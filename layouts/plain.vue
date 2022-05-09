@@ -30,7 +30,10 @@
           to="/"
           class="text-decoration-none"
         >
-          <VeoAppBarLogo />
+          <VeoAppBarLogo
+            style="height: 64px"
+            class="d-flex align-center"
+          />
         </nuxt-link>
       </div>
       <v-spacer />
