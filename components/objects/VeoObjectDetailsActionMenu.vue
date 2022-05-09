@@ -88,6 +88,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { mdiDotsVertical, mdiAlertOutline, mdiExclamationThick } from '@mdi/js';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
+import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
 export default defineComponent({
   name: 'VeoObjectDetailsActionMenu',
@@ -100,6 +101,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     const route = useRoute();
+    const { linkObject } = useVeoObjectUtilities();
 
     // general stuff
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
@@ -137,7 +139,10 @@ export default defineComponent({
 
     // emit after new object creation for linking
     const onCreateObjectSuccess = (newObjectId: string) => {
-      emit('new-object-created', newObjectId, createObjectDialog.value.objectType);
+      if (props.object) {
+        linkObject('child', { objectType: props.object?.type, objectId: props.object.id }, { objectType: createObjectDialog.value.objectType as string, objectId: newObjectId });
+        emit('reload');
+      }
     };
 
     return {

@@ -47,7 +47,6 @@
             :active-tab.sync="activeTab"
             :dense="!!pageWidths[1]"
             @reload="loadObject"
-            @new-object-created="onChildObjectCreated"
           />
         </template>
         <template #footer>
@@ -55,7 +54,6 @@
             :object="object"
             :type="activeTab"
             @reload="loadObject"
-            @new-object-created="onChildObjectCreated"
           />
         </template>
       </VeoPage>
@@ -153,7 +151,6 @@ import { Route } from 'vue-router/types';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { getSchemaEndpoint } from '~/plugins/api/schema';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -294,7 +291,7 @@ export default defineComponent({
     // get active tab by route hash & set route hash by switching tabs
     const activeTab: WritableComputedRef<string> = computed({
       get(): string {
-        return route.value.hash.substring(1) || 'subEntities'; // subEntities as default tab
+        return route.value.hash.substring(1) || 'childObjects'; // childObjects as default tab
       },
       set(hash: string): void {
         router.push({ hash, query: route.value.query });
@@ -302,29 +299,6 @@ export default defineComponent({
     });
 
     const loading = computed(() => fetchState.pending);
-    // link new created object to current object
-    const onChildObjectCreated = async (newObjectId: string, newObjectType: string) => {
-      if (object.value) {
-        const _editedEntity = await $api.entity.fetch(object.value.type, object.value.id);
-        const schemas = await $api.schema.fetchAll();
-
-        const currentChildren = object.value.type === 'scope' ? [...object.value.members] : [...object.value.parts];
-        const newChildren = [...currentChildren, { targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, newObjectType) || newObjectType}/${newObjectId}` }];
-
-        if (object.value.type === 'scope') {
-          _editedEntity.members = newChildren;
-        } else {
-          _editedEntity.parts = newChildren;
-        }
-
-        try {
-          await $api.entity.update(object.value.type, object.value.id, _editedEntity);
-          loadObject();
-        } catch (e: any) {
-          displayErrorMessage(upperFirst(t('errors.link').toString()), e.message);
-        }
-      }
-    };
 
     return {
       VeoAlertType,
@@ -352,7 +326,6 @@ export default defineComponent({
       notFoundError,
       object,
       objectSchema,
-      onChildObjectCreated,
       upperFirst,
       loadObject,
       activeTab
@@ -374,10 +347,7 @@ export default defineComponent({
     "oldVersionAlert": "You are currently viewing an old and readonly version of this object. If you want to update the object based on this data, please click \"restore\" first and then make your changes.",
     "outdatedObject": "This dataset has been edited by another user. Do you want to load the changes?",
     "restore": "restore",
-    "version": "version {version}",
-    "subEntities": "components",
-    "parents": "part of",
-    "links": "links"
+    "version": "version {version}"
   },
   "de": {
     "objectInfo": "Objektdetails",
@@ -389,10 +359,7 @@ export default defineComponent({
     "oldVersionAlert": "Ihnen wird eine alte, schreibgeschützte Version dieses Objektes angezeigt. Bitte klicken Sie auf \"Wiederherstellen\", wenn Sie Ihr Objekt basierend auf diesen Daten aktualisieren möchten.",
     "outdatedObject": "Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?",
     "restore": "wiederherstellen",
-    "version": "version {version}",
-    "subEntities": "Bestandteile",
-    "parents": "Teil von",
-    "links": "Links"
+    "version": "version {version}"
   }
 }
 </i18n>
