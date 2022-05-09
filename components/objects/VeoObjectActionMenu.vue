@@ -69,7 +69,7 @@
             color="grey"
             @click="action.action"
           >
-            {{ upperFirst(t(action.key).toString()) }}
+            {{ action.title }}
             <v-icon right>
               {{ action.icon }}
             </v-icon>
@@ -78,7 +78,7 @@
       </template>
     </v-speed-dial>
     <!-- dialogs -->
-    <VeoAddEntityDialog
+    <VeoLinkObjectDialog
       v-model="addEntityDialog.value"
       v-bind="addEntityDialog"
       @success="onAddEntitySuccess"
@@ -87,7 +87,8 @@
     <VeoCreateEntityDialog
       v-model="createEntityDialog.value"
       :schemas="createEntitySchemas"
-      @create-entity="onObjectTypeSelected($event, createEntityDialog.parent)"
+      :v-bind="createEntityDialog"
+      @create-entity="openCreateObjectDialog($event.type, $event.addAsChild)"
     />
     <VeoCreateObjectDialog
       v-if="createObjectDialog.objectType"
@@ -111,10 +112,11 @@ import { defineComponent, onMounted, useRoute, ref, computed, useContext, watch,
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
-import { separateUUIDParam } from '~/lib/utils';
+import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
 export default defineComponent({
   name: 'VeoObjectActionMenu',
@@ -133,6 +135,7 @@ export default defineComponent({
     const route = useRoute();
     const { $api } = useContext();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+    const { linkObject } = useVeoObjectUtilities();
 
     // general stuff
     const schemas = ref<IVeoSchemaEndpoint[]>([]);
@@ -167,46 +170,51 @@ export default defineComponent({
     });
 
     // configure possible action items
-    const actions = [
-      {
-        key: 'linkObject',
-        icon: mdiLinkPlus,
-        tab: ['subEntities'],
-        objectTypes: ['scope', 'entity'],
-        action: () => onLinkObject()
-      },
+    const actions = computed(() => [
       {
         key: 'createObject',
+        title: t('createObject', [props.object?.type !== 'scope' ? props.object?.type : t('object')]).toString(),
         icon: mdiPlus,
-        tab: ['subEntities', 'parents'],
-        objectTypes: ['scope', 'entity'],
-        action: () => onCreateObject()
+        tab: ['childObjects', 'parentObjects'],
+        objectTypes: ['entity'],
+        action: () => openCreateObjectDialog(props.object?.type === 'scope' ? undefined : props.object?.type, props.type === 'childObjects')
       },
       {
-        key: 'linkScope',
+        key: 'linkObject',
+        title: t('linkObject', [props.object?.type !== 'scope' ? props.object?.type : t('object')]).toString(),
         icon: mdiLinkPlus,
-        tab: ['subEntities'],
-        objectTypes: ['scope'],
-        action: () => onLinkScope()
+        tab: ['childObjects', 'parentObjects'],
+        objectTypes: ['entity'],
+        action: () => openLinkObjectDialog(props.object?.type === 'scope' ? undefined : props.object?.type, props.type === 'childObjects')
       },
       {
         key: 'createScope',
+        title: t('createScope').toString(),
         icon: mdiPlus,
-        tab: ['subEntities', 'parents'],
-        objectTypes: ['scope'],
-        action: () => onCreateScope()
+        tab: ['childScopes', 'parentScopes'],
+        objectTypes: ['scope', 'entity'],
+        action: () => openCreateObjectDialog('scope', props.type === 'childScopes')
+      },
+      {
+        key: 'linkScope',
+        title: t('linkScope').toString(),
+        icon: mdiLinkPlus,
+        tab: ['childScopes', 'parentScopes'],
+        objectTypes: ['scope', 'entity'],
+        action: () => openLinkObjectDialog('scope', props.type === 'childScopes')
       },
       {
         key: 'createRisk',
+        title: t('createRisk').toString(),
         icon: mdiPlus,
         tab: ['risks'],
         objectTypes: ['entity'],
         action: () => onCreateRisk()
       }
-    ];
+    ]);
     // filter allowed actions for current type
     const allowedActions = computed(() => {
-      let allowed = actions.filter((a) => a.tab.includes(props.type)); // filter by type
+      let allowed = actions.value.filter((a) => a.tab.includes(props.type)); // filter by type
       if (props.object?.type !== 'scope') {
         allowed = allowed.filter((a) => a.objectTypes.includes('entity')); // filter by objecttype if scope
       }
@@ -218,22 +226,58 @@ export default defineComponent({
      */
 
     // dialog options
-    const addEntityDialog = ref({
-      editedEntity: undefined as IVeoEntity | undefined,
+    const addEntityDialog = ref<{ editedEntity: IVeoEntity | undefined; addType: 'scope' | 'entity'; value: boolean; hierarchicalContext: 'child' | 'parent' }>({
+      editedEntity: undefined,
       addType: 'scope' as 'scope' | 'entity',
-      value: false as boolean
+      value: false,
+      hierarchicalContext: 'child'
+    });
+
+    // object types for object type selection in CreateEntityDialog
+    const createEntitySchemas = computed(() => {
+      return schemas.value.map((schema: IVeoSchemaEndpoint) => {
+        return {
+          text: upperFirst(schema.schemaName),
+          value: schema.schemaName
+        };
+      });
+    });
+
+    const createEntityDialog = ref({
+      value: false,
+      eventPayload: undefined as undefined | IBaseObject
+    });
+    const createObjectDialog = ref({
+      value: false as boolean,
+      objectType: undefined as undefined | string,
+      hierarchicalContext: 'parent'
     });
 
     // control dialogs
-    const onLinkScope = () => {
-      addEntityDialog.value.addType = 'scope';
-      addEntityDialog.value.editedEntity = props.object;
-      addEntityDialog.value.value = true;
+    const openCreateObjectDialog = (objectType?: string, addAsChild?: boolean) => {
+      if (!objectType) {
+        createEntityDialog.value = {
+          value: true,
+          eventPayload: { objectType, addAsChild }
+        };
+      } else {
+        createEntityDialog.value.value = false;
+        createObjectDialog.value = {
+          objectType,
+          value: true,
+          hierarchicalContext: addAsChild === undefined || addAsChild ? 'child' : 'parent'
+        };
+      }
     };
-    const onLinkObject = () => {
-      addEntityDialog.value.addType = 'entity';
-      addEntityDialog.value.editedEntity = props.object;
-      addEntityDialog.value.value = true;
+
+    // control dialogs
+    const openLinkObjectDialog = (objectType?: string, addAsChild?: boolean) => {
+      addEntityDialog.value = {
+        editedEntity: props.object,
+        addType: objectType === 'scope' ? 'scope' : 'entity',
+        value: true,
+        hierarchicalContext: addAsChild === undefined || addAsChild ? 'child' : 'parent'
+      };
     };
 
     // show error or success message
@@ -251,49 +295,21 @@ export default defineComponent({
      * create scopes & objects
      */
 
-    // dialog options
-    const createEntityDialog = ref({
-      value: false as boolean,
-      parent: undefined as IVeoEntity | undefined
-    });
-    const createObjectDialog = ref({
-      value: false as boolean,
-      objectType: undefined as undefined | string
-    });
-    // object types for object type selection in CreateEntityDialog
-    const createEntitySchemas = computed(() => {
-      return schemas.value.map((schema: IVeoSchemaEndpoint) => {
-        return {
-          text: upperFirst(schema.schemaName),
-          value: schema.schemaName
-        };
-      });
-    });
-
-    // control dialogs
-    const onCreateScope = () => {
-      createObjectDialog.value.objectType = 'scope';
-      createObjectDialog.value.value = true;
-    };
-    const onCreateObject = () => {
-      if (props.object?.type === 'scope') {
-        createEntityDialog.value.parent = props.object; // at first, open dialog for object type selection (only for scopes)
-        createEntityDialog.value.value = true;
-      } else {
-        createObjectDialog.value.objectType = props.object?.type; // open object creation dialog instantly for any other object types
-        createObjectDialog.value.value = true;
-      }
-    };
-    // after object type selection open object creation dialog
-    const onObjectTypeSelected = (type?: string, _parent?: IVeoEntity) => {
-      createObjectDialog.value.objectType = type;
-      createEntityDialog.value.value = false;
-      createObjectDialog.value.value = true;
-    };
-
     // emit after new object creation for linking
-    const onCreateObjectSuccess = (newObjectId: string) => {
-      emit('new-object-created', newObjectId, createObjectDialog.value.objectType);
+    const onCreateObjectSuccess = async (newObjectId: string) => {
+      if (props.object) {
+        try {
+          await linkObject(
+            createObjectDialog.value.hierarchicalContext as any,
+            { objectType: props.object.type, objectId: props.object.id },
+            { objectType: createObjectDialog.value.objectType as string, objectId: newObjectId }
+          );
+          displaySuccessMessage(t('objectLinked').toString());
+          emit('reload');
+        } catch (e: any) {
+          displayErrorMessage(upperFirst(t('errors.link').toString()), e.message);
+        }
+      }
     };
 
     // Risk stuff
@@ -332,8 +348,9 @@ export default defineComponent({
       onAddEntityError,
       onCreateObjectSuccess,
       onCreateRiskSuccess,
+      openCreateObjectDialog,
+      openLinkObjectDialog,
       addEntityDialog,
-      onObjectTypeSelected,
       speedDialIsOpen,
       allowedActions,
       disabled,
@@ -352,29 +369,25 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "createObject": "create object",
+    "createObject": "create {0}",
     "createRisk": "create risk",
-    "linkObject": "link object",
+    "linkObject": "select {0}",
     "createScope": "create scope",
-    "linkScope": "link scope",
-    "subEntities": "components",
-    "parents": "part of",
-    "objectLinked": "The links are successfully updated.",
+    "linkScope": "select scope",
+    "object": "object",
+    "objectLinked": "The links were successfully updated.",
     "objectNotLinked": "The links could not be updated.",
-    "createType": "create {0}",
     "parentScopeNoRiskDefinition": "This object needs a parent scope with a risk definition to create a risk"
   },
   "de": {
-    "createObject": "Objekt erstellen",
+    "createObject": "{0} erstellen",
     "createRisk": "Risiko hinzufügen",
-    "linkObject": "Objekt verknüpfen",
+    "linkObject": "{0} auswählen",
     "createScope": "Scope erstellen",
-    "linkScope": "Scope verknüpfen",
-    "subEntities": "Bestandteile",
-    "parents": "Teil von",
+    "linkScope": "Scope auswählen",
+    "object": "Objekt",
     "objectLinked": "Die Verknüpfungen wurden erfolgreich aktualisiert.",
     "objectNotLinked": "Die Verknüpfungen konnten nicht aktualisiert werden.",
-    "createType": "{0} erstellen",
     "parentScopeNoRiskDefinition": "Dieses Objekt muss Teil eines Scopes mit Risikodefinition sein, um ein Risiko zu erstellen"
   }
 }

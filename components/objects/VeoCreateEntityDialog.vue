@@ -39,7 +39,7 @@
         text
         color="primary"
         :disabled="!type"
-        @click="$emit('create-entity', type)"
+        @click="$emit('create-entity', { type, ...eventPayload })"
       >
         {{ $t('create') }}
       </v-btn>
@@ -66,6 +66,10 @@ export default Vue.extend({
     schemas: {
       type: Array as Prop<string[]>,
       default: () => []
+    },
+    eventPayload: {
+      type: Object,
+      default: () => {}
     }
   },
   data() {

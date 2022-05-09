@@ -157,7 +157,7 @@ describe('Objects details', () => {
         cy.wait(5000); // needed because otherwise scopes shown before would be selected :(
 
         cy.get(':nth-child(4) > :nth-child(1) > .v-data-table__checkbox > .v-input--selection-controls__input > .v-input--selection-controls__ripple').click();
-        cy.get('[data-cy=veo-add-entity-dialog-save-button]').click({ force: true });
+        cy.get('[data-cy=veo-link-object-dialog-save-button]').click({ force: true });
 
         cy.wait('@G_updateObject').then((interception) => {
           cy.log(interception.request.url);
