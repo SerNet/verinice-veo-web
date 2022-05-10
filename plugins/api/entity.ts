@@ -168,7 +168,7 @@ export default function (api: Client) {
         });
     },
 
-    async fetchRisks(objectType: string, id: string): Promise<IVeoEntity[]> {
+    async fetchRisks(objectType: string, id: string): Promise<IVeoRisk[]> {
       if (objectType !== 'process') {
         throw new Error(`api::fetchRisk: Risks can only be fetched for processes. You tried fetching a risk for a ${objectType}`);
       }
@@ -179,6 +179,22 @@ export default function (api: Client) {
         params: {
           objectType,
           id
+        }
+      });
+    },
+
+    async fetchRisk(objectType: string, id: string, scenarioId: string): Promise<IVeoRisk> {
+      if (objectType !== 'process') {
+        throw new Error(`api::fetchRisk: Risks can only be fetched for processes. You tried fetching a risk for a ${objectType}`);
+      }
+
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+
+      return api.req('/api/:objectType/:id/risks/:scenarioId', {
+        params: {
+          objectType,
+          id,
+          scenarioId
         }
       });
     },

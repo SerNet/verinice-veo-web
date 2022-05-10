@@ -70,6 +70,7 @@
       :domain-id="domainId"
       :object-type="object && object.type"
       :object-id="object && object.id"
+      @reload="fetch"
     />
   </div>
 </template>
@@ -138,7 +139,7 @@ export default defineComponent({
       } else if (props.type === 'parents' && props.object && parentType.value) {
         items.value = await $api.entity.fetchParents(parentType.value, props.object.id);
       } else if (props.type === 'risks' && props.object) {
-        items.value = await $api.entity.fetchRisks(props.object.type, props.object.id);
+        items.value = (await $api.entity.fetchRisks(props.object.type, props.object.id)) as any;
       } else {
         // create entities for table from links
         const links: Partial<IVeoEntity>[] = [];
@@ -273,17 +274,19 @@ export default defineComponent({
     /**
      * risks edit dialog
      */
-    const editRiskDialog = ref<{ visible: boolean; risk?: IVeoEntity }>({
+    const editRiskDialog = ref<{ visible: boolean; scenarioId?: string }>({
       visible: false,
-      risk: undefined
+      scenarioId: undefined
     });
 
     // push to object detail site (on click in table)
-    const openItem = ({ item }: { item: IVeoEntity }) => {
+    const openItem = ({ item }: { item: IVeoEntity | IVeoRisk }) => {
       if (props.type === 'risks') {
-        editRiskDialog.value.risk = item;
+        item = item as IVeoRisk;
+        editRiskDialog.value.scenarioId = getEntityDetailsFromLink(item.scenario).id;
         editRiskDialog.value.visible = true;
       } else {
+        item = item as IVeoEntity;
         router.push({
           name: 'unit-domains-domain-objects-entity',
           params: {

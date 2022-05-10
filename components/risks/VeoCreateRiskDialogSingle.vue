@@ -26,6 +26,13 @@
     v-on="$listeners"
   >
     <template #default>
+      <VeoAlert
+        :type="VeoAlertType.INFO"
+        :title="t('computedValues')"
+        :text="t('computedValuesCTA')"
+        flat
+        no-close-button
+      />
       <v-form
         v-if="data"
         v-model="formIsValid"
@@ -44,6 +51,7 @@
                   v-model="data.scenario"
                   object-type="scenario"
                   required
+                  :rules="[(data) => !!data || t('scenarioRequired')]"
                   sub-type="SCN_Scenario"
                   :domain-id="domainId"
                   value-as-link
@@ -64,33 +72,13 @@
           </v-card-text>
         </VeoCard>
         <VeoCreateRiskDialogRiskDefinitions
-          v-model="data.domains[domainId].riskDefinitions"
+          v-model="data"
           :domain="domain"
+          :form-is-dirty="formIsDirty"
         />
-        <h2 class="text-h2 mt-4">
-          {{ upperFirst(t('mitigationSection').toString()) }}
-        </h2>
-        <VeoCard>
-          <v-card-text>
-            <VeoObjectSelect
-              v-model="data.mitigation"
-              object-type="control"
-              :label="t('mitigation')"
-              value-as-link
-            />
-          </v-card-text>
-        </VeoCard>
       </v-form>
     </template>
     <template #dialog-options>
-      <v-btn
-        v-cy-name="'cancel-button'"
-        text
-        :disabled="savingRisk"
-        @click="dialog = false"
-      >
-        {{ t('global.button.cancel') }}
-      </v-btn>
       <v-spacer />
       <v-btn
         v-cy-name="'save-button'"
@@ -102,19 +90,28 @@
       >
         {{ t('global.button.save') }}
       </v-btn>
+      <v-btn
+        v-cy-name="'close-button'"
+        text
+        color="primary"
+        :disabled="savingRisk"
+        @click="dialog = false"
+      >
+        {{ t('global.button.close') }}
+      </v-btn>
     </template>
   </VeoDialog>
 </template>
 
 <script lang="ts">
+import { nextTick } from 'process';
 import { useContext, useFetch } from '@nuxtjs/composition-api';
-import { computed, defineComponent, PropType, ref, watch } from '@vue/composition-api';
+import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 import { merge, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { useVeoAlerts } from '~/composables/VeoAlert';
-import { getEntityDetailsFromLink } from '~/lib/utils';
 
-import { IVeoDomain, IVeoRisk } from '~/types/VeoTypes';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+import { IVeoDomain, IVeoRisk, VeoAlertType } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -122,19 +119,19 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    risk: {
-      type: Object as PropType<IVeoRisk>,
+    scenarioId: {
+      type: String,
       default: undefined
     },
     domainId: {
       type: String,
       required: true
     },
-    objectType: {
+    objectId: {
       type: String,
       required: true
     },
-    objectId: {
+    objectType: {
       type: String,
       required: true
     }
@@ -153,32 +150,59 @@ export default defineComponent({
       }
     });
 
+    watch(
+      () => dialog.value,
+      (newValue) => {
+        if (newValue) {
+          fetchDomain();
+        }
+      }
+    );
+
     // Domain stuff, used for risk definitions
     const domain = ref<IVeoDomain | undefined>();
     const { fetch: fetchDomain } = useFetch(async () => {
       domain.value = await $api.domain.fetch(props.domainId);
-      data.value = makeRiskObject(data.value, props.domainId, Object.keys(domain.value?.riskDefinitions || {}));
+      data.value = makeRiskObject(risk.value, props.domainId, Object.keys(domain.value?.riskDefinitions || {}));
+      nextTick(() => {
+        formIsDirty.value = false;
+      });
     });
     watch(
       () => props.domainId,
       () => fetchDomain()
     );
 
-    const formIsValid = ref(false);
+    const data = ref<IVeoRisk>(makeRiskObject(undefined, props.domainId, Object.keys(domain.value?.riskDefinitions || {})));
+    const formIsValid = ref(true);
     const formIsDirty = ref(false);
 
-    const data = ref<IVeoRisk>(makeRiskObject({} as any, props.domainId, Object.keys(domain.value?.riskDefinitions || {})));
-    watch(
-      () => props.risk,
-      (newValue) => {
-        data.value = makeRiskObject(newValue, props.domainId, Object.keys(domain.value?.riskDefinitions || {}));
-        formIsValid.value = false;
-        formIsDirty.value = false;
-      },
-      {
-        deep: true,
-        immediate: true
+    const risk = ref<IVeoRisk | undefined>(undefined);
+    const { fetch: fetchRisk } = useFetch(async () => {
+      if (props.scenarioId) {
+        risk.value = await $api.entity.fetchRisk(props.objectType, props.objectId, props.scenarioId);
+      } else {
+        risk.value = undefined;
       }
+
+      data.value = makeRiskObject(risk.value, props.domainId, Object.keys(domain.value?.riskDefinitions || {}));
+      formIsValid.value = true;
+
+      nextTick(() => {
+        formIsDirty.value = false;
+      });
+    });
+    watch(
+      () => props.scenarioId,
+      () => fetchRisk()
+    );
+
+    watch(
+      () => data.value,
+      () => {
+        formIsDirty.value = true;
+      },
+      { deep: true }
     );
 
     const savingRisk = ref(false);
@@ -186,14 +210,14 @@ export default defineComponent({
       savingRisk.value = true;
 
       try {
-        if (props.risk) {
-          const { id } = getEntityDetailsFromLink(props.risk.scenario);
-          await $api.entity.updateRisk(props.objectType, props.objectId, id, data.value);
+        if (props.scenarioId) {
+          await $api.entity.updateRisk(props.objectType, props.objectId, props.scenarioId, data.value);
         } else {
           await $api.entity.createRisk(props.objectType, props.objectId, data.value);
         }
-        displaySuccessMessage(props.risk ? upperFirst(t('riskUpdated').toString()) : upperFirst(t('riskCreated').toString()));
-        dialog.value = false;
+        displaySuccessMessage(props.scenarioId ? upperFirst(t('riskUpdated').toString()) : upperFirst(t('riskCreated').toString()));
+        fetchRisk();
+        emit('reload');
       } catch (e: any) {
         displayErrorMessage(upperFirst(t('riskNotSaved').toString()), e.message);
       } finally {
@@ -207,16 +231,18 @@ export default defineComponent({
       domain,
       formIsDirty,
       formIsValid,
+      risk,
       saveRisk,
       savingRisk,
 
       upperFirst,
-      t
+      t,
+      VeoAlertType
     };
   }
 });
 
-const makeRiskObject = (initialData: IVeoRisk, domainId: string, riskDefinition: string[]): IVeoRisk => {
+const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, riskDefinition: string[]): IVeoRisk => {
   const object: any = {
     scenario: undefined,
     mitigation: undefined,
@@ -300,7 +326,7 @@ const makeRiskObject = (initialData: IVeoRisk, domainId: string, riskDefinition:
     };
   }
 
-  return merge(object, initialData);
+  return initialData ? merge(object, initialData) : object;
 };
 </script>
 
@@ -308,25 +334,27 @@ const makeRiskObject = (initialData: IVeoRisk, domainId: string, riskDefinition:
 {
   "en": {
     "common": "common",
+    "computedValues": "Some values are computed in the backend.",
+    "computedValuesCTA": "Please press \"Save\" to recomputed those values.",
     "createRisk": "create risk",
     "editRisk": "edit risk \"{0}\"",
-    "mitigation": "mitigation",
-    "mitigationSection": "risk reduction actions (mitigating actions)",
     "riskCreated": "the risk was created successfully",
     "riskUpdated": "the risk was edited successfully",
     "riskNotSaved": "the risk couldn't be saved",
-    "riskOwner": "risk owner"
+    "riskOwner": "risk owner",
+    "scenarioRequired": "A risk scenario has to be selected"
   },
   "de": {
     "common": "allgemein",
+    "computedValues": "Einige Werte werden automatisch berechnet.",
+    "computedValuesCTA": "Drücken sie \"Speichern\" um diese Werte neu berechnen zu lassen.",
     "createRisk": "Risiko erstellen",
     "editRisk": "Risiko \"{0}\" bearbeiten",
-    "mitigation": "Gegenmaßnahme",
-    "mitigationSection": "Maßnahmen zur Risikoreduktion (Mitigierende Maßnahmen)",
     "riskCreated": "das Risiko wurde erfolgreich erstellt",
     "riskUpdated": "das Risiko wurde erfolgreich bearbeitet",
     "riskNotSaved": "das Risiko konnte nicht gespeichert werden",
-    "riskOwner": "Verantwortlicher"
+    "riskOwner": "Verantwortlicher",
+    "scenarioRequired": "Es muss ein Szenario ausgewählt werden"
   }
 }
 </i18n>

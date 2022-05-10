@@ -387,6 +387,7 @@ export interface IVeoEntityDomain {
     subType?: string;
     riskDefinition?: string;
     decisionResults?: IVeoDecisionResults;
+    riskValues?: any;
   };
 }
 
@@ -446,6 +447,7 @@ export interface IVeoRisk {
               riskTreatments: string;
               riskTreatmentExplanation: string;
               inherentRisk: number;
+              effectiveRisk: number;
             }
           ];
         };
