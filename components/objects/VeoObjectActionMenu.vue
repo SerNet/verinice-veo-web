@@ -37,7 +37,6 @@
           <template #activator="{ on }">
             <div v-on="on">
               <v-btn
-                v-model="speedDialIsOpen"
                 v-cy-name="'show-actions-button'"
                 color="primary"
                 :disabled="!allowedActions.length || disabled"
@@ -45,7 +44,7 @@
                 fab
                 data-component-name="object-details-actions-button"
               >
-                <v-icon v-if="speedDialIsOpen">
+                <v-icon v-if="speedDialIsOpen && !disabled">
                   {{ mdiClose }}
                 </v-icon>
                 <v-icon v-else>
@@ -59,7 +58,10 @@
           </template>
         </v-tooltip>
       </template>
-      <template #default>
+      <template
+        v-if="allowedActions.length && !disabled"
+        #default
+      >
         <div v-cy-name="'action-list'">
           <v-btn
             v-for="action in allowedActions"
