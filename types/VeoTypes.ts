@@ -586,3 +586,14 @@ export interface IVeoFormsWidgetDefinition {
     [lang: string]: string;
   };
 }
+
+export interface IVeoInspectionResult {
+  description: {
+    [lang: string]: string;
+  };
+  severity: string;
+  suggestions: {
+    type: string;
+    [key: string]: any;
+  }[];
+}

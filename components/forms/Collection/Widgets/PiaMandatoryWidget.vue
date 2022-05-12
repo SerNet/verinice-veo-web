@@ -22,8 +22,20 @@
     no-close-button
     flat
     :title="piaMandatory ? t('piaMandatory') : t('piaNotMandatory')"
-    :text="piaMandatory ? t('piaMandatoryText') : t('piaNotMandatoryText')"
-  />
+  >
+    <span v-if="piaMandatory">
+      <i18n
+        path="piaMandatoryText"
+        tag="span"
+      ><br></i18n>
+    </span>
+    <span v-else>
+      <i18n
+        path="piaNotMandatoryText"
+        tag="span"
+      ><br></i18n>
+    </span>
+  </VeoAlert>
 </template>
 
 <script lang="ts">
@@ -55,7 +67,7 @@ export default defineComponent({
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
-    const piaMandatory = computed(() => !!props.objectData.domains?.[domainId.value]?.decisionResults.piaMandatory.value);
+    const piaMandatory = computed(() => !!props.objectData.domains?.[domainId.value]?.decisionResults?.piaMandatory?.value);
 
     return {
       piaMandatory,
