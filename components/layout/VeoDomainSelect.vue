@@ -21,43 +21,73 @@
     bottom
   >
     <template #activator="{ on, value }">
-      <v-list-item
-        class="veo-domain-select mx-2"
+      <v-list
+        nav
         dense
-        data-component-name="domain-select"
-        :disabled="disabled"
-        v-on="on"
+        :rounded="miniVariant"
       >
-        <v-skeleton-loader
-          v-if="$fetchState.pending"
-          height="24px"
-          style="border-radius: 999px"
-          type="image"
-          width="100px"
-        />
-        <span
-          v-else
-          class="veo-domain-select__selection"
-        >
-          {{ domainName }}
-        </span>
-        <v-icon
-          v-if="value"
+        <v-list-item
+          v-show="!miniVariant"
+          class="veo-domain-select mx-2"
+          data-component-name="domain-select"
           :disabled="disabled"
-          right
-          color="primary"
+          v-on="on"
         >
-          {{ mdiChevronUp }}
-        </v-icon>
-        <v-icon
-          v-else
-          :disabled="disabled"
-          right
-          color="primary"
+          <v-skeleton-loader
+            v-if="$fetchState.pending"
+            height="24px"
+            style="border-radius: 999px"
+            type="image"
+            width="100px"
+          />
+          <span
+            v-else
+            class="veo-domain-select__selection text-no-wrap"
+          >
+            {{ domainName }}
+          </span>
+          <v-icon
+            v-if="value"
+            :disabled="disabled"
+            right
+            color="primary"
+          >
+            {{ mdiChevronUp }}
+          </v-icon>
+          <v-icon
+            v-else
+            :disabled="disabled"
+            right
+            color="primary"
+          >
+            {{ mdiChevronDown }}
+          </v-icon>
+        </v-list-item>
+        <v-list-item
+          v-show="miniVariant"
+          style="height:44px;"
+          @click="$emit('expand-menu')"
+          v-on="on"
         >
-          {{ mdiChevronDown }}
-        </v-icon>
-      </v-list-item>
+          <v-tooltip
+            right
+            :disabled="!miniVariant"
+          >
+            <template #activator="{ on, attrs }">
+              <div
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon
+                  color="black"
+                  v-text="mdiShapeOutline"
+                />
+              </div>
+            </template>
+            <span>{{ t('domainSelection') }}</span>
+          </v-tooltip>
+        </v-list-item>
+      </v-list>
     </template>
     <template #default>
       <v-list dense>
@@ -82,7 +112,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
+import { mdiChevronDown, mdiChevronUp, mdiShapeOutline } from '@mdi/js';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain } from '~/types/VeoTypes';
@@ -90,6 +120,10 @@ import { IVeoDomain } from '~/types/VeoTypes';
 export default defineComponent({
   props: {
     disabled: {
+      type: Boolean,
+      default: false
+    },
+    miniVariant: {
       type: Boolean,
       default: false
     }
@@ -153,7 +187,8 @@ export default defineComponent({
 
       t,
       mdiChevronDown,
-      mdiChevronUp
+      mdiChevronUp,
+      mdiShapeOutline
     };
   }
 });
@@ -162,10 +197,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "noDomainSelected": "No module selected"
+    "noDomainSelected": "No module selected",
+    "domainSelection": "Domain selection"
   },
   "de": {
-    "noDomainSelected": "Kein Modul ausgewählt"
+    "noDomainSelected": "Kein Modul ausgewählt",
+    "domainSelection": "Modulauswahl"
   }
 }
 </i18n>
