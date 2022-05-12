@@ -153,14 +153,15 @@ interface IVeoCustomObject {
 }
 
 export interface IVeoCustomLink extends IVeoCustomObject {
-  name: string;
+  attributes: IBaseObject;
+  domains: any;
   target: IVeoLink;
 }
 
 export interface IVeoCustomAspect extends IVeoCustomObject {}
 
 export interface IVeoCustomLinks {
-  [key: string]: IVeoCustomLink;
+  [key: string]: IVeoCustomLink[];
 }
 
 export interface IVeoCustomAspects {
