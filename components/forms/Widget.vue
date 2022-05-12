@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
+   - Copyright (C) 2022  Jonas Heitmann
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -15,37 +15,33 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<template>
-  <VeoEditorListItem
-    v-bind="$props"
-    v-on="$listeners"
-  />
-</template>
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
+import { defineComponent, h } from '@nuxtjs/composition-api';
 
-import { IInputType } from '~/types/VeoEditor';
+import PiaMandatoryWidget from '~/components/forms/Collection/Widgets/PiaMandatoryWidget.vue';
 
-interface IProps {
-  title: string;
-  styling: IInputType;
-  translate: boolean;
-}
+const AVAILABLE_WIDGETS = [PiaMandatoryWidget];
 
-export default defineComponent<IProps>({
+export default defineComponent({
   props: {
-    title: {
+    name: {
       type: String,
-      default: undefined
+      required: true
     },
-    styling: {
+    objectData: {
       type: Object,
-      default: () => {}
-    },
-    translate: {
-      type: Boolean,
-      default: false
+      required: true
     }
+  },
+  setup(props) {
+    const fittingComponent = AVAILABLE_WIDGETS.find((widget) => widget.name === props.name);
+
+    if (!fittingComponent) {
+      // eslint-disable-next-line no-console
+      console.warn(`VeoForm:: Couldn't find widget ${props.name}`);
+      return null;
+    }
+    return () => h(fittingComponent, { props });
   }
 });
 </script>

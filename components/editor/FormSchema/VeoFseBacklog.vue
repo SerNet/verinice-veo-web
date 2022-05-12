@@ -204,19 +204,58 @@
           </v-card>
         </v-expansion-panel-content>
       </v-expansion-panel>
+      <v-expansion-panel v-show="filteredWidgets.length">
+        <v-expansion-panel-header class="overline px-0">
+          {{ t('formWidgets') }}
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-card
+            v-if="filteredWidgets.length"
+            outlined
+            class="overflow-hidden"
+          >
+            <v-list
+              dense
+              class="py-0"
+            >
+              <Draggable
+                class="drag-unused-widgets"
+                tag="div"
+                style="overflow: auto; min-width:300;"
+                :list="filteredWidgets"
+                :group="{ name: 'g1', pull: 'clone', put: false }"
+                :sort="false"
+                :clone="onCloneWidget"
+              >
+                <v-sheet
+                  v-for="widget in filteredWidgets"
+                  :key="widget.name"
+                >
+                  <VeoFseListItem
+                    :title="widget.name"
+                    :styling="{ icon: 'mdi-auto-fix', color: 'grey darken-4', name: upperFirst(t('widget').toString()) }"
+                  />
+                </v-sheet>
+              </Draggable>
+            </v-list>
+          </v-card>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
     </v-expansion-panels>
   </div>
 </template>
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropType, ref, Ref, watch } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, PropType, ref, Ref } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
-import vjp from 'vue-json-pointer';
 import Draggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
+import { pick, upperFirst } from 'lodash';
+
 import { INPUT_TYPES } from '~/types/VeoEditor';
-import { IVeoFormSchema, IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoFormSchema, IVeoFormsWidgetDefinition, IVeoObjectSchema } from '~/types/VeoTypes';
 import { BaseObject, generateFormSchema, Mode } from '~/components/forms/utils';
+import { WidgetDefinition as PiaMandatoryWidgetDefinition } from '~/components/forms/Collection/Widgets/PiaMandatoryWidget.vue';
 
 interface IProps {
   searchQuery: string;
@@ -233,18 +272,20 @@ export interface IControl {
   backlogTitle: string;
   propertyName: string;
   category: 'basics' | 'aspects' | 'links';
-  used: boolean;
 }
 
 export interface IUnused {
   basics: IControl[];
   aspects: IControl[];
   links: IControl[];
+  widgets: IVeoFormsWidgetDefinition[];
 }
 
 export interface IControlItemMap {
   [parent: string]: IControl[];
 }
+
+const WIDGETS = [PiaMandatoryWidgetDefinition];
 
 export default defineComponent<IProps>({
   components: {
@@ -336,8 +377,7 @@ export default defineComponent<IProps>({
           label,
           backlogTitle,
           propertyName,
-          category,
-          used: false
+          category
         };
       };
 
@@ -368,38 +408,20 @@ export default defineComponent<IProps>({
     }
     initializeControls();
 
-    watch(
-      () => props.formSchema.content,
-      () => {
-        const usedScopes = Object.entries(JsonPointer.flatten(props.formSchema.content, true))
-          .filter(([key, _value]) => /elements\/\d+\/scope$/.test(key))
-          .map(([_key, value]) => value as string);
-
-        controls.value.forEach((obj, i) => {
-          if (usedScopes.includes(obj.scope)) {
-            // if an element is used in FormSchema and "used" property is not true yet => set to true
-            if (obj.used === false) {
-              vjp.set(controls.value, `/${i}/used`, true);
-            }
-          } else if (obj.used === true) {
-            // if an element is not in FormSchema anymore, but "used" property is true => set to false
-            vjp.set(controls.value, `/${i}/used`, false);
-          }
-        });
-      },
-      {
-        deep: true,
-        immediate: true
-      }
+    const nonLayoutFormSchemaElements = computed<{ type: string; name?: string; scope?: string }[]>(
+      () =>
+        Object.values(JsonPointer.flatten(props.formSchema.content, true))
+          .filter((element: any) => typeof element === 'object' && element.type && element.type !== 'Layout')
+          .map((element: any) => pick(element, 'type', 'scope', 'name')) as any
     );
 
     /**
      * Computed refs that are displayed in the expansion panels.
      */
-    const expansionPanels: Ref<number[]> = ref([0, 1, 2, 3]);
+    const expansionPanels: Ref<number[]> = ref([0, 1, 2, 3, 4]);
 
     function onExpandAll() {
-      expansionPanels.value = [0, 1, 2, 3];
+      expansionPanels.value = [0, 1, 2, 3, 4];
     }
 
     function onCollapseAll() {
@@ -408,9 +430,16 @@ export default defineComponent<IProps>({
 
     const unused: ComputedRef<IUnused> = computed(() => {
       return {
-        basics: controls.value.filter((obj) => obj.category === 'basics' && !obj.used),
-        aspects: controls.value.filter((obj) => obj.category === 'aspects' && !obj.used),
-        links: controls.value.filter((obj) => obj.category === 'links' && !obj.used)
+        basics: controls.value.filter(
+          (obj) => obj.category === 'basics' && !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Control' && element.scope === obj.scope)
+        ),
+        aspects: controls.value.filter(
+          (obj) => obj.category === 'aspects' && !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Control' && element.scope === obj.scope)
+        ),
+        links: controls.value.filter(
+          (obj) => obj.category === 'links' && !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Control' && element.scope === obj.scope)
+        ),
+        widgets: WIDGETS.filter((widget) => !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Widget' && element.name === widget.name))
       };
     });
 
@@ -429,6 +458,8 @@ export default defineComponent<IProps>({
     const filteredFormElements: ComputedRef<any> = computed(() => {
       return formElements.filter((f: any) => !props.searchQuery || f.description.title?.toLowerCase().includes(props.searchQuery));
     });
+
+    const filteredWidgets = computed(() => unused.value.widgets.filter((widget) => !props.searchQuery || widget.name.toLowerCase().includes(props.searchQuery)));
 
     const controlElementsVisible: ComputedRef<Boolean> = computed(() => {
       return !!(filteredFormElements.value.length + filteredBasics.value.length + filteredAspects.value.length + filteredLinks.value.length);
@@ -460,20 +491,28 @@ export default defineComponent<IProps>({
       };
     }
 
+    const onCloneWidget = (widget: IVeoFormsWidgetDefinition) => ({
+      type: 'Widget',
+      name: widget.name
+    });
+
     return {
       filteredBasics,
       filteredAspects,
       filteredLinks,
       filteredFormElements,
+      filteredWidgets,
       expansionPanels,
       controlElementsVisible,
       onExpandAll,
       onCollapseAll,
       onCloneFormElement,
       onCloneControl,
+      onCloneWidget,
       typeMap,
 
-      t
+      t,
+      upperFirst
     };
   }
 });
@@ -491,13 +530,17 @@ export default defineComponent<IProps>({
     "collapse": "collapse all",
     "expand": "expand all",
     "formElements": "form elements",
-    "searchNoMatch": "no matching controls"
+    "formWidgets": "form widgets",
+    "searchNoMatch": "no matching controls",
+    "widget": "widget"
   },
   "de": {
     "collapse": "alle einklappen",
     "expand": "alle ausklappen",
     "formElements": "steuerelemente",
-    "searchNoMatch": "keine passenden Steuerelemente vorhanden"
+    "formWidgets": "Formular-Widgets",
+    "searchNoMatch": "keine passenden Steuerelemente vorhanden",
+    "widget": "Widget"
   }
 }
 </i18n>

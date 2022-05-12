@@ -488,10 +488,11 @@ export default defineComponent({
 
     function onDelete(event: IVeoFormSchemaItemDeleteEvent): void {
       if (formSchema.value) {
+        const pointer = event.formSchemaPointer as string;
         // Delete custom translation keys for deleted elemented and nested elements
-        const elementFormSchema = JsonPointer.get(formSchema.value.content, event.formSchemaPointer) as IVeoFormSchemaItem;
+        const elementFormSchema = JsonPointer.get(formSchema.value.content, pointer) as IVeoFormSchemaItem;
         deleteElementCustomTranslation(elementFormSchema, formSchema.value.translation, onUpdateCustomTranslation);
-        const vjpPointer = event.formSchemaPointer.replace('#', '');
+        const vjpPointer = pointer.replace('#', '');
         // Not allowed to make changes on the root object
         if (event.formSchemaPointer !== '#') {
           vjp.remove(formSchema.value.content, vjpPointer);
@@ -503,7 +504,7 @@ export default defineComponent({
 
     function onUpdate(event: IVeoFormSchemaItemUpdateEvent): void {
       if (formSchema.value?.content) {
-        vjp.set(formSchema.value.content, event.formSchemaPointer.replace('#', ''), event.data);
+        vjp.set(formSchema.value.content, (event.formSchemaPointer as string).replace('#', ''), event.data);
       }
     }
 
