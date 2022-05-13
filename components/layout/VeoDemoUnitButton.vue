@@ -63,7 +63,7 @@ import { mdiLoginVariant, mdiLogoutVariant } from '@mdi/js';
 import { defineComponent, ref, computed, Ref, useContext } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
-import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
+import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { IVeoUnit } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
 
@@ -90,12 +90,32 @@ export default defineComponent({
     const userIsInDemoUnit = computed(() => currentUnit.value === demoUnit.value?.id);
     const buttonIcon = computed(() => (userIsInDemoUnit.value ? mdiLogoutVariant : mdiLoginVariant));
 
+    const lastNormalUnit = computed(() => {
+      const unit = LocalStorage.unitBeforeDemoUnit || units.value[0].id;
+      const domain = getFirstDomainDomaindId(units.value.find((_unit) => _unit.id === unit) as IVeoUnit) || '';
+
+      return { unit, domain };
+    });
+
     function toggleDemoUnit() {
       if (userIsInDemoUnit.value) {
-        app.router?.push(`/${createUUIDUrlParam('unit', LocalStorage.unitBeforeDemoUnit || units.value[0].id)}`);
+        app.router?.push({
+          name: 'unit-domains-domain',
+          params: {
+            unit: createUUIDUrlParam('unit', lastNormalUnit.value.unit),
+            domain: createUUIDUrlParam('domain', lastNormalUnit.value.domain)
+          }
+        });
       } else if (demoUnit.value) {
         LocalStorage.unitBeforeDemoUnit = currentUnit.value;
-        app.router?.push(`/${createUUIDUrlParam('unit', demoUnit.value.id)}`);
+
+        app.router?.push({
+          name: 'unit-domains-domain',
+          params: {
+            unit: createUUIDUrlParam('unit', demoUnit.value.id),
+            domain: createUUIDUrlParam('domain', getFirstDomainDomaindId(demoUnit.value) || '')
+          }
+        });
       }
     }
 
