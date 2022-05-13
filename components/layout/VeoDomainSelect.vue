@@ -28,7 +28,7 @@
       >
         <v-list-item
           v-show="!miniVariant"
-          class="veo-domain-select mx-2"
+          class="veo-domain-select"
           data-component-name="domain-select"
           :disabled="disabled"
           v-on="on"
