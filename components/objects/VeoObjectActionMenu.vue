@@ -44,7 +44,7 @@
                 fab
                 data-component-name="object-details-actions-button"
               >
-                <v-icon v-if="speedDialIsOpen && !disabled">
+                <v-icon v-if="speedDialIsOpen && !disabled && allowedActions.length">
                   {{ mdiClose }}
                 </v-icon>
                 <v-icon v-else>
