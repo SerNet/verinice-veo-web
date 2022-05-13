@@ -31,6 +31,10 @@ export default defineComponent({
     objectData: {
       type: Object,
       required: true
+    },
+    objectMetaData: {
+      type: Object,
+      default: () => {}
     }
   },
   setup(props) {

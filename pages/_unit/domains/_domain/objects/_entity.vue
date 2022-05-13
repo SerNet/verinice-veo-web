@@ -73,6 +73,7 @@
             :preselected-sub-type="preselectedSubType"
             :valid.sync="isFormValid"
             :disable-sub-type-select="object && object.domains[domainId] && !!object.domains[domainId].subType"
+            :object-meta-data.sync="metaData"
             @input="onFormInput"
             @show-revision="onShowRevision"
             @create-pia="createPIADialogVisible = true"
@@ -191,9 +192,13 @@ export default defineComponent({
     const object = ref<IVeoEntity | undefined>(undefined);
     const modifiedObject = ref<IVeoEntity | undefined>(undefined);
 
+    // Object details are originally part of the object, but as they might get updated independently, we want to avoid refetching the whole object, so we outsorce them.
+    const metaData = ref<any>({});
+
     const { fetchState, fetch: loadObject } = useFetch(async () => {
       object.value = await $api.entity.fetch(objectParameter.value.type, objectParameter.value.id);
       modifiedObject.value = cloneDeep(object.value);
+      metaData.value = cloneDeep(object.value.domains[domainId.value]);
     });
 
     const notFoundError = computed(() => (fetchState.error as any)?.statusCode === 404);
@@ -327,6 +332,7 @@ export default defineComponent({
       formDataIsRevision,
       isFormDirty,
       isFormValid,
+      metaData,
       modifiedObject,
       onContinueNavigation,
       onFormInput,

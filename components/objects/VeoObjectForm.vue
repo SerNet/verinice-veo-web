@@ -55,6 +55,7 @@
             v-model="objectData"
             :schema="objectSchema"
             :ui="currentFormSchema && currentFormSchema.content"
+            :object-meta-data="objectMetaData"
             :general-translation="translations && translations[locale]"
             :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
             :error-messages.sync="formErrors"
@@ -171,6 +172,10 @@ export default defineComponent({
       type: Object,
       default: undefined
     } as PropOptions<IVeoObjectSchema>,
+    objectMetaData: {
+      type: Object,
+      default: () => {}
+    },
     disableHistory: {
       type: Boolean,
       default: false
@@ -217,6 +222,9 @@ export default defineComponent({
       fetch,
       fetchState: { pending: formLoading }
     } = useFetch(async () => {
+      fetchWarnings();
+      fetchDecisions();
+
       // Only fetch once, as translations changing while the user uses this component is highly unlikely
       if (!translations.value) {
         translations.value = (await $api.translation.fetch(['de', 'en'])).lang;
@@ -234,9 +242,9 @@ export default defineComponent({
         }
       }
       if (selectedDisplayOption.value !== 'objectschema') {
-        currentFormSchema.value = await $api.form.fetch(props.domainId, selectedDisplayOption.value);
+        // currentFormSchema.value = await $api.form.fetch(props.domainId, selectedDisplayOption.value);
       } else {
-        currentFormSchema.value = undefined;
+        // currentFormSchema.value = undefined;
       }
 
       const subType = formSchemas.value.find((formschema) => formschema.id === selectedDisplayOption.value)?.subType;
@@ -340,16 +348,39 @@ export default defineComponent({
 
     // errors and warnings from backend
     const backendWarnings = ref<IVeoInspectionResult[]>([]);
-    const { fetch: fetchWarnings } = useFetch(async () => {
-      if (props.value) {
-        backendWarnings.value = await $api.entity.fetchInspections(props.value.type, props.value.id, props.domainId);
+
+    // For some reason putting this in a useFetch and using fetchWarnings as the name for the fetch hook caused all useFetch to be refetched
+    const fetchWarnings = async () => {
+      if (objectData.value?.id) {
+        backendWarnings.value = await $api.entity.fetchInspections(objectData.value.type, objectData.value.id, props.domainId);
       }
-    });
+    };
+
+    // For some reason putting this in a useFetch and using fetchDecisions as the name for the fetch hook caused all useFetch to be refetched
+    const fetchDecisions = async () => {
+      // Fetch updated decision results and merge them with the current values
+      if (objectData.value?.domains?.[props.domainId]) {
+        const newDecisionResults: IBaseObject = {};
+        for (const key in props.objectMetaData?.decisionResults || {}) {
+          newDecisionResults[key] = await $api.entity.fetchWipDecisionEvaluation(objectData.value.type, objectData.value as any, props.domainId, key);
+        }
+        emit('update:object-meta-data', { ...props.objectMetaData, decisionResults: newDecisionResults });
+      }
+    };
 
     watch(
-      () => props.value,
-      () => throttle(fetchWarnings, 500)(),
+      () => objectData.value,
+      () => throttle(fetchDecisions, 500)(),
       { deep: true }
+    );
+
+    watch(
+      () => objectData.value?.id,
+      (newValue) => {
+        if (newValue) {
+          fetchWarnings();
+        }
+      }
     );
 
     return {

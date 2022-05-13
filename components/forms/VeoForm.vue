@@ -55,6 +55,10 @@ export default Vue.extend({
       type: Object,
       default: undefined
     } as PropOptions<UISchema>,
+    objectMetaData: {
+      type: Object,
+      default: () => {}
+    },
     domainId: {
       type: String,
       default: undefined
@@ -496,7 +500,8 @@ export default Vue.extend({
         props: {
           ...rule,
           name: element.name,
-          objectData: this.value
+          objectData: this.value,
+          objectMetaData: this.objectMetaData
         }
       });
     },

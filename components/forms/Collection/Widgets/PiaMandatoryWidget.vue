@@ -39,9 +39,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useRoute } from '@nuxtjs/composition-api';
+import { computed, defineComponent } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { separateUUIDParam } from '~/lib/utils';
 
 import { IVeoFormsWidgetDefinition, VeoAlertType } from '~/types/VeoTypes';
 
@@ -59,15 +58,16 @@ export default defineComponent({
     objectData: {
       type: Object,
       required: true
+    },
+    objectMetaData: {
+      type: Object,
+      default: () => {}
     }
   },
   setup(props) {
     const { t } = useI18n();
-    const route = useRoute();
 
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
-
-    const piaMandatory = computed(() => !!props.objectData.domains?.[domainId.value]?.decisionResults?.piaMandatory?.value);
+    const piaMandatory = computed(() => !!props.objectMetaData?.decisionResults?.piaMandatory?.value);
 
     return {
       piaMandatory,
