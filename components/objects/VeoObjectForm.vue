@@ -242,9 +242,9 @@ export default defineComponent({
         }
       }
       if (selectedDisplayOption.value !== 'objectschema') {
-        // currentFormSchema.value = await $api.form.fetch(props.domainId, selectedDisplayOption.value);
+        currentFormSchema.value = await $api.form.fetch(props.domainId, selectedDisplayOption.value);
       } else {
-        // currentFormSchema.value = undefined;
+        currentFormSchema.value = undefined;
       }
 
       const subType = formSchemas.value.find((formschema) => formschema.id === selectedDisplayOption.value)?.subType;
