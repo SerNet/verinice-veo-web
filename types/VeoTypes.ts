@@ -153,14 +153,15 @@ interface IVeoCustomObject {
 }
 
 export interface IVeoCustomLink extends IVeoCustomObject {
-  name: string;
+  attributes: IBaseObject;
+  domains: any;
   target: IVeoLink;
 }
 
 export interface IVeoCustomAspect extends IVeoCustomObject {}
 
 export interface IVeoCustomLinks {
-  [key: string]: IVeoCustomLink;
+  [key: string]: IVeoCustomLink[];
 }
 
 export interface IVeoCustomAspects {
@@ -387,6 +388,7 @@ export interface IVeoEntityDomain {
     subType?: string;
     riskDefinition?: string;
     decisionResults?: IVeoDecisionResults;
+    riskValues?: any;
   };
 }
 
@@ -446,6 +448,7 @@ export interface IVeoRisk {
               riskTreatments: string;
               riskTreatmentExplanation: string;
               inherentRisk: number;
+              effectiveRisk: number;
             }
           ];
         };

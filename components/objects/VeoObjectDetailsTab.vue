@@ -56,6 +56,7 @@
       :domain-id="domainId"
       :object-type="object && object.type"
       :object-id="object && object.id"
+      @reload="fetch"
     />
   </div>
 </template>
@@ -68,6 +69,7 @@ import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 export default defineComponent({
   name: 'VeoObjectDetailsTab',
@@ -100,6 +102,7 @@ export default defineComponent({
     /**
      * Fetch table data based on selected tab
      */
+    const schemas = ref<IVeoSchemaEndpoint[]>([]);
     const { fetchState, fetch } = useFetch(async () => {
       if (props.object) {
         switch (props.type) {
@@ -116,12 +119,15 @@ export default defineComponent({
             items.value = await $api.entity.fetchParents(props.object.type, props.object.id);
             break;
           case 'risks':
-            items.value = await $api.entity.fetchRisks(props.object.type, props.object.id);
+            items.value = (await $api.entity.fetchRisks(props.object.type, props.object.id)) as any;
             break;
           case 'links':
+            schemas.value = await $api.schema.fetchAll();
             // create entities for table from links
-            items.value = Object.values(props.object.links).reduce((linkArray: { id: string; name?: string; type: string }[], link: IVeoCustomLink) => {
-              linkArray.push(createEntityFromLink(link));
+            items.value = Object.values(props.object.links).reduce((linkArray: { id: string; name?: string; type: string }[], links: IVeoCustomLink[]) => {
+              for (const link of links) {
+                linkArray.push(createEntityFromLink(link));
+              }
               return linkArray;
             }, []) as any;
         }
@@ -131,7 +137,7 @@ export default defineComponent({
     const createEntityFromLink = (link: IVeoCustomLink) => {
       const name = link.target.displayName;
       const splitted = link.target.targetUri.split('/');
-      const type = splitted[4];
+      const type = getSchemaName(schemas.value, splitted[4]) || splitted[4];
       const id = splitted[5];
       return { id, name, type };
     };
@@ -250,17 +256,19 @@ export default defineComponent({
     /**
      * risks edit dialog
      */
-    const editRiskDialog = ref<{ visible: boolean; risk?: IVeoEntity }>({
+    const editRiskDialog = ref<{ visible: boolean; scenarioId?: string }>({
       visible: false,
-      risk: undefined
+      scenarioId: undefined
     });
 
     // push to object detail site (on click in table)
-    const openItem = ({ item }: { item: IVeoEntity }) => {
+    const openItem = ({ item }: { item: IVeoEntity | IVeoRisk }) => {
       if (props.type === 'risks') {
-        editRiskDialog.value.risk = item;
+        item = item as IVeoRisk;
+        editRiskDialog.value.scenarioId = getEntityDetailsFromLink(item.scenario).id;
         editRiskDialog.value.visible = true;
       } else {
+        item = item as IVeoEntity;
         router.push({
           name: 'unit-domains-domain-objects-entity',
           params: {

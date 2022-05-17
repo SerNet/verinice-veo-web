@@ -28,14 +28,33 @@
     class="veo-primary-navigation"
     v-on="$listeners"
   >
+    <template #prepend>
+      <div>
+        <div
+          class="d-flex align-end"
+          :class="{
+            'ml-4': !miniVariant,
+            'ml-2': miniVariant
+          }"
+          style="min-height: 65px;"
+          data-component-name="logo"
+        >
+          <nuxt-link
+            :to="homeLink"
+            class="text-decoration-none"
+          >
+            <VeoAppBarLogo :size="miniVariant ? 'small' : 'large'" />
+          </nuxt-link>
+        </div>
+        <VeoDomainSelect
+          v-if="$route.params.unit"
+          :mini-variant="miniVariant"
+          @expand-menu="setMiniVariant(false)"
+        />
+      </div>
+    </template>
     <template #default>
       <div class="d-flex flex-column fill-height">
-        <div>
-          <slot
-            name="header"
-            v-bind="{ miniVariant }"
-          />
-        </div>
         <v-list
           nav
           dense
@@ -57,10 +76,7 @@
             />
           </template>
           <v-divider class="my-4" />
-          <slot
-            name="append-content"
-            v-bind="{ miniVariant }"
-          />
+          <VeoDemoUnitButton :icon-only="miniVariant" />
         </v-list>
       </div>
     </template>
@@ -173,7 +189,7 @@ export default defineComponent({
   },
   setup(props) {
     const { t, locale } = useI18n();
-    const { $api, $user } = useContext();
+    const { $api, $user, params } = useContext();
     const route = useRoute();
 
     // Layout stuff
@@ -476,8 +492,12 @@ export default defineComponent({
       }
     };
 
+    // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
+    const homeLink = computed(() => (params.value.domain ? `/${params.value.unit}/domains/${params.value.domain}` : params.value.unit ? `/${params.value.unit}` : '/'));
+
     return {
       items,
+      homeLink,
       miniVariant,
       onCollapseMenus,
       setMiniVariant,

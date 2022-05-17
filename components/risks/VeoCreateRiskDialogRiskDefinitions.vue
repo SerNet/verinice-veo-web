@@ -17,12 +17,10 @@
 -->
 <template>
   <div>
-    <h2 class="text-h2 mb-2 mt-6">
-      {{ upperFirst(t('riskDefinitions').toString()) }}
-    </h2>
     <div class="risk-definitions">
       <VeoTabs v-model="activeTab">
-        <template
+        <!-- Disabled tabs until more risk definitions are available -->
+        <!--<template
           v-if="!!domain"
           #tabs
         >
@@ -49,7 +47,7 @@
               width="100px"
             />
           </v-tab>
-        </template>
+        </template>-->
         <template
           v-if="!!domain"
           #items
@@ -57,114 +55,289 @@
           <v-tab-item
             v-for="riskDefinition of domain.riskDefinitions"
             :key="riskDefinition.id"
-            class="px-4"
           >
-            <v-row no-gutters>
-              <v-col
-                xs="12"
-                md="6"
-              >
-                <v-select
-                  v-model="internalValue[riskDefinition.id].probability.specificProbability"
-                  color="primary"
-                  :label="upperFirst(t('specificProbability').toString())"
-                  :items="probabilities"
-                  clearable
+            <h2 class="text-h2">
+              {{ upperFirst(t('probability').toString()) }}
+            </h2>
+            <VeoCard>
+              <v-card-text>
+                <v-row>
+                  <v-col
+                    xs="12"
+                    md="4"
+                  >
+                    <v-select
+                      :value="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].probability.potentialProbability"
+                      color="primary"
+                      :label="upperFirst(t('potentialProbability').toString())"
+                      :items="probabilities"
+                      disabled
+                    >
+                      <template
+                        v-if="formIsDirty"
+                        #selection
+                      >
+                        {{ t('saveCTA') }}
+                      </template>
+                    </v-select>
+                  </v-col>
+                  <v-col
+                    xs="12"
+                    md="4"
+                  >
+                    <v-select
+                      v-model="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].probability.specificProbability"
+                      color="primary"
+                      :label="upperFirst(t('specificProbability').toString())"
+                      :items="probabilities"
+                      clearable
+                    />
+                  </v-col>
+                  <v-col
+                    xs="12"
+                    md="4"
+                  >
+                    <v-select
+                      :value="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].probability.effectiveProbability"
+                      color="primary"
+                      :label="upperFirst(t('effectiveProbability').toString())"
+                      :items="probabilities"
+                      disabled
+                    >
+                      <template
+                        v-if="formIsDirty"
+                        #selection
+                      >
+                        {{ t('saveCTA') }}
+                      </template>
+                    </v-select>
+                  </v-col>
+                  <v-col
+                    xs="12"
+                    md="12"
+                  >
+                    <v-textarea
+                      v-model="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].probability.specificProbabilityExplanation"
+                      :label="upperFirst(t('explanation').toString())"
+                      clearable
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </VeoCard>
+            <h2 class="text-h2 mt-4">
+              {{ upperFirst(t('impact').toString()) }}
+            </h2>
+            <VeoCard>
+              <v-card-text>
+                <v-row>
+                  <v-col
+                    v-for="(protectionGoal, index) of riskDefinition.categories"
+                    :key="protectionGoal.id"
+                    cols="6"
+                    md="3"
+                  >
+                    <h3 class="text-h3">
+                      {{ protectionGoal.name }}
+                    </h3>
+                    <v-select
+                      :value="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].impactValues[index].potentialImpact"
+                      color="primary"
+                      :label="upperFirst(t('potentialImpact').toString())"
+                      :items="impacts[protectionGoal.id]"
+                      disabled
+                    >
+                      <template
+                        v-if="formIsDirty"
+                        #selection
+                      >
+                        {{ t('saveCTA') }}
+                      </template>
+                    </v-select>
+                    <v-select
+                      v-model="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].impactValues[index].specificImpact"
+                      color="primary"
+                      :label="upperFirst(t('specificImpact').toString())"
+                      :items="impacts[protectionGoal.id]"
+                      clearable
+                    />
+                    <v-textarea
+                      v-model="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].impactValues[index].specificImpactExplanation"
+                      :label="upperFirst(t('explanation').toString())"
+                      clearable
+                    />
+                    <v-select
+                      :value="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].impactValues[index].effectiveImpact"
+                      color="primary"
+                      :label="upperFirst(t('effectiveImpact').toString())"
+                      :items="impacts[protectionGoal.id]"
+                      disabled
+                    >
+                      <template
+                        v-if="formIsDirty"
+                        #selection
+                      >
+                        {{ t('saveCTA') }}
+                      </template>
+                    </v-select>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </VeoCard>
+            <h2 class="text-h2 mt-4">
+              {{ upperFirst(t('inherentRisk').toString()) }}
+            </h2>
+            <VeoCard>
+              <v-card-text>
+                <v-row>
+                  <v-col
+                    v-for="(protectionGoal, index) of riskDefinition.categories"
+                    :key="protectionGoal.id"
+                    cols="6"
+                    md="3"
+                  >
+                    <h3 class="text-h3">
+                      {{ protectionGoal.name }}
+                    </h3>
+                    <v-select
+                      :value="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues[index].inherentRisk"
+                      color="primary"
+                      :label="upperFirst(t('inherentRisk').toString())"
+                      :items="riskValues"
+                      disabled
+                    >
+                      <template
+                        v-if="formIsDirty"
+                        #selection
+                      >
+                        {{ t('saveCTA') }}
+                      </template>
+                    </v-select>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </VeoCard>
+            <h2 class="text-h2 mt-4">
+              {{ upperFirst(t('residualRisk').toString()) }}
+            </h2>
+            <VeoCard>
+              <v-card-text>
+                <v-row>
+                  <v-col
+                    v-for="(protectionGoal, index) of riskDefinition.categories"
+                    :key="protectionGoal.id"
+                    cols="6"
+                    md="3"
+                  >
+                    <h3 class="text-h3">
+                      {{ protectionGoal.name }}
+                    </h3>
+                    <v-select
+                      v-model="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues[index].riskTreatments"
+                      multiple
+                      color="primary"
+                      :label="upperFirst(t('riskTreatment').toString())"
+                      :items="treatmentOptions"
+                      class="veo-risk-dialog__risk-treatment-selection"
+                    >
+                      <template #selection="{ item, index: selectionIndex }">
+                        <span
+                          v-if="selectionIndex === 0"
+                          class="text-no-wrap"
+                        >
+                          {{ item.text }}
+                        </span>
+                        <v-chip
+                          v-else-if="selectionIndex === 1"
+                          small
+                          class="flex-shrink-0"
+                        >
+                          +{{ internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues[index].riskTreatments.length }}
+                        </v-chip>
+                      </template>
+                    </v-select>
+                    <v-textarea
+                      v-model="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues[index].riskTreatmentExplanation"
+                      :label="upperFirst(t('explanation').toString())"
+                      clearable
+                    />
+                    <v-select
+                      v-model="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues[index].residualRisk"
+                      color="primary"
+                      :label="upperFirst(t('residualRisk').toString())"
+                      :items="riskValues"
+                      clearable
+                    />
+                    <v-textarea
+                      v-model="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues[index].residualRiskExplanation"
+                      :label="upperFirst(t('explanation').toString())"
+                      clearable
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </VeoCard>
+            <h2 class="text-h2 mt-4">
+              {{ upperFirst(t('mitigationSection').toString()) }}
+              <v-tooltip bottom>
+                <template #activator="{ on }">
+                  <v-icon v-on="on">
+                    {{ mdiInformationOutline }}
+                  </v-icon>
+                </template>
+                <template #default>
+                  <i18n
+                    path="mitigationAreaOfApplicationExplanation"
+                    tag="span"
+                  >
+                    <br>
+                  </i18n>
+                </template>
+              </v-tooltip>
+            </h2>
+            <VeoCard>
+              <v-card-text>
+                <VeoObjectSelect
+                  v-model="internalValue.mitigation"
+                  object-type="control"
+                  :label="t('mitigation')"
+                  value-as-link
                 />
-              </v-col>
-              <v-col
-                xs="12"
-                md="12"
-              >
-                <v-text-field
-                  v-model="internalValue[riskDefinition.id].probability.specificProbabilityExplanation"
-                  :label="upperFirst(t('explanation').toString())"
-                  clearable
-                />
-              </v-col>
-            </v-row>
-            <div
-              v-for="(protectionGoal, index) of riskDefinition.categories"
-              :key="protectionGoal.id"
-              class="mt-8"
-            >
-              <h3 class="text-h3">
-                {{ protectionGoal.name }}
-              </h3>
-              <v-row no-gutters>
-                <v-col
-                  xs="12"
-                  md="6"
-                >
-                  <v-select
-                    v-model="internalValue[riskDefinition.id].impactValues[index].specificImpact"
-                    color="primary"
-                    :label="upperFirst(t('specificImpact').toString())"
-                    :items="impacts[protectionGoal.id]"
-                    clearable
-                  />
-                </v-col>
-                <v-col
-                  xs="12"
-                  md="12"
-                >
-                  <v-text-field
-                    v-model="internalValue[riskDefinition.id].impactValues[index].specificImpactExplanation"
-                    :label="upperFirst(t('explanation').toString())"
-                    clearable
-                  />
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col
-                  xs="12"
-                  md="6"
-                >
-                  <v-select
-                    v-model="internalValue[riskDefinition.id].riskValues[index].riskTreatments"
-                    multiple
-                    color="primary"
-                    :label="upperFirst(t('riskTreatment').toString())"
-                    :items="treatmentOptions"
-                    clearable
-                  />
-                </v-col>
-                <v-col
-                  xs="12"
-                  md="12"
-                >
-                  <v-text-field
-                    v-model="internalValue[riskDefinition.id].riskValues[index].riskTreatmentExplanation"
-                    :label="upperFirst(t('explanation').toString())"
-                    clearable
-                  />
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col
-                  xs="12"
-                  md="6"
-                >
-                  <v-select
-                    v-model="internalValue[riskDefinition.id].riskValues[index].residualRisk"
-                    color="primary"
-                    :label="upperFirst(t('residualRisk').toString())"
-                    :items="riskValues"
-                    clearable
-                  />
-                </v-col>
-                <v-col
-                  xs="12"
-                  md="12"
-                >
-                  <v-text-field
-                    v-model="internalValue[riskDefinition.id].riskValues[index].residualRiskExplanation"
-                    :label="upperFirst(t('explanation').toString())"
-                    clearable
-                  />
-                </v-col>
-              </v-row>
-            </div>
+              </v-card-text>
+            </VeoCard>
+            <h2 class="text-h2 mt-4">
+              {{ upperFirst(t('effectiveRisk').toString()) }}
+            </h2>
+            <VeoCard class="mb-2">
+              <v-card-text>
+                <v-row>
+                  <v-col
+                    v-for="(protectionGoal, index) of riskDefinition.categories"
+                    :key="protectionGoal.id"
+                    cols="6"
+                    md="3"
+                  >
+                    <h3 class="text-h3">
+                      {{ protectionGoal.name }}
+                    </h3>
+                    <v-select
+                      :value="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues[index].effectiveRisk"
+                      disabled
+                      color="primary"
+                      :label="upperFirst(t('effectiveRisk').toString())"
+                      :items="riskValues"
+                    >
+                      <template
+                        v-if="formIsDirty"
+                        #selection
+                      >
+                        {{ t('saveCTA') }}
+                      </template>
+                    </v-select>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </VeoCard>
           </v-tab-item>
         </template>
       </VeoTabs>
@@ -176,6 +349,7 @@
 import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
+import { mdiInformationOutline } from '@mdi/js';
 
 import { IBaseObject } from '~/lib/utils';
 import { IVeoDomain, IVeoRisk } from '~/types/VeoTypes';
@@ -183,12 +357,16 @@ import { IVeoDomain, IVeoRisk } from '~/types/VeoTypes';
 export default defineComponent({
   props: {
     value: {
-      type: Object as PropType<IVeoRisk['domains']['x']['riskDefinitions']>,
+      type: Object as PropType<IVeoRisk>,
       required: true
     },
     domain: {
       type: Object as PropType<IVeoDomain>,
       default: () => undefined
+    },
+    formIsDirty: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {
@@ -198,7 +376,7 @@ export default defineComponent({
       get() {
         return props.value;
       },
-      set(newValue: IVeoRisk['domains']['x']['riskDefinitions']) {
+      set(newValue: IVeoRisk) {
         emit('input', newValue);
       }
     });
@@ -232,7 +410,8 @@ export default defineComponent({
       treatmentOptions,
 
       upperFirst,
-      t
+      t,
+      mdiInformationOutline
     };
   }
 });
@@ -241,10 +420,20 @@ export default defineComponent({
 <i18n>
 {
   "en": {
+    "effectiveImpact": "effective impact",
+    "effectiveProbability": "effective probability",
+    "effectiveRisk": "effective risk",
     "explanation": "explanation",
+    "impact": "impact",
+    "inherentRisk": "inherent risk",
+    "mitigation": "mitigation",
+    "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions,{0} meaning only one mitigation action can be applied to a risk",
+    "mitigationSection": "risk reduction actions (mitigating actions)",
+    "potentialImpact": "potential impact",
+    "potentialProbability": "potential probability",
+    "probability": "probability",
     "protectionGoals": "protection goals",
     "residualRisk": "residual risk",
-    "riskDefinitions": "risk definitions",
     "riskTreatment": "risk treatment",
     "riskTreatments": {
       "RISK_TREATMENT_ACCEPTANCE": "risk retention",
@@ -253,14 +442,25 @@ export default defineComponent({
       "RISK_TREATMENT_REDUCTION": "risk reduction",
       "RISK_TREATMENT_TRANSFER": "risk transfer"
     },
+    "saveCTA": "save to recompute",
     "specificImpact": "specific impact",
     "specificProbability": "specific probability"
   },
   "de": {
+    "effectiveImpact": "Effektive Auswirkung",
+    "effectiveProbability": "Effektive Wahrscheinlichkeit",
+    "effectiveRisk": "Effektives Risiko",
     "explanation": "Erklärung",
-    "residualRisk": "verbleibendes Risiko",
+    "impact": "Auswirkung",
+    "inherentRisk": "Brutto-Risiko",
+    "mitigation": "Gegenmaßnahme",
+    "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg,{0} d.h. es kann immer nur eine migitierende Maßnahme pro Risiko ausgewählt werden",
+    "mitigationSection": "Maßnahmen zur Risikoreduktion (Mitigierende Maßnahmen)",
+    "potentialImpact": "potentielle Auswirkung",
+    "potentialProbability": "potentielle Wahrscheinlichkeit",
+    "probability": "Eintrittswahrscheinlichkeit",
     "protectionGoals": "Schutzziele",
-    "riskDefinitions": "Risikodefinitionen",
+    "residualRisk": "verbleibendes Risiko",
     "riskTreatment": "Risikobehandlung",
     "riskTreatments": {
       "RISK_TREATMENT_ACCEPTANCE": "Risiko-Akzeptanz",
@@ -269,6 +469,7 @@ export default defineComponent({
       "RISK_TREATMENT_REDUCTION": "Risikominderung",
       "RISK_TREATMENT_TRANSFER": "Risikotransfer"
     },
+    "saveCTA": "Speichern zum Neuberechnen",
     "specificImpact": "spezifische Auswirkungen",
     "specificProbability": "spezifische Wahrscheinlichkeit"
   }
@@ -279,5 +480,9 @@ export default defineComponent({
 .risk-definitions {
   border-radius: 16px;
   overflow: hidden;
+}
+
+.veo-risk-dialog__risk-treatment-selection ::v-deep.v-select__selections {
+  flex-wrap: nowrap;
 }
 </style>
