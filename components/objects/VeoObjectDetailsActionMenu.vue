@@ -18,31 +18,22 @@
 <template>
   <div>
     <v-menu
-      top
-      left
+      bottom
+      right
       offset-y
     >
       <template #activator="{ on }">
-        <v-badge
-          :value="dpiaMandatory"
-          bordered
-          color="error"
-          :icon="mdiExclamationThick"
-          overlap
+        <v-btn
+          :disabled="!allowedActions.length"
+          fab
+          text
+          small
+          v-on="on"
         >
-          <v-btn
-            color="primary"
-            :disabled="!allowedActions.length"
-            fab
-            text
-            small
-            v-on="on"
-          >
-            <v-icon>
-              {{ mdiDotsVertical }}
-            </v-icon>
-          </v-btn>
-        </v-badge>
+          <v-icon>
+            {{ mdiDotsVertical }}
+          </v-icon>
+        </v-btn>
       </template>
       <v-list class="py-0">
         <v-list-item
@@ -50,19 +41,6 @@
           :key="action.key"
           @click="action.action"
         >
-          <v-list-item-icon v-if="dpiaMandatory && action.key === 'createDPIA'">
-            <v-tooltip bottom>
-              <template #activator="{ on }">
-                <v-icon
-                  color="primary"
-                  v-on="on"
-                >
-                  {{ mdiAlertOutline }}
-                </v-icon>
-              </template>
-              <span>{{ t('mandatoryDPIA') }}</span>
-            </v-tooltip>
-          </v-list-item-icon>
           <v-list-item-title>
             {{ upperFirst(t(action.key).toString()) }}
           </v-list-item-title>
@@ -107,7 +85,6 @@ export default defineComponent({
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
     const subType = computed(() => props.object?.domains[domainId.value]?.subType);
-    const dpiaMandatory = computed(() => !!props.object?.domains[domainId.value]?.decisionResults?.piaMandatory?.value);
 
     // configure possible action items
     const actions = [
@@ -147,7 +124,6 @@ export default defineComponent({
 
     return {
       domainId,
-      dpiaMandatory,
       allowedActions,
       createObjectDialog,
       onCreateObjectSuccess,
@@ -165,12 +141,10 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "createDPIA": "create DPIA",
-    "mandatoryDPIA": "Please create a data protection impact assessment for the current data processing"
+    "createDPIA": "create PIA"
   },
   "de": {
-    "createDPIA": "DSFA erstellen",
-    "mandatoryDPIA": "Bitte erstellen Sie für die aktuelle Verarbeitungstätigkeit eine Datenschutz-Folgeabschätzung"
+    "createDPIA": "DSFA erstellen"
   }
 }
 </i18n>

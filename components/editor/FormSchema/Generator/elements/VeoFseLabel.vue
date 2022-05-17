@@ -32,7 +32,7 @@
         </v-icon>
       </v-col>
       <v-col>
-        <div class="text-caption text-truncate">
+        <div class="text-h5 font-weight-regular text-truncate">
           {{ label }} <VeoFseRuleDisplay
             v-if="ruleDisplayIcon"
             :value="ruleDisplayIcon"

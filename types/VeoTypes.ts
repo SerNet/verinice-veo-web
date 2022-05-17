@@ -510,7 +510,9 @@ export interface IVeoFormSchemaItemUpdateEvent {
 }
 
 export interface IVeoFormSchemaItemDeleteEvent {
-  formSchemaPointer: string;
+  type: string;
+  formSchemaPointer?: string;
+  name?: string;
 }
 
 export interface IVeoFormSchema extends IVeoFormSchemaMeta {
@@ -579,4 +581,22 @@ export interface IVeoFormSchemaGeneratorOptions {
   groupedNamespaces?: { namespace: string; label?: string }[];
   generateControlFunction: (pointer: string, schema: IBaseObject, mode: Mode) => any;
   generateGroupFunction: (children: any[], label?: string) => any;
+}
+
+export interface IVeoFormsWidgetDefinition {
+  name: string;
+  description: {
+    [lang: string]: string;
+  };
+}
+
+export interface IVeoInspectionResult {
+  description: {
+    [lang: string]: string;
+  };
+  severity: string;
+  suggestions: {
+    type: string;
+    [key: string]: any;
+  }[];
 }

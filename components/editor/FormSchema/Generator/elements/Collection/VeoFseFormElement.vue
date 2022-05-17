@@ -20,13 +20,13 @@
     rounded
     flat
     outlined
-    class="fse-input mx-3 my-2"
+    class="fse-generator-element mx-3 my-2"
   >
     <v-card-text class="pa-0">
       <v-row no-gutters>
         <v-col
           cols="auto"
-          class="text-right px-1 fse-input-dragbar"
+          class="d-flex align-center px-1"
           :class="color"
         >
           <v-icon
@@ -41,13 +41,13 @@
           style="overflow: auto"
         >
           <div>
-            <div class="fse-input-title mt-1 mb-1">
+            <div class="text-h5 font-weight-regular">
               {{ label }}
             </div>
-            <div class="fse-input-property-name mb-1">
+            <div class="text-body-2">
               {{ name }}
             </div>
-            <div class="fse-input-type mb-1">
+            <div class="text-body-2">
               {{ currentType }} <VeoFseRuleDisplay
                 v-if="ruleDisplayIcon"
                 :value="ruleDisplayIcon"
@@ -240,36 +240,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
-.fse-input {
-  min-width: 250px;
-  overflow: hidden;
-
-  .row {
-    flex-wrap: nowrap;
-
-    .col {
-      align-items: center;
-      display: flex;
-      // height: 36px;
-    }
-  }
-}
-
-.fse-input-title {
-  // color: black;
-  // font-size: 1.1rem;
-  // font-weight: bold;
-  font-size: 1rem;
-  line-height: 1.2;
-  color: rgba(0, 0, 0, 0.87);
-}
-
-.fse-input-property-name,
-.fse-input-type {
-  font-size: 0.75rem;
-  line-height: 1.2;
-  color: rgba(0, 0, 0, 0.6);
+.fse-generator-element {
+  min-width: 300px;
 }
 </style>
