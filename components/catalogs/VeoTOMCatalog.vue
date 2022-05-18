@@ -181,8 +181,9 @@ export default defineComponent({
 
     const selectedTomsIds = ref<string[]>([]);
     const availableToms = computed(() =>
+      // VVT is a process that is needed by the backend, but the user shouldn't be able to select it, so we hide it. TODO: Remove
       props.catalogItems
-        .filter((item) => item.tailoringReferences.length > 0)
+        .filter((item) => item.tailoringReferences.length > 0 && !item.description.startsWith('VVT'))
         .map((item) => {
           const displayNameParts = (item.element.displayName as string).split(' ');
           const designator = displayNameParts.shift() as string;

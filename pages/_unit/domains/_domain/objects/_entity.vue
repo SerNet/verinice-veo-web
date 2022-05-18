@@ -73,8 +73,10 @@
             :preselected-sub-type="preselectedSubType"
             :valid.sync="isFormValid"
             :disable-sub-type-select="object && object.domains[domainId] && !!object.domains[domainId].subType"
+            :object-meta-data.sync="metaData"
             @input="onFormInput"
             @show-revision="onShowRevision"
+            @create-pia="createPIADialogVisible = true"
           >
             <template
               v-if="formDataIsRevision"
@@ -136,6 +138,13 @@
             @exit="onContinueNavigation"
           />
           <VeoWindowUnloadPrevention :value="isFormDirty" />
+          <VeoCreateObjectDialog
+            v-model="createPIADialogVisible"
+            object-type="process"
+            sub-type="PRO_DPIA"
+            :domain-id="domainId"
+            @success="onPIACreated"
+          />
         </template>
       </VeoPage>
     </template>
@@ -151,6 +160,7 @@ import { Route } from 'vue-router/types';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -174,6 +184,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+    const { linkObject } = useVeoObjectUtilities();
 
     const objectParameter = computed(() => separateUUIDParam(route.value.params.entity));
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
@@ -181,9 +192,13 @@ export default defineComponent({
     const object = ref<IVeoEntity | undefined>(undefined);
     const modifiedObject = ref<IVeoEntity | undefined>(undefined);
 
+    // Object details are originally part of the object, but as they might get updated independently, we want to avoid refetching the whole object, so we outsorce them.
+    const metaData = ref<any>({});
+
     const { fetchState, fetch: loadObject } = useFetch(async () => {
       object.value = await $api.entity.fetch(objectParameter.value.type, objectParameter.value.id);
       modifiedObject.value = cloneDeep(object.value);
+      metaData.value = cloneDeep(object.value.domains[domainId.value]);
     });
 
     const notFoundError = computed(() => (fetchState.error as any)?.statusCode === 404);
@@ -287,7 +302,6 @@ export default defineComponent({
     }
 
     // object details stuff
-
     // get active tab by route hash & set route hash by switching tabs
     const activeTab: WritableComputedRef<string> = computed({
       get(): string {
@@ -300,16 +314,29 @@ export default defineComponent({
 
     const loading = computed(() => fetchState.pending);
 
+    // pia stuff
+    const createPIADialogVisible = ref(false);
+
+    const onPIACreated = async (newObjectId: string) => {
+      if (object.value) {
+        await linkObject('child', { objectType: object.value.type, objectId: object.value.id }, { objectType: 'process', objectId: newObjectId });
+      }
+      loadObject();
+    };
+
     return {
       VeoAlertType,
+      createPIADialogVisible,
       domainId,
       entityModifiedDialogVisible,
       formDataIsRevision,
       isFormDirty,
       isFormValid,
+      metaData,
       modifiedObject,
       onContinueNavigation,
       onFormInput,
+      onPIACreated,
       onShowRevision,
       preselectedSubType,
       resetForm,

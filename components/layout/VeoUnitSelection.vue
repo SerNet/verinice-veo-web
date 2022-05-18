@@ -24,6 +24,7 @@
           :items="displayedUnits"
           item-text="name"
           item-value="id"
+          :item-disabled="(item) => !getFirstDomainDomaindId(item)"
           hide-details
           :label="t('unit.select.label')"
           dense
@@ -94,6 +95,7 @@ export default defineComponent({
     };
 
     return {
+      getFirstDomainDomaindId,
       displayedUnits,
       doChangeUnit,
       doCreateUnit,

@@ -24,25 +24,28 @@
       <v-list-item
         v-for="(item, index) of items"
         :key="index"
+        class="d-block"
       >
-        <span
-          style="font-size: 2rem;"
-          class="pr-2 pt-3 align-self-start"
-        >
-          &bull;
-        </span>
-        <v-list-item-content
-          class="text-body-2 d-block"
-          style="overflow-wrap: anywhere;"
-        >
-          {{ item.message }}
+        <v-list-item-content>
+          <v-list-item-title class="text-wrap">
+            {{ item.message }}
+          </v-list-item-title>
         </v-list-item-content>
-        <v-list-item-action v-if="item.fixable && fixingAllowed">
+        <v-list-item-action class="fill-width ml-0">
           <v-btn
+            v-if="item.fixable && fixingAllowed"
             text
             @click="$emit('fix', item.code, item.params)"
           >
             {{ t('fix') }}
+          </v-btn>
+          <v-btn
+            v-for="action of item.actions"
+            :key="action.title"
+            text
+            @click="action.callback()"
+          >
+            {{ action.title }}
           </v-btn>
         </v-list-item-action>
       </v-list-item>

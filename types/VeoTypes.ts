@@ -153,14 +153,15 @@ interface IVeoCustomObject {
 }
 
 export interface IVeoCustomLink extends IVeoCustomObject {
-  name: string;
+  attributes: IBaseObject;
+  domains: any;
   target: IVeoLink;
 }
 
 export interface IVeoCustomAspect extends IVeoCustomObject {}
 
 export interface IVeoCustomLinks {
-  [key: string]: IVeoCustomLink;
+  [key: string]: IVeoCustomLink[];
 }
 
 export interface IVeoCustomAspects {
@@ -387,6 +388,7 @@ export interface IVeoEntityDomain {
     subType?: string;
     riskDefinition?: string;
     decisionResults?: IVeoDecisionResults;
+    riskValues?: any;
   };
 }
 
@@ -446,6 +448,7 @@ export interface IVeoRisk {
               riskTreatments: string;
               riskTreatmentExplanation: string;
               inherentRisk: number;
+              effectiveRisk: number;
             }
           ];
         };
@@ -507,7 +510,9 @@ export interface IVeoFormSchemaItemUpdateEvent {
 }
 
 export interface IVeoFormSchemaItemDeleteEvent {
-  formSchemaPointer: string;
+  type: string;
+  formSchemaPointer?: string;
+  name?: string;
 }
 
 export interface IVeoFormSchema extends IVeoFormSchemaMeta {
@@ -576,4 +581,22 @@ export interface IVeoFormSchemaGeneratorOptions {
   groupedNamespaces?: { namespace: string; label?: string }[];
   generateControlFunction: (pointer: string, schema: IBaseObject, mode: Mode) => any;
   generateGroupFunction: (children: any[], label?: string) => any;
+}
+
+export interface IVeoFormsWidgetDefinition {
+  name: string;
+  description: {
+    [lang: string]: string;
+  };
+}
+
+export interface IVeoInspectionResult {
+  description: {
+    [lang: string]: string;
+  };
+  severity: string;
+  suggestions: {
+    type: string;
+    [key: string]: any;
+  }[];
 }

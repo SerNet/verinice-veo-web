@@ -269,7 +269,8 @@ export default defineComponent({
     }
 
     function setFormSchema(newValue: any) {
-      formSchema.value = JSON.parse(JSON.stringify(newValue).replaceAll(props.domainId, '{CURRENT_DOMAIN_ID}'));
+      // We add a slash infront of the replace in order to only replace the domain id in the scope property
+      formSchema.value = JSON.parse(JSON.stringify(newValue).replaceAll(`/${props.domainId}`, '/{CURRENT_DOMAIN_ID}'));
     }
 
     function emitSchemas() {

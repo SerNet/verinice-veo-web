@@ -27,6 +27,7 @@ import { cloneDeep, dropRight, merge, pull } from 'lodash';
 import { Layout as ILayout, IVeoFormSchemaControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
 import { BaseObject, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule, generateFormSchemaControl, generateFormSchemaGroup } from '~/components/forms/utils';
 import Label from '~/components/forms/Label.vue';
+import Widget from '~/components/forms/Widget.vue';
 import Control from '~/components/forms/Control.vue';
 import Layout from '~/components/forms/Layout.vue';
 import Wrapper from '~/components/forms/Wrapper.vue';
@@ -54,6 +55,10 @@ export default Vue.extend({
       type: Object,
       default: undefined
     } as PropOptions<UISchema>,
+    objectMetaData: {
+      type: Object,
+      default: () => {}
+    },
     domainId: {
       type: String,
       default: undefined
@@ -119,6 +124,7 @@ export default Vue.extend({
           '/createdBy$',
           '/parts$',
           '/members$',
+          '/risks$',
           '/designator$',
           '/decisionResults',
           '(\\w+)/properties/domains$',
@@ -146,7 +152,7 @@ export default Vue.extend({
                 let elementSchema: any = cloneDeep(JsonPointer.get(this.schema, scope) || {});
                 elementSchema = this.addConditionalSchemaPropertiesToControlSchema(elementSchema, scope);
                 return elementSchema?.enum?.map(
-                  (status: string) => this.generalTranslation[`${this.schema.title}_${this.value.domains?.[this.domainId]?.subType}_status_${status}`] || status
+                  (status: string) => this.generalTranslation?.[`${this.schema.title}_${this.value.domains?.[this.domainId]?.subType}_status_${status}`] || status
                 );
               })()
             }
@@ -489,6 +495,16 @@ export default Vue.extend({
         }
       });
     },
+    createWidget(element: any, h: CreateElement, rule: IRule): VNode {
+      return h(Widget, {
+        props: {
+          ...rule,
+          name: element.name,
+          objectData: this.value,
+          objectMetaData: this.objectMetaData
+        }
+      });
+    },
     createChildren(element: UISchemaElement, formSchemaPointer: string, h: CreateElement) {
       return element.elements && element.elements.map((elem, index) => this.createComponent(elem, `${formSchemaPointer}/elements/${index}`, h));
     },
@@ -501,6 +517,8 @@ export default Vue.extend({
           return this.createControl(element, h, rule);
         case 'Label':
           return this.createLabel(element, h, rule);
+        case 'Widget':
+          return this.createWidget(element, h, rule);
       }
     },
     updateUI() {

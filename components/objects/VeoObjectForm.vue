@@ -51,10 +51,11 @@
         <template #default>
           <slot name="prepend-form" />
           <VeoForm
-            v-if="!$fetchState.pending && objectSchema && !loading"
+            v-if="!formLoading && objectSchema && !loading"
             v-model="objectData"
             :schema="objectSchema"
             :ui="currentFormSchema && currentFormSchema.content"
+            :object-meta-data="objectMetaData"
             :general-translation="translations && translations[locale]"
             :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
             :error-messages.sync="formErrors"
@@ -145,12 +146,12 @@
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, PropOptions, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { upperFirst, merge } from 'lodash';
+import { upperFirst, merge, throttle } from 'lodash';
 import { mdiFormatListBulleted, mdiHistory, mdiInformationOutline } from '@mdi/js';
 
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoFormSchema, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
 
 export default defineComponent({
   name: 'VeoObjectForm',
@@ -171,6 +172,10 @@ export default defineComponent({
       type: Object,
       default: undefined
     } as PropOptions<IVeoObjectSchema>,
+    objectMetaData: {
+      type: Object,
+      default: () => {}
+    },
     disableHistory: {
       type: Boolean,
       default: false
@@ -213,7 +218,13 @@ export default defineComponent({
     const formSchemas: Ref<IVeoFormSchemaMeta[]> = ref([]);
     const currentFormSchema: Ref<undefined | IVeoFormSchema> = ref(undefined);
 
-    const { $fetch } = useFetch(async () => {
+    const {
+      fetch,
+      fetchState: { pending: formLoading }
+    } = useFetch(async () => {
+      fetchWarnings();
+      fetchDecisions();
+
       // Only fetch once, as translations changing while the user uses this component is highly unlikely
       if (!translations.value) {
         translations.value = (await $api.translation.fetch(['de', 'en'])).lang;
@@ -265,9 +276,7 @@ export default defineComponent({
       return availableFormSchemas;
     });
 
-    watch(selectedDisplayOption, () => {
-      $fetch();
-    });
+    watch(selectedDisplayOption, () => fetch());
 
     const formSchemaHasGroups = computed(() => {
       return currentFormSchema.value?.content.elements?.some((element: any) => (element.type === 'Layout' || element.type === 'Group') && element.options.label);
@@ -317,13 +326,68 @@ export default defineComponent({
     // Messages stuff
     const messages = computed(() => ({
       errors: formErrors.value.map((entry) => ({ code: entry.pointer, message: entry.message })),
-      warnings: []
+      warnings: backendWarnings.value.filter((warning) => warning.severity === 'WARNING').map((warning) => formatWarning(warning))
     }));
+
+    const formatWarning = (warning: IVeoInspectionResult) => {
+      const actions = [];
+
+      for (const suggestion of warning.suggestions) {
+        if (suggestion.type === 'addPart') {
+          actions.push({
+            title: t('createPIA').toString(),
+            callback: () => {
+              emit('create-pia');
+            }
+          });
+        }
+      }
+
+      return { message: warning.description[locale.value] || Object.values(warning.description)[0], actions };
+    };
+
+    // errors and warnings from backend
+    const backendWarnings = ref<IVeoInspectionResult[]>([]);
+
+    // For some reason putting this in a useFetch and using fetchWarnings as the name for the fetch hook caused all useFetch to be refetched
+    const fetchWarnings = async () => {
+      if (objectData.value?.id) {
+        backendWarnings.value = await $api.entity.fetchInspections(objectData.value.type, objectData.value.id, props.domainId);
+      }
+    };
+
+    // For some reason putting this in a useFetch and using fetchDecisions as the name for the fetch hook caused all useFetch to be refetched
+    const fetchDecisions = async () => {
+      // Fetch updated decision results and merge them with the current values
+      if (objectData.value?.domains?.[props.domainId]) {
+        const newDecisionResults: IBaseObject = {};
+        for (const key in props.objectMetaData?.decisionResults || {}) {
+          newDecisionResults[key] = await $api.entity.fetchWipDecisionEvaluation(objectData.value.type, objectData.value as any, props.domainId, key);
+        }
+        emit('update:object-meta-data', { ...props.objectMetaData, decisionResults: newDecisionResults });
+      }
+    };
+
+    watch(
+      () => objectData.value,
+      () => throttle(fetchDecisions, 500)(),
+      { deep: true }
+    );
+
+    watch(
+      () => objectData.value?.id,
+      (newValue) => {
+        if (newValue) {
+          fetchWarnings();
+        }
+      }
+    );
 
     return {
       currentFormSchema,
       displayOptions,
       formErrors,
+      formLoading,
       formSchemaHasGroups,
       locale,
       messages,
@@ -345,6 +409,7 @@ export default defineComponent({
 <i18n>
 {
   "en": {
+    "createPIA": "create PIA",
     "display": "view as",
     "history": "history",
     "messages": "messages",
@@ -353,6 +418,7 @@ export default defineComponent({
     "tableOfContents": "contents"
   },
   "de": {
+    "createPIA": "DSFA erstellen",
     "display": "Ansicht",
     "history": "Verlauf",
     "messages": "Meldungen",

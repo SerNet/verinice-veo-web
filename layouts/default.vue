@@ -47,32 +47,7 @@
       :domain-id="domainId"
       :unit-id="unitId"
       data-component-name="primary-navigation"
-    >
-      <template #header="{ miniVariant }">
-        <div>
-          <div
-            class="d-flex align-end"
-            :class="{
-              'ml-4': !miniVariant,
-              'ml-2': miniVariant
-            }"
-            style="min-height: 65px;"
-            data-component-name="logo"
-          >
-            <nuxt-link
-              :to="homeLink"
-              class="text-decoration-none"
-            >
-              <VeoAppBarLogo :size="miniVariant ? 'small' : 'large'" />
-            </nuxt-link>
-          </div>
-          <VeoDomainSelect v-if="$route.params.unit" />
-        </div>
-      </template>
-      <template #append-content="{ miniVariant }">
-        <VeoDemoUnitButton :icon-only="miniVariant" />
-      </template>
-    </VeoPrimaryNavigation>
+    />
     <v-main
       style="max-height: 100vh;"
       class="overflow-hidden"
@@ -102,7 +77,7 @@ import 'intro.js/minified/introjs.min.css';
 
 export default defineComponent({
   setup(_props, context) {
-    const { params, $api } = useContext();
+    const { $api } = useContext();
     const route = useRoute();
     const router = useRouter();
 
@@ -164,9 +139,6 @@ export default defineComponent({
       }, 1000);
     });
 
-    // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
-    const homeLink = computed(() => (params.value.domain ? `/${params.value.unit}/domains/${params.value.domain}` : params.value.unit ? `/${params.value.unit}` : '/'));
-
     const domainId = computed((): string | undefined => {
       if (route.value.name === 'unit-domains-more') {
         return undefined;
@@ -182,7 +154,6 @@ export default defineComponent({
       drawer,
       newUnitDialog,
       breadcrumbsKey,
-      homeLink,
       alerts
     };
   },

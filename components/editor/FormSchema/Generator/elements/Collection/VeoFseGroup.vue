@@ -64,7 +64,7 @@
         </v-icon>
       </v-col>
       <v-col>
-        <div class="text-caption text-truncate">
+        <div class="text-h5 font-weight-regular text-truncate">
           {{ $t('group') }} <VeoFseRuleDisplay
             v-if="ruleDisplayIcon"
             :value="ruleDisplayIcon"

@@ -20,7 +20,7 @@ import { max } from 'lodash';
 import { getSchemaEndpoint } from './schema';
 import { separateUUIDParam } from '~/lib/utils';
 import { Client } from '~/plugins/api';
-import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from '~/types/VeoTypes';
+import { IVeoAPIMessage, IVeoEntity, IVeoInspectionResult, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from '~/types/VeoTypes';
 
 export interface IVeoEntityRequestParams extends IVeoPaginationOptions {
   displayName?: string;
@@ -168,7 +168,7 @@ export default function (api: Client) {
         });
     },
 
-    async fetchRisks(objectType: string, id: string): Promise<IVeoEntity[]> {
+    async fetchRisks(objectType: string, id: string): Promise<IVeoRisk[]> {
       if (objectType !== 'process') {
         throw new Error(`api::fetchRisk: Risks can only be fetched for processes. You tried fetching a risk for a ${objectType}`);
       }
@@ -179,6 +179,36 @@ export default function (api: Client) {
         params: {
           objectType,
           id
+        }
+      });
+    },
+
+    async fetchInspections(objectType: string, id: string, domain: string): Promise<IVeoInspectionResult[]> {
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+
+      return api.req('/api/:objectType/:id/inspection', {
+        params: {
+          objectType,
+          id
+        },
+        query: {
+          domain
+        }
+      });
+    },
+
+    async fetchRisk(objectType: string, id: string, scenarioId: string): Promise<IVeoRisk> {
+      if (objectType !== 'process') {
+        throw new Error(`api::fetchRisk: Risks can only be fetched for processes. You tried fetching a risk for a ${objectType}`);
+      }
+
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+
+      return api.req('/api/:objectType/:id/risks/:scenarioId', {
+        params: {
+          objectType,
+          id,
+          scenarioId
         }
       });
     },
@@ -353,6 +383,27 @@ export default function (api: Client) {
     async fetchParents(parentType: string, id: string): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
       return await this.fetchAll(parentType, undefined, {
         childElementIds: id
+      });
+    },
+    /**
+     * Returns the same data as updating an object, however without persisting the data. Can be used to check whether the decision results would be different if the object is saved
+     * @param objectType
+     * @param object
+     * @returns
+     */
+    async fetchWipDecisionEvaluation(objectType: string, object: IVeoEntity, domain: string, decision: string): Promise<any> {
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+
+      return api.req('/api/:objectType/decision-evaluation', {
+        method: 'POST',
+        params: {
+          objectType
+        },
+        query: {
+          domain,
+          decision
+        },
+        json: object
       });
     }
   };

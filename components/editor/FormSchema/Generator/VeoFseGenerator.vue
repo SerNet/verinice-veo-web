@@ -23,6 +23,7 @@ import { JsonPointer } from 'json-ptr';
 import FseLabel from './elements/VeoFseLabel.vue';
 import FseControl from './elements/VeoFseControl.vue';
 import FseLayout from './elements/VeoFseLayout.vue';
+import VeoFseWidget from './elements/VeoFseWidget.vue';
 import { UISchema, UISchemaElement } from '~/types/UISchema';
 import {
   IVeoFormSchemaCustomTranslationEvent,
@@ -31,6 +32,9 @@ import {
   IVeoFormSchemaTranslationCollection,
   IVeoTranslationCollection
 } from '~/types/VeoTypes';
+import { WidgetDefinition as PiaMandatoryWidgetDefinition } from '~/components/forms/Collection/Widgets/PiaMandatoryWidget.vue';
+
+const WIDGETS = [PiaMandatoryWidgetDefinition];
 
 export default Vue.extend({
   name: 'FseGenerator',
@@ -57,12 +61,6 @@ export default Vue.extend({
     }
   },
   methods: {
-    onDelete(event: IVeoFormSchemaItemDeleteEvent): void {
-      this.$emit('delete', event);
-    },
-    onUpdate(event: IVeoFormSchemaItemUpdateEvent): void {
-      this.$emit('update', event);
-    },
     onUpdateCustomTranslation(event: IVeoFormSchemaCustomTranslationEvent): void {
       this.$emit('update-custom-translation', event);
     }
@@ -89,8 +87,8 @@ export default Vue.extend({
                 language: this.language
               },
               on: {
-                delete: (event: IVeoFormSchemaItemDeleteEvent) => this.onDelete(event),
-                update: (event: IVeoFormSchemaItemUpdateEvent) => this.onUpdate(event),
+                delete: (event: IVeoFormSchemaItemDeleteEvent) => this.$emit('delete', event),
+                update: (event: IVeoFormSchemaItemUpdateEvent) => this.$emit('update', event),
                 'update-custom-translation': (event: IVeoFormSchemaCustomTranslationEvent) => this.onUpdateCustomTranslation(event)
               }
             },
@@ -127,8 +125,8 @@ export default Vue.extend({
               scope: element.scope || ''
             },
             on: {
-              delete: (event: IVeoFormSchemaItemDeleteEvent) => this.onDelete(event),
-              update: (event: IVeoFormSchemaItemUpdateEvent) => this.onUpdate(event),
+              delete: (event: IVeoFormSchemaItemDeleteEvent) => this.$emit('delete', event),
+              update: (event: IVeoFormSchemaItemUpdateEvent) => this.$emit('update', event),
               'update-custom-translation': (event: IVeoFormSchemaCustomTranslationEvent) => this.onUpdateCustomTranslation(event)
             }
           });
@@ -145,9 +143,28 @@ export default Vue.extend({
               language: this.language
             },
             on: {
-              delete: (event: IVeoFormSchemaItemDeleteEvent) => this.onDelete(event),
-              update: (event: IVeoFormSchemaItemUpdateEvent) => this.onUpdate(event),
+              delete: (event: IVeoFormSchemaItemDeleteEvent) => this.$emit('delete', event),
+              update: (event: IVeoFormSchemaItemUpdateEvent) => this.$emit('update', event),
               'update-custom-translation': (event: IVeoFormSchemaCustomTranslationEvent) => this.onUpdateCustomTranslation(event)
+            }
+          });
+        case 'Widget':
+          // eslint-disable-next-line no-case-declarations
+          const widgetDefinition = WIDGETS.find((widget) => element.name === widget.name);
+          if (!widgetDefinition) {
+            // eslint-disable-next-line no-console
+            console.warn(`VeoFseGenerator:: ${element.name} not found`);
+            return null as any;
+          }
+
+          return h(VeoFseWidget, {
+            props: {
+              name: widgetDefinition.name,
+              formSchemaPointer,
+              description: widgetDefinition.description[this.$i18n.locale] || Object.values(widgetDefinition.description)[0]
+            },
+            on: {
+              delete: (event: IVeoFormSchemaItemDeleteEvent) => this.$emit('delete', event)
             }
           });
       }
