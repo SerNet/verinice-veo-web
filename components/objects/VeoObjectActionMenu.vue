@@ -81,6 +81,7 @@
     </v-speed-dial>
     <!-- dialogs -->
     <VeoLinkObjectDialog
+      v-if="addEntityDialog.editedObject"
       v-model="addEntityDialog.value"
       v-bind="addEntityDialog"
       @success="onAddEntitySuccess"
@@ -228,8 +229,8 @@ export default defineComponent({
      */
 
     // dialog options
-    const addEntityDialog = ref<{ editedEntity: IVeoEntity | undefined; addType: 'scope' | 'entity'; value: boolean; hierarchicalContext: 'child' | 'parent' }>({
-      editedEntity: undefined,
+    const addEntityDialog = ref<{ editedObject: IVeoEntity | undefined; addType: 'scope' | 'entity'; value: boolean; hierarchicalContext: 'child' | 'parent' }>({
+      editedObject: undefined,
       addType: 'scope' as 'scope' | 'entity',
       value: false,
       hierarchicalContext: 'child'
@@ -275,7 +276,7 @@ export default defineComponent({
     // control dialogs
     const openLinkObjectDialog = (objectType?: string, addAsChild?: boolean) => {
       addEntityDialog.value = {
-        editedEntity: props.object,
+        editedObject: props.object,
         addType: objectType === 'scope' ? 'scope' : 'entity',
         value: true,
         hierarchicalContext: addAsChild === undefined || addAsChild ? 'child' : 'parent'

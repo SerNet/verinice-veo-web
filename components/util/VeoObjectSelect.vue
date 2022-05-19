@@ -26,6 +26,7 @@
     :label="localLabel"
     :search-input.sync="searchQuery"
     :clearable="!required"
+    :return-object="valueAsEntity"
     v-bind="$attrs"
     @change="onInput"
     @input="onInput"
@@ -53,7 +54,7 @@ import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink } from '~/types/VeoTypes';
 export default defineComponent({
   props: {
     value: {
-      type: [String, Object] as PropType<string | IVeoLink>,
+      type: [String, Object] as PropType<string | IVeoLink | IVeoEntity>,
       default: undefined
     },
     required: {
@@ -77,6 +78,10 @@ export default defineComponent({
       default: undefined
     },
     valueAsLink: {
+      type: Boolean,
+      default: false
+    },
+    valueAsEntity: {
       type: Boolean,
       default: false
     }
@@ -114,8 +119,12 @@ export default defineComponent({
     };
 
     const internalValue = computed<string | undefined>(() => {
-      if (typeof props.value === 'object') {
-        return getEntityDetailsFromLink(props.value).id;
+      if (typeof props.value === 'object' && props.value !== null) {
+        if (props.valueAsEntity) {
+          return (props.value as IVeoEntity).id;
+        } else {
+          return getEntityDetailsFromLink(props.value as IVeoLink).id;
+        }
       } else {
         return props.value;
       }

@@ -153,7 +153,6 @@ export default defineComponent({
       if (item.type !== 'scope' && item.parts?.length) return h(VIcon, 'mdi-file-document-multiple');
       else if (item.type === 'scope' && item.parts?.length) return h(VIcon, 'mdi-archive-arrow-down');
       else if (item.type === 'scope') return h(VIcon, 'mdi-archive');
-      else if (item.type === 'scope') return h(VIcon, 'mdi-archive');
       return h(VIcon, 'mdi-file-document');
     };
     /**

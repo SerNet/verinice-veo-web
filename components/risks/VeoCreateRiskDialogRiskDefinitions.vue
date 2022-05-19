@@ -297,11 +297,64 @@
             </h2>
             <VeoCard>
               <v-card-text>
-                <VeoObjectSelect
-                  v-model="internalValue.mitigation"
-                  object-type="control"
-                  :label="t('mitigation')"
-                  value-as-link
+                <div class="d-flex fill-width align-center">
+                  <div>
+                    <v-radio-group
+                      v-model="createNewMitigatingAction"
+                      hide-details
+                      dense
+                    >
+                      <v-radio
+                        :label="t('createNewMitigation')"
+                        :value="true"
+                      />
+                      <v-radio
+                        :label="`${t('useExistingMitigation')}:`"
+                        :value="false"
+                      />
+                    </v-radio-group>
+                    <VeoObjectSelect
+                      v-model="internalValue.mitigation"
+                      object-type="control"
+                      :disabled="createNewMitigatingAction"
+                      :label="t('mitigation')"
+                      value-as-link
+                      class="ml-8"
+                    />
+                  </div>
+                  <v-tooltip bottom>
+                    <template #activator="{ on }">
+                      <div
+                        class="ml-4"
+                        v-on="on"
+                      >
+                        <v-badge
+                          :content="mitigationParts.length + ''"
+                          overlap
+                        >
+                          <v-btn
+                            icon
+                            :disabled="fetchingMitigation"
+                            @click="editPartsDialogVisible = true"
+                          >
+                            <v-icon>
+                              {{ mdiFileDocumentMultiple }}
+                            </v-icon>
+                          </v-btn>
+                        </v-badge>
+                      </div>
+                    </template>
+                    <template #default>
+                      {{ upperFirst(t('editParts').toString()) }}
+                    </template>
+                  </v-tooltip>
+                </div>
+                <VeoLinkObjectDialog
+                  v-model="editPartsDialogVisible"
+                  add-type="entity"
+                  :edited-object="createNewMitigatingAction ? newMitigatingAction : internalValue.mitigation"
+                  return-objects
+                  :selected-items.sync="mitigationParts"
                 />
               </v-card-text>
             </VeoCard>
@@ -346,13 +399,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, useContext, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiInformationOutline } from '@mdi/js';
+import { mdiFileDocumentMultiple, mdiInformationOutline } from '@mdi/js';
 
-import { IBaseObject } from '~/lib/utils';
-import { IVeoDomain, IVeoRisk } from '~/types/VeoTypes';
+import { getEntityDetailsFromLink, IBaseObject } from '~/lib/utils';
+import { IVeoDomain, IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -371,6 +424,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { t } = useI18n();
+    const { $api } = useContext();
 
     const internalValue = computed({
       get() {
@@ -400,17 +454,74 @@ export default defineComponent({
       }))
     );
 
+    // Mitigating action stuff
+    const createNewMitigatingAction = ref(true);
+    const newMitigatingAction = computed(() => ({ type: 'control', name: t('mitigatingAction', [internalValue.value.scenario?.displayName]).toString() }));
+
+    const editPartsDialogVisible = ref(false);
+
+    const selectedMitigationAsEntity = ref<IVeoEntity | undefined>(undefined);
+    const fetchingMitigation = ref(false);
+
+    const mitigationParts = ref<{ type: string; id: string }[]>([]);
+
+    const fetchMitigation = async () => {
+      if (internalValue.value.mitigation) {
+        fetchingMitigation.value = true;
+        const { id } = getEntityDetailsFromLink(internalValue.value.mitigation);
+
+        try {
+          selectedMitigationAsEntity.value = await $api.entity.fetch('control', id);
+
+          mitigationParts.value = selectedMitigationAsEntity.value.parts.map((part) => getEntityDetailsFromLink(part));
+        } finally {
+          fetchingMitigation.value = false;
+        }
+      } else {
+        mitigationParts.value = [];
+      }
+    };
+
+    watch(
+      () => createNewMitigatingAction.value,
+      (newValue) => {
+        if (newValue) {
+          mitigationParts.value = [];
+        } else {
+          fetchMitigation();
+        }
+      }
+    );
+
+    watch(
+      () => internalValue.value.mitigation,
+      () => {
+        if (internalValue.value.mitigation) {
+          createNewMitigatingAction.value = false;
+        }
+        fetchMitigation();
+      },
+      { immediate: true, deep: true }
+    );
+
     return {
       activeTab,
       activeRiskDefinition,
+      createNewMitigatingAction,
+      editPartsDialogVisible,
+      fetchMitigation,
+      fetchingMitigation,
       impacts,
       internalValue,
+      mitigationParts,
+      newMitigatingAction,
       probabilities,
       riskValues,
       treatmentOptions,
 
       upperFirst,
       t,
+      mdiFileDocumentMultiple,
       mdiInformationOutline
     };
   }
@@ -420,12 +531,15 @@ export default defineComponent({
 <i18n>
 {
   "en": {
+    "createNewMitigation": "create new mitigating action",
+    "editParts": "edit parts",
     "effectiveImpact": "effective impact",
     "effectiveProbability": "effective probability",
     "effectiveRisk": "effective risk",
     "explanation": "explanation",
     "impact": "impact",
     "inherentRisk": "inherent risk",
+    "mitigatingAction": "Mitigating action for \"{0}\"",
     "mitigation": "mitigation",
     "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions,{0} meaning only one mitigation action can be applied to a risk",
     "mitigationSection": "risk reduction actions (mitigating actions)",
@@ -444,15 +558,19 @@ export default defineComponent({
     },
     "saveCTA": "save to recompute",
     "specificImpact": "specific impact",
-    "specificProbability": "specific probability"
+    "specificProbability": "specific probability",
+    "useExistingMitigation": "use existing mitigating action"
   },
   "de": {
+    "createNewMitigation": "Neue mitigierende Maßnahme erstellen",
+    "editParts": "Teile bearbeiten",
     "effectiveImpact": "Effektive Auswirkung",
     "effectiveProbability": "Effektive Wahrscheinlichkeit",
     "effectiveRisk": "Effektives Risiko",
     "explanation": "Erklärung",
     "impact": "Auswirkung",
     "inherentRisk": "Brutto-Risiko",
+    "mitigatingAction": "Mitigierende Maßnahme für \"{0}\"",
     "mitigation": "Gegenmaßnahme",
     "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg,{0} d.h. es kann immer nur eine migitierende Maßnahme pro Risiko ausgewählt werden",
     "mitigationSection": "Maßnahmen zur Risikoreduktion (Mitigierende Maßnahmen)",
@@ -471,7 +589,8 @@ export default defineComponent({
     },
     "saveCTA": "Speichern zum Neuberechnen",
     "specificImpact": "spezifische Auswirkungen",
-    "specificProbability": "spezifische Wahrscheinlichkeit"
+    "specificProbability": "spezifische Wahrscheinlichkeit",
+    "useExistingMitigation": "Vorhandene mitigierende Maßnahme nutzen"
   }
 }
 </i18n>
