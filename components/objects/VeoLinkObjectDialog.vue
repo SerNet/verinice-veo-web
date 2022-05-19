@@ -150,7 +150,7 @@ export default defineComponent({
     const saving = ref(false); // saving status for adding entities
     const loading = ref(false); // loading status for fetch entities
     const entities = ref<IVeoPaginatedResponse<IVeoEntity[]>>({ items: [], page: 1, pageCount: 0, totalItemCount: 0 });
-    const availableEntities = computed(() => ({ ...entities.value, items: entities.value.items.filter((item) => item.id !== props.editedEntity?.id || item.type === 'scope') }));
+    const availableEntities = computed(() => ({ ...entities.value, items: entities.value.items.filter((item) => item.id !== props.editedEntity?.id) }));
     const schemas = ref<IVeoSchemaEndpoint[]>([]);
     const formschemas = ref<IVeoFormSchemaMeta[]>([]);
     const filterDialogVisible = ref(false);
