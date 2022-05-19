@@ -111,7 +111,7 @@
 
 <script lang="ts">
 import { defineComponent, useRoute, ref, computed, useContext, useFetch, watch, PropType } from '@nuxtjs/composition-api';
-import { cloneDeep, differenceBy, upperFirst } from 'lodash';
+import { cloneDeep, differenceBy, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiFilter } from '@mdi/js';
 import { getEntityDetailsFromLink, IBaseObject, separateUUIDParam } from '~/lib/utils';
@@ -324,17 +324,13 @@ export default defineComponent({
             const parentsToAdd = differenceBy(modifiedSelectedItems.value, mergedSelectedItems.value, 'id');
             const parentsToRemove = differenceBy(mergedSelectedItems.value, modifiedSelectedItems.value, 'id');
             for (const parent of parentsToAdd) {
-              await linkObject('parent', { objectId: _editedObject.id, objectType: _editedObject.type }, { objectId: parent.id, objectType: parent.type });
+              await linkObject('parent', pick(_editedObject, 'id', 'type'), parent);
             }
             for (const parent of parentsToRemove) {
               await unlinkObject(parent.id, _editedObject.id, parent.type);
             }
           } else {
-            await linkObject(
-              props.hierarchicalContext,
-              { objectType: _editedObject.type, objectId: _editedObject.id },
-              modifiedSelectedItems.value.map((item) => ({ objectId: item.id, objectType: item.type }))
-            );
+            await linkObject(props.hierarchicalContext, pick(_editedObject, 'id', 'type'), modifiedSelectedItems.value);
           }
           emit('success');
         } catch (error: any) {

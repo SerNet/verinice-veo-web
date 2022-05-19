@@ -83,7 +83,7 @@
 
 <script lang="ts">
 import { defineComponent, useRoute, ref, computed, PropType } from '@nuxtjs/composition-api';
-import { upperFirst } from 'lodash';
+import { pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiDotsVertical, mdiAlertOutline, mdiExclamationThick } from '@mdi/js';
 import { separateUUIDParam } from '~/lib/utils';
@@ -140,7 +140,7 @@ export default defineComponent({
     // emit after new object creation for linking
     const onCreateObjectSuccess = (newObjectId: string) => {
       if (props.object) {
-        linkObject('child', { objectType: props.object?.type, objectId: props.object.id }, { objectType: createObjectDialog.value.objectType as string, objectId: newObjectId });
+        linkObject('child', pick(props.object, 'id', 'type'), { type: createObjectDialog.value.objectType as string, id: newObjectId });
         emit('reload');
       }
     };

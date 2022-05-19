@@ -112,7 +112,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, useRoute, ref, computed, useContext, watch, PropType } from '@nuxtjs/composition-api';
-import { upperFirst } from 'lodash';
+import { pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
@@ -302,11 +302,10 @@ export default defineComponent({
     const onCreateObjectSuccess = async (newObjectId: string) => {
       if (props.object) {
         try {
-          await linkObject(
-            createObjectDialog.value.hierarchicalContext as any,
-            { objectType: props.object.type, objectId: props.object.id },
-            { objectType: createObjectDialog.value.objectType as string, objectId: newObjectId }
-          );
+          await linkObject(createObjectDialog.value.hierarchicalContext as any, pick(props.object, 'id', 'type'), {
+            type: createObjectDialog.value.objectType as string,
+            id: newObjectId
+          });
           displaySuccessMessage(t('objectLinked').toString());
           emit('reload');
         } catch (e: any) {
