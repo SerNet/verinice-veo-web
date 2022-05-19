@@ -32,9 +32,10 @@ export function useVeoObjectUtilities() {
 
   /**
    * Duplicates an object, including adding its children to the new object.
-   * Does NOT add the new object to all parents of the original object.
+   * Does NOT add the new object to the parents of the original object (Mostly, see addToParentScopes)
    *
    * @param object The object to clone
+   * @param addToParentScopes If set to true, adds the cloned object to the same scopes as the original object (needed if you want to clone an object containing a risk definition)
    * @returns Returns a promise that resolves if the object was cloned successfully and rejects if the object couldn't be cloned
    */
   const cloneObject = async (object: IVeoEntity, addToParentScopes: boolean = false) => {
