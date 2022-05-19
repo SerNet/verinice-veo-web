@@ -37,9 +37,14 @@ export function useVeoObjectUtilities() {
    * @param object The object to clone
    * @returns Returns a promise that resolves if the object was cloned successfully and rejects if the object couldn't be cloned
    */
-  const cloneObject = async (object: IVeoEntity) => {
+  const cloneObject = async (object: IVeoEntity, addToParentScopes: boolean = false) => {
     const newEntity = cloneDeep(object);
     newEntity.name = `${object.name} (${t('clone').toString()})`;
+
+    let parentScopes: undefined | string[];
+    if (addToParentScopes) {
+      parentScopes = (await $api.entity.fetchParents('scope', object.id)).items.map((item) => item.id);
+    }
 
     // Remove readonly properties that shouldn't be posted
     // @ts-ignore
@@ -49,7 +54,7 @@ export function useVeoObjectUtilities() {
     // @ts-ignore
     delete newEntity.designator;
 
-    return await $api.entity.create(newEntity.type, newEntity);
+    return (await $api.entity.create(newEntity.type, newEntity, parentScopes)).resourceId;
   };
 
   /**

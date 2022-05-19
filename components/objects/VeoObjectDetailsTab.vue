@@ -95,7 +95,7 @@ export default defineComponent({
     const router = useRouter();
 
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-    const { cloneObject } = useVeoObjectUtilities();
+    const { cloneObject, linkObject } = useVeoObjectUtilities();
 
     const items = ref<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>();
 
@@ -210,7 +210,14 @@ export default defineComponent({
               icon: mdiContentCopy,
               async action(item: IVeoEntity) {
                 try {
-                  await cloneObject(item);
+                  const clonedObjectId = await cloneObject(item, true);
+                  if (props.object) {
+                    await linkObject(
+                      props.type === 'childScopes' || props.type === 'childObjects' ? 'child' : 'parent',
+                      { objectType: props.object.type, objectId: props.object.id },
+                      { objectType: item.type, objectId: clonedObjectId }
+                    );
+                  }
                   displaySuccessMessage(upperFirst(t('objectCloned').toString()));
                   fetch();
                 } catch (e: any) {
