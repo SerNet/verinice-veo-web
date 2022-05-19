@@ -220,7 +220,7 @@ export default defineComponent({
             },
             {
               id: 'unlink',
-              label: upperFirst(t('unlinkObject').toString()),
+              label: upperFirst(t(props.object?.type === 'scope' || props.type === 'parentScopes' ? 'removeFromScope' : 'removeFromObject').toString()),
               icon: mdiLinkOff,
               action(item: IVeoEntity) {
                 if (props.type === 'parentScopes' || props.type === 'parentObjects') {
@@ -249,14 +249,35 @@ export default defineComponent({
 
     const onUnlinkEntitySuccess = () => {
       unlinkEntityDialog.value.value = false;
-      displaySuccessMessage(upperFirst(t('objectUnlinked').toString()));
+      displaySuccessMessage(
+        upperFirst(
+          t(
+            props.type === 'parentScopes' && props.object?.type === 'scope'
+              ? 'removeScopeFromScopeSuccess'
+              : props.type === 'parentScopes'
+              ? 'removeObjectFromScopeSuccess'
+              : 'removeObjectFromObjectSuccess'
+          ).toString()
+        )
+      );
       emit('new-object-created'); // emit to page for refetching object
       fetch();
     };
 
     const onUnlinkEntityError = (error: any) => {
       unlinkEntityDialog.value.value = false;
-      displayErrorMessage(upperFirst(t('errors.unlink').toString()), error?.toString());
+      displayErrorMessage(
+        upperFirst(
+          t(
+            props.type === 'parentScopes' && props.object?.type === 'scope'
+              ? 'removeScopeFromScopeError'
+              : props.type === 'parentScopes'
+              ? 'removeObjectFromScopeError'
+              : 'removeObjectFromObjectError'
+          ).toString()
+        ),
+        error?.toString()
+      );
     };
 
     /**
@@ -310,16 +331,21 @@ export default defineComponent({
   "en": {
     "cloneObject": "clone object",
     "deleteRisk": "delete risk",
-    "unlinkObject": "unlink object",
     "objectCloned": "Object successfully cloned.",
-    "objectUnlinked": "Object successfully unlinked.",
     "errors": {
       "clone": "Could not clone object.",
-      "unlink": "Could not unlink object.",
       "link": "Could not link new object.",
       "risk": "Couldn't delete risk"
     },
     "parentType": "parent type",
+    "removeFromObject": "Remove from object",
+    "removeFromScope": "Remove from scope",
+    "removeObjectFromObjectError": "Couldn't remove object",
+    "removeObjectFromObjectSuccess": "Object was removed successfully",
+    "removeObjectFromScopeError": "Couldn't remove object from scope",
+    "removeObjectFromScopeSuccess": "Object was removed from scope",
+    "removeScopeFromScopeError": "Couldn't remove scope",
+    "removeScopeFromScopeSuccess": "Scope was removed successfully",
     "riskDeleted": "The risk was removed",
     "scenario": "Scenario"
 
@@ -327,16 +353,21 @@ export default defineComponent({
   "de": {
     "cloneObject": "Objekt duplizieren",
     "deleteRisk": "Risiko löschen",
-    "unlinkObject": "Verknüpfung entfernen",
     "objectCloned": "Das Objekt wurde erfolgreich dupliziert.",
-    "objectUnlinked": "Die Verknüpfung wurde erfolgreich entfernt.",
     "errors": {
       "clone": "Das Objekt konnte nicht dupliziert werden.",
-      "unlink": "Die Verknüpfung konnte nicht entfernt werden.",
       "link": "Das neue Objekt konnte nicht verknüpft werden.",
       "risk": "Risiko konnte nicht gelöscht werden"
     },
     "parentType": "Elterntyp",
+    "removeFromObject": "Aus Objekt entfernen",
+    "removeFromScope": "Aus Scope entfernen",
+    "removeObjectFromObjectError": "Objekt konnte nicht entfernt werden",
+    "removeObjectFromObjectSuccess": "Objekt wurde entfernt",
+    "removeObjectFromScopeError": "Objekt konnte nicht aus Scope entfernt werden",
+    "removeObjectFromScopeSuccess": "Objekt wurde aus Scope entfernt",
+    "removeScopeFromScopeError": "Scope konnte nicht entfernt werden",
+    "removeScopeFromScopeSuccess": "Scope wurde entfernt",
     "riskDeleted": "Das Risiko wurde entfernt",
     "scenario": "Szenario"
   }
