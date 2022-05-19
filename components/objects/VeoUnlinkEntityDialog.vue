@@ -22,8 +22,6 @@
   >
     <template #default>
       <span class="text-body-1">{{ $t('text', { displayName, parentDisplayName }) }}</span>
-      <br>
-      <span class="text-body-2">{{ $t('hint') }}</span>
     </template>
     <template #dialog-options>
       <v-btn
@@ -127,13 +125,11 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-  "text": "Unlinking \"{displayName}\" only removes the object from \"{parentDisplayName}\".",
-  "hint": "If you wish to delete the object, you have to delete it from the root element.",
-  "headline": "Unlink object"
+    "text": "Unlinking \"{displayName}\" only removes the object from \"{parentDisplayName}\".",
+    "headline": "Unlink object"
   },
   "de": {
     "text": "Es wird nur die Verknüpfung von \"{displayName}\" zu \"{parentDisplayName}\" entfernt.",
-    "hint": "Das Objekt kann nur von der obersten Ebene aus gelöscht werden.",
     "headline": "Verknüpfung entfernen"
   }
 }
