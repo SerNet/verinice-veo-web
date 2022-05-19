@@ -223,8 +223,14 @@ export default defineComponent({
               label: upperFirst(t('unlinkObject').toString()),
               icon: mdiLinkOff,
               action(item: IVeoEntity) {
-                unlinkEntityDialog.value.item = item;
-                unlinkEntityDialog.value.parent = props.object;
+                if (props.type === 'parentScopes' || props.type === 'parentObjects') {
+                  unlinkEntityDialog.value.item = props.object;
+                  unlinkEntityDialog.value.parent = item;
+                } else {
+                  unlinkEntityDialog.value.item = item;
+                  unlinkEntityDialog.value.parent = props.object;
+                }
+
                 unlinkEntityDialog.value.value = true;
               }
             }
