@@ -237,12 +237,12 @@ export default defineComponent({
 
     // object types for object type selection in CreateEntityDialog
     const createEntitySchemas = computed(() => {
-      return schemas.value.map((schema: IVeoSchemaEndpoint) => {
-        return {
+      return schemas.value
+        .filter((filter) => filter.schemaName !== 'scope')
+        .map((schema: IVeoSchemaEndpoint) => ({
           text: upperFirst(schema.schemaName),
           value: schema.schemaName
-        };
-      });
+        }));
     });
 
     const createEntityDialog = ref({
