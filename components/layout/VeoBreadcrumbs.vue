@@ -145,7 +145,7 @@ export interface IVeoBreadcrumb {
 interface IVeoBreadcrumbReplacementMapBreadcrumb {
   disabled?: boolean;
   exact?: boolean;
-  to?: string;
+  to?: string | Function;
   text?: string;
   asyncText?: (param: string, value?: string) => Promise<string>;
   icon?: any;
@@ -220,6 +220,12 @@ export default defineComponent({
             return object.displayName;
           }
         }
+      ],
+      [
+        'objects',
+        {
+          to: () => `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${separateUUIDParam(route.value.params.entity).type}`
+        }
       ]
     ]);
 
@@ -230,20 +236,27 @@ export default defineComponent({
     const generatedBreadcrumbs: ComputedRef<(IVeoBreadcrumb & { loading?: boolean })[]> = computed(() =>
       breadcrumbParts.value
         .filter((part) => !BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.has(part) || !BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(part)?.hidden)
-        .map((part, index) => ({
-          param: part,
-          exact: true,
-          text: ['text', 'icon', 'asyncText'].some((key) => key in (BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(part) || {})) ? undefined : t(`breadcrumbs.${part}`).toString(),
-          index,
-          key: breadcrumbParts.value.slice(0, breadcrumbParts.value.findIndex((_part) => _part === part) + 1).join('/') || '/',
-          to:
-            route.value.fullPath
-              .split('/')
-              .slice(0, breadcrumbParts.value.findIndex((_part) => _part === part) + 1)
-              .join('/') || '/',
-          position: index * 10,
-          ...(BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.has(part) ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(part) : {})
-        }))
+        .map((part, index) => {
+          const replacementMapEntry = BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(part);
+
+          return {
+            param: part,
+            exact: true,
+            text: ['text', 'icon', 'asyncText'].some((key) => key in (replacementMapEntry || {})) ? undefined : t(`breadcrumbs.${part}`).toString(),
+            index,
+            key: breadcrumbParts.value.slice(0, breadcrumbParts.value.findIndex((_part) => _part === part) + 1).join('/') || '/',
+            position: index * 10,
+            ...(replacementMapEntry || {}),
+            to: replacementMapEntry?.to
+              ? typeof replacementMapEntry.to === 'string'
+                ? replacementMapEntry.to
+                : replacementMapEntry.to()
+              : route.value.fullPath
+                  .split('/')
+                  .slice(0, breadcrumbParts.value.findIndex((_part) => _part === part) + 1)
+                  .join('/') || '/'
+          };
+        })
     );
 
     const breadcrumbs = computed(() =>
