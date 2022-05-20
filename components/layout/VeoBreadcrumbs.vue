@@ -17,31 +17,97 @@
 -->
 <template>
   <v-breadcrumbs
-    :items="breadcrumbs"
+    :items="displayedBreadcrumbs"
     class="px-0"
     data-component-name="breadcrumbs"
   >
     <template #item="{ item }">
       <v-breadcrumbs-item
-        v-bind="attrs"
+        v-bind="item"
         nuxt
       >
-        {{ item.to }}
-        <v-icon
-          v-if="item.icon"
-          small
-          class="primary--text"
-        >
-          {{ item.icon }}
-        </v-icon>
-        <v-skeleton-loader
-          v-if="item.asyncText"
-          type="image"
-          width="60"
-          height="14"
-        />
-        <template v-if="item.text">
-          {{ item.text }}
+        <template v-if="item.index < BREADCRUMB_BREAKOFF + 1 || breadcrumbs.length === BREADCRUMB_BREAKOFF + 2">
+          <v-icon
+            v-if="item.icon"
+            class="primary--text"
+          >
+            {{ item.icon }}
+          </v-icon>
+          <template v-if="item.asyncText">
+            <template v-if="asyncTextMap[item.param]">
+              {{ asyncTextMap[item.param] }}
+            </template>
+            <v-skeleton-loader
+              v-else
+              type="image"
+              width="80"
+              height="14"
+            />
+          </template>
+        
+          <template v-if="item.text">
+            {{ item.text }}
+          </template>
+        </template>
+        <template v-else-if="item.index === BREADCRUMB_BREAKOFF + 1">
+          <v-menu
+            bottom
+            offset-y
+          >
+            <template #activator="{ on }">
+              <v-btn
+                icon
+                small
+                v-on="on"
+                @click.stop.prevent
+              >
+                <v-icon color="black">
+                  {{ mdiChevronDown }}
+                </v-icon>
+              </v-btn>
+            </template>
+            <template #default>
+              <v-list dense>
+                <v-list-item-group
+                  mandatory
+                  color="primary"
+                >
+                  <v-list-item
+                    v-for="menuItem of slicedBreadcrumbs"
+                    v-bind="menuItem"
+                    :key="menuItem.key"
+                    nuxt
+                  >
+                    <v-list-item-icon v-if="menuItem.icon">
+                      <v-icon
+            
+                        class="primary--text"
+                      >
+                        {{ menuItem.icon }}
+                      </v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>
+                      <template v-if="menuItem.asyncText">
+                        <template v-if="asyncTextMap[menuItem.param]">
+                          {{ asyncTextMap[menuItem.param] }}
+                        </template>
+                        <v-skeleton-loader
+                          v-else
+                          type="image"
+                          width="80"
+                          height="14"
+                        />
+                      </template>
+        
+                      <template v-if="menuItem.text">
+                        {{ menuItem.text }}
+                      </template>
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list-item-group>
+              </v-list>
+            </template>
+          </v-menu>
         </template>
       </v-breadcrumbs-item>
     </template>
@@ -57,10 +123,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, useContext, PropType, computed, ComputedRef } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute, useContext, PropType, computed, ComputedRef, watch, set, reactive } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { last } from 'lodash';
-import { mdiChevronRight, mdiHomeOutline } from '@mdi/js';
+import { mdiChevronDown, mdiChevronRight, mdiHomeOutline } from '@mdi/js';
 import { separateUUIDParam } from '~/lib/utils';
 
 export interface IVeoBreadcrumb {
@@ -73,6 +139,7 @@ export interface IVeoBreadcrumb {
   icon?: any;
   position: number;
   index: number;
+  param: string;
 }
 
 interface IVeoBreadcrumbReplacementMapBreadcrumb {
@@ -103,7 +170,7 @@ export default defineComponent({
     const { $api } = useContext();
 
     // After this position, all breadcrumbs will be moved to a menu to avoid scrolling
-    const BREADCRUMB_BREAKOFF = 6;
+    const BREADCRUMB_BREAKOFF = 2;
 
     const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbReplacementMapBreadcrumb>([
       [
@@ -162,22 +229,22 @@ export default defineComponent({
 
     const generatedBreadcrumbs: ComputedRef<(IVeoBreadcrumb & { loading?: boolean })[]> = computed(() =>
       breadcrumbParts.value
+        .filter((part) => !BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.has(part) || !BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(part)?.hidden)
         .map((part, index) => ({
+          param: part,
+          exact: true,
           text: ['text', 'icon', 'asyncText'].some((key) => key in (BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(part) || {})) ? undefined : t(`breadcrumbs.${part}`).toString(),
           index,
-          key: breadcrumbParts.value.slice(0, index + 1).join('/') || '/',
+          key: breadcrumbParts.value.slice(0, breadcrumbParts.value.findIndex((_part) => _part === part) + 1).join('/') || '/',
           to:
             route.value.fullPath
               .split('/')
-              .slice(0, index + 1)
+              .slice(0, breadcrumbParts.value.findIndex((_part) => _part === part) + 1)
               .join('/') || '/',
           position: index * 10,
           ...(BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.has(part) ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(part) : {})
         }))
-        .filter((breadcrumb) => !breadcrumb.hidden === true)
     );
-
-    console.log(generatedBreadcrumbs);
 
     const breadcrumbs = computed(() =>
       props.overrideBreadcrumbs
@@ -185,11 +252,40 @@ export default defineComponent({
         : [...generatedBreadcrumbs.value, ...props.customBreadcrumbs].sort((breadcrumbA, breadcrumbB) => breadcrumbA.position - breadcrumbB.position)
     );
 
+    const displayedBreadcrumbs = computed(() => breadcrumbs.value.slice(0, BREADCRUMB_BREAKOFF + 2));
+    const slicedBreadcrumbs = computed(() => breadcrumbs.value.slice(BREADCRUMB_BREAKOFF + 1));
+
+    // Async text results
+    const asyncTextMap = reactive<{ [param: string]: string }>({});
+    watch(
+      () => breadcrumbs.value,
+      async (newValue) => {
+        for (const breadcrumb of newValue) {
+          if (breadcrumb.asyncText) {
+            try {
+              const result = await breadcrumb.asyncText(breadcrumb.param, route.value.params[breadcrumb.param.startsWith(':') ? breadcrumb.param.substring(1) : breadcrumb.param]);
+              set(asyncTextMap, breadcrumb.param, result);
+            } catch (e: any) {
+              // eslint-disable-next-line no-console
+              console.warn(`Couldn't fetch async text for breadcrumb ${breadcrumb.param}: ${e.message}`);
+            }
+          }
+        }
+      },
+      {
+        immediate: true
+      }
+    );
+
     return {
-      BREADCRUMB_BREAKOFF,
+      asyncTextMap,
       breadcrumbs,
+      BREADCRUMB_BREAKOFF,
+      displayedBreadcrumbs,
+      slicedBreadcrumbs,
 
       t,
+      mdiChevronDown,
       mdiChevronRight
     };
   }
