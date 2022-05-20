@@ -213,7 +213,7 @@ export default defineComponent({
                   const clonedObjectId = await cloneObject(item, true);
                   if (props.object) {
                     await linkObject(
-                      props.type === 'childScopes' || props.type === 'childObjects' ? 'child' : 'parent',
+                      ['childScopes', 'childObjects'].includes(props.type) ? 'child' : 'parent',
                       { objectType: props.object.type, objectId: props.object.id },
                       { objectType: item.type, objectId: clonedObjectId }
                     );
@@ -230,7 +230,7 @@ export default defineComponent({
               label: upperFirst(t(props.object?.type === 'scope' || props.type === 'parentScopes' ? 'removeFromScope' : 'removeFromObject').toString()),
               icon: mdiLinkOff,
               action(item: IVeoEntity) {
-                if (props.type === 'parentScopes' || props.type === 'parentObjects') {
+                if (['parentScopes', 'parentObjects'].includes(props.type)) {
                   unlinkEntityDialog.value.item = props.object;
                   unlinkEntityDialog.value.parent = item;
                 } else {
