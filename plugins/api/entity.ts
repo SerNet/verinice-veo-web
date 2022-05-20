@@ -100,7 +100,7 @@ export default function (api: Client) {
      * Creates an entity
      * @param entity
      */
-    async create(objectType: string, entity: IVeoEntity): Promise<IVeoAPIMessage> {
+    async create(objectType: string, entity: IVeoEntity, parentScopes?: string[]): Promise<IVeoAPIMessage> {
       objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
       // Remove properties of the object only used in the frontend
@@ -116,6 +116,9 @@ export default function (api: Client) {
         method: 'POST',
         params: {
           objectType
+        },
+        query: {
+          scopes: parentScopes?.join(',')
         },
         json: entity
       });
