@@ -231,8 +231,8 @@ export default defineComponent({
       [
         ':matrix',
         {
-          asyncText: async (_param, value) => {
-            return await Promise.resolve(value as string);
+          asyncText: (_param, value) => {
+            return Promise.resolve(value as string);
           }
         }
       ],
