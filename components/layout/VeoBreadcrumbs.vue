@@ -125,7 +125,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, useContext, PropType, computed, ComputedRef, watch, set, reactive } from '@nuxtjs/composition-api';
+import { defineComponent, del, useRoute, useContext, PropType, computed, ComputedRef, watch, set, reactive } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { last } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal, mdiHomeOutline } from '@mdi/js';
@@ -295,6 +295,7 @@ export default defineComponent({
         for (const breadcrumb of newValue) {
           if (breadcrumb.asyncText) {
             try {
+              del(asyncTextMap, breadcrumb.param);
               const result = await breadcrumb.asyncText(breadcrumb.param, route.value.params[breadcrumb.param.replace(/^:/, '')]);
               set(asyncTextMap, breadcrumb.param, result);
             } catch (e: any) {
