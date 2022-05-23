@@ -26,7 +26,8 @@
         v-bind="item"
         nuxt
       >
-        <template v-if="item.index < BREADCRUMB_BREAKOFF + 1 || breadcrumbs.length === BREADCRUMB_BREAKOFF + 2">
+        <!-- Display if the breadcrumb is visible or the amount of breadcrumbs is one over the BREADCRUMB_BREAKOFF (else there would be a single item in the list, making it kinda pointless) -->
+        <template v-if="item.index < BREADCRUMB_BREAKOFF || breadcrumbs.length === BREADCRUMB_BREAKOFF + 1">
           <v-icon
             v-if="item.icon"
             class="primary--text"
@@ -49,7 +50,8 @@
             {{ item.text }}
           </template>
         </template>
-        <template v-else-if="item.index === BREADCRUMB_BREAKOFF + 1">
+        <!-- Display the button with the list instead the last item -->
+        <template v-else-if="item.index === BREADCRUMB_BREAKOFF">
           <v-menu
             bottom
             offset-y
@@ -61,8 +63,8 @@
                 v-on="on"
                 @click.stop.prevent
               >
-                <v-icon color="black">
-                  {{ mdiChevronDown }}
+                <v-icon color="primary">
+                  {{ mdiDotsHorizontal }}
                 </v-icon>
               </v-btn>
             </template>
@@ -126,7 +128,7 @@
 import { defineComponent, useRoute, useContext, PropType, computed, ComputedRef, watch, set, reactive } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { last } from 'lodash';
-import { mdiChevronDown, mdiChevronRight, mdiHomeOutline } from '@mdi/js';
+import { mdiChevronRight, mdiDotsHorizontal, mdiHomeOutline } from '@mdi/js';
 import { separateUUIDParam } from '~/lib/utils';
 
 export interface IVeoBreadcrumb {
@@ -170,7 +172,7 @@ export default defineComponent({
     const { $api } = useContext();
 
     // After this position, all breadcrumbs will be moved to a menu to avoid scrolling
-    const BREADCRUMB_BREAKOFF = 2;
+    const BREADCRUMB_BREAKOFF = 4;
 
     const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbReplacementMapBreadcrumb>([
       [
@@ -182,11 +184,6 @@ export default defineComponent({
       [
         ':unit',
         {
-          asyncText: async (_param, value) => {
-            const unitId = separateUUIDParam(value).id;
-            const unit = await $api.unit.fetch(unitId);
-            return unit.name;
-          },
           hidden: true
         }
       ],
@@ -218,6 +215,24 @@ export default defineComponent({
             const { type, id } = separateUUIDParam(value);
             const object = await $api.entity.fetch(type, id);
             return object.displayName;
+          }
+        }
+      ],
+      [
+        ':catalog',
+        {
+          asyncText: async (_param, value) => {
+            const { id } = separateUUIDParam(value);
+            const catalog = await $api.catalog.fetch(id);
+            return catalog.name;
+          }
+        }
+      ],
+      [
+        ':matrix',
+        {
+          asyncText: async (_param, value) => {
+            return await Promise.resolve(value as string);
           }
         }
       ],
@@ -265,8 +280,8 @@ export default defineComponent({
         : [...generatedBreadcrumbs.value, ...props.customBreadcrumbs].sort((breadcrumbA, breadcrumbB) => breadcrumbA.position - breadcrumbB.position)
     );
 
-    const displayedBreadcrumbs = computed(() => breadcrumbs.value.slice(0, BREADCRUMB_BREAKOFF + 2));
-    const slicedBreadcrumbs = computed(() => breadcrumbs.value.slice(BREADCRUMB_BREAKOFF + 1));
+    const displayedBreadcrumbs = computed(() => breadcrumbs.value.slice(0, BREADCRUMB_BREAKOFF + 1)); // Use one breadcrumb more than would be displayed to display the "more"-button
+    const slicedBreadcrumbs = computed(() => breadcrumbs.value.slice(BREADCRUMB_BREAKOFF + 1)); // Start with the breadcrumb that wouldn't be displayed
 
     // Async text results
     const asyncTextMap = reactive<{ [param: string]: string }>({});
@@ -276,7 +291,7 @@ export default defineComponent({
         for (const breadcrumb of newValue) {
           if (breadcrumb.asyncText) {
             try {
-              const result = await breadcrumb.asyncText(breadcrumb.param, route.value.params[breadcrumb.param.startsWith(':') ? breadcrumb.param.substring(1) : breadcrumb.param]);
+              const result = await breadcrumb.asyncText(breadcrumb.param, route.value.params[breadcrumb.param.replace(/^:/, '')]);
               set(asyncTextMap, breadcrumb.param, result);
             } catch (e: any) {
               // eslint-disable-next-line no-console
@@ -298,8 +313,8 @@ export default defineComponent({
       slicedBreadcrumbs,
 
       t,
-      mdiChevronDown,
-      mdiChevronRight
+      mdiChevronRight,
+      mdiDotsHorizontal
     };
   }
 });
