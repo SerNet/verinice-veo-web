@@ -239,7 +239,11 @@ export default defineComponent({
       [
         'objects',
         {
-          to: () => `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${separateUUIDParam(route.value.params.entity).type}`
+          to: () => {
+            const objectType = separateUUIDParam(route.value.params.entity).type;
+
+            return `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectType.length ? objectType : route.value.query.objectType}`;
+          }
         }
       ]
     ]);
