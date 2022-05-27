@@ -277,120 +277,6 @@
                 </v-row>
               </v-card-text>
             </VeoCard>
-            <h2 class="text-h2 mt-4">
-              {{ upperFirst(t('mitigationSection').toString()) }}
-              <v-tooltip bottom>
-                <template #activator="{ on }">
-                  <v-icon v-on="on">
-                    {{ mdiInformationOutline }}
-                  </v-icon>
-                </template>
-                <template #default>
-                  <i18n
-                    path="mitigationAreaOfApplicationExplanation"
-                    tag="span"
-                  >
-                    <br>
-                  </i18n>
-                </template>
-              </v-tooltip>
-            </h2>
-            <VeoCard>
-              <v-card-text>
-                <div class="d-flex fill-width align-center">
-                  <div>
-                    <v-radio-group
-                      v-model="createNewMitigatingAction"
-                      hide-details
-                      dense
-                    >
-                      <v-radio
-                        :label="t('createNewMitigation')"
-                        :value="true"
-                      />
-                      <v-radio
-                        :label="`${t('useExistingMitigation')}:`"
-                        :value="false"
-                      />
-                    </v-radio-group>
-                    <VeoObjectSelect
-                      v-model="internalValue.mitigation"
-                      object-type="control"
-                      :disabled="createNewMitigatingAction"
-                      :label="t('mitigation')"
-                      value-as-link
-                      class="ml-8"
-                    />
-                  </div>
-                  <v-tooltip bottom>
-                    <template #activator="{ on }">
-                      <div
-                        class="ml-4"
-                        v-on="on"
-                      >
-                        <v-badge
-                          :content="mitigationParts.length + ''"
-                          overlap
-                        >
-                          <v-btn
-                            icon
-                            :disabled="fetchingMitigation"
-                            @click="editPartsDialogVisible = true"
-                          >
-                            <v-icon>
-                              {{ mdiFileDocumentMultiple }}
-                            </v-icon>
-                          </v-btn>
-                        </v-badge>
-                      </div>
-                    </template>
-                    <template #default>
-                      {{ upperFirst(t('editParts').toString()) }}
-                    </template>
-                  </v-tooltip>
-                </div>
-                <VeoLinkObjectDialog
-                  v-model="editPartsDialogVisible"
-                  add-type="entity"
-                  :edited-object="createNewMitigatingAction ? newMitigatingAction : internalValue.mitigation"
-                  return-objects
-                  :selected-items.sync="mitigationParts"
-                />
-              </v-card-text>
-            </VeoCard>
-            <h2 class="text-h2 mt-4">
-              {{ upperFirst(t('effectiveRisk').toString()) }}
-            </h2>
-            <VeoCard class="mb-2">
-              <v-card-text>
-                <v-row>
-                  <v-col
-                    v-for="(protectionGoal, index) of riskDefinition.categories"
-                    :key="protectionGoal.id"
-                    cols="6"
-                    md="3"
-                  >
-                    <h3 class="text-h3">
-                      {{ protectionGoal.name }}
-                    </h3>
-                    <v-select
-                      :value="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues[index].effectiveRisk"
-                      disabled
-                      color="primary"
-                      :label="upperFirst(t('effectiveRisk').toString())"
-                      :items="riskValues"
-                    >
-                      <template
-                        v-if="formIsDirty"
-                        #selection
-                      >
-                        {{ t('saveCTA') }}
-                      </template>
-                    </v-select>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </VeoCard>
           </v-tab-item>
         </template>
       </VeoTabs>
@@ -399,13 +285,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiFileDocumentMultiple, mdiInformationOutline } from '@mdi/js';
 
-import { getEntityDetailsFromLink, IBaseObject } from '~/lib/utils';
-import { IVeoDomain, IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
+import { IBaseObject } from '~/lib/utils';
+import { IVeoDomain, IVeoRisk } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -424,7 +309,6 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { $api } = useContext();
 
     const internalValue = computed({
       get() {
@@ -454,75 +338,17 @@ export default defineComponent({
       }))
     );
 
-    // Mitigating action stuff
-    const createNewMitigatingAction = ref(true);
-    const newMitigatingAction = computed(() => ({ type: 'control', name: t('mitigatingAction', [internalValue.value.scenario?.displayName]).toString() }));
-
-    const editPartsDialogVisible = ref(false);
-
-    const selectedMitigationAsEntity = ref<IVeoEntity | undefined>(undefined);
-    const fetchingMitigation = ref(false);
-
-    const mitigationParts = ref<{ type: string; id: string }[]>([]);
-
-    const fetchMitigation = async () => {
-      if (internalValue.value.mitigation) {
-        fetchingMitigation.value = true;
-        const { id } = getEntityDetailsFromLink(internalValue.value.mitigation);
-
-        try {
-          selectedMitigationAsEntity.value = await $api.entity.fetch('control', id);
-
-          mitigationParts.value = selectedMitigationAsEntity.value.parts.map((part) => getEntityDetailsFromLink(part));
-        } finally {
-          fetchingMitigation.value = false;
-        }
-      } else {
-        mitigationParts.value = [];
-      }
-    };
-
-    watch(
-      () => createNewMitigatingAction.value,
-      (newValue) => {
-        if (newValue) {
-          mitigationParts.value = [];
-        } else {
-          fetchMitigation();
-        }
-      }
-    );
-
-    watch(
-      () => internalValue.value.mitigation,
-      () => {
-        if (internalValue.value.mitigation) {
-          createNewMitigatingAction.value = false;
-        }
-        fetchMitigation();
-      },
-      { immediate: true, deep: true }
-    );
-
     return {
       activeTab,
       activeRiskDefinition,
-      createNewMitigatingAction,
-      editPartsDialogVisible,
-      fetchMitigation,
-      fetchingMitigation,
       impacts,
       internalValue,
-      mitigationParts,
-      newMitigatingAction,
       probabilities,
       riskValues,
       treatmentOptions,
 
       upperFirst,
-      t,
-      mdiFileDocumentMultiple,
-      mdiInformationOutline
+      t
     };
   }
 });
@@ -531,18 +357,11 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "createNewMitigation": "create new mitigating action",
-    "editParts": "edit parts",
     "effectiveImpact": "effective impact",
     "effectiveProbability": "effective probability",
-    "effectiveRisk": "effective risk",
     "explanation": "explanation",
     "impact": "impact",
     "inherentRisk": "inherent risk",
-    "mitigatingAction": "Mitigating action for \"{0}\"",
-    "mitigation": "mitigation",
-    "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions,{0} meaning only one mitigation action can be applied to a risk",
-    "mitigationSection": "risk reduction actions (mitigating actions)",
     "potentialImpact": "potential impact",
     "potentialProbability": "potential probability",
     "probability": "probability",
@@ -558,22 +377,16 @@ export default defineComponent({
     },
     "saveCTA": "save to recompute",
     "specificImpact": "specific impact",
-    "specificProbability": "specific probability",
-    "useExistingMitigation": "use existing mitigating action"
+    "specificProbability": "specific probability"
   },
   "de": {
-    "createNewMitigation": "Neue mitigierende Maßnahme erstellen",
-    "editParts": "Teile bearbeiten",
+    
+    
     "effectiveImpact": "Effektive Auswirkung",
     "effectiveProbability": "Effektive Wahrscheinlichkeit",
-    "effectiveRisk": "Effektives Risiko",
     "explanation": "Erklärung",
     "impact": "Auswirkung",
     "inherentRisk": "Brutto-Risiko",
-    "mitigatingAction": "Mitigierende Maßnahme für \"{0}\"",
-    "mitigation": "Gegenmaßnahme",
-    "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg,{0} d.h. es kann immer nur eine migitierende Maßnahme pro Risiko ausgewählt werden",
-    "mitigationSection": "Maßnahmen zur Risikoreduktion (Mitigierende Maßnahmen)",
     "potentialImpact": "potentielle Auswirkung",
     "potentialProbability": "potentielle Wahrscheinlichkeit",
     "probability": "Eintrittswahrscheinlichkeit",
@@ -589,8 +402,7 @@ export default defineComponent({
     },
     "saveCTA": "Speichern zum Neuberechnen",
     "specificImpact": "spezifische Auswirkungen",
-    "specificProbability": "spezifische Wahrscheinlichkeit",
-    "useExistingMitigation": "Vorhandene mitigierende Maßnahme nutzen"
+    "specificProbability": "spezifische Wahrscheinlichkeit"
   }
 }
 </i18n>

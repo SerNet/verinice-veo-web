@@ -124,8 +124,16 @@ export function useVeoObjectUtilities() {
     }
   };
 
+  const createLink = async (objectToCreateLinkFrom: IVeoAPIObjectIdentifier) => {
+    const schemas = await $api.schema.fetchAll();
+    return {
+      targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, objectToCreateLinkFrom.type) || objectToCreateLinkFrom.type}/${objectToCreateLinkFrom.id}`
+    };
+  };
+
   return {
     cloneObject,
+    createLink,
     linkObject,
     unlinkObject
   };
