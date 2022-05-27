@@ -180,6 +180,7 @@ import Vue from 'vue';
 import { mdiFilter } from '@mdi/js';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { IVeoCreateReportData, IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoReportMeta, IVeoReportsMeta } from '~/types/VeoTypes';
+import { VeoEvents } from '~/types/VeoGlobalEvents';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-type';
 
@@ -299,21 +300,26 @@ export default Vue.extend({
   },
   methods: {
     async generateReport() {
-      this.generatingReport = true;
       if (this.report) {
         const outputType = this.report.outputTypes[0];
         const body: IVeoCreateReportData = {
           outputType,
           targets: this.selectedEntities
         };
-        const result = new Blob([await this.$api.report.create(this.reportId, body)], { type: outputType });
+        try {
+          this.generatingReport = true;
+          const result = new Blob([await this.$api.report.create(this.reportId, body)], { type: outputType });
 
-        const downloadButton = this.$refs.downloadButton;
-        downloadButton.href = URL.createObjectURL(result);
-        downloadButton.download = `${this.report.name[this.$i18n.locale]}.${outputType.split('/').pop() || outputType}`;
-        downloadButton.click();
+          const downloadButton = this.$refs.downloadButton;
+          downloadButton.href = URL.createObjectURL(result);
+          downloadButton.download = `${this.report.name[this.$i18n.locale]}.${outputType.split('/').pop() || outputType}`;
+          downloadButton.click();
+        } catch (e: any) {
+          this.$root.$emit(VeoEvents.ALERT_ERROR, { title: this.$t('generateReportError'), text: e.message });
+        } finally {
+          this.generatingReport = false;
+        }
       }
-      this.generatingReport = false;
     },
     onSubTypeChange() {
       this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
@@ -379,6 +385,7 @@ export default Vue.extend({
     "filterObjects": "Filter objects",
     "form": "Sub type",
     "generateReport": "Generate report",
+    "generateReportError": "Couldn't generate report",
     "hintMultiple": "Please select the object you want to create the report for.",
     "hintSingle": "Please select the object you want to create the report for.",
     "objectType": "Object type"
@@ -389,6 +396,7 @@ export default Vue.extend({
     "filterObjects": "Objektauswahl weiter einschränken",
     "form": "Subtyp",
     "generateReport": "Report generieren",
+    "generateReportError": "Report konnte nicht erstellt werden",
     "hintMultiple": "Bitte wählen Sie die Objekte aus, für die Sie den Report erstellen möchten.",
     "hintSingle": "Bitte wählen Sie das Objekt aus, für das Sie den Report erstellen möchten.",
     "objectType": "Objekttyp"
