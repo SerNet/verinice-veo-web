@@ -20,10 +20,10 @@ import Vue from 'vue';
 import { VNode, PropOptions, CreateElement } from 'vue/types';
 import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
-
 import vjp from 'vue-json-pointer';
 import { ErrorObject, ValidateFunction } from 'ajv';
 import { cloneDeep, dropRight, merge, pull } from 'lodash';
+
 import { Layout as ILayout, IVeoFormSchemaControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
 import { BaseObject, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule, generateFormSchemaControl, generateFormSchemaGroup } from '~/components/forms/utils';
 import Label from '~/components/forms/Label.vue';
@@ -82,10 +82,10 @@ export default Vue.extend({
     isValid: {
       type: Boolean
     },
-    disableSubTypeSelect: {
-      type: Boolean,
-      default: false
-    },
+    disabledInputs: {
+      type: Array,
+      default: () => []
+    } as PropOptions<String[]>,
     errorMessages: {
       type: Array,
       default: () => []
@@ -158,7 +158,10 @@ export default Vue.extend({
             }
           },
           [`#/properties/domains/properties/${this.domainId}/properties/subType`]: {
-            formSchema: { disabled: this.disableSubTypeSelect }
+            formSchema: { disabled: this.disabledInputs.includes(`#/properties/domains/properties/${this.domainId}/properties/subType`) }
+          },
+          [`#/properties/domains/properties/${this.domainId}/properties/riskDefinition`]: {
+            formSchema: { disabled: this.disabledInputs.includes(`#/properties/domains/properties/${this.domainId}/properties/riskDefinition`) }
           },
           [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/implementationStatus`]: {
             formSchema: {
