@@ -192,7 +192,7 @@ import { mdiFileDocumentMultiple, mdiInformationOutline } from '@mdi/js';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
-import { IVeoDomain, IVeoEntity, IVeoRisk, VeoAlertType } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoEntity, IVeoRisk, IVeoRiskDefinition, VeoAlertType } from '~/types/VeoTypes';
 import { IVeoAPIObjectIdentifier, useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
 export default defineComponent({
@@ -229,7 +229,7 @@ export default defineComponent({
     const domain = ref<IVeoDomain | undefined>();
     const { fetch: fetchDomain } = useFetch(async () => {
       domain.value = await $api.domain.fetch(props.domainId);
-      data.value = makeRiskObject(risk.value, props.domainId, Object.keys(domain.value?.riskDefinitions || {}));
+      data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
       nextTick(() => {
         formIsDirty.value = false;
       });
@@ -244,7 +244,7 @@ export default defineComponent({
       () => props.value,
       (newValue) => {
         if (newValue) {
-          makeRiskObject(risk?.value, props.domainId, Object.keys(domain.value?.riskDefinitions || {}));
+          makeRiskObject(risk?.value, props.domainId, domain.value?.riskDefinitions || {});
         }
       },
       {
@@ -264,7 +264,7 @@ export default defineComponent({
         risk.value = undefined;
       }
 
-      data.value = makeRiskObject(risk.value, props.domainId, Object.keys(domain.value?.riskDefinitions || {}));
+      data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
       formIsValid.value = true;
 
       nextTick(() => {
@@ -393,7 +393,7 @@ export default defineComponent({
   }
 });
 
-const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, riskDefinitions: string[]): IVeoRisk => {
+const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, riskDefinitions: { [key: string]: IVeoRiskDefinition }): IVeoRisk => {
   const object: any = {
     scenario: undefined,
     mitigation: undefined,
@@ -406,78 +406,34 @@ const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, ris
     }
   };
 
-  for (const riskDefinition of riskDefinitions) {
+  for (const riskDefinition in riskDefinitions) {
+    const categories = riskDefinitions[riskDefinition].categories.map((category) => category.id);
     object.domains[domainId].riskDefinitions[riskDefinition] = {
       probability: {
         effectiveProbability: undefined,
         potentialProbability: undefined,
         specificProbability: undefined,
         specificProbabilityExplanation: undefined
-      },
-      impactValues: [
-        {
-          category: 'C',
-          effectiveImpact: undefined,
-          specificImpact: undefined,
-          specificImpactExplanation: undefined,
-          potentialImpact: undefined
-        },
-        {
-          category: 'I',
-          effectiveImpact: undefined,
-          specificImpact: undefined,
-          specificImpactExplanation: undefined,
-          potentialImpact: undefined
-        },
-        {
-          category: 'A',
-          effectiveImpact: undefined,
-          specificImpact: undefined,
-          specificImpactExplanation: undefined,
-          potentialImpact: undefined
-        },
-        {
-          category: 'R',
-          effectiveImpact: undefined,
-          specificImpact: undefined,
-          specificImpactExplanation: undefined,
-          potentialImpact: undefined
-        }
-      ],
-      riskValues: [
-        {
-          category: 'C',
-          residualRisk: undefined,
-          residualRiskExplanation: undefined,
-          riskTreatments: [],
-          riskTreatmentExplanation: undefined
-        },
-        {
-          category: 'I',
-          residualRisk: undefined,
-          residualRiskExplanation: undefined,
-          riskTreatments: [],
-          riskTreatmentExplanation: undefined
-        },
-        {
-          category: 'A',
-          residualRisk: undefined,
-          residualRiskExplanation: undefined,
-          riskTreatments: [],
-          riskTreatmentExplanation: undefined
-        },
-        {
-          category: 'R',
-          residualRisk: undefined,
-          residualRiskExplanation: undefined,
-          riskTreatments: [],
-          riskTreatmentExplanation: undefined
-        }
-      ]
+      }
     };
+    object.domains[domainId].riskDefinitions[riskDefinition].impactValues = categories.map((category) => ({
+      category,
+      effectiveImpact: undefined,
+      specificImpact: undefined,
+      specificImpactExplanation: undefined,
+      potentialImpact: undefined
+    }));
+
+    object.domains[domainId].riskDefinitions[riskDefinition].riskValues = categories.map((category) => ({
+      category,
+      residualRisk: undefined,
+      residualRiskExplanation: undefined,
+      riskTreatments: [],
+      riskTreatmentExplanation: undefined
+    }));
   }
 
-  return initialData ? merge(object, initialData) : object;
+  return initialData ? merge(initialData, object) : object;
 };
 </script>
 
