@@ -331,9 +331,6 @@ export default defineComponent({
       if (object.value?.domains?.[domainId.value].subType) {
         disabledInputs.push(`#/properties/domains/properties/${domainId.value}/properties/subType`);
       }
-      if (object.value?.domains?.[domainId.value].riskDefinition) {
-        disabledInputs.push(`#/properties/domains/properties/${domainId.value}/properties/riskDefinition`);
-      }
 
       return disabledInputs;
     });
