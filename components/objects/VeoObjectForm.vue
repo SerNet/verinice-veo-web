@@ -23,7 +23,6 @@
     <template #default>
       <VeoPage
         :id="scrollWrapperId"
-        color="#ffffff"
         sticky-header
         :sticky-footer="!!$slots['append-form-fixed']"
         data-component-name="object-form-form"
@@ -73,7 +72,6 @@
         </template>
       </VeoPage>
       <VeoPage
-        color="#ffffff"
         no-padding
         data-component-name="object-form-sidebar"
       >

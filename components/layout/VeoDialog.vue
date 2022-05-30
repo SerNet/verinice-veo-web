@@ -30,7 +30,7 @@
       :color="xLarge ? 'white' : undefined"
       tile
     >
-      <div :class="{ 'veo-dialog__inner--border-bottom': xLarge }">
+      <div class="veo-dialog__inner--border-bottom">
         <v-card-title class="pt-2 pb-1">
           <VeoAppLogoMobile
             v-if="fullscreen"
@@ -48,10 +48,6 @@
             <v-icon>{{ mdiClose }}</v-icon>
           </v-btn>
         </v-card-title>
-        <v-divider
-          v-if="!xLarge"
-          class="mx-4"
-        />
       </div>
       <v-card-text
         class="pa-4 overflow-x-hidden overflow-y-auto flex-grow-1"
@@ -69,9 +65,9 @@
       </v-card-text>
       <v-card-actions
         v-if="!!$slots['dialog-options'] && fixedFooter"
-        :class="{ 'pb-3 px-4 d-block pt-0': true, 'veo-dialog__actions--border-top': xLarge }"
+        class="veo-dialog__actions--border-top"
+        :class="{ 'pb-3 px-4 d-block pt-0': true }"
       >
-        <v-divider v-if="!xLarge" />
         <div class="d-flex pt-3">
           <slot name="dialog-options" />
         </div>
@@ -170,9 +166,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-card,
-.v-card__actions,
 .v-card__title {
   background-color: $background-accent;
+}
+
+.v-card__text {
+  background-color: $background-primary;
 }
 
 .veo-dialog__inner--border-bottom {

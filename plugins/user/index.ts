@@ -34,7 +34,7 @@ export const publicRoutes = ['help', 'docs', 'login', 'sso'];
 export class User {
   private _auth: Auth;
 
-  private _tablePageSize: number = 10;
+  private _tablePageSize: number = 20;
 
   constructor(config: Keycloak.KeycloakConfig) {
     this._auth = new Auth(config);

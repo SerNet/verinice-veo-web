@@ -26,7 +26,6 @@
     :page-widths-xl="pageWidthsXl"
     :page-widths-lg="pageWidthsLg"
     :page-titles="pageTitles"
-    class="veo-page-wrapper-white"
     data-component-name="object-details-page"
     @page-collapsed="onPageCollapsed"
   >
@@ -34,7 +33,6 @@
       <VeoPage        
         sticky-header
         sticky-footer
-        color="#ffffff"
         :title="(object && object.displayName) || ''"
         data-component-name="object-details-details"
       >
