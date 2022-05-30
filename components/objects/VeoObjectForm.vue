@@ -18,7 +18,7 @@
 <template>
   <VeoPageWrapper
     unresponsive-page-widths
-    :page-widths="[{ width: '100%', minWidth: 'auto' }, '300px']"
+    :page-widths="[{ width: '100%' }, 'auto']"
   >
     <template #default>
       <VeoPage
@@ -49,22 +49,26 @@
         </template>
         <template #default>
           <slot name="prepend-form" />
-          <VeoForm
-            v-if="!formLoading && objectSchema && !loading"
-            v-model="objectData"
-            :schema="objectSchema"
-            :ui="currentFormSchema && currentFormSchema.content"
-            :object-meta-data="objectMetaData"
-            :general-translation="translations && translations[locale]"
-            :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
-            :error-messages.sync="formErrors"
-            :reactive-form-actions="reactiveFormActions"
-            :disabled="disabled"
-            :object-creation-disabled="objectCreationDisabled"
-            :disable-sub-type-select="disableSubTypeSelect"
-            :domain-id="domainId"
-          />
-          <VeoObjectFormSkeletonLoader v-else />
+          <VeoCard>
+            <v-card-text>
+              <VeoForm
+                v-if="!formLoading && objectSchema && !loading"
+                v-model="objectData"
+                :schema="objectSchema"
+                :ui="currentFormSchema && currentFormSchema.content"
+                :object-meta-data="objectMetaData"
+                :general-translation="translations && translations[locale]"
+                :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
+                :error-messages.sync="formErrors"
+                :reactive-form-actions="reactiveFormActions"
+                :disabled="disabled"
+                :object-creation-disabled="objectCreationDisabled"
+                :disable-sub-type-select="disableSubTypeSelect"
+                :domain-id="domainId"
+              />
+              <VeoObjectFormSkeletonLoader v-else />
+            </v-card-text>
+          </VeoCard>
           <slot name="append-form" />
         </template>
         <template #footer>
@@ -72,59 +76,95 @@
         </template>
       </VeoPage>
       <VeoPage
+        content-class="fill-height"
+        height="100%"
         no-padding
         data-component-name="object-form-sidebar"
       >
         <template #default>
           <VeoTabs
             v-cy-name="'form-tabs'"
+            class="fill-height"
             vertical
           >
             <template #tabs>
-              <v-tab
-                :disabled="!currentFormSchema || !formSchemaHasGroups"
-                data-component-name="object-form-form-navigation"
-              >
-                <v-icon v-text="mdiFormatListBulleted" />
-              </v-tab>
-              <v-tab
-                v-if="!disableHistory"
-                data-component-name="object-form-history"
-              >
-                <v-icon
-                  v-cy-name="'history-tab'"
-                  v-text="mdiHistory"
-                />
-              </v-tab>
-              <v-tab data-component-name="object-form-validation">
-                <v-badge
-                  :content="messages.errors.length + messages.warnings.length"
-                  :value="messages.errors.length + messages.warnings.length > 0"
-                  color="primary"
-                  overlap
-                >
-                  <v-icon v-text="mdiInformationOutline" />
-                </v-badge>
-              </v-tab>
+              <v-tooltip left>
+                <template #activator="{ on }">
+                  <v-tab
+                    :disabled="!currentFormSchema || !formSchemaHasGroups"
+                    data-component-name="object-form-form-navigation"
+                    v-on="on"
+                  >
+                    <v-icon v-text="mdiFormatListBulleted" />
+                  </v-tab>
+                </template>
+                <template #default>
+                  {{ t('tableOfContents') }}
+                </template>
+              </v-tooltip>
+              
+              <v-tooltip left>
+                <template #activator="{ on }">
+                  <v-tab
+                    v-if="!disableHistory"
+                    data-component-name="object-form-history"
+                    v-on="on"
+                  >
+                    <v-icon
+                      v-cy-name="'history-tab'"
+                      v-text="mdiHistory"
+                    />
+                  </v-tab>
+                </template>
+                <template #default>
+                  {{ t('history') }}
+                </template>
+              </v-tooltip>
+              <v-tooltip left>
+                <template #activator="{ on }">
+                  <v-tab
+                    data-component-name="object-form-validation"
+                    v-on="on"
+                  >
+                    <v-badge
+                      :content="messages.errors.length + messages.warnings.length"
+                      :value="messages.errors.length + messages.warnings.length > 0"
+                      color="primary"
+                      overlap
+                    >
+                      <v-icon v-text="mdiInformationOutline" />
+                    </v-badge>
+                  </v-tab>
+                </template>
+                <template #default>
+                  {{ t('messages') }}
+                </template>
+              </v-tooltip>
             </template>
             <template #items>
               <v-tab-item class="px-4">
-                <VeoFormNavigation
-                  v-if="currentFormSchema"
-                  :form-schema="currentFormSchema && currentFormSchema.content"
-                  :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
-                  class="mx-n4"
-                  :scroll-wrapper-id="scrollWrapperId"
-                />
+                <VeoCard>
+                  <v-card-text>
+                    <VeoFormNavigation
+                      v-if="currentFormSchema"
+                      :form-schema="currentFormSchema && currentFormSchema.content"
+                      :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
+                      class="mx-n4"
+                      :scroll-wrapper-id="scrollWrapperId"
+                    />
+                  </v-card-text>
+                </VeoCard>
               </v-tab-item>
               <v-tab-item v-if="!disableHistory">
-                <VeoObjectHistory
-                  v-if="objectData"
-                  :object="objectData"
-                  :loading="loading"
-                  :object-schema="objectSchema"
-                  v-on="$listeners"
-                />
+                <VeoCard style="max-height: 100%; overflow-y: auto">
+                  <VeoObjectHistory
+                    v-if="objectData"
+                    :object="objectData"
+                    :loading="loading"
+                    :object-schema="objectSchema"
+                    v-on="$listeners"
+                  />
+                </VeoCard>
               </v-tab-item>
               <v-tab-item class="px-4">
                 <VeoValidationResult
@@ -425,3 +465,9 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+::v-deep.veo-tabs ::v-deep.v-window__container {
+  max-height: 100%;
+}
+</style>

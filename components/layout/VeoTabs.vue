@@ -103,9 +103,7 @@ export default defineComponent({
               props: {
                 value: internalValue.value
               },
-              class: {
-                transparent: true
-              }
+              class: 'pt-2 transparent'
             },
             [slots.items ? slots.items() : []]
           )
