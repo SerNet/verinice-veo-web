@@ -37,10 +37,6 @@ export default defineComponent({
     stickyTabs: {
       type: Boolean,
       default: false
-    },
-    vertical: {
-      type: Boolean,
-      default: false
     }
   },
   setup(props, { attrs, slots, emit }) {
@@ -75,8 +71,7 @@ export default defineComponent({
         {
           class: {
             'fill-width': props.fullsize,
-            'veo-tab--sticky': props.stickyTabs,
-            'd-flex flex-row-reverse veo-tabs--vertical': props.vertical
+            'veo-tab--sticky': props.stickyTabs
           }
         },
         [
@@ -84,10 +79,8 @@ export default defineComponent({
             VTabs,
             {
               props: {
-                vertical: props.vertical,
                 value: internalValue.value,
                 color: 'primary',
-                optional: props.vertical,
                 ...attrs
               },
               on: {
@@ -103,17 +96,15 @@ export default defineComponent({
             },
             [tabs.value]
           ),
-          ...(props.vertical ? [] : [h(VDivider)]),
+          h(VDivider),
           h(
             VTabsItems,
             {
               props: {
-                vertical: props.vertical,
                 value: internalValue.value
               },
               class: {
-                transparent: true,
-                'pt-2': !props.vertical
+                transparent: true
               }
             },
             [slots.items ? slots.items() : []]
@@ -133,10 +124,6 @@ export default defineComponent({
   right: 0;
   top: 0;
   z-index: 2;
-}
-
-::v-deep.veo-tabs---vertical .v-tab {
-  max-width: 48px;
 }
 
 .veo-tabs ::v-deep.v-slide-group__wrapper,
