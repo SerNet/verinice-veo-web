@@ -22,3 +22,8 @@ html {
 .fill-width {
   width: 100%;
 }
+
+.veo-border {
+  border: 1px solid darken($background-primary, 7%) !important;
+  box-shadow: 0px 2px 2px -2px rgb(200, 200, 200) !important;
+}

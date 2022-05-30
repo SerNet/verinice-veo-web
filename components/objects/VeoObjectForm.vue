@@ -78,8 +78,7 @@
         <template #default>
           <VeoTabs
             v-cy-name="'form-tabs'"
-            sticky-tabs
-            grow
+            vertical
           >
             <template #tabs>
               <v-tab

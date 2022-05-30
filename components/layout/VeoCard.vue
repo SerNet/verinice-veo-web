@@ -33,7 +33,8 @@ export default defineComponent({
         {
           class: {
             'veo-card--inverted': props.inverted,
-            'veo-card': !props.inverted
+            'veo-card': !props.inverted,
+            'veo-border': true
           },
           props: {
             ...props,
@@ -54,8 +55,6 @@ export default defineComponent({
 
 .veo-card {
   background: $background-accent;
-  border: 1px solid darken($background-primary, 7%);
-  box-shadow: 0px 2px 2px -2px rgb(200, 200, 200) !important;
   overflow: hidden;
 }
 </style>
