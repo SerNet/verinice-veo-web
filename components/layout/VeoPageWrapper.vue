@@ -315,9 +315,6 @@ export default Vue.extend({
                     class: ['flex-row', classes, 'pa-0']
                   },
                   [
-                    ...(index > 0 && !this.previousPageIsCollapsed(index) && index < this.pagesCollapsedStates.length
-                      ? [h('div', { style: { 'border-right': '1px solid #0000001F' } })]
-                      : []),
                     ...((index === this.collapsablePages.length - 1 && this.collapsablePages[index]) || this.previousPageIsCollapsed(index)
                       ? [
                           h(

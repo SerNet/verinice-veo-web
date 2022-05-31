@@ -33,6 +33,7 @@
   <v-list
     v-else
     v-cy-name="'history-list'"
+    class="py-0"
   >
     <v-list-item-group
       color="primary"
