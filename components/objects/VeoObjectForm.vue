@@ -62,7 +62,7 @@
             :reactive-form-actions="reactiveFormActions"
             :disabled="disabled"
             :object-creation-disabled="objectCreationDisabled"
-            :disable-sub-type-select="disableSubTypeSelect"
+            :disabled-inputs="disabledInputs"
             :domain-id="domainId"
           />
           <VeoObjectFormSkeletonLoader v-else />
@@ -144,7 +144,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropOptions, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, PropOptions, PropType, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst, merge, throttle } from 'lodash';
 import { mdiFormatListBulleted, mdiHistory, mdiInformationOutline } from '@mdi/js';
@@ -180,9 +180,9 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    disableSubTypeSelect: {
-      type: Boolean,
-      default: false
+    disabledInputs: {
+      type: Array as PropType<String[]>,
+      default: () => []
     },
     domainId: {
       type: String,

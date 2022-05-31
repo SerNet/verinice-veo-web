@@ -72,7 +72,7 @@
             :domain-id="domainId"
             :preselected-sub-type="preselectedSubType"
             :valid.sync="isFormValid"
-            :disable-sub-type-select="object && object.domains[domainId] && !!object.domains[domainId].subType"
+            :disabled-inputs="disabledInputs"
             :object-meta-data.sync="metaData"
             @input="onFormInput"
             @show-revision="onShowRevision"
@@ -324,9 +324,21 @@ export default defineComponent({
       loadObject();
     };
 
+    // disabling inputs
+    const disabledInputs = computed<string[]>(() => {
+      const disabledInputs: string[] = [];
+
+      if (object.value?.domains?.[domainId.value].subType) {
+        disabledInputs.push(`#/properties/domains/properties/${domainId.value}/properties/subType`);
+      }
+
+      return disabledInputs;
+    });
+
     return {
       VeoAlertType,
       createPIADialogVisible,
+      disabledInputs,
       domainId,
       entityModifiedDialogVisible,
       formDataIsRevision,
