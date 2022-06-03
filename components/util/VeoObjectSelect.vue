@@ -24,11 +24,13 @@
     :no-data-text="t('noObjects')"
     no-filter
     :label="localLabel"
-    :search-input.sync="searchQuery"
+    :search-input="searchQuery"
     :clearable="!required"
+    :return-object="valueAsEntity"
     v-bind="$attrs"
     @change="onInput"
     @input="onInput"
+    @update:search-input="onSearchInputUpdate"
   >
     <template
       v-if="moreItemsAvailable"
@@ -49,11 +51,12 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { getSchemaEndpoint } from '~/plugins/api/schema';
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink } from '~/types/VeoTypes';
+import { useVeoAlerts } from '~/composables/VeoAlert';
 
 export default defineComponent({
   props: {
     value: {
-      type: [String, Object] as PropType<string | IVeoLink>,
+      type: [String, Object] as PropType<string | IVeoLink | IVeoEntity>,
       default: undefined
     },
     required: {
@@ -79,33 +82,43 @@ export default defineComponent({
     valueAsLink: {
       type: Boolean,
       default: false
+    },
+    valueAsEntity: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {
     const { $api, $config } = useContext();
     const { locale, t } = useI18n();
+    const { displayErrorMessage } = useVeoAlerts();
 
     // Select options related stuff
     const searchQuery = ref('');
     const items = ref<IVeoEntity[]>([]);
     const moreItemsAvailable = ref(false);
 
-    watch(
-      () => searchQuery.value,
-      (newValue, oldValue) => {
-        if (newValue !== oldValue) {
-          loadObjects();
-        }
-      }
-    );
-
-    const loadObjects = async () => {
+    const loadObjects = async (displayName?: string, onlyAssignItemsIfItemsExist = false) => {
       const data = await $api.entity.fetchAll(props.objectType, 1, {
         subType: props.subType,
-        displayName: searchQuery.value ?? undefined
+        displayName: displayName ?? undefined
       });
       moreItemsAvailable.value = data.pageCount > 1;
-      items.value = data.items;
+
+      if (data.items.length || !onlyAssignItemsIfItemsExist) {
+        items.value = data.items;
+      } else {
+        throw new Error(t('errorWhileFetching').toString());
+      }
+    };
+
+    const onSearchInputUpdate = async (query: string) => {
+      try {
+        await loadObjects(query, true);
+        searchQuery.value = query;
+      } catch (e: any) {
+        displayErrorMessage(e.message, props.label);
+      }
     };
 
     // value stuff
@@ -114,8 +127,12 @@ export default defineComponent({
     };
 
     const internalValue = computed<string | undefined>(() => {
-      if (typeof props.value === 'object') {
-        return getEntityDetailsFromLink(props.value).id;
+      if (typeof props.value === 'object' && props.value !== null) {
+        if (props.valueAsEntity) {
+          return (props.value as IVeoEntity).id;
+        } else {
+          return getEntityDetailsFromLink(props.value as IVeoLink).id;
+        }
       } else {
         return props.value;
       }
@@ -127,7 +144,7 @@ export default defineComponent({
         if (!!newValue && !items.value.find((item) => item.id === newValue)) {
           loadObject(newValue);
         } else if (!newValue) {
-          loadObjects();
+          loadObjects(searchQuery.value);
         }
       },
       {
@@ -169,6 +186,7 @@ export default defineComponent({
       items,
       moreItemsAvailable,
       onInput,
+      onSearchInputUpdate,
       searchQuery,
 
       t
@@ -181,10 +199,12 @@ export default defineComponent({
 {
   "en": {
     "beMoreSpecific": "Please be more specific to show additional objects",
+    "errorWhileFetching": "Error while fetching objects",
     "noObjects": "No objects found"
   },
   "de": {
     "beMoreSpecific": "Bitte geben Sie weitere Zeichen ein, um die Auswahl einzuschränken",
+    "errorWhileFetching": "Beim Laden der Objekte ist ein Fehler aufgetreten",
     "noObjects": "Keine Objekte vorhanden"
   }
 }

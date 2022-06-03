@@ -153,7 +153,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref, useAsync, useMeta, WritableComputedRef, useRouter } from '@nuxtjs/composition-api';
-import { cloneDeep, upperFirst } from 'lodash';
+import { cloneDeep, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
@@ -319,7 +319,7 @@ export default defineComponent({
 
     const onPIACreated = async (newObjectId: string) => {
       if (object.value) {
-        await linkObject('child', { objectType: object.value.type, objectId: object.value.id }, { objectType: 'process', objectId: newObjectId });
+        await linkObject('child', pick(object.value, 'id', 'type'), { type: 'process', id: newObjectId });
       }
       loadObject();
     };

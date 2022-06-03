@@ -277,67 +277,6 @@
                 </v-row>
               </v-card-text>
             </VeoCard>
-            <h2 class="text-h2 mt-4">
-              {{ upperFirst(t('mitigationSection').toString()) }}
-              <v-tooltip bottom>
-                <template #activator="{ on }">
-                  <v-icon v-on="on">
-                    {{ mdiInformationOutline }}
-                  </v-icon>
-                </template>
-                <template #default>
-                  <i18n
-                    path="mitigationAreaOfApplicationExplanation"
-                    tag="span"
-                  >
-                    <br>
-                  </i18n>
-                </template>
-              </v-tooltip>
-            </h2>
-            <VeoCard>
-              <v-card-text>
-                <VeoObjectSelect
-                  v-model="internalValue.mitigation"
-                  object-type="control"
-                  :label="t('mitigation')"
-                  value-as-link
-                />
-              </v-card-text>
-            </VeoCard>
-            <h2 class="text-h2 mt-4">
-              {{ upperFirst(t('effectiveRisk').toString()) }}
-            </h2>
-            <VeoCard class="mb-2">
-              <v-card-text>
-                <v-row>
-                  <v-col
-                    v-for="(protectionGoal, index) of riskDefinition.categories"
-                    :key="protectionGoal.id"
-                    cols="6"
-                    md="3"
-                  >
-                    <h3 class="text-h3">
-                      {{ protectionGoal.name }}
-                    </h3>
-                    <v-select
-                      :value="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues[index].effectiveRisk"
-                      disabled
-                      color="primary"
-                      :label="upperFirst(t('effectiveRisk').toString())"
-                      :items="riskValues"
-                    >
-                      <template
-                        v-if="formIsDirty"
-                        #selection
-                      >
-                        {{ t('saveCTA') }}
-                      </template>
-                    </v-select>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </VeoCard>
           </v-tab-item>
         </template>
       </VeoTabs>
@@ -349,7 +288,6 @@
 import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiInformationOutline } from '@mdi/js';
 
 import { IBaseObject } from '~/lib/utils';
 import { IVeoDomain, IVeoRisk } from '~/types/VeoTypes';
@@ -410,8 +348,7 @@ export default defineComponent({
       treatmentOptions,
 
       upperFirst,
-      t,
-      mdiInformationOutline
+      t
     };
   }
 });
@@ -422,13 +359,9 @@ export default defineComponent({
   "en": {
     "effectiveImpact": "effective impact",
     "effectiveProbability": "effective probability",
-    "effectiveRisk": "effective risk",
     "explanation": "explanation",
     "impact": "impact",
     "inherentRisk": "inherent risk",
-    "mitigation": "mitigation",
-    "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions,{0} meaning only one mitigation action can be applied to a risk",
-    "mitigationSection": "risk reduction actions (mitigating actions)",
     "potentialImpact": "potential impact",
     "potentialProbability": "potential probability",
     "probability": "probability",
@@ -447,15 +380,13 @@ export default defineComponent({
     "specificProbability": "specific probability"
   },
   "de": {
+    
+    
     "effectiveImpact": "Effektive Auswirkung",
     "effectiveProbability": "Effektive Wahrscheinlichkeit",
-    "effectiveRisk": "Effektives Risiko",
     "explanation": "Erklärung",
     "impact": "Auswirkung",
     "inherentRisk": "Brutto-Risiko",
-    "mitigation": "Gegenmaßnahme",
-    "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg,{0} d.h. es kann immer nur eine migitierende Maßnahme pro Risiko ausgewählt werden",
-    "mitigationSection": "Maßnahmen zur Risikoreduktion (Mitigierende Maßnahmen)",
     "potentialImpact": "potentielle Auswirkung",
     "potentialProbability": "potentielle Wahrscheinlichkeit",
     "probability": "Eintrittswahrscheinlichkeit",

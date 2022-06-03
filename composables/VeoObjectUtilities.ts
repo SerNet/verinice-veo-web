@@ -22,8 +22,8 @@ import { getSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoEntity } from '~/types/VeoTypes';
 
 export interface IVeoAPIObjectIdentifier {
-  objectId: string;
-  objectType: string;
+  id: string;
+  type: string;
 }
 
 export function useVeoObjectUtilities() {
@@ -104,22 +104,22 @@ export function useVeoObjectUtilities() {
 
     if (hierarchicalContext === 'parent') {
       objectToAdd = objectToAdd as IVeoAPIObjectIdentifier;
-      const editedEntity = await $api.entity.fetch(objectToAdd.objectType, objectToAdd.objectId);
+      const editedEntity = await $api.entity.fetch(objectToAdd.type, objectToAdd.id);
       const childrenProperty = editedEntity.type === 'scope' ? 'members' : 'parts';
 
       const newLink = {
-        targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, objectToModify.objectType) || objectToModify.objectType}/${objectToModify.objectId}`
+        targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, objectToModify.type) || objectToModify.type}/${objectToModify.id}`
       };
 
       editedEntity[childrenProperty].push(newLink);
 
       await $api.entity.update(editedEntity.type, editedEntity.id, editedEntity);
     } else {
-      const editedEntity = await $api.entity.fetch(objectToModify.objectType, objectToModify.objectId);
+      const editedEntity = await $api.entity.fetch(objectToModify.type, objectToModify.id);
       const childrenProperty = editedEntity.type === 'scope' ? 'members' : 'parts';
 
       const newLinkEntries = (isArray(objectToAdd) ? objectToAdd : [objectToAdd]).map((object) => ({
-        targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, object.objectType) || object.objectType}/${object.objectId}`
+        targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, object.type) || object.type}/${object.id}`
       }));
 
       if (batchReplace && isArray(objectToAdd)) {
@@ -130,8 +130,16 @@ export function useVeoObjectUtilities() {
     }
   };
 
+  const createLink = async (objectToCreateLinkFrom: IVeoAPIObjectIdentifier) => {
+    const schemas = await $api.schema.fetchAll();
+    return {
+      targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, objectToCreateLinkFrom.type) || objectToCreateLinkFrom.type}/${objectToCreateLinkFrom.id}`
+    };
+  };
+
   return {
     cloneObject,
+    createLink,
     linkObject,
     unlinkObject
   };

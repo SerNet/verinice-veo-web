@@ -62,7 +62,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
-import { upperFirst } from 'lodash';
+import { pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiContentCopy, mdiLinkOff, mdiTrashCanOutline } from '@mdi/js';
 import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
@@ -212,11 +212,10 @@ export default defineComponent({
                 try {
                   const clonedObjectId = await cloneObject(item, true);
                   if (props.object) {
-                    await linkObject(
-                      ['childScopes', 'childObjects'].includes(props.type) ? 'child' : 'parent',
-                      { objectType: props.object.type, objectId: props.object.id },
-                      { objectType: item.type, objectId: clonedObjectId }
-                    );
+                    await linkObject(['childScopes', 'childObjects'].includes(props.type) ? 'child' : 'parent', pick(props.object, 'id', 'type'), {
+                      type: item.type,
+                      id: clonedObjectId
+                    });
                   }
                   displaySuccessMessage(upperFirst(t('objectCloned').toString()));
                   fetch();

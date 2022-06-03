@@ -81,6 +81,7 @@
     </v-speed-dial>
     <!-- dialogs -->
     <VeoLinkObjectDialog
+      v-if="addEntityDialog.editedObject"
       v-model="addEntityDialog.value"
       v-bind="addEntityDialog"
       @success="onAddEntitySuccess"
@@ -111,7 +112,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, useRoute, ref, computed, useContext, watch, PropType } from '@nuxtjs/composition-api';
-import { upperFirst } from 'lodash';
+import { pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
@@ -228,8 +229,8 @@ export default defineComponent({
      */
 
     // dialog options
-    const addEntityDialog = ref<{ editedEntity: IVeoEntity | undefined; addType: 'scope' | 'entity'; value: boolean; hierarchicalContext: 'child' | 'parent' }>({
-      editedEntity: undefined,
+    const addEntityDialog = ref<{ editedObject: IVeoEntity | undefined; addType: 'scope' | 'entity'; value: boolean; hierarchicalContext: 'child' | 'parent' }>({
+      editedObject: undefined,
       addType: 'scope' as 'scope' | 'entity',
       value: false,
       hierarchicalContext: 'child'
@@ -275,7 +276,7 @@ export default defineComponent({
     // control dialogs
     const openLinkObjectDialog = (objectType?: string, addAsChild?: boolean) => {
       addEntityDialog.value = {
-        editedEntity: props.object,
+        editedObject: props.object,
         addType: objectType === 'scope' ? 'scope' : 'entity',
         value: true,
         hierarchicalContext: addAsChild === undefined || addAsChild ? 'child' : 'parent'
@@ -301,11 +302,10 @@ export default defineComponent({
     const onCreateObjectSuccess = async (newObjectId: string) => {
       if (props.object) {
         try {
-          await linkObject(
-            createObjectDialog.value.hierarchicalContext as any,
-            { objectType: props.object.type, objectId: props.object.id },
-            { objectType: createObjectDialog.value.objectType as string, objectId: newObjectId }
-          );
+          await linkObject(createObjectDialog.value.hierarchicalContext as any, pick(props.object, 'id', 'type'), {
+            type: createObjectDialog.value.objectType as string,
+            id: newObjectId
+          });
           displaySuccessMessage(t('objectLinked').toString());
           emit('reload');
         } catch (e: any) {
