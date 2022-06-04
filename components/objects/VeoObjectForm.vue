@@ -24,11 +24,11 @@
       <VeoPage
         :id="scrollWrapperId"
         data-component-name="object-form-form"
-        content-class="d-flex flex-column fill-height justify-space-between"
+        sticky-footer
       >
         <template #default>
           <slot name="prepend-form-inner" />
-          <VeoCard class="overflow-y-auto">
+          <VeoCard>
             <v-card-text>
               <VeoForm
                 v-if="!formLoading && objectSchema && !loading"
@@ -48,9 +48,9 @@
               <VeoObjectFormSkeletonLoader v-else />
             </v-card-text>
           </VeoCard>
-          <div class="flex-grow-0">
-            <slot name="append-form-outer" />
-          </div>
+        </template>
+        <template #footer>
+          <slot name="append-form-outer" />
         </template>
       </VeoPage>
       <VeoPage
@@ -60,8 +60,11 @@
         data-component-name="object-form-sidebar"
       >
         <template #default>
-          <div class="d-flex flex-row fill-height pb-13">
-            <VeoCard style="max-height: 100%">
+          <div class="d-flex flex-row fill-height pb-13 align-start">
+            <VeoCard
+              v-show="selectedSideContainer !== undefined"
+              style="max-height: 100%"
+            >
               <v-card-text v-if="selectedSideContainer === SIDE_CONTAINERS.VIEW">
                 <v-select
                   v-model="selectedDisplayOption"
@@ -115,14 +118,16 @@
               </v-tooltip>
               <v-tooltip left>
                 <template #activator="{ on }">
-                  <v-btn
-                    style="border-radius: 99px"
-                    icon
-                    :value="SIDE_CONTAINERS.TABLE_OF_CONTENTS"
-                    v-on="on"
-                  >
-                    <v-icon v-text="mdiFormatListBulleted" />
-                  </v-btn>
+                  <div v-on="on">
+                    <v-btn
+                      :disabled="!currentFormSchema"
+                      style="border-radius: 99px"
+                      icon
+                      :value="SIDE_CONTAINERS.TABLE_OF_CONTENTS"
+                    >
+                      <v-icon v-text="mdiFormatListBulleted" />
+                    </v-btn>
+                  </div>
                 </template>
                 <template #default>
                   {{ t('tableOfContents') }}

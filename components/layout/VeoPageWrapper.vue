@@ -268,7 +268,7 @@ export default Vue.extend({
           },
           [
             ...(this.$props.loading
-              ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'skeleton-title px-10 py-1' })]
+              ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'skeleton-title px-4 py-1' })]
               : [
                   ...(this.$props.title
                     ? [
@@ -276,7 +276,7 @@ export default Vue.extend({
                           domProps: {
                             innerText: this.$props.title
                           },
-                          class: `d-inline px-10 py-1 flex-grow-0 text-h${this.$props.headingLevel}`
+                          class: `d-inline px-4 py-1 flex-grow-0 text-h${this.$props.headingLevel}`
                         })
                       ]
                     : []),

@@ -22,6 +22,7 @@
     collapsable-left
     collapsable-right
     :loading="loading"
+    :title="(object && object.displayName) || ''"
     :page-widths="pageWidths"
     :page-widths-xl="pageWidthsXl"
     :page-widths-lg="pageWidthsLg"
@@ -33,7 +34,7 @@
       <VeoPage        
         sticky-header
         sticky-footer
-        :title="(object && object.displayName) || ''"
+        content-class="fill-height"
         data-component-name="object-details-details"
       >
         <template #default>
@@ -92,6 +93,7 @@
               />
             </template>
             <template #append-form-outer>
+              <div class="object-details-actions__fade" />
               <div
                 class="d-flex object-details-actions pt-4"
                 data-component-name="object-details-actions"
@@ -392,5 +394,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .object-details-actions {
   background-color: $background-primary;
+}
+
+.object-details-actions__fade {
+  background-image: linear-gradient(to bottom, transparent, $background-primary);
+  height: 16px;
 }
 </style>
