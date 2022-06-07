@@ -30,33 +30,21 @@
       style="bottom: 12px"
     >
       <template #activator>
-        <v-tooltip
-          left
-          :disabled="!tooltipText"
+        <v-btn
+          v-cy-name="'show-actions-button'"
+          color="primary"
+          :disabled="!allowedActions.length || disabled"
+          depressed
+          fab
+          data-component-name="object-details-actions-button"
         >
-          <template #activator="{ on }">
-            <div v-on="on">
-              <v-btn
-                v-cy-name="'show-actions-button'"
-                color="primary"
-                :disabled="!allowedActions.length || disabled"
-                depressed
-                fab
-                data-component-name="object-details-actions-button"
-              >
-                <v-icon v-if="speedDialIsOpen && !disabled && allowedActions.length">
-                  {{ mdiClose }}
-                </v-icon>
-                <v-icon v-else>
-                  {{ mdiPlus }}
-                </v-icon>
-              </v-btn>
-            </div>
-          </template>
-          <template #default>
-            {{ tooltipText }}
-          </template>
-        </v-tooltip>
+          <v-icon v-if="speedDialIsOpen && !disabled && allowedActions.length">
+            {{ mdiClose }}
+          </v-icon>
+          <v-icon v-else>
+            {{ mdiPlus }}
+          </v-icon>
+        </v-btn>
       </template>
       <template
         v-if="allowedActions.length && !disabled"
@@ -111,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, useRoute, ref, computed, useContext, watch, PropType } from '@nuxtjs/composition-api';
+import { defineComponent, onMounted, useRoute, ref, computed, useContext, PropType } from '@nuxtjs/composition-api';
 import { pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
@@ -146,8 +134,6 @@ export default defineComponent({
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     const speedDialIsOpen = ref(false);
-    const tooltipText = ref<string | undefined>(undefined);
-    const disabled = computed(() => props.type === 'risks' && !hasScopeWithRiskDefinitionAsParent(parents.value));
 
     // fetch schemas from api
     onMounted(async () => {
@@ -155,21 +141,6 @@ export default defineComponent({
         unit: unitId.value
       });
       schemas.value = fetchedSchemas;
-
-      // For some reason an error gets thrown if this watch isn't in the unmounted
-      watch(
-        () => disabled.value,
-        (newValue) => {
-          if (newValue) {
-            tooltipText.value = t('parentScopeNoRiskDefinition').toString();
-          } else {
-            tooltipText.value = undefined;
-          }
-        },
-        {
-          immediate: true
-        }
-      );
     });
 
     // configure possible action items
@@ -326,21 +297,6 @@ export default defineComponent({
       emit('reload');
     };
 
-    const hasScopeWithRiskDefinitionAsParent = (eligibleEntities: IVeoEntity[]) => eligibleEntities.some((entity) => !!entity.domains?.[domainId.value]?.riskDefinition);
-
-    const parents = ref<IVeoEntity[]>([]);
-    watch(
-      () => props.object,
-      async (newValue) => {
-        if (newValue) {
-          parents.value = (await $api.entity.fetchParents('scope', newValue.id)).items;
-        }
-      },
-      {
-        immediate: true
-      }
-    );
-
     return {
       createEntitySchemas,
       createEntityDialog,
@@ -355,9 +311,7 @@ export default defineComponent({
       addEntityDialog,
       speedDialIsOpen,
       allowedActions,
-      disabled,
       domainId,
-      tooltipText,
 
       t,
       upperFirst,
@@ -378,8 +332,7 @@ export default defineComponent({
     "linkScope": "select scope",
     "object": "object",
     "objectLinked": "The links were successfully updated.",
-    "objectNotLinked": "The links could not be updated.",
-    "parentScopeNoRiskDefinition": "This object needs a parent scope with a risk definition to create a risk"
+    "objectNotLinked": "The links could not be updated."
   },
   "de": {
     "createObject": "{0} erstellen",
@@ -389,8 +342,7 @@ export default defineComponent({
     "linkScope": "Scope auswählen",
     "object": "Objekt",
     "objectLinked": "Die Verknüpfungen wurden erfolgreich aktualisiert.",
-    "objectNotLinked": "Die Verknüpfungen konnten nicht aktualisiert werden.",
-    "parentScopeNoRiskDefinition": "Dieses Objekt muss Teil eines Scopes mit Risikodefinition sein, um ein Risiko zu erstellen"
+    "objectNotLinked": "Die Verknüpfungen konnten nicht aktualisiert werden."
   }
 }
 </i18n>
