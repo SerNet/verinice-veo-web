@@ -30,33 +30,21 @@
       style="bottom: 12px"
     >
       <template #activator>
-        <v-tooltip
-          left
-          :disabled="!tooltipText"
+        <v-btn
+          v-cy-name="'show-actions-button'"
+          color="primary"
+          :disabled="!allowedActions.length || disabled"
+          depressed
+          fab
+          data-component-name="object-details-actions-button"
         >
-          <template #activator="{ on }">
-            <div v-on="on">
-              <v-btn
-                v-cy-name="'show-actions-button'"
-                color="primary"
-                :disabled="!allowedActions.length || disabled"
-                depressed
-                fab
-                data-component-name="object-details-actions-button"
-              >
-                <v-icon v-if="speedDialIsOpen && !disabled && allowedActions.length">
-                  {{ mdiClose }}
-                </v-icon>
-                <v-icon v-else>
-                  {{ mdiPlus }}
-                </v-icon>
-              </v-btn>
-            </div>
-          </template>
-          <template #default>
-            {{ tooltipText }}
-          </template>
-        </v-tooltip>
+          <v-icon v-if="speedDialIsOpen && !disabled && allowedActions.length">
+            {{ mdiClose }}
+          </v-icon>
+          <v-icon v-else>
+            {{ mdiPlus }}
+          </v-icon>
+        </v-btn>
       </template>
       <template
         v-if="allowedActions.length && !disabled"
@@ -146,7 +134,6 @@ export default defineComponent({
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     const speedDialIsOpen = ref(false);
-    const tooltipText = ref<string | undefined>(undefined);
 
     // fetch schemas from api
     onMounted(async () => {
@@ -325,7 +312,6 @@ export default defineComponent({
       speedDialIsOpen,
       allowedActions,
       domainId,
-      tooltipText,
 
       t,
       upperFirst,
