@@ -42,7 +42,7 @@
                 :reactive-form-actions="reactiveFormActions"
                 :disabled="disabled"
                 :object-creation-disabled="objectCreationDisabled"
-                :disable-sub-type-select="disableSubTypeSelect"
+                :disabled-inputs="disabledInputs"
                 :domain-id="domainId"
               />
               <VeoObjectFormSkeletonLoader v-else />
@@ -104,6 +104,7 @@
               <v-tooltip left>
                 <template #activator="{ on }">
                   <v-btn
+                    v-cy-name="'display-tab'"
                     style="border-radius: 99px"
                     icon
                     :value="SIDE_CONTAINERS.VIEW"
