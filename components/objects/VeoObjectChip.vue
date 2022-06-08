@@ -98,6 +98,10 @@ export default defineComponent({
   }
 }
 
+.v-chip.v-chip--outlined.v-chip.v-chip {
+  background-color: white !important;
+}
+
 .v-chip--outlined:not(.flag) .label {
   border-right-style: solid;
   border-right-width: 1px;

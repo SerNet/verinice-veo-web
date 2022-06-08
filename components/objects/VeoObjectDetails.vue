@@ -16,75 +16,78 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-row
-    no-gutters
-    class="fill-height flex-column flex-nowrap"
-  >
-    <v-col class="flex-grow-0 text-body-1 py-2">
-      <template v-if="!loading">
-        <v-row>
-          <v-col data-component-name="object-details-date-time">
-            <p class="text-no-wrap mb-0">
-              <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
-              {{ object && formatDateTime(object.updatedAt) || '-' }} {{ t('by') }} {{ object && object.updatedBy || '-' }}
-            </p>
-            <p class="text-no-wrap mb-0">
-              <strong>{{ upperFirst(t('createdAt').toString()) }}:</strong>
-              {{ object && formatDateTime(object.createdAt) || '-' }} {{ t('by') }} {{ object && object.createdBy || '-' }}
-            </p>
-          </v-col>
-          <v-col
-            v-if="showCreateDPIAMenu"
-            cols="auto"
-            class="text-right ml-auto pt-1"
-            align-self="center"
-          >
-            <VeoObjectDetailsActionMenu
-              :object="object"
-              @reload="$emit('reload')"
+  <div>
+    <div class="object-details">
+      <VeoCard>
+        <v-card-text>
+          <div class="text-body-1 pb-2">
+            <template v-if="!loading">
+              <v-row no-gutters>
+                <v-col data-component-name="object-details-date-time">
+                  <p class="text-no-wrap mb-0">
+                    <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
+                    {{ object && formatDateTime(object.updatedAt) || '-' }} {{ t('by') }} {{ object && object.updatedBy || '-' }}
+                  </p>
+                  <p class="text-no-wrap mb-0">
+                    <strong>{{ upperFirst(t('createdAt').toString()) }}:</strong>
+                    {{ object && formatDateTime(object.createdAt) || '-' }} {{ t('by') }} {{ object && object.createdBy || '-' }}
+                  </p>
+                </v-col>
+                <v-col
+                  v-if="showCreateDPIAMenu"
+                  cols="auto"
+                  class="text-right ml-auto pt-1"
+                  align-self="center"
+                >
+                  <VeoObjectDetailsActionMenu
+                    :object="object"
+                    @reload="$emit('reload')"
+                  />
+                </v-col>
+              </v-row>
+            </template>
+            <v-skeleton-loader
+              v-else
+              type="text@2"
+              width="60%"
             />
-          </v-col>
-        </v-row>
+          </div>
+          <div
+            v-if="!loading"
+            class="text-body-2 overflow-y-auto object-details__description"
+            data-component-name="object-details-description"
+          >
+            <span v-if="object && object.description">{{ object.description }}</span>
+            <i v-else>{{ t('noDescription') }}</i>
+          </div>
+          <div
+            v-else
+            class="flex-grow-0"
+          >
+            <v-skeleton-loader type="paragraph" />
+          </div>
+        </v-card-text>
+      </VeoCard>
+    </div>
+    <VeoTabs v-model="internalActiveTab">
+      <template #tabs>
+        <!-- We use v-show instead of v-if, as v-show doesn't cause side effects in the v-model if risks are not present -->
+        <v-tab
+          v-for="tab in tabs"
+          v-show="!tab.hidden"
+          :key="tab.key"
+          :disabled="tab.disabled"
+          :data-component-name="`object-details-${tab.key}-tab`"
+        >
+          {{ t(tab.key) }}
+        </v-tab>
       </template>
-      <v-skeleton-loader
-        v-else
-        type="text@2"
-        width="60%"
-      />
-    </v-col>
-    <v-col
-      v-if="!loading"
-      class="flex-grow-0 object-details-information text-body-1"
-      data-component-name="object-details-description"
-    >
-      <span v-if="object && object.description">{{ object.description }}</span>
-      <i v-else>{{ t('noDescription') }}</i>
-    </v-col>
-    <v-col
-      v-else
-      class="flex-grow-0 object-details-information"
-    >
-      <v-skeleton-loader type="paragraph" />
-    </v-col>
-    <v-col>
-      <VeoTabs v-model="internalActiveTab">
-        <template #tabs>
-          <!-- We use v-show instead of v-if, as v-show doesn't cause side effects in the v-model if risks are not present -->
-          <v-tab
-            v-for="tab in tabs"
-            v-show="!tab.hidden"
-            :key="tab.key"
-            :disabled="tab.disabled"
-            :data-component-name="`object-details-${tab.key}-tab`"
-          >
-            {{ t(tab.key) }}
-          </v-tab>
-        </template>
-        <template #items>
-          <v-tab-item
-            v-for="tab in tabs"
-            :key="tab.key"
-          >
+      <template #items>
+        <v-tab-item
+          v-for="tab in tabs"
+          :key="tab.key"
+        >
+          <VeoCard>
             <VeoObjectDetailsTab
               v-if="object"
               :type="tab.key"
@@ -93,11 +96,11 @@
               :domain-id="domainId"
               @new-object-created="$emit('reload')"
             />
-          </v-tab-item>
-        </template>
-      </VeoTabs>
-    </v-col>
-  </v-row>
+          </VeoCard>
+        </v-tab-item>
+      </template>
+    </VeoTabs>
+  </div>
 </template>
 
 <script lang="ts">
@@ -236,10 +239,10 @@ export default defineComponent({
 </i18n>
 
 <style lang="scss" scoped>
-.object-details-information {
-  min-height: 16vh;
-  max-height: 50vh;
-  overflow-y: auto;
-  overflow-x: hidden;
+.object-details {
+  min-height: 30vh;
+}
+.object-details__description {
+  max-height: 30vh;
 }
 </style>

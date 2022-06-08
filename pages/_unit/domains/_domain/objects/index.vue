@@ -52,6 +52,7 @@
           class="mr-2"
           rounded
           primary
+          color="white"
           depressed
           small
           style="outline: 1px solid black;"

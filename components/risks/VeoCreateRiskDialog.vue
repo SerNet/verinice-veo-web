@@ -33,6 +33,7 @@
         >
           <v-btn
             class="mr-2"
+            color="white"
             rounded
             primary
             depressed

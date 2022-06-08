@@ -19,7 +19,7 @@
   <v-list
     flat
     dense
-    class="pa-0"
+    class="py-0"
   >
     <v-list-item-group
       v-model="selectedItem"
@@ -111,9 +111,7 @@ export default Vue.extend({
     },
     // eslint-disable-next-line no-undef
     itemsToObserve(): NodeListOf<Element> | false {
-      return this.items.length
-          ? document.querySelectorAll(this.items.map((item) => `#${item.initialId}`).join(', '))
-          : false;
+      return this.items.length ? document.querySelectorAll(this.items.map((item) => `#${item.initialId}`).join(', ')) : false;
     }
   },
   watch: {

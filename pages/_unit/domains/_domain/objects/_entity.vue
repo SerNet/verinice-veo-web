@@ -22,11 +22,11 @@
     collapsable-left
     collapsable-right
     :loading="loading"
+    :title="(object && object.displayName) || ''"
     :page-widths="pageWidths"
     :page-widths-xl="pageWidthsXl"
     :page-widths-lg="pageWidthsLg"
     :page-titles="pageTitles"
-    class="veo-page-wrapper-white"
     data-component-name="object-details-page"
     @page-collapsed="onPageCollapsed"
   >
@@ -34,8 +34,7 @@
       <VeoPage        
         sticky-header
         sticky-footer
-        color="#ffffff"
-        :title="(object && object.displayName) || ''"
+        content-class="fill-height"
         data-component-name="object-details-details"
       >
         <template #default>
@@ -66,6 +65,7 @@
         <template #default>
           <VeoObjectForm
             v-model="modifiedObject"
+            class="pb-4"
             :disabled="formDataIsRevision"
             :object-schema="objectSchema"
             :loading="$fetchState.pending"
@@ -80,7 +80,7 @@
           >
             <template
               v-if="formDataIsRevision"
-              #prepend-form
+              #prepend-form-inner
             >
               <VeoAlert
                 v-cy-name="'old-version-alert'"
@@ -92,10 +92,10 @@
                 :text="t('oldVersionAlert')"
               />
             </template>
-            <template #append-form-fixed>
+            <template #append-form-outer>
+              <div class="object-details-actions__fade" />
               <div
-                class="d-flex pt-2 pb-4 white"
-                style="border-top: 1px solid #efefef"
+                class="d-flex object-details-actions pt-4"
                 data-component-name="object-details-actions"
               >
                 <template v-if="!formDataIsRevision">
@@ -110,7 +110,7 @@
                   <v-spacer />
                   <v-btn
                     v-cy-name="'save-button'"
-                    text
+                    depressed
                     color="primary"
                     :disabled="loading || !isFormDirty || !isFormValid"
                     @click="saveObject"
@@ -122,7 +122,7 @@
                   <v-spacer />
                   <v-btn
                     v-cy-name="'restore-button'"
-                    text
+                    depressed
                     color="primary"
                     @click="restoreObject"
                   >
@@ -402,3 +402,14 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.object-details-actions {
+  background-color: $background-primary;
+}
+
+.object-details-actions__fade {
+  background-image: linear-gradient(to bottom, transparent, $background-primary);
+  height: 16px;
+}
+</style>

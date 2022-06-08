@@ -19,7 +19,7 @@
   <v-tooltip bottom>
     <template #activator="{ on }">
       <v-btn
-        class="collapse-button px-0"
+        class="collapse-button px-0 white"
         :class="{'collapse-button--right': right}"
         small
         elevation="0"
@@ -33,7 +33,7 @@
       #default
     >
       {{ t(value ? 'expand' : 'collapse', { elementName: elementName || t('page').toString() }) }}
-      <span v-if="index !== undefined"><br>(Alt/{{ t('control') }} + {{index + 1}})</span>
+      <span v-if="index !== undefined"><br>(Alt/{{ t('control') }} + {{ index + 1 }})</span>
     </template>
   </v-tooltip>
 </template>

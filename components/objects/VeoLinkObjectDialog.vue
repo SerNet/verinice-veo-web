@@ -46,6 +46,7 @@
           <v-btn
             v-cy-name="'filter-button'"
             class="mr-2"
+            color="white"
             rounded
             primary
             depressed

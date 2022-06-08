@@ -489,6 +489,9 @@ export default defineComponent({
           page: props.page,
           loading: props.loading,
           itemsPerPage: itemsPerPage.value,
+          footerProps: {
+            itemsPerPageOptions: [10, 20, 50, -1]
+          },
           ...paginationProps.value
         },
         on: {
