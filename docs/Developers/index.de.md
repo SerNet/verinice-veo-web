@@ -5,7 +5,7 @@ position: 4
 
 ## Developers
 
-Documentation for software developers
+Documentation for software developers.
 
 ## Table of Contents
 
