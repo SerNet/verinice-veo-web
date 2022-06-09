@@ -8,3 +8,9 @@ position: 4
 In diesem Abschnitt wird das Objektmodell von verinice.veo beschrieben. veo unterstützt Anwender bei Aufbau und Betrieb von Managementsystemen für Informationssicherheit und Datenschutz. Im Modell sind dafür generische Fachobjekte definiert, die gleichzeitig für die verschiedenen Managementsysteme verwendet werden können. Es gibt ein Modell, mit dem alle Verfahren und Standards abgebildet werden können. Das hat den Vorteil, dass Anwender zum Beispiel mit dem Aufbau eines ISMS nach ISO 27000 beginnen können. Dieselben Daten können später aber auch für ein Verzeichnis der Verarbeitungstätigkeiten verwendet werden. Das Fachobjekt Prozess kann im Datenschutz ein Verfahren für ein Verzeichnis der Verarbeitungstätigkeiten sein. Gleichzeitig kann derselbe Prozess aber auch Teil einer Risikoanalyse nach ISO 27005 sein.
 
 Das Modell erfüllt aber auch Voraussetzungen für den Betrieb einer SaaS Anwendung, die von vielen unterschiedlichen Kunden genutzt wird. Die Daten von verschiedenen Kunden im Modell werden durch Organisationsobjekte sicher voneinander getrennt. Die Organisationsobjekte erlauben es aber auch, die Daten der zum Teil großen Kunden flexibel aufzuteilen.
+
+## Inhaltsverzeichnis
+
+* <DocLink to="/object_model/domains">Domänen</DocLink>
+* <DocLink to="/object_model/objects">Fachobjekte</DocLink>
+* <DocLink to="/object_model/forms">Formulare</DocLink>
