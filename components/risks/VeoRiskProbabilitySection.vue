@@ -1,0 +1,162 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2022  Jonas Heitmann
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<template>
+  <div>
+    <h2 class="text-h2">
+      {{ upperFirst(t('probability').toString()) }}
+    </h2>
+    <VeoCard>
+      <v-card-text>
+        <v-row>
+          <v-col
+            xs="12"
+            md="4"
+          >
+            <v-select
+              :value="data.potentialProbability"
+              color="primary"
+              :label="upperFirst(t('potentialProbability').toString())"
+              :items="probabilities"
+              disabled
+            >
+              <template
+                v-if="dirtyFields.scenario"
+                #selection
+              >
+                {{ t('saveCTA') }}
+              </template>
+            </v-select>
+          </v-col>
+          <v-col
+            xs="12"
+            md="4"
+          >
+            <v-select
+              :value="data.specificProbability"
+              color="primary"
+              :label="upperFirst(t('specificProbability').toString())"
+              :items="probabilities"
+              clearable
+              @input="onSpecificProbabilityChanged"
+            />
+          </v-col>
+          <v-col
+            xs="12"
+            md="4"
+          >
+            <v-select
+              :value="data.effectiveProbability"
+              color="primary"
+              :label="upperFirst(t('effectiveProbability').toString())"
+              :items="probabilities"
+              disabled
+            >
+              <template
+                v-if="dirtyFields && (dirtyFields.scenario || dirtyFields[`${riskDefinition.id}_specificProbability`])"
+                #selection
+              >
+                {{ t('saveCTA') }}
+              </template>
+            </v-select>
+          </v-col>
+          <v-col
+            xs="12"
+            md="12"
+          >
+            <v-textarea
+              :value="data.specificProbabilityExplanation"
+              :label="upperFirst(t('explanation').toString())"
+              clearable
+              @input="onSpecificProbabilityExplanationChanged"
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </VeoCard>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, PropType } from '@nuxtjs/composition-api';
+import { upperFirst } from 'lodash';
+import { useI18n } from 'nuxt-i18n-composable';
+
+import { IDirtyFields } from './VeoCreateRiskDialogSingle.vue';
+import { IVeoDomainRiskDefinition, IVeoRiskDefinition } from '~/types/VeoTypes';
+
+export default defineComponent({
+  props: {
+    data: {
+      type: Object as PropType<IVeoRiskDefinition['probability']>,
+      required: true
+    },
+    riskDefinition: {
+      type: Object as PropType<IVeoDomainRiskDefinition>,
+      required: true
+    },
+    dirtyFields: {
+      type: Object as PropType<IDirtyFields>,
+      default: () => {}
+    }
+  },
+  setup(props, { emit }) {
+    const { t } = useI18n();
+
+    const probabilities = props.riskDefinition.probability.levels.map((level) => ({ text: level.name, value: level.ordinalValue }));
+
+    const onSpecificProbabilityExplanationChanged = (newValue: string) => {
+      emit('update:data', { ...props.data, specificProbabilityExplanation: newValue });
+    };
+
+    const onSpecificProbabilityChanged = (newValue: number) => {
+      emit('update:dirty-fields', { ...props.dirtyFields, [`${props.riskDefinition.id}_specificProbability`]: true });
+      emit('update:data', { ...props.data, specificProbability: newValue });
+    };
+
+    return {
+      onSpecificProbabilityChanged,
+      onSpecificProbabilityExplanationChanged,
+      probabilities,
+
+      t,
+      upperFirst
+    };
+  }
+});
+</script>
+
+<i18n>
+{
+  "en": {
+    "effectiveProbability": "effective probability",
+    "explanation": "explanation",
+    "potentialProbability": "potential probability",
+    "probability": "probability",
+    "saveCTA": "save to recompute",
+    "specificProbability": "specific probability"
+  },
+  "de": {
+    "effectiveProbability": "Effektive Wahrscheinlichkeit",
+    "explanation": "Erklärung",
+    "potentialProbability": "potentielle Wahrscheinlichkeit",
+    "probability": "Eintrittswahrscheinlichkeit",
+    "saveCTA": "Speichern zum Neuberechnen",
+    "specificProbability": "spezifische Wahrscheinlichkeit"
+  }
+}
+</i18n>

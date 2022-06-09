@@ -119,6 +119,10 @@ export default defineComponent({
     object: {
       type: Object as PropType<IVeoEntity | undefined>,
       default: undefined
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {

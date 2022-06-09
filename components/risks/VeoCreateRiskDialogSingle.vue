@@ -19,7 +19,7 @@
   <VeoDialog
     :value="value"
     :close-disabled="savingRisk"
-    :persistent="savingRisk || formIsDirty"
+    :persistent="savingRisk || !!Object.keys(dirtyFields).length"
     :headline="upperFirst(!!risk ? t('editRisk', [risk.designator]).toString() : t('createRisk').toString())"
     large
     fixed-footer
@@ -48,13 +48,14 @@
                 md="6"
               >
                 <VeoObjectSelect
-                  v-model="data.scenario"
+                  :value="data.scenario"
                   object-type="scenario"
                   required
                   :rules="[(data) => !!data || t('scenarioRequired')]"
                   sub-type="SCN_Scenario"
                   :domain-id="domainId"
                   value-as-link
+                  @input="onScenarioChanged"
                 />
               </v-col>
               <v-col
@@ -74,89 +75,10 @@
         <VeoCreateRiskDialogRiskDefinitions
           v-model="data"
           :domain="domain"
-          :form-is-dirty="formIsDirty"
+          :dirty-fields.sync="dirtyFields"
+          @update:new-mitigating-action="newMitigatingAction = $event"
+          @update:mitigation-parts="mitigationParts = $event"
         />
-        <h2 class="text-h2 mt-4">
-          {{ upperFirst(t('mitigationSection').toString()) }}
-          <v-tooltip bottom>
-            <template #activator="{ on }">
-              <v-icon v-on="on">
-                {{ mdiInformationOutline }}
-              </v-icon>
-            </template>
-            <template #default>
-              <i18n
-                path="mitigationAreaOfApplicationExplanation"
-                tag="span"
-              >
-                <br>
-              </i18n>
-            </template>
-          </v-tooltip>
-        </h2>
-        <VeoCard>
-          <v-card-text>
-            <div class="d-flex fill-width align-center">
-              <div>
-                <v-radio-group
-                  v-model="createNewMitigatingAction"
-                  hide-details
-                  dense
-                >
-                  <v-radio
-                    :label="t('createNewMitigation')"
-                    :value="true"
-                  />
-                  <v-radio
-                    :label="`${t('useExistingMitigation')}:`"
-                    :value="false"
-                  />
-                </v-radio-group>
-                <VeoObjectSelect
-                  v-model="data.mitigation"
-                  object-type="control"
-                  :disabled="createNewMitigatingAction"
-                  :label="t('mitigation')"
-                  value-as-link
-                  class="ml-8"
-                />
-              </div>
-              <v-tooltip bottom>
-                <template #activator="{ on }">
-                  <div
-                    class="ml-4"
-                    v-on="on"
-                  >
-                    <v-badge
-                      :content="mitigationParts.length + ''"
-                      overlap
-                    >
-                      <v-btn
-                        icon
-                        :disabled="fetchingMitigation"
-                        @click="editPartsDialogVisible = true"
-                      >
-                        <v-icon>
-                          {{ mdiFileDocumentMultiple }}
-                        </v-icon>
-                      </v-btn>
-                    </v-badge>
-                  </div>
-                </template>
-                <template #default>
-                  {{ upperFirst(t('editParts').toString()) }}
-                </template>
-              </v-tooltip>
-            </div>
-            <VeoLinkObjectDialog
-              v-model="editPartsDialogVisible"
-              add-type="entity"
-              :edited-object="createNewMitigatingAction ? newMitigatingAction : data.mitigation"
-              return-objects
-              :selected-items.sync="mitigationParts"
-            />
-          </v-card-text>
-        </VeoCard>
       </v-form>
     </template>
     <template #dialog-options>
@@ -176,7 +98,7 @@
         text
         color="primary"
         :disabled="savingRisk"
-        @click="dialog = false"
+        @click="$emit('input', false)"
       >
         {{ t('global.button.close') }}
       </v-btn>
@@ -185,15 +107,19 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
+import { defineComponent, nextTick, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
 import { merge, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiFileDocumentMultiple, mdiInformationOutline } from '@mdi/js';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
-import { IVeoDomain, IVeoEntity, IVeoRisk, IVeoRiskDefinition, VeoAlertType } from '~/types/VeoTypes';
+import { getEntityDetailsFromLink } from '~/lib/utils';
+import { IVeoDomain, IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType } from '~/types/VeoTypes';
 import { IVeoAPIObjectIdentifier, useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+
+export interface IDirtyFields {
+  [field: string]: boolean;
+}
 
 export default defineComponent({
   props: {
@@ -219,9 +145,8 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { $config, $api } = useContext();
+    const { $api } = useContext();
     const { t } = useI18n();
-    const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { createLink, linkObject } = useVeoObjectUtilities();
 
@@ -231,7 +156,7 @@ export default defineComponent({
       domain.value = await $api.domain.fetch(props.domainId);
       data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
       nextTick(() => {
-        formIsDirty.value = false;
+        dirtyFields.value = {};
       });
     });
     watch(
@@ -254,7 +179,16 @@ export default defineComponent({
 
     const data = ref<IVeoRisk | undefined>(undefined);
     const formIsValid = ref(true);
-    const formIsDirty = ref(false);
+
+    // dirty/pristine stuff
+    const dirtyFields = ref<IDirtyFields>({});
+
+    const onScenarioChanged = (newValue: IVeoLink) => {
+      if (data.value) {
+        data.value.scenario = newValue;
+        dirtyFields.value.scenario = true;
+      }
+    };
 
     const risk = ref<IVeoRisk | undefined>(undefined);
     const { fetch: fetchRisk } = useFetch(async () => {
@@ -268,20 +202,12 @@ export default defineComponent({
       formIsValid.value = true;
 
       nextTick(() => {
-        formIsDirty.value = false;
+        dirtyFields.value = {};
       });
     });
     watch(
       () => props.scenarioId,
       () => fetchRisk()
-    );
-
-    watch(
-      () => data.value,
-      () => {
-        formIsDirty.value = true;
-      },
-      { deep: true }
     );
 
     const savingRisk = ref(false);
@@ -291,7 +217,7 @@ export default defineComponent({
 
         try {
           const mitigationDetails = { type: 'control', id: data.value.mitigation ? getEntityDetailsFromLink(data.value.mitigation).id : undefined };
-          if (createNewMitigatingAction.value === true) {
+          if (newMitigatingAction.value) {
             const newMitigationId = (await $api.entity.create('control', newMitigatingAction.value as any)).resourceId;
             mitigationDetails.id = newMitigationId;
             data.value.mitigation = await createLink(mitigationDetails as IVeoAPIObjectIdentifier);
@@ -315,71 +241,17 @@ export default defineComponent({
     };
 
     // Mitigating action stuff
-    const createNewMitigatingAction = ref(true);
-    const newMitigatingAction = computed(() => ({
-      type: 'control',
-      name: t('mitigatingAction', [data.value?.scenario?.displayName]).toString(),
-      owner: {
-        targetUri: `${$config.apiUrl}/units/${separateUUIDParam(route.value.params.unit).id}`
-      }
-    }));
-
-    const editPartsDialogVisible = ref(false);
-
-    const selectedMitigationAsEntity = ref<IVeoEntity | undefined>(undefined);
-    const fetchingMitigation = ref(false);
-
+    const newMitigatingAction = ref<Object | undefined>();
     const mitigationParts = ref<{ type: string; id: string }[]>([]);
 
-    const fetchMitigation = async () => {
-      if (data.value?.mitigation) {
-        fetchingMitigation.value = true;
-        const { id } = getEntityDetailsFromLink(data.value.mitigation);
-
-        try {
-          selectedMitigationAsEntity.value = await $api.entity.fetch('control', id);
-
-          mitigationParts.value = selectedMitigationAsEntity.value.parts.map((part) => getEntityDetailsFromLink(part));
-        } finally {
-          fetchingMitigation.value = false;
-        }
-      } else {
-        mitigationParts.value = [];
-      }
-    };
-
-    watch(
-      () => createNewMitigatingAction.value,
-      (newValue) => {
-        if (newValue) {
-          mitigationParts.value = [];
-        } else {
-          fetchMitigation();
-        }
-      }
-    );
-
-    watch(
-      () => data.value?.mitigation,
-      () => {
-        if (data.value?.mitigation) {
-          createNewMitigatingAction.value = false;
-        }
-        fetchMitigation();
-      },
-      { immediate: true, deep: true }
-    );
-
     return {
-      createNewMitigatingAction,
       data,
+      dirtyFields,
       domain,
-      editPartsDialogVisible,
-      fetchingMitigation,
-      formIsDirty,
       formIsValid,
       mitigationParts,
       newMitigatingAction,
+      onScenarioChanged,
       risk,
       saveRisk,
       savingRisk,
@@ -393,7 +265,7 @@ export default defineComponent({
   }
 });
 
-const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, riskDefinitions: { [key: string]: IVeoRiskDefinition }): IVeoRisk => {
+const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, riskDefinitions: { [key: string]: IVeoDomainRiskDefinition }): IVeoRisk => {
   const object: any = {
     scenario: undefined,
     mitigation: undefined,
@@ -406,31 +278,58 @@ const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, ris
     }
   };
 
+  const mergedObject = initialData ? merge(initialData, object) : object;
+
   for (const riskDefinition in riskDefinitions) {
-    const categories = riskDefinitions[riskDefinition].categories.map((category) => category.id);
-    object.domains[domainId].riskDefinitions[riskDefinition] = {
+    if (!mergedObject.domains[domainId].riskDefinitions[riskDefinition]) {
+      mergedObject.domains[domainId].riskDefinitions[riskDefinition] = {
+        impactValues: [],
+        riskValues: []
+      };
+    }
+    merge(mergedObject.domains[domainId].riskDefinitions[riskDefinition], {
       probability: {
         effectiveProbability: undefined,
         potentialProbability: undefined,
         specificProbability: undefined,
         specificProbabilityExplanation: undefined
       }
-    };
-    object.domains[domainId].riskDefinitions[riskDefinition].impactValues = categories.map((category) => ({
-      category,
-      effectiveImpact: undefined,
-      specificImpact: undefined,
-      specificImpactExplanation: undefined,
-      potentialImpact: undefined
-    }));
+    });
 
-    object.domains[domainId].riskDefinitions[riskDefinition].riskValues = categories.map((category) => ({
-      category,
-      residualRisk: undefined,
-      residualRiskExplanation: undefined,
-      riskTreatments: [],
-      riskTreatmentExplanation: undefined
-    }));
+    for (const category of riskDefinitions[riskDefinition].categories.map((category) => category.id)) {
+      const impactValueObject = {
+        category,
+        effectiveImpact: undefined,
+        specificImpact: undefined,
+        specificImpactExplanation: undefined,
+        potentialImpact: undefined
+      };
+      if (!mergedObject.domains[domainId].riskDefinitions[riskDefinition].impactValues.find((impactValue: any) => impactValue.category === category)) {
+        mergedObject.domains[domainId].riskDefinitions[riskDefinition].impactValues.push(impactValueObject);
+      } else {
+        merge(
+          mergedObject.domains[domainId].riskDefinitions[riskDefinition].impactValues.find((impactValue: any) => impactValue.category === category),
+          impactValueObject
+        );
+      }
+
+      const riskValueObject = {
+        category,
+        userDefinedResidualRisk: undefined,
+        residualRisk: undefined,
+        residualRiskExplanation: undefined,
+        riskTreatments: [],
+        riskTreatmentExplanation: undefined
+      };
+      if (!mergedObject.domains[domainId].riskDefinitions[riskDefinition].riskValues.find((riskValue: any) => riskValue.category === category)) {
+        mergedObject.domains[domainId].riskDefinitions[riskDefinition].riskValues.push(riskValueObject);
+      } else {
+        merge(
+          mergedObject.domains[domainId].riskDefinitions[riskDefinition].riskValues.find((impactValue: any) => impactValue.category === category),
+          riskValueObject
+        );
+      }
+    }
   }
 
   return initialData ? merge(initialData, object) : object;
@@ -443,39 +342,25 @@ const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, ris
     "common": "common",
     "computedValues": "Some values are computed in the backend.",
     "computedValuesCTA": "Please press \"Save\" to recomputed those values.",
-    "createNewMitigation": "create new mitigating action",
     "createRisk": "create risk",
-    "editParts": "edit parts",
     "editRisk": "edit risk \"{0}\"",
-    "mitigatingAction": "Mitigating action for \"{0}\"",
-    "mitigation": "mitigation",
-    "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions,{0} meaning only one mitigation action can be applied to a risk",
-    "mitigationSection": "risk reduction actions (mitigating actions)",
     "riskCreated": "the risk was created successfully",
     "riskUpdated": "the risk was edited successfully",
     "riskNotSaved": "the risk couldn't be saved",
     "riskOwner": "risk owner",
-    "scenarioRequired": "A risk scenario has to be selected",
-    "useExistingMitigation": "use existing mitigating action"
+    "scenarioRequired": "A risk scenario has to be selected"
   },
   "de": {
     "common": "allgemein",
     "computedValues": "Einige Werte werden automatisch berechnet.",
     "computedValuesCTA": "Drücken sie \"Speichern\" um diese Werte neu berechnen zu lassen.",
-    "createNewMitigation": "Neue mitigierende Maßnahme erstellen",
     "createRisk": "Risiko erstellen",
-    "editParts": "Teile bearbeiten",
     "editRisk": "Risiko \"{0}\" bearbeiten",
-    "mitigatingAction": "Mitigierende Maßnahme für \"{0}\"",
-    "mitigation": "Gegenmaßnahme",
-    "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg,{0} d.h. es kann immer nur eine migitierende Maßnahme pro Risiko ausgewählt werden",
-    "mitigationSection": "Maßnahmen zur Risikoreduktion (Mitigierende Maßnahmen)",
     "riskCreated": "das Risiko wurde erfolgreich erstellt",
     "riskUpdated": "das Risiko wurde erfolgreich bearbeitet",
     "riskNotSaved": "das Risiko konnte nicht gespeichert werden",
     "riskOwner": "Verantwortlicher",
-    "scenarioRequired": "Es muss ein Szenario ausgewählt werden",
-    "useExistingMitigation": "Vorhandene mitigierende Maßnahme nutzen"
+    "scenarioRequired": "Es muss ein Szenario ausgewählt werden"
   }
 }
 </i18n>
