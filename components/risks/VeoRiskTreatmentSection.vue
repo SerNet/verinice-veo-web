@@ -43,7 +43,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { upperFirst } from 'lodash';
+import { cloneDeep, upperFirst } from 'lodash';
 
 import { IDirtyFields } from './VeoCreateRiskDialogSingle.vue';
 import { IVeoDomainRiskDefinition, IVeoRiskDefinition } from '~/types/VeoTypes';
@@ -69,18 +69,22 @@ export default defineComponent({
     const protectionGoalExists = (protectionGoal: string) => !!props.data.find((riskValue) => riskValue.category === protectionGoal);
 
     const onRiskTreatmentChanged = (protectionGoal: string, newValue: string[]) => {
-      const riskValue = props.data.find((riskValue) => riskValue.category === protectionGoal);
+      const localData = cloneDeep(props.data);
+      const riskValue = localData.find((riskValue) => riskValue.category === protectionGoal);
       if (riskValue) {
         riskValue.riskTreatments = newValue;
       }
+      emit('update:data', localData);
       emit('update:dirty-fields', { ...props.dirtyFields, [`${props.riskDefinition.id}_${protectionGoal}_riskTreatments`]: true });
     };
 
     const onRiskTreatmentExplanationChanged = (protectionGoal: string, newValue: string) => {
-      const riskValue = props.data.find((riskValue) => riskValue.category === protectionGoal);
+      const localData = cloneDeep(props.data);
+      const riskValue = localData.find((riskValue) => riskValue.category === protectionGoal);
       if (riskValue) {
         riskValue.riskTreatmentExplanation = newValue;
       }
+      emit('update:data', localData);
     };
 
     return {

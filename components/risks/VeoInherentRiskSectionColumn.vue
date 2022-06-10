@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
@@ -70,7 +70,7 @@ export default defineComponent({
   setup(props) {
     const { t } = useI18n();
 
-    const riskValues = props.riskDefinition.riskValues.map((level) => ({ text: level.name, value: level.ordinalValue }));
+    const riskValues = computed(() => props.riskDefinition.riskValues.map((level) => ({ text: level.name, value: level.ordinalValue })));
 
     return {
       riskValues,

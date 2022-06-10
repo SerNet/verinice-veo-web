@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
@@ -104,10 +104,12 @@ export default defineComponent({
   setup(props) {
     const { t } = useI18n();
 
-    const impacts = props.riskDefinition.categories.reduce((previousValue: IBaseObject, currentValue) => {
-      previousValue[currentValue.id] = currentValue.potentialImpacts.map((level) => ({ text: level.name, value: level.ordinalValue }));
-      return previousValue;
-    }, {});
+    const impacts = computed(() =>
+      props.riskDefinition.categories.reduce((previousValue: IBaseObject, currentValue) => {
+        previousValue[currentValue.id] = currentValue.potentialImpacts.map((level) => ({ text: level.name, value: level.ordinalValue }));
+        return previousValue;
+      }, {})
+    );
 
     const getImpactValuesByProtectionGoal = (riskDefinition: IVeoRisk['domains']['x']['riskDefinitions']['y'], protectionGoal: string) => {
       return riskDefinition.impactValues.find((value) => value.category === protectionGoal);

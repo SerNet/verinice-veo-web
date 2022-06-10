@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
@@ -117,7 +117,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
 
-    const probabilities = props.riskDefinition.probability.levels.map((level) => ({ text: level.name, value: level.ordinalValue }));
+    const probabilities = computed(() => props.riskDefinition.probability.levels.map((level) => ({ text: level.name, value: level.ordinalValue })));
 
     const onSpecificProbabilityExplanationChanged = (newValue: string) => {
       emit('update:data', { ...props.data, specificProbabilityExplanation: newValue });

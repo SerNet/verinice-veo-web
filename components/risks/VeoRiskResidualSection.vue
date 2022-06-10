@@ -43,7 +43,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { upperFirst } from 'lodash';
+import { cloneDeep, upperFirst } from 'lodash';
 
 import { IVeoDomainRiskDefinition, IVeoRiskDefinition } from '~/types/VeoTypes';
 
@@ -58,23 +58,27 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { t } = useI18n();
 
     const protectionGoalExists = (protectionGoal: string) => !!props.data.find((riskValue) => riskValue.category === protectionGoal);
 
     const onUserDefinedResidualRiskChanged = (protectionGoal: string, newValue: number) => {
-      const riskValue = props.data.find((riskValue) => riskValue.category === protectionGoal);
+      const localData = cloneDeep(props.data);
+      const riskValue = localData.find((riskValue) => riskValue.category === protectionGoal);
       if (riskValue) {
         riskValue.userDefinedResidualRisk = newValue;
       }
+      emit('update:data', localData);
     };
 
     const onResidualRiskExplanationChanged = (protectionGoal: string, newValue: string) => {
-      const riskValue = props.data.find((riskValue) => riskValue.category === protectionGoal);
+      const localData = cloneDeep(props.data);
+      const riskValue = localData.find((riskValue) => riskValue.category === protectionGoal);
       if (riskValue) {
         riskValue.residualRiskExplanation = newValue;
       }
+      emit('update:data', localData);
     };
 
     return {
