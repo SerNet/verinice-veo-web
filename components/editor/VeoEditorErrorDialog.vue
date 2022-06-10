@@ -17,16 +17,30 @@
 -->
 <template>
   <VeoDialog
+    :value="value"
     v-bind="$attrs"
-    :headline="t('schemaValidationWarnings')"
+    :headline="upperFirst(t('schemaValidationWarnings').toString())"
     large
     fixed-footer
     v-on="$listeners"
   >
     <template #default>
-      <VeoValidationResult
-        :result="$attrs.validation"
-        warnings-visible
+      <h3 class="text-h3">
+        {{ upperFirst(t('schemaValidationErrors').toString()) }} ({{ validation.errors.length }})
+      </h3>
+      <VeoValidationResultList
+        v-bind="$attrs"
+        :items="validation.errors"
+        no-error-placeholder-visible
+        fixing-allowed
+        v-on="$listeners"
+      />
+      <h3 class="text-h3 mt-4">
+        {{ upperFirst(t('schemaValidationWarnings').toString()) }} ({{ validation.warnings.length }})
+      </h3>
+      <VeoValidationResultList
+        v-bind="$attrs"
+        :items="validation.warnings"
         fixing-allowed
         v-on="$listeners"
       />
@@ -44,22 +58,33 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
+import { defineComponent, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
+import { upperFirst } from 'lodash';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 
-interface IProps {
-  value: boolean;
-  validation: VeoSchemaValidatorValidationResult;
-}
-
-export default defineComponent<IProps>({
+export default defineComponent({
+  props: {
+    value: {
+      type: Boolean,
+      default: false
+    },
+    validation: {
+      type: Object as PropType<VeoSchemaValidatorValidationResult>,
+      default: () => ({
+        valid: true,
+        errors: [],
+        warnings: []
+      })
+    }
+  },
   setup() {
     const { t } = useI18n();
 
     return {
-      t
+      t,
+      upperFirst
     };
   }
 });
@@ -68,14 +93,12 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "schemaValidationWarnings": "Warnings"
+    "schemaValidationErrors": "errors",
+    "schemaValidationWarnings": "warnings"
   },
   "de": {
-    "schemaValidationWarnings": "Warnungen"
+    "schemaValidationErrors": "fehler",
+    "schemaValidationWarnings": "warnungen"
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-</style>

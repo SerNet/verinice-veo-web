@@ -43,6 +43,7 @@ export interface VeoSchemaValidatorValidationResult {
   valid: boolean;
   errors: VeoSchemaValidatorMessage[];
   warnings: VeoSchemaValidatorMessage[];
+  information?: VeoSchemaValidatorMessage[];
 }
 
 /*

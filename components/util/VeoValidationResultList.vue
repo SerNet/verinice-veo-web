@@ -16,13 +16,13 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoCard
-    v-if="items.length > 0"
-    v-bind="$attrs"
-  >
-    <v-list>
+  <v-list>
+    <template v-for="(item, index) of items">
+      <v-divider
+        v-if="index > 0"
+        :key="`divider_${index}`"
+      />
       <v-list-item
-        v-for="(item, index) of items"
         :key="index"
         class="d-block"
       >
@@ -31,7 +31,7 @@
             {{ item.message }}
           </v-list-item-title>
         </v-list-item-content>
-        <v-list-item-action class="fill-width ml-0">
+        <v-list-item-action class="fill-width ml-0 my-0">
           <v-btn
             v-if="item.fixable && fixingAllowed"
             text
@@ -49,14 +49,16 @@
           </v-btn>
         </v-list-item-action>
       </v-list-item>
-    </v-list>
-  </VeoCard>
-  <p
-    v-else-if="noErrorPlaceholderVisible"
-    class="font-italic text-body-2 mt-2"
-  >
-    {{ t('noErrors') }}
-  </p>
+    </template>
+    <v-list-item
+      v-if="!items.length && noErrorPlaceholderVisible"
+      dense
+    >
+      <v-list-item-content class="font-italic text-body-2">
+        <v-list-item-title>{{ t('noErrors') }}</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+  </v-list>
 </template>
 
 <script lang="ts">
