@@ -89,10 +89,9 @@
                 :object-schema="objectSchema"
                 v-on="$listeners"
               />
-              <VeoValidationResult
+              <VeoObjectMessagesTab
                 v-else-if="selectedSideContainer === SIDE_CONTAINERS.MESSAGES"
-                :result="messages"
-                warnings-visible
+                :messages="messages"
               />
             </VeoCard>
             <v-btn-toggle
@@ -161,8 +160,8 @@
                     v-on="on"
                   >
                     <v-badge
-                      :content="messages.errors.length + messages.warnings.length"
-                      :value="messages.errors.length + messages.warnings.length > 0"
+                      :content="messages.errors.length + messages.warnings.length + messages.information.length"
+                      :value="messages.errors.length + messages.warnings.length + messages.information.length > 0"
                       color="primary"
                       overlap
                     >
@@ -191,6 +190,7 @@ import { mdiEyeOutline, mdiFormatListBulleted, mdiHistory, mdiInformationOutline
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import { IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 enum SIDE_CONTAINERS {
   HISTORY,
@@ -375,8 +375,34 @@ export default defineComponent({
     // Messages stuff
     const messages = computed(() => ({
       errors: formErrors.value.map((entry) => ({ code: entry.pointer, message: entry.message })),
-      warnings: backendWarnings.value.filter((warning) => warning.severity === 'WARNING').map((warning) => formatWarning(warning))
+      warnings: backendWarnings.value.filter((warning) => warning.severity === 'WARNING').map((warning) => formatWarning(warning)),
+      information: objectInformation.value
     }));
+
+    const objectInformation = computed<VeoSchemaValidatorMessage[]>(() => {
+      const information: VeoSchemaValidatorMessage[] = [];
+
+      if (props.objectMetaData?.decisionResults?.piaMandatory) {
+        if (props.objectMetaData.decisionResults.piaMandatory.value) {
+          information.push({
+            code: 'I_PIA_MANDATORY',
+            message: t('piaMandatory').toString()
+          });
+        } else {
+          information.push({
+            code: 'I_PIA_NOT_MANDATORY',
+            message: t('piaNotMandatory').toString()
+          });
+        }
+      } else {
+        information.push({
+          code: 'I_PIA_MANDATORY_UNKNOWN',
+          message: t('piaMandatoryUnknown').toString()
+        });
+      }
+
+      return information;
+    });
 
     const formatWarning = (warning: IVeoInspectionResult) => {
       const actions = [];
@@ -467,6 +493,9 @@ export default defineComponent({
     "messages": "messages",
     "objects": "objects",
     "objectView": "object view",
+    "piaMandatory": "A privacy impact assesment is required for this object.",
+    "piaMandatoryUnknown": "Cannot determine if a privacy assesment is required.",
+    "piaNotMandatory": "No privacy impact assesment is required for this object.",
     "tableOfContents": "contents",
     "viewAs": "view as"
   },
@@ -477,6 +506,9 @@ export default defineComponent({
     "messages": "Meldungen",
     "objects": "Objekte",
     "objectView": "Objektansicht",
+    "piaMandatory": "Für dieses Objekt ist eine Datenschutzfolgeabschätzung verpflichtend.",
+    "piaMandatoryUnknown": "Es kann nicht festgestellt werden, ob für dieses Objekt eine Datenschutzfolgeabschätzung verpflichtend ist.",
+    "piaNotMandatory": "Für dieses Objekt ist keine Datenschutzfolgeabschätzung verpflichtend.",
     "tableOfContents": "Inhalt",
     "viewAs": "darstellen als"
   }
