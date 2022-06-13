@@ -31,6 +31,7 @@ import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue';
 import VeoTabs from '~/components/layout/VeoTabs.vue';
 import VeoForm from '~/components/forms/VeoForm.vue';
 import VeoValidationResult from '~/components/util/VeoValidationResult.vue';
+import VeoCard from '~/components/layout/VeoCard.vue';
 import { getEmittedEvent, getFormInput, getVSelectComponentByDataCy } from '~/lib/jestUtils';
 
 import process from '~/cypress/fixtures/api/default/schemas/process.2019.json';
@@ -55,7 +56,8 @@ const mockDefaults = {
           VeoFormNavigation,
           VeoValidationResult,
           VeoTabs,
-          VeoObjectFormSkeletonLoader
+          VeoObjectFormSkeletonLoader,
+          VeoCard
         }
       }))()
   },
@@ -195,6 +197,8 @@ describe('CreateObjectDialog.vue', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 200));
     const form = wrapper.getComponent(VeoObjectForm);
+    (form.find('[data-cy=veo-object-form-display-tab]') as any).element.click();
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const selectWrapper: ChildNode = form.find('[data-cy=veo-object-form-display-select]').element.parentElement as any;
     expect(selectWrapper.firstChild?.textContent).toBe('PRO_DataProcessing');
   });
@@ -211,6 +215,8 @@ describe('CreateObjectDialog.vue', () => {
       }
     });
     await new Promise((resolve) => setTimeout(resolve, 200));
+    (wrapper.find('[data-cy=veo-object-form-display-tab]') as any).element.click();
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const select = getVSelectComponentByDataCy(wrapper, 'veo-object-form-display-select');
 
     // One label for each custom aspect

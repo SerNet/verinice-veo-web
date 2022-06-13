@@ -153,7 +153,6 @@ export default defineComponent({
       if (item.type !== 'scope' && item.parts?.length) return h(VIcon, 'mdi-file-document-multiple');
       else if (item.type === 'scope' && item.parts?.length) return h(VIcon, 'mdi-archive-arrow-down');
       else if (item.type === 'scope') return h(VIcon, 'mdi-archive');
-      else if (item.type === 'scope') return h(VIcon, 'mdi-archive');
       return h(VIcon, 'mdi-file-document');
     };
     /**
@@ -439,8 +438,10 @@ export default defineComponent({
           if (calculateTableWidth(headers) > tableWrapperWidth) {
             const leastImportantHeaderIndex = indexOfHeaderWithLowestPriority(headers);
 
-            // If undefined, no header is left, so leave the loop. Also we always want at least one column to be shown
-            if (leastImportantHeaderIndex === undefined || headers.length <= 1) {
+            // If undefined, no header is left, so leave the loop.
+            // Also we always want at least one column to be shown.
+            // Also leave if the least important header has priority 100, as those headers should always be shown
+            if (leastImportantHeaderIndex === undefined || headers.length <= 1 || headers[leastImportantHeaderIndex].priority === 100) {
               break;
             }
             headers.splice(leastImportantHeaderIndex, 1);
@@ -488,6 +489,9 @@ export default defineComponent({
           page: props.page,
           loading: props.loading,
           itemsPerPage: itemsPerPage.value,
+          footerProps: {
+            itemsPerPageOptions: [10, 20, 50, -1]
+          },
           ...paginationProps.value
         },
         on: {

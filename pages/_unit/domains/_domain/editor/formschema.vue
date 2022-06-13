@@ -21,7 +21,6 @@
     title-class="d-flex align-center"
     collapsable-left
     collapsable-right
-    class="veo-page-wrapper-white"
   >
     <template
       v-if="formSchema && objectSchema"
@@ -159,7 +158,6 @@
       #default
     >
       <VeoPage
-        color="#ffffff"
         sticky-header
       >
         <template #header>
@@ -188,7 +186,6 @@
         </template>
       </VeoPage>
       <VeoPage
-        color="#ffffff"
         heading-level="3"
         :title="t('usedControls')"
         :titlebar-alignment="VeoPageHeaderAlignment.CENTER"
@@ -236,7 +233,6 @@
       </VeoPage>
       <VeoPage
         v-if="!$vuetify.breakpoint.xs"
-        color="#ffffff"
         height="100%"
         heading-level="3"
         :title="t('preview')"

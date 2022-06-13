@@ -17,9 +17,9 @@
 -->
 <template>
   <VeoDialog
-    v-model="dialog"
+    :value="value"
     :close-disabled="savingRisk"
-    :persistent="savingRisk || formIsDirty"
+    :persistent="savingRisk || !!Object.keys(dirtyFields).length"
     :headline="upperFirst(!!risk ? t('editRisk', [risk.designator]).toString() : t('createRisk').toString())"
     large
     fixed-footer
@@ -48,13 +48,14 @@
                 md="6"
               >
                 <VeoObjectSelect
-                  v-model="data.scenario"
+                  :value="data.scenario"
                   object-type="scenario"
                   required
                   :rules="[(data) => !!data || t('scenarioRequired')]"
                   sub-type="SCN_Scenario"
                   :domain-id="domainId"
                   value-as-link
+                  @input="onScenarioChanged"
                 />
               </v-col>
               <v-col
@@ -74,7 +75,10 @@
         <VeoCreateRiskDialogRiskDefinitions
           v-model="data"
           :domain="domain"
-          :form-is-dirty="formIsDirty"
+          :dirty-fields.sync="dirtyFields"
+          @update:new-mitigating-action="newMitigatingAction = $event"
+          @update:create-new-mitigating-action="createNewMitigatingAction = $event"
+          @update:mitigation-parts="mitigationParts = $event"
         />
       </v-form>
     </template>
@@ -95,7 +99,7 @@
         text
         color="primary"
         :disabled="savingRisk"
-        @click="dialog = false"
+        @click="$emit('input', false)"
       >
         {{ t('global.button.close') }}
       </v-btn>
@@ -104,14 +108,19 @@
 </template>
 
 <script lang="ts">
-import { nextTick } from 'process';
-import { useContext, useFetch } from '@nuxtjs/composition-api';
-import { computed, defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, nextTick, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
 import { merge, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
+import { mdiFileDocumentMultiple, mdiInformationOutline } from '@mdi/js';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { IVeoDomain, IVeoRisk, VeoAlertType } from '~/types/VeoTypes';
+import { getEntityDetailsFromLink } from '~/lib/utils';
+import { IVeoDomain, IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType } from '~/types/VeoTypes';
+import { IVeoAPIObjectIdentifier, useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+
+export interface IDirtyFields {
+  [field: string]: boolean;
+}
 
 export default defineComponent({
   props: {
@@ -140,42 +149,47 @@ export default defineComponent({
     const { $api } = useContext();
     const { t } = useI18n();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
-
-    const dialog = computed({
-      get() {
-        return props.value;
-      },
-      set(newValue: boolean) {
-        emit('input', newValue);
-      }
-    });
-
-    watch(
-      () => dialog.value,
-      (newValue) => {
-        if (newValue) {
-          fetchDomain();
-        }
-      }
-    );
+    const { createLink, linkObject } = useVeoObjectUtilities();
 
     // Domain stuff, used for risk definitions
     const domain = ref<IVeoDomain | undefined>();
     const { fetch: fetchDomain } = useFetch(async () => {
       domain.value = await $api.domain.fetch(props.domainId);
-      data.value = makeRiskObject(risk.value, props.domainId, Object.keys(domain.value?.riskDefinitions || {}));
+      data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
       nextTick(() => {
-        formIsDirty.value = false;
+        dirtyFields.value = {};
       });
     });
     watch(
       () => props.domainId,
-      () => fetchDomain()
+      () => fetchDomain(),
+      { immediate: true }
     );
 
-    const data = ref<IVeoRisk>(makeRiskObject(undefined, props.domainId, Object.keys(domain.value?.riskDefinitions || {})));
+    watch(
+      () => props.value,
+      (newValue) => {
+        if (newValue) {
+          makeRiskObject(risk?.value, props.domainId, domain.value?.riskDefinitions || {});
+        }
+      },
+      {
+        immediate: true
+      }
+    );
+
+    const data = ref<IVeoRisk | undefined>(undefined);
     const formIsValid = ref(true);
-    const formIsDirty = ref(false);
+
+    // dirty/pristine stuff
+    const dirtyFields = ref<IDirtyFields>({});
+
+    const onScenarioChanged = (newValue: IVeoLink) => {
+      if (data.value) {
+        data.value.scenario = newValue;
+        dirtyFields.value.scenario = true;
+      }
+    };
 
     const risk = ref<IVeoRisk | undefined>(undefined);
     const { fetch: fetchRisk } = useFetch(async () => {
@@ -185,11 +199,11 @@ export default defineComponent({
         risk.value = undefined;
       }
 
-      data.value = makeRiskObject(risk.value, props.domainId, Object.keys(domain.value?.riskDefinitions || {}));
+      data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
       formIsValid.value = true;
 
       nextTick(() => {
-        formIsDirty.value = false;
+        dirtyFields.value = {};
       });
     });
     watch(
@@ -197,52 +211,64 @@ export default defineComponent({
       () => fetchRisk()
     );
 
-    watch(
-      () => data.value,
-      () => {
-        formIsDirty.value = true;
-      },
-      { deep: true }
-    );
-
     const savingRisk = ref(false);
     const saveRisk = async () => {
-      savingRisk.value = true;
+      if (data.value) {
+        savingRisk.value = true;
 
-      try {
-        if (props.scenarioId) {
-          await $api.entity.updateRisk(props.objectType, props.objectId, props.scenarioId, data.value);
-        } else {
-          await $api.entity.createRisk(props.objectType, props.objectId, data.value);
+        try {
+          const mitigationDetails = { type: 'control', id: data.value.mitigation ? getEntityDetailsFromLink(data.value.mitigation).id : undefined };
+          if (createNewMitigatingAction.value) {
+            const newMitigationId = (await $api.entity.create('control', newMitigatingAction.value as any)).resourceId;
+            mitigationDetails.id = newMitigationId;
+            data.value.mitigation = await createLink(mitigationDetails as IVeoAPIObjectIdentifier);
+          }
+          await linkObject('child', mitigationDetails as IVeoAPIObjectIdentifier, mitigationParts.value, true);
+
+          if (props.scenarioId) {
+            await $api.entity.updateRisk(props.objectType, props.objectId, props.scenarioId, data.value);
+          } else {
+            await $api.entity.createRisk(props.objectType, props.objectId, data.value);
+          }
+          displaySuccessMessage(props.scenarioId ? upperFirst(t('riskUpdated').toString()) : upperFirst(t('riskCreated').toString()));
+          fetchRisk();
+          emit('reload');
+        } catch (e: any) {
+          displayErrorMessage(upperFirst(t('riskNotSaved').toString()), e.message);
+        } finally {
+          savingRisk.value = false;
         }
-        displaySuccessMessage(props.scenarioId ? upperFirst(t('riskUpdated').toString()) : upperFirst(t('riskCreated').toString()));
-        fetchRisk();
-        emit('reload');
-      } catch (e: any) {
-        displayErrorMessage(upperFirst(t('riskNotSaved').toString()), e.message);
-      } finally {
-        savingRisk.value = false;
       }
     };
 
+    // Mitigating action stuff
+    const newMitigatingAction = ref<Object | undefined>();
+    const createNewMitigatingAction = ref<Boolean>(true);
+    const mitigationParts = ref<{ type: string; id: string }[]>([]);
+
     return {
+      createNewMitigatingAction,
       data,
-      dialog,
+      dirtyFields,
       domain,
-      formIsDirty,
       formIsValid,
+      mitigationParts,
+      newMitigatingAction,
+      onScenarioChanged,
       risk,
       saveRisk,
       savingRisk,
 
       upperFirst,
       t,
-      VeoAlertType
+      VeoAlertType,
+      mdiFileDocumentMultiple,
+      mdiInformationOutline
     };
   }
 });
 
-const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, riskDefinition: string[]): IVeoRisk => {
+const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, riskDefinitions: { [key: string]: IVeoDomainRiskDefinition }): IVeoRisk => {
   const object: any = {
     scenario: undefined,
     mitigation: undefined,
@@ -255,78 +281,61 @@ const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, ris
     }
   };
 
-  for (const _riskDefinition of riskDefinition) {
-    object.domains[domainId].riskDefinitions[_riskDefinition] = {
+  const mergedObject = initialData ? merge(initialData, object) : object;
+
+  for (const riskDefinition in riskDefinitions) {
+    if (!mergedObject.domains[domainId].riskDefinitions[riskDefinition]) {
+      mergedObject.domains[domainId].riskDefinitions[riskDefinition] = {
+        impactValues: [],
+        riskValues: []
+      };
+    }
+    merge(mergedObject.domains[domainId].riskDefinitions[riskDefinition], {
       probability: {
         effectiveProbability: undefined,
         potentialProbability: undefined,
         specificProbability: undefined,
         specificProbabilityExplanation: undefined
-      },
-      impactValues: [
-        {
-          category: 'C',
-          effectiveImpact: undefined,
-          specificImpact: undefined,
-          specificImpactExplanation: undefined,
-          potentialImpact: undefined
-        },
-        {
-          category: 'I',
-          effectiveImpact: undefined,
-          specificImpact: undefined,
-          specificImpactExplanation: undefined,
-          potentialImpact: undefined
-        },
-        {
-          category: 'A',
-          effectiveImpact: undefined,
-          specificImpact: undefined,
-          specificImpactExplanation: undefined,
-          potentialImpact: undefined
-        },
-        {
-          category: 'R',
-          effectiveImpact: undefined,
-          specificImpact: undefined,
-          specificImpactExplanation: undefined,
-          potentialImpact: undefined
-        }
-      ],
-      riskValues: [
-        {
-          category: 'C',
-          residualRisk: undefined,
-          residualRiskExplanation: undefined,
-          riskTreatments: [],
-          riskTreatmentExplanation: undefined
-        },
-        {
-          category: 'I',
-          residualRisk: undefined,
-          residualRiskExplanation: undefined,
-          riskTreatments: [],
-          riskTreatmentExplanation: undefined
-        },
-        {
-          category: 'A',
-          residualRisk: undefined,
-          residualRiskExplanation: undefined,
-          riskTreatments: [],
-          riskTreatmentExplanation: undefined
-        },
-        {
-          category: 'R',
-          residualRisk: undefined,
-          residualRiskExplanation: undefined,
-          riskTreatments: [],
-          riskTreatmentExplanation: undefined
-        }
-      ]
-    };
+      }
+    });
+
+    for (const category of riskDefinitions[riskDefinition].categories.map((category) => category.id)) {
+      const impactValueObject = {
+        category,
+        effectiveImpact: undefined,
+        specificImpact: undefined,
+        specificImpactExplanation: undefined,
+        potentialImpact: undefined
+      };
+      if (!mergedObject.domains[domainId].riskDefinitions[riskDefinition].impactValues.find((impactValue: any) => impactValue.category === category)) {
+        mergedObject.domains[domainId].riskDefinitions[riskDefinition].impactValues.push(impactValueObject);
+      } else {
+        merge(
+          mergedObject.domains[domainId].riskDefinitions[riskDefinition].impactValues.find((impactValue: any) => impactValue.category === category),
+          impactValueObject
+        );
+      }
+
+      const riskValueObject = {
+        category,
+        userDefinedResidualRisk: undefined,
+        residualRisk: undefined,
+        residualRiskExplanation: undefined,
+        riskTreatments: [],
+        riskTreatmentExplanation: undefined
+      };
+      if (!mergedObject.domains[domainId].riskDefinitions[riskDefinition].riskValues.find((riskValue: any) => riskValue.category === category)) {
+        mergedObject.domains[domainId].riskDefinitions[riskDefinition].riskValues.push(riskValueObject);
+      } else {
+        merge(
+          mergedObject.domains[domainId].riskDefinitions[riskDefinition].riskValues.find((impactValue: any) => impactValue.category === category),
+          riskValueObject
+        );
+      }
+    }
   }
 
-  return initialData ? merge(object, initialData) : object;
+  return initialData ? merge(initialData, object) : object;
 };
 </script>
 

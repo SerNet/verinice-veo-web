@@ -51,7 +51,7 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 
 # copy print.js
 WORKDIR /usr/src/app
-COPY print.js .
+COPY --chown=chrome print.js .
 RUN mkdir dist
 
 # Start nuxt app in background, wait for startup and generate pdf documentation

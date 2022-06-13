@@ -21,10 +21,11 @@
     :color="alertColor"
     colored-border
     border="left"
-    :elevation="flat ? 0 : 4"
+    :elevation="flat ? undefined : 4"
     dense
-    class="veo-alert"
+    class="veo-alert veo-border"
     :icon="alertIcon"
+    style="border-radius: 12px"
   >
     <v-row
       no-gutters

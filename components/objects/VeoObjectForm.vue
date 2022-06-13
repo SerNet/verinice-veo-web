@@ -18,125 +18,164 @@
 <template>
   <VeoPageWrapper
     unresponsive-page-widths
-    :page-widths="[{ width: '100%', minWidth: 'auto' }, '300px']"
+    :page-widths="[{ width: '100%' }, 'auto']"
   >
     <template #default>
       <VeoPage
         :id="scrollWrapperId"
-        color="#ffffff"
-        sticky-header
-        :sticky-footer="!!$slots['append-form-fixed']"
         data-component-name="object-form-form"
+        sticky-footer
       >
-        <template #header>
-          <v-row class="align-center mx-0 pb-3 pt-2">
-            <v-col cols="auto">
-              <span class="text-h3">
-                {{ upperFirst(t('display').toString()) }}:
-              </span>
-            </v-col>
-            <v-col cols="auto">
-              <v-select
-                v-model="selectedDisplayOption"
-                class="mt-n2"
-                dense
-                hide-details
-                :items="displayOptions"
-                :data-cy="$utils.prefixCyData($options, 'display-select')"
-              />
-            </v-col>
-          </v-row>
-          <v-divider />
-        </template>
         <template #default>
           <slot name="prepend-form" />
-          <VeoForm
-            v-if="!formLoading && objectSchema && !loading"
-            v-model="objectData"
-            :schema="objectSchema"
-            :ui="currentFormSchema && currentFormSchema.content"
-            :object-meta-data="objectMetaData"
-            :general-translation="translations && translations[locale]"
-            :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
-            :error-messages.sync="formErrors"
-            :reactive-form-actions="reactiveFormActions"
-            :disabled="disabled"
-            :object-creation-disabled="objectCreationDisabled"
-            :disable-sub-type-select="disableSubTypeSelect"
-            :domain-id="domainId"
-          />
-          <VeoObjectFormSkeletonLoader v-else />
-          <slot name="append-form" />
+          <VeoCard>
+            <v-card-text>
+              <VeoForm
+                v-if="!formLoading && objectSchema && !loading"
+                v-model="objectData"
+                :schema="objectSchema"
+                :ui="currentFormSchema && currentFormSchema.content"
+                :object-meta-data="objectMetaData"
+                :general-translation="translations && translations[locale]"
+                :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
+                :error-messages.sync="formErrors"
+                :reactive-form-actions="reactiveFormActions"
+                :disabled="disabled"
+                :object-creation-disabled="objectCreationDisabled"
+                :disabled-inputs="disabledInputs"
+                :domain-id="domainId"
+              />
+              <VeoObjectFormSkeletonLoader v-else />
+            </v-card-text>
+          </VeoCard>
         </template>
         <template #footer>
-          <slot name="append-form-fixed" />
+          <slot name="append-form-outer" />
         </template>
       </VeoPage>
       <VeoPage
-        color="#ffffff"
+        content-class="fill-height"
+        height="100%"
         no-padding
         data-component-name="object-form-sidebar"
       >
         <template #default>
-          <VeoTabs
-            v-cy-name="'form-tabs'"
-            sticky-tabs
-            grow
-          >
-            <template #tabs>
-              <v-tab
-                :disabled="!currentFormSchema || !formSchemaHasGroups"
-                data-component-name="object-form-form-navigation"
-              >
-                <v-icon v-text="mdiFormatListBulleted" />
-              </v-tab>
-              <v-tab
-                v-if="!disableHistory"
-                data-component-name="object-form-history"
-              >
-                <v-icon
-                  v-cy-name="'history-tab'"
-                  v-text="mdiHistory"
+          <div class="d-flex flex-row fill-height pb-13 align-start">
+            <VeoCard
+              v-show="selectedSideContainer !== undefined"
+              style="max-height: 100%"
+            >
+              <v-card-text v-if="selectedSideContainer === SIDE_CONTAINERS.VIEW">
+                <v-select
+                  v-model="selectedDisplayOption"
+                  class="mt-n2"
+                  :label="upperFirst(t('viewAs').toString())"
+                  hide-details
+                  :items="displayOptions"
+                  :data-cy="$utils.prefixCyData($options, 'display-select')"
                 />
-              </v-tab>
-              <v-tab data-component-name="object-form-validation">
-                <v-badge
-                  :content="messages.errors.length + messages.warnings.length"
-                  :value="messages.errors.length + messages.warnings.length > 0"
-                  color="primary"
-                  overlap
-                >
-                  <v-icon v-text="mdiInformationOutline" />
-                </v-badge>
-              </v-tab>
-            </template>
-            <template #items>
-              <v-tab-item class="px-4">
-                <VeoFormNavigation
-                  v-if="currentFormSchema"
-                  :form-schema="currentFormSchema && currentFormSchema.content"
-                  :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
-                  class="mx-n4"
-                  :scroll-wrapper-id="scrollWrapperId"
-                />
-              </v-tab-item>
-              <v-tab-item v-if="!disableHistory">
-                <VeoObjectHistory
-                  v-if="objectData"
-                  :object="objectData"
-                  :loading="loading"
-                  :object-schema="objectSchema"
-                  v-on="$listeners"
-                />
-              </v-tab-item>
-              <v-tab-item class="px-4">
-                <VeoValidationResult
-                  :result="messages"
-                  warnings-visible
-                />
-              </v-tab-item>
-            </template>
-          </VeoTabs>
+              </v-card-text>
+              <VeoFormNavigation
+                v-else-if="selectedSideContainer === SIDE_CONTAINERS.TABLE_OF_CONTENTS && currentFormSchema"
+                :form-schema="currentFormSchema && currentFormSchema.content"
+                :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
+                :scroll-wrapper-id="scrollWrapperId"
+              />
+              <VeoObjectHistory
+                v-else-if="objectData && selectedSideContainer === SIDE_CONTAINERS.HISTORY"
+                class="fill-height overflow-y-auto"
+                :object="objectData"
+                :loading="loading"
+                :object-schema="objectSchema"
+                v-on="$listeners"
+              />
+              <VeoValidationResult
+                v-else-if="selectedSideContainer === SIDE_CONTAINERS.MESSAGES"
+                :result="messages"
+                warnings-visible
+              />
+            </VeoCard>
+            <v-btn-toggle
+              v-model="selectedSideContainer"
+              group
+              class="flex-column"
+              color="primary"
+            >
+              <v-tooltip left>
+                <template #activator="{ on }">
+                  <v-btn
+                    v-cy-name="'display-tab'"
+                    style="border-radius: 99px"
+                    icon
+                    :value="SIDE_CONTAINERS.VIEW"
+                    v-on="on"
+                  >
+                    <v-icon v-text="mdiEyeOutline" />
+                  </v-btn>
+                </template>
+                <template #default>
+                  {{ t('display') }}
+                </template>
+              </v-tooltip>
+              <v-tooltip left>
+                <template #activator="{ on }">
+                  <div v-on="on">
+                    <v-btn
+                      :disabled="!currentFormSchema"
+                      style="border-radius: 99px"
+                      icon
+                      :value="SIDE_CONTAINERS.TABLE_OF_CONTENTS"
+                    >
+                      <v-icon v-text="mdiFormatListBulleted" />
+                    </v-btn>
+                  </div>
+                </template>
+                <template #default>
+                  {{ t('tableOfContents') }}
+                </template>
+              </v-tooltip>
+              <v-tooltip left>
+                <template #activator="{ on }">
+                  <v-btn
+                    style="border-radius: 99px"
+                    icon
+                    :value="SIDE_CONTAINERS.HISTORY"
+                    v-on="on"
+                  >
+                    <v-icon
+                      v-cy-name="'history-tab'"
+                      v-text="mdiHistory"
+                    />
+                  </v-btn>
+                </template>
+                <template #default>
+                  {{ t('history') }}
+                </template>
+              </v-tooltip>
+              <v-tooltip left>
+                <template #activator="{ on }">
+                  <v-btn
+                    style="border-radius: 99px"
+                    icon
+                    :value="SIDE_CONTAINERS.MESSAGES"
+                    v-on="on"
+                  >
+                    <v-badge
+                      :content="messages.errors.length + messages.warnings.length"
+                      :value="messages.errors.length + messages.warnings.length > 0"
+                      color="primary"
+                      overlap
+                    >
+                      <v-icon v-text="mdiInformationOutline" />
+                    </v-badge>
+                  </v-btn>
+                </template>
+                <template #default>
+                  {{ t('messages') }}
+                </template>
+              </v-tooltip>
+            </v-btn-toggle>
+          </div>
         </template>
       </VeoPage>
     </template>
@@ -144,14 +183,21 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropOptions, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, PropOptions, PropType, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst, merge, throttle } from 'lodash';
-import { mdiFormatListBulleted, mdiHistory, mdiInformationOutline } from '@mdi/js';
+import { mdiEyeOutline, mdiFormatListBulleted, mdiHistory, mdiInformationOutline } from '@mdi/js';
 
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import { IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+
+enum SIDE_CONTAINERS {
+  HISTORY,
+  MESSAGES,
+  TABLE_OF_CONTENTS,
+  VIEW
+}
 
 export default defineComponent({
   name: 'VeoObjectForm',
@@ -180,9 +226,9 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    disableSubTypeSelect: {
-      type: Boolean,
-      default: false
+    disabledInputs: {
+      type: Array as PropType<String[]>,
+      default: () => []
     },
     domainId: {
       type: String,
@@ -323,6 +369,9 @@ export default defineComponent({
       return props.objectSchema?.title === 'person' ? personReactiveFormActions() : [];
     });
 
+    // side menu stuff
+    const selectedSideContainer = ref<undefined | SIDE_CONTAINERS>(undefined);
+
     // Messages stuff
     const messages = computed(() => ({
       errors: formErrors.value.map((entry) => ({ code: entry.pointer, message: entry.message })),
@@ -394,13 +443,16 @@ export default defineComponent({
       objectData,
       reactiveFormActions,
       selectedDisplayOption,
+      selectedSideContainer,
       translations,
 
+      mdiEyeOutline,
       mdiFormatListBulleted,
       mdiHistory,
       mdiInformationOutline,
       upperFirst,
-      t
+      t,
+      SIDE_CONTAINERS
     };
   }
 });
@@ -415,7 +467,8 @@ export default defineComponent({
     "messages": "messages",
     "objects": "objects",
     "objectView": "object view",
-    "tableOfContents": "contents"
+    "tableOfContents": "contents",
+    "viewAs": "view as"
   },
   "de": {
     "createPIA": "DSFA erstellen",
@@ -424,7 +477,8 @@ export default defineComponent({
     "messages": "Meldungen",
     "objects": "Objekte",
     "objectView": "Objektansicht",
-    "tableOfContents": "Inhalt"
+    "tableOfContents": "Inhalt",
+    "viewAs": "darstellen als"
   }
 }
 </i18n>

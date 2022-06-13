@@ -111,12 +111,22 @@ export default defineComponent({
       }
     });
 
+    watch(
+      () => props.value,
+      (newValue) => {
+        if (newValue) {
+          // Set risk definition if scope
+          setDefaultRiskDefinitionIfScope();
+        }
+      }
+    );
+
     const isFormDirty = ref(false);
     const isFormValid = ref(false);
 
     // object schema stuff
     const objectSchema: Ref<IVeoObjectSchema | undefined> = ref(undefined);
-    const objectData: any = ref({});
+    const objectData = ref<any>({});
     seedInitialData();
 
     function seedInitialData() {
@@ -139,6 +149,22 @@ export default defineComponent({
       isFormDirty.value = false;
       isFormValid.value = false;
     }
+
+    const setDefaultRiskDefinitionIfScope = async () => {
+      if (props.objectType === 'scope') {
+        const domain = await $api.domain.fetch(props.domainId);
+        if (Object.keys(domain.riskDefinitions).length === 1) {
+          if (!objectData.value.domains) {
+            objectData.value.domains = {};
+          }
+          if (!objectData.value.domains[props.domainId]) {
+            objectData.value.domains[props.domainId] = {};
+          }
+
+          objectData.value.domains[props.domainId].riskDefinition = Object.keys(domain.riskDefinitions)[0];
+        }
+      }
+    };
 
     const { fetch } = useFetch(async () => {
       objectSchema.value = await $api.schema.fetch(props.objectType, [props.domainId]);

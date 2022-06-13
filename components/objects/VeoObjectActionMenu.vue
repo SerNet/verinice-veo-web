@@ -30,33 +30,21 @@
       style="bottom: 12px"
     >
       <template #activator>
-        <v-tooltip
-          left
-          :disabled="!tooltipText"
+        <v-btn
+          v-cy-name="'show-actions-button'"
+          color="primary"
+          :disabled="!allowedActions.length || disabled"
+          depressed
+          fab
+          data-component-name="object-details-actions-button"
         >
-          <template #activator="{ on }">
-            <div v-on="on">
-              <v-btn
-                v-cy-name="'show-actions-button'"
-                color="primary"
-                :disabled="!allowedActions.length || disabled"
-                depressed
-                fab
-                data-component-name="object-details-actions-button"
-              >
-                <v-icon v-if="speedDialIsOpen && !disabled && allowedActions.length">
-                  {{ mdiClose }}
-                </v-icon>
-                <v-icon v-else>
-                  {{ mdiPlus }}
-                </v-icon>
-              </v-btn>
-            </div>
-          </template>
-          <template #default>
-            {{ tooltipText }}
-          </template>
-        </v-tooltip>
+          <v-icon v-if="speedDialIsOpen && !disabled && allowedActions.length">
+            {{ mdiClose }}
+          </v-icon>
+          <v-icon v-else>
+            {{ mdiPlus }}
+          </v-icon>
+        </v-btn>
       </template>
       <template
         v-if="allowedActions.length && !disabled"
@@ -81,6 +69,7 @@
     </v-speed-dial>
     <!-- dialogs -->
     <VeoLinkObjectDialog
+      v-if="addEntityDialog.editedObject"
       v-model="addEntityDialog.value"
       v-bind="addEntityDialog"
       @success="onAddEntitySuccess"
@@ -110,8 +99,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, useRoute, ref, computed, useContext, watch, PropType } from '@nuxtjs/composition-api';
-import { upperFirst } from 'lodash';
+import { defineComponent, onMounted, useRoute, ref, computed, useContext, PropType } from '@nuxtjs/composition-api';
+import { pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
@@ -130,6 +119,10 @@ export default defineComponent({
     object: {
       type: Object as PropType<IVeoEntity | undefined>,
       default: undefined
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {
@@ -145,8 +138,6 @@ export default defineComponent({
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     const speedDialIsOpen = ref(false);
-    const tooltipText = ref<string | undefined>(undefined);
-    const disabled = computed(() => props.type === 'risks' && !hasScopeWithRiskDefinitionAsParent(parents.value));
 
     // fetch schemas from api
     onMounted(async () => {
@@ -154,21 +145,6 @@ export default defineComponent({
         unit: unitId.value
       });
       schemas.value = fetchedSchemas;
-
-      // For some reason an error gets thrown if this watch isn't in the unmounted
-      watch(
-        () => disabled.value,
-        (newValue) => {
-          if (newValue) {
-            tooltipText.value = t('parentScopeNoRiskDefinition').toString();
-          } else {
-            tooltipText.value = undefined;
-          }
-        },
-        {
-          immediate: true
-        }
-      );
     });
 
     // configure possible action items
@@ -228,8 +204,8 @@ export default defineComponent({
      */
 
     // dialog options
-    const addEntityDialog = ref<{ editedEntity: IVeoEntity | undefined; addType: 'scope' | 'entity'; value: boolean; hierarchicalContext: 'child' | 'parent' }>({
-      editedEntity: undefined,
+    const addEntityDialog = ref<{ editedObject: IVeoEntity | undefined; addType: 'scope' | 'entity'; value: boolean; hierarchicalContext: 'child' | 'parent' }>({
+      editedObject: undefined,
       addType: 'scope' as 'scope' | 'entity',
       value: false,
       hierarchicalContext: 'child'
@@ -237,12 +213,12 @@ export default defineComponent({
 
     // object types for object type selection in CreateEntityDialog
     const createEntitySchemas = computed(() => {
-      return schemas.value.map((schema: IVeoSchemaEndpoint) => {
-        return {
+      return schemas.value
+        .filter((filter) => filter.schemaName !== 'scope')
+        .map((schema: IVeoSchemaEndpoint) => ({
           text: upperFirst(schema.schemaName),
           value: schema.schemaName
-        };
-      });
+        }));
     });
 
     const createEntityDialog = ref({
@@ -275,7 +251,7 @@ export default defineComponent({
     // control dialogs
     const openLinkObjectDialog = (objectType?: string, addAsChild?: boolean) => {
       addEntityDialog.value = {
-        editedEntity: props.object,
+        editedObject: props.object,
         addType: objectType === 'scope' ? 'scope' : 'entity',
         value: true,
         hierarchicalContext: addAsChild === undefined || addAsChild ? 'child' : 'parent'
@@ -301,11 +277,10 @@ export default defineComponent({
     const onCreateObjectSuccess = async (newObjectId: string) => {
       if (props.object) {
         try {
-          await linkObject(
-            createObjectDialog.value.hierarchicalContext as any,
-            { objectType: props.object.type, objectId: props.object.id },
-            { objectType: createObjectDialog.value.objectType as string, objectId: newObjectId }
-          );
+          await linkObject(createObjectDialog.value.hierarchicalContext as any, pick(props.object, 'id', 'type'), {
+            type: createObjectDialog.value.objectType as string,
+            id: newObjectId
+          });
           displaySuccessMessage(t('objectLinked').toString());
           emit('reload');
         } catch (e: any) {
@@ -326,21 +301,6 @@ export default defineComponent({
       emit('reload');
     };
 
-    const hasScopeWithRiskDefinitionAsParent = (eligibleEntities: IVeoEntity[]) => eligibleEntities.some((entity) => !!entity.domains?.[domainId.value]?.riskDefinition);
-
-    const parents = ref<IVeoEntity[]>([]);
-    watch(
-      () => props.object,
-      async (newValue) => {
-        if (newValue) {
-          parents.value = (await $api.entity.fetchParents('scope', newValue.id)).items;
-        }
-      },
-      {
-        immediate: true
-      }
-    );
-
     return {
       createEntitySchemas,
       createEntityDialog,
@@ -355,9 +315,7 @@ export default defineComponent({
       addEntityDialog,
       speedDialIsOpen,
       allowedActions,
-      disabled,
       domainId,
-      tooltipText,
 
       t,
       upperFirst,
@@ -378,8 +336,7 @@ export default defineComponent({
     "linkScope": "select scope",
     "object": "object",
     "objectLinked": "The links were successfully updated.",
-    "objectNotLinked": "The links could not be updated.",
-    "parentScopeNoRiskDefinition": "This object needs a parent scope with a risk definition to create a risk"
+    "objectNotLinked": "The links could not be updated."
   },
   "de": {
     "createObject": "{0} erstellen",
@@ -389,8 +346,7 @@ export default defineComponent({
     "linkScope": "Scope auswählen",
     "object": "Objekt",
     "objectLinked": "Die Verknüpfungen wurden erfolgreich aktualisiert.",
-    "objectNotLinked": "Die Verknüpfungen konnten nicht aktualisiert werden.",
-    "parentScopeNoRiskDefinition": "Dieses Objekt muss Teil eines Scopes mit Risikodefinition sein, um ein Risiko zu erstellen"
+    "objectNotLinked": "Die Verknüpfungen konnten nicht aktualisiert werden."
   }
 }
 </i18n>

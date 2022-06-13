@@ -105,7 +105,7 @@ import { computed, ComputedRef, defineComponent, Ref, ref, useContext, useFetch,
 import { useI18n } from 'nuxt-i18n-composable';
 
 import LocalStorage from '~/util/LocalStorage';
-import { createUUIDUrlParam } from '~/lib/utils';
+import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { IVeoFormSchemaMeta, IVeoUnit } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -124,7 +124,8 @@ export default defineComponent({
 
     const firstUnitId: ComputedRef<string | undefined> = computed(() => nonDemoUnits.value[0]?.id);
 
-    const domainId = computed(() => route.value.params.domain);
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     watch(
       () => domainId.value,
@@ -135,7 +136,7 @@ export default defineComponent({
       const forms = await $api.form.fetchAll(domainId.value);
       const units = await $api.unit.fetchAll();
       const demoUnit = units.find((unit) => unit.name === 'Demo');
-      nonDemoUnits.value = units.filter((unit) => unit.name !== 'Demo');
+      nonDemoUnits.value = units.filter((unit) => unit.name !== 'Demo' && getFirstDomainDomaindId(unit));
       if (demoUnit) {
         const demoUnitDomains = await $api.domain.fetchUnitDomains(demoUnit.id);
         const dsgvoDomain = demoUnitDomains.find((domain) => domain.name === 'DS-GVO');
@@ -175,8 +176,8 @@ export default defineComponent({
       to: {
         name: 'unit-domains-domain',
         params: {
-          unit: route.value.params.unit || (firstUnitId.value ? createUUIDUrlParam('unit', firstUnitId.value) : ''),
-          domain: route.value.params.domain || ''
+          unit: unitId.value || (firstUnitId.value ? createUUIDUrlParam('unit', firstUnitId.value) : ''),
+          domain: domainId.value
         }
       },
       name: 'Dashboard'
@@ -191,8 +192,8 @@ export default defineComponent({
           to: {
             name: 'unit-domains-domain-objects',
             params: {
-              unit: route.value.params.unit || (firstUnitId.value ? createUUIDUrlParam('unit', firstUnitId.value) : ''),
-              domain: route.value.params.domain || ''
+              unit: unitId.value || (firstUnitId.value ? createUUIDUrlParam('unit', firstUnitId.value) : ''),
+              domain: domainId.value
             },
             query: {
               objectType,
@@ -221,7 +222,7 @@ export default defineComponent({
   "en": {
     "createEntitiesCTA": "Many paths lead to the goal... record the {0}, name your {1} or create a {2}.",
     "dashboardCTA": "One step at a time... the {0} provides you with an overall view and leads you along the lifecycle of your assets directly to the next tasks or the last activities.",
-    "demoUnitCTA": "You prefer to get your bearings first? Then take a look at the {0} (resets with every login).",
+    "demoUnitCTA": "You prefer to get your bearings first? Then take a look at the {0}.",
     "helpCTA": "Our Hints and Tutorials will show you how to use the system, and you can gain a deeper insight in the Online Documentation.",
     "lastLine": "Good luck!{0}Your verinice.TEAM",
     "go": "Lets go!",
@@ -231,7 +232,7 @@ export default defineComponent({
   "de": {
     "createEntitiesCTA": "Viele Wege führen zum Ziel... erfassen Sie die {0}, benennen Sie Ihre {1} oder legen Sie eine {2} an.",
     "dashboardCTA": "Ein Schritt nach dem anderen... das {0} bietet Ihnen einen Gesamtüberblick und führt Sie entlang des Lebebenszyklus Ihrer Assets direkt zu den nächsten Aufgaben oder den letzten Aktivitäten.",
-    "demoUnitCTA": "Sie möchten sich lieber erst orientieren? Dann werfen Sie einen Blick auf die {0} (wird bei jedem Login zurückgesetzt).",
+    "demoUnitCTA": "Sie möchten sich lieber erst orientieren? Dann werfen Sie einen Blick auf die {0}.",
     "helpCTA": "Die Bedienung vermitteln Ihnen unsere Hints und Tutorials, tieferen Einblick gewinnen Sie in der Online-Dokumentation.",
     "lastLine": "Viel Erfolg wünscht!{0}Ihr verinice.TEAM",
     "go": "Los gehts!",

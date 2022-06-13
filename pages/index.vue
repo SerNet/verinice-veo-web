@@ -40,6 +40,10 @@
                 :label="$t('unitpickerPlaceholder')"
               />
             </div>
+            <v-progress-linear
+              v-if="$fetchState.pending"
+              indeterminate
+            />
           </template>
           <template #default="{ items }">
             <v-list

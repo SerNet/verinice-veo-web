@@ -17,7 +17,6 @@
 -->
 <template>
   <VeoPageWrapper
-    class="veo-page-wrapper-white"
     collapsable-right
     :page-widths="pageWidths"
     @page-collapsed="onPageCollapsed"
@@ -25,7 +24,6 @@
     <template #default>
       <VeoPage
         v-if="objectSchemaHelper"
-        color="#ffffff"
         sticky-header
       >
         <template #header>
