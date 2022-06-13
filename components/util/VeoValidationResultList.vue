@@ -40,13 +40,30 @@
             {{ t('fix') }}
           </v-btn>
           <v-btn
-            v-for="action of item.actions"
-            :key="action.title"
+            v-if="item.actions && item.actions.length === 1"
             text
-            @click="action.callback()"
+            @click="item.actions && item.actions[0].callback()"
           >
-            {{ action.title }}
+            {{ item.actions[0].title }}
           </v-btn>
+          <VeoNestedMenu
+            v-else-if="item.actions && item.actions.length > 0"
+            :items="formattedActions(item.actions)"
+            bottom
+            right
+            offset-y
+          >
+            <template #activator="{ on }">
+              <v-btn
+                icon
+                v-on="on"
+              >
+                <v-icon>
+                  {{ mdiCogOutline }}
+                </v-icon>
+              </v-btn>
+            </template>
+          </VeoNestedMenu>
         </v-list-item-action>
       </v-list-item>
     </template>
@@ -62,17 +79,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
+import { defineComponent, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
+import { mdiCogOutline } from '@mdi/js';
 
+import { INestedMenuEntries } from '../layout/VeoNestedMenu.vue';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 export default defineComponent({
   props: {
     items: {
-      type: Array,
+      type: Array as PropType<VeoSchemaValidatorMessage[]>,
       default: () => []
-    } as PropOptions<VeoSchemaValidatorMessage[]>,
+    },
     noErrorPlaceholderVisible: {
       type: Boolean,
       default: false
@@ -85,7 +104,19 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
 
-    return { t };
+    const formattedActions: (actions: VeoSchemaValidatorMessage['actions']) => INestedMenuEntries[] = (actions) =>
+      (actions || []).map((action) => ({
+        key: action.title,
+        title: action.title,
+        action: action.callback
+      }));
+
+    return {
+      formattedActions,
+
+      t,
+      mdiCogOutline
+    };
   }
 });
 </script>

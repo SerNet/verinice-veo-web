@@ -77,7 +77,8 @@
             :inspection-results="inspectionResults"
             @input="onFormInput"
             @show-revision="onShowRevision"
-            @create-pia="createPIADialogVisible = true"
+            @create-dpia="createDPIADialogVisible = true"
+            @link-dpia="linkObjectDialogVisible = true"
           >
             <template
               v-if="formDataIsRevision"
@@ -140,11 +141,20 @@
           />
           <VeoWindowUnloadPrevention :value="isFormDirty" />
           <VeoCreateObjectDialog
-            v-model="createPIADialogVisible"
+            v-model="createDPIADialogVisible"
             object-type="process"
             sub-type="PRO_DPIA"
             :domain-id="domainId"
-            @success="onPIACreated"
+            @success="onDPIACreated"
+          />
+          <VeoLinkObjectDialog
+            v-if="object"
+            v-model="linkObjectDialogVisible"
+            add-type="entity"
+            :edited-object="object"
+            :hierarchical-context="'child'"
+            :preselected-filters="{ subType: 'PRO_DPIA' }"
+            @success="onDPIALinked"
           />
         </template>
       </VeoPage>
@@ -320,12 +330,19 @@ export default defineComponent({
     const loading = computed(() => fetchState.pending);
 
     // pia stuff
-    const createPIADialogVisible = ref(false);
+    const createDPIADialogVisible = ref(false);
+    const linkObjectDialogVisible = ref(false);
 
-    const onPIACreated = async (newObjectId: string) => {
+    const onDPIACreated = async (newObjectId: string) => {
       if (object.value) {
         await linkObject('child', pick(object.value, 'id', 'type'), { type: 'process', id: newObjectId });
       }
+      createDPIADialogVisible.value = false;
+      loadObject();
+    };
+
+    const onDPIALinked = () => {
+      linkObjectDialogVisible.value = false;
       loadObject();
     };
 
@@ -342,7 +359,7 @@ export default defineComponent({
 
     return {
       VeoAlertType,
-      createPIADialogVisible,
+      createDPIADialogVisible,
       disabledInputs,
       domainId,
       entityModifiedDialogVisible,
@@ -350,11 +367,13 @@ export default defineComponent({
       inspectionResults,
       isFormDirty,
       isFormValid,
+      linkObjectDialogVisible,
       metaData,
       modifiedObject,
       onContinueNavigation,
       onFormInput,
-      onPIACreated,
+      onDPIACreated,
+      onDPIALinked,
       onShowRevision,
       preselectedSubType,
       resetForm,

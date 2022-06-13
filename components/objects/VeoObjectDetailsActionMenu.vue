@@ -17,14 +17,15 @@
 -->
 <template>
   <div>
-    <v-menu
+    <VeoNestedMenu
       bottom
       right
       offset-y
+      :items="visibleItems"
     >
       <template #activator="{ on }">
         <v-btn
-          :disabled="!allowedActions.length"
+          :disabled="!visibleItems.length"
           fab
           text
           small
@@ -35,26 +36,22 @@
           </v-icon>
         </v-btn>
       </template>
-      <v-list class="py-0">
-        <v-list-item
-          v-for="action in allowedActions"
-          :key="action.key"
-          @click="action.action"
-        >
-          <v-list-item-title>
-            {{ upperFirst(t(action.key).toString()) }}
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+    </VeoNestedMenu>
     <!-- dialogs -->
     <VeoCreateObjectDialog
-      v-if="createObjectDialog.objectType"
-      v-model="createObjectDialog.value"
+      v-model="createObjectDialogVisible"
       :domain-id="domainId"
-      :object-type="createObjectDialog.objectType"
-      :sub-type="createObjectDialog.subType"
+      object-type="process"
+      sub-type="PRO_DPIA"
       @success="onCreateObjectSuccess"
+    />
+    <VeoLinkObjectDialog
+      v-model="linkObjectDialogVisible"
+      add-type="entity"
+      :edited-object="object"
+      :hierarchical-context="'child'"
+      :preselected-filters="{ subType: 'PRO_DPIA' }"
+      @success="$emit('reload')"
     />
   </div>
 </template>
@@ -64,9 +61,11 @@ import { defineComponent, useRoute, ref, computed, PropType } from '@nuxtjs/comp
 import { pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiDotsVertical, mdiAlertOutline, mdiExclamationThick } from '@mdi/js';
+
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { INestedMenuEntries } from '~/components/layout/VeoNestedMenu.vue';
 
 export default defineComponent({
   name: 'VeoObjectDetailsActionMenu',
@@ -86,50 +85,57 @@ export default defineComponent({
 
     const subType = computed(() => props.object?.domains[domainId.value]?.subType);
 
-    // configure possible action items
-    const actions = [
+    const items: (INestedMenuEntries & { objectTypes: string[]; subTypes: string[] })[] = [
       {
-        key: 'createDPIA',
+        key: 'dpia',
+        title: t('dpia').toString(),
+        children: [
+          {
+            key: 'create_dpia',
+            title: t('createDPIA').toString(),
+            action: () => {
+              createObjectDialogVisible.value = true;
+            }
+          },
+          {
+            key: 'link_dpia',
+            title: t('linkDPIA').toString(),
+            action: () => {
+              linkObjectDialogVisible.value = true;
+            }
+          }
+        ],
         objectTypes: ['process'],
-        subTypes: ['PRO_DataProcessing'],
-        action: () => onCreateDPIA()
+        subTypes: ['PRO_DataProcessing']
       }
     ];
 
     // filter allowed actions for current object type & sub type
-    const allowedActions = computed(() =>
-      actions.filter((a) => props.object?.type && subType.value && a.objectTypes.includes(props.object?.type) && a.subTypes.includes(subType.value))
+    const visibleItems = computed(() =>
+      items.filter((a) => props.object?.type && subType.value && a.objectTypes.includes(props.object?.type) && a.subTypes.includes(subType.value))
     );
 
     // dialog stuff
-    const createObjectDialog = ref({
-      value: false as boolean,
-      objectType: undefined as undefined | string,
-      subType: undefined as undefined | string
-    });
-
-    const onCreateDPIA = () => {
-      createObjectDialog.value.objectType = props.object?.type;
-      createObjectDialog.value.subType = 'PRO_DPIA';
-      createObjectDialog.value.value = true;
-    };
+    const linkObjectDialogVisible = ref(false);
+    const createObjectDialogVisible = ref(false);
 
     // emit after new object creation for linking
     const onCreateObjectSuccess = (newObjectId: string) => {
       if (props.object) {
-        linkObject('child', pick(props.object, 'id', 'type'), { type: createObjectDialog.value.objectType as string, id: newObjectId });
+        linkObject('child', pick(props.object, 'id', 'type'), { type: 'process', id: newObjectId });
         emit('reload');
       }
     };
 
     return {
       domainId,
-      allowedActions,
-      createObjectDialog,
+      createObjectDialogVisible,
+      linkObjectDialogVisible,
       onCreateObjectSuccess,
 
       t,
       upperFirst,
+      visibleItems,
       mdiDotsVertical,
       mdiAlertOutline,
       mdiExclamationThick
@@ -141,10 +147,14 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "createDPIA": "create PIA"
+    "createDPIA": "create DPIA",
+    "dpia": "DPIA",
+    "linkDPIA": "link DPIA"
   },
   "de": {
-    "createDPIA": "DSFA erstellen"
+    "createDPIA": "DSFA erstellen",
+    "dpia": "DSFA",
+    "linkDPIA": "DSFA hinzufügen"
   }
 }
 </i18n>

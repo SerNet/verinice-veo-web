@@ -408,16 +408,25 @@ export default defineComponent({
     });
 
     const formatWarning = (warning: IVeoInspectionResult) => {
-      const actions = [];
+      let actions: VeoSchemaValidatorMessage['actions'] = [];
 
       for (const suggestion of warning.suggestions) {
         if (suggestion.type === 'addPart') {
-          actions.push({
-            title: t('createPIA').toString(),
-            callback: () => {
-              emit('create-pia');
+          actions = [
+            ...actions,
+            {
+              title: t('createDPIA').toString(),
+              callback: () => {
+                emit('create-dpia');
+              }
+            },
+            {
+              title: t('linkDPIA').toString(),
+              callback: () => {
+                emit('link-dpia');
+              }
             }
-          });
+          ];
         }
       }
 
@@ -471,9 +480,10 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "createPIA": "create PIA",
+    "createDPIA": "create DPIA",
     "display": "view as",
     "history": "history",
+    "linkDPIA": "link DPIA",
     "messages": "messages",
     "objects": "objects",
     "objectView": "object view",
@@ -484,9 +494,10 @@ export default defineComponent({
     "viewAs": "view as"
   },
   "de": {
-    "createPIA": "DSFA erstellen",
+    "createDPIA": "DSFA erstellen",
     "display": "Ansicht",
     "history": "Verlauf",
+    "linkDPIA": "DSFA hinzufügen",
     "messages": "Meldungen",
     "objects": "Objekte",
     "objectView": "Objektansicht",

@@ -36,7 +36,7 @@ export interface VeoSchemaValidatorMessage {
   message: string;
   fixable?: boolean;
   params?: IBaseObject;
-  actions?: { title: string; callback: CallableFunction };
+  actions?: { title: string; callback: CallableFunction }[];
 }
 
 export interface VeoSchemaValidatorValidationResult {
