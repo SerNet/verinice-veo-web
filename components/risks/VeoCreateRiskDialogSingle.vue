@@ -218,7 +218,6 @@ export default defineComponent({
 
         try {
           const mitigationDetails = { type: 'control', id: data.value.mitigation ? getEntityDetailsFromLink(data.value.mitigation).id : undefined };
-          console.log(createNewMitigatingAction.value);
           if (createNewMitigatingAction.value) {
             const newMitigationId = (await $api.entity.create('control', newMitigatingAction.value as any)).resourceId;
             mitigationDetails.id = newMitigationId;
