@@ -178,6 +178,7 @@ export default defineComponent({
         } else {
           fetchMitigation();
         }
+        emit('update:create-new-mitigating-action', newValue);
       }
     );
 

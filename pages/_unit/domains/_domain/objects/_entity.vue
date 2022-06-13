@@ -328,7 +328,7 @@ export default defineComponent({
     const disabledInputs = computed<string[]>(() => {
       const disabledInputs: string[] = [];
 
-      if (object.value?.domains?.[domainId.value].subType) {
+      if (object.value?.domains?.[domainId.value]?.subType) {
         disabledInputs.push(`#/properties/domains/properties/${domainId.value}/properties/subType`);
       }
 

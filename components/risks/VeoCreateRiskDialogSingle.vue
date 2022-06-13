@@ -77,6 +77,7 @@
           :domain="domain"
           :dirty-fields.sync="dirtyFields"
           @update:new-mitigating-action="newMitigatingAction = $event"
+          @update:create-new-mitigating-action="createNewMitigatingAction = $event"
           @update:mitigation-parts="mitigationParts = $event"
         />
       </v-form>
@@ -217,7 +218,8 @@ export default defineComponent({
 
         try {
           const mitigationDetails = { type: 'control', id: data.value.mitigation ? getEntityDetailsFromLink(data.value.mitigation).id : undefined };
-          if (newMitigatingAction.value) {
+          console.log(createNewMitigatingAction.value);
+          if (createNewMitigatingAction.value) {
             const newMitigationId = (await $api.entity.create('control', newMitigatingAction.value as any)).resourceId;
             mitigationDetails.id = newMitigationId;
             data.value.mitigation = await createLink(mitigationDetails as IVeoAPIObjectIdentifier);
@@ -242,9 +244,11 @@ export default defineComponent({
 
     // Mitigating action stuff
     const newMitigatingAction = ref<Object | undefined>();
+    const createNewMitigatingAction = ref<Boolean>(true);
     const mitigationParts = ref<{ type: string; id: string }[]>([]);
 
     return {
+      createNewMitigatingAction,
       data,
       dirtyFields,
       domain,
