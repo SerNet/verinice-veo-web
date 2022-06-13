@@ -252,6 +252,10 @@ export default defineComponent({
     objectCreationDisabled: {
       type: Boolean,
       default: false
+    },
+    inspectionResults: {
+      type: Array as PropType<IVeoInspectionResult[]>,
+      default: () => []
     }
   },
   setup(props, { emit }) {
@@ -268,7 +272,6 @@ export default defineComponent({
       fetch,
       fetchState: { pending: formLoading }
     } = useFetch(async () => {
-      fetchWarnings();
       fetchDecisions();
 
       // Only fetch once, as translations changing while the user uses this component is highly unlikely
@@ -375,7 +378,7 @@ export default defineComponent({
     // Messages stuff
     const messages = computed(() => ({
       errors: formErrors.value.map((entry) => ({ code: entry.pointer, message: entry.message })),
-      warnings: backendWarnings.value.filter((warning) => warning.severity === 'WARNING').map((warning) => formatWarning(warning)),
+      warnings: props.inspectionResults.filter((warning) => warning.severity === 'WARNING').map((warning) => formatWarning(warning)),
       information: objectInformation.value
     }));
 
@@ -421,16 +424,6 @@ export default defineComponent({
       return { message: warning.description[locale.value] || Object.values(warning.description)[0], actions };
     };
 
-    // errors and warnings from backend
-    const backendWarnings = ref<IVeoInspectionResult[]>([]);
-
-    // For some reason putting this in a useFetch and using fetchWarnings as the name for the fetch hook caused all useFetch to be refetched
-    const fetchWarnings = async () => {
-      if (objectData.value?.id) {
-        backendWarnings.value = await $api.entity.fetchInspections(objectData.value.type, objectData.value.id, props.domainId);
-      }
-    };
-
     // For some reason putting this in a useFetch and using fetchDecisions as the name for the fetch hook caused all useFetch to be refetched
     const fetchDecisions = async () => {
       // Fetch updated decision results and merge them with the current values
@@ -447,15 +440,6 @@ export default defineComponent({
       () => objectData.value,
       () => throttle(fetchDecisions, 500)(),
       { deep: true }
-    );
-
-    watch(
-      () => objectData.value?.id,
-      (newValue) => {
-        if (newValue) {
-          fetchWarnings();
-        }
-      }
     );
 
     return {

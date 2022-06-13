@@ -74,6 +74,7 @@
             :valid.sync="isFormValid"
             :disabled-inputs="disabledInputs"
             :object-meta-data.sync="metaData"
+            :inspection-results="inspectionResults"
             @input="onFormInput"
             @show-revision="onShowRevision"
             @create-pia="createPIADialogVisible = true"
@@ -158,7 +159,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
 import { separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
@@ -195,10 +196,14 @@ export default defineComponent({
     // Object details are originally part of the object, but as they might get updated independently, we want to avoid refetching the whole object, so we outsorce them.
     const metaData = ref<any>({});
 
+    // Inspection results
+    const inspectionResults = ref<IVeoInspectionResult[]>([]);
+
     const { fetchState, fetch: loadObject } = useFetch(async () => {
       object.value = await $api.entity.fetch(objectParameter.value.type, objectParameter.value.id);
       modifiedObject.value = cloneDeep(object.value);
       metaData.value = cloneDeep(object.value.domains[domainId.value]);
+      inspectionResults.value = await $api.entity.fetchInspections(object.value.type, object.value.id, domainId.value);
     });
 
     const notFoundError = computed(() => (fetchState.error as any)?.statusCode === 404);
@@ -342,6 +347,7 @@ export default defineComponent({
       domainId,
       entityModifiedDialogVisible,
       formDataIsRevision,
+      inspectionResults,
       isFormDirty,
       isFormValid,
       metaData,
