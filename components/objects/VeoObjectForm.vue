@@ -385,7 +385,7 @@ export default defineComponent({
     const objectInformation = computed<VeoSchemaValidatorMessage[]>(() => {
       const information: VeoSchemaValidatorMessage[] = [];
 
-      if (props.objectMetaData?.decisionResults?.piaMandatory) {
+      if (props.objectMetaData?.decisionResults?.piaMandatory.value !== undefined) {
         if (props.objectMetaData.decisionResults.piaMandatory.value) {
           information.push({
             code: 'I_PIA_MANDATORY',
@@ -487,9 +487,9 @@ export default defineComponent({
     "messages": "messages",
     "objects": "objects",
     "objectView": "object view",
-    "piaMandatory": "A privacy impact assesment is required for this object.",
+    "piaMandatory": "Privacy impact assesment required.",
     "piaMandatoryUnknown": "Cannot determine if a privacy assesment is required.",
-    "piaNotMandatory": "No privacy impact assesment is required for this object.",
+    "piaNotMandatory": "No privacy impact assesment required.",
     "tableOfContents": "contents",
     "viewAs": "view as"
   },
@@ -501,9 +501,9 @@ export default defineComponent({
     "messages": "Meldungen",
     "objects": "Objekte",
     "objectView": "Objektansicht",
-    "piaMandatory": "Für dieses Objekt ist eine Datenschutzfolgeabschätzung verpflichtend.",
+    "piaMandatory": "Datenschutzfolgeabschätzung verpflichtend.",
     "piaMandatoryUnknown": "Es kann nicht festgestellt werden, ob für dieses Objekt eine Datenschutzfolgeabschätzung verpflichtend ist.",
-    "piaNotMandatory": "Für dieses Objekt ist keine Datenschutzfolgeabschätzung verpflichtend.",
+    "piaNotMandatory": "Datenschutzfolgeabschätzung nicht verpflichtend.",
     "tableOfContents": "Inhalt",
     "viewAs": "darstellen als"
   }
