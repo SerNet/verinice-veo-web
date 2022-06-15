@@ -61,19 +61,21 @@
           <template
             v-for="item in items"
           >
-            <VeoPrimayNavigationCategory
-              v-if="item.children"
-              :key="item.key"
-              v-bind="item"
-              :level="0"
-              :mini-variant="miniVariant"
-            />
-            <VeoPrimaryNavigationEntry
-              v-else
-              :key="item.key"
-              v-bind="item"
-              :mini-variant="miniVariant"
-            />
+            <div :key="item.key">
+              <VeoPrimayNavigationCategory
+                v-if="item.children"
+                v-bind="item"
+                :level="0"
+                :mini-variant="miniVariant"
+                @expand-menu="setMiniVariant(false)"
+              />
+              <VeoPrimaryNavigationEntry
+                v-else
+                v-bind="item"
+                :mini-variant="miniVariant"
+                @expand-menu="setMiniVariant(false)"
+              />
+            </div>
           </template>
         </v-list-item-group>
         <v-divider class="mb-2" />
@@ -121,7 +123,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import {
   mdiApplicationCogOutline,
   mdiChevronDoubleLeft,
@@ -160,6 +162,7 @@ export interface INavItem {
   childrenLoading?: boolean;
   componentName?: string;
   classes?: string;
+  activePath?: string;
 }
 
 const objectTypeSortOrder = new Map<string, number>([
@@ -192,6 +195,7 @@ export default defineComponent({
   setup(props) {
     const { t, locale } = useI18n();
     const { $api, $user, params } = useContext();
+    const route = useRoute();
 
     // Layout stuff
     const miniVariant = ref<boolean>(LocalStorage.primaryNavMiniVariant);
@@ -230,6 +234,7 @@ export default defineComponent({
           return {
             key: objectSchema.title,
             name: upperFirst(objectSchema.title),
+            activePath: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectSchema.title}`,
             children: [
               // all of object type
               {
@@ -396,6 +401,7 @@ export default defineComponent({
     const objectsNavEntry = computed<INavItem>(() => ({
       key: 'objects',
       name: t('breadcrumbs.objects').toString(),
+      activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/objects`,
       icon: mdiFileDocumentOutline,
       children: objectTypesChildItems.value,
       childrenLoading: objectEntriesLoading.pending,
@@ -405,6 +411,7 @@ export default defineComponent({
     const catalogsNavEntry = computed<INavItem>(() => ({
       key: 'catalogs',
       name: t('breadcrumbs.catalogs').toString(),
+      activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/catalogs`,
       icon: mdiClipboardListOutline,
       children: catalogsEntriesChildItems.value,
       childrenLoading: catalogsEntriesLoading.pending,
@@ -414,6 +421,7 @@ export default defineComponent({
     const reportsNavEntry = computed<INavItem>(() => ({
       key: 'reports',
       name: t('breadcrumbs.reports').toString(),
+      activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/reports`,
       icon: mdiFileChartOutline,
       children: reportsEntriesChildItems.value,
       childrenLoading: reportsEntriesLoading.pending,
@@ -423,6 +431,7 @@ export default defineComponent({
     const risksNavEntry = computed<INavItem>(() => ({
       key: 'risks',
       name: t('breadcrumbs.risks').toString(),
+      activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/risks`,
       icon: mdiTableLarge,
       children: riskChildItems.value,
       childrenLoading: riskDefinitionsLoading.pending,
@@ -444,17 +453,22 @@ export default defineComponent({
 
     const items = computed<INavItem[]>(() => [
       ...(maxUnits.value && maxUnits.value > 2 ? [unitSelectionNavEntry] : []),
-      ...(props.unitId && props.domainId ? [domainDashboardNavEntry.value, objectsNavEntry.value, catalogsNavEntry.value, reportsNavEntry.value, risksNavEntry.value] : []),
-      ...(props.domainId && props.unitId && isContentCreator.value ? [editorsNavEntry.value] : [])
+      ...(props.unitId && props.domainId
+        ? [
+            domainDashboardNavEntry.value,
+            ...(props.domainId && props.unitId && isContentCreator.value ? [editorsNavEntry.value] : []),
+            objectsNavEntry.value,
+            catalogsNavEntry.value,
+            reportsNavEntry.value,
+            risksNavEntry.value
+          ]
+        : [])
     ]);
 
     // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
     const homeLink = computed(() => (params.value.domain ? `/${params.value.unit}/domains/${params.value.domain}` : params.value.unit ? `/${params.value.unit}` : '/'));
 
-    const activeCategory = ref(undefined);
-
     return {
-      activeCategory,
       items,
       homeLink,
       miniVariant,
@@ -493,12 +507,8 @@ export default defineComponent({
   padding-left: 4px;
 }
 
-.veo-primary-navigation ::v-deep.v-list-item--active:not(.v-list-group__header) {
-  border-left: 4px solid $primary;
-
-  > .v-list-item__title {
-    padding-left: 0;
-  }
+.veo-primary-navigation.v-navigation-drawer--mini-variant ::v-deep.v-list-item {
+  padding-left: 8px;
 }
 
 .veo-primary-navigation ::v-deep.v-list-item--active:not(.v-list-group__header) {

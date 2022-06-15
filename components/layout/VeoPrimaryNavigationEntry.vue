@@ -23,6 +23,7 @@
     :exact="exact"
     :class="classes"
     :data-component-name="componentName"
+    @click="onClick"
   >
     <v-list-item-icon v-if="icon">
       <v-tooltip
@@ -82,8 +83,17 @@ export default defineComponent({
       default: undefined
     }
   },
-  setup() {
-    return {};
+  setup(props, { emit }) {
+    const onClick = (event: any) => {
+      if (props.miniVariant) {
+        emit('expand-menu');
+      }
+      emit('click', event);
+    };
+
+    return {
+      onClick
+    };
   }
 });
 </script>

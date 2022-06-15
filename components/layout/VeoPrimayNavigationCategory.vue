@@ -21,8 +21,10 @@
     :sub-group="level > 0"
     :data-component-name="componentName"
     :prepend-icon="level > 0 ? mdiChevronDown : icon"
-    :class="{ 'border-top': level === 0, 'veo-primary-navigation__group': level > 0 }"
+    :class="{ 'border-top': level === 0, 'veo-primary-navigation__group': level > 0, 'veo-primary-navigation__group--active': $route.fullPath.includes(activePath) }"
     no-action
+    :value="$route.fullPath.includes(activePath) /* group prop is not working with query parameters, so we have to use a simple hack to expand the active path */"
+    @click="onClick"
   >
     <template #activator>
       <v-list-item-title>
@@ -43,18 +45,22 @@
         </v-list-item-title>
       </v-list-item>
     </template>
-    <template v-for="child of children">
-      <VeoPrimaryNavigationEntry
-        v-if="!child.children"
-        :key="child.key"
-        v-bind="child"
-      />
-      <VeoPrimaryNavigationCategory
-        v-else
-        :key="child.key"
-        v-bind="child"
-        :level="level + 1"
-      />
+    <template v-else>
+      <template v-for="child of children">
+        <div :key="child.key">
+          <VeoPrimaryNavigationEntry
+            v-if="!child.children"
+            v-bind="child"
+            v-on="$listeners"
+          />
+          <VeoPrimaryNavigationCategory
+            v-else
+            v-bind="child"
+            :level="level + 1"
+            v-on="$listeners"
+          />
+        </div>
+      </template>
     </template>
   </v-list-group>
 </template>
@@ -92,13 +98,26 @@ export default defineComponent({
       type: Number,
       default: 0
     },
+    activePath: {
+      type: String,
+      required: true
+    },
     componentName: {
       type: String,
       default: undefined
     }
   },
-  setup() {
+  setup(props, { emit }) {
+    const onClick = (event: any) => {
+      if (props.miniVariant) {
+        emit('expand-menu');
+      }
+      emit('click', event);
+    };
+
     return {
+      onClick,
+
       mdiChevronDown
     };
   }
@@ -118,5 +137,11 @@ export default defineComponent({
     margin-bottom: 8px;
     margin-top: 8px;
   }
+}
+
+.veo-primary-navigation__group > ::v-deep.v-list-group__header.v-list-item--active,
+.veo-primary-navigation__group--active > ::v-deep.v-list-group__header {
+  color: #000000;
+  font-weight: bold;
 }
 </style>
