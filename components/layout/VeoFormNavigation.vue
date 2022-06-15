@@ -16,40 +16,45 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list
-    flat
-    dense
-    class="py-0"
-  >
-    <v-list-item-group
-      v-model="selectedItem"
-      mandatory
-      color="primary"
+  <div>
+    <h2 class="text-h2 px-4 pt-1">
+      {{ $t('tableOfContents').toString() }}
+    </h2>
+    <v-list
+      flat
+      dense
+      class="py-0"
     >
-      <template v-for="item in items">
-        <v-list-item
-          :key="item.initialId + '0'"
-          style="min-height: 28px;"
-          :value="item.initialId"
-          @click="onClick(item.initialId)"
-        >
-          <v-list-item-content>
-            <v-list-item-title :class="currentLevelLeftMargin">
-              {{ item.text }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <VeoFormNavigation
-          v-if="nestingLevel < 0"
-          :key="item.initialId + '1'"
-          :form-schema="item.layout"
-          :custom-translation="customTranslation"
-          :initial-id="item.initialId"
-          :nesting-level="nextNestingLevel"
-        />
-      </template>
-    </v-list-item-group>
-  </v-list>
+      <v-list-item-group
+        v-model="selectedItem"
+        mandatory
+        color="primary"
+      >
+        <template v-for="item in items">
+          <v-list-item
+            :key="item.initialId + '0'"
+            style="min-height: 28px;"
+            :value="item.initialId"
+            @click="onClick(item.initialId)"
+          >
+            <v-list-item-content>
+              <v-list-item-title :class="currentLevelLeftMargin">
+                {{ item.text }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <VeoFormNavigation
+            v-if="nestingLevel < 0"
+            :key="item.initialId + '1'"
+            :form-schema="item.layout"
+            :custom-translation="customTranslation"
+            :initial-id="item.initialId"
+            :nesting-level="nextNestingLevel"
+          />
+        </template>
+      </v-list-item-group>
+    </v-list>
+  </div>
 </template>
 
 <script lang="ts">
@@ -195,6 +200,13 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-</style>
+<i18n>
+{
+  "en": {
+    "tableOfContents": "Contents"
+  },
+  "de": {
+    "tableOfContents": "Inhalt"
+  }
+}
+</i18n>
