@@ -19,14 +19,17 @@
   <v-tooltip bottom>
     <template #activator="{ on }">
       <v-btn
-        class="collapse-button px-0 white"
+        class="collapse-button px-0 white mt-6"
         :class="{'collapse-button--right': right}"
+        color="black"
         small
-        elevation="0"
+        elevation="1"
         @click="$emit('input', !value)"
         v-on="on"
       >
-        <v-icon>{{ chevron }}</v-icon>
+        <v-icon small>
+          {{ chevron }}
+        </v-icon>
       </v-btn>
     </template>
     <template
@@ -98,22 +101,20 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .collapse-button {
+  border-radius: 999px;
+  height: 28px !important;
+  width: 28px !important;
+  min-width: 28px !important;
   position: absolute !important;
-  min-width: 35px !important;
-
   top: 0;
   z-index: 1;
 
   &:not(.collapse-button--right) {
-    left: 0;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    left: 4px;
   }
 }
 
 .collapse-button--right {
-  right: 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+  right: 4px;
 }
 </style>

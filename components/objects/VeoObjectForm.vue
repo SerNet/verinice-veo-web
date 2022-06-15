@@ -25,6 +25,7 @@
         :id="scrollWrapperId"
         data-component-name="object-form-form"
         sticky-footer
+        no-padding
       >
         <template #default>
           <slot name="prepend-form" />

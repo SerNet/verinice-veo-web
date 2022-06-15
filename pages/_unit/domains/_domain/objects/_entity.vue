@@ -19,6 +19,7 @@
   <VeoObjectNotFound v-if="!loading && notFoundError" />
   <VeoPageWrapper
     v-else
+    class="px-4 pt-4"
     collapsable-left
     collapsable-right
     :loading="loading"
@@ -34,6 +35,7 @@
       <VeoPage
         sticky-footer
         data-component-name="object-details-details"
+        no-padding
       >
         <template #default>
           <VeoObjectDetails
@@ -60,7 +62,6 @@
       <VeoPage
         content-class="fill-height"
         no-padding
-        :title="!pageWidths[1] ? (object && object.displayName) : undefined"
         data-component-name="object-details-form"
       >
         <template #default>
