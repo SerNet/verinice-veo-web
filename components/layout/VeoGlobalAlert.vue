@@ -16,39 +16,13 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-snackbar
-    v-if="type === alertType.SUCCESS"
-    v-model="value"
-    bottom
-    light
-    @input="onInput"
-  >
-    <v-row
-      class="align-center"
-      dense
-    >
-      <v-col cols="auto">
-        <v-icon
-          color="success"
-          large
-        >
-          {{ mdiCheckCircleOutline }}
-        </v-icon>
-      </v-col>
-      <v-col
-        cols="auto"
-        class="text-body-1"
-      >
-        {{ text }}
-      </v-col>
-    </v-row>
-  </v-snackbar>
   <VeoAlert
-    v-else
     v-model="value"
     v-bind="$props"
     :save-button-text="(params && params.buttonText) || t('global.button.ok')"
     class="veo-global-alert"
+    :no-close-button="type === VeoAlertType.SUCCESS"
+    :timeout="type === VeoAlertType.SUCCESS ? 5000 : undefined"
     @input="onInput"
   >
     <template
@@ -124,7 +98,7 @@ export default defineComponent<IVeoGlobalAlert>({
     }
 
     return {
-      alertType: VeoAlertType,
+      VeoAlertType,
       mdiCheckCircleOutline,
       onCustomButtonClick,
       onInput,
@@ -138,11 +112,10 @@ export default defineComponent<IVeoGlobalAlert>({
 
 <style lang="scss" scoped>
 .veo-global-alert {
-  bottom: 0;
-  left: 50%;
-  max-width: 800px;
+  bottom: 24px;
+  right: 16px;
+  max-width: 400px;
   position: fixed;
-  transform: translateX(-50%);
   width: 100%;
   z-index: 301;
 }

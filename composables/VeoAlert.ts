@@ -32,7 +32,7 @@ export function useVeoAlerts() {
    * @param params Additional params to further customize certain messages
    * @returns Key of the alert. Can be used to call expireAlert programmatically
    */
-  function displayMessage(type: VeoAlertType, title: string | undefined, text: string, params?: IVeoGlobalAlertParams) {
+  function displayMessage(type: VeoAlertType, title: string, text: string | undefined, params?: IVeoGlobalAlertParams) {
     const alertKey = Date.now();
     alerts.value.push({
       type,
@@ -75,7 +75,7 @@ export function useVeoAlerts() {
    * @returns Key of the alert. Can be used to call expireAlert programmatically
    */
   function displaySuccessMessage(text: string): number {
-    return displayMessage(VeoAlertType.SUCCESS, undefined, text);
+    return displayMessage(VeoAlertType.SUCCESS, text, undefined);
   }
 
   /**
