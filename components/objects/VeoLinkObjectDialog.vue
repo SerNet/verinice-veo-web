@@ -73,12 +73,14 @@
           </v-chip-group>
         </v-col>
       </v-row>
-      <VeoEntitySelectionList
-        v-model="modifiedSelectedItems"
-        :items="availableObjects"
-        :loading="fetchState.pending || loadingObjects"
-        @page-change="onPageChange"
-      />
+      <VeoCard>
+        <VeoEntitySelectionList
+          v-model="modifiedSelectedItems"
+          :items="availableObjects"
+          :loading="fetchState.pending || loadingObjects"
+          @page-change="onPageChange"
+        />
+      </VeoCard>
     </template>
     <template #dialog-options>
       <v-btn

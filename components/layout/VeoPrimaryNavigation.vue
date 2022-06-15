@@ -101,13 +101,13 @@
               v-if="miniVariant"
               color="black"
             >
-              {{ mdiChevronDoubleRight }}
+              {{ mdiChevronRight }}
             </v-icon>
             <v-icon
               v-else
               color="black"
             >
-              {{ mdiChevronDoubleLeft }}
+              {{ mdiChevronLeft }}
             </v-icon>
           </v-list-item-icon>
           <v-list-item-title v-if="miniVariant">
@@ -126,8 +126,8 @@
 import { computed, defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import {
   mdiApplicationCogOutline,
-  mdiChevronDoubleLeft,
-  mdiChevronDoubleRight,
+  mdiChevronLeft,
+  mdiChevronRight,
   mdiClipboardListOutline,
   mdiFileChartOutline,
   mdiFileDocumentOutline,
@@ -474,8 +474,8 @@ export default defineComponent({
       miniVariant,
       setMiniVariant,
 
-      mdiChevronDoubleLeft,
-      mdiChevronDoubleRight,
+      mdiChevronLeft,
+      mdiChevronRight,
       t
     };
   }

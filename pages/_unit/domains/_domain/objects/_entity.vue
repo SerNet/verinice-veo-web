@@ -31,10 +31,8 @@
     @page-collapsed="onPageCollapsed"
   >
     <template #default>
-      <VeoPage        
-        sticky-header
+      <VeoPage
         sticky-footer
-        content-class="fill-height"
         data-component-name="object-details-details"
       >
         <template #default>
@@ -49,7 +47,10 @@
           />
         </template>
         <template #footer>
+          <div style="height: 36px" />
           <VeoObjectActionMenu
+            color="primary"
+            speed-dial-style="bottom: 12px; right: 0"
             :object="object"
             :type="activeTab"
             @reload="loadObject"
