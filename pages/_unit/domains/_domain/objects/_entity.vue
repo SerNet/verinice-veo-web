@@ -19,6 +19,7 @@
   <VeoObjectNotFound v-if="!loading && notFoundError" />
   <VeoPageWrapper
     v-else
+    class="px-4 pt-4"
     collapsable-left
     collapsable-right
     :loading="loading"
@@ -31,11 +32,10 @@
     @page-collapsed="onPageCollapsed"
   >
     <template #default>
-      <VeoPage        
-        sticky-header
+      <VeoPage
         sticky-footer
-        content-class="fill-height"
         data-component-name="object-details-details"
+        no-padding
       >
         <template #default>
           <VeoObjectDetails
@@ -49,7 +49,10 @@
           />
         </template>
         <template #footer>
+          <div style="height: 36px" />
           <VeoObjectActionMenu
+            color="primary"
+            speed-dial-style="bottom: 12px; right: 0"
             :object="object"
             :type="activeTab"
             @reload="loadObject"
@@ -59,7 +62,6 @@
       <VeoPage
         content-class="fill-height"
         no-padding
-        :title="!pageWidths[1] ? (object && object.displayName) : undefined"
         data-component-name="object-details-form"
       >
         <template #default>

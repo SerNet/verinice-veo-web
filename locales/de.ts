@@ -50,7 +50,6 @@ export default {
   'global.button.no': 'Nein',
   'global.button.ok': 'Okay',
   'global.button.previous': 'Zurück',
-  'global.button.discard': 'Abbrechen',
   'global.button.save': 'Speichern',
   'global.button.save_quit': 'Speichern und Schließen',
   'global.button.apply': 'Übernehmen',

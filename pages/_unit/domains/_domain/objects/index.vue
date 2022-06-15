@@ -19,135 +19,140 @@
   <VeoPage
     :title="upperFirst(t('objectOverview').toString())"
     data-component-name="object-overview-page"
+    sticky-footer
   >
-    <VeoFilterDialog
-      v-model="filterDialogVisible"
-      :domain="domainId"
-      :filter="filter"
-      object-type-required
-      @update:filter="updateRouteQuery"
-    />
-    <VeoCreateObjectDialog
-      v-if="objectType"
-      v-model="createDialogVisible"
-      :domain-id="domainId"
-      :object-type="objectType"
-      :sub-type="subType"
-      @success="fetch"
-    />
-    <VeoDeleteEntityDialog
-      :value="!!itemDelete"
-      :item="itemDelete"
-      @input="onCloseDeleteDialog"
-      @success="fetch(); onCloseDeleteDialog(false)"
-      @error="showError('delete', itemDelete, $event)"
-    />
-    <v-row no-gutters>
-      <v-col
-        cols="auto"
-        class="d-flex align-center"
-      >
+    <template #default>
+      <VeoFilterDialog
+        v-model="filterDialogVisible"
+        :domain="domainId"
+        :filter="filter"
+        object-type-required
+        @update:filter="updateRouteQuery"
+      />
+      <VeoCreateObjectDialog
+        v-if="objectType"
+        v-model="createDialogVisible"
+        :domain-id="domainId"
+        :object-type="objectType"
+        :sub-type="subType"
+        @success="fetch"
+      />
+      <VeoDeleteEntityDialog
+        :value="!!itemDelete"
+        :item="itemDelete"
+        @input="onCloseDeleteDialog"
+        @success="fetch(); onCloseDeleteDialog(false)"
+        @error="showError('delete', itemDelete, $event)"
+      />
+      <v-row no-gutters>
+        <v-col
+          cols="auto"
+          class="d-flex align-center"
+        >
+          <v-btn
+            v-cy-name="'filter-button'"
+            class="mr-2"
+            rounded
+            primary
+            color="white"
+            depressed
+            small
+            style="outline: 1px solid black;"
+            data-component-name="object-overview-filter"
+            @click="filterDialogVisible = true"
+          >
+            <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter').toString()) }}
+          </v-btn>
+        </v-col>
+        <v-col
+          cols="auto"
+          class="grow"
+        >
+          <v-chip-group
+            v-cy-name="'chips'"
+            data-component-name="object-overview-active-filters"
+          >
+            <VeoObjectChip
+              v-for="k in activeFilterKeys"
+              :key="k"
+              :label="formatLabel(k)"
+              :value="formatValue(k, filter[k])"
+              :close="k!='objectType'"
+              @click:close="clearFilter(k)"
+            />
+          </v-chip-group>
+        </v-col>
+      </v-row>
+      <VeoCard v-if="!fetchState.error">
+        <VeoObjectTable
+          :items="items"
+          :loading="fetchState.pending"
+          :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
+          data-component-name="object-overview-table"
+          @page-change="onPageChange"
+          @click="openItem"
+        >
+          <template #actions="{item}">
+            <v-tooltip
+              v-for="btn in actions"
+              :key="btn.id"
+              bottom
+            >
+              <template #activator="{on}">
+                <v-btn
+                  icon
+                  :data-component-name="`object-overview-${btn.id}-button`"
+                  @click="btn.action(item)"
+                  v-on="on"
+                >
+                  <v-icon v-text="btn.icon" />
+                </v-btn>
+              </template>
+              {{ btn.label }}
+            </v-tooltip>
+          </template>
+        </VeoObjectTable>
+      </VeoCard>
+      <VeoObjectTypeError v-else>
         <v-btn
-          v-cy-name="'filter-button'"
-          class="mr-2"
-          rounded
-          primary
-          color="white"
-          depressed
-          small
-          style="outline: 1px solid black;"
-          data-component-name="object-overview-filter"
+          color="primary"
+          text
           @click="filterDialogVisible = true"
         >
-          <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter').toString()) }}
+          {{ t('filterObjects') }}
         </v-btn>
-      </v-col>
-      <v-col
-        cols="auto"
-        class="grow"
+      </VeoObjectTypeError>
+    </template>
+    <template #footer>
+      <v-tooltip
+        v-if="objectType"
+        left
       >
-        <v-chip-group
-          v-cy-name="'chips'"
-          data-component-name="object-overview-active-filters"
+        <template
+          #activator="{ on }"
         >
-          <VeoObjectChip
-            v-for="k in activeFilterKeys"
-            :key="k"
-            :label="formatLabel(k)"
-            :value="formatValue(k, filter[k])"
-            :close="k!='objectType'"
-            @click:close="clearFilter(k)"
-          />
-        </v-chip-group>
-      </v-col>
-    </v-row>
-    <VeoCard v-if="!fetchState.error">
-      <VeoObjectTable
-        :items="items"
-        :loading="fetchState.pending"
-        :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
-        data-component-name="object-overview-table"
-        @page-change="onPageChange"
-        @click="openItem"
-      >
-        <template #actions="{item}">
-          <v-tooltip
-            v-for="btn in actions"
-            :key="btn.id"
-            bottom
+          <v-btn
+            v-cy-name="'create-button'"
+            color="primary"
+            depressed
+            fab
+            absolute
+            style="bottom: 12px; right: 0"
+            data-component-name="create-object-button"
+            @click="createDialogVisible = true"
+            v-on="on"
           >
-            <template #activator="{on}">
-              <v-btn
-                icon
-                :data-component-name="`object-overview-${btn.id}-button`"
-                @click="btn.action(item)"
-                v-on="on"
-              >
-                <v-icon v-text="btn.icon" />
-              </v-btn>
-            </template>
-            {{ btn.label }}
-          </v-tooltip>
+            <v-icon>
+              {{ mdiPlus }}
+            </v-icon>
+          </v-btn>
+          <div style="height: 76px" />
         </template>
-      </VeoObjectTable>
-    </VeoCard>
-    <VeoObjectTypeError v-else>
-      <v-btn
-        color="primary"
-        text
-        @click="filterDialogVisible = true"
-      >
-        {{ t('filterObjects') }}
-      </v-btn>
-    </VeoObjectTypeError>
-    <v-tooltip
-      v-if="objectType"
-      left
-    >
-      <template
-        #activator="{ on }"
-      >
-        <v-btn
-          v-cy-name="'create-button'"
-          color="primary"
-          depressed
-          fab
-          absolute
-          right
-          style="bottom: 12px"
-          data-component-name="create-object-button"
-          @click="createDialogVisible = true"
-          v-on="on"
-        >
-          <v-icon>
-            {{ mdiPlus }}
-          </v-icon>
-        </v-btn>
-      </template>
-      <template #default>
-        <span>{{ t('createObject', [createObjectLabel]) }}</span>
-      </template>
-    </v-tooltip>
+        <template #default>
+          <span>{{ t('createObject', [createObjectLabel]) }}</span>
+        </template>
+      </v-tooltip>
+    </template>
   </VeoPage>
 </template>
 

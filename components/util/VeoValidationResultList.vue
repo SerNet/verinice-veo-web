@@ -24,12 +24,11 @@
       />
       <v-list-item
         :key="index"
-        class="d-block"
+        class="d-block veo-object-message"
+        :class="item.params && item.params.type ? `veo-object-message--${item.params.type}` : ''"
       >
-        <v-list-item-content>
-          <v-list-item-title class="text-wrap">
-            {{ item.message }}
-          </v-list-item-title>
+        <v-list-item-content class="text-body-2">
+          {{ item.message }}
         </v-list-item-content>
         <v-list-item-action class="fill-width ml-0 my-0">
           <v-btn
@@ -137,5 +136,25 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-list {
   background-color: transparent;
+}
+
+.veo-object-message {
+  border-left: 4px solid transparent;
+}
+
+.veo-object-message--success {
+  border-left: 4px solid #4caf50;
+}
+
+.veo-object-message--info {
+  border-left: 4px solid #2196f3;
+}
+
+.veo-object-message--warning {
+  border-left: 4px solid #fb8c00;
+}
+
+.veo-object-message--error {
+  border-left: 4px solid $primary;
 }
 </style>

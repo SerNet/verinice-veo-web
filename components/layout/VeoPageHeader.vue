@@ -63,9 +63,9 @@ export default defineComponent({
     });
     return () =>
       h('div', { style: { display: 'contents' } }, [
-        ...(!!props.title || !!slots.title
+        ...(!!props.title || (!!slots.title && !!slots.title())
           ? [
-              h('div', { class: 'd-flex flex-row flex-wrap veo-page__title', style: { ...titlebarAlignment.value, 'background-color': props.color } }, [
+              h('div', { class: 'd-flex flex-row flex-wrap veo-page__title pt-4', style: { ...titlebarAlignment.value, 'background-color': props.color } }, [
                 ...(props.loading
                   ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'skeleton-title' })]
                   : [h(`h${props.headingLevel}`, { class: `d-inline flex-grow-0 text-h${props.headingLevel}` }, props.title), ...(slots.title ? [slots.title()] : [])])

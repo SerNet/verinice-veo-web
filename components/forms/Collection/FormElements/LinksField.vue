@@ -22,7 +22,7 @@
     :class="options && options.class"
     :style="options && options.style"
   >
-    <VeoCard
+    <div
       v-for="(val, index) in localValue"
       :key="index"
       class="links-field-item my-2 pt-2 d-flex flex-row"
@@ -53,7 +53,7 @@
           <v-icon>{{ mdiTrashCanOutline }}</v-icon>
         </v-btn>
       </v-card-actions>
-    </VeoCard>
+    </div>
     <v-btn
       v-if="!options.singleLink"
       small
@@ -195,10 +195,13 @@ export const helpers: Helpful<FormElementProps> = {
 </i18n>
 
 <style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
 .links-field-item ::v-deep .vf-layout {
   padding-left: 0;
   padding-right: 0;
+}
+
+.links-field-item {
+  border: 1px solid $medium-grey;
+  border-radius: 12px;
 }
 </style>

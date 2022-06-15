@@ -118,6 +118,7 @@ export default defineComponent<IProps>({
   display: flex;
   flex-direction: column;
   flex-shrink: 1;
+  height: 100%;
   margin: 0;
   max-height: 100%;
   overflow-x: hidden;

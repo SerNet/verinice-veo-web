@@ -25,6 +25,7 @@
         :id="scrollWrapperId"
         data-component-name="object-form-form"
         sticky-footer
+        no-padding
       >
         <template #default>
           <slot name="prepend-form" />
@@ -60,21 +61,27 @@
         data-component-name="object-form-sidebar"
       >
         <template #default>
-          <div class="d-flex flex-row fill-height pb-13 align-start">
+          <div class="d-flex flex-row fill-height pb-13 ml-2 align-start">
             <VeoCard
               v-show="selectedSideContainer !== undefined"
-              style="max-height: 100%"
+              class="overflow-y-auto"
+              style="max-height: 100%; width: 300px"
             >
-              <v-card-text v-if="selectedSideContainer === SIDE_CONTAINERS.VIEW">
-                <v-select
-                  v-model="selectedDisplayOption"
-                  class="mt-n2"
-                  :label="upperFirst(t('viewAs').toString())"
-                  hide-details
-                  :items="displayOptions"
-                  :data-cy="$utils.prefixCyData($options, 'display-select')"
-                />
-              </v-card-text>
+              <div v-if="selectedSideContainer === SIDE_CONTAINERS.VIEW">
+                <h2 class="text-h2 px-4 pt-1">
+                  {{ $t('display').toString() }}
+                </h2>
+                <v-card-text>
+                  <v-select
+                    v-model="selectedDisplayOption"
+                    class="mt-n2"
+                    :label="upperFirst(t('viewAs').toString())"
+                    hide-details
+                    :items="displayOptions"
+                    :data-cy="$utils.prefixCyData($options, 'display-select')"
+                  />
+                </v-card-text>
+              </div>
               <VeoFormNavigation
                 v-else-if="selectedSideContainer === SIDE_CONTAINERS.TABLE_OF_CONTENTS && currentFormSchema"
                 :form-schema="currentFormSchema && currentFormSchema.content"
@@ -385,22 +392,31 @@ export default defineComponent({
     const objectInformation = computed<VeoSchemaValidatorMessage[]>(() => {
       const information: VeoSchemaValidatorMessage[] = [];
 
-      if (props.objectMetaData?.decisionResults?.piaMandatory.value !== undefined) {
+      if (props.objectMetaData?.decisionResults?.piaMandatory?.value !== undefined) {
         if (props.objectMetaData.decisionResults.piaMandatory.value) {
           information.push({
             code: 'I_PIA_MANDATORY',
-            message: t('piaMandatory').toString()
+            message: t('piaMandatory').toString(),
+            params: {
+              type: 'info'
+            }
           });
         } else {
           information.push({
             code: 'I_PIA_NOT_MANDATORY',
-            message: t('piaNotMandatory').toString()
+            message: t('piaNotMandatory').toString(),
+            params: {
+              type: 'success'
+            }
           });
         }
       } else {
         information.push({
           code: 'I_PIA_MANDATORY_UNKNOWN',
-          message: t('piaMandatoryUnknown').toString()
+          message: t('piaMandatoryUnknown').toString(),
+          params: {
+            type: 'info'
+          }
         });
       }
 
@@ -430,7 +446,13 @@ export default defineComponent({
         }
       }
 
-      return { message: warning.description[locale.value] || Object.values(warning.description)[0], actions };
+      return {
+        message: warning.description[locale.value] || Object.values(warning.description)[0],
+        actions,
+        params: {
+          type: 'warning'
+        }
+      };
     };
 
     // For some reason putting this in a useFetch and using fetchDecisions as the name for the fetch hook caused all useFetch to be refetched

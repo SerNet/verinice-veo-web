@@ -60,6 +60,13 @@
       </v-form>
     </template>
     <template #dialog-options>
+      <v-btn
+        color="black"
+        text
+        @click="$emit('input', false)"
+      >
+        {{ $t('global.button.cancel') }}
+      </v-btn>
       <v-spacer />
       <v-btn
         :disabled="!valid"
@@ -123,6 +130,8 @@ export default Vue.extend({
         if (newValue) {
           this.dialog = newValue;
         } else {
+          this.newUnit.name = '';
+          this.newUnit.description = '';
           this.$emit('input', false);
         }
       }

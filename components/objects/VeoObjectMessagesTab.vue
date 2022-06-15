@@ -20,14 +20,13 @@
     <h2 class="text-h2 px-4 pt-1">
       {{ upperFirst(t('messages').toString()) }}
     </h2>
-    <v-divider class="pb-2" />
     <div
       v-for="section of ['errors', 'warnings', 'information']"
       :key="section"
     >
-      <h3 class="text-h3 px-4">
+      <span class="font-weight-medium text-body-1 px-4">
         {{ upperFirst(t(section).toString()) }} ({{ getMessagesBySeverity(section).length }})
-      </h3>
+      </span>
       <VeoValidationResultList
         :items="getMessagesBySeverity(section)"
         :no-error-placeholder-visible="section === 'errors'"

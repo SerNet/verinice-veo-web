@@ -107,7 +107,8 @@ export default defineComponent({
 
       if (data.items.length || !onlyAssignItemsIfItemsExist) {
         items.value = data.items;
-      } else {
+        // Only throw a message if we searched for a query string
+      } else if (displayName) {
         throw new Error(t('errorWhileFetching').toString());
       }
     };

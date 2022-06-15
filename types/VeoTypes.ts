@@ -569,8 +569,8 @@ export interface IVeoGlobalAlertParams {
 
 export interface IVeoGlobalAlert {
   type: VeoAlertType;
-  title?: string; // Not required in snackbars (Success message)
-  text: string;
+  title: string; // Not required in snackbars (Success message)
+  text?: string;
   params?: IVeoGlobalAlertParams; // Allows the user to specify certain aspects of the alert
   alertKey?: number; // Used to display one alert after another (only one should be displayed at once) and to programmatically remove an alert
 }
