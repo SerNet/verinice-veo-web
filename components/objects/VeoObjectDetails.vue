@@ -94,7 +94,7 @@
               :object="object"
               :dense="dense"
               :domain-id="domainId"
-              @new-object-created="$emit('reload')"
+              @reload="$emit('reload')"
             />
           </VeoCard>
         </v-tab-item>
