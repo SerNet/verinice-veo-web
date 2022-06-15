@@ -136,7 +136,7 @@ export default defineComponent({
      * Defines whether the current objects parent/child scopes should be edited or the parent/child objects of the same type as the object.
      */
     addType: {
-      type: String,
+      type: String as PropType<'scope' | 'entity'>,
       required: true
     },
     /**
@@ -168,6 +168,10 @@ export default defineComponent({
     returnObjects: {
       type: Boolean,
       default: false
+    },
+    preselectedFilters: {
+      type: Object,
+      default: () => {}
     }
   },
   setup(props, { emit }) {
@@ -217,6 +221,17 @@ export default defineComponent({
 
     const filter = ref<IBaseObject>({});
     const filterDialogVisible = ref(false);
+
+    watch(
+      () => props.preselectedFilters,
+      (newValue) => {
+        filter.value = { ...filter.value, ...newValue };
+      },
+      {
+        deep: true,
+        immediate: true
+      }
+    );
 
     // available & active filter options
     const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'];

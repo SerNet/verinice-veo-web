@@ -76,9 +76,11 @@
             :valid.sync="isFormValid"
             :disabled-inputs="disabledInputs"
             :object-meta-data.sync="metaData"
+            :inspection-results="inspectionResults"
             @input="onFormInput"
             @show-revision="onShowRevision"
-            @create-pia="createPIADialogVisible = true"
+            @create-dpia="createDPIADialogVisible = true"
+            @link-dpia="linkObjectDialogVisible = true"
           >
             <template
               v-if="formDataIsRevision"
@@ -141,11 +143,20 @@
           />
           <VeoWindowUnloadPrevention :value="isFormDirty" />
           <VeoCreateObjectDialog
-            v-model="createPIADialogVisible"
+            v-model="createDPIADialogVisible"
             object-type="process"
             sub-type="PRO_DPIA"
             :domain-id="domainId"
-            @success="onPIACreated"
+            @success="onDPIACreated"
+          />
+          <VeoLinkObjectDialog
+            v-if="object"
+            v-model="linkObjectDialogVisible"
+            add-type="entity"
+            :edited-object="object"
+            :hierarchical-context="'child'"
+            :preselected-filters="{ subType: 'PRO_DPIA' }"
+            @success="onDPIALinked"
           />
         </template>
       </VeoPage>
@@ -160,7 +171,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
 import { separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
@@ -197,10 +208,14 @@ export default defineComponent({
     // Object details are originally part of the object, but as they might get updated independently, we want to avoid refetching the whole object, so we outsorce them.
     const metaData = ref<any>({});
 
+    // Inspection results
+    const inspectionResults = ref<IVeoInspectionResult[]>([]);
+
     const { fetchState, fetch: loadObject } = useFetch(async () => {
       object.value = await $api.entity.fetch(objectParameter.value.type, objectParameter.value.id);
       modifiedObject.value = cloneDeep(object.value);
       metaData.value = cloneDeep(object.value.domains[domainId.value]);
+      inspectionResults.value = await $api.entity.fetchInspections(object.value.type, object.value.id, domainId.value);
     });
 
     const notFoundError = computed(() => (fetchState.error as any)?.statusCode === 404);
@@ -317,12 +332,19 @@ export default defineComponent({
     const loading = computed(() => fetchState.pending);
 
     // pia stuff
-    const createPIADialogVisible = ref(false);
+    const createDPIADialogVisible = ref(false);
+    const linkObjectDialogVisible = ref(false);
 
-    const onPIACreated = async (newObjectId: string) => {
+    const onDPIACreated = async (newObjectId: string) => {
       if (object.value) {
         await linkObject('child', pick(object.value, 'id', 'type'), { type: 'process', id: newObjectId });
       }
+      createDPIADialogVisible.value = false;
+      loadObject();
+    };
+
+    const onDPIALinked = () => {
+      linkObjectDialogVisible.value = false;
       loadObject();
     };
 
@@ -339,18 +361,21 @@ export default defineComponent({
 
     return {
       VeoAlertType,
-      createPIADialogVisible,
+      createDPIADialogVisible,
       disabledInputs,
       domainId,
       entityModifiedDialogVisible,
       formDataIsRevision,
+      inspectionResults,
       isFormDirty,
       isFormValid,
+      linkObjectDialogVisible,
       metaData,
       modifiedObject,
       onContinueNavigation,
       onFormInput,
-      onPIACreated,
+      onDPIACreated,
+      onDPIALinked,
       onShowRevision,
       preselectedSubType,
       resetForm,

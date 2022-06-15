@@ -56,7 +56,7 @@
       :domain-id="domainId"
       :object-type="object && object.type"
       :object-id="object && object.id"
-      @reload="fetch"
+      @reload="onRelatedObjectModified"
     />
   </div>
 </template>
@@ -196,7 +196,7 @@ export default defineComponent({
                   const { id } = getEntityDetailsFromLink(item.scenario);
                   await $api.entity.deleteRisk(props.object?.type || '', props.object?.id || '', id);
                   displaySuccessMessage(upperFirst(t('riskDeleted').toString()));
-                  fetch();
+                  onRelatedObjectModified();
                 } catch (e: any) {
                   displayErrorMessage(upperFirst(t('deleteRiskError').toString()), e.message);
                 }
@@ -266,8 +266,7 @@ export default defineComponent({
           ).toString()
         )
       );
-      emit('new-object-created'); // emit to page for refetching object
-      fetch();
+      onRelatedObjectModified();
     };
 
     const onUnlinkEntityError = (error: any) => {
@@ -312,10 +311,16 @@ export default defineComponent({
       }
     };
 
+    const onRelatedObjectModified = () => {
+      fetch();
+      emit('reload');
+    };
+
     return {
       additionalHeaders,
       defaultHeaders,
       editRiskDialog,
+      onRelatedObjectModified,
       onUnlinkEntitySuccess,
       onUnlinkEntityError,
       unlinkEntityDialog,

@@ -90,10 +90,9 @@
                 :object-schema="objectSchema"
                 v-on="$listeners"
               />
-              <VeoValidationResult
+              <VeoObjectMessagesTab
                 v-else-if="selectedSideContainer === SIDE_CONTAINERS.MESSAGES"
-                :result="messages"
-                warnings-visible
+                :messages="messages"
               />
             </VeoCard>
             <v-btn-toggle
@@ -162,8 +161,8 @@
                     v-on="on"
                   >
                     <v-badge
-                      :content="messages.errors.length + messages.warnings.length"
-                      :value="messages.errors.length + messages.warnings.length > 0"
+                      :content="messages.errors.length + messages.warnings.length + messages.information.length"
+                      :value="messages.errors.length + messages.warnings.length + messages.information.length > 0"
                       color="primary"
                       overlap
                     >
@@ -192,6 +191,7 @@ import { mdiEyeOutline, mdiFormatListBulleted, mdiHistory, mdiInformationOutline
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import { IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 enum SIDE_CONTAINERS {
   HISTORY,
@@ -253,6 +253,10 @@ export default defineComponent({
     objectCreationDisabled: {
       type: Boolean,
       default: false
+    },
+    inspectionResults: {
+      type: Array as PropType<IVeoInspectionResult[]>,
+      default: () => []
     }
   },
   setup(props, { emit }) {
@@ -269,7 +273,6 @@ export default defineComponent({
       fetch,
       fetchState: { pending: formLoading }
     } = useFetch(async () => {
-      fetchWarnings();
       fetchDecisions();
 
       // Only fetch once, as translations changing while the user uses this component is highly unlikely
@@ -376,34 +379,59 @@ export default defineComponent({
     // Messages stuff
     const messages = computed(() => ({
       errors: formErrors.value.map((entry) => ({ code: entry.pointer, message: entry.message })),
-      warnings: backendWarnings.value.filter((warning) => warning.severity === 'WARNING').map((warning) => formatWarning(warning))
+      warnings: props.inspectionResults.filter((warning) => warning.severity === 'WARNING').map((warning) => formatWarning(warning)),
+      information: objectInformation.value
     }));
 
+    const objectInformation = computed<VeoSchemaValidatorMessage[]>(() => {
+      const information: VeoSchemaValidatorMessage[] = [];
+
+      if (props.objectMetaData?.decisionResults?.piaMandatory.value !== undefined) {
+        if (props.objectMetaData.decisionResults.piaMandatory.value) {
+          information.push({
+            code: 'I_PIA_MANDATORY',
+            message: t('piaMandatory').toString()
+          });
+        } else {
+          information.push({
+            code: 'I_PIA_NOT_MANDATORY',
+            message: t('piaNotMandatory').toString()
+          });
+        }
+      } else {
+        information.push({
+          code: 'I_PIA_MANDATORY_UNKNOWN',
+          message: t('piaMandatoryUnknown').toString()
+        });
+      }
+
+      return information;
+    });
+
     const formatWarning = (warning: IVeoInspectionResult) => {
-      const actions = [];
+      let actions: VeoSchemaValidatorMessage['actions'] = [];
 
       for (const suggestion of warning.suggestions) {
         if (suggestion.type === 'addPart') {
-          actions.push({
-            title: t('createPIA').toString(),
-            callback: () => {
-              emit('create-pia');
+          actions = [
+            ...actions,
+            {
+              title: t('createDPIA').toString(),
+              callback: () => {
+                emit('create-dpia');
+              }
+            },
+            {
+              title: t('linkDPIA').toString(),
+              callback: () => {
+                emit('link-dpia');
+              }
             }
-          });
+          ];
         }
       }
 
       return { message: warning.description[locale.value] || Object.values(warning.description)[0], actions };
-    };
-
-    // errors and warnings from backend
-    const backendWarnings = ref<IVeoInspectionResult[]>([]);
-
-    // For some reason putting this in a useFetch and using fetchWarnings as the name for the fetch hook caused all useFetch to be refetched
-    const fetchWarnings = async () => {
-      if (objectData.value?.id) {
-        backendWarnings.value = await $api.entity.fetchInspections(objectData.value.type, objectData.value.id, props.domainId);
-      }
     };
 
     // For some reason putting this in a useFetch and using fetchDecisions as the name for the fetch hook caused all useFetch to be refetched
@@ -422,15 +450,6 @@ export default defineComponent({
       () => objectData.value,
       () => throttle(fetchDecisions, 500)(),
       { deep: true }
-    );
-
-    watch(
-      () => objectData.value?.id,
-      (newValue) => {
-        if (newValue) {
-          fetchWarnings();
-        }
-      }
     );
 
     return {
@@ -462,22 +481,30 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "createPIA": "create PIA",
+    "createDPIA": "create DPIA",
     "display": "view as",
     "history": "history",
+    "linkDPIA": "link DPIA",
     "messages": "messages",
     "objects": "objects",
     "objectView": "object view",
+    "piaMandatory": "Privacy impact assesment required.",
+    "piaMandatoryUnknown": "Cannot determine if a privacy assesment is required.",
+    "piaNotMandatory": "No privacy impact assesment required.",
     "tableOfContents": "contents",
     "viewAs": "view as"
   },
   "de": {
-    "createPIA": "DSFA erstellen",
+    "createDPIA": "DSFA erstellen",
     "display": "Ansicht",
     "history": "Verlauf",
+    "linkDPIA": "DSFA hinzufügen",
     "messages": "Meldungen",
     "objects": "Objekte",
     "objectView": "Objektansicht",
+    "piaMandatory": "Datenschutzfolgeabschätzung verpflichtend.",
+    "piaMandatoryUnknown": "Es kann nicht festgestellt werden, ob für dieses Objekt eine Datenschutzfolgeabschätzung verpflichtend ist.",
+    "piaNotMandatory": "Datenschutzfolgeabschätzung nicht verpflichtend.",
     "tableOfContents": "Inhalt",
     "viewAs": "darstellen als"
   }
