@@ -1,9 +1,20 @@
-title: Kataloge-Tutorial
-description: Verwendung von Katalogen
+title: Die Kataloge
+description: Beschreibung der Kataloge
 route: /unit-:unit/domains/domain-:domain/catalogs/catalog-:catalog
+lang: de
 steps:
   - title: 'Kataloge'
     element: '[data-component-name=catalog-page]'
-    intro: Im diesem Abschnitt können vorhandene Kataloge angewendet werde.
+    intro: Im diesem Abschnitt können vorhandene Kataloge angewendet werden.
+  - title: 'Gefährdungen anwenden'
+# todo4nbrx: data-component erstellen
+    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div.v-tabs.theme--light.veo-tabs > div > div.v-slide-group__wrapper > div > div.v-tab.v-tab--active'
+    intro: Wählen Sie die Gefährdungen aus, die im Rahmen der Risikoanalyse betrachtet werden sollen. Die Gefährdungen werden in Ihre aktuelle Unit kopiert und können dort verwendet werden.
+  - title: 'TOM anwenden'
+# todo4nbrx: data-component erstellen
+    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div.v-tabs.theme--light.veo-tabs > div > div.v-slide-group__wrapper > div > div:nth-child(3)'
+    intro: Wählen Sie die TOM aus, die zur weiteren verwendung in Ihre Unit kopiert werden sollen.
   - title: 'Geschafft'
-    intro: Weitere Informationen zu Katalogen finden Sie auch in der <a href="http://localhost:3000/docs/Bedienung/Kapitel_1">Online Dokumentation</a>
+# todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
+#    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.
+    intro: Weitere Informationen finden Sie auch in der Online Dokumentation.
