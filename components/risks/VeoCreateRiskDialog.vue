@@ -217,6 +217,9 @@ export default defineComponent({
           [props.domainId]: {
             reference: {
               targetUri: `${$config.apiUrl}/domains/${props.domainId}`
+            },
+            riskDefinitions: {
+              DSRA: {}
             }
           }
         }
