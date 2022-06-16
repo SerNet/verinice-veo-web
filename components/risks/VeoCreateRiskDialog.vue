@@ -60,12 +60,14 @@
           </v-chip-group>
         </v-col>
       </v-row>
-      <VeoEntitySelectionList
-        v-model="selectedScenarios"
-        :items="objects"
-        :loading="$fetchState.pending"
-        @page-change="onPageChange"
-      />
+      <VeoCard>
+        <VeoEntitySelectionList
+          v-model="selectedScenarios"
+          :items="objects"
+          :loading="$fetchState.pending"
+          @page-change="onPageChange"
+        />
+      </VeoCard>
       <VeoFilterDialog
         v-model="filterDialogVisible"
         :domain="domainId"
@@ -215,6 +217,9 @@ export default defineComponent({
           [props.domainId]: {
             reference: {
               targetUri: `${$config.apiUrl}/domains/${props.domainId}`
+            },
+            riskDefinitions: {
+              DSRA: {}
             }
           }
         }

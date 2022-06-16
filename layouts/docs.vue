@@ -156,9 +156,6 @@ export default defineComponent({
 
 ::v-deep.v-main > .v-main__wrap {
   background: $background-primary;
-  display: flex;
-  flex-direction: column;
-  padding-top: 8px;
 }
 
 .veo-docs-navigation.v-navigation-drawer {

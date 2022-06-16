@@ -25,6 +25,7 @@
         :id="scrollWrapperId"
         data-component-name="object-form-form"
         sticky-footer
+        no-padding
       >
         <template #default>
           <slot name="prepend-form" />
@@ -60,21 +61,27 @@
         data-component-name="object-form-sidebar"
       >
         <template #default>
-          <div class="d-flex flex-row fill-height pb-13 align-start">
+          <div class="d-flex flex-row fill-height pb-13 ml-2 align-start">
             <VeoCard
               v-show="selectedSideContainer !== undefined"
-              style="max-height: 100%"
+              class="overflow-y-auto"
+              style="max-height: 100%; width: 300px"
             >
-              <v-card-text v-if="selectedSideContainer === SIDE_CONTAINERS.VIEW">
-                <v-select
-                  v-model="selectedDisplayOption"
-                  class="mt-n2"
-                  :label="upperFirst(t('viewAs').toString())"
-                  hide-details
-                  :items="displayOptions"
-                  :data-cy="$utils.prefixCyData($options, 'display-select')"
-                />
-              </v-card-text>
+              <div v-if="selectedSideContainer === SIDE_CONTAINERS.VIEW">
+                <h2 class="text-h2 px-4 pt-1">
+                  {{ $t('display').toString() }}
+                </h2>
+                <v-card-text>
+                  <v-select
+                    v-model="selectedDisplayOption"
+                    class="mt-n2"
+                    :label="upperFirst(t('viewAs').toString())"
+                    hide-details
+                    :items="displayOptions"
+                    :data-cy="$utils.prefixCyData($options, 'display-select')"
+                  />
+                </v-card-text>
+              </div>
               <VeoFormNavigation
                 v-else-if="selectedSideContainer === SIDE_CONTAINERS.TABLE_OF_CONTENTS && currentFormSchema"
                 :form-schema="currentFormSchema && currentFormSchema.content"
@@ -89,10 +96,9 @@
                 :object-schema="objectSchema"
                 v-on="$listeners"
               />
-              <VeoValidationResult
+              <VeoObjectMessagesTab
                 v-else-if="selectedSideContainer === SIDE_CONTAINERS.MESSAGES"
-                :result="messages"
-                warnings-visible
+                :messages="messages"
               />
             </VeoCard>
             <v-btn-toggle
@@ -161,8 +167,8 @@
                     v-on="on"
                   >
                     <v-badge
-                      :content="messages.errors.length + messages.warnings.length"
-                      :value="messages.errors.length + messages.warnings.length > 0"
+                      :content="messages.errors.length + messages.warnings.length + messages.information.length"
+                      :value="messages.errors.length + messages.warnings.length + messages.information.length > 0"
                       color="primary"
                       overlap
                     >
@@ -191,6 +197,7 @@ import { mdiEyeOutline, mdiFormatListBulleted, mdiHistory, mdiInformationOutline
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import { IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 enum SIDE_CONTAINERS {
   HISTORY,
@@ -252,6 +259,10 @@ export default defineComponent({
     objectCreationDisabled: {
       type: Boolean,
       default: false
+    },
+    inspectionResults: {
+      type: Array as PropType<IVeoInspectionResult[]>,
+      default: () => []
     }
   },
   setup(props, { emit }) {
@@ -268,7 +279,6 @@ export default defineComponent({
       fetch,
       fetchState: { pending: formLoading }
     } = useFetch(async () => {
-      fetchWarnings();
       fetchDecisions();
 
       // Only fetch once, as translations changing while the user uses this component is highly unlikely
@@ -375,34 +385,74 @@ export default defineComponent({
     // Messages stuff
     const messages = computed(() => ({
       errors: formErrors.value.map((entry) => ({ code: entry.pointer, message: entry.message })),
-      warnings: backendWarnings.value.filter((warning) => warning.severity === 'WARNING').map((warning) => formatWarning(warning))
+      warnings: props.inspectionResults.filter((warning) => warning.severity === 'WARNING').map((warning) => formatWarning(warning)),
+      information: objectInformation.value
     }));
 
-    const formatWarning = (warning: IVeoInspectionResult) => {
-      const actions = [];
+    const objectInformation = computed<VeoSchemaValidatorMessage[]>(() => {
+      const information: VeoSchemaValidatorMessage[] = [];
 
-      for (const suggestion of warning.suggestions) {
-        if (suggestion.type === 'addPart') {
-          actions.push({
-            title: t('createPIA').toString(),
-            callback: () => {
-              emit('create-pia');
+      if (props.objectMetaData?.decisionResults?.piaMandatory?.value !== undefined) {
+        if (props.objectMetaData.decisionResults.piaMandatory.value) {
+          information.push({
+            code: 'I_PIA_MANDATORY',
+            message: t('piaMandatory').toString(),
+            params: {
+              type: 'info'
+            }
+          });
+        } else {
+          information.push({
+            code: 'I_PIA_NOT_MANDATORY',
+            message: t('piaNotMandatory').toString(),
+            params: {
+              type: 'success'
             }
           });
         }
+      } else {
+        information.push({
+          code: 'I_PIA_MANDATORY_UNKNOWN',
+          message: t('piaMandatoryUnknown').toString(),
+          params: {
+            type: 'info'
+          }
+        });
       }
 
-      return { message: warning.description[locale.value] || Object.values(warning.description)[0], actions };
-    };
+      return information;
+    });
 
-    // errors and warnings from backend
-    const backendWarnings = ref<IVeoInspectionResult[]>([]);
+    const formatWarning = (warning: IVeoInspectionResult) => {
+      let actions: VeoSchemaValidatorMessage['actions'] = [];
 
-    // For some reason putting this in a useFetch and using fetchWarnings as the name for the fetch hook caused all useFetch to be refetched
-    const fetchWarnings = async () => {
-      if (objectData.value?.id) {
-        backendWarnings.value = await $api.entity.fetchInspections(objectData.value.type, objectData.value.id, props.domainId);
+      for (const suggestion of warning.suggestions) {
+        if (suggestion.type === 'addPart') {
+          actions = [
+            ...actions,
+            {
+              title: t('createDPIA').toString(),
+              callback: () => {
+                emit('create-dpia');
+              }
+            },
+            {
+              title: t('linkDPIA').toString(),
+              callback: () => {
+                emit('link-dpia');
+              }
+            }
+          ];
+        }
       }
+
+      return {
+        message: warning.description[locale.value] || Object.values(warning.description)[0],
+        actions,
+        params: {
+          type: 'warning'
+        }
+      };
     };
 
     // For some reason putting this in a useFetch and using fetchDecisions as the name for the fetch hook caused all useFetch to be refetched
@@ -421,15 +471,6 @@ export default defineComponent({
       () => objectData.value,
       () => throttle(fetchDecisions, 500)(),
       { deep: true }
-    );
-
-    watch(
-      () => objectData.value?.id,
-      (newValue) => {
-        if (newValue) {
-          fetchWarnings();
-        }
-      }
     );
 
     return {
@@ -461,22 +502,30 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "createPIA": "create PIA",
+    "createDPIA": "create DPIA",
     "display": "view as",
     "history": "history",
+    "linkDPIA": "link DPIA",
     "messages": "messages",
     "objects": "objects",
     "objectView": "object view",
+    "piaMandatory": "Privacy impact assesment required.",
+    "piaMandatoryUnknown": "Cannot determine if a privacy assesment is required.",
+    "piaNotMandatory": "No privacy impact assesment required.",
     "tableOfContents": "contents",
     "viewAs": "view as"
   },
   "de": {
-    "createPIA": "DSFA erstellen",
+    "createDPIA": "DSFA erstellen",
     "display": "Ansicht",
     "history": "Verlauf",
+    "linkDPIA": "DSFA hinzufügen",
     "messages": "Meldungen",
     "objects": "Objekte",
     "objectView": "Objektansicht",
+    "piaMandatory": "Datenschutzfolgeabschätzung verpflichtend.",
+    "piaMandatoryUnknown": "Es kann nicht festgestellt werden, ob für dieses Objekt eine Datenschutzfolgeabschätzung verpflichtend ist.",
+    "piaNotMandatory": "Datenschutzfolgeabschätzung nicht verpflichtend.",
     "tableOfContents": "Inhalt",
     "viewAs": "darstellen als"
   }

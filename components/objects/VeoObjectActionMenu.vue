@@ -27,7 +27,7 @@
       transition="slide-y-reverse"
       absolute
       right
-      style="bottom: 12px"
+      :style="speedDialStyle"
     >
       <template #activator>
         <v-btn
@@ -123,6 +123,10 @@ export default defineComponent({
     disabled: {
       type: Boolean,
       default: false
+    },
+    speedDialStyle: {
+      type: String,
+      default: undefined
     }
   },
   setup(props, { emit }) {

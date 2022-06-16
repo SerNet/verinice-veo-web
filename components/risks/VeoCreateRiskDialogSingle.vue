@@ -21,7 +21,7 @@
     :close-disabled="savingRisk"
     :persistent="savingRisk || !!Object.keys(dirtyFields).length"
     :headline="upperFirst(!!risk ? t('editRisk', [risk.designator]).toString() : t('createRisk').toString())"
-    large
+    x-large
     fixed-footer
     v-on="$listeners"
   >

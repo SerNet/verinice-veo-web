@@ -49,7 +49,6 @@ export default {
   'global.button.next': 'Next',
   'global.button.no': 'No',
   'global.button.ok': 'Okay',
-  'global.button.discard': 'Cancel',
   'global.button.previous': 'Previous',
   'global.button.save': 'Save',
   'global.button.save_quit': 'Save and exit',

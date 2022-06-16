@@ -18,7 +18,9 @@
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 
-import VeoFilterDialog from '~/components/layout/VeoFilterDialog.vue';
+import VeoFilterDialog from '~/components/util/VeoFilterDialog.vue';
+import VeoCard from '~/components/layout/VeoCard.vue';
+import VeoFilter from '~/components/util/VeoFilter.vue';
 import VeoDialog from '~/components/layout/VeoDialog.vue';
 import { getEmittedEvent } from '~/lib/jestUtils';
 
@@ -27,7 +29,9 @@ const vuetify = new Vuetify();
 const mockDefaults = {
   vuetify,
   components: {
-    VeoDialog
+    VeoDialog,
+    VeoFilter,
+    VeoCard
   },
   mocks: {
     $nuxt: {

@@ -23,71 +23,65 @@
   >
     <template #default>
       <v-form v-model="filterFormValid">
-        <v-list dense>
-          <v-list-item
-            v-for="(option, index) of displayedFilterOptions"
-            :key="option.name || `${option.type}_${index}`"
-            :data-cy="option.type !== IVeoFilterOptionType.DIVIDER ? $utils.prefixCyData($options, 'filter-option') : ''"
-            dense
-            class="px-0"
-          >
-            <v-divider
-              v-if="option.type === IVeoFilterOptionType.DIVIDER"
-            />
-            <v-text-field
-              v-else-if="option.type === IVeoFilterOptionType.TEXT"
-              v-model="localFilter[option.name]"
-              :label="upperFirst(t(`objectlist.${option.name}`).toString()) + (option.required ? '*' : '')"
-              :required="option.required"
-              :rules="option.required ? [requiredRule] : []"
-              :disabled="option.disabled"
-              :name="option.name"
-              :clearable="!option.required"
-              dense
-              @input="(newValue) => option.onChange ? option.onChange(newValue) : () => {}"
-            />
-            <v-select
-              v-else-if="option.type === IVeoFilterOptionType.SELECT"
-              v-model="localFilter[option.name]"
-              :label="upperFirst(t(`objectlist.${option.name}`).toString()) + (option.required ? '*' : '')"
-              :required="option.required"
-              :rules="option.required ? [requiredRule] : []"
-              :items="option.selectOptions"
-              :disabled="option.disabled"
-              :name="option.name"
-              :clearable="!option.required"
-              dense
-              @change="(newValue) => option.onChange ? option.onChange(newValue) : () => {}"
-            />
-            <v-checkbox
-              v-else-if="option.type === IVeoFilterOptionType.CHECKBOX"
-              v-model="localFilter[option.name]"
-              :label="upperFirst(t(`objectlist.${option.name}`).toString()) + (option.required ? '*' : '')"
-              :required="option.required"
-              :rules="option.required ? [requiredRule] : []"
-              :disabled="option.disabled"
-              :name="option.name"
-              dense
-              @change="(newValue) => option.onChange ? option.onChange(newValue) : () => {}"
-            />
-          </v-list-item>
-          <v-list-item
-            class="justify-center px-0"
+        <VeoCard>
+          <v-card-text>
+            <v-list dense>
+              <VeoFilter
+                v-for="(option, index) of defaultFilterOptions"
+                :key="option.name || `${option.type}_${index}`"
+                :data-cy="option.type !== IVeoFilterOptionType.DIVIDER ? $utils.prefixCyData($options, 'filter-option') : ''"
+                :value="localFilter[option.name]"
+                v-bind="option"
+                dense
+                @input="onFilterInput($event, option.name)"
+              />
+            </v-list>
+          </v-card-text>
+        </VeoCard>
+        <VeoCard
+          v-if="showAllFilters"
+          class="mt-2"
+        >
+          <v-card-text>
+            <v-list dense>
+              <VeoFilter
+                v-for="(option, index) of additionalFilterOptions"
+                :key="option.name || `${option.type}_${index}`"
+                :data-cy="option.type !== IVeoFilterOptionType.DIVIDER ? $utils.prefixCyData($options, 'filter-option') : ''"
+                :value="localFilter[option.name]"
+                v-bind="option"
+                dense
+                @input="onFilterInput($event, option.name)"
+              />
+            </v-list>
+          </v-card-text>
+        </VeoCard>
+        <div class="d-flex justify-center fill-width my-2">
+          <v-btn
+            text
             :data-cy="$utils.prefixCyData($options, 'expand-button')"
             @click="showAllFilters = !showAllFilters"
           >
             <template v-if="showAllFilters">
-              <v-icon>{{ mdiChevronDoubleUp }}</v-icon>
+              <v-icon left>
+                {{ mdiChevronUp }}
+              </v-icon>
               <span>{{ upperFirst(t('collapseOptions').toString()) }}</span>
-              <v-icon>{{ mdiChevronDoubleUp }}</v-icon>
+              <v-icon right>
+                {{ mdiChevronUp }}
+              </v-icon>
             </template>
             <template v-else>
-              <v-icon>{{ mdiChevronDoubleDown }}</v-icon>
+              <v-icon left>
+                {{ mdiChevronDown }}
+              </v-icon>
               <span>{{ upperFirst(t('expandOptions').toString()) }}</span>
-              <v-icon>{{ mdiChevronDoubleDown }}</v-icon>
+              <v-icon right>
+                {{ mdiChevronDown }}
+              </v-icon>
             </template>
-          </v-list-item>
-        </v-list>
+          </v-btn>
+        </div>
       </v-form>
     </template>
     <template #dialog-options>
@@ -114,36 +108,16 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { mdiChevronDoubleDown, mdiChevronDoubleUp } from '@mdi/js';
+import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
 import { defineComponent, ref, computed, Ref, watch, PropOptions, ComputedRef, useFetch, useContext, nextTick } from '@nuxtjs/composition-api';
 import { clone, omitBy, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { BaseObject } from '../forms/utils';
+import { IVeoFilterDivider, IVeoFilterOption, IVeoFilterOptionType } from './VeoFilter.vue';
 import { IBaseObject, extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoFormSchemaMeta, IVeoTranslations } from '~/types/VeoTypes';
-
-enum IVeoFilterOptionType {
-  TEXT,
-  SELECT,
-  CHECKBOX,
-  DIVIDER
-}
-
-interface IVeoFilterOption {
-  name: string;
-  type: IVeoFilterOptionType;
-  required?: boolean;
-  alwaysVisible?: boolean;
-  selectOptions?: { text: string; value: string }[];
-  disabled?: boolean;
-  onChange?: (value: string) => void;
-}
-
-interface IVeoFilterDivider {
-  type: IVeoFilterOptionType.DIVIDER;
-}
 
 export default defineComponent({
   name: 'VeoFilterDialog',
@@ -369,25 +343,29 @@ export default defineComponent({
       }
     });
     const showAllFilters = ref(false);
-    const displayedFilterOptions = computed(() =>
-      showAllFilters.value ? filterOptions.value : filterOptions.value.filter((filter) => filter.type === IVeoFilterOptionType.DIVIDER || filter.alwaysVisible)
-    );
+    const defaultFilterOptions = computed(() => filterOptions.value.filter((filter) => filter.type === IVeoFilterOptionType.DIVIDER || filter.alwaysVisible));
+
+    const additionalFilterOptions = computed(() => filterOptions.value.filter((filter) => filter.type !== IVeoFilterOptionType.DIVIDER && !filter.alwaysVisible));
+
+    const onFilterInput = ($event: any, filter: string) => (localFilter.value = { ...localFilter.value, [filter]: $event });
 
     return {
+      additionalFilterOptions,
       dialog,
-      displayedFilterOptions,
+      defaultFilterOptions,
       filterFormValid,
       localFilter,
+      onFilterInput,
       onReset,
       onSubmit,
       requiredRule,
       showAllFilters,
+      IVeoFilterOptionType,
 
       t,
       upperFirst,
-      mdiChevronDoubleDown,
-      mdiChevronDoubleUp,
-      IVeoFilterOptionType
+      mdiChevronDown,
+      mdiChevronUp
     };
   }
 });

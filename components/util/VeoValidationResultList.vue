@@ -16,22 +16,21 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoCard
-    v-if="items.length > 0"
-    v-bind="$attrs"
-  >
-    <v-list>
+  <v-list>
+    <template v-for="(item, index) of items">
+      <v-divider
+        v-if="index > 0"
+        :key="`divider_${index}`"
+      />
       <v-list-item
-        v-for="(item, index) of items"
         :key="index"
-        class="d-block"
+        class="d-block veo-object-message"
+        :class="item.params && item.params.type ? `veo-object-message--${item.params.type}` : ''"
       >
-        <v-list-item-content>
-          <v-list-item-title class="text-wrap">
-            {{ item.message }}
-          </v-list-item-title>
+        <v-list-item-content class="text-body-2">
+          {{ item.message }}
         </v-list-item-content>
-        <v-list-item-action class="fill-width ml-0">
+        <v-list-item-action class="fill-width ml-0 my-0">
           <v-btn
             v-if="item.fixable && fixingAllowed"
             text
@@ -40,37 +39,58 @@
             {{ t('fix') }}
           </v-btn>
           <v-btn
-            v-for="action of item.actions"
-            :key="action.title"
+            v-if="item.actions && item.actions.length === 1"
             text
-            @click="action.callback()"
+            @click="item.actions && item.actions[0].callback()"
           >
-            {{ action.title }}
+            {{ item.actions[0].title }}
           </v-btn>
+          <VeoNestedMenu
+            v-else-if="item.actions && item.actions.length > 0"
+            :items="formattedActions(item.actions)"
+            bottom
+            right
+            offset-y
+          >
+            <template #activator="{ on }">
+              <v-btn
+                icon
+                v-on="on"
+              >
+                <v-icon>
+                  {{ mdiCogOutline }}
+                </v-icon>
+              </v-btn>
+            </template>
+          </VeoNestedMenu>
         </v-list-item-action>
       </v-list-item>
-    </v-list>
-  </VeoCard>
-  <p
-    v-else-if="noErrorPlaceholderVisible"
-    class="font-italic text-body-2 mt-2"
-  >
-    {{ t('noErrors') }}
-  </p>
+    </template>
+    <v-list-item
+      v-if="!items.length && noErrorPlaceholderVisible"
+      dense
+    >
+      <v-list-item-content class="font-italic text-body-2">
+        <v-list-item-title>{{ t('noErrors') }}</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+  </v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
+import { defineComponent, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
+import { mdiCogOutline } from '@mdi/js';
 
+import { INestedMenuEntries } from '../layout/VeoNestedMenu.vue';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 export default defineComponent({
   props: {
     items: {
-      type: Array,
+      type: Array as PropType<VeoSchemaValidatorMessage[]>,
       default: () => []
-    } as PropOptions<VeoSchemaValidatorMessage[]>,
+    },
     noErrorPlaceholderVisible: {
       type: Boolean,
       default: false
@@ -83,7 +103,19 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
 
-    return { t };
+    const formattedActions: (actions: VeoSchemaValidatorMessage['actions']) => INestedMenuEntries[] = (actions) =>
+      (actions || []).map((action) => ({
+        key: action.title,
+        title: action.title,
+        action: action.callback
+      }));
+
+    return {
+      formattedActions,
+
+      t,
+      mdiCogOutline
+    };
   }
 });
 </script>
@@ -104,5 +136,25 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-list {
   background-color: transparent;
+}
+
+.veo-object-message {
+  border-left: 4px solid transparent;
+}
+
+.veo-object-message--success {
+  border-left: 4px solid #4caf50;
+}
+
+.veo-object-message--info {
+  border-left: 4px solid #2196f3;
+}
+
+.veo-object-message--warning {
+  border-left: 4px solid #fb8c00;
+}
+
+.veo-object-message--error {
+  border-left: 4px solid $primary;
 }
 </style>

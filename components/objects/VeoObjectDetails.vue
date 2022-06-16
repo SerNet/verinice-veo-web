@@ -37,7 +37,6 @@
                   v-if="showCreateDPIAMenu"
                   cols="auto"
                   class="text-right ml-auto pt-1"
-                  align-self="center"
                 >
                   <VeoObjectDetailsActionMenu
                     :object="object"
@@ -94,7 +93,7 @@
               :object="object"
               :dense="dense"
               :domain-id="domainId"
-              @new-object-created="$emit('reload')"
+              @reload="$emit('reload')"
             />
           </VeoCard>
         </v-tab-item>

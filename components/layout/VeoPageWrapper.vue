@@ -276,7 +276,7 @@ export default Vue.extend({
                           domProps: {
                             innerText: this.$props.title
                           },
-                          class: `d-inline px-4 py-1 flex-grow-0 text-h${this.$props.headingLevel}`
+                          class: `d-inline flex-grow-0 text-h${this.$props.headingLevel}`
                         })
                       ]
                     : []),
@@ -320,7 +320,7 @@ export default Vue.extend({
                           h(
                             'div',
                             {
-                              style: 'width: 20px',
+                              style: 'width: 16px',
                               class: 'fill-height'
                             },
                             [
@@ -342,7 +342,7 @@ export default Vue.extend({
                     slotItem,
                     ...((index === 0 && this.collapsablePages[index]) || this.nextPageIsCollapsed(index)
                       ? [
-                          h('div', { style: 'width: 20px', class: 'fill-height' }, [
+                          h('div', { style: 'width: 16px', class: 'fill-height' }, [
                             h(VeoCollapseButton, {
                               props: {
                                 value: this.nextPageIsCollapsed(index),

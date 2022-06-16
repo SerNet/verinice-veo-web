@@ -18,7 +18,7 @@
 -->
 <template>
   <v-navigation-drawer
-    :width="290"
+    :width="300"
     :value="value"
     app
     floating
@@ -31,7 +31,7 @@
     <template #prepend>
       <div>
         <div
-          class="d-flex align-end"
+          class="d-flex align-center"
           :class="{
             'ml-4': !miniVariant,
             'ml-2': miniVariant
@@ -54,35 +54,38 @@
       </div>
     </template>
     <template #default>
-      <div class="d-flex flex-column fill-height">
-        <v-list
-          nav
-          dense
-          :rounded="miniVariant"
-          expand
-          class="fill-height d-flex flex-column"
-        >
+      <v-list
+        :rounded="miniVariant"
+      >
+        <v-list-item-group>
           <template
-            v-for="(item, index) in items"
+            v-for="item in items"
           >
-            <VeoPrimaryNavigationEntry
-              :key="index"
-              v-bind="item"
-              path="#"
-              :level="0"
-              :mini-variant="miniVariant"
-              @expand-menu="setMiniVariant(false)"
-              @collapse-other-submenus="onCollapseMenus"
-            />
+            <div :key="item.key">
+              <VeoPrimayNavigationCategory
+                v-if="item.children"
+                v-bind="item"
+                :level="0"
+                :mini-variant="miniVariant"
+                @expand-menu="setMiniVariant(false)"
+              />
+              <VeoPrimaryNavigationEntry
+                v-else
+                v-bind="item"
+                :mini-variant="miniVariant"
+                @expand-menu="setMiniVariant(false)"
+              />
+            </div>
           </template>
-          <v-divider class="my-4" />
+        </v-list-item-group>
+        <v-divider class="mb-2" />
+        <div class="mx-2">
           <VeoDemoUnitButton :icon-only="miniVariant" />
-        </v-list>
-      </div>
+        </div>
+      </v-list>
     </template>
     <template #append>
       <v-list
-        nav
         dense
         class="pa-0"
       >
@@ -98,13 +101,13 @@
               v-if="miniVariant"
               color="black"
             >
-              {{ mdiChevronDoubleRight }}
+              {{ mdiChevronRight }}
             </v-icon>
             <v-icon
               v-else
               color="black"
             >
-              {{ mdiChevronDoubleLeft }}
+              {{ mdiChevronLeft }}
             </v-icon>
           </v-list-item-icon>
           <v-list-item-title v-if="miniVariant">
@@ -120,11 +123,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, provide, reactive, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import {
   mdiApplicationCogOutline,
-  mdiChevronDoubleLeft,
-  mdiChevronDoubleRight,
+  mdiChevronLeft,
+  mdiChevronRight,
   mdiClipboardListOutline,
   mdiFileChartOutline,
   mdiFileDocumentOutline,
@@ -150,14 +153,16 @@ import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/_unit/domains/_do
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/_unit/domains/_domain/editor/index.vue';
 
 export interface INavItem {
+  key: string;
   name: string;
   icon?: string;
-  to?: RawLocation;
-  childItems?: INavItem[];
-  childItemsLoading?: boolean;
-  partOfActivePath?: boolean;
   exact?: boolean;
+  to?: RawLocation;
+  children?: INavItem[];
+  childrenLoading?: boolean;
   componentName?: string;
+  classes?: string;
+  activePath?: string;
 }
 
 const objectTypeSortOrder = new Map<string, number>([
@@ -227,11 +232,13 @@ export default defineComponent({
           const objectSubTypes = extractSubTypesFromObjectSchema(objectSchema);
 
           return {
+            key: objectSchema.title,
             name: upperFirst(objectSchema.title),
-            partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/objects?objectType=${objectSchema.title}`),
-            childItems: [
+            activePath: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectSchema.title}`,
+            children: [
               // all of object type
               {
+                key: `${objectSchema.title}_all`,
                 name: upperFirst(t('all').toString()),
                 to: {
                   name: OBJECTS_ROUTE_NAME,
@@ -242,7 +249,8 @@ export default defineComponent({
                   query: {
                     objectType: objectSchema.title
                   }
-                }
+                },
+                exact: true
               },
               // dynamic sub type routes
               ...sortBy(
@@ -250,6 +258,7 @@ export default defineComponent({
                   const formSchema = formSchemas.value.find((formSchema) => formSchema.modelType === objectSchema.title && formSchema.subType === subType.subType);
                   const displayName = formSchema?.name[locale.value] || subType.subType;
                   return {
+                    key: displayName,
                     name: displayName,
                     to: {
                       name: OBJECTS_ROUTE_NAME,
@@ -263,7 +272,6 @@ export default defineComponent({
                       }
                     },
                     exact: true,
-                    disabled: false,
                     sorting: formSchema?.sorting
                   };
                 }),
@@ -284,6 +292,7 @@ export default defineComponent({
 
     const catalogsEntriesChildItems = computed<INavItem[]>(() =>
       catalogs.value.map((catalog) => ({
+        key: catalog.id,
         name: catalog.name,
         to: {
           name: CATALOGS_CATALOG_ROUTE_NAME,
@@ -306,6 +315,7 @@ export default defineComponent({
       () =>
         Object.keys(reports.value)
           .map((reportId: string) => ({
+            key: reportId,
             name: reports.value[reportId].name[locale.value],
             to: {
               name: REPORTS_REPORT_ROUTE_NAME,
@@ -329,8 +339,8 @@ export default defineComponent({
 
     const riskChildItems = computed<INavItem[]>(() =>
       Object.values(riskDefinitions.value).map(({ id }: { id: string }) => ({
+        key: id,
         name: id,
-        exact: false,
         to: {
           name: RISKS_MATRIX_ROUTE_NAME,
           params: {
@@ -361,20 +371,19 @@ export default defineComponent({
       }
     );
 
-    /* const spacer: INavItem = {
-      name: 'spacer'
-    }; */
-
     const unitSelectionNavEntry: INavItem = {
+      key: 'unitSelection',
       name: t('breadcrumbs.index').toString(),
       icon: mdiFormatListBulleted,
       to: {
         name: UNIT_SELECTION_ROUTE_NAME
       },
-      componentName: 'unit-select-nav-item'
+      componentName: 'unit-select-nav-item',
+      exact: true
     };
 
     const domainDashboardNavEntry = computed<INavItem>(() => ({
+      key: 'domainDashboard',
       name: t('domain.index.title').toString(),
       icon: mdiHomeOutline,
       to: {
@@ -384,50 +393,53 @@ export default defineComponent({
           domain: createUUIDUrlParam('domain', props.domainId)
         }
       },
-      componentName: 'domain-dashboard-nav-item'
+      componentName: 'domain-dashboard-nav-item',
+      exact: true,
+      classes: 'mb-4'
     }));
 
     const objectsNavEntry = computed<INavItem>(() => ({
+      key: 'objects',
       name: t('breadcrumbs.objects').toString(),
+      activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/objects`,
       icon: mdiFileDocumentOutline,
-      to: undefined,
-      childItems: objectTypesChildItems.value,
-      childItemsLoading: objectEntriesLoading.pending,
-      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/objects`),
+      children: objectTypesChildItems.value,
+      childrenLoading: objectEntriesLoading.pending,
       componentName: 'objects-nav-item'
     }));
 
     const catalogsNavEntry = computed<INavItem>(() => ({
+      key: 'catalogs',
       name: t('breadcrumbs.catalogs').toString(),
+      activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/catalogs`,
       icon: mdiClipboardListOutline,
-      to: undefined,
-      childItems: catalogsEntriesChildItems.value,
-      childItemsLoading: catalogsEntriesLoading.pending,
-      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/catalogs`),
+      children: catalogsEntriesChildItems.value,
+      childrenLoading: catalogsEntriesLoading.pending,
       componentName: 'catalogs-nav-item'
     }));
 
     const reportsNavEntry = computed<INavItem>(() => ({
+      key: 'reports',
       name: t('breadcrumbs.reports').toString(),
+      activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/reports`,
       icon: mdiFileChartOutline,
-      to: undefined,
-      childItems: reportsEntriesChildItems.value,
-      childItemsLoading: reportsEntriesLoading.pending,
-      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/reports`),
+      children: reportsEntriesChildItems.value,
+      childrenLoading: reportsEntriesLoading.pending,
       componentName: 'reports-nav-item'
     }));
 
     const risksNavEntry = computed<INavItem>(() => ({
+      key: 'risks',
       name: t('breadcrumbs.risks').toString(),
+      activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/risks`,
       icon: mdiTableLarge,
-      to: undefined,
-      childItems: riskChildItems.value,
-      childItemsLoading: riskDefinitionsLoading.pending,
-      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/risks`),
+      children: riskChildItems.value,
+      childrenLoading: riskDefinitionsLoading.pending,
       componentName: 'risks-nav-item'
     }));
 
     const editorsNavEntry = computed<INavItem>(() => ({
+      key: 'editors',
       name: t('breadcrumbs.editor').toString(),
       icon: mdiApplicationCogOutline,
       to: {
@@ -436,61 +448,22 @@ export default defineComponent({
           unit: createUUIDUrlParam('unit', props.unitId),
           domain: createUUIDUrlParam('domain', props.domainId)
         }
-      },
-      exact: false
+      }
     }));
 
     const items = computed<INavItem[]>(() => [
       ...(maxUnits.value && maxUnits.value > 2 ? [unitSelectionNavEntry] : []),
       ...(props.unitId && props.domainId
-        ? [domainDashboardNavEntry.value, objectsNavEntry.value, catalogsNavEntry.value, reportsNavEntry.value, risksNavEntry.value /*, editorsNavEntry.value */]
-        : []),
-      ...(props.domainId && props.unitId && isContentCreator.value ? [editorsNavEntry.value] : [])
+        ? [
+            domainDashboardNavEntry.value,
+            ...(props.domainId && props.unitId && isContentCreator.value ? [editorsNavEntry.value] : []),
+            objectsNavEntry.value,
+            catalogsNavEntry.value,
+            reportsNavEntry.value,
+            risksNavEntry.value
+          ]
+        : [])
     ]);
-
-    const expandedNavItems = reactive<string[]>([]);
-    provide('expandedNavItems', expandedNavItems);
-
-    const addExpandedNavItemsToSet = (item: INavItem, previousPath: string) => {
-      const newPath = `${previousPath}/${item.name}`;
-
-      if (item.partOfActivePath && !expandedNavItems.includes(newPath)) {
-        expandedNavItems.push(newPath);
-      }
-
-      for (const child of item.childItems || []) {
-        addExpandedNavItemsToSet(child, newPath);
-      }
-    };
-
-    watch(
-      () => items.value,
-      () => {
-        for (const item of items.value) {
-          addExpandedNavItemsToSet(item, '#');
-        }
-      }
-    );
-
-    const onCollapseMenus = (itemToExpandKey: string) => {
-      // If The key is already part of the array, collapse the item
-      if (!expandedNavItems.includes(itemToExpandKey)) {
-        expandedNavItems.push(itemToExpandKey);
-      } else {
-        const index = expandedNavItems.findIndex((key) => key === itemToExpandKey);
-        expandedNavItems.splice(index, 1);
-      }
-
-      for (let i = 0; i < expandedNavItems.length; i++) {
-        const key = expandedNavItems[i];
-
-        // Only remove items on second level or below that are not parents of the clicked element. We splice as to not completely remove the object. This would destroy reactivity
-        if (key.split('/').length > 2 && !itemToExpandKey.includes(key)) {
-          expandedNavItems.splice(i, 1);
-          i--;
-        }
-      }
-    };
 
     // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
     const homeLink = computed(() => (params.value.domain ? `/${params.value.unit}/domains/${params.value.domain}` : params.value.unit ? `/${params.value.unit}` : '/'));
@@ -499,11 +472,10 @@ export default defineComponent({
       items,
       homeLink,
       miniVariant,
-      onCollapseMenus,
       setMiniVariant,
 
-      mdiChevronDoubleLeft,
-      mdiChevronDoubleRight,
+      mdiChevronLeft,
+      mdiChevronRight,
       t
     };
   }
@@ -529,5 +501,21 @@ export default defineComponent({
 .veo-primary-navigation.v-navigation-drawer {
   background-color: $background-accent;
   border-right: 1px solid $medium-grey;
+}
+
+.veo-primary-navigation ::v-deep.v-list-item > .v-list-item__title {
+  padding-left: 4px;
+}
+
+.veo-primary-navigation.v-navigation-drawer--mini-variant ::v-deep.v-list-item {
+  padding-left: 8px;
+}
+
+.veo-primary-navigation ::v-deep.v-list-item--active:not(.v-list-group__header) {
+  border-left: 4px solid $primary;
+
+  > .v-list-item__title {
+    padding-left: 0;
+  }
 }
 </style>

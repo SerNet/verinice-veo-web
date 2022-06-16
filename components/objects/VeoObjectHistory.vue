@@ -16,69 +16,74 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div v-if="$fetchState.pending || loading">
-    <div
-      v-for="index in [1, 2]"
-      :key="index"
-      class="my-6 px-4"
-    >
-      <v-skeleton-loader type="heading" />
-      <v-skeleton-loader
-        type="text"
-        class="my-2"
-      />
-      <v-skeleton-loader type="text" />
-    </div>
-  </div>
-  <v-list
-    v-else
-    v-cy-name="'history-list'"
-    class="py-0"
-  >
-    <v-list-item-group
-      color="primary"
-      :value="0"
-      mandatory
-    >
+  <div>
+    <h2 class="text-h2 px-4 pt-1">
+      {{ $t('history').toString() }}
+    </h2>
+    <div v-if="$fetchState.pending || loading">
       <div
-        v-for="(version, index) of historyEntriesWithCompability"
-        :key="version.changeNumber"
+        v-for="index in [1, 2]"
+        :key="index"
+        class="my-6 px-4"
       >
-        <v-divider v-if="index > 0" />
-        <v-tooltip
-          bottom
-          :disabled="version.compability.valid"
-        >
-          <template #activator="{ on }">
-            <div v-on="on">
-              <v-list-item
-                three-line
-                :disabled="!version.compability.valid"
-              >
-                <v-list-item-content
-                  @click="$emit('show-revision', version, index > 0)"
-                >
-                  <v-list-item-title>
-                    {{ $t('version') }}
-                    <b>{{ version.changeNumber + 1 }}</b>
-                    : {{ (new Date(version.time)).toLocaleString($i18n.locale) }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle>
-                    {{ $t('by') }}
-                    <b>{{ version.author }}</b>
-                  </v-list-item-subtitle>
-                  <v-list-item-subtitle>{{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </div>
-          </template>
-          <template #default>
-            {{ $t('dataIncompatible') }}
-          </template>
-        </v-tooltip>
+        <v-skeleton-loader type="heading" />
+        <v-skeleton-loader
+          type="text"
+          class="my-2"
+        />
+        <v-skeleton-loader type="text" />
       </div>
-    </v-list-item-group>
-  </v-list>
+    </div>
+    <v-list
+      v-else
+      v-cy-name="'history-list'"
+      class="py-0"
+    >
+      <v-list-item-group
+        color="primary"
+        :value="0"
+        mandatory
+      >
+        <div
+          v-for="(version, index) of historyEntriesWithCompability"
+          :key="version.changeNumber"
+        >
+          <v-divider v-if="index > 0" />
+          <v-tooltip
+            bottom
+            :disabled="version.compability.valid"
+          >
+            <template #activator="{ on }">
+              <div v-on="on">
+                <v-list-item
+                  three-line
+                  :disabled="!version.compability.valid"
+                >
+                  <v-list-item-content
+                    @click="$emit('show-revision', version, index > 0)"
+                  >
+                    <v-list-item-title>
+                      {{ $t('version') }}
+                      <b>{{ version.changeNumber + 1 }}</b>
+                      : {{ (new Date(version.time)).toLocaleString($i18n.locale) }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      {{ $t('by') }}
+                      <b>{{ version.author }}</b>
+                    </v-list-item-subtitle>
+                    <v-list-item-subtitle>{{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+              </div>
+            </template>
+            <template #default>
+              {{ $t('dataIncompatible') }}
+            </template>
+          </v-tooltip>
+        </div>
+      </v-list-item-group>
+    </v-list>
+  </div>
 </template>
 
 <script lang="ts">
@@ -159,6 +164,7 @@ export default Vue.extend({
   "en": {
     "by": "by",
     "dataIncompatible": "This revision is incompatible with the schema and cannot be displayed.",
+    "history": "History",
     "restoreRevision": "Restore version",
     "revisionType": {
       "CREATION": "Object created",
@@ -171,6 +177,7 @@ export default Vue.extend({
   "de": {
     "by": "by",
     "dataIncompatible": "Diese Version ist inkompatibel mit dem Schema und kann nicht angezeigt werden.",
+    "history": "Verlauf",
     "restoreRevision": "Version wiederherstellen",
     "revisionType": {
       "CREATION": "Objekt erstellt",

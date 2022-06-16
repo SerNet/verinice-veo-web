@@ -30,7 +30,7 @@ import VeoPageHeader from '~/components/layout/VeoPageHeader.vue';
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue';
 import VeoTabs from '~/components/layout/VeoTabs.vue';
 import VeoForm from '~/components/forms/VeoForm.vue';
-import VeoValidationResult from '~/components/util/VeoValidationResult.vue';
+import VeoValidationResultList from '~/components/util/VeoValidationResultList.vue';
 import VeoCard from '~/components/layout/VeoCard.vue';
 import { getEmittedEvent, getFormInput, getVSelectComponentByDataCy } from '~/lib/jestUtils';
 
@@ -54,7 +54,7 @@ const mockDefaults = {
           VeoPage: (() => merge(VeoPage, { components: { VeoPageHeader } }))(),
           VeoForm,
           VeoFormNavigation,
-          VeoValidationResult,
+          VeoValidationResultList,
           VeoTabs,
           VeoObjectFormSkeletonLoader,
           VeoCard
@@ -62,8 +62,7 @@ const mockDefaults = {
       }))()
   },
   stubs: {
-    LinksFieldRow: true,
-    VeoValidationResultList: true
+    LinksFieldRow: true
   },
   mocks: {
     $nuxt: {

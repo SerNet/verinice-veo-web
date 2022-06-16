@@ -21,9 +21,9 @@
     :color="alertColor"
     colored-border
     border="left"
-    :elevation="flat ? undefined : 4"
+    :elevation="flat ? undefined : 2"
     dense
-    class="veo-alert veo-border"
+    class="veo-alert veo-border overflow-hidden"
     :icon="alertIcon"
     style="border-radius: 12px"
   >
@@ -33,7 +33,7 @@
     >
       <v-col
         cols="auto"
-        class="accent--text"
+        class="accent--text d-flex justify-center flex-column"
       >
         <h3
           class="text-h3"
@@ -46,10 +46,7 @@
           v-text="text"
         />
       </v-col>
-      <v-col
-        cols="auto"
-        class="align-self-center"
-      >
+      <v-col cols="auto">
         <slot name="additional-button" />
         <v-btn
           v-if="!noCloseButton"
@@ -58,20 +55,29 @@
           @click="$emit('input', false)"
         >
           <span v-if="saveButtonText">{{ saveButtonText }}</span>
-          <span v-else>{{ $t('global.button.ok') }}</span>
+          <span v-else>{{ t('global.button.ok') }}</span>
         </v-btn>
       </v-col>
     </v-row>
+    <v-progress-linear
+      v-if="timeout"
+      class="veo-alert-timeout-bar"
+      absolute
+      bottom
+      :color="alertColor"
+      height="4"
+      :value="remainingTime / timeout * 100"
+    />
   </v-alert>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Prop } from 'vue/types/options';
+import { computed, defineComponent, onUnmounted, PropType, ref, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
 import { VeoAlertType } from '~/types/VeoTypes';
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     text: {
       type: String,
@@ -82,7 +88,7 @@ export default Vue.extend({
       default: undefined
     },
     type: {
-      type: Number as Prop<VeoAlertType>,
+      type: Number as PropType<VeoAlertType>,
       default: VeoAlertType.ERROR
     },
     flat: {
@@ -96,11 +102,17 @@ export default Vue.extend({
     saveButtonText: {
       type: String,
       default: undefined
+    },
+    timeout: {
+      type: Number,
+      default: undefined
     }
   },
-  computed: {
-    alertColor(): string {
-      switch (this.type) {
+  setup(props, { emit }) {
+    const { t } = useI18n();
+
+    const alertColor = computed(() => {
+      switch (props.type) {
         case 0:
           return 'primary';
         case 1:
@@ -110,9 +122,10 @@ export default Vue.extend({
         default:
           return 'primary';
       }
-    },
-    alertIcon(): string {
-      switch (this.type) {
+    });
+
+    const alertIcon = computed(() => {
+      switch (props.type) {
         case 0:
           return 'mdi-alert-circle-outline';
         case 1:
@@ -122,7 +135,46 @@ export default Vue.extend({
         default:
           return 'mdi-alert-circle-outline';
       }
-    }
+    });
+
+    let interval: any;
+    const intervalTime = 50;
+    const remainingTime = ref<number>(0);
+
+    watch(
+      () => props.timeout,
+      (newValue) => {
+        if (newValue) {
+          if (interval) {
+            clearInterval(interval);
+          }
+          remainingTime.value = newValue;
+          interval = setInterval(() => {
+            if (remainingTime.value < 0) {
+              clearInterval(interval);
+              emit('input', false);
+            }
+
+            remainingTime.value -= intervalTime;
+          }, intervalTime);
+        }
+      },
+      { immediate: true }
+    );
+
+    onUnmounted(() => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    });
+
+    return {
+      alertColor,
+      alertIcon,
+      remainingTime,
+
+      t
+    };
   }
 });
 </script>
@@ -130,5 +182,9 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .veo-alert ::v-deep i {
   align-self: center;
+}
+
+.veo-alert-timeout-bar {
+  left: 0;
 }
 </style>

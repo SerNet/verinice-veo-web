@@ -58,7 +58,7 @@
         </div>
         <v-card-actions
           v-if="!!$slots['dialog-options'] && !fixedFooter"
-          class="pt-3 pb-0"
+          class="pt-3 pb-0 px-0"
         >
           <slot name="dialog-options" />
         </v-card-actions>

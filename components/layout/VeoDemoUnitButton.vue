@@ -22,11 +22,12 @@
   >
     <template #activator="{ on }">
       <div
-        class="d-inline-block"
+        class="d-block"
         v-on="on"
         @click.prevent
       >
         <v-btn
+          v-bind="$attrs"
           color="primary"
           :disabled="!demoUnit || units.length === 0"
           :icon="iconOnly"
