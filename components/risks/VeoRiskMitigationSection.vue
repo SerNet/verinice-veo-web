@@ -36,70 +36,45 @@
       </v-tooltip>
     </h2>
     <VeoCard>
-      <v-card-text>
-        <div class="d-flex fill-width align-center">
-          <div>
-            <v-radio-group
-              v-model="createNewMitigatingAction"
-              hide-details
-              dense
-            >
-              <v-radio
-                :label="t('createNewMitigation')"
-                :value="true"
-              />
-              <v-radio
-                :label="`${t('useExistingMitigation')}:`"
-                :value="false"
-              />
-            </v-radio-group>
-            <VeoObjectSelect
-              :value="data.mitigation"
-              object-type="control"
-              :disabled="createNewMitigatingAction"
-              :label="t('mitigation')"
-              value-as-link
-              class="ml-8"
-              @input="$emit('input', { ...data, mitigation: $event })"
-            />
-          </div>
-          <v-tooltip bottom>
-            <template #activator="{ on }">
-              <div
-                class="ml-4"
-                v-on="on"
-              >
-                <v-badge
-                  :content="mitigationParts.length + ''"
-                  overlap
-                >
-                  <v-btn
-                    icon
-                    :disabled="fetchingMitigation"
-                    @click="editPartsDialogVisible = true"
-                  >
-                    <v-icon>
-                      {{ mdiFileDocumentMultiple }}
-                    </v-icon>
-                  </v-btn>
-                </v-badge>
-              </div>
-            </template>
-            <template #default>
-              {{ upperFirst(t('editParts').toString()) }}
-            </template>
-          </v-tooltip>
-        </div>
-        <VeoLinkObjectDialog
-          v-if="editPartsDialogVisible"
-          v-model="editPartsDialogVisible"
-          add-type="entity"
-          :edited-object="createNewMitigatingAction ? newMitigatingAction : selectedMitigationAsEntity"
-          return-objects
-          :selected-items.sync="mitigationParts"
-        />
-      </v-card-text>
+      <VeoObjectTable
+        :default-headers="['name']"
+        :loading="fetchingMitigation"
+      />
     </VeoCard>
+    <v-menu
+      top
+      offset-y
+    >
+      <template #activator="{ on }">
+        <v-btn
+          class="mt-2"
+          color="primary"
+          depressed
+          v-on="on"
+        >
+          <v-icon left>
+            {{ mdiPencilOutline }}
+          </v-icon>
+          {{ t('editMitigatingActions').toString() }}
+        </v-btn>
+      </template>
+      <template #default>
+        <v-list dense>
+          <v-list-item @click="createMitigationDialogVisible = true">
+            <v-list-item-title>{{ t('createMitigation') }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="editMitigationsDialogVisible = true">
+            <v-list-item-title>{{ t('addMitigation') }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </template>
+    </v-menu>
+    <VeoLinkObjectDialog
+      v-if="editMitigationsDialogVisible"
+      v-model="editMitigationsDialogVisible"
+      add-type="entity"
+      return-objects
+    />
   </div>
 </template>
 
@@ -107,7 +82,7 @@
 import { computed, defineComponent, PropType, ref, useContext, useRoute, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
-import { mdiFileDocumentMultiple, mdiInformationOutline } from '@mdi/js';
+import { mdiInformationOutline, mdiPencilOutline } from '@mdi/js';
 
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
@@ -117,6 +92,10 @@ export default defineComponent({
     data: {
       type: Object as PropType<IVeoRisk>,
       default: undefined
+    },
+    domainId: {
+      type: String,
+      required: true
     }
   },
   setup(props, { emit }) {
@@ -125,12 +104,16 @@ export default defineComponent({
     const route = useRoute();
 
     // Mitigating action stuff
-    const createNewMitigatingAction = ref(true);
     const newMitigatingAction = computed(() => ({
       type: 'control',
-      name: t('mitigatingAction', [props.data?.scenario?.displayName]).toString(),
+      name: t('mitigatingAction', [props.data?.designator]).toString(),
       owner: {
         targetUri: `${$config.apiUrl}/units/${separateUUIDParam(route.value.params.unit).id}`
+      },
+      domain: {
+        [props.domainId]: {
+          subType: 'CTL_TOM'
+        }
       }
     }));
 
@@ -140,18 +123,11 @@ export default defineComponent({
       { deep: true }
     );
 
-    const editPartsDialogVisible = ref(false);
+    const createMitigationDialogVisible = ref(false);
+    const editMitigationsDialogVisible = ref(false);
 
-    const selectedMitigationAsEntity = ref<IVeoEntity | undefined>(undefined);
+    const containerAsObject = ref<IVeoEntity | undefined>(undefined);
     const fetchingMitigation = ref(false);
-
-    const mitigationParts = ref<{ type: string; id: string }[]>([]);
-
-    watch(
-      () => mitigationParts.value,
-      (newValue) => emit('update:mitigation-parts', newValue),
-      { deep: true }
-    );
 
     const fetchMitigation = async () => {
       if (props.data?.mitigation) {
@@ -159,52 +135,30 @@ export default defineComponent({
         const { id } = getEntityDetailsFromLink(props.data.mitigation);
 
         try {
-          selectedMitigationAsEntity.value = await $api.entity.fetch('control', id);
-
-          mitigationParts.value = selectedMitigationAsEntity.value.parts.map((part) => getEntityDetailsFromLink(part));
+          containerAsObject.value = await $api.entity.fetch('control', id);
         } finally {
           fetchingMitigation.value = false;
         }
-      } else {
-        mitigationParts.value = [];
       }
     };
 
     watch(
-      () => createNewMitigatingAction.value,
-      (newValue) => {
-        if (newValue) {
-          mitigationParts.value = [];
-        } else {
-          fetchMitigation();
-        }
-        emit('update:create-new-mitigating-action', newValue);
-      }
-    );
-
-    watch(
       () => props.data?.mitigation,
-      () => {
-        if (props.data?.mitigation) {
-          createNewMitigatingAction.value = false;
-        }
-        fetchMitigation();
-      },
-      { immediate: true, deep: true }
+      () => fetchMitigation(),
+      { immediate: true }
     );
 
     return {
-      createNewMitigatingAction,
-      editPartsDialogVisible,
+      createMitigationDialogVisible,
+      containerAsObject,
+      editMitigationsDialogVisible,
       fetchingMitigation,
-      mitigationParts,
       newMitigatingAction,
-      selectedMitigationAsEntity,
 
       t,
       upperFirst,
-      mdiFileDocumentMultiple,
-      mdiInformationOutline
+      mdiInformationOutline,
+      mdiPencilOutline
     };
   }
 });
@@ -213,22 +167,20 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "createNewMitigation": "create new mitigating action",
-    "editParts": "edit parts",
+    "addMitigation": "add mitigating action",
+    "createMitigation": "create mitigating action",
+    "editMitigatingActions": "edit mitigating actions",
     "mitigatingAction": "Mitigating action for \"{0}\"",
-    "mitigation": "mitigation",
     "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions,{0} meaning only one mitigation action can be applied to a risk",
-    "mitigationSection": "risk reduction actions (mitigating actions)",
-    "useExistingMitigation": "use existing mitigating action"
+    "mitigationSection": "risk reduction actions (mitigating actions)"
   },
   "de": {
-    "createNewMitigation": "Neue mitigierende Maßnahme erstellen",
-    "editParts": "Teile bearbeiten",
+    "addMitigation": "Mitigierende Maßnahme verknüpfen",
+    "createMitigation": "Mitigierende Maßnahme erstellen",
+    "editMitigatingActions": "Mitigierende Maßnahmen bearbeiten",
     "mitigatingAction": "Mitigierende Maßnahme für \"{0}\"",
-    "mitigation": "Gegenmaßnahme",
     "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg,{0} d.h. es kann immer nur eine migitierende Maßnahme pro Risiko ausgewählt werden",
-    "mitigationSection": "Maßnahmen zur Risikoreduktion (Mitigierende Maßnahmen)",
-    "useExistingMitigation": "Vorhandene mitigierende Maßnahme nutzen"
+    "mitigationSection": "Maßnahmen zur Risikoreduktion (Mitigierende Maßnahmen)"
   }
 }
 </i18n>

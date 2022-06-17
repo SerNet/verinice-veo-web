@@ -82,6 +82,7 @@
             />
             <VeoRiskMitigationSection
               :data.sync="internalValue"
+              :domain-id="domain.id"
               v-on="$listeners"
             />
             <VeoRiskResidualSection
