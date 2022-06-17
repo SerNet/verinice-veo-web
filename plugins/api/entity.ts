@@ -397,7 +397,7 @@ export default function (api: Client) {
     async fetchWipDecisionEvaluation(objectType: string, object: IVeoEntity, domain: string, decision: string): Promise<any> {
       objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
-      return api.req('/api/:objectType/decision-evaluation', {
+      return api.req('/api/:objectType/evaluation', {
         method: 'POST',
         params: {
           objectType
