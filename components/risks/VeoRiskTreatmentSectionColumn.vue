@@ -30,6 +30,7 @@
       :label="upperFirst(t('riskTreatment').toString())"
       :items="treatmentOptions"
       class="veo-risk-dialog__risk-treatment-selection"
+      hide-details
       @input="$emit('update:risk-treatments', $event)"
     >
       <template #selection="{ item, index }">
@@ -48,12 +49,26 @@
         </v-chip>
       </template>
     </v-select>
-    <v-textarea
-      :value="riskTreatmentExplanation"
-      :label="upperFirst(t('explanation').toString())"
-      clearable
-      @input="$emit('update:risk-treatment-explanation', $event)"
-    />
+    <v-edit-dialog>
+      <v-text-field
+        :value="riskTreatmentExplanation"
+        :label="upperFirst(t('explanation').toString())"
+        hide-details
+        @input="$emit('update:risk-treatment-explanation', $event)"
+      />
+      <template #input>
+        <v-textarea
+          :value="riskTreatmentExplanation"
+          :label="upperFirst(t('explanation').toString())"
+          clearable
+          auto-grow
+          autofocus
+          rows="1"
+          no-resize
+          @input="$emit('update:risk-treatment-explanation', $event)"
+        />
+      </template>
+    </v-edit-dialog>
   </v-col>  
 </template>
 

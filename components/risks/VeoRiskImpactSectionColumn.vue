@@ -29,6 +29,7 @@
       :label="upperFirst(t('potentialImpact').toString())"
       :items="impacts[protectionGoal.id]"
       disabled
+      hide-details
     />
     <v-select
       :value="specificImpact"
@@ -36,20 +37,36 @@
       :label="upperFirst(t('specificImpact').toString())"
       :items="impacts[protectionGoal.id]"
       clearable
+      hide-details
       @input="$emit('update:specific-impact', $event)"
     />
-    <v-textarea
-      :value="specificImpactExplanation"
-      :label="upperFirst(t('explanation').toString())"
-      clearable
-      @input="$emit('update:specific-impact-explanation', $event)"
-    />
+    <v-edit-dialog>
+      <v-text-field
+        :value="specificImpactExplanation"
+        :label="upperFirst(t('explanation').toString())"
+        hide-details
+        @input="$emit('update:specific-impact-explanation', $event)"
+      />
+      <template #input>
+        <v-textarea
+          :value="specificImpactExplanation"
+          :label="upperFirst(t('explanation').toString())"
+          clearable
+          auto-grow
+          autofocus
+          rows="1"
+          no-resize
+          @input="$emit('update:specific-impact-explanation', $event)"
+        />
+      </template>
+    </v-edit-dialog>
     <v-select
       :value="effectiveImpact"
       color="primary"
       :label="upperFirst(t('effectiveImpact').toString())"
       :items="impacts[protectionGoal.id]"
       disabled
+      hide-details
     >
       <template
         v-if="dirtyFields && dirtyFields[`${riskDefinition.id}_${protectionGoal.id}_specificImpact`]"
