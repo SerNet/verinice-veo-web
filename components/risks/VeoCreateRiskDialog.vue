@@ -61,8 +61,11 @@
         </v-col>
       </v-row>
       <VeoCard>
-        <VeoEntitySelectionList
+        <VeoObjectTable
           v-model="selectedScenarios"
+          show-select
+          checkbox-color="primary"
+          :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="objects"
           :loading="$fetchState.pending"
           @page-change="onPageChange"

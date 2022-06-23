@@ -76,8 +76,11 @@
         {{ t('selectDPEntitiesCTA') }}
       </p>
       <VeoCard>
-        <VeoEntitySelectionList
+        <VeoObjectTable
           v-model="selectedEntities"
+          show-select
+          checkbox-color="primary"
+          :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="availableEntities"
           :loading="entitiesLoading"
           @page-change="onPageChange"
@@ -182,16 +185,14 @@ export default defineComponent({
     const selectedTomsIds = ref<string[]>([]);
     const availableToms = computed(() =>
       // VVT is a process that is needed by the backend, but the user shouldn't be able to select it, so we hide it. TODO: Remove
-      props.catalogItems
-        .filter((item) => item.tailoringReferences.length > 0 && !item.description.startsWith('VVT'))
-        .map((item) => {
-          const displayNameParts = (item.element.displayName as string).split(' ');
-          const designator = displayNameParts.shift() as string;
-          const abbreviation = displayNameParts.shift() as string;
-          const title = displayNameParts.join(' ') as string;
+      props.catalogItems.map((item) => {
+        const displayNameParts = (item.element.displayName as string).split(' ');
+        const designator = displayNameParts.shift() as string;
+        const abbreviation = displayNameParts.shift() as string;
+        const title = displayNameParts.join(' ') as string;
 
-          return { designator, abbreviation, title, id: item.id, description: item.description };
-        })
+        return { designator, abbreviation, title, id: item.id, description: item.description };
+      })
     );
 
     const selectedTOMs = computed(() => availableToms.value.filter((tom) => selectedTomsIds.value.includes(tom.id)));

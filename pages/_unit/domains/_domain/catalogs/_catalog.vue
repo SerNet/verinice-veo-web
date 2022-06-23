@@ -24,7 +24,7 @@
       <VeoTabs class="mt-6">
         <template #tabs>
           <v-tab>{{ t('applyEntries') }}</v-tab>
-          <v-tab v-if="catalogContainsTOMs">
+          <v-tab>
             {{ t('applyTOMs') }}
           </v-tab>
         </template>
