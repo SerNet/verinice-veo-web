@@ -76,9 +76,7 @@
           v-model="data"
           :domain="domain"
           :dirty-fields.sync="dirtyFields"
-          @update:new-mitigating-action="newMitigatingAction = $event"
-          @update:create-new-mitigating-action="createNewMitigatingAction = $event"
-          @update:mitigation-parts="mitigationParts = $event"
+          :mitigations.sync="mitigations"
         />
       </v-form>
     </template>
@@ -108,15 +106,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, nextTick, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { merge, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiFileDocumentMultiple, mdiInformationOutline } from '@mdi/js';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { getEntityDetailsFromLink } from '~/lib/utils';
-import { IVeoDomain, IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType } from '~/types/VeoTypes';
-import { IVeoAPIObjectIdentifier, useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
+import { IVeoDomain, IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
+import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
 export interface IDirtyFields {
   [field: string]: boolean;
@@ -146,10 +144,13 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { $api } = useContext();
+    const { $api, $config } = useContext();
+    const route = useRoute();
     const { t } = useI18n();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { createLink, linkObject } = useVeoObjectUtilities();
+
+    const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     // Domain stuff, used for risk definitions
     const domain = ref<IVeoDomain | undefined>();
@@ -217,13 +218,14 @@ export default defineComponent({
         savingRisk.value = true;
 
         try {
-          const mitigationDetails = { type: 'control', id: data.value.mitigation ? getEntityDetailsFromLink(data.value.mitigation).id : undefined };
-          if (createNewMitigatingAction.value) {
+          if (!data.value.mitigation && mitigations.value.length) {
             const newMitigationId = (await $api.entity.create('control', newMitigatingAction.value as any)).resourceId;
-            mitigationDetails.id = newMitigationId;
-            data.value.mitigation = await createLink(mitigationDetails as IVeoAPIObjectIdentifier);
+            data.value.mitigation = await createLink({ type: 'control', id: newMitigationId });
           }
-          await linkObject('child', mitigationDetails as IVeoAPIObjectIdentifier, mitigationParts.value, true);
+
+          if (data.value.mitigation) {
+            await linkObject('child', { id: getEntityDetailsFromLink(data.value.mitigation).id, type: 'control' }, mitigations.value, true);
+          }
 
           if (props.scenarioId) {
             await $api.entity.updateRisk(props.objectType, props.objectId, props.scenarioId, data.value);
@@ -242,18 +244,27 @@ export default defineComponent({
     };
 
     // Mitigating action stuff
-    const newMitigatingAction = ref<Object | undefined>();
-    const createNewMitigatingAction = ref<Boolean>(true);
-    const mitigationParts = ref<{ type: string; id: string }[]>([]);
+    const mitigations = ref<IVeoEntity[]>([]);
+
+    const newMitigatingAction = computed(() => ({
+      type: 'control',
+      name: t('mitigatingAction', [data.value?.designator]).toString(),
+      owner: {
+        targetUri: `${$config.apiUrl}/units/${unitId.value}`
+      },
+      domain: {
+        [props.domainId]: {
+          subType: 'CTL_TOM'
+        }
+      }
+    }));
 
     return {
-      createNewMitigatingAction,
       data,
       dirtyFields,
       domain,
       formIsValid,
-      mitigationParts,
-      newMitigatingAction,
+      mitigations,
       onScenarioChanged,
       risk,
       saveRisk,
@@ -347,6 +358,7 @@ const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, ris
     "computedValuesCTA": "Please press \"Save\" to recomputed those values.",
     "createRisk": "create risk",
     "editRisk": "edit risk \"{0}\"",
+    "mitigatingAction": "Mitigating action for \"{0}\"",
     "riskCreated": "the risk was created successfully",
     "riskUpdated": "the risk was edited successfully",
     "riskNotSaved": "the risk couldn't be saved",
@@ -359,6 +371,7 @@ const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, ris
     "computedValuesCTA": "Drücken sie \"Speichern\" um diese Werte neu berechnen zu lassen.",
     "createRisk": "Risiko erstellen",
     "editRisk": "Risiko \"{0}\" bearbeiten",
+    "mitigatingAction": "Mitigierende Maßnahme für \"{0}\"",
     "riskCreated": "das Risiko wurde erfolgreich erstellt",
     "riskUpdated": "das Risiko wurde erfolgreich bearbeitet",
     "riskNotSaved": "das Risiko konnte nicht gespeichert werden",

@@ -65,12 +65,13 @@ export function formatTime(date: Date) {
   return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
 }
 
-export function getEntityDetailsFromLink(link: IVeoLink): { type: string; id: string } {
+export function getEntityDetailsFromLink(link: IVeoLink): { type: string; id: string; name: string } {
   const destructedLink = link.targetUri.split('/');
 
   return {
     id: destructedLink.pop() || '',
-    type: destructedLink.pop() || ''
+    type: destructedLink.pop() || '',
+    name: link.displayName || ''
   };
 }
 

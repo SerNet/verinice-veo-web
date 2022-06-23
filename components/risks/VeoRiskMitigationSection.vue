@@ -37,8 +37,9 @@
     </h2>
     <VeoCard>
       <VeoObjectTable
-        :default-headers="['name']"
+        :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'updatedAt']"
         :loading="fetchingMitigation"
+        :items="selectedItems"
       />
     </VeoCard>
     <v-menu
@@ -73,18 +74,33 @@
       v-if="editMitigationsDialogVisible"
       v-model="editMitigationsDialogVisible"
       add-type="entity"
+      :edited-object="editedObject"
       return-objects
+      use-full-objects
+      :selected-items.sync="selectedItems"
+    >
+      <template #header>
+        {{ t('addMitigatingActionsToRisk', [data && data.designator]).toString() }}
+      </template>
+    </VeoLinkObjectDialog>
+    <VeoCreateObjectDialog
+      v-if="createMitigationDialogVisible"
+      v-model="createMitigationDialogVisible"
+      object-type="control"
+      sub-type="CTL_TOM"
+      :domain-id="domainId"
+      @success="onMitigationCreated"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, useRoute, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, useContext, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 import { mdiInformationOutline, mdiPencilOutline } from '@mdi/js';
 
-import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
+import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -93,6 +109,10 @@ export default defineComponent({
       type: Object as PropType<IVeoRisk>,
       default: undefined
     },
+    mitigations: {
+      type: Array as PropType<IVeoEntity[]>,
+      default: () => []
+    },
     domainId: {
       type: String,
       required: true
@@ -100,33 +120,23 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { $config, $api } = useContext();
-    const route = useRoute();
+    const { $api } = useContext();
 
-    // Mitigating action stuff
-    const newMitigatingAction = computed(() => ({
-      type: 'control',
-      name: t('mitigatingAction', [props.data?.designator]).toString(),
-      owner: {
-        targetUri: `${$config.apiUrl}/units/${separateUUIDParam(route.value.params.unit).id}`
-      },
-      domain: {
-        [props.domainId]: {
-          subType: 'CTL_TOM'
-        }
-      }
-    }));
-
-    watch(
-      () => newMitigatingAction.value,
-      (newValue) => emit('update:new-mitigating-action', newValue),
-      { deep: true }
-    );
+    // We don't need the name, as it only gets used by the text in the linkObjectDialog and this text gets overwritten by template#header
+    const editedObject = { type: 'control', name: '' };
 
     const createMitigationDialogVisible = ref(false);
     const editMitigationsDialogVisible = ref(false);
 
-    const containerAsObject = ref<IVeoEntity | undefined>(undefined);
+    const selectedItems = computed<IVeoEntity[]>({
+      get() {
+        return props.mitigations;
+      },
+      set(newValue: IVeoEntity[]) {
+        emit('update:mitigations', newValue);
+      }
+    });
+
     const fetchingMitigation = ref(false);
 
     const fetchMitigation = async () => {
@@ -135,11 +145,18 @@ export default defineComponent({
         const { id } = getEntityDetailsFromLink(props.data.mitigation);
 
         try {
-          containerAsObject.value = await $api.entity.fetch('control', id);
+          selectedItems.value = await $api.entity.fetchSubEntities('control', id);
         } finally {
           fetchingMitigation.value = false;
         }
+      } else {
+        selectedItems.value = [];
       }
+    };
+
+    const onMitigationCreated = async (objectId: string) => {
+      const newMitigation = await $api.entity.fetch('control', objectId);
+      selectedItems.value.push(newMitigation);
     };
 
     watch(
@@ -150,10 +167,11 @@ export default defineComponent({
 
     return {
       createMitigationDialogVisible,
-      containerAsObject,
+      editedObject,
       editMitigationsDialogVisible,
       fetchingMitigation,
-      newMitigatingAction,
+      onMitigationCreated,
+      selectedItems,
 
       t,
       upperFirst,
@@ -168,17 +186,17 @@ export default defineComponent({
 {
   "en": {
     "addMitigation": "add mitigating action",
+    "addMitigatingActionsToRisk": "add existing mitigating actions to the risk \"{0}\"",
     "createMitigation": "create mitigating action",
     "editMitigatingActions": "edit mitigating actions",
-    "mitigatingAction": "Mitigating action for \"{0}\"",
     "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions,{0} meaning only one mitigation action can be applied to a risk",
     "mitigationSection": "risk reduction actions (mitigating actions)"
   },
   "de": {
     "addMitigation": "Mitigierende Maßnahme verknüpfen",
+    "addMitigatingActionsToRisk": "Vorhandene mitigierende Maßnahmen mit dem Risiko \"{0}\" verknüpfen",
     "createMitigation": "Mitigierende Maßnahme erstellen",
     "editMitigatingActions": "Mitigierende Maßnahmen bearbeiten",
-    "mitigatingAction": "Mitigierende Maßnahme für \"{0}\"",
     "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg,{0} d.h. es kann immer nur eine migitierende Maßnahme pro Risiko ausgewählt werden",
     "mitigationSection": "Maßnahmen zur Risikoreduktion (Mitigierende Maßnahmen)"
   }
