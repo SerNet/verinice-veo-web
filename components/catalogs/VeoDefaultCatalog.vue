@@ -18,7 +18,7 @@
 <template>
   <div>
     <p class="text-body-1">
-      {{ t('selectEntitiesCTA') }}
+      <slot name="header" />
     </p>
     <VeoCard>
       <VeoCatalogSelectionList
@@ -74,6 +74,14 @@ export default defineComponent({
     loading: {
       type: Boolean,
       default: false
+    },
+    successText: {
+      type: String,
+      default: undefined
+    },
+    errorText: {
+      type: String,
+      default: undefined
     }
   },
   setup(props) {
@@ -103,16 +111,14 @@ export default defineComponent({
 
     const selectedItems = ref<string[]>([]);
     const availableItems = computed(() =>
-      props.catalogItems
-        .filter((item) => item.tailoringReferences.length === 0)
-        .map((item) => {
-          const displayNameParts = (item.element.displayName as string).split(' ');
-          const designator = displayNameParts.shift() as string;
-          const abbreviation = displayNameParts.shift() as string;
-          const title = displayNameParts.join(' ') as string;
+      props.catalogItems.map((item) => {
+        const displayNameParts = (item.element.displayName as string).split(' ');
+        const designator = displayNameParts.shift() as string;
+        const abbreviation = displayNameParts.shift() as string;
+        const title = displayNameParts.join(' ') as string;
 
-          return { designator, abbreviation, title, id: item.id, description: item.description };
-        })
+        return { designator, abbreviation, title, id: item.id, description: item.description };
+      })
     );
 
     // Applying
@@ -125,10 +131,10 @@ export default defineComponent({
         const incarnations = await $api.unit.fetchIncarnations(selectedItems.value);
         // Apply incarnations
         await $api.unit.updateIncarnations(incarnations);
-        displaySuccessMessage(t('catalogItemsApplied').toString());
+        displaySuccessMessage(props.successText);
         selectedItems.value = [];
       } catch (e: any) {
-        displayErrorMessage(t('applyCatalogItemsError').toString(), e.message);
+        displayErrorMessage(props.errorText, e.message);
       } finally {
         applyingItems.value = false;
       }
@@ -150,16 +156,10 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "apply": "apply",
-    "applyCatalogItemsError": "Couldn't apply scenarios",
-    "catalogItemsApplied": "Scenarios were applied successfully",
-    "selectEntitiesCTA": "Please select the scenarios you want to apply."
+    "apply": "apply"
   },
   "de": {
-    "apply": "anwenden",
-    "applyCatalogItemsError": "Gefährdungen konnten nicht angewandt werden",
-    "catalogItemsApplied": "Gefährdungen wurden erfolgreich angewandt",
-    "selectEntitiesCTA": "Bitte wählen Sie die Gefährdungen aus, die Sie anwenden möchten."
+    "apply": "anwenden"
   }
 }
 </i18n>
