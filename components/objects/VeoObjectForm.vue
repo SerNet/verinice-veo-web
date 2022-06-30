@@ -189,7 +189,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropOptions, PropType, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, PropOptions, PropType, Ref, ref, useAsync, useContext, useFetch, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst, merge, throttle } from 'lodash';
 import { mdiEyeOutline, mdiFormatListBulleted, mdiHistory, mdiInformationOutline } from '@mdi/js';
@@ -274,6 +274,8 @@ export default defineComponent({
     const translations: Ref<{ [key: string]: IVeoTranslationCollection } | undefined> = ref(undefined);
     const formSchemas: Ref<IVeoFormSchemaMeta[]> = ref([]);
     const currentFormSchema: Ref<undefined | IVeoFormSchema> = ref(undefined);
+
+    const domain = useAsync(() => $api.domain.fetch(props.domainId));
 
     const {
       fetch,
@@ -391,6 +393,7 @@ export default defineComponent({
 
     const objectInformation = computed<VeoSchemaValidatorMessage[]>(() => {
       const information: VeoSchemaValidatorMessage[] = [];
+      const decisionRules = domain.value?.decisions?.piaMandatory?.rules || [];
 
       if (props.objectMetaData?.decisionResults?.piaMandatory?.value !== undefined) {
         if (props.objectMetaData.decisionResults.piaMandatory.value) {
@@ -399,7 +402,8 @@ export default defineComponent({
             message: t('piaMandatory').toString(),
             params: {
               type: 'info'
-            }
+            },
+            decisionRules
           });
         } else {
           information.push({
@@ -407,7 +411,8 @@ export default defineComponent({
             message: t('piaNotMandatory').toString(),
             params: {
               type: 'success'
-            }
+            },
+            decisionRules
           });
         }
       } else {
@@ -416,7 +421,8 @@ export default defineComponent({
           message: t('piaMandatoryUnknown').toString(),
           params: {
             type: 'info'
-          }
+          },
+          decisionRules
         });
       }
 

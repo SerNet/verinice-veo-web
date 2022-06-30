@@ -19,7 +19,7 @@
   <v-autocomplete
     :value="internalValue"
     :items="items"
-    item-text="name"
+    item-text="displayName"
     item-value="id"
     :no-data-text="t('noObjects')"
     no-filter
@@ -40,16 +40,35 @@
         {{ t('beMoreSpecific') }}
       </v-list-item>
     </template>
+    <template
+      #item="{ item }"
+    >
+      <v-icon left>
+        {{ getItemIcon(item) }}
+      </v-icon>
+      {{ item.displayName }}
+      <v-hover v-slot="{ hover }">
+        <v-icon
+          right
+          style="z-index: 5000;"
+          :color="hover ? 'primary' : ''"
+          @click="openItem(item)"
+        >
+          {{ mdiOpenInNew }}
+        </v-icon>
+      </v-hover>
+    </template>
   </v-autocomplete>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
+import { mdiArchive, mdiArchiveArrowDown, mdiFileDocument, mdiFileDocumentMultiple, mdiOpenInNew } from '@mdi/js';
 import { getSchemaEndpoint } from '~/plugins/api/schema';
-import { getEntityDetailsFromLink } from '~/lib/utils';
+import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
@@ -181,6 +200,27 @@ export default defineComponent({
     const currentSubTypeFormName = computed(() => props.subType && formSchemas.value.find((formSchema) => formSchema.subType === props.subType)?.name[locale.value]);
     const localLabel = computed(() => props.label ?? `${currentSubTypeFormName.value ? currentSubTypeFormName.value : upperFirst(props.objectType)}${props.required ? '*' : ''}`);
 
+    const getItemIcon = (item: IVeoEntity) => {
+      if (item.type !== 'scope' && item.parts?.length) return mdiFileDocumentMultiple;
+      else if (item.type === 'scope' && item.parts?.length) return mdiArchiveArrowDown;
+      else if (item.type === 'scope') return mdiArchive;
+      return mdiFileDocument;
+    };
+
+    const router = useRouter();
+    const route = useRoute();
+
+    const openItem = (item: IVeoEntity) => {
+      const routeData = router.resolve({
+        name: 'unit-domains-domain-objects-entity',
+        params: {
+          ...route.value.params,
+          entity: createUUIDUrlParam(item.type, item.id)
+        }
+      });
+      window.open(routeData.href, '_blank');
+    };
+
     return {
       localLabel,
       internalValue,
@@ -189,6 +229,9 @@ export default defineComponent({
       onInput,
       onSearchInputUpdate,
       searchQuery,
+      getItemIcon,
+      mdiOpenInNew,
+      openItem,
 
       t
     };
