@@ -144,8 +144,8 @@ export default defineComponent({
   },
   "de": {
     "explanation": "Erklärung",
-    "residualRisk": "Netto-Risiko",
-    "residualRiskHint": "Das angezeigte Netto-Risiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben."
+    "residualRisk": "Nettorisiko",
+    "residualRiskHint": "Das angezeigte Nettorisiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben."
   }
 }
 </i18n>

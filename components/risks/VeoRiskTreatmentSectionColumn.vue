@@ -134,9 +134,9 @@ export default defineComponent({
     "explanation": "Erklärung",
     "riskTreatment": "Risikobehandlung",
     "riskTreatments": {
-      "RISK_TREATMENT_ACCEPTANCE": "Risiko-Akzeptanz",
+      "RISK_TREATMENT_ACCEPTANCE": "Risikoakzeptanz",
       "RISK_TREATMENT_AVOIDANCE": "Risikovermeidung",
-      "RISK_TREATMENT_REDUCTION": "Risikominderung",
+      "RISK_TREATMENT_REDUCTION": "Risikoreduktion",
       "RISK_TREATMENT_TRANSFER": "Risikotransfer"
     }
   }

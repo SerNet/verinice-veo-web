@@ -99,7 +99,7 @@ export default defineComponent({
     "residualRisk": "residual risk"
   },
   "de": {
-    "residualRisk": "Netto-Risiko"
+    "residualRisk": "Nettorisiko"
   }
 }
 </i18n>

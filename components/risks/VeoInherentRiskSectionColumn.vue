@@ -90,7 +90,7 @@ export default defineComponent({
     "saveCTA": "save to recompute"
   },
   "de": {
-    "inherentRisk": "Brutto-Risiko",
+    "inherentRisk": "Bruttorisiko",
     "saveCTA": "Speichern zum Neuberechnen"
   }
 }

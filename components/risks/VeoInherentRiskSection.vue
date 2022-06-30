@@ -83,7 +83,7 @@ export default defineComponent({
     "inherentRisk": "inherent risk"
   },
   "de": {
-    "inherentRisk": "Brutto-Risiko"
+    "inherentRisk": "Bruttorisiko"
   }
 }
 </i18n>
