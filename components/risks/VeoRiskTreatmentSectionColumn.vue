@@ -148,4 +148,8 @@ export default defineComponent({
 .veo-risk-dialog__risk-treatment-selection ::v-deep.v-select__selections {
   flex-wrap: nowrap;
 }
+
+::v-deep .v-small-dialog__activator__content {
+  width: 100%;
+}
 </style>

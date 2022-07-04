@@ -161,3 +161,9 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+::v-deep .v-small-dialog__activator__content {
+  width: 100%;
+}
+</style>
