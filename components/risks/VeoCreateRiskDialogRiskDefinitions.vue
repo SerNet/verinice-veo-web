@@ -117,14 +117,22 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const internalValue = computed({
-      get() {
-        return props.value;
-      },
-      set(newValue: IVeoRisk) {
+    const internalValue = ref<IVeoRisk>(props.value);
+    // Computed can't watch deep, so we have to create two watchers to properly send events
+    watch(
+      () => internalValue.value,
+      (newValue) => {
         emit('input', newValue);
-      }
-    });
+      },
+      { deep: true }
+    );
+    watch(
+      () => props.value,
+      (newValue) => {
+        internalValue.value = newValue;
+      },
+      { deep: true }
+    );
 
     // layout stuff
     const getRiskValuesByProtectionGoal = (riskDefinition: IVeoRisk['domains']['x']['riskDefinitions']['y'], protectionGoal: string) => {

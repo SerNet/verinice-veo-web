@@ -63,22 +63,24 @@
                 md="6"
               >
                 <VeoObjectSelect
-                  v-model="data.riskOwner"
+                  :value="data.riskOwner"
                   object-type="person"
                   :label="t('riskOwner')"
                   value-as-link
+                  @input="onRiskOwnerChanged"
                 />
               </v-col>
             </v-row>
           </v-card-text>
         </VeoCard>
         <VeoCreateRiskDialogRiskDefinitions
-          v-model="data"
+          :value="data"
           :domain="domain"
           :dirty-fields.sync="dirtyFields"
           @update:new-mitigating-action="newMitigatingAction = $event"
           @update:create-new-mitigating-action="createNewMitigatingAction = $event"
           @update:mitigation-parts="mitigationParts = $event"
+          @input="onRiskDefinitionsChanged"
         />
       </v-form>
     </template>
@@ -89,7 +91,7 @@
         text
         color="primary"
         :loading="savingRisk"
-        :disabled="!formIsValid"
+        :disabled="!formIsValid || !formModified"
         @click="saveRisk"
       >
         {{ t('global.button.save') }}
@@ -108,8 +110,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
-import { merge, upperFirst } from 'lodash';
+import { computed, defineComponent, nextTick, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
+import { cloneDeep, isEqual, merge, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiFileDocumentMultiple, mdiInformationOutline } from '@mdi/js';
 
@@ -156,6 +158,7 @@ export default defineComponent({
     const { fetch: fetchDomain } = useFetch(async () => {
       domain.value = await $api.domain.fetch(props.domainId);
       data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
+      originalData.value = cloneDeep(data.value);
       nextTick(() => {
         dirtyFields.value = {};
       });
@@ -179,7 +182,9 @@ export default defineComponent({
     );
 
     const data = ref<IVeoRisk | undefined>(undefined);
+    const originalData = ref<IVeoRisk | undefined>(undefined);
     const formIsValid = ref(true);
+    const formModified = computed(() => !isEqual(data.value, originalData.value));
 
     // dirty/pristine stuff
     const dirtyFields = ref<IDirtyFields>({});
@@ -191,6 +196,16 @@ export default defineComponent({
       }
     };
 
+    const onRiskOwnerChanged = (newValue: IVeoLink) => {
+      if (data.value) {
+        data.value.riskOwner = newValue;
+      }
+    };
+
+    const onRiskDefinitionsChanged = (newValue: IVeoRisk) => {
+      data.value = newValue;
+    };
+
     const risk = ref<IVeoRisk | undefined>(undefined);
     const { fetch: fetchRisk } = useFetch(async () => {
       if (props.scenarioId) {
@@ -200,6 +215,7 @@ export default defineComponent({
       }
 
       data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
+      originalData.value = cloneDeep(data.value);
       formIsValid.value = true;
 
       nextTick(() => {
@@ -252,8 +268,11 @@ export default defineComponent({
       dirtyFields,
       domain,
       formIsValid,
+      formModified,
       mitigationParts,
       newMitigatingAction,
+      onRiskDefinitionsChanged,
+      onRiskOwnerChanged,
       onScenarioChanged,
       risk,
       saveRisk,

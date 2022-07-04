@@ -29,7 +29,7 @@
       :label="upperFirst(t('residualRisk').toString())"
       :items="riskValues"
       :disabled="!riskTreatments.length"
-      :clearable="userDefinedResidualRisk && riskTreatments.length"
+      :clearable="userDefinedResidualRisk && !!riskTreatments.length"
       @input="$emit('update:user-defined-residual-risk', $event)"
     >
       <template #selection="{ item }">
