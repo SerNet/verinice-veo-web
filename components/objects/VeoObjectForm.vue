@@ -189,14 +189,14 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropOptions, PropType, Ref, ref, useAsync, useContext, useFetch, watch } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, PropOptions, PropType, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst, merge, throttle } from 'lodash';
 import { mdiEyeOutline, mdiFormatListBulleted, mdiHistory, mdiInformationOutline } from '@mdi/js';
 
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 enum SIDE_CONTAINERS {
@@ -275,7 +275,11 @@ export default defineComponent({
     const formSchemas: Ref<IVeoFormSchemaMeta[]> = ref([]);
     const currentFormSchema: Ref<undefined | IVeoFormSchema> = ref(undefined);
 
-    const domain = useAsync(() => $api.domain.fetch(props.domainId));
+    const domain = ref<IVeoDomain | undefined>();
+    const { fetch: fetchDomain } = useFetch(async () => {
+      domain.value = await $api.domain.fetch(props.domainId);
+    });
+    watch(() => props.domainId, fetchDomain);
 
     const {
       fetch,
