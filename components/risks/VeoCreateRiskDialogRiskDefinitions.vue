@@ -81,7 +81,9 @@
               @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
             <VeoRiskMitigationSection
-              :data.sync="internalValue"
+              :data="internalValue"
+              :mitigations.sync="_mitigations"
+              :domain-id="domain.id"
               v-on="$listeners"
             />
             <VeoRiskResidualSection
@@ -99,7 +101,7 @@
 import { computed, defineComponent, PropType, ref, watch } from '@nuxtjs/composition-api';
 
 import { IDirtyFields } from './VeoCreateRiskDialogSingle.vue';
-import { IVeoDomain, IVeoRisk } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -114,6 +116,10 @@ export default defineComponent({
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       default: () => {}
+    },
+    mitigations: {
+      type: Array as PropType<IVeoEntity[]>,
+      default: () => []
     }
   },
   setup(props, { emit }) {
@@ -155,11 +161,21 @@ export default defineComponent({
       { deep: true }
     );
 
+    const _mitigations = computed({
+      get() {
+        return props.mitigations;
+      },
+      set(newValue: IVeoEntity[]) {
+        emit('update:mitigations', newValue);
+      }
+    });
+
     return {
       activeTab,
       activeRiskDefinition,
       getRiskValuesByProtectionGoal,
-      internalValue
+      internalValue,
+      _mitigations
     };
   }
 });

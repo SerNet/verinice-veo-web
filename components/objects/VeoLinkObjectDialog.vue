@@ -26,8 +26,11 @@
     v-on="$listeners"
   >
     <template #default>
+      <p v-if="!!$slots.header">
+        <slot name="header" />
+      </p>
       <p
-        v-if="hierarchicalContext === 'child'"
+        v-else-if="hierarchicalContext === 'child'"
         class="text-body-1"
       >
         {{ t('linkChildExplanation', { displayName: editedObjectDisplayName, linkedObjectType }) }}
@@ -74,8 +77,11 @@
         </v-col>
       </v-row>
       <VeoCard>
-        <VeoEntitySelectionList
+        <VeoObjectTable
           v-model="modifiedSelectedItems"
+          show-select
+          checkbox-color="primary"
+          :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="availableObjects"
           :loading="fetchState.pending || loadingObjects"
           @page-change="onPageChange"
@@ -152,7 +158,7 @@ export default defineComponent({
      * If editedObject is set, those values will be merged with the values defined here.
      */
     selectedItems: {
-      type: Array as PropType<{ type: string; id: string }[]>,
+      type: Array as PropType<({ type: string; id: string } | IVeoEntity)[]>,
       default: () => []
     },
     /**
@@ -172,6 +178,15 @@ export default defineComponent({
     preselectedFilters: {
       type: Object,
       default: () => {}
+    },
+    /**
+     * Return complete objects as selected items.
+     * NOTE: If you use this prop, please make sure that you pass a complete object as editedObject and if you use
+     * the prop selectedItems that the items are also of type IVeoEntity
+     */
+    useFullObjects: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {
@@ -321,12 +336,12 @@ export default defineComponent({
     );
 
     // Linking logic
-    const mergedSelectedItems = ref<{ id: string; type: string }[]>([]);
-    const modifiedSelectedItems = ref<{ id: string; type: string }[]>([]); // Doesn't get modified to compare which parents have been added removed
+    const mergedSelectedItems = ref<({ id: string; type: string } | IVeoEntity)[]>([]);
+    const modifiedSelectedItems = ref<({ id: string; type: string } | IVeoEntity)[]>([]); // Doesn't get modified to compare which parents have been added removed
 
     const savingObject = ref(false); // saving status for adding entities
     const linkObjects = async () => {
-      if (props.returnObjects || !(props.editedObject as IVeoEntity).id) {
+      if (props.returnObjects || !(props.editedObject as IVeoEntity).designator) {
         if (!props.returnObjects) {
           // eslint-disable-next-line no-console
           console.warn('VeoLinkObjectDialog:: returnObjects is set to false, but no entity was passed. Continuing as if returnObjects is set to true');
@@ -348,7 +363,11 @@ export default defineComponent({
               await unlinkObject(parent.id, _editedObject.id, parent.type);
             }
           } else {
-            await linkObject(props.hierarchicalContext, pick(_editedObject, 'id', 'type'), modifiedSelectedItems.value);
+            await linkObject(
+              props.hierarchicalContext,
+              pick(_editedObject, 'id', 'type'),
+              modifiedSelectedItems.value.map((selectedItem) => pick(selectedItem, 'id', 'type'))
+            );
           }
           emit('success');
         } catch (error: any) {
@@ -361,31 +380,52 @@ export default defineComponent({
 
     const preselectItems = async () => {
       if (props.hierarchicalContext === 'child') {
-        if ((props.editedObject as IVeoEntity).id) {
-          const _editedObject = props.editedObject as IVeoEntity;
-          const childrenProperty = props.editedObject.type === 'scope' ? 'members' : 'parts';
-          mergedSelectedItems.value = [
-            ...props.selectedItems,
-            ..._editedObject[childrenProperty].map((child: IVeoLink) => {
-              const details = getEntityDetailsFromLink(child);
-              const id = details.id;
-              let type = details.type;
-              type = getSchemaName(objectSchemas.value, type) || type;
+        // If edited object is a complete object, fetch preselected items and merge them with the passed ones (usually those are empty)
+        if ((props.editedObject as IVeoEntity).designator) {
+          if (props.useFullObjects) {
+            if (props.selectedItems && props.selectedItems.some((selectedItem) => !(selectedItem as IVeoEntity).designator)) {
+              // eslint-disable-next-line no-console
+              console.warn(
+                'VeoLinkObjectDialog::preselectItems: It seems like you used the prop useFullObject while passing minimal objects in selectedItems. Please configure the component according to the description of the useFullObjects prop.'
+              );
+            }
+            const children = await $api.entity.fetchSubEntities(filter.value.objectType, (props.editedObject as IVeoEntity).id);
+            mergedSelectedItems.value = [...props.selectedItems, ...children];
+          } else {
+            const _editedObject = props.editedObject as IVeoEntity;
+            const childrenProperty = props.editedObject.type === 'scope' ? 'members' : 'parts';
+            mergedSelectedItems.value = [
+              ...props.selectedItems,
+              ..._editedObject[childrenProperty].map((child: IVeoLink) => {
+                const details = getEntityDetailsFromLink(child);
+                const id = details.id;
+                let type = details.type;
+                type = getSchemaName(objectSchemas.value, type) || type;
 
-              return { id, type };
-            })
-          ];
+                return { id, type };
+              })
+            ];
+          }
         } else {
-          mergedSelectedItems.value = props.selectedItems;
+          mergedSelectedItems.value = [...props.selectedItems];
         }
-      } else if ((props.editedObject as IVeoEntity).id) {
+        // Parents with full objects
+      } else if (props.useFullObjects) {
+        if (props.selectedItems && props.selectedItems.some((selectedItem) => !(selectedItem as IVeoEntity).designator)) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            'VeoLinkObjectDialog::preselectItems: It seems like you used the prop useFullObject while passing minimal objects in selectedItems. Please configure the component according to the description of the useFullObjects prop.'
+          );
+        }
+
         const _editedObject = props.editedObject as IVeoEntity;
-
         const parentType = props.addType === 'entity' ? _editedObject.type : 'scope';
+        const parents = (await $api.entity.fetchParents(parentType, _editedObject.id)).items;
 
-        mergedSelectedItems.value = (await $api.entity.fetchParents(parentType, _editedObject.id)).items.map((item) => ({ id: item.id, type: item.type }));
+        mergedSelectedItems.value = [...props.selectedItems, ...parents];
+        // Parents with minimal objects (no pre-queried pre selected items), as full objects don't contain links to their parents
       } else {
-        mergedSelectedItems.value = [];
+        mergedSelectedItems.value = [...props.selectedItems];
       }
       modifiedSelectedItems.value = cloneDeep(mergedSelectedItems.value);
     };

@@ -133,8 +133,13 @@ export default defineComponent({
       }
     };
 
+    function requiredRule(value: string) {
+      return !!value && value.length > 0;
+    }
+
     return {
       onInput,
+      requiredRule,
       IVeoFilterOptionType,
 
       t,

@@ -514,6 +514,9 @@ export default defineComponent({
             emitPageUpdate({ sortDesc });
           },
           'click:row'(_item: any, context: any) {
+            if (Object.prototype.hasOwnProperty.call(attrs, 'show-select')) {
+              context.select(!context.isSelected);
+            }
             emit('click', context);
           }
         },
