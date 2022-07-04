@@ -529,7 +529,7 @@ export default defineComponent({
     "createDPIA": "DSFA erstellen",
     "display": "Ansicht",
     "history": "Verlauf",
-    "linkDPIA": "DSFA hinzufügen",
+    "linkDPIA": "DSFA auswählen",
     "messages": "Meldungen",
     "objects": "Objekte",
     "objectView": "Objektansicht",
