@@ -169,7 +169,6 @@ export default defineComponent({
 
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
-    // console.log(props);
     const schemaItemsProperties =
       props.schema &&
       props.schema.items &&

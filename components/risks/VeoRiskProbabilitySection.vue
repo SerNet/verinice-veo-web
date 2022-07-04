@@ -144,8 +144,6 @@ export default defineComponent({
     const probabilities = computed(() => props.riskDefinition.probability.levels.map((level) => ({ text: level.name, value: level.ordinalValue })));
 
     const onSpecificProbabilityExplanationChanged = (newValue: string) => {
-      console.log('hallo');
-      console.log(newValue);
       emit('update:data', { ...props.data, specificProbabilityExplanation: newValue });
     };
 
@@ -154,12 +152,7 @@ export default defineComponent({
       emit('update:data', { ...props.data, specificProbability: newValue });
     };
 
-    const test = () => {
-      console.log('mip?');
-    };
-
     return {
-      test,
       onSpecificProbabilityChanged,
       onSpecificProbabilityExplanationChanged,
       probabilities,
