@@ -18,6 +18,7 @@
 <template>
   <VeoWidget :loading="loading">
     <template #default>
+      {{ chartData }}
       <v-row
         v-for="(chart, index) of chartData"
         :key="index"
@@ -37,7 +38,7 @@
         />
         <v-col>
           <BarChart
-            v-if="chart.totalEntities > 0"
+            v-if="chart.totalEntries > 0"
             ref="barChartRef"
             :chart-data="chart"
             :options="options[index]"
@@ -88,19 +89,25 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropType, ref } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-api';
 import { BarChart } from 'vue-chart-3';
 import { Chart, BarController, Tooltip, CategoryScale, BarElement, LinearScale } from 'chart.js';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { IVeoDomainStatusCount } from '~/plugins/api/domain';
+import { CHART_COLORS } from '~/lib/utils';
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
 export interface IChartValue {
-  label: string;
-  value: number;
-  color: string;
+  totalEntries: number;
+  labels: string[];
+  dataSets: {
+    data: number[];
+    backgroundColor: string;
+    label: string;
+  }[];
 }
 
 export default defineComponent({
@@ -114,8 +121,8 @@ export default defineComponent({
       default: false
     },
     data: {
-      type: Array as PropType<{ subType: string; title: string; statusTypes: (IChartValue & { status: string })[]; totalEntities: number }[]>,
-      default: () => []
+      type: Object as PropType<IVeoDomainStatusCount['x']>,
+      default: () => {}
     },
     chartHeight: {
       type: [Number, String],
@@ -126,10 +133,10 @@ export default defineComponent({
     const { t } = useI18n();
     const barChartRef = ref([]);
 
-    const options: ComputedRef<any[]> = computed(() =>
-      props.data.map((entry, index) => ({
+    const options = computed(() =>
+      Object.values(props.data).map((subTypeData) => ({
         responsive: true,
-        onClick: (_point: any, $event: any) => handleClickEvent(index, $event),
+        onClick: (_point: any, $event: any) => handleClickEvent(0, $event),
         plugins: {
           legend: false,
           tooltip: props.chartHeight >= 45,
@@ -153,7 +160,7 @@ export default defineComponent({
         scales: {
           x: {
             min: 0,
-            max: entry.statusTypes.reduce((previousValue, currentValue) => previousValue + currentValue.value, 0),
+            max: Object.values(subTypeData).reduce((previousValue, currentValue) => previousValue + currentValue, 0),
             stacked: true,
             ticks: {
               display: false
@@ -178,17 +185,18 @@ export default defineComponent({
     );
 
     function handleClickEvent(clickedBarIndex: number, event: any) {
-      emit('click', props.data[clickedBarIndex].subType, props.data[clickedBarIndex].statusTypes[event[0].datasetIndex].status);
+      console.log(event);
+      // emit('click', props.data[clickedBarIndex].subType, 0);
     }
 
-    const chartData: ComputedRef<any[]> = computed(() =>
-      props.data.map((entry) => ({
-        totalEntities: entry.totalEntities,
-        labels: [entry.title],
-        datasets: entry.statusTypes.map((value) => ({
-          data: [value.value],
-          backgroundColor: value.color,
-          label: value.label
+    const chartData = computed<IChartValue[]>(() =>
+      Object.entries(props.data).map(([subType, subTypeData]) => ({
+        totalEntries: Object.values(subTypeData).reduce((previosValue, currentValue) => previosValue + currentValue, 0),
+        labels: [subType],
+        dataSets: Object.entries(subTypeData).map(([status, amount]) => ({
+          data: [amount],
+          backgroundColor: CHART_COLORS[0],
+          label: status
         }))
       }))
     );
