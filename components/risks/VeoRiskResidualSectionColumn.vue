@@ -29,7 +29,8 @@
       :label="upperFirst(t('residualRisk').toString())"
       :items="riskValues"
       :disabled="!riskTreatments.length"
-      :clearable="userDefinedResidualRisk && !!riskTreatments.length"
+      :clearable="!!(userDefinedResidualRisk && riskTreatments.length)"
+      hide-details
       @input="$emit('update:user-defined-residual-risk', $event)"
     >
       <template #selection="{ item }">
@@ -58,13 +59,28 @@
         </div>
       </template>
     </v-select>
-    <v-textarea
-      :value="residualRiskExplanation"
-      :label="upperFirst(t('explanation').toString())"
-      :disabled="!riskTreatments.length"
-      clearable
-      @input="$emit('update:residual-risk-explanation', $event)"
-    />
+    <v-edit-dialog>
+      <v-text-field
+        :value="residualRiskExplanation"
+        :label="upperFirst(t('explanation').toString())"
+        :disabled="!riskTreatments.length"
+        hide-details
+        @input="$emit('update:residual-risk-explanation', $event)"
+      />
+      <template #input>
+        <v-textarea
+          :disabled="!riskTreatments.length"
+          :value="residualRiskExplanation"
+          :label="upperFirst(t('explanation').toString())"
+          clearable
+          auto-grow
+          autofocus
+          rows="1"
+          no-resize
+          @input="$emit('update:residual-risk-explanation', $event)"
+        />
+      </template>
+    </v-edit-dialog>
   </v-col>
 </template>
 
@@ -128,8 +144,14 @@ export default defineComponent({
   },
   "de": {
     "explanation": "Erklärung",
-    "residualRisk": "Netto-Risiko",
-    "residualRiskHint": "Das angezeigte Netto-Risiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben."
+    "residualRisk": "Nettorisiko",
+    "residualRiskHint": "Das angezeigte Nettorisiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben."
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+::v-deep .v-small-dialog__activator__content {
+  width: 100%;
+}
+</style>

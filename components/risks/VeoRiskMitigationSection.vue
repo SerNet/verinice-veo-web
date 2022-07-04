@@ -17,7 +17,7 @@
 -->
 <template>
   <div>
-    <h2 class="text-h2 mt-4">
+    <h2 class="text-h2 mt-2 mb-1">
       {{ upperFirst(t('mitigationSection').toString()) }}
       <v-tooltip bottom>
         <template #activator="{ on }">
@@ -36,13 +36,14 @@
       </v-tooltip>
     </h2>
     <VeoCard>
-      <v-card-text>
+      <v-card-text class="pa-3 px-4">
         <div class="d-flex fill-width align-center">
           <div>
             <v-radio-group
               v-model="createNewMitigatingAction"
               hide-details
               dense
+              class="mt-0"
             >
               <v-radio
                 :label="t('createNewMitigation')"
@@ -60,6 +61,7 @@
               :label="t('mitigation')"
               value-as-link
               class="ml-8"
+              hide-details
               @input="$emit('input', { ...data, mitigation: $event })"
             />
           </div>

@@ -17,11 +17,11 @@
 -->
 <template>
   <div>
-    <h2 class="text-h2 mt-4">
+    <h2 class="text-h2 mt-2 mb-1">
       {{ upperFirst(t('residualRisk').toString()) }}
     </h2>
     <VeoCard>
-      <v-card-text>
+      <v-card-text class="pa-3 px-4">
         <v-row>
           <template v-for="protectionGoal of riskDefinition.categories">
             <VeoRiskResidualSectionColumn
@@ -99,7 +99,7 @@ export default defineComponent({
     "residualRisk": "residual risk"
   },
   "de": {
-    "residualRisk": "Netto-Risiko"
+    "residualRisk": "Nettorisiko"
   }
 }
 </i18n>

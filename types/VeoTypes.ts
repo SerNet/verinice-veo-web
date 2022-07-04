@@ -129,7 +129,20 @@ export interface IVeoDomainRiskDefinition {
     description: string;
   };
 }
-
+export interface IVeoPiaMandatoryRule {
+  description: {
+    [key: string]: string;
+  };
+  conditions: {
+    inputMatcher: {
+      type: string;
+    };
+    inputProvider: {
+      type: string;
+    };
+  }[];
+  output?: boolean;
+}
 export interface IVeoDomain extends IVeoBaseObject {
   name: string;
   abbreviation: string;
@@ -137,6 +150,11 @@ export interface IVeoDomain extends IVeoBaseObject {
   catalogs: any[];
   riskDefinitions: {
     [key: string]: IVeoDomainRiskDefinition;
+  };
+  decisions: {
+    piaMandatory: {
+      rules: IVeoPiaMandatoryRule[];
+    };
   };
 }
 

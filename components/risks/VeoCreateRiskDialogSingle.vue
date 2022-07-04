@@ -37,11 +37,11 @@
         v-if="data"
         v-model="formIsValid"
       >
-        <h2 class="text-h2 mb-2">
+        <h2 class="text-h2 mb-1">
           {{ upperFirst(t('common').toString()) }}
         </h2>
         <VeoCard>
-          <v-card-text>
+          <v-card-text class="pa-3 px-4">
             <v-row>
               <v-col
                 xs="12"
@@ -55,6 +55,7 @@
                   sub-type="SCN_Scenario"
                   :domain-id="domainId"
                   value-as-link
+                  hide-details
                   @input="onScenarioChanged"
                 />
               </v-col>
@@ -65,8 +66,9 @@
                 <VeoObjectSelect
                   :value="data.riskOwner"
                   object-type="person"
-                  :label="t('riskOwner')"
+                  :label="upperFirst(t('riskOwner').toString())"
                   value-as-link
+                  hide-details
                   @input="onRiskOwnerChanged"
                 />
               </v-col>

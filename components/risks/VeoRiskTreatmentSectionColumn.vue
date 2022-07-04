@@ -30,6 +30,7 @@
       :label="upperFirst(t('riskTreatment').toString())"
       :items="treatmentOptions"
       class="veo-risk-dialog__risk-treatment-selection"
+      hide-details
       @input="$emit('update:risk-treatments', $event)"
     >
       <template #selection="{ item, index }">
@@ -48,12 +49,26 @@
         </v-chip>
       </template>
     </v-select>
-    <v-textarea
-      :value="riskTreatmentExplanation"
-      :label="upperFirst(t('explanation').toString())"
-      clearable
-      @input="$emit('update:risk-treatment-explanation', $event)"
-    />
+    <v-edit-dialog>
+      <v-text-field
+        :value="riskTreatmentExplanation"
+        :label="upperFirst(t('explanation').toString())"
+        hide-details
+        @input="$emit('update:risk-treatment-explanation', $event)"
+      />
+      <template #input>
+        <v-textarea
+          :value="riskTreatmentExplanation"
+          :label="upperFirst(t('explanation').toString())"
+          clearable
+          auto-grow
+          autofocus
+          rows="1"
+          no-resize
+          @input="$emit('update:risk-treatment-explanation', $event)"
+        />
+      </template>
+    </v-edit-dialog>
   </v-col>  
 </template>
 
@@ -119,9 +134,9 @@ export default defineComponent({
     "explanation": "Erklärung",
     "riskTreatment": "Risikobehandlung",
     "riskTreatments": {
-      "RISK_TREATMENT_ACCEPTANCE": "Risiko-Akzeptanz",
+      "RISK_TREATMENT_ACCEPTANCE": "Risikoakzeptanz",
       "RISK_TREATMENT_AVOIDANCE": "Risikovermeidung",
-      "RISK_TREATMENT_REDUCTION": "Risikominderung",
+      "RISK_TREATMENT_REDUCTION": "Risikoreduktion",
       "RISK_TREATMENT_TRANSFER": "Risikotransfer"
     }
   }
@@ -132,5 +147,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .veo-risk-dialog__risk-treatment-selection ::v-deep.v-select__selections {
   flex-wrap: nowrap;
+}
+
+::v-deep .v-small-dialog__activator__content {
+  width: 100%;
 }
 </style>

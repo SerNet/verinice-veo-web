@@ -196,7 +196,7 @@ import { mdiEyeOutline, mdiFormatListBulleted, mdiHistory, mdiInformationOutline
 
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 enum SIDE_CONTAINERS {
@@ -274,6 +274,12 @@ export default defineComponent({
     const translations: Ref<{ [key: string]: IVeoTranslationCollection } | undefined> = ref(undefined);
     const formSchemas: Ref<IVeoFormSchemaMeta[]> = ref([]);
     const currentFormSchema: Ref<undefined | IVeoFormSchema> = ref(undefined);
+
+    const domain = ref<IVeoDomain | undefined>();
+    const { fetch: fetchDomain } = useFetch(async () => {
+      domain.value = await $api.domain.fetch(props.domainId);
+    });
+    watch(() => props.domainId, fetchDomain);
 
     const {
       fetch,
@@ -391,6 +397,7 @@ export default defineComponent({
 
     const objectInformation = computed<VeoSchemaValidatorMessage[]>(() => {
       const information: VeoSchemaValidatorMessage[] = [];
+      const decisionRules = domain.value?.decisions?.piaMandatory?.rules || [];
 
       if (props.objectMetaData?.decisionResults?.piaMandatory?.value !== undefined) {
         if (props.objectMetaData.decisionResults.piaMandatory.value) {
@@ -399,7 +406,8 @@ export default defineComponent({
             message: t('piaMandatory').toString(),
             params: {
               type: 'info'
-            }
+            },
+            decisionRules
           });
         } else {
           information.push({
@@ -407,7 +415,8 @@ export default defineComponent({
             message: t('piaNotMandatory').toString(),
             params: {
               type: 'success'
-            }
+            },
+            decisionRules
           });
         }
       } else {
@@ -416,7 +425,8 @@ export default defineComponent({
           message: t('piaMandatoryUnknown').toString(),
           params: {
             type: 'info'
-          }
+          },
+          decisionRules
         });
       }
 
