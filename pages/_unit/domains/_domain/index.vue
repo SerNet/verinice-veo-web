@@ -35,32 +35,76 @@
       type="text"
     />
     <v-row>
-      <v-col
-        v-for="(row, rowIndex) of chartData"
-        :key="rowIndex"
-        cols="12"
-        lg="6"
-      >
-        <div
-          v-for="widget of row"
-          :key="widget[0]"
-          v-cy-name="widget[0] !== 'my_latest_widget' ? 'status-bar-chart-widget' : ''"
-          class="my-4"
+      <template v-if="$fetchState.pending">
+        <v-col
+          v-for="index in 2"
+          :key="index"
+          cols="12"
+          lg="6"
         >
-          <VeoMyLatestRevisionsWidget
-            v-if="widget[0] === 'my_latest_widget'"
-            data-component-name="domain-dashboard-latest-revisions-widget"
-          />
-          <VeoStackedStatusBarChartWidget
-            v-else
-            chart-height="30"
-            :data="widget[1]"
-            :loading="$fetchState.pending"
-            :data-component-name="`domain-dashboard-${widget}-widget`"
-            @click="onBarClick"
-          />
-        </div>
-      </v-col>
+          <VeoWidget
+            v-for="j in 4"
+            :key="j"
+            loading
+            class="my-4"
+          >
+            <template #skeleton>
+              <v-row
+                v-for="k in [1,2]"
+                :key="k"
+                class="align-center"
+              >
+                <v-col
+                  cols="12"
+                  md="4"
+                >
+                  <v-skeleton-loader
+                    class="ml-6"
+                    type="text"
+                    width="70%"
+                  />
+                </v-col>
+                <v-col>
+                  <v-skeleton-loader
+                    class="ml-6"
+                    type="heading"
+                    width="210%"
+                  />
+                </v-col>
+              </v-row>      
+            </template>
+          </VeoWidget>
+        </v-col>
+      </template>
+      <template v-else>
+        <v-col
+          v-for="(row, rowIndex) of chartData"
+          :key="rowIndex"
+          cols="12"
+          lg="6"
+        >
+          <div
+            v-for="widget of row"
+            :key="widget[0]"
+            v-cy-name="widget[0] !== 'my_latest_widget' ? 'status-bar-chart-widget' : ''"
+            class="my-4"
+          >
+            <VeoMyLatestRevisionsWidget
+              v-if="widget[0] === 'my_latest_widget'"
+              data-component-name="domain-dashboard-latest-revisions-widget"
+            />
+            <VeoStackedStatusBarChartWidget
+              v-else
+              chart-height="30"
+              :data="widget[1]"
+              :domain-id="(domain && domain.id) || undefined"
+              :object-type="widget[0]"
+              :data-component-name="`domain-dashboard-${widget[0]}-widget`"
+              @click="onBarClicked"
+            />
+          </div>
+        </v-col>
+      </template>
     </v-row>
     <VeoWelcomeDialog
       v-if="welcomeDialog"
@@ -70,75 +114,38 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref, useContext, useFetch, useMeta, useRouter, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useMeta, useRoute, useRouter } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-
 import { separateUUIDParam } from '~/lib/utils';
-import { IVeoDomain, IVeoFormSchemaMeta, IVeoTranslations } from '~/types/VeoTypes';
-import LocalStorage from '~/util/LocalStorage';
-import { useVeoAlerts } from '~/composables/VeoAlert';
 import { IVeoDomainStatusCount } from '~/plugins/api/domain';
+import { IVeoDomain } from '~/types/VeoTypes';
+import LocalStorage from '~/util/LocalStorage';
 
 export const ROUTE_NAME = 'unit-domains-domain';
 
 export default defineComponent({
   name: 'VeoDomainDashboardPage',
-  setup(_props) {
-    const { t, locale } = useI18n();
-    const { $api, params } = useContext();
+  setup() {
+    const { $api } = useContext();
+    const route = useRoute();
     const router = useRouter();
-    const { displayErrorMessage } = useVeoAlerts();
+    const { t } = useI18n();
 
-    const domainId = computed(() => separateUUIDParam(params.value.domain).id);
-    const unitId = computed(() => separateUUIDParam(params.value.unit).id);
+    const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
     const welcomeDialog = ref(!LocalStorage.firstStepsCompleted);
 
-    // refetch everything if domain changes
-    watch(
-      () => params.value.domain,
-      () => {
-        fetch();
-      }
-    );
-
-    const { fetch } = useFetch(async () => {
-      await Promise.all([fetchTranslations(), fetchDomain(), fetchDomainObjectInformation(), fetchFormschemaMetaInfo()]);
+    // Domain specific stuff
+    const domain = ref<IVeoDomain | undefined>();
+    useFetch(async () => {
+      domain.value = await $api.domain.fetch(domainId.value);
     });
 
-    // Fetch the current domain for use in later calls
-    const domain: Ref<IVeoDomain | undefined> = ref();
-    async function fetchDomain() {
-      try {
-        domain.value = await $api.domain.fetch(domainId.value);
-      } catch (e: any) {
-        if (e.code === 404) {
-          displayErrorMessage(t('error404').toString(), t('domainNotFoundText').toString());
-          router.push(`/${params.value.unit}`);
-        }
-      }
-    }
-
     const domainObjectInformation = ref<IVeoDomainStatusCount | undefined>();
-    const fetchDomainObjectInformation = async () => {
+    useFetch(async () => {
       domainObjectInformation.value = await $api.domain.inspectDomainObjects(unitId.value, domainId.value);
-    };
-
-    let translations: IVeoTranslations = { lang: {} };
-    async function fetchTranslations() {
-      // Only load the translations once, as they won't change if the domain changes
-      if (JSON.stringify(translations.lang) === '{}') {
-        translations = await $api.translation.fetch(['de', 'en']);
-      }
-    }
-
-    // Load all formschemas to use their translated names instead of the subtype keys when displaying the bars
-    let formschemas: IVeoFormSchemaMeta[] = [];
-    async function fetchFormschemaMetaInfo() {
-      if (domain.value) {
-        formschemas = await $api.form.fetchAll(domain.value.id);
-      }
-    }
+    });
 
     // Create chart data
     const chartData = computed(() => {
@@ -157,24 +164,19 @@ export default defineComponent({
     const WIDGET_LAYOUT = ['scope', 'process', 'asset', 'person', 'control', 'incident', 'document', 'scenario'];
     const WIDGETS_PER_ROW = 5;
 
-    // Navigate if the user clicks on a bar
-    function onBarClick(subType: string, status: string) {
-      const objectType = formschemas.find((formschema) => formschema.subType === subType)?.modelType;
-
-      if (objectType) {
-        router.push({
-          name: 'unit-domains-domain-objects',
-          params: {
-            domain: params.value.domain
-          },
-          query: {
-            status,
-            objectType,
-            subType
-          }
-        });
-      }
-    }
+    const onBarClicked = (objectType: string, subType: string, status: string) => {
+      router.push({
+        name: 'unit-domains-domain-objects',
+        params: {
+          domain: route.value.params.domain
+        },
+        query: {
+          objectType,
+          subType,
+          status
+        }
+      });
+    };
 
     // page title
     const title = computed(() => domain.value?.name || t('domainOverview').toString());
@@ -185,7 +187,7 @@ export default defineComponent({
     return {
       chartData,
       domain,
-      onBarClick,
+      onBarClicked,
       title,
       welcomeDialog,
 
