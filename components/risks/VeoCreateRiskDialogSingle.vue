@@ -273,7 +273,7 @@ export default defineComponent({
       owner: {
         targetUri: `${$config.apiUrl}/units/${unitId.value}`
       },
-      domain: {
+      domains: {
         [props.domainId]: {
           subType: 'CTL_TOM'
         }
