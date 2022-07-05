@@ -20,7 +20,7 @@ import { max } from 'lodash';
 import { getSchemaEndpoint } from './schema';
 import { separateUUIDParam } from '~/lib/utils';
 import { Client } from '~/plugins/api';
-import { IVeoAPIMessage, IVeoEntity, IVeoInspectionResult, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from '~/types/VeoTypes';
+import { IVeoAPIMessage, IVeoDecisionEvaluation, IVeoEntity, IVeoInspectionResult, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from '~/types/VeoTypes';
 
 export interface IVeoEntityRequestParams extends IVeoPaginationOptions {
   displayName?: string;
@@ -394,7 +394,7 @@ export default function (api: Client) {
      * @param object
      * @returns
      */
-    async fetchWipDecisionEvaluation(objectType: string, object: IVeoEntity, domain: string, decision: string): Promise<any> {
+    async fetchWipDecisionEvaluation(objectType: string, object: IVeoEntity, domain: string, decision: string): Promise<IVeoDecisionEvaluation> {
       objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
       return api.req('/api/:objectType/evaluation', {

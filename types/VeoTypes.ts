@@ -400,6 +400,22 @@ export interface IVeoDecisionResults {
   };
 }
 
+export interface IVeoInspectionResult {
+  description: {
+    [lang: string]: string;
+  };
+  severity: string;
+  suggestions: {
+    type: string;
+    [key: string]: any;
+  }[];
+}
+
+export interface IVeoDecisionEvaluation {
+  decisionResults: IVeoDecisionResults;
+  inspectionFindings: IVeoInspectionResult[];
+}
+
 export interface IVeoEntityDomain {
   [key: string]: {
     status?: string;
@@ -605,15 +621,4 @@ export interface IVeoFormsWidgetDefinition {
   description: {
     [lang: string]: string;
   };
-}
-
-export interface IVeoInspectionResult {
-  description: {
-    [lang: string]: string;
-  };
-  severity: string;
-  suggestions: {
-    type: string;
-    [key: string]: any;
-  }[];
 }

@@ -407,7 +407,8 @@ export default defineComponent({
             params: {
               type: 'info'
             },
-            decisionRules
+            decisionRules,
+            matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
           });
         } else {
           information.push({
@@ -416,7 +417,8 @@ export default defineComponent({
             params: {
               type: 'success'
             },
-            decisionRules
+            decisionRules,
+            matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
           });
         }
       } else {
@@ -426,7 +428,8 @@ export default defineComponent({
           params: {
             type: 'info'
           },
-          decisionRules
+          decisionRules,
+          matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
         });
       }
 
@@ -467,13 +470,16 @@ export default defineComponent({
 
     // For some reason putting this in a useFetch and using fetchDecisions as the name for the fetch hook caused all useFetch to be refetched
     const fetchDecisions = async () => {
+      const toReturn: any = { ...props.objectMetaData, decisionResults: {}, inspectionFindings: [] };
+
       // Fetch updated decision results and merge them with the current values
       if (objectData.value?.domains?.[props.domainId]) {
-        const newDecisionResults: IBaseObject = {};
         for (const key in props.objectMetaData?.decisionResults || {}) {
-          newDecisionResults[key] = await $api.entity.fetchWipDecisionEvaluation(objectData.value.type, objectData.value as any, props.domainId, key);
+          const result = await $api.entity.fetchWipDecisionEvaluation(objectData.value.type, objectData.value as any, props.domainId, key);
+          toReturn.inspectionFindings.push(...result.inspectionFindings);
+          toReturn.decisionResults[key] = result.decisionResults.piaMandatory;
         }
-        emit('update:object-meta-data', { ...props.objectMetaData, decisionResults: newDecisionResults });
+        emit('update:object-meta-data', toReturn);
       }
     };
 
