@@ -275,7 +275,8 @@ export default defineComponent({
       },
       domains: {
         [props.domainId]: {
-          subType: 'CTL_TOM'
+          subType: 'CTL_TOM',
+          status: 'NEW'
         }
       }
     }));
