@@ -83,7 +83,7 @@
                 :key="i"
               >
                 <v-list-item-icon>
-                  <v-icon :color="reason.output ? 'success' : 'error'">
+                  <v-icon :color="!item.matchingRules || !item.matchingRules.includes(i) ? undefined : reason.output ? 'success' : 'error'">
                     {{ reason.output ? mdiCheckCircleOutline : mdiCloseCircleOutline }}
                   </v-icon>
                 </v-list-item-icon>
