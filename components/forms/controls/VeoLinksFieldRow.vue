@@ -26,6 +26,7 @@
         :label="options.label"
         :domain-id="domainId"
         required
+        :error-messages="errors.get(objectSchemaPointer + '/properties/target')"
         value-as-link
         v-on="$listeners"
       >

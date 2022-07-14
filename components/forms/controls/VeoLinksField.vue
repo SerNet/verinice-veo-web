@@ -19,23 +19,19 @@
   <div
     v-if="options.visible"
     :class="options && options.class"
-    class="vf-links-field vf-form-element veo-links-field-border mt-4 pa-2"
+    class="vf-links-field vf-form-element"
   >
     <v-list>
-      <div
-        v-for="(link, index) of internalValue"
-        :key="'a' + index"
-      >
-        {{ link }}
-      </div>
       <v-list-item
         v-for="(link, index) of internalValue"
         :key="index"
+        class="veo-links-field-border mt-4 px-4"
       >
         <v-list-item-content>
           <VeoLinksFieldRow
             v-bind="$props"
             :value="link.target"
+            :object-schema-pointer="objectSchemaPointer + '/' + index"
             @input="onLinksFieldRowInput(index, $event)"
           />
         </v-list-item-content>
@@ -69,6 +65,7 @@
 import { computed, defineComponent } from '@nuxtjs/composition-api';
 import { mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
+import { cloneDeep } from 'lodash';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { VeoFormsControlProps } from '../util';
@@ -106,7 +103,15 @@ export default defineComponent({
     };
 
     const removeLink = (index: number) => {
-      internalValue.value.splice(index, 1);
+      // We clone to avoid mutating the internalValue computed prop in place (this would not call the set method of the computed property and not propagate the value to VeoForm)
+      const newInternalValue = cloneDeep(internalValue.value);
+      newInternalValue.splice(index, 1);
+
+      if (!newInternalValue.length) {
+        internalValue.value = [emptyLink];
+      } else {
+        internalValue.value = newInternalValue;
+      }
     };
 
     const onLinksFieldRowInput = (index: number, newValue: any) => {
