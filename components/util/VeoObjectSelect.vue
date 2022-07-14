@@ -18,7 +18,7 @@
 <template>
   <v-autocomplete
     v-model="internalValue"
-    :items="items"
+    :items="displayedItems"
     item-text="displayName"
     item-value="id"
     :no-data-text="t('noObjects')"
@@ -106,6 +106,10 @@ export default defineComponent({
     valueAsEntity: {
       type: Boolean,
       default: false
+    },
+    hiddenValues: {
+      type: Array as PropType<String[]>,
+      default: () => []
     }
   },
   setup(props, { emit }) {
@@ -240,7 +244,11 @@ export default defineComponent({
       window.open(routeData.href, '_blank');
     };
 
+    // Hide certain items based on their id
+    const displayedItems = computed(() => (props.hiddenValues.length ? items.value.filter((item) => !props.hiddenValues.includes(item.id)) : items.value));
+
     return {
+      displayedItems,
       localLabel,
       internalValue,
       isLoading,

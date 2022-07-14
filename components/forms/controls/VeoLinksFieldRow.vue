@@ -25,6 +25,7 @@
         :sub-type="subType"
         :label="options.label"
         :domain-id="domainId"
+        :hidden-values="hiddenValues"
         required
         :error-messages="errors.get(objectSchemaPointer + '/properties/target')"
         value-as-link
@@ -69,7 +70,7 @@ import { mdiPlus } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { VeoFormsControlProps } from '../util';
-import { separateUUIDParam } from '~/lib/utils';
+import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
@@ -86,7 +87,13 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 
 export default defineComponent({
   name: CONTROL_DEFINITION.key,
-  props: VeoFormsControlProps,
+  props: {
+    ...VeoFormsControlProps,
+    otherSelectedLinks: {
+      type: Array,
+      default: () => []
+    }
+  },
   setup(props) {
     const { $api } = useContext();
     const route = useRoute();
@@ -115,10 +122,14 @@ export default defineComponent({
     // Used to remount VeoObjectSelect after object has been created to reload all items.
     const key = ref(0);
 
+    // Users should only be able to select an item once per link, thus we have to remove all already selected items from the VeoObjectSelect
+    const hiddenValues = computed(() => props.otherSelectedLinks.filter((link: any) => link.target?.targetUri).map((link: any) => getEntityDetailsFromLink(link.target).id));
+
     return {
       createButtonLabel,
       createObjectDialogVisible,
       domainId,
+      hiddenValues,
       key,
       objectType,
       onTargetCreated,

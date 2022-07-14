@@ -31,9 +31,12 @@
           <VeoLinksFieldRow
             v-bind="$props"
             :value="link.target"
+            :other-selected-links="(value || []).filter((item, _index) => _index !== index)"
             :object-schema-pointer="objectSchemaPointer + '/' + index"
             @input="onLinksFieldRowInput(index, $event)"
-          />
+          >
+            <slot />
+          </VeoLinksFieldRow>
         </v-list-item-content>
         <v-list-item-action>
           <v-btn
