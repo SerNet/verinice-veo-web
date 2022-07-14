@@ -217,9 +217,6 @@ export default defineComponent({
 
     // Filter stuff
     const filterFormValid = ref(false);
-    function requiredRule(value: string) {
-      return !!value && value.length > 0;
-    }
 
     // We keep a copy of the prop filter object as we only want to change the filters if the user clicks submit
     const localFilter: Ref<IBaseObject> = ref(clone(props.filter) || {});
@@ -358,7 +355,6 @@ export default defineComponent({
       onFilterInput,
       onReset,
       onSubmit,
-      requiredRule,
       showAllFilters,
       IVeoFilterOptionType,
 

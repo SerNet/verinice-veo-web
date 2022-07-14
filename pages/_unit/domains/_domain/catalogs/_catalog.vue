@@ -24,22 +24,34 @@
       <VeoTabs class="mt-6">
         <template #tabs>
           <v-tab>{{ t('applyEntries') }}</v-tab>
-          <v-tab v-if="catalogContainsTOMs">
+          <v-tab>
             {{ t('applyTOMs') }}
           </v-tab>
         </template>
         <template #items>
           <v-tab-item>
             <VeoDefaultCatalog
-              :catalog-items="catalogItems"
+              :catalog-items="scenarios"
               :loading="$fetchState.pending"
-            />
+              :success-text="t('scenariosApplied').toString()"
+              :error-text="t('applyScenariosError').toString()"
+            >
+              <template #header>
+                {{ t('selectScenariosCTA') }}
+              </template>
+            </VeoDefaultCatalog>
           </v-tab-item>
           <v-tab-item>
-            <VeoTOMCatalog
-              :catalog-items="catalogItems"
+            <VeoDefaultCatalog
+              :catalog-items="toms"
               :loading="$fetchState.pending"
-            />
+              :success-text="t('TOMsApplied').toString()"
+              :error-text="t('applyTOMsError').toString()"
+            >
+              <template #header>
+                {{ t('selectTOMsCTA') }}
+              </template>
+            </VeoDefaultCatalog>
           </v-tab-item>
         </template>
       </VeoTabs>
@@ -70,7 +82,8 @@ export default defineComponent({
 
     const catalogItems = ref<IVeoCatalogItem[]>([]);
 
-    const catalogContainsTOMs = computed(() => catalogItems.value.some((item) => item.tailoringReferences.length > 0));
+    const scenarios = computed(() => catalogItems.value.filter((catalogItem) => !catalogItem.element.displayName?.includes('TOM-')));
+    const toms = computed(() => catalogItems.value.filter((catalogItem) => catalogItem.element.displayName?.includes('TOM-')));
 
     const { fetch } = useFetch(async () => {
       catalogItems.value = await $api.catalog.fetchItems(catalogId.value, domainId.value);
@@ -86,9 +99,9 @@ export default defineComponent({
     );
 
     return {
-      catalogContainsTOMs,
-      catalogItems,
+      scenarios,
       title,
+      toms,
 
       t
     };
@@ -100,13 +113,25 @@ export default defineComponent({
 {
   "en": {
     "applyEntries": "apply scenarios",
+    "applyScenariosError": "Couldn't apply scenarios",
     "applyTOMs": "apply TOMs",
-    "catalog": "Catalog {name}"
+    "applyTOMsError": "Couldn't apply TOMs",
+    "catalog": "Catalog {name}",
+    "scenariosApplied": "Scenarios were applied successfully",
+    "selectScenariosCTA": "Please select the scenarios you want to apply.",
+    "selectTOMsCTA": "Please choose one or more technical organizational measures to apply.",
+    "TOMsApplied": "TOMs were applied"
   },
   "de": {
     "applyEntries": "Gefährdungen anwenden",
+    "applyScenariosError": "Gefährdungen konnten nicht angewandt werden",
     "applyTOMs": "TOMs anwenden",
-    "catalog": "Katalog {name}"
+    "applyTOMsError": "Die TOMs konnten nicht angewendet werden",
+    "catalog": "Katalog {name}",
+    "scenariosApplied": "Gefährdungen wurden erfolgreich angewandt",
+    "selectScenariosCTA": "Bitte wählen Sie die Gefährdungen aus, die Sie anwenden möchten.",
+    "selectTOMsCTA": "Wählen Sie eine oder mehrere technische und organisatorische Maßnahmen aus, die angewendet werden sollen.",
+    "TOMsApplied": "TOMs wurden angewendet"
   }
 }
 </i18n>

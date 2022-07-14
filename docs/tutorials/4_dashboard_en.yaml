@@ -1,0 +1,40 @@
+title: The Dashboard
+description: Description of the dashboard
+route: /unit-:unit/domains/domain-:domain
+exact: true
+lang: en
+steps:
+  - title: 'The Dashboard'
+    element: '[data-component-name=domain-dashboard-page]'
+    intro: The dashboard shows your most recently edited objects as well as a graphical representation of all objects. By clicking on the bar charts, you can navigate directly to the object overview for all subtypes in the respective status or to the most recently edited object.
+  - title: 'My most recently edited objects'
+    element: '[data-component-name=domain-dashboard-latest-revisions-widget]'
+    intro: In this section you can quickly navigate to your most recently edited objects.
+  - title: 'Scopes'
+    element: '[data-component-name=domain-dashboard-scope-widget]'
+    intro: This area displays subtypes of an object type, here the available scopes.
+  - title: 'Processes'
+    element: '[data-component-name=domain-dashboard-process-widget]'
+    intro: The subtypes are used to display the objects of a type differently in special forms. For example, processes can be presented as processing activities, data transfers or data protection impact assessments.
+  - title: 'Assets'
+    element: '[data-component-name=domain-dashboard-asset-widget]'
+    intro: Each subtype can have a specific status. By default, a life cycle of the individual objects is presented, e.g. for the assets.
+  - title: 'People'
+    element: '[data-component-name=domain-dashboard-person-widget]'
+    intro: The status of the objects are colour-coded - red = new, yellow = in progress, blue = under review, green = released and grey = archived.
+  - title: 'Controls'
+    element: '[data-component-name=domain-dashboard-control-widget]'
+    intro: Red, yellow and blue objects require further documentation, green and grey ones you have defined as sufficiently documented.
+  - title: 'Incidents'
+    element: '[data-component-name=domain-dashboard-incident-widget]'
+    intro: A new data protection incident that requires a timely response is displayed in red in the Incidents section.<br><b>This function is currently under development!</b>
+  - title: 'Documents'
+    element: '[data-component-name=domain-dashboard-document-widget]'
+    intro: Or if there is a contract pending review, you will find it in blue in the bar chart in the documents section.
+  - title: 'Scenarios'
+    element: '[data-component-name=domain-dashboard-scenario-widget]'
+    intro: Navigate from the dashboard directly to the 'yellow' hazards that need further consideration.
+  - title: 'Done'
+# todo4sernet: Replace hyperlink to online documentation when documentation created.
+# intro: Further information can also be found in the <a href="/docs">online documentation</a>.
+    intro: Further information can also be found in the online documentation.

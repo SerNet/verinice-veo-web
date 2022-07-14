@@ -154,7 +154,7 @@ export default defineComponent({
   "de": {
     "createDPIA": "DSFA erstellen",
     "dpia": "DSFA",
-    "linkDPIA": "DSFA hinzufügen"
+    "linkDPIA": "DSFA auswählen"
   }
 }
 </i18n>

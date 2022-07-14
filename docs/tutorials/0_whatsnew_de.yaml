@@ -1,0 +1,9 @@
+title: What's new?
+description: Beschreibung neuer Features und Funktionen in verinice.veo
+route: /
+lang: de
+steps:
+#  - title: 'What's new?'
+#    intro: <font color=##c90000><b>verinice.veo</b></font><br>16. Juni 2022
+  - title: 'Neues in verinice.veo'
+    intro: <span style='color:#FF0000;'>v</span><span style='color:#FF1F00;'>e</span><span style='color:#FF3F00;'>r</span><span style='color:#FF7F00;'>i</span><span style='color:#FF9F00;'>n</span><span style='color:#FFBF00;'>i</span><span style='color:#FFDF00;'>c</span><span style='color:#DFFF00;'>e</span><span style='color:#BFFF00;'>.</span><span style='color:#9FFF00;'>v</span><span style='color:#5FFF00;'>e</span><span style='color:#3FFF00;'>o</span><br><span style='color:#1FFF00;'>m</span><span style='color:#00FF1F;'>i</span><span style='color:#00FF3F;'>t</span> <span style='color:#00FF5F;'>S</span><span style='color:#00FF7F;'>i</span><span style='color:#00FF9F;'>c</span><span style='color:#00FFBF;'>h</span><span style='color:#00FFDF;'>e</span><span style='color:#00FEFF;'>r</span><span style='color:#00DFFF;'>h</span><span style='color:#009FFF;'>e</span><span style='color:#007FFF;'>i</span><span style='color:#005FFF;'>t</span> <span style='color:#003FFF;'>n</span><span style='color:#001FFF;'>e</span><span style='color:#0000FF;'>u</span><span style='color:#3F00FF;'>!</span><br><span style='color:#5F00FF;'>S</span><span style='color:#7F00FF;'>e</span><span style='color:#BF00FF;'>r</span><span style='color:#DF00FF;'>N</span><span style='color:#FF00FE;'>e</span><span style='color:#FF00DF;'>t</span> <span style='color:#FF00BF;'>2</span><span style='color:#FF009F;'>0</span><span style='color:#FF007F;'>2</span><span style='color:#FF005F;'>2</span><span style='color:#FF003F;'> </span><span style='color:#FF001F;'>;-)</span>

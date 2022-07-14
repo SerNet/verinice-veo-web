@@ -7,6 +7,8 @@ position: 2
 
 #### Up and running in 5 minutes / Cloud Native
 
+Geht auch viel schneller!
+
 VEO ist als cloud-basierte Software-as-a-Service Lösung für Sie sofort einsetzbar. Alle Daten werden in Deutschland bei einem deutschen Hosting-Anbieter in einem ISO 27001-zertifizierten Rechenzentrum DSGVO-konform sicher gespeichert.
 
 VEO erfüllt die Anforderungen der CNCF (CNCF.io) an cloud native software: open source, vendor-neutral, resilient, manageable und observeable.

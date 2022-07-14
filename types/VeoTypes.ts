@@ -129,7 +129,20 @@ export interface IVeoDomainRiskDefinition {
     description: string;
   };
 }
-
+export interface IVeoPiaMandatoryRule {
+  description: {
+    [key: string]: string;
+  };
+  conditions: {
+    inputMatcher: {
+      type: string;
+    };
+    inputProvider: {
+      type: string;
+    };
+  }[];
+  output?: boolean;
+}
 export interface IVeoDomain extends IVeoBaseObject {
   name: string;
   abbreviation: string;
@@ -137,6 +150,11 @@ export interface IVeoDomain extends IVeoBaseObject {
   catalogs: any[];
   riskDefinitions: {
     [key: string]: IVeoDomainRiskDefinition;
+  };
+  decisions: {
+    piaMandatory: {
+      rules: IVeoPiaMandatoryRule[];
+    };
   };
 }
 
@@ -382,6 +400,22 @@ export interface IVeoDecisionResults {
   };
 }
 
+export interface IVeoInspectionResult {
+  description: {
+    [lang: string]: string;
+  };
+  severity: string;
+  suggestions: {
+    type: string;
+    [key: string]: any;
+  }[];
+}
+
+export interface IVeoDecisionEvaluation {
+  decisionResults: IVeoDecisionResults;
+  inspectionFindings: IVeoInspectionResult[];
+}
+
 export interface IVeoEntityDomain {
   [key: string]: {
     status?: string;
@@ -587,15 +621,4 @@ export interface IVeoFormsWidgetDefinition {
   description: {
     [lang: string]: string;
   };
-}
-
-export interface IVeoInspectionResult {
-  description: {
-    [lang: string]: string;
-  };
-  severity: string;
-  suggestions: {
-    type: string;
-    [key: string]: any;
-  }[];
 }

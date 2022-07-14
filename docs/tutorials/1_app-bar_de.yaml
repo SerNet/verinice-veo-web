@@ -1,0 +1,25 @@
+title: Die Anwendungsleiste
+description: Beschreibung der Anwendungsleiste
+route: /
+lang: de
+steps:
+  - title: 'Anwendungsleiste'
+    element: '[data-component-name=app-bar]'
+    intro: Über die Anwendungsleiste steuern Sie grundlegende Funktionen. Sie steht in allen Ansichten zur Verfügung.
+  - title: 'Breadcrumb'
+# todo4nbrx: data-component erstellen
+    element: '#app > div.v-application--wrap > header > div > ul'
+    intro: Über die Breadcrumb navigieren Sie jederzeit zu vorab aufgerufenen Objekten.
+  - title: 'Sprachauswahl'
+    element: '[data-component-name=language-select]'
+    intro: Mit dem Sprachumschalter wählen Sie aus den verfügbaren Sprachen.
+  - title: 'Kontext-Hilfe'
+    element: '[data-component-name=tutorial-select]'
+    intro: Über die Kontext-Hilfe rufen Sie eines der verfügbaren Tutorials auf.
+  - title: 'Account Button'
+    element: '[data-component-name=account-menu-button]'
+    intro: Über den Account Button können Sie sich abmelden und weitere Informationen zu verinice.veo abrufen.
+  - title: 'Geschafft'
+# todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
+#    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.
+    intro: Weitere Informationen finden Sie auch in der Online Dokumentation.

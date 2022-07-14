@@ -1,0 +1,25 @@
+title: The application bar
+description: Description of the application bar
+route: /
+lang: en
+steps:
+  - title: 'Application bar'
+    element: '[data-component-name=app-bar]'
+    intro: The application bar is used to control basic functions. It is available in all views.
+  - title: 'Breadcrumb'
+# todo4nbrx: create data-component
+    element: '#app > div.v-application--wrap > header > div > ul'
+    intro: Use the breadcrumb to navigate to previously accessed objects at any time.
+  - title: 'Language selection'
+    element: '[data-component-name=language-select]'
+    intro: Use the language selector to choose from the available languages.
+  - title: 'Context help'
+    element: '[data-component-name=tutorial-select]'
+    intro: Use the context help to call up one of the available tutorials.
+  - title: 'Account Button'
+    element: '[data-component-name=account-menu-button]'
+    intro: Via the account button you can log out and get further information about verinice.veo.
+  - title: 'Done'
+# todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
+# intro: Further information can also be found in the <a href="/docs">online documentation</a>.
+    intro: Further information can also be found in the online documentation.

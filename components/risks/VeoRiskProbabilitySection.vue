@@ -17,15 +17,15 @@
 -->
 <template>
   <div>
-    <h2 class="text-h2">
+    <h2 class="text-h2 mb-1">
       {{ upperFirst(t('probability').toString()) }}
     </h2>
     <VeoCard>
-      <v-card-text>
-        <v-row>
+      <v-card-text class="pa-3 px-4">
+        <v-row class="pt-0">
           <v-col
             xs="12"
-            md="4"
+            md="3"
           >
             <v-select
               :value="data.potentialProbability"
@@ -33,6 +33,7 @@
               :label="upperFirst(t('potentialProbability').toString())"
               :items="probabilities"
               disabled
+              hide-details
             >
               <template
                 v-if="dirtyFields.scenario"
@@ -44,7 +45,7 @@
           </v-col>
           <v-col
             xs="12"
-            md="4"
+            md="3"
           >
             <v-select
               :value="data.specificProbability"
@@ -52,12 +53,13 @@
               :label="upperFirst(t('specificProbability').toString())"
               :items="probabilities"
               clearable
+              hide-details
               @input="onSpecificProbabilityChanged"
             />
           </v-col>
           <v-col
             xs="12"
-            md="4"
+            md="3"
           >
             <v-select
               :value="data.effectiveProbability"
@@ -65,6 +67,7 @@
               :label="upperFirst(t('effectiveProbability').toString())"
               :items="probabilities"
               disabled
+              hide-details
             >
               <template
                 v-if="dirtyFields && (dirtyFields.scenario || dirtyFields[`${riskDefinition.id}_specificProbability`])"
@@ -76,14 +79,35 @@
           </v-col>
           <v-col
             xs="12"
-            md="12"
+            md="3"
           >
-            <v-textarea
-              :value="data.specificProbabilityExplanation"
-              :label="upperFirst(t('explanation').toString())"
-              clearable
-              @input="onSpecificProbabilityExplanationChanged"
-            />
+            <v-edit-dialog style="width: 30px !important;">
+              <template
+                #default
+                style="width: 30px !important;"
+              >
+                <v-text-field
+                  :value="data.specificProbabilityExplanation"
+                  :label="upperFirst(t('explanation').toString())"
+                  hide-details
+                  @input="onSpecificProbabilityExplanationChanged"
+                />
+              </template>
+              <template #input>
+                <v-textarea
+                  :value="data.specificProbabilityExplanation"
+                  :label="upperFirst(t('explanation').toString())"
+                  clearable
+                  auto-grow
+                  autofocus
+                  rows="1"
+                  no-resize
+                  hide-details
+                  class="pb-1"
+                  @input="onSpecificProbabilityExplanationChanged"
+                />
+              </template>
+            </v-edit-dialog>
           </v-col>
         </v-row>
       </v-card-text>
@@ -160,3 +184,16 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.v-small-dialog__activator ::v-deep {
+  width: 30px !important;
+}
+span.v-small-dialog__activator__content ::v-deep {
+  width: 30px !important;
+}
+
+.v-text-field .v-label {
+  max-width: 100% !important;
+}
+</style>

@@ -1,0 +1,20 @@
+title: The catalogues
+description: Description of the catalogues
+route: /unit-:unit/domains/domain-:domain/catalogs/catalog-:catalog
+lang: en
+steps:
+  - title: 'Catalogues'
+    element: '[data-component-name=catalog-page]'
+    intro: In this section, existing catalogues can be applied.
+  - title: 'Apply hazards'
+# todo4nbrx: create data-component
+    element: '#app > div.v-application--wrap > main > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.v-tabs.theme--light.veo-tabs > div > div.v-slide-group__wrapper > div > div.v-tab.v-tab--active'
+    intro: Select the hazards to be considered in the risk analysis. The hazards are copied to your current unit and can be used there.
+  - title: 'Apply TOM'
+# todo4nbrx: create data-component
+    element: '#app > div.v-application--wrap > main > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.v-tabs.theme--light.veo-tabs > div > div.v-slide-group__wrapper > div > div:nth-child(3)'
+    intro: Select the TOM to be copied into your unit for further use.
+  - title: 'Done'
+# todo4sernet: Replace hyperlink to online documentation if documentation created.
+# intro: Further information can also be found in the <a href="/docs">online documentation</a>.
+    intro: Further information can also be found in the online documentation.

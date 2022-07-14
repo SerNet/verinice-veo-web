@@ -133,8 +133,11 @@
         </v-col>
       </v-row>
       <VeoCard>
-        <VeoEntitySelectionList
+        <VeoObjectTable
           v-model="selectedEntities"
+          show-select
+          checkbox-color="primary"
+          :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="entities"
           :loading="$fetchState.pending || global_loading"
           single-select

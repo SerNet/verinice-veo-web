@@ -63,6 +63,36 @@
               </v-btn>
             </template>
           </VeoNestedMenu>
+          <VeoPopoverMenu
+            v-if="item.decisionRules && item.decisionRules.length > 0"
+          >
+            <template #activator="{ on, attrs }">
+              <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon>
+                  {{ mdiInformationOutline }}
+                </v-icon>
+              </v-btn>
+            </template>
+            <v-list dense>
+              <v-list-item
+                v-for="reason, i in item.decisionRules"
+                :key="i"
+              >
+                <v-list-item-icon>
+                  <v-icon :color="!item.matchingRules || !item.matchingRules.includes(i) ? undefined : reason.output ? 'success' : 'error'">
+                    {{ reason.output ? mdiCheckCircleOutline : mdiCloseCircleOutline }}
+                  </v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  {{ reason.description.en }}
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </VeoPopoverMenu>
         </v-list-item-action>
       </v-list-item>
     </template>
@@ -80,7 +110,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiCogOutline } from '@mdi/js';
+import { mdiCogOutline, mdiInformationOutline, mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js';
 
 import { INestedMenuEntries } from '../layout/VeoNestedMenu.vue';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
@@ -114,7 +144,10 @@ export default defineComponent({
       formattedActions,
 
       t,
-      mdiCogOutline
+      mdiCogOutline,
+      mdiInformationOutline,
+      mdiCheckCircleOutline,
+      mdiCloseCircleOutline
     };
   }
 });

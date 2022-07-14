@@ -1,0 +1,30 @@
+title: The reports
+description: Description of the reports
+route: /unit-:unit/domains/domain-:domain/reports/:reports
+lang: en
+steps:
+  - title: 'Reports'
+    element: '[data-component-name=report-page]'
+    intro: In this section you create the desired report after selecting a report template.
+  - title: 'Name of the report template'
+    element: '[data-component-name=report-page] h1'
+    intro: In the upper area you will find the name of the respective report template...
+  - title: 'Description of the report template'
+    element: '[data-component-name=report-description]'
+    intro: ... and a description of the contents.
+  - title: 'Scope selection'
+    element: '[data-component-name=report-entity-selection]'
+    intro: In the already familiar list view, select the scope for which the report is to be generated.
+  - title: 'Important'
+    element: '[data-component-name=report-entity-selection-filter-bar]'
+    intro: Different reports are executed on specific scopes, which is why object type and subtype are invariant as filter criteria!
+  - title: 'Scoping!'
+    element: '[data-component-name=report-entity-selection]'
+    intro: To generate one and the same report for different (sub-)scopes, work with nested scopes.
+  - title: 'Generate report'
+    element: '[data-component-name=generate-report-button]'
+    intro: Generate the report for output as a PDF.
+  - title: 'Done'
+# todo4sernet: Replace hyperlink to online documentation if documentation created.
+# intro: Further information can also be found in the <a href="/docs">online documentation</a>.
+    intro: Further information can also be found in the online documentation.

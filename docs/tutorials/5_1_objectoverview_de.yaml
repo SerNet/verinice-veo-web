@@ -1,10 +1,11 @@
-title: Objektübersicht-Tutorial
-description: Verwendung von Objekten
+title: Die Objektübersicht
+description: Beschreibung der Objektübersicht
 route: /unit-:unit/domains/domain-:domain/objects?*
+lang: de
 steps:
   - title: 'Objektübersicht'
     element: '[data-component-name=object-overview-page]'
-    intro: In der Objektübersicht werden verfügbare Objekte aufgelistet.
+    intro: In der Objektübersicht werden alle verfügbare Objekte aufgelistet.
   - title: 'Filter'
     element: '[data-component-name=object-overview-filter]'
     intro: Die Objektübersicht wird dazu immer auf Grundlage eines Filters aufgebaut.
@@ -30,7 +31,9 @@ steps:
     element: '[data-component-name=object-overview-table] > .v-data-footer'
     intro: Existieren viele Objekte können Sie durch die Paginierung die Anzahl der je Seite dargestellten Objekte anpassen und zwischen den einzelnen Seiten navigieren.
   - title: 'Objekt bearbeiten'
-    element: '[data-component-name=object-overview-table] tr:nth-child(1)'
+## todo4nbrx: Hier wird fälschlich der Tabellenkopf ausgewählt
+# element: '[data-component-name=object-overview-table] tr:nth-child(1)'
+    element: '#veo-object-table-615 > div.v-data-table__wrapper > table > tbody > tr:nth-child(1)'
     intro: Öffnen Sie ein Objekt in der Liste durch einfachen Mausklick zum Bearbeiten.
   - title: 'Der Designator'
     element: '[data-component-name=object-overview-table] tr:nth-child(1) > td:nth-child(2)'
@@ -45,4 +48,6 @@ steps:
     element: '[data-component-name=create-object-button]'
     intro: Über die Schältfläche "Objekt erstellen" können Sie ein neues Objekt zu den aktiven Filtereinstellungen erstellen.
   - title: 'Geschafft'
-    intro: Weitere Informationen zu Objektübersicht finden Sie auch in der <a href="http://localhost:3000/docs/Bedienung/Kapitel_1">Online Dokumentation</a>
+# todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
+#    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.
+    intro: Weitere Informationen finden Sie auch in der Online Dokumentation.

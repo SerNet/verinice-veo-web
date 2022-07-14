@@ -196,7 +196,7 @@ import { mdiEyeOutline, mdiFormatListBulleted, mdiHistory, mdiInformationOutline
 
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 enum SIDE_CONTAINERS {
@@ -274,6 +274,12 @@ export default defineComponent({
     const translations: Ref<{ [key: string]: IVeoTranslationCollection } | undefined> = ref(undefined);
     const formSchemas: Ref<IVeoFormSchemaMeta[]> = ref([]);
     const currentFormSchema: Ref<undefined | IVeoFormSchema> = ref(undefined);
+
+    const domain = ref<IVeoDomain | undefined>();
+    const { fetch: fetchDomain } = useFetch(async () => {
+      domain.value = await $api.domain.fetch(props.domainId);
+    });
+    watch(() => props.domainId, fetchDomain);
 
     const {
       fetch,
@@ -391,6 +397,7 @@ export default defineComponent({
 
     const objectInformation = computed<VeoSchemaValidatorMessage[]>(() => {
       const information: VeoSchemaValidatorMessage[] = [];
+      const decisionRules = domain.value?.decisions?.piaMandatory?.rules || [];
 
       if (props.objectMetaData?.decisionResults?.piaMandatory?.value !== undefined) {
         if (props.objectMetaData.decisionResults.piaMandatory.value) {
@@ -399,7 +406,9 @@ export default defineComponent({
             message: t('piaMandatory').toString(),
             params: {
               type: 'info'
-            }
+            },
+            decisionRules,
+            matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
           });
         } else {
           information.push({
@@ -407,7 +416,9 @@ export default defineComponent({
             message: t('piaNotMandatory').toString(),
             params: {
               type: 'success'
-            }
+            },
+            decisionRules,
+            matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
           });
         }
       } else {
@@ -416,7 +427,9 @@ export default defineComponent({
           message: t('piaMandatoryUnknown').toString(),
           params: {
             type: 'info'
-          }
+          },
+          decisionRules,
+          matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
         });
       }
 
@@ -457,13 +470,16 @@ export default defineComponent({
 
     // For some reason putting this in a useFetch and using fetchDecisions as the name for the fetch hook caused all useFetch to be refetched
     const fetchDecisions = async () => {
+      const toReturn: any = { ...props.objectMetaData, decisionResults: {}, inspectionFindings: [] };
+
       // Fetch updated decision results and merge them with the current values
       if (objectData.value?.domains?.[props.domainId]) {
-        const newDecisionResults: IBaseObject = {};
         for (const key in props.objectMetaData?.decisionResults || {}) {
-          newDecisionResults[key] = await $api.entity.fetchWipDecisionEvaluation(objectData.value.type, objectData.value as any, props.domainId, key);
+          const result = await $api.entity.fetchWipDecisionEvaluation(objectData.value.type, objectData.value as any, props.domainId, key);
+          toReturn.inspectionFindings.push(...result.inspectionFindings);
+          toReturn.decisionResults[key] = result.decisionResults.piaMandatory;
         }
-        emit('update:object-meta-data', { ...props.objectMetaData, decisionResults: newDecisionResults });
+        emit('update:object-meta-data', toReturn);
       }
     };
 
@@ -519,7 +535,7 @@ export default defineComponent({
     "createDPIA": "DSFA erstellen",
     "display": "Ansicht",
     "history": "Verlauf",
-    "linkDPIA": "DSFA hinzufügen",
+    "linkDPIA": "DSFA auswählen",
     "messages": "Meldungen",
     "objects": "Objekte",
     "objectView": "Objektansicht",

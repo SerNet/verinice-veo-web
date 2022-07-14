@@ -29,6 +29,7 @@
       :label="upperFirst(t('inherentRisk').toString())"
       :items="riskValues"
       disabled
+      hide-details
     >
       <template
         v-if="dirtyFields && (dirtyFields.scenario || dirtyFields[`${riskDefinition.id}_specificProbability`] || dirtyFields[`${riskDefinition.id}_${protectionGoal.id}_specificImpact`])"
@@ -89,7 +90,7 @@ export default defineComponent({
     "saveCTA": "save to recompute"
   },
   "de": {
-    "inherentRisk": "Brutto-Risiko",
+    "inherentRisk": "Bruttorisiko",
     "saveCTA": "Speichern zum Neuberechnen"
   }
 }
