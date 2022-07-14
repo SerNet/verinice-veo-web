@@ -78,7 +78,6 @@
             :additional-context="additionalContext"
             :object-meta-data.sync="metaData"
             :inspection-results="inspectionResults"
-            @input="onFormInput"
             @show-revision="onShowRevision"
             @create-dpia="createDPIADialogVisible = true"
             @link-dpia="linkObjectDialogVisible = true"
@@ -167,7 +166,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref, useAsync, useMeta, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
-import { cloneDeep, pick, upperFirst } from 'lodash';
+import { cloneDeep, isEqual, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
@@ -246,16 +245,11 @@ export default defineComponent({
     const objectSchema: Ref<IVeoObjectSchema | null> = useAsync(() => $api.schema.fetch(objectParameter.value.type, [domainId.value]));
     const preselectedSubType = computed(() => route.value.query.subType);
 
-    const isFormDirty = ref(false);
+    const isFormDirty = computed(() => !isEqual(object.value, modifiedObject.value));
     const isFormValid = ref(false);
-
-    function onFormInput() {
-      isFormDirty.value = true;
-    }
 
     // Form actions
     function resetForm() {
-      isFormDirty.value = false;
       modifiedObject.value = cloneDeep(object.value);
     }
 
@@ -274,7 +268,6 @@ export default defineComponent({
           modifiedObject.value.$etag = object.value.$etag;
           await $api.entity.update(objectParameter.value.type, objectParameter.value.id, modifiedObject.value);
           loadObject();
-          isFormDirty.value = false;
           formDataIsRevision.value = false;
           displaySuccessMessage(successText);
         }
@@ -303,7 +296,6 @@ export default defineComponent({
 
     function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: true) {
       const displayRevisionCallback = () => {
-        isFormDirty.value = false;
         formDataIsRevision.value = isRevision;
 
         // We have to stringify the content and then manually add the host, as the history api currently doesn't support absolute urls 18-01-2022
@@ -388,7 +380,6 @@ export default defineComponent({
       metaData,
       modifiedObject,
       onContinueNavigation,
-      onFormInput,
       onDPIACreated,
       onDPIALinked,
       onShowRevision,
