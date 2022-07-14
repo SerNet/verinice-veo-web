@@ -19,7 +19,6 @@ import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 import { merge } from 'lodash';
 
-import { install as VeeValidate } from '~/plugins/vee-validate';
 import VeoCreateObjectDialog from '~/components/objects/VeoCreateObjectDialog.vue';
 import VeoObjectForm from '~/components/objects/VeoObjectForm.vue';
 import VeoDialog from '~/components/layout/VeoDialog.vue';
@@ -38,8 +37,6 @@ import process from '~/cypress/fixtures/api/default/schemas/process.2019.json';
 import forms from '~/cypress/fixtures/api/forms/fetchAll.json';
 import form from '~/cypress/fixtures/api/forms/3ebd14a2-eb7d-4d18-a9ad-2056da85569e.json';
 import translation from '~/cypress/fixtures/translations/translation.json';
-
-window.Vue.use(VeeValidate);
 
 const vuetify = new Vuetify();
 

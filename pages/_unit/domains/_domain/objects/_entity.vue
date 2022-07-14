@@ -47,6 +47,7 @@
             :dense="!!pageWidths[1]"
             @reload="loadObject"
           />
+          {{ modifiedObject }}
         </template>
         <template #footer>
           <div style="height: 36px" />
@@ -74,7 +75,7 @@
             :domain-id="domainId"
             :preselected-sub-type="preselectedSubType"
             :valid.sync="isFormValid"
-            :disabled-inputs="disabledInputs"
+            :additional-context="additionalContext"
             :object-meta-data.sync="metaData"
             :inspection-results="inspectionResults"
             @input="onFormInput"
@@ -165,7 +166,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref, useAsync, useMeta, WritableComputedRef, useRouter } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref, useAsync, useMeta, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
 import { cloneDeep, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
@@ -216,6 +217,7 @@ export default defineComponent({
       modifiedObject.value = cloneDeep(object.value);
       metaData.value = cloneDeep(object.value.domains[domainId.value]);
       inspectionResults.value = await $api.entity.fetchInspections(object.value.type, object.value.id, domainId.value);
+      getAdditionalContext();
     });
 
     const notFoundError = computed(() => (fetchState.error as any)?.statusCode === 404);
@@ -349,20 +351,33 @@ export default defineComponent({
     };
 
     // disabling inputs
-    const disabledInputs = computed<string[]>(() => {
-      const disabledInputs: string[] = [];
+    const additionalContext = ref({});
 
-      if (object.value?.domains?.[domainId.value]?.subType) {
-        disabledInputs.push(`#/properties/domains/properties/${domainId.value}/properties/subType`);
-      }
+    const getAdditionalContext = () => {
+      const disabledSubType = object.value?.domains?.[domainId.value]?.subType
+        ? {
+            [`#/properties/domains/properties/${domainId.value}/properties/subType`]: {
+              formSchema: { disabled: true }
+            }
+          }
+        : {};
 
-      return disabledInputs;
-    });
+      const disabledRiskDefinition = object.value?.domains?.[domainId.value]?.riskDefinition
+        ? {
+            [`#/properties/domains/properties/${domainId.value}/properties/riskDefinition`]: {
+              formSchema: { disabled: true }
+            }
+          }
+        : {};
+      additionalContext.value = { ...disabledSubType, ...disabledRiskDefinition };
+    };
+
+    watch(() => () => domainId.value, getAdditionalContext, { deep: true, immediate: true });
 
     return {
       VeoAlertType,
+      additionalContext,
       createDPIADialogVisible,
-      disabledInputs,
       domainId,
       entityModifiedDialogVisible,
       formDataIsRevision,

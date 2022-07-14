@@ -1,608 +1,331 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021 Davit Svandize, Jonas Heitmann, Jessica Lühnen, Samuel Vitzthum, Markus Werner
+   - Copyright (C) 2022  Jonas Heitmann
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   -
+   - 
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   -
+   - 
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import Vue from 'vue';
-import { VNode, PropOptions, CreateElement } from 'vue/types';
-import { JSONSchema7 } from 'json-schema';
+import { computed, defineComponent, h, PropType, ref } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
+import { cloneDeep, merge } from 'lodash';
 import { JsonPointer } from 'json-ptr';
-import vjp from 'vue-json-pointer';
-import { ErrorObject, ValidateFunction } from 'ajv';
-import { cloneDeep, dropRight, merge, pull } from 'lodash';
+import { JSONSchema7 } from 'json-schema';
+import { ErrorObject } from 'ajv';
 
-import { Layout as ILayout, IVeoFormSchemaControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
-import { BaseObject, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule, generateFormSchemaControl, generateFormSchemaGroup } from '~/components/forms/utils';
-import Label from '~/components/forms/Label.vue';
-import Widget from '~/components/forms/Widget.vue';
-import Control from '~/components/forms/Control.vue';
-import Layout from '~/components/forms/Layout.vue';
-import Wrapper from '~/components/forms/Wrapper.vue';
-import { IVeoDomain, IVeoFormsAdditionalContext, IVeoFormSchemaGeneratorOptions, IVeoFormsControlProps, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import {
+  IVeoFormsAdditionalContext,
+  IVeoFormsReactiveFormActions,
+  IVeoFormsTranslations,
+  IVeoFormElementFormSchema,
+  IVeoFormControlFormSchema,
+  IVeoFormLabelFormSchema,
+  IVeoFormWidgetFormSchema,
+  IVeoFormElementDefaultProps
+} from './types';
+import {
+  evaluateRule,
+  removePropertiesKeywordFromPath,
+  addConditionalSchemaPropertiesToControlSchema,
+  ajv,
+  generateFormSchema,
+  generateFormSchemaControl,
+  generateFormSchemaGroup,
+  Mode
+} from './util';
+import Control from './controls/Control';
+import Widget from './widgets/Widget';
+import VeoGroup from './layouts/VeoGroup.vue';
+import VeoLabel from './labels/VeoLabel.vue';
+import VeoValidationResultList from '~/components/util/VeoValidationResultList.vue';
 import { IBaseObject } from '~/lib/utils';
-import { getDefaultReactiveFormActions } from '~/components/forms/reactiveFormActions';
+import { IVeoFormSchema, IVeoFormSchemaGeneratorOptions, IVeoObjectSchema } from '~/types/VeoTypes';
+import FormSchemaValidator from '~/lib/FormSchemaValidator';
+import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
+import { useVeoErrorFormatter } from '~/composables/VeoErrorFormatter';
 
-interface IErrorMessageElement {
-  pointer: string;
-  message: string;
-}
+const GENERATOR_OPTIONS = (props: any) =>
+  ({
+    excludedProperties: [
+      '/id$',
+      '/type$',
+      '/owner$',
+      '^#/properties/links',
+      '/updatedAt$',
+      '/updatedBy$',
+      '/createdAt$',
+      '/createdBy$',
+      '/parts$',
+      '/members$',
+      '/risks$',
+      '/designator$',
+      '/decisionResults',
+      '(\\w+)/properties/domains$',
+      '_self'
+    ],
+    groupedNamespaces: Object.keys(props.objectSchema.properties?.customAspects?.properties || {}).map((key) => ({
+      namespace: `#/properties/customAspects/properties/${key}`,
+      label: key
+    })),
+    generateControlFunction: generateFormSchemaControl,
+    generateGroupFunction: generateFormSchemaGroup
+  } as IVeoFormSchemaGeneratorOptions);
 
-export default Vue.extend({
-  name: 'VeoForm',
+export default defineComponent({
   props: {
+    /**
+     * The value of the form
+     */
     value: {
-      type: Object,
-      default: () => ({})
-    },
-    schema: {
-      type: Object,
-      required: true
-    } as PropOptions<JSONSchema7>,
-    ui: {
-      type: Object,
-      default: undefined
-    } as PropOptions<UISchema>,
-    objectMetaData: {
-      type: Object,
+      type: Object as PropType<IBaseObject>,
       default: () => {}
     },
-    domainId: {
-      type: String,
+    /**
+     * The object schema. Required. Creates the required inputs.
+     */
+    objectSchema: {
+      type: Object as PropType<IVeoObjectSchema>,
+      required: true
+    },
+    /**
+     * The form schema. Rearranges the inputs generated by the object schema and adds additional labels.
+     */
+    formSchema: {
+      type: Object as PropType<IVeoFormSchema>,
       default: undefined
     },
-    disabled: Boolean,
     /**
-     * If set to true, objects can't be created from within the custom link dropdown
+     * Meta data belonging to the form/object. Gets passed down for use by controls, layouts and widgets.
+     */
+    metaData: {
+      type: Object as PropType<IBaseObject>,
+      default: undefined
+    },
+    /**
+     * Modifies the form and/or object schema at runtime.
+     */
+    additionalContext: {
+      type: Object as PropType<IVeoFormsAdditionalContext>,
+      default: undefined
+    },
+    /**
+     * Get called after a value changes to update other data based on the changed data.
+     */
+    reactiveFormActions: {
+      type: Object as PropType<IVeoFormsReactiveFormActions>,
+      default: undefined
+    },
+    /**
+     * Disables the complete form. If you only want to disable certain inputs, use the additional context.
+     */
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * Disables creating new objects using the VeoCreateObjectDialog from within the form. Usually only set to true to avoid stacking VeoCreateObjectDialogs.
      */
     objectCreationDisabled: {
       type: Boolean,
       default: false
     },
-    generalTranslation: {
-      type: Object,
+    /**
+     * Translations. VeoForms searches for all labels starting with #lang/... in this map.
+     */
+    translations: {
+      type: Object as PropType<IVeoFormsTranslations>,
       default: () => {}
-    } as PropOptions<IVeoTranslationCollection>,
-    customTranslation: {
-      type: Object,
-      default: () => {}
-    } as PropOptions<IVeoTranslationCollection>,
-    isValid: {
-      type: Boolean
     },
-    disabledInputs: {
-      type: Array,
-      default: () => []
-    } as PropOptions<String[]>,
-    errorMessages: {
-      type: Array,
-      default: () => []
-    } as PropOptions<IErrorMessageElement[]>,
-    reactiveFormActions: {
-      type: Array,
-      default: () => []
-    } as PropOptions<IVeoReactiveFormAction[]>,
-    additionalContext: {
-      type: Object,
-      default: () => {}
-    } as PropOptions<IVeoFormsAdditionalContext>
-  },
-  data() {
-    return {
-      localUI: this.ui,
-      formIsValid: true,
-      errorsMsgMap: {} as BaseObject,
-      domain: undefined as undefined | IVeoDomain
-    };
-  },
-  computed: {
-    validateFunction(): ValidateFunction {
-      return ajv.compile(this.schema);
-    },
-    generatorOptions(): IVeoFormSchemaGeneratorOptions {
-      return {
-        excludedProperties: [
-          '/id$',
-          '/type$',
-          '/owner$',
-          '^#/properties/links',
-          '/updatedAt$',
-          '/updatedBy$',
-          '/createdAt$',
-          '/createdBy$',
-          '/parts$',
-          '/members$',
-          '/risks$',
-          '/designator$',
-          '/decisionResults',
-          '(\\w+)/properties/domains$',
-          '_self'
-        ],
-        groupedNamespaces: Object.keys((this.schema as any).properties?.customAspects?.properties || {}).map((key) => ({
-          namespace: `#/properties/customAspects/properties/${key}`,
-          label: key
-        })),
-        generateControlFunction: generateFormSchemaControl,
-        generateGroupFunction: generateFormSchemaGroup
-      };
-    },
-    localReactiveFormActions(): IVeoReactiveFormAction[] {
-      return [...this.reactiveFormActions, ...getDefaultReactiveFormActions(this)];
-    },
-    defaultAdditionalContext(): IVeoFormsAdditionalContext {
-      if (this.domainId) {
-        return {
-          [`#/properties/domains/properties/${this.domainId}/properties/status`]: {
-            formSchema: {
-              disabled: !this.value.domains?.[this.domainId]?.subType,
-              enum: (() => {
-                const scope = `#/properties/domains/properties/${this.domainId}/properties/status`;
-                let elementSchema: any = cloneDeep(JsonPointer.get(this.schema, scope) || {});
-                elementSchema = this.addConditionalSchemaPropertiesToControlSchema(elementSchema, scope);
-                return elementSchema?.enum?.map(
-                  (status: string) => this.generalTranslation?.[`${this.schema.title}_${this.value.domains?.[this.domainId]?.subType}_status_${status}`] || status
-                );
-              })()
-            }
-          },
-          [`#/properties/domains/properties/${this.domainId}/properties/subType`]: {
-            formSchema: { disabled: this.disabledInputs.includes(`#/properties/domains/properties/${this.domainId}/properties/subType`) }
-          },
-          [`#/properties/domains/properties/${this.domainId}/properties/riskDefinition`]: {
-            formSchema: { disabled: this.disabledInputs.includes(`#/properties/domains/properties/${this.domainId}/properties/riskDefinition`) }
-          },
-          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/implementationStatus`]: {
-            formSchema: {
-              enum: (() => (this.domain?.riskDefinitions?.DSRA?.implementationStateDefinition?.levels || []).map((level: any) => level.name))()
-            }
-          },
-          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialProbability`]: {
-            formSchema: {
-              enum: (() => (this.domain?.riskDefinitions?.DSRA?.probability?.levels || []).map((level: any) => level.name))()
-            }
-          },
-          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/C`]: {
-            formSchema: {
-              enum: (() => (this.domain?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'C')?.potentialImpacts || []).map((level: any) => level.name))()
-            }
-          },
-          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/I`]: {
-            formSchema: {
-              enum: (() => (this.domain?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'I')?.potentialImpacts || []).map((level: any) => level.name))()
-            }
-          },
-          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/A`]: {
-            formSchema: {
-              enum: (() => (this.domain?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'A')?.potentialImpacts || []).map((level: any) => level.name))()
-            }
-          },
-          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/R`]: {
-            formSchema: {
-              enum: (() => (this.domain?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'R')?.potentialImpacts || []).map((level: any) => level.name))()
-            }
-          }
-        };
-      } else {
-        return {};
-      }
-    },
-    localAdditionalContext(): IVeoFormsAdditionalContext {
-      return { ...this.defaultAdditionalContext, ...this.additionalContext };
+    /**
+     * If set to true, VeoForms will print a variety of data to the console in order to debug VeoForms.
+     */
+    debug: {
+      type: Boolean,
+      default: false
     }
   },
-  watch: {
-    schema: {
-      immediate: true,
-      handler() {
-        this.updateUI();
-        this.validate();
-      }
-    },
-    ui: {
-      immediate: true,
-      // deep property is important to check for changes in FormSchema to update the form (import for live updates in FormSchemaEditor).
-      // if it causes problems or performance issues, should be removed and another solution found
-      deep: true,
-      handler() {
-        this.updateUI();
-      }
-    },
-    generalTranslation: {
-      immediate: true,
-      handler() {
-        if (this.ui) {
-          this.localUI = this.translate<UISchema>(this.ui);
-        } else if (this.localUI) {
-          this.localUI = this.translate<UISchema>(this.localUI);
-        }
-      }
-    },
-    customTranslation: {
-      immediate: true,
-      handler() {
-        if (this.ui) {
-          this.localUI = this.translate<UISchema>(this.ui);
-        } else if (this.localUI) {
-          this.localUI = this.translate<UISchema>(this.localUI);
-        }
-      }
-    },
-    errorsMsgMap: {
-      immediate: true,
-      deep: true,
-      handler() {
-        this.$emit(
-          'update:errorMessages',
-          Object.entries(this.errorsMsgMap).map(([pointer, message]) => ({
-            pointer,
-            message
-          }))
-        );
-      }
-    },
-    domainId: {
-      handler() {
-        this.fetchDomain();
-      },
-      immediate: true
-    }
-  },
-  methods: {
-    async fetchDomain() {
-      // ToDo: Workaround for unit tests, find a way to mock when using composition api
-      if (this.$api) {
-        this.domain = await this.$api.domain.fetch(this.domainId);
-      }
-    },
-    validate() {
-      this.formIsValid = this.validateFunction(this.value);
-      this.errorsMsgMap = !this.formIsValid && this.validateFunction.errors ? this.validateFunction.errors.reduce(this.validationErrorTransform, {}) : {};
-      this.$emit('update:isValid', this.formIsValid);
-    },
-    executeReactiveFormActions(oldObjectData: IBaseObject, newObjectData: IBaseObject) {
-      if (oldObjectData) {
-        // Only proceed if this isn't triggered after initally loading the data
-        for (const reactiveFormAction of this.localReactiveFormActions) {
-          let newValue;
-          let oldValue;
+  emits: ['input', 'update:messages', 'update:valid'],
+  setup(props, { emit }) {
+    const { locale } = useI18n();
 
-          try {
-            newValue = vjp.get(newObjectData, reactiveFormAction.attributeName);
-            oldValue = vjp.get(oldObjectData, reactiveFormAction.attributeName);
-          } catch (e) {
-            // Default is already set to undefined, so we don't have to do anything here
-          }
+    const { defaultReactiveFormActions } = useVeoReactiveFormActions();
+    const { formatErrors } = useVeoErrorFormatter();
 
-          if ((!!newValue || !!oldValue) && newValue !== oldValue) {
-            reactiveFormAction.handler(newValue, newObjectData, oldObjectData);
-          }
-        }
-      }
-      return cloneDeep(newObjectData);
-    },
-    getLangText(langPointer: string): string {
-      const translationKey = langPointer.replace('#lang/', '');
-      return this.customTranslation?.[translationKey] || this.generalTranslation?.[translationKey] || translationKey;
-    },
-    translate<T>(objectWithLangPointers: JSONSchema7 | UISchemaElement): T {
-      return JSON.parse(
-        JSON.stringify(objectWithLangPointers).replace(/"(#lang\/.*?)"/gi, (_: string, langMatchWithoutQuotes: string) => {
-          return JSON.stringify(this.getLangText(langMatchWithoutQuotes));
-        })
-      );
-    },
-    setValue(scope: string, v: any) {
-      // TODO: check the performance of these lines, which can cause slow input process
-      if (scope) {
-        const oldValue = cloneDeep(this.value);
+    const localTranslations = computed(() => props.translations?.[locale.value] || {});
+    const localAdditionalContext = computed(() => props.additionalContext || {});
+    const localFormSchema = computed(() => props.formSchema || generateFormSchema(props.objectSchema, GENERATOR_OPTIONS(props), Mode.VEO));
+    const localReactiveFormActions = computed(() => {
+      const toReturn = defaultReactiveFormActions();
 
-        // We clone the current value again to not edit the prop ourselves but let the parent component handle it
-        let newValue = cloneDeep(this.value);
-
-        const path = propertyPath(scope).replace('#/', '/');
-        // We don't use !v, as false is a valid value we want to save in the object data
-        if (v !== undefined && v !== null) {
-          vjp.set(newValue, path, v);
+      for (const key in props.reactiveFormActions || {}) {
+        if (toReturn[key]) {
+          toReturn[key].push(...props.reactiveFormActions[key]);
         } else {
-          // If a new value is undefined or null, unset it in the object and check whether any parent elements are empty now and can be removed
-          try {
-            vjp.remove(newValue, path);
-
-            let parts = [];
-
-            parts = path.split('/');
-            while (parts.length > 1) {
-              parts.pop();
-              const tempPath = parts.join('/');
-
-              if (!this.propertyIsEmpty(newValue, tempPath)) {
-                break;
-              }
-
-              vjp.remove(newValue, tempPath);
-              parts = tempPath.split('/');
-            }
-          } catch (_) {}
+          toReturn[key] = props.reactiveFormActions[key];
         }
-        newValue = this.executeReactiveFormActions(oldValue, newValue);
-
-        this.$emit('input', newValue);
-        this.$nextTick().then(() => this.validate());
       }
-    },
-    propertyIsEmpty(object: IBaseObject, pointer: string): boolean {
-      const property = vjp.get(object, pointer);
-      return !property || (Array.isArray(property) && !property.length) || (typeof property === 'object' && !Array.isArray(property) && !Object.keys(property).length);
-    },
-    validationErrorTransform(accummulator: {}, error: ErrorObject) {
-      const keyMatch = error.schemaPath.match(/((.+\/properties\/\w+\b)|(.+(?=\/required)))/g);
-      if (!keyMatch) {
-        throw new Error('Key does not match in Errors array');
-      }
-      const indexMatch = error.instancePath.match(/\/\d+$/);
-      const missingProperty = (error.params as any).missingProperty;
-      const requiredKey = `${keyMatch[0]}${indexMatch ? indexMatch[0] : ''}/properties/${missingProperty}`;
+      return toReturn;
+    });
 
-      const key = error.keyword !== 'required' ? keyMatch[0] : requiredKey;
-      let translatedErrorString = '';
+    // Form schema validation
+    const formSchemaValidator = new FormSchemaValidator();
+    const formSchemaFitsObjectSchema = computed<true | VeoSchemaValidatorValidationResult>(() => formSchemaValidator.validate(localFormSchema.value, props.objectSchema));
 
-      switch (error.keyword) {
-        case 'required':
-          // Special handling of links, as their last data path entry isn't the string we search for
-          if (['targetUri', 'target'].includes(missingProperty)) {
-            translatedErrorString = this.handleRequiredLink(error);
-            break;
-          }
-          translatedErrorString = this.$t(`error.${error.keyword}`, { field: this.getInvalidFieldLabel(missingProperty) }).toString();
-          break;
-        // While pattern and format are separate errors, we want to display the same error message for both, as both have to be fixed the same way by the user
-        case 'format':
-        case 'pattern':
-          translatedErrorString = this.$t('error.format', {
-            field: this.getInvalidFieldLabel(error.instancePath.split('/').pop() || error.instancePath),
-            format: (error.params as any)[error.keyword]
-          }).toString();
-          break;
-        default:
-          translatedErrorString = error.message || '';
+    // Object data validation
+    const errorMessages = ref(new Map<string, string[]>());
+    const validateFunction = computed(() => ajv.compile(props.objectSchema));
+
+    // Form generation
+    const defaultProps: IVeoFormElementDefaultProps = {
+      metaData: props.metaData,
+      disabled: props.disabled,
+      objectCreationDisabled: props.objectCreationDisabled,
+      translations: localTranslations.value,
+      debug: props.debug
+    };
+
+    const createComponent = (element: any, formSchemaPointer: string): any => {
+      const rule = evaluateRule(props.value, element.rule);
+
+      element.options = merge(element.options || {}, rule);
+      if (element.options.label && element.options.label.startsWith('#lang/')) {
+        const key = element.options.label.split('/')[1];
+        element.options.label = localTranslations.value[key] || key;
       }
 
-      return { ...accummulator, [key]: translatedErrorString };
-    },
-    handleRequiredLink(error: ErrorObject): string {
-      const dataPathParts = error.instancePath.split('/');
-      const missingProperty = (error.params as any).missingProperty;
-      let index: number | undefined;
-      if (missingProperty === 'targetUri') {
-        dataPathParts.pop();
-        index = Number(dataPathParts.pop());
-      } else if (missingProperty === 'target') {
-        index = Number(dataPathParts.pop());
+      if (element.options.visible) {
+        switch (element.type) {
+          case 'Layout':
+            return createLayout(element, formSchemaPointer);
+          case 'Control':
+            return createControl(element, formSchemaPointer);
+          case 'Label':
+            return createLabel(element, formSchemaPointer);
+          case 'Widget':
+            return createWidget(element, formSchemaPointer);
+        }
       }
+    };
 
-      const position = index ? `${index + 1}.` : '';
-      return this.$t(`error.${error.keyword}_link`, {
-        field: this.getInvalidFieldLabel(dataPathParts.pop() || missingProperty),
-        position
-      }).toString();
-    },
-    getInvalidFieldLabel(field: string): string {
-      return (this.customTranslation && this.customTranslation[field]) || (this.generalTranslation && this.generalTranslation[field]) || field;
-    },
-    createLayout(element: ILayout, formSchemaPointer: string, h: CreateElement, rule: IRule): VNode {
+    const createChildren = (element: IVeoFormElementFormSchema, formSchemaPointer: string) => {
+      return element.elements && element.elements.map((elem, index) => createComponent(elem, `${formSchemaPointer}/elements/${index}`));
+    };
+
+    const createLayout = (element: IVeoFormElementFormSchema, formSchemaPointer: string) => {
       return h(
-        Layout,
+        VeoGroup,
         {
           props: {
+            ...defaultProps,
             options: element.options,
-            formSchemaPointer,
-            ...rule
+            formSchemaPointer
           }
         },
-        this.createChildren(element, formSchemaPointer, h)
+        createChildren(element, formSchemaPointer)
       );
-    },
-    createControl(element: IVeoFormSchemaControl, h: CreateElement, rule: IRule): VNode {
-      let partOfProps: { [key: string]: any } = {
-        name: undefined,
-        schema: {},
-        value: undefined,
-        validation: {},
-        generalTranslation: undefined,
-        customTranslation: undefined,
-        api: {}
-      };
+    };
 
-      if (element.scope) {
-        // as custom links may consist of many rows, the errors needs special handling in order to display the error in their belonging input field (row)
-        let linkErrors = undefined as any;
-        if (element.scope.includes('link')) {
-          const errorKeys = Object.keys(this.errorsMsgMap).filter((errorKey) => errorKey.includes(element.scope!)); // get error keys for all faulty rows of a custom link
-          if (errorKeys.length > 0) {
-            linkErrors = {};
-            for (const errorKey of errorKeys) {
-              const indexFromString = errorKey
-                .split('/')
-                .splice(5)
-                .find((item) => Number.isInteger(Number(item))) as string | undefined;
-              linkErrors[`_${indexFromString || '0'}`] = this.errorsMsgMap[errorKey]; // assign error to belonging index (row) of custom link
-            }
-          }
-        }
-
-        const elementName = element.scope.split('/').pop() as string;
-        let elementSchema: any = cloneDeep(JsonPointer.get(this.schema, element.scope) || {});
-        const elementValue: any = JsonPointer.get(this.value, propertyPath(element.scope));
-
-        elementSchema = this.addConditionalSchemaPropertiesToControlSchema(elementSchema, element.scope);
-
-        partOfProps = {
-          name: elementName,
-          schema: elementSchema,
-          generalTranslation: this.generalTranslation,
-          customTranslation: this.customTranslation,
-          // TODO: Check InputNumber.vue or other Elements with "clear" and deafult value. Change how default value is used to fix bug
-          value: typeof elementValue !== 'undefined' ? elementValue : elementSchema && elementSchema.default,
-          validation: {
-            objectSchema: {
-              errorMsg: this.errorsMsgMap[element.scope] || linkErrors
-            }
-          }
-        };
-      }
-
-      const additionalFSConditions = element.scope && this.localAdditionalContext[element.scope]?.formSchema;
-      const additionalOSContext = element.scope && this.localAdditionalContext[element.scope]?.objectSchema;
-      const options = {
-        ...element.options,
-        ...additionalFSConditions
-      };
-
-      return h(Control, {
+    const createLabel = (element: IVeoFormLabelFormSchema, formSchemaPointer: string) => {
+      return h(VeoLabel, {
         props: {
-          ...rule,
-          elements: element.elements,
-          options: {
-            ...options,
-            label: this.schema.required?.includes(partOfProps.name) ? element.options?.label + '*' : element.options?.label
-          },
-          disabled: this.disabled || options.disabled,
-          objectCreationDisabled: this.objectCreationDisabled,
-          ...partOfProps,
-          schema: { ...partOfProps.schema, ...additionalOSContext }
-        } as IVeoFormsControlProps,
-        on: {
-          input: (v: any) => element.scope && this.setValue(element.scope, v),
-          change: (v: any) => element.scope && this.setValue(element.scope, v)
-        }
-      });
-    },
-    createLabel(element: ILabel, h: CreateElement, rule: IRule): VNode {
-      return h(Label, {
-        props: {
-          ...rule,
+          ...defaultProps,
           options: element.options,
+          formSchemaPointer,
           text: element.text
         }
       });
-    },
-    createWidget(element: any, h: CreateElement, rule: IRule): VNode {
+    };
+
+    const createWidget = (element: IVeoFormWidgetFormSchema, formSchemaPointer: string) => {
       return h(Widget, {
         props: {
-          ...rule,
+          ...defaultProps,
+          options: element.options,
+          formSchemaPointer,
           name: element.name,
-          objectData: this.value,
-          objectMetaData: this.objectMetaData
+          objectData: props.value
         }
       });
-    },
-    createChildren(element: UISchemaElement, formSchemaPointer: string, h: CreateElement) {
-      return element.elements && element.elements.map((elem, index) => this.createComponent(elem, `${formSchemaPointer}/elements/${index}`, h));
-    },
-    createComponent(element: UISchemaElement, formSchemaPointer: string, h: CreateElement): VNode {
-      const rule = evaluateRule(this.value, element.rule);
-      switch (element.type) {
-        case 'Layout':
-          return this.createLayout(element, formSchemaPointer, h, rule);
-        case 'Control':
-          return this.createControl(element, h, rule);
-        case 'Label':
-          return this.createLabel(element, h, rule);
-        case 'Widget':
-          return this.createWidget(element, h, rule);
+    };
+
+    const createControl = (element: IVeoFormControlFormSchema, formSchemaPointer: string) => {
+      if (!element.scope) {
+        if (props.debug) {
+          // eslint-disable-next-line no-console
+          console.warn(`VeoForm::createControl: Control ${formSchemaPointer} has no scope: ${JSON.stringify(element)}`);
+        }
+        return;
       }
-    },
-    updateUI() {
-      if (this.ui) {
-        this.localUI = this.translate<UISchema>(this.ui);
+
+      const controlObjectSchema = { ...(JsonPointer.get(props.objectSchema, element.scope) as JSONSchema7), ...(localAdditionalContext.value[element.scope]?.objectSchema || {}) };
+      return h(Control, {
+        props: {
+          key: element.scope,
+          ...defaultProps,
+          options: { ...element.options, ...localAdditionalContext.value[element.scope]?.formSchema },
+          formSchemaPointer,
+          objectSchemaPointer: element.scope,
+          objectSchema: addConditionalSchemaPropertiesToControlSchema(props.objectSchema, props.value, controlObjectSchema, element.scope),
+          value: JsonPointer.get(props.value, removePropertiesKeywordFromPath(element.scope)),
+          errors: errorMessages.value
+        },
+        on: {
+          input: onControlInput
+        }
+      });
+    };
+
+    // Input handling
+    const onControlInput = (objectSchemaPointer: string, newValue: any, oldValue: string) => {
+      // Clone object to avoid mutating the original data
+      let updatedForm = cloneDeep(props.value);
+
+      // '' should be handled as if the value was deleted (an empty input field cleared with backspace returns '', while an input field cleared with the clear button returns undefined)
+      if (newValue === '') {
+        newValue = undefined;
+      }
+
+      // Set new value
+      if (newValue === undefined) {
+        JsonPointer.unset(updatedForm, removePropertiesKeywordFromPath(objectSchemaPointer));
       } else {
-        this.localUI = this.translate<UISchema>(generateFormSchema(this.schema, this.generatorOptions, Mode.VEO));
-      }
-    },
-    getParentPointer(elementPointer: string): string {
-      const parentParts = elementPointer.split('/');
-      return dropRight(parentParts, 2).join('/');
-    },
-    addConditionalSchemaPropertiesToControlSchema(initialControlSchema: JSONSchema7, pointer: string) {
-      let schema = cloneDeep(initialControlSchema);
-
-      const controlName = pointer.split('/').pop() as string;
-      // Search for conditionally applied properties of the new control (based in the parent object in the objectschema)
-      const parentPointer = this.getParentPointer(pointer);
-      const parentSchema: any = JsonPointer.get(this.schema, parentPointer);
-
-      if (parentSchema) {
-        const getSchemaCompositionConditions = (schemaCompositionObject: any) =>
-          schemaCompositionObject?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
-
-        const conditionsToCheck = [
-          ...(parentSchema.then?.properties?.[controlName] || parentSchema.else?.properties?.[controlName] ? [parentSchema] : []),
-          ...getSchemaCompositionConditions(parentSchema.allOf),
-          ...getSchemaCompositionConditions(parentSchema.AnyOf),
-          ...getSchemaCompositionConditions(parentSchema.OneOf)
-        ];
-
-        for (const condition of conditionsToCheck) {
-          schema = this.getSchemaWithAppliedConditionalSchemaProperties(schema, condition, parentPointer, controlName);
-        }
+        JsonPointer.set(updatedForm, removePropertiesKeywordFromPath(objectSchemaPointer), newValue, true);
       }
 
-      return schema;
-    },
-    getSchemaWithAppliedConditionalSchemaProperties(
-      initialControlSchema: JSONSchema7,
-      ifElseThenBlock: { if?: any; else?: any; then?: any },
-      parentPointer: string,
-      controlName: string
-    ) {
-      let schema;
-      for (const propertyWithCondition of Object.keys(ifElseThenBlock.if?.properties)) {
-        const pathInFormDataParts = pull(parentPointer.split('/'), 'properties', 'attributes');
-        pathInFormDataParts.push(propertyWithCondition);
-        const pathInFormData = pathInFormDataParts.join('/');
-
-        if (JsonPointer.get(this.value, pathInFormData) === ifElseThenBlock.if.properties[propertyWithCondition].const) {
-          schema = merge(initialControlSchema, ifElseThenBlock.then?.properties?.[controlName]);
-        } else {
-          schema = merge(initialControlSchema, ifElseThenBlock.else?.properties?.[controlName]);
-        }
+      // Apply reactive form actions
+      for (const action of localReactiveFormActions.value[objectSchemaPointer] || []) {
+        updatedForm = action(newValue, oldValue, updatedForm, props.value);
       }
-      return schema;
-    }
-  },
-  render(h): VNode {
-    return h(Wrapper, [this.createComponent(this.localUI, '#', h)]);
+
+      // Validate new form data
+      const formIsValid = validateFunction.value(updatedForm);
+      if (!formIsValid) {
+        errorMessages.value = formatErrors(validateFunction.value.errors as ErrorObject[], localTranslations.value);
+      } else {
+        errorMessages.value = new Map();
+      }
+      emit('update:messages', errorMessages.value);
+      emit('update:valid', formIsValid);
+
+      // Send updated form
+      emit('input', updatedForm);
+    };
+
+    return () =>
+      !formSchemaFitsObjectSchema.value
+        ? h(VeoValidationResultList, { props: { items: (formSchemaFitsObjectSchema.value as VeoSchemaValidatorValidationResult).errors } })
+        : h('div', { class: 'vf-wrapper' }, [createComponent(localFormSchema.value, '#')]);
   }
 });
 </script>
-
-<i18n>
-{
-  "en": {
-    "error": {
-      "format": "The field \"{field}\" has to match the format \"{format}\"",
-      "required": "The field \"{field}\" is required",
-      "required_link": "The {position} link in \"{field}\" has to point to an object or must be removed"
-    }
-  },
-  "de": {
-    "error": {
-      "format": "Das Feld \"{field}\" muss dem Format \"{format}\" entsprechen",
-      "required": "Das Feld \"{field}\" muss ausgefüllt sein",
-      "required_link": "Der {position} Link in \"{field}\" muss auf ein Objekt zeigen oder entfernt werden"
-    }
-  }
-}
-</i18n>

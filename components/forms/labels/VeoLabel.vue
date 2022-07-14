@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
+   - Copyright (C) 2022  Jonas Heitmann
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -16,31 +16,46 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <LayoutFormat
-    v-bind="$props"
-    v-on="$listeners"
+  <div
+    v-if="options.visible"
+    :id="formSchemaPointer"
+    class="vf-label"
+    :class="options && options.class"
+    :style="options && options.style"
   >
-    <slot />
-  </LayoutFormat>
+    {{ text }}
+  </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from '@nuxtjs/composition-api';
 
-import LayoutFormat from '~/components/forms/Collection/LayoutFormats/LayoutFormat.vue';
+import { VeoFormsElementProps } from '../util';
+import { IVeoFormsElementDefinition } from '../types';
 
-export default Vue.extend({
-  components: {
-    LayoutFormat
+export const LABEL_DEFINITION: IVeoFormsElementDefinition = {
+  key: 'veo-label',
+  name: {
+    en: 'label',
+    de: 'Label'
   },
+  description: {
+    en: 'Adds non-editable text to the form.',
+    de: 'Fügt Text in ein Formular ein.'
+  }
+};
+
+export default defineComponent({
+  name: LABEL_DEFINITION.key,
   props: {
-    options: { type: Object, default: undefined },
-    formSchemaPointer: {
+    ...VeoFormsElementProps,
+    text: {
       type: String,
-      default: undefined
-    },
-    disabled: Boolean,
-    visible: Boolean
+      required: true
+    }
+  },
+  setup() {
+    return {};
   }
 });
 </script>

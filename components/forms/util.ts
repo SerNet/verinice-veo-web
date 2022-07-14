@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2021  Davit Svandize, Jonas Heitmann
+ * Copyright (C) 2022  Jonas Heitmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,67 +15,97 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { JSONSchema7 } from 'json-schema';
+import { PropType } from '@nuxtjs/composition-api';
+import { JsonPointer } from 'json-ptr';
 import Ajv2019 from 'ajv/dist/2019';
 import addFormats from 'ajv-formats';
-import { JsonPointer } from 'json-ptr';
-import { merge, partition } from 'lodash';
-import { UIRule, UISchemaElement, IVeoFormSchemaControl } from '~/types/UISchema';
+import { cloneDeep, dropRight, merge, partition, pull } from 'lodash';
+import { JSONSchema7 } from 'json-schema';
+
+import { IVeoFormElementFormSchemaRule, IVeoFormElementRule, IVeoFormsTranslations } from './types';
+import { IBaseObject } from '~/lib/utils';
+import { IVeoFormSchemaControl, UISchemaElement } from '~/types/UISchema';
 import { IVeoFormSchemaGeneratorOptions } from '~/types/VeoTypes';
 
-type defaultType = string | boolean | number | undefined | null;
-
-export interface BaseObject {
-  [key: string]: any;
-}
-
-export interface ILinksFieldDialogNewObject {
-  name?: string;
-  abbreviation?: string;
-  description?: string;
-  subType?: { [key: string]: string };
-  domains?: { targetUri: string }[];
-}
-
-export interface ILinksFieldDialogUpdatedObject extends ILinksFieldDialogNewObject, BaseObject {
-  name?: string;
-  abbreviation?: string;
-  description?: string;
-  // TODO: activate after displayName is implemented
-  // displayName: string
-  id: string;
-}
-
-// Nuxt compile throws warnings if this is no default export exists
 export default {};
 
-export function isContain(array: defaultType[], elementToContain: defaultType[] | defaultType) {
-  if (Array.isArray(elementToContain)) {
-    // Check if every element of elementToContain is in array included
-    return elementToContain.every((el) => array.includes(el));
-  } else {
-    return array.includes(elementToContain);
+export const VeoFormsElementProps = {
+  metaData: {
+    type: Object as PropType<IBaseObject>,
+    default: undefined
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  objectCreationDisabled: {
+    type: Boolean,
+    default: false
+  },
+  translations: {
+    type: Object as PropType<IVeoFormsTranslations>,
+    default: () => {}
+  },
+  debug: {
+    type: Boolean,
+    default: false
+  },
+  formSchemaPointer: {
+    type: String,
+    required: true
+  },
+  options: {
+    type: Object as PropType<IBaseObject & IVeoFormElementRule>,
+    default: () => {}
   }
-}
+};
 
-// Evaluate Rule
+export const VeoFormsWidgetProps = {
+  ...VeoFormsElementProps,
+  name: {
+    type: String,
+    required: true
+  },
+  objectData: {
+    type: Object as PropType<IBaseObject>,
+    default: () => {}
+  }
+};
+
+export const VeoFormsControlProps = {
+  ...VeoFormsElementProps,
+  objectSchemaPointer: {
+    type: String,
+    default: '',
+    required: true
+  },
+  objectSchema: {
+    type: Object as PropType<JSONSchema7>,
+    default: () => {},
+    required: true
+  },
+  value: {
+    type: [Number, String, Object, Array],
+    default: undefined
+  },
+  errors: {
+    type: Map as PropType<Map<String, String[]>>,
+    default: () => {}
+  }
+};
+
 export const ajv = new Ajv2019({
   allErrors: true,
-  strict: false // ToDo: Currently the process schema isn't adhering to the json schema standard, so we disable strict mode to prevent errors beeing shown
+  strict: true
 });
 addFormats(ajv);
 
-export function propertyPath(path: string) {
+export const removePropertiesKeywordFromPath = (path: string) => {
   // TODO: Better translation from #/properties/name to #/name for values
   return String(path || '').replace(/\/properties\//g, '/');
-}
+};
 
-export interface IRule {
-  visible: boolean;
-  disabled: boolean;
-}
-
-export function evaluateRule(value: any, rule: UIRule | undefined) {
+export const evaluateRule = (value: any, rule: IVeoFormElementFormSchemaRule | undefined): IVeoFormElementRule => {
   const defaults = {
     visible: true,
     disabled: false
@@ -90,7 +120,7 @@ export function evaluateRule(value: any, rule: UIRule | undefined) {
     return defaults;
   }
 
-  const v = JsonPointer.get(value, propertyPath(rule.condition.scope));
+  const v = JsonPointer.get(value, removePropertiesKeywordFromPath(rule.condition.scope));
 
   // if rule condition is true
   if (ajv.validate(rule.condition.schema, v)) {
@@ -118,9 +148,63 @@ export function evaluateRule(value: any, rule: UIRule | undefined) {
         return { ...defaults, disabled: true };
     }
   }
-}
+};
 
-// Generate Formschema
+// Conditionally apply properties
+const getParentPointer = (elementPointer: string): string => {
+  const parentParts = elementPointer.split('/');
+  return dropRight(parentParts, 2).join('/');
+};
+
+export const addConditionalSchemaPropertiesToControlSchema = (objectSchema: JSONSchema7, objectData: any, controlObjectSchema: JSONSchema7, pointer: string) => {
+  let schema = cloneDeep(controlObjectSchema);
+
+  const controlName = pointer.split('/').pop() as string;
+  // Search for conditionally applied properties of the new control (based in the parent object in the objectschema)
+  const parentPointer = getParentPointer(pointer);
+  const parentSchema: any = JsonPointer.get(objectSchema, parentPointer);
+
+  if (parentSchema) {
+    const getSchemaCompositionConditions = (schemaCompositionObject: any) =>
+      schemaCompositionObject?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
+
+    const conditionsToCheck = [
+      ...(parentSchema.then?.properties?.[controlName] || parentSchema.else?.properties?.[controlName] ? [parentSchema] : []),
+      ...getSchemaCompositionConditions(parentSchema.allOf),
+      ...getSchemaCompositionConditions(parentSchema.AnyOf),
+      ...getSchemaCompositionConditions(parentSchema.OneOf)
+    ];
+
+    for (const condition of conditionsToCheck) {
+      schema = getSchemaWithAppliedConditionalSchemaProperties(objectData, schema, condition, parentPointer, controlName);
+    }
+  }
+
+  return schema;
+};
+
+const getSchemaWithAppliedConditionalSchemaProperties = (
+  objectData: any,
+  controlObjectSchema: JSONSchema7,
+  ifElseThenBlock: { if?: any; else?: any; then?: any },
+  parentPointer: string,
+  controlName: string
+) => {
+  let schema;
+  for (const propertyWithCondition of Object.keys(ifElseThenBlock.if?.properties)) {
+    const pathInFormDataParts = pull(parentPointer.split('/'), 'properties', 'attributes');
+    pathInFormDataParts.push(propertyWithCondition);
+    const pathInFormData = pathInFormDataParts.join('/');
+
+    if (JsonPointer.get(objectData, pathInFormData) === ifElseThenBlock.if.properties[propertyWithCondition].const) {
+      schema = merge(controlObjectSchema, ifElseThenBlock.then?.properties?.[controlName]);
+    } else {
+      schema = merge(controlObjectSchema, ifElseThenBlock.else?.properties?.[controlName]);
+    }
+  }
+  return schema;
+};
+
 export enum Mode {
   GENERAL = 'GENERAL',
   VEO = 'VEO'
@@ -141,21 +225,21 @@ export function generateFormSchemaGroup(children: UISchemaElement[], label?: str
     ? {
         type: 'Label',
         text: label,
-        options: { class: 'font-italic accent--text text-body-2 ml-3' }
+        options: { class: 'font-italic accent--text text-body-2' }
       }
     : undefined;
 
   return {
     type: 'Layout',
     options: {
-      class: 'border',
+      class: 'veo-generated-fs-group-border',
       direction: 'vertical'
     },
     elements: [...(labelElement ? [labelElement as any] : []), ...children]
   };
 }
 
-export function generateFormSchemaControl(pointer: string, schema: BaseObject, mode: Mode): IVeoFormSchemaControl {
+export function generateFormSchemaControl(pointer: string, schema: IBaseObject, mode: Mode): IVeoFormSchemaControl {
   const propertyName = pointer.split('/').pop();
   const label = propertyName ? (mode === Mode.VEO ? `#lang/${propertyName}` : propertyName) : '';
 

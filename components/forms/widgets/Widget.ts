@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2021  Markus Werner, Jonas Heitmann
+ * Copyright (C) 2022  Jonas Heitmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,22 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import Vue from 'vue';
-import { ValidationProvider, extend } from 'vee-validate';
+import { defineComponent, h } from '@nuxtjs/composition-api';
 
-export function install(vue: typeof Vue) {
-  extend('objectSchema', {
-    params: ['errorMsg'],
-    validate: (_, args: Record<string, any>) => ({
-      required: true,
-      valid: !args.errorMsg
-    }),
-    message: (_, args) => args.errorMsg,
-    computesRequired: true
-  });
-  vue.component('ValidationProvider', ValidationProvider);
-}
+import { VeoFormsWidgetProps } from '../util';
+import VeoDPIAMandatoryWidget from '~/components/forms/widgets/VeoDPIAMandatoryWidget.vue';
 
-export default function () {
-  install(Vue);
-}
+const AVAILABLE_WIDGETS = [VeoDPIAMandatoryWidget];
+
+export default defineComponent({
+  props: VeoFormsWidgetProps,
+  setup(props) {
+    const fittingComponent = AVAILABLE_WIDGETS.find((widget) => widget.name === props.name);
+
+    if (!fittingComponent) {
+      // eslint-disable-next-line no-console
+      console.warn(`VeoForm::Widget: Couldn't find widget ${props.name}`);
+      return null;
+    }
+    return () => h(fittingComponent, { props });
+  }
+});

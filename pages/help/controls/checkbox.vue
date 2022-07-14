@@ -27,8 +27,8 @@
       >
         <VeoForm
           v-model="form.data"
-          :schema="form.objectSchema"
-          :ui="form.formSchema"
+          :object-schema="form.objectSchema"
+          :form-schema="form.formSchema"
         />
       </v-col>
     </v-row>

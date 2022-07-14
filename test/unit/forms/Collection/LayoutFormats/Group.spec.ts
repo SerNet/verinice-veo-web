@@ -17,13 +17,9 @@
  */
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
-import Vue from 'vue';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
 import { Renderable } from '~/types/renderable';
-
-import { install as VeeValidate } from '~/plugins/vee-validate';
-Vue.use(VeeValidate);
 
 const vuetify = new Vuetify();
 

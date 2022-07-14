@@ -32,6 +32,9 @@
     @input="onInput"
     @update:search-input="onSearchInputUpdate"
   >
+    <template #prepend-item>
+      <slot name="prepend-item" />
+    </template>
     <template
       v-if="moreItemsAvailable"
       #append-item
@@ -137,6 +140,7 @@ export default defineComponent({
         await loadObjects(query, true);
         searchQuery.value = query;
       } catch (e: any) {
+        console.log(e, query, props);
         displayErrorMessage(e.message, props.label);
       }
     };

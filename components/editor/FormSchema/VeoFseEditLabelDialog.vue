@@ -121,8 +121,8 @@ import { defineComponent, PropType, Ref, ref, reactive } from '@nuxtjs/compositi
 import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 
-import { BaseObject } from '~/components/forms/utils';
 import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
+import { IBaseObject } from '~/lib/utils';
 
 interface IProps {
   value: boolean;
@@ -169,7 +169,7 @@ export default defineComponent<IProps>({
     const { t } = useI18n();
 
     // Default values which should not be shown in FormSchema
-    const defaults: BaseObject = {
+    const defaults: IBaseObject = {
       class: undefined,
       style: undefined
     };

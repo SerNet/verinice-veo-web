@@ -42,32 +42,28 @@
 import { computed, defineComponent } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
-import { IVeoFormsWidgetDefinition, VeoAlertType } from '~/types/VeoTypes';
+import { IVeoFormsElementDefinition } from '../types';
+import { VeoFormsWidgetProps } from '../util';
+import { VeoAlertType } from '~/types/VeoTypes';
 
-export const WidgetDefinition: IVeoFormsWidgetDefinition = {
-  name: 'PiaMandatoryWidget',
+export const WIDGET_DEFINITION: IVeoFormsElementDefinition = {
+  key: 'PiaMandatoryWidget',
+  name: {
+    en: 'PiaMandatoryWidget'
+  },
   description: {
-    de: 'Fügt einen Text im Formschema ein, der definiert ob eine Datenschutzfolgeabschätzung nötig ist.',
-    en: 'Adds a label to the form, specifing whether a privacy impact assesment is mandatory.'
+    en: 'Adds a label to the form, specifing whether a privacy impact assesment is mandatory.',
+    de: 'Fügt einen Text im Formschema ein, der definiert ob eine Datenschutzfolgeabschätzung nötig ist.'
   }
 };
 
 export default defineComponent({
-  name: WidgetDefinition.name,
-  props: {
-    objectData: {
-      type: Object,
-      required: true
-    },
-    objectMetaData: {
-      type: Object,
-      default: () => {}
-    }
-  },
+  name: WIDGET_DEFINITION.key,
+  props: VeoFormsWidgetProps,
   setup(props) {
     const { t } = useI18n();
 
-    const piaMandatory = computed(() => !!props.objectMetaData?.decisionResults?.piaMandatory?.value);
+    const piaMandatory = computed(() => !!props.metaData?.decisionResults?.piaMandatory?.value);
 
     return {
       piaMandatory,

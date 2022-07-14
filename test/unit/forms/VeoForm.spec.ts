@@ -22,8 +22,6 @@ import Vuetify from 'vuetify';
 import VeoForm from '~/components/forms/VeoForm.vue';
 import { Renderable } from '~/types/renderable';
 
-import { install as VeeValidate } from '~/plugins/vee-validate';
-Vue.use(VeeValidate);
 Vue.use(Vuetify);
 const vuetify = new Vuetify();
 

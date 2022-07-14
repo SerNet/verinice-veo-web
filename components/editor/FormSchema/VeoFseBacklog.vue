@@ -253,9 +253,11 @@ import { v4 as uuid } from 'uuid';
 import { pick, upperFirst } from 'lodash';
 
 import { INPUT_TYPES } from '~/types/VeoEditor';
-import { IVeoFormSchema, IVeoFormsWidgetDefinition, IVeoObjectSchema } from '~/types/VeoTypes';
-import { BaseObject, generateFormSchema, Mode } from '~/components/forms/utils';
-import { WidgetDefinition as PiaMandatoryWidgetDefinition } from '~/components/forms/Collection/Widgets/PiaMandatoryWidget.vue';
+import { IVeoFormSchema, IVeoObjectSchema } from '~/types/VeoTypes';
+import { generateFormSchema, Mode } from '~/components/forms/util';
+import { WIDGET_DEFINITION as PiaMandatoryWidgetDefinition } from '~/components/forms/widgets/VeoDPIAMandatoryWidget.vue';
+import { IVeoFormsElementDefinition } from '~/components/forms/types';
+import { IBaseObject } from '~/lib/utils';
 
 interface IProps {
   searchQuery: string;
@@ -278,7 +280,7 @@ export interface IUnused {
   basics: IControl[];
   aspects: IControl[];
   links: IControl[];
-  widgets: IVeoFormsWidgetDefinition[];
+  widgets: IVeoFormsElementDefinition[];
 }
 
 export interface IControlItemMap {
@@ -348,7 +350,7 @@ export default defineComponent<IProps>({
 
     // When ObjectSchema is loaded, controls and controlsItems should be initialized to use them in other functions
     function initializeControls() {
-      const createControl = (key: string, value: BaseObject, mode: Mode): IControl => {
+      const createControl = (key: string, value: IBaseObject, mode: Mode): IControl => {
         const propertyName = key.split('/').slice(-1)[0];
         const label = propertyName.split('_').pop() || '';
         let backlogTitle = propertyName;
@@ -359,7 +361,7 @@ export default defineComponent<IProps>({
           category = 'links';
           const attributes = value.items?.properties?.attributes?.properties || [];
 
-          for (const [attributeKey, attributeValue] of Object.entries<BaseObject>(attributes)) {
+          for (const [attributeKey, attributeValue] of Object.entries<IBaseObject>(attributes)) {
             if (!nestedControls.value[key]) {
               nestedControls.value[key] = [];
             }
@@ -439,7 +441,7 @@ export default defineComponent<IProps>({
         links: controls.value.filter(
           (obj) => obj.category === 'links' && !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Control' && element.scope === obj.scope)
         ),
-        widgets: WIDGETS.filter((widget) => !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Widget' && element.name === widget.name))
+        widgets: WIDGETS.filter((widget) => !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Widget' && element.name === widget.key))
       };
     });
 
@@ -459,7 +461,7 @@ export default defineComponent<IProps>({
       return formElements.filter((f: any) => !props.searchQuery || f.description.title?.toLowerCase().includes(props.searchQuery));
     });
 
-    const filteredWidgets = computed(() => unused.value.widgets.filter((widget) => !props.searchQuery || widget.name.toLowerCase().includes(props.searchQuery)));
+    const filteredWidgets = computed(() => unused.value.widgets.filter((widget) => !props.searchQuery || widget.key.toLowerCase().includes(props.searchQuery)));
 
     const controlElementsVisible: ComputedRef<Boolean> = computed(() => {
       return !!(filteredFormElements.value.length + filteredBasics.value.length + filteredAspects.value.length + filteredLinks.value.length);
@@ -491,7 +493,7 @@ export default defineComponent<IProps>({
       };
     }
 
-    const onCloneWidget = (widget: IVeoFormsWidgetDefinition) => ({
+    const onCloneWidget = (widget: IVeoFormsElementDefinition) => ({
       type: 'Widget',
       name: widget.name
     });
