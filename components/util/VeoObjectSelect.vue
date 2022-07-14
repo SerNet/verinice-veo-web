@@ -17,20 +17,18 @@
 -->
 <template>
   <v-autocomplete
-    :value="internalValue"
+    v-model="internalValue"
     :items="items"
     item-text="displayName"
     item-value="id"
     :no-data-text="t('noObjects')"
+    :loading="isLoading"
     no-filter
     :label="localLabel"
-    :search-input="searchQuery"
+    :search-input.sync="searchQuery"
     :clearable="!required"
     :return-object="valueAsEntity"
     v-bind="$attrs"
-    @change="onInput"
-    @input="onInput"
-    @update:search-input="onSearchInputUpdate"
   >
     <template #prepend-item>
       <slot name="prepend-item" />
@@ -114,61 +112,81 @@ export default defineComponent({
     const { $api, $config } = useContext();
     const { locale, t } = useI18n();
     const { displayErrorMessage } = useVeoAlerts();
+    const router = useRouter();
+    const route = useRoute();
 
     // Select options related stuff
-    const searchQuery = ref('');
+    const isLoading = ref(false);
     const items = ref<IVeoEntity[]>([]);
     const moreItemsAvailable = ref(false);
 
-    const loadObjects = async (displayName?: string, onlyAssignItemsIfItemsExist = false) => {
+    const loadObjects = async (displayName?: string) => {
+      // Exit to avoid endless loop (loadObjects gets called by the search query if the search value changes, such as when all objects have been loaded and the displayName gets displayed instead of undefined)
+      if (items.value.find((item) => item.displayName === displayName)) {
+        return;
+      }
+
+      isLoading.value = true;
       const data = await $api.entity.fetchAll(props.objectType, 1, {
         subType: props.subType,
         displayName: displayName ?? undefined
       });
       moreItemsAvailable.value = data.pageCount > 1;
 
-      if (data.items.length || !onlyAssignItemsIfItemsExist) {
-        items.value = data.items;
-        // Only throw a message if we searched for a query string
-      } else if (displayName) {
-        throw new Error(t('errorWhileFetching').toString());
-      }
+      items.value = data.items;
+      isLoading.value = false;
     };
 
-    const onSearchInputUpdate = async (query: string) => {
-      try {
-        await loadObjects(query, true);
-        searchQuery.value = query;
-      } catch (e: any) {
-        console.log(e, query, props);
-        displayErrorMessage(e.message, props.label);
-      }
-    };
-
-    // value stuff
     const loadObject = async (id: string) => {
-      items.value.push(await $api.entity.fetch(props.objectType, id));
+      isLoading.value = true;
+      try {
+        const entity = await $api.entity.fetch(props.objectType, id);
+        items.value = [entity];
+      } catch (e) {
+        // If the object couldn't be found, remove it from the select and print an error message
+        internalValue.value = undefined;
+        displayErrorMessage(upperFirst(t('objectNotFound').toString()), t('objectNotFoundExplanation', [props.label, id]).toString());
+      } finally {
+        isLoading.value = false;
+      }
     };
 
-    const internalValue = computed<string | undefined>(() => {
-      if (typeof props.value === 'object' && props.value !== null) {
-        if (props.valueAsEntity) {
-          return (props.value as IVeoEntity).id;
+    // Value related stuff
+    const schemas = ref();
+    useFetch(async () => {
+      schemas.value = await $api.schema.fetchAll();
+    });
+
+    const internalValue = computed<string | undefined>({
+      get: () => {
+        if (typeof props.value === 'object' && props.value !== null) {
+          if (props.valueAsEntity) {
+            return (props.value as IVeoEntity).id;
+          } else {
+            return getEntityDetailsFromLink(props.value as IVeoLink).id;
+          }
         } else {
-          return getEntityDetailsFromLink(props.value as IVeoLink).id;
+          return props.value;
         }
-      } else {
-        return props.value;
+      },
+      set: (newValue: string | undefined) => {
+        if (props.valueAsLink) {
+          emit('input', newValue ? { targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas.value, props.objectType)}/${newValue}` } : undefined);
+        } else {
+          emit('input', newValue);
+        }
       }
     });
 
     watch(
       () => internalValue.value,
-      (newValue) => {
-        if (!!newValue && !items.value.find((item) => item.id === newValue)) {
-          loadObject(newValue);
-        } else if (!newValue) {
-          loadObjects(searchQuery.value);
+      (newValue: string | undefined) => {
+        if (newValue) {
+          if (!items.value.find((item) => item.id === newValue)) {
+            loadObject(newValue);
+          }
+        } else {
+          loadObjects();
         }
       },
       {
@@ -176,18 +194,17 @@ export default defineComponent({
       }
     );
 
-    const schemas = ref();
-    useFetch(async () => {
-      schemas.value = await $api.schema.fetchAll();
-    });
-
-    const onInput = (newValue: string) => {
-      if (props.valueAsLink) {
-        emit('input', newValue ? { targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas.value, props.objectType)}/${newValue}` } : undefined);
-      } else {
-        emit('input', newValue);
+    // Search query related stuff
+    const searchQuery = ref();
+    watch(
+      () => searchQuery.value,
+      (newValue: string) => {
+        if (isLoading.value) {
+          return;
+        }
+        loadObjects(newValue || undefined);
       }
-    };
+    );
 
     // Label stuff
     const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
@@ -211,9 +228,7 @@ export default defineComponent({
       return mdiFileDocument;
     };
 
-    const router = useRouter();
-    const route = useRoute();
-
+    // Object select display
     const openItem = (item: IVeoEntity) => {
       const routeData = router.resolve({
         name: 'unit-domains-domain-objects-entity',
@@ -228,10 +243,9 @@ export default defineComponent({
     return {
       localLabel,
       internalValue,
+      isLoading,
       items,
       moreItemsAvailable,
-      onInput,
-      onSearchInputUpdate,
       searchQuery,
       getItemIcon,
       mdiOpenInNew,
@@ -248,12 +262,16 @@ export default defineComponent({
   "en": {
     "beMoreSpecific": "Please be more specific to show additional objects",
     "errorWhileFetching": "Error while fetching objects",
-    "noObjects": "No objects found"
+    "noObjects": "No objects found",
+    "objectNotFound": "object not found",
+    "objectNotFoundExplanation": "The object for the link \"{0}\" with the ID \"{1}\" couldn't be found."
   },
   "de": {
     "beMoreSpecific": "Bitte geben Sie weitere Zeichen ein, um die Auswahl einzuschränken",
     "errorWhileFetching": "Beim Laden der Objekte ist ein Fehler aufgetreten",
-    "noObjects": "Keine Objekte vorhanden"
+    "noObjects": "Keine Objekte vorhanden",
+    "objectNotFound": "Objekt nicht gefunden",
+    "objectNotFoundExplanation": "Das Objekt für die Verlinkung \"{0}\" mit der ID \"{1}\" konnte nicht gefunden werden."
   }
 }
 </i18n>

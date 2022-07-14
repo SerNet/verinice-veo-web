@@ -22,7 +22,12 @@
     class="vf-links-field vf-form-element veo-links-field-border mt-4 pa-2"
   >
     <v-list>
-      {{ internalValue }}
+      <div
+        v-for="(link, index) of internalValue"
+        :key="'a' + index"
+      >
+        {{ link }}
+      </div>
       <v-list-item
         v-for="(link, index) of internalValue"
         :key="index"
@@ -31,7 +36,7 @@
           <VeoLinksFieldRow
             v-bind="$props"
             :value="link.target"
-            @input="internalValue[index].target = $event"
+            @input="onLinksFieldRowInput(index, $event)"
           />
         </v-list-item-content>
         <v-list-item-action>
@@ -85,23 +90,35 @@ export default defineComponent({
   name: CONTROL_DEFINITION.key,
   props: VeoFormsControlProps,
   setup(props, { emit }) {
-    console.log(props);
     const { t } = useI18n();
 
+    const emptyLink = { target: undefined };
+
     const internalValue = computed<any[]>({
-      get: () => (props.value && props.value.length ? props.value : []),
+      get: () => (props.value && props.value.length ? props.value : [emptyLink]),
       set: (newValue: undefined | any[]) => {
-        emit('input', newValue);
+        emit('input', !newValue || (newValue.length === 1 && JSON.stringify(emptyLink) === JSON.stringify(newValue[0])) ? undefined : newValue);
       }
     });
 
-    const addLink = () => {};
+    const addLink = () => {
+      internalValue.value = [...internalValue.value, emptyLink];
+    };
 
-    const removeLink = (index: number) => {};
+    const removeLink = (index: number) => {
+      internalValue.value.splice(index, 1);
+    };
+
+    const onLinksFieldRowInput = (index: number, newValue: any) => {
+      const newInternalValue = internalValue.value;
+      newInternalValue[index] = { target: newValue };
+      internalValue.value = newInternalValue;
+    };
 
     return {
       addLink,
       internalValue,
+      onLinksFieldRowInput,
       removeLink,
 
       mdiPlus,
