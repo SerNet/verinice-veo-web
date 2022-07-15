@@ -18,7 +18,7 @@
 <script lang="ts">
 import { computed, defineComponent, h, PropType, ref } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { cloneDeep, merge } from 'lodash';
+import { cloneDeep, merge, take, takeRight } from 'lodash';
 import { JsonPointer } from 'json-ptr';
 import { JSONSchema7 } from 'json-schema';
 import { ErrorObject } from 'ajv';
@@ -268,6 +268,22 @@ export default defineComponent({
         return;
       }
 
+      // Special handling for link attributes, as they don't have a complete pointer in the form schema as they can only exist inside of their link
+      if (element.scope.startsWith('#/properties/attributes')) {
+        if (props.debug) {
+          // eslint-disable-next-line no-console
+          console.warn(`VeoForm::createControl: Custom Link attribute detected: ${element.scope}. Searching for custom link...`);
+        }
+        // Get object schema pointer of link based on the assumption that link attributes can't get displayed separately from the link
+        const formSchemaPointerFragments = formSchemaPointer.split('/');
+        const parentFormSchemaPointer = take(formSchemaPointerFragments, formSchemaPointerFragments.length - 2).join('/'); // Links can't be deconstructed, so the attributes are always direct children of the link
+        const parentObjectSchemaPointer = (JsonPointer.get(localFormSchema.value, parentFormSchemaPointer) as IVeoFormControlFormSchema).scope;
+
+        // Glue the object schema pointer of the link attribute to the one of the link to create a valid one for the whole object
+        const objectSchemaPointerFragments = element.scope.split('/');
+        element.scope = parentObjectSchemaPointer + '/items/' + takeRight(objectSchemaPointerFragments, objectSchemaPointerFragments.length - 1).join('/');
+      }
+
       const controlObjectSchema = { ...(JsonPointer.get(props.objectSchema, element.scope) as JSONSchema7), ...(localAdditionalContext.value[element.scope]?.objectSchema || {}) };
       return h(Control, {
         props: {
@@ -282,12 +298,22 @@ export default defineComponent({
         },
         on: {
           input: onControlInput
+        },
+        scopedSlots: {
+          default: () => createChildren(element, formSchemaPointer)
         }
       });
     };
 
     // Input handling
-    const onControlInput = (objectSchemaPointer: string, newValue: any, oldValue: string) => {
+    const onControlInput = (objectSchemaPointer: string, newValue: any, oldValue: string, index?: number) => {
+      let valuePointer = removePropertiesKeywordFromPath(objectSchemaPointer);
+
+      // If this condition is truthy, we have a link attribute and have to replace /items/ with the index.
+      if (index !== undefined && valuePointer.includes('/items/')) {
+        valuePointer = valuePointer.replace('/items/', `/${index}/`);
+      }
+
       // Clone object to avoid mutating the original data
       let updatedForm = cloneDeep(props.value);
 
@@ -298,9 +324,9 @@ export default defineComponent({
 
       // Set new value
       if (newValue === undefined) {
-        JsonPointer.unset(updatedForm, removePropertiesKeywordFromPath(objectSchemaPointer));
+        JsonPointer.unset(updatedForm, valuePointer);
       } else {
-        JsonPointer.set(updatedForm, removePropertiesKeywordFromPath(objectSchemaPointer), newValue, true);
+        JsonPointer.set(updatedForm, valuePointer, newValue, true);
       }
 
       // Apply reactive form actions

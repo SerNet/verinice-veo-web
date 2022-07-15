@@ -33,7 +33,7 @@
           :id="objectSchemaPointer"
           :value="formattedDate"
           :disabled="disabled || options.disabled"
-          :error-messages="errors.get(objectSchemaPointer)"
+          :error-messages="getControlErrorMessages($props)"
           :label="options && options.label"
           :class="options && options.class"
           :clearable="!options.required"
@@ -67,7 +67,7 @@ import { mdiCalendar } from '@mdi/js';
 import { formatISO } from 'date-fns';
 
 import { IVeoFormsElementDefinition } from '../types';
-import { VeoFormsControlProps } from '../util';
+import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   key: 'veo-date-input',
@@ -107,6 +107,7 @@ export default defineComponent({
       menu,
       onDateInput,
 
+      getControlErrorMessages,
       mdiCalendar
     };
   }

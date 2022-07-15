@@ -53,7 +53,7 @@ const AVAILABLE_CONTROLS = [
 export default defineComponent({
   props: VeoFormsControlProps,
   emits: ['input'],
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     const { locale } = useI18n();
 
     const controls: { control: any; truthyConditions: number }[] = [];
@@ -102,8 +102,11 @@ export default defineComponent({
     return () =>
       h(maxBy(controls, 'truthyConditions')?.control.default, {
         props,
+        scopedSlots: {
+          default: () => (slots.default ? slots.default() : undefined)
+        },
         on: {
-          input: (newValue: any) => emit('input', props.objectSchemaPointer, newValue, props.value)
+          input: (newValue: any) => emit('input', props.objectSchemaPointer, newValue, props.value, props.index)
         }
       });
   }

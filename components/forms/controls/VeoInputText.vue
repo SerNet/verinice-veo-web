@@ -21,7 +21,7 @@
     :id="objectSchemaPointer"
     :value="value"
     :disabled="disabled || options.disabled"
-    :error-messages="errors.get(objectSchemaPointer)"
+    :error-messages="getControlErrorMessages($props)"
     :label="options && options.label"
     :class="options && options.class"
     class="vf-form-element vf-input-text"
@@ -36,7 +36,7 @@
 import { defineComponent } from '@nuxtjs/composition-api';
 
 import { IVeoFormsElementDefinition } from '../types';
-import { VeoFormsControlProps } from '../util';
+import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   key: 'veo-text-input',
@@ -56,7 +56,9 @@ export default defineComponent({
   name: CONTROL_DEFINITION.key,
   props: VeoFormsControlProps,
   setup() {
-    return {};
+    return {
+      getControlErrorMessages
+    };
   }
 });
 </script>

@@ -21,7 +21,7 @@
     :id="objectSchemaPointer"
     :value="value"
     :disabled="disabled || options.disabled"
-    :error-messages="errors.get(objectSchemaPointer)"
+    :error-messages="getControlErrorMessages($props)"
     :label="options && options.label"
     :class="options && options.class"
     class="vf-form-element vf-input-uri"
@@ -52,7 +52,7 @@ import { defineComponent } from '@nuxtjs/composition-api';
 import { mdiOpenInNew } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
-import { VeoFormsControlProps } from '../util';
+import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   key: 'veo-uri-input',
@@ -72,6 +72,7 @@ export default defineComponent({
   props: VeoFormsControlProps,
   setup() {
     return {
+      getControlErrorMessages,
       mdiOpenInNew
     };
   }

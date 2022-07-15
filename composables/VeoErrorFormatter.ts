@@ -43,21 +43,22 @@ export const useVeoErrorFormatter = () => {
       throw new Error('Key does not match in Errors array');
     }
 
-    const indexMatch = error.instancePath.match(/\/\d+$/);
-    const missingProperty = (error.params as any).missingProperty;
-    const requiredKey = `${keyMatch[0]}${indexMatch ? indexMatch[0] : ''}/properties/${missingProperty}`;
+    const indexMatch = error.instancePath.match(/(\/\d+$)|(\/\d+\/)/);
+    let objectSchemaPointer = indexMatch ? keyMatch[0].replace('/items/', indexMatch[0]) : keyMatch[0];
 
-    const key = error.keyword !== 'required' ? keyMatch[0] : requiredKey;
     let translatedErrorString = '';
 
     switch (error.keyword) {
       case 'required':
+        // eslint-disable-next-line no-case-declarations
+        const affectedProperty = (error.params as IBaseObject).missingProperty;
+        objectSchemaPointer = `${keyMatch[0]}${indexMatch ? indexMatch[0] : ''}/properties/${affectedProperty}`;
         // Special handling of links, as their last data path entry isn't the string we search for
-        if (['targetUri', 'target'].includes(missingProperty)) {
+        if (['targetUri', 'target'].includes(affectedProperty)) {
           translatedErrorString = handleRequiredLink(error, translations);
           break;
         }
-        translatedErrorString = t(`error.${error.keyword}`, { field: getInvalidFieldLabel(missingProperty, translations) }).toString();
+        translatedErrorString = t(`error.${error.keyword}`, { field: getInvalidFieldLabel(affectedProperty, translations) }).toString();
         break;
       // While pattern and format are separate errors, we want to display the same error message for both, as both have to be fixed the same way by the user
       case 'format':
@@ -71,7 +72,7 @@ export const useVeoErrorFormatter = () => {
         translatedErrorString = error.message || '';
     }
 
-    return [key, translatedErrorString];
+    return [objectSchemaPointer, translatedErrorString];
   };
 
   const handleRequiredLink = (error: ErrorObject, translations: IBaseObject): string => {

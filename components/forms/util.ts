@@ -91,6 +91,11 @@ export const VeoFormsControlProps = {
   errors: {
     type: Map as PropType<Map<String, String[]>>,
     default: () => {}
+  },
+  // Marks this control as being part of a link (and gets passed in the onInput call. Usually gets set in the background by the VeoLinksFieldRowAttribute component)
+  index: {
+    type: Number,
+    default: undefined
   }
 };
 
@@ -286,3 +291,8 @@ export function generateFormSchema(objectSchema: JSONSchema7, generatorOptions: 
 
   return formSchema;
 }
+
+export const getControlErrorMessages = (props: any, modifier: string = '') =>
+  props.index !== undefined
+    ? props.errors.get(props.objectSchemaPointer.replace('/items/', `/${props.index}/`) + modifier)
+    : props.errors.get(props.objectSchemaPointer + modifier);

@@ -31,8 +31,9 @@
           <VeoLinksFieldRow
             v-bind="$props"
             :value="link.target"
-            :other-selected-links="(value || []).filter((item, _index) => _index !== index)"
+            :other-selected-links="getOtherSelectedLinks(index)"
             :object-schema-pointer="objectSchemaPointer + '/' + index"
+            :index="index"
             @input="onLinksFieldRowInput(index, $event)"
           >
             <slot />
@@ -95,14 +96,14 @@ export default defineComponent({
     const emptyLink = { target: undefined };
 
     const internalValue = computed<any[]>({
-      get: () => (props.value && props.value.length ? props.value : [emptyLink]),
+      get: () => (props.value && props.value.length ? props.value : [cloneDeep(emptyLink)]),
       set: (newValue: undefined | any[]) => {
         emit('input', !newValue || (newValue.length === 1 && JSON.stringify(emptyLink) === JSON.stringify(newValue[0])) ? undefined : newValue);
       }
     });
 
     const addLink = () => {
-      internalValue.value = [...internalValue.value, emptyLink];
+      internalValue.value = [...internalValue.value, cloneDeep(emptyLink)];
     };
 
     const removeLink = (index: number) => {
@@ -111,7 +112,7 @@ export default defineComponent({
       newInternalValue.splice(index, 1);
 
       if (!newInternalValue.length) {
-        internalValue.value = [emptyLink];
+        internalValue.value = [cloneDeep(emptyLink)];
       } else {
         internalValue.value = newInternalValue;
       }
@@ -123,8 +124,13 @@ export default defineComponent({
       internalValue.value = newInternalValue;
     };
 
+    const getOtherSelectedLinks = (index: number) => {
+      return ((props.value || []) as any[]).filter((_item, _index) => _index !== index);
+    };
+
     return {
       addLink,
+      getOtherSelectedLinks,
       internalValue,
       onLinksFieldRowInput,
       removeLink,

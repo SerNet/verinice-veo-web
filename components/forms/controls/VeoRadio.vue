@@ -30,7 +30,7 @@
       :id="objectSchemaPointer"
       :value="value"
       :disabled="disabled || options.disabled"
-      :error-messages="errors.get(objectSchemaPointer)"
+      :error-messages="getControlErrorMessages($props)"
       :label="options && options.label"
       :class="options && options.class"
       :clearable="!options.required"
@@ -62,7 +62,7 @@ import { computed, defineComponent } from '@nuxtjs/composition-api';
 import { mdiClose } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
-import { VeoFormsControlProps } from '../util';
+import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   key: 'veo-radio-button',
@@ -105,6 +105,7 @@ export default defineComponent({
       isDirectionVertical,
       items,
 
+      getControlErrorMessages,
       mdiClose
     };
   }

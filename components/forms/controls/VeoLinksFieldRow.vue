@@ -27,7 +27,7 @@
         :domain-id="domainId"
         :hidden-values="hiddenValues"
         required
-        :error-messages="errors.get(objectSchemaPointer + '/properties/target')"
+        :error-messages="getControlErrorMessages($props, '/properties/target')"
         value-as-link
         v-on="$listeners"
       >
@@ -58,7 +58,9 @@
       />
     </div>
     <div>
-      <slot />
+      <VeoLinksFieldRowAttribute v-bind="$props">
+        <slot />
+      </VeoLinksFieldRowAttribute>
     </div>
   </div>
 </template>
@@ -69,7 +71,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { mdiPlus } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
-import { VeoFormsControlProps } from '../util';
+import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
@@ -92,6 +94,10 @@ export default defineComponent({
     otherSelectedLinks: {
       type: Array,
       default: () => []
+    },
+    index: {
+      type: Number,
+      required: true
     }
   },
   setup(props) {
@@ -135,6 +141,7 @@ export default defineComponent({
       onTargetCreated,
       subType,
 
+      getControlErrorMessages,
       mdiPlus,
       t
     };

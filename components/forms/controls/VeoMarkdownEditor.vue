@@ -31,7 +31,7 @@
       :id="objectSchemaPointer"
       ref="editor"
       :initial-value="value"
-      :error-messages="errors.get(objectSchemaPointer)"
+      :error-messages="getControlErrorMessages($props)"
       :class="options && options.class"
       class="vf-form-element vf-input-text"
       :options="editorOptions"
@@ -48,7 +48,7 @@ import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highl
 import { Editor } from '@toast-ui/vue-editor';
 
 import { IVeoFormsElementDefinition } from '../types';
-import { VeoFormsControlProps } from '../util';
+import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   key: 'veo-markdown-editor',
@@ -130,7 +130,9 @@ export default defineComponent({
     return {
       editor,
       editorOptions,
-      onChange
+      onChange,
+
+      getControlErrorMessages
     };
   }
 });
