@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { computed, defineComponent, h, PropType, ref } from '@nuxtjs/composition-api';
+import { computed, defineComponent, h, PropType, ref, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { cloneDeep, merge, take, takeRight } from 'lodash';
 import { JsonPointer } from 'json-ptr';
@@ -157,14 +157,24 @@ export default defineComponent({
   },
   emits: ['input', 'update:messages', 'update:valid'],
   setup(props, { emit }) {
+    watch(
+      () => props.formSchema,
+      () => {
+        // Needed to rerender the complete form if the formSchema gets changed to avoid inputs getting stuck with their old ui
+        keyModifier.value++;
+      },
+      { deep: true }
+    );
+
     const { locale } = useI18n();
 
     const { defaultReactiveFormActions } = useVeoReactiveFormActions();
     const { formatErrors } = useVeoErrorFormatter();
 
+    const keyModifier = ref(0);
     const localTranslations = computed(() => props.translations?.[locale.value] || {});
     const localAdditionalContext = computed(() => props.additionalContext || {});
-    const localFormSchema = computed(() => props.formSchema || generateFormSchema(props.objectSchema, GENERATOR_OPTIONS(props), Mode.VEO));
+    const localFormSchema = computed(() => cloneDeep(props.formSchema) || generateFormSchema(props.objectSchema, GENERATOR_OPTIONS(props), Mode.VEO));
     const localReactiveFormActions = computed(() => {
       const toReturn = defaultReactiveFormActions();
 
@@ -239,6 +249,7 @@ export default defineComponent({
     const createLabel = (element: IVeoFormLabelFormSchema, formSchemaPointer: string) => {
       return h(VeoLabel, {
         props: {
+          key: `${formSchemaPointer}_${keyModifier}`,
           ...defaultProps,
           options: element.options,
           formSchemaPointer,
@@ -287,7 +298,7 @@ export default defineComponent({
       const controlObjectSchema = { ...(JsonPointer.get(props.objectSchema, element.scope) as JSONSchema7), ...(localAdditionalContext.value[element.scope]?.objectSchema || {}) };
       return h(Control, {
         props: {
-          key: element.scope,
+          key: `${element.scope}_${keyModifier}`,
           ...defaultProps,
           options: { ...element.options, ...localAdditionalContext.value[element.scope]?.formSchema },
           formSchemaPointer,
@@ -351,7 +362,7 @@ export default defineComponent({
     return () =>
       !formSchemaFitsObjectSchema.value
         ? h(VeoValidationResultList, { props: { items: (formSchemaFitsObjectSchema.value as VeoSchemaValidatorValidationResult).errors } })
-        : h('div', { class: 'vf-wrapper' }, [createComponent(localFormSchema.value, '#')]);
+        : h('div', { class: 'vf-wrapper', key: keyModifier.value }, [createComponent(localFormSchema.value, '#')]);
   }
 });
 </script>

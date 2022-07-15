@@ -47,7 +47,6 @@
             :dense="!!pageWidths[1]"
             @reload="loadObject"
           />
-          {{ modifiedObject }}
         </template>
         <template #footer>
           <div style="height: 36px" />
