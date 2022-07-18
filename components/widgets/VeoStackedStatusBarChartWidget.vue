@@ -36,8 +36,15 @@
           v-text="chart.labels[0]"
         />
         <v-col>
+          <v-skeleton-loader
+            v-if="$fetchState.pending"
+            width="100%"
+            type="image"
+            height="25px"
+            class="my-1"
+          />
           <BarChart
-            v-if="chart.totalEntries > 0"
+            v-else-if="chart.totalEntries > 0"
             ref="barChartRef"
             :chart-data="chart"
             :options="options[index]"
