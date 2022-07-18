@@ -88,7 +88,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const formattedDate = computed({
       get() {
-        return props.value ? new Date(props.value).toLocaleDateString() : undefined;
+        return props.value ? new Date(props.value).toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: 'numeric' }) : undefined;
       },
       set(newValue: string | undefined) {
         emit('input', newValue ? formatISO(new Date(newValue), { representation: 'date' }) : undefined);

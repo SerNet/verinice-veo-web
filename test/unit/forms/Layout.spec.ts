@@ -19,14 +19,13 @@ import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
-import { Renderable } from '~/types/renderable';
 
 const vuetify = new Vuetify();
 
 describe('Layout.vue', () => {
   it('should render certain layout', async () => {
-    const form: Renderable = {
-      schema: {
+    const form = {
+      objectSchema: {
         type: 'object',
         properties: {
           name: {
@@ -37,7 +36,7 @@ describe('Layout.vue', () => {
           }
         }
       },
-      ui: {
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -112,14 +111,11 @@ describe('Layout.vue', () => {
     const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout');
     expect(layoutWrapper.exists()).toBe(true);
     expect(layoutWrapper.classes()).toContain('vf-group');
-    expect(layoutWrapper.classes()).toContain('col-md-auto');
-    expect(layoutWrapper.classes()).toContain('col-12');
 
     expect(layoutWrapper.exists()).toBe(true);
 
-    const horitontalLayoutSelector = wrapper.find('#elements-0-elements-1.vf-group .row.direction-horizontal');
+    const horitontalLayoutSelector = wrapper.find('[id="#/elements/0/elements/1"].vf-group > .flex-row');
     expect(horitontalLayoutSelector.exists()).toBe(true);
     expect(horitontalLayoutSelector.classes()).toContain('flex-row');
-    expect(horitontalLayoutSelector.classes()).toContain('direction-horizontal');
   });
 });

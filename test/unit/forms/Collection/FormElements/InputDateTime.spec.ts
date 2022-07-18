@@ -20,14 +20,13 @@ import Vuetify from 'vuetify';
 import flushPromises from 'flush-promises';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
-import { Renderable } from '~/types/renderable';
 
 const vuetify = new Vuetify();
 
 describe('InputDateTime.vue', () => {
   it('should render input-date-time element for date-times', async () => {
-    const form: Renderable = {
-      schema: {
+    const form = {
+      objectSchema: {
         type: 'object',
         properties: {
           dueDateTime: {
@@ -36,7 +35,7 @@ describe('InputDateTime.vue', () => {
           }
         }
       },
-      ui: {
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -70,15 +69,15 @@ describe('InputDateTime.vue', () => {
     wrapper.vm.$parent.$forceUpdate();
     await wrapper.vm.$nextTick();
 
-    const el = wrapper.find('.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control .v-input.v-text-field input');
+    const el = wrapper.find('.vf-wrapper > .vf-layout > .flex-column > .vf-form-element .v-input.v-text-field input');
 
     expect(el.exists()).toBe(true);
 
-    const inputElement = wrapper.find('.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control .v-input.v-text-field input').element as HTMLInputElement;
+    const inputElement = el.element as HTMLInputElement;
 
     expect(wrapper.element).toMatchSnapshot('Initial render');
 
-    expect(inputElement.value).toBe('2020-08-05T12:05:00+02:00');
+    expect(inputElement.value).toBe('05.08.2020');
 
     wrapper.setProps({
       value: { dueDateTime: '1999-08-05T12:05:00+02:00' }
@@ -87,6 +86,6 @@ describe('InputDateTime.vue', () => {
 
     expect(wrapper.element).toMatchSnapshot('Updated DateTime');
 
-    expect(inputElement.value).toBe('1999-08-05T12:05:00+02:00');
+    expect(inputElement.value).toBe('05.08.1999');
   });
 });

@@ -20,14 +20,12 @@ import Vuetify from 'vuetify';
 import flushPromises from 'flush-promises';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
-import { Renderable } from '~/types/renderable';
-
 const vuetify = new Vuetify();
 
 describe('Select.vue', () => {
   it('should render select component to choose some list element', async () => {
-    const form: Renderable = {
-      schema: {
+    const form = {
+      objectSchema: {
         type: 'object',
         properties: {
           list: {
@@ -36,7 +34,7 @@ describe('Select.vue', () => {
           }
         }
       },
-      ui: {
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -67,7 +65,7 @@ describe('Select.vue', () => {
     wrapper.vm.$parent.$forceUpdate();
     await wrapper.vm.$nextTick();
 
-    const controlElement = wrapper.find('.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control');
+    const controlElement = wrapper.find('.vf-wrapper > .vf-layout > .flex-column > .vf-form-element');
 
     expect(controlElement.findAll('.v-input.v-select')).toHaveLength(1);
     expect(controlElement.findAll('.v-select__selection')).toHaveLength(1);
@@ -85,8 +83,8 @@ describe('Select.vue', () => {
   });
 
   it('should render select component to choose multiple list elements', async () => {
-    const form: Renderable = {
-      schema: {
+    const form = {
+      objectSchema: {
         type: 'object',
         properties: {
           list: {
@@ -98,7 +96,7 @@ describe('Select.vue', () => {
           }
         }
       },
-      ui: {
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -129,7 +127,7 @@ describe('Select.vue', () => {
     wrapper.vm.$parent.$forceUpdate();
     await wrapper.vm.$nextTick();
 
-    const controlElement = wrapper.find('.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control');
+    const controlElement = wrapper.find('.vf-wrapper > .vf-layout > .flex-column > .vf-form-element');
 
     expect(controlElement.findAll('.v-input.v-select')).toHaveLength(1);
     expect(controlElement.findAll('.v-select__selection')).toHaveLength(2);

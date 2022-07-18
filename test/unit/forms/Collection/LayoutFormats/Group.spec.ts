@@ -19,14 +19,13 @@ import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
-import { Renderable } from '~/types/renderable';
 
 const vuetify = new Vuetify();
 
 describe('Group.vue', () => {
   it('should render vertical layout', async () => {
-    const form: Renderable = {
-      schema: {
+    const form = {
+      objectSchema: {
         type: 'object',
         properties: {
           name: {
@@ -37,7 +36,7 @@ describe('Group.vue', () => {
           }
         }
       },
-      ui: {
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -75,16 +74,14 @@ describe('Group.vue', () => {
     const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout');
     expect(layoutWrapper.exists()).toBe(true);
     expect(layoutWrapper.classes()).toContain('vf-group');
-    expect(layoutWrapper.classes()).toContain('col-md-auto');
-    expect(layoutWrapper.classes()).toContain('col-12');
 
     // TODO: get width of input elements and compare with wrapper width.
     // e.g. expect( width of each element ).toBe(width of wrapper)
   });
 
   it('should render horizontal layout', async () => {
-    const form: Renderable = {
-      schema: {
+    const form = {
+      objectSchema: {
         type: 'object',
         properties: {
           name: {
@@ -95,7 +92,7 @@ describe('Group.vue', () => {
           }
         }
       },
-      ui: {
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'horizontal',
@@ -133,8 +130,6 @@ describe('Group.vue', () => {
     // TODO: Better solution to find child layout element
     const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout');
     expect(layoutWrapper.exists()).toBe(true);
-    expect(layoutWrapper.classes()).toContain('col-md-auto');
-    expect(layoutWrapper.classes()).toContain('col-12');
 
     // TODO: get width of input elements and compare with wrapper width.
     // e.g. expect( sum(width of each element) ).toBeLessThanOrEqual(width of wrapper)

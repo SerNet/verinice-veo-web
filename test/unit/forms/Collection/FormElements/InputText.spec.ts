@@ -19,14 +19,13 @@ import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
-import { Renderable } from '~/types/renderable';
 
 const vuetify = new Vuetify();
 
 describe('InputText.vue', () => {
   it('should render input-text-field element for texts', async () => {
-    const form: Renderable = {
-      schema: {
+    const form = {
+      objectSchema: {
         type: 'object',
         properties: {
           name: {
@@ -34,7 +33,7 @@ describe('InputText.vue', () => {
           }
         }
       },
-      ui: {
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -66,7 +65,7 @@ describe('InputText.vue', () => {
     wrapper.vm.$parent.$forceUpdate();
     await wrapper.vm.$nextTick();
 
-    const controlElement = wrapper.find('.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control');
+    const controlElement = wrapper.find('.vf-wrapper > .vf-layout > .flex-column > .vf-form-element');
 
     expect(controlElement.findAll('.v-input.v-text-field')).toHaveLength(1);
     expect(controlElement.findAll('input')).toHaveLength(1);

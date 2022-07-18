@@ -20,14 +20,13 @@ import Vuetify from 'vuetify';
 import flushPromises from 'flush-promises';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
-import { Renderable } from '~/types/renderable';
 
 const vuetify = new Vuetify();
 
 describe('InputDate.vue', () => {
   it('should render input-date element for dates', async () => {
-    const form: Renderable = {
-      schema: {
+    const form = {
+      objectSchema: {
         type: 'object',
         properties: {
           dueDate: {
@@ -36,7 +35,7 @@ describe('InputDate.vue', () => {
           }
         }
       },
-      ui: {
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -53,7 +52,7 @@ describe('InputDate.vue', () => {
         ]
       },
       value: {
-        dueDate: '13.08.2019'
+        dueDate: '2019-08-13'
       }
     };
 
@@ -70,7 +69,7 @@ describe('InputDate.vue', () => {
     wrapper.vm.$parent.$forceUpdate();
     await wrapper.vm.$nextTick();
 
-    const controlElement = wrapper.find('.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control');
+    const controlElement = wrapper.find('.vf-wrapper > .vf-layout > .flex-column > .vf-form-element');
 
     expect(controlElement.findAll('.v-input.v-text-field')).toHaveLength(1);
     expect(controlElement.findAll('input')).toHaveLength(1);
@@ -81,7 +80,7 @@ describe('InputDate.vue', () => {
     expect(controlElement.find('.v-input.v-text-field input').element.hasAttribute('type')).toBe(true);
     expect(controlElement.find('.v-input.v-text-field input').element.getAttribute('type')).toBe('text');
 
-    wrapper.setProps({ value: { dueDate: '20.09.2019' } });
+    wrapper.setProps({ value: { dueDate: '2019-09-20' } });
     await flushPromises();
     expect((controlElement.find('.v-input.v-text-field input').element as HTMLInputElement).value).toBe('20.09.2019');
 

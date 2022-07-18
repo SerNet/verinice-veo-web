@@ -19,14 +19,13 @@ import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
-import { Renderable } from '~/types/renderable';
 
 const vuetify = new Vuetify();
 
 describe('InputUri.vue', () => {
   it('should be rendered InputUri field', () => {
-    const form: Renderable = {
-      schema: {
+    const form = {
+      objectSchema: {
         type: 'object',
         properties: {
           inputUri: {
@@ -36,7 +35,7 @@ describe('InputUri.vue', () => {
           }
         }
       },
-      ui: {
+      formSchema: {
         type: 'Control',
         scope: '#/properties/inputUri',
         options: {

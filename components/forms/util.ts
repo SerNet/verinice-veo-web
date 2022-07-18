@@ -85,7 +85,7 @@ export const VeoFormsControlProps = {
     required: true
   },
   value: {
-    type: [Number, String, Object, Array],
+    type: [Number, String, Object, Array, Boolean],
     default: undefined
   },
   errors: {

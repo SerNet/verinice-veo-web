@@ -59,7 +59,7 @@ const mockDefaults = {
       }))()
   },
   stubs: {
-    LinksFieldRow: true
+    VeoLinksFieldRow: true
   },
   mocks: {
     $nuxt: {
@@ -120,7 +120,7 @@ describe('CreateObjectDialog.vue', () => {
     });
 
     await new Promise((resolve) => setTimeout(resolve, 200));
-    const input = getFormInput('name*');
+    const input = getFormInput('name');
     input.$emit('input', 'My new object name');
 
     expect((wrapper.vm as any).objectData).toEqual({
@@ -166,7 +166,7 @@ describe('CreateObjectDialog.vue', () => {
       domainId: 'my-completely-invalid-domain-uuid-that-doesnt-matter'
     });
 
-    const input = getFormInput('name*');
+    const input = getFormInput('name');
     input.$emit('input', 'My new object name');
 
     (overlay as any).click();
