@@ -196,7 +196,7 @@ describe('CreateObjectDialog.vue', () => {
     (form.find('[data-cy=veo-object-form-display-tab]') as any).element.click();
     await new Promise((resolve) => setTimeout(resolve, 500));
     const selectWrapper: ChildNode = form.find('[data-cy=veo-object-form-display-select]').element.parentElement as any;
-    expect(selectWrapper.firstChild?.textContent).toBe('PRO_DataProcessing');
+    expect(selectWrapper.firstChild?.textContent).toBe('Verarbeitungstätigkeit');
   });
 
   it('should check whether the form gets switched if the user uses the display switcher', async () => {

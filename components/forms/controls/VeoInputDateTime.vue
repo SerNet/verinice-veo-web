@@ -126,7 +126,6 @@ export default defineComponent({
           : undefined;
       },
       set(newValue: string | undefined) {
-        console.log(newValue);
         emit('input', newValue ? formatISO(new Date(newValue)) : undefined);
       }
     });
