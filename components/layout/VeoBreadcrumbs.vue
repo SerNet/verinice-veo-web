@@ -125,24 +125,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, del, useRoute, useContext, PropType, computed, ComputedRef, watch, set, reactive, useMeta } from '@nuxtjs/composition-api';
+import { defineComponent, del, useRoute, useContext, computed, ComputedRef, watch, set, reactive, useMeta } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { last } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal, mdiHomeOutline } from '@mdi/js';
-import { separateUUIDParam } from '~/lib/utils';
 
-export interface IVeoBreadcrumb {
-  disabled?: boolean;
-  exact?: boolean;
-  key: string;
-  to: string;
-  text?: string;
-  asyncText?: (param: string, value?: string) => Promise<string>;
-  icon?: any;
-  position: number;
-  index: number;
-  param: string;
-}
+import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
+import { separateUUIDParam } from '~/lib/utils';
 
 interface IVeoBreadcrumbReplacementMapBreadcrumb {
   disabled?: boolean;
@@ -157,10 +146,6 @@ interface IVeoBreadcrumbReplacementMapBreadcrumb {
 
 export default defineComponent({
   props: {
-    customBreadcrumbs: {
-      type: Array as PropType<IVeoBreadcrumb[]>,
-      default: () => []
-    },
     overrideBreadcrumbs: {
       type: Boolean,
       default: false
@@ -175,6 +160,7 @@ export default defineComponent({
     const route = useRoute();
     const { $api } = useContext();
     const { title } = useMeta();
+    const { breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
 
     // After this position, all breadcrumbs will be moved to a menu to avoid scrolling
     const BREADCRUMB_BREAKOFF = 4;
@@ -288,11 +274,18 @@ export default defineComponent({
         })
     );
 
-    const breadcrumbs = computed(() =>
-      props.overrideBreadcrumbs
-        ? props.customBreadcrumbs
-        : [...generatedBreadcrumbs.value, ...props.customBreadcrumbs].sort((breadcrumbA, breadcrumbB) => breadcrumbA.position - breadcrumbB.position)
-    );
+    const breadcrumbs = computed(() => {
+      let _breadcrumbs: (IVeoBreadcrumb & { loading?: boolean })[] = [];
+      if (!props.overrideBreadcrumbs) {
+        _breadcrumbs = [...generatedBreadcrumbs.value];
+      }
+
+      for (const customBreadcrumb of customBreadcrumbs.value) {
+        _breadcrumbs.push({ ...customBreadcrumb, index: _breadcrumbs.length });
+      }
+
+      return _breadcrumbs.sort((breadcrumbA, breadcrumbB) => breadcrumbA.position - breadcrumbB.position);
+    });
 
     const displayedBreadcrumbs = computed(() => breadcrumbs.value.slice(0, BREADCRUMB_BREAKOFF + 1)); // Use one breadcrumb more than would be displayed to display the "more"-button
     const slicedBreadcrumbs = computed(() => breadcrumbs.value.slice(BREADCRUMB_BREAKOFF + 1)); // Start with the breadcrumb that wouldn't be displayed

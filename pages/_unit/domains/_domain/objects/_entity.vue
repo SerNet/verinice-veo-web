@@ -165,15 +165,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref, useAsync, WritableComputedRef, useRouter } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref, useAsync, WritableComputedRef, useRouter, watch, onUnmounted } from '@nuxtjs/composition-api';
 import { cloneDeep, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
 import { separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
+import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -192,12 +194,15 @@ export default defineComponent({
     }
   },
   setup() {
-    const { t } = useI18n();
+    const { locale, t } = useI18n();
     const { $api, $config } = useContext();
     const route = useRoute();
     const router = useRouter();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { linkObject } = useVeoObjectUtilities();
+    const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
+
+    const preselectedSubType = computed<string | undefined>(() => route.value.query.subType as any);
 
     const objectParameter = computed(() => separateUUIDParam(route.value.params.entity));
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
@@ -216,6 +221,65 @@ export default defineComponent({
       modifiedObject.value = cloneDeep(object.value);
       metaData.value = cloneDeep(object.value.domains[domainId.value]);
       inspectionResults.value = await $api.entity.fetchInspections(object.value.type, object.value.id, domainId.value);
+    });
+
+    // Breadcrumb extensions
+    const objectTypeKey = 'object-detail-view-object-type';
+    const endpoints = ref<IVeoSchemaEndpoint[]>([]);
+
+    const onObjectTypeChanged = async (newObjectType: string) => {
+      if (customBreadcrumbExists(objectTypeKey)) {
+        removeCustomBreadcrumb(objectTypeKey);
+      }
+
+      if (!endpoints.value.length) {
+        endpoints.value = await $api.schema.fetchAll();
+      }
+
+      addCustomBreadcrumb({
+        key: objectTypeKey,
+        text: upperFirst(getSchemaEndpoint(endpoints.value, newObjectType)),
+        to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${newObjectType}`,
+        param: objectTypeKey,
+        index: 0,
+        position: 11
+      });
+    };
+    watch(() => objectParameter.value.type, onObjectTypeChanged, { immediate: true });
+
+    const subTypeKey = 'object-detail-view-sub-type';
+    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
+
+    const onSubTypeChanged = async (newSubType?: string) => {
+      if (customBreadcrumbExists(subTypeKey)) {
+        removeCustomBreadcrumb(subTypeKey);
+      }
+
+      // Exit if no subtype is set
+      if (!newSubType) {
+        return;
+      }
+
+      if (!formSchemas.value.length) {
+        formSchemas.value = await $api.form.fetchAll(domainId.value);
+      }
+
+      const formSchema = formSchemas.value.find((formSchema) => formSchema.subType === newSubType);
+
+      addCustomBreadcrumb({
+        key: subTypeKey,
+        text: formSchema ? formSchema.name[locale.value] || Object.values(formSchema.name[locale.value])[0] : (preselectedSubType.value as string),
+        to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectParameter.value.type}&subType=${preselectedSubType.value}`,
+        param: objectTypeKey,
+        index: 0,
+        position: 12
+      });
+    };
+    watch(() => preselectedSubType.value, onSubTypeChanged, { immediate: true });
+
+    onUnmounted(() => {
+      removeCustomBreadcrumb(objectTypeKey);
+      removeCustomBreadcrumb(subTypeKey);
     });
 
     const notFoundError = computed(() => (fetchState.error as any)?.statusCode === 404);
@@ -240,7 +304,6 @@ export default defineComponent({
 
     // Forms part specific stuff
     const objectSchema: Ref<IVeoObjectSchema | null> = useAsync(() => $api.schema.fetch(objectParameter.value.type, [domainId.value]));
-    const preselectedSubType = computed(() => route.value.query.subType);
 
     const isFormDirty = ref(false);
     const isFormValid = ref(false);
