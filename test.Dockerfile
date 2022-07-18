@@ -15,6 +15,4 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-ENV LANG=de_DE.UTF-8
-
 CMD ["npm", "run","test"]

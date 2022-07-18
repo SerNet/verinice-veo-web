@@ -76,13 +76,13 @@ describe('InputDate.vue', () => {
     expect(controlElement.findAll('label')).toHaveLength(1);
 
     expect(controlElement.find('.v-input.v-text-field').get('input'));
-    expect((controlElement.find('.v-input.v-text-field input').element as HTMLInputElement).value).toBe('13.08.2019');
+    expect((controlElement.find('.v-input.v-text-field input').element as HTMLInputElement).value).toBe('08/13/2019');
     expect(controlElement.find('.v-input.v-text-field input').element.hasAttribute('type')).toBe(true);
     expect(controlElement.find('.v-input.v-text-field input').element.getAttribute('type')).toBe('text');
 
     wrapper.setProps({ value: { dueDate: '2019-09-20' } });
     await flushPromises();
-    expect((controlElement.find('.v-input.v-text-field input').element as HTMLInputElement).value).toBe('20.09.2019');
+    expect((controlElement.find('.v-input.v-text-field input').element as HTMLInputElement).value).toBe('09/20/2019');
 
     expect(controlElement.find('.v-input.v-text-field').get('label'));
     expect(controlElement.find('.v-input.v-text-field label').text()).toBe('Due Date');
