@@ -121,25 +121,30 @@ export default defineComponent({
 
     const formattedDateTime = computed({
       get() {
-        return props.value ? new Date(props.value).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : undefined;
+        return props.value
+          ? new Date(props.value).toLocaleString(locale.value, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+          : undefined;
       },
       set(newValue: string | undefined) {
+        console.log(newValue);
         emit('input', newValue ? formatISO(new Date(newValue)) : undefined);
       }
     });
 
     // Input related stuff
+    const timezoneOffset = formatISO(new Date()).split('+')[1];
+
     const date = computed(() => formatISO(new Date(props.value), { representation: 'date' }));
 
     const onDateInput = (newValue: string) => {
-      formattedDateTime.value = newValue + 'T' + time.value;
+      formattedDateTime.value = `${newValue}T${time.value}+${timezoneOffset}`;
       activeTab.value = 1;
     };
 
     const time = computed(() => formatISO(new Date(props.value), { representation: 'time' }).split('+')[0]);
 
     const onTimeInput = (newValue: string) => {
-      formattedDateTime.value = date.value + 'T' + newValue;
+      formattedDateTime.value = `${date.value}T${newValue}+${timezoneOffset}`;
       menu.value = false;
       activeTab.value = 0;
     };
