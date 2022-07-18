@@ -27,7 +27,10 @@
         v-if="$vuetify.breakpoint.xs"
         @click="drawer = true"
       />
-      <VeoBreadcrumbs :key="breadcrumbsKey" />
+      <VeoBreadcrumbs
+        :key="breadcrumbsKey"
+        write-to-title
+      />
       <v-spacer />
       <VeoLanguageSwitch />
       <div class="mx-3">

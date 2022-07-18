@@ -165,7 +165,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref, useAsync, useMeta, WritableComputedRef, useRouter } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref, useAsync, WritableComputedRef, useRouter } from '@nuxtjs/composition-api';
 import { cloneDeep, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
@@ -237,8 +237,6 @@ export default defineComponent({
         pageWidthsXl.value = [5, 7];
       }
     };
-
-    useMeta(() => ({ title: [object.value?.displayName || [], t('breadcrumbs.objects')].flat().join(' - ') }));
 
     // Forms part specific stuff
     const objectSchema: Ref<IVeoObjectSchema | null> = useAsync(() => $api.schema.fetch(objectParameter.value.type, [domainId.value]));
@@ -396,8 +394,7 @@ export default defineComponent({
       loadObject,
       activeTab
     };
-  },
-  head: {}
+  }
 });
 </script>
 

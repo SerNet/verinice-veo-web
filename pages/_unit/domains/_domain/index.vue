@@ -70,7 +70,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref, useContext, useFetch, useMeta, useRouter, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, Ref, ref, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { CHART_COLORS, separateUUIDParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
@@ -251,9 +251,6 @@ export default defineComponent({
 
     // page title
     const title = computed(() => domain.value?.name || t('domainOverview').toString());
-    useMeta(() => ({
-      title: title.value
-    }));
 
     return {
       domain,
@@ -265,8 +262,7 @@ export default defineComponent({
 
       t
     };
-  },
-  head: {}
+  }
 });
 </script>
 

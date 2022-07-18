@@ -643,11 +643,6 @@ export default defineComponent({
       t,
       HELP_ROUTE
     };
-  },
-  head(): any {
-    return {
-      title: this.$t('editor.formschema.headline')
-    };
   }
 });
 </script>

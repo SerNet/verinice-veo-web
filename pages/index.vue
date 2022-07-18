@@ -141,11 +141,6 @@ export default Vue.extend({
 
     this.units = units;
   },
-  head(): any {
-    return {
-      title: this.$t('breadcrumbs.index')
-    };
-  },
   computed: {
     maxUnits(): number | undefined {
       const maxUnits = this.$user.auth.profile?.attributes?.maxUnits?.[0];

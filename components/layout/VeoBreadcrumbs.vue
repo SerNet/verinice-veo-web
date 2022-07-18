@@ -34,7 +34,7 @@
           >
             {{ item.icon }}
           </v-icon>
-          <template v-if="item.asyncText">
+          <template v-else-if="item.asyncText">
             <template v-if="asyncTextMap[item.param]">
               {{ asyncTextMap[item.param] }}
             </template>
@@ -46,7 +46,7 @@
             />
           </template>
         
-          <template v-if="item.text">
+          <template v-else-if="item.text">
             {{ item.text }}
           </template>
         </template>
@@ -125,7 +125,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, del, useRoute, useContext, PropType, computed, ComputedRef, watch, set, reactive } from '@nuxtjs/composition-api';
+import { defineComponent, del, useRoute, useContext, PropType, computed, ComputedRef, watch, set, reactive, useMeta } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { last } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal, mdiHomeOutline } from '@mdi/js';
@@ -164,12 +164,17 @@ export default defineComponent({
     overrideBreadcrumbs: {
       type: Boolean,
       default: false
+    },
+    writeToTitle: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props) {
     const { t, locale } = useI18n();
     const route = useRoute();
     const { $api } = useContext();
+    const { title } = useMeta();
 
     // After this position, all breadcrumbs will be moved to a menu to avoid scrolling
     const BREADCRUMB_BREAKOFF = 4;
@@ -196,7 +201,12 @@ export default defineComponent({
       [
         ':domain',
         {
-          icon: mdiHomeOutline
+          icon: mdiHomeOutline,
+          asyncText: async (_param, value) => {
+            const { id } = separateUUIDParam(value);
+            const object = await $api.domain.fetch(id);
+            return object.name;
+          }
         }
       ],
       [
@@ -310,6 +320,19 @@ export default defineComponent({
       }
     );
 
+    // Page title related stuff
+    const updateTitle = () => {
+      if (props.writeToTitle) {
+        title.value = breadcrumbs.value
+          .map((entry) => (entry.asyncText !== undefined && asyncTextMap?.[entry.param] ? asyncTextMap[entry.param] : entry.text))
+          .reverse()
+          .join(' - ');
+      }
+    };
+
+    watch(() => asyncTextMap, updateTitle, { deep: true, immediate: true });
+    watch(() => breadcrumbs.value, updateTitle, { deep: true, immediate: true });
+
     return {
       asyncTextMap,
       breadcrumbs,
@@ -321,6 +344,7 @@ export default defineComponent({
       mdiChevronRight,
       mdiDotsHorizontal
     };
-  }
+  },
+  head: {}
 });
 </script>

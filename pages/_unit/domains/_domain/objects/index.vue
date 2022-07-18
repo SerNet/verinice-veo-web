@@ -159,7 +159,7 @@
 <script lang="ts">
 import { mdiContentCopy, mdiFilter, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
-import { computed, defineComponent, useContext, useFetch, useRoute, useRouter, ref, reactive, watch, useMeta } from '@nuxtjs/composition-api';
+import { computed, defineComponent, useContext, useFetch, useRoute, useRouter, ref, reactive, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoTranslations } from '~/types/VeoTypes';
@@ -213,9 +213,6 @@ export default defineComponent({
     // current object type and sub type
     const objectType = computed(() => filter.value.objectType);
     const subType = computed(() => filter.value.subType);
-
-    // change page title
-    useMeta(() => ({ title: [upperFirst(objectType.value) || [], t('breadcrumbs.objects')].flat().join(' - ') }));
 
     // fetch objects of objectType
     const { fetchState, fetch } = useFetch(async () => {
@@ -364,9 +361,6 @@ export default defineComponent({
       updateRouteQuery,
       upperFirst
     };
-  },
-  head(): any {
-    return {};
   }
 });
 </script>

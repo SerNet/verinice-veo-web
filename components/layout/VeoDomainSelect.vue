@@ -170,7 +170,7 @@ export default defineComponent({
     const selectItems = computed(() => {
       const items = domains.value.map((domain) => ({ value: domain.id, text: domain.name }));
 
-      items.push({ value: 'more', text: t('breadcrumbs.more_modules').toString() });
+      items.push({ value: 'more', text: t('breadcrumbs.more').toString() });
 
       return items;
     });

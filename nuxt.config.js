@@ -15,7 +15,7 @@ export default {
    ** Headers of the page
    */
   head: {
-    title: 'Bitte warten...',
+    title: 'verinice.veo',
     meta: [
       {
         charset: 'utf-8'
