@@ -65,6 +65,7 @@
 import { computed, defineComponent, ref } from '@nuxtjs/composition-api';
 import { mdiCalendar } from '@mdi/js';
 import { formatISO } from 'date-fns';
+import { useI18n } from 'nuxt-i18n-composable';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
@@ -86,9 +87,11 @@ export default defineComponent({
   name: CONTROL_DEFINITION.key,
   props: VeoFormsControlProps,
   setup(props, { emit }) {
+    const { locale } = useI18n();
+
     const formattedDate = computed({
       get() {
-        return props.value ? new Date(props.value).toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: 'numeric' }) : undefined;
+        return props.value ? new Date(props.value).toLocaleDateString(locale.value, { day: '2-digit', month: '2-digit', year: 'numeric' }) : undefined;
       },
       set(newValue: string | undefined) {
         emit('input', newValue ? formatISO(new Date(newValue), { representation: 'date' }) : undefined);

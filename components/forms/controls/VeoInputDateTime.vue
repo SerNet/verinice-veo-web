@@ -91,6 +91,7 @@
 import { computed, defineComponent, ref } from '@nuxtjs/composition-api';
 import { mdiCalendar, mdiClockOutline } from '@mdi/js';
 import { formatISO } from 'date-fns';
+import { useI18n } from 'nuxt-i18n-composable';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
@@ -112,13 +113,17 @@ export default defineComponent({
   name: CONTROL_DEFINITION.key,
   props: VeoFormsControlProps,
   setup(props, { emit }) {
+    const { locale } = useI18n();
+
     // Display stuff
     const activeTab = ref(0);
     const menu = ref(false);
 
     const formattedDateTime = computed({
       get() {
-        return props.value ? new Date(props.value).toLocaleString(undefined, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : undefined;
+        return props.value
+          ? new Date(props.value).toLocaleString(locale.value, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+          : undefined;
       },
       set(newValue: string | undefined) {
         emit('input', newValue ? formatISO(new Date(newValue)) : undefined);
