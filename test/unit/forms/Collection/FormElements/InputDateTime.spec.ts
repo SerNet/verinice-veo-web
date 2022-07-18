@@ -31,7 +31,7 @@ describe('InputDateTime.vue', () => {
         properties: {
           dueDateTime: {
             type: 'string',
-            format: 'date'
+            format: 'date-time'
           }
         }
       },
@@ -77,7 +77,7 @@ describe('InputDateTime.vue', () => {
 
     expect(wrapper.element).toMatchSnapshot('Initial render');
 
-    expect(inputElement.value).toBe('05.08.2020');
+    expect(inputElement.value).toBe('05.08.2020, 12:05');
 
     wrapper.setProps({
       value: { dueDateTime: '1999-08-05T12:05:00+02:00' }
@@ -86,6 +86,6 @@ describe('InputDateTime.vue', () => {
 
     expect(wrapper.element).toMatchSnapshot('Updated DateTime');
 
-    expect(inputElement.value).toBe('05.08.1999');
+    expect(inputElement.value).toBe('05.08.1999, 12:05');
   });
 });

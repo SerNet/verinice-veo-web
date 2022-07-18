@@ -36,7 +36,9 @@ jest.mock('nuxt-i18n-composable', () => ({
   useI18n() {
     return {
       t: (t) => t,
-      locale: 'de'
+      locale: {
+        value: 'de'
+      }
     };
   }
 }));

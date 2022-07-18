@@ -41,7 +41,7 @@
           </div>
           <br>
           <div class="text-body-2 d-flex flex-row align-center">
-            <span class="pr-2">{{ name }}</span>
+            <span class="pr-2">{{ name[locale] || Object.values(name)[0] }}</span>
             <v-tooltip
               v-if="description"
               bottom
@@ -95,9 +95,13 @@ import { upperFirst } from 'lodash';
 
 export default defineComponent({
   props: {
-    name: {
+    key: {
       type: String,
       required: true
+    },
+    name: {
+      type: Object,
+      default: () => {}
     },
     description: {
       type: String,
@@ -109,18 +113,19 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { t } = useI18n();
+    const { locale, t } = useI18n();
 
     const deleteDialogVisible = ref(false);
 
     const deleteWidget = () => {
       deleteDialogVisible.value = false;
-      emit('delete', { name: props.name, formSchemaPointer: props.formSchemaPointer });
+      emit('delete', { name: props.key, formSchemaPointer: props.formSchemaPointer });
     };
 
     return {
       deleteDialogVisible,
       deleteWidget,
+      locale,
 
       mdiInformationOutline,
       mdiMenu,

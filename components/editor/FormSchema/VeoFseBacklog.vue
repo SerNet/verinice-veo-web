@@ -229,10 +229,10 @@
               >
                 <v-sheet
                   v-for="widget in filteredWidgets"
-                  :key="widget.name"
+                  :key="widget.key"
                 >
                   <VeoFseListItem
-                    :title="widget.name"
+                    :title="widget.name[locale]|| Object.values(widget.name)[0]"
                     :styling="{ icon: 'mdi-auto-fix', color: 'grey darken-4', name: upperFirst(t('widget').toString()) }"
                   />
                 </v-sheet>
@@ -308,7 +308,7 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
-    const { t } = useI18n();
+    const { locale, t } = useI18n();
 
     const typeMap = ref(INPUT_TYPES);
 
@@ -495,7 +495,7 @@ export default defineComponent<IProps>({
 
     const onCloneWidget = (widget: IVeoFormsElementDefinition) => ({
       type: 'Widget',
-      name: widget.name
+      name: widget.name[locale.value] || Object.values(widget.name)[0]
     });
 
     return {
@@ -505,6 +505,7 @@ export default defineComponent<IProps>({
       filteredFormElements,
       filteredWidgets,
       expansionPanels,
+      locale,
       controlElementsVisible,
       onExpandAll,
       onCollapseAll,

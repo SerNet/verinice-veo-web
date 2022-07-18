@@ -15,7 +15,7 @@ exports[`InputDateTime.vue should render input-date-time element for date-times:
       dense=""
     >
       <div
-        class="vf-input-date vf-form-element"
+        class="vf-input-date-time vf-form-element"
       >
         <div
           class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field"
@@ -107,7 +107,7 @@ exports[`InputDateTime.vue should render input-date-time element for date-times:
       dense=""
     >
       <div
-        class="vf-input-date vf-form-element"
+        class="vf-input-date-time vf-form-element"
       >
         <div
           class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field"
