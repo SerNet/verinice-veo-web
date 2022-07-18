@@ -326,6 +326,7 @@ export default defineComponent({
         title.value = breadcrumbs.value
           .map((entry) => (entry.asyncText !== undefined && asyncTextMap?.[entry.param] ? asyncTextMap[entry.param] : entry.text))
           .reverse()
+          .slice(0, BREADCRUMB_BREAKOFF)
           .join(' - ');
       }
     };
