@@ -72,6 +72,16 @@
           <VeoUnitSelection :units="units" />
         </template>
         <v-divider />
+        <v-list-item
+          :href="accountLink"
+          target="_blank"
+        >
+          <v-list-item-title>
+            {{ $t('myAccount') }}
+          </v-list-item-title>
+          <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
+        </v-list-item>
+        <v-divider />
         <v-list-item @click="displayDeploymentDetails = true">
           <v-list-item-title>
             {{ $t('about') }}
@@ -104,7 +114,7 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n();
-    const { $api, $user } = useContext();
+    const { $api, $config, $user } = useContext();
     const route = useRoute();
 
     const displayDeploymentDetails = ref(false);
@@ -132,7 +142,10 @@ export default defineComponent({
       units.value = await $api.unit.fetchAll();
     });
 
+    const accountLink = computed(() => `${$config.oidcUrl}/realms/${$config.oidcRealm}/account`);
+
     return {
+      accountLink,
       t,
 
       displayDeploymentDetails,
@@ -150,11 +163,13 @@ export default defineComponent({
   "en": {
     "about": "About verinice.",
     "logout": "Logout",
+    "myAccount": "My account",
     "notAvailable": "Not available"
   },
   "de": {
     "about": "Über verinice.",
     "logout": "Abmelden",
+    "myAccount": "Mein Account",
     "notAvailable": "Keine Angabe"
   }
 }

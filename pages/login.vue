@@ -32,7 +32,7 @@
           {{ t('login') }}
         </v-btn>
       </v-col>
-      <v-col>
+      <!--<v-col>VEO-1539
         <v-btn
           depressed
           block
@@ -41,7 +41,7 @@
         >
           {{ t('register') }}
         </v-btn>
-      </v-col>
+      </v-col>-->
     </v-row>
   </div>
 </template>
