@@ -33,8 +33,14 @@
           lg="7"
           xl="4"
           class="body-1 text-no-wrap"
-          v-text="chart.labels[0]"
-        />
+        >
+          <nuxt-link
+            :to="objectOveriewLink(index)"
+            class="black--text text-decoration-none"
+          >
+            {{ chart.labels[0] }}
+          </nuxt-link>
+        </v-col>
         <v-col>
           <v-skeleton-loader
             v-if="$fetchState.pending"
@@ -70,7 +76,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { BarChart } from 'vue-chart-3';
 import { Chart, BarController, Tooltip, CategoryScale, BarElement, LinearScale } from 'chart.js';
 import { upperFirst } from 'lodash';
@@ -119,6 +125,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { $api, app } = useContext();
     const { locale, t } = useI18n();
+    const route = useRoute();
 
     const barChartRef = ref([]);
 
@@ -233,10 +240,14 @@ export default defineComponent({
       }))
     );
 
+    const objectOveriewLink = (subTypeIndex: number) =>
+      `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${props.objectType}&subType=${sortedSubTypes.value[subTypeIndex][0]}`;
+
     return {
       barChartRef,
       chartData,
       ChartDataLabels,
+      objectOveriewLink,
       options,
 
       upperFirst,
