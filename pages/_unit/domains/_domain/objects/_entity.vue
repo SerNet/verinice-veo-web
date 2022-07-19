@@ -218,7 +218,7 @@ export default defineComponent({
       inspectionResults.value = await $api.entity.fetchInspections(object.value.type, object.value.id, domainId.value);
     });
 
-    const notFoundError = computed(() => (fetchState.error as any)?.statusCode === 404);
+    const notFoundError = computed(() => (fetchState.error as any)?.code === 404);
 
     // Display stuff
     const pageWidths = ref<Number[]>([3, 9]);
