@@ -307,7 +307,7 @@ export default Vue.extend({
           this.generatingReport = true;
           const result = new Blob([await this.$api.report.create(this.reportId, body)], { type: outputType });
 
-          const downloadButton = this.$refs.downloadButton as any;
+          const downloadButton = this.$refs.downloadButton as HTMLAnchorElement;
           downloadButton.href = URL.createObjectURL(result);
           downloadButton.download = `${this.report.name[this.$i18n.locale]}.${outputType.split('/').pop() || outputType}`;
           downloadButton.click();
