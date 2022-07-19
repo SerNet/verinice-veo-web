@@ -169,7 +169,7 @@
                     <v-badge
                       :content="messages.errors.length + messages.warnings.length + messages.information.length"
                       :value="messages.errors.length + messages.warnings.length + messages.information.length > 0"
-                      color="primary"
+                      :color="messages.errors.length ? 'error' : messages.warnings.length ? 'warning' : 'info'"
                       overlap
                     >
                       <v-icon v-text="mdiInformationOutline" />
