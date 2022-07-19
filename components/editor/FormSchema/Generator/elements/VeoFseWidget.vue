@@ -95,7 +95,7 @@ import { upperFirst } from 'lodash';
 
 export default defineComponent({
   props: {
-    key: {
+    code: {
       type: String,
       required: true
     },
@@ -119,7 +119,7 @@ export default defineComponent({
 
     const deleteWidget = () => {
       deleteDialogVisible.value = false;
-      emit('delete', { name: props.key, formSchemaPointer: props.formSchemaPointer });
+      emit('delete', { name: props.code, formSchemaPointer: props.formSchemaPointer });
     };
 
     return {

@@ -40,7 +40,7 @@ import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
-  key: 'veo-number-input',
+  code: 'veo-number-input',
   name: {
     en: 'number input',
     de: 'Zahleneingabe'
@@ -53,7 +53,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 };
 
 export default defineComponent({
-  name: CONTROL_DEFINITION.key,
+  name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
   setup() {
     return {

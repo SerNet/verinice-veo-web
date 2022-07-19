@@ -51,7 +51,7 @@ import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
-  key: 'veo-markdown-editor',
+  code: 'veo-markdown-editor',
   name: {
     en: 'markdown editor',
     de: 'Markdown editor'
@@ -78,7 +78,7 @@ function clearButton(callback: CallableFunction) {
 }
 
 export default defineComponent({
-  name: CONTROL_DEFINITION.key,
+  name: CONTROL_DEFINITION.code,
   components: {
     editor: Editor
   },

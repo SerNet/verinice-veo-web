@@ -65,7 +65,7 @@ import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
-  key: 'veo-radio-button',
+  code: 'veo-radio-button',
   name: {
     en: 'radio button',
     de: 'Radio Auswahl'
@@ -82,7 +82,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 };
 
 export default defineComponent({
-  name: CONTROL_DEFINITION.key,
+  name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
   setup(props) {
     const isDirectionVertical = computed(() => props.options.direction === 'vertical');

@@ -71,7 +71,7 @@ import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
-  key: 'veo-date-input',
+  code: 'veo-date-input',
   name: {
     en: 'date input',
     de: 'Datumseingabe'
@@ -84,7 +84,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 };
 
 export default defineComponent({
-  name: CONTROL_DEFINITION.key,
+  name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
   setup(props, { emit }) {
     const { locale } = useI18n();

@@ -55,7 +55,7 @@ import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
-  key: 'veo-uri-input',
+  code: 'veo-uri-input',
   name: {
     en: 'uri input',
     de: 'URI-Eingabe'
@@ -68,7 +68,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 };
 
 export default defineComponent({
-  name: CONTROL_DEFINITION.key,
+  name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
   setup() {
     return {

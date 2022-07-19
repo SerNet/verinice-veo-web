@@ -50,7 +50,7 @@ export interface IVeoFormElementDefaultProps {
 }
 
 export interface IVeoFormsElementDefinition {
-  key: string;
+  code: string;
   name: { [lang: string]: string }; // Name of this component (used in FormSchemaEditor)
   description: { [lang: string]: string }; // Description describing this component (used in FormSchemaEditor)
   conditions?: (_props: IVeoFormElementDefaultProps) => boolean[]; // Every condition has to be truthy in order for this component to get displayed. Components with more truthy conditions will be displayed first.

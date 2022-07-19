@@ -76,7 +76,7 @@ import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
-  key: 'veo-links-field-row',
+  code: 'veo-links-field-row',
   name: {
     en: 'links field row',
     de: 'Link-Feld-Eintrag'
@@ -88,7 +88,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 };
 
 export default defineComponent({
-  name: CONTROL_DEFINITION.key,
+  name: CONTROL_DEFINITION.code,
   props: {
     ...VeoFormsControlProps,
     otherSelectedLinks: {

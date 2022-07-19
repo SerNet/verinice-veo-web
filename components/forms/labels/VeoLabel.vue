@@ -34,7 +34,7 @@ import { VeoFormsElementProps } from '../util';
 import { IVeoFormsElementDefinition } from '../types';
 
 export const LABEL_DEFINITION: IVeoFormsElementDefinition = {
-  key: 'veo-label',
+  code: 'veo-label',
   name: {
     en: 'label',
     de: 'Label'
@@ -46,7 +46,7 @@ export const LABEL_DEFINITION: IVeoFormsElementDefinition = {
 };
 
 export default defineComponent({
-  name: LABEL_DEFINITION.key,
+  name: LABEL_DEFINITION.code,
   props: {
     ...VeoFormsElementProps,
     text: {

@@ -441,7 +441,7 @@ export default defineComponent<IProps>({
         links: controls.value.filter(
           (obj) => obj.category === 'links' && !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Control' && element.scope === obj.scope)
         ),
-        widgets: WIDGETS.filter((widget) => !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Widget' && element.name === widget.key))
+        widgets: WIDGETS.filter((widget) => !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Widget' && element.name === widget.code))
       };
     });
 
@@ -461,7 +461,7 @@ export default defineComponent<IProps>({
       return formElements.filter((f: any) => !props.searchQuery || f.description.title?.toLowerCase().includes(props.searchQuery));
     });
 
-    const filteredWidgets = computed(() => unused.value.widgets.filter((widget) => !props.searchQuery || widget.key.toLowerCase().includes(props.searchQuery)));
+    const filteredWidgets = computed(() => unused.value.widgets.filter((widget) => !props.searchQuery || widget.code.toLowerCase().includes(props.searchQuery)));
 
     const controlElementsVisible: ComputedRef<Boolean> = computed(() => {
       return !!(filteredFormElements.value.length + filteredBasics.value.length + filteredAspects.value.length + filteredLinks.value.length);

@@ -47,7 +47,7 @@ import { VeoFormsWidgetProps } from '../util';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 export const WIDGET_DEFINITION: IVeoFormsElementDefinition = {
-  key: 'PiaMandatoryWidget',
+  code: 'PiaMandatoryWidget',
   name: {
     en: 'PiaMandatoryWidget'
   },
@@ -58,7 +58,7 @@ export const WIDGET_DEFINITION: IVeoFormsElementDefinition = {
 };
 
 export default defineComponent({
-  name: WIDGET_DEFINITION.key,
+  name: WIDGET_DEFINITION.code,
   props: VeoFormsWidgetProps,
   setup(props) {
     const { t } = useI18n();

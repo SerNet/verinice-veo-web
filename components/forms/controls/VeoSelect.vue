@@ -41,7 +41,7 @@ import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
-  key: 'veo-select-input',
+  code: 'veo-select-input',
   name: {
     en: 'select input',
     de: 'Auswahl'
@@ -57,7 +57,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 };
 
 export default defineComponent({
-  name: CONTROL_DEFINITION.key,
+  name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
   setup(props) {
     // @ts-ignore

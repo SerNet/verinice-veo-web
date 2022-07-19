@@ -75,7 +75,7 @@ import { IVeoFormsElementDefinition } from '../types';
 import { VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
-  key: 'veo-links-field',
+  code: 'veo-links-field',
   name: {
     en: 'links field',
     de: 'Link-Feld'
@@ -88,7 +88,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 };
 
 export default defineComponent({
-  name: CONTROL_DEFINITION.key,
+  name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
   setup(props, { emit }) {
     const { t } = useI18n();

@@ -45,7 +45,7 @@ import { VeoFormsElementProps } from '../util';
 import { IVeoFormsElementDefinition } from '../types';
 
 export const GROUP_DEFINITION: IVeoFormsElementDefinition = {
-  key: 'veo-group',
+  code: 'veo-group',
   name: {
     en: 'group',
     de: 'Gruppe'
@@ -57,7 +57,7 @@ export const GROUP_DEFINITION: IVeoFormsElementDefinition = {
 };
 
 export default defineComponent({
-  name: GROUP_DEFINITION.key,
+  name: GROUP_DEFINITION.code,
   props: VeoFormsElementProps,
   setup(props) {
     const classes = computed(() => props.options.class || '');
