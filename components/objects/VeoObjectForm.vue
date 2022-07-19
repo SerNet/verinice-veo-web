@@ -346,7 +346,7 @@ export default defineComponent({
 
     const selectedDisplayOption = ref('objectschema');
     const displayOptions: ComputedRef<{ text: string; value: string | undefined }[]> = computed(() => {
-      const currentSubType = props.value?.domains?.[props.domainId]?.subType;
+      const currentSubType = objectData.value?.domains?.[props.domainId]?.subType;
       const availableFormSchemas: { text: string; value: string | undefined }[] = formSchemas.value
         .filter((formSchema) => formSchema.modelType === props.objectSchema?.title && (!currentSubType || currentSubType === formSchema.subType))
         .map((formSchema) => ({
@@ -374,7 +374,7 @@ export default defineComponent({
       () => props.preselectedSubType,
       (newValue) => {
         const formSchemaId = getFormschemaIdBySubType(newValue);
-        if (newValue && formSchemaId) {
+        if (formSchemaId) {
           selectedDisplayOption.value = formSchemaId;
         } else {
           selectedDisplayOption.value = 'objectschema';
