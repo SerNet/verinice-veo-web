@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoWidget :loading="loading">
+  <VeoWidget>
     <template #default>
       <v-row
         v-for="(chart, index) of chartData"
@@ -33,11 +33,24 @@
           lg="7"
           xl="4"
           class="body-1 text-no-wrap"
-          v-text="chart.labels[0]"
-        />
+        >
+          <nuxt-link
+            :to="objectOveriewLink(index)"
+            class="black--text text-decoration-none"
+          >
+            {{ chart.labels[0] }}
+          </nuxt-link>
+        </v-col>
         <v-col>
+          <v-skeleton-loader
+            v-if="$fetchState.pending"
+            width="100%"
+            type="image"
+            height="25px"
+            class="my-1"
+          />
           <BarChart
-            v-if="chart.totalEntities > 0"
+            v-else-if="chart.totalEntries > 0"
             ref="barChartRef"
             :chart-data="chart"
             :options="options[index]"
@@ -59,48 +72,31 @@
         {{ t('noSubtypes') }}
       </div>
     </template>
-    <template #skeleton>
-      <v-row
-        v-for="index in [1,2]"
-        :key="index"
-        class="align-center"
-      >
-        <v-col
-          cols="12"
-          md="4"
-        >
-          <v-skeleton-loader
-            class="ml-6"
-            type="text"
-            width="70%"
-          />
-        </v-col>
-        <v-col>
-          <v-skeleton-loader
-            class="ml-6"
-            type="heading"
-            width="210%"
-          />
-        </v-col>
-      </v-row>      
-    </template>
   </VeoWidget>
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropType, ref } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { BarChart } from 'vue-chart-3';
 import { Chart, BarController, Tooltip, CategoryScale, BarElement, LinearScale } from 'chart.js';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+import { IVeoDomainStatusCount } from '~/plugins/api/domain';
+import { CHART_COLORS, IBaseObject } from '~/lib/utils';
+import { IVeoFormSchemaMeta, IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
+
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
 export interface IChartValue {
-  label: string;
-  value: number;
-  color: string;
+  totalEntries: number;
+  labels: string[];
+  datasets: {
+    data: number[];
+    backgroundColor: string;
+    label: string;
+  }[];
 }
 
 export default defineComponent({
@@ -109,25 +105,73 @@ export default defineComponent({
     BarChart
   },
   props: {
-    loading: {
-      type: Boolean,
-      default: false
-    },
     data: {
-      type: Array as PropType<{ subType: string; title: string; statusTypes: (IChartValue & { status: string })[]; totalEntities: number }[]>,
-      default: () => []
+      type: Object as PropType<IVeoDomainStatusCount['x']>,
+      default: () => {}
     },
     chartHeight: {
       type: [Number, String],
       default: 50
+    },
+    objectType: {
+      type: String,
+      required: true
+    },
+    domainId: {
+      type: String,
+      required: true
     }
   },
   setup(props, { emit }) {
-    const { t } = useI18n();
+    const { $api, app } = useContext();
+    const { locale, t } = useI18n();
+    const route = useRoute();
+
     const barChartRef = ref([]);
 
-    const options: ComputedRef<any[]> = computed(() =>
-      props.data.map((entry, index) => ({
+    const objectSchema = ref<IVeoObjectSchema | undefined>();
+    const { fetch: fetchObjectSchema } = useFetch(async () => {
+      if (props.domainId) {
+        objectSchema.value = await $api.schema.fetch(props.objectType, [props.domainId]);
+      }
+    });
+
+    const sortedStatusBySubType = computed<IBaseObject>(() =>
+      (objectSchema.value?.properties?.domains?.properties?.[props.domainId]?.allOf || []).reduce((previousValue, currentValue) => {
+        previousValue[currentValue.if.properties.subType.const] = currentValue.then.properties.status.enum;
+        return previousValue;
+      }, Object.assign({}))
+    );
+
+    const translations = ref<IVeoTranslations>();
+    useFetch(async () => {
+      translations.value = await $api.translation.fetch(app.i18n.locales.map((locale: any) => locale.code));
+    });
+
+    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
+    const { fetch: fetchFormSchemas } = useFetch(async () => {
+      if (props.domainId) {
+        formSchemas.value = await $api.form.fetchAll(props.domainId);
+      }
+    });
+
+    const sortedSubTypes = computed(() =>
+      Object.entries(props.data).sort(
+        ([subTypeA, _subTypeDataA], [subTypeB, _subTypeDataB]) =>
+          formSchemas.value.findIndex((formSchema) => formSchema.subType === subTypeA) - formSchemas.value.findIndex((formSchema) => formSchema.subType === subTypeB)
+      )
+    );
+
+    watch(
+      () => props.domainId,
+      () => {
+        fetchObjectSchema();
+        fetchFormSchemas();
+      }
+    );
+
+    const options = computed(() =>
+      sortedSubTypes.value.map(([_subType, subTypeData], index) => ({
         responsive: true,
         onClick: (_point: any, $event: any) => handleClickEvent(index, $event),
         plugins: {
@@ -140,7 +184,7 @@ export default defineComponent({
             color: 'white',
             display(context: any) {
               const index = context.dataIndex;
-              const value = context.dataset.data[index];
+              const value = context.dataset?.data?.[index] || -1;
               return value > 0;
             },
             offset: '12'
@@ -153,7 +197,7 @@ export default defineComponent({
         scales: {
           x: {
             min: 0,
-            max: entry.statusTypes.reduce((previousValue, currentValue) => previousValue + currentValue.value, 0),
+            max: Object.values(subTypeData).reduce((previousValue, currentValue) => previousValue + currentValue, 0),
             stacked: true,
             ticks: {
               display: false
@@ -177,26 +221,33 @@ export default defineComponent({
       }))
     );
 
-    function handleClickEvent(clickedBarIndex: number, event: any) {
-      emit('click', props.data[clickedBarIndex].subType, props.data[clickedBarIndex].statusTypes[event[0].datasetIndex].status);
-    }
+    const handleClickEvent = (clickedBarIndex: number, event: any) => {
+      const subType = sortedSubTypes.value[clickedBarIndex][0];
+      emit('click', props.objectType, subType, sortedStatusBySubType.value[subType][event[0].datasetIndex]);
+    };
 
-    const chartData: ComputedRef<any[]> = computed(() =>
-      props.data.map((entry) => ({
-        totalEntities: entry.totalEntities,
-        labels: [entry.title],
-        datasets: entry.statusTypes.map((value) => ({
-          data: [value.value],
-          backgroundColor: value.color,
-          label: value.label
-        }))
+    const chartData = computed<IChartValue[]>(() =>
+      sortedSubTypes.value.map(([subType, subTypeData]) => ({
+        totalEntries: Object.values(subTypeData).reduce((previosValue, currentValue) => previosValue + currentValue, 0),
+        labels: [formSchemas.value.find((formSchema) => formSchema.subType === subType)?.name?.[locale.value] || subType],
+        datasets: (Object.entries(sortedStatusBySubType.value).find(([sortedStatusSubType, _status]) => sortedStatusSubType === subType)?.[1] || []).map(
+          (status: string, index: number) => ({
+            data: [subTypeData[status]],
+            backgroundColor: CHART_COLORS[index],
+            label: translations.value?.lang[locale.value][`${props.objectType}_${subType}_status_${status}`] || status
+          })
+        )
       }))
     );
+
+    const objectOveriewLink = (subTypeIndex: number) =>
+      `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${props.objectType}&subType=${sortedSubTypes.value[subTypeIndex][0]}`;
 
     return {
       barChartRef,
       chartData,
       ChartDataLabels,
+      objectOveriewLink,
       options,
 
       upperFirst,
