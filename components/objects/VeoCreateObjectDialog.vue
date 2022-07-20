@@ -121,6 +121,9 @@ export default defineComponent({
       }
     );
 
+    watch(() => props.objectType, seedInitialData);
+    watch(() => props.subType, seedInitialData);
+
     const isFormDirty = ref(false);
     const isFormValid = ref(false);
 

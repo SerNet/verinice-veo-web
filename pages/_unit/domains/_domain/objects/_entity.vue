@@ -242,7 +242,7 @@ export default defineComponent({
 
     // Forms part specific stuff
     const objectSchema: Ref<IVeoObjectSchema | null> = useAsync(() => $api.schema.fetch(objectParameter.value.type, [domainId.value]));
-    const preselectedSubType = computed(() => route.value.query.subType);
+    const preselectedSubType = computed(() => route.value.query.subType || object.value?.domains?.[domainId.value]?.subType);
 
     const isFormDirty = computed(() => !isEqual(object.value, modifiedObject.value));
     const isFormValid = ref(false);
