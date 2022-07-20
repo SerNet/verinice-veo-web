@@ -42,6 +42,7 @@
           <nuxt-link
             :to="homeLink"
             class="text-decoration-none"
+            style="width: 100%"
           >
             <VeoAppBarLogo :size="miniVariant ? 'small' : 'large'" />
           </nuxt-link>

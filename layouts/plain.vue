@@ -29,6 +29,7 @@
         <nuxt-link
           to="/"
           class="text-decoration-none"
+          style="width: 100%"
         >
           <VeoAppBarLogo
             style="height: 64px"

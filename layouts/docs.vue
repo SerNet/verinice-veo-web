@@ -65,6 +65,7 @@
         <nuxt-link
           to="/docs"
           class="text-decoration-none"
+          style="width: 100%"
         >
           <VeoAppBarLogo />
         </nuxt-link>
