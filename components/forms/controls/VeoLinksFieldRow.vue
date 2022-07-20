@@ -66,14 +66,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiPlus } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
-import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { IVeoCustomLink, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field-row',
@@ -92,7 +92,7 @@ export default defineComponent({
   props: {
     ...VeoFormsControlProps,
     otherSelectedLinks: {
-      type: Array,
+      type: Array as PropType<IVeoCustomLink[]>,
       default: () => []
     },
     index: {
@@ -129,7 +129,7 @@ export default defineComponent({
     const key = ref(0);
 
     // Users should only be able to select an item once per link, thus we have to remove all already selected items from the VeoObjectSelect
-    const hiddenValues = computed(() => props.otherSelectedLinks.filter((link: any) => link.target?.targetUri).map((link: any) => getEntityDetailsFromLink(link.target).id));
+    const hiddenValues = computed(() => props.otherSelectedLinks.filter((link) => link.target?.targetUri).map((link) => getEntityDetailsFromLink(link.target).id));
 
     return {
       createButtonLabel,

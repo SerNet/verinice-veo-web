@@ -65,7 +65,7 @@ export const useVeoErrorFormatter = () => {
       case 'pattern':
         translatedErrorString = t('error.format', {
           field: getInvalidFieldLabel(error.instancePath.split('/').pop() || error.instancePath, translations),
-          format: (error.params as any)[error.keyword]
+          format: error.params[error.keyword]
         }).toString();
         break;
       default:
@@ -77,7 +77,7 @@ export const useVeoErrorFormatter = () => {
 
   const handleRequiredLink = (error: ErrorObject, translations: IBaseObject): string => {
     const dataPathParts = error.instancePath.split('/');
-    const missingProperty = (error.params as any).missingProperty;
+    const missingProperty = error.params.missingProperty;
     let index: number | undefined;
     if (missingProperty === 'targetUri') {
       dataPathParts.pop();

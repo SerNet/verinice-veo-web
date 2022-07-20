@@ -53,7 +53,7 @@ export const WIDGET_DEFINITION: IVeoFormsElementDefinition = {
   },
   description: {
     en: 'Adds a label to the form, specifing whether a privacy impact assesment is mandatory.',
-    de: 'Fügt einen Text im Formschema ein, der definiert ob eine Datenschutzfolgeabschätzung nötig ist.'
+    de: 'Fügt einen Text im Formschema ein, der definiert, ob eine Datenschutzfolgeabschätzung nötig ist.'
   }
 };
 
