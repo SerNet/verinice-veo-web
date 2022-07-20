@@ -486,7 +486,7 @@ export default defineComponent({
   "en": {
     "filter": "filter",
     "headline": "select {0}",
-    "linkChildEntityExplanation": "Add {linkedObjectType} as a part to \"{parentName}\"",
+    "linkChildExplanation": "Add {linkedObjectType} as a part to \"{parentName}\"",
     "linkParentExplanation": "Add {linkedObjectType} as a parent to \"{parentName}\"",
     "object": "object"
   },

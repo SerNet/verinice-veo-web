@@ -111,6 +111,7 @@
                 <template #activator="{ on }">
                   <v-btn
                     v-cy-name="'display-tab'"
+                    data-component-name="object-form-view-tab"
                     style="border-radius: 99px"
                     icon
                     :value="SIDE_CONTAINERS.VIEW"
@@ -128,6 +129,7 @@
                   <div v-on="on">
                     <v-btn
                       :disabled="!currentFormSchema"
+                      data-component-name="object-form-toc-tab"
                       style="border-radius: 99px"
                       icon
                       :value="SIDE_CONTAINERS.TABLE_OF_CONTENTS"
@@ -144,6 +146,7 @@
                 <template #activator="{ on }">
                   <v-btn
                     style="border-radius: 99px"
+                    data-component-name="object-form-history-tab"
                     icon
                     :value="SIDE_CONTAINERS.HISTORY"
                     v-on="on"
@@ -162,6 +165,7 @@
                 <template #activator="{ on }">
                   <v-btn
                     style="border-radius: 99px"
+                    data-component-name="object-form-messages-tab"
                     icon
                     :value="SIDE_CONTAINERS.MESSAGES"
                     v-on="on"

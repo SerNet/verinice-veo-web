@@ -18,15 +18,12 @@ steps:
 #    element: '[data-component-name=object-details-page] > div:nth-child(2) > div > button'
 #    intro: Die Objektdetails können per Schaltfläche oder Shortcut Alt/STRG + 1 versteckt bzw. angezeigt werden.
   - title: 'Objektbezeichnung'
-# todo4nbrx: data-component nach restyling nicht auffindbar?
-    element: '[data-component-name=object-details-details] h1'
+    element: '[data-component-name=object-details-page] h1'
     intro: Die Objektbezeichnung enthält den Designator, die Abkürzung und den Namen des Objektes.
   - title: 'Änderungsdetails'
-# todo4nbrx: data-component nach restyling nicht auffindbar?
     element: '[data-component-name=object-details-date-time]'
     intro: Erkennen Sie auf den ersten Blick, wer das Objekt wann erstellt oder letztmalig geändert hat.
   - title: 'Objektbeschreibung'
-# todo4nbrx: data-component nach restyling nicht auffindbar?
     element: '[data-component-name=object-details-description]'
     intro: Zur eindeutigen Beschreibung des Objektes wird sofern vorhanden die Objektbeschreibung ausgegeben.
   - title: 'Scopes'
@@ -64,23 +61,16 @@ steps:
     element: '[data-component-name=object-form-sidebar]'
     intro: Über die Seitenleiste blenden Sie die Objektansicht, die Formular-Navigation, die History und Validierungsmeldungen ein.
   - title: 'Seitenleiste - Ansicht'
-# todo4nbrx: neue  data-component nach restyling erstellen
-    element: '#app > div.v-application--wrap > main > div > div > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div.flex-row.col-9.col-lg-7.col-xl-7.pa-0 > div.veo-page.py-0.col.col-12.px-0 > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.pb-4.fill-width.fill-height.d-flex.flex-column.overflow-hidden > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div:nth-child(2) > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div.flex-column.v-item-group.theme--light.v-btn-toggle.v-btn-toggle--group.primary--text > button:nth-child(1) > span > span > svg'
+    element: '[data-component-name=object-form-view-tab]'
     intro: In der Ansicht können Sie ein Objekt in den unterschiedlichen Formularen/Subtypen betrachten.
   - title: 'Seitenleiste - Formularnavigation'
-# todo4nbrx: neue  data-component nach restyling erstellen
-#    element: '[data-component-name=object-form-sidebar] [data-component-name=object-form-form-navigation]'
-    element: '#app > div.v-application--wrap > main > div > div > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div.flex-row.col-9.col-lg-7.col-xl-7.pa-0 > div.veo-page.py-0.col.col-12.px-0 > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.pb-4.fill-width.fill-height.d-flex.flex-column.overflow-hidden > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div:nth-child(2) > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div.flex-column.v-item-group.theme--light.v-btn-toggle.v-btn-toggle--group.primary--text > div > button > span > span > svg'
+    element: '[data-component-name=object-form-toc-tab]'
     intro: Mit der Formularnavigation können Sie schnell zu bestimmten Abschnitten im Formular navigieren.
   - title: 'Seitenleiste - Objekthistorie'
-# todo4nbrx: neue  data-component nach restyling erstellen
-#    element: '[data-component-name=object-form-sidebar] [data-component-name=object-form-history]'
-    element: '#app > div.v-application--wrap > main > div > div > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div.flex-row.col-9.col-lg-7.col-xl-7.pa-0 > div.veo-page.py-0.col.col-12.px-0 > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.pb-4.fill-width.fill-height.d-flex.flex-column.overflow-hidden > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div:nth-child(2) > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div.flex-column.v-item-group.theme--light.v-btn-toggle.v-btn-toggle--group.primary--text > button:nth-child(6) > span > span > svg'
+    element: '[data-component-name=object-form-history-tab]'
     intro: In der Objekthistorie sehen Sie alle vorherigen Versionen und können eine ältere Version wiederherstellen.
   - title: 'Seitenleiste - Validierung'
-# todo4nbrx: neue  data-component nach restyling erstellen
-#    element: '[data-component-name=object-form-sidebar] [data-component-name=object-form-validation]'
-    element: '#app > div.v-application--wrap > main > div > div > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div.flex-row.col-9.col-lg-7.col-xl-7.pa-0 > div.veo-page.py-0.col.col-12.px-0 > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.pb-4.fill-width.fill-height.d-flex.flex-column.overflow-hidden > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div:nth-child(2) > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div.flex-column.v-item-group.theme--light.v-btn-toggle.v-btn-toggle--group.primary--text > button:nth-child(8) > span > span > span.v-icon.notranslate.theme--light > svg > path'
+    element: '[data-component-name=object-form-messages-tab]'
     intro: Im Abschnitt Validierung werden Ihnen Fehler oder Warnungen zu den im Formular eingegebenen Inhalten angezeigt.
   - title: 'Geschafft'
 # todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.

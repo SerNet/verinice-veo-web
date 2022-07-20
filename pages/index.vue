@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage :title="$t('breadcrumbs.index')">
+  <VeoPage
+    :title="$t('breadcrumbs.index')"
+    data-component-name="unit-selection-page"
+  >
     <div class="text-body-1 my-4">
       {{ $t('unitpicker') }}
     </div>

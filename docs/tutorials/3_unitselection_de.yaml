@@ -5,8 +5,7 @@ exact: true
 lang: de
 steps:
   - title: 'Die Unitauswahl'
-# todo4nbrx: data-component erstellen
-    element: '#app > div.v-application--wrap > main > div'
+    element: '[data-component-name=unit-selection-page]'
     intro: Auf der Seite Unitauswahl wählen Sie eine der verfügbaren Units zur weiteren Bearbeitung aus.
   - title: 'Verfügbare Units'
     element: '[data-component-name=unit-selection-available-units]'
