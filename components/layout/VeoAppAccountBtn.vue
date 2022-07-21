@@ -76,8 +76,11 @@
           :href="accountLink"
           target="_blank"
         >
-          <v-list-item-title>
+          <v-list-item-title class="d-flex">
             {{ $t('myAccount') }}
+            <v-icon x-small>
+              {{ mdiOpenInNew }}
+            </v-icon>
           </v-list-item-title>
           <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
         </v-list-item>
@@ -102,6 +105,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
+import { mdiOpenInNew } from '@mdi/js';
 
 import { IVeoUnit } from '~/types/VeoTypes';
 
@@ -146,13 +150,14 @@ export default defineComponent({
 
     return {
       accountLink,
-      t,
-
       displayDeploymentDetails,
       initials,
       maxUnits,
       menuVisible,
-      units
+      units,
+
+      mdiOpenInNew,
+      t
     };
   }
 });
