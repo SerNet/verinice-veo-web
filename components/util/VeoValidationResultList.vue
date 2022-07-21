@@ -88,7 +88,7 @@
                   </v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  {{ reason.description.en }}
+                  {{ reason.description[locale] || Object.values(reason.description)[0] }}
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -131,7 +131,7 @@ export default defineComponent({
     }
   },
   setup() {
-    const { t } = useI18n();
+    const { locale, t } = useI18n();
 
     const formattedActions: (actions: VeoSchemaValidatorMessage['actions']) => INestedMenuEntries[] = (actions) =>
       (actions || []).map((action) => ({
@@ -142,6 +142,7 @@ export default defineComponent({
 
     return {
       formattedActions,
+      locale,
 
       t,
       mdiCogOutline,
