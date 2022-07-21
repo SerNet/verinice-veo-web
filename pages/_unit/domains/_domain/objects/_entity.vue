@@ -74,10 +74,9 @@
             :domain-id="domainId"
             :preselected-sub-type="preselectedSubType"
             :valid.sync="isFormValid"
-            :disabled-inputs="disabledInputs"
+            :additional-context="additionalContext"
             :object-meta-data.sync="metaData"
             :inspection-results="inspectionResults"
-            @input="onFormInput"
             @show-revision="onShowRevision"
             @create-dpia="createDPIADialogVisible = true"
             @link-dpia="linkObjectDialogVisible = true"
@@ -165,8 +164,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref, useAsync, WritableComputedRef, useRouter, watch, onUnmounted } from '@nuxtjs/composition-api';
-import { cloneDeep, pick, upperFirst } from 'lodash';
+import { computed, defineComponent, onUnmounted, ref, useContext, useFetch, useRoute, Ref, useAsync, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
+import { cloneDeep, isEqual, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
@@ -202,8 +201,6 @@ export default defineComponent({
     const { linkObject } = useVeoObjectUtilities();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
 
-    const preselectedSubType = computed<string | undefined>(() => route.value.query.subType as any);
-
     const objectParameter = computed(() => separateUUIDParam(route.value.params.entity));
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
@@ -221,6 +218,7 @@ export default defineComponent({
       modifiedObject.value = cloneDeep(object.value);
       metaData.value = cloneDeep(object.value.domains[domainId.value]);
       inspectionResults.value = await $api.entity.fetchInspections(object.value.type, object.value.id, domainId.value);
+      getAdditionalContext();
     });
 
     // Breadcrumb extensions
@@ -304,17 +302,13 @@ export default defineComponent({
 
     // Forms part specific stuff
     const objectSchema: Ref<IVeoObjectSchema | null> = useAsync(() => $api.schema.fetch(objectParameter.value.type, [domainId.value]));
+    const preselectedSubType = computed<string | undefined>(() => route.value.query.subType || (object.value?.domains?.[domainId.value]?.subType as any));
 
-    const isFormDirty = ref(false);
+    const isFormDirty = computed(() => !isEqual(object.value, modifiedObject.value));
     const isFormValid = ref(false);
-
-    function onFormInput() {
-      isFormDirty.value = true;
-    }
 
     // Form actions
     function resetForm() {
-      isFormDirty.value = false;
       modifiedObject.value = cloneDeep(object.value);
     }
 
@@ -333,7 +327,6 @@ export default defineComponent({
           modifiedObject.value.$etag = object.value.$etag;
           await $api.entity.update(objectParameter.value.type, objectParameter.value.id, modifiedObject.value);
           loadObject();
-          isFormDirty.value = false;
           formDataIsRevision.value = false;
           displaySuccessMessage(successText);
         }
@@ -362,7 +355,6 @@ export default defineComponent({
 
     function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: true) {
       const displayRevisionCallback = () => {
-        isFormDirty.value = false;
         formDataIsRevision.value = isRevision;
 
         // We have to stringify the content and then manually add the host, as the history api currently doesn't support absolute urls 18-01-2022
@@ -410,20 +402,33 @@ export default defineComponent({
     };
 
     // disabling inputs
-    const disabledInputs = computed<string[]>(() => {
-      const disabledInputs: string[] = [];
+    const additionalContext = ref({});
 
-      if (object.value?.domains?.[domainId.value]?.subType) {
-        disabledInputs.push(`#/properties/domains/properties/${domainId.value}/properties/subType`);
-      }
+    const getAdditionalContext = () => {
+      const disabledSubType = object.value?.domains?.[domainId.value]?.subType
+        ? {
+            [`#/properties/domains/properties/${domainId.value}/properties/subType`]: {
+              formSchema: { disabled: true }
+            }
+          }
+        : {};
 
-      return disabledInputs;
-    });
+      const disabledRiskDefinition = object.value?.domains?.[domainId.value]?.riskDefinition
+        ? {
+            [`#/properties/domains/properties/${domainId.value}/properties/riskDefinition`]: {
+              formSchema: { disabled: true }
+            }
+          }
+        : {};
+      additionalContext.value = { ...disabledSubType, ...disabledRiskDefinition };
+    };
+
+    watch(() => () => domainId.value, getAdditionalContext, { deep: true, immediate: true });
 
     return {
       VeoAlertType,
+      additionalContext,
       createDPIADialogVisible,
-      disabledInputs,
       domainId,
       entityModifiedDialogVisible,
       formDataIsRevision,
@@ -434,7 +439,6 @@ export default defineComponent({
       metaData,
       modifiedObject,
       onContinueNavigation,
-      onFormInput,
       onDPIACreated,
       onDPIALinked,
       onShowRevision,

@@ -198,7 +198,6 @@ import { differenceBy, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { controlTypeAlternatives, IControlType } from '~/types/VeoEditor';
-import { BaseObject } from '~/components/forms/utils';
 import {
   IVeoFormSchemaCustomTranslationEvent,
   IVeoFormSchemaItem,
@@ -207,6 +206,7 @@ import {
   IVeoTranslationCollection
 } from '~/types/VeoTypes';
 import { deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
+import { IBaseObject } from '~/lib/utils';
 
 interface IProps {
   value: boolean;
@@ -275,7 +275,7 @@ export default defineComponent<IProps>({
      * General variables
      */
 
-    const defaults: BaseObject = {
+    const defaults: IBaseObject = {
       direction: 'horizontal'
     };
 

@@ -127,5 +127,11 @@ export default {
     dateTime: 'Datum und Uhrzeit',
     text: 'Text',
     uri: 'URI'
+  },
+
+  error: {
+    format: 'Das Feld "{field}" muss dem Format "{format}" entsprechen',
+    required: 'Das Feld "{field}" muss ausgefüllt sein',
+    required_link: 'Der {position} Link in "{field}" muss auf ein Objekt zeigen oder entfernt werden'
   }
 };

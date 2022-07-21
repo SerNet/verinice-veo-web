@@ -15,22 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 import flushPromises from 'flush-promises';
 
-import { install as VeeValidate } from '@/plugins/vee-validate';
 import VeoForm from '~/components/forms/VeoForm.vue';
-import { Renderable } from '~/types/renderable';
-Vue.use(VeeValidate);
 
 const vuetify = new Vuetify();
 
 describe('VeoForm.vue', () => {
   it('should render checkbox element', async () => {
-    const form: Renderable = {
-      schema: {
+    const form = {
+      objectSchema: {
         type: 'object',
         properties: {
           isMarried: {
@@ -38,7 +34,7 @@ describe('VeoForm.vue', () => {
           }
         }
       },
-      ui: {
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -70,7 +66,7 @@ describe('VeoForm.vue', () => {
     wrapper.vm.$parent.$forceUpdate();
     await wrapper.vm.$nextTick();
 
-    const controlElement = wrapper.find('.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control');
+    const controlElement = wrapper.find('.vf-wrapper > .vf-layout > .flex-column > .vf-form-element');
 
     expect(controlElement.findAll('.v-input.v-input--checkbox')).toHaveLength(1);
     expect(controlElement.findAll('input')).toHaveLength(1);

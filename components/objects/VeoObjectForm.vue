@@ -34,17 +34,14 @@
               <VeoForm
                 v-if="!formLoading && objectSchema && !loading"
                 v-model="objectData"
-                :schema="objectSchema"
-                :ui="currentFormSchema && currentFormSchema.content"
-                :object-meta-data="objectMetaData"
-                :general-translation="translations && translations[locale]"
-                :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
-                :error-messages.sync="formErrors"
+                :object-schema="objectSchema"
+                :form-schema="currentFormSchema && currentFormSchema.content"
+                :meta-data="objectMetaData"
+                :additional-context="localAdditionalContext"
                 :reactive-form-actions="reactiveFormActions"
-                :disabled="disabled"
                 :object-creation-disabled="objectCreationDisabled"
-                :disabled-inputs="disabledInputs"
-                :domain-id="domainId"
+                :translations="mergedTranslations"
+                @update:messages="formErrors = $event"
               />
               <VeoObjectFormSkeletonLoader v-else />
             </v-card-text>
@@ -198,10 +195,14 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst, merge, throttle } from 'lodash';
 import { mdiEyeOutline, mdiFormatListBulleted, mdiHistory, mdiInformationOutline } from '@mdi/js';
 
+import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/forms/types';
+import { getRiskAdditionalContext, getStatusAdditionalContext } from '~/components/forms/additionalContext';
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoDomain, IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
+
+import VeoForm from '~/components/forms/VeoForm.vue';
 
 enum SIDE_CONTAINERS {
   HISTORY,
@@ -212,6 +213,7 @@ enum SIDE_CONTAINERS {
 
 export default defineComponent({
   name: 'VeoObjectForm',
+  components: { VeoForm },
   props: {
     value: {
       type: Object,
@@ -237,9 +239,9 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    disabledInputs: {
-      type: Array as PropType<String[]>,
-      default: () => []
+    additionalContext: {
+      type: Object as PropType<IVeoFormsAdditionalContext>,
+      default: () => {}
     },
     domainId: {
       type: String,
@@ -276,14 +278,31 @@ export default defineComponent({
 
     // Formschema/display stuff
     const translations: Ref<{ [key: string]: IVeoTranslationCollection } | undefined> = ref(undefined);
+    const mergedTranslations = computed(() => merge(translations.value, currentFormSchema.value?.translation || {}));
     const formSchemas: Ref<IVeoFormSchemaMeta[]> = ref([]);
     const currentFormSchema: Ref<undefined | IVeoFormSchema> = ref(undefined);
 
     const domain = ref<IVeoDomain | undefined>();
     const { fetch: fetchDomain } = useFetch(async () => {
       domain.value = await $api.domain.fetch(props.domainId);
+      getAdditionalContext();
     });
     watch(() => props.domainId, fetchDomain);
+
+    const localAdditionalContext = ref<IVeoFormsAdditionalContext>({});
+
+    const getAdditionalContext = () => {
+      localAdditionalContext.value = {
+        ...props.additionalContext,
+        ...(props.objectSchema && domain.value ? getRiskAdditionalContext(props.objectSchema.title, domain.value) : {}),
+        ...(props.value && props.objectSchema && translations.value
+          ? getStatusAdditionalContext(props.value, props.objectSchema, translations.value[locale.value], props.domainId)
+          : {})
+      };
+    };
+
+    watch(() => props.objectSchema, getAdditionalContext, { deep: true });
+    watch(() => props.additionalContext, getAdditionalContext, { deep: true });
 
     const {
       fetch,
@@ -331,7 +350,7 @@ export default defineComponent({
 
     const selectedDisplayOption = ref('objectschema');
     const displayOptions: ComputedRef<{ text: string; value: string | undefined }[]> = computed(() => {
-      const currentSubType = props.value?.domains?.[props.domainId]?.subType;
+      const currentSubType = objectData.value?.domains?.[props.domainId]?.subType;
       const availableFormSchemas: { text: string; value: string | undefined }[] = formSchemas.value
         .filter((formSchema) => formSchema.modelType === props.objectSchema?.title && (!currentSubType || currentSubType === formSchema.subType))
         .map((formSchema) => ({
@@ -359,7 +378,7 @@ export default defineComponent({
       () => props.preselectedSubType,
       (newValue) => {
         const formSchemaId = getFormschemaIdBySubType(newValue);
-        if (newValue && formSchemaId) {
+        if (formSchemaId) {
           selectedDisplayOption.value = formSchemaId;
         } else {
           selectedDisplayOption.value = 'objectschema';
@@ -376,17 +395,17 @@ export default defineComponent({
         emit('input', newValue);
       }
     });
-    const formErrors: Ref<any[]> = ref([]);
+    const formErrors: Ref<Map<string, string[]>> = ref(new Map());
 
     watch(
       () => formErrors.value,
       () => {
-        emit('update:valid', formErrors.value.length === 0);
+        emit('update:valid', !formErrors.value.size);
       }
     );
 
-    const reactiveFormActions: ComputedRef<IVeoReactiveFormAction[]> = computed(() => {
-      return props.objectSchema?.title === 'person' ? personReactiveFormActions() : [];
+    const reactiveFormActions: ComputedRef<IVeoFormsReactiveFormActions> = computed(() => {
+      return props.objectSchema?.title === 'person' ? personReactiveFormActions() : {};
     });
 
     // side menu stuff
@@ -394,7 +413,7 @@ export default defineComponent({
 
     // Messages stuff
     const messages = computed(() => ({
-      errors: formErrors.value.map((entry) => ({ code: entry.pointer, message: entry.message })),
+      errors: Array.from(formErrors.value).map(([objectSchemaPointer, messages]) => ({ code: objectSchemaPointer, message: messages[0] })),
       warnings: props.inspectionResults.filter((warning) => warning.severity === 'WARNING').map((warning) => formatWarning(warning)),
       information: objectInformation.value
     }));
@@ -494,6 +513,7 @@ export default defineComponent({
     );
 
     return {
+      localAdditionalContext,
       currentFormSchema,
       displayOptions,
       formErrors,
@@ -501,11 +521,11 @@ export default defineComponent({
       formSchemaHasGroups,
       locale,
       messages,
+      mergedTranslations,
       objectData,
       reactiveFormActions,
       selectedDisplayOption,
       selectedSideContainer,
-      translations,
 
       mdiEyeOutline,
       mdiFormatListBulleted,

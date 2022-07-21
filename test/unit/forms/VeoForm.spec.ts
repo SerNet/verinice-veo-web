@@ -20,10 +20,7 @@ import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
-import { Renderable } from '~/types/renderable';
 
-import { install as VeeValidate } from '~/plugins/vee-validate';
-Vue.use(VeeValidate);
 Vue.use(Vuetify);
 const vuetify = new Vuetify();
 
@@ -33,8 +30,8 @@ describe('VeoForm.vue', () => {
       form.value = newValue;
     };
 
-    const form: Renderable = {
-      schema: {
+    const form = {
+      objectSchema: {
         type: 'object',
         properties: {
           name: {
@@ -45,7 +42,7 @@ describe('VeoForm.vue', () => {
           }
         }
       },
-      ui: {
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'horizontal',
