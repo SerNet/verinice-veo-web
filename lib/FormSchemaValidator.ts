@@ -18,7 +18,7 @@
 import { JsonPointer } from 'json-ptr';
 
 import { VeoSchemaValidatorMessage, VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
-import { IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoFormSchema, IVeoObjectSchema } from '~/types/VeoTypes';
 
 export type VeoSchemaValidatorRequiredProperty = string | { key: string; value: any };
 
@@ -34,7 +34,7 @@ export default class FormSchemaValidator {
    *
    * @returns VeoSchemaValidatorValidationResult Contains all errors and warnings generated while checking the schema.
    */
-  public validate(schema: any, objectSchema: IVeoObjectSchema | undefined = undefined): VeoSchemaValidatorValidationResult {
+  public validate(schema: IVeoFormSchema | IVeoFormSchema['content'], objectSchema: IVeoObjectSchema | undefined = undefined): VeoSchemaValidatorValidationResult {
     if (objectSchema) {
       this.propertiesExistInObjectSchema(schema, objectSchema);
     } else {
@@ -47,6 +47,8 @@ export default class FormSchemaValidator {
   private propertiesExistInObjectSchema(formSchema: any, objectSchema: IVeoObjectSchema) {
     if (formSchema.content) {
       this.elementExists(formSchema.content, objectSchema, `#/`, undefined);
+    } else if (formSchema.elements) {
+      this.elementExists(formSchema, objectSchema, `#/`, undefined);
     } else {
       this.warnings.push({ code: 'W_CONTENT_MISSING', message: 'This formschema has no controls and thus no use.' });
     }

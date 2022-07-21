@@ -47,7 +47,7 @@ import Control from './controls/Control';
 import Widget from './widgets/Widget';
 import VeoGroup from './layouts/VeoGroup.vue';
 import VeoLabel from './labels/VeoLabel.vue';
-import VeoValidationResultList from '~/components/util/VeoValidationResultList.vue';
+import VeoFormValidationFailed from './VeoFormValidationFailed.vue';
 import { IBaseObject } from '~/lib/utils';
 import { IVeoFormSchema, IVeoFormSchemaGeneratorOptions, IVeoObjectSchema } from '~/types/VeoTypes';
 import FormSchemaValidator from '~/lib/FormSchemaValidator';
@@ -190,7 +190,7 @@ export default defineComponent({
 
     // Form schema validation
     const formSchemaValidator = new FormSchemaValidator();
-    const formSchemaFitsObjectSchema = computed<true | VeoSchemaValidatorValidationResult>(() => formSchemaValidator.validate(localFormSchema.value, props.objectSchema));
+    const formSchemaFitsObjectSchema = computed<VeoSchemaValidatorValidationResult>(() => formSchemaValidator.validate(localFormSchema.value, props.objectSchema));
 
     // Object data validation
     const errorMessages = ref(new Map<string, string[]>());
@@ -360,8 +360,8 @@ export default defineComponent({
     };
 
     return () =>
-      !formSchemaFitsObjectSchema.value
-        ? h(VeoValidationResultList, { props: { items: (formSchemaFitsObjectSchema.value as VeoSchemaValidatorValidationResult).errors } })
+      !formSchemaFitsObjectSchema.value.valid
+        ? h(VeoFormValidationFailed, { props: { errors: formSchemaFitsObjectSchema.value.errors } })
         : h('div', { class: 'vf-wrapper', key: keyModifier.value }, [createComponent(localFormSchema.value, '#')]);
   }
 });
