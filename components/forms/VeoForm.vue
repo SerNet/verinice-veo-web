@@ -360,8 +360,8 @@ export default defineComponent({
     };
 
     return () =>
-      !formSchemaFitsObjectSchema.value.valid
-        ? h(VeoFormValidationFailed, { props: { errors: formSchemaFitsObjectSchema.value.errors } })
+      !formSchemaFitsObjectSchema.value?.valid
+        ? h(VeoFormValidationFailed, { props: { errors: formSchemaFitsObjectSchema.value?.errors } })
         : h('div', { class: 'vf-wrapper', key: keyModifier.value }, [createComponent(localFormSchema.value, '#')]);
   }
 });

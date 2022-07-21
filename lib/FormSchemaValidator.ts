@@ -35,6 +35,8 @@ export default class FormSchemaValidator {
    * @returns VeoSchemaValidatorValidationResult Contains all errors and warnings generated while checking the schema.
    */
   public validate(schema: IVeoFormSchema | IVeoFormSchema['content'], objectSchema: IVeoObjectSchema | undefined = undefined): VeoSchemaValidatorValidationResult {
+    this.errors = [];
+    this.warnings = [];
     if (objectSchema) {
       this.propertiesExistInObjectSchema(schema, objectSchema);
     } else {
