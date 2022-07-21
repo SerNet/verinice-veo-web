@@ -529,9 +529,9 @@ export default defineComponent({
     "messages": "messages",
     "objects": "objects",
     "objectView": "object view",
-    "piaMandatory": "Privacy impact assesment required.",
-    "piaMandatoryUnknown": "Cannot determine if a privacy assesment is required.",
-    "piaNotMandatory": "No privacy impact assesment required.",
+    "piaMandatory": "Privacy impact assessment required.",
+    "piaMandatoryUnknown": "Cannot determine if a privacy assessment is required.",
+    "piaNotMandatory": "No privacy impact assessment required.",
     "tableOfContents": "contents",
     "viewAs": "view as"
   },

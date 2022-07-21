@@ -402,7 +402,7 @@ export default defineComponent({
     "clone": "duplicated",
     "cloneObject": "clone object",
     "deleteObject": "delete object",
-    "dpiaMandatory": "Privacy impact assesment required",
+    "dpiaMandatory": "Privacy impact assessment required",
     "errors": {
       "clone": "Could not clone object",
       "delete": "Could not delete object"

@@ -48,7 +48,7 @@ export const WidgetDefinition: IVeoFormsWidgetDefinition = {
   name: 'PiaMandatoryWidget',
   description: {
     de: 'Fügt einen Text im Formschema ein, der definiert ob eine Datenschutzfolgeabschätzung nötig ist.',
-    en: 'Adds a label to the form, specifing whether a privacy impact assesment is mandatory.'
+    en: 'Adds a label to the form, specifing whether a privacy impact assessment is mandatory.'
   }
 };
 
@@ -82,10 +82,10 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "piaMandatory": "Privacy impact assesment required",
-    "piaMandatoryText": "Based on the data of this object, a privacy impact assesment is required.{0}Please create one using the button in the warnings tab on the right.",
-    "piaNotMandatory": "Privacy impact assesment not required",
-    "piaNotMandatoryText": "A privacy impact assesment is not required for this object."
+    "piaMandatory": "Privacy impact assessment required",
+    "piaMandatoryText": "Based on the data of this object, a privacy impact assessment is required.{0}Please create one using the button in the warnings tab on the right.",
+    "piaNotMandatory": "Privacy impact assessment not required",
+    "piaNotMandatoryText": "A privacy impact assessment is not required for this object."
   },
   "de": {
     "piaMandatory": "Datenschutzfolgeabschätzung verpflichtend",
