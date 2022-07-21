@@ -199,7 +199,6 @@ export default Vue.extend({
       loading: false as boolean,
       objectType: undefined as undefined | string,
       userSelectedSubType: undefined as undefined | string,
-      forms: [] as IVeoFormSchemaMeta[],
       filterDialogVisible: false,
       filterKeys: ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'],
       formschemas: [] as IVeoFormSchemaMeta[],
@@ -208,7 +207,6 @@ export default Vue.extend({
     };
   },
   async fetch() {
-    this.forms = await this.$api.form.fetchAll();
     const reports: IVeoReportsMeta = await this.$api.report.fetchAll();
     this.report = reports[this.reportId];
 
@@ -219,17 +217,12 @@ export default Vue.extend({
 
     this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
   },
-  head(): any {
-    return {
-      title: this.title
-    };
-  },
   computed: {
     outputFormat(): string {
       return this.report?.outputTypes[0].split('/').pop() || '';
     },
     title(): string {
-      return this.$t('create', { type: this.report?.name[this.$i18n.locale] || '', format: upperCase(this.outputFormat || '') });
+      return this.$t('create', { type: this.report?.name[this.$i18n.locale] || '', format: upperCase(this.outputFormat || '') }).toString();
     },
     reportId(): string {
       return this.$route.params.type;
@@ -259,7 +252,7 @@ export default Vue.extend({
     },
     subTypes(): { value: string; text: string }[] {
       return (this.currentTargetType?.subTypes || []).map((entry) => ({
-        text: this.forms.find((form) => form.subType === entry)?.name[this.$i18n.locale] || '',
+        text: this.formschemas.find((form) => form.subType === entry)?.name[this.$i18n.locale] || '',
         value: entry
       }));
     },
@@ -314,7 +307,7 @@ export default Vue.extend({
           this.generatingReport = true;
           const result = new Blob([await this.$api.report.create(this.reportId, body)], { type: outputType });
 
-          const downloadButton = this.$refs.downloadButton;
+          const downloadButton = this.$refs.downloadButton as HTMLAnchorElement;
           downloadButton.href = URL.createObjectURL(result);
           downloadButton.download = `${this.report.name[this.$i18n.locale]}.${outputType.split('/').pop() || outputType}`;
           downloadButton.click();

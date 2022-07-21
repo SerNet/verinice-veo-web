@@ -77,11 +77,6 @@ export default defineComponent<IProps>({
     return {
       t
     };
-  },
-  head(): any {
-    return {
-      title: 'verinice.'
-    };
   }
 });
 </script>

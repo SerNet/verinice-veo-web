@@ -34,7 +34,7 @@
           >
             {{ item.icon }}
           </v-icon>
-          <template v-if="item.asyncText">
+          <template v-else-if="item.asyncText">
             <template v-if="asyncTextMap[item.param]">
               {{ asyncTextMap[item.param] }}
             </template>
@@ -46,7 +46,7 @@
             />
           </template>
         
-          <template v-if="item.text">
+          <template v-else-if="item.text">
             {{ item.text }}
           </template>
         </template>
@@ -125,24 +125,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, del, useRoute, useContext, PropType, computed, ComputedRef, watch, set, reactive } from '@nuxtjs/composition-api';
+import { defineComponent, del, useRoute, useContext, computed, ComputedRef, watch, set, reactive, useMeta } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { last } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal, mdiHomeOutline } from '@mdi/js';
-import { separateUUIDParam } from '~/lib/utils';
 
-export interface IVeoBreadcrumb {
-  disabled?: boolean;
-  exact?: boolean;
-  key: string;
-  to: string;
-  text?: string;
-  asyncText?: (param: string, value?: string) => Promise<string>;
-  icon?: any;
-  position: number;
-  index: number;
-  param: string;
-}
+import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
+import { separateUUIDParam } from '~/lib/utils';
 
 interface IVeoBreadcrumbReplacementMapBreadcrumb {
   disabled?: boolean;
@@ -157,11 +146,11 @@ interface IVeoBreadcrumbReplacementMapBreadcrumb {
 
 export default defineComponent({
   props: {
-    customBreadcrumbs: {
-      type: Array as PropType<IVeoBreadcrumb[]>,
-      default: () => []
-    },
     overrideBreadcrumbs: {
+      type: Boolean,
+      default: false
+    },
+    writeToTitle: {
       type: Boolean,
       default: false
     }
@@ -170,6 +159,8 @@ export default defineComponent({
     const { t, locale } = useI18n();
     const route = useRoute();
     const { $api } = useContext();
+    const { title } = useMeta();
+    const { breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
 
     // After this position, all breadcrumbs will be moved to a menu to avoid scrolling
     const BREADCRUMB_BREAKOFF = 4;
@@ -196,7 +187,12 @@ export default defineComponent({
       [
         ':domain',
         {
-          icon: mdiHomeOutline
+          icon: mdiHomeOutline,
+          asyncText: async (_param, value) => {
+            const { id } = separateUUIDParam(value);
+            const object = await $api.domain.fetch(id);
+            return object.name;
+          }
         }
       ],
       [
@@ -278,11 +274,18 @@ export default defineComponent({
         })
     );
 
-    const breadcrumbs = computed(() =>
-      props.overrideBreadcrumbs
-        ? props.customBreadcrumbs
-        : [...generatedBreadcrumbs.value, ...props.customBreadcrumbs].sort((breadcrumbA, breadcrumbB) => breadcrumbA.position - breadcrumbB.position)
-    );
+    const breadcrumbs = computed(() => {
+      let _breadcrumbs: (IVeoBreadcrumb & { loading?: boolean })[] = [];
+      if (!props.overrideBreadcrumbs) {
+        _breadcrumbs = [...generatedBreadcrumbs.value];
+      }
+
+      for (const customBreadcrumb of customBreadcrumbs.value) {
+        _breadcrumbs.push({ ...customBreadcrumb, index: _breadcrumbs.length });
+      }
+
+      return _breadcrumbs.sort((breadcrumbA, breadcrumbB) => breadcrumbA.position - breadcrumbB.position);
+    });
 
     const displayedBreadcrumbs = computed(() => breadcrumbs.value.slice(0, BREADCRUMB_BREAKOFF + 1)); // Use one breadcrumb more than would be displayed to display the "more"-button
     const slicedBreadcrumbs = computed(() => breadcrumbs.value.slice(BREADCRUMB_BREAKOFF + 1)); // Start with the breadcrumb that wouldn't be displayed
@@ -310,6 +313,20 @@ export default defineComponent({
       }
     );
 
+    // Page title related stuff
+    const updateTitle = () => {
+      if (props.writeToTitle) {
+        title.value = breadcrumbs.value
+          .map((entry) => (entry.asyncText !== undefined && asyncTextMap?.[entry.param] ? asyncTextMap[entry.param] : entry.text))
+          .reverse()
+          .slice(0, BREADCRUMB_BREAKOFF)
+          .join(' - ');
+      }
+    };
+
+    watch(() => asyncTextMap, updateTitle, { deep: true, immediate: true });
+    watch(() => breadcrumbs.value, updateTitle, { deep: true, immediate: true });
+
     return {
       asyncTextMap,
       breadcrumbs,
@@ -321,6 +338,7 @@ export default defineComponent({
       mdiChevronRight,
       mdiDotsHorizontal
     };
-  }
+  },
+  head: {}
 });
 </script>

@@ -167,13 +167,7 @@ export default defineComponent({
       domains.value = await $api.domain.fetchUnitDomains(unitId.value);
     });
 
-    const selectItems = computed(() => {
-      const items = domains.value.map((domain) => ({ value: domain.id, text: domain.name }));
-
-      items.push({ value: 'more', text: t('breadcrumbs.more_modules').toString() });
-
-      return items;
-    });
+    const selectItems = computed(() => domains.value.map((domain) => ({ value: domain.id, text: domain.name })).concat({ value: 'more', text: t('breadcrumbs.more').toString() }));
 
     watch(
       () => unitId.value,

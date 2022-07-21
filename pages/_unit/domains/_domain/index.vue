@@ -114,7 +114,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useMeta, useRoute, useRouter } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoDomainStatusCount } from '~/plugins/api/domain';
@@ -180,9 +180,6 @@ export default defineComponent({
 
     // page title
     const title = computed(() => domain.value?.name || t('domainOverview').toString());
-    useMeta(() => ({
-      title: title.value
-    }));
 
     return {
       chartData,
@@ -193,8 +190,7 @@ export default defineComponent({
 
       t
     };
-  },
-  head: {}
+  }
 });
 </script>
 
