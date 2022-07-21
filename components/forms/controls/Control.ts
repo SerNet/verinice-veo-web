@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { defineComponent, h } from '@nuxtjs/composition-api';
+import { computed, defineComponent, h } from '@nuxtjs/composition-api';
 import { maxBy } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
@@ -56,23 +56,17 @@ export default defineComponent({
   setup(props, { emit, slots }) {
     const { locale } = useI18n();
 
-    const controls: { control: any; truthyConditions: number }[] = [];
-
-    for (let i = 0; i < AVAILABLE_CONTROLS.length; i++) {
-      if (AVAILABLE_CONTROLS[i].CONTROL_DEFINITION.conditions) {
-        if (props.debug) {
+    const controls = AVAILABLE_CONTROLS.flatMap((control) => {
+      const definition = control.CONTROL_DEFINITION;
+      if (definition) {
+        if (process.dev && props.debug) {
           // eslint-disable-next-line no-console
-          console.log(
-            `VeoForm::Control: Checking whether ${
-              AVAILABLE_CONTROLS[i].CONTROL_DEFINITION.name[locale.value] || AVAILABLE_CONTROLS[i].CONTROL_DEFINITION.name[0]
-            } meets all conditions...`
-          );
+          console.log(`VeoForm::Control: Checking whether ${definition.name[locale.value] || definition.name[0]} meets all conditions...`);
         }
-        // @ts-ignore
-        const evaluatedConditions: boolean[] = AVAILABLE_CONTROLS[i].CONTROL_DEFINITION.conditions(props);
+        const evaluatedConditions: boolean[] = definition.conditions?.(props) || [];
         const truthyConditions = evaluatedConditions.filter((condition) => condition).length;
 
-        if (props.debug) {
+        if (process.dev && props.debug) {
           for (let j = 0; j < evaluatedConditions.length; j++) {
             if (evaluatedConditions[j]) {
               // eslint-disable-next-line no-console
@@ -85,12 +79,13 @@ export default defineComponent({
         }
 
         if (evaluatedConditions.length === truthyConditions) {
-          controls.push({ control: AVAILABLE_CONTROLS[i], truthyConditions });
+          return [{ control, truthyConditions }];
         }
       }
-    }
+      return [];
+    });
 
-    if (props.debug) {
+    if (process.dev && props.debug) {
       for (const control of controls) {
         // eslint-disable-next-line no-console
         console.log(
@@ -99,9 +94,14 @@ export default defineComponent({
       }
     }
 
+    const items = computed(() => {
+      const items = props.objectSchema.enum || [props.objectSchema.items || []].flat().flatMap((def) => (typeof def === 'object' ? def.enum || [] : []));
+      return items.map((item, index) => (props.options.enum ? { text: props.options.enum[index], value: item } : { text: props.translations[String(item)] || item, value: item }));
+    });
+
     return () =>
       h(maxBy(controls, 'truthyConditions')?.control.default, {
-        props,
+        props: { ...props, items: items.value },
         scopedSlots: {
           default: () => (slots.default ? slots.default() : undefined)
         },

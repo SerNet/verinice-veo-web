@@ -96,6 +96,10 @@ export const VeoFormsControlProps = {
   index: {
     type: Number,
     default: undefined
+  },
+  items: {
+    type: Array as PropType<{ text: string; value: any }[]>,
+    default: () => []
   }
 };
 

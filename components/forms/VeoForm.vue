@@ -272,7 +272,7 @@ export default defineComponent({
 
     const createControl = (element: IVeoFormControlFormSchema, formSchemaPointer: string) => {
       if (!element.scope) {
-        if (props.debug) {
+        if (process.dev && props.debug) {
           // eslint-disable-next-line no-console
           console.warn(`VeoForm::createControl: Control ${formSchemaPointer} has no scope: ${JSON.stringify(element)}`);
         }
@@ -281,7 +281,7 @@ export default defineComponent({
 
       // Special handling for link attributes, as they don't have a complete pointer in the form schema as they can only exist inside of their link
       if (element.scope.startsWith('#/properties/attributes')) {
-        if (props.debug) {
+        if (process.dev && props.debug) {
           // eslint-disable-next-line no-console
           console.warn(`VeoForm::createControl: Custom Link attribute detected: ${element.scope}. Searching for custom link...`);
         }

@@ -87,23 +87,8 @@ export default defineComponent({
   setup(props) {
     const isDirectionVertical = computed(() => props.options.direction === 'vertical');
 
-    const items = computed(() => {
-      let items: any[] = [];
-
-      if (props.objectSchema.enum) {
-        items = props.objectSchema.enum;
-        // @ts-ignore
-      } else if (props.objectSchema.items?.enum) {
-        // @ts-ignore
-        items = props.objectSchema.items?.enum;
-      }
-
-      return items.map((item, index) => (props.options.enum ? { text: props.options.enum[index], value: item } : { text: props.translations[item] || item, value: item }));
-    });
-
     return {
       isDirectionVertical,
-      items,
 
       getControlErrorMessages,
       mdiClose

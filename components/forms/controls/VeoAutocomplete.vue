@@ -64,22 +64,7 @@ export default defineComponent({
     // @ts-ignore
     const multiple = computed(() => props.objectSchema.type === 'array' && typeof props.objectSchema.items?.enum !== 'undefined');
 
-    const items = computed(() => {
-      let items: any[] = [];
-
-      if (props.objectSchema.enum) {
-        items = props.objectSchema.enum;
-        // @ts-ignore
-      } else if (props.objectSchema.items?.enum) {
-        // @ts-ignore
-        items = props.objectSchema.items?.enum;
-      }
-
-      return items.map((item, index) => (props.options.enum ? { text: props.options.enum[index], value: item } : { text: props.translations[item] || item, value: item }));
-    });
-
     return {
-      items,
       multiple,
 
       getControlErrorMessages
