@@ -18,7 +18,7 @@
 <template>
   <VeoPageWrapper
     unresponsive-page-widths
-    :page-widths="[{ width: '100%' }, 'auto']"
+    :page-widths="[{ width: '100%', minWidth: 0 }, 'auto']"
   >
     <template #default>
       <VeoPage
@@ -317,15 +317,16 @@ export default defineComponent({
       // Only fetch formschema overview once, as formschemas getting added/changed while the user uses this component is highly unlikely
       if (formSchemas.value.length === 0) {
         formSchemas.value = await $api.form.fetchAll(props.domainId);
+      }
 
-        if (props.preselectedSubType) {
-          const formSchemaId = getFormschemaIdBySubType(props.preselectedSubType);
+      if (props.preselectedSubType) {
+        const formSchemaId = getFormschemaIdBySubType(props.preselectedSubType);
 
-          if (formSchemaId) {
-            selectedDisplayOption.value = formSchemaId;
-          }
+        if (formSchemaId) {
+          selectedDisplayOption.value = formSchemaId;
         }
       }
+
       if (selectedDisplayOption.value !== 'objectschema') {
         currentFormSchema.value = await $api.form.fetch(props.domainId, selectedDisplayOption.value);
       } else {
