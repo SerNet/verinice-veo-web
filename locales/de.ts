@@ -105,22 +105,19 @@ export default {
   'unit.index.title': 'Unit-Dashboard',
   'unit.select.label': 'Unit',
 
-  'breadcrumbs.all': 'Alle',
-  'breadcrumbs.catalogs': 'Kataloge',
-  'breadcrumbs.domain': 'Modul',
-  'breadcrumbs.reports': 'Reports',
-  'breadcrumbs.risks': 'Risikodefinitionen',
-  'breadcrumbs.help': 'Handbuch',
-  'breadcrumbs.detail_view': 'Detailansicht',
-  'breadcrumbs.editor': 'Editoren',
-  'breadcrumbs.forms': 'Formulare',
-  'breadcrumbs.index': 'Unitauswahl',
-  'breadcrumbs.more_modules': 'Weitere Module',
-  'breadcrumbs.objects': 'Objekte',
-  'breadcrumbs.objectschema': 'Objektschema',
-  'breadcrumbs.scopes': 'Scopes',
-  'breadcrumbs.history': 'Verlauf',
-  'breadcrumbs.create': 'Erstellen',
+  breadcrumbs: {
+    catalogs: 'Kataloge',
+    domain: 'Modul',
+    editor: 'Editoren',
+    formschema: 'Formschema Editor',
+    help: 'Handbuch',
+    index: 'Unitauswahl',
+    more: 'Weitere Module',
+    objects: 'Objekte',
+    objectschema: 'Objektschema Editor',
+    reports: 'Reports',
+    risks: 'Risikodefinitionen'
+  },
 
   // temporary until the composition api supports <i18n></i18n>
   saveSchemaError: 'Das Schema konnte nicht aktualisiert werden',
@@ -130,5 +127,11 @@ export default {
     dateTime: 'Datum und Uhrzeit',
     text: 'Text',
     uri: 'URI'
+  },
+
+  error: {
+    format: 'Das Feld "{field}" muss dem Format "{format}" entsprechen',
+    required: 'Das Feld "{field}" muss ausgefüllt sein',
+    required_link: 'Der {position} Link in "{field}" muss auf ein Objekt zeigen oder entfernt werden'
   }
 };

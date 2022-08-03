@@ -88,6 +88,7 @@
           :items="items"
           :loading="fetchState.pending"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
+          :additional-headers="additionalHeaders"
           data-component-name="object-overview-table"
           @page-change="onPageChange"
           @click="openItem"
@@ -159,12 +160,13 @@
 <script lang="ts">
 import { mdiContentCopy, mdiFilter, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
-import { computed, defineComponent, useContext, useFetch, useRoute, useRouter, ref, reactive, watch, useMeta } from '@nuxtjs/composition-api';
+import { computed, defineComponent, h, useContext, useFetch, useRoute, useRouter, ref, reactive, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoTranslations } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
 
@@ -213,9 +215,6 @@ export default defineComponent({
     // current object type and sub type
     const objectType = computed(() => filter.value.objectType);
     const subType = computed(() => filter.value.subType);
-
-    // change page title
-    useMeta(() => ({ title: [upperFirst(objectType.value) || [], t('breadcrumbs.objects')].flat().join(' - ') }));
 
     // fetch objects of objectType
     const { fetchState, fetch } = useFetch(async () => {
@@ -337,9 +336,28 @@ export default defineComponent({
       }
     ]);
 
+    // Additional headers (only if user is viewing processes with subtype PRO_DataProcessing)
+    const additionalHeaders = computed<ObjectTableHeader[]>(() =>
+      filter.value.objectType === 'process' && filter.value.subType === 'PRO_DataProcessing'
+        ? [
+            {
+              priority: 31,
+              order: 51,
+              value: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
+              render: ({ item }) =>
+                h('div', item.domains[domainId.value]?.decisionResults?.piaMandatory?.value ? t('global.button.yes').toString() : t('global.button.no').toString()),
+              text: t('dpiaMandatory').toString(),
+              sortable: false,
+              width: 210
+            }
+          ]
+        : []
+    );
+
     return {
       t,
       actions,
+      additionalHeaders,
       domainId,
       activeFilterKeys,
       clearFilter,
@@ -364,9 +382,6 @@ export default defineComponent({
       updateRouteQuery,
       upperFirst
     };
-  },
-  head(): any {
-    return {};
   }
 });
 </script>
@@ -381,6 +396,7 @@ export default defineComponent({
     "clone": "duplicated",
     "cloneObject": "clone object",
     "deleteObject": "delete object",
+    "dpiaMandatory": "Privacy impact assessment required",
     "errors": {
       "clone": "Could not clone object",
       "delete": "Could not delete object"
@@ -394,6 +410,7 @@ export default defineComponent({
     "clone": "dupliziert",
     "cloneObject": "objekt duplizieren",
     "deleteObject": "objekt löschen",
+    "dpiaMandatory": "Datenschutzfolgeabschätzung verpflichtend",
     "errors": {
       "clone": "Das Objekt konnte nicht dupliziert werden",
       "delete": "Das Objekt konnte nicht gelöscht werden"

@@ -23,8 +23,10 @@
     <template #default>
       <VeoTabs class="mt-6">
         <template #tabs>
-          <v-tab>{{ t('applyEntries') }}</v-tab>
-          <v-tab>
+          <v-tab data-component-name="catalog-hazards-tab">
+            {{ t('applyEntries') }}
+          </v-tab>
+          <v-tab data-component-name="catalog-tom-tab">
             {{ t('applyTOMs') }}
           </v-tab>
         </template>

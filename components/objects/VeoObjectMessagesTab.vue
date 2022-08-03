@@ -36,10 +36,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api';
+import { defineComponent, watch, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+import { useVeoAlerts } from '~/composables/VeoAlert';
 
 export default defineComponent({
   props: {
@@ -50,6 +51,18 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n();
+    const { displayInfoMessage } = useVeoAlerts();
+
+    watch(
+      () => props.messages,
+      (newValue, oldValue) => {
+        for (const message1 of [...newValue.warnings, ...(newValue.information || [])]) {
+          if (!oldValue.warnings.find((message2) => message2.code === message1.code) && !oldValue.information?.find((message2) => message2.code === message1.code)) {
+            displayInfoMessage(t('newMessage').toString(), message1.message, { timeout: 5000 });
+          }
+        }
+      }
+    );
 
     const getMessagesBySeverity = (severity: string) => (props.messages as any)[severity] || [];
 
@@ -69,12 +82,14 @@ export default defineComponent({
     "errors": "errors",
     "information": "information",
     "messages": "messages",
+    "newMessage": "New message",
     "warnings": "warnings"
   },
   "de": {
     "errors": "fehler",
     "information": "informationen",
     "messages": "meldungen",
+    "newMessage": "Neue Meldung",
     "warnings": "warnungen"
   }
 }

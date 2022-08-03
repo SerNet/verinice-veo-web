@@ -1,0 +1,166 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2022  Jonas Heitmann
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<template>
+  <div
+    v-if="options.visible"
+    class="vf-input-date-time vf-form-element"
+  >
+    <v-menu
+      v-model="menu"
+      :close-on-content-click="false"
+      transition="scale-transition"
+      offset-y
+      max-width="350px"
+      min-width="350px"
+    >
+      <template #activator="{ on }">
+        <v-text-field
+          :id="objectSchemaPointer"
+          :value="formattedDateTime"
+          :disabled="disabled || options.disabled"
+          :error-messages="getControlErrorMessages($props)"
+          :label="options && options.label"
+          :class="options && options.class"
+          :clearable="!options.required"
+          hide-details="auto"
+          :prepend-icon="mdiCalendar"
+          hint="DD.MM.YYYY HH:MM"
+          v-on="on"
+          @click:clear="$emit('input', undefined)"
+        />
+      </template>
+      <template #default>
+        <v-sheet color="white">
+          <VeoTabs
+            v-model="activeTab"
+            grow
+          >
+            <template #tabs>
+              <v-tab>
+                <v-icon>{{ mdiCalendar }}</v-icon>
+              </v-tab>
+              <v-tab
+                :disabled="!date"
+              >
+                <v-icon>{{ mdiClockOutline }}</v-icon>
+              </v-tab>
+            </template>
+            <template #items>
+              <v-tab-item>
+                <v-date-picker
+                  :value="date"
+                  color="primary"
+                  no-title
+                  full-width
+                  @input="onDateInput"
+                />
+              </v-tab-item>
+              <v-tab-item>
+                <v-time-picker
+                  :value="time"
+                  color="primary"
+                  format="24hr"
+                  full-width
+                  @input="onTimeInput"
+                />
+              </v-tab-item>
+            </template>
+          </VeoTabs>
+        </v-sheet>
+      </template>
+    </v-menu>
+  </div>
+</template>
+
+<script lang="ts">
+import { computed, defineComponent, ref } from '@nuxtjs/composition-api';
+import { mdiCalendar, mdiClockOutline } from '@mdi/js';
+import { formatISO } from 'date-fns';
+import { useI18n } from 'nuxt-i18n-composable';
+
+import { IVeoFormsElementDefinition } from '../types';
+import { getControlErrorMessages, VeoFormsControlProps } from '../util';
+
+export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
+  code: 'veo-date-time-input',
+  name: {
+    en: 'date time input',
+    de: 'Datums- und Zeiteingabe'
+  },
+  description: {
+    en: 'Lets the user choose a date and time from a calender-like component.',
+    de: 'Lässt den User mithilfe einer kalendermäßigen Komponente ein Datum und die dazugehörige Uhrzeit auswählen.'
+  },
+  conditions: (props) => [props.objectSchema.type === 'string', props.objectSchema.format === 'date-time']
+};
+
+export default defineComponent({
+  name: CONTROL_DEFINITION.code,
+  props: VeoFormsControlProps,
+  setup(props, { emit }) {
+    const { locale } = useI18n();
+
+    // Display stuff
+    const activeTab = ref(0);
+    const menu = ref(false);
+
+    const formattedDateTime = computed({
+      get() {
+        return props.value
+          ? new Date(props.value).toLocaleString(locale.value, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+          : undefined;
+      },
+      set(newValue: string | undefined) {
+        emit('input', newValue ? formatISO(new Date(newValue)) : undefined);
+      }
+    });
+
+    // Input related stuff
+    const timezoneOffset = formatISO(new Date()).split('+')[1];
+
+    const date = computed(() => formatISO(new Date(props.value), { representation: 'date' }));
+
+    const onDateInput = (newValue: string) => {
+      formattedDateTime.value = `${newValue}T${time.value}+${timezoneOffset}`;
+      activeTab.value = 1;
+    };
+
+    const time = computed(() => formatISO(new Date(props.value), { representation: 'time' }).split('+')[0]);
+
+    const onTimeInput = (newValue: string) => {
+      formattedDateTime.value = `${date.value}T${newValue}+${timezoneOffset}`;
+      menu.value = false;
+      activeTab.value = 0;
+    };
+
+    return {
+      activeTab,
+      date,
+      formattedDateTime,
+      menu,
+      onDateInput,
+      onTimeInput,
+      time,
+
+      getControlErrorMessages,
+      mdiCalendar,
+      mdiClockOutline
+    };
+  }
+});
+</script>

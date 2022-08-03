@@ -28,9 +28,9 @@
       >
         <VeoForm
           v-model="dynamicForm.data"
-          :schema="dynamicForm.objectSchema"
-          :ui="dynamicForm.formSchema"
-          :general-translation="dynamicForm.lang[activeLanguage]"
+          :object-schema="dynamicForm.objectSchema"
+          :form-schema="dynamicForm.formSchema"
+          :translations="dynamicForm.lang"
         />
       </v-col>
     </v-row>

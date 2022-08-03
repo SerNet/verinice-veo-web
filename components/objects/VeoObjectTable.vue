@@ -45,7 +45,7 @@ export type ObjectTableItems = IVeoPaginatedResponse<IVeoEntity[]> | Array<IVeoE
 
 export type ObjectTableFormatter = (value: any) => string;
 export type ObjectTableTooltip = (value: any) => string;
-export type ObjectTableRenderer = (props: { item: IVeoEntity }) => VNode | VNode[] | string;
+export type ObjectTableRenderer = (props: { item: IVeoEntity; value: any }) => VNode | VNode[] | string;
 
 export interface ObjectTableHeader extends Omit<DataTableHeader, 'text'> {
   priority: number;

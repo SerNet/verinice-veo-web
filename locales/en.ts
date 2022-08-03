@@ -105,22 +105,19 @@ export default {
   'unit.index.title': 'Unit Dashboard',
   'unit.select.label': 'Unit',
 
-  'breadcrumbs.all': 'All',
-  'breadcrumbs.catalogs': 'Catalogs',
-  'breadcrumbs.domain': 'Module',
-  'breadcrumbs.reports': 'Reports',
-  'breadcrumbs.risks': 'Risk definitions',
-  'breadcrumbs.help': 'Manual',
-  'breadcrumbs.detail_view': 'Detail view',
-  'breadcrumbs.editor': 'Editors',
-  'breadcrumbs.forms': 'Forms',
-  'breadcrumbs.index': 'Unit selection',
-  'breadcrumbs.more_modules': 'More modules',
-  'breadcrumbs.objects': 'Objects',
-  'breadcrumbs.objectschema': 'Object schema',
-  'breadcrumbs.scopes': 'Scopes',
-  'breadcrumbs.history': 'History',
-  'breadcrumbs.create': 'Create',
+  breadcrumbs: {
+    catalogs: 'Catelogs',
+    domain: 'Module',
+    editor: 'Editors',
+    formschema: 'Formschema editor',
+    help: 'Manual',
+    index: 'Unit selection',
+    more: 'More modules',
+    objects: 'Objects',
+    objectschema: 'Objektschema editor',
+    reports: 'Reports',
+    risks: 'Risk definitions'
+  },
 
   // temporary until the composition api supports <i18n></i18n>
   saveSchemaError: "Couldn't update schema",
@@ -130,5 +127,11 @@ export default {
     dateTime: 'Date and Time',
     text: 'Text',
     uri: 'URI'
+  },
+
+  error: {
+    format: 'The field "{field}" has to match the format "{format}"',
+    required: 'The field "{field}" is required',
+    required_link: 'The {position} link in "{field}" has to point to an object or must be removed'
   }
 };

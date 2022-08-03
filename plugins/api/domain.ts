@@ -18,6 +18,14 @@
 import { Client } from '~/plugins/api';
 import { IVeoDomain, IVeoObjectSchema, IVeoUnit } from '~/types/VeoTypes';
 
+export interface IVeoDomainStatusCount {
+  [objectSchema: string]: {
+    [subType: string]: {
+      [status: string]: number;
+    };
+  };
+}
+
 export default function (api: Client) {
   return {
     /**
@@ -77,6 +85,22 @@ export default function (api: Client) {
           type: objectType
         },
         json: data
+      });
+    },
+
+    /**
+     * Returns all sub types, their statuses and the object count with those properties for every object schema for this domain.
+     * @param domainId domain ID
+     */
+    inspectDomainObjects(unitId: string, domainId: string): Promise<IVeoDomainStatusCount> {
+      return api.req(`/api/domains/:id/element-status-count`, {
+        method: 'GET',
+        params: {
+          id: domainId
+        },
+        query: {
+          unit: unitId
+        }
       });
     }
   };

@@ -15,23 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 import flushPromises from 'flush-promises';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
-import { install as VeeValidate } from '~/plugins/vee-validate';
-import { Renderable } from '~/types/renderable';
-Vue.use(VeeValidate);
 
 const vuetify = new Vuetify();
 
 describe('Label.vue', () => {
   it('should render label component for static text', async () => {
-    const form: Renderable = {
-      schema: {},
-      ui: {
+    const form = {
+      objectSchema: {},
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -63,9 +59,9 @@ describe('Label.vue', () => {
   });
 
   it("should add classes to label component in all 3 vue format: {}, [], '' ", async () => {
-    const form1: Renderable = {
-      schema: {},
-      ui: {
+    const form1 = {
+      objectSchema: {},
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -87,9 +83,9 @@ describe('Label.vue', () => {
       value: {}
     };
 
-    const form2: Renderable = {
-      schema: {},
-      ui: {
+    const form2 = {
+      objectSchema: {},
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -108,9 +104,9 @@ describe('Label.vue', () => {
       value: {}
     };
 
-    const form3: Renderable = {
-      schema: {},
-      ui: {
+    const form3 = {
+      objectSchema: {},
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -139,24 +135,25 @@ describe('Label.vue', () => {
     wrapper.vm.$parent.$forceUpdate();
     await wrapper.vm.$nextTick();
 
-    const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout');
-    const labelTextElement = layoutWrapper.find('.vf-label');
+    let labelTextElement = wrapper.find('.vf-wrapper > .vf-layout .vf-label');
     expect(labelTextElement.classes()).toContain('display');
     expect(labelTextElement.classes()).toContain('text-right');
     wrapper.setProps({ ...form2 });
     await flushPromises();
+    labelTextElement = wrapper.find('.vf-wrapper > .vf-layout .vf-label');
     expect(labelTextElement.classes()).toContain('display-1');
     expect(labelTextElement.classes()).toContain('text-center');
     wrapper.setProps({ ...form3 });
     await flushPromises();
+    labelTextElement = wrapper.find('.vf-wrapper > .vf-layout .vf-label');
     expect(labelTextElement.classes()).toContain('display-2');
     expect(labelTextElement.classes()).toContain('text-left');
   });
 
   it("should add style to label component in all 3 vue format: {}, [], '' ", async () => {
-    const form1: Renderable = {
-      schema: {},
-      ui: {
+    const form1 = {
+      objectSchema: {},
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -178,9 +175,9 @@ describe('Label.vue', () => {
       value: {}
     };
 
-    const form2: Renderable = {
-      schema: {},
-      ui: {
+    const form2 = {
+      objectSchema: {},
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -199,9 +196,9 @@ describe('Label.vue', () => {
       value: {}
     };
 
-    const form3: Renderable = {
-      schema: {},
-      ui: {
+    const form3 = {
+      objectSchema: {},
+      formSchema: {
         type: 'Layout',
         options: {
           direction: 'vertical',
@@ -230,16 +227,17 @@ describe('Label.vue', () => {
     wrapper.vm.$parent.$forceUpdate();
     await wrapper.vm.$nextTick();
 
-    const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout');
-    const labelTextElement = layoutWrapper.find('.vf-label');
+    let labelTextElement = wrapper.find('.vf-wrapper > .vf-layout .vf-label');
     expect(labelTextElement.attributes().style).toContain('font-size: 14px;');
     expect(labelTextElement.attributes().style).toContain('text-align: right;');
     wrapper.setProps({ ...form2 });
     await flushPromises();
+    labelTextElement = wrapper.find('.vf-wrapper > .vf-layout .vf-label');
     expect(labelTextElement.attributes().style).toContain('font-size: 16px;');
     expect(labelTextElement.attributes().style).toContain('text-align: center;');
     wrapper.setProps({ ...form3 });
     await flushPromises();
+    labelTextElement = wrapper.find('.vf-wrapper > .vf-layout .vf-label');
     expect(labelTextElement.attributes().style).toContain('font-size: 18px;');
     expect(labelTextElement.attributes().style).toContain('text-align: left;');
   });

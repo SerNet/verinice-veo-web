@@ -7,8 +7,7 @@ steps:
     element: '[data-component-name=app-bar]'
     intro: The application bar is used to control basic functions. It is available in all views.
   - title: 'Breadcrumb'
-# todo4nbrx: create data-component
-    element: '#app > div.v-application--wrap > header > div > ul'
+    element: '[data-component-name=breadcrumbs]'
     intro: Use the breadcrumb to navigate to previously accessed objects at any time.
   - title: 'Language selection'
     element: '[data-component-name=language-select]'

@@ -37,22 +37,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useMeta } from '@nuxtjs/composition-api';
+import { defineComponent } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
 export default defineComponent({
   setup() {
     const { t, locale } = useI18n();
-    const { title } = useMeta();
-
-    title.value = t('moreModules').toString();
 
     return {
       t,
       locale
     };
-  },
-  head: {}
+  }
 });
 </script>
 

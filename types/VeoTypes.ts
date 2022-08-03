@@ -18,7 +18,7 @@
 import { JSONSchema7TypeName } from 'json-schema';
 import { UISchemaElement } from './UISchema';
 import { IBaseObject } from '~/lib/utils';
-import { Mode } from '~/components/forms/utils';
+import { Mode } from '~/components/forms/util';
 
 export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
 

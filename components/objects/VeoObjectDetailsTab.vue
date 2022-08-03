@@ -61,12 +61,15 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
+import { defineComponent, h, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
 import { pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiContentCopy, mdiLinkOff, mdiTrashCanOutline } from '@mdi/js';
+import { mdiArrowDown, mdiArrowRight, mdiCheck, mdiContentCopy, mdiLinkOff, mdiTransitDetour, mdiTrashCanOutline } from '@mdi/js';
+import { VIcon, VTooltip } from 'vuetify/lib';
+
+import { ObjectTableHeader } from './VeoObjectTable.vue';
 import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
-import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
+import { IVeoCustomLink, IVeoDomain, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
@@ -159,7 +162,7 @@ export default defineComponent({
         : ['designator', 'updatedAt', 'updatedBy', 'actions']
     );
 
-    const additionalHeaders = computed(() =>
+    const additionalHeaders = computed<ObjectTableHeader[]>(() =>
       props.type === 'risks'
         ? [
             {
@@ -168,14 +171,82 @@ export default defineComponent({
               cellClass: ['font-weight-bold'],
               width: 200,
               truncate: true,
-              importance: 100,
+              priority: 100,
               order: 40,
               render: ({ value }: { value: string }) => {
                 // The display name contains designator, abbreviation and name of the scenario, however we only want the name, so we split the string
                 // As the abbreviation is optional and at this point we have no ability to check whether it is set here, we simply remove the designator and display everything else
                 return value.split(' ').slice(1).join(' ');
               }
-            }
+            },
+            ...['C', 'I', 'A', 'R'].map((categoryId, index) => ({
+              value: `riskValues_${categoryId}`,
+              text: domainData.value?.categories?.find((category) => category.id === categoryId)?.name || '',
+              render: ({ item }: { item: any }) => {
+                const { inherentRisk, residualRisk } = getInherentAndResidualRisk(item, categoryId);
+                const riskTreatments = getRiskTreatments(item, categoryId);
+                const values = domainData.value?.riskValues;
+
+                const translatedInherentRisk = values?.find((entry) => entry.ordinalValue === inherentRisk)?.name;
+                const translatedResidualRisk = values?.find((entry) => entry.ordinalValue === residualRisk)?.name;
+
+                return h('div', [
+                  translatedInherentRisk
+                    ? h(VTooltip, {
+                        props: {
+                          bottom: true,
+                          maxWidth: 600
+                        },
+                        scopedSlots: {
+                          activator: ({ attrs, on }) => h('span', { attrs, on, class: 'grey--text text--darken-4' }, translatedInherentRisk),
+                          default: () => h('span', t('inherentRisk').toString())
+                        }
+                      })
+                    : undefined,
+                  translatedInherentRisk && translatedResidualRisk ? h('span', ' / ') : undefined,
+                  translatedResidualRisk
+                    ? h(VTooltip, {
+                        props: {
+                          bottom: true,
+                          maxWidth: 600
+                        },
+                        scopedSlots: {
+                          activator: ({ attrs, on }) => h('span', { attrs, on, class: 'pr-1' }, translatedResidualRisk),
+                          default: () => h('span', t('residualRisk').toString())
+                        }
+                      })
+                    : undefined,
+                  riskTreatments.map((riskTreatment) => {
+                    let icon = mdiCheck;
+                    switch (riskTreatment) {
+                      case 'RISK_TREATMENT_AVOIDANCE':
+                        icon = mdiTransitDetour;
+                        break;
+                      case 'RISK_TREATMENT_REDUCTION':
+                        icon = mdiArrowDown;
+                        break;
+                      case 'RISK_TREATMENT_TRANSFER':
+                        icon = mdiArrowRight;
+                        break;
+                    }
+
+                    return h(VTooltip, {
+                      props: {
+                        bottom: true,
+                        maxWidth: 600
+                      },
+                      scopedSlots: {
+                        activator: ({ attrs, on }) => h(VIcon, { attrs, on, props: { small: true } }, icon),
+                        default: () => h('span', t(`riskTreatments.${riskTreatment}`).toString())
+                      }
+                    });
+                  })
+                ]);
+              },
+              priority: 89 - index,
+              order: 41 + index,
+              width: 100
+            }))
           ]
         : []
     );
@@ -285,9 +356,7 @@ export default defineComponent({
       );
     };
 
-    /**
-     * risks edit dialog
-     */
+    // Edit risk dialog stuff
     const editRiskDialog = ref<{ visible: boolean; scenarioId?: string }>({
       visible: false,
       scenarioId: undefined
@@ -310,6 +379,24 @@ export default defineComponent({
         });
       }
     };
+
+    // Risk tab related stuff
+    const domainData = ref<undefined | IVeoDomain['riskDefinitions']['x']>(undefined);
+    useFetch(async () => {
+      domainData.value = (await $api.domain.fetch(props.domainId)).riskDefinitions.DSRA;
+    });
+
+    const getInherentAndResidualRisk = (item: IVeoRisk, protectionGoal: string) => {
+      const category = item.domains?.[props.domainId]?.riskDefinitions?.DSRA?.riskValues?.find((category: any) => category.category === protectionGoal);
+
+      return {
+        inherentRisk: category?.inherentRisk,
+        residualRisk: category?.userDefinedResidualRisk || category?.residualRisk
+      };
+    };
+
+    const getRiskTreatments = (item: IVeoRisk, protectionGoal: string) =>
+      item.domains?.[props.domainId]?.riskDefinitions?.DSRA?.riskValues?.find((category: any) => category.category === protectionGoal)?.riskTreatments || [];
 
     const onRelatedObjectModified = () => {
       fetch();
@@ -348,6 +435,7 @@ export default defineComponent({
       "link": "Could not link new object.",
       "risk": "Couldn't delete risk"
     },
+    "inherentRisk": "Inherent risk",
     "parentType": "parent type",
     "removeFromObject": "Remove from object",
     "removeFromScope": "Remove from scope",
@@ -357,7 +445,14 @@ export default defineComponent({
     "removeObjectFromScopeSuccess": "Object was removed from scope",
     "removeScopeFromScopeError": "Couldn't remove scope",
     "removeScopeFromScopeSuccess": "Scope was removed successfully",
+    "residualRisk": "Residual risk",
     "riskDeleted": "The risk was removed",
+    "riskTreatments": {
+      "RISK_TREATMENT_ACCEPTANCE": "risk retention",
+      "RISK_TREATMENT_AVOIDANCE": "risk avoidance",
+      "RISK_TREATMENT_REDUCTION": "risk reduction",
+      "RISK_TREATMENT_TRANSFER": "risk transfer"
+    },
     "scenario": "Scenario"
 
   },
@@ -370,6 +465,7 @@ export default defineComponent({
       "link": "Das neue Objekt konnte nicht verknüpft werden.",
       "risk": "Risiko konnte nicht gelöscht werden"
     },
+    "inherentRisk": "Bruttorisiko",
     "parentType": "Elterntyp",
     "removeFromObject": "Aus Objekt entfernen",
     "removeFromScope": "Aus Scope entfernen",
@@ -379,7 +475,14 @@ export default defineComponent({
     "removeObjectFromScopeSuccess": "Objekt wurde aus Scope entfernt",
     "removeScopeFromScopeError": "Scope konnte nicht entfernt werden",
     "removeScopeFromScopeSuccess": "Scope wurde entfernt",
+    "residualRisk": "Nettorisiko",
     "riskDeleted": "Das Risiko wurde entfernt",
+    "riskTreatments": {
+      "RISK_TREATMENT_ACCEPTANCE": "Risikoakzeptanz",
+      "RISK_TREATMENT_AVOIDANCE": "Risikovermeidung",
+      "RISK_TREATMENT_REDUCTION": "Risikoreduktion",
+      "RISK_TREATMENT_TRANSFER": "Risikotransfer"
+    },
     "scenario": "Szenario"
   }
 }

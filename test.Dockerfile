@@ -14,4 +14,5 @@ COPY package-lock.json .
 RUN npm install
 # Bundle app source
 COPY . .
+
 CMD ["npm", "run","test"]

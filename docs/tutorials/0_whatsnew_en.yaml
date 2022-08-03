@@ -4,4 +4,4 @@ route: /
 lang: en
 steps:
   - title: 'What is new?'
-    intro: <font color=##c90000><b>verinice.veo</b></font><br>16 June 2022
+    intro: '<span style="color: #c90000"><b>verinice.veo</b></span><br>16 June 2022'

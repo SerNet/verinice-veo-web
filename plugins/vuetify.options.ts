@@ -35,9 +35,9 @@ export default {
         secondary: colors.red.darken3,
         accent: colors.grey.darken1,
         error: '#c90000',
-        // info:,
-        // success:,
-        // warning:,
+        info: '#2196f3',
+        warning: '#fb8c00',
+        success: '#4caf50',
         grey: '#d7d7d7',
         lightGrey: '#fafafa'
       }

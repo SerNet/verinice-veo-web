@@ -1,0 +1,196 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2022  Jonas Heitmann
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<template>
+  <div
+    v-if="options.visible"
+    class="vf-markdown-editor vf-form-element"
+    :class="{ 'is-disabled': disabled || options.disabled }"
+  >
+    <div
+      v-if="options.label"
+      class="subtitle-1"
+    >
+      {{ options.label }}
+    </div>
+    <editor
+      :id="objectSchemaPointer"
+      ref="editor"
+      :initial-value="value"
+      :error-messages="getControlErrorMessages($props)"
+      :class="options && options.class"
+      class="vf-form-element vf-input-text"
+      :options="editorOptions"
+      @change="onChange"
+    />
+  </div>
+</template>
+
+<script lang="ts">
+import { computed, defineComponent, ref, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
+import Prism from 'prismjs';
+import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
+import { Editor } from '@toast-ui/vue-editor';
+
+import { IVeoFormsElementDefinition } from '../types';
+import { getControlErrorMessages, VeoFormsControlProps } from '../util';
+
+export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
+  code: 'veo-markdown-editor',
+  name: {
+    en: 'markdown editor',
+    de: 'Markdown editor'
+  },
+  description: {
+    en: 'WYSIWYG markdown editor to style input.',
+    de: 'WYSIWYG Markdown editor um Eingaben zu formatieren.'
+  },
+  conditions: (props) => [props.objectSchema.type === 'string', typeof props.options !== 'undefined' && props.options.format === 'markdown']
+};
+
+// Outside of vue as the editor can't handle the function being part of the vue methods or computed properties.
+function clearButton(callback: CallableFunction) {
+  const el = document.createElement('button');
+  el.textContent = 'X';
+  el.type = 'button';
+  el.classList.add('codeblock');
+  // @ts-ignore
+  el.ariaLabel = 'Clear editor';
+  el.addEventListener('click', () => {
+    callback();
+  });
+  return el;
+}
+
+export default defineComponent({
+  name: CONTROL_DEFINITION.code,
+  components: {
+    editor: Editor
+  },
+  props: VeoFormsControlProps,
+  setup(props, { emit }) {
+    const { t } = useI18n();
+
+    const editor = ref();
+
+    const editorOptions = computed(() => ({
+      usageStatistics: false,
+      plugins: [[codeSyntaxHighlightPlugin, { highlighter: Prism }]],
+      toolbarItems: [
+        ['heading', 'bold', 'italic', 'strike'],
+        ['hr', 'quote'],
+        ['ul', 'ol', 'task', 'indent', 'outdent'],
+        ['table', 'image', 'link'],
+        [
+          'code',
+          {
+            el: clearButton(() => emit('input', undefined)),
+            name: 'clear-button',
+            tooltip: t('clear')
+          },
+          'codeblock'
+        ]
+      ]
+    }));
+
+    watch(
+      () => props.value,
+      (newValue) => {
+        if (editor.value) {
+          editor.value.invoke('setMarkdown', newValue);
+        }
+      },
+      { immediate: true }
+    );
+
+    const onChange = () => {
+      const markdownText = invoke('getMarkdown');
+      emit('input', (typeof props.value === 'undefined' || props.value === null) && markdownText === '' ? props.value : markdownText);
+    };
+
+    const invoke = (tuiMethodName: string) => {
+      return editor.value.invoke(tuiMethodName);
+    };
+
+    return {
+      editor,
+      editorOptions,
+      onChange,
+
+      getControlErrorMessages
+    };
+  }
+});
+</script>
+
+<i18n>
+{
+  "en": {
+    "clear": "Clear content"
+  },
+  "de": {
+    "clear": "Inhalt löschen"
+  }
+}  
+</i18n>
+
+<style lang="scss">
+// Good resource how to include external .css as inline in scss
+// https://github.com/sass/node-sass/issues/2362#issuecomment-388634848
+// add node_modules/ to work with rollup and vue together
+// https://github.com/vuejs/rollup-plugin-vue/issues/146#issuecomment-363749613
+.vf-markdown-editor {
+  position: relative;
+  z-index: 0;
+
+  @import 'node_modules/@toast-ui/editor/dist/toastui-editor';
+  @import 'prismjs/themes/prism';
+  @import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight';
+  .toastui-editor-contents h1,
+  .toastui-editor-contents h2,
+  .toastui-editor-contents h3,
+  .toastui-editor-contents h4,
+  .toastui-editor-contents h5,
+  .toastui-editor-contents h6 {
+    border: none;
+  }
+  .toastui-editor-toolbar-item-wrapper {
+    margin: 0;
+  }
+  code::before,
+  code::after {
+    content: none;
+  }
+  code {
+    box-shadow: none;
+    background: none;
+    font-weight: 400;
+    font-size: 100%;
+  }
+  &.is-disabled {
+    .toastui-editor-defaultUI::before {
+      content: '';
+      width: 100%;
+      background: rgba(255, 255, 255, 0.7);
+      height: 100%;
+      position: absolute;
+      z-index: 101;
+    }
+  }
+}
+</style>

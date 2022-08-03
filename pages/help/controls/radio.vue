@@ -35,8 +35,8 @@
       >
         <VeoForm
           v-model="dynamicForm.data"
-          :schema="dynamicForm.objectSchema"
-          :ui="dynamicForm.formSchema"
+          :object-schema="dynamicForm.objectSchema"
+          :form-schema="dynamicForm.formSchema"
         />
       </v-col>
     </v-row>

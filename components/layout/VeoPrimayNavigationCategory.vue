@@ -27,7 +27,7 @@
     @click="onClick"
   >
     <template #activator>
-      <v-list-item-title>
+      <v-list-item-title class="veo-primary-navigation__group__title">
         {{ name }}
       </v-list-item-title>
     </template>
@@ -130,12 +130,12 @@ export default defineComponent({
 }
 
 .veo-primary-navigation__group > ::v-deep.v-list-group__header {
-  min-height: 40px;
-  max-height: 40px;
+  min-height: 32px;
+  max-height: 32px;
 
   > .v-list-item__icon {
-    margin-bottom: 8px;
-    margin-top: 8px;
+    margin-bottom: 4px;
+    margin-top: 4px;
   }
 }
 
@@ -143,5 +143,10 @@ export default defineComponent({
 .veo-primary-navigation__group--active > ::v-deep.v-list-group__header {
   color: #000000;
   font-weight: bold;
+}
+
+.veo-primary-navigation__group__title {
+  font-size: 0.8125rem;
+  line-height: 1rem;
 }
 </style>

@@ -75,7 +75,7 @@ export function useVeoAlerts() {
    * @returns Key of the alert. Can be used to call expireAlert programmatically
    */
   function displaySuccessMessage(text: string): number {
-    return displayMessage(VeoAlertType.SUCCESS, text, '');
+    return displayMessage(VeoAlertType.SUCCESS, text, '', { timeout: 5000 });
   }
 
   /**

@@ -32,7 +32,7 @@ import {
   IVeoFormSchemaTranslationCollection,
   IVeoTranslationCollection
 } from '~/types/VeoTypes';
-import { WidgetDefinition as PiaMandatoryWidgetDefinition } from '~/components/forms/Collection/Widgets/PiaMandatoryWidget.vue';
+import { WIDGET_DEFINITION as PiaMandatoryWidgetDefinition } from '~/components/forms/widgets/VeoDPIAMandatoryWidget.vue';
 
 const WIDGETS = [PiaMandatoryWidgetDefinition];
 
@@ -150,7 +150,7 @@ export default Vue.extend({
           });
         case 'Widget':
           // eslint-disable-next-line no-case-declarations
-          const widgetDefinition = WIDGETS.find((widget) => element.name === widget.name);
+          const widgetDefinition = WIDGETS.find((widget) => element.name === widget.code);
           if (!widgetDefinition) {
             // eslint-disable-next-line no-console
             console.warn(`VeoFseGenerator:: ${element.name} not found`);
@@ -159,6 +159,7 @@ export default Vue.extend({
 
           return h(VeoFseWidget, {
             props: {
+              code: widgetDefinition.code,
               name: widgetDefinition.name,
               formSchemaPointer,
               description: widgetDefinition.description[this.$i18n.locale] || Object.values(widgetDefinition.description)[0]

@@ -72,6 +72,19 @@
           <VeoUnitSelection :units="units" />
         </template>
         <v-divider />
+        <v-list-item
+          :href="accountLink"
+          target="_blank"
+        >
+          <v-list-item-title class="d-flex">
+            {{ $t('myAccount') }}
+            <v-icon x-small>
+              {{ mdiOpenInNew }}
+            </v-icon>
+          </v-list-item-title>
+          <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
+        </v-list-item>
+        <v-divider />
         <v-list-item @click="displayDeploymentDetails = true">
           <v-list-item-title>
             {{ $t('about') }}
@@ -92,6 +105,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
+import { mdiOpenInNew } from '@mdi/js';
 
 import { IVeoUnit } from '~/types/VeoTypes';
 
@@ -104,7 +118,7 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n();
-    const { $api, $user } = useContext();
+    const { $api, $config, $user } = useContext();
     const route = useRoute();
 
     const displayDeploymentDetails = ref(false);
@@ -132,14 +146,18 @@ export default defineComponent({
       units.value = await $api.unit.fetchAll();
     });
 
-    return {
-      t,
+    const accountLink = computed(() => `${$config.oidcUrl}/realms/${$config.oidcRealm}/account`);
 
+    return {
+      accountLink,
       displayDeploymentDetails,
       initials,
       maxUnits,
       menuVisible,
-      units
+      units,
+
+      mdiOpenInNew,
+      t
     };
   }
 });
@@ -150,11 +168,13 @@ export default defineComponent({
   "en": {
     "about": "About verinice.",
     "logout": "Logout",
+    "myAccount": "My account",
     "notAvailable": "Not available"
   },
   "de": {
     "about": "Über verinice.",
     "logout": "Abmelden",
+    "myAccount": "Mein Account",
     "notAvailable": "Keine Angabe"
   }
 }

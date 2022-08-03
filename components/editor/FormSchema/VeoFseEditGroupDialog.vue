@@ -143,8 +143,8 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { v4 as uuid } from 'uuid';
 import { JsonPointer } from 'json-ptr';
 import { merge } from 'lodash';
-import { BaseObject } from '~/components/forms/utils';
 import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
+import { IBaseObject } from '~/lib/utils';
 
 interface IProps {
   value: boolean;
@@ -191,7 +191,7 @@ export default defineComponent<IProps>({
     const { t } = useI18n();
 
     // Default values which should not be shown in FormSchema
-    const defaults: BaseObject = {
+    const defaults: IBaseObject = {
       direction: 'vertical',
       class: undefined,
       style: undefined

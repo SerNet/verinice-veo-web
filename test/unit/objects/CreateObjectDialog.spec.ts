@@ -19,7 +19,6 @@ import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 import { merge } from 'lodash';
 
-import { install as VeeValidate } from '~/plugins/vee-validate';
 import VeoCreateObjectDialog from '~/components/objects/VeoCreateObjectDialog.vue';
 import VeoObjectForm from '~/components/objects/VeoObjectForm.vue';
 import VeoDialog from '~/components/layout/VeoDialog.vue';
@@ -38,8 +37,6 @@ import process from '~/cypress/fixtures/api/default/schemas/process.2019.json';
 import forms from '~/cypress/fixtures/api/forms/fetchAll.json';
 import form from '~/cypress/fixtures/api/forms/3ebd14a2-eb7d-4d18-a9ad-2056da85569e.json';
 import translation from '~/cypress/fixtures/translations/translation.json';
-
-window.Vue.use(VeeValidate);
 
 const vuetify = new Vuetify();
 
@@ -62,7 +59,7 @@ const mockDefaults = {
       }))()
   },
   stubs: {
-    LinksFieldRow: true
+    VeoLinksFieldRow: true
   },
   mocks: {
     $nuxt: {
@@ -123,7 +120,7 @@ describe('CreateObjectDialog.vue', () => {
     });
 
     await new Promise((resolve) => setTimeout(resolve, 200));
-    const input = getFormInput('name*');
+    const input = getFormInput('name');
     input.$emit('input', 'My new object name');
 
     expect((wrapper.vm as any).objectData).toEqual({
@@ -169,7 +166,7 @@ describe('CreateObjectDialog.vue', () => {
       domainId: 'my-completely-invalid-domain-uuid-that-doesnt-matter'
     });
 
-    const input = getFormInput('name*');
+    const input = getFormInput('name');
     input.$emit('input', 'My new object name');
 
     (overlay as any).click();
@@ -199,7 +196,7 @@ describe('CreateObjectDialog.vue', () => {
     (form.find('[data-cy=veo-object-form-display-tab]') as any).element.click();
     await new Promise((resolve) => setTimeout(resolve, 500));
     const selectWrapper: ChildNode = form.find('[data-cy=veo-object-form-display-select]').element.parentElement as any;
-    expect(selectWrapper.firstChild?.textContent).toBe('PRO_DataProcessing');
+    expect(selectWrapper.firstChild?.textContent).toBe('Verarbeitungstätigkeit');
   });
 
   it('should check whether the form gets switched if the user uses the display switcher', async () => {

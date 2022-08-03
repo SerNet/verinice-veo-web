@@ -15,7 +15,7 @@ export default {
    ** Headers of the page
    */
   head: {
-    title: 'Bitte warten...',
+    title: 'verinice.veo',
     meta: [
       {
         charset: 'utf-8'
@@ -68,7 +68,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/vee-validate', '~/plugins/user', '~/plugins/api', '~/plugins/utils', '~/plugins/navigationHelper'],
+  plugins: ['~/plugins/user', '~/plugins/api', '~/plugins/utils', '~/plugins/navigationHelper'],
 
   /**
    *

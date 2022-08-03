@@ -19,46 +19,38 @@ import { computed, useRoute } from '@nuxtjs/composition-api';
 import { trim } from 'lodash';
 import vjp from 'vue-json-pointer';
 
+import { IVeoFormsReactiveFormActions } from '~/components/forms/types';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
-import { IVeoReactiveFormAction } from '~/types/VeoTypes';
 
 export function useVeoReactiveFormActions() {
   const route = useRoute();
 
   const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
-  function defaultReactiveFormActions(): IVeoReactiveFormAction[] {
-    return [
-      ...(domainId.value
-        ? [
-            {
-              attributeName: `/domains/${domainId.value}/subType`,
-              handler: (newValue: any, newObject: any) => {
-                if (domainId.value && !!newValue) {
-                  delete newObject.domains[domainId.value].status;
-                }
+  function defaultReactiveFormActions(): IVeoFormsReactiveFormActions {
+    return domainId.value
+      ? {
+          [`#/properties/domains/properties/${domainId.value}/properties/subType`]: [
+            (newValue, _oldValue, newObject, _oldObject) => {
+              if (domainId.value && !!newValue) {
+                delete newObject.domains[domainId.value].status;
               }
+              return newObject;
             }
           ]
-        : [])
-    ];
+        }
+      : {};
   }
 
-  function personReactiveFormActions(): IVeoReactiveFormAction[] {
-    return [
-      {
-        attributeName: '/customAspects/person_generalInformation/attributes/person_generalInformation_givenName',
-        handler: (_newValue, newObject, oldObject) => {
-          getFullName(newObject, oldObject);
-        }
-      },
-      {
-        attributeName: '/customAspects/person_generalInformation/attributes/person_generalInformation_familyName',
-        handler: (_newValue, newObject, oldObject) => {
-          getFullName(newObject, oldObject);
-        }
-      }
-    ];
+  function personReactiveFormActions(): IVeoFormsReactiveFormActions {
+    return {
+      '#/properties/customAspects/properties/person_generalInformation/properties/attributes/properties/person_generalInformation_givenName': [
+        (_newValue, _oldValue, newObject, oldObject) => getFullName(newObject, oldObject)
+      ],
+      '#/properties/customAspects/properties/person_generalInformation/properties/attributes/properties/person_generalInformation_familyName': [
+        (_newValue, _oldValue, newObject, oldObject) => getFullName(newObject, oldObject)
+      ]
+    };
   }
 
   /*
@@ -105,6 +97,7 @@ export function useVeoReactiveFormActions() {
     if (fullnameOld === computedFullNameOld || fullnameOld === '' || fullnameOld === undefined) {
       vjp.set(newObject, '/name', computedFullNameNew);
     }
+    return newObject;
   }
 
   return {

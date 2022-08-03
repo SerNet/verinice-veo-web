@@ -244,11 +244,9 @@
         >
           <VeoForm
             v-model="objectData"
-            :schema="objectSchema"
-            :ui="formSchema.content"
-            :general-translation="translation && translation.lang[language]"
-            :custom-translation="formSchema.translation && formSchema.translation[language]"
-            :domain-id="domainId"
+            :object-schema="objectSchema"
+            :form-schema="formSchema.content"
+            :translations="translations"
             :additional-context="additionalContext"
           />
         </template>
@@ -598,6 +596,17 @@ export default defineComponent({
       }
     }));
 
+    const translations = computed(() => {
+      const toReturn: IBaseObject = {};
+      const languages = Object.keys(translation.value?.lang || {});
+
+      for (const language of languages) {
+        toReturn[language] = { ...translation.value?.lang[language], ...(formSchema.value?.translation?.[language] || {}) };
+      }
+
+      return toReturn;
+    });
+
     return {
       additionalContext,
       creationDialogVisible,
@@ -639,14 +648,10 @@ export default defineComponent({
       save,
       saveNewSchema,
       saveUpdatedSchema,
+      translations,
 
       t,
       HELP_ROUTE
-    };
-  },
-  head(): any {
-    return {
-      title: this.$t('editor.formschema.headline')
     };
   }
 });

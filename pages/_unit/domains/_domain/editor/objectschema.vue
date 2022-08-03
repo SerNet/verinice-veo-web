@@ -142,7 +142,7 @@
                 </div>
               </template>
               <template #default>
-                <span v-if="isContentCreator">{{ upperFirst($t('save')) }}</span>
+                <span v-if="isContentCreator">{{ upperFirst($t('save').toString()) }}</span>
                 <span v-else>{{ $t('saveContentCreator') }}</span>
               </template>
             </v-tooltip>
@@ -346,11 +346,6 @@ export default Vue.extend({
     // TODO: Backend should create an API endpoint to get available languages dynamically
     this.translations = (await this.$api.translation.fetch([]))?.lang || {};
   },
-  head(): any {
-    return {
-      title: this.$t('editor.objectschema.headline')
-    };
-  },
   computed: {
     title(): string {
       return this.objectSchemaHelper?.getTitle() || '';
@@ -450,10 +445,10 @@ export default Vue.extend({
     },
     async saveSchema() {
       try {
-        await this.$api.domain.updateTypeDefinition(this.domainId, this.title, this.objectSchemaHelper?.toSchema());
-        displaySuccessMessage(this.$t('saveSchemaSuccess'));
+        await this.$api.domain.updateTypeDefinition(this.domainId, this.title, this.objectSchemaHelper?.toSchema() as any);
+        displaySuccessMessage(this.$t('saveSchemaSuccess').toString());
       } catch (e: any) {
-        displayErrorMessage(this.$t('error.title'), `${this.$t('saveSchemaError').toString()}: ${e.message}`);
+        displayErrorMessage(this.$t('error.title').toString(), `${this.$t('saveSchemaError').toString()}: ${e.message}`);
       }
     },
     upperFirst

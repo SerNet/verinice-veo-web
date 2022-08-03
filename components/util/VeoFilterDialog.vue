@@ -113,7 +113,6 @@ import { defineComponent, ref, computed, Ref, watch, PropOptions, ComputedRef, u
 import { clone, omitBy, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
-import { BaseObject } from '../forms/utils';
 import { IVeoFilterDivider, IVeoFilterOption, IVeoFilterOptionType } from './VeoFilter.vue';
 import { IBaseObject, extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
@@ -154,7 +153,7 @@ export default defineComponent({
     // Fetching of object types & translations for status
     const objectTypes: Ref<IVeoSchemaEndpoint[]> = ref([]);
     const formschemas: Ref<IVeoFormSchemaMeta[]> = ref([]);
-    const subTypes: Ref<{ [schemaName: string]: { subType: string; name: BaseObject; status: string[] }[] }> = ref({});
+    const subTypes: Ref<{ [schemaName: string]: { subType: string; name: IBaseObject; status: string[] }[] }> = ref({});
     const translations: Ref<IVeoTranslations | undefined> = ref(undefined);
 
     useFetch(async () => {

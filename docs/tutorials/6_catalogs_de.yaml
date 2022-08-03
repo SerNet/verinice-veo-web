@@ -7,12 +7,10 @@ steps:
     element: '[data-component-name=catalog-page]'
     intro: Im diesem Abschnitt können vorhandene Kataloge angewendet werden.
   - title: 'Gefährdungen anwenden'
-# todo4nbrx: data-component erstellen
-    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div.v-tabs.theme--light.veo-tabs > div > div.v-slide-group__wrapper > div > div.v-tab.v-tab--active'
+    element: '[data-component-name=catalog-hazards-tab]'
     intro: Wählen Sie die Gefährdungen aus, die im Rahmen der Risikoanalyse betrachtet werden sollen. Die Gefährdungen werden in Ihre aktuelle Unit kopiert und können dort verwendet werden.
   - title: 'TOM anwenden'
-# todo4nbrx: data-component erstellen
-    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div.v-tabs.theme--light.veo-tabs > div > div.v-slide-group__wrapper > div > div:nth-child(3)'
+    element: '[data-component-name=catalog-tom-tab]'
     intro: Wählen Sie die TOM aus, die zur weiteren verwendung in Ihre Unit kopiert werden sollen.
   - title: 'Geschafft'
 # todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.

@@ -31,12 +31,10 @@ steps:
     element: '[data-component-name=object-overview-table] > .v-data-footer'
     intro: Existieren viele Objekte können Sie durch die Paginierung die Anzahl der je Seite dargestellten Objekte anpassen und zwischen den einzelnen Seiten navigieren.
   - title: 'Objekt bearbeiten'
-## todo4nbrx: Hier wird fälschlich der Tabellenkopf ausgewählt
-# element: '[data-component-name=object-overview-table] tr:nth-child(1)'
-    element: '#veo-object-table-615 > div.v-data-table__wrapper > table > tbody > tr:nth-child(1)'
+    element: '[data-component-name=object-overview-table] tbody tr:nth-child(1)'
     intro: Öffnen Sie ein Objekt in der Liste durch einfachen Mausklick zum Bearbeiten.
   - title: 'Der Designator'
-    element: '[data-component-name=object-overview-table] tr:nth-child(1) > td:nth-child(2)'
+    element: '[data-component-name=object-overview-table] tbody tr:nth-child(1) > td:nth-child(2)'
     intro: Der Designator wird vom System als eindeutiges und nicht änderbares Kriterium vergeben, dass zur schnellen Suche von Objekten verwendet kann.
   - title: 'Objekt duplizieren'
     element: '[data-component-name=object-overview-clone-button]'

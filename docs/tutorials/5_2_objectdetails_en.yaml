@@ -12,21 +12,18 @@ steps:
     intro: The object details on the left can be hidden or displayed by button or shortcut Alt/STRG + 1.<br>The form can be hidden or displayed by button or shortcut Alt/STRG + 2.
 # details
   - title: 'Object details'
-    element: '[data-component-name=object-details]'
+    element: '[data-component-name=object-details-details]'
     intro: On the left side you can see the environment of the selected object in detail.
 # - title: 'Hide/display object-details' element: '[data-component-name=object-details
 # element: '[data-component-name=object-details-page] > div:nth-child(2) > div > button'
 # intro: The object details can be hidden or displayed via button or shortcut Alt/STRG + 1.
   - title: 'Object name'
-# todo4nbrx: data-component not findable after restyling?
-    element: '[data-component-name=object-details-details] h1'
+    element: '[data-component-name=object-details-page] h1'
     intro: The object name contains the designer, the abbreviation and the name of the object.
   - title: 'Change details'
-# todo4nbrx: data-component not findable after restyling?
     element: '[data-component-name=object-details-date-time]'
     intro: Identify at a glance who created or last modified the object and when.
   - title: 'Object description'
-# todo4nbrx: data-component not findable after restyling?
     element: '[data-component-name=object-details-description]'
     intro: For the unique description of the object, the object description is output, if available.
   - title: 'Scopes'
@@ -64,23 +61,16 @@ steps:
     element: '[data-component-name=object-form-sidebar]'
     intro: Use the sidebar to display the object view, form navigation, history and validation messages.
   - title: 'Sidebar - View'
-# todo4nbrx: create new data-component after restyling
-    element: '#app > div.v-application--wrap > main > div > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div.flex-row.col-9.col-lg-7.col-xl-7.pa-0 > div.veo-page.py-0.col.col-12.px-0 > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.pb-4.fill-width.fill-height.d-flex. flex-column.overflow-hidden > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div:nth-child(2) > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.flex-column.v-item-group.theme--light.v-btn-toggle.v-btn-toggle--group.primary--text > button:nth-child(1) > span > span > svg'
+    element: '[data-component-name=object-form-view-tab]'
     intro: In the view you can look at an object in the different forms/subtypes.
   - title: 'Sidebar - Form Navigation'
-# todo4nbrx: create new data-component after restyling
-# element: '[data-component-name=object-form-sidebar] [data-component-name=object-form-navigation]'.
-    element: '#app > div.v-application--wrap > main > div > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div.flex-row.col-9.col-lg-7.col-xl-7.pa-0 > div.veo-page.py-0.col.col-12.px-0 > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.pb-4.fill-width.fill-height.d-flex. flex-column.overflow-hidden > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div:nth-child(2) > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.flex-column.v-item-group.theme--light.v-btn-toggle.v-btn-toggle--group.primary--text > div > button > span > span > svg'
+    element: '[data-component-name=object-form-toc-tab]'
     intro: With the form navigation you can quickly navigate to specific sections in the form.
   - title: 'Sidebar - Object History'
-# todo4nbrx: create new data-component after restyling
-# element: '[data-component-name=object-form-sidebar] [data-component-name=object-form-history]'.
-    element: '#app > div.v-application--wrap > main > div > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div.flex-row.col-9.col-lg-7.col-xl-7.pa-0 > div.veo-page.py-0.col.col-12.px-0 > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.pb-4.fill-width.fill-height.d-flex. flex-column.overflow-hidden > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div:nth-child(2) > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.flex-column.v-item-group.theme--light.v-btn-toggle.v-btn-toggle--group.primary--text > button:nth-child(6) > span > span > svg'
+    element: '[data-component-name=object-form-history-tab]'
     intro: In the object history you can see all previous versions and restore an older version.
   - title: 'Sidebar - Validation'
-# todo4nbrx: create new data-component after restyling
-# element: '[data-component-name=object-form-sidebar] [data-component-name=object-form-validation]'.
-    element: '#app > div.v-application--wrap > main > div > div.d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div.flex-row.col-9.col-lg-7.col-xl-7.pa-0 > div. veo-page.py-0.col.col-12.px-0 > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.pb-4.fill-width.fill-height.d-flex.flex-column.overflow-hidden > div. d-flex.flex-nowrap.overflow-hidden.flex-grow-1 > div:nth-child(2) > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.flex-column.v-item-group.theme--light.v-btn-toggle.v-btn-toggle--group.primary--text > button:nth-child(8) > span > span.v-icon.notranslate.theme--light > svg > path'
+    element: '[data-component-name=object-form-messages-tab]'
     intro: In the Validation section, you will see errors or warnings about the content entered in the form.
   - title: 'Done'
 # todo4sernet: Replace hyperlink to online documentation if documentation created.
