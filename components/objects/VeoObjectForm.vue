@@ -423,38 +423,40 @@ export default defineComponent({
       const information: VeoSchemaValidatorMessage[] = [];
       const decisionRules = domain.value?.decisions?.piaMandatory?.rules || [];
 
-      if (props.objectMetaData?.decisionResults?.piaMandatory?.value !== undefined) {
-        if (props.objectMetaData.decisionResults.piaMandatory.value) {
+      if (objectData.value?.domains?.[props.domainId]?.subType === 'PRO_DataProcessing') {
+        if (props.objectMetaData?.decisionResults?.piaMandatory?.value !== undefined) {
+          if (props.objectMetaData.decisionResults.piaMandatory.value) {
+            information.push({
+              code: 'I_PIA_MANDATORY',
+              message: t('piaMandatory').toString(),
+              params: {
+                type: 'info'
+              },
+              decisionRules,
+              matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
+            });
+          } else {
+            information.push({
+              code: 'I_PIA_NOT_MANDATORY',
+              message: t('piaNotMandatory').toString(),
+              params: {
+                type: 'success'
+              },
+              decisionRules,
+              matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
+            });
+          }
+        } else {
           information.push({
-            code: 'I_PIA_MANDATORY',
-            message: t('piaMandatory').toString(),
+            code: 'I_PIA_MANDATORY_UNKNOWN',
+            message: t('piaMandatoryUnknown').toString(),
             params: {
               type: 'info'
             },
             decisionRules,
             matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
           });
-        } else {
-          information.push({
-            code: 'I_PIA_NOT_MANDATORY',
-            message: t('piaNotMandatory').toString(),
-            params: {
-              type: 'success'
-            },
-            decisionRules,
-            matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
-          });
         }
-      } else {
-        information.push({
-          code: 'I_PIA_MANDATORY_UNKNOWN',
-          message: t('piaMandatoryUnknown').toString(),
-          params: {
-            type: 'info'
-          },
-          decisionRules,
-          matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
-        });
       }
 
       return information;
