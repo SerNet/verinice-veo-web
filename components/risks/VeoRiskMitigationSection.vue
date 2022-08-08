@@ -134,6 +134,7 @@ export default defineComponent({
       },
       set(newValue: IVeoEntity[]) {
         emit('update:mitigations', newValue);
+        emit('mitigations-modified', true);
       }
     });
 
@@ -146,6 +147,7 @@ export default defineComponent({
 
         try {
           selectedItems.value = await $api.entity.fetchSubEntities('control', id);
+          emit('mitigations-modified', false);
         } finally {
           fetchingMitigation.value = false;
         }
