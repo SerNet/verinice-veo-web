@@ -88,7 +88,7 @@ export default Vue.extend({
     },
     initialId: {
       type: String,
-      default: ''
+      default: '#'
     },
     nestingLevel: {
       type: Number,
@@ -116,7 +116,7 @@ export default Vue.extend({
     },
     // eslint-disable-next-line no-undef
     itemsToObserve(): NodeListOf<Element> | false {
-      return this.items.length ? document.querySelectorAll(this.items.map((item) => `#${item.initialId}`).join(', ')) : false;
+      return this.items.length ? document.querySelectorAll(this.items.map((item) => `[id="${item.initialId}"]`).join(', ')) : false;
     }
   },
   watch: {
@@ -129,9 +129,7 @@ export default Vue.extend({
             // Important to iterate on all elements to have correct indices of Layouts in FormSchema
             return el.type === 'Layout' && el.options && el.options.format === 'group'
               ? {
-                  // "" + "elements-0"
-                  // "elements" + "-elements-0"
-                  initialId: `${this.initialId}${this.initialId ? '-' : ''}elements-${index}`,
+                  initialId: `${this.initialId}${this.initialId ? '/' : ''}elements/${index}`,
                   text: this.customTranslation[el.options?.label?.replace('#lang/', '')] || el.options?.label,
                   layout: el
                 }
@@ -170,6 +168,7 @@ export default Vue.extend({
       this.scroll(groupId);
     },
     scroll(groupId: string): void {
+      console.log(groupId);
       // Scroll problems with sticky header solve with https://github.com/iamdustan/smoothscroll/issues/47#issuecomment-350810238
       // What we want to scroll to
       const item = document.getElementById(groupId);
