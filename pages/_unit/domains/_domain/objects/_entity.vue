@@ -237,7 +237,7 @@ export default defineComponent({
 
       addCustomBreadcrumb({
         key: objectTypeKey,
-        text: upperFirst(getSchemaEndpoint(endpoints.value, newObjectType)),
+        text: t(`objectTypes.${getSchemaEndpoint(endpoints.value, newObjectType)}`).toString(),
         to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${newObjectType}`,
         param: objectTypeKey,
         index: 0,
