@@ -28,7 +28,7 @@
     type="number"
     :clearable="!options.required"
     hide-details="auto"
-    @input="$emit('input', $event)"
+    @input="onInput"
     @click:clear="$emit('input', undefined)"
   />
 </template>
@@ -55,9 +55,22 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 export default defineComponent({
   name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
-  setup() {
+  setup(props, { emit }) {
+    const onInput = (data: string | number) => {
+      if (typeof data !== 'number') {
+        if (props.objectSchema.type === 'integer') {
+          data = parseInt(data, 10);
+        } else {
+          data = parseFloat(data);
+        }
+      }
+
+      emit('input', data);
+    };
+
     return {
-      getControlErrorMessages
+      getControlErrorMessages,
+      onInput
     };
   }
 });
