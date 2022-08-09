@@ -95,7 +95,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, PropType, ref, useContext, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, useContext, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 import { mdiInformationOutline, mdiPencilOutline } from '@mdi/js';
