@@ -95,7 +95,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, nextTick, PropType, ref, useContext, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 import { mdiInformationOutline, mdiPencilOutline } from '@mdi/js';
@@ -153,12 +153,13 @@ export default defineComponent({
         }
       } else {
         selectedItems.value = [];
+        emit('mitigations-modified', false);
       }
     };
 
     const onMitigationCreated = async (objectId: string) => {
       const newMitigation = await $api.entity.fetch('control', objectId);
-      selectedItems.value.push(newMitigation);
+      selectedItems.value = [...selectedItems.value, newMitigation]; // We reassign the ref instead of using .push so that the computed setter picks up the changes
     };
 
     watch(
