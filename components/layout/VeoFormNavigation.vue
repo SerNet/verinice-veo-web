@@ -168,7 +168,6 @@ export default Vue.extend({
       this.scroll(groupId);
     },
     scroll(groupId: string): void {
-      console.log(groupId);
       // Scroll problems with sticky header solve with https://github.com/iamdustan/smoothscroll/issues/47#issuecomment-350810238
       // What we want to scroll to
       const item = document.getElementById(groupId);
