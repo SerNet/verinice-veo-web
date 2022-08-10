@@ -423,38 +423,41 @@ export default defineComponent({
       const information: VeoSchemaValidatorMessage[] = [];
       const decisionRules = domain.value?.decisions?.piaMandatory?.rules || [];
 
-      if (props.objectMetaData?.decisionResults?.piaMandatory?.value !== undefined) {
-        if (props.objectMetaData.decisionResults.piaMandatory.value) {
+      if (objectData.value?.domains?.[props.domainId]?.subType === 'PRO_DataProcessing') {
+        const decisionName = domain.value?.decisions?.piaMandatory?.name[locale.value] || Object.values(domain.value?.decisions?.piaMandatory?.name || {})[0];
+        if (props.objectMetaData?.decisionResults?.piaMandatory?.value !== undefined) {
+          if (props.objectMetaData.decisionResults.piaMandatory.value) {
+            information.push({
+              code: 'I_PIA_MANDATORY',
+              message: `${decisionName}: ${t('global.button.yes').toString()}`,
+              params: {
+                type: 'info'
+              },
+              decisionRules,
+              matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
+            });
+          } else {
+            information.push({
+              code: 'I_PIA_NOT_MANDATORY',
+              message: `${decisionName}: ${t('global.button.no').toString()}`,
+              params: {
+                type: 'success'
+              },
+              decisionRules,
+              matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
+            });
+          }
+        } else {
           information.push({
-            code: 'I_PIA_MANDATORY',
-            message: t('piaMandatory').toString(),
+            code: 'I_PIA_MANDATORY_UNKNOWN',
+            message: `${decisionName}: ${upperFirst(t('unknown').toString())}`,
             params: {
               type: 'info'
             },
             decisionRules,
             matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
           });
-        } else {
-          information.push({
-            code: 'I_PIA_NOT_MANDATORY',
-            message: t('piaNotMandatory').toString(),
-            params: {
-              type: 'success'
-            },
-            decisionRules,
-            matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
-          });
         }
-      } else {
-        information.push({
-          code: 'I_PIA_MANDATORY_UNKNOWN',
-          message: t('piaMandatoryUnknown').toString(),
-          params: {
-            type: 'info'
-          },
-          decisionRules,
-          matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
-        });
       }
 
       return information;
@@ -550,10 +553,8 @@ export default defineComponent({
     "messages": "messages",
     "objects": "objects",
     "objectView": "object view",
-    "piaMandatory": "Privacy impact assessment required.",
-    "piaMandatoryUnknown": "Cannot determine if a privacy assessment is required.",
-    "piaNotMandatory": "No privacy impact assessment required.",
     "tableOfContents": "contents",
+    "unknown": "unknown",
     "viewAs": "view as"
   },
   "de": {
@@ -564,10 +565,8 @@ export default defineComponent({
     "messages": "Meldungen",
     "objects": "Objekte",
     "objectView": "Objektansicht",
-    "piaMandatory": "Datenschutzfolgeabschätzung verpflichtend.",
-    "piaMandatoryUnknown": "Es kann nicht festgestellt werden, ob für dieses Objekt eine Datenschutzfolgeabschätzung verpflichtend ist.",
-    "piaNotMandatory": "Datenschutzfolgeabschätzung nicht verpflichtend.",
     "tableOfContents": "Inhalt",
+    "unknown": "unbestimmt",
     "viewAs": "darstellen als"
   }
 }
