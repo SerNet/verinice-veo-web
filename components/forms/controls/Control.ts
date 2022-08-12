@@ -18,6 +18,7 @@
 import { computed, defineComponent, h } from '@nuxtjs/composition-api';
 import { maxBy } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
+import { JsonPointer } from 'json-ptr';
 
 import { VeoFormsControlProps } from '../util';
 import * as VeoAutocomplete from './VeoAutocomplete.vue';
@@ -99,14 +100,27 @@ export default defineComponent({
       return items.map((item, index) => (props.options.enum ? { text: props.options.enum[index], value: item } : { text: props.translations[String(item)] || item, value: item }));
     });
 
+    const valuePointer = computed(() => (props.index !== undefined ? props.valuePointer.replace('items', props.index + '') : props.valuePointer));
+    const elementKey = computed(() => (props.index !== undefined ? props.elementKey?.replace('items', props.index + '') : props.elementKey));
+
+    // If the element is part of a custom link, we have to modify some props. We can't do it in VeoForm as the index isn't accesible there, so we do it here
+    const _props = computed<any>(() => ({
+      ...props,
+      items: items.value,
+      valuePointer: valuePointer.value,
+      value: JsonPointer.get(props.object, valuePointer.value),
+      elementKey: elementKey.value
+    }));
+
     return () =>
       h(maxBy(controls, 'truthyConditions')?.control.default, {
-        props: { ...props, items: items.value },
+        props: _props.value,
+        key: elementKey.value,
         scopedSlots: {
           default: () => (slots.default ? slots.default() : undefined)
         },
         on: {
-          input: (newValue: any) => emit('input', props.objectSchemaPointer, newValue, props.value, props.index)
+          input: (newValue: any) => emit('input', _props.value.objectSchemaPointer, newValue, _props.value.value, _props.value.index)
         }
       });
   }

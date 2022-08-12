@@ -249,7 +249,7 @@ export default defineComponent({
     const createLabel = (element: IVeoFormLabelFormSchema, formSchemaPointer: string) => {
       return h(VeoLabel, {
         props: {
-          key: `${formSchemaPointer}_${keyModifier}`,
+          key: `${formSchemaPointer}_${keyModifier.value}`,
           ...defaultProps,
           options: element.options,
           formSchemaPointer,
@@ -296,15 +296,18 @@ export default defineComponent({
       }
 
       const controlObjectSchema = { ...(JsonPointer.get(props.objectSchema, element.scope) as JSONSchema7), ...(localAdditionalContext.value[element.scope]?.objectSchema || {}) };
+      const valuePointer = removePropertiesKeywordFromPath(element.scope);
       return h(Control, {
         props: {
-          key: `${element.scope}_${keyModifier}`,
+          elementKey: `${element.scope}_${keyModifier.value}`,
           ...defaultProps,
           options: { ...element.options, ...localAdditionalContext.value[element.scope]?.formSchema },
           formSchemaPointer,
           objectSchemaPointer: element.scope,
           objectSchema: addConditionalSchemaPropertiesToControlSchema(props.objectSchema, props.value, controlObjectSchema, element.scope),
-          value: JsonPointer.get(props.value, removePropertiesKeywordFromPath(element.scope)),
+          valuePointer,
+          value: JsonPointer.get(props.value, valuePointer),
+          object: props.value,
           errors: errorMessages.value
         },
         on: {
