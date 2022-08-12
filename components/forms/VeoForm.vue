@@ -225,6 +225,9 @@ export default defineComponent({
           case 'Widget':
             return createWidget(element, formSchemaPointer);
         }
+      } else {
+        // VeoForms is confused if a form element doesn't exist and then suddently gets added as a new node, so we insert a placeholder element if the form element should be hidden
+        return h('template');
       }
     };
 
