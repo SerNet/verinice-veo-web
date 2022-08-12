@@ -121,22 +121,22 @@ export default {
 
   // NBRX-1765 object type names are hardcoded in the frontend for the moment. Will change at some point
   objectTypes: {
-    asset: 'Asset DE',
-    assets: 'Assets DE',
-    control: 'Control DE',
-    controls: 'Controls DE',
-    document: 'Dokument DE',
-    documents: 'Dokumente DE',
-    incident: 'Incident DE',
-    incidents: 'Incidents DE',
-    person: 'Person DE',
-    persons: 'Personen DE',
-    process: 'Prozess DE',
-    processes: 'Prozesse DE',
-    scenario: 'Szenario DE',
-    scenarios: 'Szenarien DE',
-    scope: 'Scope DE',
-    scopes: 'Scopes DE'
+    asset: 'Asset',
+    assets: 'Assets',
+    control: 'Maßnahme',
+    controls: 'Maßnahmen',
+    document: 'Dokument',
+    documents: 'Dokumente',
+    incident: 'Vorfall',
+    incidents: 'Vorfälle',
+    person: 'Person',
+    persons: 'Personen',
+    process: 'Prozess',
+    processes: 'Prozesse',
+    scenario: 'Szenario',
+    scenarios: 'Szenarien',
+    scope: 'Scope',
+    scopes: 'Scopes'
   },
 
   // temporary until the composition api supports <i18n></i18n>
