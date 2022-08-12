@@ -22,13 +22,14 @@
     :value="value"
     :disabled="disabled || options.disabled"
     :error-messages="getControlErrorMessages($props)"
+    :false-value="false"
     :label="options && options.label"
     :class="options && options.class"
     class="vf-form-element vf-checkbox"
     :indeterminate="value === undefined"
     hide-details="auto"
     color="primary"
-    @change="$emit('input', $event)"
+    @change="onChange"
   >
     <template #append>
       <v-icon @click="$emit('input', undefined)">
@@ -61,8 +62,17 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 export default defineComponent({
   name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
-  setup() {
+  setup(_, { emit }) {
+    const onChange = (newValue: any) => {
+      // VEO-1573 For some reason an unchecked v-checkbox emits null instead of false, even if the false-value is set to false
+      if (newValue === null) {
+        newValue = false;
+      }
+      emit('input', newValue);
+    };
+
     return {
+      onChange,
       getControlErrorMessages,
       mdiClose
     };
