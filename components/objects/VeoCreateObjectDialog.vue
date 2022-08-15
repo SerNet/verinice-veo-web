@@ -188,7 +188,7 @@ export default defineComponent({
       }
     }
 
-    const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + upperFirst(props.objectType));
+    const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + t(`objectTypes.${props.objectType}`).toString());
 
     return {
       dialog,

@@ -234,7 +234,7 @@ export default defineComponent({
 
           return {
             key: objectSchema.title,
-            name: upperFirst(objectSchema.title),
+            name: t(`objectTypes.${objectSchema.title}`).toString(),
             activePath: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectSchema.title}`,
             children: [
               // all of object type

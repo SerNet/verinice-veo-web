@@ -270,7 +270,7 @@ export default defineComponent({
       switch (label) {
         // Uppercase object types
         case 'objectType':
-          return upperFirst(value);
+          return t(`objectTypes.${value}`).toString();
         // Translate sub types
         case 'subType':
           return formSchemas.value.find((formSchema) => formSchema.subType === value)?.name?.[locale.value] || value;
