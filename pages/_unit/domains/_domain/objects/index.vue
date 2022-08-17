@@ -476,7 +476,7 @@ export default defineComponent({
     "clone": "dupliziert",
     "cloneObject": "objekt duplizieren",
     "deleteObject": "objekt löschen",
-    "dpiaMandatory": "Datenschutzfolgeabschätzung verpflichtend",
+    "dpiaMandatory": "DS-FA verpflichtend",
     "errors": {
       "clone": "Das Objekt konnte nicht dupliziert werden",
       "delete": "Das Objekt konnte nicht gelöscht werden"

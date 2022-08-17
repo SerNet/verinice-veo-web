@@ -53,7 +53,7 @@ export const WIDGET_DEFINITION: IVeoFormsElementDefinition = {
   },
   description: {
     en: 'Adds a label to the form, specifing whether a privacy impact assesment is mandatory.',
-    de: 'Fügt einen Text im Formschema ein, der definiert, ob eine Datenschutzfolgeabschätzung nötig ist.'
+    de: 'Fügt einen Text im Formschema ein, der definiert, ob eine Datenschutz-Folgeabschätzung nötig ist.'
   }
 };
 
@@ -84,10 +84,10 @@ export default defineComponent({
     "piaNotMandatoryText": "A privacy impact assessment is not required for this object."
   },
   "de": {
-    "piaMandatory": "Datenschutzfolgeabschätzung verpflichtend",
-    "piaMandatoryText": "Basierend auf Daten in diesem Objekt ist eine Datenschutzfolgeabschätzung verpflichtend.{0}Bitte erstellen Sie diese über die Warnungsleiste rechts.",
-    "piaNotMandatory": "Datenschutzfolgeabschätzung nicht verpflichtend",
-    "piaNotMandatoryText": "Für dieses Objekt ist keine Datenschutzfolgeabschätzung notwendig."
+    "piaMandatory": "Datenschutz-Folgeabschätzung verpflichtend",
+    "piaMandatoryText": "Basierend auf Daten in diesem Objekt ist eine Datenschutz-Folgeabschätzung verpflichtend.{0}Bitte erstellen Sie diese über die Warnungsleiste rechts.",
+    "piaNotMandatory": "Datenschutz-Folgeabschätzung nicht verpflichtend",
+    "piaNotMandatoryText": "Für dieses Objekt ist keine Datenschutz-Folgeabschätzung notwendig."
   }
 }
 </i18n>
