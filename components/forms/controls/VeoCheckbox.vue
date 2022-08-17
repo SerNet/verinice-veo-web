@@ -22,7 +22,6 @@
     :value="value"
     :disabled="disabled || options.disabled"
     :error-messages="getControlErrorMessages($props)"
-    :false-value="false"
     :label="options && options.label"
     :class="options && options.class"
     class="vf-form-element vf-checkbox"
@@ -64,11 +63,8 @@ export default defineComponent({
   props: VeoFormsControlProps,
   setup(_, { emit }) {
     const onChange = (newValue: any) => {
-      // VEO-1573 For some reason an unchecked v-checkbox emits null instead of false, even if the false-value is set to false
-      if (newValue === null) {
-        newValue = false;
-      }
-      emit('input', newValue);
+      // VEO-1573 Casting to boolean, somehow the value would be a string otherwise
+      emit('input', newValue === true);
     };
 
     return {
