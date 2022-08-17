@@ -155,7 +155,7 @@ export default defineComponent({
     const actions = computed(() => [
       {
         key: 'createObject',
-        title: t('createObject', [props.object?.type !== 'scope' ? props.object?.type : t('object')]).toString(),
+        title: t('createObject', [props.object?.type !== 'scope' ? t(`objectTypes.${props.object?.type}`) : t('object')]).toString(),
         icon: mdiPlus,
         tab: ['childObjects', 'parentObjects'],
         objectTypes: ['entity'],
@@ -163,7 +163,7 @@ export default defineComponent({
       },
       {
         key: 'linkObject',
-        title: t('linkObject', [props.object?.type !== 'scope' ? props.object?.type : t('object')]).toString(),
+        title: t('linkObject', [props.object?.type !== 'scope' ? t(`objectTypes.${props.object?.type}`) : t('object')]).toString(),
         icon: mdiLinkPlus,
         tab: ['childObjects', 'parentObjects'],
         objectTypes: ['entity'],

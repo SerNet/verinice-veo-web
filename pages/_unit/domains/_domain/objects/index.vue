@@ -342,7 +342,7 @@ export default defineComponent({
       switch (label) {
         // Uppercase object types
         case 'objectType':
-          return upperFirst(value);
+          return t(`objectTypes.${value}`).toString();
         // Translate sub types
         case 'subType':
           return formschemas.value.find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
@@ -353,7 +353,7 @@ export default defineComponent({
       }
     };
 
-    const createObjectLabel = computed(() => (subType.value ? formatValue('subType', subType.value) : upperFirst(objectType.value)));
+    const createObjectLabel = computed(() => (subType.value ? formatValue('subType', subType.value) : t(`objectTypes.${objectType.value}`).toString()));
 
     const onCloseDeleteDialog = (visible: boolean) => {
       if (visible === false) {

@@ -346,7 +346,7 @@ export default Vue.extend({
       switch (label) {
         // Uppercase object types
         case 'objectType':
-          return upperFirst(value);
+          return this.$t(`objectTypes.${value}`).toString();
         // Translate sub types
         case 'subType':
           return this.formschemas.find((formschema) => formschema.subType === value)?.name?.[this.$i18n.locale] || value;
