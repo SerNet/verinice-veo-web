@@ -19,7 +19,7 @@
   <v-checkbox
     v-if="options.visible"
     :id="objectSchemaPointer"
-    :value="value"
+    :input-value="value"
     :disabled="disabled || options.disabled"
     :error-messages="getControlErrorMessages($props)"
     :label="options && options.label"
@@ -28,7 +28,7 @@
     :indeterminate="value === undefined"
     hide-details="auto"
     color="primary"
-    @change="onChange"
+    @change="$emit('input', $event)"
   >
     <template #append>
       <v-icon @click="$emit('input', undefined)">
@@ -61,14 +61,8 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 export default defineComponent({
   name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
-  setup(_, { emit }) {
-    const onChange = (newValue: any) => {
-      // VEO-1573 Casting to boolean, somehow the value would be a string otherwise
-      emit('input', newValue === true);
-    };
-
+  setup() {
     return {
-      onChange,
       getControlErrorMessages,
       mdiClose
     };
