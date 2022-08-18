@@ -239,8 +239,8 @@ export default defineComponent({
           selectOptions: props.allowedObjectTypes
             ? objectTypes.value
                 .filter((ot) => props.allowedObjectTypes!.includes(ot))
-                .map((objectType) => ({ text: upperFirst(objectType.schemaName), value: objectType.schemaName }))
-            : objectTypes.value.map((objectType) => ({ text: upperFirst(objectType.schemaName), value: objectType.schemaName })),
+                .map((objectType) => ({ text: t(`objectTypes.${objectType.schemaName}`).toString(), value: objectType.schemaName }))
+            : objectTypes.value.map((objectType) => ({ text: t(`objectTypes.${objectType.schemaName}`).toString(), value: objectType.schemaName })),
           onChange: () => {
             nextTick(() => {
               delete localFilter.value.subType;

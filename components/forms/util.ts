@@ -74,20 +74,35 @@ export const VeoFormsWidgetProps = {
 
 export const VeoFormsControlProps = {
   ...VeoFormsElementProps,
+  // Points to the definition of this control in the object schema
   objectSchemaPointer: {
     type: String,
     default: '',
     required: true
   },
+  // Complete object schema
   objectSchema: {
     type: Object as PropType<JSONSchema7>,
     default: () => {},
     required: true
   },
+  // Points to where the value can be found in the object (usually the object schema pointer without /properties, however if the control is part of a custom link, the index omes into play)
+  valuePointer: {
+    type: String,
+    default: '',
+    required: true
+  },
+  // The value of this control. Might get modified in the Control.ts if control is part of a custom link.
   value: {
     type: [Number, String, Object, Array, Boolean],
     default: undefined
   },
+  // The complete object
+  object: {
+    type: Object as PropType<IBaseObject>,
+    default: () => {}
+  },
+  // Map containing all errors present in the form
   errors: {
     type: Map as PropType<Map<String, String[]>>,
     default: () => {}
@@ -97,9 +112,15 @@ export const VeoFormsControlProps = {
     type: Number,
     default: undefined
   },
+  // Contains all items available in VeoAutocomplete, VeoSelect and VeoRadio
   items: {
     type: Array as PropType<{ text: string; value: any }[]>,
     default: () => []
+  },
+  // Used by vue the identify each Node so that it only gets repainted if the key changes. Makes forms more performant
+  elementKey: {
+    type: String,
+    required: true
   }
 };
 

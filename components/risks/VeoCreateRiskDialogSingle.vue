@@ -79,10 +79,10 @@
           :value="data"
           :domain="domain"
           :dirty-fields.sync="dirtyFields"
-          :mitigations.sync="mitigations"
+          :mitigations="mitigations"
+          @update:mitigations="onMitigationsChanged"
           @update:new-mitigating-action="newMitigatingAction = $event"
-          @update:create-new-mitigating-action="createNewMitigatingAction = $event"
-          @update:mitigation-parts="mitigationParts = $event"
+          @mitigations-modified="mitigationsModified = $event"
           @input="onRiskDefinitionsChanged"
         />
       </v-form>
@@ -190,7 +190,7 @@ export default defineComponent({
     const data = ref<IVeoRisk | undefined>(undefined);
     const originalData = ref<IVeoRisk | undefined>(undefined);
     const formIsValid = ref(true);
-    const formModified = computed(() => !isEqual(data.value, originalData.value));
+    const formModified = computed(() => !isEqual(data.value, originalData.value) || mitigationsModified.value);
 
     // dirty/pristine stuff
     const dirtyFields = ref<IDirtyFields>({});
@@ -267,6 +267,13 @@ export default defineComponent({
     // Mitigating action stuff
     const mitigations = ref<IVeoEntity[]>([]);
 
+    const mitigationsModified = ref(false);
+
+    const onMitigationsChanged = (newMitigation: IVeoEntity[]) => {
+      mitigations.value = newMitigation;
+      dirtyFields.value.mitigation = true;
+    };
+
     const newMitigatingAction = computed(() => ({
       type: 'control',
       name: t('mitigatingAction', [data.value?.designator]).toString(),
@@ -288,7 +295,9 @@ export default defineComponent({
       formIsValid,
       formModified,
       mitigations,
+      mitigationsModified,
       newMitigatingAction,
+      onMitigationsChanged,
       onRiskDefinitionsChanged,
       onRiskOwnerChanged,
       onScenarioChanged,

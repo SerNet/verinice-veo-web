@@ -45,7 +45,7 @@
             :domain-id="domainId"
             :active-tab.sync="activeTab"
             :dense="!!pageWidths[1]"
-            @reload="loadObject"
+            @reload="updateObjectRelationships"
           />
         </template>
         <template #footer>
@@ -55,7 +55,7 @@
             speed-dial-style="bottom: 12px; right: 0"
             :object="object"
             :type="activeTab"
-            @reload="loadObject"
+            @reload="updateObjectRelationships"
           />
         </template>
       </VeoPage>
@@ -165,11 +165,11 @@
 
 <script lang="ts">
 import { computed, defineComponent, onUnmounted, ref, useContext, useFetch, useRoute, Ref, useAsync, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
-import { cloneDeep, isEqual, pick, upperFirst } from 'lodash';
+import { cloneDeep, isEqual, omit, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
-import { separateUUIDParam } from '~/lib/utils';
+import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
@@ -207,6 +207,9 @@ export default defineComponent({
 
     const object = ref<IVeoEntity | undefined>(undefined);
     const modifiedObject = ref<IVeoEntity | undefined>(undefined);
+    /* Data that should get merged back into modifiedObject after the object has been reloaded, useful to persist children
+     * of objects while keeping form changes */
+    const wipObjectData = ref<IBaseObject | undefined>(undefined);
 
     // Object details are originally part of the object, but as they might get updated independently, we want to avoid refetching the whole object, so we outsorce them.
     const metaData = ref<any>({});
@@ -220,6 +223,11 @@ export default defineComponent({
       metaData.value = cloneDeep(object.value.domains[domainId.value]);
       inspectionResults.value = await $api.entity.fetchInspections(object.value.type, object.value.id, domainId.value);
       getAdditionalContext();
+
+      if (wipObjectData.value) {
+        modifiedObject.value = { ...modifiedObject.value, ...wipObjectData.value };
+        wipObjectData.value = undefined;
+      }
     });
 
     // Breadcrumb extensions
@@ -237,7 +245,7 @@ export default defineComponent({
 
       addCustomBreadcrumb({
         key: objectTypeKey,
-        text: upperFirst(getSchemaEndpoint(endpoints.value, newObjectType)),
+        text: t(`objectTypes.${getSchemaEndpoint(endpoints.value, newObjectType)}`).toString(),
         to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${newObjectType}`,
         param: objectTypeKey,
         index: 0,
@@ -320,6 +328,11 @@ export default defineComponent({
       await updateObject(upperFirst(t('objectRestored', { name: object.value?.displayName }).toString()), upperFirst(t('objectNotRestored').toString()));
     }
 
+    function updateObjectRelationships() {
+      wipObjectData.value = omit(cloneDeep(modifiedObject.value), 'createdAt', 'createdBy', 'updatedAt', 'updatedBy', 'parts');
+      loadObject();
+    }
+
     async function updateObject(successText: string, errorText: string) {
       try {
         if (modifiedObject.value && object.value) {
@@ -393,12 +406,12 @@ export default defineComponent({
         await linkObject('child', pick(object.value, 'id', 'type'), { type: 'process', id: newObjectId });
       }
       createDPIADialogVisible.value = false;
-      loadObject();
+      updateObjectRelationships();
     };
 
     const onDPIALinked = () => {
       linkObjectDialogVisible.value = false;
-      loadObject();
+      updateObjectRelationships();
     };
 
     // disabling inputs
@@ -458,6 +471,7 @@ export default defineComponent({
       object,
       objectSchema,
       upperFirst,
+      updateObjectRelationships,
       loadObject,
       activeTab
     };

@@ -160,13 +160,16 @@
 <script lang="ts">
 import { mdiContentCopy, mdiFilter, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
-import { computed, defineComponent, h, useContext, useFetch, useRoute, useRouter, ref, reactive, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, h, useContext, useFetch, useRoute, useRouter, ref, reactive, watch, onUnmounted } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
+import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
+
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoTranslations } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
+import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
 
@@ -180,6 +183,7 @@ export default defineComponent({
 
     const { displayErrorMessage } = useVeoAlerts();
     const { cloneObject } = useVeoObjectUtilities();
+    const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
 
     const items = ref<IVeoPaginatedResponse<IVeoEntity[]>>();
     const formschemas = ref<IVeoFormSchemaMeta[]>([]);
@@ -216,6 +220,9 @@ export default defineComponent({
     const objectType = computed(() => filter.value.objectType);
     const subType = computed(() => filter.value.subType);
 
+    // parse UUID from URL
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+
     // fetch objects of objectType
     const { fetchState, fetch } = useFetch(async () => {
       const objectType = filter.value.objectType;
@@ -243,9 +250,68 @@ export default defineComponent({
       fetch();
     });
 
-    // parse UUID from URL
-    const domainId = computed(() => {
-      return separateUUIDParam(route.value.params.domain).id;
+    // Additional breadcrumbs based on object type and sub type
+    const objectTypeKey = 'object-overview-object-type';
+    const endpoints = ref<IVeoSchemaEndpoint[]>([]);
+
+    const onObjectTypeChanged = async (newObjectType?: string) => {
+      if (customBreadcrumbExists(objectTypeKey)) {
+        removeCustomBreadcrumb(objectTypeKey);
+      }
+
+      // Exit if no subtype is set
+      if (!newObjectType) {
+        return;
+      }
+
+      if (!endpoints.value.length) {
+        endpoints.value = await $api.schema.fetchAll();
+      }
+
+      addCustomBreadcrumb({
+        key: objectTypeKey,
+        text: upperFirst(getSchemaEndpoint(endpoints.value, newObjectType)),
+        to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${newObjectType}`,
+        param: objectTypeKey,
+        index: 0,
+        position: 11
+      });
+    };
+    watch(() => objectType.value, onObjectTypeChanged, { immediate: true });
+
+    const subTypeKey = 'object-overview-sub-type';
+    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
+
+    const onSubTypeChanged = async (newSubType?: string) => {
+      if (customBreadcrumbExists(subTypeKey)) {
+        removeCustomBreadcrumb(subTypeKey);
+      }
+
+      // Exit if no subtype is set
+      if (!newSubType) {
+        return;
+      }
+
+      if (!formSchemas.value.length) {
+        formSchemas.value = await $api.form.fetchAll(domainId.value);
+      }
+
+      const formSchema = formSchemas.value.find((formSchema) => formSchema.subType === newSubType);
+
+      addCustomBreadcrumb({
+        key: subTypeKey,
+        text: formSchema ? formSchema.name[locale.value] || Object.values(formSchema.name[locale.value])[0] : newSubType,
+        to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectType.value}&subType=${newSubType}`,
+        param: objectTypeKey,
+        index: 0,
+        position: 12
+      });
+    };
+    watch(() => subType.value, onSubTypeChanged, { immediate: true });
+
+    onUnmounted(() => {
+      removeCustomBreadcrumb(objectTypeKey);
+      removeCustomBreadcrumb(subTypeKey);
     });
 
     // Update query parameters but keep other route options
@@ -276,7 +342,7 @@ export default defineComponent({
       switch (label) {
         // Uppercase object types
         case 'objectType':
-          return upperFirst(value);
+          return t(`objectTypes.${value}`).toString();
         // Translate sub types
         case 'subType':
           return formschemas.value.find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
@@ -287,7 +353,7 @@ export default defineComponent({
       }
     };
 
-    const createObjectLabel = computed(() => (subType.value ? formatValue('subType', subType.value) : upperFirst(objectType.value)));
+    const createObjectLabel = computed(() => (subType.value ? formatValue('subType', subType.value) : t(`objectTypes.${objectType.value}`).toString()));
 
     const onCloseDeleteDialog = (visible: boolean) => {
       if (visible === false) {
@@ -410,7 +476,7 @@ export default defineComponent({
     "clone": "dupliziert",
     "cloneObject": "objekt duplizieren",
     "deleteObject": "objekt löschen",
-    "dpiaMandatory": "Datenschutzfolgeabschätzung verpflichtend",
+    "dpiaMandatory": "DS-FA verpflichtend",
     "errors": {
       "clone": "Das Objekt konnte nicht dupliziert werden",
       "delete": "Das Objekt konnte nicht gelöscht werden"

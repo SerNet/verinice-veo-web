@@ -154,6 +154,7 @@ export interface IVeoDomain extends IVeoBaseObject {
   decisions: {
     piaMandatory: {
       rules: IVeoPiaMandatoryRule[];
+      name: { [locale: string]: string };
     };
   };
 }

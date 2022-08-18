@@ -19,7 +19,7 @@
   <v-checkbox
     v-if="options.visible"
     :id="objectSchemaPointer"
-    :value="value"
+    :input-value="value"
     :disabled="disabled || options.disabled"
     :error-messages="getControlErrorMessages($props)"
     :label="options && options.label"
