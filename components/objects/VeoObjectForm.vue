@@ -558,10 +558,10 @@ export default defineComponent({
     "viewAs": "view as"
   },
   "de": {
-    "createDPIA": "DS-FA erstellen",
+    "createDPIA": "DSFA erstellen",
     "display": "Ansicht",
     "history": "Verlauf",
-    "linkDPIA": "DS-FA auswählen",
+    "linkDPIA": "DSFA auswählen",
     "messages": "Meldungen",
     "objects": "Objekte",
     "objectView": "Objektansicht",
