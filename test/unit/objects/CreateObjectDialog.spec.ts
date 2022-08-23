@@ -131,7 +131,7 @@ describe('CreateObjectDialog.vue', () => {
     });
 
     wrapper.find('.close-button').vm.$emit('click'); // v-btn is NOT native, thus we can't use trigger(click)
-    await new Promise((resolve) => setTimeout(resolve, 200)); // Waiting for 200ms, as the filter only gets reset after the close animation (150ms)
+    await new Promise((resolve) => setTimeout(resolve, 200)); // Waiting for 200ms, as the form only gets reset after the close animation (150ms)
     /* expect((wrapper.vm as any).objectData).toEqual({ // For some reason not working
       owner: {
         targetUri: 'some-url/units/invalid-unit-uuid-that-doesnt-matter'

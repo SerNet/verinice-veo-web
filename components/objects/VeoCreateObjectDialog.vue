@@ -106,7 +106,7 @@ export default defineComponent({
         if (!value) {
           setTimeout(() => {
             seedInitialData();
-          }, 1000);
+          }, 150);
         }
       }
     });
