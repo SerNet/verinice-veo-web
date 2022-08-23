@@ -27,7 +27,7 @@
   >
     <template #default>
       <VeoObjectForm
-        v-model="objectData"
+        :value="objectData"
         :object-schema="objectSchema"
         :domain-id="domainId"
         :preselected-sub-type="subType"
@@ -35,7 +35,7 @@
         disable-history
         scroll-wrapper-id="scroll-wrapper-create-dialog"
         object-creation-disabled
-        @input="isFormDirty = true"
+        @input="onFormInput"
       />
     </template>
     <template #dialog-options>
@@ -106,7 +106,7 @@ export default defineComponent({
         if (!value) {
           setTimeout(() => {
             seedInitialData();
-          }, 150);
+          }, 1000);
         }
       }
     });
@@ -153,6 +153,11 @@ export default defineComponent({
       isFormValid.value = false;
     }
 
+    const onFormInput = (newObjectData: any) => {
+      objectData.value = newObjectData;
+      isFormDirty.value = true;
+    };
+
     const setDefaultRiskDefinitionIfScope = async () => {
       if (props.objectType === 'scope') {
         const domain = await $api.domain.fetch(props.domainId);
@@ -197,6 +202,7 @@ export default defineComponent({
       isFormValid,
       objectSchema,
       objectData,
+      onFormInput,
       onSubmit,
 
       upperFirst,
