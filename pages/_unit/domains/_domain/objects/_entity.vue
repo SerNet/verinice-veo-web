@@ -353,7 +353,7 @@ export default defineComponent({
             }
           });
         } else {
-          displayErrorMessage(errorText, e.message);
+          displayErrorMessage(errorText, e.message, { details: cloneDeep({ object: modifiedObject.value, objectSchema: objectSchema.value }) });
         }
       }
     }

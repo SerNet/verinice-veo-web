@@ -123,6 +123,7 @@ pipeline {
                             --build-arg VEO_OIDC_URL='${env.OIDC_URL_DEV}' \
                             --build-arg VEO_OIDC_REALM='${env.OIDC_REALM_DEV}' \
                             --build-arg VEO_OIDC_CLIENT='${env.OIDC_CLIENT_DEV}' \
+                            --build-arg VEO_DEBUG=true \
                             --label org.opencontainers.image.version='$projectVersion' \
                             --label org.opencontainers.image.revision='$env.GIT_COMMIT' \
                             .")

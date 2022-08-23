@@ -62,7 +62,8 @@ export default {
     reportsApiUrl: process.env.VEO_REPORTING_API_URL || 'https://api.develop.verinice.com/reporting',
     oidcUrl: process.env.VEO_OIDC_URL || 'https://auth.staging.verinice.com/auth',
     oidcRealm: process.env.VEO_OIDC_REALM || 'verinice-veo',
-    oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client'
+    oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client',
+    debug: process.env.VEO_DEBUG || false
   },
 
   /*

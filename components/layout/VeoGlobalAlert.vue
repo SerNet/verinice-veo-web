@@ -25,23 +25,35 @@
     :timeout="params ? params.timeout : undefined"
     @input="onInput"
   >
-    <template
-      v-if="params && params.objectModified"
-      #additional-button
-    >
+    {{ showDownloadDetailsButton }}
+    <template #additional-button>
       <v-btn
+        v-if="params && params.objectModified"
         text
         color="primary"
         @click="onCustomButtonClick('refetch')"
       >
-        {{ $t('global.button.yes') }}
+        {{ t('global.button.yes') }}
       </v-btn>
+      <div v-if="showDownloadDetailsButton && params && params.details">
+        <v-btn
+          text
+          color
+          @click="downloadDetails"
+        >
+          {{ t('downloadDetails') }}
+        </v-btn>
+        <a
+          ref="downloadButton"
+          href="#"
+        />
+      </div>
     </template>
   </VeoAlert>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions, ref, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropOptions, ref, useContext, watch } from '@nuxtjs/composition-api';
 import { mdiCheckCircleOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
 
@@ -72,6 +84,7 @@ export default defineComponent<IVeoGlobalAlert>({
     }
   },
   setup(props) {
+    const { $config } = useContext();
     const { t } = useI18n();
     const { expireAlert, dispatchEventForCurrentAlert } = useVeoAlerts();
 
@@ -98,7 +111,30 @@ export default defineComponent<IVeoGlobalAlert>({
       dispatchEventForCurrentAlert(event);
     }
 
+    const showDownloadDetailsButton = computed(() => $config.debug);
+    const downloadButton = ref();
+
+    const downloadDetails = () => {
+      const blob = new Blob([JSON.stringify(props.params?.details)], { type: 'text/json' });
+
+      downloadButton.value.download = `error_${new Date().toISOString()}.json`;
+      downloadButton.value.href = window.URL.createObjectURL(blob);
+      downloadButton.value.dataset.downloadurl = ['text/json', downloadButton.value.download, downloadButton.value.href].join(':');
+
+      const evt = new MouseEvent('click', {
+        view: window,
+        bubbles: true,
+        cancelable: true
+      });
+
+      downloadButton.value.dispatchEvent(evt);
+    };
+
     return {
+      downloadButton,
+      downloadDetails,
+      showDownloadDetailsButton,
+
       VeoAlertType,
       mdiCheckCircleOutline,
       onCustomButtonClick,
@@ -110,6 +146,17 @@ export default defineComponent<IVeoGlobalAlert>({
   }
 });
 </script>
+
+<i18n>
+{
+  "en": {
+    "downloadDetails": "Download details"
+  },
+  "de": {
+    "downloadDetails": "Details herunterladen"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 .veo-global-alert {
