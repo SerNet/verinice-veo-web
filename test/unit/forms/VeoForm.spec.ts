@@ -91,6 +91,7 @@ describe('VeoForm.vue', () => {
     expect(inputs.at(0).element.tagName).toBe('INPUT');
 
     inputs.at(0).setValue('hans');
+    await new Promise((resolve) => setTimeout(resolve, 150)); // Needed as the v-model only gets updated after 150ms
 
     // Sadly either vue or the vue test utils won't pick up on the changes made to the value prop, so we have to manually update it.
     wrapper.setProps({ value: form.value });

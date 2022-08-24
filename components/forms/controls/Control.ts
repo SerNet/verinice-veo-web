@@ -56,7 +56,7 @@ export default defineComponent({
   props: VeoFormsControlProps,
   emits: ['input'],
   setup(props, { emit, slots }) {
-    const objectData = inject<IBaseObject>('objectData');
+    const objectData = inject<ComputedRef<IBaseObject>>('objectData');
     const translations = inject<ComputedRef<IBaseObject>>('translations');
 
     const { locale } = useI18n();
@@ -112,7 +112,7 @@ export default defineComponent({
       ...props,
       items: items.value,
       valuePointer: valuePointer.value,
-      value: JsonPointer.get(objectData, valuePointer.value),
+      value: JsonPointer.get(objectData?.value, valuePointer.value),
       elementKey: elementKey.value
     }));
 

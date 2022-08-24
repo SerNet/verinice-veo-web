@@ -166,18 +166,6 @@ export default defineComponent({
       { deep: true }
     );
 
-    // Needed so that components pick up changes on the form from the outside and adjust their values if necessary
-    watch(
-      () => props.value,
-      () => {
-        if (!internalChange.value) {
-          keyModifier.value++;
-        } else {
-          internalChange.value = false;
-        }
-      }
-    );
-
     const { locale } = useI18n();
 
     const { defaultReactiveFormActions } = useVeoReactiveFormActions();
@@ -218,8 +206,9 @@ export default defineComponent({
     };
 
     // global available data
+    const _value = computed(() => props.value);
     provide('translations', localTranslations);
-    provide('objectData', props.value);
+    provide('objectData', _value);
 
     const createComponent = (element: any, formSchemaPointer: string): any => {
       const rule = evaluateRule(props.value, element.rule);
