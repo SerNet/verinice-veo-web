@@ -172,7 +172,6 @@ export default defineComponent({
     const { formatErrors } = useVeoErrorFormatter();
 
     const keyModifier = ref(0);
-    const internalChange = ref(false);
     const localTranslations = computed(() => props.translations?.[locale.value] || {});
     const localAdditionalContext = computed(() => props.additionalContext || {});
     const localFormSchema = computed(() => cloneDeep(props.formSchema) || generateFormSchema(props.objectSchema, GENERATOR_OPTIONS(props), Mode.VEO));
@@ -365,7 +364,6 @@ export default defineComponent({
       emit('update:valid', formIsValid);
 
       // Send updated form
-      internalChange.value = true; // Needed so the values get correctly updated upon external data changes
       emit('input', updatedForm);
     };
 
