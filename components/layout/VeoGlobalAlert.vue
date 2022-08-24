@@ -78,6 +78,7 @@ export default defineComponent<IVeoGlobalAlert>({
     function onInput(newValue: boolean) {
       if (!newValue && props.alertKey) {
         expireAlert(props.alertKey);
+        value.value = false;
       }
     }
 

@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Plugin } from '@nuxt/types';
-import Keycloak from 'keycloak-js';
 import Vue from 'vue';
 
 import { Auth } from './auth';
