@@ -25,7 +25,6 @@
     :timeout="params ? params.timeout : undefined"
     @input="onInput"
   >
-    {{ showDownloadDetailsButton }}
     <template #additional-button>
       <v-btn
         v-if="params && params.objectModified"
