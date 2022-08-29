@@ -367,7 +367,7 @@ export default defineComponent({
       emit('input', updatedForm);
     };
 
-    const onDelayedInput = debounce(onControlInput, 150);
+    const onDelayedInput = debounce(onControlInput, 250);
 
     return () =>
       !formSchemaFitsObjectSchema.value?.valid
