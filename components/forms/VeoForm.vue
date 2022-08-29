@@ -16,9 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { computed, defineComponent, h, PropType, ref, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, h, PropType, provide, ref, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { cloneDeep, merge, take, takeRight } from 'lodash';
+import { cloneDeep, debounce, merge, take, takeRight } from 'lodash';
 import { JsonPointer } from 'json-ptr';
 import { JSONSchema7 } from 'json-schema';
 import { ErrorObject } from 'ajv';
@@ -201,9 +201,13 @@ export default defineComponent({
       metaData: props.metaData,
       disabled: props.disabled,
       objectCreationDisabled: props.objectCreationDisabled,
-      translations: localTranslations.value,
       debug: props.debug
     };
+
+    // global available data
+    const _value = computed(() => props.value);
+    provide('translations', localTranslations);
+    provide('objectData', _value);
 
     const createComponent = (element: any, formSchemaPointer: string): any => {
       const rule = evaluateRule(props.value, element.rule);
@@ -267,8 +271,7 @@ export default defineComponent({
           ...defaultProps,
           options: element.options,
           formSchemaPointer,
-          name: element.name,
-          objectData: props.value
+          name: element.name
         }
       });
     };
@@ -310,11 +313,10 @@ export default defineComponent({
           objectSchema: addConditionalSchemaPropertiesToControlSchema(props.objectSchema, props.value, controlObjectSchema, element.scope),
           valuePointer,
           value: JsonPointer.get(props.value, valuePointer),
-          object: props.value,
           errors: errorMessages.value
         },
         on: {
-          input: onControlInput
+          input: onDelayedInput
         },
         scopedSlots: {
           default: () => createChildren(element, formSchemaPointer)
@@ -364,6 +366,8 @@ export default defineComponent({
       // Send updated form
       emit('input', updatedForm);
     };
+
+    const onDelayedInput = debounce(onControlInput, 250);
 
     return () =>
       !formSchemaFitsObjectSchema.value?.valid

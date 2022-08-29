@@ -44,7 +44,6 @@ export interface IVeoFormElementDefaultProps {
   metaData: JSONSchema7;
   disabled: boolean;
   objectCreationDisabled: boolean;
-  translations: IBaseObject;
   debug: boolean;
   [key: string]: any;
 }

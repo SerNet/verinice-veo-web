@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, defineComponent, h } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, h, inject } from '@nuxtjs/composition-api';
 import { maxBy } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
@@ -34,6 +34,7 @@ import * as VeoLinksFieldRow from './VeoLinksFieldRow.vue';
 import * as VeoMarkdownEditor from './VeoMarkdownEditor.vue';
 import * as VeoRadio from './VeoRadio.vue';
 import * as VeoSelect from './VeoSelect.vue';
+import { IBaseObject } from '~/lib/utils';
 
 const AVAILABLE_CONTROLS = [
   VeoAutocomplete,
@@ -55,6 +56,9 @@ export default defineComponent({
   props: VeoFormsControlProps,
   emits: ['input'],
   setup(props, { emit, slots }) {
+    const objectData = inject<ComputedRef<IBaseObject>>('objectData');
+    const translations = inject<ComputedRef<IBaseObject>>('translations');
+
     const { locale } = useI18n();
 
     const controls = AVAILABLE_CONTROLS.flatMap((control) => {
@@ -97,7 +101,7 @@ export default defineComponent({
 
     const items = computed(() => {
       const items = props.objectSchema.enum || [props.objectSchema.items || []].flat().flatMap((def) => (typeof def === 'object' ? def.enum || [] : []));
-      return items.map((item, index) => (props.options.enum ? { text: props.options.enum[index], value: item } : { text: props.translations[String(item)] || item, value: item }));
+      return items.map((item, index) => (props.options.enum ? { text: props.options.enum[index], value: item } : { text: translations?.value[String(item)] || item, value: item }));
     });
 
     const valuePointer = computed(() => (props.index !== undefined ? props.valuePointer.replace('items', props.index + '') : props.valuePointer));
@@ -108,7 +112,7 @@ export default defineComponent({
       ...props,
       items: items.value,
       valuePointer: valuePointer.value,
-      value: JsonPointer.get(props.object, valuePointer.value),
+      value: JsonPointer.get(objectData?.value, valuePointer.value),
       elementKey: elementKey.value
     }));
 

@@ -192,7 +192,7 @@
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, PropOptions, PropType, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { upperFirst, merge, throttle } from 'lodash';
+import { upperFirst, merge, debounce } from 'lodash';
 import { mdiEyeOutline, mdiFormatListBulleted, mdiHistory, mdiInformationOutline } from '@mdi/js';
 
 import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/forms/types';
@@ -512,7 +512,7 @@ export default defineComponent({
 
     watch(
       () => objectData.value,
-      () => throttle(fetchDecisions, 500)(),
+      () => debounce(fetchDecisions, 1000)(),
       { deep: true }
     );
 

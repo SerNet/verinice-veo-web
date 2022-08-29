@@ -22,7 +22,7 @@ import addFormats from 'ajv-formats';
 import { cloneDeep, dropRight, merge, partition, pull } from 'lodash';
 import { JSONSchema7 } from 'json-schema';
 
-import { IVeoFormElementFormSchemaRule, IVeoFormElementRule, IVeoFormsTranslations } from './types';
+import { IVeoFormElementFormSchemaRule, IVeoFormElementRule } from './types';
 import { IBaseObject } from '~/lib/utils';
 import { IVeoFormSchemaControl, UISchemaElement } from '~/types/UISchema';
 import { IVeoFormSchemaGeneratorOptions } from '~/types/VeoTypes';
@@ -41,10 +41,6 @@ export const VeoFormsElementProps = {
   objectCreationDisabled: {
     type: Boolean,
     default: false
-  },
-  translations: {
-    type: Object as PropType<IVeoFormsTranslations>,
-    default: () => {}
   },
   debug: {
     type: Boolean,
@@ -65,10 +61,6 @@ export const VeoFormsWidgetProps = {
   name: {
     type: String,
     required: true
-  },
-  objectData: {
-    type: Object as PropType<IBaseObject>,
-    default: () => {}
   }
 };
 
@@ -96,11 +88,6 @@ export const VeoFormsControlProps = {
   value: {
     type: [Number, String, Object, Array, Boolean],
     default: undefined
-  },
-  // The complete object
-  object: {
-    type: Object as PropType<IBaseObject>,
-    default: () => {}
   },
   // Map containing all errors present in the form
   errors: {
