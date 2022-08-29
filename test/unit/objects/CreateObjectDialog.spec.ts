@@ -123,7 +123,7 @@ describe('CreateObjectDialog.vue', () => {
     const input = getFormInput('name');
     input.$emit('input', 'My new object name');
 
-    await new Promise((resolve) => setTimeout(resolve, 200)); // Waiting for 200ms, as the form only gets reset after the close animation (150ms)
+    await new Promise((resolve) => setTimeout(resolve, 300)); // Waiting for 300ms, as the form only gets reset after the close animation (150ms) and the changes only get propagated after 250ms on VeoForms side
     expect((wrapper.vm as any).objectData).toEqual({
       owner: {
         targetUri: 'some-url/units/invalid-unit-uuid-that-doesnt-matter'
