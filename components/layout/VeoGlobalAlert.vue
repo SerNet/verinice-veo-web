@@ -17,7 +17,7 @@
 -->
 <template>
   <VeoAlert
-    v-model="value"
+    :value="value"
     v-bind="$props"
     :save-button-text="(params && params.buttonText) || t('global.button.ok')"
     class="veo-global-alert"
@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropOptions, ref, useContext, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, nextTick, PropOptions, ref, useContext, watch } from '@nuxtjs/composition-api';
 import { mdiCheckCircleOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
 
@@ -88,9 +88,13 @@ export default defineComponent<IVeoGlobalAlert>({
     const { expireAlert, dispatchEventForCurrentAlert } = useVeoAlerts();
 
     function onInput(newValue: boolean) {
-      if (!newValue && props.alertKey) {
-        expireAlert(props.alertKey);
+      if (!newValue) {
         value.value = false;
+        nextTick(() => {
+          if (props.alertKey) {
+            expireAlert(props.alertKey);
+          }
+        });
       }
     }
 

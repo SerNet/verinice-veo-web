@@ -17,6 +17,7 @@
 -->
 <template>
   <v-alert
+    :value="value"
     v-bind="$attrs"
     :color="alertColor"
     colored-border
@@ -79,6 +80,10 @@ import { VeoAlertType } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
+    value: {
+      type: Boolean,
+      default: false
+    },
     text: {
       type: String,
       default: undefined
@@ -141,26 +146,23 @@ export default defineComponent({
     const intervalTime = 50;
     const remainingTime = ref<number>(0);
 
-    watch(
-      () => props.timeout,
-      (newValue) => {
-        if (newValue) {
-          if (interval) {
-            clearInterval(interval);
+    const onValueUpdated = (newValue: boolean) => {
+      if (interval) {
+        clearInterval(interval);
+      }
+      if (newValue && props.timeout) {
+        remainingTime.value = props.timeout;
+        interval = setInterval(() => {
+          if (remainingTime.value <= 0) {
+            emit('input', false);
           }
-          remainingTime.value = newValue;
-          interval = setInterval(() => {
-            if (remainingTime.value < 0) {
-              clearInterval(interval);
-              emit('input', false);
-            }
 
-            remainingTime.value -= intervalTime;
-          }, intervalTime);
-        }
-      },
-      { immediate: true }
-    );
+          remainingTime.value -= intervalTime;
+        }, intervalTime);
+      }
+    };
+
+    watch(() => props.value, onValueUpdated, { immediate: true });
 
     onUnmounted(() => {
       if (interval) {
