@@ -329,7 +329,7 @@ export default defineComponent({
     }
 
     function updateObjectRelationships() {
-      wipObjectData.value = omit(cloneDeep(modifiedObject.value), 'createdAt', 'createdBy', 'updatedAt', 'updatedBy', 'parts');
+      wipObjectData.value = omit(cloneDeep(modifiedObject.value), 'createdAt', 'createdBy', 'updatedAt', 'updatedBy', 'parts', 'members');
       loadObject();
     }
 
