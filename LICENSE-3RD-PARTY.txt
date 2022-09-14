@@ -761,11 +761,41 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following NPM packages may be included in this product:
+
+ - @jridgewell/gen-mapping@0.3.2
+ - @jridgewell/set-array@1.1.2
+
+These packages each contain the following license and notice below:
+
+Copyright 2022 Justin Ridgewell <jridgewell@google.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-----------
+
+The following NPM packages may be included in this product:
 
  - @jridgewell/resolve-uri@3.0.5
+ - @jridgewell/source-map@0.3.2
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 Copyright 2019 Justin Ridgewell <jridgewell@google.com>
 
@@ -820,11 +850,12 @@ THE SOFTWARE.
 
 -----------
 
-The following NPM package may be included in this product:
+The following NPM packages may be included in this product:
 
+ - @jridgewell/trace-mapping@0.3.15
  - @jridgewell/trace-mapping@0.3.4
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 Copyright 2022 Justin Ridgewell <justin@ridgewell.name>
 
@@ -1266,7 +1297,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following NPM package may be included in this product:
 
- - @nuxt/friendly-errors-webpack-plugin@2.5.1
+ - @nuxt/friendly-errors-webpack-plugin@2.5.2
 
 This package contains the following license and notice below:
 
@@ -4491,10 +4522,39 @@ THE SOFTWARE.
 
 -----------
 
+The following NPM package may be included in this product:
+
+ - acorn@8.8.0
+
+This package contains the following license and notice below:
+
+MIT License
+
+Copyright (C) 2012-2022 by various contributors (see AUTHORS)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+-----------
+
 The following NPM packages may be included in this product:
 
  - aggregate-error@3.1.0
- - ansi-regex@3.0.0
  - ansi-regex@5.0.1
  - ansi-styles@3.2.1
  - ansi-styles@4.3.0
@@ -4547,9 +4607,7 @@ The following NPM packages may be included in this product:
  - slash@3.0.0
  - sort-keys@2.0.0
  - split-on-first@1.1.0
- - string-width@2.1.1
  - string-width@4.2.3
- - strip-ansi@4.0.0
  - strip-ansi@6.0.1
  - strip-final-newline@2.0.0
  - supports-color@5.5.0
@@ -5045,7 +5103,6 @@ The following NPM packages may be included in this product:
  - import-from@2.1.0
  - is-absolute-url@2.1.0
  - is-binary-path@1.0.1
- - is-fullwidth-code-point@2.0.0
  - is-plain-obj@1.1.0
  - is-wsl@1.1.0
  - normalize-url@1.9.1
@@ -8552,7 +8609,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 The following NPM packages may be included in this product:
 
  - commondir@1.0.1
- - shell-quote@1.7.2
+ - shell-quote@1.7.3
 
 These packages each contain the following license and notice below:
 
@@ -8685,7 +8742,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 The following NPM packages may be included in this product:
 
  - concat-map@0.0.1
- - minimist@1.2.5
+ - minimist@1.2.6
  - path-browserify@0.0.1
  - safe-regex@1.1.0
  - text-table@0.2.0
@@ -13070,7 +13127,7 @@ The following NPM packages may be included in this product:
  - git-up@4.0.5
  - git-url-parse@11.6.0
  - parse-path@4.0.3
- - parse-url@6.0.0
+ - parse-url@6.0.5
 
 These packages each contain the following license and notice below:
 
@@ -16471,11 +16528,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following NPM package may be included in this product:
 
- - json-ptr@2.2.0
+ - json-ptr@3.1.1
 
 This package contains the following license and notice below:
 
-Copyright (c) 2011-2018 Phillip Clark
+Copyright (c) 2011-2021 Phillip Clark
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -17842,8 +17899,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following NPM packages may be included in this product:
 
- - nanoid@3.1.28
  - nanoid@3.1.30
+ - nanoid@3.3.4
 
 These packages each contain the following license and notice below:
 
@@ -17967,7 +18024,7 @@ SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - node-fetch@2.6.5
+ - node-fetch@2.6.7
 
 This package contains the following license and notice below:
 
@@ -20519,7 +20576,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following NPM package may be included in this product:
 
- - prismjs@1.25.0
+ - prismjs@1.28.0
 
 This package contains the following license and notice below:
 
@@ -26661,7 +26718,7 @@ SUCH DAMAGE.
 
 The following NPM package may be included in this product:
 
- - terser@5.9.0
+ - terser@5.14.2
 
 This package contains the following license and notice below:
 
@@ -28028,7 +28085,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following NPM package may be included in this product:
 
- - veo-web@1.0.0
+ - veo-web@1.0.1
 
 This package contains the following license and notice below:
 
@@ -28968,7 +29025,7 @@ SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - vue-router@3.5.4
+ - vue-router@3.5.2
 
 This package contains the following license and notice below:
 
