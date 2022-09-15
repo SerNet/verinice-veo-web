@@ -121,7 +121,10 @@ export class Auth {
    */
   public async logout(destination?: string, absolute: boolean = false): Promise<void> {
     LocalStorage.clear();
-    await this._keycloak.logout({ redirectUri: `${absolute ? '' : window.location.origin}${destination}` });
+    await this._keycloak.logout({
+      post_logout_redirect_uri: `${absolute ? '' : window.location.origin}${destination}`,
+      id_token_hint: this._keycloak.idToken
+    } as any); // Keycloak adpater doesn't know that the parameters changed
     this._keycloak.clearToken();
   }
 
