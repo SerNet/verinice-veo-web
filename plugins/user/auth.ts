@@ -121,6 +121,7 @@ export class Auth {
    */
   public async logout(destination?: string, absolute: boolean = false): Promise<void> {
     LocalStorage.clear();
+    console.log(this._keycloak.idToken, this._keycloak);
     await this._keycloak.logout({
       post_logout_redirect_uri: `${absolute ? '' : window.location.origin}${destination}`,
       id_token_hint: this._keycloak.idToken
