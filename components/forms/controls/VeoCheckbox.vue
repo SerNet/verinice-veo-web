@@ -30,7 +30,10 @@
     color="primary"
     @change="$emit('input', $event)"
   >
-    <template #append>
+    <template
+      v-if="value"
+      #append
+    >
       <v-icon @click="$emit('input', undefined)">
         {{ mdiClose }}
       </v-icon>
