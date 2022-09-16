@@ -5,7 +5,6 @@ exact: true
 lang: en
 steps:
   - title: 'The unit selection'
-# todo4nbrx: data-component erstellen
     element: '[data-component-name=unit-selection-page]'
     intro: On the unit selection page, select one of the available units for further processing.
   - title: 'Available units'

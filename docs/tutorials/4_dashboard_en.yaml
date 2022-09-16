@@ -27,13 +27,13 @@ steps:
     intro: Red, yellow and blue objects require further documentation, green and grey ones you have defined as sufficiently documented.
   - title: 'Incidents'
     element: '[data-component-name=domain-dashboard-incident-widget]'
-    intro: A new data protection incident that requires a timely response is displayed in red in the Incidents section.<br><b>This function is currently under development!</b>
+    intro: A new data protection incident that requires a timely response is displayed in red in the Incidents section.<br>
   - title: 'Documents'
     element: '[data-component-name=domain-dashboard-document-widget]'
     intro: Or if there is a contract pending review, you will find it in blue in the bar chart in the documents section.
   - title: 'Scenarios'
     element: '[data-component-name=domain-dashboard-scenario-widget]'
-    intro: Navigate from the dashboard directly to the 'yellow' hazards that need further consideration.
+    intro: Navigate from the dashboard directly to the yellow scenarios that need further consideration.
   - title: 'Done'
 # todo4sernet: Replace hyperlink to online documentation when documentation created.
 # intro: Further information can also be found in the <a href="/docs">online documentation</a>.

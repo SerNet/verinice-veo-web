@@ -27,13 +27,13 @@ steps:
     intro: Rote, gelbe und blaue Objekte bedürfen weiterer Dokumentation, grüne und graue haben Sie als hinreichend dokumentiert definiert.
   - title: 'Incidents'
     element: '[data-component-name=domain-dashboard-incident-widget]'
-    intro: Ein neuer Datenschutzvorfall, der eine fristgerechte Reaktion erfordert, wird Ihnen im Bereich Incidents rot dargestellt.<br><b>Diese Funktion befindet sich aktuell in Entwicklung!</b>
+    intro: Ein neuer Datenschutzvorfall, der eine fristgerechte Reaktion erfordert, wird Ihnen im Bereich Incidents rot dargestellt.<br>
   - title: 'Documents'
     element: '[data-component-name=domain-dashboard-document-widget]'
     intro: Oder steht ein Vertrag zur Prüfung an, so finden Sie diesen blau im Balkendiagramm im Bereich Dokumente.
   - title: 'Scenarios'
     element: '[data-component-name=domain-dashboard-scenario-widget]'
-    intro: Navigieren Sie vom Dashboard direkt zu den "gelben" Gefährdungen, die weiter betrachtet werden müssen.
+    intro: Navigieren Sie vom Dashboard direkt zu den gelben Gefährdungen, die weiter betrachtet werden müssen.
   - title: 'Geschafft'
 # todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
 #    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.
