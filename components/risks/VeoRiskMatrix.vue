@@ -20,7 +20,7 @@
     <thead>
       <tr>
         <th
-          :colspan="probabilities.length + 1"
+          :colspan="probabilities.length + 2"
           class="py-1"
           style="height: auto"
         >
@@ -64,7 +64,7 @@
         <th
           :rowspan="impacts.length + 1"
           class="px-2"
-          style="text-orientation: upright; writing-mode: vertical-rl; width: auto;"
+          style="text-orientation: upright; writing-mode: tb; width: auto; min-width: 44px"
         >
           {{ upperFirst(t('impact').toString()) }}
         </th>
