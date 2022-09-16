@@ -255,7 +255,6 @@ import { pick, upperFirst } from 'lodash';
 import { INPUT_TYPES } from '~/types/VeoEditor';
 import { IVeoFormSchema, IVeoObjectSchema } from '~/types/VeoTypes';
 import { generateFormSchema, Mode } from '~/components/forms/util';
-import { WIDGET_DEFINITION as PiaMandatoryWidgetDefinition } from '~/components/forms/widgets/VeoDPIAMandatoryWidget.vue';
 import { IVeoFormsElementDefinition } from '~/components/forms/types';
 import { IBaseObject } from '~/lib/utils';
 
@@ -287,7 +286,7 @@ export interface IControlItemMap {
   [parent: string]: IControl[];
 }
 
-const WIDGETS = [PiaMandatoryWidgetDefinition];
+const WIDGETS: IVeoFormsElementDefinition[] = [];
 
 export default defineComponent<IProps>({
   components: {

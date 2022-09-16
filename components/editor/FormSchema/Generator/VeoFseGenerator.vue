@@ -32,9 +32,9 @@ import {
   IVeoFormSchemaTranslationCollection,
   IVeoTranslationCollection
 } from '~/types/VeoTypes';
-import { WIDGET_DEFINITION as PiaMandatoryWidgetDefinition } from '~/components/forms/widgets/VeoDPIAMandatoryWidget.vue';
+import { IVeoFormsElementDefinition } from '~/components/forms/types';
 
-const WIDGETS = [PiaMandatoryWidgetDefinition];
+const WIDGETS: IVeoFormsElementDefinition[] = [];
 
 export default Vue.extend({
   name: 'FseGenerator',
