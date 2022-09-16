@@ -12,9 +12,9 @@ steps:
   - title: 'Domain Selector'
     element: '[data-component-name=domain-select]'
     intro: Mit dem Domain Selector wählen Sie eine der zur Verfügung stehenden Domänen aus.
-  - title: 'Unitauswahl'
-    element: '[data-component-name=unit-select-nav-item]'
-    intro: Wählen Sie eine der zur Verfügung stehenden Units aus.
+  #- title: 'Unitauswahl'
+  #  element: '[data-component-name=unit-select-nav-item]'
+  #  intro: Wählen Sie eine der zur Verfügung stehenden Units aus.
   - title: 'Dashboard'
     element: '[data-component-name=domain-dashboard-nav-item]'
     intro: Auf dem Dashboard sehen Sie auf einen Blick alle Objekte je Subtyp und Status (Lebenszyklus) und können direkt zu diesen navigieren.
