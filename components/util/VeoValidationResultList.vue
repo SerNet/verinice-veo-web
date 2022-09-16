@@ -53,14 +53,21 @@
             offset-y
           >
             <template #activator="{ on }">
-              <v-btn
-                icon
-                v-on="on"
-              >
-                <v-icon>
-                  {{ mdiCogOutline }}
-                </v-icon>
-              </v-btn>
+              <v-tooltip bottom>
+                <template #activator="{ on: on2}">
+                  <v-btn
+                    icon
+                    v-on="{ ...on2, ...on }"
+                  >
+                    <v-icon>
+                      {{ mdiLightbulbOutline }}
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <template #default>
+                  {{ t('fix') }}
+                </template>
+              </v-tooltip>
             </template>
           </VeoNestedMenu>
           <VeoPopoverMenu
@@ -110,7 +117,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiCogOutline, mdiInformationOutline, mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js';
+import { mdiInformationOutline, mdiLightbulbOutline, mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js';
 
 import { INestedMenuEntries } from '../layout/VeoNestedMenu.vue';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
@@ -145,7 +152,7 @@ export default defineComponent({
       locale,
 
       t,
-      mdiCogOutline,
+      mdiLightbulbOutline,
       mdiInformationOutline,
       mdiCheckCircleOutline,
       mdiCloseCircleOutline

@@ -18,9 +18,8 @@
 import { defineComponent, h } from '@nuxtjs/composition-api';
 
 import { VeoFormsWidgetProps } from '../util';
-import VeoDPIAMandatoryWidget from '~/components/forms/widgets/VeoDPIAMandatoryWidget.vue';
 
-const AVAILABLE_WIDGETS = [VeoDPIAMandatoryWidget];
+const AVAILABLE_WIDGETS: any[] = [];
 
 export default defineComponent({
   props: VeoFormsWidgetProps,
