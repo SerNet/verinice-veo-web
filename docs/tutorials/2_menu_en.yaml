@@ -13,8 +13,7 @@ steps:
     element: '[data-component-name=domain-select]'
     intro: Use the Domain Selector to select one of the available domains.
   - title: 'Unitauswahl'
-  # todo4nbrx: neuen data-component-name erstellen und hier austauschen:
-    element: '[data-component-name=domain-select]'
+    element: '[data-component-name=unit-select-nav-item]'
     intro: Select one of the available units.
   - title: 'Dashboard'
     element: '[data-component-name=domain-dashboard-nav-item]'
