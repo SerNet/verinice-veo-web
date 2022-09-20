@@ -29,13 +29,33 @@
     hide-details="auto"        
     :items="items"
     :multiple="multiple"
-    @change="$emit('input', $event)"
+    @change="onItemsChanged"
     @click:clear="$emit('input', undefined)"
-  />
+  >
+    <template
+      v-if="multiple"
+      #prepend-item
+    >
+      <!-- Needed as a replacement for v-list-item in case the list is part of a select or autocomplete and the user prepends a list item, as the wrong v-list-item gets highlighted when selected -->
+      <div
+        v-ripple
+        class="veo-custom-list-item"
+        :class="{
+          'veo-active-list-item': Array.isArray(value) && !value.length
+        }"
+        @click="$emit('input', [])"
+      >
+        <v-list-item-title>
+          {{ t('nothing') }}
+        </v-list-item-title>
+      </div>
+    </template>
+  </v-select>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
@@ -59,15 +79,39 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 export default defineComponent({
   name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
-  setup(props) {
+  setup(props, { emit }) {
+    const { t } = useI18n();
+
     // @ts-ignore
     const multiple = computed(() => props.objectSchema.type === 'array' && typeof props.objectSchema.items?.enum !== 'undefined');
 
+    // If the user deselects from one item to zero items, we want to pass undefined instead of an empty array as an empty array has to be explicitly selected
+    const onItemsChanged = (newValue: any) => {
+      if (multiple.value && Array.isArray(newValue) && !newValue.length) {
+        emit('input', undefined);
+      } else {
+        emit('input', newValue);
+      }
+    };
+
     return {
       multiple,
+      onItemsChanged,
 
-      getControlErrorMessages
+      getControlErrorMessages,
+      t
     };
   }
 });
 </script>
+
+<i18n>
+{
+  "en": {
+    "nothing": "Nothing"
+  },
+  "de": {
+    "nothing": "Keine/Keins"
+  }
+}
+</i18n>
