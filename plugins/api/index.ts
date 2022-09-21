@@ -189,10 +189,10 @@ export class Client {
           } catch (e) {
             // eslint-disable-next-line no-console
             console.error("Couldn't refresh session");
-            await $user.auth.logout('/');
+            await $user.auth.login('/');
           }
         } else if (options.retry === false) {
-          await $user.auth.logout('/');
+          await $user.auth.login('/');
         }
       }
 
