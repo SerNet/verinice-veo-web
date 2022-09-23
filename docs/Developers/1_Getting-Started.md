@@ -204,3 +204,210 @@ Find all objects that have another object as a part. One or more UUIDs can be sp
 **[`GET /assets?childElementIds=823dfbfa-21d4-4174-b184-38734465cbbb`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/asset-controller/getAssets)** - OpenAPI documentation
 
 Finds all incidents that have incident with ID _823dfbfa-21d4-4174-b184-38734465cbbb_ as a part.
+
+### Load a single business object
+
+A single object can be loaded with its UUID. API endpoint to load a process:
+
+**[`GET /processes/e529ee00-c995-444f-9a1d-2c07cf03143e`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/process-controller/getProcess)** - OpenAPI documentation
+
+Python code listing to load a process:
+```python
+import requests
+
+token = get_token()
+headers = {
+    'Authorization': token,
+}
+response = requests.get("https://api.verinice.com/veo/processes/e529ee00-c995-444f-9a1d-2c07cf03143e", headers=headers, verify=verify_ssl)
+```
+
+If you take a closer look at the element in the response, you will see that it is built up of different parts:
+
+```json{11,17,47} 
+{
+    "createdAt": "2022-06-27T15:11:59.877590Z",
+    "createdBy": "username A",
+    "updatedAt": "2022-06-27T15:11:59.877590Z",
+    "updatedBy": "username B",
+    "name": "Business process",
+    "designator": "PRO-347",
+    "description": "A business process, business method or business function is a collection of related, \
+    structured activities or tasks by people or equipment in which a specific sequence produces a service \
+    or product for a particular customer or customers.",
+    "owner": {
+        "displayName": "veo Unit",
+        "targetUri": "https://api.develop.verinice.com/veo/units/a602f30d-54be-4565-bacd-3c422ab88e18",
+        "searchesUri": "https://api.develop.verinice.com/veo/units/searches",
+        "resourcesUri": "https://api.develop.verinice.com/veo/units{?parent,displayName}"
+    },
+    "links": {
+        "process_dataType": [
+            {
+                "domains": [],
+                "attributes": {},
+                "target": {
+                    "displayName": "AST-935 Customer data",
+                    "targetUri": "https://api.develop.verinice.com/veo/assets/faf5d744-2bc8-4c19-bd5f-783f59d719a2",
+                    "searchesUri": "https://api.develop.verinice.com/veo/assets/searches",
+                    "resourcesUri": "https://api.develop.verinice.com/veo/assets{?unit,displayName,subType,status,\
+                    childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,\
+                    sortBy,sortOrder}"
+                }
+            }
+        ],
+        "process_processor": [
+            {
+                "domains": [],
+                "attributes": {},
+                "target": {
+                    "displayName": "SCP-460 IT Development Company",
+                    "targetUri": "https://api.develop.verinice.com/veo/scopes/26757ad0-a76b-41ab-bbcb-9b67e2fc1c90",
+                    "searchesUri": "https://api.develop.verinice.com/veo/scopes/searches",
+                    "resourcesUri": "https://api.develop.verinice.com/veo/scopes{?unit,displayName,subType,status,\
+                    childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,\
+                    sortBy,sortOrder}"
+                }
+            }
+        ]
+    },
+    "customAspects": {
+        "process_recipient": {
+            "domains": [],
+            "attributes": {
+                "process_recipient_type": "process_recipient_type_processor"
+            }
+        },
+        "process_dataTransfer": {
+            "domains": [],
+            "attributes": {
+                "process_dataTransfer_legalBasis": [],
+                "process_dataTransfer_explanation": "The data is always deleted after the online meeting has ended.",
+                "process_dataTransfer_otherLegalBasis": "Art. 6 Abs. 1 S. 1 lit. b DSGVO"
+            }
+        }
+    },
+    "type": "process",
+    "parts": [],
+    "domains": {
+        "b5110307-ca95-4bcb-bd7a-d2570f3d8946": {
+            "subType": "PRO_DataTransfer",
+            "status": "IN_PROGRESS",
+            "decisionResults": {},
+            "riskValues": {}
+        }
+    },
+    "id": "20c06dc7-5eec-46ec-b866-72cc12537be2",
+    "_self": "https://api.develop.verinice.com/veo/processes/20c06dc7-5eec-46ec-b866-72cc12537be2"
+}
+```
+
+The element `owner` references a <DocLink to="/object_model/objects#asset">unit</DocLink> to which the element belongs, the element `links` contains links to other elements and `customAspects` contains functional properties of the element. Each subject object belongs to one or more domains. One subtype is defined for each domain for each object. A lifecycle status is also set.
+
+### Object schema
+
+### Create a business object
+
+**[`POST /assets`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/asset-controller/createAsset)** - OpenAPI documentation
+
+After loading a unit and domain ID, a business object can be created with the API endpoint:
+
+**[`POST /assets`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/asset-controller/createAsset)** - OpenAPI documentation
+
+Python code listing to create an asset:
+
+```python
+element = {
+    'name': 'Mail Server',
+    'owner': {
+        'targetUri': 'https://api.develop.verinice.com/veo/units/a602f30d-54be-4565-bacd-3c422ab88e18',
+    },
+    'type': 'asset',
+    'domains': {
+        'b5110307-ca95-4bcb-bd7a-d2570f3d8946': {
+            'subType': 'AST_IT-System',
+            'status': 'RELEASED',
+        }
+    }
+}
+url = "https://api.develop.verinice.com/veo/assets"
+token = get_token()
+headers = {
+    "Authorization": token,
+    "Content-Type": "application/json",
+}
+response = requests.post(url, data=element, headers=headers, verify=True)
+if (response.status_code != 201):
+    print("Error while posting element: " + str(response.status_code))
+    raise Exception("Error while posting element: " + str(response.status_code))
+element_id = response.json().get("resourceId")
+```
+
+The element in the listing above contains the mandatory properties that must be present when you create it:
+- `name`
+- `owner`: A reference to a unit
+- `type`: `asset`, `control`, `document`, `incident`, `person`, `process` or `scenario`
+- `domains`: References to one or more domains and an `subType` und a `status` per domain. 
+
+### Update a business object
+
+Scopes can be updated with this endpoint, for example:
+
+**[`PUT /scopes/{uuid}`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/scope-controller/updateScope)** - OpenAPI documentation
+
+The enpoints for the other object types have URLs according to their type.
+
+The veo API uses [ETags](https://en.wikipedia.org/wiki/HTTP_ETag) for [optimistic concurrency control](https://en.wikipedia.org/wiki/Optimistic_concurrency_control). This prevents concurrent changes to a resource from multiple clients overwriting each other.
+
+If a single business object is loaded, then together with the object the header `ETag` is returned. The ETag must be sent in the PUT Request as header `If-Match` when updating an object. Python code listing to update a scope with an etag:
+```python
+import requests
+import json
+import re
+   
+token = get_token()
+url = "https://api.verinice.com/scopes/e4af7789-5da0-49ed-86c6-8ecea8262f0f"
+
+# Load the scope object
+headers = {
+    'Authorization': token
+}
+response = requests.get(url, headers=headers, verify=True)
+etag = response.headers["ETag"]
+# Extract the ETag that is sent between quotes.
+etag = re.findall('"([^"]*)"', etag)[0]
+
+scope:dict = response.json()
+# Modify the scope data....
+
+# Update the scope 
+# Set etag without quotes as header "If-Match"
+headers = {
+    "Authorization": token,
+    "Content-Type": "application/json",
+    "If-Match": etag
+}
+requests.put(url, data = json.dumps(scope), headers=headers, verify=True)
+```
+
+### Delete a business object
+
+To delete an object, execute a request with the DELETE method on the object's URL:
+
+**[`DELETE /scenarios/{uuid}`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/scenario-controller/deleteScenario)** - OpenAPI documentation
+
+Python code listing to delete a scenario:
+
+```python
+import requests
+token = get_token()
+url = "https://api.verinice.com/scenarios/e4af7789-5da0-49ed-86c6-8ecea8262f0f"
+
+# Load the scope object
+headers = {
+    'Authorization': token
+}
+response = requests.delete(url, headers=headers, verify=True)
+```
+
+When a scope is deleted, the members of the scope are not deleted, but removed from the scope before deletion. Also, when an object is deleted that contains parts, the parts are not deleted, but removed from the object before deletion. When a unit is deleted, all elements in the unit are deleted along with the unit.
