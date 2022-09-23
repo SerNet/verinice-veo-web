@@ -5,7 +5,7 @@ position: 2
 
 ### Organisationsobjekte
 
-Organisationsobjekte helfen bei der Zuordnung der Objekte zu Anwendern. Organisationsobjekte realisieren die Trennung der Daten in unterschiedliche Mandanten. Innerhalb eines Mandanten können weitere Untergruppen angelegt werden, z.B. für Tochtergesellschaften oder Fachabteilungen.
+Organisationsobjekte helfen bei der Zuordnung der Objekte zu Anwender*innen. Organisationsobjekte realisieren die Trennung der Daten in unterschiedliche Mandanten. Innerhalb eines Mandanten können weitere Untergruppen angelegt werden, z.B. für Tochtergesellschaften oder Fachabteilungen.
 
 ![veo-organisationsobjekte](media/veo-organisationsobjekte.png)
 
@@ -19,7 +19,7 @@ Die Unit teilt einen Mandanten in eine oder mehrere Untereinheiten auf. Eine Uni
 
 ### Fachobjekte
 
-Für den Betrieb von Managementsystemen für Informationssicherheit und Datenschutz enthält das Objektmodell von veo die Fachobjekte [Prozess](#prozess), [Asset](#asset), [Szenario](#szenario), [Risiko](#risiko), [Control](#control), [Incident](#incident), [Dokument](#dokument) und [Person](#person). Diese Objekte können über sogenannte Subtypen weiter präzisiert werden.
+Für den Betrieb von Managementsystemen für Informationssicherheit und Datenschutz enthält das Objektmodell von veo die Fachobjekte [Prozess](#prozess), [Asset](#asset), [Szenario](#szenario), [Risiko](#risiko), [Control](#control), [Vorfall](#incident), [Dokument](#dokument) und [Person](#person). Diese Objekte können über sogenannte Subtypen weiter präzisiert werden.
 
 ![veo-fachobjekte](media/veo-fachobjekte.png)
 

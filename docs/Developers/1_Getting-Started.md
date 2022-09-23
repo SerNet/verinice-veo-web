@@ -14,7 +14,7 @@ basic concepts of the verinice.veo object model. You can learn more about these 
 
 ### Authentication
 
-verinice.veo uses [OpenID Connect (OIDC)](https://openid.net/connect/) for authentication, which is built on top of [OAuth 2.0](https://oauth.net/2/). [Keycloak](https://www.keycloak.org/) is used as authentication server. Keycloak exposes a variety of REST endpoints for OAuth 2.0 flows. The token endpoint allows us to retrieve an access tokens. For each request sent to the verinice.veo API such an access token is required.
+verinice.veo uses [OpenID Connect (OIDC)](https://openid.net/connect/) for authentication, which is built on top of [OAuth 2.0](https://oauth.net/2/). [Keycloak](https://www.keycloak.org/) is used as authentication server. For each request sent to the verinice.veo API an access token is required. Keycloak exposes a variety of REST endpoints for OAuth 2.0 flows. The token endpoint allows us to retrieve an access tokens. The method `get_token` creates a token with this endpoint:
 
 ```python
 import requests
@@ -24,19 +24,16 @@ def get_token():
         'username':USER_NAME, 
         'password':PASSWORD,
         'grant_type':'password',
-        'client_id':KEYCLOAK_CLIENT_ID
+        'client_id':'verinice-veo-api'
     }
 
-    response = requests.post(KEYCLOAK_BASE_URL + "/auth/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/token", data = body)
+    response = requests.post("https://auth.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/token", data = body)
     if (response.status_code != 200):
         print("Error while getting token, status code: " + str(response.status_code))
     return "Bearer " + response.json().get('access_token')
 
 ```
 For the creation of a token these parameters must be set:
- - `KEYCLOAK_BASE_URL`: i.g. https://auth.verinice.com/
- - `KEYCLOAK_REALM`: verinice-veo
- - `KEYCLOAK_CLIENT_ID`: verinice-veo-api
  - `USER_NAME`: A valid user name
  - `PASSWORD`: The password for the user
 
@@ -138,6 +135,7 @@ for process in json_data.get("items"):
 
 ### Search for business objects
 
+
 All endpoints for loading ISMS business types have the same search parameters, which are briefly described here. All parameters can be combined as needed.
 
 #### subType 
@@ -156,21 +154,21 @@ Find all objects that contain the term in the name:
 
 Finds all assets that contain _fire_ in the name, e.g. an asset _firewall_ or _fire extinguisher_.
 
-### status
+#### status
 
 Find all objects of a certain status. The available statuses are:
-
 - _NEW_
 - _IN\_PROGRESS_
 - _FOR\_REVIEW_
 - _RELEASED_
 - _ARCHIVED_
 
-`GET https://api.verinice.com/veo/controls?status=RELEASED`
+**[`GET /controls?status=RELEASED`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/control-controller/getControls)** - OpenAPI documentation
 
 Finds all controls with the status _RELEASED_.
 
-### hasChildElements
+
+#### hasChildElements
 
 All business objects in veo can have parts of the same type. Find all the objects that have parts.
 
@@ -178,7 +176,7 @@ All business objects in veo can have parts of the same type. Find all the object
 
 Finds all processes that have parts (sub processes).
 
-### hasParentElements
+#### hasParentElements
 
 Find all objects that are a part of another object.
 
@@ -186,7 +184,7 @@ Find all objects that are a part of another object.
 
 Finds all assets that that are a part of another asset.
 
-### childElementIds
+#### childElementIds
 
 Find all objects that have another object as a part. One or more UUIDs can be specified, separated by a comma.
 

@@ -49,11 +49,10 @@ Eine Domäne enthält beliebig viele Formulare. Mit diesen Formularen lassen sic
 
 #### Kataloge
 
-Jede Domäne enthält einen Katalog. Ein Katalog ist eine Sammlung von Fachobjekten, die auf ein ISMS-Modell angewendet werden können. Jeder Katalogeintrag ist mit einem Fachobjekt verknüpft, das zu dem Katalog gehört. Zusätzlich enthält ein Katalogeintrag eine Menge von Regeln, die bestimmen, welche Aktionen ausgeführt werden, wenn ein Katalogeintrag angewendet wird.
+Jede Domäne enthält einen oder mehrere Kataloge. Ein Katalog ist eine Sammlung von Fachobjekten, die auf ein ISMS-Modell angewendet werden können. Ein Katalogeintrag besteht aus einem Fachobjekt und zusätzlich aus einer Menge von Regeln, die bestimmen, welche Aktionen ausgeführt werden, wenn der Katalogeintrag auf das Modell angewendet wird.
 
-Die Domäne Datenschutz enthält Katalogeinträge für Technische und organisatorische Maßnahmen (TOMs). Jeder dieser Katalogeinträge ist verknüpft mit einem [Control](objects#control). Es gibt zwei Regeln für die Anwendung, wenn der Katalogeintrag auf ein Verfahren [Prozess](objects#prozess) angewendet wird:
+Die Domäne Datenschutz enthält Katalogeinträge für Technische und organisatorische Maßnahmen (TOMs, Fachobjekt: [Control](objects#control)) und Gefährdungen (Fachobjekt: [Szenario](objects#scenario)). Diese Einträge enthalten nur eine einfache Regel, wenn sie auf eine Unit im Modell angewendet werden: Die TOM oder Gefährdung wird in die Unit kopiert. Andere Kataloge können komplizierte Regeln für das Anwenden enthalten, wie zum Beispiel der  das IT-Grundschutz-Kompendium in der Domäne IT-Grundschutz.
 
-* Kopiere das Control
-* Verknüpfe das Control mit dem Verfahren
+#### Profile
 
-![veo-kataloge](media/veo-kataloge.png)
+Kataloge enthalten jeden einzelnen Eintrag immer nur einmal, Angewendet werden können die Katalogeinträge zwar mehrfach, der Katalog enthält aber keine Beispiele angewendeter Einträge. Es ist im Katalog nicht ersichtlich auf was für eine Verarbeitungstätigkeit eine einzelne TOM sinnvollerweise angewendet werden sollte. Solche Hinweise und Beispiele für das angewendete Einträge aus Katalogen finden sich in Profilen. Profile enthalten fertige ISMS-Modelle, die als Vorlage verwendet werden können.
