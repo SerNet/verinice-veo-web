@@ -42,6 +42,10 @@ For the creation of a token these parameters must be set:
 The unit is the root node in veo's object model and the hierarchical root of objects and groups. A unit represents an organization (e.g. a company) or a department in an organization. Therefore, almost all functions in the verinice.veo API require a Unit.
 
 All units owned by the client of an account are loaded with the call of this endpoint:
+
+**[`GET /units`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/unit-controller/getUnits)** - OpenAPI documentation
+
+Python code listing to load units:
 ```python
 import requests
 
@@ -64,6 +68,11 @@ unit_name = units[0].get("name")
 The different areas of expertise, which can be managed with veo, are called domains. If a function is called in the API, then mostly a domain must be specified.
 
 All domains that can be edited are loaded with the call of this endpoint:
+
+**[`GET /domains`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/domain-controller/getDomains)** - OpenAPI documentation
+
+
+Python code listing to load domains:
 ```python
 import requests
 
@@ -85,8 +94,11 @@ domain_name = domains[0].get("name")
 
 In besides the units, to which all other data refer, and the domains, which give the data business meaning, the ISMS veo business  objects can of course also be loaded and modified via the API. For the operation of management systems for information security and data protection, the object model of veo contains the business objects <DocLink to="/object_model/objects#process">process</DocLink>, <DocLink to="/object_model/objects#asset">asset</DocLink>, <DocLink to="/object_model/objects#scenario">scenario</DocLink>, <DocLink to="/object_model/objects#risk">risk</DocLink>, <DocLink to="/object_model/objects#control">control</DocLink>, <DocLink to="/object_model/objects#incident">incident</DocLink>, <DocLink to="/object_model/objects#document">document</DocLink> and <DocLink to="/object_model/objects#person">person</DocLink>. These objects can be further specified via so-called subtypes. The meaning of these business objects are explained in the <DocLink to="/object_model/objects">_Object Model_ section in the _Business Objects_ chapter</DocLink>.
 
+For each business object type there are the same API endpoints for managing the objects of this type. Endpoint for loading all processes (example):
 
- The following snippet shows how to load all processes from a unit:
+ **[`GET /processes`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/process-controller/getProcesses)** - OpenAPI documentation
+
+The following snippet shows how to load all processes from a unit:
 
 ```python
 import requests
@@ -122,7 +134,8 @@ containing a single page of items, the number of all items in the result, and th
 
 The number of items in the page can be specified with the `size` parameter, the page number with the `page` parameter:
 
-`GET /processes?size=5&page=3`
+
+**[`GET /processes?size=5&page=3`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/process-controller/getProcesses)** - OpenAPI documentation
 
 Now you can iterate over the items in the page to process the data:
 
@@ -142,7 +155,7 @@ All endpoints for loading ISMS business types have the same search parameters, w
 
 Find all objects of a certain sub-type:
 
-`GET https://api.verinice.com/veo/documents?subType=DOC_Contract`
+**[`GET /documents?subType=DOC_Contract`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/document-controller/getDocuments)** - OpenAPI documentation
 
 Finds all documents of the sub-type _DOC_Contract_ (Contracts).
 
@@ -150,7 +163,7 @@ Finds all documents of the sub-type _DOC_Contract_ (Contracts).
 
 Find all objects that contain the term in the name:
 
-`GET https://api.verinice.com/veo/assets?name=fire`
+**[`GET /assets?name=fire`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/asset-controller/getAssets)** - OpenAPI documentation
 
 Finds all assets that contain _fire_ in the name, e.g. an asset _firewall_ or _fire extinguisher_.
 
@@ -172,7 +185,7 @@ Finds all controls with the status _RELEASED_.
 
 All business objects in veo can have parts of the same type. Find all the objects that have parts.
 
-`GET https://api.verinice.com/veo/processes?hasChildElements=true`
+**[`GET /processes?hasChildElements=true`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/process-controller/getProcesses)** - OpenAPI documentation
 
 Finds all processes that have parts (sub processes).
 
@@ -180,7 +193,7 @@ Finds all processes that have parts (sub processes).
 
 Find all objects that are a part of another object.
 
-`GET https://api.verinice.com/veo/assets?hasParentElements=true`
+**[`GET /assets?hasParentElements=true`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/asset-controller/getAssets)** - OpenAPI documentation
 
 Finds all assets that that are a part of another asset.
 
@@ -188,6 +201,6 @@ Finds all assets that that are a part of another asset.
 
 Find all objects that have another object as a part. One or more UUIDs can be specified, separated by a comma.
 
-`GET https://api.verinice.com/veo/assets?childElementIds=823dfbfa-21d4-4174-b184-38734465cbbb`
+**[`GET /assets?childElementIds=823dfbfa-21d4-4174-b184-38734465cbbb`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/asset-controller/getAssets)** - OpenAPI documentation
 
 Finds all incidents that have incident with ID _823dfbfa-21d4-4174-b184-38734465cbbb_ as a part.
