@@ -44,9 +44,11 @@
     <template
       #item="{ item }"
     >
-      <v-icon left>
-        {{ getItemIcon(item) }}
-      </v-icon>
+      <VeoObjectIcon
+        :object-type="item.type"
+        :is-composite="item.parts && item.parts.length"
+        left
+      />
       {{ item.displayName }}
       <v-hover v-slot="{ hover }">
         <v-icon
@@ -67,7 +69,7 @@ import { computed, defineComponent, PropType, ref, useContext, useFetch, useRout
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
-import { mdiArchive, mdiArchiveArrowDown, mdiFileDocument, mdiFileDocumentMultiple, mdiOpenInNew } from '@mdi/js';
+import { mdiOpenInNew } from '@mdi/js';
 import { getSchemaEndpoint } from '~/plugins/api/schema';
 import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink } from '~/types/VeoTypes';
@@ -225,13 +227,6 @@ export default defineComponent({
     const currentSubTypeFormName = computed(() => props.subType && formSchemas.value.find((formSchema) => formSchema.subType === props.subType)?.name[locale.value]);
     const localLabel = computed(() => props.label ?? `${currentSubTypeFormName.value ? currentSubTypeFormName.value : upperFirst(props.objectType)}${props.required ? '*' : ''}`);
 
-    const getItemIcon = (item: IVeoEntity) => {
-      if (item.type !== 'scope' && item.parts?.length) return mdiFileDocumentMultiple;
-      else if (item.type === 'scope' && item.parts?.length) return mdiArchiveArrowDown;
-      else if (item.type === 'scope') return mdiArchive;
-      return mdiFileDocument;
-    };
-
     // Object select display
     const openItem = (item: IVeoEntity) => {
       const routeData = router.resolve({
@@ -255,7 +250,6 @@ export default defineComponent({
       items,
       moreItemsAvailable,
       searchQuery,
-      getItemIcon,
       mdiOpenInNew,
       openItem,
 
