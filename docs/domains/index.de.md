@@ -7,7 +7,7 @@ position: 2
 
 Verfügbare Domänen in verinice.veo:
 
-1. [DS-GVO](gdpr)
-1. [BSI IT-Grundschutz](it-grundschutz)
-1. [ISO 27001](iso)
-1. [VDA ISA / TISAX](vda)
+1. <DocLink to="/domains/gdpr">DS-GVO</DocLink>
+1. <DocLink to="/domains/it-grundschutz">BSI IT-Grundschutz</DocLink>
+1. <DocLink to="/domains/iso">ISO 27001</DocLink>
+1. <DocLink to="/domains/vda">VDA ISA / TISAX</DocLink>

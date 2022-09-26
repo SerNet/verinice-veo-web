@@ -5,5 +5,5 @@ position: 1
 
 ## Introduction
 
-1. [Evolution](evolution)
-1. [Features & Benefits](features_benefits)
+1. <DocLink to="/introduction/evolution">Evolution</DocLink>
+1. <DocLink to="/introduction/features_benefits">Features & Benefits</DocLink>

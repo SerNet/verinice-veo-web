@@ -7,8 +7,8 @@ position: 2
 
 The user interface consists of the following areas:
 
-1. [application bar](app_bar)
-1. [menu](menu)
-1. [main area](main)
+1. <DocLink to="user_interface/app_bar">application bar</DocLink>
+1. <DocLink to="/user_interface/menu">menu</DocLink>
+1. <DocLink to="/user_interface/main">main area</DocLink>
 
 ![The user interface](media/veo_user-interface.de.jpg)
