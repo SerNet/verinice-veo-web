@@ -46,7 +46,7 @@ export default function (api: Client) {
      *
      * @param parent
      */
-    async fetchAll(objectType: string, page: number = 0, query: IVeoEntityRequestParams = {}, noUnit: boolean = false): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
+    async fetchAll(objectType: string, page: number = 1, query: IVeoEntityRequestParams = {}, noUnit: boolean = false): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
       // Entities don't get accessed without their unit as a context, for this reason we manually add the unit if omitted by the developer.
       // To override this behaviour, set noUnit to true.
       if (!query.unit && !noUnit) {

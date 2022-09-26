@@ -20,14 +20,20 @@ import { UseQueryOptions } from 'vue-query/lib/vue';
 import { MaybeRef } from 'vue-query/lib/vue/types';
 
 import { useQuery } from './utils/query';
+import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 interface IVeoFetchObjectsParameters {
   unit: string;
   objectType: string;
-  page?: string;
+  page?: number;
   displayName?: string;
   subType?: string;
   childElementIds?: string;
+}
+
+interface IVeoFetchObjectParameters {
+  objectType: string;
+  id: string;
 }
 
 /**
@@ -37,8 +43,14 @@ interface IVeoFetchObjectsParameters {
  * @param queryOptions Options modifying query behaviour.
  * @returns Returns all objects matching the parameter criteria.
  */
-export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParameters>, queryOptions: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
+export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
   const { $api } = useContext();
 
-  return useQuery(['objects', queryParameters], $api.entity.fetchAll, queryParameters, queryOptions);
+  return useQuery<IVeoPaginatedResponse<IVeoEntity[]>>('objects', $api.entity.fetchAll, queryParameters, queryOptions);
+};
+
+export const useFetchObject = (queryParameters: MaybeRef<IVeoFetchObjectParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoEntity>('object', $api.entity.fetch, queryParameters, queryOptions);
 };

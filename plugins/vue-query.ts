@@ -22,7 +22,7 @@ import { VueQueryPlugin, QueryClient, hydrate } from 'vue-query';
 export default (context: Context) => {
   // Modify your Vue Query global settings here
   const queryClient = new QueryClient({
-    defaultOptions: { queries: { staleTime: 1000 * 10, refetchOnWindowFocus: false } }
+    defaultOptions: { queries: { staleTime: 1000, refetchOnWindowFocus: false } }
   });
   const options = { queryClient };
 
