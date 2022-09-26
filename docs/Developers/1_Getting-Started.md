@@ -14,7 +14,7 @@ basic concepts of the verinice.veo object model. You can learn more about these 
 
 ### Authentication
 
-verinice.veo uses [OpenID Connect (OIDC)](https://openid.net/connect/) for authentication, which is built on top of [OAuth 2.0](https://oauth.net/2/). [Keycloak](https://www.keycloak.org/) is used as authentication server. For each request sent to the verinice.veo API an access token is required. Keycloak exposes a variety of REST endpoints for OAuth 2.0 flows. The token endpoint allows us to retrieve an access tokens. The method `get_token` creates a token with this endpoint:
+verinice.veo uses [OpenID Connect (OIDC)](https://openid.net/connect/) for authentication, which is built on top of [OAuth 2.0](https://oauth.net/2/). [Keycloak](https://www.keycloak.org/) is used as authentication server. For each request sent to the verinice.veo API an access token is required. Keycloak exposes a variety of REST endpoints for OAuth 2.0 flows. The token endpoint allows us to retrieve an access token. The method `get_token` creates a token with this endpoint:
 
 ```python
 import requests
@@ -347,7 +347,7 @@ The element in the listing above contains the mandatory properties that must be 
 - `name`
 - `owner`: A reference to a unit
 - `type`: `asset`, `control`, `document`, `incident`, `person`, `process` or `scenario`
-- `domains`: References to one or more domains and an `subType` und a `status` per domain. 
+- `domains`: References to one or more domains and a `subType` und a `status` per domain. 
 
 ### Update a business object
 
