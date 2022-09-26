@@ -131,7 +131,7 @@
                       icon
                       :value="SIDE_CONTAINERS.TABLE_OF_CONTENTS"
                     >
-                      <v-icon v-text="mdiFormatListBulleted" />
+                      <v-icon v-text="mdiTableOfContents" />
                     </v-btn>
                   </div>
                 </template>
@@ -193,7 +193,7 @@
 import { computed, ComputedRef, defineComponent, PropOptions, PropType, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst, merge, debounce } from 'lodash';
-import { mdiEyeOutline, mdiFormatListBulleted, mdiHistory, mdiInformationOutline } from '@mdi/js';
+import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } from '@mdi/js';
 
 import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/forms/types';
 import { getRiskAdditionalContext, getStatusAdditionalContext } from '~/components/forms/additionalContext';
@@ -532,9 +532,9 @@ export default defineComponent({
       selectedSideContainer,
 
       mdiEyeOutline,
-      mdiFormatListBulleted,
       mdiHistory,
       mdiInformationOutline,
+      mdiTableOfContents,
       upperFirst,
       t,
       SIDE_CONTAINERS
