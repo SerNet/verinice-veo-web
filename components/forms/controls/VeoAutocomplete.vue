@@ -33,6 +33,11 @@
     @click:clear="$emit('input', undefined)"
   >
     <template
+      #item
+    >
+      <v-list-item-title>--{{ selection }}--{{ t('nothing') }}--</v-list-item-title>
+    </template>
+    <template
       v-if="multiple"
       #prepend-item
     >
