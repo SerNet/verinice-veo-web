@@ -45,15 +45,14 @@ Durch die Aspekte und Links sind die Daten, die Fachobjekt in veo enthält, flex
 
 #### Formulare
 
-Eine Domäne enthält beliebig viele Formulare. Mit diesen Formularen lassen sich speziell die Aspekte und Links in den Objekten bearbeiten, die in der Domäne enthalten sind und unterstützen die Anwender dabei, die in der Domäne erforderlichen Arbeitsabläufe umzusetzen. Die Formulare sind nur für die Anwender sichtbar, die mit der Domäne arbeiten. Die Anwender können in der Domäne neue Formulare definieren oder vorhandene abändern und anpassen. Der Abschnitt [Formulare](forms) beschreibt die Formulare in veo.
+Eine Domäne enthält beliebig viele Formulare. Mit diesen Formularen lassen sich speziell die Aspekte und Links in den Objekten bearbeiten, die in der Domäne enthalten sind und unterstützen die Anwender dabei, die in der Domäne erforderlichen Arbeitsabläufe umzusetzen. Die Formulare sind nur für die Anwender sichtbar, die mit der Domäne arbeiten. Die Anwender können in der Domäne neue Formulare definieren oder vorhandene abändern und anpassen. Der Abschnitt <DocLink to="/object_model/forms">Formulare</DocLink> beschreibt die Formulare in veo.
 
 #### Kataloge
 
-Jede Domäne enthält einen Katalog. Ein Katalog ist eine Sammlung von Fachobjekten, die auf ein ISMS-Modell angewendet werden können. Jeder Katalogeintrag ist mit einem Fachobjekt verknüpft, das zu dem Katalog gehört. Zusätzlich enthält ein Katalogeintrag eine Menge von Regeln, die bestimmen, welche Aktionen ausgeführt werden, wenn ein Katalogeintrag angewendet wird.
+Jede Domäne enthält einen oder mehrere Kataloge. Ein Katalog ist eine Sammlung von Fachobjekten, die auf ein ISMS-Modell angewendet werden können. Ein Katalogeintrag besteht aus einem Fachobjekt und zusätzlich aus einer Menge von Regeln, die bestimmen, welche Aktionen ausgeführt werden, wenn der Katalogeintrag auf das Modell angewendet wird.
 
-Die Domäne Datenschutz enthält Katalogeinträge für Technische und organisatorische Maßnahmen (TOMs). Jeder dieser Katalogeinträge ist verknüpft mit einem [Control](objects#control). Es gibt zwei Regeln für die Anwendung, wenn der Katalogeintrag auf ein Verfahren [Prozess](objects#prozess) angewendet wird:
+Die Domäne Datenschutz enthält Katalogeinträge für Technische und organisatorische Maßnahmen (TOMs, Fachobjekt: <DocLink to="/object_model/objects#control">Control</DocLink>) und Gefährdungen (Fachobjekt: <DocLink to="/object_model/objects#scenario">Szenario</DocLink>). Diese Einträge enthalten nur eine einfache Regel, wenn sie auf eine Unit im Modell angewendet werden: Die TOM oder Gefährdung wird in die Unit kopiert. Andere Kataloge können komplizierte Regeln für das Anwenden enthalten, wie zum Beispiel das IT-Grundschutz-Kompendium in der Domäne IT-Grundschutz.
 
-* Kopiere das Control
-* Verknüpfe das Control mit dem Verfahren
+#### Profile
 
-![veo-kataloge](media/veo-kataloge.png)
+Kataloge enthalten jeden einzelnen Eintrag immer nur einmal. Angewendet werden können die Katalogeinträge zwar mehrfach, der Katalog enthält aber keine Beispiele angewendeter Einträge. Es ist im Katalog nicht ersichtlich auf was für eine Verarbeitungstätigkeit eine einzelne TOM sinnvollerweise angewendet werden sollte. Solche Hinweise und Beispiele für angewendete Einträge aus Katalogen finden sich in Profilen. Profile enthalten fertige ISMS-Modelle, die als Vorlage verwendet werden können.
