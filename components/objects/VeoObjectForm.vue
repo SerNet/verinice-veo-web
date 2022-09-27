@@ -411,7 +411,7 @@ export default defineComponent({
     // Messages stuff
     const messages = computed(() => ({
       errors: Array.from(formErrors.value).map(([objectSchemaPointer, messages]) => ({ code: objectSchemaPointer, message: messages[0] })),
-      warnings: (props.objectMetaData.inspectionFindings || [])
+      warnings: (props.objectMetaData?.inspectionFindings || [])
         .filter((warning: IVeoInspectionResult) => warning.severity === 'WARNING')
         .map((warning: IVeoInspectionResult) => formatWarning(warning)),
       information: objectInformation.value
