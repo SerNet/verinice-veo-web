@@ -63,7 +63,7 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "hint": "Please choose the catelog you want to apply items from."
+    "hint": "Please choose the catalog you want to apply items from."
   },
   "de": {
     "hint": "Bitte wählen Sie aus der Liste den Katalog aus, aus dem Sie Einträge anwenden möchten."

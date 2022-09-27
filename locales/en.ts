@@ -106,7 +106,7 @@ export default {
   'unit.select.label': 'Unit',
 
   breadcrumbs: {
-    catalogs: 'Catelogs',
+    catalogs: 'Catalogs',
     domain: 'Module',
     editor: 'Editors',
     formschema: 'Formschema editor',
