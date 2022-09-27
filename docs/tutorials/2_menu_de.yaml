@@ -1,6 +1,6 @@
 title: Das Menü
 description: Beschreibung des Menüs
-route: /
+route: /unit-:unit
 lang: de
 steps:
   - title: 'Das Menü'
@@ -9,10 +9,12 @@ steps:
   - title: 'Logo'
     element: '[data-component-name=logo]'
     intro: Über das Logo kommen Sie jederzeit zurück auf das Dashboard der aktiven Unit.
-# todo4?: Das Element Domain Selector ist auf der Seite Unitauswahl nicht verfügbar!
   - title: 'Domain Selector'
     element: '[data-component-name=domain-select]'
     intro: Mit dem Domain Selector wählen Sie eine der zur Verfügung stehenden Domänen aus.
+  #- title: 'Unitauswahl'
+  #  element: '[data-component-name=unit-select-nav-item]'
+  #  intro: Wählen Sie eine der zur Verfügung stehenden Units aus.
   - title: 'Dashboard'
     element: '[data-component-name=domain-dashboard-nav-item]'
     intro: Auf dem Dashboard sehen Sie auf einen Blick alle Objekte je Subtyp und Status (Lebenszyklus) und können direkt zu diesen navigieren.

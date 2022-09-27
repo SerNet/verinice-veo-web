@@ -51,7 +51,7 @@ A domain contains any number of forms. These forms can be used specifically to e
 
 Each domain contains a catalogue. A catalogue is a collection of subject objects that can be applied to an ISMS model. Each catalogue entry is linked to a subject object that belongs to the catalogue. In addition, a catalogue entry contains a set of rules that determine what actions are performed when a catalogue entry is applied.
 
-The domain Data Protection contains catalogue entries for Technical and Organisational Measures (TOMs). Each of these catalogue entries is associated with a [Control](objects#control). There are two rules for application when the catalogue entry is applied to a [process](objects#process):
+The domain Data Protection contains catalogue entries for Technical and Organisational Measures (TOMs). Each of these catalogue entries is associated with a <DocLink to="/object_model/objects#control">Control</DocLink>. There are two rules for application when the catalogue entry is applied to a <DocLink to="/object_model/objects#process">Formulare</DocLink>:
 
 * Copy the control
 * Link the control to the process
