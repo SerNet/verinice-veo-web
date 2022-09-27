@@ -265,10 +265,6 @@ export default defineComponent({
     objectCreationDisabled: {
       type: Boolean,
       default: false
-    },
-    inspectionResults: {
-      type: Array as PropType<IVeoInspectionResult[]>,
-      default: () => []
     }
   },
   setup(props, { emit }) {
@@ -415,7 +411,9 @@ export default defineComponent({
     // Messages stuff
     const messages = computed(() => ({
       errors: Array.from(formErrors.value).map(([objectSchemaPointer, messages]) => ({ code: objectSchemaPointer, message: messages[0] })),
-      warnings: props.inspectionResults.filter((warning) => warning.severity === 'WARNING').map((warning) => formatWarning(warning)),
+      warnings: (props.objectMetaData.inspectionFindings || [])
+        .filter((warning: IVeoInspectionResult) => warning.severity === 'WARNING')
+        .map((warning: IVeoInspectionResult) => formatWarning(warning)),
       information: objectInformation.value
     }));
 
