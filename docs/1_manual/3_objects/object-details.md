@@ -35,6 +35,6 @@ Die Darstellung des Objektumfeldes zeigt dabei:
 1. Mit **In Scope** und **Teil von** den Blick *nach außen*.
 1. Mit **Links** aus dem Formular heraus verknüpfte Objekte.
 1. Mit **Risiken** wo vorhanden die betrachteten Gefährdungen und deren Behandlung.
-1. Je nach aktivem **Tabellenreiter** können kontextsensitiv Elemente hinzugefügt werden.<br>Elemente die ineinem Objekt nicht zur Verfügung stehen sind ausgegraut.
+1. Je nach aktivem **Tabellenreiter** können kontextsensitiv Elemente hinzugefügt werden.<br>Elemente die neinem Objekt nicht zur Verfügung stehen sind ausgegraut.
 
 ![Objektumfeld](media/veo_object-details_environment.de.png)

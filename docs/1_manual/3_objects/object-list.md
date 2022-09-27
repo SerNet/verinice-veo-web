@@ -5,7 +5,7 @@ position: 2
 
 #### Objektübersicht
 
-Die Navigation über das Menü oder das Dashboard öffnet die **Objektübersicht**, die immer eine **gefilterte Liste** von Objekten angezeigt.
+Die Navigation über das Menü oder das Dashboard öffnet die **Objektübersicht**, die immer eine **gefilterte Liste** von Objekten anzeigt.
 
 Die aktiven Filterkriterien werden über der Objektliste dargestellt:
 
