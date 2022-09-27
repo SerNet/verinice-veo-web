@@ -88,10 +88,11 @@
               <v-list-item
                 v-for="reason, i in item.decisionRules"
                 :key="i"
+                :disabled="!item.matchingRules || !item.matchingRules.includes(i)"
               >
                 <v-list-item-icon>
-                  <v-icon :color="!item.matchingRules || !item.matchingRules.includes(i) ? undefined : reason.output ? 'success' : 'error'">
-                    {{ reason.output ? mdiCheckCircleOutline : mdiCloseCircleOutline }}
+                  <v-icon>
+                    {{ reason.output === true ? mdiCheckCircleOutline : reason.output === false ? mdiCloseCircleOutline : mdiHelpCircleOutline }}
                   </v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
@@ -117,7 +118,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiInformationOutline, mdiLightbulbOutline, mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js';
+import { mdiCheckCircleOutline, mdiCloseCircleOutline, mdiInformationOutline, mdiLightbulbOutline, mdiHelpCircleOutline } from '@mdi/js';
 
 import { INestedMenuEntries } from '../layout/VeoNestedMenu.vue';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
@@ -155,7 +156,8 @@ export default defineComponent({
       mdiLightbulbOutline,
       mdiInformationOutline,
       mdiCheckCircleOutline,
-      mdiCloseCircleOutline
+      mdiCloseCircleOutline,
+      mdiHelpCircleOutline
     };
   }
 });
