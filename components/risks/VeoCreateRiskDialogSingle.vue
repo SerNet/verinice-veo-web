@@ -116,7 +116,6 @@
 import { computed, defineComponent, nextTick, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { cloneDeep, isEqual, merge, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiFileDocumentMultiple, mdiInformationOutline } from '@mdi/js';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
@@ -307,9 +306,7 @@ export default defineComponent({
 
       upperFirst,
       t,
-      VeoAlertType,
-      mdiFileDocumentMultiple,
-      mdiInformationOutline
+      VeoAlertType
     };
   }
 });

@@ -106,7 +106,6 @@
 import { computed, defineComponent, PropOptions, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
-import { mdiChevronDown } from '@mdi/js';
 
 import { IVeoEntity } from '~/types/VeoTypes';
 import { formatDate, formatTime } from '~/lib/utils';
@@ -199,7 +198,6 @@ export default defineComponent({
       subType,
       tabs,
 
-      mdiChevronDown,
       formatDateTime,
       upperFirst,
       t

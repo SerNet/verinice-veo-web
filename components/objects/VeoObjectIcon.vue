@@ -24,15 +24,14 @@
       v-if="isComposite"
       class="veo-object-icon--composite"
       color="primary"
-      small
     >
-      {{ mdiPlus }}
+      {{ mdiDotsHorizontal }}
     </v-icon>
   </div>
 </template>
 
 <script lang="ts">
-import { mdiAccountOutline, mdiAlarmLightOutline, mdiDevices, mdiFileDocumentOutline, mdiPlaylistCheck, mdiPlus, mdiShieldAlertOutline } from '@mdi/js';
+import { mdiAccountOutline, mdiAlarmLightOutline, mdiDevices, mdiDotsHorizontal, mdiFileDocumentOutline, mdiPlaylistCheck, mdiShieldAlertOutline } from '@mdi/js';
 import { defineComponent } from '@nuxtjs/composition-api';
 
 export const OBJECT_TYPE_ICONS = new Map<string, string>([
@@ -58,7 +57,7 @@ export default defineComponent({
   setup() {
     return {
       OBJECT_TYPE_ICONS,
-      mdiPlus
+      mdiDotsHorizontal
     };
   }
 });
@@ -71,8 +70,8 @@ export default defineComponent({
 }
 
 .veo-object-icon--composite {
+  bottom: -50%;
   position: absolute;
-  right: -17%;
-  top: -27%;
+  right: 28%;
 }
 </style>
