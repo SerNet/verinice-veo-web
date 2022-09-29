@@ -40,6 +40,7 @@ export interface VeoSchemaValidatorMessage {
   actions?: { title: string; callback: CallableFunction }[];
   decisionRules?: IVeoPiaMandatoryRule[];
   matchingRules?: number[];
+  decisiveRule?: number;
 }
 
 export interface VeoSchemaValidatorValidationResult {

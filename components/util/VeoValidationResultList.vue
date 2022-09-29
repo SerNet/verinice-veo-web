@@ -89,6 +89,9 @@
                 v-for="reason, i in item.decisionRules"
                 :key="i"
                 :disabled="!item.matchingRules || !item.matchingRules.includes(i)"
+                :class="{
+                  'font-weight-bold': i === item.decisiveRule
+                }"
               >
                 <v-list-item-icon>
                   <v-icon>
@@ -100,6 +103,15 @@
                 </v-list-item-content>
               </v-list-item>
             </v-list>
+            <p class="text-body-2 mx-3 mb-0">
+              Regeln sind absteigend nach ihrer Priorität sortiert.
+            </p>
+            <p class="text-body-2 mx-3 mb-0">
+              <b>Fettgedruckte</b> Regeln sind verantwortlich für die Entscheidung.
+            </p>
+            <p class="text-body-2 mx-3 mb-0 pb-2">
+              <span style="color: rgb(0,0,0,0.38)">Ausgegraute</span> Regeln treffen nicht zu.
+            </p>
           </VeoPopoverMenu>
         </v-list-item-action>
       </v-list-item>

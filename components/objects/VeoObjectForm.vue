@@ -432,6 +432,7 @@ export default defineComponent({
                 type: 'info'
               },
               decisionRules,
+              decisiveRule: props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule || -1,
               matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
             });
           } else {
@@ -442,6 +443,7 @@ export default defineComponent({
                 type: 'success'
               },
               decisionRules,
+              decisiveRule: props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule || -1,
               matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
             });
           }
@@ -453,6 +455,7 @@ export default defineComponent({
               type: 'info'
             },
             decisionRules,
+            decisiveRule: props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule || -1,
             matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
           });
         }
