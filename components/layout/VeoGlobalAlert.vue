@@ -53,7 +53,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, nextTick, PropOptions, ref, useContext, watch } from '@nuxtjs/composition-api';
-import { mdiCheckCircleOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -139,7 +138,6 @@ export default defineComponent<IVeoGlobalAlert>({
       showDownloadDetailsButton,
 
       VeoAlertType,
-      mdiCheckCircleOutline,
       onCustomButtonClick,
       onInput,
       value,

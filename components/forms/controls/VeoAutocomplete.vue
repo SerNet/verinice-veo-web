@@ -19,7 +19,7 @@
   <v-autocomplete
     v-if="options.visible"
     :id="objectSchemaPointer"
-    :value="value"
+    v-model="internalValue"
     :disabled="disabled || options.disabled"
     :error-messages="getControlErrorMessages($props)"
     :label="options && options.label"
@@ -27,28 +27,30 @@
     class="vf-form-element vf-autocomplete"
     :clearable="!options.required"
     hide-details="auto"        
-    :items="items"
+    :items="localItems"
     :multiple="multiple"
-    @change="onItemsChanged"
     @click:clear="$emit('input', undefined)"
   >
-    <template
-      v-if="multiple"
-      #prepend-item
-    >
-      <!-- Needed as a replacement for v-list-item in case the list is part of a select or autocomplete and the user prepends a list item, as the wrong v-list-item gets highlighted when selected -->
-      <div
-        v-ripple
-        class="veo-custom-list-item"
-        :class="{
-          'veo-active-list-item': Array.isArray(value) && !value.length
-        }"
-        @click="$emit('input', [])"
+    <template #item="{ attrs, item, on }">
+      <v-list-item
+        v-if="item.value === '_empty_array_'"
+        v-bind="attrs"
+        v-on="on"
       >
-        <v-list-item-title>
-          {{ t('nothing') }}
-        </v-list-item-title>
-      </div>
+        <v-list-item-title>{{ item.text }}</v-list-item-title>
+      </v-list-item>
+      <v-list-item
+        v-else
+        v-bind="attrs"
+        style="max-height: 48px"
+        v-on="on"
+      >
+        <v-checkbox
+          :input-value="attrs.inputValue"
+          color="primary"
+        />
+        <v-list-item-title>{{ item.text }}</v-list-item-title>
+      </v-list-item>
     </template>
   </v-autocomplete>
 </template>
@@ -91,16 +93,36 @@ export default defineComponent({
       if (multiple.value && Array.isArray(newValue) && !newValue.length) {
         emit('input', undefined);
       } else {
-        emit('input', newValue);
+        emit('input', Array.isArray(newValue) ? newValue.filter((entry) => entry !== '_empty_array_') : newValue);
       }
     };
 
+    const localItems = computed(() => (multiple.value ? [{ text: t('nothing'), value: '_empty_array_' }] : []).concat(props.items));
+
+    // Needed as _empty_array_ is needed as a value to display the text when selected while it should never be passed down to VeoForms
+    const internalValue = computed({
+      get() {
+        return props.value && Array.isArray(props.value) && props.value.length === 0 ? ['_empty_array_'] : props.value;
+      },
+      set(newValue: any) {
+        const newValueIsArray = Array.isArray(newValue);
+        const oldValueIsArray = Array.isArray(props.value);
+        const newValueIsEmpty = newValue.includes('_empty_array_');
+        if (newValueIsArray && newValueIsEmpty && oldValueIsArray && !(!props.value.length && newValue.length > 1)) {
+          emit('input', []);
+        } else {
+          onItemsChanged(newValue);
+        }
+      }
+    });
+
     return {
+      internalValue,
+      localItems,
       multiple,
       onItemsChanged,
 
-      getControlErrorMessages,
-      t
+      getControlErrorMessages
     };
   }
 });

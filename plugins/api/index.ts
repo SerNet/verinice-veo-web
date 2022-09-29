@@ -244,4 +244,8 @@ export default (function (context, inject) {
 } as Plugin);
 
 export type Injection = ReturnType<typeof createAPI>;
+
+/**
+ * @deprecated
+ */
 export type API = Injection;

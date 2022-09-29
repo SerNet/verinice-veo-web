@@ -23,6 +23,9 @@ import { User } from '~/plugins/user';
 
 declare module 'vue/types/vue' {
   interface Vue {
+    /**
+     * @deprecated
+     */
     $api: API;
     $user: User;
     $utils: any;
@@ -31,6 +34,9 @@ declare module 'vue/types/vue' {
 
 declare module '@nuxt/types/app' {
   interface NuxtAppOptions {
+    /**
+     * @deprecated
+     */
     $api: API;
     $user: User;
     $utils: any;
@@ -39,6 +45,9 @@ declare module '@nuxt/types/app' {
 
 declare module '@nuxt/types' {
   interface Context {
+    /**
+     * @deprecated
+     */
     $api: API;
     $user: User;
     $utils: any;

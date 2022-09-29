@@ -60,7 +60,7 @@
 import { defineComponent, useRoute, ref, computed, PropType } from '@nuxtjs/composition-api';
 import { pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiDotsVertical, mdiAlertOutline, mdiExclamationThick } from '@mdi/js';
+import { mdiDotsVertical } from '@mdi/js';
 
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
@@ -136,9 +136,7 @@ export default defineComponent({
       t,
       upperFirst,
       visibleItems,
-      mdiDotsVertical,
-      mdiAlertOutline,
-      mdiExclamationThick
+      mdiDotsVertical
     };
   }
 });

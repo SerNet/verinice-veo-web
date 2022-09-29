@@ -172,13 +172,15 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
 
+    const CONTRAST_THRESHOLD = 90;
+
     const getMostContrastyColor = (backgroundColor: string) => {
       const hex = backgroundColor.substring(1);
       const r = parseInt(hex.slice(0, 2), 16);
       const g = parseInt(hex.slice(2, 4), 16);
       const b = parseInt(hex.slice(4, 6), 16);
 
-      return r * 0.299 + g * 0.587 + b * 0.114 > 50 ? '#000000' : '#ffffff';
+      return r * 0.299 + g * 0.587 + b * 0.114 > CONTRAST_THRESHOLD ? '#000000' : '#ffffff';
     };
 
     return {

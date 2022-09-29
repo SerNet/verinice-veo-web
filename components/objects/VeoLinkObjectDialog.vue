@@ -82,8 +82,8 @@
           show-select
           checkbox-color="primary"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
-          :items="availableObjects"
-          :loading="fetchState.pending || loadingObjects"
+          :items="objectList"
+          :loading="fetchState.pending || isLoading"
           @page-change="onPageChange"
         />
       </VeoCard>
@@ -119,14 +119,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, ref, computed, useContext, useFetch, watch, PropType } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute, ref, computed, useContext, useFetch, watch, PropType, reactive } from '@nuxtjs/composition-api';
 import { cloneDeep, differenceBy, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiFilter } from '@mdi/js';
 import { getEntityDetailsFromLink, IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink, IVeoPaginatedResponse, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink, IVeoTranslations } from '~/types/VeoTypes';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { useFetchObjects } from '~/composables/api/objects';
 
 export default defineComponent({
   name: 'VeoLinkObjectDialog',
@@ -218,24 +219,25 @@ export default defineComponent({
     });
 
     // Table/filter logic
-    const loadingObjects = ref(false);
-    const availableObjects = ref<IVeoPaginatedResponse<IVeoEntity[]>>({ items: [], page: 1, pageCount: 0, totalItemCount: 0 });
-
-    const fetchObjects = async (options: { page: number; sortBy: string; sortDesc: boolean }) => {
-      if (filter.value.objectType) {
-        loadingObjects.value = true;
-        availableObjects.value = await $api.entity.fetchAll(filter.value.objectType, options.page, {
-          size: $user.tablePageSize,
-          sortBy: options.sortBy,
-          sortOrder: options.sortDesc ? 'desc' : 'asc',
-          ...(filter.value || {})
-        });
-        loadingObjects.value = false;
-      }
-    };
-
     const filter = ref<IBaseObject>({});
     const filterDialogVisible = ref(false);
+
+    const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
+    const resetQueryOptions = () => {
+      Object.assign(queryParameters, { page: 1, sortBy: 'name', sortDesc: false });
+    };
+
+    const combinedQueryParameters = computed(() => ({
+      size: $user.tablePageSize,
+      sortBy: queryParameters.sortBy,
+      sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
+      page: queryParameters.page,
+      unit: separateUUIDParam(route.value.params.unit).id,
+      ...filter.value
+    }));
+    const queryEnabled = computed(() => !!filter.value.objectType);
+
+    const { data: objectList, isLoading } = useFetchObjects(combinedQueryParameters as any, { enabled: queryEnabled });
 
     watch(
       () => props.preselectedFilters,
@@ -254,13 +256,7 @@ export default defineComponent({
       return filterKeys.filter((k) => filter.value[k] !== undefined);
     });
 
-    watch(
-      () => filter.value,
-      () => {
-        fetchObjects({ page: 1, sortBy: 'name', sortDesc: false });
-      },
-      { deep: true }
-    );
+    watch(() => filter.value, resetQueryOptions, { deep: true });
 
     // formatting filter chips and their translations
     const formatLabel = (label: string) => {
@@ -294,8 +290,8 @@ export default defineComponent({
     };
 
     // refetch entities on page or sort changes (in VeoObjectTable)
-    const onPageChange = async (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
-      await fetchObjects({ page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
+    const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
+      Object.assign(queryParameters, { page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
     };
 
     // get allowed filter-objectTypes for current parent and child type
@@ -433,7 +429,7 @@ export default defineComponent({
     watch(
       () => props.editedObject,
       () => {
-        fetchObjects({ page: 1, sortBy: 'name', sortDesc: false });
+        resetQueryOptions();
         preselectItems();
       },
       { deep: true }
@@ -444,7 +440,7 @@ export default defineComponent({
       () => props.value,
       (newValue) => {
         if (newValue) {
-          fetchObjects({ page: 1, sortBy: 'name', sortDesc: false });
+          resetQueryOptions();
           preselectItems();
         }
       },
@@ -456,7 +452,6 @@ export default defineComponent({
     return {
       activeFilterKeys,
       allowedObjectTypes,
-      availableObjects,
       clearFilter,
       domainId,
       editedObjectDisplayName,
@@ -465,10 +460,11 @@ export default defineComponent({
       filterDialogVisible,
       formatLabel,
       formatValue,
+      isLoading,
       linkedObjectType,
       linkObjects,
-      loadingObjects,
       modifiedSelectedItems,
+      objectList,
       onPageChange,
       savingObject,
       updateFilter,

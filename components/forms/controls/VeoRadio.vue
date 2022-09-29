@@ -49,7 +49,7 @@
         />
       </template>
       <template
-        v-if="value"
+        v-if="value !== undefined"
         #append
       >
         <v-icon @click="$emit('input', undefined)">

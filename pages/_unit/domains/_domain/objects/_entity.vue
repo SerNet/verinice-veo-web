@@ -76,7 +76,6 @@
             :valid.sync="isFormValid"
             :additional-context="additionalContext"
             :object-meta-data.sync="metaData"
-            :inspection-results="inspectionResults"
             @show-revision="onShowRevision"
             @create-dpia="createDPIADialogVisible = true"
             @link-dpia="linkObjectDialogVisible = true"
@@ -170,7 +169,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
@@ -214,14 +213,10 @@ export default defineComponent({
     // Object details are originally part of the object, but as they might get updated independently, we want to avoid refetching the whole object, so we outsorce them.
     const metaData = ref<any>({});
 
-    // Inspection results
-    const inspectionResults = ref<IVeoInspectionResult[]>([]);
-
     const { fetchState, fetch: loadObject } = useFetch(async () => {
       object.value = await $api.entity.fetch(objectParameter.value.type, objectParameter.value.id);
       modifiedObject.value = cloneDeep(object.value);
       metaData.value = cloneDeep(object.value.domains[domainId.value]);
-      inspectionResults.value = await $api.entity.fetchInspections(object.value.type, object.value.id, domainId.value);
       getAdditionalContext();
 
       if (wipObjectData.value) {
@@ -312,7 +307,7 @@ export default defineComponent({
     // Forms part specific stuff
     const objectSchema: Ref<IVeoObjectSchema | null> = useAsync(() => $api.schema.fetch(objectParameter.value.type, [domainId.value]));
 
-    const isFormDirty = computed(() => !isEqual(object.value, modifiedObject.value));
+    const isFormDirty = computed(() => !isEqual(object.value, modifiedObject.value) && !formDataIsRevision.value);
     const isFormValid = ref(false);
 
     // Form actions
@@ -369,6 +364,7 @@ export default defineComponent({
     function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: true) {
       const displayRevisionCallback = () => {
         formDataIsRevision.value = isRevision;
+        entityModifiedDialogVisible.value = false;
 
         // We have to stringify the content and then manually add the host, as the history api currently doesn't support absolute urls 18-01-2022
         modifiedObject.value = JSON.parse(JSON.stringify(data.content).replaceAll(/"\//g, `"${$config.apiUrl}/`));
@@ -448,7 +444,6 @@ export default defineComponent({
       domainId,
       entityModifiedDialogVisible,
       formDataIsRevision,
-      inspectionResults,
       isFormDirty,
       isFormValid,
       linkObjectDialogVisible,

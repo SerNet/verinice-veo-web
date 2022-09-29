@@ -126,15 +126,15 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import {
-  mdiApplicationCogOutline,
+  mdiBookOpenPageVariantOutline,
   mdiChevronLeft,
   mdiChevronRight,
-  mdiClipboardListOutline,
   mdiFileChartOutline,
   mdiFileDocumentOutline,
-  mdiFormatListBulleted,
   mdiHomeOutline,
-  mdiTableLarge
+  mdiHomeSwitchOutline,
+  mdiTableSettings,
+  mdiTextBoxEditOutline
 } from '@mdi/js';
 import { RawLocation } from 'vue-router/types';
 import { useI18n } from 'nuxt-i18n-composable';
@@ -152,6 +152,7 @@ import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/_unit/domains
 import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/_unit/domains/_domain/reports/_type.vue';
 import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/_unit/domains/_domain/risks/_matrix.vue';
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/_unit/domains/_domain/editor/index.vue';
+import { OBJECT_TYPE_ICONS } from '~/components/objects/VeoObjectIcon.vue';
 
 export interface INavItem {
   key: string;
@@ -235,6 +236,7 @@ export default defineComponent({
           return {
             key: objectSchema.title,
             name: t(`objectTypes.${objectSchema.title}`).toString(),
+            icon: OBJECT_TYPE_ICONS.get(objectSchema.title),
             activePath: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectSchema.title}`,
             children: [
               // all of object type
@@ -375,7 +377,7 @@ export default defineComponent({
     const unitSelectionNavEntry: INavItem = {
       key: 'unitSelection',
       name: t('breadcrumbs.index').toString(),
-      icon: mdiFormatListBulleted,
+      icon: mdiHomeSwitchOutline,
       to: {
         name: UNIT_SELECTION_ROUTE_NAME
       },
@@ -413,7 +415,7 @@ export default defineComponent({
       key: 'catalogs',
       name: t('breadcrumbs.catalogs').toString(),
       activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/catalogs`,
-      icon: mdiClipboardListOutline,
+      icon: mdiBookOpenPageVariantOutline,
       children: catalogsEntriesChildItems.value,
       childrenLoading: catalogsEntriesLoading.pending,
       componentName: 'catalogs-nav-item'
@@ -433,7 +435,7 @@ export default defineComponent({
       key: 'risks',
       name: t('breadcrumbs.risks').toString(),
       activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/risks`,
-      icon: mdiTableLarge,
+      icon: mdiTableSettings,
       children: riskChildItems.value,
       childrenLoading: riskDefinitionsLoading.pending,
       componentName: 'risks-nav-item'
@@ -442,7 +444,7 @@ export default defineComponent({
     const editorsNavEntry = computed<INavItem>(() => ({
       key: 'editors',
       name: t('breadcrumbs.editor').toString(),
-      icon: mdiApplicationCogOutline,
+      icon: mdiTextBoxEditOutline,
       to: {
         name: EDITOR_INDEX_ROUTE_NAME,
         params: {

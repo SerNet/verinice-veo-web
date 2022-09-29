@@ -44,9 +44,11 @@
     <template
       #item="{ item }"
     >
-      <v-icon left>
-        {{ getItemIcon(item) }}
-      </v-icon>
+      <VeoObjectIcon
+        :object-type="item.type"
+        :is-composite="item.parts && item.parts.length"
+        left
+      />
       {{ item.displayName }}
       <v-hover v-slot="{ hover }">
         <v-icon
@@ -63,15 +65,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, unref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
-import { mdiArchive, mdiArchiveArrowDown, mdiFileDocument, mdiFileDocumentMultiple, mdiOpenInNew } from '@mdi/js';
+import { mdiOpenInNew } from '@mdi/js';
 import { getSchemaEndpoint } from '~/plugins/api/schema';
-import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
+import { createUUIDUrlParam, getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useFetchObject, useFetchObjects } from '~/composables/api/objects';
 
 export default defineComponent({
   props: {
@@ -119,41 +122,7 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
 
-    // Select options related stuff
-    const isLoading = ref(false);
-    const items = ref<IVeoEntity[]>([]);
-    const moreItemsAvailable = ref(false);
-
-    const loadObjects = async (displayName?: string) => {
-      // Exit to avoid endless loop (loadObjects gets called by the search query if the search value changes, such as when all objects have been loaded and the displayName gets displayed instead of undefined)
-      if (items.value.find((item) => item.displayName === displayName)) {
-        return;
-      }
-
-      isLoading.value = true;
-      const data = await $api.entity.fetchAll(props.objectType, 1, {
-        subType: props.subType,
-        displayName: displayName ?? undefined
-      });
-      moreItemsAvailable.value = data.pageCount > 1;
-
-      items.value = data.items;
-      isLoading.value = false;
-    };
-
-    const loadObject = async (id: string) => {
-      isLoading.value = true;
-      try {
-        const entity = await $api.entity.fetch(props.objectType, id);
-        items.value = [entity];
-      } catch (e) {
-        // If the object couldn't be found, remove it from the select and print an error message
-        internalValue.value = undefined;
-        displayErrorMessage(upperFirst(t('objectNotFound').toString()), t('objectNotFoundExplanation', [props.label, id]).toString());
-      } finally {
-        isLoading.value = false;
-      }
-    };
+    const unit = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     // Value related stuff
     const schemas = ref();
@@ -182,33 +151,43 @@ export default defineComponent({
       }
     });
 
+    // Select options related stuff
+    const searchQuery = ref();
+
+    const searchQueryNotStale = computed(() => !fetchObjectsData?.value?.items?.find((item) => item.displayName === searchQuery.value));
+    const fetchObjectsQueryParameters = computed(() => ({
+      unit: unit.value,
+      objectType: props.objectType,
+      page: 1,
+      subType: props.subType,
+      displayName: searchQuery.value ?? undefined
+    }));
+    const { data: fetchObjectsData, isLoading: isLoadingObjects } = useFetchObjects(fetchObjectsQueryParameters, {
+      placeholderData: { items: [], pageCount: 0, page: 1 },
+      enabled: searchQueryNotStale
+    });
+
+    const moreItemsAvailable = computed(() => (fetchObjectsData.value?.pageCount || 0) > 0);
+
+    const fetchObjectQueryParameters = computed(() => ({
+      objectType: props.objectType,
+      id: internalValue.value || '' // to avoid typecasting in the fetch hook. Shouldn't get executed if value is not set. (See fetchObjectQueryEnabled)
+    }));
+    const { data: fetchObjectData, isLoading: isLoadingObject, isError } = useFetchObject(fetchObjectQueryParameters, { enabled: computed(() => !!unref(internalValue)) });
+
     watch(
-      () => internalValue.value,
-      (newValue: string | undefined) => {
+      () => isError.value,
+      (newValue) => {
         if (newValue) {
-          if (!items.value.find((item) => item.id === newValue)) {
-            loadObject(newValue);
-          }
-        } else {
-          loadObjects();
+          displayErrorMessage(upperFirst(t('objectNotFound').toString()), t('objectNotFoundExplanation', [props.label, internalValue.value]).toString());
         }
-      },
-      {
-        immediate: true
       }
     );
 
-    // Search query related stuff
-    const searchQuery = ref();
-    watch(
-      () => searchQuery.value,
-      (newValue: string) => {
-        if (isLoading.value) {
-          return;
-        }
-        loadObjects(newValue || undefined);
-      }
-    );
+    const isLoading = computed(() => isLoadingObjects.value || isLoadingObject.value);
+
+    const items = computed<IVeoEntity[]>(() => [...(fetchObjectsData.value?.items || []), ...(fetchObjectData.value ? [fetchObjectData.value] : [])]);
+    const displayedItems = computed(() => (props.hiddenValues.length ? items.value.filter((item) => !props.hiddenValues.includes(item.id)) : items.value));
 
     // Label stuff
     const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
@@ -225,13 +204,6 @@ export default defineComponent({
     const currentSubTypeFormName = computed(() => props.subType && formSchemas.value.find((formSchema) => formSchema.subType === props.subType)?.name[locale.value]);
     const localLabel = computed(() => props.label ?? `${currentSubTypeFormName.value ? currentSubTypeFormName.value : upperFirst(props.objectType)}${props.required ? '*' : ''}`);
 
-    const getItemIcon = (item: IVeoEntity) => {
-      if (item.type !== 'scope' && item.parts?.length) return mdiFileDocumentMultiple;
-      else if (item.type === 'scope' && item.parts?.length) return mdiArchiveArrowDown;
-      else if (item.type === 'scope') return mdiArchive;
-      return mdiFileDocument;
-    };
-
     // Object select display
     const openItem = (item: IVeoEntity) => {
       const routeData = router.resolve({
@@ -244,18 +216,16 @@ export default defineComponent({
       window.open(routeData.href, '_blank');
     };
 
-    // Hide certain items based on their id
-    const displayedItems = computed(() => (props.hiddenValues.length ? items.value.filter((item) => !props.hiddenValues.includes(item.id)) : items.value));
-
     return {
       displayedItems,
       localLabel,
       internalValue,
       isLoading,
+      isLoadingObjects,
+      isLoadingObject,
       items,
       moreItemsAvailable,
       searchQuery,
-      getItemIcon,
       mdiOpenInNew,
       openItem,
 
