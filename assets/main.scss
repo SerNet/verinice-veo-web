@@ -45,30 +45,3 @@ html {
   
   color: $primary !important;
 }
-
-/* Needed as a replacement for v-list-item in case the list is part of a select or autocomplete and the user prepends a list item, as the wrong v-list-item gets highlighted when selected */
-.veo-custom-list-item {
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  height: 48px;
-  padding: 0 14px;
-  position: relative;
-
-  &:hover::before {
-    background: rgb(0, 0, 0);
-  }
-
-  &::before {
-    background: transparent;
-    bottom: 0;
-    content: '';
-    display: block;
-    opacity: 0.06;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-  }
-}
