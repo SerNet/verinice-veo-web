@@ -34,9 +34,10 @@ import {
 import { VNode, VNodeChildren, VNodeData } from 'vue/types/vnode';
 import { useI18n } from 'nuxt-i18n-composable';
 import { DataTableHeader } from 'vuetify/types';
-import { VDataTable, VIcon, VTooltip } from 'vuetify/lib';
+import { VDataTable, VTooltip } from 'vuetify/lib';
 import { cloneDeep } from 'lodash';
 
+import VeoObjectIcon from '~/components/objects/VeoObjectIcon.vue';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useThrottleNextTick } from '~/composables/utils';
 import { separateUUIDParam } from '~/lib/utils';
@@ -149,12 +150,13 @@ export default defineComponent({
     /**
      * Render folder or file icons
      */
-    const renderIcon: ObjectTableRenderer = ({ item }) => {
-      if (item.type !== 'scope' && item.parts?.length) return h(VIcon, 'mdi-file-document-multiple');
-      else if (item.type === 'scope' && item.parts?.length) return h(VIcon, 'mdi-archive-arrow-down');
-      else if (item.type === 'scope') return h(VIcon, 'mdi-archive');
-      return h(VIcon, 'mdi-file-document');
-    };
+    const renderIcon: ObjectTableRenderer = ({ item }) =>
+      h(VeoObjectIcon, {
+        props: {
+          objectType: item.type,
+          isComposite: !!item.parts?.length
+        }
+      });
     /**
      * Render date column using date formatter
      */

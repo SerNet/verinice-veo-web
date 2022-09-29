@@ -27,6 +27,11 @@
     @click="onClick"
   >
     <template #activator>
+      <v-list-item-icon v-if="icon && level > 0">
+        <v-icon>
+          {{ icon }}
+        </v-icon>
+      </v-list-item-icon>
       <v-list-item-title class="veo-primary-navigation__group__title">
         {{ name }}
       </v-list-item-title>
