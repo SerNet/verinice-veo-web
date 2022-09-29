@@ -307,7 +307,7 @@ export default defineComponent({
     // Forms part specific stuff
     const objectSchema: Ref<IVeoObjectSchema | null> = useAsync(() => $api.schema.fetch(objectParameter.value.type, [domainId.value]));
 
-    const isFormDirty = computed(() => !isEqual(object.value, modifiedObject.value));
+    const isFormDirty = computed(() => !isEqual(object.value, modifiedObject.value) && !formDataIsRevision.value);
     const isFormValid = ref(false);
 
     // Form actions
@@ -364,6 +364,7 @@ export default defineComponent({
     function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: true) {
       const displayRevisionCallback = () => {
         formDataIsRevision.value = isRevision;
+        entityModifiedDialogVisible.value = false;
 
         // We have to stringify the content and then manually add the host, as the history api currently doesn't support absolute urls 18-01-2022
         modifiedObject.value = JSON.parse(JSON.stringify(data.content).replaceAll(/"\//g, `"${$config.apiUrl}/`));
