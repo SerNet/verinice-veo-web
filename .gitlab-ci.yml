@@ -14,7 +14,7 @@ review:
   environment:
     auto_stop_in: 4 week
 
-test:e2e:
+.test:e2e:
   stage: performance
   tags:
     - 'cpmsys01'

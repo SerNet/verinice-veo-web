@@ -63,13 +63,14 @@ export default {
     oidcUrl: process.env.VEO_OIDC_URL || 'https://auth.staging.verinice.com/auth',
     oidcRealm: process.env.VEO_OIDC_REALM || 'verinice-veo',
     oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client',
-    debug: process.env.VEO_DEBUG || false
+    debug: process.env.VEO_DEBUG || false,
+    debugCache: process.env.VEO_DEBUG_CACHE || false // Either a boolean or the query string (or first entry of query string if array)
   },
 
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/user', '~/plugins/api', '~/plugins/utils', '~/plugins/navigationHelper'],
+  plugins: ['~/plugins/api', '~/plugins/navigationHelper', '~/plugins/user', '~/plugins/utils', '~/plugins/vue-query'],
 
   /**
    *

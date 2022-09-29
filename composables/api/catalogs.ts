@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2021  Jonas Heitmann, Markus Werner
+ * Copyright (C) 2022  Jonas Heitmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,42 +15,4 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import '@nuxt/types';
-import VueI18n from 'vue-i18n';
-
-import { API } from '~/plugins/api';
-import { User } from '~/plugins/user';
-
-declare module 'vue/types/vue' {
-  interface Vue {
-    /**
-     * @deprecated
-     */
-    $api: API;
-    $user: User;
-    $utils: any;
-  }
-}
-
-declare module '@nuxt/types/app' {
-  interface NuxtAppOptions {
-    /**
-     * @deprecated
-     */
-    $api: API;
-    $user: User;
-    $utils: any;
-  }
-}
-
-declare module '@nuxt/types' {
-  interface Context {
-    /**
-     * @deprecated
-     */
-    $api: API;
-    $user: User;
-    $utils: any;
-    $t: VueI18n.prototype.t; // Composition api workaround
-  }
-}
+// To be implemented...

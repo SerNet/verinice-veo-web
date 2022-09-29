@@ -67,7 +67,7 @@
           checkbox-color="primary"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="objects"
-          :loading="$fetchState.pending"
+          :loading="$fetchState.pending || objectsQueryIsLoading"
           @page-change="onPageChange"
         />
       </VeoCard>
@@ -105,13 +105,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, reactive, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { omit, upperFirst } from 'lodash';
 import { mdiFilter } from '@mdi/js';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse } from '~/types/VeoTypes';
-import { IBaseObject } from '~/lib/utils';
+import { IVeoEntity, IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useFetchObjects } from '~/composables/api/objects';
 
 export default defineComponent({
   name: 'CreateRiskDialog',
@@ -130,25 +131,12 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { $api, $config } = useContext();
+    const { $api, $config, $user } = useContext();
+    const route = useRoute();
     const { t, tc, locale } = useI18n();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
-    // API stuff
-    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
-
-    const requestOptions = ref<IBaseObject>({
-      page: 1
-    });
-    const objects = ref<IVeoPaginatedResponse<IVeoEntity[]> | undefined>(undefined);
-
-    useFetch(async () => {
-      formSchemas.value = await $api.form.fetchAll(props.domainId);
-    });
-
-    const { fetch } = useFetch(async () => {
-      objects.value = await $api.entity.fetchAll('scenario', requestOptions.value.page, { ...filter.value, ...requestOptions.value });
-    });
+    const unit = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     // Layout stuff
     const dialog = computed({
@@ -197,15 +185,33 @@ export default defineComponent({
       omit(filter.value, key);
     };
 
-    const onPageChange = (newOptions: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
-      requestOptions.value = { page: newOptions.newPage, sortOrder: newOptions.sortDesc ? 'desc' : 'asc', sortBy: newOptions.sortBy };
-      fetch();
+    const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
+      Object.assign(queryParameters, { page: opts.newPage, sortOrder: opts.sortDesc ? 'desc' : 'asc', sortDesc: !!opts.sortDesc });
     };
 
     const onFilterUpdate = (newFilter: any) => {
       filter.value = newFilter;
-      fetch();
     };
+
+    // API stuff
+    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
+
+    const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
+    const combinedQueryParameters = computed(() => ({
+      objectType: 'scenario',
+      unit: unit.value,
+      size: $user.tablePageSize,
+      sortBy: queryParameters.sortBy,
+      sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
+      page: queryParameters.page,
+      ...filter.value
+    }));
+
+    useFetch(async () => {
+      formSchemas.value = await $api.form.fetchAll(props.domainId);
+    });
+
+    const { data: objects, isLoading: objectsQueryIsLoading } = useFetchObjects(combinedQueryParameters);
 
     // Create risk stuff
     const creatingRisks = ref(false);
@@ -250,6 +256,7 @@ export default defineComponent({
       formatLabel,
       formatValue,
       objects,
+      objectsQueryIsLoading,
       onPageChange,
       onSubmit,
       onFilterUpdate,
