@@ -64,6 +64,7 @@
     "uuid": "^8.3.2",
     "vue-chart-3": "^0.5.11",
     "vue-json-pointer": "^0.6.2",
+    "vue-query": "^1.26.0",
     "vuedraggable": "^2.24.3"
   },
   "devDependencies": {

@@ -31,15 +31,15 @@ export interface IForm {
   lang?: IBaseObject;
 }
 
+interface IUUIDParam {
+  type: string;
+  id: string;
+}
+
 export function createUUIDUrlParam(type: string, UUID: string): string {
   // UUID is exactly 36 characters long
   // If it exactly 36 characters long (raw UUID), than add type to it, else return it directly, because type is already in it
   return UUID.length !== 36 ? UUID : `${type}-${UUID}`;
-}
-
-interface IUUIDParam {
-  type: string;
-  id: string;
 }
 
 export function separateUUIDParam(param: string | undefined): IUUIDParam {

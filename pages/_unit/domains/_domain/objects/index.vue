@@ -35,13 +35,13 @@
         :domain-id="domainId"
         :object-type="objectType"
         :sub-type="subType"
-        @success="fetch"
+        @success="refetchObjects"
       />
       <VeoDeleteEntityDialog
         :value="!!itemDelete"
         :item="itemDelete"
         @input="onCloseDeleteDialog"
-        @success="fetch(); onCloseDeleteDialog(false)"
+        @success="refetchObjects(); onCloseDeleteDialog(false)"
         @error="showError('delete', itemDelete, $event)"
       />
       <v-row no-gutters>
@@ -83,10 +83,10 @@
           </v-chip-group>
         </v-col>
       </v-row>
-      <VeoCard v-if="!fetchState.error">
+      <VeoCard v-if="objectType">
         <VeoObjectTable
           :items="items"
-          :loading="fetchState.pending"
+          :loading="isLoading"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :additional-headers="additionalHeaders"
           data-component-name="object-overview-table"
@@ -165,11 +165,12 @@ import { upperFirst } from 'lodash';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoTranslations } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
+import { useFetchObjects } from '~/composables/api/objects';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
 
@@ -177,7 +178,7 @@ export default defineComponent({
   name: 'VeoObjectsOverviewPage',
   setup() {
     const { t, locale } = useI18n();
-    const { $api } = useContext();
+    const { $api, $user } = useContext();
     const route = useRoute();
     const router = useRouter();
 
@@ -185,7 +186,6 @@ export default defineComponent({
     const { cloneObject } = useVeoObjectUtilities();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
 
-    const items = ref<IVeoPaginatedResponse<IVeoEntity[]>>();
     const formschemas = ref<IVeoFormSchemaMeta[]>([]);
     const translations = ref<IVeoTranslations['lang']>({});
 
@@ -213,9 +213,6 @@ export default defineComponent({
     // filters that have a value (and will be displayed as chips)
     const activeFilterKeys = computed(() => filterKeys.filter((k) => filter.value[k] !== undefined));
 
-    // pagination parameters (page and sorting), set by VeoObjectTable
-    const pagination = reactive({ page: 1, sortBy: undefined as string | undefined, sortOrder: undefined as 'desc' | 'asc' | undefined });
-
     // current object type and sub type
     const objectType = computed(() => filter.value.objectType);
     const subType = computed(() => filter.value.subType);
@@ -224,31 +221,37 @@ export default defineComponent({
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
     // fetch objects of objectType
-    const { fetchState, fetch } = useFetch(async () => {
-      const objectType = filter.value.objectType;
-      // objectType has to be defined
-      if (!objectType) throw new Error('The object type was not specified');
-      const params = { ...filter.value, ...pagination, page: undefined };
-      delete params.objectType;
-      delete params.page;
+    const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
+    const resetQueryOptions = () => {
+      Object.assign(queryParameters, { page: 1, sortBy: 'name', sortDesc: false });
+    };
 
-      const [schemas, entities, _translations] = await Promise.all([
-        $api.form.fetchAll(domainId.value),
-        $api.entity.fetchAll(objectType, pagination.page, params),
-        $api.translation.fetch(['de', 'en'])
-      ]);
+    const combinedQueryParameters = computed(() => ({
+      size: $user.tablePageSize,
+      sortBy: queryParameters.sortBy,
+      sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
+      page: queryParameters.page,
+      unit: separateUUIDParam(route.value.params.unit).id,
+      ...filter.value
+    }));
+    const queryEnabled = computed(() => !!filter.value.objectType);
+
+    const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters as any, { enabled: queryEnabled });
+
+    const { $fetchState } = useFetch(async () => {
+      const [schemas, _translations] = await Promise.all([$api.form.fetchAll(domainId.value), $api.translation.fetch(['de', 'en'])]);
       formschemas.value = schemas;
-      items.value = entities;
       translations.value = _translations.lang;
     });
 
-    // refetch on changes via FilterDialog or URL query parameters
-    watch(filter, (oldVal, newVal) => {
-      if (oldVal.objectType !== newVal.objectType) {
-        pagination.page = 1;
-      }
-      fetch();
-    });
+    const isLoading = computed(() => isLoadingObjects.value || $fetchState.pending);
+
+    watch(() => filter.value, resetQueryOptions, { deep: true });
+
+    // refetch entities on page or sort changes (in VeoObjectTable)
+    const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
+      Object.assign(queryParameters, { page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
+    };
 
     // Additional breadcrumbs based on object type and sub type
     const objectTypeKey = 'object-overview-object-type';
@@ -329,14 +332,6 @@ export default defineComponent({
       updateRouteQuery({ [key]: undefined }, false);
     };
 
-    // refetch on page or sort changes (in VeoObjectTable)
-    const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
-      pagination.page = opts.newPage;
-      pagination.sortBy = opts.sortBy;
-      pagination.sortOrder = opts.sortDesc === undefined ? undefined : opts.sortDesc ? 'desc' : 'asc';
-      return fetch();
-    };
-
     const formatLabel = (label: string) => upperFirst(t(`objectlist.${label}`).toString());
     const formatValue = (label: FilterKey, value?: string) => {
       switch (label) {
@@ -386,7 +381,7 @@ export default defineComponent({
         async action(item: IVeoEntity) {
           try {
             await cloneObject(item);
-            fetch();
+            refetch.value();
           } catch (e: any) {
             showError('clone', item, e);
           }
@@ -420,6 +415,10 @@ export default defineComponent({
         : []
     );
 
+    const refetchObjects = () => {
+      refetch.value();
+    };
+
     return {
       t,
       actions,
@@ -428,13 +427,12 @@ export default defineComponent({
       activeFilterKeys,
       clearFilter,
       createObjectLabel,
-      fetch,
-      fetchState,
       filter,
       createDialogVisible,
       filterDialogVisible,
       formatLabel,
       formatValue,
+      isLoading,
       itemDelete,
       items,
       mdiFilter,
@@ -443,6 +441,7 @@ export default defineComponent({
       openItem,
       onCloseDeleteDialog,
       onPageChange,
+      refetchObjects,
       showError,
       subType,
       updateRouteQuery,
