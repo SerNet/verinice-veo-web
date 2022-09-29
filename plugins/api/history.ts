@@ -34,53 +34,21 @@ export default function (api: Client) {
       }
 
       query.uri = `/${getSchemaEndpoint(await api._context.$api.schema.fetchAll(), entity.type)}/${entity.id}`;
-      return api.req('/api/history/revisions/', {
-        query
-      });
-    },
-
-    /**
-     * Loads a specific version of a given entity.
-     *
-     * NOT PAGINATED
-     *
-     * @param entity The entity to load the version of.
-     * @param changeNumber The version of the entity to load.
-     */
-    async fetchVersion(entity: IVeoEntity, changeNumber: string, query?: Record<string, string>): Promise<IVeoObjectHistoryEntry> {
-      if (!query) {
-        query = {};
-      }
-
-      query.uri = `/${getSchemaEndpoint(await api._context.$api.schema.fetchAll(), entity.type)}/${entity.id}`;
-      return api.req('/api/history/revisions/change/:changeNumber', {
-        params: {
-          changeNumber
-        },
-        query
-      });
-    },
-
-    /**
-     * Loads the newest version of the given entity at a point in time.
-     *
-     * NOT PAGINATED
-     *
-     * @param entity The entity to load the version of.
-     * @param date The date at which to retrieve the most current version.
-     */
-    async fetchVersionAt(entity: IVeoEntity, date: string, query?: Record<string, string>): Promise<IVeoObjectHistoryEntry> {
-      if (!query) {
-        query = {};
-      }
-
-      query.uri = `/${getSchemaEndpoint(await api._context.$api.schema.fetchAll(), entity.type)}/${entity.id}`;
-      return api.req('/api/history/revisions/contemporary/:date', {
-        params: {
-          date
-        },
-        query
-      });
+      return api
+        .req('/api/history/revisions/', {
+          query
+        })
+        .then((result: IVeoObjectHistoryEntry[]) => {
+          result.forEach((historyEntry) => {
+            if (!historyEntry.content.parts) {
+              historyEntry.content.parts = [];
+            }
+            if (!historyEntry.content.members) {
+              historyEntry.content.members = [];
+            }
+          });
+          return result;
+        });
     },
 
     /**
