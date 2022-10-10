@@ -296,6 +296,8 @@ export default defineComponent({
       };
     };
 
+    const selectedDisplayOption = ref('objectschema');
+
     watch(() => props.objectSchema, getAdditionalContext, { deep: true });
     watch(() => props.additionalContext, getAdditionalContext, { deep: true });
 
@@ -343,7 +345,6 @@ export default defineComponent({
       }
     });
 
-    const selectedDisplayOption = ref('objectschema');
     const displayOptions: ComputedRef<{ text: string; value: string | undefined }[]> = computed(() => {
       const currentSubType = objectData.value?.domains?.[props.domainId]?.subType;
       const availableFormSchemas: { text: string; value: string | undefined }[] = (formSchemas.value || [])
