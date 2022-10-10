@@ -165,12 +165,13 @@ import { upperFirst } from 'lodash';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoTranslations } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useFetchObjects } from '~/composables/api/objects';
+import { useFetchForms } from '~/composables/api/forms';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
 
@@ -186,7 +187,6 @@ export default defineComponent({
     const { cloneObject } = useVeoObjectUtilities();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
 
-    const formschemas = ref<IVeoFormSchemaMeta[]>([]);
     const translations = ref<IVeoTranslations['lang']>({});
 
     const itemDelete = ref<IVeoEntity>();
@@ -239,10 +239,13 @@ export default defineComponent({
     const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters as any, { enabled: queryEnabled });
 
     const { $fetchState } = useFetch(async () => {
-      const [schemas, _translations] = await Promise.all([$api.form.fetchAll(domainId.value), $api.translation.fetch(['de', 'en'])]);
-      formschemas.value = schemas;
+      const [_translations] = await Promise.all([$api.translation.fetch(['de', 'en'])]);
       translations.value = _translations.lang;
     });
+
+    const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
+    const formsQueryEnabled = computed(() => !!domainId.value);
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
 
     const isLoading = computed(() => isLoadingObjects.value || $fetchState.pending);
 
@@ -283,9 +286,8 @@ export default defineComponent({
     watch(() => objectType.value, onObjectTypeChanged, { immediate: true });
 
     const subTypeKey = 'object-overview-sub-type';
-    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
 
-    const onSubTypeChanged = async (newSubType?: string) => {
+    const onSubTypeChanged = (newSubType?: string) => {
       if (customBreadcrumbExists(subTypeKey)) {
         removeCustomBreadcrumb(subTypeKey);
       }
@@ -295,11 +297,7 @@ export default defineComponent({
         return;
       }
 
-      if (!formSchemas.value.length) {
-        formSchemas.value = await $api.form.fetchAll(domainId.value);
-      }
-
-      const formSchema = formSchemas.value.find((formSchema) => formSchema.subType === newSubType);
+      const formSchema = (formSchemas.value || []).find((formSchema) => formSchema.subType === newSubType);
 
       addCustomBreadcrumb({
         key: subTypeKey,
@@ -340,7 +338,7 @@ export default defineComponent({
           return t(`objectTypes.${value}`).toString();
         // Translate sub types
         case 'subType':
-          return formschemas.value.find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
+          return (formSchemas.value || []).find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
         case 'status':
           return translations.value[locale.value]?.[`${objectType.value}_${subType.value}_status_${value}`] || value;
         default:

@@ -72,9 +72,10 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { mdiOpenInNew } from '@mdi/js';
 import { getSchemaEndpoint } from '~/plugins/api/schema';
 import { createUUIDUrlParam, getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useFetchObject, useFetchObjects } from '~/composables/api/objects';
+import { useFetchForms } from '~/composables/api/forms';
 
 export default defineComponent({
   props: {
@@ -190,18 +191,11 @@ export default defineComponent({
     const displayedItems = computed(() => (props.hiddenValues.length ? items.value.filter((item) => !props.hiddenValues.includes(item.id)) : items.value));
 
     // Label stuff
-    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
-    const { fetch: fetchFormSchemas } = useFetch(async () => {
-      if (props.domainId) {
-        formSchemas.value = await $api.form.fetchAll(props.domainId);
-      }
-    });
-    watch(
-      () => props.domainId,
-      () => fetchFormSchemas
-    );
+    const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const formsQueryEnabled = computed(() => !props.domainId);
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
 
-    const currentSubTypeFormName = computed(() => props.subType && formSchemas.value.find((formSchema) => formSchema.subType === props.subType)?.name[locale.value]);
+    const currentSubTypeFormName = computed(() => props.subType && (formSchemas.value || []).find((formSchema) => formSchema.subType === props.subType)?.name[locale.value]);
     const localLabel = computed(() => props.label ?? `${currentSubTypeFormName.value ? currentSubTypeFormName.value : upperFirst(props.objectType)}${props.required ? '*' : ''}`);
 
     // Object select display

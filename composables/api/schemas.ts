@@ -15,4 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-// To be implemented...
+import { useContext } from '@nuxtjs/composition-api';
+import { UseQueryOptions } from 'vue-query/lib/vue';
+import { MaybeRef } from 'vue-query/lib/vue/types';
+
+import { useQuery } from './utils/query';
+import { IVeoObjectSchema } from '~/types/VeoTypes';
+
+export interface IVeoFetchSchemaParameters {
+  type: string;
+  domainIds: string[];
+}
+
+export const useFetchSchema = (queryParameters: MaybeRef<IVeoFetchSchemaParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoObjectSchema>('schemas', $api.schema.fetch, queryParameters, { ...queryOptions, staleTime: 10 * 60 * 1000 });
+};

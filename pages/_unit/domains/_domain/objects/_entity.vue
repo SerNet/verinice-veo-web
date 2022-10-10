@@ -169,11 +169,12 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
+import { useFetchForms } from '~/composables/api/forms';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -250,9 +251,12 @@ export default defineComponent({
     watch(() => objectParameter.value.type, onObjectTypeChanged, { immediate: true });
 
     const subTypeKey = 'object-detail-view-sub-type';
-    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
 
-    const onSubTypeChanged = async (newSubType?: string) => {
+    const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
+    const formsQueryEnabled = computed(() => !!domainId.value);
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
+
+    const onSubTypeChanged = (newSubType?: string) => {
       if (customBreadcrumbExists(subTypeKey)) {
         removeCustomBreadcrumb(subTypeKey);
       }
@@ -262,11 +266,7 @@ export default defineComponent({
         return;
       }
 
-      if (!formSchemas.value.length) {
-        formSchemas.value = await $api.form.fetchAll(domainId.value);
-      }
-
-      const formSchema = formSchemas.value.find((formSchema) => formSchema.subType === newSubType);
+      const formSchema = (formSchemas.value || []).find((formSchema) => formSchema.subType === newSubType);
 
       addCustomBreadcrumb({
         key: subTypeKey,

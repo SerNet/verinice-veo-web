@@ -102,7 +102,7 @@
                 :rules="[requiredRule]"
                 :items="objectTypes"
                 required
-                @change="$emit('update:objectType', $event)"
+                @change="$emit('update:object-type', $event)"
               />
             </v-col>
           </v-row>
@@ -121,7 +121,7 @@
               <VeoEditorFileUpload
                 :input-label="t('objectSchemaUploadLabel')"
                 :submit-button-text="t('importObjectSchema')"
-                @schema-uploaded="$emit('update:objectSchema', $event)"
+                @schema-uploaded="$emit('update:object-schema', $event)"
               />
             </v-col>
           </v-row>
@@ -146,7 +146,7 @@
                 :loading="!!objectType && !objectSchema"
                 :label="t('editor.formschema.subtype')"
                 :rules="[requiredRule]"
-                @change="$emit('update:subType', $event)"
+                @change="$emit('update:sub-type', $event)"
               />
             </v-col>
           </v-row>
@@ -222,7 +222,7 @@ export default defineComponent({
       ];
     });
 
-    const subTypes = computed(() => props.objectSchema?.properties?.domains?.properties?.['{CURRENT_DOMAIN_ID}']?.properties?.subType?.enum || []);
+    const subTypes = computed(() => props.objectSchema?.properties?.domains?.properties?.[props.domainId]?.properties?.subType?.enum || []);
 
     return {
       objectTypes,

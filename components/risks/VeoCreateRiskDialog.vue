@@ -105,14 +105,15 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
+import { computed, defineComponent, reactive, ref, useContext, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { omit, upperFirst } from 'lodash';
 import { mdiFilter } from '@mdi/js';
-import { IVeoEntity, IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { IVeoEntity } from '~/types/VeoTypes';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useFetchObjects } from '~/composables/api/objects';
+import { useFetchForms } from '~/composables/api/forms';
 
 export default defineComponent({
   name: 'CreateRiskDialog',
@@ -152,6 +153,10 @@ export default defineComponent({
     });
 
     // Filter stuff
+    const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const formQueryEnabled = computed(() => !!props.domainId);
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formQueryEnabled });
+
     const filterDialogVisible = ref(false);
 
     const selectedScenarios = ref<IVeoEntity[]>([]);
@@ -175,7 +180,7 @@ export default defineComponent({
           return t(`objectTypes.${value}`).toString();
         // Translate sub types
         case 'subType':
-          return formSchemas.value.find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
+          return (formSchemas.value || []).find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
         default:
           return value;
       }
@@ -193,9 +198,6 @@ export default defineComponent({
       filter.value = newFilter;
     };
 
-    // API stuff
-    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
-
     const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
     const combinedQueryParameters = computed(() => ({
       objectType: 'scenario',
@@ -206,10 +208,6 @@ export default defineComponent({
       page: queryParameters.page,
       ...filter.value
     }));
-
-    useFetch(async () => {
-      formSchemas.value = await $api.form.fetchAll(props.domainId);
-    });
 
     const { data: objects, isLoading: objectsQueryIsLoading } = useFetchObjects(combinedQueryParameters);
 

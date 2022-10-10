@@ -66,14 +66,15 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiPlus } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
-import { IVeoCustomLink, IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { IVeoCustomLink } from '~/types/VeoTypes';
+import { useFetchForms } from '~/composables/api/forms';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field-row',
@@ -101,7 +102,6 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { $api } = useContext();
     const route = useRoute();
     const { t, locale } = useI18n();
 
@@ -110,10 +110,9 @@ export default defineComponent({
     const objectType = computed<string>(() => ((props.objectSchema as any).items.properties.target.properties.type.enum[0] + '').toLowerCase());
     const subType = computed<string>(() => (props.objectSchema as any).items.properties.target.properties.subType?.enum?.[0]);
 
-    const formSchemas = ref<IVeoFormSchemaMeta[]>();
-    useFetch(async () => {
-      formSchemas.value = await $api.form.fetchAll(domainId.value);
-    });
+    const queryParameters = computed(() => ({ domainId: domainId.value }));
+    const queryEnabled = computed(() => !!domainId.value);
+    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled });
 
     const createButtonLabel = computed(() =>
       subType.value ? formSchemas.value?.find((formSchema) => formSchema.subType === subType.value)?.name?.[locale.value] || objectType.value : objectType.value

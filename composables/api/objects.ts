@@ -22,7 +22,7 @@ import { MaybeRef } from 'vue-query/lib/vue/types';
 import { useQuery } from './utils/query';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
-interface IVeoFetchObjectsParameters {
+export interface IVeoFetchObjectsParameters {
   unit: string;
   objectType: string;
   page?: number;
@@ -31,7 +31,7 @@ interface IVeoFetchObjectsParameters {
   childElementIds?: string;
 }
 
-interface IVeoFetchObjectParameters {
+export interface IVeoFetchObjectParameters {
   objectType: string;
   id: string;
 }
@@ -49,6 +49,13 @@ export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParame
   return useQuery<IVeoPaginatedResponse<IVeoEntity[]>>('objects', $api.entity.fetchAll, queryParameters, queryOptions);
 };
 
+/**
+ * Loasd a single object, including object details
+ *
+ * @param queryParameters The parameters required by the api call.
+ * @param queryOptions Options modifying query behaviour.
+ * @returns Returns the object.
+ */
 export const useFetchObject = (queryParameters: MaybeRef<IVeoFetchObjectParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
   const { $api } = useContext();
 
