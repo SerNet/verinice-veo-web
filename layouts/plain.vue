@@ -47,6 +47,16 @@
         :email="$user.auth.profile.email"
         @logout="$user.auth.logout('/')"
       />
+      <v-btn
+        v-else
+        color="primary"
+        icon
+        :href="$config.accountPath"
+      >
+        <v-icon>
+          {{ mdiAccountCircleOutline }}
+        </v-icon>
+      </v-btn>
     </v-app-bar>
     <v-main>
       <nuxt />
@@ -55,13 +65,20 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-export default Vue.extend({
-  head() {
+import { mdiAccountCircleOutline } from '@mdi/js';
+import { defineComponent, useMeta } from '@nuxtjs/composition-api';
+
+export default defineComponent({
+  setup() {
+    const meta = useMeta();
+
+    meta.titleTemplate.value = '%s - verinice.veo';
+
     return {
-      titleTemplate: '%s - verinice.veo'
+      mdiAccountCircleOutline
     };
-  }
+  },
+  head: {}
 });
 </script>
 <style lang="scss" scoped>

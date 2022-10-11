@@ -32,16 +32,16 @@
           {{ t('login') }}
         </v-btn>
       </v-col>
-      <!--<v-col>VEO-1539
+      <v-col v-if="$config.accountPath">
         <v-btn
           depressed
           block
           color="white"
-          @click="register"
+          :href="$config.accountPath"
         >
           {{ t('register') }}
         </v-btn>
-      </v-col>-->
+      </v-col>
     </v-row>
   </div>
 </template>
@@ -57,11 +57,10 @@ export default defineComponent({
     const { $user } = useContext();
 
     const login = () => $user.auth.login('/');
-    const register = () => $user.auth.register('/');
 
     return {
       login,
-      register,
+
       t
     };
   }
