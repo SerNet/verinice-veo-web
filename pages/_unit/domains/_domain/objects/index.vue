@@ -226,7 +226,7 @@ export default defineComponent({
       Object.assign(queryParameters, { page: 1, sortBy: 'name', sortDesc: false });
     };
 
-    const combinedQueryParameters = computed(() => ({
+    const combinedQueryParameters = computed<any>(() => ({
       size: $user.tablePageSize,
       sortBy: queryParameters.sortBy,
       sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
@@ -236,7 +236,7 @@ export default defineComponent({
     }));
     const queryEnabled = computed(() => !!filter.value.objectType);
 
-    const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters as any, { enabled: queryEnabled });
+    const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled });
 
     const { $fetchState } = useFetch(async () => {
       const [schemas, _translations] = await Promise.all([$api.form.fetchAll(domainId.value), $api.translation.fetch(['de', 'en'])]);
@@ -381,7 +381,7 @@ export default defineComponent({
         async action(item: IVeoEntity) {
           try {
             await cloneObject(item);
-            refetch.value();
+            refetch();
           } catch (e: any) {
             showError('clone', item, e);
           }
@@ -416,7 +416,7 @@ export default defineComponent({
     );
 
     const refetchObjects = () => {
-      refetch.value();
+      refetch();
     };
 
     return {

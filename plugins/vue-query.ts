@@ -17,7 +17,7 @@
  */
 import { Context } from '@nuxt/types';
 import Vue from 'vue';
-import { VueQueryPlugin, QueryClient, hydrate } from 'vue-query';
+import { VueQueryPlugin, QueryClient, hydrate } from '@tanstack/vue-query';
 
 export default (context: Context) => {
   // Modify your Vue Query global settings here
