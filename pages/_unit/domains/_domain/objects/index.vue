@@ -225,6 +225,7 @@ export default defineComponent({
     const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
     const resetQueryOptions = () => {
       Object.assign(queryParameters, { page: 1, sortBy: 'name', sortDesc: false });
+      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
     const combinedQueryParameters = computed<any>(() => ({
@@ -254,6 +255,7 @@ export default defineComponent({
     // refetch entities on page or sort changes (in VeoObjectTable)
     const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
       Object.assign(queryParameters, { page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
+      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
     // Additional breadcrumbs based on object type and sub type

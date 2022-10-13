@@ -192,6 +192,7 @@ export default defineComponent({
 
     const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
       Object.assign(queryParameters, { page: opts.newPage, sortOrder: opts.sortDesc ? 'desc' : 'asc', sortDesc: !!opts.sortDesc });
+      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
     const onFilterUpdate = (newFilter: any) => {
@@ -209,7 +210,7 @@ export default defineComponent({
       ...filter.value
     }));
 
-    const { data: objects, isLoading: objectsQueryIsLoading } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
+    const { data: objects, isLoading: objectsQueryIsLoading, refetch } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
 
     // Create risk stuff
     const creatingRisks = ref(false);

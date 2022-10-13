@@ -228,6 +228,7 @@ export default defineComponent({
     const objectsQueryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
     const resetQueryOptions = () => {
       Object.assign(objectsQueryParameters, { page: 1, sortBy: 'name', sortDesc: false });
+      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
     const combinedObjectsQueryParameters = computed(() => ({
@@ -240,7 +241,7 @@ export default defineComponent({
     }));
     const objectsQueryEnabled = computed(() => !!filter.value.objectType);
 
-    const { data: objectList, isLoading } = useFetchObjects(combinedObjectsQueryParameters as any, { enabled: objectsQueryEnabled, keepPreviousData: true });
+    const { data: objectList, isLoading, refetch } = useFetchObjects(combinedObjectsQueryParameters as any, { enabled: objectsQueryEnabled, keepPreviousData: true });
 
     watch(
       () => props.preselectedFilters,
@@ -295,6 +296,7 @@ export default defineComponent({
     // refetch entities on page or sort changes (in VeoObjectTable)
     const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
       Object.assign(objectsQueryParameters, { page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
+      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
     // get allowed filter-objectTypes for current parent and child type
