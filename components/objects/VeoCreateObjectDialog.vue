@@ -136,6 +136,9 @@ export default defineComponent({
       objectData.value = {
         owner: {
           targetUri: `${$config.apiUrl}/units/${separateUUIDParam(route.value.params.unit).id}`
+        },
+        domains: {
+          [props.domainId]: {}
         }
       };
 
