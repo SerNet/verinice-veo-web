@@ -125,6 +125,9 @@ describe('CreateObjectDialog.vue', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 300)); // Waiting for 300ms, as the form only gets reset after the close animation (150ms) and the changes only get propagated after 250ms on VeoForms side
     expect((wrapper.vm as any).objectData).toEqual({
+      domains: {
+        'my-completely-invalid-domain-uuid-that-doesnt-matter': {}
+      },
       owner: {
         targetUri: 'some-url/units/invalid-unit-uuid-that-doesnt-matter'
       },
@@ -134,6 +137,9 @@ describe('CreateObjectDialog.vue', () => {
     wrapper.find('.close-button').vm.$emit('click'); // v-btn is NOT native, thus we can't use trigger(click)
     await new Promise((resolve) => setTimeout(resolve, 200)); // Waiting for 200ms, as the form only gets reset after the close animation (150ms)
     expect((wrapper.vm as any).objectData).toEqual({
+      domains: {
+        'my-completely-invalid-domain-uuid-that-doesnt-matter': {}
+      },
       owner: {
         targetUri: 'some-url/units/invalid-unit-uuid-that-doesnt-matter'
       }
