@@ -89,6 +89,7 @@
           :loading="isLoading"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :additional-headers="additionalHeaders"
+          :page="queryParameters.page"
           data-component-name="object-overview-table"
           @page-change="onPageChange"
           @click="openItem"
@@ -226,7 +227,7 @@ export default defineComponent({
       Object.assign(queryParameters, { page: 1, sortBy: 'name', sortDesc: false });
     };
 
-    const combinedQueryParameters = computed(() => ({
+    const combinedQueryParameters = computed<any>(() => ({
       size: $user.tablePageSize,
       sortBy: queryParameters.sortBy,
       sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
@@ -236,7 +237,7 @@ export default defineComponent({
     }));
     const queryEnabled = computed(() => !!filter.value.objectType);
 
-    const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters as any, { enabled: queryEnabled });
+    const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true });
 
     const { $fetchState } = useFetch(async () => {
       translations.value = (await $api.translation.fetch(['de', 'en'])).lang;
@@ -378,7 +379,7 @@ export default defineComponent({
         async action(item: IVeoEntity) {
           try {
             await cloneObject(item);
-            refetch.value();
+            refetch();
           } catch (e: any) {
             showError('clone', item, e);
           }
@@ -413,7 +414,7 @@ export default defineComponent({
     );
 
     const refetchObjects = () => {
-      refetch.value();
+      refetch();
     };
 
     return {
@@ -442,6 +443,7 @@ export default defineComponent({
       showError,
       subType,
       updateRouteQuery,
+      queryParameters,
       upperFirst
     };
   }

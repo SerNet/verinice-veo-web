@@ -70,7 +70,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/api', '~/plugins/navigationHelper', '~/plugins/user', '~/plugins/utils', '~/plugins/vue-query'],
+  plugins: ['~/plugins/api', '~/plugins/navigationHelper', '~/plugins/user', '~/plugins/utils', '~/plugins/vue-query', '~/plugins/font-awesome'],
 
   /**
    *

@@ -130,7 +130,6 @@ import {
   mdiChevronLeft,
   mdiChevronRight,
   mdiFileChartOutline,
-  mdiFileDocumentOutline,
   mdiHomeOutline,
   mdiHomeSwitchOutline,
   mdiTableSettings,
@@ -159,6 +158,7 @@ export interface INavItem {
   key: string;
   name: string;
   icon?: string;
+  faIcon?: string | string[];
   exact?: boolean;
   to?: RawLocation;
   children?: INavItem[];
@@ -237,11 +237,13 @@ export default defineComponent({
         .sort((a, b) => (objectTypeSortOrder.get(a.title) || 0) - (objectTypeSortOrder.get(b.title) || 0))
         .map((objectSchema) => {
           const objectSubTypes = extractSubTypesFromObjectSchema(objectSchema);
+          const _icon = OBJECT_TYPE_ICONS.get(objectSchema.title);
 
           return {
             key: objectSchema.title,
             name: t(`objectTypes.${objectSchema.title}`).toString(),
-            icon: OBJECT_TYPE_ICONS.get(objectSchema.title),
+            icon: _icon?.library === 'mdi' ? (_icon?.icon as string) : undefined,
+            faIcon: _icon?.library === 'fa' ? _icon?.icon : undefined,
             activePath: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectSchema.title}`,
             children: [
               // all of object type
@@ -410,7 +412,7 @@ export default defineComponent({
       key: 'objects',
       name: t('breadcrumbs.objects').toString(),
       activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/objects`,
-      icon: mdiFileDocumentOutline,
+      faIcon: ['far', 'object-ungroup'],
       children: objectTypesChildItems.value,
       childrenLoading: objectEntriesLoading.pending,
       componentName: 'objects-nav-item'

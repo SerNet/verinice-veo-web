@@ -17,8 +17,17 @@
 -->
 <template>
   <div class="veo-object-icon__outer">
-    <v-icon v-bind="$attrs">
-      {{ OBJECT_TYPE_ICONS.get(objectType) }}
+    <font-awesome-icon
+      v-if="icon && icon.library === 'fa'"
+      color="grey"
+      v-bind="$attrs"
+      :icon="icon.icon"
+    />
+    <v-icon
+      v-else-if="icon && icon.library === 'mdi'"
+      v-bind="$attrs"
+    >
+      {{ icon.icon }}
     </v-icon>
     <v-icon
       v-if="isComposite"
@@ -32,15 +41,17 @@
 
 <script lang="ts">
 import { mdiAccountOutline, mdiAlarmLightOutline, mdiDevices, mdiDotsHorizontal, mdiFileDocumentOutline, mdiPlaylistCheck, mdiShieldAlertOutline } from '@mdi/js';
-import { defineComponent } from '@nuxtjs/composition-api';
+import { computed, defineComponent } from '@nuxtjs/composition-api';
 
-export const OBJECT_TYPE_ICONS = new Map<string, string>([
-  ['asset', mdiDevices],
-  ['person', mdiAccountOutline],
-  ['incident', mdiAlarmLightOutline],
-  ['document', mdiFileDocumentOutline],
-  ['scenario', mdiShieldAlertOutline],
-  ['control', mdiPlaylistCheck]
+export const OBJECT_TYPE_ICONS = new Map<string, { icon: string | string[]; library: 'fa' | 'mdi' }>([
+  ['scope', { icon: ['far', 'object-group'], library: 'fa' }],
+  ['process', { icon: ['fas', 'diagram-project'], library: 'fa' }],
+  ['asset', { icon: mdiDevices, library: 'mdi' }],
+  ['person', { icon: mdiAccountOutline, library: 'mdi' }],
+  ['incident', { icon: mdiAlarmLightOutline, library: 'mdi' }],
+  ['document', { icon: mdiFileDocumentOutline, library: 'mdi' }],
+  ['scenario', { icon: mdiShieldAlertOutline, library: 'mdi' }],
+  ['control', { icon: mdiPlaylistCheck, library: 'mdi' }]
 ]);
 
 export default defineComponent({
@@ -54,9 +65,12 @@ export default defineComponent({
       default: false
     }
   },
-  setup() {
+  setup(props) {
+    const icon = computed(() => OBJECT_TYPE_ICONS.get(props.objectType));
+
     return {
-      OBJECT_TYPE_ICONS,
+      icon,
+
       mdiDotsHorizontal
     };
   }

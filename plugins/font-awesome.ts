@@ -15,22 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Context } from '@nuxt/types';
 import Vue from 'vue';
-import { VueQueryPlugin, QueryClient, hydrate } from '@tanstack/vue-query';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faObjectGroup, faObjectUngroup } from '@fortawesome/free-regular-svg-icons';
+import { faDiagramProject } from '@fortawesome/free-solid-svg-icons';
 
-export default (context: Context) => {
-  // Modify your Vue Query global settings here
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { staleTime: 1000, refetchOnWindowFocus: false } }
-  });
-  const options = { queryClient };
-
-  Vue.use(VueQueryPlugin, options);
-
-  if (process.client) {
-    if (context.nuxtState && context.nuxtState['vue-query']) {
-      hydrate(queryClient, context.nuxtState['vue-query']);
-    }
-  }
+export default () => {
+  library.add(faDiagramProject, faObjectGroup, faObjectUngroup);
+  Vue.component('FontAwesomeIcon', FontAwesomeIcon);
 };

@@ -34,11 +34,16 @@
   },
   "dependencies": {
     "@codemirror/next": "^0.14.0",
+    "@fortawesome/fontawesome-svg-core": "^6.2.0",
+    "@fortawesome/free-regular-svg-icons": "^6.2.0",
+    "@fortawesome/free-solid-svg-icons": "^6.2.0",
+    "@fortawesome/vue-fontawesome": "^2.0.8",
     "@mdi/font": "^6.1.95",
     "@mdi/js": "^7.0.96",
     "@nuxt/content": "^1.15.1",
     "@nuxtjs/composition-api": "^0.32.0",
     "@nuxtjs/i18n": "^7.2.0",
+    "@tanstack/vue-query": "4.10.1",
     "@toast-ui/editor-plugin-code-syntax-highlight": "^3.0.0",
     "@toast-ui/vue-editor": "^3.1.0",
     "ajv": "^8.6.3",
@@ -64,7 +69,6 @@
     "uuid": "^8.3.2",
     "vue-chart-3": "^0.5.11",
     "vue-json-pointer": "^0.6.2",
-    "vue-query": "^1.26.0",
     "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
