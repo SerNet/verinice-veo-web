@@ -50,7 +50,7 @@ export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParame
 };
 
 /**
- * Loasd a single object, including object details
+ * Loads a single object, including object details
  *
  * @param queryParameters The parameters required by the api call.
  * @param queryOptions Options modifying query behaviour.

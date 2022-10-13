@@ -154,8 +154,8 @@ export default defineComponent({
 
     // Filter stuff
     const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
-    const formQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formQueryEnabled });
+    const formsQueryEnabled = computed(() => !!props.domainId);
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
 
     const filterDialogVisible = ref(false);
 

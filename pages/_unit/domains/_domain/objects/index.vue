@@ -239,8 +239,7 @@ export default defineComponent({
     const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters as any, { enabled: queryEnabled });
 
     const { $fetchState } = useFetch(async () => {
-      const [_translations] = await Promise.all([$api.translation.fetch(['de', 'en'])]);
-      translations.value = _translations.lang;
+      translations.value = (await $api.translation.fetch(['de', 'en'])).lang;
     });
 
     const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
