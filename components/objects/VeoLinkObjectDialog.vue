@@ -240,7 +240,7 @@ export default defineComponent({
     }));
     const objectsQueryEnabled = computed(() => !!filter.value.objectType);
 
-    const { data: objectList, isLoading } = useFetchObjects(combinedQueryParameters as any, { enabled: queryEnabled, keepPreviousData: true });
+    const { data: objectList, isLoading } = useFetchObjects(combinedObjectsQueryParameters as any, { enabled: objectsQueryEnabled, keepPreviousData: true });
 
     watch(
       () => props.preselectedFilters,

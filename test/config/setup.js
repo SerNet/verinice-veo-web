@@ -19,7 +19,7 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import Vuetify from 'vuetify/lib';
 import VueCompositionAPI from '@vue/composition-api';
-import { VueQueryPlugin } from 'vue-query';
+import { VueQueryPlugin } from '@tanstack/vue-query';
 
 Vue.config.productionTip = false;
 Vue.use(Vuetify);

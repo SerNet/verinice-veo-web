@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { useContext } from '@nuxtjs/composition-api';
-import { UseQueryOptions } from 'vue-query/lib/vue';
-import { MaybeRef } from 'vue-query/lib/vue/types';
+import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
+import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 
 import { useQuery } from './utils/query';
 import { IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
