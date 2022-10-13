@@ -211,7 +211,7 @@ export default defineComponent({
       formSchemas.value = await $api.form.fetchAll(props.domainId);
     });
 
-    const { data: objects, isLoading: objectsQueryIsLoading } = useFetchObjects(combinedQueryParameters);
+    const { data: objects, isLoading: objectsQueryIsLoading } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
 
     // Create risk stuff
     const creatingRisks = ref(false);
