@@ -337,7 +337,7 @@ export default defineComponent({
       let updatedForm = cloneDeep(props.value);
 
       // '' should be handled as if the value was deleted (an empty input field cleared with backspace returns '', while an input field cleared with the clear button returns undefined)
-      if (newValue === '') {
+      if (newValue === '' || newValue === null) {
         newValue = undefined;
       }
 
