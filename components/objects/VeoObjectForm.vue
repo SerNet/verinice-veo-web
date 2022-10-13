@@ -32,7 +32,7 @@
           <VeoCard>
             <v-card-text>
               <VeoForm
-                v-if="!formLoading && objectSchema && !loading"
+                v-if="!formLoading && objectSchema && !loading && !$fetchState.pending"
                 v-model="objectData"
                 :object-schema="objectSchema"
                 :form-schema="currentFormSchema && currentFormSchema.content"
