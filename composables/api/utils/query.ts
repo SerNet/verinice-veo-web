@@ -80,7 +80,10 @@ export const useQuery = <T>(
  */
 const queryParameterMap = new Map<string, string[]>([
   ['objects_fetchAll', ['objectType', 'page', '_parameters_']],
-  ['object_fetch', ['objectType', 'id']]
+  ['object_fetch', ['objectType', 'id']],
+  ['forms_fetchAll', ['domainId']],
+  ['form_fetch', ['domainId', 'id']],
+  ['schemas_fetch', ['type', 'domainIds']]
 ]);
 
 /**

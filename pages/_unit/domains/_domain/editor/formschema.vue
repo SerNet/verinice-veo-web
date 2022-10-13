@@ -279,9 +279,7 @@
       <VeoFseWizardDialog
         :value="creationDialogVisible"
         :domain-id="domainId"
-        @objectSchema="setObjectSchema"
-        @formSchema="setFormSchema"
-        @translations="setTranslation"
+        @done="onWizardFinished"
       />
       <VeoEditorErrorDialog
         v-model="errorDialogVisible"
@@ -422,6 +420,12 @@ export default defineComponent({
     function setTranslation(newTranslation: IVeoTranslations) {
       translation.value = newTranslation;
     }
+
+    const onWizardFinished = (payload: { formSchema: IVeoFormSchema; objectSchema: IVeoObjectSchema; translations: IVeoTranslations }) => {
+      setTranslation(payload.translations);
+      setObjectSchema(payload.objectSchema);
+      setFormSchema(payload.formSchema);
+    };
 
     async function save() {
       // control whether save new or save updated schema
@@ -649,6 +653,7 @@ export default defineComponent({
       saveNewSchema,
       saveUpdatedSchema,
       translations,
+      onWizardFinished,
 
       t,
       HELP_ROUTE

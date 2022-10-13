@@ -141,7 +141,7 @@ import { sortBy, upperFirst } from 'lodash';
 
 import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
-import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoReportsMeta } from '~/types/VeoTypes';
+import { IVeoCatalog, IVeoDomain, IVeoObjectSchema, IVeoReportsMeta } from '~/types/VeoTypes';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
@@ -152,6 +152,7 @@ import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/_unit/domains/_
 import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/_unit/domains/_domain/risks/_matrix.vue';
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/_unit/domains/_domain/editor/index.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/objects/VeoObjectIcon.vue';
+import { useFetchForms } from '~/composables/api/forms';
 
 export interface INavItem {
   key: string;
@@ -210,7 +211,12 @@ export default defineComponent({
     // objects specific stuff
     const objectTypes = ref<IVeoSchemaEndpoint[]>([]);
     const objectSchemas = ref<IVeoObjectSchema[]>([]);
-    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
+
+    const queryParameters = computed(() => ({
+      domainId: props.domainId
+    }));
+    const queryEnabled = computed(() => !!props.domainId);
+    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled });
     const { fetch: fetchObjectsEntries, fetchState: objectEntriesLoading } = useFetch(async () => {
       // Only load object types on the first call, as them changing while the user is using the application is highly unlikely
       if (!objectTypes.value.length) {
@@ -223,7 +229,6 @@ export default defineComponent({
         for (const objectType of objectTypes.value) {
           objectSchemas.value.push(await $api.schema.fetch(objectType.schemaName, [props.domainId]));
         }
-        formSchemas.value = await $api.form.fetchAll(props.domainId);
       }
     });
 
@@ -260,7 +265,7 @@ export default defineComponent({
               // dynamic sub type routes
               ...sortBy(
                 objectSubTypes.map((subType) => {
-                  const formSchema = formSchemas.value.find((formSchema) => formSchema.modelType === objectSchema.title && formSchema.subType === subType.subType);
+                  const formSchema = (formSchemas.value || []).find((formSchema) => formSchema.modelType === objectSchema.title && formSchema.subType === subType.subType);
                   const displayName = formSchema?.name[locale.value] || subType.subType;
                   return {
                     key: displayName,

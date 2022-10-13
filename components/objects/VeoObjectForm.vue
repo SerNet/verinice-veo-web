@@ -199,10 +199,11 @@ import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/comp
 import { getRiskAdditionalContext, getStatusAdditionalContext } from '~/components/forms/additionalContext';
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoDomain, IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoInspectionResult, IVeoObjectSchema, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
+import { useFetchForm, useFetchForms } from '~/composables/api/forms';
 
 enum SIDE_CONTAINERS {
   HISTORY,
@@ -275,8 +276,6 @@ export default defineComponent({
     // Formschema/display stuff
     const translations: Ref<{ [key: string]: IVeoTranslationCollection } | undefined> = ref(undefined);
     const mergedTranslations = computed(() => merge(translations.value, currentFormSchema.value?.translation || {}));
-    const formSchemas: Ref<IVeoFormSchemaMeta[]> = ref([]);
-    const currentFormSchema: Ref<undefined | IVeoFormSchema> = ref(undefined);
 
     const domain = ref<IVeoDomain | undefined>();
     const { fetch: fetchDomain } = useFetch(async () => {
@@ -297,8 +296,19 @@ export default defineComponent({
       };
     };
 
+    const selectedDisplayOption = ref('objectschema');
+
     watch(() => props.objectSchema, getAdditionalContext, { deep: true });
     watch(() => props.additionalContext, getAdditionalContext, { deep: true });
+
+    const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const formsQueryEnabled = computed(() => !!props.domainId);
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
+
+    const formQueryParameters = computed(() => ({ domainId: props.domainId, id: selectedDisplayOption.value }));
+    const formQueryEnabled = computed(() => selectedDisplayOption.value !== 'objectschema');
+    const { data: formSchema } = useFetchForm(formQueryParameters, { enabled: formQueryEnabled });
+    const currentFormSchema = computed(() => (selectedDisplayOption.value === 'objectschema' ? undefined : formSchema.value));
 
     const {
       fetch,
@@ -310,10 +320,6 @@ export default defineComponent({
       if (!translations.value) {
         translations.value = (await $api.translation.fetch(['de', 'en'])).lang;
       }
-      // Only fetch formschema overview once, as formschemas getting added/changed while the user uses this component is highly unlikely
-      if (formSchemas.value.length === 0) {
-        formSchemas.value = await $api.form.fetchAll(props.domainId);
-      }
 
       if (props.preselectedSubType) {
         const formSchemaId = getFormschemaIdBySubType(props.preselectedSubType);
@@ -323,13 +329,7 @@ export default defineComponent({
         }
       }
 
-      if (selectedDisplayOption.value !== 'objectschema') {
-        currentFormSchema.value = await $api.form.fetch(props.domainId, selectedDisplayOption.value);
-      } else {
-        currentFormSchema.value = undefined;
-      }
-
-      const subType = formSchemas.value.find((formschema) => formschema.id === selectedDisplayOption.value)?.subType;
+      const subType = (formSchemas.value || []).find((formschema) => formschema.id === selectedDisplayOption.value)?.subType;
 
       // Set sub type and status if subType was not set and the user views the object with a subtype
       if (subType && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
@@ -345,10 +345,9 @@ export default defineComponent({
       }
     });
 
-    const selectedDisplayOption = ref('objectschema');
     const displayOptions: ComputedRef<{ text: string; value: string | undefined }[]> = computed(() => {
       const currentSubType = objectData.value?.domains?.[props.domainId]?.subType;
-      const availableFormSchemas: { text: string; value: string | undefined }[] = formSchemas.value
+      const availableFormSchemas: { text: string; value: string | undefined }[] = (formSchemas.value || [])
         .filter((formSchema) => formSchema.modelType === props.objectSchema?.title && (!currentSubType || currentSubType === formSchema.subType))
         .map((formSchema) => ({
           text: formSchema.name[locale.value] || formSchema.subType,
@@ -365,7 +364,7 @@ export default defineComponent({
     });
 
     function getFormschemaIdBySubType(subType: string) {
-      const formSchemaId = formSchemas.value.find((formschema) => formschema.subType === subType)?.id;
+      const formSchemaId = (formSchemas.value || []).find((formschema) => formschema.subType === subType)?.id;
       if (formSchemaId) {
         return formSchemaId;
       }

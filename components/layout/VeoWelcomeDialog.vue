@@ -106,7 +106,8 @@ import { useI18n } from 'nuxt-i18n-composable';
 
 import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
-import { IVeoFormSchemaMeta, IVeoUnit } from '~/types/VeoTypes';
+import { IVeoUnit } from '~/types/VeoTypes';
+import { useFetchForms } from '~/composables/api/forms';
 
 export default defineComponent({
   props: {
@@ -127,13 +128,18 @@ export default defineComponent({
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
+    const queryParameters = computed(() => ({
+      domainId: domainId.value
+    }));
+    const queryEnabled = computed(() => !!domainId.value);
+    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled });
+
     watch(
       () => domainId.value,
       () => fetch()
     );
 
     const { fetch } = useFetch(async () => {
-      const forms = await $api.form.fetchAll(domainId.value);
       const units = await $api.unit.fetchAll();
       const demoUnit = units.find((unit) => unit.name === 'Demo');
       nonDemoUnits.value = units.filter((unit) => unit.name !== 'Demo' && getFirstDomainDomaindId(unit));
@@ -154,10 +160,6 @@ export default defineComponent({
           };
         }
       }
-
-      createEntityCreateLink('scope', 'SCP_ResponsibleBody', forms);
-      createEntityCreateLink('person', 'PER_DataProtectionOfficer', forms);
-      createEntityCreateLink('process', 'PRO_DataProcessing', forms);
     });
     const dialog = computed({
       get() {
@@ -171,7 +173,12 @@ export default defineComponent({
       }
     });
 
-    const formLinks: Ref<{ name: string; to: RawLocation }[]> = ref([]);
+    const formLinksToCreate = [
+      ['scope', 'SCP_ResponsibleBody'],
+      ['person', 'PER_DataProtectionOfficer'],
+      ['process', 'PRO_DataProcessing']
+    ];
+    const formLinks = computed<any[]>(() => formLinksToCreate.map((details) => createEntityCreateLink(details[0], details[1])).filter((link) => link));
     const dashboardLink: ComputedRef<{ name: string; to: RawLocation }> = computed(() => ({
       to: {
         name: 'unit-domains-domain',
@@ -184,10 +191,10 @@ export default defineComponent({
     }));
     const demoUnitLink: Ref<{ name: string; to: RawLocation } | undefined> = ref(undefined);
 
-    function createEntityCreateLink(objectType: string, subType: string, forms: IVeoFormSchemaMeta[]) {
-      const form = forms.find((form) => form.subType === subType);
+    function createEntityCreateLink(objectType: string, subType: string) {
+      const form = (formSchemas.value || []).find((form) => form.subType === subType);
       if (form) {
-        formLinks.value.push({
+        return {
           name: form.name[locale.value],
           to: {
             name: 'unit-domains-domain-objects',
@@ -200,7 +207,9 @@ export default defineComponent({
               subType
             }
           }
-        });
+        };
+      } else {
+        return undefined;
       }
     }
 

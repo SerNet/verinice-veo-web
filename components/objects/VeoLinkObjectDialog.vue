@@ -125,9 +125,10 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { mdiFilter } from '@mdi/js';
 import { getEntityDetailsFromLink, IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoLink, IVeoTranslations } from '~/types/VeoTypes';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects } from '~/composables/api/objects';
+import { useFetchForms } from '~/composables/api/forms';
 
 export default defineComponent({
   name: 'VeoLinkObjectDialog',
@@ -199,13 +200,15 @@ export default defineComponent({
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
     const objectSchemas = ref<IVeoSchemaEndpoint[]>([]);
-    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
     const translations = ref<IVeoTranslations['lang']>({});
 
+    const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
+    const formsQueryEnabled = computed(() => !!domainId.value);
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
+
     const { fetchState } = useFetch(async () => {
-      const [_schemas, _formschemas, _translations] = await Promise.all([$api.schema.fetchAll(), $api.form.fetchAll(domainId.value), $api.translation.fetch(['de', 'en'])]);
+      const [_schemas, _translations] = await Promise.all([$api.schema.fetchAll(), $api.translation.fetch(['de', 'en'])]);
       objectSchemas.value = _schemas;
-      formSchemas.value = _formschemas;
       translations.value = _translations.lang;
     });
 
@@ -222,20 +225,20 @@ export default defineComponent({
     const filter = ref<IBaseObject>({});
     const filterDialogVisible = ref(false);
 
-    const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
+    const objectsQueryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
     const resetQueryOptions = () => {
-      Object.assign(queryParameters, { page: 1, sortBy: 'name', sortDesc: false });
+      Object.assign(objectsQueryParameters, { page: 1, sortBy: 'name', sortDesc: false });
     };
 
-    const combinedQueryParameters = computed(() => ({
+    const combinedObjectsQueryParameters = computed(() => ({
       size: $user.tablePageSize,
-      sortBy: queryParameters.sortBy,
-      sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
-      page: queryParameters.page,
+      sortBy: objectsQueryParameters.sortBy,
+      sortOrder: objectsQueryParameters.sortDesc ? 'desc' : 'asc',
+      page: objectsQueryParameters.page,
       unit: separateUUIDParam(route.value.params.unit).id,
       ...filter.value
     }));
-    const queryEnabled = computed(() => !!filter.value.objectType);
+    const objectsQueryEnabled = computed(() => !!filter.value.objectType);
 
     const { data: objectList, isLoading } = useFetchObjects(combinedQueryParameters as any, { enabled: queryEnabled, keepPreviousData: true });
 
@@ -269,7 +272,7 @@ export default defineComponent({
           return t(`objectTypes.${value}`).toString();
         // Translate sub types
         case 'subType':
-          return formSchemas.value.find((formSchema) => formSchema.subType === value)?.name?.[locale.value] || value;
+          return (formSchemas.value || []).find((formSchema) => formSchema.subType === value)?.name?.[locale.value] || value;
         case 'status':
           return translations.value[locale.value]?.[`${filter.value.objectType}_${filter.value.subType}_status_${value}`] || value;
         default:
@@ -291,7 +294,7 @@ export default defineComponent({
 
     // refetch entities on page or sort changes (in VeoObjectTable)
     const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
-      Object.assign(queryParameters, { page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
+      Object.assign(objectsQueryParameters, { page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
     };
 
     // get allowed filter-objectTypes for current parent and child type

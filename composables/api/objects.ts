@@ -49,6 +49,13 @@ export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParame
   return useQuery<IVeoPaginatedResponse<IVeoEntity[]>>('objects', $api.entity.fetchAll, queryParameters, queryOptions);
 };
 
+/**
+ * Loads a single object, including object details
+ *
+ * @param queryParameters The parameters required by the api call.
+ * @param queryOptions Options modifying query behaviour.
+ * @returns Returns the object.
+ */
 export const useFetchObject = (queryParameters: MaybeRef<IVeoFetchObjectParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
   const { $api } = useContext();
 
