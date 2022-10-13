@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { reactive, unref, useContext, watch } from '@nuxtjs/composition-api';
+import { reactive, set, unref, useContext, watch } from '@nuxtjs/composition-api';
 import { useQuery as vueQueryUseQuery, useQueryClient } from '@tanstack/vue-query';
 import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
@@ -40,7 +40,14 @@ export const useQuery = <T>(
   const { $config } = useContext();
 
   // We turn the queryOptions (often a computed) into an object that we assign to the query key, in order to not have a ref inside the query key while still maintaining reactivity.
-  const combinedQueryKey = reactive([primaryQueryKey, queryParameters]);
+  // const combinedQueryKey = reactive([primaryQueryKey, unref(queryParameters)]);
+  const combinedQueryKey = reactive([primaryQueryKey]);
+  watch(
+    () => unref(queryParameters),
+    (newValue) => {
+      set(combinedQueryKey, 1, newValue);
+    }
+  );
 
   // Actual query getting executed
   const result = vueQueryUseQuery<T>(
