@@ -121,7 +121,7 @@ export default defineComponent({
     const { $user, $api, i18n } = useContext();
     const vm = getCurrentInstance();
 
-    const translations = useAsync(() => $api.translation.fetch(i18n.locales as any), 'translations');
+    const translations = useAsync(() => $api.translation.fetch(i18n.locales.map((locale: any) => locale.code)), 'translations');
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
     /**
