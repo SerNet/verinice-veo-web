@@ -1,0 +1,14 @@
+---
+title: Catalogs
+position: 4
+---
+
+## Catalogs
+
+<br>
+
+![catalogs](media/veo_catalogues.de.png)
+
+1. In catalogs, depending on the domain, global objects are available for use in your installation. <br>These can be, for example, data protection threats, TOM or IT-Grundschutz building blocks.
+1. select the desired objects.
+1. when applying, the selected objects are copied to your respective unit and can be used there.
