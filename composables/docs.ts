@@ -119,8 +119,8 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
   createDirs?: boolean;
   buildItem?: (item: DocPageFetchReturn) => T;
 }) => {
-  const { app } = useContext();
-  const locales: any = app.i18n.locales;
+  const { i18n } = useContext();
+  const locales: any = i18n.locales;
 
   const { localeSeparator, locale } = getOptions(params);
   const normalizePath = (path: string) => (path.split(localeSeparator).shift() || path).replace(/\/index(?:\.\w+)?$/i, '') || '/';

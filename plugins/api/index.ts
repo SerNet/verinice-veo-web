@@ -140,7 +140,7 @@ export class Client {
       headers: {
         Accept: 'application/json',
         Authorization: 'Bearer ' + $user.auth.token,
-        'Accept-Language': this.context.app.i18n.locale
+        'Accept-Language': this.context.i18n.locale
       } as Record<string, string>,
       method: 'GET',
       mode: 'cors'

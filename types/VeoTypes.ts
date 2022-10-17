@@ -534,10 +534,6 @@ export interface IVeoFormSchemaTranslationCollection {
   [key: string]: IVeoTranslationCollection;
 }
 
-export interface IVeoFormSchemaCustomTranslationEvent {
-  [key: string]: string | undefined;
-}
-
 export interface IVeoFormSchemaItemUpdateEvent {
   formSchemaPointer: string;
   data: IVeoFormSchemaItem;

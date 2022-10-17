@@ -124,7 +124,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { $api, app } = useContext();
+    const { $api, i18n } = useContext();
     const { locale, t } = useI18n();
     const route = useRoute();
 
@@ -146,7 +146,7 @@ export default defineComponent({
 
     const translations = ref<IVeoTranslations>();
     useFetch(async () => {
-      translations.value = await $api.translation.fetch(app.i18n.locales.map((locale: any) => locale.code));
+      translations.value = await $api.translation.fetch(i18n.locales.map((locale: any) => locale.code));
     });
 
     const formsQueryParameters = computed(() => ({ domainId: props.domainId }));

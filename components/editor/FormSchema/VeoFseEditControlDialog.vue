@@ -194,17 +194,11 @@
 import { computed, defineComponent, PropType, Ref, ref, watch, inject, provide } from '@nuxtjs/composition-api';
 import Draggable from 'vuedraggable';
 import { JsonPointer } from 'json-ptr';
-import { differenceBy, upperFirst } from 'lodash';
+import { cloneDeep, differenceBy, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { controlTypeAlternatives, IControlType } from '~/types/VeoEditor';
-import {
-  IVeoFormSchemaCustomTranslationEvent,
-  IVeoFormSchemaItem,
-  IVeoFormSchemaItemUpdateEvent,
-  IVeoFormSchemaTranslationCollection,
-  IVeoTranslationCollection
-} from '~/types/VeoTypes';
+import { IVeoFormSchemaItem, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
 import { IBaseObject } from '~/lib/utils';
 
@@ -468,9 +462,8 @@ export default defineComponent<IProps>({
       } else {
         delete updateData.rule;
       }
-      const updateTranslation: IVeoFormSchemaCustomTranslationEvent = JSON.parse(JSON.stringify(localCustomTranslation.value));
       context.emit('edit', JSON.parse(JSON.stringify(updateData)));
-      context.emit('update-custom-translation', updateTranslation);
+      context.emit('update-custom-translation', cloneDeep(localCustomTranslation.value));
     }
 
     return {
