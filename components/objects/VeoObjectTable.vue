@@ -505,15 +505,15 @@ export default defineComponent({
           'update:items-per-page'(itemsPerPage: number) {
             $user.tablePageSize = itemsPerPage;
             emit('update:items-per-page', itemsPerPage);
-            emitPageUpdate({});
+            emitPageUpdate({ newPage: 1 });
           },
           'update:sort-by'(sortBy: string | string[]) {
             emit('update:sort-by', sortBy);
-            emitPageUpdate({ sortBy });
+            emitPageUpdate({ sortBy, newPage: 1 });
           },
           'update:sort-desc'(sortDesc: boolean | boolean[]) {
             emit('update:sort-desc', sortDesc);
-            emitPageUpdate({ sortDesc });
+            emitPageUpdate({ sortDesc, newPage: 1 });
           },
           'click:row'(_item: any, context: any) {
             if (Object.prototype.hasOwnProperty.call(attrs, 'show-select')) {
