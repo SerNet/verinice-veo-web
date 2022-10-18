@@ -87,7 +87,7 @@ const mockDefaults = {
           }
         },
         $config: {
-          apiUrl: 'some-url'
+          apiUrl: 'https://example.com'
         },
         $vuetify: {
           breakpoint: {
@@ -115,7 +115,7 @@ describe('CreateObjectDialog.vue', () => {
       propsData: {
         value: true,
         objectType: 'process',
-        domainId: 'my-completely-invalid-domain-uuid-that-doesnt-matter'
+        domainId: '72df5644-90cf-4ea6-9991-0b8f2b1a3999'
       }
     });
 
@@ -126,10 +126,10 @@ describe('CreateObjectDialog.vue', () => {
     await new Promise((resolve) => setTimeout(resolve, 300)); // Waiting for 300ms, as the form only gets reset after the close animation (150ms) and the changes only get propagated after 250ms on VeoForms side
     expect((wrapper.vm as any).objectData).toEqual({
       domains: {
-        'my-completely-invalid-domain-uuid-that-doesnt-matter': {}
+        '72df5644-90cf-4ea6-9991-0b8f2b1a3999': {}
       },
       owner: {
-        targetUri: 'some-url/units/invalid-unit-uuid-that-doesnt-matter'
+        targetUri: 'https://example.com/units/invalid-unit-uuid-that-doesnt-matter'
       },
       name: 'My new object name'
     });
@@ -138,10 +138,10 @@ describe('CreateObjectDialog.vue', () => {
     await new Promise((resolve) => setTimeout(resolve, 200)); // Waiting for 200ms, as the form only gets reset after the close animation (150ms)
     expect((wrapper.vm as any).objectData).toEqual({
       domains: {
-        'my-completely-invalid-domain-uuid-that-doesnt-matter': {}
+        '72df5644-90cf-4ea6-9991-0b8f2b1a3999': {}
       },
       owner: {
-        targetUri: 'some-url/units/invalid-unit-uuid-that-doesnt-matter'
+        targetUri: 'https://example.com/units/invalid-unit-uuid-that-doesnt-matter'
       }
     });
   });
@@ -154,7 +154,7 @@ describe('CreateObjectDialog.vue', () => {
       propsData: {
         value: true,
         objectType: 'process',
-        domainId: 'my-completely-invalid-domain-uuid-that-doesnt-matter'
+        domainId: '72df5644-90cf-4ea6-9991-0b8f2b1a3999'
       }
     });
 
@@ -170,7 +170,7 @@ describe('CreateObjectDialog.vue', () => {
     wrapper.setProps({
       value: true,
       objectType: 'process',
-      domainId: 'my-completely-invalid-domain-uuid-that-doesnt-matter'
+      domainId: '72df5644-90cf-4ea6-9991-0b8f2b1a3999'
     });
 
     const input = getFormInput('name');
@@ -193,7 +193,7 @@ describe('CreateObjectDialog.vue', () => {
       propsData: {
         value: true,
         objectType: 'process',
-        domainId: 'my-completely-invalid-domain-uuid-that-doesnt-matter',
+        domainId: '72df5644-90cf-4ea6-9991-0b8f2b1a3999',
         subType: 'PRO_DataProcessing'
       }
     });
@@ -214,7 +214,7 @@ describe('CreateObjectDialog.vue', () => {
       propsData: {
         value: true,
         objectType: 'process',
-        domainId: 'my-completely-invalid-domain-uuid-that-doesnt-matter'
+        domainId: '72df5644-90cf-4ea6-9991-0b8f2b1a3999'
       }
     });
     await new Promise((resolve) => setTimeout(resolve, 200));
