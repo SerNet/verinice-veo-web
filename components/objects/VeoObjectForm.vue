@@ -299,6 +299,7 @@ export default defineComponent({
     const selectedDisplayOption = ref('objectschema');
 
     watch(() => props.objectSchema, getAdditionalContext, { deep: true });
+    watch(() => props.value, getAdditionalContext, { deep: true });
     watch(() => props.additionalContext, getAdditionalContext, { deep: true });
 
     const formsQueryParameters = computed(() => ({ domainId: props.domainId }));

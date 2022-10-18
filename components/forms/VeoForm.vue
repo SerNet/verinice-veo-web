@@ -157,21 +157,11 @@ export default defineComponent({
   },
   emits: ['input', 'update:messages', 'update:valid'],
   setup(props, { emit }) {
-    watch(
-      () => props.formSchema,
-      () => {
-        // Needed to rerender the complete form if the formSchema gets changed to avoid inputs getting stuck with their old ui
-        keyModifier.value++;
-      },
-      { deep: true }
-    );
-
     const { locale } = useI18n();
 
     const { defaultReactiveFormActions } = useVeoReactiveFormActions();
     const { formatErrors } = useVeoErrorFormatter();
 
-    const keyModifier = ref(0);
     const localTranslations = computed(() => props.translations?.[locale.value] || {});
     const localAdditionalContext = computed(() => props.additionalContext || {});
     const localFormSchema = computed(() => cloneDeep(props.formSchema) || generateFormSchema(props.objectSchema, GENERATOR_OPTIONS(props), Mode.VEO));
@@ -196,6 +186,20 @@ export default defineComponent({
     const errorMessages = ref(new Map<string, string[]>());
     const validateFunction = computed(() => ajv.compile(props.objectSchema));
 
+    // Force rerender on prop change
+    const keyModifier = ref(0);
+    const forceRerender = () => keyModifier.value++;
+
+    watch(() => props.objectSchema, forceRerender, { deep: true });
+    watch(() => props.formSchema, forceRerender, { deep: true });
+    watch(() => props.additionalContext, forceRerender, { deep: true });
+    watch(() => props.translations, forceRerender, { deep: true });
+
+    // global available data
+    const _value = computed(() => props.value);
+    provide('translations', localTranslations);
+    provide('objectData', _value);
+
     // Form generation
     const defaultProps: IVeoFormElementDefaultProps = {
       metaData: props.metaData,
@@ -203,11 +207,6 @@ export default defineComponent({
       objectCreationDisabled: props.objectCreationDisabled,
       debug: props.debug
     };
-
-    // global available data
-    const _value = computed(() => props.value);
-    provide('translations', localTranslations);
-    provide('objectData', _value);
 
     const createComponent = (element: any, formSchemaPointer: string): any => {
       const rule = evaluateRule(props.value, element.rule);
@@ -301,7 +300,10 @@ export default defineComponent({
         element.scope = parentObjectSchemaPointer + '/items/' + takeRight(objectSchemaPointerFragments, objectSchemaPointerFragments.length - 1).join('/');
       }
 
-      const controlObjectSchema = { ...(JsonPointer.get(props.objectSchema, element.scope) as JSONSchema7), ...(localAdditionalContext.value[element.scope]?.objectSchema || {}) };
+      const controlObjectSchema = computed(() => ({
+        ...(JsonPointer.get(props.objectSchema, element.scope) as JSONSchema7),
+        ...(localAdditionalContext.value[element.scope]?.objectSchema || {})
+      }));
       const valuePointer = removePropertiesKeywordFromPath(element.scope);
       return h(Control, {
         props: {
@@ -310,7 +312,7 @@ export default defineComponent({
           options: { ...element.options, ...localAdditionalContext.value[element.scope]?.formSchema },
           formSchemaPointer,
           objectSchemaPointer: element.scope,
-          objectSchema: addConditionalSchemaPropertiesToControlSchema(props.objectSchema, props.value, controlObjectSchema, element.scope),
+          objectSchema: addConditionalSchemaPropertiesToControlSchema(props.objectSchema, props.value, controlObjectSchema.value, element.scope),
           valuePointer,
           value: JsonPointer.get(props.value, valuePointer),
           errors: errorMessages.value
