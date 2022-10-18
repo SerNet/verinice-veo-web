@@ -30,7 +30,29 @@
     :items="localItems"
     :multiple="multiple"
     @click:clear="$emit('input', undefined)"
-  />
+  >
+    <template #item="{ attrs, item, on }">
+      <v-list-item
+        v-if="item.value === '_empty_array_'"
+        v-bind="attrs"
+        v-on="on"
+      >
+        <v-list-item-title>{{ item.text }}</v-list-item-title>
+      </v-list-item>
+      <v-list-item
+        v-else
+        v-bind="attrs"
+        style="max-height: 48px"
+        v-on="on"
+      >
+        <v-checkbox
+          :input-value="attrs.inputValue"
+          color="primary"
+        />
+        <v-list-item-title>{{ item.text }}</v-list-item-title>
+      </v-list-item>
+    </template>
+  </v-select>
 </template>
 
 <script lang="ts">
