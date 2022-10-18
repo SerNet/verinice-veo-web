@@ -181,7 +181,7 @@ export default defineComponent({
 
     const fetchFormQueryParameters = computed(() => ({ domainId: props.domainId, id: formSchemaId.value || '' }));
     const fetchFormQueryEnabled = computed(() => !!formSchemaId.value && formSchemaId.value !== 'custom');
-    const { data: remoteFormSchema, isLoading: loadingFormSchema } = useFetchForm(fetchFormQueryParameters, { enabled: fetchFormQueryEnabled });
+    const { data: remoteFormSchema, isFetching: loadingFormSchema } = useFetchForm(fetchFormQueryParameters, { enabled: fetchFormQueryEnabled });
 
     const formSchema = computed(() => {
       let schema = !formSchemaId.value || formSchemaId.value === 'custom' ? uploadedFormSchema.value : remoteFormSchema.value;
@@ -198,7 +198,7 @@ export default defineComponent({
 
     const fetchSchemaQueryParameters = computed(() => ({ type: objectSchemaId.value || '', domainIds: [props.domainId] }));
     const fetchSchemaQueryEnabled = computed(() => !!objectSchemaId.value && objectSchemaId.value !== 'custom');
-    const { data: remoteObjectSchema, isLoading: loadingObjectSchema } = useFetchSchema(fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
+    const { data: remoteObjectSchema, isFetching: loadingObjectSchema } = useFetchSchema(fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
 
     const objectSchema = computed(() => {
       let schema = forceOwnObjectSchema.value || objectSchemaId.value === 'custom' ? uploadedObjectSchema.value : remoteObjectSchema.value;

@@ -121,7 +121,8 @@ import { defineComponent, PropType, Ref, ref, reactive } from '@nuxtjs/compositi
 import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 
-import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
+import { cloneDeep } from 'lodash';
+import { IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
 
 interface IProps {
@@ -257,9 +258,8 @@ export default defineComponent<IProps>({
       } else {
         delete updateData.rule;
       }
-      const updateTranslation: IVeoFormSchemaCustomTranslationEvent = JSON.parse(JSON.stringify(localCustomTranslations.value));
       context.emit('edit', updateData as IVeoFormSchemaItemUpdateEvent['data']);
-      context.emit('update-custom-translation', updateTranslation);
+      context.emit('update-custom-translation', cloneDeep(localCustomTranslations.value));
     }
 
     return {
