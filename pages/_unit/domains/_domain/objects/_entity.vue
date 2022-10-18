@@ -348,7 +348,7 @@ export default defineComponent({
             }
           });
         } else {
-          displayErrorMessage(errorText, e.message, { details: cloneDeep({ object: modifiedObject.value, objectSchema: objectSchema.value, error: e.message }) });
+          displayErrorMessage(errorText, e.message, { details: cloneDeep({ object: modifiedObject.value, objectSchema: objectSchema.value, error: JSON.stringify(e) }) });
         }
       }
     }
