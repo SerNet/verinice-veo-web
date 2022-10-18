@@ -17,14 +17,15 @@
 -->
 <template>
   <VeoDialog
-    v-model="dialog"
+    v-bind="$attrs"
     large
-    :headline="$t('editor.formschema.translation')"
+    :headline="t('editor.formschema.translation')"
     fixed-footer
+    v-on="$listeners"
   >
     <template #default>
       <div style="min-height: 20vh">
-        <v-form v-model="data.valid">
+        <v-form v-model="formIsValid">
           <v-row
             no-gutters
             class="align-center mt-4"
@@ -35,17 +36,17 @@
             >
               <span
                 style="font-size: 1.2rem;"
-              >{{ $t('displayLanguageDescription') }}*:</span>
+              >{{ t('displayLanguageDescription') }}*:</span>
             </v-col>
             <v-col
               cols="12"
               :md="5"
             >
               <v-select
-                v-model="data.displayLanguage"
-                :items="supportedLanguageItems"
+                v-model="displayLanguage"
+                :items="displayLanguageItems"
                 :rules="requiredRule"
-                :label="$t('displayLanguage')"
+                :label="t('displayLanguage')"
                 required
               />
             </v-col>
@@ -60,18 +61,18 @@
             >
               <span
                 style="font-size: 1.2rem;"
-              >{{ $t('supportedLanguages') }}*:</span>
+              >{{ t('supportedLanguages') }}*:</span>
             </v-col>
             <v-col
               cols="12"
               :md="5"
             >
               <v-select
-                v-model="data.supportedLanguages"
-                :items="availableLanguageItems"
+                v-model="supportedLanguages"
+                :items="supportedLanguageItems"
                 :rules="requiredRule"
                 multiple
-                :label="$t('supportedLanguages')"
+                :label="t('supportedLanguages')"
                 required
               />
             </v-col>
@@ -79,23 +80,20 @@
 
           <v-row>
             <v-col
-              v-for="language in data.supportedLanguages"
+              v-for="language in supportedLanguages"
               :key="language"
               cols="12"
             >
               <h3 class="text-h3">
-                {{ $t(`languageName.${ language }`) }}
+                {{ languageDetails[language] }}
               </h3>
               <VeoCard>
-                <VeoCodeEditor
-                  :value="JSON.stringify(data.translations[language], undefined, 2)"
-                  @input="onCodeUpdate($event, language)"
-                />
+                <VeoCodeEditor v-model="translations[language]" />
               </VeoCard>
             </v-col>
           </v-row>
         </v-form>
-        <small>{{ $t('global.input.requiredfields') }}</small>
+        <small>{{ t('global.input.requiredfields') }}</small>
       </div>
     </template>
     <template #dialog-options>
@@ -104,150 +102,159 @@
         color="primary"
         @click="$emit('input', false)"
       >
-        {{ $t('global.button.close') }}
+        {{ t('global.button.close') }}
       </v-btn>
       <v-spacer />
       <v-btn
         text
         color="primary"
-        :disabled="!data.valid"
+        :disabled="!formIsValid"
         @click="onSave"
       >
-        {{ $t('global.button.save') }}
+        {{ t('global.button.save') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
-import Vue from 'vue';
-import { Ref } from '@nuxtjs/composition-api';
-import { cloneDeep } from 'lodash';
-import { Prop } from 'vue/types/options';
+import { computed, defineComponent, inject, PropType, reactive, ref, Ref, set, useContext, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
+import { LocaleObject } from '@nuxtjs/i18n/types';
 
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
-import { IVeoTranslationCollection } from '~/types/VeoTypes';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+import { IBaseObject } from '~/lib/utils';
 
-interface IItem {
-  value: string;
-  text: string;
-}
-
-export default Vue.extend({
-  inject: ['objectSchemaHelper'],
+export default defineComponent({
   props: {
-    value: {
-      type: Boolean,
-      required: true
-    },
     availableLanguages: {
-      type: Array as Prop<string[]>,
+      type: Array as PropType<string[]>,
       default: () => []
     },
     currentDisplayLanguage: {
       type: String,
       default: ''
-    },
-    // Doesn't actually get passed as a prop but injected by DI. However Typescript can't handle that so we define it here.
-    // The default value gets overwritte by DI
-    // See: https://github.com/vuejs/vue/issues/8969
-    objectSchemaHelper: {
-      type: Object as Prop<Ref<ObjectSchemaHelper>>,
-      default: undefined
     }
   },
-  data() {
-    return {
-      data: {
-        valid: true,
-        translations: {} as { [key: string]: IVeoTranslationCollection },
-        displayLanguage: '' as string,
-        supportedLanguages: [] as string[]
-      }
-    };
-  },
-  computed: {
-    dialog: {
-      get(): boolean {
-        return this.value;
-      },
-      set(newValue: boolean) {
-        this.$emit('input', newValue);
-      }
-    },
-    availableLanguageItems(): IItem[] {
-      return this.availableLanguages.map((language: string) => ({
-        text: this.$t(`languageName.${language}`).toString(),
+  setup(props, { emit }) {
+    const { t } = useI18n();
+    const { i18n } = useContext();
+    const { displayErrorMessage } = useVeoAlerts();
+
+    const objectSchemaHelper = inject<Ref<ObjectSchemaHelper>>('objectSchemaHelper');
+
+    // Local translations that get edited. Key is language, value is the language object. In this case a string as the editor returns a string and expects a string.
+    const translations = reactive<{ [lang: string]: string }>(
+      Object.entries(objectSchemaHelper?.value.getAllTranslations() || {}).reduce((prevValue, [language, translations]) => {
+        prevValue[language] = JSON.stringify(translations, undefined, 2);
+        return prevValue;
+      }, {} as IBaseObject)
+    );
+
+    // Form stuff
+    const formIsValid = ref(true);
+    const displayLanguage = ref<string>(props.currentDisplayLanguage);
+    const supportedLanguages = ref<string[]>(objectSchemaHelper?.value.getLanguages() || []);
+
+    const requiredRule = computed(() => [(v: any) => (Array.isArray(v) ? v.length > 0 : !!v)]);
+
+    const languageDetails = computed(() =>
+      (i18n.locales as LocaleObject[]).reduce((previousValue, currentValue) => {
+        previousValue[currentValue.code] = currentValue.name;
+        return previousValue;
+      }, {} as IBaseObject)
+    );
+
+    const supportedLanguageItems = computed(() =>
+      props.availableLanguages.map((language: string) => ({
+        text: languageDetails.value[language] || language,
         value: language
-      }));
-    },
-    supportedLanguageItems(): IItem[] {
-      return this.data.supportedLanguages.map((language: string) => ({
-        text: this.$t(`languageName.${language}`).toString(),
+      }))
+    );
+
+    const displayLanguageItems = computed(() =>
+      supportedLanguages.value.map((language: string) => ({
+        text: languageDetails.value[language] || language,
         value: language
-      }));
-    },
-    requiredRule() {
-      return [(v: any) => (Array.isArray(v) ? v.length > 0 : !!v)];
-    }
-  },
-  watch: {
-    'data.supportedLanguages'(newValue: string[]) {
-      // Make sure all supported languages contain an entry in the translations object.
-      for (const language of newValue) {
-        if (!this.data.translations[language]) {
-          const savedTranslations = this.objectSchemaHelper.value.getTranslations(language);
-          if (savedTranslations) {
-            this.data.translations[language] = cloneDeep(savedTranslations);
+      }))
+    );
+
+    watch(
+      () => supportedLanguages.value,
+      (newValue) => {
+        // Make sure all supported languages contain an entry in the translations object.
+        newValue.forEach((language) => {
+          if (!translations[language]) {
+            const savedTranslations = objectSchemaHelper?.value.getTranslations(language);
+            if (savedTranslations) {
+              set(translations, language, JSON.stringify(savedTranslations, undefined, 2));
+            } else {
+              set(translations, language, {});
+            }
+          }
+        });
+
+        // Remove all no longer supported languages from the translations object.
+        Object.keys(translations).forEach((language) => {
+          if (!newValue.includes(language)) {
+            delete translations[language];
+          }
+        });
+
+        // If the display language is removed, fallback to another eligible language
+        if (!newValue.includes(displayLanguage.value)) {
+          if (newValue.length > 0) {
+            displayLanguage.value = newValue[0];
           } else {
-            this.data.translations[language] = {};
+            displayLanguage.value = '';
           }
         }
       }
+    );
 
-      // Remove all no longer supported languages from the translations object.
-      for (const language of Object.keys(this.data.translations)) {
-        if (!newValue.includes(language)) {
-          delete this.data.translations[language];
+    watch(
+      () => displayLanguage.value,
+      (newValue) => {
+        emit('update:current-display-language', newValue);
+      }
+    );
+
+    watch(
+      () => props.currentDisplayLanguage,
+      (newValue, oldValue) => {
+        if (newValue !== oldValue) {
+          displayLanguage.value = newValue;
         }
       }
+    );
 
-      // If the current display language has been removed, set the first one as a fallback.
-      if (!newValue.includes(this.data.displayLanguage)) {
-        if (newValue.length > 0) {
-          this.data.displayLanguage = newValue[0];
-        } else {
-          this.data.displayLanguage = '';
-        }
-      }
-    },
-    'data.displayLanguage'(newValue: string) {
-      this.$emit('display-language-changed', newValue);
-    },
-    currentDisplayLanguage(newValue: string, oldValue: string) {
-      if (newValue !== oldValue) {
-        this.data.displayLanguage = newValue;
-      }
-    }
-  },
-  mounted() {
-    this.data.supportedLanguages = this.objectSchemaHelper.value.getLanguages() || [];
-    this.data.displayLanguage = this.currentDisplayLanguage;
-    this.data.translations = cloneDeep(this.objectSchemaHelper.value.getAllTranslations() || {});
-  },
-  methods: {
-    onSave() {
-      for (const [language, translations] of Object.entries(this.data.translations)) {
-        this.objectSchemaHelper.value.updateTranslations(language, translations);
-      }
-
-      this.$emit('input', false);
-      this.$emit('schema-updated');
-    },
-    onCodeUpdate(payload: any, language: string) {
+    const onSave = () => {
       try {
-        this.data.translations[language] = JSON.parse(payload);
-      } catch (e) {}
-    }
+        Object.entries(translations).forEach(([language, translations]) => {
+          const parsedTranslation = JSON.parse(translations);
+          objectSchemaHelper?.value.updateTranslations(language, parsedTranslation);
+        });
+
+        emit('input', false);
+        emit('schema-updated');
+      } catch (e: any) {
+        displayErrorMessage(t('updateTranslationsError').toString(), e.message);
+      }
+    };
+
+    return {
+      displayLanguage,
+      displayLanguageItems,
+      formIsValid,
+      languageDetails,
+      onSave,
+      requiredRule,
+      supportedLanguages,
+      supportedLanguageItems,
+      translations,
+
+      t
+    };
   }
 });
 </script>
@@ -255,35 +262,16 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "languageName": {
-      "de": "German",
-      "en": "English",
-      "it": "Italian",
-      "cs": "Czech"
-    },
-    "languageSelectLabel": "Language",
     "displayLanguage": "Languages",
     "displayLanguageDescription": "Display language in object schema editor",
-    "supportedLanguages": "Supported Languages"
+    "supportedLanguages": "Supported Languages",
+    "updateTranslationsError": "Couldn't update translations"
   },
   "de": {
-    "languageName": {
-      "de": "Deutsch",
-      "en": "Englisch",
-      "it": "Italienisch",
-      "cs": "Tschechisch"
-    },
     "displayLanguage": "Sprache",
     "displayLanguageDescription": "Anzeigesprache im Objektschema Editor",
-    "supportedLanguages": "Sprachen"
+    "supportedLanguages": "Sprachen",
+    "updateTranslationsError": "Übersetzungen konnten nicht aktualisiert werden"
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
-::v-deep .veo-editor-save-button {
-  display: none;
-}
-</style>

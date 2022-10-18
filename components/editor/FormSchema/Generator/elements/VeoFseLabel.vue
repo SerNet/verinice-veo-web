@@ -91,7 +91,7 @@ import Vue from 'vue';
 import { PropOptions } from 'vue/types/options';
 import { getRuleEffectIcons } from '~/lib/FormSchemaHelper';
 
-import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
+import { IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 
 export default Vue.extend({
   name: 'FseLabel',
@@ -156,7 +156,7 @@ export default Vue.extend({
       this.$emit('delete', { formSchemaPointer: this.formSchemaPointer } as IVeoFormSchemaItemDeleteEvent);
       this.deleteDialog = false;
     },
-    onUpdateCustomTranslation(event: IVeoFormSchemaCustomTranslationEvent) {
+    onUpdateCustomTranslation(event: IVeoFormSchemaTranslationCollection) {
       this.$emit('update-custom-translation', event);
     },
     setLabel() {

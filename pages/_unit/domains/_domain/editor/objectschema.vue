@@ -285,9 +285,8 @@
       <VeoOseTranslationDialog
         v-if="!$fetchState.pending && translationDialogVisible"
         v-model="translationDialogVisible"
-        :current-display-language="displayLanguage"
+        :current-display-language.sync="displayLanguage"
         :available-languages="availableLanguages"
-        @display-language-changed="onDisplayLanguageUpdate"
         @schema-updated="updateCode"
       />
     </template>

@@ -298,11 +298,10 @@
       <VeoFseTranslationDialog
         v-if="!$fetchState.pending && translationDialogVisible && formSchema && formSchema.translation"
         v-model="translationDialogVisible"
-        :translation="formSchema.translation"
-        :language="language"
-        :languages="availableLanguages"
+        :translations="formSchema.translation"
+        :current-display-language.sync="language"
+        :available-languages="availableLanguages"
         :name="formSchema.name"
-        @update-language="setFormLanguage"
         @update-translation="setFormTranslation"
         @update-name="setFormName"
       />
@@ -328,6 +327,8 @@ import vjp from 'vue-json-pointer';
 import { computed, defineComponent, provide, Ref, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
+import { LocaleObject } from '@nuxtjs/i18n/types';
+
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
 import {
   IVeoTranslations,
@@ -347,8 +348,8 @@ import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 
 export default defineComponent({
   setup() {
-    const { t } = useI18n();
-    const { $api, app, $user } = useContext();
+    const { locale, t } = useI18n();
+    const { $api, $user, i18n } = useContext();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
@@ -389,10 +390,10 @@ export default defineComponent({
     provide('mainFormSchema', formSchema);
     const translation: Ref<IVeoTranslations | undefined> = ref(undefined);
     const objectData = ref({});
-    const language = ref(app.i18n.locale);
+    const language = ref(locale.value);
 
     watch(
-      () => app.i18n.locale,
+      () => locale.value,
       (newLanguageVal) => {
         language.value = newLanguageVal;
       }
@@ -405,10 +406,10 @@ export default defineComponent({
     function setFormSchema(schema: IVeoFormSchema) {
       formSchema.value = schema;
       // If a translation for current app language does not exist, initialise it
-      if (formSchema.value && !formSchema.value.translation?.[app.i18n.locale]) {
+      if (formSchema.value && !formSchema.value.translation?.[locale.value]) {
         setFormTranslation({
           ...formSchema.value.translation,
-          ...{ [app.i18n.locale]: {} }
+          ...{ [locale.value]: {} }
         });
       }
     }
@@ -525,16 +526,11 @@ export default defineComponent({
      * Translations related stuff
      */
     const translationDialogVisible: Ref<boolean> = ref(false);
-    const availableLanguages: Ref<string[]> = ref([]);
+    const availableLanguages = computed(() => (i18n.locales as LocaleObject[]).map((locale) => locale.code));
 
     function onClickTranslationBtn() {
       translationDialogVisible.value = true;
     }
-
-    useFetch(async () => {
-      // TODO: Backend should create an API endpoint to get available languages dynamically
-      availableLanguages.value = Object.keys((await $api.translation.fetch([]))?.lang);
-    });
 
     function setFormTranslation(event: IVeoFormSchemaTranslationCollection) {
       if (formSchema.value) {
@@ -546,10 +542,6 @@ export default defineComponent({
       if (formSchema.value) {
         vjp.set(formSchema.value, '/name', event);
       }
-    }
-
-    function setFormLanguage(newLanguageVal: string) {
-      language.value = newLanguageVal;
     }
 
     function onUpdateCustomTranslation(event: IVeoFormSchemaTranslationCollection) {
@@ -645,7 +637,6 @@ export default defineComponent({
       availableLanguages,
       setFormTranslation,
       setFormName,
-      setFormLanguage,
       onUpdateCustomTranslation,
       onFixRequest,
       VeoPageHeaderAlignment,
