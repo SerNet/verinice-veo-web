@@ -462,7 +462,7 @@ export default defineComponent<IProps>({
       } else {
         delete updateData.rule;
       }
-      context.emit('edit', JSON.parse(JSON.stringify(updateData)));
+      context.emit('edit', cloneDeep(updateData));
       context.emit('update-custom-translation', cloneDeep(localCustomTranslation.value));
     }
 

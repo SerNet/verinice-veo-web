@@ -80,7 +80,7 @@
 
           <v-row>
             <v-col
-              v-for="(translationsAsString, language) in localTranslations"
+              v-for="(_, language) in localTranslations"
               :key="language"
               cols="12"
             >
@@ -165,7 +165,7 @@ export default defineComponent({
     const { i18n } = useContext();
     const { displayErrorMessage } = useVeoAlerts();
 
-    const emptyObjectString = '{\n  \n}';
+    const EMPTY_OBJECT_STRING = '{\n  \n}';
     const localTranslations = reactive<{ [lang: string]: string }>(
       Object.entries(props.translations).reduce((prevValue, [language, translations]) => {
         prevValue[language] = JSON.stringify(translations, undefined, 2);
@@ -203,7 +203,7 @@ export default defineComponent({
 
         newValue.forEach((languageCode) => {
           if (!localTranslations[languageCode]) {
-            localTranslations[languageCode] = emptyObjectString;
+            localTranslations[languageCode] = EMPTY_OBJECT_STRING;
           }
         });
         // If the display language is removed, fallback to another eligible language
@@ -237,7 +237,7 @@ export default defineComponent({
           displayLanguage.value = newValue;
         }
       }
-    ); // ToDo: save Methode, testen
+    );
 
     watch(
       () => props.name,
