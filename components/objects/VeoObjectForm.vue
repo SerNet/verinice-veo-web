@@ -34,6 +34,7 @@
               <VeoForm
                 v-if="!formLoading && objectSchema && !loading && !$fetchState.pending"
                 v-model="objectData"
+                :disabled="disabled"
                 :object-schema="objectSchema"
                 :form-schema="currentFormSchema && currentFormSchema.content"
                 :meta-data="objectMetaData"

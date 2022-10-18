@@ -82,7 +82,7 @@
           >
             <template
               v-if="formDataIsRevision"
-              #prepend-form-inner
+              #prepend-form
             >
               <VeoAlert
                 v-cy-name="'old-version-alert'"
