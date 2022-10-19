@@ -200,12 +200,12 @@ export default defineComponent({
     provide('objectData', _value);
 
     // Form generation
-    const defaultProps: IVeoFormElementDefaultProps = {
+    const defaultProps = computed<IVeoFormElementDefaultProps>(() => ({
       metaData: props.metaData,
       disabled: props.disabled,
       objectCreationDisabled: props.objectCreationDisabled,
       debug: props.debug
-    };
+    }));
 
     const createComponent = (element: any, formSchemaPointer: string): any => {
       const rule = evaluateRule(props.value, element.rule);
@@ -242,7 +242,7 @@ export default defineComponent({
         VeoGroup,
         {
           props: {
-            ...defaultProps,
+            ...defaultProps.value,
             options: element.options,
             formSchemaPointer
           }
@@ -255,7 +255,7 @@ export default defineComponent({
       return h(VeoLabel, {
         props: {
           key: `${formSchemaPointer}_${keyModifier.value}`,
-          ...defaultProps,
+          ...defaultProps.value,
           options: element.options,
           formSchemaPointer,
           text: element.text
@@ -266,7 +266,7 @@ export default defineComponent({
     const createWidget = (element: IVeoFormWidgetFormSchema, formSchemaPointer: string) => {
       return h(Widget, {
         props: {
-          ...defaultProps,
+          ...defaultProps.value,
           options: element.options,
           formSchemaPointer,
           name: element.name
@@ -307,7 +307,7 @@ export default defineComponent({
       return h(Control, {
         props: {
           elementKey: `${element.scope}_${keyModifier.value}`,
-          ...defaultProps,
+          ...defaultProps.value,
           options: { ...element.options, ...localAdditionalContext.value[element.scope]?.formSchema },
           formSchemaPointer,
           objectSchemaPointer: element.scope,
