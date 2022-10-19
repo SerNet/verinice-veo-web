@@ -233,6 +233,12 @@ export default function (api: Client) {
         delete entity.members;
       }
 
+      // Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
+      // @ts-ignore
+      delete entity.createdAt;
+      // @ts-ignore
+      delete entity.updatedAt;
+
       return api
         .req('/api/:objectType/:id', {
           method: 'PUT',
