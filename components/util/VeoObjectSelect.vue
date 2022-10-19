@@ -46,7 +46,7 @@
     >
       <VeoObjectIcon
         :object-type="item.type"
-        :is-composite="item.parts && item.parts.length"
+        :is-composite="!!(item.parts && item.parts.length)"
         left
       />
       {{ item.displayName }}

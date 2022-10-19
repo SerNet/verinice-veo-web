@@ -142,18 +142,20 @@
               </v-tooltip>
               <v-tooltip left>
                 <template #activator="{ on }">
-                  <v-btn
-                    style="border-radius: 99px"
-                    data-component-name="object-form-history-tab"
-                    icon
-                    :value="SIDE_CONTAINERS.HISTORY"
-                    v-on="on"
-                  >
-                    <v-icon
-                      v-cy-name="'history-tab'"
-                      v-text="mdiHistory"
-                    />
-                  </v-btn>
+                  <div v-on="on">
+                    <v-btn
+                      style="border-radius: 99px"
+                      data-component-name="object-form-history-tab"
+                      :disabled="disableHistory"
+                      icon
+                      :value="SIDE_CONTAINERS.HISTORY"
+                    >
+                      <v-icon
+                        v-cy-name="'history-tab'"
+                        v-text="mdiHistory"
+                      />
+                    </v-btn>
+                  </div>
                 </template>
                 <template #default>
                   {{ t('history') }}
@@ -312,17 +314,35 @@ export default defineComponent({
     const { data: formSchema } = useFetchForm(formQueryParameters, { enabled: formQueryEnabled });
     const currentFormSchema = computed(() => (selectedDisplayOption.value === 'objectschema' ? undefined : formSchema.value));
 
+    function getFormschemaIdBySubType(subType: string) {
+      const formSchemaId = (formSchemas.value || []).find((formschema) => formschema.subType === subType)?.id;
+      if (formSchemaId) {
+        return formSchemaId;
+      }
+    }
+
+    const setDisplayOptionBasedOnSubtype = () => {
+      const formSchemaId = getFormschemaIdBySubType(props.preselectedSubType);
+      if (formSchemaId) {
+        selectedDisplayOption.value = formSchemaId;
+      } else {
+        selectedDisplayOption.value = 'objectschema';
+      }
+    };
+
     watch(
       () => formSchemas.value,
       (newValue) => {
-        if (newValue?.length && props.preselectedSubType) {
-          const formSchemaId = getFormschemaIdBySubType(props.preselectedSubType);
-          if (formSchemaId) {
-            selectedDisplayOption.value = formSchemaId;
-          }
+        if (newValue && props.preselectedSubType) {
+          setDisplayOptionBasedOnSubtype();
         }
       },
-      { deep: true }
+      { deep: true, immediate: true }
+    );
+
+    watch(
+      () => props.preselectedSubType,
+      () => setDisplayOptionBasedOnSubtype()
     );
 
     watch(
@@ -344,7 +364,6 @@ export default defineComponent({
     );
 
     const {
-      fetch,
       fetchState: { pending: formLoading }
     } = useFetch(async () => {
       fetchDecisions();
@@ -367,30 +386,9 @@ export default defineComponent({
       return availableFormSchemas;
     });
 
-    watch(selectedDisplayOption, () => fetch());
-
     const formSchemaHasGroups = computed(() => {
       return currentFormSchema.value?.content.elements?.some((element: any) => (element.type === 'Layout' || element.type === 'Group') && element.options.label);
     });
-
-    function getFormschemaIdBySubType(subType: string) {
-      const formSchemaId = (formSchemas.value || []).find((formschema) => formschema.subType === subType)?.id;
-      if (formSchemaId) {
-        return formSchemaId;
-      }
-    }
-
-    watch(
-      () => props.preselectedSubType,
-      (newValue) => {
-        const formSchemaId = getFormschemaIdBySubType(newValue);
-        if (formSchemaId) {
-          selectedDisplayOption.value = formSchemaId;
-        } else {
-          selectedDisplayOption.value = 'objectschema';
-        }
-      }
-    );
 
     // Form stuff
     const objectData = computed({
