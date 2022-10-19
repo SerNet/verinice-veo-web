@@ -163,7 +163,7 @@ export default defineComponent({
       subType: props.subType,
       displayName: searchQuery.value ?? undefined
     }));
-    const { data: fetchObjectsData, isLoading: isLoadingObjects } = useFetchObjects(fetchObjectsQueryParameters, {
+    const { data: fetchObjectsData, isFetching: isLoadingObjects } = useFetchObjects(fetchObjectsQueryParameters, {
       placeholderData: { items: [], pageCount: 0, page: 1 },
       enabled: searchQueryNotStale
     });
@@ -174,7 +174,7 @@ export default defineComponent({
       objectType: props.objectType,
       id: internalValue.value || '' // to avoid typecasting in the fetch hook. Shouldn't get executed if value is not set. (See fetchObjectQueryEnabled)
     }));
-    const { data: fetchObjectData, isLoading: isLoadingObject, isError } = useFetchObject(fetchObjectQueryParameters, { enabled: computed(() => !!unref(internalValue)) });
+    const { data: fetchObjectData, isFetching: isLoadingObject, isError } = useFetchObject(fetchObjectQueryParameters, { enabled: computed(() => !!unref(internalValue)) });
 
     watch(
       () => isError.value,
