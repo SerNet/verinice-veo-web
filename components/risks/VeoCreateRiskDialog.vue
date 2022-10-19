@@ -67,7 +67,7 @@
           checkbox-color="primary"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="objects"
-          :loading="$fetchState.pending || objectsQueryIsLoading"
+          :loading="objectsQueryIsLoading"
           @page-change="onPageChange"
         />
       </VeoCard>
@@ -210,7 +210,7 @@ export default defineComponent({
       ...filter.value
     }));
 
-    const { data: objects, isLoading: objectsQueryIsLoading, refetch } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
+    const { data: objects, isFetching: objectsQueryIsLoading, refetch } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
 
     // Create risk stuff
     const creatingRisks = ref(false);
