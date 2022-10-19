@@ -331,13 +331,13 @@ export default defineComponent({
     };
 
     watch(
-      () => formSchemas.value?.length,
+      () => formSchemas.value,
       (newValue) => {
         if (newValue && props.preselectedSubType) {
           setDisplayOptionBasedOnSubtype();
         }
       },
-      { immediate: true }
+      { deep: true, immediate: true }
     );
 
     watch(
