@@ -192,7 +192,6 @@ export default defineComponent({
 
     watch(() => props.objectSchema, forceRerender, { deep: true });
     watch(() => props.formSchema, forceRerender, { deep: true });
-    watch(() => props.additionalContext, forceRerender, { deep: true });
     watch(() => props.translations, forceRerender, { deep: true });
 
     // global available data
