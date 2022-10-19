@@ -32,6 +32,7 @@
         {{ t('veoClaim') }}
       </h2>
       <i18n
+        v-if="formLinks.length"
         path="createEntitiesCTA"
         tag="p"
       >
