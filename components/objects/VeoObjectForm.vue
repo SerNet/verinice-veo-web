@@ -142,18 +142,20 @@
               </v-tooltip>
               <v-tooltip left>
                 <template #activator="{ on }">
-                  <v-btn
-                    style="border-radius: 99px"
-                    data-component-name="object-form-history-tab"
-                    icon
-                    :value="SIDE_CONTAINERS.HISTORY"
-                    v-on="on"
-                  >
-                    <v-icon
-                      v-cy-name="'history-tab'"
-                      v-text="mdiHistory"
-                    />
-                  </v-btn>
+                  <div v-on="on">
+                    <v-btn
+                      style="border-radius: 99px"
+                      data-component-name="object-form-history-tab"
+                      :disabled="disableHistory"
+                      icon
+                      :value="SIDE_CONTAINERS.HISTORY"
+                    >
+                      <v-icon
+                        v-cy-name="'history-tab'"
+                        v-text="mdiHistory"
+                      />
+                    </v-btn>
+                  </div>
                 </template>
                 <template #default>
                   {{ t('history') }}
