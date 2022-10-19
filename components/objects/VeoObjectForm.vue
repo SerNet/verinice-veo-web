@@ -320,7 +320,26 @@ export default defineComponent({
             selectedDisplayOption.value = formSchemaId;
           }
         }
-      }
+      },
+      { deep: true }
+    );
+
+    watch(
+      () => currentFormSchema.value,
+      (newValue) => {
+        if (newValue && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
+          const newDomainObject = {
+            domains: {
+              [props.domainId]: {
+                subType: newValue.subType,
+                status: 'NEW'
+              }
+            }
+          };
+          objectData.value = merge(objectData.value, newDomainObject);
+        }
+      },
+      { deep: true }
     );
 
     const {
@@ -332,21 +351,6 @@ export default defineComponent({
       // Only fetch once, as translations changing while the user uses this component is highly unlikely
       if (!translations.value) {
         translations.value = (await $api.translation.fetch(['de', 'en'])).lang;
-      }
-
-      const subType = (formSchemas.value || []).find((formschema) => formschema.id === selectedDisplayOption.value)?.subType;
-
-      // Set sub type and status if subType was not set and the user views the object with a subtype
-      if (subType && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
-        const newDomainObject = {
-          domains: {
-            [props.domainId]: {
-              subType,
-              status: 'NEW'
-            }
-          }
-        };
-        objectData.value = merge(objectData.value, newDomainObject);
       }
     });
 
