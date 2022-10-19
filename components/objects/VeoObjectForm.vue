@@ -311,6 +311,18 @@ export default defineComponent({
     const { data: formSchema } = useFetchForm(formQueryParameters, { enabled: formQueryEnabled });
     const currentFormSchema = computed(() => (selectedDisplayOption.value === 'objectschema' ? undefined : formSchema.value));
 
+    watch(
+      () => formSchemas.value,
+      (newValue) => {
+        if (newValue?.length && props.preselectedSubType) {
+          const formSchemaId = getFormschemaIdBySubType(props.preselectedSubType);
+          if (formSchemaId) {
+            selectedDisplayOption.value = formSchemaId;
+          }
+        }
+      }
+    );
+
     const {
       fetch,
       fetchState: { pending: formLoading }
@@ -320,14 +332,6 @@ export default defineComponent({
       // Only fetch once, as translations changing while the user uses this component is highly unlikely
       if (!translations.value) {
         translations.value = (await $api.translation.fetch(['de', 'en'])).lang;
-      }
-
-      if (props.preselectedSubType) {
-        const formSchemaId = getFormschemaIdBySubType(props.preselectedSubType);
-
-        if (formSchemaId) {
-          selectedDisplayOption.value = formSchemaId;
-        }
       }
 
       const subType = (formSchemas.value || []).find((formschema) => formschema.id === selectedDisplayOption.value)?.subType;
