@@ -39,7 +39,7 @@
           :clearable="!options.required"
           hide-details="auto"
           :prepend-icon="mdiCalendar"
-          hint="DD.MM.YYYY"
+          :hint="t('hint', [DATE_HINT])"
           v-on="on"
           @click:clear="$emit('input', undefined)"
         />
@@ -69,6 +69,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
+import { useFormatters } from '~/composables/utils';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-date-input',
@@ -87,11 +88,14 @@ export default defineComponent({
   name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
   setup(props, { emit }) {
-    const { locale } = useI18n();
+    const { t } = useI18n();
+    const { formatDate } = useFormatters();
+
+    const DATE_HINT = ref(formatDate(new Date()).value);
 
     const formattedDate = computed({
       get() {
-        return props.value ? new Date(props.value).toLocaleDateString(locale.value, { day: '2-digit', month: '2-digit', year: 'numeric' }) : undefined;
+        return props.value ? formatDate(new Date(props.value)).value : undefined;
       },
       set(newValue: string | undefined) {
         emit('input', newValue ? formatISO(new Date(newValue), { representation: 'date' }) : undefined);
@@ -111,8 +115,21 @@ export default defineComponent({
       onDateInput,
 
       getControlErrorMessages,
-      mdiCalendar
+      mdiCalendar,
+      t,
+      DATE_HINT
     };
   }
 });
 </script>
+
+<i18n>
+{
+  "en": {
+    "hint": "DD.MM.YYYY e.g. {0}"
+  },
+  "de": {
+    "hint": "DD.MM.YYYY z.B. {0}"
+  }
+}
+</i18n>
