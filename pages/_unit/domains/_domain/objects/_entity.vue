@@ -163,7 +163,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onUnmounted, ref, useContext, useFetch, useRoute, Ref, useAsync, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref, useAsync, WritableComputedRef, useRouter, watch, onUnmounted } from '@nuxtjs/composition-api';
 import { cloneDeep, isEqual, omit, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
@@ -180,16 +180,13 @@ export default defineComponent({
   name: 'VeoObjectsIndexPage',
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
-    if (this.entityModifiedDialogVisible) {
+    if (this.entityModifiedDialogVisible || !this.isFormDirty) {
       next();
-    } else if (this.isFormDirty) {
+    } else {
       // If the form was modified and the dialog is closed, show it and abort navigation
       this.onContinueNavigation = () => this.$router.push({ name: to.name || undefined, params: to.params, query: to.query });
       this.entityModifiedDialogVisible = true;
       next(false);
-    } else {
-      // The form wasn't modified, proceed as if this hook doesn't exist
-      next();
     }
   },
   setup() {
@@ -197,7 +194,7 @@ export default defineComponent({
     const { $api, $config } = useContext();
     const route = useRoute();
     const router = useRouter();
-    const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+    const { displaySuccessMessage, displayErrorMessage, expireAlert } = useVeoAlerts();
     const { linkObject } = useVeoObjectUtilities();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
 
@@ -282,6 +279,7 @@ export default defineComponent({
     onUnmounted(() => {
       removeCustomBreadcrumb(objectTypeKey);
       removeCustomBreadcrumb(subTypeKey);
+      expireOptimisticLockingAlert();
     });
 
     const notFoundError = computed(() => (fetchState.error as any)?.code === 404);
@@ -328,7 +326,16 @@ export default defineComponent({
       loadObject();
     }
 
+    const optimisticLockingAlertKey = ref<undefined | number>(undefined);
+    const expireOptimisticLockingAlert = () => {
+      if (optimisticLockingAlertKey.value) {
+        expireAlert(optimisticLockingAlertKey.value);
+        optimisticLockingAlertKey.value = undefined;
+      }
+    };
+
     async function updateObject(successText: string, errorText: string) {
+      expireOptimisticLockingAlert();
       try {
         if (modifiedObject.value && object.value) {
           // @ts-ignore ETag is not defined on the type, however it is set by the api plugin
@@ -340,7 +347,7 @@ export default defineComponent({
         }
       } catch (e: any) {
         if (e.code === 412) {
-          displayErrorMessage(errorText, t('outdatedObject').toString(), {
+          optimisticLockingAlertKey.value = displayErrorMessage(errorText, t('outdatedObject').toString(), {
             objectModified: true,
             buttonText: t('global.button.no').toString(),
             eventCallbacks: {
