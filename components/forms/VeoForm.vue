@@ -296,7 +296,7 @@ export default defineComponent({
         ...(JsonPointer.get(localObjectSchema.value, element.scope) as JSONSchema7),
         ...(localAdditionalContext.value[element.scope]?.objectSchema || {})
       }));
-      const valuePointer = removePropertiesKeywordFromPath(element.scope);
+      const valuePointer = computed(() => removePropertiesKeywordFromPath(element.scope));
       return h(Control, {
         props: {
           elementKey: element.scope,
@@ -305,8 +305,8 @@ export default defineComponent({
           formSchemaPointer,
           objectSchemaPointer: element.scope,
           objectSchema: addConditionalSchemaPropertiesToControlSchema(localObjectSchema.value, _value.value, controlObjectSchema.value, element.scope),
-          valuePointer,
-          value: JsonPointer.get(_value.value, valuePointer),
+          valuePointer: valuePointer.value,
+          value: JsonPointer.get(_value.value, valuePointer.value),
           errors: errorMessages.value
         },
         on: {
