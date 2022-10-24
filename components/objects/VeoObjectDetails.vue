@@ -26,11 +26,11 @@
                 <v-col data-component-name="object-details-date-time">
                   <p class="text-no-wrap mb-0">
                     <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
-                    {{ object && formatDateTime(object.updatedAt) || '-' }} {{ t('by') }} {{ object && object.updatedBy || '-' }}
+                    {{ updatedAtFormatted || '-' }} {{ t('by') }} {{ object && object.updatedBy || '-' }}
                   </p>
                   <p class="text-no-wrap mb-0">
                     <strong>{{ upperFirst(t('createdAt').toString()) }}:</strong>
-                    {{ object && formatDateTime(object.createdAt) || '-' }} {{ t('by') }} {{ object && object.createdBy || '-' }}
+                    {{ createdAtFormatted || '-' }} {{ t('by') }} {{ object && object.createdBy || '-' }}
                   </p>
                 </v-col>
                 <v-col
@@ -108,7 +108,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
 import { IVeoEntity } from '~/types/VeoTypes';
-import { formatDate, formatTime } from '~/lib/utils';
+import { useFormatters } from '~/composables/utils';
 
 export default defineComponent({
   name: 'VeoObjectDetails',
@@ -136,6 +136,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { t } = useI18n();
+    const { formatDateTime } = useFormatters();
 
     const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean }[]>(() => {
       return [
@@ -187,18 +188,19 @@ export default defineComponent({
       }
     });
 
-    // format date time to show updated at & created at
-    const formatDateTime = (date: string) => formatDate(new Date(date)) + ' ' + formatTime(new Date(date));
+    const createdAtFormatted = computed(() => (props.object ? formatDateTime(new Date(props.object.createdAt)).value : undefined));
+    const updatedAtFormatted = computed(() => (props.object ? formatDateTime(new Date(props.object.updatedAt)).value : undefined));
 
     const showCreateDPIAMenu = computed(() => props.object?.type === 'process' && subType.value === 'PRO_DataProcessing');
 
     return {
+      createdAtFormatted,
       internalActiveTab,
       showCreateDPIAMenu,
       subType,
       tabs,
+      updatedAtFormatted,
 
-      formatDateTime,
       upperFirst,
       t
     };

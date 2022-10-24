@@ -39,7 +39,7 @@ import { cloneDeep } from 'lodash';
 
 import VeoObjectIcon from '~/components/objects/VeoObjectIcon.vue';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
-import { useThrottleNextTick } from '~/composables/utils';
+import { useFormatters, useThrottleNextTick } from '~/composables/utils';
 import { separateUUIDParam } from '~/lib/utils';
 
 export type ObjectTableItems = IVeoPaginatedResponse<IVeoEntity[]> | Array<IVeoEntity>;
@@ -116,10 +116,11 @@ export default defineComponent({
     click: (_: any) => {}
   },
   setup(props, { emit, slots, attrs, listeners }) {
-    const { d, t } = useI18n();
+    const { t } = useI18n();
     const route = useRoute();
     const { $user, $api, i18n } = useContext();
     const vm = getCurrentInstance();
+    const { formatDateTime } = useFormatters();
 
     const translations = useAsync(() => $api.translation.fetch(i18n.locales.map((locale: any) => locale.code)), 'translations');
 
@@ -129,7 +130,7 @@ export default defineComponent({
      */
     const formatDate: ObjectTableFormatter = (v) => {
       try {
-        return d(new Date(v), 'long').replace(/,/g, '');
+        return formatDateTime(new Date(v)).value;
       } catch (e) {
         return '';
       }

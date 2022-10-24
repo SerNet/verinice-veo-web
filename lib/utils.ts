@@ -53,18 +53,6 @@ export function separateUUIDParam(param: string | undefined): IUUIDParam {
   };
 }
 
-export function formatDate(date: Date) {
-  return date.toLocaleDateString('de-DE', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
-}
-
-export function formatTime(date: Date) {
-  return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-}
-
 export function getEntityDetailsFromLink(link: IVeoLink): { type: string; id: string; name: string } {
   const destructedLink = link.targetUri.split('/');
 
