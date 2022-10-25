@@ -24,7 +24,7 @@
       v-model="menu"
       :close-on-content-click="false"
       transition="scale-transition"
-      offset-y
+      top
       max-width="350px"
       min-width="350px"
     >
@@ -40,12 +40,13 @@
           hide-details="auto"
           :prepend-icon="mdiCalendar"
           :hint="t('hint', [DATE_HINT])"
+          readonly
           v-on="on"
           @click:clear="$emit('input', undefined)"
         />
       </template>
       <template #default>
-        <v-sheet color="white">
+        <v-card>
           <VeoTabs
             v-model="activeTab"
             grow
@@ -81,14 +82,23 @@
               </v-tab-item>
             </template>
           </VeoTabs>
-        </v-sheet>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              text
+              @click="menu = false"
+            >
+              {{ t('global.button.close') }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
       </template>
     </v-menu>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, watch } from '@nuxtjs/composition-api';
 import { mdiCalendar, mdiClockOutline } from '@mdi/js';
 import { formatISO } from 'date-fns';
 import { useI18n } from 'nuxt-i18n-composable';
@@ -96,6 +106,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 import { useFormatters } from '~/composables/utils';
+import { dateIsValid } from '~/lib/utils';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-date-time-input',
@@ -123,31 +134,93 @@ export default defineComponent({
     const activeTab = ref(0);
     const menu = ref(false);
 
-    const formattedDateTime = computed({
-      get() {
-        return props.value ? formatDateTime(new Date(props.value)).value : undefined;
-      },
-      set(newValue: string | undefined) {
-        emit('input', newValue ? formatISO(new Date(newValue)) : undefined);
+    watch(
+      () => menu.value,
+      (newValue, oldValue) => {
+        if (newValue && !oldValue) {
+          activeTab.value = 0;
+        }
       }
+    );
+
+    const parseDateOrReturnUndefined = (date: any) => {
+      try {
+        const _date = new Date(date);
+        if (dateIsValid(_date)) {
+          return _date;
+        }
+        return undefined;
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.warn(e);
+        return undefined;
+      }
+    };
+
+    const internalDateObject = computed(() => {
+      if (props.value) {
+        return parseDateOrReturnUndefined(props.value);
+      }
+      return undefined;
+    });
+
+    const formattedDateTime = computed(() => {
+      if (internalDateObject.value) {
+        return formatDateTime(internalDateObject.value).value;
+      }
+      return props.value;
     });
 
     // Input related stuff
-    const timezoneOffset = formatISO(new Date()).split('+')[1];
-
-    const date = computed(() => formatISO(new Date(props.value), { representation: 'date' }));
+    const date = computed(() => {
+      if (internalDateObject.value) {
+        return formatISO(internalDateObject.value, { representation: 'date' });
+      }
+      return undefined;
+    });
+    const time = computed(() => {
+      if (internalDateObject.value) {
+        return formatISO(internalDateObject.value, { representation: 'time' }).split('+')[0];
+      }
+      return undefined;
+    });
 
     const onDateInput = (newValue: string) => {
-      formattedDateTime.value = `${newValue}T${time.value}+${timezoneOffset}`;
+      let dateObject;
+      if (internalDateObject.value) {
+        dateObject = new Date(internalDateObject.value);
+      } else {
+        dateObject = new Date();
+      }
+      const splittedDateString = newValue.split('-');
+      const year = parseInt(splittedDateString[0] || '', 10);
+      const month = parseInt(splittedDateString[1] || '', 10);
+      const date = parseInt(splittedDateString[2] || '', 10);
+      if (year && month && date) {
+        dateObject.setFullYear(year, month - 1, date);
+        emit('input', formatISO(dateObject));
+      } else {
+        emit('input', newValue);
+      }
       activeTab.value = 1;
     };
 
-    const time = computed(() => formatISO(new Date(props.value), { representation: 'time' }).split('+')[0]);
-
     const onTimeInput = (newValue: string) => {
-      formattedDateTime.value = `${date.value}T${newValue}+${timezoneOffset}`;
-      menu.value = false;
-      activeTab.value = 0;
+      let dateObject;
+      if (internalDateObject.value) {
+        dateObject = new Date(internalDateObject.value);
+      } else {
+        dateObject = new Date();
+      }
+      const splittedTimeString = newValue.split(':');
+      const hours = parseInt(splittedTimeString[0] || '', 10);
+      const minutes = parseInt(splittedTimeString[1] || '', 10);
+      if (hours !== undefined && minutes !== undefined) {
+        dateObject.setHours(hours, minutes);
+        emit('input', formatISO(dateObject));
+      } else {
+        emit('input', newValue);
+      }
     };
 
     return {

@@ -81,3 +81,5 @@ export function getFirstDomainDomaindId(unit: IVeoUnit): string | undefined {
 
   return firstDomain ? getEntityDetailsFromLink(firstDomain).id : undefined;
 }
+
+export const dateIsValid = (date: Date) => date.toString() !== 'Invalid Date';

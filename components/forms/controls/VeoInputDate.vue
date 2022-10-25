@@ -24,7 +24,7 @@
       v-model="menu"
       :close-on-content-click="false"
       transition="scale-transition"
-      offset-y
+      top
       max-width="350px"
       min-width="350px"
     >
@@ -40,6 +40,7 @@
           hide-details="auto"
           :prepend-icon="mdiCalendar"
           :hint="t('hint', [DATE_HINT])"
+          readonly
           v-on="on"
           @click:clear="$emit('input', undefined)"
         />
@@ -70,6 +71,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 import { useFormatters } from '~/composables/utils';
+import { dateIsValid } from '~/lib/utils';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-date-input',
@@ -93,19 +95,53 @@ export default defineComponent({
 
     const DATE_HINT = ref(formatDate(new Date()).value);
 
-    const formattedDate = computed({
-      get() {
-        return props.value ? formatDate(new Date(props.value)).value : undefined;
-      },
-      set(newValue: string | undefined) {
-        emit('input', newValue ? formatISO(new Date(newValue), { representation: 'date' }) : undefined);
+    const parseDateOrReturnUndefined = (date: any) => {
+      try {
+        const _date = new Date(date);
+        if (dateIsValid(_date)) {
+          return _date;
+        }
+        return undefined;
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.warn(e);
+        return undefined;
       }
+    };
+
+    const internalDateObject = computed(() => {
+      if (props.value) {
+        return parseDateOrReturnUndefined(props.value);
+      }
+      return undefined;
+    });
+
+    const formattedDate = computed(() => {
+      if (internalDateObject.value) {
+        return formatDate(internalDateObject.value).value;
+      }
+      return props.value;
     });
 
     const menu = ref(false);
 
     const onDateInput = (newValue: string) => {
-      formattedDate.value = newValue;
+      let dateObject;
+      if (internalDateObject.value) {
+        dateObject = new Date(internalDateObject.value);
+      } else {
+        dateObject = new Date();
+      }
+      const splittedDateString = newValue.split('-');
+      const year = parseInt(splittedDateString[0] || '', 10);
+      const month = parseInt(splittedDateString[1] || '', 10);
+      const date = parseInt(splittedDateString[2] || '', 10);
+      if (year && month && date) {
+        dateObject.setFullYear(year, month - 1, date);
+        emit('input', formatISO(dateObject, { representation: 'date' }));
+      } else {
+        emit('input', newValue);
+      }
       menu.value = false;
     };
 
