@@ -161,7 +161,7 @@ export default defineComponent({
     /**
      * Render date column using date formatter
      */
-    const renderDate: ObjectTableRenderer = ({ item }) => formatDate(item.updatedAt);
+    const renderDate: ObjectTableRenderer = ({ item }) => (item.updatedAt ? formatDate(item.updatedAt) : '');
     /**
      * Render created at / updated at tooltip
      */

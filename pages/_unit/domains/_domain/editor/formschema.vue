@@ -203,7 +203,7 @@
               :language="language"
               @delete="onDelete"
               @update="onUpdate"
-              @update-custom-translation="onUpdateCustomTranslation"
+              @update-custom-translation="setFormTranslation"
             />
           </div>
         </template>
@@ -248,6 +248,7 @@
             :form-schema="formSchema.content"
             :translations="translations"
             :additional-context="additionalContext"
+            :locale="language"
           />
         </template>
         <template v-else>
@@ -324,7 +325,7 @@
 <script lang="ts">
 import vjp from 'vue-json-pointer';
 
-import { computed, defineComponent, provide, Ref, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, provide, Ref, ref, set, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 import { LocaleObject } from '@nuxtjs/i18n/types';
@@ -490,7 +491,7 @@ export default defineComponent({
         const pointer = event.formSchemaPointer as string;
         // Delete custom translation keys for deleted elemented and nested elements
         const elementFormSchema = JsonPointer.get(formSchema.value.content, pointer) as IVeoFormSchemaItem;
-        deleteElementCustomTranslation(elementFormSchema, formSchema.value.translation, onUpdateCustomTranslation);
+        deleteElementCustomTranslation(elementFormSchema, formSchema.value.translation, setFormTranslation);
         const vjpPointer = pointer.replace('#', '');
         // Not allowed to make changes on the root object
         if (event.formSchemaPointer !== '#') {
@@ -534,19 +535,13 @@ export default defineComponent({
 
     function setFormTranslation(event: IVeoFormSchemaTranslationCollection) {
       if (formSchema.value) {
-        vjp.set(formSchema.value, '/translation', event);
+        set(formSchema.value, 'translation', event);
       }
     }
 
     function setFormName(event: IVeoFormSchemaMeta['name']) {
       if (formSchema.value) {
-        vjp.set(formSchema.value, '/name', event);
-      }
-    }
-
-    function onUpdateCustomTranslation(event: IVeoFormSchemaTranslationCollection) {
-      if (formSchema.value) {
-        vjp.set(formSchema.value, `/translation`, event);
+        set(formSchema.value, 'name', event);
       }
     }
 
@@ -637,7 +632,6 @@ export default defineComponent({
       availableLanguages,
       setFormTranslation,
       setFormName,
-      onUpdateCustomTranslation,
       onFixRequest,
       VeoPageHeaderAlignment,
       save,

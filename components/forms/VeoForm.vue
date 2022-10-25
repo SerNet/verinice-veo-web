@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { computed, defineComponent, h, PropType, provide, ref } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, h, PropType, provide, ref } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { cloneDeep, debounce, merge, take, takeRight } from 'lodash';
 import { JsonPointer } from 'json-ptr';
@@ -91,6 +91,10 @@ export default defineComponent({
       type: Object as PropType<IBaseObject>,
       default: () => {}
     },
+    locale: {
+      type: String,
+      default: undefined
+    },
     /**
      * The object schema. Required. Creates the required inputs.
      */
@@ -162,7 +166,7 @@ export default defineComponent({
     const { defaultReactiveFormActions } = useVeoReactiveFormActions();
     const { formatErrors } = useVeoErrorFormatter();
 
-    const localTranslations = computed(() => props.translations?.[locale.value] || {});
+    const localTranslations = computed(() => props.translations?.[props.locale || locale.value] || {});
     const localAdditionalContext = computed(() => props.additionalContext || {});
     const localObjectSchema = computed(() => props.objectSchema);
     const localFormSchema = computed(() => cloneDeep(props.formSchema) || generateFormSchema(localObjectSchema.value, GENERATOR_OPTIONS(props), Mode.VEO));
@@ -200,25 +204,25 @@ export default defineComponent({
       debug: props.debug
     }));
 
-    const createComponent = (element: any, formSchemaPointer: string): any => {
+    const createComponent = (element: any, formSchemaPointer: string, translations: ComputedRef<IBaseObject>, localObjectSchema: ComputedRef<IVeoObjectSchema>): any => {
       const rule = evaluateRule(_value.value, element.rule);
 
-      element.options = merge(element.options || {}, rule);
-      if (element.options.label && element.options.label.startsWith('#lang/')) {
-        const key = element.options.label.split('/')[1];
-        element.options.label = localTranslations.value[key] || key;
+      const options = merge(cloneDeep(element.options || {}), rule);
+      if (options.label && options.label.startsWith('#lang/')) {
+        const key = options.label.split('/')[1];
+        options.label = translations.value[key] || key;
       }
 
-      if (element.options.visible) {
+      if (options.visible) {
         switch (element.type) {
           case 'Layout':
-            return createLayout(element, formSchemaPointer);
+            return createLayout({ ...element, options }, formSchemaPointer, translations, localObjectSchema);
           case 'Control':
-            return createControl(element, formSchemaPointer);
+            return createControl({ ...element, options }, formSchemaPointer, translations, localObjectSchema);
           case 'Label':
-            return createLabel(element, formSchemaPointer);
+            return createLabel({ ...element, options }, formSchemaPointer);
           case 'Widget':
-            return createWidget(element, formSchemaPointer);
+            return createWidget({ ...element, options }, formSchemaPointer);
         }
       } else {
         // VeoForms is confused if a form element doesn't exist and then suddently gets added as a new node, so we insert a placeholder element if the form element should be hidden
@@ -226,11 +230,21 @@ export default defineComponent({
       }
     };
 
-    const createChildren = (element: IVeoFormElementFormSchema, formSchemaPointer: string) => {
-      return element.elements && element.elements.map((elem, index) => createComponent(elem, `${formSchemaPointer}/elements/${index}`));
+    const createChildren = (
+      element: IVeoFormElementFormSchema,
+      formSchemaPointer: string,
+      translations: ComputedRef<IBaseObject>,
+      localObjectSchema: ComputedRef<IVeoObjectSchema>
+    ) => {
+      return element.elements && element.elements.map((elem, index) => createComponent(elem, `${formSchemaPointer}/elements/${index}`, translations, localObjectSchema));
     };
 
-    const createLayout = (element: IVeoFormElementFormSchema, formSchemaPointer: string) => {
+    const createLayout = (
+      element: IVeoFormElementFormSchema,
+      formSchemaPointer: string,
+      translations: ComputedRef<IBaseObject>,
+      localObjectSchema: ComputedRef<IVeoObjectSchema>
+    ) => {
       return h(
         VeoGroup,
         {
@@ -240,7 +254,7 @@ export default defineComponent({
             formSchemaPointer
           }
         },
-        createChildren(element, formSchemaPointer)
+        createChildren(element, formSchemaPointer, translations, localObjectSchema)
       );
     };
 
@@ -267,8 +281,14 @@ export default defineComponent({
       });
     };
 
-    const createControl = (element: IVeoFormControlFormSchema, formSchemaPointer: string) => {
-      if (!element.scope) {
+    const createControl = (
+      element: IVeoFormControlFormSchema,
+      formSchemaPointer: string,
+      translations: ComputedRef<IBaseObject>,
+      localObjectSchema: ComputedRef<IVeoObjectSchema>
+    ) => {
+      let scope = cloneDeep(element.scope);
+      if (!scope) {
         if (process.dev && props.debug) {
           // eslint-disable-next-line no-console
           console.warn(`VeoForm::createControl: Control ${formSchemaPointer} has no scope: ${JSON.stringify(element)}`);
@@ -277,10 +297,10 @@ export default defineComponent({
       }
 
       // Special handling for link attributes, as they don't have a complete pointer in the form schema as they can only exist inside of their link
-      if (element.scope.startsWith('#/properties/attributes')) {
+      if (scope.startsWith('#/properties/attributes')) {
         if (process.dev && props.debug) {
           // eslint-disable-next-line no-console
-          console.warn(`VeoForm::createControl: Custom Link attribute detected: ${element.scope}. Searching for custom link...`);
+          console.warn(`VeoForm::createControl: Custom Link attribute detected: ${scope}. Searching for custom link...`);
         }
         // Get object schema pointer of link based on the assumption that link attributes can't get displayed separately from the link
         const formSchemaPointerFragments = formSchemaPointer.split('/');
@@ -288,23 +308,23 @@ export default defineComponent({
         const parentObjectSchemaPointer = (JsonPointer.get(localFormSchema.value, parentFormSchemaPointer) as IVeoFormControlFormSchema).scope;
 
         // Glue the object schema pointer of the link attribute to the one of the link to create a valid one for the whole object
-        const objectSchemaPointerFragments = element.scope.split('/');
-        element.scope = parentObjectSchemaPointer + '/items/' + takeRight(objectSchemaPointerFragments, objectSchemaPointerFragments.length - 1).join('/');
+        const objectSchemaPointerFragments = scope.split('/');
+        scope = parentObjectSchemaPointer + '/items/' + takeRight(objectSchemaPointerFragments, objectSchemaPointerFragments.length - 1).join('/');
       }
 
       const controlObjectSchema = computed(() => ({
-        ...(JsonPointer.get(localObjectSchema.value, element.scope) as JSONSchema7),
-        ...(localAdditionalContext.value[element.scope]?.objectSchema || {})
+        ...(JsonPointer.get(localObjectSchema.value, scope) as JSONSchema7),
+        ...(localAdditionalContext.value[scope]?.objectSchema || {})
       }));
-      const valuePointer = computed(() => removePropertiesKeywordFromPath(element.scope));
+      const valuePointer = computed(() => removePropertiesKeywordFromPath(scope));
       return h(Control, {
         props: {
-          elementKey: element.scope,
+          elementKey: scope,
           ...defaultProps.value,
-          options: { ...element.options, ...localAdditionalContext.value[element.scope]?.formSchema },
+          options: { ...element.options, ...localAdditionalContext.value[scope]?.formSchema },
           formSchemaPointer,
-          objectSchemaPointer: element.scope,
-          objectSchema: addConditionalSchemaPropertiesToControlSchema(localObjectSchema.value, _value.value, controlObjectSchema.value, element.scope),
+          objectSchemaPointer: scope,
+          objectSchema: addConditionalSchemaPropertiesToControlSchema(localObjectSchema.value, _value.value, controlObjectSchema.value, scope),
           valuePointer: valuePointer.value,
           value: JsonPointer.get(_value.value, valuePointer.value),
           errors: errorMessages.value
@@ -313,7 +333,7 @@ export default defineComponent({
           input: onDelayedInput
         },
         scopedSlots: {
-          default: () => createChildren(element, formSchemaPointer)
+          default: () => createChildren(element, formSchemaPointer, translations, localObjectSchema)
         }
       });
     };
@@ -366,7 +386,7 @@ export default defineComponent({
     return () =>
       !formSchemaFitsObjectSchema.value?.valid
         ? h(VeoFormValidationFailed, { props: { errors: formSchemaFitsObjectSchema.value?.errors } })
-        : h('div', { class: 'vf-wrapper' }, [createComponent(localFormSchema.value, '#')]);
+        : h('div', { class: 'vf-wrapper' }, [createComponent(localFormSchema.value, '#', localTranslations, localObjectSchema)]);
   }
 });
 </script>

@@ -86,7 +86,7 @@ export default {
   },
 
   router: {
-    middleware: ['authentication', 'unitValidation']
+    middleware: ['urlValidation', 'authentication', 'unitValidation']
   },
   /*
    ** Nuxt.js modules
