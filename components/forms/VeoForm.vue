@@ -204,7 +204,7 @@ export default defineComponent({
       debug: props.debug
     }));
 
-    const createComponent = (element: any, formSchemaPointer: string, translations: ComputedRef<IBaseObject>): any => {
+    const createComponent = (element: any, formSchemaPointer: string, translations: ComputedRef<IBaseObject>, localObjectSchema: ComputedRef<IVeoObjectSchema>): any => {
       const rule = evaluateRule(_value.value, element.rule);
 
       const options = merge(cloneDeep(element.options || {}), rule);
@@ -216,9 +216,9 @@ export default defineComponent({
       if (options.visible) {
         switch (element.type) {
           case 'Layout':
-            return createLayout({ ...element, options }, formSchemaPointer, translations);
+            return createLayout({ ...element, options }, formSchemaPointer, translations, localObjectSchema);
           case 'Control':
-            return createControl({ ...element, options }, formSchemaPointer, translations);
+            return createControl({ ...element, options }, formSchemaPointer, translations, localObjectSchema);
           case 'Label':
             return createLabel({ ...element, options }, formSchemaPointer);
           case 'Widget':
@@ -230,11 +230,21 @@ export default defineComponent({
       }
     };
 
-    const createChildren = (element: IVeoFormElementFormSchema, formSchemaPointer: string, translations: ComputedRef<IBaseObject>) => {
-      return element.elements && element.elements.map((elem, index) => createComponent(elem, `${formSchemaPointer}/elements/${index}`, translations));
+    const createChildren = (
+      element: IVeoFormElementFormSchema,
+      formSchemaPointer: string,
+      translations: ComputedRef<IBaseObject>,
+      localObjectSchema: ComputedRef<IVeoObjectSchema>
+    ) => {
+      return element.elements && element.elements.map((elem, index) => createComponent(elem, `${formSchemaPointer}/elements/${index}`, translations, localObjectSchema));
     };
 
-    const createLayout = (element: IVeoFormElementFormSchema, formSchemaPointer: string, translations: ComputedRef<IBaseObject>) => {
+    const createLayout = (
+      element: IVeoFormElementFormSchema,
+      formSchemaPointer: string,
+      translations: ComputedRef<IBaseObject>,
+      localObjectSchema: ComputedRef<IVeoObjectSchema>
+    ) => {
       return h(
         VeoGroup,
         {
@@ -244,7 +254,7 @@ export default defineComponent({
             formSchemaPointer
           }
         },
-        createChildren(element, formSchemaPointer, translations)
+        createChildren(element, formSchemaPointer, translations, localObjectSchema)
       );
     };
 
@@ -271,7 +281,12 @@ export default defineComponent({
       });
     };
 
-    const createControl = (element: IVeoFormControlFormSchema, formSchemaPointer: string, translations: ComputedRef<IBaseObject>) => {
+    const createControl = (
+      element: IVeoFormControlFormSchema,
+      formSchemaPointer: string,
+      translations: ComputedRef<IBaseObject>,
+      localObjectSchema: ComputedRef<IVeoObjectSchema>
+    ) => {
       let scope = cloneDeep(element.scope);
       if (!scope) {
         if (process.dev && props.debug) {
@@ -318,7 +333,7 @@ export default defineComponent({
           input: onDelayedInput
         },
         scopedSlots: {
-          default: () => createChildren(element, formSchemaPointer, translations)
+          default: () => createChildren(element, formSchemaPointer, translations, localObjectSchema)
         }
       });
     };
@@ -371,7 +386,7 @@ export default defineComponent({
     return () =>
       !formSchemaFitsObjectSchema.value?.valid
         ? h(VeoFormValidationFailed, { props: { errors: formSchemaFitsObjectSchema.value?.errors } })
-        : h('div', { class: 'vf-wrapper' }, [createComponent(localFormSchema.value, '#', localTranslations)]);
+        : h('div', { class: 'vf-wrapper' }, [createComponent(localFormSchema.value, '#', localTranslations, localObjectSchema)]);
   }
 });
 </script>
