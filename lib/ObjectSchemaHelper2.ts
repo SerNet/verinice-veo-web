@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { cloneDeep, merge } from 'lodash';
+import { cloneDeep, merge, trim } from 'lodash';
 
 import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
 import {
@@ -251,16 +251,17 @@ export default class ObjectSchemaHelper {
   }
 
   public addTranslation(key: string, initialValue: string, lang?: string) {
+    const trimmedKey = trim(key);
     if (lang) {
       // Only add new translation if id doesn't exist yet
-      if (!this._translations[lang][key]) {
-        this._translations[lang][key] = initialValue;
+      if (!this._translations[lang][trimmedKey]) {
+        this._translations[lang][trimmedKey] = initialValue;
       }
     } else {
       for (const language of Object.keys(this._translations)) {
         // Only add new translation if id doesn't exist yet
-        if (!this._translations[language][key]) {
-          this._translations[language][key] = initialValue;
+        if (!this._translations[language][trimmedKey]) {
+          this._translations[language][trimmedKey] = initialValue;
         }
       }
     }
@@ -276,7 +277,7 @@ export default class ObjectSchemaHelper {
 
   public changeTranslationKey(oldKey: string, newKey: string) {
     for (const language of Object.keys(this._translations)) {
-      this._translations[language][newKey] = this._translations[language][oldKey];
+      this._translations[language][trim(newKey)] = this._translations[language][oldKey];
       delete this._translations[language][oldKey];
     }
   }
