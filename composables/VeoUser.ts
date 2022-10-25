@@ -63,6 +63,9 @@ export const useUser: () => IVeoUserComposable = () => {
         silentCheckSsoRedirectUri: window.location.origin + '/sso',
         checkLoginIframe: false
       });
+      if (keycloak.value.authenticated) {
+        await keycloak.value.loadUserProfile();
+      }
     } catch (error) {
       throw new Error(`Error while setting up authentication provider: ${error}`);
     }
@@ -74,7 +77,7 @@ export const useUser: () => IVeoUserComposable = () => {
         await initialize(context);
       }
     };
-    keycloakInitialized.value = false;
+    keycloakInitialized.value = true;
   };
 
   const refreshKeycloakSession = async () => {
@@ -96,6 +99,7 @@ export const useUser: () => IVeoUserComposable = () => {
         redirectUri: window.location.origin + destination,
         scope: 'openid'
       });
+      await keycloak.value.loadUserProfile();
     } else {
       throw new Error("Couldn't login user: Keycloak not initialized");
     }

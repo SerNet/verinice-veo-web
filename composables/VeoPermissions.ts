@@ -38,8 +38,10 @@ export const usePermissions = () => {
         }
         if (role.includes('veo-content-creator')) {
           can('read', 'editors');
+          can('manage', 'editors');
         } else {
           cannot('read', 'editors');
+          cannot('manage', 'editors');
         }
       }
       // @ts-ignore For some reason the rules and update types are incompatible, they work however
@@ -53,7 +55,6 @@ export const usePermissions = () => {
     const { can, cannot, rules } = new AbilityBuilder(createMongoAbility);
     can('read', 'all');
     cannot('manage', 'all');
-    cannot('delete', 'all');
     cannot('read', 'editors');
     // @ts-ignore For some reason the rules and update types are incompatible, they work however
     ability.value.update(rules);
