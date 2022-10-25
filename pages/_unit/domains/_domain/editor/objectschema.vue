@@ -131,7 +131,7 @@
               <template #activator="{on}">
                 <div v-on="on">
                   <v-btn
-                    :disabled="!schemaIsValid.valid || !isContentCreator"
+                    :disabled="!schemaIsValid.valid || ability.cannot('manage', 'editors')"
                     icon
                     large
                     color="primary"
@@ -142,7 +142,7 @@
                 </div>
               </template>
               <template #default>
-                <span v-if="isContentCreator">{{ upperFirst(t('save').toString()) }}</span>
+                <span v-if="ability.can('manage', 'editors')">{{ upperFirst(t('save').toString()) }}</span>
                 <span v-else>{{ t('saveContentCreator') }}</span>
               </template>
             </v-tooltip>
@@ -306,7 +306,7 @@ import { IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
-import { useUser } from '~/composables/VeoUser';
+import { usePermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   name: 'ObjectSchemaEditor',
@@ -314,8 +314,8 @@ export default defineComponent({
     const { locale, t } = useI18n();
     const { $api } = useContext();
     const route = useRoute();
-    const { roles } = useUser();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+    const ability = usePermissions();
 
     const objectSchemaHelper = ref<ObjectSchemaHelper | undefined>(undefined);
 
@@ -346,8 +346,6 @@ export default defineComponent({
       Object.assign(translations, _translations);
     });
     const availableLanguages = computed(() => Object.keys(translations));
-
-    const isContentCreator = computed(() => roles.value.includes('veo-content-creator'));
 
     const downloadButton = ref();
 
@@ -453,6 +451,7 @@ export default defineComponent({
     };
 
     return {
+      ability,
       availableLanguages,
       code,
       creationDialogVisible,
@@ -464,7 +463,6 @@ export default defineComponent({
       downloadSchema,
       errorDialogVisible,
       hideEmptyAspects,
-      isContentCreator,
       objectSchemaHelper,
       onDisplayLanguageUpdate,
       onPageCollapsed,

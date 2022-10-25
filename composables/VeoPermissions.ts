@@ -37,10 +37,10 @@ export const usePermissions = () => {
           cannot('manage', 'all');
         }
         if (role.includes('veo-content-creator')) {
-          can('read', 'editors');
+          can('view', 'editors');
           can('manage', 'editors');
         } else {
-          cannot('read', 'editors');
+          cannot('view', 'editors');
           cannot('manage', 'editors');
         }
       }
@@ -53,9 +53,9 @@ export const usePermissions = () => {
   // Initial data if no roles exist
   if (!roles.value.length) {
     const { can, cannot, rules } = new AbilityBuilder(createMongoAbility);
-    can('read', 'all');
+    can('view', 'all');
     cannot('manage', 'all');
-    cannot('read', 'editors');
+    cannot('view', 'editors');
     // @ts-ignore For some reason the rules and update types are incompatible, they work however
     ability.value.update(rules);
   }

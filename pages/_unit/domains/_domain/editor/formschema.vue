@@ -140,7 +140,7 @@
               icon
               large
               color="primary"
-              :disabled="!isContentCreator"
+              :disabled="ability.cannot('manage', 'editors')"
               @click="save"
             >
               <v-icon>mdi-content-save</v-icon>
@@ -148,7 +148,7 @@
           </div>
         </template>
         <template #default>
-          <span v-if="isContentCreator">{{ t('save') }}</span>
+          <span v-if="ability.can('manage', 'editors')">{{ t('save') }}</span>
           <span v-else>{{ t('saveContentCreator') }}</span>
         </template>
       </v-tooltip>
@@ -344,15 +344,15 @@ import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
-import { useUser } from '~/composables/VeoUser';
+import { usePermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   setup() {
     const { locale, t } = useI18n();
     const { $api } = useContext();
-    const { roles } = useUser();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+    const ability = usePermissions();
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
@@ -566,8 +566,6 @@ export default defineComponent({
       }
     }
 
-    const isContentCreator = computed(() => !!roles.value.find((r: string) => r === 'veo-content-creator'));
-
     // Circumventing {CURRENT_DOMAIN_ID} in fse controls
     const additionalContext = computed(() => ({
       [`#/properties/domains/properties/{CURRENT_DOMAIN_ID}/properties/riskValues/properties/DSRA/properties/implementationStatus`]: {
@@ -614,6 +612,7 @@ export default defineComponent({
     });
 
     return {
+      ability,
       additionalContext,
       creationDialogVisible,
       domainId,
@@ -628,7 +627,6 @@ export default defineComponent({
       language,
       translation,
       schemaIsValid,
-      isContentCreator,
       setFormSchema,
       setObjectSchema,
       setTranslation,

@@ -33,6 +33,7 @@
           <template #activator="{on}">
             <v-btn
               icon
+              :disabled="ability.cannot('manage', 'objects')"
               @click="btn.action(item)"
               v-on="on"
             >
@@ -73,6 +74,7 @@ import { IVeoCustomLink, IVeoDomain, IVeoEntity, IVeoPaginatedResponse, IVeoRisk
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
+import { usePermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   name: 'VeoObjectDetailsTab',
@@ -96,6 +98,7 @@ export default defineComponent({
     const route = useRoute();
     const { $api } = useContext();
     const router = useRouter();
+    const ability = usePermissions();
 
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { cloneObject, linkObject } = useVeoObjectUtilities();
@@ -404,6 +407,7 @@ export default defineComponent({
     };
 
     return {
+      ability,
       additionalHeaders,
       defaultHeaders,
       editRiskDialog,

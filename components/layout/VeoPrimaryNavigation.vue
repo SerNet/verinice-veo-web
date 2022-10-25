@@ -154,6 +154,7 @@ import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/_unit/domains/_do
 import { OBJECT_TYPE_ICONS } from '~/components/objects/VeoObjectIcon.vue';
 import { useFetchForms } from '~/composables/api/forms';
 import { useUser } from '~/composables/VeoUser';
+import { usePermissions } from '~/composables/VeoPermissions';
 
 export interface INavItem {
   key: string;
@@ -199,8 +200,9 @@ export default defineComponent({
   setup(props) {
     const { t, locale } = useI18n();
     const { $api } = useContext();
-    const { roles, userSettings } = useUser();
+    const { userSettings } = useUser();
     const route = useRoute();
+    const ability = usePermissions();
 
     // Layout stuff
     const miniVariant = ref<boolean>(LocalStorage.primaryNavMiniVariant);
@@ -364,9 +366,6 @@ export default defineComponent({
       }))
     );
 
-    // nav item stuff
-    const isContentCreator = computed(() => !!roles.value.find((r: string) => r === 'veo-content-creator'));
-
     // Reload certain navigation items if domain changes
     watch(
       () => props.domainId,
@@ -462,7 +461,7 @@ export default defineComponent({
       ...(props.unitId && props.domainId
         ? [
             domainDashboardNavEntry.value,
-            ...(props.domainId && props.unitId && isContentCreator.value ? [editorsNavEntry.value] : []),
+            ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
             objectsNavEntry.value,
             catalogsNavEntry.value,
             reportsNavEntry.value,
