@@ -67,7 +67,7 @@
             <v-list-item-subtitle>{{ email || t('notAvailable') }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-        <template v-if="!maxUnits || maxUnits > 2">
+        <template v-if="!userSettings.maxUnits || userSettings.maxUnits > 2">
           <v-divider />
           <VeoUnitSelection :units="units" />
         </template>
@@ -108,6 +108,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { mdiOpenInNew } from '@mdi/js';
 
 import { IVeoUnit } from '~/types/VeoTypes';
+import { useUser } from '~/composables/VeoUser';
 
 export default defineComponent({
   props: {
@@ -118,19 +119,14 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n();
-    const { $api, $config, $user } = useContext();
+    const { $api, $config } = useContext();
+    const { userSettings } = useUser();
     const route = useRoute();
 
     const displayDeploymentDetails = ref(false);
     const menuVisible = ref(false);
 
     const initials = computed(() => props.prename.substring(0, 1) + props.lastname.substring(0, 1) || '??');
-
-    const maxUnits = computed(() => {
-      const maxUnits = $user.auth.profile?.attributes?.maxUnits?.[0];
-
-      return maxUnits ? parseInt(maxUnits, 10) : maxUnits;
-    });
 
     const unitId = computed(() => route.value.params.unit);
 
@@ -152,9 +148,9 @@ export default defineComponent({
       accountLink,
       displayDeploymentDetails,
       initials,
-      maxUnits,
       menuVisible,
       units,
+      userSettings,
 
       mdiOpenInNew,
       t

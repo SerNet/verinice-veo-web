@@ -46,17 +46,6 @@
           required
           :label="$t('unit.details.description')"
         />
-        <!-- VEO-78: Unit Hierarchien deaktiviert, da im Backend nicht implementiert
-        <v-select
-          class="unit-select flex-grow-0"
-          multiple
-          :items="units"
-          item-text="name"
-          item-value="id"
-          :value="newUnit.units"
-          :label="$t('unit.details.children')"
-        />
-        -->
       </v-form>
     </template>
     <template #dialog-options>
@@ -100,7 +89,6 @@ export default Vue.extend({
     return {
       dialog: false as boolean,
       noWatch: false as boolean,
-      units: [] as Array<any>,
       newUnit: {} as { units: string[]; name: string; description: string },
       valid: false as boolean,
       rules: {
@@ -113,11 +101,6 @@ export default Vue.extend({
       },
       loading: false as boolean
     };
-  },
-  async fetch() {
-    /* if (this.$user.auth.profile) {
-      this.units = await this.$api.unit.fetchAll()
-    } */
   },
   watch: {
     value(newValue) {

@@ -44,9 +44,6 @@ describe('VeoObjectTable.vue', () => {
                 return Promise.resolve([]);
               }
             }
-          },
-          $user: {
-            tablePageSize: 20
           }
         }
       },

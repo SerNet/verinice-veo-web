@@ -173,6 +173,7 @@ import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
+import { useUser } from '~/composables/VeoUser';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
 
@@ -180,7 +181,8 @@ export default defineComponent({
   name: 'VeoObjectsOverviewPage',
   setup() {
     const { t, locale } = useI18n();
-    const { $api, $user } = useContext();
+    const { $api } = useContext();
+    const { tablePageSize } = useUser();
     const route = useRoute();
     const router = useRouter();
 
@@ -229,7 +231,7 @@ export default defineComponent({
     };
 
     const combinedQueryParameters = computed<any>(() => ({
-      size: $user.tablePageSize,
+      size: tablePageSize.value,
       sortBy: queryParameters.sortBy,
       sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
       page: queryParameters.page,

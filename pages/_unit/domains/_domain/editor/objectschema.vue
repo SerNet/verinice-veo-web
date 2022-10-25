@@ -191,7 +191,7 @@
           >
             <v-col>
               <v-text-field
-                v-model="search"
+                v-model="searchQuery"
                 dense
                 clearable
                 flat
@@ -216,7 +216,7 @@
         <template #default>
           <VeoObjectSchemaEditor
             v-if="schemaIsValid.valid"
-            :search="search"
+            :search="searchQuery"
             :hide-empty-aspects="hideEmptyAspects"
             :domain-id="domainId"
             @schema-updated="updateCode"
@@ -295,10 +295,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { computed } from '@nuxtjs/composition-api';
+import { computed, defineComponent, provide, reactive, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { upperFirst, pickBy } from 'lodash';
 import { mdiAlertCircleOutline, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
+import { useI18n } from 'nuxt-i18n-composable';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
@@ -306,31 +306,182 @@ import { IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
+import { useUser } from '~/composables/VeoUser';
 
-const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
-
-export default Vue.extend({
+export default defineComponent({
   name: 'ObjectSchemaEditor',
-  provide(): any {
-    return {
-      displayLanguage: computed(() => this.displayLanguage),
-      objectSchemaHelper: computed(() => this.objectSchemaHelper)
+  setup() {
+    const { locale, t } = useI18n();
+    const { $api } = useContext();
+    const route = useRoute();
+    const { roles } = useUser();
+    const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+
+    const objectSchemaHelper = ref<ObjectSchemaHelper | undefined>(undefined);
+
+    const displayLanguage = ref(locale.value);
+    watch(
+      () => locale.value,
+      (newValue) => {
+        displayLanguage.value = newValue;
+      }
+    );
+
+    provide('displayLanguage', displayLanguage);
+    provide('objectSchemaHelper', objectSchemaHelper);
+
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+
+    // Layout stuff
+    const pageWidths = ref([6, 6]);
+
+    const creationDialogVisible = ref(true);
+    const errorDialogVisible = ref(false);
+    const translationDialogVisible = ref(false);
+    const detailsDialogVisible = ref(false);
+
+    const translations = reactive<IVeoTranslations['lang']>({});
+    useFetch(async () => {
+      const _translations = (await $api.translation.fetch([]))?.lang || {};
+      Object.assign(translations, _translations);
+    });
+    const availableLanguages = computed(() => Object.keys(translations.value));
+
+    const isContentCreator = computed(() => roles.value.includes('veo-content-creator'));
+
+    const downloadButton = ref();
+
+    const code = ref('');
+    const schemaIsValid = ref<VeoSchemaValidatorValidationResult>({ valid: false, errors: [], warnings: [] });
+
+    // Editor stuff
+    const hideEmptyAspects = ref(false);
+    const searchQuery = ref<string | undefined>(undefined);
+
+    // Schema stuff
+    const title = computed(() => objectSchemaHelper.value?.getTitle() || '');
+    const description = computed(() => objectSchemaHelper.value?.getDescription() || '');
+
+    const schemaSpecificTranslations = (): IVeoTranslations['lang'] => {
+      const translationsToReturn: IVeoTranslations['lang'] = {};
+      const schemaTitle = objectSchemaHelper.value?.getTitle() || '';
+
+      for (const language of availableLanguages.value) {
+        translationsToReturn[language] = pickBy(translations[language], (_value, key) => key.startsWith(schemaTitle));
+      }
+
+      return translationsToReturn;
     };
-  },
-  data() {
+
+    const setSchema = (data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) => {
+      objectSchemaHelper.value = data.schema || data.meta ? new ObjectSchemaHelper(data.schema, domainId.value) : undefined;
+
+      if (objectSchemaHelper.value) {
+        if (data.meta) {
+          objectSchemaHelper.value.setTitle(data.meta.type);
+          objectSchemaHelper.value.setDescription(data.meta.description);
+        }
+
+        if (objectSchemaHelper.value.getLanguages().length === 0) {
+          for (const [languageKey, translations] of Object.entries(schemaSpecificTranslations)) {
+            objectSchemaHelper.value.updateTranslations(languageKey, translations);
+          }
+        }
+        code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
+        validate();
+      }
+
+      creationDialogVisible.value = !objectSchemaHelper.value || false;
+    };
+
+    const updateSchema = (schema: IVeoObjectSchema) => {
+      objectSchemaHelper.value = new ObjectSchemaHelper(schema);
+      code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
+      objectSchemaHelper.value = new ObjectSchemaHelper(JSON.parse(code.value));
+
+      validate();
+    };
+
+    const updateSchemaName = (name: string) => {
+      objectSchemaHelper.value?.setTitle(name);
+      code.value = JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2);
+    };
+
+    const updateDescription = (description: string) => {
+      objectSchemaHelper.value?.setDescription(description);
+      code.value = JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2);
+    };
+
+    const updateCode = () => {
+      if (objectSchemaHelper.value) {
+        code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
+        validate();
+      }
+    };
+
+    const downloadSchema = () => {
+      if (downloadButton.value) {
+        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2))}`;
+        (downloadButton.value as any).href = data;
+        (downloadButton.value as any).download = `os_${objectSchemaHelper.value?.getTitle() || 'download'}.json`;
+      }
+    };
+
+    const validate = () => {
+      schemaIsValid.value = objectSchemaHelper.value?.validate() || { valid: false, errors: [], warnings: [] };
+    };
+
+    const onDisplayLanguageUpdate = (newLanguage: string) => {
+      displayLanguage.value = newLanguage;
+    };
+
+    const onPageCollapsed = (collapsedPages: boolean[]) => {
+      if (collapsedPages[1]) {
+        pageWidths.value = [12, 0];
+      } else {
+        pageWidths.value = [6, 6];
+      }
+    };
+
+    const saveSchema = async () => {
+      try {
+        await $api.domain.updateTypeDefinition(domainId.value, title.value, objectSchemaHelper.value?.toSchema() as any);
+        displaySuccessMessage(t('saveSchemaSuccess').toString());
+      } catch (e: any) {
+        displayErrorMessage(t('error.title').toString(), `${t('saveSchemaError').toString()}: ${e.message}`);
+      }
+    };
+
     return {
-      pageWidths: [6, 6] as number[],
-      creationDialogVisible: false as boolean,
-      errorDialogVisible: false as boolean,
-      translationDialogVisible: false as boolean,
-      translations: {} as IVeoTranslations['lang'],
-      detailsDialogVisible: false as boolean,
-      hideEmptyAspects: false as boolean,
-      search: '' as string,
-      objectSchemaHelper: undefined as ObjectSchemaHelper | undefined,
-      code: '' as string,
-      schemaIsValid: { valid: false, errors: [], warnings: [] } as VeoSchemaValidatorValidationResult,
-      displayLanguage: this.$i18n.locale as string,
+      availableLanguages,
+      code,
+      creationDialogVisible,
+      description,
+      detailsDialogVisible,
+      displayLanguage,
+      domainId,
+      downloadButton,
+      downloadSchema,
+      errorDialogVisible,
+      hideEmptyAspects,
+      isContentCreator,
+      objectSchemaHelper,
+      onDisplayLanguageUpdate,
+      onPageCollapsed,
+      pageWidths,
+      saveSchema,
+      schemaIsValid,
+      searchQuery,
+      setSchema,
+      title,
+      translationDialogVisible,
+      updateCode,
+      updateSchema,
+      updateSchemaName,
+      updateDescription,
+
+      t,
+      upperFirst,
       mdiAlertCircleOutline,
       mdiContentSave,
       mdiDownload,
@@ -341,117 +492,6 @@ export default Vue.extend({
       mdiWrench,
       HELP_ROUTE
     };
-  },
-  async fetch() {
-    // TODO: Backend should create an API endpoint to get available languages dynamically
-    this.translations = (await this.$api.translation.fetch([]))?.lang || {};
-  },
-  computed: {
-    title(): string {
-      return this.objectSchemaHelper?.getTitle() || '';
-    },
-    description(): string {
-      return this.objectSchemaHelper?.getDescription() || '';
-    },
-    domainId(): string {
-      return separateUUIDParam(this.$route.params.domain).id;
-    },
-    availableLanguages(): string[] {
-      return Object.keys(this.translations);
-    },
-    schemaSpecificTranslations(): IVeoTranslations['lang'] {
-      const translationsToReturn: IVeoTranslations['lang'] = {};
-      const schemaTitle = this.objectSchemaHelper?.getTitle() || '';
-
-      for (const language of this.availableLanguages) {
-        translationsToReturn[language] = pickBy(this.translations[language], (_value, key) => key.startsWith(schemaTitle));
-      }
-
-      return translationsToReturn;
-    },
-    isContentCreator(): boolean {
-      return !!this.$user.auth.roles.find((r: string) => r === 'veo-content-creator');
-    }
-  },
-  watch: {
-    '$i18n.locale'(newValue) {
-      this.displayLanguage = newValue;
-    }
-  },
-  mounted() {
-    this.creationDialogVisible = true;
-  },
-  methods: {
-    setSchema(data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) {
-      this.objectSchemaHelper = data.schema || data.meta ? new ObjectSchemaHelper(data.schema, this.domainId) : undefined;
-
-      if (this.objectSchemaHelper) {
-        if (data.meta) {
-          this.objectSchemaHelper.setTitle(data.meta.type);
-          this.objectSchemaHelper.setDescription(data.meta.description);
-        }
-
-        if (this.objectSchemaHelper.getLanguages().length === 0) {
-          for (const [languageKey, translations] of Object.entries(this.schemaSpecificTranslations)) {
-            this.objectSchemaHelper.updateTranslations(languageKey, translations);
-          }
-        }
-        this.code = JSON.stringify(this.objectSchemaHelper.toSchema(), undefined, 2);
-        this.validate();
-      }
-
-      this.creationDialogVisible = !this.objectSchemaHelper || false;
-    },
-    updateSchema(schema: IVeoObjectSchema) {
-      this.objectSchemaHelper = new ObjectSchemaHelper(schema);
-      this.code = JSON.stringify(this.objectSchemaHelper.toSchema(), undefined, 2);
-      this.objectSchemaHelper = new ObjectSchemaHelper(JSON.parse(this.code));
-
-      this.validate();
-    },
-    updateSchemaName(name: string) {
-      this.objectSchemaHelper?.setTitle(name);
-      this.code = JSON.stringify(this.objectSchemaHelper?.toSchema(), undefined, 2);
-    },
-    updateDescription(description: string) {
-      this.objectSchemaHelper?.setDescription(description);
-      this.code = JSON.stringify(this.objectSchemaHelper?.toSchema(), undefined, 2);
-    },
-    updateCode() {
-      if (this.objectSchemaHelper) {
-        this.code = JSON.stringify(this.objectSchemaHelper.toSchema(), undefined, 2);
-        this.validate();
-      }
-    },
-    downloadSchema() {
-      if (this.$refs.downloadButton) {
-        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(this.objectSchemaHelper?.toSchema(), undefined, 2))}`;
-        (this.$refs.downloadButton as any).href = data;
-        (this.$refs.downloadButton as any).download = `os_${this.objectSchemaHelper?.getTitle() || 'download'}.json`;
-      }
-    },
-    validate() {
-      this.schemaIsValid = this.objectSchemaHelper?.validate() || { valid: false, errors: [], warnings: [] };
-    },
-    onDisplayLanguageUpdate(newLanguage: string) {
-      this.displayLanguage = newLanguage;
-    },
-    onPageCollapsed(collapsedPages: boolean[]) {
-      if (collapsedPages[1]) {
-        this.pageWidths = [12, 0];
-      } else {
-        this.pageWidths = [6, 6];
-      }
-    },
-    async saveSchema() {
-      try {
-        await this.$api.domain.updateTypeDefinition(this.domainId, this.title, this.objectSchemaHelper?.toSchema() as any);
-        displaySuccessMessage(this.$t('saveSchemaSuccess').toString());
-      } catch (e: any) {
-        displayErrorMessage(this.$t('error.title').toString(), `${this.$t('saveSchemaError').toString()}: ${e.message}`);
-      }
-    },
-    upperFirst
   }
 });
 </script>

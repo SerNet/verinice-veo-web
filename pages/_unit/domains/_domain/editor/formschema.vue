@@ -344,11 +344,13 @@ import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
+import { useUser } from '~/composables/VeoUser';
 
 export default defineComponent({
   setup() {
-    const { t } = useI18n();
-    const { $api, app, $user } = useContext();
+    const { locale, t } = useI18n();
+    const { $api } = useContext();
+    const { roles } = useUser();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
@@ -389,10 +391,10 @@ export default defineComponent({
     provide('mainFormSchema', formSchema);
     const translation: Ref<IVeoTranslations | undefined> = ref(undefined);
     const objectData = ref({});
-    const language = ref(app.i18n.locale);
+    const language = ref(locale.value);
 
     watch(
-      () => app.i18n.locale,
+      () => locale.value,
       (newLanguageVal) => {
         language.value = newLanguageVal;
       }
@@ -405,10 +407,10 @@ export default defineComponent({
     function setFormSchema(schema: IVeoFormSchema) {
       formSchema.value = schema;
       // If a translation for current app language does not exist, initialise it
-      if (formSchema.value && !formSchema.value.translation?.[app.i18n.locale]) {
+      if (formSchema.value && !formSchema.value.translation?.[locale.value]) {
         setFormTranslation({
           ...formSchema.value.translation,
-          ...{ [app.i18n.locale]: {} }
+          ...{ [locale.value]: {} }
         });
       }
     }
@@ -564,7 +566,7 @@ export default defineComponent({
       }
     }
 
-    const isContentCreator = computed(() => !!$user.auth.roles.find((r: string) => r === 'veo-content-creator'));
+    const isContentCreator = computed(() => !!roles.value.find((r: string) => r === 'veo-content-creator'));
 
     // Circumventing {CURRENT_DOMAIN_ID} in fse controls
     const additionalContext = computed(() => ({

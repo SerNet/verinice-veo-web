@@ -16,21 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Middleware } from '@nuxt/types';
-import { publicRoutes } from '~/plugins/user/index';
+import { useUser } from '~/composables/VeoUser';
+
+/**
+ * These routes will not trigger authentication
+ */
+export const publicRoutes = ['help', 'docs', 'login', 'sso'];
+
 /**
  * This file is part of the middleware and checks whether the user is allowed to access a specified route.
- * It does so by using the $user plugins auth functionality and gets called on every route change.
+ * It does so by using casl and gets called on every route change.
  * This functionality was formerly part of the auth plugin but as redirection via next() in the beforeEach hooks is quite buggy, it got outsourced.
  */
-export default (function ({ app, redirect, from, route }) {
+export default <Middleware>(async (context) => {
+  const { authenticated, initialize, keycloakInitialized } = useUser();
+
   // Proceed if the user is authenticated
-  if (app.$user.auth.authenticated) {
+  if (authenticated.value) {
     // If the user is being redirected from /login to /login, redirect to /index as he is already logged in.
-    if (route.path === '/login' && from.path === '/login') {
-      return redirect('/');
+    if (context.route.path === '/login' && context.from.path === '/login') {
+      return context.redirect('/');
     }
-  } else if (!publicRoutes.some((r) => route.path.startsWith(`/${r}`))) {
-    // User is not authenticated but needs authentication, so redirect him to the login page.
-    return redirect('/login');
+  } else if (!publicRoutes.some((r) => context.route.path.startsWith(`/${r}`))) {
+    if (!keycloakInitialized.value) {
+      await initialize(context);
+    } else {
+      // User is not authenticated but needs authentication, so redirect him to the login page.
+      return context.redirect('/login');
+    }
   }
-} as Middleware);
+  return await Promise.resolve();
+});

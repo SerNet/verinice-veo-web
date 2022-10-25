@@ -37,12 +37,12 @@
         <VeoTutorialButton />
       </div>
       <VeoAppAccountBtn
-        v-if="$user.auth.profile"
-        :username="$user.auth.profile.username"
-        :prename="$user.auth.profile.firstName"
-        :lastname="$user.auth.profile.lastName"
-        :email="$user.auth.profile.email"
-        @logout="$user.auth.logout('/')"
+        v-if="profile"
+        :username="profile.username"
+        :prename="profile.firstName"
+        :lastname="profile.lastName"
+        :email="profile.email"
+        @logout="logout"
       />
     </v-app-bar>
     <VeoPrimaryNavigation
@@ -69,24 +69,33 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, Ref, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api';
+import { computed, defineComponent, onMounted, Ref, ref, useContext, useMeta, useRoute, useRouter } from '@nuxtjs/composition-api';
 
 import { useI18n } from 'nuxt-i18n-composable';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-
+import { useUser } from '~/composables/VeoUser';
 import 'intro.js/minified/introjs.min.css';
 
 export default defineComponent({
   setup(_props, context) {
     const { $api } = useContext();
+    const { logout: _logout, profile } = useUser();
     const route = useRoute();
     const router = useRouter();
 
     const { alerts, listenToRootEvents } = useVeoAlerts();
     const { t } = useI18n();
     listenToRootEvents(context.root);
+
+    useMeta(() => ({
+      title: 'verinice.',
+      titleTemplate: '%s - verinice.veo'
+    }));
+
+    const logout = () => _logout('/');
+
     //
     // Global navigation
     //
@@ -155,16 +164,14 @@ export default defineComponent({
       domainId,
       unitId,
       drawer,
+      logout,
       newUnitDialog,
       breadcrumbsKey,
-      alerts
+      alerts,
+      profile
     };
   },
-  head() {
-    return {
-      titleTemplate: '%s - verinice.veo'
-    };
-  }
+  head: {}
 });
 </script>
 
