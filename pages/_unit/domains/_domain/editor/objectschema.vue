@@ -29,7 +29,7 @@
         <template #header>
           <div class="d-flex flex-row align-center">
             <h1 class="text-h1">
-              {{ $t('editor.objectschema.headline') }}
+              {{ t('editor.objectschema.headline') }}
             </h1>
             <v-tooltip bottom>
               <template #activator="{on}">
@@ -52,7 +52,7 @@
                 </a>
               </template>
               <template #default>
-                {{ $t('editor.schema.download') }}
+                {{ t('editor.schema.download') }}
               </template>
             </v-tooltip>
             <v-tooltip bottom>
@@ -70,7 +70,7 @@
                 </v-btn>
               </template>
               <template #default>
-                {{ $t('editor.schema.warnings') }}
+                {{ t('editor.schema.warnings') }}
               </template>
             </v-tooltip>
             <v-tooltip bottom>
@@ -87,7 +87,7 @@
                 </v-btn>
               </template>
               <template #default>
-                {{ $t('translations') }}
+                {{ t('translations') }}
               </template>
             </v-tooltip>
             <v-tooltip bottom>
@@ -103,7 +103,7 @@
                 </v-btn>
               </template>
               <template #default>
-                {{ $t("editor.schema.properties") }}
+                {{ t("editor.schema.properties") }}
               </template>
             </v-tooltip>
             <v-tooltip bottom>
@@ -121,7 +121,7 @@
                 </v-btn>
               </template>
               <template #default>
-                {{ $t('help') }}
+                {{ t('help') }}
               </template>
             </v-tooltip>
             <v-tooltip
@@ -142,8 +142,8 @@
                 </div>
               </template>
               <template #default>
-                <span v-if="isContentCreator">{{ upperFirst($t('save').toString()) }}</span>
-                <span v-else>{{ $t('saveContentCreator') }}</span>
+                <span v-if="isContentCreator">{{ upperFirst(t('save').toString()) }}</span>
+                <span v-else>{{ t('saveContentCreator') }}</span>
               </template>
             </v-tooltip>
           </div>
@@ -164,7 +164,7 @@
                     dense
                     hide-details
                     flat
-                    :label="$t('objectschema')"
+                    :label="t('objectschema')"
                     @input="updateSchemaName"
                   />
                 </v-col>
@@ -177,7 +177,7 @@
                     :value="description"
                     dense
                     hide-details
-                    :label="$t('description')"
+                    :label="t('description')"
                     @input="updateDescription"
                   />
                 </v-col>
@@ -198,7 +198,7 @@
                 filled
                 hide-details
                 :prepend-inner-icon="mdiMagnify"
-                :label="$t('search')"
+                :label="t('search')"
               />
             </v-col>
             <v-col>
@@ -207,7 +207,7 @@
                 class="caption"
                 dense
                 hide-details
-                :label="$t('hideemptyaspects')"
+                :label="t('hideemptyaspects')"
               />
             </v-col>
           </v-row>
@@ -240,7 +240,7 @@
               class="text-left"
             >
               <h3 class="text-h3">
-                {{ $t('invalidObjectSchema') }}
+                {{ t('invalidObjectSchema') }}
               </h3>
               <v-list-item
                 v-for="(error, index) of schemaIsValid.errors"
@@ -345,7 +345,7 @@ export default defineComponent({
       const _translations = (await $api.translation.fetch([]))?.lang || {};
       Object.assign(translations, _translations);
     });
-    const availableLanguages = computed(() => Object.keys(translations.value));
+    const availableLanguages = computed(() => Object.keys(translations));
 
     const isContentCreator = computed(() => roles.value.includes('veo-content-creator'));
 
@@ -362,7 +362,7 @@ export default defineComponent({
     const title = computed(() => objectSchemaHelper.value?.getTitle() || '');
     const description = computed(() => objectSchemaHelper.value?.getDescription() || '');
 
-    const schemaSpecificTranslations = (): IVeoTranslations['lang'] => {
+    const schemaSpecificTranslations = computed<IVeoTranslations['lang']>(() => {
       const translationsToReturn: IVeoTranslations['lang'] = {};
       const schemaTitle = objectSchemaHelper.value?.getTitle() || '';
 
@@ -371,7 +371,7 @@ export default defineComponent({
       }
 
       return translationsToReturn;
-    };
+    });
 
     const setSchema = (data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) => {
       objectSchemaHelper.value = data.schema || data.meta ? new ObjectSchemaHelper(data.schema, domainId.value) : undefined;
@@ -383,7 +383,7 @@ export default defineComponent({
         }
 
         if (objectSchemaHelper.value.getLanguages().length === 0) {
-          for (const [languageKey, translations] of Object.entries(schemaSpecificTranslations)) {
+          for (const [languageKey, translations] of Object.entries(schemaSpecificTranslations.value)) {
             objectSchemaHelper.value.updateTranslations(languageKey, translations);
           }
         }
