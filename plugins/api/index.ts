@@ -191,10 +191,10 @@ export class Client {
           } catch (e) {
             // eslint-disable-next-line no-console
             console.error("Couldn't refresh session");
-            await this._user.login('/');
+            await this._user.initialize(this._context);
           }
         } else if (options.retry === false) {
-          await this._user.login('/');
+          await this._user.initialize(this._context);
         }
       }
 
