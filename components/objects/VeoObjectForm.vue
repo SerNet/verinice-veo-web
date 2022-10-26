@@ -202,7 +202,7 @@ import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/comp
 import { getRiskAdditionalContext, getStatusAdditionalContext } from '~/components/forms/additionalContext';
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoDomain, IVeoInspectionResult, IVeoObjectSchema, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
@@ -307,7 +307,7 @@ export default defineComponent({
 
     const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
     const formsQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     const formQueryParameters = computed(() => ({ domainId: props.domainId, id: selectedDisplayOption.value }));
     const formQueryEnabled = computed(() => selectedDisplayOption.value !== 'objectschema');
@@ -315,7 +315,7 @@ export default defineComponent({
     const currentFormSchema = computed(() => (selectedDisplayOption.value === 'objectschema' ? undefined : formSchema.value));
 
     function getFormschemaIdBySubType(subType: string) {
-      const formSchemaId = (formSchemas.value || []).find((formschema) => formschema.subType === subType)?.id;
+      const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === subType)?.id;
       if (formSchemaId) {
         return formSchemaId;
       }
@@ -376,7 +376,7 @@ export default defineComponent({
 
     const displayOptions: ComputedRef<{ text: string; value: string | undefined }[]> = computed(() => {
       const currentSubType = objectData.value?.domains?.[props.domainId]?.subType;
-      const availableFormSchemas: { text: string; value: string | undefined }[] = (formSchemas.value || [])
+      const availableFormSchemas: { text: string; value: string | undefined }[] = (formSchemas.value as IVeoFormSchemaMeta[])
         .filter((formSchema) => formSchema.modelType === props.objectSchema?.title && (!currentSubType || currentSubType === formSchema.subType))
         .map((formSchema) => ({
           text: formSchema.name[locale.value] || formSchema.subType,

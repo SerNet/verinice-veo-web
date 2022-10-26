@@ -15,10 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { reactive, set, unref, useContext, watch } from '@nuxtjs/composition-api';
+import { computed, reactive, unref, useContext, watch } from '@nuxtjs/composition-api';
 import { useQuery as vueQueryUseQuery, useQueryClient } from '@tanstack/vue-query';
 import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+import { isFunction } from 'lodash';
 
 import { IBaseObject } from '~/lib/utils';
 
@@ -32,32 +33,34 @@ import { IBaseObject } from '~/lib/utils';
  * @returns Query object containing the data and information about the query.
  */
 export const useQuery = <T>(
-  primaryQueryKey: string,
+  queryKey: string[] | CallableFunction,
   requestFunction: CallableFunction,
   queryParameters: MaybeRef<IBaseObject>,
   queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>
 ) => {
   const { $config } = useContext();
 
-  // We turn the queryOptions (often a computed) into an object that we assign to the query key, in order to not have a ref inside the query key while still maintaining reactivity.
-  // const combinedQueryKey = reactive([primaryQueryKey, unref(queryParameters)]);
-  const combinedQueryKey = reactive([primaryQueryKey]);
+  const evaluatedQueryKey = computed(() => (isFunction(queryKey) ? queryKey(unref(queryParameters)) : queryKey));
+
+  const localQueryKey = reactive([]);
+
   watch(
-    () => unref(queryParameters),
+    () => evaluatedQueryKey.value,
     (newValue) => {
-      set(combinedQueryKey, 1, newValue);
-    }
+      Object.assign(localQueryKey, newValue);
+    },
+    { deep: true, immediate: true }
   );
 
   // Actual query getting executed
   const result = vueQueryUseQuery<T>(
-    combinedQueryKey,
-    () => requestFunction(...transformQueryParameters(primaryQueryKey, requestFunction.name, unref(queryParameters))),
+    localQueryKey,
+    () => requestFunction(...transformQueryParameters(evaluatedQueryKey.value[0], requestFunction.name, unref(queryParameters))),
     queryOptions as any
   );
 
   // Debugging stuff
-  if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(primaryQueryKey))) {
+  if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(evaluatedQueryKey.value[0]))) {
     const queryClient = useQueryClient();
 
     watch(
@@ -67,13 +70,13 @@ export const useQuery = <T>(
           const staleTime = queryOptions?.staleTime || queryClient.getDefaultOptions().queries?.staleTime;
           // eslint-disable-next-line no-console
           console.log(
-            `[vueQuery] data for query key "${JSON.stringify(combinedQueryKey)}" is considered stale (stale time is ${staleTime}). Last updated at ${new Date(
+            `[vueQuery] data for query key "${JSON.stringify(evaluatedQueryKey.value)}" is considered stale (stale time is ${staleTime}). Last updated at ${new Date(
               result.dataUpdatedAt.value
             ).toLocaleTimeString()}, now is ${new Date().toLocaleTimeString()}. Fetching...`
           );
         } else if (newValue) {
           // eslint-disable-next-line no-console
-          console.log(`[vueQuery] data for "${JSON.stringify(combinedQueryKey)}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(queryOptions)}"`);
+          console.log(`[vueQuery] data for "${JSON.stringify(evaluatedQueryKey.value)}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(queryOptions)}"`);
         }
       }
     );
