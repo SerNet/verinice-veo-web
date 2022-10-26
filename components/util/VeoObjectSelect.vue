@@ -25,10 +25,11 @@
     :loading="isLoading"
     no-filter
     :label="localLabel"
-    :search-input.sync="searchQuery"
+    :search-input="searchQuery"
     :clearable="!required"
     :return-object="valueAsEntity"
     v-bind="$attrs"
+    @update:search-input="onSearchQueryInput"
   >
     <template #prepend-item>
       <slot name="prepend-item" />
@@ -163,10 +164,19 @@ export default defineComponent({
       subType: props.subType,
       displayName: searchQuery.value ?? undefined
     }));
-    const { data: fetchObjectsData, isFetching: isLoadingObjects } = useFetchObjects(fetchObjectsQueryParameters, {
+    const {
+      data: fetchObjectsData,
+      isFetching: isLoadingObjects,
+      refetch
+    } = useFetchObjects(fetchObjectsQueryParameters, {
       placeholderData: { items: [], pageCount: 0, page: 1 },
-      enabled: searchQueryNotStale
+      enabled: searchQueryNotStale.value
     });
+
+    const onSearchQueryInput = (newValue: string) => {
+      searchQuery.value = newValue;
+      refetch();
+    };
 
     const moreItemsAvailable = computed(() => (fetchObjectsData.value?.pageCount || 0) > 0);
 
@@ -219,6 +229,7 @@ export default defineComponent({
       isLoadingObject,
       items,
       moreItemsAvailable,
+      onSearchQueryInput,
       searchQuery,
       mdiOpenInNew,
       openItem,
