@@ -27,8 +27,12 @@ export interface IVeoFetchSchemaParameters {
   domainIds: string[];
 }
 
+export const schemasQueryKeys = {
+  schemas: (queryParameters: IVeoFetchSchemaParameters) => ['schemas', queryParameters.type, queryParameters.domainIds] as const
+};
+
 export const useFetchSchema = (queryParameters: MaybeRef<IVeoFetchSchemaParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
   const { $api } = useContext();
 
-  return useQuery<IVeoObjectSchema>('schemas', $api.schema.fetch, queryParameters, { ...queryOptions, staleTime: 10 * 60 * 1000 });
+  return useQuery<IVeoObjectSchema>(schemasQueryKeys.schemas, $api.schema.fetch, queryParameters, { ...queryOptions, staleTime: 10 * 60 * 1000 });
 };

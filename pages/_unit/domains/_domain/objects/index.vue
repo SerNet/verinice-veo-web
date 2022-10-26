@@ -166,7 +166,7 @@ import { upperFirst } from 'lodash';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoTranslations } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
@@ -238,7 +238,7 @@ export default defineComponent({
     }));
     const queryEnabled = computed(() => !!filter.value.objectType);
 
-    const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true });
+    const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true, placeholderData: [] });
 
     const { $fetchState } = useFetch(async () => {
       translations.value = (await $api.translation.fetch(['de', 'en'])).lang;
@@ -246,7 +246,7 @@ export default defineComponent({
 
     const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
     const formsQueryEnabled = computed(() => !!domainId.value);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     const isLoading = computed(() => isLoadingObjects.value || $fetchState.pending);
 
@@ -299,7 +299,7 @@ export default defineComponent({
         return;
       }
 
-      const formSchema = (formSchemas.value || []).find((formSchema) => formSchema.subType === newSubType);
+      const formSchema = (formSchemas.value as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === newSubType);
 
       addCustomBreadcrumb({
         key: subTypeKey,
@@ -340,7 +340,7 @@ export default defineComponent({
           return t(`objectTypes.${value}`).toString();
         // Translate sub types
         case 'subType':
-          return (formSchemas.value || []).find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
+          return (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
         case 'status':
           return translations.value[locale.value]?.[`${objectType.value}_${subType.value}_status_${value}`] || value;
         default:

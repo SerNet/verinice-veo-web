@@ -141,7 +141,7 @@ import { sortBy, upperFirst } from 'lodash';
 
 import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
-import { IVeoCatalog, IVeoDomain, IVeoObjectSchema, IVeoReportsMeta } from '~/types/VeoTypes';
+import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoReportsMeta } from '~/types/VeoTypes';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
@@ -216,7 +216,7 @@ export default defineComponent({
       domainId: props.domainId
     }));
     const queryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled });
+    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled, placeholderData: [] });
     const { fetch: fetchObjectsEntries, fetchState: objectEntriesLoading } = useFetch(async () => {
       // Only load object types on the first call, as them changing while the user is using the application is highly unlikely
       if (!objectTypes.value.length) {
@@ -265,7 +265,9 @@ export default defineComponent({
               // dynamic sub type routes
               ...sortBy(
                 objectSubTypes.map((subType) => {
-                  const formSchema = (formSchemas.value || []).find((formSchema) => formSchema.modelType === objectSchema.title && formSchema.subType === subType.subType);
+                  const formSchema = (formSchemas.value as IVeoFormSchemaMeta[]).find(
+                    (formSchema) => formSchema.modelType === objectSchema.title && formSchema.subType === subType.subType
+                  );
                   const displayName = formSchema?.name[locale.value] || subType.subType;
                   return {
                     key: displayName,

@@ -125,7 +125,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { mdiFilter } from '@mdi/js';
 import { getEntityDetailsFromLink, IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoEntity, IVeoLink, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink, IVeoTranslations } from '~/types/VeoTypes';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
@@ -204,7 +204,7 @@ export default defineComponent({
 
     const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
     const formsQueryEnabled = computed(() => !!domainId.value);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     const { fetchState } = useFetch(async () => {
       const [_schemas, _translations] = await Promise.all([$api.schema.fetchAll(), $api.translation.fetch(['de', 'en'])]);
@@ -273,7 +273,7 @@ export default defineComponent({
           return t(`objectTypes.${value}`).toString();
         // Translate sub types
         case 'subType':
-          return (formSchemas.value || []).find((formSchema) => formSchema.subType === value)?.name?.[locale.value] || value;
+          return (formSchemas.value as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === value)?.name?.[locale.value] || value;
         case 'status':
           return translations.value[locale.value]?.[`${filter.value.objectType}_${filter.value.subType}_status_${value}`] || value;
         default:

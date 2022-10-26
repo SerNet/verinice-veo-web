@@ -36,6 +36,11 @@ export interface IVeoFetchObjectParameters {
   id: string;
 }
 
+export const objectsQueryKeys = {
+  objects: (queryParameters: IVeoFetchObjectsParameters) => ['objects', queryParameters.objectType, queryParameters.subType, { queryParameters }] as const,
+  object: (queryParameters: IVeoFetchObjectParameters) => ['object', queryParameters.objectType, queryParameters.id]
+};
+
 /**
  * Loads all objects up to a limit.
  *
@@ -46,7 +51,7 @@ export interface IVeoFetchObjectParameters {
 export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
   const { $api } = useContext();
 
-  return useQuery<IVeoPaginatedResponse<IVeoEntity[]>>('objects', $api.entity.fetchAll, queryParameters, queryOptions);
+  return useQuery<IVeoPaginatedResponse<IVeoEntity[]>>(objectsQueryKeys.objects, $api.entity.fetchAll, queryParameters, queryOptions);
 };
 
 /**
@@ -59,5 +64,5 @@ export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParame
 export const useFetchObject = (queryParameters: MaybeRef<IVeoFetchObjectParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
   const { $api } = useContext();
 
-  return useQuery<IVeoEntity>('object', $api.entity.fetch, queryParameters, queryOptions);
+  return useQuery<IVeoEntity>(objectsQueryKeys.object, $api.entity.fetch, queryParameters, queryOptions);
 };
