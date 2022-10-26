@@ -153,8 +153,5 @@ export default {
     format: 'Das Feld "{field}" muss dem Format "{format}" entsprechen',
     required: 'Das Feld "{field}" muss ausgefüllt sein',
     required_link: 'Der {position} Link in "{field}" muss auf ein Objekt zeigen oder entfernt werden'
-  },
-
-  forbidden: 'Zugriff verweigert',
-  forbiddenNavigationHint: 'Sie wurden auf die vorherige Seite zurückgeleitet.'
+  }
 };

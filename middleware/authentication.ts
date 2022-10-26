@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Middleware } from '@nuxt/types';
-import { useVeoAlerts } from '~/composables/VeoAlert';
 import { usePermissions } from '~/composables/VeoPermissions';
 import { useUser } from '~/composables/VeoUser';
 
@@ -39,28 +38,35 @@ export const restrictedRoutes = new Map<string, [string, string]>([
 export default <Middleware>(async (context) => {
   const { authenticated, initialize, keycloakInitialized } = useUser();
   const ability = usePermissions();
-  const { displayErrorMessage } = useVeoAlerts();
 
-  // Proceed if the user is authenticated
-  if (authenticated.value) {
-    // If the user is being redirected from /login to /login, redirect to /index as he is already logged in.
-    if (context.route.path === '/login' && context.from.path === '/login') {
-      return context.redirect('/');
-    } else {
-      const requiredPermission = restrictedRoutes.get(context.route.name || '');
-      const isRouteRestricted = Array.isArray(requiredPermission);
-      if (isRouteRestricted && ability.value.cannot(requiredPermission[0], requiredPermission[1])) {
-        displayErrorMessage(context.i18n.t('forbidden').toString(), context.i18n.t('forbiddenNavigationHint').toString());
-        return context.redirect(context.from.fullPath);
+  // Prevent the user from accessing the login page if he is logged in
+  if (authenticated.value && context.route.path === '/login') {
+    return context.redirect('/');
+  }
+
+  // Everything inside the if block only gets executed if the user wants to access an non-public route.
+  if (!publicRoutes.some((r) => context.route.path.startsWith(`/${r}`))) {
+    // If keycloak isn't initialized, initialize keycloak
+    if (!keycloakInitialized.value) {
+      try {
+        await initialize(context);
+      } catch (error: any) {
+        return context.error({ statusCode: 401, message: error });
       }
     }
-  } else if (!publicRoutes.some((r) => context.route.path.startsWith(`/${r}`))) {
-    if (!keycloakInitialized.value) {
-      await initialize(context);
-    } else {
-      // User is not authenticated but needs authentication, so redirect him to the login page.
+
+    // If keycloak is initialized and the user isn't logged in, redirect to login
+    if (!authenticated.value) {
       return context.redirect('/login');
     }
+
+    // check permissions
+    const requiredPermission = restrictedRoutes.get(context.route.name || '');
+    const isRouteRestricted = Array.isArray(requiredPermission);
+
+    // If the route is restricted and the user doesn't have the required permissions, display an error
+    if (isRouteRestricted && ability.value.cannot(requiredPermission[0], requiredPermission[1])) {
+      return context.error({ statusCode: 403 });
+    }
   }
-  return await Promise.resolve();
 });

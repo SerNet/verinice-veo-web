@@ -153,8 +153,5 @@ export default {
     format: 'The field "{field}" has to match the format "{format}"',
     required: 'The field "{field}" is required',
     required_link: 'The {position} link in "{field}" has to point to an object or must be removed'
-  },
-
-  forbidden: 'Access forbidden',
-  forbiddenNavigationHint: 'You were returned to the previous page.'
+  }
 };
