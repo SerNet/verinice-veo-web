@@ -106,6 +106,7 @@ export default {
   'unit.select.label': 'Unit',
 
   breadcrumbs: {
+    administration: 'Clientverwaltung',
     catalogs: 'Kataloge',
     domain: 'Modul',
     editor: 'Editoren',

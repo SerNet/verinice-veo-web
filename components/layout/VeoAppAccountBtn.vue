@@ -77,27 +77,32 @@
           target="_blank"
         >
           <v-list-item-title class="d-flex">
-            {{ $t('myAccount') }}
+            {{ t('myAccount') }}
             <v-icon x-small>
               {{ mdiOpenInNew }}
             </v-icon>
           </v-list-item-title>
-          <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
+        </v-list-item>
+        <v-divider />
+        <v-list-item to="/administration">
+          <v-list-item-title>
+            {{ t('breadcrumbs.administration') }}
+          </v-list-item-title>
         </v-list-item>
         <v-divider />
         <v-list-item @click="displayDeploymentDetails = true">
           <v-list-item-title>
-            {{ $t('about') }}
+            {{ t('about') }}
           </v-list-item-title>
-          <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
         </v-list-item>
         <v-divider />
         <v-list-item @click="$emit('logout')">
           <v-list-item-title class="font-weight-medium">
-            {{ $t('logout') }}
+            {{ t('logout') }}
           </v-list-item-title>
         </v-list-item>
       </v-list>
+      <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
     </v-card>
   </v-menu>
 </template>
@@ -167,12 +172,14 @@ export default defineComponent({
 {
   "en": {
     "about": "About verinice.",
+    "clientAdministration": "Client administration",
     "logout": "Logout",
     "myAccount": "My account",
     "notAvailable": "Not available"
   },
   "de": {
     "about": "Über verinice.",
+    "clientAdministration": "Clientverwaltung",
     "logout": "Abmelden",
     "myAccount": "Mein Account",
     "notAvailable": "Keine Angabe"
