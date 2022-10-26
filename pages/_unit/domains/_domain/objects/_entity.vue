@@ -53,6 +53,7 @@
           <VeoObjectActionMenu
             color="primary"
             speed-dial-style="bottom: 12px; right: 0"
+            :disabled="ability.cannot('manage', 'objects')"
             :object="object"
             :type="activeTab"
             @reload="updateObjectRelationships"
@@ -68,7 +69,7 @@
           <VeoObjectForm
             v-model="modifiedObject"
             class="pb-4"
-            :disabled="formDataIsRevision"
+            :disabled="formDataIsRevision || ability.cannot('manage', 'objects')"
             :object-schema="objectSchema"
             :loading="$fetchState.pending"
             :domain-id="domainId"
@@ -104,7 +105,7 @@
                   <v-btn
                     v-cy-name="'reset-button'"
                     text
-                    :disabled="loading || !isFormDirty"
+                    :disabled="loading || !isFormDirty || ability.cannot('manage', 'objects')"
                     @click="resetForm"
                   >
                     {{ t('global.button.reset') }}
@@ -114,7 +115,7 @@
                     v-cy-name="'save-button'"
                     depressed
                     color="primary"
-                    :disabled="loading || !isFormDirty || !isFormValid"
+                    :disabled="loading || !isFormDirty || !isFormValid || ability.cannot('manage', 'objects')"
                     @click="saveObject"
                   >
                     {{ t('global.button.save') }}
@@ -125,6 +126,7 @@
                   <v-btn
                     v-cy-name="'restore-button'"
                     depressed
+                    :disabled="ability.cannot('manage', 'objects')"
                     color="primary"
                     @click="restoreObject"
                   >
@@ -175,6 +177,7 @@ import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useFetchForms } from '~/composables/api/forms';
+import { usePermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -197,6 +200,7 @@ export default defineComponent({
     const { displaySuccessMessage, displayErrorMessage, expireAlert } = useVeoAlerts();
     const { linkObject } = useVeoObjectUtilities();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
+    const ability = usePermissions();
 
     const objectParameter = computed(() => separateUUIDParam(route.value.params.entity));
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
@@ -444,6 +448,7 @@ export default defineComponent({
     watch(() => () => domainId.value, getAdditionalContext, { deep: true, immediate: true });
 
     return {
+      ability,
       linkObjectFilter,
       VeoAlertType,
       additionalContext,

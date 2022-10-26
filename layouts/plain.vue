@@ -40,12 +40,12 @@
       <v-spacer />
       <VeoLanguageSwitch class="mx-3" />
       <VeoAppAccountBtn
-        v-if="$user.auth.profile"
-        :username="$user.auth.profile.username"
-        :prename="$user.auth.profile.firstName"
-        :lastname="$user.auth.profile.lastName"
-        :email="$user.auth.profile.email"
-        @logout="$user.auth.logout('/')"
+        v-if="profile"
+        :username="profile.username"
+        :prename="profile.firstName"
+        :lastname="profile.lastName"
+        :email="profile.email"
+        @logout="logout"
       />
     </v-app-bar>
     <v-main>
@@ -55,13 +55,26 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-export default Vue.extend({
-  head() {
-    return {
+import { defineComponent, useMeta } from '@nuxtjs/composition-api';
+import { useUser } from '~/composables/VeoUser';
+
+export default defineComponent({
+  setup() {
+    const { logout: _logout, profile } = useUser();
+
+    useMeta(() => ({
+      title: 'verinice.',
       titleTemplate: '%s - verinice.veo'
+    }));
+
+    const logout = () => _logout('/');
+
+    return {
+      logout,
+      profile
     };
-  }
+  },
+  head: {}
 });
 </script>
 <style lang="scss" scoped>

@@ -28,12 +28,12 @@ import report from '~/plugins/api/report';
 import domain from '~/plugins/api/domain';
 import monitoring from '~/plugins/api/monitoring';
 import catalog from '~/plugins/api/catalog';
-import { User } from '~/plugins/user';
 import { IVeoPaginationOptions } from '~/types/VeoTypes';
 import { sanitizeURLParams } from '~/lib/utils';
+import { IVeoUserComposable, useUser } from '~/composables/VeoUser';
 
-export function createAPI(context: Context) {
-  return Client.create(context, { form, entity, history, schema, translation, unit, report, domain, catalog, monitoring });
+export function createAPI(context: Context, user: IVeoUserComposable) {
+  return Client.create(context, { form, entity, history, schema, translation, unit, report, domain, catalog, monitoring }, user);
 }
 
 export interface IAPIClient {
@@ -82,16 +82,17 @@ export class Client {
   public baseHistoryURL: string;
   public baseReportURL: string;
   public _context: Context;
+  public _user: IVeoUserComposable;
 
-  static create<T extends Record<keyof T, IAPIClient>>(context: Context, namespaces: T): Client & { [K in keyof T]: ReturnType<T[K]> } {
-    const instance: any = new this(context);
+  static create<T extends Record<keyof T, IAPIClient>>(context: Context, namespaces: T, user: IVeoUserComposable): Client & { [K in keyof T]: ReturnType<T[K]> } {
+    const instance: any = new this(context, user);
     for (const key in namespaces) {
       instance[key] = namespaces[key](instance);
     }
     return instance;
   }
 
-  constructor(protected context: Context) {
+  constructor(protected context: Context, user: IVeoUserComposable) {
     this.build = context.$config.build;
     this.version = context.$config.version;
     this.baseURL = `${context.$config.apiUrl}`.replace(/\/$/, '');
@@ -100,6 +101,7 @@ export class Client {
     this.baseReportURL = `${context.$config.reportsApiUrl}`.replace(/\/$/, '');
 
     this._context = context;
+    this._user = user;
   }
 
   public getURL(url: string) {
@@ -119,8 +121,6 @@ export class Client {
    * Basic request function used by all api namespaces
    */
   public async req(url: string, options: RequestOptions = {}): Promise<any> {
-    const $user = this.context.app.$user as User;
-
     // Only allow alpha-numeric values and dashes in url params (NOTE: Everything behind the ? is NOT a PARAM but part of the QUERY string)
     const splittedUrl = url.split('/');
     for (const index in splittedUrl) {
@@ -139,8 +139,8 @@ export class Client {
     const defaults = {
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer ' + $user.auth.token,
-        'Accept-Language': this.context.i18n.locale
+        Authorization: 'Bearer ' + this._user.token.value,
+        'Accept-Language': this.context.app.i18n.locale
       } as Record<string, string>,
       method: 'GET',
       mode: 'cors'
@@ -179,20 +179,22 @@ export class Client {
     if (Number(res.status) === 401) {
       // Check whether the error was returned because of keycloak or an invalid api endpoint configuration
       try {
-        await $user.auth.loadUserProfile();
+        if (this._user.keycloak.value) {
+          await this._user.keycloak.value.loadUserProfile();
+        }
       } catch (e) {
         // If the user profile couldn't get loaded, the session seems to be invalid, so we try to refresh it
         if (options.retry) {
           try {
-            await $user.auth.refreshSession();
+            await this._user.refreshKeycloakSession();
             return this.req(url, { ...options, retry: false });
           } catch (e) {
             // eslint-disable-next-line no-console
             console.error("Couldn't refresh session");
-            await $user.auth.login('/');
+            await this._user.initialize(this._context);
           }
         } else if (options.retry === false) {
-          await $user.auth.login('/');
+          await this._user.initialize(this._context);
         }
       }
 
@@ -239,9 +241,11 @@ export class Client {
   }
 }
 
-export default (function (context, inject) {
-  inject('api', createAPI(context));
-} as Plugin);
+export default <Plugin>((context, inject) => {
+  const user = useUser();
+
+  inject('api', createAPI(context, user));
+});
 
 export type Injection = ReturnType<typeof createAPI>;
 

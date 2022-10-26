@@ -104,6 +104,7 @@
                 <v-btn
                   icon
                   :data-component-name="`object-overview-${btn.id}-button`"
+                  :disabled="ability.cannot('manage', 'objects')"
                   @click="btn.action(item)"
                   v-on="on"
                 >
@@ -137,6 +138,7 @@
             v-cy-name="'create-button'"
             color="primary"
             depressed
+            :disabled="ability.cannot('manage', 'objects')"
             fab
             absolute
             style="bottom: 12px; right: 0"
@@ -173,6 +175,8 @@ import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
+import { useUser } from '~/composables/VeoUser';
+import { usePermissions } from '~/composables/VeoPermissions';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
 
@@ -180,9 +184,11 @@ export default defineComponent({
   name: 'VeoObjectsOverviewPage',
   setup() {
     const { t, locale } = useI18n();
-    const { $api, $user } = useContext();
+    const { $api } = useContext();
+    const { tablePageSize } = useUser();
     const route = useRoute();
     const router = useRouter();
+    const ability = usePermissions();
 
     const { displayErrorMessage } = useVeoAlerts();
     const { cloneObject } = useVeoObjectUtilities();
@@ -229,7 +235,7 @@ export default defineComponent({
     };
 
     const combinedQueryParameters = computed<any>(() => ({
-      size: $user.tablePageSize,
+      size: tablePageSize.value,
       sortBy: queryParameters.sortBy,
       sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
       page: queryParameters.page,
@@ -421,6 +427,7 @@ export default defineComponent({
 
     return {
       t,
+      ability,
       actions,
       additionalHeaders,
       domainId,

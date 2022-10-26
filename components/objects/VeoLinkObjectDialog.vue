@@ -129,6 +129,7 @@ import { IVeoEntity, IVeoLink, IVeoTranslations } from '~/types/VeoTypes';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
+import { useUser } from '~/composables/VeoUser';
 
 export default defineComponent({
   name: 'VeoLinkObjectDialog',
@@ -194,7 +195,8 @@ export default defineComponent({
   setup(props, { emit }) {
     const route = useRoute();
     const { t, locale } = useI18n();
-    const { $api, $user } = useContext();
+    const { $api } = useContext();
+    const { tablePageSize } = useUser();
     const { linkObject, unlinkObject } = useVeoObjectUtilities();
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
@@ -232,7 +234,7 @@ export default defineComponent({
     };
 
     const combinedObjectsQueryParameters = computed(() => ({
-      size: $user.tablePageSize,
+      size: tablePageSize.value,
       sortBy: objectsQueryParameters.sortBy,
       sortOrder: objectsQueryParameters.sortDesc ? 'desc' : 'asc',
       page: objectsQueryParameters.page,

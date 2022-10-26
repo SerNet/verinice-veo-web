@@ -47,21 +47,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext } from '@nuxtjs/composition-api';
+import { defineComponent } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
+
+import { useUser } from '~/composables/VeoUser';
 
 export default defineComponent({
   layout: 'plain',
   setup() {
     const { t } = useI18n();
-    const { $user } = useContext();
+    const { login: _login } = useUser();
 
-    const login = () => $user.auth.login('/');
-    const register = () => $user.auth.register('/');
+    // Needed as a separate function, as _login would be undefined if directly called from within the template.
+    const login = () => _login('/');
 
     return {
       login,
-      register,
       t
     };
   }
