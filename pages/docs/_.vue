@@ -16,17 +16,30 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage v-if="document">
-    <div class="caption">
-      {{ document.path }}
+  <VeoPage
+    v-if="document"
+    :title="document.title"
+  >
+    <div class="d-flex">
+      <VeoCard class="flex-grow-1">
+        <v-card-text>
+          <NuxtContent :document="document" />
+        </v-card-text>
+      </VeoCard>
+      <VeoDocNavigation
+        :items="items"
+        class="flex-grow-0 ml-4"
+      />
     </div>
-    <NuxtContent :document="document" />
   </VeoPage>
 </template>
 <script lang="ts">
 import { defineComponent, useRoute } from '@nuxtjs/composition-api';
+import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { useDoc } from '~/composables/docs';
+
+import { useDoc, useDocTree } from '~/composables/docs';
+
 export default defineComponent({
   setup() {
     const { locale } = useI18n();
@@ -35,11 +48,21 @@ export default defineComponent({
       path: `/${route.value.params.pathMatch || 'index'}`,
       locale: locale.value
     });
-    return { document };
-  },
-  head(): any {
+
+    const items = useDocTree({
+      childrenKey: 'children',
+      buildItem(item) {
+        return {
+          ...item,
+          name: `${item.isDir ? upperFirst(item.dir.split('/').pop()) : item.title || upperFirst(item.slug)}`,
+          to: `/docs${item.path}`
+        };
+      }
+    });
+
     return {
-      title: this.document?.title
+      document,
+      items
     };
   }
 });

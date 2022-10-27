@@ -65,7 +65,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 
 import { DocPageFetchReturn, useDocs } from '~/composables/docs';
 export default defineComponent({
-  layout: 'print',
+  layout: 'none',
   validate({ route, redirect }) {
     if ('print' in route.query) {
       return true;
