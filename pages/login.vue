@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
+import { defineComponent, useContext } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { useUser } from '~/composables/VeoUser';
@@ -56,7 +56,12 @@ export default defineComponent({
   layout: 'plain',
   setup() {
     const { t } = useI18n();
-    const { login: _login } = useUser();
+    const context = useContext();
+    const { login: _login, initialize, keycloakInitialized } = useUser();
+
+    if (!keycloakInitialized.value) {
+      initialize(context);
+    }
 
     // Needed as a separate function, as _login would be undefined if directly called from within the template.
     const login = () => _login('/');
