@@ -52,6 +52,7 @@
                   v-model="formData.username"
                   :label="`${t('username')}*`"
                   :prepend-inner-icon="mdiAccountOutline"
+                  :readonly="!!id"
                   :rules="[requiredRule, usernameIsDuplicateRule]"
                 />
               </v-col>
