@@ -35,7 +35,7 @@
       </v-list-item-content>
     </v-list-item>
     <v-list-item
-      @click="doCreateUnit()"
+      @click="$emit('create-unit')"
     >
       <v-list-item-title>
         {{ t('unit.create.short') }}
@@ -50,7 +50,6 @@ import { computed, defineComponent, PropType, ref, useContext, useFetch, useRout
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { IVeoUnit } from '~/types/VeoTypes';
-import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 
 export default defineComponent({
@@ -61,9 +60,9 @@ export default defineComponent({
     }
   },
   emits: {
-    [VeoEvents.UNIT_CREATE]: (_: boolean) => {}
+    'create-unit': () => {}
   },
-  setup(_, { root }) {
+  setup() {
     const { $api } = useContext();
     const { t } = useI18n();
     const route = useRoute();
@@ -90,15 +89,10 @@ export default defineComponent({
       }
     };
 
-    const doCreateUnit = (persistent: boolean = false) => {
-      root.$emit(VeoEvents.UNIT_CREATE, persistent);
-    };
-
     return {
       getFirstDomainDomaindId,
       displayedUnits,
       doChangeUnit,
-      doCreateUnit,
       unit,
 
       t

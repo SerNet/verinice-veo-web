@@ -15,26 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { VeoAlertType } from './VeoTypes';
-
-export interface IVeoEventPayload {
-  type?: VeoAlertType;
-  text: string;
-  title?: string;
-  saveButtonText?: string;
-  objectModified?: boolean; // ToDo: Temporary until objects rework
-  refetchCallback?: CallableFunction; // ToDo: Temporary until objects rework
-}
-
 export const VeoEvents = {
   SNACKBAR_SUCCESS: 'snackbar_success',
   ALERT_ERROR: 'alert_error',
   ALERT_INFO: 'alert_info',
   ALERT_EXPIRE: 'alert_expire',
 
-  DOMAIN_CHANGED: 'domain_changed',
-  UNIT_CREATE: 'unit-create',
-  UNIT_CREATED: 'unit_created',
-
-  ENTITY_UPDATED: 'entity_updated'
+  UNIT_CREATED: 'unit_created'
 };

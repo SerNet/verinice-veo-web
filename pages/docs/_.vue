@@ -28,7 +28,6 @@ import { defineComponent, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { useDoc } from '~/composables/docs';
 export default defineComponent({
-  layout: 'docs',
   setup() {
     const { locale } = useI18n();
     const route = useRoute();

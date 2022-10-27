@@ -27,28 +27,6 @@
         @click="drawer = true"
       />
       <v-spacer />
-      <v-tooltip
-        bottom
-        :disabled="pdfExists"
-      >
-        <template #activator="{ on }">
-          <div v-on="on">
-            <v-btn
-              depressed
-              :disabled="!pdfExists"
-              :to="pdfPath"
-              color="primary"
-              class="mr-2"
-              target="_blank"
-            >
-              {{ t('exportAsPDF') }}
-            </v-btn>            
-          </div>
-        </template>
-        <template #default>
-          {{ t('noPdfExists') }}
-        </template>
-      </v-tooltip>
       <VeoLanguageSwitch />
     </v-app-bar>
     <v-navigation-drawer
@@ -84,14 +62,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, Ref, ref } from '@nuxtjs/composition-api';
+import { defineComponent, Ref, ref } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { useDocTree } from '~/composables/docs';
 
 export default defineComponent({
   setup() {
-    const { t, locale } = useI18n();
+    const { t } = useI18n();
     //
     // Global navigation
     //
@@ -107,21 +85,9 @@ export default defineComponent({
         };
       }
     });
-
-    const pdfExists = ref(false);
-    const pdfPath = computed(() => `/Documentation_${locale.value}.pdf`);
-    onMounted(async () => {
-      try {
-        const response = await fetch(pdfPath.value);
-        pdfExists.value = !!response.headers.get('content-type')?.startsWith('application/pdf');
-      } catch (_) {}
-    });
-
     return {
       drawer,
       items,
-      pdfPath,
-      pdfExists,
 
       t
     };
