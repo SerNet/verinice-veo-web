@@ -21,6 +21,7 @@ import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 
 import { useQuery } from './utils/query';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 export interface IVeoFetchSchemaParameters {
   type: string;
@@ -28,11 +29,18 @@ export interface IVeoFetchSchemaParameters {
 }
 
 export const schemasQueryKeys = {
-  schemas: (queryParameters: IVeoFetchSchemaParameters) => ['schemas', queryParameters.type, queryParameters.domainIds] as const
+  schemas: ['schemas'],
+  schema: (queryParameters: IVeoFetchSchemaParameters) => ['schema', queryParameters.type, queryParameters.domainIds] as const
+};
+
+export const useFetchSchemas = (queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoSchemaEndpoint[]>(schemasQueryKeys.schemas, $api.schema.fetchAll, {}, { ...queryOptions, staleTime: Infinity, placeholderData: [] });
 };
 
 export const useFetchSchema = (queryParameters: MaybeRef<IVeoFetchSchemaParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
   const { $api } = useContext();
 
-  return useQuery<IVeoObjectSchema>(schemasQueryKeys.schemas, $api.schema.fetch, queryParameters, { ...queryOptions, staleTime: 10 * 60 * 1000 });
+  return useQuery<IVeoObjectSchema>(schemasQueryKeys.schema, $api.schema.fetch, queryParameters, { ...queryOptions, staleTime: 10 * 60 * 1000 });
 };

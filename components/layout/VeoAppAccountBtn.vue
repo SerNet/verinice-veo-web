@@ -95,7 +95,10 @@
           <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
         </v-list-item>
         <v-divider />
-        <v-list-item to="/docs">
+        <v-list-item
+          active-class="veo-active-list-item"
+          to="/docs"
+        >
           <v-list-item-title>
             {{ $t('documentation') }}
           </v-list-item-title>

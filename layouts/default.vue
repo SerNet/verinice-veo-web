@@ -67,12 +67,14 @@ import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import 'intro.js/minified/introjs.min.css';
+import { useUser } from '~/composables/VeoUser';
 
 export default defineComponent({
   setup(_props, context) {
     const { $api } = useContext();
     const route = useRoute();
     const router = useRouter();
+    const { authenticated } = useUser();
 
     const { alerts, displaySuccessMessage, listenToRootEvents } = useVeoAlerts();
     const { t } = useI18n();
@@ -100,21 +102,23 @@ export default defineComponent({
 
     // automatically create first unit if none exists and then change to new unit
     onMounted(async () => {
-      const units = await $api.unit.fetchAll();
-      if (units.length === 0) {
-        const data = await $api.unit.create({ name: t('unit.default.name'), description: t('unit.default.description') });
-        const unit = await $api.unit.fetch(data.resourceId);
-        displaySuccessMessage(t('unit.created').toString());
-        context.root.$emit(VeoEvents.UNIT_CREATED);
-        const domainId = getFirstDomainDomaindId(unit);
-        if (domainId) {
-          router.push({
-            name: 'unit-domains-domain',
-            params: {
-              unit: createUUIDUrlParam('unit', unit.id),
-              domain: createUUIDUrlParam('domain', domainId)
-            }
-          });
+      if (authenticated.value) {
+        const units = await $api.unit.fetchAll();
+        if (units.length === 0) {
+          const data = await $api.unit.create({ name: t('unit.default.name'), description: t('unit.default.description') });
+          const unit = await $api.unit.fetch(data.resourceId);
+          displaySuccessMessage(t('unit.created').toString());
+          context.root.$emit(VeoEvents.UNIT_CREATED);
+          const domainId = getFirstDomainDomaindId(unit);
+          if (domainId) {
+            router.push({
+              name: 'unit-domains-domain',
+              params: {
+                unit: createUUIDUrlParam('unit', unit.id),
+                domain: createUUIDUrlParam('domain', domainId)
+              }
+            });
+          }
         }
       }
     });

@@ -23,6 +23,8 @@ import { isFunction } from 'lodash';
 
 import { IBaseObject } from '~/lib/utils';
 
+export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
+
 /**
  * Wrapper for vue-query's useQuery to apply some custom logic to make it work more seamless with the legacy api plugin.
  *
@@ -33,7 +35,7 @@ import { IBaseObject } from '~/lib/utils';
  * @returns Query object containing the data and information about the query.
  */
 export const useQuery = <T>(
-  queryKey: string[] | CallableFunction,
+  queryKey: readonly string[] | CallableFunction,
   requestFunction: CallableFunction,
   queryParameters: MaybeRef<IBaseObject>,
   queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>
@@ -93,7 +95,10 @@ const queryParameterMap = new Map<string, string[]>([
   ['object_fetch', ['objectType', 'id']],
   ['forms_fetchAll', ['domainId']],
   ['form_fetch', ['domainId', 'id']],
-  ['schemas_fetch', ['type', 'domainIds']]
+  ['schemas_fetchAll', []],
+  ['schema_fetch', ['type', 'domainIds']],
+  ['units_fetchAll', []],
+  ['unit_fetch', ['id']]
 ]);
 
 /**
