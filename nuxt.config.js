@@ -60,6 +60,7 @@ export default {
     formsApiUrl: process.env.VEO_FORMS_API_URL || 'https://api.develop.verinice.com/forms',
     historyApiUrl: process.env.VEO_HISTORY_API_URL || 'https://api.develop.verinice.com/history',
     reportsApiUrl: process.env.VEO_REPORTING_API_URL || 'https://api.develop.verinice.com/reporting',
+    accountsApiUrl: process.env.VEO_REPORTING_API_URL || 'https://api.develop.verinice.com/accounts',
     oidcUrl: process.env.VEO_OIDC_URL || 'https://auth.staging.verinice.com/auth',
     oidcRealm: process.env.VEO_OIDC_REALM || 'verinice-veo',
     oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client',
