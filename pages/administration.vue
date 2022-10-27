@@ -17,11 +17,39 @@
 -->
 <template>
   <VeoPage :title="t('breadcrumbs.administration')">
-    a
+    <h2 class="text-h2 mt-6">
+      {{ t('accounts') }}
+    </h2>
+    <p class="text-body-2">
+      {{ t('accountAdministrationHint') }}
+    </p>
+    <VeoCard>
+      <VeoObjectTable>
+        <template #actions="{item}">
+          <v-tooltip
+            v-for="action in accountTableActions"
+            :key="action.id"
+            bottom
+          >
+            <template #activator="{on}">
+              <v-btn
+                icon
+                @click="action.action(item)"
+                v-on="on"
+              >
+                <v-icon v-text="action.icon" />
+              </v-btn>
+            </template>
+            {{ t(action.label) }}
+          </v-tooltip>
+        </template>
+      </VeoObjectTable>
+    </VeoCard>
   </VeoPage>
 </template>
 
 <script lang="ts">
+import { mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
 import { defineComponent } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
@@ -29,7 +57,29 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
 
+    const onEditAccount = () => {};
+
+    const onDeleteAccount = () => {};
+
+    // Table stuff
+    const accountTableActions: { id: string; action: CallableFunction; icon: string; label: string }[] = [
+      {
+        id: 'edit',
+        action: onEditAccount,
+        icon: mdiPencilOutline,
+        label: 'edit'
+      },
+      {
+        id: 'delete',
+        action: onDeleteAccount,
+        icon: mdiTrashCanOutline,
+        label: 'global.button.delete'
+      }
+    ];
+
     return {
+      accountTableActions,
+
       t
     };
   }
@@ -39,10 +89,14 @@ export default defineComponent({
 <i18n>
 {
    "en": {
-    "clientAdministration": "Client administration"
+    "accountAdministrationHint": "Every account has access to all units and objects in this client.",
+    "accounts": "Accounts",
+    "edit": "Edit"
    },
    "de": {
-    "clientAdministration": "Clientverwaltung"
+    "accountAdministrationHint": "Jeder Account hat Zugriff auf alle Units und Objekte in diesem Client.",
+    "accounts": "Accounts",
+    "edit": "Bearbeiten"
    }
 }
 </i18n>
