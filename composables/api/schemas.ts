@@ -27,7 +27,7 @@ export interface IVeoFetchSchemaParameters {
 }
 
 export const schemasQueryKeys = {
-  schemas: (queryParameters: IVeoFetchSchemaParameters) => ['schemas', queryParameters.type, queryParameters.domainIds] as const
+  schemas: (queryParameters: IVeoFetchSchemaParameters) => ['schema', queryParameters.type, queryParameters.domainIds] as const
 };
 
 export const useFetchSchema = (queryParameters: MaybeRef<IVeoFetchSchemaParameters>, queryOptions?: QueryOptions) => {
