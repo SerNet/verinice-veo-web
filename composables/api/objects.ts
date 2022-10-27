@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { useContext } from '@nuxtjs/composition-api';
-import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 
-import { useQuery } from './utils/query';
+import { QueryOptions, useQuery } from './utils/query';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export interface IVeoFetchObjectsParameters {
@@ -48,7 +47,7 @@ export const objectsQueryKeys = {
  * @param queryOptions Options modifying query behaviour.
  * @returns Returns all objects matching the parameter criteria.
  */
-export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
+export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParameters>, queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
   return useQuery<IVeoPaginatedResponse<IVeoEntity[]>>(objectsQueryKeys.objects, $api.entity.fetchAll, queryParameters, queryOptions);
@@ -61,7 +60,7 @@ export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParame
  * @param queryOptions Options modifying query behaviour.
  * @returns Returns the object.
  */
-export const useFetchObject = (queryParameters: MaybeRef<IVeoFetchObjectParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
+export const useFetchObject = (queryParameters: MaybeRef<IVeoFetchObjectParameters>, queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
   return useQuery<IVeoEntity>(objectsQueryKeys.object, $api.entity.fetch, queryParameters, queryOptions);

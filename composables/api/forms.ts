@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { useContext } from '@nuxtjs/composition-api';
-import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 
-import { useQuery } from './utils/query';
+import { QueryOptions, useQuery } from './utils/query';
 import { IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export interface IVeoFetchFormsParameters {
@@ -36,13 +35,13 @@ export const schemasQueryKeys = {
   form: (queryParameters: IVeoFetchFormParameters) => ['form', queryParameters.domainId, queryParameters.id] as const
 };
 
-export const useFetchForms = (queryParameters: MaybeRef<IVeoFetchFormsParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
+export const useFetchForms = (queryParameters: MaybeRef<IVeoFetchFormsParameters>, queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
   return useQuery<IVeoFormSchemaMeta[]>(schemasQueryKeys.forms, $api.form.fetchAll, queryParameters, { ...queryOptions, staleTime: 10 * 60 * 1000, placeholderData: [] });
 };
 
-export const useFetchForm = (queryParameters: MaybeRef<IVeoFetchFormParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
+export const useFetchForm = (queryParameters: MaybeRef<IVeoFetchFormParameters>, queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
   return useQuery<IVeoFormSchema>(schemasQueryKeys.form, $api.form.fetch, queryParameters, { ...queryOptions, staleTime: 10 * 60 * 1000 });
