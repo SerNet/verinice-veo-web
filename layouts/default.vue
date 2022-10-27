@@ -34,7 +34,20 @@
       <div class="mx-3">
         <VeoTutorialButton />
       </div>
-      <VeoAppAccountBtn @create-unit="createUnit" />
+      <VeoAppAccountBtn
+        v-if="authenticated"
+        @create-unit="createUnit"
+      />
+      <v-btn
+        v-else
+        color="primary"
+        icon
+        to="/login"
+      >
+        <v-icon>
+          {{ mdiAccountCircleOutline }}
+        </v-icon>
+      </v-btn>
     </v-app-bar>
     <VeoPrimaryNavigation
       v-model="drawer"
@@ -61,8 +74,9 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, Ref, ref, useContext, useMeta, useRoute, useRouter } from '@nuxtjs/composition-api';
-
 import { useI18n } from 'nuxt-i18n-composable';
+import { mdiAccountCircleOutline } from '@mdi/js';
+
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -133,6 +147,7 @@ export default defineComponent({
     const unitId = computed(() => (separateUUIDParam(route.value.params.unit).id.length > 0 ? separateUUIDParam(route.value.params.unit).id : undefined));
 
     return {
+      authenticated,
       createUnit,
       domainId,
       unitId,
@@ -140,7 +155,8 @@ export default defineComponent({
       newUnitDialog,
       alerts,
 
-      t
+      t,
+      mdiAccountCircleOutline
     };
   },
   head: {}
