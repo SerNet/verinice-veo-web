@@ -1,0 +1,310 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2022  Jonas Heitmann
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<template>
+  <VeoDialog
+    :value="value"
+    v-bind="$attrs"
+    :headline="id ? t('updateAccount') : t('createAccount')"
+    large
+    v-on="$listeners"
+  >
+    <template #default>
+      <VeoAlert
+        :value="(profile && profile.username === username) || !id"
+        flat
+        no-close-button
+        :type="VeoAlertType.INFO"
+      >
+        <span v-if="id">
+          {{ t('updatingOwnAccount') }}
+        </span>
+        <span v-else>
+          {{ t('noPassword') }}
+        </span>
+      </VeoAlert>
+      <VeoCard>
+        <v-card-text>
+          <v-form
+            v-model="formIsValid"
+            @submit.prevent="updateAccount"
+          >
+            <v-row>
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <v-text-field
+                  v-model="formData.username"
+                  :label="`${t('username')}*`"
+                  :prepend-inner-icon="mdiAccountOutline"
+                  :rules="[requiredRule, usernameIsDuplicateRule]"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <v-text-field
+                  v-model="formData.email"
+                  :label="`${t('email')}*`"
+                  :prepend-inner-icon="mdiEmailOutline"
+                  :rules="[requiredRule]"
+                />
+              </v-col>
+            </v-row>
+            <v-checkbox
+              v-model="formData.enabled"
+              :label="t('enabled')"
+            />
+            <v-row>
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <v-text-field
+                  v-model="formData.firstName"
+                  clearable
+                  :label="t('firstName')"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <v-text-field
+                  v-model="formData.lastName"
+                  clearable
+                  :label="t('lastName')"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <v-select
+                  v-model="formData.groups"
+                  clearable
+                  :items="availableGroups"
+                  :label="t('groups')"
+                  multiple
+                />
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+      </VeoCard>
+    </template>
+    <template #dialog-options>
+      <v-btn
+        text
+        @click="$emit('input', false)"
+      >
+        {{ t('global.button.cancel') }}
+      </v-btn>
+      <v-spacer />
+      <v-btn
+        text
+        color="primary"
+        :disabled="!formIsValid || ability.cannot('manage', 'accounts')"
+        @click="updateAccount"
+      >
+        {{ id ? t('updateAccount') : t('createAccount') }}
+      </v-btn>
+    </template>
+  </VeoDialog>
+</template>
+
+<script lang="ts">
+import { mdiAccountOutline, mdiEmailOutline } from '@mdi/js';
+import { computed, defineComponent, PropType, reactive, ref, watch } from '@nuxtjs/composition-api';
+import { pick, trim } from 'lodash';
+import { useI18n } from 'nuxt-i18n-composable';
+import { useCreateAccount, useUpdateAccount } from '~/composables/api/accounts';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+
+import { usePermissions } from '~/composables/VeoPermissions';
+import { useUser } from '~/composables/VeoUser';
+import { VeoAlertType } from '~/types/VeoTypes';
+
+export default defineComponent({
+  props: {
+    value: {
+      type: Boolean,
+      default: false
+    },
+    id: {
+      type: String,
+      default: ''
+    },
+    username: {
+      type: String,
+      default: ''
+    },
+    firstName: {
+      type: String,
+      default: ''
+    },
+    lastName: {
+      type: String,
+      default: ''
+    },
+    email: {
+      type: String,
+      default: ''
+    },
+    enabled: {
+      type: Boolean,
+      default: true
+    },
+    groups: {
+      type: Array as PropType<string[]>,
+      default: () => []
+    },
+    takenAccountNames: {
+      type: Array as PropType<string[]>,
+      default: () => []
+    }
+  },
+  setup(props, { emit }) {
+    const { t } = useI18n();
+    const ability = usePermissions();
+    const { profile } = useUser();
+    const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
+
+    // form stuff
+    const formIsValid = ref(false);
+    const formData = reactive<{ username?: string; email?: string; firstName?: string; lastName?: string; enabled?: boolean; groups?: string[]; [key: string]: any }>({});
+
+    const usernameIsDuplicateRule = (v: any) => !formData.username || !props.takenAccountNames.includes(trim(v)) || t('usernameAlreadyTaken').toString();
+    const requiredRule = (v: any) => (!!v && !!trim(v).length) || t('global.input.required').toString();
+
+    const availableGroups = ref([]);
+
+    // Update form data from outside
+    watch(
+      () => props,
+      (newValue) => {
+        Object.assign(formData, pick(newValue, 'username', 'email', 'firstName', 'lastName', 'enabled', 'groups'));
+      },
+      { deep: true }
+    );
+    watch(
+      () => props.value,
+      () => {
+        if (!props.value) {
+          setTimeout(() => {
+            Object.assign(formData, {});
+          }, 250);
+        }
+      }
+    );
+
+    // CRUD stuff
+    const createMutationParameters = computed(() => formData);
+    const { mutateAsync: create } = useCreateAccount(createMutationParameters as any);
+    const updateMutationParameters = computed(() => ({ ...formData, id: props.id }));
+    const { mutateAsync: update } = useUpdateAccount(updateMutationParameters as any);
+
+    const updateAccount = () => {
+      if (!formIsValid.value || ability.value.cannot('manage', 'accounts')) {
+        return;
+      }
+
+      // Sanitize data
+      Object.keys(formData).forEach((key) => {
+        if (typeof formData[key] === 'string') {
+          formData[key] = trim(formData[key]);
+        }
+
+        if (formData[key] === undefined || formData[key] === '') {
+          delete formData[key];
+        }
+      });
+      try {
+        if (props.id) {
+          update();
+        } else {
+          create();
+        }
+        displaySuccessMessage(t(props.id ? 'updatingAccountSuccess' : 'creatingAccountSuccess').toString());
+        emit('success');
+        emit('input', false);
+      } catch (error: any) {
+        displayErrorMessage(t(props.id ? 'updatingAccountFailed' : 'creatingAccountFailed').toString(), error.message);
+      }
+    };
+
+    return {
+      ability,
+      availableGroups,
+      formData,
+      formIsValid,
+      profile,
+      requiredRule,
+      updateAccount,
+      usernameIsDuplicateRule,
+
+      t,
+      VeoAlertType,
+      mdiAccountOutline,
+      mdiEmailOutline
+    };
+  }
+});
+</script>
+
+<i18n>
+{
+  "en": {
+    "createAccount": "Create account",
+    "creatingAccountFailed": "Couldn't create account",
+    "creatingAccountSuccess": "Account was created successfully",
+    "email": "Email address",
+    "enabled": "Account is enabled?",
+    "firstName": "First name",
+    "groups": "Assigned groups",
+    "lastName": "Last name",
+    "noPassword": "The password can be set by the user after verifying his email address.",
+    "updateAccount": "Update account",
+    "updatingAccountFailed": "Couldn't update account",
+    "updatingAccountSuccess": "Account was updated successfully",
+    "updatingOwnAccount": "You are updating your own account. For your own safety, editing your permissions is disabled.",
+    "username": "Username",
+    "usernameAlreadyTaken": "The username is already in use. Please choose another one."
+  },
+  "de": {
+    "createAccount": "Account erstellen",
+    "creatingAccountFailed": "Account konnte nicht erstellt werden",
+    "creatingAccountSuccess": "Account wurde erstellt",
+    "email": "E-Mail-Adresse",
+    "enabled": "Account ist aktiv?",
+    "firstName": "Vorname",
+    "groups": "Zugehörige Gruppen",
+    "lastName": "Nachname",
+    "noPassword": "Das Passwort kann vom Benutzer nach dem Verifizieren der E-Mail-Adresse gesetzt werden.",
+    "updateAccount": "Account aktualisieren",
+    "updatingAccountFailed": "Account konnte nicht aktualisiert werden",
+    "updatingAccountSuccess": "Account wurde aktualisiert",
+    "updatingOwnAccount": "Sie bearbeiten Ihren eigenen Account. Aus Sicherheitsgründen wurde das Bearbeiten von Berechtigungen deaktiviert.",
+    "username": "Benutzername",
+    "usernameAlreadyTaken": "Der Benutzername wird bereits genutzt. Bitte wählen Sie einen anderen."
+  }
+}
+</i18n>
