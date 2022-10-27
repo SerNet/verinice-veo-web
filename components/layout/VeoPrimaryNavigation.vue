@@ -141,7 +141,7 @@ import { sortBy, upperFirst } from 'lodash';
 
 import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
-import { IVeoCatalog, IVeoDomain, IVeoObjectSchema, IVeoReportsMeta } from '~/types/VeoTypes';
+import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoReportsMeta } from '~/types/VeoTypes';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
@@ -153,6 +153,8 @@ import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/_unit/domains/_do
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/_unit/domains/_domain/editor/index.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/objects/VeoObjectIcon.vue';
 import { useFetchForms } from '~/composables/api/forms';
+import { useUser } from '~/composables/VeoUser';
+import { usePermissions } from '~/composables/VeoPermissions';
 
 export interface INavItem {
   key: string;
@@ -197,8 +199,10 @@ export default defineComponent({
   },
   setup(props) {
     const { t, locale } = useI18n();
-    const { $api, $user, params } = useContext();
+    const { $api } = useContext();
+    const { userSettings } = useUser();
     const route = useRoute();
+    const ability = usePermissions();
 
     // Layout stuff
     const miniVariant = ref<boolean>(LocalStorage.primaryNavMiniVariant);
@@ -216,7 +220,7 @@ export default defineComponent({
       domainId: props.domainId
     }));
     const queryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled });
+    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled, placeholderData: [] });
     const { fetch: fetchObjectsEntries, fetchState: objectEntriesLoading } = useFetch(async () => {
       // Only load object types on the first call, as them changing while the user is using the application is highly unlikely
       if (!objectTypes.value.length) {
@@ -265,7 +269,9 @@ export default defineComponent({
               // dynamic sub type routes
               ...sortBy(
                 objectSubTypes.map((subType) => {
-                  const formSchema = (formSchemas.value || []).find((formSchema) => formSchema.modelType === objectSchema.title && formSchema.subType === subType.subType);
+                  const formSchema = (formSchemas.value as IVeoFormSchemaMeta[]).find(
+                    (formSchema) => formSchema.modelType === objectSchema.title && formSchema.subType === subType.subType
+                  );
                   const displayName = formSchema?.name[locale.value] || subType.subType;
                   return {
                     key: displayName,
@@ -362,15 +368,6 @@ export default defineComponent({
       }))
     );
 
-    // nav item stuff
-    const maxUnits = computed<number | undefined>(() => {
-      const _maxUnits = $user.auth.profile?.attributes?.maxUnits?.[0];
-
-      return _maxUnits ? parseInt(_maxUnits, 10) : _maxUnits;
-    });
-
-    const isContentCreator = computed(() => !!$user.auth.roles.find((r: string) => r === 'veo-content-creator'));
-
     // Reload certain navigation items if domain changes
     watch(
       () => props.domainId,
@@ -462,11 +459,11 @@ export default defineComponent({
     }));
 
     const items = computed<INavItem[]>(() => [
-      ...(maxUnits.value && maxUnits.value > 2 ? [unitSelectionNavEntry] : []),
+      ...(userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry] : []),
       ...(props.unitId && props.domainId
         ? [
             domainDashboardNavEntry.value,
-            ...(props.domainId && props.unitId && isContentCreator.value ? [editorsNavEntry.value] : []),
+            ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
             objectsNavEntry.value,
             catalogsNavEntry.value,
             reportsNavEntry.value,
@@ -476,7 +473,9 @@ export default defineComponent({
     ]);
 
     // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
-    const homeLink = computed(() => (params.value.domain ? `/${params.value.unit}/domains/${params.value.domain}` : params.value.unit ? `/${params.value.unit}` : '/'));
+    const homeLink = computed(() =>
+      route.value.params.domain ? `/${route.value.params.unit}/domains/${route.value.params.domain}` : route.value.params.unit ? `/${route.value.params.unit}` : '/'
+    );
 
     return {
       items,

@@ -59,7 +59,7 @@ export default function (api: Client) {
 
       if (!query.size) {
         // if size is not set use the default user tablePageSize
-        query.size = api._context.$user.tablePageSize;
+        query.size = api._user.tablePageSize.value;
       }
 
       if (query.size === -1) {

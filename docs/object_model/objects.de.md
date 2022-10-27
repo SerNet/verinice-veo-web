@@ -11,7 +11,7 @@ Organisationsobjekte helfen bei der Zuordnung der Objekte zu Anwender*innen. Org
 
 #### Client
 
-Der Client im Objektmodell bildet einen Kunden bzw. ein Mandanten ab. Ein Kunde kann eine Organisation sein, ein Kunde kann aber auch eine einzelne Person sein. Die Daten, die zu einem Client gehören sind von den Daten anderer Clients getrennt und können in keiner Weise mit einander vermischt oder verknüpft werden. Es ist nicht möglich Daten von einem Client zu einem anderen Client zu übertragen. Jedes Objekt in veo gehört zu genau einem Client. Einem Client können mehrere Anwender (Accounts) zugeordnet werden. Ein Anwender kann niemals auf Daten zugreifen, die zu einem Client gehören, dem er nicht zugeordnet ist.
+Der Client im Objektmodell bildet einen Kunden bzw. einen Mandanten ab. Ein Kunde kann eine Organisation sein, ein Kunde kann aber auch eine einzelne Person sein. Die Daten, die zu einem Client gehören, sind von den Daten anderer Clients getrennt und können in keiner Weise miteinander vermischt oder verknüpft werden. Es ist nicht möglich, Daten von einem Client zu einem anderen Client zu übertragen. Jedes Objekt in veo gehört zu genau einem Client. Einem Client können mehrere Anwender (Accounts) zugeordnet werden. Ein Anwender kann niemals auf Daten zugreifen, die zu einem Client gehören, dem er nicht zugeordnet ist.
 
 #### Unit
 
@@ -32,7 +32,7 @@ Ein Geschäftsprozess ist eine Folge von Aktivitäten, die Betriebsmittel verwen
 
 #### Asset
 
-Ein Objekt, das einen erkennbaren Wert für ein Unternehmen hat, ein Vermögenswert. Es gibt viele Arten von Assets: Informationen, Software, Server, Menschen und ihre Qualifikationen, Fähigkeiten und Erfahrungen außerdem immaterielle Werte, wie z. B. Ruf und Image.
+Ein Objekt, das einen erkennbaren Wert für ein Unternehmen hat, ein Vermögenswert. Es gibt viele Arten von Assets: Informationen, Software, Server, Menschen und ihre Qualifikationen, Fähigkeiten und Erfahrungen, außerdem immaterielle Werte, wie z. B. Ruf und Image.
 
 Assets können andere Assets enthalten (siehe [Composites](#composites)). Systemkomponenten haben häufig einen rekursiven Aufbau:
 
@@ -88,7 +88,7 @@ Der Objekttyp "Control" ist beispielsweise geeignet für die Abbildung der folge
 
 #### Incident
 
-Ein Vorfall bzw. Sicherheitsvorfall (Englisch: Incident) ist ein Ereignis, dass eingetreten ist und möglicherweise die Informationssicherheit gefährdet hat. Ein Incident kann ausgelöst werden durch eine Bedrohung.
+Ein Vorfall bzw. Sicherheitsvorfall (Englisch: Incident) ist ein Ereignis, das eingetreten ist und möglicherweise die Informationssicherheit gefährdet hat. Ein Incident kann ausgelöst werden durch eine Bedrohung.
 
 Der Objekttyp "Incident" ist beispielsweise geeignet für die Abbildung der folgenden Begriffe aus den genannten Standards:
 
@@ -106,19 +106,19 @@ Der Objekttyp "Person" ist beispielsweise geeignet für die Abbildung der folgen
 
 #### Dokument
 
-Ein Dokument, das eine anderes Objekt beschreibt oder zusätzliche Informationen liefert. Dient der Abbildung von Richtlinien, Leitlinien, Policy-Dokumenten, Vorfallsdokumentation etc. unabhängig von Format, Medium oder Quelle.
+Ein Dokument, das eine anderes Objekt beschreibt oder zusätzliche Informationen liefert. Dient der Abbildung von Richtlinien, Leitlinien, Policy-Dokumenten, Vorfalldokumentation etc. unabhängig von Format, Medium oder Quelle.
 
-Das Document kann sich beziehen auf: das Managementsystem und seine Prozesse, Verfahrensdokumentation (ISO 27001: "Documentation") sowie Aufzeichnungen zu Nachweiszwecken (ISO 27001: "Records").
+Das Dokument kann sich beziehen auf: das Managementsystem und seine Prozesse, Verfahrensdokumentation (ISO 27001: "Documentation") sowie Aufzeichnungen zu Nachweiszwecken (ISO 27001: "Records").
 
-Der Objekttyp "Document" ist beispielsweise geeignet für die Abbildung der folgenden Begriffe aus den genannten Standards:
+Der Objekttyp "Dokument" ist beispielsweise geeignet für die Abbildung der folgenden Begriffe aus den genannten Standards:
 
 * ISO 27001: "Documented information", "Documentation" und "Records" (über Subtypen)
 
 #### Composites
 
-Jedes der Fachobjekte, kann ein einzelnes Objekt oder eine Gruppe von Objekten repräsentieren. Zu diesem Zweck kann jedes Fachobjekt Objekte gleichen Typs enthalten. Wenn ein Fachobjekt solche Teilobjekte enthält, dann ist es als ein zusammengesetztes Objekt (English: Composite) modelliert. Jedes Fachobjekt kann zu jedem Zeitpunkt zu einem Composite gemacht werden, indem man ihm Unterobjekte hinzufügt.
+Jedes der Fachobjekte kann ein einzelnes Objekt oder eine Gruppe von Objekten repräsentieren. Zu diesem Zweck kann jedes Fachobjekt Objekte gleichen Typs enthalten. Wenn ein Fachobjekt solche Teilobjekte enthält, dann ist es als ein zusammengesetztes Objekt (English: Composite) modelliert. Jedes Fachobjekt kann zu jedem Zeitpunkt zu einem Composite gemacht werden, indem man ihm Unterobjekte hinzufügt.
 
-Beispiele dafür sind: Teams, die aus einzelnen Personen bestehen, ein Serverschrank der einzelne Server enthält oder ein Baustein (Control) aus dem IT-Grundschutz, der viele einzelne Maßnahmen enthält. In allen Anwendungsfällen in veo kann ein zusammengesetztes Objekt genauso verwendet werden, wie ein einzelnes Objekt. Für jeden Fall kann individuell entschieden werden, ob es sinnvoller ist die einzelnen Teilobjekte zu betrachten oder das zusammengesetzte Objekt als Ganzes.
+Beispiele dafür sind: Teams, die aus einzelnen Personen bestehen, ein Serverschrank, der einzelne Server enthält oder ein Baustein (Control) aus dem IT-Grundschutz, der viele einzelne Maßnahmen enthält. In allen Anwendungsfällen in veo kann ein zusammengesetztes Objekt genauso verwendet werden, wie ein einzelnes Objekt. Für jeden Fall kann individuell entschieden werden, ob es sinnvoller ist, die einzelnen Teilobjekte zu betrachten oder das zusammengesetzte Objekt als Ganzes.
 
 Objekte, die Teil eines Composites sind, können als Ganzes oder individuell betrachtet werden. Ein Asset in einer Risikoanalyse kann z.B. ein Rechenzentrum, ein Serverraum oder auch ein einzelner Server sein, die zusammen als das Composite "Rechenzentrum" abgebildet wurden.
 
@@ -137,7 +137,7 @@ Scopes stellen einen weiteren Gruppierungsmechanismus zur Verfügung. Anders als
 
 Abgrenzung zu Composites: auf diesen Gruppen sind anders als bei Composites nicht alle Operationen verfügbar, die auf den Fachobjekten operieren. Ein Asset-Composite oder Szenario-Composite kann in Risikoanalysen genauso verwendet werden, wie ein einzelnes Asset. Dies ist bei Scopes nicht der Fall.
 
-Scopes haben eine zentrale Bedeutung bei der Organisation von Daten in veo. Im Gegensatz zu den Units gehören Scopes zu den Fachobjekten, dass heißt sie sind Träger fachlicher Eigenschaften und können in den Anwendungsfällen für Datenschutz und Informationssicherheit verwendet werden. Da Scopes andere Scopes oder Fachobjekte enthalten, können damit viele unterschiedliche organisatorische Einheiten abgebildet werden:
+Scopes haben eine zentrale Bedeutung bei der Organisation von Daten in veo. Im Gegensatz zu den Units gehören Scopes zu den Fachobjekten, das heißt sie sind Träger fachlicher Eigenschaften und können in den Anwendungsfällen für Datenschutz und Informationssicherheit verwendet werden. Da Scopes andere Scopes oder Fachobjekte enthalten, können damit viele unterschiedliche organisatorische Einheiten abgebildet werden:
 
 * Organisationen, Teilorganisationen, Tochtergesellschaften
 * Abteilungen, Fachbereiche, Teams
@@ -152,6 +152,6 @@ Organisationen, Teilorganisationen oder Tochtergesellschaften werden als Scopes 
 
 ![veo-composite-tochtergesellschaften](media/veo-composite-tochtergesellschaften.png)
 
-Ein Informationsverbund für den IT-Grundschutz des BSI wird als Scope modelliert, der eine Prozess-, mehrere Asset und eine Personengruppe enthält. Die Gruppen mit Fachobjekten können beliebig viele Untergruppen desselben Typs enthalten. Die IT-Grundschutz Fachobjekte Anwendung, IT-, ICS-, IOT-System, Kommunikationsverbindung und Raum werden in veo als Assets modelliert.
+Ein Informationsverbund für den IT-Grundschutz des BSI wird als Scope modelliert, der eine Prozess-, mehrere Asset- und eine Personengruppe enthält. Die Gruppen mit Fachobjekten können beliebig viele Untergruppen desselben Typs enthalten. Die IT-Grundschutz-Fachobjekte Anwendung, IT-, ICS-, IOT-System, Kommunikationsverbindung und Raum werden in veo als Assets modelliert.
 
 ![veo-composite-informationsverbund](media/veo-composite-informationsverbund.png)

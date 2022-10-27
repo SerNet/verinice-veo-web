@@ -330,7 +330,6 @@ export default Vue.extend({
       if (this.objectType) {
         this.entities = await this.$api.entity.fetchAll(this.objectType, options.page, {
           ...(this.subType || this.subType === '' ? { subType: this.subType } : {}),
-          size: this.$user.tablePageSize,
           sortBy: options.sortBy,
           sortOrder: options.sortDesc ? 'desc' : 'asc',
           ...(this.filter || {})

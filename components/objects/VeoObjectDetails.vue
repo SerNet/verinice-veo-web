@@ -39,6 +39,7 @@
                   class="text-right ml-auto pt-1"
                 >
                   <VeoObjectDetailsActionMenu
+                    :disabled="ability.cannot('manage', 'objects')"
                     :object="object"
                     @reload="$emit('reload')"
                   />
@@ -109,6 +110,7 @@ import { upperFirst } from 'lodash';
 
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useFormatters } from '~/composables/utils';
+import { usePermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   name: 'VeoObjectDetails',
@@ -137,6 +139,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     const { formatDateTime } = useFormatters();
+    const ability = usePermissions();
 
     const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean }[]>(() => {
       return [
@@ -194,6 +197,7 @@ export default defineComponent({
     const showCreateDPIAMenu = computed(() => props.object?.type === 'process' && subType.value === 'PRO_DataProcessing');
 
     return {
+      ability,
       createdAtFormatted,
       internalActiveTab,
       showCreateDPIAMenu,

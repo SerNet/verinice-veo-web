@@ -9,12 +9,12 @@ Learn how to authenticate and load and create your first elements.
 
 ### Prerequisites
 
-In this documentation it is assumed that you are familiar with the
+In this documentation, it is assumed that you are familiar with the
 basic concepts of the verinice.veo object model. You can learn more about these concepts in the directory <DocLink to="/object_model">Object model</DocLink>. 
 
 ### Authentication
 
-verinice.veo uses [OpenID Connect (OIDC)](https://openid.net/connect/) for authentication, which is built on top of [OAuth 2.0](https://oauth.net/2/). [Keycloak](https://www.keycloak.org/) is used as authentication server. For each request sent to the verinice.veo API an access token is required. Keycloak exposes a variety of REST endpoints for OAuth 2.0 flows. The token endpoint allows us to retrieve an access token. The method `get_token` creates a token with this endpoint:
+verinice.veo uses [OpenID Connect (OIDC)](https://openid.net/connect/) for authentication, which is built on top of [OAuth 2.0](https://oauth.net/2/). [Keycloak](https://www.keycloak.org/) is used as authentication server. For each request sent to the verinice.veo API, an access token is required. Keycloak exposes a variety of REST endpoints for OAuth 2.0 flows. The token endpoint allows us to retrieve an access token. The method `get_token` creates a token with this endpoint:
 
 ```python
 import requests
@@ -33,7 +33,7 @@ def get_token():
     return "Bearer " + response.json().get('access_token')
 
 ```
-For the creation of a token these parameters must be set:
+For the creation of a token, these parameters must be set:
  - `USER_NAME`: A valid user name
  - `PASSWORD`: The password for the user
 
@@ -94,7 +94,7 @@ domain_name = domains[0].get("name")
 
 In besides the units, to which all other data refer, and the domains, which give the data business meaning, the ISMS veo business  objects can of course also be loaded and modified via the API. For the operation of management systems for information security and data protection, the object model of veo contains the business objects <DocLink to="/object_model/objects#process">process</DocLink>, <DocLink to="/object_model/objects#asset">asset</DocLink>, <DocLink to="/object_model/objects#scenario">scenario</DocLink>, <DocLink to="/object_model/objects#risk">risk</DocLink>, <DocLink to="/object_model/objects#control">control</DocLink>, <DocLink to="/object_model/objects#incident">incident</DocLink>, <DocLink to="/object_model/objects#document">document</DocLink> and <DocLink to="/object_model/objects#person">person</DocLink>. These objects can be further specified via so-called subtypes. The meaning of these business objects are explained in the <DocLink to="/object_model/objects">_Object Model_ section in the _Business Objects_ chapter</DocLink>.
 
-For each business object type there are the same API endpoints for managing the objects of this type. Endpoint for loading all processes (example):
+For each business object type, there are the same API endpoints for managing the objects of this type. Endpoint for loading all processes (example):
 
  **[`GET /processes`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/process-controller/getProcesses)** - OpenAPI documentation
 
@@ -355,11 +355,11 @@ Scopes can be updated with this endpoint, for example:
 
 **[`PUT /scopes/{uuid}`](https://api.verinice.com/veo/swagger-ui/index.html?configUrl=/veo/v3/api-docs/swagger-config#/scope-controller/updateScope)** - OpenAPI documentation
 
-The enpoints for the other object types have URLs according to their type.
+The endpoints for the other object types have URLs according to their type.
 
 The veo API uses [ETags](https://en.wikipedia.org/wiki/HTTP_ETag) for [optimistic concurrency control](https://en.wikipedia.org/wiki/Optimistic_concurrency_control). This prevents concurrent changes to a resource from multiple clients overwriting each other.
 
-If a single business object is loaded, then together with the object the header `ETag` is returned. The ETag must be sent in the PUT Request as header `If-Match` when updating an object. Python code listing to update a scope with an etag:
+If a single business object is loaded, then together with the object the header `ETag` is returned. The ETag must be sent in the PUT Request as header `If-Match` when updating an object. Python code listing to update a scope with an ETag:
 ```python
 import requests
 import json

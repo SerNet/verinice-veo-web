@@ -41,6 +41,7 @@ import VeoObjectIcon from '~/components/objects/VeoObjectIcon.vue';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useFormatters, useThrottleNextTick } from '~/composables/utils';
 import { separateUUIDParam } from '~/lib/utils';
+import { useUser } from '~/composables/VeoUser';
 
 export type ObjectTableItems = IVeoPaginatedResponse<IVeoEntity[]> | Array<IVeoEntity>;
 
@@ -118,7 +119,8 @@ export default defineComponent({
   setup(props, { emit, slots, attrs, listeners }) {
     const { t } = useI18n();
     const route = useRoute();
-    const { $user, $api, i18n } = useContext();
+    const { $api, i18n } = useContext();
+    const { tablePageSize } = useUser();
     const vm = getCurrentInstance();
     const { formatDateTime } = useFormatters();
 
@@ -378,7 +380,6 @@ export default defineComponent({
       };
     });
 
-    const itemsPerPage = computed(() => $user.tablePageSize);
     const firstOrValue = <T extends unknown>(v: T | T[]): T => (Array.isArray(v) ? v[0] : v);
     const pageUpdate = {
       newPage: props.page,
@@ -491,7 +492,7 @@ export default defineComponent({
           sortDesc: props.sortDesc,
           page: props.page,
           loading: props.loading,
-          itemsPerPage: itemsPerPage.value,
+          itemsPerPage: tablePageSize.value,
           footerProps: {
             itemsPerPageOptions: [10, 20, 50, -1]
           },
@@ -504,7 +505,7 @@ export default defineComponent({
             emitPageUpdate({ newPage: page });
           },
           'update:items-per-page'(itemsPerPage: number) {
-            $user.tablePageSize = itemsPerPage;
+            tablePageSize.value = itemsPerPage;
             emit('update:items-per-page', itemsPerPage);
             emitPageUpdate({ newPage: 1 });
           },

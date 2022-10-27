@@ -109,11 +109,12 @@ import { computed, defineComponent, reactive, ref, useContext, useRoute } from '
 import { useI18n } from 'nuxt-i18n-composable';
 import { omit, upperFirst } from 'lodash';
 import { mdiFilter } from '@mdi/js';
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
+import { useUser } from '~/composables/VeoUser';
 
 export default defineComponent({
   name: 'CreateRiskDialog',
@@ -132,7 +133,8 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { $api, $config, $user } = useContext();
+    const { $api, $config } = useContext();
+    const { tablePageSize } = useUser();
     const route = useRoute();
     const { t, tc, locale } = useI18n();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -155,7 +157,7 @@ export default defineComponent({
     // Filter stuff
     const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
     const formsQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     const filterDialogVisible = ref(false);
 
@@ -180,7 +182,7 @@ export default defineComponent({
           return t(`objectTypes.${value}`).toString();
         // Translate sub types
         case 'subType':
-          return (formSchemas.value || []).find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
+          return (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
         default:
           return value;
       }
@@ -203,7 +205,7 @@ export default defineComponent({
     const combinedQueryParameters = computed(() => ({
       objectType: 'scenario',
       unit: unit.value,
-      size: $user.tablePageSize,
+      size: tablePageSize.value,
       sortBy: queryParameters.sortBy,
       sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
       page: queryParameters.page,

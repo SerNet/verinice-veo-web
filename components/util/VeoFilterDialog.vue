@@ -116,7 +116,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { IVeoFilterDivider, IVeoFilterOption, IVeoFilterOptionType } from './VeoFilter.vue';
 import { IBaseObject, extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoFormSchemaMeta, IVeoTranslations } from '~/types/VeoTypes';
 import { useFetchForms } from '~/composables/api/forms';
 
 export default defineComponent({
@@ -158,7 +158,7 @@ export default defineComponent({
 
     const formsQueryParameters = computed(() => ({ domainId: props.domain }));
     const formsQueryEnabled = computed(() => !!props.domain);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     useFetch(async () => {
       // Only fetch object types once, as changes are highly unlikely (preemptively included, if fetch() gets called by a watcher in the future)
@@ -185,7 +185,7 @@ export default defineComponent({
         // @ts-ignore TODO: Remove before merge
         extractSubTypesFromObjectSchema(_schema).map((subType) => ({
           ...subType,
-          name: (formSchemas.value || []).find((fs) => fs.subType === subType.subType)?.name || {}
+          name: (formSchemas.value as IVeoFormSchemaMeta[]).find((fs) => fs.subType === subType.subType)?.name || {}
         }))
       );
     }
@@ -259,8 +259,8 @@ export default defineComponent({
           selectOptions: availableSubTypes.value
             .map((subTypes) => ({ text: subTypes.name[locale.value], value: subTypes.subType }))
             .sort((a, b) => {
-              const sortValueA = (formSchemas.value || []).find((schema) => schema.subType === a.value)?.sorting;
-              const sortValueB = (formSchemas.value || []).find((schema) => schema.subType === b.value)?.sorting;
+              const sortValueA = (formSchemas.value as IVeoFormSchemaMeta[]).find((schema) => schema.subType === a.value)?.sorting;
+              const sortValueB = (formSchemas.value as IVeoFormSchemaMeta[]).find((schema) => schema.subType === b.value)?.sorting;
 
               if (!sortValueA) {
                 return 1;

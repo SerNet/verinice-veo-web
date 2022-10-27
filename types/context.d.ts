@@ -19,7 +19,6 @@ import '@nuxt/types';
 import VueI18n from 'vue-i18n';
 
 import { API } from '~/plugins/api';
-import { User } from '~/plugins/user';
 
 declare module 'vue/types/vue' {
   interface Vue {
@@ -27,7 +26,6 @@ declare module 'vue/types/vue' {
      * @deprecated
      */
     $api: API;
-    $user: User;
     $utils: any;
   }
 }
@@ -38,7 +36,6 @@ declare module '@nuxt/types/app' {
      * @deprecated
      */
     $api: API;
-    $user: User;
     $utils: any;
   }
 }
@@ -49,7 +46,6 @@ declare module '@nuxt/types' {
      * @deprecated
      */
     $api: API;
-    $user: User;
     $utils: any;
     $t: VueI18n.prototype.t; // Composition api workaround
   }

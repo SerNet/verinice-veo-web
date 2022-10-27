@@ -46,7 +46,7 @@
         <v-btn
           depressed
           color="primary"
-          :disabled="selectedItems.length === 0 || applyingItems"
+          :disabled="selectedItems.length === 0 || applyingItems || ability.cannot('manage', 'catalogs')"
           :loading="applyingItems"
           @click="applyItems"
         >
@@ -63,6 +63,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 
 import { IVeoCatalogSelectionListHeader } from '~/components/catalogs/VeoCatalogSelectionList.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { usePermissions } from '~/composables/VeoPermissions';
 import { IVeoCatalogItem } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -88,6 +89,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { $api } = useContext();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
+    const ability = usePermissions();
 
     // Selecting
     const catalogTableHeaders = computed<IVeoCatalogSelectionListHeader[]>(() => [
@@ -141,6 +143,7 @@ export default defineComponent({
     };
 
     return {
+      ability,
       applyingItems,
       applyItems,
       availableItems,

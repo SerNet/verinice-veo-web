@@ -104,6 +104,7 @@
                 <v-btn
                   icon
                   :data-component-name="`object-overview-${btn.id}-button`"
+                  :disabled="ability.cannot('manage', 'objects')"
                   @click="btn.action(item)"
                   v-on="on"
                 >
@@ -137,6 +138,7 @@
             v-cy-name="'create-button'"
             color="primary"
             depressed
+            :disabled="ability.cannot('manage', 'objects')"
             fab
             absolute
             style="bottom: 12px; right: 0"
@@ -166,13 +168,15 @@ import { upperFirst } from 'lodash';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoTranslations } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
+import { useUser } from '~/composables/VeoUser';
+import { usePermissions } from '~/composables/VeoPermissions';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
 
@@ -180,9 +184,11 @@ export default defineComponent({
   name: 'VeoObjectsOverviewPage',
   setup() {
     const { t, locale } = useI18n();
-    const { $api, $user } = useContext();
+    const { $api } = useContext();
+    const { tablePageSize } = useUser();
     const route = useRoute();
     const router = useRouter();
+    const ability = usePermissions();
 
     const { displayErrorMessage } = useVeoAlerts();
     const { cloneObject } = useVeoObjectUtilities();
@@ -229,7 +235,7 @@ export default defineComponent({
     };
 
     const combinedQueryParameters = computed<any>(() => ({
-      size: $user.tablePageSize,
+      size: tablePageSize.value,
       sortBy: queryParameters.sortBy,
       sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
       page: queryParameters.page,
@@ -238,7 +244,7 @@ export default defineComponent({
     }));
     const queryEnabled = computed(() => !!filter.value.objectType);
 
-    const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true });
+    const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true, placeholderData: [] });
 
     const { $fetchState } = useFetch(async () => {
       translations.value = (await $api.translation.fetch(['de', 'en'])).lang;
@@ -246,7 +252,7 @@ export default defineComponent({
 
     const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
     const formsQueryEnabled = computed(() => !!domainId.value);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     const isLoading = computed(() => isLoadingObjects.value || $fetchState.pending);
 
@@ -299,7 +305,7 @@ export default defineComponent({
         return;
       }
 
-      const formSchema = (formSchemas.value || []).find((formSchema) => formSchema.subType === newSubType);
+      const formSchema = (formSchemas.value as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === newSubType);
 
       addCustomBreadcrumb({
         key: subTypeKey,
@@ -340,7 +346,7 @@ export default defineComponent({
           return t(`objectTypes.${value}`).toString();
         // Translate sub types
         case 'subType':
-          return (formSchemas.value || []).find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
+          return (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
         case 'status':
           return translations.value[locale.value]?.[`${objectType.value}_${subType.value}_status_${value}`] || value;
         default:
@@ -421,6 +427,7 @@ export default defineComponent({
 
     return {
       t,
+      ability,
       actions,
       additionalHeaders,
       domainId,

@@ -31,14 +31,19 @@ export interface IVeoFetchFormParameters {
   id: string;
 }
 
+export const schemasQueryKeys = {
+  forms: (queryParameters: IVeoFetchFormsParameters) => ['forms', queryParameters.domainId] as const,
+  form: (queryParameters: IVeoFetchFormParameters) => ['form', queryParameters.domainId, queryParameters.id] as const
+};
+
 export const useFetchForms = (queryParameters: MaybeRef<IVeoFetchFormsParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
   const { $api } = useContext();
 
-  return useQuery<IVeoFormSchemaMeta[]>('forms', $api.form.fetchAll, queryParameters, { ...queryOptions, staleTime: 10 * 60 * 1000, placeholderData: [] });
+  return useQuery<IVeoFormSchemaMeta[]>(schemasQueryKeys.forms, $api.form.fetchAll, queryParameters, { ...queryOptions, staleTime: 10 * 60 * 1000, placeholderData: [] });
 };
 
 export const useFetchForm = (queryParameters: MaybeRef<IVeoFetchFormParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
   const { $api } = useContext();
 
-  return useQuery<IVeoFormSchema>('form', $api.form.fetch, queryParameters, { ...queryOptions, staleTime: 10 * 60 * 1000 });
+  return useQuery<IVeoFormSchema>(schemasQueryKeys.form, $api.form.fetch, queryParameters, { ...queryOptions, staleTime: 10 * 60 * 1000 });
 };
