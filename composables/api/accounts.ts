@@ -51,7 +51,7 @@ export interface IVeoDeleteAccountParameters {
 }
 
 export const accountsQueryKeys = {
-  accounts: ['accounts'],
+  accounts: ['accounts'] as const,
   account: (queryParameters: IVeoFetchAccountParameters) => ['account', queryParameters.id] as const
 };
 

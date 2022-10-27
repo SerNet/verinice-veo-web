@@ -34,7 +34,7 @@ export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
  * @param queryOptions Options modifiying query behaviour.
  * @returns Query object containing the data and information about the query.
  */
-export const useQuery = <T>(queryKey: string[] | CallableFunction, requestFunction: CallableFunction, queryParameters: MaybeRef<IBaseObject>, queryOptions?: QueryOptions) => {
+export const useQuery = <T>(queryKey: readonly string[] | CallableFunction, requestFunction: CallableFunction, queryParameters: MaybeRef<IBaseObject>, queryOptions?: QueryOptions) => {
   const { $config } = useContext();
 
   const evaluatedQueryKey = computed(() => (isFunction(queryKey) ? queryKey(unref(queryParameters)) : queryKey));
