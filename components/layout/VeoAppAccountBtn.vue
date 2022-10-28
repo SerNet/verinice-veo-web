@@ -100,7 +100,7 @@
           to="/docs"
         >
           <v-list-item-title>
-            {{ $t('documentation') }}
+            {{ $t('breadcrumbs.docs') }}
           </v-list-item-title>
           <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
         </v-list-item>
@@ -179,14 +179,12 @@ export default defineComponent({
 {
   "en": {
     "about": "About verinice.",
-    "documentation": "Documentation",
     "logout": "Logout",
     "myAccount": "My account",
     "notAvailable": "Not available"
   },
   "de": {
     "about": "Über verinice.",
-    "documentation": "Dokumentation",
     "logout": "Abmelden",
     "myAccount": "Mein Account",
     "notAvailable": "Keine Angabe"

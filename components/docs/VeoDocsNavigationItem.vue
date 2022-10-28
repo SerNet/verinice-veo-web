@@ -32,7 +32,7 @@
     :class="{
       'veo-docs-navigation-group--active': itemIsActive
     }"
-    active-class="black--text font-weight-bold"
+    active-class="black--text"
     @input="groupToggled"
   >
     <template #activator>
@@ -42,7 +42,7 @@
         class="veo-docs-navigation__mock-group-activator--active"
         dense
       />
-      <v-list-item-title :class="{ 'primary--text font-weight-bold': itemIsActive }">
+      <v-list-item-title :class="{ 'primary--text': itemIsActive }">
         {{ name }}
       </v-list-item-title>
     </template>

@@ -16,16 +16,20 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list
-    nav
-    dense
-  >
-    <VeoDocsNavigationItem
-      v-for="item of items"
-      :key="item.to"
-      v-bind="item"
-    />
-  </v-list>
+  <div class="d-flex mr-n4">
+    <v-divider vertical />
+    <v-list
+      dense
+      color="transparent"
+      class="fill-width"
+    >
+      <VeoDocsNavigationItem
+        v-for="item of items"
+        :key="item.to"
+        v-bind="item"
+      />
+    </v-list>
+  </div>
 </template>
 
 <script lang="ts">

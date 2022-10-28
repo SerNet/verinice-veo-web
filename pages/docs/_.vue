@@ -16,22 +16,33 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
-    v-if="document"
-    :title="document.title"
+  <VeoPageWrapper
+    :page-widths="[{ width: '100%', minWidth: 0 }, '300px']"
+    unresponsive-page-widths
   >
-    <div class="d-flex">
-      <VeoCard class="flex-grow-1">
+    <VeoPage
+      v-if="document"
+      :title="document.title"
+    >
+      <VeoCard class="mb-4">
         <v-card-text>
           <NuxtContent :document="document" />
         </v-card-text>
       </VeoCard>
-      <VeoDocNavigation
-        :items="items"
-        class="flex-grow-0 ml-4"
-      />
-    </div>
-  </VeoPage>
+    </VeoPage>
+    <VeoPage height="100%">
+      <div class="d-flex fill-height pt-12">
+        <v-divider
+          vertical
+          class="ml-n4"
+        />
+        <VeoDocNavigation
+          :items="items"
+          class="flex-grow-1"
+        />
+      </div>
+    </VeoPage>
+  </VeoPageWrapper>
 </template>
 <script lang="ts">
 import { defineComponent, useRoute } from '@nuxtjs/composition-api';
