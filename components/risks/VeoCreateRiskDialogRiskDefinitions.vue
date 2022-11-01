@@ -58,36 +58,42 @@
           >
             <VeoRiskProbabilitySection
               :dirty-fields="dirtyFields"
+              :disabled="disabled"
               :risk-definition="riskDefinition"
               :data.sync="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].probability"
               @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
             <VeoRiskImpactSection
               :dirty-fields="dirtyFields"
+              :disabled="disabled"
               :risk-definition="riskDefinition"
               :data.sync="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].impactValues"
               @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
             <VeoInherentRiskSection
               :dirty-fields="dirtyFields"
+              :disabled="disabled"
               :risk-definition="riskDefinition"
               :data.sync="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
               @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
             <VeoRiskTreatmentSection
               :dirty-fields="dirtyFields"
+              :disabled="disabled"
               :risk-definition="riskDefinition"
               :data.sync="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
               @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
             <VeoRiskMitigationSection
               :data="internalValue"
+              :disabled="disabled"
               :mitigations.sync="_mitigations"
               :domain-id="domain.id"
               v-on="$listeners"
             />
             <VeoRiskResidualSection
               :risk-definition="riskDefinition"
+              :disabled="disabled"
               :data.sync="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
             />
           </v-tab-item>
@@ -120,6 +126,10 @@ export default defineComponent({
     mitigations: {
       type: Array as PropType<IVeoEntity[]>,
       default: () => []
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {

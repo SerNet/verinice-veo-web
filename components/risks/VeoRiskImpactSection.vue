@@ -29,6 +29,7 @@
               :key="protectionGoal.id"
               :dirty-fields="dirtyFields"
               :protection-goal="protectionGoal"
+              :disabled="disabled"
               :risk-definition="riskDefinition"
               v-bind="data.find((impactValue) => impactValue.category === protectionGoal.id)"
               @update:specific-impact-explanation="onSpecificImpactExplanationChanged(protectionGoal.id, $event)"
@@ -62,6 +63,10 @@ export default defineComponent({
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       default: () => {}
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {

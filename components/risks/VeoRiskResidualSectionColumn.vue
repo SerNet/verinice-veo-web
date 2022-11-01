@@ -28,7 +28,7 @@
       color="primary"
       :label="upperFirst(t('residualRisk').toString())"
       :items="riskValues"
-      :disabled="!riskTreatments.length"
+      :disabled="!riskTreatments.length || disabled"
       :clearable="!!(userDefinedResidualRisk && riskTreatments.length)"
       hide-details
       @input="$emit('update:user-defined-residual-risk', $event)"
@@ -63,13 +63,13 @@
       <v-text-field
         :value="residualRiskExplanation"
         :label="upperFirst(t('explanation').toString())"
-        :disabled="!riskTreatments.length"
+        :disabled="!riskTreatments.length || disabled"
         hide-details
         @input="$emit('update:residual-risk-explanation', $event)"
       />
       <template #input>
         <v-textarea
-          :disabled="!riskTreatments.length"
+          :disabled="!riskTreatments.length || disabled"
           :value="residualRiskExplanation"
           :label="upperFirst(t('explanation').toString())"
           clearable
@@ -94,6 +94,10 @@ import { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
       required: true

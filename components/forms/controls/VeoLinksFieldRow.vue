@@ -23,6 +23,7 @@
         :object-type="objectType"
         :sub-type="subType"
         :label="options.label"
+        :disabled="disabled"
         :domain-id="domainId"
         :hidden-values="hiddenValues"
         required

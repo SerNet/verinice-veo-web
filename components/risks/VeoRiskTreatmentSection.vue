@@ -27,6 +27,7 @@
             <VeoRiskTreatmentSectionColumn
               v-if="protectionGoalExists(protectionGoal.id)"
               :key="protectionGoal.id"
+              :disabled="disabled"
               :protection-goal="protectionGoal"
               :risk-definition="riskDefinition"
               v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
@@ -61,6 +62,10 @@ export default defineComponent({
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       default: () => {}
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {
