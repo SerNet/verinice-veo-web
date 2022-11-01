@@ -15,10 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, ComputedRef, Ref, ref } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, Ref, ref, watch } from '@nuxtjs/composition-api';
 import Keycloak from 'keycloak-js';
-import { IBaseObject } from '~/lib/utils';
 
+import { IBaseObject } from '~/lib/utils';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 import LocalStorage from '~/util/LocalStorage';
 
 export interface IVeoUserSettings {
@@ -46,6 +47,8 @@ const keycloakInitialized = ref(false);
 const tablePageSize = ref<number>(20);
 
 export const useUser: () => IVeoUserComposable = () => {
+  const { updatePermissions } = useVeoPermissions();
+
   const initialize = async (context: any) => {
     if (keycloakInitialized.value || keycloakInitializationStarted.value) {
       return;
@@ -66,6 +69,9 @@ export const useUser: () => IVeoUserComposable = () => {
       if (keycloak.value.authenticated) {
         await keycloak.value.loadUserProfile();
       }
+
+      // Update permissions immediately as the middleware can't wait for the next tick
+      updatePermissions(keycloak.value?.tokenParsed?.roles || []);
     } catch (error) {
       throw new Error(`Error while setting up authentication provider: ${error}`);
     }
@@ -134,6 +140,13 @@ export const useUser: () => IVeoUserComposable = () => {
   const userSettings = computed<IVeoUserSettings>(() => ({
     maxUnits: keycloak.value?.tokenParsed?.max_units
   }));
+
+  watch(
+    () => roles.value,
+    (newValue) => {
+      updatePermissions(newValue);
+    }
+  );
 
   return {
     authenticated,

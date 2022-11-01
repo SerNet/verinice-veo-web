@@ -124,7 +124,7 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain, IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
-import { usePermissions } from '~/composables/VeoPermissions';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export interface IDirtyFields {
   [field: string]: boolean;
@@ -159,7 +159,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { createLink, linkObject } = useVeoObjectUtilities();
-    const ability = usePermissions();
+    const { ability } = useVeoPermissions();
 
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 

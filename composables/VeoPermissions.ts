@@ -17,46 +17,31 @@
  */
 
 import { AbilityBuilder, createMongoAbility } from '@casl/ability';
-import { ref, watch } from '@nuxtjs/composition-api';
-import { useUser } from './VeoUser';
+import { ref } from '@nuxtjs/composition-api';
 
 const ability = ref(createMongoAbility());
 
-export const usePermissions = () => {
-  const { roles } = useUser();
-
-  watch(
-    () => roles.value,
-    (newValue) => {
-      const { can, cannot, rules } = new AbilityBuilder(createMongoAbility);
-
-      if (newValue.includes('veo-write')) {
-        can('manage', 'all');
-      } else {
-        cannot('manage', 'all');
-      }
-      if (newValue.includes('veo-content-creator')) {
-        can('view', 'editors');
-        can('manage', 'editors');
-      } else {
-        cannot('view', 'editors');
-        cannot('manage', 'editors');
-      }
-      // @ts-ignore For some reason the rules and update types are incompatible, they work however
-      ability.value.update(rules);
-    },
-    { deep: true, immediate: true }
-  );
-
-  // Initial data if no roles exist
-  if (!roles.value.length) {
+export const useVeoPermissions = () => {
+  const updatePermissions = (newValue: string[]) => {
     const { can, cannot, rules } = new AbilityBuilder(createMongoAbility);
+
     can('view', 'all');
-    cannot('manage', 'all');
-    cannot('view', 'editors');
+
+    if (newValue.includes('veo-write')) {
+      can('manage', 'all');
+    } else {
+      cannot('manage', 'all');
+    }
+    if (newValue.includes('veo-content-creator')) {
+      can('view', 'editors');
+      can('manage', 'editors');
+    } else {
+      cannot('view', 'editors');
+      cannot('manage', 'editors');
+    }
     // @ts-ignore For some reason the rules and update types are incompatible, they work however
     ability.value.update(rules);
-  }
+  };
 
-  return ability;
+  return { ability, updatePermissions };
 };

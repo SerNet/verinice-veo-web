@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Middleware } from '@nuxt/types';
-import { usePermissions } from '~/composables/VeoPermissions';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useUser } from '~/composables/VeoUser';
 
 /**
@@ -37,7 +37,7 @@ export const restrictedRoutes = new Map<string, [string, string]>([
  */
 export default <Middleware>(async (context) => {
   const { authenticated, initialize, keycloakInitialized } = useUser();
-  const ability = usePermissions();
+  const { ability } = useVeoPermissions();
 
   // Prevent the user from accessing the login page if he is logged in
   if (authenticated.value && context.route.path === '/login') {

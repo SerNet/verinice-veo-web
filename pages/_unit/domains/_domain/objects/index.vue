@@ -176,7 +176,7 @@ import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
 import { useUser } from '~/composables/VeoUser';
-import { usePermissions } from '~/composables/VeoPermissions';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
 
@@ -188,7 +188,7 @@ export default defineComponent({
     const { tablePageSize } = useUser();
     const route = useRoute();
     const router = useRouter();
-    const ability = usePermissions();
+    const { ability } = useVeoPermissions();
 
     const { displayErrorMessage } = useVeoAlerts();
     const { cloneObject } = useVeoObjectUtilities();

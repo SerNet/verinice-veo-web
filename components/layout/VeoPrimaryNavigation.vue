@@ -154,7 +154,7 @@ import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/_unit/domains/_do
 import { OBJECT_TYPE_ICONS } from '~/components/objects/VeoObjectIcon.vue';
 import { useFetchForms } from '~/composables/api/forms';
 import { useUser } from '~/composables/VeoUser';
-import { usePermissions } from '~/composables/VeoPermissions';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export interface INavItem {
   key: string;
@@ -202,7 +202,7 @@ export default defineComponent({
     const { $api } = useContext();
     const { userSettings } = useUser();
     const route = useRoute();
-    const ability = usePermissions();
+    const { ability } = useVeoPermissions();
 
     // Layout stuff
     const miniVariant = ref<boolean>(LocalStorage.primaryNavMiniVariant);
