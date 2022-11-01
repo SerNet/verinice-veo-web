@@ -243,6 +243,12 @@ export default defineComponent({
         }
       ],
       [
+        'docs',
+        {
+          to: '/docs/index'
+        }
+      ],
+      [
         '*',
         {
           hidden: true
