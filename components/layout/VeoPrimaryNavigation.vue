@@ -153,7 +153,7 @@ import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/_unit/domains/_do
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/_unit/domains/_domain/editor/index.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/objects/VeoObjectIcon.vue';
 import { useFetchForms } from '~/composables/api/forms';
-import { useUser } from '~/composables/VeoUser';
+import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export interface INavItem {
@@ -200,7 +200,7 @@ export default defineComponent({
   setup(props) {
     const { t, locale } = useI18n();
     const { $api } = useContext();
-    const { userSettings } = useUser();
+    const { userSettings } = useVeoUser();
     const route = useRoute();
     const { ability } = useVeoPermissions();
 

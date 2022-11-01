@@ -50,14 +50,14 @@
 import { defineComponent, useContext } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
-import { useUser } from '~/composables/VeoUser';
+import { useVeoUser } from '~/composables/VeoUser';
 
 export default defineComponent({
   layout: 'plain',
   setup() {
     const { t } = useI18n();
     const context = useContext();
-    const { login: _login, initialize, keycloakInitialized } = useUser();
+    const { login: _login, initialize, keycloakInitialized } = useVeoUser();
 
     if (!keycloakInitialized.value) {
       initialize(context);

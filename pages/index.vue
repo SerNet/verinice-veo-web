@@ -81,7 +81,7 @@
 import { defineComponent, ref, useContext, useFetch, useRouter } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
-import { useUser } from '~/composables/VeoUser';
+import { useVeoUser } from '~/composables/VeoUser';
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import { IVeoUnit } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
@@ -92,7 +92,7 @@ export default defineComponent({
   name: 'VeoUnitSelectionPage',
   setup() {
     const { $api } = useContext();
-    const { profile, userSettings } = useUser();
+    const { profile, userSettings } = useVeoUser();
     const router = useRouter();
     const { t } = useI18n();
 

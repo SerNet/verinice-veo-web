@@ -175,7 +175,7 @@ import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
-import { useUser } from '~/composables/VeoUser';
+import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
@@ -185,7 +185,7 @@ export default defineComponent({
   setup() {
     const { t, locale } = useI18n();
     const { $api } = useContext();
-    const { tablePageSize } = useUser();
+    const { tablePageSize } = useVeoUser();
     const route = useRoute();
     const router = useRouter();
     const { ability } = useVeoPermissions();

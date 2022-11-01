@@ -129,7 +129,7 @@ import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink, IVeoTranslations } from '~/ty
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
-import { useUser } from '~/composables/VeoUser';
+import { useVeoUser } from '~/composables/VeoUser';
 
 export default defineComponent({
   name: 'VeoLinkObjectDialog',
@@ -196,7 +196,7 @@ export default defineComponent({
     const route = useRoute();
     const { t, locale } = useI18n();
     const { $api } = useContext();
-    const { tablePageSize } = useUser();
+    const { tablePageSize } = useVeoUser();
     const { linkObject, unlinkObject } = useVeoObjectUtilities();
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);

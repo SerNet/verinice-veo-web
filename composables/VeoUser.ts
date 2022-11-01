@@ -46,7 +46,7 @@ const keycloakInitializationStarted = ref(false);
 const keycloakInitialized = ref(false);
 const tablePageSize = ref<number>(20);
 
-export const useUser: () => IVeoUserComposable = () => {
+export const useVeoUser: () => IVeoUserComposable = () => {
   const { updatePermissions } = useVeoPermissions();
 
   const initialize = async (context: any) => {

@@ -75,13 +75,13 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useUser } from '~/composables/VeoUser';
+import { useVeoUser } from '~/composables/VeoUser';
 import 'intro.js/minified/introjs.min.css';
 
 export default defineComponent({
   setup(_props, context) {
     const { $api } = useContext();
-    const { logout: _logout, profile } = useUser();
+    const { logout: _logout, profile } = useVeoUser();
     const route = useRoute();
     const router = useRouter();
 
