@@ -54,10 +54,7 @@
         />
       </div>
     </template>
-    <template
-      v-if="authenticated"
-      #default
-    >
+    <template #default>
       <v-list :rounded="miniVariant">
         <v-list-item-group>
           <template
@@ -84,22 +81,6 @@
         <div class="mx-2">
           <VeoDemoUnitButton :icon-only="miniVariant" />
         </div>
-      </v-list>
-    </template>
-    <template
-      v-else
-      #default
-    >
-      <v-list :rounded="miniVariant">
-        <v-list-item-group>
-          <VeoPrimaryNavigationEntry
-            :name="t('login')"
-            to="/login"
-            :icon="mdiLoginVariant"
-            :mini-variant="miniVariant"
-            @expand-menu="setMiniVariant(false)"
-          />
-        </v-list-item-group>
       </v-list>
     </template>
     <template #append>
@@ -147,6 +128,7 @@ import {
   mdiChevronLeft,
   mdiChevronRight,
   mdiFileChartOutline,
+  mdiFileDocumentOutline,
   mdiHomeOutline,
   mdiHomeSwitchOutline,
   mdiLoginVariant,
@@ -173,6 +155,7 @@ import { useFetchForms } from '~/composables/api/forms';
 import { useUser } from '~/composables/VeoUser';
 import { usePermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemas } from '~/composables/api/schemas';
+import { useDocTree } from '~/composables/docs';
 
 export interface INavItem {
   key: string;
@@ -475,8 +458,37 @@ export default defineComponent({
       }
     }));
 
+    const loginNavEntry = computed<INavItem>(() => ({
+      key: 'login',
+      name: t('login').toString(),
+      to: '/login',
+      icon: mdiLoginVariant,
+      componentName: 'login-nav-item'
+    }));
+
+    const docsNavEntry = computed<INavItem>(() => ({
+      key: 'docs',
+      name: t('breadcrumbs.docs').toString(),
+      to: '/docs',
+      icon: mdiFileDocumentOutline,
+      componentName: 'docs-nav-item',
+      activePath: '/docs',
+      children: docLinks.value
+    }));
+
+    const docLinks = useDocTree({
+      childrenKey: 'children',
+      buildItem(item) {
+        return {
+          ...item,
+          name: `${item.isDir ? upperFirst(item.dir.split('/').pop()) : item.title || upperFirst(item.slug)}`,
+          to: `/docs${item.path}`
+        };
+      }
+    });
+
     const items = computed<INavItem[]>(() => [
-      ...(userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry] : []),
+      ...(authenticated.value && userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry] : []),
       ...(props.unitId && props.domainId
         ? [
             domainDashboardNavEntry.value,
@@ -486,7 +498,9 @@ export default defineComponent({
             reportsNavEntry.value,
             risksNavEntry.value
           ]
-        : [])
+        : []),
+      ...(!authenticated.value ? [loginNavEntry.value] : []),
+      ...(route.value.path.startsWith('/docs') ? [docsNavEntry.value] : [])
     ]);
 
     // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)

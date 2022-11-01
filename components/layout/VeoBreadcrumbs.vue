@@ -241,6 +241,12 @@ export default defineComponent({
             return `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectType.length ? objectType : route.value.query.objectType}`;
           }
         }
+      ],
+      [
+        '*',
+        {
+          hidden: true
+        }
       ]
     ]);
 

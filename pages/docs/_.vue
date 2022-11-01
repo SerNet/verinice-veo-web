@@ -16,40 +16,22 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPageWrapper
-    :page-widths="[{ width: '100%', minWidth: 0 }, '300px']"
-    unresponsive-page-widths
+  <VeoPage
+    v-if="document"
+    :title="document.title"
   >
-    <VeoPage
-      v-if="document"
-      :title="document.title"
-    >
-      <VeoCard class="mb-4">
-        <v-card-text>
-          <NuxtContent :document="document" />
-        </v-card-text>
-      </VeoCard>
-    </VeoPage>
-    <VeoPage height="100%">
-      <div class="d-flex fill-height pt-12">
-        <v-divider
-          vertical
-          class="ml-n4"
-        />
-        <VeoDocNavigation
-          :items="items"
-          class="flex-grow-1"
-        />
-      </div>
-    </VeoPage>
-  </VeoPageWrapper>
+    <VeoCard class="mb-4">
+      <v-card-text>
+        <NuxtContent :document="document" />
+      </v-card-text>
+    </VeoCard>
+  </VeoPage>
 </template>
 <script lang="ts">
-import { defineComponent, useRoute } from '@nuxtjs/composition-api';
-import { upperFirst } from 'lodash';
+import { defineComponent, useRoute, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
-import { useDoc, useDocTree } from '~/composables/docs';
+import { useDoc } from '~/composables/docs';
 
 export default defineComponent({
   setup() {
@@ -60,20 +42,19 @@ export default defineComponent({
       locale: locale.value
     });
 
-    const items = useDocTree({
-      childrenKey: 'children',
-      buildItem(item) {
-        return {
-          ...item,
-          name: `${item.isDir ? upperFirst(item.dir.split('/').pop()) : item.title || upperFirst(item.slug)}`,
-          to: `/docs${item.path}`
-        };
+    watch(
+      () => document.value?.path,
+      (newValue) => {
+        const pathSegments = (newValue || '').split('/');
+        pathSegments.forEach(() => {
+          pathSegments.pop();
+          console.log(pathSegments);
+        });
       }
-    });
+    );
 
     return {
-      document,
-      items
+      document
     };
   }
 });
