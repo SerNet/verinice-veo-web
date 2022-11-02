@@ -39,6 +39,12 @@ export const useVeoPermissions = () => {
       cannot('view', 'editors');
       cannot('manage', 'editors');
     }
+
+    if (newValue.includes('veo-accountmanagers')) {
+      can('manage', 'accounts');
+    } else {
+      can('manage', 'accounts');
+    }
     // @ts-ignore For some reason the rules and update types are incompatible, they work however
     ability.value.update(rules);
   };

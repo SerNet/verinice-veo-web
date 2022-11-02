@@ -102,14 +102,14 @@ import { computed, defineComponent, reactive, ref } from '@nuxtjs/composition-ap
 import { useI18n } from 'nuxt-i18n-composable';
 import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
 import { useFetchAccounts } from '~/composables/api/accounts';
-import { usePermissions } from '~/composables/VeoPermissions';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { IVeoAccount } from '~/plugins/api/account';
 
 export default defineComponent({
   setup() {
     const { t } = useI18n();
     const { data: accounts, isFetching } = useFetchAccounts();
-    const ability = usePermissions();
+    const { ability } = useVeoPermissions();
 
     const onEditAccount = (account: IVeoAccount) => {
       Object.assign(editAccountDialogProps, account);

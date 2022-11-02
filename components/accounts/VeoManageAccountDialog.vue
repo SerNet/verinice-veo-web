@@ -140,8 +140,8 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { useCreateAccount, useUpdateAccount } from '~/composables/api/accounts';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
-import { usePermissions } from '~/composables/VeoPermissions';
-import { useUser } from '~/composables/VeoUser';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useVeoUser } from '~/composables/VeoUser';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -185,8 +185,8 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { t } = useI18n();
-    const ability = usePermissions();
-    const { profile } = useUser();
+    const { ability } = useVeoPermissions();
+    const { profile } = useVeoUser();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
     // form stuff
