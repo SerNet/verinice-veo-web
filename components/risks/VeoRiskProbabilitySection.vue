@@ -50,6 +50,7 @@
             <v-select
               :value="data.specificProbability"
               color="primary"
+              :disabled="disabled"
               :label="upperFirst(t('specificProbability').toString())"
               :items="probabilities"
               clearable
@@ -88,6 +89,7 @@
               >
                 <v-text-field
                   :value="data.specificProbabilityExplanation"
+                  :disabled="disabled"
                   :label="upperFirst(t('explanation').toString())"
                   hide-details
                   @input="onSpecificProbabilityExplanationChanged"
@@ -96,6 +98,7 @@
               <template #input>
                 <v-textarea
                   :value="data.specificProbabilityExplanation"
+                  :disabled="disabled"
                   :label="upperFirst(t('explanation').toString())"
                   clearable
                   auto-grow
@@ -136,6 +139,10 @@ export default defineComponent({
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       default: () => {}
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {

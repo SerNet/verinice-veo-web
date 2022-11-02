@@ -74,7 +74,7 @@ import { IVeoCustomLink, IVeoDomain, IVeoEntity, IVeoPaginatedResponse, IVeoRisk
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { usePermissions } from '~/composables/VeoPermissions';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   name: 'VeoObjectDetailsTab',
@@ -98,7 +98,7 @@ export default defineComponent({
     const route = useRoute();
     const { $api } = useContext();
     const router = useRouter();
-    const ability = usePermissions();
+    const { ability } = useVeoPermissions();
 
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { cloneObject, linkObject } = useVeoObjectUtilities();

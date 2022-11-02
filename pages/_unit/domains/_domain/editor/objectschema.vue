@@ -305,7 +305,7 @@ import { IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
-import { usePermissions } from '~/composables/VeoPermissions';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   name: 'ObjectSchemaEditor',
@@ -314,7 +314,7 @@ export default defineComponent({
     const { $api } = useContext();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
-    const ability = usePermissions();
+    const { ability } = useVeoPermissions();
 
     const objectSchemaHelper = ref<ObjectSchemaHelper | undefined>(undefined);
 

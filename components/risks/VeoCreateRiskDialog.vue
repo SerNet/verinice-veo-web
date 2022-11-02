@@ -114,7 +114,7 @@ import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
-import { useUser } from '~/composables/VeoUser';
+import { useVeoUser } from '~/composables/VeoUser';
 
 export default defineComponent({
   name: 'CreateRiskDialog',
@@ -134,7 +134,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { $api, $config } = useContext();
-    const { tablePageSize } = useUser();
+    const { tablePageSize } = useVeoUser();
     const route = useRoute();
     const { t, tc, locale } = useI18n();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();

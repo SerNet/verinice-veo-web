@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Middleware } from '@nuxt/types';
-import { usePermissions } from '~/composables/VeoPermissions';
-import { useUser } from '~/composables/VeoUser';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useVeoUser } from '~/composables/VeoUser';
 
 /**
  * These routes will not trigger authentication
@@ -36,8 +36,8 @@ export const restrictedRoutes = new Map<string, [string, string]>([
  * This functionality was formerly part of the auth plugin but as redirection via next() in the beforeEach hooks is quite buggy, it got outsourced.
  */
 export default <Middleware>(async (context) => {
-  const { authenticated, initialize, keycloakInitialized } = useUser();
-  const ability = usePermissions();
+  const { authenticated, initialize, keycloakInitialized } = useVeoUser();
+  const { ability } = useVeoPermissions();
 
   // Prevent the user from accessing the login page if he is logged in
   if (authenticated.value && context.route.path === '/login') {

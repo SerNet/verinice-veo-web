@@ -63,7 +63,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 
 import { IVeoCatalogSelectionListHeader } from '~/components/catalogs/VeoCatalogSelectionList.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { usePermissions } from '~/composables/VeoPermissions';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { IVeoCatalogItem } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -89,7 +89,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { $api } = useContext();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-    const ability = usePermissions();
+    const { ability } = useVeoPermissions();
 
     // Selecting
     const catalogTableHeaders = computed<IVeoCatalogSelectionListHeader[]>(() => [

@@ -113,7 +113,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { mdiOpenInNew } from '@mdi/js';
 
 import { IVeoUnit } from '~/types/VeoTypes';
-import { useUser } from '~/composables/VeoUser';
+import { useVeoUser } from '~/composables/VeoUser';
 
 export default defineComponent({
   props: {
@@ -125,7 +125,7 @@ export default defineComponent({
   setup(props) {
     const { t } = useI18n();
     const { $api, $config } = useContext();
-    const { userSettings } = useUser();
+    const { userSettings } = useVeoUser();
     const route = useRoute();
 
     const displayDeploymentDetails = ref(false);

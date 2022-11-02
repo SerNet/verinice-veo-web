@@ -110,7 +110,7 @@ import { upperFirst } from 'lodash';
 
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useFormatters } from '~/composables/utils';
-import { usePermissions } from '~/composables/VeoPermissions';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   name: 'VeoObjectDetails',
@@ -139,7 +139,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     const { formatDateTime } = useFormatters();
-    const ability = usePermissions();
+    const { ability } = useVeoPermissions();
 
     const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean }[]>(() => {
       return [

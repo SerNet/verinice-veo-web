@@ -56,11 +56,11 @@
 
 <script lang="ts">
 import { defineComponent, useMeta } from '@nuxtjs/composition-api';
-import { useUser } from '~/composables/VeoUser';
+import { useVeoUser } from '~/composables/VeoUser';
 
 export default defineComponent({
   setup() {
-    const { logout: _logout, profile } = useUser();
+    const { logout: _logout, profile } = useVeoUser();
 
     useMeta(() => ({
       title: 'verinice.',

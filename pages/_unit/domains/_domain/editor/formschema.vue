@@ -346,7 +346,7 @@ import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
-import { usePermissions } from '~/composables/VeoPermissions';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   setup() {
@@ -354,7 +354,7 @@ export default defineComponent({
     const { $api, i18n } = useContext();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
-    const ability = usePermissions();
+    const { ability } = useVeoPermissions();
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 

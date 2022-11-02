@@ -33,6 +33,7 @@
     />
     <v-select
       :value="specificImpact"
+      :disabled="disabled"
       color="primary"
       :label="upperFirst(t('specificImpact').toString())"
       :items="impacts[protectionGoal.id]"
@@ -44,12 +45,14 @@
       <v-text-field
         :value="specificImpactExplanation"
         :label="upperFirst(t('explanation').toString())"
+        :disabled="disabled"
         hide-details
         @input="$emit('update:specific-impact-explanation', $event)"
       />
       <template #input>
         <v-textarea
           :value="specificImpactExplanation"
+          :disabled="disabled"
           :label="upperFirst(t('explanation').toString())"
           clearable
           auto-grow
@@ -112,6 +115,10 @@ export default defineComponent({
     specificImpactExplanation: {
       type: String,
       default: undefined
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     },
     effectiveImpact: {
       type: Number,

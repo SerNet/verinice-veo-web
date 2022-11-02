@@ -54,6 +54,7 @@
                   :rules="[(data) => !!data || t('scenarioRequired')]"
                   sub-type="SCN_Scenario"
                   :domain-id="domainId"
+                  :disabled="formDisabled"
                   value-as-link
                   hide-details
                   @input="onScenarioChanged"
@@ -67,6 +68,7 @@
                   :value="data.riskOwner"
                   object-type="person"
                   :label="upperFirst(t('riskOwner').toString())"
+                  :disabled="formDisabled"
                   value-as-link
                   hide-details
                   @input="onRiskOwnerChanged"
@@ -79,6 +81,7 @@
           :value="data"
           :domain="domain"
           :dirty-fields.sync="dirtyFields"
+          :disabled="formDisabled"
           :mitigations="mitigations"
           @update:mitigations="onMitigationsChanged"
           @update:new-mitigating-action="newMitigatingAction = $event"
@@ -121,6 +124,7 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain, IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export interface IDirtyFields {
   [field: string]: boolean;
@@ -155,8 +159,11 @@ export default defineComponent({
     const { t } = useI18n();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { createLink, linkObject } = useVeoObjectUtilities();
+    const { ability } = useVeoPermissions();
 
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
+
+    const formDisabled = computed(() => ability.value.cannot('manage', 'objects'));
 
     // Domain stuff, used for risk definitions
     const domain = ref<IVeoDomain | undefined>();
@@ -291,6 +298,7 @@ export default defineComponent({
       data,
       dirtyFields,
       domain,
+      formDisabled,
       formIsValid,
       formModified,
       mitigations,

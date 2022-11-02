@@ -41,7 +41,7 @@ import VeoObjectIcon from '~/components/objects/VeoObjectIcon.vue';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useFormatters, useThrottleNextTick } from '~/composables/utils';
 import { separateUUIDParam } from '~/lib/utils';
-import { useUser } from '~/composables/VeoUser';
+import { useVeoUser } from '~/composables/VeoUser';
 
 export type ObjectTableItems = IVeoPaginatedResponse<IVeoEntity[]> | Array<IVeoEntity>;
 
@@ -120,7 +120,7 @@ export default defineComponent({
     const { t } = useI18n();
     const route = useRoute();
     const { $api, i18n } = useContext();
-    const { tablePageSize } = useUser();
+    const { tablePageSize } = useVeoUser();
     const vm = getCurrentInstance();
     const { formatDateTime } = useFormatters();
 

@@ -31,7 +31,7 @@ import monitoring from '~/plugins/api/monitoring';
 import catalog from '~/plugins/api/catalog';
 import { IVeoPaginationOptions } from '~/types/VeoTypes';
 import { sanitizeURLParams } from '~/lib/utils';
-import { IVeoUserComposable, useUser } from '~/composables/VeoUser';
+import { IVeoUserComposable, useVeoUser } from '~/composables/VeoUser';
 
 export function createAPI(context: Context, user: IVeoUserComposable) {
   return Client.create(context, { account, form, entity, history, schema, translation, unit, report, domain, catalog, monitoring }, user);
@@ -246,7 +246,7 @@ export class Client {
 }
 
 export default <Plugin>((context, inject) => {
-  const user = useUser();
+  const user = useVeoUser();
 
   inject('api', createAPI(context, user));
 });

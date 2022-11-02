@@ -27,6 +27,7 @@
       :value="riskTreatments"
       multiple
       color="primary"
+      :disabled="disabled"
       :label="upperFirst(t('riskTreatment').toString())"
       :items="treatmentOptions"
       class="veo-risk-dialog__risk-treatment-selection"
@@ -52,6 +53,7 @@
     <v-edit-dialog>
       <v-text-field
         :value="riskTreatmentExplanation"
+        :disabled="disabled"
         :label="upperFirst(t('explanation').toString())"
         hide-details
         @input="$emit('update:risk-treatment-explanation', $event)"
@@ -59,6 +61,7 @@
       <template #input>
         <v-textarea
           :value="riskTreatmentExplanation"
+          :disabled="disabled"
           :label="upperFirst(t('explanation').toString())"
           clearable
           auto-grow
@@ -81,6 +84,10 @@ import { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
       required: true

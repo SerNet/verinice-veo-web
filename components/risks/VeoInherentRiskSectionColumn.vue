@@ -63,6 +63,10 @@ export default defineComponent({
       type: Object as PropType<IDirtyFields>,
       default: () => {}
     },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     inherentRisk: {
       type: Number,
       default: undefined

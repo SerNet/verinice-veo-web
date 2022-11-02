@@ -177,7 +177,7 @@ import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useFetchForms } from '~/composables/api/forms';
-import { usePermissions } from '~/composables/VeoPermissions';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -200,7 +200,7 @@ export default defineComponent({
     const { displaySuccessMessage, displayErrorMessage, expireAlert } = useVeoAlerts();
     const { linkObject } = useVeoObjectUtilities();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
-    const ability = usePermissions();
+    const { ability } = useVeoPermissions();
 
     const objectParameter = computed(() => separateUUIDParam(route.value.params.entity));
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
