@@ -19,6 +19,7 @@
   <VeoDialog
     v-bind="$attrs"
     :headline="t('deleteAccount')"
+    :close-disabled="isLoading"
     v-on="$listeners"
   >
     <template #default>
@@ -35,6 +36,7 @@
     <template #dialog-options>
       <v-btn
         text
+        :disabled="isLoading"
         @click="$emit('input', false)"
       >
         {{ t('global.button.cancel') }}
@@ -44,6 +46,7 @@
         text
         color="primary"
         :disabled="!id || ability.cannot('manage', 'accounts') || (profile && profile.username === username)"
+        :loading="isLoading"
         @click="deleteAccount"
       >
         {{ t('global.button.delete') }}
@@ -87,27 +90,26 @@ export default defineComponent({
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
     const deleteMutationParameters = computed(() => ({ id: props.id }));
-    const { mutateAsync: doDelete } = useDeleteAccount(deleteMutationParameters);
+    const { mutateAsync: doDelete, isLoading } = useDeleteAccount(deleteMutationParameters);
 
-    const deleteAccount = () => {
+    const deleteAccount = async () => {
       if (!props.id || ability.value.cannot('manage', 'accounts')) {
         return;
       }
       try {
-        doDelete();
+        await doDelete();
         displaySuccessMessage(t('deletingAccountSuccess').toString());
         emit('success');
         emit('input', false);
       } catch (error: any) {
         displayErrorMessage(t('deletingAccountFailed').toString(), error.message);
       }
-      emit('success');
-      emit('input', false);
     };
 
     return {
       ability,
       deleteAccount,
+      isLoading,
       profile,
 
       t,

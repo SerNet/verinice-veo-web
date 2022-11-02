@@ -28,6 +28,10 @@
         {{ t('accountAdministrationHint') }}
       </p>
       <VeoCard>
+        <p class="mx-3 mt-3 mb-1">
+          <b>{{ accounts && accounts.length || 0 }}</b> von
+          <b>{{ userSettings.maxUsers }}</b> Accounts angelegt
+        </p>
         <VeoObjectTable
           :default-headers="['actions']"
           :items="accounts"
@@ -57,22 +61,18 @@
     </template>
     <template #footer>
       <v-tooltip left>
-        <template
-          #activator="{ on }"
-        >
+        <template #activator="{ on }">
           <v-btn
             color="primary"
             depressed
-            :disabled="ability.cannot('manage', 'accounts')"
+            :disabled="ability.cannot('manage', 'accounts') || (accounts && accounts.length >= userSettings.maxUsers)"
             fab
             absolute
             style="bottom: 12px; right: 0"
             @click="createAccountDialogVisible = true"
             v-on="on"
           >
-            <v-icon>
-              {{ mdiPlus }}
-            </v-icon>
+            <v-icon>{{ mdiPlus }}</v-icon>
           </v-btn>
           <div style="height: 76px" />
         </template>
@@ -84,7 +84,7 @@
         v-if="manageAccountDialogVisible"
         :value="manageAccountDialogVisible"
         v-bind="manageAccountProps"
-        :taken-account-names="takenAccountNames"
+        :existing-accounts="accounts"
         @input="onManageAccountDialogInput"
       />
       <VeoDeleteAccountDialog
@@ -103,12 +103,14 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
 import { useFetchAccounts } from '~/composables/api/accounts';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useVeoUser } from '~/composables/VeoUser';
 import { IVeoAccount } from '~/plugins/api/account';
 
 export default defineComponent({
   setup() {
     const { t } = useI18n();
     const { data: accounts, isFetching } = useFetchAccounts();
+    const { userSettings } = useVeoUser();
     const { ability } = useVeoPermissions();
 
     const onEditAccount = (account: IVeoAccount) => {
@@ -138,10 +140,13 @@ export default defineComponent({
       }
     };
 
-    const takenAccountNames = computed(() => (accounts.value || []).map((account) => account.username));
-
     // Table stuff
-    const accountTableActions: { id: string; action: CallableFunction; icon: string; label: string }[] = [
+    const accountTableActions: {
+      id: string;
+      action: CallableFunction;
+      icon: string;
+      label: string;
+    }[] = [
       {
         id: 'edit',
         action: onEditAccount,
@@ -176,7 +181,7 @@ export default defineComponent({
         order: 30,
         priority: 80,
         text: t('email').toString(),
-        value: 'email'
+        value: 'emailAddress'
       },
       {
         order: 40,
@@ -212,7 +217,7 @@ export default defineComponent({
       manageAccountDialogVisible,
       manageAccountProps,
       onManageAccountDialogInput,
-      takenAccountNames,
+      userSettings,
 
       t,
       mdiPlus

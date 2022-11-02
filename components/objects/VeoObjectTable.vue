@@ -293,7 +293,7 @@ export default defineComponent({
     /**
      * Default cell classes
      */
-    const defaultCellClasses = ['flex-nowrap', 'text-no-wrap', 'cursor-pointer'];
+    const defaultCellClasses = ['flex-nowrap', 'text-no-wrap'];
     /**
      * Classes to apply when truncate is set
      */
@@ -336,7 +336,7 @@ export default defineComponent({
         ...props.additionalHeaders
       ]
         .map((header) => {
-          const cellClass = defaultCellClasses.concat(header.cellClass || [], header.truncate ? truncateClasses : []);
+          const cellClass = defaultCellClasses.concat(header.cellClass || [], header.truncate ? truncateClasses : [], listeners.click ? 'cursor-pointer' : []);
           return {
             ...header,
             text: header.text ?? t(`objectlist.${header.value}`).toString(),
@@ -500,29 +500,33 @@ export default defineComponent({
         },
         on: {
           ...listeners,
-          'update:page'(page: number) {
+          'update:page': (page: number) => {
             emit('update:page', page);
             emitPageUpdate({ newPage: page });
           },
-          'update:items-per-page'(itemsPerPage: number) {
+          'update:items-per-page': (itemsPerPage: number) => {
             tablePageSize.value = itemsPerPage;
             emit('update:items-per-page', itemsPerPage);
             emitPageUpdate({ newPage: 1 });
           },
-          'update:sort-by'(sortBy: string | string[]) {
+          'update:sort-by': (sortBy: string | string[]) => {
             emit('update:sort-by', sortBy);
             emitPageUpdate({ sortBy, newPage: 1 });
           },
-          'update:sort-desc'(sortDesc: boolean | boolean[]) {
+          'update:sort-desc': (sortDesc: boolean | boolean[]) => {
             emit('update:sort-desc', sortDesc);
             emitPageUpdate({ sortDesc, newPage: 1 });
           },
-          'click:row'(_item: any, context: any) {
-            if (Object.prototype.hasOwnProperty.call(attrs, 'show-select')) {
-              context.select(!context.isSelected);
-            }
-            emit('click', context);
-          }
+          ...(listeners.click
+            ? {
+                'click:row': (_item: any, context: any) => {
+                  if (Object.prototype.hasOwnProperty.call(attrs, 'show-select')) {
+                    context.select(!context.isSelected);
+                  }
+                  emit('click', context);
+                }
+              }
+            : {})
         },
         scopedSlots: { ...scopedSlots.value, ...slots }
       });

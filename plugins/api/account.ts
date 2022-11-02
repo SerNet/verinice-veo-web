@@ -20,7 +20,7 @@ import { Client } from '~/plugins/api';
 export interface IVeoAccount {
   id: string;
   username: string;
-  email: string;
+  emailAddress: string;
   firstName?: string;
   lastName?: string;
   groups: string[];
@@ -94,7 +94,7 @@ export default function (api: Client) {
      * @param query Additional query params
      * @returns 204 if successful
      */
-    delete(id: string, query: Record<string, string> = {}): Promise<void> {
+    _delete(id: string, query: Record<string, string> = {}): Promise<void> {
       return api.req('/api/accounts/:id', {
         method: 'DELETE',
         params: {

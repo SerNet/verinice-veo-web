@@ -19,6 +19,7 @@
   <VeoDialog
     :value="value"
     v-bind="$attrs"
+    :close-disabled="isLoading"
     :headline="id ? t('updateAccount') : t('createAccount')"
     large
     v-on="$listeners"
@@ -52,7 +53,7 @@
                   v-model="formData.username"
                   :label="`${t('username')}*`"
                   :prepend-inner-icon="mdiAccountOutline"
-                  :readonly="!!id"
+                  :disabled="!!id"
                   :rules="[requiredRule, usernameIsDuplicateRule]"
                 />
               </v-col>
@@ -61,10 +62,10 @@
                 md="6"
               >
                 <v-text-field
-                  v-model="formData.email"
+                  v-model="formData.emailAddress"
                   :label="`${t('email')}*`"
                   :prepend-inner-icon="mdiEmailOutline"
-                  :rules="[requiredRule]"
+                  :rules="[requiredRule, mailAddressIsDuplicateRule, mailRegexRule]"
                 />
               </v-col>
             </v-row>
@@ -80,7 +81,8 @@
                 <v-text-field
                   v-model="formData.firstName"
                   clearable
-                  :label="t('firstName')"
+                  :label="`${t('firstName')}*`"
+                  :rules="[requiredRule]"
                 />
               </v-col>
               <v-col
@@ -90,7 +92,8 @@
                 <v-text-field
                   v-model="formData.lastName"
                   clearable
-                  :label="t('lastName')"
+                  :label="`${t('lastName')}*`"
+                  :rules="[requiredRule]"
                 />
               </v-col>
             </v-row>
@@ -115,6 +118,7 @@
     <template #dialog-options>
       <v-btn
         text
+        :disabled="isLoading"
         @click="$emit('input', false)"
       >
         {{ t('global.button.cancel') }}
@@ -124,6 +128,7 @@
         text
         color="primary"
         :disabled="!formIsValid || ability.cannot('manage', 'accounts')"
+        :loading="isLoading"
         @click="updateAccount"
       >
         {{ id ? t('updateAccount') : t('createAccount') }}
@@ -142,6 +147,7 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
+import { IVeoAccount } from '~/plugins/api/account';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -166,7 +172,7 @@ export default defineComponent({
       type: String,
       default: ''
     },
-    email: {
+    emailAddress: {
       type: String,
       default: ''
     },
@@ -178,8 +184,8 @@ export default defineComponent({
       type: Array as PropType<string[]>,
       default: () => []
     },
-    takenAccountNames: {
-      type: Array as PropType<string[]>,
+    existingAccounts: {
+      type: Array as PropType<IVeoAccount[]>,
       default: () => []
     }
   },
@@ -191,20 +197,29 @@ export default defineComponent({
 
     // form stuff
     const formIsValid = ref(false);
-    const formData = reactive<{ username?: string; email?: string; firstName?: string; lastName?: string; enabled?: boolean; groups?: string[]; [key: string]: any }>({});
+    const formData = reactive<{ username?: string; emailAddress?: string; firstName?: string; lastName?: string; enabled?: boolean; groups?: string[]; [key: string]: any }>({});
 
-    const usernameIsDuplicateRule = (v: any) => !formData.username || !props.takenAccountNames.includes(trim(v)) || t('usernameAlreadyTaken').toString();
+    const usernameIsDuplicateRule = (v: any) =>
+      !props.existingAccounts.find((account) => account.username === trim(v) && account.id !== props.id) || t('usernameAlreadyTaken').toString();
+    const mailAddressIsDuplicateRule = (v: any) =>
+      !props.existingAccounts.find((account) => account.emailAddress === trim(v) && account.id !== props.id) || t('emailAddressAlreadyTaken').toString();
+    const mailRegexRule = (v: string) => (typeof v === 'string' && /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v)) || t('emailAddressWrongFormat').toString();
     const requiredRule = (v: any) => (!!v && !!trim(v).length) || t('global.input.required').toString();
 
-    const availableGroups = ref([]);
+    const availableGroups = ref([
+      {
+        text: t('permissions.veo-write').toString(),
+        value: 'veo-write-access'
+      }
+    ]);
 
     // Update form data from outside
     watch(
       () => props,
       (newValue) => {
-        Object.assign(formData, pick(newValue, 'username', 'email', 'firstName', 'lastName', 'enabled', 'groups'));
+        Object.assign(formData, pick(newValue, 'username', 'emailAddress', 'firstName', 'lastName', 'enabled', 'groups'));
       },
-      { deep: true }
+      { deep: true, immediate: true }
     );
     watch(
       () => props.value,
@@ -219,11 +234,13 @@ export default defineComponent({
 
     // CRUD stuff
     const createMutationParameters = computed(() => formData);
-    const { mutateAsync: create } = useCreateAccount(createMutationParameters as any);
+    const { mutateAsync: create, isLoading: isLoadingCreate } = useCreateAccount(createMutationParameters as any);
     const updateMutationParameters = computed(() => ({ ...formData, id: props.id }));
-    const { mutateAsync: update } = useUpdateAccount(updateMutationParameters as any);
+    const { mutateAsync: update, isLoading: isLoadingUpdate } = useUpdateAccount(updateMutationParameters as any);
 
-    const updateAccount = () => {
+    const isLoading = computed(() => isLoadingCreate.value || isLoadingUpdate.value);
+
+    const updateAccount = async () => {
       if (!formIsValid.value || ability.value.cannot('manage', 'accounts')) {
         return;
       }
@@ -240,9 +257,9 @@ export default defineComponent({
       });
       try {
         if (props.id) {
-          update();
+          await update();
         } else {
-          create();
+          await create();
         }
         displaySuccessMessage(t(props.id ? 'updatingAccountSuccess' : 'creatingAccountSuccess').toString());
         emit('success');
@@ -257,6 +274,9 @@ export default defineComponent({
       availableGroups,
       formData,
       formIsValid,
+      isLoading,
+      mailAddressIsDuplicateRule,
+      mailRegexRule,
       profile,
       requiredRule,
       updateAccount,
@@ -278,11 +298,16 @@ export default defineComponent({
     "creatingAccountFailed": "Couldn't create account",
     "creatingAccountSuccess": "Account was created successfully",
     "email": "Email address",
+    "emailAddressAlreadyTaken": "The email address is already in use. Please choose another one.",
+    "emailAddressWrongFormat": "Please enter a valid email address.",
     "enabled": "Account is enabled?",
     "firstName": "First name",
     "groups": "Assigned groups",
     "lastName": "Last name",
     "noPassword": "The password can be set by the user after verifying his email address.",
+    "permissions": {
+      "veo-write": "Write access"
+    },
     "updateAccount": "Update account",
     "updatingAccountFailed": "Couldn't update account",
     "updatingAccountSuccess": "Account was updated successfully",
@@ -295,11 +320,16 @@ export default defineComponent({
     "creatingAccountFailed": "Account konnte nicht erstellt werden",
     "creatingAccountSuccess": "Account wurde erstellt",
     "email": "E-Mail-Adresse",
+    "emailAddressAlreadyTaken": "Die E-Mail Adresse wird bereits genutzt. Bitte wählen Sie eine andere.",
+    "emailAddressWrongFormat": "Bitte gebe eine gültige E-Mail-Adresse ein.",
     "enabled": "Account ist aktiv?",
     "firstName": "Vorname",
     "groups": "Zugehörige Gruppen",
     "lastName": "Nachname",
     "noPassword": "Das Passwort kann vom Benutzer nach dem Verifizieren der E-Mail-Adresse gesetzt werden.",
+    "permissions": {
+      "veo-write": "Schreibzugriff"
+    },
     "updateAccount": "Account aktualisieren",
     "updatingAccountFailed": "Account konnte nicht aktualisiert werden",
     "updatingAccountSuccess": "Account wurde aktualisiert",

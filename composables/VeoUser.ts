@@ -23,7 +23,8 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import LocalStorage from '~/util/LocalStorage';
 
 export interface IVeoUserSettings {
-  maxUnits: number | undefined;
+  maxUnits: number;
+  maxUsers: number;
 }
 
 export interface IVeoUserComposable {
@@ -138,7 +139,8 @@ export const useVeoUser: () => IVeoUserComposable = () => {
   const profile = computed(() => keycloak.value?.profile);
 
   const userSettings = computed<IVeoUserSettings>(() => ({
-    maxUnits: keycloak.value?.tokenParsed?.max_units
+    maxUnits: keycloak.value?.tokenParsed?.max_units || 2,
+    maxUsers: keycloak.value?.tokenParsed?.max_users || -1
   }));
 
   watch(

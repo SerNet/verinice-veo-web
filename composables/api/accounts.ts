@@ -71,7 +71,7 @@ export const useCreateAccount = (mutationParameters: MaybeRef<IVeoCreateAccountP
   const { $api } = useContext();
   const queryClient = useQueryClient();
 
-  return useMutation<void>('account', $api.account.create, mutationParameters, {
+  return useMutation('account', $api.account.create, mutationParameters, {
     ...mutationOptions,
     onSuccess: () => {
       queryClient.invalidateQueries(accountsQueryKeys.accounts);
@@ -83,7 +83,7 @@ export const useUpdateAccount = (mutationParameters: MaybeRef<IVeoUpdateAccountP
   const { $api } = useContext();
   const queryClient = useQueryClient();
 
-  return useMutation<void>('account', $api.account.update, mutationParameters, {
+  return useMutation('account', $api.account.update, mutationParameters, {
     ...mutationOptions,
     onSuccess: () => {
       queryClient.invalidateQueries(accountsQueryKeys.accounts);
@@ -96,7 +96,7 @@ export const useDeleteAccount = (mutationParameters: MaybeRef<IVeoDeleteAccountP
   const { $api } = useContext();
   const queryClient = useQueryClient();
 
-  return useMutation<void>('account', $api.account.delete, mutationParameters, {
+  return useMutation('account', $api.account._delete, mutationParameters, {
     ...mutationOptions,
     onSuccess: () => {
       queryClient.invalidateQueries(accountsQueryKeys.accounts);

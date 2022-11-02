@@ -44,7 +44,10 @@ export const useMutation = <T = void>(
   const { $config } = useContext();
 
   // Actual mutation getting executed
-  const result = vueQueryUseMutation<T>(() => mutationFunction(...transformQueryParameters(mutationIdentifier, mutationFunction.name, unref(mutationParameters))), mutationOptions);
+  const result = vueQueryUseMutation<T>(
+    (mutationParameters: any) => mutationFunction(...transformQueryParameters(mutationIdentifier, mutationFunction.name, mutationParameters)),
+    mutationOptions
+  );
 
   // Debugging stuff
   if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(mutationIdentifier))) {
@@ -63,5 +66,9 @@ export const useMutation = <T = void>(
     );
   }
 
-  return result;
+  return {
+    ...result,
+    // @ts-ignore For some reason the type say mutate doesn't take parameters, even though it is documented that way and does.
+    mutateAsync: () => result.mutateAsync(unref(mutationParameters))
+  };
 };
