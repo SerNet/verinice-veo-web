@@ -77,27 +77,35 @@
           target="_blank"
         >
           <v-list-item-title class="d-flex">
-            {{ $t('myAccount') }}
+            {{ t('myAccount') }}
             <v-icon x-small>
               {{ mdiOpenInNew }}
             </v-icon>
           </v-list-item-title>
-          <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
+        </v-list-item>
+        <v-divider />
+        <v-list-item
+          v-if="ability.can('manage', 'accounts')"
+          to="/administration"
+        >
+          <v-list-item-title>
+            {{ t('breadcrumbs.administration') }}
+          </v-list-item-title>
         </v-list-item>
         <v-divider />
         <v-list-item @click="displayDeploymentDetails = true">
           <v-list-item-title>
-            {{ $t('about') }}
+            {{ t('about') }}
           </v-list-item-title>
-          <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
         </v-list-item>
         <v-divider />
         <v-list-item @click="$emit('logout')">
           <v-list-item-title class="font-weight-medium">
-            {{ $t('logout') }}
+            {{ t('logout') }}
           </v-list-item-title>
         </v-list-item>
       </v-list>
+      <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
     </v-card>
   </v-menu>
 </template>
@@ -109,6 +117,7 @@ import { mdiOpenInNew } from '@mdi/js';
 
 import { IVeoUnit } from '~/types/VeoTypes';
 import { useVeoUser } from '~/composables/VeoUser';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   props: {
@@ -122,6 +131,7 @@ export default defineComponent({
     const { $api, $config } = useContext();
     const { userSettings } = useVeoUser();
     const route = useRoute();
+    const { ability } = useVeoPermissions();
 
     const displayDeploymentDetails = ref(false);
     const menuVisible = ref(false);
@@ -145,6 +155,7 @@ export default defineComponent({
     const accountLink = computed(() => `${$config.oidcUrl}/realms/${$config.oidcRealm}/account`);
 
     return {
+      ability,
       accountLink,
       displayDeploymentDetails,
       initials,
@@ -163,12 +174,14 @@ export default defineComponent({
 {
   "en": {
     "about": "About verinice.",
+    "clientAdministration": "Client administration",
     "logout": "Logout",
     "myAccount": "My account",
     "notAvailable": "Not available"
   },
   "de": {
     "about": "Über verinice.",
+    "clientAdministration": "Clientverwaltung",
     "logout": "Abmelden",
     "myAccount": "Mein Account",
     "notAvailable": "Keine Angabe"

@@ -18,6 +18,7 @@
 import defaultsDeep from 'lodash/defaultsDeep';
 import { Plugin, Context } from '@nuxt/types';
 
+import account from '~/plugins/api/account';
 import entity from '~/plugins/api/entity';
 import form from '~/plugins/api/form';
 import history from '~/plugins/api/history';
@@ -33,7 +34,7 @@ import { sanitizeURLParams } from '~/lib/utils';
 import { IVeoUserComposable, useVeoUser } from '~/composables/VeoUser';
 
 export function createAPI(context: Context, user: IVeoUserComposable) {
-  return Client.create(context, { form, entity, history, schema, translation, unit, report, domain, catalog, monitoring }, user);
+  return Client.create(context, { account, form, entity, history, schema, translation, unit, report, domain, catalog, monitoring }, user);
 }
 
 export interface IAPIClient {
@@ -81,6 +82,7 @@ export class Client {
   public baseFormURL: string;
   public baseHistoryURL: string;
   public baseReportURL: string;
+  public baseAccountURL: string;
   public _context: Context;
   public _user: IVeoUserComposable;
 
@@ -99,6 +101,7 @@ export class Client {
     this.baseFormURL = `${context.$config.formsApiUrl}`.replace(/\/$/, '');
     this.baseHistoryURL = `${context.$config.historyApiUrl}`.replace(/\/$/, '');
     this.baseReportURL = `${context.$config.reportsApiUrl}`.replace(/\/$/, '');
+    this.baseAccountURL = `${context.$config.accountsApiUrl}`.replace(/\/$/, '');
 
     this._context = context;
     this._user = user;
@@ -109,6 +112,7 @@ export class Client {
       .replace(/^\/api\/forms/, this.baseFormURL)
       .replace(/^\/api\/history/, this.baseHistoryURL)
       .replace(/^\/api\/reports/, this.baseReportURL)
+      .replace(/^\/api\/accounts/, this.baseAccountURL)
       .replace(/^\/api/, this.baseURL);
     if (_url.startsWith('/')) {
       const loc = window.location;

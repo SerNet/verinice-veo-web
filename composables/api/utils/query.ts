@@ -23,20 +23,22 @@ import { isFunction } from 'lodash';
 
 import { IBaseObject } from '~/lib/utils';
 
+export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
+
 /**
  * Wrapper for vue-query's useQuery to apply some custom logic to make it work more seamless with the legacy api plugin.
  *
- * @param primaryQueryKey Primary key of the query. Shouldn't change. Changes are triggered by changing the query parameters that get added to the query key.
+ * @param queryKey query key. Changes to it trigger a refetch. Can either be a string array or a callable function that gets passed the query parameters
  * @param requestFunction Function to call to fetch data (usually a function from the api plugin).
  * @param queryParameters Parameters to pass to the request function.
  * @param queryOptions Options modifiying query behaviour.
  * @returns Query object containing the data and information about the query.
  */
 export const useQuery = <T>(
-  queryKey: string[] | CallableFunction,
+  queryKey: readonly string[] | CallableFunction,
   requestFunction: CallableFunction,
   queryParameters: MaybeRef<IBaseObject>,
-  queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>
+  queryOptions?: QueryOptions
 ) => {
   const { $config } = useContext();
 
@@ -93,7 +95,12 @@ const queryParameterMap = new Map<string, string[]>([
   ['object_fetch', ['objectType', 'id']],
   ['forms_fetchAll', ['domainId']],
   ['form_fetch', ['domainId', 'id']],
-  ['schemas_fetch', ['type', 'domainIds']]
+  ['schema_fetch', ['type', 'domainIds']],
+  ['accounts_fetchAll', []],
+  ['account_fetch', ['id']],
+  ['account_create', ['_parameters_']],
+  ['account_update', ['id', '_parameters_']],
+  ['account__delete', ['id']]
 ]);
 
 /**
@@ -104,7 +111,7 @@ const queryParameterMap = new Map<string, string[]>([
  * @param queryParameters The object containing all query parameters, some of which will get applied as arguments.
  * @returns An array containing the arguments in the correct order, ready to be passed to the request function.
  */
-const transformQueryParameters = (primaryQueryKey: string, requestFunctionName: string, queryParameters: IBaseObject) => {
+export const transformQueryParameters = (primaryQueryKey: string, requestFunctionName: string, queryParameters: IBaseObject) => {
   const key = `${primaryQueryKey}_${requestFunctionName}`;
 
   const returnParameters =

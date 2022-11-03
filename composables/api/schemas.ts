@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { useContext } from '@nuxtjs/composition-api';
-import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 
-import { useQuery } from './utils/query';
+import { QueryOptions, useQuery } from './utils/query';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 
 export interface IVeoFetchSchemaParameters {
@@ -28,10 +27,10 @@ export interface IVeoFetchSchemaParameters {
 }
 
 export const schemasQueryKeys = {
-  schemas: (queryParameters: IVeoFetchSchemaParameters) => ['schemas', queryParameters.type, queryParameters.domainIds] as const
+  schemas: (queryParameters: IVeoFetchSchemaParameters) => ['schema', queryParameters.type, queryParameters.domainIds] as const
 };
 
-export const useFetchSchema = (queryParameters: MaybeRef<IVeoFetchSchemaParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
+export const useFetchSchema = (queryParameters: MaybeRef<IVeoFetchSchemaParameters>, queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
   return useQuery<IVeoObjectSchema>(schemasQueryKeys.schemas, $api.schema.fetch, queryParameters, { ...queryOptions, staleTime: 10 * 60 * 1000 });
