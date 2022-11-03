@@ -46,6 +46,7 @@
             >
               <template #activator="{on}">
                 <v-btn
+                  :disabled="action.isDisabled && action.isDisabled(item)"
                   icon
                   @click="action.action(item)"
                   v-on="on"
@@ -110,7 +111,7 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
     const { data: accounts, isFetching } = useFetchAccounts();
-    const { userSettings } = useVeoUser();
+    const { profile, userSettings } = useVeoUser();
     const { ability } = useVeoPermissions();
 
     const onEditAccount = (account: IVeoAccount) => {
@@ -146,6 +147,7 @@ export default defineComponent({
       action: CallableFunction;
       icon: string;
       label: string;
+      isDisabled?: CallableFunction;
     }[] = [
       {
         id: 'edit',
@@ -157,7 +159,8 @@ export default defineComponent({
         id: 'delete',
         action: onDeleteAccount,
         icon: mdiTrashCanOutline,
-        label: 'global.button.delete'
+        label: 'global.button.delete',
+        isDisabled: (item: IVeoAccount) => item.username === profile.value?.username
       }
     ];
 

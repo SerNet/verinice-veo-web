@@ -44,7 +44,7 @@ export const useVeoPermissions = () => {
       can('view', 'accounts');
       can('manage', 'accounts');
     } else {
-      // Temp as currently the accountmanagers role is a group. Will be removed as soon as groups vs. roles is talked about
+      // TODO Temp as currently the accountmanagers role is a group. Will be removed as soon as groups vs. roles is talked about
       can('view', 'accounts');
       can('manage', 'accounts');
     }

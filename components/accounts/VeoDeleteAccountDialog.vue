@@ -73,14 +73,6 @@ export default defineComponent({
     username: {
       type: String,
       required: true
-    },
-    firstName: {
-      type: String,
-      default: ''
-    },
-    lastName: {
-      type: String,
-      default: ''
     }
   },
   setup(props, { emit }) {

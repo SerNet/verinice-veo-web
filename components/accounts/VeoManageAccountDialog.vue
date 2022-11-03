@@ -42,7 +42,7 @@
         <v-card-text>
           <v-form
             v-model="formIsValid"
-            @submit.prevent="updateAccount"
+            @submit.prevent="createOrUpdateAccount"
           >
             <v-row>
               <v-col
@@ -140,7 +140,7 @@
 <script lang="ts">
 import { mdiAccountOutline, mdiEmailOutline } from '@mdi/js';
 import { computed, defineComponent, PropType, reactive, ref, watch } from '@nuxtjs/composition-api';
-import { pick, trim } from 'lodash';
+import { cloneDeep, pick, trim } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { useCreateAccount, useUpdateAccount } from '~/composables/api/accounts';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -217,10 +217,12 @@ export default defineComponent({
     watch(
       () => props,
       (newValue) => {
-        Object.assign(formData, pick(newValue, 'username', 'emailAddress', 'firstName', 'lastName', 'enabled', 'groups'));
+        Object.assign(formData, cloneDeep(pick(newValue, 'username', 'emailAddress', 'firstName', 'lastName', 'enabled', 'groups')));
       },
       { deep: true, immediate: true }
     );
+
+    // Reset form on close (dialog close animation is done after 250ms)
     watch(
       () => props.value,
       () => {
@@ -240,7 +242,7 @@ export default defineComponent({
 
     const isLoading = computed(() => isLoadingCreate.value || isLoadingUpdate.value);
 
-    const updateAccount = async () => {
+    const createOrUpdateAccount = async () => {
       if (!formIsValid.value || ability.value.cannot('manage', 'accounts')) {
         return;
       }
@@ -272,6 +274,7 @@ export default defineComponent({
     return {
       ability,
       availableGroups,
+      createOrUpdateAccount,
       formData,
       formIsValid,
       isLoading,
@@ -279,7 +282,6 @@ export default defineComponent({
       mailRegexRule,
       profile,
       requiredRule,
-      updateAccount,
       usernameIsDuplicateRule,
 
       t,
@@ -320,7 +322,7 @@ export default defineComponent({
     "creatingAccountFailed": "Account konnte nicht erstellt werden",
     "creatingAccountSuccess": "Account wurde erstellt",
     "email": "E-Mail-Adresse",
-    "emailAddressAlreadyTaken": "Die E-Mail Adresse wird bereits genutzt. Bitte wählen Sie eine andere.",
+    "emailAddressAlreadyTaken": "Die E-Mail Adresse wird bereits verwendet. Bitte wählen Sie eine andere.",
     "emailAddressWrongFormat": "Bitte gebe eine gültige E-Mail-Adresse ein.",
     "enabled": "Account ist aktiv?",
     "firstName": "Vorname",
@@ -335,7 +337,7 @@ export default defineComponent({
     "updatingAccountSuccess": "Account wurde aktualisiert",
     "updatingOwnAccount": "Sie bearbeiten Ihren eigenen Account. Aus Sicherheitsgründen wurde das Bearbeiten von Berechtigungen deaktiviert.",
     "username": "Benutzername",
-    "usernameAlreadyTaken": "Der Benutzername wird bereits genutzt. Bitte wählen Sie einen anderen."
+    "usernameAlreadyTaken": "Der Benutzername wird bereits verwendet. Bitte wählen Sie einen anderen."
   }
 }
 </i18n>
