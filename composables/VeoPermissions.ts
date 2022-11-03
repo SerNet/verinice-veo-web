@@ -41,9 +41,11 @@ export const useVeoPermissions = () => {
     }
 
     if (newValue.includes('veo-accountmanagers')) {
+      can('view', 'accounts');
       can('manage', 'accounts');
     } else {
       // Temp as currently the accountmanagers role is a group. Will be removed as soon as groups vs. roles is talked about
+      can('view', 'accounts');
       can('manage', 'accounts');
     }
     // @ts-ignore For some reason the rules and update types are incompatible, they work however
