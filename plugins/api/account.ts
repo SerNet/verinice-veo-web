@@ -90,6 +90,8 @@ export default function (api: Client) {
     /**
      * Deletes a single account
      *
+     * NOTE: Name is _delete, as delete.name returns _delete, making the naming of this function and the queryParameterMap in the api composable inconsistent
+     *
      * @param id The account to delete
      * @param query Additional query params
      * @returns 204 if successful
