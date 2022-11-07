@@ -16,19 +16,26 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage v-if="document">
-    <div class="caption">
-      {{ document.path }}
-    </div>
-    <NuxtContent :document="document" />
+  <VeoPage
+    v-if="document"
+    :title="document.title"
+  >
+    <VeoCard class="mb-4">
+      <v-card-text>
+        <NuxtContent :document="document" />
+      </v-card-text>
+    </VeoCard>
   </VeoPage>
 </template>
 <script lang="ts">
-import { defineComponent, useRoute } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute, watch } from '@nuxtjs/composition-api';
+import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { useDoc } from '~/composables/docs';
+
+import { useDoc, useDocs } from '~/composables/docs';
+import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
+
 export default defineComponent({
-  layout: 'docs',
   setup() {
     const { locale } = useI18n();
     const route = useRoute();
@@ -36,11 +43,56 @@ export default defineComponent({
       path: `/${route.value.params.pathMatch || 'index'}`,
       locale: locale.value
     });
-    return { document };
-  },
-  head(): any {
+    const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
+
+    const docs = useDocs({
+      buildItem(item) {
+        return {
+          ...item,
+          name: item.isDir ? `${upperFirst(item.slug)} (${item.path})` : `${item.title || item.slug} (${item.path})`,
+          to: item.path
+        };
+      }
+    });
+
+    const updateBreadcrumbs = () => {
+      // Remove previous custom breadcrumbs
+      clearCustomBreadcrumbs();
+
+      if (!docs.value?.length || !document.value) {
+        return;
+      }
+
+      // Get all path segments and the nesting level to know how many breadcrumb entries have to be created
+      const pathSegments = (document.value?.path || '').split('/').filter((segment) => segment);
+      const nestingLevel = pathSegments.length;
+
+      // Greater than 0 as we don't want to include the index page in the breadcrumbs
+      for (let i = nestingLevel; i > 0; i--) {
+        const currentPathSegments = pathSegments.slice(0, i);
+        const unlocalizedCurrentPath = currentPathSegments.join('/').replace(/(\.\w+)/, '');
+
+        const breadcrumbItem = (docs.value || []).find((doc) => doc.path === `/${unlocalizedCurrentPath}`);
+        if (breadcrumbItem) {
+          addCustomBreadcrumb({
+            to: `/docs${breadcrumbItem.path}`,
+            exact: true,
+            key: breadcrumbItem.path,
+            index: 0,
+            text: breadcrumbItem.title,
+            position: i * 10,
+            param: ''
+          });
+        }
+      }
+    };
+
+    watch(() => document.value?.path, updateBreadcrumbs, { immediate: true });
+
+    watch(() => docs.value, updateBreadcrumbs, { deep: true, immediate: true });
+
     return {
-      title: this.document?.title
+      document
     };
   }
 });

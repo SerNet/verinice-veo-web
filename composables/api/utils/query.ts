@@ -91,16 +91,19 @@ export const useQuery = <T>(
  * Map containing all keys in the order the options should be passed to the api function as arguments.
  */
 const queryParameterMap = new Map<string, string[]>([
-  ['objects_fetchAll', ['objectType', 'page', '_parameters_']],
-  ['object_fetch', ['objectType', 'id']],
-  ['forms_fetchAll', ['domainId']],
-  ['form_fetch', ['domainId', 'id']],
-  ['schema_fetch', ['type', 'domainIds']],
   ['accounts_fetchAll', []],
   ['account_fetch', ['id']],
   ['account_create', ['_parameters_']],
   ['account_update', ['id', '_parameters_']],
-  ['account__delete', ['id']]
+  ['account__delete', ['id']],
+  ['forms_fetchAll', ['domainId']],
+  ['form_fetch', ['domainId', 'id']],
+  ['objects_fetchAll', ['objectType', 'page', '_parameters_']],
+  ['object_fetch', ['objectType', 'id']],
+  ['schemas_fetchAll', []],
+  ['schema_fetch', ['type', 'domainIds']],
+  ['units_fetchAll', []],
+  ['unit_fetch', ['id']]
 ]);
 
 /**

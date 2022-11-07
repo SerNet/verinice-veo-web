@@ -24,15 +24,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-export default Vue.extend({
-  head() {
-    return {
-      titleTemplate: '%s - verinice.veo'
-    };
+import { defineComponent } from '@nuxtjs/composition-api';
+
+export default defineComponent({
+  setup() {
+    return {};
   }
 });
 </script>
-<style lang="scss" scoped>
-@import '~/assets/docs.scss';
-</style>

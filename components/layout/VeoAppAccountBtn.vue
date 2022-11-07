@@ -56,20 +56,23 @@
             </v-icon>
           </v-list-item-avatar>
           <v-list-item-content>
-            <span v-if="prename || lastname">
-              {{ prename }}
-              {{ lastname }}
+            <span v-if="(profile && profile.firstName) || (profile && profile.lastName)">
+              {{ profile.firstName }}
+              {{ profile.lastName }}
             </span>
             <span
               v-else
               v-text="t('notAvailable')"
             />
-            <v-list-item-subtitle>{{ email || t('notAvailable') }}</v-list-item-subtitle>
+            <v-list-item-subtitle>{{ profile && profile.email || t('notAvailable') }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
         <template v-if="!userSettings.maxUnits || userSettings.maxUnits > 2">
           <v-divider />
-          <VeoUnitSelection :units="units" />
+          <VeoUnitSelection
+            :units="units"
+            v-on="$listeners"
+          />
         </template>
         <v-divider />
         <v-list-item
@@ -99,7 +102,17 @@
           </v-list-item-title>
         </v-list-item>
         <v-divider />
-        <v-list-item @click="$emit('logout')">
+        <v-list-item
+          active-class="veo-active-list-item"
+          to="/docs"
+        >
+          <v-list-item-title>
+            {{ $t('breadcrumbs.docs') }}
+          </v-list-item-title>
+          <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
+        </v-list-item>
+        <v-divider />
+        <v-list-item @click="logout">
           <v-list-item-title class="font-weight-medium">
             {{ t('logout') }}
           </v-list-item-title>
@@ -120,23 +133,23 @@ import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
-  props: {
-    prename: { type: String, default: '' },
-    lastname: { type: String, default: '' },
-    username: { type: String, default: '' },
-    email: { type: String, default: '' }
+  emits: {
+    'create-unit': () => {}
   },
-  setup(props) {
+  setup() {
     const { t } = useI18n();
     const { $api, $config } = useContext();
-    const { userSettings } = useVeoUser();
+    const { logout: _logout, profile, userSettings } = useVeoUser();
     const route = useRoute();
     const { ability } = useVeoPermissions();
+    const logout = () => _logout('/');
 
     const displayDeploymentDetails = ref(false);
     const menuVisible = ref(false);
 
-    const initials = computed(() => props.prename.substring(0, 1) + props.lastname.substring(0, 1) || '??');
+    const firstName = computed(() => profile.value?.firstName || '');
+    const lastName = computed(() => profile.value?.lastName || '');
+    const initials = computed(() => firstName.value.substring(0, 1) + lastName.value.substring(0, 1) || '??');
 
     const unitId = computed(() => route.value.params.unit);
 
@@ -159,7 +172,9 @@ export default defineComponent({
       accountLink,
       displayDeploymentDetails,
       initials,
+      logout,
       menuVisible,
+      profile,
       units,
       userSettings,
 

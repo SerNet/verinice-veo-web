@@ -108,6 +108,7 @@ export default {
   breadcrumbs: {
     administration: 'Client administration',
     catalogs: 'Catalogs',
+    docs: 'Documentation',
     domain: 'Module',
     editor: 'Editors',
     formschema: 'Formschema editor',

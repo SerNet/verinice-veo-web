@@ -55,9 +55,7 @@
       </div>
     </template>
     <template #default>
-      <v-list
-        :rounded="miniVariant"
-      >
+      <v-list :rounded="miniVariant">
         <v-list-item-group>
           <template
             v-for="item in items"
@@ -130,8 +128,10 @@ import {
   mdiChevronLeft,
   mdiChevronRight,
   mdiFileChartOutline,
+  mdiFileDocumentOutline,
   mdiHomeOutline,
   mdiHomeSwitchOutline,
+  mdiLoginVariant,
   mdiTableSettings,
   mdiTextBoxEditOutline
 } from '@mdi/js';
@@ -142,7 +142,6 @@ import { sortBy, upperFirst } from 'lodash';
 import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoReportsMeta } from '~/types/VeoTypes';
-import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/_unit/domains/_domain/index.vue';
@@ -155,6 +154,8 @@ import { OBJECT_TYPE_ICONS } from '~/components/objects/VeoObjectIcon.vue';
 import { useFetchForms } from '~/composables/api/forms';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useFetchSchemas } from '~/composables/api/schemas';
+import { useDocTree } from '~/composables/docs';
 
 export interface INavItem {
   key: string;
@@ -200,7 +201,7 @@ export default defineComponent({
   setup(props) {
     const { t, locale } = useI18n();
     const { $api } = useContext();
-    const { userSettings } = useVeoUser();
+    const { authenticated, userSettings } = useVeoUser();
     const route = useRoute();
     const { ability } = useVeoPermissions();
 
@@ -213,24 +214,23 @@ export default defineComponent({
     }
 
     // objects specific stuff
-    const objectTypes = ref<IVeoSchemaEndpoint[]>([]);
     const objectSchemas = ref<IVeoObjectSchema[]>([]);
 
     const queryParameters = computed(() => ({
       domainId: props.domainId
     }));
-    const queryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled, placeholderData: [] });
+    const allFormSchemasQueryEnabled = computed(() => !!props.domainId);
+    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
+
+    const { data: objectTypes } = useFetchSchemas({ enabled: authenticated.value });
+
     const { fetch: fetchObjectsEntries, fetchState: objectEntriesLoading } = useFetch(async () => {
       // Only load object types on the first call, as them changing while the user is using the application is highly unlikely
-      if (!objectTypes.value.length) {
-        objectTypes.value = await $api.schema.fetchAll();
-      }
       objectSchemas.value = [];
 
       // We only load the objectschemas to avoid loading some when the domain id is set and some if it isn't set
       if (props.domainId) {
-        for (const objectType of objectTypes.value) {
+        for (const objectType of objectTypes.value || []) {
           objectSchemas.value.push(await $api.schema.fetch(objectType.schemaName, [props.domainId]));
         }
       }
@@ -458,8 +458,37 @@ export default defineComponent({
       }
     }));
 
+    const loginNavEntry = computed<INavItem>(() => ({
+      key: 'login',
+      name: t('login').toString(),
+      to: '/login',
+      icon: mdiLoginVariant,
+      componentName: 'login-nav-item'
+    }));
+
+    const docsNavEntry = computed<INavItem>(() => ({
+      key: 'docs',
+      name: t('breadcrumbs.docs').toString(),
+      to: '/docs',
+      icon: mdiFileDocumentOutline,
+      componentName: 'docs-nav-item',
+      activePath: '/docs',
+      children: docLinks.value
+    }));
+
+    const docLinks = useDocTree({
+      childrenKey: 'children',
+      buildItem(item) {
+        return {
+          ...item,
+          name: `${item.isDir ? upperFirst(item.dir.split('/').pop()) : item.title || upperFirst(item.slug)}`,
+          to: `/docs${item.path}`
+        };
+      }
+    });
+
     const items = computed<INavItem[]>(() => [
-      ...(userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry] : []),
+      ...(authenticated.value && userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry] : []),
       ...(props.unitId && props.domainId
         ? [
             domainDashboardNavEntry.value,
@@ -469,7 +498,9 @@ export default defineComponent({
             reportsNavEntry.value,
             risksNavEntry.value
           ]
-        : [])
+        : []),
+      ...(!authenticated.value ? [loginNavEntry.value] : []),
+      ...(route.value.path.startsWith('/docs') ? [docsNavEntry.value] : [])
     ]);
 
     // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
@@ -478,14 +509,16 @@ export default defineComponent({
     );
 
     return {
+      authenticated,
       items,
       homeLink,
       miniVariant,
       setMiniVariant,
 
+      t,
       mdiChevronLeft,
       mdiChevronRight,
-      t
+      mdiLoginVariant
     };
   }
 });
@@ -496,12 +529,14 @@ export default defineComponent({
   "en": {
     "collapse": "Collapse menu",
     "fix": "Fix menu",
-    "all": "all"
+    "all": "all",
+    "login": "Login"
   },
   "de": {
     "collapse": "Menü verstecken",
     "fix": "Menü fixieren",
-    "all": "alle"
+    "all": "alle",
+    "login": "Anmelden"
   }
 }
 </i18n>
