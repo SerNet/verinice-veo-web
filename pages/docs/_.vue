@@ -20,7 +20,10 @@
     v-if="document"
     :title="document.title"
   >
-    <VeoCard class="mb-4">
+    <VeoCard
+      class="mb-4"
+      style="max-width: 1024px"
+    >
       <v-card-text>
         <NuxtContent :document="document" />
       </v-card-text>
