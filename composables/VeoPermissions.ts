@@ -22,17 +22,17 @@ import { ref } from '@nuxtjs/composition-api';
 const ability = ref(createMongoAbility());
 
 export const useVeoPermissions = () => {
-  const updatePermissions = (newValue: string[]) => {
+  const updatePermissions = (permissions: string[]) => {
     const { can, cannot, rules } = new AbilityBuilder(createMongoAbility);
 
     can('view', 'all');
 
-    if (newValue.includes('veo-write')) {
+    if (permissions.includes('veo-write')) {
       can('manage', 'all');
     } else {
       cannot('manage', 'all');
     }
-    if (newValue.includes('veo-content-creator')) {
+    if (permissions.includes('veo-content-creator')) {
       can('view', 'editors');
       can('manage', 'editors');
     } else {
@@ -40,13 +40,15 @@ export const useVeoPermissions = () => {
       cannot('manage', 'editors');
     }
 
-    if (newValue.includes('veo-accountmanagers')) {
+    if (permissions.includes('account:read')) {
       can('view', 'accounts');
+    } else {
+      cannot('view', 'accounts');
+    }
+    if (permissions.includes('account:manage')) {
       can('manage', 'accounts');
     } else {
-      // TODO Temp as currently the accountmanagers role is a group. Will be removed as soon as groups vs. roles is talked about
-      can('view', 'accounts');
-      can('manage', 'accounts');
+      cannot('manage', 'accounts');
     }
     // @ts-ignore For some reason the rules and update types are incompatible, they work however
     ability.value.update(rules);

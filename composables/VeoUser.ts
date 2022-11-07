@@ -72,7 +72,7 @@ export const useVeoUser: () => IVeoUserComposable = () => {
       }
 
       // Update permissions immediately as the middleware can't wait for the next tick
-      updatePermissions(keycloak.value?.tokenParsed?.roles || []);
+      updatePermissions([...(keycloak.value?.tokenParsed?.realm_access?.roles || []), ...(keycloak.value?.tokenParsed?.resource_access?.['veo-accounts']?.roles || [])]);
     } catch (error) {
       throw new Error(`Error while setting up authentication provider: ${error}`);
     }
@@ -134,7 +134,10 @@ export const useVeoUser: () => IVeoUserComposable = () => {
 
   const token = computed<string | undefined>(() => keycloak.value?.token);
 
-  const roles = computed<string[]>(() => keycloak.value?.tokenParsed?.roles || []);
+  const roles = computed<string[]>(() => [
+    ...(keycloak.value?.tokenParsed?.realm_accessRoles || []),
+    ...(keycloak.value?.tokenParsed?.resource_access?.['veo-accounts']?.roles || [])
+  ]);
 
   const profile = computed(() => keycloak.value?.profile);
 

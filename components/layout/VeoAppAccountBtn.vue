@@ -86,16 +86,17 @@
             </v-icon>
           </v-list-item-title>
         </v-list-item>
-        <v-divider />
-        <v-list-item
-          v-if="ability.can('manage', 'accounts')"
-          active-class="veo-active-list-item"
-          to="/administration"
-        >
-          <v-list-item-title>
-            {{ t('breadcrumbs.administration') }}
-          </v-list-item-title>
-        </v-list-item>
+        <template v-if="ability.can('manage', 'accounts')">
+          <v-divider />
+          <v-list-item
+            active-class="veo-active-list-item"
+            to="/administration"
+          >
+            <v-list-item-title>
+              {{ t('breadcrumbs.administration') }}
+            </v-list-item-title>
+          </v-list-item>
+        </template>
         <v-divider />
         <v-list-item @click="displayDeploymentDetails = true">
           <v-list-item-title>
