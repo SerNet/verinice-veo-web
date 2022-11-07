@@ -89,6 +89,7 @@
         <v-divider />
         <v-list-item
           v-if="ability.can('manage', 'accounts')"
+          active-class="veo-active-list-item"
           to="/administration"
         >
           <v-list-item-title>
