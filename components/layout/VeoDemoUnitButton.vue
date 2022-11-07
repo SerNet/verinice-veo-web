@@ -67,7 +67,7 @@ import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { IVeoUnit } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
-import { useUser } from '~/composables/VeoUser';
+import { useVeoUser } from '~/composables/VeoUser';
 import { useFetchUnits } from '~/composables/api/units';
 
 export default defineComponent({
@@ -80,7 +80,7 @@ export default defineComponent({
   setup(_props, context) {
     const { t } = useI18n();
     const { app, params } = useContext();
-    const { authenticated } = useUser();
+    const { authenticated } = useVeoUser();
 
     // Demo unit/unit selection
 
