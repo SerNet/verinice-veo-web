@@ -218,9 +218,6 @@ export const useDocTree = <T extends DocPageFetchReturn, ChildrenKey extends str
       const parent = tree.get(parentPath);
       if (parent && parent !== item) {
         const children = (parent[childrenKey] = parent[childrenKey] || ([] as T[]));
-        if (!children.length) {
-          children.push({ name: 'Index', to: parent.to === '/docs/' ? '/docs/index' : parent.to, exact: true });
-        }
         children.push(item);
       }
     });

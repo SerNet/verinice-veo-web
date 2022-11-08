@@ -93,7 +93,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api';
+import { defineComponent, PropType, useRoute, useRouter } from '@nuxtjs/composition-api';
 import { mdiChevronDown } from '@mdi/js';
 
 import { INavItem } from './VeoPrimaryNavigation.vue';
@@ -136,14 +136,25 @@ export default defineComponent({
     componentName: {
       type: String,
       default: undefined
+    },
+    to: {
+      type: String,
+      default: undefined
     }
   },
   setup(props, { emit }) {
+    const route = useRoute();
+    const router = useRouter();
+
     const onClick = (event: any) => {
       if (props.miniVariant) {
         emit('expand-menu');
       }
-      emit('click', event);
+      if (props.to && route.value.path !== props.to) {
+        router.push(props.to);
+      } else {
+        emit('click', event);
+      }
     };
 
     return {
