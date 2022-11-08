@@ -29,6 +29,10 @@ VEO_OIDC_CLIENT=veo-development-client
 
 For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
 
+## Documentation
+Use the `DocLink` component for all **internal** links instead of `<nuxt-link>`, as `<nuxt-link>` won't work in the pdf.
+Also remove `index` from all links in order for PDF navigation to work correctly.
+
 ## vue-query Debugging
 Debugging can be enabled by setting the `VEO_DEBUG_CACHE` variable to `true` or an array containing the first part of each query key you want to debug, eg. `VEO_DEBUG_CACHE=['objects','monitoring']`. Debugging can also be enabled at runtime by setting `$nuxt.$config.debugCache` to one of the aforementioned values.
 
