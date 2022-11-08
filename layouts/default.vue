@@ -38,6 +38,7 @@
         class="mr-3"
         color="black"
         icon
+        target="_blank"
         to="/docs/index"
         exact
       >
