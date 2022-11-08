@@ -2,11 +2,6 @@
 title: Arbeitsfläche
 position: 3
 ---
-
-## Arbeitsfläche
-
-<br>
-
 Die Arbeitsfläche stellt je nach Kontext verschiedenste Inhalte dar:
 
 ||||

@@ -2,11 +2,6 @@
 title: Application bar
 position: 1
 ---
-
-### Application bar
-
-<br>
-
 The application bar provides overarching functions for operation:
 
 ![application bar](media/veo_app-bar.en.png)

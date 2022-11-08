@@ -2,11 +2,6 @@
 title: Risk definitions
 position: 5
 ---
-
-## Risk definitions
-
-<br>
-
 In the section risk definitions the definitions for the risk analysis can be seen:
 
 ![risk definition](media/veo_risk-definition.de.png)

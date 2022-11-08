@@ -3,8 +3,6 @@ title: User manual
 position: 1
 ---
 
-## user manual
-
 <br>
 
 This section describes the basic operation of verinice.veo.

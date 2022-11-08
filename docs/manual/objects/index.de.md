@@ -2,11 +2,6 @@
 title: Objekte
 position: 3
 ---
-
-### Objekte
-
-<br>
-
 Im Abschnitt Objekte können Objekte angelegt, bearbeitet oder gelöscht werden.
 
 #### Objektübersicht

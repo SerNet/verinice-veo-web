@@ -2,7 +2,6 @@
 title: Objects
 position: 2
 ---
-
 ### Organisational objects
 
 Organisational objects help to assign objects to users. Organisational objects realise the separation of data into different clients. Within a client, further subgroups can be created, e.g. for subsidiaries or specialist departments.

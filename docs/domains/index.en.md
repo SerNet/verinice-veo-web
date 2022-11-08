@@ -3,8 +3,6 @@ title: Domains
 position: 2
 ---
 
-## Domains
-
 Available domains in verinice.veo:
 
 1. <DocLink to="/2_domains/gdpr">DS-GVO</DocLink>

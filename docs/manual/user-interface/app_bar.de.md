@@ -2,11 +2,6 @@
 title: Anwendungsleiste
 position: 1
 ---
-
-### Anwendungsleiste
-
-<br>
-
 Die Anwendungsleiste stellt übergreifende Funktionen zur Bedienung bereit:
 
 ![Anwendungsleiste](media/veo_app-bar.de.png)

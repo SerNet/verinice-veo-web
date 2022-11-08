@@ -2,11 +2,6 @@
 title: Workspace
 position: 3
 ---
-
-## Workspace
-
-<br>
-
 The workspace displays a wide variety of content, depending on the context:
 
 ||||

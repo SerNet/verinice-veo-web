@@ -2,11 +2,6 @@
 title: Reports
 position: 4
 ---
-
-## Reports
-
-<br>
-
 In the Reports section, select the desired template from those available:
 
 ![Reports](media/veo_reports.de.png)

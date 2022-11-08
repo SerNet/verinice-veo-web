@@ -2,7 +2,6 @@
 title: Objekte
 position: 2
 ---
-
 ### Organisationsobjekte
 
 Organisationsobjekte helfen bei der Zuordnung der Objekte zu Anwender*innen. Organisationsobjekte realisieren die Trennung der Daten in unterschiedliche Mandanten. Innerhalb eines Mandanten können weitere Untergruppen angelegt werden, z.B. für Tochtergesellschaften oder Fachabteilungen.

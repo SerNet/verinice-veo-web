@@ -2,11 +2,6 @@
 title: Reports
 position: 4
 ---
-
-## Reports
-
-<br>
-
 Im Abschnitt Reports wählen Sie aus den zur Verfügung stehenden Vorlagen die gewünschte aus:
 
 ![Reports](media/veo_reports.de.png)

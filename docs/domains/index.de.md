@@ -3,8 +3,6 @@ title: Domänen
 position: 2
 ---
 
-## Domänen
-
 Verfügbare Domänen in verinice.veo:
 
 1. <DocLink to="/2_domains/gdpr">DS-GVO</DocLink>

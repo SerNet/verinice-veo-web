@@ -1,9 +1,7 @@
 ---
-title: Getting Started
+title: Getting Started with the verinice.veo API
 position: 0
 ---
-
-## Getting Started with the verinice.veo API
 
 Learn how to authenticate and load and create your first elements.
 

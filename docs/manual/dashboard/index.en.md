@@ -3,8 +3,6 @@ title: Dashboard
 position: 2
 ---
 
-### Dashboard
-
 <br>
 
 On the dashboard all objects and their status (life cycle) are displayed graphically and by mouse click you navigate directly to the respective objects.

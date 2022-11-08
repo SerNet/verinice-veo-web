@@ -3,8 +3,6 @@ title: Kataloge
 position: 4
 ---
 
-## Kataloge
-
 <br>
 
 ![Kataloge](media/veo_catalogues.de.png)

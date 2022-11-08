@@ -2,11 +2,6 @@
 title: Risikodefinitionen
 position: 5
 ---
-
-## Risikodefinitionen
-
-<br>
-
 Im Abschnitt Risikodefinitionen können die Definitionen für die Risikoanalyse eingesehen werden:
 
 ![Risikodefinition](media/veo_risk-definition.de.png)

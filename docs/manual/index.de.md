@@ -3,8 +3,6 @@ title: Benutzerhandbuch
 position: 1
 ---
 
-## Benutzerhandbuch
-
 <br>
 
 In diesem Abschnitt ist die grundlegende Bedienung von verinice.veo beschrieben.

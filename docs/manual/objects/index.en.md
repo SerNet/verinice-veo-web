@@ -2,11 +2,6 @@
 title: Objects
 position: 3
 ---
-
-### objects
-
-<br>
-
 In the Objects section, objects can be created, edited or deleted.
 
 #### Object overview

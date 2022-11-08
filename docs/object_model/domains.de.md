@@ -2,9 +2,6 @@
 title: Domänen
 position: 1
 ---
-
-### Domänen
-
 Die verschiedenen Fachbereiche, die mit dem Managementsystem veo bearbeitet werden können, werden *Domänen* genannt. Im Moment ist geplant, dass 3 Domänen in veo enthalten sein werden:
 
 * Datenschutz

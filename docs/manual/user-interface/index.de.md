@@ -2,11 +2,6 @@
 title: Benutzeroberfläche
 position: 1
 ---
-
-## Benutzeroberfläche
-
-<br>
-
 Die Benutzeroberfläche besteht aus drei Bereichen:
 
 1. Die <DocLink to="/manual/user-interface/app_bar">Anwendungsleiste</DocLink> stellt übergreifende Funktionen zur Bedienung bereit.

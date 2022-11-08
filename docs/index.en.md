@@ -5,8 +5,6 @@ position: 0
 
 <br>
 
-## Welcome to
-
 ![verinice.veo - New for sure!](logo_verinice_veo_rgb.png)
 
 <br>

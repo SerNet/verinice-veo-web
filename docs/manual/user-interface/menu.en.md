@@ -2,11 +2,6 @@
 title: Menu
 position: 2
 ---
-
-### menu
-
-<br>
-
 Use the menu to navigate comfortably through verinice:
 
 |||

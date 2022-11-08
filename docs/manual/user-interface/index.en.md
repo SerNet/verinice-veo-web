@@ -2,11 +2,6 @@
 title: User interface
 position: 1
 ---
-
-## User interface
-
-<br>
-
 The user interface consists of three areas:
 
 1. the <DocLink to="/manual/user-interface/app_bar">app bar</DocLink> provides overarching functions for operation.
