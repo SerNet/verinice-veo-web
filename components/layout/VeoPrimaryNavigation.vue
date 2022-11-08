@@ -236,6 +236,8 @@ export default defineComponent({
       }
     });
 
+    watch(() => objectTypes.value, fetchObjectsEntries, { deep: true });
+
     const objectTypesChildItems = computed<INavItem[]>(() =>
       objectSchemas.value
         .sort((a, b) => (objectTypeSortOrder.get(a.title) || 0) - (objectTypeSortOrder.get(b.title) || 0))
