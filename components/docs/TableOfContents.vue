@@ -34,7 +34,7 @@ export default defineComponent({
   props: {
     value: { type: Array, default: () => [] } as PropOptions<any[]>,
     childrenProperty: { type: String, default: 'children' },
-    nameProperty: { type: String, default: 'name' },
+    nameProperty: { type: String, default: 'title' },
     linkProperty: { type: String, default: 'to' },
     levelProperty: { type: String, default: 'level' }
   },
@@ -79,7 +79,7 @@ export default defineComponent({
     a {
       right: 0;
       &::after {
-        content: ' p. ' target-counter(attr(href), page);
+        content: '' target-counter(attr(href), page);
         float: right;
         position: absolute;
         right: 0;
