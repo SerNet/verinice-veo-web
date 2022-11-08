@@ -31,9 +31,20 @@
       <v-spacer />
       <DownloadDocsButton v-if="$route.path.startsWith('/docs')" />
       <VeoLanguageSwitch />
-      <div class="mx-3">
-        <VeoTutorialButton />
-      </div>
+      <VeoTutorialButton />
+      <v-btn
+        v-if="ability.can('view', 'documentation')"
+        active-class="veo-active-list-item-no-background"
+        class="mr-3"
+        color="black"
+        icon
+        to="/docs/index"
+        exact
+      >
+        <v-icon>
+          {{ mdiHelpCircleOutline }}
+        </v-icon>
+      </v-btn>
       <VeoAppAccountBtn
         v-if="authenticated"
         @create-unit="createUnit"
@@ -75,13 +86,14 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, Ref, ref, useContext, useMeta, useRoute, useRouter } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiAccountCircleOutline } from '@mdi/js';
+import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
 import 'intro.js/minified/introjs.min.css';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   setup(_props, context) {
@@ -89,6 +101,7 @@ export default defineComponent({
     const { authenticated } = useVeoUser();
     const route = useRoute();
     const router = useRouter();
+    const { ability } = useVeoPermissions();
 
     const { alerts, displaySuccessMessage, listenToRootEvents } = useVeoAlerts();
     const { t } = useI18n();
@@ -147,6 +160,7 @@ export default defineComponent({
     const unitId = computed(() => (separateUUIDParam(route.value.params.unit).id.length > 0 ? separateUUIDParam(route.value.params.unit).id : undefined));
 
     return {
+      ability,
       authenticated,
       createUnit,
       domainId,
@@ -156,7 +170,8 @@ export default defineComponent({
       alerts,
 
       t,
-      mdiAccountCircleOutline
+      mdiAccountCircleOutline,
+      mdiHelpCircleOutline
     };
   },
   head: {}

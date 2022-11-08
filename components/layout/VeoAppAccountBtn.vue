@@ -104,16 +104,6 @@
           </v-list-item-title>
         </v-list-item>
         <v-divider />
-        <v-list-item
-          active-class="veo-active-list-item"
-          to="/docs"
-        >
-          <v-list-item-title>
-            {{ $t('breadcrumbs.docs') }}
-          </v-list-item-title>
-          <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
-        </v-list-item>
-        <v-divider />
         <v-list-item @click="logout">
           <v-list-item-title class="font-weight-medium">
             {{ t('logout') }}

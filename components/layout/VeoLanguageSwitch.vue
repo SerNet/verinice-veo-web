@@ -24,6 +24,7 @@
   >
     <template #activator="{ on }">
       <v-btn
+        v-bind="$attrs"
         color="black"
         icon
         data-component-name="language-select"
