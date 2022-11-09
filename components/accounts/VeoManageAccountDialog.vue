@@ -129,7 +129,7 @@
         color="primary"
         :disabled="!formIsValid || ability.cannot('manage', 'accounts')"
         :loading="isLoading"
-        @click="updateAccount"
+        @click="createOrUpdateAccount"
       >
         {{ id ? t('updateAccount') : t('createAccount') }}
       </v-btn>
