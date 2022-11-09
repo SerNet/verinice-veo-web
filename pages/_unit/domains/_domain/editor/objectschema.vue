@@ -362,7 +362,7 @@ export default defineComponent({
 
     const schemaSpecificTranslations = computed<IVeoTranslations['lang']>(() => {
       const translationsToReturn: IVeoTranslations['lang'] = {};
-      const schemaTitle = objectSchemaHelper.value?.getTitle() || '';
+      const schemaTitle = `${objectSchemaHelper.value?.getTitle()}_` || '';
 
       for (const language of availableLanguages.value) {
         translationsToReturn[language] = pickBy(translations[language], (_value, key) => key.startsWith(schemaTitle));
