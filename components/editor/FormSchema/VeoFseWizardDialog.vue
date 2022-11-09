@@ -86,6 +86,7 @@ import { Dictionary, isEqual, merge, pick } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { JsonPointer } from 'json-ptr';
+import { LocaleObject } from '@nuxtjs/i18n';
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
 import { IVeoFormSchema, IVeoObjectSchema, IVeoObjectSchemaTranslations, IVeoTranslations } from '~/types/VeoTypes';
 import { useFetchForm } from '~/composables/api/forms';
@@ -112,7 +113,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const { t, locale } = useI18n();
-    const { $api } = useContext();
+    const { $api, i18n } = useContext();
 
     // Display stuff
     const state = ref(WIZARD_STATES.START);
@@ -236,7 +237,7 @@ export default defineComponent({
     );
 
     // translation stuff
-    const translations = useAsync(() => $api.translation.fetch([]));
+    const translations = useAsync(() => $api.translation.fetch((i18n.locales as LocaleObject[]).map((locale) => locale.code)));
 
     // create stuff
     const createFormValid = ref(true);
