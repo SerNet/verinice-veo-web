@@ -29,8 +29,8 @@
       </p>
       <VeoCard>
         <p class="mx-3 mt-3 mb-1">
-          <b>{{ accounts && accounts.length || 0 }}</b> von
-          <b>{{ userSettings.maxUsers }}</b> Accounts angelegt
+          <b>{{ activeAccounts }}</b> {{ t('of') }}
+          <b>{{ userSettings.maxUsers }}</b> {{ t('activeAccounts') }}
         </p>
         <VeoObjectTable
           :default-headers="['actions']"
@@ -66,7 +66,7 @@
           <v-btn
             color="primary"
             depressed
-            :disabled="ability.cannot('manage', 'accounts') || (accounts && accounts.length >= userSettings.maxUsers)"
+            :disabled="ability.cannot('manage', 'accounts') || (activeAccounts >= userSettings.maxUsers)"
             fab
             absolute
             style="bottom: 12px; right: 0"
@@ -110,9 +110,11 @@ import { IVeoAccount } from '~/plugins/api/account';
 export default defineComponent({
   setup() {
     const { t } = useI18n();
-    const { data: accounts, isFetching } = useFetchAccounts();
     const { profile, userSettings } = useVeoUser();
     const { ability } = useVeoPermissions();
+
+    const { data: accounts, isFetching } = useFetchAccounts();
+    const activeAccounts = computed(() => (accounts.value || []).filter((account) => account.enabled).length);
 
     const onEditAccount = (account: IVeoAccount) => {
       Object.assign(editAccountDialogProps, account);
@@ -212,6 +214,7 @@ export default defineComponent({
       ability,
       accounts,
       accountTableActions,
+      activeAccounts,
       additionalTableHeaders,
       createAccountDialogVisible,
       deleteAccountDialogVisible,
@@ -234,6 +237,7 @@ export default defineComponent({
    "en": {
     "accountAdministrationHint": "Every account has access to all units and objects in this client.",
     "accounts": "Accounts",
+    "activeAccounts": "active accounts",
     "createAccount": "Create account",
     "edit": "Edit",
     "email": "Email address",
@@ -241,11 +245,13 @@ export default defineComponent({
     "firstName": "First name",
     "groups": "Assigned groups",
     "lastName": "Last name",
+    "of": "of",
     "username": "Username"
    },
    "de": {
     "accountAdministrationHint": "Jeder Account hat Zugriff auf alle Units und Objekte in diesem Client.",
     "accounts": "Accounts",
+    "activeAccounts": "aktive Accounts",
     "createAccount": "Account erstellen",
     "edit": "Bearbeiten",
     "email": "E-Mail-Adresse",
@@ -253,6 +259,7 @@ export default defineComponent({
     "firstName": "Vorname",
     "groups": "Zugehörige Gruppen",
     "lastName": "Nachname",
+    "of": "von",
     "username": "Benutzername"
    }
 }
