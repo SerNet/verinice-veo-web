@@ -21,6 +21,12 @@ import { ref } from '@nuxtjs/composition-api';
 
 const ability = ref(createMongoAbility());
 
+// Base permissions that gets overwritten IF the user is authenticated & entering a protected route
+const { can, rules } = new AbilityBuilder(createMongoAbility);
+can('view', 'documentation');
+// @ts-ignore
+ability.value.update(rules);
+
 export const useVeoPermissions = () => {
   const updatePermissions = (permissions: string[]) => {
     const { can, cannot, rules } = new AbilityBuilder(createMongoAbility);
