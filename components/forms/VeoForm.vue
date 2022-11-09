@@ -55,6 +55,10 @@ import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator'
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import { useVeoErrorFormatter } from '~/composables/VeoErrorFormatter';
 
+const DEBUG_MAP = new Map<string, string>();
+// @ts-ignore
+window.VEO_FORMS_DEBUG_MAP = DEBUG_MAP;
+
 const GENERATOR_OPTIONS = (props: any) =>
   ({
     excludedProperties: [

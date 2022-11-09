@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, ComputedRef, defineComponent, h, inject } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, h, inject, watch } from '@nuxtjs/composition-api';
 import { maxBy } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
@@ -58,6 +58,15 @@ export default defineComponent({
   setup(props, { emit, slots }) {
     const objectData = inject<ComputedRef<IBaseObject>>('objectData');
     const translations = inject<ComputedRef<IBaseObject>>('translations');
+
+    watch(
+      () => props.objectSchema,
+      (newValue) => {
+        // @ts-ignore
+        window.VEO_FORMS_DEBUG_MAP.set(props.objectSchemaPointer, JSON.stringify(newValue));
+      },
+      { immediate: true, deep: true }
+    );
 
     const { locale } = useI18n();
 
