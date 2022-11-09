@@ -298,6 +298,7 @@ import { computed, defineComponent, provide, reactive, ref, useContext, useFetch
 import { upperFirst, pickBy } from 'lodash';
 import { mdiAlertCircleOutline, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
+import { LocaleObject } from '@nuxtjs/i18n/types';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
@@ -311,7 +312,7 @@ export default defineComponent({
   name: 'ObjectSchemaEditor',
   setup() {
     const { locale, t } = useI18n();
-    const { $api } = useContext();
+    const { $api, i18n } = useContext();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
@@ -341,7 +342,7 @@ export default defineComponent({
 
     const translations = reactive<IVeoTranslations['lang']>({});
     useFetch(async () => {
-      const _translations = (await $api.translation.fetch([]))?.lang || {};
+      const _translations = (await $api.translation.fetch((i18n.locales as LocaleObject[]).map((locale) => locale.code)))?.lang || {};
       Object.assign(translations, _translations);
     });
     const availableLanguages = computed(() => Object.keys(translations));
