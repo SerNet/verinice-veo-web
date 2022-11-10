@@ -419,7 +419,15 @@ export default defineComponent({
 
     const objectInformation = computed<VeoSchemaValidatorMessage[]>(() => {
       const information: VeoSchemaValidatorMessage[] = [];
-      const decisionRules = domain.value?.decisions?.piaMandatory?.rules || [];
+      const decisionRules: VeoSchemaValidatorMessage['decisionRules'] = (domain.value?.decisions?.piaMandatory?.rules || []).reduce((previousValue, currentValue, index) => {
+        const key = currentValue.output === undefined ? 'undefined' : currentValue.output ? 'true' : 'false';
+        if (previousValue[key]) {
+          previousValue[key].push({ ...currentValue, index });
+        } else {
+          previousValue[key] = [{ ...currentValue, index }];
+        }
+        return previousValue;
+      }, Object.create(null));
 
       if (objectData.value?.domains?.[props.domainId]?.subType === 'PRO_DataProcessing') {
         const decisionName = domain.value?.decisions?.piaMandatory?.name[locale.value] || Object.values(domain.value?.decisions?.piaMandatory?.name || {})[0];

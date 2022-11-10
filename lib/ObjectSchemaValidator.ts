@@ -38,7 +38,7 @@ export interface VeoSchemaValidatorMessage {
   fixable?: boolean;
   params?: IBaseObject;
   actions?: { title: string; callback: CallableFunction }[];
-  decisionRules?: IVeoPiaMandatoryRule[];
+  decisionRules?: { undefined: IVeoPiaMandatoryRule[]; true: IVeoPiaMandatoryRule[]; false: IVeoPiaMandatoryRule[] };
   matchingRules?: number[];
   decisiveRule?: number;
 }
