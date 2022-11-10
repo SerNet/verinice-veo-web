@@ -77,15 +77,14 @@
               />
             </v-col>
           </v-row>
-
+          <VeoEditorTranslationUpload :available-languages="availableLanguages" />
           <v-row>
             <v-col
               v-for="(_, language) in localTranslations"
               :key="language"
               cols="12"
             >
-              {{ language }}
-              <h3 class="text-h3">
+              <h3 class="text-h3 mt-6">
                 {{ languageDetails[language] }}
               </h3>
               <VeoCard>

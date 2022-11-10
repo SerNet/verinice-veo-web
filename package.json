@@ -15,10 +15,6 @@
     "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore .",
     "precommit": "npm run lint",
     "test": "jest",
-    "test:e2e": "cross-env LANG='de_DE.UTF-8' && cypress run",
-    "test:e2e-open": "cross-env LANG='de_DE.UTF-8' && cypress open",
-    "cy:verify": "cypress verify",
-    "cy:info": "cypress info",
     "print": "docker run --add-host=host.docker.internal:host-gateway -v $(pwd)/print.js:/usr/src/app/print.js -v $(pwd)/dist:/usr/src/app/dist ghcr.io/drpayyne/chrome-puppeteer:latest node print.js http://host.docker.internal:3000/docs?print"
   },
   "husky": {
@@ -70,13 +66,13 @@
     "uuid": "^8.3.2",
     "vue-chart-3": "^0.5.11",
     "vue-json-pointer": "^0.6.2",
-    "vuedraggable": "^2.24.3"
+    "vuedraggable": "^2.24.3",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.0/xlsx-0.19.0.tgz"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-typescript": "^7.16.7",
-    "@cypress/code-coverage": "^3.10.0",
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@nbrx/eslint-config-nuxt": "^1.1.0",
     "@nuxt/types": "^2.15.8",
@@ -102,14 +98,10 @@
     "babel-jest": "^27.2.3",
     "babel-plugin-istanbul": "^6.0.0",
     "cross-env": "^7.0.3",
-    "cypress": "^8.5.0",
-    "cypress-file-upload": "^5.0.8",
-    "cypress-plugin-snapshots": "^1.4.4",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-friendly-formatter": "^4.0.1",
     "eslint-loader": "^4.0.2",
-    "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-nuxt": "^2.0.0",
     "eslint-plugin-prettier-vue": "^2.1.1",
     "eslint-plugin-vue": "^7.20.0",
