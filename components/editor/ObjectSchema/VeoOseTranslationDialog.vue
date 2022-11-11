@@ -77,7 +77,11 @@
               />
             </v-col>
           </v-row>
-
+          <VeoOseEditorTranslationUpload
+            :available-languages="supportedLanguages"
+            :replace-translations.sync="replaceTranslations"
+            @translations-imported="onTranslationsImported"
+          />
           <v-row>
             <v-col
               v-for="language in supportedLanguages"
@@ -121,9 +125,11 @@ import { computed, defineComponent, inject, PropType, reactive, ref, Ref, set, u
 import { useI18n } from 'nuxt-i18n-composable';
 import { LocaleObject } from '@nuxtjs/i18n/types';
 
+import { merge } from 'lodash';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { IBaseObject } from '~/lib/utils';
+import { IVeoTranslations } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -228,6 +234,18 @@ export default defineComponent({
       }
     );
 
+    // Translation file import stuff
+    const replaceTranslations = ref(false);
+    const onTranslationsImported = (_translations: IVeoTranslations['lang']) => {
+      for (const language of Object.keys(translations)) {
+        if (replaceTranslations.value) {
+          set(translations, language, JSON.stringify(_translations[language], undefined, 2));
+        } else {
+          set(translations, language, JSON.stringify(merge(objectSchemaHelper?.value?.getTranslations(language) || {}, _translations[language]), undefined, 2));
+        }
+      }
+    };
+
     const onSave = () => {
       try {
         Object.entries(translations).forEach(([language, translations]) => {
@@ -248,6 +266,8 @@ export default defineComponent({
       formIsValid,
       languageDetails,
       onSave,
+      onTranslationsImported,
+      replaceTranslations,
       requiredRule,
       supportedLanguages,
       supportedLanguageItems,

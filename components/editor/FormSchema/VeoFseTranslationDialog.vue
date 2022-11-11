@@ -77,7 +77,6 @@
               />
             </v-col>
           </v-row>
-          {{ replaceTranslations }}
           <VeoFseEditorTranslationUpload
             :available-languages="availableLanguages"
             :replace-translations.sync="replaceTranslations"
