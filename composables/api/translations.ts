@@ -15,4 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-// To be implemented...
+import { useContext } from '@nuxtjs/composition-api';
+import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+
+import { QueryOptions, useQuery } from './utils/query';
+import { IVeoTranslations } from '~/types/VeoTypes';
+
+export interface IVeoFetchTranslationsParameters {
+  languages: string[];
+}
+
+export const schemasQueryKeys = {
+  translations: (queryParameters: IVeoFetchTranslationsParameters) => ['translations', queryParameters.languages] as const
+};
+
+export const useFetchTranslations = (queryParameters: MaybeRef<IVeoFetchTranslationsParameters>, queryOptions?: QueryOptions) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoTranslations>(schemasQueryKeys.translations, $api.translation.fetch, queryParameters, {
+    ...queryOptions,
+    staleTime: 60 * 60 * 1000,
+    placeholderData: { lang: {} }
+  });
+};

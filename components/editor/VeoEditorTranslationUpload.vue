@@ -48,9 +48,6 @@
                 cols="12"
                 md="4"
               >
-                <p class="text-body-2 mb-0">
-                  {{ t('sheet') }}
-                </p>
                 <v-select
                   v-model="sheet"
                   :disabled="!languageFile || uploadingLanguageFile"
@@ -85,6 +82,7 @@
                   {{ t('langColumn', [localeDetailsMap[language].name || language]) }}
                 </p>
                 <v-select
+                  v-model="languageColumns[language]"
                   :disabled="!languageFile || uploadingLanguageFile"
                   :items="availableColumns"
                   :rules="[requiredRule]"
@@ -92,19 +90,25 @@
                 />
               </v-col>
             </v-row>
-            <div class="text-right">
+            <div class="d-flex justify-space-between align-center">
+              <v-checkbox
+                :value="replaceTranslations"
+                :label="t('replaceTranslations')"
+                @change="$emit('update:replace-translations', $event)"
+              />
               <v-btn
                 color="primary"
                 depressed
                 :disabled="!formIsValid"
                 role="submit"
                 type="submit"
-                @click="importTranslations"
+                @click="importFunction(columns, idColumn || 0, languageColumns)"
               >
                 {{ t('import') }}
               </v-btn>
             </div>
           </v-form>
+          <slot />
         </v-card-text>
       </template>
     </VeoCard>
@@ -112,9 +116,8 @@
 </template>
 
 <script lang="ts">
-import { ref, useContext } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, reactive, ref, set, useContext, watch } from '@nuxtjs/composition-api';
 import { LocaleObject } from '@nuxtjs/i18n/types';
-import { computed, defineComponent, PropType, reactive, watch } from '@vue/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiTranslate } from '@mdi/js';
 import { read, WorkBook, WorkSheet } from 'xlsx';
@@ -127,6 +130,14 @@ export default defineComponent({
     availableLanguages: {
       type: Array as PropType<string[]>,
       required: true
+    },
+    importFunction: {
+      type: Function as PropType<(column: string[][], idColumn: number, languageColumns: { [lang: string]: number }) => void>,
+      required: true
+    },
+    replaceTranslations: {
+      type: Boolean,
+      default: false
     }
   },
   setup() {
@@ -205,23 +216,24 @@ export default defineComponent({
     const columns = reactive<string[][]>([]);
     const availableColumns = ref<{ value: number; text: string }[]>();
 
+    // Parse sheet to a two-dimensional array containing of the values. It is a bit more complicated as we don't know how many columns exist in the beginning and the rows aren't necessarily in the right order
     const parseSheet = (sheet: WorkSheet) => {
       const toReturn: string[][] = [];
       for (const cell of Object.keys(sheet)) {
         const firstChar = cell.charCodeAt(0);
 
         if (firstChar >= 65 && firstChar <= 90) {
+          const row = Number((cell || '').replace(/[^0-9]/g, '')) - 1; // -1 as xlsx starts with row 1 instead of 0
           const arrayIndex = firstChar - 65;
           if (!toReturn[arrayIndex]) {
-            toReturn[arrayIndex] = [sheet[cell].w];
-          } else {
-            toReturn[arrayIndex].push(sheet[cell].w);
+            toReturn[arrayIndex] = [];
           }
+          set(toReturn[arrayIndex], row, sheet[cell].w);
         }
       }
       Object.assign(columns, toReturn);
-
       availableColumns.value = columns
+        .filter((column) => column[0])
         .map((column, index) => ({
           text: column[0].replace(/[^a-zA-Z0-9 ]/g, ''),
           value: index
@@ -229,14 +241,11 @@ export default defineComponent({
         .filter((array) => array); // Filter out empty columns
     };
 
-    const importTranslations = () => {};
-
     return {
       availableColumns,
       columns,
       formIsValid,
       idColumn,
-      importTranslations,
       languageColumns,
       languageFile,
       localeDetailsMap,
@@ -262,6 +271,7 @@ export default defineComponent({
     "import": "Import",
     "langColumn": "Column for language {0}",
     "languageFile": "Language file",
+    "replaceTranslations": "Delete and replace existing translations",
     "sheet": "Sheet",
     "uploadLanguageFile": "Upload language file"
   },
@@ -272,6 +282,7 @@ export default defineComponent({
     "import": "Importieren",
     "langColumn": "Spalte für Sprache {0}",
     "languageFile": "Sprachdatei",
+    "replaceTranslations": "Vorhandene Übersetzungen löschen und ersetzen",
     "sheet": "Tabelle",
     "uploadLanguageFile": "Sprachdatei hochladen"
   }
