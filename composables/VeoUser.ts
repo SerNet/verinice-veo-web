@@ -61,6 +61,17 @@ export const useVeoUser: () => IVeoUserComposable = () => {
       clientId: context.$config.oidcClient
     });
 
+    // Refresh token HAS to be set before calling init
+    keycloak.value.onTokenExpired = async () => {
+      try {
+        await refreshKeycloakSession();
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('VeoUser::initialize_ Automatically refreshing keycloak session failed...');
+        await initialize(context);
+      }
+    };
+
     try {
       await keycloak.value.init({
         onLoad: 'check-sso',
@@ -77,13 +88,6 @@ export const useVeoUser: () => IVeoUserComposable = () => {
       throw new Error(`Error while setting up authentication provider: ${error}`);
     }
 
-    keycloak.value.onTokenExpired = async () => {
-      try {
-        await refreshKeycloakSession();
-      } catch (e) {
-        await initialize(context);
-      }
-    };
     keycloakInitialized.value = true;
   };
 
