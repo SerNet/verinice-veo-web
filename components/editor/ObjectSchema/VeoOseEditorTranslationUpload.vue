@@ -106,6 +106,10 @@ export default defineComponent({
     availableLanguages: {
       type: Array as PropType<string[]>,
       required: true
+    },
+    replaceTranslations: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {
@@ -208,15 +212,15 @@ export default defineComponent({
 {
   "en": {
     "importedTranslations": "Imported translations",
-    "result": "Upload",
+    "result": "Upload details",
     "unusedTranslations": "Translations of aspects or attributes not present in the object schema (not imported)",
     "uploadOverwrite": "Uploading a language file overwrites changes made in the code editor since the last time you hit save."
   },
   "de": {
     "importedTranslations": "Importierte Übersetzungen",
-    "result": "Upload",
+    "result": "Upload-Details",
     "unusedTranslations": "Übersetzungen von nicht im Objektschema vorhandenen Aspekten oder Attributen (nicht importiert)",
-    "uploadOverwrite": "Das Hochladen einer Sprachdatei überschreibt alle Änderungen im Codeeditor seit Sie das letzte mal Speichern gedrückt haben."
+    "uploadOverwrite": "Das Hochladen einer Sprachdatei überschreibt alle Änderungen im Codeeditor seit Sie das letzte Mal speichern gedrückt haben."
   }
 }
 </i18n>

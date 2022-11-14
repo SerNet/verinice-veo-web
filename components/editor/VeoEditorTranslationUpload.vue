@@ -132,7 +132,7 @@ export default defineComponent({
       required: true
     },
     importFunction: {
-      type: Function as PropType<(column: string[][], idColumn: number, languageColumns: { [lang: string]: number }) => void>,
+      type: Function as PropType<(columns: string[][], idColumn: number, languageColumns: { [lang: string]: number }) => void>,
       required: true
     },
     replaceTranslations: {
@@ -216,15 +216,17 @@ export default defineComponent({
     const columns = reactive<string[][]>([]);
     const availableColumns = ref<{ value: number; text: string }[]>();
 
-    // Parse sheet to a two-dimensional array containing of the values. It is a bit more complicated as we don't know how many columns exist in the beginning and the rows aren't necessarily in the right order
+    // Parse sheet to a two-dimensional array containing the values. It is a bit more complicated as we don't know how many columns exist in the beginning and the rows aren't necessarily in the right order
     const parseSheet = (sheet: WorkSheet) => {
       const toReturn: string[][] = [];
       for (const cell of Object.keys(sheet)) {
+        // First char is usually either a meta field (starting with !) or defines the column (A,B,C,...)
         const firstChar = cell.charCodeAt(0);
 
+        // If first char is a value between A and Z, continue
         if (firstChar >= 65 && firstChar <= 90) {
-          const row = Number((cell || '').replace(/[^0-9]/g, '')) - 1; // -1 as xlsx starts with row 1 instead of 0
-          const arrayIndex = firstChar - 65;
+          const row = Number((cell || '').replace(/[^0-9]/g, '')) - 1; // Extract the number out of a key like A123. -1 as xlsx starts with row 1 instead of 0
+          const arrayIndex = firstChar - 65; // A is index 0 in our array, B is 1...
           if (!toReturn[arrayIndex]) {
             toReturn[arrayIndex] = [];
           }
@@ -235,7 +237,7 @@ export default defineComponent({
       availableColumns.value = columns
         .filter((column) => column[0])
         .map((column, index) => ({
-          text: column[0].replace(/[^a-zA-Z0-9 ]/g, ''),
+          text: column[0].replace(/[^\w]/g, ''), // Remove special characters from column names
           value: index
         }))
         .filter((array) => array); // Filter out empty columns
@@ -267,7 +269,7 @@ export default defineComponent({
   "en": {
     "column": "Column",
     "fileUploadFailed": "Couldn't upload language file",
-    "idColumn": "ID-column",
+    "idColumn": "ID column",
     "import": "Import",
     "langColumn": "Column for language {0}",
     "languageFile": "Language file",
@@ -283,7 +285,7 @@ export default defineComponent({
     "langColumn": "Spalte für Sprache {0}",
     "languageFile": "Sprachdatei",
     "replaceTranslations": "Vorhandene Übersetzungen löschen und ersetzen",
-    "sheet": "Tabelle",
+    "sheet": "Tabellenblatt",
     "uploadLanguageFile": "Sprachdatei hochladen"
   }
 }

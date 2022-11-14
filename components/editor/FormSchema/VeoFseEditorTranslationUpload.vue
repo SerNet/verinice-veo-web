@@ -132,6 +132,10 @@ export default defineComponent({
     availableLanguages: {
       type: Array as PropType<string[]>,
       required: true
+    },
+    replaceTranslations: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {
@@ -238,18 +242,18 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "duplicateTranslations": "Translations already present in the objectschema (not imported)",
+    "duplicateTranslations": "Translations already present in the object schema (not imported)",
     "importedTranslations": "Imported translations",
-    "result": "Upload",
-    "unusedTranslations": "Translations of not present formschema controls (not imported)",
+    "result": "Upload details",
+    "unusedTranslations": "Translations of controls not present in form schema (not imported)",
     "uploadOverwrite": "Uploading a language file overwrites changes made in the code editor since the last time you hit save."
   },
   "de": {
     "duplicateTranslations": "Bereits im Objektschema vorhandene Übersetzungen (nicht importiert)",
     "importedTranslations": "Importierte Übersetzungen",
-    "result": "Upload",
+    "result": "Upload-Details",
     "unusedTranslations": "Übersetzungen von nicht im Formschema vorhandenen Controls (nicht importiert)",
-    "uploadOverwrite": "Das Hochladen einer Sprachdatei überschreibt alle Änderungen im Codeeditor seit Sie das letzte mal Speichern gedrückt haben."
+    "uploadOverwrite": "Das Hochladen einer Sprachdatei überschreibt alle Änderungen im Codeeditor seit Sie das letzte Mal speichern gedrückt haben."
   }
 }
 </i18n>
