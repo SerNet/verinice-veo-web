@@ -77,15 +77,18 @@
               />
             </v-col>
           </v-row>
-
+          <VeoFseEditorTranslationUpload
+            :available-languages="availableLanguages"
+            :replace-translations.sync="replaceTranslations"
+            @translations-imported="onTranslationsImported"
+          />
           <v-row>
             <v-col
               v-for="(_, language) in localTranslations"
               :key="language"
               cols="12"
             >
-              {{ language }}
-              <h3 class="text-h3">
+              <h3 class="text-h3 mt-6">
                 {{ languageDetails[language] }}
               </h3>
               <VeoCard>
@@ -132,12 +135,12 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { computed, defineComponent, del, PropType, reactive, ref, useContext, watch } from '@nuxtjs/composition-api';
-import { difference } from 'lodash';
+import { computed, defineComponent, del, PropType, reactive, ref, set, useContext, watch } from '@nuxtjs/composition-api';
+import { difference, merge } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { LocaleObject } from '@nuxtjs/i18n/types';
 
-import { IVeoFormSchemaMeta, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
+import { IVeoFormSchemaMeta, IVeoFormSchemaTranslationCollection, IVeoTranslations } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
@@ -249,9 +252,28 @@ export default defineComponent({
     watch(
       () => props.translations,
       (newValue) => {
-        Object.assign(localTranslations, newValue);
+        Object.assign(
+          localTranslations,
+          Object.entries(newValue).reduce((prevValue, [language, translations]) => {
+            prevValue[language] = JSON.stringify(translations, undefined, 2);
+            return prevValue;
+          }, {} as IBaseObject)
+        );
       }
     );
+
+    // Translation upload stuff
+    const replaceTranslations = ref(false);
+
+    const onTranslationsImported = (translations: IVeoTranslations['lang']) => {
+      for (const language of Object.keys(translations)) {
+        if (replaceTranslations.value) {
+          set(localTranslations, language, JSON.stringify(translations[language], undefined, 2));
+        } else {
+          set(localTranslations, language, JSON.stringify(merge(props.translations[language], translations[language]), undefined, 2));
+        }
+      }
+    };
 
     const onSave = () => {
       try {
@@ -278,6 +300,8 @@ export default defineComponent({
       languageDetails,
       localTranslations,
       onSave,
+      onTranslationsImported,
+      replaceTranslations,
       requiredRule,
       supportedLanguages,
       supportedLanguageItems,
