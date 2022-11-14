@@ -24,7 +24,7 @@
       class="mb-4"
       style="max-width: 1024px"
     >
-      <v-card-text>
+      <v-card-text class="text-body-1">
         <NuxtContent :document="document" />
       </v-card-text>
     </VeoCard>
