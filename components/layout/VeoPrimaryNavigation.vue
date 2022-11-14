@@ -471,7 +471,7 @@ export default defineComponent({
     const docsNavEntry = computed<INavItem>(() => ({
       key: 'docs',
       name: t('breadcrumbs.docs').toString(),
-      to: '/docs',
+      to: '/docs/index',
       icon: mdiFileDocumentOutline,
       componentName: 'docs-nav-item',
       activePath: '/docs',

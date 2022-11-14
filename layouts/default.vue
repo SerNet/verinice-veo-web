@@ -32,20 +32,30 @@
       <DownloadDocsButton v-if="$route.path.startsWith('/docs')" />
       <VeoLanguageSwitch />
       <VeoTutorialButton />
-      <v-btn
+      <v-tooltip
         v-if="ability.can('view', 'documentation')"
-        active-class="veo-active-list-item-no-background"
-        class="mr-3"
-        color="black"
-        icon
-        target="_blank"
-        to="/docs/index"
-        exact
+        bottom
       >
-        <v-icon>
-          {{ mdiHelpCircleOutline }}
-        </v-icon>
-      </v-btn>
+        <template #activator="{ on }">
+          <v-btn
+            active-class="veo-active-list-item-no-background"
+            class="mr-3"
+            color="black"
+            icon
+            target="_blank"
+            to="/docs/index"
+            exact
+            v-on="on"
+          >
+            <v-icon>
+              {{ mdiHelpCircleOutline }}
+            </v-icon>
+          </v-btn>
+        </template>
+        <template #default>
+          {{ t('openDocumentationInNewTab') }}
+        </template>
+      </v-tooltip>
       <VeoAppAccountBtn
         v-if="authenticated"
         @create-unit="createUnit"
@@ -189,3 +199,14 @@ export default defineComponent({
   background: $background-primary;
 }
 </style>
+
+<i18n>
+{
+  "en": {
+    "openDocumentationInNewTab": "Open online documentation in new tab"
+  },
+  "de": {
+    "openDocumentationInNewTab": "Online-Dokumentaion in neuem Tab öffnen"
+  }
+}
+</i18n>
