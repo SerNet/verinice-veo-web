@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, h, PropType, provide, ref } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, h, PropType, provide, ref, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { cloneDeep, debounce, merge, take, takeRight } from 'lodash';
 import { JsonPointer } from 'json-ptr';
@@ -343,6 +343,18 @@ export default defineComponent({
     };
 
     // Input handling
+    const validateFormData = (data: IBaseObject) => {
+      // Validate new form data
+      const formIsValid = validateFunction.value(data);
+      if (!formIsValid) {
+        errorMessages.value = formatErrors(validateFunction.value.errors as ErrorObject[], localTranslations.value);
+      } else {
+        errorMessages.value = new Map();
+      }
+      emit('update:messages', errorMessages.value);
+      emit('update:valid', formIsValid);
+    };
+
     const onControlInput = (objectSchemaPointer: string, newValue: any, oldValue: string, index?: number) => {
       let valuePointer = removePropertiesKeywordFromPath(objectSchemaPointer);
 
@@ -371,21 +383,19 @@ export default defineComponent({
         updatedForm = action(newValue, oldValue, updatedForm, _value.value);
       }
 
-      // Validate new form data
-      const formIsValid = validateFunction.value(updatedForm);
-      if (!formIsValid) {
-        errorMessages.value = formatErrors(validateFunction.value.errors as ErrorObject[], localTranslations.value);
-      } else {
-        errorMessages.value = new Map();
-      }
-      emit('update:messages', errorMessages.value);
-      emit('update:valid', formIsValid);
+      validateFormData(updatedForm);
 
       // Send updated form
       emit('input', updatedForm);
     };
 
     const onDelayedInput = debounce(onControlInput, 250);
+
+    watch(
+      () => props.value,
+      (newValue) => validateFormData(newValue),
+      { immediate: true }
+    );
 
     return () =>
       !formSchemaFitsObjectSchema.value?.valid
