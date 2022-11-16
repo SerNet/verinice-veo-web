@@ -215,6 +215,15 @@ export default defineComponent({
       if (options.label && options.label.startsWith('#lang/')) {
         const key = options.label.split('/')[1];
         options.label = translations.value[key] || key;
+
+        // Add an asterix to required fields
+        const parentPointer = (element.scope || '').split('/');
+        const elementId = parentPointer.pop();
+        parentPointer.pop();
+        const requiredElements = (JsonPointer.get(props.objectSchema, `${parentPointer.join('/')}/required`) as string[]) || [];
+        if (requiredElements.includes(elementId)) {
+          options.label = `${options.label}*`;
+        }
       }
 
       if (options.visible) {
