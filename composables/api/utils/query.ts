@@ -104,7 +104,9 @@ const queryParameterMap = new Map<string, string[]>([
   ['schema_fetch', ['type', 'domainIds']],
   ['units_fetchAll', []],
   ['unit_fetch', ['id']],
-  ['translations_fetch', ['languages']]
+  ['translations_fetch', ['languages']],
+  ['domains_fetchAll', []],
+  ['domain_fetch', ['id']]
 ]);
 
 /**
