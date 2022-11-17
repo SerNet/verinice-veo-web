@@ -26,15 +26,17 @@ async function main() {
   const fileName = 'Documentation';
   const shorten = (str, len) => (str.length > len ? str.substr(0, len) + '...' : str);
   const url = process.argv[2] || `http://localhost:3000/docs/?print`;
-  console.log(`Printing...`);
+  console.log('Opening browser...');
   const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--export-tagged-pdf'] });
+  console.log('Browser openend, creating new page');
   const page = await browser.newPage();
+  console.log('New page created, registering event listeners');
   page
     .on('console', (message) => console.log(`    ${message.type().substr(0, 3).toUpperCase()} ${message.text()}`))
     .on('pageerror', ({ message }) => console.error('    ' + message))
     .on('response', (response) => console.log(` ☑️  ${response.status()} ${shorten(response.url(), 120)}`))
     .on('requestfailed', (request) => console.error(` ❌  ${request.failure().errorText} ${request.url()}`));
-
+  console.log('Starting printing...');
   for (const lang of LANGS) {
     const outputFile = `${outputFolder}/${fileName}_${lang}.pdf`;
     console.log(`Printing: ${url} (${lang})...`);
