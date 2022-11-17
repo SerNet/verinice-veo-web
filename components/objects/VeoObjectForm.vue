@@ -195,7 +195,7 @@
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, PropOptions, PropType, Ref, ref, useContext, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { upperFirst, merge, debounce, cloneDeep } from 'lodash';
+import { upperFirst, merge, debounce } from 'lodash';
 import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } from '@mdi/js';
 
 import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/forms/types';
