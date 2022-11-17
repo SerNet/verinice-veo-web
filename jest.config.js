@@ -9,11 +9,11 @@ module.exports = {
   moduleFileExtensions: ['js', 'ts', 'json', 'vue'],
   modulePathIgnorePatterns: ['<rootDir>/dist'],
   transform: {
-    '^.+\\.(vue)$': '@vue/vue2-jest',
+    '\\.vue$': '@vue/vue2-jest',
     '\\.[jt]sx?$': 'babel-jest'
   },
   roots: ['<rootDir>'],
-  transformIgnorePatterns: ['<rootDir>/node_modules/(?!(@babel|vuetify)/)', '<rootDir>/test/e2e'],
+  transformIgnorePatterns: ['<rootDir>/test/e2e'],
   collectCoverage: false,
   collectCoverageFrom: ['<rootDir>/components/**/*.vue'],
   snapshotSerializers: ['jest-serializer-vue'],

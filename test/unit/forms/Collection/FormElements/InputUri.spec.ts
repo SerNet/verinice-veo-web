@@ -48,7 +48,19 @@ describe('InputUri.vue', () => {
     };
     const wrapper = mount(VeoForm, {
       vuetify,
-      propsData: { ...form }
+      propsData: { ...form },
+      mocks: {
+        $nuxt: {
+          context: {
+            app: {
+              i18n: {
+                t: (v: string) => v,
+                locale: 'de'
+              }
+            }
+          }
+        }
+      }
     });
     // Usage of Snapshots with Vue: https://www.digitalocean.com/community/tutorials/vuejs-jest-snapshot-testing-in-vue
     expect(wrapper.element).toMatchSnapshot('Initial render');

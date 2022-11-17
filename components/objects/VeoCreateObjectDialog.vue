@@ -110,7 +110,7 @@ export default defineComponent({
     const objectData = ref<IBaseObject>({});
     const pristineObjectData = ref<IBaseObject>({});
 
-    const isFormDirty = computed(() => isEqual(objectData.value, pristineObjectData.value));
+    const isFormDirty = computed(() => !isEqual(objectData.value, pristineObjectData.value));
     const isFormValid = ref(false);
 
     const seedInitialData = () => {
