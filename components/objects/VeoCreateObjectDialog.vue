@@ -152,8 +152,8 @@ export default defineComponent({
       }
     };
 
-    watch(() => props.subType, seedInitialData);
-    watch(() => props.objectType, seedInitialData);
+    watch(() => props.subType, seedInitialData, { immediate: true });
+    watch(() => props.objectType, seedInitialData, { immediate: true });
     watch(
       () => props.value,
       (newValue) => {

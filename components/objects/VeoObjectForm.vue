@@ -195,7 +195,7 @@
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, PropOptions, PropType, Ref, ref, useContext, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { upperFirst, merge, debounce } from 'lodash';
+import { upperFirst, merge, debounce, cloneDeep } from 'lodash';
 import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } from '@mdi/js';
 
 import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/forms/types';
@@ -351,15 +351,10 @@ export default defineComponent({
       () => currentFormSchema.value,
       (newValue) => {
         if (newValue && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
-          const newDomainObject = {
-            domains: {
-              [props.domainId]: {
-                subType: newValue.subType,
-                status: 'NEW'
-              }
-            }
+          objectData.value.domains[props.domainId] = {
+            subType: newValue.subType,
+            status: 'NEW'
           };
-          objectData.value = merge(objectData.value, newDomainObject);
         }
       },
       { deep: true }
