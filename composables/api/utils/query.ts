@@ -25,6 +25,14 @@ import { IBaseObject } from '~/lib/utils';
 
 export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
 
+export const STALE_TIME = {
+  NONE: 0, // No stale time
+  REQUEST: 1000, // 1 seconds
+  LONG: 60 * 60 * 1000, // 60 minutes
+  MEDIUM: 10 * 60 * 1000, // 10 minutes
+  INFINITY: Infinity // Only refetch on page reload
+};
+
 /**
  * Wrapper for vue-query's useQuery to apply some custom logic to make it work more seamless with the legacy api plugin.
  *
@@ -104,7 +112,9 @@ const queryParameterMap = new Map<string, string[]>([
   ['schema_fetch', ['type', 'domainIds']],
   ['units_fetchAll', []],
   ['unit_fetch', ['id']],
-  ['translations_fetch', ['languages']]
+  ['translations_fetch', ['languages']],
+  ['domains_fetchAll', []],
+  ['domain_fetch', ['id']]
 ]);
 
 /**

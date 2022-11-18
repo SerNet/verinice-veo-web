@@ -18,7 +18,7 @@
 import { useContext } from '@nuxtjs/composition-api';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 
-import { QueryOptions, useQuery } from './utils/query';
+import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
 import { IVeoTranslations } from '~/types/VeoTypes';
 
 export interface IVeoFetchTranslationsParameters {
@@ -34,7 +34,7 @@ export const useFetchTranslations = (queryParameters: MaybeRef<IVeoFetchTranslat
 
   return useQuery<IVeoTranslations>(schemasQueryKeys.translations, $api.translation.fetch, queryParameters, {
     ...queryOptions,
-    staleTime: 60 * 60 * 1000,
+    staleTime: STALE_TIME.LONG,
     placeholderData: { lang: {} }
   });
 };

@@ -15,11 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import path from 'path';
 import Vue from 'vue';
+import glob from 'glob';
 import VueI18n from 'vue-i18n';
 import Vuetify from 'vuetify/lib';
 import VueCompositionAPI from '@vue/composition-api';
 import { VueQueryPlugin } from '@tanstack/vue-query';
+
+// Auto import all components (super inefficient, but saves a lot of lines of code)
+glob.sync(path.join(__dirname, '../../components/**/*.vue')).forEach((file) => {
+  const name = file.match(/(\w*)\.vue$/)[1];
+  Vue.component(name, require(file).default);
+});
 
 Vue.config.productionTip = false;
 Vue.use(Vuetify);
@@ -27,4 +35,4 @@ Vue.use(VueCompositionAPI);
 Vue.use(VueQueryPlugin);
 Vue.use(VueI18n);
 
-window.Vue = Vue;
+global.Vue = Vue;

@@ -222,7 +222,7 @@ export default defineComponent({
     const allFormSchemasQueryEnabled = computed(() => !!props.domainId);
     const { data: formSchemas } = useFetchForms(queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
 
-    const { data: objectTypes } = useFetchSchemas({ enabled: authenticated.value });
+    const { data: objectTypes } = useFetchSchemas({ enabled: authenticated });
 
     const { fetch: fetchObjectsEntries, fetchState: objectEntriesLoading } = useFetch(async () => {
       // Only load object types on the first call, as them changing while the user is using the application is highly unlikely

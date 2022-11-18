@@ -18,7 +18,7 @@
 import { useContext } from '@nuxtjs/composition-api';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 
-import { QueryOptions, useQuery } from './utils/query';
+import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
 import { IVeoUnit } from '~/types/VeoTypes';
 
 export interface IVeoFetchUnitParameters {
@@ -33,11 +33,11 @@ export const unitsQueryKeys = {
 export const useFetchUnits = (queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
-  return useQuery<IVeoUnit[]>(unitsQueryKeys.units, $api.unit.fetchAll, {}, { ...queryOptions, staleTime: 10 * 60 * 1000, placeholderData: [] });
+  return useQuery<IVeoUnit[]>(unitsQueryKeys.units, $api.unit.fetchAll, {}, { ...queryOptions, staleTime: STALE_TIME.MEDIUM, placeholderData: [] });
 };
 
 export const useFetchUnit = (queryParameters: MaybeRef<IVeoFetchUnitParameters>, queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
-  return useQuery<IVeoUnit[]>(unitsQueryKeys.unit, $api.unit.fetch, queryParameters, { ...queryOptions, staleTime: 10 * 60 * 1000 });
+  return useQuery<IVeoUnit[]>(unitsQueryKeys.unit, $api.unit.fetch, queryParameters, { ...queryOptions, staleTime: STALE_TIME.MEDIUM });
 };

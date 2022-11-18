@@ -32,6 +32,12 @@ describe('VeoObjectTable.vue', () => {
     mocks: {
       $nuxt: {
         context: {
+          app: {
+            i18n: {
+              t: (v: string) => v,
+              locale: 'de'
+            }
+          },
           i18n: {
             locales: [
               { code: 'de', file: 'de.ts', name: 'Deutsch' },
