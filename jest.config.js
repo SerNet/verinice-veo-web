@@ -9,7 +9,7 @@ module.exports = {
   moduleFileExtensions: ['js', 'ts', 'json', 'vue'],
   modulePathIgnorePatterns: ['<rootDir>/dist'],
   transform: {
-    '\\.vue$': '@vue/vue2-jest',
+    '^.+\\.vue$': '@vue/vue2-jest',
     '\\.[jt]sx?$': 'babel-jest'
   },
   roots: ['<rootDir>'],

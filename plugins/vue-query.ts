@@ -19,10 +19,12 @@ import { Context } from '@nuxt/types';
 import Vue from 'vue';
 import { VueQueryPlugin, QueryClient, hydrate } from '@tanstack/vue-query';
 
+import { STALE_TIME } from '~/composables/api/utils/query';
+
 export default (context: Context) => {
   // Modify your Vue Query global settings here
   const queryClient = new QueryClient({
-    defaultOptions: { queries: { staleTime: 1000, refetchOnWindowFocus: false } }
+    defaultOptions: { queries: { staleTime: STALE_TIME.REQUEST, refetchOnWindowFocus: false } }
   });
   const options = { queryClient };
 

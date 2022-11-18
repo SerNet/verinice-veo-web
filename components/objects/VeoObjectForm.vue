@@ -301,7 +301,7 @@ export default defineComponent({
       ...props.additionalContext,
       ...(objectSchema.value && domain.value ? getRiskAdditionalContext(objectSchema.value.title, domain.value) : {}),
       ...(props.value && objectSchema.value && translations.value
-        ? getStatusAdditionalContext(props.value, objectSchema.value, (mergedTranslations.value as any)[locale.value], props.domainId)
+        ? getStatusAdditionalContext(props.value, objectSchema.value, mergedTranslations.value[locale.value], props.domainId)
         : {})
     }));
 

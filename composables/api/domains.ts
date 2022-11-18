@@ -18,7 +18,7 @@
 import { useContext } from '@nuxtjs/composition-api';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 
-import { QueryOptions, useQuery } from './utils/query';
+import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
 import { IVeoDomain } from '~/types/VeoTypes';
 
 export interface IVeoFetchDomainParameters {
@@ -33,11 +33,11 @@ export const domainsQueryKeys = {
 export const useFetchDomains = (queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
-  return useQuery<IVeoDomain[]>(domainsQueryKeys.domains, $api.domain.fetchAll, {}, { ...queryOptions, staleTime: 60 * 60 * 1000, placeholderData: [] });
+  return useQuery<IVeoDomain[]>(domainsQueryKeys.domains, $api.domain.fetchAll, {}, { ...queryOptions, staleTime: STALE_TIME.LONG, placeholderData: [] });
 };
 
 export const useFetchDomain = (queryParameters: MaybeRef<IVeoFetchDomainParameters>, queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
-  return useQuery<IVeoDomain>(domainsQueryKeys.domain, $api.domain.fetch, queryParameters, { ...queryOptions, staleTime: 10 * 60 * 1000 });
+  return useQuery<IVeoDomain>(domainsQueryKeys.domain, $api.domain.fetch, queryParameters, { ...queryOptions, staleTime: STALE_TIME.MEDIUM });
 };

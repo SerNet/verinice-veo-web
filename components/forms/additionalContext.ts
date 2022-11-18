@@ -21,7 +21,7 @@ import { cloneDeep } from 'lodash';
 import { addConditionalSchemaPropertiesToControlSchema } from './util';
 import { IVeoFormsAdditionalContext } from '~/components/forms/types';
 import { IBaseObject } from '~/lib/utils';
-import { IVeoDomain } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoTranslationCollection } from '~/types/VeoTypes';
 
 export default {};
 
@@ -71,7 +71,12 @@ export const getRiskAdditionalContext = (objectType: string, domain: IVeoDomain)
   }
 };
 
-export const getStatusAdditionalContext = (objectData: IBaseObject, objectSchema: JSONSchema7, translations: IBaseObject, domainId: string): IVeoFormsAdditionalContext => ({
+export const getStatusAdditionalContext = (
+  objectData: IBaseObject,
+  objectSchema: JSONSchema7,
+  translations: IVeoTranslationCollection,
+  domainId: string
+): IVeoFormsAdditionalContext => ({
   [`#/properties/domains/properties/${domainId}/properties/status`]: {
     formSchema: {
       disabled: !objectData.domains?.[domainId]?.subType,
