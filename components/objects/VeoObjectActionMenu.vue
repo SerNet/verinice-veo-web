@@ -86,6 +86,7 @@
       v-model="createObjectDialog.value"
       :domain-id="domainId"
       :object-type="createObjectDialog.objectType"
+      :sub-type="subType"
       @success="onCreateObjectSuccess"
     />
     <VeoCreateRiskDialog
@@ -276,6 +277,7 @@ export default defineComponent({
     /**
      * create scopes & objects
      */
+    const subType = computed(() => (props.object?.type === 'scope' && props.type === 'childObjects' ? undefined : props.object?.domains?.[domainId.value]?.subType));
 
     // emit after new object creation for linking
     const onCreateObjectSuccess = async (newObjectId: string) => {
@@ -318,6 +320,7 @@ export default defineComponent({
       openLinkObjectDialog,
       addEntityDialog,
       speedDialIsOpen,
+      subType,
       allowedActions,
       domainId,
 

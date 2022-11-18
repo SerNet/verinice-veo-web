@@ -170,7 +170,7 @@ export default defineComponent({
       refetch
     } = useFetchObjects(fetchObjectsQueryParameters, {
       placeholderData: { items: [], pageCount: 0, page: 1 },
-      enabled: searchQueryNotStale.value
+      enabled: searchQueryNotStale
     });
 
     const onSearchQueryInput = (newValue: string) => {

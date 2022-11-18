@@ -44,7 +44,19 @@ describe('Label.vue', () => {
     };
 
     const wrapper = mount(VeoForm, {
-      propsData: { ...form }
+      propsData: { ...form },
+      mocks: {
+        $nuxt: {
+          context: {
+            app: {
+              i18n: {
+                t: (v: string) => v,
+                locale: 'de'
+              }
+            }
+          }
+        }
+      }
     });
 
     // Fixes immediate:true bugs with setProps() of vue test utils
@@ -127,7 +139,19 @@ describe('Label.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
-      propsData: { ...form1 }
+      propsData: { ...form1 },
+      mocks: {
+        $nuxt: {
+          context: {
+            app: {
+              i18n: {
+                t: (v: string) => v,
+                locale: 'de'
+              }
+            }
+          }
+        }
+      }
     });
 
     // Fixes immediate:true bugs with setProps() of vue test utils
@@ -219,7 +243,19 @@ describe('Label.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
-      propsData: { ...form1 }
+      propsData: { ...form1 },
+      mocks: {
+        $nuxt: {
+          context: {
+            app: {
+              i18n: {
+                t: (v: string) => v,
+                locale: 'de'
+              }
+            }
+          }
+        }
+      }
     });
 
     // Fixes immediate:true bugs with setProps() of vue test utils

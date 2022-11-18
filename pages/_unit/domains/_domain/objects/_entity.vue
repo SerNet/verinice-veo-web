@@ -40,7 +40,7 @@
         <template #default>
           <VeoObjectDetails
             class="mb-10"
-            :loading="$fetchState.pending"
+            :loading="loading"
             :object="object"
             :domain-id="domainId"
             :active-tab.sync="activeTab"
@@ -67,11 +67,12 @@
       >
         <template #default>
           <VeoObjectForm
+            ref="objectForm"
             v-model="modifiedObject"
             class="pb-4"
             :disabled="formDataIsRevision || ability.cannot('manage', 'objects')"
-            :object-schema="objectSchema"
-            :loading="$fetchState.pending"
+            :object-type="objectParameter.type"
+            :loading="loading"
             :domain-id="domainId"
             :preselected-sub-type="preselectedSubType"
             :valid.sync="isFormValid"
@@ -165,13 +166,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onUnmounted, ref, useContext, useFetch, useRoute, Ref, useAsync, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, onUnmounted, ref, useContext, useFetch, useRoute, Ref, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
 import { cloneDeep, isEqual, omit, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
@@ -307,10 +308,9 @@ export default defineComponent({
     };
 
     // Forms part specific stuff
-    const objectSchema: Ref<IVeoObjectSchema | null> = useAsync(() => $api.schema.fetch(objectParameter.value.type, [domainId.value]));
-
     const isFormDirty = computed(() => !isEqual(object.value, modifiedObject.value) && !formDataIsRevision.value);
     const isFormValid = ref(false);
+    const objectForm = ref();
 
     // Form actions
     function resetForm() {
@@ -359,7 +359,9 @@ export default defineComponent({
             }
           });
         } else {
-          displayErrorMessage(errorText, e.message, { details: cloneDeep({ object: modifiedObject.value, objectSchema: objectSchema.value, error: JSON.stringify(e) }) });
+          displayErrorMessage(errorText, e.message, {
+            details: cloneDeep({ object: modifiedObject.value, objectSchema: objectForm.value.objectSchema, error: JSON.stringify(e) })
+          });
         }
       }
     }
@@ -461,6 +463,8 @@ export default defineComponent({
       linkObjectDialogVisible,
       metaData,
       modifiedObject,
+      objectForm,
+      objectParameter,
       onContinueNavigation,
       onDPIACreated,
       onDPIALinked,
@@ -479,7 +483,6 @@ export default defineComponent({
       loading,
       notFoundError,
       object,
-      objectSchema,
       upperFirst,
       updateObjectRelationships,
       loadObject,
