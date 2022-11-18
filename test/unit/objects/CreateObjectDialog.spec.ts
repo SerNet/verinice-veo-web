@@ -120,7 +120,7 @@ describe('CreateObjectDialog.vue', () => {
     });
 
     await new Promise((resolve) => setTimeout(resolve, 200));
-    const input = getFormInput('name');
+    const input = getFormInput('name*');
     input.$emit('input', 'My new object name');
 
     await new Promise((resolve) => setTimeout(resolve, 300)); // Waiting for 300ms, as the form only gets reset after the close animation (150ms) and the changes only get propagated after 250ms on VeoForms side
@@ -173,7 +173,7 @@ describe('CreateObjectDialog.vue', () => {
       domainId: '72df5644-90cf-4ea6-9991-0b8f2b1a3999'
     });
 
-    const input = getFormInput('name');
+    const input = getFormInput('name*');
     input.$emit('input', 'My new object name');
 
     (overlay as any).click();
