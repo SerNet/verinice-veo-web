@@ -19,7 +19,7 @@ import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
 import { isEqual, isPlainObject } from 'lodash';
-import { IVeoEntity, IVeoFormSchema, IVeoLink, IVeoObjectSchema, IVeoUnit } from '~/types/VeoTypes';
+import { IVeoCustomLink, IVeoEntity, IVeoFormSchema, IVeoLink, IVeoObjectSchema, IVeoUnit } from '~/types/VeoTypes';
 
 export const CHART_COLORS = ['#c90000', '#ffc107', '#3f51b5', '#8bc34a', '#858585'];
 
@@ -88,7 +88,17 @@ export function getFirstDomainDomaindId(unit: IVeoUnit): string | undefined {
 export const dateIsValid = (date: Date) => date.toString() !== 'Invalid Date';
 
 // Keys that don't have to be present in an object nor match in order to be equal
-const IGNORED_KEYS: (string | RegExp)[] = ['decisionResults', /createdAt$/, /createdBy$/, /updatedAt$/, /updatedBy$/, /searchesUri$/, /resourcesUri$/, /displayName$/];
+const IGNORED_KEYS: (string | RegExp)[] = [
+  'decisionResults',
+  /createdAt$/,
+  /createdBy$/,
+  /updatedAt$/,
+  /updatedBy$/,
+  /targetUri$/,
+  /searchesUri$/,
+  /resourcesUri$/,
+  /displayName$/
+];
 
 export const isObjectEqual = (objectA: IVeoEntity, objectB: IVeoEntity) => {
   // Turn both objects into flat maps so it's easier to compare them based on their keys
@@ -117,9 +127,28 @@ export const isObjectEqual = (objectA: IVeoEntity, objectB: IVeoEntity) => {
       if (isPlainObject(value)) {
         return false;
       }
+      // If both conditions are true, the value is a custom link. As it isn't guaranteed that the links from the
+      // history api are in the same order as from the default api, we use a custom comparator
+      if (Array.isArray(value) && value[0]?.target) {
+        return !isLinkEqual(value, objectBFlatMap[key] as IVeoCustomLink[]);
+      }
       return !isEqual(value, objectBFlatMap[key]);
     })
     .map(([key, _value]) => key);
 
   return { isEqual: !missingKeys.length && !mismatchingValues.length, missingKeys, mismatchingValues };
+};
+
+const isLinkEqual = (linkA: IVeoCustomLink[], linkB: IVeoCustomLink[]) => {
+  if (linkA.length !== linkB.length) {
+    return false;
+  }
+  for (const link of linkA) {
+    const correspondingLinkB = linkB.find((_link) => link.target?.targetUri === _link.target?.targetUri);
+    // No need to compare target object, as the only relevant field is targetUri and correspondingLinkB would be undefined if the value doesn't exist
+    if (!correspondingLinkB || !isEqual(link.attributes, correspondingLinkB.attributes) || !isEqual(link.domains, correspondingLinkB.domains)) {
+      return false;
+    }
+  }
+  return true;
 };
