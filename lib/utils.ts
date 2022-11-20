@@ -18,6 +18,7 @@
 import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
+import { isEqual, isPlainObject } from 'lodash';
 import { IVeoEntity, IVeoFormSchema, IVeoLink, IVeoObjectSchema, IVeoUnit } from '~/types/VeoTypes';
 
 export const CHART_COLORS = ['#c90000', '#ffc107', '#3f51b5', '#8bc34a', '#858585'];
@@ -87,7 +88,7 @@ export function getFirstDomainDomaindId(unit: IVeoUnit): string | undefined {
 export const dateIsValid = (date: Date) => date.toString() !== 'Invalid Date';
 
 // Keys that don't have to be present in an object nor match in order to be equal
-const IGNORED_KEYS: (string | RegExp)[] = [/createdAt$/, /createdBy$/, /updatedAt$/, /updatedBy$/, /searchesUri$/, /resourcesUri$/, /displayName$/];
+const IGNORED_KEYS: (string | RegExp)[] = ['decisionResults', /createdAt$/, /createdBy$/, /updatedAt$/, /updatedBy$/, /searchesUri$/, /resourcesUri$/, /displayName$/];
 
 export const isObjectEqual = (objectA: IVeoEntity, objectB: IVeoEntity) => {
   // Turn both objects into flat maps so it's easier to compare them based on their keys
@@ -112,7 +113,11 @@ export const isObjectEqual = (objectA: IVeoEntity, objectB: IVeoEntity) => {
       if (missingKeys.includes(key)) {
         return false;
       }
-      return value !== objectBFlatMap[key];
+      // Returns false if the value is an object, as object keys will get checked anyways.
+      if (isPlainObject(value)) {
+        return false;
+      }
+      return !isEqual(value, objectBFlatMap[key]);
     })
     .map(([key, _value]) => key);
 

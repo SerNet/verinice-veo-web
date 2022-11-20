@@ -308,7 +308,7 @@ export default defineComponent({
     };
 
     // Forms part specific stuff
-    const isFormDirty = computed(() => !isObjectEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity) && !formDataIsRevision.value);
+    const isFormDirty = computed(() => !isObjectEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity).isEqual && !formDataIsRevision.value);
     const isFormValid = ref(false);
     const objectForm = ref();
 
