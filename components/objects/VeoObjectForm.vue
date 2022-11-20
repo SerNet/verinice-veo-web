@@ -299,7 +299,7 @@ export default defineComponent({
 
     const localAdditionalContext = computed<IVeoFormsAdditionalContext>(() => ({
       ...props.additionalContext,
-      ...(objectSchema.value && domain.value ? getRiskAdditionalContext(objectSchema.value.title, domain.value) : {}),
+      ...(objectSchema.value && domain.value ? getRiskAdditionalContext(objectSchema.value.title, domain.value, locale.value) : {}),
       ...(props.value && objectSchema.value && translations.value
         ? getStatusAdditionalContext(props.value, objectSchema.value, mergedTranslations.value[locale.value], props.domainId)
         : {})
@@ -350,7 +350,7 @@ export default defineComponent({
     watch(
       () => currentFormSchema.value,
       (newValue) => {
-        if (newValue && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
+        if (newValue && objectData.value && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
           objectData.value.domains[props.domainId] = {
             subType: newValue.subType,
             status: 'NEW'

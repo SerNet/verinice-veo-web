@@ -21,7 +21,7 @@
     md="3"
   >
     <h3 class="text-h3">
-      {{ protectionGoal.name }}
+      {{ protectionGoal.translations[locale].name }}
     </h3>
     <v-select
       :value="riskTreatments"
@@ -106,7 +106,7 @@ export default defineComponent({
     }
   },
   setup() {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
 
     const treatmentOptions = computed(() =>
       ['RISK_TREATMENT_ACCEPTANCE', 'RISK_TREATMENT_AVOIDANCE', 'RISK_TREATMENT_REDUCTION', 'RISK_TREATMENT_TRANSFER'].map((option) => ({
@@ -119,6 +119,7 @@ export default defineComponent({
       treatmentOptions,
 
       t,
+      locale,
       upperFirst
     };
   }

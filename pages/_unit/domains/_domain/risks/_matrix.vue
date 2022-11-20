@@ -60,7 +60,7 @@ export const ROUTE_NAME = 'unit-domains-domain-risks-matrix';
 export default defineComponent({
   setup() {
     const { $api } = useContext();
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const route = useRoute();
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
@@ -72,7 +72,7 @@ export default defineComponent({
     });
 
     // Matrix selection
-    const protectionGoals = computed(() => (data.value?.categories || []).map((category) => ({ text: category.name, id: category.id })));
+    const protectionGoals = computed(() => (data.value?.categories || []).map((category) => ({ text: category.translations[locale.value].name, id: category.id })));
 
     // Matrix stuff
     const getMatrixData = (protectionGoal: string) => {
