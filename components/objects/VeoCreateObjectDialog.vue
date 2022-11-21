@@ -67,6 +67,7 @@ import { cloneDeep, isEqual, upperFirst } from 'lodash';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { useFetchDomain } from '~/composables/api/domains';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 export default defineComponent({
   props: {
@@ -88,12 +89,15 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const { $api, $config } = useContext();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
-    const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + t(`objectTypes.${props.objectType}`).toString());
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+
+    const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + translations.value?.lang[locale.value]?.[props.objectType]);
 
     // Seeding of empty form
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));

@@ -109,6 +109,7 @@ import { IVeoEntity } from '~/types/VeoTypes';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 export default defineComponent({
   name: 'VeoObjectActionMenu',
@@ -131,11 +132,14 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const route = useRoute();
     const { $api } = useContext();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { linkObject } = useVeoObjectUtilities();
+
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
     // general stuff
     const schemas = ref<IVeoSchemaEndpoint[]>([]);
@@ -156,7 +160,7 @@ export default defineComponent({
     const actions = computed(() => [
       {
         key: 'createObject',
-        title: t('createObject', [props.object?.type !== 'scope' ? t(`objectTypes.${props.object?.type}`) : t('object')]).toString(),
+        title: t('createObject', [props.object?.type !== 'scope' ? translations.value?.lang[locale.value]?.[props.object?.type || ''] : t('object')]).toString(),
         icon: mdiPlus,
         tab: ['childObjects', 'parentObjects'],
         objectTypes: ['entity'],
@@ -164,7 +168,7 @@ export default defineComponent({
       },
       {
         key: 'linkObject',
-        title: t('linkObject', [props.object?.type !== 'scope' ? t(`objectTypes.${props.object?.type}`) : t('object')]).toString(),
+        title: t('linkObject', [props.object?.type !== 'scope' ? translations.value?.lang[locale.value]?.[props.object?.type || ''] : t('object')]).toString(),
         icon: mdiLinkPlus,
         tab: ['childObjects', 'parentObjects'],
         objectTypes: ['entity'],

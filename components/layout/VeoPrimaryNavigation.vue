@@ -156,6 +156,7 @@ import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemas } from '~/composables/api/schemas';
 import { useDocTree } from '~/composables/docs';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 export interface INavItem {
   key: string;
@@ -213,6 +214,9 @@ export default defineComponent({
       LocalStorage.primaryNavMiniVariant = miniVariant.value;
     }
 
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+
     // objects specific stuff
     const objectSchemas = ref<IVeoObjectSchema[]>([]);
 
@@ -247,7 +251,7 @@ export default defineComponent({
 
           return {
             key: objectSchema.title,
-            name: t(`objectTypes.${objectSchema.title}`).toString(),
+            name: translations.value?.lang[locale.value]?.[objectSchema.title] || '',
             icon: _icon?.library === 'mdi' ? (_icon?.icon as string) : undefined,
             faIcon: _icon?.library === 'fa' ? _icon?.icon : undefined,
             activePath: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectSchema.title}`,
