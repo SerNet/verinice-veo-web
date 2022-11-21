@@ -499,10 +499,12 @@ export default defineComponent({
       }
     };
 
+    const debouncedFetchDecisions = debounce(fetchDecisions, 1000);
+
     watch(
       () => objectData.value,
       () => {
-        debounce(fetchDecisions, 1000)();
+        debouncedFetchDecisions();
         setSubType();
       },
       { deep: true }
