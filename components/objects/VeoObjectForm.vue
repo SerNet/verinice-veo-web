@@ -347,18 +347,16 @@ export default defineComponent({
       () => setDisplayOptionBasedOnSubtype()
     );
 
-    watch(
-      () => currentFormSchema.value,
-      (newValue) => {
-        if (newValue && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
-          objectData.value.domains[props.domainId] = {
-            subType: newValue.subType,
-            status: 'NEW'
-          };
-        }
-      },
-      { deep: true }
-    );
+    const setSubType = () => {
+      if (objectData.value && currentFormSchema.value && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
+        objectData.value.domains[props.domainId] = {
+          subType: currentFormSchema.value.subType,
+          status: 'NEW'
+        };
+      }
+    };
+
+    watch(() => currentFormSchema.value, setSubType, { deep: true });
 
     const displayOptions: ComputedRef<{ text: string; value: string | undefined }[]> = computed(() => {
       const currentSubType = objectData.value?.domains?.[props.domainId]?.subType;
@@ -501,9 +499,14 @@ export default defineComponent({
       }
     };
 
+    const debouncedFetchDecisions = debounce(fetchDecisions, 1000);
+
     watch(
       () => objectData.value,
-      () => debounce(fetchDecisions, 1000)(),
+      () => {
+        debouncedFetchDecisions();
+        setSubType();
+      },
       { deep: true }
     );
 

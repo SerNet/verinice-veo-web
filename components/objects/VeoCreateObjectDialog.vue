@@ -62,12 +62,13 @@
 <script lang="ts">
 import { defineComponent, ref, useContext, useRoute, computed, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { cloneDeep, isEqual, upperFirst } from 'lodash';
+import { cloneDeep, upperFirst } from 'lodash';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { IBaseObject, separateUUIDParam } from '~/lib/utils';
+import { IBaseObject, isObjectEqual, separateUUIDParam } from '~/lib/utils';
 import { useFetchDomain } from '~/composables/api/domains';
 import { useFetchTranslations } from '~/composables/api/translations';
+import { IVeoEntity } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -114,7 +115,7 @@ export default defineComponent({
     const objectData = ref<IBaseObject>({});
     const pristineObjectData = ref<IBaseObject>({});
 
-    const isFormDirty = computed(() => !isEqual(objectData.value, pristineObjectData.value));
+    const isFormDirty = computed(() => !isObjectEqual(objectData.value as IVeoEntity, pristineObjectData.value as IVeoEntity).isEqual);
     const isFormValid = ref(false);
 
     const seedInitialData = () => {

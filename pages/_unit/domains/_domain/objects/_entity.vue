@@ -167,11 +167,11 @@
 
 <script lang="ts">
 import { computed, defineComponent, onUnmounted, ref, useContext, useFetch, useRoute, Ref, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
-import { cloneDeep, isEqual, omit, pick, upperFirst } from 'lodash';
+import { cloneDeep, omit, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
-import { IBaseObject, separateUUIDParam } from '~/lib/utils';
+import { IBaseObject, isObjectEqual, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
@@ -312,7 +312,7 @@ export default defineComponent({
     };
 
     // Forms part specific stuff
-    const isFormDirty = computed(() => !isEqual(object.value, modifiedObject.value) && !formDataIsRevision.value);
+    const isFormDirty = computed(() => !isObjectEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity).isEqual && !formDataIsRevision.value);
     const isFormValid = ref(false);
     const objectForm = ref();
 
