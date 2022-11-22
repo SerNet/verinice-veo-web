@@ -299,7 +299,7 @@ export default defineComponent({
 
     const localAdditionalContext = computed<IVeoFormsAdditionalContext>(() => ({
       ...props.additionalContext,
-      ...(objectSchema.value && domain.value ? getRiskAdditionalContext(objectSchema.value.title, domain.value) : {}),
+      ...(objectSchema.value && domain.value ? getRiskAdditionalContext(objectSchema.value.title, domain.value, locale.value) : {}),
       ...(props.value && objectSchema.value && translations.value
         ? getStatusAdditionalContext(props.value, objectSchema.value, mergedTranslations.value[locale.value], props.domainId)
         : {})
