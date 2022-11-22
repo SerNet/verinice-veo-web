@@ -156,7 +156,7 @@
             add-type="entity"
             :edited-object="object"
             :hierarchical-context="'child'"
-            :preselected-filters="linkObjectFilter"
+            :preselected-filters="{ subType: 'PRO_DPIA' }"
             @success="onDPIALinked"
           />
         </template>
@@ -414,8 +414,6 @@ export default defineComponent({
     const createDPIADialogVisible = ref(false);
     const linkObjectDialogVisible = ref(false);
 
-    const linkObjectFilter = { subType: 'PRO_DPIA' };
-
     const onDPIACreated = async (newObjectId: string) => {
       if (object.value) {
         await linkObject('child', pick(object.value, 'id', 'type'), { type: 'process', id: newObjectId });
@@ -455,7 +453,6 @@ export default defineComponent({
 
     return {
       ability,
-      linkObjectFilter,
       VeoAlertType,
       additionalContext,
       createDPIADialogVisible,
