@@ -163,12 +163,12 @@
 <script lang="ts">
 import { mdiContentCopy, mdiFilter, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
-import { computed, defineComponent, h, useContext, useFetch, useRoute, useRouter, ref, reactive, watch, onUnmounted } from '@nuxtjs/composition-api';
+import { computed, defineComponent, h, useContext, useRoute, useRouter, ref, reactive, watch, onUnmounted } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
@@ -177,6 +177,7 @@ import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
 
@@ -194,7 +195,8 @@ export default defineComponent({
     const { cloneObject } = useVeoObjectUtilities();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
 
-    const translations = ref<IVeoTranslations['lang']>({});
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations, isFetching: translationsLoading } = useFetchTranslations(fetchTranslationsQueryParameters);
 
     const itemDelete = ref<IVeoEntity>();
 
@@ -246,15 +248,11 @@ export default defineComponent({
 
     const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true, placeholderData: [] });
 
-    const { $fetchState } = useFetch(async () => {
-      translations.value = (await $api.translation.fetch(['de', 'en'])).lang;
-    });
-
     const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
     const formsQueryEnabled = computed(() => !!domainId.value);
     const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
-    const isLoading = computed(() => isLoadingObjects.value || $fetchState.pending);
+    const isLoading = computed(() => isLoadingObjects.value || translationsLoading.value);
 
     watch(() => filter.value, resetQueryOptions, { deep: true });
 
@@ -284,7 +282,7 @@ export default defineComponent({
 
       addCustomBreadcrumb({
         key: objectTypeKey,
-        text: upperFirst(getSchemaEndpoint(endpoints.value, newObjectType)),
+        text: translations.value?.lang[locale.value]?.[getSchemaEndpoint(endpoints.value, newObjectType) || ''],
         to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${newObjectType}`,
         param: objectTypeKey,
         index: 0,
@@ -343,12 +341,12 @@ export default defineComponent({
       switch (label) {
         // Uppercase object types
         case 'objectType':
-          return t(`objectTypes.${value}`).toString();
+          return value ? translations.value?.lang[locale.value]?.[value] : undefined;
         // Translate sub types
         case 'subType':
           return (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
         case 'status':
-          return translations.value[locale.value]?.[`${objectType.value}_${subType.value}_status_${value}`] || value;
+          return translations.value?.lang?.[locale.value]?.[`${objectType.value}_${subType.value}_status_${value}`] || value;
         default:
           return value;
       }

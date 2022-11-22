@@ -121,26 +121,6 @@ export default {
     risks: 'Risk definitions'
   },
 
-  // NBRX-1765 object type names are hardcoded in the frontend for the moment. Will change at some point
-  objectTypes: {
-    asset: 'asset',
-    assets: 'assets',
-    control: 'control',
-    controls: 'controls',
-    document: 'document',
-    documents: 'documents',
-    incident: 'incident',
-    incidents: 'incidents',
-    person: 'person',
-    persons: 'persons',
-    process: 'process',
-    processes: 'processes',
-    scenario: 'scenario',
-    scenarios: 'scenarios',
-    scope: 'scope',
-    scopes: 'scopes'
-  },
-
   // temporary until the composition api supports <i18n></i18n>
   saveSchemaError: "Couldn't update schema",
   saveSchemaSuccess: 'Schema updated!',
