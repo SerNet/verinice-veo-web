@@ -125,11 +125,12 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { mdiFilter } from '@mdi/js';
 import { getEntityDetailsFromLink, IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink } from '~/types/VeoTypes';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
 import { useVeoUser } from '~/composables/VeoUser';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 export default defineComponent({
   name: 'VeoLinkObjectDialog',
@@ -202,16 +203,16 @@ export default defineComponent({
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
     const objectSchemas = ref<IVeoSchemaEndpoint[]>([]);
-    const translations = ref<IVeoTranslations['lang']>({});
+
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
     const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
     const formsQueryEnabled = computed(() => !!domainId.value);
     const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     const { fetchState } = useFetch(async () => {
-      const [_schemas, _translations] = await Promise.all([$api.schema.fetchAll(), $api.translation.fetch(['de', 'en'])]);
-      objectSchemas.value = _schemas;
-      translations.value = _translations.lang;
+      objectSchemas.value = await $api.schema.fetchAll();
     });
 
     const editedObjectDisplayName = computed(() => ((props.editedObject as IVeoEntity).id ? (props.editedObject as IVeoEntity).displayName : props.editedObject.name));
@@ -272,12 +273,12 @@ export default defineComponent({
       switch (label) {
         // Uppercase object types
         case 'objectType':
-          return t(`objectTypes.${value}`).toString();
+          return value ? translations.value?.lang[locale.value]?.[value] : undefined;
         // Translate sub types
         case 'subType':
           return (formSchemas.value as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === value)?.name?.[locale.value] || value;
         case 'status':
-          return translations.value[locale.value]?.[`${filter.value.objectType}_${filter.value.subType}_status_${value}`] || value;
+          return translations.value?.lang[locale.value]?.[`${filter.value.objectType}_${filter.value.subType}_status_${value}`] || value;
         default:
           return value;
       }

@@ -167,11 +167,11 @@
 
 <script lang="ts">
 import { computed, defineComponent, onUnmounted, ref, useContext, useFetch, useRoute, Ref, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
-import { cloneDeep, isEqual, omit, pick, upperFirst } from 'lodash';
+import { cloneDeep, omit, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
-import { IBaseObject, separateUUIDParam } from '~/lib/utils';
+import { IBaseObject, isObjectEqual, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
@@ -179,6 +179,7 @@ import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useFetchForms } from '~/composables/api/forms';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -206,6 +207,9 @@ export default defineComponent({
     const objectParameter = computed(() => separateUUIDParam(route.value.params.entity));
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
     const preselectedSubType = computed<string | undefined>(() => route.value.query.subType || (object.value?.domains?.[domainId.value]?.subType as any));
+
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
     const object = ref<IVeoEntity | undefined>(undefined);
     const modifiedObject = ref<IVeoEntity | undefined>(undefined);
@@ -243,7 +247,7 @@ export default defineComponent({
 
       addCustomBreadcrumb({
         key: objectTypeKey,
-        text: t(`objectTypes.${getSchemaEndpoint(endpoints.value, newObjectType)}`).toString(),
+        text: translations.value?.lang[locale.value]?.[getSchemaEndpoint(endpoints.value, newObjectType) || ''],
         to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${newObjectType}`,
         param: objectTypeKey,
         index: 0,
@@ -308,7 +312,7 @@ export default defineComponent({
     };
 
     // Forms part specific stuff
-    const isFormDirty = computed(() => !isEqual(object.value, modifiedObject.value) && !formDataIsRevision.value);
+    const isFormDirty = computed(() => !isObjectEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity).isEqual && !formDataIsRevision.value);
     const isFormValid = ref(false);
     const objectForm = ref();
 

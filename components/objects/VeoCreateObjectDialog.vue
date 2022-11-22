@@ -62,11 +62,13 @@
 <script lang="ts">
 import { defineComponent, ref, useContext, useRoute, computed, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { cloneDeep, isEqual, upperFirst } from 'lodash';
+import { cloneDeep, upperFirst } from 'lodash';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { IBaseObject, separateUUIDParam } from '~/lib/utils';
+import { IBaseObject, isObjectEqual, separateUUIDParam } from '~/lib/utils';
 import { useFetchDomain } from '~/composables/api/domains';
+import { useFetchTranslations } from '~/composables/api/translations';
+import { IVeoEntity } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -88,12 +90,15 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const { $api, $config } = useContext();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
-    const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + t(`objectTypes.${props.objectType}`).toString());
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+
+    const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + translations.value?.lang[locale.value]?.[props.objectType]);
 
     // Seeding of empty form
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
@@ -110,7 +115,7 @@ export default defineComponent({
     const objectData = ref<IBaseObject>({});
     const pristineObjectData = ref<IBaseObject>({});
 
-    const isFormDirty = computed(() => !isEqual(objectData.value, pristineObjectData.value));
+    const isFormDirty = computed(() => !isObjectEqual(objectData.value as IVeoEntity, pristineObjectData.value as IVeoEntity).isEqual);
     const isFormValid = ref(false);
 
     const seedInitialData = () => {
