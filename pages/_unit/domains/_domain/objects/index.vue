@@ -22,13 +22,6 @@
     sticky-footer
   >
     <template #default>
-      <VeoFilterDialog
-        v-model="filterDialogVisible"
-        :domain="domainId"
-        :filter="filter"
-        object-type-required
-        @update:filter="updateRouteQuery"
-      />
       <VeoCreateObjectDialog
         v-if="objectType"
         v-model="createDialogVisible"
@@ -44,45 +37,13 @@
         @success="refetchObjects(); onCloseDeleteDialog(false)"
         @error="showError('delete', itemDelete, $event)"
       />
-      <v-row no-gutters>
-        <v-col
-          cols="auto"
-          class="d-flex align-center"
-        >
-          <v-btn
-            v-cy-name="'filter-button'"
-            class="mr-2"
-            rounded
-            primary
-            color="white"
-            depressed
-            small
-            style="outline: 1px solid black;"
-            data-component-name="object-overview-filter"
-            @click="filterDialogVisible = true"
-          >
-            <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter').toString()) }}
-          </v-btn>
-        </v-col>
-        <v-col
-          cols="auto"
-          class="grow"
-        >
-          <v-chip-group
-            v-cy-name="'chips'"
-            data-component-name="object-overview-active-filters"
-          >
-            <VeoObjectChip
-              v-for="k in activeFilterKeys"
-              :key="k"
-              :label="formatLabel(k)"
-              :value="formatValue(k, filter[k])"
-              :close="k!='objectType'"
-              @click:close="clearFilter(k)"
-            />
-          </v-chip-group>
-        </v-col>
-      </v-row>
+      <VeoObjectFilterBar
+        ref="filterBar"
+        :domain-id="domainId"
+        :filter="filter"
+        :required-fields="['objectType']"
+        @update:filter="updateRouteQuery"
+      />
       <VeoCard v-if="objectType">
         <VeoObjectTable
           :items="items"
@@ -120,7 +81,7 @@
         <v-btn
           color="primary"
           text
-          @click="filterDialogVisible = true"
+          @click="onOpenFilterDialog"
         >
           {{ t('filterObjects') }}
         </v-btn>
@@ -161,7 +122,7 @@
 </template>
 
 <script lang="ts">
-import { mdiContentCopy, mdiFilter, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
+import { mdiContentCopy, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
 import { computed, defineComponent, h, useContext, useRoute, useRouter, ref, reactive, watch, onUnmounted } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
@@ -201,7 +162,12 @@ export default defineComponent({
     const itemDelete = ref<IVeoEntity>();
 
     const createDialogVisible = ref(false);
-    const filterDialogVisible = ref(false);
+
+    // Ref to filter bar to programmatically open filter dialog from outside
+    const filterBar = ref();
+    const onOpenFilterDialog = () => {
+      filterBar.value.filterDialogVisible = true;
+    };
 
     // accepted filter keys (others wont be respected when specified in URL query parameters)
     const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'] as const;
@@ -218,9 +184,6 @@ export default defineComponent({
         })
       ) as Record<FilterKey, string | undefined>;
     });
-
-    // filters that have a value (and will be displayed as chips)
-    const activeFilterKeys = computed(() => filterKeys.filter((k) => filter.value[k] !== undefined));
 
     // current object type and sub type
     const objectType = computed(() => filter.value.objectType);
@@ -331,12 +294,6 @@ export default defineComponent({
       await router.push({ ...route.value, name: route.value.name!, query });
     };
 
-    // Remove a filter by removing it from query params
-    const clearFilter = (key: FilterKey) => {
-      updateRouteQuery({ [key]: undefined }, false);
-    };
-
-    const formatLabel = (label: string) => upperFirst(t(`objectlist.${label}`).toString());
     const formatValue = (label: FilterKey, value?: string) => {
       switch (label) {
         // Uppercase object types
@@ -429,22 +386,19 @@ export default defineComponent({
       actions,
       additionalHeaders,
       domainId,
-      activeFilterKeys,
-      clearFilter,
       createObjectLabel,
       filter,
       createDialogVisible,
-      filterDialogVisible,
-      formatLabel,
+      filterBar,
       formatValue,
       isLoading,
       itemDelete,
       items,
-      mdiFilter,
       mdiPlus,
       objectType,
       openItem,
       onCloseDeleteDialog,
+      onOpenFilterDialog,
       onPageChange,
       refetchObjects,
       showError,
@@ -461,7 +415,6 @@ export default defineComponent({
 {
   "en": {
     "objectOverview": "object overview",
-    "filter": "filter",
     "filterObjects": "filter objects",
     "createObject": "create {0}",
     "clone": "duplicated",
@@ -475,7 +428,6 @@ export default defineComponent({
   },
   "de": {
     "objectOverview": "Objektübersicht",
-    "filter": "filter",
     "filterObjects": "Objekte filtern",
     "createObject": "{0} erstellen",
     "clone": "dupliziert",

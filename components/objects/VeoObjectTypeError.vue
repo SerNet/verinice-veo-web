@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div class="d-flex flex-column align-center fill-height">
+  <div class="d-flex flex-column align-center">
     <v-img
       src="/images/noObjecttypeErrorImage.svg"
       max-height="300px"

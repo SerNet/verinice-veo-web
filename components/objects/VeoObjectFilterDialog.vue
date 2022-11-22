@@ -26,7 +26,7 @@
         <VeoCard>
           <v-card-text>
             <v-list dense>
-              <VeoFilter
+              <VeoObjectFilter
                 v-for="(option, index) of defaultFilterOptions"
                 :key="option.name || `${option.type}_${index}`"
                 :data-cy="option.type !== IVeoFilterOptionType.DIVIDER ? $utils.prefixCyData($options, 'filter-option') : ''"
@@ -44,7 +44,7 @@
         >
           <v-card-text>
             <v-list dense>
-              <VeoFilter
+              <VeoObjectFilter
                 v-for="(option, index) of additionalFilterOptions"
                 :key="option.name || `${option.type}_${index}`"
                 :data-cy="option.type !== IVeoFilterOptionType.DIVIDER ? $utils.prefixCyData($options, 'filter-option') : ''"
@@ -109,11 +109,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
-import { defineComponent, ref, computed, Ref, watch, PropOptions, ComputedRef, useFetch, useContext, nextTick } from '@nuxtjs/composition-api';
+import { defineComponent, ref, computed, Ref, watch, ComputedRef, useFetch, useContext, nextTick, PropType } from '@nuxtjs/composition-api';
 import { clone, omitBy, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
-import { IVeoFilterDivider, IVeoFilterOption, IVeoFilterOptionType } from './VeoFilter.vue';
+import { IVeoFilterDivider, IVeoFilterOption, IVeoFilterOptionType } from './VeoObjectFilter.vue';
 import { IBaseObject, extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
@@ -121,32 +121,32 @@ import { useFetchForms } from '~/composables/api/forms';
 import { useFetchTranslations } from '~/composables/api/translations';
 
 export default defineComponent({
-  name: 'VeoFilterDialog',
+  name: 'VeoObjectFilterDialog',
   props: {
     value: {
       type: Boolean,
       default: false
     },
-    objectTypeRequired: {
-      type: Boolean,
-      default: false
-    },
-    allowedObjectTypes: {
-      type: Array,
-      default: () => undefined
-    } as PropOptions<IVeoSchemaEndpoint[] | undefined>,
     filter: {
-      type: Object,
+      type: Object as PropType<IBaseObject>,
       default: () => {}
-    } as PropOptions<IBaseObject>,
-    domain: {
+    },
+    domainId: {
       type: String,
       required: true
     },
-    disableFields: {
-      type: Array,
+    allowedObjectTypes: {
+      type: Array as PropType<IVeoSchemaEndpoint[]>,
       default: () => []
-    } as PropOptions<string[]>
+    },
+    disabledFields: {
+      type: Array as PropType<string[]>,
+      default: () => []
+    },
+    requiredFields: {
+      type: Array as PropType<string[]>,
+      default: () => []
+    }
   },
   setup(props, { emit }) {
     const { $api } = useContext();
@@ -159,8 +159,8 @@ export default defineComponent({
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
-    const formsQueryParameters = computed(() => ({ domainId: props.domain }));
-    const formsQueryEnabled = computed(() => !!props.domain);
+    const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const formsQueryEnabled = computed(() => !!props.domainId);
     const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     useFetch(async () => {
@@ -175,7 +175,7 @@ export default defineComponent({
 
     // Create an object containing all subtypes for an object schema with all their status
     async function fetchSubTypesForSchema(schema: string) {
-      const _schema = await $api.schema.fetch(schema, [props.domain]);
+      const _schema = await $api.schema.fetch(schema, [props.domainId]);
 
       Vue.set(
         subTypes.value,
@@ -203,10 +203,10 @@ export default defineComponent({
      * Removes all set filters, emits them and closes the dialog
      */
     function onReset() {
-      const newFilterObject: IBaseObject = props.objectTypeRequired ? { objectType: localFilter.value.objectType } : {};
+      const newFilterObject: IBaseObject = {};
 
       for (const key of Object.keys(localFilter.value)) {
-        if (props.disableFields?.includes(key)) {
+        if (props.disabledFields.includes(key) || props.requiredFields.includes(key)) {
           newFilterObject[key] = localFilter.value[key];
         }
       }
@@ -234,10 +234,10 @@ export default defineComponent({
         {
           name: 'objectType',
           type: IVeoFilterOptionType.SELECT,
-          required: props.objectTypeRequired,
-          disabled: props.disableFields?.includes('objectType'),
+          required: props.requiredFields.includes('objectType'),
+          disabled: props.disabledFields?.includes('objectType'),
           alwaysVisible: true,
-          selectOptions: props.allowedObjectTypes
+          selectOptions: props.allowedObjectTypes.length
             ? objectTypes.value
                 .filter((ot) => props.allowedObjectTypes!.includes(ot))
                 .map((objectType) => ({ text: translations.value?.lang[locale.value]?.[objectType.schemaName] || '', value: objectType.schemaName }))
@@ -253,7 +253,7 @@ export default defineComponent({
           name: 'subType',
           type: IVeoFilterOptionType.SELECT,
           alwaysVisible: true,
-          disabled: !localFilter.value.objectType || props.disableFields?.includes('subType'),
+          disabled: !localFilter.value.objectType || props.disabledFields?.includes('subType'),
           selectOptions: availableSubTypes.value
             .map((subTypes) => ({ text: subTypes.name[locale.value], value: subTypes.subType }))
             .sort((a, b) => {
@@ -278,13 +278,13 @@ export default defineComponent({
         } as IVeoFilterDivider,
         {
           name: 'designator',
-          disabled: props.disableFields?.includes('designator'),
+          disabled: props.disabledFields?.includes('designator'),
           type: IVeoFilterOptionType.TEXT,
           alwaysVisible: true
         },
         {
           name: 'name',
-          disabled: props.disableFields?.includes('name'),
+          disabled: props.disabledFields?.includes('name'),
           type: IVeoFilterOptionType.TEXT,
           alwaysVisible: true
         },
@@ -292,7 +292,7 @@ export default defineComponent({
           name: 'status',
           type: IVeoFilterOptionType.SELECT,
           alwaysVisible: true,
-          disabled: !localFilter.value.objectType || !localFilter.value.subType || props.disableFields?.includes('status'),
+          disabled: !localFilter.value.objectType || !localFilter.value.subType || props.disabledFields?.includes('status'),
           selectOptions: availableSubTypes.value
             .find((subType) => subType.subType === localFilter.value.subType)
             ?.status.map((status) => ({
@@ -302,22 +302,22 @@ export default defineComponent({
         },
         {
           name: 'description',
-          disabled: props.disableFields?.includes('description'),
+          disabled: props.disabledFields?.includes('description'),
           type: IVeoFilterOptionType.TEXT
         },
         {
           name: 'updatedBy',
-          disabled: props.disableFields?.includes('updatedBy'),
+          disabled: props.disabledFields?.includes('updatedBy'),
           type: IVeoFilterOptionType.TEXT
         },
         {
           name: 'notPartOfGroup',
-          disabled: props.disableFields?.includes('notPartOfGroup'),
+          disabled: props.disabledFields?.includes('notPartOfGroup'),
           type: IVeoFilterOptionType.CHECKBOX
         },
         {
           name: 'hasChildObjects',
-          disabled: props.disableFields?.includes('hasChildObjects'),
+          disabled: props.disabledFields?.includes('hasChildObjects'),
           type: IVeoFilterOptionType.CHECKBOX
         }
       ];

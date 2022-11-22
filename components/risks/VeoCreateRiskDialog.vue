@@ -26,40 +26,13 @@
     v-on="$listeners"
   >
     <template #default>
-      <v-row no-gutters>
-        <v-col
-          cols="auto"
-          class="d-flex align-center"
-        >
-          <v-btn
-            class="mr-2"
-            color="white"
-            rounded
-            primary
-            depressed
-            small
-            style="outline: 1px solid black"
-            @click="filterDialogVisible = true"
-          >
-            <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter').toString()) }}
-          </v-btn>
-        </v-col>
-        <v-col
-          cols="auto"
-          class="grow"
-        >
-          <v-chip-group>
-            <VeoObjectChip
-              v-for="k in activeFilterKeys"
-              :key="k"
-              :label="formatLabel(k)"
-              :value="formatValue(k, filter[k])"
-              :close="k!='objectType' && k!='subType'"
-              @click:close="clearFilter(k)"
-            />
-          </v-chip-group>
-        </v-col>
-      </v-row>
+      <VeoObjectFilterBar
+        :domain-id="domainId"
+        :filter="filter"
+        :disabled-fields="['objectType', 'subType']"
+        :required-fields="['objectType']"
+        @update:filter="onFilterUpdate"
+      />
       <VeoCard>
         <VeoObjectTable
           v-model="selectedScenarios"
@@ -71,14 +44,6 @@
           @page-change="onPageChange"
         />
       </VeoCard>
-      <VeoFilterDialog
-        v-model="filterDialogVisible"
-        :domain="domainId"
-        :filter="filter"
-        :disable-fields="['objectType', 'subType']"
-        object-type-required
-        @update:filter="onFilterUpdate"
-      />
     </template>
     <template #dialog-options>
       <v-btn
@@ -107,15 +72,13 @@
 <script lang="ts">
 import { computed, defineComponent, reactive, ref, useContext, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { omit, upperFirst } from 'lodash';
-import { mdiFilter } from '@mdi/js';
-import { IVeoEntity, IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { upperFirst } from 'lodash';
+
+import { IVeoEntity } from '~/types/VeoTypes';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useFetchObjects } from '~/composables/api/objects';
-import { useFetchForms } from '~/composables/api/forms';
 import { useVeoUser } from '~/composables/VeoUser';
-import { useFetchTranslations } from '~/composables/api/translations';
 
 export default defineComponent({
   name: 'CreateRiskDialog',
@@ -137,13 +100,10 @@ export default defineComponent({
     const { $api, $config } = useContext();
     const { tablePageSize } = useVeoUser();
     const route = useRoute();
-    const { t, tc, locale } = useI18n();
+    const { t, tc } = useI18n();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
     const unit = computed(() => separateUUIDParam(route.value.params.unit).id);
-
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
     // Layout stuff
     const dialog = computed({
@@ -159,42 +119,12 @@ export default defineComponent({
     });
 
     // Filter stuff
-    const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
-    const formsQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
-
-    const filterDialogVisible = ref(false);
-
     const selectedScenarios = ref<IVeoEntity[]>([]);
 
-    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'];
     const filter = ref<IBaseObject>({
       objectType: 'scenario',
       subType: 'SCN_Scenario'
     });
-
-    const activeFilterKeys = filterKeys.filter((k) => filter.value[k] !== undefined);
-
-    const formatLabel = (label: string) => {
-      return upperFirst(t(`objectlist.${label}`).toString());
-    };
-
-    const formatValue = (label: string, value?: string) => {
-      switch (label) {
-        // Uppercase object types
-        case 'objectType':
-          return value ? translations.value?.lang[locale.value]?.[value] : undefined;
-        // Translate sub types
-        case 'subType':
-          return (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
-        default:
-          return value;
-      }
-    };
-
-    const clearFilter = (key: string) => {
-      omit(filter.value, key);
-    };
 
     const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
       Object.assign(queryParameters, { page: opts.newPage, sortOrder: opts.sortDesc ? 'desc' : 'asc', sortDesc: !!opts.sortDesc });
@@ -203,6 +133,7 @@ export default defineComponent({
 
     const onFilterUpdate = (newFilter: any) => {
       filter.value = newFilter;
+      refetch();
     };
 
     const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
@@ -252,14 +183,9 @@ export default defineComponent({
     };
 
     return {
-      activeFilterKeys,
-      clearFilter,
       creatingRisks,
       dialog,
       filter,
-      filterDialogVisible,
-      formatLabel,
-      formatValue,
       objects,
       objectsQueryIsLoading,
       onPageChange,
@@ -269,8 +195,7 @@ export default defineComponent({
 
       t,
       tc,
-      upperFirst,
-      mdiFilter
+      upperFirst
     };
   }
 });
@@ -281,13 +206,11 @@ export default defineComponent({
   "en": {
     "createRisk": "create risk | create risk | create {count} risks",
     "createRiskError": "Couldn't create risk | Couldn't create risks",
-    "filter": "filter",
     "risksCreated": "The risk was created successfully | The risks were created successfully"
   },
   "de": {
     "createRisk": "risiko erstellen | risiko erstellen | {count} Risiken erstellen",
     "createRiskError": "Das Risiko konnte nicht erstellt werden | Die Risiken konnten nicht erstellt werden",
-    "filter": "filter",
     "risksCreated": "Das Risiko wurde erstellt | Die Risiken wurden erstellt"
   }
 }

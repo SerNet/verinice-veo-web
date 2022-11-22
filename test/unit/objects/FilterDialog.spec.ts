@@ -18,7 +18,7 @@
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 
-import VeoFilterDialog from '~/components/util/VeoFilterDialog.vue';
+import VeoObjectFilterDialog from '~/components/objects/VeoObjectFilterDialog.vue';
 import { getEmittedEvent } from '~/lib/jestUtils';
 
 const vuetify = new Vuetify();
@@ -72,7 +72,7 @@ jest.mock('nuxt-i18n-composable', () => ({
 describe.skip('FilterDialog.vue', () => {
   it('should open veo filter dialog with 5 filters and be expandable to 9 filters', async () => {
     document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
-    const filterDialog = mount(VeoFilterDialog, {
+    const filterDialog = mount(VeoObjectFilterDialog, {
       ...mockDefaults,
       propsData: {
         value: true,
@@ -101,7 +101,7 @@ describe.skip('FilterDialog.vue', () => {
     };
 
     document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
-    const filterDialog = mount(VeoFilterDialog, {
+    const filterDialog = mount(VeoObjectFilterDialog, {
       ...mockDefaults,
       propsData: {
         value: true,
@@ -122,7 +122,7 @@ describe.skip('FilterDialog.vue', () => {
   it('should open veo filter dialog, select a filter and submit selected filter values', () => {
     document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
 
-    const wrapper = mount(VeoFilterDialog, {
+    const wrapper = mount(VeoObjectFilterDialog, {
       ...mockDefaults,
       propsData: {
         value: true,
@@ -146,7 +146,7 @@ describe.skip('FilterDialog.vue', () => {
   it('should open veo filter dialog, select a filter and reset all filters', () => {
     document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
 
-    const wrapper = mount(VeoFilterDialog, {
+    const wrapper = mount(VeoObjectFilterDialog, {
       ...mockDefaults,
       propsData: {
         value: true,
@@ -169,7 +169,7 @@ describe.skip('FilterDialog.vue', () => {
   it('should open veo filter dialog, select a filter, close dialog and reopen dialog. All filters should be reset', async () => {
     document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
 
-    const wrapper = mount(VeoFilterDialog, {
+    const wrapper = mount(VeoObjectFilterDialog, {
       ...mockDefaults,
       propsData: {
         value: true,
@@ -183,14 +183,14 @@ describe.skip('FilterDialog.vue', () => {
     const filterDialog = wrapper.find('.v-dialog');
 
     filterDialog.find('[name=designator]').setValue('Designator Text');
-    expect((wrapper.getComponent(VeoFilterDialog) as any).vm.localFilter).toEqual({
+    expect((wrapper.getComponent(VeoObjectFilterDialog) as any).vm.localFilter).toEqual({
       objectType: 'scope',
       name: 'My name',
       designator: 'Designator Text'
     });
     filterDialog.find('.close-button').vm.$emit('click'); // v-btn is NOT native, thus we can't use trigger(click)
     await new Promise((resolve) => setTimeout(resolve, 200)); // Waiting for 200ms, as the filter only gets reset after the close animation (150ms)
-    expect((wrapper.getComponent(VeoFilterDialog) as any).vm.localFilter).toEqual({
+    expect((wrapper.getComponent(VeoObjectFilterDialog) as any).vm.localFilter).toEqual({
       objectType: 'scope',
       name: 'My name'
     });

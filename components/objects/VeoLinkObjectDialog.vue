@@ -41,41 +41,13 @@
       >
         {{ t('linkParentExplanation', { displayName: editedObjectDisplayName, linkedObjectType }) }}
       </p>
-      <v-row no-gutters>
-        <v-col
-          cols="auto"
-          class="d-flex align-center"
-        >
-          <v-btn
-            v-cy-name="'filter-button'"
-            class="mr-2"
-            color="white"
-            rounded
-            primary
-            depressed
-            small
-            style="outline: 1px solid black"
-            @click="filterDialogVisible = true"
-          >
-            <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter').toString()) }}
-          </v-btn>
-        </v-col>
-        <v-col
-          cols="auto"
-          class="grow"
-        >
-          <v-chip-group v-cy-name="'chips'">
-            <VeoObjectChip
-              v-for="k in activeFilterKeys"
-              :key="k"
-              :label="formatLabel(k)"
-              :value="formatValue(k, filter[k])"
-              :close="k!='objectType'"
-              @click:close="clearFilter(k)"
-            />
-          </v-chip-group>
-        </v-col>
-      </v-row>
+      <VeoObjectFilterBar
+        :domain-id="domainId"
+        :filter="filter"
+        :allowed-object-types="allowedObjectTypes"
+        :required-fields="['objectType']"
+        @update:filter="updateFilter"
+      />
       <VeoCard>
         <VeoObjectTable
           v-model="modifiedSelectedItems"
@@ -106,14 +78,6 @@
       >
         {{ t('global.button.save') }}
       </v-btn>
-      <VeoFilterDialog
-        v-model="filterDialogVisible"
-        :domain="domainId"
-        :filter="filter"
-        :allowed-object-types="allowedObjectTypes"
-        object-type-required
-        @update:filter="updateFilter"
-      />
     </template>
   </VeoDialog>
 </template>
@@ -122,15 +86,13 @@
 import { defineComponent, useRoute, ref, computed, useContext, useFetch, watch, PropType, reactive } from '@nuxtjs/composition-api';
 import { cloneDeep, differenceBy, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiFilter } from '@mdi/js';
+
 import { getEntityDetailsFromLink, IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects } from '~/composables/api/objects';
-import { useFetchForms } from '~/composables/api/forms';
 import { useVeoUser } from '~/composables/VeoUser';
-import { useFetchTranslations } from '~/composables/api/translations';
 
 export default defineComponent({
   name: 'VeoLinkObjectDialog',
@@ -195,7 +157,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const route = useRoute();
-    const { t, locale } = useI18n();
+    const { t } = useI18n();
     const { $api } = useContext();
     const { tablePageSize } = useVeoUser();
     const { linkObject, unlinkObject } = useVeoObjectUtilities();
@@ -203,13 +165,6 @@ export default defineComponent({
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
     const objectSchemas = ref<IVeoSchemaEndpoint[]>([]);
-
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
-
-    const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
-    const formsQueryEnabled = computed(() => !!domainId.value);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     const { fetchState } = useFetch(async () => {
       objectSchemas.value = await $api.schema.fetchAll();
@@ -226,7 +181,6 @@ export default defineComponent({
 
     // Table/filter logic
     const filter = ref<IBaseObject>({});
-    const filterDialogVisible = ref(false);
 
     const objectsQueryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
     const resetQueryOptions = () => {
@@ -257,39 +211,7 @@ export default defineComponent({
       }
     );
 
-    // available & active filter options
-    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'];
-    const activeFilterKeys = computed(() => {
-      return filterKeys.filter((k) => filter.value[k] !== undefined);
-    });
-
     watch(() => filter.value, resetQueryOptions, { deep: true });
-
-    // formatting filter chips and their translations
-    const formatLabel = (label: string) => {
-      return upperFirst(t(`objectlist.${label}`).toString());
-    };
-    const formatValue = (label: string, value?: string) => {
-      switch (label) {
-        // Uppercase object types
-        case 'objectType':
-          return value ? translations.value?.lang[locale.value]?.[value] : undefined;
-        // Translate sub types
-        case 'subType':
-          return (formSchemas.value as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === value)?.name?.[locale.value] || value;
-        case 'status':
-          return translations.value?.lang[locale.value]?.[`${filter.value.objectType}_${filter.value.subType}_status_${value}`] || value;
-        default:
-          return value;
-      }
-    };
-
-    // remove one filter
-    const clearFilter = (key: string) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [key]: remove, ...rest } = filter.value;
-      filter.value = { ...rest };
-    };
 
     // update filter options
     const updateFilter = (newFilter: IBaseObject) => {
@@ -458,16 +380,11 @@ export default defineComponent({
     );
 
     return {
-      activeFilterKeys,
       allowedObjectTypes,
-      clearFilter,
       domainId,
       editedObjectDisplayName,
       fetchState,
       filter,
-      filterDialogVisible,
-      formatLabel,
-      formatValue,
       isLoading,
       linkedObjectType,
       linkObjects,
@@ -478,8 +395,7 @@ export default defineComponent({
       updateFilter,
 
       t,
-      upperFirst,
-      mdiFilter
+      upperFirst
     };
   }
 });
@@ -488,14 +404,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "filter": "filter",
     "headline": "select {0}",
     "linkChildExplanation": "Add {linkedObjectType} as a part to \"{parentName}\"",
     "linkParentExplanation": "Add {linkedObjectType} as a parent to \"{parentName}\"",
     "object": "object"
   },
   "de": {
-    "filter": "filter",
     "headline": "{0} auswählen",
     "linkChildExplanation": "{linkedObjectType} unter \"{displayName}\" einfügen",
     "linkParentExplanation": "{linkedObjectType} über \"{displayName}\" einfügen",
