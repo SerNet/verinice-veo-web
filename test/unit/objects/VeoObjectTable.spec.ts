@@ -50,6 +50,9 @@ describe('VeoObjectTable.vue', () => {
                 return Promise.resolve([]);
               }
             }
+          },
+          $config: {
+            debugCache: false
           }
         }
       },
