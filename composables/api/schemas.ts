@@ -15,15 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useContext } from '@nuxtjs/composition-api';
+import { computed, unref, useContext } from '@nuxtjs/composition-api';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 
-import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
+import { QueryOptions, STALE_TIME, useQueries, useQuery } from './utils/query';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
+import { IBaseObject } from '~/lib/utils';
 
 export interface IVeoFetchSchemaParameters {
   type: string;
+  domainIds: string[];
+}
+
+export interface IVeoFetchSchemasDetailedParameters {
   domainIds: string[];
 }
 
@@ -42,4 +47,19 @@ export const useFetchSchema = (queryParameters: MaybeRef<IVeoFetchSchemaParamete
   const { $api } = useContext();
 
   return useQuery<IVeoObjectSchema>(schemasQueryKeys.schema, $api.schema.fetch, queryParameters, { ...queryOptions, staleTime: STALE_TIME.MEDIUM });
+};
+
+export const useFetchSchemasDetailed = (queryParameters: MaybeRef<IVeoFetchSchemasDetailedParameters>, queryOptions?: QueryOptions) => {
+  const { $api } = useContext();
+
+  // Query useQueries depends on
+  const schemas = useFetchSchemas();
+
+  // Parameters for the depending queries. As this function only gets called once, we have to add reactivity under the hood to make the magic happen
+  const dependetQueryKeys = computed<(readonly string[] | CallableFunction)[]>(() => (schemas.data.value || []).map((_) => schemasQueryKeys.schema));
+  const dependentQueryParameters = computed<IBaseObject[]>(() =>
+    (schemas.data.value || []).map((schema) => ({ domainIds: unref(queryParameters).domainIds, type: schema.schemaName }))
+  );
+
+  return useQueries<IVeoObjectSchema>(dependetQueryKeys, $api.schema.fetch, dependentQueryParameters, queryOptions);
 };

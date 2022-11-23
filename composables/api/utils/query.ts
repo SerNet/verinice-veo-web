@@ -15,10 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, reactive, unref, useContext, watch } from '@nuxtjs/composition-api';
-import { useQuery as vueQueryUseQuery, useQueryClient } from '@tanstack/vue-query';
+import { computed, reactive, ref, Ref, unref, useContext, watch } from '@nuxtjs/composition-api';
+import { useQuery as vueQueryUseQuery, useQueries as VueQueryUseQueries, useQueryClient } from '@tanstack/vue-query';
 import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+import { QueryObserverResult } from '@tanstack/query-core/build/lib/types';
 import { isFunction } from 'lodash';
 
 import { IBaseObject } from '~/lib/utils';
@@ -34,7 +35,7 @@ export const STALE_TIME = {
 };
 
 /**
- * Wrapper for vue-query's useQuery to apply some custom logic to make it work more seamless with the legacy api plugin.
+ * Wrapper for vue-query's useQuery to apply some custom logic to make it work more seamless with the legacy api plugin and add optional debugging output.
  *
  * @param queryKey query key. Changes to it trigger a refetch. Can either be a string array or a callable function that gets passed the query parameters
  * @param requestFunction Function to call to fetch data (usually a function from the api plugin).
@@ -76,7 +77,7 @@ export const useQuery = <T>(
     watch(
       () => result.isFetching?.value,
       (newValue) => {
-        if (newValue && result.isStale) {
+        if (newValue && result.isStale.value) {
           const staleTime = queryOptions?.staleTime || queryClient.getDefaultOptions().queries?.staleTime;
           // eslint-disable-next-line no-console
           console.log(
@@ -96,6 +97,76 @@ export const useQuery = <T>(
 };
 
 /**
+ * Wrapper for vue-query's useQueries to provide more debugging output and have a similiar interface usage to our own useQuery
+ *
+ * @param queryKeys query key array. Changes to it trigger a refetch. Each entry corresponds to a new query, so make sure to pass the same amount of queryParameters and queryKeys.
+ * @param requestFunction Function to call to fetch data (usually a function from the api plugin).
+ * @param queryParameters Array with parameters to pass to the request function.
+ * @param queryOptions Options modifiying query behaviour.
+ * @returns Array containing query objects containing the data and information about the query. NOT reactive, so you have to watch the results in your components.
+ */
+export const useQueries = <T>(
+  queryKeys: Ref<(readonly string[] | CallableFunction)[]>,
+  requestFunction: CallableFunction,
+  queryParameters: Ref<IBaseObject[]>,
+  queryOptions?: QueryOptions
+) => {
+  const { $config } = useContext();
+
+  // Query key after all functions that might be part of it have been run with the parameters passed
+  const evaluatedQueryKey = computed(() => queryKeys.value.map((queryKey, index) => (isFunction(queryKey) ? queryKey(unref(queryParameters)[index]) : queryKey)));
+
+  // Key that gets assigned as otherwise useQueries doesn't pick up the changes
+  const localQueryKey = reactive<any[][]>([]);
+
+  const queries = ref<any[]>([]);
+
+  watch(
+    () => evaluatedQueryKey.value,
+    (newValue) => {
+      Object.assign(localQueryKey, newValue);
+
+      queries.value = localQueryKey.length
+        ? localQueryKey.map((queryKey, index) => ({
+            queryKey,
+            queryFn: () => requestFunction(...transformQueryParameters(evaluatedQueryKey.value[index][0], requestFunction.name, unref(queryParameters)[index])),
+            ...queryOptions
+          }))
+        : [{ queryKey: ['unnecessary'], queryFn: () => null }];
+    },
+    { deep: true, immediate: true }
+  );
+
+  // Actual query getting executed
+  const result = VueQueryUseQueries({ queries });
+
+  // Debugging stuff
+  if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(evaluatedQueryKey.value[0][0]))) {
+    const queryClient = useQueryClient();
+
+    watch(
+      () => result[0]?.isFetching,
+      (newValue) => {
+        if (newValue && result[0]?.isStale) {
+          const staleTime = queryOptions?.staleTime || queryClient.getDefaultOptions().queries?.staleTime;
+          // eslint-disable-next-line no-console
+          console.log(
+            `[vueQuery] data for query key "${JSON.stringify(evaluatedQueryKey.value)}" is considered stale (stale time is ${staleTime}). Last updated at ${new Date(
+              result[0]?.dataUpdatedAt
+            ).toLocaleTimeString()}, now is ${new Date().toLocaleTimeString()}. Fetching...`
+          );
+        } else if (newValue) {
+          // eslint-disable-next-line no-console
+          console.log(`[vueQuery] data for "${JSON.stringify(evaluatedQueryKey.value)}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(queryOptions)}"`);
+        }
+      }
+    );
+  }
+
+  return result as QueryObserverResult<T, unknown>[];
+};
+
+/**
  * Map containing all keys in the order the options should be passed to the api function as arguments.
  */
 const queryParameterMap = new Map<string, string[]>([
@@ -108,6 +179,7 @@ const queryParameterMap = new Map<string, string[]>([
   ['form_fetch', ['domainId', 'id']],
   ['objects_fetchAll', ['objectType', 'page', '_parameters_']],
   ['object_fetch', ['objectType', 'id']],
+  ['reports_fetchAll', []],
   ['schemas_fetchAll', []],
   ['schema_fetch', ['type', 'domainIds']],
   ['units_fetchAll', []],
