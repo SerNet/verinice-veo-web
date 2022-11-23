@@ -44,7 +44,7 @@
       <VeoObjectFilterBar
         :domain-id="domainId"
         :filter="filter"
-        :allowed-object-types="allowedObjectTypes"
+        :available-object-types="availableObjectTypes"
         :required-fields="['objectType']"
         @update:filter="updateFilter"
       />
@@ -225,27 +225,28 @@ export default defineComponent({
     };
 
     // get allowed filter-objectTypes for current parent and child type
-    const allowedObjectTypes = computed(() => {
+    const availableObjectTypes = computed<string[]>(() => {
+      const objectSchemaNames = objectSchemas.value.map((objectSchema) => objectSchema.schemaName);
       if (props.hierarchicalContext === 'parent') {
         if (props.addType === 'entity') {
           // Only allow the same schema for the parent as the one of the current element...
-          return objectSchemas.value.filter((item) => item.schemaName === props.editedObject.type);
+          return objectSchemaNames.filter((item) => item === props.editedObject.type);
         } else {
           // ...or a scope
-          return objectSchemas.value.filter((item) => item.endpoint === 'scopes');
+          return objectSchemaNames.filter((item) => item === 'scope');
         }
       } else {
         // Filter out scopes if the user wants to add objects and the parent is a scope
         if (props.editedObject.type === 'scope' && props.addType === 'entity') {
-          return objectSchemas.value.filter((item) => item.endpoint !== 'scopes');
+          return objectSchemaNames.filter((item) => item !== 'scope');
         }
         // Only scope if the user wants to add scopes and the parent is a scope
         if (props.editedObject.type === 'scope' && props.addType === 'scope') {
-          return objectSchemas.value.filter((item) => item.endpoint === 'scopes');
+          return objectSchemaNames.filter((item) => item === 'scope');
         }
         // Only own object type if the user wants to add objects and the parent is a object
         if (props.editedObject.type !== 'scope' && props.addType === 'entity') {
-          return objectSchemas.value.filter((item) => item.schemaName === props.editedObject.type);
+          return objectSchemaNames.filter((item) => item === props.editedObject.type);
         }
       }
 
@@ -253,10 +254,10 @@ export default defineComponent({
     });
 
     watch(
-      () => allowedObjectTypes.value,
+      () => availableObjectTypes.value,
       (newValue) => {
         if (newValue?.[0]) {
-          filter.value = { objectType: allowedObjectTypes.value[0].schemaName };
+          filter.value = { objectType: newValue[0] };
         }
       }
     );
@@ -380,7 +381,7 @@ export default defineComponent({
     );
 
     return {
-      allowedObjectTypes,
+      availableObjectTypes,
       domainId,
       editedObjectDisplayName,
       fetchState,

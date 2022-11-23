@@ -107,18 +107,17 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
-import { defineComponent, ref, computed, Ref, watch, ComputedRef, useFetch, useContext, nextTick, PropType } from '@nuxtjs/composition-api';
+import { defineComponent, ref, computed, Ref, watch, ComputedRef, nextTick, PropType } from '@nuxtjs/composition-api';
 import { clone, omitBy, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { IVeoFilterDivider, IVeoFilterOption, IVeoFilterOptionType } from './VeoObjectFilter.vue';
 import { IBaseObject, extractSubTypesFromObjectSchema } from '~/lib/utils';
-import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { IVeoFormSchemaMeta, IVeoObjectSchema } from '~/types/VeoTypes';
 import { useFetchForms } from '~/composables/api/forms';
 import { useFetchTranslations } from '~/composables/api/translations';
+import { useFetchSchemasDetailed } from '~/composables/api/schemas';
 
 export default defineComponent({
   name: 'VeoObjectFilterDialog',
@@ -135,8 +134,12 @@ export default defineComponent({
       type: String,
       required: true
     },
-    allowedObjectTypes: {
-      type: Array as PropType<IVeoSchemaEndpoint[]>,
+    availableObjectTypes: {
+      type: Array as PropType<string[]>,
+      default: () => []
+    },
+    availableSubTypes: {
+      type: Array as PropType<string[]>,
       default: () => []
     },
     disabledFields: {
@@ -149,12 +152,33 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { $api } = useContext();
     const { t, locale } = useI18n();
 
+    const queryParameters = computed(() => ({ domainIds: [props.domainId] }));
+    const _schemas = useFetchSchemasDetailed(queryParameters);
+    const schemas = ref<IVeoObjectSchema[]>([]);
+
+    // _schemas is a non-reactive array, so we have to explicitly watch it to assign it to a ref so that the rest of vues reactivity picks up changes
+    watch(
+      () => _schemas,
+      (newValue) => {
+        schemas.value = newValue.map((query) => query.data).filter((schema) => schema) as IVeoObjectSchema[];
+      },
+      { deep: true, immediate: true }
+    );
+
+    const objectTypes = computed<string[]>(() => schemas.value.map((schema) => schema.title));
+    const subTypes = computed<{ [schemaName: string]: { subType: string; name: IBaseObject; status: string[] }[] }>(() =>
+      schemas.value.reduce((previousValue, currentValue) => {
+        previousValue[currentValue.title] = extractSubTypesFromObjectSchema(currentValue).map((subType) => ({
+          ...subType,
+          name: (formSchemas.value as IVeoFormSchemaMeta[]).find((fs) => fs.subType === subType.subType)?.name || {}
+        }));
+        return previousValue;
+      }, Object.create(null))
+    );
+
     // Fetching of object types & translations for status
-    const objectTypes: Ref<IVeoSchemaEndpoint[]> = ref([]);
-    const subTypes: Ref<{ [schemaName: string]: { subType: string; name: IBaseObject; status: string[] }[] }> = ref({});
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
@@ -162,31 +186,6 @@ export default defineComponent({
     const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
     const formsQueryEnabled = computed(() => !!props.domainId);
     const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
-
-    useFetch(async () => {
-      // Only fetch object types once, as changes are highly unlikely (preemptively included, if fetch() gets called by a watcher in the future)
-      if (objectTypes.value.length === 0) {
-        objectTypes.value = await $api.schema.fetchAll();
-        for await (const objectType of objectTypes.value) {
-          await fetchSubTypesForSchema(objectType.schemaName);
-        }
-      }
-    });
-
-    // Create an object containing all subtypes for an object schema with all their status
-    async function fetchSubTypesForSchema(schema: string) {
-      const _schema = await $api.schema.fetch(schema, [props.domainId]);
-
-      Vue.set(
-        subTypes.value,
-        schema,
-        // @ts-ignore TODO: Remove before merge
-        extractSubTypesFromObjectSchema(_schema).map((subType) => ({
-          ...subType,
-          name: (formSchemas.value as IVeoFormSchemaMeta[]).find((fs) => fs.subType === subType.subType)?.name || {}
-        }))
-      );
-    }
 
     // Form actions
     /**
@@ -227,7 +226,7 @@ export default defineComponent({
       }
     );
 
-    const availableSubTypes = computed(() => subTypes.value[localFilter.value.objectType] || []);
+    const localAvailableSubTypes = computed(() => subTypes.value[localFilter.value.objectType] || []);
 
     const filterOptions: ComputedRef<(IVeoFilterOption | IVeoFilterDivider)[]> = computed(() => {
       return [
@@ -237,11 +236,11 @@ export default defineComponent({
           required: props.requiredFields.includes('objectType'),
           disabled: props.disabledFields?.includes('objectType'),
           alwaysVisible: true,
-          selectOptions: props.allowedObjectTypes.length
+          selectOptions: props.availableObjectTypes.length
             ? objectTypes.value
-                .filter((ot) => props.allowedObjectTypes!.includes(ot))
-                .map((objectType) => ({ text: translations.value?.lang[locale.value]?.[objectType.schemaName] || '', value: objectType.schemaName }))
-            : objectTypes.value.map((objectType) => ({ text: translations.value?.lang[locale.value]?.[objectType.schemaName] || '', value: objectType.schemaName })),
+                .filter((objectType) => props.availableObjectTypes!.includes(objectType))
+                .map((objectType) => ({ text: translations.value?.lang[locale.value]?.[objectType] || '', value: objectType }))
+            : objectTypes.value.map((objectType) => ({ text: translations.value?.lang[locale.value]?.[objectType] || '', value: objectType })),
           onChange: () => {
             nextTick(() => {
               delete localFilter.value.subType;
@@ -254,8 +253,9 @@ export default defineComponent({
           type: IVeoFilterOptionType.SELECT,
           alwaysVisible: true,
           disabled: !localFilter.value.objectType || props.disabledFields?.includes('subType'),
-          selectOptions: availableSubTypes.value
+          selectOptions: localAvailableSubTypes.value
             .map((subTypes) => ({ text: subTypes.name[locale.value], value: subTypes.subType }))
+            .filter((subTypes) => !props.availableSubTypes.length || props.availableSubTypes.includes(subTypes.value))
             .sort((a, b) => {
               const sortValueA = (formSchemas.value as IVeoFormSchemaMeta[]).find((schema) => schema.subType === a.value)?.sorting;
               const sortValueB = (formSchemas.value as IVeoFormSchemaMeta[]).find((schema) => schema.subType === b.value)?.sorting;
@@ -293,7 +293,7 @@ export default defineComponent({
           type: IVeoFilterOptionType.SELECT,
           alwaysVisible: true,
           disabled: !localFilter.value.objectType || !localFilter.value.subType || props.disabledFields?.includes('status'),
-          selectOptions: availableSubTypes.value
+          selectOptions: localAvailableSubTypes.value
             .find((subType) => subType.subType === localFilter.value.subType)
             ?.status.map((status) => ({
               text: translations.value ? translations.value.lang[locale.value][`${localFilter.value.objectType}_${localFilter.value.subType}_status_${status}`] : status,

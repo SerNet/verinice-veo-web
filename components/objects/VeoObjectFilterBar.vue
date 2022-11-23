@@ -74,7 +74,6 @@ import { IBaseObject } from '~/lib/utils';
 import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
 import { useFetchTranslations } from '~/composables/api/translations';
 import { useFetchForms } from '~/composables/api/forms';
-import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 export default defineComponent({
   props: {
@@ -95,8 +94,12 @@ export default defineComponent({
       default: () => []
     },
     // Props only required by the filter dialog. We define them explicitly here as $attrs gets binded to the container, so we use $props for binding to the filter. Also better readability
-    allowedObjectTypes: {
-      type: Array as PropType<IVeoSchemaEndpoint[]>,
+    availableObjectTypes: {
+      type: Array as PropType<string[]>,
+      default: () => []
+    },
+    availableSubTypes: {
+      type: Array as PropType<string[]>,
       default: () => []
     }
   },
