@@ -179,6 +179,7 @@ const queryParameterMap = new Map<string, string[]>([
   ['form_fetch', ['domainId', 'id']],
   ['objects_fetchAll', ['objectType', 'page', '_parameters_']],
   ['object_fetch', ['objectType', 'id']],
+  ['report_create', ['type', 'body']],
   ['reports_fetchAll', []],
   ['schemas_fetchAll', []],
   ['schema_fetch', ['type', 'domainIds']],

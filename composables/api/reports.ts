@@ -15,4 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-// To be implemented...
+import { useContext } from '@nuxtjs/composition-api';
+import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+
+import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
+import { MutationOptions, useMutation } from './utils/mutation';
+import { IVeoCreateReportData, IVeoReportsMeta } from '~/types/VeoTypes';
+
+export interface IVeoCreateReportParameters {
+  type: string;
+  body: IVeoCreateReportData;
+}
+
+export const reportsQueryKeys = {
+  reports: ['reports'] as const
+};
+
+export const useFetchReports = (queryOptions?: QueryOptions) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoReportsMeta>(reportsQueryKeys.reports, $api.report.fetchAll, {}, { ...queryOptions, staleTime: STALE_TIME.INFINITY });
+};
+
+export const useCreateReport = (mutationParameters: MaybeRef<IVeoCreateReportParameters>, mutationOptions?: MutationOptions) => {
+  const { $api } = useContext();
+
+  return useMutation('report', $api.report.create, mutationParameters, mutationOptions);
+};
