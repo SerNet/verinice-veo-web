@@ -283,7 +283,7 @@
         :validation="schemaIsValid"
       />
       <VeoOseTranslationDialog
-        v-if="!$fetchState.pending && translationDialogVisible"
+        v-if="!translationsLoading && translationDialogVisible"
         v-model="translationDialogVisible"
         :current-display-language.sync="displayLanguage"
         :available-languages="availableLanguages"
@@ -294,7 +294,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, provide, reactive, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, provide, reactive, ref, useContext, useRoute, watch } from '@nuxtjs/composition-api';
 import { upperFirst, pickBy } from 'lodash';
 import { mdiAlertCircleOutline, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
@@ -307,6 +307,7 @@ import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 export default defineComponent({
   name: 'ObjectSchemaEditor',
@@ -340,11 +341,15 @@ export default defineComponent({
     const translationDialogVisible = ref(false);
     const detailsDialogVisible = ref(false);
 
+    const fetchTranslationQueryParameters = computed(() => ({
+      languages: (i18n.locales as LocaleObject[]).map((locale) => locale.code)
+    }));
     const translations = reactive<IVeoTranslations['lang']>({});
-    useFetch(async () => {
-      const _translations = (await $api.translation.fetch((i18n.locales as LocaleObject[]).map((locale) => locale.code)))?.lang || {};
-      Object.assign(translations, _translations);
-    });
+    const { data: _translations, isFetching: translationsLoading } = useFetchTranslations(fetchTranslationQueryParameters);
+    watch(
+      () => _translations.value,
+      (newValue) => Object.assign(translations, newValue?.lang || {})
+    );
     const availableLanguages = computed(() => Object.keys(translations));
 
     const downloadButton = ref();
@@ -473,6 +478,7 @@ export default defineComponent({
       setSchema,
       title,
       translationDialogVisible,
+      translationsLoading,
       updateCode,
       updateSchema,
       updateSchemaName,

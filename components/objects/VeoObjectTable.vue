@@ -16,21 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  PropType,
-  h,
-  useContext,
-  useAsync,
-  useRoute,
-  ComputedRef,
-  getCurrentInstance,
-  onMounted,
-  onUnmounted,
-  ref,
-  watch
-} from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, h, useRoute, ComputedRef, getCurrentInstance, onMounted, onUnmounted, ref, watch } from '@nuxtjs/composition-api';
 import { VNode, VNodeChildren, VNodeData } from 'vue/types/vnode';
 import { useI18n } from 'nuxt-i18n-composable';
 import { DataTableHeader } from 'vuetify/types';
@@ -42,6 +28,7 @@ import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useFormatters, useThrottleNextTick } from '~/composables/utils';
 import { separateUUIDParam } from '~/lib/utils';
 import { useVeoUser } from '~/composables/VeoUser';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 export type ObjectTableItems = IVeoPaginatedResponse<IVeoEntity[]> | Array<IVeoEntity>;
 
@@ -117,14 +104,14 @@ export default defineComponent({
     click: (_: any) => {}
   },
   setup(props, { emit, slots, attrs, listeners }) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const route = useRoute();
-    const { $api, i18n } = useContext();
     const { tablePageSize } = useVeoUser();
     const vm = getCurrentInstance();
     const { formatDateTime } = useFormatters();
 
-    const translations = useAsync(() => $api.translation.fetch(i18n.locales.map((locale: any) => locale.code)), 'translations');
+    const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(translationQueryParameters);
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
     /**
@@ -144,7 +131,7 @@ export default defineComponent({
       if (!domainId.value) return '';
       const domainDetails = item.domains[domainId.value];
       const key = `${item.type}_${domainDetails?.subType}_status_${domainDetails?.status}`;
-      return translations.value?.lang?.[i18n.locale]?.[key] || item.domains[domainId.value]?.status || '';
+      return translations.value?.lang?.[locale.value]?.[key] || item.domains[domainId.value]?.status || '';
     };
     /**
      * Distinguish between {@link IVeoPaginatedResponse} and {@link IVeoEntity}[]

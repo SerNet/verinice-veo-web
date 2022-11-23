@@ -85,8 +85,9 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { IVeoDomainStatusCount } from '~/plugins/api/domain';
 import { CHART_COLORS, IBaseObject } from '~/lib/utils';
-import { IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { useFetchForms } from '~/composables/api/forms';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
@@ -124,7 +125,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { $api, i18n } = useContext();
+    const { $api } = useContext();
     const { locale, t } = useI18n();
     const route = useRoute();
 
@@ -144,10 +145,8 @@ export default defineComponent({
       }, Object.assign({}))
     );
 
-    const translations = ref<IVeoTranslations>();
-    useFetch(async () => {
-      translations.value = await $api.translation.fetch(i18n.locales.map((locale: any) => locale.code));
-    });
+    const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(translationQueryParameters);
 
     const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
     const formsQueryEnabled = computed(() => !!props.domainId);
