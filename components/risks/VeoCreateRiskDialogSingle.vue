@@ -125,6 +125,7 @@ import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain, IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export interface IDirtyFields {
   [field: string]: boolean;
@@ -164,6 +165,8 @@ export default defineComponent({
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     const formDisabled = computed(() => ability.value.cannot('manage', 'objects'));
+
+    const { data: schemas } = useFetchSchemas();
 
     // Domain stuff, used for risk definitions
     const domain = ref<IVeoDomain | undefined>();
@@ -247,11 +250,11 @@ export default defineComponent({
         try {
           if (!data.value.mitigation && mitigations.value.length) {
             const newMitigationId = (await $api.entity.create('control', newMitigatingAction.value as any)).resourceId;
-            data.value.mitigation = await createLink({ type: 'control', id: newMitigationId });
+            data.value.mitigation = createLink(schemas.value || {}, { type: 'control', id: newMitigationId });
           }
 
           if (data.value.mitigation) {
-            await linkObject('child', { id: getEntityDetailsFromLink(data.value.mitigation).id, type: 'control' }, mitigations.value, true);
+            await linkObject(schemas.value || {}, 'child', { id: getEntityDetailsFromLink(data.value.mitigation).id, type: 'control' }, mitigations.value, true);
           }
 
           if (props.scenarioId) {

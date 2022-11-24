@@ -73,8 +73,11 @@ export const useCreateAccount = (mutationParameters: MaybeRef<IVeoCreateAccountP
 
   return useMutation('account', $api.account.create, mutationParameters, {
     ...mutationOptions,
-    onSuccess: () => {
+    onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries(accountsQueryKeys.accounts);
+      if (mutationOptions?.onSuccess) {
+        mutationOptions.onSuccess(data, variables, context);
+      }
     }
   });
 };
@@ -85,9 +88,12 @@ export const useUpdateAccount = (mutationParameters: MaybeRef<IVeoUpdateAccountP
 
   return useMutation('account', $api.account.update, mutationParameters, {
     ...mutationOptions,
-    onSuccess: () => {
+    onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries(accountsQueryKeys.accounts);
       queryClient.invalidateQueries(accountsQueryKeys.account({ id: unref(mutationParameters).id }));
+      if (mutationOptions?.onSuccess) {
+        mutationOptions.onSuccess(data, variables, context);
+      }
     }
   });
 };
@@ -98,9 +104,12 @@ export const useDeleteAccount = (mutationParameters: MaybeRef<IVeoDeleteAccountP
 
   return useMutation('account', $api.account._delete, mutationParameters, {
     ...mutationOptions,
-    onSuccess: () => {
+    onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries(accountsQueryKeys.accounts);
       queryClient.invalidateQueries(accountsQueryKeys.account({ id: unref(mutationParameters).id }));
+      if (mutationOptions?.onSuccess) {
+        mutationOptions.onSuccess(data, variables, context);
+      }
     }
   });
 };

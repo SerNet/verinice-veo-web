@@ -55,7 +55,7 @@
           checkbox-color="primary"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="objectList"
-          :loading="fetchState.pending || isLoading"
+          :loading="schemasLoading || isLoading"
           @page-change="onPageChange"
         />
       </VeoCard>
@@ -83,16 +83,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, ref, computed, useContext, useFetch, watch, PropType, reactive } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute, ref, computed, useContext, watch, PropType, reactive } from '@nuxtjs/composition-api';
 import { cloneDeep, differenceBy, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { getEntityDetailsFromLink, IBaseObject, separateUUIDParam } from '~/lib/utils';
-import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export default defineComponent({
   name: 'VeoLinkObjectDialog',
@@ -164,11 +164,7 @@ export default defineComponent({
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
-    const objectSchemas = ref<IVeoSchemaEndpoint[]>([]);
-
-    const { fetchState } = useFetch(async () => {
-      objectSchemas.value = await $api.schema.fetchAll();
-    });
+    const { data: objectSchemas, isFetching: schemasLoading } = useFetchSchemas();
 
     const editedObjectDisplayName = computed(() => ((props.editedObject as IVeoEntity).id ? (props.editedObject as IVeoEntity).displayName : props.editedObject.name));
 
@@ -226,7 +222,7 @@ export default defineComponent({
 
     // get allowed filter-objectTypes for current parent and child type
     const availableObjectTypes = computed<string[]>(() => {
-      const objectSchemaNames = objectSchemas.value.map((objectSchema) => objectSchema.schemaName);
+      const objectSchemaNames = Object.keys(objectSchemas.value || {});
       if (props.hierarchicalContext === 'parent') {
         if (props.addType === 'entity') {
           // Only allow the same schema for the parent as the one of the current element...
@@ -284,13 +280,14 @@ export default defineComponent({
             const parentsToAdd = differenceBy(modifiedSelectedItems.value, mergedSelectedItems.value, 'id');
             const parentsToRemove = differenceBy(mergedSelectedItems.value, modifiedSelectedItems.value, 'id');
             for (const parent of parentsToAdd) {
-              await linkObject('parent', pick(_editedObject, 'id', 'type'), parent);
+              await linkObject(objectSchemas.value || {}, 'parent', pick(_editedObject, 'id', 'type'), parent);
             }
             for (const parent of parentsToRemove) {
               await unlinkObject(parent.id, _editedObject.id, parent.type);
             }
           } else {
             await linkObject(
+              objectSchemas.value || {},
               props.hierarchicalContext,
               pick(_editedObject, 'id', 'type'),
               modifiedSelectedItems.value.map((selectedItem) => pick(selectedItem, 'id', 'type'))
@@ -327,7 +324,7 @@ export default defineComponent({
                 const details = getEntityDetailsFromLink(child);
                 const id = details.id;
                 let type = details.type;
-                type = getSchemaName(objectSchemas.value, type) || type;
+                type = objectSchemas.value?.[type] || type;
 
                 return { id, type };
               })
@@ -384,7 +381,6 @@ export default defineComponent({
       availableObjectTypes,
       domainId,
       editedObjectDisplayName,
-      fetchState,
       filter,
       isLoading,
       linkedObjectType,
@@ -393,6 +389,7 @@ export default defineComponent({
       objectList,
       onPageChange,
       savingObject,
+      schemasLoading,
       updateFilter,
 
       t,

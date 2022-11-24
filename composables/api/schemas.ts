@@ -20,7 +20,7 @@ import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 
 import { QueryOptions, STALE_TIME, useQueries, useQuery } from './utils/query';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
-import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
+import { IVeoSchemaEndpoints } from '~/plugins/api/schema';
 import { IBaseObject } from '~/lib/utils';
 
 export interface IVeoFetchSchemaParameters {
@@ -40,7 +40,7 @@ export const schemasQueryKeys = {
 export const useFetchSchemas = (queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
-  return useQuery<IVeoSchemaEndpoint[]>(schemasQueryKeys.schemas, $api.schema.fetchAll, {}, { ...queryOptions, staleTime: STALE_TIME.INFINITY, placeholderData: [] });
+  return useQuery<IVeoSchemaEndpoints>(schemasQueryKeys.schemas, $api.schema.fetchAll, {}, { ...queryOptions, staleTime: STALE_TIME.INFINITY, placeholderData: {} });
 };
 
 export const useFetchSchema = (queryParameters: MaybeRef<IVeoFetchSchemaParameters>, queryOptions?: QueryOptions) => {
@@ -53,12 +53,12 @@ export const useFetchSchemasDetailed = (queryParameters: MaybeRef<IVeoFetchSchem
   const { $api } = useContext();
 
   // Query useQueries depends on
-  const schemas = useFetchSchemas();
+  const { data: schemas } = useFetchSchemas();
 
   // Parameters for the depending queries. As this function only gets called once, we have to add reactivity under the hood to make the magic happen
-  const dependetQueryKeys = computed<(readonly string[] | CallableFunction)[]>(() => (schemas.data.value || []).map((_) => schemasQueryKeys.schema));
+  const dependetQueryKeys = computed<(readonly string[] | CallableFunction)[]>(() => Object.keys(schemas.value || {}).map((_) => schemasQueryKeys.schema));
   const dependentQueryParameters = computed<IBaseObject[]>(() =>
-    (schemas.data.value || []).map((schema) => ({ domainIds: unref(queryParameters).domainIds, type: schema.schemaName }))
+    Object.keys(schemas.value || {}).map((schemaName) => ({ domainIds: unref(queryParameters).domainIds, type: schemaName }))
   );
 
   return useQueries<IVeoObjectSchema>(dependetQueryKeys, $api.schema.fetch, dependentQueryParameters, queryOptions);

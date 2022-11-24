@@ -124,7 +124,7 @@
 <script lang="ts">
 import { mdiContentCopy, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
-import { computed, defineComponent, h, useContext, useRoute, useRouter, ref, reactive, watch, onUnmounted } from '@nuxtjs/composition-api';
+import { computed, defineComponent, h, useRoute, useRouter, ref, reactive, watch, onUnmounted } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
@@ -133,12 +133,12 @@ import { IVeoEntity, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
-import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchTranslations } from '~/composables/api/translations';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
 
@@ -146,7 +146,6 @@ export default defineComponent({
   name: 'VeoObjectsOverviewPage',
   setup() {
     const { t, locale } = useI18n();
-    const { $api } = useContext();
     const { tablePageSize } = useVeoUser();
     const route = useRoute();
     const router = useRouter();
@@ -227,9 +226,9 @@ export default defineComponent({
 
     // Additional breadcrumbs based on object type and sub type
     const objectTypeKey = 'object-overview-object-type';
-    const endpoints = ref<IVeoSchemaEndpoint[]>([]);
+    const { data: endpoints } = useFetchSchemas();
 
-    const onObjectTypeChanged = async (newObjectType?: string) => {
+    const onObjectTypeChanged = (newObjectType?: string) => {
       if (customBreadcrumbExists(objectTypeKey)) {
         removeCustomBreadcrumb(objectTypeKey);
       }
@@ -239,13 +238,9 @@ export default defineComponent({
         return;
       }
 
-      if (!endpoints.value.length) {
-        endpoints.value = await $api.schema.fetchAll();
-      }
-
       addCustomBreadcrumb({
         key: objectTypeKey,
-        text: translations.value?.lang[locale.value]?.[getSchemaEndpoint(endpoints.value, newObjectType) || ''],
+        text: translations.value?.lang[locale.value]?.[endpoints.value?.[newObjectType] || newObjectType],
         to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${newObjectType}`,
         param: objectTypeKey,
         index: 0,

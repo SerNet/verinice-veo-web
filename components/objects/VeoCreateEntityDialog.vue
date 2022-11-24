@@ -17,14 +17,15 @@
 -->
 <template>
   <VeoDialog
-    v-model="dialog"
-    :headline="$t('headline')"
+    v-bind="$attrs"
+    :headline="t('headline')"
+    v-on="$listeners"
   >
     <template #default>
-      {{ $t('create_entity') }}
+      {{ t('create_entity') }}
       <v-select
         v-model="type"
-        :items="schemas"
+        :items="options"
       />
     </template>
     <template #dialog-options>
@@ -32,7 +33,7 @@
         text
         @click="$emit('input', false)"
       >
-        {{ $t('global.button.cancel') }}
+        {{ t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -41,62 +42,46 @@
         :disabled="!type"
         @click="$emit('create-entity', { type, ...eventPayload })"
       >
-        {{ $t('create') }}
+        {{ t('create') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Prop } from 'vue/types/options';
+import { computed, defineComponent, ref } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
-interface IData {
-  dialog: boolean;
-  noWatch: boolean;
-  type?: string;
-}
+import { useFetchSchemas } from '~/composables/api/schemas';
+import { useFetchTranslations } from '~/composables/api/translations';
 
-export default Vue.extend({
+export default defineComponent({
   props: {
-    value: {
-      type: Boolean,
-      required: true
-    },
-    schemas: {
-      type: Array as Prop<string[]>,
-      default: () => []
-    },
     eventPayload: {
       type: Object,
       default: () => {}
     }
   },
-  data() {
-    return {
-      dialog: false,
-      noWatch: false,
-      type: undefined
-    } as IData;
-  },
-  watch: {
-    value(newValue: boolean) {
-      this.noWatch = true;
-      this.dialog = newValue;
-      this.noWatch = false;
-    },
-    dialog(newValue: boolean) {
-      if (!this.noWatch) {
-        this.$emit('input', newValue);
-      }
+  setup() {
+    const { t, locale } = useI18n();
 
-      if (newValue) {
-        this.type = undefined;
-      }
-    }
-  },
-  mounted() {
-    this.dialog = this.value;
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+
+    const { data: schemas } = useFetchSchemas();
+
+    const type = ref<string | undefined>();
+
+    const options = computed<{ text: string; value: string }[]>(() =>
+      Object.keys(schemas || {}).map((schemaName) => ({ value: schemaName, text: translations.value?.lang[locale.value]?.[schemaName] || schemaName }))
+    );
+
+    return {
+      options,
+      type,
+
+      t
+    };
   }
 });
 </script>

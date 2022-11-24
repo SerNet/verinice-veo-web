@@ -40,5 +40,6 @@ export const useFetchReports = (queryOptions?: QueryOptions) => {
 export const useCreateReport = (mutationParameters: MaybeRef<IVeoCreateReportParameters>, mutationOptions?: MutationOptions) => {
   const { $api } = useContext();
 
+  // No need to invalidate queries, as this doesn't create a new report type, just a new report of that type for the user
   return useMutation('report', $api.report.create, mutationParameters, mutationOptions);
 };

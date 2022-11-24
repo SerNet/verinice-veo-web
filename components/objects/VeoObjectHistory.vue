@@ -119,8 +119,9 @@ export default Vue.extend({
     };
   },
   async fetch() {
+    const schemas = await this.$api.schema.fetchAll();
     if (this.object && !this.loading) {
-      this.history = (await this.$api.history.fetchVersions(this.object)).sort((a: IVeoObjectHistoryEntry, b: IVeoObjectHistoryEntry) => {
+      this.history = (await this.$api.history.fetchVersions(schemas[this.object.type], this.object)).sort((a: IVeoObjectHistoryEntry, b: IVeoObjectHistoryEntry) => {
         return a.changeNumber > b.changeNumber ? -1 : a.changeNumber < b.changeNumber ? 1 : 0;
       });
     }

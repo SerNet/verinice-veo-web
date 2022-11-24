@@ -73,8 +73,8 @@ import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoCustomLink, IVeoDomain, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
-import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export default defineComponent({
   name: 'VeoObjectDetailsTab',
@@ -108,7 +108,8 @@ export default defineComponent({
     /**
      * Fetch table data based on selected tab
      */
-    const schemas = ref<IVeoSchemaEndpoint[]>([]);
+    const { data: schemas } = useFetchSchemas();
+
     const { fetchState, fetch } = useFetch(async () => {
       if (props.object) {
         switch (props.type) {
@@ -128,7 +129,6 @@ export default defineComponent({
             items.value = (await $api.entity.fetchRisks(props.object.type, props.object.id)) as any;
             break;
           case 'links':
-            schemas.value = await $api.schema.fetchAll();
             // create entities for table from links
             items.value = Object.values(props.object.links).reduce((linkArray: { id: string; name?: string; type: string }[], links: IVeoCustomLink[]) => {
               for (const link of links) {
@@ -143,7 +143,7 @@ export default defineComponent({
     const createEntityFromLink = (link: IVeoCustomLink) => {
       const name = link.target.displayName;
       const splitted = link.target.targetUri.split('/');
-      const type = getSchemaName(schemas.value, splitted[4]) || splitted[4];
+      const type = Object.entries(schemas.value || {}).find(([_key, value]) => value === splitted[4])?.[0] || splitted[4];
       const id = splitted[5];
       return { id, name, type };
     };
@@ -286,7 +286,7 @@ export default defineComponent({
                 try {
                   const clonedObjectId = await cloneObject(item, true);
                   if (props.object) {
-                    await linkObject(['childScopes', 'childObjects'].includes(props.type) ? 'child' : 'parent', pick(props.object, 'id', 'type'), {
+                    await linkObject(schemas.value || {}, ['childScopes', 'childObjects'].includes(props.type) ? 'child' : 'parent', pick(props.object, 'id', 'type'), {
                       type: item.type,
                       id: clonedObjectId
                     });

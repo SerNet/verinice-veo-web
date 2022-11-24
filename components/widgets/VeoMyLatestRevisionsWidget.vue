@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoWidget :title="$t('myLatestRevisions')">
+  <VeoWidget :title="t('myLatestRevisions')">
     <v-simple-table dense>
       <tbody>
         <tr
@@ -33,7 +33,7 @@
             </nuxt-link>
           </td>
           <td class="text-right text-body-2">
-            {{ new Date(revision.time).toLocaleString($i18n.locale) }}
+            {{ new Date(revision.time).toLocaleString(locale) }}
           </td>
         </tr>
       </tbody>
@@ -42,35 +42,42 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { separateUUIDParam, createUUIDUrlParam } from '~/lib/utils';
-import { IVeoFormSchemaMeta, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
-export default Vue.extend({
-  props: {},
-  data() {
+import { useFetchForms } from '~/composables/api/forms';
+import { separateUUIDParam, createUUIDUrlParam } from '~/lib/utils';
+import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+
+export default defineComponent({
+  setup() {
+    const { $api } = useContext();
+    const { t, locale } = useI18n();
+    const route = useRoute();
+
+    const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+
+    const revisions = ref<IVeoObjectHistoryEntry[]>([]);
+    useFetch(async () => {
+      revisions.value = await $api.history.fetchLatest(unitId.value);
+    });
+
+    const fetchFormsQueryParameters = computed(() => ({ domainId: domainId.value }));
+    const fetchFormsQueryEnabled = computed(() => !!domainId.value);
+    const { data: forms } = useFetchForms(fetchFormsQueryParameters, { enabled: fetchFormsQueryEnabled });
+
+    const createUrl = (revision: IVeoObjectHistoryEntry) =>
+      `/${route.value.params.unit}/domains/${route.value.params.domain}/objects/${createUUIDUrlParam(revision.content.type, revision.content.id)}/`;
+
     return {
-      revisions: [] as IVeoObjectHistoryEntry[],
-      forms: [] as IVeoFormSchemaMeta[]
+      createUrl,
+      forms,
+      revisions,
+
+      t,
+      locale
     };
-  },
-  async fetch() {
-    this.revisions = await this.$api.history.fetchLatest(this.unitId);
-    this.forms = await this.$api.form.fetchAll(this.domainId);
-  },
-  computed: {
-    unitId() {
-      return separateUUIDParam(this.$route.params.unit).id;
-    },
-    domainId() {
-      return separateUUIDParam(this.$route.params.domain).id;
-    }
-  },
-  methods: {
-    createUUIDUrlParam,
-    createUrl(revision: IVeoObjectHistoryEntry) {
-      return `/${this.$route.params.unit}/domains/${this.$route.params.domain}/objects/${createUUIDUrlParam(revision.content.type, revision.content.id)}/`;
-    }
   }
 });
 </script>

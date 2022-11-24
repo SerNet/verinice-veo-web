@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { getSchemaEndpoint } from './schema';
 import { Client } from '~/plugins/api';
 import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export default function (api: Client) {
   return {
@@ -28,27 +28,36 @@ export default function (api: Client) {
      *
      * @param entity The entity to load the versions of.
      */
-    async fetchVersions(entity: IVeoEntity, query?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
+    fetchVersions(schemaEndpoint: string, entity: IVeoEntity, query?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
       if (!query) {
         query = {};
       }
 
-      query.uri = `/${getSchemaEndpoint(await api._context.$api.schema.fetchAll(), entity.type)}/${entity.id}`;
-      return api
-        .req('/api/history/revisions/', {
-          query
-        })
-        .then((result: IVeoObjectHistoryEntry[]) => {
-          result.forEach((historyEntry) => {
-            if (!historyEntry.content.parts) {
-              historyEntry.content.parts = [];
+      return new Promise((resolve) => {
+        useFetchSchemas({
+          onSuccess: async (data) => {
+            console.log(data);
+            if (!query) {
+              query = {};
             }
-            if (!historyEntry.content.members) {
-              historyEntry.content.members = [];
-            }
-          });
-          return result;
+            query.uri = `/${schemaEndpoint}/${entity.id}`;
+
+            const result = await api.req('/api/history/revisions/', {
+              query
+            });
+
+            result.forEach((historyEntry: IVeoObjectHistoryEntry) => {
+              if (!historyEntry.content.parts) {
+                historyEntry.content.parts = [];
+              }
+              if (!historyEntry.content.members) {
+                historyEntry.content.members = [];
+              }
+            });
+            resolve(result);
+          }
         });
+      });
     },
 
     /**

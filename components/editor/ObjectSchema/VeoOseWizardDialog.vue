@@ -217,9 +217,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { capitalize, isEmpty, isEqual, isString, trim } from 'lodash';
+import { isEmpty, isEqual, isString, trim, upperFirst } from 'lodash';
 
-import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 
 export default Vue.extend({
@@ -281,29 +280,8 @@ export default Vue.extend({
     },
     state: {
       immediate: true,
-      handler() {
-        if (this.state === 'import' || this.state === 'start') {
-          // Only load types of schema types if a user navigates by the dialog
-          if ((this.isNavigatedByDialog || this.isDialogCustom) && this.objectTypes.length === 0) {
-            this.$api.schema
-              .fetchAll(true)
-              .then((data) =>
-                data.map((value: IVeoSchemaEndpoint) => {
-                  return {
-                    text: capitalize(value.schemaName),
-                    value: value.schemaName
-                  };
-                })
-              )
-              .then((types: any) => {
-                types.unshift({
-                  text: this.$t('customObjectSchema') as string,
-                  value: 'custom'
-                });
-                this.objectTypes = types;
-              });
-          }
-        }
+      handler(newValue) {
+        this.onStateChanged(newValue);
       }
     },
     $route: {
@@ -343,6 +321,17 @@ export default Vue.extend({
     this.dialog = this.value;
   },
   methods: {
+    async onStateChanged(newState: string) {
+      // Only load types of schema types if a user navigates by the dialog
+      if (newState === 'import' || (newState === 'start' && (this.isNavigatedByDialog || this.isDialogCustom) && this.objectTypes.length === 0)) {
+        const schemas = await this.$api.schema.fetchAll();
+        this.objectTypes = Object.keys(schemas).map((schemaName) => ({ text: upperFirst(schemaName), value: schemaName }));
+        this.objectTypes.unshift({
+          text: this.$t('customObjectSchema') as string,
+          value: 'custom'
+        });
+      }
+    },
     createSchema() {
       this.$emit('completed', {
         schema: undefined,

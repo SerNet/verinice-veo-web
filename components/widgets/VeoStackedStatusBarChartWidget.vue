@@ -43,7 +43,7 @@
         </v-col>
         <v-col>
           <v-skeleton-loader
-            v-if="$fetchState.pending"
+            v-if="schemasIsLoading"
             width="100%"
             type="image"
             height="25px"
@@ -76,7 +76,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, useRoute } from '@nuxtjs/composition-api';
 import { BarChart } from 'vue-chart-3';
 import { Chart, BarController, Tooltip, CategoryScale, BarElement, LinearScale } from 'chart.js';
 import { upperFirst } from 'lodash';
@@ -85,9 +85,9 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { IVeoDomainStatusCount } from '~/plugins/api/domain';
 import { CHART_COLORS, IBaseObject } from '~/lib/utils';
-import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { useFetchForms } from '~/composables/api/forms';
 import { useFetchTranslations } from '~/composables/api/translations';
+import { useFetchSchema } from '~/composables/api/schemas';
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
@@ -125,18 +125,14 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { $api } = useContext();
     const { locale, t } = useI18n();
     const route = useRoute();
 
     const barChartRef = ref([]);
 
-    const objectSchema = ref<IVeoObjectSchema | undefined>();
-    const { fetch: fetchObjectSchema } = useFetch(async () => {
-      if (props.domainId) {
-        objectSchema.value = await $api.schema.fetch(props.objectType, [props.domainId]);
-      }
-    });
+    const fetchSchemaQueryParameters = computed(() => ({ domainIds: [props.domainId], type: props.objectType }));
+    const fetchSchemaQueryEnabled = computed(() => !!props.domainId);
+    const { data: objectSchema, isFetching: schemasIsLoading } = useFetchSchema(fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
 
     const sortedStatusBySubType = computed<IBaseObject>(() =>
       (objectSchema.value?.properties?.domains?.properties?.[props.domainId]?.allOf || []).reduce((previousValue, currentValue) => {
@@ -158,13 +154,6 @@ export default defineComponent({
           (formSchemas.value || []).findIndex((formSchema) => formSchema.subType === subTypeA) -
           (formSchemas.value || []).findIndex((formSchema) => formSchema.subType === subTypeB)
       )
-    );
-
-    watch(
-      () => props.domainId,
-      () => {
-        fetchObjectSchema();
-      }
     );
 
     const options = computed(() =>
@@ -246,6 +235,7 @@ export default defineComponent({
       ChartDataLabels,
       objectOveriewLink,
       options,
+      schemasIsLoading,
 
       upperFirst,
       t

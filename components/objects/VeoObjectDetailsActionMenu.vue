@@ -67,6 +67,7 @@ import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { INestedMenuEntries } from '~/components/layout/VeoNestedMenu.vue';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export default defineComponent({
   name: 'VeoObjectDetailsActionMenu',
@@ -84,6 +85,8 @@ export default defineComponent({
     const { t } = useI18n();
     const route = useRoute();
     const { linkObject } = useVeoObjectUtilities();
+
+    const { data: schemas } = useFetchSchemas();
 
     // general stuff
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
@@ -127,7 +130,7 @@ export default defineComponent({
     // emit after new object creation for linking
     const onCreateObjectSuccess = (newObjectId: string) => {
       if (props.object) {
-        linkObject('child', pick(props.object, 'id', 'type'), { type: 'process', id: newObjectId });
+        linkObject(schemas.value || {}, 'child', pick(props.object, 'id', 'type'), { type: 'process', id: newObjectId });
         emit('reload');
       }
     };

@@ -77,7 +77,6 @@
     />
     <VeoCreateEntityDialog
       v-model="createEntityDialog.value"
-      :schemas="createEntitySchemas"
       :v-bind="createEntityDialog"
       @create-entity="openCreateObjectDialog($event.type, $event.addAsChild)"
     />
@@ -100,16 +99,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, useRoute, ref, computed, useContext, PropType } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute, ref, computed, PropType } from '@nuxtjs/composition-api';
 import { pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
+
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
-import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useFetchTranslations } from '~/composables/api/translations';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export default defineComponent({
   name: 'VeoObjectActionMenu',
@@ -134,7 +134,6 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t, locale } = useI18n();
     const route = useRoute();
-    const { $api } = useContext();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { linkObject } = useVeoObjectUtilities();
 
@@ -142,19 +141,10 @@ export default defineComponent({
     const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
     // general stuff
-    const schemas = ref<IVeoSchemaEndpoint[]>([]);
+    const { data: schemas } = useFetchSchemas();
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
-    const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     const speedDialIsOpen = ref(false);
-
-    // fetch schemas from api
-    onMounted(async () => {
-      const fetchedSchemas = await $api.schema.fetchAll(false, {
-        unit: unitId.value
-      });
-      schemas.value = fetchedSchemas;
-    });
 
     // configure possible action items
     const actions = computed(() => [
@@ -220,16 +210,6 @@ export default defineComponent({
       hierarchicalContext: 'child'
     });
 
-    // object types for object type selection in CreateEntityDialog
-    const createEntitySchemas = computed(() => {
-      return schemas.value
-        .filter((filter) => filter.schemaName !== 'scope')
-        .map((schema: IVeoSchemaEndpoint) => ({
-          text: upperFirst(schema.schemaName),
-          value: schema.schemaName
-        }));
-    });
-
     const createEntityDialog = ref({
       value: false,
       eventPayload: undefined as undefined | IBaseObject
@@ -287,7 +267,7 @@ export default defineComponent({
     const onCreateObjectSuccess = async (newObjectId: string) => {
       if (props.object) {
         try {
-          await linkObject(createObjectDialog.value.hierarchicalContext as any, pick(props.object, 'id', 'type'), {
+          await linkObject(schemas.value || {}, createObjectDialog.value.hierarchicalContext as any, pick(props.object, 'id', 'type'), {
             type: createObjectDialog.value.objectType as string,
             id: newObjectId
           });
@@ -312,7 +292,6 @@ export default defineComponent({
     };
 
     return {
-      createEntitySchemas,
       createEntityDialog,
       createObjectDialog,
       createRiskDialogVisible,

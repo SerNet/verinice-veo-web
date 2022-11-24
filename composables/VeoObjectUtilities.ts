@@ -18,8 +18,9 @@
 import { useContext } from '@nuxtjs/composition-api';
 import { cloneDeep, isArray, isString } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { getSchemaEndpoint } from '~/plugins/api/schema';
+
 import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoSchemaEndpoints } from '~/plugins/api/schema';
 
 export interface IVeoAPIObjectIdentifier {
   id: string;
@@ -90,12 +91,12 @@ export function useVeoObjectUtilities() {
    * @param batchReplace If set to true and an array is passed to objectToAdd, the previous children of objectToModify get overwritten by the new object, else they get appended. Only applies for hierarchicalContext=child
    */
   const linkObject = async (
+    schemas: IVeoSchemaEndpoints,
     hierarchicalContext: 'child' | 'parent',
     objectToModify: IVeoAPIObjectIdentifier,
     objectToAdd: IVeoAPIObjectIdentifier | IVeoAPIObjectIdentifier[],
     batchReplace: boolean = true
   ) => {
-    const schemas = await $api.schema.fetchAll();
     if (hierarchicalContext === 'parent' && isArray(objectToAdd)) {
       // eslint-disable-next-line no-console
       console.warn('VeoObjectUtilities::linkObject: Batch entity updates are only supported for child links. Exiting');
@@ -108,7 +109,7 @@ export function useVeoObjectUtilities() {
       const childrenProperty = editedEntity.type === 'scope' ? 'members' : 'parts';
 
       const newLink = {
-        targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, objectToModify.type) || objectToModify.type}/${objectToModify.id}`
+        targetUri: `${$config.apiUrl}/${schemas[objectToModify.type]}/${objectToModify.id}`
       };
 
       editedEntity[childrenProperty].push(newLink);
@@ -119,7 +120,7 @@ export function useVeoObjectUtilities() {
       const childrenProperty = editedEntity.type === 'scope' ? 'members' : 'parts';
 
       const newLinkEntries = (isArray(objectToAdd) ? objectToAdd : [objectToAdd]).map((object) => ({
-        targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, object.type) || object.type}/${object.id}`
+        targetUri: `${$config.apiUrl}/${schemas[object.type]}/${object.id}`
       }));
 
       if (batchReplace && isArray(objectToAdd)) {
@@ -130,12 +131,9 @@ export function useVeoObjectUtilities() {
     }
   };
 
-  const createLink = async (objectToCreateLinkFrom: IVeoAPIObjectIdentifier) => {
-    const schemas = await $api.schema.fetchAll();
-    return {
-      targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, objectToCreateLinkFrom.type) || objectToCreateLinkFrom.type}/${objectToCreateLinkFrom.id}`
-    };
-  };
+  const createLink = (schemas: IVeoSchemaEndpoints, objectToCreateLinkFrom: IVeoAPIObjectIdentifier) => ({
+    targetUri: `${$config.apiUrl}/${schemas[objectToCreateLinkFrom.type]}/${objectToCreateLinkFrom.id}`
+  });
 
   return {
     cloneObject,

@@ -171,23 +171,26 @@ export const useQueries = <T>(
  */
 const queryParameterMap = new Map<string, string[]>([
   ['accounts_fetchAll', []],
-  ['account_fetch', ['id']],
   ['account_create', ['_parameters_']],
+  ['account_fetch', ['id']],
   ['account_update', ['id', '_parameters_']],
   ['account__delete', ['id']],
   ['forms_fetchAll', ['domainId']],
+  ['form_create', ['domainId', 'form']],
   ['form_fetch', ['domainId', 'id']],
-  ['objects_fetchAll', ['objectType', 'page', '_parameters_']],
-  ['object_fetch', ['objectType', 'id']],
-  ['report_create', ['type', 'body']],
+  ['form_update', ['id', 'domainId', 'form']],
+  ['objects_fetchAll', ['endpoint', 'page', '_parameters_']], // objectType gets passed to the composable, however it transforms objectType into the corresponding endpoint
+  ['object_fetch', ['endpoint', 'id']], // objectType gets passed to the composable, however it transforms objectType into the corresponding endpoint
   ['reports_fetchAll', []],
+  ['report_create', ['type', 'body']],
   ['schemas_fetchAll', []],
   ['schema_fetch', ['type', 'domainIds']],
   ['units_fetchAll', []],
   ['unit_fetch', ['id']],
   ['translations_fetch', ['languages']],
   ['domains_fetchAll', []],
-  ['domain_fetch', ['id']]
+  ['domain_fetch', ['id']],
+  ['domain_updateTypeDefinition', ['domainId', 'objectType', 'objectSchema']]
 ]);
 
 /**

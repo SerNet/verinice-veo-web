@@ -176,10 +176,10 @@ import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, VeoAlertType } 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
-import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useFetchForms } from '~/composables/api/forms';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchTranslations } from '~/composables/api/translations';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -234,20 +234,16 @@ export default defineComponent({
 
     // Breadcrumb extensions
     const objectTypeKey = 'object-detail-view-object-type';
-    const endpoints = ref<IVeoSchemaEndpoint[]>([]);
+    const { data: endpoints } = useFetchSchemas();
 
-    const onObjectTypeChanged = async (newObjectType: string) => {
+    const onObjectTypeChanged = (newObjectType: string) => {
       if (customBreadcrumbExists(objectTypeKey)) {
         removeCustomBreadcrumb(objectTypeKey);
       }
 
-      if (!endpoints.value.length) {
-        endpoints.value = await $api.schema.fetchAll();
-      }
-
       addCustomBreadcrumb({
         key: objectTypeKey,
-        text: translations.value?.lang[locale.value]?.[getSchemaEndpoint(endpoints.value, newObjectType) || ''],
+        text: translations.value?.lang[locale.value]?.[endpoints.value?.[newObjectType] || newObjectType],
         to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${newObjectType}`,
         param: objectTypeKey,
         index: 0,
@@ -418,7 +414,7 @@ export default defineComponent({
 
     const onDPIACreated = async (newObjectId: string) => {
       if (object.value) {
-        await linkObject('child', pick(object.value, 'id', 'type'), { type: 'process', id: newObjectId });
+        await linkObject(endpoints.value || {}, 'child', pick(object.value, 'id', 'type'), { type: 'process', id: newObjectId });
       }
       createDPIADialogVisible.value = false;
       updateObjectRelationships();

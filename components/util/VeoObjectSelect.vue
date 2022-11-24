@@ -66,17 +66,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, unref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, unref, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { mdiOpenInNew } from '@mdi/js';
-import { getSchemaEndpoint } from '~/plugins/api/schema';
 import { createUUIDUrlParam, getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useFetchObject, useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export default defineComponent({
   props: {
@@ -118,7 +118,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { $api, $config } = useContext();
+    const { $config } = useContext();
     const { locale, t } = useI18n();
     const { displayErrorMessage } = useVeoAlerts();
     const router = useRouter();
@@ -127,10 +127,7 @@ export default defineComponent({
     const unit = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     // Value related stuff
-    const schemas = ref();
-    useFetch(async () => {
-      schemas.value = await $api.schema.fetchAll();
-    });
+    const { data: schemas } = useFetchSchemas();
 
     const internalValue = computed<string | undefined>({
       get: () => {
@@ -146,7 +143,7 @@ export default defineComponent({
       },
       set: (newValue: string | undefined) => {
         if (props.valueAsLink) {
-          emit('input', newValue ? { targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas.value, props.objectType)}/${newValue}` } : undefined);
+          emit('input', newValue ? { targetUri: `${$config.apiUrl}/${schemas.value?.[props.objectType]}/${newValue}` } : undefined);
         } else {
           emit('input', newValue);
         }

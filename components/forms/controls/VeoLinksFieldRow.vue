@@ -75,7 +75,7 @@ import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoCustomLink } from '~/types/VeoTypes';
 import { useFetchForms } from '~/composables/api/forms';
-import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field-row',
@@ -104,7 +104,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const route = useRoute();
-    const { $api, $config } = useContext();
+    const { $config } = useContext();
     const { t, locale } = useI18n();
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
@@ -120,14 +120,11 @@ export default defineComponent({
       subType.value ? formSchemas.value?.find((formSchema) => formSchema.subType === subType.value)?.name?.[locale.value] || objectType.value : objectType.value
     );
 
-    // new object cration
+    // new object creation
     const createObjectDialogVisible = ref(false);
-    const schemas = ref<IVeoSchemaEndpoint[]>([]);
-    const onTargetCreated = async (newElementId: string) => {
-      if (!schemas.value.length) {
-        schemas.value = await $api.schema.fetchAll();
-      }
-      emit('input', { targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas.value, objectType.value)}/${newElementId}` });
+    const { data: schemas } = useFetchSchemas();
+    const onTargetCreated = (newElementId: string) => {
+      emit('input', { targetUri: `${$config.apiUrl}/${schemas.value?.[objectType.value]}/${newElementId}` });
     };
 
     // Users should only be able to select an item once per link, thus we have to remove all already selected items from the VeoObjectSelect

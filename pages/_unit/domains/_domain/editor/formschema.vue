@@ -347,6 +347,7 @@ import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useCreateForm, useUpdateForm } from '~/composables/api/forms';
 
 export default defineComponent({
   setup() {
@@ -431,30 +432,39 @@ export default defineComponent({
       setFormSchema(payload.formSchema);
     };
 
+    // Create/update stuff
+    const createFormSchemaQueryParameters = computed(() => ({
+      domainId: domainId.value,
+      form: formSchema.value as IVeoFormSchema
+    }));
+    const { mutateAsync: create } = useCreateForm(createFormSchemaQueryParameters, {
+      onSuccess: (data) => {
+        if (formSchema.value) {
+          formSchema.value.id = data as string; // For some reason the interface always returns void, even though this is a string
+        }
+      }
+    });
+    const updateFormSchemaQueryParameters = computed(() => ({
+      id: formSchema.value?.id || '',
+      domainId: domainId.value,
+      form: formSchema.value as IVeoFormSchema
+    }));
+    const { mutateAsync: update } = useUpdateForm(updateFormSchemaQueryParameters);
+
     async function save() {
       // control whether save new or save updated schema
       try {
-        if (formSchema.value?.id) {
-          await saveUpdatedSchema();
+        if (!formSchema.value) {
+          throw new Error('Formschema not defined');
+        }
+        if (formSchema.value.id) {
+          await update();
         } else {
-          await saveNewSchema();
+          await create();
         }
         displaySuccessMessage(t('saveSchemaSuccess').toString());
       } catch (err: any) {
         displayErrorMessage(t('error').toString(), `${t('saveSchemaError').toString()}: ${err.message}`);
-      }
-    }
-
-    async function saveNewSchema() {
-      if (formSchema.value) {
-        const id = await $api.form.create(domainId.value, formSchema.value);
-        formSchema.value.id = id; // set id from response, so next save would update schema instead of creating another one
-      }
-    }
-
-    async function saveUpdatedSchema() {
-      if (formSchema.value?.id) {
-        await $api.form.update(formSchema.value.id, domainId.value, formSchema.value);
       }
     }
 
@@ -635,8 +645,6 @@ export default defineComponent({
       onFixRequest,
       VeoPageHeaderAlignment,
       save,
-      saveNewSchema,
-      saveUpdatedSchema,
       translations,
       onWizardFinished,
 
@@ -659,7 +667,7 @@ export default defineComponent({
     "search": "Search for a control...",
     "help": "Help",
     "save": "Save",
-    "saveSchemaSuccess": "Schema saved!",
+    "saveSchemaSuccess": "Schema saved! The change will be visible to other users in less than 30 minutes.",
     "saveSchemaError": "Couldn't save schema!",
     "error": "Error",
     "saveContentCreator": "You need the role \"Content Creator\" to save the formschema."
@@ -674,7 +682,7 @@ export default defineComponent({
     "search": "Nach einem Steuerelement suchen",
     "help": "Hilfe",
     "save": "Speichern",
-    "saveSchemaSuccess": "Schema wurde gespeichert!",
+    "saveSchemaSuccess": "Schema wurde gespeichert! Andere User werden die Änderung in spätestens 30 Minuten sehen.",
     "saveSchemaError": "Schema konnte nicht gespeichert werden",
     "error": "Fehler",
     "saveContentCreator": "Sie müssen die Rolle \"Content Creator\" besitzen, um das Formschema zu speichern."

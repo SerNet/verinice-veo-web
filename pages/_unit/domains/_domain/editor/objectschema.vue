@@ -308,12 +308,13 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchTranslations } from '~/composables/api/translations';
+import { useUpdateTypeDefinition } from '~/composables/api/domains';
 
 export default defineComponent({
   name: 'ObjectSchemaEditor',
   setup() {
     const { locale, t } = useI18n();
-    const { $api, i18n } = useContext();
+    const { i18n } = useContext();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
@@ -446,9 +447,13 @@ export default defineComponent({
       }
     };
 
+    // Saving
+    const updateTypeDefinitionQueryParameters = computed(() => ({ domainId: domainId.value, objectType: title.value, objectSchema: objectSchemaHelper.value?.toSchema() as any }));
+    const { mutateAsync: update } = useUpdateTypeDefinition(updateTypeDefinitionQueryParameters);
+
     const saveSchema = async () => {
       try {
-        await $api.domain.updateTypeDefinition(domainId.value, title.value, objectSchemaHelper.value?.toSchema() as any);
+        await update();
         displaySuccessMessage(t('saveSchemaSuccess').toString());
       } catch (e: any) {
         displayErrorMessage(t('error.title').toString(), `${t('saveSchemaError').toString()}: ${e.message}`);
@@ -512,7 +517,7 @@ export default defineComponent({
     "translations": "Translations",
     "help": "Help",
     "save": "save",
-    "saveSchemaSuccess": "Schema saved!",
+    "saveSchemaSuccess": "Schema saved! The change will be visible to other users in less than 30 minutes.",
     "saveSchemaError": "Couldn't save schema!",
     "saveContentCreator": "You need the role \"Content Creator\" to save the objectschema."
   },
@@ -526,7 +531,7 @@ export default defineComponent({
     "translations": "Übersetzungen",
     "help": "Hilfe",
     "save": "speichern",
-    "saveSchemaSuccess": "Schema wurde gespeichert!",
+    "saveSchemaSuccess": "Schema wurde gespeichert! Andere User werden die Änderung in spätestens 30 Minuten sehen.",
     "saveSchemaError": "Schema konnte nicht gespeichert werden",
     "saveContentCreator": "Sie müssen die Rolle \"Content Creator\" besitzen, um das Objektschema zu speichern."
   }

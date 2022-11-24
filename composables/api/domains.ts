@@ -17,12 +17,20 @@
  */
 import { useContext } from '@nuxtjs/composition-api';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+import { useQueryClient } from '@tanstack/vue-query';
 
 import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
+import { MutationOptions, useMutation } from './utils/mutation';
 import { IVeoDomain } from '~/types/VeoTypes';
 
 export interface IVeoFetchDomainParameters {
   id: string;
+}
+
+export interface IVeoUpdateTypeDefinitionParameters {
+  domainId: string;
+  objectType: string;
+  objectSchema: string;
 }
 
 export const domainsQueryKeys = {
@@ -40,4 +48,20 @@ export const useFetchDomain = (queryParameters: MaybeRef<IVeoFetchDomainParamete
   const { $api } = useContext();
 
   return useQuery<IVeoDomain>(domainsQueryKeys.domain, $api.domain.fetch, queryParameters, { ...queryOptions, staleTime: STALE_TIME.MEDIUM });
+};
+
+export const useUpdateTypeDefinition = (mutationParameters: MaybeRef<IVeoUpdateTypeDefinitionParameters>, mutationOptions?: MutationOptions) => {
+  const { $api } = useContext();
+  const queryClient = useQueryClient();
+
+  return useMutation('domain', $api.domain.updateTypeDefinition, mutationParameters, {
+    ...mutationOptions,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['object']);
+      queryClient.invalidateQueries(['translations']);
+      if (mutationOptions?.onSuccess) {
+        mutationOptions.onSuccess(data, variables, context);
+      }
+    }
+  });
 };

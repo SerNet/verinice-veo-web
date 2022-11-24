@@ -17,8 +17,10 @@
  */
 import { useContext } from '@nuxtjs/composition-api';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+import { useQueryClient } from '@tanstack/vue-query';
 
 import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
+import { MutationOptions, useMutation } from './utils/mutation';
 import { IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export interface IVeoFetchFormsParameters {
@@ -28,6 +30,17 @@ export interface IVeoFetchFormsParameters {
 export interface IVeoFetchFormParameters {
   domainId: string;
   id: string;
+}
+
+export interface IVeoCreateFormParameters {
+  domainId: string;
+  form: IVeoFormSchema;
+}
+
+export interface IVeoUpdateFormParameters {
+  id: string;
+  domainId: string;
+  form: IVeoFormSchema;
 }
 
 export const schemasQueryKeys = {
@@ -45,4 +58,36 @@ export const useFetchForm = (queryParameters: MaybeRef<IVeoFetchFormParameters>,
   const { $api } = useContext();
 
   return useQuery<IVeoFormSchema>(schemasQueryKeys.form, $api.form.fetch, queryParameters, { ...queryOptions, staleTime: STALE_TIME.MEDIUM });
+};
+
+export const useCreateForm = (mutationParameters: MaybeRef<IVeoCreateFormParameters>, mutationOptions?: MutationOptions) => {
+  const { $api } = useContext();
+  const queryClient = useQueryClient();
+
+  return useMutation('form', $api.form.create, mutationParameters, {
+    ...mutationOptions,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['form']);
+      queryClient.invalidateQueries(['forms']);
+      if (mutationOptions?.onSuccess) {
+        mutationOptions.onSuccess(data, variables, context);
+      }
+    }
+  });
+};
+
+export const useUpdateForm = (mutationParameters: MaybeRef<IVeoUpdateFormParameters>, mutationOptions?: MutationOptions) => {
+  const { $api } = useContext();
+  const queryClient = useQueryClient();
+
+  return useMutation('form', $api.form.update, mutationParameters, {
+    ...mutationOptions,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['form']);
+      queryClient.invalidateQueries(['forms']);
+      if (mutationOptions?.onSuccess) {
+        mutationOptions.onSuccess(data, variables, context);
+      }
+    }
+  });
 };

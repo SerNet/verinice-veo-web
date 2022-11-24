@@ -24,7 +24,7 @@ import { transformQueryParameters } from './query';
 import { IBaseObject } from '~/lib/utils';
 
 // Type for less typing in composables
-export type MutationOptions<T = void> = Omit<UseMutationOptions<T, unknown, void, unknown>, 'queryFn'>;
+export type MutationOptions<T = unknown> = Omit<UseMutationOptions<T, unknown, void, unknown>, 'queryFn'>;
 
 /**
  * Wrapper for vue-query's useMutation to apply some custom logic to make it work more seamless with the legacy api plugin.
