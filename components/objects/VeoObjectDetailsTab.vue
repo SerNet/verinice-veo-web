@@ -284,7 +284,7 @@ export default defineComponent({
               icon: mdiContentCopy,
               async action(item: IVeoEntity) {
                 try {
-                  const clonedObjectId = await cloneObject(item, true);
+                  const clonedObjectId = await cloneObject(schemas.value || {}, item, true);
                   if (props.object) {
                     await linkObject(schemas.value || {}, ['childScopes', 'childObjects'].includes(props.type) ? 'child' : 'parent', pick(props.object, 'id', 'type'), {
                       type: item.type,

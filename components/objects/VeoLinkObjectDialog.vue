@@ -283,7 +283,7 @@ export default defineComponent({
               await linkObject(objectSchemas.value || {}, 'parent', pick(_editedObject, 'id', 'type'), parent);
             }
             for (const parent of parentsToRemove) {
-              await unlinkObject(parent.id, _editedObject.id, parent.type);
+              await unlinkObject(objectSchemas.value || {}, parent.id, _editedObject.id, parent.type);
             }
           } else {
             await linkObject(

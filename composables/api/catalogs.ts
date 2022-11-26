@@ -15,4 +15,62 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-// To be implemented...
+import { useContext } from '@nuxtjs/composition-api';
+import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+
+import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
+import { IVeoCatalog, IVeoCatalogItem } from '~/types/VeoTypes';
+
+export interface IVeoFetchCatalogsParameters {
+  domainId: string;
+}
+
+export interface IVeoFetchCatalogParameters {
+  id: string;
+}
+
+export interface IVeoFetchCatalogItemsParameters {
+  catalogId: string;
+  domainId: string;
+}
+
+export interface IVeoFetchCatalogItemParameters {
+  catalogId: string;
+  itemId: string;
+  domainid: string;
+}
+
+export const domainsQueryKeys = {
+  catalogs: (queryParameters: IVeoFetchCatalogsParameters) => ['catalogs', queryParameters.domainId] as const,
+  catalog: (queryParameters: IVeoFetchCatalogParameters) => ['catalog', queryParameters.id] as const,
+  catalogItems: (queryParameters: IVeoFetchCatalogItemsParameters) => ['catalogItems', queryParameters.catalogId, queryParameters.domainId] as const,
+  catalogItem: (queryParameters: IVeoFetchCatalogItemParameters) => ['catalogItems', queryParameters.catalogId, queryParameters.domainid, queryParameters.domainid] as const
+};
+
+export const useFetchCatalogs = (queryParameters: MaybeRef<IVeoFetchCatalogsParameters>, queryOptions?: QueryOptions) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoCatalog[]>(domainsQueryKeys.catalogs, $api.catalog.fetchAll, queryParameters, { ...queryOptions, staleTime: STALE_TIME.INFINITY, placeholderData: [] });
+};
+
+export const useFetchCatalog = (queryParameters: MaybeRef<IVeoFetchCatalogParameters>, queryOptions?: QueryOptions) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoCatalog>(domainsQueryKeys.catalog, $api.catalog.fetch, queryParameters, { ...queryOptions, staleTime: STALE_TIME.INFINITY });
+};
+
+export const useFetchCatalogItems = (queryParameters: MaybeRef<IVeoFetchCatalogItemsParameters>, queryOptions?: QueryOptions) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoCatalogItem[]>(domainsQueryKeys.catalogItems, $api.catalog.fetchItems, queryParameters, {
+    ...queryOptions,
+    staleTime: STALE_TIME.INFINITY,
+    placeholderData: []
+  });
+};
+
+export const useFetchCatalogItem = (queryParameters: MaybeRef<IVeoFetchCatalogItemParameters>, queryOptions?: QueryOptions) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoCatalogItem>(domainsQueryKeys.catalogItem, $api.catalog.fetchItem, queryParameters, { ...queryOptions, staleTime: STALE_TIME.INFINITY });
+};

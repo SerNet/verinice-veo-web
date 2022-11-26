@@ -39,7 +39,7 @@ export function useVeoObjectUtilities() {
    * @param addToParentScopes If set to true, adds the cloned object to the same scopes as the original object (needed if you want to clone an object containing a risk definition)
    * @returns Returns a promise that resolves if the object was cloned successfully and rejects if the object couldn't be cloned
    */
-  const cloneObject = async (object: IVeoEntity, addToParentScopes: boolean = false) => {
+  const cloneObject = async (schemas: IVeoSchemaEndpoints, object: IVeoEntity, addToParentScopes: boolean = false) => {
     const newEntity = cloneDeep(object);
     newEntity.name = `${object.name} (${t('clone').toString()})`;
 
@@ -56,7 +56,7 @@ export function useVeoObjectUtilities() {
     // @ts-ignore
     delete newEntity.designator;
 
-    return (await $api.entity.create(newEntity.type, newEntity, parentScopes)).resourceId;
+    return (await $api.entity.create(schemas[newEntity.type], newEntity, parentScopes)).resourceId;
   };
 
   /**
@@ -67,7 +67,7 @@ export function useVeoObjectUtilities() {
    * @param parentType If object is a string, the type of the object to remove the child from has to be specified
    * @returns Returns a promise that resolves if the child was removed successfully and rejects if the child couldn't be removed
    */
-  const unlinkObject = async (object: IVeoEntity | string, objectToRemove: IVeoEntity | string, parentType?: string) => {
+  const unlinkObject = async (schemas: IVeoSchemaEndpoints, object: IVeoEntity | string, objectToRemove: IVeoEntity | string, parentType?: string) => {
     if (isString(object) && !parentType) {
       throw new Error('VeoObjectUtilities::unlinkObject: "parentType" has to be specified if object is a uuid');
     }
@@ -79,7 +79,7 @@ export function useVeoObjectUtilities() {
     } else {
       _object.parts = _object.parts.filter((part) => !part.targetUri.includes(objcectToRemoveUUID));
     }
-    return await $api.entity.update(_object.type, _object.id, _object);
+    return await $api.entity.update(schemas[_object.type], _object.id, _object);
   };
 
   /**

@@ -72,7 +72,7 @@
             class="pb-4"
             :disabled="formDataIsRevision || ability.cannot('manage', 'objects')"
             :object-type="objectParameter.type"
-            :loading="loading"
+            :loading="loading || !modifiedObject"
             :domain-id="domainId"
             :preselected-sub-type="preselectedSubType"
             :valid.sync="isFormValid"
@@ -166,7 +166,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onUnmounted, ref, useContext, useFetch, useRoute, Ref, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, onUnmounted, ref, useContext, useRoute, Ref, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
 import { cloneDeep, omit, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
@@ -180,6 +180,7 @@ import { useFetchForms } from '~/composables/api/forms';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchTranslations } from '~/composables/api/translations';
 import { useFetchSchemas } from '~/composables/api/schemas';
+import { useFetchObject } from '~/composables/api/objects';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -204,6 +205,8 @@ export default defineComponent({
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
     const { ability } = useVeoPermissions();
 
+    const { data: endpoints } = useFetchSchemas();
+
     const objectParameter = computed(() => separateUUIDParam(route.value.params.entity));
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
     const preselectedSubType = computed<string | undefined>(() => route.value.query.subType || (object.value?.domains?.[domainId.value]?.subType as any));
@@ -211,7 +214,6 @@ export default defineComponent({
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
-    const object = ref<IVeoEntity | undefined>(undefined);
     const modifiedObject = ref<IVeoEntity | undefined>(undefined);
     /* Data that should get merged back into modifiedObject after the object has been reloaded, useful to persist children
      * of objects while keeping form changes */
@@ -220,21 +222,30 @@ export default defineComponent({
     // Object details are originally part of the object, but as they might get updated independently, we want to avoid refetching the whole object, so we outsorce them.
     const metaData = ref<any>({});
 
-    const { fetchState, fetch: loadObject } = useFetch(async () => {
-      object.value = await $api.entity.fetch(objectParameter.value.type, objectParameter.value.id);
-      modifiedObject.value = cloneDeep(object.value);
-      metaData.value = cloneDeep(object.value.domains[domainId.value]);
-      getAdditionalContext();
+    const fetchObjectQueryParameters = computed(() => ({ objectType: endpoints.value?.[objectParameter.value.type] || '', id: objectParameter.value.id }));
+    const fetchObjectQueryEnabled = computed(() => !!endpoints.value?.[objectParameter.value.type] && !!objectParameter.value.id);
+    const {
+      data: object,
+      isFetching: loading,
+      isError: notFoundError,
+      refetch
+    } = useFetchObject(fetchObjectQueryParameters, {
+      enabled: fetchObjectQueryEnabled,
+      onSuccess: (data) => {
+        const _data = data as IVeoEntity;
+        modifiedObject.value = cloneDeep(_data);
+        metaData.value = cloneDeep(_data.domains[domainId.value]);
+        getAdditionalContext();
 
-      if (wipObjectData.value) {
-        modifiedObject.value = { ...modifiedObject.value, ...wipObjectData.value };
-        wipObjectData.value = undefined;
+        if (wipObjectData.value) {
+          modifiedObject.value = { ...modifiedObject.value, ...wipObjectData.value };
+          wipObjectData.value = undefined;
+        }
       }
     });
 
     // Breadcrumb extensions
     const objectTypeKey = 'object-detail-view-object-type';
-    const { data: endpoints } = useFetchSchemas();
 
     const onObjectTypeChanged = (newObjectType: string) => {
       if (customBreadcrumbExists(objectTypeKey)) {
@@ -287,8 +298,6 @@ export default defineComponent({
       expireOptimisticLockingAlert();
     });
 
-    const notFoundError = computed(() => (fetchState.error as any)?.code === 404);
-
     // Display stuff
     const pageWidths = ref<Number[]>([3, 9]);
     const pageWidthsLg = ref<Number[]>([5, 7]);
@@ -327,7 +336,7 @@ export default defineComponent({
 
     function updateObjectRelationships() {
       wipObjectData.value = omit(cloneDeep(modifiedObject.value), 'createdAt', 'createdBy', 'updatedAt', 'updatedBy', 'parts', 'members');
-      loadObject();
+      refetch();
     }
 
     const optimisticLockingAlertKey = ref<undefined | number>(undefined);
@@ -345,7 +354,7 @@ export default defineComponent({
           // @ts-ignore ETag is not defined on the type, however it is set by the api plugin
           modifiedObject.value.$etag = object.value.$etag;
           await $api.entity.update(objectParameter.value.type, objectParameter.value.id, modifiedObject.value);
-          loadObject();
+          refetch();
           formDataIsRevision.value = false;
           displaySuccessMessage(successText);
         }
@@ -355,7 +364,7 @@ export default defineComponent({
             objectModified: true,
             buttonText: t('global.button.no').toString(),
             eventCallbacks: {
-              refetch: () => loadObject()
+              refetch
             }
           });
         } else {
@@ -403,8 +412,6 @@ export default defineComponent({
         router.push({ hash, query: route.value.query });
       }
     });
-
-    const loading = computed(() => fetchState.pending);
 
     // pia stuff
     const createDPIADialogVisible = ref(false);
@@ -485,7 +492,7 @@ export default defineComponent({
       object,
       upperFirst,
       updateObjectRelationships,
-      loadObject,
+      refetch,
       activeTab
     };
   }

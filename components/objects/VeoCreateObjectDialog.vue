@@ -69,6 +69,7 @@ import { IBaseObject, isObjectEqual, separateUUIDParam } from '~/lib/utils';
 import { useFetchDomain } from '~/composables/api/domains';
 import { useFetchTranslations } from '~/composables/api/translations';
 import { IVeoEntity } from '~/types/VeoTypes';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export default defineComponent({
   props: {
@@ -97,6 +98,8 @@ export default defineComponent({
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+
+    const { data: endpoints } = useFetchSchemas();
 
     const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + translations.value?.lang[locale.value]?.[props.objectType]);
 
@@ -173,7 +176,7 @@ export default defineComponent({
     // Submitting form
     const onSubmit = async () => {
       try {
-        const result = await $api.entity.create(props.objectType, objectData.value as any);
+        const result = await $api.entity.create(endpoints.value?.[props.objectType] || props.objectType, objectData.value as any);
         emit('success', result.resourceId);
         displaySuccessMessage(upperFirst(t('objectCreated', { name: objectData.value.name }).toString()));
         emit('input', false);

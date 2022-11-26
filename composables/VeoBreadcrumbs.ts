@@ -23,7 +23,6 @@ export interface IVeoBreadcrumb {
   key: string;
   to: string;
   text?: string;
-  asyncText?: (param: string, value?: string) => Promise<string>;
   icon?: any;
   position: number;
   index: number; // Can be set to zero, as the VeoBreadcrumbs.vue component will handle it.

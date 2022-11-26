@@ -34,9 +34,9 @@
           >
             {{ item.icon }}
           </v-icon>
-          <template v-else-if="item.asyncText">
-            <template v-if="asyncTextMap[item.param]">
-              {{ asyncTextMap[item.param] }}
+          <template v-else-if="Object.keys(queryResultMap).includes(item.param)">
+            <template v-if="queryResultMap[item.param]">
+              {{ queryResultMap[item.param] }}
             </template>
             <v-skeleton-loader
               v-else
@@ -45,7 +45,6 @@
               height="14"
             />
           </template>
-        
           <template v-else-if="item.text">
             {{ item.text }}
           </template>
@@ -88,10 +87,10 @@
                         {{ menuItem.icon }}
                       </v-icon>
                     </v-list-item-icon>
-                    <v-list-item-title>
-                      <template v-if="menuItem.asyncText">
-                        <template v-if="asyncTextMap[menuItem.param]">
-                          {{ asyncTextMap[menuItem.param] }}
+                    <v-list-item-title v-else>
+                      <template v-if="Object.keys(queryResultMap).includes(menuItem.param)">
+                        <template v-if="queryResultMap[menuItem.param]">
+                          {{ queryResultMap[menuItem.param] }}
                         </template>
                         <v-skeleton-loader
                           v-else
@@ -100,7 +99,6 @@
                           height="14"
                         />
                       </template>
-        
                       <template v-if="menuItem.text">
                         {{ menuItem.text }}
                       </template>
@@ -125,20 +123,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, del, useRoute, useContext, computed, ComputedRef, watch, set, reactive, useMeta } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute, computed, ComputedRef, watch, useMeta, Ref, ref, reactive, set } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { last } from 'lodash';
+import { isEmpty, isFunction, last } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal, mdiHomeOutline } from '@mdi/js';
 
 import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
-import { separateUUIDParam } from '~/lib/utils';
+import { IBaseObject, separateUUIDParam } from '~/lib/utils';
+import { useFetchSchemas } from '~/composables/api/schemas';
+import { useFetchObject } from '~/composables/api/objects';
+import { useFetchDomain } from '~/composables/api/domains';
+import { useFetchReports } from '~/composables/api/reports';
+import { useFetchCatalog } from '~/composables/api/catalogs';
 
 interface IVeoBreadcrumbReplacementMapBreadcrumb {
   disabled?: boolean;
   exact?: boolean;
   to?: string | Function;
-  text?: string;
-  asyncText?: (param: string, value?: string) => Promise<string>;
+  text?: string | ((param: string, value?: string) => string);
+  queryParameterTransformationFn?: (param: string, value?: string) => {};
+  queryResultTransformationFn?: (param: string, value: string | undefined, data: any) => string;
   icon?: any;
   position?: number;
   hidden?: boolean;
@@ -158,12 +162,56 @@ export default defineComponent({
   setup(props) {
     const { t, locale } = useI18n();
     const route = useRoute();
-    const { $api } = useContext();
     const { title } = useMeta();
     const { breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
 
     // After this position, all breadcrumbs will be moved to a menu to avoid scrolling
     const BREADCRUMB_BREAKOFF = 4;
+
+    // Async queries. For now we assume that every query type will only be used once (at most one object, one domain, one report is part of the path).
+    // Must be refactored if for example two objects are part of the path.
+    type asyncParameters = ':domain' | ':entity' | ':type' | ':catalog';
+    const queryParameterMap: { [K in asyncParameters]: Ref<IBaseObject> } = {
+      ':domain': ref({}),
+      ':entity': ref({}),
+      ':type': ref({}),
+      ':catalog': ref({})
+    };
+    const queryResultMap = reactive<{ [K in asyncParameters]: any }>({
+      ':domain': undefined,
+      ':entity': undefined,
+      ':type': undefined,
+      ':catalog': undefined
+    });
+
+    const objectQueryEnabled = computed(() => !isEmpty(queryParameterMap[':entity'].value));
+    const domainQueryEnabled = computed(() => !isEmpty(queryParameterMap[':domain'].value));
+    const catalogQueryEnabled = computed(() => !isEmpty(queryParameterMap[':catalog'].value));
+
+    useFetchObject(queryParameterMap[':entity'] as any, {
+      enabled: objectQueryEnabled,
+      onSuccess: (data) =>
+        set(queryResultMap, ':entity', (BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':entity') as any).queryResultTransformationFn(':entity', route.value.params[':entity'], data))
+    });
+    useFetchDomain(queryParameterMap[':domain'] as any, {
+      enabled: domainQueryEnabled,
+      onSuccess: (data) =>
+        set(queryResultMap, ':domain', (BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':domain') as any).queryResultTransformationFn(':domain', route.value.params[':domain'], data))
+    });
+    useFetchCatalog(queryParameterMap[':catalog'] as any, {
+      enabled: catalogQueryEnabled,
+      onSuccess: (data) =>
+        set(
+          queryResultMap,
+          ':catalog',
+          (BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':catalog') as any).queryResultTransformationFn(':catalog', route.value.params[':catalog'], data)
+        )
+    });
+    useFetchReports({
+      onSuccess: (data) =>
+        set(queryResultMap, ':type', (BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':type') as any).queryResultTransformationFn(':type', route.value.params[':type'], data))
+    });
+    const { data: endpoints } = useFetchSchemas();
 
     const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbReplacementMapBreadcrumb>([
       [
@@ -188,57 +236,47 @@ export default defineComponent({
         ':domain',
         {
           icon: mdiHomeOutline,
-          asyncText: async (_param, value) => {
-            const { id } = separateUUIDParam(value);
-            const object = await $api.domain.fetch(id);
-            return object.name;
-          }
+          queryParameterTransformationFn: (_param, value) => ({ id: separateUUIDParam(value).id }),
+          queryResultTransformationFn: (_param, _value, data) => data.name
         }
       ],
       [
         ':type', // Used for reports
         {
-          asyncText: async (_param, value) => {
-            const reports = await $api.report.fetchAll();
-            return reports[value as string].name[locale.value];
-          }
+          queryParameterTransformationFn: (_param, _value) => ({}),
+          queryResultTransformationFn: (_param, value, data) => data[value as string].name[locale.value]
         }
       ],
       [
         ':entity',
         {
-          asyncText: async (_param, value) => {
-            const { type, id } = separateUUIDParam(value);
-            const object = await $api.entity.fetch(type, id);
-            return object.displayName;
-          }
+          queryParameterTransformationFn: (_param, value) => {
+            const { type: objectType, id } = separateUUIDParam(value);
+            return { objectType, id };
+          },
+          queryResultTransformationFn: (_param, _value, data) => data.displayName
         }
       ],
       [
         ':catalog',
         {
-          asyncText: async (_param, value) => {
-            const { id } = separateUUIDParam(value);
-            const catalog = await $api.catalog.fetch(id);
-            return catalog.name;
-          }
+          queryParameterTransformationFn: (_param, value) => ({ id: separateUUIDParam(value).id }),
+          queryResultTransformationFn: (_param, _value, data) => data.name
         }
       ],
       [
         ':matrix',
         {
-          asyncText: (_param, value) => {
-            return Promise.resolve(value as string);
-          }
+          text: (_param, value) => value || ''
         }
       ],
       [
         'objects',
         {
           to: () => {
-            const objectType = separateUUIDParam(route.value.params.entity).type;
+            const objectType = endpoints.value?.[separateUUIDParam(route.value.params.entity).type];
 
-            return `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectType.length ? objectType : route.value.query.objectType}`;
+            return `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectType}`;
           }
         }
       ],
@@ -260,7 +298,7 @@ export default defineComponent({
 
     const breadcrumbParts = computed(() => pathTemplate.value.split('/'));
 
-    const generatedBreadcrumbs: ComputedRef<(IVeoBreadcrumb & { loading?: boolean })[]> = computed(() =>
+    const generatedBreadcrumbs: ComputedRef<IVeoBreadcrumb[]> = computed(() =>
       breadcrumbParts.value
         .filter((part) => !BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.has(part) || !BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(part)?.hidden)
         .map((part, index) => {
@@ -269,7 +307,7 @@ export default defineComponent({
           return {
             param: part,
             exact: true,
-            text: ['text', 'icon', 'asyncText'].some((key) => key in (replacementMapEntry || {})) ? undefined : t(`breadcrumbs.${part}`).toString(),
+            text: ['text', 'icon', 'asyncTextQueryParameters'].some((key) => key in (replacementMapEntry || {})) ? undefined : t(`breadcrumbs.${part}`).toString(),
             index,
             key: breadcrumbParts.value.slice(0, breadcrumbParts.value.findIndex((_part) => _part === part) + 1).join('/') || '/',
             position: index * 10,
@@ -284,10 +322,16 @@ export default defineComponent({
                   .join('/') || '/'
           };
         })
+        .map((breadcrumb) => {
+          if (isFunction(breadcrumb.text)) {
+            breadcrumb.text = breadcrumb.text(breadcrumb.param, route.value.params[breadcrumb.param]);
+          }
+          return breadcrumb;
+        })
     );
 
     const breadcrumbs = computed(() => {
-      let _breadcrumbs: (IVeoBreadcrumb & { loading?: boolean })[] = [];
+      let _breadcrumbs: IVeoBreadcrumb[] = [];
       if (!props.overrideBreadcrumbs) {
         _breadcrumbs = [...generatedBreadcrumbs.value];
       }
@@ -302,21 +346,16 @@ export default defineComponent({
     const displayedBreadcrumbs = computed(() => breadcrumbs.value.slice(0, BREADCRUMB_BREAKOFF + 1)); // Use one breadcrumb more than would be displayed to display the "more"-button
     const slicedBreadcrumbs = computed(() => breadcrumbs.value.slice(BREADCRUMB_BREAKOFF + 1)); // Start with the breadcrumb that wouldn't be displayed
 
-    // Async text results
-    const asyncTextMap = reactive<{ [param: string]: string }>({});
+    // Put all query parameters into a map
     watch(
       () => breadcrumbs.value,
-      async (newValue) => {
+      (newValue) => {
         for (const breadcrumb of newValue) {
-          if (breadcrumb.asyncText) {
-            try {
-              del(asyncTextMap, breadcrumb.param);
-              const result = await breadcrumb.asyncText(breadcrumb.param, route.value.params[breadcrumb.param.replace(/^:/, '')]);
-              set(asyncTextMap, breadcrumb.param, result);
-            } catch (e: any) {
-              // eslint-disable-next-line no-console
-              console.warn(`Couldn't fetch async text for breadcrumb ${breadcrumb.param}: ${e.message}`);
-            }
+          if (breadcrumb.queryParameterTransformationFn) {
+            queryParameterMap[breadcrumb.param as asyncParameters].value = breadcrumb.queryParameterTransformationFn(
+              breadcrumb.param,
+              route.value.params[breadcrumb.param.replace(/^:/, '')]
+            );
           }
         }
       },
@@ -325,22 +364,24 @@ export default defineComponent({
       }
     );
 
+    // console.warn(`Couldn't fetch async text for breadcrumb ${breadcrumb.param}: ${e.message}`);
+
     // Page title related stuff
     const updateTitle = () => {
       if (props.writeToTitle) {
         title.value = breadcrumbs.value
-          .map((entry) => (entry.asyncText !== undefined && asyncTextMap?.[entry.param] ? asyncTextMap[entry.param] : entry.text))
+          .map((entry) => (entry.queryParameterTransformationFn !== undefined ? queryResultMap[entry.param as asyncParameters] : entry.text))
           .reverse()
           .slice(0, BREADCRUMB_BREAKOFF)
           .join(' - ');
       }
     };
 
-    watch(() => asyncTextMap, updateTitle, { deep: true, immediate: true });
+    watch(() => queryResultMap, updateTitle, { deep: true, immediate: true });
     watch(() => breadcrumbs.value, updateTitle, { deep: true, immediate: true });
 
     return {
-      asyncTextMap,
+      queryResultMap: queryResultMap as IBaseObject, // We can't typify in the template so to avoid typing errors getting thrown there, we make the type more generic
       breadcrumbs,
       BREADCRUMB_BREAKOFF,
       displayedBreadcrumbs,

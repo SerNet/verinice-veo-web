@@ -336,7 +336,7 @@ export default defineComponent({
         icon: mdiContentCopy,
         async action(item: IVeoEntity) {
           try {
-            await cloneObject(item);
+            await cloneObject(endpoints.value || {}, item);
             refetch();
           } catch (e: any) {
             showError('clone', item, e);
