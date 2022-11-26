@@ -87,7 +87,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiCheckCircleOutline, mdiCloseCircleOutline, mdiInformationOutline, mdiLightbulbOutline, mdiHelpCircleOutline } from '@mdi/js';
+import { mdiLightbulbOutline } from '@mdi/js';
 
 import { INestedMenuEntries } from '../layout/VeoNestedMenu.vue';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
@@ -122,11 +122,7 @@ export default defineComponent({
       locale,
 
       t,
-      mdiLightbulbOutline,
-      mdiInformationOutline,
-      mdiCheckCircleOutline,
-      mdiCloseCircleOutline,
-      mdiHelpCircleOutline
+      mdiLightbulbOutline
     };
   }
 });
