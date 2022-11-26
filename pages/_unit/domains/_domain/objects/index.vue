@@ -352,7 +352,7 @@ export default defineComponent({
       }
     };
 
-    const createObjectLabel = computed(() => (subType.value ? formatValue('subType', subType.value) : t(`objectTypes.${objectType.value}`).toString()));
+    const createObjectLabel = computed(() => (subType.value ? formatValue('subType', subType.value) : translations.value?.lang?.[locale.value]?.[objectType.value || '']));
 
     const onCloseDeleteDialog = (visible: boolean) => {
       if (visible === false) {
