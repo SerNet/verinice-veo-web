@@ -410,7 +410,7 @@ export default defineComponent({
 
     const objectInformation = computed<VeoSchemaValidatorMessage[]>(() => {
       const information: VeoSchemaValidatorMessage[] = [];
-      const decisionRules: VeoSchemaValidatorMessage['decisionRules'] = domain.value?.decisions?.piaMandatory?.rules || [];
+      const decisionRules = domain.value?.decisions?.piaMandatory?.rules || [];
 
       if (objectData.value?.domains?.[props.domainId]?.subType === 'PRO_DataProcessing') {
         const decisionName = domain.value?.decisions?.piaMandatory?.name[locale.value] || Object.values(domain.value?.decisions?.piaMandatory?.name || {})[0];

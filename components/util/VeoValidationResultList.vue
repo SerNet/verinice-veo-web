@@ -32,16 +32,9 @@
         </v-list-item-content>
         <v-list-item-action class="fill-width ml-0 my-0">
           <v-btn
-            v-if="item.fixable && fixingAllowed"
-            text
-            @click="$emit('fix', item.code, item.params)"
-          >
-            {{ t('fix') }}
-          </v-btn>
-          <v-btn
             v-if="item.actions && item.actions.length === 1"
             text
-            @click="item.actions && item.actions[0].callback()"
+            @click="item.actions && item.actions[0].callback(item, $emit)"
           >
             {{ item.actions[0].title }}
           </v-btn>
