@@ -418,33 +418,33 @@ export default defineComponent({
           if (props.objectMetaData.decisionResults.piaMandatory.value) {
             information.push({
               code: 'I_PIA_MANDATORY',
-              message: `${decisionName}: ${t('global.button.yes').toString()}`,
+              message: `${decisionName}: ${t('global.button.yes').toString()} (${
+                decisionRules[props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule].description[locale.value]
+              })`,
               params: {
                 type: 'info'
-              },
-              decisionRules,
-              matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
+              }
             });
           } else {
             information.push({
               code: 'I_PIA_NOT_MANDATORY',
-              message: `${decisionName}: ${t('global.button.no').toString()}`,
+              message: `${decisionName}: ${t('global.button.no').toString()} (${
+                decisionRules[props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule].description[locale.value]
+              })`,
               params: {
                 type: 'success'
-              },
-              decisionRules,
-              matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
+              }
             });
           }
         } else {
           information.push({
             code: 'I_PIA_MANDATORY_UNKNOWN',
-            message: `${decisionName}: ${upperFirst(t('unknown').toString())}`,
+            message: `${decisionName}: ${upperFirst(t('unknown').toString())} (${
+              decisionRules[props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule].description[locale.value]
+            })`,
             params: {
               type: 'info'
-            },
-            decisionRules,
-            matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
+            }
           });
         }
       }
