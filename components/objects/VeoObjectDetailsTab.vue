@@ -33,6 +33,7 @@
           <template #activator="{on}">
             <v-btn
               icon
+              :disabled="ability.cannot('manage', 'objects')"
               @click="btn.action(item)"
               v-on="on"
             >
@@ -73,6 +74,7 @@ import { IVeoCustomLink, IVeoDomain, IVeoEntity, IVeoPaginatedResponse, IVeoRisk
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   name: 'VeoObjectDetailsTab',
@@ -92,10 +94,11 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const route = useRoute();
     const { $api } = useContext();
     const router = useRouter();
+    const { ability } = useVeoPermissions();
 
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { cloneObject, linkObject } = useVeoObjectUtilities();
@@ -181,14 +184,14 @@ export default defineComponent({
             },
             ...['C', 'I', 'A', 'R'].map((categoryId, index) => ({
               value: `riskValues_${categoryId}`,
-              text: domainData.value?.categories?.find((category) => category.id === categoryId)?.name || '',
+              text: domainData.value?.categories?.find((category) => category.id === categoryId)?.translations[locale.value].name || '',
               render: ({ item }: { item: any }) => {
                 const { inherentRisk, residualRisk } = getInherentAndResidualRisk(item, categoryId);
                 const riskTreatments = getRiskTreatments(item, categoryId);
                 const values = domainData.value?.riskValues;
 
-                const translatedInherentRisk = values?.find((entry) => entry.ordinalValue === inherentRisk)?.name;
-                const translatedResidualRisk = values?.find((entry) => entry.ordinalValue === residualRisk)?.name;
+                const translatedInherentRisk = values?.find((entry) => entry.ordinalValue === inherentRisk)?.translations[locale.value].name;
+                const translatedResidualRisk = values?.find((entry) => entry.ordinalValue === residualRisk)?.translations[locale.value].name;
 
                 return h('div', [
                   translatedInherentRisk
@@ -404,6 +407,7 @@ export default defineComponent({
     };
 
     return {
+      ability,
       additionalHeaders,
       defaultHeaders,
       editRiskDialog,

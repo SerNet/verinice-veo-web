@@ -21,7 +21,7 @@
     md="3"
   >
     <h3 class="text-h3">
-      {{ protectionGoal.name }}
+      {{ protectionGoal.translations[locale].name }}
     </h3>
     <v-select
       :value="potentialImpact"
@@ -33,6 +33,7 @@
     />
     <v-select
       :value="specificImpact"
+      :disabled="disabled"
       color="primary"
       :label="upperFirst(t('specificImpact').toString())"
       :items="impacts[protectionGoal.id]"
@@ -44,12 +45,14 @@
       <v-text-field
         :value="specificImpactExplanation"
         :label="upperFirst(t('explanation').toString())"
+        :disabled="disabled"
         hide-details
         @input="$emit('update:specific-impact-explanation', $event)"
       />
       <template #input>
         <v-textarea
           :value="specificImpactExplanation"
+          :disabled="disabled"
           :label="upperFirst(t('explanation').toString())"
           clearable
           auto-grow
@@ -113,17 +116,21 @@ export default defineComponent({
       type: String,
       default: undefined
     },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     effectiveImpact: {
       type: Number,
       default: undefined
     }
   },
   setup(props) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
 
     const impacts = computed(() =>
       props.riskDefinition.categories.reduce((previousValue: IBaseObject, currentValue) => {
-        previousValue[currentValue.id] = currentValue.potentialImpacts.map((level) => ({ text: level.name, value: level.ordinalValue }));
+        previousValue[currentValue.id] = currentValue.potentialImpacts.map((level) => ({ text: level.translations[locale.value].name, value: level.ordinalValue }));
         return previousValue;
       }, {})
     );
@@ -137,6 +144,7 @@ export default defineComponent({
       impacts,
 
       t,
+      locale,
       upperFirst
     };
   }

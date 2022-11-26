@@ -140,7 +140,7 @@
               icon
               large
               color="primary"
-              :disabled="!isContentCreator"
+              :disabled="ability.cannot('manage', 'editors')"
               @click="save"
             >
               <v-icon>mdi-content-save</v-icon>
@@ -148,7 +148,7 @@
           </div>
         </template>
         <template #default>
-          <span v-if="isContentCreator">{{ t('save') }}</span>
+          <span v-if="ability.can('manage', 'editors')">{{ t('save') }}</span>
           <span v-else>{{ t('saveContentCreator') }}</span>
         </template>
       </v-tooltip>
@@ -203,7 +203,7 @@
               :language="language"
               @delete="onDelete"
               @update="onUpdate"
-              @update-custom-translation="onUpdateCustomTranslation"
+              @update-custom-translation="setFormTranslation"
             />
           </div>
         </template>
@@ -248,6 +248,7 @@
             :form-schema="formSchema.content"
             :translations="translations"
             :additional-context="additionalContext"
+            :locale="language"
           />
         </template>
         <template v-else>
@@ -279,9 +280,7 @@
       <VeoFseWizardDialog
         :value="creationDialogVisible"
         :domain-id="domainId"
-        @objectSchema="setObjectSchema"
-        @formSchema="setFormSchema"
-        @translations="setTranslation"
+        @done="onWizardFinished"
       />
       <VeoEditorErrorDialog
         v-model="errorDialogVisible"
@@ -300,11 +299,10 @@
       <VeoFseTranslationDialog
         v-if="!$fetchState.pending && translationDialogVisible && formSchema && formSchema.translation"
         v-model="translationDialogVisible"
-        :translation="formSchema.translation"
-        :language="language"
-        :languages="availableLanguages"
+        :translations="formSchema.translation"
+        :current-display-language.sync="language"
+        :available-languages="availableLanguages"
         :name="formSchema.name"
-        @update-language="setFormLanguage"
         @update-translation="setFormTranslation"
         @update-name="setFormName"
       />
@@ -327,9 +325,11 @@
 <script lang="ts">
 import vjp from 'vue-json-pointer';
 
-import { computed, defineComponent, provide, Ref, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, provide, Ref, ref, set, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
+import { LocaleObject } from '@nuxtjs/i18n/types';
+
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
 import {
   IVeoTranslations,
@@ -346,13 +346,15 @@ import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   setup() {
-    const { t } = useI18n();
-    const { $api, app, $user } = useContext();
+    const { locale, t } = useI18n();
+    const { $api, i18n } = useContext();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+    const { ability } = useVeoPermissions();
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
@@ -391,10 +393,10 @@ export default defineComponent({
     provide('mainFormSchema', formSchema);
     const translation: Ref<IVeoTranslations | undefined> = ref(undefined);
     const objectData = ref({});
-    const language = ref(app.i18n.locale);
+    const language = ref(locale.value);
 
     watch(
-      () => app.i18n.locale,
+      () => locale.value,
       (newLanguageVal) => {
         language.value = newLanguageVal;
       }
@@ -407,10 +409,10 @@ export default defineComponent({
     function setFormSchema(schema: IVeoFormSchema) {
       formSchema.value = schema;
       // If a translation for current app language does not exist, initialise it
-      if (formSchema.value && !formSchema.value.translation?.[app.i18n.locale]) {
+      if (formSchema.value && !formSchema.value.translation?.[locale.value]) {
         setFormTranslation({
           ...formSchema.value.translation,
-          ...{ [app.i18n.locale]: {} }
+          ...{ [locale.value]: {} }
         });
       }
     }
@@ -422,6 +424,12 @@ export default defineComponent({
     function setTranslation(newTranslation: IVeoTranslations) {
       translation.value = newTranslation;
     }
+
+    const onWizardFinished = (payload: { formSchema: IVeoFormSchema; objectSchema: IVeoObjectSchema; translations: IVeoTranslations }) => {
+      setTranslation(payload.translations);
+      setObjectSchema(payload.objectSchema);
+      setFormSchema(payload.formSchema);
+    };
 
     async function save() {
       // control whether save new or save updated schema
@@ -485,7 +493,7 @@ export default defineComponent({
         const pointer = event.formSchemaPointer as string;
         // Delete custom translation keys for deleted elemented and nested elements
         const elementFormSchema = JsonPointer.get(formSchema.value.content, pointer) as IVeoFormSchemaItem;
-        deleteElementCustomTranslation(elementFormSchema, formSchema.value.translation, onUpdateCustomTranslation);
+        deleteElementCustomTranslation(elementFormSchema, formSchema.value.translation, setFormTranslation);
         const vjpPointer = pointer.replace('#', '');
         // Not allowed to make changes on the root object
         if (event.formSchemaPointer !== '#') {
@@ -521,36 +529,21 @@ export default defineComponent({
      * Translations related stuff
      */
     const translationDialogVisible: Ref<boolean> = ref(false);
-    const availableLanguages: Ref<string[]> = ref([]);
+    const availableLanguages = computed(() => (i18n.locales as LocaleObject[]).map((locale) => locale.code));
 
     function onClickTranslationBtn() {
       translationDialogVisible.value = true;
     }
 
-    useFetch(async () => {
-      // TODO: Backend should create an API endpoint to get available languages dynamically
-      availableLanguages.value = Object.keys((await $api.translation.fetch([]))?.lang);
-    });
-
     function setFormTranslation(event: IVeoFormSchemaTranslationCollection) {
       if (formSchema.value) {
-        vjp.set(formSchema.value, '/translation', event);
+        set(formSchema.value, 'translation', event);
       }
     }
 
     function setFormName(event: IVeoFormSchemaMeta['name']) {
       if (formSchema.value) {
-        vjp.set(formSchema.value, '/name', event);
-      }
-    }
-
-    function setFormLanguage(newLanguageVal: string) {
-      language.value = newLanguageVal;
-    }
-
-    function onUpdateCustomTranslation(event: IVeoFormSchemaTranslationCollection) {
-      if (formSchema.value) {
-        vjp.set(formSchema.value, `/translation`, event);
+        set(formSchema.value, 'name', event);
       }
     }
 
@@ -559,8 +552,6 @@ export default defineComponent({
         onDelete(params as any);
       }
     }
-
-    const isContentCreator = computed(() => !!$user.auth.roles.find((r: string) => r === 'veo-content-creator'));
 
     // Circumventing {CURRENT_DOMAIN_ID} in fse controls
     const additionalContext = computed(() => ({
@@ -608,6 +599,7 @@ export default defineComponent({
     });
 
     return {
+      ability,
       additionalContext,
       creationDialogVisible,
       domainId,
@@ -622,7 +614,6 @@ export default defineComponent({
       language,
       translation,
       schemaIsValid,
-      isContentCreator,
       setFormSchema,
       setObjectSchema,
       setTranslation,
@@ -641,14 +632,13 @@ export default defineComponent({
       availableLanguages,
       setFormTranslation,
       setFormName,
-      setFormLanguage,
-      onUpdateCustomTranslation,
       onFixRequest,
       VeoPageHeaderAlignment,
       save,
       saveNewSchema,
       saveUpdatedSchema,
       translations,
+      onWizardFinished,
 
       t,
       HELP_ROUTE

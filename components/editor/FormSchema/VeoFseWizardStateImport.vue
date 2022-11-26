@@ -31,13 +31,13 @@
           :rules="[requiredRule]"
           :items="formSchemaOptions"
           required
-          @change="onChangeFormSchema"
+          @change="$emit('update:form-schema-id', $event)"
         />
         <VeoEditorFileUpload
           v-if="formSchemaId === 'custom'"
           :input-label="t('formSchemaUploadLabel')"
           :submit-button-text="t('importFormSchema')"
-          @schema-uploaded="$emit('update:formSchema', $event)"
+          @schema-uploaded="$emit('update:form-schema', $event)"
         />
         <VeoAlert
           :value="objectTypeMissing || !schemasCompatible"
@@ -56,7 +56,7 @@
               class="mt-2"
               outlined
               color="info"
-              @click="$emit('forceImport')"
+              @click="$emit('force-import')"
             >
               {{ t('forceProceed') }}
             </v-btn>
@@ -72,14 +72,14 @@
         <v-checkbox
           :input-value="forceOwnSchema"
           :label="t('forceOwnSchema')"
-          @change="$emit('update:forceOwnSchema', $event)"
+          @change="$emit('update:force-own-schema', $event)"
         />
         <div v-if="forceOwnSchema">
           <VeoEditorFileUpload
             v-cy-name="'objectschema-input'"
             :input-label="t('objectSchemaUploadLabel')"
             :submit-button-text="t('importObjectSchema')"
-            @schema-uploaded="$emit('update:objectSchema', $event)"
+            @schema-uploaded="$emit('update:object-schema', $event)"
           />
         </div>
       </v-card-text>
@@ -88,11 +88,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useAsync, useContext, computed, ComputedRef, PropOptions, watch } from '@nuxtjs/composition-api';
+import { defineComponent, useAsync, useContext, computed, ComputedRef, PropOptions } from '@nuxtjs/composition-api';
 import { isObject } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
-import { IVeoFormSchema, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
+import { useFetchForms } from '~/composables/api/forms';
+import { IVeoFormSchema, VeoAlertType } from '~/types/VeoTypes';
 
 export default defineComponent({
   name: 'VeoFseWizardStateImport',
@@ -117,16 +118,12 @@ export default defineComponent({
       required: true,
       validator: (value: any) => value === undefined || isObject(value)
     } as PropOptions<IVeoFormSchema | undefined>,
-    objectSchema: {
-      required: true,
-      validator: (value: any) => value === undefined || isObject(value)
-    } as PropOptions<IVeoObjectSchema | undefined>,
     schemasCompatible: {
       type: Boolean,
       default: true
     }
   },
-  setup(props, { emit }) {
+  setup(props) {
     const { t, locale } = useI18n();
     const { $api } = useContext();
 
@@ -136,7 +133,8 @@ export default defineComponent({
     }
 
     // formschema stuff
-    const formSchemas = useAsync(() => $api.form.fetchAll(props.domainId));
+    const queryEnabled = computed(() => !!props.domainId);
+    const { data: formSchemas } = useFetchForms({ domainId: props.domainId }, { enabled: queryEnabled });
 
     const formSchemaOptions: ComputedRef<{ text: string; value: string }[]> = computed(() => [
       {
@@ -146,13 +144,6 @@ export default defineComponent({
       ...(formSchemas.value || []).map((formSchema) => ({ text: formSchema.name[locale.value], value: formSchema.id as string }))
     ]);
 
-    function onChangeFormSchema(newValue: string) {
-      emit('update:formSchemaId', newValue);
-
-      // Reset objectSchema to avoid the user clicking next if the object schema is of another type than specified by the form schema
-      emit('upate:objectSchema', undefined);
-    }
-
     // objectschema stuff
     const objectTypes = useAsync(() => $api.schema.fetchAll());
 
@@ -161,20 +152,9 @@ export default defineComponent({
       () => props.formSchema && (!objectTypes.value?.length || !objectTypes.value.some((type) => type.schemaName === (props.formSchema?.modelType as string)))
     );
 
-    // If the formschema changes, see if the object schema exists and we can load it
-    watch(
-      () => props.formSchema,
-      () => {
-        if (props.formSchema && !objectTypeMissing.value && !props.forceOwnSchema) {
-          emit('newObjectType', props.formSchema.modelType);
-        }
-      }
-    );
-
     return {
       formSchemaOptions,
       objectTypeMissing,
-      onChangeFormSchema,
       requiredRule,
 
       VeoAlertType,

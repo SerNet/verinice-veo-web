@@ -59,7 +59,7 @@ export default function (api: Client) {
 
       if (!query.size) {
         // if size is not set use the default user tablePageSize
-        query.size = api._context.$user.tablePageSize;
+        query.size = api._user.tablePageSize.value;
       }
 
       if (query.size === -1) {
@@ -232,6 +232,12 @@ export default function (api: Client) {
         // @ts-ignore
         delete entity.members;
       }
+
+      // Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
+      // @ts-ignore
+      delete entity.createdAt;
+      // @ts-ignore
+      delete entity.updatedAt;
 
       return api
         .req('/api/:objectType/:id', {

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { FetchReturn } from '@nuxt/content/types/query-builder';
-import { useAsync, useContext, computed } from '@nuxtjs/composition-api';
+import { useAsync, useContext, computed, watch } from '@nuxtjs/composition-api';
 import { cloneDeep } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
@@ -81,18 +81,18 @@ const sortDocs = (docs: (readonly [string, DocPageFetchReturn])[]) => {
 };
 
 export const useDoc = (params: { path: string; locale?: string; localeSeparator?: string; fallbackLocale?: string }) => {
-  const { localeSeparator, path, fallbackLocale, locale } = getOptions(params);
+  const options = computed(() => getOptions(params));
   const { $content } = useContext();
 
   const fetchDoc = async () => {
     const fetchResult = await $content({ deep: true })
       .where({
         $or: [
-          { path: path + localeSeparator + locale },
-          { path: path + localeSeparator + fallbackLocale },
-          { path: path + '/index' + localeSeparator + locale },
-          { path: path + '/index' + localeSeparator + fallbackLocale },
-          { path }
+          { path: options.value.path + options.value.localeSeparator + options.value.locale },
+          { path: options.value.path + options.value.localeSeparator + options.value.fallbackLocale },
+          { path: options.value.path + '/index' + options.value.localeSeparator + options.value.locale },
+          { path: options.value.path + '/index' + options.value.localeSeparator + options.value.fallbackLocale },
+          { path: options.value.path }
         ],
         extension: '.md'
       })
@@ -102,11 +102,21 @@ export const useDoc = (params: { path: string; locale?: string; localeSeparator?
     return ensureArray(fetchResult).shift();
   };
 
-  const doc = useAsync(fetchDoc, path);
+  const doc = useAsync(fetchDoc, options.value.path);
 
-  onContentUpdate(async () => {
+  const updateDocs = async () => {
     doc.value = await fetchDoc();
-  });
+  };
+
+  watch(
+    () => options.value,
+    () => {
+      updateDocs();
+    },
+    { deep: true }
+  );
+
+  onContentUpdate(updateDocs);
 
   return doc;
 };
@@ -119,8 +129,8 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
   createDirs?: boolean;
   buildItem?: (item: DocPageFetchReturn) => T;
 }) => {
-  const { app } = useContext();
-  const locales: any = app.i18n.locales;
+  const { i18n } = useContext();
+  const locales: any = i18n.locales;
 
   const { localeSeparator, locale } = getOptions(params);
   const normalizePath = (path: string) => (path.split(localeSeparator).shift() || path).replace(/\/index(?:\.\w+)?$/i, '') || '/';
@@ -189,7 +199,18 @@ export const useDocTree = <T extends DocPageFetchReturn, ChildrenKey extends str
   const docs = useDocs({ ...params, createDirs: true });
 
   return computed(() => {
-    const files = docs.value || [];
+    const files = (docs.value || []).map(
+      (file) =>
+        ({
+          key: file.path,
+          name: file.title,
+          to: file.to,
+          activePath: file.path,
+          path: file.path,
+          position: file.position,
+          dir: file.dir
+        } as any)
+    );
     const tree = new Map(files.sort((itemA, itemB) => itemA.position - itemB.position).map((item) => [item.path, item]));
 
     tree.forEach((item) => {

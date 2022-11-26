@@ -18,9 +18,18 @@
 import { readonly, ref, Ref, SetupContext } from '@nuxtjs/composition-api';
 
 import { IVeoGlobalAlert, IVeoGlobalAlertParams, VeoAlertType } from '~/types/VeoTypes';
-import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
+import { VeoEvents } from '~/types/VeoGlobalEvents';
 
 const alerts: Ref<IVeoGlobalAlert[]> = ref([]);
+
+interface IVeoEventPayload {
+  type?: VeoAlertType;
+  text: string;
+  title?: string;
+  saveButtonText?: string;
+  objectModified?: boolean; // ToDo: Temporary until objects rework
+  refetchCallback?: CallableFunction; // ToDo: Temporary until objects rework
+}
 
 export function useVeoAlerts() {
   /**

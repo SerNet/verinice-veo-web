@@ -57,7 +57,19 @@ describe('Select.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
-      propsData: { ...form }
+      propsData: { ...form },
+      mocks: {
+        $nuxt: {
+          context: {
+            app: {
+              i18n: {
+                t: (v: string) => v,
+                locale: 'de'
+              }
+            }
+          }
+        }
+      }
     });
 
     // Fixes immediate:true bugs with setProps() of vue test utils
@@ -119,7 +131,19 @@ describe('Select.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
-      propsData: { ...form }
+      propsData: { ...form },
+      mocks: {
+        $nuxt: {
+          context: {
+            app: {
+              i18n: {
+                t: (v: string) => v,
+                locale: 'de'
+              }
+            }
+          }
+        }
+      }
     });
 
     // Fixes immediate:true bugs with setProps() of vue test utils

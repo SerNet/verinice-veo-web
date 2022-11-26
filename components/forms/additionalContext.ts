@@ -21,32 +21,44 @@ import { cloneDeep } from 'lodash';
 import { addConditionalSchemaPropertiesToControlSchema } from './util';
 import { IVeoFormsAdditionalContext } from '~/components/forms/types';
 import { IBaseObject } from '~/lib/utils';
-import { IVeoDomain } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoTranslationCollection } from '~/types/VeoTypes';
 
 export default {};
 
-export const getRiskAdditionalContext = (objectType: string, domain: IVeoDomain): IVeoFormsAdditionalContext => {
+export const getRiskAdditionalContext = (objectType: string, domain: IVeoDomain, language: string): IVeoFormsAdditionalContext => {
   switch (objectType) {
     case 'process':
       return {
         [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/C`]: {
           formSchema: {
-            enum: (() => (domain.riskDefinitions.DSRA?.categories?.find((category) => category.id === 'C')?.potentialImpacts || []).map((level: any) => level.name))()
+            enum: (() =>
+              (domain.riskDefinitions.DSRA?.categories?.find((category) => category.id === 'C')?.potentialImpacts || []).map(
+                (level) => level.translations[language]?.name || Object.values(level.translations)[0].name
+              ))()
           }
         },
         [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/I`]: {
           formSchema: {
-            enum: (() => (domain.riskDefinitions.DSRA?.categories?.find((category) => category.id === 'I')?.potentialImpacts || []).map((level: any) => level.name))()
+            enum: (() =>
+              (domain.riskDefinitions.DSRA?.categories?.find((category) => category.id === 'I')?.potentialImpacts || []).map(
+                (level) => level.translations[language]?.name || Object.values(level.translations)[0].name
+              ))()
           }
         },
         [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/A`]: {
           formSchema: {
-            enum: (() => (domain.riskDefinitions.DSRA?.categories?.find((category) => category.id === 'A')?.potentialImpacts || []).map((level: any) => level.name))()
+            enum: (() =>
+              (domain.riskDefinitions.DSRA?.categories?.find((category) => category.id === 'A')?.potentialImpacts || []).map(
+                (level) => level.translations[language]?.name || Object.values(level.translations)[0].name
+              ))()
           }
         },
         [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/R`]: {
           formSchema: {
-            enum: (() => (domain.riskDefinitions.DSRA?.categories?.find((category) => category.id === 'R')?.potentialImpacts || []).map((level: any) => level.name))()
+            enum: (() =>
+              (domain.riskDefinitions.DSRA?.categories?.find((category) => category.id === 'R')?.potentialImpacts || []).map(
+                (level) => level.translations[language]?.name || Object.values(level.translations)[0].name
+              ))()
           }
         }
       };
@@ -54,7 +66,7 @@ export const getRiskAdditionalContext = (objectType: string, domain: IVeoDomain)
       return {
         [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/DSRA/properties/potentialProbability`]: {
           formSchema: {
-            enum: (() => (domain.riskDefinitions.DSRA?.probability?.levels || []).map((level: any) => level.name))()
+            enum: (() => (domain.riskDefinitions.DSRA?.probability?.levels || []).map((level) => level.translations[language]?.name || Object.values(level.translations)[0].name))()
           }
         }
       };
@@ -62,7 +74,10 @@ export const getRiskAdditionalContext = (objectType: string, domain: IVeoDomain)
       return {
         [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/DSRA/properties/implementationStatus`]: {
           formSchema: {
-            enum: (() => (domain.riskDefinitions.DSRA?.implementationStateDefinition?.levels || []).map((level: any) => level.name))()
+            enum: (() =>
+              (domain.riskDefinitions.DSRA?.implementationStateDefinition?.levels || []).map(
+                (level) => level.translations[language]?.name || Object.values(level.translations)[0].name
+              ))()
           }
         }
       };
@@ -71,7 +86,12 @@ export const getRiskAdditionalContext = (objectType: string, domain: IVeoDomain)
   }
 };
 
-export const getStatusAdditionalContext = (objectData: IBaseObject, objectSchema: JSONSchema7, translations: IBaseObject, domainId: string): IVeoFormsAdditionalContext => ({
+export const getStatusAdditionalContext = (
+  objectData: IBaseObject,
+  objectSchema: JSONSchema7,
+  translations: IVeoTranslationCollection,
+  domainId: string
+): IVeoFormsAdditionalContext => ({
   [`#/properties/domains/properties/${domainId}/properties/status`]: {
     formSchema: {
       disabled: !objectData.domains?.[domainId]?.subType,

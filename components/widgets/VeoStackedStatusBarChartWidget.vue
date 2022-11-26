@@ -85,7 +85,8 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { IVeoDomainStatusCount } from '~/plugins/api/domain';
 import { CHART_COLORS, IBaseObject } from '~/lib/utils';
-import { IVeoFormSchemaMeta, IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
+import { useFetchForms } from '~/composables/api/forms';
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
@@ -123,7 +124,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { $api, app } = useContext();
+    const { $api, i18n } = useContext();
     const { locale, t } = useI18n();
     const route = useRoute();
 
@@ -145,20 +146,18 @@ export default defineComponent({
 
     const translations = ref<IVeoTranslations>();
     useFetch(async () => {
-      translations.value = await $api.translation.fetch(app.i18n.locales.map((locale: any) => locale.code));
+      translations.value = await $api.translation.fetch(i18n.locales.map((locale: any) => locale.code));
     });
 
-    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
-    const { fetch: fetchFormSchemas } = useFetch(async () => {
-      if (props.domainId) {
-        formSchemas.value = await $api.form.fetchAll(props.domainId);
-      }
-    });
+    const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const formsQueryEnabled = computed(() => !!props.domainId);
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
 
     const sortedSubTypes = computed(() =>
       Object.entries(props.data).sort(
         ([subTypeA, _subTypeDataA], [subTypeB, _subTypeDataB]) =>
-          formSchemas.value.findIndex((formSchema) => formSchema.subType === subTypeA) - formSchemas.value.findIndex((formSchema) => formSchema.subType === subTypeB)
+          (formSchemas.value || []).findIndex((formSchema) => formSchema.subType === subTypeA) -
+          (formSchemas.value || []).findIndex((formSchema) => formSchema.subType === subTypeB)
       )
     );
 
@@ -166,7 +165,6 @@ export default defineComponent({
       () => props.domainId,
       () => {
         fetchObjectSchema();
-        fetchFormSchemas();
       }
     );
 
@@ -229,7 +227,7 @@ export default defineComponent({
     const chartData = computed<IChartValue[]>(() =>
       sortedSubTypes.value.map(([subType, subTypeData]) => ({
         totalEntries: Object.values(subTypeData).reduce((previosValue, currentValue) => previosValue + currentValue, 0),
-        labels: [formSchemas.value.find((formSchema) => formSchema.subType === subType)?.name?.[locale.value] || subType],
+        labels: [(formSchemas.value || []).find((formSchema) => formSchema.subType === subType)?.name?.[locale.value] || subType],
         datasets: (Object.entries(sortedStatusBySubType.value).find(([sortedStatusSubType, _status]) => sortedStatusSubType === subType)?.[1] || []).map(
           (status: string, index: number) => ({
             data: [subTypeData[status]],

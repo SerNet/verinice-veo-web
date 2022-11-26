@@ -106,7 +106,9 @@ export default {
   'unit.select.label': 'Unit',
 
   breadcrumbs: {
+    administration: 'Clientverwaltung',
     catalogs: 'Kataloge',
+    docs: 'Dokumentation',
     domain: 'Modul',
     editor: 'Editoren',
     formschema: 'Formschema Editor',
@@ -117,26 +119,6 @@ export default {
     objectschema: 'Objektschema Editor',
     reports: 'Reports',
     risks: 'Risikodefinitionen'
-  },
-
-  // NBRX-1765 object type names are hardcoded in the frontend for the moment. Will change at some point
-  objectTypes: {
-    asset: 'Asset',
-    assets: 'Assets',
-    control: 'Maßnahme',
-    controls: 'Maßnahmen',
-    document: 'Dokument',
-    documents: 'Dokumente',
-    incident: 'Vorfall',
-    incidents: 'Vorfälle',
-    person: 'Person',
-    persons: 'Personen',
-    process: 'Prozess',
-    processes: 'Prozesse',
-    scenario: 'Szenario',
-    scenarios: 'Szenarien',
-    scope: 'Scope',
-    scopes: 'Scopes'
   },
 
   // temporary until the composition api supports <i18n></i18n>

@@ -67,7 +67,7 @@
           checkbox-color="primary"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="objects"
-          :loading="$fetchState.pending || objectsQueryIsLoading"
+          :loading="objectsQueryIsLoading"
           @page-change="onPageChange"
         />
       </VeoCard>
@@ -105,7 +105,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
+import { computed, defineComponent, reactive, ref, useContext, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { omit, upperFirst } from 'lodash';
 import { mdiFilter } from '@mdi/js';
@@ -113,6 +113,9 @@ import { IVeoEntity, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useFetchObjects } from '~/composables/api/objects';
+import { useFetchForms } from '~/composables/api/forms';
+import { useVeoUser } from '~/composables/VeoUser';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 export default defineComponent({
   name: 'CreateRiskDialog',
@@ -131,12 +134,16 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { $api, $config, $user } = useContext();
+    const { $api, $config } = useContext();
+    const { tablePageSize } = useVeoUser();
     const route = useRoute();
     const { t, tc, locale } = useI18n();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
     const unit = computed(() => separateUUIDParam(route.value.params.unit).id);
+
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
     // Layout stuff
     const dialog = computed({
@@ -152,6 +159,10 @@ export default defineComponent({
     });
 
     // Filter stuff
+    const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const formsQueryEnabled = computed(() => !!props.domainId);
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+
     const filterDialogVisible = ref(false);
 
     const selectedScenarios = ref<IVeoEntity[]>([]);
@@ -172,10 +183,10 @@ export default defineComponent({
       switch (label) {
         // Uppercase object types
         case 'objectType':
-          return t(`objectTypes.${value}`).toString();
+          return value ? translations.value?.lang[locale.value]?.[value] : undefined;
         // Translate sub types
         case 'subType':
-          return formSchemas.value.find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
+          return (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
         default:
           return value;
       }
@@ -187,31 +198,25 @@ export default defineComponent({
 
     const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
       Object.assign(queryParameters, { page: opts.newPage, sortOrder: opts.sortDesc ? 'desc' : 'asc', sortDesc: !!opts.sortDesc });
+      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
     const onFilterUpdate = (newFilter: any) => {
       filter.value = newFilter;
     };
 
-    // API stuff
-    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
-
     const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
     const combinedQueryParameters = computed(() => ({
       objectType: 'scenario',
       unit: unit.value,
-      size: $user.tablePageSize,
+      size: tablePageSize.value,
       sortBy: queryParameters.sortBy,
       sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
       page: queryParameters.page,
       ...filter.value
     }));
 
-    useFetch(async () => {
-      formSchemas.value = await $api.form.fetchAll(props.domainId);
-    });
-
-    const { data: objects, isLoading: objectsQueryIsLoading } = useFetchObjects(combinedQueryParameters);
+    const { data: objects, isFetching: objectsQueryIsLoading, refetch } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
 
     // Create risk stuff
     const creatingRisks = ref(false);

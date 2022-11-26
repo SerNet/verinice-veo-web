@@ -15,4 +15,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-// To be implemented...
+import { useContext } from '@nuxtjs/composition-api';
+import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+
+import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
+import { IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
+
+export interface IVeoFetchFormsParameters {
+  domainId: string;
+}
+
+export interface IVeoFetchFormParameters {
+  domainId: string;
+  id: string;
+}
+
+export const schemasQueryKeys = {
+  forms: (queryParameters: IVeoFetchFormsParameters) => ['forms', queryParameters.domainId] as const,
+  form: (queryParameters: IVeoFetchFormParameters) => ['form', queryParameters.domainId, queryParameters.id] as const
+};
+
+export const useFetchForms = (queryParameters: MaybeRef<IVeoFetchFormsParameters>, queryOptions?: QueryOptions) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoFormSchemaMeta[]>(schemasQueryKeys.forms, $api.form.fetchAll, queryParameters, { ...queryOptions, staleTime: STALE_TIME.MEDIUM, placeholderData: [] });
+};
+
+export const useFetchForm = (queryParameters: MaybeRef<IVeoFetchFormParameters>, queryOptions?: QueryOptions) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoFormSchema>(schemasQueryKeys.form, $api.form.fetch, queryParameters, { ...queryOptions, staleTime: STALE_TIME.MEDIUM });
+};

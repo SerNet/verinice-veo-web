@@ -116,6 +116,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
+
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoDomainStatusCount } from '~/plugins/api/domain';
 import { IVeoDomain } from '~/types/VeoTypes';

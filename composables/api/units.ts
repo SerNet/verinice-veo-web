@@ -15,4 +15,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-// To be implemented...
+import { useContext } from '@nuxtjs/composition-api';
+import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+
+import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
+import { IVeoUnit } from '~/types/VeoTypes';
+
+export interface IVeoFetchUnitParameters {
+  id: string;
+}
+
+export const unitsQueryKeys = {
+  units: ['units'] as const,
+  unit: (queryParameters: IVeoFetchUnitParameters) => ['unit', queryParameters.id] as const
+};
+
+export const useFetchUnits = (queryOptions?: QueryOptions) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoUnit[]>(unitsQueryKeys.units, $api.unit.fetchAll, {}, { ...queryOptions, staleTime: STALE_TIME.MEDIUM, placeholderData: [] });
+};
+
+export const useFetchUnit = (queryParameters: MaybeRef<IVeoFetchUnitParameters>, queryOptions?: QueryOptions) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoUnit[]>(unitsQueryKeys.unit, $api.unit.fetch, queryParameters, { ...queryOptions, staleTime: STALE_TIME.MEDIUM });
+};

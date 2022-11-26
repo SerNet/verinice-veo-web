@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { defineComponent, h } from '@nuxtjs/composition-api';
+import { computed, defineComponent, h } from '@nuxtjs/composition-api';
 
 import { VeoFormsWidgetProps } from '../util';
 
@@ -24,13 +24,13 @@ const AVAILABLE_WIDGETS: any[] = [];
 export default defineComponent({
   props: VeoFormsWidgetProps,
   setup(props) {
-    const fittingComponent = AVAILABLE_WIDGETS.find((widget) => widget.name === props.name);
+    const fittingComponent = computed(() => AVAILABLE_WIDGETS.find((widget) => widget.name === props.name));
 
     if (!fittingComponent) {
       // eslint-disable-next-line no-console
       console.warn(`VeoForm::Widget: Couldn't find widget ${props.name}`);
       return null;
     }
-    return () => h(fittingComponent, { props });
+    return () => h(fittingComponent.value, { props });
   }
 });

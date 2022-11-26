@@ -56,20 +56,23 @@
             </v-icon>
           </v-list-item-avatar>
           <v-list-item-content>
-            <span v-if="prename || lastname">
-              {{ prename }}
-              {{ lastname }}
+            <span v-if="(profile && profile.firstName) || (profile && profile.lastName)">
+              {{ profile.firstName }}
+              {{ profile.lastName }}
             </span>
             <span
               v-else
               v-text="t('notAvailable')"
             />
-            <v-list-item-subtitle>{{ email || t('notAvailable') }}</v-list-item-subtitle>
+            <v-list-item-subtitle>{{ profile && profile.email || t('notAvailable') }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-        <template v-if="!maxUnits || maxUnits > 2">
+        <template v-if="!userSettings.maxUnits || userSettings.maxUnits > 2">
           <v-divider />
-          <VeoUnitSelection :units="units" />
+          <VeoUnitSelection
+            :units="units"
+            v-on="$listeners"
+          />
         </template>
         <v-divider />
         <v-list-item
@@ -77,27 +80,37 @@
           target="_blank"
         >
           <v-list-item-title class="d-flex">
-            {{ $t('myAccount') }}
+            {{ t('myAccount') }}
             <v-icon x-small>
               {{ mdiOpenInNew }}
             </v-icon>
           </v-list-item-title>
-          <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
         </v-list-item>
+        <template v-if="ability.can('manage', 'accounts')">
+          <v-divider />
+          <v-list-item
+            active-class="veo-active-list-item"
+            to="/administration"
+          >
+            <v-list-item-title>
+              {{ t('breadcrumbs.administration') }}
+            </v-list-item-title>
+          </v-list-item>
+        </template>
         <v-divider />
         <v-list-item @click="displayDeploymentDetails = true">
           <v-list-item-title>
-            {{ $t('about') }}
+            {{ t('about') }}
           </v-list-item-title>
-          <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
         </v-list-item>
         <v-divider />
-        <v-list-item @click="$emit('logout')">
+        <v-list-item @click="logout">
           <v-list-item-title class="font-weight-medium">
-            {{ $t('logout') }}
+            {{ t('logout') }}
           </v-list-item-title>
         </v-list-item>
       </v-list>
+      <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
     </v-card>
   </v-menu>
 </template>
@@ -108,29 +121,27 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { mdiOpenInNew } from '@mdi/js';
 
 import { IVeoUnit } from '~/types/VeoTypes';
+import { useVeoUser } from '~/composables/VeoUser';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
-  props: {
-    prename: { type: String, default: '' },
-    lastname: { type: String, default: '' },
-    username: { type: String, default: '' },
-    email: { type: String, default: '' }
+  emits: {
+    'create-unit': () => {}
   },
-  setup(props) {
+  setup() {
     const { t } = useI18n();
-    const { $api, $config, $user } = useContext();
+    const { $api, $config } = useContext();
+    const { logout: _logout, profile, userSettings } = useVeoUser();
     const route = useRoute();
+    const { ability } = useVeoPermissions();
+    const logout = () => _logout('/');
 
     const displayDeploymentDetails = ref(false);
     const menuVisible = ref(false);
 
-    const initials = computed(() => props.prename.substring(0, 1) + props.lastname.substring(0, 1) || '??');
-
-    const maxUnits = computed(() => {
-      const maxUnits = $user.auth.profile?.attributes?.maxUnits?.[0];
-
-      return maxUnits ? parseInt(maxUnits, 10) : maxUnits;
-    });
+    const firstName = computed(() => profile.value?.firstName || '');
+    const lastName = computed(() => profile.value?.lastName || '');
+    const initials = computed(() => firstName.value.substring(0, 1) + lastName.value.substring(0, 1) || '??');
 
     const unitId = computed(() => route.value.params.unit);
 
@@ -149,12 +160,15 @@ export default defineComponent({
     const accountLink = computed(() => `${$config.oidcUrl}/realms/${$config.oidcRealm}/account`);
 
     return {
+      ability,
       accountLink,
       displayDeploymentDetails,
       initials,
-      maxUnits,
+      logout,
       menuVisible,
+      profile,
       units,
+      userSettings,
 
       mdiOpenInNew,
       t
@@ -167,12 +181,14 @@ export default defineComponent({
 {
   "en": {
     "about": "About verinice.",
+    "clientAdministration": "Client administration",
     "logout": "Logout",
     "myAccount": "My account",
     "notAvailable": "Not available"
   },
   "de": {
     "about": "Über verinice.",
+    "clientAdministration": "Clientverwaltung",
     "logout": "Abmelden",
     "myAccount": "Mein Account",
     "notAvailable": "Keine Angabe"

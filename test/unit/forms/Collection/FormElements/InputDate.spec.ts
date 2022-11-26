@@ -60,7 +60,17 @@ describe('InputDate.vue', () => {
       vuetify,
       propsData: { ...form },
       mocks: {
-        $t: (msg: any) => msg
+        $t: (msg: any) => msg,
+        $nuxt: {
+          context: {
+            app: {
+              i18n: {
+                t: (v: string) => v,
+                locale: 'de'
+              }
+            }
+          }
+        }
       }
     });
 

@@ -15,48 +15,62 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { reactive, set, unref, useContext, watch } from '@nuxtjs/composition-api';
-import { useQuery as vueQueryUseQuery, useQueryClient } from 'vue-query';
-import { UseQueryOptions } from 'vue-query/lib/vue';
-import { MaybeRef } from 'vue-query/lib/vue/types';
+import { computed, reactive, unref, useContext, watch } from '@nuxtjs/composition-api';
+import { useQuery as vueQueryUseQuery, useQueryClient } from '@tanstack/vue-query';
+import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
+import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+import { isFunction } from 'lodash';
 
 import { IBaseObject } from '~/lib/utils';
+
+export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
+
+export const STALE_TIME = {
+  NONE: 0, // No stale time
+  REQUEST: 1000, // 1 seconds
+  LONG: 60 * 60 * 1000, // 60 minutes
+  MEDIUM: 10 * 60 * 1000, // 10 minutes
+  INFINITY: Infinity // Only refetch on page reload
+};
 
 /**
  * Wrapper for vue-query's useQuery to apply some custom logic to make it work more seamless with the legacy api plugin.
  *
- * @param primaryQueryKey Primary key of the query. Shouldn't change. Changes are triggered by changing the query parameters that get added to the query key.
+ * @param queryKey query key. Changes to it trigger a refetch. Can either be a string array or a callable function that gets passed the query parameters
  * @param requestFunction Function to call to fetch data (usually a function from the api plugin).
  * @param queryParameters Parameters to pass to the request function.
  * @param queryOptions Options modifiying query behaviour.
  * @returns Query object containing the data and information about the query.
  */
 export const useQuery = <T>(
-  primaryQueryKey: string,
+  queryKey: readonly string[] | CallableFunction,
   requestFunction: CallableFunction,
   queryParameters: MaybeRef<IBaseObject>,
-  queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>
+  queryOptions?: QueryOptions
 ) => {
   const { $config } = useContext();
 
-  // We turn the queryOptions (often a computed) into an object that we assign to the query key, in order to not have a ref inside the query key while still maintaining reactivity.
-  const combinedQueryKey = reactive([primaryQueryKey]);
+  const evaluatedQueryKey = computed(() => (isFunction(queryKey) ? queryKey(unref(queryParameters)) : queryKey));
+
+  const localQueryKey = reactive([]);
+
   watch(
-    () => unref(queryParameters),
+    () => evaluatedQueryKey.value,
     (newValue) => {
-      set(combinedQueryKey, 1, newValue);
-    }
+      Object.assign(localQueryKey, newValue);
+    },
+    { deep: true, immediate: true }
   );
 
   // Actual query getting executed
   const result = vueQueryUseQuery<T>(
-    combinedQueryKey,
-    () => requestFunction(...transformQueryParameters(primaryQueryKey, requestFunction.name, unref(queryParameters))),
+    localQueryKey,
+    () => requestFunction(...transformQueryParameters(evaluatedQueryKey.value[0], requestFunction.name, unref(queryParameters))),
     queryOptions as any
   );
 
   // Debugging stuff
-  if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(primaryQueryKey))) {
+  if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(evaluatedQueryKey.value[0]))) {
     const queryClient = useQueryClient();
 
     watch(
@@ -66,13 +80,13 @@ export const useQuery = <T>(
           const staleTime = queryOptions?.staleTime || queryClient.getDefaultOptions().queries?.staleTime;
           // eslint-disable-next-line no-console
           console.log(
-            `[vueQuery] data for query key "${JSON.stringify(combinedQueryKey)}" is considered stale (stale time is ${staleTime}). Last updated at ${new Date(
+            `[vueQuery] data for query key "${JSON.stringify(evaluatedQueryKey.value)}" is considered stale (stale time is ${staleTime}). Last updated at ${new Date(
               result.dataUpdatedAt.value
             ).toLocaleTimeString()}, now is ${new Date().toLocaleTimeString()}. Fetching...`
           );
         } else if (newValue) {
           // eslint-disable-next-line no-console
-          console.log(`[vueQuery] data for "${JSON.stringify(combinedQueryKey)}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(queryOptions)}"`);
+          console.log(`[vueQuery] data for "${JSON.stringify(evaluatedQueryKey.value)}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(queryOptions)}"`);
         }
       }
     );
@@ -85,8 +99,22 @@ export const useQuery = <T>(
  * Map containing all keys in the order the options should be passed to the api function as arguments.
  */
 const queryParameterMap = new Map<string, string[]>([
+  ['accounts_fetchAll', []],
+  ['account_fetch', ['id']],
+  ['account_create', ['_parameters_']],
+  ['account_update', ['id', '_parameters_']],
+  ['account__delete', ['id']],
+  ['forms_fetchAll', ['domainId']],
+  ['form_fetch', ['domainId', 'id']],
   ['objects_fetchAll', ['objectType', 'page', '_parameters_']],
-  ['object_fetch', ['objectType', 'id']]
+  ['object_fetch', ['objectType', 'id']],
+  ['schemas_fetchAll', []],
+  ['schema_fetch', ['type', 'domainIds']],
+  ['units_fetchAll', []],
+  ['unit_fetch', ['id']],
+  ['translations_fetch', ['languages']],
+  ['domains_fetchAll', []],
+  ['domain_fetch', ['id']]
 ]);
 
 /**
@@ -97,7 +125,7 @@ const queryParameterMap = new Map<string, string[]>([
  * @param queryParameters The object containing all query parameters, some of which will get applied as arguments.
  * @returns An array containing the arguments in the correct order, ready to be passed to the request function.
  */
-const transformQueryParameters = (primaryQueryKey: string, requestFunctionName: string, queryParameters: IBaseObject) => {
+export const transformQueryParameters = (primaryQueryKey: string, requestFunctionName: string, queryParameters: IBaseObject) => {
   const key = `${primaryQueryKey}_${requestFunctionName}`;
 
   const returnParameters =

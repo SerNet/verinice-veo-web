@@ -32,8 +32,9 @@
           <VeoCard>
             <v-card-text>
               <VeoForm
-                v-if="!formLoading && objectSchema && !loading"
+                v-if="!dataIsLoading"
                 v-model="objectData"
+                :disabled="disabled"
                 :object-schema="objectSchema"
                 :form-schema="currentFormSchema && currentFormSchema.content"
                 :meta-data="objectMetaData"
@@ -141,18 +142,20 @@
               </v-tooltip>
               <v-tooltip left>
                 <template #activator="{ on }">
-                  <v-btn
-                    style="border-radius: 99px"
-                    data-component-name="object-form-history-tab"
-                    icon
-                    :value="SIDE_CONTAINERS.HISTORY"
-                    v-on="on"
-                  >
-                    <v-icon
-                      v-cy-name="'history-tab'"
-                      v-text="mdiHistory"
-                    />
-                  </v-btn>
+                  <div v-on="on">
+                    <v-btn
+                      style="border-radius: 99px"
+                      data-component-name="object-form-history-tab"
+                      :disabled="disableHistory"
+                      icon
+                      :value="SIDE_CONTAINERS.HISTORY"
+                    >
+                      <v-icon
+                        v-cy-name="'history-tab'"
+                        v-text="mdiHistory"
+                      />
+                    </v-btn>
+                  </div>
                 </template>
                 <template #default>
                   {{ t('history') }}
@@ -190,7 +193,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropOptions, PropType, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, PropOptions, PropType, Ref, ref, useContext, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst, merge, debounce } from 'lodash';
 import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } from '@mdi/js';
@@ -199,10 +202,14 @@ import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/comp
 import { getRiskAdditionalContext, getStatusAdditionalContext } from '~/components/forms/additionalContext';
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoDomain, IVeoFormSchema, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectSchema, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoFormSchemaMeta, IVeoInspectionResult, IVeoTranslations } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
+import { useFetchForm, useFetchForms } from '~/composables/api/forms';
+import { useFetchTranslations } from '~/composables/api/translations';
+import { useFetchDomain } from '~/composables/api/domains';
+import { useFetchSchema } from '~/composables/api/schemas';
 
 enum SIDE_CONTAINERS {
   HISTORY,
@@ -227,10 +234,10 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    objectSchema: {
-      type: Object,
-      default: undefined
-    } as PropOptions<IVeoObjectSchema>,
+    objectType: {
+      type: String,
+      required: true
+    },
     objectMetaData: {
       type: Object,
       default: () => {}
@@ -273,83 +280,88 @@ export default defineComponent({
     const { personReactiveFormActions } = useVeoReactiveFormActions();
 
     // Formschema/display stuff
-    const translations: Ref<{ [key: string]: IVeoTranslationCollection } | undefined> = ref(undefined);
-    const mergedTranslations = computed(() => merge(translations.value, currentFormSchema.value?.translation || {}));
-    const formSchemas: Ref<IVeoFormSchemaMeta[]> = ref([]);
-    const currentFormSchema: Ref<undefined | IVeoFormSchema> = ref(undefined);
-
-    const domain = ref<IVeoDomain | undefined>();
-    const { fetch: fetchDomain } = useFetch(async () => {
-      domain.value = await $api.domain.fetch(props.domainId);
-      getAdditionalContext();
+    // Fetching object schema
+    const fetchSchemaQueryParameters = computed(() => ({ type: props.objectType, domainIds: [props.domainId] }));
+    const fetchSchemaQueryEnabled = computed(() => !!props.objectType && !!props.domainId);
+    const { data: objectSchema, isFetching: objectSchemaIsFetching } = useFetchSchema(fetchSchemaQueryParameters, {
+      enabled: fetchSchemaQueryEnabled
     });
-    watch(() => props.domainId, fetchDomain);
 
-    const localAdditionalContext = ref<IVeoFormsAdditionalContext>({});
+    const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations, isFetching: translationsAreFetching } = useFetchTranslations(translationQueryParameters);
+    const mergedTranslations = computed<IVeoTranslations['lang']>(() => merge(translations.value?.lang || {}, currentFormSchema.value?.translation || {}));
 
-    const getAdditionalContext = () => {
-      localAdditionalContext.value = {
-        ...props.additionalContext,
-        ...(props.objectSchema && domain.value ? getRiskAdditionalContext(props.objectSchema.title, domain.value) : {}),
-        ...(props.value && props.objectSchema && translations.value
-          ? getStatusAdditionalContext(props.value, props.objectSchema, translations.value[locale.value], props.domainId)
-          : {})
-      };
-    };
-
-    watch(() => props.objectSchema, getAdditionalContext, { deep: true });
-    watch(() => props.additionalContext, getAdditionalContext, { deep: true });
-
-    const {
-      fetch,
-      fetchState: { pending: formLoading }
-    } = useFetch(async () => {
-      fetchDecisions();
-
-      // Only fetch once, as translations changing while the user uses this component is highly unlikely
-      if (!translations.value) {
-        translations.value = (await $api.translation.fetch(['de', 'en'])).lang;
-      }
-      // Only fetch formschema overview once, as formschemas getting added/changed while the user uses this component is highly unlikely
-      if (formSchemas.value.length === 0) {
-        formSchemas.value = await $api.form.fetchAll(props.domainId);
-      }
-
-      if (props.preselectedSubType) {
-        const formSchemaId = getFormschemaIdBySubType(props.preselectedSubType);
-
-        if (formSchemaId) {
-          selectedDisplayOption.value = formSchemaId;
-        }
-      }
-
-      if (selectedDisplayOption.value !== 'objectschema') {
-        currentFormSchema.value = await $api.form.fetch(props.domainId, selectedDisplayOption.value);
-      } else {
-        currentFormSchema.value = undefined;
-      }
-
-      const subType = formSchemas.value.find((formschema) => formschema.id === selectedDisplayOption.value)?.subType;
-
-      // Set sub type and status if subType was not set and the user views the object with a subtype
-      if (subType && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
-        const newDomainObject = {
-          domains: {
-            [props.domainId]: {
-              subType,
-              status: 'NEW'
-            }
-          }
-        };
-        objectData.value = merge(objectData.value, newDomainObject);
-      }
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
+    const fetchDomainQueryEnabled = computed(() => !!props.domainId);
+    const { data: domain, isFetching: domainIsFetching } = useFetchDomain(fetchDomainQueryParameters, {
+      enabled: fetchDomainQueryEnabled
     });
+
+    const localAdditionalContext = computed<IVeoFormsAdditionalContext>(() => ({
+      ...props.additionalContext,
+      ...(objectSchema.value && domain.value ? getRiskAdditionalContext(objectSchema.value.title, domain.value, locale.value) : {}),
+      ...(props.value && objectSchema.value && translations.value
+        ? getStatusAdditionalContext(props.value, objectSchema.value, mergedTranslations.value[locale.value], props.domainId)
+        : {})
+    }));
 
     const selectedDisplayOption = ref('objectschema');
+
+    const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const formsQueryEnabled = computed(() => !!props.domainId);
+    const { data: formSchemas, isFetching: formSchemasAreFetching } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+
+    const formQueryParameters = computed(() => ({ domainId: props.domainId, id: selectedDisplayOption.value }));
+    const formQueryEnabled = computed(() => selectedDisplayOption.value !== 'objectschema');
+    const { data: formSchema, isFetching: formSchemaIsFetching } = useFetchForm(formQueryParameters, { enabled: formQueryEnabled });
+    const currentFormSchema = computed(() => (selectedDisplayOption.value === 'objectschema' ? undefined : formSchema.value));
+
+    function getFormschemaIdBySubType(subType: string) {
+      const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === subType)?.id;
+      if (formSchemaId) {
+        return formSchemaId;
+      }
+    }
+
+    const setDisplayOptionBasedOnSubtype = () => {
+      const formSchemaId = getFormschemaIdBySubType(props.preselectedSubType);
+      if (formSchemaId) {
+        selectedDisplayOption.value = formSchemaId;
+      } else {
+        selectedDisplayOption.value = 'objectschema';
+      }
+    };
+
+    watch(
+      () => formSchemas.value,
+      (newValue) => {
+        if (newValue && props.preselectedSubType) {
+          setDisplayOptionBasedOnSubtype();
+        }
+      },
+      { deep: true, immediate: true }
+    );
+
+    watch(
+      () => props.preselectedSubType,
+      () => setDisplayOptionBasedOnSubtype()
+    );
+
+    const setSubType = () => {
+      if (objectData.value && currentFormSchema.value && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
+        objectData.value.domains[props.domainId] = {
+          subType: currentFormSchema.value.subType,
+          status: 'NEW'
+        };
+      }
+    };
+
+    watch(() => currentFormSchema.value, setSubType, { deep: true });
+
     const displayOptions: ComputedRef<{ text: string; value: string | undefined }[]> = computed(() => {
       const currentSubType = objectData.value?.domains?.[props.domainId]?.subType;
-      const availableFormSchemas: { text: string; value: string | undefined }[] = formSchemas.value
-        .filter((formSchema) => formSchema.modelType === props.objectSchema?.title && (!currentSubType || currentSubType === formSchema.subType))
+      const availableFormSchemas: { text: string; value: string | undefined }[] = (formSchemas.value as IVeoFormSchemaMeta[])
+        .filter((formSchema) => formSchema.modelType === objectSchema.value?.title && (!currentSubType || currentSubType === formSchema.subType))
         .map((formSchema) => ({
           text: formSchema.name[locale.value] || formSchema.subType,
           value: formSchema.id
@@ -358,30 +370,9 @@ export default defineComponent({
       return availableFormSchemas;
     });
 
-    watch(selectedDisplayOption, () => fetch());
-
     const formSchemaHasGroups = computed(() => {
       return currentFormSchema.value?.content.elements?.some((element: any) => (element.type === 'Layout' || element.type === 'Group') && element.options.label);
     });
-
-    function getFormschemaIdBySubType(subType: string) {
-      const formSchemaId = formSchemas.value.find((formschema) => formschema.subType === subType)?.id;
-      if (formSchemaId) {
-        return formSchemaId;
-      }
-    }
-
-    watch(
-      () => props.preselectedSubType,
-      (newValue) => {
-        const formSchemaId = getFormschemaIdBySubType(newValue);
-        if (formSchemaId) {
-          selectedDisplayOption.value = formSchemaId;
-        } else {
-          selectedDisplayOption.value = 'objectschema';
-        }
-      }
-    );
 
     // Form stuff
     const objectData = computed({
@@ -402,7 +393,7 @@ export default defineComponent({
     );
 
     const reactiveFormActions: ComputedRef<IVeoFormsReactiveFormActions> = computed(() => {
-      return props.objectSchema?.title === 'person' ? personReactiveFormActions() : {};
+      return objectSchema.value?.title === 'person' ? personReactiveFormActions() : {};
     });
 
     // side menu stuff
@@ -519,23 +510,33 @@ export default defineComponent({
       }
     };
 
+    const debouncedFetchDecisions = debounce(fetchDecisions, 1000);
+
     watch(
       () => objectData.value,
-      () => debounce(fetchDecisions, 1000)(),
+      () => {
+        debouncedFetchDecisions();
+        setSubType();
+      },
       { deep: true }
+    );
+
+    const dataIsLoading = computed<boolean>(
+      () => objectSchemaIsFetching.value || props.loading || formSchemasAreFetching.value || formSchemaIsFetching.value || domainIsFetching.value || translationsAreFetching.value
     );
 
     return {
       localAdditionalContext,
       currentFormSchema,
+      dataIsLoading,
       displayOptions,
       formErrors,
-      formLoading,
       formSchemaHasGroups,
       locale,
       messages,
       mergedTranslations,
       objectData,
+      objectSchema,
       reactiveFormActions,
       selectedDisplayOption,
       selectedSideContainer,

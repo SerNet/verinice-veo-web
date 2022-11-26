@@ -17,7 +17,7 @@
 -->
 <template>
   <VeoDialog
-    v-model="dialog"
+    :value="value"
     :headline="headline"
     x-large
     :persistent="isFormDirty"
@@ -27,22 +27,21 @@
   >
     <template #default>
       <VeoObjectForm
-        :value="objectData"
-        :object-schema="objectSchema"
-        :domain-id="domainId"
+        v-model="objectData"
+        v-bind="$props"
         :preselected-sub-type="subType"
         :valid.sync="isFormValid"
+        :loading="domainIsFetching"
         disable-history
         scroll-wrapper-id="scroll-wrapper-create-dialog"
         object-creation-disabled
-        @input="onFormInput"
       />
     </template>
     <template #dialog-options>
       <v-btn
         text
         :data-cy="$utils.prefixCyData($options, 'cancel-button')"
-        @click="dialog = false"
+        @click="$emit('input', false)"
       >
         {{ t('global.button.cancel') }}
       </v-btn>
@@ -50,7 +49,7 @@
       <v-btn
         text
         color="primary"
-        :disabled="!isFormValid"
+        :disabled="!isFormValid || !isFormDirty"
         :data-cy="$utils.prefixCyData($options, 'save-button')"
         @click="onSubmit"
       >
@@ -61,13 +60,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, useFetch, useContext, Ref, useRoute, computed, watch } from '@nuxtjs/composition-api';
+import { defineComponent, ref, useContext, useRoute, computed, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { upperFirst } from 'lodash';
+import { cloneDeep, upperFirst } from 'lodash';
 
-import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { separateUUIDParam } from '~/lib/utils';
+import { IBaseObject, isObjectEqual, separateUUIDParam } from '~/lib/utils';
+import { useFetchDomain } from '~/composables/api/domains';
+import { useFetchTranslations } from '~/composables/api/translations';
+import { IVeoEntity } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -89,79 +90,61 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const { $api, $config } = useContext();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
-    // Display stuff
-    const dialog = computed({
-      get() {
-        return props.value;
-      },
-      set(value: boolean) {
-        emit('input', value);
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
-        // If the dialog gets closed, restore pristine state, 150ms seems to be the animation duration of v-dialog
-        if (!value) {
-          setTimeout(() => {
-            seedInitialData();
-          }, 150);
+    const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + translations.value?.lang[locale.value]?.[props.objectType]);
+
+    // Seeding of empty form
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
+    const fetchDomainQueryEnabled = computed(() => !!props.domainId);
+    const { data: domain, isFetching: domainIsFetching } = useFetchDomain(fetchDomainQueryParameters, {
+      onSuccess: () => {
+        if (props.objectType === 'scope') {
+          seedInitialData();
         }
-      }
+      },
+      enabled: fetchDomainQueryEnabled
     });
 
-    watch(
-      () => props.value,
-      (newValue) => {
-        if (newValue) {
-          // Set risk definition if scope
-          setDefaultRiskDefinitionIfScope();
-        }
-      }
-    );
+    const objectData = ref<IBaseObject>({});
+    const pristineObjectData = ref<IBaseObject>({});
 
-    watch(() => props.objectType, seedInitialData);
-    watch(() => props.subType, seedInitialData);
-
-    const isFormDirty = ref(false);
+    const isFormDirty = computed(() => !isObjectEqual(objectData.value as IVeoEntity, pristineObjectData.value as IVeoEntity).isEqual);
     const isFormValid = ref(false);
 
-    // object schema stuff
-    const objectSchema: Ref<IVeoObjectSchema | undefined> = ref(undefined);
-    const objectData = ref<any>({});
-    seedInitialData();
-
-    function seedInitialData() {
+    const seedInitialData = () => {
       objectData.value = {
         owner: {
           targetUri: `${$config.apiUrl}/units/${separateUUIDParam(route.value.params.unit).id}`
+        },
+        domains: {
+          [props.domainId]: {}
         }
       };
 
       // Set subtype if a subtype is preselected
       if (props.domainId && props.subType) {
-        objectData.value.domains = {
-          [props.domainId]: {
-            subType: props.subType,
-            status: 'NEW'
-          }
+        objectData.value.domains[props.domainId] = {
+          subType: props.subType,
+          status: 'NEW'
         };
       }
 
-      isFormDirty.value = false;
-      isFormValid.value = false;
-    }
+      setDefaultRiskDefinitionIfScope();
 
-    const onFormInput = (newObjectData: any) => {
-      objectData.value = newObjectData;
-      isFormDirty.value = true;
+      // Create a pristine object to compare whether the user has inputted data
+      pristineObjectData.value = cloneDeep(objectData.value);
     };
 
-    const setDefaultRiskDefinitionIfScope = async () => {
-      if (props.objectType === 'scope') {
-        const domain = await $api.domain.fetch(props.domainId);
-        if (Object.keys(domain.riskDefinitions).length === 1) {
+    const setDefaultRiskDefinitionIfScope = () => {
+      if (props.objectType === 'scope' && domain.value) {
+        if (Object.keys(domain.value.riskDefinitions).length === 1) {
           if (!objectData.value.domains) {
             objectData.value.domains = {};
           }
@@ -169,40 +152,42 @@ export default defineComponent({
             objectData.value.domains[props.domainId] = {};
           }
 
-          objectData.value.domains[props.domainId].riskDefinition = Object.keys(domain.riskDefinitions)[0];
+          objectData.value.domains[props.domainId].riskDefinition = Object.keys(domain.value.riskDefinitions)[0];
         }
       }
     };
 
-    const { fetch } = useFetch(async () => {
-      objectSchema.value = await $api.schema.fetch(props.objectType, [props.domainId]);
-    });
+    watch(() => props.subType, seedInitialData, { immediate: true });
+    watch(() => props.objectType, seedInitialData, { immediate: true });
+    watch(
+      () => props.value,
+      (newValue) => {
+        if (!newValue) {
+          setTimeout(() => {
+            seedInitialData();
+          }, 150);
+        }
+      }
+    );
 
-    // refetch on objectType change
-    watch(() => props.objectType, fetch);
-
-    // Actions
-    async function onSubmit() {
+    // Submitting form
+    const onSubmit = async () => {
       try {
-        const result = await $api.entity.create(props.objectType, objectData.value);
+        const result = await $api.entity.create(props.objectType, objectData.value as any);
         emit('success', result.resourceId);
         displaySuccessMessage(upperFirst(t('objectCreated', { name: objectData.value.name }).toString()));
-        dialog.value = false;
+        emit('input', false);
       } catch (e: any) {
         displayErrorMessage(upperFirst(t('objectNotCreated', { name: objectData.value.name || upperFirst(t('object').toString()) }).toString()), e.message);
       }
-    }
-
-    const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + t(`objectTypes.${props.objectType}`).toString());
+    };
 
     return {
-      dialog,
+      domainIsFetching,
       headline,
       isFormDirty,
       isFormValid,
-      objectSchema,
       objectData,
-      onFormInput,
       onSubmit,
 
       upperFirst,

@@ -43,6 +43,7 @@
       />
     </VeoCard>
     <v-menu
+      :disabled="disabled"
       top
       offset-y
     >
@@ -51,6 +52,7 @@
           class="mt-2"
           color="primary"
           depressed
+          :disabled="disabled"
           v-on="on"
         >
           <v-icon left>
@@ -112,6 +114,10 @@ export default defineComponent({
     mitigations: {
       type: Array as PropType<IVeoEntity[]>,
       default: () => []
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     },
     domainId: {
       type: String,

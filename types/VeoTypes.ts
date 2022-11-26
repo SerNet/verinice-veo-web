@@ -61,53 +61,49 @@ export interface IVeoLink {
   searchesUri?: string;
 }
 
+export interface IVeoRiskDefinitionItemTranslations {
+  [lang: string]: {
+    name: string;
+    abbreviation: string;
+    description: string;
+  };
+}
+
 export interface IVeoRiskValue {
-  abbreviation: string;
-  description: string;
   htmlColor: string;
-  name: string;
+  translations: IVeoRiskDefinitionItemTranslations;
   ordinalValue: number;
   symbolicRisk: string;
 }
 
 export interface IVeoRiskPotentialImpact {
-  abbreviation: string;
-  description: string;
   htmlColor: string;
-  name: string;
+  translations: IVeoRiskDefinitionItemTranslations;
   ordinalValue: string;
   valueMatrix?: IVeoRiskValue[][];
 }
 
 export interface IVeoRiskCategory {
-  abbreviation: string;
-  description: string;
   id: string;
-  name: string;
+  translations: IVeoRiskDefinitionItemTranslations;
   potentialImpacts: IVeoRiskPotentialImpact[];
   valueMatrix: IVeoRiskValue[][];
 }
 
 export interface IVeoRiskProbabilityLevel {
-  name: string;
-  abbreviation: string;
-  description: string;
   htmlColor: string;
   ordinalValue: number;
+  translations: IVeoRiskDefinitionItemTranslations;
 }
 
 export interface IVeoRiskProbability {
   id: string;
-  name: string;
-  abbreviation: string;
-  description: string;
+  translations: IVeoRiskDefinitionItemTranslations;
   levels: IVeoRiskProbabilityLevel[];
 }
 
 export interface IVeoRiskImplementationState {
-  name: string;
-  abbreviation: string;
-  description: string;
+  translations: IVeoRiskDefinitionItemTranslations;
   htmlColor: string;
   ordinalValue: number;
 }
@@ -117,16 +113,18 @@ export interface IVeoDomainRiskDefinition {
   probability: IVeoRiskProbability;
   implementationStateDefinition: {
     id: string;
-    name: string;
-    abbreviation: string;
-    description: string;
+    translations: IVeoRiskDefinitionItemTranslations;
     levels: IVeoRiskImplementationState[];
   };
   categories: IVeoRiskCategory[];
   riskValues: IVeoRiskValue[];
   riskMethod: {
     impactMethod: string;
-    description: string;
+    translations: {
+      [lang: string]: {
+        description: string;
+      };
+    };
   };
 }
 export interface IVeoPiaMandatoryRule {
@@ -533,10 +531,6 @@ export interface IVeoFormSchemaItem {
 
 export interface IVeoFormSchemaTranslationCollection {
   [key: string]: IVeoTranslationCollection;
-}
-
-export interface IVeoFormSchemaCustomTranslationEvent {
-  [key: string]: string | undefined;
 }
 
 export interface IVeoFormSchemaItemUpdateEvent {

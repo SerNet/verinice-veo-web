@@ -89,6 +89,7 @@
           :loading="isLoading"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :additional-headers="additionalHeaders"
+          :page="queryParameters.page"
           data-component-name="object-overview-table"
           @page-change="onPageChange"
           @click="openItem"
@@ -103,6 +104,7 @@
                 <v-btn
                   icon
                   :data-component-name="`object-overview-${btn.id}-button`"
+                  :disabled="ability.cannot('manage', 'objects')"
                   @click="btn.action(item)"
                   v-on="on"
                 >
@@ -136,6 +138,7 @@
             v-cy-name="'create-button'"
             color="primary"
             depressed
+            :disabled="ability.cannot('manage', 'objects')"
             fab
             absolute
             style="bottom: 12px; right: 0"
@@ -160,17 +163,21 @@
 <script lang="ts">
 import { mdiContentCopy, mdiFilter, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
-import { computed, defineComponent, h, useContext, useFetch, useRoute, useRouter, ref, reactive, watch, onUnmounted } from '@nuxtjs/composition-api';
+import { computed, defineComponent, h, useContext, useRoute, useRouter, ref, reactive, watch, onUnmounted } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useFetchObjects } from '~/composables/api/objects';
+import { useFetchForms } from '~/composables/api/forms';
+import { useVeoUser } from '~/composables/VeoUser';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
 
@@ -178,16 +185,18 @@ export default defineComponent({
   name: 'VeoObjectsOverviewPage',
   setup() {
     const { t, locale } = useI18n();
-    const { $api, $user } = useContext();
+    const { $api } = useContext();
+    const { tablePageSize } = useVeoUser();
     const route = useRoute();
     const router = useRouter();
+    const { ability } = useVeoPermissions();
 
     const { displayErrorMessage } = useVeoAlerts();
     const { cloneObject } = useVeoObjectUtilities();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
 
-    const formschemas = ref<IVeoFormSchemaMeta[]>([]);
-    const translations = ref<IVeoTranslations['lang']>({});
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations, isFetching: translationsLoading } = useFetchTranslations(fetchTranslationsQueryParameters);
 
     const itemDelete = ref<IVeoEntity>();
 
@@ -224,10 +233,11 @@ export default defineComponent({
     const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
     const resetQueryOptions = () => {
       Object.assign(queryParameters, { page: 1, sortBy: 'name', sortDesc: false });
+      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
-    const combinedQueryParameters = computed(() => ({
-      size: $user.tablePageSize,
+    const combinedQueryParameters = computed<any>(() => ({
+      size: tablePageSize.value,
       sortBy: queryParameters.sortBy,
       sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
       page: queryParameters.page,
@@ -236,21 +246,20 @@ export default defineComponent({
     }));
     const queryEnabled = computed(() => !!filter.value.objectType);
 
-    const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters as any, { enabled: queryEnabled });
+    const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true, placeholderData: [] });
 
-    const { $fetchState } = useFetch(async () => {
-      const [schemas, _translations] = await Promise.all([$api.form.fetchAll(domainId.value), $api.translation.fetch(['de', 'en'])]);
-      formschemas.value = schemas;
-      translations.value = _translations.lang;
-    });
+    const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
+    const formsQueryEnabled = computed(() => !!domainId.value);
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
-    const isLoading = computed(() => isLoadingObjects.value || $fetchState.pending);
+    const isLoading = computed(() => isLoadingObjects.value || translationsLoading.value);
 
     watch(() => filter.value, resetQueryOptions, { deep: true });
 
     // refetch entities on page or sort changes (in VeoObjectTable)
     const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
       Object.assign(queryParameters, { page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
+      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
     // Additional breadcrumbs based on object type and sub type
@@ -273,7 +282,7 @@ export default defineComponent({
 
       addCustomBreadcrumb({
         key: objectTypeKey,
-        text: upperFirst(getSchemaEndpoint(endpoints.value, newObjectType)),
+        text: translations.value?.lang[locale.value]?.[getSchemaEndpoint(endpoints.value, newObjectType) || ''],
         to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${newObjectType}`,
         param: objectTypeKey,
         index: 0,
@@ -283,9 +292,8 @@ export default defineComponent({
     watch(() => objectType.value, onObjectTypeChanged, { immediate: true });
 
     const subTypeKey = 'object-overview-sub-type';
-    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
 
-    const onSubTypeChanged = async (newSubType?: string) => {
+    const onSubTypeChanged = (newSubType?: string) => {
       if (customBreadcrumbExists(subTypeKey)) {
         removeCustomBreadcrumb(subTypeKey);
       }
@@ -295,11 +303,7 @@ export default defineComponent({
         return;
       }
 
-      if (!formSchemas.value.length) {
-        formSchemas.value = await $api.form.fetchAll(domainId.value);
-      }
-
-      const formSchema = formSchemas.value.find((formSchema) => formSchema.subType === newSubType);
+      const formSchema = (formSchemas.value as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === newSubType);
 
       addCustomBreadcrumb({
         key: subTypeKey,
@@ -337,18 +341,18 @@ export default defineComponent({
       switch (label) {
         // Uppercase object types
         case 'objectType':
-          return t(`objectTypes.${value}`).toString();
+          return value ? translations.value?.lang[locale.value]?.[value] : undefined;
         // Translate sub types
         case 'subType':
-          return formschemas.value.find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
+          return (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
         case 'status':
-          return translations.value[locale.value]?.[`${objectType.value}_${subType.value}_status_${value}`] || value;
+          return translations.value?.lang?.[locale.value]?.[`${objectType.value}_${subType.value}_status_${value}`] || value;
         default:
           return value;
       }
     };
 
-    const createObjectLabel = computed(() => (subType.value ? formatValue('subType', subType.value) : t(`objectTypes.${objectType.value}`).toString()));
+    const createObjectLabel = computed(() => (subType.value ? formatValue('subType', subType.value) : translations.value?.lang?.[locale.value]?.[objectType.value || '']));
 
     const onCloseDeleteDialog = (visible: boolean) => {
       if (visible === false) {
@@ -381,7 +385,7 @@ export default defineComponent({
         async action(item: IVeoEntity) {
           try {
             await cloneObject(item);
-            refetch.value();
+            refetch();
           } catch (e: any) {
             showError('clone', item, e);
           }
@@ -416,11 +420,12 @@ export default defineComponent({
     );
 
     const refetchObjects = () => {
-      refetch.value();
+      refetch();
     };
 
     return {
       t,
+      ability,
       actions,
       additionalHeaders,
       domainId,
@@ -445,6 +450,7 @@ export default defineComponent({
       showError,
       subType,
       updateRouteQuery,
+      queryParameters,
       upperFirst
     };
   }

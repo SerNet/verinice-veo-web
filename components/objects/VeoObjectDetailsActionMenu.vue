@@ -25,7 +25,8 @@
     >
       <template #activator="{ on }">
         <v-btn
-          :disabled="!visibleItems.length"
+          v-bind="$attrs"
+          :disabled="!visibleItems.length || $props.disabled"
           fab
           text
           small
@@ -70,6 +71,10 @@ import { INestedMenuEntries } from '~/components/layout/VeoNestedMenu.vue';
 export default defineComponent({
   name: 'VeoObjectDetailsActionMenu',
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     object: {
       type: Object as PropType<IVeoEntity | undefined>,
       default: undefined

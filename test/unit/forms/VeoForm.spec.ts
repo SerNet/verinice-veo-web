@@ -78,6 +78,16 @@ describe('VeoForm.vue', () => {
         input: onValueUpdate
       },
       mocks: {
+        $nuxt: {
+          context: {
+            app: {
+              i18n: {
+                t: (v: string) => v,
+                locale: 'de'
+              }
+            }
+          }
+        },
         $route: {
           params: {
             domain: 'my-completely-invalid-domain-uuid-that-doesnt-matter'

@@ -21,7 +21,7 @@
     md="3"
   >
     <h3 class="text-h3">
-      {{ protectionGoal.name }}
+      {{ protectionGoal.translations[locale].name }}
     </h3>
     <v-select
       :value="inherentRisk"
@@ -63,20 +63,25 @@ export default defineComponent({
       type: Object as PropType<IDirtyFields>,
       default: () => {}
     },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     inherentRisk: {
       type: Number,
       default: undefined
     }
   },
   setup(props) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
 
-    const riskValues = computed(() => props.riskDefinition.riskValues.map((level) => ({ text: level.name, value: level.ordinalValue })));
+    const riskValues = computed(() => props.riskDefinition.riskValues.map((level) => ({ text: level.translations[locale.value].name, value: level.ordinalValue })));
 
     return {
       riskValues,
 
       t,
+      locale,
       upperFirst
     };
   }

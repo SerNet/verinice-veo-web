@@ -71,6 +71,11 @@ $card-title-line-height: 1.8rem; // Equals h2
   color: #000000;
 }
 
-.veo-disabled {
-  color: rgba(0, 0, 0, 0.38);
+// Fixing a vuetify bug that causes child-subgroups to also get expanded if the parent subgroup is expanded
+.v-list-group--sub-group.v-list-group--active .v-list-item__icon.v-list-group__header__prepend-icon .v-icon {
+  transform: none;
+}
+
+.v-list-group--sub-group.v-list-group--active > .v-list-group__header > .v-list-item__icon.v-list-group__header__prepend-icon .v-icon {
+  transform: rotate(-180deg);
 }

@@ -41,7 +41,7 @@
             :md="5"
           >
             <v-text-field
-              :value="localCustomTranslation[localName]"
+              :value="localCustomTranslation[language][localName]"
               :label="t('editor.formschema.edit.input.label')"
               required
               @input="onInputLabel"
@@ -138,12 +138,12 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, Ref, ref, reactive } from '@nuxtjs/composition-api';
+import { defineComponent, PropType, Ref, ref, reactive, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { v4 as uuid } from 'uuid';
 import { JsonPointer } from 'json-ptr';
-import { merge } from 'lodash';
-import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
+import { cloneDeep, merge } from 'lodash';
+import { IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
 
 interface IProps {
@@ -197,7 +197,15 @@ export default defineComponent<IProps>({
       style: undefined
     };
 
-    const localCustomTranslation: Ref<IVeoFormSchemaTranslationCollection> = ref({ ...props.customTranslations });
+    const localCustomTranslation: Ref<IVeoFormSchemaTranslationCollection> = ref({});
+
+    watch(
+      () => props.customTranslations,
+      (newValue) => {
+        localCustomTranslation.value = newValue;
+      },
+      { deep: true, immediate: true }
+    );
 
     // Get values of element by Pointer and if is not defined, get its default values (e.g. direction = undefined => 'vertical')
     function getValue(pointer: string, defaultValue: any): any {
@@ -307,9 +315,8 @@ export default defineComponent<IProps>({
       } else {
         delete updateData.rule;
       }
-      const updateTranslation: IVeoFormSchemaCustomTranslationEvent = JSON.parse(JSON.stringify(localCustomTranslation.value));
       context.emit('edit', updateData as IVeoFormSchemaItemUpdateEvent['data']);
-      context.emit('update-custom-translation', updateTranslation);
+      context.emit('update-custom-translation', cloneDeep(localCustomTranslation.value));
     }
 
     return {

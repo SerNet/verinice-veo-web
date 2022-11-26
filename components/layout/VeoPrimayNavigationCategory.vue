@@ -20,17 +20,39 @@
     active-class="black--text font-weight-bold"
     :sub-group="level > 0"
     :data-component-name="componentName"
-    :prepend-icon="level > 0 ? mdiChevronDown : icon"
     :class="{ 'border-top': level === 0, 'veo-primary-navigation__group': level > 0, 'veo-primary-navigation__group--active': $route.fullPath.includes(activePath) }"
     no-action
     :value="$route.fullPath.includes(activePath) /* group prop is not working with query parameters, so we have to use a simple hack to expand the active path */"
     @click="onClick"
   >
+    <template
+      #prependIcon
+    >
+      <v-icon
+        v-if="level > 0"
+        v-text="mdiChevronDown"
+      />
+      <v-icon
+        v-else-if="icon"
+        v-text="icon"
+      />
+      <font-awesome-icon
+        v-else-if="faIcon"
+        :icon="faIcon"
+      />
+    </template>
     <template #activator>
       <v-list-item-icon v-if="icon && level > 0">
         <v-icon>
           {{ icon }}
         </v-icon>
+      </v-list-item-icon>
+      <v-list-item-icon v-else-if="faIcon && level > 0">
+        <font-awesome-icon
+          :icon="faIcon"
+          :color="$route.fullPath.includes(activePath) ? 'black' : 'grey'"
+          class="pt-1"
+        />
       </v-list-item-icon>
       <v-list-item-title class="veo-primary-navigation__group__title">
         {{ name }}
@@ -71,7 +93,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api';
+import { defineComponent, PropType, useRoute, useRouter } from '@nuxtjs/composition-api';
 import { mdiChevronDown } from '@mdi/js';
 
 import { INavItem } from './VeoPrimaryNavigation.vue';
@@ -85,6 +107,10 @@ export default defineComponent({
     },
     icon: {
       type: String,
+      default: undefined
+    },
+    faIcon: {
+      type: [String, Array],
       default: undefined
     },
     children: {
@@ -110,14 +136,25 @@ export default defineComponent({
     componentName: {
       type: String,
       default: undefined
+    },
+    to: {
+      type: String,
+      default: undefined
     }
   },
   setup(props, { emit }) {
+    const route = useRoute();
+    const router = useRouter();
+
     const onClick = (event: any) => {
       if (props.miniVariant) {
         emit('expand-menu');
       }
-      emit('click', event);
+      if (props.to && route.value.path !== props.to) {
+        router.push(props.to);
+      } else {
+        emit('click', event);
+      }
     };
 
     return {

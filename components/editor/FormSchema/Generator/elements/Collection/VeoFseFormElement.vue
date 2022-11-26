@@ -113,13 +113,7 @@ import { JSONSchema7 } from 'json-schema';
 import { UISchemaElement } from '@/types/UISchema';
 
 import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VeoEditor';
-import {
-  IVeoFormSchemaCustomTranslationEvent,
-  IVeoFormSchemaItemDeleteEvent,
-  IVeoFormSchemaItemUpdateEvent,
-  IVeoFormSchemaTranslationCollection,
-  IVeoTranslationCollection
-} from '~/types/VeoTypes';
+import { IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { getRuleEffectIcons } from '~/lib/FormSchemaHelper';
 
 export default Vue.extend({
@@ -232,7 +226,7 @@ export default Vue.extend({
     setLabel(): void {
       this.label = this.customTranslations?.[this.language][this.name] || this.generalTranslation?.[this.name] || this.name;
     },
-    onUpdateCustomTranslation(event: IVeoFormSchemaCustomTranslationEvent) {
+    onUpdateCustomTranslation(event: IVeoFormSchemaTranslationCollection) {
       this.$emit('update-custom-translation', event);
     }
   }

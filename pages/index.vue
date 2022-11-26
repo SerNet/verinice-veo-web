@@ -17,11 +17,11 @@
 -->
 <template>
   <VeoPage
-    :title="$t('breadcrumbs.index')"
+    :title="t('breadcrumbs.index')"
     data-component-name="unit-selection-page"
   >
     <div class="text-body-1 my-4">
-      {{ $t('unitpicker') }}
+      {{ t('unitpicker') }}
     </div>
     <div class="d-flex justify-center">
       <VeoCard style="width: 70%; max-width: 1000px;">
@@ -40,11 +40,11 @@
                 hide-details
                 color="black"
                 prepend-inner-icon="mdi-magnify"
-                :label="$t('unitpickerPlaceholder')"
+                :label="t('unitpickerPlaceholder')"
               />
             </div>
             <v-progress-linear
-              v-if="$fetchState.pending"
+              v-if="fetchState.pending"
               indeterminate
             />
           </template>
@@ -78,85 +78,79 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, ref, useContext, useFetch, useRouter } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
+import { useVeoUser } from '~/composables/VeoUser';
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import { IVeoUnit } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
 
 export const ROUTE_NAME = 'index';
 
-export default Vue.extend({
+export default defineComponent({
   name: 'VeoUnitSelectionPage',
-  data() {
-    return {
-      search: '',
-      unit: '',
-      units: [] as IVeoUnit[],
-      showWelcomeDialog: false as boolean
-    };
-  },
-  async fetch() {
-    const units = await this.$api.unit.fetchAll();
+  setup() {
+    const { $api } = useContext();
+    const { profile, userSettings } = useVeoUser();
+    const router = useRouter();
+    const { t } = useI18n();
 
-    // Only applicable if the user has only two units (one demo and one main)
-    if (this.maxUnits === 2) {
-      const nonDemoUnits: IVeoUnit[] = units.filter((unit: IVeoUnit) => unit.name !== 'Demo');
-      const myNonDemoUnit = nonDemoUnits.find((unit) => unit.createdBy === this.$user.auth.profile?.username);
+    const search = ref<string | undefined>(undefined);
 
-      // Auto-redirect the user to his non demo unit upon visting the app. If it doesn't exist, create it and then redirect
-      if (nonDemoUnits.length > 0) {
-        // Try redirecting the user to the first unit found that was created by him, else redirect him to a unit created by someone else.
-        const unitToRedirectTo = myNonDemoUnit ?? nonDemoUnits[0];
+    const showWelcomeDialog = ref(!LocalStorage.firstStepsCompleted);
 
-        if (unitToRedirectTo) {
-          const domainId = getFirstDomainDomaindId(unitToRedirectTo);
+    const units = ref<IVeoUnit[]>([]);
+
+    const { fetchState } = useFetch(async () => {
+      units.value = await $api.unit.fetchAll();
+
+      // Only applicable if the user has only two units (one demo and one main)
+      if (userSettings.value.maxUnits === 2) {
+        const nonDemoUnits: IVeoUnit[] = units.value.filter((unit: IVeoUnit) => unit.name !== 'Demo');
+        const myNonDemoUnit = nonDemoUnits.find((unit) => unit.createdBy === profile.value?.username);
+
+        // Auto-redirect the user to his non demo unit upon visting the app. If it doesn't exist, create it and then redirect
+        if (nonDemoUnits.length > 0) {
+          // Try redirecting the user to the first unit found that was created by him, else redirect him to a unit created by someone else.
+          const unitToRedirectTo = myNonDemoUnit ?? nonDemoUnits[0];
+
+          if (unitToRedirectTo) {
+            const domainId = getFirstDomainDomaindId(unitToRedirectTo);
+
+            if (domainId) {
+              router.push({
+                name: 'unit-domains-domain',
+                params: {
+                  unit: createUUIDUrlParam('unit', unitToRedirectTo.id),
+                  domain: createUUIDUrlParam('domain', domainId)
+                }
+              });
+            }
+          }
+        } else {
+          const result = await $api.unit.create({
+            name: 'Unit 1',
+            description: t('firstUnitDescription')
+          });
+          const unit = await $api.unit.fetch(result.resourceId);
+          const domainId = getFirstDomainDomaindId(unit);
 
           if (domainId) {
-            this.$router.push({
+            router.push({
               name: 'unit-domains-domain',
               params: {
-                unit: createUUIDUrlParam('unit', unitToRedirectTo.id),
+                unit: createUUIDUrlParam('unit', unit.id),
                 domain: createUUIDUrlParam('domain', domainId)
               }
             });
           }
         }
-      } else {
-        const result = await this.$api.unit.create({
-          name: 'Unit 1',
-          description: this.$t('firstUnitDescription')
-        });
-        const unit = await this.$api.unit.fetch(result.resourceId);
-        const domainId = getFirstDomainDomaindId(unit);
-
-        if (domainId) {
-          this.$router.push({
-            name: 'unit-domains-domain',
-            params: {
-              unit: createUUIDUrlParam('unit', unit.id),
-              domain: createUUIDUrlParam('domain', domainId)
-            }
-          });
-        }
       }
-    }
+    });
 
-    this.units = units;
-  },
-  computed: {
-    maxUnits(): number | undefined {
-      const maxUnits = this.$user.auth.profile?.attributes?.maxUnits?.[0];
-
-      return maxUnits ? parseInt(maxUnits, 10) : maxUnits;
-    }
-  },
-  mounted() {
-    this.showWelcomeDialog = !LocalStorage.firstStepsCompleted;
-  },
-  methods: {
-    generateUnitDashboardLink(unitId: string) {
-      const unitToLinkTo = this.units.find((unit) => unit.id === unitId);
+    const generateUnitDashboardLink = (unitId: string) => {
+      const unitToLinkTo = units.value.find((unit) => unit.id === unitId);
       let domainId;
 
       if (unitToLinkTo) {
@@ -164,7 +158,17 @@ export default Vue.extend({
       }
 
       return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
-    }
+    };
+
+    return {
+      fetchState,
+      generateUnitDashboardLink,
+      search,
+      showWelcomeDialog,
+      units,
+
+      t
+    };
   }
 });
 </script>

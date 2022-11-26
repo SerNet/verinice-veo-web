@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, ComputedRef, defineComponent, h, inject } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, h, inject, watch } from '@nuxtjs/composition-api';
 import { maxBy } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
@@ -59,39 +59,50 @@ export default defineComponent({
     const objectData = inject<ComputedRef<IBaseObject>>('objectData');
     const translations = inject<ComputedRef<IBaseObject>>('translations');
 
+    watch(
+      () => props.objectSchema,
+      (newValue) => {
+        // @ts-ignore
+        window.VEO_FORMS_DEBUG_MAP.set(props.objectSchemaPointer, JSON.stringify(newValue));
+      },
+      { immediate: true, deep: true }
+    );
+
     const { locale } = useI18n();
 
-    const controls = AVAILABLE_CONTROLS.flatMap((control) => {
-      const definition = control.CONTROL_DEFINITION;
-      if (definition) {
-        if (process.dev && props.debug) {
-          // eslint-disable-next-line no-console
-          console.log(`VeoForm::Control: Checking whether ${definition.name[locale.value] || definition.name[0]} meets all conditions...`);
-        }
-        const evaluatedConditions: boolean[] = definition.conditions?.(props) || [];
-        const truthyConditions = evaluatedConditions.filter((condition) => condition).length;
+    const controls = computed(() =>
+      AVAILABLE_CONTROLS.flatMap((control) => {
+        const definition = control.CONTROL_DEFINITION;
+        if (definition) {
+          if (process.dev && props.debug) {
+            // eslint-disable-next-line no-console
+            console.log(`VeoForm::Control: Checking whether ${definition.name[locale.value] || definition.name[0]} meets all conditions...`);
+          }
+          const evaluatedConditions: boolean[] = definition.conditions?.(props) || [];
+          const truthyConditions = evaluatedConditions.filter((condition) => condition).length;
 
-        if (process.dev && props.debug) {
-          for (let j = 0; j < evaluatedConditions.length; j++) {
-            if (evaluatedConditions[j]) {
-              // eslint-disable-next-line no-console
-              console.log(`VeoForm::Control: Condition ${j} is met`);
-            } else {
-              // eslint-disable-next-line no-console
-              console.log(`VeoForm::Control: Condition ${j} is NOT met`);
+          if (process.dev && props.debug) {
+            for (let j = 0; j < evaluatedConditions.length; j++) {
+              if (evaluatedConditions[j]) {
+                // eslint-disable-next-line no-console
+                console.log(`VeoForm::Control: Condition ${j} is met`);
+              } else {
+                // eslint-disable-next-line no-console
+                console.log(`VeoForm::Control: Condition ${j} is NOT met`);
+              }
             }
           }
-        }
 
-        if (evaluatedConditions.length === truthyConditions) {
-          return [{ control, truthyConditions }];
+          if (evaluatedConditions.length === truthyConditions) {
+            return [{ control, truthyConditions }];
+          }
         }
-      }
-      return [];
-    });
+        return [];
+      })
+    );
 
     if (process.dev && props.debug) {
-      for (const control of controls) {
+      for (const control of controls.value) {
         // eslint-disable-next-line no-console
         console.log(
           `Control ${control.control.CONTROL_DEFINITION.name[locale.value] || control.control.CONTROL_DEFINITION.name[0]} has ${control.truthyConditions} truthy conditions`
@@ -117,7 +128,7 @@ export default defineComponent({
     }));
 
     return () =>
-      h(maxBy(controls, 'truthyConditions')?.control.default, {
+      h(maxBy(controls.value, 'truthyConditions')?.control.default, {
         props: _props.value,
         key: elementKey.value,
         scopedSlots: {

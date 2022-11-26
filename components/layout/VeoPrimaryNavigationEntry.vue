@@ -25,7 +25,7 @@
     :data-component-name="componentName"
     @click="onClick"
   >
-    <v-list-item-icon v-if="icon">
+    <v-list-item-icon v-if="icon || faIcon">
       <v-tooltip
         right
         :disabled="!miniVariant"
@@ -35,7 +35,14 @@
             v-bind="attrs"
             v-on="on"
           >
-            <v-icon v-text="icon" />
+            <v-icon
+              v-if="icon"
+              v-text="icon"
+            />
+            <font-awesome-icon
+              v-else-if="faIcon"
+              :icon="faIcon"
+            />
           </div>
         </template>
         <span>{{ name }}</span>
@@ -60,6 +67,10 @@ export default defineComponent({
     },
     icon: {
       type: String,
+      default: undefined
+    },
+    faIcon: {
+      type: [String, Array],
       default: undefined
     },
     to: {

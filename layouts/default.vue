@@ -27,23 +27,49 @@
         v-if="$vuetify.breakpoint.xs"
         @click="drawer = true"
       />
-      <VeoBreadcrumbs
-        :key="breadcrumbsKey"
-        write-to-title
-      />
+      <VeoBreadcrumbs write-to-title />
       <v-spacer />
+      <DownloadDocsButton v-if="$route.path.startsWith('/docs')" />
       <VeoLanguageSwitch />
-      <div class="mx-3">
-        <VeoTutorialButton />
-      </div>
+      <VeoTutorialButton />
+      <v-tooltip
+        v-if="ability.can('view', 'documentation')"
+        bottom
+      >
+        <template #activator="{ on }">
+          <v-btn
+            active-class="veo-active-list-item-no-background"
+            class="mr-3"
+            color="black"
+            icon
+            target="_blank"
+            to="/docs/index"
+            exact
+            v-on="on"
+          >
+            <v-icon>
+              {{ mdiHelpCircleOutline }}
+            </v-icon>
+          </v-btn>
+        </template>
+        <template #default>
+          {{ t('openDocumentationInNewTab') }}
+        </template>
+      </v-tooltip>
       <VeoAppAccountBtn
-        v-if="$user.auth.profile"
-        :username="$user.auth.profile.username"
-        :prename="$user.auth.profile.firstName"
-        :lastname="$user.auth.profile.lastName"
-        :email="$user.auth.profile.email"
-        @logout="$user.auth.logout('/')"
+        v-if="authenticated"
+        @create-unit="createUnit"
       />
+      <v-btn
+        v-else
+        color="primary"
+        icon
+        to="/login"
+      >
+        <v-icon>
+          {{ mdiAccountCircleOutline }}
+        </v-icon>
+      </v-btn>
     </v-app-bar>
     <VeoPrimaryNavigation
       v-model="drawer"
@@ -69,24 +95,34 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, Ref, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api';
-
+import { computed, defineComponent, onMounted, Ref, ref, useContext, useMeta, useRoute, useRouter } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
+import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
+
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-
+import { useVeoUser } from '~/composables/VeoUser';
 import 'intro.js/minified/introjs.min.css';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
   setup(_props, context) {
     const { $api } = useContext();
+    const { authenticated } = useVeoUser();
     const route = useRoute();
     const router = useRouter();
+    const { ability } = useVeoPermissions();
 
-    const { alerts, listenToRootEvents } = useVeoAlerts();
+    const { alerts, displaySuccessMessage, listenToRootEvents } = useVeoAlerts();
     const { t } = useI18n();
     listenToRootEvents(context.root);
+
+    useMeta(() => ({
+      title: 'verinice.',
+      titleTemplate: '%s - verinice.veo'
+    }));
+
     //
     // Global navigation
     //
@@ -97,10 +133,6 @@ export default defineComponent({
     //
     const newUnitDialog = ref({ value: false, persistent: false });
 
-    const getUnits = () => {
-      return $api.unit.fetchAll();
-    };
-
     function createUnit(persistent: boolean = false) {
       newUnitDialog.value.value = true;
       newUnitDialog.value.persistent = persistent;
@@ -108,38 +140,25 @@ export default defineComponent({
 
     // automatically create first unit if none exists and then change to new unit
     onMounted(async () => {
-      const units = await getUnits();
-      if (units.length === 0) {
-        const data = await $api.unit.create({ name: t('unit.default.name'), description: t('unit.default.description') });
-        const unit = await $api.unit.fetch(data.resourceId);
-        const { displaySuccessMessage } = useVeoAlerts();
-        displaySuccessMessage(t('unit.created').toString());
-        context.root.$emit(VeoEvents.UNIT_CREATED);
-        const domainId = getFirstDomainDomaindId(unit);
-        if (domainId) {
-          router.push({
-            name: 'unit-domains-domain',
-            params: {
-              unit: createUUIDUrlParam('unit', unit.id),
-              domain: createUUIDUrlParam('domain', domainId)
-            }
-          });
+      if (authenticated.value) {
+        const units = await $api.unit.fetchAll();
+        if (units.length === 0) {
+          const data = await $api.unit.create({ name: t('unit.default.name'), description: t('unit.default.description') });
+          const unit = await $api.unit.fetch(data.resourceId);
+          displaySuccessMessage(t('unit.created').toString());
+          context.root.$emit(VeoEvents.UNIT_CREATED);
+          const domainId = getFirstDomainDomaindId(unit);
+          if (domainId) {
+            router.push({
+              name: 'unit-domains-domain',
+              params: {
+                unit: createUUIDUrlParam('unit', unit.id),
+                domain: createUUIDUrlParam('domain', domainId)
+              }
+            });
+          }
         }
       }
-    });
-
-    // UI related events (unit switch/creation)
-    context.root.$on(VeoEvents.UNIT_CREATE, (persistent: boolean) => {
-      createUnit(persistent);
-    });
-
-    // Breadcrumbs related events
-    const breadcrumbsKey = ref(0);
-    context.root.$on(VeoEvents.ENTITY_UPDATED, () => {
-      // Update breadcrumbsKey to rerender VeoBreadcrumbs component, when entity displayName is updated
-      setTimeout(() => {
-        breadcrumbsKey.value += 1;
-      }, 1000);
     });
 
     const domainId = computed((): string | undefined => {
@@ -152,19 +171,21 @@ export default defineComponent({
     const unitId = computed(() => (separateUUIDParam(route.value.params.unit).id.length > 0 ? separateUUIDParam(route.value.params.unit).id : undefined));
 
     return {
+      ability,
+      authenticated,
+      createUnit,
       domainId,
       unitId,
       drawer,
       newUnitDialog,
-      breadcrumbsKey,
-      alerts
+      alerts,
+
+      t,
+      mdiAccountCircleOutline,
+      mdiHelpCircleOutline
     };
   },
-  head() {
-    return {
-      titleTemplate: '%s - verinice.veo'
-    };
-  }
+  head: {}
 });
 </script>
 
@@ -178,3 +199,14 @@ export default defineComponent({
   background: $background-primary;
 }
 </style>
+
+<i18n>
+{
+  "en": {
+    "openDocumentationInNewTab": "Open online documentation in new tab"
+  },
+  "de": {
+    "openDocumentationInNewTab": "Online-Dokumentaion in neuem Tab öffnen"
+  }
+}
+</i18n>
