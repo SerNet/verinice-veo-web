@@ -72,7 +72,9 @@ export default defineComponent({
     });
 
     // Matrix selection
-    const protectionGoals = computed(() => (data.value?.categories || []).map((category) => ({ text: category.translations[locale.value].name, id: category.id })));
+    const protectionGoals = computed(() =>
+      (data.value?.categories || []).map((category) => ({ text: category.translations[locale.value]?.name || Object.values(category.translations)[0].name, id: category.id }))
+    );
 
     // Matrix stuff
     const getMatrixData = (protectionGoal: string) => {

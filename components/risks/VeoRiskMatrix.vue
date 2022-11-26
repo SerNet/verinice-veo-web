@@ -37,7 +37,7 @@
           :style="{ backgroundColor: probability.htmlColor, color: getMostContrastyColor(probability.htmlColor) }"
         >
           <div class="d-flex flex-wrap justify-center">
-            <span>{{ probability.translations[locale].name }}&nbsp;</span>
+            <span>{{ probability.translations[locale] && probability.translations[locale].name || Object.values(probability.translations)[0].name }}&nbsp;</span>
             <v-tooltip
               max-width="400px"
               top
@@ -52,7 +52,7 @@
                 </v-icon>
               </template>
               <template #default>
-                {{ probability.translations[locale].description }}
+                {{ probability.translations[locale] && probability.translations[locale].description || Object.values(probability.translations)[0].description }}
               </template>
             </v-tooltip>
           </div>
@@ -79,7 +79,7 @@
           :style="{ backgroundColor: impact.htmlColor, color: getMostContrastyColor(impact.htmlColor) }"
         >
           <div class="d-flex flex-wrap justify-center">
-            <span>{{ impact.translations[locale].name }}&nbsp;</span>
+            <span>{{ impact.translations[locale] && impact.translations[locale].name || Object.values(impact.translations)[0].name }}&nbsp;</span>
             <v-tooltip
               max-width="400px"
               top
@@ -93,7 +93,7 @@
                 </v-icon>
               </template>
               <template #default>
-                {{ impact.translations[locale].description }}
+                {{ impact.translations[locale] && impact.translations[locale].description || Object.values(impact.translations)[0].description }}
               </template>
             </v-tooltip>
           </div>
@@ -106,7 +106,7 @@
             :style="{ backgroundColor: _value.htmlColor, color: getMostContrastyColor(_value.htmlColor) }"
           >
             <div class="d-flex flex-wrap justify-center">
-              <span>{{ _value.translations[locale].name }}&nbsp;</span>
+              <span>{{ _value.translations[locale] && _value.translations[locale].name || Object.values(_value.translations)[0].name }}&nbsp;</span>
               <v-tooltip
                 max-width="400px"
                 top
@@ -120,7 +120,7 @@
                   </v-icon>
                 </template>
                 <template #default>
-                  {{ _value.translations[locale].description }}
+                  {{ _value.translations[locale] && _value.translations[locale].description || Object.values(_value.translations)[0].description }}
                 </template>
               </v-tooltip>
             </div>
