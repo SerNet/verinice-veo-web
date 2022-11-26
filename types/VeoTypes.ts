@@ -140,7 +140,6 @@ export interface IVeoPiaMandatoryRule {
     };
   }[];
   output?: boolean;
-  index?: number; // Needed internally
 }
 export interface IVeoDomain extends IVeoBaseObject {
   name: string;

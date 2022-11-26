@@ -70,59 +70,6 @@
               </v-tooltip>
             </template>
           </VeoNestedMenu>
-          <VeoPopoverMenu
-            v-if="item.decisionRules && Object.keys(item.decisionRules).length > 0"
-          >
-            <template #activator="{ on, attrs }">
-              <v-btn
-                icon
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon>
-                  {{ mdiInformationOutline }}
-                </v-icon>
-              </v-btn>
-            </template>
-            <div
-              v-for="(rules, outputGroupIndex) of item.decisionRules"
-              :key="outputGroupIndex"
-              class="pt-4 px-2"
-            >
-              <span class="text-body-1">{{ t('rulesWithResult', [t(`output.${rules[0].output}`).toString()]) }}</span>
-              <ul>
-                <li
-                  v-for="rule in rules"
-                  :key="rule.index"
-                  :class="{
-                    'font-weight-bold': rule.index=== item.decisiveRule,
-                    'veo-disabled': !item.matchingRules || !item.matchingRules.includes(rule.index || 0)
-                  }"
-                  class="my-2"
-                >
-                  {{ rule.description[locale] || Object.values(rule.description)[0] }}
-                </li>
-              </ul>
-            </div>
-            <v-divider class="mb-1" />
-            <i18n
-              tag="p"
-              path="rules.ruleBold"
-              class="text-body-2 mx-3 mb-0"
-            >
-              <b>{{ t('rules.bold') }}</b>
-            </i18n>
-            <i18n
-              tag="p"
-              path="rules.ruleGrey"
-              class="text-body-2 mx-3 mb-0"
-            >
-              <span class="veo-disabled">{{ t('rules.grey') }}</span>
-            </i18n>
-            <p class="text-body-2 mx-3 mb-0 pb-2">
-              {{ t('rules.ruleDefault') }}
-            </p>
-          </VeoPopoverMenu>
         </v-list-item-action>
       </v-list-item>
     </template>
@@ -189,37 +136,11 @@ export default defineComponent({
 {
   "en": {
     "fix": "Fix",
-    "noErrors": "No errors found!",
-    "output": {
-      "false": "no",
-      "true": "yes",
-      "undefined": "unknown"
-    },
-    "rules": {
-      "bold": "Bold",
-      "grey": "Greyed out",
-      "ruleBold": "{0} rules are responsible for the decision.",
-      "ruleDefault": "Not greyed out rules apply.",
-      "ruleGrey": "{0} rules don't apply."
-    },
-    "rulesWithResult": "Rules with the result {0}:"
+    "noErrors": "No errors found!"
   },
   "de": {
     "fix": "Beheben",
-    "noErrors": "Keine Fehler gefunden!",
-    "output": {
-      "false": "nein",
-      "true": "ja",
-      "undefined": "unbestimmt"
-    },
-    "rules": {
-      "bold": "Fettgedruckte",
-      "grey": "Ausgegraute",
-      "ruleBold": "{0} Regeln sind verantwortlich für die Entscheidung",
-      "ruleDefault": "Nicht ausgegraute Regeln treffen zu.",
-      "ruleGrey": "{0} Regeln treffen nicht zu."
-    },
-    "rulesWithResult": "Regeln mit dem Ergebnis {0}:"
+    "noErrors": "Keine Fehler gefunden!"
   }
 }
 </i18n>

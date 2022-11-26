@@ -410,15 +410,7 @@ export default defineComponent({
 
     const objectInformation = computed<VeoSchemaValidatorMessage[]>(() => {
       const information: VeoSchemaValidatorMessage[] = [];
-      const decisionRules: VeoSchemaValidatorMessage['decisionRules'] = (domain.value?.decisions?.piaMandatory?.rules || []).reduce((previousValue, currentValue, index) => {
-        const key = currentValue.output === undefined ? 'undefined' : currentValue.output ? 'true' : 'false';
-        if (previousValue[key]) {
-          previousValue[key].push({ ...currentValue, index });
-        } else {
-          previousValue[key] = [{ ...currentValue, index }];
-        }
-        return previousValue;
-      }, Object.create(null));
+      const decisionRules: VeoSchemaValidatorMessage['decisionRules'] = domain.value?.decisions?.piaMandatory?.rules || [];
 
       if (objectData.value?.domains?.[props.domainId]?.subType === 'PRO_DataProcessing') {
         const decisionName = domain.value?.decisions?.piaMandatory?.name[locale.value] || Object.values(domain.value?.decisions?.piaMandatory?.name || {})[0];
@@ -426,36 +418,33 @@ export default defineComponent({
           if (props.objectMetaData.decisionResults.piaMandatory.value) {
             information.push({
               code: 'I_PIA_MANDATORY',
-              message: `${decisionName}: ${t('global.button.yes').toString()}`,
+              message: `${decisionName}: ${t('global.button.yes').toString()} (${
+                decisionRules[props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule].description[locale.value]
+              })`,
               params: {
                 type: 'info'
-              },
-              decisionRules,
-              decisiveRule: props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule || -1,
-              matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
+              }
             });
           } else {
             information.push({
               code: 'I_PIA_NOT_MANDATORY',
-              message: `${decisionName}: ${t('global.button.no').toString()}`,
+              message: `${decisionName}: ${t('global.button.no').toString()} (${
+                decisionRules[props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule].description[locale.value]
+              })`,
               params: {
                 type: 'success'
-              },
-              decisionRules,
-              decisiveRule: props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule || -1,
-              matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
+              }
             });
           }
         } else {
           information.push({
             code: 'I_PIA_MANDATORY_UNKNOWN',
-            message: `${decisionName}: ${upperFirst(t('unknown').toString())}`,
+            message: `${decisionName}: ${upperFirst(t('unknown').toString())} (${
+              decisionRules[props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule].description[locale.value]
+            })`,
             params: {
               type: 'info'
-            },
-            decisionRules,
-            decisiveRule: props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule || -1,
-            matchingRules: props.objectMetaData?.decisionResults?.piaMandatory?.matchingRules || []
+            }
           });
         }
       }
