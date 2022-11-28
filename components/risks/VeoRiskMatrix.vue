@@ -106,7 +106,7 @@
             :style="{ backgroundColor: _value.htmlColor, color: getMostContrastyColor(_value.htmlColor) }"
           >
             <div class="d-flex flex-wrap justify-center">
-              <span>{{ _value.translations[locale] && _value.translations[locale].name || Object.values(_value.translations)[0].name }}&nbsp;</span>
+              <span>{{ riskValues[_value.ordinalValue].translations[locale] && riskValues[_value.ordinalValue].translations[locale].name || Object.values(riskValues[_value.ordinalValue].translations)[0].name }}&nbsp;</span>
               <v-tooltip
                 max-width="400px"
                 top
@@ -120,7 +120,7 @@
                   </v-icon>
                 </template>
                 <template #default>
-                  {{ _value.translations[locale] && _value.translations[locale].description || Object.values(_value.translations)[0].description }}
+                  {{ riskValues[_value.ordinalValue].translations[locale] && riskValues[_value.ordinalValue].translations[locale].description || Object.values(riskValues[_value.ordinalValue].translations)[0].description }}
                 </template>
               </v-tooltip>
             </div>
@@ -166,6 +166,10 @@ export default defineComponent({
     },
     impacts: {
       type: Array as PropType<IVeoRiskPotentialImpact[]>,
+      default: () => []
+    },
+    riskValues: {
+      type: Array as PropType<IVeoRiskValue[]>,
       default: () => []
     }
   },

@@ -83,7 +83,8 @@ export default defineComponent({
       return {
         impacts: reverse(cloneDeep(category?.potentialImpacts || [])),
         value: reverse(cloneDeep(category?.valueMatrix || [])),
-        probabilities: data.value?.probability.levels || []
+        probabilities: data.value?.probability.levels || [],
+        riskValues: data.value?.riskValues || []
       };
     };
 
