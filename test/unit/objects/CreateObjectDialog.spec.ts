@@ -89,7 +89,7 @@ const mockDefaults = {
   }
 } as any;
 
-describe('CreateObjectDialog.vue', () => {
+describe.skip('CreateObjectDialog.vue', () => {
   // Skipping because CompositionAPI watch doesn't get fired
   it.skip('should open create object dialog, enter a value, close the dialog and check whether the form has been reset', async () => {
     document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app

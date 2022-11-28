@@ -18,7 +18,6 @@
 import { isArray, isObject } from 'lodash';
 import ObjectSchemaHelper from './ObjectSchemaHelper2';
 import { IBaseObject } from './utils';
-import { IVeoPiaMandatoryRule } from '~/types/VeoTypes';
 
 export type VeoSchemaValidatorRequiredProperty = string | { key: string; value: any };
 
@@ -35,11 +34,8 @@ export interface VeoSchemaValidatorProperty {
 export interface VeoSchemaValidatorMessage {
   code: string;
   message: string;
-  fixable?: boolean;
   params?: IBaseObject;
   actions?: { title: string; callback: CallableFunction }[];
-  decisionRules?: IVeoPiaMandatoryRule[];
-  matchingRules?: number[];
 }
 
 export interface VeoSchemaValidatorValidationResult {
