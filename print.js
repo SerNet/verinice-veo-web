@@ -27,7 +27,7 @@ async function main() {
   const shorten = (str, len) => (str.length > len ? str.substr(0, len) + '...' : str);
   const url = process.argv[2] || `http://localhost:3000/docs/?print`;
   console.log('Opening browser...');
-  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--export-tagged-pdf'] });
+  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--export-tagged-pdf'], pipe: true });
   console.log('Browser openend, creating new page');
   const page = await browser.newPage();
   console.log('New page created, registering event listeners');
