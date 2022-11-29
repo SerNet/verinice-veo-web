@@ -98,7 +98,7 @@ export default defineComponent({
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
-    const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + translations.value?.lang[locale.value]?.[props.objectType]);
+    const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + upperFirst(translations.value?.lang[locale.value]?.[props.objectType] || props.objectType));
 
     // Seeding of empty form
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
