@@ -436,7 +436,6 @@ export default defineComponent({
             });
           }
         } else {
-          console.log(props.objectMetaData);
           information.push({
             code: 'I_PIA_MANDATORY_UNKNOWN',
             message: `${decisionName}: ${upperFirst(t('unknown').toString())}` + (decisiveRuleDescription ? ` (${decisiveRuleDescription})` : ''),
