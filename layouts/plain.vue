@@ -47,6 +47,16 @@
         :email="profile.email"
         @logout="logout"
       />
+      <v-btn
+        v-else
+        color="primary"
+        icon
+        :href="$config.accountPath"
+      >
+        <v-icon>
+          {{ mdiAccountCircleOutline }}
+        </v-icon>
+      </v-btn>
     </v-app-bar>
     <v-main>
       <nuxt />
@@ -56,7 +66,9 @@
 </template>
 
 <script lang="ts">
+import { mdiAccountCircleOutline } from '@mdi/js';
 import { defineComponent, useMeta } from '@nuxtjs/composition-api';
+
 import { useVeoUser } from '~/composables/VeoUser';
 
 export default defineComponent({
@@ -72,7 +84,9 @@ export default defineComponent({
 
     return {
       logout,
-      profile
+      profile,
+
+      mdiAccountCircleOutline
     };
   },
   head: {}
