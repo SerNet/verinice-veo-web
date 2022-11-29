@@ -50,6 +50,7 @@
     </v-app-bar>
     <v-main>
       <nuxt />
+      <VeoCookieBanner />
     </v-main>
   </v-app>
 </template>
