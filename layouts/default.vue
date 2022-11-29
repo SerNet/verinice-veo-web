@@ -82,6 +82,7 @@
       class="overflow-hidden"
     >
       <nuxt />
+      <VeoCookieBanner />
     </v-main>
     <VeoGlobalAlert
       v-if="alerts[0]"

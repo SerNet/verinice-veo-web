@@ -18,7 +18,7 @@
 <template>
   <v-list-item
     :to="to"
-    color="primary"
+    active-class="veo-active-list-item"
     dense
     :exact="exact"
     :class="classes"
