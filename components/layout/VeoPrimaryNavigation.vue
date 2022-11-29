@@ -251,7 +251,7 @@ export default defineComponent({
 
           return {
             key: objectSchema.title,
-            name: translations.value?.lang[locale.value]?.[objectSchema.title] || '',
+            name: upperFirst(translations.value?.lang[locale.value]?.[objectSchema.title] || objectSchema.title),
             icon: _icon?.library === 'mdi' ? (_icon?.icon as string) : undefined,
             faIcon: _icon?.library === 'fa' ? _icon?.icon : undefined,
             activePath: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectSchema.title}`,
