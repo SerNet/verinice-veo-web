@@ -17,37 +17,62 @@
 -->
 <template>
   <div class="wrapper">
-    <v-row class="flex-column text-center">
-      <v-col class="d-flex">
-        <VeoAppLogoDesktop />
-      </v-col>
-      <v-col class="mt-10">
-        <v-btn
-          depressed
-          block
-          color="primary"
-          class="login-button"
-          @click="login"
-        >
-          {{ t('login') }}
-        </v-btn>
-      </v-col>
-      <v-col v-if="$config.accountPath">
-        <v-btn
-          depressed
-          block
-          color="white"
-          :href="$config.accountPath"
-        >
-          {{ t('register') }}
-        </v-btn>
-      </v-col>
-    </v-row>
+    <VeoAppLogoDesktop />
+    <VeoCard class="mt-2">
+      <v-card-text class="d-flex justify-space-around">
+        <div style="flex-basis: 0; flex-grow: 1">
+          <h4 class="text-h4 mb-4 cta">
+            {{ t('loginCTA') }}
+          </h4>
+          <div class="text-center">
+            <v-btn
+              color="primary"
+              depressed
+              x-large
+              @click="login"
+            >
+              {{ t('login') }}
+            </v-btn>
+          </div>
+        </div>
+        <v-divider
+          class="mx-7"
+          vertical
+          light
+        />
+        <div style="flex-basis: 0; flex-grow: 1">
+          <h4 class="text-h4 mb-4 cta">
+            {{ t('createAccountCTA') }}
+          </h4>
+          <div class="text-center">
+            <v-btn
+              v-if="$config.accountPath"
+              depressed
+              x-large
+              :href="$config.accountPath"
+            >
+              {{ t('register') }}
+            </v-btn>
+          </div>
+        </div>
+      </v-card-text>
+    </VeoCard>
+    <div class="text-center mt-2">
+      <a
+        :href="dataProtectionRegulationLink"
+        target="_blank"
+      >{{ t('dataProtectionRegulations') }}</a>
+      <span class="mx-1">|</span>
+      <a
+        :href="imprintLink"
+        target="_blank"
+      >{{ t('imprint') }}</a>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext } from '@nuxtjs/composition-api';
+import { computed, defineComponent, useContext } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { useVeoUser } from '~/composables/VeoUser';
@@ -55,7 +80,7 @@ import { useVeoUser } from '~/composables/VeoUser';
 export default defineComponent({
   layout: 'plain',
   setup() {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const context = useContext();
     const { login: _login, initialize, keycloakInitialized } = useVeoUser();
 
@@ -66,8 +91,14 @@ export default defineComponent({
     // Needed as a separate function, as _login would be undefined if directly called from within the template.
     const login = () => _login('/');
 
+    const dataProtectionRegulationLink = computed(() => (locale.value === 'en' ? 'https://www.sernet.de/en/data-protection-declaration/' : 'https://www.sernet.de/datenschutz/'));
+    const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.verinice.com/en/left/Imprint/' : 'https://account.verinice.com/impressum/'));
+
     return {
+      dataProtectionRegulationLink,
+      imprintLink,
       login,
+
       t
     };
   }
@@ -77,10 +108,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
+    "createAccountCTA": "Create a new account",
     "login": "Login",
     "register": "Register"
   },
   "de": {
+    "createAccountCTA": "Einen neuen Account erstellen",
     "login": "Anmelden",
     "register": "Registrieren"
   }
@@ -101,9 +134,24 @@ export default defineComponent({
     font-size: 52px;
     font-weight: 400;
   }
-}
 
-.v-btn {
-  border-radius: 0px;
+  .cta {
+    height: 75px;
+  }
 }
 </style>
+
+<i18n>
+{
+  "en": {
+    "dataProtectionRegulations": "Data protection regulations",
+    "imprint": "Imprint",
+    "loginCTA": "Login with an existing account"
+  },
+  "de": {
+    "dataProtectionRegulations": "Datenschutzerklärung",
+    "imprint": "Impressum",
+    "loginCTA": "Mit einem vorhandenen Account anmelden"
+  }
+}
+</i18n>

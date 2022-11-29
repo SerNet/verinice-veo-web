@@ -66,9 +66,6 @@ export default defineComponent({
 
     const onLanguageSwitch = (locale: string) => {
       i18n.setLocale(locale);
-
-      // Reload to make sure everything changed language
-      window.location.reload();
     };
 
     return {
