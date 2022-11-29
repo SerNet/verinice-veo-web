@@ -414,13 +414,14 @@ export default defineComponent({
 
       if (objectData.value?.domains?.[props.domainId]?.subType === 'PRO_DataProcessing') {
         const decisionName = domain.value?.decisions?.piaMandatory?.name[locale.value] || Object.values(domain.value?.decisions?.piaMandatory?.name || {})[0];
+        const decisiveRuleDescription =
+          decisionRules[props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule]?.description[locale.value] ||
+          Object.values(decisionRules[props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule]?.description || {})[0];
         if (props.objectMetaData?.decisionResults?.piaMandatory?.value !== undefined) {
           if (props.objectMetaData.decisionResults.piaMandatory.value) {
             information.push({
               code: 'I_PIA_MANDATORY',
-              message: `${decisionName}: ${t('global.button.yes').toString()} (${
-                decisionRules[props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule].description[locale.value]
-              })`,
+              message: `${decisionName}: ${t('global.button.yes').toString()}` + (decisiveRuleDescription ? ` (${decisiveRuleDescription})` : ''),
               params: {
                 type: 'info'
               }
@@ -428,20 +429,17 @@ export default defineComponent({
           } else {
             information.push({
               code: 'I_PIA_NOT_MANDATORY',
-              message: `${decisionName}: ${t('global.button.no').toString()} (${
-                decisionRules[props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule].description[locale.value]
-              })`,
+              message: `${decisionName}: ${t('global.button.no').toString()}` + (decisiveRuleDescription ? ` (${decisiveRuleDescription})` : ''),
               params: {
                 type: 'success'
               }
             });
           }
         } else {
+          console.log(props.objectMetaData);
           information.push({
             code: 'I_PIA_MANDATORY_UNKNOWN',
-            message: `${decisionName}: ${upperFirst(t('unknown').toString())} (${
-              decisionRules[props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule].description[locale.value]
-            })`,
+            message: `${decisionName}: ${upperFirst(t('unknown').toString())}` + (decisiveRuleDescription ? ` (${decisiveRuleDescription})` : ''),
             params: {
               type: 'info'
             }
