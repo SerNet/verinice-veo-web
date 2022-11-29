@@ -23,7 +23,14 @@
   margin-top: 8px;
  }
 
- ::v-deep img {
+ .nuxt-content img {
   max-width: 100%;
 }
+
+pre, code {
+  white-space: normal;
+}
  
+html {
+  font-size: 14px;
+}

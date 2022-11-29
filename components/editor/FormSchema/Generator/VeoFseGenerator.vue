@@ -25,13 +25,7 @@ import FseControl from './elements/VeoFseControl.vue';
 import FseLayout from './elements/VeoFseLayout.vue';
 import VeoFseWidget from './elements/VeoFseWidget.vue';
 import { UISchema, UISchemaElement } from '~/types/UISchema';
-import {
-  IVeoFormSchemaCustomTranslationEvent,
-  IVeoFormSchemaItemDeleteEvent,
-  IVeoFormSchemaItemUpdateEvent,
-  IVeoFormSchemaTranslationCollection,
-  IVeoTranslationCollection
-} from '~/types/VeoTypes';
+import { IVeoFormSchemaTranslationCollection, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { IVeoFormsElementDefinition } from '~/components/forms/types';
 
 const WIDGETS: IVeoFormsElementDefinition[] = [];
@@ -60,11 +54,6 @@ export default Vue.extend({
       required: true
     }
   },
-  methods: {
-    onUpdateCustomTranslation(event: IVeoFormSchemaCustomTranslationEvent): void {
-      this.$emit('update-custom-translation', event);
-    }
-  },
   render(h): VNode {
     const createComponent = (element: UISchemaElement, formSchemaPointer: string, elementLevel: number): VNode => {
       // Create children of layout "elements"
@@ -86,11 +75,7 @@ export default Vue.extend({
                 customTranslations: this.customTranslations,
                 language: this.language
               },
-              on: {
-                delete: (event: IVeoFormSchemaItemDeleteEvent) => this.$emit('delete', event),
-                update: (event: IVeoFormSchemaItemUpdateEvent) => this.$emit('update', event),
-                'update-custom-translation': (event: IVeoFormSchemaCustomTranslationEvent) => this.onUpdateCustomTranslation(event)
-              }
+              on: this.$listeners
             },
             createChildren()
           );
@@ -124,11 +109,7 @@ export default Vue.extend({
               ...partOfProps,
               scope: element.scope || ''
             },
-            on: {
-              delete: (event: IVeoFormSchemaItemDeleteEvent) => this.$emit('delete', event),
-              update: (event: IVeoFormSchemaItemUpdateEvent) => this.$emit('update', event),
-              'update-custom-translation': (event: IVeoFormSchemaCustomTranslationEvent) => this.onUpdateCustomTranslation(event)
-            }
+            on: this.$listeners
           });
         }
         case 'Label':
@@ -142,11 +123,7 @@ export default Vue.extend({
               customTranslations: this.customTranslations,
               language: this.language
             },
-            on: {
-              delete: (event: IVeoFormSchemaItemDeleteEvent) => this.$emit('delete', event),
-              update: (event: IVeoFormSchemaItemUpdateEvent) => this.$emit('update', event),
-              'update-custom-translation': (event: IVeoFormSchemaCustomTranslationEvent) => this.onUpdateCustomTranslation(event)
-            }
+            on: this.$listeners
           });
         case 'Widget':
           // eslint-disable-next-line no-case-declarations
@@ -164,9 +141,7 @@ export default Vue.extend({
               formSchemaPointer,
               description: widgetDefinition.description[this.$i18n.locale] || Object.values(widgetDefinition.description)[0]
             },
-            on: {
-              delete: (event: IVeoFormSchemaItemDeleteEvent) => this.$emit('delete', event)
-            }
+            on: this.$listeners
           });
       }
     };

@@ -39,8 +39,9 @@ import { cloneDeep } from 'lodash';
 
 import VeoObjectIcon from '~/components/objects/VeoObjectIcon.vue';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
-import { useThrottleNextTick } from '~/composables/utils';
+import { useFormatters, useThrottleNextTick } from '~/composables/utils';
 import { separateUUIDParam } from '~/lib/utils';
+import { useVeoUser } from '~/composables/VeoUser';
 
 export type ObjectTableItems = IVeoPaginatedResponse<IVeoEntity[]> | Array<IVeoEntity>;
 
@@ -116,12 +117,14 @@ export default defineComponent({
     click: (_: any) => {}
   },
   setup(props, { emit, slots, attrs, listeners }) {
-    const { d, t } = useI18n();
+    const { t } = useI18n();
     const route = useRoute();
-    const { $user, $api, i18n } = useContext();
+    const { $api, i18n } = useContext();
+    const { tablePageSize } = useVeoUser();
     const vm = getCurrentInstance();
+    const { formatDateTime } = useFormatters();
 
-    const translations = useAsync(() => $api.translation.fetch(i18n.locales as any), 'translations');
+    const translations = useAsync(() => $api.translation.fetch(i18n.locales.map((locale: any) => locale.code)), 'translations');
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
     /**
@@ -129,7 +132,7 @@ export default defineComponent({
      */
     const formatDate: ObjectTableFormatter = (v) => {
       try {
-        return d(new Date(v), 'long').replace(/,/g, '');
+        return formatDateTime(new Date(v)).value;
       } catch (e) {
         return '';
       }
@@ -160,7 +163,7 @@ export default defineComponent({
     /**
      * Render date column using date formatter
      */
-    const renderDate: ObjectTableRenderer = ({ item }) => formatDate(item.updatedAt);
+    const renderDate: ObjectTableRenderer = ({ item }) => (item.updatedAt ? formatDate(item.updatedAt) : '');
     /**
      * Render created at / updated at tooltip
      */
@@ -290,7 +293,7 @@ export default defineComponent({
     /**
      * Default cell classes
      */
-    const defaultCellClasses = ['flex-nowrap', 'text-no-wrap', 'cursor-pointer'];
+    const defaultCellClasses = ['flex-nowrap', 'text-no-wrap'];
     /**
      * Classes to apply when truncate is set
      */
@@ -333,7 +336,7 @@ export default defineComponent({
         ...props.additionalHeaders
       ]
         .map((header) => {
-          const cellClass = defaultCellClasses.concat(header.cellClass || [], header.truncate ? truncateClasses : []);
+          const cellClass = defaultCellClasses.concat(header.cellClass || [], header.truncate ? truncateClasses : [], listeners.click ? 'cursor-pointer' : []);
           return {
             ...header,
             text: header.text ?? t(`objectlist.${header.value}`).toString(),
@@ -377,7 +380,6 @@ export default defineComponent({
       };
     });
 
-    const itemsPerPage = computed(() => $user.tablePageSize);
     const firstOrValue = <T extends unknown>(v: T | T[]): T => (Array.isArray(v) ? v[0] : v);
     const pageUpdate = {
       newPage: props.page,
@@ -490,7 +492,7 @@ export default defineComponent({
           sortDesc: props.sortDesc,
           page: props.page,
           loading: props.loading,
-          itemsPerPage: itemsPerPage.value,
+          itemsPerPage: tablePageSize.value,
           footerProps: {
             itemsPerPageOptions: [10, 20, 50, -1]
           },
@@ -498,29 +500,33 @@ export default defineComponent({
         },
         on: {
           ...listeners,
-          'update:page'(page: number) {
+          'update:page': (page: number) => {
             emit('update:page', page);
             emitPageUpdate({ newPage: page });
           },
-          'update:items-per-page'(itemsPerPage: number) {
-            $user.tablePageSize = itemsPerPage;
+          'update:items-per-page': (itemsPerPage: number) => {
+            tablePageSize.value = itemsPerPage;
             emit('update:items-per-page', itemsPerPage);
-            emitPageUpdate({});
+            emitPageUpdate({ newPage: 1 });
           },
-          'update:sort-by'(sortBy: string | string[]) {
+          'update:sort-by': (sortBy: string | string[]) => {
             emit('update:sort-by', sortBy);
-            emitPageUpdate({ sortBy });
+            emitPageUpdate({ sortBy, newPage: 1 });
           },
-          'update:sort-desc'(sortDesc: boolean | boolean[]) {
+          'update:sort-desc': (sortDesc: boolean | boolean[]) => {
             emit('update:sort-desc', sortDesc);
-            emitPageUpdate({ sortDesc });
+            emitPageUpdate({ sortDesc, newPage: 1 });
           },
-          'click:row'(_item: any, context: any) {
-            if (Object.prototype.hasOwnProperty.call(attrs, 'show-select')) {
-              context.select(!context.isSelected);
-            }
-            emit('click', context);
-          }
+          ...(listeners.click
+            ? {
+                'click:row': (_item: any, context: any) => {
+                  if (Object.prototype.hasOwnProperty.call(attrs, 'show-select')) {
+                    context.select(!context.isSelected);
+                  }
+                  emit('click', context);
+                }
+              }
+            : {})
         },
         scopedSlots: { ...scopedSlots.value, ...slots }
       });

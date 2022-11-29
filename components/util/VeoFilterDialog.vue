@@ -116,7 +116,9 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { IVeoFilterDivider, IVeoFilterOption, IVeoFilterOptionType } from './VeoFilter.vue';
 import { IBaseObject, extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoFormSchemaMeta, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { useFetchForms } from '~/composables/api/forms';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 export default defineComponent({
   name: 'VeoFilterDialog',
@@ -152,23 +154,22 @@ export default defineComponent({
 
     // Fetching of object types & translations for status
     const objectTypes: Ref<IVeoSchemaEndpoint[]> = ref([]);
-    const formschemas: Ref<IVeoFormSchemaMeta[]> = ref([]);
     const subTypes: Ref<{ [schemaName: string]: { subType: string; name: IBaseObject; status: string[] }[] }> = ref({});
-    const translations: Ref<IVeoTranslations | undefined> = ref(undefined);
+
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+
+    const formsQueryParameters = computed(() => ({ domainId: props.domain }));
+    const formsQueryEnabled = computed(() => !!props.domain);
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     useFetch(async () => {
       // Only fetch object types once, as changes are highly unlikely (preemptively included, if fetch() gets called by a watcher in the future)
       if (objectTypes.value.length === 0) {
         objectTypes.value = await $api.schema.fetchAll();
-        formschemas.value = await $api.form.fetchAll(props.domain);
         for await (const objectType of objectTypes.value) {
           await fetchSubTypesForSchema(objectType.schemaName);
         }
-      }
-
-      // Only fetch translations once, as changes are highly unlikely (preemptively included, if fetch() gets called by a watcher in the future)
-      if (!translations.value) {
-        translations.value = await $api.translation.fetch(['de', 'en']);
       }
     });
 
@@ -182,7 +183,7 @@ export default defineComponent({
         // @ts-ignore TODO: Remove before merge
         extractSubTypesFromObjectSchema(_schema).map((subType) => ({
           ...subType,
-          name: formschemas.value.find((fs) => fs.subType === subType.subType)?.name || {}
+          name: (formSchemas.value as IVeoFormSchemaMeta[]).find((fs) => fs.subType === subType.subType)?.name || {}
         }))
       );
     }
@@ -239,8 +240,8 @@ export default defineComponent({
           selectOptions: props.allowedObjectTypes
             ? objectTypes.value
                 .filter((ot) => props.allowedObjectTypes!.includes(ot))
-                .map((objectType) => ({ text: t(`objectTypes.${objectType.schemaName}`).toString(), value: objectType.schemaName }))
-            : objectTypes.value.map((objectType) => ({ text: t(`objectTypes.${objectType.schemaName}`).toString(), value: objectType.schemaName })),
+                .map((objectType) => ({ text: translations.value?.lang[locale.value]?.[objectType.schemaName] || '', value: objectType.schemaName }))
+            : objectTypes.value.map((objectType) => ({ text: translations.value?.lang[locale.value]?.[objectType.schemaName] || '', value: objectType.schemaName })),
           onChange: () => {
             nextTick(() => {
               delete localFilter.value.subType;
@@ -256,8 +257,8 @@ export default defineComponent({
           selectOptions: availableSubTypes.value
             .map((subTypes) => ({ text: subTypes.name[locale.value], value: subTypes.subType }))
             .sort((a, b) => {
-              const sortValueA = formschemas.value.find((schema) => schema.subType === a.value)?.sorting;
-              const sortValueB = formschemas.value.find((schema) => schema.subType === b.value)?.sorting;
+              const sortValueA = (formSchemas.value as IVeoFormSchemaMeta[]).find((schema) => schema.subType === a.value)?.sorting;
+              const sortValueB = (formSchemas.value as IVeoFormSchemaMeta[]).find((schema) => schema.subType === b.value)?.sorting;
 
               if (!sortValueA) {
                 return 1;

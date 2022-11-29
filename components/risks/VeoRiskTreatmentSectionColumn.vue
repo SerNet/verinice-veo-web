@@ -21,12 +21,13 @@
     md="3"
   >
     <h3 class="text-h3">
-      {{ protectionGoal.name }}
+      {{ protectionGoal.translations[locale].name }}
     </h3>
     <v-select
       :value="riskTreatments"
       multiple
       color="primary"
+      :disabled="disabled"
       :label="upperFirst(t('riskTreatment').toString())"
       :items="treatmentOptions"
       class="veo-risk-dialog__risk-treatment-selection"
@@ -52,6 +53,7 @@
     <v-edit-dialog>
       <v-text-field
         :value="riskTreatmentExplanation"
+        :disabled="disabled"
         :label="upperFirst(t('explanation').toString())"
         hide-details
         @input="$emit('update:risk-treatment-explanation', $event)"
@@ -59,6 +61,7 @@
       <template #input>
         <v-textarea
           :value="riskTreatmentExplanation"
+          :disabled="disabled"
           :label="upperFirst(t('explanation').toString())"
           clearable
           auto-grow
@@ -81,6 +84,10 @@ import { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
       required: true
@@ -99,7 +106,7 @@ export default defineComponent({
     }
   },
   setup() {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
 
     const treatmentOptions = computed(() =>
       ['RISK_TREATMENT_ACCEPTANCE', 'RISK_TREATMENT_AVOIDANCE', 'RISK_TREATMENT_REDUCTION', 'RISK_TREATMENT_TRANSFER'].map((option) => ({
@@ -112,6 +119,7 @@ export default defineComponent({
       treatmentOptions,
 
       t,
+      locale,
       upperFirst
     };
   }

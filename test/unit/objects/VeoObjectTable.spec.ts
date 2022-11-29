@@ -32,6 +32,12 @@ describe('VeoObjectTable.vue', () => {
     mocks: {
       $nuxt: {
         context: {
+          app: {
+            i18n: {
+              t: (v: string) => v,
+              locale: 'de'
+            }
+          },
           i18n: {
             locales: [
               { code: 'de', file: 'de.ts', name: 'Deutsch' },
@@ -44,9 +50,6 @@ describe('VeoObjectTable.vue', () => {
                 return Promise.resolve([]);
               }
             }
-          },
-          $user: {
-            tablePageSize: 20
           }
         }
       },
@@ -81,7 +84,7 @@ describe('VeoObjectTable.vue', () => {
       ...mockDefaults,
       propsData: {
         items,
-        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
+        defaultHeaders: ['designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       }
     });
     const table = wrapper.findComponent(VDataTable);
@@ -96,7 +99,7 @@ describe('VeoObjectTable.vue', () => {
       ...mockDefaults,
       propsData: {
         items,
-        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
+        defaultHeaders: ['designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       }
     });
     const table = wrapper.findComponent(VDataTable);
@@ -112,7 +115,7 @@ describe('VeoObjectTable.vue', () => {
       ...mockDefaults,
       propsData: {
         items: data,
-        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
+        defaultHeaders: ['designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       },
       listeners: {
         'update:page': onUpdatePage
@@ -139,7 +142,7 @@ describe('VeoObjectTable.vue', () => {
       ...mockDefaults,
       propsData: {
         items: data,
-        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
+        defaultHeaders: ['designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       },
       listeners: {
         'update:items-per-page': onUpdateItemsPerPage
@@ -162,7 +165,7 @@ describe('VeoObjectTable.vue', () => {
       ...mockDefaults,
       propsData: {
         items: data,
-        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
+        defaultHeaders: ['designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       },
       listeners: {
         'page-change': onPageChange
@@ -190,7 +193,7 @@ describe('VeoObjectTable.vue', () => {
       ...mockDefaults,
       propsData: {
         items: data,
-        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
+        defaultHeaders: ['designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       },
       listeners: {
         click: onItemClick
@@ -215,7 +218,7 @@ describe('VeoObjectTable.vue', () => {
       propsData: {
         items: data,
         page: 2, // simulate page 2
-        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
+        defaultHeaders: ['designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       }
     });
     const table = wrapper.findComponent(VDataTable);
@@ -238,7 +241,7 @@ describe('VeoObjectTable.vue', () => {
       ...mockDefaults,
       propsData: {
         items: data,
-        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt'],
+        defaultHeaders: ['designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt'],
         sortBy: 'designator'
       }
     });
@@ -265,7 +268,7 @@ describe('VeoObjectTable.vue', () => {
       ...mockDefaults,
       propsData: {
         items: data,
-        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
+        defaultHeaders: ['designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       }
     });
     const table = wrapper.findComponent(VDataTable);

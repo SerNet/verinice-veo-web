@@ -37,6 +37,7 @@ exports[`InputUri.vue should be rendered InputUri field: Initial render 1`] = `
             <button
               aria-label="clear icon"
               class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
+              tabindex="-1"
               type="button"
             />
           </div>

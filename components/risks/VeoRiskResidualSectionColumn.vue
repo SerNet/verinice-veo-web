@@ -21,14 +21,14 @@
     md="3"
   >
     <h3 class="text-h3">
-      {{ protectionGoal.name }}
+      {{ protectionGoal.translations[locale].name }}
     </h3>
     <v-select
       :value="userDefinedResidualRisk || residualRisk"
       color="primary"
       :label="upperFirst(t('residualRisk').toString())"
       :items="riskValues"
-      :disabled="!riskTreatments.length"
+      :disabled="!riskTreatments.length || disabled"
       :clearable="!!(userDefinedResidualRisk && riskTreatments.length)"
       hide-details
       @input="$emit('update:user-defined-residual-risk', $event)"
@@ -63,13 +63,13 @@
       <v-text-field
         :value="residualRiskExplanation"
         :label="upperFirst(t('explanation').toString())"
-        :disabled="!riskTreatments.length"
+        :disabled="!riskTreatments.length || disabled"
         hide-details
         @input="$emit('update:residual-risk-explanation', $event)"
       />
       <template #input>
         <v-textarea
-          :disabled="!riskTreatments.length"
+          :disabled="!riskTreatments.length || disabled"
           :value="residualRiskExplanation"
           :label="upperFirst(t('explanation').toString())"
           clearable
@@ -94,6 +94,10 @@ import { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
       required: true
@@ -120,14 +124,15 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
 
-    const riskValues = computed(() => props.riskDefinition.riskValues.map((level) => ({ text: level.name, value: level.ordinalValue })));
+    const riskValues = computed(() => props.riskDefinition.riskValues.map((level) => ({ text: level.translations[locale.value].name, value: level.ordinalValue })));
 
     return {
       riskValues,
 
       t,
+      locale,
       upperFirst,
       mdiInformationOutline
     };

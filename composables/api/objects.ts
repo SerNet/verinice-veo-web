@@ -16,13 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { useContext } from '@nuxtjs/composition-api';
-import { UseQueryOptions } from 'vue-query/lib/vue';
-import { MaybeRef } from 'vue-query/lib/vue/types';
+import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 
-import { useQuery } from './utils/query';
+import { QueryOptions, useQuery } from './utils/query';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
-interface IVeoFetchObjectsParameters {
+export interface IVeoFetchObjectsParameters {
   unit: string;
   objectType: string;
   page?: number;
@@ -31,10 +30,15 @@ interface IVeoFetchObjectsParameters {
   childElementIds?: string;
 }
 
-interface IVeoFetchObjectParameters {
+export interface IVeoFetchObjectParameters {
   objectType: string;
   id: string;
 }
+
+export const objectsQueryKeys = {
+  objects: (queryParameters: IVeoFetchObjectsParameters) => ['objects', queryParameters.objectType, queryParameters.subType, { queryParameters }] as const,
+  object: (queryParameters: IVeoFetchObjectParameters) => ['object', queryParameters.objectType, queryParameters.id]
+};
 
 /**
  * Loads all objects up to a limit.
@@ -43,14 +47,21 @@ interface IVeoFetchObjectParameters {
  * @param queryOptions Options modifying query behaviour.
  * @returns Returns all objects matching the parameter criteria.
  */
-export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
+export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParameters>, queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
-  return useQuery<IVeoPaginatedResponse<IVeoEntity[]>>('objects', $api.entity.fetchAll, queryParameters, queryOptions);
+  return useQuery<IVeoPaginatedResponse<IVeoEntity[]>>(objectsQueryKeys.objects, $api.entity.fetchAll, queryParameters, queryOptions);
 };
 
-export const useFetchObject = (queryParameters: MaybeRef<IVeoFetchObjectParameters>, queryOptions?: Omit<UseQueryOptions, 'queryKey' | 'queryFn'>) => {
+/**
+ * Loads a single object, including object details
+ *
+ * @param queryParameters The parameters required by the api call.
+ * @param queryOptions Options modifying query behaviour.
+ * @returns Returns the object.
+ */
+export const useFetchObject = (queryParameters: MaybeRef<IVeoFetchObjectParameters>, queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
-  return useQuery<IVeoEntity>('object', $api.entity.fetch, queryParameters, queryOptions);
+  return useQuery<IVeoEntity>(objectsQueryKeys.object, $api.entity.fetch, queryParameters, queryOptions);
 };

@@ -40,7 +40,7 @@
         <template #default>
           <VeoObjectDetails
             class="mb-10"
-            :loading="$fetchState.pending"
+            :loading="loading"
             :object="object"
             :domain-id="domainId"
             :active-tab.sync="activeTab"
@@ -53,6 +53,7 @@
           <VeoObjectActionMenu
             color="primary"
             speed-dial-style="bottom: 12px; right: 0"
+            :disabled="ability.cannot('manage', 'objects')"
             :object="object"
             :type="activeTab"
             @reload="updateObjectRelationships"
@@ -66,11 +67,12 @@
       >
         <template #default>
           <VeoObjectForm
+            ref="objectForm"
             v-model="modifiedObject"
             class="pb-4"
-            :disabled="formDataIsRevision"
-            :object-schema="objectSchema"
-            :loading="$fetchState.pending"
+            :disabled="formDataIsRevision || ability.cannot('manage', 'objects')"
+            :object-type="objectParameter.type"
+            :loading="loading"
             :domain-id="domainId"
             :preselected-sub-type="preselectedSubType"
             :valid.sync="isFormValid"
@@ -82,7 +84,7 @@
           >
             <template
               v-if="formDataIsRevision"
-              #prepend-form-inner
+              #prepend-form
             >
               <VeoAlert
                 v-cy-name="'old-version-alert'"
@@ -104,7 +106,7 @@
                   <v-btn
                     v-cy-name="'reset-button'"
                     text
-                    :disabled="loading || !isFormDirty"
+                    :disabled="loading || !isFormDirty || ability.cannot('manage', 'objects')"
                     @click="resetForm"
                   >
                     {{ t('global.button.reset') }}
@@ -114,7 +116,7 @@
                     v-cy-name="'save-button'"
                     depressed
                     color="primary"
-                    :disabled="loading || !isFormDirty || !isFormValid"
+                    :disabled="loading || !isFormDirty || !isFormValid || ability.cannot('manage', 'objects')"
                     @click="saveObject"
                   >
                     {{ t('global.button.save') }}
@@ -125,6 +127,7 @@
                   <v-btn
                     v-cy-name="'restore-button'"
                     depressed
+                    :disabled="ability.cannot('manage', 'objects')"
                     color="primary"
                     @click="restoreObject"
                   >
@@ -153,7 +156,7 @@
             add-type="entity"
             :edited-object="object"
             :hierarchical-context="'child'"
-            :preselected-filters="linkObjectFilter"
+            :preselected-filters="{ subType: 'PRO_DPIA' }"
             @success="onDPIALinked"
           />
         </template>
@@ -163,32 +166,32 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onUnmounted, ref, useContext, useFetch, useRoute, Ref, useAsync, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
-import { cloneDeep, isEqual, omit, pick, upperFirst } from 'lodash';
+import { computed, defineComponent, onUnmounted, ref, useContext, useFetch, useRoute, Ref, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
+import { cloneDeep, omit, pick, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
-import { IBaseObject, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
+import { IBaseObject, isObjectEqual, separateUUIDParam } from '~/lib/utils';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
+import { useFetchForms } from '~/composables/api/forms';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
-    if (this.entityModifiedDialogVisible) {
+    if (this.entityModifiedDialogVisible || !this.isFormDirty) {
       next();
-    } else if (this.isFormDirty) {
+    } else {
       // If the form was modified and the dialog is closed, show it and abort navigation
       this.onContinueNavigation = () => this.$router.push({ name: to.name || undefined, params: to.params, query: to.query });
       this.entityModifiedDialogVisible = true;
       next(false);
-    } else {
-      // The form wasn't modified, proceed as if this hook doesn't exist
-      next();
     }
   },
   setup() {
@@ -196,13 +199,17 @@ export default defineComponent({
     const { $api, $config } = useContext();
     const route = useRoute();
     const router = useRouter();
-    const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+    const { displaySuccessMessage, displayErrorMessage, expireAlert } = useVeoAlerts();
     const { linkObject } = useVeoObjectUtilities();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
+    const { ability } = useVeoPermissions();
 
     const objectParameter = computed(() => separateUUIDParam(route.value.params.entity));
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
     const preselectedSubType = computed<string | undefined>(() => route.value.query.subType || (object.value?.domains?.[domainId.value]?.subType as any));
+
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
     const object = ref<IVeoEntity | undefined>(undefined);
     const modifiedObject = ref<IVeoEntity | undefined>(undefined);
@@ -240,7 +247,7 @@ export default defineComponent({
 
       addCustomBreadcrumb({
         key: objectTypeKey,
-        text: t(`objectTypes.${getSchemaEndpoint(endpoints.value, newObjectType)}`).toString(),
+        text: translations.value?.lang[locale.value]?.[getSchemaEndpoint(endpoints.value, newObjectType) || ''],
         to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${newObjectType}`,
         param: objectTypeKey,
         index: 0,
@@ -250,9 +257,12 @@ export default defineComponent({
     watch(() => objectParameter.value.type, onObjectTypeChanged, { immediate: true });
 
     const subTypeKey = 'object-detail-view-sub-type';
-    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
 
-    const onSubTypeChanged = async (newSubType?: string) => {
+    const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
+    const formsQueryEnabled = computed(() => !!domainId.value);
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+
+    const onSubTypeChanged = (newSubType?: string) => {
       if (customBreadcrumbExists(subTypeKey)) {
         removeCustomBreadcrumb(subTypeKey);
       }
@@ -262,11 +272,7 @@ export default defineComponent({
         return;
       }
 
-      if (!formSchemas.value.length) {
-        formSchemas.value = await $api.form.fetchAll(domainId.value);
-      }
-
-      const formSchema = formSchemas.value.find((formSchema) => formSchema.subType === newSubType);
+      const formSchema = (formSchemas.value as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === newSubType);
 
       addCustomBreadcrumb({
         key: subTypeKey,
@@ -282,6 +288,7 @@ export default defineComponent({
     onUnmounted(() => {
       removeCustomBreadcrumb(objectTypeKey);
       removeCustomBreadcrumb(subTypeKey);
+      expireOptimisticLockingAlert();
     });
 
     const notFoundError = computed(() => (fetchState.error as any)?.code === 404);
@@ -305,10 +312,9 @@ export default defineComponent({
     };
 
     // Forms part specific stuff
-    const objectSchema: Ref<IVeoObjectSchema | null> = useAsync(() => $api.schema.fetch(objectParameter.value.type, [domainId.value]));
-
-    const isFormDirty = computed(() => !isEqual(object.value, modifiedObject.value) && !formDataIsRevision.value);
+    const isFormDirty = computed(() => !isObjectEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity).isEqual && !formDataIsRevision.value);
     const isFormValid = ref(false);
+    const objectForm = ref();
 
     // Form actions
     function resetForm() {
@@ -328,7 +334,16 @@ export default defineComponent({
       loadObject();
     }
 
+    const optimisticLockingAlertKey = ref<undefined | number>(undefined);
+    const expireOptimisticLockingAlert = () => {
+      if (optimisticLockingAlertKey.value) {
+        expireAlert(optimisticLockingAlertKey.value);
+        optimisticLockingAlertKey.value = undefined;
+      }
+    };
+
     async function updateObject(successText: string, errorText: string) {
+      expireOptimisticLockingAlert();
       try {
         if (modifiedObject.value && object.value) {
           // @ts-ignore ETag is not defined on the type, however it is set by the api plugin
@@ -340,7 +355,7 @@ export default defineComponent({
         }
       } catch (e: any) {
         if (e.code === 412) {
-          displayErrorMessage(errorText, t('outdatedObject').toString(), {
+          optimisticLockingAlertKey.value = displayErrorMessage(errorText, t('outdatedObject').toString(), {
             objectModified: true,
             buttonText: t('global.button.no').toString(),
             eventCallbacks: {
@@ -348,7 +363,9 @@ export default defineComponent({
             }
           });
         } else {
-          displayErrorMessage(errorText, e.message, { details: cloneDeep({ object: modifiedObject.value, objectSchema: objectSchema.value, error: e.message }) });
+          displayErrorMessage(errorText, e.message, {
+            details: cloneDeep({ object: modifiedObject.value, objectSchema: objectForm.value.objectSchema, error: JSON.stringify(e) })
+          });
         }
       }
     }
@@ -397,8 +414,6 @@ export default defineComponent({
     const createDPIADialogVisible = ref(false);
     const linkObjectDialogVisible = ref(false);
 
-    const linkObjectFilter = { subType: 'PRO_DPIA' };
-
     const onDPIACreated = async (newObjectId: string) => {
       if (object.value) {
         await linkObject('child', pick(object.value, 'id', 'type'), { type: 'process', id: newObjectId });
@@ -437,7 +452,7 @@ export default defineComponent({
     watch(() => () => domainId.value, getAdditionalContext, { deep: true, immediate: true });
 
     return {
-      linkObjectFilter,
+      ability,
       VeoAlertType,
       additionalContext,
       createDPIADialogVisible,
@@ -449,6 +464,8 @@ export default defineComponent({
       linkObjectDialogVisible,
       metaData,
       modifiedObject,
+      objectForm,
+      objectParameter,
       onContinueNavigation,
       onDPIACreated,
       onDPIALinked,
@@ -467,7 +484,6 @@ export default defineComponent({
       loading,
       notFoundError,
       object,
-      objectSchema,
       upperFirst,
       updateObjectRelationships,
       loadObject,

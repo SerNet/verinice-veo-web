@@ -18,13 +18,13 @@
 <template>
   <a
     v-if="isPrintView"
-    :href="`#${toWithLeadingSlash}`"
+    :href="`#${transformedLink}`"
   >
     <slot name="default" />
   </a>
   <nuxt-link
     v-else
-    :to="`/docs${toWithLeadingSlash}`"
+    :to="`/docs${transformedLink}`"
   >
     <slot name="default" />
   </nuxt-link>
@@ -45,11 +45,17 @@ export default defineComponent({
 
     const isPrintView = Object.prototype.hasOwnProperty.call(route.value.query, 'print');
 
-    const toWithLeadingSlash = computed(() => (props.to.startsWith('/') ? props.to : '/' + props.to));
+    const linkContainsId = computed(() => props.to.includes('#'));
+    const linkId = computed(() => props.to.split('#')[1]);
+
+    const addLeadingSlashIfNotExists = (link: string) => (link.startsWith('/') ? link : '/' + link);
+    const removeTrailingSlashIfExists = (link: string) => (link.endsWith('/') ? link.substr(0, link.length - 1) : link);
+
+    const transformedLink = computed(() => removeTrailingSlashIfExists(linkContainsId.value && isPrintView ? linkId.value : addLeadingSlashIfNotExists(props.to)));
 
     return {
       isPrintView,
-      toWithLeadingSlash
+      transformedLink
     };
   }
 });

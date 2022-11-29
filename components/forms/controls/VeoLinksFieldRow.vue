@@ -19,11 +19,11 @@
   <div class="d-flex flex-column">
     <div>
       <VeoObjectSelect
-        :key="key"
         :value="value"
         :object-type="objectType"
         :sub-type="subType"
         :label="options.label"
+        :disabled="disabled"
         :domain-id="domainId"
         :hidden-values="hiddenValues"
         required
@@ -66,14 +66,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, useContext, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiPlus } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
-import { IVeoCustomLink, IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { IVeoCustomLink } from '~/types/VeoTypes';
+import { useFetchForms } from '~/composables/api/forms';
+import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field-row',
@@ -100,9 +102,9 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
-    const { $api } = useContext();
+  setup(props, { emit }) {
     const route = useRoute();
+    const { $api, $config } = useContext();
     const { t, locale } = useI18n();
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
@@ -110,10 +112,9 @@ export default defineComponent({
     const objectType = computed<string>(() => ((props.objectSchema as any).items.properties.target.properties.type.enum[0] + '').toLowerCase());
     const subType = computed<string>(() => (props.objectSchema as any).items.properties.target.properties.subType?.enum?.[0]);
 
-    const formSchemas = ref<IVeoFormSchemaMeta[]>();
-    useFetch(async () => {
-      formSchemas.value = await $api.form.fetchAll(domainId.value);
-    });
+    const queryParameters = computed(() => ({ domainId: domainId.value }));
+    const queryEnabled = computed(() => !!domainId.value);
+    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled });
 
     const createButtonLabel = computed(() =>
       subType.value ? formSchemas.value?.find((formSchema) => formSchema.subType === subType.value)?.name?.[locale.value] || objectType.value : objectType.value
@@ -121,12 +122,13 @@ export default defineComponent({
 
     // new object cration
     const createObjectDialogVisible = ref(false);
-    const onTargetCreated = () => {
-      key.value = key.value + 1;
+    const schemas = ref<IVeoSchemaEndpoint[]>([]);
+    const onTargetCreated = async (newElementId: string) => {
+      if (!schemas.value.length) {
+        schemas.value = await $api.schema.fetchAll();
+      }
+      emit('input', { targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas.value, objectType.value)}/${newElementId}` });
     };
-
-    // Used to remount VeoObjectSelect after object has been created to reload all items.
-    const key = ref(0);
 
     // Users should only be able to select an item once per link, thus we have to remove all already selected items from the VeoObjectSelect
     const hiddenValues = computed(() => props.otherSelectedLinks.filter((link) => link.target?.targetUri).map((link) => getEntityDetailsFromLink(link.target).id));
@@ -136,7 +138,6 @@ export default defineComponent({
       createObjectDialogVisible,
       domainId,
       hiddenValues,
-      key,
       objectType,
       onTargetCreated,
       subType,

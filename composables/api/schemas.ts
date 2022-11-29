@@ -15,4 +15,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-// To be implemented...
+import { useContext } from '@nuxtjs/composition-api';
+import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+
+import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
+import { IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
+
+export interface IVeoFetchSchemaParameters {
+  type: string;
+  domainIds: string[];
+}
+
+export const schemasQueryKeys = {
+  schemas: ['schemas'] as const,
+  schema: (queryParameters: IVeoFetchSchemaParameters) => ['schema', queryParameters.type, queryParameters.domainIds] as const
+};
+
+export const useFetchSchemas = (queryOptions?: QueryOptions) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoSchemaEndpoint[]>(schemasQueryKeys.schemas, $api.schema.fetchAll, {}, { ...queryOptions, staleTime: STALE_TIME.INFINITY, placeholderData: [] });
+};
+
+export const useFetchSchema = (queryParameters: MaybeRef<IVeoFetchSchemaParameters>, queryOptions?: QueryOptions) => {
+  const { $api } = useContext();
+
+  return useQuery<IVeoObjectSchema>(schemasQueryKeys.schema, $api.schema.fetch, queryParameters, { ...queryOptions, staleTime: STALE_TIME.MEDIUM });
+};

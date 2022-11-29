@@ -183,7 +183,7 @@ import { upperCase, upperFirst } from 'lodash';
 import Vue from 'vue';
 import { mdiFilter } from '@mdi/js';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
-import { IVeoCreateReportData, IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoReportMeta, IVeoReportsMeta } from '~/types/VeoTypes';
+import { IVeoCreateReportData, IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoReportMeta, IVeoReportsMeta, IVeoTranslations } from '~/types/VeoTypes';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-type';
@@ -198,6 +198,7 @@ export default Vue.extend({
       generatingReport: false as boolean,
       loading: false as boolean,
       objectType: undefined as undefined | string,
+      translations: { lang: {} } as IVeoTranslations,
       userSelectedSubType: undefined as undefined | string,
       filterDialogVisible: false,
       filterKeys: ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'],
@@ -216,6 +217,8 @@ export default Vue.extend({
     this.formschemas = await this.$api.form.fetchAll(this.domainId);
 
     this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
+
+    this.translations = await this.$api.translation.fetch([this.$i18n.locale]);
   },
   computed: {
     outputFormat(): string {
@@ -330,7 +333,6 @@ export default Vue.extend({
       if (this.objectType) {
         this.entities = await this.$api.entity.fetchAll(this.objectType, options.page, {
           ...(this.subType || this.subType === '' ? { subType: this.subType } : {}),
-          size: this.$user.tablePageSize,
           sortBy: options.sortBy,
           sortOrder: options.sortDesc ? 'desc' : 'asc',
           ...(this.filter || {})
@@ -346,7 +348,7 @@ export default Vue.extend({
       switch (label) {
         // Uppercase object types
         case 'objectType':
-          return this.$t(`objectTypes.${value}`).toString();
+          return value ? this.translations?.lang[this.$i18n.locale]?.[value] : undefined;
         // Translate sub types
         case 'subType':
           return this.formschemas.find((formschema) => formschema.subType === value)?.name?.[this.$i18n.locale] || value;

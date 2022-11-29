@@ -27,6 +27,7 @@
             <VeoRiskResidualSectionColumn
               v-if="protectionGoalExists(protectionGoal.id)"
               :key="protectionGoal.id"
+              :disabled="disabled"
               :protection-goal="protectionGoal"
               :risk-definition="riskDefinition"
               v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
@@ -52,6 +53,10 @@ export default defineComponent({
     data: {
       type: Array as PropType<IVeoRiskDefinition['riskValues']>,
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,

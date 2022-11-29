@@ -125,9 +125,12 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { mdiFilter } from '@mdi/js';
 import { getEntityDetailsFromLink, IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink } from '~/types/VeoTypes';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects } from '~/composables/api/objects';
+import { useFetchForms } from '~/composables/api/forms';
+import { useVeoUser } from '~/composables/VeoUser';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 export default defineComponent({
   name: 'VeoLinkObjectDialog',
@@ -193,20 +196,23 @@ export default defineComponent({
   setup(props, { emit }) {
     const route = useRoute();
     const { t, locale } = useI18n();
-    const { $api, $user } = useContext();
+    const { $api } = useContext();
+    const { tablePageSize } = useVeoUser();
     const { linkObject, unlinkObject } = useVeoObjectUtilities();
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
     const objectSchemas = ref<IVeoSchemaEndpoint[]>([]);
-    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
-    const translations = ref<IVeoTranslations['lang']>({});
+
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+
+    const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
+    const formsQueryEnabled = computed(() => !!domainId.value);
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     const { fetchState } = useFetch(async () => {
-      const [_schemas, _formschemas, _translations] = await Promise.all([$api.schema.fetchAll(), $api.form.fetchAll(domainId.value), $api.translation.fetch(['de', 'en'])]);
-      objectSchemas.value = _schemas;
-      formSchemas.value = _formschemas;
-      translations.value = _translations.lang;
+      objectSchemas.value = await $api.schema.fetchAll();
     });
 
     const editedObjectDisplayName = computed(() => ((props.editedObject as IVeoEntity).id ? (props.editedObject as IVeoEntity).displayName : props.editedObject.name));
@@ -222,22 +228,23 @@ export default defineComponent({
     const filter = ref<IBaseObject>({});
     const filterDialogVisible = ref(false);
 
-    const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
+    const objectsQueryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
     const resetQueryOptions = () => {
-      Object.assign(queryParameters, { page: 1, sortBy: 'name', sortDesc: false });
+      Object.assign(objectsQueryParameters, { page: 1, sortBy: 'name', sortDesc: false });
+      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
-    const combinedQueryParameters = computed(() => ({
-      size: $user.tablePageSize,
-      sortBy: queryParameters.sortBy,
-      sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
-      page: queryParameters.page,
+    const combinedObjectsQueryParameters = computed(() => ({
+      size: tablePageSize.value,
+      sortBy: objectsQueryParameters.sortBy,
+      sortOrder: objectsQueryParameters.sortDesc ? 'desc' : 'asc',
+      page: objectsQueryParameters.page,
       unit: separateUUIDParam(route.value.params.unit).id,
       ...filter.value
     }));
-    const queryEnabled = computed(() => !!filter.value.objectType);
+    const objectsQueryEnabled = computed(() => !!filter.value.objectType);
 
-    const { data: objectList, isLoading } = useFetchObjects(combinedQueryParameters as any, { enabled: queryEnabled });
+    const { data: objectList, isLoading, refetch } = useFetchObjects(combinedObjectsQueryParameters as any, { enabled: objectsQueryEnabled, keepPreviousData: true });
 
     watch(
       () => props.preselectedFilters,
@@ -266,12 +273,12 @@ export default defineComponent({
       switch (label) {
         // Uppercase object types
         case 'objectType':
-          return t(`objectTypes.${value}`).toString();
+          return value ? translations.value?.lang[locale.value]?.[value] : undefined;
         // Translate sub types
         case 'subType':
-          return formSchemas.value.find((formSchema) => formSchema.subType === value)?.name?.[locale.value] || value;
+          return (formSchemas.value as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === value)?.name?.[locale.value] || value;
         case 'status':
-          return translations.value[locale.value]?.[`${filter.value.objectType}_${filter.value.subType}_status_${value}`] || value;
+          return translations.value?.lang[locale.value]?.[`${filter.value.objectType}_${filter.value.subType}_status_${value}`] || value;
         default:
           return value;
       }
@@ -291,7 +298,8 @@ export default defineComponent({
 
     // refetch entities on page or sort changes (in VeoObjectTable)
     const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
-      Object.assign(queryParameters, { page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
+      Object.assign(objectsQueryParameters, { page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
+      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
     // get allowed filter-objectTypes for current parent and child type

@@ -46,6 +46,7 @@
           :key="document.path"
           class="page"
         >
+          <h2>{{ document.title }}</h2>
           <NuxtContent :document="document" />
           <div class="veo-pdf-preview-chapter-context">
             {{ getTranslatedHierarchyAsString(document) }}

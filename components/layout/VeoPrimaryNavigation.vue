@@ -55,9 +55,7 @@
       </div>
     </template>
     <template #default>
-      <v-list
-        :rounded="miniVariant"
-      >
+      <v-list :rounded="miniVariant">
         <v-list-item-group>
           <template
             v-for="item in items"
@@ -130,8 +128,10 @@ import {
   mdiChevronLeft,
   mdiChevronRight,
   mdiFileChartOutline,
+  mdiFileDocumentOutline,
   mdiHomeOutline,
   mdiHomeSwitchOutline,
+  mdiLoginVariant,
   mdiTableSettings,
   mdiTextBoxEditOutline
 } from '@mdi/js';
@@ -142,7 +142,6 @@ import { sortBy, upperFirst } from 'lodash';
 import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoReportsMeta } from '~/types/VeoTypes';
-import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/_unit/domains/_domain/index.vue';
@@ -152,6 +151,12 @@ import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/_unit/domains/_
 import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/_unit/domains/_domain/risks/_matrix.vue';
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/_unit/domains/_domain/editor/index.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/objects/VeoObjectIcon.vue';
+import { useFetchForms } from '~/composables/api/forms';
+import { useVeoUser } from '~/composables/VeoUser';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useFetchSchemas } from '~/composables/api/schemas';
+import { useDocTree } from '~/composables/docs';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 export interface INavItem {
   key: string;
@@ -196,8 +201,10 @@ export default defineComponent({
   },
   setup(props) {
     const { t, locale } = useI18n();
-    const { $api, $user, params } = useContext();
+    const { $api } = useContext();
+    const { authenticated, userSettings } = useVeoUser();
     const route = useRoute();
+    const { ability } = useVeoPermissions();
 
     // Layout stuff
     const miniVariant = ref<boolean>(LocalStorage.primaryNavMiniVariant);
@@ -207,25 +214,33 @@ export default defineComponent({
       LocalStorage.primaryNavMiniVariant = miniVariant.value;
     }
 
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+
     // objects specific stuff
-    const objectTypes = ref<IVeoSchemaEndpoint[]>([]);
     const objectSchemas = ref<IVeoObjectSchema[]>([]);
-    const formSchemas = ref<IVeoFormSchemaMeta[]>([]);
+
+    const queryParameters = computed(() => ({
+      domainId: props.domainId
+    }));
+    const allFormSchemasQueryEnabled = computed(() => !!props.domainId);
+    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
+
+    const { data: objectTypes } = useFetchSchemas({ enabled: authenticated });
+
     const { fetch: fetchObjectsEntries, fetchState: objectEntriesLoading } = useFetch(async () => {
       // Only load object types on the first call, as them changing while the user is using the application is highly unlikely
-      if (!objectTypes.value.length) {
-        objectTypes.value = await $api.schema.fetchAll();
-      }
       objectSchemas.value = [];
 
       // We only load the objectschemas to avoid loading some when the domain id is set and some if it isn't set
       if (props.domainId) {
-        for (const objectType of objectTypes.value) {
+        for (const objectType of objectTypes.value || []) {
           objectSchemas.value.push(await $api.schema.fetch(objectType.schemaName, [props.domainId]));
         }
-        formSchemas.value = await $api.form.fetchAll(props.domainId);
       }
     });
+
+    watch(() => objectTypes.value, fetchObjectsEntries, { deep: true });
 
     const objectTypesChildItems = computed<INavItem[]>(() =>
       objectSchemas.value
@@ -236,7 +251,7 @@ export default defineComponent({
 
           return {
             key: objectSchema.title,
-            name: t(`objectTypes.${objectSchema.title}`).toString(),
+            name: upperFirst(translations.value?.lang[locale.value]?.[objectSchema.title] || objectSchema.title),
             icon: _icon?.library === 'mdi' ? (_icon?.icon as string) : undefined,
             faIcon: _icon?.library === 'fa' ? _icon?.icon : undefined,
             activePath: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectSchema.title}`,
@@ -260,7 +275,9 @@ export default defineComponent({
               // dynamic sub type routes
               ...sortBy(
                 objectSubTypes.map((subType) => {
-                  const formSchema = formSchemas.value.find((formSchema) => formSchema.modelType === objectSchema.title && formSchema.subType === subType.subType);
+                  const formSchema = (formSchemas.value as IVeoFormSchemaMeta[]).find(
+                    (formSchema) => formSchema.modelType === objectSchema.title && formSchema.subType === subType.subType
+                  );
                   const displayName = formSchema?.name[locale.value] || subType.subType;
                   return {
                     key: displayName,
@@ -357,15 +374,6 @@ export default defineComponent({
       }))
     );
 
-    // nav item stuff
-    const maxUnits = computed<number | undefined>(() => {
-      const _maxUnits = $user.auth.profile?.attributes?.maxUnits?.[0];
-
-      return _maxUnits ? parseInt(_maxUnits, 10) : _maxUnits;
-    });
-
-    const isContentCreator = computed(() => !!$user.auth.roles.find((r: string) => r === 'veo-content-creator'));
-
     // Reload certain navigation items if domain changes
     watch(
       () => props.domainId,
@@ -456,32 +464,67 @@ export default defineComponent({
       }
     }));
 
+    const loginNavEntry = computed<INavItem>(() => ({
+      key: 'login',
+      name: t('login').toString(),
+      to: '/login',
+      icon: mdiLoginVariant,
+      componentName: 'login-nav-item'
+    }));
+
+    const docsNavEntry = computed<INavItem>(() => ({
+      key: 'docs',
+      name: t('breadcrumbs.docs').toString(),
+      to: '/docs/index',
+      icon: mdiFileDocumentOutline,
+      componentName: 'docs-nav-item',
+      activePath: '/docs',
+      children: docLinks.value
+    }));
+
+    const docLinks = useDocTree({
+      childrenKey: 'children',
+      buildItem(item) {
+        return {
+          ...item,
+          name: `${item.isDir ? upperFirst(item.dir.split('/').pop()) : item.title || upperFirst(item.slug)}`,
+          to: `/docs${item.path}`
+        };
+      }
+    });
+
     const items = computed<INavItem[]>(() => [
-      ...(maxUnits.value && maxUnits.value > 2 ? [unitSelectionNavEntry] : []),
+      ...(authenticated.value && userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry] : []),
       ...(props.unitId && props.domainId
         ? [
             domainDashboardNavEntry.value,
-            ...(props.domainId && props.unitId && isContentCreator.value ? [editorsNavEntry.value] : []),
+            ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
             objectsNavEntry.value,
             catalogsNavEntry.value,
             reportsNavEntry.value,
             risksNavEntry.value
           ]
-        : [])
+        : []),
+      ...(!authenticated.value ? [loginNavEntry.value] : []),
+      ...(route.value.path.startsWith('/docs') ? [docsNavEntry.value] : [])
     ]);
 
     // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
-    const homeLink = computed(() => (params.value.domain ? `/${params.value.unit}/domains/${params.value.domain}` : params.value.unit ? `/${params.value.unit}` : '/'));
+    const homeLink = computed(() =>
+      route.value.params.domain ? `/${route.value.params.unit}/domains/${route.value.params.domain}` : route.value.params.unit ? `/${route.value.params.unit}` : '/'
+    );
 
     return {
+      authenticated,
       items,
       homeLink,
       miniVariant,
       setMiniVariant,
 
+      t,
       mdiChevronLeft,
       mdiChevronRight,
-      t
+      mdiLoginVariant
     };
   }
 });
@@ -492,12 +535,14 @@ export default defineComponent({
   "en": {
     "collapse": "Collapse menu",
     "fix": "Fix menu",
-    "all": "all"
+    "all": "all",
+    "login": "Login"
   },
   "de": {
     "collapse": "Menü verstecken",
     "fix": "Menü fixieren",
-    "all": "alle"
+    "all": "alle",
+    "login": "Anmelden"
   }
 }
 </i18n>

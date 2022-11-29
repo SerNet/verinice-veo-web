@@ -31,7 +31,10 @@
     :multiple="multiple"
     @click:clear="$emit('input', undefined)"
   >
-    <template #item="{ attrs, item, on }">
+    <template
+      v-if="multiple"
+      #item="{ attrs, item, on }"
+    >
       <v-list-item
         v-if="item.value === '_empty_array_'"
         v-bind="attrs"
@@ -107,7 +110,7 @@ export default defineComponent({
       set(newValue: any) {
         const newValueIsArray = Array.isArray(newValue);
         const oldValueIsArray = Array.isArray(props.value);
-        const newValueIsEmpty = newValue?.includes('_empty_array_');
+        const newValueIsEmpty = Array.isArray(newValue) && newValue?.includes('_empty_array_');
         if (newValueIsArray && newValueIsEmpty && oldValueIsArray && !(!props.value.length && newValue.length > 1)) {
           emit('input', []);
         } else {

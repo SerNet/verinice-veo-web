@@ -40,12 +40,12 @@
       <v-spacer />
       <VeoLanguageSwitch class="mx-3" />
       <VeoAppAccountBtn
-        v-if="$user.auth.profile"
-        :username="$user.auth.profile.username"
-        :prename="$user.auth.profile.firstName"
-        :lastname="$user.auth.profile.lastName"
-        :email="$user.auth.profile.email"
-        @logout="$user.auth.logout('/')"
+        v-if="profile"
+        :username="profile.username"
+        :prename="profile.firstName"
+        :lastname="profile.lastName"
+        :email="profile.email"
+        @logout="logout"
       />
       <v-btn
         v-else
@@ -60,6 +60,7 @@
     </v-app-bar>
     <v-main>
       <nuxt />
+      <VeoCookieBanner />
     </v-main>
   </v-app>
 </template>
@@ -68,13 +69,23 @@
 import { mdiAccountCircleOutline } from '@mdi/js';
 import { defineComponent, useMeta } from '@nuxtjs/composition-api';
 
+import { useVeoUser } from '~/composables/VeoUser';
+
 export default defineComponent({
   setup() {
-    const meta = useMeta();
+    const { logout: _logout, profile } = useVeoUser();
 
-    meta.titleTemplate.value = '%s - verinice.veo';
+    useMeta(() => ({
+      title: 'verinice.',
+      titleTemplate: '%s - verinice.veo'
+    }));
+
+    const logout = () => _logout('/');
 
     return {
+      logout,
+      profile,
+
       mdiAccountCircleOutline
     };
   },

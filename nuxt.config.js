@@ -60,6 +60,7 @@ export default {
     formsApiUrl: process.env.VEO_FORMS_API_URL || 'https://api.develop.verinice.com/forms',
     historyApiUrl: process.env.VEO_HISTORY_API_URL || 'https://api.develop.verinice.com/history',
     reportsApiUrl: process.env.VEO_REPORTING_API_URL || 'https://api.develop.verinice.com/reporting',
+    accountsApiUrl: process.env.VEO_ACCOUNTS_API_URL || 'https://api.develop.verinice.com/accounts',
     oidcUrl: process.env.VEO_OIDC_URL || 'https://auth.staging.verinice.com/auth',
     oidcRealm: process.env.VEO_OIDC_REALM || 'verinice-veo',
     oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client',
@@ -71,7 +72,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/api', '~/plugins/navigationHelper', '~/plugins/user', '~/plugins/utils', '~/plugins/vue-query', '~/plugins/font-awesome'],
+  plugins: ['~/plugins/api', '~/plugins/navigationHelper', '~/plugins/utils', '~/plugins/vue-query', '~/plugins/font-awesome'],
 
   /**
    *
@@ -87,7 +88,7 @@ export default {
   },
 
   router: {
-    middleware: ['authentication', 'unitValidation']
+    middleware: ['urlValidation', 'authentication', 'unitValidation']
   },
   /*
    ** Nuxt.js modules
@@ -194,7 +195,7 @@ export default {
   /**
    *
    */
-  css: ['~/assets/main.scss', '~/assets/intro.scss'],
+  css: ['~/assets/main.scss', '~/assets/intro.scss', '~/assets/docs.scss'],
 
   /**
    *

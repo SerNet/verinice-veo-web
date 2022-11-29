@@ -2,9 +2,6 @@
 title: Domains
 position: 1
 ---
-
-### Domains
-
 The different subject areas that can be processed with the management system veo are called *domains*. At the moment it is planned that 3 domains will be included in veo:
 
 * Data protection

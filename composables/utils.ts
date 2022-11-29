@@ -16,8 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { NuxtApp } from '@nuxt/types/app';
-import { getCurrentInstance, nextTick, onMounted, useContext, useRoute } from '@nuxtjs/composition-api';
+import { computed, getCurrentInstance, nextTick, onMounted, useContext, useRoute } from '@nuxtjs/composition-api';
 import { kebabCase } from 'lodash';
+import { useI18n } from 'nuxt-i18n-composable';
+
+export const useFormatters = () => {
+  const { locale } = useI18n();
+
+  const formatDate = (date: Date) =>
+    computed(() =>
+      date.toLocaleDateString(locale.value, {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      })
+    );
+
+  const formatTime = (date: Date) => computed(() => date.toLocaleDateString(locale.value, { hour: '2-digit', minute: '2-digit' }));
+
+  const formatDateTime = (date: Date) =>
+    computed(() => date.toLocaleDateString(locale.value, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }));
+
+  return {
+    formatDate,
+    formatDateTime,
+    formatTime
+  };
+};
 
 /**
  * Performs the action `fn` and ignores further calls until nextTick

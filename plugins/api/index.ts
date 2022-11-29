@@ -18,6 +18,7 @@
 import defaultsDeep from 'lodash/defaultsDeep';
 import { Plugin, Context } from '@nuxt/types';
 
+import account from '~/plugins/api/account';
 import entity from '~/plugins/api/entity';
 import form from '~/plugins/api/form';
 import history from '~/plugins/api/history';
@@ -28,12 +29,12 @@ import report from '~/plugins/api/report';
 import domain from '~/plugins/api/domain';
 import monitoring from '~/plugins/api/monitoring';
 import catalog from '~/plugins/api/catalog';
-import { User } from '~/plugins/user';
 import { IVeoPaginationOptions } from '~/types/VeoTypes';
 import { sanitizeURLParams } from '~/lib/utils';
+import { IVeoUserComposable, useVeoUser } from '~/composables/VeoUser';
 
-export function createAPI(context: Context) {
-  return Client.create(context, { form, entity, history, schema, translation, unit, report, domain, catalog, monitoring });
+export function createAPI(context: Context, user: IVeoUserComposable) {
+  return Client.create(context, { account, form, entity, history, schema, translation, unit, report, domain, catalog, monitoring }, user);
 }
 
 export interface IAPIClient {
@@ -43,7 +44,8 @@ export interface IAPIClient {
 
 export enum VeoApiReponseType {
   JSON,
-  BLOB
+  BLOB,
+  VOID
 }
 
 /*
@@ -69,7 +71,6 @@ export interface RequestOptions extends RequestInit {
   query?: Record<string, string | number | undefined> & IVeoPaginationOptions;
   params?: Record<string, string | number | undefined>;
   json?: any;
-  retry?: boolean;
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
   reponseType?: VeoApiReponseType;
 }
@@ -81,25 +82,29 @@ export class Client {
   public baseFormURL: string;
   public baseHistoryURL: string;
   public baseReportURL: string;
+  public baseAccountURL: string;
   public _context: Context;
+  public _user: IVeoUserComposable;
 
-  static create<T extends Record<keyof T, IAPIClient>>(context: Context, namespaces: T): Client & { [K in keyof T]: ReturnType<T[K]> } {
-    const instance: any = new this(context);
+  static create<T extends Record<keyof T, IAPIClient>>(context: Context, namespaces: T, user: IVeoUserComposable): Client & { [K in keyof T]: ReturnType<T[K]> } {
+    const instance: any = new this(context, user);
     for (const key in namespaces) {
       instance[key] = namespaces[key](instance);
     }
     return instance;
   }
 
-  constructor(protected context: Context) {
+  constructor(protected context: Context, user: IVeoUserComposable) {
     this.build = context.$config.build;
     this.version = context.$config.version;
     this.baseURL = `${context.$config.apiUrl}`.replace(/\/$/, '');
     this.baseFormURL = `${context.$config.formsApiUrl}`.replace(/\/$/, '');
     this.baseHistoryURL = `${context.$config.historyApiUrl}`.replace(/\/$/, '');
     this.baseReportURL = `${context.$config.reportsApiUrl}`.replace(/\/$/, '');
+    this.baseAccountURL = `${context.$config.accountsApiUrl}`.replace(/\/$/, '');
 
     this._context = context;
+    this._user = user;
   }
 
   public getURL(url: string) {
@@ -107,6 +112,7 @@ export class Client {
       .replace(/^\/api\/forms/, this.baseFormURL)
       .replace(/^\/api\/history/, this.baseHistoryURL)
       .replace(/^\/api\/reports/, this.baseReportURL)
+      .replace(/^\/api\/accounts/, this.baseAccountURL)
       .replace(/^\/api/, this.baseURL);
     if (_url.startsWith('/')) {
       const loc = window.location;
@@ -119,7 +125,10 @@ export class Client {
    * Basic request function used by all api namespaces
    */
   public async req(url: string, options: RequestOptions = {}): Promise<any> {
-    const $user = this.context.app.$user as User;
+    // If for some reason keycloak isn't initialized, initialize it.
+    if (!this._user.keycloakInitialized.value) {
+      await this._user.initialize(this._context);
+    }
 
     // Only allow alpha-numeric values and dashes in url params (NOTE: Everything behind the ? is NOT a PARAM but part of the QUERY string)
     const splittedUrl = url.split('/');
@@ -139,8 +148,8 @@ export class Client {
     const defaults = {
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer ' + $user.auth.token,
-        'Accept-Language': this.context.app.i18n.locale
+        Authorization: 'Bearer ' + this._user.keycloak.value?.token,
+        'Accept-Language': this._context.i18n.locale
       } as Record<string, string>,
       method: 'GET',
       mode: 'cors'
@@ -153,10 +162,6 @@ export class Client {
       options.body = JSON.stringify(options.json);
       defaults.method = 'POST';
       defaults.headers['Content-Type'] = 'application/json';
-    }
-
-    if (options.retry === undefined) {
-      options.retry = true;
     }
 
     const combinedOptions = defaultsDeep(options, defaults);
@@ -175,63 +180,51 @@ export class Client {
 
     const reqURL = this.getURL(combinedUrl);
     const res = await fetch(reqURL, combinedOptions);
-
-    if (Number(res.status) === 401) {
-      // Check whether the error was returned because of keycloak or an invalid api endpoint configuration
-      try {
-        await $user.auth.loadUserProfile();
-      } catch (e) {
-        // If the user profile couldn't get loaded, the session seems to be invalid, so we try to refresh it
-        if (options.retry) {
-          try {
-            await $user.auth.refreshSession();
-            return this.req(url, { ...options, retry: false });
-          } catch (e) {
-            // eslint-disable-next-line no-console
-            console.error("Couldn't refresh session");
-            await $user.auth.login('/');
-          }
-        } else if (options.retry === false) {
-          await $user.auth.login('/');
-        }
-      }
-
-      return Promise.reject(new Error(`Invalid JWT: ${combinedOptions.method || 'GET'} ${reqURL}`));
-    } else if (options.method === 'DELETE') {
-      return Promise.resolve();
-    } else {
-      return await this.parseResponse(reqURL, res, options);
-    }
+    return await this.parseResponse(res, options);
   }
 
-  async parseResponse<T>(url: string, res: Response, options: RequestOptions): Promise<T & { $etag?: string }> {
-    let parsed;
+  async parseResponse<T>(res: Response, options: RequestOptions): Promise<T & { $etag?: string }> {
+    let parsedResponseBody;
 
-    switch (options.reponseType) {
-      case VeoApiReponseType.BLOB:
-        parsed = await res.blob();
-        break;
-      default:
-        parsed = await this.parseJson(res);
-        break;
-    }
-
-    if (parsed) {
-      if (res.status >= 200 && res.status <= 300) {
-        return parsed;
-      } else {
-        throw new VeoApiError(url, res.status, parsed.message, parsed);
+    try {
+      switch (options.reponseType) {
+        case VeoApiReponseType.BLOB:
+          parsedResponseBody = await res.blob();
+          break;
+        case VeoApiReponseType.VOID:
+          break;
+        default:
+          parsedResponseBody = await this.parseJson(res);
+          break;
       }
-    } else {
-      throw new Error('Invalid response');
+    } catch (e: any) {
+      // eslint-disable-next-line no-console
+      console.error(`API Plugin::parseResponse: Error while parsing response for ${res.url}`);
     }
+
+    const status = Number(res.status);
+    if (status >= 200 && status <= 300) {
+      return parsedResponseBody;
+    } else if (status === 401) {
+      if (this._user.keycloak.value && this._user.keycloak.value?.isTokenExpired()) {
+        await this._user.refreshKeycloakSession();
+        // Retry api call
+        return this.req(res.url, options);
+      }
+    }
+    throw new VeoApiError(res.url, res.status, parsedResponseBody?.message, parsedResponseBody);
   }
 
   async parseJson(res: Response): Promise<any> {
     const raw = await res.text();
     const etag = res.headers.get('etag');
 
-    const parsed = raw ? JSON.parse(raw) : true;
+    if (!raw) {
+      // eslint-disable-next-line no-console
+      console.warn(`API Plugin::parseJson: Empty response body for request ${res.url} with response type JSON`);
+      return undefined;
+    }
+    const parsed = JSON.parse(raw);
     if (typeof parsed === 'object' && etag) {
       Object.defineProperty(parsed, '$etag', { enumerable: false, configurable: false, value: etag });
     }
@@ -239,9 +232,11 @@ export class Client {
   }
 }
 
-export default (function (context, inject) {
-  inject('api', createAPI(context));
-} as Plugin);
+export default <Plugin>((context, inject) => {
+  const user = useVeoUser();
+
+  inject('api', createAPI(context, user));
+});
 
 export type Injection = ReturnType<typeof createAPI>;
 

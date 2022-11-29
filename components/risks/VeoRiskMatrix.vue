@@ -37,7 +37,7 @@
           :style="{ backgroundColor: probability.htmlColor, color: getMostContrastyColor(probability.htmlColor) }"
         >
           <div class="d-flex flex-wrap justify-center">
-            <span>{{ probability.name }}&nbsp;</span>
+            <span>{{ probability.translations[locale] && probability.translations[locale].name || Object.values(probability.translations)[0].name }}&nbsp;</span>
             <v-tooltip
               max-width="400px"
               top
@@ -52,7 +52,7 @@
                 </v-icon>
               </template>
               <template #default>
-                {{ probability.description }}
+                {{ probability.translations[locale] && probability.translations[locale].description || Object.values(probability.translations)[0].description }}
               </template>
             </v-tooltip>
           </div>
@@ -79,7 +79,7 @@
           :style="{ backgroundColor: impact.htmlColor, color: getMostContrastyColor(impact.htmlColor) }"
         >
           <div class="d-flex flex-wrap justify-center">
-            <span>{{ impact.name }}&nbsp;</span>
+            <span>{{ impact.translations[locale] && impact.translations[locale].name || Object.values(impact.translations)[0].name }}&nbsp;</span>
             <v-tooltip
               max-width="400px"
               top
@@ -93,7 +93,7 @@
                 </v-icon>
               </template>
               <template #default>
-                {{ impact.description }}
+                {{ impact.translations[locale] && impact.translations[locale].description || Object.values(impact.translations)[0].description }}
               </template>
             </v-tooltip>
           </div>
@@ -106,7 +106,7 @@
             :style="{ backgroundColor: _value.htmlColor, color: getMostContrastyColor(_value.htmlColor) }"
           >
             <div class="d-flex flex-wrap justify-center">
-              <span>{{ _value.name }}&nbsp;</span>
+              <span>{{ riskValues[_value.ordinalValue].translations[locale] && riskValues[_value.ordinalValue].translations[locale].name || Object.values(riskValues[_value.ordinalValue].translations)[0].name }}&nbsp;</span>
               <v-tooltip
                 max-width="400px"
                 top
@@ -120,7 +120,7 @@
                   </v-icon>
                 </template>
                 <template #default>
-                  {{ _value.description }}
+                  {{ riskValues[_value.ordinalValue].translations[locale] && riskValues[_value.ordinalValue].translations[locale].description || Object.values(riskValues[_value.ordinalValue].translations)[0].description }}
                 </template>
               </v-tooltip>
             </div>
@@ -167,10 +167,14 @@ export default defineComponent({
     impacts: {
       type: Array as PropType<IVeoRiskPotentialImpact[]>,
       default: () => []
+    },
+    riskValues: {
+      type: Array as PropType<IVeoRiskValue[]>,
+      default: () => []
     }
   },
   setup() {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
 
     const CONTRAST_THRESHOLD = 90;
 
@@ -188,7 +192,8 @@ export default defineComponent({
 
       mdiInformationOutline,
       upperFirst,
-      t
+      t,
+      locale
     };
   }
 });

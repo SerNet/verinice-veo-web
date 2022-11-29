@@ -27,6 +27,7 @@
             <VeoInherentRiskSectionColumn
               v-if="protectionGoalExists(protectionGoal.id)"
               :key="protectionGoal.id"
+              :disabled="disabled"
               :protection-goal="protectionGoal"
               :risk-definition="riskDefinition"
               :dirty-fields.sync="dirtyFields"
@@ -60,6 +61,10 @@ export default defineComponent({
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       default: () => {}
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props) {

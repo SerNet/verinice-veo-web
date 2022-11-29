@@ -45,3 +45,9 @@ html {
   
   color: $primary !important;
 }
+
+.veo-active-list-item-no-background {
+  &::before {
+    opacity: 0 !important;
+  }
+}

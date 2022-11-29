@@ -24,6 +24,7 @@
   >
     <template #activator="{ on }">
       <v-btn
+        v-bind="$attrs"
         color="black"
         icon
         data-component-name="language-select"
@@ -60,11 +61,11 @@ import { mdiTranslate } from '@mdi/js';
 
 export default defineComponent({
   setup() {
-    const { app } = useContext();
+    const { i18n } = useContext();
     const { t } = useI18n();
 
     const onLanguageSwitch = (locale: string) => {
-      app.i18n.setLocale(locale);
+      i18n.setLocale(locale);
 
       // Reload to make sure everything changed language
       window.location.reload();
