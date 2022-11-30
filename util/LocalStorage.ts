@@ -21,7 +21,7 @@ const LAST_UNIT = 'last-unit';
 export const FIRST_STEPS_COMPLETED = 'first-steps-completed';
 const UNIT_BEFORE_DEMOUNIT = ' unit-before-demounit';
 
-const PERSIST_ON_LOGOUT = [FIRST_STEPS_COMPLETED];
+const PERSIST_ON_LOGOUT = [FIRST_STEPS_COMPLETED, 'accepted-cookies'];
 
 export default class LocalStorage {
   static clear() {
