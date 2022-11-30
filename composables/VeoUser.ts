@@ -68,6 +68,8 @@ export const useVeoUser: () => IVeoUserComposable = () => {
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error('VeoUser::initialize_ Automatically refreshing keycloak session failed...');
+        keycloakInitialized.value = false;
+        keycloakInitializationStarted.value = false;
         await initialize(context);
       }
     };
