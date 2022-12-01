@@ -17085,7 +17085,7 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHE
 
 The following NPM package may be included in this product:
 
- - keycloak-js@18.0.1
+ - keycloak-js@20.0.1
 
 This package contains the following license and notice below:
 
@@ -28549,7 +28549,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following NPM package may be included in this product:
 
- - veo-web@1.0.6
+ - veo-web@1.0.7
 
 This package contains the following license and notice below:
 
