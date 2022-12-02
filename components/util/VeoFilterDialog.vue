@@ -57,7 +57,6 @@
           </v-card-text>
         </VeoCard>
         <div class="d-flex justify-center fill-width my-2">
-          {{ showAllFilters }}
           <v-btn
             text
             :data-cy="$utils.prefixCyData($options, 'expand-button')"
