@@ -27,6 +27,7 @@
   >
     <template #default>
       <VeoAlert
+        :value="true"
         :type="VeoAlertType.INFO"
         :title="t('computedValues')"
         :text="t('computedValuesCTA')"
