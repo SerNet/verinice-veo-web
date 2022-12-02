@@ -1,7 +1,8 @@
 # veo-web
 
-> Veo Web Frontend
-
+verinice.veo is a cloud-native application for managing information security and data protection
+![Dashbaord of verinice.veo](docs/manual/dashboard/media/veo_dashboard-screenshot.en.png)
+In this repository you will find the frontend of the application.
 ## Build Setup
 
 ```bash
