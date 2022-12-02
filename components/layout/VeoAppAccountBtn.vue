@@ -80,7 +80,7 @@
           target="_blank"
         >
           <v-list-item-title class="d-flex">
-            {{ t('myAccount') }}
+            {{ t('editAccount') }}
             <v-icon x-small>
               {{ mdiOpenInNew }}
             </v-icon>
@@ -181,16 +181,14 @@ export default defineComponent({
 {
   "en": {
     "about": "About verinice.",
-    "clientAdministration": "Client administration",
     "logout": "Logout",
-    "myAccount": "My account",
+    "editAccount": "Edit account",
     "notAvailable": "Not available"
   },
   "de": {
     "about": "Über verinice.",
-    "clientAdministration": "Clientverwaltung",
     "logout": "Abmelden",
-    "myAccount": "Mein Account",
+    "editAccount": "Benutzerkonto bearbeiten",
     "notAvailable": "Keine Angabe"
   }
 }
