@@ -57,6 +57,7 @@
           </v-card-text>
         </VeoCard>
         <div class="d-flex justify-center fill-width my-2">
+          {{ showAllFilters }}
           <v-btn
             text
             :data-cy="$utils.prefixCyData($options, 'expand-button')"
@@ -370,8 +371,8 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "collapseOptions": "more options",
-    "expandOptions": "less options",
+    "collapseOptions": "less options",
+    "expandOptions": "more options",
     "filterList": "filter list",
     "resetFilter": "reset filter",
     "submitFilter": "apply filter"
