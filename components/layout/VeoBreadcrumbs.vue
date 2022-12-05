@@ -123,9 +123,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, computed, ComputedRef, watch, useMeta, Ref, ref, reactive, set } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute, computed, ComputedRef, watch, useMeta, ref, reactive, set } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { isEmpty, isFunction, last } from 'lodash';
+import { isEmpty, last, pick } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal, mdiHomeOutline } from '@mdi/js';
 
 import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
@@ -136,16 +136,22 @@ import { useFetchDomain } from '~/composables/api/domains';
 import { useFetchReports } from '~/composables/api/reports';
 import { useFetchCatalog } from '~/composables/api/catalogs';
 
+type SupportedQuery = ':domain' | ':entity' | ':type' | ':catalog';
+
 interface IVeoBreadcrumbReplacementMapBreadcrumb {
   disabled?: boolean;
   exact?: boolean;
-  to?: string | Function;
-  text?: string | ((param: string, value?: string) => string);
-  queryParameterTransformationFn?: (param: string, value?: string) => {};
-  queryResultTransformationFn?: (param: string, value: string | undefined, data: any) => string;
-  icon?: any;
-  position?: number;
   hidden?: boolean;
+  icon?: any;
+  to?: string | Function;
+  dynamicText?: (param: string, value?: string) => string;
+  queriedText?: {
+    query: SupportedQuery;
+    parameterTransformationFn: (param: string, value?: string) => {};
+    resultTransformationFn: (param: string, value: string | undefined, data: any) => string;
+  };
+  position?: number;
+  text?: string;
 }
 
 export default defineComponent({
@@ -165,52 +171,6 @@ export default defineComponent({
     const { title } = useMeta();
     const { breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
 
-    // After this position, all breadcrumbs will be moved to a menu to avoid scrolling
-    const BREADCRUMB_BREAKOFF = 4;
-
-    // Async queries. For now we assume that every query type will only be used once (at most one object, one domain, one report is part of the path).
-    // Must be refactored if for example two objects are part of the path.
-    type asyncParameters = ':domain' | ':entity' | ':type' | ':catalog';
-    const queryParameterMap: { [K in asyncParameters]: Ref<IBaseObject> } = {
-      ':domain': ref({}),
-      ':entity': ref({}),
-      ':type': ref({}),
-      ':catalog': ref({})
-    };
-    const queryResultMap = reactive<{ [K in asyncParameters]: any }>({
-      ':domain': undefined,
-      ':entity': undefined,
-      ':type': undefined,
-      ':catalog': undefined
-    });
-
-    const objectQueryEnabled = computed(() => !isEmpty(queryParameterMap[':entity'].value));
-    const domainQueryEnabled = computed(() => !isEmpty(queryParameterMap[':domain'].value));
-    const catalogQueryEnabled = computed(() => !isEmpty(queryParameterMap[':catalog'].value));
-
-    useFetchObject(queryParameterMap[':entity'] as any, {
-      enabled: objectQueryEnabled,
-      onSuccess: (data) =>
-        set(queryResultMap, ':entity', (BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':entity') as any).queryResultTransformationFn(':entity', route.value.params[':entity'], data))
-    });
-    useFetchDomain(queryParameterMap[':domain'] as any, {
-      enabled: domainQueryEnabled,
-      onSuccess: (data) =>
-        set(queryResultMap, ':domain', (BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':domain') as any).queryResultTransformationFn(':domain', route.value.params[':domain'], data))
-    });
-    useFetchCatalog(queryParameterMap[':catalog'] as any, {
-      enabled: catalogQueryEnabled,
-      onSuccess: (data) =>
-        set(
-          queryResultMap,
-          ':catalog',
-          (BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':catalog') as any).queryResultTransformationFn(':catalog', route.value.params[':catalog'], data)
-        )
-    });
-    useFetchReports({
-      onSuccess: (data) =>
-        set(queryResultMap, ':type', (BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':type') as any).queryResultTransformationFn(':type', route.value.params[':type'], data))
-    });
     const { data: endpoints } = useFetchSchemas();
 
     const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbReplacementMapBreadcrumb>([
@@ -236,38 +196,50 @@ export default defineComponent({
         ':domain',
         {
           icon: mdiHomeOutline,
-          queryParameterTransformationFn: (_param, value) => ({ id: separateUUIDParam(value).id }),
-          queryResultTransformationFn: (_param, _value, data) => data.name
+          queriedText: {
+            query: ':domain',
+            parameterTransformationFn: (_param, value) => ({ id: separateUUIDParam(value).id }),
+            resultTransformationFn: (_param, _value, data) => data.name
+          }
         }
       ],
       [
         ':type', // Used for reports
         {
-          queryParameterTransformationFn: (_param, _value) => ({}),
-          queryResultTransformationFn: (_param, value, data) => data[value as string].name[locale.value]
+          queriedText: {
+            query: ':type',
+            parameterTransformationFn: (_param, _value) => ({}),
+            resultTransformationFn: (_param, value, data) => data[value as string].name[locale.value]
+          }
         }
       ],
       [
         ':entity',
         {
-          queryParameterTransformationFn: (_param, value) => {
-            const { type: objectType, id } = separateUUIDParam(value);
-            return { objectType, id };
-          },
-          queryResultTransformationFn: (_param, _value, data) => data.displayName
+          queriedText: {
+            query: ':entity',
+            parameterTransformationFn: (_param, value) => {
+              const { type: objectType, id } = separateUUIDParam(value);
+              return { objectType, id };
+            },
+            resultTransformationFn: (_param, _value, data) => data.displayName
+          }
         }
       ],
       [
         ':catalog',
         {
-          queryParameterTransformationFn: (_param, value) => ({ id: separateUUIDParam(value).id }),
-          queryResultTransformationFn: (_param, _value, data) => data.name
+          queriedText: {
+            query: ':catalog',
+            parameterTransformationFn: (_param, value) => ({ id: separateUUIDParam(value).id }),
+            resultTransformationFn: (_param, _value, data) => data.name
+          }
         }
       ],
       [
         ':matrix',
         {
-          text: (_param, value) => value || ''
+          dynamicText: (_param, value) => value || ''
         }
       ],
       [
@@ -294,6 +266,43 @@ export default defineComponent({
       ]
     ]);
 
+    // After this position, all breadcrumbs will be moved to a menu to avoid scrolling
+    const BREADCRUMB_BREAKOFF = 4;
+
+    // Queried text. For now we assume that every query type will only be used once (at most one object, one domain, one report is part of the path).
+    // Must be refactored if for example two objects are part of the path.
+    const queryResultMap = reactive<{ [K in SupportedQuery]: any }>({
+      ':domain': undefined,
+      ':entity': undefined,
+      ':type': undefined,
+      ':catalog': undefined
+    });
+
+    const successFunction = (key: SupportedQuery) => (data: any) =>
+      set(queryResultMap, key, BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(key)?.queriedText?.resultTransformationFn(key, route.value.params[key], data));
+
+    const objectQueryParameters = ref<any>({});
+    const objectQueryEnabled = computed(() => !isEmpty(objectQueryParameters.value));
+    useFetchObject(objectQueryParameters, {
+      enabled: objectQueryEnabled,
+      onSuccess: successFunction(':entity')
+    });
+    const domainQueryParameters = ref<any>({});
+    const domainQueryEnabled = computed(() => !isEmpty(domainQueryParameters.value));
+    useFetchDomain(domainQueryParameters, {
+      enabled: domainQueryEnabled,
+      onSuccess: successFunction(':domain')
+    });
+    const catalogQueryParameters = ref<any>({});
+    const catalogQueryEnabled = computed(() => !isEmpty(catalogQueryParameters.value));
+    useFetchCatalog(catalogQueryParameters, {
+      enabled: catalogQueryEnabled,
+      onSuccess: successFunction(':catalog')
+    });
+    useFetchReports({
+      onSuccess: successFunction(':type')
+    });
+
     const pathTemplate = computed(() => last(route.value.matched)?.path || '');
 
     const breadcrumbParts = computed(() => pathTemplate.value.split('/'));
@@ -302,17 +311,17 @@ export default defineComponent({
       breadcrumbParts.value
         .filter((part) => !BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.has(part) || !BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(part)?.hidden)
         .map((part, index) => {
-          const replacementMapEntry = BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(part);
+          const replacementMapEntry = BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(part) || {};
 
           return {
             param: part,
             exact: true,
-            text: ['text', 'icon', 'asyncTextQueryParameters'].some((key) => key in (replacementMapEntry || {})) ? undefined : t(`breadcrumbs.${part}`).toString(),
+            text: ['text', 'icon', 'queriedText', 'dynamicText'].some((key) => key in replacementMapEntry) ? undefined : t(`breadcrumbs.${part}`).toString(),
             index,
             key: breadcrumbParts.value.slice(0, breadcrumbParts.value.findIndex((_part) => _part === part) + 1).join('/') || '/',
             position: index * 10,
-            ...(replacementMapEntry || {}),
-            to: replacementMapEntry?.to
+            ...pick(replacementMapEntry, ['disabled', 'exact', 'hidden', 'icon', 'position', 'text']),
+            to: replacementMapEntry.to
               ? typeof replacementMapEntry.to === 'string'
                 ? replacementMapEntry.to
                 : replacementMapEntry.to()
@@ -323,10 +332,15 @@ export default defineComponent({
           };
         })
         .map((breadcrumb) => {
-          if (isFunction(breadcrumb.text)) {
-            breadcrumb.text = breadcrumb.text(breadcrumb.param, route.value.params[breadcrumb.param]);
+          const replacementMapEntry = BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(breadcrumb.param) || {};
+          if (replacementMapEntry?.dynamicText) {
+            return {
+              ...breadcrumb,
+              text: replacementMapEntry.dynamicText(breadcrumb.param, route.value.params[breadcrumb.param])
+            };
+          } else {
+            return breadcrumb;
           }
-          return breadcrumb;
         })
     );
 
@@ -351,11 +365,20 @@ export default defineComponent({
       () => breadcrumbs.value,
       (newValue) => {
         for (const breadcrumb of newValue) {
-          if (breadcrumb.queryParameterTransformationFn) {
-            queryParameterMap[breadcrumb.param as asyncParameters].value = breadcrumb.queryParameterTransformationFn(
-              breadcrumb.param,
-              route.value.params[breadcrumb.param.replace(/^:/, '')]
-            );
+          const replacementMapEntry = BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(breadcrumb.param);
+          if (replacementMapEntry?.queriedText) {
+            const transformedResult = replacementMapEntry.queriedText.parameterTransformationFn(breadcrumb.param, route.value.params[breadcrumb.param.replace(/^:/, '')]);
+            switch (replacementMapEntry.queriedText.query) {
+              case ':catalog':
+                catalogQueryParameters.value = transformedResult;
+                break;
+              case ':domain':
+                domainQueryParameters.value = transformedResult;
+                break;
+              case ':entity':
+                objectQueryParameters.value = transformedResult;
+                break;
+            }
           }
         }
       },
@@ -370,7 +393,7 @@ export default defineComponent({
     const updateTitle = () => {
       if (props.writeToTitle) {
         title.value = breadcrumbs.value
-          .map((entry) => (entry.queryParameterTransformationFn !== undefined ? queryResultMap[entry.param as asyncParameters] : entry.text))
+          .map((entry) => (BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.has(entry.param) ? queryResultMap[entry.param as SupportedQuery] : entry.text))
           .reverse()
           .slice(0, BREADCRUMB_BREAKOFF)
           .join(' - ');
