@@ -71,7 +71,7 @@ export default function (api: Client) {
       }
 
       query.owner = `/units/${unitId}`;
-      return api.req('/api/history/revisions/my-latest/', {
+      return api.req('/api/history/revisions/my-latest', {
         query
       });
     }
