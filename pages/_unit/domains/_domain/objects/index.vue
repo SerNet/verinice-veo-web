@@ -248,6 +248,16 @@ export default defineComponent({
       });
     };
     watch(() => objectType.value, onObjectTypeChanged, { immediate: true });
+    watch(
+      () => translations.value,
+      () => onObjectTypeChanged(objectType.value),
+      { deep: true }
+    );
+    watch(
+      () => endpoints.value,
+      () => onObjectTypeChanged(objectType.value),
+      { deep: true }
+    );
 
     const subTypeKey = 'object-overview-sub-type';
 
@@ -273,6 +283,11 @@ export default defineComponent({
       });
     };
     watch(() => subType.value, onSubTypeChanged, { immediate: true });
+    watch(
+      () => formSchemas.value,
+      () => onSubTypeChanged(subType.value),
+      { deep: true }
+    );
 
     onUnmounted(() => {
       removeCustomBreadcrumb(objectTypeKey);

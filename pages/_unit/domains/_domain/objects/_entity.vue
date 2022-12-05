@@ -262,6 +262,16 @@ export default defineComponent({
       });
     };
     watch(() => objectParameter.value.type, onObjectTypeChanged, { immediate: true });
+    watch(
+      () => translations.value,
+      () => onObjectTypeChanged(objectParameter.value.type),
+      { deep: true }
+    );
+    watch(
+      () => endpoints.value,
+      () => onObjectTypeChanged(objectParameter.value.type),
+      { deep: true }
+    );
 
     const subTypeKey = 'object-detail-view-sub-type';
 
@@ -291,6 +301,11 @@ export default defineComponent({
       });
     };
     watch(() => preselectedSubType.value, onSubTypeChanged, { immediate: true });
+    watch(
+      () => formSchemas.value,
+      () => onSubTypeChanged(preselectedSubType.value),
+      { deep: true }
+    );
 
     onUnmounted(() => {
       removeCustomBreadcrumb(objectTypeKey);
