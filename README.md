@@ -1,7 +1,8 @@
 # veo-web
 
-> Veo Web Frontend
-
+verinice.veo is a cloud-native application for managing information security and data protection
+![Dashbaord of verinice.veo](docs/manual/dashboard/media/veo_dashboard-screenshot.en.png)
+In this repository you will find the frontend of the application.
 ## Build Setup
 
 ```bash
@@ -21,10 +22,10 @@ $ npm run generate
 
 Required env variables:
 ```
-VEO_API_URL=https://api.develop.verinice.com/
-VEO_OIDC_URL=https://auth.staging.verinice.com/auth
+VEO_API_URL=https://api.verinice.com/
+VEO_OIDC_URL=https://auth.verinice.com/auth
 VEO_OIDC_REALM=verinice-veo
-VEO_OIDC_CLIENT=veo-development-client
+VEO_OIDC_CLIENT=veo-prod
 ```
 
 For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
