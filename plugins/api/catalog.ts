@@ -29,7 +29,7 @@ export default function (api: Client) {
     fetchAll(domainId: string, query: Record<string, string> = {}): Promise<IVeoCatalog[]> {
       query.domain = domainId;
 
-      return api.req('/api/catalogs/', {
+      return api.req('/api/catalogs', {
         query
       });
     },

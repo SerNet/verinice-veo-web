@@ -36,7 +36,7 @@ export default function (api: Client) {
         query.domainId = domain;
       }
 
-      return api.req('/api/forms/', {
+      return api.req('/api/forms', {
         query
       });
     },
@@ -50,7 +50,7 @@ export default function (api: Client) {
      * @returns UUID of the new form
      */
     create(domainId: string, form: IVeoFormSchema): Promise<string> {
-      return api.req('/api/forms/', {
+      return api.req('/api/forms', {
         json: { domainId, ...form }
       });
     },
