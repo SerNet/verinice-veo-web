@@ -15,17 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, unref, useContext } from '@nuxtjs/composition-api';
+import { useContext } from '@nuxtjs/composition-api';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 
-import { omit } from 'lodash';
 import { QueryOptions, useQuery } from './utils/query';
-import { useFetchSchemas } from './schemas';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export interface IVeoFetchObjectsParameters {
   unit: string;
-  objectType: string;
+  endpoint: string;
   page?: number;
   displayName?: string;
   subType?: string;
@@ -33,13 +31,13 @@ export interface IVeoFetchObjectsParameters {
 }
 
 export interface IVeoFetchObjectParameters {
-  objectType: string;
+  endpoint: string;
   id: string;
 }
 
 export const objectsQueryKeys = {
-  objects: (queryParameters: IVeoFetchObjectsParameters) => ['objects', queryParameters.objectType, queryParameters.subType, { queryParameters }] as const,
-  object: (queryParameters: IVeoFetchObjectParameters) => ['object', queryParameters.objectType, queryParameters.id]
+  objects: (queryParameters: IVeoFetchObjectsParameters) => ['objects', queryParameters.endpoint, queryParameters.page || 1, queryParameters] as const,
+  object: (queryParameters: IVeoFetchObjectParameters) => ['object', queryParameters.endpoint, queryParameters.id]
 };
 
 /**
@@ -52,14 +50,7 @@ export const objectsQueryKeys = {
 export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParameters>, queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
-  // Turn queryParameters.objectType into the corresponding endpoint (e.g. "process" into "processes")
-  const { data: endpoints } = useFetchSchemas();
-  const alteredParams = computed(() => ({ ...omit(unref(queryParameters), 'objectType'), endpoint: endpoints.value?.[unref(queryParameters).objectType] }));
-  const queryEnabled = computed(() =>
-    queryOptions?.enabled ? unref(queryOptions.enabled) && !!endpoints.value?.[unref(queryParameters).objectType] : !!endpoints.value?.[unref(queryParameters).objectType]
-  );
-
-  return useQuery<IVeoPaginatedResponse<IVeoEntity[]>>(objectsQueryKeys.objects, $api.entity.fetchAll, alteredParams, { ...queryOptions, enabled: queryEnabled });
+  return useQuery<IVeoPaginatedResponse<IVeoEntity[]>>(objectsQueryKeys.objects, $api.entity.fetchAll, queryParameters, queryOptions);
 };
 
 /**
@@ -72,12 +63,5 @@ export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParame
 export const useFetchObject = (queryParameters: MaybeRef<IVeoFetchObjectParameters>, queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
-  // Turn queryParameters.objectType into the corresponding endpoint (e.g. "process" into "processes")
-  const { data: endpoints } = useFetchSchemas();
-  const alteredParams = computed(() => ({ ...omit(unref(queryParameters), 'objectType'), endpoint: endpoints.value?.[unref(queryParameters).objectType] }));
-  const queryEnabled = computed(() =>
-    queryOptions?.enabled ? unref(queryOptions.enabled) && !!endpoints.value?.[unref(queryParameters).objectType] : !!endpoints.value?.[unref(queryParameters).objectType]
-  );
-
-  return useQuery<IVeoEntity>(objectsQueryKeys.object, $api.entity.fetch, alteredParams, { ...queryOptions, enabled: queryEnabled });
+  return useQuery<IVeoEntity>(objectsQueryKeys.object, $api.entity.fetch, queryParameters, queryOptions);
 };

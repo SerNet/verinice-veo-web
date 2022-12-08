@@ -108,6 +108,7 @@ import { useCreateReport, useFetchReports } from '~/composables/api/reports';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-type';
 
@@ -119,6 +120,7 @@ export default defineComponent({
     const router = useRouter();
     const { displayErrorMessage } = useVeoAlerts();
     const { tablePageSize } = useVeoUser();
+    const { data: endpoints } = useFetchSchemas();
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
@@ -178,15 +180,17 @@ export default defineComponent({
       sortOrder: objectsQueryParameters.sortDesc ? 'desc' : 'asc',
       page: objectsQueryParameters.page,
       unit: separateUUIDParam(route.value.params.unit).id,
-      ...filter.value
+      ...filter.value,
+      endpoint: endpoints.value && filter.value.objectType ? endpoints.value[filter.value.objectType as string] : undefined
     }));
-    const objectsQueryEnabled = computed(() => !!filter.value.objectType);
+    const objectType = computed<string | undefined>(() => filter.value.objectType as string | undefined);
+    const objectsQueryEnabled = computed(() => !!objectType.value && !!endpoints.value?.[objectType.value]);
 
     const {
       data: objects,
-      isFetching: objectsFetching,
+      isLoading: objectsFetching,
       refetch: refetchObjects
-    } = useFetchObjects(combinedObjectsQueryParameters as any, { enabled: objectsQueryEnabled, keepPreviousData: true });
+    } = useFetchObjects(combinedObjectsQueryParameters as any, { enabled: objectsQueryEnabled, keepPreviousData: true, placeholderData: [] });
 
     const updateRouteQuery = async (v: Record<string, string | undefined | null | true>, reset = true) => {
       const resetValues = reset ? filterKeys.map((key) => [key, undefined as string | undefined | null]) : [];
@@ -222,12 +226,12 @@ export default defineComponent({
         targets: selectedObjects.value
       }
     }));
-    const { mutateAsync: create, isLoading: generatingReport } = useCreateReport(createMutationParameters, { onSuccess: openReport });
+    const { mutateAsync: create, isLoading: generatingReport } = useCreateReport({ onSuccess: openReport });
 
     const generateReport = () => {
       if (report.value) {
         try {
-          create();
+          create(createMutationParameters);
         } catch (error: any) {
           displayErrorMessage(t('generateReportError').toString(), error.message);
         }

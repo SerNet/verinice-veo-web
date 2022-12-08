@@ -89,8 +89,8 @@
                     </v-list-item-icon>
                     <v-list-item-title v-else>
                       <template v-if="Object.keys(queryResultMap).includes(menuItem.param)">
-                        <template v-if="queryResultMap[menuItem.param]">
-                          {{ queryResultMap[menuItem.param] }}
+                        <template v-if="queryResultMap[item.param]">
+                          {{ queryResultMap[item.param] }}
                         </template>
                         <v-skeleton-loader
                           v-else
@@ -123,13 +123,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, computed, ComputedRef, watch, useMeta, ref, reactive, set } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute, computed, ComputedRef, watch, useMeta, ref } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { isEmpty, last, pick } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal, mdiHomeOutline } from '@mdi/js';
 
 import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
-import { IBaseObject, separateUUIDParam } from '~/lib/utils';
+import { separateUUIDParam } from '~/lib/utils';
 import { useFetchSchemas } from '~/composables/api/schemas';
 import { useFetchObject } from '~/composables/api/objects';
 import { useFetchDomain } from '~/composables/api/domains';
@@ -209,7 +209,7 @@ export default defineComponent({
           queriedText: {
             query: ':type',
             parameterTransformationFn: (_param, _value) => ({}),
-            resultTransformationFn: (_param, value, data) => data[value as string].name[locale.value]
+            resultTransformationFn: (_param, value, data) => (data ? data[value as string]?.name?.[locale.value] : undefined)
           }
         }
       ],
@@ -271,37 +271,35 @@ export default defineComponent({
 
     // Queried text. For now we assume that every query type will only be used once (at most one object, one domain, one report is part of the path).
     // Must be refactored if for example two objects are part of the path.
-    const queryResultMap = reactive<{ [K in SupportedQuery]: any }>({
-      ':domain': undefined,
-      ':entity': undefined,
-      ':type': undefined,
-      ':catalog': undefined
-    });
-
-    const successFunction = (key: SupportedQuery) => (data: any) =>
-      set(queryResultMap, key, BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(key)?.queriedText?.resultTransformationFn(key, route.value.params[key], data));
-
     const objectQueryParameters = ref<any>({});
     const objectQueryEnabled = computed(() => !isEmpty(objectQueryParameters.value));
-    useFetchObject(objectQueryParameters, {
-      enabled: objectQueryEnabled,
-      onSuccess: successFunction(':entity')
+    const { data: object } = useFetchObject(objectQueryParameters, {
+      enabled: objectQueryEnabled
     });
     const domainQueryParameters = ref<any>({});
     const domainQueryEnabled = computed(() => !isEmpty(domainQueryParameters.value));
-    useFetchDomain(domainQueryParameters, {
-      enabled: domainQueryEnabled,
-      onSuccess: successFunction(':domain')
+    const { data: domain } = useFetchDomain(domainQueryParameters, {
+      enabled: domainQueryEnabled
     });
     const catalogQueryParameters = ref<any>({});
     const catalogQueryEnabled = computed(() => !isEmpty(catalogQueryParameters.value));
-    useFetchCatalog(catalogQueryParameters, {
-      enabled: catalogQueryEnabled,
-      onSuccess: successFunction(':catalog')
+    const { data: catalog } = useFetchCatalog(catalogQueryParameters, {
+      enabled: catalogQueryEnabled
     });
-    useFetchReports({
-      onSuccess: successFunction(':type')
-    });
+    const { data: report } = useFetchReports();
+
+    const queryResultMap = computed<{ [key: string]: any }>(() => ({
+      ':catalog': catalog.value
+        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':catalog')?.queriedText?.resultTransformationFn(':catalog', route.value.params.catalog, catalog.value)
+        : undefined,
+      ':domain': domain.value
+        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':domain')?.queriedText?.resultTransformationFn(':domain', route.value.params.domain, domain.value)
+        : undefined,
+      ':object': object.value
+        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':object')?.queriedText?.resultTransformationFn(':object', route.value.params.object, object.value)
+        : undefined,
+      ':type': report.value ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':type')?.queriedText?.resultTransformationFn(':type', route.value.params.type, report.value) : undefined
+    }));
 
     const pathTemplate = computed(() => last(route.value.matched)?.path || '');
 
@@ -336,7 +334,7 @@ export default defineComponent({
           if (replacementMapEntry?.dynamicText) {
             return {
               ...breadcrumb,
-              text: replacementMapEntry.dynamicText(breadcrumb.param, route.value.params[breadcrumb.param])
+              text: replacementMapEntry.dynamicText(breadcrumb.param, route.value.params[breadcrumb.param.replace(/^:/, '')])
             };
           } else {
             return breadcrumb;
@@ -387,13 +385,11 @@ export default defineComponent({
       }
     );
 
-    // console.warn(`Couldn't fetch async text for breadcrumb ${breadcrumb.param}: ${e.message}`);
-
     // Page title related stuff
     const updateTitle = () => {
       if (props.writeToTitle) {
         title.value = breadcrumbs.value
-          .map((entry) => (BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.has(entry.param) ? queryResultMap[entry.param as SupportedQuery] : entry.text))
+          .map((entry) => (BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(entry.param)?.queriedText ? queryResultMap.value[entry.param as SupportedQuery] : entry.text))
           .reverse()
           .slice(0, BREADCRUMB_BREAKOFF)
           .join(' - ');
@@ -404,7 +400,7 @@ export default defineComponent({
     watch(() => breadcrumbs.value, updateTitle, { deep: true, immediate: true });
 
     return {
-      queryResultMap: queryResultMap as IBaseObject, // We can't typify in the template so to avoid typing errors getting thrown there, we make the type more generic
+      queryResultMap,
       breadcrumbs,
       BREADCRUMB_BREAKOFF,
       displayedBreadcrumbs,

@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { useContext } from '@nuxtjs/composition-api';
-import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 
 import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
-import { MutationOptions, useMutation } from './utils/mutation';
+import { IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
+import { VeoApiReponseType } from './utils/request';
 import { IVeoCreateReportData, IVeoReportsMeta } from '~/types/VeoTypes';
 
 export interface IVeoCreateReportParameters {
@@ -31,15 +31,26 @@ export const reportsQueryKeys = {
   reports: ['reports'] as const
 };
 
+export const reportsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
+  create: (mutationParameters: IVeoCreateReportParameters) => ({ json: mutationParameters.body, params: { type: mutationParameters.type } })
+};
+
 export const useFetchReports = (queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
   return useQuery<IVeoReportsMeta>(reportsQueryKeys.reports, $api.report.fetchAll, {}, { ...queryOptions, staleTime: STALE_TIME.INFINITY });
 };
 
-export const useCreateReport = (mutationParameters: MaybeRef<IVeoCreateReportParameters>, mutationOptions?: MutationOptions) => {
-  const { $api } = useContext();
-
+export const useCreateReport = (mutationOptions?: MutationOptions) => {
   // No need to invalidate queries, as this doesn't create a new report type, just a new report of that type for the user
-  return useMutation('report', $api.report.create, mutationParameters, mutationOptions);
+  return useMutation<IVeoCreateReportParameters, void>(
+    'report',
+    {
+      url: '/api/reporting/reports/:type',
+      method: 'POST',
+      reponseType: VeoApiReponseType.BLOB
+    },
+    reportsMutationParameterTransformationMap.create,
+    mutationOptions
+  );
 };

@@ -26,8 +26,8 @@ export default function (api: Client) {
      * NOT PAGINATED
      *
      */
-    fetchAll(query?: Record<string, string>): Promise<IVeoReportsMeta> {
-      return api.req('/api/reports/reports', {
+    fetchAll(query: Record<string, string> = {}): Promise<IVeoReportsMeta> {
+      return api.req('/api/reporting/reports', {
         query
       });
     },
@@ -42,7 +42,7 @@ export default function (api: Client) {
      * @returns UUID of the new form
      */
     create(type: string, body: IVeoCreateReportData): Promise<string> {
-      return api.req('/api/reports/reports/:type', {
+      return api.req('/api/reporting/reports/:type', {
         method: 'POST',
         params: {
           type

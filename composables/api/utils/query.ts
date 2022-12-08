@@ -20,11 +20,23 @@ import { useQuery as vueQueryUseQuery, useQueries as VueQueryUseQueries, useQuer
 import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 import { QueryObserverResult } from '@tanstack/query-core/build/lib/types';
-import { isFunction } from 'lodash';
+import { cloneDeep, isFunction } from 'lodash';
 
+import { VeoApiReponseType } from './request';
 import { IBaseObject } from '~/lib/utils';
 
 export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
+
+export interface IVeoQueryDefinition {
+  url: string;
+  method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
+  reponseType?: VeoApiReponseType;
+}
+
+export interface IVeoQueryParameters {
+  params?: IBaseObject;
+  query?: IBaseObject;
+}
 
 export const STALE_TIME = {
   NONE: 0, // No stale time
@@ -66,7 +78,12 @@ export const useQuery = <T>(
   // Actual query getting executed
   const result = vueQueryUseQuery<T>(
     localQueryKey,
-    () => requestFunction(...transformQueryParameters(evaluatedQueryKey.value[0], requestFunction.name, unref(queryParameters))),
+    ({ queryKey }) => {
+      const localQueryKey = cloneDeep(queryKey as any as string[]);
+      // Remove first parameter, as this is just the query key
+      localQueryKey.shift();
+      return requestFunction(...localQueryKey);
+    },
     queryOptions as any
   );
 
@@ -89,7 +106,8 @@ export const useQuery = <T>(
           // eslint-disable-next-line no-console
           console.log(`[vueQuery] data for "${JSON.stringify(evaluatedQueryKey.value)}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(queryOptions)}"`);
         }
-      }
+      },
+      { immediate: true }
     );
   }
 
@@ -127,9 +145,13 @@ export const useQueries = <T>(
       Object.assign(localQueryKey, newValue);
 
       queries.value = localQueryKey.length
-        ? localQueryKey.map((queryKey, index) => ({
+        ? localQueryKey.map((queryKey) => ({
             queryKey,
-            queryFn: () => requestFunction(...transformQueryParameters(evaluatedQueryKey.value[index][0], requestFunction.name, unref(queryParameters)[index])),
+            queryFn: () => {
+              const localQueryKey = cloneDeep(queryKey as any as string[]);
+              localQueryKey.shift();
+              return requestFunction(...localQueryKey);
+            },
             ...queryOptions
           }))
         : [{ queryKey: ['unnecessary'], queryFn: () => null }];
@@ -159,65 +181,10 @@ export const useQueries = <T>(
           // eslint-disable-next-line no-console
           console.log(`[vueQuery] data for "${JSON.stringify(evaluatedQueryKey.value)}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(queryOptions)}"`);
         }
-      }
+      },
+      { immediate: true }
     );
   }
 
   return result as QueryObserverResult<T, unknown>[];
-};
-
-/**
- * Map containing all keys in the order the options should be passed to the api function as arguments.
- */
-const queryParameterMap = new Map<string, string[]>([
-  ['accounts_fetchAll', []],
-  ['account_create', ['_parameters_']],
-  ['account_fetch', ['id']],
-  ['account_update', ['id', '_parameters_']],
-  ['account__delete', ['id']],
-  ['catalogs_fetchAll', ['domainId']],
-  ['catalog_fetch', ['id']],
-  ['catalogItems_fetchAll', ['catalogId', 'domainId']],
-  ['catalogItems_fetch', ['catalogId', 'itemId', 'domainId']],
-  ['forms_fetchAll', ['domainId']],
-  ['form_create', ['domainId', 'form']],
-  ['form_fetch', ['domainId', 'id']],
-  ['form_update', ['id', 'domainId', 'form']],
-  ['objects_fetchAll', ['endpoint', 'page', '_parameters_']], // objectType gets passed to the composable, however it transforms objectType into the corresponding endpoint
-  ['object_fetch', ['endpoint', 'id']], // objectType gets passed to the composable, however it transforms objectType into the corresponding endpoint
-  ['reports_fetchAll', []],
-  ['report_create', ['type', 'body']],
-  ['schemas_fetchAll', []],
-  ['schema_fetch', ['type', 'domainIds']],
-  ['units_fetchAll', []],
-  ['unit_fetch', ['id']],
-  ['translations_fetch', ['languages']],
-  ['domains_fetchAll', []],
-  ['domain_fetch', ['id']],
-  ['domain_updateTypeDefinition', ['domainId', 'objectType', 'objectSchema']]
-]);
-
-/**
- * Returns the queryParameters object as an array with the values in the correct order to pass them to the api function.
- *
- * @param primaryQueryKey The primary query key of the request, used for identification
- * @param requestFunctionName The name of the api function to be called, used for identification
- * @param queryParameters The object containing all query parameters, some of which will get applied as arguments.
- * @returns An array containing the arguments in the correct order, ready to be passed to the request function.
- */
-export const transformQueryParameters = (primaryQueryKey: string, requestFunctionName: string, queryParameters: IBaseObject) => {
-  const key = `${primaryQueryKey}_${requestFunctionName}`;
-
-  const returnParameters =
-    queryParameterMap.get(key)?.map((parameter) => {
-      if (parameter === '_parameters_') {
-        return queryParameters;
-      } else if (queryParameters[parameter]) {
-        return queryParameters[parameter];
-      } else {
-        throw new Error(`Missing parameter for query "${primaryQueryKey} ${requestFunctionName}": ${parameter}`);
-      }
-    }) || [];
-
-  return returnParameters;
 };

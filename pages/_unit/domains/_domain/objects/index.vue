@@ -154,6 +154,7 @@ export default defineComponent({
     const { displayErrorMessage } = useVeoAlerts();
     const { cloneObject } = useVeoObjectUtilities();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
+    const { data: endpoints } = useFetchSchemas();
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations, isFetching: translationsLoading } = useFetchTranslations(fetchTranslationsQueryParameters);
@@ -204,9 +205,10 @@ export default defineComponent({
       sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
       page: queryParameters.page,
       unit: separateUUIDParam(route.value.params.unit).id,
-      ...filter.value
+      ...filter.value,
+      endpoint: objectType.value && endpoints.value ? endpoints.value[objectType.value] : undefined
     }));
-    const queryEnabled = computed(() => !!filter.value.objectType);
+    const queryEnabled = computed(() => !!objectType.value && !!endpoints.value?.[objectType.value]);
 
     const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true, placeholderData: [] });
 
@@ -226,7 +228,6 @@ export default defineComponent({
 
     // Additional breadcrumbs based on object type and sub type
     const objectTypeKey = 'object-overview-object-type';
-    const { data: endpoints } = useFetchSchemas();
 
     const onObjectTypeChanged = (newObjectType?: string) => {
       if (customBreadcrumbExists(objectTypeKey)) {

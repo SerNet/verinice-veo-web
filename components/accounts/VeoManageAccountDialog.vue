@@ -236,9 +236,9 @@ export default defineComponent({
 
     // CRUD stuff
     const createMutationParameters = computed(() => formData);
-    const { mutateAsync: create, isLoading: isLoadingCreate } = useCreateAccount(createMutationParameters as any);
+    const { mutateAsync: create, isLoading: isLoadingCreate } = useCreateAccount();
     const updateMutationParameters = computed(() => ({ ...formData, id: props.id }));
-    const { mutateAsync: update, isLoading: isLoadingUpdate } = useUpdateAccount(updateMutationParameters as any);
+    const { mutateAsync: update, isLoading: isLoadingUpdate } = useUpdateAccount();
 
     const isLoading = computed(() => isLoadingCreate.value || isLoadingUpdate.value);
 
@@ -259,9 +259,9 @@ export default defineComponent({
       });
       try {
         if (props.id) {
-          await update();
+          await update(updateMutationParameters as any);
         } else {
-          await create();
+          await create(createMutationParameters as any);
         }
         displaySuccessMessage(t(props.id ? 'updatingAccountSuccess' : 'creatingAccountSuccess').toString());
         emit('success');

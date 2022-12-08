@@ -111,7 +111,7 @@ export class Client {
     const _url = String(url)
       .replace(/^\/api\/forms/, this.baseFormURL)
       .replace(/^\/api\/history/, this.baseHistoryURL)
-      .replace(/^\/api\/reports/, this.baseReportURL)
+      .replace(/^\/api\/reporting/, this.baseReportURL)
       .replace(/^\/api\/accounts/, this.baseAccountURL)
       .replace(/^\/api/, this.baseURL);
     if (_url.startsWith('/')) {

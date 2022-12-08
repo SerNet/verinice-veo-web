@@ -20,7 +20,7 @@ import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 import { useQueryClient } from '@tanstack/vue-query';
 
 import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
-import { MutationOptions, useMutation } from './utils/mutation';
+import { IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
 import { IVeoDomain } from '~/types/VeoTypes';
 
 export interface IVeoFetchDomainParameters {
@@ -38,6 +38,16 @@ export const domainsQueryKeys = {
   domain: (queryParameters: IVeoFetchDomainParameters) => ['domain', queryParameters.id] as const
 };
 
+export const domainsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
+  updateTypeDefinition: (mutationParameters: IVeoUpdateTypeDefinitionParameters) => ({
+    params: {
+      id: mutationParameters.objectType,
+      type: mutationParameters.objectType
+    },
+    json: mutationParameters.objectSchema
+  })
+};
+
 export const useFetchDomains = (queryOptions?: QueryOptions) => {
   const { $api } = useContext();
 
@@ -50,18 +60,22 @@ export const useFetchDomain = (queryParameters: MaybeRef<IVeoFetchDomainParamete
   return useQuery<IVeoDomain>(domainsQueryKeys.domain, $api.domain.fetch, queryParameters, { ...queryOptions, staleTime: STALE_TIME.MEDIUM });
 };
 
-export const useUpdateTypeDefinition = (mutationParameters: MaybeRef<IVeoUpdateTypeDefinitionParameters>, mutationOptions?: MutationOptions) => {
-  const { $api } = useContext();
+export const useUpdateTypeDefinition = (mutationOptions?: MutationOptions) => {
   const queryClient = useQueryClient();
 
-  return useMutation('domain', $api.domain.updateTypeDefinition, mutationParameters, {
-    ...mutationOptions,
-    onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries(['object']);
-      queryClient.invalidateQueries(['translations']);
-      if (mutationOptions?.onSuccess) {
-        mutationOptions.onSuccess(data, variables, context);
+  return useMutation(
+    'domain',
+    { url: `/api/domains/:id/elementtypedefinitions/:type/updatefromobjectschema`, method: 'POST' },
+    domainsMutationParameterTransformationMap.updateTypeDefinition,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(['object']);
+        queryClient.invalidateQueries(['translations']);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
       }
     }
-  });
+  );
 };

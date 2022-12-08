@@ -437,10 +437,10 @@ export default defineComponent({
       domainId: domainId.value,
       form: formSchema.value as IVeoFormSchema
     }));
-    const { mutateAsync: create } = useCreateForm(createFormSchemaQueryParameters, {
-      onSuccess: (data) => {
+    const { mutateAsync: create } = useCreateForm({
+      onSuccess: (data: any) => {
         if (formSchema.value) {
-          formSchema.value.id = data as string; // For some reason the interface always returns void, even though this is a string
+          formSchema.value.id = data; // For some reason the interface always returns void, even though this is a string
         }
       }
     });
@@ -449,7 +449,7 @@ export default defineComponent({
       domainId: domainId.value,
       form: formSchema.value as IVeoFormSchema
     }));
-    const { mutateAsync: update } = useUpdateForm(updateFormSchemaQueryParameters);
+    const { mutateAsync: update } = useUpdateForm();
 
     async function save() {
       // control whether save new or save updated schema
@@ -458,9 +458,9 @@ export default defineComponent({
           throw new Error('Formschema not defined');
         }
         if (formSchema.value.id) {
-          await update();
+          await update(updateFormSchemaQueryParameters);
         } else {
-          await create();
+          await create(createFormSchemaQueryParameters);
         }
         displaySuccessMessage(t('saveSchemaSuccess').toString());
       } catch (err: any) {

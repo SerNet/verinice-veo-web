@@ -449,11 +449,11 @@ export default defineComponent({
 
     // Saving
     const updateTypeDefinitionQueryParameters = computed(() => ({ domainId: domainId.value, objectType: title.value, objectSchema: objectSchemaHelper.value?.toSchema() as any }));
-    const { mutateAsync: update } = useUpdateTypeDefinition(updateTypeDefinitionQueryParameters);
+    const { mutateAsync: update } = useUpdateTypeDefinition();
 
     const saveSchema = async () => {
       try {
-        await update();
+        await update(updateTypeDefinitionQueryParameters);
         displaySuccessMessage(t('saveSchemaSuccess').toString());
       } catch (e: any) {
         displayErrorMessage(t('error.title').toString(), `${t('saveSchemaError').toString()}: ${e.message}`);

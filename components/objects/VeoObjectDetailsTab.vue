@@ -111,19 +111,22 @@ export default defineComponent({
     const { data: schemas } = useFetchSchemas();
 
     const { fetchState, fetch } = useFetch(async () => {
+      if (!schemas.value) {
+        return;
+      }
       if (props.object) {
         switch (props.type) {
           case 'childScopes':
-            items.value = (await $api.entity.fetchSubEntities(props.object.type, props.object.id)).filter((entity) => entity.type === 'scope');
+            items.value = (await $api.entity.fetchSubEntities(schemas.value[props.object.type], props.object.id)).filter((entity) => entity.type === 'scope');
             break;
           case 'childObjects':
-            items.value = (await $api.entity.fetchSubEntities(props.object.type, props.object.id)).filter((entity) => entity.type !== 'scope');
+            items.value = (await $api.entity.fetchSubEntities(schemas.value[props.object.type], props.object.id)).filter((entity) => entity.type !== 'scope');
             break;
           case 'parentScopes':
-            items.value = await $api.entity.fetchParents('scope', props.object.id);
+            items.value = await $api.entity.fetchParents('scopes', props.object.id);
             break;
           case 'parentObjects':
-            items.value = await $api.entity.fetchParents(props.object.type, props.object.id);
+            items.value = await $api.entity.fetchParents(schemas.value[props.object.type], props.object.id);
             break;
           case 'risks':
             items.value = (await $api.entity.fetchRisks(props.object.type, props.object.id)) as any;
@@ -148,14 +151,12 @@ export default defineComponent({
       return { id, name, type };
     };
 
-    watch(
-      () => props.object,
-      () => fetch(),
-      {
-        deep: true,
-        immediate: true
-      }
-    );
+    watch(() => props.object, fetch, {
+      deep: true
+    });
+    watch(() => schemas.value, fetch, {
+      deep: true
+    });
 
     const defaultHeaders = computed(() =>
       props.type !== 'risks' && props.type !== 'links'

@@ -54,56 +54,6 @@ export default function (api: Client) {
         },
         query
       });
-    },
-    /**
-     * Creates an account
-     *
-     * @param account The new account data
-     * @param query Additional query params
-     * @returns 201 if successful
-     */
-    create(account: IVeoAccount, query: Record<string, string> = {}): Promise<void> {
-      return api.req('/api/accounts/', {
-        method: 'POST',
-        query,
-        json: account
-      });
-    },
-    /**
-     * Updates an account
-     *
-     * @param id The account to update
-     * @param account The new account data
-     * @param query Additional query params
-     * @returns 204 if successful
-     */
-    update(id: string, account: IVeoAccount, query: Record<string, string> = {}): Promise<void> {
-      return api.req('/api/accounts/:id', {
-        method: 'PUT',
-        params: {
-          id
-        },
-        query,
-        json: account
-      });
-    },
-    /**
-     * Deletes a single account
-     *
-     * NOTE: Name is _delete, as delete.name returns _delete, making the naming of this function and the queryParameterMap in the api composable inconsistent
-     *
-     * @param id The account to delete
-     * @param query Additional query params
-     * @returns 204 if successful
-     */
-    _delete(id: string, query: Record<string, string> = {}): Promise<void> {
-      return api.req('/api/accounts/:id', {
-        method: 'DELETE',
-        params: {
-          id
-        },
-        query
-      });
     }
   };
 }

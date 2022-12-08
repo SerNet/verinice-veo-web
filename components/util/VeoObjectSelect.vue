@@ -29,8 +29,8 @@
     :clearable="!required"
     :return-object="valueAsEntity"
     v-bind="$attrs"
-    @update:search-input="onSearchQueryInput"
   >
+    <!-- @update:search-input="onSearchQueryInput" -->
     <template #prepend-item>
       <slot name="prepend-item" />
     </template>
@@ -156,7 +156,7 @@ export default defineComponent({
     const searchQueryNotStale = computed(() => !fetchObjectsData?.value?.items?.find((item) => item.displayName === searchQuery.value));
     const fetchObjectsQueryParameters = computed(() => ({
       unit: unit.value,
-      objectType: props.objectType,
+      endpoint: props.objectType,
       page: 1,
       subType: props.subType,
       displayName: searchQuery.value ?? undefined
@@ -178,7 +178,7 @@ export default defineComponent({
     const moreItemsAvailable = computed(() => (fetchObjectsData.value?.pageCount || 0) > 0);
 
     const fetchObjectQueryParameters = computed(() => ({
-      objectType: props.objectType,
+      endpoint: props.objectType,
       id: internalValue.value || '' // to avoid typecasting in the fetch hook. Shouldn't get executed if value is not set. (See fetchObjectQueryEnabled)
     }));
     const { data: fetchObjectData, isFetching: isLoadingObject, isError } = useFetchObject(fetchObjectQueryParameters, { enabled: computed(() => !!unref(internalValue)) });

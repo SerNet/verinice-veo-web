@@ -222,7 +222,7 @@ export default defineComponent({
     // Object details are originally part of the object, but as they might get updated independently, we want to avoid refetching the whole object, so we outsorce them.
     const metaData = ref<any>({});
 
-    const fetchObjectQueryParameters = computed(() => ({ objectType: endpoints.value?.[objectParameter.value.type] || '', id: objectParameter.value.id }));
+    const fetchObjectQueryParameters = computed(() => ({ endpoint: endpoints.value?.[objectParameter.value.type] || '', id: objectParameter.value.id }));
     const fetchObjectQueryEnabled = computed(() => !!endpoints.value?.[objectParameter.value.type] && !!objectParameter.value.id);
     const {
       data: object,

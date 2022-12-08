@@ -37,14 +37,14 @@ export interface IVeoFetchCatalogItemsParameters {
 export interface IVeoFetchCatalogItemParameters {
   catalogId: string;
   itemId: string;
-  domainid: string;
+  domainId: string;
 }
 
 export const domainsQueryKeys = {
   catalogs: (queryParameters: IVeoFetchCatalogsParameters) => ['catalogs', queryParameters.domainId] as const,
   catalog: (queryParameters: IVeoFetchCatalogParameters) => ['catalog', queryParameters.id] as const,
   catalogItems: (queryParameters: IVeoFetchCatalogItemsParameters) => ['catalogItems', queryParameters.catalogId, queryParameters.domainId] as const,
-  catalogItem: (queryParameters: IVeoFetchCatalogItemParameters) => ['catalogItems', queryParameters.catalogId, queryParameters.domainid, queryParameters.domainid] as const
+  catalogItem: (queryParameters: IVeoFetchCatalogItemParameters) => ['catalogItems', queryParameters.catalogId, queryParameters.itemId, queryParameters.domainId] as const
 };
 
 export const useFetchCatalogs = (queryParameters: MaybeRef<IVeoFetchCatalogsParameters>, queryOptions?: QueryOptions) => {

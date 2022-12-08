@@ -141,7 +141,7 @@ import { sortBy, upperFirst } from 'lodash';
 
 import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
-import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoReportsMeta } from '~/types/VeoTypes';
+import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema } from '~/types/VeoTypes';
 
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/_unit/domains/_domain/index.vue';
@@ -157,6 +157,7 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemasDetailed } from '~/composables/api/schemas';
 import { useDocTree } from '~/composables/docs';
 import { useFetchTranslations } from '~/composables/api/translations';
+import { useFetchReports } from '~/composables/api/reports';
 
 export interface INavItem {
   key: string;
@@ -325,17 +326,14 @@ export default defineComponent({
     );
 
     // report specific stuff
-    const reports = ref<IVeoReportsMeta>({});
-    const { fetchState: reportsEntriesLoading } = useFetch(async () => {
-      reports.value = await $api.report.fetchAll();
-    });
+    const { data: reports, isFetching: reportsEntriesLoading } = useFetchReports();
 
     const reportsEntriesChildItems = computed<INavItem[]>(
       () =>
-        Object.keys(reports.value)
-          .map((reportId: string) => ({
+        Object.entries(reports.value || {})
+          .map(([reportId, report]) => ({
             key: reportId,
-            name: reports.value[reportId].name[locale.value],
+            name: report.name[locale.value],
             to: {
               name: REPORTS_REPORT_ROUTE_NAME,
               params: {
@@ -433,7 +431,7 @@ export default defineComponent({
       activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/reports`,
       icon: mdiFileChartOutline,
       children: reportsEntriesChildItems.value,
-      childrenLoading: reportsEntriesLoading.pending,
+      childrenLoading: reportsEntriesLoading.value,
       componentName: 'reports-nav-item'
     }));
 

@@ -152,7 +152,7 @@ export default defineComponent({
         const { id } = getEntityDetailsFromLink(props.data.mitigation);
 
         try {
-          selectedItems.value = await $api.entity.fetchSubEntities('control', id);
+          selectedItems.value = await $api.entity.fetchSubEntities('controls', id);
           emit('mitigations-modified', false);
         } finally {
           fetchingMitigation.value = false;
@@ -164,7 +164,7 @@ export default defineComponent({
     };
 
     const onMitigationCreated = async (objectId: string) => {
-      const newMitigation = await $api.entity.fetch('control', objectId);
+      const newMitigation = await $api.entity.fetch('controls', objectId);
       selectedItems.value = [...selectedItems.value, newMitigation]; // We reassign the ref instead of using .push so that the computed setter picks up the changes
     };
 
