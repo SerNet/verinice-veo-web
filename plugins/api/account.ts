@@ -36,7 +36,7 @@ export default function (api: Client) {
      * @returns a list containing all accounts in the client
      */
     fetchAll(query: Record<string, string> = {}): Promise<IVeoAccount[]> {
-      return api.req('/api/accounts', {
+      return api.req('/api/accounts/', {
         query
       });
     },
@@ -63,7 +63,7 @@ export default function (api: Client) {
      * @returns 201 if successful
      */
     create(account: IVeoAccount, query: Record<string, string> = {}): Promise<void> {
-      return api.req('/api/accounts', {
+      return api.req('/api/accounts/', {
         method: 'POST',
         query,
         json: account
