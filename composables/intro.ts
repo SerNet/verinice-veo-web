@@ -338,6 +338,12 @@ export function useTutorials() {
   onContentUpdate(async () => {
     _tutorials.value = await fetchDocs();
   });
+  watch(
+    () => i18n.locale.value,
+    async () => {
+      _tutorials.value = await fetchDocs();
+    }
+  );
 
   // Ignore hash part in current route url
   const currentRouteHref = computed(() => route.value.fullPath.replace(/#.*$/, ''));
