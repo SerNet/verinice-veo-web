@@ -83,8 +83,10 @@ export default defineComponent({
     const catalogId = computed(() => separateUUIDParam(route.value.params.catalog).id);
 
     const catalogItems = ref<IVeoCatalogItem[]>([]);
-
-    const scenarios = computed(() => catalogItems.value.filter((catalogItem) => !catalogItem.element.displayName?.includes('TOM-')));
+    const scenarios = computed(() =>
+      // VVT is needed by the backend, however it shouldn't be selectable by the user as this throws an error
+      catalogItems.value.filter((catalogItem) => !catalogItem.element.displayName?.includes('TOM-') && !catalogItem.element.displayName?.includes('VVT'))
+    );
     const toms = computed(() => catalogItems.value.filter((catalogItem) => catalogItem.element.displayName?.includes('TOM-')));
 
     const { fetch } = useFetch(async () => {
