@@ -33,19 +33,14 @@
 <script lang="ts">
 import { defineComponent, useRoute, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { useDoc, useDocs } from '~/composables/docs';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
 export default defineComponent({
   setup() {
-    const { locale } = useI18n();
     const route = useRoute();
-    const document = useDoc({
-      path: `/${route.value.params.pathMatch || 'index'}`,
-      locale: locale.value
-    });
+    const document = useDoc({ path: `/${route.value.params.pathMatch || 'index'}` });
     const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 
     const docs = useDocs({

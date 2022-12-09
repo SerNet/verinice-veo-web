@@ -17,6 +17,7 @@
  */
 import { FetchReturn } from '@nuxt/content/types/query-builder';
 import { useAsync, useContext, computed, watch } from '@nuxtjs/composition-api';
+import { LocaleObject } from '@nuxtjs/i18n/types';
 import { cloneDeep } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
@@ -32,10 +33,10 @@ export interface DocPage {
 export type DocPageFetchReturn = FetchReturn & DocPage;
 
 type ContentOptions = { path?: string; locale?: string; localeSeparator?: string; fallbackLocale?: string; where?: object };
-const getOptions = (params: ContentOptions) => {
+const getOptions = (params: ContentOptions, _locale: string) => {
   const fallbackLocale = params.fallbackLocale ?? 'de';
   const localeSeparator = params.localeSeparator ?? '.';
-  const locale = params.locale ?? useI18n().locale.value;
+  const locale = params.locale ?? _locale;
   return { ...params, fallbackLocale, localeSeparator, locale };
 };
 
@@ -81,7 +82,8 @@ const sortDocs = (docs: (readonly [string, DocPageFetchReturn])[]) => {
 };
 
 export const useDoc = (params: { path: string; locale?: string; localeSeparator?: string; fallbackLocale?: string }) => {
-  const options = computed(() => getOptions(params));
+  const i18n = useI18n();
+  const options = computed(() => getOptions(params, i18n.locale.value));
   const { $content } = useContext();
 
   const fetchDoc = async () => {
@@ -129,18 +131,20 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
   createDirs?: boolean;
   buildItem?: (item: DocPageFetchReturn) => T;
 }) => {
-  const { i18n } = useContext();
-  const locales: any = i18n.locales;
+  const {
+    i18n: { locales }
+  } = useContext();
+  const i18n = useI18n();
 
-  const { localeSeparator, locale } = getOptions(params);
-  const normalizePath = (path: string) => (path.split(localeSeparator).shift() || path).replace(/\/index(?:\.\w+)?$/i, '') || '/';
+  const options = computed(() => getOptions(params, i18n.locale.value));
+  const normalizePath = (path: string) => (path.split(options.value.localeSeparator).shift() || path).replace(/\/index(?:\.\w+)?$/i, '') || '/';
   const { $content } = useContext();
   const buildItem = params.buildItem ?? ((v) => v);
   const fetchDocs = async () => {
     // The nuxt content queries are using lokiJS, however they aren't properly implemented and most operators aren't working. To circumvent undefinedIn (checking for a key or its value), we use nin to only check for the value
     // In addition, lang: { $eq: undefined } or lang: undefined seems to unset the filter, so we have to take all possible other values expect the current language and undefined and check if the page does have one of those
     const fetchResult = await (params.root ? $content(params.root, { deep: true }) : $content({ deep: true }))
-      .where({ lang: { $nin: locales.filter((_locale: any) => _locale.code !== locale).map((_locale: any) => _locale.code) }, extension: '.md' })
+      .where({ lang: { $nin: (locales as LocaleObject[]).filter((_locale: any) => _locale.code !== options.value.locale).map((_locale: any) => _locale.code) }, extension: '.md' })
       .sortBy('path', 'asc')
       .fetch<DocPage>();
 
@@ -184,6 +188,13 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
   onContentUpdate(async () => {
     docs.value = await fetchDocs();
   });
+
+  watch(
+    () => i18n.locale.value,
+    async () => {
+      docs.value = await fetchDocs();
+    }
+  );
 
   return docs;
 };

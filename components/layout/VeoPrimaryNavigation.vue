@@ -77,10 +77,12 @@
             </div>
           </template>
         </v-list-item-group>
-        <v-divider class="mb-2" />
-        <div class="mx-2">
-          <VeoDemoUnitButton :icon-only="miniVariant" />
-        </div>
+        <template v-if="authenticated">
+          <v-divider class="mb-2" />
+          <div class="mx-2">
+            <VeoDemoUnitButton :icon-only="miniVariant" />
+          </div>
+        </template>
       </v-list>
     </template>
     <template #append>
@@ -131,7 +133,6 @@ import {
   mdiFileDocumentOutline,
   mdiHomeOutline,
   mdiHomeSwitchOutline,
-  mdiLoginVariant,
   mdiTableSettings,
   mdiTextBoxEditOutline
 } from '@mdi/js';
@@ -464,12 +465,13 @@ export default defineComponent({
       }
     }));
 
-    const loginNavEntry = computed<INavItem>(() => ({
-      key: 'login',
-      name: t('login').toString(),
-      to: '/login',
-      icon: mdiLoginVariant,
-      componentName: 'login-nav-item'
+    const backToVeoNavEntry = computed<INavItem>(() => ({
+      key: 'veo',
+      name: t('backToVeo').toString(),
+      to: '/',
+      icon: mdiHomeOutline,
+      componentName: 'veo-nav-item',
+      exact: true
     }));
 
     const docsNavEntry = computed<INavItem>(() => ({
@@ -505,8 +507,7 @@ export default defineComponent({
             risksNavEntry.value
           ]
         : []),
-      ...(!authenticated.value ? [loginNavEntry.value] : []),
-      ...(route.value.path.startsWith('/docs') ? [docsNavEntry.value] : [])
+      ...(route.value.path.startsWith('/docs') ? [backToVeoNavEntry.value, docsNavEntry.value] : [])
     ]);
 
     // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
@@ -523,8 +524,7 @@ export default defineComponent({
 
       t,
       mdiChevronLeft,
-      mdiChevronRight,
-      mdiLoginVariant
+      mdiChevronRight
     };
   }
 });
@@ -536,13 +536,13 @@ export default defineComponent({
     "collapse": "Collapse menu",
     "fix": "Fix menu",
     "all": "all",
-    "login": "Login"
+    "backToVeo": "Go to verinice.veo"
   },
   "de": {
     "collapse": "Menü verstecken",
     "fix": "Menü fixieren",
     "all": "alle",
-    "login": "Anmelden"
+    "backToVeo": "Zu verinice.veo"
   }
 }
 </i18n>
