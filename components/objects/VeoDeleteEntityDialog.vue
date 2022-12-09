@@ -17,11 +17,12 @@
 -->
 <template>
   <VeoDialog
-    v-model="dialog"
-    :headline="$t('headline')"
+    v-bind="$attrs"
+    :headline="t('headline')"
+    v-on="$listeners"
   >
     <template #default>
-      <span class="text-body-1">{{ $t('text', { displayName }) }}</span>
+      <span class="text-body-1">{{ t('text', { displayName }) }}</span>
     </template>
     <template #dialog-options>
       <v-btn
@@ -29,81 +30,64 @@
         :data-cy="$utils.prefixCyData($options, 'cancel-button')"
         @click="$emit('input', false)"
       >
-        {{ $t('global.button.no') }}
+        {{ t('global.button.no') }}
       </v-btn>
       <v-spacer />
       <v-btn
         text
         color="primary"
         :data-cy="$utils.prefixCyData($options, 'confirm-button')"
-        :disabled="!item"
-        @click="deleteEntity"
+        :disabled="!deleteButtonEnabled"
+        @click="deleteObject"
       >
-        {{ $t('global.button.delete') }}
+        {{ t('global.button.delete') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Prop } from 'vue/types/options';
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
+import { useDeleteObject } from '~/composables/api/objects';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 import { IVeoEntity } from '~/types/VeoTypes';
 
-interface IData {
-  dialog: boolean;
-  noWatch: boolean;
-}
-
-export default Vue.extend({
+export default defineComponent({
   props: {
-    value: {
-      type: Boolean,
-      required: true
-    },
     item: {
-      type: Object as Prop<IVeoEntity>,
+      type: Object as PropType<IVeoEntity>,
       default: undefined
     }
   },
-  data() {
-    return {
-      dialog: false,
-      noWatch: false
-    } as IData;
-  },
-  computed: {
-    displayName(): string {
-      return this.item?.displayName ?? '';
-    }
-  },
-  watch: {
-    value(newValue: boolean) {
-      this.noWatch = true;
-      this.dialog = newValue;
-      this.noWatch = false;
-    },
-    dialog(newValue: boolean) {
-      if (!this.noWatch) {
-        this.$emit('input', newValue);
+  setup(props, { emit }) {
+    const { t } = useI18n();
+    const { mutateAsync: doDelete } = useDeleteObject();
+    const { data: endpoints } = useFetchSchemas();
+
+    const displayName = computed(() => props.item?.displayName ?? '');
+
+    const deleteButtonEnabled = computed(() => !!endpoints.value?.[props.item?.type]);
+    const deleteObject = () => {
+      if (!deleteButtonEnabled.value) {
+        return;
       }
-    }
-  },
-  mounted() {
-    this.dialog = this.value;
-  },
-  methods: {
-    deleteEntity() {
-      this.$api.entity
-        .delete(this.item.type, this.item.id)
-        .then(() => {
-          this.$emit('success');
-        })
-        .catch((error) => {
-          this.$emit('error', error);
-        });
-    }
+      try {
+        doDelete({ endpoint: endpoints.value?.[props.item.type], id: props.item.id });
+        emit('success');
+      } catch (error) {
+        emit('error', error);
+      }
+    };
+
+    return {
+      deleteButtonEnabled,
+      deleteObject,
+      displayName,
+
+      t
+    };
   }
 });
 </script>

@@ -219,8 +219,9 @@ export default defineComponent({
           queriedText: {
             query: ':entity',
             parameterTransformationFn: (_param, value) => {
-              const { type: objectType, id } = separateUUIDParam(value);
-              return { objectType, id };
+              const { type, id } = separateUUIDParam(value);
+              const endpoint = endpoints.value?.[type];
+              return { endpoint, id };
             },
             resultTransformationFn: (_param, _value, data) => data.displayName
           }
@@ -272,7 +273,7 @@ export default defineComponent({
     // Queried text. For now we assume that every query type will only be used once (at most one object, one domain, one report is part of the path).
     // Must be refactored if for example two objects are part of the path.
     const objectQueryParameters = ref<any>({});
-    const objectQueryEnabled = computed(() => !isEmpty(objectQueryParameters.value));
+    const objectQueryEnabled = computed(() => !isEmpty(objectQueryParameters.value) && !!objectQueryParameters.endpoint);
     const { data: object } = useFetchObject(objectQueryParameters, {
       enabled: objectQueryEnabled
     });
@@ -295,8 +296,8 @@ export default defineComponent({
       ':domain': domain.value
         ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':domain')?.queriedText?.resultTransformationFn(':domain', route.value.params.domain, domain.value)
         : undefined,
-      ':object': object.value
-        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':object')?.queriedText?.resultTransformationFn(':object', route.value.params.object, object.value)
+      ':entity': object.value
+        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':entity')?.queriedText?.resultTransformationFn(':entity', route.value.params.object, object.value)
         : undefined,
       ':type': report.value ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':type')?.queriedText?.resultTransformationFn(':type', route.value.params.type, report.value) : undefined
     }));
@@ -365,16 +366,16 @@ export default defineComponent({
         for (const breadcrumb of newValue) {
           const replacementMapEntry = BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(breadcrumb.param);
           if (replacementMapEntry?.queriedText) {
-            const transformedResult = replacementMapEntry.queriedText.parameterTransformationFn(breadcrumb.param, route.value.params[breadcrumb.param.replace(/^:/, '')]);
+            const transformedParameters = replacementMapEntry.queriedText.parameterTransformationFn(breadcrumb.param, route.value.params[breadcrumb.param.replace(/^:/, '')]);
             switch (replacementMapEntry.queriedText.query) {
               case ':catalog':
-                catalogQueryParameters.value = transformedResult;
+                catalogQueryParameters.value = transformedParameters;
                 break;
               case ':domain':
-                domainQueryParameters.value = transformedResult;
+                domainQueryParameters.value = transformedParameters;
                 break;
               case ':entity':
-                objectQueryParameters.value = transformedResult;
+                objectQueryParameters.value = transformedParameters;
                 break;
             }
           }

@@ -33,9 +33,9 @@ export interface IVeoQueryDefinition {
   reponseType?: VeoApiReponseType;
 }
 
-export interface IVeoQueryParameters {
-  params?: IBaseObject;
-  query?: IBaseObject;
+export interface IVeoQueryParameters<TParams = IBaseObject, TQuery = IBaseObject> {
+  params?: TParams;
+  query?: TQuery;
 }
 
 export const STALE_TIME = {

@@ -127,7 +127,7 @@ export default defineComponent({
     const unit = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     // Value related stuff
-    const { data: schemas } = useFetchSchemas();
+    const { data: endpoints } = useFetchSchemas();
 
     const internalValue = computed<string | undefined>({
       get: () => {
@@ -143,7 +143,7 @@ export default defineComponent({
       },
       set: (newValue: string | undefined) => {
         if (props.valueAsLink) {
-          emit('input', newValue ? { targetUri: `${$config.apiUrl}/${schemas.value?.[props.objectType]}/${newValue}` } : undefined);
+          emit('input', newValue ? { targetUri: `${$config.apiUrl}/${endpoints.value?.[props.objectType]}/${newValue}` } : undefined);
         } else {
           emit('input', newValue);
         }
@@ -153,14 +153,17 @@ export default defineComponent({
     // Select options related stuff
     const searchQuery = ref();
 
-    const searchQueryNotStale = computed(() => !fetchObjectsData?.value?.items?.find((item) => item.displayName === searchQuery.value));
-    const fetchObjectsQueryParameters = computed(() => ({
-      unit: unit.value,
-      endpoint: props.objectType,
-      page: 1,
-      subType: props.subType,
-      displayName: searchQuery.value ?? undefined
-    }));
+    const searchQueryNotStale = computed(() => !fetchObjectsData?.value?.items?.find((item) => item.displayName === searchQuery.value) && !!endpoints.value?.[props.objectType]);
+    const fetchObjectsQueryParameters = computed(
+      () =>
+        ({
+          unit: unit.value,
+          endpoint: endpoints.value?.[props.objectType],
+          page: 1,
+          subType: props.subType,
+          displayName: searchQuery.value ?? undefined
+        } as any)
+    );
     const {
       data: fetchObjectsData,
       isFetching: isLoadingObjects,
@@ -177,11 +180,15 @@ export default defineComponent({
 
     const moreItemsAvailable = computed(() => (fetchObjectsData.value?.pageCount || 0) > 0);
 
-    const fetchObjectQueryParameters = computed(() => ({
-      endpoint: props.objectType,
-      id: internalValue.value || '' // to avoid typecasting in the fetch hook. Shouldn't get executed if value is not set. (See fetchObjectQueryEnabled)
-    }));
-    const { data: fetchObjectData, isFetching: isLoadingObject, isError } = useFetchObject(fetchObjectQueryParameters, { enabled: computed(() => !!unref(internalValue)) });
+    const fetchObjectQueryParameters = computed(
+      () =>
+        ({
+          endpoint: endpoints.value?.[props.objectType],
+          id: internalValue.value
+        } as any)
+    );
+    const fetchObjectQueryEnabled = computed(() => !!unref(internalValue) && !!endpoints.value?.[props.objectType]);
+    const { data: fetchObjectData, isFetching: isLoadingObject, isError } = useFetchObject(fetchObjectQueryParameters, { enabled: fetchObjectQueryEnabled });
 
     watch(
       () => isError.value,

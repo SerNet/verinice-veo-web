@@ -20,15 +20,17 @@ import { useMutation as vueQueryUseMutation } from '@tanstack/vue-query';
 import { UseMutationOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 import { omit } from 'lodash';
+
 import { IVeoQueryDefinition, IVeoQueryParameters } from './query';
 import { useRequest } from './request';
+import { IBaseObject } from '~/lib/utils';
 
 // Type for less typing in composables
 export type MutationOptions<T = unknown> = Omit<UseMutationOptions<T, unknown, void, unknown>, 'queryFn'>;
 
 export interface IVeoMutationDefinition extends IVeoQueryDefinition {}
 
-export interface IVeoMutationParameters extends IVeoQueryParameters {
+export interface IVeoMutationParameters<TParams = IBaseObject, TQuery = IBaseObject> extends IVeoQueryParameters<TParams, TQuery> {
   body?: any;
   json?: any;
 }

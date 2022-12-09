@@ -24,12 +24,14 @@
   >
     <template #default>
       <VeoLoadingWrapper v-if="loading" />
-      <v-alert
-        v-if="error.value"
-        type="error"
+      <VeoAlert
+        :value="!!error.value"
+        :type="VeoAlertType.ERROR"
+        flat
+        no-close-button
       >
         {{ error.content }}
-      </v-alert>
+      </VeoAlert>
       <v-form
         v-model="valid"
         class="new-unit-form"
@@ -73,6 +75,7 @@ import Vue from 'vue';
 
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
+import { VeoAlertType } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -99,7 +102,8 @@ export default Vue.extend({
         value: false as boolean,
         content: '' as string
       },
-      loading: false as boolean
+      loading: false as boolean,
+      VeoAlertType
     };
   },
   watch: {

@@ -19,7 +19,7 @@ import { useContext } from '@nuxtjs/composition-api';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 
 import { useQueryClient } from '@tanstack/vue-query';
-import { IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
+import { IVeoMutationParameters, IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
 import { QueryOptions, useQuery } from './utils/query';
 import { IVeoAccount } from '~/plugins/api/account';
 
@@ -94,7 +94,7 @@ export const useUpdateAccount = (mutationOptions?: MutationOptions) => {
     ...mutationOptions,
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries(accountsQueryKeys.accounts);
-      queryClient.invalidateQueries(accountsQueryKeys.account({ id: (variables as unknown as IVeoUpdateAccountParameters).id }));
+      queryClient.invalidateQueries(accountsQueryKeys.account({ id: (variables as unknown as IVeoMutationParameters<IVeoUpdateAccountParameters>).params?.id || '' }));
       if (mutationOptions?.onSuccess) {
         mutationOptions.onSuccess(data, variables, context);
       }
@@ -109,7 +109,7 @@ export const useDeleteAccount = (mutationOptions?: MutationOptions) => {
     ...mutationOptions,
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries(accountsQueryKeys.accounts);
-      queryClient.invalidateQueries(accountsQueryKeys.account({ id: (variables as unknown as IVeoDeleteAccountParameters).id }));
+      queryClient.invalidateQueries(accountsQueryKeys.account({ id: (variables as unknown as IVeoMutationParameters<IVeoUpdateAccountParameters>).params?.id || '' }));
       if (mutationOptions?.onSuccess) {
         mutationOptions.onSuccess(data, variables, context);
       }

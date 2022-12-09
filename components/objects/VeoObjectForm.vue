@@ -209,7 +209,7 @@ import VeoForm from '~/components/forms/VeoForm.vue';
 import { useFetchForm, useFetchForms } from '~/composables/api/forms';
 import { useFetchTranslations } from '~/composables/api/translations';
 import { useFetchDomain } from '~/composables/api/domains';
-import { useFetchSchema } from '~/composables/api/schemas';
+import { useFetchSchema, useFetchSchemas } from '~/composables/api/schemas';
 
 enum SIDE_CONTAINERS {
   HISTORY,
@@ -485,13 +485,14 @@ export default defineComponent({
     };
 
     // For some reason putting this in a useFetch and using fetchDecisions as the name for the fetch hook caused all useFetch to be refetched
+    const { data: endpoints } = useFetchSchemas();
     const fetchDecisions = async () => {
       const toReturn: any = { ...props.objectMetaData, decisionResults: {}, inspectionFindings: [] };
 
       // Fetch updated decision results and merge them with the current values
-      if (objectData.value?.domains?.[props.domainId]) {
+      if (objectData.value?.domains?.[props.domainId] && endpoints.value?.[objectData.value.type]) {
         for (const key in props.objectMetaData?.decisionResults || {}) {
-          const result = await $api.entity.fetchWipDecisionEvaluation(objectData.value.type, objectData.value as any, props.domainId, key);
+          const result = await $api.entity.fetchWipDecisionEvaluation(endpoints.value[objectData.value.type], objectData.value as any, props.domainId, key);
           toReturn.inspectionFindings.push(...result.inspectionFindings);
           toReturn.decisionResults[key] = result.decisionResults.piaMandatory;
         }

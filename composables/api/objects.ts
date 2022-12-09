@@ -17,8 +17,11 @@
  */
 import { useContext } from '@nuxtjs/composition-api';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+import { useQueryClient } from '@tanstack/vue-query';
 
 import { QueryOptions, useQuery } from './utils/query';
+import { IVeoMutationParameters, IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
+import { VeoApiReponseType } from './utils/request';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export interface IVeoFetchObjectsParameters {
@@ -35,9 +38,18 @@ export interface IVeoFetchObjectParameters {
   id: string;
 }
 
+export interface IVeoDeleteObjectParameters {
+  endpoint: string;
+  id: string;
+}
+
 export const objectsQueryKeys = {
   objects: (queryParameters: IVeoFetchObjectsParameters) => ['objects', queryParameters.endpoint, queryParameters.page || 1, queryParameters] as const,
   object: (queryParameters: IVeoFetchObjectParameters) => ['object', queryParameters.endpoint, queryParameters.id]
+};
+
+export const objectsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
+  delete: (mutationParameters: IVeoDeleteObjectParameters) => ({ params: { endpoint: mutationParameters.endpoint, id: mutationParameters.id } })
 };
 
 /**
@@ -64,4 +76,32 @@ export const useFetchObject = (queryParameters: MaybeRef<IVeoFetchObjectParamete
   const { $api } = useContext();
 
   return useQuery<IVeoEntity>(objectsQueryKeys.object, $api.entity.fetch, queryParameters, queryOptions);
+};
+
+export const useDeleteObject = (mutationOptions?: MutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IVeoDeleteObjectParameters, void>(
+    'report',
+    {
+      url: '/api/:endpoint/:id',
+      method: 'DELETE',
+      reponseType: VeoApiReponseType.VOID
+    },
+    objectsMutationParameterTransformationMap.delete,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(['objects', (variables as unknown as IVeoMutationParameters<IVeoDeleteObjectParameters>).params?.endpoint]);
+        queryClient.invalidateQueries([
+          'object',
+          (variables as unknown as IVeoMutationParameters<IVeoDeleteObjectParameters>).params?.endpoint,
+          (variables as unknown as IVeoMutationParameters<IVeoDeleteObjectParameters>).params?.id
+        ]);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
+      }
+    }
+  );
 };

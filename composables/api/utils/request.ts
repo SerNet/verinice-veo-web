@@ -67,7 +67,7 @@ export const useRequest = () => {
   });
 
   const getUrl = (url: string) => {
-    const parsedUrl = url.match(/\/api\/(\w+)\/(.*)/);
+    const parsedUrl = url.match(/\/api\/(\w+)(\/(.*)|$)/);
     if (!parsedUrl) {
       throw new Error("Request::getUrl: Couldn't parse request url");
     }
@@ -79,7 +79,10 @@ export const useRequest = () => {
       path = parsedUrl[2];
     } else {
       endpoint = apiEndpoints.default;
-      path = `${parsedUrl[1]}/${parsedUrl[2]}`;
+      path = `${parsedUrl[1]}${parsedUrl[2]}`;
+    }
+    if (path.startsWith('/')) {
+      path = path.substring(1);
     }
 
     return `${endpoint}/${path}`;
@@ -182,7 +185,7 @@ export const useRequest = () => {
         queryParameters.delete(param);
       }
     }
-    const combinedUrl = `${url}?${queryParameters.toString()}`;
+    const combinedUrl = `${url}${queryParameters.toString() ? '?' : ''}${queryParameters.toString()}`;
 
     const reqURL = getUrl(combinedUrl);
     const res = await fetch(reqURL, combinedOptions);

@@ -42,7 +42,7 @@ export default function (api: Client) {
             }
             query.uri = `/${schemaEndpoint}/${entity.id}`;
 
-            const result = await api.req('/api/history/revisions/', {
+            const result = await api.req('/api/history/revisions', {
               query
             });
 

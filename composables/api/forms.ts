@@ -20,7 +20,7 @@ import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 import { useQueryClient } from '@tanstack/vue-query';
 
 import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
-import { IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
+import { IVeoMutationParameters, IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
 import { IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export interface IVeoFetchFormsParameters {
@@ -107,8 +107,13 @@ export const useUpdateForm = (mutationOptions?: MutationOptions) => {
     {
       ...mutationOptions,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries(['form', (variables as unknown as IVeoUpdateFormParameters).id]);
-        queryClient.invalidateQueries(['forms']);
+        queryClient.invalidateQueries(
+          schemasQueryKeys.form({
+            domainId: (variables as unknown as IVeoMutationParameters<IVeoUpdateFormParameters>).params?.domainId || '',
+            id: (variables as unknown as IVeoMutationParameters<IVeoUpdateFormParameters>).params?.id || ''
+          })
+        );
+        queryClient.invalidateQueries(schemasQueryKeys.forms({ domainId: (variables as unknown as IVeoMutationParameters<IVeoUpdateFormParameters>).params?.domainId || '' }));
         if (mutationOptions?.onSuccess) {
           mutationOptions.onSuccess(data, variables, context);
         }
