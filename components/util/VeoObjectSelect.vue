@@ -29,8 +29,8 @@
     :clearable="!required"
     :return-object="valueAsEntity"
     v-bind="$attrs"
+    @update:search-input="onSearchQueryInput"
   >
-    <!-- @update:search-input="onSearchQueryInput" -->
     <template #prepend-item>
       <slot name="prepend-item" />
     </template>
@@ -201,7 +201,10 @@ export default defineComponent({
 
     const isLoading = computed(() => isLoadingObjects.value || isLoadingObject.value);
 
-    const items = computed<IVeoEntity[]>(() => [...(fetchObjectsData.value?.items || []), ...(fetchObjectData.value ? [fetchObjectData.value] : [])]);
+    const items = computed<IVeoEntity[]>(() => [
+      ...(fetchObjectsData.value?.items || []),
+      ...(fetchObjectData.value && !fetchObjectsData.value?.items?.find((item) => item.id === fetchObjectData.value.id) ? [fetchObjectData.value] : [])
+    ]);
     const displayedItems = computed(() => (props.hiddenValues.length ? items.value.filter((item) => !props.hiddenValues.includes(item.id)) : items.value));
 
     // Label stuff

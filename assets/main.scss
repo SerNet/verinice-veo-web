@@ -51,3 +51,27 @@ html {
     opacity: 0 !important;
   }
 }
+
+.veo-pseudo-hover {
+  &::before {
+    background-color: rgba(0, 0, 0, 0);
+    content: '';
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: background-color 200ms ease-in-out;
+  }
+}
+
+.veo-pseudo-hover:hover {
+  &::before {
+    background-color: rgba(0, 0, 0, 0.12);
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}

@@ -138,11 +138,11 @@ export default defineComponent({
 
     const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
     const combinedQueryParameters = computed(() => ({
-      endpoint: 'scenario',
+      endpoint: 'scenarios',
       unit: unit.value,
       size: tablePageSize.value,
       sortBy: queryParameters.sortBy,
-      sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
+      sortOrder: (queryParameters.sortDesc ? 'desc' : 'asc') as 'desc' | 'asc',
       page: queryParameters.page,
       ...filter.value
     }));

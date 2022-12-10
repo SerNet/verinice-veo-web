@@ -15,9 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useContext } from '@nuxtjs/composition-api';
-
-import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
+import { IVeoQueryTransformationMap, QueryOptions, STALE_TIME, useQuery } from './utils/query';
 import { IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
 import { VeoApiReponseType } from './utils/request';
 import { IVeoCreateReportData, IVeoReportsMeta } from '~/types/VeoTypes';
@@ -27,23 +25,27 @@ export interface IVeoCreateReportParameters {
   body: IVeoCreateReportData;
 }
 
-export const reportsQueryKeys = {
-  reports: ['reports'] as const
+export const reportsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
+  fetchAll: () => ({})
 };
 
 export const reportsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
   create: (mutationParameters: IVeoCreateReportParameters) => ({ json: mutationParameters.body, params: { type: mutationParameters.type } })
 };
 
-export const useFetchReports = (queryOptions?: QueryOptions) => {
-  const { $api } = useContext();
+export const useFetchReports = (queryOptions?: QueryOptions) =>
+  useQuery<void, IVeoReportsMeta>(
+    'reports',
+    {
+      url: '/api/reporting/reports'
+    },
+    undefined,
+    reportsQueryParameterTransformationMap.fetchAll,
+    { ...queryOptions, staleTime: STALE_TIME.INFINITY }
+  );
 
-  return useQuery<IVeoReportsMeta>(reportsQueryKeys.reports, $api.report.fetchAll, {}, { ...queryOptions, staleTime: STALE_TIME.INFINITY });
-};
-
-export const useCreateReport = (mutationOptions?: MutationOptions) => {
-  // No need to invalidate queries, as this doesn't create a new report type, just a new report of that type for the user
-  return useMutation<IVeoCreateReportParameters, void>(
+export const useCreateReport = (mutationOptions?: MutationOptions) =>
+  useMutation<IVeoCreateReportParameters, void>(
     'report',
     {
       url: '/api/reporting/reports/:type',
@@ -51,6 +53,6 @@ export const useCreateReport = (mutationOptions?: MutationOptions) => {
       reponseType: VeoApiReponseType.BLOB
     },
     reportsMutationParameterTransformationMap.create,
+    // No need to invalidate queries, as this doesn't create a new report type, just a new report of that type for the user
     mutationOptions
   );
-};

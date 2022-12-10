@@ -15,29 +15,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useContext } from '@nuxtjs/composition-api';
-import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+import { Ref } from '@nuxtjs/composition-api';
 
-import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
+import { IVeoQueryTransformationMap, QueryOptions, STALE_TIME, useQuery } from './utils/query';
 import { IVeoUnit } from '~/types/VeoTypes';
 
 export interface IVeoFetchUnitParameters {
   id: string;
 }
 
-export const unitsQueryKeys = {
-  units: ['units'] as const,
-  unit: (queryParameters: IVeoFetchUnitParameters) => ['unit', queryParameters.id] as const
+export const unitsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
+  fetchAll: () => ({}),
+  fetch: (queryParameters: IVeoFetchUnitParameters) => ({ params: queryParameters })
 };
 
-export const useFetchUnits = (queryOptions?: QueryOptions) => {
-  const { $api } = useContext();
+export const useFetchUnits = (queryOptions?: QueryOptions) =>
+  useQuery<void, IVeoUnit[]>('units', { url: '/api/units' }, undefined, unitsQueryParameterTransformationMap.fetchAll, {
+    ...queryOptions,
+    staleTime: STALE_TIME.MEDIUM,
+    placeholderData: []
+  });
 
-  return useQuery<IVeoUnit[]>(unitsQueryKeys.units, $api.unit.fetchAll, {}, { ...queryOptions, staleTime: STALE_TIME.MEDIUM, placeholderData: [] });
-};
-
-export const useFetchUnit = (queryParameters: MaybeRef<IVeoFetchUnitParameters>, queryOptions?: QueryOptions) => {
-  const { $api } = useContext();
-
-  return useQuery<IVeoUnit[]>(unitsQueryKeys.unit, $api.unit.fetch, queryParameters, { ...queryOptions, staleTime: STALE_TIME.MEDIUM });
-};
+export const useFetchUnit = (queryParameters: Ref<IVeoFetchUnitParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchUnitParameters, IVeoUnit>('unit', { url: '/api/units/:id' }, queryParameters, unitsQueryParameterTransformationMap.fetch, {
+    ...queryOptions,
+    staleTime: STALE_TIME.MEDIUM
+  });

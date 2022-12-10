@@ -15,11 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useContext } from '@nuxtjs/composition-api';
-import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+import { Ref } from '@nuxtjs/composition-api';
 import { useQueryClient } from '@tanstack/vue-query';
 
-import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
+import { IVeoQueryTransformationMap, QueryOptions, STALE_TIME, useQuery } from './utils/query';
 import { IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
 import { IVeoDomain } from '~/types/VeoTypes';
 
@@ -33,9 +32,9 @@ export interface IVeoUpdateTypeDefinitionParameters {
   objectSchema: string;
 }
 
-export const domainsQueryKeys = {
-  domains: ['domains'] as const,
-  domain: (queryParameters: IVeoFetchDomainParameters) => ['domain', queryParameters.id] as const
+export const domainsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
+  fetchAll: () => ({}),
+  fetch: (queryParameters: IVeoFetchDomainParameters) => ({ params: queryParameters })
 };
 
 export const domainsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
@@ -48,17 +47,18 @@ export const domainsMutationParameterTransformationMap: IVeoMutationTransformati
   })
 };
 
-export const useFetchDomains = (queryOptions?: QueryOptions) => {
-  const { $api } = useContext();
+export const useFetchDomains = (queryOptions?: QueryOptions) =>
+  useQuery<void, IVeoDomain[]>('domains', { url: '/api/domains/' }, undefined, domainsQueryParameterTransformationMap.fetchAll, {
+    ...queryOptions,
+    staleTime: STALE_TIME.LONG,
+    placeholderData: []
+  });
 
-  return useQuery<IVeoDomain[]>(domainsQueryKeys.domains, $api.domain.fetchAll, {}, { ...queryOptions, staleTime: STALE_TIME.LONG, placeholderData: [] });
-};
-
-export const useFetchDomain = (queryParameters: MaybeRef<IVeoFetchDomainParameters>, queryOptions?: QueryOptions) => {
-  const { $api } = useContext();
-
-  return useQuery<IVeoDomain>(domainsQueryKeys.domain, $api.domain.fetch, queryParameters, { ...queryOptions, staleTime: STALE_TIME.MEDIUM });
-};
+export const useFetchDomain = (queryParameters: Ref<IVeoFetchDomainParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchDomainParameters, IVeoDomain>('domain', { url: '/api/domains/:id' }, queryParameters, domainsQueryParameterTransformationMap.fetch, {
+    ...queryOptions,
+    staleTime: STALE_TIME.MEDIUM
+  });
 
 export const useUpdateTypeDefinition = (mutationOptions?: MutationOptions) => {
   const queryClient = useQueryClient();

@@ -22,6 +22,7 @@
     :save-button-text="(params && params.buttonText) || t('global.button.ok')"
     class="veo-global-alert"
     :no-close-button="type === VeoAlertType.SUCCESS"
+    :dismiss-on-click="type === VeoAlertType.SUCCESS"
     :timeout="params ? params.timeout : undefined"
     @input="onInput"
   >

@@ -62,14 +62,14 @@ export const useRequest = () => {
     accounts: context.$config.accountsApiUrl.replace(/\/$/, ''),
     forms: context.$config.formsApiUrl.replace(/\/$/, ''),
     history: context.$config.historyApiUrl.replace(/\/$/, ''),
-    reports: context.$config.reportsApiUrl.replace(/\/$/, ''),
+    reporting: context.$config.reportsApiUrl.replace(/\/$/, ''),
     default: context.$config.apiUrl.replace(/\/$/, '')
   });
 
   const getUrl = (url: string) => {
-    const parsedUrl = url.match(/\/api\/(\w+)(\/(.*)|$)/);
+    const parsedUrl = url.match(/\/api\/(\w+)((\/|\?)(.*)|$)/);
     if (!parsedUrl) {
-      throw new Error("Request::getUrl: Couldn't parse request url");
+      throw new Error(`Request::getUrl: Couldn't parse request url "${url}"`);
     }
 
     let path;
@@ -177,16 +177,10 @@ export const useRequest = () => {
     const combinedOptions = defaultsDeep(options, defaults);
     combinedOptions.headers.Authorization = defaults.headers.Authorization;
 
-    const queryParameters = new URLSearchParams(options.query || {});
-    // Remove params that have an undefined value from the query parameters
-    // @ts-ignore for some reason VSCode says URLSearchParams.entries() doesn't exist
-    for (const [param, value] of queryParameters.entries()) {
-      if (value === undefined) {
-        queryParameters.delete(param);
-      }
-    }
-    const combinedUrl = `${url}${queryParameters.toString() ? '?' : ''}${queryParameters.toString()}`;
+    // Create an URLSearchParams Object after filtering out all undefined query options
+    const queryParameters = new URLSearchParams(Object.fromEntries(Object.entries(options.query || {}).filter(([_param, value]) => value !== undefined)));
 
+    const combinedUrl = `${url}${queryParameters.toString() ? '?' : ''}${queryParameters.toString()}`;
     const reqURL = getUrl(combinedUrl);
     const res = await fetch(reqURL, combinedOptions);
     return await parseResponse(res, options);

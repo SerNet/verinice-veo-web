@@ -72,6 +72,7 @@
             class="pb-4"
             :disabled="formDataIsRevision || ability.cannot('manage', 'objects')"
             :object-type="objectParameter.type"
+            :original-object="object"
             :loading="loading || !modifiedObject"
             :domain-id="domainId"
             :preselected-sub-type="preselectedSubType"
@@ -221,9 +222,10 @@ export default defineComponent({
 
     // Object details are originally part of the object, but as they might get updated independently, we want to avoid refetching the whole object, so we outsorce them.
     const metaData = ref<any>({});
+    const endpoint = computed(() => endpoints.value?.[objectParameter.value.type]);
 
-    const fetchObjectQueryParameters = computed(() => ({ endpoint: endpoints.value?.[objectParameter.value.type] || '', id: objectParameter.value.id }));
-    const fetchObjectQueryEnabled = computed(() => !!endpoints.value?.[objectParameter.value.type] && !!objectParameter.value.id);
+    const fetchObjectQueryParameters = computed(() => ({ endpoint: endpoint.value || '', id: objectParameter.value.id }));
+    const fetchObjectQueryEnabled = computed(() => !!endpoints.value && !!objectParameter.value.id);
     const {
       data: object,
       isFetching: loading,
@@ -368,10 +370,10 @@ export default defineComponent({
         if (modifiedObject.value && object.value) {
           // @ts-ignore ETag is not defined on the type, however it is set by the api plugin
           modifiedObject.value.$etag = object.value.$etag;
-          await $api.entity.update(objectParameter.value.type, objectParameter.value.id, modifiedObject.value);
+          await $api.entity.update(endpoint.value || '', objectParameter.value.id, modifiedObject.value);
+          displaySuccessMessage(successText);
           refetch();
           formDataIsRevision.value = false;
-          displaySuccessMessage(successText);
         }
       } catch (e: any) {
         if (e.code === 412) {

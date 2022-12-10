@@ -15,27 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, reactive, ref, Ref, unref, useContext, watch } from '@nuxtjs/composition-api';
+import { reactive, ref, Ref, set, unref, useContext, watch } from '@nuxtjs/composition-api';
 import { useQuery as vueQueryUseQuery, useQueries as VueQueryUseQueries, useQueryClient } from '@tanstack/vue-query';
 import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
-import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 import { QueryObserverResult } from '@tanstack/query-core/build/lib/types';
-import { cloneDeep, isFunction } from 'lodash';
+import { omit } from 'lodash';
 
-import { VeoApiReponseType } from './request';
+import { useRequest, VeoApiReponseType } from './request';
 import { IBaseObject } from '~/lib/utils';
 
 export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
 
-export interface IVeoQueryDefinition {
+export interface IVeoQueryDefinition<TResult = any> {
   url: string;
-  method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
   reponseType?: VeoApiReponseType;
+  onDataFetched?: (result: TResult) => TResult;
 }
 
 export interface IVeoQueryParameters<TParams = IBaseObject, TQuery = IBaseObject> {
   params?: TParams;
   query?: TQuery;
+}
+
+export interface IVeoQueryTransformationMap {
+  [operation: string]: (mutationParameters: any) => IVeoQueryParameters;
 }
 
 export const STALE_TIME = {
@@ -49,46 +52,50 @@ export const STALE_TIME = {
 /**
  * Wrapper for vue-query's useQuery to apply some custom logic to make it work more seamless with the legacy api plugin and add optional debugging output.
  *
- * @param queryKey query key. Changes to it trigger a refetch. Can either be a string array or a callable function that gets passed the query parameters
- * @param requestFunction Function to call to fetch data (usually a function from the api plugin).
+ * @param queryIdentifier Used for debugging and identifying all requests that get made to the defined endpoint. (Developer note: If you have two queries with the same URL and method, you are probably doing something wrong)
+ * @param queryDefinition Defines url and return type of the request.
  * @param queryParameters Parameters to pass to the request function.
+ * @param queryParameterTransformationFn Function that transforms an object passed from the application (developer friendly) to an object that gets used by the api to generate the url
  * @param queryOptions Options modifiying query behaviour.
  * @returns Query object containing the data and information about the query.
  */
-export const useQuery = <T>(
-  queryKey: readonly string[] | CallableFunction,
-  requestFunction: CallableFunction,
-  queryParameters: MaybeRef<IBaseObject>,
+export const useQuery = <TVariable = IBaseObject, TResult = any>(
+  queryIdentifier: string,
+  queryDefinition: IVeoQueryDefinition<TResult>,
+  queryParameters: Ref<TVariable> | undefined,
+  queryParameterTransformationFn: (parameters: TVariable | void) => IVeoQueryParameters,
   queryOptions?: QueryOptions
 ) => {
   const { $config } = useContext();
+  const { request } = useRequest();
 
-  const evaluatedQueryKey = computed(() => (isFunction(queryKey) ? queryKey(unref(queryParameters)) : queryKey));
-
-  const localQueryKey = reactive([]);
-
+  // Generating query key based on identifier and the query parameters. This causes the query to get executed again if the query parameters change
+  const queryKey = reactive<any[]>([queryIdentifier]);
   watch(
-    () => evaluatedQueryKey.value,
+    () => queryParameters?.value,
     (newValue) => {
-      Object.assign(localQueryKey, newValue);
+      if (newValue) {
+        set(queryKey, 1, newValue);
+      }
     },
     { deep: true, immediate: true }
   );
 
   // Actual query getting executed
-  const result = vueQueryUseQuery<T>(
-    localQueryKey,
-    ({ queryKey }) => {
-      const localQueryKey = cloneDeep(queryKey as any as string[]);
-      // Remove first parameter, as this is just the query key
-      localQueryKey.shift();
-      return requestFunction(...localQueryKey);
+  const result = vueQueryUseQuery<TResult>(
+    queryKey,
+    async () => {
+      let result = await request(queryDefinition.url, { ...queryParameterTransformationFn(unref(queryParameters)), ...omit(queryDefinition, 'url', 'onDataFetched') });
+      if (queryDefinition.onDataFetched) {
+        result = queryDefinition.onDataFetched(result);
+      }
+      return result;
     },
     queryOptions as any
   );
 
   // Debugging stuff
-  if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(evaluatedQueryKey.value[0]))) {
+  if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(queryIdentifier))) {
     const queryClient = useQueryClient();
 
     watch(
@@ -98,13 +105,19 @@ export const useQuery = <T>(
           const staleTime = queryOptions?.staleTime || queryClient.getDefaultOptions().queries?.staleTime;
           // eslint-disable-next-line no-console
           console.log(
-            `[vueQuery] data for query key "${JSON.stringify(evaluatedQueryKey.value)}" is considered stale (stale time is ${staleTime}). Last updated at ${new Date(
+            `[vueQuery] data for query "${JSON.stringify(queryIdentifier)}" with parameters "${JSON.stringify(
+              queryParameters?.value
+            )}" is considered stale (stale time is ${staleTime}). Last updated at ${new Date(
               result.dataUpdatedAt.value
             ).toLocaleTimeString()}, now is ${new Date().toLocaleTimeString()}. Fetching...`
           );
         } else if (newValue) {
           // eslint-disable-next-line no-console
-          console.log(`[vueQuery] data for "${JSON.stringify(evaluatedQueryKey.value)}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(queryOptions)}"`);
+          console.log(
+            `[vueQuery] data for query "${JSON.stringify(queryIdentifier)}" with parameters "${JSON.stringify(
+              queryParameters?.value
+            )}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(queryOptions)}"`
+          );
         }
       },
       { immediate: true }
@@ -117,40 +130,38 @@ export const useQuery = <T>(
 /**
  * Wrapper for vue-query's useQueries to provide more debugging output and have a similiar interface usage to our own useQuery
  *
- * @param queryKeys query key array. Changes to it trigger a refetch. Each entry corresponds to a new query, so make sure to pass the same amount of queryParameters and queryKeys.
- * @param requestFunction Function to call to fetch data (usually a function from the api plugin).
- * @param queryParameters Array with parameters to pass to the request function.
+ * @param queryIdentifier Used for debugging and identifying all requests that get made to the defined endpoint. (Developer note: If you have two queries with the same URL and method, you are probably doing something wrong)
+ * @param queryDefinition Defines url and return type of the request.
+ * @param queryParameters Parameters to pass to the request function. Each array entries results in a new query
+ * @param queryParameterTransformationFn Function that transforms an object passed from the application (developer friendly) to an object that gets used by the api to generate the url
  * @param queryOptions Options modifiying query behaviour.
  * @returns Array containing query objects containing the data and information about the query. NOT reactive, so you have to watch the results in your components.
  */
-export const useQueries = <T>(
-  queryKeys: Ref<(readonly string[] | CallableFunction)[]>,
-  requestFunction: CallableFunction,
-  queryParameters: Ref<IBaseObject[]>,
+export const useQueries = <TVariable = IBaseObject, TResult = any>(
+  queriesIdentifier: string,
+  queryDefinition: IVeoQueryDefinition<TResult>,
+  queryParameters: Ref<(TVariable | void)[]>,
+  queryParameterTransformationFn: (parameters: TVariable | void) => IVeoQueryParameters,
   queryOptions?: QueryOptions
 ) => {
-  const { $config } = useContext();
-
-  // Query key after all functions that might be part of it have been run with the parameters passed
-  const evaluatedQueryKey = computed(() => queryKeys.value.map((queryKey, index) => (isFunction(queryKey) ? queryKey(unref(queryParameters)[index]) : queryKey)));
-
-  // Key that gets assigned as otherwise useQueries doesn't pick up the changes
-  const localQueryKey = reactive<any[][]>([]);
+  const { request } = useRequest();
 
   const queries = ref<any[]>([]);
-
   watch(
-    () => evaluatedQueryKey.value,
+    () => queryParameters.value,
     (newValue) => {
-      Object.assign(localQueryKey, newValue);
-
-      queries.value = localQueryKey.length
-        ? localQueryKey.map((queryKey) => ({
-            queryKey,
-            queryFn: () => {
-              const localQueryKey = cloneDeep(queryKey as any as string[]);
-              localQueryKey.shift();
-              return requestFunction(...localQueryKey);
+      queries.value = newValue.length
+        ? newValue.map((query) => ({
+            queryKey: [queriesIdentifier, query],
+            queryFn: async () => {
+              let result = await request(queryDefinition.url, {
+                ...queryParameterTransformationFn(unref(query)),
+                ...omit(queryDefinition, 'url', 'onDataFetched')
+              });
+              if (queryDefinition.onDataFetched) {
+                result = queryDefinition.onDataFetched(result);
+              }
+              return result;
             },
             ...queryOptions
           }))
@@ -162,29 +173,5 @@ export const useQueries = <T>(
   // Actual query getting executed
   const result = VueQueryUseQueries({ queries });
 
-  // Debugging stuff
-  if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(evaluatedQueryKey.value[0][0]))) {
-    const queryClient = useQueryClient();
-
-    watch(
-      () => result[0]?.isFetching,
-      (newValue) => {
-        if (newValue && result[0]?.isStale) {
-          const staleTime = queryOptions?.staleTime || queryClient.getDefaultOptions().queries?.staleTime;
-          // eslint-disable-next-line no-console
-          console.log(
-            `[vueQuery] data for query key "${JSON.stringify(evaluatedQueryKey.value)}" is considered stale (stale time is ${staleTime}). Last updated at ${new Date(
-              result[0]?.dataUpdatedAt
-            ).toLocaleTimeString()}, now is ${new Date().toLocaleTimeString()}. Fetching...`
-          );
-        } else if (newValue) {
-          // eslint-disable-next-line no-console
-          console.log(`[vueQuery] data for "${JSON.stringify(evaluatedQueryKey.value)}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(queryOptions)}"`);
-        }
-      },
-      { immediate: true }
-    );
-  }
-
-  return result as QueryObserverResult<T, unknown>[];
+  return result as QueryObserverResult<TResult, unknown>[];
 };

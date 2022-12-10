@@ -129,7 +129,7 @@ export default defineComponent({
             items.value = await $api.entity.fetchParents(schemas.value[props.object.type], props.object.id);
             break;
           case 'risks':
-            items.value = (await $api.entity.fetchRisks(props.object.type, props.object.id)) as any;
+            items.value = (await $api.entity.fetchRisks(schemas.value[props.object.type], props.object.id)) as any;
             break;
           case 'links':
             // create entities for table from links

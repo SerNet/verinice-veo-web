@@ -18,9 +18,9 @@
 <template>
   <div>
     <h2 class="text-h2 px-4 pt-1">
-      {{ $t('history').toString() }}
+      {{ t('history').toString() }}
     </h2>
-    <div v-if="$fetchState.pending || loading">
+    <div v-if="isFetching">
       <div
         v-for="index in [1, 2]"
         :key="index"
@@ -63,99 +63,86 @@
                     @click="$emit('show-revision', version, index > 0)"
                   >
                     <v-list-item-title>
-                      {{ $t('version') }}
+                      {{ t('version') }}
                       <b>{{ version.changeNumber + 1 }}</b>
-                      : {{ (new Date(version.time)).toLocaleString($i18n.locale) }}
+                      : {{ (new Date(version.time)).toLocaleString(locale) }}
                     </v-list-item-title>
                     <v-list-item-subtitle>
-                      {{ $t('by') }}
+                      {{ t('by') }}
                       <b>{{ version.author }}</b>
                     </v-list-item-subtitle>
-                    <v-list-item-subtitle>{{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
+                    <v-list-item-subtitle>{{ t('type') }}: {{ t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
               </div>
             </template>
             <template #default>
-              {{ $t('dataIncompatible') }}
+              {{ t('dataIncompatible') }}
             </template>
           </v-tooltip>
         </div>
       </v-list-item-group>
+      <v-list-item
+        v-if="!historyEntriesWithCompability.length"
+        disabled
+      >
+        <i class="text-body-2">{{ t('noPriorVersions') }}</i>
+      </v-list-item>
     </v-list>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Prop } from 'vue/types/options';
+import { computed, defineComponent, PropType } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
+import { useFetchVersions } from '~/composables/api/history';
 import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
-interface IData {
-  history: IVeoObjectHistoryEntry[];
-}
-
-export default Vue.extend({
+export default defineComponent({
   name: 'VeoObjectHistory',
   props: {
     object: {
-      type: Object as Prop<IVeoEntity>,
+      type: Object as PropType<IVeoEntity>,
       required: true
-    },
-    loading: {
-      type: Boolean,
-      default: false
     },
     objectSchema: {
       type: Object,
       default: undefined
     }
   },
-  data(): IData {
-    return {
-      history: []
-    };
-  },
-  async fetch() {
-    const schemas = await this.$api.schema.fetchAll();
-    if (this.object && !this.loading) {
-      this.history = (await this.$api.history.fetchVersions(schemas[this.object.type], this.object)).sort((a: IVeoObjectHistoryEntry, b: IVeoObjectHistoryEntry) => {
+  setup(props) {
+    const { t, locale } = useI18n();
+
+    const fetchVersionsQueryParameters = computed(() => ({ object: props.object }));
+    const fetchVersionsQueryEnabled = computed(() => !!props.object);
+    const { data: history, isFetching } = useFetchVersions(fetchVersionsQueryParameters, { enabled: fetchVersionsQueryEnabled });
+
+    const historyEntries = computed(() =>
+      (history.value || []).sort((a, b) => {
         return a.changeNumber > b.changeNumber ? -1 : a.changeNumber < b.changeNumber ? 1 : 0;
-      });
-    }
-  },
-  computed: {
-    historyEntriesWithCompability(): (IVeoObjectHistoryEntry & { compability: VeoSchemaValidatorValidationResult })[] {
-      return this.history.map((entry) => ({ ...entry, compability: this.getIsDataCompatible(entry) }));
-    }
-  },
-  // For some reason we have to check on both, as $fetchState.pending will be false in some cases while the object is not set yet.
-  watch: {
-    loading(newValue: boolean) {
-      if (!newValue && this.object) {
-        setTimeout(() => {
-          this.$fetch();
-        }, 1000);
-      }
-    },
-    object(newValue: IVeoEntity, oldValue: IVeoEntity | undefined) {
-      // Only load if old object data was not existing and the page isn't loading
-      if (!this.loading && newValue && JSON.stringify(oldValue) === '{}') {
-        this.$nextTick().then(() => {
-          this.$fetch();
-        });
-      }
-    }
-  },
-  methods: {
-    getIsDataCompatible(data: IVeoObjectHistoryEntry): VeoSchemaValidatorValidationResult {
-      if (!this.objectSchema) {
+      })
+    );
+
+    const historyEntriesWithCompability = computed<(IVeoObjectHistoryEntry & { compability: VeoSchemaValidatorValidationResult })[]>(() =>
+      historyEntries.value.map((entry) => ({ ...entry, compability: isDataCompatible(entry) }))
+    );
+
+    const isDataCompatible = (data: IVeoObjectHistoryEntry): VeoSchemaValidatorValidationResult => {
+      if (!props.objectSchema) {
         return { valid: true, errors: [], warnings: [] };
       }
-      return ObjectSchemaValidator.fitsObjectSchema(this.objectSchema, data.content);
-    }
+      return ObjectSchemaValidator.fitsObjectSchema(props.objectSchema, data.content);
+    };
+
+    return {
+      historyEntriesWithCompability,
+      isFetching,
+
+      t,
+      locale
+    };
   }
 });
 </script>
@@ -166,6 +153,7 @@ export default Vue.extend({
     "by": "by",
     "dataIncompatible": "This revision is incompatible with the schema and cannot be displayed.",
     "history": "History",
+    "noPriorVersions": "There are no prior versions for this object.",
     "restoreRevision": "Restore version",
     "revisionType": {
       "CREATION": "Object created",
@@ -179,6 +167,7 @@ export default Vue.extend({
     "by": "by",
     "dataIncompatible": "Diese Version ist inkompatibel mit dem Schema und kann nicht angezeigt werden.",
     "history": "Verlauf",
+    "noPriorVersions": "Für dieses Objekt gibt es keine Vorgängeversionen.",
     "restoreRevision": "Version wiederherstellen",
     "revisionType": {
       "CREATION": "Objekt erstellt",

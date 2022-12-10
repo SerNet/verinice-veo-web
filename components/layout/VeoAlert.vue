@@ -25,8 +25,10 @@
     :elevation="flat ? undefined : 2"
     dense
     class="veo-alert veo-border overflow-hidden"
+    :class="{ 'veo-pseudo-hover': dismissOnClick }"
     :icon="alertIcon"
     style="border-radius: 12px"
+    @click="onContentClick"
   >
     <v-row
       no-gutters
@@ -108,6 +110,10 @@ export default defineComponent({
       type: String,
       default: undefined
     },
+    dismissOnClick: {
+      type: Boolean,
+      default: false
+    },
     timeout: {
       type: Number,
       default: undefined
@@ -170,9 +176,16 @@ export default defineComponent({
       }
     });
 
+    const onContentClick = () => {
+      if (props.dismissOnClick) {
+        emit('input', false);
+      }
+    };
+
     return {
       alertColor,
       alertIcon,
+      onContentClick,
       remainingTime,
 
       t

@@ -15,12 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useContext } from '@nuxtjs/composition-api';
-import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+import { Ref } from '@nuxtjs/composition-api';
 
 import { useQueryClient } from '@tanstack/vue-query';
 import { IVeoMutationParameters, IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
-import { QueryOptions, useQuery } from './utils/query';
+import { IVeoQueryTransformationMap, QueryOptions, useQuery } from './utils/query';
+import { VeoApiReponseType } from './utils/request';
 import { IVeoAccount } from '~/plugins/api/account';
 
 export interface IVeoFetchAccountParameters {
@@ -50,9 +50,9 @@ export interface IVeoDeleteAccountParameters {
   id: string;
 }
 
-export const accountsQueryKeys = {
-  accounts: ['accounts'] as const,
-  account: (queryParameters: IVeoFetchAccountParameters) => ['account', queryParameters.id] as const
+export const accountsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
+  fetchAll: () => ({}),
+  fetch: (queryParameters: IVeoFetchAccountParameters) => ({ params: queryParameters })
 };
 
 export const accountsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
@@ -61,17 +61,11 @@ export const accountsMutationParameterTransformationMap: IVeoMutationTransformat
   delete: (mutationParameters: IVeoDeleteAccountParameters) => ({ params: { id: mutationParameters.id } })
 };
 
-export const useFetchAccounts = (queryOptions?: QueryOptions) => {
-  const { $api } = useContext();
+export const useFetchAccounts = (queryOptions?: QueryOptions) =>
+  useQuery<void, IVeoAccount[]>('accounts', { url: '/api/accounts/' }, undefined, accountsQueryParameterTransformationMap.fetchAll, { ...queryOptions, placeholderData: [] });
 
-  return useQuery<IVeoAccount[]>(accountsQueryKeys.accounts, $api.account.fetchAll, {}, { ...queryOptions, placeholderData: [] });
-};
-
-export const useFetchAccount = (queryParameters: MaybeRef<IVeoFetchAccountParameters>, queryOptions?: QueryOptions) => {
-  const { $api } = useContext();
-
-  return useQuery<IVeoAccount>(accountsQueryKeys.account, $api.account.fetch, queryParameters, queryOptions);
-};
+export const useFetchAccount = (queryParameters: Ref<IVeoFetchAccountParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchAccountParameters, IVeoAccount>('account', { url: '/api/accounts/:id' }, queryParameters, accountsQueryParameterTransformationMap.fetch, queryOptions);
 
 export const useCreateAccount = (mutationOptions?: MutationOptions) => {
   const queryClient = useQueryClient();
@@ -79,7 +73,7 @@ export const useCreateAccount = (mutationOptions?: MutationOptions) => {
   return useMutation<IVeoCreateAccountParameters, void>('account', { url: '/api/accounts', method: 'POST' }, accountsMutationParameterTransformationMap.create, {
     ...mutationOptions,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries(accountsQueryKeys.accounts);
+      queryClient.invalidateQueries(['accounts']);
       if (mutationOptions?.onSuccess) {
         mutationOptions.onSuccess(data, variables, context);
       }
@@ -90,29 +84,39 @@ export const useCreateAccount = (mutationOptions?: MutationOptions) => {
 export const useUpdateAccount = (mutationOptions?: MutationOptions) => {
   const queryClient = useQueryClient();
 
-  return useMutation<IVeoUpdateAccountParameters, void>('account', { url: '/api/accounts/:id', method: 'PUT' }, accountsMutationParameterTransformationMap.update, {
-    ...mutationOptions,
-    onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries(accountsQueryKeys.accounts);
-      queryClient.invalidateQueries(accountsQueryKeys.account({ id: (variables as unknown as IVeoMutationParameters<IVeoUpdateAccountParameters>).params?.id || '' }));
-      if (mutationOptions?.onSuccess) {
-        mutationOptions.onSuccess(data, variables, context);
+  return useMutation<IVeoUpdateAccountParameters, void>(
+    'account',
+    { url: '/api/accounts/:id', method: 'PUT', reponseType: VeoApiReponseType.VOID },
+    accountsMutationParameterTransformationMap.update,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(['accounts']);
+        queryClient.invalidateQueries(['account', { id: (variables as unknown as IVeoMutationParameters<IVeoUpdateAccountParameters>).params?.id || '' }]);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
       }
     }
-  });
+  );
 };
 
 export const useDeleteAccount = (mutationOptions?: MutationOptions) => {
   const queryClient = useQueryClient();
 
-  return useMutation<IVeoDeleteAccountParameters, void>('account', { url: '/api/accounts/:id', method: 'DELETE' }, accountsMutationParameterTransformationMap.delete, {
-    ...mutationOptions,
-    onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries(accountsQueryKeys.accounts);
-      queryClient.invalidateQueries(accountsQueryKeys.account({ id: (variables as unknown as IVeoMutationParameters<IVeoUpdateAccountParameters>).params?.id || '' }));
-      if (mutationOptions?.onSuccess) {
-        mutationOptions.onSuccess(data, variables, context);
+  return useMutation<IVeoDeleteAccountParameters, void>(
+    'account',
+    { url: '/api/accounts/:id', method: 'DELETE', reponseType: VeoApiReponseType.VOID },
+    accountsMutationParameterTransformationMap.delete,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(['accounts']);
+        queryClient.invalidateQueries(['account', { id: (variables as unknown as IVeoMutationParameters<IVeoUpdateAccountParameters>).params?.id || '' }]);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
       }
     }
-  });
+  );
 };

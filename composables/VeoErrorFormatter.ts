@@ -40,7 +40,7 @@ export const useVeoErrorFormatter = () => {
   const formatError = (error: ErrorObject, translations: IBaseObject) => {
     const keyMatch = error.schemaPath.match(/((.+\/properties\/(\w-)+\b)|(.+(?=\/required)))/g);
     if (!keyMatch) {
-      throw new Error('Key does not match in Errors array');
+      throw new Error(`Key does ${error.schemaPath} not match in Errors array`);
     }
 
     const indexMatch = error.instancePath.match(/(\/\d+$)|(\/\d+\/)/);

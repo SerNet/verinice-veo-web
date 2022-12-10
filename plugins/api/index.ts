@@ -21,11 +21,8 @@ import { Plugin, Context } from '@nuxt/types';
 import account from '~/plugins/api/account';
 import entity from '~/plugins/api/entity';
 import form from '~/plugins/api/form';
-import history from '~/plugins/api/history';
 import schema from '~/plugins/api/schema';
-import translation from '~/plugins/api/translation';
 import unit from '~/plugins/api/unit';
-import report from '~/plugins/api/report';
 import domain from '~/plugins/api/domain';
 import monitoring from '~/plugins/api/monitoring';
 import catalog from '~/plugins/api/catalog';
@@ -34,7 +31,7 @@ import { sanitizeURLParams } from '~/lib/utils';
 import { IVeoUserComposable, useVeoUser } from '~/composables/VeoUser';
 
 export function createAPI(context: Context, user: IVeoUserComposable) {
-  return Client.create(context, { account, form, entity, history, schema, translation, unit, report, domain, catalog, monitoring }, user);
+  return Client.create(context, { account, form, entity, schema, unit, domain, catalog, monitoring }, user);
 }
 
 export interface IAPIClient {

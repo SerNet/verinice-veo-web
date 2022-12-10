@@ -435,9 +435,8 @@ export interface IVeoEntity extends IVeoBaseObject {
   owner: IVeoLink;
   links: IVeoCustomLinks;
   customAspects: IVeoCustomAspects;
-  members: IVeoLink[]; // Only contains items if entity is of type scope
-  parts: IVeoLink[]; // Only contains items if entity is NOT of type scope
-  descriptionShort?: string; // Frontend only attribute used in VeoObjectList.vue
+  members: IVeoLink[]; // Only set if object is of type scope
+  parts: IVeoLink[]; // Only set if object is NOT of type scope
   type: string;
   _self: string;
 }

@@ -28,7 +28,9 @@ import { IBaseObject } from '~/lib/utils';
 // Type for less typing in composables
 export type MutationOptions<T = unknown> = Omit<UseMutationOptions<T, unknown, void, unknown>, 'queryFn'>;
 
-export interface IVeoMutationDefinition extends IVeoQueryDefinition {}
+export interface IVeoMutationDefinition extends IVeoQueryDefinition {
+  method?: 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
+}
 
 export interface IVeoMutationParameters<TParams = IBaseObject, TQuery = IBaseObject> extends IVeoQueryParameters<TParams, TQuery> {
   body?: any;

@@ -89,7 +89,7 @@
               <VeoObjectHistory
                 v-else-if="objectData && selectedSideContainer === SIDE_CONTAINERS.HISTORY"
                 class="fill-height overflow-y-auto"
-                :object="objectData"
+                :object="originalObject || objectData"
                 :loading="loading"
                 :object-schema="objectSchema"
                 v-on="$listeners"
@@ -202,7 +202,7 @@ import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/comp
 import { getRiskAdditionalContext, getStatusAdditionalContext } from '~/components/forms/additionalContext';
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoFormSchemaMeta, IVeoInspectionResult, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoTranslations } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
@@ -265,6 +265,10 @@ export default defineComponent({
     scrollWrapperId: {
       type: String,
       default: 'scroll-wrapper'
+    },
+    originalObject: {
+      type: Object as PropType<IVeoEntity | undefined>,
+      default: undefined
     },
     /**
      * If set to true, objects can't be created from within the custom link dropdown

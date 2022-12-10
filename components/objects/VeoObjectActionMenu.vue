@@ -75,7 +75,7 @@
       @success="onAddEntitySuccess"
       @error="onAddEntityError"
     />
-    <VeoCreateEntityDialog
+    <VeoSelectObjectTypeDialog
       v-model="createEntityDialog.value"
       :v-bind="createEntityDialog"
       @create-entity="openCreateObjectDialog($event.type, $event.addAsChild)"

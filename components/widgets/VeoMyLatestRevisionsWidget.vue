@@ -20,7 +20,7 @@
     <v-simple-table dense>
       <tbody>
         <tr
-          v-for="(revision, key) in revisions"
+          v-for="(revision, key) in revisions || []"
           :key="key"
           class="text-no-wrap overflow-x-hidden fill-width"
         >
@@ -42,26 +42,24 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
+import { computed, defineComponent, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { useFetchForms } from '~/composables/api/forms';
+import { useFetchLatestChanges } from '~/composables/api/history';
 import { separateUUIDParam, createUUIDUrlParam } from '~/lib/utils';
 import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
 export default defineComponent({
   setup() {
-    const { $api } = useContext();
     const { t, locale } = useI18n();
     const route = useRoute();
 
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
-    const revisions = ref<IVeoObjectHistoryEntry[]>([]);
-    useFetch(async () => {
-      revisions.value = await $api.history.fetchLatest(unitId.value);
-    });
+    const latestChangesQueryParameters = computed(() => ({ unitId: unitId.value }));
+    const { data: revisions } = useFetchLatestChanges(latestChangesQueryParameters);
 
     const fetchFormsQueryParameters = computed(() => ({ domainId: domainId.value }));
     const fetchFormsQueryEnabled = computed(() => !!domainId.value);
