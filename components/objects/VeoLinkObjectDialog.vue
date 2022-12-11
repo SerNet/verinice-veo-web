@@ -164,7 +164,7 @@ export default defineComponent({
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
-    const { data: objectSchemas, isFetching: schemasLoading } = useFetchSchemas();
+    const { data: endpoints, isFetching: schemasLoading } = useFetchSchemas();
 
     const editedObjectDisplayName = computed(() => ((props.editedObject as IVeoEntity).id ? (props.editedObject as IVeoEntity).displayName : props.editedObject.name));
 
@@ -184,15 +184,17 @@ export default defineComponent({
       refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
+    const endpoint = computed(() => endpoints.value?.[filter.value.objectType]);
     const combinedObjectsQueryParameters = computed(() => ({
       size: tablePageSize.value,
       sortBy: objectsQueryParameters.sortBy,
       sortOrder: objectsQueryParameters.sortDesc ? 'desc' : 'asc',
       page: objectsQueryParameters.page,
       unit: separateUUIDParam(route.value.params.unit).id,
-      ...filter.value
+      ...filter.value,
+      endpoint: endpoint.value
     }));
-    const objectsQueryEnabled = computed(() => !!filter.value.objectType);
+    const objectsQueryEnabled = computed(() => !!endpoint.value);
 
     const { data: objectList, isLoading, refetch } = useFetchObjects(combinedObjectsQueryParameters as any, { enabled: objectsQueryEnabled, keepPreviousData: true });
 
@@ -222,7 +224,7 @@ export default defineComponent({
 
     // get allowed filter-objectTypes for current parent and child type
     const availableObjectTypes = computed<string[]>(() => {
-      const objectSchemaNames = Object.keys(objectSchemas.value || {});
+      const objectSchemaNames = Object.keys(endpoints.value || {});
       if (props.hierarchicalContext === 'parent') {
         if (props.addType === 'entity') {
           // Only allow the same schema for the parent as the one of the current element...
@@ -280,14 +282,14 @@ export default defineComponent({
             const parentsToAdd = differenceBy(modifiedSelectedItems.value, mergedSelectedItems.value, 'id');
             const parentsToRemove = differenceBy(mergedSelectedItems.value, modifiedSelectedItems.value, 'id');
             for (const parent of parentsToAdd) {
-              await linkObject(objectSchemas.value || {}, 'parent', pick(_editedObject, 'id', 'type'), parent);
+              await linkObject(endpoints.value || {}, 'parent', pick(_editedObject, 'id', 'type'), parent);
             }
             for (const parent of parentsToRemove) {
-              await unlinkObject(objectSchemas.value || {}, parent.id, _editedObject.id, parent.type);
+              await unlinkObject(endpoints.value || {}, parent.id, _editedObject.id, parent.type);
             }
           } else {
             await linkObject(
-              objectSchemas.value || {},
+              endpoints.value || {},
               props.hierarchicalContext,
               pick(_editedObject, 'id', 'type'),
               modifiedSelectedItems.value.map((selectedItem) => pick(selectedItem, 'id', 'type'))
@@ -324,7 +326,7 @@ export default defineComponent({
                 const details = getEntityDetailsFromLink(child);
                 const id = details.id;
                 let type = details.type;
-                type = objectSchemas.value?.[type] || type;
+                type = endpoints.value?.[type] || type;
 
                 return { id, type };
               })

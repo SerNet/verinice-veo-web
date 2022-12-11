@@ -153,12 +153,13 @@ export default defineComponent({
     // Select options related stuff
     const searchQuery = ref();
 
-    const searchQueryNotStale = computed(() => !fetchObjectsData?.value?.items?.find((item) => item.displayName === searchQuery.value) && !!endpoints.value?.[props.objectType]);
+    const endpoint = computed(() => endpoints.value?.[props.objectType]);
+    const searchQueryNotStale = computed(() => !fetchObjectsData?.value?.items?.find((item) => item.displayName === searchQuery.value) && !!endpoint.value);
     const fetchObjectsQueryParameters = computed(
       () =>
         ({
           unit: unit.value,
-          endpoint: endpoints.value?.[props.objectType],
+          endpoint: endpoint.value,
           page: 1,
           subType: props.subType,
           displayName: searchQuery.value ?? undefined

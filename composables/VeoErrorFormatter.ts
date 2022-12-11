@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { ErrorObject } from 'ajv';
+import { last } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { IBaseObject } from '~/lib/utils';
@@ -38,21 +39,33 @@ export const useVeoErrorFormatter = () => {
   };
 
   const formatError = (error: ErrorObject, translations: IBaseObject) => {
-    const keyMatch = error.schemaPath.match(/((.+\/properties\/(\w-)+\b)|(.+(?=\/required)))/g);
-    if (!keyMatch) {
-      throw new Error(`Key does ${error.schemaPath} not match in Errors array`);
+    const isRequiredRule = error.schemaPath.match(/((.+\/properties\/(\w-)+\b)|(.+(?=\/required)))/g);
+    const isEqualRule = !!error.params.allowedValues;
+    const isAdditionalPropertiesRule = error.keyword === 'additionalProperties';
+    if (!isRequiredRule && !isEqualRule && !isAdditionalPropertiesRule) {
+      throw new Error(`No error formatted found for ${JSON.stringify(error)}`);
     }
 
-    const indexMatch = error.instancePath.match(/(\/\d+$)|(\/\d+\/)/);
-    let objectSchemaPointer = indexMatch ? keyMatch[0].replace('/items/', indexMatch[0]) : keyMatch[0];
+    let indexMatch;
+    let objectSchemaPointer = '';
+    let affectedProperty;
+    if (isRequiredRule) {
+      indexMatch = error.instancePath.match(/(\/\d+$)|(\/\d+\/)/);
+      objectSchemaPointer = indexMatch ? isRequiredRule[0].replace('/items/', indexMatch[0]) : isRequiredRule[0];
+    }
+    if (isEqualRule || isAdditionalPropertiesRule) {
+      const paths = error.schemaPath.split('/');
+      affectedProperty = last(paths);
+      objectSchemaPointer = paths.join('/');
+    }
 
     let translatedErrorString = '';
 
     switch (error.keyword) {
       case 'required':
         // eslint-disable-next-line no-case-declarations
-        const affectedProperty = (error.params as IBaseObject).missingProperty;
-        objectSchemaPointer = `${keyMatch[0]}${indexMatch ? indexMatch[0] : ''}/properties/${affectedProperty}`;
+        affectedProperty = (error.params as IBaseObject).missingProperty;
+        objectSchemaPointer = `${(isRequiredRule as RegExpMatchArray)[0]}${indexMatch ? indexMatch[0] : ''}/properties/${affectedProperty}`;
         // Special handling of links, as their last data path entry isn't the string we search for
         if (['targetUri', 'target'].includes(affectedProperty)) {
           translatedErrorString = handleRequiredLink(error, translations);
@@ -67,6 +80,11 @@ export const useVeoErrorFormatter = () => {
           field: getInvalidFieldLabel(error.instancePath.split('/').pop() || error.instancePath, translations),
           format: error.params[error.keyword]
         }).toString();
+        break;
+      // Enum is the keyword if a field is expected to have a certain value (one of the ones present in the enum) but has another one
+      case 'enum':
+      case 'additionalProperties':
+        translatedErrorString = t(`error.${error.keyword}`, { field: getInvalidFieldLabel(affectedProperty as string, translations) }).toString();
         break;
       default:
         translatedErrorString = error.message || '';

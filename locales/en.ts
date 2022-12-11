@@ -132,6 +132,8 @@ export default {
   },
 
   error: {
+    additionalProperties: 'The field "{field}" is not part of the object schema',
+    enum: 'The field "{field}" contains an invalid value',
     format: 'The field "{field}" has to match the format "{format}"',
     required: 'The field "{field}" is required',
     required_link: 'The {position} link in "{field}" has to point to an object or must be removed'

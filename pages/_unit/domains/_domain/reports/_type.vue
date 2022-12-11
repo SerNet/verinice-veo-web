@@ -174,6 +174,7 @@ export default defineComponent({
 
     watch(() => filter.value, resetQueryOptions, { deep: true });
 
+    const endpoint = computed(() => endpoints.value?.[filter.value.objectType as string]);
     const combinedObjectsQueryParameters = computed(() => ({
       size: tablePageSize.value,
       sortBy: objectsQueryParameters.sortBy,
@@ -181,10 +182,10 @@ export default defineComponent({
       page: objectsQueryParameters.page,
       unit: separateUUIDParam(route.value.params.unit).id,
       ...filter.value,
-      endpoint: endpoints.value && filter.value.objectType ? endpoints.value[filter.value.objectType as string] : undefined
+      endpoint: endpoint.value
     }));
     const objectType = computed<string | undefined>(() => filter.value.objectType as string | undefined);
-    const objectsQueryEnabled = computed(() => !!objectType.value && !!endpoints.value?.[objectType.value]);
+    const objectsQueryEnabled = computed(() => !!objectType.value && !!endpoint.value);
 
     const {
       data: objects,

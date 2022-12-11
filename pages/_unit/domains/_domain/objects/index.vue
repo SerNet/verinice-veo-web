@@ -125,7 +125,7 @@
 import { mdiContentCopy, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
 import { computed, defineComponent, h, useRoute, useRouter, ref, reactive, watch, onUnmounted } from '@nuxtjs/composition-api';
-import { upperFirst } from 'lodash';
+import { omit, upperFirst } from 'lodash';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
@@ -198,16 +198,17 @@ export default defineComponent({
       Object.assign(queryParameters, { page: 1, sortBy: 'name', sortDesc: false });
     };
 
+    const endpoint = computed(() => endpoints.value?.[filter.value.objectType || '']);
     const combinedQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
       sortBy: queryParameters.sortBy,
       sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
       page: queryParameters.page,
       unit: separateUUIDParam(route.value.params.unit).id,
-      ...filter.value,
-      endpoint: objectType.value && endpoints.value ? endpoints.value[objectType.value] : undefined
+      ...omit(filter.value, 'objectType'),
+      endpoint: endpoint.value
     }));
-    const queryEnabled = computed(() => !!objectType.value && !!endpoints.value?.[objectType.value]);
+    const queryEnabled = computed(() => !!objectType.value && !!endpoint.value);
 
     const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true, placeholderData: [] });
 
