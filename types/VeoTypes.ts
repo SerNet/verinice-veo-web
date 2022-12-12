@@ -439,6 +439,7 @@ export interface IVeoEntity extends IVeoBaseObject {
   parts: IVeoLink[]; // Only set if object is NOT of type scope
   type: string;
   _self: string;
+  etag?: string;
 }
 
 export interface IVeoRiskDefinition {

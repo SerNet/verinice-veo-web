@@ -66,17 +66,17 @@ export const useUnlinkObject = () => {
 
   const { mutateAsync: updateObject } = useUpdateObject();
 
-  const unlink = (object: IVeoEntity, objectToRemove: IVeoEntity | string) => {
-    const _object = cloneDeep(object);
+  const unlink = (objectToModify: IVeoEntity, objectToRemove: IVeoEntity | string) => {
+    const object = cloneDeep(objectToModify);
+
     const objcectToRemoveUUID = isString(objectToRemove) ? objectToRemove : objectToRemove.id;
 
-    if (_object.type === 'scope') {
-      _object.members = _object.members.filter((member) => !member.targetUri.includes(objcectToRemoveUUID));
+    if (object.type === 'scope') {
+      object.members = object.members.filter((member) => !member.targetUri.includes(objcectToRemoveUUID));
     } else {
-      _object.parts = _object.parts.filter((part) => !part.targetUri.includes(objcectToRemoveUUID));
+      object.parts = object.parts.filter((part) => !part.targetUri.includes(objcectToRemoveUUID));
     }
-
-    return updateObject({ endpoint: endpoints.value?.[_object.type], object: _object });
+    return updateObject({ endpoint: endpoints.value?.[object.type], object });
   };
 
   return { unlink };

@@ -38,6 +38,7 @@
         no-padding
       >
         <template #default>
+          ETag: {{ object && object.etag }}
           <VeoObjectDetails
             class="mb-10"
             :loading="loading"
@@ -234,6 +235,7 @@ export default defineComponent({
       onSuccess: (data) => {
         const _data = data as IVeoEntity;
         modifiedObject.value = cloneDeep(_data);
+        // console.log(4, data.$etag);
         metaData.value = cloneDeep(_data.domains[domainId.value]);
         getAdditionalContext();
 
@@ -366,8 +368,6 @@ export default defineComponent({
       expireOptimisticLockingAlert();
       try {
         if (modifiedObject.value && object.value) {
-          // @ts-ignore ETag is not defined on the type, however it is set by the api plugin
-          modifiedObject.value.$etag = object.value.$etag;
           await $api.entity.update(endpoint.value || '', objectParameter.value.id, modifiedObject.value);
           displaySuccessMessage(successText);
           refetch();

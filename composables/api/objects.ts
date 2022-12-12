@@ -264,10 +264,13 @@ export const useUpdateObject = (mutationOptions?: MutationOptions) => {
         queryClient.invalidateQueries([
           'object',
           {
-            endpoint: (variables as unknown as IVeoMutationParameters<IVeoUpdateObjectParameters>).params?.endpoint,
-            id: (variables as unknown as IVeoMutationParameters<IVeoUpdateObjectParameters>).params?.object.id
+            endpoint: (variables as unknown as IVeoMutationParameters).params?.endpoint,
+            id: (variables as unknown as IVeoMutationParameters).params?.id
           }
         ]);
+        setTimeout(() => {
+          queryClient.invalidateQueries(['versions']);
+        }, 5000); // Only invalidate after 5 seconds, as the history sevice isn't updated as sonn as the object is updated
         if (mutationOptions?.onSuccess) {
           mutationOptions.onSuccess(data, variables, context);
         }
@@ -291,7 +294,7 @@ export const useDeleteObject = (mutationOptions?: MutationOptions) => {
       ...mutationOptions,
       onSuccess: (data, variables, context) => {
         queryClient.invalidateQueries(['objects']);
-        queryClient.invalidateQueries(['object', (variables as unknown as IVeoMutationParameters<IVeoDeleteObjectParameters>).params]);
+        queryClient.invalidateQueries(['object', (variables as unknown as IVeoMutationParameters).params]);
         if (mutationOptions?.onSuccess) {
           mutationOptions.onSuccess(data, variables, context);
         }

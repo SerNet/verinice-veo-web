@@ -124,11 +124,11 @@ export const useUpdateForm = (mutationOptions?: MutationOptions) => {
         queryClient.invalidateQueries([
           'form',
           {
-            domainId: (variables as unknown as IVeoMutationParameters<IVeoUpdateFormParameters>).params?.domainId || '',
-            id: (variables as unknown as IVeoMutationParameters<IVeoUpdateFormParameters>).params?.id || ''
+            domainId: (variables as unknown as IVeoMutationParameters).params?.domainId || '',
+            id: (variables as unknown as IVeoMutationParameters).params?.id || ''
           }
         ]);
-        queryClient.invalidateQueries(['forms', { domainId: (variables as unknown as IVeoMutationParameters<IVeoUpdateFormParameters>).query?.domainId || '' }]);
+        queryClient.invalidateQueries(['forms', { domainId: (variables as unknown as IVeoMutationParameters).query?.domainId || '' }]);
         if (mutationOptions?.onSuccess) {
           mutationOptions.onSuccess(data, variables, context);
         }

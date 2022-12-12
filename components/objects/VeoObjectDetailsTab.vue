@@ -45,7 +45,7 @@
       </template>
     </VeoObjectTable>
     <!-- dialogs -->
-    <VeoUnlinkEntityDialog
+    <VeoUnlinkObjectDialog
       v-model="unlinkEntityDialog.value"
       v-bind="unlinkEntityDialog"
       @success="onUnlinkEntitySuccess"
@@ -318,12 +318,13 @@ export default defineComponent({
               id: 'unlink',
               label: upperFirst(t(props.object?.type === 'scope' || props.type === 'parentScopes' ? 'removeFromScope' : 'removeFromObject').toString()),
               icon: mdiLinkOff,
-              action(item: IVeoEntity) {
+              action: async (item: IVeoEntity) => {
+                const parent = await $api.entity.fetch(schemas.value?.[item.type] || '', item.id);
                 if (['parentScopes', 'parentObjects'].includes(props.type)) {
-                  unlinkEntityDialog.value.item = props.object;
-                  unlinkEntityDialog.value.parent = item;
+                  unlinkEntityDialog.value.objectToRemove = props.object;
+                  unlinkEntityDialog.value.parent = parent;
                 } else {
-                  unlinkEntityDialog.value.item = item;
+                  unlinkEntityDialog.value.objectToRemove = parent;
                   unlinkEntityDialog.value.parent = props.object;
                 }
 
@@ -339,7 +340,7 @@ export default defineComponent({
 
     const unlinkEntityDialog = ref({
       value: false as boolean,
-      item: undefined as IVeoEntity | undefined,
+      objectToRemove: undefined as IVeoEntity | undefined,
       parent: undefined as IVeoEntity | undefined
     });
 

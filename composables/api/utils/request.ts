@@ -131,6 +131,7 @@ export const useRequest = () => {
     }
     const parsed = JSON.parse(raw);
     if (typeof parsed === 'object' && etag) {
+      parsed.etag = etag;
       Object.defineProperty(parsed, '$etag', { enumerable: false, configurable: false, value: etag });
     }
     return parsed;
@@ -168,6 +169,8 @@ export const useRequest = () => {
     if (options.json) {
       if ('$etag' in options.json) {
         defaults.headers['If-Match'] = options.json.$etag?.replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
+      } else if ('etag' in options.json) {
+        defaults.headers['If-Match'] = options.json.etag?.replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
       }
       options.body = JSON.stringify(options.json);
       defaults.method = 'POST';

@@ -92,7 +92,7 @@ export const useUpdateAccount = (mutationOptions?: MutationOptions) => {
       ...mutationOptions,
       onSuccess: (data, variables, context) => {
         queryClient.invalidateQueries(['accounts']);
-        queryClient.invalidateQueries(['account', { id: (variables as unknown as IVeoMutationParameters<IVeoUpdateAccountParameters>).params?.id || '' }]);
+        queryClient.invalidateQueries(['account', { id: (variables as unknown as IVeoMutationParameters).params?.id || '' }]);
         if (mutationOptions?.onSuccess) {
           mutationOptions.onSuccess(data, variables, context);
         }
@@ -112,7 +112,7 @@ export const useDeleteAccount = (mutationOptions?: MutationOptions) => {
       ...mutationOptions,
       onSuccess: (data, variables, context) => {
         queryClient.invalidateQueries(['accounts']);
-        queryClient.invalidateQueries(['account', { id: (variables as unknown as IVeoMutationParameters<IVeoUpdateAccountParameters>).params?.id || '' }]);
+        queryClient.invalidateQueries(['account', { id: (variables as unknown as IVeoMutationParameters).params?.id || '' }]);
         if (mutationOptions?.onSuccess) {
           mutationOptions.onSuccess(data, variables, context);
         }
