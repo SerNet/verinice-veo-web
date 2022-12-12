@@ -55,6 +55,7 @@ export const useVeoErrorFormatter = () => {
     }
     if (isEqualRule || isAdditionalPropertiesRule) {
       const paths = error.schemaPath.split('/');
+      paths.pop();
       affectedProperty = last(paths);
       objectSchemaPointer = paths.join('/');
     }
