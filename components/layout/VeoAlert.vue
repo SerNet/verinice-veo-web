@@ -199,6 +199,11 @@ export default defineComponent({
   align-self: center;
 }
 
+.veo-alert ::v-deep.v-alert__content {
+  overflow: hidden;
+  overflow-wrap: break-word;
+}
+
 .veo-alert-timeout-bar {
   left: 0;
 }
