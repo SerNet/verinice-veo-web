@@ -235,7 +235,6 @@ export default defineComponent({
       onSuccess: (data) => {
         const _data = data as IVeoEntity;
         modifiedObject.value = cloneDeep(_data);
-        // console.log(4, data.$etag);
         metaData.value = cloneDeep(_data.domains[domainId.value]);
         getAdditionalContext();
 
