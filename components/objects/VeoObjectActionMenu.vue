@@ -69,7 +69,7 @@
     </v-speed-dial>
     <!-- dialogs -->
     <VeoLinkObjectDialog
-      v-if="addEntityDialog.editedObject"
+      v-if="addEntityDialog.object"
       v-model="addEntityDialog.value"
       v-bind="addEntityDialog"
       @success="onAddEntitySuccess"
@@ -99,15 +99,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, ref, computed, PropType } from '@nuxtjs/composition-api';
-import { pick, upperFirst } from 'lodash';
+import { defineComponent, useRoute, ref, computed, PropType, useContext } from '@nuxtjs/composition-api';
+import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
 
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useFetchTranslations } from '~/composables/api/translations';
 import { useFetchSchemas } from '~/composables/api/schemas';
 
@@ -132,16 +132,18 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
+    const { $api } = useContext();
     const { t, locale } = useI18n();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
-    const { linkObject } = useVeoObjectUtilities();
+    const { link } = useLinkObject();
+
+    const { data: endpoints } = useFetchSchemas();
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
     // general stuff
-    const { data: schemas } = useFetchSchemas();
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
     const speedDialIsOpen = ref(false);
@@ -203,11 +205,11 @@ export default defineComponent({
      */
 
     // dialog options
-    const addEntityDialog = ref<{ editedObject: IVeoEntity | undefined; addType: 'scope' | 'entity'; value: boolean; hierarchicalContext: 'child' | 'parent' }>({
-      editedObject: undefined,
-      addType: 'scope' as 'scope' | 'entity',
+    const addEntityDialog = ref<{ object: IVeoEntity | undefined; editScopeRelationship: boolean; value: boolean; editParents: boolean }>({
+      object: undefined,
+      editScopeRelationship: false,
       value: false,
-      hierarchicalContext: 'child'
+      editParents: false
     });
 
     const createEntityDialog = ref({
@@ -240,10 +242,10 @@ export default defineComponent({
     // control dialogs
     const openLinkObjectDialog = (objectType?: string, addAsChild?: boolean) => {
       addEntityDialog.value = {
-        editedObject: props.object,
-        addType: objectType === 'scope' ? 'scope' : 'entity',
+        object: props.object,
+        editScopeRelationship: objectType === 'scope',
         value: true,
-        hierarchicalContext: addAsChild === undefined || addAsChild ? 'child' : 'parent'
+        editParents: addAsChild !== undefined && !addAsChild
       };
     };
 
@@ -267,10 +269,12 @@ export default defineComponent({
     const onCreateObjectSuccess = async (newObjectId: string) => {
       if (props.object) {
         try {
-          await linkObject(schemas.value || {}, createObjectDialog.value.hierarchicalContext as any, pick(props.object, 'id', 'type'), {
-            type: createObjectDialog.value.objectType as string,
-            id: newObjectId
-          });
+          const createdObject = await $api.entity.fetch(endpoints.value?.[createObjectDialog.value.objectType || ''] || '', newObjectId);
+          if (createObjectDialog.value.hierarchicalContext === 'child') {
+            await link(props.object, createdObject);
+          } else {
+            await link(createdObject, props.object);
+          }
           displaySuccessMessage(t('objectLinked').toString());
           emit('reload');
         } catch (e: any) {

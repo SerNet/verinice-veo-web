@@ -75,11 +75,9 @@
     <VeoLinkObjectDialog
       v-if="editMitigationsDialogVisible"
       v-model="editMitigationsDialogVisible"
-      add-type="entity"
-      :edited-object="editedObject"
+      :object="editedObject"
       return-objects
-      use-full-objects
-      :selected-items.sync="selectedItems"
+      :preselected-items.sync="selectedItems"
     >
       <template #header>
         {{ t('addMitigatingActionsToRisk', [data && data.designator]).toString() }}

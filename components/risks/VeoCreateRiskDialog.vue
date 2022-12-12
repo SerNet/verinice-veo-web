@@ -171,7 +171,7 @@ export default defineComponent({
       }));
 
       try {
-        await Promise.all(risks.map((risk: any) => $api.entity.createRisk('process', props.objectId, risk)));
+        await Promise.all(risks.map((risk: any) => $api.entity.createRisk('processes', props.objectId, risk)));
         displaySuccessMessage(tc('risksCreated', selectedScenarios.value.length));
         selectedScenarios.value = [];
         emit('success');

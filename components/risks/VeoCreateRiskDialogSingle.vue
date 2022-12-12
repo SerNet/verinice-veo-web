@@ -123,9 +123,8 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain, IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
-import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useFetchSchemas } from '~/composables/api/schemas';
 
 export interface IDirtyFields {
   [field: string]: boolean;
@@ -159,14 +158,13 @@ export default defineComponent({
     const route = useRoute();
     const { t } = useI18n();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
-    const { createLink, linkObject } = useVeoObjectUtilities();
+    const { link } = useLinkObject();
+    const { createLink } = useCreateLink();
     const { ability } = useVeoPermissions();
 
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     const formDisabled = computed(() => ability.value.cannot('manage', 'objects'));
-
-    const { data: schemas } = useFetchSchemas();
 
     // Domain stuff, used for risk definitions
     const domain = ref<IVeoDomain | undefined>();
@@ -224,7 +222,7 @@ export default defineComponent({
     const risk = ref<IVeoRisk | undefined>(undefined);
     const { fetch: fetchRisk } = useFetch(async () => {
       if (props.scenarioId) {
-        risk.value = await $api.entity.fetchRisk(props.objectType, props.objectId, props.scenarioId);
+        risk.value = await $api.entity.fetchRisk('processes', props.objectId, props.scenarioId);
       } else {
         risk.value = undefined;
       }
@@ -250,11 +248,11 @@ export default defineComponent({
         try {
           if (!data.value.mitigation && mitigations.value.length) {
             const newMitigationId = (await $api.entity.create('control', newMitigatingAction.value as any)).resourceId;
-            data.value.mitigation = createLink(schemas.value || {}, { type: 'control', id: newMitigationId });
+            data.value.mitigation = createLink('controls', newMitigationId);
           }
 
           if (data.value.mitigation) {
-            await linkObject(schemas.value || {}, 'child', { id: getEntityDetailsFromLink(data.value.mitigation).id, type: 'control' }, mitigations.value, true);
+            await link(await $api.entity.fetch('controls', getEntityDetailsFromLink(data.value.mitigation).id), mitigations.value, true);
           }
 
           if (props.scenarioId) {

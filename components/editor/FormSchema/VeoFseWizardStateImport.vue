@@ -133,8 +133,9 @@ export default defineComponent({
     }
 
     // formschema stuff
+    const queryParameters = computed(() => ({ domainId: props.domainId }));
     const queryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms({ domainId: props.domainId }, { enabled: queryEnabled });
+    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled });
 
     const formSchemaOptions: ComputedRef<{ text: string; value: string }[]> = computed(() => [
       {

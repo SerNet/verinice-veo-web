@@ -154,9 +154,7 @@
           <VeoLinkObjectDialog
             v-if="object"
             v-model="linkObjectDialogVisible"
-            add-type="entity"
-            :edited-object="object"
-            :hierarchical-context="'child'"
+            :object="object"
             :preselected-filters="linkObjectFilter"
             @success="onDPIALinked"
           />
@@ -168,14 +166,14 @@
 
 <script lang="ts">
 import { computed, defineComponent, onUnmounted, ref, useContext, useRoute, Ref, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
-import { cloneDeep, omit, pick, upperFirst } from 'lodash';
+import { cloneDeep, omit, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
 import { IBaseObject, isObjectEqual, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 import { useFetchForms } from '~/composables/api/forms';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -202,7 +200,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const { displaySuccessMessage, displayErrorMessage, expireAlert } = useVeoAlerts();
-    const { linkObject } = useVeoObjectUtilities();
+    const { link } = useLinkObject();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
     const { ability } = useVeoPermissions();
 
@@ -438,7 +436,7 @@ export default defineComponent({
 
     const onDPIACreated = async (newObjectId: string) => {
       if (object.value) {
-        await linkObject(endpoints.value || {}, 'child', pick(object.value, 'id', 'type'), { type: 'process', id: newObjectId });
+        await link(object.value, { type: 'process', id: newObjectId });
       }
       createDPIADialogVisible.value = false;
       updateObjectRelationships();

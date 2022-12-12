@@ -23,7 +23,7 @@ import { useVeoUser } from '../VeoUser';
 import { IVeoQueryTransformationMap, QueryOptions, useQuery } from './utils/query';
 import { IVeoMutationParameters, IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
 import { VeoApiReponseType } from './utils/request';
-import { IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
+import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
 
 export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
   unit: string;
@@ -39,6 +39,32 @@ export interface IVeoFetchObjectParameters {
   id: string;
 }
 
+export interface IVeoFetchParentObjectsParameters extends IVeoPaginationOptions {
+  parentEndpoint: string;
+  childObjectId: string;
+  unitId: string;
+}
+
+export interface IVeoFetchChildObjectsParameters {
+  endpoint: string;
+  id: string;
+}
+
+export interface IVeoFetchChildScopesParameters {
+  id: string;
+}
+
+export interface IVeoCreateObjectParameters {
+  endpoint: string;
+  object: IVeoEntity;
+  parentScopes?: string[];
+}
+
+export interface IVeoUpdateObjectParameters {
+  endpoint: string;
+  object: IVeoEntity;
+}
+
 export interface IVeoDeleteObjectParameters {
   endpoint: string;
   id: string;
@@ -46,11 +72,60 @@ export interface IVeoDeleteObjectParameters {
 
 export const objectsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
   fetchAll: (queryParameters: IVeoFetchObjectsParameters) => ({ params: { endpoint: queryParameters.endpoint }, query: omit(queryParameters, 'endpoint') }),
-  fetch: (queryParameters: IVeoFetchObjectParameters) => ({ params: queryParameters })
+  fetch: (queryParameters: IVeoFetchObjectParameters) => ({ params: queryParameters }),
+  fetchChildObjects: (queryParameters: IVeoFetchChildObjectsParameters) => ({ params: queryParameters }),
+  fetchChildScopes: (queryParameters: IVeoFetchChildScopesParameters) => ({ params: queryParameters })
 };
 
 export const objectsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
+  create: (mutationParameters: IVeoCreateObjectParameters) => {
+    const _object = mutationParameters.object;
+    // Remove properties of the object only used in the frontend
+    if (_object.type === 'scopes') {
+      // @ts-ignore
+      delete _object.parts;
+    } else {
+      // @ts-ignore
+      delete _object.members;
+    }
+    return { params: { endpoint: mutationParameters.endpoint }, query: { scopes: mutationParameters.parentScopes?.join(',') }, json: _object };
+  },
+  update: (mutationParameters: IVeoUpdateObjectParameters) => {
+    const _object = mutationParameters.object;
+    // Remove properties of the object only used in the frontend
+    if (_object.type === 'scopes') {
+      // @ts-ignore
+      delete _object.parts;
+    } else {
+      // @ts-ignore
+      delete _object.members;
+    }
+    // Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
+    // @ts-ignore
+    delete _object.createdAt;
+    // @ts-ignore
+    delete _object.updatedAt;
+    // @ts-ignore
+    delete _object.displayName;
+    return { params: { endpoint: mutationParameters.endpoint, id: mutationParameters.object.id }, json: _object };
+  },
   delete: (mutationParameters: IVeoDeleteObjectParameters) => ({ params: { endpoint: mutationParameters.endpoint, id: mutationParameters.id } })
+};
+
+export const formatObject = (object: IVeoEntity) => {
+  /*
+   * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+   * members. However we combine both entity types as they get used more or less the same way
+   */
+  if (!object.parts) {
+    object.parts = [];
+  }
+  if (!object.members) {
+    object.members = [];
+  }
+  // The frontend sets the display name as the backend only sets it for links. Gets used for example in the breadcrumbs.
+  object.displayName = `${object.designator} ${object.abbreviation || ''} ${object.name}`;
+  return object;
 };
 
 /**
@@ -74,20 +149,7 @@ export const useFetchObjects = (queryParameters: Ref<IVeoFetchObjectsParameters>
     {
       url: '/api/:endpoint',
       onDataFetched: (result) => {
-        result.items.forEach((item: IVeoEntity) => {
-          /*
-           * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
-           * members. However we combine both entity types as they get used more or less the same way
-           */
-          if (!item.parts) {
-            item.parts = [];
-          }
-          if (!item.members) {
-            item.members = [];
-          }
-          // The frontend sets the display name as the backend only sets it for links. Gets used for example in the breadcrumbs.
-          item.displayName = `${item.designator} ${item.abbreviation || ''} ${item.name}`;
-        });
+        result.items.map((item) => formatObject(item));
 
         // +1, because the first page for the api is 0, however vuetify expects it to be 1
         result.page = result.page + 1;
@@ -111,6 +173,78 @@ export const useFetchObject = (queryParameters: Ref<IVeoFetchObjectParameters>, 
     'object',
     {
       url: '/api/:endpoint/:id',
+      onDataFetched: (result) => formatObject(result)
+    },
+    queryParameters,
+    objectsQueryParameterTransformationMap.fetch,
+    queryOptions
+  );
+
+export const useFetchParentObjects = (queryParameters: Ref<IVeoFetchParentObjectsParameters>, queryOptions?: QueryOptions) => {
+  const transformedQueryParameters = computed(() => ({
+    ...omit(queryParameters.value, 'unitId', 'parentEndpoint', 'childObjectId'),
+    unit: queryParameters.value.unitId,
+    endpoint: queryParameters.value.parentEndpoint,
+    childElementIds: queryParameters.value.childObjectId,
+    size: -1
+  }));
+  return useFetchObjects(transformedQueryParameters, queryOptions);
+};
+
+export const useFetchChildObjects = (queryParameters: Ref<IVeoFetchChildObjectsParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchChildObjectsParameters, IVeoEntity[]>(
+    'childObjects',
+    {
+      url: '/api/:endpoint/:id/parts',
+      onDataFetched: (result) => result.map((item) => formatObject(item))
+    },
+    queryParameters,
+    objectsQueryParameterTransformationMap.fetchChildObjects,
+    queryOptions
+  );
+
+export const useFetchChildScopes = (queryParameters: Ref<IVeoFetchChildScopesParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchChildScopesParameters, IVeoEntity[]>(
+    'childScopes',
+    {
+      url: '/api/scopes/:id/members',
+      onDataFetched: (result) => result.map((item) => formatObject(item))
+    },
+    queryParameters,
+    objectsQueryParameterTransformationMap.fetchChildScopes,
+    queryOptions
+  );
+
+export const useCreateObject = (mutationOptions?: MutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IVeoCreateObjectParameters, IVeoAPIMessage>(
+    'object',
+    {
+      url: '/api/:endpoint/',
+      method: 'POST'
+    },
+    objectsMutationParameterTransformationMap.create,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(['objects']);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
+      }
+    }
+  );
+};
+
+export const useUpdateObject = (mutationOptions?: MutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IVeoUpdateObjectParameters, IVeoEntity>(
+    'object',
+    {
+      url: '/api/:endpoint/:id',
+      method: 'PUT',
       onDataFetched: (result) => {
         if (!result.parts) {
           result.parts = [];
@@ -122,10 +256,25 @@ export const useFetchObject = (queryParameters: Ref<IVeoFetchObjectParameters>, 
         return result;
       }
     },
-    queryParameters,
-    objectsQueryParameterTransformationMap.fetch,
-    queryOptions
+    objectsMutationParameterTransformationMap.update,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(['objects']);
+        queryClient.invalidateQueries([
+          'object',
+          {
+            endpoint: (variables as unknown as IVeoMutationParameters<IVeoUpdateObjectParameters>).params?.endpoint,
+            id: (variables as unknown as IVeoMutationParameters<IVeoUpdateObjectParameters>).params?.object.id
+          }
+        ]);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
+      }
+    }
   );
+};
 
 export const useDeleteObject = (mutationOptions?: MutationOptions) => {
   const queryClient = useQueryClient();
@@ -141,12 +290,8 @@ export const useDeleteObject = (mutationOptions?: MutationOptions) => {
     {
       ...mutationOptions,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries(['objects', (variables as unknown as IVeoMutationParameters<IVeoDeleteObjectParameters>).params?.endpoint]);
-        queryClient.invalidateQueries([
-          'object',
-          (variables as unknown as IVeoMutationParameters<IVeoDeleteObjectParameters>).params?.endpoint,
-          (variables as unknown as IVeoMutationParameters<IVeoDeleteObjectParameters>).params?.id
-        ]);
+        queryClient.invalidateQueries(['objects']);
+        queryClient.invalidateQueries(['object', (variables as unknown as IVeoMutationParameters<IVeoDeleteObjectParameters>).params]);
         if (mutationOptions?.onSuccess) {
           mutationOptions.onSuccess(data, variables, context);
         }

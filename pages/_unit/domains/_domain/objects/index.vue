@@ -131,7 +131,7 @@ import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { useCloneObject } from '~/composables/VeoObjectUtilities';
 import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
@@ -152,7 +152,7 @@ export default defineComponent({
     const { ability } = useVeoPermissions();
 
     const { displayErrorMessage } = useVeoAlerts();
-    const { cloneObject } = useVeoObjectUtilities();
+    const { clone } = useCloneObject();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
     const { data: endpoints } = useFetchSchemas();
 
@@ -351,8 +351,7 @@ export default defineComponent({
         icon: mdiContentCopy,
         async action(item: IVeoEntity) {
           try {
-            await cloneObject(endpoints.value || {}, item);
-            refetch();
+            await clone(item);
           } catch (e: any) {
             showError('clone', item, e);
           }

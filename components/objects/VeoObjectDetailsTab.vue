@@ -63,18 +63,19 @@
 </template>
 <script lang="ts">
 import { defineComponent, h, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
-import { pick, upperFirst } from 'lodash';
+import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiArrowDown, mdiArrowRight, mdiCheck, mdiContentCopy, mdiLinkOff, mdiTransitDetour, mdiTrashCanOutline } from '@mdi/js';
 import { VIcon, VTooltip } from 'vuetify/lib';
 
 import { ObjectTableHeader } from './VeoObjectTable.vue';
-import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
+import { createUUIDUrlParam, getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoCustomLink, IVeoDomain, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemas } from '~/composables/api/schemas';
+import { useFetchParentObjects } from '~/composables/api/objects';
 
 export default defineComponent({
   name: 'VeoObjectDetailsTab',
@@ -101,9 +102,16 @@ export default defineComponent({
     const { ability } = useVeoPermissions();
 
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-    const { cloneObject, linkObject } = useVeoObjectUtilities();
+    const { link } = useLinkObject();
+    const { clone } = useCloneObject();
 
     const items = ref<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>();
+
+    const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
+
+    const parentQueryParameters = computed(() => ({ parentEndpoint: 'scopes', childObjectId: props.object?.id || '', unitId: unitId.value }));
+    const parentQueryEnabled = computed(() => props.type !== 'risks' && !!props.object?.id);
+    const { data: parents } = useFetchParentObjects(parentQueryParameters, { enabled: parentQueryEnabled });
 
     /**
      * Fetch table data based on selected tab
@@ -285,12 +293,19 @@ export default defineComponent({
               icon: mdiContentCopy,
               async action(item: IVeoEntity) {
                 try {
-                  const clonedObjectId = await cloneObject(schemas.value || {}, item, true);
+                  const clonedObjectId = (
+                    await clone(
+                      item,
+                      (parents.value?.items || []).map((item) => item.id)
+                    )
+                  ).resourceId;
+                  const clonedObject = await $api.entity.fetch(schemas.value?.[item.type] || '', clonedObjectId);
                   if (props.object) {
-                    await linkObject(schemas.value || {}, ['childScopes', 'childObjects'].includes(props.type) ? 'child' : 'parent', pick(props.object, 'id', 'type'), {
-                      type: item.type,
-                      id: clonedObjectId
-                    });
+                    if (['childScopes', 'childObjects'].includes(props.type)) {
+                      await link(props.object, clonedObject);
+                    } else {
+                      await link(clonedObject, props.object);
+                    }
                   }
                   displaySuccessMessage(upperFirst(t('objectCloned').toString()));
                   fetch();
