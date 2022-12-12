@@ -30,7 +30,10 @@
         <v-list-item-content class="text-body-2">
           {{ item.message }}
         </v-list-item-content>
-        <v-list-item-action class="fill-width ml-0 my-0">
+        <v-list-item-action
+          v-if="item.actions && item.actions.length"
+          class="fill-width ml-0 my-0"
+        >
           <v-btn
             v-if="item.fixable && fixingAllowed"
             text
