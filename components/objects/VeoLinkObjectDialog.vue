@@ -54,7 +54,7 @@
           show-select
           checkbox-color="primary"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
-          :items="objects"
+          :items="selectableObjects"
           :loading="objectsLoading || childrenLoading || parentsLoading"
           @page-change="onPageChange"
         />
@@ -204,6 +204,7 @@ export default defineComponent({
       isFetching: objectsLoading,
       refetch: refetchObjects
     } = useFetchObjects(combinedObjectsQueryParameters, { enabled: objectsQueryEnabled, keepPreviousData: true });
+    const selectableObjects = computed(() => (objects.value?.items || []).filter((object) => object.id !== props.object?.id));
 
     watch(
       () => props.preselectedFilters,
@@ -347,11 +348,11 @@ export default defineComponent({
       linkObjects,
       modifiedSelectedItems,
       newObjectTypeName,
-      objects,
       objectsLoading,
       onPageChange,
       parentsLoading,
       savingObject,
+      selectableObjects,
       title,
       updateFilter,
 
