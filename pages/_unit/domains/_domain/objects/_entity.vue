@@ -38,7 +38,6 @@
         no-padding
       >
         <template #default>
-          ETag: {{ object && object.etag }}
           <VeoObjectDetails
             class="mb-10"
             :loading="loading"

@@ -43,7 +43,8 @@ export class VeoApiError extends Error {
   }
 }
 
-// eslint-disable-next-line no-undef
+export const ETAG_MAP = new Map<string, string>();
+
 export interface RequestOptions extends RequestInit {
   query?: Record<string, string | number | undefined> & IVeoPaginationOptions;
   params?: Record<string, string | number | undefined>;
@@ -88,7 +89,7 @@ export const useRequest = () => {
     return `${endpoint}/${path}`;
   };
 
-  const parseResponse = async <T>(res: Response, options: RequestOptions): Promise<T & { $etag?: string }> => {
+  const parseResponse = async <T>(res: Response, options: RequestOptions): Promise<T> => {
     let parsedResponseBody;
 
     try {
@@ -122,7 +123,6 @@ export const useRequest = () => {
 
   const parseJson = async (res: Response): Promise<any> => {
     const raw = await res.text();
-    const etag = res.headers.get('etag');
 
     if (!raw) {
       // eslint-disable-next-line no-console
@@ -130,11 +130,14 @@ export const useRequest = () => {
       return undefined;
     }
     const parsed = JSON.parse(raw);
-    if (typeof parsed === 'object' && etag) {
-      parsed.etag = etag;
-      Object.defineProperty(parsed, '$etag', { enumerable: false, configurable: false, value: etag });
-    }
     return parsed;
+  };
+
+  const updateETagMapIfEtagExists = (response: Response, options: RequestOptions) => {
+    const etag = response.headers.get('etag');
+    if (etag && options.params?.id) {
+      ETAG_MAP.set(options.params.id as string, etag);
+    }
   };
 
   const request = async <TResult = any>(url: string, options: RequestOptions): Promise<TResult> => {
@@ -166,12 +169,12 @@ export const useRequest = () => {
       mode: 'cors'
     };
 
+    // Some requests, but not all use an ETag header. To automate setting and getting the etag header, we assume that every query that uses an ETag has a parameter called id
+    if (options.params?.id && ETAG_MAP.has(options.params.id as string)) {
+      defaults.headers['If-Match'] = (ETAG_MAP.get(options.params.id as string) as string).replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
+    }
+
     if (options.json) {
-      if ('$etag' in options.json) {
-        defaults.headers['If-Match'] = options.json.$etag?.replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
-      } else if ('etag' in options.json) {
-        defaults.headers['If-Match'] = options.json.etag?.replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
-      }
       options.body = JSON.stringify(options.json);
       defaults.method = 'POST';
       defaults.headers['Content-Type'] = 'application/json';
@@ -186,6 +189,7 @@ export const useRequest = () => {
     const combinedUrl = `${url}${queryParameters.toString() ? '?' : ''}${queryParameters.toString()}`;
     const reqURL = getUrl(combinedUrl);
     const res = await fetch(reqURL, combinedOptions);
+    updateETagMapIfEtagExists(res, options);
     return await parseResponse(res, options);
   };
 
