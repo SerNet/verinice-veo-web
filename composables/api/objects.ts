@@ -75,6 +75,12 @@ export interface IVeoDeleteObjectParameters {
   id: string;
 }
 
+export interface IVeoDeleteRiskParameters {
+  endpoint: string;
+  objectId: string;
+  scenarioId: string;
+}
+
 export const objectsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
   fetchAll: (queryParameters: IVeoFetchObjectsParameters) => ({ params: { endpoint: queryParameters.endpoint }, query: omit(queryParameters, 'endpoint') }),
   fetch: (queryParameters: IVeoFetchObjectParameters) => ({ params: queryParameters }),
@@ -115,7 +121,8 @@ export const objectsMutationParameterTransformationMap: IVeoMutationTransformati
     delete _object.displayName;
     return { params: { endpoint: mutationParameters.endpoint, id: mutationParameters.object.id }, json: _object };
   },
-  delete: (mutationParameters: IVeoDeleteObjectParameters) => ({ params: { endpoint: mutationParameters.endpoint, id: mutationParameters.id } })
+  delete: (mutationParameters: IVeoDeleteObjectParameters) => ({ params: mutationParameters }),
+  deleteRisk: (mutationParameters: IVeoDeleteRiskParameters) => ({ params: mutationParameters })
 };
 
 export const formatObject = (object: IVeoEntity) => {
@@ -318,6 +325,35 @@ export const useDeleteObject = (mutationOptions?: MutationOptions) => {
       onSuccess: (data, variables, context) => {
         queryClient.invalidateQueries(['objects']);
         queryClient.invalidateQueries(['object', (variables as unknown as IVeoMutationParameters).params]);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
+      }
+    }
+  );
+};
+
+export const useDeleteRisk = (mutationOptions?: MutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IVeoDeleteRiskParameters, void>(
+    'risk',
+    {
+      url: '/api/:endpoint/:objectId/risks/:scenarioId',
+      method: 'DELETE',
+      reponseType: VeoApiReponseType.VOID
+    },
+    objectsMutationParameterTransformationMap.deleteRisk,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries([
+          'risks',
+          {
+            endpoint: (variables as unknown as IVeoMutationParameters).params?.endpoint,
+            id: (variables as unknown as IVeoMutationParameters).params?.objectId
+          }
+        ]);
         if (mutationOptions?.onSuccess) {
           mutationOptions.onSuccess(data, variables, context);
         }

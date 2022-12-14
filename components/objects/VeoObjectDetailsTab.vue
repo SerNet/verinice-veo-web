@@ -75,7 +75,7 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemas } from '~/composables/api/schemas';
-import { useFetchChildObjects, useFetchChildScopes, useFetchParentObjects, useFetchRisks } from '~/composables/api/objects';
+import { useDeleteRisk, useFetchChildObjects, useFetchChildScopes, useFetchParentObjects, useFetchRisks } from '~/composables/api/objects';
 
 export default defineComponent({
   name: 'VeoObjectDetailsTab',
@@ -155,6 +155,9 @@ export default defineComponent({
           }, []) as any[];
       }
     });
+
+    // Crud stuff
+    const { mutateAsync: deleteRisk } = useDeleteRisk();
 
     const createEntityFromLink = (link: IVeoCustomLink) => {
       const name = link.target.displayName;
@@ -275,9 +278,8 @@ export default defineComponent({
               async action(item: IVeoRisk) {
                 try {
                   const { id } = getEntityDetailsFromLink(item.scenario);
-                  await $api.entity.deleteRisk(props.object?.type || '', props.object?.id || '', id);
+                  await deleteRisk({ objectId: props.object?.id, endpoint: schemas.value?.[props.object?.type || ''] || '', scenarioId: id });
                   displaySuccessMessage(upperFirst(t('riskDeleted').toString()));
-                  onRelatedObjectModified();
                 } catch (e: any) {
                   displayErrorMessage(upperFirst(t('deleteRiskError').toString()), e.message);
                 }
