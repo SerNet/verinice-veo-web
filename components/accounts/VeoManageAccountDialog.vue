@@ -142,12 +142,11 @@ import { mdiAccountOutline, mdiEmailOutline } from '@mdi/js';
 import { computed, defineComponent, PropType, reactive, ref, watch } from '@nuxtjs/composition-api';
 import { cloneDeep, pick, trim } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { useCreateAccount, useUpdateAccount } from '~/composables/api/accounts';
+import { IVeoAccount, useCreateAccount, useUpdateAccount } from '~/composables/api/accounts';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
-import { IVeoAccount } from '~/plugins/api/account';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 export default defineComponent({

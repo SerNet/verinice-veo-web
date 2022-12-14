@@ -30,6 +30,7 @@
     :return-object="valueAsEntity"
     v-bind="$attrs"
     @update:search-input="onSearchQueryInput"
+    @click:clear="onClearClicked"
   >
     <template #prepend-item>
       <slot name="prepend-item" />
@@ -141,8 +142,10 @@ export default defineComponent({
           return props.value;
         }
       },
-      set: (newValue: string | undefined) => {
-        if (props.valueAsLink) {
+      set: (newValue: string | undefined | null) => {
+        if (!newValue && !props.required) {
+          emit('input', newValue);
+        } else if (props.valueAsLink) {
           emit('input', newValue ? { targetUri: `${$config.apiUrl}/${endpoints.value?.[props.objectType]}/${newValue}` } : undefined);
         } else {
           emit('input', newValue);
@@ -175,11 +178,21 @@ export default defineComponent({
     });
 
     const onSearchQueryInput = (newValue: string) => {
+      // We have to early exit if the value is undefined or null, as for some reason it can be set to one of those values if the objects get fetched, resulting in an infinite fetch
+      if (!newValue) {
+        return;
+      }
       searchQuery.value = newValue;
       refetch();
     };
 
-    const moreItemsAvailable = computed(() => (fetchObjectsData.value?.pageCount || 0) > 0);
+    const onClearClicked = () => {
+      searchQuery.value = '';
+      internalValue.value = undefined;
+      refetch();
+    };
+
+    const moreItemsAvailable = computed(() => (fetchObjectsData.value?.pageCount || 0) > 1);
 
     const fetchObjectQueryParameters = computed(
       () =>
@@ -230,6 +243,7 @@ export default defineComponent({
 
     return {
       displayedItems,
+      fetchObjectsData,
       localLabel,
       internalValue,
       isLoading,
@@ -240,6 +254,7 @@ export default defineComponent({
       onSearchQueryInput,
       searchQuery,
       mdiOpenInNew,
+      onClearClicked,
       openItem,
 
       t
