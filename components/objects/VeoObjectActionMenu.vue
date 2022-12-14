@@ -290,7 +290,6 @@ export default defineComponent({
 
     const onCreateRiskSuccess = () => {
       createRiskDialogVisible.value = false;
-      emit('reload');
     };
 
     return {

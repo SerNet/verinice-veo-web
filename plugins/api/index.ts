@@ -18,7 +18,6 @@
 import defaultsDeep from 'lodash/defaultsDeep';
 import { Plugin, Context } from '@nuxt/types';
 
-import account from '~/plugins/api/account';
 import entity from '~/plugins/api/entity';
 import form from '~/plugins/api/form';
 import schema from '~/plugins/api/schema';
@@ -31,7 +30,7 @@ import { IVeoUserComposable, useVeoUser } from '~/composables/VeoUser';
 import { ETAG_MAP, RequestOptions } from '~/composables/api/utils/request';
 
 export function createAPI(context: Context, user: IVeoUserComposable) {
-  return Client.create(context, { account, form, entity, schema, unit, domain, catalog, monitoring }, user);
+  return Client.create(context, { form, entity, schema, unit, domain, catalog, monitoring }, user);
 }
 
 export interface IAPIClient {

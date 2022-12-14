@@ -57,7 +57,6 @@
       :domain-id="domainId"
       :object-type="object && object.type"
       :object-id="object && object.id"
-      @reload="onRelatedObjectModified"
     />
   </div>
 </template>
@@ -426,7 +425,6 @@ export default defineComponent({
       additionalHeaders,
       defaultHeaders,
       editRiskDialog,
-      onRelatedObjectModified,
       onUnlinkEntitySuccess,
       onUnlinkEntityError,
       unlinkEntityDialog,

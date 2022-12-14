@@ -75,7 +75,7 @@ import { upperFirst } from 'lodash';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useFetchObjects } from '~/composables/api/objects';
+import { useCreateRisk, useFetchObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 
 export default defineComponent({
@@ -95,11 +95,13 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { $api, $config } = useContext();
+    const { $config } = useContext();
     const { tablePageSize } = useVeoUser();
     const route = useRoute();
     const { t, tc } = useI18n();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
+
+    const { mutateAsync: createRisk } = useCreateRisk();
 
     const unit = computed(() => separateUUIDParam(route.value.params.unit).id);
 
@@ -169,7 +171,7 @@ export default defineComponent({
       }));
 
       try {
-        await Promise.all(risks.map((risk: any) => $api.entity.createRisk('processes', props.objectId, risk)));
+        await Promise.all(risks.map((risk: any) => createRisk({ endpoint: 'processes', objectId: props.objectId, risk })));
         displaySuccessMessage(tc('risksCreated', selectedScenarios.value.length));
         selectedScenarios.value = [];
         emit('success');

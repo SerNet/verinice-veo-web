@@ -300,7 +300,7 @@ export default defineComponent({
     const savingObject = ref(false); // saving status for adding entities
     const linkObjects = async () => {
       if (props.returnObjects) {
-        emit('update:selected-items', modifiedSelectedItems.value);
+        emit('update:preselected-items', modifiedSelectedItems.value);
         emit('input', false);
       } else {
         savingObject.value = true;

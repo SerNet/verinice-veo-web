@@ -75,6 +75,12 @@ export interface IVeoDeleteObjectParameters {
   id: string;
 }
 
+export interface IVeoCreateRiskParameters {
+  endpoint: string;
+  objectId: string;
+  risk: IVeoRisk;
+}
+
 export interface IVeoDeleteRiskParameters {
   endpoint: string;
   objectId: string;
@@ -122,6 +128,10 @@ export const objectsMutationParameterTransformationMap: IVeoMutationTransformati
     return { params: { endpoint: mutationParameters.endpoint, id: mutationParameters.object.id }, json: _object };
   },
   delete: (mutationParameters: IVeoDeleteObjectParameters) => ({ params: mutationParameters }),
+  createRisk: (mutationParameters: IVeoCreateRiskParameters) => ({
+    params: { endpoint: mutationParameters.endpoint, objectId: mutationParameters.objectId },
+    json: mutationParameters.risk
+  }),
   deleteRisk: (mutationParameters: IVeoDeleteRiskParameters) => ({ params: mutationParameters })
 };
 
@@ -325,6 +335,34 @@ export const useDeleteObject = (mutationOptions?: MutationOptions) => {
       onSuccess: (data, variables, context) => {
         queryClient.invalidateQueries(['objects']);
         queryClient.invalidateQueries(['object', (variables as unknown as IVeoMutationParameters).params]);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
+      }
+    }
+  );
+};
+
+export const useCreateRisk = (mutationOptions?: MutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IVeoCreateRiskParameters, IVeoRisk>(
+    'risk',
+    {
+      url: '/api/:endpoint/:objectId/risks',
+      method: 'POST'
+    },
+    objectsMutationParameterTransformationMap.createRisk,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries([
+          'risks',
+          {
+            endpoint: (variables as unknown as IVeoMutationParameters).params?.endpoint,
+            id: (variables as unknown as IVeoMutationParameters).params?.objectId
+          }
+        ]);
         if (mutationOptions?.onSuccess) {
           mutationOptions.onSuccess(data, variables, context);
         }

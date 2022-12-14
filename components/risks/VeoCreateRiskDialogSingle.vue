@@ -123,6 +123,7 @@ import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain, IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export interface IDirtyFields {
   [field: string]: boolean;
@@ -163,6 +164,8 @@ export default defineComponent({
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     const formDisabled = computed(() => ability.value.cannot('manage', 'objects'));
+
+    const { data: endpoints } = useFetchSchemas();
 
     // Domain stuff, used for risk definitions
     const domain = ref<IVeoDomain | undefined>();
@@ -245,7 +248,7 @@ export default defineComponent({
 
         try {
           if (!data.value.mitigation && mitigations.value.length) {
-            const newMitigationId = (await $api.entity.create('control', newMitigatingAction.value as any)).resourceId;
+            const newMitigationId = (await $api.entity.create('controls', newMitigatingAction.value as any)).resourceId;
             data.value.mitigation = createLink('controls', newMitigationId);
           }
 
@@ -254,9 +257,9 @@ export default defineComponent({
           }
 
           if (props.scenarioId) {
-            await $api.entity.updateRisk(props.objectType, props.objectId, props.scenarioId, data.value);
+            await $api.entity.updateRisk(endpoints.value?.[props.objectType || ''] || '', props.objectId, props.scenarioId, data.value);
           } else {
-            await $api.entity.createRisk(props.objectType, props.objectId, data.value);
+            await $api.entity.createRisk(endpoints.value?.[props.objectType || ''] || '', props.objectId, data.value);
           }
           displaySuccessMessage(props.scenarioId ? upperFirst(t('riskUpdated').toString()) : upperFirst(t('riskCreated').toString()));
           fetchRisk();

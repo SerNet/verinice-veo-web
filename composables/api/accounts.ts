@@ -21,7 +21,16 @@ import { useQueryClient } from '@tanstack/vue-query';
 import { IVeoMutationParameters, IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
 import { IVeoQueryTransformationMap, QueryOptions, useQuery } from './utils/query';
 import { VeoApiReponseType } from './utils/request';
-import { IVeoAccount } from '~/plugins/api/account';
+
+export interface IVeoAccount {
+  id: string;
+  username: string;
+  emailAddress: string;
+  firstName?: string;
+  lastName?: string;
+  groups: string[];
+  enabled: boolean;
+}
 
 export interface IVeoFetchAccountParameters {
   id: string;
