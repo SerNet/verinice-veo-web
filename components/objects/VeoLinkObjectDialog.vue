@@ -262,7 +262,13 @@ export default defineComponent({
       childObjectId: props.object?.id || ''
     }));
     const parentsQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && props.editParents);
-    const { data: parents, isFetching: parentsLoading } = useFetchParentObjects(parentsQueryParameters, { enabled: parentsQueryEnabled, keepPreviousData: true });
+    const { data: parents, isFetching: parentsLoading, refetch } = useFetchParentObjects(parentsQueryParameters, { enabled: parentsQueryEnabled, keepPreviousData: false });
+    // Needed as for some reason nuxt won't pick up the changes
+    watch(
+      () => parentsQueryParameters.value,
+      () => refetch(), // () => refetch() is needed, as "refetch," would pass the newValue parameters which are incompatible for whatever reason
+      { deep: true }
+    );
 
     const childObjectsQueryParameters = computed(() => ({
       endpoint: objectEndpoint.value,
