@@ -88,7 +88,6 @@
               #prepend-form
             >
               <VeoAlert
-                v-cy-name="'old-version-alert'"
                 :value="true"
                 :type="VeoAlertType.INFO"
                 no-close-button
@@ -105,7 +104,6 @@
               >
                 <template v-if="!formDataIsRevision">
                   <v-btn
-                    v-cy-name="'reset-button'"
                     text
                     :disabled="loading || !isFormDirty || ability.cannot('manage', 'objects')"
                     @click="resetForm"
@@ -114,7 +112,6 @@
                   </v-btn>
                   <v-spacer />
                   <v-btn
-                    v-cy-name="'save-button'"
                     depressed
                     color="primary"
                     :disabled="loading || !isFormDirty || !isFormValid || ability.cannot('manage', 'objects')"
@@ -126,7 +123,6 @@
                 <template v-else>
                   <v-spacer />
                   <v-btn
-                    v-cy-name="'restore-button'"
                     depressed
                     :disabled="ability.cannot('manage', 'objects')"
                     color="primary"

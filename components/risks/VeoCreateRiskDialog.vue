@@ -47,7 +47,6 @@
     </template>
     <template #dialog-options>
       <v-btn
-        v-cy-name="'cancel-button'"
         text
         :disabled="creatingRisks"
         @click="dialog = false"
@@ -56,7 +55,6 @@
       </v-btn>
       <v-spacer />
       <v-btn
-        v-cy-name="'save-button'"
         text
         color="primary"
         :loading="creatingRisks"

@@ -70,7 +70,6 @@
             @click="deleteDialogVisible = true"
           >
             <v-icon
-              v-cy-name="'delete-button'"
               dense
               small
             >

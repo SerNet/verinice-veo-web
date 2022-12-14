@@ -13,7 +13,6 @@ module.exports = {
     '\\.[jt]sx?$': 'babel-jest'
   },
   roots: ['<rootDir>'],
-  transformIgnorePatterns: ['<rootDir>/test/e2e'],
   collectCoverage: false,
   collectCoverageFrom: ['<rootDir>/components/**/*.vue'],
   snapshotSerializers: ['jest-serializer-vue'],

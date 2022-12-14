@@ -25,7 +25,6 @@
       class="d-flex align-center"
     >
       <v-btn
-        v-cy-name="'filter-button'"
         class="mr-2"
         color="white"
         rounded
@@ -45,7 +44,7 @@
       cols="auto"
       class="grow"
     >
-      <v-chip-group v-cy-name="'chips'">
+      <v-chip-group>
         <VeoObjectChip
           v-for="k in activeFilterKeys"
           :key="k"

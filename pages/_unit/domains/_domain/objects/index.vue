@@ -96,7 +96,6 @@
           #activator="{ on }"
         >
           <v-btn
-            v-cy-name="'create-button'"
             color="primary"
             depressed
             :disabled="ability.cannot('manage', 'objects')"

@@ -28,7 +28,6 @@
     <template #dialog-options>
       <v-btn
         text
-        :data-cy="$utils.prefixCyData($options, 'cancel-button')"
         @click="$emit('input', false)"
       >
         {{ t('global.button.no') }}
@@ -38,7 +37,6 @@
         text
         color="primary"
         :disabled="!objectToRemove"
-        :data-cy="$utils.prefixCyData($options, 'confirm-button')"
         :loading="unlinking"
         @click="unlinkObject"
       >

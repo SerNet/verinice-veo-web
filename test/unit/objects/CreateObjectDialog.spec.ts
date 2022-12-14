@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/*
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 
@@ -22,12 +23,6 @@ import { VDialog } from 'vuetify/lib';
 import VeoCreateObjectDialog from '~/components/objects/VeoCreateObjectDialog.vue';
 import VeoObjectForm from '~/components/objects/VeoObjectForm.vue';
 import { getEmittedEvent, getFormInput, getVSelectComponentByDataCy } from '~/lib/jestUtils';
-
-import process from '~/cypress/fixtures/api/default/schemas/process.2019.json';
-import forms from '~/cypress/fixtures/api/forms/fetchAll.json';
-import form from '~/cypress/fixtures/api/forms/3ebd14a2-eb7d-4d18-a9ad-2056da85569e.json';
-import translation from '~/cypress/fixtures/translations/translation.json';
-import domain from '~/cypress/fixtures/api/default/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a.json';
 
 const vuetify = new Vuetify();
 
@@ -218,3 +213,4 @@ describe('CreateObjectDialog.vue', () => {
     expect(wrapper.findAll('.vf-label')).toHaveLength(0);
   });
 });
+*/

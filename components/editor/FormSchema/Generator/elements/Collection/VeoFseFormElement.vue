@@ -67,7 +67,6 @@
             <v-icon
               dense
               small
-              :data-cy="$utils.prefixCyData($options, 'edit-button')"
             >
               mdi-pencil
             </v-icon>
@@ -80,7 +79,6 @@
             <v-icon
               dense
               small
-              :data-cy="$utils.prefixCyData($options, 'delete-button')"
             >
               mdi-trash-can-outline
             </v-icon>

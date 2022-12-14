@@ -23,21 +23,6 @@ export function getFormInput(label: string, formWrapper: string = '.vf-wrapper')
   return (inputField as any)?.__vue__;
 }
 
-export function getVSelectComponentByDataCy(wrapper: Wrapper<Vue, Element>, name: string) {
-  const rawInput = wrapper.find(`[data-cy=${name}]`);
-
-  let el = rawInput.element;
-  while (!el.className.split(' ').includes('v-select')) {
-    if (!el.parentElement) {
-      break;
-    } else {
-      el = el.parentElement;
-    }
-  }
-  expect((el as any).__vue__).toBeTruthy();
-  return (el as any).__vue__;
-}
-
 export function getEmittedEvent(wrapper: Wrapper<Vue, Element>, event: string): any {
   const emittedEvents = wrapper.emitted();
   expect(emittedEvents[event]).toBeTruthy();

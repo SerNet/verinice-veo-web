@@ -29,7 +29,6 @@
               <VeoObjectFilter
                 v-for="(option, index) of defaultFilterOptions"
                 :key="option.name || `${option.type}_${index}`"
-                :data-cy="option.type !== IVeoFilterOptionType.DIVIDER ? $utils.prefixCyData($options, 'filter-option') : ''"
                 :value="localFilter[option.name]"
                 v-bind="option"
                 dense
@@ -47,7 +46,6 @@
               <VeoObjectFilter
                 v-for="(option, index) of additionalFilterOptions"
                 :key="option.name || `${option.type}_${index}`"
-                :data-cy="option.type !== IVeoFilterOptionType.DIVIDER ? $utils.prefixCyData($options, 'filter-option') : ''"
                 :value="localFilter[option.name]"
                 v-bind="option"
                 dense
@@ -59,7 +57,6 @@
         <div class="d-flex justify-center fill-width my-2">
           <v-btn
             text
-            :data-cy="$utils.prefixCyData($options, 'expand-button')"
             @click="showAllFilters = !showAllFilters"
           >
             <template v-if="showAllFilters">
@@ -87,7 +84,6 @@
     <template #dialog-options>
       <v-btn
         text
-        :data-cy="$utils.prefixCyData($options, 'reset-button')"
         @click="onReset"
       >
         {{ t(`resetFilter`) }}
@@ -95,7 +91,6 @@
       <v-spacer />
       <v-btn
         color="primary"
-        :data-cy="$utils.prefixCyData($options, 'submit-button')"
         text
         :disabled="!filterFormValid"
         @click="onSubmit"

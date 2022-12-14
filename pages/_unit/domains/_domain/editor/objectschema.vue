@@ -35,7 +35,6 @@
               <template #activator="{on}">
                 <a
                   ref="downloadButton"
-                  v-cy-name="'download-button'"
                   href="#"
                   class="text-decoration-none"
                   style="vertical-align: bottom;"
@@ -159,7 +158,6 @@
                   lg="4"
                 >
                   <v-text-field
-                    v-cy-name="'objectschema-title-input'"
                     :value="title"
                     dense
                     hide-details
@@ -173,7 +171,6 @@
                   lg="8"
                 >
                   <v-text-field
-                    v-cy-name="'objectschema-description-input'"
                     :value="description"
                     dense
                     hide-details

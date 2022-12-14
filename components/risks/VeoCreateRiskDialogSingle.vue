@@ -93,7 +93,6 @@
     <template #dialog-options>
       <v-spacer />
       <v-btn
-        v-cy-name="'save-button'"
         text
         color="primary"
         :loading="savingRisk"
@@ -103,7 +102,6 @@
         {{ t('global.button.save') }}
       </v-btn>
       <v-btn
-        v-cy-name="'close-button'"
         text
         color="primary"
         :disabled="savingRisk"

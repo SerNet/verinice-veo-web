@@ -76,7 +76,6 @@
                     :label="upperFirst(t('viewAs').toString())"
                     hide-details
                     :items="displayOptions"
-                    :data-cy="$utils.prefixCyData($options, 'display-select')"
                   />
                 </v-card-text>
               </div>
@@ -108,7 +107,6 @@
               <v-tooltip left>
                 <template #activator="{ on }">
                   <v-btn
-                    v-cy-name="'display-tab'"
                     data-component-name="object-form-view-tab"
                     style="border-radius: 99px"
                     icon
@@ -150,10 +148,7 @@
                       icon
                       :value="SIDE_CONTAINERS.HISTORY"
                     >
-                      <v-icon
-                        v-cy-name="'history-tab'"
-                        v-text="mdiHistory"
-                      />
+                      <v-icon v-text="mdiHistory" />
                     </v-btn>
                   </div>
                 </template>

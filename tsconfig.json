@@ -45,7 +45,6 @@
     "coverage",
     ".nuxt",
     ".gitlab",
-    "dist",
-    "cypress"
+    "dist"
   ]
 }

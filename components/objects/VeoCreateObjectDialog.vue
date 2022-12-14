@@ -40,7 +40,6 @@
     <template #dialog-options>
       <v-btn
         text
-        :data-cy="$utils.prefixCyData($options, 'cancel-button')"
         @click="$emit('input', false)"
       >
         {{ t('global.button.cancel') }}
@@ -50,7 +49,6 @@
         text
         color="primary"
         :disabled="!isFormValid || !isFormDirty"
-        :data-cy="$utils.prefixCyData($options, 'save-button')"
         @click="onSubmit"
       >
         {{ t('global.button.save') }}

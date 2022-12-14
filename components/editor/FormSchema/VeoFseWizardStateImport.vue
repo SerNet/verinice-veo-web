@@ -76,7 +76,6 @@
         />
         <div v-if="forceOwnSchema">
           <VeoEditorFileUpload
-            v-cy-name="'objectschema-input'"
             :input-label="t('objectSchemaUploadLabel')"
             :submit-button-text="t('importObjectSchema')"
             @schema-uploaded="$emit('update:object-schema', $event)"

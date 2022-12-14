@@ -82,7 +82,6 @@
             v-for="(attribute, index) of form.data.attributes"
             :key="index"
             v-bind="attribute"
-            v-cy-name="'attribute'"
             :aspect-name="aspectPrefix"
             @delete="removeAttribute(index)"
             @update="updateAttribute($event, index)"

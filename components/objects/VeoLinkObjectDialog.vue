@@ -72,7 +72,6 @@
       <v-btn
         text
         color="primary"
-        :data-cy="$utils.prefixCyData($options, 'save-button')"
         :loading="savingObject"
         @click="linkObjects"
       >
@@ -83,7 +82,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, ref, computed, watch, PropType, reactive } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute, ref, computed, watch, PropType, reactive, useContext } from '@nuxtjs/composition-api';
 import { differenceBy, uniqBy, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
@@ -152,6 +151,7 @@ export default defineComponent({
     const { tablePageSize } = useVeoUser();
     const { link } = useLinkObject();
     const { unlink } = useUnlinkObject();
+    const { $api } = useContext();
 
     const { data: endpoints } = useFetchSchemas();
     const translationsQueryParameters = computed(() => ({ languages: [locale.value] }));
@@ -188,7 +188,7 @@ export default defineComponent({
       refetchObjects(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
-    const endpoint = computed(() => endpoints.value?.[filter.value.objectType] || '');
+    const objectListEndpoint = computed(() => endpoints.value?.[filter.value.objectType] || '');
     const combinedObjectsQueryParameters = computed(() => ({
       size: tablePageSize.value,
       sortBy: objectsQueryParameters.sortBy,
@@ -196,9 +196,9 @@ export default defineComponent({
       page: objectsQueryParameters.page,
       unit: separateUUIDParam(route.value.params.unit).id,
       ...filter.value,
-      endpoint: endpoint.value
+      endpoint: objectListEndpoint.value
     }));
-    const objectsQueryEnabled = computed(() => !!endpoint.value);
+    const objectsQueryEnabled = computed(() => !!objectListEndpoint.value);
     const {
       data: objects,
       isFetching: objectsLoading,
@@ -253,27 +253,28 @@ export default defineComponent({
     );
 
     // Selectable and selected objects
+    const objectEndpoint = computed(() => endpoints.value?.[props.object?.type || ''] || '');
     const parentsQueryParameters = computed(() => ({
       size: -1,
       page: 1,
       unitId: separateUUIDParam(route.value.params.unit).id,
-      parentEndpoint: endpoint.value,
+      parentEndpoint: objectListEndpoint.value,
       childObjectId: props.object?.id || ''
     }));
-    const parentsQueryEnabled = computed(() => !!endpoint.value && !!props.object?.id && props.editParents);
+    const parentsQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && props.editParents);
     const { data: parents, isFetching: parentsLoading } = useFetchParentObjects(parentsQueryParameters, { enabled: parentsQueryEnabled, keepPreviousData: true });
 
     const childObjectsQueryParameters = computed(() => ({
-      endpoint: endpoint.value,
+      endpoint: objectEndpoint.value,
       id: props.object?.id || ''
     }));
-    const childObjectsQueryEnabled = computed(() => !!endpoint.value && !!props.object?.id && !props.editParents && endpoint.value !== 'scopes');
+    const childObjectsQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && !props.editParents && objectEndpoint.value !== 'scopes');
     const { data: childObjects, isFetching: childObjectsLoading } = useFetchChildObjects(childObjectsQueryParameters, { enabled: childObjectsQueryEnabled });
 
     const childScopesQueryParameters = computed(() => ({
       id: props.object?.id || ''
     }));
-    const childScopesQueryEnabled = computed(() => !!endpoint.value && !!props.object?.id && !props.editParents && endpoint.value === 'scopes');
+    const childScopesQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && !props.editParents && objectEndpoint.value === 'scopes');
     const { data: childScopes, isFetching: childScopesLoading } = useFetchChildScopes(childScopesQueryParameters, { enabled: childScopesQueryEnabled });
 
     const children = computed(() => uniqBy([...(childObjects.value || []), ...(childScopes.value || []), ...props.preselectedItems], (arrayEntry) => arrayEntry.id));
@@ -298,15 +299,17 @@ export default defineComponent({
       } else {
         savingObject.value = true;
         try {
-          if (props.object) {
+          if (props.object && endpoints.value) {
             if (props.editParents) {
               const parentsToAdd = differenceBy(modifiedSelectedItems.value, originalSelectedItems.value, 'id');
               const parentsToRemove = differenceBy(originalSelectedItems.value, modifiedSelectedItems.value, 'id');
               for (const parent of parentsToAdd) {
-                await link(parent, props.object);
+                const _parent = await $api.entity.fetch(endpoints.value?.[parent.type], parent.id);
+                await link(_parent, props.object);
               }
               for (const parent of parentsToRemove) {
-                await unlink(parent, props.object.id);
+                const _parent = await $api.entity.fetch(endpoints.value?.[parent.type], parent.id);
+                await unlink(_parent, props.object.id);
               }
             } else {
               await link(props.object, modifiedSelectedItems.value, true);

@@ -23,10 +23,8 @@
         :key="index"
         class="align-center"
         dense
-        :data-cy="$utils.prefixCyData($options, 'subtype-row', $route)"
       >
         <v-col
-          v-cy-name="'subtype-label'"
           cols="12"
           sm="12"
           md="5"
