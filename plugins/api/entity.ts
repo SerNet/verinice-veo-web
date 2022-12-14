@@ -100,7 +100,7 @@ export default function (api: Client) {
      */
     create(endpoint: string, entity: IVeoEntity, parentScopes?: string[]): Promise<IVeoAPIMessage> {
       // Remove properties of the object only used in the frontend
-      if (entity.type === 'scopes') {
+      if (entity.type === 'scope') {
         // @ts-ignore
         delete entity.parts;
       } else {

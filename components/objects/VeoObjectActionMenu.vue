@@ -22,7 +22,6 @@
   >
     <v-speed-dial
       v-model="speedDialIsOpen"
-      v-cy-name="'action-menu'"
       direction="top"
       transition="slide-y-reverse"
       absolute
@@ -31,7 +30,6 @@
     >
       <template #activator>
         <v-btn
-          v-cy-name="'show-actions-button'"
           color="primary"
           :disabled="!allowedActions.length || disabled"
           depressed
@@ -50,7 +48,7 @@
         v-if="allowedActions.length && !disabled"
         #default
       >
-        <div v-cy-name="'action-list'">
+        <div>
           <v-btn
             v-for="action in allowedActions"
             :key="action.key"

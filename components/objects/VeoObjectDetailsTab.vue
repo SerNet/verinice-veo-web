@@ -21,7 +21,7 @@
       :additional-headers="additionalHeaders"
       :default-headers="defaultHeaders"
       :items="items"
-      :loading="fetchState.pending"
+      :loading="tableIsLoading"
       @click="openItem"
     >
       <template #actions="{item}">
@@ -62,7 +62,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, h, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
+import { defineComponent, h, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiArrowDown, mdiArrowRight, mdiCheck, mdiContentCopy, mdiLinkOff, mdiTransitDetour, mdiTrashCanOutline } from '@mdi/js';
@@ -75,7 +75,7 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemas } from '~/composables/api/schemas';
-import { useFetchParentObjects } from '~/composables/api/objects';
+import { useFetchChildObjects, useFetchChildScopes, useFetchParentObjects, useFetchRisks } from '~/composables/api/objects';
 
 export default defineComponent({
   name: 'VeoObjectDetailsTab',
@@ -105,49 +105,54 @@ export default defineComponent({
     const { link } = useLinkObject();
     const { clone } = useCloneObject();
 
-    const items = ref<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>();
-
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
-    const parentQueryParameters = computed(() => ({ parentEndpoint: 'scopes', childObjectId: props.object?.id || '', unitId: unitId.value }));
-    const parentQueryEnabled = computed(() => props.type !== 'risks' && !!props.object?.id);
-    const { data: parents } = useFetchParentObjects(parentQueryParameters, { enabled: parentQueryEnabled });
-
-    /**
-     * Fetch table data based on selected tab
-     */
+    // Fetching different queries for the table
     const { data: schemas } = useFetchSchemas();
+    const parentScopesQueryParameters = computed(() => ({ parentEndpoint: 'scopes', childObjectId: props.object?.id || '', unitId: unitId.value }));
+    const parentScopesQueryEnabled = computed(() => props.type !== 'risks' && !!props.object?.id);
+    const { data: parentScopes, isFetching: parentScopesIsFetching } = useFetchParentObjects(parentScopesQueryParameters, { enabled: parentScopesQueryEnabled }); // Used by table and cloning objects
+    const parentObjectsQueryParameters = computed(() => ({
+      parentEndpoint: schemas.value?.[props.object?.type || ''] || '',
+      childObjectId: props.object?.id || '',
+      unitId: unitId.value
+    }));
+    const parentObjectsQueryEnabled = computed(() => props.type === 'parentObjects' && !!props.object?.id);
+    const { data: parentObjects, isFetching: parentObjectsIsFetching } = useFetchParentObjects(parentObjectsQueryParameters, { enabled: parentObjectsQueryEnabled });
+    const childScopesQueryParameters = computed(() => ({ id: props.object?.id || '' }));
+    const childScopesQueryEnabled = computed(() => props.type === 'childScopes' && !!props.object?.id);
+    const { data: childScopes, isFetching: childScopesIsFetching } = useFetchChildScopes(childScopesQueryParameters, { enabled: childScopesQueryEnabled });
+    const childObjectsQueryParameters = computed(() => ({ id: props.object?.id || '', endpoint: schemas.value?.[props.object?.type || ''] || '' }));
+    const childObjectsQueryEnabled = computed(() => props.type === 'childObjects' && !!props.object?.id);
+    const { data: childObjects, isFetching: childObjectsIsFetching } = useFetchChildObjects(childObjectsQueryParameters, { enabled: childObjectsQueryEnabled });
+    const risksQueryParameters = computed(() => ({ id: props.object?.id || '', endpoint: schemas.value?.[props.object?.type || ''] || '' }));
+    const risksQueryEnabled = computed(() => props.type === 'risks' && !!props.object?.id);
+    const { data: risks, isFetching: risksIsFetching } = useFetchRisks(risksQueryParameters, { enabled: risksQueryEnabled });
 
-    const { fetchState, fetch } = useFetch(async () => {
-      if (!schemas.value) {
-        return;
-      }
-      if (props.object) {
-        switch (props.type) {
-          case 'childScopes':
-            items.value = (await $api.entity.fetchSubEntities(schemas.value[props.object.type], props.object.id)).filter((entity) => entity.type === 'scope');
-            break;
-          case 'childObjects':
-            items.value = (await $api.entity.fetchSubEntities(schemas.value[props.object.type], props.object.id)).filter((entity) => entity.type !== 'scope');
-            break;
-          case 'parentScopes':
-            items.value = await $api.entity.fetchParents('scopes', props.object.id);
-            break;
-          case 'parentObjects':
-            items.value = await $api.entity.fetchParents(schemas.value[props.object.type], props.object.id);
-            break;
-          case 'risks':
-            items.value = (await $api.entity.fetchRisks(schemas.value[props.object.type], props.object.id)) as any;
-            break;
-          case 'links':
-            // create entities for table from links
-            items.value = Object.values(props.object.links).reduce((linkArray: { id: string; name?: string; type: string }[], links: IVeoCustomLink[]) => {
-              for (const link of links) {
-                linkArray.push(createEntityFromLink(link));
-              }
-              return linkArray;
-            }, []) as any;
-        }
+    const tableIsLoading = computed(
+      () => parentScopesIsFetching.value || parentObjectsIsFetching.value || childScopesIsFetching.value || childObjectsIsFetching.value || risksIsFetching.value
+    );
+
+    const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>(() => {
+      switch (props.type) {
+        case 'childScopes':
+          return childScopes.value || [];
+        case 'childObjects':
+          return childObjects.value || [];
+        case 'parentScopes':
+          return parentScopes.value || [];
+        case 'parentObjects':
+          return parentObjects.value || [];
+        case 'risks':
+          return risks.value || [];
+        case 'links':
+        default:
+          return Object.values(props.object?.links || {}).reduce((linkArray: { id: string; name?: string; type: string }[], links: IVeoCustomLink[]) => {
+            for (const link of links) {
+              linkArray.push(createEntityFromLink(link));
+            }
+            return linkArray;
+          }, []) as any[];
       }
     });
 
@@ -158,13 +163,6 @@ export default defineComponent({
       const id = splitted[5];
       return { id, name, type };
     };
-
-    watch(() => props.object, fetch, {
-      deep: true
-    });
-    watch(() => schemas.value, fetch, {
-      deep: true
-    });
 
     const defaultHeaders = computed(() =>
       props.type !== 'risks' && props.type !== 'links'
@@ -296,7 +294,7 @@ export default defineComponent({
                   const clonedObjectId = (
                     await clone(
                       item,
-                      (parents.value?.items || []).map((item) => item.id)
+                      (parentScopes.value?.items || []).map((item) => item.id)
                     )
                   ).resourceId;
                   const clonedObject = await $api.entity.fetch(schemas.value?.[item.type] || '', clonedObjectId);
@@ -308,7 +306,6 @@ export default defineComponent({
                     }
                   }
                   displaySuccessMessage(upperFirst(t('objectCloned').toString()));
-                  fetch();
                 } catch (e: any) {
                   displayErrorMessage(upperFirst(t('errors.clone').toString()), e.message);
                 }
@@ -419,7 +416,6 @@ export default defineComponent({
       item.domains?.[props.domainId]?.riskDefinitions?.DSRA?.riskValues?.find((category: any) => category.category === protectionGoal)?.riskTreatments || [];
 
     const onRelatedObjectModified = () => {
-      fetch();
       emit('reload');
     };
 
@@ -432,10 +428,9 @@ export default defineComponent({
       onUnlinkEntitySuccess,
       onUnlinkEntityError,
       unlinkEntityDialog,
-      fetchState,
       openItem,
+      tableIsLoading,
       actions,
-      fetch,
       items,
 
       t,

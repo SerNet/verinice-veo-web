@@ -23,7 +23,7 @@ import { useVeoUser } from '../VeoUser';
 import { IVeoQueryTransformationMap, QueryOptions, useQuery } from './utils/query';
 import { IVeoMutationParameters, IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
 import { VeoApiReponseType } from './utils/request';
-import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
+import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from '~/types/VeoTypes';
 
 export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
   unit: string;
@@ -54,6 +54,11 @@ export interface IVeoFetchChildScopesParameters {
   id: string;
 }
 
+export interface IVeoFetchRisksParameters {
+  endpoint: string;
+  id: string;
+}
+
 export interface IVeoCreateObjectParameters {
   endpoint: string;
   object: IVeoEntity;
@@ -74,14 +79,15 @@ export const objectsQueryParameterTransformationMap: IVeoQueryTransformationMap 
   fetchAll: (queryParameters: IVeoFetchObjectsParameters) => ({ params: { endpoint: queryParameters.endpoint }, query: omit(queryParameters, 'endpoint') }),
   fetch: (queryParameters: IVeoFetchObjectParameters) => ({ params: queryParameters }),
   fetchChildObjects: (queryParameters: IVeoFetchChildObjectsParameters) => ({ params: queryParameters }),
-  fetchChildScopes: (queryParameters: IVeoFetchChildScopesParameters) => ({ params: queryParameters })
+  fetchChildScopes: (queryParameters: IVeoFetchChildScopesParameters) => ({ params: queryParameters }),
+  fetchRisks: (queryParameters: IVeoFetchRisksParameters) => ({ params: queryParameters })
 };
 
 export const objectsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
   create: (mutationParameters: IVeoCreateObjectParameters) => {
     const _object = mutationParameters.object;
     // Remove properties of the object only used in the frontend
-    if (_object.type === 'scopes') {
+    if (_object.type === 'scope') {
       // @ts-ignore
       delete _object.parts;
     } else {
@@ -93,7 +99,7 @@ export const objectsMutationParameterTransformationMap: IVeoMutationTransformati
   update: (mutationParameters: IVeoUpdateObjectParameters) => {
     const _object = mutationParameters.object;
     // Remove properties of the object only used in the frontend
-    if (_object.type === 'scopes') {
+    if (_object.type === 'scope') {
       // @ts-ignore
       delete _object.parts;
     } else {
@@ -215,6 +221,9 @@ export const useFetchChildScopes = (queryParameters: Ref<IVeoFetchChildScopesPar
     queryOptions
   );
 
+export const useFetchRisks = (queryParameters: Ref<IVeoFetchRisksParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchRisksParameters, IVeoRisk[]>('risks', { url: '/api/:endpoint/:id/risks' }, queryParameters, objectsQueryParameterTransformationMap.fetchRisks, queryOptions);
+
 export const useCreateObject = (mutationOptions?: MutationOptions) => {
   const queryClient = useQueryClient();
 
@@ -268,6 +277,20 @@ export const useUpdateObject = (mutationOptions?: MutationOptions) => {
             id: (variables as unknown as IVeoMutationParameters).params?.id
           }
         ]);
+        queryClient.invalidateQueries([
+          'childObjects',
+          {
+            endpoint: (variables as unknown as IVeoMutationParameters).params?.endpoint,
+            id: (variables as unknown as IVeoMutationParameters).params?.id
+          }
+        ]);
+        queryClient.invalidateQueries([
+          'childScopes',
+          {
+            id: (variables as unknown as IVeoMutationParameters).params?.id
+          }
+        ]);
+        queryClient.invalidateQueries(['objects']); // Invalid all object lists, as the parent endpoint uses the same key (and we want an updated edit date in the list for this object)
         setTimeout(() => {
           queryClient.invalidateQueries(['versions']);
         }, 5000); // Only invalidate after 5 seconds, as the history sevice isn't updated as sonn as the object is updated
