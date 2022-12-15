@@ -18,7 +18,7 @@
 <template>
   <v-app>
     <v-main>
-      <nuxt />
+      <slot />
     </v-main>
   </v-app>
 </template>

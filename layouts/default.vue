@@ -81,7 +81,7 @@
       style="max-height: 100vh;"
       class="overflow-hidden"
     >
-      <nuxt />
+      <slot />
       <VeoCookieBanner />
     </v-main>
     <VeoGlobalAlert

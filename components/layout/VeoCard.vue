@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { defineComponent, h } from '@vue/composition-api';
+import { defineComponent, h } from '@nuxtjs/composition-api';
 import { VCard } from 'vuetify/lib';
 
 export default defineComponent({

@@ -20,7 +20,6 @@ import Vue from 'vue';
 import glob from 'glob';
 import VueI18n from 'vue-i18n';
 import Vuetify from 'vuetify/lib';
-import VueCompositionAPI from '@vue/composition-api';
 import { VueQueryPlugin } from '@tanstack/vue-query';
 
 // Auto import all components (super inefficient, but saves a lot of lines of code)
@@ -31,7 +30,6 @@ glob.sync(path.join(__dirname, '../../components/**/*.vue')).forEach((file) => {
 
 Vue.config.productionTip = false;
 Vue.use(Vuetify);
-Vue.use(VueCompositionAPI);
 Vue.use(VueQueryPlugin);
 Vue.use(VueI18n);
 

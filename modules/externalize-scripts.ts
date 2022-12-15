@@ -35,10 +35,10 @@ interface Generator {
  * Hook into nuxt generator (will only work for files used in production)
  * to rewrite inline scripts into external scipt files
  */
-export default (function () {
-  this.nuxt.hook('generate:before', (generator: Generator) => {
+export default ((options, nuxt) => {
+  nuxt.hook('generate:before', (generator: Generator) => {
     const distNuxtPath = generator.distNuxtPath;
-    const publicPath = this.options.build.publicPath || '';
+    const publicPath = options.build.publicPath || '';
     const _minifyHtml = generator.minifyHtml;
     // Patch generator.minifyHtml to externalize inline scripts
     generator.minifyHtml = function (...params) {
@@ -56,4 +56,4 @@ export default (function () {
       });
     } as Generator['minifyHtml'];
   });
-} as Module<any>);
+});

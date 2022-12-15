@@ -1,25 +1,11 @@
 {
-  "gitlab.instanceUrl": "https://git.nbrx.de",
-  "vetur.format.defaultFormatter.html": "prettyhtml",
   "editor.rulers": [
     120
   ],
-  "vetur.experimental.templateInterpolationService": true,
   "editor.formatOnSave": false,
-  "eslint.validate": [
-    "vue",
-    "javascript",
-    "typescript",
-    "html"
-  ],
-  "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
-  "vetur.format.defaultFormatter.js": "vscode-typescript",
-  "vetur.validation.template": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "i18n-ally.localesPaths": "locales",
   "psi-header.changes-tracking": {
     "autoHeader": "autoSave",
     "enforceHeader": true,

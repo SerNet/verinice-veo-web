@@ -27,16 +27,7 @@
     >
       {{ options.label }}
     </div>
-    <editor
-      :id="objectSchemaPointer"
-      ref="editor"
-      :initial-value="value"
-      :error-messages="getControlErrorMessages($props)"
-      :class="options && options.class"
-      class="vf-form-element vf-input-text"
-      :options="editorOptions"
-      @change="onChange"
-    />
+    <div ref="editor" />
   </div>
 </template>
 
@@ -45,10 +36,11 @@ import { computed, defineComponent, ref, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import Prism from 'prismjs';
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
-import { Editor } from '@toast-ui/vue-editor';
+import Editor from '@toast-ui/editor';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
+import { onMounted } from 'vue';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-markdown-editor',
@@ -126,6 +118,19 @@ export default defineComponent({
     const invoke = (tuiMethodName: string) => {
       return editor.value.invoke(tuiMethodName);
     };
+
+    const editor = ref();
+    onMounted(() => {
+      const e = new Editor({
+        el: editor.value,
+        height: '500px',
+        initialEditType: 'markdown',
+        previewStyle: 'vertical',
+        events: {
+          change: () => emit('update:modelValue', e.getMarkdown()),
+        },
+      });
+    });
 
     return {
       editor,

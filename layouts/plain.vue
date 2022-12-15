@@ -59,7 +59,7 @@
       </v-btn>
     </v-app-bar>
     <v-main>
-      <nuxt />
+      <slot />
       <VeoCookieBanner />
     </v-main>
   </v-app>

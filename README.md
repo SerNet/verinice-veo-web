@@ -1,24 +1,38 @@
 # veo-web
 
-verinice.veo is a cloud-native application for managing information security and data protection
-![Dashbaord of verinice.veo](docs/manual/dashboard/media/veo_dashboard-screenshot.en.png)
-In this repository you will find the frontend of the application.
-## Build Setup
+Look at the [nuxt 3 documentation](https://v3.nuxtjs.org) to learn more.
+
+## Setup
+
+Make sure to install the dependencies:
 
 ```bash
-# install dependencies
-$ npm install # Or yarn install
-
-# serve with hot reload at localhost:3000
-$ npm run dev
-
-# build for production and launch server
-$ npm run build
-$ npm start
-
-# generate static project
-$ npm run generate
+npm install
 ```
+
+## Development Server
+
+Start the development server on http://localhost:3000
+
+```bash
+npm run dev
+```
+
+## Production
+
+Build the application for production:
+
+```bash
+npm run build
+```
+
+Locally preview production build:
+
+```bash
+npm run preview
+```
+
+Checkout the [deployment documentation](https://v3.nuxtjs.org/guide/deploy/presets) for more information.
 
 Required env variables:
 ```

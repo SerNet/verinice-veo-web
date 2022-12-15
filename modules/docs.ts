@@ -59,7 +59,7 @@ const toHtml = (node: MdNode): string => {
   return tag ? `<${tag}${propStr}>${children.join('')}</${tag}>` : children.join('');
 };
 
-export default (function () {
+export default ((options, nuxt) => {
   /**
    * Change image paths before parsing markdown documents
    */
@@ -72,13 +72,13 @@ export default (function () {
         const filePath = src || path;
         const fileDir = pathDirname(file.path);
         // ...extract src and resolve it relative to file and build relative path from nuxt root directory
-        const resolved = pathRelative(this.options.rootDir, pathResolve(fileDir, filePath));
+        const resolved = pathRelative(options.rootDir, pathResolve(fileDir, filePath));
         // replace path with resolved path
         return src ? `${preSrc}${resolved}${postSrc}` : `${prePath}${resolved}${postPath}`;
       });
     }
   };
-  this.nuxt.hook('content:file:beforeParse', replaceImagePaths);
+  nuxt.hook('content:file:beforeParse', replaceImagePaths);
 
   /**
    * Add language property and allow specific keys inside yaml to include markdown
@@ -110,5 +110,5 @@ export default (function () {
       }
     }
   };
-  this.nuxt.hook('content:file:beforeInsert', extendDocument);
-} as Module<any>);
+  nuxt.hook('content:file:beforeInsert', extendDocument);
+});

@@ -57,7 +57,7 @@
           </template>
           <template #items>
             <v-tab-item>
-              <nuxt-child />
+              <nuxt-page />
             </v-tab-item>
           </template>
         </VeoTabs>
