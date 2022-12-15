@@ -42,7 +42,6 @@
     ]
   },
   "exclude": [
-    "coverage",
     ".nuxt",
     ".gitlab",
     "dist"

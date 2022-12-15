@@ -12,6 +12,7 @@ module.exports = {
     '^.+\\.vue$': '@vue/vue2-jest',
     '\\.[jt]sx?$': 'babel-jest'
   },
+  transformIgnorePatterns: ['node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic)'],
   roots: ['<rootDir>'],
   collectCoverage: false,
   collectCoverageFrom: ['<rootDir>/components/**/*.vue'],

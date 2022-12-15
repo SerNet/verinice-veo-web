@@ -20,7 +20,3 @@ static/sw.js
 .DS_Store
 .history
 junit.xml
-report.xml
-parrots/**/*.tmp.ts
-coverage
-screenshots
