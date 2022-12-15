@@ -120,10 +120,11 @@ import { useI18n } from 'nuxt-i18n-composable';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
-import { IVeoDomain, IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
+import { IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemas } from '~/composables/api/schemas';
+import { useFetchDomain } from '~/composables/api/domains';
 
 export interface IDirtyFields {
   [field: string]: boolean;
@@ -168,20 +169,19 @@ export default defineComponent({
     const { data: endpoints } = useFetchSchemas();
 
     // Domain stuff, used for risk definitions
-    const domain = ref<IVeoDomain | undefined>();
-    const { fetch: fetchDomain } = useFetch(async () => {
-      domain.value = await $api.domain.fetch(props.domainId);
-      data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
-      originalData.value = cloneDeep(data.value);
-      nextTick(() => {
-        dirtyFields.value = {};
-      });
+    const data = ref<IVeoRisk | undefined>(undefined);
+    const originalData = ref<IVeoRisk | undefined>(undefined);
+
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
+    const { data: domain } = useFetchDomain(fetchDomainQueryParameters, {
+      onSuccess: () => {
+        data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
+        originalData.value = cloneDeep(data.value);
+        nextTick(() => {
+          dirtyFields.value = {};
+        });
+      }
     });
-    watch(
-      () => props.domainId,
-      () => fetchDomain(),
-      { immediate: true }
-    );
 
     watch(
       () => props.value,
@@ -195,8 +195,6 @@ export default defineComponent({
       }
     );
 
-    const data = ref<IVeoRisk | undefined>(undefined);
-    const originalData = ref<IVeoRisk | undefined>(undefined);
     const formIsValid = ref(true);
     const formModified = computed(() => !isEqual(data.value, originalData.value) || mitigationsModified.value);
 
@@ -212,7 +210,9 @@ export default defineComponent({
 
     const onRiskOwnerChanged = (newValue: IVeoLink) => {
       if (data.value) {
-        data.value.riskOwner = newValue;
+        // For some reason nuxt won't pick up the changes otherwise (probably fixed with nuxt 3)
+        data.value = { ...data.value, ...{ riskOwner: newValue } };
+        dirtyFields.value.riskOwner = true;
       }
     };
 
