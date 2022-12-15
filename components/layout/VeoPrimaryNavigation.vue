@@ -142,7 +142,7 @@ import { sortBy, upperFirst } from 'lodash';
 
 import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
-import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoReportsMeta } from '~/types/VeoTypes';
+import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema } from '~/types/VeoTypes';
 
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/_unit/domains/_domain/index.vue';
@@ -155,9 +155,10 @@ import { OBJECT_TYPE_ICONS } from '~/components/objects/VeoObjectIcon.vue';
 import { useFetchForms } from '~/composables/api/forms';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useFetchSchemas } from '~/composables/api/schemas';
+import { useFetchSchemasDetailed } from '~/composables/api/schemas';
 import { useDocTree } from '~/composables/docs';
 import { useFetchTranslations } from '~/composables/api/translations';
+import { useFetchReports } from '~/composables/api/reports';
 
 export interface INavItem {
   key: string;
@@ -220,6 +221,7 @@ export default defineComponent({
 
     // objects specific stuff
     const objectSchemas = ref<IVeoObjectSchema[]>([]);
+    const schemasLoading = ref(false);
 
     const queryParameters = computed(() => ({
       domainId: props.domainId
@@ -227,21 +229,17 @@ export default defineComponent({
     const allFormSchemasQueryEnabled = computed(() => !!props.domainId);
     const { data: formSchemas } = useFetchForms(queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
 
-    const { data: objectTypes } = useFetchSchemas({ enabled: authenticated });
-
-    const { fetch: fetchObjectsEntries, fetchState: objectEntriesLoading } = useFetch(async () => {
-      // Only load object types on the first call, as them changing while the user is using the application is highly unlikely
-      objectSchemas.value = [];
-
-      // We only load the objectschemas to avoid loading some when the domain id is set and some if it isn't set
-      if (props.domainId) {
-        for (const objectType of objectTypes.value || []) {
-          objectSchemas.value.push(await $api.schema.fetch(objectType.schemaName, [props.domainId]));
-        }
-      }
-    });
-
-    watch(() => objectTypes.value, fetchObjectsEntries, { deep: true });
+    const fetchSchemasDetailedQueryParameters = computed(() => ({ domainIds: [props.domainId] }));
+    const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId);
+    const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, { enabled: fetchSchemasDetailedQueryEnabled });
+    watch(
+      () => _schemas,
+      (newValue) => {
+        objectSchemas.value = (newValue || []).map((schema) => schema.data).filter((schema) => schema) as IVeoObjectSchema[];
+        schemasLoading.value = (newValue || []).some((schema) => schema.isFetching);
+      },
+      { deep: true }
+    );
 
     const objectTypesChildItems = computed<INavItem[]>(() =>
       objectSchemas.value
@@ -329,17 +327,14 @@ export default defineComponent({
     );
 
     // report specific stuff
-    const reports = ref<IVeoReportsMeta>({});
-    const { fetchState: reportsEntriesLoading } = useFetch(async () => {
-      reports.value = await $api.report.fetchAll();
-    });
+    const { data: reports, isFetching: reportsEntriesLoading } = useFetchReports();
 
     const reportsEntriesChildItems = computed<INavItem[]>(
       () =>
-        Object.keys(reports.value)
-          .map((reportId: string) => ({
+        Object.entries(reports.value || {})
+          .map(([reportId, report]) => ({
             key: reportId,
-            name: reports.value[reportId].name[locale.value],
+            name: report.name[locale.value],
             to: {
               name: REPORTS_REPORT_ROUTE_NAME,
               params: {
@@ -379,7 +374,6 @@ export default defineComponent({
     watch(
       () => props.domainId,
       () => {
-        fetchObjectsEntries();
         fetchCatalogsEntries();
         fetchRiskDefinitions();
       }
@@ -418,7 +412,7 @@ export default defineComponent({
       activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/objects`,
       faIcon: ['far', 'object-ungroup'],
       children: objectTypesChildItems.value,
-      childrenLoading: objectEntriesLoading.pending,
+      childrenLoading: schemasLoading.value,
       componentName: 'objects-nav-item'
     }));
 
@@ -438,7 +432,7 @@ export default defineComponent({
       activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/reports`,
       icon: mdiFileChartOutline,
       children: reportsEntriesChildItems.value,
-      childrenLoading: reportsEntriesLoading.pending,
+      childrenLoading: reportsEntriesLoading.value,
       componentName: 'reports-nav-item'
     }));
 

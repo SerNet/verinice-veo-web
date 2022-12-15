@@ -72,7 +72,8 @@
             class="pb-4"
             :disabled="formDataIsRevision || ability.cannot('manage', 'objects')"
             :object-type="objectParameter.type"
-            :loading="loading"
+            :original-object="object"
+            :loading="loading || !modifiedObject"
             :domain-id="domainId"
             :preselected-sub-type="preselectedSubType"
             :valid.sync="isFormValid"
@@ -87,7 +88,6 @@
               #prepend-form
             >
               <VeoAlert
-                v-cy-name="'old-version-alert'"
                 :value="true"
                 :type="VeoAlertType.INFO"
                 no-close-button
@@ -104,7 +104,6 @@
               >
                 <template v-if="!formDataIsRevision">
                   <v-btn
-                    v-cy-name="'reset-button'"
                     text
                     :disabled="loading || !isFormDirty || ability.cannot('manage', 'objects')"
                     @click="resetForm"
@@ -113,7 +112,6 @@
                   </v-btn>
                   <v-spacer />
                   <v-btn
-                    v-cy-name="'save-button'"
                     depressed
                     color="primary"
                     :disabled="loading || !isFormDirty || !isFormValid || ability.cannot('manage', 'objects')"
@@ -125,7 +123,6 @@
                 <template v-else>
                   <v-spacer />
                   <v-btn
-                    v-cy-name="'restore-button'"
                     depressed
                     :disabled="ability.cannot('manage', 'objects')"
                     color="primary"
@@ -153,10 +150,8 @@
           <VeoLinkObjectDialog
             v-if="object"
             v-model="linkObjectDialogVisible"
-            add-type="entity"
-            :edited-object="object"
-            :hierarchical-context="'child'"
             :preselected-filters="{ subType: 'PRO_DPIA' }"
+            :object="object"
             @success="onDPIALinked"
           />
         </template>
@@ -166,20 +161,21 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onUnmounted, ref, useContext, useFetch, useRoute, Ref, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
-import { cloneDeep, omit, pick, upperFirst } from 'lodash';
+import { computed, defineComponent, onUnmounted, ref, useContext, useRoute, Ref, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
+import { cloneDeep, omit, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
 
 import { IBaseObject, isObjectEqual, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
-import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useFetchForms } from '~/composables/api/forms';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchTranslations } from '~/composables/api/translations';
+import { useFetchSchemas } from '~/composables/api/schemas';
+import { useFetchObject } from '~/composables/api/objects';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -200,9 +196,11 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const { displaySuccessMessage, displayErrorMessage, expireAlert } = useVeoAlerts();
-    const { linkObject } = useVeoObjectUtilities();
+    const { link } = useLinkObject();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
     const { ability } = useVeoPermissions();
+
+    const { data: endpoints } = useFetchSchemas();
 
     const objectParameter = computed(() => separateUUIDParam(route.value.params.entity));
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
@@ -211,7 +209,6 @@ export default defineComponent({
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
-    const object = ref<IVeoEntity | undefined>(undefined);
     const modifiedObject = ref<IVeoEntity | undefined>(undefined);
     /* Data that should get merged back into modifiedObject after the object has been reloaded, useful to persist children
      * of objects while keeping form changes */
@@ -219,35 +216,41 @@ export default defineComponent({
 
     // Object details are originally part of the object, but as they might get updated independently, we want to avoid refetching the whole object, so we outsorce them.
     const metaData = ref<any>({});
+    const endpoint = computed(() => endpoints.value?.[objectParameter.value.type]);
 
-    const { fetchState, fetch: loadObject } = useFetch(async () => {
-      object.value = await $api.entity.fetch(objectParameter.value.type, objectParameter.value.id);
-      modifiedObject.value = cloneDeep(object.value);
-      metaData.value = cloneDeep(object.value.domains[domainId.value]);
-      getAdditionalContext();
+    const fetchObjectQueryParameters = computed(() => ({ endpoint: endpoint.value || '', id: objectParameter.value.id }));
+    const fetchObjectQueryEnabled = computed(() => !!endpoints.value && !!objectParameter.value.id);
+    const {
+      data: object,
+      isFetching: loading,
+      isError: notFoundError,
+      refetch
+    } = useFetchObject(fetchObjectQueryParameters, {
+      enabled: fetchObjectQueryEnabled,
+      onSuccess: (data) => {
+        const _data = data as IVeoEntity;
+        modifiedObject.value = cloneDeep(_data);
+        metaData.value = cloneDeep(_data.domains[domainId.value]);
+        getAdditionalContext();
 
-      if (wipObjectData.value) {
-        modifiedObject.value = { ...modifiedObject.value, ...wipObjectData.value };
-        wipObjectData.value = undefined;
+        if (wipObjectData.value) {
+          modifiedObject.value = { ...modifiedObject.value, ...wipObjectData.value };
+          wipObjectData.value = undefined;
+        }
       }
     });
 
     // Breadcrumb extensions
     const objectTypeKey = 'object-detail-view-object-type';
-    const endpoints = ref<IVeoSchemaEndpoint[]>([]);
 
-    const onObjectTypeChanged = async (newObjectType: string) => {
+    const onObjectTypeChanged = (newObjectType: string) => {
       if (customBreadcrumbExists(objectTypeKey)) {
         removeCustomBreadcrumb(objectTypeKey);
       }
 
-      if (!endpoints.value.length) {
-        endpoints.value = await $api.schema.fetchAll();
-      }
-
       addCustomBreadcrumb({
         key: objectTypeKey,
-        text: translations.value?.lang[locale.value]?.[getSchemaEndpoint(endpoints.value, newObjectType) || ''],
+        text: translations.value?.lang[locale.value]?.[endpoints.value?.[newObjectType] || newObjectType],
         to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${newObjectType}`,
         param: objectTypeKey,
         index: 0,
@@ -255,6 +258,16 @@ export default defineComponent({
       });
     };
     watch(() => objectParameter.value.type, onObjectTypeChanged, { immediate: true });
+    watch(
+      () => translations.value,
+      () => onObjectTypeChanged(objectParameter.value.type),
+      { deep: true }
+    );
+    watch(
+      () => endpoints.value,
+      () => onObjectTypeChanged(objectParameter.value.type),
+      { deep: true }
+    );
 
     const subTypeKey = 'object-detail-view-sub-type';
 
@@ -284,14 +297,17 @@ export default defineComponent({
       });
     };
     watch(() => preselectedSubType.value, onSubTypeChanged, { immediate: true });
+    watch(
+      () => formSchemas.value,
+      () => onSubTypeChanged(preselectedSubType.value),
+      { deep: true }
+    );
 
     onUnmounted(() => {
       removeCustomBreadcrumb(objectTypeKey);
       removeCustomBreadcrumb(subTypeKey);
       expireOptimisticLockingAlert();
     });
-
-    const notFoundError = computed(() => (fetchState.error as any)?.code === 404);
 
     // Display stuff
     const pageWidths = ref<Number[]>([3, 9]);
@@ -331,7 +347,7 @@ export default defineComponent({
 
     function updateObjectRelationships() {
       wipObjectData.value = omit(cloneDeep(modifiedObject.value), 'createdAt', 'createdBy', 'updatedAt', 'updatedBy', 'parts', 'members');
-      loadObject();
+      refetch();
     }
 
     const optimisticLockingAlertKey = ref<undefined | number>(undefined);
@@ -346,12 +362,10 @@ export default defineComponent({
       expireOptimisticLockingAlert();
       try {
         if (modifiedObject.value && object.value) {
-          // @ts-ignore ETag is not defined on the type, however it is set by the api plugin
-          modifiedObject.value.$etag = object.value.$etag;
-          await $api.entity.update(objectParameter.value.type, objectParameter.value.id, modifiedObject.value);
-          loadObject();
-          formDataIsRevision.value = false;
+          await $api.entity.update(endpoint.value || '', objectParameter.value.id, modifiedObject.value);
           displaySuccessMessage(successText);
+          refetch();
+          formDataIsRevision.value = false;
         }
       } catch (e: any) {
         if (e.code === 412) {
@@ -359,7 +373,7 @@ export default defineComponent({
             objectModified: true,
             buttonText: t('global.button.no').toString(),
             eventCallbacks: {
-              refetch: () => loadObject()
+              refetch
             }
           });
         } else {
@@ -408,15 +422,13 @@ export default defineComponent({
       }
     });
 
-    const loading = computed(() => fetchState.pending);
-
     // pia stuff
     const createDPIADialogVisible = ref(false);
     const linkObjectDialogVisible = ref(false);
 
     const onDPIACreated = async (newObjectId: string) => {
       if (object.value) {
-        await linkObject('child', pick(object.value, 'id', 'type'), { type: 'process', id: newObjectId });
+        await link(object.value, { type: 'process', id: newObjectId });
       }
       createDPIADialogVisible.value = false;
       updateObjectRelationships();
@@ -486,7 +498,7 @@ export default defineComponent({
       object,
       upperFirst,
       updateObjectRelationships,
-      loadObject,
+      refetch,
       activeTab
     };
   }

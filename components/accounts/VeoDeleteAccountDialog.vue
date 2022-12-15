@@ -82,14 +82,14 @@ export default defineComponent({
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
     const deleteMutationParameters = computed(() => ({ id: props.id }));
-    const { mutateAsync: doDelete, isLoading } = useDeleteAccount(deleteMutationParameters);
+    const { mutateAsync: doDelete, isLoading } = useDeleteAccount();
 
     const deleteAccount = async () => {
       if (!props.id || ability.value.cannot('manage', 'accounts')) {
         return;
       }
       try {
-        await doDelete();
+        await doDelete(deleteMutationParameters);
         displaySuccessMessage(t('deletingAccountSuccess').toString());
         emit('success');
         emit('input', false);

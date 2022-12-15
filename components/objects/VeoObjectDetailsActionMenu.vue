@@ -48,9 +48,7 @@
     />
     <VeoLinkObjectDialog
       v-model="linkObjectDialogVisible"
-      add-type="entity"
-      :edited-object="object"
-      :hierarchical-context="'child'"
+      :object="object"
       :preselected-filters="{ subType: 'PRO_DPIA' }"
       @success="$emit('reload')"
     />
@@ -59,13 +57,13 @@
 
 <script lang="ts">
 import { defineComponent, useRoute, ref, computed, PropType } from '@nuxtjs/composition-api';
-import { pick, upperFirst } from 'lodash';
+import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiDotsVertical } from '@mdi/js';
 
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
-import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { INestedMenuEntries } from '~/components/layout/VeoNestedMenu.vue';
 
 export default defineComponent({
@@ -83,7 +81,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     const route = useRoute();
-    const { linkObject } = useVeoObjectUtilities();
+    const { link } = useLinkObject();
 
     // general stuff
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
@@ -127,7 +125,7 @@ export default defineComponent({
     // emit after new object creation for linking
     const onCreateObjectSuccess = (newObjectId: string) => {
       if (props.object) {
-        linkObject('child', pick(props.object, 'id', 'type'), { type: 'process', id: newObjectId });
+        link(props.object, { type: 'process', id: newObjectId });
         emit('reload');
       }
     };

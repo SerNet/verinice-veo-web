@@ -16,22 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { mount } from '@vue/test-utils';
-import Vuetify from 'vuetify';
+// import Vuetify from 'vuetify';
 
 import { VDialog } from 'vuetify/lib';
 import VeoCreateObjectDialog from '~/components/objects/VeoCreateObjectDialog.vue';
 import VeoObjectForm from '~/components/objects/VeoObjectForm.vue';
-import { getEmittedEvent, getFormInput, getVSelectComponentByDataCy } from '~/lib/jestUtils';
+import { getEmittedEvent, getFormInput } from '~/lib/jestUtils';
 
-import process from '~/cypress/fixtures/api/default/schemas/process.2019.json';
-import forms from '~/cypress/fixtures/api/forms/fetchAll.json';
-import form from '~/cypress/fixtures/api/forms/3ebd14a2-eb7d-4d18-a9ad-2056da85569e.json';
-import translation from '~/cypress/fixtures/translations/translation.json';
-import domain from '~/cypress/fixtures/api/default/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a.json';
+// const vuetify = new Vuetify();
 
-const vuetify = new Vuetify();
-
-const mockDefaults = {
+/* const mockDefaults = {
   vuetify,
   mocks: {
     $nuxt: {
@@ -87,7 +81,8 @@ const mockDefaults = {
       }
     }
   }
-} as any;
+} as any; */
+const mockDefaults = {};
 
 describe.skip('CreateObjectDialog.vue', () => {
   // Skipping because CompositionAPI watch doesn't get fired
@@ -203,13 +198,13 @@ describe.skip('CreateObjectDialog.vue', () => {
     await new Promise((resolve) => setTimeout(resolve, 200));
     (wrapper.find('[data-cy=veo-object-form-display-tab]') as any).element.click();
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const select = getVSelectComponentByDataCy(wrapper, 'veo-object-form-display-select');
+    // const select = getVSelectComponentByDataCy(wrapper, 'veo-object-form-display-select');
 
     // One label for each custom aspect
     expect(wrapper.findAll('.vf-label')).toHaveLength(12);
 
     // Switch to formschema
-    select.$emit('input', '3ebd14a2-eb7d-4d18-a9ad-2056da85569e');
+    // select.$emit('input', '3ebd14a2-eb7d-4d18-a9ad-2056da85569e');
 
     // Wait for form to get regenerated
     await new Promise((resolve) => setTimeout(resolve, 200));

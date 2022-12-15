@@ -30,6 +30,7 @@
     :return-object="valueAsEntity"
     v-bind="$attrs"
     @update:search-input="onSearchQueryInput"
+    @click:clear="onClearClicked"
   >
     <template #prepend-item>
       <slot name="prepend-item" />
@@ -66,17 +67,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, unref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, unref, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { mdiOpenInNew } from '@mdi/js';
-import { getSchemaEndpoint } from '~/plugins/api/schema';
 import { createUUIDUrlParam, getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useFetchObject, useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export default defineComponent({
   props: {
@@ -118,7 +119,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { $api, $config } = useContext();
+    const { $config } = useContext();
     const { locale, t } = useI18n();
     const { displayErrorMessage } = useVeoAlerts();
     const router = useRouter();
@@ -127,10 +128,7 @@ export default defineComponent({
     const unit = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     // Value related stuff
-    const schemas = ref();
-    useFetch(async () => {
-      schemas.value = await $api.schema.fetchAll();
-    });
+    const { data: endpoints } = useFetchSchemas();
 
     const internalValue = computed<string | undefined>({
       get: () => {
@@ -144,9 +142,11 @@ export default defineComponent({
           return props.value;
         }
       },
-      set: (newValue: string | undefined) => {
-        if (props.valueAsLink) {
-          emit('input', newValue ? { targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas.value, props.objectType)}/${newValue}` } : undefined);
+      set: (newValue: string | undefined | null) => {
+        if (!newValue && !props.required) {
+          emit('input', newValue);
+        } else if (props.valueAsLink) {
+          emit('input', newValue ? { targetUri: `${$config.apiUrl}/${endpoints.value?.[props.objectType]}/${newValue}` } : undefined);
         } else {
           emit('input', newValue);
         }
@@ -156,14 +156,18 @@ export default defineComponent({
     // Select options related stuff
     const searchQuery = ref();
 
-    const searchQueryNotStale = computed(() => !fetchObjectsData?.value?.items?.find((item) => item.displayName === searchQuery.value));
-    const fetchObjectsQueryParameters = computed(() => ({
-      unit: unit.value,
-      objectType: props.objectType,
-      page: 1,
-      subType: props.subType,
-      displayName: searchQuery.value ?? undefined
-    }));
+    const endpoint = computed(() => endpoints.value?.[props.objectType]);
+    const searchQueryNotStale = computed(() => !fetchObjectsData?.value?.items?.find((item) => item.displayName === searchQuery.value) && !!endpoint.value);
+    const fetchObjectsQueryParameters = computed(
+      () =>
+        ({
+          unit: unit.value,
+          endpoint: endpoint.value,
+          page: 1,
+          subType: props.subType,
+          displayName: searchQuery.value ?? undefined
+        } as any)
+    );
     const {
       data: fetchObjectsData,
       isFetching: isLoadingObjects,
@@ -174,17 +178,31 @@ export default defineComponent({
     });
 
     const onSearchQueryInput = (newValue: string) => {
+      // We have to early exit if the value is undefined or null, as for some reason it can be set to one of those values if the objects get fetched, resulting in an infinite fetch
+      if (!newValue) {
+        return;
+      }
       searchQuery.value = newValue;
       refetch();
     };
 
-    const moreItemsAvailable = computed(() => (fetchObjectsData.value?.pageCount || 0) > 0);
+    const onClearClicked = () => {
+      searchQuery.value = '';
+      internalValue.value = undefined;
+      refetch();
+    };
 
-    const fetchObjectQueryParameters = computed(() => ({
-      objectType: props.objectType,
-      id: internalValue.value || '' // to avoid typecasting in the fetch hook. Shouldn't get executed if value is not set. (See fetchObjectQueryEnabled)
-    }));
-    const { data: fetchObjectData, isFetching: isLoadingObject, isError } = useFetchObject(fetchObjectQueryParameters, { enabled: computed(() => !!unref(internalValue)) });
+    const moreItemsAvailable = computed(() => (fetchObjectsData.value?.pageCount || 0) > 1);
+
+    const fetchObjectQueryParameters = computed(
+      () =>
+        ({
+          endpoint: endpoints.value?.[props.objectType],
+          id: internalValue.value
+        } as any)
+    );
+    const fetchObjectQueryEnabled = computed(() => !!unref(internalValue) && !!endpoints.value?.[props.objectType]);
+    const { data: fetchObjectData, isFetching: isLoadingObject, isError } = useFetchObject(fetchObjectQueryParameters, { enabled: fetchObjectQueryEnabled });
 
     watch(
       () => isError.value,
@@ -197,7 +215,10 @@ export default defineComponent({
 
     const isLoading = computed(() => isLoadingObjects.value || isLoadingObject.value);
 
-    const items = computed<IVeoEntity[]>(() => [...(fetchObjectsData.value?.items || []), ...(fetchObjectData.value ? [fetchObjectData.value] : [])]);
+    const items = computed<IVeoEntity[]>(() => [
+      ...(fetchObjectsData.value?.items || []),
+      ...(fetchObjectData.value && !fetchObjectsData.value?.items?.find((item) => item.id === fetchObjectData.value.id) ? [fetchObjectData.value] : [])
+    ]);
     const displayedItems = computed(() => (props.hiddenValues.length ? items.value.filter((item) => !props.hiddenValues.includes(item.id)) : items.value));
 
     // Label stuff
@@ -222,6 +243,7 @@ export default defineComponent({
 
     return {
       displayedItems,
+      fetchObjectsData,
       localLabel,
       internalValue,
       isLoading,
@@ -232,6 +254,7 @@ export default defineComponent({
       onSearchQueryInput,
       searchQuery,
       mdiOpenInNew,
+      onClearClicked,
       openItem,
 
       t

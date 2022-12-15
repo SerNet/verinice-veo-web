@@ -22,67 +22,28 @@
     sticky-footer
   >
     <template #default>
-      <VeoFilterDialog
-        v-model="filterDialogVisible"
-        :domain="domainId"
-        :filter="filter"
-        object-type-required
-        @update:filter="updateRouteQuery"
-      />
       <VeoCreateObjectDialog
         v-if="objectType"
         v-model="createDialogVisible"
         :domain-id="domainId"
         :object-type="objectType"
         :sub-type="subType"
-        @success="refetchObjects"
+        @success="refetch"
       />
       <VeoDeleteEntityDialog
         :value="!!itemDelete"
         :item="itemDelete"
         @input="onCloseDeleteDialog"
-        @success="refetchObjects(); onCloseDeleteDialog(false)"
+        @success="refetch(); onCloseDeleteDialog(false)"
         @error="showError('delete', itemDelete, $event)"
       />
-      <v-row no-gutters>
-        <v-col
-          cols="auto"
-          class="d-flex align-center"
-        >
-          <v-btn
-            v-cy-name="'filter-button'"
-            class="mr-2"
-            rounded
-            primary
-            color="white"
-            depressed
-            small
-            style="outline: 1px solid black;"
-            data-component-name="object-overview-filter"
-            @click="filterDialogVisible = true"
-          >
-            <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter').toString()) }}
-          </v-btn>
-        </v-col>
-        <v-col
-          cols="auto"
-          class="grow"
-        >
-          <v-chip-group
-            v-cy-name="'chips'"
-            data-component-name="object-overview-active-filters"
-          >
-            <VeoObjectChip
-              v-for="k in activeFilterKeys"
-              :key="k"
-              :label="formatLabel(k)"
-              :value="formatValue(k, filter[k])"
-              :close="k!='objectType'"
-              @click:close="clearFilter(k)"
-            />
-          </v-chip-group>
-        </v-col>
-      </v-row>
+      <VeoObjectFilterBar
+        ref="filterBar"
+        :domain-id="domainId"
+        :filter="filter"
+        :required-fields="['objectType']"
+        @update:filter="updateRouteQuery"
+      />
       <VeoCard v-if="objectType">
         <VeoObjectTable
           :items="items"
@@ -120,7 +81,7 @@
         <v-btn
           color="primary"
           text
-          @click="filterDialogVisible = true"
+          @click="onOpenFilterDialog"
         >
           {{ t('filterObjects') }}
         </v-btn>
@@ -135,7 +96,6 @@
           #activator="{ on }"
         >
           <v-btn
-            v-cy-name="'create-button'"
             color="primary"
             depressed
             :disabled="ability.cannot('manage', 'objects')"
@@ -161,23 +121,23 @@
 </template>
 
 <script lang="ts">
-import { mdiContentCopy, mdiFilter, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
+import { mdiContentCopy, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
-import { computed, defineComponent, h, useContext, useRoute, useRouter, ref, reactive, watch, onUnmounted } from '@nuxtjs/composition-api';
-import { upperFirst } from 'lodash';
+import { computed, defineComponent, h, useRoute, useRouter, ref, reactive, watch, onUnmounted } from '@nuxtjs/composition-api';
+import { omit, upperFirst } from 'lodash';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { useCloneObject } from '~/composables/VeoObjectUtilities';
 import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
-import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchTranslations } from '~/composables/api/translations';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
 
@@ -185,15 +145,15 @@ export default defineComponent({
   name: 'VeoObjectsOverviewPage',
   setup() {
     const { t, locale } = useI18n();
-    const { $api } = useContext();
     const { tablePageSize } = useVeoUser();
     const route = useRoute();
     const router = useRouter();
     const { ability } = useVeoPermissions();
 
     const { displayErrorMessage } = useVeoAlerts();
-    const { cloneObject } = useVeoObjectUtilities();
+    const { clone } = useCloneObject();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
+    const { data: endpoints } = useFetchSchemas();
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations, isFetching: translationsLoading } = useFetchTranslations(fetchTranslationsQueryParameters);
@@ -201,7 +161,12 @@ export default defineComponent({
     const itemDelete = ref<IVeoEntity>();
 
     const createDialogVisible = ref(false);
-    const filterDialogVisible = ref(false);
+
+    // Ref to filter bar to programmatically open filter dialog from outside
+    const filterBar = ref();
+    const onOpenFilterDialog = () => {
+      filterBar.value.filterDialogVisible = true;
+    };
 
     // accepted filter keys (others wont be respected when specified in URL query parameters)
     const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'] as const;
@@ -219,9 +184,6 @@ export default defineComponent({
       ) as Record<FilterKey, string | undefined>;
     });
 
-    // filters that have a value (and will be displayed as chips)
-    const activeFilterKeys = computed(() => filterKeys.filter((k) => filter.value[k] !== undefined));
-
     // current object type and sub type
     const objectType = computed(() => filter.value.objectType);
     const subType = computed(() => filter.value.subType);
@@ -233,18 +195,19 @@ export default defineComponent({
     const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
     const resetQueryOptions = () => {
       Object.assign(queryParameters, { page: 1, sortBy: 'name', sortDesc: false });
-      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
+    const endpoint = computed(() => endpoints.value?.[filter.value.objectType || '']);
     const combinedQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
       sortBy: queryParameters.sortBy,
       sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
       page: queryParameters.page,
       unit: separateUUIDParam(route.value.params.unit).id,
-      ...filter.value
+      ...omit(filter.value, 'objectType'),
+      endpoint: endpoint.value
     }));
-    const queryEnabled = computed(() => !!filter.value.objectType);
+    const queryEnabled = computed(() => !!objectType.value && !!endpoint.value);
 
     const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true, placeholderData: [] });
 
@@ -259,14 +222,12 @@ export default defineComponent({
     // refetch entities on page or sort changes (in VeoObjectTable)
     const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
       Object.assign(queryParameters, { page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
-      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
     // Additional breadcrumbs based on object type and sub type
     const objectTypeKey = 'object-overview-object-type';
-    const endpoints = ref<IVeoSchemaEndpoint[]>([]);
 
-    const onObjectTypeChanged = async (newObjectType?: string) => {
+    const onObjectTypeChanged = (newObjectType?: string) => {
       if (customBreadcrumbExists(objectTypeKey)) {
         removeCustomBreadcrumb(objectTypeKey);
       }
@@ -276,13 +237,9 @@ export default defineComponent({
         return;
       }
 
-      if (!endpoints.value.length) {
-        endpoints.value = await $api.schema.fetchAll();
-      }
-
       addCustomBreadcrumb({
         key: objectTypeKey,
-        text: translations.value?.lang[locale.value]?.[getSchemaEndpoint(endpoints.value, newObjectType) || ''],
+        text: translations.value?.lang[locale.value]?.[endpoints.value?.[newObjectType] || newObjectType],
         to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${newObjectType}`,
         param: objectTypeKey,
         index: 0,
@@ -290,6 +247,16 @@ export default defineComponent({
       });
     };
     watch(() => objectType.value, onObjectTypeChanged, { immediate: true });
+    watch(
+      () => translations.value,
+      () => onObjectTypeChanged(objectType.value),
+      { deep: true }
+    );
+    watch(
+      () => endpoints.value,
+      () => onObjectTypeChanged(objectType.value),
+      { deep: true }
+    );
 
     const subTypeKey = 'object-overview-sub-type';
 
@@ -315,6 +282,11 @@ export default defineComponent({
       });
     };
     watch(() => subType.value, onSubTypeChanged, { immediate: true });
+    watch(
+      () => formSchemas.value,
+      () => onSubTypeChanged(subType.value),
+      { deep: true }
+    );
 
     onUnmounted(() => {
       removeCustomBreadcrumb(objectTypeKey);
@@ -331,12 +303,6 @@ export default defineComponent({
       await router.push({ ...route.value, name: route.value.name!, query });
     };
 
-    // Remove a filter by removing it from query params
-    const clearFilter = (key: FilterKey) => {
-      updateRouteQuery({ [key]: undefined }, false);
-    };
-
-    const formatLabel = (label: string) => upperFirst(t(`objectlist.${label}`).toString());
     const formatValue = (label: FilterKey, value?: string) => {
       switch (label) {
         // Uppercase object types
@@ -352,7 +318,7 @@ export default defineComponent({
       }
     };
 
-    const createObjectLabel = computed(() => (subType.value ? formatValue('subType', subType.value) : translations.value?.lang?.[locale.value]?.[objectType.value || '']));
+    const createObjectLabel = computed(() => (subType.value ? formatValue('subType', subType.value) : formatValue('objectType', objectType.value)));
 
     const onCloseDeleteDialog = (visible: boolean) => {
       if (visible === false) {
@@ -384,8 +350,7 @@ export default defineComponent({
         icon: mdiContentCopy,
         async action(item: IVeoEntity) {
           try {
-            await cloneObject(item);
-            refetch();
+            await clone(item);
           } catch (e: any) {
             showError('clone', item, e);
           }
@@ -419,34 +384,26 @@ export default defineComponent({
         : []
     );
 
-    const refetchObjects = () => {
-      refetch();
-    };
-
     return {
       t,
       ability,
       actions,
       additionalHeaders,
       domainId,
-      activeFilterKeys,
-      clearFilter,
       createObjectLabel,
       filter,
       createDialogVisible,
-      filterDialogVisible,
-      formatLabel,
-      formatValue,
+      filterBar,
       isLoading,
       itemDelete,
       items,
-      mdiFilter,
       mdiPlus,
       objectType,
       openItem,
       onCloseDeleteDialog,
+      onOpenFilterDialog,
       onPageChange,
-      refetchObjects,
+      refetch,
       showError,
       subType,
       updateRouteQuery,
@@ -461,7 +418,6 @@ export default defineComponent({
 {
   "en": {
     "objectOverview": "object overview",
-    "filter": "filter",
     "filterObjects": "filter objects",
     "createObject": "create {0}",
     "clone": "duplicated",
@@ -475,7 +431,6 @@ export default defineComponent({
   },
   "de": {
     "objectOverview": "Objektübersicht",
-    "filter": "filter",
     "filterObjects": "Objekte filtern",
     "createObject": "{0} erstellen",
     "clone": "dupliziert",

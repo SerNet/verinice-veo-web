@@ -28,19 +28,8 @@ export interface IVeoEntitiesMetaInfo {
   [key: string]: IVeoEntityMetaInfo;
 }
 
-export interface IVeoSchemaEndpoint {
-  schemaName: string;
-  endpoint: string;
-}
-
-let endpoints: IVeoSchemaEndpoint[];
-
-export function getSchemaEndpoint(endpoints: IVeoSchemaEndpoint[], schemaName: string): string | undefined {
-  return endpoints.find((endpoint) => endpoint.schemaName === schemaName)?.endpoint;
-}
-
-export function getSchemaName(endpoints: IVeoSchemaEndpoint[], _endpoint: string): string | undefined {
-  return endpoints.find((endpoint) => endpoint.endpoint === _endpoint)?.schemaName;
+export interface IVeoSchemaEndpoints {
+  [schemaName: string]: string;
 }
 
 export default function (api: Client) {
@@ -51,21 +40,12 @@ export default function (api: Client) {
      * NOT PAGINATED
      *
      */
-    async fetchAll(ignoreMissingEndpoints: boolean = false, query?: Record<string, string>): Promise<IVeoSchemaEndpoint[]> {
-      if (!endpoints) {
-        const schemas: IVeoEntitiesMetaInfo = await api.req('/api/types', {
-          query
-        });
+    async fetchAll(query?: Record<string, string>): Promise<IVeoSchemaEndpoints> {
+      const schemas: IVeoEntitiesMetaInfo = await api.req('/api/types', {
+        query
+      });
 
-        const types = Object.keys(schemas);
-
-        endpoints = types.map((type: string) => ({
-          endpoint: schemas[type].collectionUri.split('/')[1].split('{')[0],
-          schemaName: type
-        }));
-      }
-
-      return endpoints.filter((entry) => ignoreMissingEndpoints || !!entry.endpoint);
+      return Object.fromEntries(Object.entries(schemas).map(([key, value]) => [key, /([a-z]*){(.+)$/.exec(value.collectionUri)?.[1] || value.collectionUri]));
     },
 
     /**

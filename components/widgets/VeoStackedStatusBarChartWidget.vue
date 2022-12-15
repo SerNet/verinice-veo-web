@@ -23,10 +23,8 @@
         :key="index"
         class="align-center"
         dense
-        :data-cy="$utils.prefixCyData($options, 'subtype-row', $route)"
       >
         <v-col
-          v-cy-name="'subtype-label'"
           cols="12"
           sm="12"
           md="5"
@@ -43,7 +41,7 @@
         </v-col>
         <v-col>
           <v-skeleton-loader
-            v-if="$fetchState.pending"
+            v-if="schemasIsLoading"
             width="100%"
             type="image"
             height="25px"
@@ -76,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, useRoute } from '@nuxtjs/composition-api';
 import { BarChart } from 'vue-chart-3';
 import { Chart, BarController, Tooltip, CategoryScale, BarElement, LinearScale } from 'chart.js';
 import { upperFirst } from 'lodash';
@@ -85,8 +83,9 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { IVeoDomainStatusCount } from '~/plugins/api/domain';
 import { CHART_COLORS, IBaseObject } from '~/lib/utils';
-import { IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
 import { useFetchForms } from '~/composables/api/forms';
+import { useFetchTranslations } from '~/composables/api/translations';
+import { useFetchSchema } from '~/composables/api/schemas';
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
@@ -124,18 +123,14 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { $api, i18n } = useContext();
     const { locale, t } = useI18n();
     const route = useRoute();
 
     const barChartRef = ref([]);
 
-    const objectSchema = ref<IVeoObjectSchema | undefined>();
-    const { fetch: fetchObjectSchema } = useFetch(async () => {
-      if (props.domainId) {
-        objectSchema.value = await $api.schema.fetch(props.objectType, [props.domainId]);
-      }
-    });
+    const fetchSchemaQueryParameters = computed(() => ({ domainIds: [props.domainId], type: props.objectType }));
+    const fetchSchemaQueryEnabled = computed(() => !!props.domainId);
+    const { data: objectSchema, isFetching: schemasIsLoading } = useFetchSchema(fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
 
     const sortedStatusBySubType = computed<IBaseObject>(() =>
       (objectSchema.value?.properties?.domains?.properties?.[props.domainId]?.allOf || []).reduce((previousValue, currentValue) => {
@@ -144,10 +139,8 @@ export default defineComponent({
       }, Object.assign({}))
     );
 
-    const translations = ref<IVeoTranslations>();
-    useFetch(async () => {
-      translations.value = await $api.translation.fetch(i18n.locales.map((locale: any) => locale.code));
-    });
+    const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(translationQueryParameters);
 
     const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
     const formsQueryEnabled = computed(() => !!props.domainId);
@@ -159,13 +152,6 @@ export default defineComponent({
           (formSchemas.value || []).findIndex((formSchema) => formSchema.subType === subTypeA) -
           (formSchemas.value || []).findIndex((formSchema) => formSchema.subType === subTypeB)
       )
-    );
-
-    watch(
-      () => props.domainId,
-      () => {
-        fetchObjectSchema();
-      }
     );
 
     const options = computed(() =>
@@ -247,6 +233,7 @@ export default defineComponent({
       ChartDataLabels,
       objectOveriewLink,
       options,
+      schemasIsLoading,
 
       upperFirst,
       t

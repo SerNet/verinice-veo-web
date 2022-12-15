@@ -1028,6 +1028,7 @@ SOFTWARE.
 The following NPM packages may be included in this product:
 
  - @jridgewell/resolve-uri@3.1.0
+ - @jridgewell/resolve-uri@3.1.0
  - @jridgewell/source-map@0.3.2
 
 These packages each contain the following license and notice below:

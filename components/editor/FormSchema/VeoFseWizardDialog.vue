@@ -81,16 +81,17 @@
 
 <script lang="ts">
 import { nextTick } from 'process';
-import { defineComponent, useRoute, useRouter, ref, watch, Ref, useContext, set, computed, useAsync } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute, useRouter, ref, watch, Ref, useContext, set, computed } from '@nuxtjs/composition-api';
 import { Dictionary, isEqual, merge, pick } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { JsonPointer } from 'json-ptr';
-import { LocaleObject } from '@nuxtjs/i18n';
+import { LocaleObject } from '@nuxtjs/i18n/types';
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
 import { IVeoFormSchema, IVeoObjectSchema, IVeoObjectSchemaTranslations, IVeoTranslations } from '~/types/VeoTypes';
 import { useFetchForm } from '~/composables/api/forms';
 import { useFetchSchema } from '~/composables/api/schemas';
+import { useFetchTranslations } from '~/composables/api/translations';
 
 enum WIZARD_STATES {
   START,
@@ -113,7 +114,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const { t, locale } = useI18n();
-    const { $api, i18n } = useContext();
+    const { i18n } = useContext();
 
     // Display stuff
     const state = ref(WIZARD_STATES.START);
@@ -237,7 +238,8 @@ export default defineComponent({
     );
 
     // translation stuff
-    const translations = useAsync(() => $api.translation.fetch((i18n.locales as LocaleObject[]).map((locale) => locale.code)));
+    const translationQueryParameters = computed(() => ({ languages: (i18n.locales as LocaleObject[]).map((locale) => locale.code) }));
+    const { data: translations } = useFetchTranslations(translationQueryParameters);
 
     // create stuff
     const createFormValid = ref(true);

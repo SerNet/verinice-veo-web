@@ -15,60 +15,72 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { unref, useContext, watch } from '@nuxtjs/composition-api';
+import { unref, useContext } from '@nuxtjs/composition-api';
 import { useMutation as vueQueryUseMutation } from '@tanstack/vue-query';
 import { UseMutationOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+import { omit } from 'lodash';
 
-import { transformQueryParameters } from './query';
+import { IVeoQueryDefinition, IVeoQueryParameters } from './query';
+import { useRequest } from './request';
 import { IBaseObject } from '~/lib/utils';
 
 // Type for less typing in composables
-export type MutationOptions<T = void> = Omit<UseMutationOptions<T, unknown, void, unknown>, 'queryFn'>;
+export type MutationOptions<T = unknown> = Omit<UseMutationOptions<T, unknown, void, unknown>, 'queryFn'>;
+
+export interface IVeoMutationDefinition extends IVeoQueryDefinition {
+  method?: 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
+}
+
+export interface IVeoMutationParameters<TParams = IBaseObject, TQuery = IBaseObject> extends IVeoQueryParameters<TParams, TQuery> {
+  body?: any;
+  json?: any;
+}
+
+export interface IVeoMutationTransformationMap {
+  [operation: string]: (mutationParameters: any) => IVeoMutationParameters;
+}
 
 /**
  * Wrapper for vue-query's useMutation to apply some custom logic to make it work more seamless with the legacy api plugin.
  *
  * @param mutationIdentifier Identifier of the mutation used for debugging.
- * @param mutationFunction Function to call to mutate (usually a function from the api plugin).
- * @param mutationParameters Parameters to pass to the mutation function.
- * @param mutationOptions Options modifiying mutation behaviour.
+ * @param mutationDefinition Object defining api endpoint, HTTP method and return type
+ * @param mutationParameterTransformationFn Function that transforms an object passed from the application (developer friendly) to an object that gets used by the api to generate the url
+ * @param mutationOptions Options modifying mutation behaviour.
  * @returns Mutation object.
  */
-export const useMutation = <T = void>(
+export const useMutation = <TVariable, TResult>(
   mutationIdentifier: string,
-  mutationFunction: CallableFunction,
-  mutationParameters: MaybeRef<IBaseObject>,
-  mutationOptions?: MutationOptions<T>
+  mutationDefinition: IVeoMutationDefinition,
+  mutationParameterTransformationFn: (parameters: TVariable) => IVeoMutationParameters,
+  mutationOptions?: MutationOptions
 ) => {
   const { $config } = useContext();
+  const { request } = useRequest();
 
-  // Actual mutation getting executed
-  const result = vueQueryUseMutation<T>(
-    (mutationParameters: any) => mutationFunction(...transformQueryParameters(mutationIdentifier, mutationFunction.name, mutationParameters)),
-    mutationOptions
-  );
-
-  // Debugging stuff
-  if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(mutationIdentifier))) {
-    watch(
-      () => result.isLoading?.value,
-      (newValue) => {
-        if (newValue) {
-          // eslint-disable-next-line no-console
-          console.log(
-            `[vueQuery] Mutation "${mutationIdentifier}" is running with parameters "${JSON.stringify(mutationParameters)}". Fetching...\nOptions: "${JSON.stringify(
-              mutationOptions
-            )}"`
-          );
-        }
-      }
-    );
-  }
+  // Actual mutation getting execute
+  // @ts-ignore Some weird typing problems. However everything works
+  const result = vueQueryUseMutation<TResult, unknown, IMutationParameters>({
+    mutationFn: (mutationParameters: IVeoMutationParameters) => request(mutationDefinition.url, { ...mutationParameters, ...omit(mutationDefinition, 'url') }),
+    ...mutationOptions
+  });
 
   return {
     ...result,
-    // @ts-ignore For some reason the type say mutate doesn't take parameters, even though it is documented that way and does.
-    mutateAsync: () => result.mutateAsync(unref(mutationParameters))
+    mutateAsync: (mutationParameters: MaybeRef<any>) => {
+      const transformedParameters = mutationParameterTransformationFn(unref(mutationParameters));
+      // Debugging stuff
+      if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(mutationIdentifier))) {
+        // eslint-disable-next-line no-console
+        console.log(
+          `[vueQuery] Mutation "${mutationIdentifier}" is running with parameters "${JSON.stringify(mutationParameters)}". Fetching...\nOptions: "${JSON.stringify(
+            mutationOptions
+          )}"`
+        );
+      }
+
+      return result.mutateAsync(transformedParameters);
+    }
   };
 };

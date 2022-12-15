@@ -76,7 +76,6 @@
         />
         <div v-if="forceOwnSchema">
           <VeoEditorFileUpload
-            v-cy-name="'objectschema-input'"
             :input-label="t('objectSchemaUploadLabel')"
             :submit-button-text="t('importObjectSchema')"
             @schema-uploaded="$emit('update:object-schema', $event)"
@@ -88,11 +87,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useAsync, useContext, computed, ComputedRef, PropOptions } from '@nuxtjs/composition-api';
+import { defineComponent, computed, ComputedRef, PropOptions } from '@nuxtjs/composition-api';
 import { isObject } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { useFetchForms } from '~/composables/api/forms';
+import { useFetchSchemas } from '~/composables/api/schemas';
 import { IVeoFormSchema, VeoAlertType } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -125,7 +125,6 @@ export default defineComponent({
   },
   setup(props) {
     const { t, locale } = useI18n();
-    const { $api } = useContext();
 
     // display stuff
     function requiredRule(value: string) {
@@ -133,8 +132,9 @@ export default defineComponent({
     }
 
     // formschema stuff
+    const queryParameters = computed(() => ({ domainId: props.domainId }));
     const queryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms({ domainId: props.domainId }, { enabled: queryEnabled });
+    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled });
 
     const formSchemaOptions: ComputedRef<{ text: string; value: string }[]> = computed(() => [
       {
@@ -145,11 +145,11 @@ export default defineComponent({
     ]);
 
     // objectschema stuff
-    const objectTypes = useAsync(() => $api.schema.fetchAll());
+    const { data: objectTypes } = useFetchSchemas();
 
     // If the object schema belonging to the form schema doesn't exist, the user has to upload it themself
     const objectTypeMissing = computed(
-      () => props.formSchema && (!objectTypes.value?.length || !objectTypes.value.some((type) => type.schemaName === (props.formSchema?.modelType as string)))
+      () => props.formSchema && (!objectTypes.value?.length || !Object.keys(objectTypes.value || {}).some((schemaName) => schemaName === (props.formSchema?.modelType as string)))
     );
 
     return {

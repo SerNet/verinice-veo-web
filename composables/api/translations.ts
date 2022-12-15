@@ -15,26 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useContext } from '@nuxtjs/composition-api';
-import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+import { Ref } from '@nuxtjs/composition-api';
 
-import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
+import { IVeoQueryTransformationMap, QueryOptions, STALE_TIME, useQuery } from './utils/query';
 import { IVeoTranslations } from '~/types/VeoTypes';
 
 export interface IVeoFetchTranslationsParameters {
   languages: string[];
 }
 
-export const schemasQueryKeys = {
-  translations: (queryParameters: IVeoFetchTranslationsParameters) => ['translations', queryParameters.languages] as const
+export const translationsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
+  fetch: (queryParameters: IVeoFetchTranslationsParameters) => ({ query: { languages: queryParameters.languages.toString() } })
 };
 
-export const useFetchTranslations = (queryParameters: MaybeRef<IVeoFetchTranslationsParameters>, queryOptions?: QueryOptions) => {
-  const { $api } = useContext();
-
-  return useQuery<IVeoTranslations>(schemasQueryKeys.translations, $api.translation.fetch, queryParameters, {
+export const useFetchTranslations = (queryParameters: Ref<IVeoFetchTranslationsParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchTranslationsParameters, IVeoTranslations>('translations', { url: '/api/translations' }, queryParameters, translationsQueryParameterTransformationMap.fetch, {
     ...queryOptions,
     staleTime: STALE_TIME.LONG,
     placeholderData: { lang: {} }
   });
-};

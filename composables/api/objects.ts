@@ -15,15 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useContext } from '@nuxtjs/composition-api';
-import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+import { computed, Ref } from '@nuxtjs/composition-api';
+import { useQueryClient } from '@tanstack/vue-query';
+import { max, omit } from 'lodash';
 
-import { QueryOptions, useQuery } from './utils/query';
-import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { useVeoUser } from '../VeoUser';
+import { IVeoQueryTransformationMap, QueryOptions, useQuery } from './utils/query';
+import { IVeoMutationParameters, IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
+import { VeoApiReponseType } from './utils/request';
+import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from '~/types/VeoTypes';
 
-export interface IVeoFetchObjectsParameters {
+export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
   unit: string;
-  objectType: string;
+  endpoint: string;
   page?: number;
   displayName?: string;
   subType?: string;
@@ -31,13 +35,120 @@ export interface IVeoFetchObjectsParameters {
 }
 
 export interface IVeoFetchObjectParameters {
-  objectType: string;
+  endpoint: string;
   id: string;
 }
 
-export const objectsQueryKeys = {
-  objects: (queryParameters: IVeoFetchObjectsParameters) => ['objects', queryParameters.objectType, queryParameters.subType, { queryParameters }] as const,
-  object: (queryParameters: IVeoFetchObjectParameters) => ['object', queryParameters.objectType, queryParameters.id]
+export interface IVeoFetchParentObjectsParameters extends IVeoPaginationOptions {
+  parentEndpoint: string;
+  childObjectId: string;
+  unitId: string;
+}
+
+export interface IVeoFetchChildObjectsParameters {
+  endpoint: string;
+  id: string;
+}
+
+export interface IVeoFetchChildScopesParameters {
+  id: string;
+}
+
+export interface IVeoFetchRisksParameters {
+  endpoint: string;
+  id: string;
+}
+
+export interface IVeoCreateObjectParameters {
+  endpoint: string;
+  object: IVeoEntity;
+  parentScopes?: string[];
+}
+
+export interface IVeoUpdateObjectParameters {
+  endpoint: string;
+  object: IVeoEntity;
+}
+
+export interface IVeoDeleteObjectParameters {
+  endpoint: string;
+  id: string;
+}
+
+export interface IVeoCreateRiskParameters {
+  endpoint: string;
+  objectId: string;
+  risk: IVeoRisk;
+}
+
+export interface IVeoDeleteRiskParameters {
+  endpoint: string;
+  objectId: string;
+  scenarioId: string;
+}
+
+export const objectsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
+  fetchAll: (queryParameters: IVeoFetchObjectsParameters) => ({ params: { endpoint: queryParameters.endpoint }, query: omit(queryParameters, 'endpoint') }),
+  fetch: (queryParameters: IVeoFetchObjectParameters) => ({ params: queryParameters }),
+  fetchChildObjects: (queryParameters: IVeoFetchChildObjectsParameters) => ({ params: queryParameters }),
+  fetchChildScopes: (queryParameters: IVeoFetchChildScopesParameters) => ({ params: queryParameters }),
+  fetchRisks: (queryParameters: IVeoFetchRisksParameters) => ({ params: queryParameters })
+};
+
+export const objectsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
+  create: (mutationParameters: IVeoCreateObjectParameters) => {
+    const _object = mutationParameters.object;
+    // Remove properties of the object only used in the frontend
+    if (_object.type === 'scope') {
+      // @ts-ignore
+      delete _object.parts;
+    } else {
+      // @ts-ignore
+      delete _object.members;
+    }
+    return { params: { endpoint: mutationParameters.endpoint }, query: { scopes: mutationParameters.parentScopes?.join(',') }, json: _object };
+  },
+  update: (mutationParameters: IVeoUpdateObjectParameters) => {
+    const _object = mutationParameters.object;
+    // Remove properties of the object only used in the frontend
+    if (_object.type === 'scope') {
+      // @ts-ignore
+      delete _object.parts;
+    } else {
+      // @ts-ignore
+      delete _object.members;
+    }
+    // Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
+    // @ts-ignore
+    delete _object.createdAt;
+    // @ts-ignore
+    delete _object.updatedAt;
+    // @ts-ignore
+    delete _object.displayName;
+    return { params: { endpoint: mutationParameters.endpoint, id: mutationParameters.object.id }, json: _object };
+  },
+  delete: (mutationParameters: IVeoDeleteObjectParameters) => ({ params: mutationParameters }),
+  createRisk: (mutationParameters: IVeoCreateRiskParameters) => ({
+    params: { endpoint: mutationParameters.endpoint, objectId: mutationParameters.objectId },
+    json: mutationParameters.risk
+  }),
+  deleteRisk: (mutationParameters: IVeoDeleteRiskParameters) => ({ params: mutationParameters })
+};
+
+export const formatObject = (object: IVeoEntity) => {
+  /*
+   * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+   * members. However we combine both entity types as they get used more or less the same way
+   */
+  if (!object.parts) {
+    object.parts = [];
+  }
+  if (!object.members) {
+    object.members = [];
+  }
+  // The frontend sets the display name as the backend only sets it for links. Gets used for example in the breadcrumbs.
+  object.displayName = `${object.designator} ${object.abbreviation || ''} ${object.name}`;
+  return object;
 };
 
 /**
@@ -47,12 +158,32 @@ export const objectsQueryKeys = {
  * @param queryOptions Options modifying query behaviour.
  * @returns Returns all objects matching the parameter criteria.
  */
-export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParameters>, queryOptions?: QueryOptions) => {
-  const { $api } = useContext();
+export const useFetchObjects = (queryParameters: Ref<IVeoFetchObjectsParameters>, queryOptions?: QueryOptions) => {
+  const { tablePageSize } = useVeoUser();
 
-  return useQuery<IVeoPaginatedResponse<IVeoEntity[]>>(objectsQueryKeys.objects, $api.entity.fetchAll, queryParameters, queryOptions);
+  const modifiedQueryParameters = computed(() => ({
+    ...queryParameters.value,
+    // Set default page size if not explicitly stated. Set page size to 1000 if the user selects "All" in the ui (Vuetify returns -1 in that case)
+    size: queryParameters.value.size === undefined ? tablePageSize.value : queryParameters.value.size === -1 ? 1000 : queryParameters.value.size,
+    page: queryParameters.value.page ? max([queryParameters.value.page - 1, 0]) : 0
+  }));
+  return useQuery<IVeoFetchObjectsParameters, IVeoPaginatedResponse<IVeoEntity[]>>(
+    'objects',
+    {
+      url: '/api/:endpoint',
+      onDataFetched: (result) => {
+        result.items.map((item) => formatObject(item));
+
+        // +1, because the first page for the api is 0, however vuetify expects it to be 1
+        result.page = result.page + 1;
+        return result;
+      }
+    },
+    modifiedQueryParameters,
+    objectsQueryParameterTransformationMap.fetchAll,
+    queryOptions
+  );
 };
-
 /**
  * Loads a single object, including object details
  *
@@ -60,8 +191,211 @@ export const useFetchObjects = (queryParameters: MaybeRef<IVeoFetchObjectsParame
  * @param queryOptions Options modifying query behaviour.
  * @returns Returns the object.
  */
-export const useFetchObject = (queryParameters: MaybeRef<IVeoFetchObjectParameters>, queryOptions?: QueryOptions) => {
-  const { $api } = useContext();
+export const useFetchObject = (queryParameters: Ref<IVeoFetchObjectParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchObjectParameters, IVeoEntity>(
+    'object',
+    {
+      url: '/api/:endpoint/:id',
+      onDataFetched: (result) => formatObject(result)
+    },
+    queryParameters,
+    objectsQueryParameterTransformationMap.fetch,
+    queryOptions
+  );
 
-  return useQuery<IVeoEntity>(objectsQueryKeys.object, $api.entity.fetch, queryParameters, queryOptions);
+export const useFetchParentObjects = (queryParameters: Ref<IVeoFetchParentObjectsParameters>, queryOptions?: QueryOptions) => {
+  const transformedQueryParameters = computed(() => ({
+    ...omit(queryParameters.value, 'unitId', 'parentEndpoint', 'childObjectId'),
+    unit: queryParameters.value.unitId,
+    endpoint: queryParameters.value.parentEndpoint,
+    childElementIds: queryParameters.value.childObjectId,
+    size: -1
+  }));
+  return useFetchObjects(transformedQueryParameters, queryOptions);
+};
+
+export const useFetchChildObjects = (queryParameters: Ref<IVeoFetchChildObjectsParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchChildObjectsParameters, IVeoEntity[]>(
+    'childObjects',
+    {
+      url: '/api/:endpoint/:id/parts',
+      onDataFetched: (result) => result.map((item) => formatObject(item))
+    },
+    queryParameters,
+    objectsQueryParameterTransformationMap.fetchChildObjects,
+    queryOptions
+  );
+
+export const useFetchChildScopes = (queryParameters: Ref<IVeoFetchChildScopesParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchChildScopesParameters, IVeoEntity[]>(
+    'childScopes',
+    {
+      url: '/api/scopes/:id/members',
+      onDataFetched: (result) => result.map((item) => formatObject(item))
+    },
+    queryParameters,
+    objectsQueryParameterTransformationMap.fetchChildScopes,
+    queryOptions
+  );
+
+export const useFetchRisks = (queryParameters: Ref<IVeoFetchRisksParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchRisksParameters, IVeoRisk[]>('risks', { url: '/api/:endpoint/:id/risks' }, queryParameters, objectsQueryParameterTransformationMap.fetchRisks, queryOptions);
+
+export const useCreateObject = (mutationOptions?: MutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IVeoCreateObjectParameters, IVeoAPIMessage>(
+    'object',
+    {
+      url: '/api/:endpoint/',
+      method: 'POST'
+    },
+    objectsMutationParameterTransformationMap.create,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(['objects']);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
+      }
+    }
+  );
+};
+
+export const useUpdateObject = (mutationOptions?: MutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IVeoUpdateObjectParameters, IVeoEntity>(
+    'object',
+    {
+      url: '/api/:endpoint/:id',
+      method: 'PUT',
+      onDataFetched: (result) => {
+        if (!result.parts) {
+          result.parts = [];
+        }
+        if (!result.members) {
+          result.members = [];
+        }
+        result.displayName = `${result.designator} ${result.abbreviation || ''} ${result.name}`;
+        return result;
+      }
+    },
+    objectsMutationParameterTransformationMap.update,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(['objects']);
+        queryClient.invalidateQueries([
+          'object',
+          {
+            endpoint: (variables as unknown as IVeoMutationParameters).params?.endpoint,
+            id: (variables as unknown as IVeoMutationParameters).params?.id
+          }
+        ]);
+        queryClient.invalidateQueries([
+          'childObjects',
+          {
+            endpoint: (variables as unknown as IVeoMutationParameters).params?.endpoint,
+            id: (variables as unknown as IVeoMutationParameters).params?.id
+          }
+        ]);
+        queryClient.invalidateQueries([
+          'childScopes',
+          {
+            id: (variables as unknown as IVeoMutationParameters).params?.id
+          }
+        ]);
+        queryClient.invalidateQueries(['objects']); // Invalid all object lists, as the parent endpoint uses the same key (and we want an updated edit date in the list for this object)
+        setTimeout(() => {
+          queryClient.invalidateQueries(['versions']);
+        }, 5000); // Only invalidate after 5 seconds, as the history sevice isn't updated as sonn as the object is updated
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
+      }
+    }
+  );
+};
+
+export const useDeleteObject = (mutationOptions?: MutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IVeoDeleteObjectParameters, void>(
+    'object',
+    {
+      url: '/api/:endpoint/:id',
+      method: 'DELETE',
+      reponseType: VeoApiReponseType.VOID
+    },
+    objectsMutationParameterTransformationMap.delete,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(['objects']);
+        queryClient.invalidateQueries(['object', (variables as unknown as IVeoMutationParameters).params]);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
+      }
+    }
+  );
+};
+
+export const useCreateRisk = (mutationOptions?: MutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IVeoCreateRiskParameters, IVeoRisk>(
+    'risk',
+    {
+      url: '/api/:endpoint/:objectId/risks',
+      method: 'POST'
+    },
+    objectsMutationParameterTransformationMap.createRisk,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries([
+          'risks',
+          {
+            endpoint: (variables as unknown as IVeoMutationParameters).params?.endpoint,
+            id: (variables as unknown as IVeoMutationParameters).params?.objectId
+          }
+        ]);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
+      }
+    }
+  );
+};
+
+export const useDeleteRisk = (mutationOptions?: MutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IVeoDeleteRiskParameters, void>(
+    'risk',
+    {
+      url: '/api/:endpoint/:objectId/risks/:scenarioId',
+      method: 'DELETE',
+      reponseType: VeoApiReponseType.VOID
+    },
+    objectsMutationParameterTransformationMap.deleteRisk,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries([
+          'risks',
+          {
+            endpoint: (variables as unknown as IVeoMutationParameters).params?.endpoint,
+            id: (variables as unknown as IVeoMutationParameters).params?.objectId
+          }
+        ]);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
+      }
+    }
+  );
 };

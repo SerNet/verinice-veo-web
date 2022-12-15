@@ -86,7 +86,6 @@
           <div
             v-for="widget of row"
             :key="widget[0]"
-            v-cy-name="widget[0] !== 'my_latest_widget' ? 'status-bar-chart-widget' : ''"
             class="my-4"
           >
             <VeoMyLatestRevisionsWidget

@@ -94,7 +94,6 @@
     <template #dialog-options>
       <v-spacer />
       <v-btn
-        v-cy-name="'save-button'"
         text
         color="primary"
         :loading="savingRisk"
@@ -104,7 +103,6 @@
         {{ t('global.button.save') }}
       </v-btn>
       <v-btn
-        v-cy-name="'close-button'"
         text
         color="primary"
         :disabled="savingRisk"
@@ -123,9 +121,11 @@ import { useI18n } from 'nuxt-i18n-composable';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
-import { IVeoDomain, IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
-import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
+import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useFetchSchemas } from '~/composables/api/schemas';
+import { useFetchDomain } from '~/composables/api/domains';
 
 export interface IDirtyFields {
   [field: string]: boolean;
@@ -159,28 +159,30 @@ export default defineComponent({
     const route = useRoute();
     const { t } = useI18n();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
-    const { createLink, linkObject } = useVeoObjectUtilities();
+    const { link } = useLinkObject();
+    const { createLink } = useCreateLink();
     const { ability } = useVeoPermissions();
 
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     const formDisabled = computed(() => ability.value.cannot('manage', 'objects'));
 
+    const { data: endpoints } = useFetchSchemas();
+
     // Domain stuff, used for risk definitions
-    const domain = ref<IVeoDomain | undefined>();
-    const { fetch: fetchDomain } = useFetch(async () => {
-      domain.value = await $api.domain.fetch(props.domainId);
-      data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
-      originalData.value = cloneDeep(data.value);
-      nextTick(() => {
-        dirtyFields.value = {};
-      });
+    const data = ref<IVeoRisk | undefined>(undefined);
+    const originalData = ref<IVeoRisk | undefined>(undefined);
+
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
+    const { data: domain } = useFetchDomain(fetchDomainQueryParameters, {
+      onSuccess: () => {
+        data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
+        originalData.value = cloneDeep(data.value);
+        nextTick(() => {
+          dirtyFields.value = {};
+        });
+      }
     });
-    watch(
-      () => props.domainId,
-      () => fetchDomain(),
-      { immediate: true }
-    );
 
     watch(
       () => props.value,
@@ -194,8 +196,6 @@ export default defineComponent({
       }
     );
 
-    const data = ref<IVeoRisk | undefined>(undefined);
-    const originalData = ref<IVeoRisk | undefined>(undefined);
     const formIsValid = ref(true);
     const formModified = computed(() => !isEqual(data.value, originalData.value) || mitigationsModified.value);
 
@@ -211,7 +211,9 @@ export default defineComponent({
 
     const onRiskOwnerChanged = (newValue: IVeoLink) => {
       if (data.value) {
-        data.value.riskOwner = newValue;
+        // For some reason nuxt won't pick up the changes otherwise (probably fixed with nuxt 3)
+        data.value = { ...data.value, ...{ riskOwner: newValue } };
+        dirtyFields.value.riskOwner = true;
       }
     };
 
@@ -222,7 +224,7 @@ export default defineComponent({
     const risk = ref<IVeoRisk | undefined>(undefined);
     const { fetch: fetchRisk } = useFetch(async () => {
       if (props.scenarioId) {
-        risk.value = await $api.entity.fetchRisk(props.objectType, props.objectId, props.scenarioId);
+        risk.value = await $api.entity.fetchRisk('processes', props.objectId, props.scenarioId);
       } else {
         risk.value = undefined;
       }
@@ -247,18 +249,18 @@ export default defineComponent({
 
         try {
           if (!data.value.mitigation && mitigations.value.length) {
-            const newMitigationId = (await $api.entity.create('control', newMitigatingAction.value as any)).resourceId;
-            data.value.mitigation = await createLink({ type: 'control', id: newMitigationId });
+            const newMitigationId = (await $api.entity.create('controls', newMitigatingAction.value as any)).resourceId;
+            data.value.mitigation = createLink('controls', newMitigationId);
           }
 
           if (data.value.mitigation) {
-            await linkObject('child', { id: getEntityDetailsFromLink(data.value.mitigation).id, type: 'control' }, mitigations.value, true);
+            await link(await $api.entity.fetch('controls', getEntityDetailsFromLink(data.value.mitigation).id), mitigations.value, true);
           }
 
           if (props.scenarioId) {
-            await $api.entity.updateRisk(props.objectType, props.objectId, props.scenarioId, data.value);
+            await $api.entity.updateRisk(endpoints.value?.[props.objectType || ''] || '', props.objectId, props.scenarioId, data.value);
           } else {
-            await $api.entity.createRisk(props.objectType, props.objectId, data.value);
+            await $api.entity.createRisk(endpoints.value?.[props.objectType || ''] || '', props.objectId, data.value);
           }
           displaySuccessMessage(props.scenarioId ? upperFirst(t('riskUpdated').toString()) : upperFirst(t('riskCreated').toString()));
           fetchRisk();

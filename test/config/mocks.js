@@ -17,18 +17,15 @@
  */
 import { config } from '@vue/test-utils';
 
-import { prefixCyData } from '~/plugins/utils';
-
 config.mocks = {
-  $utils: {
-    /*
-     * NOTE!! This function will not work as when called in the browser (either npm run dev or cypress), at it has no access to $options
-     * or $route.
-     * This function will thus just return the string one passed to it, however we use it in the template to enable cypress e2e tests in the future
-     */
-    prefixCyData
-  },
-  $t: (t) => t
+  $t: (t) => t,
+  $nuxt: {
+    context: {
+      $config: {
+        accountsApiUrl: 'http://localhost:443/accounts'
+      }
+    }
+  }
 };
 
 // Mocks the intersection observer, however not as a jest module mock, as it usually resides in the global scope allowing us to mock it there

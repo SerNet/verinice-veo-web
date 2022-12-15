@@ -25,8 +25,10 @@
     :elevation="flat ? undefined : 2"
     dense
     class="veo-alert veo-border overflow-hidden"
+    :class="{ 'veo-pseudo-hover': dismissOnClick, 'cursor-pointer': dismissOnClick }"
     :icon="alertIcon"
     style="border-radius: 12px"
+    @click="onContentClick"
   >
     <v-row
       no-gutters
@@ -46,6 +48,12 @@
           class="mb-0 accent--text text-body-1"
           v-text="text"
         />
+        <p
+          v-if="dismissOnClick"
+          class="caption mt-2"
+        >
+          {{ t('clickToDismiss') }}
+        </p>
       </v-col>
       <v-col cols="auto">
         <slot name="additional-button" />
@@ -107,6 +115,10 @@ export default defineComponent({
     saveButtonText: {
       type: String,
       default: undefined
+    },
+    dismissOnClick: {
+      type: Boolean,
+      default: false
     },
     timeout: {
       type: Number,
@@ -170,9 +182,16 @@ export default defineComponent({
       }
     });
 
+    const onContentClick = () => {
+      if (props.dismissOnClick) {
+        emit('input', false);
+      }
+    };
+
     return {
       alertColor,
       alertIcon,
+      onContentClick,
       remainingTime,
 
       t
@@ -181,9 +200,25 @@ export default defineComponent({
 });
 </script>
 
+<i18n>
+{
+  "en": {
+    "clickToDismiss": "Click to dismiss"
+  },
+  "de": {
+    "clickToDismiss": "Zum Schließen klicken"
+  }
+}
+</i18n>
+
 <style lang="scss" scoped>
 .veo-alert ::v-deep i {
   align-self: center;
+}
+
+.veo-alert ::v-deep.v-alert__content {
+  overflow: hidden;
+  overflow-wrap: break-word;
 }
 
 .veo-alert-timeout-bar {

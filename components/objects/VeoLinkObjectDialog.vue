@@ -19,7 +19,7 @@
   <VeoDialog
     :value="value"
     large
-    :headline="t('headline', [linkedObjectType])"
+    :headline="title"
     :persistent="savingObject"
     :close-disabled="savingObject"
     fixed-footer
@@ -30,60 +30,32 @@
         <slot name="header" />
       </p>
       <p
-        v-else-if="hierarchicalContext === 'child'"
+        v-else-if="!editParents"
         class="text-body-1"
       >
-        {{ t('linkChildExplanation', { displayName: editedObjectDisplayName, linkedObjectType }) }}
+        {{ t('linkChildExplanation', { displayName: object && object.displayName, newObjectTypeName }) }}
       </p>
       <p
         v-else
         class="text-body-1"
       >
-        {{ t('linkParentExplanation', { displayName: editedObjectDisplayName, linkedObjectType }) }}
+        {{ t('linkParentExplanation', { displayName: object && object.displayName, newObjectTypeName }) }}
       </p>
-      <v-row no-gutters>
-        <v-col
-          cols="auto"
-          class="d-flex align-center"
-        >
-          <v-btn
-            v-cy-name="'filter-button'"
-            class="mr-2"
-            color="white"
-            rounded
-            primary
-            depressed
-            small
-            style="outline: 1px solid black"
-            @click="filterDialogVisible = true"
-          >
-            <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter').toString()) }}
-          </v-btn>
-        </v-col>
-        <v-col
-          cols="auto"
-          class="grow"
-        >
-          <v-chip-group v-cy-name="'chips'">
-            <VeoObjectChip
-              v-for="k in activeFilterKeys"
-              :key="k"
-              :label="formatLabel(k)"
-              :value="formatValue(k, filter[k])"
-              :close="k!='objectType'"
-              @click:close="clearFilter(k)"
-            />
-          </v-chip-group>
-        </v-col>
-      </v-row>
+      <VeoObjectFilterBar
+        :domain-id="domainId"
+        :filter="filter"
+        :available-object-types="availableObjectTypes"
+        :required-fields="['objectType']"
+        @update:filter="updateFilter"
+      />
       <VeoCard>
         <VeoObjectTable
           v-model="modifiedSelectedItems"
           show-select
           checkbox-color="primary"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
-          :items="objectList"
-          :loading="fetchState.pending || isLoading"
+          :items="selectableObjects"
+          :loading="objectsLoading || childrenLoading || parentsLoading"
           @page-change="onPageChange"
         />
       </VeoCard>
@@ -100,36 +72,26 @@
       <v-btn
         text
         color="primary"
-        :data-cy="$utils.prefixCyData($options, 'save-button')"
         :loading="savingObject"
         @click="linkObjects"
       >
         {{ t('global.button.save') }}
       </v-btn>
-      <VeoFilterDialog
-        v-model="filterDialogVisible"
-        :domain="domainId"
-        :filter="filter"
-        :allowed-object-types="allowedObjectTypes"
-        object-type-required
-        @update:filter="updateFilter"
-      />
     </template>
   </VeoDialog>
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, ref, computed, useContext, useFetch, watch, PropType, reactive } from '@nuxtjs/composition-api';
-import { cloneDeep, differenceBy, pick, upperFirst } from 'lodash';
+import { defineComponent, useRoute, ref, computed, watch, PropType, reactive, useContext } from '@nuxtjs/composition-api';
+import { differenceBy, uniqBy, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiFilter } from '@mdi/js';
-import { getEntityDetailsFromLink, IBaseObject, separateUUIDParam } from '~/lib/utils';
-import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink } from '~/types/VeoTypes';
-import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
-import { useFetchObjects } from '~/composables/api/objects';
-import { useFetchForms } from '~/composables/api/forms';
+
+import { IBaseObject, separateUUIDParam } from '~/lib/utils';
+import { IVeoEntity } from '~/types/VeoTypes';
+import { useUnlinkObject, useLinkObject } from '~/composables/VeoObjectUtilities';
+import { useFetchChildObjects, useFetchChildScopes, useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
+import { useFetchSchemas } from '~/composables/api/schemas';
 import { useFetchTranslations } from '~/composables/api/translations';
 
 export default defineComponent({
@@ -145,32 +107,31 @@ export default defineComponent({
     /**
      * Defines whether the current objects parent/child scopes should be edited or the parent/child objects of the same type as the object.
      */
-    addType: {
-      type: String as PropType<'scope' | 'entity'>,
-      required: true
+    editScopeRelationship: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * Defines whether the selected objects should be added as children or as parents
+     */
+    editParents: {
+      type: Boolean,
+      default: false
     },
     /**
      * Either pass a complete object (contains the id) or an object containing the minimal properties required for this component to work.
      * If you pass a complete object you don't have to define selectedItems, these will be automatically fetched and selected.
      */
-    editedObject: {
-      type: Object as PropType<IVeoEntity | { type: string; name: string }>,
+    object: {
+      type: Object as PropType<IVeoEntity | undefined>,
       required: true
     },
     /**
-     * Pass a list of objects that should be preselected. Usually only required if editedObject doesn't get passed.
-     * If editedObject is set, those values will be merged with the values defined here.
+     * Pass a list of objects that should be preselected. Those values will be merged with the values defined in this component.
      */
-    selectedItems: {
-      type: Array as PropType<({ type: string; id: string } | IVeoEntity)[]>,
+    preselectedItems: {
+      type: Array as PropType<IVeoEntity[]>,
       default: () => []
-    },
-    /**
-     * Defines whether the selected objects should be added as children or as parents
-     */
-    hierarchicalContext: {
-      type: String as PropType<'parent' | 'child'>,
-      default: 'child'
     },
     /**
      * Instead of saving, returns the selected items
@@ -182,69 +143,68 @@ export default defineComponent({
     preselectedFilters: {
       type: Object,
       default: () => {}
-    },
-    /**
-     * Return complete objects as selected items.
-     * NOTE: If you use this prop, please make sure that you pass a complete object as editedObject and if you use
-     * the prop selectedItems that the items are also of type IVeoEntity
-     */
-    useFullObjects: {
-      type: Boolean,
-      default: false
     }
   },
   setup(props, { emit }) {
     const route = useRoute();
     const { t, locale } = useI18n();
-    const { $api } = useContext();
     const { tablePageSize } = useVeoUser();
-    const { linkObject, unlinkObject } = useVeoObjectUtilities();
+    const { link } = useLinkObject();
+    const { unlink } = useUnlinkObject();
+    const { $api } = useContext();
+
+    const { data: endpoints } = useFetchSchemas();
+    const translationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useFetchTranslations(translationsQueryParameters);
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
-    const objectSchemas = ref<IVeoSchemaEndpoint[]>([]);
-
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
-
-    const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
-    const formsQueryEnabled = computed(() => !!domainId.value);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
-
-    const { fetchState } = useFetch(async () => {
-      objectSchemas.value = await $api.schema.fetchAll();
-    });
-
-    const editedObjectDisplayName = computed(() => ((props.editedObject as IVeoEntity).id ? (props.editedObject as IVeoEntity).displayName : props.editedObject.name));
-
-    /**
-     * Common stuff
-     */
-    const linkedObjectType = computed(() => {
-      return props.addType === 'scope' ? ['Scope'] : props.editedObject.type === 'scope' ? t('object').toString() : upperFirst(props.editedObject.type);
-    });
+    const newObjectTypeName = computed(() =>
+      props.editScopeRelationship
+        ? translations.value?.lang?.[locale.value]?.scope
+        : props.object?.type === 'scope'
+        ? t('object')
+        : translations.value?.lang?.[locale.value][props.object?.type || '']
+    );
+    const title = computed(() =>
+      t(
+        props.editParents && props.editScopeRelationship
+          ? 'editParentScopes'
+          : props.editScopeRelationship
+          ? 'editChildScopes'
+          : props.editParents
+          ? 'editParentObjects'
+          : 'editChildObjects',
+        [props.object?.displayName]
+      )
+    );
 
     // Table/filter logic
     const filter = ref<IBaseObject>({});
-    const filterDialogVisible = ref(false);
 
     const objectsQueryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
     const resetQueryOptions = () => {
       Object.assign(objectsQueryParameters, { page: 1, sortBy: 'name', sortDesc: false });
-      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
+      refetchObjects(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
+    const objectListEndpoint = computed(() => endpoints.value?.[filter.value.objectType] || '');
     const combinedObjectsQueryParameters = computed(() => ({
       size: tablePageSize.value,
       sortBy: objectsQueryParameters.sortBy,
-      sortOrder: objectsQueryParameters.sortDesc ? 'desc' : 'asc',
+      sortOrder: (objectsQueryParameters.sortDesc ? 'desc' : 'asc') as 'asc' | 'desc',
       page: objectsQueryParameters.page,
       unit: separateUUIDParam(route.value.params.unit).id,
-      ...filter.value
+      ...filter.value,
+      endpoint: objectListEndpoint.value
     }));
-    const objectsQueryEnabled = computed(() => !!filter.value.objectType);
-
-    const { data: objectList, isLoading, refetch } = useFetchObjects(combinedObjectsQueryParameters as any, { enabled: objectsQueryEnabled, keepPreviousData: true });
+    const objectsQueryEnabled = computed(() => !!objectListEndpoint.value);
+    const {
+      data: objects,
+      isFetching: objectsLoading,
+      refetch: refetchObjects
+    } = useFetchObjects(combinedObjectsQueryParameters, { enabled: objectsQueryEnabled, keepPreviousData: true });
+    const selectableObjects = computed(() => (objects.value?.items || []).filter((object) => object.id !== props.object?.id));
 
     watch(
       () => props.preselectedFilters,
@@ -257,39 +217,7 @@ export default defineComponent({
       }
     );
 
-    // available & active filter options
-    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'];
-    const activeFilterKeys = computed(() => {
-      return filterKeys.filter((k) => filter.value[k] !== undefined);
-    });
-
     watch(() => filter.value, resetQueryOptions, { deep: true });
-
-    // formatting filter chips and their translations
-    const formatLabel = (label: string) => {
-      return upperFirst(t(`objectlist.${label}`).toString());
-    };
-    const formatValue = (label: string, value?: string) => {
-      switch (label) {
-        // Uppercase object types
-        case 'objectType':
-          return value ? translations.value?.lang[locale.value]?.[value] : undefined;
-        // Translate sub types
-        case 'subType':
-          return (formSchemas.value as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === value)?.name?.[locale.value] || value;
-        case 'status':
-          return translations.value?.lang[locale.value]?.[`${filter.value.objectType}_${filter.value.subType}_status_${value}`] || value;
-        default:
-          return value;
-      }
-    };
-
-    // remove one filter
-    const clearFilter = (key: string) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [key]: remove, ...rest } = filter.value;
-      filter.value = { ...rest };
-    };
 
     // update filter options
     const updateFilter = (newFilter: IBaseObject) => {
@@ -299,79 +227,99 @@ export default defineComponent({
     // refetch entities on page or sort changes (in VeoObjectTable)
     const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
       Object.assign(objectsQueryParameters, { page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
-      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
+      refetchObjects(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
     // get allowed filter-objectTypes for current parent and child type
-    const allowedObjectTypes = computed(() => {
-      if (props.hierarchicalContext === 'parent') {
-        if (props.addType === 'entity') {
-          // Only allow the same schema for the parent as the one of the current element...
-          return objectSchemas.value.filter((item) => item.schemaName === props.editedObject.type);
-        } else {
-          // ...or a scope
-          return objectSchemas.value.filter((item) => item.endpoint === 'scopes');
-        }
+    const availableObjectTypes = computed<string[]>(() => {
+      const objectSchemaNames = Object.keys(endpoints.value || {});
+      if (props.editScopeRelationship) {
+        return objectSchemaNames.filter((item) => item === 'scope');
+      } else if (props.object?.type === 'scope') {
+        return objectSchemaNames.filter((item) => item !== 'scope');
       } else {
-        // Filter out scopes if the user wants to add objects and the parent is a scope
-        if (props.editedObject.type === 'scope' && props.addType === 'entity') {
-          return objectSchemas.value.filter((item) => item.endpoint !== 'scopes');
-        }
-        // Only scope if the user wants to add scopes and the parent is a scope
-        if (props.editedObject.type === 'scope' && props.addType === 'scope') {
-          return objectSchemas.value.filter((item) => item.endpoint === 'scopes');
-        }
-        // Only own object type if the user wants to add objects and the parent is a object
-        if (props.editedObject.type !== 'scope' && props.addType === 'entity') {
-          return objectSchemas.value.filter((item) => item.schemaName === props.editedObject.type);
-        }
+        return [props.object?.type || ''];
       }
-
-      return [];
     });
 
     watch(
-      () => allowedObjectTypes.value,
+      () => availableObjectTypes.value,
       (newValue) => {
         if (newValue?.[0]) {
-          filter.value = { objectType: allowedObjectTypes.value[0].schemaName };
+          filter.value = { objectType: newValue[0] };
         }
-      }
+      },
+      { immediate: true, deep: true }
+    );
+
+    // Selectable and selected objects
+    const objectEndpoint = computed(() => endpoints.value?.[props.object?.type || ''] || '');
+    const parentsQueryParameters = computed(() => ({
+      size: -1,
+      page: 1,
+      unitId: separateUUIDParam(route.value.params.unit).id,
+      parentEndpoint: objectListEndpoint.value,
+      childObjectId: props.object?.id || ''
+    }));
+    const parentsQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && props.editParents);
+    const { data: parents, isFetching: parentsLoading, refetch } = useFetchParentObjects(parentsQueryParameters, { enabled: parentsQueryEnabled, keepPreviousData: false });
+    // Needed as for some reason nuxt won't pick up the changes
+    watch(
+      () => parentsQueryParameters.value,
+      () => refetch(), // () => refetch() is needed, as "refetch," would pass the newValue parameters which are incompatible for whatever reason
+      { deep: true }
+    );
+
+    const childObjectsQueryParameters = computed(() => ({
+      endpoint: objectEndpoint.value,
+      id: props.object?.id || ''
+    }));
+    const childObjectsQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && !props.editParents && objectEndpoint.value !== 'scopes');
+    const { data: childObjects, isFetching: childObjectsLoading } = useFetchChildObjects(childObjectsQueryParameters, { enabled: childObjectsQueryEnabled });
+
+    const childScopesQueryParameters = computed(() => ({
+      id: props.object?.id || ''
+    }));
+    const childScopesQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && !props.editParents && objectEndpoint.value === 'scopes');
+    const { data: childScopes, isFetching: childScopesLoading } = useFetchChildScopes(childScopesQueryParameters, { enabled: childScopesQueryEnabled });
+
+    const children = computed(() => uniqBy([...(childObjects.value || []), ...(childScopes.value || []), ...props.preselectedItems], (arrayEntry) => arrayEntry.id));
+    const childrenLoading = computed(() => childObjectsLoading.value || childScopesLoading.value);
+
+    const originalSelectedItems = computed(() => (props.editParents ? parents.value?.items || [] : children.value)); // Doesn't get modified to compare which parents have been added removed
+    const modifiedSelectedItems = ref<IVeoEntity[]>([]);
+    watch(
+      () => originalSelectedItems.value,
+      (newValue) => {
+        modifiedSelectedItems.value = newValue;
+      },
+      { deep: true, immediate: true }
     );
 
     // Linking logic
-    const mergedSelectedItems = ref<({ id: string; type: string } | IVeoEntity)[]>([]);
-    const modifiedSelectedItems = ref<({ id: string; type: string } | IVeoEntity)[]>([]); // Doesn't get modified to compare which parents have been added removed
-
     const savingObject = ref(false); // saving status for adding entities
     const linkObjects = async () => {
-      if (props.returnObjects || !(props.editedObject as IVeoEntity).designator) {
-        if (!props.returnObjects) {
-          // eslint-disable-next-line no-console
-          console.warn('VeoLinkObjectDialog:: returnObjects is set to false, but no entity was passed. Continuing as if returnObjects is set to true');
-        }
-        emit('update:selected-items', modifiedSelectedItems.value);
+      if (props.returnObjects) {
+        emit('update:preselected-items', modifiedSelectedItems.value);
         emit('input', false);
       } else {
         savingObject.value = true;
-        const _editedObject = props.editedObject as IVeoEntity;
-
         try {
-          if (props.hierarchicalContext === 'parent') {
-            const parentsToAdd = differenceBy(modifiedSelectedItems.value, mergedSelectedItems.value, 'id');
-            const parentsToRemove = differenceBy(mergedSelectedItems.value, modifiedSelectedItems.value, 'id');
-            for (const parent of parentsToAdd) {
-              await linkObject('parent', pick(_editedObject, 'id', 'type'), parent);
+          if (props.object && endpoints.value) {
+            if (props.editParents) {
+              const parentsToAdd = differenceBy(modifiedSelectedItems.value, originalSelectedItems.value, 'id');
+              const parentsToRemove = differenceBy(originalSelectedItems.value, modifiedSelectedItems.value, 'id');
+              for (const parent of parentsToAdd) {
+                const _parent = await $api.entity.fetch(endpoints.value?.[parent.type], parent.id);
+                await link(_parent, props.object);
+              }
+              for (const parent of parentsToRemove) {
+                const _parent = await $api.entity.fetch(endpoints.value?.[parent.type], parent.id);
+                await unlink(_parent, props.object.id);
+              }
+            } else {
+              await link(props.object, modifiedSelectedItems.value, true);
             }
-            for (const parent of parentsToRemove) {
-              await unlinkObject(parent.id, _editedObject.id, parent.type);
-            }
-          } else {
-            await linkObject(
-              props.hierarchicalContext,
-              pick(_editedObject, 'id', 'type'),
-              modifiedSelectedItems.value.map((selectedItem) => pick(selectedItem, 'id', 'type'))
-            );
           }
           emit('success');
         } catch (error: any) {
@@ -382,64 +330,9 @@ export default defineComponent({
       }
     };
 
-    const preselectItems = async () => {
-      if (props.hierarchicalContext === 'child') {
-        // If edited object is a complete object, fetch preselected items and merge them with the passed ones (usually those are empty)
-        if ((props.editedObject as IVeoEntity).designator) {
-          if (props.useFullObjects) {
-            if (props.selectedItems && props.selectedItems.some((selectedItem) => !(selectedItem as IVeoEntity).designator)) {
-              // eslint-disable-next-line no-console
-              console.warn(
-                'VeoLinkObjectDialog::preselectItems: It seems like you used the prop useFullObject while passing minimal objects in selectedItems. Please configure the component according to the description of the useFullObjects prop.'
-              );
-            }
-            const children = await $api.entity.fetchSubEntities(filter.value.objectType, (props.editedObject as IVeoEntity).id);
-            mergedSelectedItems.value = [...props.selectedItems, ...children];
-          } else {
-            const _editedObject = props.editedObject as IVeoEntity;
-            const childrenProperty = props.editedObject.type === 'scope' ? 'members' : 'parts';
-            mergedSelectedItems.value = [
-              ...props.selectedItems,
-              ..._editedObject[childrenProperty].map((child: IVeoLink) => {
-                const details = getEntityDetailsFromLink(child);
-                const id = details.id;
-                let type = details.type;
-                type = getSchemaName(objectSchemas.value, type) || type;
-
-                return { id, type };
-              })
-            ];
-          }
-        } else {
-          mergedSelectedItems.value = [...props.selectedItems];
-        }
-        // Parents with full objects
-      } else if (props.useFullObjects) {
-        if (props.selectedItems && props.selectedItems.some((selectedItem) => !(selectedItem as IVeoEntity).designator)) {
-          // eslint-disable-next-line no-console
-          console.warn(
-            'VeoLinkObjectDialog::preselectItems: It seems like you used the prop useFullObject while passing minimal objects in selectedItems. Please configure the component according to the description of the useFullObjects prop.'
-          );
-        }
-
-        const _editedObject = props.editedObject as IVeoEntity;
-        const parentType = props.addType === 'entity' ? _editedObject.type : 'scope';
-        const parents = (await $api.entity.fetchParents(parentType, _editedObject.id)).items;
-
-        mergedSelectedItems.value = [...props.selectedItems, ...parents];
-        // Parents with minimal objects (no pre-queried pre selected items), as full objects don't contain links to their parents
-      } else {
-        mergedSelectedItems.value = [...props.selectedItems];
-      }
-      modifiedSelectedItems.value = cloneDeep(mergedSelectedItems.value);
-    };
-
     watch(
-      () => props.editedObject,
-      () => {
-        resetQueryOptions();
-        preselectItems();
-      },
+      () => props.object,
+      () => resetQueryOptions,
       { deep: true }
     );
 
@@ -449,7 +342,6 @@ export default defineComponent({
       (newValue) => {
         if (newValue) {
           resetQueryOptions();
-          preselectItems();
         }
       },
       {
@@ -458,28 +350,23 @@ export default defineComponent({
     );
 
     return {
-      activeFilterKeys,
-      allowedObjectTypes,
-      clearFilter,
+      availableObjectTypes,
+      childrenLoading,
       domainId,
-      editedObjectDisplayName,
-      fetchState,
       filter,
-      filterDialogVisible,
-      formatLabel,
-      formatValue,
-      isLoading,
-      linkedObjectType,
       linkObjects,
       modifiedSelectedItems,
-      objectList,
+      newObjectTypeName,
+      objectsLoading,
       onPageChange,
+      parentsLoading,
       savingObject,
+      selectableObjects,
+      title,
       updateFilter,
 
       t,
-      upperFirst,
-      mdiFilter
+      upperFirst
     };
   }
 });
@@ -488,17 +375,21 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "filter": "filter",
-    "headline": "select {0}",
-    "linkChildExplanation": "Add {linkedObjectType} as a part to \"{parentName}\"",
-    "linkParentExplanation": "Add {linkedObjectType} as a parent to \"{parentName}\"",
+    "editChildObjects": "Edit parts of \"{0}\"",
+    "editChildScopes": "Edit scopes of \"{0}\"",
+    "editParentObjects": "Edit parent parts of \"{0}\"",
+    "editParentScopes": "Edit parent scopes of \"{0}\"",
+    "linkChildExplanation": "Add {newObjectTypeName} as a part to \"{parentName}\"",
+    "linkParentExplanation": "Add {newObjectTypeName} as a parent to \"{parentName}\"",
     "object": "object"
   },
   "de": {
-    "filter": "filter",
-    "headline": "{0} auswählen",
-    "linkChildExplanation": "{linkedObjectType} unter \"{displayName}\" einfügen",
-    "linkParentExplanation": "{linkedObjectType} über \"{displayName}\" einfügen",
+    "editChildObjects": "Teile von \"{0}\" bearbeiten",
+    "editChildScopes": "Scopes von \"{0}\" bearbeiten",
+    "editParentObjects": "Teile über \"{0}\" bearbeiten",
+    "editParentScopes": "Scopes über \"{0}\" bearbeiten",
+    "linkChildExplanation": "{newObjectTypeName} unter \"{displayName}\" einfügen",
+    "linkParentExplanation": "{newObjectTypeName} über \"{displayName}\" einfügen",
     "object": "Objekt"
   }
 }

@@ -17,12 +17,13 @@
 -->
 <template>
   <VeoDialog
+    :value="value"
     v-bind="$attrs"
-    :headline="t('headline')"
+    :headline="t('unlinkObject')"
     v-on="$listeners"
   >
     <template #default>
-      <span class="text-body-1">{{ t('text', { displayName }) }}</span>
+      <span class="text-body-1">{{ t('text', { displayName: objectToRemove && objectToRemove.displayName, parentDisplayName: parent && parent.displayName }) }}</span>
     </template>
     <template #dialog-options>
       <v-btn
@@ -35,54 +36,58 @@
       <v-btn
         text
         color="primary"
-        :disabled="!deleteButtonEnabled"
-        @click="deleteObject"
+        :disabled="!objectToRemove"
+        :loading="unlinking"
+        @click="unlinkObject"
       >
-        {{ t('global.button.delete') }}
+        {{ t('unlinkObject') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api';
+import { defineComponent, PropType, ref } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { useDeleteObject } from '~/composables/api/objects';
-import { useFetchSchemas } from '~/composables/api/schemas';
+import { useUnlinkObject } from '~/composables/VeoObjectUtilities';
 
 import { IVeoEntity } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
-    item: {
+    value: {
+      type: Boolean,
+      required: true
+    },
+    objectToRemove: {
+      type: Object as PropType<IVeoEntity>,
+      default: undefined
+    },
+    parent: {
       type: Object as PropType<IVeoEntity>,
       default: undefined
     }
   },
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { mutateAsync: doDelete } = useDeleteObject();
-    const { data: endpoints } = useFetchSchemas();
+    const { unlink } = useUnlinkObject();
 
-    const displayName = computed(() => props.item?.displayName ?? '');
-
-    const deleteButtonEnabled = computed(() => !!endpoints.value?.[props.item?.type]);
-    const deleteObject = () => {
-      if (!deleteButtonEnabled.value) {
-        return;
-      }
+    const unlinking = ref(false);
+    const unlinkObject = async () => {
+      unlinking.value = true;
       try {
-        doDelete({ endpoint: endpoints.value?.[props.item.type], id: props.item.id });
+        await unlink(props.parent, props.objectToRemove);
         emit('success');
       } catch (error) {
         emit('error', error);
+      } finally {
+        unlinking.value = false;
       }
     };
 
     return {
-      deleteButtonEnabled,
-      deleteObject,
-      displayName,
+      unlinking,
+      unlinkObject,
 
       t
     };
@@ -93,12 +98,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "text": "Do you really want to delete the object \"{displayName}\"?",
-    "headline": "Delete object"
+    "text": "Unlinking \"{displayName}\" only removes the object from \"{parentDisplayName}\".",
+    "unlinkObject": "Unlink object"
   },
   "de": {
-    "text": "Möchten Sie das Objekt \"{displayName}\" wirklich löschen?",
-    "headline": "Objekt löschen"
+    "text": "Es wird nur die Verknüpfung von \"{displayName}\" zu \"{parentDisplayName}\" entfernt.",
+    "unlinkObject": "Verknüpfung entfernen"
   }
 }
 </i18n>

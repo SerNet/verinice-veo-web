@@ -22,7 +22,6 @@
   >
     <v-speed-dial
       v-model="speedDialIsOpen"
-      v-cy-name="'action-menu'"
       direction="top"
       transition="slide-y-reverse"
       absolute
@@ -31,7 +30,6 @@
     >
       <template #activator>
         <v-btn
-          v-cy-name="'show-actions-button'"
           color="primary"
           :disabled="!allowedActions.length || disabled"
           depressed
@@ -50,7 +48,7 @@
         v-if="allowedActions.length && !disabled"
         #default
       >
-        <div v-cy-name="'action-list'">
+        <div>
           <v-btn
             v-for="action in allowedActions"
             :key="action.key"
@@ -69,15 +67,14 @@
     </v-speed-dial>
     <!-- dialogs -->
     <VeoLinkObjectDialog
-      v-if="addEntityDialog.editedObject"
+      v-if="addEntityDialog.object"
       v-model="addEntityDialog.value"
       v-bind="addEntityDialog"
       @success="onAddEntitySuccess"
       @error="onAddEntityError"
     />
-    <VeoCreateEntityDialog
+    <VeoSelectObjectTypeDialog
       v-model="createEntityDialog.value"
-      :schemas="createEntitySchemas"
       :v-bind="createEntityDialog"
       @create-entity="openCreateObjectDialog($event.type, $event.addAsChild)"
     />
@@ -100,16 +97,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, useRoute, ref, computed, useContext, PropType } from '@nuxtjs/composition-api';
-import { pick, upperFirst } from 'lodash';
+import { defineComponent, useRoute, ref, computed, PropType, useContext } from '@nuxtjs/composition-api';
+import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
+
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
-import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useFetchTranslations } from '~/composables/api/translations';
+import { useFetchSchemas } from '~/composables/api/schemas';
 
 export default defineComponent({
   name: 'VeoObjectActionMenu',
@@ -132,29 +130,21 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
+    const { $api } = useContext();
     const { t, locale } = useI18n();
     const route = useRoute();
-    const { $api } = useContext();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
-    const { linkObject } = useVeoObjectUtilities();
+    const { link } = useLinkObject();
+
+    const { data: endpoints } = useFetchSchemas();
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
     // general stuff
-    const schemas = ref<IVeoSchemaEndpoint[]>([]);
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
-    const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     const speedDialIsOpen = ref(false);
-
-    // fetch schemas from api
-    onMounted(async () => {
-      const fetchedSchemas = await $api.schema.fetchAll(false, {
-        unit: unitId.value
-      });
-      schemas.value = fetchedSchemas;
-    });
 
     // configure possible action items
     const actions = computed(() => [
@@ -213,21 +203,11 @@ export default defineComponent({
      */
 
     // dialog options
-    const addEntityDialog = ref<{ editedObject: IVeoEntity | undefined; addType: 'scope' | 'entity'; value: boolean; hierarchicalContext: 'child' | 'parent' }>({
-      editedObject: undefined,
-      addType: 'scope' as 'scope' | 'entity',
+    const addEntityDialog = ref<{ object: IVeoEntity | undefined; editScopeRelationship: boolean; value: boolean; editParents: boolean }>({
+      object: undefined,
+      editScopeRelationship: false,
       value: false,
-      hierarchicalContext: 'child'
-    });
-
-    // object types for object type selection in CreateEntityDialog
-    const createEntitySchemas = computed(() => {
-      return schemas.value
-        .filter((filter) => filter.schemaName !== 'scope')
-        .map((schema: IVeoSchemaEndpoint) => ({
-          text: upperFirst(schema.schemaName),
-          value: schema.schemaName
-        }));
+      editParents: false
     });
 
     const createEntityDialog = ref({
@@ -260,10 +240,10 @@ export default defineComponent({
     // control dialogs
     const openLinkObjectDialog = (objectType?: string, addAsChild?: boolean) => {
       addEntityDialog.value = {
-        editedObject: props.object,
-        addType: objectType === 'scope' ? 'scope' : 'entity',
+        object: props.object,
+        editScopeRelationship: objectType === 'scope',
         value: true,
-        hierarchicalContext: addAsChild === undefined || addAsChild ? 'child' : 'parent'
+        editParents: addAsChild !== undefined && !addAsChild
       };
     };
 
@@ -287,10 +267,12 @@ export default defineComponent({
     const onCreateObjectSuccess = async (newObjectId: string) => {
       if (props.object) {
         try {
-          await linkObject(createObjectDialog.value.hierarchicalContext as any, pick(props.object, 'id', 'type'), {
-            type: createObjectDialog.value.objectType as string,
-            id: newObjectId
-          });
+          const createdObject = await $api.entity.fetch(endpoints.value?.[createObjectDialog.value.objectType || ''] || '', newObjectId);
+          if (createObjectDialog.value.hierarchicalContext === 'child') {
+            await link(props.object, createdObject);
+          } else {
+            await link(createdObject, props.object);
+          }
           displaySuccessMessage(t('objectLinked').toString());
           emit('reload');
         } catch (e: any) {
@@ -308,11 +290,9 @@ export default defineComponent({
 
     const onCreateRiskSuccess = () => {
       createRiskDialogVisible.value = false;
-      emit('reload');
     };
 
     return {
-      createEntitySchemas,
       createEntityDialog,
       createObjectDialog,
       createRiskDialogVisible,

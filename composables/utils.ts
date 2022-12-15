@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { NuxtApp } from '@nuxt/types/app';
-import { computed, getCurrentInstance, nextTick, onMounted, useContext, useRoute } from '@nuxtjs/composition-api';
-import { kebabCase } from 'lodash';
+import { computed, nextTick, onMounted, useContext } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
 export const useFormatters = () => {
@@ -66,22 +65,6 @@ export const useThrottleNextTick = () => {
   };
 
   return { throttle };
-};
-
-export const useCypress = () => {
-  const instance = getCurrentInstance();
-  const route = useRoute();
-  return {
-    /**
-     * Composable version of prefixCyData
-     * @param name Name that will be prefixed with component name
-     */
-    prefixCyData(name: string) {
-      const componentName = instance?.type?.name as string | undefined;
-      const prefix = componentName || route.value.name;
-      return [prefix && kebabCase(prefix), name].flat().join('-');
-    }
-  };
 };
 
 export const onContentUpdate = (callback: (context: { event: string; path: string }) => void) => {

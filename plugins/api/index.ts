@@ -18,23 +18,19 @@
 import defaultsDeep from 'lodash/defaultsDeep';
 import { Plugin, Context } from '@nuxt/types';
 
-import account from '~/plugins/api/account';
 import entity from '~/plugins/api/entity';
 import form from '~/plugins/api/form';
-import history from '~/plugins/api/history';
 import schema from '~/plugins/api/schema';
-import translation from '~/plugins/api/translation';
 import unit from '~/plugins/api/unit';
-import report from '~/plugins/api/report';
 import domain from '~/plugins/api/domain';
 import monitoring from '~/plugins/api/monitoring';
 import catalog from '~/plugins/api/catalog';
-import { IVeoPaginationOptions } from '~/types/VeoTypes';
 import { sanitizeURLParams } from '~/lib/utils';
 import { IVeoUserComposable, useVeoUser } from '~/composables/VeoUser';
+import { ETAG_MAP, RequestOptions } from '~/composables/api/utils/request';
 
 export function createAPI(context: Context, user: IVeoUserComposable) {
-  return Client.create(context, { account, form, entity, history, schema, translation, unit, report, domain, catalog, monitoring }, user);
+  return Client.create(context, { form, entity, schema, unit, domain, catalog, monitoring }, user);
 }
 
 export interface IAPIClient {
@@ -64,15 +60,6 @@ export class VeoApiError extends Error {
     this.message = message;
     this.additionalInformation = additionalInformation;
   }
-}
-
-// eslint-disable-next-line no-undef
-export interface RequestOptions extends RequestInit {
-  query?: Record<string, string | number | undefined> & IVeoPaginationOptions;
-  params?: Record<string, string | number | undefined>;
-  json?: any;
-  method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
-  reponseType?: VeoApiReponseType;
 }
 
 export class Client {
@@ -111,7 +98,7 @@ export class Client {
     const _url = String(url)
       .replace(/^\/api\/forms/, this.baseFormURL)
       .replace(/^\/api\/history/, this.baseHistoryURL)
-      .replace(/^\/api\/reports/, this.baseReportURL)
+      .replace(/^\/api\/reporting/, this.baseReportURL)
       .replace(/^\/api\/accounts/, this.baseAccountURL)
       .replace(/^\/api/, this.baseURL);
     if (_url.startsWith('/')) {
@@ -119,6 +106,13 @@ export class Client {
       return `${loc.protocol}//${loc.host}${_url}`;
     }
     return _url;
+  }
+
+  private updateETagMapIfEtagExists(response: Response, options: RequestOptions) {
+    const etag = response.headers.get('etag');
+    if (etag && options.params?.id) {
+      ETAG_MAP.set(options.params.id as string, etag);
+    }
   }
 
   /**
@@ -155,10 +149,12 @@ export class Client {
       mode: 'cors'
     };
 
+    // Some requests, but not all use an ETag header. To automate setting and getting the etag header, we assume that every query that uses an ETag has a parameter called id
+    if (options.params?.id && ETAG_MAP.has(options.params.id as string)) {
+      defaults.headers['If-Match'] = (ETAG_MAP.get(options.params.id as string) as string).replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
+    }
+
     if (options.json) {
-      if ('$etag' in options.json) {
-        defaults.headers['If-Match'] = options.json.$etag?.replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
-      }
       options.body = JSON.stringify(options.json);
       defaults.method = 'POST';
       defaults.headers['Content-Type'] = 'application/json';
@@ -180,10 +176,11 @@ export class Client {
 
     const reqURL = this.getURL(combinedUrl);
     const res = await fetch(reqURL, combinedOptions);
+    this.updateETagMapIfEtagExists(res, options);
     return await this.parseResponse(res, options);
   }
 
-  async parseResponse<T>(res: Response, options: RequestOptions): Promise<T & { $etag?: string }> {
+  async parseResponse<T>(res: Response, options: RequestOptions): Promise<T> {
     let parsedResponseBody;
 
     try {
@@ -217,7 +214,6 @@ export class Client {
 
   async parseJson(res: Response): Promise<any> {
     const raw = await res.text();
-    const etag = res.headers.get('etag');
 
     if (!raw) {
       // eslint-disable-next-line no-console
@@ -225,9 +221,6 @@ export class Client {
       return undefined;
     }
     const parsed = JSON.parse(raw);
-    if (typeof parsed === 'object' && etag) {
-      Object.defineProperty(parsed, '$etag', { enumerable: false, configurable: false, value: etag });
-    }
     return parsed;
   }
 }

@@ -132,6 +132,8 @@ export default {
   },
 
   error: {
+    additionalProperties: 'Das Feld "{field}" besitzt nicht im Objektschemas erlaubte Attribute.',
+    enum: 'Das Feld "{field}" besitzt einen nicht erlaubten Wert',
     format: 'Das Feld "{field}" muss dem Format "{format}" entsprechen',
     required: 'Das Feld "{field}" muss ausgefüllt sein',
     required_link: 'Der {position} Link in "{field}" muss auf ein Objekt zeigen oder entfernt werden'

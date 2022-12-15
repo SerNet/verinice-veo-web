@@ -102,10 +102,9 @@ import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { computed, defineComponent, reactive, ref } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
-import { useFetchAccounts } from '~/composables/api/accounts';
+import { IVeoAccount, useFetchAccounts } from '~/composables/api/accounts';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
-import { IVeoAccount } from '~/plugins/api/account';
 
 export default defineComponent({
   setup() {

@@ -142,12 +142,11 @@ import { mdiAccountOutline, mdiEmailOutline } from '@mdi/js';
 import { computed, defineComponent, PropType, reactive, ref, watch } from '@nuxtjs/composition-api';
 import { cloneDeep, pick, trim } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { useCreateAccount, useUpdateAccount } from '~/composables/api/accounts';
+import { IVeoAccount, useCreateAccount, useUpdateAccount } from '~/composables/api/accounts';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
-import { IVeoAccount } from '~/plugins/api/account';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -236,9 +235,9 @@ export default defineComponent({
 
     // CRUD stuff
     const createMutationParameters = computed(() => formData);
-    const { mutateAsync: create, isLoading: isLoadingCreate } = useCreateAccount(createMutationParameters as any);
+    const { mutateAsync: create, isLoading: isLoadingCreate } = useCreateAccount();
     const updateMutationParameters = computed(() => ({ ...formData, id: props.id }));
-    const { mutateAsync: update, isLoading: isLoadingUpdate } = useUpdateAccount(updateMutationParameters as any);
+    const { mutateAsync: update, isLoading: isLoadingUpdate } = useUpdateAccount();
 
     const isLoading = computed(() => isLoadingCreate.value || isLoadingUpdate.value);
 
@@ -259,9 +258,9 @@ export default defineComponent({
       });
       try {
         if (props.id) {
-          await update();
+          await update(updateMutationParameters as any);
         } else {
-          await create();
+          await create(createMutationParameters as any);
         }
         displaySuccessMessage(t(props.id ? 'updatingAccountSuccess' : 'creatingAccountSuccess').toString());
         emit('success');

@@ -173,7 +173,6 @@
     <template #dialog-options>
       <v-btn
         text
-        :data-cy="$utils.prefixCyData($options, 'close-button')"
         @click="close()"
       >
         {{ t('global.button.close') }}
@@ -182,7 +181,6 @@
       <v-btn
         text
         color="primary"
-        :data-cy="$utils.prefixCyData($options, 'save-button')"
         @click="updateElement()"
       >
         {{ t('global.button.save') }}

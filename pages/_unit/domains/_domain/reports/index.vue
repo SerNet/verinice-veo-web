@@ -16,16 +16,17 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage :title="$t('breadcrumbs.reports')">
+  <VeoPage :title="t('breadcrumbs.reports')">
     <template #header>
       <p class="mt-4 text-body-1">
-        {{ $t('hint') }}
+        {{ t('hint') }}
       </p>
     </template>
     <template #default>
       <VeoCard>
         <VeoReportList
           :items="reports"
+          :loading="isFetching"
           @create-report="createReport"
         />
       </VeoCard>
@@ -34,27 +35,29 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, useRoute, useRouter } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
-import { IVeoReportsMeta } from '~/types/VeoTypes';
+import { useFetchReports } from '~/composables/api/reports';
 
-interface IData {
-  reports: IVeoReportsMeta;
-}
+export default defineComponent({
+  setup() {
+    const { t } = useI18n();
+    const route = useRoute();
+    const router = useRouter();
+    const { data: reports, isFetching } = useFetchReports();
 
-export default Vue.extend({
-  data(): IData {
-    return {
-      reports: {}
+    const createReport = (reportId: string) => {
+      router.push(`/${route.value.params.unit}/domains/${route.value.params.domain}/reports/${reportId}`);
     };
-  },
-  async fetch() {
-    this.reports = await this.$api.report.fetchAll();
-  },
-  methods: {
-    createReport(reportId: string) {
-      this.$router.push(`/${this.$route.params.unit}/domains/${this.$route.params.domain}/reports/${reportId}`);
-    }
+
+    return {
+      createReport,
+      isFetching,
+      reports,
+
+      t
+    };
   }
 });
 </script>

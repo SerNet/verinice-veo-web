@@ -76,7 +76,6 @@
                     :label="upperFirst(t('viewAs').toString())"
                     hide-details
                     :items="displayOptions"
-                    :data-cy="$utils.prefixCyData($options, 'display-select')"
                   />
                 </v-card-text>
               </div>
@@ -89,7 +88,7 @@
               <VeoObjectHistory
                 v-else-if="objectData && selectedSideContainer === SIDE_CONTAINERS.HISTORY"
                 class="fill-height overflow-y-auto"
-                :object="objectData"
+                :object="originalObject || objectData"
                 :loading="loading"
                 :object-schema="objectSchema"
                 v-on="$listeners"
@@ -108,7 +107,6 @@
               <v-tooltip left>
                 <template #activator="{ on }">
                   <v-btn
-                    v-cy-name="'display-tab'"
                     data-component-name="object-form-view-tab"
                     style="border-radius: 99px"
                     icon
@@ -150,10 +148,7 @@
                       icon
                       :value="SIDE_CONTAINERS.HISTORY"
                     >
-                      <v-icon
-                        v-cy-name="'history-tab'"
-                        v-text="mdiHistory"
-                      />
+                      <v-icon v-text="mdiHistory" />
                     </v-btn>
                   </div>
                 </template>
@@ -202,14 +197,14 @@ import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/comp
 import { getRiskAdditionalContext, getStatusAdditionalContext } from '~/components/forms/additionalContext';
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoFormSchemaMeta, IVeoInspectionResult, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoTranslations } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
 import { useFetchForm, useFetchForms } from '~/composables/api/forms';
 import { useFetchTranslations } from '~/composables/api/translations';
 import { useFetchDomain } from '~/composables/api/domains';
-import { useFetchSchema } from '~/composables/api/schemas';
+import { useFetchSchema, useFetchSchemas } from '~/composables/api/schemas';
 
 enum SIDE_CONTAINERS {
   HISTORY,
@@ -265,6 +260,10 @@ export default defineComponent({
     scrollWrapperId: {
       type: String,
       default: 'scroll-wrapper'
+    },
+    originalObject: {
+      type: Object as PropType<IVeoEntity | undefined>,
+      default: undefined
     },
     /**
      * If set to true, objects can't be created from within the custom link dropdown
@@ -401,7 +400,7 @@ export default defineComponent({
 
     // Messages stuff
     const messages = computed(() => ({
-      errors: Array.from(formErrors.value).map(([objectSchemaPointer, messages]) => ({ code: objectSchemaPointer, message: messages[0] })),
+      errors: Array.from(formErrors.value).map(([objectSchemaPointer, messages]) => ({ code: objectSchemaPointer, message: messages[0], params: { type: 'error' } })),
       warnings: (props.objectMetaData?.inspectionFindings || [])
         .filter((warning: IVeoInspectionResult) => warning.severity === 'WARNING')
         .map((warning: IVeoInspectionResult) => formatWarning(warning)),
@@ -482,13 +481,14 @@ export default defineComponent({
     };
 
     // For some reason putting this in a useFetch and using fetchDecisions as the name for the fetch hook caused all useFetch to be refetched
+    const { data: endpoints } = useFetchSchemas();
     const fetchDecisions = async () => {
       const toReturn: any = { ...props.objectMetaData, decisionResults: {}, inspectionFindings: [] };
 
       // Fetch updated decision results and merge them with the current values
-      if (objectData.value?.domains?.[props.domainId]) {
+      if (objectData.value?.domains?.[props.domainId] && endpoints.value?.[objectData.value.type]) {
         for (const key in props.objectMetaData?.decisionResults || {}) {
-          const result = await $api.entity.fetchWipDecisionEvaluation(objectData.value.type, objectData.value as any, props.domainId, key);
+          const result = await $api.entity.fetchWipDecisionEvaluation(endpoints.value[objectData.value.type], objectData.value as any, props.domainId, key);
           toReturn.inspectionFindings.push(...result.inspectionFindings);
           toReturn.decisionResults[key] = result.decisionResults.piaMandatory;
         }

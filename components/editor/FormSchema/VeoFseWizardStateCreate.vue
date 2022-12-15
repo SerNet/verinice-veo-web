@@ -158,9 +158,11 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropOptions, useAsync, useContext } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropOptions } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
+
+import { useFetchSchemas } from '~/composables/api/schemas';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -200,26 +202,21 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n();
-    const { $api } = useContext();
 
     function requiredRule(value: string) {
       return !!value || t('global.input.required').toString();
     }
 
     // Select options
-    const _objectTypes = useAsync(() => $api.schema.fetchAll());
+    const { data: objectSchemas } = useFetchSchemas();
 
-    const objectTypes: ComputedRef<{ text: string; value: string }[]> = computed(() => {
-      return [
-        {
-          text: t('customObjectSchema').toString(),
-          value: 'custom'
-        },
-        ...(_objectTypes.value || []).map((objectType) => ({
-          text: upperFirst(objectType.schemaName),
-          value: objectType.schemaName
-        }))
-      ];
+    const objectTypes = computed(() => {
+      const objectSchemaOptions = Object.keys(objectSchemas.value || {}).map((schemaName) => ({ text: upperFirst(schemaName), value: schemaName }));
+      objectSchemaOptions.unshift({
+        text: t('customObjectSchema').toString(),
+        value: 'custom'
+      });
+      return objectSchemaOptions;
     });
 
     const subTypes = computed(() => props.objectSchema?.properties?.domains?.properties?.[props.domainId]?.properties?.subType?.enum || []);
