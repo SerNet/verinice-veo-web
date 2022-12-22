@@ -36,7 +36,7 @@ export default function (api: Client) {
      * @param query Additional request query params
      */
     fetchAll(query?: Record<string, string>): Promise<IVeoDomain[]> {
-      return api.req('/api/domains/', {
+      return api.req('/api/domains', {
         query
       });
     },

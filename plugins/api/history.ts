@@ -35,7 +35,7 @@ export default function (api: Client) {
 
       query.uri = `/${getSchemaEndpoint(await api._context.$api.schema.fetchAll(), entity.type)}/${entity.id}`;
       return api
-        .req('/api/history/revisions/', {
+        .req('/api/history/revisions', {
           query
         })
         .then((result: IVeoObjectHistoryEntry[]) => {
@@ -62,7 +62,7 @@ export default function (api: Client) {
       }
 
       query.owner = `/units/${unitId}`;
-      return api.req('/api/history/revisions/my-latest/', {
+      return api.req('/api/history/revisions/my-latest', {
         query
       });
     }
