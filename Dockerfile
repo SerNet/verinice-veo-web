@@ -6,8 +6,8 @@ RUN apk --no-cache add git python3 make g++
 
 # Create app directory
 WORKDIR /usr/src/app
-# Copy .npmrc for installing @nbrx/eslint-config-nuxt and package.json and lock file
-COPY .npmrc package.json package-lock.json ./
+# Copy package.json and lock file
+COPY package.json package-lock.json ./
 # Install packages
 RUN npm ci
 # Bundle app source

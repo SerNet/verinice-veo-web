@@ -2,10 +2,20 @@
   "editor.rulers": [
     120
   ],
+  "prettier.enable": false,
   "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
+  "eslint.validate": [
+    "vue",
+    "javascript",
+    "typescript",
+    "html"
+  ],
+  "eslint.alwaysShowStatus": true,
+  "eslint.format.enable": true,
+  "eslint.lintTask.enable": true,
   "psi-header.changes-tracking": {
     "autoHeader": "autoSave",
     "enforceHeader": true,
@@ -64,5 +74,5 @@
       "end": "-->",
       "prefix": "   - "
     }
-  ]
+  ],
 }
