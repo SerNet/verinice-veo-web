@@ -26,27 +26,27 @@ declare module 'vue-json-pointer' {
     /**
      *  Looks up a JSON pointer in an object.
      */
-    get(object: Object, pointer: string): any;
+    get(object: object, pointer: string): any;
     /**
      *  Set a value for a JSON pointer on object.
      */
-    set(object: Object, pointer: string, value: any): void;
+    set(object: object, pointer: string, value: any): void;
     /**
      *  Removes an attribute of object referenced by pointer
      */
-    remove(object: Object, pointer: string): void;
+    remove(object: object, pointer: string): void;
     /**
      *  Creates a dictionary object (pointer -> value).
      */
-    dict(object: Object): Object;
+    dict(object: object): object;
     /**
      *  Just like: each(pointer.dict(obj), iterator);
      */
-    walk(object: Object, iterator: (value: any, key: string) => void): void;
+    walk(object: object, iterator: (value: any, key: string) => void): void;
     /**
      *  Tests if an object has a value for a JSON pointer.
      */
-    has(object: Object, pointer: string): boolean;
+    has(object: object, pointer: string): boolean;
     /**
      *  Escapes a reference token.
      */

@@ -15,11 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { defineNuxtPlugin } from '@nuxtjs/composition-api';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import LocalStorage from '~/util/LocalStorage';
 
-export default defineNuxtPlugin(async ({ $api, app, route }) => {
+export default defineNuxtPlugin (async ({ $api, app, route }) => {
   const clearLastVisitData = () => {
     LocalStorage.lastUnit = null;
     LocalStorage.lastDomain = null;

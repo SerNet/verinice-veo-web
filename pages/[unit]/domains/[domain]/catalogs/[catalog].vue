@@ -62,45 +62,30 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
 import { separateUUIDParam } from '~/lib/utils';
-import { IVeoCatalogItem } from '~/types/VeoTypes';
+import { useFetchCatalogItems } from '~~/composables/api/catalogs';
 
 export const ROUTE_NAME = 'unit-domains-domain-catalogs-catalog';
 
 export default defineComponent({
   name: 'VeoCatalogPage',
   setup() {
-    const { $api } = useContext();
     const { t } = useI18n();
     const route = useRoute();
 
     const title = computed(() => t('catalog', { name: catalogItems.value?.[0]?.catalog?.displayName || '' }));
 
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
-    const catalogId = computed(() => separateUUIDParam(route.value.params.catalog).id);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
+    const catalogId = computed(() => separateUUIDParam(route.params.catalo as string).id);
 
-    const catalogItems = ref<IVeoCatalogItem[]>([]);
     const scenarios = computed(() =>
       // VVT is needed by the backend, however it shouldn't be selectable by the user as this throws an error
       catalogItems.value.filter((catalogItem) => !catalogItem.element.displayName?.includes('TOM-') && !catalogItem.element.displayName?.includes('VVT'))
     );
     const toms = computed(() => catalogItems.value.filter((catalogItem) => catalogItem.element.displayName?.includes('TOM-')));
 
-    const { fetch } = useFetch(async () => {
-      catalogItems.value = await $api.catalog.fetchItems(catalogId.value, domainId.value);
-    });
-
-    watch(
-      () => domainId.value,
-      () => fetch()
-    );
-    watch(
-      () => catalogId.value,
-      () => fetch()
-    );
+    const fetchCatalogItemsQueryParameters = computed(() => ({ catalogId: catalogId.value, domainId: domainId.value }));
+    const { data: catalogItems } = useFetchCatalogItems(fetchCatalogItemsQueryParameters);
 
     return {
       scenarios,

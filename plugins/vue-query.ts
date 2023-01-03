@@ -15,24 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Context } from '@nuxt/types';
-import Vue from 'vue';
+import { createApp } from 'vue';
 import { VueQueryPlugin, QueryClient, hydrate } from '@tanstack/vue-query';
 
 import { STALE_TIME } from '~/composables/api/utils/query';
 
-export default (context: Context) => {
+export default defineNuxtPlugin(nuxtApp => {
   // Modify your Vue Query global settings here
   const queryClient = new QueryClient({
     defaultOptions: { queries: { staleTime: STALE_TIME.REQUEST, refetchOnWindowFocus: false } }
   });
   const options = { queryClient };
 
-  Vue.use(VueQueryPlugin, options);
+  const app = createApp({});
+  app.use(VueQueryPlugin, options);
 
   if (process.client) {
-    if (context.nuxtState && context.nuxtState['vue-query']) {
-      hydrate(queryClient, context.nuxtState['vue-query']);
+    if (nuxtApp.nuxtState?.['vue-query']) {
+      hydrate(queryClient, nuxtApp.nuxtState['vue-query']);
     }
   }
-};
+});

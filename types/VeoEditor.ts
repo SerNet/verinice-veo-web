@@ -199,7 +199,7 @@ const INPUT_ELEMENTS = [
  * @param conditions The conditions to check against.
  * @param additionalCustomAdvantage Increases the score by x.
  */
-function calculateConditionsScore(conditions: boolean[], additionalCustomAdvantage: number = 0): number {
+function calculateConditionsScore(conditions: boolean[], additionalCustomAdvantage = 0): number {
   // If every condition is satisfied, then calculate number of conditions
   // else not every condition is satisfied and therefore return 0
   return (isEveryConditionTrue(conditions) ? conditions.length : 0) + additionalCustomAdvantage;

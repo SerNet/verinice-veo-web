@@ -70,7 +70,7 @@ export default class LocalStorage {
     return JSON.parse(LocalStorage.get(key) || '{}');
   }
 
-  static setObject(key: string, value: Object) {
+  static setObject(key: string, value: object) {
     LocalStorage.set(key, JSON.stringify(value));
   }
 

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { reactive, ref, Ref, set, unref, useContext, watch } from '@nuxtjs/composition-api';
+import { reactive, ref, Ref, unref, watch } from 'vue';
 import { useQuery as vueQueryUseQuery, useQueries as VueQueryUseQueries, useQueryClient } from '@tanstack/vue-query';
 import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
 import { QueryObserverResult } from '@tanstack/query-core/build/lib/types';
@@ -66,7 +66,7 @@ export const useQuery = <TVariable = IBaseObject, TResult = any>(
   queryParameterTransformationFn: (parameters: TVariable | void) => IVeoQueryParameters,
   queryOptions?: QueryOptions
 ) => {
-  const { $config } = useContext();
+  const { $config } = useNuxtApp();
   const { request } = useRequest();
 
   // Generating query key based on identifier and the query parameters. This causes the query to get executed again if the query parameters change
@@ -75,7 +75,7 @@ export const useQuery = <TVariable = IBaseObject, TResult = any>(
     () => queryParameters?.value,
     (newValue) => {
       if (newValue) {
-        set(queryKey, 1, newValue);
+        queryKey[1] = newValue;
       }
     },
     { deep: true, immediate: true }
@@ -152,19 +152,19 @@ export const useQueries = <TVariable = IBaseObject, TResult = any>(
     (newValue) => {
       queries.value = newValue.length
         ? newValue.map((query) => ({
-            queryKey: [queriesIdentifier, query],
-            queryFn: async () => {
-              let result = await request(queryDefinition.url, {
-                ...queryParameterTransformationFn(unref(query)),
-                ...omit(queryDefinition, 'url', 'onDataFetched')
-              });
-              if (queryDefinition.onDataFetched) {
-                result = queryDefinition.onDataFetched(result);
-              }
-              return result;
-            },
-            ...queryOptions
-          }))
+          queryKey: [queriesIdentifier, query],
+          queryFn: async () => {
+            let result = await request(queryDefinition.url, {
+              ...queryParameterTransformationFn(unref(query)),
+              ...omit(queryDefinition, 'url', 'onDataFetched')
+            });
+            if (queryDefinition.onDataFetched) {
+              result = queryDefinition.onDataFetched(result);
+            }
+            return result;
+          },
+          ...queryOptions
+        }))
         : [{ queryKey: ['unnecessary'], queryFn: () => null }];
     },
     { deep: true, immediate: true }

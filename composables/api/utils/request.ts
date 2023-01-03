@@ -15,9 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { reactive, useContext } from '@nuxtjs/composition-api';
+import { reactive } from 'vue';
 import { defaultsDeep } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 import { useVeoUser } from '~/composables/VeoUser';
 import { sanitizeURLParams } from '~/lib/utils';
 import { IVeoPaginationOptions } from '~/types/VeoTypes';
@@ -54,7 +53,7 @@ export interface RequestOptions extends RequestInit {
 }
 
 export const useRequest = () => {
-  const context = useContext();
+  const context = useNuxtApp();
   const user = useVeoUser();
   const { locale } = useI18n();
 

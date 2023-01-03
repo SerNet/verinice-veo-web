@@ -228,8 +228,8 @@
                 :clone="onCloneWidget"
               >
                 <v-sheet
-                  v-for="widget in filteredWidgets"
-                  :key="widget.key"
+                  v-for="(widget, index) in filteredWidgets"
+                  :key="index"
                 >
                   <VeoFseListItem
                     :title="widget.name[locale]|| Object.values(widget.name)[0]"
@@ -245,8 +245,7 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropType, ref, Ref } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { ComputedRef, PropType, Ref } from 'vue';
 import { JsonPointer } from 'json-ptr';
 import Draggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
@@ -257,12 +256,6 @@ import { IVeoFormSchema, IVeoObjectSchema } from '~/types/VeoTypes';
 import { generateFormSchema, Mode } from '~/components/forms/util';
 import { IVeoFormsElementDefinition } from '~/components/forms/types';
 import { IBaseObject } from '~/lib/utils';
-
-interface IProps {
-  searchQuery: string;
-  formSchema: IVeoFormSchema;
-  objectSchema: IVeoObjectSchema;
-}
 
 export interface IControl {
   scope: string;
@@ -288,7 +281,7 @@ export interface IControlItemMap {
 
 const WIDGETS: IVeoFormsElementDefinition[] = [];
 
-export default defineComponent<IProps>({
+export default defineComponent({
   components: {
     Draggable
   },
@@ -306,6 +299,7 @@ export default defineComponent<IProps>({
       required: true
     }
   },
+  emits: ['control-items'],
   setup(props, context) {
     const { locale, t } = useI18n();
 
@@ -405,7 +399,7 @@ export default defineComponent<IProps>({
         Mode.VEO
       );
 
-      context.emit('controlItems', nestedControls.value);
+      context.emit('control-items', nestedControls.value);
     }
     initializeControls();
 
@@ -462,7 +456,7 @@ export default defineComponent<IProps>({
 
     const filteredWidgets = computed(() => unused.value.widgets.filter((widget) => !props.searchQuery || widget.code.toLowerCase().includes(props.searchQuery)));
 
-    const controlElementsVisible: ComputedRef<Boolean> = computed(() => {
+    const controlElementsVisible: ComputedRef<boolean> = computed(() => {
       return !!(filteredFormElements.value.length + filteredBasics.value.length + filteredAspects.value.length + filteredLinks.value.length);
     });
 

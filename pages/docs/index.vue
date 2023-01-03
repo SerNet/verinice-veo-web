@@ -60,9 +60,7 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, useRoute } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { DocPageFetchReturn, useDocs } from '~/composables/docs';
 export default defineComponent({
@@ -78,12 +76,12 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const { locale, t } = useI18n();
-    const lang = route.value.query.lang?.toString() || undefined;
+    const lang = route.query.lang?.toString() || undefined;
     if (lang) {
       locale.value = lang;
     }
     // It is possible to a query parameter root to only print the contents of a folder/chapter
-    const root = [...(route.value.query.root || [])].join('') || undefined;
+    const root = [...(route.query.root || [])].join('') || undefined;
     const documents = useDocs({
       root,
       createDirs: true,
@@ -126,28 +124,28 @@ export default defineComponent({
       // ensure pagedjs is not embedded until documents have been rendered
       script: this.documents
         ? [
-            {
-              // Do not execute PagedJS automatically
-              innerHTML: 'window.PagedConfig = { auto: false };'
-            },
-            {
-              src: '/paged.polyfill.js',
-              callback: () => {
-                const win = window as any;
-                const Paged = win.Paged;
-                class MyHandler extends Paged.Handler {
-                  afterRendered() {
-                    document.dispatchEvent(new Event('PAGEDJS_AFTER_RENDERED'));
-                    document.querySelector('#print-button')?.addEventListener('click', () => {
-                      window.print();
-                    });
-                  }
+          {
+            // Do not execute PagedJS automatically
+            innerHTML: 'window.PagedConfig = { auto: false };'
+          },
+          {
+            src: '/paged.polyfill.js',
+            callback: () => {
+              const win = window as any;
+              const Paged = win.Paged;
+              class MyHandler extends Paged.Handler {
+                afterRendered() {
+                  document.dispatchEvent(new Event('PAGEDJS_AFTER_RENDERED'));
+                  document.querySelector('#print-button')?.addEventListener('click', () => {
+                    window.print();
+                  });
                 }
-                Paged.registerHandlers(MyHandler);
-                win.PagedPolyfill.preview();
               }
+              Paged.registerHandlers(MyHandler);
+              win.PagedPolyfill.preview();
             }
-          ]
+          }
+        ]
         : []
     };
   }

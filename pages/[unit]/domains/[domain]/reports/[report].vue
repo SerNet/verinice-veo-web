@@ -99,8 +99,6 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { upperCase, upperFirst } from 'lodash';
 
 import { separateUUIDParam } from '~/lib/utils';
@@ -122,14 +120,14 @@ export default defineComponent({
     const { tablePageSize } = useVeoUser();
     const { data: endpoints } = useFetchSchemas();
 
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     const outputType = computed<string>(() => report.value?.outputTypes?.[0] || '');
 
     const title = computed(() => t('create', { type: report.value?.name?.[locale.value] || '', format: upperCase(outputType.value.split('/').pop()) }).toString());
 
     // Fetching the right report
-    const requestedReportName = computed(() => route.value.params.type);
+    const requestedReportName = computed(() => route.params.type as string);
 
     const { data: reports, isFetching: reportsFetching } = useFetchReports();
     const report = computed(() => reports.value?.[requestedReportName.value]);
@@ -153,7 +151,7 @@ export default defineComponent({
 
     // filter built from URL query parameters
     const filter = computed(() => {
-      const query = route.value.query;
+      const query = route.query;
 
       let filterObject = Object.fromEntries(
         filterKeys.map((key) => {
@@ -180,7 +178,7 @@ export default defineComponent({
       sortBy: objectsQueryParameters.sortBy,
       sortOrder: objectsQueryParameters.sortDesc ? 'desc' : 'asc',
       page: objectsQueryParameters.page,
-      unit: separateUUIDParam(route.value.params.unit).id,
+      unit: separateUUIDParam(route.params.unit as string).id,
       ...filter.value,
       endpoint: endpoint.value
     }));
@@ -196,10 +194,10 @@ export default defineComponent({
     const updateRouteQuery = async (v: Record<string, string | undefined | null | true>, reset = true) => {
       const resetValues = reset ? filterKeys.map((key) => [key, undefined as string | undefined | null]) : [];
       const newValues = Object.fromEntries(resetValues.concat(Object.entries(v).map(([k, v]) => [k, v === true ? null : v])));
-      const query = { ...route.value.query, ...newValues };
+      const query = { ...route.query, ...newValues };
       // obsolete params need to be removed from the query to match the route exactly in the NavigationDrawer
       Object.keys(query).forEach((key) => query[key] === undefined && delete query[key]);
-      await router.push({ ...route.value, name: route.value.name!, query });
+      await router.push({ ...route, name: route.name, query });
     };
 
     // refetch entities on page or sort changes (in VeoObjectTable)

@@ -67,36 +67,33 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain } from '~/types/VeoTypes';
+import { useFetchDomain } from '~~/composables/api/domains';
 
 export default defineComponent({
   setup() {
-    const { $api } = useContext();
     const route = useRoute();
     const router = useRouter();
     const { t } = useI18n();
 
-    const domain = ref<IVeoDomain | undefined>(undefined);
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
-
-    useFetch(async () => {
-      domain.value = await $api.domain.fetch(domainId.value);
-
-      if (!route.value.params.matrix) {
-        viewRiskDefinition(Object.values(domain.value.riskDefinitions)[0].id);
+    const redirectIfNoRiskDefinitionSelected = (data: IVeoDomain) => {
+      if (!route.params.matrix) {
+        viewRiskDefinition(Object.values(data.riskDefinitions)[0].id);
       }
-    });
+    };
 
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
+    const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
+    const { data: domain } = useFetchDomain(fetchDomainQueryParameters, { onSuccess: redirectIfNoRiskDefinitionSelected });
+    
     const viewRiskDefinition = (id: string) => {
       router.push({
         name: 'unit-domains-domain-risks-matrix',
         params: {
-          ...route.value.params,
+          ...route.params,
           matrix: id
         }
       });

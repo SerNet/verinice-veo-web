@@ -15,11 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { FetchReturn } from '@nuxt/content/types/query-builder';
-import { useAsync, useContext, computed, watch } from '@nuxtjs/composition-api';
-import { LocaleObject } from '@nuxtjs/i18n/types';
+import { ParsedContent } from '@nuxt/content/dist/runtime/types';
+import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { cloneDeep } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { onContentUpdate } from './utils';
 
@@ -30,7 +28,7 @@ export interface DocPage {
   isDir?: boolean;
 }
 
-export type DocPageFetchReturn = FetchReturn & DocPage;
+export type DocPageFetchReturn = ParsedContent & DocPage;
 
 type ContentOptions = { path?: string; locale?: string; localeSeparator?: string; fallbackLocale?: string; where?: object };
 const getOptions = (params: ContentOptions, _locale: string) => {
@@ -40,9 +38,7 @@ const getOptions = (params: ContentOptions, _locale: string) => {
   return { ...params, fallbackLocale, localeSeparator, locale };
 };
 
-const ensureArray = <T>(result: T[] | T): T[] => {
-  return result && Array.isArray(result) ? result : [result];
-};
+const ensureArray = <T>(result: T[] | T): T[] => Array.isArray(result) ? result : [result];
 
 /**
  * Why a special function only to sort? Docs don't only get sorted by their level or their position alone, they always get sorted relative to their parents.
@@ -81,13 +77,12 @@ const sortDocs = (docs: (readonly [string, DocPageFetchReturn])[]) => {
   });
 };
 
-export const useDoc = (params: { path: string; locale?: string; localeSeparator?: string; fallbackLocale?: string }) => {
+export const useDoc = async (params: { path: string; locale?: string; localeSeparator?: string; fallbackLocale?: string }) => {
   const i18n = useI18n();
   const options = computed(() => getOptions(params, i18n.locale.value));
-  const { $content } = useContext();
 
   const fetchDoc = async () => {
-    const fetchResult = await $content({ deep: true })
+    const fetchResult = await queryContent({ deep: true })
       .where({
         $or: [
           { path: options.value.path + options.value.localeSeparator + options.value.locale },
@@ -99,12 +94,12 @@ export const useDoc = (params: { path: string; locale?: string; localeSeparator?
         extension: '.md'
       })
       .limit(1)
-      .fetch<DocPage>();
+      .find();
 
     return ensureArray(fetchResult).shift();
   };
 
-  const doc = useAsync(fetchDoc, options.value.path);
+  const doc = ref(await fetchDoc());
 
   const updateDocs = async () => {
     doc.value = await fetchDoc();
@@ -123,7 +118,7 @@ export const useDoc = (params: { path: string; locale?: string; localeSeparator?
   return doc;
 };
 
-export const useDocs = <T extends DocPageFetchReturn>(params: {
+export const useDocs = async<T extends DocPageFetchReturn = DocPageFetchReturn>(params: {
   root?: string;
   locale?: string;
   localeSeparator?: string;
@@ -133,20 +128,19 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
 }) => {
   const {
     i18n: { locales }
-  } = useContext();
+  } = useNuxtApp();
   const i18n = useI18n();
 
   const options = computed(() => getOptions(params, i18n.locale.value));
   const normalizePath = (path: string) => (path.split(options.value.localeSeparator).shift() || path).replace(/\/index(?:\.\w+)?$/i, '') || '/';
-  const { $content } = useContext();
   const buildItem = params.buildItem ?? ((v) => v);
   const fetchDocs = async () => {
     // The nuxt content queries are using lokiJS, however they aren't properly implemented and most operators aren't working. To circumvent undefinedIn (checking for a key or its value), we use nin to only check for the value
     // In addition, lang: { $eq: undefined } or lang: undefined seems to unset the filter, so we have to take all possible other values expect the current language and undefined and check if the page does have one of those
-    const fetchResult = await (params.root ? $content(params.root, { deep: true }) : $content({ deep: true }))
+    const fetchResult = await (params.root ? queryContent(params.root, { deep: true }) : queryContent({ deep: true }))
       .where({ lang: { $nin: (locales as LocaleObject[]).filter((_locale: any) => _locale.code !== options.value.locale).map((_locale: any) => _locale.code) }, extension: '.md' })
-      .sortBy('path', 'asc')
-      .fetch<DocPage>();
+      .sort({  })
+      .find();
 
     const docs = sortDocs(
       ensureArray(fetchResult).map((item) => {
@@ -163,27 +157,27 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
     const fileMap: Record<string, ReturnType<typeof buildItem>> = {};
     const returnVal = params.createDirs
       ? list.flatMap((item) => {
-          const path = item.path;
-          fileMap[path] = item;
-          const segments = path.split('/').slice(1);
-          const items = [item];
-          // Create parent directories (upwards the tree)
-          for (let i = 1; i < segments.length; i++) {
-            const pathSegments = segments.slice(0, -i);
-            const path = '/' + pathSegments.join('/');
-            if (fileMap[path]) break; // stop at first existing directory
-            const dir = '/' + pathSegments.slice(0, -1).join('/');
-            const newItem = (fileMap[path] = buildItem({ ...item, isDir: true, path, dir, segments, level: segments.length - i }));
-            // Add created directories to the list of files
-            items.unshift(newItem);
-          }
-          return items;
-        })
+        const path = item.path;
+        fileMap[path] = item;
+        const segments = path.split('/').slice(1);
+        const items = [item];
+        // Create parent directories (upwards the tree)
+        for (let i = 1; i < segments.length; i++) {
+          const pathSegments = segments.slice(0, -i);
+          const path = '/' + pathSegments.join('/');
+          if (fileMap[path]) break; // stop at first existing directory
+          const dir = '/' + pathSegments.slice(0, -1).join('/');
+          const newItem = (fileMap[path] = buildItem({ ...item, isDir: true, path, dir, segments, level: segments.length - i }));
+          // Add created directories to the list of files
+          items.unshift(newItem);
+        }
+        return items;
+      })
       : list;
     return returnVal;
   };
 
-  const docs = useAsync(fetchDocs);
+  const docs = ref(await fetchDocs());
 
   onContentUpdate(async () => {
     docs.value = await fetchDocs();
@@ -198,7 +192,7 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
 
   return docs;
 };
-export const useDocTree = <T extends DocPageFetchReturn, ChildrenKey extends string = 'children'>(params: {
+export const useDocTree = async <T extends DocPageFetchReturn, ChildrenKey extends string = 'children'>(params: {
   root?: string;
   locale?: string;
   localeSeparator?: string;
@@ -207,7 +201,7 @@ export const useDocTree = <T extends DocPageFetchReturn, ChildrenKey extends str
   buildItem?: (item: DocPageFetchReturn) => T;
 }) => {
   const childrenKey = params.childrenKey || 'children';
-  const docs = useDocs({ ...params, createDirs: true });
+  const docs = await useDocs({ ...params, createDirs: true });
 
   return computed(() => {
     const files = (docs.value || []).map(

@@ -35,13 +35,7 @@ export default defineNuxtConfig({
   /*
    ** Nuxt.js modules
    */
-  modules: [
-    'nuxt-polyfill',
-    '@nuxt/content',
-    '@nuxtjs/i18n',
-    './modules/docs',
-    './modules/externalize-scripts'
-  ],
+  modules: ['nuxt-polyfill', '@nuxt/content', '@nuxtjs/i18n', './modules/docs', './modules/externalize-scripts'],
   content: {
     dir: 'docs',
     liveEdit: false,
@@ -104,6 +98,6 @@ export default defineNuxtConfig({
   },
 
   build: {
-    transpile: ['vuetify'],
+    transpile: ['vuetify']
   }
 });

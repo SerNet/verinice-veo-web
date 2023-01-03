@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import defaultsDeep from 'lodash/defaultsDeep';
-import { Plugin, Context } from '@nuxt/types';
 
 import entity from '~/plugins/api/entity';
 import form from '~/plugins/api/form';
@@ -29,13 +28,13 @@ import { sanitizeURLParams } from '~/lib/utils';
 import { IVeoUserComposable, useVeoUser } from '~/composables/VeoUser';
 import { ETAG_MAP, RequestOptions } from '~/composables/api/utils/request';
 
-export function createAPI(context: Context, user: IVeoUserComposable) {
+export function createAPI(context: any, user: IVeoUserComposable) {
   return Client.create(context, { form, entity, schema, unit, domain, catalog, monitoring }, user);
 }
 
 export interface IAPIClient {
   // eslint-disable-next-line no-use-before-define
-  (api: Client): Object;
+  (api: Client): object;
 }
 
 export enum VeoApiReponseType {
@@ -70,10 +69,10 @@ export class Client {
   public baseHistoryURL: string;
   public baseReportURL: string;
   public baseAccountURL: string;
-  public _context: Context;
+  public _context: any;
   public _user: IVeoUserComposable;
 
-  static create<T extends Record<keyof T, IAPIClient>>(context: Context, namespaces: T, user: IVeoUserComposable): Client & { [K in keyof T]: ReturnType<T[K]> } {
+  static create<T extends Record<keyof T, IAPIClient>>(context: any, namespaces: T, user: IVeoUserComposable): Client & { [K in keyof T]: ReturnType<T[K]> } {
     const instance: any = new this(context, user);
     for (const key in namespaces) {
       instance[key] = namespaces[key](instance);
@@ -81,7 +80,7 @@ export class Client {
     return instance;
   }
 
-  constructor(protected context: Context, user: IVeoUserComposable) {
+  constructor(protected context: any, user: IVeoUserComposable) {
     this.build = context.$config.build;
     this.version = context.$config.version;
     this.baseURL = `${context.$config.apiUrl}`.replace(/\/$/, '');
@@ -225,10 +224,10 @@ export class Client {
   }
 }
 
-export default <Plugin>((context, inject) => {
+export default defineNuxtPlugin(nuxtApp => {
   const user = useVeoUser();
 
-  inject('api', createAPI(context, user));
+  nuxtApp.provide('api', () => createAPI(nuxtApp, user));
 });
 
 export type Injection = ReturnType<typeof createAPI>;

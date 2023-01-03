@@ -181,7 +181,7 @@
             :object-schema="objectSchema"
             :form-schema="formSchema"
             :search-query="searchQuery"
-            @controlItems="updateControlItems"
+            @control-items="updateControlItems"
           />
         </template>
       </VeoPage>
@@ -207,7 +207,10 @@
             />
           </div>
         </template>
-        <template v-else>
+        <template
+          v-else
+          #default
+        >
           <v-row class="fill-height flex-column text-center align-center px-8">
             <v-col
               cols="auto"
@@ -232,7 +235,7 @@
         </template>
       </VeoPage>
       <VeoPage
-        v-if="!$vuetify.breakpoint.xs"
+        v-if="!vuetify.breakpoint.xs"
         height="100%"
         heading-level="3"
         :title="t('preview')"
@@ -251,7 +254,10 @@
             :locale="language"
           />
         </template>
-        <template v-else>
+        <template
+          v-else
+          #default
+        >
           <v-row class="fill-height flex-column text-center align-center px-8">
             <v-col
               cols="auto"
@@ -299,8 +305,8 @@
       <VeoFseTranslationDialog
         v-if="!$fetchState.pending && translationDialogVisible && formSchema && formSchema.translation"
         v-model="translationDialogVisible"
+        v-model:current-display-language="language"
         :translations="formSchema.translation"
-        :current-display-language.sync="language"
         :available-languages="availableLanguages"
         :name="formSchema.name"
         @update-translation="setFormTranslation"
@@ -325,10 +331,8 @@
 <script lang="ts">
 import vjp from 'vue-json-pointer';
 
-import { computed, defineComponent, provide, Ref, ref, set, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { Ref } from 'vue';
 import { JsonPointer } from 'json-ptr';
-import { LocaleObject } from '@nuxtjs/i18n/types';
 
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
 import {
@@ -339,8 +343,7 @@ import {
   IVeoFormSchemaItem,
   IVeoFormSchemaItemUpdateEvent,
   IVeoFormSchemaTranslationCollection,
-  IVeoFormSchemaMeta,
-  IVeoDomain
+  IVeoFormSchemaMeta
 } from '~/types/VeoTypes';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
@@ -348,16 +351,18 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useCreateForm, useUpdateForm } from '~/composables/api/forms';
+import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+import { useFetchDomain } from '~~/composables/api/domains';
 
 export default defineComponent({
   setup() {
     const { locale, t } = useI18n();
-    const { $api, i18n } = useContext();
+    const { i18n, vuetify } = useNuxtApp();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
 
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     /**
      * Layout specific stuff
@@ -487,12 +492,12 @@ export default defineComponent({
     }
 
     const invalidSchemaDownloadDialogVisible = ref(false);
-    function downloadSchema(forceDownload: boolean = false) {
+    function downloadSchema(forceDownload = false) {
       if (schemaIsValid.value.valid === false && !forceDownload) {
         invalidSchemaDownloadDialogVisible.value = true;
       } else if (downloadButton.value && downloadButton.value !== null) {
         invalidSchemaDownloadDialogVisible.value = false;
-        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`;
+        const data = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`;
         downloadButton.value.href = data;
         downloadButton.value.download = `fs_${formSchema.value?.name[language.value] || 'missing_translation'}.json`;
       }
@@ -525,15 +530,8 @@ export default defineComponent({
       controlItems.value = items;
     }
 
-    const domain = ref<IVeoDomain | undefined>(undefined);
-    const { fetch: fetchDomain } = useFetch(async () => {
-      domain.value = await $api.domain.fetch(domainId.value);
-    });
-
-    watch(
-      () => domainId.value,
-      () => fetchDomain()
-    );
+    const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
+    const { data: domain } = useFetchDomain(fetchDomainQueryParameters);
 
     /**
      * Translations related stuff
@@ -547,13 +545,13 @@ export default defineComponent({
 
     function setFormTranslation(event: IVeoFormSchemaTranslationCollection) {
       if (formSchema.value) {
-        set(formSchema.value, 'translation', event);
+        formSchema.value.translation = event;
       }
     }
 
     function setFormName(event: IVeoFormSchemaMeta['name']) {
       if (formSchema.value) {
-        set(formSchema.value, 'name', event);
+        formSchema.value.name = event;
       }
     }
 
@@ -647,6 +645,7 @@ export default defineComponent({
       save,
       translations,
       onWizardFinished,
+      vuetify,
 
       t,
       HELP_ROUTE

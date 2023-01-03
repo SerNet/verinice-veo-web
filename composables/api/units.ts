@@ -15,18 +15,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Ref } from '@nuxtjs/composition-api';
+import { Ref } from 'vue';
 
 import { IVeoQueryTransformationMap, QueryOptions, STALE_TIME, useQuery } from './utils/query';
-import { IVeoUnit } from '~/types/VeoTypes';
+import { IVeoAPIMessage, IVeoUnit } from '~/types/VeoTypes';
+import { useQueryClient } from '@tanstack/vue-query';
+import { IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
 
 export interface IVeoFetchUnitParameters {
   id: string;
 }
 
+export interface IVeoCreateUnitParameters {
+  name: string;
+  description: string;
+}
+
 export const unitsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
   fetchAll: () => ({}),
   fetch: (queryParameters: IVeoFetchUnitParameters) => ({ params: queryParameters })
+};
+
+export const unitsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
+  create: (mutationParameters: IVeoCreateUnitParameters) => ({
+    json: mutationParameters
+  })
 };
 
 export const useFetchUnits = (queryOptions?: QueryOptions) =>
@@ -41,3 +54,25 @@ export const useFetchUnit = (queryParameters: Ref<IVeoFetchUnitParameters>, quer
     ...queryOptions,
     staleTime: STALE_TIME.MEDIUM
   });
+
+export const useCreateUnit = (mutationOptions?: MutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IVeoCreateUnitParameters, IVeoAPIMessage>(
+    'form',
+    {
+      url: '/api/units',
+      method: 'POST'
+    },
+    unitsMutationParameterTransformationMap.create,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(['units']);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
+      }
+    }
+  );
+};

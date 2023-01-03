@@ -15,12 +15,10 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<script lang="ts">
-import Vue from 'vue';
+<script lang="ts" setup>
+defineNuxtRouteMiddleware(() => {
+  const route = useRoute();
 
-export default Vue.extend({
-  middleware({ params, redirect }) {
-    redirect(`/${params.unit}`);
-  }
+  navigateTo(`/${route.params.unit}`);
 });
 </script>

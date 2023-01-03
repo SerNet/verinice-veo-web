@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage :title="$t('breadcrumbs.catalogs')">
+  <VeoPage :title="t('breadcrumbs.catalogs')">
     <template #header>
       <p class="mt-4">
         {{ t('hint') }}
@@ -31,25 +31,19 @@
   </VeoPage>
 </template>
 
-<script>
-import { computed, defineComponent, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
+<script lang="ts">
 import { separateUUIDParam } from '~/lib/utils';
+import { useFetchCatalogs } from '~/composables/api/catalogs';
 
 export default defineComponent({
   setup() {
-    const { $api } = useContext();
     const route = useRoute();
     const { t } = useI18n();
 
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
-    const catalogs = ref();
-
-    useFetch(async () => {
-      catalogs.value = await $api.catalog.fetchAll(domainId.value);
-    });
+    const fetchCatalogsQueryParameters = computed(() => ({ domainId: domainId.value }));
+    const { data: catalogs } = useFetchCatalogs(fetchCatalogsQueryParameters);
 
     return {
       catalogs,

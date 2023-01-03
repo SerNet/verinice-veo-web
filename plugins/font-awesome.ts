@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import Vue from 'vue';
+import { createApp } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faObjectGroup, faObjectUngroup } from '@fortawesome/free-regular-svg-icons';
 import { faDiagramProject } from '@fortawesome/free-solid-svg-icons';
 
-export default () => {
+export default defineNuxtPlugin(() => {
   library.add(faDiagramProject, faObjectGroup, faObjectUngroup);
-  Vue.component('FontAwesomeIcon', FontAwesomeIcon);
-};
+  createApp({}).component('FontAwesomeIcon', FontAwesomeIcon);
+});

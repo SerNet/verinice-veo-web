@@ -35,9 +35,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, useRouter } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
 import { useFetchReports } from '~/composables/api/reports';
 
 export default defineComponent({
@@ -48,7 +45,7 @@ export default defineComponent({
     const { data: reports, isFetching } = useFetchReports();
 
     const createReport = (reportId: string) => {
-      router.push(`/${route.value.params.unit}/domains/${route.value.params.domain}/reports/${reportId}`);
+      router.push(`/${route.params.unit}/domains/${route.params.domain}/reports/${reportId}`);
     };
 
     return {

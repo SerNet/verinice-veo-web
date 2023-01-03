@@ -1,6 +1,9 @@
 <template>
   <NuxtLayout>
-    <Transition name="page" mode="out-in">
+    <Transition
+      name="page"
+      mode="out-in"
+    >
       <NuxtPage />
     </Transition>
   </NuxtLayout>
@@ -23,5 +26,5 @@ useHead({
     }
   ],
   link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
-})
+});
 </script>

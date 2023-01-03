@@ -31,7 +31,6 @@
   </VeoPage>
 </template>
 <script lang="ts">
-import { defineComponent, useRoute, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 
 import { useDoc, useDocs } from '~/composables/docs';
@@ -40,7 +39,7 @@ import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 export default defineComponent({
   setup() {
     const route = useRoute();
-    const document = useDoc({ path: `/${route.value.params.pathMatch || 'index'}` });
+    const document = useDoc({ path: `/${route.params.pathMatch || 'index'}` });
     const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 
     const docs = useDocs({

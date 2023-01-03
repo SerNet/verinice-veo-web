@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const path = require('path');
-const puppeteer = require('puppeteer');
+import path from 'path';
+import puppeteer from 'puppeteer';
 
 const LANGS = ['de', 'en'];
 

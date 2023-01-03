@@ -36,20 +36,8 @@
   </VeoPage>
 </template>
 
-<script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
-export default defineComponent({
-  setup() {
-    const { t, locale } = useI18n();
-
-    return {
-      t,
-      locale
-    };
-  }
-});
+<script lang="ts" setup>
+const { t, locale } = useI18n();
 </script>
 
 <i18n>

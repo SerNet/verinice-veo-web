@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { unref, useContext } from '@nuxtjs/composition-api';
+import { unref } from 'vue';
 import { useMutation as vueQueryUseMutation } from '@tanstack/vue-query';
 import { UseMutationOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
@@ -56,12 +56,12 @@ export const useMutation = <TVariable, TResult>(
   mutationParameterTransformationFn: (parameters: TVariable) => IVeoMutationParameters,
   mutationOptions?: MutationOptions
 ) => {
-  const { $config } = useContext();
+  const { $config } = useNuxtApp();
   const { request } = useRequest();
 
   // Actual mutation getting execute
   // @ts-ignore Some weird typing problems. However everything works
-  const result = vueQueryUseMutation<TResult, unknown, IMutationParameters>({
+  const result = vueQueryUseMutation<TResult, unknown, IVeoMutationParameters>({
     mutationFn: (mutationParameters: IVeoMutationParameters) => request(mutationDefinition.url, { ...mutationParameters, ...omit(mutationDefinition, 'url') }),
     ...mutationOptions
   });

@@ -47,11 +47,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-
 export const ROUTE = '/help';
 
-export default Vue.extend({
+export default {
   name: 'Docs',
   layout: 'plain',
   data() {
@@ -116,5 +114,5 @@ export default Vue.extend({
       ]
     };
   }
-});
+};
 </script>

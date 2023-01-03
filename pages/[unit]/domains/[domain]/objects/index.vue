@@ -122,8 +122,6 @@
 
 <script lang="ts">
 import { mdiContentCopy, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
-import { useI18n } from 'nuxt-i18n-composable';
-import { computed, defineComponent, h, useRoute, useRouter, ref, reactive, watch, onUnmounted } from '@nuxtjs/composition-api';
 import { omit, upperFirst } from 'lodash';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
@@ -174,7 +172,7 @@ export default defineComponent({
 
     // filter built from URL query parameters
     const filter = computed(() => {
-      const query = route.value.query;
+      const query = route.query;
       return Object.fromEntries(
         filterKeys.map((key) => {
           // Extract first query value
@@ -189,7 +187,7 @@ export default defineComponent({
     const subType = computed(() => filter.value.subType);
 
     // parse UUID from URL
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     // fetch objects of objectType
     const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
@@ -203,7 +201,7 @@ export default defineComponent({
       sortBy: queryParameters.sortBy,
       sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
       page: queryParameters.page,
-      unit: separateUUIDParam(route.value.params.unit).id,
+      unit: separateUUIDParam(route.params.unit as string).id,
       ...omit(filter.value, 'objectType'),
       endpoint: endpoint.value
     }));
@@ -240,7 +238,7 @@ export default defineComponent({
       addCustomBreadcrumb({
         key: objectTypeKey,
         text: translations.value?.lang[locale.value]?.[endpoints.value?.[newObjectType] || newObjectType],
-        to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${newObjectType}`,
+        to: `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${newObjectType}`,
         param: objectTypeKey,
         index: 0,
         position: 11
@@ -275,7 +273,7 @@ export default defineComponent({
       addCustomBreadcrumb({
         key: subTypeKey,
         text: formSchema ? formSchema.name[locale.value] || Object.values(formSchema.name[locale.value])[0] : newSubType,
-        to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectType.value}&subType=${newSubType}`,
+        to: `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${objectType.value}&subType=${newSubType}`,
         param: objectTypeKey,
         index: 0,
         position: 12
@@ -297,10 +295,10 @@ export default defineComponent({
     const updateRouteQuery = async (v: Record<string, string | undefined | null | true>, reset = true) => {
       const resetValues = reset ? filterKeys.map((key) => [key, undefined as string | undefined | null]) : [];
       const newValues = Object.fromEntries(resetValues.concat(Object.entries(v).map(([k, v]) => [k, v === true ? null : v])));
-      const query = { ...route.value.query, ...newValues };
+      const query = { ...route.query, ...newValues };
       // obsolete params need to be removed from the query to match the route exactly in the NavigationDrawer
       Object.keys(query).forEach((key) => query[key] === undefined && delete query[key]);
-      await router.push({ ...route.value, name: route.value.name!, query });
+      await router.push({ ...route, name: route.name, query });
     };
 
     const formatValue = (label: FilterKey, value?: string) => {
@@ -334,7 +332,7 @@ export default defineComponent({
       return router.push({
         name: 'unit-domains-domain-objects-entity',
         params: {
-          ...route.value.params,
+          ...route.params,
           entity: createUUIDUrlParam(item.type, item.id)
         },
         query: {
@@ -370,17 +368,17 @@ export default defineComponent({
     const additionalHeaders = computed<ObjectTableHeader[]>(() =>
       filter.value.objectType === 'process' && filter.value.subType === 'PRO_DataProcessing'
         ? [
-            {
-              priority: 31,
-              order: 51,
-              value: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
-              render: ({ item }) =>
-                h('div', item.domains[domainId.value]?.decisionResults?.piaMandatory?.value ? t('global.button.yes').toString() : t('global.button.no').toString()),
-              text: t('dpiaMandatory').toString(),
-              sortable: false,
-              width: 210
-            }
-          ]
+          {
+            priority: 31,
+            order: 51,
+            value: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
+            render: ({ item }) =>
+              h('div', item.domains[domainId.value]?.decisionResults?.piaMandatory?.value ? t('global.button.yes').toString() : t('global.button.no').toString()),
+            text: t('dpiaMandatory').toString(),
+            sortable: false,
+            width: 210
+          }
+        ]
         : []
     );
 

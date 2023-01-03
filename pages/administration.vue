@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
-    :title="t('breadcrumbs.administration')"
-    sticky-footer
-  >
+  <VeoPage :title="t('breadcrumbs.administration')" sticky-footer>
     <template #default>
       <h2 class="text-h2 mt-6">
         {{ t('accounts') }}
@@ -38,13 +35,13 @@
           :loading="isFetching"
           :additional-headers="additionalTableHeaders"
         >
-          <template #actions="{item}">
+          <template #actions="{ item }">
             <v-tooltip
               v-for="action in accountTableActions"
               :key="action.id"
               bottom
             >
-              <template #activator="{on}">
+              <template #activator="{ on }">
                 <v-btn
                   :disabled="action.isDisabled && action.isDisabled(item)"
                   icon
@@ -66,7 +63,10 @@
           <v-btn
             color="primary"
             depressed
-            :disabled="ability.cannot('manage', 'accounts') || (activeAccounts >= userSettings.maxUsers)"
+            :disabled="
+              ability.cannot('manage', 'accounts') ||
+              activeAccounts >= userSettings.maxUsers
+            "
             fab
             absolute
             style="bottom: 12px; right: 0"
@@ -97,138 +97,122 @@
   </VeoPage>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
-import { computed, defineComponent, reactive, ref } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
 import { IVeoAccount, useFetchAccounts } from '~/composables/api/accounts';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 
-export default defineComponent({
-  setup() {
-    const { t } = useI18n();
-    const { profile, userSettings } = useVeoUser();
-    const { ability } = useVeoPermissions();
+const { t } = useI18n();
+const { profile, userSettings } = useVeoUser();
+const { ability } = useVeoPermissions();
 
-    const { data: accounts, isFetching } = useFetchAccounts();
-    const activeAccounts = computed(() => (accounts.value || []).filter((account) => account.enabled).length);
+const { data: accounts, isFetching } = useFetchAccounts();
+const activeAccounts = computed(
+  () => (accounts.value || []).filter((account) => account.enabled).length
+);
 
-    const onEditAccount = (account: IVeoAccount) => {
-      Object.assign(editAccountDialogProps, account);
-      editAccountDialogVisible.value = true;
-    };
+const onEditAccount = (account: IVeoAccount) => {
+  Object.assign(editAccountDialogProps, account);
+  editAccountDialogVisible.value = true;
+};
 
-    const onDeleteAccount = (account: IVeoAccount) => {
-      Object.assign(editAccountDialogProps, account);
-      deleteAccountDialogVisible.value = true;
-    };
+const onDeleteAccount = (account: IVeoAccount) => {
+  Object.assign(editAccountDialogProps, account);
+  deleteAccountDialogVisible.value = true;
+};
 
-    const createAccountDialogVisible = ref(false);
-    const deleteAccountDialogVisible = ref(false);
-    const editAccountDialogVisible = ref(false);
-    const editAccountDialogProps = reactive({});
+const createAccountDialogVisible = ref(false);
+const deleteAccountDialogVisible = ref(false);
+const editAccountDialogVisible = ref(false);
+const editAccountDialogProps = reactive({});
 
-    const manageAccountDialogVisible = computed(() => createAccountDialogVisible.value || editAccountDialogVisible.value);
-    const manageAccountProps = computed(() => (editAccountDialogVisible.value ? editAccountDialogProps : {}));
-    const onManageAccountDialogInput = (newValue: boolean) => {
-      if (!newValue) {
-        if (createAccountDialogVisible.value) {
-          createAccountDialogVisible.value = false;
-        } else if (editAccountDialogVisible.value) {
-          editAccountDialogVisible.value = false;
-        }
-      }
-    };
-
-    // Table stuff
-    const accountTableActions: {
-      id: string;
-      action: CallableFunction;
-      icon: string;
-      label: string;
-      isDisabled?: CallableFunction;
-    }[] = [
-      {
-        id: 'edit',
-        action: onEditAccount,
-        icon: mdiPencilOutline,
-        label: 'edit'
-      },
-      {
-        id: 'delete',
-        action: onDeleteAccount,
-        icon: mdiTrashCanOutline,
-        label: 'global.button.delete',
-        isDisabled: (item: IVeoAccount) => item.username === profile.value?.username
-      }
-    ];
-
-    const additionalTableHeaders = ref<ObjectTableHeader[]>([
-      {
-        order: 10,
-        priority: 100,
-        text: t('username').toString(),
-        value: 'username',
-        width: 180
-      },
-      {
-        order: 20,
-        priority: 90,
-        text: t('enabled').toString(),
-        value: 'enabled',
-        render: ({ value }) => (value ? t('global.button.yes').toString() : t('global.button.no').toString()),
-        width: 80
-      },
-      {
-        order: 30,
-        priority: 80,
-        text: t('email').toString(),
-        value: 'emailAddress'
-      },
-      {
-        order: 40,
-        priority: 70,
-        text: t('firstName').toString(),
-        value: 'firstName',
-        width: 180
-      },
-      {
-        order: 50,
-        priority: 71,
-        text: t('lastName').toString(),
-        value: 'lastName',
-        width: 180
-      },
-      {
-        order: 60,
-        priority: 60,
-        text: t('groups').toString(),
-        value: 'groups'
-      }
-    ]);
-
-    return {
-      ability,
-      accounts,
-      accountTableActions,
-      activeAccounts,
-      additionalTableHeaders,
-      createAccountDialogVisible,
-      deleteAccountDialogVisible,
-      editAccountDialogProps,
-      isFetching,
-      manageAccountDialogVisible,
-      manageAccountProps,
-      onManageAccountDialogInput,
-      userSettings,
-
-      t,
-      mdiPlus
-    };
+const manageAccountDialogVisible = computed(
+  () => createAccountDialogVisible.value || editAccountDialogVisible.value
+);
+const manageAccountProps = computed(() =>
+  editAccountDialogVisible.value ? editAccountDialogProps : {}
+);
+const onManageAccountDialogInput = (newValue: boolean) => {
+  if (!newValue) {
+    if (createAccountDialogVisible.value) {
+      createAccountDialogVisible.value = false;
+    } else if (editAccountDialogVisible.value) {
+      editAccountDialogVisible.value = false;
+    }
   }
-});
+};
+
+// Table stuff
+const accountTableActions: {
+  id: string;
+  action: CallableFunction;
+  icon: string;
+  label: string;
+  isDisabled?: CallableFunction;
+}[] = [
+  {
+    id: 'edit',
+    action: onEditAccount,
+    icon: mdiPencilOutline,
+    label: 'edit'
+  },
+  {
+    id: 'delete',
+    action: onDeleteAccount,
+    icon: mdiTrashCanOutline,
+    label: 'global.button.delete',
+    isDisabled: (item: IVeoAccount) => item.username === profile.value?.username
+  }
+];
+
+const additionalTableHeaders = ref<ObjectTableHeader[]>([
+  {
+    order: 10,
+    priority: 100,
+    text: t('username').toString(),
+    value: 'username',
+    width: 180
+  },
+  {
+    order: 20,
+    priority: 90,
+    text: t('enabled').toString(),
+    value: 'enabled',
+    render: ({ value }) =>
+      value
+        ? t('global.button.yes').toString()
+        : t('global.button.no').toString(),
+    width: 80
+  },
+  {
+    order: 30,
+    priority: 80,
+    text: t('email').toString(),
+    value: 'emailAddress'
+  },
+  {
+    order: 40,
+    priority: 70,
+    text: t('firstName').toString(),
+    value: 'firstName',
+    width: 180
+  },
+  {
+    order: 50,
+    priority: 71,
+    text: t('lastName').toString(),
+    value: 'lastName',
+    width: 180
+  },
+  {
+    order: 60,
+    priority: 60,
+    text: t('groups').toString(),
+    value: 'groups'
+  }
+]);
 </script>
 
 <i18n>

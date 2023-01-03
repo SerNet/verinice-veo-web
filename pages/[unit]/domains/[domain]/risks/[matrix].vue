@@ -48,28 +48,26 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { cloneDeep, reverse, upperFirst } from 'lodash';
 
 import { IVeoDomain } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
+import { useFetchDomain } from '~~/composables/api/domains';
 
 export const ROUTE_NAME = 'unit-domains-domain-risks-matrix';
 
 export default defineComponent({
   setup() {
-    const { $api } = useContext();
     const { t, locale } = useI18n();
     const route = useRoute();
 
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
-    const riskDefinition = computed(() => route.value.params.matrix);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
+    const riskDefinition = computed(() => route.params.matrix);
 
-    const data = ref<undefined | IVeoDomain['riskDefinitions']['x']>(undefined);
-    useFetch(async () => {
-      data.value = (await $api.domain.fetch(domainId.value)).riskDefinitions[riskDefinition.value];
-    });
+    const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
+    const { data: domain } = useFetchDomain(fetchDomainQueryParameters);
+
+    const data = computed<undefined | IVeoDomain['riskDefinitions']['x']>(() => domain.value.riskDefinitions[riskDefinition.value as string]);
 
     // Matrix selection
     const protectionGoals = computed(() =>

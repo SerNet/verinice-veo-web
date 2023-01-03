@@ -45,7 +45,7 @@ export default function (api: Client) {
      *
      * @param parent
      */
-    fetchAll(endpoint: string, page: number = 1, query: IVeoEntityRequestParams = {}, noUnit: boolean = false): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
+    fetchAll(endpoint: string, page = 1, query: IVeoEntityRequestParams = {}, noUnit = false): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
       // Entities don't get accessed without their unit as a context, for this reason we manually add the unit if omitted by the developer.
       // To override this behaviour, set noUnit to true.
       if (!query.unit && !noUnit) {
@@ -101,10 +101,10 @@ export default function (api: Client) {
     create(endpoint: string, entity: IVeoEntity, parentScopes?: string[]): Promise<IVeoAPIMessage> {
       // Remove properties of the object only used in the frontend
       if (entity.type === 'scope') {
-        // @ts-ignore
+        // @ts-ignore Is only set in DTO if object is any type expect scope
         delete entity.parts;
       } else {
-        // @ts-ignore
+        // @ts-ignore Is only set in DTO if object is of type scope
         delete entity.members;
       }
 
@@ -208,17 +208,16 @@ export default function (api: Client) {
     async update(endpoint: string, id: string, entity: IVeoEntity): Promise<IVeoEntity> {
       // Remove properties of the object only used in the frontend
       if (entity.type === 'scope') {
-        // @ts-ignore
+        // @ts-ignore Is only set in DTO if object is any type expect scope
         delete entity.parts;
       } else {
-        // @ts-ignore
+        // @ts-ignore Is only set in DTO if object is of type scope
         delete entity.members;
       }
 
-      // Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
-      // @ts-ignore
+      // @ts-ignore Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
       delete entity.createdAt;
-      // @ts-ignore
+      // @ts-ignore Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
       delete entity.updatedAt;
 
       const result = await api.req('/api/:endpoint/:id', {

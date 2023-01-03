@@ -52,10 +52,9 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'nuxt-i18n-composable';
-import { NuxtError } from '@nuxt/types';
+import { NuxtError } from 'nuxt/app';
 import { upperFirst } from 'lodash';
-import { computed, defineComponent, PropType, useMeta } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 
 export default defineComponent({
   layout: 'plain',

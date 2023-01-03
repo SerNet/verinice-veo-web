@@ -39,11 +39,11 @@
       >
         <template #default>
           <VeoObjectDetails
+            v-model:active-tab="activeTab"
             class="mb-10"
             :loading="loading"
             :object="object"
             :domain-id="domainId"
-            :active-tab.sync="activeTab"
             :dense="!!pageWidths[1]"
             @reload="updateObjectRelationships"
           />
@@ -69,6 +69,8 @@
           <VeoObjectForm
             ref="objectForm"
             v-model="modifiedObject"
+            v-model:valid="isFormValid"
+            v-model:object-meta-data="metaData"
             class="pb-4"
             :disabled="formDataIsRevision || ability.cannot('manage', 'objects')"
             :object-type="objectParameter.type"
@@ -76,9 +78,7 @@
             :loading="loading || !modifiedObject"
             :domain-id="domainId"
             :preselected-sub-type="preselectedSubType"
-            :valid.sync="isFormValid"
             :additional-context="additionalContext"
-            :object-meta-data.sync="metaData"
             @show-revision="onShowRevision"
             @create-dpia="createDPIADialogVisible = true"
             @link-dpia="linkObjectDialogVisible = true"
@@ -161,10 +161,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onUnmounted, ref, useContext, useRoute, Ref, WritableComputedRef, useRouter, watch } from '@nuxtjs/composition-api';
+import { Ref } from 'vue';
 import { cloneDeep, omit, upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
-import { Route } from 'vue-router/types';
 
 import { IBaseObject, isObjectEqual, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
@@ -179,7 +177,7 @@ import { useFetchObject } from '~/composables/api/objects';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
-  beforeRouteLeave(to: Route, _from: Route, next: Function) {
+  beforeRouteLeave(to, _from, next) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
     if (this.entityModifiedDialogVisible || !this.isFormDirty) {
       next();
@@ -192,7 +190,8 @@ export default defineComponent({
   },
   setup() {
     const { locale, t } = useI18n();
-    const { $api, $config } = useContext();
+    const { $api } = useNuxtApp();
+    const config = useRuntimeConfig();
     const route = useRoute();
     const router = useRouter();
     const { displaySuccessMessage, displayErrorMessage, expireAlert } = useVeoAlerts();
@@ -202,9 +201,9 @@ export default defineComponent({
 
     const { data: endpoints } = useFetchSchemas();
 
-    const objectParameter = computed(() => separateUUIDParam(route.value.params.entity));
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
-    const preselectedSubType = computed<string | undefined>(() => route.value.query.subType || (object.value?.domains?.[domainId.value]?.subType as any));
+    const objectParameter = computed(() => separateUUIDParam(route.params.entity as string));
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
+    const preselectedSubType = computed<string | undefined>(() => route.query.subType || (object.value?.domains?.[domainId.value]?.subType as any));
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
@@ -251,7 +250,7 @@ export default defineComponent({
       addCustomBreadcrumb({
         key: objectTypeKey,
         text: translations.value?.lang[locale.value]?.[endpoints.value?.[newObjectType] || newObjectType],
-        to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${newObjectType}`,
+        to: `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${newObjectType}`,
         param: objectTypeKey,
         index: 0,
         position: 11
@@ -290,7 +289,7 @@ export default defineComponent({
       addCustomBreadcrumb({
         key: subTypeKey,
         text: formSchema ? formSchema.name[locale.value] || Object.values(formSchema.name[locale.value])[0] : (preselectedSubType.value as string),
-        to: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectParameter.value.type}&subType=${preselectedSubType.value}`,
+        to: `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${objectParameter.value.type}&subType=${preselectedSubType.value}`,
         param: objectTypeKey,
         index: 0,
         position: 12
@@ -310,12 +309,12 @@ export default defineComponent({
     });
 
     // Display stuff
-    const pageWidths = ref<Number[]>([3, 9]);
-    const pageWidthsLg = ref<Number[]>([5, 7]);
-    const pageWidthsXl = ref<Number[]>([5, 7]);
+    const pageWidths = ref<number[]>([3, 9]);
+    const pageWidthsLg = ref<number[]>([5, 7]);
+    const pageWidthsXl = ref<number[]>([5, 7]);
     const pageTitles = ref<string[]>([t('objectInfo').toString(), t('objectForm').toString()]);
 
-    const onPageCollapsed = (collapsedPages: Boolean[]) => {
+    const onPageCollapsed = (collapsedPages: boolean[]) => {
       if (collapsedPages.some((page) => page)) {
         pageWidths.value = [12, 0];
         pageWidthsLg.value = [12, 0];
@@ -398,8 +397,8 @@ export default defineComponent({
         entityModifiedDialogVisible.value = false;
 
         // We have to stringify the content and then manually add the host, as the history api currently doesn't support absolute urls 18-01-2022
-        modifiedObject.value = JSON.parse(JSON.stringify(data.content).replaceAll(/"\//g, `"${$config.apiUrl}/`));
-        // @ts-ignore
+        modifiedObject.value = JSON.parse(JSON.stringify(data.content).replaceAll(/"\//g, `"${config.apiUrl}/`));
+        // @ts-ignore We don't set the display name when loading objects from the history, so we have to do it here
         modifiedObject.value.displayName = `${data.content.designator} ${data.content.abbreviation || ''} ${data.content.name}`;
         version.value = data.changeNumber;
       };
@@ -413,12 +412,12 @@ export default defineComponent({
 
     // object details stuff
     // get active tab by route hash & set route hash by switching tabs
-    const activeTab: WritableComputedRef<string> = computed({
+    const activeTab = computed<string>({
       get(): string {
-        return route.value.hash.substring(1) || 'childObjects'; // childObjects as default tab
+        return route.hash.substring(1) || 'childObjects'; // childObjects as default tab
       },
       set(hash: string): void {
-        router.push({ hash, query: route.value.query });
+        router.push({ hash, query: route.query });
       }
     });
 
@@ -445,18 +444,18 @@ export default defineComponent({
     const getAdditionalContext = () => {
       const disabledSubType = object.value?.domains?.[domainId.value]?.subType
         ? {
-            [`#/properties/domains/properties/${domainId.value}/properties/subType`]: {
-              formSchema: { disabled: true }
-            }
+          [`#/properties/domains/properties/${domainId.value}/properties/subType`]: {
+            formSchema: { disabled: true }
           }
+        }
         : {};
 
       const disabledRiskDefinition = object.value?.domains?.[domainId.value]?.riskDefinition
         ? {
-            [`#/properties/domains/properties/${domainId.value}/properties/riskDefinition`]: {
-              formSchema: { disabled: true }
-            }
+          [`#/properties/domains/properties/${domainId.value}/properties/riskDefinition`]: {
+            formSchema: { disabled: true }
           }
+        }
         : {};
       additionalContext.value = { ...disabledSubType, ...disabledRiskDefinition };
     };

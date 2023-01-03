@@ -24,7 +24,7 @@
       flat
     >
       <v-app-bar-nav-icon
-        v-if="$vuetify.breakpoint.xs"
+        v-if="context.$vuetify.breakpoint.xs"
         @click="drawer = true"
       />
       <VeoBreadcrumbs write-to-title />
@@ -78,7 +78,7 @@
       data-component-name="primary-navigation"
     />
     <v-main
-      style="max-height: 100vh;"
+      style="max-height: 100vh"
       class="overflow-hidden"
     >
       <slot />
@@ -95,99 +95,88 @@
   </v-app>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onMounted, Ref, ref, useContext, useMeta, useRoute, useRouter } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+<script lang="ts" setup>
 import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 
 import { VeoEvents } from '~/types/VeoGlobalEvents';
-import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
+import {
+  createUUIDUrlParam,
+  getFirstDomainDomaindId,
+  separateUUIDParam
+} from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
 import 'intro.js/minified/introjs.min.css';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
-export default defineComponent({
-  setup(_props, context) {
-    const { $api } = useContext();
-    const { authenticated } = useVeoUser();
-    const route = useRoute();
-    const router = useRouter();
-    const { ability } = useVeoPermissions();
+const context = useNuxtApp();
+const { authenticated } = useVeoUser();
+const route = useRoute();
+const router = useRouter();
+const { ability } = useVeoPermissions();
 
-    const { alerts, displaySuccessMessage, listenToRootEvents } = useVeoAlerts();
-    const { t } = useI18n();
-    listenToRootEvents(context.root);
+const { alerts, displaySuccessMessage, listenToRootEvents } = useVeoAlerts();
+const { t } = useI18n();
+listenToRootEvents(context.root);
 
-    useMeta(() => ({
-      title: 'verinice.',
-      titleTemplate: '%s - verinice.veo'
-    }));
+useHead(() => ({
+  title: 'verinice.',
+  titleTemplate: '%s - verinice.veo'
+}));
 
-    //
-    // Global navigation
-    //
-    const drawer: Ref<boolean> = ref(false);
+//
+// Global navigation
+//
+const drawer = ref<boolean>(false);
 
-    //
-    // Unit creation and navigation
-    //
-    const newUnitDialog = ref({ value: false, persistent: false });
+//
+// Unit creation and navigation
+//
+const newUnitDialog = ref({ value: false, persistent: false });
 
-    function createUnit(persistent: boolean = false) {
-      newUnitDialog.value.value = true;
-      newUnitDialog.value.persistent = persistent;
-    }
+function createUnit(persistent = false) {
+  newUnitDialog.value.value = true;
+  newUnitDialog.value.persistent = persistent;
+}
 
-    // automatically create first unit if none exists and then change to new unit
-    onMounted(async () => {
-      if (authenticated.value) {
-        const units = await $api.unit.fetchAll();
-        if (units.length === 0) {
-          const data = await $api.unit.create({ name: t('unit.default.name'), description: t('unit.default.description') });
-          const unit = await $api.unit.fetch(data.resourceId);
-          displaySuccessMessage(t('unit.created').toString());
-          context.root.$emit(VeoEvents.UNIT_CREATED);
-          const domainId = getFirstDomainDomaindId(unit);
-          if (domainId) {
-            router.push({
-              name: 'unit-domains-domain',
-              params: {
-                unit: createUUIDUrlParam('unit', unit.id),
-                domain: createUUIDUrlParam('domain', domainId)
-              }
-            });
+// automatically create first unit if none exists and then change to new unit
+onMounted(async () => {
+  if (authenticated.value) {
+    const units = await context.$api.unit.fetchAll();
+    if (units.length === 0) {
+      const data = await context.$api.unit.create({
+        name: t('unit.default.name'),
+        description: t('unit.default.description')
+      });
+      const unit = await context.$api.unit.fetch(data.resourceId);
+      displaySuccessMessage(t('unit.created').toString());
+      context.root.$emit(VeoEvents.UNIT_CREATED);
+      const domainId = getFirstDomainDomaindId(unit);
+      if (domainId) {
+        router.push({
+          name: 'unit-domains-domain',
+          params: {
+            unit: createUUIDUrlParam('unit', unit.id),
+            domain: createUUIDUrlParam('domain', domainId)
           }
-        }
+        });
       }
-    });
-
-    const domainId = computed((): string | undefined => {
-      if (route.value.name === 'unit-domains-more') {
-        return undefined;
-      }
-      return separateUUIDParam(route.value.params.domain).id;
-    });
-
-    const unitId = computed(() => (separateUUIDParam(route.value.params.unit).id.length > 0 ? separateUUIDParam(route.value.params.unit).id : undefined));
-
-    return {
-      ability,
-      authenticated,
-      createUnit,
-      domainId,
-      unitId,
-      drawer,
-      newUnitDialog,
-      alerts,
-
-      t,
-      mdiAccountCircleOutline,
-      mdiHelpCircleOutline
-    };
-  },
-  head: {}
+    }
+  }
 });
+
+const domainId = computed((): string | undefined => {
+  if (route.name === 'unit-domains-more') {
+    return undefined;
+  }
+  return separateUUIDParam(route.params.domain as string).id;
+});
+
+const unitId = computed(() =>
+  separateUUIDParam(route.params.unit as string).id.length > 0
+    ? separateUUIDParam(route.params.unit as string).id
+    : undefined
+);
 </script>
 
 <style lang="scss" scoped>
@@ -196,7 +185,7 @@ export default defineComponent({
   border-bottom: 1px solid $medium-grey;
 }
 
-::v-deep.v-main > .v-main__wrap {
+::v-deep.v-main>.v-main__wrap {
   background: $background-primary;
 }
 </style>

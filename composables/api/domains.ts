@@ -15,15 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Ref } from '@nuxtjs/composition-api';
+import { Ref } from 'vue';
 import { useQueryClient } from '@tanstack/vue-query';
 
 import { IVeoQueryTransformationMap, QueryOptions, STALE_TIME, useQuery } from './utils/query';
 import { IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
 import { IVeoDomain } from '~/types/VeoTypes';
 
+export interface IVeoDomainStatusCount {
+  [objectSchema: string]: {
+    [subType: string]: {
+      [status: string]: number;
+    };
+  };
+}
+
 export interface IVeoFetchDomainParameters {
   id: string;
+}
+
+export interface IVeoFetchDomainElementStatusCount {
+  id: string;
+  unitId: string;
 }
 
 export interface IVeoUpdateTypeDefinitionParameters {
@@ -34,7 +47,8 @@ export interface IVeoUpdateTypeDefinitionParameters {
 
 export const domainsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
   fetchAll: () => ({}),
-  fetch: (queryParameters: IVeoFetchDomainParameters) => ({ params: queryParameters })
+  fetch: (queryParameters: IVeoFetchDomainParameters) => ({ params: queryParameters }),
+  fetchElementStatusCount: (queryParameters: IVeoFetchDomainElementStatusCount) => ({ params: { id: queryParameters.id }, query: { unit: queryParameters.unitId } })
 };
 
 export const domainsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
@@ -58,6 +72,12 @@ export const useFetchDomain = (queryParameters: Ref<IVeoFetchDomainParameters>, 
   useQuery<IVeoFetchDomainParameters, IVeoDomain>('domain', { url: '/api/domains/:id' }, queryParameters, domainsQueryParameterTransformationMap.fetch, {
     ...queryOptions,
     staleTime: STALE_TIME.MEDIUM
+  });
+
+export const useFetchDomainElementStatusCount = (queryParameters: Ref<IVeoFetchDomainElementStatusCount>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchDomainElementStatusCount, IVeoDomainStatusCount>('domainElementStatusCount', { url: '/api/domains/:id/element-status-count' }, queryParameters, domainsQueryParameterTransformationMap.fetchElementStatusCount, {
+    ...queryOptions,
+    staleTime: STALE_TIME.REQUEST
   });
 
 export const useUpdateTypeDefinition = (mutationOptions?: MutationOptions) => {

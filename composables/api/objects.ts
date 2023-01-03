@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, Ref } from '@nuxtjs/composition-api';
+import { Ref } from 'vue';
 import { useQueryClient } from '@tanstack/vue-query';
 import { max, omit } from 'lodash';
 
@@ -100,10 +100,10 @@ export const objectsMutationParameterTransformationMap: IVeoMutationTransformati
     const _object = mutationParameters.object;
     // Remove properties of the object only used in the frontend
     if (_object.type === 'scope') {
-      // @ts-ignore
+      // @ts-ignore Is only set in DTO if object is any type expect scope
       delete _object.parts;
     } else {
-      // @ts-ignore
+      // @ts-ignore Is only set in DTO if object is of type scope
       delete _object.members;
     }
     return { params: { endpoint: mutationParameters.endpoint }, query: { scopes: mutationParameters.parentScopes?.join(',') }, json: _object };
@@ -112,18 +112,17 @@ export const objectsMutationParameterTransformationMap: IVeoMutationTransformati
     const _object = mutationParameters.object;
     // Remove properties of the object only used in the frontend
     if (_object.type === 'scope') {
-      // @ts-ignore
+      // @ts-ignore Is only set in DTO if object is any type expect scope
       delete _object.parts;
     } else {
-      // @ts-ignore
+      // @ts-ignore Is only set in DTO if object is of type scope
       delete _object.members;
     }
-    // Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
-    // @ts-ignore
+    // @ts-ignore Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
     delete _object.createdAt;
-    // @ts-ignore
+    // @ts-ignore Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
     delete _object.updatedAt;
-    // @ts-ignore
+    // @ts-ignore Display name is generated in the frontend, so we remove it from the DTO before sending it to the backend
     delete _object.displayName;
     return { params: { endpoint: mutationParameters.endpoint, id: mutationParameters.object.id }, json: _object };
   },

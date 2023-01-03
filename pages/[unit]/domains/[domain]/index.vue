@@ -113,39 +113,30 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
 import { separateUUIDParam } from '~/lib/utils';
-import { IVeoDomainStatusCount } from '~/plugins/api/domain';
-import { IVeoDomain } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
+import { useFetchDomain, useFetchDomainElementStatusCount } from '~/composables/api/domains';
 
 export const ROUTE_NAME = 'unit-domains-domain';
 
 export default defineComponent({
   name: 'VeoDomainDashboardPage',
   setup() {
-    const { $api } = useContext();
     const route = useRoute();
     const router = useRouter();
     const { t } = useI18n();
 
-    const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     const welcomeDialog = ref(!LocalStorage.firstStepsCompleted);
 
     // Domain specific stuff
-    const domain = ref<IVeoDomain | undefined>();
-    useFetch(async () => {
-      domain.value = await $api.domain.fetch(domainId.value);
-    });
+    const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
+    const { data: domain } = useFetchDomain(fetchDomainQueryParameters);
 
-    const domainObjectInformation = ref<IVeoDomainStatusCount | undefined>();
-    useFetch(async () => {
-      domainObjectInformation.value = await $api.domain.inspectDomainObjects(unitId.value, domainId.value);
-    });
+    const fetchDomainElementStatusCountQueryParameters = computed(() => ({ id: domainId.value, unitId: unitId.value }));
+    const { data: domainObjectInformation } = useFetchDomainElementStatusCount(fetchDomainElementStatusCountQueryParameters);
 
     // Create chart data
     const chartData = computed(() => {
@@ -168,7 +159,7 @@ export default defineComponent({
       router.push({
         name: 'unit-domains-domain-objects',
         params: {
-          domain: route.value.params.domain
+          domain: route.params.domain
         },
         query: {
           objectType,

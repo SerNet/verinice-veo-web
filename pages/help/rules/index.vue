@@ -16,9 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import Vue from 'vue';
-
-export default Vue.extend({
+export default {
   middleware({ redirect, route }) {
     redirect(
       `/${route.path
@@ -28,7 +26,7 @@ export default Vue.extend({
         .join('/')}/`
     );
   }
-});
+};
 </script>
 
 <style lang="scss" scoped></style>

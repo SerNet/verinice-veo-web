@@ -15,42 +15,43 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import {createVuetify} from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
+import {createVuetify} from 'vuetify';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
 import { de } from 'vuetify/locale';
-import 'vuetify/styles'
+import 'vuetify/styles';
 
 const vuetify = createVuetify({
-    components,
-    directives,
-    ssr: true,
-    icons: {
-        defaultSet: 'mdiSvg', // This is already the default value - only for display purposes
-    },
-    locale: {
-      locale: 'de',
-      messages: { de }
-    },
-    theme: {
-        themes: {
-            light: {
-                colors: {
-                  primary: '#c90000',
-                  secondary: '#C62828',
-                  accent: '#757575',
-                  error: '#c90000',
-                  info: '#2196f3',
-                  warning: '#fb8c00',
-                  success: '#4caf50',
-                  grey: '#d7d7d7',
-                  lightGrey: '#fafafa'
-                },
-            },
-        },
-    },
-})
+  components,
+  directives,
+  ssr: true,
+  icons: {
+    sets: {},
+    defaultSet: 'mdiSvg' // This is already the default value - only for display purposes
+  },
+  locale: {
+    locale: 'de',
+    messages: { de }
+  },
+  theme: {
+    themes: {
+      light: {
+        colors: {
+          primary: '#c90000',
+          secondary: '#C62828',
+          accent: '#757575',
+          error: '#c90000',
+          info: '#2196f3',
+          warning: '#fb8c00',
+          success: '#4caf50',
+          grey: '#d7d7d7',
+          lightGrey: '#fafafa'
+        }
+      }
+    }
+  }
+});
 
 export default defineNuxtPlugin(nuxtApp => {
-    nuxtApp.vueApp.use(vuetify)
+  nuxtApp.vueApp.use(vuetify);
 });

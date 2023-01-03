@@ -62,14 +62,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
-interface IProps {}
-
 export const ROUTE_NAME = 'unit-domains-domain-editor';
 
-export default defineComponent<IProps>({
+export default defineComponent({
   name: 'VeoEditorIndexPage',
   setup() {
     const { t } = useI18n();

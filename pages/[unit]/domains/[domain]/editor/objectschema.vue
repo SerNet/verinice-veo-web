@@ -255,7 +255,7 @@
         </template>
       </VeoPage>
       <VeoPage
-        v-if="objectSchemaHelper && !$vuetify.breakpoint.xs"
+        v-if="objectSchemaHelper && !vuetify.breakpoint.xs"
         height="100%"
         content-class="ose__code-editor"
       >
@@ -282,7 +282,7 @@
       <VeoOseTranslationDialog
         v-if="!translationsLoading && translationDialogVisible"
         v-model="translationDialogVisible"
-        :current-display-language.sync="displayLanguage"
+        v-model:current-display-language="displayLanguage"
         :available-languages="availableLanguages"
         @schema-updated="updateCode"
       />
@@ -291,11 +291,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, provide, reactive, ref, useContext, useRoute, watch } from '@nuxtjs/composition-api';
 import { upperFirst, pickBy } from 'lodash';
 import { mdiAlertCircleOutline, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
-import { useI18n } from 'nuxt-i18n-composable';
-import { LocaleObject } from '@nuxtjs/i18n/types';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
@@ -306,12 +303,13 @@ import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchTranslations } from '~/composables/api/translations';
 import { useUpdateTypeDefinition } from '~/composables/api/domains';
+import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 
 export default defineComponent({
   name: 'ObjectSchemaEditor',
   setup() {
     const { locale, t } = useI18n();
-    const { i18n } = useContext();
+    const { i18n, vuetify } = useNuxtApp();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
@@ -329,7 +327,7 @@ export default defineComponent({
     provide('displayLanguage', displayLanguage);
     provide('objectSchemaHelper', objectSchemaHelper);
 
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     // Layout stuff
     const pageWidths = ref([6, 6]);
@@ -422,7 +420,7 @@ export default defineComponent({
 
     const downloadSchema = () => {
       if (downloadButton.value) {
-        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2))}`;
+        const data = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2))}`;
         (downloadButton.value as any).href = data;
         (downloadButton.value as any).download = `os_${objectSchemaHelper.value?.getTitle() || 'download'}.json`;
       }
@@ -485,6 +483,7 @@ export default defineComponent({
       updateSchema,
       updateSchemaName,
       updateDescription,
+      vuetify,
 
       t,
       upperFirst,

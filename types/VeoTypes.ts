@@ -175,7 +175,7 @@ export interface IVeoCustomLink extends IVeoCustomObject {
   target: IVeoLink;
 }
 
-export interface IVeoCustomAspect extends IVeoCustomObject {}
+export type IVeoCustomAspect = IVeoCustomObject
 
 export interface IVeoCustomLinks {
   [key: string]: IVeoCustomLink[];
@@ -590,7 +590,7 @@ export enum VeoAlertType {
 }
 
 export interface IVeoGlobalAlertParams {
-  buttonText?: String; // If not set defaults to "Okay" in VeoGlobalAlert of types "Info & Error"
+  buttonText?: string; // If not set defaults to "Okay" in VeoGlobalAlert of types "Info & Error"
   eventCallbacks?: { [event: string]: CallableFunction };
   [key: string]: any;
 }

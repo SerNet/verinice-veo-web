@@ -41,9 +41,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-
-export default Vue.extend({
+export default {
   layout: 'plain',
   data() {
     return {
@@ -75,7 +73,7 @@ export default Vue.extend({
       return this.form;
     }
   }
-});
+};
 </script>
 
 <style lang="scss"></style>
