@@ -1,0 +1,93 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:nuxt/recommended",
+    "plugin:vue/vue3-recommended",
+    "@nuxt/eslint-config"
+  ],
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "parserOptions": {
+    "project": [
+      "./tsconfig.json"
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.vue"
+      ],
+      "parser": "vue-eslint-parser",
+      "parserOptions": {
+        "parser": "@typescript-eslint/parser"
+      }
+    }
+  ],
+  "rules": {
+    "comma-dangle": [
+      "error",
+      "never"
+    ],
+    "eol-last": "error",
+    "indent": "off",
+    "semi": "error",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ],
+    "@typescript-eslint/ban-ts-comment": [
+      "error",
+      {
+        "ts-ignore": "allow-with-description"
+      }
+    ],
+    "@typescript-eslint/indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "vue/valid-v-slot": [
+      "error",
+      {
+        "allowModifiers": true
+      }
+    ],
+    "vue/max-attributes-per-line": [
+      "error",
+      {
+        "singleline": 1,
+        "multiline": 1
+      }
+    ],
+    "vue/no-v-text-v-html-on-component": "off",
+    "vue/block-tag-newline": [
+      "error",
+      {
+        "singleline": "always",
+        "multiline": "always"
+      }
+    ],
+    "vue/component-name-in-template-casing": [
+      "error",
+      "PascalCase",
+      {
+        "registeredComponentsOnly": true
+      }
+    ],
+    // Off as page names can be single word (in our case)
+    "vue/multi-word-component-names": "off"
+  }
+}

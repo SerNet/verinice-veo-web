@@ -2,7 +2,18 @@
   "editor.rulers": [
     120
   ],
-  "prettier.enable": false,
+  "[json]": {
+    "editor.defaultFormatter": null
+  },
+  "[vue]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[javascript]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
   "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
