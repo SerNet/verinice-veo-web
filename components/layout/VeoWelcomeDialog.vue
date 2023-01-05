@@ -41,7 +41,7 @@
             v-for="(link, index) in formLinks"
             :key="index"
             :to="link.to"
-            @click.native="dialog = false"
+            @click="dialog = false"
           >
             {{ link.name }}
           </nuxt-link>
@@ -62,7 +62,7 @@
         <nuxt-link
           v-if="firstUnitId"
           :to="dashboardLink.to"
-          @click.native="dialog = false"
+          @click="dialog = false"
         >
           {{ dashboardLink.name }}
         </nuxt-link>
@@ -75,7 +75,7 @@
       >
         <nuxt-link
           :to="demoUnitLink.to"
-          @click.native="dialog = false"
+          @click="dialog = false"
         >
           {{ demoUnitLink.name }}
         </nuxt-link>
@@ -101,14 +101,14 @@
 </template>
 
 <script lang="ts">
-import { RawLocation } from 'vue-router/types/router';
-import { computed, ComputedRef, defineComponent, Ref, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { ComputedRef } from 'vue';
 
 import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
-import { IVeoUnit } from '~/types/VeoTypes';
 import { useFetchForms } from '~/composables/api/forms';
+import { RouteLocationRaw } from 'vue-router';
+import { useFetchUnits } from '~/composables/api/units';
+import { useFetchUnitDomains } from '~/composables/api/domains';
 
 export default defineComponent({
   props: {
@@ -117,17 +117,15 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['input'],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
-    const { $api } = useContext();
     const route = useRoute();
-
-    const nonDemoUnits: Ref<IVeoUnit[]> = ref([]); // Used if the unit is not present in the url params
 
     const firstUnitId: ComputedRef<string | undefined> = computed(() => nonDemoUnits.value[0]?.id);
 
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
-    const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
+    const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
 
     const queryParameters = computed(() => ({
       domainId: domainId.value
@@ -135,33 +133,27 @@ export default defineComponent({
     const queryEnabled = computed(() => !!domainId.value);
     const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled });
 
-    watch(
-      () => domainId.value,
-      () => fetch()
-    );
+    const { data: units } = useFetchUnits({ placeholderData: [] });
+    const demoUnit = computed(() => units.value.find((unit) => unit.name === 'Demo'));
+    const nonDemoUnits = computed(() => units.value.filter((unit) => unit.name !== 'Demo' && getFirstDomainDomaindId(unit)));
 
-    const { fetch } = useFetch(async () => {
-      const units = await $api.unit.fetchAll();
-      const demoUnit = units.find((unit) => unit.name === 'Demo');
-      nonDemoUnits.value = units.filter((unit) => unit.name !== 'Demo' && getFirstDomainDomaindId(unit));
-      if (demoUnit) {
-        const demoUnitDomains = await $api.domain.fetchUnitDomains(demoUnit.id);
-        const dsgvoDomain = demoUnitDomains.find((domain) => domain.name === 'DS-GVO');
+    const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: demoUnit.value.id }));
+    const fetchUnitDomainsQueryEnabled = computed(() => !!demoUnit.value);
+    const { data: demoUnitDomains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
 
-        if (dsgvoDomain) {
-          demoUnitLink.value = {
-            to: {
-              name: 'unit-domains-domain',
-              params: {
-                unit: createUUIDUrlParam('unit', demoUnit.id),
-                domain: createUUIDUrlParam('domain', dsgvoDomain.id || '')
-              }
-            },
-            name: 'Demo-Unit'
-          };
+    const dsgvoDomain = computed(() => demoUnitDomains.value.find((domain) => domain.name === 'DS-GVO'));
+
+    const demoUnitLink = computed<{ name: string; to: RouteLocationRaw } | undefined>(() => dsgvoDomain.value ? {
+      to: {
+        name: 'unit-domains-domain',
+        params: {
+          unit: createUUIDUrlParam('unit', demoUnit.value.id),
+          domain: createUUIDUrlParam('domain', dsgvoDomain.value.id || '')
         }
-      }
-    });
+      },
+      name: 'Demo-Unit'
+    } : undefined);
+
     const dialog = computed({
       get() {
         return props.value;
@@ -180,7 +172,7 @@ export default defineComponent({
       ['process', 'PRO_DataProcessing']
     ];
     const formLinks = computed<any[]>(() => formLinksToCreate.map((details) => createEntityCreateLink(details[0], details[1])).filter((link) => link));
-    const dashboardLink: ComputedRef<{ name: string; to: RawLocation }> = computed(() => ({
+    const dashboardLink: ComputedRef<{ name: string; to: RouteLocationRaw }> = computed(() => ({
       to: {
         name: 'unit-domains-domain',
         params: {
@@ -190,7 +182,6 @@ export default defineComponent({
       },
       name: 'Dashboard'
     }));
-    const demoUnitLink: Ref<{ name: string; to: RawLocation } | undefined> = ref(undefined);
 
     function createEntityCreateLink(objectType: string, subType: string) {
       const form = (formSchemas.value || []).find((form) => form.subType === subType);

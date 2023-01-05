@@ -141,9 +141,9 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { computed, defineComponent, PropOptions, ref, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 import { trim } from 'lodash';
+
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -153,9 +153,9 @@ export default defineComponent({
       required: true
     },
     objectSchema: {
-      type: Object,
+      type: Object as PropType<IVeoObjectSchema>,
       required: true
-    } as PropOptions<IVeoObjectSchema>,
+    },
     formSchema: {
       type: String,
       default: ''
@@ -173,6 +173,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['input', 'update-subtype', 'update-sorting', 'update-schema-name'],
   setup(props, context) {
     const { t } = useI18n();
 

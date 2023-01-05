@@ -16,8 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { defineComponent, h } from '@nuxtjs/composition-api';
-import { VCard } from 'vuetify/lib';
+import { VCard } from 'vuetify/components';
 
 export default defineComponent({
   props: {
@@ -26,7 +25,7 @@ export default defineComponent({
       default: false
     }
   },
-  setup(props, { listeners, attrs, slots }) {
+  setup(props, { attrs, slots }) {
     return () =>
       h(
         VCard,
@@ -40,7 +39,7 @@ export default defineComponent({
             ...props,
             ...attrs
           },
-          on: listeners as any // Type for value: Funcion | Function[] vs Function | undefined
+          ...attrs
         },
         ...(slots.default ? [slots.default()] : [])
       );

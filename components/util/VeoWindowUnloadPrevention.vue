@@ -20,9 +20,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-
-export default Vue.extend({
+export default {
   props: {
     value: {
       type: Boolean,
@@ -39,10 +37,10 @@ export default Vue.extend({
       immediate: true
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (window) window.onbeforeunload = null;
   }
-});
+};
 </script>
 
 <i18n>

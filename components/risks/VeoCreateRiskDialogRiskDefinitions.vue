@@ -57,44 +57,44 @@
             :key="riskDefinition.id"
           >
             <VeoRiskProbabilitySection
+              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].probability"
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
-              :data.sync="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].probability"
               @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
             <VeoRiskImpactSection
+              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].impactValues"
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
-              :data.sync="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].impactValues"
               @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
             <VeoInherentRiskSection
+              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
-              :data.sync="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
               @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
             <VeoRiskTreatmentSection
+              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
-              :data.sync="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
               @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
             <VeoRiskMitigationSection
+              v-model:mitigations="_mitigations"
               :data="internalValue"
               :disabled="disabled"
-              :mitigations.sync="_mitigations"
               :domain-id="domain.id"
-              v-on="$listeners"
+              v-bind="$attrs"
             />
             <VeoRiskResidualSection
+              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
               :risk-definition="riskDefinition"
               :disabled="disabled"
-              :data.sync="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
             />
           </v-tab-item>
         </template>
@@ -104,7 +104,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watch } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 
 import { IDirtyFields } from './VeoCreateRiskDialogSingle.vue';
 import { IVeoDomain, IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
@@ -121,6 +121,7 @@ export default defineComponent({
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       default: () => {}
     },
     mitigations: {
@@ -132,6 +133,7 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['update:mitigations', 'input', 'update:dirty-fields'],
   setup(props, { emit }) {
     const internalValue = ref<IVeoRisk>(props.value);
     // Computed can't watch deep, so we have to create two watchers to properly send events

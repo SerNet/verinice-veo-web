@@ -56,9 +56,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, ref, computed, PropType } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 import { mdiDotsVertical } from '@mdi/js';
 
 import { separateUUIDParam } from '~/lib/utils';
@@ -78,13 +77,14 @@ export default defineComponent({
       default: undefined
     }
   },
+  emits: ['reload'],
   setup(props, { emit }) {
     const { t } = useI18n();
     const route = useRoute();
     const { link } = useLinkObject();
 
     // general stuff
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     const subType = computed(() => props.object?.domains[domainId.value]?.subType);
 

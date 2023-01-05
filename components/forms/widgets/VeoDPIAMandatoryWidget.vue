@@ -39,9 +39,6 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
 import { IVeoFormsElementDefinition } from '../types';
 import { VeoFormsWidgetProps } from '../util';
 import { VeoAlertType } from '~/types/VeoTypes';

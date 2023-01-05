@@ -17,36 +17,29 @@
 -->
 <template>
   <VeoDialog
-    v-model="dialog"
-    :headline="$t('unit.create')"
-    :persistent="persistent"
-    :close-disabled="loading"
+    :value="value"
+    :headline="t('unit.create')"
+    :persistent="persistent || creatingUnit"
+    :close-disabled="creatingUnit"
+    v-bind="$attrs"
   >
     <template #default>
-      <VeoLoadingWrapper v-if="loading" />
-      <VeoAlert
-        :value="!!error.value"
-        :type="VeoAlertType.ERROR"
-        flat
-        no-close-button
-      >
-        {{ error.content }}
-      </VeoAlert>
       <v-form
-        v-model="valid"
+        ref="form"
+        v-model="formIsValid"
         class="new-unit-form"
       >
         <v-text-field
           v-model="newUnit.name"
-          :rules="rules.name"
+          :rules="[requiredRule]"
           required
-          :label="$t('unit.details.name')"
+          :label="t('unit.details.name')"
         />
         <v-text-field
           v-model="newUnit.description"
-          :rules="rules.description"
+          :rules="[requiredRule]"
           required
-          :label="$t('unit.details.description')"
+          :label="t('unit.details.description')"
         />
       </v-form>
     </template>
@@ -56,116 +49,96 @@
         text
         @click="$emit('input', false)"
       >
-        {{ $t('global.button.cancel') }}
+        {{ t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
-        :disabled="!valid"
+        :disabled="!formIsValid"
+        :loading="creatingUnit"
         color="primary"
         text
-        @click="createUnit()"
+        @click="createUnit"
       >
-        {{ $t('global.button.save') }}
+        {{ t('global.button.save') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
-<script lang="ts">
-import Vue from 'vue';
-
+<script lang="ts" setup>
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
-import { VeoEvents } from '~/types/VeoGlobalEvents';
-import { VeoAlertType } from '~/types/VeoTypes';
+import { useCreateUnit } from '~/composables/api/units';
+import { useRequest } from '~/composables/api/utils/request';
+import { useRules } from '~/composables/utils';
 
-export default Vue.extend({
-  props: {
-    value: {
-      type: Boolean,
-      default: false
-    },
-    persistent: {
-      type: Boolean,
-      default: false
-    }
+const props = defineProps({
+  value: {
+    type: Boolean,
+    default: false
   },
-  data() {
-    return {
-      dialog: false as boolean,
-      noWatch: false as boolean,
-      newUnit: {} as { units: string[]; name: string; description: string },
-      valid: false as boolean,
-      rules: {
-        name: [(v: string) => !!v || this.$t('unit.details.name.required')],
-        description: [(v: string) => !!v || this.$t('unit.details.description.required')]
-      },
-      error: {
-        value: false as boolean,
-        content: '' as string
-      },
-      loading: false as boolean,
-      VeoAlertType
-    };
-  },
-  watch: {
-    value(newValue) {
-      this.noWatch = true;
-      this.dialog = newValue;
-      this.noWatch = false;
-    },
-    dialog(newValue) {
-      if (!this.noWatch) {
-        if (newValue) {
-          this.dialog = newValue;
-        } else {
-          this.newUnit.name = '';
-          this.newUnit.description = '';
-          this.$emit('input', false);
-        }
-      }
-    }
-  },
-  mounted() {
-    this.noWatch = true;
-    this.dialog = this.value;
-    this.noWatch = false;
-  },
-  methods: {
-    createUnit() {
-      this.loading = true;
-      this.$api.unit
-        .create(this.newUnit)
-        .then(async (data: any) => {
-          const unit = await this.$api.unit.fetch(data.resourceId);
-          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.created') });
-          this.error.value = false;
-          this.dialog = false;
-          this.$root.$emit(VeoEvents.UNIT_CREATED);
-          const domainId = getFirstDomainDomaindId(unit);
-
-          if (domainId) {
-            this.$router.push({
-              name: 'unit-domains-domain',
-              params: {
-                unit: createUUIDUrlParam('unit', unit.id),
-                domain: createUUIDUrlParam('domain', domainId)
-              }
-            });
-          }
-        })
-        .catch((error: string) => {
-          this.error.value = true;
-          this.error.content = error;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-    }
+  persistent: {
+    type: Boolean,
+    default: false
   }
 });
+
+const emit = defineEmits(['input']);
+
+
+const { t } = useI18n();
+const router = useRouter();
+const { requiredRule } = useRules();
+const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
+const { request } = useRequest();
+
+watch(() => props.value, (newValue) => {
+  if(!newValue) {
+    newUnit.name = undefined;
+    newUnit.description = undefined;
+    form.value.resetValidation();
+  }
+});
+
+// Everything unit related
+const form = ref();
+const formIsValid = ref(false);
+const newUnit = reactive<{ name: string | undefined, description: string | undefined }>({ name: undefined, description: undefined });
+
+const { mutateAsync, isLoading: creatingUnit, data: newUnitPayload } = useCreateUnit({ onError: (error: any) => {
+  displayErrorMessage(t('createUnitError'), error.message);
+} });
+const createUnit = async () => {
+  if(!formIsValid.value) {
+    return;
+  }
+  await mutateAsync(newUnit);
+  displaySuccessMessage(t('unitCreated'));
+  emit('input', false);
+  const unit = await request('/api/units/:id', { params: { id: newUnitPayload.value.resourceId } });
+  const domainId = getFirstDomainDomaindId(unit);
+
+  if (domainId) {
+    router.push({
+      name: 'unit-domains-domain',
+      params: {
+        unit: createUUIDUrlParam('unit', unit.id),
+        domain: createUUIDUrlParam('domain', domainId)
+      }
+    });
+  }
+};
 </script>
-<style lang="scss" scoped>
-.new-unit-form {
-  max-width: 400px;
-  width: 100%;
+
+<i18n>
+{
+  "en": {
+    "createUnit": "Create unit",
+    "createUnitError": "Couldn't create unit",
+    "unitCreated": "New unit was created successfully"
+  },
+  "de": {
+    "createUnit": "Unit erstellen",
+    "createUnitError": "Unit konnte nicht erstellt werden",
+    "unitCreated": "Unit wurde erfolgreich erstellt"
+  }
 }
-</style>
+</i18n>

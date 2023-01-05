@@ -31,8 +31,6 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useRoute } from '@nuxtjs/composition-api';
-
 export default defineComponent({
   props: {
     to: {
@@ -43,7 +41,7 @@ export default defineComponent({
   setup(props) {
     const route = useRoute();
 
-    const isPrintView = Object.prototype.hasOwnProperty.call(route.value.query, 'print');
+    const isPrintView = Object.prototype.hasOwnProperty.call(route.query, 'print');
 
     const linkContainsId = computed(() => props.to.includes('#'));
     const linkId = computed(() => props.to.split('#')[1]);

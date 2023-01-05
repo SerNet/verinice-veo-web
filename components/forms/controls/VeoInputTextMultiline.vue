@@ -36,8 +36,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
-
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
@@ -57,6 +55,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 export default defineComponent({
   name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
+  emits: ['input'],
   setup() {
     return {
       getControlErrorMessages

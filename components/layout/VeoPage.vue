@@ -47,21 +47,10 @@
   </v-col>
 </template>
 <script lang="ts">
-import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
-
+import { PropType } from 'vue';
 import { VeoPageHeaderAlignment } from './VeoPageHeader.vue';
 
-interface IProps {
-  contentClass: string;
-  headingLevel: string | number;
-  stickyHeader: boolean;
-  height: string;
-  loading: boolean;
-  title?: string;
-  titlebarAlignment: VeoPageHeaderAlignment;
-}
-
-export default defineComponent<IProps>({
+export default defineComponent({
   props: {
     contentClass: {
       type: String,
@@ -102,9 +91,9 @@ export default defineComponent<IProps>({
       default: undefined
     },
     titlebarAlignment: {
-      type: Number,
+      type: Number as PropType<VeoPageHeaderAlignment>,
       default: VeoPageHeaderAlignment.LEFT
-    } as PropOptions<VeoPageHeaderAlignment>
+    }
   },
   setup() {
     return {};

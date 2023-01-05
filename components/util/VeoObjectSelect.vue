@@ -67,9 +67,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, unref, useContext, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { mdiOpenInNew } from '@mdi/js';
 import { createUUIDUrlParam, getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
@@ -114,18 +113,19 @@ export default defineComponent({
       default: false
     },
     hiddenValues: {
-      type: Array as PropType<String[]>,
+      type: Array as PropType<string[]>,
       default: () => []
     }
   },
+  emits: ['input'],
   setup(props, { emit }) {
-    const { $config } = useContext();
+    const config = useRuntimeConfig();
     const { locale, t } = useI18n();
     const { displayErrorMessage } = useVeoAlerts();
     const router = useRouter();
     const route = useRoute();
 
-    const unit = computed(() => separateUUIDParam(route.value.params.unit).id);
+    const unit = computed(() => separateUUIDParam(route.params.unit as string).id);
 
     // Value related stuff
     const { data: endpoints } = useFetchSchemas();
@@ -139,14 +139,14 @@ export default defineComponent({
             return getEntityDetailsFromLink(props.value as IVeoLink).id;
           }
         } else {
-          return props.value;
+          return props.value as string;
         }
       },
       set: (newValue: string | undefined | null) => {
         if (!newValue && !props.required) {
           emit('input', newValue);
         } else if (props.valueAsLink) {
-          emit('input', newValue ? { targetUri: `${$config.apiUrl}/${endpoints.value?.[props.objectType]}/${newValue}` } : undefined);
+          emit('input', newValue ? { targetUri: `${config.public.apiUrl}/${endpoints.value?.[props.objectType]}/${newValue}` } : undefined);
         } else {
           emit('input', newValue);
         }
@@ -234,7 +234,7 @@ export default defineComponent({
       const routeData = router.resolve({
         name: 'unit-domains-domain-objects-entity',
         params: {
-          ...route.value.params,
+          ...route.params,
           entity: createUUIDUrlParam(item.type, item.id)
         }
       });

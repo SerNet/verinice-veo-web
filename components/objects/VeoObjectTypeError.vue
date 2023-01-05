@@ -32,23 +32,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, useRouter } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
-export default defineComponent({
-  name: 'VeoObjectTypeError',
-  setup() {
-    const { t } = useI18n();
-    const router = useRouter();
-
-    const goBackToPreviousPage = () => {
-      router.back();
-    };
-
-    return { t, goBackToPreviousPage };
-  }
-});
+<script lang="ts" setup>
+const { t } = useI18n();
 </script>
 
 <i18n>

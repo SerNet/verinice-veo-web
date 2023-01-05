@@ -16,14 +16,13 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { defineComponent, ref, h, computed, watch } from '@nuxtjs/composition-api';
-import { VDivider, VTabs, VTabsItems } from 'vuetify/lib';
+import { VDivider, VTabs, VWindow } from 'vuetify/components';
 
 export default defineComponent({
   components: {
     VDivider,
     VTabs,
-    VTabsItems
+    VWindow
   },
   props: {
     fullsize: {
@@ -39,6 +38,7 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['input'],
   setup(props, { attrs, slots, emit }) {
     const internalValue = ref(props.value);
 
@@ -57,7 +57,7 @@ export default defineComponent({
       watch(
         () => activeTab.value,
         (newValue) => {
-          const activeTabIsDisabled: boolean = (newValue?.componentOptions?.propsData as any)?.disabled;
+          const activeTabIsDisabled: boolean = newValue?.props?.disabled;
           if (activeTabIsDisabled) {
             const newValue = (internalValue.value + 1) % tabs.value.length;
             internalValue.value = newValue;
@@ -98,7 +98,7 @@ export default defineComponent({
           ),
           h(VDivider),
           h(
-            VTabsItems,
+            VWindow,
             {
               props: {
                 value: internalValue.value

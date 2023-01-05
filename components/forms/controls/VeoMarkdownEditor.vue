@@ -32,8 +32,6 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import Prism from 'prismjs';
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
 import Editor from '@toast-ui/editor';
@@ -61,7 +59,6 @@ function clearButton(callback: CallableFunction) {
   el.textContent = 'X';
   el.type = 'button';
   el.classList.add('codeblock');
-  // @ts-ignore
   el.ariaLabel = 'Clear editor';
   el.addEventListener('click', () => {
     callback();
@@ -71,10 +68,8 @@ function clearButton(callback: CallableFunction) {
 
 export default defineComponent({
   name: CONTROL_DEFINITION.code,
-  components: {
-    editor: Editor
-  },
   props: VeoFormsControlProps,
+  emits: ['update:modelValue', 'input'],
   setup(props, { emit }) {
     const { t } = useI18n();
 
@@ -119,7 +114,6 @@ export default defineComponent({
       return editor.value.invoke(tuiMethodName);
     };
 
-    const editor = ref();
     onMounted(() => {
       const e = new Editor({
         el: editor.value,
@@ -127,8 +121,8 @@ export default defineComponent({
         initialEditType: 'markdown',
         previewStyle: 'vertical',
         events: {
-          change: () => emit('update:modelValue', e.getMarkdown()),
-        },
+          change: () => emit('update:modelValue', e.getMarkdown())
+        }
       });
     });
 

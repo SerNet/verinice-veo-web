@@ -28,7 +28,7 @@
         <div
           ref="editor"
           style="height: 100%"
-          @keyup="onChangedCode($event)"
+          @keyup="onChangedCode"
         />
       </div>
     </div>
@@ -40,8 +40,7 @@ import { keymap, highlightSpecialChars, indentOnInput } from '@codemirror/next/v
 import { startCompletion, autocompletion, completionKeymap } from '@codemirror/next/autocomplete';
 import { json } from '@codemirror/next/lang-json';
 import { lintKeymap } from '@codemirror/next/lint';
-// eslint-disable-next-line import/named
-import { TransactionSpec, tagExtension, StateField, EditorSelection } from '@codemirror/next/state';
+import { TransactionSpec, tagExtension, StateField, EditorSelection, Extension } from '@codemirror/next/state';
 
 import { history, historyKeymap } from '@codemirror/next/history';
 import { foldGutter, foldKeymap } from '@codemirror/next/fold';
@@ -56,7 +55,7 @@ import { rectangularSelection } from '@codemirror/next/rectangular-selection';
 import { gotoLineKeymap } from '@codemirror/next/goto-line';
 import { highlightSelectionMatches } from '@codemirror/next/highlight-selection';
 import { defaultHighlighter } from '@codemirror/next/highlight';
-import { defineComponent, onMounted, ref, watchEffect, watch, nextTick } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 
 const languageTag = Symbol('language');
 
@@ -65,24 +64,17 @@ export interface CodeError extends Error {
   severity?: string;
 }
 
-interface Props {
-  value: string;
-  wordwrap?: boolean;
-  language: typeof basicSetup | false;
-  error?: CodeError;
-  readonly: boolean;
-}
-
 export const SELECTION_CHAR = '\uD813';
 
-export default defineComponent<Props>({
+export default defineComponent({
   props: {
     value: { type: String, default: '' },
     wordwrap: { type: Boolean, default: false },
-    language: { type: [Array, Boolean, Object], default: () => json() },
+    language: { type: Array as PropType<Extension[]>, default: () => json() },
     error: { type: Object, default: undefined },
     readonly: { type: Boolean, default: false }
   },
+  emits: ['update:error', 'input'],
   setup(props, context) {
     const editorRef = ref<HTMLDivElement>(null as any);
     let $editor: EditorView;
@@ -119,7 +111,7 @@ export default defineComponent<Props>({
     //   }
     // }
 
-    function setText(value: string, force: boolean = false) {
+    function setText(value: string, force = false) {
       if (force || $editor.state.doc.toString() !== value) {
         const regex = new RegExp(SELECTION_CHAR, 'g');
         const text = value.replace(regex, '');
@@ -213,7 +205,7 @@ export default defineComponent<Props>({
           $editor.dispatch(...transactions);
           // const err = setError(props.error)
           // err && $editor.dispatch(err)
-        } catch (e) {}
+        } catch (e) { /* empty */ }
       });
 
       setText(props.value);
@@ -236,7 +228,7 @@ export default defineComponent<Props>({
           if (t) {
             $editor.dispatch(t);
           }
-        } catch (e) {}
+        } catch (e) { /* empty */ }
       },
       focus() {
         nextTick(() => {

@@ -64,12 +64,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 import { omit, upperFirst } from 'lodash';
 import { mdiFilter } from '@mdi/js';
 
-import { IBaseObject } from '~/lib/utils';
 import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
 import { useFetchTranslations } from '~/composables/api/translations';
 import { useFetchForms } from '~/composables/api/forms';
@@ -77,7 +75,7 @@ import { useFetchForms } from '~/composables/api/forms';
 export default defineComponent({
   props: {
     filter: {
-      type: Object as PropType<IBaseObject>,
+      type: Object as PropType<Record<string, any>>,
       required: true
     },
     domainId: {
@@ -102,6 +100,7 @@ export default defineComponent({
       default: () => []
     }
   },
+  emits: ['update:filter'],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
 

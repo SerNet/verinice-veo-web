@@ -16,36 +16,25 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoEditorListItem
-    v-bind="$props"
-    v-on="$listeners"
-  />
+  <VeoEditorListItem v-bind="$props" />
 </template>
-<script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
+<script lang="ts" setup>
+import { PropType } from 'vue';
 
 import { IInputType } from '~/types/VeoEditor';
 
-interface IProps {
-  title: string;
-  styling: IInputType;
-  translate: boolean;
-}
-
-export default defineComponent<IProps>({
-  props: {
-    title: {
-      type: String,
-      default: undefined
-    },
-    styling: {
-      type: Object,
-      default: () => {}
-    },
-    translate: {
-      type: Boolean,
-      default: false
-    }
+defineProps({
+  title: {
+    type: String,
+    default: undefined
+  },
+  styling: {
+    type: Object as PropType<IInputType>,
+    default: () => ({})
+  },
+  translate: {
+    type: Boolean,
+    default: false
   }
 });
 </script>

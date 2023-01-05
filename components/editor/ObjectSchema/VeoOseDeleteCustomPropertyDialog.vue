@@ -42,21 +42,24 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 
-interface IProps {
-  value: boolean;
-  title: string;
-  type: 'aspect' | 'link';
-}
-
-export default defineComponent<IProps>({
+export default defineComponent({
   props: {
-    value: { type: Boolean, required: true },
-    title: { type: String, required: true },
-    type: { type: String, required: true }
+    value: {
+      type: Boolean,
+      required: true
+    },
+    title: {
+      type: String,
+      required: true
+    },
+    type: {
+      type: String as PropType<'aspect' | 'link'>,
+      required: true
+    }
   },
+  emits: ['input', 'delete-item'],
   setup(props, context) {
     const { t } = useI18n();
 

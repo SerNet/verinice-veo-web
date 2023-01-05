@@ -66,9 +66,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@nuxtjs/composition-api';
 import { mdiPlus, mdiTrashCanOutline } from '@mdi/js';
-import { useI18n } from 'nuxt-i18n-composable';
 import { cloneDeep } from 'lodash';
 
 import { IVeoFormsElementDefinition } from '../types';
@@ -90,13 +88,18 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 export default defineComponent({
   name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
+  emits: ['input'],
   setup(props, { emit }) {
     const { t } = useI18n();
 
     const emptyLink = { target: undefined };
 
     const internalValue = computed<any[]>({
-      get: () => (props.value && props.value.length ? props.value : [cloneDeep(emptyLink)]),
+      get: () => {
+        // We have to cast value to an any array, as value has the general definition of string | number | boolean | undefined | any[] | object here
+        const _value: any[] = props.value as any[];
+        return (_value && _value.length ? _value : [cloneDeep(emptyLink)]);
+      },
       set: (newValue: undefined | any[]) => {
         emit('input', !newValue || (newValue.length === 1 && JSON.stringify(emptyLink) === JSON.stringify(newValue[0])) ? undefined : newValue);
       }

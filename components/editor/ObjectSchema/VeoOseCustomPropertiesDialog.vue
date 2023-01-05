@@ -96,7 +96,7 @@
             v-if="duplicates.length > 0"
             type="error"
             class="mb-4 mt-6"
-            border="left"
+            border="start"
             colored-border
           >
             <span>{{ $t('duplicateAttributes') }}:</span>
@@ -162,16 +162,14 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import Vue from 'vue';
-import { Prop } from 'vue/types/options';
+import { PropType, Ref } from 'vue';
 import { cloneDeep, trim, upperFirst } from 'lodash';
 
-import { Ref } from '@nuxtjs/composition-api';
 import { IVeoSchemaEndpoints } from '~/plugins/api/schema';
 import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
 import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
-export default Vue.extend({
+export default {
   inject: ['objectSchemaHelper', 'displayLanguage'],
   props: {
     value: {
@@ -194,17 +192,18 @@ export default Vue.extend({
     // The default value gets overwritte by DI
     // See: https://github.com/vuejs/vue/issues/8969
     objectSchemaHelper: {
-      type: Object as Prop<Ref<ObjectSchemaHelper>>,
+      type: Object as PropType<Ref<ObjectSchemaHelper>>,
       default: undefined
     },
     // Doesn't actually get passed as a prop but injected by DI. However Typescript can't handle that so we define it here.
     // The default value gets overwritte by DI
     // See: https://github.com/vuejs/vue/issues/8969
     displayLanguage: {
-      type: Object as Prop<Ref<string>>,
+      type: Object as PropType<Ref<string>>,
       default: undefined
     }
   },
+  emits: ['delete', 'input', 'error', 'success'],
   data() {
     return {
       form: {
@@ -402,7 +401,7 @@ export default Vue.extend({
 
         // Remove language keys not present in the updated attribute lists
         if (this.editedProperty) {
-          for (const attribute of this.editedProperty?.attributes) {
+          for (const attribute of this.editedProperty?.attributes || []) {
             if (!this.form.data.attributes.find((attribute2) => attribute2.originalId === attribute.title)) {
               this.objectSchemaHelper.value.removeTranslation(`${attribute.prefix}${attribute.title}`);
             }
@@ -452,7 +451,7 @@ export default Vue.extend({
       }
     }
   }
-});
+};
 </script>
 
 <i18n>

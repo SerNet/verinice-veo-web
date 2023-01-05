@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { PropType } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 import { JsonPointer } from 'json-ptr';
 import Ajv2019 from 'ajv/dist/2019';
 import addFormats from 'ajv-formats';
@@ -52,7 +52,7 @@ export const VeoFormsElementProps = {
   },
   options: {
     type: Object as PropType<IBaseObject & IVeoFormElementRule>,
-    default: () => {}
+    default: () => ({})
   }
 };
 
@@ -75,7 +75,7 @@ export const VeoFormsControlProps = {
   // Complete object schema
   objectSchema: {
     type: Object as PropType<JSONSchema7>,
-    default: () => {},
+    default: () => ({}),
     required: true
   },
   // Points to where the value can be found in the object (usually the object schema pointer without /properties, however if the control is part of a custom link, the index omes into play)
@@ -91,8 +91,8 @@ export const VeoFormsControlProps = {
   },
   // Map containing all errors present in the form
   errors: {
-    type: Map as PropType<Map<String, String[]>>,
-    default: () => {}
+    type: Map as PropType<Map<string, string[]>>,
+    default: () => ({})
   },
   // Marks this control as being part of a link (and gets passed in the onInput call. Usually gets set in the background by the VeoLinksFieldRowAttribute component)
   index: {
@@ -240,10 +240,10 @@ function isPropertyExcludedFromFormSchema(pointer: string, excludedProperties: s
 export function generateFormSchemaGroup(children: UISchemaElement[], label?: string): UISchemaElement {
   const labelElement = label
     ? {
-        type: 'Label',
-        text: label,
-        options: { class: 'font-italic accent--text text-body-2' }
-      }
+      type: 'Label',
+      text: label,
+      options: { class: 'font-italic accent--text text-body-2' }
+    }
     : undefined;
 
   return {
@@ -304,7 +304,7 @@ export function generateFormSchema(objectSchema: JSONSchema7, generatorOptions: 
   return formSchema;
 }
 
-export const getControlErrorMessages = (props: any, modifier: string = '') =>
+export const getControlErrorMessages = (props: any, modifier = '') =>
   props.index !== undefined
     ? props.errors.get(props.objectSchemaPointer.replace('/items/', `/${props.index}/`) + modifier)
     : props.errors.get(props.objectSchemaPointer + modifier);

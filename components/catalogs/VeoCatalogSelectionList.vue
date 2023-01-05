@@ -41,8 +41,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Prop } from 'vue/types/options';
+import { PropType } from 'vue';
 
 export interface IVeoCatalogSelectionListHeader {
   filterable?: boolean;
@@ -52,18 +51,18 @@ export interface IVeoCatalogSelectionListHeader {
   width?: number;
 }
 
-export default Vue.extend({
+export default {
   props: {
     value: {
-      type: Array as Prop<string[]>,
+      type: Array as PropType<string[]>,
       default: () => []
     },
     items: {
-      type: Array as Prop<any[]>,
+      type: Array as PropType<any[]>,
       default: () => []
     },
     headers: {
-      type: Array as Prop<IVeoCatalogSelectionListHeader[]>,
+      type: Array as PropType<IVeoCatalogSelectionListHeader[]>,
       default: () => []
     },
     selectable: {
@@ -71,6 +70,7 @@ export default Vue.extend({
       default: false
     }
   },
+  emits: ['input'],
   computed: {
     localHeaders(): IVeoCatalogSelectionListHeader[] {
       const localHeaders = [...this.headers];
@@ -114,7 +114,7 @@ export default Vue.extend({
       this.$emit('input', newValues);
     }
   }
-});
+};
 </script>
 
 <style lang="scss" scoped>

@@ -134,16 +134,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, nextTick, ComputedRef } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { cloneDeep, trim } from 'lodash';
-import { IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
 import { INPUT_TYPES } from '~/types/VeoEditor';
-
-interface IProps extends IVeoOSHCustomProperty {
-  aspectName: string;
-  enum: any[];
-}
 
 interface IInputFormat {
   name: string;
@@ -189,7 +181,7 @@ const INPUT_FORMATS: IInputFormats = {
   ]
 };
 
-export default defineComponent<IProps>({
+export default defineComponent({
   props: {
     title: {
       type: String,
@@ -228,6 +220,7 @@ export default defineComponent<IProps>({
       default: undefined
     }
   },
+  emits: ['delete', 'update'],
   setup(props, context) {
     const { t } = useI18n();
     const prefix = computed(() => props.aspectName + '_');
@@ -332,14 +325,14 @@ export default defineComponent<IProps>({
     }
 
     // Special operations for all types
-    const formatOptions: ComputedRef<IInputFormat[]> = computed(() => {
+    const formatOptions = computed<IInputFormat[]>(() => {
       return (INPUT_FORMATS[form.value.data.type] || []).map((entry: any) => {
         entry.displayName = t(`attributeTypes.${entry.name}`);
         return entry;
       });
     });
 
-    const currentFormatOption: ComputedRef<string | undefined> = computed(() => {
+    const currentFormatOption = computed<string | undefined>(() => {
       // We have to iterate over every object in the formatOptions array and only if the format property matches, we have the correct one.
       return formatOptions.value.find((item) => item.options.format === form.value.data.format)?.name;
     });

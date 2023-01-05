@@ -17,16 +17,16 @@
 -->
 <template>
   <VeoDialog
+    :model-value="modelValue"
     v-bind="$attrs"
     large
     fixed-footer
     :headline="t('formSchema')"
-    v-on="$listeners"
   >
     <template #default>
       <VeoCard style="min-height: 20vh">
         <VeoCodeEditor
-          :value="$props.code"
+          :value="code"
           readonly
         />
       </VeoCard>
@@ -43,28 +43,21 @@
     </template>
   </VeoDialog>
 </template>
-<script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
-interface IProps {
-  value: boolean;
-  code: string;
-}
-
-export default defineComponent<IProps>({
-  props: {
-    code: {
-      type: String,
-      required: true
-    }
+<script lang="ts" setup>
+defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false
   },
-  setup() {
-    const { t } = useI18n();
-
-    return { t };
+  code: {
+    type: String,
+    required: true
   }
 });
+
+defineEmits(['input']);
+
+const { t } = useI18n();
 </script>
 
 <i18n>

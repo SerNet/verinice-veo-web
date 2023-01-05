@@ -19,7 +19,6 @@
   <VeoDialog
     v-bind="$attrs"
     :headline="t('headline')"
-    v-on="$listeners"
   >
     <template #default>
       <span class="text-body-1">{{ t('text', { displayName }) }}</span>
@@ -45,8 +44,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
+
 import { useDeleteObject } from '~/composables/api/objects';
 import { useFetchSchemas } from '~/composables/api/schemas';
 
@@ -59,6 +58,7 @@ export default defineComponent({
       default: undefined
     }
   },
+  emits: ['success', 'error', 'input'],
   setup(props, { emit }) {
     const { t } = useI18n();
     const { mutateAsync: doDelete } = useDeleteObject();

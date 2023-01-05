@@ -21,6 +21,7 @@ import { useQueryClient } from '@tanstack/vue-query';
 import { IVeoQueryTransformationMap, QueryOptions, STALE_TIME, useQuery } from './utils/query';
 import { IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
 import { IVeoDomain } from '~/types/VeoTypes';
+import { useFetchUnit } from './units';
 
 export interface IVeoDomainStatusCount {
   [objectSchema: string]: {
@@ -32,6 +33,10 @@ export interface IVeoDomainStatusCount {
 
 export interface IVeoFetchDomainParameters {
   id: string;
+}
+
+export interface IVeoFetchUnitDomainsParameters {
+  unitId: string;
 }
 
 export interface IVeoFetchDomainElementStatusCount {
@@ -67,6 +72,18 @@ export const useFetchDomains = (queryOptions?: QueryOptions) =>
     staleTime: STALE_TIME.LONG,
     placeholderData: []
   });
+
+export const useFetchUnitDomains = (queryParameters: Ref<IVeoFetchUnitDomainsParameters>, queryOptions?: QueryOptions) => {
+  const fetchUnitQueryParameters = computed(() => ({ id: queryParameters.value.unitId }));
+  const fetchUnitQueryEnabled = computed(() => !!queryParameters.value.unitId);
+  const { data: unit } = useFetchUnit(fetchUnitQueryParameters, { enabled: fetchUnitQueryEnabled });
+
+  return useQuery<void, IVeoDomain[]>('domains', { url: '/api/domains/', onDataFetched: (result) => result.filter((domain) => unit.value.domains.some((unitDomain) => unitDomain.targetUri.includes(domain.id))) }, undefined, domainsQueryParameterTransformationMap.fetchAll, {
+    ...queryOptions,
+    staleTime: STALE_TIME.LONG,
+    placeholderData: []
+  });
+};
 
 export const useFetchDomain = (queryParameters: Ref<IVeoFetchDomainParameters>, queryOptions?: QueryOptions) =>
   useQuery<IVeoFetchDomainParameters, IVeoDomain>('domain', { url: '/api/domains/:id' }, queryParameters, domainsQueryParameterTransformationMap.fetch, {

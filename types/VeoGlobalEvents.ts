@@ -16,10 +16,5 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 export const VeoEvents = {
-  SNACKBAR_SUCCESS: 'snackbar_success',
-  ALERT_ERROR: 'alert_error',
-  ALERT_INFO: 'alert_info',
-  ALERT_EXPIRE: 'alert_expire',
-
-  UNIT_CREATED: 'unit_created'
+  ALERT_ERROR: 'alert_error'
 };

@@ -28,11 +28,9 @@
   </nav>
 </template>
 <script lang="ts">
-import { defineComponent, computed, PropOptions } from '@nuxtjs/composition-api';
-
 export default defineComponent({
   props: {
-    value: { type: Array, default: () => [] } as PropOptions<any[]>,
+    value: { type: Array, default: () => [] },
     childrenProperty: { type: String, default: 'children' },
     nameProperty: { type: String, default: 'title' },
     linkProperty: { type: String, default: 'to' },

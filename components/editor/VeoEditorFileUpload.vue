@@ -18,8 +18,8 @@
 <template>
   <VeoTabs>
     <template #tabs>
-      <v-tab>{{ $t('importFile') }}</v-tab>
-      <v-tab>{{ $t('importCode') }}</v-tab>
+      <v-tab>{{ t('importFile') }}</v-tab>
+      <v-tab>{{ t('importCode') }}</v-tab>
     </template>
     <template #items>
       <v-tab-item>
@@ -48,80 +48,68 @@
     </template>
   </VeoTabs>
 </template>
-<script lang="ts">
-import Vue from 'vue';
-import { VeoEvents } from '~/types/VeoGlobalEvents';
+<script lang="ts" setup>
 import { IVeoObjectSchema, IVeoFormSchema } from '~/types/VeoTypes';
 
-export default Vue.extend({
-  props: {
-    code: {
-      type: String,
-      default: ''
-    },
-    inputLabel: {
-      type: String,
-      required: true
-    },
-    clearInput: {
-      type: Boolean,
-      default: false
-    },
-    submitButtonText: {
-      type: String,
-      default: undefined
-    }
+defineProps({
+  code: {
+    type: String,
+    default: ''
   },
-  data() {
-    return {
-      file: undefined as File | undefined,
-      uploading: false as boolean
-    };
+  inputLabel: {
+    type: String,
+    required: true
   },
-  watch: {
-    clearInput(newValue) {
-      if (newValue) {
-        this.file = undefined;
-        this.$emit('update:clearInput');
-      }
-    }
-  },
-  methods: {
-    async onChange(event: any) {
-      this.uploading = true;
-      // 3 seconds delay to better visualise uploading process if a file is very small
-      if (event) {
-        await this.delay(2000);
-      }
-      this.doUpload();
-      this.uploading = false;
-    },
-    delay(ms: number): Promise<void> {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    },
-    doUpload() {
-      if (this.file) {
-        // Init file reader
-        const fr = new FileReader();
-
-        // Register callback upon successfull file upload
-        fr.onload = (event) => {
-          const result = JSON.parse((event.target?.result as string) || '{}');
-          this.sendSchema(result);
-        };
-        fr.onerror = (_) => {
-          this.$root.$emit(VeoEvents.ALERT_ERROR, { title: this.$t('uploadError'), text: fr.error });
-        };
-
-        // Read file
-        fr.readAsText(this.file);
-      }
-    },
-    sendSchema(schema: IVeoObjectSchema | IVeoFormSchema) {
-      this.$emit('schema-uploaded', schema);
-    }
+  submitButtonText: {
+    type: String,
+    default: undefined
   }
 });
+
+const emit = defineEmits(['schema-uploaded']);
+
+const { displayErrorMessage } = useVeoAlerts();
+const { t } = useI18n();
+
+const file = ref<File[]>();
+const uploading = ref(false);
+
+const onChange = async (event: any) => {
+  uploading.value = true;
+  // 3 seconds delay to better visualise uploading process if a file is very small
+  if (event) {
+    await delay(2000);
+  }
+  doUpload();
+  uploading.value = false;
+};
+
+const delay = (ms: number): Promise<void> => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+const doUpload = () => {
+  if (file.value?.[0]) {
+    // Init file reader
+    const fr = new FileReader();
+
+    // Register callback upon successfull file upload
+    fr.onload = (event) => {
+      const result = JSON.parse((event.target?.result as string) || '{}');
+      sendSchema(result);
+    };
+    fr.onerror = (_) => {
+      displayErrorMessage(t('uploadError'), fr.error as any);
+    };
+
+    // Read file
+    fr.readAsText(file.value?.[0]);
+  }
+};
+
+const sendSchema = (schema: IVeoObjectSchema | IVeoFormSchema) => {
+  emit('schema-uploaded', schema);
+};
 </script>
 
 <i18n>

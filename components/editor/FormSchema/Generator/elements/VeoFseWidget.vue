@@ -87,9 +87,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@nuxtjs/composition-api';
 import { mdiInformationOutline, mdiMenu, mdiTrashCanOutline } from '@mdi/js';
-import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
 export default defineComponent({
@@ -100,7 +98,7 @@ export default defineComponent({
     },
     name: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
     description: {
       type: String,
@@ -111,6 +109,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['delete'],
   setup(props, { emit }) {
     const { locale, t } = useI18n();
 

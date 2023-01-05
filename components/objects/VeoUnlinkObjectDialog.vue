@@ -20,7 +20,6 @@
     :value="value"
     v-bind="$attrs"
     :headline="t('unlinkObject')"
-    v-on="$listeners"
   >
     <template #default>
       <span class="text-body-1">{{ t('text', { displayName: objectToRemove && objectToRemove.displayName, parentDisplayName: parent && parent.displayName }) }}</span>
@@ -46,53 +45,44 @@
   </VeoDialog>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, ref } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+<script lang="ts" setup>
+import { PropType } from 'vue';
 import { useUnlinkObject } from '~/composables/VeoObjectUtilities';
 
 import { IVeoEntity } from '~/types/VeoTypes';
 
-export default defineComponent({
-  props: {
-    value: {
-      type: Boolean,
-      required: true
-    },
-    objectToRemove: {
-      type: Object as PropType<IVeoEntity>,
-      default: undefined
-    },
-    parent: {
-      type: Object as PropType<IVeoEntity>,
-      default: undefined
-    }
+const props = defineProps({
+  value: {
+    type: Boolean,
+    required: true
   },
-  setup(props, { emit }) {
-    const { t } = useI18n();
-    const { unlink } = useUnlinkObject();
-
-    const unlinking = ref(false);
-    const unlinkObject = async () => {
-      unlinking.value = true;
-      try {
-        await unlink(props.parent, props.objectToRemove);
-        emit('success');
-      } catch (error) {
-        emit('error', error);
-      } finally {
-        unlinking.value = false;
-      }
-    };
-
-    return {
-      unlinking,
-      unlinkObject,
-
-      t
-    };
+  objectToRemove: {
+    type: Object as PropType<IVeoEntity>,
+    default: undefined
+  },
+  parent: {
+    type: Object as PropType<IVeoEntity>,
+    default: undefined
   }
 });
+
+const emit = defineEmits(['error', 'input', 'success']);
+  
+const { t } = useI18n();
+const { unlink } = useUnlinkObject();
+
+const unlinking = ref(false);
+const unlinkObject = async () => {
+  unlinking.value = true;
+  try {
+    await unlink(props.parent, props.objectToRemove);
+    emit('success');
+  } catch (error) {
+    emit('error', error);
+  } finally {
+    unlinking.value = false;
+  }
+};
 </script>
 
 <i18n>

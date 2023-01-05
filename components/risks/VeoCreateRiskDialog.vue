@@ -20,10 +20,10 @@
     v-model="dialog"
     :close-disabled="creatingRisks"
     :persistent="creatingRisks"
-    :headline="upperFirst(tc('createRisk', 0).toString())"
+    :headline="upperFirst(t('createRisk', 0).toString())"
     x-large
     fixed-footer
-    v-on="$listeners"
+    v-bind="$attrs"
   >
     <template #default>
       <VeoObjectFilterBar
@@ -61,15 +61,13 @@
         :disabled="!selectedScenarios.length"
         @click="onSubmit"
       >
-        {{ tc('createRisk', selectedScenarios.length, { count: selectedScenarios.length }) }}
+        {{ t('createRisk', { plural: selectedScenarios.length, named: { count: selectedScenarios.length } }) }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, useContext, useRoute } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
 import { IVeoEntity } from '~/types/VeoTypes';
@@ -94,16 +92,17 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['input', 'success'],
   setup(props, { emit }) {
-    const { $config } = useContext();
+    const config = useRuntimeConfig();
     const { tablePageSize } = useVeoUser();
     const route = useRoute();
-    const { t, tc } = useI18n();
+    const { t } = useI18n();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
     const { mutateAsync: createRisk } = useCreateRisk();
 
-    const unit = computed(() => separateUUIDParam(route.value.params.unit).id);
+    const unit = computed(() => separateUUIDParam(route.params.unit as string).id);
 
     // Layout stuff
     const dialog = computed({
@@ -156,12 +155,12 @@ export default defineComponent({
       creatingRisks.value = true;
       const risks = selectedScenarios.value.map((scenario) => ({
         scenario: {
-          targetUri: `${$config.apiUrl}/scenarios/${scenario.id}`
+          targetUri: `${config.public.apiUrl}/scenarios/${scenario.id}`
         },
         domains: {
           [props.domainId]: {
             reference: {
-              targetUri: `${$config.apiUrl}/domains/${props.domainId}`
+              targetUri: `${config.public.apiUrl}/domains/${props.domainId}`
             },
             riskDefinitions: {
               DSRA: {}
@@ -172,11 +171,11 @@ export default defineComponent({
 
       try {
         await Promise.all(risks.map((risk: any) => createRisk({ endpoint: 'processes', objectId: props.objectId, risk })));
-        displaySuccessMessage(tc('risksCreated', selectedScenarios.value.length));
+        displaySuccessMessage(t('risksCreated', selectedScenarios.value.length));
         selectedScenarios.value = [];
         emit('success');
       } catch (e: any) {
-        displayErrorMessage(tc('createRiskError', selectedScenarios.value.length), e.message);
+        displayErrorMessage(t('createRiskError', selectedScenarios.value.length), e.message);
       }
 
       creatingRisks.value = false;
@@ -194,7 +193,6 @@ export default defineComponent({
       selectedScenarios,
 
       t,
-      tc,
       upperFirst
     };
   }

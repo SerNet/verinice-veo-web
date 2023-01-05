@@ -18,11 +18,10 @@
 <template>
   <VeoDialog
     v-bind="$attrs"
-    :headline="$t('downloadSchema')"
-    v-on="$listeners"
+    :headline="t('downloadSchema')"
   >
     <template #default>
-      {{ $t('invalidSchemaConfirmation') }}
+      {{ t('invalidSchemaConfirmation') }}
     </template>
     <template #dialog-options>
       <v-btn
@@ -43,10 +42,10 @@
   </VeoDialog>
 </template>
 
-<script lang="ts">
-import Vue from 'vue';
+<script lang="ts" setup>
+defineEmits(['download', 'input']);
 
-export default Vue.extend({});
+const { t } = useI18n();
 </script>
 
 <i18n>

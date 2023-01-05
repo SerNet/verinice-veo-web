@@ -20,7 +20,6 @@
     v-bind="$attrs"
     :headline="t('deleteAccount')"
     :close-disabled="isLoading"
-    v-on="$listeners"
   >
     <template #default>
       <VeoAlert
@@ -55,60 +54,47 @@
   </VeoDialog>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+<script lang="ts" setup>
 import { useDeleteAccount } from '~/composables/api/accounts';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { VeoAlertType } from '~/types/VeoTypes';
 
-export default defineComponent({
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    username: {
-      type: String,
-      required: true
-    }
+const props = defineProps({
+  id: {
+    type: String,
+    required: true
   },
-  setup(props, { emit }) {
-    const { t } = useI18n();
-    const { ability } = useVeoPermissions();
-    const { profile } = useVeoUser();
-    const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-
-    const deleteMutationParameters = computed(() => ({ id: props.id }));
-    const { mutateAsync: doDelete, isLoading } = useDeleteAccount();
-
-    const deleteAccount = async () => {
-      if (!props.id || ability.value.cannot('manage', 'accounts')) {
-        return;
-      }
-      try {
-        await doDelete(deleteMutationParameters);
-        displaySuccessMessage(t('deletingAccountSuccess').toString());
-        emit('success');
-        emit('input', false);
-      } catch (error: any) {
-        displayErrorMessage(t('deletingAccountFailed').toString(), error.message);
-      }
-    };
-
-    return {
-      ability,
-      deleteAccount,
-      isLoading,
-      profile,
-
-      t,
-      VeoAlertType
-    };
+  username: {
+    type: String,
+    required: true
   }
 });
+
+const emit = defineEmits(['input', 'success']);
+  
+const { t } = useI18n();
+const { ability } = useVeoPermissions();
+const { profile } = useVeoUser();
+const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
+
+const deleteMutationParameters = computed(() => ({ id: props.id }));
+const { mutateAsync: doDelete, isLoading } = useDeleteAccount();
+
+const deleteAccount = async () => {
+  if (!props.id || ability.value.cannot('manage', 'accounts')) {
+    return;
+  }
+  try {
+    await doDelete(deleteMutationParameters);
+    displaySuccessMessage(t('deletingAccountSuccess').toString());
+    emit('success');
+    emit('input', false);
+  } catch (error: any) {
+    displayErrorMessage(t('deletingAccountFailed').toString(), error.message);
+  }
+};
 </script>
 
 <i18n>

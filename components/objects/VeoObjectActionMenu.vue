@@ -97,9 +97,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, ref, computed, PropType, useContext } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
 
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
@@ -129,8 +128,9 @@ export default defineComponent({
       default: undefined
     }
   },
+  emits: ['reload'],
   setup(props, { emit }) {
-    const { $api } = useContext();
+    const { $api } = useNuxtApp();
     const { t, locale } = useI18n();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
@@ -142,7 +142,7 @@ export default defineComponent({
     const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
 
     // general stuff
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     const speedDialIsOpen = ref(false);
 

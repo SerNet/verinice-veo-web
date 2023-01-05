@@ -45,23 +45,15 @@
     </template>
   </VeoCard>
 </template>
-<script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
-
-interface IProps {
-  title: String;
-}
-
-export default defineComponent<IProps>({
-  props: {
-    title: {
-      type: String,
-      default: undefined
-    },
-    loading: {
-      type: Boolean,
-      default: false
-    }
+<script lang="ts" setup>
+defineProps({
+  title: {
+    type: String,
+    default: undefined
+  },
+  loading: {
+    type: Boolean,
+    default: false
   }
 });
 </script>

@@ -189,30 +189,16 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { computed, defineComponent, PropType, Ref, ref, watch, inject, provide } from '@nuxtjs/composition-api';
 import Draggable from 'vuedraggable';
 import { JsonPointer } from 'json-ptr';
 import { cloneDeep, differenceBy, upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
-import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { controlTypeAlternatives, IControlType } from '~/types/VeoEditor';
 import { IVeoFormSchemaItem, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
 import { IBaseObject } from '~/lib/utils';
+import { PropType } from 'vue';
 
-interface IProps {
-  value: boolean;
-  name: string;
-  options: any;
-  schema: any;
-  formSchema: any;
-  generalTranslation: IVeoTranslationCollection;
-  customTranslations: IVeoFormSchemaTranslationCollection;
-  type: string;
-  language: string;
-}
-
-export default defineComponent<IProps>({
+export default defineComponent({
   components: {
     Draggable,
     VeoFseControl: (): Promise<any> => import('~/components/editor/FormSchema/Generator/elements/VeoFseControl.vue')
@@ -227,11 +213,11 @@ export default defineComponent<IProps>({
       required: true
     },
     options: {
-      type: Object as PropType<any>,
+      type: Object,
       required: true
     },
     schema: {
-      type: Object as PropType<any>,
+      type: Object,
       required: true
     },
     formSchema: {
@@ -243,11 +229,13 @@ export default defineComponent<IProps>({
       default: ''
     },
     generalTranslation: {
-      type: Object,
+      type: Object as PropType<IVeoTranslationCollection>,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       default: () => {}
     },
     customTranslations: {
-      type: Object,
+      type: Object as PropType<IVeoFormSchemaTranslationCollection>,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       default: () => {}
     },
     type: {
@@ -259,8 +247,10 @@ export default defineComponent<IProps>({
       required: true
     }
   },
+  emits: ['input', 'edit', 'update-custom-translation'],
   setup(props, context) {
     const { t } = useI18n();
+    const { displayErrorMessage } = useVeoAlerts();
 
     // TODO: Refactor the component
     /**
@@ -271,7 +261,7 @@ export default defineComponent<IProps>({
       direction: 'horizontal'
     };
 
-    const localCustomTranslation: Ref<IVeoFormSchemaTranslationCollection> = ref({ ...props.customTranslations });
+    const localCustomTranslation = ref<IVeoFormSchemaTranslationCollection>({ ...props.customTranslations });
 
     /**
      * General functions
@@ -324,7 +314,7 @@ export default defineComponent<IProps>({
      * Control types related stuff
      */
     // TODO: this (also transformValues()) should be refactored and should like the structure as of FormSchema
-    const activeControlType: Ref<IControlType> = ref({
+    const activeControlType = ref<IControlType>({
       name: props.type,
       format: props.options.format,
       ...(props.type === 'Radio' && {
@@ -356,9 +346,7 @@ export default defineComponent<IProps>({
       if (newType) {
         activeControlType.value = newType;
       } else {
-        context.emit(VeoEvents.ALERT_ERROR, {
-          text: 'updateActiveControlType: Control type not found'
-        });
+        displayErrorMessage('Logic error', 'updateActiveControlType: Control type not found');
       }
     }
 
@@ -369,7 +357,7 @@ export default defineComponent<IProps>({
     function getDefaultLabel() {
       return props.generalTranslation?.[props.name] || props.name;
     }
-    const defaultLabel: Ref<string> = ref(getDefaultLabel());
+    const defaultLabel = ref<string>(getDefaultLabel());
 
     function onInputLabel(event: string) {
       localCustomTranslation.value[props.language][props.name] = event;

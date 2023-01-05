@@ -22,7 +22,6 @@
     :close-disabled="isLoading"
     :headline="id ? t('updateAccount') : t('createAccount')"
     large
-    v-on="$listeners"
   >
     <template #default>
       <VeoAlert
@@ -138,10 +137,10 @@
 </template>
 
 <script lang="ts">
+import { PropType } from 'vue';
 import { mdiAccountOutline, mdiEmailOutline } from '@mdi/js';
-import { computed, defineComponent, PropType, reactive, ref, watch } from '@nuxtjs/composition-api';
 import { cloneDeep, pick, trim } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
+
 import { IVeoAccount, useCreateAccount, useUpdateAccount } from '~/composables/api/accounts';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
@@ -188,6 +187,7 @@ export default defineComponent({
       default: () => []
     }
   },
+  emits: ['input', 'success'],
   setup(props, { emit }) {
     const { t } = useI18n();
     const { ability } = useVeoPermissions();

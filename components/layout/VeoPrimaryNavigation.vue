@@ -22,11 +22,11 @@
     :value="value"
     app
     floating
-    :mini-variant="!$vuetify.breakpoint.xs && miniVariant"
-    :permanent="!$vuetify.breakpoint.xs"
-    :temporary="$vuetify.breakpoint.xs"
+    :mini-variant="!vuetify.breakpoint.xs && miniVariant"
+    :permanent="!vuetify.breakpoint.xs"
+    :temporary="vuetify.breakpoint.xs"
     class="veo-primary-navigation"
-    v-on="$listeners"
+    v-bind="$attrs"
   >
     <template #prepend>
       <div>
@@ -59,22 +59,21 @@
         <v-list-item-group>
           <template
             v-for="item in items"
+            :key="item.key"
           >
-            <div :key="item.key">
-              <VeoPrimayNavigationCategory
-                v-if="item.children"
-                v-bind="item"
-                :level="0"
-                :mini-variant="miniVariant"
-                @expand-menu="setMiniVariant(false)"
-              />
-              <VeoPrimaryNavigationEntry
-                v-else
-                v-bind="item"
-                :mini-variant="miniVariant"
-                @expand-menu="setMiniVariant(false)"
-              />
-            </div>
+            <VeoPrimayNavigationCategory
+              v-if="item.children"
+              v-bind="item"
+              :level="0"
+              :mini-variant="miniVariant"
+              @expand-menu="setMiniVariant(false)"
+            />
+            <VeoPrimaryNavigationEntry
+              v-else
+              v-bind="item"
+              :mini-variant="miniVariant"
+              @expand-menu="setMiniVariant(false)"
+            />
           </template>
         </v-list-item-group>
         <template v-if="authenticated">
@@ -92,7 +91,7 @@
       >
         <v-divider style="background: rgba(255, 255, 255, 0.2)" />
         <v-list-item
-          v-if="!$vuetify.breakpoint.xs"
+          v-if="!vuetify.breakpoint.xs"
           class="pl-4"
           data-component-name="toggle-navigation"
           @click="setMiniVariant(!miniVariant)"
@@ -124,7 +123,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
+import { RouteLocationRaw } from 'vue-router';
 import {
   mdiBookOpenPageVariantOutline,
   mdiChevronLeft,
@@ -136,8 +135,6 @@ import {
   mdiTableSettings,
   mdiTextBoxEditOutline
 } from '@mdi/js';
-import { RawLocation } from 'vue-router/types';
-import { useI18n } from 'nuxt-i18n-composable';
 import { sortBy, upperFirst } from 'lodash';
 
 import LocalStorage from '~/util/LocalStorage';
@@ -166,7 +163,7 @@ export interface INavItem {
   icon?: string;
   faIcon?: string | string[];
   exact?: boolean;
-  to?: RawLocation;
+  to?: RouteLocationRaw;
   children?: INavItem[];
   childrenLoading?: boolean;
   componentName?: string;
@@ -203,7 +200,7 @@ export default defineComponent({
   },
   setup(props) {
     const { t, locale } = useI18n();
-    const { $api } = useContext();
+    const { $api, vuetify } = useNuxtApp();
     const { authenticated, userSettings } = useVeoUser();
     const route = useRoute();
     const { ability } = useVeoPermissions();
@@ -253,7 +250,7 @@ export default defineComponent({
             name: upperFirst(translations.value?.lang[locale.value]?.[objectSchema.title] || objectSchema.title),
             icon: _icon?.library === 'mdi' ? (_icon?.icon as string) : undefined,
             faIcon: _icon?.library === 'fa' ? _icon?.icon : undefined,
-            activePath: `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectSchema.title}`,
+            activePath: `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${objectSchema.title}`,
             children: [
               // all of object type
               {
@@ -409,7 +406,7 @@ export default defineComponent({
     const objectsNavEntry = computed<INavItem>(() => ({
       key: 'objects',
       name: t('breadcrumbs.objects').toString(),
-      activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/objects`,
+      activePath: `${route.params.unit}/domains/${route.params.domain}/objects`,
       faIcon: ['far', 'object-ungroup'],
       children: objectTypesChildItems.value,
       childrenLoading: schemasLoading.value,
@@ -419,7 +416,7 @@ export default defineComponent({
     const catalogsNavEntry = computed<INavItem>(() => ({
       key: 'catalogs',
       name: t('breadcrumbs.catalogs').toString(),
-      activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/catalogs`,
+      activePath: `${route.params.unit}/domains/${route.params.domain}/catalogs`,
       icon: mdiBookOpenPageVariantOutline,
       children: catalogsEntriesChildItems.value,
       childrenLoading: catalogsEntriesLoading.pending,
@@ -429,7 +426,7 @@ export default defineComponent({
     const reportsNavEntry = computed<INavItem>(() => ({
       key: 'reports',
       name: t('breadcrumbs.reports').toString(),
-      activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/reports`,
+      activePath: `${route.params.unit}/domains/${route.params.domain}/reports`,
       icon: mdiFileChartOutline,
       children: reportsEntriesChildItems.value,
       childrenLoading: reportsEntriesLoading.value,
@@ -439,7 +436,7 @@ export default defineComponent({
     const risksNavEntry = computed<INavItem>(() => ({
       key: 'risks',
       name: t('breadcrumbs.risks').toString(),
-      activePath: `${route.value.params.unit}/domains/${route.value.params.domain}/risks`,
+      activePath: `${route.params.unit}/domains/${route.params.domain}/risks`,
       icon: mdiTableSettings,
       children: riskChildItems.value,
       childrenLoading: riskDefinitionsLoading.pending,
@@ -493,20 +490,20 @@ export default defineComponent({
       ...(authenticated.value && userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry] : []),
       ...(props.unitId && props.domainId
         ? [
-            domainDashboardNavEntry.value,
-            ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
-            objectsNavEntry.value,
-            catalogsNavEntry.value,
-            reportsNavEntry.value,
-            risksNavEntry.value
-          ]
+          domainDashboardNavEntry.value,
+          ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
+          objectsNavEntry.value,
+          catalogsNavEntry.value,
+          reportsNavEntry.value,
+          risksNavEntry.value
+        ]
         : []),
-      ...(route.value.path.startsWith('/docs') ? [backToVeoNavEntry.value, docsNavEntry.value] : [])
+      ...(route.path.startsWith('/docs') ? [backToVeoNavEntry.value, docsNavEntry.value] : [])
     ]);
 
     // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
     const homeLink = computed(() =>
-      route.value.params.domain ? `/${route.value.params.unit}/domains/${route.value.params.domain}` : route.value.params.unit ? `/${route.value.params.unit}` : '/'
+      route.params.domain ? `/${route.params.unit}/domains/${route.params.domain}` : route.params.unit ? `/${route.params.unit}` : '/'
     );
 
     return {
@@ -515,6 +512,7 @@ export default defineComponent({
       homeLink,
       miniVariant,
       setMiniVariant,
+      vuetify,
 
       t,
       mdiChevronLeft,

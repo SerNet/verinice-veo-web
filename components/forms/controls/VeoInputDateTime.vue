@@ -98,10 +98,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@nuxtjs/composition-api';
 import { mdiCalendar, mdiClockOutline } from '@mdi/js';
 import { formatISO } from 'date-fns';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
@@ -124,6 +122,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 export default defineComponent({
   name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
+  emits: ['input'],
   setup(props, { emit }) {
     const { t } = useI18n();
     const { formatDateTime } = useFormatters();

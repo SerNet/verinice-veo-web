@@ -21,7 +21,7 @@
     v-bind="$attrs"
     :color="alertColor"
     colored-border
-    border="left"
+    border="start"
     :elevation="flat ? undefined : 2"
     dense
     class="veo-alert veo-border overflow-hidden"
@@ -81,8 +81,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onUnmounted, PropType, ref, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 
 import { VeoAlertType } from '~/types/VeoTypes';
 
@@ -125,6 +124,7 @@ export default defineComponent({
       default: undefined
     }
   },
+  emits: ['input'],
   setup(props, { emit }) {
     const { t } = useI18n();
 

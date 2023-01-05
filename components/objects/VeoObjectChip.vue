@@ -25,10 +25,9 @@
     style="height: auto;"
     color="primary"
     data-component-name="veo-object-chip"
-    v-on="$listeners"
   >
     <div
-      v-if="label || $scopedSlots.label"
+      v-if="label || $slots.label"
       class="label pa-1 px-2"
     >
       <span
@@ -52,18 +51,11 @@
     </div>
   </v-chip>
 </template>
-<script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
-
-export default defineComponent({
-  props: {
-    label: { type: String, default: '' },
-    close: { type: Boolean, default: true },
-    value: { type: [String, Boolean], default: undefined }
-  },
-  setup() {
-    return {};
-  }
+<script lang="ts" setup>
+defineProps({
+  label: { type: String, default: '' },
+  close: { type: Boolean, default: true },
+  value: { type: [String, Boolean], default: undefined }
 });
 </script>
 <style lang="scss" scoped>

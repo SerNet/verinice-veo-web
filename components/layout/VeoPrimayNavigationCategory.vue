@@ -73,27 +73,30 @@
       </v-list-item>
     </template>
     <template v-else>
-      <template v-for="child of children">
-        <div :key="child.key">
-          <VeoPrimaryNavigationEntry
-            v-if="!child.children"
-            v-bind="child"
-            v-on="$listeners"
-          />
-          <VeoPrimaryNavigationCategory
-            v-else
-            v-bind="child"
-            :level="level + 1"
-            v-on="$listeners"
-          />
-        </div>
+      <template
+        v-for="child of children"
+        :key="child.key"
+      >
+        <VeoPrimaryNavigationEntry
+          v-if="!child.children"
+          v-bind="child"
+          @expand-menu="$emit('expand-menu')"
+          @click="$emit('click')"
+        />
+        <VeoPrimaryNavigationCategory
+          v-else
+          v-bind="child"
+          :level="level + 1"
+          @expand-menu="$emit('expand-menu')"
+          @click="$emit('click')"
+        />
       </template>
     </template>
   </v-list-group>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, useRoute, useRouter } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 import { mdiChevronDown } from '@mdi/js';
 
 import { INavItem } from './VeoPrimaryNavigation.vue';
@@ -142,6 +145,7 @@ export default defineComponent({
       default: undefined
     }
   },
+  emits: ['expand-menu', 'click'],
   setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();
@@ -150,7 +154,7 @@ export default defineComponent({
       if (props.miniVariant) {
         emit('expand-menu');
       }
-      if (props.to && route.value.path !== props.to) {
+      if (props.to && route.path !== props.to) {
         router.push(props.to);
       } else {
         emit('click', event);

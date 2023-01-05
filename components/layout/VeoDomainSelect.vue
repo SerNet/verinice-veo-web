@@ -73,10 +73,10 @@
             right
             :disabled="!miniVariant"
           >
-            <template #activator="{ on, attrs }">
+            <template #activator="{ on1, attrs }">
               <div
                 v-bind="attrs"
-                v-on="on"
+                v-on="on1"
               >
                 <v-icon
                   color="black"
@@ -110,12 +110,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { mdiChevronDown, mdiChevronUp, mdiShapeOutline } from '@mdi/js';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoDomain } from '~/types/VeoTypes';
+import { useFetchUnitDomains } from '~~/composables/api/domains';
 
 export default defineComponent({
   props: {
@@ -128,24 +126,24 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['expand-menu'],
   setup() {
-    const { $api } = useContext();
     const router = useRouter();
     const route = useRoute();
     const { t } = useI18n();
 
-    const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
+    const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
 
     const domainId = computed({
       get() {
-        return separateUUIDParam(route.value.params.domain).id || 'more';
+        return separateUUIDParam(route.params.domain as string).id || 'more';
       },
       set(newValue: string) {
         if (newValue === 'more') {
           router.push({
             name: 'unit-domains-more',
             params: {
-              ...route.value.params,
+              ...route.params,
               domain: 'more'
             }
           });
@@ -153,7 +151,7 @@ export default defineComponent({
           router.push({
             name: 'unit-domains-domain',
             params: {
-              ...route.value.params,
+              ...route.params,
               domain: createUUIDUrlParam('domain', newValue)
             }
           });
@@ -162,17 +160,11 @@ export default defineComponent({
     });
     const domainName = computed(() => selectItems.value.find((domain) => domain.value === domainId.value)?.text || t('noDomainSelected').toString());
 
-    const domains = ref<IVeoDomain[]>([]);
-    const { fetch } = useFetch(async () => {
-      domains.value = await $api.domain.fetchUnitDomains(unitId.value);
-    });
+    const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: unitId.value }));
+    const fetchUnitDomainsQueryEnabled = computed(() => !!unitId.value);
+    const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
 
     const selectItems = computed(() => domains.value.map((domain) => ({ value: domain.id, text: domain.name })).concat({ value: 'more', text: t('breadcrumbs.more').toString() }));
-
-    watch(
-      () => unitId.value,
-      () => fetch()
-    );
 
     return {
       domainId,

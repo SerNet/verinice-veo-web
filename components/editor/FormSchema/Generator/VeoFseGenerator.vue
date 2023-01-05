@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import Vue, { VNode, PropOptions } from 'vue';
+import { PropType } from 'vue';
 import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
@@ -30,32 +30,32 @@ import { IVeoFormsElementDefinition } from '~/components/forms/types';
 
 const WIDGETS: IVeoFormsElementDefinition[] = [];
 
-export default Vue.extend({
+export default {
   name: 'FseGenerator',
   props: {
     schema: {
-      type: Object,
+      type: Object as PropType<JSONSchema7>,
       required: true
-    } as PropOptions<JSONSchema7>,
+    },
     value: {
-      type: Object,
+      type: Object as PropType<UISchema>,
       default: undefined
-    } as PropOptions<UISchema>,
+    },
     generalTranslation: {
-      type: Object,
-      default: () => {}
-    } as PropOptions<IVeoTranslationCollection>,
+      type: Object as PropType<IVeoTranslationCollection>,
+      default: () => ({})
+    },
     customTranslations: {
-      type: Object,
-      default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollection>,
+      type: Object as PropType<IVeoFormSchemaTranslationCollection>,
+      default: () => ({})
+    },
     language: {
       type: String,
       required: true
     }
   },
-  render(h): VNode {
-    const createComponent = (element: UISchemaElement, formSchemaPointer: string, elementLevel: number): VNode => {
+  render(h) {
+    const createComponent = (element: UISchemaElement, formSchemaPointer: string, elementLevel: number) => {
       // Create children of layout "elements"
       const createChildren = () => {
         return element.elements && element.elements.map((elem, index) => createComponent(elem, `${formSchemaPointer}/elements/${index}`, elementLevel + 1));
@@ -75,7 +75,7 @@ export default Vue.extend({
                 customTranslations: this.customTranslations,
                 language: this.language
               },
-              on: this.$listeners
+              ...this.$attrs
             },
             createChildren()
           );
@@ -109,7 +109,7 @@ export default Vue.extend({
               ...partOfProps,
               scope: element.scope || ''
             },
-            on: this.$listeners
+            ...this.$attrs
           });
         }
         case 'Label':
@@ -123,7 +123,7 @@ export default Vue.extend({
               customTranslations: this.customTranslations,
               language: this.language
             },
-            on: this.$listeners
+            ...this.$attrs
           });
         case 'Widget':
           // eslint-disable-next-line no-case-declarations
@@ -141,7 +141,7 @@ export default Vue.extend({
               formSchemaPointer,
               description: widgetDefinition.description[this.$i18n.locale] || Object.values(widgetDefinition.description)[0]
             },
-            on: this.$listeners
+            ...this.$attrs
           });
       }
     };
@@ -154,7 +154,7 @@ export default Vue.extend({
 
     return createComponent(this.value, '#', 0);
   }
-});
+};
 </script>
 
 <style lang="scss" scoped>

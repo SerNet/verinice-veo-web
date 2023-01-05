@@ -63,8 +63,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
 export enum IVeoFilterOptionType {
@@ -123,6 +122,7 @@ export default defineComponent({
       default: undefined
     }
   },
+  emits: ['input'],
   setup(props, { emit }) {
     const { t } = useI18n();
 

@@ -32,9 +32,9 @@
   >
     <template #append-outer>
       <v-btn
-        :disabled="errors.get(objectSchemaPointer) || !value"
+        :disabled="!!errors.get(objectSchemaPointer).length || !value"
         icon
-        :href="value"
+        :href="<string>value"
         target="_blank"
         color="primary"
         small
@@ -48,7 +48,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
 import { mdiOpenInNew } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
@@ -70,6 +69,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 export default defineComponent({
   name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
+  emits: ['input'],
   setup() {
     return {
       getControlErrorMessages,

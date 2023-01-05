@@ -19,47 +19,49 @@
   <VeoFseGroup
     v-bind="$props"
     :key="name"
-    v-on="$listeners"
+    @delete="$emit('delete', $event)"
+    @update="$emit('update', $event)"
+    @update-custom-translation="$emit('update-custom-translation', $event)"
   >
     <slot />
   </VeoFseGroup>
 </template>
 
-<script lang="ts">
-import Vue from 'vue';
-import { PropOptions } from 'vue/types/options';
+<script lang="ts" setup>
+import { PropType } from 'vue';
 import { IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 
-export default Vue.extend({
-  props: {
-    value: {
-      type: Object,
-      default: undefined
-    },
-    name: {
-      type: String,
-      default: undefined
-    },
-    options: {
-      type: Object,
-      default: undefined
-    },
-    customTranslations: {
-      type: Object,
-      default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollection>,
-    formSchemaPointer: {
-      type: String,
-      default: undefined
-    },
-    level: {
-      type: Number,
-      default: undefined
-    },
-    language: {
-      type: String,
-      required: true
-    }
+
+defineProps({
+  value: {
+    type: Object,
+    default: undefined
+  },
+  name: {
+    type: String,
+    default: undefined
+  },
+  options: {
+    type: Object,
+    default: undefined
+  },
+  customTranslations: {
+    type: Object as PropType<IVeoFormSchemaTranslationCollection>,
+    default: () => ({})
+  },
+  formSchemaPointer: {
+    type: String,
+    default: undefined
+  },
+  level: {
+    type: Number,
+    default: undefined
+  },
+  language: {
+    type: String,
+    required: true
   }
 });
+
+defineEmits(['update', 'delete', 'update-custom-translation']);
 </script>

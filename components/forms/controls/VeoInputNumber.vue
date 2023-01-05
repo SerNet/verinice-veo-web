@@ -34,8 +34,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
-
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
@@ -55,9 +53,11 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 export default defineComponent({
   name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
+  emits: ['input'],
   setup(props, { emit }) {
     const onInput = (data: string | number) => {
       if (typeof data !== 'number') {
+        // @ts-ignore Type exists on objectschema, but not on default value (that will never be set if this component gets rendered)
         if (props.objectSchema.type === 'integer') {
           data = parseInt(data, 10);
         } else {

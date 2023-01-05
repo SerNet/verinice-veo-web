@@ -102,10 +102,9 @@
 </template>
 
 <script lang="ts">
+import { PropType } from 'vue';
 import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
-import { defineComponent, ref, computed, Ref, watch, ComputedRef, nextTick, PropType } from '@nuxtjs/composition-api';
 import { clone, omitBy, upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { IVeoFilterDivider, IVeoFilterOption, IVeoFilterOptionType } from './VeoObjectFilter.vue';
 import { IBaseObject, extractSubTypesFromObjectSchema } from '~/lib/utils';
@@ -123,7 +122,7 @@ export default defineComponent({
     },
     filter: {
       type: Object as PropType<IBaseObject>,
-      default: () => {}
+      default: () => ({})
     },
     domainId: {
       type: String,
@@ -146,6 +145,7 @@ export default defineComponent({
       default: () => []
     }
   },
+  emits: ['input', 'update:filter'],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
 
@@ -213,7 +213,7 @@ export default defineComponent({
     const filterFormValid = ref(false);
 
     // We keep a copy of the prop filter object as we only want to change the filters if the user clicks submit
-    const localFilter: Ref<IBaseObject> = ref(clone(props.filter) || {});
+    const localFilter = ref<IBaseObject>(clone(props.filter) || {});
     watch(
       () => props.filter,
       (newValue) => {
@@ -223,7 +223,7 @@ export default defineComponent({
 
     const localAvailableSubTypes = computed(() => subTypes.value[localFilter.value.objectType] || []);
 
-    const filterOptions: ComputedRef<(IVeoFilterOption | IVeoFilterDivider)[]> = computed(() => {
+    const filterOptions = computed<(IVeoFilterOption | IVeoFilterDivider)[]>(() => {
       return [
         {
           name: 'objectType',
@@ -233,8 +233,8 @@ export default defineComponent({
           alwaysVisible: true,
           selectOptions: props.availableObjectTypes.length
             ? objectTypes.value
-                .filter((objectType) => props.availableObjectTypes!.includes(objectType))
-                .map((objectType) => ({ text: translations.value?.lang[locale.value]?.[objectType] || '', value: objectType }))
+              .filter((objectType) => props.availableObjectTypes.includes(objectType))
+              .map((objectType) => ({ text: translations.value?.lang[locale.value]?.[objectType] || '', value: objectType }))
             : objectTypes.value.map((objectType) => ({ text: translations.value?.lang[locale.value]?.[objectType] || '', value: objectType })),
           onChange: () => {
             nextTick(() => {

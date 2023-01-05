@@ -92,8 +92,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, Ref, ref, computed, WritableComputedRef } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType, Ref } from 'vue';
 import { JsonPointer } from 'json-ptr';
 import { cloneDeep, orderBy } from 'lodash';
 import vjp from 'vue-json-pointer';
@@ -115,15 +114,10 @@ interface IVeoFormSchemaItemRuleLocal {
   };
 }
 
-interface IProps {
-  value: IVeoFormSchemaItemRule;
-  currentScope: string | undefined;
-}
-
-export default defineComponent<IProps>({
+export default defineComponent({
   props: {
     value: {
-      type: Object,
+      type: Object as PropType<IVeoFormSchemaItemRule>,
       default: () => ({})
     },
     currentScope: {
@@ -131,6 +125,7 @@ export default defineComponent<IProps>({
       default: undefined
     }
   },
+  emits: ['input'],
   setup(props, context) {
     const { t } = useI18n();
 
@@ -156,15 +151,13 @@ export default defineComponent<IProps>({
       { text: t('displayTypes.show'), value: 'SHOW' },
       { text: t('displayTypes.hide'), value: 'HIDE' }
     ]);
-    const displayType: WritableComputedRef<string | undefined> = computed({
+    const displayType = computed<string | undefined>({
       get() {
         return rule.value.effect;
       },
       set(newEffect: IVeoFormSchemaItemRule['effect'] | undefined) {
         if (newEffect) {
           vjp.set(rule.value, '/effect', newEffect);
-        } else if (newEffect && typeof rule.value.effect === 'undefined') {
-          rule.value = { effect: newEffect, condition: {} };
         } else {
           rule.value = {};
         }
@@ -178,8 +171,8 @@ export default defineComponent<IProps>({
     usedScopes.value = isCurrentLinkAttribute.value
       ? linksAttributesScopes.value || []
       : Object.entries(JsonPointer.flatten(mainFormSchema?.value?.content, true) as Record<string, any>)
-          .filter(([key, _value]) => /elements\/\d+\/scope$/.test(key))
-          .map(([_key, value]) => value as string);
+        .filter(([key, _value]) => /elements\/\d+\/scope$/.test(key))
+        .map(([_key, value]) => value as string);
     // Current Scope of elements Checkbox & Enum should not be shown in the list of scopes,
     // because the current element cannot be conditional on own property
     if (props.currentScope) {
@@ -215,7 +208,7 @@ export default defineComponent<IProps>({
     conditionScopeItems.value = orderBy(conditionScopeItems.value, [(o) => o.name.toLowerCase()], ['asc']);
 
     // Enable reactivity for defining and getting "scope" from rule object
-    const conditionScope: WritableComputedRef<string | undefined> = computed({
+    const conditionScope = computed<string | undefined>({
       get() {
         return rule.value.condition?.scope;
       },
@@ -234,7 +227,7 @@ export default defineComponent<IProps>({
     // Value items are the same as the enum of the selection conditionScope
     const conditionValueItems = computed(() => conditionScopeItems.value.find((el) => el.scope === conditionScope.value)?.enum);
     // Enable reactivity for defining and getting the value from "enum" in the rule object
-    const conditionValue: WritableComputedRef<IVeoFormSchemaItemRule['condition']['schema']['enum'] | undefined> = computed({
+    const conditionValue = computed<IVeoFormSchemaItemRule['condition']['schema']['enum'] | undefined>({
       get() {
         return rule.value.condition?.schema?.enum;
       },

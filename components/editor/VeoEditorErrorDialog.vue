@@ -22,7 +22,6 @@
     :headline="upperFirst(t('schemaValidationWarnings').toString())"
     large
     fixed-footer
-    v-on="$listeners"
   >
     <template #default>
       <h3 class="text-h3">
@@ -33,7 +32,6 @@
         :items="validation.errors"
         no-error-placeholder-visible
         fixing-allowed
-        v-on="$listeners"
       />
       <h3 class="text-h3 mt-4">
         {{ upperFirst(t('schemaValidationWarnings').toString()) }} ({{ validation.warnings.length }})
@@ -42,7 +40,6 @@
         v-bind="$attrs"
         :items="validation.warnings"
         fixing-allowed
-        v-on="$listeners"
       />
     </template>
     <template #dialog-options>
@@ -58,8 +55,7 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
@@ -79,6 +75,7 @@ export default defineComponent({
       })
     }
   },
+  emits: ['input'],
   setup() {
     const { t } = useI18n();
 

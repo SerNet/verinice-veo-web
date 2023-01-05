@@ -87,13 +87,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { PropOptions } from 'vue/types/options';
+import { PropType } from 'vue';
 import { getRuleEffectIcons } from '~/lib/FormSchemaHelper';
 
 import { IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 
-export default Vue.extend({
+export default {
   name: 'FseLabel',
   props: {
     value: {
@@ -109,9 +108,9 @@ export default Vue.extend({
       default: undefined
     },
     customTranslations: {
-      type: Object,
-      default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollection>,
+      type: Object as PropType<IVeoFormSchemaTranslationCollection>,
+      default: () => ({})
+    },
     formSchemaPointer: {
       type: String,
       default: undefined
@@ -121,6 +120,7 @@ export default Vue.extend({
       required: true
     }
   },
+  emits: ['update', 'delete', 'update-custom-translation'],
   data() {
     return {
       editDialog: false,
@@ -163,7 +163,7 @@ export default Vue.extend({
       this.label = (this.name && this.customTranslations?.[this.language][this.name]) || '';
     }
   }
-});
+};
 </script>
 
 <style lang="scss" scoped>

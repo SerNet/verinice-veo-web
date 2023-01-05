@@ -15,10 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, isRef, nextTick, onBeforeUnmount, onMounted, Ref, ref, useAsync, useContext, useRoute, useRouter, watch, WatchStopHandle } from '@nuxtjs/composition-api';
+import { Ref, WatchStopHandle } from 'vue';
 import introJs, { Hint, IntroJs } from 'intro.js';
-import { useI18n } from 'nuxt-i18n-composable';
-import * as pathToRegexp from 'path-to-regexp';
+import pathToRegexp from 'path-to-regexp';
 
 import { onContentUpdate, onFetchFinish } from './utils';
 
@@ -63,7 +62,7 @@ export function createIntro() {
 
     // Stop watching tutorial on route change
     const _watchRouteChange = watch(
-      () => route.value.fullPath,
+      () => route.fullPath,
       () => {
         if (stopOnRouteChange.value) {
           stop();
@@ -117,10 +116,8 @@ export function createIntro() {
                       event.preventDefault();
                       const fullPath = url.pathname + url.search + url.hash;
                       // use vue router for navigation
-                      router.push(fullPath, () => {
-                        // restore old stopOnRouteChange value
-                        stopOnRouteChange.value = _oldStopOnRouteChangeValue;
-                      });
+                      router.push(fullPath);
+                      stopOnRouteChange.value = _oldStopOnRouteChangeValue;
                     }
                   }
                 };
@@ -160,8 +157,11 @@ export function createIntro() {
           } else {
             _instance.exit(true);
             // Reset handlers
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             _instance.oncomplete(() => {});
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             _instance.onchange(() => {});
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             _instance.onexit(() => {});
           }
         },
@@ -312,13 +312,12 @@ export function useIntro() {
   };
 }
 
-export function useTutorials() {
-  const { $content } = useContext();
+export async function useTutorials() {
   const intro = useIntro();
   const route = useRoute();
   const i18n = useI18n();
   const fetchDocs = async () => {
-    const docs = await $content('', { deep: true }).where({ extension: '.yaml' }).sortBy('path', 'asc').fetch<ITutorialDocument>();
+    const docs = await queryContent('', { deep: true }).where({ extension: '.yaml' }).sort({}).find();
     if (!docs || !Array.isArray(docs)) return [];
 
     return (
@@ -334,7 +333,7 @@ export function useTutorials() {
         })
     );
   };
-  const _tutorials = useAsync(fetchDocs, 'tutorials');
+  const _tutorials = ref(await fetchDocs());
   onContentUpdate(async () => {
     _tutorials.value = await fetchDocs();
   });
@@ -346,7 +345,7 @@ export function useTutorials() {
   );
 
   // Ignore hash part in current route url
-  const currentRouteHref = computed(() => route.value.fullPath.replace(/#.*$/, ''));
+  const currentRouteHref = computed(() => route.fullPath.replace(/#.*$/, ''));
   // Make sure tutorials is always present
   const tutorials = computed(() => _tutorials.value?.map((tutorial) => ({ ...tutorial, applicable: tutorial.match(currentRouteHref.value) })) || []);
   type Tutorial = typeof tutorials.value extends Array<infer U> ? U : never;
@@ -365,7 +364,7 @@ export function useTutorials() {
      * @example `load('/tutorials/tutorial-test-steps')`
      */
     load(predicate?: string | TutorialPredicate, autoplay = true) {
-      const _find: TutorialPredicate = typeof predicate === 'function' ? predicate : (_) => _.path === predicate;
+      const _find: TutorialPredicate = typeof predicate === 'function' ? predicate : (_) => _._path === predicate;
       const tutorial = computed(() => (predicate ? tutorials.value?.find(_find) : tutorialsForRoute.value?.[0]));
       intro.configure(tutorial);
       if (autoplay) {
@@ -391,7 +390,7 @@ export function useTutorials() {
  * Vue uses path-to-regexp 1.7.0 (wildcard asterisk support)
  * @see https://router.vuejs.org/guide/essentials/dynamic-matching.html#advanced-matching-patterns
  */
-function pathToRegex(route?: string, exact: boolean = false) {
+function pathToRegex(route?: string, exact = false) {
   try {
     return route && pathToRegexp.default(route, { end: exact });
   } catch (e) {

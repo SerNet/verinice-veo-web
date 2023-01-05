@@ -138,25 +138,15 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, Ref, ref, reactive, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { JsonPointer } from 'json-ptr';
 import { cloneDeep, merge } from 'lodash';
+
 import { IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
 
-interface IProps {
-  value: boolean;
-  name: string;
-  options: any;
-  formSchema: any;
-  formSchemaPointer: string;
-  customTranslations: IVeoFormSchemaTranslationCollection;
-  language: string;
-}
-
-export default defineComponent<IProps>({
+export default defineComponent({
   props: {
     value: {
       type: Boolean,
@@ -179,14 +169,15 @@ export default defineComponent<IProps>({
       default: undefined
     },
     customTranslations: {
-      type: Object,
-      default: () => {}
+      type: Object as PropType<IVeoFormSchemaTranslationCollection>,
+      default: () => ({})
     },
     language: {
       type: String,
       required: true
     }
   },
+  emits: ['input', 'update-custom-translation', 'edit'],
   setup(props, context) {
     const { t } = useI18n();
 
@@ -197,7 +188,7 @@ export default defineComponent<IProps>({
       style: undefined
     };
 
-    const localCustomTranslation: Ref<IVeoFormSchemaTranslationCollection> = ref({});
+    const localCustomTranslation = ref<IVeoFormSchemaTranslationCollection>({});
 
     watch(
       () => props.customTranslations,

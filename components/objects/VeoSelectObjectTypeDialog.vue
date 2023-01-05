@@ -19,7 +19,6 @@
   <VeoDialog
     v-bind="$attrs"
     :headline="t('headline')"
-    v-on="$listeners"
   >
     <template #default>
       {{ t('create_entity') }}
@@ -48,42 +47,31 @@
   </VeoDialog>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
+<script lang="ts" setup>
 import { useFetchSchemas } from '~/composables/api/schemas';
 import { useFetchTranslations } from '~/composables/api/translations';
 
-export default defineComponent({
-  props: {
-    eventPayload: {
-      type: Object,
-      default: () => {}
-    }
-  },
-  setup() {
-    const { t, locale } = useI18n();
-
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
-
-    const { data: schemas } = useFetchSchemas();
-
-    const type = ref<string | undefined>();
-
-    const options = computed<{ text: string; value: string }[]>(() =>
-      Object.keys(schemas || {}).map((schemaName) => ({ value: schemaName, text: translations.value?.lang[locale.value]?.[schemaName] || schemaName }))
-    );
-
-    return {
-      options,
-      type,
-
-      t
-    };
+defineProps({
+  eventPayload: {
+    type: Object,
+    default: () => ({})
   }
 });
+
+defineEmits(['create-entity', 'input']);
+
+const { t, locale } = useI18n();
+
+const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+
+const { data: schemas } = useFetchSchemas();
+
+const type = ref<string | undefined>();
+
+const options = computed<{ text: string; value: string }[]>(() =>
+  Object.keys(schemas || {}).map((schemaName) => ({ value: schemaName, text: translations.value?.lang[locale.value]?.[schemaName] || schemaName }))
+);
 </script>
 
 <i18n>

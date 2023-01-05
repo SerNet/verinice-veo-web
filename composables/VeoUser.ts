@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, ComputedRef, Ref, ref, watch } from '@nuxtjs/composition-api';
+import { ComputedRef, Ref } from 'vue';
 import Keycloak from 'keycloak-js';
 
 import { IBaseObject } from '~/lib/utils';

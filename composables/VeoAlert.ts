@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { readonly, ref, Ref, SetupContext } from '@nuxtjs/composition-api';
+import { Ref } from 'vue';
 
 import { IVeoGlobalAlert, IVeoGlobalAlertParams, VeoAlertType } from '~/types/VeoTypes';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
@@ -117,7 +117,7 @@ export function useVeoAlerts() {
    *
    * @param root The root context of the nuxt application
    */
-  function listenToRootEvents(root: SetupContext['root']): void {
+  function listenToRootEvents(root: any): void {
     root.$on(VeoEvents.ALERT_ERROR, (payload: IVeoEventPayload) => {
       displayErrorMessage(payload.title as string, payload.text, {
         buttonText: payload.saveButtonText,
@@ -126,21 +126,6 @@ export function useVeoAlerts() {
           refetch: payload.refetchCallback as CallableFunction
         }
       });
-    });
-    root.$on(VeoEvents.ALERT_INFO, (payload: IVeoEventPayload) => {
-      displayInfoMessage(payload.title as string, payload.text, {
-        buttonText: payload.saveButtonText,
-        objectModified: payload.objectModified,
-        eventCallbacks: {
-          refetch: payload.refetchCallback as CallableFunction
-        }
-      });
-    });
-    root.$on(VeoEvents.SNACKBAR_SUCCESS, (payload: IVeoEventPayload) => {
-      displaySuccessMessage(payload.text);
-    });
-    root.$on(VeoEvents.ALERT_EXPIRE, (alertKey: number) => {
-      expireAlert(alertKey);
     });
   }
 

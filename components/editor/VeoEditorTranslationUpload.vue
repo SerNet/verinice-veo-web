@@ -116,9 +116,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, reactive, ref, set, useContext, watch } from '@nuxtjs/composition-api';
-import { LocaleObject } from '@nuxtjs/i18n/types';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
+import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { mdiTranslate } from '@mdi/js';
 import { read, WorkBook, WorkSheet } from 'xlsx';
 import { trim } from 'lodash';
@@ -140,8 +139,9 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['update:replace-translations'],
   setup() {
-    const { i18n } = useContext();
+    const { i18n } = useNuxtApp();
     const { t } = useI18n();
     const { displayErrorMessage } = useVeoAlerts();
 
@@ -161,7 +161,7 @@ export default defineComponent({
 
     // xlsx stuff
     const uploadingLanguageFile = ref(false);
-    const languageFile = ref<File>();
+    const languageFile = ref<File[]>();
     const workbook = ref<WorkBook>();
 
     const sheet = ref<string>();
@@ -170,7 +170,7 @@ export default defineComponent({
     const uploadLanguageFile = (newFile: File | undefined) => {
       // Reset selection
       uploadingLanguageFile.value = true;
-      languageFile.value = newFile;
+      languageFile.value = [newFile];
       sheet.value = undefined;
 
       if (!newFile) {
@@ -230,7 +230,7 @@ export default defineComponent({
           if (!toReturn[arrayIndex]) {
             toReturn[arrayIndex] = [];
           }
-          set(toReturn[arrayIndex], row, sheet[cell].w);
+          toReturn[arrayIndex][row] = sheet[cell].w;
         }
       }
       Object.assign(columns, toReturn);

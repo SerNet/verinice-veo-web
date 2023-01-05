@@ -61,29 +61,29 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, h, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 import { mdiArrowDown, mdiArrowRight, mdiCheck, mdiContentCopy, mdiLinkOff, mdiTransitDetour, mdiTrashCanOutline } from '@mdi/js';
-import { VIcon, VTooltip } from 'vuetify/lib';
+import { VIcon, VTooltip } from 'vuetify/components';
 
 import { ObjectTableHeader } from './VeoObjectTable.vue';
 import { createUUIDUrlParam, getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
-import { IVeoCustomLink, IVeoDomain, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
+import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemas } from '~/composables/api/schemas';
 import { useDeleteRisk, useFetchChildObjects, useFetchChildScopes, useFetchParentObjects, useFetchRisks } from '~/composables/api/objects';
+import { useFetchDomain } from '~~/composables/api/domains';
 
 export default defineComponent({
   name: 'VeoObjectDetailsTab',
   props: {
     type: { type: String, default: '' },
     object: {
-      type: Object,
+      type: Object as PropType<IVeoEntity>,
       default: undefined
-    } as PropOptions<IVeoEntity>,
+    },
     dense: {
       type: Boolean,
       default: false
@@ -93,10 +93,11 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['reload'],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
     const route = useRoute();
-    const { $api } = useContext();
+    const { $api } = useNuxtApp();
     const router = useRouter();
     const { ability } = useVeoPermissions();
 
@@ -104,7 +105,7 @@ export default defineComponent({
     const { link } = useLinkObject();
     const { clone } = useCloneObject();
 
-    const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
+    const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
 
     // Fetching different queries for the table
     const { data: schemas } = useFetchSchemas();
@@ -170,96 +171,96 @@ export default defineComponent({
       props.type !== 'risks' && props.type !== 'links'
         ? ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']
         : props.type === 'links'
-        ? ['icon', 'name']
-        : ['designator', 'updatedAt', 'updatedBy', 'actions']
+          ? ['icon', 'name']
+          : ['designator', 'updatedAt', 'updatedBy', 'actions']
     );
 
     const additionalHeaders = computed<ObjectTableHeader[]>(() =>
       props.type === 'risks'
         ? [
-            {
-              value: 'scenario.displayName',
-              text: t('scenario').toString(),
-              cellClass: ['font-weight-bold'],
-              width: 200,
-              truncate: true,
-              priority: 100,
-              order: 40,
-              render: ({ value }: { value: string }) => {
-                // The display name contains designator, abbreviation and name of the scenario, however we only want the name, so we split the string
-                // As the abbreviation is optional and at this point we have no ability to check whether it is set here, we simply remove the designator and display everything else
-                return value.split(' ').slice(1).join(' ');
-              }
-            },
-            ...['C', 'I', 'A', 'R'].map((categoryId, index) => ({
-              value: `riskValues_${categoryId}`,
-              text: domainData.value?.categories?.find((category) => category.id === categoryId)?.translations[locale.value].name || '',
-              render: ({ item }: { item: any }) => {
-                const { inherentRisk, residualRisk } = getInherentAndResidualRisk(item, categoryId);
-                const riskTreatments = getRiskTreatments(item, categoryId);
-                const values = domainData.value?.riskValues;
+          {
+            value: 'scenario.displayName',
+            text: t('scenario').toString(),
+            cellClass: ['font-weight-bold'],
+            width: 200,
+            truncate: true,
+            priority: 100,
+            order: 40,
+            render: ({ value }: { value: string }) => {
+              // The display name contains designator, abbreviation and name of the scenario, however we only want the name, so we split the string
+              // As the abbreviation is optional and at this point we have no ability to check whether it is set here, we simply remove the designator and display everything else
+              return value.split(' ').slice(1).join(' ');
+            }
+          },
+          ...['C', 'I', 'A', 'R'].map((categoryId, index) => ({
+            value: `riskValues_${categoryId}`,
+            text: domainData.value?.categories?.find((category) => category.id === categoryId)?.translations[locale.value].name || '',
+            render: ({ item }: { item: any }) => {
+              const { inherentRisk, residualRisk } = getInherentAndResidualRisk(item, categoryId);
+              const riskTreatments = getRiskTreatments(item, categoryId);
+              const values = domainData.value?.riskValues;
 
-                const translatedInherentRisk = values?.find((entry) => entry.ordinalValue === inherentRisk)?.translations[locale.value].name;
-                const translatedResidualRisk = values?.find((entry) => entry.ordinalValue === residualRisk)?.translations[locale.value].name;
+              const translatedInherentRisk = values?.find((entry) => entry.ordinalValue === inherentRisk)?.translations[locale.value].name;
+              const translatedResidualRisk = values?.find((entry) => entry.ordinalValue === residualRisk)?.translations[locale.value].name;
 
-                return h('div', [
-                  translatedInherentRisk
-                    ? h(VTooltip, {
-                        props: {
-                          bottom: true,
-                          maxWidth: 600
-                        },
-                        scopedSlots: {
-                          activator: ({ attrs, on }) => h('span', { attrs, on, class: 'grey--text text--darken-4' }, translatedInherentRisk),
-                          default: () => h('span', t('inherentRisk').toString())
-                        }
-                      })
-                    : undefined,
-                  translatedInherentRisk && translatedResidualRisk ? h('span', ' / ') : undefined,
-                  translatedResidualRisk
-                    ? h(VTooltip, {
-                        props: {
-                          bottom: true,
-                          maxWidth: 600
-                        },
-                        scopedSlots: {
-                          activator: ({ attrs, on }) => h('span', { attrs, on, class: 'pr-1' }, translatedResidualRisk),
-                          default: () => h('span', t('residualRisk').toString())
-                        }
-                      })
-                    : undefined,
-                  riskTreatments.map((riskTreatment) => {
-                    let icon = mdiCheck;
-                    switch (riskTreatment) {
-                      case 'RISK_TREATMENT_AVOIDANCE':
-                        icon = mdiTransitDetour;
-                        break;
-                      case 'RISK_TREATMENT_REDUCTION':
-                        icon = mdiArrowDown;
-                        break;
-                      case 'RISK_TREATMENT_TRANSFER':
-                        icon = mdiArrowRight;
-                        break;
+              return h('div', [
+                translatedInherentRisk
+                  ? h(VTooltip, {
+                    props: {
+                      bottom: true,
+                      maxWidth: 600
+                    },
+                    scopedSlots: {
+                      activator: ({ attrs, on }) => h('span', { attrs, on, class: 'grey--text text--darken-4' }, translatedInherentRisk),
+                      default: () => h('span', t('inherentRisk').toString())
                     }
-
-                    return h(VTooltip, {
-                      props: {
-                        bottom: true,
-                        maxWidth: 600
-                      },
-                      scopedSlots: {
-                        activator: ({ attrs, on }) => h(VIcon, { attrs, on, props: { small: true } }, icon),
-                        default: () => h('span', t(`riskTreatments.${riskTreatment}`).toString())
-                      }
-                    });
                   })
-                ]);
-              },
-              priority: 89 - index,
-              order: 41 + index,
-              width: 100
-            }))
-          ]
+                  : undefined,
+                translatedInherentRisk && translatedResidualRisk ? h('span', ' / ') : undefined,
+                translatedResidualRisk
+                  ? h(VTooltip, {
+                    props: {
+                      bottom: true,
+                      maxWidth: 600
+                    },
+                    scopedSlots: {
+                      activator: ({ attrs, on }) => h('span', { attrs, on, class: 'pr-1' }, translatedResidualRisk),
+                      default: () => h('span', t('residualRisk').toString())
+                    }
+                  })
+                  : undefined,
+                riskTreatments.map((riskTreatment) => {
+                  let icon = mdiCheck;
+                  switch (riskTreatment) {
+                    case 'RISK_TREATMENT_AVOIDANCE':
+                      icon = mdiTransitDetour;
+                      break;
+                    case 'RISK_TREATMENT_REDUCTION':
+                      icon = mdiArrowDown;
+                      break;
+                    case 'RISK_TREATMENT_TRANSFER':
+                      icon = mdiArrowRight;
+                      break;
+                  }
+
+                  return h(VTooltip, {
+                    props: {
+                      bottom: true,
+                      maxWidth: 600
+                    },
+                    scopedSlots: {
+                      activator: ({ attrs, on }) => h(VIcon, { attrs, on, props: { small: true } }, icon),
+                      default: () => h('span', t(`riskTreatments.${riskTreatment}`).toString())
+                    }
+                  });
+                })
+              ]);
+            },
+            priority: 89 - index,
+            order: 41 + index,
+            width: 100
+          }))
+        ]
         : []
     );
 
@@ -270,66 +271,66 @@ export default defineComponent({
     const actions = computed(() =>
       props.type === 'risks'
         ? [
-            {
-              id: 'delete',
-              label: upperFirst(t('deleteRisk').toString()),
-              icon: mdiTrashCanOutline,
-              async action(item: IVeoRisk) {
-                try {
-                  const { id } = getEntityDetailsFromLink(item.scenario);
-                  await deleteRisk({ objectId: props.object?.id, endpoint: schemas.value?.[props.object?.type || ''] || '', scenarioId: id });
-                  displaySuccessMessage(upperFirst(t('riskDeleted').toString()));
-                } catch (e: any) {
-                  displayErrorMessage(upperFirst(t('deleteRiskError').toString()), e.message);
-                }
+          {
+            id: 'delete',
+            label: upperFirst(t('deleteRisk').toString()),
+            icon: mdiTrashCanOutline,
+            async action(item: IVeoRisk) {
+              try {
+                const { id } = getEntityDetailsFromLink(item.scenario);
+                await deleteRisk({ objectId: props.object?.id, endpoint: schemas.value?.[props.object?.type || ''] || '', scenarioId: id });
+                displaySuccessMessage(upperFirst(t('riskDeleted').toString()));
+              } catch (e: any) {
+                displayErrorMessage(upperFirst(t('deleteRiskError').toString()), e.message);
               }
             }
-          ]
+          }
+        ]
         : [
-            {
-              id: 'clone',
-              label: upperFirst(t('cloneObject').toString()),
-              icon: mdiContentCopy,
-              async action(item: IVeoEntity) {
-                try {
-                  const clonedObjectId = (
-                    await clone(
-                      item,
-                      (parentScopes.value?.items || []).map((item) => item.id)
-                    )
-                  ).resourceId;
-                  const clonedObject = await $api.entity.fetch(schemas.value?.[item.type] || '', clonedObjectId);
-                  if (props.object) {
-                    if (['childScopes', 'childObjects'].includes(props.type)) {
-                      await link(props.object, clonedObject);
-                    } else {
-                      await link(clonedObject, props.object);
-                    }
+          {
+            id: 'clone',
+            label: upperFirst(t('cloneObject').toString()),
+            icon: mdiContentCopy,
+            async action(item: IVeoEntity) {
+              try {
+                const clonedObjectId = (
+                  await clone(
+                    item,
+                    (parentScopes.value?.items || []).map((item) => item.id)
+                  )
+                ).resourceId;
+                const clonedObject = await $api.entity.fetch(schemas.value?.[item.type] || '', clonedObjectId);
+                if (props.object) {
+                  if (['childScopes', 'childObjects'].includes(props.type)) {
+                    await link(props.object, clonedObject);
+                  } else {
+                    await link(clonedObject, props.object);
                   }
-                  displaySuccessMessage(upperFirst(t('objectCloned').toString()));
-                } catch (e: any) {
-                  displayErrorMessage(upperFirst(t('errors.clone').toString()), e.message);
                 }
-              }
-            },
-            {
-              id: 'unlink',
-              label: upperFirst(t(props.object?.type === 'scope' || props.type === 'parentScopes' ? 'removeFromScope' : 'removeFromObject').toString()),
-              icon: mdiLinkOff,
-              action: async (item: IVeoEntity) => {
-                const parent = await $api.entity.fetch(schemas.value?.[item.type] || '', item.id);
-                if (['parentScopes', 'parentObjects'].includes(props.type)) {
-                  unlinkEntityDialog.value.objectToRemove = props.object;
-                  unlinkEntityDialog.value.parent = parent;
-                } else {
-                  unlinkEntityDialog.value.objectToRemove = parent;
-                  unlinkEntityDialog.value.parent = props.object;
-                }
-
-                unlinkEntityDialog.value.value = true;
+                displaySuccessMessage(upperFirst(t('objectCloned').toString()));
+              } catch (e: any) {
+                displayErrorMessage(upperFirst(t('errors.clone').toString()), e.message);
               }
             }
-          ]
+          },
+          {
+            id: 'unlink',
+            label: upperFirst(t(props.object?.type === 'scope' || props.type === 'parentScopes' ? 'removeFromScope' : 'removeFromObject').toString()),
+            icon: mdiLinkOff,
+            action: async (item: IVeoEntity) => {
+              const parent = await $api.entity.fetch(schemas.value?.[item.type] || '', item.id);
+              if (['parentScopes', 'parentObjects'].includes(props.type)) {
+                unlinkEntityDialog.value.objectToRemove = props.object;
+                unlinkEntityDialog.value.parent = parent;
+              } else {
+                unlinkEntityDialog.value.objectToRemove = parent;
+                unlinkEntityDialog.value.parent = props.object;
+              }
+
+              unlinkEntityDialog.value.value = true;
+            }
+          }
+        ]
     );
 
     /**
@@ -350,8 +351,8 @@ export default defineComponent({
             props.type === 'parentScopes' && props.object?.type === 'scope'
               ? 'removeScopeFromScopeSuccess'
               : props.type === 'parentScopes'
-              ? 'removeObjectFromScopeSuccess'
-              : 'removeObjectFromObjectSuccess'
+                ? 'removeObjectFromScopeSuccess'
+                : 'removeObjectFromObjectSuccess'
           ).toString()
         )
       );
@@ -366,8 +367,8 @@ export default defineComponent({
             props.type === 'parentScopes' && props.object?.type === 'scope'
               ? 'removeScopeFromScopeError'
               : props.type === 'parentScopes'
-              ? 'removeObjectFromScopeError'
-              : 'removeObjectFromObjectError'
+                ? 'removeObjectFromScopeError'
+                : 'removeObjectFromObjectError'
           ).toString()
         ),
         error?.toString()
@@ -391,7 +392,7 @@ export default defineComponent({
         router.push({
           name: 'unit-domains-domain-objects-entity',
           params: {
-            ...route.value.params,
+            ...route.params,
             entity: createUUIDUrlParam(item.type, item.id)
           }
         });
@@ -399,10 +400,9 @@ export default defineComponent({
     };
 
     // Risk tab related stuff
-    const domainData = ref<undefined | IVeoDomain['riskDefinitions']['x']>(undefined);
-    useFetch(async () => {
-      domainData.value = (await $api.domain.fetch(props.domainId)).riskDefinitions.DSRA;
-    });
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
+    const { data: domain } = useFetchDomain(fetchDomainQueryParameters);
+    const domainData = computed(() => domain.value?.riskDefinitions?.DSRA);
 
     const getInherentAndResidualRisk = (item: IVeoRisk, protectionGoal: string) => {
       const category = item.domains?.[props.domainId]?.riskDefinitions?.DSRA?.riskValues?.find((category: any) => category.category === protectionGoal);

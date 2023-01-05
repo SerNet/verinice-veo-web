@@ -23,7 +23,7 @@
     fixed-footer
     :large="state !== WIZARD_STATES.START"
     :close-function="onClose"
-    v-on="$listeners"
+    @update:model-value="$emit('model-value', $event)"
   >
     <template #default>
       <VeoLoadingWrapper v-if="loadingFormSchema || loadingObjectSchema" />
@@ -34,21 +34,21 @@
           @import="state = WIZARD_STATES.IMPORT"
         />
         <VeoFseWizardStateCreate
+          v-model:valid="createFormValid"
+          v-model:object-type="objectSchemaId"
           :value="WIZARD_STATES.CREATE"
           :domain-id="domainId"
-          :valid.sync="createFormValid"
-          :object-type.sync="objectSchemaId"
           :object-schema="objectSchema"
           v-bind="formSchemaDetails"
           v-on="createFormListeners"
           @update:object-schema="uploadedObjectSchema = $event"
         />
         <VeoFseWizardStateImport
+          v-model:force-own-schema="forceOwnObjectSchema"
+          v-model:form-schema-id="formSchemaId"
           :value="WIZARD_STATES.IMPORT"
           :domain-id="domainId"
-          :force-own-schema.sync="forceOwnObjectSchema"
           :form-schema="formSchema"
-          :form-schema-id.sync="formSchemaId"
           :schemas-compatible="schemasCompatible"
           @force-import="importFormSchema()"
           @update:form-schema="uploadedFormSchema = $event"
@@ -81,12 +81,10 @@
 
 <script lang="ts">
 import { nextTick } from 'process';
-import { defineComponent, useRoute, useRouter, ref, watch, Ref, useContext, set, computed } from '@nuxtjs/composition-api';
 import { Dictionary, isEqual, merge, pick } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
-
 import { JsonPointer } from 'json-ptr';
-import { LocaleObject } from '@nuxtjs/i18n/types';
+import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
 import { IVeoFormSchema, IVeoObjectSchema, IVeoObjectSchemaTranslations, IVeoTranslations } from '~/types/VeoTypes';
 import { useFetchForm } from '~/composables/api/forms';
@@ -110,11 +108,12 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['done', 'model-value'],
   setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();
     const { t, locale } = useI18n();
-    const { i18n } = useContext();
+    const { i18n } = useNuxtApp();
 
     // Display stuff
     const state = ref(WIZARD_STATES.START);
@@ -137,10 +136,10 @@ export default defineComponent({
       state.value = WIZARD_STATES.START;
 
       // Extract data from url
-      forceOwnObjectSchema.value = !!route.value.query.forceOwnSchema;
-      objectSchemaId.value = (route.value.query.objectType as string) || undefined;
-      formSchemaId.value = (route.value.query.formSchema as string) || undefined;
-      formSchemaDetails.value = pick(route.value.query, ['name', 'sorting', 'subType']) as Dictionary<string | null>;
+      forceOwnObjectSchema.value = !!route.query.forceOwnSchema;
+      objectSchemaId.value = (route.query.objectType as string) || undefined;
+      formSchemaId.value = (route.query.formSchema as string) || undefined;
+      formSchemaDetails.value = pick(route.query, ['name', 'sorting', 'subType']) as Dictionary<string | null>;
 
       // If the user wants to open a specific form schema, show the upload page to allow him to upload his own schema or select an object schema if he wishes to
       if (formSchemaId.value) {
@@ -176,7 +175,7 @@ export default defineComponent({
     }
 
     // form and objectschema stuff
-    const formSchemaDetails: Ref<{ name?: string; subType?: string; sorting?: string }> = ref({});
+    const formSchemaDetails = ref<{ name?: string; subType?: string; sorting?: string }>({});
 
     const formSchemaId = ref<string>();
     const uploadedFormSchema = ref<IVeoFormSchema>();
@@ -258,7 +257,7 @@ export default defineComponent({
         formSchemaDetails.value.subType as string,
         formSchemaDetails.value.sorting || null
       );
-      if (!isEqual(route.value.query, formSchemaDetails.value)) {
+      if (!isEqual(route.query, formSchemaDetails.value)) {
         router.push({
           query: {
             objectType: objectSchemaId.value,
@@ -270,9 +269,10 @@ export default defineComponent({
     }
 
     const createFormListeners = {
-      'update:name': (newValue: string) => set(formSchemaDetails.value, 'name', newValue),
-      'update:sorting': (newValue: string) => set(formSchemaDetails.value, 'sorting', newValue),
-      'update:sub-type': (newValue: string) => set(formSchemaDetails.value, 'subType', newValue),
+      'update:name': (newValue: string) => formSchemaDetails.value['name'] = newValue,
+      'update:sorting': (newValue: string) => formSchemaDetails.value['sorting'] = newValue,
+      'update:sub-type': (newValue: string) => formSchemaDetails.value['subType'] = newValue,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       submit: () => (createFormValid.value ? createFormSchema() : () => {})
     };
 
@@ -284,7 +284,7 @@ export default defineComponent({
         forceOwnSchema: forceOwnObjectSchema.value ? forceOwnObjectSchema.value + '' : undefined
       };
 
-      if (!isEqual(route.value.query, queryParams)) {
+      if (!isEqual(route.query, queryParams)) {
         router.push({
           query: queryParams
         });
@@ -294,7 +294,7 @@ export default defineComponent({
 
     function emitSchemas() {
       const mergedTranslations: IVeoTranslations = { lang: {} };
-      const osTranslations = (JsonPointer.get(objectSchema, '#/properties/translations') || {}) as IVeoObjectSchemaTranslations | {};
+      const osTranslations = (JsonPointer.get(objectSchema, '#/properties/translations') || {}) as IVeoObjectSchemaTranslations | Record<string, never>;
 
       mergedTranslations.lang = merge(translations.value?.lang, osTranslations);
       if (osTranslations) {

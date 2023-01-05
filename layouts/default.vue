@@ -98,7 +98,6 @@
 <script lang="ts" setup>
 import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 
-import { VeoEvents } from '~/types/VeoGlobalEvents';
 import {
   createUUIDUrlParam,
   getFirstDomainDomaindId,
@@ -108,6 +107,9 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
 import 'intro.js/minified/introjs.min.css';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useCreateUnit, useFetchUnits } from '~~/composables/api/units';
+import { IVeoUnit } from '~~/types/VeoTypes';
+import { useRequest } from '~~/composables/api/utils/request';
 
 const context = useNuxtApp();
 const { authenticated } = useVeoUser();
@@ -116,6 +118,7 @@ const router = useRouter();
 const { ability } = useVeoPermissions();
 
 const { alerts, displaySuccessMessage, listenToRootEvents } = useVeoAlerts();
+const { request } = useRequest();
 const { t } = useI18n();
 listenToRootEvents(context.root);
 
@@ -140,30 +143,29 @@ function createUnit(persistent = false) {
 }
 
 // automatically create first unit if none exists and then change to new unit
-onMounted(async () => {
-  if (authenticated.value) {
-    const units = await context.$api.unit.fetchAll();
-    if (units.length === 0) {
-      const data = await context.$api.unit.create({
-        name: t('unit.default.name'),
-        description: t('unit.default.description')
+const { mutateAsync: _createUnit, data: newUnitPayload } = useCreateUnit();
+
+const fetchUnitsDisabled = computed(() => authenticated.value);
+useFetchUnits({ enabled: fetchUnitsDisabled, onSuccess: async (data: IVeoUnit[]) => {
+  if(!data.length) {
+    await _createUnit({
+      name: t('unit.default.name'),
+      description: t('unit.default.description')
+    });
+    displaySuccessMessage('firstUnitCreated');
+    const unit = await request('/api/units/:id', { params: { id: newUnitPayload.value.resourceId } });
+    const domainId = getFirstDomainDomaindId(unit);
+    if (domainId) {
+      router.push({
+        name: 'unit-domains-domain',
+        params: {
+          unit: createUUIDUrlParam('unit', unit.id),
+          domain: createUUIDUrlParam('domain', domainId)
+        }
       });
-      const unit = await context.$api.unit.fetch(data.resourceId);
-      displaySuccessMessage(t('unit.created').toString());
-      context.root.$emit(VeoEvents.UNIT_CREATED);
-      const domainId = getFirstDomainDomaindId(unit);
-      if (domainId) {
-        router.push({
-          name: 'unit-domains-domain',
-          params: {
-            unit: createUUIDUrlParam('unit', unit.id),
-            domain: createUUIDUrlParam('domain', domainId)
-          }
-        });
-      }
     }
   }
-});
+} });
 
 const domainId = computed((): string | undefined => {
   if (route.name === 'unit-domains-more') {
@@ -193,9 +195,11 @@ const unitId = computed(() =>
 <i18n>
 {
   "en": {
+    "firstUnitCreated": "First unit was created successfully",
     "openDocumentationInNewTab": "Open online documentation in new tab"
   },
   "de": {
+    "firstUnitCreated": "Die erste Unit wurde erfolgreich erstellt",
     "openDocumentationInNewTab": "Online-Dokumentaion in neuem Tab öffnen"
   }
 }

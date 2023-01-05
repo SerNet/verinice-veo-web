@@ -21,7 +21,7 @@
     v-bind="$attrs"
   >
     <template
-      v-if="!!$scopedSlots.activator"
+      v-if="!!$slots.activator"
       #activator="slotListeners"
     >
       <slot
@@ -45,7 +45,7 @@
           >
             <template #activator="{ on }">
               <v-list-item
-                :key="item.key"
+                :key="`0_${item.key}`"
                 v-on="on"
               >
                 <v-list-item-icon v-if="anyItemHasIcon">
@@ -66,7 +66,7 @@
           </VeoNestedMenu>
           <v-list-item
             v-else
-            :key="item.key"
+            :key="`1_${item.key}`"
             @click="item.action ? onActionClicked(item.action) : () => {}"
           >
             <v-list-item-icon v-if="anyItemHasIcon">
@@ -86,7 +86,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
+
 import { mdiChevronRight } from '@mdi/js';
 
 export interface INestedMenuEntries {
@@ -104,6 +105,7 @@ export default defineComponent({
       default: () => []
     }
   },
+  emits: ['close'],
   setup(props, { emit }) {
     const anyItemHasIcon = computed(() => (props.items || []).some((item) => !!item.icon));
 

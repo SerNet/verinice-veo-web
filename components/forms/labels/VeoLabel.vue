@@ -28,8 +28,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
-
 import { VeoFormsElementProps } from '../util';
 import { IVeoFormsElementDefinition } from '../types';
 

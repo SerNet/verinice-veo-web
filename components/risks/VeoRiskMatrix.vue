@@ -146,8 +146,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 import { mdiInformationOutline } from '@mdi/js';
 import { upperFirst } from 'lodash';
 

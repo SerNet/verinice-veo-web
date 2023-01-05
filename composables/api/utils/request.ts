@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { reactive } from 'vue';
 import { defaultsDeep } from 'lodash';
+
 import { useVeoUser } from '~/composables/VeoUser';
 import { sanitizeURLParams } from '~/lib/utils';
 import { IVeoPaginationOptions } from '~/types/VeoTypes';

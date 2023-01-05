@@ -61,9 +61,6 @@
 
 <script lang="ts">
 import { mdiLoginVariant, mdiLogoutVariant } from '@mdi/js';
-import { defineComponent, computed, Ref, useRouter, useRoute } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { IVeoUnit } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
@@ -77,7 +74,7 @@ export default defineComponent({
       default: false
     }
   },
-  setup(_props, context) {
+  setup(_props) {
     const { t } = useI18n();
     const { authenticated } = useVeoUser();
     const router = useRouter();
@@ -85,11 +82,11 @@ export default defineComponent({
 
     // Demo unit/unit selection
 
-    const { data: units, refetch } = useFetchUnits({
+    const { data: units } = useFetchUnits({
       enabled: authenticated
     });
 
-    const currentUnit = computed(() => separateUUIDParam(route.value.params.unit).id);
+    const currentUnit = computed(() => separateUUIDParam(route.params.unit as string).id);
     const demoUnit = computed(() => (units.value || []).find((unit) => unit.name === 'Demo'));
     const nonDemoUnits = computed(() => (units.value || []).filter((unit) => unit.name !== 'Demo'));
 
@@ -135,12 +132,10 @@ export default defineComponent({
       }
     };
 
-    context.root.$on(VeoEvents.UNIT_CREATED, () => refetch());
-
     return {
       toggleDemoUnit,
       demoUnit,
-      units: units as Ref<IVeoUnit[]>,
+      units,
       userIsInDemoUnit,
       buttonIcon,
 

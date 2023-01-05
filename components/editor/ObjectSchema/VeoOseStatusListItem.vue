@@ -69,19 +69,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 import { mdiMenu, mdiTranslate, mdiTrashCanOutline } from '@mdi/js';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { CHART_COLORS } from '~/lib/utils';
 
 export default defineComponent({
   props: {
     status: {
-      type: Object,
+      type: Object as PropType<{ key: string; [lang: string]: string }>,
       required: true
-    } as PropOptions<{ key: string; [lang: string]: string }>,
+    },
     index: {
       type: Number,
       required: true
@@ -91,6 +90,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['update-status', 'delete'],
   setup(props, { emit }) {
     const { t } = useI18n();
 

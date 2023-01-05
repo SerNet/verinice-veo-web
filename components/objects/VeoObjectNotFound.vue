@@ -38,23 +38,15 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, useRouter } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+<script lang="ts" setup>
+const { t } = useI18n();
+const router = useRouter();
 
-export default defineComponent({
-  name: 'VeoObjectNotFound',
-  setup() {
-    const { t } = useI18n();
-    const router = useRouter();
+const goBackToPreviousPage = () => {
+  router.back();
+};
 
-    const goBackToPreviousPage = () => {
-      router.back();
-    };
-
-    return { t, goBackToPreviousPage };
-  }
-});
+return { t, goBackToPreviousPage };
 </script>
 
 <i18n>

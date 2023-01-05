@@ -131,8 +131,6 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { StorageSerializers, useStorage } from '@vueuse/core';
 
 type COOKIE_OPTIONS = 'keycloak' | 'i18n' | 'navigation';

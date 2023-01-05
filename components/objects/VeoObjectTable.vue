@@ -16,11 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { computed, defineComponent, PropType, h, useRoute, ComputedRef, getCurrentInstance, onMounted, onUnmounted, ref, watch } from '@nuxtjs/composition-api';
-import { VNode, VNodeChildren, VNodeData } from 'vue/types/vnode';
-import { useI18n } from 'nuxt-i18n-composable';
-import { DataTableHeader } from 'vuetify/types';
-import { VDataTable, VTooltip } from 'vuetify/lib';
+import { PropType, VNode } from 'vue';
+import { VDataTable, VTooltip } from 'vuetify/components';
+import { } from 'vuetify/';
 import { cloneDeep } from 'lodash';
 
 import VeoObjectIcon from '~/components/objects/VeoObjectIcon.vue';
@@ -49,7 +47,7 @@ export interface ObjectTableHeader extends Omit<DataTableHeader, 'text'> {
 
 export type ExtractProperty<V extends ReadonlyArray<Record<string, any>>, K extends keyof V[0]> = V extends ReadonlyArray<Record<K, infer U>> ? U : never;
 
-function hasOwnProperty<X extends {}, Y extends PropertyKey>(obj: X, prop: Y): obj is X & Record<Y, unknown> {
+function hasOwnProperty<X extends object, Y extends PropertyKey>(obj: X, prop: Y): obj is X & Record<Y, unknown> {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
@@ -67,7 +65,7 @@ export default defineComponent({
      * Keys of the default columns defined in the VeoObjectTable that should get shown
      */
     defaultHeaders: {
-      type: Array as PropType<String[]>,
+      type: Array as PropType<string[]>,
       default: () => []
     },
     additionalHeaders: {
@@ -95,15 +93,15 @@ export default defineComponent({
       default: false
     }
   },
-  emits: {
-    'update:sort-desc': (_: boolean | boolean[]) => {},
-    'update:sort-by': (_: string | string[]) => {},
-    'update:page': (_: number) => {},
-    'update:items-per-page': (_: number) => {},
-    'page-change': (_: { newPage: number; sortBy: string; sortDesc: boolean }) => {},
-    click: (_: any) => {}
-  },
-  setup(props, { emit, slots, attrs, listeners }) {
+  emits: [
+    'update:sort-desc',
+    'update:sort-by',
+    'update:page',
+    'update:items-per-page',
+    'page-change',
+    'click'
+  ],
+  setup(props, { emit, slots, attrs }) {
     const { t, locale } = useI18n();
     const route = useRoute();
     const { tablePageSize } = useVeoUser();
@@ -113,7 +111,7 @@ export default defineComponent({
     const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useFetchTranslations(translationQueryParameters);
 
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
     /**
      * Format date via i18n
      */
@@ -158,15 +156,15 @@ export default defineComponent({
       return h('table', [
         item.createdAt
           ? h('tr', [
-              h('td', [t('createdAt').toString(), ': ']),
-              h('td', [h('strong', formatDate(item.createdAt) || '???'), ' ', t('by').toString(), ' ', h('strong', item.createdBy)])
-            ])
+            h('td', [t('createdAt').toString(), ': ']),
+            h('td', [h('strong', formatDate(item.createdAt) || '???'), ' ', t('by').toString(), ' ', h('strong', item.createdBy)])
+          ])
           : [],
         item.updatedAt
           ? h('tr', [
-              h('td', [t('updatedAt').toString(), ': ']),
-              h('td', [h('strong', formatDate(item.updatedAt) || '???'), ' ', t('by').toString(), ' ', h('strong', item.updatedBy)])
-            ])
+            h('td', [t('updatedAt').toString(), ': ']),
+            h('td', [h('strong', formatDate(item.updatedAt) || '???'), ' ', t('by').toString(), ' ', h('strong', item.updatedBy)])
+          ])
           : []
       ]);
     };
@@ -315,7 +313,7 @@ export default defineComponent({
     /**
      * Prepare headers for v-data-table, applying classes and tooltip renderers
      */
-    const _headers: ComputedRef<Header[]> = computed(() =>
+    const _headers = computed<Header[]>(() =>
       [
         ...Object.entries(defaultHeaders)
           .filter(([key, _header]) => props.defaultHeaders.includes(key))
@@ -323,7 +321,7 @@ export default defineComponent({
         ...props.additionalHeaders
       ]
         .map((header) => {
-          const cellClass = defaultCellClasses.concat(header.cellClass || [], header.truncate ? truncateClasses : [], listeners.click ? 'cursor-pointer' : []);
+          const cellClass = defaultCellClasses.concat(header.cellClass || [], header.truncate ? truncateClasses : [], attrs.click ? 'cursor-pointer' : []);
           return {
             ...header,
             text: header.text ?? t(`objectlist.${header.value}`).toString(),
@@ -341,7 +339,7 @@ export default defineComponent({
       const mappedValues = Object.fromEntries(
         mappers.map((formatter) => {
           const name = formatter.value as keyof IVeoEntity;
-          const value = formatter.map!(item[name]);
+          const value = formatter.map(item[name]);
           return [name, value];
         })
       );
@@ -355,7 +353,7 @@ export default defineComponent({
     /**
      * Create scopedSlots to apply renderers
      */
-    const scopedSlots = computed(() => Object.fromEntries(_headers.value.filter((_) => !!_.render).map((_) => [`item.${_.value}`, _.render!])));
+    const scopedSlots = computed(() => Object.fromEntries(_headers.value.filter((_) => !!_.render).map((_) => [`item.${_.value}`, _.render])));
     /**
      * Calculate pagination properties
      */
@@ -367,7 +365,7 @@ export default defineComponent({
       };
     });
 
-    const firstOrValue = <T extends unknown>(v: T | T[]): T => (Array.isArray(v) ? v[0] : v);
+    const firstOrValue = <T>(v: T | T[]): T => (Array.isArray(v) ? v[0] : v);
     const pageUpdate = {
       newPage: props.page,
       sortBy: firstOrValue(props.sortBy),
@@ -486,7 +484,7 @@ export default defineComponent({
           ...paginationProps.value
         },
         on: {
-          ...listeners,
+          ...attrs,
           'update:page': (page: number) => {
             emit('update:page', page);
             emitPageUpdate({ newPage: page });
@@ -504,15 +502,15 @@ export default defineComponent({
             emit('update:sort-desc', sortDesc);
             emitPageUpdate({ sortDesc, newPage: 1 });
           },
-          ...(listeners.click
+          ...(attrs.click
             ? {
-                'click:row': (_item: any, context: any) => {
-                  if (Object.prototype.hasOwnProperty.call(attrs, 'show-select')) {
-                    context.select(!context.isSelected);
-                  }
-                  emit('click', context);
+              'click:row': (_item: any, context: any) => {
+                if (Object.prototype.hasOwnProperty.call(attrs, 'show-select')) {
+                  context.select(!context.isSelected);
                 }
+                emit('click', context);
               }
+            }
             : {})
         },
         scopedSlots: { ...scopedSlots.value, ...slots }

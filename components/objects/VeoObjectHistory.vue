@@ -92,8 +92,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 
 import { useFetchVersions } from '~/composables/api/history';
 import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
@@ -111,6 +110,7 @@ export default defineComponent({
       default: undefined
     }
   },
+  emits: ['show-revision'],
   setup(props) {
     const { t, locale } = useI18n();
 

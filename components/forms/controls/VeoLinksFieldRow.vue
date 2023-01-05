@@ -29,7 +29,7 @@
         required
         :error-messages="getControlErrorMessages($props, '/properties/target')"
         value-as-link
-        v-on="$listeners"
+        v-bind="$attrs"
       >
         <template
           v-if="!objectCreationDisabled"
@@ -66,8 +66,6 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, useRoute } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { mdiPlus } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
@@ -76,6 +74,7 @@ import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoCustomLink } from '~/types/VeoTypes';
 import { useFetchForms } from '~/composables/api/forms';
 import { useFetchSchemas } from '~/composables/api/schemas';
+import { PropType } from 'vue';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field-row',
@@ -102,12 +101,13 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['input'],
   setup(props, { emit }) {
     const route = useRoute();
-    const { $config } = useContext();
+    const config = useRuntimeConfig();
     const { t, locale } = useI18n();
 
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     const objectType = computed<string>(() => ((props.objectSchema as any).items.properties.target.properties.type.enum[0] + '').toLowerCase());
     const subType = computed<string>(() => (props.objectSchema as any).items.properties.target.properties.subType?.enum?.[0]);
@@ -124,7 +124,7 @@ export default defineComponent({
     const createObjectDialogVisible = ref(false);
     const { data: schemas } = useFetchSchemas();
     const onTargetCreated = (newElementId: string) => {
-      emit('input', { targetUri: `${$config.apiUrl}/${schemas.value?.[objectType.value]}/${newElementId}` });
+      emit('input', { targetUri: `${config.public.apiUrl}/${schemas.value?.[objectType.value]}/${newElementId}` });
     };
 
     // Users should only be able to select an item once per link, thus we have to remove all already selected items from the VeoObjectSelect

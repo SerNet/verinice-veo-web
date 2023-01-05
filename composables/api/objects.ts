@@ -59,6 +59,12 @@ export interface IVeoFetchRisksParameters {
   id: string;
 }
 
+export interface IVeoFetchRiskParameters {
+  endpoint: string;
+  objectId: string;
+  scenarioId: string;
+}
+
 export interface IVeoCreateObjectParameters {
   endpoint: string;
   object: IVeoEntity;
@@ -92,7 +98,8 @@ export const objectsQueryParameterTransformationMap: IVeoQueryTransformationMap 
   fetch: (queryParameters: IVeoFetchObjectParameters) => ({ params: queryParameters }),
   fetchChildObjects: (queryParameters: IVeoFetchChildObjectsParameters) => ({ params: queryParameters }),
   fetchChildScopes: (queryParameters: IVeoFetchChildScopesParameters) => ({ params: queryParameters }),
-  fetchRisks: (queryParameters: IVeoFetchRisksParameters) => ({ params: queryParameters })
+  fetchRisks: (queryParameters: IVeoFetchRisksParameters) => ({ params: queryParameters }),
+  fetchRisk: (queryParameters: IVeoFetchRiskParameters) => ({ params: { id: queryParameters.objectId, endpoint: queryParameters.endpoint, scenarioId: queryParameters.scenarioId } })
 };
 
 export const objectsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
@@ -240,6 +247,9 @@ export const useFetchChildScopes = (queryParameters: Ref<IVeoFetchChildScopesPar
 export const useFetchRisks = (queryParameters: Ref<IVeoFetchRisksParameters>, queryOptions?: QueryOptions) =>
   useQuery<IVeoFetchRisksParameters, IVeoRisk[]>('risks', { url: '/api/:endpoint/:id/risks' }, queryParameters, objectsQueryParameterTransformationMap.fetchRisks, queryOptions);
 
+export const useFetchRisk = (queryParameters: Ref<IVeoFetchRiskParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchRiskParameters, IVeoRisk>('risk', { url: '/api/:endpoint/:id/risks/:scenarioId' }, queryParameters, objectsQueryParameterTransformationMap.fetchRisk, queryOptions);
+
 export const useCreateObject = (mutationOptions?: MutationOptions) => {
   const queryClient = useQueryClient();
 
@@ -369,6 +379,9 @@ export const useCreateRisk = (mutationOptions?: MutationOptions) => {
     }
   );
 };
+
+// Updating and creating risks is the exact same request, however we alias it to make the code more understandable.
+export const useUpdateRisk = useCreateRisk;
 
 export const useDeleteRisk = (mutationOptions?: MutationOptions) => {
   const queryClient = useQueryClient();

@@ -19,67 +19,69 @@
   <div class="vf-control">
     <VeoFseFormElement
       v-bind="$props"
-      v-on="$listeners"
+      @update="$emit('update', $event)"
+      @delete="$emit('delete', $event)"
+      @update-custom-translation="$emit('update-custom-translation', $event)"
     />
   </div>
 </template>
 
-<script lang="ts">
-import Vue, { PropOptions } from 'vue';
+<script lang="ts" setup>
+import { PropType } from 'vue';
 import { JSONSchema7 } from 'json-schema';
 import { UISchemaElement } from '@/types/UISchema';
 
 import { IVeoFormSchemaTranslationCollection, IVeoTranslationCollection } from '~/types/VeoTypes';
 
-export default Vue.extend({
-  props: {
-    name: { type: String, default: '' },
-    schema: {
-      type: Object,
-      default: undefined
-    } as PropOptions<JSONSchema7>,
-    generalTranslation: {
-      type: Object,
-      default: () => {}
-    } as PropOptions<IVeoTranslationCollection>,
-    customTranslations: {
-      type: Object,
-      default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollection>,
-    elements: {
-      type: Array,
-      default: () => []
-    } as PropOptions<UISchemaElement[]>,
-    options: {
-      type: Object,
-      default: undefined
-    },
-    value: {
-      type: Object,
-      default: undefined
-    },
-    formSchemaPointer: {
-      type: String,
-      default: ''
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    visible: {
-      type: Boolean,
-      default: true
-    },
-    scope: {
-      type: String,
-      default: ''
-    },
-    language: {
-      type: String,
-      required: true
-    }
+defineProps({
+  name: { type: String, default: '' },
+  schema: {
+    type: Object as PropType<JSONSchema7>,
+    default: undefined
+  },
+  generalTranslation: {
+    type: Object as PropType<IVeoTranslationCollection>,
+    default: () => ({})
+  },
+  customTranslations: {
+    type: Object as PropType<IVeoFormSchemaTranslationCollection>,
+    default: () => ({})
+  },
+  elements: {
+    type: Array as PropType<UISchemaElement[]>,
+    default: () => []
+  },
+  options: {
+    type: Object,
+    default: undefined
+  },
+  value: {
+    type: Object,
+    default: undefined
+  },
+  formSchemaPointer: {
+    type: String,
+    default: ''
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  visible: {
+    type: Boolean,
+    default: true
+  },
+  scope: {
+    type: String,
+    default: ''
+  },
+  language: {
+    type: String,
+    required: true
   }
 });
+
+defineEmits(['update', 'delete', 'update-custom-translation']);
 </script>
 
 <style lang="scss" scoped>

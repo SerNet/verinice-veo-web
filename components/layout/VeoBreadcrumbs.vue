@@ -123,8 +123,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, computed, ComputedRef, watch, useMeta, ref } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { isEmpty, last, pick } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal, mdiHomeOutline } from '@mdi/js';
 
@@ -143,11 +141,11 @@ interface IVeoBreadcrumbReplacementMapBreadcrumb {
   exact?: boolean;
   hidden?: boolean;
   icon?: any;
-  to?: string | Function;
+  to?: string | (() => string);
   dynamicText?: (param: string, value?: string) => string;
   queriedText?: {
     query: SupportedQuery;
-    parameterTransformationFn: (param: string, value?: string) => {};
+    parameterTransformationFn: (param: string, value?: string) => object;
     resultTransformationFn: (param: string, value: string | undefined, data: any) => string;
   };
   position?: number;
@@ -168,7 +166,12 @@ export default defineComponent({
   setup(props) {
     const { t, locale } = useI18n();
     const route = useRoute();
-    const { title } = useMeta();
+
+    const title = ref('');
+
+    useHead(() => ({
+      title
+    }));
     const { breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
 
     const { data: endpoints } = useFetchSchemas();
@@ -247,9 +250,9 @@ export default defineComponent({
         'objects',
         {
           to: () => {
-            const objectType = endpoints.value?.[separateUUIDParam(route.value.params.entity).type];
+            const objectType = endpoints.value?.[separateUUIDParam(route.params.entity as string).type];
 
-            return `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${objectType}`;
+            return `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${objectType}`;
           }
         }
       ],
@@ -291,22 +294,22 @@ export default defineComponent({
 
     const queryResultMap = computed<{ [key: string]: any }>(() => ({
       ':catalog': catalog.value
-        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':catalog')?.queriedText?.resultTransformationFn(':catalog', route.value.params.catalog, catalog.value)
+        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':catalog')?.queriedText?.resultTransformationFn(':catalog', route.params.catalog as string, catalog.value)
         : undefined,
       ':domain': domain.value
-        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':domain')?.queriedText?.resultTransformationFn(':domain', route.value.params.domain, domain.value)
+        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':domain')?.queriedText?.resultTransformationFn(':domain', route.params.domain as string, domain.value)
         : undefined,
       ':entity': object.value
-        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':entity')?.queriedText?.resultTransformationFn(':entity', route.value.params.object, object.value)
+        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':entity')?.queriedText?.resultTransformationFn(':entity', route.params.object as string, object.value)
         : undefined,
-      ':type': report.value ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':type')?.queriedText?.resultTransformationFn(':type', route.value.params.type, report.value) : undefined
+      ':type': report.value ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':type')?.queriedText?.resultTransformationFn(':type', route.params.type as string, report.value) : undefined
     }));
 
-    const pathTemplate = computed(() => last(route.value.matched)?.path || '');
+    const pathTemplate = computed(() => last(route.matched)?.path || '');
 
     const breadcrumbParts = computed(() => pathTemplate.value.split('/'));
 
-    const generatedBreadcrumbs: ComputedRef<IVeoBreadcrumb[]> = computed(() =>
+    const generatedBreadcrumbs = computed<IVeoBreadcrumb[]>(() =>
       breadcrumbParts.value
         .filter((part) => !BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.has(part) || !BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(part)?.hidden)
         .map((part, index) => {
@@ -324,10 +327,10 @@ export default defineComponent({
               ? typeof replacementMapEntry.to === 'string'
                 ? replacementMapEntry.to
                 : replacementMapEntry.to()
-              : route.value.fullPath
-                  .split('/')
-                  .slice(0, breadcrumbParts.value.findIndex((_part) => _part === part) + 1)
-                  .join('/') || '/'
+              : route.fullPath
+                .split('/')
+                .slice(0, breadcrumbParts.value.findIndex((_part) => _part === part) + 1)
+                .join('/') || '/'
           };
         })
         .map((breadcrumb) => {
@@ -335,7 +338,7 @@ export default defineComponent({
           if (replacementMapEntry?.dynamicText) {
             return {
               ...breadcrumb,
-              text: replacementMapEntry.dynamicText(breadcrumb.param, route.value.params[breadcrumb.param.replace(/^:/, '')])
+              text: replacementMapEntry.dynamicText(breadcrumb.param, route.params[breadcrumb.param.replace(/^:/, '')] as string)
             };
           } else {
             return breadcrumb;
@@ -366,7 +369,7 @@ export default defineComponent({
         for (const breadcrumb of newValue) {
           const replacementMapEntry = BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(breadcrumb.param);
           if (replacementMapEntry?.queriedText) {
-            const transformedParameters = replacementMapEntry.queriedText.parameterTransformationFn(breadcrumb.param, route.value.params[breadcrumb.param.replace(/^:/, '')]);
+            const transformedParameters = replacementMapEntry.queriedText.parameterTransformationFn(breadcrumb.param, route.params[breadcrumb.param.replace(/^:/, '')] as string);
             switch (replacementMapEntry.queriedText.query) {
               case ':catalog':
                 catalogQueryParameters.value = transformedParameters;

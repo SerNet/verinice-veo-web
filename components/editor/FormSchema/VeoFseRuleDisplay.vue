@@ -30,30 +30,22 @@
     <span>{{ $t(ruleEffectName) }}</span>
   </v-tooltip>
 </template>
-<script lang="ts">
-import Vue, { PropType } from 'vue';
+<script lang="ts" setup>
+import { PropType } from 'vue';
 
-export default Vue.extend({
-  props: {
-    value: {
-      type: String as PropType<'mdi-eye-outline' | 'mdi-eye-off-outline'>,
-      default: undefined
-    }
-  },
-  data() {
-    return {
-      ruleIconsMap: {
-        'mdi-eye-outline': 'SHOW',
-        'mdi-eye-off-outline': 'HIDE'
-      }
-    };
-  },
-  computed: {
-    ruleEffectName(): string {
-      return this.ruleIconsMap[this.value];
-    }
+const props = defineProps({
+  value: {
+    type: String as PropType<'mdi-eye-outline' | 'mdi-eye-off-outline'>,
+    default: undefined
   }
 });
+
+const ruleIconsMap = {
+  'mdi-eye-outline': 'SHOW',
+  'mdi-eye-off-outline': 'HIDE'
+};
+  
+const    ruleEffectName = computed(() => ruleIconsMap[props.value]);
 </script>
 
 <i18n>

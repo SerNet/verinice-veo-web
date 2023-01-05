@@ -21,7 +21,6 @@
     large
     :headline="t('editor.formschema.translation')"
     fixed-footer
-    v-on="$listeners"
   >
     <template #default>
       <div style="min-height: 20vh">
@@ -78,8 +77,8 @@
             </v-col>
           </v-row>
           <VeoFseEditorTranslationUpload
+            v-model:replace-translations="replaceTranslations"
             :available-languages="availableLanguages"
-            :replace-translations.sync="replaceTranslations"
             @translations-imported="onTranslationsImported"
           />
           <v-row>
@@ -135,10 +134,9 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { computed, defineComponent, del, PropType, reactive, ref, set, useContext, watch } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 import { difference, merge } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
-import { LocaleObject } from '@nuxtjs/i18n/types';
+import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 
 import { IVeoFormSchemaMeta, IVeoFormSchemaTranslationCollection, IVeoTranslations } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
@@ -163,9 +161,10 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['input', 'update:current-display-language', 'update-translation', 'update-name'],
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { i18n } = useContext();
+    const { i18n } = useNuxtApp();
     const { displayErrorMessage } = useVeoAlerts();
 
     const EMPTY_OBJECT_STRING = '{\n  \n}';
@@ -219,7 +218,7 @@ export default defineComponent({
         }
         // If a language code has been removed, removed it from formschema name
         removedLanguageCodes.forEach((removedLanguageCode) => {
-          del(formSchemaTitles, removedLanguageCode);
+          delete formSchemaTitles[removedLanguageCode];
         });
       }
     );
@@ -268,9 +267,9 @@ export default defineComponent({
     const onTranslationsImported = (translations: IVeoTranslations['lang']) => {
       for (const language of Object.keys(translations)) {
         if (replaceTranslations.value) {
-          set(localTranslations, language, JSON.stringify(translations[language], undefined, 2));
+          localTranslations[language] = JSON.stringify(translations[language], undefined, 2);
         } else {
-          set(localTranslations, language, JSON.stringify(merge(props.translations[language], translations[language]), undefined, 2));
+          localTranslations[language] = JSON.stringify(merge(props.translations[language], translations[language]), undefined, 2);
         }
       }
     };

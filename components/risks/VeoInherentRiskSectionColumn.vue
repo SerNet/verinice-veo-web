@@ -42,8 +42,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
 import { IDirtyFields } from './VeoCreateRiskDialogSingle.vue';
@@ -61,6 +60,7 @@ export default defineComponent({
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       default: () => {}
     },
     disabled: {

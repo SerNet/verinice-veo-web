@@ -29,11 +29,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-json';
 
-export default Vue.extend({
+export default {
   name: 'PrimsHighlighter',
   props: {
     text: { type: String, default: '' }
@@ -43,7 +42,7 @@ export default Vue.extend({
       return this.text ? Prism.highlight(String(this.text || ''), Prism.languages.json, 'json') : '';
     }
   }
-});
+};
 </script>
 
 <style lang="scss">

@@ -62,6 +62,7 @@ export function deleteElementCustomTranslation(
   if (translationKeysToRemove) {
     const localCustomTranslation: IVeoFormSchemaTranslationCollection = JSON.parse(JSON.stringify(customTranslations));
 
+    // @ts-ignore Some type error, but as the editors will get reworked anyways ¯\_(ツ)_/¯
     translationKeysToRemove = translationKeysToRemove.map((key) => key.replace('#lang/', ''));
     translationKeysToRemove.forEach((key) => {
       for (const lang in customTranslations) {

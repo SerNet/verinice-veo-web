@@ -41,9 +41,6 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
 export default defineComponent({
   setup() {
     const { locale, t } = useI18n();
@@ -54,7 +51,7 @@ export default defineComponent({
       try {
         const response = await fetch(pdfPath.value);
         pdfExists.value = !!response.headers.get('content-type')?.startsWith('application/pdf');
-      } catch (_) {}
+      } catch (_) { /* empty */ }
     });
 
     return {

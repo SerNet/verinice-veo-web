@@ -58,9 +58,8 @@
   </v-data-table>
 </template>
 <script lang="ts">
+import { PropType } from 'vue';
 import { upperFirst, toUpper } from 'lodash';
-import Vue from 'vue';
-import { Prop } from 'vue/types/options';
 
 import { IVeoReportMeta, IVeoReportsMeta } from '~/types/VeoTypes';
 
@@ -78,10 +77,10 @@ interface IData {
   toUpper: CallableFunction;
 }
 
-export default Vue.extend({
+export default {
   props: {
     items: {
-      type: Object as Prop<IVeoReportsMeta[]>,
+      type: Object as PropType<IVeoReportsMeta[]>,
       default: () => {
         return {};
       }
@@ -91,6 +90,7 @@ export default Vue.extend({
       default: false
     }
   },
+  emits: ['create-report'],
   data(): IData {
     return {
       itemsPerPage: 10,
@@ -154,7 +154,7 @@ export default Vue.extend({
       ];
     }
   }
-});
+};
 </script>
 
 <i18n>

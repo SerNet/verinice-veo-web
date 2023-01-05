@@ -15,9 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { NuxtApp } from '@nuxt/types/app';
-import { computed, nextTick, onMounted, useContext } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { isString, trim } from "lodash";
+import { NuxtApp } from "nuxt/app";
 
 export const useFormatters = () => {
   const { locale } = useI18n();
@@ -68,9 +67,9 @@ export const useThrottleNextTick = () => {
 };
 
 export const onContentUpdate = (callback: (context: { event: string; path: string }) => void) => {
-  const { isDev } = useContext();
+  const { isDev } = useNuxtApp();
   if (isDev && process.client) {
-    withNuxt(($nuxt: Vue) => {
+    withNuxt(($nuxt) => {
       $nuxt.$on('content:update', callback);
     });
   }
@@ -85,7 +84,7 @@ export const withNuxt = (callback: (nuxt: NuxtApp) => any) => {
   }
 };
 
-export const onFetchFinish = (callback: (nuxt: NuxtApp) => any, interval: number = 100) =>
+export const onFetchFinish = (callback: (nuxt: NuxtApp) => any, interval = 100) =>
   withNuxt((nuxt) => {
     const intervalHandle = setInterval(() => {
       if (!nuxt.isFetching) {
@@ -95,4 +94,14 @@ export const onFetchFinish = (callback: (nuxt: NuxtApp) => any, interval: number
     }, interval);
   });
 
-export const onMountedFetchFinish = (callback: (nuxt: NuxtApp) => any, interval: number = 100) => onMounted(() => onFetchFinish(callback, interval));
+export const onMountedFetchFinish = (callback: (nuxt: NuxtApp) => any, interval = 100) => onMounted(() => onFetchFinish(callback, interval));
+
+export const useRules = () => {
+  const { t } = useI18n();
+
+  const requiredRule = (v: any) => !!v && isString(v) ? !!trim(v) : true || t('global.input.required');
+
+  return {
+    requiredRule
+  };
+};

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { reactive, ref, Ref, unref, watch } from 'vue';
+import { Ref } from 'vue';
 import { useQuery as vueQueryUseQuery, useQueries as VueQueryUseQueries, useQueryClient } from '@tanstack/vue-query';
 import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
 import { QueryObserverResult } from '@tanstack/query-core/build/lib/types';

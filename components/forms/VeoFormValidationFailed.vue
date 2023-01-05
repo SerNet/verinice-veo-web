@@ -30,29 +30,20 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+<script lang="ts" setup>
+import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 
-export default defineComponent({
-  props: {
-    errors: {
-      type: Array as PropType<VeoSchemaValidatorValidationResult[]>,
-      default: () => []
-    }
-  },
-  setup() {
-    const { t } = useI18n();
-
-    return {
-      t,
-      upperFirst
-    };
+defineProps({
+  errors: {
+    type: Array as PropType<VeoSchemaValidatorValidationResult[]>,
+    default: () => []
   }
 });
+
+const { t } = useI18n();
 </script>
 
 <i18n>

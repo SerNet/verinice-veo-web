@@ -69,10 +69,7 @@
         </v-list-item>
         <template v-if="!userSettings.maxUnits || userSettings.maxUnits > 2">
           <v-divider />
-          <VeoUnitSelection
-            :units="units"
-            v-on="$listeners"
-          />
+          <VeoUnitSelection v-bind="$attrs" />
         </template>
         <v-divider />
         <v-list-item
@@ -116,24 +113,18 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { mdiOpenInNew } from '@mdi/js';
 
-import { IVeoUnit } from '~/types/VeoTypes';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export default defineComponent({
-  emits: {
-    'create-unit': () => {}
-  },
   setup() {
     const { t } = useI18n();
-    const { $api, $config } = useContext();
+    const config = useRuntimeConfig();
     const { logout: _logout, profile, userSettings } = useVeoUser();
-    const route = useRoute();
     const { ability } = useVeoPermissions();
+
     const logout = () => _logout('/');
 
     const displayDeploymentDetails = ref(false);
@@ -143,21 +134,7 @@ export default defineComponent({
     const lastName = computed(() => profile.value?.lastName || '');
     const initials = computed(() => firstName.value.substring(0, 1) + lastName.value.substring(0, 1) || '??');
 
-    const unitId = computed(() => route.value.params.unit);
-
-    watch(
-      () => unitId.value,
-      () => fetch()
-    );
-
-    // Unit selection stuff
-    const units = ref<IVeoUnit[]>([]);
-
-    const { fetch } = useFetch(async () => {
-      units.value = await $api.unit.fetchAll();
-    });
-
-    const accountLink = computed(() => `${$config.oidcUrl}/realms/${$config.oidcRealm}/account`);
+    const accountLink = computed(() => `${config.public.oidcUrl}/realms/${config.public.oidcRealm}/account`);
 
     return {
       ability,
@@ -167,7 +144,6 @@ export default defineComponent({
       logout,
       menuVisible,
       profile,
-      units,
       userSettings,
 
       mdiOpenInNew,

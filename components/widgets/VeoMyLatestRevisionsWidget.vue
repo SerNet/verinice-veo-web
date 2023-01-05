@@ -42,9 +42,6 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useRoute } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
 import { useFetchForms } from '~/composables/api/forms';
 import { useFetchLatestChanges } from '~/composables/api/history';
 import { separateUUIDParam, createUUIDUrlParam } from '~/lib/utils';
@@ -55,8 +52,8 @@ export default defineComponent({
     const { t, locale } = useI18n();
     const route = useRoute();
 
-    const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     const latestChangesQueryParameters = computed(() => ({ unitId: unitId.value }));
     const { data: revisions } = useFetchLatestChanges(latestChangesQueryParameters);
@@ -66,7 +63,7 @@ export default defineComponent({
     const { data: forms } = useFetchForms(fetchFormsQueryParameters, { enabled: fetchFormsQueryEnabled });
 
     const createUrl = (revision: IVeoObjectHistoryEntry) =>
-      `/${route.value.params.unit}/domains/${route.value.params.domain}/objects/${createUUIDUrlParam(revision.content.type, revision.content.id)}/`;
+      `/${route.params.unit}/domains/${route.params.domain}/objects/${createUUIDUrlParam(revision.content.type, revision.content.id)}/`;
 
     return {
       createUrl,

@@ -19,7 +19,7 @@
   <VeoDialog
     :value="value && !!item"
     :headline="t('headline')"
-    v-on="$listeners"
+    @input="$emit('model-value', $event)"
   >
     <template #default>
       <span class="text-body-1">{{ t('text', { displayName: item && item.displayName }) }}</span>
@@ -45,8 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 
 import { IVeoEntity } from '~/types/VeoTypes';
 
@@ -57,10 +56,11 @@ export default defineComponent({
       required: true
     },
     item: {
-      type: Object,
+      type: Object as PropType<IVeoEntity>,
       default: undefined
-    } as PropOptions<IVeoEntity>
+    }
   },
+  emits: ['input', 'exit', 'model-value'],
   setup() {
     const { t } = useI18n();
 

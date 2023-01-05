@@ -104,8 +104,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropOptions, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
 import { IVeoEntity } from '~/types/VeoTypes';
@@ -116,9 +115,9 @@ export default defineComponent({
   name: 'VeoObjectDetails',
   props: {
     object: {
-      type: Object,
+      type: Object as PropType<IVeoEntity>,
       default: undefined
-    } as PropOptions<IVeoEntity>,
+    },
     loading: {
       type: Boolean,
       default: false
@@ -136,6 +135,7 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['reload', 'update:activeTab'],
   setup(props, { emit }) {
     const { t } = useI18n();
     const { formatDateTime } = useFormatters();

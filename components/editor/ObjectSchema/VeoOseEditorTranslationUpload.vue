@@ -27,8 +27,8 @@
     </VeoAlert>
     <VeoEditorTranslationUpload
       v-bind="$props"
-      :import-function="importFunction"
-      v-on="$listeners"
+      :replace-translations="replaceTranslations"
+      @update:replace-translations="$emit('replace-translations', $event)"
     >
       <template #default>
         <v-expansion-panels
@@ -93,10 +93,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, PropType, reactive, Ref, ref, useContext } from '@nuxtjs/composition-api';
-import { LocaleObject } from '@nuxtjs/i18n/types';
 import { trim } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType, Ref } from 'vue';
+import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+
 import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2';
 
 import { VeoAlertType } from '~/types/VeoTypes';
@@ -112,9 +112,10 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['translations-imported', 'replace-translations'],
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { i18n } = useContext();
+    const { i18n } = useNuxtApp();
 
     const objectSchemaHelper = inject<Ref<ObjectSchemaHelper>>('objectSchemaHelper');
 

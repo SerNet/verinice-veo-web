@@ -23,7 +23,7 @@
     :headline="upperFirst(!!risk ? t('editRisk', [risk.designator]).toString() : t('createRisk').toString())"
     x-large
     fixed-footer
-    v-on="$listeners"
+    v-bind="$attrs"
   >
     <template #default>
       <VeoAlert
@@ -79,9 +79,9 @@
           </v-card-text>
         </VeoCard>
         <VeoCreateRiskDialogRiskDefinitions
+          v-model:dirty-fields="dirtyFields"
           :value="data"
           :domain="domain"
-          :dirty-fields.sync="dirtyFields"
           :disabled="formDisabled"
           :mitigations="mitigations"
           @update:mitigations="onMitigationsChanged"
@@ -115,17 +115,15 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { cloneDeep, isEqual, merge, upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useFetchSchemas } from '~/composables/api/schemas';
 import { useFetchDomain } from '~/composables/api/domains';
+import { useCreateRisk, useFetchRisk, useUpdateRisk } from '~~/composables/api/objects';
 
 export interface IDirtyFields {
   [field: string]: boolean;
@@ -154,8 +152,10 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['input', 'reload'],
   setup(props, { emit }) {
-    const { $api, $config } = useContext();
+    const { $api } = useNuxtApp();
+    const config = useRuntimeConfig();
     const route = useRoute();
     const { t } = useI18n();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
@@ -163,11 +163,9 @@ export default defineComponent({
     const { createLink } = useCreateLink();
     const { ability } = useVeoPermissions();
 
-    const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
+    const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
 
     const formDisabled = computed(() => ability.value.cannot('manage', 'objects'));
-
-    const { data: endpoints } = useFetchSchemas();
 
     // Domain stuff, used for risk definitions
     const data = ref<IVeoRisk | undefined>(undefined);
@@ -221,15 +219,13 @@ export default defineComponent({
       data.value = newValue;
     };
 
-    const risk = ref<IVeoRisk | undefined>(undefined);
-    const { fetch: fetchRisk } = useFetch(async () => {
-      if (props.scenarioId) {
-        risk.value = await $api.entity.fetchRisk('processes', props.objectId, props.scenarioId);
-      } else {
-        risk.value = undefined;
-      }
-
-      data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
+    const fetchRiskQueryParameters = computed(() => ({ scenarioId: props.scenarioId, objectId: props.objectId, endpoint: 'processes' }));
+    const fetchRiskQueryEnabled = computed(() => !!props.scenarioId);
+    const { data: _risk } = useFetchRisk(fetchRiskQueryParameters, { enabled: fetchRiskQueryEnabled.value });
+    const risk = computed(() => props.scenarioId ? _risk.value : undefined);
+    
+    watch(() => risk.value, (newValue) => {
+      data.value = makeRiskObject(newValue, props.domainId, domain.value?.riskDefinitions || {});
       originalData.value = cloneDeep(data.value);
       formIsValid.value = true;
 
@@ -237,12 +233,10 @@ export default defineComponent({
         dirtyFields.value = {};
       });
     });
-    watch(
-      () => props.scenarioId,
-      () => fetchRisk()
-    );
 
     const savingRisk = ref(false);
+    const { mutateAsync: createRisk } = useCreateRisk();
+    const { mutateAsync: updateRisk } = useUpdateRisk();
     const saveRisk = async () => {
       if (data.value) {
         savingRisk.value = true;
@@ -258,12 +252,11 @@ export default defineComponent({
           }
 
           if (props.scenarioId) {
-            await $api.entity.updateRisk(endpoints.value?.[props.objectType || ''] || '', props.objectId, props.scenarioId, data.value);
+            await updateRisk({ endpoint: 'processes', objectId: props.objectId, risk: data.value });
           } else {
-            await $api.entity.createRisk(endpoints.value?.[props.objectType || ''] || '', props.objectId, data.value);
+            await createRisk({ endpoint: 'processes', objectId: props.objectId, risk: data.value });
           }
           displaySuccessMessage(props.scenarioId ? upperFirst(t('riskUpdated').toString()) : upperFirst(t('riskCreated').toString()));
-          fetchRisk();
           emit('reload');
         } catch (e: any) {
           displayErrorMessage(upperFirst(t('riskNotSaved').toString()), e.message);
@@ -287,7 +280,7 @@ export default defineComponent({
       type: 'control',
       name: t('mitigatingAction', [data.value?.designator]).toString(),
       owner: {
-        targetUri: `${$config.apiUrl}/units/${unitId.value}`
+        targetUri: `${config.public.apiUrl}/units/${unitId.value}`
       },
       domains: {
         [props.domainId]: {

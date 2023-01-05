@@ -47,10 +47,10 @@
             height="25px"
             class="my-1"
           />
-          <BarChart
+          <Bar
             v-else-if="chart.totalEntries > 0"
             ref="barChartRef"
-            :chart-data="chart"
+            :data="chart"
             :options="options[index]"
             :plugins="[ChartDataLabels]"
             :style="{ height: `${chartHeight}px`, cursor: 'pointer' }"
@@ -74,11 +74,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useRoute } from '@nuxtjs/composition-api';
-import { BarChart } from 'vue-chart-3';
-import { Chart, BarController, Tooltip, CategoryScale, BarElement, LinearScale } from 'chart.js';
+import { Bar } from 'vue-chartjs';
+import { Chart as ChartJS, BarController, Tooltip, CategoryScale, BarElement, LinearScale } from 'chart.js';
 import { upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { IVeoDomainStatusCount } from '~/plugins/api/domain';
@@ -86,8 +84,9 @@ import { CHART_COLORS, IBaseObject } from '~/lib/utils';
 import { useFetchForms } from '~/composables/api/forms';
 import { useFetchTranslations } from '~/composables/api/translations';
 import { useFetchSchema } from '~/composables/api/schemas';
+import { PropType } from 'vue';
 
-Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
+ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
 export interface IChartValue {
   totalEntries: number;
@@ -102,11 +101,12 @@ export interface IChartValue {
 export default defineComponent({
   name: 'VeoStackedStatusBarChartWidget',
   components: {
-    BarChart
+    Bar
   },
   props: {
     data: {
       type: Object as PropType<IVeoDomainStatusCount['x']>,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       default: () => {}
     },
     chartHeight: {
@@ -122,6 +122,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['click'],
   setup(props, { emit }) {
     const { locale, t } = useI18n();
     const route = useRoute();
@@ -159,11 +160,9 @@ export default defineComponent({
         responsive: true,
         onClick: (_point: any, $event: any) => handleClickEvent(index, $event),
         plugins: {
-          legend: false,
-          tooltip: props.chartHeight >= 45,
           datalabels: {
-            anchor: 'start',
-            align: 'end',
+            anchor: 'start' as 'start' | 'center' | 'end',
+            align: 'end' as 'start' | 'center' | 'end',
             clip: true,
             color: 'white',
             display(context: any) {
@@ -171,10 +170,10 @@ export default defineComponent({
               const value = context.dataset?.data?.[index] || -1;
               return value > 0;
             },
-            offset: '12'
+            offset: 12
           }
         },
-        indexAxis: 'y',
+        indexAxis: 'y' as 'x' | 'y',
         barPercentage: 1,
         categoryPercentage: 1,
         offset: false,
@@ -225,7 +224,7 @@ export default defineComponent({
     );
 
     const objectOveriewLink = (subTypeIndex: number) =>
-      `/${route.value.params.unit}/domains/${route.value.params.domain}/objects?objectType=${props.objectType}&subType=${sortedSubTypes.value[subTypeIndex][0]}`;
+      `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${props.objectType}&subType=${sortedSubTypes.value[subTypeIndex][0]}`;
 
     return {
       barChartRef,

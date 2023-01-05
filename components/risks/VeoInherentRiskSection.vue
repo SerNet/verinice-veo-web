@@ -30,8 +30,9 @@
               :disabled="disabled"
               :protection-goal="protectionGoal"
               :risk-definition="riskDefinition"
-              :dirty-fields.sync="dirtyFields"
+              :dirty-fields="dirtyFields"
               v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
+              @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
           </template>
         </v-row>
@@ -41,9 +42,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { IDirtyFields } from './VeoCreateRiskDialogSingle.vue';
 import { IVeoDomainRiskDefinition, IVeoRiskDefinition } from '~/types/VeoTypes';
@@ -60,6 +60,7 @@ export default defineComponent({
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       default: () => {}
     },
     disabled: {
@@ -67,6 +68,7 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['update:dirty-fields'],
   setup(props) {
     const { t } = useI18n();
 

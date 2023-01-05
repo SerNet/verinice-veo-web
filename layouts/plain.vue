@@ -67,7 +67,6 @@
 
 <script lang="ts">
 import { mdiAccountCircleOutline } from '@mdi/js';
-import { defineComponent, useMeta } from '@nuxtjs/composition-api';
 
 import { useVeoUser } from '~/composables/VeoUser';
 
@@ -75,7 +74,7 @@ export default defineComponent({
   setup() {
     const { logout: _logout, profile } = useVeoUser();
 
-    useMeta(() => ({
+    useHead(() => ({
       title: 'verinice.',
       titleTemplate: '%s - verinice.veo'
     }));

@@ -46,37 +46,27 @@
   </v-list>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, useRoute } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+<script lang="ts" setup>
+import { PropType } from 'vue';
 
 import { createUUIDUrlParam } from '~/lib/utils';
 import { IVeoCatalog } from '~/types/VeoTypes';
 
-export default defineComponent({
-  props: {
-    catalogs: {
-      type: Array as PropType<IVeoCatalog[]>,
-      default: () => []
-    },
-    loading: {
-      type: Boolean,
-      default: false
-    }
+defineProps({
+  catalogs: {
+    type: Array as PropType<IVeoCatalog[]>,
+    default: () => []
   },
-  setup() {
-    const route = useRoute();
-    const { t } = useI18n();
-
-    const generateRoute = (catalogId: string) => `/${route.value.params.unit}/domains/${route.value.params.domain}/catalogs/${createUUIDUrlParam('catalog', catalogId)}`;
-
-    return {
-      generateRoute,
-
-      t
-    };
+  loading: {
+    type: Boolean,
+    default: false
   }
 });
+ 
+const route = useRoute();
+const { t } = useI18n();
+
+const generateRoute = (catalogId: string) => `/${route.params.unit}/domains/${route.params.domain}/catalogs/${createUUIDUrlParam('catalog', catalogId)}`;
 </script>
 
 <i18n>

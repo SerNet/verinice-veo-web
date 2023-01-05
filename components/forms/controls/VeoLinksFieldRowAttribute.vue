@@ -16,8 +16,6 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { defineComponent, h } from '@nuxtjs/composition-api';
-
 import { IVeoFormElementDefaultProps, IVeoFormsElementDefinition } from '../types';
 import { VeoFormsControlProps } from '../util';
 
@@ -52,11 +50,11 @@ export default defineComponent({
         'div',
         slots.default
           ? slots.default().map((linkAttribute) => {
-              // Add an index to every control so that VeoForms can enter the value for the correct link
-              (linkAttribute.componentOptions?.propsData as IVeoFormElementDefaultProps).index = props.index;
+            // Add an index to every control so that VeoForms can enter the value for the correct link
+            (linkAttribute.props as IVeoFormElementDefaultProps).index = props.index;
 
-              return linkAttribute;
-            })
+            return linkAttribute;
+          })
           : undefined
       );
   }

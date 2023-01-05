@@ -30,9 +30,11 @@
         mandatory
         color="primary"
       >
-        <template v-for="item in items">
+        <template
+          v-for="item in items"
+          :key="item.initialId + '0'"
+        >
           <v-list-item
-            :key="item.initialId + '0'"
             style="min-height: 28px;"
             :value="item.initialId"
             @click="onClick(item.initialId)"
@@ -58,7 +60,6 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import { UISchema } from '~/types/UISchema';
 
 interface IItem {
@@ -74,7 +75,7 @@ interface IData {
   observer: IntersectionObserver | undefined;
 }
 
-export default Vue.extend({
+export default {
   // Component is recursive and name is required!!!
   name: 'VeoFormNavigation',
   props: {
@@ -84,6 +85,7 @@ export default Vue.extend({
     },
     customTranslation: {
       type: Object,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       default: () => {}
     },
     initialId: {
@@ -129,10 +131,10 @@ export default Vue.extend({
             // Important to iterate on all elements to have correct indices of Layouts in FormSchema
             return el.type === 'Layout' && el.options && el.options.format === 'group'
               ? {
-                  initialId: `${this.initialId}${this.initialId ? '/' : ''}elements/${index}`,
-                  text: this.customTranslation[el.options?.label?.replace('#lang/', '')] || el.options?.label,
-                  layout: el
-                }
+                initialId: `${this.initialId}${this.initialId ? '/' : ''}elements/${index}`,
+                text: this.customTranslation[el.options?.label?.replace('#lang/', '')] || el.options?.label,
+                layout: el
+              }
               : {}; // This is generated for non LayoutGroup elements and filtered in the next step
           })
           .filter((el: any) => !!el.text);
@@ -195,7 +197,7 @@ export default Vue.extend({
       }
     }
   }
-});
+};
 </script>
 
 <i18n>

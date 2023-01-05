@@ -21,7 +21,6 @@
     large
     :headline="t('editor.formschema.translation')"
     fixed-footer
-    v-on="$listeners"
   >
     <template #default>
       <div style="min-height: 20vh">
@@ -78,8 +77,8 @@
             </v-col>
           </v-row>
           <VeoOseEditorTranslationUpload
+            v-model:replace-translations="replaceTranslations"
             :available-languages="supportedLanguages"
-            :replace-translations.sync="replaceTranslations"
             @translations-imported="onTranslationsImported"
           />
           <v-row>
@@ -121,11 +120,10 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { computed, defineComponent, inject, PropType, reactive, ref, Ref, set, useContext, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-import { LocaleObject } from '@nuxtjs/i18n/types';
-
+import { PropType, Ref } from 'vue';
 import { merge } from 'lodash';
+import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { IBaseObject } from '~/lib/utils';
@@ -142,9 +140,10 @@ export default defineComponent({
       default: ''
     }
   },
+  emits: ['update:current-display-language', 'input', 'schema-updated'],
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { i18n } = useContext();
+    const { i18n } = useNuxtApp();
     const { displayErrorMessage } = useVeoAlerts();
 
     const objectSchemaHelper = inject<Ref<ObjectSchemaHelper>>('objectSchemaHelper');
@@ -193,9 +192,9 @@ export default defineComponent({
           if (!translations[language]) {
             const savedTranslations = objectSchemaHelper?.value.getTranslations(language);
             if (savedTranslations) {
-              set(translations, language, JSON.stringify(savedTranslations, undefined, 2));
+              translations[language] = JSON.stringify(savedTranslations, undefined, 2);
             } else {
-              set(translations, language, {});
+              translations[language] = JSON.stringify({});
             }
           }
         });
@@ -239,9 +238,9 @@ export default defineComponent({
     const onTranslationsImported = (_translations: IVeoTranslations['lang']) => {
       for (const language of Object.keys(translations)) {
         if (replaceTranslations.value) {
-          set(translations, language, JSON.stringify(_translations[language], undefined, 2));
+          translations[language] = JSON.stringify(_translations[language], undefined, 2);
         } else {
-          set(translations, language, JSON.stringify(merge(objectSchemaHelper?.value?.getTranslations(language) || {}, _translations[language]), undefined, 2));
+          translations[language] = JSON.stringify(merge(objectSchemaHelper?.value?.getTranslations(language) || {}, _translations[language]), undefined, 2);
         }
       }
     };

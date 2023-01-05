@@ -34,8 +34,8 @@
           <v-list-item-title class="font-weight-bold">
             {{ action.title }}
           </v-list-item-title>
-          <v-list-item-subtitle />
-          {{ action.text }}
+          <v-list-item-subtitle>
+            {{ action.text }}
           </v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
@@ -48,42 +48,32 @@
   </v-window-item>  
 </template>
 
-<script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+<script lang="ts" setup>
 import { mdiChevronRight } from '@mdi/js';
 
-export default defineComponent({
-  props: {
-    value: {
-      type: Number,
-      required: true
-    }
-  },
-  setup(_props, { emit }) {
-    const { t } = useI18n();
-
-    const actions = [
-      {
-        title: t('createFormSchema'),
-        text: t('createFormSchemaDescription'),
-        onClick: () => emit('create')
-      },
-      {
-        title: t('importFormSchema'),
-        text: t('importFormSchemaDescription'),
-        onClick: () => emit('import')
-      }
-    ];
-
-    return {
-      actions,
-
-      mdiChevronRight,
-      t
-    };
+defineProps({
+  value: {
+    type: Number,
+    required: true
   }
 });
+
+const emit = defineEmits(['create', 'import']);
+  
+const { t } = useI18n();
+
+const actions = [
+  {
+    title: t('createFormSchema'),
+    text: t('createFormSchemaDescription'),
+    onClick: () => emit('create')
+  },
+  {
+    title: t('importFormSchema'),
+    text: t('importFormSchemaDescription'),
+    onClick: () => emit('import')
+  }
+];
 </script>
 
 <i18n>

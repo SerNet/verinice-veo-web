@@ -43,8 +43,6 @@
 
 <script lang="ts">
 import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
-import { computed, defineComponent } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 
 export default defineComponent({
   name: 'CollapseButton',
@@ -66,6 +64,7 @@ export default defineComponent({
       default: undefined
     }
   },
+  emits: ['input'],
   setup(props) {
     const { t } = useI18n();
 

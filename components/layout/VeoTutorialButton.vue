@@ -70,9 +70,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
 import { mdiInformationOffOutline, mdiInformationOutline } from '@mdi/js';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { useTutorials } from '~/composables/intro';
 

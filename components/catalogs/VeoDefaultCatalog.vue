@@ -58,8 +58,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 
 import { IVeoCatalogSelectionListHeader } from '~/components/catalogs/VeoCatalogSelectionList.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -87,7 +86,7 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n();
-    const { $api } = useContext();
+    const { $api } = useNuxtApp();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
 

@@ -20,7 +20,6 @@
     v-bind="$attrs"
     :headline="$t('environmentInformation')"
     large
-    v-on="$listeners"
   >
     <v-simple-table dense>
       <thead>
@@ -87,10 +86,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import { IVeoDeploymentInformation } from '~/types/VeoTypes';
 
-export default Vue.extend({
+export default {
   data() {
     return {
       deployments: {
@@ -134,7 +132,7 @@ export default Vue.extend({
       this.deployments.reports = await this.$api.monitoring.fetchDeploymentDetails('reporting');
     }
   }
-});
+};
 </script>
 
 <i18n>

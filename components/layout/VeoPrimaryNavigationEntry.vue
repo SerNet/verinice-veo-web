@@ -55,8 +55,8 @@
 </template>
 
 <script lang="ts">
-import { RawLocation } from 'vue-router/types';
-import { defineComponent, PropType } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
+import { RouteLocationRaw } from 'vue-router';
 
 export default defineComponent({
   name: 'VeoPrimaryNavigationEntry',
@@ -74,7 +74,7 @@ export default defineComponent({
       default: undefined
     },
     to: {
-      type: [String, Object] as PropType<RawLocation>,
+      type: [String, Object] as PropType<RouteLocationRaw>,
       required: true
     },
     exact: {
@@ -94,6 +94,7 @@ export default defineComponent({
       default: undefined
     }
   },
+  emits: ['expand-menu', 'click'],
   setup(props, { emit }) {
     const onClick = (event: any) => {
       if (props.miniVariant) {

@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, defineComponent, h } from '@nuxtjs/composition-api';
-
 import { VeoFormsWidgetProps } from '../util';
 
 const AVAILABLE_WIDGETS: any[] = [];

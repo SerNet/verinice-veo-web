@@ -39,41 +39,25 @@
     >
       <v-list-item-title>
         {{ t('unit.create.short') }}
-        </v-btn>
       </v-list-item-title>
     </v-list-item>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
-import { IVeoUnit } from '~/types/VeoTypes';
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
+import { useFetchUnits } from '~~/composables/api/units';
 
 export default defineComponent({
-  props: {
-    units: {
-      type: Array as PropType<IVeoUnit[]>,
-      required: true
-    }
-  },
-  emits: {
-    'create-unit': () => {}
-  },
+  emits: ['create-unit'],
   setup() {
-    const { $api } = useContext();
     const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
 
-    const unit = computed(() => (route.value.params.unit && separateUUIDParam(route.value.params.unit).id) || undefined);
-    const displayedUnits = ref<IVeoUnit[]>();
+    const unit = computed(() => (route.params.unit && separateUUIDParam(route.params.unit as string).id) || undefined);
 
-    useFetch(async () => {
-      displayedUnits.value = await $api.unit.fetchAll();
-    });
+    const { data: displayedUnits } = useFetchUnits();
 
     const doChangeUnit = (unitId: string) => {
       const unit = displayedUnits.value?.find((unit) => unit.id === unitId);

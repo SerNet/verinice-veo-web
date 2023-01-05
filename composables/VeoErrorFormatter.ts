@@ -17,7 +17,6 @@
  */
 import { ErrorObject } from 'ajv';
 import { last } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { IBaseObject } from '~/lib/utils';
 

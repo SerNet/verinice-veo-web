@@ -42,8 +42,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 import { cloneDeep, upperFirst } from 'lodash';
 
 import { IVeoDomainRiskDefinition, IVeoRiskDefinition } from '~/types/VeoTypes';
@@ -63,6 +62,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['update:data'],
   setup(props, { emit }) {
     const { t } = useI18n();
 

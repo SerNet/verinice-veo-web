@@ -48,10 +48,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import JsonHighlighter from './JsonHighlighter.vue';
 
-export default Vue.extend({
+export default {
   name: 'FormDescription',
   components: {
     JsonHighlighter
@@ -86,5 +85,5 @@ export default Vue.extend({
       return JSON.stringify(json, null, 4);
     }
   }
-});
+};
 </script>

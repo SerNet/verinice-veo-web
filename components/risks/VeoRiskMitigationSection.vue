@@ -75,9 +75,9 @@
     <VeoLinkObjectDialog
       v-if="editMitigationsDialogVisible"
       v-model="editMitigationsDialogVisible"
+      v-model:preselected-items="selectedItems"
       :object="editedObject"
       return-objects
-      :preselected-items.sync="selectedItems"
     >
       <template #header>
         {{ t('addMitigatingActionsToRisk', [data && data.designator]).toString() }}
@@ -95,8 +95,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, useContext, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 import { mdiInformationOutline, mdiPencilOutline } from '@mdi/js';
 
@@ -122,9 +121,10 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['mitigations-modified', 'update:mitigations'],
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { $api } = useContext();
+    const { $api } = useNuxtApp();
 
     // We don't need the name, as it only gets used by the text in the linkObjectDialog and this text gets overwritten by template#header
     const editedObject = { type: 'control', name: '' };

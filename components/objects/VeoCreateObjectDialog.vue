@@ -17,20 +17,19 @@
 -->
 <template>
   <VeoDialog
-    :value="value"
     :headline="headline"
     x-large
     :persistent="isFormDirty"
     fixed-footer
     inner-class="fill-height"
-    v-on="$listeners"
+    v-bind="$attrs"
   >
     <template #default>
       <VeoObjectForm
         v-model="objectData"
         v-bind="$props"
+        v-model:valid="isFormValid"
         :preselected-sub-type="subType"
-        :valid.sync="isFormValid"
         :loading="domainIsFetching"
         disable-history
         scroll-wrapper-id="scroll-wrapper-create-dialog"
@@ -58,8 +57,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, useContext, useRoute, computed, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { cloneDeep, upperFirst } from 'lodash';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -88,9 +85,11 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['success', 'input'],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
-    const { $api, $config } = useContext();
+    const { $api } = useNuxtApp();
+    const config = useRuntimeConfig();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
@@ -122,7 +121,7 @@ export default defineComponent({
     const seedInitialData = () => {
       objectData.value = {
         owner: {
-          targetUri: `${$config.apiUrl}/units/${separateUUIDParam(route.value.params.unit).id}`
+          targetUri: `${config.public.apiUrl}/units/${separateUUIDParam(route.params.unit as string).id}`
         },
         domains: {
           [props.domainId]: {}

@@ -173,24 +173,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref, Ref, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { Ref } from 'vue';
 
 import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
-import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { IInputType, INPUT_TYPES } from '~/types/VeoEditor';
-
-interface IProps {
-  search: string;
-  hideEmptyAspects: boolean;
-}
 
 interface EditorPropertyItem {
   item: IVeoOSHCustomAspect | IVeoOSHCustomLink | IVeoOSHCustomProperty;
   styling?: IInputType;
 }
 
-export default defineComponent<IProps>({
+export default defineComponent({
   props: {
     search: {
       type: String,
@@ -205,8 +198,10 @@ export default defineComponent<IProps>({
       required: true
     }
   },
+  emits: ['schema-updated'],
   setup(_props, context) {
     const { t } = useI18n();
+    const { displayErrorMessage } = useVeoAlerts();
 
     function itemContainsAttributeTitle(item: EditorPropertyItem, title: string): boolean {
       return (
@@ -224,12 +219,11 @@ export default defineComponent<IProps>({
     /**
      * schema related stuff
      */
-    // @ts-ignore
-    const objectSchemaHelper: Ref<ObjectSchemaHelper> = inject('objectSchemaHelper');
+    const objectSchemaHelper = inject<Ref<ObjectSchemaHelper>>('objectSchemaHelper');
 
-    const customAspects: Ref<EditorPropertyItem[]> = ref([]);
-    const customLinks: Ref<EditorPropertyItem[]> = ref([]);
-    const basicProps: Ref<EditorPropertyItem[]> = ref([]);
+    const customAspects = ref<EditorPropertyItem[]>([]);
+    const customLinks = ref<EditorPropertyItem[]>([]);
+    const basicProps = ref<EditorPropertyItem[]>([]);
 
     const expansionPanels = ref([0, 1, 2]);
 
@@ -251,7 +245,7 @@ export default defineComponent<IProps>({
         };
       });
       customLinks.value = objectSchemaHelper.value.getCustomLinks().map((entry: IVeoOSHCustomLink) => {
-        // @ts-ignore
+        // @ts-ignore Custom links don't have a type property, however we need it for the editor. It gets removed when converting back to a schema
         entry.type = entry.targetType;
         return {
           item: entry,
@@ -261,7 +255,6 @@ export default defineComponent<IProps>({
       basicProps.value = objectSchemaHelper.value.getBasicProperties().map((entry: IVeoOSHCustomProperty) => {
         return {
           item: entry,
-          // @ts-ignore
           styling: INPUT_TYPES[entry.type]
         };
       });
@@ -293,7 +286,7 @@ export default defineComponent<IProps>({
     }
 
     // Removing types from the new item type selection as they are purely used as a fallback.
-    const newItemTypes: Ref<any> = ref(JSON.parse(JSON.stringify(INPUT_TYPES)));
+    const newItemTypes = ref(JSON.parse(JSON.stringify(INPUT_TYPES)));
     delete newItemTypes.value.default;
     delete newItemTypes.value.null;
 
@@ -304,10 +297,7 @@ export default defineComponent<IProps>({
     }
 
     function onEditPropertyError(e: any) {
-      context.emit(VeoEvents.ALERT_ERROR, {
-        title: t('createCustomPropertyError'),
-        text: e
-      });
+      displayErrorMessage(t('createCustomPropertyError'), e);
     }
 
     function onEditPropertySuccess() {

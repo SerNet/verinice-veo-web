@@ -158,9 +158,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropOptions } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { useFetchSchemas } from '~/composables/api/schemas';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
@@ -196,10 +195,11 @@ export default defineComponent({
       default: undefined
     },
     objectSchema: {
-      type: Object,
+      type: Object as PropType<IVeoObjectSchema | undefined>,
       default: undefined
-    } as PropOptions<IVeoObjectSchema | undefined>
+    }
   },
+  emits: ['update:sub-type', 'update:object-schema', 'update:object-type', 'update:sorting', 'update:name', 'submit', 'update:valid'],
   setup(props) {
     const { t } = useI18n();
 

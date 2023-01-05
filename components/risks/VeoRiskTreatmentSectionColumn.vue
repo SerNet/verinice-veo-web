@@ -76,9 +76,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
+import { PropType } from 'vue';
 
 import { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
 
@@ -105,6 +104,7 @@ export default defineComponent({
       default: undefined
     }
   },
+  emits: ['update:risk-treatment-explanation', 'update:risk-treatments'],
   setup() {
     const { t, locale } = useI18n();
 

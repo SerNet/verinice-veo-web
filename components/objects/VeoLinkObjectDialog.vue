@@ -17,13 +17,12 @@
 -->
 <template>
   <VeoDialog
-    :value="value"
+    v-bind="$attrs"
     large
     :headline="title"
     :persistent="savingObject"
     :close-disabled="savingObject"
     fixed-footer
-    v-on="$listeners"
   >
     <template #default>
       <p v-if="!!$slots.header">
@@ -82,9 +81,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, ref, computed, watch, PropType, reactive, useContext } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 import { differenceBy, uniqBy, upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
@@ -142,39 +140,40 @@ export default defineComponent({
     },
     preselectedFilters: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     }
   },
+  emits: ['update:preselected-items', 'input', 'success', 'error'],
   setup(props, { emit }) {
     const route = useRoute();
     const { t, locale } = useI18n();
     const { tablePageSize } = useVeoUser();
     const { link } = useLinkObject();
     const { unlink } = useUnlinkObject();
-    const { $api } = useContext();
+    const { $api } = useNuxtApp();
 
     const { data: endpoints } = useFetchSchemas();
     const translationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useFetchTranslations(translationsQueryParameters);
 
-    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     const newObjectTypeName = computed(() =>
       props.editScopeRelationship
         ? translations.value?.lang?.[locale.value]?.scope
         : props.object?.type === 'scope'
-        ? t('object')
-        : translations.value?.lang?.[locale.value][props.object?.type || '']
+          ? t('object')
+          : translations.value?.lang?.[locale.value][props.object?.type || '']
     );
     const title = computed(() =>
       t(
         props.editParents && props.editScopeRelationship
           ? 'editParentScopes'
           : props.editScopeRelationship
-          ? 'editChildScopes'
-          : props.editParents
-          ? 'editParentObjects'
-          : 'editChildObjects',
+            ? 'editChildScopes'
+            : props.editParents
+              ? 'editParentObjects'
+              : 'editChildObjects',
         [props.object?.displayName]
       )
     );
@@ -194,7 +193,7 @@ export default defineComponent({
       sortBy: objectsQueryParameters.sortBy,
       sortOrder: (objectsQueryParameters.sortDesc ? 'desc' : 'asc') as 'asc' | 'desc',
       page: objectsQueryParameters.page,
-      unit: separateUUIDParam(route.value.params.unit).id,
+      unit: separateUUIDParam(route.params.unit as string).id,
       ...filter.value,
       endpoint: objectListEndpoint.value
     }));
@@ -257,7 +256,7 @@ export default defineComponent({
     const parentsQueryParameters = computed(() => ({
       size: -1,
       page: 1,
-      unitId: separateUUIDParam(route.value.params.unit).id,
+      unitId: separateUUIDParam(route.params.unit as string).id,
       parentEndpoint: objectListEndpoint.value,
       childObjectId: props.object?.id || ''
     }));

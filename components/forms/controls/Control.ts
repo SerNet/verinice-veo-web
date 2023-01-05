@@ -15,9 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, ComputedRef, defineComponent, h, inject, watch } from '@nuxtjs/composition-api';
+import { ComputedRef } from 'vue';
 import { maxBy } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 
 import { VeoFormsControlProps } from '../util';
@@ -62,7 +61,7 @@ export default defineComponent({
     watch(
       () => props.objectSchema,
       (newValue) => {
-        // @ts-ignore
+        // @ts-ignore We added VEO_FORMS_DEBUG_MAP to the window previously
         window.VEO_FORMS_DEBUG_MAP.set(props.objectSchemaPointer, JSON.stringify(newValue));
       },
       { immediate: true, deep: true }
@@ -111,6 +110,7 @@ export default defineComponent({
     }
 
     const items = computed(() => {
+      // @ts-ignore At this point we expect objectSchema to be set, so type WILL exist
       const items = props.objectSchema.enum || [props.objectSchema.items || []].flat().flatMap((def) => (typeof def === 'object' ? def.enum || [] : []));
       return items.map((item, index) => (props.options.enum ? { text: props.options.enum[index], value: item } : { text: translations?.value[String(item)] || item, value: item }));
     });

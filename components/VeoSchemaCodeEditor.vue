@@ -41,17 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
-import { VeoEvents } from '~/types/VeoGlobalEvents';
-
-interface IProps {
-  value: string;
-  readonly: boolean;
-}
-
-export default defineComponent<IProps>({
+export default defineComponent({
   props: {
     value: {
       type: String,
@@ -66,8 +56,10 @@ export default defineComponent<IProps>({
       default: undefined
     }
   },
+  emits: ['input', 'schema-updated'],
   setup(props, context) {
     const { t } = useI18n();
+    const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
     const code = ref('');
     const saveButtonDisabled = ref(true);
@@ -93,15 +85,9 @@ export default defineComponent<IProps>({
         try {
           const updatedSchema = JSON.parse(code.value);
           context.emit('schema-updated', updatedSchema);
-          context.emit(VeoEvents.SNACKBAR_SUCCESS, {
-            title: '',
-            text: t('saveSchemaSuccess')
-          });
+          displaySuccessMessage(t('saveSchemaSuccess'));
         } catch (e: any) {
-          context.emit(VeoEvents.ALERT_ERROR, {
-            title: t('saveSchemaError'),
-            text: e.message
-          });
+          displayErrorMessage(t('saveSchemaError'), e.message);
         }
       }
       saveButtonDisabled.value = true;

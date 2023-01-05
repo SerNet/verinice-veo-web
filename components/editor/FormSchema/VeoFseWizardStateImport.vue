@@ -87,9 +87,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ComputedRef, PropOptions } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 import { isObject } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { useFetchForms } from '~/composables/api/forms';
 import { useFetchSchemas } from '~/composables/api/schemas';
@@ -116,13 +115,15 @@ export default defineComponent({
     },
     formSchema: {
       required: true,
-      validator: (value: any) => value === undefined || isObject(value)
-    } as PropOptions<IVeoFormSchema | undefined>,
+      validator: (value: any) => value === undefined || isObject(value),
+      type: Object as PropType<IVeoFormSchema | undefined>
+    },
     schemasCompatible: {
       type: Boolean,
       default: true
     }
   },
+  emits: ['update:object-schema', 'update:force-own-schema', 'force-import', 'update:form-schema-id', 'update:form-schema'],
   setup(props) {
     const { t, locale } = useI18n();
 
@@ -136,7 +137,7 @@ export default defineComponent({
     const queryEnabled = computed(() => !!props.domainId);
     const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled });
 
-    const formSchemaOptions: ComputedRef<{ text: string; value: string }[]> = computed(() => [
+    const formSchemaOptions = computed<{ text: string; value: string }[]>(() => [
       {
         text: t('customFormSchema').toString(),
         value: 'custom'

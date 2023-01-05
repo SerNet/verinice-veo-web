@@ -38,7 +38,6 @@
       <div v-if="showDownloadDetailsButton && params && params.details">
         <v-btn
           text
-          color
           @click="downloadDetails"
         >
           {{ t('downloadDetails') }}
@@ -53,18 +52,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, PropOptions, ref, useContext, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { VeoAlertType, IVeoGlobalAlert, IVeoGlobalAlertParams } from '~/types/VeoTypes';
+import { VeoAlertType, IVeoGlobalAlertParams } from '~/types/VeoTypes';
 
-export default defineComponent<IVeoGlobalAlert>({
+export default defineComponent({
   props: {
     type: {
-      type: Number,
+      type: Number as PropType<VeoAlertType>,
       required: true
-    } as PropOptions<VeoAlertType>,
+    },
     title: {
       type: String,
       default: undefined
@@ -74,16 +72,16 @@ export default defineComponent<IVeoGlobalAlert>({
       required: true
     },
     params: {
-      type: Object,
+      type: Object as PropType<IVeoGlobalAlertParams>,
       default: undefined
-    } as PropOptions<IVeoGlobalAlertParams>,
+    },
     alertKey: {
       type: Number,
       default: undefined
     }
   },
   setup(props) {
-    const { $config } = useContext();
+    const config = useRuntimeConfig();
     const { t } = useI18n();
     const { expireAlert, dispatchEventForCurrentAlert } = useVeoAlerts();
 
@@ -114,7 +112,7 @@ export default defineComponent<IVeoGlobalAlert>({
       dispatchEventForCurrentAlert(event);
     }
 
-    const showDownloadDetailsButton = computed(() => $config.debug);
+    const showDownloadDetailsButton = computed(() => config.public.debug);
     const downloadButton = ref();
 
     const downloadDetails = () => {

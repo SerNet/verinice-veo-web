@@ -41,7 +41,7 @@
           mandatory
         >
           <v-list-item
-            v-for="locale of $i18n.locales"
+            v-for="locale of i18n.locales"
             :key="locale.code"
             :value="locale.code"
             @click="onLanguageSwitch(locale.code)"
@@ -54,26 +54,12 @@
   </v-menu>
 </template>
 
-<script lang="ts">
-import { defineComponent, useContext } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+<script lang="ts" setup>
 import { mdiTranslate } from '@mdi/js';
 
-export default defineComponent({
-  setup() {
-    const { i18n } = useContext();
-    const { t } = useI18n();
+const { i18n } = useNuxtApp();
 
-    const onLanguageSwitch = (locale: string) => {
-      i18n.setLocale(locale);
-    };
-
-    return {
-      onLanguageSwitch,
-
-      mdiTranslate,
-      t
-    };
-  }
-});
+const onLanguageSwitch = (locale: string) => {
+  i18n.setLocale(locale);
+};
 </script>

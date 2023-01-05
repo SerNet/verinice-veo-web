@@ -15,18 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Middleware } from '@nuxt/types';
 import { validate } from 'uuid';
 import { separateUUIDParam } from '~/lib/utils';
 
 /**
  * This file checks whether a unit is set as a parameter validates it. If the validation fails, the user gets redirected to the index page.
  */
-export default <Middleware>(({ redirect, route }) => {
-  if (route.params.unit) {
-    const unitId = separateUUIDParam(route.params.unit).id;
+export default defineNuxtRouteMiddleware((to) => {
+  if (to.params.unit) {
+    const unitId = separateUUIDParam(to.params.unit as string).id;
     if (!validate(unitId)) {
-      return redirect('/');
+      return navigateTo('/');
     }
   }
 });

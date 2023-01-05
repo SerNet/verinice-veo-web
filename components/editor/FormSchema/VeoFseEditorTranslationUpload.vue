@@ -28,7 +28,7 @@
     <VeoEditorTranslationUpload
       v-bind="$props"
       :import-function="importFunction"
-      v-on="$listeners"
+      @update:replace-translations="$emit('replace-translations', $event)"
     >
       <template #default>
         <v-expansion-panels
@@ -118,11 +118,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, PropType, reactive, ref, Ref, useContext } from '@nuxtjs/composition-api';
-import { LocaleObject } from '@nuxtjs/i18n/types';
+import { PropType, Ref } from 'vue';
+import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { JsonPointer } from 'json-ptr';
 import { trim } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { useFetchTranslations } from '~/composables/api/translations';
 import { IVeoFormSchema, VeoAlertType } from '~/types/VeoTypes';
@@ -138,9 +137,10 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['translations-imported', 'replace-translations'],
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { i18n } = useContext();
+    const { i18n } = useNuxtApp();
 
     const formSchema = inject<Ref<IVeoFormSchema | undefined>>('mainFormSchema');
 

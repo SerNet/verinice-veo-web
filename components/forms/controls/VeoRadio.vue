@@ -61,7 +61,6 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@nuxtjs/composition-api';
 import { mdiClose } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
@@ -87,6 +86,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 export default defineComponent({
   name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
+  emits: ['input'],
   setup(props) {
     const isDirectionVertical = computed(() => props.options.direction === 'vertical');
 

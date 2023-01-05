@@ -91,7 +91,7 @@
                 :object="originalObject || objectData"
                 :loading="loading"
                 :object-schema="objectSchema"
-                v-on="$listeners"
+                @show-revision="$emit('show-revision')"
               />
               <VeoObjectMessagesTab
                 v-else-if="selectedSideContainer === SIDE_CONTAINERS.MESSAGES"
@@ -188,8 +188,8 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropOptions, PropType, Ref, ref, useContext, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
+
 import { upperFirst, merge, debounce } from 'lodash';
 import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } from '@mdi/js';
 
@@ -219,8 +219,8 @@ export default defineComponent({
   props: {
     value: {
       type: Object,
-      default: () => {}
-    } as PropOptions<IBaseObject>,
+      default: () => ({})
+    },
     loading: {
       type: Boolean,
       default: false
@@ -235,7 +235,7 @@ export default defineComponent({
     },
     objectMetaData: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
     disableHistory: {
       type: Boolean,
@@ -243,7 +243,7 @@ export default defineComponent({
     },
     additionalContext: {
       type: Object as PropType<IVeoFormsAdditionalContext>,
-      default: () => {}
+      default: () => ({})
     },
     domainId: {
       type: String,
@@ -273,9 +273,10 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['input', 'update:valid', 'create-dpia', 'link-dpia', 'update:object-meta-data', 'show-revision'],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
-    const { $api } = useContext();
+    const { $api } = useNuxtApp();
     const { personReactiveFormActions } = useVeoReactiveFormActions();
 
     // Formschema/display stuff
@@ -357,7 +358,7 @@ export default defineComponent({
 
     watch(() => currentFormSchema.value, setSubType, { deep: true });
 
-    const displayOptions: ComputedRef<{ text: string; value: string | undefined }[]> = computed(() => {
+    const displayOptions = computed<{ text: string; value: string | undefined }[]>(() => {
       const currentSubType = objectData.value?.domains?.[props.domainId]?.subType;
       const availableFormSchemas: { text: string; value: string | undefined }[] = (formSchemas.value as IVeoFormSchemaMeta[])
         .filter((formSchema) => formSchema.modelType === objectSchema.value?.title && (!currentSubType || currentSubType === formSchema.subType))
@@ -382,7 +383,7 @@ export default defineComponent({
         emit('input', newValue);
       }
     });
-    const formErrors: Ref<Map<string, string[]>> = ref(new Map());
+    const formErrors = ref<Map<string, string[]>>(new Map());
 
     watch(
       () => formErrors.value,
@@ -391,7 +392,7 @@ export default defineComponent({
       }
     );
 
-    const reactiveFormActions: ComputedRef<IVeoFormsReactiveFormActions> = computed(() => {
+    const reactiveFormActions = computed<IVeoFormsReactiveFormActions>(() => {
       return objectSchema.value?.title === 'person' ? personReactiveFormActions() : {};
     });
 

@@ -216,18 +216,18 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import { isEmpty, isEqual, isString, trim, upperFirst } from 'lodash';
 
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 
-export default Vue.extend({
+export default {
   props: {
     value: {
       type: Boolean,
       required: true
     }
   },
+  emits: ['input', 'completed'],
   data() {
     return {
       dialog: false as boolean,
@@ -380,7 +380,7 @@ export default Vue.extend({
       }
     }
   }
-});
+};
 </script>
 
 <i18n>

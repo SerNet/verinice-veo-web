@@ -17,13 +17,13 @@
 -->
 <template>
   <v-list>
-    <template v-for="(item, index) of items">
-      <v-divider
-        v-if="index > 0"
-        :key="`divider_${index}`"
-      />
+    <template
+      v-for="(item, index) of items"
+      :key="index"
+    >
+      <v-divider v-if="index > 0" />
       <v-list-item
-        :key="index"
+        
         class="d-block veo-object-message"
         :class="item.params && item.params.type ? `veo-object-message--${item.params.type}` : ''"
       >
@@ -81,12 +81,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { mdiLightbulbOutline } from '@mdi/js';
 
 import { INestedMenuEntries } from '../layout/VeoNestedMenu.vue';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
+import { PropType } from 'vue';
 
 export default defineComponent({
   props: {

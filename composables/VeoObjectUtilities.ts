@@ -15,9 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useContext } from '@nuxtjs/composition-api';
 import { cloneDeep, isString } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 
 import { useFetchSchemas } from './api/schemas';
 import { useCreateObject, useUpdateObject } from './api/objects';
@@ -29,10 +27,10 @@ export interface IVeoAPIObjectIdentifier {
 }
 
 export const useCreateLink = () => {
-  const { $config } = useContext();
+  const config = useRuntimeConfig();
 
   const createLink = (endpoint: string, objectId: string) => ({
-    targetUri: `${$config.apiUrl}/${endpoint}/${objectId}`
+    targetUri: `${config.public.apiUrl}/${endpoint}/${objectId}`
   });
 
   return { createLink };
@@ -48,11 +46,11 @@ export const useCloneObject = () => {
 
     // Modify new object
     newObject.name = `${object.name} (${t('clone').toString()})`;
-    // @ts-ignore
+    // @ts-ignore Remove the id, as a new object doesn't have an id yet.
     delete newObject.id;
-    // @ts-ignore
+    // @ts-ignore Remove the display name, as the backend and DTO don't contain the display name as we generate it in the frontend
     delete newObject.displayName;
-    // @ts-ignore
+    // @ts-ignore Remove the designator, as a new object doesn't have a designator yet.
     delete newObject.designator;
 
     return createObject({ endpoint: endpoints.value?.[newObject.type], object: newObject, parentScopes });
@@ -91,7 +89,7 @@ export const useLinkObject = () => {
   const link = (
     objectToModify: IVeoEntity,
     objectsToAdd: (IVeoEntity | IVeoAPIObjectIdentifier)[] | (IVeoEntity | IVeoAPIObjectIdentifier),
-    replaceExistingLinks: boolean = false
+    replaceExistingLinks = false
   ) => {
     const object = cloneDeep(objectToModify);
     const _objectsToAdd = !Array.isArray(objectsToAdd) ? [objectsToAdd] : objectsToAdd;

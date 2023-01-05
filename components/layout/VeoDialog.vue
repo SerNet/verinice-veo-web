@@ -23,7 +23,6 @@
     :width="width"
     :content-class="dialogClasses"
     v-bind="$attrs"
-    v-on="$listeners"
   >
     <v-card
       class="d-flex flex-column"
@@ -77,7 +76,6 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useContext } from '@nuxtjs/composition-api';
 import { mdiClose } from '@mdi/js';
 
 export default defineComponent({
@@ -118,9 +116,7 @@ export default defineComponent({
       default: ''
     }
   },
-  emits: {
-    input: (_: boolean) => {}
-  },
+  emits: ['input'],
   setup(props, { emit }) {
     // @ts-ignore $vuetify exists
     const { $vuetify } = useContext();

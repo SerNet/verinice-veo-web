@@ -117,25 +117,14 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, Ref, ref, reactive } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 
 import { cloneDeep } from 'lodash';
 import { IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
+import { PropType } from 'vue';
 
-interface IProps {
-  value: boolean;
-  name: string;
-  options: any;
-  formSchema: any;
-  formSchemaPointer: string;
-  customTranslations: IVeoFormSchemaTranslationCollection;
-  language: string;
-}
-
-export default defineComponent<IProps>({
+export default defineComponent({
   props: {
     value: {
       type: Boolean,
@@ -158,14 +147,15 @@ export default defineComponent<IProps>({
       default: undefined
     },
     customTranslations: {
-      type: Object,
-      default: () => {}
+      type: Object as PropType<IVeoFormSchemaTranslationCollection>,
+      default: () => ({})
     },
     language: {
       type: String,
       required: true
     }
   },
+  emits: ['input', 'update-custom-translation', 'edit'],
   setup(props, context) {
     const { t } = useI18n();
 
@@ -175,7 +165,7 @@ export default defineComponent<IProps>({
       style: undefined
     };
 
-    const localCustomTranslations: Ref<IVeoFormSchemaTranslationCollection> = ref({ ...props.customTranslations });
+    const localCustomTranslations = ref<IVeoFormSchemaTranslationCollection>({ ...props.customTranslations });
 
     // Get values of element by Pointer and if is not defined, get its default values (e.g. direction = undefined => 'vertical')
     function getValue(pointer: string, defaultValue: any): any {

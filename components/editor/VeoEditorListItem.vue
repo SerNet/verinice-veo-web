@@ -56,18 +56,11 @@
   </v-list-item>
 </template>
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { PropType } from 'vue';
 
 import { IInputType } from '~/types/VeoEditor';
 
-interface IProps {
-  styling: IInputType;
-  disabled: boolean;
-  translate: boolean;
-}
-
-export default defineComponent<IProps>({
+export default defineComponent({
   props: {
     title: {
       type: String,
@@ -77,8 +70,8 @@ export default defineComponent<IProps>({
       type: Boolean
     },
     styling: {
-      type: Object,
-      default: () => {}
+      type: Object as PropType<IInputType>,
+      default: () => ({})
     },
     translate: {
       type: Boolean,

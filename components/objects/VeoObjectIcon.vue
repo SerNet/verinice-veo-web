@@ -39,10 +39,24 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { mdiAccountOutline, mdiAlarmLightOutline, mdiDevices, mdiDotsHorizontal, mdiFileDocumentOutline, mdiPlaylistCheck, mdiShieldAlertOutline } from '@mdi/js';
-import { computed, defineComponent } from '@nuxtjs/composition-api';
 
+const props = defineProps({
+  objectType: {
+    type: String,
+    required: true
+  },
+  isComposite: {
+    type: Boolean,
+    default: false
+  }
+});
+
+const icon = computed(() => OBJECT_TYPE_ICONS.get(props.objectType));
+</script>
+
+<script lang="ts">
 export const OBJECT_TYPE_ICONS = new Map<string, { icon: string | string[]; library: 'fa' | 'mdi' }>([
   ['scope', { icon: ['far', 'object-group'], library: 'fa' }],
   ['process', { icon: ['fas', 'diagram-project'], library: 'fa' }],
@@ -53,28 +67,6 @@ export const OBJECT_TYPE_ICONS = new Map<string, { icon: string | string[]; libr
   ['scenario', { icon: mdiShieldAlertOutline, library: 'mdi' }],
   ['control', { icon: mdiPlaylistCheck, library: 'mdi' }]
 ]);
-
-export default defineComponent({
-  props: {
-    objectType: {
-      type: String,
-      required: true
-    },
-    isComposite: {
-      type: Boolean,
-      default: false
-    }
-  },
-  setup(props) {
-    const icon = computed(() => OBJECT_TYPE_ICONS.get(props.objectType));
-
-    return {
-      icon,
-
-      mdiDotsHorizontal
-    };
-  }
-});
 </script>
 
 <style lang="scss" scoped>

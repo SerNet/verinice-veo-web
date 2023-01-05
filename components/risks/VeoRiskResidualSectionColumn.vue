@@ -85,9 +85,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from '@nuxtjs/composition-api';
+import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
 import { mdiInformationOutline } from '@mdi/js';
 
 import { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
@@ -123,6 +122,7 @@ export default defineComponent({
       default: undefined
     }
   },
+  emits: ['update:residual-risk-explanation', 'update:user-defined-residual-risk'],
   setup(props) {
     const { t, locale } = useI18n();
 

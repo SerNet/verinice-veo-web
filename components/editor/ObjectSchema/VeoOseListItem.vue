@@ -34,20 +34,12 @@
   </VeoEditorListItem>
 </template>
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref, Ref, watch } from '@nuxtjs/composition-api';
+import { PropType, Ref } from 'vue';
+
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { IInputType } from '~/types/VeoEditor';
 
-interface IProps {
-  title: string;
-  prefix: string;
-  description: string;
-  twoLine: boolean;
-  styling: IInputType;
-  translate: boolean;
-}
-
-export default defineComponent<IProps>({
+export default defineComponent({
   props: {
     title: {
       type: String,
@@ -65,8 +57,8 @@ export default defineComponent<IProps>({
       type: Boolean
     },
     styling: {
-      type: Object,
-      default: () => {}
+      type: Object as PropType<IInputType>,
+      default: () => ({})
     },
     translate: {
       type: Boolean,
@@ -74,8 +66,8 @@ export default defineComponent<IProps>({
     }
   },
   setup(props) {
-    const displayLanguage: Ref<string> | undefined = inject('displayLanguage');
-    const objectSchemaHelper: Ref<ObjectSchemaHelper> | undefined = inject('objectSchemaHelper');
+    const displayLanguage = inject<Ref<string> | undefined>('displayLanguage');
+    const objectSchemaHelper = inject<Ref<ObjectSchemaHelper> | undefined>('objectSchemaHelper');
 
     /**
      * We sadly can't use a computed ref to get the localized description as vue won't

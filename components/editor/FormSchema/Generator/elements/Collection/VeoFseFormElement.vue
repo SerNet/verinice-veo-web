@@ -105,8 +105,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue';
-import { Prop } from 'vue/types/options';
+import { PropType } from 'vue';
 import { JSONSchema7 } from 'json-schema';
 import { UISchemaElement } from '@/types/UISchema';
 
@@ -114,30 +113,30 @@ import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VeoEd
 import { IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { getRuleEffectIcons } from '~/lib/FormSchemaHelper';
 
-export default Vue.extend({
+export default {
   props: {
     name: {
       type: String,
       required: true
     },
     schema: {
-      type: Object as Prop<JSONSchema7>,
+      type: Object as PropType<JSONSchema7>,
       required: true
     },
     generalTranslation: {
-      type: Object,
-      default: () => {}
-    } as PropOptions<IVeoTranslationCollection>,
+      type: Object as PropType<IVeoTranslationCollection>,
+      default: () => ({})
+    },
     customTranslations: {
-      type: Object,
-      default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollection>,
+      type: Object as PropType<IVeoFormSchemaTranslationCollection>,
+      default: () => ({})
+    },
     options: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
     elements: {
-      type: Array as Prop<UISchemaElement[]>,
+      type: Array as PropType<UISchemaElement[]>,
       default: () => []
     },
     value: {
@@ -165,6 +164,7 @@ export default Vue.extend({
       required: true
     }
   },
+  emits: ['update', 'delete', 'update-custom-translation'],
   data() {
     return {
       availableElements: [] as IInputElement[],
@@ -228,7 +228,7 @@ export default Vue.extend({
       this.$emit('update-custom-translation', event);
     }
   }
-});
+};
 </script>
 
 <style lang="scss" scoped>

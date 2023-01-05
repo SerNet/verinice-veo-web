@@ -17,14 +17,13 @@
 -->
 <script lang="ts">
 import { isObject } from 'lodash';
-import Vue from 'vue';
-import { PropType } from 'vue/types/options';
-import { VSkeletonLoader } from 'vuetify/lib';
+import { PropType } from 'vue';
+import VSkeletonLoader from '~/components/vuetifyPolyfill/VSkeletonLoader.vue'; // TODO: import { VSkeletonLoader } from 'vuetify/components'; as soon as vuetify adds it back
 
 import VeoCollapseButton from '~/components/layout/VeoCollapseButton.vue';
 import { IBaseObject } from '~/lib/utils';
 
-export default Vue.extend({
+export default {
   components: {
     VSkeletonLoader
   },
@@ -57,19 +56,19 @@ export default Vue.extend({
       default: 1
     },
     pageWidths: {
-      type: Array as PropType<(String | Number)[]>,
+      type: Array as PropType<(string | number)[]>,
       default: () => []
     },
     pageWidthsLg: {
-      type: Array as PropType<(String | Number)[]>,
+      type: Array as PropType<(string | number)[]>,
       default: () => []
     },
     pageWidthsXl: {
-      type: Array as PropType<(String | Number)[]>,
+      type: Array as PropType<(string | number)[]>,
       default: () => []
     },
     pageTitles: {
-      type: Array as PropType<String[]>,
+      type: Array as PropType<string[]>,
       default: () => []
     },
     unresponsivePageWidths: {
@@ -77,11 +76,12 @@ export default Vue.extend({
       default: false
     }
   },
+  emits: ['page-collapsed'],
   data() {
     return {
       observer: undefined as MutationObserver | undefined,
-      collapsablePages: [] as Boolean[],
-      pagesCollapsedStates: [] as Boolean[],
+      collapsablePages: [] as boolean[],
+      pagesCollapsedStates: [] as boolean[],
       currentPagesCount: 0 as number
     };
   },
@@ -103,7 +103,7 @@ export default Vue.extend({
 
     this.enableKeybinds();
   },
-  destroyed() {
+  unmounted() {
     if (this.observer) {
       this.observer.disconnect();
     }
@@ -116,7 +116,7 @@ export default Vue.extend({
      */
     togglePage(index: number): void {
       // We use Vue.set as vue won't pick up changes if we alter data via this.pagesCollapsedStates[index]
-      Vue.set(this.pagesCollapsedStates, index, !this.pagesCollapsedStates[index]);
+      this.pagesCollapsedStates[index] = !this.pagesCollapsedStates[index];
       this.$emit('page-collapsed', this.pagesCollapsedStates);
     },
     /**
@@ -270,18 +270,18 @@ export default Vue.extend({
             ...(this.$props.loading
               ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'skeleton-title px-4 py-1' })]
               : [
-                  ...(this.$props.title
-                    ? [
-                        h(`h${this.$props.headingLevel}`, {
-                          domProps: {
-                            innerText: this.$props.title
-                          },
-                          class: `d-inline flex-grow-0 text-h${this.$props.headingLevel}`
-                        })
-                      ]
-                    : []),
-                  ...(this.$slots.title ? [this.$slots.title] : [])
-                ]),
+                ...(this.$props.title
+                  ? [
+                    h(`h${this.$props.headingLevel}`, {
+                      domProps: {
+                        innerText: this.$props.title
+                      },
+                      class: `d-inline flex-grow-0 text-h${this.$props.headingLevel}`
+                    })
+                  ]
+                  : []),
+                ...(this.$slots.title ? [this.$slots().title] : [])
+              ]),
             this.$slots.header ? this.$slots.header : []
           ]
         ),
@@ -317,45 +317,45 @@ export default Vue.extend({
                   [
                     ...((index === this.collapsablePages.length - 1 && this.collapsablePages[index]) || this.previousPageIsCollapsed(index)
                       ? [
-                          h(
-                            'div',
-                            {
-                              style: 'width: 16px',
-                              class: 'fill-height'
-                            },
-                            [
-                              h(VeoCollapseButton, {
-                                props: {
-                                  value: this.previousPageIsCollapsed(index),
-                                  right: false,
-                                  elementName: this.previousPageIsCollapsed(index) ? this.pageTitles[index - 1] : this.pageTitles[index],
-                                  index: this.previousPageIsCollapsed(index) ? index - 1 : index
-                                },
-                                on: {
-                                  input: () => this.togglePage(this.previousPageIsCollapsed(index) ? index - 1 : index)
-                                }
-                              })
-                            ]
-                          )
-                        ]
+                        h(
+                          'div',
+                          {
+                            style: 'width: 16px',
+                            class: 'fill-height'
+                          },
+                          [
+                            h(VeoCollapseButton, {
+                              props: {
+                                value: this.previousPageIsCollapsed(index),
+                                right: false,
+                                elementName: this.previousPageIsCollapsed(index) ? this.pageTitles[index - 1] : this.pageTitles[index],
+                                index: this.previousPageIsCollapsed(index) ? index - 1 : index
+                              },
+                              on: {
+                                input: () => this.togglePage(this.previousPageIsCollapsed(index) ? index - 1 : index)
+                              }
+                            })
+                          ]
+                        )
+                      ]
                       : []),
                     slotItem,
                     ...((index === 0 && this.collapsablePages[index]) || this.nextPageIsCollapsed(index)
                       ? [
-                          h('div', { style: 'width: 16px', class: 'fill-height' }, [
-                            h(VeoCollapseButton, {
-                              props: {
-                                value: this.nextPageIsCollapsed(index),
-                                right: true,
-                                elementName: this.nextPageIsCollapsed(index) ? this.pageTitles[index + 1] : this.pageTitles[index],
-                                index: this.nextPageIsCollapsed(index) ? index + 1 : index
-                              },
-                              on: {
-                                input: () => this.togglePage(this.nextPageIsCollapsed(index) ? index + 1 : index)
-                              }
-                            })
-                          ])
-                        ]
+                        h('div', { style: 'width: 16px', class: 'fill-height' }, [
+                          h(VeoCollapseButton, {
+                            props: {
+                              value: this.nextPageIsCollapsed(index),
+                              right: true,
+                              elementName: this.nextPageIsCollapsed(index) ? this.pageTitles[index + 1] : this.pageTitles[index],
+                              index: this.nextPageIsCollapsed(index) ? index + 1 : index
+                            },
+                            on: {
+                              input: () => this.togglePage(this.nextPageIsCollapsed(index) ? index + 1 : index)
+                            }
+                          })
+                        ])
+                      ]
                       : [])
                   ]
                 )
@@ -366,7 +366,7 @@ export default Vue.extend({
       ]
     );
   }
-});
+};
 </script>
 
 <style lang="scss" scoped>

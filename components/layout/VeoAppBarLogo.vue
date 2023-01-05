@@ -31,26 +31,15 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, useContext } from '@nuxtjs/composition-api';
-
-export default defineComponent({
-  props: {
-    size: {
-      type: String,
-      default: 'auto'
-    }
-  },
-  setup(props) {
-    // @ts-ignore
-    const { $vuetify } = useContext();
-
-    const showDesktop = computed(() => props.size !== 'small' && ($vuetify.breakpoint.mdAndUp || props.size === 'large'));
-    const showMobile = computed(() => props.size !== 'large');
-    return {
-      showDesktop,
-      showMobile
-    };
+<script lang="ts" setup>
+const props = defineProps({
+  size: {
+    type: String,
+    default: 'auto'
   }
 });
+
+const { $vuetify } = useNuxtApp();
+const showDesktop = computed(() => props.size !== 'small' && ($vuetify.breakpoint.mdAndUp || props.size === 'large'));
+const showMobile = computed(() => props.size !== 'large');
 </script>

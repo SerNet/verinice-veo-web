@@ -22,7 +22,7 @@
     fixed-footer
     large
     persistent
-    v-on="$listeners"
+    @update:model-value="$emit('model-value', $event)"
   >
     <template #default>
       <div class="d-flex justify-space-between align-center px-1 pb-2">
@@ -169,14 +169,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, useRoute, Ref, ref, watch, useAsync, useContext } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
 import { mdiMenu, mdiPlus, mdiTranslate, mdiTrashCanOutline } from '@mdi/js';
 import Draggable from 'vuedraggable';
 import { upperFirst, cloneDeep } from 'lodash';
 
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { CHART_COLORS, separateUUIDParam } from '~/lib/utils';
+import { Ref } from 'vue';
+import { useFetchDomain } from '~~/composables/api/domains';
 
 export default defineComponent({
   components: {
@@ -192,17 +192,18 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['schema-updated', 'input', 'model-value'],
   setup(props, { emit }) {
     const { t } = useI18n();
     const route = useRoute();
-    const { $api } = useContext();
 
     const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined = inject('objectSchemaHelper');
 
     // display stuff
-    const domain = useAsync(() => $api.domain.fetch(props.domainId));
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
+    const { data: domain} = useFetchDomain(fetchDomainQueryParameters);
 
-    const displayLanguage: Ref<string> | undefined = ref((inject('displayLanguage') as Ref<string>).value);
+    const displayLanguage = inject<Ref<string>>('displayLanguage');
     // We can't use a computed here, as changes sadly won't get picked up.
     const languages = ref((objectSchemaHelper?.value?.getLanguages() || []).map((key) => ({ text: t(key), value: key })));
 
@@ -226,7 +227,7 @@ export default defineComponent({
 
     function updateForm() {
       if (objectSchemaHelper?.value) {
-        const oshSubTypes = cloneDeep(objectSchemaHelper.value.getSubTypes(separateUUIDParam(route.value.params.domain).id));
+        const oshSubTypes = cloneDeep(objectSchemaHelper.value.getSubTypes(separateUUIDParam(route.params.domain as string).id));
         subTypes.value = oshSubTypes.map((subType) => ({ subType: subType.subType, status: subType.status.map((_status) => ({ key: _status })) }));
         subTypeForms.value = Array(subTypes.value.length).fill(true);
         newStatusForms.value = Array(subTypes.value.length).fill(true);

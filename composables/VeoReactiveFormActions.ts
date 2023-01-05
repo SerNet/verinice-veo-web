@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, useRoute } from '@nuxtjs/composition-api';
 import { trim } from 'lodash';
 import vjp from 'vue-json-pointer';
 
@@ -25,20 +24,20 @@ import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 export function useVeoReactiveFormActions() {
   const route = useRoute();
 
-  const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+  const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
   function defaultReactiveFormActions(): IVeoFormsReactiveFormActions {
     return domainId.value
       ? {
-          [`#/properties/domains/properties/${domainId.value}/properties/subType`]: [
-            (newValue, _oldValue, newObject, _oldObject) => {
-              if (domainId.value && !!newValue) {
-                delete newObject.domains[domainId.value].status;
-              }
-              return newObject;
+        [`#/properties/domains/properties/${domainId.value}/properties/subType`]: [
+          (newValue, _oldValue, newObject, _oldObject) => {
+            if (domainId.value && !!newValue) {
+              delete newObject.domains[domainId.value].status;
             }
-          ]
-        }
+            return newObject;
+          }
+        ]
+      }
       : {};
   }
 

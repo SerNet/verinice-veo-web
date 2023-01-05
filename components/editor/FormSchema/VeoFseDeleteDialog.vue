@@ -17,8 +17,9 @@
 -->
 <template>
   <VeoDialog
-    v-model="dialog.value"
+    :model-value="value"
     :headline="t('deleteControlHeadline')"
+    @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
       {{ t('deleteControlConfirmation') }}
@@ -41,57 +42,17 @@
     </template>
   </VeoDialog>
 </template>
-<script lang="ts">
-import { defineComponent, ref, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
-interface IProps {
-  value: boolean;
-}
-
-export default defineComponent<IProps>({
-  props: {
-    value: {
-      type: Boolean,
-      required: true
-    }
-  },
-  setup(props, context) {
-    const { t } = useI18n();
-
-    /**
-     * Common dialog stuff (opening and closing)
-     */
-    const dialog = ref({ value: props.value });
-
-    watch(
-      () => props.value,
-      (val: boolean) => {
-        dialog.value.value = val;
-      }
-    );
-
-    watch(
-      () => dialog.value.value,
-      (val: boolean) => {
-        if (!val) {
-          context.emit('input', val);
-        }
-      }
-    );
-
-    watch(
-      () => dialog.value.value,
-      (val: boolean) => {
-        if (!val) {
-          context.emit('input', val);
-        }
-      }
-    );
-
-    return { dialog, t };
+<script lang="ts" setup>
+defineProps({
+  value: {
+    type: Boolean,
+    default: false
   }
 });
+
+defineEmits(['delete', 'input', 'update:model-value']);
+
+const { t } = useI18n();
 </script>
 
 <i18n>

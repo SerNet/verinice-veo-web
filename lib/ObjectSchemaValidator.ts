@@ -125,7 +125,7 @@ export default class ObjectSchemaValidator {
     return { valid: errors.length === 0, errors, warnings: [] };
   }
 
-  public validate(schema: any, context: string = 'schema'): VeoSchemaValidatorValidationResult {
+  public validate(schema: any, context = 'schema'): VeoSchemaValidatorValidationResult {
     if (!schema.title) {
       this.errors.push({ code: 'E_SCHEMA_PROPERTY_MISSING', message: `The schema "${context}" is missing the property "title"` });
     }

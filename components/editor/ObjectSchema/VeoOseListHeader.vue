@@ -24,7 +24,7 @@
       <v-list-item-title class="body-1 font-weight-bold d-flex align-center">
         {{ item.title }}
       </v-list-item-title>
-      <v-list-item-subtitle v-text="tc('attributecount', item.attributes.length || 0)" />
+      <v-list-item-subtitle v-text="t('attributecount', item.attributes.length || 0)" />
     </v-list-item-content>
     <v-list-item-action class="ml-3">
       <v-chip
@@ -66,38 +66,31 @@
     </v-list-item-action>
   </v-list-item>
 </template>
-<script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+<script lang="ts" setup>
 import { upperFirst } from 'lodash';
+import { PropType } from 'vue';
 
 import { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2';
 import { IInputType } from '~/types/VeoEditor';
 
-interface IProps {
-  item: IVeoOSHCustomAspect | IVeoOSHCustomLink;
-  styling: IInputType;
-}
-
-export default defineComponent<IProps>({
-  props: {
-    item: { type: Object, required: true },
-    styling: { type: Object, default: () => {} },
-    translate: {
-      type: Boolean,
-      default: false
-    }
+defineProps({
+  item: {
+    type: Object as PropType<IVeoOSHCustomAspect | IVeoOSHCustomLink>,
+    required: true
   },
-  setup() {
-    const { t, tc } = useI18n();
-
-    return {
-      upperFirst,
-      t,
-      tc
-    };
+  styling: {
+    type: Object as PropType<IInputType>,
+    default: () => ({})
+  },
+  translate: {
+    type: Boolean,
+    default: false
   }
 });
+
+defineEmits(['delete-item', 'edit-item']);
+  
+const { t } = useI18n();
 </script>
 
 <i18n>

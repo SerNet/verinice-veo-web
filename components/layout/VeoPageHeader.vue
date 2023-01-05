@@ -16,8 +16,8 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { ComputedRef, defineComponent, h, PropOptions, computed } from '@nuxtjs/composition-api';
-import { VSkeletonLoader } from 'vuetify/lib';
+import { ComputedRef, PropType } from 'vue';
+import VSkeletonLoader from '~/components/vuetifyPolyfill/VSkeletonLoader.vue'; // TODO: import { VSkeletonLoader } from 'vuetify/components'; as soon as vuetify adds it back
 
 export enum VeoPageHeaderAlignment {
   LEFT,
@@ -47,9 +47,9 @@ export default defineComponent({
       default: undefined
     },
     titlebarAlignment: {
-      type: Number,
+      type: Number as PropType<VeoPageHeaderAlignment>,
       default: VeoPageHeaderAlignment.LEFT
-    } as PropOptions<VeoPageHeaderAlignment>,
+    },
     color: {
       type: String,
       default: undefined
@@ -65,12 +65,12 @@ export default defineComponent({
       h('div', { style: { display: 'contents' } }, [
         ...(!!props.title || (!!slots.title && !!slots.title())
           ? [
-              h('div', { class: 'd-flex flex-row flex-wrap veo-page__title pt-4', style: { ...titlebarAlignment.value, 'background-color': props.color } }, [
-                ...(props.loading
-                  ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'skeleton-title' })]
-                  : [h(`h${props.headingLevel}`, { class: `d-inline flex-grow-0 text-h${props.headingLevel}` }, props.title), ...(slots.title ? [slots.title()] : [])])
-              ])
-            ]
+            h('div', { class: 'd-flex flex-row flex-wrap veo-page__title pt-4', style: { ...titlebarAlignment.value, 'background-color': props.color } }, [
+              ...(props.loading
+                ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'skeleton-title' })]
+                : [h(`h${props.headingLevel}`, { class: `d-inline flex-grow-0 text-h${props.headingLevel}` }, props.title), ...(slots.title ? [slots.title()] : [])])
+            ])
+          ]
           : []),
         ...(slots.header
           ? [h('div', { class: ['veo-page__header', ...(props.stickyHeader ? ['veo-page__header--sticky'] : [])], style: { 'background-color': props.color } }, [slots.header()])]
