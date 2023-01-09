@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPageWrapper
+  <LayoutPageWrapper
     :title="title"
     title-class="d-flex align-center"
     collapsable-left
@@ -27,21 +27,21 @@
       #header
     >
       <v-tooltip bottom>
-        <template #activator="{ on }">
+        <template #activator="{ props }">
           <a
             ref="downloadButton"
             href="#"
             class="text-decoration-none"
             style="vertical-align: bottom"
+            v-bind="props"
             @click="downloadSchema()"
-            v-on="on"
           >
             <v-btn
               icon
               large
               color="primary"
             >
-              <v-icon>mdi-download</v-icon>
+              <!--<v-icon :icon="`mdiSvg:${mdiDownload}`" />-->
             </v-btn>
           </a>
         </template>
@@ -50,15 +50,15 @@
         </template>
       </v-tooltip>
       <v-tooltip bottom>
-        <template #activator="{ on }">
+        <template #activator="{ props }">
           <v-btn
             icon
             large
             color="primary"
+            v-bind="props"
             @click="codeEditorVisible = true"
-            v-on="on"
           >
-            <v-icon>mdi-code-tags</v-icon>
+            <!--<v-icon :icon="`mdiSvg:${mdiCodeTags}`" />-->
           </v-btn>
         </template>
         <template #default>
@@ -66,17 +66,17 @@
         </template>
       </v-tooltip>
       <v-tooltip bottom>
-        <template #activator="{ on }">
+        <template #activator="{ props }">
           <v-btn
             v-if="!schemaIsValid.valid"
             icon
             large
             color="warning"
             class="ml-2"
+            v-bind="props"
             @click="errorDialogVisible = !errorDialogVisible"
-            v-on="on"
           >
-            <v-icon>mdi-alert-circle-outline</v-icon>
+            <!--<v-icon :icon="`mdiSvg:${mdiAlertCircleOutline}`" />-->
           </v-btn>
         </template>
         <template #default>
@@ -84,15 +84,15 @@
         </template>
       </v-tooltip>
       <v-tooltip bottom>
-        <template #activator="{ on }">
+        <template #activator="{ props }">
           <v-btn
             icon
             large
             color="primary"
+            v-bind="props"
             @click="onClickTranslationBtn"
-            v-on="on"
           >
-            <v-icon>mdi-translate</v-icon>
+            <!--<v-icon :icon="`mdiSvg:${mdiTranslate}`" />-->
           </v-btn>
         </template>
         <template #default>
@@ -100,15 +100,15 @@
         </template>
       </v-tooltip>
       <v-tooltip bottom>
-        <template #activator="{ on }">
+        <template #activator="{ props }">
           <v-btn
             icon
             large
             color="primary"
+            v-bind="props"
             @click="detailDialogVisible = !detailDialogVisible"
-            v-on="on"
           >
-            <v-icon>mdi-wrench</v-icon>
+            <!--<v-icon :icon="`mdiSvg:${mdiWrench}`" />-->
           </v-btn>
         </template>
         <template #default>
@@ -116,7 +116,7 @@
         </template>
       </v-tooltip>
       <v-tooltip bottom>
-        <template #activator="{on}">
+        <template #activator="{ props }">
           <v-btn
             icon
             large
@@ -124,9 +124,9 @@
             :to="HELP_ROUTE"
             class="help-button"
             color="primary"
-            v-on="on"
+            v-bind="props"
           >
-            <v-icon>mdi-help-circle-outline</v-icon>
+            <!--<v-icon :icon="`mdiSvg:${mdiHelpCircleOutline}`" />-->
           </v-btn>
         </template>
         <template #default>
@@ -134,8 +134,8 @@
         </template>
       </v-tooltip>
       <v-tooltip bottom>
-        <template #activator="{on}">
-          <div v-on="on">
+        <template #activator="{ props }">
+          <div v-bind="props">
             <v-btn
               icon
               large
@@ -143,7 +143,7 @@
               :disabled="ability.cannot('manage', 'editors')"
               @click="save"
             >
-              <v-icon>mdi-content-save</v-icon>
+              <!--<v-icon :icon="`mdiSvg:${mdiContentSave}`" />-->
             </v-btn>
           </div>
         </template>
@@ -157,7 +157,7 @@
       v-if="formSchema && objectSchema"
       #default
     >
-      <VeoPage
+      <BasePage
         sticky-header
       >
         <template #header>
@@ -172,7 +172,7 @@
             clearable
             hide-details
             filled
-            prepend-inner-icon="mdi-magnify"
+            :prepend-inner-icon="`mdiSvg:${mdiMagnify}`"
             :label="t('search')"
           />
         </template>
@@ -184,11 +184,11 @@
             @control-items="updateControlItems"
           />
         </template>
-      </VeoPage>
-      <VeoPage
+      </BasePage>
+      <BasePage
         heading-level="3"
         :title="t('usedControls')"
-        :titlebar-alignment="VeoPageHeaderAlignment.CENTER"
+        :titlebar-alignment="PageHeaderAlignment.CENTER"
       >
         <template
           v-if="schemaIsValid.valid"
@@ -216,12 +216,11 @@
               cols="auto"
               style="flex-grow: 0"
             >
-              <v-icon
+              <!--<v-icon
                 style="font-size: 8rem; opacity: 0.5"
                 color="primary"
-              >
-                mdi-information-outline
-              </v-icon>
+                :icon="`mdiSvg:${mdiInformationOutline}`"
+              />-->
             </v-col>
             <v-col
               cols="auto"
@@ -233,13 +232,13 @@
             </v-col>
           </v-row>
         </template>
-      </VeoPage>
-      <VeoPage
+      </BasePage>
+      <BasePage
         v-if="!vuetify.breakpoint.xs"
         height="100%"
         heading-level="3"
         :title="t('preview')"
-        :titlebar-alignment="VeoPageHeaderAlignment.CENTER"
+        :titlebar-alignment="PageHeaderAlignment.CENTER"
       >
         <template
           v-if="schemaIsValid.valid"
@@ -263,12 +262,11 @@
               cols="auto"
               style="flex-grow: 0"
             >
-              <v-icon
+              <!--<v-icon
                 style="font-size: 8rem; opacity: 0.5"
                 color="primary"
-              >
-                mdi-information-outline
-              </v-icon>
+                :icon="`mdiSvg:${mdiInformationOutline}`"
+              />-->
             </v-col>
             <v-col
               cols="auto"
@@ -280,7 +278,7 @@
             </v-col>
           </v-row>
         </template>
-      </VeoPage>
+      </BasePage>
     </template>
     <template #helpers>
       <VeoFseWizardDialog
@@ -303,7 +301,7 @@
       />
       <!-- Important: translationDialogVisible should be in v-if to only run code in the dialog when it is open  -->
       <VeoFseTranslationDialog
-        v-if="!$fetchState.pending && translationDialogVisible && formSchema && formSchema.translation"
+        v-if="!translationDialogVisible && formSchema && formSchema.translation"
         v-model="translationDialogVisible"
         v-model:current-display-language="language"
         :translations="formSchema.translation"
@@ -325,14 +323,14 @@
         @update-sorting="updateSorting"
       />
     </template>
-  </VeoPageWrapper>
+  </LayoutPageWrapper>
 </template>
 
 <script lang="ts">
 import vjp from 'vue-json-pointer';
-
 import { Ref } from 'vue';
 import { JsonPointer } from 'json-ptr';
+import { mdiAlertCircleOutline, mdiCodeTags, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
 
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
 import {
@@ -346,13 +344,13 @@ import {
   IVeoFormSchemaMeta
 } from '~/types/VeoTypes';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
-import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
+import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useCreateForm, useUpdateForm } from '~/composables/api/forms';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
-import { useFetchDomain } from '~~/composables/api/domains';
+import { useFetchDomain } from '~/composables/api/domains';
 
 export default defineComponent({
   setup() {
@@ -641,12 +639,21 @@ export default defineComponent({
       setFormTranslation,
       setFormName,
       onFixRequest,
-      VeoPageHeaderAlignment,
+      PageHeaderAlignment,
       save,
       translations,
       onWizardFinished,
       vuetify,
 
+      mdiAlertCircleOutline,
+      mdiCodeTags,
+      mdiContentSave,
+      mdiDownload,
+      mdiHelpCircleOutline,
+      mdiInformationOutline,
+      mdiMagnify,
+      mdiTranslate,
+      mdiWrench,
       t,
       HELP_ROUTE
     };

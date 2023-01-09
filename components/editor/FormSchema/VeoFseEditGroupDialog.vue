@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     :key="formSchemaPointer"
     :value="value"
     :headline="t('editGroupHeadline')"
@@ -135,7 +135,7 @@
         {{ t('global.button.save') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 <script lang="ts">
 import { PropType } from 'vue';
@@ -336,7 +336,3 @@ export default defineComponent({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-</style>

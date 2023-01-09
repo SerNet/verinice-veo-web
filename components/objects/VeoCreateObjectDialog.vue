@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     :headline="headline"
     x-large
     :persistent="isFormDirty"
@@ -53,7 +53,7 @@
         {{ t('global.button.save') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 
 <script lang="ts">

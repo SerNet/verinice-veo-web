@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     v-model="dialog"
     :headline="headline"
     large
@@ -31,7 +31,7 @@
         <h3 class="text-h3">
           {{ upperFirst($t('common').toString()) }}
         </h3>
-        <VeoCard>
+        <BaseCard>
           <v-card-text>
             <v-row>
               <v-col
@@ -73,7 +73,7 @@
               </v-col>
             </v-row>
           </v-card-text>
-        </VeoCard>
+        </BaseCard>
         <template v-if="dialogMode === 'edit'">
           <h3 class="text-h3 mt-6">
             {{ upperFirst($t('attributes').toString()) }} ({{ form.data.attributes.length }})
@@ -96,7 +96,7 @@
             v-if="duplicates.length > 0"
             type="error"
             class="mb-4 mt-6"
-            border="start"
+            start
             colored-border
           >
             <span>{{ $t('duplicateAttributes') }}:</span>
@@ -113,9 +113,10 @@
             text
             @click="addAttribute()"
           >
-            <v-icon left>
-              mdi-plus
-            </v-icon>
+            <!--<v-icon
+              start
+              :icon="`mdiSvg:${mdiPlus}`"
+            />-->
             {{ $t('addAttribute') }}
           </v-btn>
         </template>
@@ -159,11 +160,12 @@
         </v-btn>
       </template>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 <script lang="ts">
 import { PropType, Ref } from 'vue';
 import { cloneDeep, trim, upperFirst } from 'lodash';
+import { mdiPlus } from '@mdi/js';
 
 import { IVeoSchemaEndpoints } from '~/plugins/api/schema';
 import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
@@ -226,7 +228,8 @@ export default {
       duplicates: [] as string[],
       dialogMode: 'create' as 'create' | 'edit',
       // Not computed, as changing the aspect/link title would make this undefined -> we want more control
-      editedProperty: undefined as undefined | IVeoOSHCustomAspect | IVeoOSHCustomLink
+      editedProperty: undefined as undefined | IVeoOSHCustomAspect | IVeoOSHCustomLink,
+      mdiPlus
     };
   },
   async fetch() {

@@ -16,13 +16,13 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPageWrapper
+  <LayoutPageWrapper
     collapsable-right
     :page-widths="pageWidths"
     @page-collapsed="onPageCollapsed"
   >
     <template #default>
-      <VeoPage
+      <BasePage
         v-if="objectSchemaHelper"
         sticky-header
       >
@@ -32,21 +32,21 @@
               {{ t('editor.objectschema.headline') }}
             </h1>
             <v-tooltip bottom>
-              <template #activator="{on}">
+              <template #activator="{ props }">
                 <a
                   ref="downloadButton"
                   href="#"
                   class="text-decoration-none"
                   style="vertical-align: bottom;"
+                  v-bind="props"
                   @click="downloadSchema()"
-                  v-on="on"
                 >
                   <v-btn
                     icon
                     large
                     color="primary"
                   >
-                    <v-icon v-text="mdiDownload" />
+                    <!--<v-icon :icon="`mdiSvg:${mdiDownload}`" />-->
                   </v-btn>
                 </a>
               </template>
@@ -55,17 +55,17 @@
               </template>
             </v-tooltip>
             <v-tooltip bottom>
-              <template #activator="{on}">
+              <template #activator="{ props }">
                 <v-btn
                   v-if="schemaIsValid.warnings.length > 0"
                   icon
                   large
                   color="warning"
                   class="ml-2"
+                  v-bind="props"
                   @click="errorDialogVisible = !errorDialogVisible"
-                  v-on="on"
                 >
-                  <v-icon v-text="mdiAlertCircleOutline" />
+                  <!--<v-icon :icon="`mdiSvg:${mdiAlertCircleOutline}`" />-->
                 </v-btn>
               </template>
               <template #default>
@@ -73,16 +73,16 @@
               </template>
             </v-tooltip>
             <v-tooltip bottom>
-              <template #activator="{on}">
+              <template #activator="{ props }">
                 <v-btn
                   icon
                   large
                   class="translate-button"
                   color="primary"
+                  v-bind="props"
                   @click="translationDialogVisible = true"
-                  v-on="on"
                 >
-                  <v-icon v-text="mdiTranslate" />
+                  <!--<v-icon :icon="`mdiSvg:${mdiTranslate}`" />-->
                 </v-btn>
               </template>
               <template #default>
@@ -90,15 +90,15 @@
               </template>
             </v-tooltip>
             <v-tooltip bottom>
-              <template #activator="{ on }">
+              <template #activator="{ props }">
                 <v-btn
                   icon
                   large
                   color="primary"
+                  v-bind="props"
                   @click="detailsDialogVisible = !detailsDialogVisible"
-                  v-on="on"
                 >
-                  <v-icon v-text="mdiWrench" />
+                  <!--<v-icon :icon="`mdiSvg:${mdiWrench}`" />-->
                 </v-btn>
               </template>
               <template #default>
@@ -106,7 +106,7 @@
               </template>
             </v-tooltip>
             <v-tooltip bottom>
-              <template #activator="{on}">
+              <template #activator="{ props }">
                 <v-btn
                   icon
                   large
@@ -114,9 +114,9 @@
                   :to="HELP_ROUTE"
                   class="help-button"
                   color="primary"
-                  v-on="on"
+                  v-bind="props"
                 >
-                  <v-icon v-text="mdiHelpCircleOutline" />
+                  <!--<v-icon :icon="`mdiSvg:${mdiHelpCircleOutline}`" />-->
                 </v-btn>
               </template>
               <template #default>
@@ -127,8 +127,8 @@
               v-if="$route.query.os"
               bottom
             >
-              <template #activator="{on}">
-                <div v-on="on">
+              <template #activator="{ props }">
+                <div v-bind="props">
                   <v-btn
                     :disabled="!schemaIsValid.valid || ability.cannot('manage', 'editors')"
                     icon
@@ -136,7 +136,7 @@
                     color="primary"
                     @click="saveSchema"
                   >
-                    <v-icon v-text="mdiContentSave" />
+                    <!--<v-icon :icon="`mdiSvg:${mdiContentSave}`" />-->
                   </v-btn>
                 </div>
               </template>
@@ -194,7 +194,7 @@
                 flat
                 filled
                 hide-details
-                :prepend-inner-icon="mdiMagnify"
+                :prepend-inner-icon="`mdiSvg:${mdiMagnify}`"
                 :label="t('search')"
               />
             </v-col>
@@ -226,11 +226,11 @@
               cols="auto"
               style="flex-grow: 0"
             >
-              <v-icon
+              <!--<v-icon
                 style="font-size: 8rem; opacity: 0.5;"
                 color="primary"
-                v-text="mdiInformationOutline"
-              />
+                :icon="`mdiSvg:${mdiInformationOutline}`"
+              />-->
             </v-col>
             <v-col
               cols="auto"
@@ -253,8 +253,8 @@
             <v-spacer />
           </v-row>
         </template>
-      </VeoPage>
-      <VeoPage
+      </BasePage>
+      <BasePage
         v-if="objectSchemaHelper && !vuetify.breakpoint.xs"
         height="100%"
         content-class="ose__code-editor"
@@ -263,7 +263,7 @@
           v-model="code"
           @schema-updated="updateSchema"
         />
-      </VeoPage>
+      </BasePage>
     </template>
     <template #helpers>
       <VeoOseWizardDialog
@@ -287,7 +287,7 @@
         @schema-updated="updateCode"
       />
     </template>
-  </VeoPageWrapper>
+  </LayoutPageWrapper>
 </template>
 
 <script lang="ts">

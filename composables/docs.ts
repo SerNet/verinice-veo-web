@@ -21,14 +21,11 @@ import { cloneDeep } from 'lodash';
 
 import { onContentUpdate } from './utils';
 
-export interface DocPage {
-  title: string;
-  position: number;
-  lang: string;
+export interface DocMetaInfo {
   isDir?: boolean;
 }
 
-export type DocPageFetchReturn = ParsedContent & DocPage;
+export type DocPageFetchReturn = ParsedContent & DocMetaInfo;
 
 type ContentOptions = { path?: string; locale?: string; localeSeparator?: string; fallbackLocale?: string; where?: object };
 const getOptions = (params: ContentOptions, _locale: string) => {
@@ -37,8 +34,6 @@ const getOptions = (params: ContentOptions, _locale: string) => {
   const locale = params.locale ?? _locale;
   return { ...params, fallbackLocale, localeSeparator, locale };
 };
-
-const ensureArray = <T>(result: T[] | T): T[] => Array.isArray(result) ? result : [result];
 
 /**
  * Why a special function only to sort? Docs don't only get sorted by their level or their position alone, they always get sorted relative to their parents.
@@ -77,73 +72,80 @@ const sortDocs = (docs: (readonly [string, DocPageFetchReturn])[]) => {
   });
 };
 
-export const useDoc = async (params: { path: string; locale?: string; localeSeparator?: string; fallbackLocale?: string }) => {
+/**
+ * Load a single doc, based on path. Tries to fetch documents in falback locale if the localized document doesn't exist.
+ * 
+ * @param options Parameters containing the path and optionally locale, localeSeperator and fallbackLocale to overwrite defaults.
+ * @returns The fetched page or undefined if not found.
+ */
+export const useDoc = (options: { path: string; locale?: string; localeSeparator?: string; fallbackLocale?: string }) => {
   const i18n = useI18n();
-  const options = computed(() => getOptions(params, i18n.locale.value));
+  const mergedOptions = computed(() => getOptions(options, i18n.locale.value));
 
-  const fetchDoc = async () => {
-    const fetchResult = await queryContent({ deep: true })
-      .where({
-        $or: [
-          { path: options.value.path + options.value.localeSeparator + options.value.locale },
-          { path: options.value.path + options.value.localeSeparator + options.value.fallbackLocale },
-          { path: options.value.path + '/index' + options.value.localeSeparator + options.value.locale },
-          { path: options.value.path + '/index' + options.value.localeSeparator + options.value.fallbackLocale },
-          { path: options.value.path }
-        ],
-        extension: '.md'
-      })
-      .limit(1)
-      .find();
+  const doc = ref<ParsedContent | undefined>();
 
-    return ensureArray(fetchResult).shift();
-  };
+  const fetchDoc = async () => await queryContent({ deep: true })
+    .where({
+      $or: [
+        { path: mergedOptions.value.path + mergedOptions.value.localeSeparator + mergedOptions.value.locale },
+        { path: mergedOptions.value.path + mergedOptions.value.localeSeparator + mergedOptions.value.fallbackLocale },
+        { path: mergedOptions.value.path + '/index' + mergedOptions.value.localeSeparator + mergedOptions.value.locale },
+        { path: mergedOptions.value.path + '/index' + mergedOptions.value.localeSeparator + mergedOptions.value.fallbackLocale },
+        { path: mergedOptions.value.path }
+      ],
+      extension: '.md'
+    })
+    .findOne();
 
-  const doc = ref(await fetchDoc());
-
-  const updateDocs = async () => {
-    doc.value = await fetchDoc();
-  };
-
+  // Update doc as soon as content or the options change.
   watch(
-    () => options.value,
-    () => {
-      updateDocs();
+    () => mergedOptions.value,
+    async () => {
+      doc.value = await fetchDoc();
     },
-    { deep: true }
+    { deep: true, immediate: true }
   );
-
-  onContentUpdate(updateDocs);
+  onContentUpdate(async () => {
+    doc.value = await fetchDoc();
+  });
 
   return doc;
 };
 
-export const useDocs = async<T extends DocPageFetchReturn = DocPageFetchReturn>(params: {
+/**
+ * Fetches a document and all child documents. Returns them in an array, NOT a tree. To return them in a tree, use useDocTree
+ * 
+ * @param options Parameters to overwrite default behaviour, such as root directory, locale, localeSeparator, fallbackLocale and createDirs
+ */
+export const useDocs = (options: {
   root?: string;
   locale?: string;
   localeSeparator?: string;
   fallbackLocale?: string;
   createDirs?: boolean;
-  buildItem?: (item: DocPageFetchReturn) => T;
+  buildItem?: (item: DocPageFetchReturn) => DocPageFetchReturn;
 }) => {
   const {
     i18n: { locales }
   } = useNuxtApp();
   const i18n = useI18n();
 
-  const options = computed(() => getOptions(params, i18n.locale.value));
-  const normalizePath = (path: string) => (path.split(options.value.localeSeparator).shift() || path).replace(/\/index(?:\.\w+)?$/i, '') || '/';
-  const buildItem = params.buildItem ?? ((v) => v);
+  const mergedOptions = computed(() => getOptions(options, i18n.locale.value));
+  const normalizePath = (path: string) => (path.split(mergedOptions.value.localeSeparator).shift() || path).replace(/\/index(?:\.\w+)?$/i, '') || '/';
+  const buildItem = options.buildItem ?? ((v) => v);
+
+  const docs = ref<DocPageFetchReturn[] | undefined>();
+
   const fetchDocs = async () => {
     // The nuxt content queries are using lokiJS, however they aren't properly implemented and most operators aren't working. To circumvent undefinedIn (checking for a key or its value), we use nin to only check for the value
     // In addition, lang: { $eq: undefined } or lang: undefined seems to unset the filter, so we have to take all possible other values expect the current language and undefined and check if the page does have one of those
-    const fetchResult = await (params.root ? queryContent(params.root, { deep: true }) : queryContent({ deep: true }))
-      .where({ lang: { $nin: (locales as LocaleObject[]).filter((_locale: any) => _locale.code !== options.value.locale).map((_locale: any) => _locale.code) }, extension: '.md' })
-      .sort({  })
+    const fetchResult = await (options.root ? queryContent(options.root) : queryContent())
+      .where({ lang: { $nin: (locales as LocaleObject[]).filter((_locale: any) => _locale.code !== mergedOptions.value.locale).map((_locale: any) => _locale.code) }, extension: '.md' })
+      .sort({ path: 1 })
       .find();
 
     const docs = sortDocs(
-      ensureArray(fetchResult).map((item) => {
+      fetchResult.map((item) => {
         const path = normalizePath(item.path); // Remove language extension from path
         const segments = path.split('/');
         const dir = path === item.dir ? segments.slice(0, -1).join('/') || '/' : item.dir; // Correct dir
@@ -155,7 +157,7 @@ export const useDocs = async<T extends DocPageFetchReturn = DocPageFetchReturn>(
     const list = Array.from(new Map(docs).values());
     // Completing the list of files
     const fileMap: Record<string, ReturnType<typeof buildItem>> = {};
-    const returnVal = params.createDirs
+    const returnVal = options.createDirs
       ? list.flatMap((item) => {
         const path = item.path;
         fileMap[path] = item;
@@ -177,17 +179,16 @@ export const useDocs = async<T extends DocPageFetchReturn = DocPageFetchReturn>(
     return returnVal;
   };
 
-  const docs = ref(await fetchDocs());
-
+  // Update docs as soon as content or the options change.
   onContentUpdate(async () => {
     docs.value = await fetchDocs();
   });
-
   watch(
-    () => i18n.locale.value,
+    () => mergedOptions.value,
     async () => {
       docs.value = await fetchDocs();
-    }
+    },
+    { deep: true, immediate: true }
   );
 
   return docs;

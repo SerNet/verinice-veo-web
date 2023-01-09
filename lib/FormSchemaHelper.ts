@@ -18,6 +18,7 @@
 import FormSchemaValidator from './FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
 import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaTranslationCollection, IVeoFormSchemaItemRule, IVeoObjectSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { mdiEyeOffOutline, mdiEyeOutline } from '@mdi/js';
 
 export function generateSchema(
   name: IVeoFormSchemaMeta['name'],
@@ -74,8 +75,8 @@ export function deleteElementCustomTranslation(
 }
 
 export const ruleEffectIcons = {
-  SHOW: 'mdi-eye-outline',
-  HIDE: 'mdi-eye-off-outline'
+  SHOW: `mdiSvg:${mdiEyeOutline}`,
+  HIDE: `mdiSvg:${mdiEyeOffOutline}`
 };
 
 export function getRuleEffectIcons(ruleEffect: IVeoFormSchemaItemRule['effect']) {

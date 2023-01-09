@@ -39,10 +39,10 @@
           v-if="item.descriptionShort"
           bottom
         >
-          <template #activator="{ on }">
+          <template #activator="{ props }">
             <span
               class="veo-report-list__description--description"
-              v-on="on"
+              v-bind="props"
             >{{ item.descriptionShort }}</span>
           </template>
           <template #default>

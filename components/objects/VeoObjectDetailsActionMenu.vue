@@ -23,18 +23,15 @@
       offset-y
       :items="visibleItems"
     >
-      <template #activator="{ on }">
+      <template #activator="{ props }">
         <v-btn
-          v-bind="$attrs"
+          v-bind="mergeProps($attrs, props)"
           :disabled="!visibleItems.length || $props.disabled"
           fab
           text
           small
-          v-on="on"
         >
-          <v-icon>
-            {{ mdiDotsVertical }}
-          </v-icon>
+          <!--<v-icon :icon="`mdiSvg:${mdiDotsVertical}`" />-->
         </v-btn>
       </template>
     </VeoNestedMenu>
@@ -56,14 +53,14 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
+import { mergeProps, PropType } from 'vue';
 import { upperFirst } from 'lodash';
 import { mdiDotsVertical } from '@mdi/js';
 
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
-import { INestedMenuEntries } from '~/components/layout/VeoNestedMenu.vue';
+import { INestedMenuEntries } from '~/components/layout/NestedMenu.vue';
 
 export default defineComponent({
   name: 'VeoObjectDetailsActionMenu',
@@ -136,6 +133,7 @@ export default defineComponent({
       linkObjectDialogVisible,
       onCreateObjectSuccess,
 
+      mergeProps,
       t,
       upperFirst,
       visibleItems,

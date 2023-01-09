@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     :value="value"
     v-bind="$attrs"
     :headline="t('unlinkObject')"
@@ -42,7 +42,7 @@
         {{ t('unlinkObject') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 
 <script lang="ts" setup>

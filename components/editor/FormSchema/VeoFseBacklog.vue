@@ -233,7 +233,7 @@
                 >
                   <VeoFseListItem
                     :title="widget.name[locale]|| Object.values(widget.name)[0]"
-                    :styling="{ icon: 'mdi-auto-fix', color: 'grey darken-4', name: upperFirst(t('widget').toString()) }"
+                    :styling="{ icon: `mdiSvg:${mdiAutoFix}`, color: 'grey darken-4', name: upperFirst(t('widget').toString()) }"
                   />
                 </v-sheet>
               </Draggable>
@@ -250,6 +250,7 @@ import { JsonPointer } from 'json-ptr';
 import Draggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
 import { pick, upperFirst } from 'lodash';
+import { mdiAutoFix, mdiFormatText, mdiFormSelect } from '@mdi/js';
 
 import { INPUT_TYPES } from '~/types/VeoEditor';
 import { IVeoFormSchema, IVeoObjectSchema } from '~/types/VeoTypes';
@@ -314,7 +315,7 @@ export default defineComponent({
         elements: [],
         description: {
           title: 'group',
-          icon: 'mdi-form-select',
+          icon: `mdiSvg:${mdiFormSelect}`,
           name: 'layout',
           color: 'grey darken-2'
         }
@@ -323,7 +324,7 @@ export default defineComponent({
         type: 'Label',
         description: {
           title: 'text',
-          icon: 'mdi-format-text',
+          icon: `mdiSvg:${mdiFormatText}`,
           name: 'label',
           color: 'grey darken-2'
         }
@@ -507,6 +508,7 @@ export default defineComponent({
       onCloneWidget,
       typeMap,
 
+      mdiAutoFix,
       t,
       upperFirst
     };
@@ -515,7 +517,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-expansion-panel-content::v-deep .v-expansion-panel-content__wrap {
+.v-expansion-panel-content:deep(.v-expansion-panel-content__wrap) {
   padding: 0 0 16px !important;
 }
 </style>

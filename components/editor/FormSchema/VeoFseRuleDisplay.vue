@@ -17,35 +17,31 @@
 -->
 <template>
   <v-tooltip bottom>
-    <template #activator="{ on, attrs }">
-      <v-icon
-        dense
-        small
-        v-bind="attrs"
-        v-on="on"
-      >
-        {{ value }}
-      </v-icon>
+    <template #activator="{ props: tooltip, attrs }">
+      <!--<v-icon
+        size="small"
+        v-bind="mergeProps(attrs, tooltip)"
+        :icon="icon"
+      />-->
     </template>
-    <span>{{ $t(ruleEffectName) }}</span>
+    <span>{{ t(value) }}</span>
   </v-tooltip>
 </template>
 <script lang="ts" setup>
-import { PropType } from 'vue';
+import { mergeProps, PropType } from 'vue';
+
+import { getRuleEffectIcons } from '~/lib/FormSchemaHelper';
 
 const props = defineProps({
   value: {
-    type: String as PropType<'mdi-eye-outline' | 'mdi-eye-off-outline'>,
+    type: String as PropType<'SHOW' | 'HIDE'>,
     default: undefined
   }
 });
 
-const ruleIconsMap = {
-  'mdi-eye-outline': 'SHOW',
-  'mdi-eye-off-outline': 'HIDE'
-};
+const { t } = useI18n();
   
-const    ruleEffectName = computed(() => ruleIconsMap[props.value]);
+const icon = getRuleEffectIcons(props.value);
 </script>
 
 <i18n>

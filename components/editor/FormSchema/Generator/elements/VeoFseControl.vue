@@ -83,23 +83,3 @@ defineProps({
 
 defineEmits(['update', 'delete', 'update-custom-translation']);
 </script>
-
-<style lang="scss" scoped>
-::v-deep {
-  .v-input--selection-controls {
-    margin-top: 0 !important;
-  }
-  .vf-form-element .mdi-close {
-    opacity: 0;
-  }
-  .vf-form-element:not(.vf-array-field):not(.vf-links-field):hover .mdi-close {
-    opacity: 1;
-  }
-
-  .vf-form-element .mdi-close.primary--text,
-  .vf-form-element .mdi-close.error--text {
-    color: rgba(0, 0, 0, 0.54) !important;
-    caret-color: rgba(0, 0, 0, 0.54) !important;
-  }
-}
-</style>

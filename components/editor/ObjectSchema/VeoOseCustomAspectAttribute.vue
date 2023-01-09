@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoCard class="mb-6">
+  <BaseCard class="mb-6">
     <v-list-item>
       <v-list-item-content>
         <v-row>
@@ -126,14 +126,15 @@
           color="black"
           @click="doDelete()"
         >
-          <v-icon>mdi-trash-can-outline</v-icon>
+          <!--<v-icon :icon="`mdiSvg:${mdiTrashCanOutline}`" />-->
         </v-btn>
       </v-list-item-action>
     </v-list-item>
-  </VeoCard>
+  </BaseCard>
 </template>
 
 <script lang="ts">
+import { mdiTrashCanOutline } from '@mdi/js';
 import { cloneDeep, trim } from 'lodash';
 import { INPUT_TYPES } from '~/types/VeoEditor';
 
@@ -349,6 +350,7 @@ export default defineComponent({
       updateOptions,
       currentFormatOption,
 
+      mdiTrashCanOutline,
       t
     };
   }
@@ -364,7 +366,13 @@ export default defineComponent({
     "aspectType": "Attribute type",
     "inputFormat": "Input format",
     "values": "Available options",
-    "valuesHint": "Available options (seperate entries with Enter)"
+    "valuesHint": "Available options (seperate entries with Enter)",
+    attributeTypes: {
+      date: 'Date',
+      dateTime: 'Date and Time',
+      text: 'Text',
+      uri: 'URI'
+    }
   },
   "de": {
     "multiple": "Mehrfachauswahl",
@@ -373,7 +381,13 @@ export default defineComponent({
     "aspectType": "Typ des Attributs",
     "inputFormat": "Eingabeformat",
     "values": "Auswahlmöglichkeiten",
-    "valuesHint": "Werte (mit Enter trennen)"
+    "valuesHint": "Werte (mit Enter trennen)",
+    attributeTypes: {
+      date: 'Datum',
+      dateTime: 'Datum und Uhrzeit',
+      text: 'Text',
+      uri: 'URI'
+    }
   }
 }
 </i18n>

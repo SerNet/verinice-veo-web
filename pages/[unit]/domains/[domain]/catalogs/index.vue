@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage :title="t('breadcrumbs.catalogs')">
+  <BasePage :title="t('breadcrumbs.catalogs')">
     <template #header>
       <p class="mt-4">
         {{ t('hint') }}
@@ -25,33 +25,24 @@
     <template #default>
       <VeoCatalogList
         :catalogs="catalogs"
-        :loading="$fetchState.pending"
+        :loading="catalogsAreFetching"
       />
     </template>
-  </VeoPage>
+  </BasePage>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { separateUUIDParam } from '~/lib/utils';
 import { useFetchCatalogs } from '~/composables/api/catalogs';
 
-export default defineComponent({
-  setup() {
-    const route = useRoute();
-    const { t } = useI18n();
 
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
+const route = useRoute();
+const { t } = useI18n();
 
-    const fetchCatalogsQueryParameters = computed(() => ({ domainId: domainId.value }));
-    const { data: catalogs } = useFetchCatalogs(fetchCatalogsQueryParameters);
+const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
-    return {
-      catalogs,
-
-      t
-    };
-  }
-});
+const fetchCatalogsQueryParameters = computed(() => ({ domainId: domainId.value }));
+const { data: catalogs, isFetching: catalogsAreFetching } = useFetchCatalogs(fetchCatalogsQueryParameters);
 </script>
 
 <i18n>

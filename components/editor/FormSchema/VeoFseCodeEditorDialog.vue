@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     :model-value="modelValue"
     v-bind="$attrs"
     large
@@ -24,12 +24,12 @@
     :headline="t('formSchema')"
   >
     <template #default>
-      <VeoCard style="min-height: 20vh">
+      <BaseCard style="min-height: 20vh">
         <VeoCodeEditor
           :value="code"
           readonly
         />
-      </VeoCard>
+      </BaseCard>
     </template>
     <template #dialog-options>
       <v-spacer />
@@ -41,7 +41,7 @@
         {{ t('global.button.close') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 <script lang="ts" setup>
 defineProps({

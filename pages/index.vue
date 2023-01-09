@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
+  <BasePage
     :title="t('breadcrumbs.index')"
     data-component-name="unit-selection-page"
   >
@@ -24,7 +24,7 @@
       {{ t('unitpicker') }}
     </div>
     <div class="d-flex justify-center">
-      <VeoCard style="width: 70%; max-width: 1000px;">
+      <BaseCard style="width: 70%; max-width: 1000px;">
         <v-data-iterator
           :search="search"
           :items="units"
@@ -39,7 +39,7 @@
                 filled
                 hide-details
                 color="black"
-                prepend-inner-icon="mdi-magnify"
+                :prepend-inner-icon="`mdiSvg:${mdiMagnify}`"
                 :label="t('unitpickerPlaceholder')"
               />
             </div>
@@ -68,13 +68,13 @@
             </v-list>
           </template>
         </v-data-iterator>
-      </VeoCard>
+      </BaseCard>
     </div>
     <VeoWelcomeDialog
       v-if="showWelcomeDialog"
       v-model="showWelcomeDialog"
     />
-  </VeoPage>
+  </BasePage>
 </template>
 
 <script lang="ts">
@@ -82,13 +82,15 @@ export const ROUTE_NAME = 'index';
 </script>
 
 <script lang="ts" setup>
+import { StorageSerializers, useStorage } from '@vueuse/core';
+import { mdiMagnify } from '@mdi/js';
+
 import { useVeoUser } from '~/composables/VeoUser';
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import { IVeoAPIMessage, IVeoUnit } from '~/types/VeoTypes';
 import { useFetchUnits, useCreateUnit } from '~/composables/api/units';
-import { StorageSerializers, useStorage } from '@vueuse/core';
-import { FIRST_STEPS_COMPLETED } from '~/util/LocalStorage';
-import { useRequest } from '~~/composables/api/utils/request';
+import { LOCAL_STORAGE_KEYS } from '~/types/LocalStorage';
+import { useRequest } from '~/composables/api/utils/request';
 
 const { profile, userSettings } = useVeoUser();
 const router = useRouter();
@@ -97,7 +99,7 @@ const { request } = useRequest();
 
 const search = ref<string | undefined>(undefined);
 
-const showWelcomeDialog = useStorage(FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
+const showWelcomeDialog = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
 
 const redirectIfTwoUnits = async () => {
   // Only applicable if the user has only two units (one demo and one main)

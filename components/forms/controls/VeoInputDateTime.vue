@@ -28,7 +28,7 @@
       max-width="350px"
       min-width="350px"
     >
-      <template #activator="{ on }">
+      <template #activator="{ props }">
         <v-text-field
           :id="objectSchemaPointer"
           :value="formattedDateTime"
@@ -38,27 +38,27 @@
           :class="options && options.class"
           :clearable="!options.required"
           hide-details="auto"
-          :prepend-icon="mdiCalendar"
+          :prepend-icon="`mdiSvg:${mdiCalendar}`"
           :hint="t('hint', [DATE_HINT])"
           readonly
-          v-on="on"
+          v-bind="props"
           @click:clear="$emit('input', undefined)"
         />
       </template>
       <template #default>
         <v-card>
-          <VeoTabs
+          <BaseTabs
             v-model="activeTab"
             grow
           >
             <template #tabs>
               <v-tab>
-                <v-icon>{{ mdiCalendar }}</v-icon>
+                <!--<v-icon :icon="`mdiSvg:${mdiCalendar}`" />-->
               </v-tab>
               <v-tab
                 :disabled="!date"
               >
-                <v-icon>{{ mdiClockOutline }}</v-icon>
+                <!--<v-icon :icon="`mdiSvg:${mdiClockOutline}`" />-->
               </v-tab>
             </template>
             <template #items>
@@ -81,7 +81,7 @@
                 />
               </v-tab-item>
             </template>
-          </VeoTabs>
+          </BaseTabs>
           <v-card-actions>
             <v-spacer />
             <v-btn

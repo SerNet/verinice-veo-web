@@ -16,12 +16,12 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage :title="t('moreModules')">
+  <BasePage :title="t('moreModules')">
     <div
       class="my-3"
       style="width: 300px"
     >
-      <VeoAppLogoDesktop />
+      <LayoutAppLogoDesktop />
     </div>
     <div class="text-body-1">
       <p>{{ t('moreModulesInfo') }}</p>
@@ -33,7 +33,7 @@
         >{{ t('linkName') }}</a>.
       </p>
     </div>
-  </VeoPage>
+  </BasePage>
 </template>
 
 <script lang="ts" setup>

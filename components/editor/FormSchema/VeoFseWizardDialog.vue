@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     :value="value"
     :headline="t('formSchemaEditor')"
     persistent
@@ -76,11 +76,10 @@
         {{ t('global.button.next') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 
 <script lang="ts">
-import { nextTick } from 'process';
 import { Dictionary, isEqual, merge, pick } from 'lodash';
 import { JsonPointer } from 'json-ptr';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';

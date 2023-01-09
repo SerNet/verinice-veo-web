@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     v-model="dialog"
     :close-disabled="creatingRisks"
     :persistent="creatingRisks"
@@ -33,7 +33,7 @@
         :required-fields="['objectType']"
         @update:filter="onFilterUpdate"
       />
-      <VeoCard>
+      <BaseCard>
         <VeoObjectTable
           v-model="selectedScenarios"
           show-select
@@ -43,7 +43,7 @@
           :loading="objectsQueryIsLoading"
           @page-change="onPageChange"
         />
-      </VeoCard>
+      </BaseCard>
     </template>
     <template #dialog-options>
       <v-btn
@@ -64,7 +64,7 @@
         {{ t('createRisk', { plural: selectedScenarios.length, named: { count: selectedScenarios.length } }) }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 
 <script lang="ts">

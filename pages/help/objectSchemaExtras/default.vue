@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
+  <BasePage
     title="Default"
     fixed-header
   >
@@ -39,7 +39,7 @@
       :form-schema="dynamicForm.formSchema"
       :data="dynamicForm.data"
     />
-  </VeoPage>
+  </BasePage>
 </template>
 
 <script lang="ts">

@@ -52,9 +52,10 @@
         v-if="value !== undefined"
         #append
       >
-        <v-icon @click="$emit('input', undefined)">
-          {{ mdiClose }}
-        </v-icon>
+        <!--<v-icon
+          :icon="`mdiSvg:${mdiClose}`"
+          @click="$emit('input', undefined)"
+        />-->
       </template>
     </v-radio-group>
   </div>

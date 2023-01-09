@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage :title="t('breadcrumbs.administration')" sticky-footer>
+  <BasePage
+    :title="t('breadcrumbs.administration')"
+    sticky-footer
+  >
     <template #default>
       <h2 class="text-h2 mt-6">
         {{ t('accounts') }}
@@ -24,7 +27,7 @@
       <p class="text-body-2">
         {{ t('accountAdministrationHint') }}
       </p>
-      <VeoCard>
+      <BaseCard>
         <p class="mx-3 mt-3 mb-1">
           <b>{{ activeAccounts }}</b> {{ t('of') }}
           <b>{{ userSettings.maxUsers }}</b> {{ t('activeAccounts') }}
@@ -41,39 +44,39 @@
               :key="action.id"
               bottom
             >
-              <template #activator="{ on }">
+              <template #activator="{ props }">
                 <v-btn
                   :disabled="action.isDisabled && action.isDisabled(item)"
                   icon
+                  v-bind="props"
                   @click="action.action(item)"
-                  v-on="on"
                 >
-                  <v-icon v-text="action.icon" />
+                  <!--<v-icon :icon="action.icon" />-->
                 </v-btn>
               </template>
               {{ t(action.label) }}
             </v-tooltip>
           </template>
         </VeoObjectTable>
-      </VeoCard>
+      </BaseCard>
     </template>
     <template #footer>
       <v-tooltip left>
-        <template #activator="{ on }">
+        <template #activator="{ props }">
           <v-btn
             color="primary"
             depressed
             :disabled="
               ability.cannot('manage', 'accounts') ||
-              activeAccounts >= userSettings.maxUsers
+                activeAccounts >= userSettings.maxUsers
             "
             fab
             absolute
             style="bottom: 12px; right: 0"
+            v-bind="props"
             @click="createAccountDialogVisible = true"
-            v-on="on"
           >
-            <v-icon>{{ mdiPlus }}</v-icon>
+            <!--<v-icon :icon="`mdiSvg:${mdiPlus}`" />-->
           </v-btn>
           <div style="height: 76px" />
         </template>
@@ -81,20 +84,20 @@
           <span>{{ t('createAccount') }}</span>
         </template>
       </v-tooltip>
-      <VeoManageAccountDialog
+      <AccountsManageDialog
         v-if="manageAccountDialogVisible"
         :value="manageAccountDialogVisible"
         v-bind="manageAccountProps"
         :existing-accounts="accounts"
         @input="onManageAccountDialogInput"
       />
-      <VeoDeleteAccountDialog
+      <AccountsDeleteDialog
         v-if="deleteAccountDialogVisible"
         v-model="deleteAccountDialogVisible"
         v-bind="editAccountDialogProps"
       />
     </template>
-  </VeoPage>
+  </BasePage>
 </template>
 
 <script lang="ts" setup>

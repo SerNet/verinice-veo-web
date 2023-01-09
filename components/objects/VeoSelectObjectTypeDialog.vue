@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     v-bind="$attrs"
     :headline="t('headline')"
   >
@@ -44,7 +44,7 @@
         {{ t('create') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 
 <script lang="ts" setup>

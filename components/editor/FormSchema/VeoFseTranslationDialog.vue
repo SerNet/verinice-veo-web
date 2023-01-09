@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     v-bind="$attrs"
     large
     :headline="t('editor.formschema.translation')"
@@ -90,7 +90,7 @@
               <h3 class="text-h3 mt-6">
                 {{ languageDetails[language] }}
               </h3>
-              <VeoCard>
+              <BaseCard>
                 <v-card-text>
                   <v-row no-gutters>
                     <v-col
@@ -107,7 +107,7 @@
 
                   <VeoCodeEditor v-model="localTranslations[language]" />
                 </v-card-text>
-              </VeoCard>
+              </BaseCard>
             </v-col>
           </v-row>
         </v-form>
@@ -131,7 +131,7 @@
         {{ t('global.button.save') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 <script lang="ts">
 import { PropType } from 'vue';

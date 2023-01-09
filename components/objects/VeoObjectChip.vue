@@ -99,7 +99,7 @@ defineProps({
   border-right-width: 1px;
 }
 
-::v-deep .v-chip__close {
+:deep(.v-chip__close) {
   color: #666 !important;
 }
 </style>

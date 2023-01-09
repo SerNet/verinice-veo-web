@@ -18,7 +18,7 @@
 <template>
   <div>
     <div class="risk-definitions">
-      <VeoTabs v-model="activeTab">
+      <BaseTabs v-model="activeTab">
         <!-- Disabled tabs until more risk definitions are available -->
         <!--<template
           v-if="!!domain"
@@ -98,7 +98,7 @@
             />
           </v-tab-item>
         </template>
-      </VeoTabs>
+      </BaseTabs>
     </div>
   </div>
 </template>

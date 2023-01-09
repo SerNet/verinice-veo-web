@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { resolve as pathResolve, relative as pathRelative, dirname as pathDirname } from 'path';
-import { Module } from '@nuxt/types';
-import { contentFileBeforeInstert, contentFileBeforeParse } from '@nuxt/content/types/content';
+// import { contentFileBeforeInstert, contentFileBeforeParse } from '@nuxt/content/types/content';
 
 /**
  * Fields that may contain markdown
@@ -63,7 +62,7 @@ export default ((options, nuxt) => {
   /**
    * Change image paths before parsing markdown documents
    */
-  const replaceImagePaths: contentFileBeforeParse = (file) => {
+  /*const replaceImagePaths: contentFileBeforeParse = (file) => {
     // Transforms relative image paths in documents:
     if (/\.md$/.test(file.extension)) {
       const matchImages = /(!\[[^[\]]*\]\()([^()]+?)(\))|(<[^>]*src=")([^"]+?)("[^>]*>)/gm;
@@ -78,11 +77,11 @@ export default ((options, nuxt) => {
       });
     }
   };
-  nuxt.hook('content:file:beforeParse', replaceImagePaths);
+  nuxt.hook('content:file:beforeParse', replaceImagePaths);*/
 
   /**
    * Add language property and allow specific keys inside yaml to include markdown
-   */
+   *//*
   const extendDocument: contentFileBeforeInstert = async (document, database) => {
     // Compute language by extension
     if (['.md', '.yaml'].includes(document.extension)) {
@@ -110,5 +109,5 @@ export default ((options, nuxt) => {
       }
     }
   };
-  nuxt.hook('content:file:beforeInsert', extendDocument);
+  nuxt.hook('content:file:beforeInsert', extendDocument);*/
 });

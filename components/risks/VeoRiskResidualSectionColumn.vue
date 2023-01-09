@@ -40,12 +40,11 @@
             v-if="userDefinedResidualRisk === undefined && riskTreatments.length"
             top
           >
-            <template #activator="{ on }">
-              <v-icon
-                v-on="on"
-              >
-                {{ mdiInformationOutline }}
-              </v-icon>
+            <template #activator="{ props }">
+              <!--<v-icon
+                v-bind="props"
+                :icon="`mdiSvg:${mdiInformationOutline}`"
+              />-->
             </template>
             <template #default>
               <i18n
@@ -156,7 +155,7 @@ export default defineComponent({
 </i18n>
 
 <style lang="scss" scoped>
-::v-deep .v-small-dialog__activator__content {
+:deep(.v-small-dialog__activator__content) {
   width: 100%;
 }
 </style>

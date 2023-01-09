@@ -16,18 +16,18 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage title="Dokumentation">
+  <BasePage title="Dokumentation">
     <v-row>
       <v-col
         v-for="(doc, i) in docs"
         :key="i"
       >
-        <VeoCard>
+        <BaseCard>
           <v-list color="transparent">
             <v-subheader class="black--text font-weight-bold text-body-1">
               {{ doc.title }}
             </v-subheader>
-            <v-list-item-group>
+            <v-list-group>
               <v-list-item
                 v-for="(item, j) in doc.items"
                 :key="j"
@@ -38,12 +38,12 @@
                   <v-list-item-title v-text="item.title" />
                 </v-list-item-content>
               </v-list-item>
-            </v-list-item-group>
+            </v-list-group>
           </v-list>
-        </VeoCard>
+        </BaseCard>
       </v-col>
     </v-row>
-  </VeoPage>
+  </BasePage>
 </template>
 
 <script lang="ts">

@@ -16,12 +16,12 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
+  <BasePage
     :title="t('calltoaction').toString()"
     :heading-level="2"
   >
     <div class="d-flex justify-center">
-      <VeoCard
+      <BaseCard
         class="mt-10"
         style="width: 70%; max-width: 1000px;"
       >
@@ -37,9 +37,10 @@
               <v-list-item-subtitle>{{ t('objectSchemaDescription') }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <v-icon x-large>
-                mdi-chevron-right
-              </v-icon>
+              <!--<v-icon
+                size="x-large"
+                :icon="`mdiSvg:${mdiChevronRight}`"
+              />-->
             </v-list-item-action>
           </v-list-item>
           <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/formschema`">
@@ -50,30 +51,26 @@
               <v-list-item-subtitle>{{ t('formSchemaDescription') }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <v-icon x-large>
-                mdi-chevron-right
-              </v-icon>
+              <!--<v-icon
+                size="x-large"
+                :icon="`mdiSvg:${mdiChevronRight}`"
+              />-->
             </v-list-item-action>
           </v-list-item>
         </v-list>
-      </VeoCard>
+      </BaseCard>
     </div>
-  </VeoPage>
+  </BasePage>
 </template>
+
+<script lang="ts" setup>
+import { mdiChevronRight } from '@mdi/js';
+
+const { t } = useI18n();
+</script>
 
 <script lang="ts">
 export const ROUTE_NAME = 'unit-domains-domain-editor';
-
-export default defineComponent({
-  name: 'VeoEditorIndexPage',
-  setup() {
-    const { t } = useI18n();
-
-    return {
-      t
-    };
-  }
-});
 </script>
 
 <i18n>

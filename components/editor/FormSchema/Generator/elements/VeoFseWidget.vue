@@ -28,12 +28,11 @@
           cols="auto"
           class="d-flex align-center px-1 fse-widget-dragbar grey darken-4"
         >
-          <v-icon
+          <!--<v-icon
             class="handle"
             color="white"
-          >
-            {{ mdiMenu }}
-          </v-icon>
+            :icon="`mdiSvg:${mdiMenu}`"
+          />-->
         </v-col>
         <v-col class="mx-2">
           <div class="text-h5 font-weight-regular">
@@ -46,13 +45,12 @@
               v-if="description"
               bottom
             >
-              <template #activator="{ on }">
-                <v-icon
-                  small
-                  v-on="on"
-                >
-                  {{ mdiInformationOutline }}
-                </v-icon>
+              <template #activator="{ props }">
+                <!--<v-icon
+                  :icon="`mdiSvg:${mdiInformationOutline}`"
+                  size="small"
+                  v-bind="props"
+                />-->
               </template>
               <template #default>
                 {{ description }}
@@ -69,12 +67,10 @@
             x-small
             @click="deleteDialogVisible = true"
           >
-            <v-icon
-              dense
-              small
-            >
-              {{ mdiTrashCanOutline }}
-            </v-icon>
+            <!--<v-icon
+              :icon="`mdiSvg:${mdiTrashCanOutline}`"
+              size="small"
+            />-->
           </v-btn>
         </v-col>
       </v-row>

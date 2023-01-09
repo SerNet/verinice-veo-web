@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     :value="value"
     v-bind="$attrs"
     :headline="upperFirst(t('schemaValidationWarnings').toString())"
@@ -52,7 +52,7 @@
         {{ t('global.button.close') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 <script lang="ts">
 import { PropType } from 'vue';

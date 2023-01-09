@@ -16,12 +16,12 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
+  <BasePage
     :title="title"
     data-component-name="catalog-page"
   >
     <template #default>
-      <VeoTabs class="mt-6">
+      <BaseTabs class="mt-6">
         <template #tabs>
           <v-tab data-component-name="catalog-hazards-tab">
             {{ t('applyEntries') }}
@@ -34,7 +34,7 @@
           <v-tab-item>
             <VeoDefaultCatalog
               :catalog-items="scenarios"
-              :loading="$fetchState.pending"
+              :loading="catalogItemsAreFetching"
               :success-text="t('scenariosApplied').toString()"
               :error-text="t('applyScenariosError').toString()"
             >
@@ -46,7 +46,7 @@
           <v-tab-item>
             <VeoDefaultCatalog
               :catalog-items="toms"
-              :loading="$fetchState.pending"
+              :loading="catalogItemsAreFetching"
               :success-text="t('TOMsApplied').toString()"
               :error-text="t('applyTOMsError').toString()"
             >
@@ -56,14 +56,14 @@
             </VeoDefaultCatalog>
           </v-tab-item>
         </template>
-      </VeoTabs>
+      </BaseTabs>
     </template>
-  </VeoPage>
+  </BasePage>
 </template>
 
 <script lang="ts">
 import { separateUUIDParam } from '~/lib/utils';
-import { useFetchCatalogItems } from '~~/composables/api/catalogs';
+import { useFetchCatalogItems } from '~/composables/api/catalogs';
 
 export const ROUTE_NAME = 'unit-domains-domain-catalogs-catalog';
 
@@ -85,9 +85,10 @@ export default defineComponent({
     const toms = computed(() => catalogItems.value.filter((catalogItem) => catalogItem.element.displayName?.includes('TOM-')));
 
     const fetchCatalogItemsQueryParameters = computed(() => ({ catalogId: catalogId.value, domainId: domainId.value }));
-    const { data: catalogItems } = useFetchCatalogItems(fetchCatalogItemsQueryParameters);
+    const { data: catalogItems, isFetching: catalogItemsAreFetching } = useFetchCatalogItems(fetchCatalogItemsQueryParameters);
 
     return {
+      catalogItemsAreFetching,
       scenarios,
       title,
       toms,

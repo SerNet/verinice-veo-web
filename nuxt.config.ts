@@ -1,8 +1,12 @@
 export default defineNuxtConfig({
+  //==============================================================
+  // Base configuration
+  //==============================================================
   typescript: {
-    shim: false
+    shim: false // Disabled, as Takeover mode and Volar should be enabled/installed
   },
 
+  // Available via useRuntimeConfig().public
   runtimeConfig: {
     public: {
       version: process.env.npm_package_version || 'latest',
@@ -23,19 +27,34 @@ export default defineNuxtConfig({
     }
   },
 
-  generate: {
-    fallback: '404.html', // if you want to use '404.html'
-    async routes() {
-      const { $content } = require('@nuxt/content');
-      const files = await $content({ deep: true }).only(['path']).fetch();
-      const routes = ['/docs?print', ...new Set(files.map((file) => '/docs' + file.path.replace(/\.\w+$/, '').replace(/\/index$/, '/'))).values()];
-      return routes;
+  // Modules are buildtime only. Can be used to modify build behaviour
+  modules: [
+    '@nuxt/content',
+    '@nuxtjs/i18n',
+    './modules/docs',
+    './modules/externalize-scripts',
+    './modules/generate-doc-pages.ts'
+  ],
+
+  // Transpile vuetify
+  build: {
+    transpile: ['vuetify']
+  },
+
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@import "@/assets/styles/global.scss";'
+        }
+      }
     }
   },
-  /*
-   ** Nuxt.js modules
-   */
-  modules: ['nuxt-polyfill', '@nuxt/content', '@nuxtjs/i18n', './modules/docs', './modules/externalize-scripts'],
+
+  //==============================================================
+  // Plugin configuration
+  //==============================================================
+  // Nuxt content configuration
   content: {
     dir: 'docs',
     liveEdit: false,
@@ -44,20 +63,20 @@ export default defineNuxtConfig({
       rehypePlugins: ['rehype-inline']
     }
   },
-  /**
-   * @nuxtjs/i18n config
-   */
+
+  // i18n configuration
   i18n: {
     strategy: 'no_prefix',
     locales: [
-      { code: 'de', file: 'de.ts', name: 'Deutsch' },
-      { code: 'en', file: 'en.ts', name: 'English' }
+      { code: 'de', file: 'de.json', name: 'Deutsch' },
+      { code: 'en', file: 'en.json', name: 'English' }
     ],
     defaultLocale: 'de',
     lazy: true,
     langDir: 'locales/',
     vueI18nLoader: true,
     vueI18n: {
+      legacy: false,
       silentFallbackWarn: true,
       dateTimeFormats: Object.fromEntries(
         ['de', 'en'].map((lang) => [
@@ -79,25 +98,5 @@ export default defineNuxtConfig({
         ])
       )
     }
-  },
-
-  /**
-   * Polyfill configuration
-   */
-  polyfill: {
-    features: [
-      {
-        require: 'intersection-observer',
-        detect: () => 'IntersectionObserver' in window
-      },
-      {
-        require: 'resize-observer',
-        detect: () => 'ResizeObserver' in window
-      }
-    ]
-  },
-
-  build: {
-    transpile: ['vuetify']
   }
 });

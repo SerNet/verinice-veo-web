@@ -45,7 +45,7 @@
             :disabled="disabled || options.disabled"
             @click="removeLink(index)"
           >
-            <v-icon>{{ mdiTrashCanOutline }}</v-icon>
+            <!--<v-icon :icon="`mdiSvg:${mdiTrashCanOutline}`" />-->
           </v-btn>
         </v-list-item-action>
       </v-list-item>
@@ -57,9 +57,11 @@
       color="primary"
       @click="addLink"
     >
-      <v-icon small>
-        {{ mdiPlus }}
-      </v-icon>
+      <!--<v-icon
+        size="small"
+        start
+        :icon="`mdiSvg:${mdiPlus}`"
+      />-->
       {{ t('addLink') }}
     </v-btn>
   </div>

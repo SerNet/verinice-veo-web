@@ -16,19 +16,20 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
+  <BasePage
     v-if="document"
     :title="document.title"
   >
-    <VeoCard
+    {{ fetchContentNavigation() }}
+    <BaseCard
       class="mb-4"
       style="max-width: 1024px"
     >
       <v-card-text class="text-body-1">
-        <NuxtContent :document="document" />
+        <ContentRenderer :document="document" />
       </v-card-text>
-    </VeoCard>
-  </VeoPage>
+    </BaseCard>
+  </BasePage>
 </template>
 <script lang="ts">
 import { upperFirst } from 'lodash';

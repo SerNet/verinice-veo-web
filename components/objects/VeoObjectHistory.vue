@@ -38,7 +38,7 @@
       v-else
       class="py-0"
     >
-      <v-list-item-group
+      <v-list-group
         color="primary"
         :value="0"
         mandatory
@@ -52,8 +52,8 @@
             bottom
             :disabled="version.compability.valid"
           >
-            <template #activator="{ on }">
-              <div v-on="on">
+            <template #activator="{ props }">
+              <div v-bind="props">
                 <v-list-item
                   three-line
                   :disabled="!version.compability.valid"
@@ -80,7 +80,7 @@
             </template>
           </v-tooltip>
         </div>
-      </v-list-item-group>
+      </v-list-group>
       <v-list-item
         v-if="!historyEntriesWithCompability.length"
         disabled

@@ -29,12 +29,11 @@
           class="d-flex align-center px-1"
           :class="color"
         >
-          <v-icon
+          <!--<v-icon
             class="handle"
             color="white"
-          >
-            mdi-menu
-          </v-icon>
+            :icon="`mdiSvg:${mdiMenu}`"
+          />-->
         </v-col>
         <v-col
           class="mx-2"
@@ -48,9 +47,10 @@
               {{ name }}
             </div>
             <div class="text-body-2">
-              {{ currentType }} <VeoFseRuleDisplay
-                v-if="ruleDisplayIcon"
-                :value="ruleDisplayIcon"
+              {{ currentType }}
+              <VeoFseRuleDisplay
+                v-if="effect"
+                :value="effect"
               />
             </div>
           </div>
@@ -64,24 +64,20 @@
             x-small
             @click="showEdit"
           >
-            <v-icon
-              dense
-              small
-            >
-              mdi-pencil
-            </v-icon>
+            <!--<v-icon
+              size="small"
+              :icon="`mdiSvg:${mdiPencil}`"
+            />-->
           </v-btn>
           <v-btn
             icon
             x-small
             @click="showDelete"
           >
-            <v-icon
-              dense
-              small
-            >
-              mdi-trash-can-outline
-            </v-icon>
+            <!--<v-icon
+              size="small"
+              :icon="`mdiSvg:${mdiTrashCanOutline}`"
+            />-->
           </v-btn>
         </v-col>
       </v-row>
@@ -106,12 +102,12 @@
 
 <script lang="ts">
 import { PropType } from 'vue';
+import { mdiMenu, mdiPencil, mdiTrashCanOutline } from '@mdi/js';
 import { JSONSchema7 } from 'json-schema';
 import { UISchemaElement } from '@/types/UISchema';
 
 import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VeoEditor';
 import { IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection, IVeoTranslationCollection } from '~/types/VeoTypes';
-import { getRuleEffectIcons } from '~/lib/FormSchemaHelper';
 
 export default {
   props: {
@@ -170,7 +166,10 @@ export default {
       availableElements: [] as IInputElement[],
       editDialog: false as boolean,
       deleteDialog: false as boolean,
-      label: '' as string
+      label: '' as string,
+      mdiMenu,
+      mdiPencil,
+      mdiTrashCanOutline
     };
   },
   computed: {
@@ -183,8 +182,8 @@ export default {
     type(): string {
       return Array.isArray(this.schema.enum) ? 'enum' : this.schema.type && !Array.isArray(this.schema.type) ? this.schema.type : 'default';
     },
-    ruleDisplayIcon(): string | undefined {
-      return getRuleEffectIcons(this.value?.rule?.effect);
+    effect(): string | undefined {
+      return this.value?.rule?.effect;
     }
   },
   watch: {

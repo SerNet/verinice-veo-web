@@ -42,14 +42,13 @@
               max-width="400px"
               top
             >
-              <template #activator="{ on }">
-                <v-icon
+              <template #activator="{ props }">
+                <!--<v-icon
                   :color="getMostContrastyColor(probability.htmlColor)"
-                  right
-                  v-on="on"
-                >
-                  {{ mdiInformationOutline }}
-                </v-icon>
+                  end
+                  v-bind="props"
+                  :icon="`mdiSvg:${mdiInformationOutline}`"
+                />-->
               </template>
               <template #default>
                 {{ probability.translations[locale] && probability.translations[locale].description || Object.values(probability.translations)[0].description }}
@@ -84,13 +83,12 @@
               max-width="400px"
               top
             >
-              <template #activator="{ on }">
-                <v-icon
+              <template #activator="{ props }">
+                <!--<v-icon
                   :color="getMostContrastyColor(impact.htmlColor)"
-                  v-on="on"
-                >
-                  {{ mdiInformationOutline }}
-                </v-icon>
+                  :icon="`mdiSvg:${mdiInformationOutline}`"
+                  v-bind="props"
+                />-->
               </template>
               <template #default>
                 {{ impact.translations[locale] && impact.translations[locale].description || Object.values(impact.translations)[0].description }}
@@ -111,13 +109,12 @@
                 max-width="400px"
                 top
               >
-                <template #activator="{ on }">
-                  <v-icon
+                <template #activator="{ props }">
+                  <!--<v-icon
                     :color="getMostContrastyColor(_value.htmlColor)"
-                    v-on="on"
-                  >
-                    {{ mdiInformationOutline }}
-                  </v-icon>
+                    v-bind="props"
+                    :icon="`mdiSvg:${mdiInformationOutline}`"
+                  />-->
                 </template>
                 <template #default>
                   {{ riskValues[_value.ordinalValue].translations[locale] && riskValues[_value.ordinalValue].translations[locale].description || Object.values(riskValues[_value.ordinalValue].translations)[0].description }}

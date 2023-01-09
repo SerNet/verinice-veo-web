@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     v-if="isDialogOpen"
     v-model="dialog"
     :large="state !== 'start'"
@@ -48,9 +48,10 @@
                 <v-list-item-subtitle>{{ $t('createObjectSchemaDescription') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
-                <v-icon x-large>
-                  mdi-chevron-right
-                </v-icon>
+                <!--<v-icon
+                  size="x-large"
+                  :icon="`mdiSvg:${mdiChevronRight}`"
+                />-->
               </v-list-item-action>
             </v-list-item>
             <v-list-item
@@ -64,9 +65,10 @@
                 <v-list-item-subtitle>{{ $t('importObjectSchemaDescription') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
-                <v-icon x-large>
-                  mdi-chevron-right
-                </v-icon>
+                <!--<v-icon
+                  size="x-large"
+                  :icon="`mdiSvg:${mdiChevronRight}`"
+                />-->
               </v-list-item-action>
             </v-list-item>
           </v-list>
@@ -212,11 +214,12 @@
         {{ $t('global.button.next') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 
 <script lang="ts">
 import { isEmpty, isEqual, isString, trim, upperFirst } from 'lodash';
+import { mdiChevronRight } from '@mdi/js';
 
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 
@@ -244,7 +247,8 @@ export default {
       },
       modelType: '',
       code: '\n\n\n\n\n' as string,
-      objectTypes: [] as { value: string; text: string }[]
+      objectTypes: [] as { value: string; text: string }[],
+      mdiChevronRight
     };
   },
   computed: {

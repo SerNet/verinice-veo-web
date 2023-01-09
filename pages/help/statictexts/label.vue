@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage title="Label">
+  <BasePage title="Label">
     <v-row justify="center">
       <v-col
         cols="12"
@@ -36,7 +36,7 @@
       :form-schema="dynamicForm.formSchema"
       :data="dynamicForm.data"
     />
-  </VeoPage>
+  </BasePage>
 </template>
 
 <script lang="ts">

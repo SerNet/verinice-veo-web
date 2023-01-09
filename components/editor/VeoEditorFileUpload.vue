@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoTabs>
+  <BaseTabs>
     <template #tabs>
       <v-tab>{{ t('importFile') }}</v-tab>
       <v-tab>{{ t('importCode') }}</v-tab>
@@ -46,7 +46,7 @@
         />
       </v-tab-item>
     </template>
-  </VeoTabs>
+  </BaseTabs>
 </template>
 <script lang="ts" setup>
 import { IVeoObjectSchema, IVeoFormSchema } from '~/types/VeoTypes';

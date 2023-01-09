@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoCard>
+  <BaseCard>
     <template v-if="loading">
       <v-card-title v-if="title">
         <v-skeleton-loader
@@ -43,7 +43,7 @@
         <slot />
       </v-card-text>
     </template>
-  </VeoCard>
+  </BaseCard>
 </template>
 <script lang="ts" setup>
 defineProps({

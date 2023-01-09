@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
+  <BasePage
     :title="title"
     :loading="reportsFetching"
     data-component-name="report-page"
@@ -60,7 +60,7 @@
         :available-sub-types="availableSubTypes"
         @update:filter="updateRouteQuery"
       />
-      <VeoCard>
+      <BaseCard>
         <VeoObjectTable
           v-model="selectedObjects"
           show-select
@@ -72,7 +72,7 @@
           data-component-name="report-entity-selection"
           @page-change="onPageChange"
         />
-      </VeoCard>
+      </BaseCard>
       <v-row
         no-gutters
         class="mt-4"
@@ -95,7 +95,7 @@
         </v-col>
       </v-row>
     </template>
-  </VeoPage>
+  </BasePage>
 </template>
 
 <script lang="ts">

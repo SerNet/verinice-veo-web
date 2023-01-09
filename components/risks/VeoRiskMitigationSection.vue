@@ -20,10 +20,11 @@
     <h2 class="text-h2 mt-2 mb-1">
       {{ upperFirst(t('mitigationSection').toString()) }}
       <v-tooltip bottom>
-        <template #activator="{ on }">
-          <v-icon v-on="on">
-            {{ mdiInformationOutline }}
-          </v-icon>
+        <template #activator="{ props }">
+          <!--<v-icon
+            v-bind="props"
+            :icon="`mdiSvg:${mdiInformationOutline}`"
+          />-->
         </template>
         <template #default>
           <i18n
@@ -35,29 +36,30 @@
         </template>
       </v-tooltip>
     </h2>
-    <VeoCard>
+    <BaseCard>
       <VeoObjectTable
         :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'updatedAt']"
         :loading="fetchingMitigation"
         :items="selectedItems"
       />
-    </VeoCard>
+    </BaseCard>
     <v-menu
       :disabled="disabled"
       top
       offset-y
     >
-      <template #activator="{ on }">
+      <template #activator="{ props }">
         <v-btn
           class="mt-2"
           color="primary"
           depressed
           :disabled="disabled"
-          v-on="on"
+          v-bind="props"
         >
-          <v-icon left>
-            {{ mdiPencilOutline }}
-          </v-icon>
+          <!--<v-icon
+            start
+            :icon="`mdiSvg:${mdiPencilOutline}`"
+          />-->
           {{ t('editMitigatingActions').toString() }}
         </v-btn>
       </template>

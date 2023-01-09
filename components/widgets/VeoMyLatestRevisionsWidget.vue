@@ -17,7 +17,7 @@
 -->
 <template>
   <VeoWidget :title="t('myLatestRevisions')">
-    <v-simple-table dense>
+    <v-table dense>
       <tbody>
         <tr
           v-for="(revision, key) in revisions || []"
@@ -37,7 +37,7 @@
           </td>
         </tr>
       </tbody>
-    </v-simple-table>
+    </v-table>
   </VeoWidget>
 </template>
 

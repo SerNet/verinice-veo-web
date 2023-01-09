@@ -24,13 +24,10 @@
       class="handle d-flex align-center justify-center my-0 px-4"
       :style="{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }"
     >
-      <v-icon
+      <!--<v-icon
         color="white"
-        outlined
-        dark
-      >
-        {{ mdiMenu }}
-      </v-icon>
+        :icon="`mdiSvg:${mdiMenu}`"
+      />-->
     </v-list-item-icon>
     <v-list-item-content>
       <v-row no-gutters>
@@ -41,7 +38,7 @@
           <v-text-field
             :value="status[lang]"
             dense
-            :prepend-inner-icon="mdiTranslate"
+            :prepend-inner-icon="`mdiSvg:${mdiTranslate}`"
             :label="upperFirst(t('translation').toString())"
             hide-details
             @input="onTranslationInput"
@@ -51,13 +48,13 @@
     </v-list-item-content>
     <v-list-item-action>
       <v-tooltip bottom>
-        <template #activator="{ on }">
+        <template #activator="{ props }">
           <v-btn
             icon
-            v-on="on"
+            v-bind="props"
             @click="$emit('delete')"
           >
-            <v-icon>{{ mdiTrashCanOutline }}</v-icon>
+            <!--<v-icon :icon="`mdiSvg:${mdiTrashCanOutline}`" />-->
           </v-btn>
         </template>
         <template #default>

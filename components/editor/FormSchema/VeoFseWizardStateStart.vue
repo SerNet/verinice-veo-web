@@ -39,9 +39,10 @@
           </v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
-          <v-icon x-large>
-            {{ mdiChevronRight }}
-          </v-icon>
+          <!--<v-icon
+            size="x-large"
+            :icon="`mdiSvg:${mdiChevronRight}`"
+          />-->
         </v-list-item-action>
       </v-list-item>
     </v-list>

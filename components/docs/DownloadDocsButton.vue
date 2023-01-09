@@ -20,8 +20,8 @@
     bottom
     :disabled="pdfExists"
   >
-    <template #activator="{ on }">
-      <div v-on="on">
+    <template #activator="{ props }">
+      <div v-bind="props">
         <v-btn
           depressed
           :disabled="!pdfExists"

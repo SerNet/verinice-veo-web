@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { mdiAlphabeticalVariant, mdiCancel, mdiCheckboxOutline, mdiDecimal, mdiFileTree, mdiHelpBox, mdiLabelOutline, mdiNumeric, mdiViewList } from '@mdi/js';
 import { IVeoFormSchemaItem, IVeoFormSchemaItemOptions, IVeoFormSchemaItemRule } from './VeoTypes';
 
 // ===============================
@@ -36,15 +37,15 @@ export interface IInputType {
 export type IInputTypes = Record<string, IInputType>;
 
 export const INPUT_TYPES = {
-  string: { icon: 'mdi-alphabetical-variant', name: 'string', color: 'red' },
-  boolean: { icon: 'mdi-checkbox-outline', name: 'boolean', color: 'teal' },
-  object: { icon: 'mdi-file-tree', name: 'object', color: 'indigo' },
-  number: { icon: 'mdi-decimal', name: 'number', color: 'light-blue' },
-  integer: { icon: 'mdi-numeric', name: 'integer', color: 'green' },
-  array: { icon: 'mdi-view-list', name: 'array', color: 'amber' },
-  enum: { icon: 'mdi-label-multiple', name: 'enum', color: 'light-green' },
-  null: { icon: 'mdi-cancel', name: 'null', color: 'blue-grey' },
-  default: { icon: 'mdi-help-box', name: 'unknown', color: 'grey' }
+  string: { icon: `mdiSvg:${mdiAlphabeticalVariant}`, name: 'string', color: 'red' },
+  boolean: { icon: `mdiSvg:${mdiCheckboxOutline}`, name: 'boolean', color: 'teal' },
+  object: { icon: `mdiSvg:${mdiFileTree}`, name: 'object', color: 'indigo' },
+  number: { icon: `mdiSvg:${mdiDecimal}`, name: 'number', color: 'light-blue' },
+  integer: { icon: `mdiSvg:${mdiNumeric}`, name: 'integer', color: 'green' },
+  array: { icon: `mdiSvg:${mdiViewList}`, name: 'array', color: 'amber' },
+  enum: { icon: `mdiSvg:${mdiLabelOutline}`, name: 'enum', color: 'light-green' },
+  null: { icon: `mdiSvg:${mdiCancel}`, name: 'null', color: 'blue-grey' },
+  default: { icon: `mdiSvg:${mdiHelpBox}`, name: 'unknown', color: 'grey' }
 } as IInputTypes;
 
 /**

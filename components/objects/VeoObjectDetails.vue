@@ -18,7 +18,7 @@
 <template>
   <div>
     <div class="object-details">
-      <VeoCard>
+      <BaseCard>
         <v-card-text>
           <div class="text-body-1 pb-2">
             <template v-if="!loading">
@@ -67,9 +67,9 @@
             <v-skeleton-loader type="paragraph" />
           </div>
         </v-card-text>
-      </VeoCard>
+      </BaseCard>
     </div>
-    <VeoTabs v-model="internalActiveTab">
+    <BaseTabs v-model="internalActiveTab">
       <template #tabs>
         <!-- We use v-show instead of v-if, as v-show doesn't cause side effects in the v-model if risks are not present -->
         <v-tab
@@ -87,7 +87,7 @@
           v-for="tab in tabs"
           :key="tab.key"
         >
-          <VeoCard>
+          <BaseCard>
             <VeoObjectDetailsTab
               v-if="object"
               :type="tab.key"
@@ -96,10 +96,10 @@
               :domain-id="domainId"
               @reload="$emit('reload')"
             />
-          </VeoCard>
+          </BaseCard>
         </v-tab-item>
       </template>
-    </VeoTabs>
+    </BaseTabs>
   </div>
 </template>
 

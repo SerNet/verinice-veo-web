@@ -20,7 +20,7 @@
     <h2 class="text-h2 mb-1">
       {{ upperFirst(t('probability').toString()) }}
     </h2>
-    <VeoCard>
+    <BaseCard>
       <v-card-text class="pa-3 px-4">
         <v-row class="pt-0">
           <v-col
@@ -111,7 +111,7 @@
           </v-col>
         </v-row>
       </v-card-text>
-    </VeoCard>
+    </BaseCard>
   </div>
 </template>
 
@@ -191,10 +191,10 @@ export default defineComponent({
 </i18n>
 
 <style lang="scss" scoped>
-.v-small-dialog__activator ::v-deep {
+.v-small-dialog__activator :v-deep(*) {
   width: 30px !important;
 }
-span.v-small-dialog__activator__content ::v-deep {
+span.v-small-dialog__activator__content :deep(*) {
   width: 30px !important;
 }
 

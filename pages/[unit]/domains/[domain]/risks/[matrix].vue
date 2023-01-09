@@ -26,7 +26,7 @@
       cols="12"
       md="6"
     >
-      <VeoCard style="margin-right: 1px">
+      <BaseCard style="margin-right: 1px">
         <v-card-text>
           <h3
             class="text-h3"
@@ -34,7 +34,7 @@
           />
         </v-card-text>
         <VeoRiskMatrix
-          v-if="!$fetchState.pending"
+          v-if="!domainIsFetching"
           v-bind="getMatrixData(protectionGoal.id)"
         />
         <v-skeleton-loader
@@ -42,7 +42,7 @@
           type="image"
           width="600px"
         />
-      </VeoCard>
+      </BaseCard>
     </v-col>
   </v-row>
 </template>
@@ -52,7 +52,7 @@ import { cloneDeep, reverse, upperFirst } from 'lodash';
 
 import { IVeoDomain } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
-import { useFetchDomain } from '~~/composables/api/domains';
+import { useFetchDomain } from '~/composables/api/domains';
 
 export const ROUTE_NAME = 'unit-domains-domain-risks-matrix';
 
@@ -65,7 +65,7 @@ export default defineComponent({
     const riskDefinition = computed(() => route.params.matrix);
 
     const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
-    const { data: domain } = useFetchDomain(fetchDomainQueryParameters);
+    const { data: domain, isFetching: domainIsFetching } = useFetchDomain(fetchDomainQueryParameters);
 
     const data = computed<undefined | IVeoDomain['riskDefinitions']['x']>(() => domain.value.riskDefinitions[riskDefinition.value as string]);
 
@@ -87,6 +87,7 @@ export default defineComponent({
     };
 
     return {
+      domainIsFetching,
       getMatrixData,
       protectionGoals,
 

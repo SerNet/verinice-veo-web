@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     :value="value"
     :close-disabled="savingRisk"
     :persistent="savingRisk || !!Object.keys(dirtyFields).length"
@@ -26,7 +26,7 @@
     v-bind="$attrs"
   >
     <template #default>
-      <VeoAlert
+      <BaseAlert
         :value="true"
         :type="VeoAlertType.INFO"
         :title="t('computedValues')"
@@ -41,7 +41,7 @@
         <h2 class="text-h2 mb-1">
           {{ upperFirst(t('common').toString()) }}
         </h2>
-        <VeoCard>
+        <BaseCard>
           <v-card-text class="pa-3 px-4">
             <v-row>
               <v-col
@@ -77,7 +77,7 @@
               </v-col>
             </v-row>
           </v-card-text>
-        </VeoCard>
+        </BaseCard>
         <VeoCreateRiskDialogRiskDefinitions
           v-model:dirty-fields="dirtyFields"
           :value="data"
@@ -111,7 +111,7 @@
         {{ t('global.button.close') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 
 <script lang="ts">
@@ -123,7 +123,7 @@ import { IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity 
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchDomain } from '~/composables/api/domains';
-import { useCreateRisk, useFetchRisk, useUpdateRisk } from '~~/composables/api/objects';
+import { useCreateRisk, useFetchRisk, useUpdateRisk } from '~/composables/api/objects';
 
 export interface IDirtyFields {
   [field: string]: boolean;

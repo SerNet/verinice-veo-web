@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     v-model="dialog.value"
     large
     :headline="t('schemaDetailsHeadline')"
@@ -138,7 +138,7 @@
         {{ t('global.button.save') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 <script lang="ts">
 import { PropType } from 'vue';
@@ -264,13 +264,11 @@ export default defineComponent({
 </i18n>
 
 <style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
-.objectschema-type-field ::v-deep label {
+.objectschema-type-field :deep(label) {
   color: rgba(0, 0, 0, 0.6) !important;
 }
 
-.objectschema-type-field ::v-deep input {
+.objectschema-type-field :deep(input) {
   color: rgba(0, 0, 0, 0.87) !important;
 }
 </style>

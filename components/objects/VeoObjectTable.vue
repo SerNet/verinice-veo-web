@@ -519,7 +519,7 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-::v-deep {
+:deep(*) {
   .max-width-zero {
     max-width: 0;
   }

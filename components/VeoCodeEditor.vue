@@ -253,7 +253,7 @@ export default defineComponent({
 }
 
 .editor {
-  ::v-deep .cm-focused {
+  :deep(.cm-focused) {
     outline: none !important;
   }
 }
@@ -262,11 +262,11 @@ export default defineComponent({
  * Super ugly fix for resizes in a v-dialog, as codeMirror next has no refresh
  * event we could use to make the gutters as big as they should be.
  */
-::v-deep .cm-gutter-lineNumber {
+:deep(.cm-gutter-lineNumber) {
   min-height: 150px;
 }
 
-::v-deep .cm-gutterElement-lineNumber:not(:first-child) {
+:deep(.cm-gutterElement-lineNumber:not(:first-child)) {
   min-height: 18px;
 }
 </style>

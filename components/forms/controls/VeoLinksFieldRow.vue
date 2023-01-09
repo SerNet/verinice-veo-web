@@ -41,9 +41,10 @@
             text
             @click="createObjectDialogVisible = true"
           >
-            <v-icon left>
-              {{ mdiPlus }}
-            </v-icon>
+            <!--<v-icon
+              start
+              :icon="`mdiSvg:${mdiPlus}`"
+            />-->
             {{ t('create', [createButtonLabel]).toString() }}
           </v-btn>
         </template>

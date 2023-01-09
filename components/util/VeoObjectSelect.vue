@@ -53,14 +53,13 @@
       />
       {{ item.displayName }}
       <v-hover v-slot="{ hover }">
-        <v-icon
-          right
+        <!--<v-icon
+          end
           style="z-index: 5000;"
           :color="hover ? 'primary' : ''"
+          :icon="`mdiSvg:${mdiOpenInNew}`"
           @click="openItem(item)"
-        >
-          {{ mdiOpenInNew }}
-        </v-icon>
+        />-->
       </v-hover>
     </template>
   </v-autocomplete>

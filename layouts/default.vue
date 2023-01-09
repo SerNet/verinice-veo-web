@@ -16,18 +16,17 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-app>
+  <!--<v-app>
     <v-app-bar
       class="veo-app-bar"
       data-component-name="app-bar"
-      app
       flat
     >
       <v-app-bar-nav-icon
         v-if="context.$vuetify.breakpoint.xs"
         @click="drawer = true"
       />
-      <VeoBreadcrumbs write-to-title />
+      <LayoutBreadcrumbs write-to-title />
       <v-spacer />
       <DownloadDocsButton v-if="$route.path.startsWith('/docs')" />
       <VeoLanguageSwitch />
@@ -36,7 +35,7 @@
         v-if="ability.can('view', 'documentation')"
         bottom
       >
-        <template #activator="{ on }">
+        <template #activator="{ props }">
           <v-btn
             active-class="veo-active-list-item-no-background"
             class="mr-3"
@@ -45,11 +44,9 @@
             target="_blank"
             to="/docs/index"
             exact
-            v-on="on"
+            v-bind="props"
           >
-            <v-icon>
-              {{ mdiHelpCircleOutline }}
-            </v-icon>
+            <v-icon :icon="`mdiSvg:${mdiHelpCircleOutline}`" />
           </v-btn>
         </template>
         <template #default>
@@ -66,12 +63,10 @@
         icon
         to="/login"
       >
-        <v-icon>
-          {{ mdiAccountCircleOutline }}
-        </v-icon>
+        <v-icon :icon="`mdiSvg:${mdiAccountCircleOutline}`" />
       </v-btn>
     </v-app-bar>
-    <VeoPrimaryNavigation
+    <LayoutPrimaryNavigation
       v-model="drawer"
       :domain-id="domainId"
       :unit-id="unitId"
@@ -82,21 +77,22 @@
       class="overflow-hidden"
     >
       <slot />
-      <VeoCookieBanner />
+      <LayoutCookieBanner />
     </v-main>
-    <VeoGlobalAlert
+    <LayoutGlobalAlert
       v-if="alerts[0]"
       v-bind="alerts[0]"
     />
-    <VeoNewUnitDialog
+    <UnitsCreateDialog
       v-model="newUnitDialog.value"
       v-bind="newUnitDialog"
     />
-  </v-app>
+  </v-app>-->
+  <div>a123</div>
 </template>
 
 <script lang="ts" setup>
-import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
+/* import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 
 import {
   createUUIDUrlParam,
@@ -107,9 +103,9 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
 import 'intro.js/minified/introjs.min.css';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useCreateUnit, useFetchUnits } from '~~/composables/api/units';
-import { IVeoUnit } from '~~/types/VeoTypes';
-import { useRequest } from '~~/composables/api/utils/request';
+import { useCreateUnit, useFetchUnits } from '~/composables/api/units';
+import { IVeoUnit } from '~/types/VeoTypes';
+import { useRequest } from '~/composables/api/utils/request';
 
 const context = useNuxtApp();
 const { authenticated } = useVeoUser();
@@ -117,10 +113,9 @@ const route = useRoute();
 const router = useRouter();
 const { ability } = useVeoPermissions();
 
-const { alerts, displaySuccessMessage, listenToRootEvents } = useVeoAlerts();
+const { alerts, displaySuccessMessage } = useVeoAlerts();
 const { request } = useRequest();
 const { t } = useI18n();
-listenToRootEvents(context.root);
 
 useHead(() => ({
   title: 'verinice.',
@@ -178,7 +173,7 @@ const unitId = computed(() =>
   separateUUIDParam(route.params.unit as string).id.length > 0
     ? separateUUIDParam(route.params.unit as string).id
     : undefined
-);
+);*/
 </script>
 
 <style lang="scss" scoped>
@@ -187,7 +182,7 @@ const unitId = computed(() =>
   border-bottom: 1px solid $medium-grey;
 }
 
-::v-deep.v-main>.v-main__wrap {
+:deep(.v-main) > .v-main__wrap {
   background: $background-primary;
 }
 </style>

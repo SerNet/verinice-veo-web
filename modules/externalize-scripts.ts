@@ -17,26 +17,16 @@
  */
 import { writeFileSync } from 'fs';
 import { resolve } from 'path';
-import { NuxtOptions, Module } from '@nuxt/types';
 // hash-sum is also used by nuxt generator
 import hash from 'hash-sum';
-
-/**
- * Partial definition for generator
- * (as it is currently not typed)
- */
-interface Generator {
-  distNuxtPath: string;
-  options: NuxtOptions;
-  minifyHtml(this: Generator, html: string): string;
-}
+import { Nuxt } from '@nuxt/schema';
 
 /**
  * Hook into nuxt generator (will only work for files used in production)
  * to rewrite inline scripts into external scipt files
  */
-export default ((options, nuxt) => {
-  nuxt.hook('generate:before', (generator: Generator) => {
+export default ((_inlineOptions: object, nuxt: Nuxt) => {
+  /*nuxt.hook('builder:generateApp', (generator: Generator) => {
     const distNuxtPath = generator.distNuxtPath;
     const publicPath = options.build.publicPath || '';
     const _minifyHtml = generator.minifyHtml;
@@ -55,5 +45,5 @@ export default ((options, nuxt) => {
         return `<script${args} src="${publicPath}${fileName}"></script>`;
       });
     } as Generator['minifyHtml'];
-  });
+  });*/
 });

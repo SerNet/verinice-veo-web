@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     :value="value"
     :headline="t('editor.schema.properties')"
     fixed-footer
@@ -31,7 +31,7 @@
         </h2>
         <v-select
           v-model="displayLanguage"
-          :prepend-inner-icon="mdiTranslate"
+          :prepend-inner-icon="`mdiSvg:${mdiTranslate}`"
           :label="upperFirst(t('language').toString())"
           dense
           hide-details
@@ -45,7 +45,7 @@
           :key="subTypeIndex"
           cols="6"
         >
-          <VeoCard>
+          <BaseCard>
             <v-card-text>
               <v-row>
                 <v-col
@@ -67,15 +67,13 @@
                 </v-col>
                 <v-col cols="auto">
                   <v-tooltip bottom>
-                    <template #activator="{ on }">
+                    <template #activator="{ props }">
                       <v-btn
                         icon
-                        v-on="on"
+                        v-bind="props"
                         @click="deleteSubType(subTypeIndex)"
                       >
-                        <v-icon>
-                          {{ mdiTrashCanOutline }}
-                        </v-icon>
+                        <!--<v-icon :icon="`mdiSvg:${mdiTrashCanOutline}`" />-->
                       </v-btn>
                     </template>
                     <template #default>
@@ -124,25 +122,27 @@
                       :disabled="!newStatusForms[subTypeIndex] || !newStatusTextfields[subTypeIndex]"
                       @click="addStatusToSubType(subTypeIndex)"
                     >
-                      <v-icon>
-                        {{ mdiPlus }}
-                      </v-icon>
+                      <!--<v-icon
+                        :icon="`mdiSvg:${mdiPlus}`"
+                        start
+                      />-->
                       {{ t('add') }}
                     </v-btn>
                   </v-list-item-action>
                 </v-list-item>
               </v-form>
             </v-card-text>
-          </VeoCard>
+          </BaseCard>
         </v-col>
         <v-col cols="12">
           <v-btn
             text
             @click="addSubType"
           >
-            <v-icon>
-              {{ mdiPlus }}
-            </v-icon>
+            <!--<v-icon
+              :icon="`mdiSvg:${mdiPlus}`"
+              start
+            />-->
             {{ t('addSubtype') }}
           </v-btn>
         </v-col>
@@ -165,7 +165,7 @@
         {{ t('global.button.save') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 
 <script lang="ts">
@@ -176,7 +176,7 @@ import { upperFirst, cloneDeep } from 'lodash';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { CHART_COLORS, separateUUIDParam } from '~/lib/utils';
 import { Ref } from 'vue';
-import { useFetchDomain } from '~~/composables/api/domains';
+import { useFetchDomain } from '~/composables/api/domains';
 
 export default defineComponent({
   components: {

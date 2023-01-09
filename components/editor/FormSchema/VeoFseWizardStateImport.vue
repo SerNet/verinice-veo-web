@@ -23,7 +23,7 @@
     <h3 class="text-h3">
       {{ t('formSchema') }}
     </h3>
-    <VeoCard class="full-width">
+    <BaseCard class="full-width">
       <v-card-text>
         <v-select
           :value="formSchemaId"
@@ -39,7 +39,7 @@
           :submit-button-text="t('importFormSchema')"
           @schema-uploaded="$emit('update:form-schema', $event)"
         />
-        <VeoAlert
+        <BaseAlert
           :value="objectTypeMissing || !schemasCompatible"
           :type="!schemasCompatible && !objectTypeMissing ? VeoAlertType.INFO : VeoAlertType.ERROR"
           :title="!schemasCompatible && !objectTypeMissing ? t('objectSchemaIncompatible') : t('objectTypeMissing')"
@@ -61,13 +61,13 @@
               {{ t('forceProceed') }}
             </v-btn>
           </template>
-        </VeoAlert>
+        </BaseAlert>
       </v-card-text>
-    </VeoCard>
+    </BaseCard>
     <h3 class="text-h3 mt-6">
       {{ t('objectschema') }}
     </h3>
-    <VeoCard class="full-width">
+    <BaseCard class="full-width">
       <v-card-text>
         <v-checkbox
           :input-value="forceOwnSchema"
@@ -82,7 +82,7 @@
           />
         </div>
       </v-card-text>
-    </VeoCard>
+    </BaseCard>
   </v-window-item>
 </template>
 

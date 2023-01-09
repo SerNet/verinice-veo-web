@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
+  <BasePage
     title="Input Date"
     fixed-header
   >
@@ -39,7 +39,7 @@
       :form-schema="form.formSchema"
       :data="form.data"
     />
-  </VeoPage>
+  </BasePage>
 </template>
 
 <script lang="ts">

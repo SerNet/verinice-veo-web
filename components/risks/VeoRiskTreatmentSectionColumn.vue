@@ -153,11 +153,11 @@ export default defineComponent({
 
 
 <style lang="scss" scoped>
-.veo-risk-dialog__risk-treatment-selection ::v-deep.v-select__selections {
+.veo-risk-dialog__risk-treatment-selection :deep(.v-select__selections) {
   flex-wrap: nowrap;
 }
 
-::v-deep .v-small-dialog__activator__content {
+:deep(.v-small-dialog__activator__content) {
   width: 100%;
 }
 </style>

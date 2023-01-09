@@ -45,8 +45,6 @@ const router = useRouter();
 const goBackToPreviousPage = () => {
   router.back();
 };
-
-return { t, goBackToPreviousPage };
 </script>
 
 <i18n>

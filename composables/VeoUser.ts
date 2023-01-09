@@ -20,7 +20,6 @@ import Keycloak from 'keycloak-js';
 
 import { IBaseObject } from '~/lib/utils';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import LocalStorage from '~/util/LocalStorage';
 
 export interface IVeoUserSettings {
   maxUnits: number;
@@ -125,7 +124,6 @@ export const useVeoUser: () => IVeoUserComposable = () => {
    */
   const logout = async (destination?: string) => {
     if (keycloak.value) {
-      LocalStorage.clear();
       await keycloak.value.logout({
         post_logout_redirect_uri: window.location.origin + destination,
         id_token_hint: keycloak.value.idToken

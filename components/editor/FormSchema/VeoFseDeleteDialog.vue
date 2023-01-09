@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     :model-value="value"
     :headline="t('deleteControlHeadline')"
     @update:model-value="$emit('update:model-value', $event)"
@@ -40,7 +40,7 @@
         {{ t('global.button.delete') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 <script lang="ts" setup>
 defineProps({
@@ -67,7 +67,3 @@ const { t } = useI18n();
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-</style>

@@ -39,9 +39,7 @@
         color="primary"
         small
       >
-        <v-icon>
-          {{ mdiOpenInNew }}
-        </v-icon>
+        <!--<v-icon :icon="`mdiSvg:${mdiOpenInNew}`" />-->
       </v-btn>
     </template>
   </v-text-field>

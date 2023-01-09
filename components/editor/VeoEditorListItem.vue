@@ -18,15 +18,12 @@
 <template>
   <v-list-item :two-line="twoLine">
     <v-list-item-avatar size="32">
-      <v-icon
+      <!--<v-icon
         v-if="styling"
-        small
+        size="small"
         :class="styling.color"
-        color="white"
-        outlined
-        dark
-        v-text="styling.icon"
-      />
+        :icon="styling.icon"
+      />-->
     </v-list-item-avatar>
     <v-list-item-content>
       <v-list-item-title

@@ -16,12 +16,12 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPageWrapper
+  <LayoutPageWrapper
     unresponsive-page-widths
     :page-widths="[{ width: '100%', minWidth: 0 }, 'auto']"
   >
     <template #default>
-      <VeoPage
+      <BasePage
         :id="scrollWrapperId"
         data-component-name="object-form-form"
         sticky-footer
@@ -29,7 +29,7 @@
       >
         <template #default>
           <slot name="prepend-form" />
-          <VeoCard>
+          <BaseCard>
             <v-card-text>
               <VeoForm
                 v-if="!dataIsLoading"
@@ -46,13 +46,13 @@
               />
               <VeoObjectFormSkeletonLoader v-else />
             </v-card-text>
-          </VeoCard>
+          </BaseCard>
         </template>
         <template #footer>
           <slot name="append-form-outer" />
         </template>
-      </VeoPage>
-      <VeoPage
+      </BasePage>
+      <BasePage
         content-class="fill-height"
         height="100%"
         no-padding
@@ -60,7 +60,7 @@
       >
         <template #default>
           <div class="d-flex flex-row fill-height pb-13 ml-2 align-start">
-            <VeoCard
+            <BaseCard
               v-show="selectedSideContainer !== undefined"
               class="overflow-y-auto"
               style="max-height: 100%; width: 300px"
@@ -97,7 +97,7 @@
                 v-else-if="selectedSideContainer === SIDE_CONTAINERS.MESSAGES"
                 :messages="messages"
               />
-            </VeoCard>
+            </BaseCard>
             <v-btn-toggle
               v-model="selectedSideContainer"
               group
@@ -105,15 +105,15 @@
               color="primary"
             >
               <v-tooltip left>
-                <template #activator="{ on }">
+                <template #activator="{ props }">
                   <v-btn
                     data-component-name="object-form-view-tab"
                     style="border-radius: 99px"
                     icon
                     :value="SIDE_CONTAINERS.VIEW"
-                    v-on="on"
+                    v-bind="props"
                   >
-                    <v-icon v-text="mdiEyeOutline" />
+                    <!--<v-icon :icon="`mdiSvg:${mdiEyeOutline}`" />-->
                   </v-btn>
                 </template>
                 <template #default>
@@ -121,8 +121,8 @@
                 </template>
               </v-tooltip>
               <v-tooltip left>
-                <template #activator="{ on }">
-                  <div v-on="on">
+                <template #activator="{ props }">
+                  <div v-bind="props">
                     <v-btn
                       :disabled="!currentFormSchema"
                       data-component-name="object-form-toc-tab"
@@ -130,7 +130,7 @@
                       icon
                       :value="SIDE_CONTAINERS.TABLE_OF_CONTENTS"
                     >
-                      <v-icon v-text="mdiTableOfContents" />
+                      <!--<v-icon :icon="`mdiSvg:${mdiTableOfContents}`" />-->
                     </v-btn>
                   </div>
                 </template>
@@ -139,8 +139,8 @@
                 </template>
               </v-tooltip>
               <v-tooltip left>
-                <template #activator="{ on }">
-                  <div v-on="on">
+                <template #activator="{ props }">
+                  <div v-bind="props">
                     <v-btn
                       style="border-radius: 99px"
                       data-component-name="object-form-history-tab"
@@ -148,7 +148,7 @@
                       icon
                       :value="SIDE_CONTAINERS.HISTORY"
                     >
-                      <v-icon v-text="mdiHistory" />
+                      <!--<v-icon :icon="`mdiSvg:${mdiHistory}`" />-->
                     </v-btn>
                   </div>
                 </template>
@@ -157,13 +157,13 @@
                 </template>
               </v-tooltip>
               <v-tooltip left>
-                <template #activator="{ on }">
+                <template #activator="{ props }">
                   <v-btn
                     style="border-radius: 99px"
                     data-component-name="object-form-messages-tab"
                     icon
                     :value="SIDE_CONTAINERS.MESSAGES"
-                    v-on="on"
+                    v-bind="props"
                   >
                     <v-badge
                       :content="messages.errors.length + messages.warnings.length + messages.information.length"
@@ -171,7 +171,7 @@
                       :color="messages.errors.length ? 'error' : messages.warnings.length ? 'warning' : 'info'"
                       overlap
                     >
-                      <v-icon v-text="mdiInformationOutline" />
+                      <!--<v-icon :icon="`mdiSvg:${mdiInformationOutline}`" />-->
                     </v-badge>
                   </v-btn>
                 </template>
@@ -182,9 +182,9 @@
             </v-btn-toggle>
           </div>
         </template>
-      </VeoPage>
+      </BasePage>
     </template>
-  </VeoPageWrapper>
+  </LayoutPageWrapper>
 </template>
 
 <script lang="ts">
@@ -481,7 +481,6 @@ export default defineComponent({
       };
     };
 
-    // For some reason putting this in a useFetch and using fetchDecisions as the name for the fetch hook caused all useFetch to be refetched
     const { data: endpoints } = useFetchSchemas();
     const fetchDecisions = async () => {
       const toReturn: any = { ...props.objectMetaData, decisionResults: {}, inspectionFindings: [] };

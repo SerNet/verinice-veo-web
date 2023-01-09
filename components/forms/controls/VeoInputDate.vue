@@ -28,7 +28,7 @@
       max-width="350px"
       min-width="350px"
     >
-      <template #activator="{ on }">
+      <template #activator="{ props }">
         <v-text-field
           :id="objectSchemaPointer"
           :value="formattedDate"
@@ -38,10 +38,10 @@
           :class="options && options.class"
           :clearable="!options.required"
           hide-details="auto"
-          :prepend-icon="mdiCalendar"
+          :prepend-icon="`mdiSvg:${mdiCalendar}`"
           :hint="t('hint', [DATE_HINT])"
           readonly
-          v-on="on"
+          v-bind="props"
           @click:clear="$emit('input', undefined)"
         />
       </template>

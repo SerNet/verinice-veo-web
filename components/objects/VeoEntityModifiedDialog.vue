@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     :value="value && !!item"
     :headline="t('headline')"
     @input="$emit('model-value', $event)"
@@ -41,7 +41,7 @@
         {{ t('global.button.yes') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 
 <script lang="ts">

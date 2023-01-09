@@ -20,7 +20,7 @@
     <h3 class="text-h3 mt-6">
       {{ t('uploadLanguageFile') }}
     </h3>
-    <VeoCard>
+    <BaseCard>
       <template #default>
         <v-card-text>
           <v-form
@@ -33,7 +33,7 @@
               counter
               dense
               :loading="uploadingLanguageFile"
-              :prepend-icon="mdiTranslate"
+              :prepend-icon="`mdiSvg:${mdiTranslate}`"
               :rules="[requiredRule]"
               clearable
               :label="`${t('languageFile')}*`"
@@ -111,7 +111,7 @@
           <slot />
         </v-card-text>
       </template>
-    </VeoCard>
+    </BaseCard>
   </div>
 </template>
 

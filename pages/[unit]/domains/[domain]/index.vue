@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
+  <BasePage
     :title="title"
     :loading="!domain"
     padding
@@ -35,7 +35,7 @@
       type="text"
     />
     <v-row>
-      <template v-if="$fetchState.pending">
+      <template v-if="elementStatusCountIsFetching">
         <v-col
           v-for="index in 2"
           :key="index"
@@ -106,16 +106,18 @@
       </template>
     </v-row>
     <VeoWelcomeDialog
-      v-if="welcomeDialog"
-      v-model="welcomeDialog"
+      v-if="showWelcomeDialog"
+      v-model="showWelcomeDialog"
     />
-  </VeoPage>
+  </BasePage>
 </template>
 
 <script lang="ts">
+import { StorageSerializers, useStorage } from '@vueuse/core';
+
 import { separateUUIDParam } from '~/lib/utils';
-import LocalStorage from '~/util/LocalStorage';
 import { useFetchDomain, useFetchDomainElementStatusCount } from '~/composables/api/domains';
+import { LOCAL_STORAGE_KEYS } from '~/types/LocalStorage';
 
 export const ROUTE_NAME = 'unit-domains-domain';
 
@@ -129,14 +131,14 @@ export default defineComponent({
     const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
-    const welcomeDialog = ref(!LocalStorage.firstStepsCompleted);
+    const showWelcomeDialog = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
 
     // Domain specific stuff
     const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
     const { data: domain } = useFetchDomain(fetchDomainQueryParameters);
 
     const fetchDomainElementStatusCountQueryParameters = computed(() => ({ id: domainId.value, unitId: unitId.value }));
-    const { data: domainObjectInformation } = useFetchDomainElementStatusCount(fetchDomainElementStatusCountQueryParameters);
+    const { data: domainObjectInformation, isFetching: elementStatusCountIsFetching } = useFetchDomainElementStatusCount(fetchDomainElementStatusCountQueryParameters);
 
     // Create chart data
     const chartData = computed(() => {
@@ -175,9 +177,10 @@ export default defineComponent({
     return {
       chartData,
       domain,
+      elementStatusCountIsFetching,
       onBarClicked,
       title,
-      welcomeDialog,
+      showWelcomeDialog,
 
       t
     };
@@ -205,7 +208,7 @@ export default defineComponent({
   height: 18.89;
   width: 300px;
 
-  ::v-deep .v-skeleton-loader__text {
+  :deep(.v-skeleton-loader__text) {
     height: 16px;
   }
 }

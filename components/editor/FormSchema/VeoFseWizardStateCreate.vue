@@ -30,7 +30,7 @@
         role="submit"
         class="d-none"
       >
-      <VeoCard
+      <BaseCard
         class="mb-4"
       >
         <v-card-text>
@@ -79,8 +79,8 @@
             </v-col>
           </v-row>
         </v-card-text>
-      </VeoCard>
-      <VeoCard>
+      </BaseCard>
+      <BaseCard>
         <v-card-text>
           <v-row
             no-gutters
@@ -151,7 +151,7 @@
             </v-col>
           </v-row>
         </v-card-text>
-      </VeoCard>
+      </BaseCard>
     </v-form>
     {{ t('global.input.requiredfields') }}
   </v-window-item>
@@ -257,7 +257,7 @@ span {
 }
 
 // For some reason the chevron showed up in the upload component
-::v-deep .v-slide-group__next {
+:deep(.v-slide-group__next) {
   display: none;
 }
 </style>

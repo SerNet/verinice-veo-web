@@ -1,0 +1,71 @@
+/*
+ * verinice.veo web
+ * Copyright (C) 2023  Jonas Heitmann
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+$headings: (
+  'h1': (
+    'size': 1.4rem,
+    'weight': 500,
+    'line-height': 2rem
+  ),
+  'h2': (
+    'size': 1.3rem,
+    'weight': 500,
+    'line-height': 1.8rem
+  ),
+  'h3': (
+    'size': 1.2rem,
+    'weight': 500,
+    'line-height': 1.7rem
+  ),
+  'h4': (
+    'size': 1.1rem,
+    'weight': 500,
+    'line-height': 1.6rem
+  ),
+  'h5': (
+    'size': 1rem,
+    'weight': 500,
+    'line-height': 1.5rem
+  )
+);
+
+$list-item-dense-title-font-weight: 400;
+$card-border-radius: 12px;
+$dialog-border-radius: 12px;
+$list-nav-border-radius: 12px;
+$menu-content-elevation: 4;
+$card-title-font-size: 1.3rem; // Equals h2
+$card-title-font-weight: 500; // Equals h2
+$card-title-line-height: 1.8rem; // Equals h2
+
+// Overriding default styles
+.v-application--is-ltr .v-list-item__icon:first-child {
+  margin-right: 16px;
+}
+
+.text-h1, .text-h2, .text-h3, .text-h4, .text-h5 {
+  color: #000000
+}
+
+// Fixing a vuetify bug that causes child-subgroups to also get expanded if the parent subgroup is expanded
+.v-list-group--sub-group.v-list-group--active .v-list-item__icon.v-list-group__header__prepend-icon .v-icon {
+  transform: none
+}
+
+.v-list-group--sub-group.v-list-group--active > .v-list-group__header > .v-list-item__icon.v-list-group__header__prepend-icon .v-icon {
+  transform: rotate(-180deg)
+}

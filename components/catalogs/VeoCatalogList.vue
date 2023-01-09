@@ -74,7 +74,7 @@ const generateRoute = (catalogId: string) => `/${route.params.unit}/domains/${ro
   "en": {
     "applicableItems": "applicable items"
   },
-  "en": {
+  "de": {
     "applicableItems": "anwendbare Einträge"
   }
 }

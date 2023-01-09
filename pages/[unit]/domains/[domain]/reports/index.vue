@@ -16,22 +16,22 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage :title="t('breadcrumbs.reports')">
+  <BasePage :title="t('breadcrumbs.reports')">
     <template #header>
       <p class="mt-4 text-body-1">
         {{ t('hint') }}
       </p>
     </template>
     <template #default>
-      <VeoCard>
+      <BaseCard>
         <VeoReportList
           :items="reports"
           :loading="isFetching"
           @create-report="createReport"
         />
-      </VeoCard>
+      </BaseCard>
     </template>
-  </VeoPage>
+  </BasePage>
 </template>
 
 <script lang="ts">

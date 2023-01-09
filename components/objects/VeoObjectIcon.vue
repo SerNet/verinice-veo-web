@@ -23,19 +23,17 @@
       v-bind="$attrs"
       :icon="icon.icon"
     />
-    <v-icon
+    <!--<v-icon
       v-else-if="icon && icon.library === 'mdi'"
       v-bind="$attrs"
-    >
-      {{ icon.icon }}
-    </v-icon>
-    <v-icon
+      :icon="`mdiSvg:${icon.icon}`"
+    />-->
+    <!--<v-icon
       v-if="isComposite"
       class="veo-object-icon--composite"
       color="primary"
-    >
-      {{ mdiDotsHorizontal }}
-    </v-icon>
+      :icon="`mdiSvg:${mdiDotsHorizontal}`"
+    />-->
   </div>
 </template>
 

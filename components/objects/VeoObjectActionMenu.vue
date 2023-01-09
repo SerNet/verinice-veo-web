@@ -36,12 +36,14 @@
           fab
           data-component-name="object-details-actions-button"
         >
-          <v-icon v-if="speedDialIsOpen && !disabled && allowedActions.length">
-            {{ mdiClose }}
-          </v-icon>
-          <v-icon v-else>
-            {{ mdiPlus }}
-          </v-icon>
+          <!--<v-icon
+            v-if="speedDialIsOpen && !disabled && allowedActions.length"
+            :icon="`mdiSvg:${mdiClose}`"
+          />
+          <v-icon
+            v-else
+            :icon="`mdiSvg:${mdiPlus}`"
+          />-->
         </v-btn>
       </template>
       <template
@@ -58,9 +60,10 @@
             @click="action.action"
           >
             {{ action.title }}
-            <v-icon right>
-              {{ action.icon }}
-            </v-icon>
+            <!--<v-icon
+              end
+              :icon="`mdiSvg:${action.icon}`"
+            />-->
           </v-btn>
         </div>
       </template>
@@ -343,7 +346,7 @@ export default defineComponent({
 </i18n>
 
 <style lang="scss" scoped>
-::v-deep .v-speed-dial__list {
+:deep(.v-speed-dial__list) {
   align-items: flex-end !important;
   text-align: right;
 }

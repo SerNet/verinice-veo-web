@@ -24,18 +24,18 @@
   >
     <v-row no-gutters>
       <v-col cols="auto">
-        <v-icon
-          small
+        <!--<v-icon
+          size="small"
           class="handle pr-1"
-        >
-          mdi-menu
-        </v-icon>
+          :icon="`mdiSvg:${mdiMenu}`"
+        />-->
       </v-col>
       <v-col>
         <div class="text-h5 font-weight-regular text-truncate">
-          {{ label }} <VeoFseRuleDisplay
-            v-if="ruleDisplayIcon"
-            :value="ruleDisplayIcon"
+          {{ label }}
+          <VeoFseRuleDisplay
+            v-if="effect"
+            :value="effect"
           />
         </div>
       </v-col>
@@ -48,24 +48,20 @@
           x-small
           @click="showEdit"
         >
-          <v-icon
-            dense
-            small
-          >
-            mdi-pencil
-          </v-icon>
+          <!--<v-icon
+            size="small"
+            :icon="`mdiSvg:${mdiPencil}`"
+          />-->
         </v-btn>
         <v-btn
           icon
           x-small
           @click="showDelete"
         >
-          <v-icon
-            dense
-            small
-          >
-            mdi-trash-can-outline
-          </v-icon>
+          <!--<v-icon
+            size="small"
+            :icon="`mdiSvg:${mdiTrashCanOutline}`"
+          />-->
         </v-btn>
       </v-col>
     </v-row>
@@ -87,8 +83,8 @@
 </template>
 
 <script lang="ts">
+import { mdiMenu, mdiPencil, mdiTrashCanOutline } from '@mdi/js';
 import { PropType } from 'vue';
-import { getRuleEffectIcons } from '~/lib/FormSchemaHelper';
 
 import { IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 
@@ -125,12 +121,15 @@ export default {
     return {
       editDialog: false,
       deleteDialog: false,
-      label: ''
+      label: '',
+      mdiMenu,
+      mdiPencil,
+      mdiTrashCanOutline
     };
   },
   computed: {
-    ruleDisplayIcon(): string | undefined {
-      return getRuleEffectIcons(this.value?.rule?.effect);
+    effect(): string | undefined {
+      return this.value?.rule?.effect;
     }
   },
   watch: {
@@ -167,8 +166,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
 .fse-label {
   min-width: 250px;
   overflow: hidden;

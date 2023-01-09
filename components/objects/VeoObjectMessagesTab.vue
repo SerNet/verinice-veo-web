@@ -64,13 +64,6 @@ watch(
 );
 
 const getMessagesBySeverity = (severity: string) => (props.messages as any)[severity] || [];
-
-return {
-  getMessagesBySeverity,
-
-  t,
-  upperFirst
-};
 </script>
 
 <i18n>

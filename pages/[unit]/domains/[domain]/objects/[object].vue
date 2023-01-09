@@ -17,7 +17,7 @@
 -->
 <template>
   <VeoObjectNotFound v-if="!loading && notFoundError" />
-  <VeoPageWrapper
+  <LayoutPageWrapper
     v-else
     class="px-4 pt-4"
     collapsable-left
@@ -32,7 +32,7 @@
     @page-collapsed="onPageCollapsed"
   >
     <template #default>
-      <VeoPage
+      <BasePage
         sticky-footer
         data-component-name="object-details-details"
         no-padding
@@ -59,8 +59,8 @@
             @reload="updateObjectRelationships"
           />
         </template>
-      </VeoPage>
-      <VeoPage
+      </BasePage>
+      <BasePage
         content-class="fill-height"
         no-padding
         data-component-name="object-details-form"
@@ -87,7 +87,7 @@
               v-if="formDataIsRevision"
               #prepend-form
             >
-              <VeoAlert
+              <BaseAlert
                 :value="true"
                 :type="VeoAlertType.INFO"
                 no-close-button
@@ -155,9 +155,9 @@
             @success="onDPIALinked"
           />
         </template>
-      </VeoPage>
+      </BasePage>
     </template>
-  </VeoPageWrapper>
+  </LayoutPageWrapper>
 </template>
 
 <script lang="ts">

@@ -20,7 +20,7 @@
     <h2 class="text-h2 mt-2 mb-1">
       {{ upperFirst(t('residualRisk').toString()) }}
     </h2>
-    <VeoCard>
+    <BaseCard>
       <v-card-text class="pa-3 px-4">
         <v-row>
           <template v-for="protectionGoal of riskDefinition.categories">
@@ -37,7 +37,7 @@
           </template>
         </v-row>
       </v-card-text>
-    </VeoCard>
+    </BaseCard>
   </div>
 </template>
 

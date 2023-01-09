@@ -64,9 +64,10 @@
               color="primary"
               @click.stop="showAddDialog('aspect')"
             >
-              <v-icon small>
-                mdi-plus
-              </v-icon>
+              <!--<v-icon
+                size="small"
+                :icon="`mdiSvg:${mdiPlus}`"
+              />-->
               <span>{{ t('editor.customaspects.add') }}</span>
             </v-btn>
           </div>
@@ -114,9 +115,10 @@
               color="primary"
               @click.stop="showAddDialog('link')"
             >
-              <v-icon small>
-                mdi-plus
-              </v-icon>
+              <!--<v-icon
+                size="small"
+                :icon="`mdiSvg:${mdiPlus}`"
+              />-->
               <span>{{ t('addCustomLink') }}</span>
             </v-btn>
           </div>
@@ -174,6 +176,7 @@
 
 <script lang="ts">
 import { Ref } from 'vue';
+import { mdiPlus } from '@mdi/js';
 
 import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
 import { IInputType, INPUT_TYPES } from '~/types/VeoEditor';
@@ -353,6 +356,7 @@ export default defineComponent({
       doDeleteItem,
       formattedLinkHeader,
 
+      mdiPlus,
       t
     };
   }
@@ -373,15 +377,13 @@ export default defineComponent({
 </i18n>
 
 <style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
 .v-expansion-panel-header {
   min-height: auto !important;
   padding-left: 0;
   padding-right: 0;
 }
 
-.v-expansion-panel-content > ::v-deep.v-expansion-panel-content__wrap {
+.v-expansion-panel-content > :-deep(.v-expansion-panel-content__wrap) {
   padding-left: 0;
   padding-right: 0;
 }
@@ -390,7 +392,7 @@ export default defineComponent({
   margin: 0 !important;
   padding: 0 !important;
 
-  ::v-deep .language-json {
+  :deep(.language-json) {
     margin: 0 !important;
   }
 }

@@ -30,14 +30,14 @@
           :key="btn.id"
           bottom
         >
-          <template #activator="{on}">
+          <template #activator="{ props }">
             <v-btn
               icon
               :disabled="ability.cannot('manage', 'objects')"
+              v-bind="props"
               @click="btn.action(item)"
-              v-on="on"
             >
-              <v-icon v-text="btn.icon" />
+              <!--<v-icon :icon="btn.icon" />-->
             </v-btn>
           </template>
           {{ btn.label }}
@@ -74,7 +74,7 @@ import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities'
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemas } from '~/composables/api/schemas';
 import { useDeleteRisk, useFetchChildObjects, useFetchChildScopes, useFetchParentObjects, useFetchRisks } from '~/composables/api/objects';
-import { useFetchDomain } from '~~/composables/api/domains';
+import { useFetchDomain } from '~/composables/api/domains';
 
 export default defineComponent({
   name: 'VeoObjectDetailsTab',
@@ -243,6 +243,8 @@ export default defineComponent({
                       break;
                   }
 
+                  icon = `mdiSvg:${icon}`;
+
                   return h(VTooltip, {
                     props: {
                       bottom: true,
@@ -274,7 +276,7 @@ export default defineComponent({
           {
             id: 'delete',
             label: upperFirst(t('deleteRisk').toString()),
-            icon: mdiTrashCanOutline,
+            icon: `mdiSvg:${mdiTrashCanOutline}`,
             async action(item: IVeoRisk) {
               try {
                 const { id } = getEntityDetailsFromLink(item.scenario);
@@ -290,7 +292,7 @@ export default defineComponent({
           {
             id: 'clone',
             label: upperFirst(t('cloneObject').toString()),
-            icon: mdiContentCopy,
+            icon: `mdiSvg:${mdiContentCopy}`,
             async action(item: IVeoEntity) {
               try {
                 const clonedObjectId = (
@@ -316,7 +318,7 @@ export default defineComponent({
           {
             id: 'unlink',
             label: upperFirst(t(props.object?.type === 'scope' || props.type === 'parentScopes' ? 'removeFromScope' : 'removeFromObject').toString()),
-            icon: mdiLinkOff,
+            icon: `mdiSvg:${mdiLinkOff}`,
             action: async (item: IVeoEntity) => {
               const parent = await $api.entity.fetch(schemas.value?.[item.type] || '', item.id);
               if (['parentScopes', 'parentObjects'].includes(props.type)) {

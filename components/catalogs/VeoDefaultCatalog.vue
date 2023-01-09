@@ -20,7 +20,7 @@
     <p class="text-body-1">
       <slot name="header" />
     </p>
-    <VeoCard>
+    <BaseCard>
       <VeoCatalogSelectionList
         v-model="selectedItems"
         :items="availableItems"
@@ -28,7 +28,7 @@
         :headers="catalogTableHeaders"
         selectable
       />
-    </VeoCard>
+    </BaseCard>
     <v-row
       dense
       class="mt-4"

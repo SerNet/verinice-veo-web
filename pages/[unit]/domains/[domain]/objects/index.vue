@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
+  <BasePage
     :title="upperFirst(t('objectOverview').toString())"
     data-component-name="object-overview-page"
     sticky-footer
@@ -44,7 +44,7 @@
         :required-fields="['objectType']"
         @update:filter="updateRouteQuery"
       />
-      <VeoCard v-if="objectType">
+      <BaseCard v-if="objectType">
         <VeoObjectTable
           :items="items"
           :loading="isLoading"
@@ -61,22 +61,22 @@
               :key="btn.id"
               bottom
             >
-              <template #activator="{on}">
+              <template #activator="{ props }">
                 <v-btn
                   icon
                   :data-component-name="`object-overview-${btn.id}-button`"
                   :disabled="ability.cannot('manage', 'objects')"
+                  v-bind="props"
                   @click="btn.action(item)"
-                  v-on="on"
                 >
-                  <v-icon v-text="btn.icon" />
+                  <!--<v-icon :icon="btn.icon" />-->
                 </v-btn>
               </template>
               {{ btn.label }}
             </v-tooltip>
           </template>
         </VeoObjectTable>
-      </VeoCard>
+      </BaseCard>
       <VeoObjectTypeError v-else>
         <v-btn
           color="primary"
@@ -93,7 +93,7 @@
         left
       >
         <template
-          #activator="{ on }"
+          #activator="{ props }"
         >
           <v-btn
             color="primary"
@@ -103,12 +103,10 @@
             absolute
             style="bottom: 12px; right: 0"
             data-component-name="create-object-button"
+            v-bind="props"
             @click="createDialogVisible = true"
-            v-on="on"
           >
-            <v-icon>
-              {{ mdiPlus }}
-            </v-icon>
+            <!--<v-icon :icon="`mdiSvg:${mdiPlus}`" />-->
           </v-btn>
           <div style="height: 76px" />
         </template>
@@ -117,7 +115,7 @@
         </template>
       </v-tooltip>
     </template>
-  </VeoPage>
+  </BasePage>
 </template>
 
 <script lang="ts">
@@ -345,7 +343,7 @@ export default defineComponent({
       {
         id: 'clone',
         label: upperFirst(t('cloneObject').toString()),
-        icon: mdiContentCopy,
+        icon: `mdiSvg:${mdiContentCopy}`,
         async action(item: IVeoEntity) {
           try {
             await clone(item);
@@ -357,7 +355,7 @@ export default defineComponent({
       {
         id: 'delete',
         label: upperFirst(t('deleteObject').toString()),
-        icon: mdiTrashCanOutline,
+        icon: `mdiSvg:${mdiTrashCanOutline}`,
         action(item: IVeoEntity) {
           itemDelete.value = item;
         }

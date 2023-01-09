@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     v-bind="$attrs"
     large
     :headline="title"
@@ -47,7 +47,7 @@
         :required-fields="['objectType']"
         @update:filter="updateFilter"
       />
-      <VeoCard>
+      <BaseCard>
         <VeoObjectTable
           v-model="modifiedSelectedItems"
           show-select
@@ -57,7 +57,7 @@
           :loading="objectsLoading || childrenLoading || parentsLoading"
           @page-change="onPageChange"
         />
-      </VeoCard>
+      </BaseCard>
     </template>
     <template #dialog-options>
       <v-btn
@@ -77,7 +77,7 @@
         {{ t('global.button.save') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 
 <script lang="ts">

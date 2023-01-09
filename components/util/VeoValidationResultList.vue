@@ -48,16 +48,14 @@
             right
             offset-y
           >
-            <template #activator="{ on }">
+            <template #activator="{ props: menu }">
               <v-tooltip bottom>
-                <template #activator="{ on: on2}">
+                <template #activator="{ props: tooltip}">
                   <v-btn
                     icon
-                    v-on="{ ...on2, ...on }"
+                    v-bind="mergeProps(menu, tooltip)"
                   >
-                    <v-icon>
-                      {{ mdiLightbulbOutline }}
-                    </v-icon>
+                    <!--<v-icon :icon="`mdiSvg:${mdiLightbulbOutline}`" />-->
                   </v-btn>
                 </template>
                 <template #default>
@@ -80,47 +78,36 @@
   </v-list>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { mergeProps, PropType } from 'vue';
 import { mdiLightbulbOutline } from '@mdi/js';
 
-import { INestedMenuEntries } from '../layout/VeoNestedMenu.vue';
+import { INestedMenuEntries } from '../layout/NestedMenu.vue';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
-import { PropType } from 'vue';
 
-export default defineComponent({
-  props: {
-    items: {
-      type: Array as PropType<VeoSchemaValidatorMessage[]>,
-      default: () => []
-    },
-    noErrorPlaceholderVisible: {
-      type: Boolean,
-      default: false
-    },
-    fixingAllowed: {
-      type: Boolean,
-      default: false
-    }
+defineProps({
+  items: {
+    type: Array as PropType<VeoSchemaValidatorMessage[]>,
+    default: () => []
   },
-  setup() {
-    const { locale, t } = useI18n();
-
-    const formattedActions: (actions: VeoSchemaValidatorMessage['actions']) => INestedMenuEntries[] = (actions) =>
-      (actions || []).map((action) => ({
-        key: action.title,
-        title: action.title,
-        action: action.callback
-      }));
-
-    return {
-      formattedActions,
-      locale,
-
-      t,
-      mdiLightbulbOutline
-    };
+  noErrorPlaceholderVisible: {
+    type: Boolean,
+    default: false
+  },
+  fixingAllowed: {
+    type: Boolean,
+    default: false
   }
 });
+
+const { t } = useI18n();
+
+const formattedActions: (actions: VeoSchemaValidatorMessage['actions']) => INestedMenuEntries[] = (actions) =>
+  (actions || []).map((action) => ({
+    key: action.title,
+    title: action.title,
+    action: action.callback
+  }));
 </script>
 
 <i18n>

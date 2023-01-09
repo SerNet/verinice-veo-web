@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
+  <BasePage
     :title="upperFirst(t('risks').toString())"
     data-component-name="risk-page"
   >
@@ -25,7 +25,7 @@
         <p class="pt-3 mb-0 text-body-1">
           {{ t('selectRiskMatrixToView') }}
         </p>
-        <VeoTabs>
+        <BaseTabs>
           <template
             v-if="domain"
             #tabs
@@ -60,10 +60,10 @@
               <nuxt-page />
             </v-tab-item>
           </template>
-        </VeoTabs>
+        </BaseTabs>
       </div>
     </template>
-  </VeoPage>
+  </BasePage>
 </template>
 
 <script lang="ts">
@@ -71,7 +71,7 @@ import { upperFirst } from 'lodash';
 
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain } from '~/types/VeoTypes';
-import { useFetchDomain } from '~~/composables/api/domains';
+import { useFetchDomain } from '~/composables/api/domains';
 
 export default defineComponent({
   setup() {

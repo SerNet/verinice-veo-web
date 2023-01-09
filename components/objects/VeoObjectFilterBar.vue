@@ -34,9 +34,7 @@
         style="outline: 1px solid black"
         @click="filterDialogVisible = true"
       >
-        <v-icon>
-          {{ mdiFilter }}
-        </v-icon>
+        <!--<v-icon :icon="`mdiSvg:${mdiFilter}`" />-->
         {{ upperFirst(t('filter').toString()) }}
       </v-btn>
     </v-col>

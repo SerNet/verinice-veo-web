@@ -50,18 +50,14 @@
         icon
         @click="$emit('edit-item', $event)"
       >
-        <v-icon>
-          mdi-pencil
-        </v-icon>
+        <!--<v-icon :icon="`mdiSvg:${mdiPencil}`" />-->
       </v-btn>
       <v-btn
         class="delete-button"
         icon
         @click="$emit('delete-item', $event)"
       >
-        <v-icon>
-          mdi-trash-can-outline
-        </v-icon>
+        <!--<v-icon :icon="`mdiSvg:${mdiTrashCanOutline}`" />-->
       </v-btn>
     </v-list-item-action>
   </v-list-item>
@@ -69,6 +65,7 @@
 <script lang="ts" setup>
 import { upperFirst } from 'lodash';
 import { PropType } from 'vue';
+import { mdiPencil, mdiTrashCanOutline } from '@mdi/js';
 
 import { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2';
 import { IInputType } from '~/types/VeoEditor';

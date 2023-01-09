@@ -31,15 +31,15 @@
           class="text-decoration-none"
           style="width: 100%"
         >
-          <VeoAppBarLogo
+          <LayoutAppBarLogo
             style="height: 64px"
             class="d-flex align-center"
           />
         </nuxt-link>
       </div>
       <v-spacer />
-      <VeoLanguageSwitch class="mx-3" />
-      <VeoAppAccountBtn
+      <LayoutLanguageSwitch class="mx-3" />
+      <LayoutAccountBtn
         v-if="profile"
         :username="profile.username"
         :prename="profile.firstName"
@@ -53,14 +53,12 @@
         icon
         :href="$config.accountPath"
       >
-        <v-icon>
-          {{ mdiAccountCircleOutline }}
-        </v-icon>
+        <!--<v-icon :icon="`mdiSvg:${mdiAccountCircleOutline}`" />-->
       </v-btn>
     </v-app-bar>
     <v-main>
       <slot />
-      <VeoCookieBanner />
+      <LayoutCookieBanner />
     </v-main>
   </v-app>
 </template>
@@ -96,16 +94,16 @@ export default defineComponent({
   background-color: $background-accent !important;
   border-bottom: 1px solid $medium-grey;
 
-  ::v-deep.v-toolbar__content {
+  :deep(.v-toolbar__content) {
     padding-left: 0;
   }
 }
 
-::v-deep.v-main > .v-main__wrap {
+:deep(.v-main) > .v-main__wrap {
   background: $background-primary;
 }
 
-::v-deep.v-main > .v-main__wrap {
+:deep(.v-main) > .v-main__wrap {
   display: flex;
   flex-direction: column;
 }

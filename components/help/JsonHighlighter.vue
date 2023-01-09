@@ -49,7 +49,7 @@ export default {
 // Good resource how to include external .css as inline in scss
 // https://github.com/sass/node-sass/issues/2362#issuecomment-388634848
 .json-highlighter {
-  @import '~prismjs/themes/prism-okaidia';
+  @import 'prismjs/themes/prism-okaidia';
   code::before,
   code::after {
     content: none;

@@ -16,14 +16,14 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     v-model="dialog"
     v-bind="$attrs"
     :headline="upperFirst(t('filterList').toString())"
   >
     <template #default>
       <v-form v-model="filterFormValid">
-        <VeoCard>
+        <BaseCard>
           <v-card-text>
             <v-list dense>
               <VeoObjectFilter
@@ -36,8 +36,8 @@
               />
             </v-list>
           </v-card-text>
-        </VeoCard>
-        <VeoCard
+        </BaseCard>
+        <BaseCard
           v-if="showAllFilters"
           class="mt-2"
         >
@@ -53,29 +53,33 @@
               />
             </v-list>
           </v-card-text>
-        </VeoCard>
+        </BaseCard>
         <div class="d-flex justify-center fill-width my-2">
           <v-btn
             text
             @click="showAllFilters = !showAllFilters"
           >
             <template v-if="showAllFilters">
-              <v-icon left>
-                {{ mdiChevronUp }}
-              </v-icon>
+              <v-icon
+                start
+                :icon="`mdiSvg:${mdiChevronUp}`"
+              />
               <span>{{ upperFirst(t('collapseOptions').toString()) }}</span>
-              <v-icon right>
-                {{ mdiChevronUp }}
-              </v-icon>
+              <v-icon
+                end
+                :icon="`mdiSvg:${mdiChevronUp}`"
+              />
             </template>
             <template v-else>
-              <v-icon left>
-                {{ mdiChevronDown }}
-              </v-icon>
+              <v-icon
+                start
+                :icon="`mdiSvg:${mdiChevronDown}`"
+              />
               <span>{{ upperFirst(t('expandOptions').toString()) }}</span>
-              <v-icon right>
-                {{ mdiChevronDown }}
-              </v-icon>
+              <v-icon
+                end
+                :icon="`mdiSvg:${mdiChevronDown}`"
+              />
             </template>
           </v-btn>
         </div>
@@ -98,7 +102,7 @@
         {{ t(`submitFilter`) }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 
 <script lang="ts">

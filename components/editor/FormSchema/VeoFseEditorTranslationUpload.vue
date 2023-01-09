@@ -17,14 +17,14 @@
 -->
 <template>
   <div>
-    <VeoAlert
+    <BaseAlert
       :value="true"
       flat
       no-close-button
       :type="VeoAlertType.INFO"
     >
       {{ t('uploadOverwrite') }}
-    </VeoAlert>
+    </BaseAlert>
     <VeoEditorTranslationUpload
       v-bind="$props"
       :import-function="importFunction"
@@ -41,7 +41,7 @@
               {{ t('result') }}
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <VeoAlert
+              <BaseAlert
                 :value="true"
                 :title="t('importedTranslations')"
                 flat
@@ -65,8 +65,8 @@
                     </ul>
                   </div>
                 </template>
-              </VeoAlert>
-              <VeoAlert
+              </BaseAlert>
+              <BaseAlert
                 :value="true"
                 :title="t('duplicateTranslations')"
                 flat
@@ -90,8 +90,8 @@
                     </ul>
                   </div>
                 </template>
-              </VeoAlert>
-              <VeoAlert
+              </BaseAlert>
+              <BaseAlert
                 :value="!!unusedTranslations.length"
                 :title="t('unusedTranslations')"
                 flat
@@ -108,7 +108,7 @@
                     </li>
                   </ul>
                 </template>
-              </VeoAlert>
+              </BaseAlert>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>

@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoAlert
+  <BaseAlert
     :value="true"
     :type="piaMandatory ? VeoAlertType.INFO : VeoAlertType.SUCCESS"
     no-close-button
@@ -35,7 +35,7 @@
         tag="span"
       ><br></i18n>
     </span>
-  </VeoAlert>
+  </BaseAlert>
 </template>
 
 <script lang="ts">

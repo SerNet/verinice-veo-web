@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
+  <BaseDialog
     :key="formSchema.scope"
     v-model="dialog.value"
     :headline="t('editControlHeadline')"
@@ -27,7 +27,7 @@
       <h3 class="text-h3">
         {{ upperFirst(t('common').toString()) }}
       </h3>
-      <VeoCard>
+      <BaseCard>
         <v-card-text>
           <v-form>
             <v-row
@@ -133,11 +133,11 @@
           </v-form>
           <small>{{ t('global.input.requiredfields') }}</small>
         </v-card-text>
-      </VeoCard>
+      </BaseCard>
       <h3 class="text-h3 mt-6">
         {{ t('linkAttributes') }}
       </h3>
-      <VeoCard v-if="activeControlType.name === 'LinksField' && formSchemaElements.length > 0">
+      <BaseCard v-if="activeControlType.name === 'LinksField' && formSchemaElements.length > 0">
         <Draggable
           class="dragArea d-flex flex-column fill-width fill-height"
           tag="div"
@@ -168,7 +168,7 @@
             />
           </div>
         </Draggable>
-      </VeoCard>
+      </BaseCard>
     </template>
     <template #dialog-options>
       <v-btn
@@ -186,7 +186,7 @@
         {{ t('global.button.save') }}
       </v-btn>
     </template>
-  </VeoDialog>
+  </BaseDialog>
 </template>
 <script lang="ts">
 import Draggable from 'vuedraggable';
@@ -491,7 +491,3 @@ export default defineComponent({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-</style>

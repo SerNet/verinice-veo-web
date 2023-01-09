@@ -55,19 +55,18 @@
       align="center"
     >
       <v-col cols="auto">
-        <v-icon
-          dense
-          small
+        <!--<v-icon
+          size="small"
           class="handle pr-1"
-        >
-          mdi-menu
-        </v-icon>
+          :icon="`mdiSvg:${mdiMenu}`"
+        />-->
       </v-col>
       <v-col>
         <div class="text-h5 font-weight-regular text-truncate">
-          {{ $t('group') }} <VeoFseRuleDisplay
-            v-if="ruleDisplayIcon"
-            :value="ruleDisplayIcon"
+          {{ $t('group') }}
+          <VeoFseRuleDisplay
+            v-if="effect"
+            :value="effect"
           />
         </div>
       </v-col>
@@ -80,24 +79,20 @@
           x-small
           @click="showEdit"
         >
-          <v-icon
-            dense
-            small
-          >
-            mdi-pencil
-          </v-icon>
+          <!--<v-icon
+            size="small"
+            :icon="`mdiSvg:${mdiPencil}`"
+          />-->
         </v-btn>
         <v-btn
           icon
           x-small
           @click="showDelete"
         >
-          <v-icon
-            dense
-            small
-          >
-            mdi-trash-can-outline
-          </v-icon>
+          <!--<v-icon
+            size="small"
+            :icon="`mdiSvg:${mdiTrashCanOutline}`"
+          />-->
         </v-btn>
       </v-col>
     </v-row>
@@ -141,8 +136,8 @@
 
 <script lang="ts">
 import { PropType } from 'vue';
+import { mdiMenu, mdiPencil, mdiTrashCanOutline } from '@mdi/js';
 import Draggable from 'vuedraggable';
-import { getRuleEffectIcons } from '~/lib/FormSchemaHelper';
 
 import { IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 
@@ -186,7 +181,10 @@ export default {
     return {
       editDialog: false,
       deleteDialog: false,
-      label: ''
+      label: '',
+      mdiMenu,
+      mdiPencil,
+      mdiTrashCanOutline
     };
   },
   computed: {
@@ -201,8 +199,8 @@ export default {
     dynamicClasses(): string[] {
       return [this.directionClass];
     },
-    ruleDisplayIcon(): string | undefined {
-      return getRuleEffectIcons(this.value?.rule?.effect);
+    effect(): string | undefined {
+      return this.value?.rule?.effect;
     }
   },
   watch: {
@@ -252,8 +250,6 @@ export default {
 </i18n>
 
 <style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
 .dropzone-placeholder {
   position: absolute;
   width: 100%;
