@@ -19,7 +19,7 @@
   <div>
     <div class="preview-controls justify-space-between pb-2">
       <v-btn
-        text
+        variant="text"
         plain
         to="/docs"
       >
@@ -27,7 +27,7 @@
       </v-btn>
       <v-btn
         id="print-button"
-        text
+        variant="text"
         color="primary"
       >
         {{ t('print') }}
@@ -37,20 +37,22 @@
       <template v-if="documents">
         <TableOfContents
           class="page"
-          children-property="childItems"
-          :value="documents"
+          :model-value="navigation"
         />
         <div
           v-for="document in documents"
-          :id="document.path"
-          :key="document.path"
+          :id="document._path"
+          :key="document._path"
           class="page"
         >
           <h2>{{ document.title }}</h2>
-          <NuxtContent :document="document" />
-          <div class="veo-pdf-preview-chapter-context">
-            {{ getTranslatedHierarchyAsString(document) }}
+          <div>
+            <ContentRendererMarkdown :value="document" />
           </div>
+          <div class="veo-pdf-preview-chapter-context">
+            {{ getTranslatedHierarchyAsString(document._path) }}
+          </div>
+
           <div class="veo-pdf-preview-copyright">
             <p>verinice.veo {{ t('documentation') }}<br>&copy; 2022, SerNet GmbH</p>
           </div>
@@ -59,97 +61,75 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { upperFirst } from 'lodash';
+<script lang="ts" setup>
+import { useDocs, useDocNavigationFlat } from '~/composables/docs';
 
-import { DocPageFetchReturn, useDocs } from '~/composables/docs';
-export default defineComponent({
-  layout: 'print',
-  validate({ route, redirect }) {
-    if ('print' in route.query) {
-      return true;
-    } else {
-      redirect('/docs/index');
-      return false;
-    }
-  },
-  setup() {
-    const route = useRoute();
-    const { locale, t } = useI18n();
-    const lang = route.query.lang?.toString() || undefined;
-    if (lang) {
-      locale.value = lang;
-    }
-    // It is possible to a query parameter root to only print the contents of a folder/chapter
-    const root = [...(route.query.root || [])].join('') || undefined;
-    const documents = useDocs({
-      root,
-      createDirs: true,
-      buildItem(item) {
-        return {
-          ...item,
-          name: item.isDir ? `${upperFirst(item.slug)} (${item.path})` : `${item.title || item.slug} (${item.path})`,
-          to: item.path
-        };
-      }
-    });
+definePageMeta({ layout: 'print' });
 
-    const title = computed(() => t('documentation'));
+const route = useRoute();
+const router = useRouter();
+const { locale, t } = useI18n();
 
-    const documentsAsMap = computed(() => new Map((documents.value || []).map((document) => [document.path, document])));
+// Redirect user if he enters this page without the print query parameter, as this page is only for generating the pdf file
+if(!('print' in route.query)) {
+  router.push('/docs/index');
+}
 
-    const getTranslatedHierarchyAsString = (document: DocPageFetchReturn) => {
-      const segments = [...document.segments];
+const lang = route.query.lang?.toString() || undefined;
+if (lang) {
+  locale.value = lang;
+}
+// It is possible to a query parameter root to only print the contents of a folder/chapter
+const root = [...(route.query.root || [])].join('') || undefined;
+const documents = useDocs({ root });
 
-      let translatedSegments = [];
+// Table of contents
+const navigation = useDocNavigationFlat({ root });
 
-      while (segments.length > 0) {
-        segments.pop();
-        translatedSegments.push(documentsAsMap.value.get(segments.join('/'))?.title);
-      }
-      translatedSegments = translatedSegments.reverse().filter((segment) => segment);
-      return translatedSegments.join(' / ');
-    };
+const getTranslatedHierarchyAsString = (path: string) => {
+  const parts = path.split('/').filter((path) => path);
 
-    return {
-      documents,
-      getTranslatedHierarchyAsString,
-      t,
-      title
-    };
-  },
-  head(): any {
-    return {
-      title: this.title,
-      // ensure pagedjs is not embedded until documents have been rendered
-      script: this.documents
-        ? [
-          {
-            // Do not execute PagedJS automatically
-            innerHTML: 'window.PagedConfig = { auto: false };'
-          },
-          {
-            src: '/paged.polyfill.js',
-            callback: () => {
-              const win = window as any;
-              const Paged = win.Paged;
-              class MyHandler extends Paged.Handler {
-                afterRendered() {
-                  document.dispatchEvent(new Event('PAGEDJS_AFTER_RENDERED'));
-                  document.querySelector('#print-button')?.addEventListener('click', () => {
-                    window.print();
-                  });
-                }
-              }
-              Paged.registerHandlers(MyHandler);
-              win.PagedPolyfill.preview();
+  const translatedParts = [];
+  while(parts.length > 0) {
+    parts.pop();
+    translatedParts.push(navigation.value.find((item) => item._path === `/${parts.join('/')}`)?.title);
+  }
+
+  // Pop as the first page is always the welcome page (we don't want to show that)
+  translatedParts.pop();
+  return translatedParts.reverse().join('/');
+};
+
+useHead(() => ({
+  title: t('documentation'),
+  script: [
+    {
+      // Do not execute PagedJS automatically
+      innerHTML: 'window.PagedConfig = { auto: false };'
+    },
+    ...documents.value?.length && navigation.value?.length ? [
+      {
+        src: '/paged.polyfill.js',
+        onload: () => {
+          const _window: any = window;
+          const Paged = _window.Paged;
+          class MyHandler extends Paged.Handler {
+            afterRendered() {
+              document.dispatchEvent(new Event('PAGEDJS_AFTER_RENDERED'));
+              // We have to register the event handler here, as @click gets broken by paged.js
+              document.querySelector('#print-button')?.addEventListener('click', () => {
+                window.print();
+              });
+
             }
           }
-        ]
-        : []
-    };
-  }
-});
+          Paged.registerHandlers(MyHandler);
+          _window.PagedPolyfill.preview();
+        }
+      }
+    ] : []
+  ]
+}));
 </script>
 
 <i18n>
@@ -166,6 +146,10 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+@import url('~/assets/styles/docs.scss');
+</style>
 
 <style lang="scss">
 html {

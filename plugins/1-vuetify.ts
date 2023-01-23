@@ -17,17 +17,25 @@
  */
 import {createVuetify} from 'vuetify';
 import * as components from 'vuetify/components';
+import * as labs from 'vuetify/labs/components';
 import * as directives from 'vuetify/directives';
+import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
 import { de } from 'vuetify/locale';
 import 'vuetify/styles';
 
 const vuetify = createVuetify({
-  components,
+  components: {
+    ...components,
+    ...labs
+  },
   directives,
   ssr: true,
   icons: {
-    sets: {},
-    defaultSet: 'mdiSvg' // This is already the default value - only for display purposes
+    aliases,
+    sets: {
+      mdi
+    },
+    defaultSet: 'mdi' // This is already the default value - only for display purposes
   },
   locale: {
     locale: 'de',

@@ -51,7 +51,6 @@
 import JsonHighlighter from './JsonHighlighter.vue';
 
 export default {
-  name: 'FormDescription',
   components: {
     JsonHighlighter
   },

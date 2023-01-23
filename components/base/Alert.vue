@@ -17,16 +17,15 @@
 -->
 <template>
   <v-alert
-    :value="value"
+    :model-value="modelValue"
     v-bind="$attrs"
     :color="alertColor"
-    colored-border
-    start
+    border="start"
     :elevation="flat ? undefined : 2"
-    dense
     class="veo-alert veo-border overflow-hidden"
     :class="{ 'veo-pseudo-hover': dismissOnClick, 'cursor-pointer': dismissOnClick }"
     :icon="alertIcon"
+    variant="outlined"
     style="border-radius: 12px"
     @click="onContentClick"
   >
@@ -36,7 +35,7 @@
     >
       <v-col
         cols="auto"
-        class="accent--text d-flex justify-center flex-column"
+        class="d-flex justify-center flex-column"
       >
         <h3
           class="text-h3"
@@ -45,7 +44,7 @@
         <slot />
         <p
           v-if="text"
-          class="mb-0 accent--text text-body-1"
+          class="mb-0 text-body-1"
           v-text="text"
         />
         <p
@@ -61,21 +60,19 @@
           v-if="!noCloseButton"
           text
           :color="alertColor"
-          @click="$emit('input', false)"
+          @click="$emit('update:model-value', false)"
         >
           <span v-if="saveButtonText">{{ saveButtonText }}</span>
-          <span v-else>{{ t('global.button.ok') }}</span>
+          <span v-else>{{ globalT('global.button.ok') }}</span>
         </v-btn>
       </v-col>
     </v-row>
     <v-progress-linear
       v-if="timeout"
       class="veo-alert-timeout-bar"
-      absolute
-      bottom
       :color="alertColor"
       height="4"
-      :value="remainingTime / timeout * 100"
+      :model-value="remainingTime / timeout * 100"
     />
   </v-alert>
 </template>
@@ -88,7 +85,7 @@ import { VeoAlertType } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       default: false
     },
@@ -125,9 +122,10 @@ export default defineComponent({
       default: undefined
     }
   },
-  emits: ['input'],
+  emits: ['update:model-value'],
   setup(props, { emit }) {
     const { t } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
 
     const alertColor = computed(() => {
       switch (props.type) {
@@ -145,13 +143,13 @@ export default defineComponent({
     const alertIcon = computed(() => {
       switch (props.type) {
         case 0:
-          return `mdiSvg:${mdiAlertCircleOutline}`;
+          return mdiAlertCircleOutline;
         case 1:
-          return `mdiSvg:${mdiInformationOutline}`;
+          return mdiInformationOutline;
         case 2:
-          return `mdiSvg:${mdiCheckCircleOutline}`;
+          return mdiCheckCircleOutline;
         default:
-          return `mdiSvg:${mdiAlertCircleOutline}`;
+          return mdiAlertCircleOutline;
       }
     });
 
@@ -167,7 +165,7 @@ export default defineComponent({
         remainingTime.value = props.timeout;
         interval = setInterval(() => {
           if (remainingTime.value <= 0) {
-            emit('input', false);
+            emit('update:model-value', false);
           }
 
           remainingTime.value -= intervalTime;
@@ -175,7 +173,7 @@ export default defineComponent({
       }
     };
 
-    watch(() => props.value, onValueUpdated, { immediate: true });
+    watch(() => props.modelValue, onValueUpdated, { immediate: true });
 
     onUnmounted(() => {
       if (interval) {
@@ -185,7 +183,7 @@ export default defineComponent({
 
     const onContentClick = () => {
       if (props.dismissOnClick) {
-        emit('input', false);
+        emit('update:model-value', false);
       }
     };
 
@@ -195,7 +193,8 @@ export default defineComponent({
       onContentClick,
       remainingTime,
 
-      t
+      t,
+      globalT
     };
   }
 });
@@ -213,6 +212,10 @@ export default defineComponent({
 </i18n>
 
 <style lang="scss" scoped>
+.veo-alert {
+  background-color: white;
+}
+
 .veo-alert :deep(i) {
   align-self: center;
 }

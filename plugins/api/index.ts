@@ -22,14 +22,12 @@ import form from '~/plugins/api/form';
 import schema from '~/plugins/api/schema';
 import unit from '~/plugins/api/unit';
 import domain from '~/plugins/api/domain';
-import monitoring from '~/plugins/api/monitoring';
-import catalog from '~/plugins/api/catalog';
 import { sanitizeURLParams } from '~/lib/utils';
 import { IVeoUserComposable, useVeoUser } from '~/composables/VeoUser';
 import { ETAG_MAP, RequestOptions } from '~/composables/api/utils/request';
 
 export function createAPI(context: any, user: IVeoUserComposable) {
-  return Client.create(context, { form, entity, schema, unit, domain, catalog, monitoring }, user);
+  return Client.create(context, { form, entity, schema, unit, domain }, user);
 }
 
 export interface IAPIClient {
@@ -137,12 +135,11 @@ export class Client {
       }
     }
     url = splittedUrl.join('/');
-
     const defaults = {
       headers: {
         Accept: 'application/json',
         Authorization: 'Bearer ' + this._user.keycloak.value?.token,
-        'Accept-Language': this._context.i18n.locale
+        'Accept-Language': this._context.$i18n.locale.value
       } as Record<string, string>,
       method: 'GET',
       mode: 'cors'
@@ -227,7 +224,7 @@ export class Client {
 export default defineNuxtPlugin(nuxtApp => {
   const user = useVeoUser();
 
-  nuxtApp.provide('api', () => createAPI(nuxtApp, user));
+  nuxtApp.provide('api', createAPI(nuxtApp, user));
 });
 
 export type Injection = ReturnType<typeof createAPI>;

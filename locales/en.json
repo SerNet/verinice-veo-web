@@ -41,7 +41,6 @@
   "editor.schema.properties": "Schema properties",
 
   "error.title": "An error occured",
-  "error404": "404 - Not found",
 
   "global.button.cancel": "Cancel",
   "global.button.close": "Close",
@@ -53,7 +52,6 @@
   "global.button.save": "Save",
   "global.button.save_quit": "Save and exit",
   "global.button.apply": "Apply",
-  "global.button.reset": "Reset",
   "global.button.yes": "Yes",
   "global.input.required": "The field is required",
   "global.input.requiredfields": "* Required fields",
@@ -76,34 +74,11 @@
     "updatedBy": "Editor"
   },
 
-  "page.editors.title": "Editors",
-  "page.editors.calltoaction": "What do you want to do?",
-
-  "page.help.title": "Manual",
-
-  "page.index.title": "Unit selection",
-  "page.index.chooseunit": "Please choose a Unit",
-  "page.index.chooseunitplaceholder": "Search for a unit...",
-
   "domain.index.title": "Dashboard",
 
-  "unit.create": "Create new unit",
-  "unit.create.short": "Create unit",
-  "unit.created": "Unit was created",
   "unit.default.name": "Unit 1",
   "unit.default.description": "Your first unit",
-  "unit.details.children": "Child units",
-  "unit.details.description": "Beschreibung",
-  "unit.details.description.required": "A unit description is required!",
-  "unit.details.name": "Unit name",
-  "unit.details.name.required": "A unit name is required!",
-  "unit.details.nochild": "No child units",
   "unit.details.nodescription": "No description provided",
-  "unit.details.noparent": "Top-Level unit",
-  "unit.details.objects": "Object overview",
-  "unit.details.parent": "Parent unit",
-  "unit.index.title": "Unit Dashboard",
-  "unit.select.label": "Unit",
 
   "breadcrumbs": {
     "administration": "Account management",
@@ -127,5 +102,16 @@
     "format": "The field \"{field}\" has to match the format \"{format}\"",
     "required": "The field \"{field}\" is required",
     "required_link": "The {position} link in \"{field}\" has to point to an object or must be removed"
-  }
+  },
+
+  "createEntitiesCTA": "Many paths lead to the goal... record the {0}, name your {1} or create a {2}.",
+  "dashboardCTA": "One step at a time... the {0} provides you with an overall view and leads you along the lifecycle of your assets directly to the next tasks or the last activities.",
+  "demoUnitCTA": "You prefer to get your bearings first? Then take a look at the {0}.",
+  "lastLine": "Good luck!{0}Your verinice.TEAM",
+
+  "piaMandatoryText": "Based on the data of this object, a privacy impact assessment is required.{0}Please create one using the button in the warnings tab on the right.",
+
+  "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions,{0} meaning only one mitigation action can be applied to a risk",
+
+  "residualRiskHint": "the displayed residual risk has been derived from the input data.{0}You can overwrite it with a custom value"
 }

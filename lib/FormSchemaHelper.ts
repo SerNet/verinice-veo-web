@@ -75,8 +75,8 @@ export function deleteElementCustomTranslation(
 }
 
 export const ruleEffectIcons = {
-  SHOW: `mdiSvg:${mdiEyeOutline}`,
-  HIDE: `mdiSvg:${mdiEyeOffOutline}`
+  SHOW: mdiEyeOutline,
+  HIDE: mdiEyeOffOutline
 };
 
 export function getRuleEffectIcons(ruleEffect: IVeoFormSchemaItemRule['effect']) {

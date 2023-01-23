@@ -1,3 +1,8 @@
+import { resolve } from "path";
+
+import DocsModule from './modules/docs/module.mjs';
+import { LOCALES } from "./types/locales";
+
 export default defineNuxtConfig({
   //==============================================================
   // Base configuration
@@ -5,6 +10,14 @@ export default defineNuxtConfig({
   typescript: {
     shim: false // Disabled, as Takeover mode and Volar should be enabled/installed
   },
+
+  // Apply a transition to every page
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' }
+  },
+
+  // Disable SSR as the app is deployed using static site generation (SSG)
+  ssr: false,
 
   // Available via useRuntimeConfig().public
   runtimeConfig: {
@@ -29,11 +42,12 @@ export default defineNuxtConfig({
 
   // Modules are buildtime only. Can be used to modify build behaviour
   modules: [
+    DocsModule as any,
     '@nuxt/content',
     '@nuxtjs/i18n',
-    './modules/docs',
     './modules/externalize-scripts',
-    './modules/generate-doc-pages.ts'
+    './modules/generate-doc-pages.ts',
+    './modules/vuetify-sass-variables.ts'
   ],
 
   // Transpile vuetify
@@ -56,25 +70,35 @@ export default defineNuxtConfig({
   //==============================================================
   // Nuxt content configuration
   content: {
-    dir: 'docs',
-    liveEdit: false,
+    sources: {
+      // overwrite default source AKA `content` directory
+      content: {
+        driver: 'fs',
+        base: resolve(__dirname, 'docs')
+      }
+    },
     markdown: {
-      // inline images as base64 urls
-      rehypePlugins: ['rehype-inline']
+      rehypePlugins: [
+        'rehype-inline'
+      ]
+    },
+    experimental: {
+      clientDB: true
+    },
+    locales: LOCALES.map((locale) => locale.code),
+    defaultLocale: 'de',
+    toc: {
+      depth: 5
     }
   },
 
   // i18n configuration
   i18n: {
     strategy: 'no_prefix',
-    locales: [
-      { code: 'de', file: 'de.json', name: 'Deutsch' },
-      { code: 'en', file: 'en.json', name: 'English' }
-    ],
+    locales: LOCALES,
     defaultLocale: 'de',
     lazy: true,
     langDir: 'locales/',
-    vueI18nLoader: true,
     vueI18n: {
       legacy: false,
       silentFallbackWarn: true,
@@ -98,5 +122,14 @@ export default defineNuxtConfig({
         ])
       )
     }
+  },
+
+  fontLoader: {
+    local: [
+      {
+        src: '/Roboto-Regular.ttf',
+        family: 'Roboto'
+      }
+    ]
   }
 });

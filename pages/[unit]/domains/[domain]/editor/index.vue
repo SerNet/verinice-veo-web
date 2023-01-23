@@ -37,10 +37,10 @@
               <v-list-item-subtitle>{{ t('objectSchemaDescription') }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <!--<v-icon
+              <v-icon
                 size="x-large"
-                :icon="`mdiSvg:${mdiChevronRight}`"
-              />-->
+                :icon="mdiChevronRight"
+              />
             </v-list-item-action>
           </v-list-item>
           <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/formschema`">
@@ -51,10 +51,10 @@
               <v-list-item-subtitle>{{ t('formSchemaDescription') }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <!--<v-icon
+              <v-icon
                 size="x-large"
-                :icon="`mdiSvg:${mdiChevronRight}`"
-              />-->
+                :icon="mdiChevronRight"
+              />
             </v-list-item-action>
           </v-list-item>
         </v-list>

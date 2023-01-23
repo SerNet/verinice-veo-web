@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage :title="t('breadcrumbs.reports')">
+  <BasePage :title="$t('breadcrumbs.reports')">
     <template #header>
       <p class="mt-4 text-body-1">
         {{ t('hint') }}
@@ -24,25 +24,18 @@
     </template>
     <template #default>
       <BaseCard>
-        <VeoReportList
-          :items="reports"
-          :loading="isFetching"
-          @create-report="createReport"
-        />
+        <ReportList @create-report="createReport" />
       </BaseCard>
     </template>
   </BasePage>
 </template>
 
 <script lang="ts">
-import { useFetchReports } from '~/composables/api/reports';
-
 export default defineComponent({
   setup() {
     const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
-    const { data: reports, isFetching } = useFetchReports();
 
     const createReport = (reportId: string) => {
       router.push(`/${route.params.unit}/domains/${route.params.domain}/reports/${reportId}`);
@@ -50,8 +43,6 @@ export default defineComponent({
 
     return {
       createReport,
-      isFetching,
-      reports,
 
       t
     };

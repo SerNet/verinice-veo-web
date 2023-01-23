@@ -17,14 +17,14 @@
 -->
 <template>
   <BaseAlert
-    :value="value"
+    :model-value="value"
     v-bind="$props"
-    :save-button-text="(params && params.buttonText) || t('global.button.ok')"
+    :save-button-text="(params && params.buttonText) || globalT('global.button.ok')"
     class="veo-global-alert"
     :no-close-button="type === VeoAlertType.SUCCESS"
     :dismiss-on-click="type === VeoAlertType.SUCCESS"
     :timeout="params ? params.timeout : undefined"
-    @input="onInput"
+    @update:model-value="onInput"
   >
     <template #additional-button>
       <v-btn
@@ -33,7 +33,7 @@
         color="primary"
         @click="onCustomButtonClick('refetch')"
       >
-        {{ t('global.button.yes') }}
+        {{ globalT('global.button.yes') }}
       </v-btn>
       <div v-if="showDownloadDetailsButton && params && params.details">
         <v-btn
@@ -60,7 +60,7 @@ import { VeoAlertType, IVeoGlobalAlertParams } from '~/types/VeoTypes';
 export default defineComponent({
   props: {
     type: {
-      type: Number as PropType<BaseAlertType>,
+      type: Number as PropType<VeoAlertType>,
       required: true
     },
     title: {
@@ -83,6 +83,7 @@ export default defineComponent({
   setup(props) {
     const config = useRuntimeConfig();
     const { t } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
     const { expireAlert, dispatchEventForCurrentAlert } = useVeoAlerts();
 
     function onInput(newValue: boolean) {
@@ -141,7 +142,8 @@ export default defineComponent({
       onInput,
       value,
 
-      t
+      t,
+      globalT
     };
   }
 });

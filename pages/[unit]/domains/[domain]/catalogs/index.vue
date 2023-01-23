@@ -16,14 +16,14 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage :title="t('breadcrumbs.catalogs')">
+  <BasePage :title="$t('breadcrumbs.catalogs')">
     <template #header>
       <p class="mt-4">
         {{ t('hint') }}
       </p>
     </template>
     <template #default>
-      <VeoCatalogList
+      <CatalogList
         :catalogs="catalogs"
         :loading="catalogsAreFetching"
       />
@@ -38,6 +38,7 @@ import { useFetchCatalogs } from '~/composables/api/catalogs';
 
 const route = useRoute();
 const { t } = useI18n();
+const { t: $t } = useI18n({ useScope: 'global' });
 
 const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 

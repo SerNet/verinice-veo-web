@@ -26,7 +26,7 @@
       v-if="formSchema && objectSchema"
       #header
     >
-      <v-tooltip bottom>
+      <v-tooltip location="bottom">
         <template #activator="{ props }">
           <a
             ref="downloadButton"
@@ -41,7 +41,7 @@
               large
               color="primary"
             >
-              <!--<v-icon :icon="`mdiSvg:${mdiDownload}`" />-->
+              <v-icon :icon="mdiDownload" />
             </v-btn>
           </a>
         </template>
@@ -49,7 +49,7 @@
           {{ t("editor.schema.download") }}
         </template>
       </v-tooltip>
-      <v-tooltip bottom>
+      <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
             icon
@@ -58,14 +58,14 @@
             v-bind="props"
             @click="codeEditorVisible = true"
           >
-            <!--<v-icon :icon="`mdiSvg:${mdiCodeTags}`" />-->
+            <v-icon :icon="mdiCodeTags" />
           </v-btn>
         </template>
         <template #default>
           {{ t("formSchemaCode") }}
         </template>
       </v-tooltip>
-      <v-tooltip bottom>
+      <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
             v-if="!schemaIsValid.valid"
@@ -76,14 +76,14 @@
             v-bind="props"
             @click="errorDialogVisible = !errorDialogVisible"
           >
-            <!--<v-icon :icon="`mdiSvg:${mdiAlertCircleOutline}`" />-->
+            <v-icon :icon="mdiAlertCircleOutline" />
           </v-btn>
         </template>
         <template #default>
           {{ t("editor.schema.warnings") }}
         </template>
       </v-tooltip>
-      <v-tooltip bottom>
+      <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
             icon
@@ -92,14 +92,14 @@
             v-bind="props"
             @click="onClickTranslationBtn"
           >
-            <!--<v-icon :icon="`mdiSvg:${mdiTranslate}`" />-->
+            <v-icon :icon="mdiTranslate" />
           </v-btn>
         </template>
         <template #default>
           {{ t("editor.formschema.translation") }}
         </template>
       </v-tooltip>
-      <v-tooltip bottom>
+      <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
             icon
@@ -108,14 +108,14 @@
             v-bind="props"
             @click="detailDialogVisible = !detailDialogVisible"
           >
-            <!--<v-icon :icon="`mdiSvg:${mdiWrench}`" />-->
+            <v-icon :icon="mdiWrench" />
           </v-btn>
         </template>
         <template #default>
           {{ t("editor.schema.properties") }}
         </template>
       </v-tooltip>
-      <v-tooltip bottom>
+      <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
             icon
@@ -126,14 +126,14 @@
             color="primary"
             v-bind="props"
           >
-            <!--<v-icon :icon="`mdiSvg:${mdiHelpCircleOutline}`" />-->
+            <v-icon :icon="mdiHelpCircleOutline" />
           </v-btn>
         </template>
         <template #default>
           {{ t('help') }}
         </template>
       </v-tooltip>
-      <v-tooltip bottom>
+      <v-tooltip location="bottom">
         <template #activator="{ props }">
           <div v-bind="props">
             <v-btn
@@ -143,7 +143,7 @@
               :disabled="ability.cannot('manage', 'editors')"
               @click="save"
             >
-              <!--<v-icon :icon="`mdiSvg:${mdiContentSave}`" />-->
+              <v-icon :icon="mdiContentSave" />
             </v-btn>
           </div>
         </template>
@@ -172,7 +172,7 @@
             clearable
             hide-details
             filled
-            :prepend-inner-icon="`mdiSvg:${mdiMagnify}`"
+            :prepend-inner-icon="mdiMagnify"
             :label="t('search')"
           />
         </template>
@@ -216,11 +216,11 @@
               cols="auto"
               style="flex-grow: 0"
             >
-              <!--<v-icon
+              <v-icon
                 style="font-size: 8rem; opacity: 0.5"
                 color="primary"
-                :icon="`mdiSvg:${mdiInformationOutline}`"
-              />-->
+                :icon="mdiInformationOutline"
+              />
             </v-col>
             <v-col
               cols="auto"
@@ -234,7 +234,7 @@
         </template>
       </BasePage>
       <BasePage
-        v-if="!vuetify.breakpoint.xs"
+        v-if="!xs"
         height="100%"
         heading-level="3"
         :title="t('preview')"
@@ -262,11 +262,11 @@
               cols="auto"
               style="flex-grow: 0"
             >
-              <!--<v-icon
+              <v-icon
                 style="font-size: 8rem; opacity: 0.5"
                 color="primary"
-                :icon="`mdiSvg:${mdiInformationOutline}`"
-              />-->
+                :icon="mdiInformationOutline"
+              />
             </v-col>
             <v-col
               cols="auto"
@@ -331,6 +331,7 @@ import vjp from 'vue-json-pointer';
 import { Ref } from 'vue';
 import { JsonPointer } from 'json-ptr';
 import { mdiAlertCircleOutline, mdiCodeTags, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
+import { useDisplay } from 'vuetify';
 
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
 import {
@@ -343,7 +344,7 @@ import {
   IVeoFormSchemaTranslationCollection,
   IVeoFormSchemaMeta
 } from '~/types/VeoTypes';
-import { IBaseObject, separateUUIDParam } from '~/lib/utils';
+import { separateUUIDParam } from '~/lib/utils';
 import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
@@ -355,10 +356,11 @@ import { useFetchDomain } from '~/composables/api/domains';
 export default defineComponent({
   setup() {
     const { locale, t } = useI18n();
-    const { i18n, vuetify } = useNuxtApp();
+    const { i18n } = useNuxtApp();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
+    const { xs } = useDisplay();
 
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
@@ -553,7 +555,7 @@ export default defineComponent({
       }
     }
 
-    function onFixRequest(code: string, params?: IBaseObject) {
+    function onFixRequest(code: string, params?: Record<string, any>) {
       if (code === 'E_PROPERTY_MISSING' && params) {
         onDelete(params as any);
       }
@@ -594,7 +596,7 @@ export default defineComponent({
     }));
 
     const translations = computed(() => {
-      const toReturn: IBaseObject = {};
+      const toReturn: Record<string, any> = {};
       const languages = Object.keys(translation.value?.lang || {});
 
       for (const language of languages) {
@@ -643,7 +645,6 @@ export default defineComponent({
       save,
       translations,
       onWizardFinished,
-      vuetify,
 
       mdiAlertCircleOutline,
       mdiCodeTags,
@@ -655,7 +656,8 @@ export default defineComponent({
       mdiTranslate,
       mdiWrench,
       t,
-      HELP_ROUTE
+      HELP_ROUTE,
+      xs
     };
   }
 });

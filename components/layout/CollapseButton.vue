@@ -16,27 +16,22 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip bottom>
+  <v-tooltip location="bottom">
     <template #activator="{ props }">
       <v-btn
+        v-bind="props"
         class="collapse-button px-0 white mt-6"
         :class="{'collapse-button--right': right}"
-        color="black"
-        small
         elevation="1"
-        v-bind="props"
-        @click="$emit('input', !value)"
-      >
-        <!--<v-icon
-          size="small"
-          :icon="chevron"
-        />-->
-      </v-btn>
+        :icon="chevron"
+        size="small"
+        @click="$emit('update:model-value', !modelValue)"
+      />
     </template>
     <template
       #default
     >
-      {{ t(value ? 'expand' : 'collapse', { elementName: elementName || t('page').toString() }) }}
+      {{ t(modelValue ? 'expand' : 'collapse', { elementName: elementName || t('page').toString() }) }}
       <span v-if="index !== undefined"><br>(Alt/{{ t('control') }} + {{ index + 1 }})</span>
     </template>
   </v-tooltip>
@@ -46,9 +41,8 @@
 import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
 
 export default defineComponent({
-  name: 'CollapseButton',
   props: {
-    value: {
+    modelValue: {
       default: false, // true if collapsed
       type: Boolean
     },
@@ -65,15 +59,15 @@ export default defineComponent({
       default: undefined
     }
   },
-  emits: ['input'],
+  emits: ['update:model-value'],
   setup(props) {
     const { t } = useI18n();
 
     const chevron = computed(() => {
       if (props.right) {
-        return`mdiSvg:${mdiChevronLeft}`;
+        return mdiChevronLeft;
       } else {
-        return `mdiSvg:${mdiChevronRight}`;
+        return mdiChevronRight;
       }
     });
 

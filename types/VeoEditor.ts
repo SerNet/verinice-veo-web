@@ -37,15 +37,15 @@ export interface IInputType {
 export type IInputTypes = Record<string, IInputType>;
 
 export const INPUT_TYPES = {
-  string: { icon: `mdiSvg:${mdiAlphabeticalVariant}`, name: 'string', color: 'red' },
-  boolean: { icon: `mdiSvg:${mdiCheckboxOutline}`, name: 'boolean', color: 'teal' },
-  object: { icon: `mdiSvg:${mdiFileTree}`, name: 'object', color: 'indigo' },
-  number: { icon: `mdiSvg:${mdiDecimal}`, name: 'number', color: 'light-blue' },
-  integer: { icon: `mdiSvg:${mdiNumeric}`, name: 'integer', color: 'green' },
-  array: { icon: `mdiSvg:${mdiViewList}`, name: 'array', color: 'amber' },
-  enum: { icon: `mdiSvg:${mdiLabelOutline}`, name: 'enum', color: 'light-green' },
-  null: { icon: `mdiSvg:${mdiCancel}`, name: 'null', color: 'blue-grey' },
-  default: { icon: `mdiSvg:${mdiHelpBox}`, name: 'unknown', color: 'grey' }
+  string: { icon: mdiAlphabeticalVariant, name: 'string', color: 'red' },
+  boolean: { icon: mdiCheckboxOutline, name: 'boolean', color: 'teal' },
+  object: { icon: mdiFileTree, name: 'object', color: 'indigo' },
+  number: { icon: mdiDecimal, name: 'number', color: 'light-blue' },
+  integer: { icon: mdiNumeric, name: 'integer', color: 'green' },
+  array: { icon: mdiViewList, name: 'array', color: 'amber' },
+  enum: { icon: mdiLabelOutline, name: 'enum', color: 'light-green' },
+  null: { icon: mdiCancel, name: 'null', color: 'blue-grey' },
+  default: { icon: mdiHelpBox, name: 'unknown', color: 'grey' }
 } as IInputTypes;
 
 /**

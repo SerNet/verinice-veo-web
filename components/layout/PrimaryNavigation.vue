@@ -19,67 +19,45 @@
 <template>
   <v-navigation-drawer
     :width="300"
-    :value="value"
-    app
-    floating
-    :mini-variant="!vuetify.breakpoint.xs && miniVariant"
-    :permanent="!vuetify.breakpoint.xs"
-    :temporary="vuetify.breakpoint.xs"
+    :model-value="modelValue"
+    :rail="!xs && miniVariant"
+    :permanent="!xs"
+    :temporary="xs"
+    scrim
     class="veo-primary-navigation"
     v-bind="$attrs"
   >
     <template #prepend>
-      <div>
-        <div
-          class="d-flex align-center"
-          :class="{
-            'ml-4': !miniVariant,
-            'ml-2': miniVariant
-          }"
-          style="min-height: 65px;"
-          data-component-name="logo"
-        >
-          <nuxt-link
-            :to="homeLink"
-            class="text-decoration-none"
-            style="width: 100%"
-          >
-            <LayoutAppBarLogo :size="miniVariant ? 'small' : 'large'" />
-          </nuxt-link>
-        </div>
-        <VeoDomainSelect
-          v-if="$route.params.unit"
-          :mini-variant="miniVariant"
-          @expand-menu="miniVariant = false"
-        />
-      </div>
+      <DomainSelect
+        v-if="$route.params.unit"
+        :mini-variant="miniVariant"
+        @expand-menu="miniVariant = false"
+      />
     </template>
     <template #default>
       <v-list :rounded="miniVariant">
-        <v-list-group>
-          <template
-            v-for="item in items"
-            :key="item.key"
-          >
-            <VeoPrimayNavigationCategory
-              v-if="item.children"
-              v-bind="item"
-              :level="0"
-              :mini-variant="miniVariant"
-              @expand-menu="miniVariant = false"
-            />
-            <VeoPrimaryNavigationEntry
-              v-else
-              v-bind="item"
-              :mini-variant="miniVariant"
-              @expand-menu="miniVariant = false"
-            />
-          </template>
-        </v-list-group>
+        <template
+          v-for="item in items"
+          :key="item.key"
+        >
+          <LayoutPrimayNavigationCategory
+            v-if="item.children"
+            v-bind="item"
+            :level="0"
+            :mini-variant="miniVariant"
+            @expand-menu="miniVariant = false"
+          />
+          <LayoutPrimaryNavigationEntry
+            v-else
+            v-bind="item"
+            :mini-variant="miniVariant"
+            @expand-menu="miniVariant = false"
+          />
+        </template>
         <template v-if="authenticated">
           <v-divider class="mb-2" />
           <div class="mx-2">
-            <VeoDemoUnitButton :icon-only="miniVariant" />
+            <LayoutDemoUnitButton :icon-only="miniVariant" />
           </div>
         </template>
       </v-list>
@@ -91,23 +69,26 @@
       >
         <v-divider style="background: rgba(255, 255, 255, 0.2)" />
         <v-list-item
-          v-if="!vuetify.breakpoint.xs"
+          v-if="!xs"
           class="pl-4"
           data-component-name="toggle-navigation"
-          @expand-menu="miniVariant = !miniVariant"
+          density="compact"
+          @click="miniVariant = !miniVariant"
         >
-          <v-list-item-icon>
-            <!--<v-icon
+          <template #prepend>
+            <v-icon
               v-if="miniVariant"
               color="black"
-              :icon="`mdiSvg:${mdiChevronRight}`"
-            />-->
-            <!--<v-icon
+              class="mr-3"
+              :icon="mdiChevronRight"
+            />
+            <v-icon
               v-else
               color="black"
-              :icon="`mdiSvg:${mdiChevronLeft}`"
-            />-->
-          </v-list-item-icon>
+              class="mr-3"
+              :icon="mdiChevronLeft"
+            />
+          </template>
           <v-list-item-title v-if="miniVariant">
             {{ t('fix') }}
           </v-list-item-title>
@@ -135,6 +116,7 @@ import {
 } from '@mdi/js';
 import { sortBy, upperFirst } from 'lodash';
 import { StorageSerializers, useStorage } from '@vueuse/core';
+import { useDisplay } from 'vuetify';
 
 import { createUUIDUrlParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoFormSchemaMeta, IVeoObjectSchema } from '~/types/VeoTypes';
@@ -146,12 +128,12 @@ import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domain
 import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/reports/[report].vue';
 import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/risks/[matrix].vue';
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/editor/index.vue';
-import { OBJECT_TYPE_ICONS } from '~/components/objects/VeoObjectIcon.vue';
+import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
 import { useFetchForms } from '~/composables/api/forms';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemasDetailed } from '~/composables/api/schemas';
-import { useDocTree } from '~/composables/docs';
+import { useDocNavigation } from '~/composables/docs';
 import { useFetchTranslations } from '~/composables/api/translations';
 import { useFetchReports } from '~/composables/api/reports';
 import { LOCAL_STORAGE_KEYS } from '~/types/LocalStorage';
@@ -184,9 +166,8 @@ const objectTypeSortOrder = new Map<string, number>([
 ]);
 
 export default defineComponent({
-  name: 'VeoPrimaryNavigation',
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       default: true
     },
@@ -201,10 +182,11 @@ export default defineComponent({
   },
   setup(props) {
     const { t, locale } = useI18n();
-    const { vuetify } = useNuxtApp();
+    const { t: $t } = useI18n({ useScope: 'global' });
     const { authenticated, userSettings } = useVeoUser();
     const route = useRoute();
     const { ability } = useVeoPermissions();
+    const { xs } = useDisplay();
 
     // Layout stuff
     const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
@@ -244,7 +226,7 @@ export default defineComponent({
           return {
             key: objectSchema.title,
             name: upperFirst(translations.value?.lang[locale.value]?.[objectSchema.title] || objectSchema.title),
-            icon: _icon?.library === 'mdi' ? `mdiSvg:${_icon?.icon as string}` : undefined,
+            icon: _icon?.library === 'mdi' ? _icon?.icon as string : undefined,
             faIcon: _icon?.library === 'fa' ? _icon?.icon : undefined,
             activePath: `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${objectSchema.title}`,
             children: [
@@ -298,7 +280,8 @@ export default defineComponent({
 
     // catalog specific stuff
     const fetchCatalogsQueryParameters = computed(() => ({ domainId: props.domainId }));
-    const { data: catalogs, isFetching: catalogsEntriesLoading } = useFetchCatalogs(fetchCatalogsQueryParameters);
+    const fetchCatalogsQueryEnabled = computed(() => !!props.domainId);
+    const { data: catalogs, isFetching: catalogsEntriesLoading } = useFetchCatalogs(fetchCatalogsQueryParameters, { enabled: fetchCatalogsQueryEnabled });
 
     const catalogsEntriesChildItems = computed<INavItem[]>(() =>
       catalogs.value.map((catalog) => ({
@@ -329,7 +312,7 @@ export default defineComponent({
               params: {
                 unit: createUUIDUrlParam('unit', props.unitId),
                 domain: createUUIDUrlParam('domain', props.domainId),
-                type: reportId
+                report: reportId
               }
             }
           }))
@@ -338,8 +321,9 @@ export default defineComponent({
 
     // risk specific stuff
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
-    const { data: domain, isFetching: riskDefinitionsLoading } = useFetchDomain(fetchDomainQueryParameters);
-    const riskDefinitions = computed(() => domain.value.riskDefinitions);
+    const fetchDomainQueryEnabled = computed(() => !!props.domainId);
+    const { data: domain, isFetching: riskDefinitionsLoading } = useFetchDomain(fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
+    const riskDefinitions = computed(() => domain.value?.riskDefinitions || {});
 
     const riskChildItems = computed<INavItem[]>(() =>
       Object.values(riskDefinitions.value).map(({ id }: { id: string }) => ({
@@ -358,7 +342,7 @@ export default defineComponent({
 
     const unitSelectionNavEntry: INavItem = {
       key: 'unitSelection',
-      name: t('breadcrumbs.index').toString(),
+      name: $t('breadcrumbs.index').toString(),
       icon: mdiHomeSwitchOutline,
       to: {
         name: UNIT_SELECTION_ROUTE_NAME
@@ -369,7 +353,7 @@ export default defineComponent({
 
     const domainDashboardNavEntry = computed<INavItem>(() => ({
       key: 'domainDashboard',
-      name: t('domain.index.title').toString(),
+      name: $t('domain.index.title').toString(),
       icon: mdiHomeOutline,
       to: {
         name: DOMAIN_DASHBOARD_ROUTE_NAME,
@@ -385,7 +369,7 @@ export default defineComponent({
 
     const objectsNavEntry = computed<INavItem>(() => ({
       key: 'objects',
-      name: t('breadcrumbs.objects').toString(),
+      name: $t('breadcrumbs.objects').toString(),
       activePath: `${route.params.unit}/domains/${route.params.domain}/objects`,
       faIcon: ['far', 'object-ungroup'],
       children: objectTypesChildItems.value,
@@ -395,7 +379,7 @@ export default defineComponent({
 
     const catalogsNavEntry = computed<INavItem>(() => ({
       key: 'catalogs',
-      name: t('breadcrumbs.catalogs').toString(),
+      name: $t('breadcrumbs.catalogs').toString(),
       activePath: `${route.params.unit}/domains/${route.params.domain}/catalogs`,
       icon: mdiBookOpenPageVariantOutline,
       children: catalogsEntriesChildItems.value,
@@ -405,7 +389,7 @@ export default defineComponent({
 
     const reportsNavEntry = computed<INavItem>(() => ({
       key: 'reports',
-      name: t('breadcrumbs.reports').toString(),
+      name: $t('breadcrumbs.reports').toString(),
       activePath: `${route.params.unit}/domains/${route.params.domain}/reports`,
       icon: mdiFileChartOutline,
       children: reportsEntriesChildItems.value,
@@ -415,7 +399,7 @@ export default defineComponent({
 
     const risksNavEntry = computed<INavItem>(() => ({
       key: 'risks',
-      name: t('breadcrumbs.risks').toString(),
+      name: $t('breadcrumbs.risks').toString(),
       activePath: `${route.params.unit}/domains/${route.params.domain}/risks`,
       icon: mdiTableSettings,
       children: riskChildItems.value,
@@ -425,7 +409,7 @@ export default defineComponent({
 
     const editorsNavEntry = computed<INavItem>(() => ({
       key: 'editors',
-      name: t('breadcrumbs.editor').toString(),
+      name: $t('breadcrumbs.editor').toString(),
       icon: mdiTextBoxEditOutline,
       to: {
         name: EDITOR_INDEX_ROUTE_NAME,
@@ -447,24 +431,27 @@ export default defineComponent({
 
     const docsNavEntry = computed<INavItem>(() => ({
       key: 'docs',
-      name: t('breadcrumbs.docs').toString(),
+      name: $t('breadcrumbs.docs').toString(),
       to: '/docs/index',
       icon: mdiFileDocumentOutline,
       componentName: 'docs-nav-item',
       activePath: '/docs',
-      children: []
+      children: docNavItems.value
     }));
-
-    const docLinks = useDocTree({
-      childrenKey: 'children',
-      buildItem(item) {
-        return {
-          ...item,
-          name: `${item.isDir ? upperFirst(item.dir.split('/').pop()) : item.title || upperFirst(item.slug)}`,
-          to: `/docs${item.path}`
-        };
-      }
-    });
+    
+    const docs = useDocNavigation({});
+    const docNavItems = computed(() => 
+      (docs.value || []).map(
+        (file) => {
+          return {
+            key: file.path,
+            name: file.title,
+            to: `/docs${file._path.replace(/index.\w{2}/, '')}`,
+            activePath: file._path
+          };
+        }
+      )
+    );
 
     const items = computed<INavItem[]>(() => [
       ...(authenticated.value && userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry] : []),
@@ -491,11 +478,11 @@ export default defineComponent({
       items,
       homeLink,
       miniVariant,
-      vuetify,
 
       t,
       mdiChevronLeft,
-      mdiChevronRight
+      mdiChevronRight,
+      xs
     };
   }
 });
@@ -517,26 +504,3 @@ export default defineComponent({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-.veo-primary-navigation.v-navigation-drawer {
-  background-color: $background-accent;
-  border-right: 1px solid $medium-grey;
-}
-
-.veo-primary-navigation :deep(.v-list-item) > .v-list-item__title {
-  padding-left: 4px;
-}
-
-.veo-primary-navigation.v-navigation-drawer--mini-variant :deep(.v-list-item) {
-  padding-left: 8px;
-}
-
-.veo-primary-navigation :deep(.v-list-item--active:not(.v-list-group__header)) {
-  border-left: 4px solid $primary;
-
-  > .v-list-item__title {
-    padding-left: 0;
-  }
-}
-</style>

@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2022  Jonas Heitmann
+ * Copyright (C) 2023  Jonas Heitmann
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,22 +15,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-:deep(h1),
-:deep(h2),
-:deep(h3),
-:deep(h4),
-:deep(h5) {
+h1, h2, h3, h4, h5 {
   margin-top: 8px;
- }
+}
 
- .nuxt-content img {
+:deep(h1 > a), :deep(h2 > a), :deep(h3 > a), :deep(h4 > a), :deep(h5 > a) {
+  color: #000000;
+  text-decoration: none;
+}
+
+:deep(h1 > a:hover), :deep(h2 > a:hover), :deep(h3 > a:hover), :deep(h4 > a:hover), :deep(h5 > a:hover) {
+  text-decoration: underline;
+}
+
+:deep(img) {
   max-width: 100%;
 }
 
-pre, code {
+:deep(pre, code) {
   white-space: normal;
 }
- 
-html {
+
+:deep(:not(h1,h2,h3,h4,h5)) {
   font-size: 14px;
+}
+
+:deep(li) {
+  margin-left: 20px;
 }

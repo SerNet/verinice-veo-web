@@ -18,48 +18,38 @@
 <template>
   <div>
     <h2 class="text-h2 px-4 pt-1">
-      {{ $t('tableOfContents').toString() }}
+      {{ t('tableOfContents').toString() }}
     </h2>
-    <v-list
-      flat
-      dense
-      class="py-0"
-    >
-      <v-list-group
-        v-model="selectedItem"
-        mandatory
-        color="primary"
+    <v-list density="compact">
+      <template
+        v-for="item in items"
+        :key="item.initialId + '0'"
       >
-        <template
-          v-for="item in items"
-          :key="item.initialId + '0'"
+        <v-list-item
+          density="compact"
+          active-class="veo-active-list-item"
+          :value="item.initialId"
+          :active="selectedItem === item.initialId"
+          @click="onClick(item.initialId)"
         >
-          <v-list-item
-            style="min-height: 28px;"
-            :value="item.initialId"
-            @click="onClick(item.initialId)"
-          >
-            <v-list-item-content>
-              <v-list-item-title :class="currentLevelLeftMargin">
-                {{ item.text }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <VeoFormNavigation
-            v-if="nestingLevel < 0"
-            :key="item.initialId + '1'"
-            :form-schema="item.layout"
-            :custom-translation="customTranslation"
-            :initial-id="item.initialId"
-            :nesting-level="nextNestingLevel"
-          />
-        </template>
-      </v-list-group>
+          <v-list-item-title :class="currentLevelLeftMargin">
+            {{ item.text }}
+          </v-list-item-title>
+        </v-list-item>
+        <LayoutFormNavigation
+          v-if="nestingLevel < 0"
+          :key="item.initialId + '1'"
+          :form-schema="item.layout"
+          :custom-translation="customTranslation"
+          :initial-id="item.initialId"
+          :nesting-level="nextNestingLevel"
+        />
+      </template>
     </v-list>
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { UISchema } from '~/types/UISchema';
 
 interface IItem {
@@ -68,137 +58,128 @@ interface IItem {
   layout: UISchema;
 }
 
-interface IData {
-  items: IItem[];
-  scrollWrapper: HTMLElement | null;
-  selectedItem: string | undefined;
-  observer: IntersectionObserver | undefined;
-}
-
-export default {
-  // Component is recursive and name is required!!!
-  name: 'VeoFormNavigation',
-  props: {
-    formSchema: {
-      type: Object,
-      required: true
-    },
-    customTranslation: {
-      type: Object,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      default: () => {}
-    },
-    initialId: {
-      type: String,
-      default: '#'
-    },
-    nestingLevel: {
-      type: Number,
-      default: 0
-    },
-    scrollWrapperId: {
-      type: String,
-      default: 'scroll-wrapper'
-    }
+const props = defineProps({
+  formSchema: {
+    type: Object,
+    required: true
   },
-  data(): IData {
-    return {
-      items: [],
-      scrollWrapper: null,
-      selectedItem: undefined,
-      observer: undefined
-    };
+  customTranslation: {
+    type: Object,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    default: () => {}
   },
-  computed: {
-    nextNestingLevel(): number {
-      return this.nestingLevel + 1;
-    },
-    currentLevelLeftMargin(): string {
-      return `ml-${this.nestingLevel * 4}`;
-    },
-    // eslint-disable-next-line no-undef
-    itemsToObserve(): NodeListOf<Element> | false {
-      return this.items.length ? document.querySelectorAll(this.items.map((item) => `[id="${item.initialId}"]`).join(', ')) : false;
-    }
+  initialId: {
+    type: String,
+    default: '#'
   },
-  watch: {
-    formSchema: {
-      immediate: true,
-      deep: true,
-      handler() {
-        this.items = this.formSchema?.elements
-          ?.map((el: any, index: number) => {
-            // Important to iterate on all elements to have correct indices of Layouts in FormSchema
-            return el.type === 'Layout' && el.options && el.options.format === 'group'
-              ? {
-                initialId: `${this.initialId}${this.initialId ? '/' : ''}elements/${index}`,
-                text: this.customTranslation[el.options?.label?.replace('#lang/', '')] || el.options?.label,
-                layout: el
-              }
-              : {}; // This is generated for non LayoutGroup elements and filtered in the next step
-          })
-          .filter((el: any) => !!el.text);
-      }
-    }
+  nestingLevel: {
+    type: Number,
+    default: 0
   },
-  mounted() {
-    // Cache scrollWrapper element
-    this.scrollWrapper = document.getElementById(this.scrollWrapperId);
+  scrollWrapperId: {
+    type: String,
+    default: 'scroll-wrapper'
+  }
+});
 
-    // Activate Observer when the component is mounted
-    const options = {
-      root: document.getElementById(this.scrollWrapperId),
-      rootMargin: '-200px 0px 0px 0px', // -72px because of sticky header
-      threshold: 0
-    };
+const { t } = useI18n();
 
-    const items = this.items.map((item) => ({ key: item.initialId, value: false }));
+const items = ref<IItem[]>([]);
+const selectedItem = ref<string | undefined>();
 
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        const elId = entry.target.getAttribute('id') as string;
-        const index = items.findIndex((item) => item.key === elId);
-        items[index].value = entry.isIntersecting;
-      });
-      this.selectedItem = items.filter((item) => item.value)[0]?.key;
-    }, options);
+const nextNestingLevel = computed(() => props.nestingLevel + 1);
 
-    this.activateObserver();
-  },
-  methods: {
-    onClick(groupId: string) {
-      this.scroll(groupId);
-    },
-    scroll(groupId: string): void {
-      // Scroll problems with sticky header solve with https://github.com/iamdustan/smoothscroll/issues/47#issuecomment-350810238
-      // What we want to scroll to
-      const item = document.getElementById(groupId);
-      // The wrapper we will scroll inside
-      const wrapper = this.scrollWrapper;
-      const header = this.scrollWrapper?.getElementsByClassName('veo-page__header')[0] as HTMLElement | null;
-      if (item && wrapper && header) {
-        // header.offsetHeight =  extra distance from top (=sticky-header height)
-        const count = item.offsetTop - wrapper.scrollTop - header.offsetHeight;
-        wrapper.scrollBy({ top: count, left: 0, behavior: 'smooth' });
-      }
-    },
-    activateObserver() {
-      if (this.itemsToObserve) {
-        this.itemsToObserve.forEach((section) => {
-          this.observer?.observe(section);
-        });
-      }
-    },
-    deactivateObserver() {
-      if (this.itemsToObserve) {
-        this.itemsToObserve.forEach((section) => {
-          this.observer?.unobserve(section);
-        });
-      }
-    }
+const currentLevelLeftMargin = computed(() => `ml-${props.nestingLevel * 4}`);
+
+const itemsToObserve = computed(() => items.value.length ? document.querySelectorAll(items.value.map((item) => `[id="${item.initialId}"]`).join(', ')) : false);
+
+const onClick = (groupId: string) => {
+  selectedItem.value = groupId;
+  scroll(groupId);
+};
+const scroll = (groupId: string) => {
+  // Scroll problems with sticky header solve with https://github.com/iamdustan/smoothscroll/issues/47#issuecomment-350810238
+  // What we want to scroll to
+  const item = document.getElementById(groupId);
+  // The wrapper we will scroll inside
+  const wrapper = scrollWrapper.value;
+  const header = scrollWrapper.value?.getElementsByClassName('veo-page__header')[0] as HTMLElement | null;
+  const headerOffset = header?.offsetHeight || 0;
+  // extra distance from top (=sticky-header height)
+  if (item && wrapper) {
+    const count = item.offsetTop - wrapper.scrollTop - headerOffset;
+    wrapper.scrollBy({ top: count, left: 0, behavior: 'smooth' });
   }
 };
+
+const scrollWrapper = ref();
+const observer = ref();
+
+const activateObserver = () => {
+  if (itemsToObserve.value) {
+    itemsToObserve.value.forEach((section) => {
+      observer.value?.observe(section);
+    });
+  }
+};
+
+const deactivateObserver = () => {
+  if (itemsToObserve.value) {
+    itemsToObserve.value.forEach((section) => {
+      observer.value?.unobserve(section);
+    });
+  }
+};
+
+onMounted(() => {
+  scrollWrapper.value = document.getElementById(props.scrollWrapperId);
+
+  // Activate Observer when the component is mounted
+  const options = {
+    root: document.getElementById(props.scrollWrapperId),
+    rootMargin: '-200px 0px 0px 0px', // -72px because of sticky header
+    threshold: 0
+  };
+
+  const _items = items.value.map((item) => ({ key: item.initialId, value: false }));
+
+  observer.value = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const elId = entry.target.getAttribute('id') as string;
+      const index = _items.findIndex((item) => item.key === elId);
+      _items[index].value = entry.isIntersecting;
+    });
+    selectedItem.value = _items.filter((item) => item.value)[0]?.key;
+  }, options);
+
+  activateObserver();
+});
+onUnmounted(() => {
+  deactivateObserver();
+});
+
+watch(() => props.formSchema, () => {
+  items.value = props.formSchema?.elements
+    ?.map((el: any, index: number) => {
+      // Important to iterate on all elements to have correct indices of Layouts in FormSchema
+      return el.type === 'Layout' && el.options && el.options.format === 'group'
+        ? {
+          initialId: `${props.initialId}${props.initialId ? '/' : ''}elements/${index}`,
+          text: props.customTranslation[el.options?.label?.replace('#lang/', '')] || el.options?.label,
+          layout: el
+        }
+        : {}; // This is generated for non LayoutGroup elements and filtered in the next step
+    })
+    .filter((el: any) => !!el.text);
+}, { deep: true, immediate: true });
 </script>
+
+<script lang="ts">
+export default { 
+  name: 'FormNavigation'
+};
+</script>
+
 
 <i18n>
 {

@@ -25,49 +25,42 @@
         cols="auto"
         class="docs-form-sector"
       >
-        <VeoForm
-          v-model="form.data"
-          :object-schema="form.objectSchema"
-          :form-schema="form.formSchema"
+        <DynamicFormEntrypoint
+          v-model="data"
+          :object-schema="objectSchema"
+          :form-schema="formSchema"
         />
       </v-col>
     </v-row>
-    <FormDescription
-      :object-schema="form.objectSchema"
-      :form-schema="form.formSchema"
-      :data="form.data"
+    <HelpFormDescription
+      :object-schema="objectSchema"
+      :form-schema="formSchema"
+      :data="data"
     />
   </BasePage>
 </template>
 
-<script lang="ts">
-export default {
-  layout: 'plain',
-  data() {
-    return {
-      form: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            checkbox: {
-              type: 'boolean'
-            }
-          }
-        },
-        formSchema: {
-          type: 'Control',
-          scope: '#/properties/checkbox',
-          options: {
-            label: 'Checkbox'
-          }
-        },
-        data: {
-          checkbox: true
-        }
-      }
-    };
+<script lang="ts" setup>
+definePageMeta({ layout: 'plain' });
+
+const objectSchema = {
+  type: 'object',
+  properties: {
+    checkbox: {
+      type: 'boolean'
+    }
   }
 };
-</script>
 
-<style lang="scss"></style>
+const formSchema = {
+  type: 'Control',
+  scope: '#/properties/checkbox',
+  options: {
+    label: 'Checkbox'
+  }
+};
+
+const data = ref({
+  checkbox: false
+});
+</script>

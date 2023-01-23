@@ -22,8 +22,8 @@
   >
     <template #activator="{ props }">
       <div
-        class="d-block"
         v-bind="props"
+        class="d-block"
         @click.prevent
       >
         <v-btn
@@ -31,7 +31,7 @@
           color="primary"
           :disabled="!demoUnit || units.length === 0"
           :icon="iconOnly"
-          depressed
+          flat
           :class="{
             'veo-demo-unit-button': !iconOnly
           }"
@@ -39,10 +39,10 @@
           data-component-name="demo-unit-button"
           @click="toggleDemoUnit"
         >
-          <!--<v-icon
+          <v-icon
             :start="!iconOnly"
-            :icon="`mdiSvg:${buttonIcon}`"
-          />-->
+            :icon="buttonIcon"
+          />
           <span v-if="userIsInDemoUnit && !iconOnly">
             {{ t('leaveDemoUnit') }}
           </span>

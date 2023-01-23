@@ -4,7 +4,7 @@
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
-   - the Free Software Foundation, either version 3 of the License, or
+   - the Free Software Foundation, either version 3 of the License, orah,m al
    - (at your option) any later version.
    - 
    - This program is distributed in the hope that it will be useful,
@@ -17,27 +17,23 @@
 -->
 <template>
   <v-menu
-    v-model="menuVisible"
     :close-on-content-click="false"
     content-class="veo-account-menu"
     max-width="300px"
-    offset-y
-    bottom
-    left
   >
     <template #activator="{ props }">
       <v-btn
-        icon
         class="mr-0"
-        dark
         data-component-name="account-menu-button"
-        v-bind="{ props }"
+        color="primary"
+        v-bind="mergeProps(props, $attrs)"
+        icon
       >
         <v-avatar
+          color="primary"
           size="48"
-          color="secondary"
         >
-          <span class="white--text text-h1">{{ initials }}</span>
+          {{ initials }}
         </v-avatar>
       </v-btn>
     </template>
@@ -46,16 +42,13 @@
         dense
         class="pb-0"
       >
-        <v-list-item>
-          <v-list-item-avatar color="secondary">
-            <!--<v-icon
-              class="white--text text-h1"
-              style="font-style: normal"
-            >
+        <v-list-item lines="two">
+          <template #prepend>
+            <v-avatar color="primary">
               {{ initials }}
-            </v-icon>-->
-          </v-list-item-avatar>
-          <v-list-item-content>
+            </v-avatar>
+          </template>
+          <v-list-item-title>
             <span v-if="(profile && profile.firstName) || (profile && profile.lastName)">
               {{ profile.firstName }}
               {{ profile.lastName }}
@@ -64,24 +57,25 @@
               v-else
               v-text="t('notAvailable')"
             />
-            <v-list-item-subtitle>{{ profile && profile.email || t('notAvailable') }}</v-list-item-subtitle>
-          </v-list-item-content>
+          </v-list-item-title>
+          <v-list-item-subtitle>{{ profile && profile.email || t('notAvailable') }}</v-list-item-subtitle>
         </v-list-item>
         <template v-if="!userSettings.maxUnits || userSettings.maxUnits > 2">
           <v-divider />
-          <VeoUnitSelection v-bind="$attrs" />
+          <UnitSelect v-bind="$attrs" />
         </template>
         <v-divider />
         <v-list-item
           :href="accountLink"
           target="_blank"
         >
-          <v-list-item-title class="d-flex">
+          <v-list-item-title class="d-flex align-center">
             {{ t('editAccount') }}
-            <!--<v-icon
+            <v-icon
+              class="ml-1"
               size="x-small"
-              :icon="`mdiSvg:${mdiOpenInNew}`"
-            />-->
+              :icon="mdiOpenInNew"
+            />
           </v-list-item-title>
         </v-list-item>
         <template v-if="ability.can('manage', 'accounts')">
@@ -91,7 +85,7 @@
             to="/administration"
           >
             <v-list-item-title>
-              {{ t('breadcrumbs.administration') }}
+              {{ $t('breadcrumbs.administration') }}
             </v-list-item-title>
           </v-list-item>
         </template>
@@ -113,45 +107,28 @@
   </v-menu>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { mergeProps } from 'vue';
 import { mdiOpenInNew } from '@mdi/js';
 
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
-export default defineComponent({
-  setup() {
-    const { t } = useI18n();
-    const config = useRuntimeConfig();
-    const { logout: _logout, profile, userSettings } = useVeoUser();
-    const { ability } = useVeoPermissions();
+const { t } = useI18n();
+const { t: $t } = useI18n({ useScope: 'global' });
+const config = useRuntimeConfig();
+const { logout: _logout, profile, userSettings } = useVeoUser();
+const { ability } = useVeoPermissions();
 
-    const logout = () => _logout('/');
+const logout = () => _logout('/');
 
-    const displayDeploymentDetails = ref(false);
-    const menuVisible = ref(false);
+const displayDeploymentDetails = ref(false);
 
-    const firstName = computed(() => profile.value?.firstName || '');
-    const lastName = computed(() => profile.value?.lastName || '');
-    const initials = computed(() => firstName.value.substring(0, 1) + lastName.value.substring(0, 1) || '??');
+const firstName = computed(() => profile.value?.firstName || '');
+const lastName = computed(() => profile.value?.lastName || '');
+const initials = computed(() => firstName.value.substring(0, 1) + lastName.value.substring(0, 1) || '??');
 
-    const accountLink = computed(() => `${config.public.oidcUrl}/realms/${config.public.oidcRealm}/account`);
-
-    return {
-      ability,
-      accountLink,
-      displayDeploymentDetails,
-      initials,
-      logout,
-      menuVisible,
-      profile,
-      userSettings,
-
-      mdiOpenInNew,
-      t
-    };
-  }
-});
+const accountLink = computed(() => `${config.public.oidcUrl}/realms/${config.public.oidcRealm}/account`);
 </script>
 
 <i18n>
@@ -172,26 +149,7 @@ export default defineComponent({
 </i18n>
 
 <style lang="scss" scoped>
-.veo-account-menu {
-  margin-top: 16px;
-  contain: initial;
-  overflow: visible;
-}
-
 .veo-account-menu > .v-card {
   border-radius: 12px;
-}
-
-.veo-account-menu::before {
-  position: absolute;
-  content: '';
-  top: 0;
-  right: 14px;
-  transform: translateY(-100%);
-  width: 10px;
-  height: 13px;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 13px solid #fff;
 }
 </style>

@@ -17,63 +17,51 @@
 -->
 <template>
   <BasePage
-    :title="t('breadcrumbs.index')"
+    :title="$t('breadcrumbs.index')"
     data-component-name="unit-selection-page"
   >
-    <div class="text-body-1 my-4">
-      {{ t('unitpicker') }}
-    </div>
     <div class="d-flex justify-center">
-      <BaseCard style="width: 70%; max-width: 1000px;">
-        <v-data-iterator
-          :search="search"
-          :items="units"
-          item-key="id"
-        >
-          <template #header>
-            <div data-component-name="unit-selection-search">
-              <v-text-field
-                v-model="search"
-                dense
-                clearable
-                filled
-                hide-details
-                color="black"
-                :prepend-inner-icon="`mdiSvg:${mdiMagnify}`"
-                :label="t('unitpickerPlaceholder')"
+      <BaseCard
+        style="width: 70%; max-width: 1000px;"
+      >
+        <v-card-text>
+          <h3 class="text-h4">
+            {{ t('unitpicker') }}
+          </h3>
+        </v-card-text>
+        <v-list lines="two">
+          <template v-if="unitsFetching">
+            <div
+              v-for="i in 2"
+              :key="i"
+              class="mb-4"
+            >
+              <VSkeletonLoader
+                type="text"
+                width="150px"
+                class="mx-4 my-1"
+              />
+              <VSkeletonLoader
+                type="text"
+                width="250px"
+                class="mx-4 my-1"
               />
             </div>
-            <v-progress-linear
-              v-if="unitsFetching"
-              indeterminate
-            />
           </template>
-          <template #default="{ items }">
-            <v-list
-              dense
-              data-component-name="unit-selection-available-units"
-            >
-              <v-list-item
-                v-for="item in items"
-                :key="item.id"
-                two-line
-                :disabled="!generateUnitDashboardLink(item.id)"
-                :to="generateUnitDashboardLink(item.id)"
-              >
-                <v-list-item-content>
-                  <v-list-item-title v-text="item.name" />
-                  <v-list-item-subtitle v-text="item.description" />
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </template>
-        </v-data-iterator>
+          <v-list-item
+            v-for="unit in units"
+            v-else
+            :key="unit.id"
+            lines="two"
+            :title="unit.name"
+            :subtitle="unit.description"
+            :disabled="!generateUnitDashboardLink(unit.id)"
+            :to="generateUnitDashboardLink(unit.id)"
+          />
+        </v-list>
       </BaseCard>
     </div>
-    <VeoWelcomeDialog
-      v-if="showWelcomeDialog"
-      v-model="showWelcomeDialog"
-    />
+    <WelcomeDialog v-model="showWelcomeDialog" />
   </BasePage>
 </template>
 
@@ -83,7 +71,6 @@ export const ROUTE_NAME = 'index';
 
 <script lang="ts" setup>
 import { StorageSerializers, useStorage } from '@vueuse/core';
-import { mdiMagnify } from '@mdi/js';
 
 import { useVeoUser } from '~/composables/VeoUser';
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
@@ -97,9 +84,12 @@ const router = useRouter();
 const { t } = useI18n();
 const { request } = useRequest();
 
-const search = ref<string | undefined>(undefined);
+const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
 
-const showWelcomeDialog = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
+const showWelcomeDialog = computed({
+  get: () => !firstSetpsCompleted.value,
+  set: (newValue) => { firstSetpsCompleted.value = !newValue; }
+});
 
 const redirectIfTwoUnits = async () => {
   // Only applicable if the user has only two units (one demo and one main)

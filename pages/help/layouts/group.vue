@@ -46,11 +46,11 @@
             class="ml-10"
           >
             <v-text-field
-              :value="groupTitle"
+              v-model="groupTitle"
               label="Group title"
               hide-details
               clearable
-              @input="onInputGroupTitle"
+              variant="underlined"
             />
           </v-col>
         </v-row>
@@ -61,14 +61,14 @@
         lg="4"
         class="docs-form-sector"
       >
-        <VeoForm
+        <DynamicFormEntrypoint
           v-model="form.data"
-          :schema="form.objectSchema"
-          :ui="form.formSchema"
+          :object-schema="form.objectSchema"
+          :form-schema="form.formSchema"
         />
       </v-col>
     </v-row>
-    <FormDescription
+    <HelpFormDescription
       :object-schema="form.objectSchema"
       :form-schema="form.formSchema"
       :data="form.data"
@@ -76,91 +76,63 @@
   </BasePage>
 </template>
 
-<script lang="ts">
-import vjp from 'vue-json-pointer';
+<script lang="ts" setup>
+definePageMeta({ layout: 'plain' });
 
-export default {
-  layout: 'plain',
-  data() {
-    return {
-      form: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            inputText: {
-              type: 'string'
-            },
-            select: {
-              type: 'string',
-              enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
-            }
-          }
-        },
-        formSchema: {
-          type: 'Layout',
-          options: {
-            format: 'group'
-          },
-          elements: [
-            {
-              type: 'Control',
-              scope: '#/properties/inputText',
-              options: {
-                label: 'Input Text'
-              }
-            },
-            {
-              type: 'Control',
-              scope: '#/properties/select',
-              options: {
-                label: 'Select'
-              }
-            }
-          ]
-        },
-        data: {
-          inputText: 'Beispiel',
-          select: 'Beispiel-1'
+const form = ref({
+  objectSchema: {
+    type: 'object',
+    properties: {
+      inputText: {
+        type: 'string'
+      },
+      select: {
+        type: 'string',
+        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
+      }
+    }
+  },
+  formSchema: {
+    type: 'Layout',
+    options: {
+      format: 'group'
+    },
+    elements: [
+      {
+        type: 'Control',
+        scope: '#/properties/inputText',
+        options: {
+          label: 'Input Text'
         }
       },
-      direction: 'vertical',
-      border: false,
-      groupTitle: undefined
-    };
-  },
-  watch: {
-    direction: {
-      immediate: true,
-      handler() {
-        this.update('/options/direction', this.direction);
-      }
-    },
-    border: {
-      immediate: true,
-      handler() {
-        if (this.border) {
-          this.update('/options/class', 'border');
-        } else {
-          this.update('/options/class', undefined);
+      {
+        type: 'Control',
+        scope: '#/properties/select',
+        options: {
+          label: 'Select'
         }
       }
-    }
+    ]
   },
-  methods: {
-    update(jsonPointer: string, value: any): void {
-      vjp.set(this.form.formSchema, jsonPointer, value);
-      this.form.formSchema = { ...this.form.formSchema };
-    },
-    onInputGroupTitle(event: any) {
-      this.groupTitle = event;
-      if (event) {
-        this.update('/options/label', event);
-      } else {
-        this.update('/options/label', undefined);
-      }
-    }
+  data: {
+    inputText: 'Beispiel',
+    select: 'Beispiel-1'
   }
-};
-</script>
+});
 
-<style lang="scss"></style>
+const direction = ref('vertical');
+const border = ref(false);
+const groupTitle = ref(undefined);
+
+watch(() => direction.value, (newValue) => {
+  form.value.formSchema.options.direction = newValue;
+});
+  
+watch(() => border.value, (newValue) => {
+  form.value.formSchema.options.class = newValue ? 'border' : '';
+});
+
+watch(() => groupTitle.value, (newValue) => {
+  form.value.formSchema.options.label = newValue;
+});
+</script>

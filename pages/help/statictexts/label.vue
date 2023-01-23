@@ -24,42 +24,31 @@
         lg="4"
         class="docs-form-sector d-flex justify-center"
       >
-        <VeoForm
-          v-model="dynamicForm.data"
-          :schema="dynamicForm.objectSchema"
-          :ui="dynamicForm.formSchema"
+        <DynamicFormEntrypoint
+          v-model="form.data"
+          :object-schema="form.objectSchema"
+          :form-schema="form.formSchema"
         />
       </v-col>
     </v-row>
-    <FormDescription
-      :object-schema="dynamicForm.objectSchema"
-      :form-schema="dynamicForm.formSchema"
-      :data="dynamicForm.data"
+    <HelpFormDescription
+      :object-schema="form.objectSchema"
+      :form-schema="form.formSchema"
+      :data="form.data"
     />
   </BasePage>
 </template>
 
-<script lang="ts">
-export default {
-  layout: 'plain',
-  data() {
-    return {
-      form: {
-        objectSchema: {},
-        formSchema: {
-          type: 'Label',
-          text: 'Ein Beispiel für den statischen Text.'
-        },
-        data: {}
-      }
-    };
-  },
-  computed: {
-    dynamicForm(): any {
-      return this.form;
-    }
-  }
-};
-</script>
+<script lang="ts" setup>
+definePageMeta({ layout: 'plain' });
 
-<style lang="scss"></style>
+const form = ref({
+  objectSchema: {},
+  formSchema: {
+    type: 'Label',
+    text: 'Ein Beispiel für den statischen Text.',
+    options: {}
+  },
+  data: {}
+});
+</script>

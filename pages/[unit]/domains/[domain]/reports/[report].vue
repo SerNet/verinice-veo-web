@@ -38,7 +38,7 @@
       </v-row>
     </template>
     <template #default>
-      <VeoLoadingWrapper v-if="generatingReport" />
+      <LayoutLoadingWrapper v-if="generatingReport" />
       <p
         v-if="report && report.multipleTargetsSupported"
         class="text-body-1"
@@ -51,7 +51,7 @@
       >
         {{ t('hintSingle') }}
       </p>
-      <VeoObjectFilterBar
+      <ObjectFilterBar
         data-component-name="report-entity-selection-filter-bar"
         :domain-id="domainId"
         :filter="filter"
@@ -61,7 +61,7 @@
         @update:filter="updateRouteQuery"
       />
       <BaseCard>
-        <VeoObjectTable
+        <ObjectTable
           v-model="selectedObjects"
           show-select
           checkbox-color="primary"
@@ -69,6 +69,7 @@
           :items="objects"
           :loading="objectsFetching"
           single-select
+          return-objects
           data-component-name="report-entity-selection"
           @page-change="onPageChange"
         />
@@ -80,7 +81,7 @@
         <v-spacer />
         <v-col cols="auto">
           <v-btn
-            depressed
+            flat
             color="primary"
             :disabled="generatingReport || !selectedObjects.length"
             data-component-name="generate-report-button"
@@ -108,7 +109,7 @@ import { useFetchObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useFetchSchemas } from '~/composables/api/schemas';
 
-export const ROUTE_NAME = 'unit-domains-domain-reports-type';
+export const ROUTE_NAME = 'unit-domains-domain-reports-report';
 
 export default defineComponent({
   name: 'VeoReportPage',
@@ -127,7 +128,7 @@ export default defineComponent({
     const title = computed(() => t('create', { type: report.value?.name?.[locale.value] || '', format: upperCase(outputType.value.split('/').pop()) }).toString());
 
     // Fetching the right report
-    const requestedReportName = computed(() => route.params.type as string);
+    const requestedReportName = computed(() => route.params.report as string);
 
     const { data: reports, isFetching: reportsFetching } = useFetchReports();
     const report = computed(() => reports.value?.[requestedReportName.value]);

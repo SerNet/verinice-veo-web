@@ -35,14 +35,14 @@
         lg="4"
         class="docs-form-sector"
       >
-        <VeoForm
+        <DynamicFormEntrypoint
           v-model="dynamicForm.data"
           :object-schema="dynamicForm.objectSchema"
           :form-schema="dynamicForm.formSchema"
         />
       </v-col>
     </v-row>
-    <FormDescription
+    <HelpFormDescription
       :object-schema="dynamicForm.objectSchema"
       :form-schema="dynamicForm.formSchema"
       :data="dynamicForm.data"
@@ -50,68 +50,57 @@
   </BasePage>
 </template>
 
-<script lang="ts">
-export default {
-  layout: 'plain',
-  data() {
-    return {
-      form: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            autocomplete: {
-              enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
-            }
-          }
-        },
-        formSchema: {
-          type: 'Control',
-          scope: '#/properties/autocomplete',
-          options: {
-            label: 'Autocomplete',
-            format: 'autocomplete'
-          }
-        },
-        data: {
-          autocomplete: 'Beispiel-1'
-        }
-      },
-      formMultiselect: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            autocomplete: {
-              type: 'array',
-              items: {
-                enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
-              }
-            }
-          }
-        },
-        formSchema: {
-          type: 'Control',
-          scope: '#/properties/autocomplete',
-          options: {
-            label: 'Autocomplete',
-            format: 'autocomplete'
-          }
-        },
-        data: {
-          autocomplete: ['Beispiel-1']
-        }
-      },
-      isMultiselect: false
-    };
-  },
-  computed: {
-    dynamicForm(): any {
-      if (this.isMultiselect) {
-        return this.formMultiselect;
-      }
-      return this.form;
-    }
-  }
-};
-</script>
+<script lang="ts" setup>
+definePageMeta({ layout: 'plain' });
 
-<style lang="scss"></style>
+const form = ref({
+  objectSchema: {
+    type: 'object',
+    properties: {
+      autocomplete: {
+        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
+      }
+    }
+  },
+  formSchema: {
+    type: 'Control',
+    scope: '#/properties/autocomplete',
+    options: {
+      label: 'Autocomplete',
+      format: 'autocomplete'
+    }
+  },
+  data: {
+    autocomplete: 'Beispiel-1'
+  }
+});
+
+const formMultiselect = ref({
+  objectSchema: {
+    type: 'object',
+    properties: {
+      autocomplete: {
+        type: 'array',
+        items: {
+          enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
+        }
+      }
+    }
+  },
+  formSchema: {
+    type: 'Control',
+    scope: '#/properties/autocomplete',
+    options: {
+      label: 'Autocomplete',
+      format: 'autocomplete'
+    }
+  },
+  data: {
+    autocomplete: ['Beispiel-1']
+  }
+});
+
+const isMultiselect = ref(true);
+
+const dynamicForm = computed(() => isMultiselect.value ? formMultiselect.value : form.value);
+</script>

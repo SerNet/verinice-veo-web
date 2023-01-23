@@ -31,8 +31,8 @@
           </v-tab>
         </template>
         <template #items>
-          <v-tab-item>
-            <VeoDefaultCatalog
+          <v-window-item>
+            <CatalogDefaultCatalog
               :catalog-items="scenarios"
               :loading="catalogItemsAreFetching"
               :success-text="t('scenariosApplied').toString()"
@@ -41,10 +41,10 @@
               <template #header>
                 {{ t('selectScenariosCTA') }}
               </template>
-            </VeoDefaultCatalog>
-          </v-tab-item>
-          <v-tab-item>
-            <VeoDefaultCatalog
+            </CatalogDefaultCatalog>
+          </v-window-item>
+          <v-window-item>
+            <CatalogDefaultCatalog
               :catalog-items="toms"
               :loading="catalogItemsAreFetching"
               :success-text="t('TOMsApplied').toString()"
@@ -53,8 +53,8 @@
               <template #header>
                 {{ t('selectTOMsCTA') }}
               </template>
-            </VeoDefaultCatalog>
-          </v-tab-item>
+            </CatalogDefaultCatalog>
+          </v-window-item>
         </template>
       </BaseTabs>
     </template>
@@ -76,7 +76,7 @@ export default defineComponent({
     const title = computed(() => t('catalog', { name: catalogItems.value?.[0]?.catalog?.displayName || '' }));
 
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-    const catalogId = computed(() => separateUUIDParam(route.params.catalo as string).id);
+    const catalogId = computed(() => separateUUIDParam(route.params.catalog as string).id);
 
     const scenarios = computed(() =>
       // VVT is needed by the backend, however it shouldn't be selectable by the user as this throws an error

@@ -18,44 +18,49 @@
 <template>
   <v-list-item
     :to="to"
-    active-class="veo-active-list-item"
-    dense
-    :exact="exact"
-    :class="classes"
+    :active="isActive"
+    active-class="veo-active-list-item veo-active-list-nav-item"
+    :class="_classes"
     :data-component-name="componentName"
+    density="compact"
     @click="onClick"
   >
-    <v-list-item-icon v-if="icon || faIcon">
+    <template
+      v-if="icon || faIcon"
+      #prepend
+    >
       <v-tooltip
-        right
+        location="end"
         :disabled="!miniVariant"
       >
         <template #activator="{ props: tooltip, attrs }">
           <div
             v-bind="mergeProps(attrs, tooltip)"
           >
-            <!--<v-icon
+            <v-icon
               v-if="icon"
               :icon="icon"
+              start
             />
             <font-awesome-icon
               v-else-if="faIcon"
               :icon="faIcon"
-            />-->
+            />
           </div>
         </template>
         <span>{{ name }}</span>
       </v-tooltip>
-    </v-list-item-icon>
-    <v-list-item-title>
+    </template>
+    <v-list-item-title class="veo-primary-navigation-title">
       {{ name }}
     </v-list-item-title>
   </v-list-item>
 </template>
 
 <script lang="ts" setup>
+import { isEqual, pick } from 'lodash';
 import { mergeProps, PropType } from 'vue';
-import { RouteLocationRaw } from 'vue-router';
+import { _RouteLocationBase } from 'vue-router';
 
 const props = defineProps({
   name: {
@@ -71,7 +76,7 @@ const props = defineProps({
     default: undefined
   },
   to: {
-    type: [String, Object] as PropType<RouteLocationRaw>,
+    type: [String, Object] as PropType<_RouteLocationBase>,
     required: true
   },
   exact: {
@@ -89,9 +94,19 @@ const props = defineProps({
   classes: {
     type: String,
     default: undefined
+  },
+  level: {
+    type: Number,
+    default: 0
+  },
+  activePath: {
+    type: String,
+    default: undefined
   }
 });
 const emit = defineEmits(['expand-menu', 'click']);
+
+const route = useRoute();
   
 const onClick = (event: any) => {
   if (props.miniVariant) {
@@ -99,4 +114,25 @@ const onClick = (event: any) => {
   }
   emit('click', event);
 };
+
+const _classes = computed(() => `${props.classes} primary-navigation-entry-level-${props.level}`);
+
+const isActive = computed(() => {
+  const isRouteObject = typeof props.to === 'object';
+
+  if(props.activePath) {
+    return props.exact ? route.fullPath === props.activePath : route.fullPath.includes(props.activePath);
+  } else if(isRouteObject) {
+    const toRoute = props.to as _RouteLocationBase;
+    return props.exact ? isEqual(pick(route, 'name', 'query', 'params'), pick(toRoute, 'name', 'query', 'params')) : route.name.toString().includes(toRoute.name.toString());
+  } else {
+    return props.exact ? route.fullPath === props.to : route.fullPath.includes(props.to);
+  }
+});
 </script>
+
+<style lang="scss">
+.veo-active-list-nav-item {
+  border-left: 4px solid $primary;
+}
+</style>

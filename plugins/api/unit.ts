@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { isArray } from 'lodash';
-import { separateUUIDParam } from '~/lib/utils';
 import { Client } from '~/plugins/api';
 
 import { IVeoAPIMessage, IVeoUnit, IVeoUnitIncarnations } from '~/types/VeoTypes';
@@ -102,11 +101,7 @@ export default function (api: Client) {
     /**
      * Fetches the incarnations for a group of catalog items
      */
-    fetchIncarnations(itemIds: string | string[], unitId?: string): Promise<IVeoUnitIncarnations> {
-      if (!unitId) {
-        unitId = separateUUIDParam(api._context.route.params.unit).id;
-      }
-
+    fetchIncarnations(itemIds: string | string[], unitId: string): Promise<IVeoUnitIncarnations> {
       if (isArray(itemIds)) {
         itemIds = itemIds.join(',');
       }
@@ -121,11 +116,7 @@ export default function (api: Client) {
       });
     },
 
-    updateIncarnations(incarnations: IVeoUnitIncarnations, unitId?: string): Promise<IVeoUnitIncarnations> {
-      if (!unitId) {
-        unitId = separateUUIDParam(api._context.route.params.unit).id;
-      }
-
+    updateIncarnations(incarnations: IVeoUnitIncarnations, unitId: string): Promise<IVeoUnitIncarnations> {
       return api.req('/api/units/:unitId/incarnations', {
         method: 'POST',
         params: {

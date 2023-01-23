@@ -17,7 +17,7 @@
 -->
 <template>
   <v-dialog
-    :value="value"
+    :model-value="modelValue"
     max-width="80%"
     :fullscreen="fullscreen"
     :width="width"
@@ -30,7 +30,7 @@
       tile
     >
       <div class="veo-dialog__inner--border-bottom">
-        <v-card-title class="pt-2 pb-1">
+        <v-card-title class="d-flex align-center pt-2 pb-1">
           <LayoutAppLogoMobile
             v-if="fullscreen"
             style="height: 36px"
@@ -40,11 +40,12 @@
           <v-btn
             :disabled="closeDisabled"
             icon
-            large
+            flat
+            size="large"
             class="close-button"
             @click="closeDialog()"
           >
-            <!--<v-icon :icon="`mdiSvg:${mdiClose}`" />-->
+            <v-icon :icon="mdiClose" />
           </v-btn>
         </v-card-title>
       </div>
@@ -77,11 +78,11 @@
 
 <script lang="ts">
 import { mdiClose } from '@mdi/js';
+import { useDisplay } from 'vuetify';
 
 export default defineComponent({
-  name: 'VeoDialog',
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       default: false
     },
@@ -116,12 +117,11 @@ export default defineComponent({
       default: ''
     }
   },
-  emits: ['input'],
+  emits: ['update:model-value'],
   setup(props, { emit }) {
-    // @ts-ignore $vuetify exists
-    const { $vuetify } = useContext();
+    const { mdAndDown, smAndDown, xs } = useDisplay();
 
-    const fullscreen = computed(() => (props.xLarge && $vuetify.breakpoint.mdAndDown) || (props.large && $vuetify.breakpoint.smAndDown) || $vuetify.breakpoint.xsOnly);
+    const fullscreen = computed(() => (props.xLarge && mdAndDown.value) || (props.large && smAndDown.value) || xs.value);
 
     const width = computed(() => {
       if (props.large) return '900px';
@@ -132,14 +132,14 @@ export default defineComponent({
     const closeDialog = () => {
       // @ts-ignore For some reason closeFunction has a value of never, but no Prop type seems to fit a function
       if (props.closeFunction()) {
-        emit('input', false);
+        emit('update:model-value', false);
       }
     };
 
     const dialogClasses = computed(() => {
       const classes = {
         'overflow-hidden': true,
-        'd-flex': props.value
+        'd-flex': props.modelValue
       };
 
       return Object.entries(classes)
@@ -162,11 +162,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-card,
-.v-card__title {
+.v-card-title {
   background-color: $background-accent;
 }
 
-.v-card__text {
+.v-card-text {
   background-color: $background-primary;
 }
 

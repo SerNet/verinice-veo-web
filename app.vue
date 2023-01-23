@@ -1,12 +1,9 @@
 <template>
-  <NuxtLayout>
-    <Transition
-      name="page"
-      mode="out-in"
-    >
+  <div>
+    <NuxtLayout>
       <NuxtPage />
-    </Transition>
-  </NuxtLayout>
+    </NuxtLayout>
+  </div>
 </template>
 
 <script setup>

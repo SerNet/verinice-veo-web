@@ -33,7 +33,7 @@
             v-text="protectionGoal.text"
           />
         </v-card-text>
-        <VeoRiskMatrix
+        <RiskMatrix
           v-if="!domainIsFetching"
           v-bind="getMatrixData(protectionGoal.id)"
         />
@@ -67,7 +67,7 @@ export default defineComponent({
     const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
     const { data: domain, isFetching: domainIsFetching } = useFetchDomain(fetchDomainQueryParameters);
 
-    const data = computed<undefined | IVeoDomain['riskDefinitions']['x']>(() => domain.value.riskDefinitions[riskDefinition.value as string]);
+    const data = computed<undefined | IVeoDomain['riskDefinitions']['x']>(() => domain.value?.riskDefinitions?.[riskDefinition.value as string]);
 
     // Matrix selection
     const protectionGoals = computed(() =>

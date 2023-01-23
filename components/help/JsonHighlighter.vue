@@ -33,7 +33,6 @@ import Prism from 'prismjs';
 import 'prismjs/components/prism-json';
 
 export default {
-  name: 'PrimsHighlighter',
   props: {
     text: { type: String, default: '' }
   },

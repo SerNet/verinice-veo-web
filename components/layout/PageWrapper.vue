@@ -15,358 +15,336 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<script lang="ts">
-import { isObject } from 'lodash';
+<template>
+  <component :is="render" />
+</template>
+
+<script lang="ts" setup>
 import { PropType } from 'vue';
-import VSkeletonLoader from '~/components/vuetifyPolyfill/VSkeletonLoader.vue'; // TODO: import { VSkeletonLoader } from 'vuetify/components'; as soon as vuetify adds it back
+import { isObject } from 'lodash';
+import { useDisplay } from 'vuetify';
 
+import VSkeletonLoader from '~/components/VSkeletonLoader.vue'; // TODO: import { VSkeletonLoader } from 'vuetify/components'; as soon as vuetify adds it back
 import LayoutCollapseButton from '~/components/layout/CollapseButton.vue';
-import { IBaseObject } from '~/lib/utils';
 
-export default {
-  components: {
-    VSkeletonLoader
+const props = defineProps({
+  title: {
+    type: String,
+    default: undefined
   },
-  props: {
-    title: {
-      type: String,
-      default: undefined
-    },
-    titleClass: {
-      type: String,
-      default: undefined
-    },
-    /**
+  titleClass: {
+    type: String,
+    default: undefined
+  },
+  /**
      * Shows a skeleton for the title if set to true
      */
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    collapsableLeft: {
-      type: Boolean,
-      default: false
-    },
-    collapsableRight: {
-      type: Boolean,
-      default: false
-    },
-    headingLevel: {
-      type: Number,
-      default: 1
-    },
-    pageWidths: {
-      type: Array as PropType<(string | number)[]>,
-      default: () => []
-    },
-    pageWidthsLg: {
-      type: Array as PropType<(string | number)[]>,
-      default: () => []
-    },
-    pageWidthsXl: {
-      type: Array as PropType<(string | number)[]>,
-      default: () => []
-    },
-    pageTitles: {
-      type: Array as PropType<string[]>,
-      default: () => []
-    },
-    unresponsivePageWidths: {
-      type: Boolean,
-      default: false
-    }
+  loading: {
+    type: Boolean,
+    default: false
   },
-  emits: ['page-collapsed'],
-  data() {
-    return {
-      observer: undefined as MutationObserver | undefined,
-      collapsablePages: [] as boolean[],
-      pagesCollapsedStates: [] as boolean[],
-      currentPagesCount: 0 as number
-    };
+  collapsableLeft: {
+    type: Boolean,
+    default: false
   },
-  watch: {
-    // Reset pages if collapsable left or right change (to avoid having a collapsed page if it isn't allowed to collapse anymore)
-    collapsableLeft() {
-      this.onPageCountChange();
-    },
-    collapsableRight() {
-      this.onPageCountChange();
-    }
+  collapsableRight: {
+    type: Boolean,
+    default: false
   },
-  mounted() {
-    this.observer = new MutationObserver(() => {
-      this.onPageCountChange();
-    });
-    this.observer.observe(this.$refs.wrapper as Element, { childList: true });
-    this.onPageCountChange();
+  headingLevel: {
+    type: Number,
+    default: 1
+  },
+  pageWidths: {
+    type: Array as PropType<(string | number)[]>,
+    default: () => []
+  },
+  pageWidthsLg: {
+    type: Array as PropType<(string | number)[]>,
+    default: () => []
+  },
+  pageWidthsXl: {
+    type: Array as PropType<(string | number)[]>,
+    default: () => []
+  },
+  pageTitles: {
+    type: Array as PropType<string[]>,
+    default: () => []
+  },
+  unresponsivePageWidths: {
+    type: Boolean,
+    default: false
+  }
+});
 
-    this.enableKeybinds();
-  },
-  unmounted() {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
+const emit = defineEmits(['page-collapsed']);
 
-    this.destroyKeybinds();
-  },
-  methods: {
-    /**
+const attrs = useAttrs();
+const slots = useSlots();
+const { lgAndUp, xl } = useDisplay();
+
+const observer = ref<MutationObserver | undefined>();
+const wrapper = ref();
+const collapsablePages = ref<boolean[]>([]);
+const pagesCollapsedStates = ref<boolean[]>([]);
+const currentPageCount = ref(0);
+
+// Shortcut stuff
+const enableKeybinds = () => {
+  document.addEventListener('keydown', onKeyPress);
+};
+const destroyKeybinds = () => {
+  document.removeEventListener('keydown', onKeyPress);
+};
+  
+
+onMounted(() => {
+  observer.value = new MutationObserver(() => { onPageCountChange(); });
+  observer.value.observe(wrapper.value, { childList: true });
+  onPageCountChange();
+  enableKeybinds();
+});
+
+onUnmounted(() => {
+  if(observer.value) {
+    observer.value.disconnect();
+    destroyKeybinds();
+  }
+});
+  
+/**
      * Index of the page which should be toggled
      */
-    togglePage(index: number): void {
-      // We use Vue.set as vue won't pick up changes if we alter data via this.pagesCollapsedStates[index]
-      this.pagesCollapsedStates[index] = !this.pagesCollapsedStates[index];
-      this.$emit('page-collapsed', this.pagesCollapsedStates);
-    },
-    /**
+const togglePage = (index: number) => {
+  pagesCollapsedStates.value[index] = !pagesCollapsedStates.value[index];
+  emit('page-collapsed', pagesCollapsedStates.value);
+};
+/**
      * Called initally and if the amount of pages change during runtime to update the arrays controlling
      * which pages can be collapsed and their state.
      */
-    onPageCountChange() {
-      if (this.$refs.wrapper) {
-        const currentPagesCount = (this.$refs.wrapper as Element).children.length;
+const onPageCountChange = () => {
+  if (wrapper.value) {
+    const _currentPagesCount = wrapper.value.children.length;
 
-        // Only reinitialize arrays if the amount of children changed
-        if (currentPagesCount !== this.currentPagesCount) {
-          // Only make the page on the very left and very right collapsable if passed by prop, all other pages aren't collapsable
-          this.collapsablePages = Array(currentPagesCount).fill(false);
-          this.collapsablePages[0] = this.collapsableLeft;
-          this.collapsablePages[this.collapsablePages.length - 1] = this.collapsableRight;
+    // Only reinitialize arrays if the amount of children changed
+    if (_currentPagesCount !== currentPageCount.value) {
+      // Only make the page on the very left and very right collapsable if passed by prop, all other pages aren't collapsable
+      collapsablePages.value = Array(_currentPagesCount).fill(false);
+      collapsablePages.value[0] = props.collapsableLeft;
+      collapsablePages.value[collapsablePages.value.length - 1] = props.collapsableRight;
 
-          // Expand all pages (resets the state even if previous pages have been collapsed)
-          this.pagesCollapsedStates = Array(currentPagesCount).fill(false);
-          this.currentPagesCount = currentPagesCount;
+      // Expand all pages (resets the state even if previous pages have been collapsed)
+      pagesCollapsedStates.value = Array(_currentPagesCount).fill(false);
+      currentPageCount.value = _currentPagesCount;
 
-          this.destroyKeybinds();
-          this.enableKeybinds();
-        }
-      }
-    },
-    /**
+      destroyKeybinds();
+      enableKeybinds();
+    }
+  }
+};
+
+watch(() => props.collapsableLeft, onPageCountChange);
+watch(() => props.collapsableRight, onPageCountChange);
+/**
      * Helper function to find out whether the previous page is collapsed
      */
-    previousPageIsCollapsed(index: number) {
-      return index > 0 && this.pagesCollapsedStates[index - 1];
-    },
-    /**
+const previousPageIsCollapsed = (index: number) => index > 0 && pagesCollapsedStates.value[index - 1];
+/**
      * Helper function to find out whether the next page is collapsed
      */
-    nextPageIsCollapsed(index: number) {
-      return index < this.collapsablePages.length - 1 && this.pagesCollapsedStates[index + 1];
-    },
-    enableKeybinds() {
-      document.addEventListener('keydown', this.onKeyPress);
-    },
-    destroyKeybinds() {
-      document.removeEventListener('keydown', this.onKeyPress);
-    },
-    /**
+const nextPageIsCollapsed = (index: number) => index < collapsablePages.value.length - 1 && pagesCollapsedStates.value[index + 1];
+
+/**
      * Called when the user presses any key. The function only does stuff if Alt+(0-9) is pressed.
      */
-    onKeyPress(event: KeyboardEvent) {
-      if (event.repeat) {
-        return;
-      }
-      if ((event.altKey || event.ctrlKey) && event.key >= '0' && event.key <= '9') {
-        let digit = Number(event.key);
-        if (digit === 0) {
-          digit = 10;
-        }
+const onKeyPress = (event: KeyboardEvent) => {
+  if (event.repeat) {
+    return;
+  }
+  if ((event.altKey || event.ctrlKey) && event.key >= '0' && event.key <= '9') {
+    let digit = Number(event.key);
+    if (digit === 0) {
+      digit = 10;
+    }
 
-        if (this.collapsablePages[digit - 1]) {
-          // If the page count is two, we have to behave a bit different to avoid not showing any page
-          if (this.currentPagesCount === 2) {
-            if (digit === 1) {
-              this.togglePage(0);
-              if (this.nextPageIsCollapsed(0)) {
-                this.togglePage(1);
-              }
-            } else {
-              this.togglePage(1);
-              if (this.previousPageIsCollapsed(1)) {
-                this.togglePage(0);
-              }
-            }
-          } else if (digit <= this.currentPagesCount && this.collapsablePages[digit - 1]) {
-            this.togglePage(digit - 1);
+    if (collapsablePages.value[digit - 1]) {
+      // If the page count is two, we have to behave a bit different to avoid not showing any page
+      if (currentPageCount.value === 2) {
+        if (digit === 1) {
+          togglePage(0);
+          if (nextPageIsCollapsed(0)) {
+            togglePage(1);
+          }
+        } else {
+          togglePage(1);
+          if (previousPageIsCollapsed(1)) {
+            togglePage(0);
           }
         }
+      } else if (digit <= currentPageCount.value && collapsablePages.value[digit - 1]) {
+        togglePage(digit - 1);
       }
-    },
-    /**
+    }
+  }
+};
+/**
      * Creates an array containing all classes that should be applied to a page. Contains a fallback if no props are passed.
      *
      * @param index The index of the page to look for values for
      */
-    localPageWidth(index: number): { classes: string[]; styles: IBaseObject } {
-      const classes = [];
-      let styles = {};
+const localPageWidth = (index: number): { classes: string[]; styles: Record<string, any> } => {
+  const classes = [];
+  let styles = {};
 
-      if (this.pageWidths[index]) {
-        classes.push(`col-${this.pageWidths[index]}`);
+  if (props.pageWidths[index]) {
+    classes.push(`v-col-${props.pageWidths[index]}`);
 
-        if (this.unresponsivePageWidths) {
-          if (isObject(this.pageWidths[index])) {
-            styles = this.pageWidths[index];
-          } else {
-            styles = {
-              width: this.pageWidths[index],
-              minWidth: this.pageWidths[index]
-            };
-          }
-        }
+    if (props.unresponsivePageWidths) {
+      if (isObject(props.pageWidths[index])) {
+        styles = props.pageWidths[index];
+      } else {
+        styles = {
+          width: props.pageWidths[index],
+          minWidth: props.pageWidths[index]
+        };
       }
-
-      if (this.pageWidthsLg[index]) {
-        classes.push(`col-lg-${this.pageWidthsLg[index]}`);
-        if (this.unresponsivePageWidths && this.$vuetify.breakpoint.lgAndUp) {
-          if (isObject(this.pageWidthsLg[index])) {
-            styles = this.pageWidthsLg[index];
-          } else {
-            styles = {
-              width: this.pageWidthsLg[index],
-              minWidth: this.pageWidthsLg[index]
-            };
-          }
-        }
-      }
-
-      if (this.pageWidthsXl[index]) {
-        classes.push(`col-xl-${this.pageWidthsXl[index]}`);
-        if (this.unresponsivePageWidths && this.$vuetify.breakpoint.xl) {
-          if (isObject(this.pageWidthsXl[index])) {
-            styles = this.pageWidthsXl[index];
-          } else {
-            styles = {
-              width: this.pageWidthsXl[index],
-              minWidth: this.pageWidthsXl[index]
-            };
-          }
-        }
-      }
-
-      if (classes.length === 0) {
-        classes.push(`col-${Math.floor(12 / (this.currentPagesCount - this.pagesCollapsedStates.filter((page) => page).length))}`);
-      }
-
-      return { classes: this.unresponsivePageWidths ? [] : classes, styles: this.unresponsivePageWidths ? styles : {} };
     }
+  }
+
+  if (props.pageWidthsLg[index]) {
+    classes.push(`v-col-lg-${props.pageWidthsLg[index]}`);
+    if (props.unresponsivePageWidths && lgAndUp.value) {
+      if (isObject(props.pageWidthsLg[index])) {
+        styles = props.pageWidthsLg[index];
+      } else {
+        styles = {
+          width: props.pageWidthsLg[index],
+          minWidth: props.pageWidthsLg[index]
+        };
+      }
+    }
+  }
+
+  if (props.pageWidthsXl[index]) {
+    classes.push(`v-col-xl-${props.pageWidthsXl[index]}`);
+    if (props.unresponsivePageWidths && xl.value) {
+      if (isObject(props.pageWidthsXl[index])) {
+        styles = props.pageWidthsXl[index];
+      } else {
+        styles = {
+          width: props.pageWidthsXl[index],
+          minWidth: props.pageWidthsXl[index]
+        };
+      }
+    }
+  }
+
+  if (classes.length === 0) {
+    classes.push(`v-col-${Math.floor(12 / (currentPageCount.value - pagesCollapsedStates.value.filter((page) => page).length))}`);
+  }
+
+  return { classes: props.unresponsivePageWidths ? [] : classes, styles: props.unresponsivePageWidths ? styles : {} };
+};
+  
+const render = () => h(
+  'div',
+  {
+    ...attrs,
+    class: 'fill-width fill-height d-flex flex-column overflow-hidden'
   },
-  render(h): any {
-    return h(
+  [
+    h(
       'div',
       {
-        class: 'fill-width fill-height d-flex flex-column overflow-hidden',
-        ...this.$attrs
+        class: props.titleClass
       },
       [
-        h(
-          'div',
-          {
-            class: this.$props.titleClass
-          },
-          [
-            ...(this.$props.loading
-              ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'skeleton-title px-4 py-1' })]
-              : [
-                ...(this.$props.title
+        ...(props.loading
+          ? [h(VSkeletonLoader, { type: 'text', class: 'skeleton-title px-4 py-1' })]
+          : [
+            ...(props.title
+              ? [
+                h(`h${props.headingLevel}`, {
+                  innerText: props.title,
+                  class: `d-inline flex-grow-0 text-h${props.headingLevel}`
+                })
+              ]
+              : []),
+            ...(slots.title ? [slots.title()] : [])
+          ]),
+        slots.header ? slots.header() : []
+      ]
+    ),
+    h(
+      'div',
+      {
+        class: 'd-flex flex-nowrap overflow-hidden flex-grow-1',
+        ref: wrapper
+      },
+      (slots.default ? slots.default() : [])
+        .filter((slot) => slot.type.__name === 'Page')
+        .map((slotItem, index) => {
+          if (slotItem.props) {
+            slotItem.props.isPageWrapperChild = true;
+          }
+
+          const { classes, styles } = localPageWidth(index);
+
+          return [
+            h(
+              'div',
+              {
+                style: {
+                  position: 'relative',
+                  display: pagesCollapsedStates.value[index] ? 'none' : 'flex',
+                  ...styles
+                },
+                class: ['flex-row', classes, 'pa-0']
+              },
+              [
+                ...((index === collapsablePages.value.length - 1 && collapsablePages.value[index]) || previousPageIsCollapsed(index)
                   ? [
-                    h(`h${this.$props.headingLevel}`, {
-                      domProps: {
-                        innerText: this.$props.title
+                    h(
+                      'div',
+                      {
+                        style: 'width: 16px',
+                        class: 'fill-height'
                       },
-                      class: `d-inline flex-grow-0 text-h${this.$props.headingLevel}`
-                    })
+                      [
+                        h(LayoutCollapseButton, {
+                          modelValue: previousPageIsCollapsed(index),
+                          right: false,
+                          elementName: previousPageIsCollapsed(index) ? props.pageTitles[index - 1] : props.pageTitles[index],
+                          index: previousPageIsCollapsed(index) ? index - 1 : index,
+                          'onUpdate:modelValue': () => togglePage(previousPageIsCollapsed(index) ? index - 1 : index)
+                        })
+                      ]
+                    )
                   ]
                   : []),
-                ...(this.$slots.title ? [this.$slots().title] : [])
-              ]),
-            this.$slots.header ? this.$slots.header : []
-          ]
-        ),
-        h(
-          'div',
-          {
-            props: {
-              noGutters: true
-            },
-            class: 'd-flex flex-nowrap overflow-hidden flex-grow-1',
-            ref: 'wrapper'
-          },
-          (this.$slots.default ? this.$slots.default : [])
-            .filter((slot) => slot.tag)
-            .map((slotItem, index) => {
-              if (slotItem.componentOptions?.propsData) {
-                (slotItem.componentOptions.propsData as any).isPageWrapperChild = true;
-              }
-
-              const { classes, styles } = this.localPageWidth(index);
-
-              return [
-                h(
-                  'div',
-                  {
-                    style: {
-                      position: 'relative',
-                      display: this.pagesCollapsedStates[index] ? 'none' : 'flex',
-                      ...styles
-                    },
-                    class: ['flex-row', classes, 'pa-0']
-                  },
-                  [
-                    ...((index === this.collapsablePages.length - 1 && this.collapsablePages[index]) || this.previousPageIsCollapsed(index)
-                      ? [
-                        h(
-                          'div',
-                          {
-                            style: 'width: 16px',
-                            class: 'fill-height'
-                          },
-                          [
-                            h(LayoutCollapseButton, {
-                              props: {
-                                value: this.previousPageIsCollapsed(index),
-                                right: false,
-                                elementName: this.previousPageIsCollapsed(index) ? this.pageTitles[index - 1] : this.pageTitles[index],
-                                index: this.previousPageIsCollapsed(index) ? index - 1 : index
-                              },
-                              on: {
-                                input: () => this.togglePage(this.previousPageIsCollapsed(index) ? index - 1 : index)
-                              }
-                            })
-                          ]
-                        )
-                      ]
-                      : []),
-                    slotItem,
-                    ...((index === 0 && this.collapsablePages[index]) || this.nextPageIsCollapsed(index)
-                      ? [
-                        h('div', { style: 'width: 16px', class: 'fill-height' }, [
-                          h(LayoutCollapseButton, {
-                            props: {
-                              value: this.nextPageIsCollapsed(index),
-                              right: true,
-                              elementName: this.nextPageIsCollapsed(index) ? this.pageTitles[index + 1] : this.pageTitles[index],
-                              index: this.nextPageIsCollapsed(index) ? index + 1 : index
-                            },
-                            on: {
-                              input: () => this.togglePage(this.nextPageIsCollapsed(index) ? index + 1 : index)
-                            }
-                          })
-                        ])
-                      ]
-                      : [])
+                h(slotItem),
+                ...((index === 0 && collapsablePages.value[index]) || nextPageIsCollapsed(index)
+                  ? [
+                    h('div', { style: 'width: 16px', class: 'fill-height' }, [
+                      h(LayoutCollapseButton, {
+                        modelValue: nextPageIsCollapsed(index),
+                        right: true,
+                        elementName: nextPageIsCollapsed(index) ? props.pageTitles[index + 1] : props.pageTitles[index],
+                        index: nextPageIsCollapsed(index) ? index + 1 : index,
+                        'onUpdate:modelValue': () => togglePage(nextPageIsCollapsed(index) ? index + 1 : index)
+                      })
+                    ])
                   ]
-                )
-              ];
-            })
-        ),
-        this.$slots.helpers ? this.$slots.helpers : []
-      ]
-    );
-  }
-};
+                  : [])
+              ]
+            )
+          ];
+        })
+    ),
+    slots.helpers ? slots.helpers() : []
+  ]
+);
 </script>
 
 <style lang="scss" scoped>

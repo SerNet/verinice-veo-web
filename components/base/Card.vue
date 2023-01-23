@@ -15,45 +15,45 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<script lang="ts">
+<template>
+  <component :is="render" />
+</template>
+<script lang="ts" setup>
 import { VCard } from 'vuetify/components';
 
-export default defineComponent({
-  props: {
-    inverted: {
-      type: Boolean,
-      default: false
-    }
-  },
-  setup(props, { attrs, slots }) {
-    return () =>
-      h(
-        VCard,
-        {
-          class: {
-            'veo-card--inverted': props.inverted,
-            'veo-card': !props.inverted,
-            'veo-border': true
-          },
-          props: {
-            ...props,
-            ...attrs
-          },
-          ...attrs
-        },
-        ...(slots.default ? [slots.default()] : [])
-      );
+const props = defineProps({
+  inverted: {
+    type: Boolean,
+    default: false
   }
 });
+
+const slots = useSlots();
+const attrs = useAttrs();
+
+const render = () => h(
+  VCard,
+  {
+    ...attrs,
+    class: {
+      'veo-card': true,
+      'veo-card--inverted': props.inverted,
+      'veo-border': true
+    },
+    flat: true,
+    rounded: true
+  },
+  ...(slots.default ? [slots.default] : [])
+);
 </script>
 
 <style lang="scss" scoped>
-.veo-card--inverted {
-  background-color: $background-primary;
-}
-
 .veo-card {
   background: $background-accent;
+  border-radius: 12px;
   overflow: hidden;
+}
+.veo-card--inverted {
+  background-color: $background-primary;
 }
 </style>

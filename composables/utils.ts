@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { isString, trim } from "lodash";
-import { NuxtApp } from "nuxt/app";
 
 export const useFormatters = () => {
   const { locale } = useI18n();
@@ -66,38 +65,8 @@ export const useThrottleNextTick = () => {
   return { throttle };
 };
 
-export const onContentUpdate = (callback: (context: { event: string; path: string }) => void) => {
-  const { isDev } = useNuxtApp();
-  if (isDev && process.client) {
-    withNuxt(($nuxt) => {
-      $nuxt.$on('content:update', callback);
-    });
-  }
-};
-
-export const withNuxt = (callback: (nuxt: NuxtApp) => any) => {
-  const win = window as any;
-  if ('$nuxt' in win) {
-    callback(win.$nuxt);
-  } else {
-    win.onNuxtReady(callback);
-  }
-};
-
-export const onFetchFinish = (callback: (nuxt: NuxtApp) => any, interval = 100) =>
-  withNuxt((nuxt) => {
-    const intervalHandle = setInterval(() => {
-      if (!nuxt.isFetching) {
-        clearInterval(intervalHandle);
-        nextTick(() => callback(nuxt));
-      }
-    }, interval);
-  });
-
-export const onMountedFetchFinish = (callback: (nuxt: NuxtApp) => any, interval = 100) => onMounted(() => onFetchFinish(callback, interval));
-
 export const useRules = () => {
-  const { t } = useI18n();
+  const { t } = useI18n({ useScope: 'global' });
 
   const requiredRule = (v: any) => !!v && isString(v) ? !!trim(v) : true || t('global.input.required');
 

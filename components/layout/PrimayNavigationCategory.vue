@@ -17,20 +17,20 @@
 -->
 <template>
   <v-list-group
-    active-class="black--text font-weight-bold"
+    active-class="text-black font-weight-bold"
     :sub-group="level > 0"
     :data-component-name="componentName"
     :class="{ 'border-top': level === 0, 'veo-primary-navigation__group': level > 0, 'veo-primary-navigation__group--active': $route.fullPath.includes(activePath) }"
     no-action
-    :value="$route.fullPath.includes(activePath) /* group prop is not working with query parameters, so we have to use a simple hack to expand the active path */"
+    :model-value="$route.fullPath.includes(activePath) /* group prop is not working with query parameters, so we have to use a simple hack to expand the active path */"
     @click="onClick"
   >
     <template
       #prependIcon
     >
-      <!--<v-icon
+      <v-icon
         v-if="level > 0"
-        :icon="`mdiSvg:${mdiChevronDown}`"
+        :icon="mdiChevronDown"
       />
       <v-icon
         v-else-if="icon"
@@ -39,22 +39,34 @@
       <font-awesome-icon
         v-else-if="faIcon"
         :icon="faIcon"
-      />-->
+      />
     </template>
-    <template #activator>
-      <v-list-item-icon v-if="icon && level > 0">
-        <!--<v-icon :icon="icon" />-->
-      </v-list-item-icon>
-      <v-list-item-icon v-else-if="faIcon && level > 0">
-        <font-awesome-icon
-          :icon="faIcon"
-          :color="$route.fullPath.includes(activePath) ? 'black' : 'grey'"
-          class="pt-1"
-        />
-      </v-list-item-icon>
-      <v-list-item-title class="veo-primary-navigation__group__title">
-        {{ name }}
-      </v-list-item-title>
+    <template #activator="{ props: activatorProps }">
+      <v-list-item
+        v-bind="activatorProps"
+        :density="level > 0 ? 'compact' : 'default'"
+        :class="activatorIntendation"
+      >
+        <template
+          v-if="icon || faIcon"
+          #prepend
+        >
+          <v-icon
+            v-if="icon"
+            :icon="icon"
+            class="mr-3"
+          />
+          <font-awesome-icon
+            v-else-if="faIcon"
+            :icon="faIcon"
+            :color="$route.fullPath.includes(activePath) ? 'black' : 'grey'"
+            class="pt-1 mr-3"
+          />
+        </template>
+        <v-list-item-title class="veo-primary-navigation-title">
+          {{ name }}
+        </v-list-item-title>
+      </v-list-item>
     </template>
     <template v-if="childrenLoading">
       <v-list-item
@@ -75,13 +87,14 @@
         v-for="child of children"
         :key="child.key"
       >
-        <VeoPrimaryNavigationEntry
+        <LayoutPrimaryNavigationEntry
           v-if="!child.children"
           v-bind="child"
+          :level="level + 1"
           @expand-menu="$emit('expand-menu')"
           @click="$emit('click')"
         />
-        <VeoPrimaryNavigationCategory
+        <LayoutPrimaryNavigationCategory
           v-else
           v-bind="child"
           :level="level + 1"
@@ -93,79 +106,77 @@
   </v-list-group>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { PropType } from 'vue';
 import { mdiChevronDown } from '@mdi/js';
 
 import { INavItem } from './PrimaryNavigation.vue';
 
-export default defineComponent({
-  name: 'VeoPrimaryNavigationCategory',
-  props: {
-    name: {
-      type: String,
-      required: true
-    },
-    icon: {
-      type: String,
-      default: undefined
-    },
-    faIcon: {
-      type: [String, Array],
-      default: undefined
-    },
-    children: {
-      type: Array as PropType<INavItem[]>,
-      required: true
-    },
-    childrenLoading: {
-      type: Boolean,
-      default: false
-    },
-    miniVariant: {
-      type: Boolean,
-      default: false
-    },
-    level: {
-      type: Number,
-      default: 0
-    },
-    activePath: {
-      type: String,
-      required: true
-    },
-    componentName: {
-      type: String,
-      default: undefined
-    },
-    to: {
-      type: String,
-      default: undefined
-    }
+const props = defineProps({
+  name: {
+    type: String,
+    required: true
   },
-  emits: ['expand-menu', 'click'],
-  setup(props, { emit }) {
-    const route = useRoute();
-    const router = useRouter();
-
-    const onClick = (event: any) => {
-      if (props.miniVariant) {
-        emit('expand-menu');
-      }
-      if (props.to && route.path !== props.to) {
-        router.push(props.to);
-      } else {
-        emit('click', event);
-      }
-    };
-
-    return {
-      onClick,
-
-      mdiChevronDown
-    };
+  icon: {
+    type: String,
+    default: undefined
+  },
+  faIcon: {
+    type: [String, Array],
+    default: undefined
+  },
+  children: {
+    type: Array as PropType<INavItem[]>,
+    required: true
+  },
+  childrenLoading: {
+    type: Boolean,
+    default: false
+  },
+  miniVariant: {
+    type: Boolean,
+    default: false
+  },
+  level: {
+    type: Number,
+    default: 0
+  },
+  activePath: {
+    type: String,
+    required: true
+  },
+  componentName: {
+    type: String,
+    default: undefined
+  },
+  to: {
+    type: String,
+    default: undefined
   }
 });
+const emit = defineEmits(['expand-menu', 'click']);
+
+const route = useRoute();
+const router = useRouter();
+
+const onClick = (event: any) => {
+  if (props.miniVariant) {
+    emit('expand-menu');
+  }
+  if (props.to && route.path !== props.to) {
+    router.push(props.to);
+  } else {
+    emit('click', event);
+  }
+};
+
+const activatorIntendation = computed(() => `primary-navigation-entry-level-${props.level}`);
+</script>
+
+<script lang="ts">
+export default {
+  name: 'LayoutPrimaryNavigationCategory'
+};
 </script>
 
 <style lang="scss" scoped>
@@ -173,24 +184,11 @@ export default defineComponent({
   border-top: 1px solid $medium-grey;
 }
 
-.veo-primary-navigation__group > :deep(.v-list-group__header) {
-  min-height: 32px;
-  max-height: 32px;
-
-  > .v-list-item__icon {
-    margin-bottom: 4px;
-    margin-top: 4px;
-  }
+.v-list-item--density-compact.primary-navigation-entry-level-1 {
+  padding-inline-start: 52px !important;
 }
 
-.veo-primary-navigation__group > :deep(.v-list-group__header.v-list-item--active),
-.veo-primary-navigation__group--active > :deep(.v-list-group__header) {
-  color: #000000;
-  font-weight: bold;
-}
-
-.veo-primary-navigation__group__title {
-  font-size: 0.8125rem;
-  line-height: 1rem;
+.v-list-item--density-compact.primary-navigation-entry-level-2 {
+  padding-inline-start: 84px !important;
 }
 </style>

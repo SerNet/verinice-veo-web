@@ -56,9 +56,9 @@
             </v-tab>
           </template>
           <template #items>
-            <v-tab-item>
+            <v-window-item>
               <nuxt-page />
-            </v-tab-item>
+            </v-window-item>
           </template>
         </BaseTabs>
       </div>

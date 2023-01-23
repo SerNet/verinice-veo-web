@@ -41,7 +41,6 @@
   "editor.schema.warnings": "Hinweise",
 
   "error.title": "Es ist ein Fehler aufgetreten",
-  "error404": "404 - Nicht gefunden",
 
   "global.button.cancel": "Abbrechen",
   "global.button.close": "Schließen",
@@ -53,7 +52,6 @@
   "global.button.save": "Speichern",
   "global.button.save_quit": "Speichern und Schließen",
   "global.button.apply": "Übernehmen",
-  "global.button.reset": "Zurücksetzen",
   "global.button.yes": "Ja",
   "global.input.required": "Das Feld muss ausgefüllt werden",
   "global.input.requiredfields": "* Pflichtfelder",
@@ -76,37 +74,14 @@
     "updatedBy": "Bearbeiter"
   },
 
-  "page.editors.title": "Editoren",
-  "page.editors.calltoaction": "Was möchten Sie tun?",
-
-  "page.help.title": "Handbuch",
-
-  "page.index.title": "Unitauswahl",
-  "page.index.chooseunit": "Bitte wählen Sie eine Unit",
-  "page.index.chooseunitplaceholder": "Nach einer Unit suchen...",
-
   "domain.index.title": "Dashboard",
 
-  "unit.create": "Neue Unit erstellen",
-  "unit.create.short": "Unit erstellen",
-  "unit.created": "Unit wurde erstellt",
   "unit.default.name": "Unit 1",
   "unit.default.description": "Deine erste Unit",
-  "unit.details.children": "Untergeordnete Units",
-  "unit.details.description": "Beschreibung",
-  "unit.details.description.required": "Bitte tragen Sie eine Beschreibung ein.",
-  "unit.details.name": "Name der Unit",
-  "unit.details.name.required": "Bitte tragen Sie einen Unit-Namen ein.",
-  "unit.details.nochild": "Keine untegeordneten Units vorhanden",
   "unit.details.nodescription": "Keine Beschreibung festgelegt",
-  "unit.details.noparent": "Top-Level Unit",
-  "unit.details.objects": "Objekte",
-  "unit.details.parent": "Übergeordnete Unit",
-  "unit.index.title": "Unit-Dashboard",
-  "unit.select.label": "Unit",
 
   "breadcrumbs": {
-    "administration": "Account management",
+    "administration": "Benutzerverwaltung",
     "catalogs": "Kataloge",
     "docs": "Dokumentation",
     "domain": "Modul",
@@ -127,5 +102,16 @@
     "format": "Das Feld \"{field}\" muss dem Format \"{format}\" entsprechen",
     "required": "Das Feld \"{field}\" muss ausgefüllt sein",
     "required_link": "Der {position} Link in \"{field}\" muss auf ein Objekt zeigen oder entfernt werden"
-  }
+  },
+
+  "createEntitiesCTA": "Viele Wege führen zum Ziel... erfassen Sie die {0}, benennen Sie Ihre {1} oder legen Sie eine {2} an.",
+  "dashboardCTA": "Ein Schritt nach dem anderen... das {0} bietet Ihnen einen Gesamtüberblick und führt Sie entlang des Lebebenszyklus Ihrer Assets direkt zu den nächsten Aufgaben oder den letzten Aktivitäten.",
+  "demoUnitCTA": "Sie möchten sich lieber erst orientieren? Dann werfen Sie einen Blick auf die {0}.",
+  "lastLine": "Viel Erfolg wünscht!{0}Ihr verinice.TEAM",
+
+  "piaMandatoryText": "Basierend auf Daten in diesem Objekt ist eine Datenschutz-Folgeabschätzung verpflichtend.{0}Bitte erstellen Sie diese über die Warnungsleiste rechts.",
+
+  "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg,{0} d.h. es kann immer nur eine migitierende Maßnahme pro Risiko ausgewählt werden",
+
+  "residualRiskHint": "Das angezeigte Nettorisiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben."
 }

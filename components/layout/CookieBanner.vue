@@ -18,7 +18,7 @@
 <template>
   <div v-if="!cookieSelection">
     <div class="veo-border veo-cookie-banner">
-      <v-card tile>
+      <v-card style="border-radius: 0">
         <v-card-text class="d-flex flex-row align-center justify-space-between py-0">
           <span class="text-body-1">
             {{ t('cookieBannerText') }}
@@ -29,7 +29,7 @@
           </span>
           <div>
             <v-btn
-              depressed
+              flat
               color="primary"
               class="mx-1 my-3"
               @click="acceptRequiredCookies"
@@ -37,7 +37,7 @@
               {{ t('declineOptionalCookies') }}
             </v-btn>
             <v-btn
-              depressed
+              flat
               color="primary"
               class="mx-1 my-3"
               @click="cookieConfigurationVisible = true"
@@ -45,7 +45,7 @@
               {{ t('configure') }}
             </v-btn>
             <v-btn
-              depressed
+              flat
               color="primary"
               class="mx-1 my-3"
               @click="acceptAllCookies"
@@ -59,7 +59,6 @@
     <v-navigation-drawer
       v-model="cookieConfigurationVisible"
       temporary
-      fixed
       class="pa-4"
       :width="300"
     >
@@ -75,25 +74,25 @@
           >{{ t('moreInformation') }}</a>
         </span>
         <v-expansion-panels
-          :value="[0]"
+          :model-value="[0]"
           multiple
-          flat
+          variant="accordion"
         >
           <v-expansion-panel
             v-for="(category, index) of categories"
             :key="index"
           >
-            <v-expansion-panel-header v-if="category.options.length">
+            <v-expansion-panel-title v-if="category.options.length">
               <v-checkbox
-                :input-value="true"
+                :value="true"
                 class="pt-0 mt-0"
                 disabled
                 dense
                 hide-details
                 :label="category.label"
               />
-            </v-expansion-panel-header>
-            <v-expansion-panel-content class="pl-4">
+            </v-expansion-panel-title>
+            <v-expansion-panel-text class="pl-4">
               <v-checkbox
                 v-for="cookie of category.options"
                 :key="cookie"
@@ -104,11 +103,11 @@
                 hide-details
                 :label="t(`cookie.${cookie}`)"
               />
-            </v-expansion-panel-content>
+            </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
         <v-btn
-          depressed
+          flat
           class="mt-6"
           color="primary"
           block
@@ -117,7 +116,7 @@
           {{ t('acceptAllCookies') }}
         </v-btn>
         <v-btn
-          depressed
+          flat
           class="mt-2"
           color="primary"
           block

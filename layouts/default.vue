@@ -16,24 +16,39 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <!--<v-app>
+  <v-app>
     <v-app-bar
-      class="veo-app-bar"
+      :class="$style['app-bar']"
       data-component-name="app-bar"
       flat
     >
       <v-app-bar-nav-icon
-        v-if="context.$vuetify.breakpoint.xs"
+        v-if="xs"
         @click="drawer = true"
       />
+      <div
+        class="d-flex align-end ml-4"
+        style="min-height: 65px;"
+      >
+        <nuxt-link
+          to="/"
+          class="text-decoration-none"
+          style="width: 100%"
+        >
+          <LayoutAppBarLogo
+            style="height: 64px"
+            class="d-flex align-center"
+          />
+        </nuxt-link>
+      </div>
       <LayoutBreadcrumbs write-to-title />
       <v-spacer />
-      <DownloadDocsButton v-if="$route.path.startsWith('/docs')" />
-      <VeoLanguageSwitch />
-      <VeoTutorialButton />
+      <DocsDownloadButton v-if="$route.path.startsWith('/docs')" />
+      <LayoutLanguageSwitch />
+      <LayoutTutorialButton />
       <v-tooltip
         v-if="ability.can('view', 'documentation')"
-        bottom
+        location="bottom"
       >
         <template #activator="{ props }">
           <v-btn
@@ -46,15 +61,16 @@
             exact
             v-bind="props"
           >
-            <v-icon :icon="`mdiSvg:${mdiHelpCircleOutline}`" />
+            <v-icon :icon="mdiHelpCircleOutline" />
           </v-btn>
         </template>
         <template #default>
           {{ t('openDocumentationInNewTab') }}
         </template>
       </v-tooltip>
-      <VeoAppAccountBtn
+      <LayoutAccountBtn
         v-if="authenticated"
+        class="mr-3"
         @create-unit="createUnit"
       />
       <v-btn
@@ -63,7 +79,7 @@
         icon
         to="/login"
       >
-        <v-icon :icon="`mdiSvg:${mdiAccountCircleOutline}`" />
+        <v-icon :icon="mdiAccountCircleOutline" />
       </v-btn>
     </v-app-bar>
     <LayoutPrimaryNavigation
@@ -72,10 +88,7 @@
       :unit-id="unitId"
       data-component-name="primary-navigation"
     />
-    <v-main
-      style="max-height: 100vh"
-      class="overflow-hidden"
-    >
+    <v-main :class="$style.main">
       <slot />
       <LayoutCookieBanner />
     </v-main>
@@ -83,16 +96,15 @@
       v-if="alerts[0]"
       v-bind="alerts[0]"
     />
-    <UnitsCreateDialog
+    <UnitCreateDialog
       v-model="newUnitDialog.value"
       v-bind="newUnitDialog"
     />
-  </v-app>-->
-  <div>a123</div>
+  </v-app>
 </template>
 
 <script lang="ts" setup>
-/* import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
+import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 
 import {
   createUUIDUrlParam,
@@ -106,8 +118,9 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useCreateUnit, useFetchUnits } from '~/composables/api/units';
 import { IVeoUnit } from '~/types/VeoTypes';
 import { useRequest } from '~/composables/api/utils/request';
+import { useDisplay } from 'vuetify';
 
-const context = useNuxtApp();
+const { xs } = useDisplay();
 const { authenticated } = useVeoUser();
 const route = useRoute();
 const router = useRouter();
@@ -173,19 +186,27 @@ const unitId = computed(() =>
   separateUUIDParam(route.params.unit as string).id.length > 0
     ? separateUUIDParam(route.params.unit as string).id
     : undefined
-);*/
+);
 </script>
 
-<style lang="scss" scoped>
-.veo-app-bar {
-  background-color: $background-accent !important;
-  border-bottom: 1px solid $medium-grey;
-}
-
-:deep(.v-main) > .v-main__wrap {
-  background: $background-primary;
-}
-</style>
+<style lang="scss" module>
+  .app-bar {
+    background-color: $background-accent !important;
+    border-bottom: 1px solid $medium-grey;
+  
+    :deep(.v-toolbar__content) {
+      padding-left: 0;
+    }
+  }
+  .main {
+    background: $background-primary;
+  }
+  
+  .main {
+    display: flex;
+    flex-direction: column;
+  }
+  </style>
 
 <i18n>
 {

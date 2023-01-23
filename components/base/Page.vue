@@ -21,11 +21,17 @@
     cols="12"
     :class="noPadding ? 'px-0' : 'px-4'"
   >
-    <LayoutPageHeader v-bind="$props">
-      <template #title>
+    <LayoutPageHeader v-bind="omit(props, 'contentClass', 'stickyFooter', 'height', 'noPadding')">
+      <template
+        v-if="$slots.title"
+        #title
+      >
         <slot name="title" />
       </template>
-      <template #header>
+      <template
+        v-if="$slots.header"
+        #header
+      >
         <slot name="header" />
       </template>
     </LayoutPageHeader>
@@ -46,60 +52,58 @@
     </v-row>
   </v-col>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import { PropType } from 'vue';
+import { omit } from 'lodash';
+
 import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
 
-export default defineComponent({
-  props: {
-    contentClass: {
-      type: String,
-      default: ''
-    },
-    headingLevel: {
-      type: [Number, String],
-      default: 1
-    },
-    stickyHeader: {
-      type: Boolean,
-      default: false
-    },
-    stickyFooter: {
-      type: Boolean,
-      default: false
-    },
-    height: {
-      type: String,
-      default: 'auto'
-    },
-    /**
+const props = defineProps({
+  contentClass: {
+    type: String,
+    default: ''
+  },
+  headingLevel: {
+    type: [Number, String],
+    default: 1
+  },
+  stickyHeader: {
+    type: Boolean,
+    default: false
+  },
+  stickyFooter: {
+    type: Boolean,
+    default: false
+  },
+  height: {
+    type: String,
+    default: 'auto'
+  },
+  /**
      * Shows a skeleton for the title if set to true
      */
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    noPadding: {
-      type: Boolean,
-      default: false
-    },
-    /**
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  noPadding: {
+    type: Boolean,
+    default: false
+  },
+  /**
      * The title of the page. Used to standardtize headings
      */
-    title: {
-      type: String,
-      default: undefined
-    },
-    titlebarAlignment: {
-      type: Number as PropType<PageHeaderAlignment>,
-      default: PageHeaderAlignment.LEFT
-    }
+  title: {
+    type: String,
+    default: undefined
   },
-  setup() {
-    return {};
+  titlebarAlignment: {
+    type: Number as PropType<PageHeaderAlignment>,
+    default: PageHeaderAlignment.LEFT
   }
 });
 </script>
+
 <style lang="scss" scoped>
 .veo-page {
   display: flex;

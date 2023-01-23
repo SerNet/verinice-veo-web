@@ -31,7 +31,7 @@
             <h1 class="text-h1">
               {{ t('editor.objectschema.headline') }}
             </h1>
-            <v-tooltip bottom>
+            <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <a
                   ref="downloadButton"
@@ -46,7 +46,7 @@
                     large
                     color="primary"
                   >
-                    <!--<v-icon :icon="`mdiSvg:${mdiDownload}`" />-->
+                    <v-icon :icon="mdiDownload" />
                   </v-btn>
                 </a>
               </template>
@@ -54,7 +54,7 @@
                 {{ t('editor.schema.download') }}
               </template>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-btn
                   v-if="schemaIsValid.warnings.length > 0"
@@ -65,14 +65,14 @@
                   v-bind="props"
                   @click="errorDialogVisible = !errorDialogVisible"
                 >
-                  <!--<v-icon :icon="`mdiSvg:${mdiAlertCircleOutline}`" />-->
+                  <v-icon :icon="mdiAlertCircleOutline" />
                 </v-btn>
               </template>
               <template #default>
                 {{ t('editor.schema.warnings') }}
               </template>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-btn
                   icon
@@ -82,14 +82,14 @@
                   v-bind="props"
                   @click="translationDialogVisible = true"
                 >
-                  <!--<v-icon :icon="`mdiSvg:${mdiTranslate}`" />-->
+                  <v-icon :icon="mdiTranslate" />
                 </v-btn>
               </template>
               <template #default>
                 {{ t('translations') }}
               </template>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-btn
                   icon
@@ -98,14 +98,14 @@
                   v-bind="props"
                   @click="detailsDialogVisible = !detailsDialogVisible"
                 >
-                  <!--<v-icon :icon="`mdiSvg:${mdiWrench}`" />-->
+                  <v-icon :icon="mdiWrench" />
                 </v-btn>
               </template>
               <template #default>
                 {{ t("editor.schema.properties") }}
               </template>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-btn
                   icon
@@ -116,7 +116,7 @@
                   color="primary"
                   v-bind="props"
                 >
-                  <!--<v-icon :icon="`mdiSvg:${mdiHelpCircleOutline}`" />-->
+                  <v-icon :icon="mdiHelpCircleOutline" />
                 </v-btn>
               </template>
               <template #default>
@@ -125,7 +125,7 @@
             </v-tooltip>
             <v-tooltip
               v-if="$route.query.os"
-              bottom
+              location="bottom"
             >
               <template #activator="{ props }">
                 <div v-bind="props">
@@ -136,7 +136,7 @@
                     color="primary"
                     @click="saveSchema"
                   >
-                    <!--<v-icon :icon="`mdiSvg:${mdiContentSave}`" />-->
+                    <v-icon :icon="mdiContentSave" />
                   </v-btn>
                 </div>
               </template>
@@ -194,7 +194,7 @@
                 flat
                 filled
                 hide-details
-                :prepend-inner-icon="`mdiSvg:${mdiMagnify}`"
+                :prepend-inner-icon="mdiMagnify"
                 :label="t('search')"
               />
             </v-col>
@@ -226,11 +226,11 @@
               cols="auto"
               style="flex-grow: 0"
             >
-              <!--<v-icon
+              <v-icon
                 style="font-size: 8rem; opacity: 0.5;"
                 color="primary"
-                :icon="`mdiSvg:${mdiInformationOutline}`"
-              />-->
+                :icon="mdiInformationOutline"
+              />
             </v-col>
             <v-col
               cols="auto"
@@ -255,7 +255,7 @@
         </template>
       </BasePage>
       <BasePage
-        v-if="objectSchemaHelper && !vuetify.breakpoint.xs"
+        v-if="objectSchemaHelper && !xs"
         height="100%"
         content-class="ose__code-editor"
       >
@@ -293,6 +293,7 @@
 <script lang="ts">
 import { upperFirst, pickBy } from 'lodash';
 import { mdiAlertCircleOutline, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
+import { useDisplay } from 'vuetify';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
@@ -309,10 +310,11 @@ export default defineComponent({
   name: 'ObjectSchemaEditor',
   setup() {
     const { locale, t } = useI18n();
-    const { i18n, vuetify } = useNuxtApp();
+    const { i18n } = useNuxtApp();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
+    const { xs } = useDisplay();
 
     const objectSchemaHelper = ref<ObjectSchemaHelper | undefined>(undefined);
 
@@ -483,7 +485,6 @@ export default defineComponent({
       updateSchema,
       updateSchemaName,
       updateDescription,
-      vuetify,
 
       t,
       upperFirst,
@@ -495,7 +496,8 @@ export default defineComponent({
       mdiMagnify,
       mdiTranslate,
       mdiWrench,
-      HELP_ROUTE
+      HELP_ROUTE,
+      xs
     };
   }
 });

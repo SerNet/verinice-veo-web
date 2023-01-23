@@ -16,111 +16,115 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-breadcrumbs
-    :items="displayedBreadcrumbs"
+  <div
     class="px-0"
     data-component-name="breadcrumbs"
   >
-    <template #item="{ item }">
-      <v-breadcrumbs-item
-        v-bind="item"
-        nuxt
-      >
-        <!-- Display if the breadcrumb is visible or the amount of breadcrumbs is one over the BREADCRUMB_BREAKOFF (else there would be a single item in the list, making it kinda pointless) -->
-        <template v-if="item.index < BREADCRUMB_BREAKOFF || breadcrumbs.length === BREADCRUMB_BREAKOFF + 1">
-          <v-icon
-            v-if="item.icon"
-            class="primary--text"
-            :icon="item.icon"
+    <v-breadcrumbs-item
+      v-for="(item, index) of displayedBreadcrumbs"
+      :key="item.key"
+      :to="item.to"
+      :disabled="item.disabled || item.to === $route.fullPath"
+      nuxt
+    >
+      <span v-if="index">
+        <v-icon
+          color="black"
+          :icon="mdiChevronRight"
+          size="small"
+        /></span>
+      <!-- Display if the breadcrumb is visible or the amount of breadcrumbs is one over the BREADCRUMB_BREAKOFF (else there would be a single item in the list, making it kinda pointless) -->
+      <template v-if="item.index < BREADCRUMB_BREAKOFF || breadcrumbs.length === BREADCRUMB_BREAKOFF + 1">
+        <v-icon
+          v-if="item.icon"
+          class="text-primary"
+          :icon="item.icon"
+        />
+        <span
+          v-else-if="Object.keys(queryResultMap).includes(item.param)"
+          class="breadcrumbs-font-size"
+        >
+          <template v-if="queryResultMap[item.param]">
+            {{ queryResultMap[item.param] }}
+          </template>
+          <v-skeleton-loader
+            v-else
+            type="image"
+            width="80"
+            height="14"
           />
-          <template v-else-if="Object.keys(queryResultMap).includes(item.param)">
-            <template v-if="queryResultMap[item.param]">
-              {{ queryResultMap[item.param] }}
-            </template>
-            <v-skeleton-loader
-              v-else
-              type="image"
-              width="80"
-              height="14"
+        </span>
+        <span
+          v-else-if="item.text"
+          class="breadcrumbs-font-size"
+        >
+          {{ item.text }}
+        </span>
+      </template>
+      <!-- Display the button with the list instead the last item -->
+      <template v-else-if="item.index === BREADCRUMB_BREAKOFF">
+        <v-menu>
+          <template #activator="{ props }">
+            <v-btn
+              v-bind="props"
+              color="primary"
+              :icon="mdiDotsHorizontal"
+              small
+              @click.stop.prevent
             />
           </template>
-          <template v-else-if="item.text">
-            {{ item.text }}
-          </template>
-        </template>
-        <!-- Display the button with the list instead the last item -->
-        <template v-else-if="item.index === BREADCRUMB_BREAKOFF">
-          <v-menu
-            bottom
-            offset-y
-          >
-            <template #activator="{ props }">
-              <v-btn
-                icon
-                small
-                v-bind="props"
-                @click.stop.prevent
+          <template #default>
+            <v-list dense>
+              <v-list-group
+                mandatory
+                color="primary"
               >
-                <!--<v-icon
-                  color="primary"
-                  :icon="`mdiSvg:${mdiDotsHorizontal}`"
-                />-->
-              </v-btn>
-            </template>
-            <template #default>
-              <v-list dense>
-                <v-list-group
-                  mandatory
-                  color="primary"
+                <v-list-item
+                  v-for="menuItem of slicedBreadcrumbs"
+                  v-bind="menuItem"
+                  :key="menuItem.key"
+                  nuxt
+                  density="compact"
                 >
-                  <v-list-item
-                    v-for="menuItem of slicedBreadcrumbs"
-                    v-bind="menuItem"
-                    :key="menuItem.key"
-                    nuxt
+                  <template
+                    v-if="menuItem.icon"
+                    #prepend
                   >
-                    <v-list-item-icon v-if="menuItem.icon">
-                      <!--<v-icon
-                        class="primary--text"
-                        :icon="menuItem.icon"
-                      />-->
-                    </v-list-item-icon>
-                    <v-list-item-title v-else>
-                      <template v-if="Object.keys(queryResultMap).includes(menuItem.param)">
-                        <template v-if="queryResultMap[item.param]">
-                          {{ queryResultMap[item.param] }}
-                        </template>
-                        <v-skeleton-loader
-                          v-else
-                          type="image"
-                          width="80"
-                          height="14"
-                        />
+                    <v-icon
+                      :icon="menuItem.icon"
+                      color="primary"
+                    />
+                  </template>
+                  <v-list-item-title
+                    v-if="!menuItem.icon"
+                  >
+                    <template v-if="Object.keys(queryResultMap).includes(menuItem.param)">
+                      <template v-if="queryResultMap[item.param]">
+                        {{ queryResultMap[item.param] }}
                       </template>
-                      <template v-if="menuItem.text">
-                        {{ menuItem.text }}
-                      </template>
-                    </v-list-item-title>
-                  </v-list-item>
-                </v-list-group>
-              </v-list>
-            </template>
-          </v-menu>
-        </template>
-      </v-breadcrumbs-item>
-    </template>
-    <template #divider>
-      <!--<v-icon
-        color="black"
-        :icon="`mdiSvg:${mdiChevronRight}`"
-        size="small"
-      />-->
-    </template>
-  </v-breadcrumbs>
+                      <v-skeleton-loader
+                        v-else
+                        type="image"
+                        width="80"
+                        height="14"
+                      />
+                    </template>
+                    <template v-if="menuItem.text">
+                      {{ menuItem.text }}
+                    </template>
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list-group>
+            </v-list>
+          </template>
+        </v-menu>
+      </template>
+    </v-breadcrumbs-item>
+  </div>
 </template>
 
 <script lang="ts">
-import { isEmpty, last, pick } from 'lodash';
+import { isEmpty, last, omit, pick } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal, mdiHomeOutline } from '@mdi/js';
 
 import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
@@ -131,7 +135,7 @@ import { useFetchDomain } from '~/composables/api/domains';
 import { useFetchReports } from '~/composables/api/reports';
 import { useFetchCatalog } from '~/composables/api/catalogs';
 
-type SupportedQuery = ':domain' | ':entity' | ':type' | ':catalog';
+type SupportedQuery = ':domain' | ':object' | ':report' | ':catalog';
 
 interface IVeoBreadcrumbReplacementMapBreadcrumb {
   disabled?: boolean;
@@ -204,20 +208,20 @@ export default defineComponent({
         }
       ],
       [
-        ':type', // Used for reports
+        ':report', // Used for reports
         {
           queriedText: {
-            query: ':type',
+            query: ':report',
             parameterTransformationFn: (_param, _value) => ({}),
             resultTransformationFn: (_param, value, data) => (data ? data[value as string]?.name?.[locale.value] : undefined)
           }
         }
       ],
       [
-        ':entity',
+        ':object',
         {
           queriedText: {
-            query: ':entity',
+            query: ':object',
             parameterTransformationFn: (_param, value) => {
               const { type, id } = separateUUIDParam(value);
               const endpoint = endpoints.value?.[type];
@@ -260,7 +264,7 @@ export default defineComponent({
         }
       ],
       [
-        '*',
+        ':slug(.*)*', // Doc page gets added manually to breadcrumbs
         {
           hidden: true
         }
@@ -296,10 +300,10 @@ export default defineComponent({
       ':domain': domain.value
         ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':domain')?.queriedText?.resultTransformationFn(':domain', route.params.domain as string, domain.value)
         : undefined,
-      ':entity': object.value
-        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':entity')?.queriedText?.resultTransformationFn(':entity', route.params.object as string, object.value)
+      ':object': object.value
+        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':object')?.queriedText?.resultTransformationFn(':object', route.params.object as string, object.value)
         : undefined,
-      ':type': report.value ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':type')?.queriedText?.resultTransformationFn(':type', route.params.type as string, report.value) : undefined
+      ':report': report.value ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':report')?.queriedText?.resultTransformationFn(':report', route.params.report as string, report.value) : undefined
     }));
 
     const pathTemplate = computed(() => last(route.matched)?.path || '');
@@ -374,7 +378,7 @@ export default defineComponent({
               case ':domain':
                 domainQueryParameters.value = transformedParameters;
                 break;
-              case ':entity':
+              case ':object':
                 objectQueryParameters.value = transformedParameters;
                 break;
             }
@@ -409,9 +413,20 @@ export default defineComponent({
 
       t,
       mdiChevronRight,
-      mdiDotsHorizontal
+      mdiDotsHorizontal,
+      omit
     };
   },
   head: {}
 });
 </script>
+
+<style lang="scss" scoped>
+.breadcrumbs-font-size {
+  font-size: 0.85rem;
+}
+
+a.v-breadcrumbs-item:not(:last-child) {
+  color: $primary
+}
+</style>

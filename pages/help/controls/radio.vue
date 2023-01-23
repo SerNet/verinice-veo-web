@@ -23,7 +23,7 @@
     <v-row justify="center">
       <v-col cols="12">
         <v-switch
-          v-model="isHorizontal"
+          v-model="isVertical"
           label="Vertikal"
           hide-details
           color="primary"
@@ -33,14 +33,14 @@
         cols="auto"
         class="docs-form-sector"
       >
-        <VeoForm
+        <DynamicFormEntrypoint
           v-model="dynamicForm.data"
           :object-schema="dynamicForm.objectSchema"
           :form-schema="dynamicForm.formSchema"
         />
       </v-col>
     </v-row>
-    <FormDescription
+    <HelpFormDescription
       :object-schema="dynamicForm.objectSchema"
       :form-schema="dynamicForm.formSchema"
       :data="dynamicForm.data"
@@ -48,66 +48,60 @@
   </BasePage>
 </template>
 
-<script lang="ts">
-export default {
-  layout: 'plain',
-  data() {
-    return {
-      form: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            radio: {
-              enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
-            }
-          }
-        },
-        formSchema: {
-          type: 'Control',
-          scope: '#/properties/radio',
-          options: {
-            label: 'Radio',
-            format: 'radio'
-          }
-        },
-        data: {
-          radio: 'Beispiel-1'
-        }
-      },
-      formVertical: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            radio: {
-              enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
-            }
-          }
-        },
-        formSchema: {
-          type: 'Control',
-          scope: '#/properties/radio',
-          options: {
-            label: 'Radio',
-            format: 'radio',
-            direction: 'vertical'
-          }
-        },
-        data: {
-          radio: 'Beispiel-1'
-        }
-      },
-      isHorizontal: false
-    };
-  },
-  computed: {
-    dynamicForm(): any {
-      if (this.isHorizontal) {
-        return this.formVertical;
-      }
-      return this.form;
-    }
-  }
-};
-</script>
+<script lang="ts" setup>
+definePageMeta({ layout: 'plain' });
 
-<style lang="scss"></style>
+const form = ref({
+  objectSchema: {
+    type: 'object',
+    properties: {
+      radio: {
+        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
+      }
+    }
+  },
+  formSchema: {
+    type: 'Control',
+    scope: '#/properties/radio',
+    options: {
+      label: 'Radio',
+      format: 'radio'
+    }
+  },
+  data: {
+    radio: 'Beispiel-1'
+  }
+});
+
+const formVertical = ref({
+  objectSchema: {
+    type: 'object',
+    properties: {
+      radio: {
+        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
+      }
+    }
+  },
+  formSchema: {
+    type: 'Control',
+    scope: '#/properties/radio',
+    options: {
+      label: 'Radio',
+      format: 'radio',
+      direction: 'vertical'
+    }
+  },
+  data: {
+    radio: 'Beispiel-1'
+  }
+});
+
+const isVertical = ref(false);
+
+const dynamicForm = computed(() => {
+  if (isVertical.value) {
+    return formVertical.value;
+  }
+  return form.value;
+});
+</script>

@@ -27,14 +27,14 @@
         lg="4"
         class="docs-form-sector"
       >
-        <VeoForm
+        <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
           :form-schema="form.formSchema"
         />
       </v-col>
     </v-row>
-    <FormDescription
+    <HelpFormDescription
       :object-schema="form.objectSchema"
       :form-schema="form.formSchema"
       :data="form.data"
@@ -42,35 +42,28 @@
   </BasePage>
 </template>
 
-<script lang="ts">
-export default {
-  layout: 'plain',
-  data() {
-    return {
-      form: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            inputDateTime: {
-              type: 'string',
-              format: 'date-time'
-            }
-          }
-        },
-        formSchema: {
-          type: 'Control',
-          scope: '#/properties/inputDateTime',
-          options: {
-            label: 'Input Date-Time'
-          }
-        },
-        data: {
-          inputDateTime: '2020-08-05T12:05:00+02:00'
-        }
-      }
-    };
-  }
-};
-</script>
+<script lang="ts" setup>
+definePageMeta({ layout: 'plain' });
 
-<style lang="scss"></style>
+const form = ref({
+  objectSchema: {
+    type: 'object',
+    properties: {
+      inputDateTime: {
+        type: 'string',
+        format: 'date-time'
+      }
+    }
+  },
+  formSchema: {
+    type: 'Control',
+    scope: '#/properties/inputDateTime',
+    options: {
+      label: 'Input Date-Time'
+    }
+  },
+  data: {
+    inputDateTime: '2020-08-05T12:05:00+02:00'
+  }
+});
+</script>

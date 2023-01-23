@@ -27,8 +27,8 @@
           <div class="text-center">
             <v-btn
               color="primary"
-              depressed
-              x-large
+              flat
+              size="x-large"
               @click="login"
             >
               {{ t('login') }}
@@ -47,8 +47,8 @@
           <div class="text-center">
             <v-btn
               v-if="$config.accountPath"
-              depressed
-              x-large
+              variant="tonal"
+              size="x-large"
               :href="$config.accountPath"
             >
               {{ t('register') }}
@@ -119,7 +119,7 @@ const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.ver
 <style lang="scss" scoped>
 .wrapper {
   margin: 5% auto 0;
-  max-width: 420px;
+  max-width: 500px;
   width: 90%;
 
   h1 {

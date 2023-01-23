@@ -18,7 +18,6 @@
 import { ComputedRef, Ref } from 'vue';
 import Keycloak from 'keycloak-js';
 
-import { IBaseObject } from '~/lib/utils';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export interface IVeoUserSettings {
@@ -33,7 +32,7 @@ export interface IVeoUserComposable {
   keycloakInitialized: Ref<boolean>;
   login: (destination: string) => Promise<void>;
   logout: (destination: string) => Promise<void>;
-  profile: ComputedRef<IBaseObject | undefined>;
+  profile: ComputedRef<Record<string, any> | undefined>;
   refreshKeycloakSession: () => Promise<void>;
   roles: ComputedRef<string[]>;
   tablePageSize: Ref<number>;

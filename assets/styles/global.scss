@@ -16,10 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 @import "./_variables.scss";
-@import "./_vuetify.scss";
 
 html {
   overflow: hidden !important;
+}
+
+// Enable scrolling of content
+html, body, #__nuxt, #__nuxt > div {
+  height: 100%;
+}
+
+main {
+  max-height: 100%;
+}
+
+// Only color non-vuetify links,as we would overwrite the color of buttons, etc otherwise
+a:not([class^='v-']) {
+  color: $primary
 }
 
 .fill-width {
@@ -81,4 +94,14 @@ html {
     right: 0;
     top: 0;
   }
+}
+
+.veo-primary-navigation-title {
+  font-size: 0.75rem;
+}
+
+.veo-primary-action-fab {
+  bottom: 12px;
+  position: absolute;
+  right: 0;
 }

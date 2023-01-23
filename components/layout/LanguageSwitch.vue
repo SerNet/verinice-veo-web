@@ -29,26 +29,18 @@
         icon
         data-component-name="language-select"
       >
-        <!--<v-icon :icon="`mdiSvg:${mdiTranslate}`" />-->
+        <v-icon :icon="mdiTranslate" />
       </v-btn>
     </template>
     <template #default>
-      <v-list dense>
-        <v-list-group
-          :value="$i18n.locale"
-          color="primary"
-          mandatory
-        >
-          <v-list-item
-            v-for="locale of i18n.locales"
-            :key="locale.code"
-            :value="locale.code"
-            @click="onLanguageSwitch(locale.code)"
-          >
-            <v-list-item-title>{{ locale.name }}</v-list-item-title>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
+      <v-list
+        v-model:selected="selectedLocale"
+        active-color="primary"
+        mandatory
+        :items="availableLocales"
+        item-title="name"
+        item-value="code"
+      />
     </template>
   </v-menu>
 </template>
@@ -56,10 +48,14 @@
 <script lang="ts" setup>
 import { mergeProps } from 'vue';
 import { mdiTranslate } from '@mdi/js';
+import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 
-const { i18n } = useNuxtApp();
+const { locale, locales, setLocale } = useI18n();
 
-const onLanguageSwitch = (locale: string) => {
-  i18n.setLocale(locale);
-};
+const selectedLocale = computed({
+  get: () => [locale.value],
+  set: (newValue) => { setLocale(newValue[0]); }
+});
+
+const availableLocales = computed<LocaleObject[]>(() => locales.value as LocaleObject[]);
 </script>

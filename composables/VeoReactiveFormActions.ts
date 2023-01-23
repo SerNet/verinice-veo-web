@@ -18,8 +18,8 @@
 import { trim } from 'lodash';
 import vjp from 'vue-json-pointer';
 
-import { IVeoFormsReactiveFormActions } from '~/components/forms/types';
-import { IBaseObject, separateUUIDParam } from '~/lib/utils';
+import { IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
+import { separateUUIDParam } from '~/lib/utils';
 
 export function useVeoReactiveFormActions() {
   const route = useRoute();
@@ -56,7 +56,7 @@ export function useVeoReactiveFormActions() {
    Helpers for previously defined reactive form actions
   
   */
-  function getFullName(newObject: IBaseObject, oldObject: IBaseObject) {
+  function getFullName(newObject: Record<string, any>, oldObject: Record<string, any>) {
     let fullnameOld = '';
     let givenNameOld = '';
     let familyNameOld = '';

@@ -29,7 +29,7 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    value: {
+    modelValue: {
       type: Number,
       default: 0
     },
@@ -38,12 +38,12 @@ export default defineComponent({
       default: false
     }
   },
-  emits: ['input'],
+  emits: ['update:model-value'],
   setup(props, { attrs, slots, emit }) {
-    const internalValue = ref(props.value);
+    const internalValue = ref(props.modelValue);
 
     watch(
-      () => props.value,
+      () => props.modelValue,
       (newValue: number) => {
         internalValue.value = newValue;
       }
@@ -61,7 +61,7 @@ export default defineComponent({
           if (activeTabIsDisabled) {
             const newValue = (internalValue.value + 1) % tabs.value.length;
             internalValue.value = newValue;
-            emit('input', newValue);
+            emit('update:model-value', newValue);
           }
         }
       );
@@ -78,34 +78,30 @@ export default defineComponent({
           h(
             VTabs,
             {
-              props: {
-                value: internalValue.value,
-                color: 'primary',
-                ...attrs
-              },
-              on: {
-                change: (newValue: number) => {
-                  internalValue.value = newValue;
-                  emit('input', newValue);
-                }
+              
+              modelValue: internalValue.value,
+              color: 'primary',
+              ...attrs,
+              
+              "onUpdate:modelValue": (newValue: number) => {
+                internalValue.value = newValue;
+                emit('update:model-value', newValue);
               },
               class: {
                 'veo-tabs': true,
                 'veo-tabs--sticky': props.stickyTabs
               }
             },
-            [tabs.value]
+            { default: () => tabs.value }
           ),
           h(VDivider),
           h(
             VWindow,
             {
-              props: {
-                value: internalValue.value
-              },
+              modelValue: internalValue.value,
               class: 'pt-2 transparent'
             },
-            [slots.items ? slots.items() : []]
+            { default: () => slots.items ? slots.items() : [] }
           )
         ]
       );

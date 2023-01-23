@@ -22,22 +22,21 @@
     sticky-footer
   >
     <template #default>
-      <VeoCreateObjectDialog
+      <ObjectCreateDialog
         v-if="objectType"
         v-model="createDialogVisible"
         :domain-id="domainId"
         :object-type="objectType"
         :sub-type="subType"
-        @success="refetch"
       />
-      <VeoDeleteEntityDialog
+      <ObjectDeleteDialog
         :value="!!itemDelete"
         :item="itemDelete"
         @input="onCloseDeleteDialog"
-        @success="refetch(); onCloseDeleteDialog(false)"
+        @success="onCloseDeleteDialog(false)"
         @error="showError('delete', itemDelete, $event)"
       />
-      <VeoObjectFilterBar
+      <ObjectFilterBar
         ref="filterBar"
         :domain-id="domainId"
         :filter="filter"
@@ -45,39 +44,41 @@
         @update:filter="updateRouteQuery"
       />
       <BaseCard v-if="objectType">
-        <VeoObjectTable
+        <ObjectTable
           :items="items"
           :loading="isLoading"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :additional-headers="additionalHeaders"
           :page="queryParameters.page"
           data-component-name="object-overview-table"
+          enable-click
           @page-change="onPageChange"
           @click="openItem"
         >
           <template #actions="{item}">
-            <v-tooltip
-              v-for="btn in actions"
-              :key="btn.id"
-              bottom
-            >
-              <template #activator="{ props }">
-                <v-btn
-                  icon
-                  :data-component-name="`object-overview-${btn.id}-button`"
-                  :disabled="ability.cannot('manage', 'objects')"
-                  v-bind="props"
-                  @click="btn.action(item)"
-                >
-                  <!--<v-icon :icon="btn.icon" />-->
-                </v-btn>
-              </template>
-              {{ btn.label }}
-            </v-tooltip>
+            <div class="d-flex">
+              <v-tooltip
+                v-for="btn in actions"
+                :key="btn.id"
+                location="start"
+              >
+                <template #activator="{ props }">
+                  <v-btn
+                    :data-component-name="`object-overview-${btn.id}-button`"
+                    :disabled="ability.cannot('manage', 'objects')"
+                    v-bind="props"
+                    :icon="btn.icon"
+                    variant="text"
+                    @click="btn.action(item)"
+                  />
+                </template>
+                {{ btn.label }}
+              </v-tooltip>
+            </div>
           </template>
-        </VeoObjectTable>
+        </ObjectTable>
       </BaseCard>
-      <VeoObjectTypeError v-else>
+      <ObjectTypeError v-else>
         <v-btn
           color="primary"
           text
@@ -85,29 +86,27 @@
         >
           {{ t('filterObjects') }}
         </v-btn>
-      </VeoObjectTypeError>
+      </ObjectTypeError>
     </template>
     <template #footer>
       <v-tooltip
         v-if="objectType"
-        left
+        location="start"
       >
         <template
           #activator="{ props }"
         >
           <v-btn
             color="primary"
-            depressed
+            flat
             :disabled="ability.cannot('manage', 'objects')"
-            fab
-            absolute
-            style="bottom: 12px; right: 0"
+            :icon="mdiPlus"
+            class="veo-primary-action-fab"
             data-component-name="create-object-button"
             v-bind="props"
+            size="large"
             @click="createDialogVisible = true"
-          >
-            <!--<v-icon :icon="`mdiSvg:${mdiPlus}`" />-->
-          </v-btn>
+          />
           <div style="height: 76px" />
         </template>
         <template #default>
@@ -127,7 +126,7 @@ import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject } from '~/composables/VeoObjectUtilities';
-import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
+import { ObjectTableHeader } from '~/components/object/Table.vue';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useFetchForms } from '~/composables/api/forms';
 import { useVeoUser } from '~/composables/VeoUser';
@@ -141,6 +140,7 @@ export default defineComponent({
   name: 'VeoObjectsOverviewPage',
   setup() {
     const { t, locale } = useI18n();
+    const { t: $t } = useI18n({ useScope: 'global' });
     const { tablePageSize } = useVeoUser();
     const route = useRoute();
     const router = useRouter();
@@ -205,7 +205,7 @@ export default defineComponent({
     }));
     const queryEnabled = computed(() => !!objectType.value && !!endpoint.value);
 
-    const { data: items, isLoading: isLoadingObjects, refetch } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true, placeholderData: [] });
+    const { data: items, isLoading: isLoadingObjects } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true, placeholderData: [] });
 
     const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
     const formsQueryEnabled = computed(() => !!domainId.value);
@@ -326,12 +326,12 @@ export default defineComponent({
       displayErrorMessage(t(`errors.${messageKey}`).toString(), error?.toString());
     };
 
-    const openItem = ({ item }: { item: IVeoEntity }) => {
+    const openItem = ({ item }) => {
       return router.push({
-        name: 'unit-domains-domain-objects-entity',
+        name: 'unit-domains-domain-objects-object',
         params: {
           ...route.params,
-          entity: createUUIDUrlParam(item.type, item.id)
+          object: createUUIDUrlParam(item.raw.type, item.raw.id)
         },
         query: {
           subType: subType.value
@@ -343,7 +343,7 @@ export default defineComponent({
       {
         id: 'clone',
         label: upperFirst(t('cloneObject').toString()),
-        icon: `mdiSvg:${mdiContentCopy}`,
+        icon: mdiContentCopy,
         async action(item: IVeoEntity) {
           try {
             await clone(item);
@@ -355,7 +355,7 @@ export default defineComponent({
       {
         id: 'delete',
         label: upperFirst(t('deleteObject').toString()),
-        icon: `mdiSvg:${mdiTrashCanOutline}`,
+        icon: mdiTrashCanOutline,
         action(item: IVeoEntity) {
           itemDelete.value = item;
         }
@@ -371,7 +371,7 @@ export default defineComponent({
             order: 51,
             value: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
             render: ({ item }) =>
-              h('div', item.domains[domainId.value]?.decisionResults?.piaMandatory?.value ? t('global.button.yes').toString() : t('global.button.no').toString()),
+              h('div', item.domains[domainId.value]?.decisionResults?.piaMandatory?.value ? $t('global.button.yes').toString() : t('global.button.no').toString()),
             text: t('dpiaMandatory').toString(),
             sortable: false,
             width: 210
@@ -399,7 +399,6 @@ export default defineComponent({
       onCloseDeleteDialog,
       onOpenFilterDialog,
       onPageChange,
-      refetch,
       showError,
       subType,
       updateRouteQuery,

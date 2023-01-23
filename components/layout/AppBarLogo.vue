@@ -19,7 +19,7 @@
   <div>
     <LayoutAppLogoDesktop
       v-if="showDesktop"
-      height="50%"
+      height="60%"
       width="85%"
     />
     <LayoutAppLogoMobile
@@ -32,6 +32,8 @@
 </template>
 
 <script lang="ts" setup>
+import { useDisplay } from 'vuetify';
+
 const props = defineProps({
   size: {
     type: String,
@@ -39,9 +41,8 @@ const props = defineProps({
   }
 });
 
-const { $vuetify } = useNuxtApp();
-// const showDesktop = computed(() => props.size !== 'small' && ($vuetify.breakpoint.mdAndUp || props.size === 'large'));
-// const showMobile = computed(() => props.size !== 'large');
-const showDesktop = true;
-const showMobile = false;
+const { mdAndUp } = useDisplay();
+
+const showDesktop = computed(() => props.size !== 'small' && (mdAndUp.value || props.size === 'large'));
+const showMobile = computed(() => props.size !== 'large');
 </script>

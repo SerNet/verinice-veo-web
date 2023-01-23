@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoObjectNotFound v-if="!loading && notFoundError" />
+  <ObjectNotFoundError v-if="!loading && notFoundError" />
   <LayoutPageWrapper
     v-else
     class="px-4 pt-4"
@@ -38,7 +38,7 @@
         no-padding
       >
         <template #default>
-          <VeoObjectDetails
+          <ObjectDetails
             v-model:active-tab="activeTab"
             class="mb-10"
             :loading="loading"
@@ -50,9 +50,8 @@
         </template>
         <template #footer>
           <div style="height: 36px" />
-          <VeoObjectActionMenu
+          <ObjectActionMenu
             color="primary"
-            speed-dial-style="bottom: 12px; right: 0"
             :disabled="ability.cannot('manage', 'objects')"
             :object="object"
             :type="activeTab"
@@ -66,7 +65,7 @@
         data-component-name="object-details-form"
       >
         <template #default>
-          <VeoObjectForm
+          <ObjectForm
             ref="objectForm"
             v-model="modifiedObject"
             v-model:valid="isFormValid"
@@ -104,26 +103,25 @@
               >
                 <template v-if="!formDataIsRevision">
                   <v-btn
-                    text
+                    variant="text"
                     :disabled="loading || !isFormDirty || ability.cannot('manage', 'objects')"
                     @click="resetForm"
                   >
-                    {{ t('global.button.reset') }}
+                    {{ t('reset') }}
                   </v-btn>
                   <v-spacer />
                   <v-btn
-                    depressed
+                    flat
                     color="primary"
                     :disabled="loading || !isFormDirty || !isFormValid || ability.cannot('manage', 'objects')"
                     @click="saveObject"
                   >
-                    {{ t('global.button.save') }}
+                    {{ $t('global.button.save') }}
                   </v-btn>
                 </template>
                 <template v-else>
                   <v-spacer />
                   <v-btn
-                    depressed
                     :disabled="ability.cannot('manage', 'objects')"
                     color="primary"
                     @click="restoreObject"
@@ -133,21 +131,21 @@
                 </template>
               </div>
             </template>
-          </VeoObjectForm>
-          <VeoEntityModifiedDialog
+          </ObjectForm>
+          <ObjectUnsavedChangesDialog
             v-model="entityModifiedDialogVisible"
             :item="object"
             @exit="onContinueNavigation"
           />
-          <VeoWindowUnloadPrevention :value="isFormDirty" />
-          <VeoCreateObjectDialog
+          <UtilUnloadPrevention :model-value="isFormDirty" />
+          <ObjectCreateDialog
             v-model="createDPIADialogVisible"
             object-type="process"
             sub-type="PRO_DPIA"
             :domain-id="domainId"
             @success="onDPIACreated"
           />
-          <VeoLinkObjectDialog
+          <ObjectLinkDialog
             v-if="object"
             v-model="linkObjectDialogVisible"
             :preselected-filters="{ subType: 'PRO_DPIA' }"
@@ -164,7 +162,7 @@
 import { Ref } from 'vue';
 import { cloneDeep, omit, upperFirst } from 'lodash';
 
-import { IBaseObject, isObjectEqual, separateUUIDParam } from '~/lib/utils';
+import { isObjectEqual, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
@@ -201,7 +199,7 @@ export default defineComponent({
 
     const { data: endpoints } = useFetchSchemas();
 
-    const objectParameter = computed(() => separateUUIDParam(route.params.entity as string));
+    const objectParameter = computed(() => separateUUIDParam(route.params.object as string));
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
     const preselectedSubType = computed<string | undefined>(() => route.query.subType || (object.value?.domains?.[domainId.value]?.subType as any));
 
@@ -211,14 +209,14 @@ export default defineComponent({
     const modifiedObject = ref<IVeoEntity | undefined>(undefined);
     /* Data that should get merged back into modifiedObject after the object has been reloaded, useful to persist children
      * of objects while keeping form changes */
-    const wipObjectData = ref<IBaseObject | undefined>(undefined);
+    const wipObjectData = ref<Record<string, any> | undefined>(undefined);
 
     // Object details are originally part of the object, but as they might get updated independently, we want to avoid refetching the whole object, so we outsorce them.
     const metaData = ref<any>({});
     const endpoint = computed(() => endpoints.value?.[objectParameter.value.type]);
 
-    const fetchObjectQueryParameters = computed(() => ({ endpoint: endpoint.value || '', id: objectParameter.value.id }));
-    const fetchObjectQueryEnabled = computed(() => !!endpoints.value && !!objectParameter.value.id);
+    const fetchObjectQueryParameters = computed(() => ({ endpoint: endpoint.value, id: objectParameter.value.id }));
+    const fetchObjectQueryEnabled = computed(() => !!fetchObjectQueryParameters.value.endpoint && !!fetchObjectQueryParameters.value.id);
     const {
       data: object,
       isFetching: loading,
@@ -515,6 +513,7 @@ export default defineComponent({
     "objectSaved": "\"{name}\" was updated successfully!",
     "oldVersionAlert": "You are currently viewing an old and readonly version of this object. If you want to update the object based on this data, please click \"restore\" first and then make your changes.",
     "outdatedObject": "This dataset has been edited by another user. Do you want to load the changes?",
+    "reset": "reset",
     "restore": "restore",
     "version": "version {version}"
   },
@@ -527,6 +526,7 @@ export default defineComponent({
     "objectSaved": "\"{name}\" wurde aktualisiert!",
     "oldVersionAlert": "Ihnen wird eine alte, schreibgeschützte Version dieses Objektes angezeigt. Bitte klicken Sie auf \"Wiederherstellen\", wenn Sie Ihr Objekt basierend auf diesen Daten aktualisieren möchten.",
     "outdatedObject": "Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?",
+    "reset": "zurücksetzen",
     "restore": "wiederherstellen",
     "version": "version {version}"
   }

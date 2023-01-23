@@ -27,14 +27,14 @@
         lg="4"
         class="docs-form-sector"
       >
-        <VeoForm
+        <DynamicFormEntrypoint
           v-model="form.data"
-          :schema="form.objectSchema"
-          :ui="form.formSchema"
+          :object-schema="form.objectSchema"
+          :form-schema="form.formSchema"
         />
       </v-col>
     </v-row>
-    <FormDescription
+    <HelpFormDescription
       :object-schema="form.objectSchema"
       :form-schema="form.formSchema"
       :data="form.data"
@@ -42,34 +42,27 @@
   </BasePage>
 </template>
 
-<script lang="ts">
-export default {
-  layout: 'plain',
-  data() {
-    return {
-      form: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            inputText: {
-              type: 'string'
-            }
-          }
-        },
-        formSchema: {
-          type: 'Control',
-          scope: '#/properties/inputText',
-          options: {
-            label: 'Input Text'
-          }
-        },
-        data: {
-          inputText: 'Beispiel'
-        }
-      }
-    };
-  }
-};
-</script>
+<script lang="ts" setup>
+definePageMeta({ layout: 'plain' });
 
-<style lang="scss"></style>
+const form = ref({
+  objectSchema: {
+    type: 'object',
+    properties: {
+      inputText: {
+        type: 'string'
+      }
+    }
+  },
+  formSchema: {
+    type: 'Control',
+    scope: '#/properties/inputText',
+    options: {
+      label: 'Input Text'
+    }
+  },
+  data: {
+    inputText: 'Beispiel'
+  }
+});
+</script>

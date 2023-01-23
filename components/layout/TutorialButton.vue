@@ -16,9 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip bottom>
-    <template #activator="{ props, attrs }">
-      <div v-bind="props">
+  <v-tooltip location="bottom">
+    <template #activator="{ props: tooltipProps, attrs }">
+      <div v-bind="tooltipProps">
         <v-btn
           v-if="tutorialsForRoute.length <= 1"
           color="black"
@@ -30,7 +30,7 @@
           data-component-name="tutorial-select"
           @click="visible ? stop(): load()"
         >
-          <!--<v-icon :icon="`mdiSvg:${visible ? mdiInformationOffOutline : mdiInformationOutline}`" />-->
+          <v-icon :icon="visible ? mdiInformationOffOutline : mdiInformationOutline" />
         </v-btn>
         <v-menu
           v-else
@@ -46,15 +46,15 @@
               data-component-name="tutorial-select"
               v-bind="menu"
             >
-              <!--<v-icon :icon="`mdiSvg:${visible ? mdiInformationOffOutline : mdiInformationOutline}`" />-->
+              <v-icon :icon="visible ? mdiInformationOffOutline : mdiInformationOutline" />
             </v-btn>
           </template>
           <template #default>
             <v-list dense>
               <v-list-item
                 v-for="tutorial of tutorialsForRoute"
-                :key="tutorial.slug"
-                @click="load(tutorial.path)"
+                :key="tutorial._id"
+                @click="load(tutorial._path)"
               >
                 <v-list-item-title>
                   {{ tutorial.title }}

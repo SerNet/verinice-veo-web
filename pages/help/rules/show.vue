@@ -27,82 +27,70 @@
         lg="4"
         class="docs-form-sector"
       >
-        <VeoForm
-          v-model="dynamicForm.data"
-          :schema="dynamicForm.objectSchema"
-          :ui="dynamicForm.formSchema"
+        <DynamicFormEntrypoint
+          v-model="form.data"
+          :object-schema="form.objectSchema"
+          :form-schema="form.formSchema"
         />
       </v-col>
     </v-row>
-    <FormDescription
-      :object-schema="dynamicForm.objectSchema"
-      :form-schema="dynamicForm.formSchema"
-      :data="dynamicForm.data"
+    <HelpFormDescription
+      :object-schema="form.objectSchema"
+      :form-schema="form.formSchema"
+      :data="form.data"
     />
   </BasePage>
 </template>
 
-<script lang="ts">
-export default {
-  layout: 'plain',
-  data() {
-    return {
-      form: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            inputText: {
-              type: 'string'
-            },
-            select: {
-              type: 'string',
-              enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
-            }
+<script lang="ts" setup>
+definePageMeta({ layout: 'plain' });
+
+const form = ref({
+  objectSchema: {
+    type: 'object',
+    properties: {
+      inputText: {
+        type: 'string'
+      },
+      select: {
+        type: 'string',
+        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
+      }
+    }
+  },
+  formSchema: {
+    type: 'Layout',
+    options: {
+      format: 'group',
+      direction: 'vertical'
+    },
+    elements: [
+      {
+        type: 'Control',
+        scope: '#/properties/inputText',
+        options: {
+          label: 'Input Text'
+        },
+        rule: {
+          effect: 'SHOW',
+          condition: {
+            scope: '#/properties/select',
+            schema: { const: 'Beispiel-3' }
           }
-        },
-        formSchema: {
-          type: 'Layout',
-          options: {
-            format: 'group',
-            direction: 'vertical'
-          },
-          elements: [
-            {
-              type: 'Control',
-              scope: '#/properties/inputText',
-              options: {
-                label: 'Input Text'
-              },
-              rule: {
-                effect: 'SHOW',
-                condition: {
-                  scope: '#/properties/select',
-                  schema: { const: 'Beispiel-3' }
-                }
-              }
-            },
-            {
-              type: 'Control',
-              scope: '#/properties/select',
-              options: {
-                label: 'Select'
-              }
-            }
-          ]
-        },
-        data: {
-          inputText: 'Beispiel',
-          select: 'Beispiel-1'
+        }
+      },
+      {
+        type: 'Control',
+        scope: '#/properties/select',
+        options: {
+          label: 'Select'
         }
       }
-    };
+    ]
   },
-  computed: {
-    dynamicForm(): any {
-      return this.form;
-    }
+  data: {
+    inputText: 'Beispiel',
+    select: 'Beispiel-1'
   }
-};
+});
 </script>
-
-<style lang="scss"></style>

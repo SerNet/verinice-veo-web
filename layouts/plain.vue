@@ -18,8 +18,7 @@
 <template>
   <v-app>
     <v-app-bar
-      class="veo-app-bar"
-      app
+      :class="$style['app-bar']"
       flat
     >
       <div
@@ -38,7 +37,7 @@
         </nuxt-link>
       </div>
       <v-spacer />
-      <LayoutLanguageSwitch class="mx-3" />
+      <LayoutLanguageSwitch />
       <LayoutAccountBtn
         v-if="profile"
         :username="profile.username"
@@ -53,58 +52,46 @@
         icon
         :href="$config.accountPath"
       >
-        <!--<v-icon :icon="`mdiSvg:${mdiAccountCircleOutline}`" />-->
+        <v-icon :icon="mdiAccountCircleOutline" />
       </v-btn>
     </v-app-bar>
-    <v-main>
+    <v-main :class="$style.main">
       <slot />
       <LayoutCookieBanner />
     </v-main>
   </v-app>
 </template>
-
-<script lang="ts">
+  
+<script lang="ts" setup>
 import { mdiAccountCircleOutline } from '@mdi/js';
-
+  
 import { useVeoUser } from '~/composables/VeoUser';
 
-export default defineComponent({
-  setup() {
-    const { logout: _logout, profile } = useVeoUser();
-
-    useHead(() => ({
-      title: 'verinice.',
-      titleTemplate: '%s - verinice.veo'
-    }));
-
-    const logout = () => _logout('/');
-
-    return {
-      logout,
-      profile,
-
-      mdiAccountCircleOutline
-    };
-  },
-  head: {}
-});
+const { logout: _logout, profile } = useVeoUser();
+  
+useHead(() => ({
+  title: 'verinice.',
+  titleTemplate: '%s - verinice.veo'
+}));
+  
+const logout = () => _logout('/');
 </script>
-<style lang="scss" scoped>
-.veo-app-bar {
-  background-color: $background-accent !important;
-  border-bottom: 1px solid $medium-grey;
 
-  :deep(.v-toolbar__content) {
-    padding-left: 0;
+<style lang="scss" module>
+  .app-bar {
+    background-color: $background-accent !important;
+    border-bottom: 1px solid $medium-grey;
+  
+    :deep(.v-toolbar__content) {
+      padding-left: 0;
+    }
   }
-}
-
-:deep(.v-main) > .v-main__wrap {
-  background: $background-primary;
-}
-
-:deep(.v-main) > .v-main__wrap {
-  display: flex;
-  flex-direction: column;
-}
-</style>
+  .main {
+    background: $background-primary;
+  }
+  
+  .main {
+    display: flex;
+    flex-direction: column;
+  }
+  </style>

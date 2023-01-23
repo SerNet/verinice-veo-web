@@ -17,81 +17,79 @@
 -->
 <template>
   <BasePage
-    v-if="document"
-    :title="document.title"
+    :title="document && document.title"
+    :loading="!document"
   >
-    {{ fetchContentNavigation() }}
     <BaseCard
       class="mb-4"
       style="max-width: 1024px"
     >
       <v-card-text class="text-body-1">
-        <ContentRenderer :document="document" />
+        <ContentRendererMarkdown
+          v-if="document"
+          :value="document"
+        />
       </v-card-text>
     </BaseCard>
   </BasePage>
 </template>
-<script lang="ts">
-import { upperFirst } from 'lodash';
+<script lang="ts" setup>
+import { isArray } from 'lodash';
 
 import { useDoc, useDocs } from '~/composables/docs';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
-export default defineComponent({
-  setup() {
-    const route = useRoute();
-    const document = useDoc({ path: `/${route.params.pathMatch || 'index'}` });
-    const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
-
-    const docs = useDocs({
-      buildItem(item) {
-        return {
-          ...item,
-          name: item.isDir ? `${upperFirst(item.slug)} (${item.path})` : `${item.title || item.slug} (${item.path})`,
-          to: item.path
-        };
-      }
-    });
-
-    const updateBreadcrumbs = () => {
-      // Remove previous custom breadcrumbs
-      clearCustomBreadcrumbs();
-
-      if (!docs.value?.length || !document.value) {
-        return;
-      }
-
-      // Get all path segments and the nesting level to know how many breadcrumb entries have to be created
-      const pathSegments = (document.value?.path || '').split('/').filter((segment) => segment);
-      const nestingLevel = pathSegments.length;
-
-      // Greater than 0 as we don't want to include the index page in the breadcrumbs
-      for (let i = nestingLevel; i > 0; i--) {
-        const currentPathSegments = pathSegments.slice(0, i);
-        const unlocalizedCurrentPath = currentPathSegments.join('/').replace(/(\.\w+)/, '');
-
-        const breadcrumbItem = (docs.value || []).find((doc) => doc.path === `/${unlocalizedCurrentPath}`);
-        if (breadcrumbItem) {
-          addCustomBreadcrumb({
-            to: `/docs${breadcrumbItem.path}`,
-            exact: true,
-            key: breadcrumbItem.path,
-            index: 0,
-            text: breadcrumbItem.title,
-            position: i * 10,
-            param: ''
-          });
-        }
-      }
-    };
-
-    watch(() => document.value?.path, updateBreadcrumbs, { immediate: true });
-
-    watch(() => docs.value, updateBreadcrumbs, { deep: true, immediate: true });
-
-    return {
-      document
-    };
+const route = useRoute();
+useHead(() => ({
+  style: {
+    src: './assets/styles/docs.scss'
   }
-});
+}));
+
+const normalizedPath = computed(() => !isArray(route.params.slug) ? [route.params.slug] : route.params.slug);
+const document = useDoc({ path: `/${normalizedPath.value.join('/') || 'index'}` });
+const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
+
+// Navigation stuff (breadcrumbs)
+
+const docs = useDocs({});
+const updateBreadcrumbs = () => {
+  // Remove previous custom breadcrumbs
+  clearCustomBreadcrumbs();
+
+  if (!docs.value?.length || !document.value) {
+    return;
+  }
+
+  // Get all path segments and the nesting level to know how many breadcrumb entries have to be created
+  const pathSegments = (document.value?._path || '').split('/').filter((segment) => segment);
+  const nestingLevel = pathSegments.length;
+
+  // Greater than 0 as we don't want to include the index page in the breadcrumbs
+  for (let i = nestingLevel; i > 0; i--) {
+    const currentPathSegments = pathSegments.slice(0, i);
+    const unlocalizedCurrentPath = currentPathSegments.join('/').replace(/(\.\w+)/, '');
+
+    const breadcrumbItem = (docs.value || []).find((doc) => doc._path === `/${unlocalizedCurrentPath}`);
+    if (breadcrumbItem) {
+      addCustomBreadcrumb({
+        to: `/docs${breadcrumbItem._path}`,
+        exact: true,
+        key: breadcrumbItem._path,
+        index: 0,
+        text: breadcrumbItem.title,
+        position: i * 10,
+        param: ''
+      });
+    }
+  }
+};
+
+watch(() => document.value?._path, updateBreadcrumbs, { immediate: true });
+
+watch(() => docs.value, updateBreadcrumbs, { deep: true, immediate: true });
 </script>
+
+<style lang="scss" scoped>
+@import url('~/assets/styles/docs.scss');
+</style>

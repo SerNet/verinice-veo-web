@@ -24,10 +24,10 @@
   >
     <div
       v-if="domain"
-      class="mt-n2 accent--text text-body-1"
+      class="mt-n2 text-accent text-body-1"
     >
       <span v-if="domain.description">{{ domain.description }}</span>
-      <i v-else>{{ t('unit.details.nodescription') }}</i>
+      <i v-else>{{ tGlobal('unit.details.nodescription') }}</i>
     </div>
     <v-skeleton-loader
       v-else
@@ -42,7 +42,7 @@
           cols="12"
           lg="6"
         >
-          <VeoWidget
+          <BaseWidget
             v-for="j in 4"
             :key="j"
             loading
@@ -73,7 +73,7 @@
                 </v-col>
               </v-row>      
             </template>
-          </VeoWidget>
+          </BaseWidget>
         </v-col>
       </template>
       <template v-else>
@@ -88,15 +88,15 @@
             :key="widget[0]"
             class="my-4"
           >
-            <VeoMyLatestRevisionsWidget
+            <WidgetMyLatestRevisions
               v-if="widget[0] === 'my_latest_widget'"
               data-component-name="domain-dashboard-latest-revisions-widget"
             />
-            <VeoStackedStatusBarChartWidget
+            <WidgetStackedStatusBarChart
               v-else
               chart-height="30"
               :data="widget[1]"
-              :domain-id="(domain && domain.id) || undefined"
+              :domain-id="domainId"
               :object-type="widget[0]"
               :data-component-name="`domain-dashboard-${widget[0]}-widget`"
               @click="onBarClicked"
@@ -105,7 +105,7 @@
         </v-col>
       </template>
     </v-row>
-    <VeoWelcomeDialog
+    <WelcomeDialog
       v-if="showWelcomeDialog"
       v-model="showWelcomeDialog"
     />
@@ -127,11 +127,16 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const { t } = useI18n();
+    const { t: tGlobal } = useI18n({ useScope: 'global' });
 
     const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
-    const showWelcomeDialog = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
+    const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
+    const showWelcomeDialog = computed({
+      get: () => !firstSetpsCompleted.value,
+      set: (newValue) => { firstSetpsCompleted.value = !newValue; }
+    });
 
     // Domain specific stuff
     const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
@@ -177,12 +182,14 @@ export default defineComponent({
     return {
       chartData,
       domain,
+      domainId,
       elementStatusCountIsFetching,
       onBarClicked,
       title,
       showWelcomeDialog,
 
-      t
+      t,
+      tGlobal
     };
   }
 });

@@ -32,15 +32,15 @@
       <div>
         <v-btn
           v-if="error.statusCode === 403 || error.statusCode === 404"
-          text
+          variant="text"
           color="primary"
           @click="$router.back()"
         >
-          {{ t('global.button.previous') }}
+          {{ $t('global.button.previous') }}
         </v-btn>
         <v-btn
           v-if="error.statusCode !== 401"
-          text
+          variant="text"
           color="primary"
           @click="$router.push('/')"
         >
@@ -51,43 +51,29 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { NuxtError } from 'nuxt/app';
 import { upperFirst } from 'lodash';
 import { PropType } from 'vue';
 
-export default defineComponent({
-  layout: 'plain',
-  props: {
-    error: {
-      type: Object as PropType<NuxtError>,
-      default: null
-    }
-  },
-  setup(props) {
-    const { t } = useI18n();
+definePageMeta({ layout: 'plain' });
 
-    const CUSTOMIZED_ERROR_PAGES = [401, 403, 404];
-
-    const errorIsCustomized = computed(() => CUSTOMIZED_ERROR_PAGES.includes(props.error.statusCode || -1));
-
-    const image = computed(() => `/images/${props.error.statusCode === 404 ? 'pageNotFound' : 'defaultError'}.svg`);
-
-    useMeta(() => ({
-      title: 'verinice.',
-      titleTemplate: '%s - verinice.veo'
-    }));
-
-    return {
-      errorIsCustomized,
-      image,
-
-      t,
-      upperFirst
-    };
-  },
-  head: {}
+const props = defineProps({
+  error: {
+    type: Object as PropType<NuxtError>,
+    default: null
+  }
 });
+
+
+const { t } = useI18n();
+const { t: $t } = useI18n({ useScope: 'global' });
+
+const CUSTOMIZED_ERROR_PAGES = [401, 403, 404];
+
+const errorIsCustomized = computed(() => CUSTOMIZED_ERROR_PAGES.includes(props.error.statusCode || -1));
+
+const image = computed(() => `/images/${props.error.statusCode === 404 ? 'pageNotFound' : 'defaultError'}.svg`);
 </script>
 
 <i18n>

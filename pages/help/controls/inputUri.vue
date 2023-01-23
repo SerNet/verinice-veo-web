@@ -27,14 +27,14 @@
         lg="4"
         class="docs-form-sector"
       >
-        <VeoForm
+        <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
           :form-schema="form.formSchema"
         />
       </v-col>
     </v-row>
-    <FormDescription
+    <HelpFormDescription
       :object-schema="form.objectSchema"
       :form-schema="form.formSchema"
       :data="form.data"
@@ -42,36 +42,31 @@
   </BasePage>
 </template>
 
-<script lang="ts">
-export default {
-  layout: 'plain',
-  data() {
-    return {
-      form: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            inputUri: {
-              type: 'string',
-              format: 'uri',
-              pattern: '^(https?|ftp)://'
-            }
-          }
-        },
-        formSchema: {
-          type: 'Control',
-          scope: '#/properties/inputUri',
-          options: {
-            label: 'Input URI'
-          }
-        },
-        data: {
-          inputUri: 'https://verinice.com/'
-        }
+<script lang="ts" setup>
+definePageMeta({ layout: 'plain' });
+
+const form = ref({
+  objectSchema: {
+    type: 'object',
+    properties: {
+      inputUri: {
+        type: 'string',
+        format: 'uri',
+        pattern: '^(https?|ftp)://'
       }
-    };
+    }
+  },
+  formSchema: {
+    type: 'Control',
+    scope: '#/properties/inputUri',
+    options: {
+      label: 'Input URI'
+    }
+  },
+  data: {
+    inputUri: 'https://verinice.com/'
   }
-};
+});
 </script>
 
 <style lang="scss"></style>

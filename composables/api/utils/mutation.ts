@@ -22,7 +22,6 @@ import { omit } from 'lodash';
 
 import { IVeoQueryDefinition, IVeoQueryParameters } from './query';
 import { useRequest } from './request';
-import { IBaseObject } from '~/lib/utils';
 
 // Type for less typing in composables
 export type MutationOptions<T = unknown> = Omit<UseMutationOptions<T, unknown, void, unknown>, 'queryFn'>;
@@ -31,7 +30,7 @@ export interface IVeoMutationDefinition extends IVeoQueryDefinition {
   method?: 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
 }
 
-export interface IVeoMutationParameters<TParams = IBaseObject, TQuery = IBaseObject> extends IVeoQueryParameters<TParams, TQuery> {
+export interface IVeoMutationParameters<TParams = Record<string, any>, TQuery = Record<string, any>> extends IVeoQueryParameters<TParams, TQuery> {
   body?: any;
   json?: any;
 }

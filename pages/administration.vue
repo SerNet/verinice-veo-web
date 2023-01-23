@@ -17,7 +17,7 @@
 -->
 <template>
   <BasePage
-    :title="t('breadcrumbs.administration')"
+    :title="$t('breadcrumbs.administration')"
     sticky-footer
   >
     <template #default>
@@ -32,69 +32,67 @@
           <b>{{ activeAccounts }}</b> {{ t('of') }}
           <b>{{ userSettings.maxUsers }}</b> {{ t('activeAccounts') }}
         </p>
-        <VeoObjectTable
+        <ObjectTable
           :default-headers="['actions']"
           :items="accounts"
           :loading="isFetching"
           :additional-headers="additionalTableHeaders"
         >
           <template #actions="{ item }">
-            <v-tooltip
-              v-for="action in accountTableActions"
-              :key="action.id"
-              bottom
-            >
-              <template #activator="{ props }">
-                <v-btn
-                  :disabled="action.isDisabled && action.isDisabled(item)"
-                  icon
-                  v-bind="props"
-                  @click="action.action(item)"
-                >
-                  <!--<v-icon :icon="action.icon" />-->
-                </v-btn>
-              </template>
-              {{ t(action.label) }}
-            </v-tooltip>
+            <div class="d-flex">
+              <v-tooltip
+                v-for="action in accountTableActions"
+                :key="action.id"
+                location="bottom"
+              >
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    :disabled="action.isDisabled && action.isDisabled(item)"
+                    :icon="action.icon"
+                    variant="text"
+                    @click="action.action(item)"
+                  />
+                </template>
+                {{ action.label }}
+              </v-tooltip>
+            </div>
           </template>
-        </VeoObjectTable>
+        </ObjectTable>
       </BaseCard>
     </template>
     <template #footer>
-      <v-tooltip left>
+      <v-tooltip location="start">
         <template #activator="{ props }">
           <v-btn
+            v-bind="props"
             color="primary"
-            depressed
             :disabled="
               ability.cannot('manage', 'accounts') ||
                 activeAccounts >= userSettings.maxUsers
             "
-            fab
-            absolute
-            style="bottom: 12px; right: 0"
-            v-bind="props"
+            size="large"
+            class="veo-primary-action-fab"
+            :icon="mdiPlus"
             @click="createAccountDialogVisible = true"
-          >
-            <!--<v-icon :icon="`mdiSvg:${mdiPlus}`" />-->
-          </v-btn>
+          />
           <div style="height: 76px" />
         </template>
         <template #default>
           <span>{{ t('createAccount') }}</span>
         </template>
       </v-tooltip>
-      <AccountsManageDialog
+      <AccountManageDialog
         v-if="manageAccountDialogVisible"
-        :value="manageAccountDialogVisible"
+        :model-value="manageAccountDialogVisible"
         v-bind="manageAccountProps"
         :existing-accounts="accounts"
-        @input="onManageAccountDialogInput"
+        @update:model-value="onManageAccountDialogInput"
       />
-      <AccountsDeleteDialog
+      <AccountDeleteDialog
         v-if="deleteAccountDialogVisible"
         v-model="deleteAccountDialogVisible"
-        v-bind="editAccountDialogProps"
+        v-bind="deleteAccountDialogProps"
       />
     </template>
   </BasePage>
@@ -102,12 +100,13 @@
 
 <script lang="ts" setup>
 import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
-import { ObjectTableHeader } from '~/components/objects/VeoObjectTable.vue';
+import { ObjectTableHeader } from '~/components/object/Table.vue';
 import { IVeoAccount, useFetchAccounts } from '~/composables/api/accounts';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 
 const { t } = useI18n();
+const { t: $t } = useI18n({ useScope: 'global' });
 const { profile, userSettings } = useVeoUser();
 const { ability } = useVeoPermissions();
 
@@ -116,26 +115,27 @@ const activeAccounts = computed(
   () => (accounts.value || []).filter((account) => account.enabled).length
 );
 
-const onEditAccount = (account: IVeoAccount) => {
-  Object.assign(editAccountDialogProps, account);
+const onEditAccount = (event: any) => {
+  editAccountDialogProps.value = event.value;
   editAccountDialogVisible.value = true;
 };
 
-const onDeleteAccount = (account: IVeoAccount) => {
-  Object.assign(editAccountDialogProps, account);
+const onDeleteAccount = (event: any) => {
+  deleteAccountDialogProps.value = event.value;
   deleteAccountDialogVisible.value = true;
 };
 
 const createAccountDialogVisible = ref(false);
 const deleteAccountDialogVisible = ref(false);
+const deleteAccountDialogProps = ref<Record<string, any>>({});
 const editAccountDialogVisible = ref(false);
-const editAccountDialogProps = reactive({});
+const editAccountDialogProps = ref<Record<string, any>>({});
 
 const manageAccountDialogVisible = computed(
   () => createAccountDialogVisible.value || editAccountDialogVisible.value
 );
 const manageAccountProps = computed(() =>
-  editAccountDialogVisible.value ? editAccountDialogProps : {}
+  editAccountDialogVisible.value ? editAccountDialogProps.value : {}
 );
 const onManageAccountDialogInput = (newValue: boolean) => {
   if (!newValue) {
@@ -159,13 +159,13 @@ const accountTableActions: {
     id: 'edit',
     action: onEditAccount,
     icon: mdiPencilOutline,
-    label: 'edit'
+    label: t('edit')
   },
   {
     id: 'delete',
     action: onDeleteAccount,
     icon: mdiTrashCanOutline,
-    label: 'global.button.delete',
+    label: $t('global.button.delete'),
     isDisabled: (item: IVeoAccount) => item.username === profile.value?.username
   }
 ];
@@ -183,10 +183,12 @@ const additionalTableHeaders = ref<ObjectTableHeader[]>([
     priority: 90,
     text: t('enabled').toString(),
     value: 'enabled',
-    render: ({ value }) =>
-      value
-        ? t('global.button.yes').toString()
-        : t('global.button.no').toString(),
+    key: 'enabled',
+    render: ({ item }) =>
+      item.raw.enabled
+        ? $t('global.button.yes').toString()
+        : $t('global.button.no').toString()
+    ,
     width: 80
   },
   {

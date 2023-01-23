@@ -22,7 +22,6 @@ import { QueryObserverResult } from '@tanstack/query-core/build/lib/types';
 import { omit } from 'lodash';
 
 import { useRequest, VeoApiReponseType } from './request';
-import { IBaseObject } from '~/lib/utils';
 
 export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
 
@@ -32,7 +31,7 @@ export interface IVeoQueryDefinition<TResult = any> {
   onDataFetched?: (result: TResult) => TResult;
 }
 
-export interface IVeoQueryParameters<TParams = IBaseObject, TQuery = IBaseObject> {
+export interface IVeoQueryParameters<TParams = Record<string, any>, TQuery = Record<string, any>> {
   params?: TParams;
   query?: TQuery;
 }
@@ -59,7 +58,7 @@ export const STALE_TIME = {
  * @param queryOptions Options modifiying query behaviour.
  * @returns Query object containing the data and information about the query.
  */
-export const useQuery = <TVariable = IBaseObject, TResult = any>(
+export const useQuery = <TVariable = Record<string, any>, TResult = any>(
   queryIdentifier: string,
   queryDefinition: IVeoQueryDefinition<TResult>,
   queryParameters: Ref<TVariable> | undefined,
@@ -137,7 +136,7 @@ export const useQuery = <TVariable = IBaseObject, TResult = any>(
  * @param queryOptions Options modifiying query behaviour.
  * @returns Array containing query objects containing the data and information about the query. NOT reactive, so you have to watch the results in your components.
  */
-export const useQueries = <TVariable = IBaseObject, TResult = any>(
+export const useQueries = <TVariable = Record<string, any>, TResult = any>(
   queriesIdentifier: string,
   queryDefinition: IVeoQueryDefinition<TResult>,
   queryParameters: Ref<(TVariable | void)[]>,
