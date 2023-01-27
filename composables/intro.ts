@@ -346,7 +346,7 @@ export function useTutorials() {
   const currentRouteHref = computed(() => route.fullPath.replace(/#.*$/, ''));
   // Make sure tutorials is always present
   const tutorials = computed(() => _tutorials.value?.map((tutorial) => ({ ...tutorial, applicable: tutorial.match(currentRouteHref.value) })) || []);
-  // console.log(tutorials);
+
   type Tutorial = typeof tutorials.value extends Array<infer U> ? U : never;
 
   const tutorialsForRoute = computed(() => tutorials.value?.filter((tutorial) => tutorial.applicable));

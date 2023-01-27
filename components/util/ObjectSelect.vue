@@ -41,27 +41,34 @@
       #append-item
     >
       <v-list-item>
-        {{ t('beMoreSpecific') }}
+        <v-list-item-subtitle>
+          {{ t('beMoreSpecific') }}
+        </v-list-item-subtitle>
       </v-list-item>
     </template>
     <template
-      #item="{ item }"
+      #item="{ props, item }"
     >
-      <ObjectIcon
-        :object-type="item.type"
-        :is-composite="!!(item.parts && item.parts.length)"
-        left
-      />
-      {{ item.displayName }}
-      <v-hover v-slot="{ hover }">
-        <v-icon
-          end
-          style="z-index: 5000;"
-          :color="hover ? 'primary' : ''"
-          :icon="mdiOpenInNew"
-          @click="openItem(item)"
-        />
-      </v-hover>
+      <v-list-item v-bind="props">
+        <template #prepend>
+          <ObjectIcon
+            :object-type="item.raw.type"
+            :is-composite="!!(item.raw.parts && item.raw.parts.length)"
+            left
+          />
+        </template>
+        <template #append>
+          <v-hover v-slot="{ hover }">
+            <v-icon
+              end
+              style="z-index: 5000;"
+              :color="hover ? 'primary' : ''"
+              :icon="mdiOpenInNew"
+              @click="openItem(item.raw)"
+            />
+          </v-hover>
+        </template>
+      </v-list-item>
     </template>
   </v-autocomplete>
 </template>
@@ -142,7 +149,8 @@ export default defineComponent({
           return props.modelValue as string;
         }
       },
-      set: (newValue: string | undefined | null) => {
+      set: (newValue: string | undefined | null) => 
+      {
         if (!newValue && !props.required) {
           emit('update:model-value', newValue);
         } else if (props.valueAsLink) {

@@ -32,6 +32,7 @@
       :items="treatmentOptions"
       class="veo-risk-dialog__risk-treatment-selection"
       hide-details
+      variant="underlined"
       @update:model-value="$emit('update:risk-treatments', $event)"
     >
       <template #selection="{ item, index }">
@@ -39,25 +40,28 @@
           v-if="index === 0"
           class="text-no-wrap"
         >
-          {{ item.text }}
+          {{ item.title }}
         </span>
         <v-chip
           v-else-if="index === 1"
-          small
-          class="flex-shrink-0"
+          size="small"
         >
-          +{{ riskTreatments.length }}
+          +{{ riskTreatments.length - 1 }} {{ t('more') }}
         </v-chip>
       </template>
     </v-select>
     <v-edit-dialog>
-      <v-text-field
-        :model-value="riskTreatmentExplanation"
-        :disabled="disabled"
-        :label="upperFirst(t('explanation').toString())"
-        hide-details
-        @update:model-value="$emit('update:risk-treatment-explanation', $event)"
-      />
+      <template #default="{ props: dialogProps }">
+        <v-text-field
+          :model-value="riskTreatmentExplanation"
+          :disabled="disabled"
+          :label="upperFirst(t('explanation').toString())"
+          hide-details
+          variant="underlined"
+          v-bind="dialogProps"
+          @update:model-value="$emit('update:risk-treatment-explanation', $event)"
+        />
+      </template>
       <template #input>
         <v-textarea
           :model-value="riskTreatmentExplanation"
@@ -66,8 +70,9 @@
           clearable
           auto-grow
           autofocus
-          rows="1"
+          rows="3"
           no-resize
+          variant="underlined"
           @update:model-value="$emit('update:risk-treatment-explanation', $event)"
         />
       </template>
@@ -130,6 +135,7 @@ export default defineComponent({
 {
   "en": {
     "explanation": "explanation",
+    "more": "more",
     "riskTreatment": "risk treatment",
     "riskTreatments": {
       "RISK_TREATMENT_ACCEPTANCE": "risk retention",
@@ -140,6 +146,7 @@ export default defineComponent({
   },
   "de": {
     "explanation": "Erklärung",
+    "more": "weitere",
     "riskTreatment": "Risikobehandlung",
     "riskTreatments": {
       "RISK_TREATMENT_ACCEPTANCE": "Risikoakzeptanz",

@@ -58,7 +58,7 @@
         <slot name="additional-button" />
         <v-btn
           v-if="!noCloseButton"
-          text
+          variant="text"
           :color="alertColor"
           @click="$emit('update:model-value', false)"
         >

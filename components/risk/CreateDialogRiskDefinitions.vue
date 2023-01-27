@@ -85,7 +85,7 @@
               @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
             <RiskMitigationSection
-              v-model:mitigations="_mitigations"
+              v-model:mitigations="localMitigations"
               :data="internalValue"
               :disabled="disabled"
               :domain-id="domain.id"
@@ -105,6 +105,7 @@
 
 <script lang="ts">
 import { PropType } from 'vue';
+import { cloneDeep } from 'lodash';
 
 import { IDirtyFields } from './CreateDialogSingle.vue';
 import { IVeoDomain, IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
@@ -135,22 +136,22 @@ export default defineComponent({
   },
   emits: ['update:mitigations', 'update:model-value', 'update:dirty-fields'],
   setup(props, { emit }) {
-    const internalValue = ref<IVeoRisk>(props.modelValue);
-    // Computed can't watch deep, so we have to create two watchers to properly send events
-    watch(
-      () => internalValue.value,
-      (newValue) => {
-        emit('update:model-value', newValue);
-      },
-      { deep: true }
-    );
-    watch(
-      () => props.modelValue,
-      (newValue) => {
-        internalValue.value = newValue;
-      },
-      { deep: true }
-    );
+    const internalValue = ref<IVeoRisk | undefined>();
+
+    // Internal value is a ref and not a computed, as a computed doesn't pick up changes somewhere deep down in the structure, so we have to explicitly watch deep.
+    const ignoreUpdate = ref(false);
+    watch(() => props.modelValue, (newValue) => {
+      if(!ignoreUpdate.value) {
+        internalValue.value = cloneDeep(newValue);
+      }
+    }, { deep: true, immediate: true });
+    watch(() => internalValue.value, (newValue) => {
+      ignoreUpdate.value = true;
+      emit('update:model-value', newValue);
+      nextTick(() => {
+        ignoreUpdate.value = false;
+      });
+    }, { deep: true });
 
     // layout stuff
     const getRiskValuesByProtectionGoal = (riskDefinition: IVeoRisk['domains']['x']['riskDefinitions']['y'], protectionGoal: string) => {
@@ -173,7 +174,7 @@ export default defineComponent({
       { deep: true }
     );
 
-    const _mitigations = computed({
+    const localMitigations = computed({
       get() {
         return props.mitigations;
       },
@@ -187,7 +188,7 @@ export default defineComponent({
       activeRiskDefinition,
       getRiskValuesByProtectionGoal,
       internalValue,
-      _mitigations
+      localMitigations
     };
   }
 });

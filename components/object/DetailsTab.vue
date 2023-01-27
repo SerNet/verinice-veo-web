@@ -22,26 +22,28 @@
       :default-headers="defaultHeaders"
       :items="items"
       :loading="tableIsLoading"
+      enable-click
       @click="openItem"
     >
       <template #actions="{item}">
-        <v-tooltip
-          v-for="btn in actions"
-          :key="btn.id"
-          location="bottom"
-        >
-          <template #activator="{ props }">
-            <v-btn
-              v-bind="props"
-              icon
-              :disabled="ability.cannot('manage', 'objects')"
-              @click="btn.action(item)"
-            >
-              <v-icon :icon="btn.icon" />
-            </v-btn>
-          </template>
-          {{ btn.label }}
-        </v-tooltip>
+        <div class="d-flex">
+          <v-tooltip
+            v-for="btn in actions"
+            :key="btn.id"
+            location="bottom"
+          >
+            <template #activator="{ props }">
+              <v-btn
+                v-bind="props"
+                :icon="btn.icon"
+                variant="flat"
+                :disabled="ability.cannot('manage', 'objects')"
+                @click="btn.action(item.raw)"
+              />
+            </template>
+            {{ btn.label }}
+          </v-tooltip>
+        </div>
       </template>
     </ObjectTable>
     <!-- dialogs -->
@@ -73,7 +75,7 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemas } from '~/composables/api/schemas';
-import { useDeleteRisk, useFetchChildObjects, useFetchChildScopes, useFetchParentObjects, useFetchRisks } from '~/composables/api/objects';
+import { useDeleteRisk, useFetchObjectChildren, useFetchScopeChildren, useFetchParentObjects, useFetchRisks } from '~/composables/api/objects';
 import { useFetchDomain } from '~/composables/api/domains';
 
 export default defineComponent({
@@ -119,14 +121,16 @@ export default defineComponent({
     const parentObjectsQueryEnabled = computed(() => props.type === 'parentObjects' && !!props.object?.id);
     const { data: parentObjects, isFetching: parentObjectsIsFetching } = useFetchParentObjects(parentObjectsQueryParameters, { enabled: parentObjectsQueryEnabled });
     const childScopesQueryParameters = computed(() => ({ id: props.object?.id || '' }));
-    const childScopesQueryEnabled = computed(() => props.type === 'childScopes' && !!props.object?.id);
-    const { data: childScopes, isFetching: childScopesIsFetching } = useFetchChildScopes(childScopesQueryParameters, { enabled: childScopesQueryEnabled });
+    const childScopesQueryEnabled = computed(() => props.type.startsWith('child') && props.object.type === 'scope' && !!props.object?.id);
+    const { data: scopeChildren, isFetching: childScopesIsFetching } = useFetchScopeChildren(childScopesQueryParameters, { enabled: childScopesQueryEnabled });
     const childObjectsQueryParameters = computed(() => ({ id: props.object?.id || '', endpoint: schemas.value?.[props.object?.type || ''] || '' }));
-    const childObjectsQueryEnabled = computed(() => props.type === 'childObjects' && !!props.object?.id);
-    const { data: childObjects, isFetching: childObjectsIsFetching } = useFetchChildObjects(childObjectsQueryParameters, { enabled: childObjectsQueryEnabled });
+    const childObjectsQueryEnabled = computed(() => props.type.startsWith('child') && props.object.type !== 'scope' && !!props.object?.id);
+    const { data: objectChildren, isFetching: childObjectsIsFetching } = useFetchObjectChildren(childObjectsQueryParameters, { enabled: childObjectsQueryEnabled });
     const risksQueryParameters = computed(() => ({ id: props.object?.id || '', endpoint: schemas.value?.[props.object?.type || ''] || '' }));
     const risksQueryEnabled = computed(() => props.type === 'risks' && !!props.object?.id);
     const { data: risks, isFetching: risksIsFetching } = useFetchRisks(risksQueryParameters, { enabled: risksQueryEnabled });
+
+    const children = computed(() => props.object.type === 'scope' ? scopeChildren.value : objectChildren.value);
 
     const tableIsLoading = computed(
       () => parentScopesIsFetching.value || parentObjectsIsFetching.value || childScopesIsFetching.value || childObjectsIsFetching.value || risksIsFetching.value
@@ -135,9 +139,9 @@ export default defineComponent({
     const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>(() => {
       switch (props.type) {
         case 'childScopes':
-          return childScopes.value || [];
+          return (children.value || []).filter((child) => child.type === 'scope');
         case 'childObjects':
-          return childObjects.value || [];
+          return (children.value || []).filter((child) => child.type !== 'scope');
         case 'parentScopes':
           return parentScopes.value || [];
         case 'parentObjects':
@@ -179,24 +183,26 @@ export default defineComponent({
         ? [
           {
             value: 'scenario.displayName',
+            key: 'scenario.displayName',
             text: t('scenario').toString(),
             cellClass: ['font-weight-bold'],
             width: 200,
             truncate: true,
             priority: 100,
             order: 40,
-            render: ({ value }: { value: string }) => {
+            render: (data: any) => {
               // The display name contains designator, abbreviation and name of the scenario, however we only want the name, so we split the string
               // As the abbreviation is optional and at this point we have no ability to check whether it is set here, we simply remove the designator and display everything else
-              return value.split(' ').slice(1).join(' ');
+              return data.item.raw.scenario.displayName.split(' ').slice(1).join(' ');
             }
           },
           ...['C', 'I', 'A', 'R'].map((categoryId, index) => ({
             value: `riskValues_${categoryId}`,
+            key: `riskValues_${categoryId}`,
             text: domainData.value?.categories?.find((category) => category.id === categoryId)?.translations[locale.value].name || '',
-            render: ({ item }: { item: any }) => {
-              const { inherentRisk, residualRisk } = getInherentAndResidualRisk(item, categoryId);
-              const riskTreatments = getRiskTreatments(item, categoryId);
+            render: (data: any) => {
+              const { inherentRisk, residualRisk } = getInherentAndResidualRisk(data.item.raw, categoryId);
+              const riskTreatments = getRiskTreatments(data.item.raw, categoryId);
               const values = domainData.value?.riskValues;
 
               const translatedInherentRisk = values?.find((entry) => entry.ordinalValue === inherentRisk)?.translations[locale.value].name;
@@ -239,7 +245,7 @@ export default defineComponent({
                     location: 'bottom',
                     maxWidth: 600
                   }, {
-                    activator: ({ attrs, on }) => h(VIcon, { attrs, on, props: { small: true } }, icon),
+                    activator: ({ attrs, props }) => h(VIcon, { ...attrs, ...props, size: 'small', icon }),
                     default: () => h('span', t(`riskTreatments.${riskTreatment}`).toString())
                   });
                 })
@@ -247,7 +253,7 @@ export default defineComponent({
             },
             priority: 89 - index,
             order: 41 + index,
-            width: 100
+            width: 150
           }))
         ]
         : []
@@ -371,13 +377,13 @@ export default defineComponent({
     });
 
     // push to object detail site (on click in table)
-    const openItem = ({ item }: { item: IVeoEntity | IVeoRisk }) => {
+    const openItem = (item: any) => {
       if (props.type === 'risks') {
-        item = item as IVeoRisk;
+        item = item.item.raw as IVeoRisk;
         editRiskDialog.value.scenarioId = getEntityDetailsFromLink(item.scenario).id;
         editRiskDialog.value.visible = true;
       } else {
-        item = item as IVeoEntity;
+        item = item.item.raw as IVeoEntity;
         router.push({
           name: 'unit-domains-domain-objects-object',
           params: {

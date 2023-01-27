@@ -24,6 +24,7 @@
     x-large
     fixed-footer
     v-bind="$attrs"
+    @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
       <BaseAlert
@@ -86,7 +87,7 @@
           :mitigations="mitigations"
           @update:mitigations="onMitigationsChanged"
           @update:new-mitigating-action="newMitigatingAction = $event"
-          @mitigations-modified="mitigationsModified = $event"
+          @mitigations-modified="onMitigationsModified"
           @update:model-value="onRiskDefinitionsChanged"
         />
       </v-form>
@@ -97,10 +98,10 @@
         text
         color="primary"
         :loading="savingRisk"
-        :disabled="!formIsValid || !formModified"
+        :disabled="formIsValid !== null || !formModified"
         @click="saveRisk"
       >
-        {{ t('global.button.save') }}
+        {{ globalT('global.button.save') }}
       </v-btn>
       <v-btn
         text
@@ -108,7 +109,7 @@
         :disabled="savingRisk"
         @click="$emit('update:model-value', false)"
       >
-        {{ t('global.button.close') }}
+        {{ globalT('global.button.close') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -152,12 +153,13 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['update:model-value', 'reload'],
-  setup(props, { emit }) {
+  emits: ['update:model-value'],
+  setup(props) {
     const { $api } = useNuxtApp();
     const config = useRuntimeConfig();
     const route = useRoute();
     const { t } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { link } = useLinkObject();
     const { createLink } = useCreateLink();
@@ -172,30 +174,13 @@ export default defineComponent({
     const originalData = ref<IVeoRisk | undefined>(undefined);
 
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
-    const { data: domain } = useFetchDomain(fetchDomainQueryParameters, {
-      onSuccess: () => {
-        data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
-        originalData.value = cloneDeep(data.value);
-        nextTick(() => {
-          dirtyFields.value = {};
-        });
-      }
-    });
-
-    watch(
-      () => props.modelValue,
-      (newValue) => {
-        if (newValue) {
-          makeRiskObject(risk?.value, props.domainId, domain.value?.riskDefinitions || {});
-        }
-      },
-      {
-        immediate: true
-      }
-    );
+    const { data: domain } = useFetchDomain(fetchDomainQueryParameters);
 
     const formIsValid = ref(true);
-    const formModified = computed(() => !isEqual(data.value, originalData.value) || mitigationsModified.value);
+    const formModified = ref(false);
+    const validate = () => {
+      formModified.value = !isEqual(data.value, originalData.value) || mitigationsModified.value;
+    };
 
     // dirty/pristine stuff
     const dirtyFields = ref<IDirtyFields>({});
@@ -204,6 +189,7 @@ export default defineComponent({
       if (data.value) {
         data.value.scenario = newValue;
         dirtyFields.value.scenario = true;
+        validate();
       }
     };
 
@@ -212,27 +198,37 @@ export default defineComponent({
         // For some reason nuxt won't pick up the changes otherwise (probably fixed with nuxt 3)
         data.value = { ...data.value, ...{ riskOwner: newValue } };
         dirtyFields.value.riskOwner = true;
+        validate();
       }
     };
 
     const onRiskDefinitionsChanged = (newValue: IVeoRisk) => {
       data.value = newValue;
+      validate();
     };
 
     const fetchRiskQueryParameters = computed(() => ({ scenarioId: props.scenarioId, objectId: props.objectId, endpoint: 'processes' }));
     const fetchRiskQueryEnabled = computed(() => !!props.scenarioId);
-    const { data: _risk } = useFetchRisk(fetchRiskQueryParameters, { enabled: fetchRiskQueryEnabled.value });
+    const { data: _risk } = useFetchRisk(fetchRiskQueryParameters, { enabled: fetchRiskQueryEnabled, onSuccess: () => {
+      init();
+    } });
     const risk = computed(() => props.scenarioId ? _risk.value : undefined);
-    
-    watch(() => risk.value, (newValue) => {
-      data.value = makeRiskObject(newValue, props.domainId, domain.value?.riskDefinitions || {});
-      originalData.value = cloneDeep(data.value);
-      formIsValid.value = true;
 
-      nextTick(() => {
-        dirtyFields.value = {};
-      });
-    });
+    const init = () => {
+      if(risk.value && domain.value) {
+        data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
+        originalData.value = cloneDeep(data.value);
+        formIsValid.value = true;
+
+        nextTick(() => {
+          dirtyFields.value = {};
+        });
+      }
+    };
+
+    watch(() => domain.value, init, { deep: true, immediate: true });
+    watch(() => risk.value, init, { deep: true, immediate: true });
+    watch(() => props.modelValue, init, { immediate: true });
 
     const savingRisk = ref(false);
     const { mutateAsync: createRisk } = useCreateRisk();
@@ -257,7 +253,6 @@ export default defineComponent({
             await createRisk({ endpoint: 'processes', objectId: props.objectId, risk: data.value });
           }
           displaySuccessMessage(props.scenarioId ? upperFirst(t('riskUpdated').toString()) : upperFirst(t('riskCreated').toString()));
-          emit('reload');
         } catch (e: any) {
           displayErrorMessage(upperFirst(t('riskNotSaved').toString()), e.message);
         } finally {
@@ -270,6 +265,10 @@ export default defineComponent({
     const mitigations = ref<IVeoEntity[]>([]);
 
     const mitigationsModified = ref(false);
+    const onMitigationsModified = (value: boolean) => {
+      mitigationsModified.value = value;
+      validate();
+    };
 
     const onMitigationsChanged = (newMitigation: IVeoEntity[]) => {
       mitigations.value = newMitigation;
@@ -301,6 +300,7 @@ export default defineComponent({
       mitigationsModified,
       newMitigatingAction,
       onMitigationsChanged,
+      onMitigationsModified,
       onRiskDefinitionsChanged,
       onRiskOwnerChanged,
       onScenarioChanged,
@@ -310,12 +310,14 @@ export default defineComponent({
 
       upperFirst,
       t,
+      globalT,
       VeoAlertType
     };
   }
 });
 
 const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, riskDefinitions: { [key: string]: IVeoDomainRiskDefinition }): IVeoRisk => {
+  const _initialData = cloneDeep(initialData);
   const object: any = {
     scenario: undefined,
     mitigation: undefined,
@@ -328,7 +330,7 @@ const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, ris
     }
   };
 
-  const mergedObject = initialData ? merge(initialData, object) : object;
+  const mergedObject = _initialData ? merge(_initialData, object) : object;
 
   for (const riskDefinition in riskDefinitions) {
     if (!mergedObject.domains[domainId].riskDefinitions[riskDefinition]) {
@@ -382,7 +384,7 @@ const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, ris
     }
   }
 
-  return initialData ? merge(initialData, object) : object;
+  return mergedObject;
 };
 </script>
 

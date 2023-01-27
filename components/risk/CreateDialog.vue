@@ -51,7 +51,7 @@
         :disabled="creatingRisks"
         @click="dialog = false"
       >
-        {{ t('global.button.cancel') }}
+        {{ $t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -97,6 +97,7 @@ export default defineComponent({
     const { tablePageSize } = useVeoUser();
     const route = useRoute();
     const { t } = useI18n();
+    const { t: $t } = useI18n();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
     const { mutateAsync: createRisk } = useCreateRisk();
@@ -192,6 +193,7 @@ export default defineComponent({
       selectedScenarios,
 
       t,
+      $t,
       upperFirst
     };
   }

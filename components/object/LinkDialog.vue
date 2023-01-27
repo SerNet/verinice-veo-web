@@ -17,6 +17,7 @@
 -->
 <template>
   <BaseDialog
+    :model-value="modelValue"
     v-bind="$attrs"
     large
     :headline="title"
@@ -87,7 +88,7 @@ import { differenceBy, uniqBy, upperFirst } from 'lodash';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useUnlinkObject, useLinkObject } from '~/composables/VeoObjectUtilities';
-import { useFetchChildObjects, useFetchChildScopes, useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
+import { useFetchObjectChildren, useFetchScopeChildren, useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useFetchSchemas } from '~/composables/api/schemas';
 import { useFetchTranslations } from '~/composables/api/translations';
@@ -273,13 +274,13 @@ export default defineComponent({
       id: props.object?.id || ''
     }));
     const childObjectsQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && !props.editParents && objectEndpoint.value !== 'scopes');
-    const { data: childObjects, isFetching: childObjectsLoading } = useFetchChildObjects(childObjectsQueryParameters, { enabled: childObjectsQueryEnabled });
+    const { data: childObjects, isFetching: childObjectsLoading } = useFetchObjectChildren(childObjectsQueryParameters, { enabled: childObjectsQueryEnabled });
 
     const childScopesQueryParameters = computed(() => ({
       id: props.object?.id || ''
     }));
     const childScopesQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && !props.editParents && objectEndpoint.value === 'scopes');
-    const { data: childScopes, isFetching: childScopesLoading } = useFetchChildScopes(childScopesQueryParameters, { enabled: childScopesQueryEnabled });
+    const { data: childScopes, isFetching: childScopesLoading } = useFetchScopeChildren(childScopesQueryParameters, { enabled: childScopesQueryEnabled });
 
     const children = computed(() => uniqBy([...(childObjects.value || []), ...(childScopes.value || []), ...props.preselectedItems], (arrayEntry) => arrayEntry.id));
     const childrenLoading = computed(() => childObjectsLoading.value || childScopesLoading.value);

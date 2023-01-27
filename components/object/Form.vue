@@ -92,7 +92,7 @@
                 :object="originalObject || objectData"
                 :loading="loading"
                 :object-schema="objectSchema"
-                @show-revision="$emit('show-revision')"
+                @show-revision="onShowRevision"
               />
               <ObjectMessagesTab
                 v-else-if="selectedSideContainer === SIDE_CONTAINERS.MESSAGES"
@@ -190,7 +190,7 @@ import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } 
 import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
 import { getRiskAdditionalContext, getStatusAdditionalContext } from '~/components/dynamic-form/additionalContext';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectHistoryEntry, IVeoTranslations } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 import { useFetchForm, useFetchForms } from '~/composables/api/forms';
@@ -502,6 +502,10 @@ export default defineComponent({
       () => objectSchemaIsFetching.value || props.loading || formSchemasAreFetching.value || formSchemaIsFetching.value || domainIsFetching.value || translationsAreFetching.value
     );
 
+    const onShowRevision = (revision: IVeoObjectHistoryEntry, isRevision: boolean) => {
+      emit('show-revision', revision, isRevision);
+    };
+
     return {
       localAdditionalContext,
       currentFormSchema,
@@ -514,6 +518,7 @@ export default defineComponent({
       mergedTranslations,
       objectData,
       objectSchema,
+      onShowRevision,
       reactiveFormActions,
       selectedDisplayOption,
       selectedSideContainer,

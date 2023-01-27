@@ -24,6 +24,7 @@ import { IVeoQueryTransformationMap, QueryOptions, useQuery } from './utils/quer
 import { IVeoMutationParameters, IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
 import { VeoApiReponseType } from './utils/request';
 import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from '~/types/VeoTypes';
+import { getEntityDetailsFromLink } from '~~/lib/utils';
 
 export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
   unit: string;
@@ -45,12 +46,12 @@ export interface IVeoFetchParentObjectsParameters extends IVeoPaginationOptions 
   unitId: string;
 }
 
-export interface IVeoFetchChildObjectsParameters {
+export interface IVeoFetchObjectChildrenParameters {
   endpoint: string;
   id: string;
 }
 
-export interface IVeoFetchChildScopesParameters {
+export interface IVeoFetchScopeChildrenParameters {
   id: string;
 }
 
@@ -96,8 +97,8 @@ export interface IVeoDeleteRiskParameters {
 export const objectsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
   fetchAll: (queryParameters: IVeoFetchObjectsParameters) => ({ params: { endpoint: queryParameters.endpoint }, query: omit(queryParameters, 'endpoint') }),
   fetch: (queryParameters: IVeoFetchObjectParameters) => ({ params: queryParameters }),
-  fetchChildObjects: (queryParameters: IVeoFetchChildObjectsParameters) => ({ params: queryParameters }),
-  fetchChildScopes: (queryParameters: IVeoFetchChildScopesParameters) => ({ params: queryParameters }),
+  fetchObjectChildren: (queryParameters: IVeoFetchObjectChildrenParameters) => ({ params: queryParameters }),
+  fetchScopeChildren: (queryParameters: IVeoFetchScopeChildrenParameters) => ({ params: queryParameters }),
   fetchRisks: (queryParameters: IVeoFetchRisksParameters) => ({ params: queryParameters }),
   fetchRisk: (queryParameters: IVeoFetchRiskParameters) => ({ params: { id: queryParameters.objectId, endpoint: queryParameters.endpoint, scenarioId: queryParameters.scenarioId } })
 };
@@ -220,27 +221,27 @@ export const useFetchParentObjects = (queryParameters: Ref<IVeoFetchParentObject
   return useFetchObjects(transformedQueryParameters, queryOptions);
 };
 
-export const useFetchChildObjects = (queryParameters: Ref<IVeoFetchChildObjectsParameters>, queryOptions?: QueryOptions) =>
-  useQuery<IVeoFetchChildObjectsParameters, IVeoEntity[]>(
+export const useFetchObjectChildren = (queryParameters: Ref<IVeoFetchObjectChildrenParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchObjectChildrenParameters, IVeoEntity[]>(
     'childObjects',
     {
       url: '/api/:endpoint/:id/parts',
       onDataFetched: (result) => result.map((item) => formatObject(item))
     },
     queryParameters,
-    objectsQueryParameterTransformationMap.fetchChildObjects,
+    objectsQueryParameterTransformationMap.fetchObjectChildren,
     queryOptions
   );
 
-export const useFetchChildScopes = (queryParameters: Ref<IVeoFetchChildScopesParameters>, queryOptions?: QueryOptions) =>
-  useQuery<IVeoFetchChildScopesParameters, IVeoEntity[]>(
+export const useFetchScopeChildren = (queryParameters: Ref<IVeoFetchScopeChildrenParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchScopeChildrenParameters, IVeoEntity[]>(
     'childScopes',
     {
       url: '/api/scopes/:id/members',
       onDataFetched: (result) => result.map((item) => formatObject(item))
     },
     queryParameters,
-    objectsQueryParameterTransformationMap.fetchChildScopes,
+    objectsQueryParameterTransformationMap.fetchScopeChildren,
     queryOptions
   );
 
@@ -365,13 +366,15 @@ export const useCreateRisk = (mutationOptions?: MutationOptions) => {
     {
       ...mutationOptions,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries([
-          'risks',
+        queryClient.invalidateQueries({ queryKey: ['risks'] });
+        queryClient.invalidateQueries({ queryKey: [
+          'risk',
           {
-            endpoint: (variables as unknown as IVeoMutationParameters).params?.endpoint,
-            id: (variables as unknown as IVeoMutationParameters).params?.objectId
+            scenarioId: getEntityDetailsFromLink((variables as unknown as any).json.scenario).id,
+            objectId: (variables as unknown as IVeoMutationParameters).params?.objectId,
+            endpoint: (variables as unknown as IVeoMutationParameters).params?.endpoint
           }
-        ]);
+        ]});
         if (mutationOptions?.onSuccess) {
           mutationOptions.onSuccess(data, variables, context);
         }

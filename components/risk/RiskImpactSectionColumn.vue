@@ -29,6 +29,7 @@
       :label="upperFirst(t('potentialImpact').toString())"
       :items="impacts[protectionGoal.id]"
       disabled
+      variant="underlined"
       hide-details
     />
     <v-select
@@ -39,16 +40,21 @@
       :items="impacts[protectionGoal.id]"
       clearable
       hide-details
+      variant="underlined"
       @update:model-value="$emit('update:specific-impact', $event)"
     />
     <v-edit-dialog>
-      <v-text-field
-        :model-value="specificImpactExplanation"
-        :label="upperFirst(t('explanation').toString())"
-        :disabled="disabled"
-        hide-details
-        @update:model-value="$emit('update:specific-impact-explanation', $event)"
-      />
+      <template #default="{ props: dialogProps }">
+        <v-text-field
+          :model-value="specificImpactExplanation"
+          :label="upperFirst(t('explanation').toString())"
+          :disabled="disabled"
+          hide-details
+          variant="underlined"
+          v-bind="dialogProps"
+          @update:model-value="$emit('update:specific-impact-explanation', $event)"
+        />
+      </template>
       <template #input>
         <v-textarea
           :model-value="specificImpactExplanation"
@@ -57,8 +63,9 @@
           clearable
           auto-grow
           autofocus
-          rows="1"
+          rows="3"
           no-resize
+          variant="underlined"
           @update:model-value="$emit('update:specific-impact-explanation', $event)"
         />
       </template>
@@ -69,6 +76,7 @@
       :label="upperFirst(t('effectiveImpact').toString())"
       :items="impacts[protectionGoal.id]"
       disabled
+      variant="underlined"
       hide-details
     >
       <template

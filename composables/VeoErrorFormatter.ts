@@ -40,7 +40,7 @@ export const useVeoErrorFormatter = () => {
     const isEqualRule = !!error.params.allowedValues;
     const isAdditionalPropertiesRule = error.keyword === 'additionalProperties';
     if (!isRequiredRule && !isEqualRule && !isAdditionalPropertiesRule) {
-      throw new Error(`No error formatted found for ${JSON.stringify(error)}`);
+      throw new Error(`No error formatter found for ${JSON.stringify(error)}`);
     }
 
     let indexMatch;

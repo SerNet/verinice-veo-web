@@ -46,7 +46,6 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxtjs/i18n',
     './modules/externalize-scripts',
-    './modules/generate-doc-pages.ts',
     './modules/vuetify-sass-variables.ts'
   ],
 

@@ -29,6 +29,7 @@
       :label="upperFirst(t('inherentRisk').toString())"
       :items="riskValues"
       disabled
+      variant="underlined"
       hide-details
     >
       <template

@@ -33,6 +33,7 @@
               :label="upperFirst(t('potentialProbability').toString())"
               :items="probabilities"
               disabled
+              variant="underlined"
               hide-details
             >
               <template
@@ -55,6 +56,7 @@
               :items="probabilities"
               clearable
               hide-details
+              variant="underlined"
               @update:model-value="onSpecificProbabilityChanged"
             />
           </v-col>
@@ -68,6 +70,7 @@
               :label="upperFirst(t('effectiveProbability').toString())"
               :items="probabilities"
               disabled
+              variant="underlined"
               hide-details
             >
               <template
@@ -82,13 +85,15 @@
             xs="12"
             md="3"
           >
-            <v-edit-dialog style="width: 30px !important;">
-              <template #default>
+            <v-edit-dialog>
+              <template #default="{ props: dialogProps }">
                 <v-text-field
                   :model-value="data.specificProbabilityExplanation"
                   :disabled="disabled"
                   :label="upperFirst(t('explanation').toString())"
                   hide-details
+                  variant="underlined"
+                  v-bind="dialogProps"
                   @update:model-value="onSpecificProbabilityExplanationChanged"
                 />
               </template>
@@ -100,10 +105,11 @@
                   clearable
                   auto-grow
                   autofocus
-                  rows="1"
+                  rows="3"
                   no-resize
                   hide-details
                   class="pb-1"
+                  variant="underlined"
                   @update:model-value="onSpecificProbabilityExplanationChanged"
                 />
               </template>

@@ -31,11 +31,12 @@
       :disabled="!riskTreatments.length || disabled"
       :clearable="!!(userDefinedResidualRisk && riskTreatments.length)"
       hide-details
+      variant="underlined"
       @update:model-value="$emit('update:user-defined-residual-risk', $event)"
     >
       <template #selection="{ item }">
         <div class="d-flex justify-space-between fill-width">
-          <span>{{ item.text }}</span>
+          <span>{{ item.title }}</span>
           <v-tooltip
             v-if="userDefinedResidualRisk === undefined && riskTreatments.length"
             top
@@ -60,13 +61,17 @@
       </template>
     </v-select>
     <v-edit-dialog>
-      <v-text-field
-        :model-value="residualRiskExplanation"
-        :label="upperFirst(t('explanation').toString())"
-        :disabled="!riskTreatments.length || disabled"
-        hide-details
-        @update:model-value="$emit('update:residual-risk-explanation', $event)"
-      />
+      <template #default="{ props: dialogProps }">
+        <v-text-field
+          :model-value="residualRiskExplanation"
+          :label="upperFirst(t('explanation').toString())"
+          :disabled="!riskTreatments.length || disabled"
+          hide-details
+          variant="underlined"
+          v-bind="dialogProps"
+          @update:model-value="$emit('update:residual-risk-explanation', $event)"
+        />
+      </template>
       <template #input>
         <v-textarea
           :disabled="!riskTreatments.length || disabled"
@@ -75,8 +80,9 @@
           clearable
           auto-grow
           autofocus
-          rows="1"
+          rows="3"
           no-resize
+          variant="underlined"
           @update:model-value="$emit('update:residual-risk-explanation', $event)"
         />
       </template>

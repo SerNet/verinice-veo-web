@@ -29,7 +29,7 @@
         required
         :error-messages="getControlErrorMessages($props, '/properties/target')"
         value-as-link
-        v-bind="$attrs"
+        @update:model-value="$emit('update:model-value', $event)"
       >
         <template
           v-if="!objectCreationDisabled"

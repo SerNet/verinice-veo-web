@@ -87,10 +87,11 @@
               #prepend-form
             >
               <BaseAlert
-                :value="true"
+                :model-value="true"
                 :type="VeoAlertType.INFO"
                 no-close-button
                 flat
+                class="mb-4"
                 :title="upperFirst(t('version', { version: version + 1 }).toString())"
                 :text="t('oldVersionAlert')"
               />
@@ -124,6 +125,7 @@
                   <v-btn
                     :disabled="ability.cannot('manage', 'objects')"
                     color="primary"
+                    flat
                     @click="restoreObject"
                   >
                     {{ t('restore') }}
@@ -415,7 +417,7 @@ export default defineComponent({
         return route.hash.substring(1) || 'childObjects'; // childObjects as default tab
       },
       set(hash: string): void {
-        router.push({ hash, query: route.query });
+        router.push({ hash: `#${hash}`, query: route.query });
       }
     });
 

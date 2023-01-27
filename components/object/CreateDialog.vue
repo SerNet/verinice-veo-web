@@ -29,7 +29,7 @@
     <template #default>
       <ObjectForm
         v-model="objectData"
-        v-bind="$props"
+        v-bind="omit($props, 'modelValue')"
         v-model:valid="isFormValid"
         :preselected-sub-type="subType"
         :loading="domainIsFetching"
@@ -43,7 +43,7 @@
         text
         @click="$emit('update:model-value', false)"
       >
-        {{ t('global.button.cancel') }}
+        {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -52,14 +52,14 @@
         :disabled="!isFormValid || !isFormDirty"
         @click="onSubmit"
       >
-        {{ t('global.button.save') }}
+        {{ globalT('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
 </template>
 
 <script lang="ts">
-import { cloneDeep, upperFirst } from 'lodash';
+import { cloneDeep, omit, upperFirst } from 'lodash';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { isObjectEqual, separateUUIDParam } from '~/lib/utils';
@@ -90,6 +90,7 @@ export default defineComponent({
   emits: ['success', 'update:model-value'],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
     const { $api } = useNuxtApp();
     const config = useRuntimeConfig();
     const route = useRoute();
@@ -192,8 +193,10 @@ export default defineComponent({
       objectData,
       onSubmit,
 
+      omit,
       upperFirst,
-      t
+      t,
+      globalT
     };
   }
 });

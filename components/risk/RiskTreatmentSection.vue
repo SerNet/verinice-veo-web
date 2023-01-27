@@ -24,7 +24,7 @@
       <v-card-text class="pa-3 px-4">
         <v-row>
           <template v-for="protectionGoal of riskDefinition.categories">
-            <RisksRiskTreatmentSectionColumn
+            <RiskTreatmentSectionColumn
               v-if="protectionGoalExists(protectionGoal.id)"
               :key="protectionGoal.id"
               :disabled="disabled"

@@ -25,6 +25,7 @@
       <v-select
         v-model="type"
         :items="options"
+        variant="underlined"
       />
     </template>
     <template #dialog-options>
@@ -32,7 +33,7 @@
         text
         @click="$emit('update:model-value', false)"
       >
-        {{ t('global.button.cancel') }}
+        {{ $t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -61,6 +62,7 @@ defineProps({
 defineEmits(['create-entity', 'update:model-value']);
 
 const { t, locale } = useI18n();
+const { t: $t } = useI18n({ useScope: 'global' });
 
 const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
 const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
@@ -70,7 +72,7 @@ const { data: schemas } = useFetchSchemas();
 const type = ref<string | undefined>();
 
 const options = computed<{ title: string; value: string }[]>(() =>
-  Object.keys(schemas || {}).map((schemaName) => ({ value: schemaName, title: translations.value?.lang[locale.value]?.[schemaName] || schemaName }))
+  Object.keys(schemas.value || {}).map((schemaName) => ({ value: schemaName, title: translations.value?.lang[locale.value]?.[schemaName] || schemaName }))
 );
 </script>
 
