@@ -118,7 +118,7 @@
               cols="12"
               md="7"
             >
-              <EditorsFormSchemaFileUpload
+              <EditorFileUpload
                 :input-label="t('objectSchemaUploadLabel')"
                 :submit-button-text="t('importObjectSchema')"
                 @schema-uploaded="$emit('update:object-schema', $event)"

@@ -17,8 +17,9 @@
 -->
 <template>
   <BaseDialog
-    v-model="dialog.value"
-    :headline="headline"
+    :model-value="modelValue"
+    :headline="t('deleteCustomAspect')"
+    v-bind="$attrs"
   >
     <template #default>
       <span>{{ t(`delete.${type}`, { title }) }}</span>
@@ -28,7 +29,7 @@
         text
         @click="$emit('update:model-value', false)"
       >
-        {{ t('global.button.cancel') }}
+        {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -36,7 +37,7 @@
         color="primary"
         @click="$emit('delete-item')"
       >
-        {{ t('global.button.delete') }}
+        {{ globalT('global.button.delete') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -60,32 +61,11 @@ export default defineComponent({
     }
   },
   emits: ['update:model-value', 'delete-item'],
-  setup(props, context) {
+  setup() {
     const { t } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
 
-    const dialog = ref({ value: props.modelValue });
-
-    watch(
-      () => props.modelValue,
-      (val: boolean) => {
-        dialog.value.value = val;
-      }
-    );
-
-    watch(
-      () => dialog.value.value,
-      (val: boolean) => {
-        if (!val) {
-          context.emit('update:model-value', val);
-        }
-      }
-    );
-
-    const headline = computed(() => {
-      return props.type ? t(`headline_${props.type}`) : '';
-    });
-
-    return { dialog, headline, t };
+    return { t, globalT };
   }
 });
 </script>
@@ -93,12 +73,14 @@ export default defineComponent({
 <i18n>
 {
   "en": {
+    "deleteCustomAspect": "Delete custom aspect",
     "delete": {
       "aspect": "Do you really want to delete the aspect \"{title}\"?",
       "link": "Do you really want to delete the link \"{title}\"?"
     }
   },
   "de": {
+    "deleteCustomAspect": "Custom aspect löschen",
     "delete": {
       "aspect": "Möchten Sie den Aspekt \"{title}\" wirklich löschen?",
       "link": "Möchten Sie den Link \"{title}\" wirklich löschen?"

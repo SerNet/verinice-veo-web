@@ -76,7 +76,7 @@
                   v-for="(el, i) in filteredFormElements"
                   :key="i"
                 >
-                  <EditorsFormSchemaListItem
+                  <EditorFormSchemaListItem
                     :title="el.description.title"
                     :styling="el.description"
                     translate
@@ -115,7 +115,7 @@
                   v-for="(el, i) in filteredBasics"
                   :key="i"
                 >
-                  <EditorsFormSchemaListItem
+                  <EditorFormSchemaListItem
                     :title="el.backlogTitle"
                     :styling="typeMap[el.type]"
                     translate
@@ -154,7 +154,7 @@
                   v-for="(el, i) in filteredAspects"
                   :key="i"
                 >
-                  <EditorsFormSchemaListItem
+                  <EditorFormSchemaListItem
                     :title="el.backlogTitle"
                     :styling="typeMap[el.type]"
                     translate
@@ -193,7 +193,7 @@
                   v-for="(el, i) in filteredLinks"
                   :key="i"
                 >
-                  <EditorsFormSchemaListItem
+                  <EditorFormSchemaListItem
                     :title="el.backlogTitle"
                     :styling="typeMap[el.type]"
                     translate
@@ -231,7 +231,7 @@
                   v-for="(widget, index) in filteredWidgets"
                   :key="index"
                 >
-                  <EditorsFormSchemaListItem
+                  <EditorFormSchemaListItem
                     :title="widget.name[locale]|| Object.values(widget.name)[0]"
                     :styling="{ icon: mdiAutoFix, color: 'grey darken-4', name: upperFirst(t('widget').toString()) }"
                   />

@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <EditorsListItem
+  <EditorListItem
     :title="title"
     :styling="styling"
     :translate="translate"
@@ -25,13 +25,7 @@
     <template #description>
       <v-list-item-subtitle><span v-text="localizedDescription" /></v-list-item-subtitle>
     </template>
-    <template #right-space>
-      <v-list-item-action
-        class="ml-0"
-        style="width: 36px;"
-      />
-    </template>
-  </EditorsListItem>
+  </EditorListItem>
 </template>
 <script lang="ts">
 import { PropType, Ref } from 'vue';

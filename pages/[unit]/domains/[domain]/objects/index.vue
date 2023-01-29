@@ -30,9 +30,9 @@
         :sub-type="subType"
       />
       <ObjectDeleteDialog
-        :value="!!itemDelete"
+        :model-value="!!itemDelete"
         :item="itemDelete"
-        @input="onCloseDeleteDialog"
+        @update:model-value="onCloseDeleteDialog"
         @success="onCloseDeleteDialog(false)"
         @error="showError('delete', itemDelete, $event)"
       />
@@ -356,8 +356,8 @@ export default defineComponent({
         id: 'delete',
         label: upperFirst(t('deleteObject').toString()),
         icon: mdiTrashCanOutline,
-        action(item: IVeoEntity) {
-          itemDelete.value = item;
+        action(item: any) {
+          itemDelete.value = item.raw;
         }
       }
     ]);

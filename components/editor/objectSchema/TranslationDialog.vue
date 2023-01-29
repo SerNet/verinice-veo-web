@@ -77,7 +77,7 @@
               />
             </v-col>
           </v-row>
-          <EditorsObjectSchemaTranslationUpload
+          <EditorObjectSchemaTranslationUpload
             v-model:replace-translations="replaceTranslations"
             :available-languages="supportedLanguages"
             @translations-imported="onTranslationsImported"
@@ -112,7 +112,7 @@
       <v-btn
         text
         color="primary"
-        :disabled="!formIsValid"
+        :disabled="formIsValid === false"
         @click="onSave"
       >
         {{ t('global.button.save') }}
@@ -142,8 +142,7 @@ export default defineComponent({
   },
   emits: ['update:current-display-language', 'update:model-value', 'schema-updated'],
   setup(props, { emit }) {
-    const { t } = useI18n();
-    const { i18n } = useNuxtApp();
+    const { locales, t } = useI18n();
     const { displayErrorMessage } = useVeoAlerts();
 
     const objectSchemaHelper = inject<Ref<ObjectSchemaHelper>>('objectSchemaHelper');
@@ -164,7 +163,7 @@ export default defineComponent({
     const requiredRule = computed(() => [(v: any) => (Array.isArray(v) ? v.length > 0 : !!v)]);
 
     const languageDetails = computed(() =>
-      (i18n.locales as LocaleObject[]).reduce((previousValue, currentValue) => {
+      (locales.value as LocaleObject[]).reduce((previousValue, currentValue) => {
         previousValue[currentValue.code] = currentValue.name;
         return previousValue;
       }, {} as Record<string, any>)

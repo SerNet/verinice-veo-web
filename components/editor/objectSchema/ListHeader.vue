@@ -18,20 +18,20 @@
 <template>
   <v-list-item
     style="background-color: #FAFAFA"
-    two-line
+    lines="two"
   >
     <v-list-item-title class="body-1 font-weight-bold d-flex align-center">
       {{ item.title }}
     </v-list-item-title>
     <v-list-item-subtitle v-text="t('attributecount', item.attributes.length || 0)" />
-    <v-list-item-action class="ml-3">
+    <template #append>
       <v-chip
-        v-if="styling"
+        v-if="styling.name"
         :color="styling.color"
         class="mr-2"
         small
         label
-        outlined
+        variant="outlined"
       >
         <span v-if="$props.translate">
           {{ t(`editor.inputtypes.${styling.name}`) }}
@@ -40,24 +40,21 @@
           {{ upperFirst(styling.name) }}
         </span>
       </v-chip>
-    </v-list-item-action>
-
-    <v-list-item-action class="ml-0 d-flex flex-row">
-      <v-btn
-        class="edit-button"
-        icon
-        @click="$emit('edit-item', $event)"
-      >
-        <v-icon :icon="mdiPencil" />
-      </v-btn>
-      <v-btn
-        class="delete-button"
-        icon
-        @click="$emit('delete-item', $event)"
-      >
-        <v-icon :icon="mdiTrashCanOutline" />
-      </v-btn>
-    </v-list-item-action>
+      <v-list-item-action class="ml-0 d-flex flex-row">
+        <v-btn
+          class="edit-button"
+          :icon="mdiPencil"
+          variant="text"
+          @click="$emit('edit-item', $event)"
+        />
+        <v-btn
+          class="delete-button"
+          :icon="mdiTrashCanOutline"
+          variant="text"
+          @click="$emit('delete-item', $event)"
+        />
+      </v-list-item-action>
+    </template>
   </v-list-item>
 </template>
 <script lang="ts" setup>

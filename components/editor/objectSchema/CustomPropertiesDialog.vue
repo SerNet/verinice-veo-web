@@ -17,11 +17,13 @@
 -->
 <template>
   <BaseDialog
-    v-model="dialog"
+    :model-value="modelValue"
     :headline="headline"
     large
     persistent
     fixed-footer
+    v-bind="$attrs"
+    @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
       <v-form
@@ -44,6 +46,7 @@
                   required
                   :rules="form.rules.title"
                   :prefix="prefix"
+                  variant="underlined"
                 />
               </v-col>
             </v-row>
@@ -58,6 +61,7 @@
                   :items="formattedObjectTypes"
                   required
                   :rules="form.rules.targetType"
+                  variant="underlined"
                 />
               </v-col>
               <v-col
@@ -69,6 +73,7 @@
                   :disabled="!form.data.targetType || form.data.targetType === ''"
                   :label="`${$t('linkSubType')}`"
                   :items="filteredFormSchemas"
+                  variant="underlined"
                 />
               </v-col>
             </v-row>
@@ -78,7 +83,7 @@
           <h3 class="text-h3 mt-6">
             {{ upperFirst($t('attributes').toString()) }} ({{ form.data.attributes.length }})
           </h3>
-          <EditorsObjectSchemaCustomAspectAttribute
+          <EditorObjectSchemaCustomAspectAttribute
             v-for="(attribute, index) of form.data.attributes"
             :key="index"
             v-bind="attribute"
@@ -110,7 +115,7 @@
             </ul>
           </v-alert>
           <v-btn
-            text
+            variant="text"
             @click="addAttribute()"
           >
             <v-icon
@@ -143,7 +148,7 @@
         <v-btn
           text
           color="primary"
-          :disabled="!form.valid || duplicates.length > 0"
+          :disabled="form.valid === false || duplicates.length > 0"
           @click="saveProperty()"
         >
           {{ $t('global.button.save') }}
@@ -163,12 +168,11 @@
   </BaseDialog>
 </template>
 <script lang="ts">
-import { PropType, Ref } from 'vue';
 import { cloneDeep, trim, upperFirst } from 'lodash';
 import { mdiPlus } from '@mdi/js';
 
 import { IVeoSchemaEndpoints } from '~/plugins/api/schema';
-import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
+import { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
 import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export default {
@@ -189,20 +193,6 @@ export default {
     domainId: {
       type: String,
       required: true
-    },
-    // Doesn't actually get passed as a prop but injected by DI. However Typescript can't handle that so we define it here.
-    // The default value gets overwritte by DI
-    // See: https://github.com/vuejs/vue/issues/8969
-    objectSchemaHelper: {
-      type: Object as PropType<Ref<ObjectSchemaHelper>>,
-      default: undefined
-    },
-    // Doesn't actually get passed as a prop but injected by DI. However Typescript can't handle that so we define it here.
-    // The default value gets overwritte by DI
-    // See: https://github.com/vuejs/vue/issues/8969
-    displayLanguage: {
-      type: Object as PropType<Ref<string>>,
-      default: undefined
     }
   },
   emits: ['delete', 'update:model-value', 'error', 'success'],
@@ -232,20 +222,7 @@ export default {
       mdiPlus
     };
   },
-  async fetch() {
-    // TODO: needs to considered if these can be loaded more efficiently, especially formSchemas
-    this.objectTypes = await this.$api.schema.fetchAll();
-    this.formSchemas = await this.$api.form.fetchAll(this.domainId);
-  },
   computed: {
-    dialog: {
-      get(): boolean {
-        return this.value;
-      },
-      set(newValue: boolean) {
-        this.$emit('update:model-value', newValue);
-      }
-    },
     headline(): string {
       if (!this.editedProperty) {
         return this.$t(`headlineCreate.${this.type}`) as string;
@@ -286,7 +263,7 @@ export default {
     }
   },
   watch: {
-    value(newValue: boolean) {
+    modelValue(newValue: boolean) {
       if (!this.propertyId) {
         this.editedProperty = undefined;
       } else {
@@ -319,7 +296,14 @@ export default {
       }
     }
   },
+  mounted() {
+    this.fetchSchemas();    
+  },
   methods: {
+    async fetchSchemas() {
+      this.objectTypes = await this.$api.schema.fetchAll();
+      this.formSchemas = await this.$api.form.fetchAll(this.domainId);
+    },
     upperFirst,
     close() {
       this.$emit('update:model-value', false);

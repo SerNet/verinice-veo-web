@@ -30,7 +30,7 @@
         <v-expansion-panel-title
           class="overline"
         >
-          {{ t('editor.basicproperties') }} ({{ basicProps.length }})
+          {{ globalT('editor.basicproperties') }} ({{ basicProps.length }})
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-card outlined>
@@ -39,7 +39,7 @@
               dense
               disabled
             >
-              <EditorsObjectSchemaListItem
+              <EditorObjectSchemaListItem
                 v-for="(child, index) of basicProps"
                 v-show="attributeContainsTitle(child.item, search)"
                 :key="index"
@@ -55,20 +55,21 @@
       </v-expansion-panel>
       <v-expansion-panel>
         <v-expansion-panel-title class="overline">
-          {{ t('editor.customaspects') }} ({{ customAspects.length }})
+          {{ globalT('editor.customaspects') }} ({{ customAspects.length }})
           <div class="d-flex">
             <v-spacer />
             <v-btn
               small
               text
               color="primary"
+              variant="text"
               @click.stop="showAddDialog('aspect')"
             >
               <v-icon
                 size="small"
                 :icon="mdiPlus"
               />
-              <span>{{ t('editor.customaspects.add') }}</span>
+              <span>{{ globalT('editor.customaspects.add') }}</span>
             </v-btn>
           </div>
         </v-expansion-panel-title>
@@ -82,16 +83,13 @@
             class="mb-2 overflow-hidden"
             outlined
           >
-            <v-list
-              class="py-0"
-              dense
-            >
-              <EditorsObjectSchemaListHeader
+            <v-list class="py-0">
+              <EditorObjectSchemaListHeader
                 v-bind="aspect"
                 @edit-item="showEditDialog(aspect.item, 'aspect')"
                 @delete-item="showDeleteDialog(aspect.item.title, 'aspect')"
               />
-              <EditorsObjectSchemaListItem
+              <EditorObjectSchemaListItem
                 v-for="(attribute, index2) of aspect.item.attributes"
                 v-show="attributeContainsTitle(attribute, search)"
                 :key="index2"
@@ -106,12 +104,12 @@
       </v-expansion-panel>
       <v-expansion-panel>
         <v-expansion-panel-title class="overline">
-          {{ t('editor.customlinks') }} ({{ customLinks.length }})
+          {{ globalT('editor.customlinks') }} ({{ customLinks.length }})
           <div class="d-flex">
             <v-spacer />
             <v-btn
               small
-              text
+              variant="text"
               color="primary"
               @click.stop="showAddDialog('link')"
             >
@@ -131,11 +129,8 @@
             class="mb-2 overflow-hidden"
             outlined
           >
-            <v-list
-              class="py-0"
-              dense
-            >
-              <EditorsObjectSchemaListHeader
+            <v-list class="py-0">
+              <EditorObjectSchemaListHeader
                 v-bind="link"
                 :styling="{
                   name: formattedLinkHeader(link.item),
@@ -144,7 +139,7 @@
                 @edit-item="showEditDialog(link.item, 'link')"
                 @delete-item="showDeleteDialog(link.item.title, 'link')"
               />
-              <EditorsObjectSchemaListItem
+              <EditorObjectSchemaListItem
                 v-for="(attribute, index2) of link.item.attributes"
                 v-show="attributeContainsTitle(attribute, search)"
                 :key="index2"
@@ -158,7 +153,7 @@
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
-    <EditorsObjectSchemaCustomPropertiesDialog
+    <EditorObjectSchemaCustomPropertiesDialog
       v-model="objectSchemaDialog.value"
       v-bind="objectSchemaDialog"
       :domain-id="domainId"
@@ -166,7 +161,7 @@
       @error="onEditPropertyError"
       @delete="showDeleteDialog(objectSchemaDialog.propertyId, objectSchemaDialog.type)"
     />
-    <EditorsObjectSchemaDeleteCustomPropertyDialog
+    <EditorObjectSchemaDeleteCustomPropertyDialog
       v-model="deleteDialog.value"
       v-bind="deleteDialog"
       @delete-item="doDeleteItem()"
@@ -204,6 +199,7 @@ export default defineComponent({
   emits: ['schema-updated'],
   setup(_props, context) {
     const { t } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
     const { displayErrorMessage } = useVeoAlerts();
 
     function itemContainsAttributeTitle(item: EditorPropertyItem, title: string): boolean {
@@ -357,7 +353,8 @@ export default defineComponent({
       formattedLinkHeader,
 
       mdiPlus,
-      t
+      t,
+      globalT
     };
   }
 });

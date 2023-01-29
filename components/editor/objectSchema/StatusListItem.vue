@@ -23,7 +23,7 @@
     <template #prepend>
       <div
         class="handle d-flex align-center justify-center my-0 px-4"
-        :style="{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }"
+        :style="{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length], height: '58px' }"
       >
         <v-icon
           color="white"
@@ -42,26 +42,28 @@
           :prepend-inner-icon="mdiTranslate"
           :label="upperFirst(t('translation').toString())"
           hide-details
+          variant="underlined"
           @update:model-value="onTranslationInput"
         />
       </v-col>
     </v-row>
-    <v-list-item-action>
-      <v-tooltip location="bottom">
-        <template #activator="{ props }">
-          <v-btn
-            v-bind="props"
-            icon
-            @click="$emit('delete')"
-          >
-            <v-icon :icon="mdiTrashCanOutline" />
-          </v-btn>
-        </template>
-        <template #default>
-          {{ upperFirst(t('deleteStatus').toString()) }}
-        </template>
-      </v-tooltip>
-    </v-list-item-action>
+    <template #append>
+      <v-list-item-action>
+        <v-tooltip location="bottom">
+          <template #activator="{ props }">
+            <v-btn
+              v-bind="props"
+              :icon="mdiTrashCanOutline"
+              variant="text"
+              @click="$emit('delete')"
+            />
+          </template>
+          <template #default>
+            {{ upperFirst(t('deleteStatus').toString()) }}
+          </template>
+        </v-tooltip>
+      </v-list-item-action>
+    </template>
   </v-list-item>
 </template>
 

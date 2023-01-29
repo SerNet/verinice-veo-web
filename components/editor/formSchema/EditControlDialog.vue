@@ -126,7 +126,7 @@
                 />
               </v-col>
             </v-row>
-            <EditorsFormSchemaConditions
+            <EditorFormSchemaConditions
               v-model="activeControlType.rule"
               :current-scope="formSchema.scope"
             />
@@ -151,7 +151,7 @@
             :key="index"
             class="handle"
           >
-            <EditorsFormSchemaGeneratorElementsControl
+            <EditorFormSchemaGeneratorElementsControl
               :name="attribute.scope.split('/').pop()"
               :object-schema="getSchema(attribute.scope)"
               :model-value="attribute"

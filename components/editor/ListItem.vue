@@ -17,37 +17,42 @@
 -->
 <template>
   <v-list-item :two-line="twoLine">
-    <template #prepend>
-      <v-icon
-        v-if="styling"
-        size="small"
-        :class="styling.color"
-        :icon="styling.icon"
-      />
+    <template 
+      v-if="styling"
+      #prepend
+    >
+      <v-avatar :color="styling.color">
+        <v-icon
+          size="small"
+          :icon="styling.icon"
+          color="white"
+        />
+      </v-avatar>
     </template>
     <v-list-item-title
       class="caption"
       v-text="title"
     />
     <slot name="description" />
-    <v-list-item-action class="ml-3">
-      <v-chip
-        v-if="styling"
-        :color="styling.color"
-        class="mr-2"
-        small
-        label
-        outlined
-      >
-        <span v-if="translate">
-          {{ t(`editor.inputtypes.${styling.name}`) }}
-        </span>
-        <span v-else>
-          {{ styling.name }}
-        </span>
-      </v-chip>
-    </v-list-item-action>
-    <slot name="right-space" />
+    <template #append>
+      <v-list-item-action class="ml-3">
+        <v-chip
+          v-if="styling"
+          :color="styling.color"
+          class="mr-2"
+          small
+          label
+          outlined
+        >
+          <span v-if="translate">
+            {{ t(`editor.inputtypes.${styling.name}`) }}
+          </span>
+          <span v-else>
+            {{ styling.name }}
+          </span>
+        </v-chip>
+      </v-list-item-action>
+    </template>
   </v-list-item>
 </template>
 <script lang="ts">

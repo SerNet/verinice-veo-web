@@ -17,12 +17,12 @@
 -->
 <template>
   <BaseDialog
-    v-if="isDialogOpen"
-    v-model="dialog"
+    :model-value="modelValue"
     :large="state !== 'start'"
     :headline="$t('editor.objectschema.headline')"
     persistent
     :close-function="onClose"
+    @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
       <v-window v-model="state">
@@ -31,7 +31,7 @@
           class="py-4"
         >
           <h3 class="text-h3">
-            {{ $t('start') }}
+            {{ t('start') }}
           </h3>
           <v-list
             class="px-0 overflow-hidden"
@@ -42,30 +42,30 @@
               @click="state = 'create'"
             >
               <v-list-item-title class="font-weight-bold">
-                {{ $t('createObjectSchema') }}
+                {{ t('createObjectSchema') }}
               </v-list-item-title>
-              <v-list-item-subtitle>{{ $t('createObjectSchemaDescription') }}</v-list-item-subtitle>
-              <v-list-item-action>
+              <v-list-item-subtitle>{{ t('createObjectSchemaDescription') }}</v-list-item-subtitle>
+              <template #append>
                 <v-icon
                   size="x-large"
                   :icon="mdiChevronRight"
                 />
-              </v-list-item-action>
+              </template>
             </v-list-item>
             <v-list-item
               two-line
               @click="state = 'import'"
             >
               <v-list-item-title class="font-weight-bold">
-                {{ $t('importObjectSchema') }}
+                {{ t('importObjectSchema') }}
               </v-list-item-title>
-              <v-list-item-subtitle>{{ $t('importObjectSchemaDescription') }}</v-list-item-subtitle>
-              <v-list-item-action>
+              <v-list-item-subtitle>{{ t('importObjectSchemaDescription') }}</v-list-item-subtitle>
+              <template #append>
                 <v-icon
                   size="x-large"
                   :icon="mdiChevronRight"
                 />
-              </v-list-item-action>
+              </template>
             </v-list-item>
           </v-list>
         </v-window-item>
@@ -74,11 +74,11 @@
           class="px-4"
         >
           <v-form
-            v-model="createForm.valid"
+            v-model="createFormIsValid"
             @submit.prevent="createSchema()"
           >
             <h2 class="text-h2">
-              {{ $t('createObjectSchema') }}
+              {{ t('createObjectSchema') }}
             </h2>
             <v-row
               no-gutters
@@ -88,7 +88,7 @@
                 cols="12"
                 :md="5"
               >
-                <span style="font-size: 1.2rem;"> {{ $t('type') }}*: </span>
+                <span style="font-size: 1.2rem;"> {{ t('type') }}*: </span>
               </v-col>
               <v-col
                 cols="12"
@@ -96,9 +96,10 @@
               >
                 <v-text-field
                   v-model="createForm.type"
-                  :label="$t('type')"
-                  :rules="createForm.rules.type"
+                  :label="t('type')"
+                  :rules="[requiredRule]"
                   required
+                  variant="underlined"
                 />
               </v-col>
             </v-row>
@@ -110,7 +111,7 @@
                 cols="12"
                 :md="5"
               >
-                <span style="font-size: 1.2rem;"> {{ $t('description') }}*: </span>
+                <span style="font-size: 1.2rem;"> {{ t('description') }}*: </span>
               </v-col>
               <v-col
                 cols="12"
@@ -118,9 +119,10 @@
               >
                 <v-text-field
                   v-model="createForm.description"
-                  :label="$t('description')"
-                  :rules="createForm.rules.description"
+                  :label="t('description')"
+                  :rules="[requiredRule]"
                   required
+                  variant="underlined"
                 />
               </v-col>
             </v-row>
@@ -132,7 +134,7 @@
           class="px-4"
         >
           <h2 class="text-h2">
-            {{ $t('importObjectSchema') }}
+            {{ t('importObjectSchema') }}
           </h2>
           <v-row
             no-gutters
@@ -142,7 +144,7 @@
               cols="12"
               :md="5"
             >
-              <span style="font-size: 1.2rem;"> {{ $t('type') }}*: </span>
+              <span style="font-size: 1.2rem;"> {{ t('type') }}*: </span>
             </v-col>
             <v-col
               cols="12"
@@ -150,17 +152,18 @@
             >
               <v-select
                 v-model="modelType"
-                :label="$t('type')"
-                :items="objectTypes"
+                :label="t('type')"
+                :items="availableObjectSchemas"
                 required
+                variant="underlined"
               />
             </v-col>
           </v-row>
           <v-row v-if="modelType === 'custom'">
             <v-col cols="12">
-              <UtilFileUpload
+              <EditorFileUpload
                 :code="code"
-                :input-label="$t('uploadLabel')"
+                :input-label="t('uploadLabel')"
                 @schema-uploaded="importSchema"
               />
             </v-col>
@@ -171,7 +174,7 @@
                 style="text-decoration: undeline; font-weight: bold; cursor: pointer;"
                 @click="state = 'create'"
               >
-                {{ $t('importObjectSchemaSwitch') }}
+                {{ t('importObjectSchemaSwitch') }}
               </span>
             </v-col>
           </v-row>
@@ -193,7 +196,7 @@
         text
         role="submit"
         type="submit"
-        :disabled="!createForm.valid"
+        :disabled="createFormIsValid === false"
         @click="createSchema()"
       >
         {{ $t('global.button.next') }}
@@ -213,174 +216,135 @@
   </BaseDialog>
 </template>
 
-<script lang="ts">
-import { isEmpty, isEqual, isString, trim, upperFirst } from 'lodash';
+<script lang="ts" setup>
+import { isEmpty, isEqual, isString } from 'lodash';
 import { mdiChevronRight } from '@mdi/js';
 
 import { separateUUIDParam } from '~/lib/utils';
+import { useFetchSchemas } from '~~/composables/api/schemas';
+import { useFetchTranslations } from '~~/composables/api/translations';
 
-export default {
-  props: {
-    modelValue: {
-      type: Boolean,
-      required: true
-    }
-  },
-  emits: ['update:model-value', 'completed'],
-  data() {
-    return {
-      dialog: false as boolean,
-      noWatch: false as boolean,
-      state: 'start' as 'start' | 'import' | 'create',
-      createForm: {
-        type: '' as string,
-        description: '' as string,
-        valid: false,
-        rules: {
-          type: [(input: string) => trim(input).length > 0],
-          description: [(input: string) => trim(input).length > 0]
-        }
-      },
-      modelType: '',
-      code: '\n\n\n\n\n' as string,
-      objectTypes: [] as { value: string; title: string }[],
-      mdiChevronRight
-    };
-  },
-  computed: {
-    importNextDisabled(): boolean {
-      return (this.modelType === 'custom' && this.code === '\n\n\n\n\n') || this.modelType === '';
-    },
-    isNavigatedByDialog() {
-      return isEmpty(this.$route.query);
-    },
-    isDialogCustom() {
-      return this.$route.query?.os === 'custom';
-    },
-    isDialogOpen(): boolean {
-      return this.isNavigatedByDialog || this.isDialogCustom;
-    },
-    domainId(): string {
-      return separateUUIDParam(this.$route.params.domain).id;
-    }
-  },
-  watch: {
-    dialog(newValue: boolean) {
-      if (newValue) {
-        this.state = 'import';
-      }
-      if (!this.noWatch) {
-        this.$emit('update:model-value', newValue);
-      }
-    },
-    value(newValue: boolean) {
-      this.noWatch = true;
-      this.dialog = newValue;
-      this.noWatch = false;
-    },
-    state: {
-      immediate: true,
-      handler(newValue) {
-        this.onStateChanged(newValue);
-      }
-    },
-    $route: {
-      immediate: true,
-      deep: true,
-      handler() {
-        // If the user navigates by URL, depending on the parameters, schemas should be generated
-        if (!this.isNavigatedByDialog || this.isDialogCustom) {
-          if (isString(this.$route.query.type) && isString(this.$route.query.description)) {
-            // If a user navigates through a URL which has parameters type and description, new OS should be created
-            this.createForm.type = this.$route.query.type;
-            this.createForm.description = this.$route.query.description;
-            this.createSchema();
-          } else if (this.$route.query.os === 'custom') {
-            // If a user navigates through a URL which has custom os parameter,
-            // the dialog with selected custom OS should be opened
-            this.state = 'import';
-            this.modelType = 'custom';
-          } else if (isString(this.$route.query.os) && this.$route.query.os !== 'custom') {
-            // If a user navigates through a URL which has os parameter different from 'custom'
-            // (e.g. 'process', 'asset', etc.), the OS should be automatically loaded from the server
-            this.state = 'import';
-            this.modelType = this.$route.query.os;
-            this.importSchema();
-          }
-        } else if (isEmpty(this.$route.query)) {
-          this.state = 'start';
-          this.code = '';
-          this.modelType = '';
-          this.clearCreateForm();
-          this.$emit('completed', {});
-        }
-      }
-    }
-  },
-  mounted() {
-    this.dialog = this.value;
-  },
-  methods: {
-    async onStateChanged(newState: string) {
-      // Only load types of schema types if a user navigates by the dialog
-      if (newState === 'import' || (newState === 'start' && (this.isNavigatedByDialog || this.isDialogCustom) && this.objectTypes.length === 0)) {
-        const schemas = await this.$api.schema.fetchAll();
-        this.objectTypes = Object.keys(schemas).map((schemaName) => ({ title: upperFirst(schemaName), value: schemaName }));
-        this.objectTypes.unshift({
-          title: this.$t('customObjectSchema') as string,
-          value: 'custom'
-        });
-      }
-    },
-    createSchema() {
-      this.$emit('completed', {
-        schema: undefined,
-        meta: { type: this.createForm.type, description: this.createForm.description }
-      });
-      this.navigateTo({
-        type: this.createForm.type,
-        description: this.createForm.description
-      });
-    },
-    importSchema(schema?: any) {
-      if (schema) {
-        this.$emit('completed', { schema, meta: undefined });
-        this.navigateTo({ os: 'custom' });
-      } else {
-        this.$api.schema.fetch(this.modelType, [this.domainId]).then((data: any) => {
-          this.$emit('completed', { schema: data, meta: undefined });
-          this.navigateTo({ os: this.modelType });
-        });
-      }
-    },
-    clearCreateForm() {
-      this.createForm = {
-        type: '' as string,
-        description: '' as string,
-        valid: false,
-        rules: {
-          type: [(input: string) => trim(input).length > 0],
-          description: [(input: string) => trim(input).length > 0]
-        }
-      };
-    },
-    onClose() {
-      this.$router.push({
-        name: 'unit-domains-domain-editor'
-      });
-      return true;
-    },
-    navigateTo(params: Record<string, any>) {
-      // If the current path does not match with new url, only then change the URL
-      if (!isEqual(this.$route.query, params)) {
-        this.$router.push({
-          name: 'unit-domains-domain-editor-objectschema',
-          query: params
-        });
-      }
-    }
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    required: true
+  }
+});
+const emit = defineEmits(['update:model-value', 'completed']);
+
+const route = useRoute();
+const router = useRouter();
+const { locale, t } = useI18n();
+const { t: $t } = useI18n({ useScope: 'global' });
+const { $api } = useNuxtApp();
+const { requiredRule } = useRules();
+
+const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
+
+// Layout stuff
+const state = ref<'start' | 'import' | 'create'>('start');
+
+watch(() => props.modelValue, (newValue) => {
+  if(newValue) {
+    state.value = 'import';
+  }
+});
+
+const isNavigatedByDialog = computed(() => isEmpty(route.query));
+const isDialogCustom = computed(() => route.query.os === 'custom');
+
+// Create stuff
+const createForm = ref({
+  type: undefined,
+  description: undefined
+});
+
+const createFormIsValid = ref(false);
+
+// Import stuff
+const code = ref();
+const modelType = ref();
+
+const { data: schemas } = useFetchSchemas();
+const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+
+const availableObjectSchemas = computed(() => (Object.keys(schemas.value || {})).map((objectType) => ({ title: translations.value?.lang[locale.value]?.[objectType] || '', value: objectType })).concat({ title: t('customObjectSchema'), value: 'custom' }));
+
+const importNextDisabled = computed(() => (modelType.value === 'custom' && !code.value) || !modelType.value);
+
+const createSchema = () => {
+  emit('completed', {
+    schema: undefined,
+    meta: { type: createForm.value.type, description: createForm.value.description }
+  });
+  navigateTo({
+    type: createForm.value.type,
+    description: createForm.value.description
+  });
+};
+const importSchema = (schema?: any) => {
+  if (schema) {
+    emit('completed', { schema, meta: undefined });
+    navigateTo({ os: 'custom' });
+  } else {
+    $api.schema.fetch(modelType.value, [domainId.value]).then((data: any) => {
+      emit('completed', { schema: data, meta: undefined });
+      navigateTo({ os: modelType.value });
+    });
   }
 };
+
+const clearCreateForm = () => {
+  createForm.value = {
+    type: undefined,
+    description: undefined
+  };
+};
+const onClose = () => {
+  router.push({
+    name: 'unit-domains-domain-editor'
+  });
+  return true;
+};
+const navigateTo = (params: Record<string, any>) => {
+  // If the current path does not match with new url, only then change the URL
+  if (!isEqual(route.query, params)) {
+    router.push({
+      name: 'unit-domains-domain-editor-objectschema',
+      query: params
+    });
+  }
+};
+
+watch(() => route, (newValue) => {
+  // If the user navigates by URL, depending on the parameters, schemas should be generated
+  if (!isNavigatedByDialog.value || isDialogCustom.value) {
+    if (isString(newValue.query.type) && isString(newValue.query.description)) {
+      // If a user navigates through a URL which has parameters type and description, new OS should be created
+      createForm.value.type = newValue.query.type;
+      createForm.value.description = newValue.query.description;
+      createSchema();
+    } else if (newValue.query.os === 'custom') {
+      // If a user navigates through a URL which has custom os parameter,
+      // the dialog with selected custom OS should be opened
+      state.value = 'import';
+      modelType.value = 'custom';
+    } else if (isString(newValue.query.os) && newValue.query.os !== 'custom') {
+      // If a user navigates through a URL which has os parameter different from 'custom'
+      // (e.g. 'process', 'asset', etc.), the OS should be automatically loaded from the server
+      state.value = 'import';
+      modelType.value = newValue.query.os;
+      importSchema();
+    }
+  } else if (isEmpty(newValue.query)) {
+    state.value = 'start';
+    code.value = '';
+    modelType.value = '';
+    clearCreateForm();
+    emit('completed', {});
+  }
+}, { deep: true, immediate: true });
 </script>
 
 <i18n>
@@ -413,9 +377,3 @@ export default {
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-.v-list-item__subtitle {
-  white-space: pre-wrap;
-}
-</style>

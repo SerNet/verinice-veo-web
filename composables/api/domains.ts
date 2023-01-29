@@ -59,7 +59,7 @@ export const domainsQueryParameterTransformationMap: IVeoQueryTransformationMap 
 export const domainsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
   updateTypeDefinition: (mutationParameters: IVeoUpdateTypeDefinitionParameters) => ({
     params: {
-      id: mutationParameters.objectType,
+      id: mutationParameters.domainId,
       type: mutationParameters.objectType
     },
     json: mutationParameters.objectSchema

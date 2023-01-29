@@ -39,7 +39,7 @@
         </v-form>
       </v-window-item>
       <v-window-item>
-        <EditorsSchemaCodeEditor
+        <EditorSchemaCodeEditor
           :model-value="code"
           :submit-button-text="submitButtonText"
           @schema-updated="sendSchema"

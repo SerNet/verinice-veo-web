@@ -28,12 +28,12 @@
     <template #default>
       <LayoutLoadingWrapper v-if="loadingFormSchema || loadingObjectSchema" />
       <v-window :model-value="state">
-        <EditorsFormSchemaWizardStateStart
+        <EditorFormSchemaWizardStateStart
           :model-value="WIZARD_STATES.START"
           @create="state = WIZARD_STATES.CREATE"
           @import="state = WIZARD_STATES.IMPORT"
         />
-        <EditorsFormSchemaWizardStateCreate
+        <EditorFormSchemaWizardStateCreate
           v-model:valid="createFormValid"
           v-model:object-type="objectSchemaId"
           :model-value="WIZARD_STATES.CREATE"
@@ -42,7 +42,7 @@
           v-bind="mergeProps(formSchemaDetails, createFormListeners)"
           @update:object-schema="uploadedObjectSchema = $event"
         />
-        <EditorsFormSchemaWizardStateImport
+        <EditorFormSchemaWizardStateImport
           v-model:force-own-schema="forceOwnObjectSchema"
           v-model:form-schema-id="formSchemaId"
           :model-value="WIZARD_STATES.IMPORT"
@@ -111,8 +111,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();
-    const { t, locale } = useI18n();
-    const { i18n } = useNuxtApp();
+    const { t, locale, locales } = useI18n();
 
     // Display stuff
     const state = ref(WIZARD_STATES.START);
@@ -236,7 +235,7 @@ export default defineComponent({
     );
 
     // translation stuff
-    const translationQueryParameters = computed(() => ({ languages: (i18n.locales as LocaleObject[]).map((locale) => locale.code) }));
+    const translationQueryParameters = computed(() => ({ languages: (locales.value as LocaleObject[]).map((locale) => locale.code) }));
     const { data: translations } = useFetchTranslations(translationQueryParameters);
 
     // create stuff

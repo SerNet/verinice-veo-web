@@ -30,32 +30,28 @@
           class="overflow-hidden"
         >
           <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/objectschema`">
-            <v-list-item-content>
-              <v-list-item-title class="font-weight-bold">
-                {{ t('editor.objectschema.headline') }}
-              </v-list-item-title>
-              <v-list-item-subtitle>{{ t('objectSchemaDescription') }}</v-list-item-subtitle>
-            </v-list-item-content>
-            <v-list-item-action>
+            <v-list-item-title class="font-weight-bold">
+              {{ $t('editor.objectschema.headline') }}
+            </v-list-item-title>
+            <v-list-item-subtitle>{{ t('objectSchemaDescription') }}</v-list-item-subtitle>
+            <template #append>
               <v-icon
                 size="x-large"
                 :icon="mdiChevronRight"
               />
-            </v-list-item-action>
+            </template>
           </v-list-item>
           <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/formschema`">
-            <v-list-item-content>
-              <v-list-item-title class="font-weight-bold">
-                {{ t('editor.formschema.headline') }}
-              </v-list-item-title>
-              <v-list-item-subtitle>{{ t('formSchemaDescription') }}</v-list-item-subtitle>
-            </v-list-item-content>
-            <v-list-item-action>
+            <v-list-item-title class="font-weight-bold">
+              {{ $t('editor.formschema.headline') }}
+            </v-list-item-title>
+            <v-list-item-subtitle>{{ t('formSchemaDescription') }}</v-list-item-subtitle>
+            <template #append>
               <v-icon
                 size="x-large"
                 :icon="mdiChevronRight"
               />
-            </v-list-item-action>
+            </template>
           </v-list-item>
         </v-list>
       </BaseCard>
@@ -67,6 +63,7 @@
 import { mdiChevronRight } from '@mdi/js';
 
 const { t } = useI18n();
+const { t: $t } = useI18n({ useScope: 'global' });
 </script>
 
 <script lang="ts">

@@ -112,7 +112,7 @@
           </v-btn>
         </template>
         <template #default>
-          {{ t("editor.schema.properties") }}
+          {{ globalT("editor.schema.properties") }}
         </template>
       </v-tooltip>
       <v-tooltip location="bottom">
@@ -197,7 +197,7 @@
           <div class="fill-height fill-width d-flex">
             <VeoFseGenerator
               :schema="objectSchema"
-              :value="formSchema.content"
+              :model-value="formSchema.content"
               :general-translation="translation && translation.lang[language]"
               :custom-translations="formSchema.translation"
               :language="language"
@@ -282,7 +282,7 @@
     </template>
     <template #helpers>
       <VeoFseWizardDialog
-        :value="creationDialogVisible"
+        :model-value="creationDialogVisible"
         :domain-id="domainId"
         @done="onWizardFinished"
       />
@@ -355,8 +355,8 @@ import { useFetchDomain } from '~/composables/api/domains';
 
 export default defineComponent({
   setup() {
-    const { locale, t } = useI18n();
-    const { i18n } = useNuxtApp();
+    const { locale, locales, t } = useI18n();
+    const { t: globalT } = useI18n();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
@@ -537,7 +537,7 @@ export default defineComponent({
      * Translations related stuff
      */
     const translationDialogVisible: Ref<boolean> = ref(false);
-    const availableLanguages = computed(() => (i18n.locales as LocaleObject[]).map((locale) => locale.code));
+    const availableLanguages = computed(() => (locales.value as LocaleObject[]).map((locale) => locale.code));
 
     function onClickTranslationBtn() {
       translationDialogVisible.value = true;
@@ -656,6 +656,7 @@ export default defineComponent({
       mdiTranslate,
       mdiWrench,
       t,
+      globalT,
       HELP_ROUTE,
       xs
     };

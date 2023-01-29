@@ -18,11 +18,11 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    :headline="t('editor.schema.properties')"
+    :headline="globalT('editor.schema.properties')"
     fixed-footer
     large
     persistent
-    @update:model-value="$emit('model-value', $event)"
+    @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
       <div class="d-flex justify-space-between align-center px-1 pb-2">
@@ -70,11 +70,10 @@
                     <template #activator="{ props }">
                       <v-btn
                         v-bind="props"
-                        icon
+                        :icon="mdiTrashCanOutline"
+                        variant="text"
                         @click="deleteSubType(subTypeIndex)"
-                      >
-                        <v-icon :icon="mdiTrashCanOutline" />
-                      </v-btn>
+                      />
                     </template>
                     <template #default>
                       {{ upperFirst(t('deleteSubtype').toString()) }}
@@ -86,19 +85,19 @@
                 {{ upperFirst(t('availableStatus').toString()) }}
               </h3>
               <Draggable
-                tag="div"
-                :list="subType.status"
+                v-model="subType.status"
+                item-key="key"
                 handle=".handle"
               >
-                <EditorsObjectSchemaStatusListItem
-                  v-for="(status, statusIndex) in subType.status"
-                  :key="status.key"
-                  :status="status"
-                  :index="statusIndex"
-                  :lang="displayLanguage"
-                  @update-status="(status) => onUpdateStatus(subTypeIndex, statusIndex, status)"
-                  @delete="onDeleteStatus(subTypeIndex, statusIndex)"
-                />
+                <template #item="{ element, index }">
+                  <EditorObjectSchemaStatusListItem
+                    :status="element"
+                    :index="index"
+                    :lang="displayLanguage"
+                    @update-status="(status) => onUpdateStatus(subTypeIndex, index, status)"
+                    @delete="onDeleteStatus(subTypeIndex, index)"
+                  />
+                </template>
               </Draggable>
               <v-form
                 v-model="newStatusForms[subTypeIndex]"
@@ -112,11 +111,12 @@
                     v-model="newStatusTextfields[subTypeIndex]"
                     :label="upperFirst(t('status').toString())"
                     dense
+                    variant="underlined"
                     :rules="[alphaNumericUnderscoreRule]"
                   />
                   <v-list-item-action>
                     <v-btn
-                      text
+                      variant="text"
                       :disabled="!newStatusForms[subTypeIndex] || !newStatusTextfields[subTypeIndex]"
                       @click="addStatusToSubType(subTypeIndex)"
                     >
@@ -134,7 +134,7 @@
         </v-col>
         <v-col cols="12">
           <v-btn
-            text
+            variant="text"
             @click="addSubType"
           >
             <v-icon
@@ -148,16 +148,16 @@
     </template>
     <template #dialog-options>
       <v-btn
-        text
+        variant="text"
         @click="$emit('update:model-value', false)"
       >
         {{ t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
-        text
+        variant="text"
         color="primary"
-        :disabled="subTypeForms.some((form) => !form)"
+        :disabled="subTypeForms.some((form) => form === false)"
         @click="onSubmit"
       >
         {{ t('global.button.save') }}
@@ -190,9 +190,10 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['schema-updated', 'update:model-value', 'model-value'],
+  emits: ['schema-updated', 'update:model-value'],
   setup(props, { emit }) {
     const { t } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
     const route = useRoute();
 
     const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined = inject('objectSchemaHelper');
@@ -331,6 +332,7 @@ export default defineComponent({
       subTypes,
 
       t,
+      globalT,
       mdiMenu,
       mdiPlus,
       mdiTranslate,

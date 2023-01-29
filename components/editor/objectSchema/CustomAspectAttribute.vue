@@ -29,6 +29,7 @@
             required
             :rules="form.rules.title"
             :prefix="prefix"
+            variant="underlined"
             @update:model-value="doUpdate($event, 'title')"
           />
         </v-col>
@@ -40,6 +41,7 @@
             :model-value="form.data.type"
             :label="t('aspectType')"
             :items="types"
+            variant="underlined"
             @update:model-value="doUpdate($event, 'type')"
           />
         </v-col>
@@ -50,6 +52,7 @@
             :model-value="form.data.description"
             :label="t('aspectDescription')"
             clearable
+            variant="underlined"
             @update:model-value="doUpdate($event, 'description')"
           />
         </v-col>
@@ -81,6 +84,7 @@
             hide-no-data
             append-icon=""
             clearable
+            variant="underlined"
             @update:model-value="doUpdate($event, 'enum')"
           >
             <template #label>
@@ -112,21 +116,20 @@
             :items="formatOptions"
             item-title="displayName"
             item-value="name"
+            variant="underlined"
             @update:model-value="updateOptions($event)"
           />
         </v-col>
       </v-row>
-      <v-list-item-action>
-        <v-btn
-          fab
-          flat
-          text
-          color="black"
-          @click="doDelete()"
-        >
-          <v-icon :icon="mdiTrashCanOutline" />
-        </v-btn>
-      </v-list-item-action>
+      <template #append>
+        <v-list-item-action>
+          <v-btn
+            variant="text"
+            :icon="mdiTrashCanOutline"
+            @click="doDelete()"
+          />
+        </v-list-item-action>
+      </template>
     </v-list-item>
   </BaseCard>
 </template>

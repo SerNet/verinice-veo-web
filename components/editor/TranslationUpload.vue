@@ -141,13 +141,12 @@ export default defineComponent({
   },
   emits: ['update:replace-translations'],
   setup() {
-    const { i18n } = useNuxtApp();
-    const { t } = useI18n();
+    const { locales, t } = useI18n();
     const { displayErrorMessage } = useVeoAlerts();
 
     // Layout / form stuff
     const localeDetailsMap = computed(() =>
-      (i18n.locales as LocaleObject[]).reduce((previousValue, currentValue) => {
+      (locales.value as LocaleObject[]).reduce((previousValue, currentValue) => {
         previousValue[currentValue.code] = currentValue;
         return previousValue;
       }, Object.create(null))

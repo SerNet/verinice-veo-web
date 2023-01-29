@@ -29,21 +29,22 @@
         <template #header>
           <div class="d-flex flex-row align-center">
             <h1 class="text-h1">
-              {{ t('editor.objectschema.headline') }}
+              {{ globalT('editor.objectschema.headline') }}
             </h1>
             <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <a
+                  v-bind="props"
                   ref="downloadButton"
                   href="#"
                   class="text-decoration-none"
                   style="vertical-align: bottom;"
-                  v-bind="props"
                   @click="downloadSchema()"
                 >
                   <v-btn
                     icon
                     large
+                    variant="text"
                     color="primary"
                   >
                     <v-icon :icon="mdiDownload" />
@@ -51,39 +52,37 @@
                 </a>
               </template>
               <template #default>
-                {{ t('editor.schema.download') }}
+                {{ globalT('editor.schema.download') }}
               </template>
             </v-tooltip>
             <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-btn
                   v-if="schemaIsValid.warnings.length > 0"
-                  icon
+                  :icon="mdiAlertCircleOutline"
                   large
                   color="warning"
                   class="ml-2"
                   v-bind="props"
+                  variant="text"
                   @click="errorDialogVisible = !errorDialogVisible"
-                >
-                  <v-icon :icon="mdiAlertCircleOutline" />
-                </v-btn>
+                />
               </template>
               <template #default>
-                {{ t('editor.schema.warnings') }}
+                {{ globalT('editor.schema.warnings') }}
               </template>
             </v-tooltip>
             <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-btn
-                  icon
+                  :icon="mdiTranslate"
                   large
                   class="translate-button"
                   color="primary"
                   v-bind="props"
+                  variant="text"
                   @click="translationDialogVisible = true"
-                >
-                  <v-icon :icon="mdiTranslate" />
-                </v-btn>
+                />
               </template>
               <template #default>
                 {{ t('translations') }}
@@ -92,32 +91,30 @@
             <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-btn
-                  icon
+                  :icon="mdiWrench"
                   large
                   color="primary"
                   v-bind="props"
+                  variant="text"
                   @click="detailsDialogVisible = !detailsDialogVisible"
-                >
-                  <v-icon :icon="mdiWrench" />
-                </v-btn>
+                />
               </template>
               <template #default>
-                {{ t("editor.schema.properties") }}
+                {{ globalT("editor.schema.properties") }}
               </template>
             </v-tooltip>
             <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <v-btn
-                  icon
+                  :icon="mdiHelpCircleOutline"
                   large
                   target="_blank"
                   :to="HELP_ROUTE"
                   class="help-button"
                   color="primary"
+                  variant="text"
                   v-bind="props"
-                >
-                  <v-icon :icon="mdiHelpCircleOutline" />
-                </v-btn>
+                />
               </template>
               <template #default>
                 {{ t('help') }}
@@ -131,13 +128,12 @@
                 <div v-bind="props">
                   <v-btn
                     :disabled="!schemaIsValid.valid || ability.cannot('manage', 'editors')"
-                    icon
+                    :icon="mdiContentSave"
                     large
                     color="primary"
+                    variant="text"
                     @click="saveSchema"
-                  >
-                    <v-icon :icon="mdiContentSave" />
-                  </v-btn>
+                  />
                 </div>
               </template>
               <template #default>
@@ -158,12 +154,13 @@
                   lg="4"
                 >
                   <v-text-field
-                    :value="title"
+                    :model-value="title"
                     dense
                     hide-details
                     flat
                     :label="t('objectschema')"
-                    @input="updateSchemaName"
+                    variant="underlined"
+                    @update:model-value="updateSchemaName"
                   />
                 </v-col>
                 <v-col
@@ -171,11 +168,12 @@
                   lg="8"
                 >
                   <v-text-field
-                    :value="description"
+                    :model-value="description"
                     dense
                     hide-details
                     :label="t('description')"
-                    @input="updateDescription"
+                    variant="underlined"
+                    @update:model-value="updateDescription"
                   />
                 </v-col>
               </v-row>
@@ -196,6 +194,7 @@
                 hide-details
                 :prepend-inner-icon="mdiMagnify"
                 :label="t('search')"
+                variant="underlined"
               />
             </v-col>
             <v-col>
@@ -211,7 +210,7 @@
           <v-divider class="mt-2" />
         </template>
         <template #default>
-          <VeoObjectSchemaEditor
+          <EditorObjectSchemaMain
             v-if="schemaIsValid.valid"
             :search="searchQuery"
             :hide-empty-aspects="hideEmptyAspects"
@@ -244,10 +243,8 @@
                 :key="`e_${index}`"
                 link
               >
-                <v-list-item-content>
-                  <v-list-item-title>{{ error.code }}</v-list-item-title>
-                  <v-list-item-subtitle>{{ error.message }}</v-list-item-subtitle>
-                </v-list-item-content>
+                <v-list-item-title>{{ error.code }}</v-list-item-title>
+                <v-list-item-subtitle>{{ error.message }}</v-list-item-subtitle>
               </v-list-item>
             </v-col>
             <v-spacer />
@@ -259,27 +256,27 @@
         height="100%"
         content-class="ose__code-editor"
       >
-        <VeoSchemaCodeEditor
+        <EditorSchemaCodeEditor
           v-model="code"
           @schema-updated="updateSchema"
         />
       </BasePage>
     </template>
     <template #helpers>
-      <VeoOseWizardDialog
+      <EditorObjectSchemaWizardDialog
         v-model="creationDialogVisible"
         @completed="setSchema"
       />
-      <VeoOseDetailsDialog
+      <EditorObjectSchemaDetailsDialog
         v-model="detailsDialogVisible"
         :domain-id="domainId"
         @schema-updated="updateCode"
       />
-      <VeoEditorErrorDialog
+      <EditorErrorDialog
         v-model="errorDialogVisible"
         :validation="schemaIsValid"
       />
-      <VeoOseTranslationDialog
+      <EditorObjectSchemaTranslationDialog
         v-if="!translationsLoading && translationDialogVisible"
         v-model="translationDialogVisible"
         v-model:current-display-language="displayLanguage"
@@ -309,8 +306,8 @@ import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 export default defineComponent({
   name: 'ObjectSchemaEditor',
   setup() {
-    const { locale, t } = useI18n();
-    const { i18n } = useNuxtApp();
+    const { locale, locales, t } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
@@ -340,7 +337,7 @@ export default defineComponent({
     const detailsDialogVisible = ref(false);
 
     const fetchTranslationQueryParameters = computed(() => ({
-      languages: (i18n.locales as LocaleObject[]).map((locale) => locale.code)
+      languages: (locales.value as LocaleObject[]).map((locale) => locale.code)
     }));
     const translations = reactive<IVeoTranslations['lang']>({});
     const { data: _translations, isFetching: translationsLoading } = useFetchTranslations(fetchTranslationQueryParameters);
@@ -349,8 +346,6 @@ export default defineComponent({
       (newValue) => Object.assign(translations, newValue?.lang || {})
     );
     const availableLanguages = computed(() => Object.keys(translations));
-
-    const downloadButton = ref();
 
     const code = ref('');
     const schemaIsValid = ref<VeoSchemaValidatorValidationResult>({ valid: false, errors: [], warnings: [] });
@@ -420,6 +415,7 @@ export default defineComponent({
       }
     };
 
+    const downloadButton = ref();
     const downloadSchema = () => {
       if (downloadButton.value) {
         const data = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2))}`;
@@ -487,6 +483,7 @@ export default defineComponent({
       updateDescription,
 
       t,
+      globalT,
       upperFirst,
       mdiAlertCircleOutline,
       mdiContentSave,

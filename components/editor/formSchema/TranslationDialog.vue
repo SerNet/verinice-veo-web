@@ -77,7 +77,7 @@
               />
             </v-col>
           </v-row>
-          <EditorsFormSchemaTranslationUpload
+          <EditorFormSchemaTranslationUpload
             v-model:replace-translations="replaceTranslations"
             :available-languages="availableLanguages"
             @translations-imported="onTranslationsImported"
@@ -163,8 +163,7 @@ export default defineComponent({
   },
   emits: ['update:model-value', 'update:current-display-language', 'update-translation', 'update-name'],
   setup(props, { emit }) {
-    const { t } = useI18n();
-    const { i18n } = useNuxtApp();
+    const { locales, t } = useI18n();
     const { displayErrorMessage } = useVeoAlerts();
 
     const EMPTY_OBJECT_STRING = '{\n  \n}';
@@ -184,7 +183,7 @@ export default defineComponent({
     const requiredRule = computed(() => [(v: any) => (Array.isArray(v) ? v.length > 0 : !!v)]);
 
     const languageDetails = computed(() =>
-      (i18n.locales as LocaleObject[]).reduce((previousValue, currentValue) => {
+      (locales.value as LocaleObject[]).reduce((previousValue, currentValue) => {
         previousValue[currentValue.code] = currentValue.name;
         return previousValue;
       }, {} as Record<string, any>)

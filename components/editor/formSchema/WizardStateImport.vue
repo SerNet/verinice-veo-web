@@ -33,7 +33,7 @@
           required
           @update:model-value="$emit('update:form-schema-id', $event)"
         />
-        <EditorsFormSchemaFileUpload
+        <EditorFileUpload
           v-if="formSchemaId === 'custom'"
           :input-label="t('formSchemaUploadLabel')"
           :submit-button-text="t('importFormSchema')"
@@ -75,7 +75,7 @@
           @update:model-value="$emit('update:force-own-schema', $event)"
         />
         <div v-if="forceOwnSchema">
-          <EditorsFormSchemaFileUpload
+          <EditorFileUpload
             :input-label="t('objectSchemaUploadLabel')"
             :submit-button-text="t('importObjectSchema')"
             @schema-uploaded="$emit('update:object-schema', $event)"

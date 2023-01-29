@@ -25,7 +25,7 @@
     >
       {{ t('uploadOverwrite') }}
     </BaseAlert>
-    <EditorsFormSchemaTranslationUpload
+    <EditorTranslationUpload
       v-bind="$props"
       :import-function="importFunction"
       @update:replace-translations="$emit('replace-translations', $event)"
@@ -113,7 +113,7 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </template>
-    </EditorsFormSchemaTranslationUpload>
+    </EditorTranslationUpload>
   </div>
 </template>
 
@@ -139,8 +139,7 @@ export default defineComponent({
   },
   emits: ['translations-imported', 'replace-translations'],
   setup(props, { emit }) {
-    const { t } = useI18n();
-    const { i18n } = useNuxtApp();
+    const { locales, t } = useI18n();
 
     const formSchema = inject<Ref<IVeoFormSchema | undefined>>('mainFormSchema');
 
@@ -151,7 +150,7 @@ export default defineComponent({
     const resultExpansionPanel = ref();
 
     const localeDetailsMap = computed(() =>
-      (i18n.locales as LocaleObject[]).reduce((previousValue, currentValue) => {
+      (locales.value as LocaleObject[]).reduce((previousValue, currentValue) => {
         previousValue[currentValue.code] = currentValue;
         return previousValue;
       }, Object.create(null))

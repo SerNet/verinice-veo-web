@@ -115,7 +115,7 @@
             />
           </v-col>
         </v-row>
-        <EditorsFormSchemaConditions v-model="formData.rule" />
+        <EditorFormSchemaConditions v-model="formData.rule" />
       </v-form>
       <small>{{ t('global.input.requiredfields') }}</small>
     </template>
