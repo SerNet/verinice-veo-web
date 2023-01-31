@@ -17,8 +17,8 @@
 -->
 <template>
   <div class="wrapper">
-    <VeoAppLogoDesktop />
-    <VeoCard class="mt-2">
+    <LayoutAppLogoDesktop />
+    <BaseCard class="mt-2">
       <v-card-text class="d-flex justify-space-around">
         <div style="flex-basis: 0; flex-grow: 1">
           <h4 class="text-h4 mb-4 cta">
@@ -27,8 +27,8 @@
           <div class="text-center">
             <v-btn
               color="primary"
-              depressed
-              x-large
+              flat
+              size="x-large"
               @click="login"
             >
               {{ t('login') }}
@@ -47,8 +47,8 @@
           <div class="text-center">
             <v-btn
               v-if="$config.accountPath"
-              depressed
-              x-large
+              variant="tonal"
+              size="x-large"
               :href="$config.accountPath"
             >
               {{ t('register') }}
@@ -56,76 +56,70 @@
           </div>
         </div>
       </v-card-text>
-    </VeoCard>
+    </BaseCard>
     <div class="text-center mt-2">
       <a
         :href="dataProtectionRegulationLink"
         target="_blank"
-      >{{ t('dataProtectionRegulations') }}</a>
+      >
+        {{ t('dataProtectionRegulations') }}
+      </a>
       <span class="mx-1">|</span>
       <a
         :href="imprintLink"
         target="_blank"
-      >{{ t('imprint') }}</a>
+      >
+        {{ t('imprint') }}
+      </a>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, useContext } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-
+<script lang="ts" setup>
 import { useVeoUser } from '~/composables/VeoUser';
 
-export default defineComponent({
-  layout: 'plain',
-  setup() {
-    const { t, locale } = useI18n();
-    const context = useContext();
-    const { login: _login, initialize, keycloakInitialized } = useVeoUser();
+definePageMeta({ layout: 'plain' });
 
-    if (!keycloakInitialized.value) {
-      initialize(context);
-    }
+const { t, locale } = useI18n();
+const context = useNuxtApp();
+const { login: _login, initialize, keycloakInitialized } = useVeoUser();
 
-    // Needed as a separate function, as _login would be undefined if directly called from within the template.
-    const login = () => _login('/');
+if (!keycloakInitialized.value) {
+  initialize(context);
+}
 
-    const dataProtectionRegulationLink = computed(() => (locale.value === 'en' ? 'https://www.sernet.de/en/data-protection-declaration/' : 'https://www.sernet.de/datenschutz/'));
-    const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.verinice.com/en/left/Imprint/' : 'https://account.verinice.com/impressum/'));
+// Needed as a separate function, as _login would be undefined if directly called from within the template.
+const login = () => _login('/');
 
-    return {
-      dataProtectionRegulationLink,
-      imprintLink,
-      login,
-
-      t
-    };
-  }
-});
+const dataProtectionRegulationLink = computed(() => (locale.value === 'en' ? 'https://www.sernet.de/en/data-protection-declaration/' : 'https://www.sernet.de/datenschutz/'));
+const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.verinice.com/en/left/Imprint/' : 'https://account.verinice.com/impressum/'));
 </script>
 
 <i18n>
 {
   "en": {
     "createAccountCTA": "Create a new account",
+    "dataProtectionRegulations": "Data protection regulations",
+    "imprint": "Imprint",
     "login": "Login",
+    "loginCTA": "Login with an existing account",
     "register": "Register"
   },
   "de": {
     "createAccountCTA": "Einen neuen Account erstellen",
+    "dataProtectionRegulations": "Datenschutzerklärung",
+    "imprint": "Impressum",
     "login": "Anmelden",
+    "loginCTA": "Mit einem vorhandenen Account anmelden",
     "register": "Registrieren"
   }
 }
 </i18n>
 
 <style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
 .wrapper {
   margin: 5% auto 0;
-  max-width: 420px;
+  max-width: 500px;
   width: 90%;
 
   h1 {
@@ -140,18 +134,3 @@ export default defineComponent({
   }
 }
 </style>
-
-<i18n>
-{
-  "en": {
-    "dataProtectionRegulations": "Data protection regulations",
-    "imprint": "Imprint",
-    "loginCTA": "Login with an existing account"
-  },
-  "de": {
-    "dataProtectionRegulations": "Datenschutzerklärung",
-    "imprint": "Impressum",
-    "loginCTA": "Mit einem vorhandenen Account anmelden"
-  }
-}
-</i18n>

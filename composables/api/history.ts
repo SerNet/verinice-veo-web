@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, Ref, unref } from '@nuxtjs/composition-api';
+import { Ref } from 'vue';
 import { IVeoQueryTransformationMap, QueryOptions, STALE_TIME, useQuery } from './utils/query';
 import { useFetchSchemas } from './schemas';
 import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';

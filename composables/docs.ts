@@ -15,22 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { FetchReturn } from '@nuxt/content/types/query-builder';
-import { useAsync, useContext, computed, watch } from '@nuxtjs/composition-api';
-import { LocaleObject } from '@nuxtjs/i18n/types';
-import { cloneDeep } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
-
-import { onContentUpdate } from './utils';
-
-export interface DocPage {
-  title: string;
-  position: number;
-  lang: string;
-  isDir?: boolean;
-}
-
-export type DocPageFetchReturn = FetchReturn & DocPage;
+import { NavItem, ParsedContent } from '@nuxt/content/dist/runtime/types';
+import { cloneDeep, last } from 'lodash';
 
 type ContentOptions = { path?: string; locale?: string; localeSeparator?: string; fallbackLocale?: string; where?: object };
 const getOptions = (params: ContentOptions, _locale: string) => {
@@ -40,201 +26,173 @@ const getOptions = (params: ContentOptions, _locale: string) => {
   return { ...params, fallbackLocale, localeSeparator, locale };
 };
 
-const ensureArray = <T>(result: T[] | T): T[] => {
-  return result && Array.isArray(result) ? result : [result];
+export const normalizePath = (path: string, localeSeparator = '.') => {
+  const parts = path.split(localeSeparator);
+
+  // Pop language extension. If there is no dot present in the path, the file hasn't been localized and there is nothing to pop
+  if(parts.length > 1) {
+    parts.pop();
+  }
+
+  // Remove /index from path
+  return parts.join(localeSeparator).replace(/\/index$/i, '') || '/';
 };
 
 /**
- * Why a special function only to sort? Docs don't only get sorted by their level or their position alone, they always get sorted relative to their parents.
- *
- * @param docs The docs to sort
- * @returns The sorted docs
+ * Load a single doc, based on path. Tries to fetch documents in falback locale if the localized document doesn't exist.
+ * 
+ * @param options Parameters containing the path and optionally locale, localeSeperator and fallbackLocale to overwrite defaults.
+ * @returns The fetched page or undefined if not found.
  */
-const sortDocs = (docs: (readonly [string, DocPageFetchReturn])[]) => {
-  // Avoid mutation the original docs, to make the function clearer
-  const localDocs = cloneDeep(docs);
-
-  // We create a map with all paths as keys to make lookup easier
-  const docsAsPathMap = new Map(localDocs);
-
-  return localDocs.sort(([_pathA, itemA], [_pathB, itemB]) => {
-    let segmentIndex = 1; // The first segment is always "", so we ignore it
-    let joinedSegmentsOfItemA = '';
-    let joinedSegmentsOfItemB = '';
-
-    // Iterate over the path of the two items to compare as long as they have the same path
-    do {
-      // If either item no longer has a segment at this depth, it has to be the parent of the other item, as all previous segments are the same.
-      if (itemA.segments[segmentIndex] === undefined) {
-        return -1;
-      } else if (itemB.segments[segmentIndex] === undefined) {
-        return 1;
-      }
-
-      joinedSegmentsOfItemA += '/' + itemA.segments[segmentIndex];
-      joinedSegmentsOfItemB += '/' + itemB.segments[segmentIndex];
-      segmentIndex++;
-    } while (joinedSegmentsOfItemA === joinedSegmentsOfItemB);
-
-    // If the paths are no longer the same, the items are on the same level, so we can simply compare them by their position
-    return (docsAsPathMap.get(joinedSegmentsOfItemA) as DocPageFetchReturn).position - (docsAsPathMap.get(joinedSegmentsOfItemB) as DocPageFetchReturn).position;
-  });
-};
-
-export const useDoc = (params: { path: string; locale?: string; localeSeparator?: string; fallbackLocale?: string }) => {
+export const useDoc = (options: { path: string; locale?: string; localeSeparator?: string; fallbackLocale?: string }) => {
   const i18n = useI18n();
-  const options = computed(() => getOptions(params, i18n.locale.value));
-  const { $content } = useContext();
 
-  const fetchDoc = async () => {
-    const fetchResult = await $content({ deep: true })
-      .where({
-        $or: [
-          { path: options.value.path + options.value.localeSeparator + options.value.locale },
-          { path: options.value.path + options.value.localeSeparator + options.value.fallbackLocale },
-          { path: options.value.path + '/index' + options.value.localeSeparator + options.value.locale },
-          { path: options.value.path + '/index' + options.value.localeSeparator + options.value.fallbackLocale },
-          { path: options.value.path }
-        ],
-        extension: '.md'
-      })
-      .limit(1)
-      .fetch<DocPage>();
+  const mergedOptions = computed(() => getOptions(options, i18n.locale.value));
 
-    return ensureArray(fetchResult).shift();
-  };
+  const doc = ref<ParsedContent | undefined>();
 
-  const doc = useAsync(fetchDoc, options.value.path);
+  const fetchDoc = async () => await queryContent().where({ $or: [
+    { _path: mergedOptions.value.path + mergedOptions.value.localeSeparator + mergedOptions.value.locale },
+    { _path: mergedOptions.value.path + mergedOptions.value.localeSeparator + mergedOptions.value.fallbackLocale },
+    { _path: mergedOptions.value.path + '/index' + mergedOptions.value.localeSeparator + mergedOptions.value.locale },
+    { _path: mergedOptions.value.path + '/index' + mergedOptions.value.localeSeparator + mergedOptions.value.fallbackLocale },
+    { _path: mergedOptions.value.path }
+  ],
+  _extension: 'md' }).findOne();
 
-  const updateDocs = async () => {
-    doc.value = await fetchDoc();
-  };
-
+  // Update doc as soon as content or the options change.
   watch(
-    () => options.value,
-    () => {
-      updateDocs();
+    () => mergedOptions.value,
+    async () => {
+      doc.value = await fetchDoc();
     },
-    { deep: true }
+    { deep: true, immediate: true }
   );
-
-  onContentUpdate(updateDocs);
 
   return doc;
 };
 
-export const useDocs = <T extends DocPageFetchReturn>(params: {
+/**
+ * Fetches a document and all child documents. Returns them in an array, NOT a tree. To return them in a tree, use useDocTree
+ * 
+ * @param options Parameters to overwrite default behaviour, such as root directory, locale, localeSeparator, fallbackLocale and createDirs
+ */
+export const useDocs = (options: {
   root?: string;
   locale?: string;
-  localeSeparator?: string;
-  fallbackLocale?: string;
-  createDirs?: boolean;
-  buildItem?: (item: DocPageFetchReturn) => T;
 }) => {
-  const {
-    i18n: { locales }
-  } = useContext();
-  const i18n = useI18n();
+  const { locale } = useI18n();
 
-  const options = computed(() => getOptions(params, i18n.locale.value));
-  const normalizePath = (path: string) => (path.split(options.value.localeSeparator).shift() || path).replace(/\/index(?:\.\w+)?$/i, '') || '/';
-  const { $content } = useContext();
-  const buildItem = params.buildItem ?? ((v) => v);
+  const mergedOptions = computed(() => getOptions(options, locale.value));
+  
+  const docs = ref<ParsedContent[] | undefined>();
+
   const fetchDocs = async () => {
-    // The nuxt content queries are using lokiJS, however they aren't properly implemented and most operators aren't working. To circumvent undefinedIn (checking for a key or its value), we use nin to only check for the value
-    // In addition, lang: { $eq: undefined } or lang: undefined seems to unset the filter, so we have to take all possible other values expect the current language and undefined and check if the page does have one of those
-    const fetchResult = await (params.root ? $content(params.root, { deep: true }) : $content({ deep: true }))
-      .where({ lang: { $nin: (locales as LocaleObject[]).filter((_locale: any) => _locale.code !== options.value.locale).map((_locale: any) => _locale.code) }, extension: '.md' })
-      .sortBy('path', 'asc')
-      .fetch<DocPage>();
-
-    const docs = sortDocs(
-      ensureArray(fetchResult).map((item) => {
-        const path = normalizePath(item.path); // Remove language extension from path
-        const segments = path.split('/');
-        const dir = path === item.dir ? segments.slice(0, -1).join('/') || '/' : item.dir; // Correct dir
-        return [path, buildItem({ ...item, path, dir, level: segments.length - 1, segments })] as const;
-      })
-    );
-
-    // Filter duplicates by path
-    const list = Array.from(new Map(docs).values());
-    // Completing the list of files
-    const fileMap: Record<string, ReturnType<typeof buildItem>> = {};
-    const returnVal = params.createDirs
-      ? list.flatMap((item) => {
-          const path = item.path;
-          fileMap[path] = item;
-          const segments = path.split('/').slice(1);
-          const items = [item];
-          // Create parent directories (upwards the tree)
-          for (let i = 1; i < segments.length; i++) {
-            const pathSegments = segments.slice(0, -i);
-            const path = '/' + pathSegments.join('/');
-            if (fileMap[path]) break; // stop at first existing directory
-            const dir = '/' + pathSegments.slice(0, -1).join('/');
-            const newItem = (fileMap[path] = buildItem({ ...item, isDir: true, path, dir, segments, level: segments.length - i }));
-            // Add created directories to the list of files
-            items.unshift(newItem);
-          }
-          return items;
-        })
-      : list;
-    return returnVal;
+    // Language has to be either the current locale or not set, as we only want the docs to contain non-i18n pages and i18n pages in the current languages.
+    return await queryContent(options.root).where({ _extension: 'md', language: { $in: [mergedOptions.value.locale, undefined] }}).find();
   };
 
-  const docs = useAsync(fetchDocs);
+  const normalizedDocs = computed(() => (docs.value || []).map((doc) => ({ ...doc, _path: normalizePath(doc._path) })));
 
-  onContentUpdate(async () => {
-    docs.value = await fetchDocs();
-  });
-
+  // Update docs as soon as content or the options change.
   watch(
-    () => i18n.locale.value,
+    () => mergedOptions.value,
     async () => {
       docs.value = await fetchDocs();
-    }
+    },
+    { deep: true, immediate: true }
   );
 
-  return docs;
+  return normalizedDocs;
 };
-export const useDocTree = <T extends DocPageFetchReturn, ChildrenKey extends string = 'children'>(params: {
+
+export const useDocNavigation = (options: {
   root?: string;
   locale?: string;
-  localeSeparator?: string;
-  fallbackLocale?: string;
-  childrenKey?: ChildrenKey;
-  buildItem?: (item: DocPageFetchReturn) => T;
 }) => {
-  const childrenKey = params.childrenKey || 'children';
-  const docs = useDocs({ ...params, createDirs: true });
+  const { locale } = useI18n();
 
-  return computed(() => {
-    const files = (docs.value || []).map(
-      (file) =>
-        ({
-          key: file.path,
-          name: file.title,
-          to: file.to,
-          activePath: file.path,
-          path: file.path,
-          position: file.position,
-          dir: file.dir
-        } as any)
-    );
-    const tree = new Map(files.sort((itemA, itemB) => itemA.position - itemB.position).map((item) => [item.path, item]));
+  const mergedOptions = computed(() => getOptions(options, locale.value));
 
-    tree.forEach((item) => {
-      const parentPath = item.dir;
-      const parent = tree.get(parentPath);
-      if (parent && parent !== item) {
-        const children = (parent[childrenKey] = parent[childrenKey] || ([] as T[]));
-        children.push(item);
+  const navigation = ref<NavItem[] | undefined>();
+
+  const normalizedDocs = computed(() => {
+    const removeIndexPages = (item: NavItem) => {
+      if(!item.children || !item.children.length) {
+        return item;
       }
-    });
 
-    // Return root of tree
-    const firstNode = tree.values().next().value;
-    return firstNode?.[childrenKey] || [];
+      const children = cloneDeep(item.children);
+      const searchCondition = (item: NavItem) => last(item._path.split('/')).startsWith('index');
+      const indexChild = item.children.findIndex((child) => searchCondition(child));
+      const newIndexPage = children.splice(indexChild, 1);
+
+      item.title = newIndexPage[0].title;
+      item.children = children;
+
+      for(const child in item.children) {
+        item.children[child] = removeIndexPages(item.children[child]);
+      }
+      return item;
+    };
+
+    return (navigation.value || []).map((item) => removeIndexPages(item));
   });
+
+  const fetch = async () => {
+    navigation.value = await fetchContentNavigation({
+      where: [
+        { _extension: 'md' },
+        { language: { $in: [mergedOptions.value.locale, undefined] } },
+        ...options.root ? [{ _path: new RegExp(`/^/${options.root}/`) }] : []
+      ]
+    });
+  };
+
+  // Update docs as soon as content or the options change.
+  watch(
+    () => mergedOptions.value,
+    async () => {
+      fetch();
+    },
+    { deep: true, immediate: true }
+  );
+
+  return normalizedDocs;
+};
+
+export const useDocNavigationFlat = (options: {
+  root?: string;
+  locale?: string;
+}) => {
+  const docEntries = useDocNavigation(options);
+
+  const navigation = computed<NavItem[]>(() => {
+    const reduceItems = (items: NavItem[]): any[] => 
+      items.reduce((previous, current) => {
+        let item = {
+          title: current.title,
+          _path: normalizePath(current._path)
+        };
+  
+        if(current.children) {
+          const searchCondition = (item: NavItem) => last(item._path.split('/')).startsWith('index');
+          const indexChild = current.children.findIndex((child) => searchCondition(child));
+  
+          const children = cloneDeep(current.children);
+          if(indexChild >= 0) {
+            const newIndexPage = children.splice(indexChild, 1);
+            item = {
+              title: newIndexPage[0].title,
+              _path: normalizePath(newIndexPage[0]._path)
+            };
+          }
+          return previous.concat(item, reduceItems(children));
+        }
+  
+        return previous.concat(item);
+      }, []);
+    return reduceItems(docEntries.value || []);
+  });
+  return navigation;
 };

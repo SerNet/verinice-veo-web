@@ -15,12 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, ComputedRef, Ref, ref, watch } from '@nuxtjs/composition-api';
+import { ComputedRef, Ref } from 'vue';
 import Keycloak from 'keycloak-js';
 
-import { IBaseObject } from '~/lib/utils';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import LocalStorage from '~/util/LocalStorage';
 
 export interface IVeoUserSettings {
   maxUnits: number;
@@ -34,7 +32,7 @@ export interface IVeoUserComposable {
   keycloakInitialized: Ref<boolean>;
   login: (destination: string) => Promise<void>;
   logout: (destination: string) => Promise<void>;
-  profile: ComputedRef<IBaseObject | undefined>;
+  profile: ComputedRef<Record<string, any> | undefined>;
   refreshKeycloakSession: () => Promise<void>;
   roles: ComputedRef<string[]>;
   tablePageSize: Ref<number>;
@@ -125,7 +123,6 @@ export const useVeoUser: () => IVeoUserComposable = () => {
    */
   const logout = async (destination?: string) => {
     if (keycloak.value) {
-      LocalStorage.clear();
       await keycloak.value.logout({
         post_logout_redirect_uri: window.location.origin + destination,
         id_token_hint: keycloak.value.idToken

@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
+  <BasePage
     title="Checkbox"
     fixed-header
   >
@@ -25,51 +25,42 @@
         cols="auto"
         class="docs-form-sector"
       >
-        <VeoForm
-          v-model="form.data"
-          :object-schema="form.objectSchema"
-          :form-schema="form.formSchema"
+        <DynamicFormEntrypoint
+          v-model="data"
+          :object-schema="objectSchema"
+          :form-schema="formSchema"
         />
       </v-col>
     </v-row>
-    <FormDescription
-      :object-schema="form.objectSchema"
-      :form-schema="form.formSchema"
-      :data="form.data"
+    <HelpFormDescription
+      :object-schema="objectSchema"
+      :form-schema="formSchema"
+      :data="data"
     />
-  </VeoPage>
+  </BasePage>
 </template>
 
-<script lang="ts">
-import Vue from 'vue';
+<script lang="ts" setup>
+definePageMeta({ layout: 'plain' });
 
-export default Vue.extend({
-  layout: 'plain',
-  data() {
-    return {
-      form: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            checkbox: {
-              type: 'boolean'
-            }
-          }
-        },
-        formSchema: {
-          type: 'Control',
-          scope: '#/properties/checkbox',
-          options: {
-            label: 'Checkbox'
-          }
-        },
-        data: {
-          checkbox: true
-        }
-      }
-    };
+const objectSchema = {
+  type: 'object',
+  properties: {
+    checkbox: {
+      type: 'boolean'
+    }
   }
+};
+
+const formSchema = {
+  type: 'Control',
+  scope: '#/properties/checkbox',
+  options: {
+    label: 'Checkbox'
+  }
+};
+
+const data = ref({
+  checkbox: false
 });
 </script>
-
-<style lang="scss"></style>

@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { mdiAlphabeticalVariant, mdiCancel, mdiCheckboxOutline, mdiDecimal, mdiFileTree, mdiHelpBox, mdiLabelOutline, mdiNumeric, mdiViewList } from '@mdi/js';
 import { IVeoFormSchemaItem, IVeoFormSchemaItemOptions, IVeoFormSchemaItemRule } from './VeoTypes';
 
 // ===============================
@@ -36,15 +37,15 @@ export interface IInputType {
 export type IInputTypes = Record<string, IInputType>;
 
 export const INPUT_TYPES = {
-  string: { icon: 'mdi-alphabetical-variant', name: 'string', color: 'red' },
-  boolean: { icon: 'mdi-checkbox-outline', name: 'boolean', color: 'teal' },
-  object: { icon: 'mdi-file-tree', name: 'object', color: 'indigo' },
-  number: { icon: 'mdi-decimal', name: 'number', color: 'light-blue' },
-  integer: { icon: 'mdi-numeric', name: 'integer', color: 'green' },
-  array: { icon: 'mdi-view-list', name: 'array', color: 'amber' },
-  enum: { icon: 'mdi-label-multiple', name: 'enum', color: 'light-green' },
-  null: { icon: 'mdi-cancel', name: 'null', color: 'blue-grey' },
-  default: { icon: 'mdi-help-box', name: 'unknown', color: 'grey' }
+  string: { icon: mdiAlphabeticalVariant, name: 'string', color: 'red' },
+  boolean: { icon: mdiCheckboxOutline, name: 'boolean', color: 'teal' },
+  object: { icon: mdiFileTree, name: 'object', color: 'indigo' },
+  number: { icon: mdiDecimal, name: 'number', color: '#add8e6' },
+  integer: { icon: mdiNumeric, name: 'integer', color: 'green' },
+  array: { icon: mdiViewList, name: 'array', color: '#ffbf00' },
+  enum: { icon: mdiLabelOutline, name: 'enum', color: '#90ee90' },
+  null: { icon: mdiCancel, name: 'null', color: 'blue-grey' },
+  default: { icon: mdiHelpBox, name: 'unknown', color: 'grey' }
 } as IInputTypes;
 
 /**
@@ -199,7 +200,7 @@ const INPUT_ELEMENTS = [
  * @param conditions The conditions to check against.
  * @param additionalCustomAdvantage Increases the score by x.
  */
-function calculateConditionsScore(conditions: boolean[], additionalCustomAdvantage: number = 0): number {
+function calculateConditionsScore(conditions: boolean[], additionalCustomAdvantage = 0): number {
   // If every condition is satisfied, then calculate number of conditions
   // else not every condition is satisfied and therefore return 0
   return (isEveryConditionTrue(conditions) ? conditions.length : 0) + additionalCustomAdvantage;

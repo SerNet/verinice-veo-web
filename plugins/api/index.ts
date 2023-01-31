@@ -16,26 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import defaultsDeep from 'lodash/defaultsDeep';
-import { Plugin, Context } from '@nuxt/types';
 
 import entity from '~/plugins/api/entity';
 import form from '~/plugins/api/form';
 import schema from '~/plugins/api/schema';
 import unit from '~/plugins/api/unit';
 import domain from '~/plugins/api/domain';
-import monitoring from '~/plugins/api/monitoring';
-import catalog from '~/plugins/api/catalog';
 import { sanitizeURLParams } from '~/lib/utils';
 import { IVeoUserComposable, useVeoUser } from '~/composables/VeoUser';
 import { ETAG_MAP, RequestOptions } from '~/composables/api/utils/request';
 
-export function createAPI(context: Context, user: IVeoUserComposable) {
-  return Client.create(context, { form, entity, schema, unit, domain, catalog, monitoring }, user);
+export function createAPI(context: any, user: IVeoUserComposable) {
+  return Client.create(context, { form, entity, schema, unit, domain }, user);
 }
 
 export interface IAPIClient {
   // eslint-disable-next-line no-use-before-define
-  (api: Client): Object;
+  (api: Client): object;
 }
 
 export enum VeoApiReponseType {
@@ -70,10 +67,10 @@ export class Client {
   public baseHistoryURL: string;
   public baseReportURL: string;
   public baseAccountURL: string;
-  public _context: Context;
+  public _context: any;
   public _user: IVeoUserComposable;
 
-  static create<T extends Record<keyof T, IAPIClient>>(context: Context, namespaces: T, user: IVeoUserComposable): Client & { [K in keyof T]: ReturnType<T[K]> } {
+  static create<T extends Record<keyof T, IAPIClient>>(context: any, namespaces: T, user: IVeoUserComposable): Client & { [K in keyof T]: ReturnType<T[K]> } {
     const instance: any = new this(context, user);
     for (const key in namespaces) {
       instance[key] = namespaces[key](instance);
@@ -81,7 +78,7 @@ export class Client {
     return instance;
   }
 
-  constructor(protected context: Context, user: IVeoUserComposable) {
+  constructor(protected context: any, user: IVeoUserComposable) {
     this.build = context.$config.build;
     this.version = context.$config.version;
     this.baseURL = `${context.$config.apiUrl}`.replace(/\/$/, '');
@@ -138,19 +135,18 @@ export class Client {
       }
     }
     url = splittedUrl.join('/');
-
     const defaults = {
       headers: {
         Accept: 'application/json',
         Authorization: 'Bearer ' + this._user.keycloak.value?.token,
-        'Accept-Language': this._context.i18n.locale
+        'Accept-Language': this._context.$i18n.locale.value
       } as Record<string, string>,
       method: 'GET',
       mode: 'cors'
     };
 
     // Some requests, but not all use an ETag header. To automate setting and getting the etag header, we assume that every query that uses an ETag has a parameter called id
-    if (options.params?.id && ETAG_MAP.has(options.params.id as string)) {
+    if (options.method !== 'GET' && options.params?.id && ETAG_MAP.has(options.params.id as string)) {
       defaults.headers['If-Match'] = (ETAG_MAP.get(options.params.id as string) as string).replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
     }
 
@@ -225,10 +221,10 @@ export class Client {
   }
 }
 
-export default <Plugin>((context, inject) => {
+export default defineNuxtPlugin(nuxtApp => {
   const user = useVeoUser();
 
-  inject('api', createAPI(context, user));
+  nuxtApp.provide('api', createAPI(nuxtApp, user));
 });
 
 export type Injection = ReturnType<typeof createAPI>;

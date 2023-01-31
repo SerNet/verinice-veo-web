@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Ref } from '@nuxtjs/composition-api';
+import { Ref } from 'vue';
 import { useQueryClient } from '@tanstack/vue-query';
 
 import { IVeoQueryTransformationMap, QueryOptions, STALE_TIME, useQuery } from './utils/query';
@@ -42,7 +42,7 @@ export interface IVeoUpdateFormParameters {
   form: IVeoFormSchema;
 }
 
-export const formssQueryParameterTransformationMap: IVeoQueryTransformationMap = {
+export const formsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
   fetchAll: (queryParameters: IVeoFetchFormsParameters) => ({ query: queryParameters }),
   fetch: (queryParameters: IVeoFetchFormParameters) => ({
     params: {
@@ -51,7 +51,7 @@ export const formssQueryParameterTransformationMap: IVeoQueryTransformationMap =
   })
 };
 
-export const accountsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
+export const formsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
   create: (mutationParameters: IVeoCreateFormParameters) => ({
     json: { domainId: mutationParameters.domainId, ...mutationParameters.form }
   }),
@@ -70,7 +70,7 @@ export const useFetchForms = (queryParameters: Ref<IVeoFetchFormsParameters>, qu
       url: '/api/forms/'
     },
     queryParameters,
-    formssQueryParameterTransformationMap.fetchAll,
+    formsQueryParameterTransformationMap.fetchAll,
     { ...queryOptions, staleTime: STALE_TIME.MEDIUM, placeholderData: [] }
   );
 
@@ -79,7 +79,7 @@ export const useFetchForm = (queryParameters: Ref<IVeoFetchFormParameters>, quer
     'form',
     { url: '/api/forms/:id', onDataFetched: (result) => JSON.parse(JSON.stringify(result).replaceAll('{CURRENT_DOMAIN_ID}', queryParameters.value.domainId)) },
     queryParameters,
-    formssQueryParameterTransformationMap.fetch,
+    formsQueryParameterTransformationMap.fetch,
     {
       ...queryOptions,
       staleTime: STALE_TIME.MEDIUM
@@ -95,7 +95,7 @@ export const useCreateForm = (mutationOptions?: MutationOptions) => {
       url: '/api/forms',
       method: 'POST'
     },
-    accountsMutationParameterTransformationMap.create,
+    formsMutationParameterTransformationMap.create,
     {
       ...mutationOptions,
       onSuccess: (data, variables, context) => {
@@ -115,9 +115,9 @@ export const useUpdateForm = (mutationOptions?: MutationOptions) => {
     'form',
     {
       url: '/api/forms/:id',
-      method: 'POST'
+      method: 'PUT'
     },
-    accountsMutationParameterTransformationMap.update,
+    formsMutationParameterTransformationMap.update,
     {
       ...mutationOptions,
       onSuccess: (data, variables, context) => {

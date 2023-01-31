@@ -101,7 +101,6 @@ export default class ObjectSchemaHelper {
     merge(this._options, options);
 
     if (!objectSchema) {
-      // @ts-ignore
       if (!domainId) {
         throw new Error("ObjectSchemaHelper2::constructor: If you don't pass an objectschema, you have to pass a domain id to generate a new one.");
       }
@@ -458,7 +457,7 @@ export default class ObjectSchemaHelper {
     }
 
     for (const attribute of link.attributes) {
-      // @ts-ignore
+      // @ts-ignore Some type error, but as the editors will get reworked anyways ¯\_(ツ)_/¯
       const dummy: IVeoObjectSchemaProperty = { ...attribute };
       dummy.title = dummy.description;
       delete dummy.prefix;
@@ -545,7 +544,7 @@ export default class ObjectSchemaHelper {
     };
 
     for (const attribute of aspect.attributes) {
-      // @ts-ignore
+      // @ts-ignore Some type error, but as the editors will get reworked anyways ¯\_(ツ)_/¯
       const dummy: IVeoObjectSchemaProperty = { ...attribute };
       dummy.title = dummy.description;
       delete dummy.prefix;
@@ -572,11 +571,10 @@ export default class ObjectSchemaHelper {
       // #168 Description is no longer used,as now all attributes are internationalized
       delete dummy.title;
 
-      // @ts-ignore
       schemaAspect.properties.attributes.properties[`${attribute.prefix}${attribute.title}`] = dummy;
     }
 
-    // @ts-ignore
+    // @ts-ignore Some type error, but as the editors will get reworked anyways ¯\_(ツ)_/¯
     return schemaAspect;
   }
 
@@ -636,19 +634,15 @@ export default class ObjectSchemaHelper {
     for (const key in objectSchema.properties) {
       switch (key) {
         case this._options.customAspectsKey:
-          // @ts-ignore
           this.loadCustomAspects(objectSchema.properties[key]);
           break;
         case this._options.customLinksKey:
-          // @ts-ignore
           this.loadCustomLinks(objectSchema.properties[key]);
           break;
         case this._options.translationsKey:
-          // @ts-ignore
           this.loadTranslations(objectSchema.properties[key]);
           break;
         case this._options.domainsKey:
-          // @ts-ignore
           this.loadDomains(objectSchema.properties[key]);
           break;
         default:
@@ -734,7 +728,6 @@ export default class ObjectSchemaHelper {
   }
 
   private loadBasicProperties(schema: IVeoObjectSchema['properties'], key: string) {
-    // @ts-ignore
     const property = schema[key] as IVeoObjectSchemaProperty;
     this._basicProperties.push({ title: key, description: property.description || '', type: this.getAttributeType(property), prefix: '' });
   }

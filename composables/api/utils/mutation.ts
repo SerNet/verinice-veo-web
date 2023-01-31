@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { unref, useContext } from '@nuxtjs/composition-api';
 import { useMutation as vueQueryUseMutation } from '@tanstack/vue-query';
 import { UseMutationOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
@@ -23,7 +22,6 @@ import { omit } from 'lodash';
 
 import { IVeoQueryDefinition, IVeoQueryParameters } from './query';
 import { useRequest } from './request';
-import { IBaseObject } from '~/lib/utils';
 
 // Type for less typing in composables
 export type MutationOptions<T = unknown> = Omit<UseMutationOptions<T, unknown, void, unknown>, 'queryFn'>;
@@ -32,7 +30,7 @@ export interface IVeoMutationDefinition extends IVeoQueryDefinition {
   method?: 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
 }
 
-export interface IVeoMutationParameters<TParams = IBaseObject, TQuery = IBaseObject> extends IVeoQueryParameters<TParams, TQuery> {
+export interface IVeoMutationParameters<TParams = Record<string, any>, TQuery = Record<string, any>> extends IVeoQueryParameters<TParams, TQuery> {
   body?: any;
   json?: any;
 }
@@ -56,12 +54,12 @@ export const useMutation = <TVariable, TResult>(
   mutationParameterTransformationFn: (parameters: TVariable) => IVeoMutationParameters,
   mutationOptions?: MutationOptions
 ) => {
-  const { $config } = useContext();
+  const { $config } = useNuxtApp();
   const { request } = useRequest();
 
   // Actual mutation getting execute
   // @ts-ignore Some weird typing problems. However everything works
-  const result = vueQueryUseMutation<TResult, unknown, IMutationParameters>({
+  const result = vueQueryUseMutation<TResult, unknown, IVeoMutationParameters>({
     mutationFn: (mutationParameters: IVeoMutationParameters) => request(mutationDefinition.url, { ...mutationParameters, ...omit(mutationDefinition, 'url') }),
     ...mutationOptions
   });

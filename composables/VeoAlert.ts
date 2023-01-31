@@ -15,21 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { readonly, ref, Ref, SetupContext } from '@nuxtjs/composition-api';
+import { Ref } from 'vue';
 
 import { IVeoGlobalAlert, IVeoGlobalAlertParams, VeoAlertType } from '~/types/VeoTypes';
-import { VeoEvents } from '~/types/VeoGlobalEvents';
 
 const alerts: Ref<IVeoGlobalAlert[]> = ref([]);
-
-interface IVeoEventPayload {
-  type?: VeoAlertType;
-  text: string;
-  title?: string;
-  saveButtonText?: string;
-  objectModified?: boolean; // ToDo: Temporary until objects rework
-  refetchCallback?: CallableFunction; // ToDo: Temporary until objects rework
-}
 
 export function useVeoAlerts() {
   /**
@@ -111,46 +101,12 @@ export function useVeoAlerts() {
     }
   }
 
-  /**
-   * Provides the old way of displaying errors by calling this.$root.$emit.
-   * NOTE: ONLY USE IN NON-COMPOSITION-API COMPONENTS
-   *
-   * @param root The root context of the nuxt application
-   */
-  function listenToRootEvents(root: SetupContext['root']): void {
-    root.$on(VeoEvents.ALERT_ERROR, (payload: IVeoEventPayload) => {
-      displayErrorMessage(payload.title as string, payload.text, {
-        buttonText: payload.saveButtonText,
-        objectModified: payload.objectModified,
-        eventCallbacks: {
-          refetch: payload.refetchCallback as CallableFunction
-        }
-      });
-    });
-    root.$on(VeoEvents.ALERT_INFO, (payload: IVeoEventPayload) => {
-      displayInfoMessage(payload.title as string, payload.text, {
-        buttonText: payload.saveButtonText,
-        objectModified: payload.objectModified,
-        eventCallbacks: {
-          refetch: payload.refetchCallback as CallableFunction
-        }
-      });
-    });
-    root.$on(VeoEvents.SNACKBAR_SUCCESS, (payload: IVeoEventPayload) => {
-      displaySuccessMessage(payload.text);
-    });
-    root.$on(VeoEvents.ALERT_EXPIRE, (alertKey: number) => {
-      expireAlert(alertKey);
-    });
-  }
-
   return {
     alerts: readonly(alerts),
     dispatchEventForCurrentAlert,
     displayErrorMessage,
     displayInfoMessage,
     displaySuccessMessage,
-    expireAlert,
-    listenToRootEvents
+    expireAlert
   };
 }

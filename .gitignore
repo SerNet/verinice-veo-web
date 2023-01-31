@@ -1,22 +1,15 @@
 .idea
 .env
 
-# dependencies
+# Nuxt
 node_modules
-
-# logs
-npm-debug.log
-
-# Nuxt build
+*.log*
 .nuxt
-.nuxt_*
-
-# Nuxt generate
+.nitro
+.cache
+.output
+.env
 dist
-dist_*
-
-static/sw.js
 
 .DS_Store
 .history
-junit.xml

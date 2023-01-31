@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { del, readonly, ref, set } from '@nuxtjs/composition-api';
-
 export interface IVeoBreadcrumb {
   disabled?: boolean;
   exact?: boolean;
@@ -50,12 +48,12 @@ export const useVeoBreadcrumbs = () => {
       throw new Error(`VeoBreadcrumbs::updateCustomBreadcrumb: Breadcrumb ${key} doesn't exist`);
     }
     const index = breadcrumbs.value.findIndex((breadcrumb) => breadcrumb.key === key);
-    set(breadcrumbs.value, index, breadcrumb);
+    breadcrumbs.value[index] = breadcrumb;
   };
 
   const clearCustomBreadcrumbs = () => {
     for (let i = breadcrumbs.value.length; i >= 0; i--) {
-      del(breadcrumbs.value, i);
+      delete breadcrumbs.value[i];
     }
   };
 

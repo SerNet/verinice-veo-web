@@ -15,9 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { reactive, useContext } from '@nuxtjs/composition-api';
 import { defaultsDeep } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
+
 import { useVeoUser } from '~/composables/VeoUser';
 import { sanitizeURLParams } from '~/lib/utils';
 import { IVeoPaginationOptions } from '~/types/VeoTypes';
@@ -54,7 +53,7 @@ export interface RequestOptions extends RequestInit {
 }
 
 export const useRequest = () => {
-  const context = useContext();
+  const context = useNuxtApp();
   const user = useVeoUser();
   const { locale } = useI18n();
 
@@ -170,7 +169,7 @@ export const useRequest = () => {
     };
 
     // Some requests, but not all use an ETag header. To automate setting and getting the etag header, we assume that every query that uses an ETag has a parameter called id
-    if (options.params?.id && ETAG_MAP.has(options.params.id as string)) {
+    if (options.method !== 'GET' && options.params?.id && ETAG_MAP.has(options.params.id as string)) {
       defaults.headers['If-Match'] = (ETAG_MAP.get(options.params.id as string) as string).replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
     }
 

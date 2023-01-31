@@ -17,14 +17,11 @@
  */
 import { ErrorObject } from 'ajv';
 import { last } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
-
-import { IBaseObject } from '~/lib/utils';
 
 export const useVeoErrorFormatter = () => {
   const { t } = useI18n();
 
-  const formatErrors = (errors: ErrorObject[], translations: IBaseObject) => {
+  const formatErrors = (errors: ErrorObject[], translations: Record<string, any>) => {
     const formattedErrors = new Map<string, string[]>();
 
     for (const error of errors) {
@@ -38,12 +35,12 @@ export const useVeoErrorFormatter = () => {
     return formattedErrors;
   };
 
-  const formatError = (error: ErrorObject, translations: IBaseObject) => {
+  const formatError = (error: ErrorObject, translations: Record<string, any>) => {
     const isRequiredRule = error.schemaPath.match(/((.+\/properties\/(\w-)+\b)|(.+(?=\/required)))/g);
     const isEqualRule = !!error.params.allowedValues;
     const isAdditionalPropertiesRule = error.keyword === 'additionalProperties';
     if (!isRequiredRule && !isEqualRule && !isAdditionalPropertiesRule) {
-      throw new Error(`No error formatted found for ${JSON.stringify(error)}`);
+      throw new Error(`No error formatter found for ${JSON.stringify(error)}`);
     }
 
     let indexMatch;
@@ -65,7 +62,7 @@ export const useVeoErrorFormatter = () => {
     switch (error.keyword) {
       case 'required':
         // eslint-disable-next-line no-case-declarations
-        affectedProperty = (error.params as IBaseObject).missingProperty;
+        affectedProperty = (error.params as Record<string, any>).missingProperty;
         objectSchemaPointer = `${(isRequiredRule as RegExpMatchArray)[0]}${indexMatch ? indexMatch[0] : ''}/properties/${affectedProperty}`;
         // Special handling of links, as their last data path entry isn't the string we search for
         if (['targetUri', 'target'].includes(affectedProperty)) {
@@ -94,7 +91,7 @@ export const useVeoErrorFormatter = () => {
     return [objectSchemaPointer, translatedErrorString];
   };
 
-  const handleRequiredLink = (error: ErrorObject, translations: IBaseObject): string => {
+  const handleRequiredLink = (error: ErrorObject, translations: Record<string, any>): string => {
     const dataPathParts = error.instancePath.split('/');
     const missingProperty = error.params.missingProperty;
     let index: number | undefined;
@@ -112,7 +109,7 @@ export const useVeoErrorFormatter = () => {
     }).toString();
   };
 
-  const getInvalidFieldLabel = (field: string, translations: IBaseObject): string => {
+  const getInvalidFieldLabel = (field: string, translations: Record<string, any>): string => {
     return translations[field] || field;
   };
 

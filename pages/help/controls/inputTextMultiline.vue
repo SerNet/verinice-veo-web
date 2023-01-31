@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
+  <BasePage
     title="Input Text Multiline"
     fixed-header
   >
@@ -27,52 +27,43 @@
         lg="4"
         class="docs-form-sector"
       >
-        <VeoForm
+        <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
           :form-schema="form.formSchema"
         />
       </v-col>
     </v-row>
-    <FormDescription
+    <HelpFormDescription
       :object-schema="form.objectSchema"
       :form-schema="form.formSchema"
       :data="form.data"
     />
-  </VeoPage>
+  </BasePage>
 </template>
 
-<script lang="ts">
-import Vue from 'vue';
+<script lang="ts" setup>
+definePageMeta({ layout: 'plain' });
 
-export default Vue.extend({
-  layout: 'plain',
-  data() {
-    return {
-      form: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            inputTextMultiline: {
-              type: 'string'
-            }
-          }
-        },
-        formSchema: {
-          type: 'Control',
-          scope: '#/properties/inputTextMultiline',
-          options: {
-            label: 'Input Text Multiline',
-            format: 'multiline'
-          }
-        },
-        data: {
-          inputTextMultiline: 'Beispiel 1\nBeispiel 2\nBeispiel 3'
-        }
+const form = ref({
+  objectSchema: {
+    type: 'object',
+    properties: {
+      inputTextMultiline: {
+        type: 'string'
       }
-    };
+    }
+  },
+  formSchema: {
+    type: 'Control',
+    scope: '#/properties/inputTextMultiline',
+    options: {
+      label: 'Input Text Multiline',
+      format: 'multiline'
+    }
+  },
+  data: {
+    inputTextMultiline: 'Beispiel 1\nBeispiel 2\nBeispiel 3'
   }
 });
 </script>
-
-<style lang="scss"></style>

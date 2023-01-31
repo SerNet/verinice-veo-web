@@ -17,35 +17,13 @@
  */
 import { JSONSchema7TypeName } from 'json-schema';
 import { UISchemaElement } from './UISchema';
-import { IBaseObject } from '~/lib/utils';
-import { Mode } from '~/components/forms/util';
+import { Mode } from '~/components/dynamic-form/util';
 
 export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
 
 /**
  * 1. Types of user generated data
  */
-export interface IVeoDeploymentInformation {
-  build: {
-    artifact: string;
-    ci: {
-      jobname: string;
-      buildnumber: string;
-    };
-    group: string;
-    name: string;
-    time: string;
-    version: string;
-  };
-  git: {
-    branch: string;
-    commit: {
-      id: string;
-      time: string;
-    };
-  };
-}
-
 export interface IVeoBaseObject {
   id: string;
   createdAt: string;
@@ -170,12 +148,12 @@ interface IVeoCustomObject {
 }
 
 export interface IVeoCustomLink extends IVeoCustomObject {
-  attributes: IBaseObject;
+  attributes: Record<string, any>;
   domains: any;
   target: IVeoLink;
 }
 
-export interface IVeoCustomAspect extends IVeoCustomObject {}
+export type IVeoCustomAspect = IVeoCustomObject
 
 export interface IVeoCustomLinks {
   [key: string]: IVeoCustomLink[];
@@ -191,13 +169,13 @@ export interface IVeoTranslationCollection {
 
 export interface IVeoReactiveFormAction {
   attributeName: string;
-  handler: (newValue: string, newObject: IBaseObject, oldObject: IBaseObject) => void;
+  handler: (newValue: string, newObject: Record<string, any>, oldObject: Record<string, any>) => void;
 }
 
 export interface IVeoFormsAdditionalContext {
   [pointer: string]: {
-    objectSchema?: IBaseObject;
-    formSchema?: IBaseObject;
+    objectSchema?: Record<string, any>;
+    formSchema?: Record<string, any>;
   };
 }
 
@@ -212,7 +190,7 @@ export interface IVeoFormsControlProps {
     label: any;
     [option: string]: any;
   };
-  schema: IBaseObject;
+  schema: Record<string, any>;
   validation: { objectSchema: { errorMsg: any } };
   value: any;
   visible: boolean;
@@ -243,10 +221,10 @@ export interface IVeoObjectSchemaProperty {
   pattern?: string;
   allOf?: {
     if: {
-      properties: IBaseObject;
+      properties: Record<string, any>;
     };
     then: {
-      properties: IBaseObject;
+      properties: Record<string, any>;
     };
   }[];
   [key: string]: any;
@@ -382,7 +360,7 @@ export interface IVeoCatalogItem extends IVeoBaseObject {
     updatedBy: string;
     referenceType: string;
     catalogItem: IVeoLink;
-    attributes: IBaseObject;
+    attributes: Record<string, any>;
     type: string;
     id: string;
   }[];
@@ -590,7 +568,7 @@ export enum VeoAlertType {
 }
 
 export interface IVeoGlobalAlertParams {
-  buttonText?: String; // If not set defaults to "Okay" in VeoGlobalAlert of types "Info & Error"
+  buttonText?: string; // If not set defaults to "Okay" in VeoGlobalAlert of types "Info & Error"
   eventCallbacks?: { [event: string]: CallableFunction };
   [key: string]: any;
 }
@@ -606,7 +584,7 @@ export interface IVeoGlobalAlert {
 export interface IVeoFormSchemaGeneratorOptions {
   excludedProperties?: string[];
   groupedNamespaces?: { namespace: string; label?: string }[];
-  generateControlFunction: (pointer: string, schema: IBaseObject, mode: Mode) => any;
+  generateControlFunction: (pointer: string, schema: Record<string, any>, mode: Mode) => any;
   generateGroupFunction: (children: any[], label?: string) => any;
 }
 

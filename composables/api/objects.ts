@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, Ref } from '@nuxtjs/composition-api';
+import { Ref } from 'vue';
 import { useQueryClient } from '@tanstack/vue-query';
 import { max, omit } from 'lodash';
 
@@ -24,6 +24,7 @@ import { IVeoQueryTransformationMap, QueryOptions, useQuery } from './utils/quer
 import { IVeoMutationParameters, IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
 import { VeoApiReponseType } from './utils/request';
 import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from '~/types/VeoTypes';
+import { getEntityDetailsFromLink } from '~~/lib/utils';
 
 export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
   unit: string;
@@ -45,18 +46,24 @@ export interface IVeoFetchParentObjectsParameters extends IVeoPaginationOptions 
   unitId: string;
 }
 
-export interface IVeoFetchChildObjectsParameters {
+export interface IVeoFetchObjectChildrenParameters {
   endpoint: string;
   id: string;
 }
 
-export interface IVeoFetchChildScopesParameters {
+export interface IVeoFetchScopeChildrenParameters {
   id: string;
 }
 
 export interface IVeoFetchRisksParameters {
   endpoint: string;
   id: string;
+}
+
+export interface IVeoFetchRiskParameters {
+  endpoint: string;
+  objectId: string;
+  scenarioId: string;
 }
 
 export interface IVeoCreateObjectParameters {
@@ -90,9 +97,10 @@ export interface IVeoDeleteRiskParameters {
 export const objectsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
   fetchAll: (queryParameters: IVeoFetchObjectsParameters) => ({ params: { endpoint: queryParameters.endpoint }, query: omit(queryParameters, 'endpoint') }),
   fetch: (queryParameters: IVeoFetchObjectParameters) => ({ params: queryParameters }),
-  fetchChildObjects: (queryParameters: IVeoFetchChildObjectsParameters) => ({ params: queryParameters }),
-  fetchChildScopes: (queryParameters: IVeoFetchChildScopesParameters) => ({ params: queryParameters }),
-  fetchRisks: (queryParameters: IVeoFetchRisksParameters) => ({ params: queryParameters })
+  fetchObjectChildren: (queryParameters: IVeoFetchObjectChildrenParameters) => ({ params: queryParameters }),
+  fetchScopeChildren: (queryParameters: IVeoFetchScopeChildrenParameters) => ({ params: queryParameters }),
+  fetchRisks: (queryParameters: IVeoFetchRisksParameters) => ({ params: queryParameters }),
+  fetchRisk: (queryParameters: IVeoFetchRiskParameters) => ({ params: { id: queryParameters.objectId, endpoint: queryParameters.endpoint, scenarioId: queryParameters.scenarioId } })
 };
 
 export const objectsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
@@ -100,10 +108,10 @@ export const objectsMutationParameterTransformationMap: IVeoMutationTransformati
     const _object = mutationParameters.object;
     // Remove properties of the object only used in the frontend
     if (_object.type === 'scope') {
-      // @ts-ignore
+      // @ts-ignore Is only set in DTO if object is any type expect scope
       delete _object.parts;
     } else {
-      // @ts-ignore
+      // @ts-ignore Is only set in DTO if object is of type scope
       delete _object.members;
     }
     return { params: { endpoint: mutationParameters.endpoint }, query: { scopes: mutationParameters.parentScopes?.join(',') }, json: _object };
@@ -112,18 +120,17 @@ export const objectsMutationParameterTransformationMap: IVeoMutationTransformati
     const _object = mutationParameters.object;
     // Remove properties of the object only used in the frontend
     if (_object.type === 'scope') {
-      // @ts-ignore
+      // @ts-ignore Is only set in DTO if object is any type expect scope
       delete _object.parts;
     } else {
-      // @ts-ignore
+      // @ts-ignore Is only set in DTO if object is of type scope
       delete _object.members;
     }
-    // Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
-    // @ts-ignore
+    // @ts-ignore Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
     delete _object.createdAt;
-    // @ts-ignore
+    // @ts-ignore Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
     delete _object.updatedAt;
-    // @ts-ignore
+    // @ts-ignore Display name is generated in the frontend, so we remove it from the DTO before sending it to the backend
     delete _object.displayName;
     return { params: { endpoint: mutationParameters.endpoint, id: mutationParameters.object.id }, json: _object };
   },
@@ -214,32 +221,35 @@ export const useFetchParentObjects = (queryParameters: Ref<IVeoFetchParentObject
   return useFetchObjects(transformedQueryParameters, queryOptions);
 };
 
-export const useFetchChildObjects = (queryParameters: Ref<IVeoFetchChildObjectsParameters>, queryOptions?: QueryOptions) =>
-  useQuery<IVeoFetchChildObjectsParameters, IVeoEntity[]>(
+export const useFetchObjectChildren = (queryParameters: Ref<IVeoFetchObjectChildrenParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchObjectChildrenParameters, IVeoEntity[]>(
     'childObjects',
     {
       url: '/api/:endpoint/:id/parts',
       onDataFetched: (result) => result.map((item) => formatObject(item))
     },
     queryParameters,
-    objectsQueryParameterTransformationMap.fetchChildObjects,
+    objectsQueryParameterTransformationMap.fetchObjectChildren,
     queryOptions
   );
 
-export const useFetchChildScopes = (queryParameters: Ref<IVeoFetchChildScopesParameters>, queryOptions?: QueryOptions) =>
-  useQuery<IVeoFetchChildScopesParameters, IVeoEntity[]>(
+export const useFetchScopeChildren = (queryParameters: Ref<IVeoFetchScopeChildrenParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchScopeChildrenParameters, IVeoEntity[]>(
     'childScopes',
     {
       url: '/api/scopes/:id/members',
       onDataFetched: (result) => result.map((item) => formatObject(item))
     },
     queryParameters,
-    objectsQueryParameterTransformationMap.fetchChildScopes,
+    objectsQueryParameterTransformationMap.fetchScopeChildren,
     queryOptions
   );
 
 export const useFetchRisks = (queryParameters: Ref<IVeoFetchRisksParameters>, queryOptions?: QueryOptions) =>
   useQuery<IVeoFetchRisksParameters, IVeoRisk[]>('risks', { url: '/api/:endpoint/:id/risks' }, queryParameters, objectsQueryParameterTransformationMap.fetchRisks, queryOptions);
+
+export const useFetchRisk = (queryParameters: Ref<IVeoFetchRiskParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchRiskParameters, IVeoRisk>('risk', { url: '/api/:endpoint/:id/risks/:scenarioId' }, queryParameters, objectsQueryParameterTransformationMap.fetchRisk, queryOptions);
 
 export const useCreateObject = (mutationOptions?: MutationOptions) => {
   const queryClient = useQueryClient();
@@ -356,13 +366,15 @@ export const useCreateRisk = (mutationOptions?: MutationOptions) => {
     {
       ...mutationOptions,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries([
-          'risks',
+        queryClient.invalidateQueries({ queryKey: ['risks'] });
+        queryClient.invalidateQueries({ queryKey: [
+          'risk',
           {
-            endpoint: (variables as unknown as IVeoMutationParameters).params?.endpoint,
-            id: (variables as unknown as IVeoMutationParameters).params?.objectId
+            scenarioId: getEntityDetailsFromLink((variables as unknown as any).json.scenario).id,
+            objectId: (variables as unknown as IVeoMutationParameters).params?.objectId,
+            endpoint: (variables as unknown as IVeoMutationParameters).params?.endpoint
           }
-        ]);
+        ]});
         if (mutationOptions?.onSuccess) {
           mutationOptions.onSuccess(data, variables, context);
         }
@@ -370,6 +382,9 @@ export const useCreateRisk = (mutationOptions?: MutationOptions) => {
     }
   );
 };
+
+// Updating and creating risks is the exact same request, however we alias it to make the code more understandable.
+export const useUpdateRisk = useCreateRisk;
 
 export const useDeleteRisk = (mutationOptions?: MutationOptions) => {
   const queryClient = useQueryClient();

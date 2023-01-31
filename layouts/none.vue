@@ -17,21 +17,12 @@
 -->
 <template>
   <div>
-    <nuxt />
+    <slot />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
-
-export default defineComponent({
-  setup() {
-    return {};
-  },
-  head() {
-    return {
-      titleTemplate: '%s - verinice.veo'
-    };
-  }
-});
+<script lang="ts" setup>
+useHead(() => ({
+  titleTemplate: '%s - verinice.veo'
+}));
 </script>

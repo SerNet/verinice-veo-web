@@ -23,15 +23,11 @@ import { IVeoCustomLink, IVeoEntity, IVeoFormSchema, IVeoLink, IVeoObjectSchema,
 
 export const CHART_COLORS = ['#c90000', '#ffc107', '#3f51b5', '#8bc34a', '#858585'];
 
-export interface IBaseObject {
-  [key: string]: any;
-}
-
 export interface IForm {
   objectSchema: JSONSchema7 | IVeoObjectSchema;
   formSchema?: IVeoFormSchema;
-  objectData: IBaseObject | IVeoEntity;
-  lang?: IBaseObject;
+  objectData: Record<string, any> | IVeoEntity;
+  lang?: Record<string, any>;
 }
 
 interface IUUIDParam {

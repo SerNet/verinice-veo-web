@@ -48,7 +48,7 @@ export default function (api: Client) {
      * @param query Additional request query params
      */
     async fetchUnitDomains(unitId: string, query?: Record<string, string>): Promise<IVeoDomain[]> {
-      // @ts-ignore
+      // @ts-ignore // unit exists, but we don't know it at this point. Could be improved but as plugin is deprecated anyways ¯\_(ツ)_/¯
       const unit: IVeoUnit = await api.unit.fetch(unitId);
       const domains: IVeoDomain[] = await this.fetchAll(query);
 

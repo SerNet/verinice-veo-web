@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
+  <BasePage
     title="Markdown Editor"
     fixed-header
   >
@@ -25,57 +25,43 @@
         cols="auto"
         class="docs-form-sector"
       >
-        <VeoForm
-          v-model="dynamicForm.data"
-          :object-schema="dynamicForm.objectSchema"
-          :form-schema="dynamicForm.formSchema"
+        <DynamicFormEntrypoint
+          v-model="form.data"
+          :object-schema="form.objectSchema"
+          :form-schema="form.formSchema"
         />
       </v-col>
     </v-row>
-    <FormDescription
-      :object-schema="dynamicForm.objectSchema"
-      :form-schema="dynamicForm.formSchema"
-      :data="dynamicForm.data"
+    <HelpFormDescription
+      :object-schema="form.objectSchema"
+      :form-schema="form.formSchema"
+      :data="form.data"
     />
-  </VeoPage>
+  </BasePage>
 </template>
 
-<script lang="ts">
-import Vue from 'vue';
+<script lang="ts" setup>
+definePageMeta({ layout: 'plain' });
 
-export default Vue.extend({
-  layout: 'plain',
-  data() {
-    return {
-      form: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            markdown: {
-              type: 'string'
-            }
-          }
-        },
-        formSchema: {
-          type: 'Control',
-          scope: '#/properties/markdown',
-          options: {
-            label: 'Markdown Editor',
-            format: 'markdown'
-          }
-        },
-        data: {
-          markdown: '# Header\n\n```js\nconsole.log("Beispiel Code")\n```'
-        }
+const form = ref({
+  objectSchema: {
+    type: 'object',
+    properties: {
+      markdown: {
+        type: 'string'
       }
-    };
-  },
-  computed: {
-    dynamicForm(): any {
-      return this.form;
     }
+  },
+  formSchema: {
+    type: 'Control',
+    scope: '#/properties/markdown',
+    options: {
+      label: 'Markdown Editor',
+      format: 'markdown'
+    }
+  },
+  data: {
+    markdown: '# Header\n\n```js\nconsole.log("Beispiel Code")\n```'
   }
 });
 </script>
-
-<style lang="scss"></style>

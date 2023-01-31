@@ -16,161 +16,144 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
-    :title="t('breadcrumbs.index')"
+  <BasePage
+    :title="$t('breadcrumbs.index')"
     data-component-name="unit-selection-page"
   >
-    <div class="text-body-1 my-4">
-      {{ t('unitpicker') }}
-    </div>
     <div class="d-flex justify-center">
-      <VeoCard style="width: 70%; max-width: 1000px;">
-        <v-data-iterator
-          :search="search"
-          :items="units"
-          item-key="id"
-        >
-          <template #header>
-            <div data-component-name="unit-selection-search">
-              <v-text-field
-                v-model="search"
-                dense
-                clearable
-                filled
-                hide-details
-                color="black"
-                prepend-inner-icon="mdi-magnify"
-                :label="t('unitpickerPlaceholder')"
+      <BaseCard
+        style="width: 70%; max-width: 1000px;"
+      >
+        <v-card-text>
+          <h3 class="text-h4">
+            {{ t('unitpicker') }}
+          </h3>
+        </v-card-text>
+        <v-list lines="two">
+          <template v-if="unitsFetching">
+            <div
+              v-for="i in 2"
+              :key="i"
+              class="mb-4"
+            >
+              <VSkeletonLoader
+                type="text"
+                width="150px"
+                class="mx-4 my-1"
+              />
+              <VSkeletonLoader
+                type="text"
+                width="250px"
+                class="mx-4 my-1"
               />
             </div>
-            <v-progress-linear
-              v-if="fetchState.pending"
-              indeterminate
-            />
           </template>
-          <template #default="{ items }">
-            <v-list
-              dense
-              data-component-name="unit-selection-available-units"
-            >
-              <v-list-item
-                v-for="item in items"
-                :key="item.id"
-                two-line
-                :disabled="!generateUnitDashboardLink(item.id)"
-                :to="generateUnitDashboardLink(item.id)"
-              >
-                <v-list-item-content>
-                  <v-list-item-title v-text="item.name" />
-                  <v-list-item-subtitle v-text="item.description" />
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </template>
-        </v-data-iterator>
-      </VeoCard>
+          <v-list-item
+            v-for="unit in units"
+            v-else
+            :key="unit.id"
+            lines="two"
+            :title="unit.name"
+            :subtitle="unit.description"
+            :disabled="!generateUnitDashboardLink(unit.id)"
+            :to="generateUnitDashboardLink(unit.id)"
+          />
+        </v-list>
+      </BaseCard>
     </div>
-    <VeoWelcomeDialog
-      v-if="showWelcomeDialog"
-      v-model="showWelcomeDialog"
-    />
-  </VeoPage>
+    <WelcomeDialog v-model="showWelcomeDialog" />
+  </BasePage>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, useContext, useFetch, useRouter } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+export const ROUTE_NAME = 'index';
+</script>
+
+<script lang="ts" setup>
+import { StorageSerializers, useStorage } from '@vueuse/core';
 
 import { useVeoUser } from '~/composables/VeoUser';
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
-import { IVeoUnit } from '~/types/VeoTypes';
-import LocalStorage from '~/util/LocalStorage';
+import { IVeoAPIMessage, IVeoUnit } from '~/types/VeoTypes';
+import { useFetchUnits, useCreateUnit } from '~/composables/api/units';
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+import { useRequest } from '~/composables/api/utils/request';
 
-export const ROUTE_NAME = 'index';
+const { profile, userSettings } = useVeoUser();
+const router = useRouter();
+const { t } = useI18n();
+const { request } = useRequest();
 
-export default defineComponent({
-  name: 'VeoUnitSelectionPage',
-  setup() {
-    const { $api } = useContext();
-    const { profile, userSettings } = useVeoUser();
-    const router = useRouter();
-    const { t } = useI18n();
+const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
 
-    const search = ref<string | undefined>(undefined);
+const showWelcomeDialog = computed({
+  get: () => !firstSetpsCompleted.value,
+  set: (newValue) => { firstSetpsCompleted.value = !newValue; }
+});
 
-    const showWelcomeDialog = ref(!LocalStorage.firstStepsCompleted);
+const redirectIfTwoUnits = async () => {
+  // Only applicable if the user has only two units (one demo and one main)
+  if (userSettings.value.maxUnits !== 2) {
+    return;
+  }
+  const nonDemoUnits: IVeoUnit[] = units.value.filter((unit: IVeoUnit) => unit.name !== 'Demo');
+  const myNonDemoUnit = nonDemoUnits.find((unit) => unit.createdBy === profile.value?.username);
 
-    const units = ref<IVeoUnit[]>([]);
+  // Auto-redirect the user to his non demo unit upon visting the app. If it doesn't exist, create it and then redirect
+  if (nonDemoUnits.length > 0) {
+    // Try redirecting the user to the first unit found that was created by him, else redirect him to a unit created by someone else.
+    const unitToRedirectTo = myNonDemoUnit ?? nonDemoUnits[0];
 
-    const { fetchState } = useFetch(async () => {
-      units.value = await $api.unit.fetchAll();
+    if (unitToRedirectTo) {
+      const domainId = getFirstDomainDomaindId(unitToRedirectTo);
 
-      // Only applicable if the user has only two units (one demo and one main)
-      if (userSettings.value.maxUnits === 2) {
-        const nonDemoUnits: IVeoUnit[] = units.value.filter((unit: IVeoUnit) => unit.name !== 'Demo');
-        const myNonDemoUnit = nonDemoUnits.find((unit) => unit.createdBy === profile.value?.username);
-
-        // Auto-redirect the user to his non demo unit upon visting the app. If it doesn't exist, create it and then redirect
-        if (nonDemoUnits.length > 0) {
-          // Try redirecting the user to the first unit found that was created by him, else redirect him to a unit created by someone else.
-          const unitToRedirectTo = myNonDemoUnit ?? nonDemoUnits[0];
-
-          if (unitToRedirectTo) {
-            const domainId = getFirstDomainDomaindId(unitToRedirectTo);
-
-            if (domainId) {
-              router.push({
-                name: 'unit-domains-domain',
-                params: {
-                  unit: createUUIDUrlParam('unit', unitToRedirectTo.id),
-                  domain: createUUIDUrlParam('domain', domainId)
-                }
-              });
-            }
+      if (domainId) {
+        await router.push({
+          name: 'unit-domains-domain',
+          params: {
+            unit: createUUIDUrlParam('unit', unitToRedirectTo.id),
+            domain: createUUIDUrlParam('domain', domainId)
           }
-        } else {
-          const result = await $api.unit.create({
-            name: 'Unit 1',
-            description: t('firstUnitDescription')
-          });
-          const unit = await $api.unit.fetch(result.resourceId);
-          const domainId = getFirstDomainDomaindId(unit);
+        });
+      }
+    }
+  } else {
+    await createUnitAndRedirect({
+      name: 'Unit 1',
+      description: t('firstUnitDescription')
+    });
+  }
+};
 
-          if (domainId) {
-            router.push({
-              name: 'unit-domains-domain',
-              params: {
-                unit: createUUIDUrlParam('unit', unit.id),
-                domain: createUUIDUrlParam('domain', domainId)
-              }
-            });
-          }
-        }
+const redirectToNewUnit = async (data: IVeoAPIMessage) => {
+  const unit = await request<IVeoUnit>('/api/units/:id', { params: { id: data.resourceId } });
+  const domainId = getFirstDomainDomaindId(unit);
+
+  if (domainId) {
+    router.push({
+      name: 'unit-domains-domain',
+      params: {
+        unit: createUUIDUrlParam('unit', unit.id),
+        domain: createUUIDUrlParam('domain', domainId)
       }
     });
-
-    const generateUnitDashboardLink = (unitId: string) => {
-      const unitToLinkTo = units.value.find((unit) => unit.id === unitId);
-      let domainId;
-
-      if (unitToLinkTo) {
-        domainId = getFirstDomainDomaindId(unitToLinkTo);
-      }
-
-      return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
-    };
-
-    return {
-      fetchState,
-      generateUnitDashboardLink,
-      search,
-      showWelcomeDialog,
-      units,
-
-      t
-    };
   }
-});
+};
+
+const { data: units, isFetching: unitsFetching } = useFetchUnits({ onSuccess: redirectIfTwoUnits });
+
+const { mutateAsync: createUnitAndRedirect } = useCreateUnit({ onSuccess: redirectToNewUnit });
+
+const generateUnitDashboardLink = (unitId: string) => {
+  const unitToLinkTo = units.value.find((unit) => unit.id === unitId);
+  let domainId;
+
+  if (unitToLinkTo) {
+    domainId = getFirstDomainDomaindId(unitToLinkTo);
+  }
+
+  return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
+};
 </script>
 
 <i18n>
