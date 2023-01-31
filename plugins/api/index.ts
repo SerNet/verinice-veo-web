@@ -146,7 +146,7 @@ export class Client {
     };
 
     // Some requests, but not all use an ETag header. To automate setting and getting the etag header, we assume that every query that uses an ETag has a parameter called id
-    if (options.params?.id && ETAG_MAP.has(options.params.id as string)) {
+    if (options.method !== 'GET' && options.params?.id && ETAG_MAP.has(options.params.id as string)) {
       defaults.headers['If-Match'] = (ETAG_MAP.get(options.params.id as string) as string).replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
     }
 

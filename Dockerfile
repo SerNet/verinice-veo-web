@@ -44,25 +44,27 @@ ENV NODE_ENV=$NODE_ENV
 RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > public/VERSION && echo ${CI_COMMIT_SHA} > BUILD && echo ${CI_COMMIT_SHA} > public/BUILD
 
 RUN npm run generate
+RUN node externalize-scripts.mjs
 
 FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 
 # copy generated application and install dependencies
 WORKDIR /usr/src/veo
-COPY --from=builder /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.js ./
-COPY --chown=chrome --from=builder /usr/src/app/dist ./dist
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.ts ./
+COPY --chown=chrome --from=builder /usr/src/app/.output ./.output
 
-# copy print.js
+RUN cat /usr/src/veo/.output/public/administration/index.html
+
+# copy print.mjs
 WORKDIR /usr/src/app
-COPY --chown=chrome print.js .
+COPY --chown=chrome print.mjs .
 RUN mkdir dist
 
 # Start nuxt app in background, wait for startup and generate pdf documentation
-RUN nohup sh -c "(cd /usr/src/veo && (./node_modules/nuxt/bin/nuxt.js start&))" && sleep 5 && node print.js
+RUN nohup sh -c "(cd /usr/src/veo && npm ci && npm i serve && (npm run start&))" && sleep 5 && node print.mjs
 
 # Copy files to veo dist folder to bundle it with application
-RUN cp /usr/src/app/dist/*.pdf /usr/src/veo/dist/
+RUN mv /usr/src/veo/.output/public/ /usr/src/veo/dist/ && cp /usr/src/app/dist/*.pdf /usr/src/veo/dist/
 
 FROM nginx:1.21 AS release
 

@@ -13,6 +13,7 @@
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore .",
     "precommit": "npm run lint",
+    "start": "nuxt start",
     "print": "docker run --add-host=host.docker.internal:host-gateway -v $(pwd)/print.js:/usr/src/app/print.js -v $(pwd)/dist:/usr/src/app/dist ghcr.io/drpayyne/chrome-puppeteer:latest node print.js http://host.docker.internal:3000/docs?print"
   },
   "husky": {
@@ -44,6 +45,8 @@
     "@tanstack/vue-query": "4.20.4",
     "@toast-ui/editor": "^3.2.1",
     "@toast-ui/editor-plugin-code-syntax-highlight": "^3.0.0",
+    "@types/glob": "^8.0.1",
+    "@types/hash-sum": "^1.0.0",
     "@types/intro.js": "^5.1.0",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.15",
@@ -59,6 +62,7 @@
     "eslint": "^8.31.0",
     "eslint-plugin-nuxt": "^4.0.0",
     "eslint-plugin-vue": "^9.8.0",
+    "glob": "^8.1.0",
     "hash-sum": "^2.0.0",
     "husky": "^8.0.2",
     "i": "^0.3.7",
