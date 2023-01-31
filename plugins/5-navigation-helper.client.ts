@@ -18,7 +18,7 @@
 import { StorageSerializers, useStorage } from '@vueuse/core';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { LOCAL_STORAGE_KEYS } from '~/types/LocalStorage';
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 export default defineNuxtPlugin (async (nuxt) => {
   const route = useRoute();

@@ -17,11 +17,12 @@
 -->
 <template>
   <EditorFormSchemaGeneratorElementsGroup
-    v-bind="$props"
+    v-bind="props"
     :key="name"
     @delete="$emit('delete', $event)"
     @update="$emit('update', $event)"
     @update-custom-translation="$emit('update-custom-translation', $event)"
+    @update:model-value="$emit('update:model-value', $event)"
   >
     <slot />
   </EditorFormSchemaGeneratorElementsGroup>
@@ -32,7 +33,7 @@ import { PropType } from 'vue';
 import { IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 
 
-defineProps({
+const props = defineProps({
   modelValue: {
     type: Object,
     default: undefined
@@ -60,8 +61,12 @@ defineProps({
   language: {
     type: String,
     required: true
+  },
+  createFunction: {
+    type: Function,
+    required: true
   }
 });
 
-defineEmits(['update', 'delete', 'update-custom-translation']);
+defineEmits(['update', 'delete', 'update-custom-translation', 'update:model-value']);
 </script>

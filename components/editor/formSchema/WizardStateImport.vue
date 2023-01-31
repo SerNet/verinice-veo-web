@@ -31,6 +31,7 @@
           :rules="[requiredRule]"
           :items="formSchemaOptions"
           required
+          variant="underlined"
           @update:model-value="$emit('update:form-schema-id', $event)"
         />
         <EditorFileUpload
@@ -70,7 +71,7 @@
     <BaseCard class="full-width">
       <v-card-text>
         <v-checkbox
-          :value="forceOwnSchema"
+          :model-value="forceOwnSchema"
           :label="t('forceOwnSchema')"
           @update:model-value="$emit('update:force-own-schema', $event)"
         />
@@ -113,7 +114,7 @@ export default defineComponent({
       default: undefined
     },
     formSchema: {
-      required: true,
+      default: undefined,
       validator: (value: any) => value === undefined || isObject(value),
       type: Object as PropType<IVeoFormSchema | undefined>
     },
@@ -149,7 +150,7 @@ export default defineComponent({
 
     // If the object schema belonging to the form schema doesn't exist, the user has to upload it themself
     const objectTypeMissing = computed(
-      () => props.formSchema && (!objectTypes.value?.length || !Object.keys(objectTypes.value || {}).some((schemaName) => schemaName === (props.formSchema?.modelType as string)))
+      () => props.formSchema && (!Object.keys(objectTypes.value || {}).some((schemaName) => schemaName === (props.formSchema?.modelType as string)))
     );
 
     return {

@@ -17,9 +17,7 @@
 -->
 <template>
   <v-card
-    rounded
-    flat
-    outlined
+    variant="outlined"
     class="fse-generator-element mx-3 my-2"
   >
     <v-card-text class="pa-0">
@@ -27,7 +25,7 @@
         <v-col
           cols="auto"
           class="d-flex align-center px-1"
-          :class="color"
+          :style="{ 'background-color': color }"
         >
           <v-icon
             class="handle"
@@ -60,31 +58,23 @@
           class="text-right pr-2"
         >
           <v-btn
-            icon
-            x-small
+            :icon="mdiPencil"
+            size="small"
+            variant="text"
             @click="showEdit"
-          >
-            <v-icon
-              size="small"
-              :icon="mdiPencil"
-            />
-          </v-btn>
+          />
           <v-btn
-            icon
-            x-small
+            :icon="mdiTrashCanOutline"
+            size="small"
+            variant="text"
             @click="showDelete"
-          >
-            <v-icon
-              size="small"
-              :icon="mdiTrashCanOutline"
-            />
-          </v-btn>
+          />
         </v-col>
       </v-row>
     </v-card-text>
     <EditorFormSchemaEditControlDialog
-      v-model="editDialog"
       v-bind="$props"
+      v-model="editDialog"
       :form-schema="modelValue"
       :form-schema-pointer="formSchemaPointer"
       :type="currentType"
@@ -182,7 +172,7 @@ export default {
       return Array.isArray(this.schema.enum) ? 'enum' : this.schema.type && !Array.isArray(this.schema.type) ? this.schema.type : 'default';
     },
     effect(): string | undefined {
-      return this.value?.rule?.effect;
+      return this.modelValue?.rule?.effect;
     }
   },
   watch: {

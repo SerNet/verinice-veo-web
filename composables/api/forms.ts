@@ -115,7 +115,7 @@ export const useUpdateForm = (mutationOptions?: MutationOptions) => {
     'form',
     {
       url: '/api/forms/:id',
-      method: 'POST'
+      method: 'PUT'
     },
     formsMutationParameterTransformationMap.update,
     {

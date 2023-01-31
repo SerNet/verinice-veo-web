@@ -20,7 +20,7 @@
     :title="title"
     :styling="styling"
     :translate="translate"
-    two-line
+    lines="two"
   >
     <template #description>
       <v-list-item-subtitle><span v-text="localizedDescription" /></v-list-item-subtitle>

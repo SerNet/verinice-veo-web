@@ -46,7 +46,7 @@
                 :title="child.item.title"
                 :description="child.item.description"
                 :styling="child.styling"
-                two-line
+                lines="two"
                 translate
               />
             </v-list>
@@ -81,7 +81,7 @@
             "
             :key="index"
             class="mb-2 overflow-hidden"
-            outlined
+            variant="outlined"
           >
             <v-list class="py-0">
               <EditorObjectSchemaListHeader
@@ -95,7 +95,7 @@
                 :key="index2"
                 v-bind="attribute"
                 :styling="newItemTypes[attribute.type]"
-                two-line
+                lines="two"
                 translate
               />
             </v-list>
@@ -127,7 +127,7 @@
             v-show="itemContainsAttributeTitle(link, search)"
             :key="index"
             class="mb-2 overflow-hidden"
-            outlined
+            variant="outlined"
           >
             <v-list class="py-0">
               <EditorObjectSchemaListHeader
@@ -145,7 +145,7 @@
                 :key="index2"
                 v-bind="attribute"
                 :styling="newItemTypes[attribute.type]"
-                two-line
+                lines="two"
                 translate
               />
             </v-list>

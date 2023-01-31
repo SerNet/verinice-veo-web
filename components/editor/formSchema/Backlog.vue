@@ -30,15 +30,15 @@
       class="pt-4 text-center"
     >
       <v-btn
-        text
-        small
+        variant="text"
+        size="small"
         @click="onExpandAll"
       >
         {{ t('expand') }}
       </v-btn>
       <v-btn
-        text
-        small
+        variant="text"
+        size="small"
         @click="onCollapseAll"
       >
         {{ t('collapse') }}
@@ -56,32 +56,26 @@
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-card
-            outlined
+            variant="outlined"
             class="overflow-hidden"
           >
-            <v-list
-              dense
-              class="py-0"
-            >
+            <v-list class="py-0">
               <Draggable
-                class="drag-form-elements"
-                tag="div"
-                style="overflow: auto; min-width:300;"
                 :list="filteredFormElements"
+                class="drag-form-elements"
+                style="overflow: auto; min-width:300;"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
                 :clone="onCloneFormElement"
+                :item-key="(element) => element.description.title"
               >
-                <v-sheet
-                  v-for="(el, i) in filteredFormElements"
-                  :key="i"
-                >
-                  <EditorFormSchemaListItem
-                    :title="el.description.title"
-                    :styling="el.description"
+                <template #item="{ element }">
+                  <EditorListItem
+                    :title="element.description.title"
+                    :styling="element.description"
                     translate
                   />
-                </v-sheet>
+                </template>
               </Draggable>
             </v-list>
           </v-card>
@@ -90,37 +84,32 @@
 
       <v-expansion-panel v-show="filteredBasics.length">
         <v-expansion-panel-title class="overline px-0">
-          {{ t('editor.basicproperties') }} ({{ filteredBasics.length }})
+          {{ globalT('editor.basicproperties') }} ({{ filteredBasics.length }})
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-card
             v-show="filteredBasics.length"
-            outlined
+            variant="outlined"
             class="overflow-hidden"
           >
-            <v-list
-              dense
-              class="py-0"
-            >
+            <v-list class="py-0">
               <Draggable
+                v-model="filteredBasics"
                 class="drag-unused-basic-properties"
                 tag="div"
                 style="overflow: auto; min-width:300;"
-                :list="filteredBasics"
+                item-key="scope"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
                 :clone="onCloneControl"
               >
-                <v-sheet
-                  v-for="(el, i) in filteredBasics"
-                  :key="i"
-                >
-                  <EditorFormSchemaListItem
-                    :title="el.backlogTitle"
-                    :styling="typeMap[el.type]"
+                <template #item="{ element }">
+                  <EditorListItem
+                    :title="element.propertyName"
+                    :styling="typeMap[element.type]"
                     translate
                   />
-                </v-sheet>
+                </template>
               </Draggable>
             </v-list>
           </v-card>
@@ -129,37 +118,32 @@
 
       <v-expansion-panel v-show="filteredAspects.length">
         <v-expansion-panel-title class="overline px-0">
-          {{ t('editor.customaspects') }} ({{ filteredAspects.length }})
+          {{ globalT('editor.customaspects') }} ({{ filteredAspects.length }})
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-card
             v-if="filteredAspects.length"
-            outlined
+            variant="outlined"
             class="overflow-hidden"
           >
-            <v-list
-              dense
-              class="py-0"
-            >
+            <v-list class="py-0">
               <Draggable
+                :list="filteredAspects"
                 class="drag-unused-aspects"
                 tag="div"
                 style="overflow: auto; min-width:300;"
-                :list="filteredAspects"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
                 :clone="onCloneControl"
+                item-key="scope"
               >
-                <v-sheet
-                  v-for="(el, i) in filteredAspects"
-                  :key="i"
-                >
-                  <EditorFormSchemaListItem
-                    :title="el.backlogTitle"
-                    :styling="typeMap[el.type]"
+                <template #item="{ element }">
+                  <EditorListItem
+                    :title="element.backlogTitle"
+                    :styling="typeMap[element.type]"
                     translate
                   />
-                </v-sheet>
+                </template>
               </Draggable>
             </v-list>
           </v-card>
@@ -168,37 +152,31 @@
 
       <v-expansion-panel v-show="filteredLinks.length">
         <v-expansion-panel-title class="overline px-0">
-          {{ t('editor.customlinks') }} ({{ filteredLinks.length }})
+          {{ globalT('editor.customlinks') }} ({{ filteredLinks.length }})
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <v-card
             v-if="filteredLinks.length"
-            outlined
+            variant="outlined"
             class="overflow-hidden"
           >
-            <v-list
-              dense
-              class="py-0"
-            >
+            <v-list class="py-0">
               <Draggable
-                class="drag-unused-links"
-                tag="div"
-                style="overflow: auto; min-width:300;"
                 :list="filteredLinks"
+                class="drag-unused-links"
+                style="overflow: auto; min-width:300;"
+                item-key="scope"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
                 :clone="onCloneControl"
               >
-                <v-sheet
-                  v-for="(el, i) in filteredLinks"
-                  :key="i"
-                >
-                  <EditorFormSchemaListItem
-                    :title="el.backlogTitle"
-                    :styling="typeMap[el.type]"
+                <template #item="{ element }">
+                  <EditorListItem
+                    :title="element.backlogTitle"
+                    :styling="typeMap[element.type]"
                     translate
                   />
-                </v-sheet>
+                </template>
               </Draggable>
             </v-list>
           </v-card>
@@ -211,31 +189,25 @@
         <v-expansion-panel-text>
           <v-card
             v-if="filteredWidgets.length"
-            outlined
+            variant="outlined"
             class="overflow-hidden"
           >
-            <v-list
-              dense
-              class="py-0"
-            >
+            <v-list class="py-0">
               <Draggable
-                class="drag-unused-widgets"
-                tag="div"
-                style="overflow: auto; min-width:300;"
                 :list="filteredWidgets"
+                item-key="code"
+                class="drag-unused-widgets"
+                style="overflow: auto; min-width:300;"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
                 :clone="onCloneWidget"
               >
-                <v-sheet
-                  v-for="(widget, index) in filteredWidgets"
-                  :key="index"
-                >
-                  <EditorFormSchemaListItem
-                    :title="widget.name[locale]|| Object.values(widget.name)[0]"
+                <template #item="{ element }">
+                  <EditorListItem
+                    :title="element.name[locale] || Object.values(element.name)[0]"
                     :styling="{ icon: mdiAutoFix, color: 'grey darken-4', name: upperFirst(t('widget').toString()) }"
                   />
-                </v-sheet>
+                </template>
               </Draggable>
             </v-list>
           </v-card>
@@ -249,7 +221,7 @@ import { ComputedRef, PropType, Ref } from 'vue';
 import { JsonPointer } from 'json-ptr';
 import Draggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
-import { pick, upperFirst } from 'lodash';
+import { cloneDeep, pick, upperFirst } from 'lodash';
 import { mdiAutoFix, mdiFormatText, mdiFormSelect } from '@mdi/js';
 
 import { INPUT_TYPES } from '~/types/VeoEditor';
@@ -302,6 +274,7 @@ export default defineComponent({
   emits: ['control-items'],
   setup(props, context) {
     const { locale, t } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
 
     const typeMap = ref(INPUT_TYPES);
 
@@ -464,9 +437,7 @@ export default defineComponent({
      * Interactive things (triggered by the user)
      */
     function onCloneFormElement(original: any) {
-      // Return always new object reference on clone to get in issues of the same reference
-      // https://github.com/SortableJS/Vue.Draggable/issues/203
-      const element = JSON.parse(JSON.stringify(original));
+      const element = cloneDeep(original);
       JsonPointer.unset(element, '#/description');
       if (element?.type?.toLowerCase() === 'label') {
         const elementName = `text_${uuid()}`;
@@ -475,7 +446,7 @@ export default defineComponent({
       return element;
     }
     function onCloneControl(original: IControl) {
-      const dataToClone: IControl = JSON.parse(JSON.stringify(original));
+      const dataToClone: IControl = cloneDeep(original);
       return {
         type: 'Control',
         scope: dataToClone.scope,
@@ -509,6 +480,7 @@ export default defineComponent({
 
       mdiAutoFix,
       t,
+      globalT,
       upperFirst
     };
   }

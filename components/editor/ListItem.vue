@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list-item :two-line="twoLine">
+  <v-list-item :lines="lines">
     <template 
       v-if="styling"
       #prepend
@@ -66,8 +66,9 @@ export default defineComponent({
       type: String,
       default: undefined
     },
-    twoLine: {
-      type: Boolean
+    lines: {
+      type: String as PropType<'one' | 'two' | 'three'>,
+      default: 'one'
     },
     styling: {
       type: Object as PropType<IInputType>,

@@ -38,7 +38,7 @@
                 cols="12"
                 :md="5"
               >
-                <span style="font-size: 1.2rem;">{{ t('editor.formschema.edit.input.label.text') }}*:</span>
+                <span style="font-size: 1.2rem;">{{ globalT('editor.formschema.edit.input.label.text') }}*:</span>
               </v-col>
               <v-col
                 cols="12"
@@ -46,7 +46,7 @@
               >
                 <v-text-field
                   :model-value="localCustomTranslation[language][name] || defaultLabel"
-                  :label="t('editor.formschema.edit.input.label')"
+                  :label="globalT('editor.formschema.edit.input.label')"
                   required
                   @update:model-value="onInputLabel"
                 />
@@ -113,7 +113,7 @@
                 cols="12"
                 :md="5"
               >
-                <span style="font-size: 1.2rem;">{{ t('editor.formschema.edit.input.direction') }}:</span>
+                <span style="font-size: 1.2rem;">{{ globalT('editor.formschema.edit.input.direction') }}:</span>
               </v-col>
               <v-col
                 cols="12"
@@ -122,7 +122,7 @@
                 <v-autocomplete
                   v-model="activeControlType.direction"
                   :items="directionItems"
-                  :label="t('editor.formschema.edit.input.direction')"
+                  :label="globalT('editor.formschema.edit.input.direction')"
                 />
               </v-col>
             </v-row>
@@ -131,7 +131,7 @@
               :current-scope="formSchema.scope"
             />
           </v-form>
-          <small>{{ t('global.input.requiredfields') }}</small>
+          <small>{{ globalT('global.input.requiredfields') }}</small>
         </v-card-text>
       </BaseCard>
       <h3 class="text-h3 mt-6">
@@ -139,34 +139,30 @@
       </h3>
       <BaseCard v-if="activeControlType.name === 'LinksField' && formSchemaElements.length > 0">
         <Draggable
+          v-model="formSchemaElements"
           class="dragArea d-flex flex-column fill-width fill-height"
-          tag="div"
           style="overflow: auto; min-height: 200px;"
-          :list="formSchemaElements"
           handle=".handle"
           :group="{ name: 'link-attributes' }"
+          item-key="scope"
         >
-          <div
-            v-for="(attribute, index) in formSchemaElements"
-            :key="index"
-            class="handle"
-          >
+          <template #item="{ element, index}">
             <EditorFormSchemaGeneratorElementsControl
-              :name="attribute.scope.split('/').pop()"
-              :object-schema="getSchema(attribute.scope)"
-              :model-value="attribute"
-              :options="attribute.options"
-              :scope="attribute.scope"
-              :form-schema="attribute"
+              :name="element.scope.split('/').pop()"
+              :object-schema="getSchema(element.scope)"
+              :model-value="element"
+              :options="element.options"
+              :scope="element.scope"
+              :form-schema="element"
               :form-schema-pointer="`${formSchemaPointer}/elements/${index}`"
               :general-translation="generalTranslation"
               :custom-translations="localCustomTranslation"
               :language="language"
               @update="onLinksAttributeUpdate(index, $event)"
-              @delete="onLinksAttributeDelete(index, attribute.scope)"
+              @delete="onLinksAttributeDelete(index, element.scope)"
               @update-custom-translation="onUpdateLinksCustomTranslation"
             />
-          </div>
+          </template>
         </Draggable>
       </BaseCard>
     </template>
@@ -175,7 +171,7 @@
         text
         @click="close()"
       >
-        {{ t('global.button.close') }}
+        {{ globalT('global.button.close') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -183,7 +179,7 @@
         color="primary"
         @click="updateElement()"
       >
-        {{ t('global.button.save') }}
+        {{ globalT('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -248,6 +244,7 @@ export default defineComponent({
   emits: ['update:model-value', 'edit', 'update-custom-translation'],
   setup(props, context) {
     const { t } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
     const { displayErrorMessage } = useVeoAlerts();
 
     // TODO: Refactor the component
@@ -330,11 +327,11 @@ export default defineComponent({
 
     const directionItems = ref([
       {
-        title: t('editor.formschema.edit.input.direction.vertical'),
+        title: globalT('editor.formschema.edit.input.direction.vertical'),
         value: 'vertical'
       },
       {
-        title: t('editor.formschema.edit.input.direction.horizontal'),
+        title: globalT('editor.formschema.edit.input.direction.horizontal'),
         value: 'horizontal'
       }
     ]);
@@ -464,7 +461,8 @@ export default defineComponent({
       ...linksField,
 
       upperFirst,
-      t
+      t,
+      globalT
     };
   }
 });

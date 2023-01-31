@@ -17,9 +17,7 @@
 -->
 <template>
   <v-card
-    flat
-    outlined
-    rounded
+    variant="outlined"
     class="fse-label mx-3 my-2 px-2"
   >
     <v-row no-gutters>
@@ -44,31 +42,23 @@
         class="text-right"
       >
         <v-btn
-          icon
-          x-small
+          :icon="mdiPencil"
+          size="small"
+          variant="text"
           @click="showEdit"
-        >
-          <v-icon
-            size="small"
-            :icon="mdiPencil"
-          />
-        </v-btn>
+        />
         <v-btn
-          icon
-          x-small
+          :icon="mdiTrashCanOutline"
+          size="small"
+          variant="text"
           @click="showDelete"
-        >
-          <v-icon
-            size="small"
-            :icon="mdiTrashCanOutline"
-          />
-        </v-btn>
+        />
       </v-col>
     </v-row>
 
     <EditorFormSchemaEditLabelDialog
-      v-model="editDialog"
       v-bind="$props"
+      v-model="editDialog"
       :form-schema="modelValue"
       :name="name"
       @edit="onEdit"
@@ -127,7 +117,7 @@ export default {
   },
   computed: {
     effect(): string | undefined {
-      return this.value?.rule?.effect;
+      return this.modelValue?.rule?.effect;
     }
   },
   watch: {

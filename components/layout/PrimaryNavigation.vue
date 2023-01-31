@@ -136,7 +136,7 @@ import { useFetchSchemasDetailed } from '~/composables/api/schemas';
 import { useDocNavigation } from '~/composables/docs';
 import { useFetchTranslations } from '~/composables/api/translations';
 import { useFetchReports } from '~/composables/api/reports';
-import { LOCAL_STORAGE_KEYS } from '~/types/LocalStorage';
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { useFetchCatalogs } from '~/composables/api/catalogs';
 import { useFetchDomain } from '~/composables/api/domains';
 

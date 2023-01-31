@@ -29,7 +29,7 @@
         text
         @click="emit('update:model-value', false)"
       >
-        {{ t('global.button.no') }}
+        {{ globalT('global.button.no') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -37,7 +37,7 @@
         color="primary"
         @click="emit('delete')"
       >
-        {{ t('global.button.delete') }}
+        {{ globalT('global.button.delete') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -53,6 +53,7 @@ defineProps({
 const emit = defineEmits(['delete', 'update:model-value', 'update:model-value']);
 
 const { t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
 </script>
 
 <i18n>

@@ -210,6 +210,10 @@ export default defineComponent({
       const rule = evaluateRule(_value.value, element.rule);
 
       const options = merge(cloneDeep(element.options || {}), rule);
+      // Turn text of label into options.label field to enable translations
+      if (element.type === 'Label' && element.text) {
+        options.label = element.text;
+      }
       if (options.label && options.label.startsWith('#lang/')) {
         const key = options.label.split('/')[1];
         options.label = translations.value[key] || key;
@@ -277,8 +281,7 @@ export default defineComponent({
         key: formSchemaPointer,
         ...defaultProps.value,
         options: element.options,
-        formSchemaPointer,
-        text: element.text
+        formSchemaPointer
       });
     };
 

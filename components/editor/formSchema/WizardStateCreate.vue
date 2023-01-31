@@ -53,6 +53,7 @@
                 :label="t('editor.formschema.create.title')"
                 :rules="[requiredRule]"
                 required
+                variant="underlined"
                 @update:model-value="$emit('update:name', $event)"
               />
             </v-col>
@@ -74,6 +75,7 @@
               <v-text-field
                 :model-value="sorting"
                 :label="t('editor.formschema.sorting')"
+                variant="underlined"
                 @update:model-value="$emit('update:sorting', $event)"
               />
             </v-col>
@@ -102,6 +104,7 @@
                 :rules="[requiredRule]"
                 :items="objectTypes"
                 required
+                variant="underlined"
                 @update:model-value="$emit('update:object-type', $event)"
               />
             </v-col>
@@ -146,6 +149,7 @@
                 :loading="!!objectType && !objectSchema"
                 :label="t('editor.formschema.subtype')"
                 :rules="[requiredRule]"
+                variant="underlined"
                 @update:model-value="$emit('update:sub-type', $event)"
               />
             </v-col>
@@ -219,7 +223,7 @@ export default defineComponent({
       return objectSchemaOptions;
     });
 
-    const subTypes = computed(() => props.objectSchema?.properties?.domains?.properties?.[props.domainId]?.properties?.subType?.enum || []);
+    const subTypes = computed(() => props.objectSchema?.properties?.domains?.properties?.['{CURRENT_DOMAIN_ID}']?.properties?.subType?.enum || []);
 
     return {
       objectTypes,

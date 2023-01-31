@@ -23,7 +23,7 @@
     :class="options && options.class"
     :style="options && options.style"
   >
-    {{ text }}
+    {{ options.label }}
   </div>
 </template>
 
@@ -45,13 +45,7 @@ export const LABEL_DEFINITION: IVeoFormsElementDefinition = {
 
 export default defineComponent({
   name: LABEL_DEFINITION.code,
-  props: {
-    ...VeoFormsElementProps,
-    text: {
-      type: String,
-      required: true
-    }
-  },
+  props: VeoFormsElementProps,
   setup() {
     return {};
   }

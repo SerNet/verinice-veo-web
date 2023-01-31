@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { trim } from 'lodash';
-import vjp from 'vue-json-pointer';
 
 import { IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
 import { separateUUIDParam } from '~/lib/utils';
@@ -64,27 +63,27 @@ export function useVeoReactiveFormActions() {
     let familyNameNew = '';
 
     try {
-      fullnameOld = vjp.get(oldObject, '/name');
+      fullnameOld = oldObject?.name;
     } catch (e) {
       // If the name couldn't be found, simply do nothing
     }
     try {
-      givenNameOld = vjp.get(oldObject, '/customAspects/person_generalInformation/attributes/person_generalInformation_givenName');
+      givenNameOld = oldObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_givenName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
     try {
-      familyNameOld = vjp.get(oldObject, '/customAspects/person_generalInformation/attributes/person_generalInformation_familyName');
+      familyNameOld = oldObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_familyName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
     try {
-      givenNameNew = vjp.get(newObject, '/customAspects/person_generalInformation/attributes/person_generalInformation_givenName');
+      givenNameNew = newObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_givenName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
     try {
-      familyNameNew = vjp.get(newObject, '/customAspects/person_generalInformation/attributes/person_generalInformation_familyName');
+      familyNameNew = newObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_familyName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
@@ -94,7 +93,7 @@ export function useVeoReactiveFormActions() {
     const computedFullNameNew = trim(`${givenNameNew} ${familyNameNew}`);
 
     if (fullnameOld === computedFullNameOld || fullnameOld === '' || fullnameOld === undefined) {
-      vjp.set(newObject, '/name', computedFullNameNew);
+      newObject.name = computedFullNameNew;
     }
     return newObject;
   }

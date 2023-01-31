@@ -117,7 +117,7 @@ import { StorageSerializers, useStorage } from '@vueuse/core';
 
 import { separateUUIDParam } from '~/lib/utils';
 import { useFetchDomain, useFetchDomainElementStatusCount } from '~/composables/api/domains';
-import { LOCAL_STORAGE_KEYS } from '~/types/LocalStorage';
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 export const ROUTE_NAME = 'unit-domains-domain';
 

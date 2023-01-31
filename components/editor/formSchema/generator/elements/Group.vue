@@ -18,9 +18,7 @@
 <template>
   <v-card
     v-if="level === 0"
-    flat
-    rounded
-    outlined
+    variant="outlined"
     class="fse-group level-0 fill-width fill-height"
   >
     <div
@@ -28,26 +26,27 @@
       class="dropzone-placeholder"
     >
       <div class="dropzone-placeholder-text subtitle-1">
-        {{ $t('dropzonePlaceholder') }}
+        {{ t('dropzonePlaceholder') }}
       </div>
     </div>
     <Draggable
+      v-model="elements"
       class="dragArea d-flex fill-width fill-height dropzone"
-      tag="div"
       style="overflow: auto;"
-      :list="modelValue.elements"
       :class="dynamicClasses"
       handle=".handle"
       :group="{ name: 'g1' }"
+      item-key="index"
     >
-      <slot />
+      <template #item="{ element, index }">
+        <component :is="createChild(element, index)" />
+      </template>
     </Draggable>
+    <slot />
   </v-card>
   <v-card
     v-else
-    flat
-    rounded
-    outlined
+    variant="outlined"
     class="fse-group mx-3 my-2 px-2 pb-2"
   >
     <v-row
@@ -63,7 +62,7 @@
       </v-col>
       <v-col>
         <div class="text-h5 font-weight-regular text-truncate">
-          {{ $t('group') }}
+          {{ t('group') }}
           <EditorFormSchemaRuleDisplay
             v-if="effect"
             :model-value="effect"
@@ -75,25 +74,17 @@
         class="text-right"
       >
         <v-btn
-          icon
-          x-small
-          @click="showEdit"
-        >
-          <v-icon
-            size="small"
-            :icon="mdiPencil"
-          />
-        </v-btn>
+          :icon="mdiPencil"
+          size="small"
+          variant="text"
+          @click="editDialogVisible = true"
+        />
         <v-btn
-          icon
-          x-small
-          @click="showDelete"
-        >
-          <v-icon
-            size="small"
-            :icon="mdiTrashCanOutline"
-          />
-        </v-btn>
+          :icon="mdiTrashCanOutline"
+          size="small"
+          variant="text"
+          @click="deleteDialogVisible = true"
+        />
       </v-col>
     </v-row>
     <v-row no-gutters>
@@ -105,133 +96,131 @@
           {{ label }}
         </div>
         <Draggable
+          v-model="elements"
           class="dragArea d-flex"
-          tag="div"
           style="overflow: auto; min-width:300; min-height:100px"
-          :list="modelValue.elements"
           :class="dynamicClasses"
           handle=".handle"
+          item-key="index"
           :group="{ name: 'g1' }"
         >
-          <slot />
+          <template #item="{ element, index }">
+            <component :is="createChild(element, index)" />
+          </template>
         </Draggable>
       </v-col>
     </v-row>
-
     <EditorFormSchemaEditGroupDialog
-      v-model="editDialog"
-      v-bind="$props"
+      v-bind="props"
+      v-model="editDialogVisible"
       :form-schema="modelValue"
       :name="name"
       @edit="onEdit"
       @update-custom-translation="onUpdateCustomTranslation"
     />
     <EditorFormSchemaDeleteDialog
-      v-model="deleteDialog"
+      v-model="deleteDialogVisible"
       @delete="onDelete"
     />
   </v-card>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { PropType } from 'vue';
 import { mdiMenu, mdiPencil, mdiTrashCanOutline } from '@mdi/js';
 import Draggable from 'vuedraggable';
 
 import { IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 
-export default {
-  components: {
-    Draggable
+const props = defineProps({
+  modelValue: {
+    type: Object,
+    default: undefined
   },
-  props: {
-    modelValue: {
-      type: Object,
-      default: undefined
-    },
-    name: {
-      type: String,
-      default: undefined
-    },
-    options: {
-      type: Object,
-      default: undefined
-    },
-    customTranslations: {
-      type: Object as PropType<IVeoFormSchemaTranslationCollection>,
-      default: () => ({})
-    },
-    formSchemaPointer: {
-      type: String,
-      default: undefined
-    },
-    level: {
-      type: Number,
-      default: undefined
-    },
-    language: {
-      type: String,
-      required: true
-    }
+  name: {
+    type: String,
+    default: undefined
   },
-  emits: ['update', 'delete', 'update-custom-translation'],
-  data() {
-    return {
-      editDialog: false,
-      deleteDialog: false,
-      label: '',
-      mdiMenu,
-      mdiPencil,
-      mdiTrashCanOutline
-    };
+  options: {
+    type: Object,
+    default: undefined
   },
-  computed: {
-    directionClass(): string {
-      // TODO: this.options does not trigger this computed property, when data is updated.
-      if (this.value.options && this.value.options.direction === 'horizontal') {
-        return 'flex-row direction-horizontal';
-      } else {
-        return 'flex-column direction-vertical';
-      }
-    },
-    dynamicClasses(): string[] {
-      return [this.directionClass];
-    },
-    effect(): string | undefined {
-      return this.value?.rule?.effect;
-    }
+  customTranslations: {
+    type: Object as PropType<IVeoFormSchemaTranslationCollection>,
+    default: () => ({})
   },
-  watch: {
-    customTranslations: {
-      immediate: true,
-      handler() {
-        this.setLabel();
-      }
-    }
+  formSchemaPointer: {
+    type: String,
+    default: undefined
   },
-  methods: {
-    showEdit() {
-      this.editDialog = true;
-    },
-    showDelete() {
-      this.deleteDialog = true;
-    },
-    onEdit(data: IVeoFormSchemaItemUpdateEvent['data']) {
-      this.$emit('update', { formSchemaPointer: this.formSchemaPointer, data } as IVeoFormSchemaItemUpdateEvent);
-      this.editDialog = false;
-    },
-    onDelete() {
-      this.$emit('delete', { formSchemaPointer: this.formSchemaPointer } as IVeoFormSchemaItemDeleteEvent);
-      this.deleteDialog = false;
-    },
-    onUpdateCustomTranslation(event: IVeoFormSchemaTranslationCollection) {
-      this.$emit('update-custom-translation', event);
-    },
-    setLabel() {
-      this.label = (this.name && this.customTranslations?.[this.language][this.name]) || '';
-    }
+  level: {
+    type: Number,
+    default: undefined
+  },
+  language: {
+    type: String,
+    required: true
+  },
+  createFunction: {
+    type: Function,
+    required: true
   }
+});
+const emit = defineEmits(['update', 'delete', 'update-custom-translation', 'update:model-value']);
+
+const { t } = useI18n();
+
+const editDialogVisible = ref(false);
+const deleteDialogVisible = ref(false);
+
+const label = ref('');
+
+const createChild = (element, index) => props.createFunction(element, `${props.formSchemaPointer}/elements/${index}`, props.level + 1);
+
+
+const directionClass = computed(() => {
+  // TODO: this.options does not trigger this computed property, when data is updated.
+  if (props.modelValue.options && props.modelValue.options.direction === 'horizontal') {
+    return 'flex-row direction-horizontal';
+  } else {
+    return 'flex-column direction-vertical';
+  }
+});
+const dynamicClasses = computed(() => {
+  return [directionClass.value];
+});
+const effect = computed(() => {
+  return props.modelValue?.rule?.effect;
+});
+
+const elements = computed({
+  get() {
+    return props.modelValue.elements.map((item, index) => ({ ...item, index }));
+  },
+  set(newValue) {
+    emit('update:model-value', { ...props.modelValue, elements: newValue });
+  }
+});
+
+const onEdit = (data: IVeoFormSchemaItemUpdateEvent['data']) => {
+  emit('update', { formSchemaPointer: props.formSchemaPointer, data } as IVeoFormSchemaItemUpdateEvent);
+  editDialogVisible.value = false;
 };
+
+const onDelete = () => {
+  emit('delete', { formSchemaPointer: props.formSchemaPointer } as IVeoFormSchemaItemDeleteEvent);
+  deleteDialogVisible.value = false;
+};
+
+const onUpdateCustomTranslation = (event: IVeoFormSchemaTranslationCollection) => {
+  emit('update-custom-translation', event);
+};
+
+const setLabel = () => {
+  label.value = (props.name && props.customTranslations?.[props.language][props.name]) || '';
+};
+
+watch(() => props.customTranslations, () => setLabel(), { immediate: true});
 </script>
 
 <i18n>

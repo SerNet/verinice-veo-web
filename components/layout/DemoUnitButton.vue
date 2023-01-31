@@ -66,7 +66,7 @@ import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '
 import { IVeoUnit } from '~/types/VeoTypes';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useFetchUnits } from '~/composables/api/units';
-import { LOCAL_STORAGE_KEYS } from '~/types/LocalStorage';
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 export default defineComponent({
   props: {

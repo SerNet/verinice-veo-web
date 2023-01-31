@@ -76,7 +76,7 @@ import { useVeoUser } from '~/composables/VeoUser';
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import { IVeoAPIMessage, IVeoUnit } from '~/types/VeoTypes';
 import { useFetchUnits, useCreateUnit } from '~/composables/api/units';
-import { LOCAL_STORAGE_KEYS } from '~/types/LocalStorage';
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { useRequest } from '~/composables/api/utils/request';
 
 const { profile, userSettings } = useVeoUser();

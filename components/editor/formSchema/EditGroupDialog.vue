@@ -34,7 +34,7 @@
             cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;">{{ t('editor.formschema.edit.input.label.text') }}:</span>
+            <span style="font-size: 1.2rem;">{{ globalT('editor.formschema.edit.input.label.text') }}:</span>
           </v-col>
           <v-col
             cols="12"
@@ -42,7 +42,7 @@
           >
             <v-text-field
               :model-value="localCustomTranslation[language][localName]"
-              :label="t('editor.formschema.edit.input.label')"
+              :label="globalT('editor.formschema.edit.input.label')"
               required
               @update:model-value="onInputLabel"
             />
@@ -56,7 +56,7 @@
             cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;">{{ t('editor.formschema.edit.input.direction') }}*:</span>
+            <span style="font-size: 1.2rem;">{{ globalT('editor.formschema.edit.input.direction') }}*:</span>
           </v-col>
           <v-col
             cols="12"
@@ -65,7 +65,7 @@
             <v-autocomplete
               v-model="formData.direction"
               :items="directionItems"
-              :label="t('editor.formschema.edit.input.direction')"
+              :label="globalT('editor.formschema.edit.input.direction')"
             />
           </v-col>
         </v-row>
@@ -77,7 +77,7 @@
             cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;"> {{ t('editor.formschema.edit.css.class') }}: </span>
+            <span style="font-size: 1.2rem;"> {{ globalT('editor.formschema.edit.css.class') }}: </span>
           </v-col>
           <v-col
             cols="12"
@@ -85,7 +85,7 @@
           >
             <v-combobox
               v-model="formData.class"
-              :label="t('editor.formschema.edit.css.class.text')"
+              :label="globalT('editor.formschema.edit.css.class.text')"
               multiple
               chips
               append-icon=""
@@ -100,7 +100,7 @@
             cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;"> {{ t('editor.formschema.edit.css.style') }}: </span>
+            <span style="font-size: 1.2rem;"> {{ globalT('editor.formschema.edit.css.style') }}: </span>
           </v-col>
           <v-col
             cols="12"
@@ -108,7 +108,7 @@
           >
             <v-combobox
               v-model="formData.style"
-              :label="t('editor.formschema.edit.css.style.text')"
+              :label="globalT('editor.formschema.edit.css.style.text')"
               multiple
               chips
               append-icon=""
@@ -117,14 +117,14 @@
         </v-row>
         <EditorFormSchemaConditions v-model="formData.rule" />
       </v-form>
-      <small>{{ t('global.input.requiredfields') }}</small>
+      <small>{{ globalT('global.input.requiredfields') }}</small>
     </template>
     <template #dialog-options>
       <v-btn
         text
         @click="onDialogChanged(false)"
       >
-        {{ t('global.button.close') }}
+        {{ globalT('global.button.close') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -132,7 +132,7 @@
         color="primary"
         @click="updateElement"
       >
-        {{ t('global.button.save') }}
+        {{ globalT('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -179,6 +179,7 @@ export default defineComponent({
   emits: ['update:model-value', 'update-custom-translation', 'edit'],
   setup(props, context) {
     const { t } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
 
     // Default values which should not be shown in FormSchema
     const defaults: Record<string, any> = {
@@ -216,11 +217,11 @@ export default defineComponent({
 
     const directionItems = ref([
       {
-        title: t('editor.formschema.edit.input.direction.vertical'),
+        title: globalT('editor.formschema.edit.input.direction.vertical'),
         value: 'vertical'
       },
       {
-        title: t('editor.formschema.edit.input.direction.horizontal'),
+        title: globalT('editor.formschema.edit.input.direction.horizontal'),
         value: 'horizontal'
       }
     ]);
@@ -318,7 +319,8 @@ export default defineComponent({
       directionItems,
       onInputLabel,
 
-      t
+      t,
+      globalT
     };
   }
 });
@@ -331,7 +333,6 @@ export default defineComponent({
   },
   "de": {
     "editGroupHeadline": "Gruppen Element anpassen"
-
   }
 }
 </i18n>

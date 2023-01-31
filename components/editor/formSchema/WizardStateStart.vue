@@ -21,13 +21,13 @@
       {{ t('start') }}
     </h2>
     <v-list
-      two-line
+      lines="two"
       color="transparent"
     >
       <v-list-item
         v-for="action of actions"
         :key="action.title"
-        two-line
+        lines="two"
         @click="action.onClick()"
       >
         <v-list-item-title class="font-weight-bold">
@@ -36,12 +36,14 @@
         <v-list-item-subtitle>
           {{ action.text }}
         </v-list-item-subtitle>
-        <v-list-item-action>
-          <v-icon
-            size="x-large"
-            :icon="mdiChevronRight"
-          />
-        </v-list-item-action>
+        <template #append>
+          <v-list-item-action>
+            <v-icon
+              size="x-large"
+              :icon="mdiChevronRight"
+            />
+          </v-list-item-action>
+        </template>
       </v-list-item>
     </v-list>
   </v-window-item>  

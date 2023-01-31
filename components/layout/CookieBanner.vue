@@ -131,7 +131,7 @@
 
 <script lang="ts">
 import { StorageSerializers, useStorage } from '@vueuse/core';
-import { LOCAL_STORAGE_KEYS } from '~/types/LocalStorage';
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 type COOKIE_OPTIONS = 'keycloak' | 'i18n' | 'navigation';
 

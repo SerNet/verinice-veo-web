@@ -34,12 +34,13 @@
           @import="state = WIZARD_STATES.IMPORT"
         />
         <EditorFormSchemaWizardStateCreate
+          v-bind="mergeProps(formSchemaDetails, createFormListeners)"
           v-model:valid="createFormValid"
           v-model:object-type="objectSchemaId"
+          v-model:sub-type="formSchemaDetails.subType"
           :model-value="WIZARD_STATES.CREATE"
           :domain-id="domainId"
           :object-schema="objectSchema"
-          v-bind="mergeProps(formSchemaDetails, createFormListeners)"
           @update:object-schema="uploadedObjectSchema = $event"
         />
         <EditorFormSchemaWizardStateImport
@@ -63,16 +64,16 @@
         text
         @click="state = WIZARD_STATES.START"
       >
-        {{ t('global.button.previous') }}
+        {{ globalT('global.button.previous') }}
       </v-btn>
       <v-spacer />
       <v-btn
         text
         color="primary"
-        :disabled="(state === WIZARD_STATES.CREATE && !createFormValid) || (state === WIZARD_STATES.IMPORT && (!objectSchema || !formSchema || !schemasCompatible))"
+        :disabled="(state === WIZARD_STATES.CREATE && createFormValid === false) || (state === WIZARD_STATES.IMPORT && (!objectSchema || !formSchema || !schemasCompatible))"
         @click="state === WIZARD_STATES.CREATE ? createFormSchema() : importFormSchema()"
       >
-        {{ t('global.button.next') }}
+        {{ globalT('global.button.next') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -112,6 +113,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const { t, locale, locales } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
 
     // Display stuff
     const state = ref(WIZARD_STATES.START);
@@ -324,6 +326,7 @@ export default defineComponent({
       uploadedObjectSchema,
 
       t,
+      globalT,
       WIZARD_STATES,
       mergeProps
     };

@@ -77,7 +77,7 @@
                 class="text-truncate"
                 style="max-width:50px;"
               >
-                {{ item }}
+                {{ item.title }}
               </span>
               <span
                 v-if="index === 1"
@@ -95,7 +95,6 @@
 import { PropType, Ref } from 'vue';
 import { JsonPointer } from 'json-ptr';
 import { cloneDeep, orderBy } from 'lodash';
-import vjp from 'vue-json-pointer';
 
 import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaItemRule, IVeoObjectSchema, IVeoObjectSchemaProperty } from '~/types/VeoTypes';
 
@@ -157,7 +156,7 @@ export default defineComponent({
       },
       set(newEffect: IVeoFormSchemaItemRule['effect'] | undefined) {
         if (newEffect) {
-          vjp.set(rule.value, '/effect', newEffect);
+          rule.value['effect'] = newEffect;
         } else {
           rule.value = {};
         }
@@ -215,9 +214,12 @@ export default defineComponent({
       set(newScope) {
         // Update only if the new selected scope is not the same as the previous one
         if (newScope !== rule.value.condition?.scope) {
-          vjp.set(rule.value, '/condition/scope', newScope);
+          if(!rule.value.condition) {
+            rule.value.condition = {};
+          }
+          rule.value.condition.scope = newScope;
           // define /condition/schema as an empty object to reset the selection values in the "value" field, when scope was changed
-          vjp.set(rule.value, '/condition/schema', {});
+          rule.value.condition.schema = {};
         }
         // Emit event always
         emitRule(rule.value);
@@ -232,7 +234,7 @@ export default defineComponent({
         return rule.value.condition?.schema?.enum;
       },
       set(newValue) {
-        vjp.set(rule.value, '/condition/schema/enum', newValue);
+        rule.value.condition.schema.enum = newValue;
         emitRule(rule.value);
       }
     });

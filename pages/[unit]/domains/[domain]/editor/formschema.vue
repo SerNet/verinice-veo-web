@@ -29,37 +29,35 @@
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <a
+            v-bind="props"
             ref="downloadButton"
             href="#"
             class="text-decoration-none"
             style="vertical-align: bottom"
-            v-bind="props"
             @click="downloadSchema()"
           >
             <v-btn
-              icon
-              large
+              :icon="mdiDownload"
+              size="large"
+              variant="text"
               color="primary"
-            >
-              <v-icon :icon="mdiDownload" />
-            </v-btn>
+            />
           </a>
         </template>
         <template #default>
-          {{ t("editor.schema.download") }}
+          {{ globalT("editor.schema.download") }}
         </template>
       </v-tooltip>
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
-            icon
-            large
+            :icon="mdiCodeTags"
+            size="large"
+            variant="text"
             color="primary"
             v-bind="props"
             @click="codeEditorVisible = true"
-          >
-            <v-icon :icon="mdiCodeTags" />
-          </v-btn>
+          />
         </template>
         <template #default>
           {{ t("formSchemaCode") }}
@@ -69,47 +67,44 @@
         <template #activator="{ props }">
           <v-btn
             v-if="!schemaIsValid.valid"
-            icon
-            large
+            :icon="mdiAlertCircleOutline"
+            size="large"
+            variant="text"
             color="warning"
             class="ml-2"
             v-bind="props"
             @click="errorDialogVisible = !errorDialogVisible"
-          >
-            <v-icon :icon="mdiAlertCircleOutline" />
-          </v-btn>
+          />
         </template>
         <template #default>
-          {{ t("editor.schema.warnings") }}
+          {{ globalT("editor.schema.warnings") }}
         </template>
       </v-tooltip>
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
-            icon
-            large
+            :icon="mdiTranslate"
+            size="large"
+            variant="text"
             color="primary"
             v-bind="props"
             @click="onClickTranslationBtn"
-          >
-            <v-icon :icon="mdiTranslate" />
-          </v-btn>
+          />
         </template>
         <template #default>
-          {{ t("editor.formschema.translation") }}
+          {{ globalT("editor.formschema.translation") }}
         </template>
       </v-tooltip>
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
-            icon
-            large
+            :icon="mdiWrench"
+            size="large"
+            variant="text"
             color="primary"
             v-bind="props"
             @click="detailDialogVisible = !detailDialogVisible"
-          >
-            <v-icon :icon="mdiWrench" />
-          </v-btn>
+          />
         </template>
         <template #default>
           {{ globalT("editor.schema.properties") }}
@@ -118,16 +113,15 @@
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
-            icon
-            large
+            :icon="mdiHelpCircleOutline"
+            size="large"
+            variant="text"
             target="_blank"
             :to="HELP_ROUTE"
             class="help-button"
             color="primary"
             v-bind="props"
-          >
-            <v-icon :icon="mdiHelpCircleOutline" />
-          </v-btn>
+          />
         </template>
         <template #default>
           {{ t('help') }}
@@ -137,14 +131,13 @@
         <template #activator="{ props }">
           <div v-bind="props">
             <v-btn
-              icon
-              large
+              :icon="mdiContentSave"
+              size="large"
+              variant="text"
               color="primary"
               :disabled="ability.cannot('manage', 'editors')"
               @click="save"
-            >
-              <v-icon :icon="mdiContentSave" />
-            </v-btn>
+            />
           </div>
         </template>
         <template #default>
@@ -177,7 +170,7 @@
           />
         </template>
         <template #default>
-          <VeoFseBacklog
+          <EditorFormSchemaBacklog
             :object-schema="objectSchema"
             :form-schema="formSchema"
             :search-query="searchQuery"
@@ -195,9 +188,9 @@
           #default
         >
           <div class="fill-height fill-width d-flex">
-            <VeoFseGenerator
+            <EditorFormSchemaGenerator
+              v-model="formSchema.content"
               :schema="objectSchema"
-              :model-value="formSchema.content"
               :general-translation="translation && translation.lang[language]"
               :custom-translations="formSchema.translation"
               :language="language"
@@ -244,7 +237,7 @@
           v-if="schemaIsValid.valid"
           #default
         >
-          <VeoForm
+          <DynamicFormEntrypoint
             v-model="objectData"
             :object-schema="objectSchema"
             :form-schema="formSchema.content"
@@ -281,27 +274,27 @@
       </BasePage>
     </template>
     <template #helpers>
-      <VeoFseWizardDialog
+      <EditorFormSchemaWizardDialog
         :model-value="creationDialogVisible"
         :domain-id="domainId"
         @done="onWizardFinished"
       />
-      <VeoEditorErrorDialog
+      <EditorErrorDialog
         v-model="errorDialogVisible"
         :validation="schemaIsValid"
         @fix="onFixRequest"
       />
-      <VeoFseCodeEditorDialog
+      <EditorFormSchemaCodeEditorDialog
         v-model="codeEditorVisible"
         :code="code"
       />
-      <VeoFseInvalidSchemaDownloadDialog
+      <EditorFormSchemaInvalidSchemaDownloadDialog
         v-model="invalidSchemaDownloadDialogVisible"
         @download="downloadSchema(true)"
       />
       <!-- Important: translationDialogVisible should be in v-if to only run code in the dialog when it is open  -->
-      <VeoFseTranslationDialog
-        v-if="!translationDialogVisible && formSchema && formSchema.translation"
+      <EditorFormSchemaTranslationDialog
+        v-if="translationDialogVisible && formSchema && formSchema.translation"
         v-model="translationDialogVisible"
         v-model:current-display-language="language"
         :translations="formSchema.translation"
@@ -310,7 +303,7 @@
         @update-translation="setFormTranslation"
         @update-name="setFormName"
       />
-      <VeoFseSchemaDetailsDialog
+      <EditorFormSchemaDetailsDialog
         v-if="formSchema"
         v-model="detailDialogVisible"
         :object-schema="objectSchema"
@@ -327,7 +320,6 @@
 </template>
 
 <script lang="ts">
-import vjp from 'vue-json-pointer';
 import { Ref } from 'vue';
 import { JsonPointer } from 'json-ptr';
 import { mdiAlertCircleOutline, mdiCodeTags, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
@@ -352,11 +344,12 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useCreateForm, useUpdateForm } from '~/composables/api/forms';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { useFetchDomain } from '~/composables/api/domains';
+import { isArray } from 'lodash';
 
 export default defineComponent({
   setup() {
     const { locale, locales, t } = useI18n();
-    const { t: globalT } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
@@ -379,7 +372,7 @@ export default defineComponent({
     provide('controlsItems', controlItems);
 
     const title = computed(() => {
-      const headline = t('editor.formschema.headline');
+      const headline = globalT('editor.formschema.headline');
       // Name property must generally exist, but before it is created in Wizard, only headline should be visible
       // If Name property exists and e.g. 'de' sub-property is empty then missing translation should be visible
       if (formSchema.value?.name) {
@@ -474,9 +467,7 @@ export default defineComponent({
     }
 
     function updateSchemaName(value: string) {
-      if (formSchema.value) {
-        vjp.set(formSchema.value, `/name/${language.value}`, value);
-      }
+      formSchema.value.name[language.value] = value;
     }
 
     function updateSubType(value: string) {
@@ -512,16 +503,24 @@ export default defineComponent({
         const vjpPointer = pointer.replace('#', '');
         // Not allowed to make changes on the root object
         if (event.formSchemaPointer !== '#') {
-          vjp.remove(formSchema.value.content, vjpPointer);
+          const parts = vjpPointer.split('/');
+          const lastPart = parts.pop();
+          const partToModify = JsonPointer.get(formSchema.value.content, parts.join('/'));
+          if(isArray(partToModify)) {
+            partToModify.splice(parseInt(lastPart), 1);
+          } else {
+            delete partToModify[lastPart];
+          }
+          JsonPointer.set(formSchema.value.content, parts.join('/'), partToModify);
         } else {
-          vjp.remove(formSchema.value, '/content');
+          delete formSchema.value.content;
         }
       }
     }
 
     function onUpdate(event: IVeoFormSchemaItemUpdateEvent): void {
       if (formSchema.value?.content) {
-        vjp.set(formSchema.value.content, (event.formSchemaPointer as string).replace('#', ''), event.data);
+        JsonPointer.set(formSchema.value.content, (event.formSchemaPointer as string).replace('#', ''), event.data);
       }
     }
 

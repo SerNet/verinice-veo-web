@@ -17,7 +17,7 @@
 -->
 <template>
   <div class="vf-control">
-    <EditorFormSchemaGeneratorElementsFormElement
+    <EditorFormElement
       v-bind="$props"
       @update="$emit('update', $event)"
       @delete="$emit('delete', $event)"

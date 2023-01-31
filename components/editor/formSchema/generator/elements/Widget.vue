@@ -17,9 +17,7 @@
 -->
 <template>
   <v-card
-    rounded
-    flat
-    outlined
+    variant="outlined"
     class="fse-generator-element mx-3 my-2"
   >
     <v-card-text class="pa-0">

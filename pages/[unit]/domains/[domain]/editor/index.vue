@@ -26,7 +26,7 @@
         style="width: 70%; max-width: 1000px;"
       >
         <v-list
-          two-line
+          lines="two"
           class="overflow-hidden"
         >
           <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/objectschema`">

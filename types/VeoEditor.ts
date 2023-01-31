@@ -40,10 +40,10 @@ export const INPUT_TYPES = {
   string: { icon: mdiAlphabeticalVariant, name: 'string', color: 'red' },
   boolean: { icon: mdiCheckboxOutline, name: 'boolean', color: 'teal' },
   object: { icon: mdiFileTree, name: 'object', color: 'indigo' },
-  number: { icon: mdiDecimal, name: 'number', color: 'light-blue' },
+  number: { icon: mdiDecimal, name: 'number', color: '#add8e6' },
   integer: { icon: mdiNumeric, name: 'integer', color: 'green' },
-  array: { icon: mdiViewList, name: 'array', color: 'amber' },
-  enum: { icon: mdiLabelOutline, name: 'enum', color: 'light-green' },
+  array: { icon: mdiViewList, name: 'array', color: '#ffbf00' },
+  enum: { icon: mdiLabelOutline, name: 'enum', color: '#90ee90' },
   null: { icon: mdiCancel, name: 'null', color: 'blue-grey' },
   default: { icon: mdiHelpBox, name: 'unknown', color: 'grey' }
 } as IInputTypes;

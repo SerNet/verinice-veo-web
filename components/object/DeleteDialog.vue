@@ -29,7 +29,7 @@
         text
         @click="$emit('update:model-value', false)"
       >
-        {{ t('global.button.no') }}
+        {{ globalT('global.button.no') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -38,7 +38,7 @@
         :disabled="!deleteButtonEnabled"
         @click="deleteObject"
       >
-        {{ t('global.button.delete') }}
+        {{ globalT('global.button.delete') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -61,6 +61,7 @@ const props = defineProps({
 const emit = defineEmits(['success', 'error', 'update:model-value']);
 
 const { t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
 const { mutateAsync: doDelete } = useDeleteObject();
 const { data: endpoints } = useFetchSchemas();
 

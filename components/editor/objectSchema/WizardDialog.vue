@@ -38,7 +38,7 @@
             color="transparent"
           >
             <v-list-item
-              two-line
+              lines="two"
               @click="state = 'create'"
             >
               <v-list-item-title class="font-weight-bold">
@@ -53,7 +53,7 @@
               </template>
             </v-list-item>
             <v-list-item
-              two-line
+              lines="two"
               @click="state = 'import'"
             >
               <v-list-item-title class="font-weight-bold">
