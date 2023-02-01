@@ -64,6 +64,8 @@ RUN mkdir dist
 RUN nohup sh -c "(cd /usr/src/veo && (npm run start&))" && sleep 5 && node print.mjs
 
 # Copy files to veo dist folder to bundle it with application
+# Needed to create here because of permission problem
+WORKDIR /usr/src/veo/dist
 RUN cp -r /usr/src/veo/.output/public/ /usr/src/veo/dist/ && cp /usr/src/app/dist/*.pdf /usr/src/veo/dist/
 
 FROM nginx:1.21 AS release
