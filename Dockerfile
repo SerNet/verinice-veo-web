@@ -61,7 +61,7 @@ COPY --chown=chrome print.mjs .
 RUN mkdir dist
 
 # Start nuxt app in background, wait for startup and generate pdf documentation
-RUN nohup sh -c "(cd /usr/src/veo && npm ci && npm i serve && (npm run start&))" && sleep 5 && node print.mjs
+RUN nohup sh -c "(cd /usr/src/veo && npm ci && (npm run start&))" && sleep 5 && node print.mjs
 
 # Copy files to veo dist folder to bundle it with application
 RUN mv /usr/src/veo/.output/public/ /usr/src/veo/dist/ && cp /usr/src/app/dist/*.pdf /usr/src/veo/dist/

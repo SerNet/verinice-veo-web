@@ -79,6 +79,7 @@
     "prismjs": "^1.29.0",
     "rehype-inline": "^2.0.0",
     "sass": "^1.57.1",
+    "serve": "^14.2.0",
     "uuid": "^9.0.0",
     "vite-plugin-vuetify": "^1.0.1",
     "vue": "^3.2.45",
