@@ -50,7 +50,6 @@ FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 
 # copy generated application and install dependencies
 WORKDIR /usr/src/veo
-RUN chown -R chrome /usr/src/veo
 
 COPY --chown=chrome --from=builder /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.ts ./
 COPY --chown=chrome --from=builder /usr/src/app/.output ./.output
@@ -65,7 +64,7 @@ RUN mkdir dist
 RUN nohup sh -c "(cd /usr/src/veo && (npm run start&))" && sleep 5 && node print.mjs
 
 # Copy files to veo dist folder to bundle it with application
-RUN mv /usr/src/veo/.output/public/ /usr/src/veo/dist/ && cp /usr/src/app/dist/*.pdf /usr/src/veo/dist/
+RUN cp -r /usr/src/veo/.output/public/ /usr/src/veo/dist/ && cp /usr/src/app/dist/*.pdf /usr/src/veo/dist/
 
 FROM nginx:1.21 AS release
 
