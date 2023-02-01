@@ -52,8 +52,7 @@ FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 WORKDIR /usr/src/veo
 COPY --chown=chrome --from=builder /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.ts ./
 COPY --chown=chrome --from=builder /usr/src/app/.output ./.output
-
-RUN cat /usr/src/veo/.output/public/administration/index.html
+COPY --from=builder /usr/src/app/node_modules ./node_modules
 
 # copy print.mjs
 WORKDIR /usr/src/app
@@ -61,7 +60,7 @@ COPY --chown=chrome print.mjs .
 RUN mkdir dist
 
 # Start nuxt app in background, wait for startup and generate pdf documentation
-RUN nohup sh -c "(cd /usr/src/veo && npm ci && (npm run start&))" && sleep 5 && node print.mjs
+RUN nohup sh -c "(cd /usr/src/veo && (npm run start&))" && sleep 5 && node print.mjs
 
 # Copy files to veo dist folder to bundle it with application
 RUN mv /usr/src/veo/.output/public/ /usr/src/veo/dist/ && cp /usr/src/app/dist/*.pdf /usr/src/veo/dist/
