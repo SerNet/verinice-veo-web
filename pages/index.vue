@@ -29,7 +29,10 @@
             {{ t('unitpicker') }}
           </h3>
         </v-card-text>
-        <v-list lines="two">
+        <v-list
+          lines="two"
+          data-component-name="unit-selection-available-units"
+        >
           <template v-if="unitsFetching">
             <div
               v-for="i in 2"
