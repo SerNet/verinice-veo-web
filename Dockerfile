@@ -49,8 +49,9 @@ RUN node externalize-scripts.mjs
 FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 
 # copy generated application and install dependencies
-USER chrome
 WORKDIR /usr/src/veo
+RUN chown -R chrome /usr/src/veo
+
 COPY --chown=chrome --from=builder /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.ts ./
 COPY --chown=chrome --from=builder /usr/src/app/.output ./.output
 COPY --from=builder /usr/src/app/node_modules ./node_modules
