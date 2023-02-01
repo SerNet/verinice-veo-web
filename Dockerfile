@@ -63,14 +63,10 @@ RUN mkdir dist
 # Start nuxt app in background, wait for startup and generate pdf documentation
 RUN nohup sh -c "(cd /usr/src/veo && (npm run start&))" && sleep 5 && node print.mjs
 
-# Copy files to veo dist folder to bundle it with application
-# Needed to create here because of permission problem
-USER root
-RUN cp -r /usr/src/veo/.output/public/ /usr/src/veo/dist/ && cp /usr/src/app/dist/*.pdf /usr/src/veo/dist/
-
 FROM nginx:1.21 AS release
 
-COPY --from=printer /usr/src/veo/dist /usr/src/app
+COPY --from=printer /usr/src/veo/.output/public /usr/src/app
+COPY --from=printer usr/src/app/dist/*.pdf /usr/src/app/
 
 # Add custom config to serve the index.html as entrypoint if the server would otherwise return a 404
 COPY  nginx.conf /etc/nginx/conf.d/custom.conf
