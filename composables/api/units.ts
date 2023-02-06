@@ -20,7 +20,8 @@ import { Ref } from 'vue';
 import { IVeoQueryTransformationMap, QueryOptions, STALE_TIME, useQuery } from './utils/query';
 import { IVeoAPIMessage, IVeoUnit } from '~/types/VeoTypes';
 import { useQueryClient } from '@tanstack/vue-query';
-import { IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
+import { IVeoMutationParameters, IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
+import { VeoApiReponseType } from './utils/request';
 
 export interface IVeoFetchUnitParameters {
   id: string;
@@ -31,6 +32,10 @@ export interface IVeoCreateUnitParameters {
   description: string;
 }
 
+export interface IVeoDeleteUnitParameters {
+  id: string;
+}
+
 export const unitsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
   fetchAll: () => ({}),
   fetch: (queryParameters: IVeoFetchUnitParameters) => ({ params: queryParameters })
@@ -39,7 +44,8 @@ export const unitsQueryParameterTransformationMap: IVeoQueryTransformationMap = 
 export const unitsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
   create: (mutationParameters: IVeoCreateUnitParameters) => ({
     json: mutationParameters
-  })
+  }),
+  delete: (mutationParameters: IVeoDeleteUnitParameters) => ({ params: mutationParameters })
 };
 
 export const useFetchUnits = (queryOptions?: QueryOptions) =>
@@ -69,6 +75,30 @@ export const useCreateUnit = (mutationOptions?: MutationOptions) => {
       ...mutationOptions,
       onSuccess: (data, variables, context) => {
         queryClient.invalidateQueries(['units']);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
+      }
+    }
+  );
+};
+
+export const useDeleteUnit = (mutationOptions?: MutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IVeoDeleteUnitParameters, void>(
+    'unit',
+    {
+      url: '/api/units/:id',
+      method: 'DELETE',
+      reponseType: VeoApiReponseType.VOID
+    },
+    unitsMutationParameterTransformationMap.delete,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(['units']);
+        queryClient.invalidateQueries(['unit', (variables as unknown as IVeoMutationParameters).params]);
         if (mutationOptions?.onSuccess) {
           mutationOptions.onSuccess(data, variables, context);
         }

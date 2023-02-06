@@ -29,6 +29,11 @@
             {{ t('unitpicker') }}
           </h3>
         </v-card-text>
+        <v-progress-linear
+          v-if="deletingUnit"
+          indeterminate
+          color="primary"
+        />
         <v-list
           lines="two"
           data-component-name="unit-selection-available-units"
@@ -60,7 +65,25 @@
             :subtitle="unit.description"
             :disabled="!generateUnitDashboardLink(unit.id)"
             :to="generateUnitDashboardLink(unit.id)"
-          />
+          >
+            <template #append>
+              <v-tooltip location="bottom">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    :icon="mdiTrashCanOutline"
+                    variant="text"
+                    data-component-name="unit-selection-delete-unit-button"
+                    :disabled="unit.name === 'Demo' || deletingUnit"
+                    @click.prevent="deleteUnit({ id: unit.id })"
+                  />
+                </template>
+                <template #default>
+                  {{ t('deleteUnit') }}
+                </template>
+              </v-tooltip>
+            </template>
+          </v-list-item>
         </v-list>
       </BaseCard>
     </div>
@@ -74,11 +97,12 @@ export const ROUTE_NAME = 'index';
 
 <script lang="ts" setup>
 import { StorageSerializers, useStorage } from '@vueuse/core';
+import { mdiTrashCanOutline } from '@mdi/js';
 
 import { useVeoUser } from '~/composables/VeoUser';
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import { IVeoAPIMessage, IVeoDomain, IVeoUnit } from '~/types/VeoTypes';
-import { useFetchUnits, useCreateUnit } from '~/composables/api/units';
+import { useFetchUnits, useCreateUnit, useDeleteUnit } from '~/composables/api/units';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { useRequest } from '~/composables/api/utils/request';
 import { useFetchUnitDomains } from '~~/composables/api/domains';
@@ -179,16 +203,20 @@ useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomains
     lastDomain.value = undefined;
   }
 }});
+
+const { mutateAsync: deleteUnit, isLoading: deletingUnit } = useDeleteUnit();
 </script>
 
 <i18n>
 {
   "en": {
+    "deleteUnit": "Delete unit",
     "firstUnitDescription": "This is your first unit",
     "unitpicker": "Please choose a unit",
     "unitpickerPlaceholder": "Search for a unit..."
   },
   "de": {
+    "deleteUnit": "Unit löschen",
     "firstUnitDescription": "Dies ist ihre erste Unit",
     "unitpicker": "Bitte wählen Sie eine Unit",
     "unitpickerPlaceholder": "Nach einer Unit suchen..."
