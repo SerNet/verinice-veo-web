@@ -131,6 +131,7 @@ import { mdiMenu, mdiPencil, mdiTrashCanOutline } from '@mdi/js';
 import Draggable from 'vuedraggable';
 
 import { IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
+import { omit } from 'lodash';
 
 const props = defineProps({
   modelValue: {
@@ -198,7 +199,7 @@ const elements = computed({
     return props.modelValue.elements.map((item, index) => ({ ...item, index }));
   },
   set(newValue) {
-    emit('update:model-value', { ...props.modelValue, elements: newValue });
+    emit('update:model-value', { ...props.modelValue, elements: newValue.map((element) => omit(element, 'index', 'formSchemaPointer')) });
   }
 });
 

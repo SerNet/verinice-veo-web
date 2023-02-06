@@ -503,6 +503,8 @@ export interface IVeoFormSchemaItem {
   options: IVeoFormSchemaItemOptions;
   elements?: IVeoFormSchemaItem[];
   rule?: IVeoFormSchemaItemRule;
+  formSchemaPointer?: string;
+  name?: string;
 }
 
 export interface IVeoFormSchemaTranslationCollection {
