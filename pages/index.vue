@@ -110,7 +110,12 @@ import { useFetchUnitDomains } from '~~/composables/api/domains';
 const { profile, userSettings } = useVeoUser();
 const router = useRouter();
 const { t } = useI18n();
+const { t: $t } = useI18n({ useScope: 'global' });
 const { request } = useRequest();
+
+useHead({
+  title: $t('breadcrumbs.index')
+});
 
 const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
 

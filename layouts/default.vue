@@ -130,7 +130,6 @@ const { request } = useRequest();
 const { t } = useI18n();
 
 useHead(() => ({
-  title: 'verinice.',
   titleTemplate: '%s - verinice.veo'
 }));
 

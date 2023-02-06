@@ -70,7 +70,6 @@ import { useVeoUser } from '~/composables/VeoUser';
 const { logout: _logout, profile } = useVeoUser();
   
 useHead(() => ({
-  title: 'verinice.',
   titleTemplate: '%s - verinice.veo'
 }));
   

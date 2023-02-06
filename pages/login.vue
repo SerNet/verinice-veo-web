@@ -83,6 +83,9 @@ definePageMeta({ layout: 'plain' });
 const { t, locale } = useI18n();
 const context = useNuxtApp();
 const { login: _login, initialize, keycloakInitialized } = useVeoUser();
+useHead({
+  title: t('login')
+});
 
 if (!keycloakInitialized.value) {
   initialize(context);

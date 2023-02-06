@@ -8,7 +8,6 @@
 
 <script setup>
 useHead({
-  title: 'verinice.veo',
   meta: [
     {
       charset: 'utf-8'
