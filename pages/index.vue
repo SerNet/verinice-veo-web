@@ -29,11 +29,6 @@
             {{ t('unitpicker') }}
           </h3>
         </v-card-text>
-        <v-progress-linear
-          v-if="deletingUnit"
-          indeterminate
-          color="primary"
-        />
         <v-list
           lines="two"
           data-component-name="unit-selection-available-units"
@@ -74,8 +69,8 @@
                     :icon="mdiTrashCanOutline"
                     variant="text"
                     data-component-name="unit-selection-delete-unit-button"
-                    :disabled="unit.name === 'Demo' || deletingUnit"
-                    @click.prevent="deleteUnit({ id: unit.id })"
+                    :disabled="unit.name === 'Demo'"
+                    @click.prevent="deleteUnit(unit)"
                   />
                 </template>
                 <template #default>
@@ -88,6 +83,10 @@
       </BaseCard>
     </div>
     <WelcomeDialog v-model="showWelcomeDialog" />
+    <UnitDeleteDialog
+      v-model="deleteUnitDialogVisible"
+      :unit="unitToDelete"
+    />
   </BasePage>
 </template>
 
@@ -102,7 +101,7 @@ import { mdiTrashCanOutline } from '@mdi/js';
 import { useVeoUser } from '~/composables/VeoUser';
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import { IVeoAPIMessage, IVeoDomain, IVeoUnit } from '~/types/VeoTypes';
-import { useFetchUnits, useCreateUnit, useDeleteUnit } from '~/composables/api/units';
+import { useFetchUnits, useCreateUnit } from '~/composables/api/units';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { useRequest } from '~/composables/api/utils/request';
 import { useFetchUnitDomains } from '~~/composables/api/domains';
@@ -209,7 +208,13 @@ useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomains
   }
 }});
 
-const { mutateAsync: deleteUnit, isLoading: deletingUnit } = useDeleteUnit();
+// Unit deletion stuff
+const deleteUnitDialogVisible = ref(false);
+const unitToDelete = ref<undefined | IVeoUnit>();
+const deleteUnit = (unit: IVeoUnit) => {
+  unitToDelete.value = unit;
+  deleteUnitDialogVisible.value = true;
+};
 </script>
 
 <i18n>
