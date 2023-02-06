@@ -95,7 +95,7 @@ const deleteUnit = async () => {
     "de": {
       "deleteUnit": "Unit löschen",
       "text": "Möchten Sie die Unit \"{name}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
-      "unitDeleted": "The unit was deleted successfully."
+      "unitDeleted": "Die Unit wurde erfolgreich gelöscht."
     }
   }
   </i18n>
