@@ -241,7 +241,7 @@ export default defineComponent({
     /**
      * create scopes & objects
      */
-    const subType = computed(() => (props.object?.type === 'scope' && props.type === 'childObjects' ? undefined : props.object?.domains?.[domainId.value]?.subType));
+    const subType = computed(() => (props.object?.type !== 'scope' && props.type.endsWith('Objects') ? props.object?.domains?.[domainId.value]?.subType : undefined));
 
     // emit after new object creation for linking
     const onCreateObjectSuccess = async (newObjectId: string) => {
