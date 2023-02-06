@@ -37,7 +37,7 @@
       <v-btn
         text
         color="primary"
-        :disabled="deletionInProgress"
+        :disabled="deletionInProgress || ability.cannot('manage', 'units')"
         :loading="deletionInProgress"
         @click="deleteUnit"
       >
@@ -65,11 +65,12 @@ const emit = defineEmits(['success', 'error', 'update:model-value']);
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
+const { ability } = useVeoPermissions();
 
 const { mutateAsync: doDelete, isLoading: deletionInProgress } = useDeleteUnit();
 
 const deleteUnit = async () => {
-  if(deletionInProgress.value) {
+  if(deletionInProgress.value || ability.value.cannot('manage', 'units')) {
     return;
   }
   try {

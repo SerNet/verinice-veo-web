@@ -193,7 +193,7 @@ const lastDomain = useStorage(LOCAL_STORAGE_KEYS.LAST_DOMAIN, undefined, localSt
 const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: lastUnit.value }));
 const fetchUnitDomainsQueryEnabled = computed(() => !!lastUnit.value && lastUnit.value !== 'undefined' && !!lastDomain.value && lastDomain.value !== 'undefined' && router.options.history.state.position === 1);
 useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled, onSuccess: (domains: IVeoDomain[]) => {
-  if (domains.find((domain) => domain.id === lastDomain.value)) {
+  if (userSettings.value.maxUsers <= 2 && domains.find((domain) => domain.id === lastDomain.value)) {
     navigateTo({
       name: 'unit-domains-domain',
       params: {

@@ -58,7 +58,7 @@
         text
         color="primary"
         :loading="creatingRisks"
-        :disabled="!selectedScenarios.length"
+        :disabled="!selectedScenarios.length || ability.cannot('manage', 'objects')"
         @click="onSubmit"
       >
         {{ t('createRisk', { plural: selectedScenarios.length, named: { count: selectedScenarios.length } }) }}
@@ -99,6 +99,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { t: $t } = useI18n();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
+    const { ability } = useVeoPermissions();
 
     const { mutateAsync: createRisk } = useCreateRisk();
 
@@ -152,6 +153,9 @@ export default defineComponent({
     const creatingRisks = ref(false);
 
     const onSubmit = async () => {
+      if(!ability.value.cannot('manage', 'objects')) {
+        return;
+      }
       creatingRisks.value = true;
       const risks = selectedScenarios.value.map((scenario) => ({
         scenario: {
@@ -182,6 +186,7 @@ export default defineComponent({
     };
 
     return {
+      ability,
       creatingRisks,
       dialog,
       filter,

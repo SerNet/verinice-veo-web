@@ -98,7 +98,7 @@
         text
         color="primary"
         :loading="savingRisk"
-        :disabled="formIsValid !== null || !formModified"
+        :disabled="formIsValid !== null || !formModified || ability.cannot('manage', 'objects')"
         @click="saveRisk"
       >
         {{ globalT('global.button.save') }}
@@ -234,6 +234,9 @@ export default defineComponent({
     const { mutateAsync: createRisk } = useCreateRisk();
     const { mutateAsync: updateRisk } = useUpdateRisk();
     const saveRisk = async () => {
+      if(ability.value.cannot('manage', 'objects')) {
+        return;
+      }
       if (data.value) {
         savingRisk.value = true;
 
@@ -290,6 +293,7 @@ export default defineComponent({
     }));
 
     return {
+      ability,
       data,
       dirtyFields,
       domain,

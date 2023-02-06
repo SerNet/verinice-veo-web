@@ -35,7 +35,7 @@
       <v-btn
         text
         color="primary"
-        :disabled="!deleteButtonEnabled"
+        :disabled="!deleteButtonEnabled || ability.cannot('manage', 'objects')"
         @click="deleteObject"
       >
         {{ globalT('global.button.delete') }}
@@ -64,12 +64,13 @@ const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { mutateAsync: doDelete } = useDeleteObject();
 const { data: endpoints } = useFetchSchemas();
+const { ability } = useVeoPermissions();
 
 const displayName = computed(() => props.item?.displayName ?? '');
 
 const deleteButtonEnabled = computed(() => !!endpoints.value?.[props.item?.type]);
 const deleteObject = () => {
-  if (!deleteButtonEnabled.value) {
+  if (!deleteButtonEnabled.value || ability.value.cannot('manage', 'objects')) {
     return;
   }
   try {

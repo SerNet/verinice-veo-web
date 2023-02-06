@@ -65,8 +65,9 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { isObjectEqual, separateUUIDParam } from '~/lib/utils';
 import { useFetchDomain } from '~/composables/api/domains';
 import { useFetchTranslations } from '~/composables/api/translations';
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes';
 import { useFetchSchemas } from '~/composables/api/schemas';
+import { useCreateObject } from '~~/composables/api/objects';
 
 export default defineComponent({
   props: {
@@ -91,10 +92,10 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t, locale } = useI18n();
     const { t: globalT } = useI18n({ useScope: 'global' });
-    const { $api } = useNuxtApp();
     const config = useRuntimeConfig();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+    const { ability } = useVeoPermissions();
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
@@ -174,12 +175,19 @@ export default defineComponent({
     );
 
     // Submitting form
-    const onSubmit = async () => {
-      try {
-        const result = await $api.entity.create(endpoints.value?.[props.objectType] || props.objectType, objectData.value as any);
-        emit('success', result.resourceId);
+    const { mutateAsync: create } = useCreateObject({
+      onSuccess: (data: IVeoAPIMessage) => {
+        emit('success', data.resourceId);
         displaySuccessMessage(upperFirst(t('objectCreated', { name: objectData.value.name }).toString()));
         emit('update:model-value', false);
+      }
+    });
+    const onSubmit = async () => {
+      if(!isFormValid.value || !isFormDirty.value || ability.value.cannot('manage', 'objects')) {
+        return;
+      }
+      try {
+        await create({ endpoint: endpoints.value?.[props.objectType], object: objectData.value });
       } catch (e: any) {
         displayErrorMessage(upperFirst(t('objectNotCreated', { name: objectData.value.name || upperFirst(t('object').toString()) }).toString()), e.message);
       }

@@ -55,7 +55,7 @@
       </v-btn>
       <v-spacer />
       <v-btn
-        :disabled="!formIsValid"
+        :disabled="!formIsValid || ability.cannot('manage', 'units')"
         :loading="creatingUnit"
         color="primary"
         text
@@ -92,6 +92,7 @@ const router = useRouter();
 const { requiredRule } = useRules();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { request } = useRequest();
+const { ability } = useVeoPermissions();
 
 watch(() => props.modelValue, (newValue) => {
   if(!newValue) {
@@ -110,7 +111,7 @@ const { mutateAsync, isLoading: creatingUnit, data: newUnitPayload } = useCreate
   displayErrorMessage(t('createUnitError'), error.message);
 } });
 const createUnit = async () => {
-  if(!formIsValid.value) {
+  if(!formIsValid.value || ability.value.cannot('manage', 'units')) {
     return;
   }
   await mutateAsync(newUnit);

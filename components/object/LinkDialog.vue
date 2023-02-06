@@ -73,6 +73,7 @@
         text
         color="primary"
         :loading="savingObject"
+        :disabled="ability.cannot('manage', 'objects')"
         @click="linkObjects"
       >
         {{ t('global.button.save') }}
@@ -151,6 +152,7 @@ export default defineComponent({
     const { link } = useLinkObject();
     const { unlink } = useUnlinkObject();
     const { $api } = useNuxtApp();
+    const { ability } = useVeoPermissions();
 
     const { data: endpoints } = useFetchSchemas();
     const translationsQueryParameters = computed(() => ({ languages: [locale.value] }));
@@ -298,6 +300,9 @@ export default defineComponent({
     // Linking logic
     const savingObject = ref(false); // saving status for adding entities
     const linkObjects = async () => {
+      if(ability.value.cannot('manage', 'objects')) {
+        return;
+      }
       if (props.returnObjects) {
         emit('update:preselected-items', modifiedSelectedItems.value);
         emit('update:model-value', false);
@@ -349,6 +354,7 @@ export default defineComponent({
     );
 
     return {
+      ability,
       availableObjectTypes,
       childrenLoading,
       domainId,
