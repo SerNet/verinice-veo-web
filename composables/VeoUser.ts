@@ -63,7 +63,7 @@ export const useVeoUser: () => IVeoUserComposable = () => {
     keycloak.value.onTokenExpired = async () => {
       try {
         // eslint-disable-next-line no-console
-        console.warn('Refreshing keycloak session...');
+        console.log('Refreshing keycloak session...');
         await refreshKeycloakSession();
       } catch (e) {
         // eslint-disable-next-line no-console
