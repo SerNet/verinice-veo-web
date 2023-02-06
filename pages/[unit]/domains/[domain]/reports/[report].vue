@@ -116,7 +116,6 @@ export default defineComponent({
   setup() {
     const { t, locale } = useI18n();
     const route = useRoute();
-    const router = useRouter();
     const { displayErrorMessage } = useVeoAlerts();
     const { tablePageSize } = useVeoUser();
     const { data: endpoints } = useFetchSchemas();
@@ -198,7 +197,7 @@ export default defineComponent({
       const query = { ...route.query, ...newValues };
       // obsolete params need to be removed from the query to match the route exactly in the NavigationDrawer
       Object.keys(query).forEach((key) => query[key] === undefined && delete query[key]);
-      await router.push({ ...route, name: route.name, query });
+      await navigateTo({ ...route, name: route.name, query });
     };
 
     // refetch entities on page or sort changes (in VeoObjectTable)

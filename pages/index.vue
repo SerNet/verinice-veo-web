@@ -77,10 +77,11 @@ import { StorageSerializers, useStorage } from '@vueuse/core';
 
 import { useVeoUser } from '~/composables/VeoUser';
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
-import { IVeoAPIMessage, IVeoUnit } from '~/types/VeoTypes';
+import { IVeoAPIMessage, IVeoDomain, IVeoUnit } from '~/types/VeoTypes';
 import { useFetchUnits, useCreateUnit } from '~/composables/api/units';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { useRequest } from '~/composables/api/utils/request';
+import { useFetchUnitDomains } from '~~/composables/api/domains';
 
 const { profile, userSettings } = useVeoUser();
 const router = useRouter();
@@ -157,6 +158,27 @@ const generateUnitDashboardLink = (unitId: string) => {
 
   return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
 };
+
+// Navigation helper (auto redirect to unit the user was previously in if he accessed the index page as entry point)
+const lastUnit = useStorage(LOCAL_STORAGE_KEYS.LAST_UNIT, undefined, localStorage, { serializer: StorageSerializers.string });
+const lastDomain = useStorage(LOCAL_STORAGE_KEYS.LAST_DOMAIN, undefined, localStorage, { serializer: StorageSerializers.string });
+const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: lastUnit.value }));
+const fetchUnitDomainsQueryEnabled = computed(() => !!lastUnit.value && lastUnit.value !== 'undefined' && !!lastDomain.value && lastDomain.value !== 'undefined' && router.options.history.state.position === 1);
+useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled, onSuccess: (domains: IVeoDomain[]) => {
+  if (domains.find((domain) => domain.id === lastDomain.value)) {
+    navigateTo({
+      name: 'unit-domains-domain',
+      params: {
+        unit: createUUIDUrlParam('unit', lastUnit.value),
+        domain: createUUIDUrlParam('domain', lastDomain.value)
+      }
+    });
+  } else {
+    // If the domain doesn't exist, the last unit & domain are outdated, so we remove them
+    lastUnit.value = undefined;
+    lastDomain.value = undefined;
+  }
+}});
 </script>
 
 <i18n>

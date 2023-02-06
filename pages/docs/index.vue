@@ -67,12 +67,11 @@ import { useDocs, useDocNavigationFlat } from '~/composables/docs';
 definePageMeta({ layout: 'print' });
 
 const route = useRoute();
-const router = useRouter();
 const { locale, t } = useI18n();
 
 // Redirect user if he enters this page without the print query parameter, as this page is only for generating the pdf file
 if(!('print' in route.query)) {
-  router.push('/docs/index');
+  navigateTo('/docs/index');
 }
 
 const lang = route.query.lang?.toString() || undefined;

@@ -35,10 +35,9 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
     const route = useRoute();
-    const router = useRouter();
 
     const createReport = (reportId: string) => {
-      router.push(`/${route.params.unit}/domains/${route.params.domain}/reports/${reportId}`);
+      navigateTo(`/${route.params.unit}/domains/${route.params.domain}/reports/${reportId}`);
     };
 
     return {

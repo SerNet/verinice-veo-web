@@ -123,7 +123,6 @@ import { useDisplay } from 'vuetify';
 const { xs } = useDisplay();
 const { authenticated } = useVeoUser();
 const route = useRoute();
-const router = useRouter();
 const { ability } = useVeoPermissions();
 
 const { alerts, displaySuccessMessage } = useVeoAlerts();
@@ -164,7 +163,7 @@ useFetchUnits({ enabled: fetchUnitsDisabled, onSuccess: async (data: IVeoUnit[])
     const unit = await request('/api/units/:id', { params: { id: newUnitPayload.value.resourceId } });
     const domainId = getFirstDomainDomaindId(unit);
     if (domainId) {
-      router.push({
+      navigateTo({
         name: 'unit-domains-domain',
         params: {
           unit: createUUIDUrlParam('unit', unit.id),

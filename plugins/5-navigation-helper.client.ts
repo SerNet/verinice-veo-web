@@ -17,45 +17,18 @@
  */
 import { StorageSerializers, useStorage } from '@vueuse/core';
 
-import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
+import { separateUUIDParam } from '~/lib/utils';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
-export default defineNuxtPlugin (async (nuxt) => {
-  const route = useRoute();
+/**
+ * Navigates the user to the domain dashboard of the unit and domain he was previously in, if he accesses the application from outside and enters the unit select page (/). The redirect
+ * magic happens on that page instead of in here, as the api composable won't work here
+ */
+export default defineNuxtPlugin (async () => {
   const router = useRouter();
 
   const lastUnit = useStorage(LOCAL_STORAGE_KEYS.LAST_UNIT, undefined, localStorage, { serializer: StorageSerializers.string });
   const lastDomain = useStorage(LOCAL_STORAGE_KEYS.LAST_DOMAIN, undefined, localStorage, { serializer: StorageSerializers.string });
-
-  const clearLastVisitData = () => {
-    lastUnit.value = undefined;
-    lastDomain.value = undefined;
-  };
-
-  if (route.path === '/' && lastUnit.value && lastDomain.value) {
-    try {
-      const domains = await nuxt.$api.domain.fetchUnitDomains(lastUnit.value);
-      if (domains.find((domain) => domain.id === lastDomain.value)) {
-        // Without setTimeout, the user won't be navigated, even though no error is thrown. Also nextTick doesn't work, so we have to increase the timeout
-        setTimeout(() => {
-          navigateTo({
-            name: 'unit-domains-domain',
-            params: {
-              unit: createUUIDUrlParam('unit', lastUnit.value),
-              domain: createUUIDUrlParam('domain', lastDomain.value)
-            }
-          });
-        }, 100);
-      } else {
-        // If the domain doesn't exist, the last unit & domain are outdated, so we remove them
-        clearLastVisitData();
-      }
-
-      // Usually gets thrown if the unit doesn't exist. This means the last unit & domain are outdated, so we remove them
-    } catch (e) {
-      clearLastVisitData();
-    }
-  }
 
   // Update last unit and last domain every time the route changes
   router?.afterEach((to, _from) => {
