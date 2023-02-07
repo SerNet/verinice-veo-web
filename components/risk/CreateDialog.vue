@@ -153,7 +153,7 @@ export default defineComponent({
     const creatingRisks = ref(false);
 
     const onSubmit = async () => {
-      if(!ability.value.cannot('manage', 'objects')) {
+      if(ability.value.cannot('manage', 'objects')) {
         return;
       }
       creatingRisks.value = true;

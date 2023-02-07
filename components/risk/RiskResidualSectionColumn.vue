@@ -24,15 +24,15 @@
       {{ protectionGoal.translations[locale].name }}
     </h3>
     <v-select
-      :model-value="userDefinedResidualRisk || residualRisk"
+      :model-value="userDefinedResidualRiskPresent ? userDefinedResidualRisk : residualRisk"
       color="primary"
       :label="upperFirst(t('residualRisk').toString())"
       :items="riskValues"
       :disabled="!riskTreatments.length || disabled"
-      :clearable="!!(userDefinedResidualRisk && riskTreatments.length)"
+      :clearable="!!(userDefinedResidualRiskPresent && riskTreatments.length)"
       hide-details
       variant="underlined"
-      @update:model-value="$emit('update:user-defined-residual-risk', $event)"
+      @update:model-value="emit('update:user-defined-residual-risk', $event)"
     >
       <template #selection="{ item }">
         <div class="d-flex justify-space-between fill-width">
@@ -41,9 +41,9 @@
             v-if="userDefinedResidualRisk === undefined && riskTreatments.length"
             top
           >
-            <template #activator="{ props }">
+            <template #activator="{ props: tooltipProps }">
               <v-icon
-                v-bind="props"
+                v-bind="tooltipProps"
                 :icon="mdiInformationOutline"
               />
             </template>
@@ -90,60 +90,51 @@
   </v-col>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 import { mdiInformationOutline } from '@mdi/js';
 
 import { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
 
-export default defineComponent({
-  props: {
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    riskDefinition: {
-      type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true
-    },
-    protectionGoal: {
-      type: Object as PropType<IVeoRiskCategory>,
-      required: true
-    },
-    riskTreatments: {
-      type: Array as PropType<string[]>,
-      default: undefined
-    },
-    userDefinedResidualRisk: {
-      type: Number,
-      default: undefined
-    },
-    residualRisk: {
-      type: Number,
-      default: undefined
-    },
-    residualRiskExplanation: {
-      type: String,
-      default: undefined
-    }
+const props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
   },
-  emits: ['update:residual-risk-explanation', 'update:user-defined-residual-risk'],
-  setup(props) {
-    const { t, locale } = useI18n();
-
-    const riskValues = computed(() => props.riskDefinition.riskValues.map((level) => ({ title: level.translations[locale.value].name, value: level.ordinalValue })));
-
-    return {
-      riskValues,
-
-      t,
-      locale,
-      upperFirst,
-      mdiInformationOutline
-    };
+  riskDefinition: {
+    type: Object as PropType<IVeoDomainRiskDefinition>,
+    required: true
+  },
+  protectionGoal: {
+    type: Object as PropType<IVeoRiskCategory>,
+    required: true
+  },
+  riskTreatments: {
+    type: Array as PropType<string[]>,
+    default: undefined
+  },
+  userDefinedResidualRisk: {
+    type: Number,
+    default: undefined
+  },
+  residualRisk: {
+    type: Number,
+    default: undefined
+  },
+  residualRiskExplanation: {
+    type: String,
+    default: undefined
   }
 });
+
+const emit = defineEmits(['update:residual-risk-explanation', 'update:user-defined-residual-risk']);
+
+const { t, locale } = useI18n();
+
+const userDefinedResidualRiskPresent = computed(() => props.userDefinedResidualRisk !== undefined);
+
+const riskValues = computed(() => props.riskDefinition.riskValues.map((level) => ({ title: level.translations[locale.value].name, value: level.ordinalValue })));
 </script>
 
 <i18n>

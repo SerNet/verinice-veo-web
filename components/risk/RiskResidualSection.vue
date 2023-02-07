@@ -70,9 +70,9 @@ export default defineComponent({
 
     const onUserDefinedResidualRiskChanged = (protectionGoal: string, newValue: number) => {
       const localData = cloneDeep(props.data);
-      const riskValue = localData.find((riskValue) => riskValue.category === protectionGoal);
-      if (riskValue) {
-        riskValue.userDefinedResidualRisk = newValue;
+      const riskValueIndex = localData.findIndex((riskValue) => riskValue.category === protectionGoal);
+      if (riskValueIndex >= 0) {
+        localData[riskValueIndex].userDefinedResidualRisk = newValue;
       }
       emit('update:data', localData);
     };

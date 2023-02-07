@@ -214,7 +214,7 @@ export default defineComponent({
                     location: 'bottom',
                     maxWidth: 600
                   }, {
-                    activator: ({ attrs, on }) => h('span', { attrs, on, class: 'text-grey text--darken-4' }, translatedInherentRisk),
+                    activator: ({ attrs, props }) => h('span', { ...attrs, ...props, class: 'text-grey text--darken-4' }, translatedInherentRisk),
                     default: () => h('span', t('inherentRisk').toString()) })
                   : undefined,
                 translatedInherentRisk && translatedResidualRisk ? h('span', ' / ') : undefined,
@@ -223,7 +223,7 @@ export default defineComponent({
                     location: 'bottom',
                     maxWidth: 600
                   }, {
-                    activator: ({ attrs, on }) => h('span', { attrs, on, class: 'pr-1' }, translatedResidualRisk),
+                    activator: ({ attrs, props }) => h('span', { ...attrs, ...props, class: 'pr-1' }, translatedResidualRisk),
                     default: () => h('span', t('residualRisk').toString())
                   })
                   : undefined,
