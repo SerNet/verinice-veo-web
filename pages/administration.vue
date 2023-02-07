@@ -237,10 +237,10 @@ const additionalTableHeaders = ref<ObjectTableHeader[]>([
     "username": "Username"
    },
    "de": {
-    "accountAdministrationHint": "Jeder Account hat Zugriff auf alle Units und Objekte in diesem Client.",
-    "accounts": "Accounts",
-    "activeAccounts": "aktive Accounts",
-    "createAccount": "Account erstellen",
+    "accountAdministrationHint": "Jeder Benutzer hat Zugriff auf alle Units und Objekte in diesem Client.",
+    "accounts": "Benutzer",
+    "activeAccounts": "aktive Benutzer",
+    "createAccount": "Benutzer erstellen",
     "edit": "Bearbeiten",
     "email": "E-Mail-Adresse",
     "enabled": "Aktiv",
