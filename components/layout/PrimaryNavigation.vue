@@ -29,7 +29,7 @@
   >
     <template #prepend>
       <DomainSelect
-        v-if="$route.params.unit"
+        v-if="route.params.unit"
         :mini-variant="miniVariant"
         @expand-menu="miniVariant = false"
       />
@@ -479,6 +479,7 @@ export default defineComponent({
       homeLink,
       miniVariant,
 
+      route,
       t,
       mdiChevronLeft,
       mdiChevronRight,
