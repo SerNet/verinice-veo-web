@@ -41,7 +41,7 @@ export interface IVeoDeploymentInformation {
 }
 
 export interface IVeoFetchDeploymentDetailsParameters {
-  api: 'default' | 'forms' | 'history' | 'reporting';
+  api: 'default' | 'forms' | 'history' | 'reporting' | 'accounts';
 }
 
 export const monitoringQueryParameterTransformationMap: IVeoQueryTransformationMap = {

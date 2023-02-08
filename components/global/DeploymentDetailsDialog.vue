@@ -71,7 +71,7 @@
             />
           </td>
           <td v-if="deployment && deployment.build">
-            {{ new Date(deployment.build.time).toLocaleString(locale) }}
+            {{ new Date(deployment.build.time || 0).toLocaleString(locale) }}
           </td>
           <td v-else>
             <v-skeleton-loader
@@ -99,6 +99,8 @@ const fetchHistoryApiDeploymentDetailsQueryParameters = ref({ api: 'history' as 
 const { data: historyApiDeploymentDetails } = useFetchDeploymentDetails(fetchHistoryApiDeploymentDetailsQueryParameters);
 const fetchReportingApiDeploymentDetailsQueryParameters = ref({ api: 'reporting' as 'default' | 'history' | 'forms' | 'reporting' });
 const { data: reportingApiDeploymentDetails } = useFetchDeploymentDetails(fetchReportingApiDeploymentDetailsQueryParameters);
+const fetchAccountingApiDeploymentDetailsQueryParameters = ref({ api: 'accounts' as 'default' | 'history' | 'forms' | 'reporting' | 'accounts' });
+const { data: accountingApiDeploymentDetails } = useFetchDeploymentDetails(fetchAccountingApiDeploymentDetailsQueryParameters);
 
 const deploymentInformation = computed<Record<string, IVeoDeploymentInformation | undefined>>(() => ({
   app: {
@@ -120,7 +122,7 @@ const deploymentInformation = computed<Record<string, IVeoDeploymentInformation 
   forms: formsApiDeploymentDetails.value,
   history: historyApiDeploymentDetails.value,
   reports: reportingApiDeploymentDetails.value,
-  accounts: undefined
+  accounts: accountingApiDeploymentDetails.value
 }));
 </script>
 
