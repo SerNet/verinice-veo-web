@@ -339,14 +339,8 @@ export default defineComponent({
     const isFormValid = ref(false);
     const objectForm = ref();
 
-    // TODO: Remove once dirty issue is debugged
+    // TODO: Remove once form is dirty issue is debugged
     const additionalDirtyInfo = computed(() => config.public.debug ? isObjectEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity) : { mismatchingValues: {}, missingKeys: {} });
-    watch(() => entityModifiedDialogVisible.value, (newValue) => {
-      if(newValue) {
-        console.log('Original data:', object.value);
-        console.log('Form data:', modifiedObject.value);
-      }
-    });
 
     // Form actions
     function resetForm() {
@@ -403,6 +397,14 @@ export default defineComponent({
     // navigation prevention stuff
     const entityModifiedDialogVisible = ref(false);
     const onContinueNavigation: Ref<CallableFunction> = ref(() => undefined);
+
+    // TODO: Remove once form is dirty issue is debugged
+    watch(() => entityModifiedDialogVisible.value, (newValue) => {
+      if(newValue) {
+        console.log('Original data:', object.value);
+        console.log('Form data:', modifiedObject.value);
+      }
+    });
 
     // history stuff
     const formDataIsRevision = ref(false);
