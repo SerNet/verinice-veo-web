@@ -23,6 +23,7 @@
   >
     <template #default>
       <span class="text-body-1">{{ t('text', { displayName: item && item.displayName }) }}</span>
+      <slot name="append" />
     </template>
     <template #dialog-options>
       <v-btn

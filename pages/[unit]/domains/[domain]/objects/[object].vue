@@ -138,7 +138,15 @@
             v-model="entityModifiedDialogVisible"
             :item="object"
             @exit="onContinueNavigation"
-          />
+          >
+            <template
+              v-if="additionalDirtyInfo.mismatchingValues || additionalDirtyInfo.missingKeys"
+              #append
+            >
+              Missing keys: {{ additionalDirtyInfo.missingKeys }}<br>
+              Mismatching values: {{ additionalDirtyInfo.mismatchingValues }}
+            </template>
+          </ObjectUnsavedChangesDialog>
           <UtilUnloadPrevention :model-value="isFormDirty" />
           <ObjectCreateDialog
             v-model="createDPIADialogVisible"
@@ -331,6 +339,15 @@ export default defineComponent({
     const isFormValid = ref(false);
     const objectForm = ref();
 
+    // TODO: Remove once dirty issue is debugged
+    const additionalDirtyInfo = computed(() => config.public.debug ? isObjectEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity) : { mismatchingValues: {}, missingKeys: {} });
+    watch(() => entityModifiedDialogVisible.value, (newValue) => {
+      if(newValue) {
+        console.log('Original data:', object.value);
+        console.log('Form data:', modifiedObject.value);
+      }
+    });
+
     // Form actions
     function resetForm() {
       modifiedObject.value = cloneDeep(object.value);
@@ -464,6 +481,7 @@ export default defineComponent({
 
     return {
       ability,
+      additionalDirtyInfo,
       VeoAlertType,
       additionalContext,
       createDPIADialogVisible,
