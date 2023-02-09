@@ -36,12 +36,13 @@
       <BaseCard>
         <ObjectTable
           v-model="selectedScenarios"
+          v-model:page="page"
+          v-model:sort-by="sortBy"
           show-select
-          checkbox-color="primary"
+          return-object
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="objects"
           :loading="objectsQueryIsLoading"
-          @page-change="onPageChange"
         />
       </BaseCard>
     </template>
@@ -68,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import { upperFirst } from 'lodash';
+import { omit, upperFirst } from 'lodash';
 
 import { IVeoEntity } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
@@ -126,25 +127,21 @@ export default defineComponent({
       subType: 'SCN_Scenario'
     });
 
-    const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
-      Object.assign(queryParameters, { page: opts.newPage, sortOrder: opts.sortDesc ? 'desc' : 'asc', sortDesc: !!opts.sortDesc });
-      refetch(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
-    };
-
     const onFilterUpdate = (newFilter: any) => {
       filter.value = newFilter;
       refetch();
     };
 
-    const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
-    const combinedQueryParameters = computed(() => ({
-      endpoint: 'scenarios',
-      unit: unit.value,
+    const page = ref(1);
+    const sortBy = ref([{ key: 'name', order: 'desc' }]);
+    const combinedQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
-      sortBy: queryParameters.sortBy,
-      sortOrder: (queryParameters.sortDesc ? 'desc' : 'asc') as 'desc' | 'asc',
-      page: queryParameters.page,
-      ...filter.value
+      sortBy: sortBy.value[0].key,
+      sortOrder: sortBy.value[0].order,
+      page: page.value,
+      unit: unit.value,
+      ...omit(filter.value, 'objectType'),
+      endpoint: 'scenarios'
     }));
 
     const { data: objects, isFetching: objectsQueryIsLoading, refetch } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
@@ -192,7 +189,8 @@ export default defineComponent({
       filter,
       objects,
       objectsQueryIsLoading,
-      onPageChange,
+      page,
+      sortBy,
       onSubmit,
       onFilterUpdate,
       selectedScenarios,

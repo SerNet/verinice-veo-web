@@ -48,10 +48,10 @@
                 <template #activator="{ props }">
                   <v-btn
                     v-bind="props"
-                    :disabled="action.isDisabled && action.isDisabled(item)"
+                    :disabled="action.isDisabled && action.isDisabled(item.raw)"
                     :icon="action.icon"
                     variant="text"
-                    @click="action.action(item)"
+                    @click="action.action(item.raw)"
                   />
                 </template>
                 {{ action.label }}
@@ -115,13 +115,13 @@ const activeAccounts = computed(
   () => (accounts.value || []).filter((account) => account.enabled).length
 );
 
-const onEditAccount = (event: any) => {
-  editAccountDialogProps.value = event.value;
+const onEditAccount = (data: any) => {
+  editAccountDialogProps.value = data;
   editAccountDialogVisible.value = true;
 };
 
-const onDeleteAccount = (event: any) => {
-  deleteAccountDialogProps.value = event.value;
+const onDeleteAccount = (data: any) => {
+  deleteAccountDialogProps.value = data;
   deleteAccountDialogVisible.value = true;
 };
 
@@ -176,6 +176,7 @@ const additionalTableHeaders = ref<ObjectTableHeader[]>([
     priority: 100,
     text: t('username').toString(),
     value: 'username',
+    key: 'username',
     width: 180
   },
   {
@@ -195,13 +196,15 @@ const additionalTableHeaders = ref<ObjectTableHeader[]>([
     order: 30,
     priority: 80,
     text: t('email').toString(),
-    value: 'emailAddress'
+    value: 'emailAddress',
+    key: 'emailAddress'
   },
   {
     order: 40,
     priority: 70,
     text: t('firstName').toString(),
     value: 'firstName',
+    key: 'firstName',
     width: 180
   },
   {
@@ -209,13 +212,15 @@ const additionalTableHeaders = ref<ObjectTableHeader[]>([
     priority: 71,
     text: t('lastName').toString(),
     value: 'lastName',
+    key: 'lastName',
     width: 180
   },
   {
     order: 60,
     priority: 60,
     text: t('groups').toString(),
-    value: 'groups'
+    value: 'groups',
+    key: 'groups'
   }
 ]);
 </script>

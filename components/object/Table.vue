@@ -17,24 +17,24 @@
 -->
 <script lang="ts">
 import { PropType, VNode, VNodeArrayChildren } from 'vue';
-import { VTooltip } from 'vuetify/components';
-import { VDataTable } from 'vuetify/labs/VDataTable';
-import { cloneDeep } from 'lodash';
+import { VProgressLinear, VTooltip } from 'vuetify/components';
+import { VDataTable, VDataTableServer } from 'vuetify/labs/VDataTable';
+import type { SortItem } from 'vuetify/labs/VDataTable/composables/sort.mjs';
+import type { DataTableHeader } from 'vuetify/labs/VDataTable/types.mjs';
+import { cloneDeep, omit } from 'lodash';
 
 import ObjectIcon from '~/components/object/Icon.vue';
-import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
-import { useFormatters, useThrottleNextTick } from '~/composables/utils';
+import { IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { useFormatters } from '~/composables/utils';
 import { separateUUIDParam } from '~/lib/utils';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useFetchTranslations } from '~/composables/api/translations';
 
-export type ObjectTableItems = IVeoPaginatedResponse<IVeoEntity[]> | Array<IVeoEntity>;
-
 export type ObjectTableFormatter = (value: any) => string;
 export type ObjectTableTooltip = (value: any) => string;
-export type ObjectTableRenderer = (props: { item: IVeoEntity; value: any }) => VNode | VNode[] | string | (() => VNode | VNode[] | string);
+export type ObjectTableRenderer = (props: { item: any; value: any }) => VNode | VNode[] | string | (() => VNode | VNode[] | string);
 
-export interface ObjectTableHeader extends Omit<DataTableHeader, 'text'> {
+interface ObjectTableHeaderAdditionalProperties {
   priority: number;
   order: number;
   truncate?: boolean;
@@ -42,63 +42,80 @@ export interface ObjectTableHeader extends Omit<DataTableHeader, 'text'> {
   text?: string;
   render?: ObjectTableRenderer;
   tooltip?: ObjectTableRenderer;
-  value: keyof IVeoEntity | string;
+  value: keyof any | string;
 }
+
+export type ObjectTableHeader = Omit<DataTableHeader, 'text'> & ObjectTableHeaderAdditionalProperties;
 
 export type ExtractProperty<V extends ReadonlyArray<Record<string, any>>, K extends keyof V[0]> = V extends ReadonlyArray<Record<K, infer U>> ? U : never;
 
+/**
+ * This component is designed to reduce code duplications for tables that use the same or similar columns across the application.
+ * Furthermore it enhances the default vuetify table by only displaying the columns that fit the available space.
+ * Can be used for paginated data (that uses the IVeoPaginatedReponse interface) and default arrays
+ */
 export default defineComponent({
   props: {
     /**
-     * Items can be `IVeoPaginatedResponse` or an array of `IVeoEntity`
+     * Items can be IVeoPaginatedResponse or an array.
      */
     items: {
-      type: [Object, Array] as PropType<ObjectTableItems>,
+      type: [Object, Array] as PropType<IVeoPaginatedResponse<any> | any[]>,
       default: () => []
     },
     /**
-     * Keys of the default columns defined in the VeoObjectTable that should get shown
+     * Displays a loading indicator. Works regardless of PaginatedResponse or array
+     */
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * Reflects the current page displayed in the table. Can be used with paginated data and simple arrays.
+     */
+    page: {
+      type: Number,
+      default: 1
+    },
+    /**
+     * Defines how the table should be sorted.
+     * NOTE: Paginated data can only be sorted by one column, all entries besides [0] will be ignored.
+     */
+    sortBy: {
+      type: Array as PropType<SortItem[]>,
+      default: () => [{ key: 'name', order: 'desc' }]
+    },
+    /**
+     * Keys of the default columns defined in the VeoObjectTable that should get shown.
      */
     defaultHeaders: {
       type: Array as PropType<string[]>,
       default: () => []
     },
+    /**
+     * Array containing additional table headers that should get shown besides the default headers.
+     */
     additionalHeaders: {
       type: Array as PropType<ObjectTableHeader[]>,
       default: () => []
     },
-    page: {
-      type: Number,
-      default: 1
-    },
-    sortBy: {
-      type: [String, Array] as PropType<string | string[]>,
-      default: () => ['name']
-    },
-    sortDesc: {
-      type: [Boolean, Array] as PropType<boolean | boolean[]>,
-      default: () => []
-    },
-    loading: {
-      type: Boolean,
-      default: false
-    },
+    /**
+     * Force-show all columns, even if this makes the table scrollable on the x-axis.
+     */
     showAllColumns: {
       type: Boolean,
       default: false
     },
-    // Needed as we can't check whether @click is set in the attrs as soon as it is defiend as an emit
+    // Needed as we can't check whether @click is set in the attrs as soon as it is defiend as an emit.
     enableClick: {
       type: Boolean,
       default: false
     }
   },
   emits: [
-    'update:sort-desc',
     'update:sort-by',
     'update:page',
     'update:items-per-page',
-    'page-change',
     'click'
   ],
   setup(props, { emit, slots, attrs }) {
@@ -113,6 +130,27 @@ export default defineComponent({
     const { data: translations } = useFetchTranslations(translationQueryParameters);
 
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
+
+    // Local sortBy and page property. Used so the table can be paginated if the props aren't set. synced by watchers.
+    const localPage = ref(props.page);
+    watch(() => localPage.value, (newValue) => {
+      emit('update:page', newValue);
+    });
+    watch(() => props.page, (newValue) => {
+      localPage.value = newValue;
+    });
+    const localSortBy = ref(props.sortBy);
+    watch(() => localSortBy.value, (newValue) => {
+      emit('update:sort-by', newValue);
+    });
+    watch(() => props.sortBy, (newValue) => {
+      localSortBy.value = newValue;
+    });
+
+    /**
+     * Distinguish between IVeoPaginatedResponse and basic arrays
+     */
+    const isPaginatedResponse = computed(() => 'items' in props.items && 'page' in props.items && 'pageCount' in props.items && 'totalItemCount' in props.items);
     /**
      * Format date via i18n
      */
@@ -133,10 +171,6 @@ export default defineComponent({
       const key = `${_item.type}_${domainDetails?.subType}_status_${domainDetails?.status}`;
       return translations.value?.lang?.[locale.value]?.[key] || _item.domains?.[domainId.value]?.status || '';
     };
-    /**
-     * Distinguish between {@link IVeoPaginatedResponse} and {@link IVeoEntity}[]
-     */
-    const isPaginatedResponse = (v: ObjectTableItems): v is IVeoPaginatedResponse<IVeoEntity[]> => 'items' in v;
     /**
      * Render folder or file icons
      */
@@ -278,7 +312,6 @@ export default defineComponent({
         order: 90
       }
     };
-    type Header = DataTableHeader & ObjectTableHeader;
 
     /**
      * Default header classes
@@ -296,22 +329,22 @@ export default defineComponent({
     /**
      * Render value inside a cell
      */
-    const renderValue = (item: IVeoEntity, key: keyof IVeoEntity | string) => (key in item.raw ? String(item.raw[key]) : '');
+    const renderValue = (item: any, key: keyof any | string) => (key in item.raw ? String(item.raw[key]) : '');
     /**
      * Convert ObjectTableRenderer to VNode array
      */
-    const toNodeChildren = (items: ReturnType<ObjectTableRenderer>): VNodeArrayChildren => ([] as (VNode | string)[]).concat(items);
+    const toNodeChildren = (items: ReturnType<ObjectTableRenderer>): VNodeArrayChildren => ([] as (VNode | string)[]).concat(items as VNode[]);
     /**
      * Render a tooltip for a cell
      */
-    const renderTooltip = (header: ObjectTableHeader, data?: VNodeData): ObjectTableRenderer => {
+    const renderTooltip = (header: ObjectTableHeader, data?: any): ObjectTableRenderer => {
       return (props) => {
         const children = header.render ? toNodeChildren(header.render(props)) : renderValue(props.item, header.value);
         return h(VTooltip, {
           location: 'bottom',
           width: 350
         }, {
-          activator: ({ attrs, props }) => h('span', { attrs, ...props, ...data }, children),
+          activator: ({ attrs, props }: { attrs: Record<string, any>, props: Record<string, any> }) => h('span', { attrs, ...props, ...data }, children),
           default: () => header.tooltip?.(props)
         });
       };
@@ -319,7 +352,7 @@ export default defineComponent({
     /**
      * Prepare headers for v-data-table, applying classes and tooltip renderers
      */
-    const _headers = computed<Header[]>(() =>
+    const _headers = computed<ObjectTableHeader[]>(() =>
       [
         ...Object.entries(defaultHeaders)
           .filter(([key, _header]) => props.defaultHeaders.includes(key))
@@ -330,7 +363,7 @@ export default defineComponent({
           const cellClass = defaultCellClasses.concat(header.cellClass || [], header.truncate ? truncateClasses : []);
           return {
             ...header,
-            title: header.text ?? $t(`objectlist.${header.value}`).toString(),
+            title: header.text ?? $t(`objectlist.${String(header.value)}`).toString(),
             cellClass,
             class: defaultClasses.concat(header.class || [], header.truncate ? truncateClasses : []),
             render: header.tooltip ? renderTooltip(header, { class: cellClass }) : header.render
@@ -341,68 +374,41 @@ export default defineComponent({
 
     // Apply formatters to items:
     const mappers = _headers.value.filter((_) => !!_.map);
-    const mapItem = (item: IVeoEntity) => {
+    const mapItem = (item: any) => {
       const mappedValues = Object.fromEntries(
         mappers.map((formatter) => {
-          const name = formatter.value as keyof IVeoEntity;
-          const value = formatter.map(item[name]);
+          const name = formatter.value;
+          const value = formatter.map ? formatter.map(item[name]) : item[name];
           return [name, value];
         })
       );
       return { ...item, ...mappedValues };
     };
 
-    const items = computed(() => {
-      const items = isPaginatedResponse(props.items) ? props.items.items : props.items;
-      return items.map(mapItem);
-    });
+    const items = computed(() => (isPaginatedResponse.value ? (props.items as IVeoPaginatedResponse<any>).items : props.items).map(mapItem));
+
     /**
      * Create slots to apply renderers
      */
     const renderers = computed(() => Object.fromEntries(_headers.value.filter((header) => !!header.render).map((header) => [`item.${header.key}`, header.render])));
-    /**
-     * Calculate pagination properties
-     */
-    const paginationProps = computed(() => {
-      if (!isPaginatedResponse(props.items)) return;
-      return {
-        page: props.items.page,
-        serverItemsLength: props.items.totalItemCount
-      };
-    });
-
-    const firstOrValue = <T>(v: T | T[]): T => (Array.isArray(v) ? v[0] : v);
-    const pageUpdate = {
-      newPage: props.page,
-      sortBy: firstOrValue(props.sortBy),
-      sortDesc: firstOrValue(props.sortDesc)
-    };
-    const { throttle } = useThrottleNextTick();
-    const emitPageUpdate = ({ newPage, sortBy, sortDesc }: { newPage?: number; sortBy?: string | string[]; sortDesc?: boolean | boolean[] }) => {
-      // Update data (and keep current values)
-      const data = Object.assign(pageUpdate, {
-        newPage: newPage ?? props.page,
-        sortBy: firstOrValue(sortBy ?? props.sortBy),
-        sortDesc: firstOrValue(sortDesc ?? props.sortDesc)
-      });
-      // ... but only emit once at nextTick
-      return throttle(() => emit('page-change', data));
-    };
 
     /**
      * Calculate which columns should be shown based on overflow
      */
     // The headers actually displayed. This changes based on space available (resizeObserver).
-    const displayedHeaders = ref<Header[]>(_headers.value);
+    const displayedHeaders = ref<ObjectTableHeader[]>(_headers.value);
 
-    const calculateTableWidth = (headers: Header[]) =>
+    // Normalized headers (not existing props get removed)
+    const normalizedDisplayHeaders = computed<DataTableHeader[]>(() => displayedHeaders.value.map((header) => omit(header, 'priority', 'order', 'truncate', 'map', 'text', 'render', 'tooltip', 'value')));
+
+    const calculateTableWidth = (headers: ObjectTableHeader[]) =>
       headers.reduce((previousValue, currentValue) => {
         // The 32 is the left and right padding of each cell
         previousValue += Number(currentValue.width || 0) + 32;
         return previousValue;
       }, 0);
 
-    const indexOfHeaderWithLowestPriority = (headers: Header[]) => {
+    const indexOfHeaderWithLowestPriority = (headers: ObjectTableHeader[]) => {
       if (!headers.length) {
         return undefined;
       }
@@ -470,60 +476,61 @@ export default defineComponent({
       }
     });
 
-    return () =>
-      h(
-        VDataTable,
-        {
-          id: `veo-object-table-${vm?.uid}`,
-          class: props.enableClick ? 'cursor-pointer' : '',
-          ...attrs,
-          items: items.value,
-          headers: displayedHeaders.value,
-          sortBy: props.sortBy,
-          sortDesc: props.sortDesc,
-          itemValue: false,
-          page: props.page,
-          loading: props.loading,
-          itemsPerPage: tablePageSize.value,
-          footerProps: {
-            itemsPerPageOptions: [10, 20, 50, -1]
-          },
-          ...paginationProps.value,
-          'onUpdate:page': (page: number) => {
-            emit('update:page', page);
-            emitPageUpdate({ newPage: page });
-          },
-          'onUpdate:items-per-page': (itemsPerPage: number) => {
-            tablePageSize.value = itemsPerPage;
-            emit('update:items-per-page', itemsPerPage);
-            emitPageUpdate({ newPage: 1 });
-          },
-          'onUpdate:sort-by': (sortBy: string | string[]) => {
-            emit('update:sort-by', sortBy);
-            emitPageUpdate({ sortBy, newPage: 1 });
-          },
-          'onUpdate:sort-desc': (sortDesc: boolean | boolean[]) => {
-            emit('update:sort-desc', sortDesc);
-            emitPageUpdate({ sortDesc, newPage: 1 });
-          },
-          ...(props.enableClick || 'show-select' in attrs
-            ? {
-              'onClick:row': (_item: any, context: any) => {
-                if ('show-select' in attrs) {
-                  // TODO-vuetify: Reenable once context is available again
-                  // context.select(!context.isSelected);
-                } else {
-                  emit('click', context);
-                }
-              }
+    const sharedProps = computed(() => ({
+      ...attrs,
+      class: props.enableClick ? 'cursor-pointer' : '',
+      id: `veo-object-table-${vm?.uid}`,
+      items: items.value,
+      itemsPerPage: tablePageSize.value,
+      mustSort: true,
+      headers: normalizedDisplayHeaders.value,
+      page: localPage.value,
+      sortBy: localSortBy.value,
+      ...(props.enableClick || 'show-select' in attrs
+        ? {
+          'onClick:row': (_item: any, context: any) => {
+            if ('show-select' in attrs) {
+              // TODO-vuetify: Reenable once context is available again
+              // context.select(!context.isSelected);
+            } else {
+              emit('click', context);
             }
-            : {})
-        },
-        {
+          }
+        }
+        : {}),
+      'onUpdate:page': (newValue: number) => {
+        localPage.value = newValue;
+      },
+      'onUpdate:itemsPerPage': (newValue: number) => {
+        tablePageSize.value = newValue;
+        emit('update:items-per-page', newValue);
+      },
+      'onUpdate:sortBy': (newValue: SortItem[]) => {
+        localSortBy.value = newValue;
+      }
+    }));
+
+    return () => isPaginatedResponse.value ?
+      h(VDataTableServer, {
+        ...attrs,
+        ...sharedProps.value,
+        loading: props.loading,
+        loadingText: t('loadingData'),
+        itemsLength: (props.items as IVeoPaginatedResponse<any>).totalItemCount
+      }, {
+        ...slots,
+        ...renderers.value
+      })
+      : h('div', [
+        ...(props.loading ? [h(VProgressLinear, { indeterminate: true, color: 'primary' })] : []),
+        h(VDataTable, {
+          ...attrs,
+          ...sharedProps.value
+        }, {
           ...slots,
           ...renderers.value
-        }
-      );
+        })
+      ]);
   }
 });
 </script>
@@ -543,11 +550,13 @@ export default defineComponent({
   "en": {
     "by": "by",
     "createdAt": "Created",
+    "loadingData": "Loading data...",
     "updatedAt": "Updated"
   },
   "de": {
     "by": "von",
     "createdAt": "Erstellt",
+    "loadingData": "Daten werden geladen",
     "updatedAt": "Aktualisiert"
   }
 }
