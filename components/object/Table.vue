@@ -429,8 +429,11 @@ export default defineComponent({
         displayedHeaders.value = _headers.value;
         return;
       }
+      console.log(1);
       if (tableWrapper) {
+        console.log(2, tableWrapper);
         const tableWrapperWidth = tableWrapper.getBoundingClientRect().width;
+        console.log(3, tableWrapperWidth);
 
         const headers = cloneDeep(_headers.value);
 
@@ -453,6 +456,7 @@ export default defineComponent({
           }
         }
 
+        console.log(4, cloneDeep(headers));
         displayedHeaders.value = headers;
       }
     };
@@ -462,9 +466,10 @@ export default defineComponent({
     const resizeObserver = new ResizeObserver(onTableWidthChange);
 
     let tableWrapper: Element | null = null;
+    watch(() => tableWrapper, onTableWidthChange);
     onMounted(() => {
       // ToDo: Refs in render functions currently don't work, so we have to use the query selector
-      tableWrapper = document.querySelector(`#veo-object-table-${vm?.uid} .v-data-table__wrapper`);
+      tableWrapper = document.querySelector(`#veo-object-table-${vm?.uid} .v-table__wrapper`);
       if (tableWrapper) {
         resizeObserver.observe(tableWrapper);
       }
