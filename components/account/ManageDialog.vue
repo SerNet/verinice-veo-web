@@ -133,7 +133,7 @@
       <v-btn
         text
         color="primary"
-        :disabled="formIsValid !== null || ability.cannot('manage', 'accounts')"
+        :disabled="formIsValid === false || ability.cannot('manage', 'accounts')"
         :loading="isLoading"
         @click="createOrUpdateAccount"
       >

@@ -24,6 +24,7 @@
     :persistent="savingObject"
     :close-disabled="savingObject"
     fixed-footer
+    @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
       <p v-if="!!$slots.header">
@@ -51,12 +52,13 @@
       <BaseCard>
         <ObjectTable
           v-model="modifiedSelectedItems"
+          v-model:page="page"
+          v-model:sort-by="sortBy"
           show-select
-          checkbox-color="primary"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="selectableObjects"
           :loading="objectsLoading || childrenLoading || parentsLoading"
-          @page-change="onPageChange"
+          return-object
         />
       </BaseCard>
     </template>
@@ -84,7 +86,7 @@
 
 <script lang="ts">
 import { PropType } from 'vue';
-import { differenceBy, uniqBy, upperFirst } from 'lodash';
+import { differenceBy, omit, uniqBy, upperFirst } from 'lodash';
 
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
@@ -183,29 +185,32 @@ export default defineComponent({
     // Table/filter logic
     const filter = ref<Record<string, any>>({});
 
-    const objectsQueryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
+    const page = ref(1);
+    const sortBy = ref([{ key: 'name', order: 'desc' }]);
     const resetQueryOptions = () => {
-      Object.assign(objectsQueryParameters, { page: 1, sortBy: 'name', sortDesc: false });
-      refetchObjects(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
+      page.value = 1;
+      sortBy.value = [{ key: 'name', order: 'desc' }];
     };
 
     const objectListEndpoint = computed(() => endpoints.value?.[filter.value.objectType] || '');
-    const combinedObjectsQueryParameters = computed(() => ({
+    const combinedObjectsQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
-      sortBy: objectsQueryParameters.sortBy,
-      sortOrder: (objectsQueryParameters.sortDesc ? 'desc' : 'asc') as 'asc' | 'desc',
-      page: objectsQueryParameters.page,
+      sortBy: sortBy.value[0].key,
+      sortOrder: sortBy.value[0].order,
+      page: page.value,
       unit: separateUUIDParam(route.params.unit as string).id,
-      ...filter.value,
+      ...omit(filter.value, 'objectType'),
       endpoint: objectListEndpoint.value
     }));
     const objectsQueryEnabled = computed(() => !!objectListEndpoint.value);
     const {
       data: objects,
-      isFetching: objectsLoading,
-      refetch: refetchObjects
+      isFetching: objectsLoading
     } = useFetchObjects(combinedObjectsQueryParameters, { enabled: objectsQueryEnabled, keepPreviousData: true });
-    const selectableObjects = computed(() => (objects.value?.items || []).filter((object) => object.id !== props.object?.id));
+    const selectableObjects = computed(() => ({
+      ...objects.value,
+      items: (objects.value?.items || []).filter((object) => object.id !== props.object?.id)
+    }));
 
     watch(
       () => props.preselectedFilters,
@@ -223,12 +228,6 @@ export default defineComponent({
     // update filter options
     const updateFilter = (newFilter: Record<string, any>) => {
       filter.value = { ...newFilter };
-    };
-
-    // refetch entities on page or sort changes (in VeoObjectTable)
-    const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
-      Object.assign(objectsQueryParameters, { page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
-      refetchObjects(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
     };
 
     // get allowed filter-objectTypes for current parent and child type
@@ -263,13 +262,7 @@ export default defineComponent({
       childObjectId: props.object?.id || ''
     }));
     const parentsQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && props.editParents);
-    const { data: parents, isFetching: parentsLoading, refetch } = useFetchParentObjects(parentsQueryParameters, { enabled: parentsQueryEnabled, keepPreviousData: false });
-    // Needed as for some reason nuxt won't pick up the changes
-    watch(
-      () => parentsQueryParameters.value,
-      () => refetch(), // () => refetch() is needed, as "refetch," would pass the newValue parameters which are incompatible for whatever reason
-      { deep: true }
-    );
+    const { data: parents, isFetching: parentsLoading } = useFetchParentObjects(parentsQueryParameters, { enabled: parentsQueryEnabled, keepPreviousData: false });
 
     const childObjectsQueryParameters = computed(() => ({
       endpoint: objectEndpoint.value,
@@ -363,10 +356,11 @@ export default defineComponent({
       modifiedSelectedItems,
       newObjectTypeName,
       objectsLoading,
-      onPageChange,
+      page,
       parentsLoading,
       savingObject,
       selectableObjects,
+      sortBy,
       title,
       updateFilter,
 

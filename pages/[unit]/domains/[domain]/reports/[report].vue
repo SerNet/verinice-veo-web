@@ -62,16 +62,16 @@
       />
       <BaseCard>
         <ObjectTable
-          v-model="selectedObjects"
+          v-model:page="page"
+          v-model:sort-by="sortBy"
+          :model-value="selectedObjects"
           show-select
-          checkbox-color="primary"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="objects"
           :loading="objectsFetching"
-          single-select
-          return-objects
+          return-object
           data-component-name="report-entity-selection"
-          @page-change="onPageChange"
+          @update:model-value="onReportSelectionUpdated"
         />
       </BaseCard>
       <v-row
@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import { upperCase, upperFirst } from 'lodash';
+import { omit, upperCase, upperFirst } from 'lodash';
 
 import { separateUUIDParam } from '~/lib/utils';
 import { useCreateReport, useFetchReports } from '~/composables/api/reports';
@@ -108,6 +108,8 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useFetchSchemas } from '~/composables/api/schemas';
+import { RouteRecordName } from 'vue-router';
+import { IVeoEntity } from '~~/types/VeoTypes';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-report';
 
@@ -138,10 +140,11 @@ export default defineComponent({
     // Table stuff
     const selectedObjects = ref<{ id: string; type: string }[]>([]);
 
-    const objectsQueryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
+    const page = ref(1);
+    const sortBy = ref([{ key: 'name', order: 'desc' }]);
     const resetQueryOptions = () => {
-      Object.assign(objectsQueryParameters, { page: 1, sortBy: 'name', sortDesc: false });
-      refetchObjects(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
+      page.value = 1;
+      sortBy.value = [{ key: 'name', order: 'desc' }];
     };
 
     const requiredFields = computed(() => (availableSubTypes.value.length ? ['objectType', 'subType'] : ['objectType']));
@@ -173,13 +176,13 @@ export default defineComponent({
     watch(() => filter.value, resetQueryOptions, { deep: true });
 
     const endpoint = computed(() => endpoints.value?.[filter.value.objectType as string]);
-    const combinedObjectsQueryParameters = computed(() => ({
+    const combinedObjectsQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
-      sortBy: objectsQueryParameters.sortBy,
-      sortOrder: objectsQueryParameters.sortDesc ? 'desc' : 'asc',
-      page: objectsQueryParameters.page,
+      sortBy: sortBy.value[0].key,
+      sortOrder: sortBy.value[0].order,
+      page: page.value,
       unit: separateUUIDParam(route.params.unit as string).id,
-      ...filter.value,
+      ...omit(filter.value, 'objectType'),
       endpoint: endpoint.value
     }));
     const objectType = computed<string | undefined>(() => filter.value.objectType as string | undefined);
@@ -197,13 +200,7 @@ export default defineComponent({
       const query = { ...route.query, ...newValues };
       // obsolete params need to be removed from the query to match the route exactly in the NavigationDrawer
       Object.keys(query).forEach((key) => query[key] === undefined && delete query[key]);
-      await navigateTo({ ...route, name: route.name, query });
-    };
-
-    // refetch entities on page or sort changes (in VeoObjectTable)
-    const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
-      Object.assign(objectsQueryParameters, { page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
-      refetchObjects(); // A dirty workaround, as vue-query doesn't pick up changes to the query key. Hopefully solved with nuxt 3
+      await navigateTo({ ...route, name: route.name as RouteRecordName | undefined, query });
     };
 
     // Generating new report
@@ -237,6 +234,14 @@ export default defineComponent({
       }
     };
 
+    const onReportSelectionUpdated = (newObjects: IVeoEntity[]) => {
+      if(newObjects?.length) {
+        selectedObjects.value = [newObjects[0]];
+      } else {
+        selectedObjects.value = [];
+      }
+    };
+
     return {
       availableObjectTypes,
       availableSubTypes,
@@ -247,8 +252,10 @@ export default defineComponent({
       generatingReport,
       objects,
       objectsFetching,
-      onPageChange,
+      onReportSelectionUpdated,
       selectedObjects,
+      sortBy,
+      page,
       refetchObjects,
       report,
       reportsFetching,

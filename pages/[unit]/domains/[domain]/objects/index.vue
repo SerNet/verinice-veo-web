@@ -45,14 +45,14 @@
       />
       <BaseCard v-if="objectType">
         <ObjectTable
+          v-model:page="page"
+          v-model:sort-by="sortBy"
           :items="items"
           :loading="isLoading"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :additional-headers="additionalHeaders"
-          :page="queryParameters.page"
           data-component-name="object-overview-table"
           enable-click
-          @page-change="onPageChange"
           @click="openItem"
         >
           <template #actions="{item}">
@@ -118,6 +118,7 @@
 </template>
 
 <script lang="ts">
+import { RouteRecordName } from 'vue-router';
 import { mdiContentCopy, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
@@ -188,23 +189,24 @@ export default defineComponent({
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     // fetch objects of objectType
-    const queryParameters = reactive({ page: 1, sortBy: 'name', sortDesc: false });
+    const page = ref(1);
+    const sortBy = ref([{ key: 'name', order: 'desc' }]);
     const resetQueryOptions = () => {
-      Object.assign(queryParameters, { page: 1, sortBy: 'name', sortDesc: false });
+      page.value = 1;
+      sortBy.value = [{ key: 'name', order: 'desc' }];
     };
 
     const endpoint = computed(() => endpoints.value?.[filter.value.objectType || '']);
     const combinedQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
-      sortBy: queryParameters.sortBy,
-      sortOrder: queryParameters.sortDesc ? 'desc' : 'asc',
-      page: queryParameters.page,
+      sortBy: sortBy.value[0].key,
+      sortOrder: sortBy.value[0].order,
+      page: page.value,
       unit: separateUUIDParam(route.params.unit as string).id,
       ...omit(filter.value, 'objectType'),
       endpoint: endpoint.value
     }));
     const queryEnabled = computed(() => !!objectType.value && !!endpoint.value);
-
     const { data: items, isLoading: isLoadingObjects } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true, placeholderData: [] });
 
     const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
@@ -214,11 +216,6 @@ export default defineComponent({
     const isLoading = computed(() => isLoadingObjects.value || translationsLoading.value);
 
     watch(() => filter.value, resetQueryOptions, { deep: true });
-
-    // refetch entities on page or sort changes (in VeoObjectTable)
-    const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
-      Object.assign(queryParameters, { page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
-    };
 
     // Additional breadcrumbs based on object type and sub type
     const objectTypeKey = 'object-overview-object-type';
@@ -296,7 +293,7 @@ export default defineComponent({
       const query = { ...route.query, ...newValues };
       // obsolete params need to be removed from the query to match the route exactly in the NavigationDrawer
       Object.keys(query).forEach((key) => query[key] === undefined && delete query[key]);
-      await router.push({ ...route, name: route.name, query });
+      await router.push({ ...route, name: route.name as RouteRecordName | undefined, query });
     };
 
     const formatValue = (label: FilterKey, value?: string) => {
@@ -326,7 +323,7 @@ export default defineComponent({
       displayErrorMessage(t(`errors.${messageKey}`).toString(), error?.toString());
     };
 
-    const openItem = ({ item }) => {
+    const openItem = ({ item }: { item: any }) => {
       return router.push({
         name: 'unit-domains-domain-objects-object',
         params: {
@@ -398,11 +395,11 @@ export default defineComponent({
       openItem,
       onCloseDeleteDialog,
       onOpenFilterDialog,
-      onPageChange,
+      page,
       showError,
+      sortBy,
       subType,
       updateRouteQuery,
-      queryParameters,
       upperFirst
     };
   }
