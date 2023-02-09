@@ -29,12 +29,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-json';
 
-export default Vue.extend({
-  name: 'PrimsHighlighter',
+export default {
   props: {
     text: { type: String, default: '' }
   },
@@ -43,14 +41,14 @@ export default Vue.extend({
       return this.text ? Prism.highlight(String(this.text || ''), Prism.languages.json, 'json') : '';
     }
   }
-});
+};
 </script>
 
 <style lang="scss">
 // Good resource how to include external .css as inline in scss
 // https://github.com/sass/node-sass/issues/2362#issuecomment-388634848
 .json-highlighter {
-  @import '~prismjs/themes/prism-okaidia';
+  @import 'prismjs/themes/prism-okaidia';
   code::before,
   code::after {
     content: none;

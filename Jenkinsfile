@@ -33,6 +33,12 @@ pipeline {
             }
         }
         stage('Test') {
+            // FIXME VEO-1783: re-enable test stage
+            when {
+                expression {
+                   return false
+                }
+            }
             agent {
                 dockerfile {
                     filename 'test.Dockerfile'

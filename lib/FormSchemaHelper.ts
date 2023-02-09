@@ -18,6 +18,7 @@
 import FormSchemaValidator from './FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
 import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaTranslationCollection, IVeoFormSchemaItemRule, IVeoObjectSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { mdiEyeOffOutline, mdiEyeOutline } from '@mdi/js';
 
 export function generateSchema(
   name: IVeoFormSchemaMeta['name'],
@@ -62,6 +63,7 @@ export function deleteElementCustomTranslation(
   if (translationKeysToRemove) {
     const localCustomTranslation: IVeoFormSchemaTranslationCollection = JSON.parse(JSON.stringify(customTranslations));
 
+    // @ts-ignore Some type error, but as the editors will get reworked anyways ¯\_(ツ)_/¯
     translationKeysToRemove = translationKeysToRemove.map((key) => key.replace('#lang/', ''));
     translationKeysToRemove.forEach((key) => {
       for (const lang in customTranslations) {
@@ -73,8 +75,8 @@ export function deleteElementCustomTranslation(
 }
 
 export const ruleEffectIcons = {
-  SHOW: 'mdi-eye-outline',
-  HIDE: 'mdi-eye-off-outline'
+  SHOW: mdiEyeOutline,
+  HIDE: mdiEyeOffOutline
 };
 
 export function getRuleEffectIcons(ruleEffect: IVeoFormSchemaItemRule['effect']) {

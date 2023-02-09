@@ -15,10 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useContext } from '@nuxtjs/composition-api';
-import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+import { Ref } from 'vue';
+import { useQueryClient } from '@tanstack/vue-query';
 
-import { QueryOptions, STALE_TIME, useQuery } from './utils/query';
+import { IVeoQueryTransformationMap, QueryOptions, STALE_TIME, useQuery } from './utils/query';
+import { IVeoMutationParameters, IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
 import { IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export interface IVeoFetchFormsParameters {
@@ -30,19 +31,108 @@ export interface IVeoFetchFormParameters {
   id: string;
 }
 
-export const schemasQueryKeys = {
-  forms: (queryParameters: IVeoFetchFormsParameters) => ['forms', queryParameters.domainId] as const,
-  form: (queryParameters: IVeoFetchFormParameters) => ['form', queryParameters.domainId, queryParameters.id] as const
+export interface IVeoCreateFormParameters {
+  domainId: string;
+  form: IVeoFormSchema;
+}
+
+export interface IVeoUpdateFormParameters {
+  id: string;
+  domainId: string;
+  form: IVeoFormSchema;
+}
+
+export const formsQueryParameterTransformationMap: IVeoQueryTransformationMap = {
+  fetchAll: (queryParameters: IVeoFetchFormsParameters) => ({ query: queryParameters }),
+  fetch: (queryParameters: IVeoFetchFormParameters) => ({
+    params: {
+      id: queryParameters.id
+    }
+  })
 };
 
-export const useFetchForms = (queryParameters: MaybeRef<IVeoFetchFormsParameters>, queryOptions?: QueryOptions) => {
-  const { $api } = useContext();
-
-  return useQuery<IVeoFormSchemaMeta[]>(schemasQueryKeys.forms, $api.form.fetchAll, queryParameters, { ...queryOptions, staleTime: STALE_TIME.MEDIUM, placeholderData: [] });
+export const formsMutationParameterTransformationMap: IVeoMutationTransformationMap = {
+  create: (mutationParameters: IVeoCreateFormParameters) => ({
+    json: { domainId: mutationParameters.domainId, ...mutationParameters.form }
+  }),
+  update: (mutationParameters: IVeoUpdateFormParameters) => ({
+    params: {
+      id: mutationParameters.id
+    },
+    json: { domainId: mutationParameters.domainId, ...mutationParameters.form }
+  })
 };
 
-export const useFetchForm = (queryParameters: MaybeRef<IVeoFetchFormParameters>, queryOptions?: QueryOptions) => {
-  const { $api } = useContext();
+export const useFetchForms = (queryParameters: Ref<IVeoFetchFormsParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchFormsParameters, IVeoFormSchemaMeta[]>(
+    'forms',
+    {
+      url: '/api/forms/'
+    },
+    queryParameters,
+    formsQueryParameterTransformationMap.fetchAll,
+    { ...queryOptions, staleTime: STALE_TIME.MEDIUM, placeholderData: [] }
+  );
 
-  return useQuery<IVeoFormSchema>(schemasQueryKeys.form, $api.form.fetch, queryParameters, { ...queryOptions, staleTime: STALE_TIME.MEDIUM });
+export const useFetchForm = (queryParameters: Ref<IVeoFetchFormParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchFormParameters, IVeoFormSchema>(
+    'form',
+    { url: '/api/forms/:id', onDataFetched: (result) => JSON.parse(JSON.stringify(result).replaceAll('{CURRENT_DOMAIN_ID}', queryParameters.value.domainId)) },
+    queryParameters,
+    formsQueryParameterTransformationMap.fetch,
+    {
+      ...queryOptions,
+      staleTime: STALE_TIME.MEDIUM
+    }
+  );
+
+export const useCreateForm = (mutationOptions?: MutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IVeoCreateFormParameters, string>(
+    'form',
+    {
+      url: '/api/forms',
+      method: 'POST'
+    },
+    formsMutationParameterTransformationMap.create,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(['forms']);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
+      }
+    }
+  );
+};
+
+export const useUpdateForm = (mutationOptions?: MutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IVeoUpdateFormParameters, void>(
+    'form',
+    {
+      url: '/api/forms/:id',
+      method: 'PUT'
+    },
+    formsMutationParameterTransformationMap.update,
+    {
+      ...mutationOptions,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries([
+          'form',
+          {
+            domainId: (variables as unknown as IVeoMutationParameters).params?.domainId || '',
+            id: (variables as unknown as IVeoMutationParameters).params?.id || ''
+          }
+        ]);
+        queryClient.invalidateQueries(['forms', { domainId: (variables as unknown as IVeoMutationParameters).query?.domainId || '' }]);
+        if (mutationOptions?.onSuccess) {
+          mutationOptions.onSuccess(data, variables, context);
+        }
+      }
+    }
+  );
 };

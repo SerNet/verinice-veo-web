@@ -17,7 +17,6 @@
  */
 import { max } from 'lodash';
 
-import { getSchemaEndpoint } from './schema';
 import { separateUUIDParam } from '~/lib/utils';
 import { Client } from '~/plugins/api';
 import { IVeoAPIMessage, IVeoDecisionEvaluation, IVeoEntity, IVeoInspectionResult, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from '~/types/VeoTypes';
@@ -46,7 +45,7 @@ export default function (api: Client) {
      *
      * @param parent
      */
-    async fetchAll(objectType: string, page: number = 1, query: IVeoEntityRequestParams = {}, noUnit: boolean = false): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
+    fetchAll(endpoint: string, page = 1, query: IVeoEntityRequestParams = {}, noUnit = false): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
       // Entities don't get accessed without their unit as a context, for this reason we manually add the unit if omitted by the developer.
       // To override this behaviour, set noUnit to true.
       if (!query.unit && !noUnit) {
@@ -67,11 +66,10 @@ export default function (api: Client) {
         query.size = 1000;
       }
 
-      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
       return api
-        .req('/api/:objectType', {
+        .req('/api/:endpoint', {
           params: {
-            objectType
+            endpoint
           },
           query
         })
@@ -100,22 +98,20 @@ export default function (api: Client) {
      * Creates an entity
      * @param entity
      */
-    async create(objectType: string, entity: IVeoEntity, parentScopes?: string[]): Promise<IVeoAPIMessage> {
-      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
-
+    create(endpoint: string, entity: IVeoEntity, parentScopes?: string[]): Promise<IVeoAPIMessage> {
       // Remove properties of the object only used in the frontend
-      if (entity.type === 'scopes') {
-        // @ts-ignore
+      if (entity.type === 'scope') {
+        // @ts-ignore Is only set in DTO if object is any type expect scope
         delete entity.parts;
       } else {
-        // @ts-ignore
+        // @ts-ignore Is only set in DTO if object is of type scope
         delete entity.members;
       }
 
-      return api.req('/api/:objectType', {
+      return api.req('/api/:endpoint', {
         method: 'POST',
         params: {
-          objectType
+          endpoint
         },
         query: {
           scopes: parentScopes?.join(',')
@@ -124,17 +120,15 @@ export default function (api: Client) {
       });
     },
 
-    async createRisk(objectType: string, id: string, risk: IVeoRisk): Promise<IVeoRisk> {
-      if (objectType !== 'process') {
-        throw new Error(`api::createRisk: Risks can only be created for processes. You tried creating a risk for a ${objectType}`);
+    createRisk(endpoint: string, id: string, risk: IVeoRisk): Promise<IVeoRisk> {
+      if (endpoint !== 'processes') {
+        throw new Error(`api::createRisk: Risks can only be created for processes. You tried creating a risk for a ${endpoint}`);
       }
 
-      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
-
-      return api.req('/api/:objectType/:id/risks', {
+      return api.req('/api/:endpoint/:id/risks', {
         method: 'POST',
         params: {
-          objectType,
+          endpoint,
           id
         },
         json: risk
@@ -145,53 +139,45 @@ export default function (api: Client) {
      * Loads one entity by id
      * @param id
      */
-    async fetch(objectType: string, id: string): Promise<IVeoEntity> {
-      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+    async fetch(endpoint: string, id: string): Promise<IVeoEntity> {
+      const result = await api.req('/api/:endpoint/:id', {
+        params: {
+          endpoint,
+          id
+        }
+      });
 
-      return api
-        .req('/api/:objectType/:id', {
-          params: {
-            objectType,
-            id
-          }
-        })
-        .then((result: IVeoEntity) => {
-          /*
-           * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
-           * members. However we combine both entity types as they get used more or less the same way
-           */
-          if (!result.parts) {
-            result.parts = [];
-          }
-          if (!result.members) {
-            result.members = [];
-          }
-          result.displayName = `${result.designator} ${result.abbreviation || ''} ${result.name}`;
-          return result;
-        });
+      /*
+       * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+       * members. However we combine both entity types as they get used more or less the same way
+       */
+      if (!result.parts) {
+        result.parts = [];
+      }
+      if (!result.members) {
+        result.members = [];
+      }
+      result.displayName = `${result.designator} ${result.abbreviation || ''} ${result.name}`;
+      return result;
     },
 
-    async fetchRisks(objectType: string, id: string): Promise<IVeoRisk[]> {
-      if (objectType !== 'process') {
-        throw new Error(`api::fetchRisk: Risks can only be fetched for processes. You tried fetching a risk for a ${objectType}`);
+    fetchRisks(endpoint: string, id: string): Promise<IVeoRisk[]> {
+      if (endpoint !== 'processes') {
+        throw new Error(`api::fetchRisk: Risks can only be fetched for processes. You tried fetching a risk for a ${endpoint}`);
       }
 
-      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
-
-      return api.req('/api/:objectType/:id/risks', {
+      return api.req('/api/:endpoint/:id/risks', {
         params: {
-          objectType,
+          endpoint,
           id
         }
       });
     },
 
-    async fetchInspections(objectType: string, id: string, domain: string): Promise<IVeoInspectionResult[]> {
-      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
-
-      return api.req('/api/:objectType/:id/inspection', {
+    fetchInspections(endpoint: string, id: string, domain: string): Promise<IVeoInspectionResult[]> {
+      return api.req('/api/:endpoint/:id/inspection', {
         params: {
-          objectType,
+          endpoint,
           id
         },
         query: {
@@ -200,16 +186,14 @@ export default function (api: Client) {
       });
     },
 
-    async fetchRisk(objectType: string, id: string, scenarioId: string): Promise<IVeoRisk> {
-      if (objectType !== 'process') {
-        throw new Error(`api::fetchRisk: Risks can only be fetched for processes. You tried fetching a risk for a ${objectType}`);
+    fetchRisk(endpoint: string, id: string, scenarioId: string): Promise<IVeoRisk> {
+      if (endpoint !== 'processes') {
+        throw new Error(`api::fetchRisk: Risks can only be fetched for processes. You tried fetching a risk for a ${endpoint}`);
       }
 
-      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
-
-      return api.req('/api/:objectType/:id/risks/:scenarioId', {
+      return api.req('/api/:endpoint/:id/risks/:scenarioId', {
         params: {
-          objectType,
+          endpoint,
           id,
           scenarioId
         }
@@ -221,70 +205,63 @@ export default function (api: Client) {
      * @param id
      * @param entity
      */
-    async update(objectType: string, id: string, entity: IVeoEntity): Promise<IVeoEntity> {
-      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
-
+    async update(endpoint: string, id: string, entity: IVeoEntity): Promise<IVeoEntity> {
       // Remove properties of the object only used in the frontend
-      if (entity.type === 'scopes' || entity.type === 'scope') {
-        // @ts-ignore
+      if (entity.type === 'scope') {
+        // @ts-ignore Is only set in DTO if object is any type expect scope
         delete entity.parts;
       } else {
-        // @ts-ignore
+        // @ts-ignore Is only set in DTO if object is of type scope
         delete entity.members;
       }
 
-      // Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
-      // @ts-ignore
+      // @ts-ignore Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
       delete entity.createdAt;
-      // @ts-ignore
+      // @ts-ignore Workaround for history: History has 9 digit second precision while default api only accepts 6 digit precision
       delete entity.updatedAt;
 
-      return api
-        .req('/api/:objectType/:id', {
-          method: 'PUT',
-          json: entity,
-          params: {
-            objectType,
-            id
-          }
-        })
-        .then((result: IVeoEntity) => {
-          /*
-           * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
-           * members. However we combine both entity types as they get used more or less the same way
-           */
-          if (!result.parts) {
-            result.parts = [];
-          }
-          if (!result.members) {
-            result.members = [];
-          }
-          result.displayName = `${result.designator} ${result.abbreviation || ''} ${result.name}`;
-          return result;
-        });
+      const result = await api.req('/api/:endpoint/:id', {
+        method: 'PUT',
+        json: entity,
+        params: {
+          endpoint,
+          id
+        }
+      });
+
+      /*
+       * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+       * members. However we combine both entity types as they get used more or less the same way
+       */
+      if (!result.parts) {
+        result.parts = [];
+      }
+      if (!result.members) {
+        result.members = [];
+      }
+      result.displayName = `${result.designator} ${result.abbreviation || ''} ${result.name}`;
+      return result;
     },
 
     /**
      * Updates a risk
      * NOTE: CURRENTLY USES THE SAME ENDPOINT AS FOR POSTING AS THE PUTTING ENDPOINT IS INOP
      *
-     * @param objectType The type of the object to update the risk for (currently has to be process)
+     * @param endpoint The endpoint of the object to update the risk for (currently has to be processes)
      * @param id The id of the process to update the risk for
      * @param _scenarioId Currently not used, see note
      * @param risk The new risk data
      * @returns Returns the updated risk
      */
-    async updateRisk(objectType: string, id: string, _scenarioId: string, risk: IVeoRisk): Promise<IVeoRisk> {
-      if (objectType !== 'process') {
-        throw new Error(`api::updateRisk: Risks can only be created for processes. You tried updating a risk for a ${objectType}`);
+    updateRisk(endpoint: string, id: string, _scenarioId: string, risk: IVeoRisk): Promise<IVeoRisk> {
+      if (endpoint !== 'processes') {
+        throw new Error(`api::updateRisk: Risks can only be created for processes. You tried updating a risk for a ${endpoint}`);
       }
 
-      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
-
-      return api.req('/api/:objectType/:id/risks', {
+      return api.req('/api/:endpoint/:id/risks', {
         method: 'POST',
         params: {
-          objectType,
+          endpoint,
           id
         },
         json: risk
@@ -295,29 +272,25 @@ export default function (api: Client) {
      * Deletes an entity
      * @param id
      */
-    async delete(objectType: string, id: string): Promise<IVeoAPIMessage> {
-      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
-
-      return api.req('/api/:objectType/:id', {
+    delete(endpoint: string, id: string): Promise<IVeoAPIMessage> {
+      return api.req('/api/:endpoint/:id', {
         params: {
-          objectType,
+          endpoint,
           id
         },
         method: 'DELETE'
       });
     },
 
-    async deleteRisk(objectType: string, objectId: string, scenarioId: string): Promise<IVeoEntity[]> {
-      if (objectType !== 'process') {
-        throw new Error(`api::deleteRisk: Risks can only be deleted for processes. You tried deleting a risk for a ${objectType}`);
+    deleteRisk(endpoint: string, objectId: string, scenarioId: string): Promise<IVeoEntity[]> {
+      if (endpoint !== 'processes') {
+        throw new Error(`api::deleteRisk: Risks can only be deleted for processes. You tried deleting a risk for a ${endpoint}`);
       }
 
-      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
-
-      return api.req('/api/:objectType/:objectId/risks/:scenarioId', {
+      return api.req('/api/:endpoint/:objectId/risks/:scenarioId', {
         method: 'DELETE',
         params: {
-          objectType,
+          endpoint,
           objectId,
           scenarioId
         }
@@ -327,13 +300,11 @@ export default function (api: Client) {
     /**
      * Returns all entities that are a sub entity of this entity.
      *
-     * @param objectType The type to fetch the entities for.
+     * @param endpoint The type to fetch the entities for.
      * @param id The uuid of the entity to fetch the sub entities for.
      */
-    async fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
-      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
-
-      if (objectType === 'scopes') {
+    fetchSubEntities(endpoint: string, id: string): Promise<IVeoEntity[]> {
+      if (endpoint === 'scopes') {
         return api
           .req(`/api/scopes/:id/members`, {
             params: {
@@ -358,9 +329,9 @@ export default function (api: Client) {
           });
       } else {
         return api
-          .req('/api/:objectType/:id/parts', {
+          .req('/api/:endpoint/:id/parts', {
             params: {
-              objectType,
+              endpoint,
               id
             }
           })
@@ -396,17 +367,15 @@ export default function (api: Client) {
     },
     /**
      * Returns the same data as updating an object, however without persisting the data. Can be used to check whether the decision results would be different if the object is saved
-     * @param objectType
+     * @param endpoint
      * @param object
      * @returns
      */
-    async fetchWipDecisionEvaluation(objectType: string, object: IVeoEntity, domain: string, decision: string): Promise<IVeoDecisionEvaluation> {
-      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
-
-      return api.req('/api/:objectType/evaluation', {
+    fetchWipDecisionEvaluation(endpoint: string, object: IVeoEntity, domain: string, decision: string): Promise<IVeoDecisionEvaluation> {
+      return api.req('/api/:endpoint/evaluation', {
         method: 'POST',
         params: {
-          objectType
+          endpoint
         },
         query: {
           domain,

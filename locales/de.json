@@ -1,0 +1,117 @@
+{
+  "clone": "Kopie",
+
+  "unsavedChanges": "Es gibt ungespeicherte Änderungen. Wollen Sie die Seite wirklich verlassen?",
+
+  "editor.basicproperties": "Standardattribute",
+  "editor.customaspects": "Individuelle Aspekte",
+  "editor.customaspects.add": "Aspekte hinzufügen",
+  "editor.customlinks": "Individuelle Links",
+  "editor.inputtypes.array": "Array",
+  "editor.inputtypes.boolean": "Wahrheitswert",
+  "editor.inputtypes.enum": "Auswahl",
+  "editor.inputtypes.integer": "Ganzzahl",
+  "editor.inputtypes.layout": "Gruppe",
+  "editor.inputtypes.null": "Null",
+  "editor.inputtypes.number": "Zahl",
+  "editor.inputtypes.object": "Objekt",
+  "editor.inputtypes.string": "Text",
+  "editor.inputtypes.label": "Text",
+  "editor.inputtypes.unknown": "Unbekannt",
+  "editor.formschema.create.title": "Name des Formschemas",
+  "editor.formschema.create.title.text": "Name des neuen Formschemas",
+  "editor.formschema.create.type": "Objektschematyp",
+  "editor.formschema.create.type.text": "Typ des Objektschemas",
+  "editor.formschema.edit.css.class": "CSS-Klassen",
+  "editor.formschema.edit.css.style": "CSS-Styles",
+  "editor.formschema.edit.css.class.text": "Klassen",
+  "editor.formschema.edit.css.style.text": "Styles",
+  "editor.formschema.edit.input.direction": "Ausrichtung",
+  "editor.formschema.edit.input.direction.horizontal": "Horizontal",
+  "editor.formschema.edit.input.direction.vertical": "Vertikal",
+  "editor.formschema.edit.input.label": "Beschriftung",
+  "editor.formschema.edit.input.label.text": "Beschriftung des Elements",
+  "editor.formschema.headline": "Formschema-Editor",
+  "editor.formschema.sorting": "Sortierwert",
+  "editor.formschema.subtype": "Sub Typ",
+  "editor.formschema.translation": "Benutzerdefinierte Übersetzungen",
+  "editor.objectschema.headline": "Objektschema-Editor",
+  "editor.schema.download": "Schema herunterladen",
+  "editor.schema.properties": "Schema-Eigenschaften",
+  "editor.schema.warnings": "Hinweise",
+
+  "error.title": "Es ist ein Fehler aufgetreten",
+
+  "global.button.cancel": "Abbrechen",
+  "global.button.close": "Schließen",
+  "global.button.delete": "Löschen",
+  "global.button.next": "Weiter",
+  "global.button.no": "Nein",
+  "global.button.ok": "Okay",
+  "global.button.previous": "Zurück",
+  "global.button.save": "Speichern",
+  "global.button.save_quit": "Speichern und Schließen",
+  "global.button.apply": "Übernehmen",
+  "global.button.yes": "Ja",
+  "global.input.required": "Das Feld muss ausgefüllt werden",
+  "global.input.requiredfields": "* Pflichtfelder",
+  "global.logout": "Logout",
+  "global.menu.collapse": "Menü verstecken",
+  "global.menu.expand": "Menü fixieren",
+
+  "objectlist": {
+    "abbreviation": "Abkürzung",
+    "createdAt": "Erstellzeitpunkt",
+    "designator": "Designator",
+    "description": "Beschreibung",
+    "hasChildObjects": "hat Bestandteile",
+    "name": "Objektname",
+    "notPartOfGroup": "nicht Teil eines anderen Objektes",
+    "objectType": "Objekttyp",
+    "status": "Status",
+    "subType": "Subtyp",
+    "updatedAt": "Letzte Änderung",
+    "updatedBy": "Bearbeiter"
+  },
+
+  "domain.index.title": "Dashboard",
+
+  "unit.default.name": "Unit 1",
+  "unit.default.description": "Deine erste Unit",
+  "unit.details.nodescription": "Keine Beschreibung festgelegt",
+
+  "breadcrumbs": {
+    "administration": "Benutzerverwaltung",
+    "catalogs": "Kataloge",
+    "docs": "Dokumentation",
+    "domain": "Modul",
+    "editor": "Editoren",
+    "formschema": "Formschema Editor",
+    "help": "Handbuch",
+    "index": "Unitauswahl",
+    "more": "Weitere Module",
+    "objects": "Objekte",
+    "objectschema": "Objektschema Editor",
+    "reports": "Reports",
+    "risks": "Risikodefinitionen"
+  },
+
+  "error": {
+    "additionalProperties": "Das Feld \"{field}\" besitzt nicht im Objektschemas erlaubte Attribute.",
+    "enum": "Das Feld \"{field}\" besitzt einen nicht erlaubten Wert",
+    "format": "Das Feld \"{field}\" muss dem Format \"{format}\" entsprechen",
+    "required": "Das Feld \"{field}\" muss ausgefüllt sein",
+    "required_link": "Der {position} Link in \"{field}\" muss auf ein Objekt zeigen oder entfernt werden"
+  },
+
+  "createEntitiesCTA": "Viele Wege führen zum Ziel... erfassen Sie die {0}, benennen Sie Ihre {1} oder legen Sie eine {2} an.",
+  "dashboardCTA": "Ein Schritt nach dem anderen... das {0} bietet Ihnen einen Gesamtüberblick und führt Sie entlang des Lebebenszyklus Ihrer Assets direkt zu den nächsten Aufgaben oder den letzten Aktivitäten.",
+  "demoUnitCTA": "Sie möchten sich lieber erst orientieren? Dann werfen Sie einen Blick auf die {0}.",
+  "lastLine": "Viel Erfolg wünscht!{0}Ihr verinice.TEAM",
+
+  "piaMandatoryText": "Basierend auf Daten in diesem Objekt ist eine Datenschutz-Folgeabschätzung verpflichtend.{0}Bitte erstellen Sie diese über die Warnungsleiste rechts.",
+
+  "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg,{0} d.h. es kann immer nur eine migitierende Maßnahme pro Risiko ausgewählt werden",
+
+  "residualRiskHint": "Das angezeigte Nettorisiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben."
+}

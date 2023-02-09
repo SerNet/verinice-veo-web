@@ -1,13 +1,13 @@
 # syntax = docker/dockerfile:experimental
-FROM node:14-alpine AS builder
+FROM node:19-alpine AS builder
 
 # Install Git & Install Python for node-14
 RUN apk --no-cache add git python3 make g++
 
 # Create app directory
 WORKDIR /usr/src/app
-# Copy .npmrc for installing @nbrx/eslint-config-nuxt and package.json and lock file
-COPY .npmrc package.json package-lock.json ./
+# Copy package.json and lock file
+COPY package.json package-lock.json ./
 # Install packages
 RUN npm ci
 # Bundle app source
@@ -41,32 +41,32 @@ ENV VEO_OIDC_CLIENT ${VEO_OIDC_CLIENT}
 ENV VEO_DEBUG ${VEO_DEBUG}
 ENV NODE_ENV=$NODE_ENV
 
-RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > static/VERSION && echo ${CI_COMMIT_SHA} > BUILD && echo ${CI_COMMIT_SHA} > static/BUILD
+RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > public/VERSION && echo ${CI_COMMIT_SHA} > BUILD && echo ${CI_COMMIT_SHA} > public/BUILD
 
 RUN npm run generate
+RUN node externalize-scripts.mjs
 
 FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 
 # copy generated application and install dependencies
 WORKDIR /usr/src/veo
-COPY --from=builder /usr/src/app/.npmrc /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.js ./
-COPY --chown=chrome --from=builder /usr/src/app/dist ./dist
+
+COPY --chown=chrome --from=builder /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.ts ./
+COPY --chown=chrome --from=builder /usr/src/app/.output ./.output
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 
-# copy print.js
+# copy print.mjs
 WORKDIR /usr/src/app
-COPY --chown=chrome print.js .
+COPY --chown=chrome print.mjs .
 RUN mkdir dist
 
 # Start nuxt app in background, wait for startup and generate pdf documentation
-RUN nohup sh -c "(cd /usr/src/veo && (./node_modules/nuxt/bin/nuxt.js start&))" && sleep 5 && node print.js
-
-# Copy files to veo dist folder to bundle it with application
-RUN cp /usr/src/app/dist/*.pdf /usr/src/veo/dist/
+RUN nohup sh -c "(cd /usr/src/veo && (npm run start&))" && sleep 5 && node print.mjs
 
 FROM nginx:1.21 AS release
 
-COPY --from=printer /usr/src/veo/dist /usr/src/app
+COPY --from=printer /usr/src/veo/.output/public /usr/src/app
+COPY --from=printer usr/src/app/dist/*.pdf /usr/src/app/
 
 # Add custom config to serve the index.html as entrypoint if the server would otherwise return a 404
 COPY  nginx.conf /etc/nginx/conf.d/custom.conf

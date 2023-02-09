@@ -17,7 +17,6 @@
  */
 import { isArray, isObject } from 'lodash';
 import ObjectSchemaHelper from './ObjectSchemaHelper2';
-import { IBaseObject } from './utils';
 
 export type VeoSchemaValidatorRequiredProperty = string | { key: string; value: any };
 
@@ -34,7 +33,7 @@ export interface VeoSchemaValidatorProperty {
 export interface VeoSchemaValidatorMessage {
   code: string;
   message: string;
-  params?: IBaseObject;
+  params?: Record<string, any>;
   actions?: { title: string; callback: CallableFunction }[];
 }
 
@@ -50,7 +49,7 @@ export interface VeoSchemaValidatorValidationResult {
  * Properties are added in later on on the backend side to provide some sort of meta data.
  * Those won't exist in the scheme so they should get ignored if checking an object.
  */
-const NON_REQUIRED_PROPERTIES = ['members', 'parts', 'designator', 'type', '$etag'];
+const NON_REQUIRED_PROPERTIES = ['members', 'parts', 'designator', 'type'];
 
 export default class ObjectSchemaValidator {
   private errors: VeoSchemaValidatorMessage[] = [];
@@ -125,7 +124,7 @@ export default class ObjectSchemaValidator {
     return { valid: errors.length === 0, errors, warnings: [] };
   }
 
-  public validate(schema: any, context: string = 'schema'): VeoSchemaValidatorValidationResult {
+  public validate(schema: any, context = 'schema'): VeoSchemaValidatorValidationResult {
     if (!schema.title) {
       this.errors.push({ code: 'E_SCHEMA_PROPERTY_MISSING', message: `The schema "${context}" is missing the property "title"` });
     }

@@ -18,8 +18,7 @@
 <template>
   <v-app>
     <v-app-bar
-      class="veo-app-bar"
-      app
+      :class="$style['app-bar']"
       flat
     >
       <div
@@ -31,15 +30,15 @@
           class="text-decoration-none"
           style="width: 100%"
         >
-          <VeoAppBarLogo
+          <LayoutAppBarLogo
             style="height: 64px"
             class="d-flex align-center"
           />
         </nuxt-link>
       </div>
       <v-spacer />
-      <VeoLanguageSwitch class="mx-3" />
-      <VeoAppAccountBtn
+      <LayoutLanguageSwitch />
+      <LayoutAccountBtn
         v-if="profile"
         :username="profile.username"
         :prename="profile.firstName"
@@ -53,61 +52,45 @@
         icon
         :href="$config.accountPath"
       >
-        <v-icon>
-          {{ mdiAccountCircleOutline }}
-        </v-icon>
+        <v-icon :icon="mdiAccountCircleOutline" />
       </v-btn>
     </v-app-bar>
-    <v-main>
-      <nuxt />
-      <VeoCookieBanner />
+    <v-main :class="$style.main">
+      <slot />
+      <LayoutCookieBanner />
     </v-main>
   </v-app>
 </template>
-
-<script lang="ts">
+  
+<script lang="ts" setup>
 import { mdiAccountCircleOutline } from '@mdi/js';
-import { defineComponent, useMeta } from '@nuxtjs/composition-api';
-
+  
 import { useVeoUser } from '~/composables/VeoUser';
 
-export default defineComponent({
-  setup() {
-    const { logout: _logout, profile } = useVeoUser();
-
-    useMeta(() => ({
-      title: 'verinice.',
-      titleTemplate: '%s - verinice.veo'
-    }));
-
-    const logout = () => _logout('/');
-
-    return {
-      logout,
-      profile,
-
-      mdiAccountCircleOutline
-    };
-  },
-  head: {}
-});
+const { logout: _logout, profile } = useVeoUser();
+  
+useHead(() => ({
+  titleTemplate: '%s - verinice.veo'
+}));
+  
+const logout = () => _logout('/');
 </script>
-<style lang="scss" scoped>
-.veo-app-bar {
-  background-color: $background-accent !important;
-  border-bottom: 1px solid $medium-grey;
 
-  ::v-deep.v-toolbar__content {
-    padding-left: 0;
+<style lang="scss" module>
+  .app-bar {
+    background-color: $background-accent !important;
+    border-bottom: 1px solid $medium-grey;
+  
+    :deep(.v-toolbar__content) {
+      padding-left: 0;
+    }
   }
-}
-
-::v-deep.v-main > .v-main__wrap {
-  background: $background-primary;
-}
-
-::v-deep.v-main > .v-main__wrap {
-  display: flex;
-  flex-direction: column;
-}
-</style>
+  .main {
+    background: $background-primary;
+  }
+  
+  .main {
+    display: flex;
+    flex-direction: column;
+  }
+  </style>

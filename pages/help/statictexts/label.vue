@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage title="Label">
+  <BasePage title="Label">
     <v-row justify="center">
       <v-col
         cols="12"
@@ -24,44 +24,31 @@
         lg="4"
         class="docs-form-sector d-flex justify-center"
       >
-        <VeoForm
-          v-model="dynamicForm.data"
-          :schema="dynamicForm.objectSchema"
-          :ui="dynamicForm.formSchema"
+        <DynamicFormEntrypoint
+          v-model="form.data"
+          :object-schema="form.objectSchema"
+          :form-schema="form.formSchema"
         />
       </v-col>
     </v-row>
-    <FormDescription
-      :object-schema="dynamicForm.objectSchema"
-      :form-schema="dynamicForm.formSchema"
-      :data="dynamicForm.data"
+    <HelpFormDescription
+      :object-schema="form.objectSchema"
+      :form-schema="form.formSchema"
+      :data="form.data"
     />
-  </VeoPage>
+  </BasePage>
 </template>
 
-<script lang="ts">
-import Vue from 'vue';
+<script lang="ts" setup>
+definePageMeta({ layout: 'plain' });
 
-export default Vue.extend({
-  layout: 'plain',
-  data() {
-    return {
-      form: {
-        objectSchema: {},
-        formSchema: {
-          type: 'Label',
-          text: 'Ein Beispiel für den statischen Text.'
-        },
-        data: {}
-      }
-    };
+const form = ref({
+  objectSchema: {},
+  formSchema: {
+    type: 'Label',
+    text: 'Ein Beispiel für den statischen Text.',
+    options: {}
   },
-  computed: {
-    dynamicForm(): any {
-      return this.form;
-    }
-  }
+  data: {}
 });
 </script>
-
-<style lang="scss"></style>

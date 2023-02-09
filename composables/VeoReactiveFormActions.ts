@@ -15,30 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, useRoute } from '@nuxtjs/composition-api';
 import { trim } from 'lodash';
-import vjp from 'vue-json-pointer';
 
-import { IVeoFormsReactiveFormActions } from '~/components/forms/types';
-import { IBaseObject, separateUUIDParam } from '~/lib/utils';
+import { IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
+import { separateUUIDParam } from '~/lib/utils';
 
 export function useVeoReactiveFormActions() {
   const route = useRoute();
 
-  const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+  const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
   function defaultReactiveFormActions(): IVeoFormsReactiveFormActions {
     return domainId.value
       ? {
-          [`#/properties/domains/properties/${domainId.value}/properties/subType`]: [
-            (newValue, _oldValue, newObject, _oldObject) => {
-              if (domainId.value && !!newValue) {
-                delete newObject.domains[domainId.value].status;
-              }
-              return newObject;
+        [`#/properties/domains/properties/${domainId.value}/properties/subType`]: [
+          (newValue, _oldValue, newObject, _oldObject) => {
+            if (domainId.value && !!newValue) {
+              delete newObject.domains[domainId.value].status;
             }
-          ]
-        }
+            return newObject;
+          }
+        ]
+      }
       : {};
   }
 
@@ -57,7 +55,7 @@ export function useVeoReactiveFormActions() {
    Helpers for previously defined reactive form actions
   
   */
-  function getFullName(newObject: IBaseObject, oldObject: IBaseObject) {
+  function getFullName(newObject: Record<string, any>, oldObject: Record<string, any>) {
     let fullnameOld = '';
     let givenNameOld = '';
     let familyNameOld = '';
@@ -65,27 +63,27 @@ export function useVeoReactiveFormActions() {
     let familyNameNew = '';
 
     try {
-      fullnameOld = vjp.get(oldObject, '/name');
+      fullnameOld = oldObject?.name;
     } catch (e) {
       // If the name couldn't be found, simply do nothing
     }
     try {
-      givenNameOld = vjp.get(oldObject, '/customAspects/person_generalInformation/attributes/person_generalInformation_givenName');
+      givenNameOld = oldObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_givenName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
     try {
-      familyNameOld = vjp.get(oldObject, '/customAspects/person_generalInformation/attributes/person_generalInformation_familyName');
+      familyNameOld = oldObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_familyName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
     try {
-      givenNameNew = vjp.get(newObject, '/customAspects/person_generalInformation/attributes/person_generalInformation_givenName');
+      givenNameNew = newObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_givenName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
     try {
-      familyNameNew = vjp.get(newObject, '/customAspects/person_generalInformation/attributes/person_generalInformation_familyName');
+      familyNameNew = newObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_familyName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
@@ -95,7 +93,7 @@ export function useVeoReactiveFormActions() {
     const computedFullNameNew = trim(`${givenNameNew} ${familyNameNew}`);
 
     if (fullnameOld === computedFullNameOld || fullnameOld === '' || fullnameOld === undefined) {
-      vjp.set(newObject, '/name', computedFullNameNew);
+      newObject.name = computedFullNameNew;
     }
     return newObject;
   }

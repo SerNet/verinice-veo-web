@@ -18,25 +18,39 @@
 <template>
   <v-app>
     <v-app-bar
-      class="veo-app-bar"
+      :class="$style['app-bar']"
       data-component-name="app-bar"
-      app
       flat
     >
       <v-app-bar-nav-icon
-        v-if="$vuetify.breakpoint.xs"
+        v-if="xs"
         @click="drawer = true"
       />
-      <VeoBreadcrumbs write-to-title />
+      <div
+        class="d-flex align-end ml-4"
+        style="min-height: 65px;"
+      >
+        <nuxt-link
+          to="/"
+          class="text-decoration-none"
+          style="width: 100%"
+        >
+          <LayoutAppBarLogo
+            style="height: 64px"
+            class="d-flex align-center"
+          />
+        </nuxt-link>
+      </div>
+      <LayoutBreadcrumbs write-to-title />
       <v-spacer />
-      <DownloadDocsButton v-if="$route.path.startsWith('/docs')" />
-      <VeoLanguageSwitch />
-      <VeoTutorialButton />
+      <DocsDownloadButton v-if="$route.path.startsWith('/docs')" />
+      <LayoutLanguageSwitch />
+      <LayoutTutorialButton />
       <v-tooltip
         v-if="ability.can('view', 'documentation')"
-        bottom
+        location="bottom"
       >
-        <template #activator="{ on }">
+        <template #activator="{ props }">
           <v-btn
             active-class="veo-active-list-item-no-background"
             class="mr-3"
@@ -45,19 +59,18 @@
             target="_blank"
             to="/docs/index"
             exact
-            v-on="on"
+            v-bind="props"
           >
-            <v-icon>
-              {{ mdiHelpCircleOutline }}
-            </v-icon>
+            <v-icon :icon="mdiHelpCircleOutline" />
           </v-btn>
         </template>
         <template #default>
           {{ t('openDocumentationInNewTab') }}
         </template>
       </v-tooltip>
-      <VeoAppAccountBtn
+      <LayoutAccountBtn
         v-if="authenticated"
+        class="mr-3"
         @create-unit="createUnit"
       />
       <v-btn
@@ -66,147 +79,141 @@
         icon
         to="/login"
       >
-        <v-icon>
-          {{ mdiAccountCircleOutline }}
-        </v-icon>
+        <v-icon :icon="mdiAccountCircleOutline" />
       </v-btn>
     </v-app-bar>
-    <VeoPrimaryNavigation
+    <LayoutPrimaryNavigation
       v-model="drawer"
       :domain-id="domainId"
       :unit-id="unitId"
       data-component-name="primary-navigation"
     />
-    <v-main
-      style="max-height: 100vh;"
-      class="overflow-hidden"
-    >
-      <nuxt />
-      <VeoCookieBanner />
+    <v-main :class="$style.main">
+      <slot />
+      <LayoutCookieBanner />
     </v-main>
-    <VeoGlobalAlert
+    <LayoutGlobalAlert
       v-if="alerts[0]"
       v-bind="alerts[0]"
     />
-    <VeoNewUnitDialog
+    <UnitCreateDialog
       v-model="newUnitDialog.value"
       v-bind="newUnitDialog"
     />
   </v-app>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onMounted, Ref, ref, useContext, useMeta, useRoute, useRouter } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+<script lang="ts" setup>
 import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 
-import { VeoEvents } from '~/types/VeoGlobalEvents';
-import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
+import {
+  createUUIDUrlParam,
+  getFirstDomainDomaindId,
+  separateUUIDParam
+} from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
 import 'intro.js/minified/introjs.min.css';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useCreateUnit, useFetchUnits } from '~/composables/api/units';
+import { IVeoUnit } from '~/types/VeoTypes';
+import { useRequest } from '~/composables/api/utils/request';
+import { useDisplay } from 'vuetify';
 
-export default defineComponent({
-  setup(_props, context) {
-    const { $api } = useContext();
-    const { authenticated } = useVeoUser();
-    const route = useRoute();
-    const router = useRouter();
-    const { ability } = useVeoPermissions();
+const { xs } = useDisplay();
+const { authenticated } = useVeoUser();
+const route = useRoute();
+const { ability } = useVeoPermissions();
 
-    const { alerts, displaySuccessMessage, listenToRootEvents } = useVeoAlerts();
-    const { t } = useI18n();
-    listenToRootEvents(context.root);
+const { alerts, displaySuccessMessage } = useVeoAlerts();
+const { request } = useRequest();
+const { t } = useI18n();
 
-    useMeta(() => ({
-      title: 'verinice.',
-      titleTemplate: '%s - verinice.veo'
-    }));
+useHead(() => ({
+  titleTemplate: '%s - verinice.veo'
+}));
 
-    //
-    // Global navigation
-    //
-    const drawer: Ref<boolean> = ref(false);
+//
+// Global navigation
+//
+const drawer = ref<boolean>(false);
 
-    //
-    // Unit creation and navigation
-    //
-    const newUnitDialog = ref({ value: false, persistent: false });
+//
+// Unit creation and navigation
+//
+const newUnitDialog = ref({ value: false, persistent: false });
 
-    function createUnit(persistent: boolean = false) {
-      newUnitDialog.value.value = true;
-      newUnitDialog.value.persistent = persistent;
-    }
+function createUnit(persistent = false) {
+  newUnitDialog.value.value = true;
+  newUnitDialog.value.persistent = persistent;
+}
 
-    // automatically create first unit if none exists and then change to new unit
-    onMounted(async () => {
-      if (authenticated.value) {
-        const units = await $api.unit.fetchAll();
-        if (units.length === 0) {
-          const data = await $api.unit.create({ name: t('unit.default.name'), description: t('unit.default.description') });
-          const unit = await $api.unit.fetch(data.resourceId);
-          displaySuccessMessage(t('unit.created').toString());
-          context.root.$emit(VeoEvents.UNIT_CREATED);
-          const domainId = getFirstDomainDomaindId(unit);
-          if (domainId) {
-            router.push({
-              name: 'unit-domains-domain',
-              params: {
-                unit: createUUIDUrlParam('unit', unit.id),
-                domain: createUUIDUrlParam('domain', domainId)
-              }
-            });
-          }
+// automatically create first unit if none exists and then change to new unit
+const { mutateAsync: _createUnit, data: newUnitPayload } = useCreateUnit();
+
+const fetchUnitsDisabled = computed(() => authenticated.value);
+useFetchUnits({ enabled: fetchUnitsDisabled, onSuccess: async (data: IVeoUnit[]) => {
+  if(!data.length) {
+    await _createUnit({
+      name: t('unit.default.name'),
+      description: t('unit.default.description')
+    });
+    displaySuccessMessage('firstUnitCreated');
+    const unit = await request('/api/units/:id', { params: { id: newUnitPayload.value.resourceId } });
+    const domainId = getFirstDomainDomaindId(unit);
+    if (domainId) {
+      navigateTo({
+        name: 'unit-domains-domain',
+        params: {
+          unit: createUUIDUrlParam('unit', unit.id),
+          domain: createUUIDUrlParam('domain', domainId)
         }
-      }
-    });
+      });
+    }
+  }
+} });
 
-    const domainId = computed((): string | undefined => {
-      if (route.value.name === 'unit-domains-more') {
-        return undefined;
-      }
-      return separateUUIDParam(route.value.params.domain).id;
-    });
-
-    const unitId = computed(() => (separateUUIDParam(route.value.params.unit).id.length > 0 ? separateUUIDParam(route.value.params.unit).id : undefined));
-
-    return {
-      ability,
-      authenticated,
-      createUnit,
-      domainId,
-      unitId,
-      drawer,
-      newUnitDialog,
-      alerts,
-
-      t,
-      mdiAccountCircleOutline,
-      mdiHelpCircleOutline
-    };
-  },
-  head: {}
+const domainId = computed((): string | undefined => {
+  if (route.name === 'unit-domains-more') {
+    return undefined;
+  }
+  return separateUUIDParam(route.params.domain as string).id;
 });
+
+const unitId = computed(() =>
+  separateUUIDParam(route.params.unit as string).id.length > 0
+    ? separateUUIDParam(route.params.unit as string).id
+    : undefined
+);
 </script>
 
-<style lang="scss" scoped>
-.veo-app-bar {
-  background-color: $background-accent !important;
-  border-bottom: 1px solid $medium-grey;
-}
-
-::v-deep.v-main > .v-main__wrap {
-  background: $background-primary;
-}
-</style>
+<style lang="scss" module>
+  .app-bar {
+    background-color: $background-accent !important;
+    border-bottom: 1px solid $medium-grey;
+  
+    :deep(.v-toolbar__content) {
+      padding-left: 0;
+    }
+  }
+  .main {
+    background: $background-primary;
+  }
+  
+  .main {
+    display: flex;
+    flex-direction: column;
+  }
+  </style>
 
 <i18n>
 {
   "en": {
+    "firstUnitCreated": "First unit was created successfully",
     "openDocumentationInNewTab": "Open online documentation in new tab"
   },
   "de": {
+    "firstUnitCreated": "Die erste Unit wurde erfolgreich erstellt",
     "openDocumentationInNewTab": "Online-Dokumentaion in neuem Tab öffnen"
   }
 }

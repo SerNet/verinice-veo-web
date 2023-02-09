@@ -5,8 +5,6 @@ RUN apk --no-cache add git
 RUN apk add python make g++
 # Create app directory
 WORKDIR /usr/src/app
-# Copy .npmrc for installing @nbrx/eslint-config-nuxt
-COPY .npmrc .
 # Install app dependencies
 COPY package.json .
 # For npm@5 or later, copy package-lock.json as well

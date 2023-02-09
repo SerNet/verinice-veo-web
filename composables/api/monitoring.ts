@@ -15,4 +15,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-// To be implemented...
+import { Ref } from 'vue';
+
+import { IVeoQueryTransformationMap, QueryOptions, useQuery } from './utils/query';
+
+export interface IVeoDeploymentInformation {
+  build: {
+    artifact?: string;
+    ci: {
+      jobname?: string;
+      buildnumber?: string;
+    };
+    group?: string;
+    name?: string;
+    time?: string;
+    version?: string;
+  };
+  git: {
+    branch?: string;
+    commit?: {
+      id?: string;
+      time?: string;
+    };
+  };
+}
+
+export interface IVeoFetchDeploymentDetailsParameters {
+  api: 'default' | 'forms' | 'history' | 'reporting' | 'accounts';
+}
+
+export const monitoringQueryParameterTransformationMap: IVeoQueryTransformationMap = {
+  fetch: (queryParameters: IVeoFetchDeploymentDetailsParameters) => ({ params: queryParameters })
+};
+
+export const useFetchDeploymentDetails = (queryParameters: Ref<IVeoFetchDeploymentDetailsParameters>, queryOptions?: QueryOptions) =>
+  useQuery<IVeoFetchDeploymentDetailsParameters, IVeoDeploymentInformation>('monitoring', { url: '/api/:api/actuator/info' }, queryParameters, monitoringQueryParameterTransformationMap.fetch, queryOptions);
