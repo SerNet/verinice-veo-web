@@ -26,6 +26,7 @@
     :class="options && options.class"
     class="vf-form-element vf-autocomplete"
     :clearable="!options.required"
+    :data-attribute-name="last(objectSchemaPointer.split('/'))"
     hide-details="auto"        
     :items="localItems"
     :multiple="multiple"
@@ -70,7 +71,7 @@
 </template>
 
 <script lang="ts">
-import { isEmpty } from 'lodash';
+import { isEmpty, last } from 'lodash';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
@@ -137,7 +138,8 @@ export default defineComponent({
       multiple,
       onItemsChanged,
 
-      getControlErrorMessages
+      getControlErrorMessages,
+      last
     };
   }
 });

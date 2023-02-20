@@ -26,6 +26,7 @@
     :class="options && options.class"
     class="vf-form-element vf-checkbox"
     :indeterminate="modelValue === undefined"
+    :data-attribute-name="last(objectSchemaPointer.split('/'))"
     hide-details="auto"
     :false-value="false"
     :true-value="true"
@@ -45,6 +46,7 @@
 </template>
 
 <script lang="ts">
+import{ last } from 'lodash';
 import { mdiClose } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
@@ -70,6 +72,7 @@ export default defineComponent({
   setup() {
     return {
       getControlErrorMessages,
+      last,
       mdiClose
     };
   }

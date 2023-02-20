@@ -27,6 +27,7 @@
     class="vf-form-element vf-input-number"
     type="number"
     :clearable="!options.required"
+    :data-attribute-name="last(objectSchemaPointer.split('/'))"
     hide-details="auto"
     variant="underlined"
     @update:model-value="onInput"
@@ -35,6 +36,8 @@
 </template>
 
 <script lang="ts">
+import{ last } from 'lodash';
+
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
@@ -71,7 +74,9 @@ export default defineComponent({
 
     return {
       getControlErrorMessages,
-      onInput
+      onInput,
+
+      last
     };
   }
 });
