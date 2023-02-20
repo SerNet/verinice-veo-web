@@ -150,7 +150,7 @@ export default defineComponent({
     const fetchUnitDomainsQueryEnabled = computed(() => !!unitId.value);
     const { data: domains, isFetching: domainIsFetching } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
 
-    const selectItems = computed(() => domains.value.map((domain) => ({ value: domain.id, title: domain.name })).concat({ value: 'more', title: $t('breadcrumbs.more').toString() }));
+    const selectItems = computed(() => (domains.value || []).map((domain) => ({ value: domain.id, title: domain.name })).concat({ value: 'more', title: $t('breadcrumbs.more').toString() }));
 
     return {
       domainId,
@@ -171,12 +171,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "noDomainSelected": "No module selected",
+    "noDomainSelected": "No domain selected",
     "domainSelection": "Domain selection"
   },
   "de": {
-    "noDomainSelected": "Kein Modul ausgewählt",
-    "domainSelection": "Modulauswahl"
+    "noDomainSelected": "Keine Domäne ausgewählt",
+    "domainSelection": "Domainauswahl"
   }
 }
 </i18n>
