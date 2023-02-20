@@ -49,12 +49,17 @@
 import { mergeProps } from 'vue';
 import { mdiTranslate } from '@mdi/js';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+import { useLocale } from 'vuetify/lib/framework.mjs';
 
 const { locale, locales, setLocale } = useI18n();
+const { current } = useLocale();
 
 const selectedLocale = computed({
   get: () => [locale.value],
-  set: (newValue) => { setLocale(newValue[0]); }
+  set: (newValue) => {
+    setLocale(newValue[0]);
+    current.value = newValue[0];
+  }
 });
 
 const availableLocales = computed<LocaleObject[]>(() => locales.value as LocaleObject[]);
