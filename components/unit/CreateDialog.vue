@@ -22,6 +22,7 @@
     :persistent="persistent || creatingUnit"
     :close-disabled="creatingUnit"
     v-bind="$attrs"
+    @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
       <v-form
@@ -117,7 +118,7 @@ const createUnit = async () => {
   await mutateAsync(newUnit);
   displaySuccessMessage(t('unitCreated'));
   emit('update:model-value', false);
-  const unit = await request('/api/units/:id', { params: { id: newUnitPayload.value.resourceId } });
+  const unit = await request('/api/units/:id', { params: { id: newUnitPayload.value?.resourceId } });
   const domainId = getFirstDomainDomaindId(unit);
 
   if (domainId) {
