@@ -429,11 +429,8 @@ export default defineComponent({
         displayedHeaders.value = _headers.value;
         return;
       }
-      console.log(1);
-      if (tableWrapper) {
-        console.log(2, tableWrapper);
-        const tableWrapperWidth = tableWrapper.getBoundingClientRect().width;
-        console.log(3, tableWrapperWidth);
+      if (tableWrapper.value) {
+        const tableWrapperWidth = tableWrapper.value.$el.clientWidth;
 
         const headers = cloneDeep(_headers.value);
 
@@ -456,7 +453,6 @@ export default defineComponent({
           }
         }
 
-        console.log(4, cloneDeep(headers));
         displayedHeaders.value = headers;
       }
     };
@@ -465,19 +461,12 @@ export default defineComponent({
 
     const resizeObserver = new ResizeObserver(onTableWidthChange);
 
-    let tableWrapper: Element | null = null;
-    watch(() => tableWrapper, onTableWidthChange);
-    onMounted(() => {
-      // ToDo: Refs in render functions currently don't work, so we have to use the query selector
-      tableWrapper = document.querySelector(`#veo-object-table-${vm?.uid} .v-table__wrapper`);
-      if (tableWrapper) {
-        resizeObserver.observe(tableWrapper);
-      }
-    });
-
-    onUnmounted(() => {
-      if (tableWrapper) {
-        resizeObserver.unobserve(tableWrapper);
+    const tableWrapper = ref();
+    watch(() => tableWrapper.value, (newValue, oldValue) => {
+      if(newValue) {
+        resizeObserver.observe(newValue.$el);
+      } else {
+        resizeObserver.unobserve(oldValue.$el);
       }
     });
 
@@ -521,7 +510,8 @@ export default defineComponent({
         ...sharedProps.value,
         loading: props.loading,
         loadingText: t('loadingData'),
-        itemsLength: (props.items as IVeoPaginatedResponse<any>).totalItemCount
+        itemsLength: (props.items as IVeoPaginatedResponse<any>).totalItemCount,
+        ref: tableWrapper
       }, {
         ...slots,
         ...renderers.value
@@ -530,7 +520,8 @@ export default defineComponent({
         ...(props.loading ? [h(VProgressLinear, { indeterminate: true, color: 'primary' })] : []),
         h(VDataTable, {
           ...attrs,
-          ...sharedProps.value
+          ...sharedProps.value,
+          ref: tableWrapper
         }, {
           ...slots,
           ...renderers.value
