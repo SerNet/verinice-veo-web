@@ -78,17 +78,19 @@
       </v-list>
     </template>
     <template #default>
-      <v-list density="compact">
-        <v-list-item
-          v-for="domain of selectItems"
-          :key="domain.value"
-          :active="domainId === domain.value"
-          active-class="veo-active-list-item"
-          :value="domain.value"
-          :title="domain.title"
-          @click="domainId = domain.value"
-        />
-      </v-list>
+      <v-card>
+        <v-list density="compact">
+          <v-list-item
+            v-for="domain of selectItems"
+            :key="domain.value"
+            :active="domainId === domain.value"
+            active-class="veo-active-list-item"
+            :value="domain.value"
+            :title="domain.title"
+            @click="domainId = domain.value"
+          />
+        </v-list>
+      </v-card>
     </template>
   </v-menu>
 </template>
@@ -150,7 +152,7 @@ export default defineComponent({
     const fetchUnitDomainsQueryEnabled = computed(() => !!unitId.value);
     const { data: domains, isFetching: domainIsFetching } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
 
-    const selectItems = computed(() => domains.value.map((domain) => ({ value: domain.id, title: domain.name })).concat({ value: 'more', title: $t('breadcrumbs.more').toString() }));
+    const selectItems = computed(() => (domains.value || []).map((domain) => ({ value: domain.id, title: domain.name })).concat({ value: 'more', title: $t('breadcrumbs.more').toString() }));
 
     return {
       domainId,
