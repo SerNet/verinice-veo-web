@@ -124,7 +124,14 @@ const isActive = computed(() => {
     return props.exact ? route.fullPath === props.activePath : route.fullPath.includes(props.activePath);
   } else if(isRouteObject) {
     const toRoute = props.to as _RouteLocationBase;
-    return props.exact ? isEqual(pick(route, 'name', 'query', 'params'), pick(toRoute, 'name', 'query', 'params')) : route.name.toString().includes(toRoute.name.toString());
+    // Set defaults to make comparing route objects easier
+    if(!toRoute.query) {
+      toRoute.query = {};
+    }
+    if(!toRoute.params) {
+      toRoute.params = {};
+    }
+    return props.exact ? isEqual(pick(route, 'name', 'query', 'params'), pick(toRoute, 'name', 'query', 'params')) : route.name?.toString().includes(toRoute.name?.toString() || '');
   } else {
     return props.exact ? route.fullPath === props.to : route.fullPath.includes(props.to);
   }

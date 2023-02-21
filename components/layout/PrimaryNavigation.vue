@@ -199,12 +199,12 @@ export default defineComponent({
     const schemasLoading = ref(false);
 
     const queryParameters = computed(() => ({
-      domainId: props.domainId
+      domainId: props.domainId || ''
     }));
     const allFormSchemasQueryEnabled = computed(() => !!props.domainId);
     const { data: formSchemas } = useFetchForms(queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
 
-    const fetchSchemasDetailedQueryParameters = computed(() => ({ domainIds: [props.domainId] }));
+    const fetchSchemasDetailedQueryParameters = computed(() => ({ domainIds: [props.domainId || ''] }));
     const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId);
     const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, { enabled: fetchSchemasDetailedQueryEnabled });
     watch(
@@ -307,6 +307,7 @@ export default defineComponent({
           .map(([reportId, report]) => ({
             key: reportId,
             name: report.name[locale.value],
+            exact: true,
             to: {
               name: REPORTS_REPORT_ROUTE_NAME,
               params: {
@@ -320,7 +321,7 @@ export default defineComponent({
     );
 
     // risk specific stuff
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId || '' }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
     const { data: domain, isFetching: riskDefinitionsLoading } = useFetchDomain(fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
     const riskDefinitions = computed(() => domain.value?.riskDefinitions || {});
