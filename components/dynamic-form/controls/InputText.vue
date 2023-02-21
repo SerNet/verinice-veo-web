@@ -26,6 +26,7 @@
     :class="options && options.class"
     class="vf-form-element vf-input-text"
     :clearable="!options.required"
+    :data-attribute-name="last(objectSchemaPointer.split('/'))"
     hide-details="auto"
     variant="underlined"
     @update:model-value="$emit('update:model-value', $event)"
@@ -34,6 +35,8 @@
 </template>
 
 <script lang="ts">
+import{ last } from 'lodash';
+
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
@@ -57,7 +60,9 @@ export default defineComponent({
   emits: ['update:model-value'],
   setup() {
     return {
-      getControlErrorMessages
+      getControlErrorMessages,
+
+      last
     };
   }
 });

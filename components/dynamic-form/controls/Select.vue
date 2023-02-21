@@ -26,6 +26,7 @@
     :class="options && options.class"
     class="vf-form-element vf-select"
     :clearable="!options.required"
+    :data-attribute-name="last(objectSchemaPointer.split('/'))"
     hide-details="auto"        
     :items="localItems"
     :multiple="multiple"
@@ -65,6 +66,7 @@
 </template>
 
 <script lang="ts">
+import{ last } from 'lodash';
 import { isEmpty } from 'lodash';
 
 import { IVeoFormsElementDefinition } from '../types';
@@ -131,7 +133,8 @@ export default defineComponent({
       onItemsChanged,
 
       getControlErrorMessages,
-      isEmpty
+      isEmpty,
+      last
     };
   }
 });

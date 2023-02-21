@@ -363,7 +363,7 @@ export default defineComponent({
           const cellClass = defaultCellClasses.concat(header.cellClass || [], header.truncate ? truncateClasses : []);
           return {
             ...header,
-            title: header.text ?? $t(`objectlist.${String(header.value)}`).toString(),
+            title: header.text ?? $t(`objectlist.${String(header.value)}`),
             cellClass,
             class: defaultClasses.concat(header.class || [], header.truncate ? truncateClasses : []),
             render: header.tooltip ? renderTooltip(header, { class: cellClass }) : header.render

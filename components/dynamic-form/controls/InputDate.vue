@@ -70,6 +70,7 @@
       :label="options && options.label"
       :class="options && options.class"
       :clearable="!options.required"
+      :data-attribute-name="last(objectSchemaPointer.split('/'))"
       hide-details="auto"
       :prepend-icon="mdiCalendar"
       :hint="t('hint', [DATE_HINT])"
@@ -81,6 +82,7 @@
 </template>
 
 <script lang="ts">
+import{ last } from 'lodash';
 import { mdiCalendar } from '@mdi/js';
 import { formatISO } from 'date-fns';
 
@@ -174,6 +176,7 @@ export default defineComponent({
       onDateInput,
 
       getControlErrorMessages,
+      last,
       mdiCalendar,
       t,
       DATE_HINT

@@ -20,6 +20,7 @@
     v-if="options.visible"
     class="vf-markdown-editor vf-form-element"
     :class="{ 'is-disabled': disabled || options.disabled }"
+    :data-attribute-name="last(objectSchemaPointer.split('/'))"
   >
     <div
       v-if="options.label"
@@ -32,6 +33,7 @@
 </template>
 
 <script lang="ts">
+import{ last } from 'lodash';
 import Prism from 'prismjs';
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
 import Editor from '@toast-ui/editor';
@@ -67,7 +69,7 @@ function clearButton(callback: CallableFunction) {
   return el;
 }
 
-let localEditor = null;
+let localEditor: any = null;
 
 export default defineComponent({
   name: CONTROL_DEFINITION.code,
@@ -121,7 +123,8 @@ export default defineComponent({
     return {
       editor,
 
-      getControlErrorMessages
+      getControlErrorMessages,
+      last
     };
   }
 });

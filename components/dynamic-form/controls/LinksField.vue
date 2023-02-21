@@ -20,6 +20,7 @@
     v-if="options.visible"
     :class="options && options.class"
     class="vf-links-field vf-form-element"
+    :data-attribute-name="last(objectSchemaPointer.split('/'))"
   >
     <v-list>
       <v-list-item
@@ -69,7 +70,7 @@
 
 <script lang="ts">
 import { mdiPlus, mdiTrashCanOutline } from '@mdi/js';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, last } from 'lodash';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { VeoFormsControlProps } from '../util';
@@ -141,6 +142,7 @@ export default defineComponent({
       onLinksFieldRowInput,
       removeLink,
 
+      last,
       mdiPlus,
       mdiTrashCanOutline,
       t
