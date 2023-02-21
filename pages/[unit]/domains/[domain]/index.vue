@@ -199,11 +199,11 @@ export default defineComponent({
 {
   "en": {
     "domainNotFoundText": "The requested domain couldn't be found. You have been returned to the unit dashboard.",
-    "domainOverview": "Module overview"
+    "domainOverview": "Domain overview"
   },
   "de": {
     "domainNotFoundText": "Die gewünschte Domain konnte nicht gefunden werden. Sie wurden zum Unit Dashboard zurückgebracht.",
-    "domainOverview": "Modulübersicht"
+    "domainOverview": "Domänenübersicht"
   }
 }
 </i18n>

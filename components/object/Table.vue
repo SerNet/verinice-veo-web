@@ -429,8 +429,8 @@ export default defineComponent({
         displayedHeaders.value = _headers.value;
         return;
       }
-      if (tableWrapper) {
-        const tableWrapperWidth = tableWrapper.getBoundingClientRect().width;
+      if (tableWrapper.value) {
+        const tableWrapperWidth = tableWrapper.value.$el.clientWidth;
 
         const headers = cloneDeep(_headers.value);
 
@@ -461,18 +461,12 @@ export default defineComponent({
 
     const resizeObserver = new ResizeObserver(onTableWidthChange);
 
-    let tableWrapper: Element | null = null;
-    onMounted(() => {
-      // ToDo: Refs in render functions currently don't work, so we have to use the query selector
-      tableWrapper = document.querySelector(`#veo-object-table-${vm?.uid} .v-data-table__wrapper`);
-      if (tableWrapper) {
-        resizeObserver.observe(tableWrapper);
-      }
-    });
-
-    onUnmounted(() => {
-      if (tableWrapper) {
-        resizeObserver.unobserve(tableWrapper);
+    const tableWrapper = ref();
+    watch(() => tableWrapper.value, (newValue, oldValue) => {
+      if(newValue) {
+        resizeObserver.observe(newValue.$el);
+      } else {
+        resizeObserver.unobserve(oldValue.$el);
       }
     });
 
@@ -507,7 +501,10 @@ export default defineComponent({
       },
       'onUpdate:sortBy': (newValue: SortItem[]) => {
         localSortBy.value = newValue;
-      }
+      },
+      ref: tableWrapper,
+      'data-table-sorted-column-name': localSortBy.value[0].key,
+      'data-table-sort-order': localSortBy.value[0].order
     }));
 
     return () => isPaginatedResponse.value ?

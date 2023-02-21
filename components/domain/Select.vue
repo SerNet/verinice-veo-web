@@ -173,12 +173,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "noDomainSelected": "No module selected",
+    "noDomainSelected": "No domain selected",
     "domainSelection": "Domain selection"
   },
   "de": {
-    "noDomainSelected": "Kein Modul ausgewählt",
-    "domainSelection": "Modulauswahl"
+    "noDomainSelected": "Keine Domäne ausgewählt",
+    "domainSelection": "Domainauswahl"
   }
 }
 </i18n>
