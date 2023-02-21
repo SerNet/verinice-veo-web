@@ -339,7 +339,7 @@ export default defineComponent({
     );
 
     const setSubType = () => {
-      if (objectData.value && currentFormSchema.value && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
+      if (objectData.value.domains && currentFormSchema.value && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
         objectData.value.domains[props.domainId] = {
           subType: currentFormSchema.value.subType,
           status: 'NEW'
