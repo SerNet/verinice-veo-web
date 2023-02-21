@@ -113,5 +113,8 @@
 
   "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg,{0} d.h. es kann immer nur eine migitierende Maßnahme pro Risiko ausgewählt werden",
 
-  "residualRiskHint": "Das angezeigte Nettorisiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben."
+  "residualRiskHint": "Das angezeigte Nettorisiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben.",
+
+  "imprintText": "Es gilt das {0} der SerNet GmbH.",
+  "privacyPolicyText": "Es gilt die {0} der SerNet GmbH."
 }

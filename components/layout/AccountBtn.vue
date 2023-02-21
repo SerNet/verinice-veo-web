@@ -20,6 +20,7 @@
     :close-on-content-click="false"
     content-class="veo-account-menu"
     max-width="300px"
+    @update:model-value="onMenuClosed"
   >
     <template #activator="{ props }">
       <v-btn
@@ -129,6 +130,10 @@ const lastName = computed(() => profile.value?.lastName || '');
 const initials = computed(() => firstName.value.substring(0, 1) + lastName.value.substring(0, 1) || '??');
 
 const accountLink = computed(() => `${config.public.oidcUrl}/realms/${config.public.oidcRealm}/account`);
+
+const onMenuClosed = () => {
+  displayDeploymentDetails.value = false;
+};
 </script>
 
 <i18n>

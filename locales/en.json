@@ -113,5 +113,8 @@
 
   "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions,{0} meaning only one mitigation action can be applied to a risk",
 
-  "residualRiskHint": "the displayed residual risk has been derived from the input data.{0}You can overwrite it with a custom value"
+  "residualRiskHint": "the displayed residual risk has been derived from the input data.{0}You can overwrite it with a custom value",
+
+  "imprintText": "The {0} of SerNet GmbH applies.",
+  "privacyPolicyText": "The {0} of SerNet GmbH applies."
 }
