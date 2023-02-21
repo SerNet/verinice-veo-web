@@ -25,15 +25,16 @@
     :loading="isLoading"
     no-filter
     :label="localLabel"
-    :search-input="searchQuery"
+    :search="searchQuery"
     :clearable="!required"
     :return-object="valueAsEntity"
     v-bind="$attrs"
     variant="underlined"
-    @update:search-input="onSearchQueryInput"
+    @update:search="onSearchQueryInput"
     @click:clear="onClearClicked"
   >
     <template #prepend-item>
+      {{ subType }}
       <slot name="prepend-item" />
     </template>
     <template
@@ -227,7 +228,7 @@ export default defineComponent({
 
     const items = computed<IVeoEntity[]>(() => [
       ...(fetchObjectsData.value?.items || []),
-      ...(fetchObjectData.value && !fetchObjectsData.value?.items?.find((item) => item.id === fetchObjectData.value.id) ? [fetchObjectData.value] : [])
+      ...(!!unref(internalValue) && fetchObjectData.value && !fetchObjectsData.value?.items?.find((item) => item.id === fetchObjectData.value.id) ? [fetchObjectData.value] : [])
     ]);
     const displayedItems = computed(() => (props.hiddenValues.length ? items.value.filter((item) => !props.hiddenValues.includes(item.id)) : items.value));
 

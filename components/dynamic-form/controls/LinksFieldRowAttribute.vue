@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { IVeoFormElementDefaultProps, IVeoFormsElementDefinition } from '../types';
+import { IVeoFormsElementDefinition } from '../types';
 import { VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
@@ -47,7 +47,9 @@ export default defineComponent({
   setup(props, { slots }) {
     return () => slots.default ? slots.default().map((linkAttribute) => {
       // Add an index to every control so that VeoForms can enter the value for the correct link
-      (linkAttribute.props as IVeoFormElementDefaultProps).index = props.index;
+      for(const control of (linkAttribute.children as any)?.[0]?.children || []) {
+        control.props.index = props.index;
+      }
 
       return linkAttribute;
     }) : null;
