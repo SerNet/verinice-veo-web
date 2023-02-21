@@ -501,7 +501,10 @@ export default defineComponent({
       },
       'onUpdate:sortBy': (newValue: SortItem[]) => {
         localSortBy.value = newValue;
-      }
+      },
+      ref: tableWrapper,
+      'data-table-sorted-column-name': localSortBy.value[0].key,
+      'data-table-sort-order': localSortBy.value[0].order
     }));
 
     return () => isPaginatedResponse.value ?
@@ -510,8 +513,7 @@ export default defineComponent({
         ...sharedProps.value,
         loading: props.loading,
         loadingText: t('loadingData'),
-        itemsLength: (props.items as IVeoPaginatedResponse<any>).totalItemCount,
-        ref: tableWrapper
+        itemsLength: (props.items as IVeoPaginatedResponse<any>).totalItemCount
       }, {
         ...slots,
         ...renderers.value
@@ -520,8 +522,7 @@ export default defineComponent({
         ...(props.loading ? [h(VProgressLinear, { indeterminate: true, color: 'primary' })] : []),
         h(VDataTable, {
           ...attrs,
-          ...sharedProps.value,
-          ref: tableWrapper
+          ...sharedProps.value
         }, {
           ...slots,
           ...renderers.value
