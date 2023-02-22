@@ -40,7 +40,7 @@
           v-for="item in items"
           :key="item.key"
         >
-          <LayoutPrimayNavigationCategory
+          <LayoutPrimaryNavigationCategory
             v-if="item.children"
             v-bind="item"
             :level="0"

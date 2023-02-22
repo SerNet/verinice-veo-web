@@ -24,7 +24,7 @@
     >
       <v-app-bar-nav-icon
         v-if="xs"
-        @click="drawer = true"
+        @click="drawer = !drawer"
       />
       <div
         class="d-flex align-end ml-4"
@@ -136,7 +136,7 @@ useHead(() => ({
 //
 // Global navigation
 //
-const drawer = ref<boolean>(false);
+const drawer = ref<boolean>(true);
 
 //
 // Unit creation and navigation
