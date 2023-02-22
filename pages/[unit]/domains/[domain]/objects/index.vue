@@ -341,11 +341,11 @@ export default defineComponent({
         id: 'clone',
         label: upperFirst(t('cloneObject').toString()),
         icon: mdiContentCopy,
-        async action(item: IVeoEntity) {
+        async action(item: any) {
           try {
-            await clone(item);
+            await clone(item.raw);
           } catch (e: any) {
-            showError('clone', item, e);
+            showError('clone', item.raw, e);
           }
         }
       },
