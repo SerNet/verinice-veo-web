@@ -59,7 +59,7 @@
             :data="chart"
             :options="options[index]"
             :plugins="[ChartDataLabels]"
-            :style="{ height: `${chartHeight}px`, cursor: 'pointer', width: '100%' }"
+            :style="{ height: `${chartHeight}px`, cursor: 'pointer', width: '100%', position: 'relative' }"
           />
           <div
             v-else
@@ -81,7 +81,7 @@
 
 <script lang="ts">
 import { Bar } from 'vue-chartjs';
-import { Chart as ChartJS, BarController, Tooltip, CategoryScale, BarElement, LinearScale } from 'chart.js';
+import { Chart as ChartJS, BarController, Tooltip, CategoryScale, BarElement, LinearScale, ChartOptions } from 'chart.js';
 import { upperFirst } from 'lodash';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
@@ -160,9 +160,10 @@ export default defineComponent({
       )
     );
 
-    const options = computed(() =>
+    const options = computed<ChartOptions[]>(() =>
       sortedSubTypes.value.map(([_subType, subTypeData], index) => ({
         responsive: true,
+        maintainAspectRatio: false,
         onClick: (_point: any, $event: any) => handleClickEvent(index, $event),
         plugins: {
           datalabels: {
@@ -174,8 +175,10 @@ export default defineComponent({
               const index = context.dataIndex;
               const value = context.dataset?.data?.[index] || -1;
               return value > 0;
-            },
-            offset: 12
+            }
+          },
+          tooltip: {
+            enabled: false
           }
         },
         indexAxis: 'y' as 'x' | 'y',
