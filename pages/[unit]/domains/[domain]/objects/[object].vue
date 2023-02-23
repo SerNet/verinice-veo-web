@@ -76,7 +76,6 @@
             :original-object="object"
             :loading="loading || !modifiedObject"
             :domain-id="domainId"
-            :preselected-sub-type="preselectedSubType"
             :additional-context="additionalContext"
             @show-revision="onShowRevision"
             @create-dpia="createDPIADialogVisible = true"
@@ -211,7 +210,6 @@ export default defineComponent({
 
     const objectParameter = computed(() => separateUUIDParam(route.params.object as string));
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-    const preselectedSubType = computed<string | undefined>(() => route.query.subType || (object.value?.domains?.[domainId.value]?.subType as any));
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
@@ -238,7 +236,9 @@ export default defineComponent({
         const _data = data as IVeoEntity;
         modifiedObject.value = cloneDeep(_data);
         metaData.value = cloneDeep(_data.domains[domainId.value]);
-        getAdditionalContext();
+
+        // On the next tick, object is populated so disabling subtype will work
+        nextTick(getAdditionalContext);
 
         if (wipObjectData.value) {
           modifiedObject.value = { ...modifiedObject.value, ...wipObjectData.value };
@@ -278,37 +278,38 @@ export default defineComponent({
 
     const subTypeKey = 'object-detail-view-sub-type';
 
-    const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
-    const formsQueryEnabled = computed(() => !!domainId.value);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+    const currentSubType = computed(() => object.value?.domains?.[domainId.value]?.subType);
 
-    const onSubTypeChanged = (newSubType?: string) => {
+    const addSubTypeBreadcrumb = (data: any) => {
       if (customBreadcrumbExists(subTypeKey)) {
         removeCustomBreadcrumb(subTypeKey);
       }
 
       // Exit if no subtype is set
-      if (!newSubType) {
+      if (!currentSubType.value) {
         return;
       }
 
-      const formSchema = (formSchemas.value as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === newSubType);
+      const formSchema = (data as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === currentSubType.value);
 
       addCustomBreadcrumb({
         key: subTypeKey,
-        text: formSchema ? formSchema.name[locale.value] || Object.values(formSchema.name[locale.value])[0] : (preselectedSubType.value as string),
-        to: `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${objectParameter.value.type}&subType=${preselectedSubType.value}`,
+        text: formSchema ? formSchema.name[locale.value] || Object.values(formSchema.name[locale.value])[0] : currentSubType.value,
+        to: `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${objectParameter.value.type}&subType=${currentSubType.value}`,
         param: objectTypeKey,
         index: 0,
         position: 12
       });
     };
-    watch(() => preselectedSubType.value, onSubTypeChanged, { immediate: true });
-    watch(
-      () => formSchemas.value,
-      () => onSubTypeChanged(preselectedSubType.value),
-      { deep: true }
-    );
+
+    const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
+    const formsQueryEnabled = computed(() => !!domainId.value);
+    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [], onSuccess: addSubTypeBreadcrumb });
+
+    // Change subtype if object subtype changes (As of 2023-02-23 this shouldn't happen as once a subtype is selected it is readonly, but you never know what the future holds)
+    watch(() => currentSubType.value, () => {
+      addSubTypeBreadcrumb(formSchemas.value);
+    });
 
     onUnmounted(() => {
       removeCustomBreadcrumb(objectTypeKey);
@@ -501,7 +502,6 @@ export default defineComponent({
       onDPIACreated,
       onDPIALinked,
       onShowRevision,
-      preselectedSubType,
       resetForm,
       restoreObject,
       saveObject,

@@ -31,7 +31,6 @@
         v-model="objectData"
         v-bind="omit($props, 'modelValue')"
         v-model:valid="isFormValid"
-        :preselected-sub-type="subType"
         :loading="domainIsFetching"
         disable-history
         scroll-wrapper-id="scroll-wrapper-create-dialog"
