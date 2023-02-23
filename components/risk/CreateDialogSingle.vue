@@ -98,7 +98,7 @@
         text
         color="primary"
         :loading="savingRisk"
-        :disabled="formIsValid !== null || !formModified || ability.cannot('manage', 'objects')"
+        :disabled="formIsValid === false || !formModified || ability.cannot('manage', 'objects')"
         @click="saveRisk"
       >
         {{ globalT('global.button.save') }}
