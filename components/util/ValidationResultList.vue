@@ -27,7 +27,10 @@
         class="d-block veo-object-message"
         :class="item.params && item.params.type ? `veo-object-message--${item.params.type}` : ''"
       >
-        <v-list-item-title class="text-body-2">
+        <v-list-item-title
+          class="text-body-2"
+          style="white-space: normal"
+        >
           {{ item.message }}
         </v-list-item-title>
         <v-list-item-action

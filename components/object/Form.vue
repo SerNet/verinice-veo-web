@@ -239,10 +239,6 @@ export default defineComponent({
       type: String,
       required: true
     },
-    preselectedSubType: {
-      type: String,
-      default: undefined
-    },
     valid: {
       type: Boolean,
       default: true
@@ -269,6 +265,17 @@ export default defineComponent({
     const { t: $t } = useI18n({ useScope: 'global' });
     const { $api } = useNuxtApp();
     const { personReactiveFormActions } = useVeoReactiveFormActions();
+
+    // Object stuff
+    const objectData = computed({
+      get() {
+        return props.modelValue as Record<string, any>;
+      },
+      set(newValue: Record<string, any>) {
+        emit('update:model-value', newValue);
+      }
+    });
+    const subType = computed(() => objectData.value?.domains?.[props.domainId]?.subType);
 
     // Formschema/display stuff
     // Fetching object schema
@@ -305,7 +312,7 @@ export default defineComponent({
     const formQueryParameters = computed(() => ({ domainId: props.domainId, id: selectedDisplayOption.value }));
     const formQueryEnabled = computed(() => selectedDisplayOption.value !== 'objectschema');
     const { data: formSchema, isFetching: formSchemaIsFetching } = useFetchForm(formQueryParameters, { enabled: formQueryEnabled });
-    const currentFormSchema = computed(() => (selectedDisplayOption.value === 'objectschema' ? undefined : formSchema.value));
+    const currentFormSchema = computed(() => (selectedDisplayOption.value === 'objectschema' || formSchemaIsFetching.value ? undefined : formSchema.value));
 
     function getFormschemaIdBySubType(subType: string) {
       const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === subType)?.id;
@@ -313,9 +320,18 @@ export default defineComponent({
         return formSchemaId;
       }
     }
+    function getSubTypeByFormSchemaId(id: string) {
+      const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.id === id)?.subType;
+      if (formSchemaId) {
+        return formSchemaId;
+      }
+    }
 
     const setDisplayOptionBasedOnSubtype = () => {
-      const formSchemaId = getFormschemaIdBySubType(props.preselectedSubType);
+      if(!subType.value) {
+        return;
+      }
+      const formSchemaId = getFormschemaIdBySubType(subType.value);
       if (formSchemaId) {
         selectedDisplayOption.value = formSchemaId;
       } else {
@@ -326,28 +342,26 @@ export default defineComponent({
     watch(
       () => formSchemas.value,
       (newValue) => {
-        if (newValue && props.preselectedSubType) {
+        if (newValue && subType.value) {
           setDisplayOptionBasedOnSubtype();
         }
       },
       { deep: true, immediate: true }
     );
+    watch(() => subType.value, (newValue) => {
+      if(newValue) {
+        setDisplayOptionBasedOnSubtype();
+      }
+    });
 
-    watch(
-      () => props.preselectedSubType,
-      () => setDisplayOptionBasedOnSubtype()
-    );
-
-    const setSubType = () => {
-      if (objectData.value.domains && currentFormSchema.value && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
+    watch(() => selectedDisplayOption.value, (newValue) => {
+      if(!!newValue && objectData.value.domains && !objectData.value?.domains?.[props.domainId]?.subType) {
         objectData.value.domains[props.domainId] = {
-          subType: currentFormSchema.value.subType,
+          subType: getSubTypeByFormSchemaId(newValue),
           status: 'NEW'
         };
       }
-    };
-
-    watch(() => currentFormSchema.value, setSubType, { deep: true });
+    });
 
     const displayOptions = computed<{ title: string; value: string | undefined }[]>(() => {
       const currentSubType = objectData.value?.domains?.[props.domainId]?.subType;
@@ -366,14 +380,6 @@ export default defineComponent({
     });
 
     // Form stuff
-    const objectData = computed({
-      get() {
-        return props.modelValue as Record<string, any>;
-      },
-      set(newValue: Record<string, any>) {
-        emit('update:model-value', newValue);
-      }
-    });
     const formErrors = ref<Map<string, string[]>>(new Map());
 
     watch(
@@ -489,14 +495,7 @@ export default defineComponent({
 
     const debouncedFetchDecisions = debounce(fetchDecisions, 1000);
 
-    watch(
-      () => objectData.value,
-      () => {
-        debouncedFetchDecisions();
-        setSubType();
-      },
-      { deep: true }
-    );
+    watch(() => objectData.value, debouncedFetchDecisions, { deep: true });
 
     const dataIsLoading = computed<boolean>(
       () => objectSchemaIsFetching.value || props.loading || formSchemasAreFetching.value || formSchemaIsFetching.value || domainIsFetching.value || translationsAreFetching.value
@@ -522,6 +521,7 @@ export default defineComponent({
       reactiveFormActions,
       selectedDisplayOption,
       selectedSideContainer,
+      subType,
 
       mdiEyeOutline,
       mdiHistory,
