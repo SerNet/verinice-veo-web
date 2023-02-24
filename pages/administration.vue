@@ -39,7 +39,7 @@
           :additional-headers="additionalTableHeaders"
         >
           <template #actions="{ item }">
-            <div class="d-flex">
+            <div class="d-flex justify-end">
               <v-tooltip
                 v-for="action in accountTableActions"
                 :key="action.id"

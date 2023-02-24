@@ -26,21 +26,15 @@
         v-if="xs"
         @click="drawer = !drawer"
       />
-      <div
-        class="d-flex align-end ml-4"
-        style="min-height: 65px;"
+      <nuxt-link
+        to="/"
+        class="text-decoration-none ml-4"
       >
-        <nuxt-link
-          to="/"
-          class="text-decoration-none"
-          style="width: 100%"
-        >
-          <LayoutAppBarLogo
-            style="height: 64px"
-            class="d-flex align-center"
-          />
-        </nuxt-link>
-      </div>
+        <LayoutAppBarLogo
+          style="height: 60px"
+          class="d-flex align-center"
+        />
+      </nuxt-link>
       <LayoutBreadcrumbs write-to-title />
       <v-spacer />
       <DocsDownloadButton v-if="$route.path.startsWith('/docs')" />

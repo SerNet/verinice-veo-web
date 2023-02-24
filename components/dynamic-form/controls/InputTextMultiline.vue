@@ -28,7 +28,6 @@
     class="vf-form-element vf-input-text-multiline"
     :clearable="!options.required"
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
-    hide-details="auto"
     auto-grow
     rows="3"
     variant="underlined"

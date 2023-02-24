@@ -42,7 +42,7 @@
           class="mt-2"
         >
           <v-card-text>
-            <v-list>
+            <v-list density="compact">
               <ObjectFilter
                 v-for="(option, index) of additionalFilterOptions"
                 :key="option.name || `${option.type}_${index}`"

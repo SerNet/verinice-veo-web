@@ -28,13 +28,15 @@
         class="mr-2"
         color="white"
         rounded
-        primary
-        flat
-        small
+        size="small"
+        variant="flat"
         style="outline: 1px solid black"
         @click="filterDialogVisible = true"
       >
-        <v-icon :icon="mdiFilter" />
+        <v-icon
+          :icon="mdiFilter"
+          location="start"
+        />
         {{ upperFirst(t('filter').toString()) }}
       </v-btn>
     </v-col>

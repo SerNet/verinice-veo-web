@@ -40,7 +40,7 @@
     </template>
     <v-card flat>
       <v-list
-        dense
+        density="compact"
         class="pb-0"
       >
         <v-list-item lines="two">

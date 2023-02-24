@@ -40,7 +40,6 @@
           :label="options && options.label"
           :class="options && options.class"
           :clearable="!options.required"
-          hide-details="auto"
           :prepend-icon="mdiCalendar"
           :hint="t('hint', [DATE_HINT])"
           readonly
@@ -106,7 +105,6 @@
       :class="options && options.class"
       :clearable="!options.required"
       :data-attribute-name="last(objectSchemaPointer.split('/'))"
-      hide-details="auto"
       :prepend-icon="mdiCalendar"
       :hint="t('hint', [DATE_HINT])"
       variant="underlined"
@@ -121,7 +119,6 @@
       :label="options && options.label"
       :class="options && options.class"
       :clearable="!options.required"
-      hide-details="auto"
       :prepend-icon="mdiClockOutline"
       :hint="t('hint', [DATE_HINT])"
       variant="underlined"
