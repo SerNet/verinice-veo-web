@@ -28,7 +28,6 @@
     type="number"
     :clearable="!options.required"
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
-    hide-details="auto"
     variant="underlined"
     @update:model-value="onInput"
     @click:clear="$emit('update:model-value', undefined)"

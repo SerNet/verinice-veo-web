@@ -164,7 +164,7 @@ export default defineComponent({
 </i18n>
 
 <style lang="scss" scoped>
-.veo-demo-unit-button :deep(.v-btn__content) {
+.veo-demo-unit-button {
   justify-content: start;
 }
 </style>

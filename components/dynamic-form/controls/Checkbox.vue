@@ -27,7 +27,6 @@
     class="vf-form-element vf-checkbox"
     :indeterminate="modelValue === undefined"
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
-    hide-details="auto"
     :false-value="false"
     :true-value="true"
     color="primary"

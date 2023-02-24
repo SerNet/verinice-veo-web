@@ -64,7 +64,7 @@
     </template>
     <template #append>
       <v-list
-        dense
+        density="compact"
         class="pa-0"
       >
         <v-divider style="background: rgba(255, 255, 255, 0.2)" />

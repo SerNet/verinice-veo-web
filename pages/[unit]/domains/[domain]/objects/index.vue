@@ -56,7 +56,7 @@
           @click="openItem"
         >
           <template #actions="{item}">
-            <div class="d-flex">
+            <div class="d-flex justify-end">
               <v-tooltip
                 v-for="btn in actions"
                 :key="btn.id"

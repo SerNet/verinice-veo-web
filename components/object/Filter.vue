@@ -34,6 +34,7 @@
       :name="name"
       :clearable="!required"
       variant="underlined"
+      hide-details="auto"
       @update:model-value="onInput($event)"
     />
     <v-select
@@ -46,6 +47,7 @@
       :disabled="disabled"
       :name="name"
       :clearable="!required"
+      hide-details="auto"
       variant="underlined"
       @update:model-value="onInput($event)"
     />
@@ -57,6 +59,7 @@
       :rules="required ? [requiredRule] : []"
       :disabled="disabled"
       :name="name"
+      hide-details="auto"
       variant="underlined"
       @update:model-value="onInput($event)"
     />

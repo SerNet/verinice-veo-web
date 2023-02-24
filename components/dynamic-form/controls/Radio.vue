@@ -35,7 +35,6 @@
       :error-messages="getControlErrorMessages($props)"
       :label="options && options.label"
       :class="options && options.class"
-      hide-details="auto"
       @update:model-value="$emit('update:model-value', $event)"
     >
       <template #default>

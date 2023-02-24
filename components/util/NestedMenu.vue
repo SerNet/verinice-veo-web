@@ -30,7 +30,7 @@
       />
     </template>
     <template #default>
-      <v-list dense>
+      <v-list density="compact">
         <template v-for="item of items">
           <UtilNestedMenu
             v-if="item.children && item.children.length"

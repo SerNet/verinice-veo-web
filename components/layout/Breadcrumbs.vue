@@ -39,10 +39,11 @@
           v-if="item.icon"
           class="text-primary"
           :icon="item.icon"
+          size="large"
         />
         <span
           v-else-if="Object.keys(queryResultMap).includes(item.param)"
-          class="breadcrumbs-font-size"
+          class="breadcrumbs-item-height"
         >
           <template v-if="queryResultMap[item.param]">
             {{ queryResultMap[item.param] }}
@@ -56,7 +57,7 @@
         </span>
         <span
           v-else-if="item.text"
-          class="breadcrumbs-font-size"
+          class="breadcrumbs-item-height"
         >
           {{ item.text }}
         </span>
@@ -93,6 +94,7 @@
                     <v-icon
                       :icon="menuItem.icon"
                       color="primary"
+                      size="large"
                     />
                   </template>
                   <v-list-item-title
@@ -422,11 +424,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.breadcrumbs-font-size {
-  font-size: 0.85rem;
-}
-
 a.v-breadcrumbs-item:not(:last-child) {
   color: $primary
+}
+
+.v-breadcrumbs-item .v-icon {
+    font-size: 1.4rem;
+}
+
+.breadcrumbs-item-height {
+  height: 1.4rem;
 }
 </style>

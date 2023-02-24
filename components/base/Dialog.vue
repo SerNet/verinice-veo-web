@@ -30,7 +30,7 @@
       tile
     >
       <div class="veo-dialog__inner--border-bottom">
-        <v-card-title class="d-flex align-center pt-2 pb-1">
+        <v-card-title class="d-flex align-center pt-0 pb-0">
           <LayoutAppLogoMobile
             v-if="fullscreen"
             style="height: 36px"
@@ -39,14 +39,11 @@
           <v-spacer />
           <v-btn
             :disabled="closeDisabled"
-            icon
+            :icon="mdiClose"
             flat
-            size="large"
             class="close-button"
             @click="closeDialog()"
-          >
-            <v-icon :icon="mdiClose" />
-          </v-btn>
+          />
         </v-card-title>
       </div>
       <v-card-text
