@@ -324,7 +324,7 @@ export default defineComponent({
     /**
      * Classes to apply when truncate is set
      */
-    const truncateClasses = ['text-truncate', 'max-width-zero'];
+    const truncateClasses = ['text-truncate'];
 
     /**
      * Render value inside a cell
@@ -366,7 +366,7 @@ export default defineComponent({
             title: header.text ?? $t(`objectlist.${String(header.value)}`),
             cellClass,
             class: defaultClasses.concat(header.class || [], header.truncate ? truncateClasses : []),
-            render: header.tooltip ? renderTooltip(header, { class: cellClass }) : header.render
+            render: header.tooltip ? renderTooltip(header, { class: cellClass, style: { maxWidth: '500px', display: 'block' }}) : header.render
           };
         })
         .sort((a, b) => a.order - b.order)
@@ -533,10 +533,6 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 :deep(*) {
-  .max-width-zero {
-    max-width: 0;
-  }
-
   .cursor-pointer .v-data-table__tr {
     cursor: pointer;
   }
