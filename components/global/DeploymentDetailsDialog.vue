@@ -110,7 +110,10 @@
           >{{ t('privacyPolicy') }}</a>
         </i18n-t>
         <br>
-        &copy; 2023 - <a href="https://www.sernet.de">SerNet GmbH</a>
+        &copy; 2023 - <a
+          href="https://www.sernet.de"
+          target="_blank"
+        >SerNet GmbH</a>
       </v-card-text>
     </BaseCard>
   </BaseDialog>
