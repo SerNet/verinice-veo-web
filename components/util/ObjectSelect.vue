@@ -34,7 +34,6 @@
     @click:clear="onClearClicked"
   >
     <template #prepend-item>
-      {{ subType }}
       <slot name="prepend-item" />
     </template>
     <template
