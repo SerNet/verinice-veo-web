@@ -366,7 +366,7 @@ export default defineComponent({
             title: header.text ?? $t(`objectlist.${String(header.value)}`),
             cellClass,
             class: defaultClasses.concat(header.class || [], header.truncate ? truncateClasses : []),
-            render: header.tooltip ? renderTooltip(header, { class: cellClass, style: { maxWidth: '500px', display: 'block' }}) : header.render
+            render: header.tooltip ? renderTooltip(header, { class: cellClass, style: { maxWidth: `${header.width}px`, display: 'block' }}) : header.render
           };
         })
         .sort((a, b) => a.order - b.order)
