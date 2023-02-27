@@ -29,7 +29,6 @@ import { getEntityDetailsFromLink } from '~~/lib/utils';
 export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
   unit: string;
   endpoint: string;
-  page?: number;
   displayName?: string;
   subType?: string;
   childElementIds?: string;

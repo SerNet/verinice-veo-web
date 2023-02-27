@@ -18,6 +18,8 @@
 <template>
   <div>
     <ObjectTable
+      v-model:page="page"
+      v-model:sort-by="sortBy"
       :additional-headers="additionalHeaders"
       :default-headers="defaultHeaders"
       :items="items"
@@ -64,7 +66,7 @@
 </template>
 <script lang="ts">
 import { PropType } from 'vue';
-import { upperFirst } from 'lodash';
+import { cloneDeep, upperFirst } from 'lodash';
 import { mdiArrowDown, mdiArrowRight, mdiCheck, mdiContentCopy, mdiLinkOff, mdiTransitDetour, mdiTrashCanOutline } from '@mdi/js';
 import { VIcon, VTooltip } from 'vuetify/components';
 
@@ -109,28 +111,46 @@ export default defineComponent({
     const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
 
     // Fetching different queries for the table
+    const page = ref(1);
+    const sortBy = ref([{ key: 'name', order: 'desc' }]);
+    const resetQueryOptions = () => {
+      page.value = 1;
+      sortBy.value = [{ key: 'name', order: 'desc' }];
+    };
+    watch(() => props.type, resetQueryOptions);
+
     const { data: schemas } = useFetchSchemas();
-    const parentScopesQueryParameters = computed(() => ({ parentEndpoint: 'scopes', childObjectId: props.object?.id || '', unitId: unitId.value }));
+    const parentScopesQueryParameters = computed(() => ({
+      parentEndpoint: 'scopes',
+      childObjectId: props.object?.id || '',
+      unitId: unitId.value,
+      sortBy: sortBy.value[0].key,
+      sortOrder: sortBy.value[0].order as 'desc' | 'asc',
+      page: page.value
+    }));
     const parentScopesQueryEnabled = computed(() => props.type !== 'risks' && !!props.object?.id);
     const { data: parentScopes, isFetching: parentScopesIsFetching } = useFetchParentObjects(parentScopesQueryParameters, { enabled: parentScopesQueryEnabled }); // Used by table and cloning objects
     const parentObjectsQueryParameters = computed(() => ({
       parentEndpoint: schemas.value?.[props.object?.type || ''] || '',
       childObjectId: props.object?.id || '',
-      unitId: unitId.value
+      unitId: unitId.value,
+      sortBy: sortBy.value[0].key,
+      sortOrder: sortBy.value[0].order as 'desc' | 'asc',
+      page: page.value
     }));
     const parentObjectsQueryEnabled = computed(() => props.type === 'parentObjects' && !!props.object?.id);
     const { data: parentObjects, isFetching: parentObjectsIsFetching } = useFetchParentObjects(parentObjectsQueryParameters, { enabled: parentObjectsQueryEnabled });
     const childScopesQueryParameters = computed(() => ({ id: props.object?.id || '' }));
-    const childScopesQueryEnabled = computed(() => props.type.startsWith('child') && props.object.type === 'scope' && !!props.object?.id);
+    const childScopesQueryEnabled = computed(() => props.type.startsWith('child') && props.object?.type === 'scope' && !!props.object?.id);
     const { data: scopeChildren, isFetching: childScopesIsFetching } = useFetchScopeChildren(childScopesQueryParameters, { enabled: childScopesQueryEnabled });
     const childObjectsQueryParameters = computed(() => ({ id: props.object?.id || '', endpoint: schemas.value?.[props.object?.type || ''] || '' }));
-    const childObjectsQueryEnabled = computed(() => props.type.startsWith('child') && props.object.type !== 'scope' && !!props.object?.id);
+    const childObjectsQueryEnabled = computed(() => props.type.startsWith('child') && props.object?.type !== 'scope' && !!props.object?.id);
     const { data: objectChildren, isFetching: childObjectsIsFetching } = useFetchObjectChildren(childObjectsQueryParameters, { enabled: childObjectsQueryEnabled });
     const risksQueryParameters = computed(() => ({ id: props.object?.id || '', endpoint: schemas.value?.[props.object?.type || ''] || '' }));
     const risksQueryEnabled = computed(() => props.type === 'risks' && !!props.object?.id);
     const { data: risks, isFetching: risksIsFetching } = useFetchRisks(risksQueryParameters, { enabled: risksQueryEnabled });
 
-    const children = computed(() => props.object.type === 'scope' ? scopeChildren.value : objectChildren.value);
+    const children = computed(() => props.object?.type === 'scope' ? scopeChildren.value : objectChildren.value);
 
     const tableIsLoading = computed(
       () => parentScopesIsFetching.value || parentObjectsIsFetching.value || childScopesIsFetching.value || childObjectsIsFetching.value || risksIsFetching.value
@@ -143,7 +163,7 @@ export default defineComponent({
         case 'childObjects':
           return (children.value || []).filter((child) => child.type !== 'scope');
         case 'parentScopes':
-          return parentScopes.value || [];
+          return cloneDeep(parentScopes.value || []);
         case 'parentObjects':
           return parentObjects.value || [];
         case 'risks':
@@ -200,6 +220,18 @@ export default defineComponent({
             value: `riskValues_${categoryId}`,
             key: `riskValues_${categoryId}`,
             text: domainData.value?.categories?.find((category) => category.id === categoryId)?.translations[locale.value].name || '',
+            sortable: false, // TODO 2023-02-27: Currently disabled, as sort is not working at the moment (vuetify 3.1.6)
+            sort: (a: any, b: any) => {
+              const values = domainData.value?.riskValues;
+
+              const { inherentRisk: inherentRisk1 } = getInherentAndResidualRisk(a, categoryId);
+              const translatedInherentRisk1 = values?.find((entry) => entry.ordinalValue === inherentRisk1)?.translations[locale.value].name;
+
+              const { inherentRisk: inherentRisk2 } = getInherentAndResidualRisk(b, categoryId);
+              const translatedInherentRisk2 = values?.find((entry) => entry.ordinalValue === inherentRisk2)?.translations[locale.value].name;
+
+              return (translatedInherentRisk1 || '').localeCompare(translatedInherentRisk2 || '');
+            },
             render: (data: any) => {
               const { inherentRisk, residualRisk } = getInherentAndResidualRisk(data.item.raw, categoryId);
               const riskTreatments = getRiskTreatments(data.item.raw, categoryId);
@@ -427,6 +459,8 @@ export default defineComponent({
       tableIsLoading,
       actions,
       items,
+      page,
+      sortBy,
 
       t,
       upperFirst
