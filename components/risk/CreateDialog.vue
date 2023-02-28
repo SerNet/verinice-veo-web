@@ -39,7 +39,6 @@
           v-model:page="page"
           v-model:sort-by="sortBy"
           show-select
-          return-object
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="objects"
           :loading="objectsQueryIsLoading"
@@ -52,7 +51,7 @@
         :disabled="creatingRisks"
         @click="dialog = false"
       >
-        {{ $t('global.button.cancel') }}
+        {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -98,7 +97,7 @@ export default defineComponent({
     const { tablePageSize } = useVeoUser();
     const route = useRoute();
     const { t } = useI18n();
-    const { t: $t } = useI18n();
+    const { t: globalT } = useI18n();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
 
@@ -196,7 +195,7 @@ export default defineComponent({
       selectedScenarios,
 
       t,
-      $t,
+      globalT,
       upperFirst
     };
   }
