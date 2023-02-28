@@ -20,7 +20,7 @@
     <h2 class="text-h2 px-4 pt-1">
       {{ t('history').toString() }}
     </h2>
-    <div v-if="isFetching">
+    <div v-if="isLoading">
       <div
         v-for="index in [1, 2]"
         :key="index"
@@ -111,7 +111,11 @@ export default defineComponent({
 
     const fetchVersionsQueryParameters = computed(() => ({ object: props.object }));
     const fetchVersionsQueryEnabled = computed(() => !!props.object);
-    const { data: history, isFetching } = useFetchVersions(fetchVersionsQueryParameters, { enabled: fetchVersionsQueryEnabled });
+    const { data: history, isLoading } = useFetchVersions(fetchVersionsQueryParameters, {
+      enabled: fetchVersionsQueryEnabled,
+      keepPreviousData: true,
+      refetchInterval: 2000 // The history service gets updated asynchronusly, but as soon as an object gets saved, the history gets refetched. To avoid using outdated data, we refetch ever 2 seconds.
+    });
 
     const historyEntries = computed(() =>
       cloneDeep((history.value || [])).sort((a, b) => {
@@ -137,7 +141,7 @@ export default defineComponent({
 
     return {
       historyEntriesWithCompability,
-      isFetching,
+      isLoading,
       selectedRevision,
 
       t,
