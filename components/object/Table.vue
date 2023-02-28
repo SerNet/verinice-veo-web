@@ -71,6 +71,13 @@ export default defineComponent({
       default: false
     },
     /**
+     * Array containing all elements selected in the table. As the stringified value is used by vuetify, internally we only select by id
+     */
+    modelValue: {
+      type: Array as PropType<any[]>,
+      default: () => []
+    },
+    /**
      * Reflects the current page displayed in the table. Can be used with paginated data and simple arrays.
      */
     page: {
@@ -116,7 +123,7 @@ export default defineComponent({
     'update:sort-by',
     'update:page',
     'update:items-per-page',
-    'click'
+    'click', 'update:model-value'
   ],
   setup(props, { emit, slots, attrs }) {
     const { t, locale } = useI18n();
@@ -470,12 +477,30 @@ export default defineComponent({
       }
     });
 
+    // Internal model value (to only use id's internally but return full objects)
+    const internalModelValue = computed({
+      get: () => props.modelValue.map((item) => item.id),
+      set: (newValue: any[]) => {
+        if(newValue.length > props.modelValue.length) {
+          const addedId = newValue.find((id) => !props.modelValue.find((item) => item.id === id));
+          const _items = isPaginatedResponse.value ? (props.items as IVeoPaginatedResponse<any[]>).items : props.items as any[];
+          emit('update:model-value', [ ...props.modelValue, _items.find((item) => item.id === addedId) ]);
+        } else {
+          const missingId = props.modelValue.findIndex((item) => !newValue.includes(item.id));
+          const itemsToModify =  cloneDeep(props.modelValue);
+          itemsToModify.splice(missingId, 1);
+          emit('update:model-value', itemsToModify);
+        }
+      }
+    });
+
     const sharedProps = computed(() => ({
       ...attrs,
       class: props.enableClick ? 'cursor-pointer' : '',
       id: `veo-object-table-${vm?.uid}`,
       items: items.value,
       itemsPerPage: tablePageSize.value,
+      modelValue: internalModelValue.value,
       mustSort: true,
       headers: normalizedDisplayHeaders.value,
       page: localPage.value,
@@ -492,6 +517,7 @@ export default defineComponent({
           }
         }
         : {}),
+      'onUpdate:modelValue': (newValue: string[]) => internalModelValue.value = newValue,
       'onUpdate:page': (newValue: number) => {
         localPage.value = newValue;
       },

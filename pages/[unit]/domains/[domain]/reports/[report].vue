@@ -69,7 +69,6 @@
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="objects"
           :loading="objectsFetching"
-          return-object
           data-component-name="report-entity-selection"
           @update:model-value="onReportSelectionUpdated"
         />

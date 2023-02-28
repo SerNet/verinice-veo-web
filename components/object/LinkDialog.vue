@@ -58,7 +58,6 @@
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="selectableObjects"
           :loading="objectsLoading || childrenLoading || parentsLoading"
-          return-object
         />
       </BaseCard>
     </template>
