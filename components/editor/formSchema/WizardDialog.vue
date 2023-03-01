@@ -23,7 +23,7 @@
     fixed-footer
     :large="state !== WIZARD_STATES.START"
     :close-function="onClose"
-    @update:model-value="$emit('model-value', $event)"
+    @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
       <LayoutLoadingWrapper v-if="loadingFormSchema || loadingObjectSchema" />
@@ -108,7 +108,7 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['done', 'model-value'],
+  emits: ['done', 'update:model-value'],
   setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();

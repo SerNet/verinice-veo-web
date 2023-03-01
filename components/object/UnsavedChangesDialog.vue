@@ -19,7 +19,7 @@
   <BaseDialog
     :model-value="modelValue && !!item"
     :headline="t('headline')"
-    @update:model-value="emit('model-value', $event)"
+    @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
       <span class="text-body-1">{{ t('text', { displayName: item && item.displayName }) }}</span>
@@ -62,7 +62,7 @@ defineProps({
   }
 });
 
-const emit = defineEmits(['update:model-value', 'exit', 'model-value']);
+const emit = defineEmits(['update:model-value', 'exit']);
   
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
