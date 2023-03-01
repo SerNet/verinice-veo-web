@@ -40,7 +40,7 @@ const vuetify = createVuetify({
   },
   locale: {
     // adapter: createVueI18nAdapter({ i18n, useI18n }) // Currently doesn't work with nuxt
-    locale: Cookies.get('i18n_redirected'),
+    locale: Cookies.get('i18n_redirected') || navigator.language.split('-')[0],
     messages: { de, en }
   },
   theme: {
