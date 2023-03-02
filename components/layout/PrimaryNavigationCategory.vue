@@ -192,4 +192,8 @@ export default {
 .v-list-item--density-compact.primary-navigation-entry-level-2 {
   padding-inline-start: 84px !important;
 }
+
+.v-list-item--density-compact.primary-navigation-entry-level-3 {
+  padding-inline-start: 116px !important;
+}
 </style>
