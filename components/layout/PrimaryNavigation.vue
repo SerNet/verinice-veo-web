@@ -139,6 +139,7 @@ import { useFetchReports } from '~/composables/api/reports';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { useFetchCatalogs } from '~/composables/api/catalogs';
 import { useFetchDomain } from '~/composables/api/domains';
+import { NavItem } from '@nuxt/content/dist/runtime/types';
 
 export interface INavItem {
   key: string;
@@ -440,18 +441,16 @@ export default defineComponent({
       children: docNavItems.value
     }));
     
+    const docItemTransformationFn = (file: NavItem): INavItem => ({
+      key: file._path,
+      name: file.title,
+      to: `/docs${ (file._path.startsWith('/index') ? file._path : file._path.replace('index', '')).replace(/\.\w{2}/, '')}`,
+      activePath: file._path,
+      children: file.children?.length ? file.children.map((file) => docItemTransformationFn(file)) : undefined
+    });
     const docs = useDocNavigation({});
     const docNavItems = computed(() => 
-      (docs.value || []).map(
-        (file) => {
-          return {
-            key: file.path,
-            name: file.title,
-            to: `/docs${file._path.replace(/index.\w{2}/, '')}`,
-            activePath: file._path
-          };
-        }
-      )
+      (docs.value || []).map((file) => docItemTransformationFn(file))
     );
 
     const items = computed<INavItem[]>(() => [

@@ -168,6 +168,7 @@ const onClick = (event: any) => {
   } else {
     emit('click', event);
   }
+  event.stopPropagation();
 };
 
 const activatorIntendation = computed(() => `primary-navigation-entry-level-${props.level}`);
