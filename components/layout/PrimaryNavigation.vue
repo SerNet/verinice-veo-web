@@ -193,7 +193,8 @@ export default defineComponent({
     const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+    const fetchTranslationsQueryEnabled = computed(() => authenticated.value);
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters, { enabled: fetchTranslationsQueryEnabled });
 
     // objects specific stuff
     const objectSchemas = ref<IVeoObjectSchema[]>([]);
@@ -206,7 +207,7 @@ export default defineComponent({
     const { data: formSchemas } = useFetchForms(queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
 
     const fetchSchemasDetailedQueryParameters = computed(() => ({ domainIds: [props.domainId || ''] }));
-    const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId);
+    const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId && authenticated.value);
     const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, { enabled: fetchSchemasDetailedQueryEnabled });
     watch(
       () => _schemas,

@@ -169,15 +169,17 @@ export default defineComponent({
   setup(props) {
     const { t, locale } = useI18n();
     const route = useRoute();
+    const { breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
+    const { authenticated } = useVeoUser();
 
     const title = ref('');
 
     useHead(() => ({
       title
     }));
-    const { breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
 
-    const { data: endpoints } = useFetchSchemas();
+    const useFetchSchemasQueryEnabled = computed(() => authenticated.value);
+    const { data: endpoints } = useFetchSchemas({ enabled: useFetchSchemasQueryEnabled });
 
     const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbReplacementMapBreadcrumb>([
       [
