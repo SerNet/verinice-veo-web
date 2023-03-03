@@ -55,7 +55,7 @@
           >
             <v-btn
               class="mt-2"
-              outlined
+              variant="flat"
               color="info"
               @click="$emit('force-import')"
             >

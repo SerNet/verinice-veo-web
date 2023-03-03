@@ -49,7 +49,7 @@
           :model-value="WIZARD_STATES.IMPORT"
           :domain-id="domainId"
           :form-schema="formSchema"
-          :object-schemas-compatible="schemasCompatible"
+          :schemas-compatible="schemasCompatible"
           @force-import="importFormSchema()"
           @update:form-schema="uploadedFormSchema = $event"
           @update:object-schema="uploadedObjectSchema = $event"
