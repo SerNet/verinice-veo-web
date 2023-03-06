@@ -1991,7 +1991,7 @@ USE OR PERFORMANCE OF THIS SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @nuxt/content@2.3.0
+ - @nuxt/content@2.4.3
  - @nuxt/telemetry@2.1.9
 
 These packages each contain the following license and notice below:
@@ -2057,38 +2057,9 @@ These packages each contain the following license and notice below:
 
 The following npm packages may be included in this product:
 
- - @nuxt/kit@3.0.0
- - @nuxt/schema@3.0.0
-
-These packages each contain the following license and notice below:
-
-MIT License
-
-Copyright (c) 2022 - Nuxt Project
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
------------
-
-The following npm packages may be included in this product:
-
+ - @nuxt/kit@3.1.1
  - @nuxt/kit@3.1.2
+ - @nuxt/schema@3.1.1
  - @nuxt/schema@3.1.2
  - @nuxt/vite-builder@3.1.2
  - nuxi@3.1.2
@@ -4401,6 +4372,7 @@ The following npm packages may be included in this product:
  - @types/glob@8.0.1
  - @types/hast@2.3.4
  - @types/intro.js@5.1.0
+ - @types/js-cookie@3.0.3
  - @types/json-schema@7.0.11
  - @types/lodash@4.14.191
  - @types/mdast@3.0.10
@@ -6420,8 +6392,8 @@ The following npm packages may be included in this product:
  - character-reference-invalid@2.0.1
  - detab@3.0.2
  - mdast-util-to-string@3.1.0
- - unist-util-position@4.0.3
- - unist-util-visit@4.1.1
+ - unist-util-position@4.0.4
+ - unist-util-visit@4.1.2
 
 These packages each contain the following license and notice below:
 
@@ -7944,7 +7916,7 @@ The following npm packages may be included in this product:
  - is-decimal@2.0.1
  - is-hexadecimal@2.0.1
  - mdast-util-to-hast@11.3.0
- - mdast-util-to-hast@12.2.5
+ - mdast-util-to-hast@12.3.0
  - rehype-external-links@2.0.1
  - rehype-raw@6.1.1
  - rehype-slug@5.1.0
@@ -16788,7 +16760,7 @@ The following npm packages may be included in this product:
 
  - mdast-squeeze-paragraphs@5.2.0
  - remark-squeeze-paragraphs@5.0.1
- - unist-builder@3.0.0
+ - unist-builder@3.0.1
 
 These packages each contain the following license and notice below:
 
@@ -24045,8 +24017,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 The following npm packages may be included in this product:
 
  - perfect-debounce@0.1.3
- - unimport@1.2.0
- - unimport@2.1.0
+ - unimport@2.2.4
 
 These packages each contain the following license and notice below:
 
@@ -29416,13 +29387,11 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 The following npm package may be included in this product:
 
- - shiki-es@0.1.2
+ - shiki-es@0.2.0
 
 This package contains the following license and notice below:
 
 # shiki-es
-
-[![bundle size](https://flat.badgen.net/bundlephobia/minzip/shiki-es)](https://bundlephobia.com/package/shiki-es)
 
 Standalone build of [shiki](https://github.com/shikijs/shiki) fully compatible with all ESM environments.
 
@@ -36923,7 +36892,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - vuetify@3.1.4
+ - vuetify@3.1.5
 
 This package contains the following license and notice below:
 
