@@ -343,7 +343,8 @@ export default defineComponent({
     const { data: _translations, isFetching: translationsLoading } = useFetchTranslations(fetchTranslationQueryParameters);
     watch(
       () => _translations.value,
-      (newValue) => Object.assign(translations, newValue?.lang || {})
+      (newValue) => Object.assign(translations, newValue?.lang || {}),
+      { deep: true, immediate: true }
     );
     const availableLanguages = computed(() => Object.keys(translations));
 
