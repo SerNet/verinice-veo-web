@@ -48,7 +48,7 @@ steps:
     element: '[data-component-name=object-details-actions-button]'
     intro: Depending on the active section, you can use the Add button to add objects and scopes as components or make the active object part of another and add risks if available.
 # form
-  - title: 'form'
+  - title: 'Form'
     element: '[data-component-name=object-form-form]'
     intro: On the right side, all details in the form are displayed.
 # title: 'Hide/display form

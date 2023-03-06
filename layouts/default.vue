@@ -29,6 +29,7 @@
       <nuxt-link
         to="/"
         class="text-decoration-none ml-4"
+        data-component-name="logo"
       >
         <LayoutAppBarLogo
           style="height: 60px"

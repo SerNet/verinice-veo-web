@@ -52,9 +52,7 @@ export const useVeoBreadcrumbs = () => {
   };
 
   const clearCustomBreadcrumbs = () => {
-    for (let i = breadcrumbs.value.length; i >= 0; i--) {
-      delete breadcrumbs.value[i];
-    }
+    breadcrumbs.value = [];
   };
 
   return {

@@ -7,16 +7,16 @@ steps:
     element: '[data-component-name=object-overview-page]'
     intro: In der Objektübersicht werden alle verfügbare Objekte aufgelistet.
   - title: 'Filter'
-    element: '[data-component-name=object-overview-filter]'
+    element: '[data-component-name=filter-bar-filter-button]'
     intro: Die Objektübersicht wird dazu immer auf Grundlage eines Filters aufgebaut.
   - title: 'Aktive Filterkriterien'
-    element: '[data-component-name=object-overview-active-filters]'
+    element: '[data-component-name=filter-bar-active-filters]'
     intro: Aktive Filterkriterien werden in sogenannten 'Chips' dargestellt.
   - title: 'Filterkriterien löschen'
     element: '[data-component-name=veo-object-chip] .v-chip__close'
     intro: Optionale Filterkriterien können durch Mausklick direkt ohne Aufruf des Filterdialogs gelöscht werden.
   - title: 'WICHTIG!'
-    element: '[data-component-name=object-overview-active-filters] span:nth-child(1)'
+    element: '[data-component-name=filter-bar-active-filters] span:nth-child(1)'
     intro: Der Objekttyp als Mindestkriterium kann nur über den Filterdialog geändert werden!
   - title: 'Übrigens...'
     element: '[data-component-name=breadcrumbs]'
@@ -28,7 +28,7 @@ steps:
     element: '[data-component-name=object-overview-table] thead'
     intro: Sortieren Sie die Objektliste durch Mausklick auf die Spaltenüberschriften um bestimmte Objekte schnell zu finden.
   - title: 'Paginierung'
-    element: '[data-component-name=object-overview-table] > .v-data-footer'
+    element: '[data-component-name=object-overview-table] > .v-data-table-footer'
     intro: Existieren viele Objekte können Sie durch die Paginierung die Anzahl der je Seite dargestellten Objekte anpassen und zwischen den einzelnen Seiten navigieren.
   - title: 'Objekt bearbeiten'
     element: '[data-component-name=object-overview-table] tbody tr:nth-child(1)'

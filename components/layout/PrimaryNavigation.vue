@@ -139,6 +139,7 @@ import { useFetchReports } from '~/composables/api/reports';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { useFetchCatalogs } from '~/composables/api/catalogs';
 import { useFetchDomain } from '~/composables/api/domains';
+import { NavItem } from '@nuxt/content/dist/runtime/types';
 
 export interface INavItem {
   key: string;
@@ -192,7 +193,8 @@ export default defineComponent({
     const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+    const fetchTranslationsQueryEnabled = computed(() => authenticated.value);
+    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters, { enabled: fetchTranslationsQueryEnabled });
 
     // objects specific stuff
     const objectSchemas = ref<IVeoObjectSchema[]>([]);
@@ -205,7 +207,7 @@ export default defineComponent({
     const { data: formSchemas } = useFetchForms(queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
 
     const fetchSchemasDetailedQueryParameters = computed(() => ({ domainIds: [props.domainId || ''] }));
-    const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId);
+    const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId && authenticated.value);
     const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, { enabled: fetchSchemasDetailedQueryEnabled });
     watch(
       () => _schemas,
@@ -440,18 +442,16 @@ export default defineComponent({
       children: docNavItems.value
     }));
     
+    const docItemTransformationFn = (file: NavItem): INavItem => ({
+      key: file._path,
+      name: file.title,
+      to: `/docs${ (file._path.startsWith('/index') ? file._path : file._path.replace('index', '')).replace(/\.\w{2}/, '')}`,
+      activePath: file._path,
+      children: file.children?.length ? file.children.map((file) => docItemTransformationFn(file)) : undefined
+    });
     const docs = useDocNavigation({});
     const docNavItems = computed(() => 
-      (docs.value || []).map(
-        (file) => {
-          return {
-            key: file.path,
-            name: file.title,
-            to: `/docs${file._path.replace(/index.\w{2}/, '')}`,
-            activePath: file._path
-          };
-        }
-      )
+      (docs.value || []).map((file) => docItemTransformationFn(file))
     );
 
     const items = computed<INavItem[]>(() => [
