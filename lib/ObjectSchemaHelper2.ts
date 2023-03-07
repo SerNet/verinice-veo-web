@@ -751,7 +751,7 @@ export default class ObjectSchemaHelper {
   }
 
   private getAttributeType(attribute: IVeoObjectSchemaProperty) {
-    return attribute.type ? attribute.type : attribute.enum ? 'enum' : 'unknown';
+    return attribute.enum ? 'enum' : attribute.type ? attribute.type : 'unknown';
   }
 
   private cleanCustomObjectName(customObjectName: string) {
