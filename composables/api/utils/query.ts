@@ -22,22 +22,31 @@ import { QueryObserverResult } from '@tanstack/query-core/build/lib/types';
 import { omit } from 'lodash';
 
 import { useRequest, VeoApiReponseType } from './request';
+import { IVeoMutationDefinition } from './mutation';
 
 export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
 
-export interface IVeoQueryDefinition<TResult = any> {
+export interface IVeoQueryDefinition<TVariables, TResult = any> {
+  primaryQueryKey: string;
   url: string;
+  queryParameterTransformationFn: (_queryParameters: TVariables) => IVeoQueryParameters;
   reponseType?: VeoApiReponseType;
-  onDataFetched?: (result: TResult) => TResult;
+  onDataFetched?: (result: TResult, queryParameters: IVeoQueryParameters) => TResult;
+  staticQueryOptions?: QueryOptions;
+}
+
+export interface IVeoQueryDefinitions {
+  queries: {
+    [queryName: string]: IVeoQueryDefinition<any, any>;
+  };
+  mutations: {
+    [queryName: string]: IVeoMutationDefinition<any, any>;
+  }
 }
 
 export interface IVeoQueryParameters<TParams = Record<string, any>, TQuery = Record<string, any>> {
   params?: TParams;
   query?: TQuery;
-}
-
-export interface IVeoQueryTransformationMap {
-  [operation: string]: (mutationParameters: any) => IVeoQueryParameters;
 }
 
 export const STALE_TIME = {
@@ -58,18 +67,16 @@ export const STALE_TIME = {
  * @param queryOptions Options modifiying query behaviour.
  * @returns Query object containing the data and information about the query.
  */
-export const useQuery = <TVariable = Record<string, any>, TResult = any>(
-  queryIdentifier: string,
-  queryDefinition: IVeoQueryDefinition<TResult>,
-  queryParameters: Ref<TVariable> | undefined,
-  queryParameterTransformationFn: (parameters: TVariable | void) => IVeoQueryParameters,
+export const useQuery = <TVariables = undefined, TResult = any>(
+  queryDefinition: IVeoQueryDefinition<TVariables, TResult>,
+  queryParameters: Ref<TVariables>,
   queryOptions?: QueryOptions
 ) => {
   const { $config } = useNuxtApp();
   const { request } = useRequest();
 
   // Generating query key based on identifier and the query parameters. This causes the query to get executed again if the query parameters change
-  const queryKey = reactive<any[]>([queryIdentifier]);
+  const queryKey = reactive<any[]>([queryDefinition.primaryQueryKey]);
   watch(
     () => queryParameters?.value,
     (newValue) => {
@@ -84,9 +91,10 @@ export const useQuery = <TVariable = Record<string, any>, TResult = any>(
   const result = vueQueryUseQuery<TResult>(
     queryKey,
     async () => {
-      let result = await request(queryDefinition.url, { ...queryParameterTransformationFn(unref(queryParameters)), ...omit(queryDefinition, 'url', 'onDataFetched') });
+      const transformedQueryParameters = queryDefinition.queryParameterTransformationFn(unref(queryParameters));
+      let result = await request(queryDefinition.url, { ...transformedQueryParameters, ...omit(queryDefinition, 'url', 'onDataFetched') });
       if (queryDefinition.onDataFetched) {
-        result = queryDefinition.onDataFetched(result);
+        result = queryDefinition.onDataFetched(result, transformedQueryParameters);
       }
       return result;
     },
@@ -94,7 +102,7 @@ export const useQuery = <TVariable = Record<string, any>, TResult = any>(
   );
 
   // Debugging stuff
-  if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(queryIdentifier))) {
+  if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(queryDefinition.primaryQueryKey))) {
     const queryClient = useQueryClient();
 
     watch(
@@ -104,7 +112,7 @@ export const useQuery = <TVariable = Record<string, any>, TResult = any>(
           const staleTime = queryOptions?.staleTime || queryClient.getDefaultOptions().queries?.staleTime;
           // eslint-disable-next-line no-console
           console.log(
-            `[vueQuery] data for query "${JSON.stringify(queryIdentifier)}" with parameters "${JSON.stringify(
+            `[vueQuery] data for query "${JSON.stringify(queryDefinition.primaryQueryKey)}" with parameters "${JSON.stringify(
               queryParameters?.value
             )}" is considered stale (stale time is ${staleTime}). Last updated at ${new Date(
               result.dataUpdatedAt.value
@@ -113,7 +121,7 @@ export const useQuery = <TVariable = Record<string, any>, TResult = any>(
         } else if (newValue) {
           // eslint-disable-next-line no-console
           console.log(
-            `[vueQuery] data for query "${JSON.stringify(queryIdentifier)}" with parameters "${JSON.stringify(
+            `[vueQuery] data for query "${JSON.stringify(queryDefinition.primaryQueryKey)}" with parameters "${JSON.stringify(
               queryParameters?.value
             )}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(queryOptions)}"`
           );
@@ -136,11 +144,9 @@ export const useQuery = <TVariable = Record<string, any>, TResult = any>(
  * @param queryOptions Options modifiying query behaviour.
  * @returns Array containing query objects containing the data and information about the query. NOT reactive, so you have to watch the results in your components.
  */
-export const useQueries = <TVariable = Record<string, any>, TResult = any>(
-  queriesIdentifier: string,
-  queryDefinition: IVeoQueryDefinition<TResult>,
-  queryParameters: Ref<(TVariable | void)[]>,
-  queryParameterTransformationFn: (parameters: TVariable | void) => IVeoQueryParameters,
+export const useQueries = <TVariables = Record<string, any>, TResult = any>(
+  queryDefinition: IVeoQueryDefinition<TVariables, TResult>,
+  queryParameters: Ref<TVariables[]>,
   queryOptions?: QueryOptions
 ) => {
   const { request } = useRequest();
@@ -151,14 +157,15 @@ export const useQueries = <TVariable = Record<string, any>, TResult = any>(
     (newValue) => {
       queries.value = newValue.length
         ? newValue.map((query) => ({
-          queryKey: [queriesIdentifier, query],
+          queryKey: [queryDefinition.primaryQueryKey, query],
           queryFn: async () => {
+            const transformedQueryParameters = queryDefinition.queryParameterTransformationFn(unref(query));
             let result = await request(queryDefinition.url, {
-              ...queryParameterTransformationFn(unref(query)),
+              ...transformedQueryParameters,
               ...omit(queryDefinition, 'url', 'onDataFetched')
             });
             if (queryDefinition.onDataFetched) {
-              result = queryDefinition.onDataFetched(result);
+              result = queryDefinition.onDataFetched(result, transformedQueryParameters);
             }
             return result;
           },

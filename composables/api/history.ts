@@ -20,44 +20,21 @@ import { IVeoQueryTransformationMap, QueryOptions, STALE_TIME, useQuery } from '
 import { useFetchSchemas } from './schemas';
 import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
-export interface IVeoFetchVersionsParameters {
-  object: IVeoEntity;
-  endpoint?: string; // Set by useFetchVersions
-}
-
-export interface IVeoFetchLatestChangesParameters {
-  unitId: string;
-}
-
-export const historyQueryParameterTransformationMap: IVeoQueryTransformationMap = {
-  fetchAll: (queryParameters: IVeoFetchVersionsParameters) => ({ query: { uri: `/${queryParameters.endpoint}/${queryParameters.object.id}` } }),
-  fetchLatest: (queryParameters: IVeoFetchLatestChangesParameters) => ({ query: { owner: `/units/${queryParameters.unitId}` } })
-};
-
 export const useFetchVersions = (queryParameters: Ref<IVeoFetchVersionsParameters>, queryOptions?: QueryOptions) => {
-  const { data: endpoints } = useFetchSchemas();
+  // const { data: endpoints } = useFetchSchemas();
 
-  const endpoint = computed(() => endpoints.value?.[queryParameters.value.object.type]);
-  const queryEnabled = computed(() => (!!endpoint.value && queryOptions?.enabled ? unref(queryOptions?.enabled) : true));
+  // const endpoint = computed(() => endpoints.value?.[queryParameters.value.object.type]);
+  // const queryEnabled = computed(() => (!!endpoint.value && queryOptions?.enabled ? unref(queryOptions?.enabled) : true));
 
-  const combinedQueryParameters = computed(() => ({ ...queryParameters.value, endpoint: endpoint.value }));
+  // const combinedQueryParameters = computed(() => ({ ...queryParameters.value, endpoint: endpoint.value }));
 
-  return useQuery<IVeoFetchVersionsParameters, IVeoObjectHistoryEntry[]>(
-    'versions',
-    {
-      url: '/api/history/revisions'
-    },
-    combinedQueryParameters,
-    historyQueryParameterTransformationMap.fetchAll,
-    { ...queryOptions, staleTime: STALE_TIME.INFINITY, enabled: queryEnabled }
-  );
+  // return useQuery<IVeoFetchVersionsParameters, IVeoObjectHistoryEntry[]>(
+  //   'versions',
+  //   {
+  //     url: '/api/history/revisions'
+  //   },
+  //   combinedQueryParameters,
+  //   historyQueryParameterTransformationMap.fetchAll,
+  //   { ...queryOptions, staleTime: STALE_TIME.INFINITY, enabled: queryEnabled }
+  // );
 };
-
-export const useFetchLatestChanges = (queryParameters: Ref<IVeoFetchLatestChangesParameters>, queryOptions?: QueryOptions) =>
-  useQuery<IVeoFetchLatestChangesParameters, IVeoObjectHistoryEntry[]>(
-    'latestVersions',
-    { url: '/api/history/revisions/my-latest' },
-    queryParameters,
-    historyQueryParameterTransformationMap.fetchLatest,
-    { ...queryOptions, staleTime: STALE_TIME.REQUEST }
-  );

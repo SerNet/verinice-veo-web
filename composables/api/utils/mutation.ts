@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useMutation as vueQueryUseMutation } from '@tanstack/vue-query';
+import { QueryClient, useMutation as vueQueryUseMutation } from '@tanstack/vue-query';
 import { UseMutationOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 import { omit } from 'lodash';
@@ -23,20 +23,19 @@ import { omit } from 'lodash';
 import { IVeoQueryDefinition, IVeoQueryParameters } from './query';
 import { useRequest } from './request';
 
-// Type for less typing in composables
-export type MutationOptions<T = unknown> = Omit<UseMutationOptions<T, unknown, void, unknown>, 'queryFn'>;
+export interface MutationOptions<_TVariables, TResult = unknown> extends Omit<UseMutationOptions<TResult, unknown, void, unknown>, 'queryFn' | 'onSuccess'> {
+  onSuccess: (queryClient: QueryClient, data: TResult, variables: IVeoMutationParameters, context: any) => any
+}
 
-export interface IVeoMutationDefinition extends IVeoQueryDefinition {
+export interface IVeoMutationDefinition<TVariables, TResult> extends Omit<IVeoQueryDefinition<TVariables, TResult>, 'queryParameterTransformationFn' | 'queryOptions'> {
   method?: 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
+  mutationParameterTransformationFn: (_queryParameters: TVariables) => IVeoMutationParameters;
+  staticMutationOptions: MutationOptions<TVariables, TResult>
 }
 
 export interface IVeoMutationParameters<TParams = Record<string, any>, TQuery = Record<string, any>> extends IVeoQueryParameters<TParams, TQuery> {
   body?: any;
   json?: any;
-}
-
-export interface IVeoMutationTransformationMap {
-  [operation: string]: (mutationParameters: any) => IVeoMutationParameters;
 }
 
 /**
@@ -48,11 +47,9 @@ export interface IVeoMutationTransformationMap {
  * @param mutationOptions Options modifying mutation behaviour.
  * @returns Mutation object.
  */
-export const useMutation = <TVariable, TResult>(
-  mutationIdentifier: string,
-  mutationDefinition: IVeoMutationDefinition,
-  mutationParameterTransformationFn: (parameters: TVariable) => IVeoMutationParameters,
-  mutationOptions?: MutationOptions
+export const useMutation = <TVariables, TResult>(
+  mutationDefinition: IVeoMutationDefinition<TVariables, TResult>,
+  mutationOptions?: MutationOptions<TVariables, TResult>
 ) => {
   const { $config } = useNuxtApp();
   const { request } = useRequest();
@@ -60,19 +57,25 @@ export const useMutation = <TVariable, TResult>(
   // Actual mutation getting execute
   // @ts-ignore Some weird typing problems. However everything works
   const result = vueQueryUseMutation<TResult, unknown, IVeoMutationParameters>({
-    mutationFn: (mutationParameters: IVeoMutationParameters) => request(mutationDefinition.url, { ...mutationParameters, ...omit(mutationDefinition, 'url') }),
+    mutationFn: (mutationParameters: IVeoMutationParameters) => async () => {
+      let result = await request(mutationDefinition.url, { ...mutationParameters, ...omit(mutationDefinition, 'url', 'onDataFetched') });
+      if (mutationDefinition.onDataFetched) {
+        result = mutationDefinition.onDataFetched(result, mutationParameters);
+      }
+      return result;
+    },
     ...mutationOptions
   });
 
   return {
     ...result,
     mutateAsync: (mutationParameters: MaybeRef<any>) => {
-      const transformedParameters = mutationParameterTransformationFn(unref(mutationParameters));
+      const transformedParameters = mutationDefinition.mutationParameterTransformationFn(unref(mutationParameters));
       // Debugging stuff
-      if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(mutationIdentifier))) {
+      if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(mutationDefinition.primaryQueryKey))) {
         // eslint-disable-next-line no-console
         console.log(
-          `[vueQuery] Mutation "${mutationIdentifier}" is running with parameters "${JSON.stringify(mutationParameters)}". Fetching...\nOptions: "${JSON.stringify(
+          `[vueQuery] Mutation "${mutationDefinition.primaryQueryKey}" is running with parameters "${JSON.stringify(mutationParameters)}". Fetching...\nOptions: "${JSON.stringify(
             mutationOptions
           )}"`
         );
@@ -82,3 +85,9 @@ export const useMutation = <TVariable, TResult>(
     }
   };
 };
+
+/* TODO:
+ * 1. Add onSuccess to mutations
+ * 2. Move all Query composable uses to new Interface
+ * 3. Fix remaining api composables
+ */

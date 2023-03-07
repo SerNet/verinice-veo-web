@@ -18,6 +18,7 @@
 import { JSONSchema7TypeName } from 'json-schema';
 import { UISchemaElement } from './UISchema';
 import { Mode } from '~/components/dynamic-form/util';
+import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 
 export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
 
@@ -118,21 +119,6 @@ export interface IVeoPiaMandatoryRule {
     };
   }[];
   output?: boolean;
-}
-export interface IVeoDomain extends IVeoBaseObject {
-  name: string;
-  abbreviation: string;
-  description: string;
-  catalogs: any[];
-  riskDefinitions: {
-    [key: string]: IVeoDomainRiskDefinition;
-  };
-  decisions: {
-    piaMandatory: {
-      rules: IVeoPiaMandatoryRule[];
-      name: { [locale: string]: string };
-    };
-  };
 }
 
 // At the moment, we only use strings in the frontend for custom attributes.
@@ -339,35 +325,6 @@ export interface IVeoUnitIncarnations {
   }[];
 }
 
-export interface IVeoCatalog extends IVeoBaseObject {
-  name: string;
-  domainTemplate: IVeoLink;
-  catalogItems: IVeoLink[];
-}
-
-export interface IVeoCatalogItem extends IVeoBaseObject {
-  id: string;
-  description: string;
-  createdAt: string;
-  createdBy: string;
-  updatedAt: string;
-  updatedBy: string;
-  catalog: IVeoLink;
-  tailoringReferences: {
-    createdAt: string;
-    createdBy: string;
-    updatedAt: string;
-    updatedBy: string;
-    referenceType: string;
-    catalogItem: IVeoLink;
-    attributes: Record<string, any>;
-    type: string;
-    id: string;
-  }[];
-  namespace: string;
-  element: IVeoLink;
-}
-
 export interface IVeoDecisionResults {
   piaMandatory?: {
     value?: boolean;
@@ -466,47 +423,6 @@ export interface IVeoRisk {
   };
 }
 
-export interface IVeoTranslations {
-  lang: {
-    [key: string]: IVeoTranslationCollection;
-  };
-}
-
-export interface IVeoFormSchemaMeta {
-  modelType: string;
-  subType: string;
-  name: { [key: string]: string };
-  id?: string;
-  domainId?: string;
-  sorting: string | null;
-}
-
-export interface IVeoFormSchemaItemOptions {
-  label?: string;
-  format?: string;
-  direction?: string;
-  class?: string;
-}
-
-export interface IVeoFormSchemaItemRule {
-  effect: 'SHOW' | 'HIDE';
-  condition: {
-    scope: string;
-    schema: { enum: (string | boolean | number)[] };
-  };
-}
-
-export interface IVeoFormSchemaItem {
-  type: IVeoFormSchemaContentType;
-  scope?: string;
-  text?: string;
-  options: IVeoFormSchemaItemOptions;
-  elements?: IVeoFormSchemaItem[];
-  rule?: IVeoFormSchemaItemRule;
-  formSchemaPointer?: string;
-  name?: string;
-}
-
 export interface IVeoFormSchemaTranslationCollection {
   [key: string]: IVeoTranslationCollection;
 }
@@ -520,38 +436,6 @@ export interface IVeoFormSchemaItemDeleteEvent {
   type: string;
   formSchemaPointer?: string;
   name?: string;
-}
-
-export interface IVeoFormSchema extends IVeoFormSchemaMeta {
-  content: IVeoFormSchemaItem;
-  translation: IVeoFormSchemaTranslationCollection;
-}
-
-export interface IVeoReportMeta {
-  name: {
-    [key: string]: string;
-  };
-  description: {
-    [key: string]: string;
-  };
-  outputTypes: string[];
-  multipleTargetsSupported: boolean;
-  targetTypes: {
-    modelType: string;
-    subTypes?: string[] | null;
-  }[];
-}
-
-export interface IVeoReportsMeta {
-  [key: string]: IVeoReportMeta;
-}
-
-export interface IVeoCreateReportData {
-  outputType: string;
-  targets: {
-    type: string;
-    id: string;
-  }[];
 }
 
 export interface IVeoObjectHistoryEntry {
