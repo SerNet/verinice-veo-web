@@ -107,10 +107,10 @@ import { useVeoUser } from '~/composables/VeoUser';
 import { RouteRecordName } from 'vue-router';
 import { IVeoEntity } from '~~/types/VeoTypes';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
-import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
+import { useFetchObjects } from '~~/composables/api/objects';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-report';
 
@@ -193,7 +193,7 @@ export default defineComponent({
       data: objects,
       isLoading: objectsFetching,
       refetch: refetchObjects
-    } = useQuery(objectQueryDefinitions.queries.fetchAll ,combinedObjectsQueryParameters as any, { enabled: objectsQueryEnabled, keepPreviousData: true, placeholderData: [] });
+    } = useFetchObjects(combinedObjectsQueryParameters as any, { enabled: objectsQueryEnabled, keepPreviousData: true, placeholderData: [] });
 
     const updateRouteQuery = async (v: Record<string, string | undefined | null | true>, reset = true) => {
       const resetValues = reset ? filterKeys.map((key) => [key, undefined as string | undefined | null]) : [];

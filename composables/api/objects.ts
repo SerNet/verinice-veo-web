@@ -15,17 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { omit } from 'lodash';
+import { max, omit } from 'lodash';
 import { Ref } from 'vue';
 import { IVeoPaginationOptions } from '~~/types/VeoTypes';
 import { QueryOptions, useQuery } from './utils/query';
-import objectQueryDefinitions from './queryDefinitions/objects';
+import objectQueryDefinitions, { IVeoFetchObjectsParameters } from './queryDefinitions/objects';
 
 export interface IVeoFetchParentObjectsParameters extends IVeoPaginationOptions {
   parentEndpoint: string;
   childObjectId: string;
   unitId: string;
 }
+
+export const useFetchObjects = (queryParameters: Ref<IVeoFetchObjectsParameters>, queryOptions?: QueryOptions) => {
+  const { tablePageSize } = useVeoUser();
+
+  const transformedQueryParameters = computed(() => ({
+    ...queryParameters.value,
+    size: queryParameters.value.size === undefined ? tablePageSize.value : queryParameters.value.size === -1 ? 1000 : queryParameters.value.size,
+    page: queryParameters.value.page ? max([queryParameters.value.page - 1, 0]) : 0
+  }));
+  return useQuery(objectQueryDefinitions.queries.fetchAll, transformedQueryParameters, queryOptions);
+};
 
 export const useFetchParentObjects = (queryParameters: Ref<IVeoFetchParentObjectsParameters>, queryOptions?: QueryOptions) => {
   const transformedQueryParameters = computed(() => ({

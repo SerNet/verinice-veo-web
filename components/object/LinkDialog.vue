@@ -90,7 +90,7 @@ import { differenceBy, omit, uniqBy, upperFirst } from 'lodash';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useUnlinkObject, useLinkObject } from '~/composables/VeoObjectUtilities';
-import { useFetchParentObjects } from '~/composables/api/objects';
+import { useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 import objectQueryDefinitions, { IVeoFetchScopeChildrenParameters } from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
@@ -207,7 +207,7 @@ export default defineComponent({
     const {
       data: objects,
       isFetching: objectsLoading
-    } = useQuery(objectQueryDefinitions.queries.fetchAll, combinedObjectsQueryParameters, { enabled: objectsQueryEnabled, keepPreviousData: true });
+    } = useFetchObjects(combinedObjectsQueryParameters, { enabled: objectsQueryEnabled, keepPreviousData: true });
     const selectableObjects = computed(() => ({
       ...objects.value,
       items: (objects.value?.items || []).filter((object) => object.id !== props.object?.id)

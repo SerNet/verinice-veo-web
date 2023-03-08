@@ -76,7 +76,7 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useMutation } from '~~/composables/api/utils/mutation';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useFetchObjects } from '~~/composables/api/objects';
 
 export default defineComponent({
   props: {
@@ -145,7 +145,7 @@ export default defineComponent({
       endpoint: 'scenarios'
     }));
 
-    const { data: objects, isFetching: objectsQueryIsLoading, refetch } = useQuery(objectQueryDefinitions.queries.fetchAll, combinedQueryParameters, { keepPreviousData: true });
+    const { data: objects, isFetching: objectsQueryIsLoading, refetch } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
 
     // Create risk stuff
     const creatingRisks = ref(false);

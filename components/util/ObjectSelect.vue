@@ -85,6 +85,7 @@ import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~~/composables/api/utils/query';
+import { useFetchObjects } from '~~/composables/api/objects';
 
 
 export default defineComponent({
@@ -182,7 +183,7 @@ export default defineComponent({
     const {
       isFetching: isLoadingObjects,
       refetch
-    } = useQuery(objectQueryDefinitions.queries.fetchAll, fetchObjectsQueryParameters, {
+    } = useFetchObjects(fetchObjectsQueryParameters, {
       placeholderData: { items: [], pageCount: 0, page: 1 },
       enabled: searchQueryNotStale, onSuccess: (data) => {
         fetchObjectsData.value = data as any;

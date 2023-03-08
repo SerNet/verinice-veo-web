@@ -132,9 +132,9 @@ import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~~/composables/api/utils/query';
+import { useFetchObjects } from '~~/composables/api/objects';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
 
@@ -208,7 +208,7 @@ export default defineComponent({
       endpoint: endpoint.value
     }));
     const queryEnabled = computed(() => !!objectType.value && !!endpoint.value);
-    const { data: items, isLoading: isLoadingObjects } = useQuery(objectQueryDefinitions.queries.fetchAll, combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true });
+    const { data: items, isLoading: isLoadingObjects } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true });
 
     const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
     const formsQueryEnabled = computed(() => !!domainId.value);
