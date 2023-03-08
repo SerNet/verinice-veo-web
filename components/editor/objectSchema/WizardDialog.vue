@@ -223,7 +223,7 @@ import { mdiChevronRight } from '@mdi/js';
 import { separateUUIDParam } from '~/lib/utils';
 import schemasQueryDefinitions from '~~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 
 const props = defineProps({
   modelValue: {
@@ -237,7 +237,6 @@ const route = useRoute();
 const router = useRouter();
 const { locale, t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
-const { $api } = useNuxtApp();
 const { requiredRule } = useRules();
 
 const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
@@ -284,15 +283,14 @@ const createSchema = () => {
     description: createForm.value.description
   });
 };
-const importSchema = (schema?: any) => {
+const importSchema = async (schema?: any) => {
   if (schema) {
     emit('completed', { schema, meta: undefined });
     navigateTo({ os: 'custom' });
   } else {
-    $api.schema.fetch(modelType.value, [domainId.value]).then((data: any) => {
-      emit('completed', { schema: data, meta: undefined });
-      navigateTo({ os: modelType.value });
-    });
+    const _schema = await useQuerySync(schemasQueryDefinitions.queries.fetchSchema, {type: modelType.value, domainIds: [domainId.value]});
+    emit('completed', { schema: _schema, meta: undefined });
+    navigateTo({ os: modelType.value });
   }
 };
 

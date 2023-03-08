@@ -128,6 +128,37 @@ export const useQuery = <TVariables = undefined, TResult = any>(
 };
 
 /**
+ * Wrapper for request composable to provde the same interface as the query composable so that each request
+ * can either be made synchronous or asynchronous.
+ * Responses of requests made by this composable get written to the vue query cache the same way as the query
+ * composable would do.
+ * 
+ * @param queryDefinition Defines url and return type of the request.
+ * @param queryParameters Parameters to pass to the request function.
+ * @returns Result of request without any additional info.
+ * @throws Throws an error if request fails
+ */
+export const useQuerySync  = async <TVariables = undefined, TResult = any>(
+  queryDefinition: IVeoQueryDefinition<TVariables, TResult>,
+  queryParameters?: TVariables
+) => {
+  const { request } = useRequest();
+  const queryClient = useQueryClient();
+
+  // Make sync request
+  const transformedQueryParameters = queryParameters ? queryDefinition.queryParameterTransformationFn(queryParameters) : {};
+  let result = await request(queryDefinition.url, { ...transformedQueryParameters, ...omit(queryDefinition, 'url', 'onDataFetched') });
+  if (queryDefinition.onDataFetched) {
+    result = queryDefinition.onDataFetched(result, transformedQueryParameters);
+  }
+
+  // Save to vue query cache
+  queryClient.setQueryData([queryDefinition.primaryQueryKey, queryParameters], result);
+
+  return result as TResult;
+};
+
+/**
  * Wrapper for vue-query's useQueries to provide more debugging output and have a similiar interface usage to our own useQuery
  *
  * @param queryDefinition Defines url, return type, static query options and more.
