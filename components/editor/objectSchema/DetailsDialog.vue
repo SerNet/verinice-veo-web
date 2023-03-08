@@ -174,7 +174,8 @@ import { upperFirst, cloneDeep } from 'lodash';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { CHART_COLORS, separateUUIDParam } from '~/lib/utils';
 import { Ref } from 'vue';
-import { useFetchDomain } from '~/composables/api/domains';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   components: {
@@ -199,8 +200,8 @@ export default defineComponent({
     const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined = inject('objectSchemaHelper');
 
     // display stuff
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
-    const { data: domain} = useFetchDomain(fetchDomainQueryParameters);
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string}));
+    const { data: domain} = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     const displayLanguage = inject<Ref<string>>('displayLanguage');
     // We can't use a computed here, as changes sadly won't get picked up.

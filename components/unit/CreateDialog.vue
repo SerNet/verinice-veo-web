@@ -69,9 +69,10 @@
 </template>
 <script lang="ts" setup>
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
-import { useCreateUnit } from '~/composables/api/units';
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useRequest } from '~/composables/api/utils/request';
 import { useRules } from '~/composables/utils';
+import { useMutation } from '~~/composables/api/utils/mutation';
 
 const props = defineProps({
   modelValue: {
@@ -108,7 +109,7 @@ const form = ref();
 const formIsValid = ref(false);
 const newUnit = reactive<{ name: string | undefined, description: string | undefined }>({ name: undefined, description: undefined });
 
-const { mutateAsync, isLoading: creatingUnit, data: newUnitPayload } = useCreateUnit({ onError: (error: any) => {
+const { mutateAsync, isLoading: creatingUnit, data: newUnitPayload } = useMutation(unitQueryDefinitions.mutations.create,{ onError: (error: any) => {
   displayErrorMessage(t('createUnitError'), error.message);
 } });
 const createUnit = async () => {

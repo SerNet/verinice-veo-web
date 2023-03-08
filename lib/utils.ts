@@ -19,7 +19,9 @@ import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
 import { isEqual, isPlainObject } from 'lodash';
-import { IVeoCustomLink, IVeoEntity, IVeoFormSchema, IVeoLink, IVeoObjectSchema, IVeoUnit } from '~/types/VeoTypes';
+import { IVeoCustomLink, IVeoEntity, IVeoLink, IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoUnit } from '~~/composables/api/queryDefinitions/units';
 
 export const CHART_COLORS = ['#c90000', '#ffc107', '#3f51b5', '#8bc34a', '#858585'];
 

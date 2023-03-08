@@ -165,8 +165,9 @@
 import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
-import { useFetchSchemas } from '~/composables/api/schemas';
+import schemasQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
@@ -212,7 +213,7 @@ export default defineComponent({
     }
 
     // Select options
-    const { data: objectSchemas } = useFetchSchemas();
+    const { data: objectSchemas } = useQuery(schemasQueryDefinitions.queries.fetchSchemas);
 
     const objectTypes = computed(() => {
       const objectSchemaOptions = Object.keys(objectSchemas.value || {}).map((schemaName) => ({ title: upperFirst(schemaName), value: schemaName }));

@@ -16,25 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Ref } from 'vue';
-import { useQueryClient } from '@tanstack/vue-query';
 
-import { IVeoQueryTransformationMap, QueryOptions, STALE_TIME, useQuery } from './utils/query';
-import { IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
-import { IVeoDomain } from '~/types/VeoTypes';
-import { useFetchUnit } from './units';
+import domainQueryDefinitions from './queryDefinitions/domains';
+import unitQueryDefinitions from './queryDefinitions/units';
+import { QueryOptions, useQuery } from './utils/query';
 
 export interface IVeoFetchUnitDomainsParameters {
   unitId: string;
 }
 
 export const useFetchUnitDomains = (queryParameters: Ref<IVeoFetchUnitDomainsParameters>, queryOptions?: QueryOptions) => {
-  // const fetchUnitQueryParameters = computed(() => ({ id: queryParameters.value.unitId }));
-  // const fetchUnitQueryEnabled = computed(() => !!queryParameters.value.unitId);
-  // const { data: unit } = useFetchUnit(fetchUnitQueryParameters, { enabled: fetchUnitQueryEnabled });
+  const fetchUnitQueryParameters = computed(() => ({ id: queryParameters.value.unitId }));
+  const fetchUnitQueryEnabled = computed(() => !!queryParameters.value.unitId && unref(queryOptions?.enabled));
+  const { data: unit, isFetching: isFetchingUnits } = useQuery(unitQueryDefinitions.queries.fetch, fetchUnitQueryParameters, { enabled: fetchUnitQueryEnabled });
 
-  // return useQuery<void, IVeoDomain[]>('domains', { url: '/api/domains/', onDataFetched: (result) => result.filter((domain) => unit.value.domains.some((unitDomain) => unitDomain.targetUri.includes(domain.id))) }, undefined, domainsQueryParameterTransformationMap.fetchAll, {
-  //   ...queryOptions,
-  //   staleTime: STALE_TIME.LONG,
-  //   placeholderData: []
-  // });
+  const { data: domains, isFetching: isFetchingDomains } = useQuery(domainQueryDefinitions.queries.fetchDomains, undefined, queryOptions);
+
+  const onSuccess = () => {
+    if(!unit.value || !domains.value?.length) {
+      return;
+    }
+    if(queryOptions?.onSuccess) {
+      unref(queryOptions.onSuccess)?.(toReturn.data.value);
+    }
+  };
+
+  watch(() => domains.value, () => onSuccess, { deep: true, immediate: true });
+  watch(() => unit.value, () => onSuccess, { deep: true, immediate: true });
+
+  const data = computed(() => (domains.value || []).filter((domain) => unit.value?.domains?.some((unitDomain) => unitDomain.targetUri.includes(domain.id))));
+  const isFetching = computed(() => isFetchingUnits.value || isFetchingDomains.value);
+
+  const toReturn = {
+    data,
+    isFetching
+  };
+
+
+  return toReturn;
 };

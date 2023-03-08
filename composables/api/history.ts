@@ -16,25 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Ref } from 'vue';
-import { IVeoQueryTransformationMap, QueryOptions, STALE_TIME, useQuery } from './utils/query';
-import { useFetchSchemas } from './schemas';
-import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { QueryOptions, useQuery } from './utils/query';
+import schemaQueryDefinitions from './queryDefinitions/schemas';
+import historyQueryDefinitions from './queryDefinitions/history';
+import { IVeoEntity } from '~~/types/VeoTypes';
+
+export interface IVeoFetchVersionsParameters {
+  object: IVeoEntity;
+}
 
 export const useFetchVersions = (queryParameters: Ref<IVeoFetchVersionsParameters>, queryOptions?: QueryOptions) => {
-  // const { data: endpoints } = useFetchSchemas();
+  const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-  // const endpoint = computed(() => endpoints.value?.[queryParameters.value.object.type]);
-  // const queryEnabled = computed(() => (!!endpoint.value && queryOptions?.enabled ? unref(queryOptions?.enabled) : true));
+  const endpoint = computed(() => endpoints.value?.[queryParameters.value.object.type]);
+  const queryEnabled = computed(() => (!!endpoint.value && queryOptions?.enabled ? unref(queryOptions?.enabled) : true));
 
-  // const combinedQueryParameters = computed(() => ({ ...queryParameters.value, endpoint: endpoint.value }));
+  const combinedQueryParameters = computed(() => ({ ...queryParameters.value, endpoint: endpoint.value as string }));
 
-  // return useQuery<IVeoFetchVersionsParameters, IVeoObjectHistoryEntry[]>(
-  //   'versions',
-  //   {
-  //     url: '/api/history/revisions'
-  //   },
-  //   combinedQueryParameters,
-  //   historyQueryParameterTransformationMap.fetchAll,
-  //   { ...queryOptions, staleTime: STALE_TIME.INFINITY, enabled: queryEnabled }
-  // );
+  return useQuery(
+    historyQueryDefinitions.queries.fetchVersions,
+    combinedQueryParameters,
+    { ...queryOptions, enabled: queryEnabled }
+  );
 };

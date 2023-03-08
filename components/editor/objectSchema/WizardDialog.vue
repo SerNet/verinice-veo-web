@@ -221,8 +221,9 @@ import { isEmpty, isEqual, isString } from 'lodash';
 import { mdiChevronRight } from '@mdi/js';
 
 import { separateUUIDParam } from '~/lib/utils';
-import { useFetchSchemas } from '~~/composables/api/schemas';
-import { useFetchTranslations } from '~~/composables/api/translations';
+import schemasQueryDefinitions from '~~/composables/api/queryDefinitions/schemas';
+import translationQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
+import { useQuery } from '~~/composables/api/utils/query';
 
 const props = defineProps({
   modelValue: {
@@ -265,9 +266,9 @@ const createFormIsValid = ref(false);
 const code = ref();
 const modelType = ref();
 
-const { data: schemas } = useFetchSchemas();
+const { data: schemas } = useQuery(schemasQueryDefinitions.queries.fetchSchemas);
 const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
 const availableObjectSchemas = computed(() => (Object.keys(schemas.value || {})).map((objectType) => ({ title: translations.value?.lang[locale.value]?.[objectType] || '', value: objectType })).concat({ title: t('customObjectSchema'), value: 'custom' }));
 

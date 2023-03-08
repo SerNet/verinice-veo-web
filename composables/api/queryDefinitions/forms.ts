@@ -17,7 +17,7 @@
  */
 import { IVeoTranslationCollection } from "~~/types/VeoTypes";
 import { IVeoMutationDefinition } from "../utils/mutation";
-import { IVeoQueryDefinition, IVeoQueryDefinitions, STALE_TIME } from "../utils/query";
+import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
 
 export interface IVeoFormSchemaMeta {
   modelType: string;
@@ -99,10 +99,13 @@ export default {
     fetchForm: {
       primaryQueryKey: 'form',
       url: '/api/forms/:id',
-      onDataFetched: (result, queryParameters) => JSON.parse(JSON.stringify(result).replaceAll('{CURRENT_DOMAIN_ID}', queryParameters.params?.domainId)),
+      onDataFetched: (result, queryParameters) => JSON.parse(JSON.stringify(result).replaceAll('{CURRENT_DOMAIN_ID}', queryParameters.query?.domainId)),
       queryParameterTransformationFn: (queryParameters) => ({
         params: {
           id: queryParameters.id
+        },
+        query: {
+          domainId: queryParameters.domainId
         }
       }),
       staticQueryOptions: {
@@ -148,4 +151,4 @@ export default {
       }
     } as IVeoMutationDefinition<IVeoUpdateFormParameters, void>
   }
-} as IVeoQueryDefinitions;
+};

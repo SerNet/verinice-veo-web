@@ -172,15 +172,17 @@ import { Ref } from 'vue';
 import { cloneDeep, omit, upperFirst } from 'lodash';
 
 import { isObjectEqual, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
-import { useFetchForms } from '~/composables/api/forms';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useFetchTranslations } from '~/composables/api/translations';
-import { useFetchSchemas } from '~/composables/api/schemas';
-import { useFetchObject } from '~/composables/api/objects';
+import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import { useQuery } from '~~/composables/api/utils/query';
+
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -206,13 +208,13 @@ export default defineComponent({
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
     const { ability } = useVeoPermissions();
 
-    const { data: endpoints } = useFetchSchemas();
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const objectParameter = computed(() => separateUUIDParam(route.params.object as string));
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     const modifiedObject = ref<IVeoEntity | undefined>(undefined);
     /* Data that should get merged back into modifiedObject after the object has been reloaded, useful to persist children
@@ -230,7 +232,7 @@ export default defineComponent({
       isFetching: loading,
       isError: notFoundError,
       refetch
-    } = useFetchObject(fetchObjectQueryParameters, {
+    } = useQuery(objectQueryDefinitions.queries.fetch, fetchObjectQueryParameters, {
       enabled: fetchObjectQueryEnabled,
       onSuccess: (data) => {
         const _data = data as IVeoEntity;
@@ -304,7 +306,7 @@ export default defineComponent({
 
     const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
     const formsQueryEnabled = computed(() => !!domainId.value);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [], onSuccess: addSubTypeBreadcrumb });
+    const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForm, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [], onSuccess: addSubTypeBreadcrumb });
 
     // Change subtype if object subtype changes (As of 2023-02-23 this shouldn't happen as once a subtype is selected it is readonly, but you never know what the future holds)
     watch(() => currentSubType.value, () => {

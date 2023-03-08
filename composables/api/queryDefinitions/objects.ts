@@ -19,7 +19,7 @@ import { omit } from "lodash";
 import { getEntityDetailsFromLink } from "~~/lib/utils";
 import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from "~~/types/VeoTypes";
 import { IVeoMutationDefinition } from "../utils/mutation";
-import { IVeoQueryDefinition, IVeoQueryDefinitions } from "../utils/query";
+import { IVeoQueryDefinition } from "../utils/query";
 import { VeoApiReponseType } from "../utils/request";
 
 export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
@@ -281,4 +281,4 @@ export default {
       }
     } as IVeoMutationDefinition<IVeoDeleteRiskParameters, void>
   }
-} as IVeoQueryDefinitions;
+};

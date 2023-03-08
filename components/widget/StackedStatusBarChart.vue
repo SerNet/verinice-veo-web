@@ -87,10 +87,11 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { IVeoDomainStatusCount } from '~/plugins/api/domain';
 import { CHART_COLORS } from '~/lib/utils';
-import { useFetchForms } from '~/composables/api/forms';
-import { useFetchTranslations } from '~/composables/api/translations';
-import { useFetchSchema } from '~/composables/api/schemas';
+import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+import schemasQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import translationsQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { PropType } from 'vue';
+import { useQuery } from '~~/composables/api/utils/query';
 
 ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
@@ -136,7 +137,7 @@ export default defineComponent({
 
     const fetchSchemaQueryParameters = computed(() => ({ domainIds: [props.domainId], type: props.objectType }));
     const fetchSchemaQueryEnabled = computed(() => !!props.domainId);
-    const { data: objectSchema, isFetching: schemasIsLoading } = useFetchSchema(fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
+    const { data: objectSchema, isFetching: schemasIsLoading } = useQuery(schemasQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
 
     const sortedStatusBySubType = computed<Record<string, any>>(() =>
       (objectSchema.value?.properties?.domains?.properties?.[props.domainId]?.allOf || []).reduce((previousValue, currentValue) => {
@@ -146,11 +147,11 @@ export default defineComponent({
     );
 
     const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(translationQueryParameters);
+    const { data: translations } = useQuery(translationsQueryDefinitions.queries.fetch, translationQueryParameters);
 
-    const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const formsQueryParameters = computed(() => ({ domainId: props.domainId as string }));
     const formsQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
+    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled });
 
     const sortedSubTypes = computed(() =>
       Object.entries(props.data).sort(

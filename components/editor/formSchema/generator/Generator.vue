@@ -28,9 +28,10 @@ import FseLabel from './elements/Label.vue';
 import FseControl from './elements/Control.vue';
 import FseLayout from './elements/Layout.vue';
 import VeoFseWidget from './elements/Widget.vue';
-import { IVeoFormSchemaItem, IVeoFormSchemaTranslationCollection, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoFormSchemaTranslationCollection, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { IVeoFormsElementDefinition } from '~/components/dynamic-form/types';
 import { cloneDeep, omit } from 'lodash';
+import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 
 type FormSchemaGeneratorAction = IVeoFormSchemaItem & { action: 'add' | 'remove'; index: number; newPointer?: string }
 

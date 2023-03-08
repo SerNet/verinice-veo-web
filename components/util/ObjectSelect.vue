@@ -81,9 +81,11 @@ import { mdiOpenInNew } from '@mdi/js';
 import { createUUIDUrlParam, getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useFetchObject, useFetchObjects } from '~/composables/api/objects';
-import { useFetchForms } from '~/composables/api/forms';
-import { useFetchSchemas } from '~/composables/api/schemas';
+import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import { useQuery } from '~~/composables/api/utils/query';
+
 
 export default defineComponent({
   props: {
@@ -135,7 +137,7 @@ export default defineComponent({
     const unit = computed(() => separateUUIDParam(route.params.unit as string).id);
 
     // Value related stuff
-    const { data: endpoints } = useFetchSchemas();
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const internalValue = computed<string | undefined>({
       get: () => {
@@ -180,7 +182,7 @@ export default defineComponent({
     const {
       isFetching: isLoadingObjects,
       refetch
-    } = useFetchObjects(fetchObjectsQueryParameters, {
+    } = useQuery(objectQueryDefinitions.queries.fetchAll, fetchObjectsQueryParameters, {
       placeholderData: { items: [], pageCount: 0, page: 1 },
       enabled: searchQueryNotStale, onSuccess: (data) => {
         fetchObjectsData.value = data as any;
@@ -212,7 +214,7 @@ export default defineComponent({
         } as any)
     );
     const fetchObjectQueryEnabled = computed(() => !!unref(internalValue) && !!endpoints.value?.[props.objectType]);
-    const { data: fetchObjectData, isFetching: isLoadingObject, isError } = useFetchObject(fetchObjectQueryParameters, { enabled: fetchObjectQueryEnabled });
+    const { data: fetchObjectData, isFetching: isLoadingObject, isError } = useQuery(objectQueryDefinitions.queries.fetch, fetchObjectQueryParameters, { enabled: fetchObjectQueryEnabled });
 
     watch(
       () => isError.value,
@@ -232,9 +234,9 @@ export default defineComponent({
     const displayedItems = computed(() => (props.hiddenValues.length ? items.value.filter((item) => !props.hiddenValues.includes(item.id)) : items.value));
 
     // Label stuff
-    const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const formsQueryParameters = computed(() => ({ domainId: props.domainId as string }));
     const formsQueryEnabled = computed(() => !props.domainId);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
+    const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled });
 
     const currentSubTypeFormName = computed(() => props.subType && (formSchemas.value || []).find((formSchema) => formSchema.subType === props.subType)?.name[locale.value]);
     const localLabel = computed(() => props.label ?? `${currentSubTypeFormName.value ? currentSubTypeFormName.value : upperFirst(props.objectType)}${props.required ? '*' : ''}`);

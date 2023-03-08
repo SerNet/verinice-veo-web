@@ -96,7 +96,8 @@ import { PropType, Ref } from 'vue';
 import { JsonPointer } from 'json-ptr';
 import { cloneDeep, orderBy } from 'lodash';
 
-import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaItemRule, IVeoObjectSchema, IVeoObjectSchemaProperty } from '~/types/VeoTypes';
+import { IVeoObjectSchema, IVeoObjectSchemaProperty } from '~/types/VeoTypes';
+import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaItemRule } from '~~/composables/api/queryDefinitions/forms';
 
 interface IConditionScopeItem {
   type: 'boolean' | 'enum';

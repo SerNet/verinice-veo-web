@@ -17,7 +17,7 @@
  */
 import { IVeoBaseObject, IVeoDomainRiskDefinition, IVeoPiaMandatoryRule } from "~~/types/VeoTypes";
 import { IVeoMutationDefinition } from "../utils/mutation";
-import { IVeoQueryDefinition, IVeoQueryDefinitions, STALE_TIME } from "../utils/query";
+import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
 
 export interface IVeoDomain extends IVeoBaseObject {
   name: string;
@@ -106,4 +106,4 @@ export default {
       }
     } as IVeoMutationDefinition<IVeoUpdateTypeDefinitionParameters, void>
   }
-} as IVeoQueryDefinitions;
+};

@@ -173,7 +173,7 @@ import { mdiPlus } from '@mdi/js';
 
 import { IVeoSchemaEndpoints } from '~/plugins/api/schema';
 import { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
-import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { IVeoFormSchemaMeta } from '~~/composables/api/queryDefinitions/forms';
 
 export default {
   inject: ['objectSchemaHelper', 'displayLanguage'],

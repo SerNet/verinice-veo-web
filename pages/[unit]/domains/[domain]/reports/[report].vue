@@ -102,13 +102,15 @@
 import { omit, upperCase, upperFirst } from 'lodash';
 
 import { separateUUIDParam } from '~/lib/utils';
-import { useCreateReport, useFetchReports } from '~/composables/api/reports';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useFetchObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
-import { useFetchSchemas } from '~/composables/api/schemas';
 import { RouteRecordName } from 'vue-router';
 import { IVeoEntity } from '~~/types/VeoTypes';
+import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import { useQuery } from '~~/composables/api/utils/query';
+import { useMutation } from '~~/composables/api/utils/mutation';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-report';
 
@@ -119,7 +121,7 @@ export default defineComponent({
     const route = useRoute();
     const { displayErrorMessage } = useVeoAlerts();
     const { tablePageSize } = useVeoUser();
-    const { data: endpoints } = useFetchSchemas();
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
@@ -130,7 +132,7 @@ export default defineComponent({
     // Fetching the right report
     const requestedReportName = computed(() => route.params.report as string);
 
-    const { data: reports, isFetching: reportsFetching } = useFetchReports();
+    const { data: reports, isFetching: reportsFetching } = useQuery(reportQueryDefinitions.queries.fetchAll);
     const report = computed(() => reports.value?.[requestedReportName.value]);
 
     const availableObjectTypes = computed<string[]>(() => (report.value?.targetTypes || []).map((targetType) => targetType.modelType));
@@ -191,7 +193,7 @@ export default defineComponent({
       data: objects,
       isLoading: objectsFetching,
       refetch: refetchObjects
-    } = useFetchObjects(combinedObjectsQueryParameters as any, { enabled: objectsQueryEnabled, keepPreviousData: true, placeholderData: [] });
+    } = useQuery(objectQueryDefinitions.queries.fetchAll ,combinedObjectsQueryParameters as any, { enabled: objectsQueryEnabled, keepPreviousData: true, placeholderData: [] });
 
     const updateRouteQuery = async (v: Record<string, string | undefined | null | true>, reset = true) => {
       const resetValues = reset ? filterKeys.map((key) => [key, undefined as string | undefined | null]) : [];
@@ -221,7 +223,7 @@ export default defineComponent({
         targets: selectedObjects.value
       }
     }));
-    const { mutateAsync: create, isLoading: generatingReport } = useCreateReport({ onSuccess: openReport });
+    const { mutateAsync: create, isLoading: generatingReport } = useMutation(reportQueryDefinitions.mutations.create,{ onSuccess: openReport });
 
     const generateReport = () => {
       if (report.value) {

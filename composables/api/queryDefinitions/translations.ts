@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IVeoQueryDefinition, IVeoQueryDefinitions, STALE_TIME } from "../utils/query";
+import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
 
 export interface IVeoTranslations {
   lang: {
@@ -42,4 +42,4 @@ export default {
   mutations: {
 
   }
-}as IVeoQueryDefinitions;
+};

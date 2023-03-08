@@ -33,7 +33,8 @@
 
 <script lang="ts" setup>
 import { separateUUIDParam } from '~/lib/utils';
-import { useFetchCatalogs } from '~/composables/api/catalogs';
+import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
+import { useQuery } from '~~/composables/api/utils/query';
 
 
 const route = useRoute();
@@ -43,7 +44,7 @@ const { t: $t } = useI18n({ useScope: 'global' });
 const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
 const fetchCatalogsQueryParameters = computed(() => ({ domainId: domainId.value }));
-const { data: catalogs, isFetching: catalogsAreFetching } = useFetchCatalogs(fetchCatalogsQueryParameters);
+const { data: catalogs, isFetching: catalogsAreFetching } = useQuery(catalogQueryDefinitions.queries.fetchCatalogs, fetchCatalogsQueryParameters);
 </script>
 
 <i18n>

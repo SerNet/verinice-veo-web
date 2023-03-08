@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { QueryClient, useMutation as vueQueryUseMutation } from '@tanstack/vue-query';
+import { QueryClient, useMutation as vueQueryUseMutation, useQueryClient } from '@tanstack/vue-query';
 import { UseMutationOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 import { omit } from 'lodash';
@@ -27,7 +27,7 @@ export interface MutationOptions<_TVariables, TResult = unknown> extends Omit<Us
   onSuccess: (queryClient: QueryClient, data: TResult, variables: IVeoMutationParameters, context: any) => any
 }
 
-export interface IVeoMutationDefinition<TVariables, TResult> extends Omit<IVeoQueryDefinition<TVariables, TResult>, 'queryParameterTransformationFn' | 'queryOptions'> {
+export interface IVeoMutationDefinition<TVariables, TResult> extends Omit<IVeoQueryDefinition<TVariables, TResult>, 'queryParameterTransformationFn' | 'staticQueryOptions'> {
   method?: 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
   mutationParameterTransformationFn: (_queryParameters: TVariables) => IVeoMutationParameters;
   staticMutationOptions: MutationOptions<TVariables, TResult>
@@ -41,9 +41,7 @@ export interface IVeoMutationParameters<TParams = Record<string, any>, TQuery = 
 /**
  * Wrapper for vue-query's useMutation to apply some custom logic to make it work more seamless with the legacy api plugin.
  *
- * @param mutationIdentifier Identifier of the mutation used for debugging.
- * @param mutationDefinition Object defining api endpoint, HTTP method and return type
- * @param mutationParameterTransformationFn Function that transforms an object passed from the application (developer friendly) to an object that gets used by the api to generate the url
+ * @param mutationDefinition Object defining api endpoint, HTTP method, return type and more.
  * @param mutationOptions Options modifying mutation behaviour.
  * @returns Mutation object.
  */
@@ -53,6 +51,18 @@ export const useMutation = <TVariables, TResult>(
 ) => {
   const { $config } = useNuxtApp();
   const { request } = useRequest();
+  const queryClient = useQueryClient();
+
+  const combinedOptions = computed(() => ({
+    ...mutationDefinition.staticMutationOptions,
+    ...mutationOptions,
+    onSuccess: async (data: TResult, variables: IVeoMutationParameters, context: any) => {
+      await mutationDefinition.staticMutationOptions.onSuccess(queryClient, data, variables, context);
+      if(mutationOptions?.onSuccess) {
+        await mutationOptions.onSuccess(queryClient, data, variables, context);
+      }
+    }
+  }));
 
   // Actual mutation getting execute
   // @ts-ignore Some weird typing problems. However everything works
@@ -64,7 +74,7 @@ export const useMutation = <TVariables, TResult>(
       }
       return result;
     },
-    ...mutationOptions
+    ...combinedOptions.value
   });
 
   return {
@@ -76,7 +86,7 @@ export const useMutation = <TVariables, TResult>(
         // eslint-disable-next-line no-console
         console.log(
           `[vueQuery] Mutation "${mutationDefinition.primaryQueryKey}" is running with parameters "${JSON.stringify(mutationParameters)}". Fetching...\nOptions: "${JSON.stringify(
-            mutationOptions
+            combinedOptions.value
           )}"`
         );
       }
@@ -85,9 +95,3 @@ export const useMutation = <TVariables, TResult>(
     }
   };
 };
-
-/* TODO:
- * 1. Add onSuccess to mutations
- * 2. Move all Query composable uses to new Interface
- * 3. Fix remaining api composables
- */

@@ -28,7 +28,8 @@ import { IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useFormatters } from '~/composables/utils';
 import { separateUUIDParam } from '~/lib/utils';
 import { useVeoUser } from '~/composables/VeoUser';
-import { useFetchTranslations } from '~/composables/api/translations';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export type ObjectTableFormatter = (value: any) => string;
 export type ObjectTableTooltip = (value: any) => string;
@@ -134,7 +135,7 @@ export default defineComponent({
     const { formatDateTime } = useFormatters();
 
     const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(translationQueryParameters);
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
 
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 

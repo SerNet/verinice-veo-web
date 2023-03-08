@@ -63,7 +63,7 @@ import { PropType } from 'vue';
 import { IVeoCatalogSelectionListHeader } from '~/components/catalog/ItemsSelectionList.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { IVeoCatalogItem } from '~/types/VeoTypes';
+import { IVeoCatalogItem } from '~~/composables/api/queryDefinitions/catalogs';
 import { separateUUIDParam } from '~~/lib/utils';
 
 export default defineComponent({
@@ -136,6 +136,7 @@ export default defineComponent({
       try {
         // Fetch incarnations for all selected items
         const incarnations = await $api.unit.fetchIncarnations(selectedItems.value, unitId.value);
+        const incarnations = await useQuerySync;
         // Apply incarnations
         await $api.unit.updateIncarnations(incarnations, unitId.value);
         displaySuccessMessage(props.successText);

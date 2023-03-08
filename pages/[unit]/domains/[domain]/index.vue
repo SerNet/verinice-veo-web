@@ -116,8 +116,9 @@
 import { StorageSerializers, useStorage } from '@vueuse/core';
 
 import { separateUUIDParam } from '~/lib/utils';
-import { useFetchDomain, useFetchDomainElementStatusCount } from '~/composables/api/domains';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export const ROUTE_NAME = 'unit-domains-domain';
 
@@ -140,10 +141,10 @@ export default defineComponent({
 
     // Domain specific stuff
     const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
-    const { data: domain } = useFetchDomain(fetchDomainQueryParameters);
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     const fetchDomainElementStatusCountQueryParameters = computed(() => ({ id: domainId.value, unitId: unitId.value }));
-    const { data: domainObjectInformation, isFetching: elementStatusCountIsFetching } = useFetchDomainElementStatusCount(fetchDomainElementStatusCountQueryParameters);
+    const { data: domainObjectInformation, isFetching: elementStatusCountIsFetching } = useQuery(domainQueryDefinitions.queries.fetchDomainElementStatusCount, fetchDomainElementStatusCountQueryParameters);
 
     // Create chart data
     const chartData = computed(() => {

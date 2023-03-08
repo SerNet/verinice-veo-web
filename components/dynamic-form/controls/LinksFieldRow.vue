@@ -73,9 +73,10 @@ import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoCustomLink } from '~/types/VeoTypes';
-import { useFetchForms } from '~/composables/api/forms';
-import { useFetchSchemas } from '~/composables/api/schemas';
+import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+import schemasQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { PropType } from 'vue';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field-row',
@@ -115,7 +116,7 @@ export default defineComponent({
 
     const queryParameters = computed(() => ({ domainId: domainId.value }));
     const queryEnabled = computed(() => !!domainId.value);
-    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled });
+    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, { enabled: queryEnabled });
 
     const createButtonLabel = computed(() =>
       subType.value ? formSchemas.value?.find((formSchema) => formSchema.subType === subType.value)?.name?.[locale.value] || objectType.value : objectType.value
@@ -123,7 +124,7 @@ export default defineComponent({
 
     // new object creation
     const createObjectDialogVisible = ref(false);
-    const { data: schemas } = useFetchSchemas();
+    const { data: schemas } = useQuery(schemasQueryDefinitions.queries.fetchSchemas);
     const onTargetCreated = (newElementId: string) => {
       emit('update:model-value', { targetUri: `${config.public.apiUrl}/${schemas.value?.[objectType.value]}/${newElementId}` });
     };

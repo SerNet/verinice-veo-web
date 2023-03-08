@@ -49,8 +49,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useFetchSchemas } from '~/composables/api/schemas';
-import { useFetchTranslations } from '~/composables/api/translations';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import { useQuery } from '~~/composables/api/utils/query';
 
 defineProps({
   eventPayload: {
@@ -65,9 +66,9 @@ const { t, locale } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 
 const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
-const { data: schemas } = useFetchSchemas();
+const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchema);
 
 const type = ref<string | undefined>();
 

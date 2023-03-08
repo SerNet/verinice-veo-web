@@ -91,9 +91,10 @@
 import { PropType } from 'vue';
 import { isObject } from 'lodash';
 
-import { useFetchForms } from '~/composables/api/forms';
-import { useFetchSchemas } from '~/composables/api/schemas';
-import { IVeoFormSchema, VeoAlertType } from '~/types/VeoTypes';
+import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import schemasQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import { VeoAlertType } from '~/types/VeoTypes';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
@@ -135,7 +136,7 @@ export default defineComponent({
     // formschema stuff
     const queryParameters = computed(() => ({ domainId: props.domainId }));
     const queryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled });
+    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, { enabled: queryEnabled });
 
     const formSchemaOptions = computed<{ title: string; value: string }[]>(() => [
       {
@@ -146,7 +147,7 @@ export default defineComponent({
     ]);
 
     // objectschema stuff
-    const { data: objectTypes } = useFetchSchemas();
+    const { data: objectTypes } = useQuery(schemasQueryDefinitions.queries.fetchSchemas);
 
     // If the object schema belonging to the form schema doesn't exist, the user has to upload it themself
     const objectTypeMissing = computed(

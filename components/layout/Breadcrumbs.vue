@@ -131,11 +131,13 @@ import { mdiChevronRight, mdiDotsHorizontal, mdiHomeOutline } from '@mdi/js';
 
 import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 import { separateUUIDParam } from '~/lib/utils';
-import { useFetchSchemas } from '~/composables/api/schemas';
-import { useFetchObject } from '~/composables/api/objects';
-import { useFetchDomain } from '~/composables/api/domains';
-import { useFetchReports } from '~/composables/api/reports';
-import { useFetchCatalog } from '~/composables/api/catalogs';
+import { useQuery } from '~~/composables/api/utils/query';
+import catalogsQueryDefinitions from '~~/composables/api/queryDefinitions/catalogs';
+import domainsQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
+import objectsQueryDefinitions from '~~/composables/api/queryDefinitions/objects';
+import reportsQueryDefinitions from '~~/composables/api/queryDefinitions/reports';
+import schemasQueryDefinitions from '~~/composables/api/queryDefinitions/schemas';
+
 
 type SupportedQuery = ':domain' | ':object' | ':report' | ':catalog';
 
@@ -177,7 +179,7 @@ export default defineComponent({
     }));
     const { breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
 
-    const { data: endpoints } = useFetchSchemas();
+    const { data: endpoints } = useQuery(schemasQueryDefinitions.queries.fetchSchemas);
 
     const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbReplacementMapBreadcrumb>([
       [
@@ -280,20 +282,20 @@ export default defineComponent({
     // Must be refactored if for example two objects are part of the path.
     const objectQueryParameters = ref<any>({});
     const objectQueryEnabled = computed(() => !isEmpty(objectQueryParameters.value) && !!objectQueryParameters.endpoint);
-    const { data: object } = useFetchObject(objectQueryParameters, {
+    const { data: object } = useQuery(objectsQueryDefinitions.queries.fetch, objectQueryParameters, {
       enabled: objectQueryEnabled
     });
     const domainQueryParameters = ref<any>({});
     const domainQueryEnabled = computed(() => !isEmpty(domainQueryParameters.value));
-    const { data: domain } = useFetchDomain(domainQueryParameters, {
+    const { data: domain } = useQuery(domainsQueryDefinitions.queries.fetchDomain, domainQueryParameters, {
       enabled: domainQueryEnabled
     });
     const catalogQueryParameters = ref<any>({});
     const catalogQueryEnabled = computed(() => !isEmpty(catalogQueryParameters.value));
-    const { data: catalog } = useFetchCatalog(catalogQueryParameters, {
+    const { data: catalog } = useQuery(catalogsQueryDefinitions.queries.fetchCatalog, catalogQueryParameters, {
       enabled: catalogQueryEnabled
     });
-    const { data: report } = useFetchReports();
+    const { data: report } = useQuery(reportsQueryDefinitions.queries.fetchAll);
 
     const queryResultMap = computed<{ [key: string]: any }>(() => ({
       ':catalog': catalog.value

@@ -47,11 +47,12 @@ import Widget from './widgets/Widget';
 import Group from './layouts/Group.vue';
 import Label from './labels/Label.vue';
 import ValidationFailedError from './ValidationFailedError.vue';
-import { IVeoFormSchemaGeneratorOptions, IVeoFormSchemaItem, IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoFormSchemaGeneratorOptions, IVeoObjectSchema } from '~/types/VeoTypes';
 import FormSchemaValidator from '~/lib/FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import { useVeoErrorFormatter } from '~/composables/VeoErrorFormatter';
+import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 
 const DEBUG_MAP = new Map<string, string>();
 // @ts-ignore We add a new property to the window to debug veo forms
@@ -177,7 +178,7 @@ export default defineComponent({
 
       for (const key in props.reactiveFormActions || {}) {
         if (toReturn[key]) {
-          toReturn[key].push(...props.reactiveFormActions[key]);
+          toReturn[key].push(...(props.reactiveFormActions[key]));
         } else {
           toReturn[key] = props.reactiveFormActions[key];
         }

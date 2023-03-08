@@ -127,7 +127,7 @@ import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoTranslations } from '~~/composables/api/queryDefinitions/translations';
 
 export default defineComponent({
   props: {

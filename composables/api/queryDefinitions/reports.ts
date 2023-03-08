@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { IVeoMutationDefinition } from "../utils/mutation";
-import { IVeoQueryDefinition, IVeoQueryDefinitions, STALE_TIME } from "../utils/query";
+import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
 import { VeoApiReponseType } from "../utils/request";
 
 export interface IVeoReportMeta {
@@ -74,4 +74,4 @@ export default {
       }
     } as IVeoMutationDefinition<IVeoCreateReportParameters, void>
   }
-}as IVeoQueryDefinitions;
+};

@@ -15,16 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { omit } from 'lodash';
 import { Ref } from 'vue';
-import { useQueryClient } from '@tanstack/vue-query';
-import { max, omit } from 'lodash';
-
-import { useVeoUser } from '../VeoUser';
-import { IVeoQueryTransformationMap, QueryOptions, useQuery } from './utils/query';
-import { IVeoMutationParameters, IVeoMutationTransformationMap, MutationOptions, useMutation } from './utils/mutation';
-import { VeoApiReponseType } from './utils/request';
-import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from '~/types/VeoTypes';
-import { getEntityDetailsFromLink } from '~~/lib/utils';
+import { IVeoPaginationOptions } from '~~/types/VeoTypes';
+import { QueryOptions, useQuery } from './utils/query';
+import objectQueryDefinitions from './queryDefinitions/objects';
 
 export interface IVeoFetchParentObjectsParameters extends IVeoPaginationOptions {
   parentEndpoint: string;
@@ -33,12 +28,12 @@ export interface IVeoFetchParentObjectsParameters extends IVeoPaginationOptions 
 }
 
 export const useFetchParentObjects = (queryParameters: Ref<IVeoFetchParentObjectsParameters>, queryOptions?: QueryOptions) => {
-  // const transformedQueryParameters = computed(() => ({
-  //   ...omit(queryParameters.value, 'unitId', 'parentEndpoint', 'childObjectId'),
-  //   unit: queryParameters.value.unitId,
-  //   endpoint: queryParameters.value.parentEndpoint,
-  //   childElementIds: queryParameters.value.childObjectId,
-  //   size: -1
-  // }));
-  // return useFetchObjects(transformedQueryParameters, queryOptions);
+  const transformedQueryParameters = computed(() => ({
+    ...omit(queryParameters.value, 'unitId', 'parentEndpoint', 'childObjectId'),
+    unit: queryParameters.value.unitId,
+    endpoint: queryParameters.value.parentEndpoint,
+    childElementIds: queryParameters.value.childObjectId,
+    size: -1
+  }));
+  return useQuery(objectQueryDefinitions.queries.fetchAll, transformedQueryParameters, queryOptions);
 };

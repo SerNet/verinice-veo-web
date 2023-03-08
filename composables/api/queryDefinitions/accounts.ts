@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { IVeoMutationDefinition } from "../utils/mutation";
-import { IVeoQueryDefinition, IVeoQueryDefinitions } from "../utils/query";
+import { IVeoQueryDefinition } from "../utils/query";
 import { VeoApiReponseType } from "../utils/request";
 
 export interface IVeoAccount {
@@ -109,4 +109,4 @@ export default {
       }
     } as IVeoMutationDefinition<IVeoDeleteAccountParameters, void>
   }
-} as IVeoQueryDefinitions;
+};

@@ -123,8 +123,10 @@ import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useFetchDomain } from '~/composables/api/domains';
-import { useCreateRisk, useFetchRisk, useUpdateRisk } from '~/composables/api/objects';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import { useQuery } from '~~/composables/api/utils/query';
+import { useMutation } from '~~/composables/api/utils/mutation';
 
 export interface IDirtyFields {
   [field: string]: boolean;
@@ -174,7 +176,7 @@ export default defineComponent({
     const originalData = ref<IVeoRisk | undefined>(undefined);
 
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
-    const { data: domain } = useFetchDomain(fetchDomainQueryParameters);
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     const formIsValid = ref(true);
     const formModified = ref(false);
@@ -207,9 +209,9 @@ export default defineComponent({
       validate();
     };
 
-    const fetchRiskQueryParameters = computed(() => ({ scenarioId: props.scenarioId, objectId: props.objectId, endpoint: 'processes' }));
+    const fetchRiskQueryParameters = computed(() => ({ scenarioId: props.scenarioId as string, objectId: props.objectId, endpoint: 'processes' }));
     const fetchRiskQueryEnabled = computed(() => !!props.scenarioId);
-    const { data: _risk } = useFetchRisk(fetchRiskQueryParameters, { enabled: fetchRiskQueryEnabled, onSuccess: () => {
+    const { data: _risk } = useQuery(objectQueryDefinitions.queries.fetchRisk, fetchRiskQueryParameters, { enabled: fetchRiskQueryEnabled, onSuccess: () => {
       init();
     } });
     const risk = computed(() => props.scenarioId ? _risk.value : undefined);
@@ -231,8 +233,8 @@ export default defineComponent({
     watch(() => props.modelValue, init, { immediate: true });
 
     const savingRisk = ref(false);
-    const { mutateAsync: createRisk } = useCreateRisk();
-    const { mutateAsync: updateRisk } = useUpdateRisk();
+    const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createOrUpdateRisk);
+    const { mutateAsync: updateRisk } = useMutation(objectQueryDefinitions.mutations.createOrUpdateRisk);
     const saveRisk = async () => {
       if(ability.value.cannot('manage', 'objects')) {
         return;

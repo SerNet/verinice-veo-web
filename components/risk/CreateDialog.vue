@@ -73,8 +73,10 @@ import { omit, upperFirst } from 'lodash';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useCreateRisk, useFetchObjects } from '~/composables/api/objects';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useVeoUser } from '~/composables/VeoUser';
+import { useMutation } from '~~/composables/api/utils/mutation';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
@@ -101,7 +103,7 @@ export default defineComponent({
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
 
-    const { mutateAsync: createRisk } = useCreateRisk();
+    const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createOrUpdateRisk);
 
     const unit = computed(() => separateUUIDParam(route.params.unit as string).id);
 
@@ -143,7 +145,7 @@ export default defineComponent({
       endpoint: 'scenarios'
     }));
 
-    const { data: objects, isFetching: objectsQueryIsLoading, refetch } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
+    const { data: objects, isFetching: objectsQueryIsLoading, refetch } = useQuery(objectQueryDefinitions.queries.fetchAll, combinedQueryParameters, { keepPreviousData: true });
 
     // Create risk stuff
     const creatingRisks = ref(false);

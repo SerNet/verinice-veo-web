@@ -119,7 +119,7 @@ import { StorageSerializers, useStorage } from '@vueuse/core';
 import { useDisplay } from 'vuetify';
 
 import { createUUIDUrlParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
-import { IVeoFormSchemaMeta, IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoObjectSchema } from '~/types/VeoTypes';
 
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/index.vue';
@@ -129,16 +129,17 @@ import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/[unit]/domains/
 import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/risks/[matrix].vue';
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/editor/index.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
-import { useFetchForms } from '~/composables/api/forms';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemasDetailed } from '~/composables/api/schemas';
 import { useDocNavigation } from '~/composables/docs';
-import { useFetchTranslations } from '~/composables/api/translations';
-import { useFetchReports } from '~/composables/api/reports';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-import { useFetchCatalogs } from '~/composables/api/catalogs';
-import { useFetchDomain } from '~/composables/api/domains';
+import catalogsQueryDefinitions from '~~/composables/api/queryDefinitions/catalogs';
+import domainsQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
+import formsQueryDefinitions from '~~/composables/api/queryDefinitions/forms';
+import reportsQueryDefinitions from '~~/composables/api/queryDefinitions/reports';
+import translationsQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export interface INavItem {
   key: string;
@@ -192,19 +193,19 @@ export default defineComponent({
     const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+    const { data: translations } = useQuery(translationsQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     // objects specific stuff
     const objectSchemas = ref<IVeoObjectSchema[]>([]);
     const schemasLoading = ref(false);
 
     const queryParameters = computed(() => ({
-      domainId: props.domainId || ''
+      domainId: props.domainId as string
     }));
     const allFormSchemasQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
+    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms ,queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
 
-    const fetchSchemasDetailedQueryParameters = computed(() => ({ domainIds: [props.domainId || ''] }));
+    const fetchSchemasDetailedQueryParameters = computed(() => ({ domainIds: [props.domainId as string] }));
     const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId);
     const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, { enabled: fetchSchemasDetailedQueryEnabled });
     watch(
@@ -237,8 +238,8 @@ export default defineComponent({
                 to: {
                   name: OBJECTS_ROUTE_NAME,
                   params: {
-                    unit: createUUIDUrlParam('unit', props.unitId),
-                    domain: createUUIDUrlParam('domain', props.domainId)
+                    unit: createUUIDUrlParam('unit', props.unitId as string),
+                    domain: createUUIDUrlParam('domain', props.domainId as string)
                   },
                   query: {
                     objectType: objectSchema.title
@@ -249,7 +250,7 @@ export default defineComponent({
               // dynamic sub type routes
               ...sortBy(
                 objectSubTypes.map((subType) => {
-                  const formSchema = (formSchemas.value as IVeoFormSchemaMeta[]).find(
+                  const formSchema = (formSchemas.value || []).find(
                     (formSchema) => formSchema.modelType === objectSchema.title && formSchema.subType === subType.subType
                   );
                   const displayName = formSchema?.name[locale.value] || subType.subType;
@@ -259,8 +260,8 @@ export default defineComponent({
                     to: {
                       name: OBJECTS_ROUTE_NAME,
                       params: {
-                        unit: createUUIDUrlParam('unit', props.unitId),
-                        domain: createUUIDUrlParam('domain', props.domainId)
+                        unit: createUUIDUrlParam('unit', props.unitId as string),
+                        domain: createUUIDUrlParam('domain', props.domainId as string)
                       },
                       query: {
                         objectType: objectSchema.title,
@@ -279,19 +280,19 @@ export default defineComponent({
     );
 
     // catalog specific stuff
-    const fetchCatalogsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const fetchCatalogsQueryParameters = computed(() => ({ domainId: props.domainId as string }));
     const fetchCatalogsQueryEnabled = computed(() => !!props.domainId);
-    const { data: catalogs, isFetching: catalogsEntriesLoading } = useFetchCatalogs(fetchCatalogsQueryParameters, { enabled: fetchCatalogsQueryEnabled });
+    const { data: catalogs, isFetching: catalogsEntriesLoading } = useQuery(catalogsQueryDefinitions.queries.fetchCatalogs, fetchCatalogsQueryParameters, { enabled: fetchCatalogsQueryEnabled });
 
     const catalogsEntriesChildItems = computed<INavItem[]>(() =>
-      catalogs.value.map((catalog) => ({
+      (catalogs.value || []).map((catalog) => ({
         key: catalog.id,
         name: catalog.name,
         to: {
           name: CATALOGS_CATALOG_ROUTE_NAME,
           params: {
-            unit: createUUIDUrlParam('unit', props.unitId),
-            domain: createUUIDUrlParam('domain', props.domainId),
+            unit: createUUIDUrlParam('unit', props.unitId as string),
+            domain: createUUIDUrlParam('domain', props.domainId as string),
             catalog: createUUIDUrlParam('catalog', catalog.id)
           }
         }
@@ -299,7 +300,7 @@ export default defineComponent({
     );
 
     // report specific stuff
-    const { data: reports, isFetching: reportsEntriesLoading } = useFetchReports();
+    const { data: reports, isFetching: reportsEntriesLoading } = useQuery(reportsQueryDefinitions.queries.fetchAll);
 
     const reportsEntriesChildItems = computed<INavItem[]>(
       () =>
@@ -311,8 +312,8 @@ export default defineComponent({
             to: {
               name: REPORTS_REPORT_ROUTE_NAME,
               params: {
-                unit: createUUIDUrlParam('unit', props.unitId),
-                domain: createUUIDUrlParam('domain', props.domainId),
+                unit: createUUIDUrlParam('unit', props.unitId as string),
+                domain: createUUIDUrlParam('domain', props.domainId as string),
                 report: reportId
               }
             }
@@ -321,9 +322,9 @@ export default defineComponent({
     );
 
     // risk specific stuff
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId || '' }));
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
-    const { data: domain, isFetching: riskDefinitionsLoading } = useFetchDomain(fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
+    const { data: domain, isFetching: riskDefinitionsLoading } = useQuery(domainsQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
     const riskDefinitions = computed(() => domain.value?.riskDefinitions || {});
 
     const riskChildItems = computed<INavItem[]>(() =>
@@ -333,8 +334,8 @@ export default defineComponent({
         to: {
           name: RISKS_MATRIX_ROUTE_NAME,
           params: {
-            unit: createUUIDUrlParam('unit', props.unitId),
-            domain: createUUIDUrlParam('domain', props.domainId),
+            unit: createUUIDUrlParam('unit', props.unitId as string),
+            domain: createUUIDUrlParam('domain', props.domainId as string),
             matrix: id
           }
         }
@@ -359,8 +360,8 @@ export default defineComponent({
       to: {
         name: DOMAIN_DASHBOARD_ROUTE_NAME,
         params: {
-          unit: createUUIDUrlParam('unit', props.unitId),
-          domain: createUUIDUrlParam('domain', props.domainId)
+          unit: createUUIDUrlParam('unit', props.unitId as string),
+          domain: createUUIDUrlParam('domain', props.domainId as string)
         }
       },
       componentName: 'domain-dashboard-nav-item',
@@ -415,8 +416,8 @@ export default defineComponent({
       to: {
         name: EDITOR_INDEX_ROUTE_NAME,
         params: {
-          unit: createUUIDUrlParam('unit', props.unitId),
-          domain: createUUIDUrlParam('domain', props.domainId)
+          unit: createUUIDUrlParam('unit', props.unitId as string),
+          domain: createUUIDUrlParam('domain', props.domainId as string)
         }
       }
     }));

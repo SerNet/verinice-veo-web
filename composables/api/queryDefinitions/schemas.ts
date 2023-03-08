@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { IVeoObjectSchema } from "~~/types/VeoTypes";
-import { IVeoQueryDefinition, IVeoQueryDefinitions, STALE_TIME } from "../utils/query";
+import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
 
 export interface IVeoEntityMetaInfo {
   collectionUri: string;
@@ -55,4 +55,4 @@ export default {
     } as IVeoQueryDefinition<IVeoFetchSchemaParameters, IVeoObjectSchema>
   },
   mutations: {}
-} as IVeoQueryDefinitions;
+};

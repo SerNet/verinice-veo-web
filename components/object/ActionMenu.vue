@@ -90,8 +90,9 @@ import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
-import { useFetchTranslations } from '~/composables/api/translations';
-import { useFetchSchemas } from '~/composables/api/schemas';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import schemasQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
@@ -116,10 +117,10 @@ export default defineComponent({
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { link } = useLinkObject();
 
-    const { data: endpoints } = useFetchSchemas();
+    const { data: endpoints } = useQuery(schemasQueryDefinitions.queries.fetchSchemas);
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     // general stuff
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);

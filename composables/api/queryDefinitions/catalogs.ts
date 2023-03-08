@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { IVeoBaseObject, IVeoLink } from "~~/types/VeoTypes";
-import { IVeoQueryDefinition, IVeoQueryDefinitions, STALE_TIME } from "../utils/query";
+import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
 
 export interface IVeoCatalog extends IVeoBaseObject {
   name: string;
@@ -107,4 +107,4 @@ export default {
     } as IVeoQueryDefinition<IVeoFetchCatalogItemParameters, IVeoCatalogItem>
   },
   mutations: {}
-} as IVeoQueryDefinitions;
+};

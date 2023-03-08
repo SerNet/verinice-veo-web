@@ -96,34 +96,7 @@ export default function (api: Client) {
           id
         }
       });
-    },
-
-    /**
-     * Fetches the incarnations for a group of catalog items
-     */
-    fetchIncarnations(itemIds: string | string[], unitId: string): Promise<IVeoUnitIncarnations> {
-      if (isArray(itemIds)) {
-        itemIds = itemIds.join(',');
-      }
-
-      return api.req('/api/units/:unitId/incarnations', {
-        params: {
-          unitId
-        },
-        query: {
-          itemIds
-        }
-      });
-    },
-
-    updateIncarnations(incarnations: IVeoUnitIncarnations, unitId: string): Promise<IVeoUnitIncarnations> {
-      return api.req('/api/units/:unitId/incarnations', {
-        method: 'POST',
-        params: {
-          unitId
-        },
-        json: incarnations
-      });
     }
+  
   };
 }
