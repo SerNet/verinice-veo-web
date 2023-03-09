@@ -267,9 +267,9 @@ export default defineComponent({
       });
       try {
         if (props.id) {
-          await update(updateMutationParameters as any);
+          await update(updateMutationParameters);
         } else {
-          await create(createMutationParameters as any);
+          await create(createMutationParameters);
         }
         displaySuccessMessage(t(props.id ? 'updatingAccountSuccess' : 'creatingAccountSuccess').toString());
         emit('success');

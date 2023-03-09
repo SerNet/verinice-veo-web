@@ -182,6 +182,7 @@ import translationQueryDefinitions from '~/composables/api/queryDefinitions/tran
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~~/composables/api/utils/query';
+import { useMutation } from '~~/composables/api/utils/mutation';
 
 
 export default defineComponent({
@@ -199,7 +200,6 @@ export default defineComponent({
   },
   setup() {
     const { locale, t } = useI18n();
-    const { $api } = useNuxtApp();
     const config = useRuntimeConfig();
     const route = useRoute();
     const router = useRouter();
@@ -207,6 +207,7 @@ export default defineComponent({
     const { link } = useLinkObject();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
     const { ability } = useVeoPermissions();
+    const {mutateAsync: _updateObject} = useMutation(objectQueryDefinitions.mutations.updateObject);
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
@@ -225,7 +226,7 @@ export default defineComponent({
     const metaData = ref<any>({});
     const endpoint = computed(() => endpoints.value?.[objectParameter.value.type]);
 
-    const fetchObjectQueryParameters = computed(() => ({ endpoint: endpoint.value, id: objectParameter.value.id }));
+    const fetchObjectQueryParameters = computed(() => ({ endpoint: endpoint.value as string, id: objectParameter.value.id }));
     const fetchObjectQueryEnabled = computed(() => !!fetchObjectQueryParameters.value.endpoint && !!fetchObjectQueryParameters.value.id);
     const {
       data: object,
@@ -304,9 +305,9 @@ export default defineComponent({
       });
     };
 
-    const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
+    const formsQueryParameters = computed(() => ({ domainId: domainId.value  }));
     const formsQueryEnabled = computed(() => !!domainId.value);
-    const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForm, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [], onSuccess: addSubTypeBreadcrumb });
+    const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [], onSuccess: addSubTypeBreadcrumb });
 
     // Change subtype if object subtype changes (As of 2023-02-23 this shouldn't happen as once a subtype is selected it is readonly, but you never know what the future holds)
     watch(() => currentSubType.value, () => {
@@ -375,7 +376,7 @@ export default defineComponent({
       expireOptimisticLockingAlert();
       try {
         if (modifiedObject.value && object.value) {
-          await $api.entity.update(endpoint.value || '', objectParameter.value.id, modifiedObject.value);
+          await _updateObject({endpoint: endpoint.value, object: modifiedObject.value });
           displaySuccessMessage(successText);
           refetch();
           formDataIsRevision.value = false;

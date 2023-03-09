@@ -111,6 +111,7 @@ import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
 import { useFetchObjects } from '~~/composables/api/objects';
+import { QueryClient } from '@tanstack/vue-query';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-report';
 
@@ -206,7 +207,7 @@ export default defineComponent({
 
     // Generating new report
     const downloadButton = ref<HTMLAnchorElement>();
-    const openReport = (result: any) => {
+    const openReport = (_queryClient: QueryClient, result: any) => {
       if (!downloadButton.value || !report.value) {
         return;
       }

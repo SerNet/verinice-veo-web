@@ -67,7 +67,7 @@ export const useMutation = <TVariables, TResult>(
   // Actual mutation getting execute
   // @ts-ignore Some weird typing problems. However everything works
   const result = vueQueryUseMutation<TResult, unknown, IVeoMutationParameters>({
-    mutationFn: (mutationParameters: IVeoMutationParameters) => async () => {
+    mutationFn: async (mutationParameters: IVeoMutationParameters) => {
       let result = await request(mutationDefinition.url, { ...mutationParameters, ...omit(mutationDefinition, 'url', 'onDataFetched') });
       if (mutationDefinition.onDataFetched) {
         result = mutationDefinition.onDataFetched(result, mutationParameters);

@@ -125,7 +125,7 @@ import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
 
 export interface IDirtyFields {
@@ -157,7 +157,6 @@ export default defineComponent({
   },
   emits: ['update:model-value'],
   setup(props) {
-    const { $api } = useNuxtApp();
     const config = useRuntimeConfig();
     const route = useRoute();
     const { t } = useI18n();
@@ -166,6 +165,8 @@ export default defineComponent({
     const { link } = useLinkObject();
     const { createLink } = useCreateLink();
     const { ability } = useVeoPermissions();
+    const { mutateAsync: createObject } = useMutation(objectQueryDefinitions.mutations.createObject);
+  
 
     const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
 
@@ -244,12 +245,12 @@ export default defineComponent({
 
         try {
           if (!data.value.mitigation && mitigations.value.length) {
-            const newMitigationId = (await $api.entity.create('controls', newMitigatingAction.value as any)).resourceId;
+            const newMitigationId = (await createObject({endpoint: 'controls', object: newMitigatingAction.value})).resourceId;
             data.value.mitigation = createLink('controls', newMitigationId);
           }
 
           if (data.value.mitigation) {
-            await link(await $api.entity.fetch('controls', getEntityDetailsFromLink(data.value.mitigation).id), mitigations.value, true);
+            await link(await useQuerySync(objectQueryDefinitions.queries.fetch, {endpoint: 'controls', id: getEntityDetailsFromLink(data.value.mitigation).id}), mitigations.value, true);
           }
 
           if (props.scenarioId) {

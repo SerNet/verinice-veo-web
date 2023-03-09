@@ -39,12 +39,15 @@ export const useFetchObjects = (queryParameters: Ref<IVeoFetchObjectsParameters>
 };
 
 export const useFetchParentObjects = (queryParameters: Ref<IVeoFetchParentObjectsParameters>, queryOptions?: QueryOptions) => {
+  const { tablePageSize } = useVeoUser();
+  
   const transformedQueryParameters = computed(() => ({
     ...omit(queryParameters.value, 'unitId', 'parentEndpoint', 'childObjectId'),
     unit: queryParameters.value.unitId,
     endpoint: queryParameters.value.parentEndpoint,
     childElementIds: queryParameters.value.childObjectId,
-    size: -1
+    size: queryParameters.value.size === undefined ? tablePageSize.value : queryParameters.value.size === -1 ? 1000 : queryParameters.value.size,
+    page: queryParameters.value.page ? max([queryParameters.value.page - 1, 0]) : 0
   }));
   return useQuery(objectQueryDefinitions.queries.fetchAll, transformedQueryParameters, queryOptions);
 };

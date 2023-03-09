@@ -65,7 +65,7 @@ export const useCloneObject = () => {
 export const useUnlinkObject = () => {
   const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-  const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.createOrUpdateRisk);
+  const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
   const unlink = (objectToModify: IVeoEntity, objectToRemove: IVeoEntity | string) => {
     const object = cloneDeep(objectToModify);
@@ -87,7 +87,7 @@ export const useLinkObject = () => {
   const { createLink } = useCreateLink();
   const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-  const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.createOrUpdateRisk);
+  const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
   const link = (
     objectToModify: IVeoEntity,

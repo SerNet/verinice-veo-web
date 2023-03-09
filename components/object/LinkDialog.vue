@@ -95,7 +95,7 @@ import { useVeoUser } from '~/composables/VeoUser';
 import objectQueryDefinitions, { IVeoFetchScopeChildrenParameters } from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
@@ -154,7 +154,6 @@ export default defineComponent({
     const { tablePageSize } = useVeoUser();
     const { link } = useLinkObject();
     const { unlink } = useUnlinkObject();
-    const { $api } = useNuxtApp();
     const { ability } = useVeoPermissions();
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
@@ -308,11 +307,11 @@ export default defineComponent({
               const parentsToAdd = differenceBy(modifiedSelectedItems.value, originalSelectedItems.value, 'id');
               const parentsToRemove = differenceBy(originalSelectedItems.value, modifiedSelectedItems.value, 'id');
               for (const parent of parentsToAdd) {
-                const _parent = await $api.entity.fetch(endpoints.value?.[parent.type], parent.id);
+                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, {endpoint: endpoints.value?.[parent.type], id: parent.id});
                 await link(_parent, props.object);
               }
               for (const parent of parentsToRemove) {
-                const _parent = await $api.entity.fetch(endpoints.value?.[parent.type], parent.id);
+                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, {endpoint: endpoints.value?.[parent.type], id: parent.id});
                 await unlink(_parent, props.object.id);
               }
             } else {

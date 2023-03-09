@@ -17,7 +17,7 @@
  */
 import { omit } from "lodash";
 import { getEntityDetailsFromLink } from "~~/lib/utils";
-import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from "~~/types/VeoTypes";
+import { IVeoAPIMessage, IVeoDecisionEvaluation, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from "~~/types/VeoTypes";
 import { IVeoMutationDefinition } from "../utils/mutation";
 import { IVeoQueryDefinition } from "../utils/query";
 import { VeoApiReponseType } from "../utils/request";
@@ -83,6 +83,13 @@ export interface IVeoDeleteRiskParameters {
   scenarioId: string;
 }
 
+export interface IVeoFetchWipDecisionEvaluationParameters{
+  endpoint: string,
+  object: IVeoEntity,
+  domain: string,
+  decision: string
+}
+
 export const formatObject = (object: IVeoEntity) => {
   /*
    * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
@@ -140,7 +147,23 @@ export default {
       primaryQueryKey: 'risk',
       url: '/api/:endpoint/:id/risks/:scenarioId',
       queryParameterTransformationFn: (queryParameters) => ({ params: { id: queryParameters.objectId, endpoint: queryParameters.endpoint, scenarioId: queryParameters.scenarioId } })
-    } as IVeoQueryDefinition<IVeoFetchRiskParameters, IVeoRisk>
+    } as IVeoQueryDefinition<IVeoFetchRiskParameters, IVeoRisk>,
+    fetchWipDecisionEvaluation: {
+      primaryQueryKey: 'evaluation',
+      url: '/api/:endpoint/evaluation',
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: {
+          endpoint: queryParameters.endpoint
+        },
+        query: {
+          domain: queryParameters.domain,
+          decision: queryParameters.decision
+        },
+        json: queryParameters.object}),
+      staticQueryOptions: {
+        method: 'POST'
+      }
+    } as IVeoQueryDefinition<IVeoFetchWipDecisionEvaluationParameters,IVeoDecisionEvaluation>
   },
   mutations:{
     createObject:{

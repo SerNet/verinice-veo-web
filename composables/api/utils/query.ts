@@ -151,13 +151,14 @@ export const useQuerySync  = async <TVariables = undefined, TResult = any>(
     result = queryDefinition.onDataFetched(result, transformedQueryParameters);
   }
 
-  // Save to vue query cache (Reason for try catch is use via dev plugin)
+  // Save to vue query cache
   try {
     const queryClient = useQueryClient();
     queryClient.setQueryData([queryDefinition.primaryQueryKey, queryParameters], result);
   } catch (e) {
-    console.warn(e);
+    console.warn('Couldn\'t set queried data:', e);
   }
+  
 
   return result as TResult;
 };

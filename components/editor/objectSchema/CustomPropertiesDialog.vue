@@ -174,6 +174,7 @@ import { mdiPlus } from '@mdi/js';
 import { IVeoSchemaEndpoints } from '~/plugins/api/schema';
 import { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
 import { IVeoFormSchemaMeta } from '~~/composables/api/queryDefinitions/forms';
+import { PropType } from 'vue';
 
 export default {
   inject: ['objectSchemaHelper', 'displayLanguage'],
@@ -193,6 +194,14 @@ export default {
     domainId: {
       type: String,
       required: true
+    },
+    objectTypes: {
+      type: Object as PropType<IVeoSchemaEndpoints>,
+      default: undefined
+    },
+    formSchemas: {
+      type: Array as PropType<IVeoFormSchemaMeta[]>,
+      default: () => []
     }
   },
   emits: ['delete', 'update:model-value', 'error', 'success'],
@@ -213,8 +222,6 @@ export default {
           targetType: [(input: string) => this.type === 'aspect' || trim(input).length > 0]
         } as { [key: string]: ((input: string) => boolean)[] }
       },
-      objectTypes: undefined as IVeoSchemaEndpoints | undefined,
-      formSchemas: [] as IVeoFormSchemaMeta[],
       duplicates: [] as string[],
       dialogMode: 'create' as 'create' | 'edit',
       // Not computed, as changing the aspect/link title would make this undefined -> we want more control
@@ -296,14 +303,7 @@ export default {
       }
     }
   },
-  mounted() {
-    this.fetchSchemas();    
-  },
   methods: {
-    async fetchSchemas() {
-      this.objectTypes = await this.$api.schema.fetchAll();
-      this.formSchemas = await this.$api.form.fetchAll(this.domainId);
-    },
     upperFirst,
     close() {
       this.$emit('update:model-value', false);

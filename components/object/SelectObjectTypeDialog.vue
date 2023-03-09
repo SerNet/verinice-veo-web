@@ -68,7 +68,7 @@ const { t: $t } = useI18n({ useScope: 'global' });
 const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
-const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchema);
+const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
 const type = ref<string | undefined>();
 

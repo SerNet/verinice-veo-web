@@ -197,7 +197,9 @@ import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/quer
 import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { useQuery } from '~~/composables/api/utils/query';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 
 enum SIDE_CONTAINERS {
   HISTORY,
@@ -264,7 +266,6 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t, locale } = useI18n();
     const { t: $t } = useI18n({ useScope: 'global' });
-    const { $api } = useNuxtApp();
     const { personReactiveFormActions } = useVeoReactiveFormActions();
 
     // Object stuff
@@ -486,7 +487,7 @@ export default defineComponent({
       // Fetch updated decision results and merge them with the current values
       if (objectData.value?.domains?.[props.domainId] && endpoints.value?.[objectData.value.type]) {
         for (const key in props.objectMetaData?.decisionResults || {}) {
-          const result = await $api.entity.fetchWipDecisionEvaluation(endpoints.value[objectData.value.type], objectData.value as any, props.domainId, key);
+          const result = await useQuerySync(objectQueryDefinitions.queries.fetchWipDecisionEvaluation, {endpoint: endpoints.value[objectData.value.type], object: objectData.value as any, domain: props.domainId, decision: key });
           toReturn.inspectionFindings.push(...result.inspectionFindings);
           toReturn.decisionResults[key] = result.decisionResults.piaMandatory;
         }

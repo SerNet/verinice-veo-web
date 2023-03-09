@@ -177,7 +177,7 @@ export default defineComponent({
 
     // Submitting form
     const { mutateAsync: create } = useMutation(objectQueryDefinitions.mutations.createObject, {
-      onSuccess: (queryClient,data: IVeoAPIMessage) => {
+      onSuccess: (queryClient, data: IVeoAPIMessage) => {
         emit('success', data.resourceId);
         displaySuccessMessage(upperFirst(t('objectCreated', { name: objectData.value.name }).toString()));
         emit('update:model-value', false);
