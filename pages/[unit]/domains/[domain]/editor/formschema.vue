@@ -188,15 +188,14 @@
           #default
         >
           <div class="fill-height fill-width d-flex">
-            <EditorFormSchemaGenerator
+            <EditorFormSchemaPlayground
+              v-if="formSchema"
               v-model="formSchema.content"
-              :schema="objectSchema"
-              :general-translation="translation && translation.lang[language]"
-              :custom-translations="formSchema.translation"
-              :language="language"
-              @delete="onDelete"
-              @update="onUpdate"
-              @update-custom-translation="setFormTranslation"
+            />
+            <v-progress-circular
+              v-else
+              size="64"
+              indeterminate
             />
           </div>
         </template>
@@ -320,6 +319,12 @@
 </template>
 
 <script lang="ts">
+export const PROVIDE_KEYS = {
+  language: 'language',
+  objectSchema: 'mainObjectSchema',
+  translations: 'translations'
+};
+
 import { Ref } from 'vue';
 import { JsonPointer } from 'json-ptr';
 import { mdiAlertCircleOutline, mdiCodeTags, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
@@ -393,6 +398,7 @@ export default defineComponent({
     const translation: Ref<IVeoTranslations | undefined> = ref(undefined);
     const objectData = ref({});
     const language = ref(locale.value);
+    provide(PROVIDE_KEYS.language, language);
 
     watch(
       () => locale.value,
@@ -604,6 +610,7 @@ export default defineComponent({
 
       return toReturn;
     });
+    provide(PROVIDE_KEYS.translations, translations);
 
     return {
       ability,

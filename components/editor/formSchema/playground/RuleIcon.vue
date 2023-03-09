@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Davit Svandize
+   - Copyright (C) 2023  Jonas Heitmann
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -16,43 +16,51 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip location="bottom">
-    <template #activator="{ props: tooltip, attrs }">
+  <v-tooltip
+    v-if="icon"
+    location="top"
+  >
+    <template #activator="{ props: tooltipProps }">
       <v-icon
-        size="small"
-        v-bind="mergeProps(attrs, tooltip)"
         :icon="icon"
+        class="mr-1"
+        size="small"
+        v-bind="tooltipProps"
       />
     </template>
-    <span>{{ t(modelValue) }}</span>
+    <template #default>
+      {{ t(rule?.effect === 'SHOW' ? 'showRule' : 'hiddenRule') }}
+    </template>
   </v-tooltip>
 </template>
-<script lang="ts" setup>
-import { mergeProps, PropType } from 'vue';
 
-import { getRuleEffectIcons } from '~/lib/FormSchemaHelper';
+<script setup lang="ts">
+import { mdiEyeOffOutline, mdiEyeOutline } from '@mdi/js';
+import { PropType } from 'vue';
+
+import { IVeoFormSchemaItemRule } from '~~/types/VeoTypes';
 
 const props = defineProps({
-  modelValue: {
-    type: String as PropType<'SHOW' | 'HIDE'>,
+  rule: {
+    type: Object as PropType<IVeoFormSchemaItemRule>,
     default: undefined
   }
 });
 
 const { t } = useI18n();
-  
-const icon = getRuleEffectIcons(props.modelValue);
+
+const icon = computed(() => !props.rule ? undefined : props.rule.effect === 'SHOW' ? mdiEyeOutline : mdiEyeOffOutline);
 </script>
 
 <i18n>
 {
   "en": {
-    "SHOW": "The element will be shown based on a rule",
-    "HIDE": "The element will be hidden based on a rule" 
+    "hideRule": "This element gets hidden based on a rule.",
+    "showRule": "This element gets displayed based on a rule."
   },
   "de": {
-    "SHOW": "Das Element wird basierend auf einer Regel angezeigt",
-    "HIDE": "Das Element wird basierend auf einer Regel versteckt" 
+    "hideRule": "Dieses Element wird basierend auf einer Regel ausgeblendet.",
+    "showRule": "Dieses Element wird basierend auf einer Regel angezeigt."
   }
 }
 </i18n>
