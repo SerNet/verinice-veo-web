@@ -48,7 +48,7 @@
 import { PropType } from 'vue';
 
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import schemasQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useMutation } from '~~/composables/api/utils/mutation';
@@ -65,7 +65,7 @@ const emit = defineEmits(['success', 'error', 'update:model-value']);
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { mutateAsync: doDelete } = useMutation(objectQueryDefinitions.mutations.deleteObject);
-const { data: endpoints } = useQuery(schemasQueryDefinitions.queries.fetchSchemas);
+const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 const { ability } = useVeoPermissions();
 
 const displayName = computed(() => props.item?.displayName ?? '');

@@ -76,7 +76,7 @@ import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/t
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import schemasQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions, { IVeoFetchRisksParameters } from '~/composables/api/queryDefinitions/objects';
 import { useFetchParentObjects } from '~/composables/api/objects';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
@@ -121,7 +121,7 @@ export default defineComponent({
     };
     watch(() => props.type, resetQueryOptions);
 
-    const { data: schemas } = useQuery(schemasQueryDefinitions.queries.fetchSchemas);
+    const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const parentScopesQueryParameters = computed(() => ({
       parentEndpoint: 'scopes',
       childObjectId: props.object?.id || '',
@@ -328,7 +328,7 @@ export default defineComponent({
                     (parentScopes.value?.items || []).map((item) => item.id)
                   )
                 ).resourceId;
-                const clonedObject = await useQuerySync(objectQueryDefinitions.queries.fetch , {endpoint: schemas.value?.[item.type] || '', id: clonedObjectId});
+                const clonedObject = await useQuerySync(objectQueryDefinitions.queries.fetch , { endpoint: schemas.value?.[item.type] || '', id: clonedObjectId });
                 if (props.object) {
                   if (['childScopes', 'childObjects'].includes(props.type)) {
                     await link(props.object, clonedObject);
@@ -347,7 +347,7 @@ export default defineComponent({
             label: upperFirst(t(props.object?.type === 'scope' || props.type === 'parentScopes' ? 'removeFromScope' : 'removeFromObject').toString()),
             icon: mdiLinkOff,
             action: async (item: IVeoEntity) => {
-              const parent = await useQuerySync(objectQueryDefinitions.queries.fetch , {endpoint: schemas.value?.[item.type] || '', id: item.id});
+              const parent = await useQuerySync(objectQueryDefinitions.queries.fetch , { endpoint: schemas.value?.[item.type] || '', id: item.id });
               if (['parentScopes', 'parentObjects'].includes(props.type)) {
                 unlinkEntityDialog.value.objectToRemove = props.object;
                 unlinkEntityDialog.value.parent = parent;
@@ -429,7 +429,7 @@ export default defineComponent({
     };
 
     // Risk tab related stuff
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string}));
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
     const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
     const domainData = computed(() => domain.value?.riskDefinitions?.DSRA);
 

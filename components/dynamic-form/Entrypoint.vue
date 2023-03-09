@@ -178,7 +178,7 @@ export default defineComponent({
 
       for (const key in props.reactiveFormActions || {}) {
         if (toReturn[key]) {
-          toReturn[key].push(...(props.reactiveFormActions[key]));
+          toReturn[key].push(...props.reactiveFormActions[key]);
         } else {
           toReturn[key] = props.reactiveFormActions[key];
         }

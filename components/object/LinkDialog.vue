@@ -307,11 +307,11 @@ export default defineComponent({
               const parentsToAdd = differenceBy(modifiedSelectedItems.value, originalSelectedItems.value, 'id');
               const parentsToRemove = differenceBy(originalSelectedItems.value, modifiedSelectedItems.value, 'id');
               for (const parent of parentsToAdd) {
-                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, {endpoint: endpoints.value?.[parent.type], id: parent.id});
+                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: endpoints.value?.[parent.type], id: parent.id });
                 await link(_parent, props.object);
               }
               for (const parent of parentsToRemove) {
-                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, {endpoint: endpoints.value?.[parent.type], id: parent.id});
+                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: endpoints.value?.[parent.type], id: parent.id });
                 await unlink(_parent, props.object.id);
               }
             } else {

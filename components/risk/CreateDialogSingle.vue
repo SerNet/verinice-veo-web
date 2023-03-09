@@ -245,12 +245,12 @@ export default defineComponent({
 
         try {
           if (!data.value.mitigation && mitigations.value.length) {
-            const newMitigationId = (await createObject({endpoint: 'controls', object: newMitigatingAction.value})).resourceId;
+            const newMitigationId = (await createObject({ endpoint: 'controls', object: newMitigatingAction.value })).resourceId;
             data.value.mitigation = createLink('controls', newMitigationId);
           }
 
           if (data.value.mitigation) {
-            await link(await useQuerySync(objectQueryDefinitions.queries.fetch, {endpoint: 'controls', id: getEntityDetailsFromLink(data.value.mitigation).id}), mitigations.value, true);
+            await link(await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: 'controls', id: getEntityDetailsFromLink(data.value.mitigation).id }), mitigations.value, true);
           }
 
           if (props.scenarioId) {

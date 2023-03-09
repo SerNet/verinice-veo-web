@@ -221,7 +221,7 @@ import { isEmpty, isEqual, isString } from 'lodash';
 import { mdiChevronRight } from '@mdi/js';
 
 import { separateUUIDParam } from '~/lib/utils';
-import schemasQueryDefinitions from '~~/composables/api/queryDefinitions/schemas';
+import schemaQueryDefinitions from '~~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 
@@ -265,7 +265,7 @@ const createFormIsValid = ref(false);
 const code = ref();
 const modelType = ref();
 
-const { data: schemas } = useQuery(schemasQueryDefinitions.queries.fetchSchemas);
+const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
@@ -288,7 +288,7 @@ const importSchema = async (schema?: any) => {
     emit('completed', { schema, meta: undefined });
     navigateTo({ os: 'custom' });
   } else {
-    const _schema = await useQuerySync(schemasQueryDefinitions.queries.fetchSchema, {type: modelType.value, domainIds: [domainId.value]});
+    const _schema = await useQuerySync(schemaQueryDefinitions.queries.fetchSchema, { type: modelType.value, domainIds: [domainId.value] });
     emit('completed', { schema: _schema, meta: undefined });
     navigateTo({ os: modelType.value });
   }

@@ -134,11 +134,11 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemasDetailed } from '~/composables/api/schemas';
 import { useDocNavigation } from '~/composables/docs';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-import catalogsQueryDefinitions from '~~/composables/api/queryDefinitions/catalogs';
-import domainsQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
+import catalogQueryDefinitions from '~~/composables/api/queryDefinitions/catalogs';
+import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
 import formsQueryDefinitions from '~~/composables/api/queryDefinitions/forms';
-import reportsQueryDefinitions from '~~/composables/api/queryDefinitions/reports';
-import translationsQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
+import reportQueryDefinitions from '~~/composables/api/queryDefinitions/reports';
+import translationQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~~/composables/api/utils/query';
 
 export interface INavItem {
@@ -193,7 +193,7 @@ export default defineComponent({
     const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useQuery(translationsQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     // objects specific stuff
     const objectSchemas = ref<IVeoObjectSchema[]>([]);
@@ -282,7 +282,7 @@ export default defineComponent({
     // catalog specific stuff
     const fetchCatalogsQueryParameters = computed(() => ({ domainId: props.domainId as string }));
     const fetchCatalogsQueryEnabled = computed(() => !!props.domainId);
-    const { data: catalogs, isFetching: catalogsEntriesLoading } = useQuery(catalogsQueryDefinitions.queries.fetchCatalogs, fetchCatalogsQueryParameters, { enabled: fetchCatalogsQueryEnabled });
+    const { data: catalogs, isFetching: catalogsEntriesLoading } = useQuery(catalogQueryDefinitions.queries.fetchCatalogs, fetchCatalogsQueryParameters, { enabled: fetchCatalogsQueryEnabled });
 
     const catalogsEntriesChildItems = computed<INavItem[]>(() =>
       (catalogs.value || []).map((catalog) => ({
@@ -300,7 +300,7 @@ export default defineComponent({
     );
 
     // report specific stuff
-    const { data: reports, isFetching: reportsEntriesLoading } = useQuery(reportsQueryDefinitions.queries.fetchAll);
+    const { data: reports, isFetching: reportsEntriesLoading } = useQuery(reportQueryDefinitions.queries.fetchAll);
 
     const reportsEntriesChildItems = computed<INavItem[]>(
       () =>
@@ -324,7 +324,7 @@ export default defineComponent({
     // risk specific stuff
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
-    const { data: domain, isFetching: riskDefinitionsLoading } = useQuery(domainsQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
+    const { data: domain, isFetching: riskDefinitionsLoading } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
     const riskDefinitions = computed(() => domain.value?.riskDefinitions || {});
 
     const riskChildItems = computed<INavItem[]>(() =>

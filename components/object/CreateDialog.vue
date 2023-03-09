@@ -65,7 +65,7 @@ import { isObjectEqual, separateUUIDParam } from '~/lib/utils';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes';
-import schemasQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery } from '~~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
@@ -101,12 +101,12 @@ export default defineComponent({
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
-    const { data: endpoints } = useQuery(schemasQueryDefinitions.queries.fetchSchemas);
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + translations.value?.lang[locale.value]?.[props.objectType]);
 
     // Seeding of empty form
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string}));
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
     const { data: domain, isFetching: domainIsFetching } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
       onSuccess: () => {

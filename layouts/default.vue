@@ -109,7 +109,7 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
 import 'intro.js/minified/introjs.min.css';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import unitsQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import { useRequest } from '~/composables/api/utils/request';
 import { useDisplay } from 'vuetify';
 import { useMutation } from '~~/composables/api/utils/mutation';
@@ -144,10 +144,10 @@ function createUnit(persistent = false) {
 }
 
 // automatically create first unit if none exists and then change to new unit
-const { mutateAsync: _createUnit, data: newUnitPayload } = useMutation(unitsQueryDefinitions.mutations.create);
+const { mutateAsync: _createUnit, data: newUnitPayload } = useMutation(unitQueryDefinitions.mutations.create);
 
 const fetchUnitsDisabled = computed(() => authenticated.value);
-useQuery(unitsQueryDefinitions.queries.fetchAll, undefined, { enabled: fetchUnitsDisabled, onSuccess: async (data: IVeoUnit[]) => {
+useQuery(unitQueryDefinitions.queries.fetchAll, undefined, { enabled: fetchUnitsDisabled, onSuccess: async (data: IVeoUnit[]) => {
   if(!data.length) {
     await _createUnit({
       name: t('unit.default.name'),

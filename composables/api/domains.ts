@@ -52,6 +52,5 @@ export const useFetchUnitDomains = (queryParameters: Ref<IVeoFetchUnitDomainsPar
     isFetching
   };
 
-
   return toReturn;
 };

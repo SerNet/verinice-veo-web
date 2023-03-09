@@ -18,7 +18,7 @@
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 import { QueryOptions, useQueries, useQuery } from './utils/query';
 
-import schemasQueryDefinitions from './queryDefinitions/schemas';
+import schemaQueryDefinitions from './queryDefinitions/schemas';
 
 
 export interface IVeoFetchSchemasDetailedParameters {
@@ -27,13 +27,13 @@ export interface IVeoFetchSchemasDetailedParameters {
 
 export const useFetchSchemasDetailed = (queryParameters: MaybeRef<IVeoFetchSchemasDetailedParameters>, queryOptions?: QueryOptions) => {
   // Query useQueries depends on
-  const { data: schemas } = useQuery(schemasQueryDefinitions.queries.fetchSchemas);
+  const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
   // Parameters for the depending queries. As this function only gets called once, we have to add reactivity under the hood to make the magic happen
   const dependentQueryParameters = computed(() => Object.keys(schemas.value || {}).map((schemaName) => ({ domainIds: unref(queryParameters).domainIds, type: schemaName })));
 
   return useQueries(
-    schemasQueryDefinitions.queries.fetchSchema,
+    schemaQueryDefinitions.queries.fetchSchema,
     dependentQueryParameters,
     queryOptions
   );

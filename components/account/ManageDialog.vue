@@ -148,7 +148,7 @@ import { PropType } from 'vue';
 import { mdiAccountOutline, mdiEmailOutline } from '@mdi/js';
 import { cloneDeep, pick, trim } from 'lodash';
 
-import accountsQueryDefinitions, { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
+import accountQueryDefinitions, { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -244,9 +244,9 @@ export default defineComponent({
 
     // CRUD stuff
     const createMutationParameters = computed(() => formData.value);
-    const { mutateAsync: create, isLoading: isLoadingCreate } = useMutation(accountsQueryDefinitions.mutations.createAccount);
+    const { mutateAsync: create, isLoading: isLoadingCreate } = useMutation(accountQueryDefinitions.mutations.createAccount);
     const updateMutationParameters = computed(() => ({ ...formData.value, id: props.id }));
-    const { mutateAsync: update, isLoading: isLoadingUpdate } = useMutation(accountsQueryDefinitions.mutations.updateAccount);
+    const { mutateAsync: update, isLoading: isLoadingUpdate } = useMutation(accountQueryDefinitions.mutations.updateAccount);
 
     const isLoading = computed(() => isLoadingCreate.value || isLoadingUpdate.value);
 

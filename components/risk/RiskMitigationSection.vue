@@ -154,7 +154,7 @@ export default defineComponent({
         const { id } = getEntityDetailsFromLink(props.data.mitigation);
 
         try {
-          selectedItems.value = await useQuerySync(objectQueryDefinitions.queries.fetchObjectChildren, {endpoint: 'controls', id: id});
+          selectedItems.value = await useQuerySync(objectQueryDefinitions.queries.fetchObjectChildren, { endpoint: 'controls', id: id });
           emit('mitigations-modified', false);
         } finally {
           fetchingMitigation.value = false;
@@ -166,7 +166,7 @@ export default defineComponent({
     };
 
     const onMitigationCreated = async (objectId: string) => {
-      const newMitigation = await useQuerySync(objectQueryDefinitions.queries.fetch, {endpoint: 'controls', id: objectId});
+      const newMitigation = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: 'controls', id: objectId });
       selectedItems.value = [...selectedItems.value, newMitigation]; // We reassign the ref instead of using .push so that the computed setter picks up the changes
     };
 

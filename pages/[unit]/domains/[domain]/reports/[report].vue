@@ -224,7 +224,7 @@ export default defineComponent({
         targets: selectedObjects.value
       }
     }));
-    const { mutateAsync: create, isLoading: generatingReport } = useMutation(reportQueryDefinitions.mutations.create,{ onSuccess: openReport });
+    const { mutateAsync: create, isLoading: generatingReport } = useMutation(reportQueryDefinitions.mutations.create, { onSuccess: openReport });
 
     const generateReport = () => {
       if (report.value) {

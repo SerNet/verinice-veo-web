@@ -434,7 +434,7 @@ export default defineComponent({
       domainId: domainId.value,
       form: formSchema.value as IVeoFormSchema
     }));
-    const { mutateAsync: create } = useMutation(formQueryDefinitions.mutations.createForm,{
+    const { mutateAsync: create } = useMutation(formQueryDefinitions.mutations.createForm, {
       onSuccess: (data: any) => {
         if (formSchema.value) {
           formSchema.value.id = data; // For some reason the interface always returns void, even though this is a string

@@ -123,7 +123,7 @@ import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { JsonPointer } from 'json-ptr';
 import { trim } from 'lodash';
 
-import translationsQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { VeoAlertType } from '~/types/VeoTypes';
 import { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
 import { useQuery } from '~~/composables/api/utils/query';
@@ -146,7 +146,7 @@ export default defineComponent({
     const formSchema = inject<Ref<IVeoFormSchema | undefined>>('mainFormSchema');
 
     const translationsQueryParameters = computed(() => ({ languages: props.availableLanguages }));
-    const { data: objectSchemaTranslations } = useQuery(translationsQueryDefinitions.queries.fetch, translationsQueryParameters);
+    const { data: objectSchemaTranslations } = useQuery(translationQueryDefinitions.queries.fetch, translationsQueryParameters);
 
     // Layout stuff
     const resultExpansionPanel = ref();

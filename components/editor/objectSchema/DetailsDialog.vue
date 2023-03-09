@@ -200,8 +200,8 @@ export default defineComponent({
     const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined = inject('objectSchemaHelper');
 
     // display stuff
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string}));
-    const { data: domain} = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     const displayLanguage = inject<Ref<string>>('displayLanguage');
     // We can't use a computed here, as changes sadly won't get picked up.

@@ -74,7 +74,7 @@ import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoCustomLink } from '~/types/VeoTypes';
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
-import schemasQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { PropType } from 'vue';
 import { useQuery } from '~~/composables/api/utils/query';
 
@@ -124,7 +124,7 @@ export default defineComponent({
 
     // new object creation
     const createObjectDialogVisible = ref(false);
-    const { data: schemas } = useQuery(schemasQueryDefinitions.queries.fetchSchemas);
+    const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const onTargetCreated = (newElementId: string) => {
       emit('update:model-value', { targetUri: `${config.public.apiUrl}/${schemas.value?.[objectType.value]}/${newElementId}` });
     };

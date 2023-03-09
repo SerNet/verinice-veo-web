@@ -376,7 +376,7 @@ export default defineComponent({
       expireOptimisticLockingAlert();
       try {
         if (modifiedObject.value && object.value) {
-          await _updateObject({endpoint: endpoint.value, object: modifiedObject.value });
+          await _updateObject({ endpoint: endpoint.value, object: modifiedObject.value });
           displaySuccessMessage(successText);
           refetch();
           formDataIsRevision.value = false;

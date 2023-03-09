@@ -311,7 +311,7 @@ export default defineComponent({
     const formsQueryEnabled = computed(() => !!props.domainId);
     const { data: formSchemas, isFetching: formSchemasAreFetching } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
-    const formQueryParameters = computed(() => ({ domainId: props.domainId, id: selectedDisplayOption.value as string}));
+    const formQueryParameters = computed(() => ({ domainId: props.domainId, id: selectedDisplayOption.value as string }));
     const formQueryEnabled = computed(() => selectedDisplayOption.value !== 'objectschema');
     const { data: formSchema, isFetching: formSchemaIsFetching } = useQuery(formQueryDefinitions.queries.fetchForm, formQueryParameters, { enabled: formQueryEnabled });
     const currentFormSchema = computed(() => (selectedDisplayOption.value === 'objectschema' || formSchemaIsFetching.value ? undefined : formSchema.value));

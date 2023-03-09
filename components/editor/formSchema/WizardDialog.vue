@@ -90,8 +90,8 @@ import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
 import { IVeoObjectSchema, IVeoObjectSchemaTranslations } from '~/types/VeoTypes';
 import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
-import schemasQueryDefinitions, { IVeoFetchSchemaParameters } from '~/composables/api/queryDefinitions/schemas';
-import translationsQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import schemaQueryDefinitions, { IVeoFetchSchemaParameters } from '~/composables/api/queryDefinitions/schemas';
+import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~~/composables/api/utils/query';
 
 enum WIZARD_STATES {
@@ -202,7 +202,7 @@ export default defineComponent({
 
     const fetchSchemaQueryParameters = computed<IVeoFetchSchemaParameters>(() => ({ type: objectSchemaId.value || '', domainIds: [props.domainId] }));
     const fetchSchemaQueryEnabled = computed(() => !!objectSchemaId.value && objectSchemaId.value !== 'custom');
-    const { data: remoteObjectSchema, isFetching: loadingObjectSchema } = useQuery(schemasQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
+    const { data: remoteObjectSchema, isFetching: loadingObjectSchema } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
 
     const objectSchema = computed(() => {
       let schema = forceOwnObjectSchema.value || objectSchemaId.value === 'custom' ? uploadedObjectSchema.value : remoteObjectSchema.value;
@@ -241,7 +241,7 @@ export default defineComponent({
 
     // translation stuff
     const translationQueryParameters = computed(() => ({ languages: (locales.value as LocaleObject[]).map((locale) => locale.code) }));
-    const { data: translations } = useQuery(translationsQueryDefinitions.queries.fetch, translationQueryParameters);
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
 
     // create stuff
     const createFormValid = ref(true);
