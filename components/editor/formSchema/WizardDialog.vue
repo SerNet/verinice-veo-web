@@ -38,6 +38,8 @@
           v-model:valid="createFormValid"
           v-model:object-type="objectSchemaId"
           v-model:sub-type="formSchemaDetails.subType"
+          v-model:name="formSchemaDetails.name"
+          v-model:sorting="formSchemaDetails.sorting"
           :model-value="WIZARD_STATES.CREATE"
           :domain-id="domainId"
           :object-schema="objectSchema"
