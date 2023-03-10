@@ -104,9 +104,8 @@ import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import { IVeoAPIMessage } from '~/types/VeoTypes';
 import unitQueryDefinitions, { IVeoUnit} from '~/composables/api/queryDefinitions/units';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-import { useRequest } from '~/composables/api/utils/request';
 import { useFetchUnitDomains } from '~~/composables/api/domains';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
 import { IVeoDomain } from '~~/composables/api/queryDefinitions/domains';
 
@@ -114,7 +113,6 @@ const { profile, userSettings } = useVeoUser();
 const router = useRouter();
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
-const { request } = useRequest();
 
 useHead({
   title: $t('breadcrumbs.index')
@@ -162,7 +160,7 @@ const redirectIfTwoUnits = async () => {
 };
 
 const redirectToNewUnit = async (queryClient: QueryClient, data: IVeoAPIMessage) => {
-  const unit = await request<IVeoUnit>('/api/units/:id', { params: { id: data.resourceId } });
+  const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: data.resourceId });
   const domainId = getFirstDomainDomaindId(unit);
 
   if (domainId) {

@@ -110,10 +110,9 @@ import { useVeoUser } from '~/composables/VeoUser';
 import 'intro.js/minified/introjs.min.css';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
-import { useRequest } from '~/composables/api/utils/request';
 import { useDisplay } from 'vuetify';
 import { useMutation } from '~~/composables/api/utils/mutation';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 
 const { xs } = useDisplay();
 const { authenticated } = useVeoUser();
@@ -121,7 +120,6 @@ const route = useRoute();
 const { ability } = useVeoPermissions();
 
 const { alerts, displaySuccessMessage } = useVeoAlerts();
-const { request } = useRequest();
 const { t } = useI18n();
 
 useHead(() => ({
@@ -154,7 +152,7 @@ useQuery(unitQueryDefinitions.queries.fetchAll, undefined, { enabled: fetchUnits
       description: t('unit.default.description')
     });
     displaySuccessMessage('firstUnitCreated');
-    const unit = await request('/api/units/:id', { params: { id: newUnitPayload.value?.resourceId } });
+    const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: newUnitPayload.value?.resourceId as string });
     const domainId = getFirstDomainDomaindId(unit);
     if (domainId) {
       navigateTo({
