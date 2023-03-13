@@ -17,8 +17,7 @@
  */
 import FormSchemaValidator from './FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
-import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaTranslationCollection, IVeoFormSchemaItemRule, IVeoObjectSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
-import { mdiEyeOffOutline, mdiEyeOutline } from '@mdi/js';
+import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaTranslationCollection, IVeoObjectSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export function generateSchema(
   name: IVeoFormSchemaMeta['name'],
@@ -72,13 +71,4 @@ export function deleteElementCustomTranslation(
     });
     callbackUpdateCustomTranslation(localCustomTranslation);
   }
-}
-
-export const ruleEffectIcons = {
-  SHOW: mdiEyeOutline,
-  HIDE: mdiEyeOffOutline
-};
-
-export function getRuleEffectIcons(ruleEffect: IVeoFormSchemaItemRule['effect']) {
-  return ruleEffect ? ruleEffectIcons[ruleEffect] : undefined;
 }

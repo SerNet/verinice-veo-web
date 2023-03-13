@@ -75,12 +75,6 @@ export interface IInputElement {
  */
 const INPUT_ELEMENTS = [
   {
-    name: 'ArrayField',
-    type: ['array'],
-    options: { direction: 'vertical' },
-    weight: (weights) => calculateConditionsScore([weights.schema.type === 'array', typeof weights.schema.elements !== 'undefined'])
-  },
-  {
     name: 'Autocomplete',
     type: ['undefined', 'enum', 'array'],
     options: { format: 'autocomplete' },
@@ -180,17 +174,6 @@ const INPUT_ELEMENTS = [
           weights.schema.type === 'number',
         typeof weights.schema.enum !== 'undefined' ||
           (weights.schema.items instanceof Object && !Array.isArray(weights.schema.items) && typeof weights.schema.items.enum !== 'undefined')
-      ])
-  },
-  {
-    name: 'Tags',
-    type: ['array'],
-    options: { format: 'tags' },
-    weight: (weights) =>
-      calculateConditionsScore([
-        weights.schema.type === 'array',
-        !!weights.schema.items,
-        weights.schema.items instanceof Object && !Array.isArray(weights.schema.items) && typeof weights.schema.items.anyOf !== 'undefined'
       ])
   }
 ] as IInputElement[];

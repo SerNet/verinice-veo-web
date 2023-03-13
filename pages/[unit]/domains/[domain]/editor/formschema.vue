@@ -281,7 +281,6 @@
       <EditorErrorDialog
         v-model="errorDialogVisible"
         :validation="schemaIsValid"
-        @fix="onFixRequest"
       />
       <EditorFormSchemaCodeEditorDialog
         v-model="codeEditorVisible"
@@ -326,18 +325,14 @@ export const PROVIDE_KEYS = {
 };
 
 import { Ref } from 'vue';
-import { JsonPointer } from 'json-ptr';
 import { mdiAlertCircleOutline, mdiCodeTags, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
 import { useDisplay } from 'vuetify';
 
-import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
+import { validate } from '~/lib/FormSchemaHelper';
 import {
   IVeoTranslations,
   IVeoObjectSchema,
   IVeoFormSchema,
-  IVeoFormSchemaItemDeleteEvent,
-  IVeoFormSchemaItem,
-  IVeoFormSchemaItemUpdateEvent,
   IVeoFormSchemaTranslationCollection,
   IVeoFormSchemaMeta
 } from '~/types/VeoTypes';
@@ -349,7 +344,6 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useCreateForm, useUpdateForm } from '~/composables/api/forms';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { useFetchDomain } from '~/composables/api/domains';
-import { isArray } from 'lodash';
 
 export default defineComponent({
   setup() {
@@ -500,36 +494,6 @@ export default defineComponent({
       }
     }
 
-    function onDelete(event: IVeoFormSchemaItemDeleteEvent): void {
-      if (formSchema.value) {
-        const pointer = event.formSchemaPointer as string;
-        // Delete custom translation keys for deleted elemented and nested elements
-        const elementFormSchema = JsonPointer.get(formSchema.value.content, pointer) as IVeoFormSchemaItem;
-        deleteElementCustomTranslation(elementFormSchema, formSchema.value.translation, setFormTranslation);
-        const vjpPointer = pointer.replace('#', '');
-        // Not allowed to make changes on the root object
-        if (event.formSchemaPointer !== '#') {
-          const parts = vjpPointer.split('/');
-          const lastPart = parts.pop();
-          const partToModify = JsonPointer.get(formSchema.value.content, parts.join('/'));
-          if(isArray(partToModify)) {
-            partToModify.splice(parseInt(lastPart), 1);
-          } else {
-            delete partToModify[lastPart];
-          }
-          JsonPointer.set(formSchema.value.content, parts.join('/'), partToModify);
-        } else {
-          delete formSchema.value.content;
-        }
-      }
-    }
-
-    function onUpdate(event: IVeoFormSchemaItemUpdateEvent): void {
-      if (formSchema.value?.content) {
-        JsonPointer.set(formSchema.value.content, (event.formSchemaPointer as string).replace('#', ''), event.data);
-      }
-    }
-
     // TODO: during the refactoring process, look if controlItems here and in Backlog can be removed
     function updateControlItems(items: any) {
       controlItems.value = items;
@@ -557,12 +521,6 @@ export default defineComponent({
     function setFormName(event: IVeoFormSchemaMeta['name']) {
       if (formSchema.value) {
         formSchema.value.name = event;
-      }
-    }
-
-    function onFixRequest(code: string, params?: Record<string, any>) {
-      if (code === 'E_PROPERTY_MISSING' && params) {
-        onDelete(params as any);
       }
     }
 
@@ -635,8 +593,6 @@ export default defineComponent({
       updateSubType,
       updateSorting,
       downloadSchema,
-      onDelete,
-      onUpdate,
       updateControlItems,
       invalidSchemaDownloadDialogVisible,
       downloadButton,
@@ -646,7 +602,6 @@ export default defineComponent({
       availableLanguages,
       setFormTranslation,
       setFormName,
-      onFixRequest,
       PageHeaderAlignment,
       save,
       translations,

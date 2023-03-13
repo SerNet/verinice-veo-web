@@ -38,13 +38,14 @@ export const PROVIDE_KEYS = {
 
 <script setup lang="ts">
 import { PropType } from 'vue';
-import { v5 as UUIDv5 } from 'uuid';
+import { JsonPointer } from 'json-ptr';
+import { v5 as UUIDv5, v4 as UUIDv4 } from 'uuid';
 
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
-import { JsonPointer } from 'json-ptr';
 import { IPlaygroundElement } from './Element.vue';
+import { cloneDeep } from 'lodash';
 
-// TODO: 1. Backlog integrieren 2. Delete/Edit einbauen
+// TODO: 2. Delete/Edit einbauen (auch Links!!)
 
 const props = defineProps({
   modelValue: {
@@ -59,6 +60,10 @@ const props = defineProps({
     })
   }
 });
+
+const emit = defineEmits<{
+  (event: 'update:model-value', formSchema: IVeoFormSchemaItem): void
+}>();
 
 // UUID Map stuff
 const formSchemaElementMap = reactive<FormSchemaElementMap>(new Map<string, IVeoFormSchemaItem>());
@@ -79,7 +84,7 @@ const getFormSchemaElementName = (formSchemaElement: IVeoFormSchemaItem, pointer
 
 const addElementToMap = (formSchemaElement: IVeoFormSchemaItem, pointer: string) => {
   const uuid = UUIDv5(getFormSchemaElementName(formSchemaElement, pointer), FORMSCHEMA_PLAYGROUND_NAMESPACE);
-  formSchemaElementMap.set(uuid, formSchemaElement); // Add formSchema element to uuid map
+  formSchemaElementMap.set(uuid, cloneDeep(formSchemaElement)); // Add formSchema element to uuid map
   if(pointer === '#') {
     playgroundElements.value = { id: uuid, children: [], readonly: true };
   } else {
@@ -97,6 +102,27 @@ const initPlayground = (formSchemaRoot: IVeoFormSchemaItem) => {
 };
 initPlayground(props.modelValue); // Call once as soon as the component gets initialized to create the map
 
+const buildFormSchemaItem = (element: IPlaygroundElement) => {
+  const formSchemaElement = formSchemaElementMap.get(element.id) as IVeoFormSchemaItem;
+  formSchemaElement.elements = 'elements' in formSchemaElement ? [] : undefined;
+
+  for(const child of element.children) {
+    formSchemaElement.elements?.push(buildFormSchemaItem(child));
+  }
+
+  return formSchemaElement;
+};
+
+const onFormSchemaModified = (newValue: IPlaygroundElement | undefined) => {
+  if(!newValue) {
+    return;
+  }
+
+  emit('update:model-value', buildFormSchemaItem(newValue));
+};
+
+watch(() => playgroundElements.value, onFormSchemaModified, { deep: true });
+
 // Manipulation of playground
 const getParentPointer = (childPointer: string) => {
   const parts = childPointer.split('/');
@@ -105,7 +131,18 @@ const getParentPointer = (childPointer: string) => {
   return parts.join('/');
 };
 
-const onAddElement = (elementPointer: string, element: IPlaygroundElement) => {
+const isFormElement = (element: IPlaygroundElement | IVeoFormSchemaItem): element is IVeoFormSchemaItem => 'type' in element;
+
+const onAddElement = (elementPointer: string, element: IPlaygroundElement | IVeoFormSchemaItem) => {
+  // onAddElement can either be called from within the playground or if the user drags a backlog item to the playground, so we have to check which object we got
+  if(isFormElement(element)) {
+    // We use v4 instead of v5 here, as v5 creates reproducable ids, which sucks for label and layouts, as those UUIDs
+    // are generated based on their position in the form schema, meaning it can happen that we create duplicates
+    const uuid = UUIDv4();
+    formSchemaElementMap.set(uuid, cloneDeep(element)); // Add formSchema element to uuid map
+    element = { id: uuid, children: [] };
+  }
+
   const newIndex = parseInt(elementPointer.split('/').pop() as string);
 
   const parent = JsonPointer.get(playgroundElements.value, getParentPointer(elementPointer)) as IPlaygroundElement;
