@@ -16,19 +16,23 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <EditorFormSchemaPlaygroundItem
-    v-if="playgroundItems"
-    :playground-item="playgroundItems"
+  <EditorFormSchemaPlaygroundElement
+    v-if="playgroundElements"
+    :playground-element="playgroundElements"
+    pointer="#"
+    @add="onAddElement"
+    @move="onMoveElement"
+    @remove="onRemoveElement"
   />
 </template>
 
 <script lang="ts">
 export const FORMSCHEMA_PLAYGROUND_NAMESPACE = 'bdc08095-d80f-4974-aa69-a41d01a66748';
 
-export type FormSchemaItemMap = Map<string, IVeoFormSchemaItem>;
+export type FormSchemaElementMap = Map<string, IVeoFormSchemaItem>;
 
 export const PROVIDE_KEYS = {
-  formSchemaItemMap: 'formSchemaItemMap'
+  formSchemaElementMap: 'formSchemaElementMap'
 };
 </script>
 
@@ -38,7 +42,9 @@ import { v5 as UUIDv5 } from 'uuid';
 
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 import { JsonPointer } from 'json-ptr';
-import { IPlaygroundItem } from './Item.vue';
+import { IPlaygroundElement } from './Element.vue';
+
+// TODO: 1. Backlog integrieren 2. Delete/Edit einbauen
 
 const props = defineProps({
   modelValue: {
@@ -55,39 +61,78 @@ const props = defineProps({
 });
 
 // UUID Map stuff
-const formSchemaItemMap = reactive<FormSchemaItemMap>(new Map<string, IVeoFormSchemaItem>());
-const playgroundItems = ref<IPlaygroundItem | undefined>(undefined);
+const formSchemaElementMap = reactive<FormSchemaElementMap>(new Map<string, IVeoFormSchemaItem>());
+const playgroundElements = ref<IPlaygroundElement | undefined>(undefined);
 
-provide(PROVIDE_KEYS.formSchemaItemMap, formSchemaItemMap);
+provide(PROVIDE_KEYS.formSchemaElementMap, formSchemaElementMap);
 
-const getFormSchemaItemName = (formSchemaItem: IVeoFormSchemaItem, pointer: string) => {
-  switch(formSchemaItem.type) {
+const getFormSchemaElementName = (formSchemaElement: IVeoFormSchemaItem, pointer: string) => {
+  switch(formSchemaElement.type) {
     case 'Control':
-      return formSchemaItem.scope as string;
+      return formSchemaElement.scope as string;
     case 'Widget':
-      return formSchemaItem.name as string;
+      return formSchemaElement.name as string;
     default:
       return pointer;
   }
 };
 
-const addItemToMap = (formSchemaItem: IVeoFormSchemaItem, pointer: string) => {
-  const uuid = UUIDv5(getFormSchemaItemName(formSchemaItem, pointer), FORMSCHEMA_PLAYGROUND_NAMESPACE);
-  formSchemaItemMap.set(uuid, formSchemaItem); // Add to formSchema item to uuid map
+const addElementToMap = (formSchemaElement: IVeoFormSchemaItem, pointer: string) => {
+  const uuid = UUIDv5(getFormSchemaElementName(formSchemaElement, pointer), FORMSCHEMA_PLAYGROUND_NAMESPACE);
+  formSchemaElementMap.set(uuid, formSchemaElement); // Add formSchema element to uuid map
   if(pointer === '#') {
-    playgroundItems.value = { id: uuid, children: [], readonly: true };
+    playgroundElements.value = { id: uuid, children: [], readonly: true };
   } else {
-    JsonPointer.set(playgroundItems.value, pointer, { id: uuid, children: [] }, true); // Add to playground items, to be displayed
+    JsonPointer.set(playgroundElements.value, pointer, { id: uuid, children: [] }, true); // Add to playground elements to be displayed
   }
 
-  (formSchemaItem.elements || []).forEach((child, childIndex) => {
-    addItemToMap(child, `${pointer}/children/${childIndex}`);
+  (formSchemaElement.elements || []).forEach((child, childIndex) => {
+    addElementToMap(child, `${pointer}/children/${childIndex}`);
   });
 };
 
 const initPlayground = (formSchemaRoot: IVeoFormSchemaItem) => {
-  formSchemaItemMap.clear();
-  addItemToMap(formSchemaRoot, '#');
+  formSchemaElementMap.clear();
+  addElementToMap(formSchemaRoot, '#');
 };
 initPlayground(props.modelValue); // Call once as soon as the component gets initialized to create the map
+
+// Manipulation of playground
+const getParentPointer = (childPointer: string) => {
+  const parts = childPointer.split('/');
+  parts.pop(); // Remove index of child pointer
+  parts.pop(); // Move from property of parent object to parent object
+  return parts.join('/');
+};
+
+const onAddElement = (elementPointer: string, element: IPlaygroundElement) => {
+  const newIndex = parseInt(elementPointer.split('/').pop() as string);
+
+  const parent = JsonPointer.get(playgroundElements.value, getParentPointer(elementPointer)) as IPlaygroundElement;
+
+  // Add at new position
+  parent.children.splice(newIndex, 0, element);
+};
+
+const onRemoveElement = (elementPointer: string, removeFromSchemaElementMap = false) => {
+  const elementIndexToRemove = parseInt(elementPointer.split('/').pop() as string);
+  const parentPointer = getParentPointer(elementPointer);
+
+  const element = JsonPointer.get(playgroundElements.value, elementPointer) as IPlaygroundElement;
+  const parent = JsonPointer.get(playgroundElements.value, parentPointer) as IPlaygroundElement;
+
+  // Remove from playground elements
+  parent.children.splice(elementIndexToRemove, 1);
+  // Remove from form schema element map
+  if(removeFromSchemaElementMap) {
+    formSchemaElementMap.delete(element.id);
+  }
+};
+
+const onMoveElement = (oldElementPointer: string, newElementPointer: string) => {
+  const element = JsonPointer.get(playgroundElements.value, oldElementPointer) as IPlaygroundElement;
+
+  onRemoveElement(oldElementPointer);
+  onAddElement(newElementPointer, element);
+};
 </script>

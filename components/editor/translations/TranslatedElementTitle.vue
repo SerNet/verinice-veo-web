@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <title12 />
+  <translatedTitle />
 </template>
 
 <script setup lang="ts">
@@ -26,7 +26,7 @@ import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains
 import { IVeoFormSchemaItem, IVeoTranslationCollection } from '~~/types/VeoTypes';
 
 const props = defineProps({
-  formSchemaItem: {
+  formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
     required: true
   },
@@ -42,14 +42,14 @@ const props = defineProps({
 
 const slots = useSlots();
 
-// Find out item name
+// Find out element name
 const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.language);
 const translations = inject<Ref<Record<string, IVeoTranslationCollection>>>(FORMSCHEMA_PROVIDE_KEYS.translations);
 
-const translationString = computed(() => props.formSchemaItem.text || props.formSchemaItem.options?.label || props.formSchemaItem.scope);
+const translationString = computed(() => props.formSchemaElement.text || props.formSchemaElement.options?.label || props.formSchemaElement.scope);
 
 // Only internationalized if starts with #lang/
-const itemName = computed(() => {
+const elementName = computed(() => {
   if(!language?.value || !translationString.value) {
     return undefined;
   }
@@ -64,8 +64,8 @@ const itemName = computed(() => {
   return translations?.value?.[language.value]?.[sanitizedKey] || undefined;
 });
 
-const title12 = computed(() => (itemName.value || !props.hideIfMissing) ? () => [
-  h(props.tag, itemName.value ?? translationString.value),
-  slots.default?.({ translatedValue: itemName.value })
+const translatedTitle = computed(() => (elementName.value || !props.hideIfMissing) ? () => [
+  h(props.tag, elementName.value ?? translationString.value),
+  slots.default?.({ translatedValue: elementName.value })
 ] : null);
 </script>

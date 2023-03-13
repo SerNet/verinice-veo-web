@@ -21,15 +21,15 @@
     border
     class="fill-width pb-1 my-1"
   >
-    <v-card-actions v-if="!playgroundItem.readonly">
+    <v-card-actions v-if="!playgroundElement.readonly">
       <div class="handle mr-1">
         <v-icon :icon="mdiDrag" />
       </div>
       <EditorFormSchemaPlaygroundRuleIcon
-        :rule="formSchemaItem.rule"
+        :rule="formSchemaElement.rule"
         class="mr-1"
       />
-      {{ t('layout') }} ({{ upperFirst(t(`layoutType.${formSchemaItem.options.format}`)) }})
+      {{ t('layout') }} ({{ upperFirst(t(`layoutType.${formSchemaElement.options.format}`)) }})
       <v-spacer />
       <v-btn
         :icon="mdiPencilOutline"
@@ -44,14 +44,23 @@
     </v-card-actions>
     <div class="mx-2">
       <EditorTranslationsTranslatedElementTitle
-        :form-schema-item="formSchemaItem"
+        :form-schema-element="formSchemaElement"
         class="mb-1"
       />
       <div
-        class="d-flex overflow-x-auto"
-        :class="directionClass"
+        :class="[
+          $style['child-layout-wrapper'],
+          formSchemaElement.options?.direction === 'horizontal' ? $style['child-layout-wrapper--horizontal'] : $style['child-layout-wrapper--vertical']
+        ]"
       >
         <slot />
+        <span
+          v-if="!playgroundElement.children.length"
+          :class="$style.dragarea__placeholder"
+          class="d-flex justify-center align-center fill-width fill-height"
+        >
+          {{ t('addElementToGroup') }}
+        </span>
       </div>
     </div>
   </v-sheet>
@@ -63,14 +72,14 @@ import { upperFirst } from 'lodash';
 import { PropType } from 'vue';
 
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
-import { IPlaygroundItem } from './Item.vue';
+import { IPlaygroundElement } from './Element.vue';
   
-const props = defineProps({
-  playgroundItem: {
-    type: Object as PropType<IPlaygroundItem>,
+defineProps({
+  playgroundElement: {
+    type: Object as PropType<IPlaygroundElement>,
     required: true
   },
-  formSchemaItem: {
+  formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
     required: true
   }
@@ -79,26 +88,19 @@ const props = defineProps({
 const emit = defineEmits(['edit', 'delete']);
 
 const { t } = useI18n();
-
-const directionClass = computed(() => {
-  // TODO: this.options does not trigger this computed property, when data is updated.
-  if (props.formSchemaItem.options?.direction === 'horizontal') {
-    return 'flex-row direction-horizontal';
-  } else {
-    return 'flex-column direction-vertical';
-  }
-});
 </script>
 
 <i18n>
 {
   "en": {
+    "addElementToGroup": "Add an element to this layout",
     "layout": "layout",
     "layoutType": {
       "group": "group"
     }
   },
   "de": {
+    "addElementToGroup": "Fügen Sie diesem Layout ein Element hinzu!",
     "layout": "Layout",
     "layoutType": {
       "group": "Gruppe"
@@ -106,3 +108,34 @@ const directionClass = computed(() => {
   }
 }
 </i18n>
+
+<style lang="scss" module>
+.child-layout-wrapper {
+  position: relative;
+}
+
+.child-layout-wrapper > div {
+  display: flex;
+  overflow-x: auto;
+}
+
+.child-layout-wrapper--vertical > div {
+  flex-direction: column;
+}
+
+.child-layout-wrapper--horizontal > div {
+  flex-direction: row;
+}
+
+.dragarea__placeholder {
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='grey' stroke-width='2' stroke-dasharray='20' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 12px;
+  bottom: 0;
+  color: $medium-grey;
+  left: 0;
+  position: absolute !important;
+  right: 0;
+  top: 0;
+  z-index: 1;
+}
+</style>

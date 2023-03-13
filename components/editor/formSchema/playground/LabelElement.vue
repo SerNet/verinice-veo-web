@@ -26,7 +26,7 @@
         <v-icon :icon="mdiDrag" />
       </div>
       <EditorFormSchemaPlaygroundRuleIcon
-        :rule="formSchemaItem.rule"
+        :rule="formSchemaElement.rule"
         class="mr-1"
       />
       {{ t('text') }}
@@ -43,7 +43,7 @@
       />
     </v-card-actions>
     <div class="mx-2">
-      <EditorTranslationsTranslatedElementTitle :form-schema-item="formSchemaItem" />
+      <EditorTranslationsTranslatedElementTitle :form-schema-element="formSchemaElement" />
     </div>
   </v-sheet>
 </template>
@@ -53,14 +53,14 @@ import { mdiDrag, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
 import { PropType } from 'vue';
 
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
-import { IPlaygroundItem } from './Item.vue';
+import { IPlaygroundElement } from './Element.vue';
   
 defineProps({
-  playgroundItem: {
-    type: Object as PropType<IPlaygroundItem>,
+  playgroundElement: {
+    type: Object as PropType<IPlaygroundElement>,
     required: true
   },
-  formSchemaItem: {
+  formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
     required: true
   }

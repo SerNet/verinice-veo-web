@@ -36,7 +36,7 @@
     >
       <v-card-actions class="d-flex py-0">
         <EditorFormSchemaPlaygroundRuleIcon
-          :rule="formSchemaItem.rule"
+          :rule="formSchemaElement.rule"
           class="mr-1"
         />
         {{ t('control') }} ({{ inputType }})
@@ -54,7 +54,7 @@
       </v-card-actions>
       <div class="mx-2 mb-1">
         <EditorTranslationsTranslatedElementTitle
-          :form-schema-item="formSchemaItem"
+          :form-schema-element="formSchemaElement"
           tag="b"
           hide-if-missing
         >
@@ -86,18 +86,18 @@ import { JsonPointer } from 'json-ptr';
 import { JSONSchema7 } from 'json-schema';
 import { last } from 'lodash';
 
-import { IPlaygroundItem } from './Item.vue';
+import { IPlaygroundElement } from './Element.vue';
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 import { eligibleInputElements, INPUT_TYPES as CONTROL_APPEARANCE_DEFINITIONS } from '~~/types/VeoEditor';
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 
   
 const props = defineProps({
-  playgroundItem: {
-    type: Object as PropType<IPlaygroundItem>,
+  playgroundElement: {
+    type: Object as PropType<IPlaygroundElement>,
     required: true
   },
-  formSchemaItem: {
+  formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
     required: true
   }
@@ -109,26 +109,26 @@ const { t } = useI18n();
 
 const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.objectSchema);
 
-const objectSchemaItem = computed(() => JsonPointer.get(objectSchema?.value, props.formSchemaItem.scope as string) as JSONSchema7); // Can't be undefined, as a control ALWAYS has a scope
+const objectSchemaElement = computed(() => JsonPointer.get(objectSchema?.value, props.formSchemaElement.scope as string) as JSONSchema7); // Can't be undefined, as a control ALWAYS has a scope
 
 const controlType = computed(() => {
   // If attribute contains an enum, display as enum, regardless of enum value type.
-  if(Array.isArray(objectSchemaItem.value?.enum)) {
+  if(Array.isArray(objectSchemaElement.value?.enum)) {
     return 'enum';
   }
 
   // If type isn't set or type is an array, return as default as we don't know how to handle it (likely a corrupt schema)
-  if(!objectSchemaItem.value?.type || Array.isArray(objectSchemaItem.value?.type)) {
+  if(!objectSchemaElement.value?.type || Array.isArray(objectSchemaElement.value?.type)) {
     return 'default';
   }
 
-  return objectSchemaItem.value?.type;
+  return objectSchemaElement.value?.type;
 });
 
-const inputType = computed(() => props.formSchemaItem && objectSchemaItem.value ? eligibleInputElements(controlType.value, { ...props.formSchemaItem, schema: objectSchemaItem.value })[0].name : undefined);
+const inputType = computed(() => props.formSchemaElement && objectSchemaElement.value ? eligibleInputElements(controlType.value, { ...props.formSchemaElement, schema: objectSchemaElement.value })[0].name : undefined);
 
 const handleColor = computed(() => CONTROL_APPEARANCE_DEFINITIONS[controlType.value].color);
-const attributeKey = computed(() => last(props.formSchemaItem.scope?.split('/')));
+const attributeKey = computed(() => last(props.formSchemaElement.scope?.split('/')));
 </script>
 
 <i18n>
