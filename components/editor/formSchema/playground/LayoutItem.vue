@@ -43,10 +43,10 @@
       />
     </v-card-actions>
     <div class="mx-2">
-      <span
-        v-if="itemName"
+      <EditorTranslationsTranslatedElementTitle
+        :form-schema-item="formSchemaItem"
         class="mb-1"
-      >{{ itemName }}</span>
+      />
       <div
         class="d-flex overflow-x-auto"
         :class="directionClass"
@@ -73,10 +73,6 @@ const props = defineProps({
   formSchemaItem: {
     type: Object as PropType<IVeoFormSchemaItem>,
     required: true
-  },
-  itemName: {
-    type: String,
-    default: undefined
   }
 });
 

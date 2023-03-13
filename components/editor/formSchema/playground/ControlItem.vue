@@ -53,18 +53,27 @@
         />
       </v-card-actions>
       <div class="mx-2 mb-1">
-        <span v-if="itemName !== attributeKey">
-          <b>{{ itemName }}</b> <span
-            class="text-body-2"
-            style="overflow-wrap: break-word"
-          >({{ attributeKey }})</span>
-        </span>
-        <span
-          v-else
-          style="overflow-wrap: break-word"
+        <EditorTranslationsTranslatedElementTitle
+          :form-schema-item="formSchemaItem"
+          tag="b"
+          hide-if-missing
         >
-          <b>{{ attributeKey }}</b>
-        </span>
+          <template #default="{ translatedValue }">
+            <span
+              v-if="translatedValue"
+              class="text-body-2"
+              style="overflow-wrap: break-word"
+            >
+              ({{ attributeKey }})
+            </span>
+            <span
+              v-else
+              style="overflow-wrap: break-word"
+            >
+              <b>{{ attributeKey }}</b>
+            </span>
+          </template>
+        </EditorTranslationsTranslatedElementTitle>
       </div>
     </div>
   </v-sheet>
@@ -91,10 +100,6 @@ const props = defineProps({
   formSchemaItem: {
     type: Object as PropType<IVeoFormSchemaItem>,
     required: true
-  },
-  itemName: {
-    type: String,
-    default: undefined
   }
 });
 

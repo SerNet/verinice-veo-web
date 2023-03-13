@@ -20,7 +20,6 @@
     :is="fittingComponent"
     :playground-item="playgroundItem"
     :form-schema-item="formSchemaItem"
-    :item-name="itemName"
     style="min-width: 300px;"
   >
     <EditorFormSchemaPlaygroundItem
@@ -40,14 +39,12 @@ export interface IPlaygroundItem {
 </script>
 
 <script setup lang="ts">
-import { PropType, Ref } from 'vue';
+import { PropType } from 'vue';
 
 import { FormSchemaItemMap, PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from './Playground.vue';
 import ControlItem from './ControlItem.vue';
 import LabelItem from './LabelItem.vue';
 import LayoutItem from './LayoutItem.vue';
-import { IVeoTranslationCollection } from '~~/types/VeoTypes';
-import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 
 const props = defineProps({
   playgroundItem: {
@@ -75,28 +72,6 @@ const fittingComponent = computed(() => {
     default:
       return h('div', t('componentNotFound', [props.playgroundItem.id, formSchemaItem.value?.type]));
   }
-});
-
-// Find out item name
-const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.language);
-const translations = inject<Ref<Record<string, IVeoTranslationCollection>>>(FORMSCHEMA_PROVIDE_KEYS.translations);
-
-// Only internationalized if starts with #lang/
-const itemName = computed(() => {
-  const label = formSchemaItem.value?.text || formSchemaItem.value?.options?.label || formSchemaItem.value?.scope;
-
-  if(!language?.value || !label) {
-    return;
-  }
-
-  let key;
-  if(label.startsWith('#lang/')) {
-    key = label.replace('#lang/', '');
-  } else {
-    return label;
-  }
-
-  return translations?.value?.[language.value]?.[key] || key;
 });
 </script>
 

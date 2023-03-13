@@ -43,7 +43,7 @@
       />
     </v-card-actions>
     <div class="mx-2">
-      {{ itemName }}
+      <EditorTranslationsTranslatedElementTitle :form-schema-item="formSchemaItem" />
     </div>
   </v-sheet>
 </template>
@@ -63,10 +63,6 @@ defineProps({
   formSchemaItem: {
     type: Object as PropType<IVeoFormSchemaItem>,
     required: true
-  },
-  itemName: {
-    type: String,
-    default: undefined
   }
 });
 
