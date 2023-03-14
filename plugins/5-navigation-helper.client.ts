@@ -21,14 +21,20 @@ import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { useQuerySync } from '~~/composables/api/utils/query';
 import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
-import domainQueryDefinitions, { IVeoDomain } from '~~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
 
 /**
  * Navigates the user to the domain dashboard of the unit and domain he was previously in, if he accesses the application from outside and enters the unit select page (/). The redirect
  * magic happens on that page instead of in here, as the api composable won't work here
  */
-export default defineNuxtPlugin (async () => {
+export default defineNuxtPlugin (async (nuxtApp) => {
   const router = useRouter();
+  const route = useRoute();
+  const { userSettings, initialize, keycloakInitialized } = useVeoUser();
+
+  if (!keycloakInitialized.value && route.path !== '/sso') {
+    await initialize(nuxtApp);
+  }
 
   const lastUnit = useStorage(LOCAL_STORAGE_KEYS.LAST_UNIT, undefined, localStorage, { serializer: StorageSerializers.string });
   const lastDomain = useStorage(LOCAL_STORAGE_KEYS.LAST_DOMAIN, undefined, localStorage, { serializer: StorageSerializers.string });
@@ -49,11 +55,11 @@ export default defineNuxtPlugin (async () => {
 
 
   // Navigation helper (auto redirect to unit the user was previously in if he accessed the index page as entry point)
-  const { userSettings } = useVeoUser();
   const  _lastUnit = localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
   const _lastDomain = localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
 
-  if(_lastDomain && _lastUnit !== undefined){
+  // localStorage.getItem only returns strings, thus we have to check the string value
+  if(_lastDomain && _lastUnit && _lastDomain !== 'undefined' && _lastUnit !== 'undefined'){
     const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, {id:_lastUnit as string});
     const domains = await useQuerySync(domainQueryDefinitions.queries.fetchDomains, undefined);
 
