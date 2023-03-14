@@ -45,7 +45,7 @@ import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 import { IPlaygroundElement } from './Element.vue';
 import { cloneDeep } from 'lodash';
 
-// TODO: 2. Delete/Edit einbauen (auch Links!!)
+// TODO: 2. Edit einbauen (auch Links!!), Delete von Layouts (Kinder aus FormSchemaElementMap entfernen)
 
 const props = defineProps({
   modelValue: {

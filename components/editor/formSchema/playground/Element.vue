@@ -21,6 +21,7 @@
     :playground-element="playgroundElement"
     :form-schema-element="formSchemaElement"
     style="min-width: 300px;"
+    @delete="deleteElementDialogVisible = true"
   >
     <Draggable
       :model-value="props.playgroundElement.children"
@@ -43,6 +44,12 @@
       </template>
     </Draggable>
   </component>
+  <EditorFormSchemaPlaygroundDeleteElementDialog
+    v-if="formSchemaElement"
+    v-model="deleteElementDialogVisible"
+    :form-schema-element="formSchemaElement"
+    @delete="emit('remove', pointer, true)"
+  />
 </template>
 
 <script lang="ts">
@@ -51,6 +58,10 @@ export interface IPlaygroundElement {
   children: IPlaygroundElement[];
   readonly?: boolean;
 }
+
+export default {
+  inheritAttrs: false
+};
 </script>
 
 <script setup lang="ts">
@@ -81,7 +92,7 @@ const props = defineProps({
 const emit = defineEmits<{
   (event: 'add', pointer: string, element: IPlaygroundElement): void
   (event: 'move', oldPosition: string, newPosition: string): void
-  (event: 'remove', pointer: string): void
+  (event: 'remove', pointer: string, removeFromSchemaElementMap?: boolean): void
 }>();
 
 const { t } = useI18n();
@@ -113,6 +124,8 @@ const onElementAdded = (event: any) =>  emit('add', `${props.pointer}/children/$
 const onElementMoved = (event: any) => emit('move', `${props.pointer}/children/${event.oldIndex}`, `${props.pointer}/children/${event.newIndex}`);
 
 const onElementRemoved = (event: any) => emit('remove', `${props.pointer}/children/${event.oldIndex}`);
+
+const deleteElementDialogVisible = ref(false);
 </script>
 
 <i18n>
