@@ -30,7 +30,7 @@ import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains'
 export default defineNuxtPlugin (async (nuxtApp) => {
   const router = useRouter();
   const route = useRoute();
-  const { userSettings, initialize, keycloakInitialized } = useVeoUser();
+  const { userSettings, initialize, keycloakInitialized, authenticated } = useVeoUser();
 
   if (!keycloakInitialized.value && route.path !== '/sso') {
     await initialize(nuxtApp);
@@ -40,7 +40,7 @@ export default defineNuxtPlugin (async (nuxtApp) => {
   const lastDomain = useStorage(LOCAL_STORAGE_KEYS.LAST_DOMAIN, undefined, localStorage, { serializer: StorageSerializers.string });
 
   // Update last unit and last domain every time the route changes
-  router?.afterEach((to, _from) => {
+  router.afterEach((to, _from) => {
     const currentRouteUnitId = separateUUIDParam(to.params.unit as string).id;
     const currentRouteDomainId = separateUUIDParam(to.params.domain as string).id;
 
@@ -59,11 +59,11 @@ export default defineNuxtPlugin (async (nuxtApp) => {
   const _lastDomain = localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
 
   // localStorage.getItem only returns strings, thus we have to check the string value
-  if(_lastDomain && _lastUnit && _lastDomain !== 'undefined' && _lastUnit !== 'undefined'){
+  if(_lastDomain && _lastUnit && _lastDomain !== 'undefined' && _lastUnit !== 'undefined' && authenticated.value){
     const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, {id:_lastUnit as string});
     const domains = await useQuerySync(domainQueryDefinitions.queries.fetchDomains, undefined);
 
-    const data = (domains || []).filter((domain) => unit.domains?.some((unitDomain) => unitDomain.targetUri.includes(domain.id)));
+    const data = (domains || []).filter((domain) => unit.domains.some((unitDomain) => unitDomain.targetUri.includes(domain.id)));
 
     if (userSettings.value.maxUnits <= 2 && data.find((domain) => domain.id === _lastDomain)) {
       navigateTo({
