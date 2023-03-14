@@ -18,17 +18,16 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
+    large
     :headline="title"
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
-      <i18n-t
-        keypath="deleteText"
-        tag="span"
-        scope="global"
-      >
-        <EditorTranslationsTranslatedElementTitle :form-schema-element="formSchemaElement" />
-      </i18n-t>
+      <component
+        :is="fittingEditComponent"
+        v-model:form-schema-element="localFormSchemaElement"
+      />
+      <EditorFormSchemaPlaygroundEditDialogElementConditionalVisibility v-model:form-schema-element="localFormSchemaElement" />
     </template>
     <template #dialog-options>
       <v-btn
@@ -41,9 +40,10 @@
       <v-btn
         variant="text"
         color="primary"
-        @click="onConfirm"
+        :disabled="!elementIsDirty"
+        @click="onSave"
       >
-        {{ globalT('global.button.delete') }}
+        {{ globalT('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -52,7 +52,11 @@
 <script setup lang="ts">
 import { PropType } from 'vue';
 
+import EditorFormSchemaPlaygroundEditDialogControlElementSettings from './edit-dialog/ControlElementSettings.vue';
+import EditorFormSchemaPlaygroundEditDialogLabelElementSettings from './edit-dialog/LabelElementSettings.vue';
+import EditorFormSchemaPlaygroundEditDialogLayoutElementSettings from './edit-dialog/LayoutElementSettings.vue';
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
+import { isEqual } from 'lodash';
 
 const props = defineProps({
   modelValue: {
@@ -65,17 +69,40 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['update:model-value', 'delete']);
+const emit = defineEmits<{
+  (event: 'update:model-value', value: boolean): void,
+  (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void
+}>();
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
 const translatedElementType = computed(() => t(`type.${props.formSchemaElement.type.toLowerCase()}`));
 
-const title = computed(() => t('delete', [translatedElementType.value]));
+const title = computed(() => t('edit', [translatedElementType.value]));
 
-const onConfirm = () => {
-  emit('delete');
+const fittingEditComponent = computed(() => {
+  switch(props.formSchemaElement.type) {
+    case 'Control':
+      return EditorFormSchemaPlaygroundEditDialogControlElementSettings;
+    case 'Label':
+      return EditorFormSchemaPlaygroundEditDialogLabelElementSettings;
+    case 'Layout':
+      return EditorFormSchemaPlaygroundEditDialogLayoutElementSettings;
+    default:
+      return h('div', 'Cannot find edit options for this form schema element type');
+  }
+});
+
+const elementIsDirty = computed(() => !isEqual(props.formSchemaElement, localFormSchemaElement.value));
+
+const localFormSchemaElement = ref(props.formSchemaElement);
+watch(() => props.formSchemaElement, (newValue) => {
+  localFormSchemaElement.value = newValue;
+}, { deep: true });
+
+const onSave = () => {
+  emit('update:form-schema-element', localFormSchemaElement.value);
   emit('update:model-value', false);
 };
 </script>
@@ -83,8 +110,7 @@ const onConfirm = () => {
 <i18n>
 {
   "en": {
-    "delete": "delete {0}",
-    "deleteText": "Do you really want to delete the element \"{0}\"? This action cannot be undone.",
+    "edit": "edit {0}",
     "type": {
       "control": "control",
       "label": "label",
@@ -93,8 +119,7 @@ const onConfirm = () => {
     }
   },
   "de": {
-    "delete": "{0} löschen",
-    "deleteText": "Möchten Sie das Element \"{0}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "edit": "{0} bearbeiten",
     "type": {
       "control": "Control",
       "label": "Label",

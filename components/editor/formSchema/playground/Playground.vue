@@ -23,6 +23,7 @@
     @add="onAddElement"
     @move="onMoveElement"
     @remove="onRemoveElement"
+    @form-schema-elements-modified="onFormSchemaModified(playgroundElements)"
   />
 </template>
 
@@ -45,7 +46,7 @@ import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 import { IPlaygroundElement } from './Element.vue';
 import { cloneDeep } from 'lodash';
 
-// TODO: 2. Edit einbauen (auch Links!!), Delete von Layouts (Kinder aus FormSchemaElementMap entfernen)
+// TODO: Edit Layout & Control (inkl Links), Bedingte Anzeige
 
 const props = defineProps({
   modelValue: {
@@ -162,7 +163,14 @@ const onRemoveElement = (elementPointer: string, removeFromSchemaElementMap = fa
   parent.children.splice(elementIndexToRemove, 1);
   // Remove from form schema element map
   if(removeFromSchemaElementMap) {
-    formSchemaElementMap.delete(element.id);
+    // Recursive function, as if we delete an element from the playground that contains children, all child elements should also get removed
+    const deleteElement = (element: IPlaygroundElement) => {
+      for(const child of element.children) {
+        deleteElement(child);
+      }
+      formSchemaElementMap.delete(element.id);
+    };
+    deleteElement(element);
   }
 };
 

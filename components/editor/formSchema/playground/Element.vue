@@ -22,6 +22,7 @@
     :form-schema-element="formSchemaElement"
     style="min-width: 300px;"
     @delete="deleteElementDialogVisible = true"
+    @edit="editElementDialogVisible = true"
   >
     <Draggable
       :model-value="props.playgroundElement.children"
@@ -40,10 +41,17 @@
           @add="(elementPointer, element) => emit('add', elementPointer, element)"
           @move="(oldPosition, newPosition) => emit('move', oldPosition, newPosition)"
           @remove="(elementPointer) => emit('remove', elementPointer)"
+          @form-schema-elements-modified="emit('form-schema-elements-modified')"
         />
       </template>
     </Draggable>
   </component>
+  <EditorFormSchemaPlaygroundEditElementDialog
+    v-if="formSchemaElement"
+    v-model="editElementDialogVisible"
+    :form-schema-element="formSchemaElement"
+    @update:form-schema-element="onFormSchemaElementEdited"
+  />
   <EditorFormSchemaPlaygroundDeleteElementDialog
     v-if="formSchemaElement"
     v-model="deleteElementDialogVisible"
@@ -73,6 +81,7 @@ import { FormSchemaElementMap, PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from '.
 import ControlElement from './ControlElement.vue';
 import LabelElement from './LabelElement.vue';
 import LayoutElement from './LayoutElement.vue';
+import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 
 
 const props = defineProps({
@@ -93,6 +102,7 @@ const emit = defineEmits<{
   (event: 'add', pointer: string, element: IPlaygroundElement): void
   (event: 'move', oldPosition: string, newPosition: string): void
   (event: 'remove', pointer: string, removeFromSchemaElementMap?: boolean): void
+  (event: 'form-schema-elements-modified'): void
 }>();
 
 const { t } = useI18n();
@@ -125,6 +135,12 @@ const onElementMoved = (event: any) => emit('move', `${props.pointer}/children/$
 
 const onElementRemoved = (event: any) => emit('remove', `${props.pointer}/children/${event.oldIndex}`);
 
+const onFormSchemaElementEdited = (editedFormSchemaElement: IVeoFormSchemaItem) => {
+  formSchemaElementMap?.set(props.playgroundElement.id, editedFormSchemaElement);
+  emit('form-schema-elements-modified');
+};
+
+const editElementDialogVisible = ref(false);
 const deleteElementDialogVisible = ref(false);
 </script>
 
