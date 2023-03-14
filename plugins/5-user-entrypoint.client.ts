@@ -37,7 +37,7 @@ export default defineNuxtPlugin (async (nuxtApp) => {
   }
 
   const router = useRouter();
-  const { userSettings, initialize, keycloakInitialized } = useVeoUser();
+  const { userSettings, initialize, keycloakInitialized, authenticated } = useVeoUser();
 
   // Update last unit and last domain every time the route changes
   const lastUnit = useStorage(LOCAL_STORAGE_KEYS.LAST_UNIT, undefined, localStorage, { serializer: StorageSerializers.string });
@@ -58,6 +58,11 @@ export default defineNuxtPlugin (async (nuxtApp) => {
 
   if (!keycloakInitialized.value) {
     await initialize(nuxtApp);
+  }
+
+  // The following stuff is only important if the user is logged in
+  if(!authenticated.value) {
+    return;
   }
 
   // Create first unit if it doesn't exist
@@ -103,7 +108,7 @@ export default defineNuxtPlugin (async (nuxtApp) => {
         // If the domain doesn't exist, the last unit & domain are outdated, so we remove them
         removeNavigationHelpers();
       }
-    } catch (_e) { // The error usually gets thrown by either the unit or domains fetch. Either because the user isn't authenticated or the unit doesn't exist
+    } catch (_e) { // The error usually gets thrown by either the unit or domains fetch. Either because the unit doesn't exist
       removeNavigationHelpers();
     }
   }
