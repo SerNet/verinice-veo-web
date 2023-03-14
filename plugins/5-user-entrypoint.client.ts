@@ -24,22 +24,25 @@ import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
 import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
 
 /**
+ * Handles various thinks when the user enters the app, such as creating the first unit if it doesn't exist
  * Navigates the user to the domain dashboard of the unit and domain he was previously in, if he accesses the application from outside and enters the unit select page (/). The redirect
  * magic happens on that page instead of in here, as the api composable won't work here
  */
 export default defineNuxtPlugin (async (nuxtApp) => {
-  const router = useRouter();
   const route = useRoute();
-  const { userSettings, initialize, keycloakInitialized, authenticated } = useVeoUser();
 
-  if (!keycloakInitialized.value && route.path !== '/sso') {
-    await initialize(nuxtApp);
+  // We don't want any of this to take effect during the login process
+  if(route.path === '/sso') {
+    return;
   }
 
+  const router = useRouter();
+  const { userSettings, initialize, keycloakInitialized } = useVeoUser();
+
+  // Update last unit and last domain every time the route changes
   const lastUnit = useStorage(LOCAL_STORAGE_KEYS.LAST_UNIT, undefined, localStorage, { serializer: StorageSerializers.string });
   const lastDomain = useStorage(LOCAL_STORAGE_KEYS.LAST_DOMAIN, undefined, localStorage, { serializer: StorageSerializers.string });
 
-  // Update last unit and last domain every time the route changes
   router.afterEach((to, _from) => {
     const currentRouteUnitId = separateUUIDParam(to.params.unit as string).id;
     const currentRouteDomainId = separateUUIDParam(to.params.domain as string).id;
@@ -53,30 +56,55 @@ export default defineNuxtPlugin (async (nuxtApp) => {
     }
   });
 
+  if (!keycloakInitialized.value) {
+    await initialize(nuxtApp);
+  }
 
-  // Navigation helper (auto redirect to unit the user was previously in if he accessed the index page as entry point)
+  // Create first unit if it doesn't exist
+  const units = await useQuerySync(unitQueryDefinitions.queries.fetchAll);
+  if(!units.length) {
+    navigateTo({ name: 'init' });
+    return;
+  }
+
+  // Navigate the user to his previous unit and domain, if both still exist AND he has at most two units AND the user enters the index page
   const  _lastUnit = localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
   const _lastDomain = localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
 
+  const removeNavigationHelpers = () => {
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
+  };
+
   // localStorage.getItem only returns strings, thus we have to check the string value
-  if(_lastDomain && _lastUnit && _lastDomain !== 'undefined' && _lastUnit !== 'undefined' && authenticated.value){
-    const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, {id:_lastUnit as string});
-    const domains = await useQuerySync(domainQueryDefinitions.queries.fetchDomains, undefined);
+  if(route.name === 'index' && _lastDomain && _lastUnit && _lastDomain !== 'undefined' && _lastUnit !== 'undefined'){
+    try {
+      const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, {id:_lastUnit as string});
+      const domains = await useQuerySync(domainQueryDefinitions.queries.fetchDomains, undefined);
 
-    const data = (domains || []).filter((domain) => unit.domains.some((unitDomain) => unitDomain.targetUri.includes(domain.id)));
+      const data = (domains || []).filter((domain) => unit.domains.some((unitDomain) => unitDomain.targetUri.includes(domain.id)));
 
-    if (userSettings.value.maxUnits <= 2 && data.find((domain) => domain.id === _lastDomain)) {
-      navigateTo({
-        name: 'unit-domains-domain',
-        params: {
-          unit: createUUIDUrlParam('unit', _lastUnit as string ),
-          domain: createUUIDUrlParam('domain', _lastDomain)
-        }
-      });
-    } else {
-      // If the domain doesn't exist, the last unit & domain are outdated, so we remove them
-      lastUnit.value = undefined;
-      lastDomain.value = undefined;
+      if (userSettings.value.maxUnits <= 2 && data.find((domain) => domain.id === _lastDomain)) {
+        console.log({
+          name: 'unit-domains-domain',
+          params: {
+            unit: createUUIDUrlParam('unit', _lastUnit as string),
+            domain: createUUIDUrlParam('domain', _lastDomain)
+          }
+        });
+        navigateTo({
+          name: 'unit-domains-domain',
+          params: {
+            unit: createUUIDUrlParam('unit', _lastUnit as string),
+            domain: createUUIDUrlParam('domain', _lastDomain)
+          }
+        });
+      } else {
+        // If the domain doesn't exist, the last unit & domain are outdated, so we remove them
+        removeNavigationHelpers();
+      }
+    } catch (_e) { // The error usually gets thrown by either the unit or domains fetch. Either because the user isn't authenticated or the unit doesn't exist
+      removeNavigationHelpers();
     }
   }
 });

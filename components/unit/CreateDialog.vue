@@ -111,7 +111,7 @@ const newUnit = reactive<{ name: string | undefined, description: string | undef
 
 const { mutateAsync, isLoading: creatingUnit, data: newUnitPayload } = useMutation(unitQueryDefinitions.mutations.create,{ onError: (error: any) => {
   displayErrorMessage(t('createUnitError'), error.message);
-} });
+}, onSuccess: () => { /**/ } });
 const createUnit = async () => {
   if(!formIsValid.value || ability.value.cannot('manage', 'units')) {
     return;

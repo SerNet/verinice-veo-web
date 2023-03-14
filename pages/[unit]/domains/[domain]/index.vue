@@ -27,7 +27,7 @@
       class="mt-n2 text-accent text-body-1"
     >
       <span v-if="domain.description">{{ domain.description }}</span>
-      <i v-else>{{ tGlobal('unit.details.nodescription') }}</i>
+      <i v-else>{{ t('noUnitDescription') }}</i>
     </div>
     <v-skeleton-loader
       v-else
@@ -200,11 +200,13 @@ export default defineComponent({
 {
   "en": {
     "domainNotFoundText": "The requested domain couldn't be found. You have been returned to the unit dashboard.",
-    "domainOverview": "Domain overview"
+    "domainOverview": "Domain overview",
+    "noUnitDescription": "No description provided"
   },
   "de": {
     "domainNotFoundText": "Die gewünschte Domain konnte nicht gefunden werden. Sie wurden zum Unit Dashboard zurückgebracht.",
-    "domainOverview": "Domänenübersicht"
+    "domainOverview": "Domänenübersicht",
+    "noUnitDescription": "Keine Beschreibung festgelegt"
   }
 }
 </i18n>

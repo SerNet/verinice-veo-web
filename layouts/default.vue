@@ -98,30 +98,21 @@
 </template>
 
 <script lang="ts" setup>
+import { useDisplay } from 'vuetify';
 import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
+import 'intro.js/minified/introjs.min.css';
 
-import {
-  createUUIDUrlParam,
-  getFirstDomainDomaindId,
-  separateUUIDParam
-} from '~/lib/utils';
+import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
-import 'intro.js/minified/introjs.min.css';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import unitsQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
-import { useRequest } from '~/composables/api/utils/request';
-import { useDisplay } from 'vuetify';
-import { useMutation } from '~~/composables/api/utils/mutation';
-import { useQuery } from '~~/composables/api/utils/query';
 
 const { xs } = useDisplay();
 const { authenticated } = useVeoUser();
 const route = useRoute();
 const { ability } = useVeoPermissions();
 
-const { alerts, displaySuccessMessage } = useVeoAlerts();
-const { request } = useRequest();
+const { alerts } = useVeoAlerts();
 const { t } = useI18n();
 
 useHead(() => ({
@@ -142,31 +133,6 @@ function createUnit(persistent = false) {
   newUnitDialog.value.value = true;
   newUnitDialog.value.persistent = persistent;
 }
-
-// automatically create first unit if none exists and then change to new unit
-const { mutateAsync: _createUnit, data: newUnitPayload } = useMutation(unitsQueryDefinitions.mutations.create);
-
-const fetchUnitsDisabled = computed(() => authenticated.value);
-useQuery(unitsQueryDefinitions.queries.fetchAll, undefined, { enabled: fetchUnitsDisabled, onSuccess: async (data: IVeoUnit[]) => {
-  if(!data.length) {
-    await _createUnit({
-      name: t('unit.default.name'),
-      description: t('unit.default.description')
-    });
-    displaySuccessMessage('firstUnitCreated');
-    const unit = await request('/api/units/:id', { params: { id: newUnitPayload.value?.resourceId } });
-    const domainId = getFirstDomainDomaindId(unit);
-    if (domainId) {
-      navigateTo({
-        name: 'unit-domains-domain',
-        params: {
-          unit: createUUIDUrlParam('unit', unit.id),
-          domain: createUUIDUrlParam('domain', domainId)
-        }
-      });
-    }
-  }
-} });
 
 const domainId = computed((): string | undefined => {
   if (route.name === 'unit-domains-more') {
