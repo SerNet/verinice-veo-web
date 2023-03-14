@@ -191,26 +191,7 @@ const generateUnitDashboardLink = (unitId: string) => {
   return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
 };
 
-// Navigation helper (auto redirect to unit the user was previously in if he accessed the index page as entry point)
-const lastUnit = useStorage(LOCAL_STORAGE_KEYS.LAST_UNIT, undefined, localStorage, { serializer: StorageSerializers.string });
-const lastDomain = useStorage(LOCAL_STORAGE_KEYS.LAST_DOMAIN, undefined, localStorage, { serializer: StorageSerializers.string });
-const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: lastUnit.value }));
-const fetchUnitDomainsQueryEnabled = computed(() => !!lastUnit.value && lastUnit.value !== 'undefined' && !!lastDomain.value && lastDomain.value !== 'undefined' && router.options.history.state.position === 1);
-useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled, onSuccess: (domains) => {
-  if (userSettings.value.maxUnits <= 2 && (domains as IVeoDomain[]).find((domain) => domain.id === lastDomain.value)) {
-    navigateTo({
-      name: 'unit-domains-domain',
-      params: {
-        unit: createUUIDUrlParam('unit', lastUnit.value),
-        domain: createUUIDUrlParam('domain', lastDomain.value)
-      }
-    });
-  } else {
-    // If the domain doesn't exist, the last unit & domain are outdated, so we remove them
-    lastUnit.value = undefined;
-    lastDomain.value = undefined;
-  }
-}});
+
 
 // Unit deletion stuff
 const deleteUnitDialogVisible = ref(false);

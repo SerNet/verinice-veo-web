@@ -17,8 +17,11 @@
  */
 import { StorageSerializers, useStorage } from '@vueuse/core';
 
-import { separateUUIDParam } from '~/lib/utils';
+import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+import { useQuerySync } from '~~/composables/api/utils/query';
+import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
+import domainQueryDefinitions, { IVeoDomain } from '~~/composables/api/queryDefinitions/domains';
 
 /**
  * Navigates the user to the domain dashboard of the unit and domain he was previously in, if he accesses the application from outside and enters the unit select page (/). The redirect
@@ -43,4 +46,31 @@ export default defineNuxtPlugin (async () => {
       lastDomain.value = currentRouteDomainId;
     }
   });
+
+
+  // Navigation helper (auto redirect to unit the user was previously in if he accessed the index page as entry point)
+  const { userSettings } = useVeoUser();
+  const  _lastUnit = localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
+  const _lastDomain = localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
+
+  if(_lastDomain && _lastUnit !== undefined){
+    const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, {id:_lastUnit as string});
+    const domains = await useQuerySync(domainQueryDefinitions.queries.fetchDomains, undefined);
+
+    const data = (domains || []).filter((domain) => unit.domains?.some((unitDomain) => unitDomain.targetUri.includes(domain.id)));
+
+    if (userSettings.value.maxUnits <= 2 && data.find((domain) => domain.id === _lastDomain)) {
+      navigateTo({
+        name: 'unit-domains-domain',
+        params: {
+          unit: createUUIDUrlParam('unit', _lastUnit as string ),
+          domain: createUUIDUrlParam('domain', _lastDomain)
+        }
+      });
+    } else {
+      // If the domain doesn't exist, the last unit & domain are outdated, so we remove them
+      lastUnit.value = undefined;
+      lastDomain.value = undefined;
+    }
+  }
 });
