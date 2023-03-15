@@ -189,9 +189,10 @@ import Draggable from 'vuedraggable';
 import { JsonPointer } from 'json-ptr';
 import { cloneDeep, differenceBy, upperFirst } from 'lodash';
 import { controlTypeAlternatives, IControlType } from '~/types/VeoEditor';
-import { IVeoFormSchemaItem, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
 import { PropType } from 'vue';
+import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 
 export default defineComponent({
   components: {

@@ -110,10 +110,10 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
 import 'intro.js/minified/introjs.min.css';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useCreateUnit, useFetchUnits } from '~/composables/api/units';
-import { IVeoUnit } from '~/types/VeoTypes';
-import { useRequest } from '~/composables/api/utils/request';
+import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import { useDisplay } from 'vuetify';
+import { useMutation } from '~~/composables/api/utils/mutation';
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 
 const { xs } = useDisplay();
 const { authenticated } = useVeoUser();
@@ -121,7 +121,6 @@ const route = useRoute();
 const { ability } = useVeoPermissions();
 
 const { alerts, displaySuccessMessage } = useVeoAlerts();
-const { request } = useRequest();
 const { t } = useI18n();
 
 useHead(() => ({
@@ -144,17 +143,17 @@ function createUnit(persistent = false) {
 }
 
 // automatically create first unit if none exists and then change to new unit
-const { mutateAsync: _createUnit, data: newUnitPayload } = useCreateUnit();
+const { mutateAsync: _createUnit, data: newUnitPayload } = useMutation(unitQueryDefinitions.mutations.create);
 
 const fetchUnitsDisabled = computed(() => authenticated.value);
-useFetchUnits({ enabled: fetchUnitsDisabled, onSuccess: async (data: IVeoUnit[]) => {
+useQuery(unitQueryDefinitions.queries.fetchAll, undefined, { enabled: fetchUnitsDisabled, onSuccess: async (data: IVeoUnit[]) => {
   if(!data.length) {
     await _createUnit({
       name: t('unit.default.name'),
       description: t('unit.default.description')
     });
     displaySuccessMessage('firstUnitCreated');
-    const unit = await request('/api/units/:id', { params: { id: newUnitPayload.value.resourceId } });
+    const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: newUnitPayload.value?.resourceId as string });
     const domainId = getFirstDomainDomaindId(unit);
     if (domainId) {
       navigateTo({

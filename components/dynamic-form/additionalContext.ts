@@ -20,7 +20,8 @@ import { JSONSchema7 } from 'json-schema';
 import { cloneDeep } from 'lodash';
 import { addConditionalSchemaPropertiesToControlSchema } from './util';
 import { IVeoFormsAdditionalContext } from '~/components/dynamic-form/types';
-import { IVeoDomain, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoDomain } from '~~/composables/api/queryDefinitions/domains';
 
 export default {};
 

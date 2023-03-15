@@ -221,8 +221,9 @@ import { isEmpty, isEqual, isString } from 'lodash';
 import { mdiChevronRight } from '@mdi/js';
 
 import { separateUUIDParam } from '~/lib/utils';
-import { useFetchSchemas } from '~~/composables/api/schemas';
-import { useFetchTranslations } from '~~/composables/api/translations';
+import schemaQueryDefinitions from '~~/composables/api/queryDefinitions/schemas';
+import translationQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 
 const props = defineProps({
   modelValue: {
@@ -236,7 +237,6 @@ const route = useRoute();
 const router = useRouter();
 const { locale, t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
-const { $api } = useNuxtApp();
 const { requiredRule } = useRules();
 
 const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
@@ -265,9 +265,9 @@ const createFormIsValid = ref(false);
 const code = ref();
 const modelType = ref();
 
-const { data: schemas } = useFetchSchemas();
+const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
 const availableObjectSchemas = computed(() => (Object.keys(schemas.value || {})).map((objectType) => ({ title: translations.value?.lang[locale.value]?.[objectType] || '', value: objectType })).concat({ title: t('customObjectSchema'), value: 'custom' }));
 
@@ -283,15 +283,14 @@ const createSchema = () => {
     description: createForm.value.description
   });
 };
-const importSchema = (schema?: any) => {
+const importSchema = async (schema?: any) => {
   if (schema) {
     emit('completed', { schema, meta: undefined });
     navigateTo({ os: 'custom' });
   } else {
-    $api.schema.fetch(modelType.value, [domainId.value]).then((data: any) => {
-      emit('completed', { schema: data, meta: undefined });
-      navigateTo({ os: modelType.value });
-    });
+    const _schema = await useQuerySync(schemaQueryDefinitions.queries.fetchSchema, { type: modelType.value, domainIds: [domainId.value] });
+    emit('completed', { schema: _schema, meta: undefined });
+    navigateTo({ os: modelType.value });
   }
 };
 

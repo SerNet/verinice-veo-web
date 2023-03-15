@@ -109,10 +109,11 @@
 import { ComputedRef } from 'vue';
 
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
-import { useFetchForms } from '~/composables/api/forms';
+import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { RouteLocationRaw } from 'vue-router';
-import { useFetchUnits } from '~/composables/api/units';
 import { useFetchUnitDomains } from '~/composables/api/domains';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   emits: ['update:model-value'],
@@ -129,13 +130,13 @@ export default defineComponent({
       domainId: domainId.value
     }));
     const queryEnabled = computed(() => !!domainId.value);
-    const { data: formSchemas } = useFetchForms(queryParameters, { enabled: queryEnabled });
+    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, { enabled: queryEnabled });
 
-    const { data: units } = useFetchUnits({ placeholderData: [] });
-    const demoUnit = computed(() => units.value.find((unit) => unit.name === 'Demo'));
-    const nonDemoUnits = computed(() => units.value.filter((unit) => unit.name !== 'Demo' && getFirstDomainDomaindId(unit)));
+    const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
+    const demoUnit = computed(() => (units.value || []).find((unit) => unit.name === 'Demo'));
+    const nonDemoUnits = computed(() => (units.value || []).filter((unit) => unit.name !== 'Demo' && getFirstDomainDomaindId(unit)));
 
-    const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: demoUnit.value?.id }));
+    const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: demoUnit.value?.id || '' }));
     const fetchUnitDomainsQueryEnabled = computed(() => !!demoUnit.value);
     const { data: demoUnitDomains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
 
@@ -145,7 +146,7 @@ export default defineComponent({
       to: {
         name: 'unit-domains-domain',
         params: {
-          unit: createUUIDUrlParam('unit', demoUnit.value.id),
+          unit: createUUIDUrlParam('unit', demoUnit.value?.id || ''),
           domain: createUUIDUrlParam('domain', dsgvoDomain.value.id || '')
         }
       },

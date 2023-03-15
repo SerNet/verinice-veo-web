@@ -108,7 +108,8 @@ import { PropType } from 'vue';
 import { cloneDeep } from 'lodash';
 
 import { IDirtyFields } from './CreateDialogSingle.vue';
-import { IVeoDomain, IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
+import { IVeoDomain } from '~~/composables/api/queryDefinitions/domains';
 
 export default defineComponent({
   props: {

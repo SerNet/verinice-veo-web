@@ -120,21 +120,22 @@
 </template>
 
 <script lang="ts" setup>
-import { IVeoDeploymentInformation, useFetchDeploymentDetails } from '~/composables/api/monitoring';
+import monitoringQueryDefintions, { IVeoDeploymentInformation } from '~/composables/api/queryDefinitions/monitoring';
+import { useQuery } from '~~/composables/api/utils/query';
 
 const config = useRuntimeConfig();
 const { t, locale } = useI18n();
 
 const fetchDefaultApiDeploymentDetailsQueryParameters = ref({ api: 'default' as 'default' | 'history' | 'forms' | 'reporting' });
-const { data: defaultApiDeploymentDetails } = useFetchDeploymentDetails(fetchDefaultApiDeploymentDetailsQueryParameters);
+const { data: defaultApiDeploymentDetails } = useQuery(monitoringQueryDefintions.queries.fetch, fetchDefaultApiDeploymentDetailsQueryParameters);
 const fetchFormsApiDeploymentDetailsQueryParameters = ref({ api: 'forms' as 'default' | 'history' | 'forms' | 'reporting' });
-const { data: formsApiDeploymentDetails } = useFetchDeploymentDetails(fetchFormsApiDeploymentDetailsQueryParameters);
+const { data: formsApiDeploymentDetails } = useQuery(monitoringQueryDefintions.queries.fetch, fetchFormsApiDeploymentDetailsQueryParameters);
 const fetchHistoryApiDeploymentDetailsQueryParameters = ref({ api: 'history' as 'default' | 'history' | 'forms' | 'reporting' });
-const { data: historyApiDeploymentDetails } = useFetchDeploymentDetails(fetchHistoryApiDeploymentDetailsQueryParameters);
+const { data: historyApiDeploymentDetails } = useQuery(monitoringQueryDefintions.queries.fetch, fetchHistoryApiDeploymentDetailsQueryParameters);
 const fetchReportingApiDeploymentDetailsQueryParameters = ref({ api: 'reporting' as 'default' | 'history' | 'forms' | 'reporting' });
-const { data: reportingApiDeploymentDetails } = useFetchDeploymentDetails(fetchReportingApiDeploymentDetailsQueryParameters);
+const { data: reportingApiDeploymentDetails } = useQuery(monitoringQueryDefintions.queries.fetch, fetchReportingApiDeploymentDetailsQueryParameters);
 const fetchAccountingApiDeploymentDetailsQueryParameters = ref({ api: 'accounts' as 'default' | 'history' | 'forms' | 'reporting' | 'accounts' });
-const { data: accountingApiDeploymentDetails } = useFetchDeploymentDetails(fetchAccountingApiDeploymentDetailsQueryParameters);
+const { data: accountingApiDeploymentDetails } = useQuery(monitoringQueryDefintions.queries.fetch, fetchAccountingApiDeploymentDetailsQueryParameters);
 
 const deploymentInformation = computed<Record<string, IVeoDeploymentInformation | undefined>>(() => ({
   app: {

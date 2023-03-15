@@ -148,12 +148,13 @@ import { PropType } from 'vue';
 import { mdiAccountOutline, mdiEmailOutline } from '@mdi/js';
 import { cloneDeep, pick, trim } from 'lodash';
 
-import { IVeoAccount, useCreateAccount, useUpdateAccount } from '~/composables/api/accounts';
+import accountQueryDefinitions, { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { VeoAlertType } from '~/types/VeoTypes';
+import { useMutation } from '~~/composables/api/utils/mutation';
 
 export default defineComponent({
   props: {
@@ -243,9 +244,9 @@ export default defineComponent({
 
     // CRUD stuff
     const createMutationParameters = computed(() => formData.value);
-    const { mutateAsync: create, isLoading: isLoadingCreate } = useCreateAccount();
+    const { mutateAsync: create, isLoading: isLoadingCreate } = useMutation(accountQueryDefinitions.mutations.createAccount);
     const updateMutationParameters = computed(() => ({ ...formData.value, id: props.id }));
-    const { mutateAsync: update, isLoading: isLoadingUpdate } = useUpdateAccount();
+    const { mutateAsync: update, isLoading: isLoadingUpdate } = useMutation(accountQueryDefinitions.mutations.updateAccount);
 
     const isLoading = computed(() => isLoadingCreate.value || isLoadingUpdate.value);
 
@@ -266,9 +267,9 @@ export default defineComponent({
       });
       try {
         if (props.id) {
-          await update(updateMutationParameters as any);
+          await update(updateMutationParameters);
         } else {
-          await create(createMutationParameters as any);
+          await create(createMutationParameters);
         }
         displaySuccessMessage(t(props.id ? 'updatingAccountSuccess' : 'creatingAccountSuccess').toString());
         emit('success');

@@ -70,9 +70,9 @@ import { PropType } from 'vue';
 import { omit, upperFirst } from 'lodash';
 import { mdiFilter } from '@mdi/js';
 
-import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
-import { useFetchTranslations } from '~/composables/api/translations';
-import { useFetchForms } from '~/composables/api/forms';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
@@ -108,11 +108,11 @@ export default defineComponent({
     const { t: $t } = useI18n({ useScope: 'global' });
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
     const formsQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+    const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     const filterDialogVisible = ref(false);
 

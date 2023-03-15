@@ -90,8 +90,10 @@ import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
-import { useFetchTranslations } from '~/composables/api/translations';
-import { useFetchSchemas } from '~/composables/api/schemas';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
@@ -110,16 +112,15 @@ export default defineComponent({
   },
   emits: ['reload'],
   setup(props, { emit }) {
-    const { $api } = useNuxtApp();
     const { t, locale } = useI18n();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { link } = useLinkObject();
 
-    const { data: endpoints } = useFetchSchemas();
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     // general stuff
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
@@ -247,7 +248,7 @@ export default defineComponent({
     const onCreateObjectSuccess = async (newObjectId: string) => {
       if (props.object) {
         try {
-          const createdObject = await $api.entity.fetch(endpoints.value?.[createObjectDialog.value.objectType || ''] || '', newObjectId);
+          const createdObject = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: endpoints.value?.[createObjectDialog.value.objectType || ''] || '' , id: newObjectId });
           if (createObjectDialog.value.hierarchicalContext === 'child') {
             await link(props.object, createdObject);
           } else {
