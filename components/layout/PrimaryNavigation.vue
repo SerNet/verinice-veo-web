@@ -207,7 +207,7 @@ export default defineComponent({
     const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms ,queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
 
     const fetchSchemasDetailedQueryParameters = computed(() => ({ domainIds: [props.domainId as string] }));
-    const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId && && authenticated.value);
+    const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId && authenticated.value);
     const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, { enabled: fetchSchemasDetailedQueryEnabled });
     watch(
       () => _schemas,
