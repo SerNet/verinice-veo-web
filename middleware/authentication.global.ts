@@ -21,7 +21,7 @@ import { useVeoUser } from '~/composables/VeoUser';
 /**
  * These routes will not trigger authentication
  */
-export const publicRoutes = ['help', 'docs', 'login', 'sso'];
+export const publicRoutes = ['help', 'docs', 'login'];
 
 export const restrictedRoutes = new Map<string, [string, string]>([
   ['unit-domains-domain-editor', ['view', 'editors']],
@@ -40,34 +40,36 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const { authenticated, initialize, keycloakInitialized } = useVeoUser();
   const { ability } = useVeoPermissions();
 
+  // /sso only gets accessed by keycloak and keycloak can't init itself if it starts another init
+  if(to.path === '/sso') {
+    return;
+  }
+
   // Prevent the user from accessing the login page if he is logged in
   if (authenticated.value && to.path === '/login') {
     return navigateTo('/');
   }
 
-  // Everything inside the if block only gets executed if the user wants to access an non-public route.
-  if (!publicRoutes.some((r) => to.path.startsWith(`/${r}`))) {
-    // If keycloak isn't initialized, initialize keycloak
-    if (!keycloakInitialized.value) {
-      try {
-        await initialize(app);
-      } catch (error: any) {
-        throw createError({ statusCode: 401, statusMessage: error });
-      }
+  // If keycloak isn't initialized, initialize keycloak
+  if (!keycloakInitialized.value) {
+    try {
+      await initialize(app);
+    } catch (error: any) {
+      throw createError({ statusCode: 401, statusMessage: error });
     }
+  }
 
-    // If keycloak is initialized and the user isn't logged in, redirect to login
-    if (!authenticated.value) {
-      return navigateTo('/login');
-    }
+  // If keycloak is initialized, the user isn't logged in and the path isn't public, redirect to login
+  if (!authenticated.value && !publicRoutes.some((r) => to.path.startsWith(`/${r}`))) {
+    return navigateTo('/login');
+  }
 
-    // check permissions
-    const requiredPermission = restrictedRoutes.get(to.name.toString() || '');
-    const isRouteRestricted = Array.isArray(requiredPermission);
+  // check permissions
+  const requiredPermission = restrictedRoutes.get(to.name?.toString() || '');
+  const isRouteRestricted = Array.isArray(requiredPermission);
 
-    // If the route is restricted and the user doesn't have the required permissions, display an error
-    if (isRouteRestricted && ability.value.cannot(requiredPermission[0], requiredPermission[1])) {
-      throw createError({ statusCode: 403 });
-    }
+  // If the route is restricted and the user doesn't have the required permissions, display an error
+  if (isRouteRestricted && ability.value.cannot(requiredPermission[0], requiredPermission[1])) {
+    throw createError({ statusCode: 403 });
   }
 });

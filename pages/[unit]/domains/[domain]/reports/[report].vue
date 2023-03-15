@@ -29,7 +29,7 @@
         <v-col cols="auto">
           <p
             v-if="report"
-            class="mt-2 mb-0 text-body-1"
+            class="mt-2 mb-0 text-body-1 font-italic"
             data-component-name="report-description"
           >
             {{ report.description[locale] }}
@@ -41,13 +41,13 @@
       <LayoutLoadingWrapper v-if="generatingReport" />
       <p
         v-if="report && report.multipleTargetsSupported"
-        class="text-body-1"
+        class="text-body-1 mt-3"
       >
         {{ t('hintMultiple') }}
       </p>
       <p
         v-else-if="report"
-        class="text-body-1"
+        class="text-body-1 mt-3"
       >
         {{ t('hintSingle') }}
       </p>

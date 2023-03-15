@@ -23,7 +23,7 @@
     :class="_classes"
     :data-component-name="componentName"
     density="compact"
-    @click="onClick"
+    @click.stop="onClick"
   >
     <template
       v-if="icon || faIcon"
@@ -61,6 +61,7 @@
 import { isEqual, pick } from 'lodash';
 import { mergeProps, PropType } from 'vue';
 import { _RouteLocationBase } from 'vue-router';
+import { INavItem } from './PrimaryNavigation.vue';
 
 const props = defineProps({
   name: {
@@ -102,17 +103,21 @@ const props = defineProps({
   activePath: {
     type: String,
     default: undefined
+  },
+  children: {
+    type: Array as PropType<INavItem[]>,
+    default: () => []
   }
 });
 const emit = defineEmits(['expand-menu', 'click']);
 
 const route = useRoute();
   
-const onClick = (event: any) => {
+const onClick = () => {
   if (props.miniVariant) {
     emit('expand-menu');
   }
-  emit('click', event);
+  navigateTo(props.to);
 };
 
 const _classes = computed(() => `${props.classes} primary-navigation-entry-level-${props.level}`);

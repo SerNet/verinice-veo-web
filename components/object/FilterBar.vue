@@ -31,6 +31,7 @@
         size="small"
         variant="flat"
         style="outline: 1px solid black"
+        data-component-name="filter-bar-filter-button"
         @click="filterDialogVisible = true"
       >
         <v-icon
@@ -43,6 +44,7 @@
     <v-col
       cols="auto"
       class="grow"
+      data-component-name="filter-bar-active-filters"
     >
       <v-chip-group>
         <BaseChip

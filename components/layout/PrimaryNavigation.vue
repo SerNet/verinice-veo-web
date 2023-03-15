@@ -117,10 +117,10 @@ import {
 import { sortBy, upperFirst } from 'lodash';
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { useDisplay } from 'vuetify';
+import { NavItem } from '@nuxt/content/dist/runtime/types';
 
 import { createUUIDUrlParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
-
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { ROUTE_NAME as OBJECTS_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/objects/index.vue';
@@ -193,7 +193,8 @@ export default defineComponent({
     const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
+    const fetchTranslationsQueryEnabled = computed(() => authenticated.value);  
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters,  { enabled: fetchTranslationsQueryEnabled });
 
     // objects specific stuff
     const objectSchemas = ref<IVeoObjectSchema[]>([]);
@@ -206,7 +207,7 @@ export default defineComponent({
     const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms ,queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
 
     const fetchSchemasDetailedQueryParameters = computed(() => ({ domainIds: [props.domainId as string] }));
-    const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId);
+    const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId && && authenticated.value);
     const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, { enabled: fetchSchemasDetailedQueryEnabled });
     watch(
       () => _schemas,
@@ -441,18 +442,16 @@ export default defineComponent({
       children: docNavItems.value
     }));
     
+    const docItemTransformationFn = (file: NavItem): INavItem => ({
+      key: file._path,
+      name: file.title,
+      to: `/docs${ (file._path.startsWith('/index') ? file._path : file._path.replace('index', '')).replace(/\.\w{2}/, '')}`,
+      activePath: file._path,
+      children: file.children?.length ? file.children.map((file) => docItemTransformationFn(file)) : undefined
+    });
     const docs = useDocNavigation({});
     const docNavItems = computed(() => 
-      (docs.value || []).map(
-        (file) => {
-          return {
-            key: file.path,
-            name: file.title,
-            to: `/docs${file._path.replace(/index.\w{2}/, '')}`,
-            activePath: file._path
-          };
-        }
-      )
+      (docs.value || []).map((file) => docItemTransformationFn(file))
     );
 
     const items = computed<INavItem[]>(() => [
