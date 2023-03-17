@@ -65,12 +65,23 @@ export const useThrottleNextTick = () => {
   return { throttle };
 };
 
+
 export const useRules = () => {
   const { t } = useI18n({ useScope: 'global' });
 
   const requiredRule = (v: any) => !!v && isString(v) ? !!trim(v) : true || t('global.input.required');
+  const requireNotEmpty = (v: string) => isString(v) && !!v ? true : t('global.input.required');
+
+  const banSpecialChars = (v: string) => hasNoSpecialChar(v) ? true : t('global.input.hasSpecialChar');
+  function hasNoSpecialChar(s: string): boolean {
+    if(s === '') return true; // do not test empty strings
+    const re = /^[a-zA-Z0-9_-]+$/; // allowed characters
+    return re.test(s);
+  }
 
   return {
-    requiredRule
+    requiredRule,
+    requireNotEmpty,
+    banSpecialChars
   };
 };
