@@ -63,10 +63,10 @@ import { StorageSerializers, useStorage } from '@vueuse/core';
 import { mdiLoginVariant, mdiLogoutVariant } from '@mdi/js';
 
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
-import { IVeoUnit } from '~/types/VeoTypes';
 import { useVeoUser } from '~/composables/VeoUser';
-import { useFetchUnits } from '~/composables/api/units';
+import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
@@ -83,7 +83,7 @@ export default defineComponent({
 
     // Demo unit/unit selection
 
-    const { data: units } = useFetchUnits({
+    const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll, undefined,{
       enabled: authenticated
     });
 

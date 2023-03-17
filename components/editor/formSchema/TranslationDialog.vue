@@ -139,8 +139,10 @@ import { PropType } from 'vue';
 import { difference, merge } from 'lodash';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 
-import { IVeoFormSchemaMeta, IVeoFormSchemaTranslationCollection, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { IVeoFormSchemaMeta } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoTranslations } from '~~/composables/api/queryDefinitions/translations';
 
 export default defineComponent({
   props: {

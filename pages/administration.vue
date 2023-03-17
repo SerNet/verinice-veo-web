@@ -101,16 +101,17 @@
 <script lang="ts" setup>
 import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { ObjectTableHeader } from '~/components/object/Table.vue';
-import { IVeoAccount, useFetchAccounts } from '~/composables/api/accounts';
+import accountQueryDefinition, { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
+import { useQuery } from '~~/composables/api/utils/query';
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 const { profile, userSettings } = useVeoUser();
 const { ability } = useVeoPermissions();
 
-const { data: accounts, isFetching } = useFetchAccounts();
+const { data: accounts, isFetching } = useQuery(accountQueryDefinition.queries.fetchAccounts);
 const activeAccounts = computed(
   () => (accounts.value || []).filter((account) => account.enabled).length
 );

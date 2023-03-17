@@ -60,7 +60,8 @@
 <script lang="ts" setup>
 import { upperFirst, toUpper } from 'lodash';
 
-import { useFetchReports } from '~/composables/api/reports';
+import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
+import { useQuery } from '~~/composables/api/utils/query';
 
 interface IReport {
   id: string;
@@ -75,7 +76,7 @@ defineEmits(['create-report']);
 
 const { t, locale } = useI18n();
 const { tablePageSize } = useVeoUser();
-const { data: reports, isFetching } = useFetchReports();
+const { data: reports, isFetching } = useQuery(reportQueryDefinitions.queries.fetchAll);
 
 const displayedItems = computed<IReport[]>(() => {
   return Object.entries(reports.value || {}).map(([id, item]) => {

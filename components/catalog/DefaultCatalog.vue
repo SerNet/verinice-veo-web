@@ -63,8 +63,11 @@ import { PropType } from 'vue';
 import { IVeoCatalogSelectionListHeader } from '~/components/catalog/ItemsSelectionList.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { IVeoCatalogItem } from '~/types/VeoTypes';
+import { IVeoCatalogItem } from '~~/composables/api/queryDefinitions/catalogs';
+import { useQuerySync } from '~~/composables/api/utils/query';
 import { separateUUIDParam } from '~~/lib/utils';
+import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
+import { useMutation } from '~~/composables/api/utils/mutation';
 
 export default defineComponent({
   props: {
@@ -88,10 +91,11 @@ export default defineComponent({
   setup(props) {
     const { t } = useI18n();
     const { t: $t } = useI18n({ useScope: 'global' });
-    const { $api } = useNuxtApp();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
     const route = useRoute();
+
+    const { mutateAsync: incarnate } =  useMutation(unitQueryDefinitions.mutations.updateIncarnations);
 
     const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
 
@@ -135,9 +139,9 @@ export default defineComponent({
 
       try {
         // Fetch incarnations for all selected items
-        const incarnations = await $api.unit.fetchIncarnations(selectedItems.value, unitId.value);
+        const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: unitId.value, itemIds: selectedItems.value });
         // Apply incarnations
-        await $api.unit.updateIncarnations(incarnations, unitId.value);
+        incarnate({ incarnations, unitId: unitId.value });
         displaySuccessMessage(props.successText);
         selectedItems.value = [];
       } catch (e: any) {

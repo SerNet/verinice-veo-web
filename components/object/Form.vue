@@ -190,13 +190,16 @@ import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } 
 import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
 import { getRiskAdditionalContext, getStatusAdditionalContext } from '~/components/dynamic-form/additionalContext';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectHistoryEntry, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
-import { useFetchForm, useFetchForms } from '~/composables/api/forms';
-import { useFetchTranslations } from '~/composables/api/translations';
-import { useFetchDomain } from '~/composables/api/domains';
-import { useFetchSchema, useFetchSchemas } from '~/composables/api/schemas';
+import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 
 enum SIDE_CONTAINERS {
   HISTORY,
@@ -263,7 +266,6 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t, locale } = useI18n();
     const { t: $t } = useI18n({ useScope: 'global' });
-    const { $api } = useNuxtApp();
     const { personReactiveFormActions } = useVeoReactiveFormActions();
 
     // Object stuff
@@ -281,17 +283,17 @@ export default defineComponent({
     // Fetching object schema
     const fetchSchemaQueryParameters = computed(() => ({ type: props.objectType, domainIds: [props.domainId] }));
     const fetchSchemaQueryEnabled = computed(() => !!props.objectType && !!props.domainId);
-    const { data: objectSchema, isFetching: objectSchemaIsFetching } = useFetchSchema(fetchSchemaQueryParameters, {
+    const { data: objectSchema, isFetching: objectSchemaIsFetching } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, {
       enabled: fetchSchemaQueryEnabled
     });
 
     const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations, isFetching: translationsAreFetching } = useFetchTranslations(translationQueryParameters);
+    const { data: translations, isFetching: translationsAreFetching } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
     const mergedTranslations = computed<IVeoTranslations['lang']>(() => merge({}, translations.value?.lang || {}, currentFormSchema.value?.translation || {}));
 
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
-    const { data: domain, isFetching: domainIsFetching } = useFetchDomain(fetchDomainQueryParameters, {
+    const { data: domain, isFetching: domainIsFetching } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
       enabled: fetchDomainQueryEnabled
     });
 
@@ -305,13 +307,13 @@ export default defineComponent({
 
     const selectedDisplayOption = ref('objectschema');
 
-    const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const formsQueryParameters = computed(() => ({ domainId: props.domainId as string}));
     const formsQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas, isFetching: formSchemasAreFetching } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+    const { data: formSchemas, isFetching: formSchemasAreFetching } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
-    const formQueryParameters = computed(() => ({ domainId: props.domainId, id: selectedDisplayOption.value }));
+    const formQueryParameters = computed(() => ({ domainId: props.domainId, id: selectedDisplayOption.value as string }));
     const formQueryEnabled = computed(() => selectedDisplayOption.value !== 'objectschema');
-    const { data: formSchema, isFetching: formSchemaIsFetching } = useFetchForm(formQueryParameters, { enabled: formQueryEnabled });
+    const { data: formSchema, isFetching: formSchemaIsFetching } = useQuery(formQueryDefinitions.queries.fetchForm, formQueryParameters, { enabled: formQueryEnabled });
     const currentFormSchema = computed(() => (selectedDisplayOption.value === 'objectschema' || formSchemaIsFetching.value ? undefined : formSchema.value));
 
     function getFormschemaIdBySubType(subType: string) {
@@ -478,14 +480,14 @@ export default defineComponent({
       };
     };
 
-    const { data: endpoints } = useFetchSchemas();
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const fetchDecisions = async () => {
       const toReturn: any = { ...props.objectMetaData, decisionResults: {}, inspectionFindings: [] };
 
       // Fetch updated decision results and merge them with the current values
       if (objectData.value?.domains?.[props.domainId] && endpoints.value?.[objectData.value.type]) {
         for (const key in props.objectMetaData?.decisionResults || {}) {
-          const result = await $api.entity.fetchWipDecisionEvaluation(endpoints.value[objectData.value.type], objectData.value as any, props.domainId, key);
+          const result = await useQuerySync(objectQueryDefinitions.queries.fetchWipDecisionEvaluation, {endpoint: endpoints.value[objectData.value.type], object: objectData.value as any, domain: props.domainId, decision: key });
           toReturn.inspectionFindings.push(...result.inspectionFindings);
           toReturn.decisionResults[key] = result.decisionResults.piaMandatory;
         }

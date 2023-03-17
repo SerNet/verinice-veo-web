@@ -73,8 +73,10 @@ import { omit, upperFirst } from 'lodash';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useCreateRisk, useFetchObjects } from '~/composables/api/objects';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useVeoUser } from '~/composables/VeoUser';
+import { useMutation } from '~~/composables/api/utils/mutation';
+import { useFetchObjects } from '~~/composables/api/objects';
 
 export default defineComponent({
   props: {
@@ -101,7 +103,7 @@ export default defineComponent({
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
 
-    const { mutateAsync: createRisk } = useCreateRisk();
+    const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createOrUpdateRisk);
 
     const unit = computed(() => separateUUIDParam(route.params.unit as string).id);
 

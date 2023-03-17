@@ -25,19 +25,18 @@ import { useRequest, VeoApiReponseType } from './request';
 
 export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
 
-export interface IVeoQueryDefinition<TResult = any> {
+export interface IVeoQueryDefinition<TVariables, TResult = any> {
+  primaryQueryKey: string;
   url: string;
+  queryParameterTransformationFn: (_queryParameters: TVariables) => IVeoQueryParameters;
   reponseType?: VeoApiReponseType;
-  onDataFetched?: (result: TResult) => TResult;
+  onDataFetched?: (result: TResult, queryParameters: IVeoQueryParameters) => TResult;
+  staticQueryOptions?: QueryOptions;
 }
 
 export interface IVeoQueryParameters<TParams = Record<string, any>, TQuery = Record<string, any>> {
   params?: TParams;
   query?: TQuery;
-}
-
-export interface IVeoQueryTransformationMap {
-  [operation: string]: (mutationParameters: any) => IVeoQueryParameters;
 }
 
 export const STALE_TIME = {
@@ -51,25 +50,26 @@ export const STALE_TIME = {
 /**
  * Wrapper for vue-query's useQuery to apply some custom logic to make it work more seamless with the legacy api plugin and add optional debugging output.
  *
- * @param queryIdentifier Used for debugging and identifying all requests that get made to the defined endpoint. (Developer note: If you have two queries with the same URL and method, you are probably doing something wrong)
- * @param queryDefinition Defines url and return type of the request.
+ * @param queryDefinition Defines url, return type, static query options and more.
  * @param queryParameters Parameters to pass to the request function.
- * @param queryParameterTransformationFn Function that transforms an object passed from the application (developer friendly) to an object that gets used by the api to generate the url
  * @param queryOptions Options modifiying query behaviour.
  * @returns Query object containing the data and information about the query.
  */
-export const useQuery = <TVariable = Record<string, any>, TResult = any>(
-  queryIdentifier: string,
-  queryDefinition: IVeoQueryDefinition<TResult>,
-  queryParameters: Ref<TVariable> | undefined,
-  queryParameterTransformationFn: (parameters: TVariable | void) => IVeoQueryParameters,
+export const useQuery = <TVariables = undefined, TResult = any>(
+  queryDefinition: IVeoQueryDefinition<TVariables, TResult>,
+  queryParameters?: Ref<TVariables>,
   queryOptions?: QueryOptions
 ) => {
   const { $config } = useNuxtApp();
   const { request } = useRequest();
 
+  const combinedOptions = computed(() => ({
+    ...queryDefinition.staticQueryOptions,
+    ...queryOptions
+  }));
+
   // Generating query key based on identifier and the query parameters. This causes the query to get executed again if the query parameters change
-  const queryKey = reactive<any[]>([queryIdentifier]);
+  const queryKey = reactive<any[]>([queryDefinition.primaryQueryKey]);
   watch(
     () => queryParameters?.value,
     (newValue) => {
@@ -84,27 +84,28 @@ export const useQuery = <TVariable = Record<string, any>, TResult = any>(
   const result = vueQueryUseQuery<TResult>(
     queryKey,
     async () => {
-      let result = await request(queryDefinition.url, { ...queryParameterTransformationFn(unref(queryParameters)), ...omit(queryDefinition, 'url', 'onDataFetched') });
+      const transformedQueryParameters = queryParameters ? queryDefinition.queryParameterTransformationFn(unref(queryParameters)) : {};
+      let result = await request(queryDefinition.url, { ...transformedQueryParameters, ...omit(queryDefinition, 'url', 'onDataFetched') });
       if (queryDefinition.onDataFetched) {
-        result = queryDefinition.onDataFetched(result);
+        result = queryDefinition.onDataFetched(result, transformedQueryParameters);
       }
       return result;
     },
-    queryOptions as any
+    combinedOptions as any
   );
 
   // Debugging stuff
-  if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(queryIdentifier))) {
+  if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(queryDefinition.primaryQueryKey))) {
     const queryClient = useQueryClient();
 
     watch(
       () => result.isFetching?.value,
       (newValue) => {
         if (newValue && result.isStale.value) {
-          const staleTime = queryOptions?.staleTime || queryClient.getDefaultOptions().queries?.staleTime;
+          const staleTime = combinedOptions.value?.staleTime || queryClient.getDefaultOptions().queries?.staleTime;
           // eslint-disable-next-line no-console
           console.log(
-            `[vueQuery] data for query "${JSON.stringify(queryIdentifier)}" with parameters "${JSON.stringify(
+            `[vueQuery] data for query "${JSON.stringify(queryDefinition.primaryQueryKey)}" with parameters "${JSON.stringify(
               queryParameters?.value
             )}" is considered stale (stale time is ${staleTime}). Last updated at ${new Date(
               result.dataUpdatedAt.value
@@ -113,9 +114,9 @@ export const useQuery = <TVariable = Record<string, any>, TResult = any>(
         } else if (newValue) {
           // eslint-disable-next-line no-console
           console.log(
-            `[vueQuery] data for query "${JSON.stringify(queryIdentifier)}" with parameters "${JSON.stringify(
+            `[vueQuery] data for query "${JSON.stringify(queryDefinition.primaryQueryKey)}" with parameters "${JSON.stringify(
               queryParameters?.value
-            )}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(queryOptions)}"`
+            )}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(combinedOptions.value)}"`
           );
         }
       },
@@ -127,42 +128,81 @@ export const useQuery = <TVariable = Record<string, any>, TResult = any>(
 };
 
 /**
+ * Wrapper for request composable to provde the same interface as the query composable so that each request
+ * can either be made synchronous or asynchronous.
+ * Responses of requests made by this composable get written to the vue query cache the same way as the query
+ * composable would do.
+ * 
+ * @param queryDefinition Defines url and return type of the request.
+ * @param queryParameters Parameters to pass to the request function.
+ * @returns Result of request without any additional info.
+ * @throws Throws an error if request fails
+ */
+export const useQuerySync  = async <TVariables = undefined, TResult = any>(
+  queryDefinition: IVeoQueryDefinition<TVariables, TResult>,
+  queryParameters?: TVariables
+) => {
+  const { request } = useRequest();
+
+  // Make sync request
+  const transformedQueryParameters = queryParameters ? queryDefinition.queryParameterTransformationFn(queryParameters) : {};
+  let result = await request(queryDefinition.url, { ...transformedQueryParameters, ...omit(queryDefinition, 'url', 'onDataFetched') });
+  if (queryDefinition.onDataFetched) {
+    result = queryDefinition.onDataFetched(result, transformedQueryParameters);
+  }
+
+  // Save to vue query cache
+  try {
+    const queryClient = useQueryClient();
+    queryClient.setQueryData([queryDefinition.primaryQueryKey, queryParameters], result);
+  } catch (e) {
+    console.warn('Couldn\'t set queried data:', e);
+  }
+  
+
+  return result as TResult;
+};
+
+/**
  * Wrapper for vue-query's useQueries to provide more debugging output and have a similiar interface usage to our own useQuery
  *
- * @param queryIdentifier Used for debugging and identifying all requests that get made to the defined endpoint. (Developer note: If you have two queries with the same URL and method, you are probably doing something wrong)
- * @param queryDefinition Defines url and return type of the request.
- * @param queryParameters Parameters to pass to the request function. Each array entries results in a new query
- * @param queryParameterTransformationFn Function that transforms an object passed from the application (developer friendly) to an object that gets used by the api to generate the url
+ * @param queryDefinition Defines url, return type, static query options and more.
+ * @param queryParameters Parameters to pass to the request function. Each array entries results in a new query.
  * @param queryOptions Options modifiying query behaviour.
  * @returns Array containing query objects containing the data and information about the query. NOT reactive, so you have to watch the results in your components.
  */
-export const useQueries = <TVariable = Record<string, any>, TResult = any>(
-  queriesIdentifier: string,
-  queryDefinition: IVeoQueryDefinition<TResult>,
-  queryParameters: Ref<(TVariable | void)[]>,
-  queryParameterTransformationFn: (parameters: TVariable | void) => IVeoQueryParameters,
+export const useQueries = <TVariables = Record<string, any>, TResult = any>(
+  queryDefinition: IVeoQueryDefinition<TVariables, TResult>,
+  queryParameters: Ref<TVariables[]>,
   queryOptions?: QueryOptions
 ) => {
   const { request } = useRequest();
 
+  const combinedOptions = computed(() => ({
+    ...queryDefinition.staticQueryOptions,
+    ...queryOptions
+  }));
+
   const queries = ref<any[]>([]);
+  
   watch(
     () => queryParameters.value,
     (newValue) => {
       queries.value = newValue.length
         ? newValue.map((query) => ({
-          queryKey: [queriesIdentifier, query],
+          queryKey: [queryDefinition.primaryQueryKey, query],
           queryFn: async () => {
+            const transformedQueryParameters = queryDefinition.queryParameterTransformationFn(unref(query));
             let result = await request(queryDefinition.url, {
-              ...queryParameterTransformationFn(unref(query)),
+              ...transformedQueryParameters,
               ...omit(queryDefinition, 'url', 'onDataFetched')
             });
             if (queryDefinition.onDataFetched) {
-              result = queryDefinition.onDataFetched(result);
+              result = queryDefinition.onDataFetched(result, transformedQueryParameters);
             }
             return result;
           },
-          ...queryOptions
+          ...combinedOptions.value
         }))
         : [{ queryKey: ['unnecessary'], queryFn: () => null }];
     },

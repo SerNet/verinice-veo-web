@@ -327,24 +327,23 @@ import { useDisplay } from 'vuetify';
 
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
 import {
-  IVeoTranslations,
   IVeoObjectSchema,
-  IVeoFormSchema,
   IVeoFormSchemaItemDeleteEvent,
-  IVeoFormSchemaItem,
   IVeoFormSchemaItemUpdateEvent,
-  IVeoFormSchemaTranslationCollection,
-  IVeoFormSchemaMeta
+  IVeoFormSchemaTranslationCollection
 } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
 import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useCreateForm, useUpdateForm } from '~/composables/api/forms';
+import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
-import { useFetchDomain } from '~/composables/api/domains';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { isArray } from 'lodash';
+import { IVeoTranslations } from '~~/composables/api/queryDefinitions/translations';
+import { useMutation } from '~~/composables/api/utils/mutation';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   setup() {
@@ -435,7 +434,7 @@ export default defineComponent({
       domainId: domainId.value,
       form: formSchema.value as IVeoFormSchema
     }));
-    const { mutateAsync: create } = useCreateForm({
+    const { mutateAsync: create } = useMutation(formQueryDefinitions.mutations.createForm, {
       onSuccess: (data: any) => {
         if (formSchema.value) {
           formSchema.value.id = data; // For some reason the interface always returns void, even though this is a string
@@ -447,7 +446,7 @@ export default defineComponent({
       domainId: domainId.value,
       form: formSchema.value as IVeoFormSchema
     }));
-    const { mutateAsync: update } = useUpdateForm();
+    const { mutateAsync: update } = useMutation(formQueryDefinitions.mutations.updateForm);
 
     async function save() {
       // control whether save new or save updated schema
@@ -530,7 +529,7 @@ export default defineComponent({
     }
 
     const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
-    const { data: domain } = useFetchDomain(fetchDomainQueryParameters);
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     /**
      * Translations related stuff

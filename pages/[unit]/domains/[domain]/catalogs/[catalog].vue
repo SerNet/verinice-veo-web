@@ -63,7 +63,8 @@
 
 <script lang="ts">
 import { separateUUIDParam } from '~/lib/utils';
-import { useFetchCatalogItems } from '~/composables/api/catalogs';
+import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export const ROUTE_NAME = 'unit-domains-domain-catalogs-catalog';
 
@@ -80,12 +81,12 @@ export default defineComponent({
 
     const scenarios = computed(() =>
       // VVT is needed by the backend, however it shouldn't be selectable by the user as this throws an error
-      catalogItems.value.filter((catalogItem) => !catalogItem.element.displayName?.includes('TOM-') && !catalogItem.element.displayName?.includes('VVT'))
+      (catalogItems.value || []).filter((catalogItem) => !catalogItem.element.displayName?.includes('TOM-') && !catalogItem.element.displayName?.includes('VVT'))
     );
-    const toms = computed(() => catalogItems.value.filter((catalogItem) => catalogItem.element.displayName?.includes('TOM-')));
+    const toms = computed(() => (catalogItems.value || []).filter((catalogItem) => catalogItem.element.displayName?.includes('TOM-')));
 
     const fetchCatalogItemsQueryParameters = computed(() => ({ catalogId: catalogId.value, domainId: domainId.value }));
-    const { data: catalogItems, isFetching: catalogItemsAreFetching } = useFetchCatalogItems(fetchCatalogItemsQueryParameters);
+    const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(catalogQueryDefinitions.queries.fetchCatalogItems, fetchCatalogItemsQueryParameters);
 
     return {
       catalogItemsAreFetching,

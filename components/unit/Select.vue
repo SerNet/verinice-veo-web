@@ -44,7 +44,8 @@
 
 <script lang="ts">
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
-import { useFetchUnits } from '~/composables/api/units';
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   emits: ['create-unit'],
@@ -55,7 +56,7 @@ export default defineComponent({
 
     const unit = computed(() => (route.params.unit && separateUUIDParam(route.params.unit as string).id) || undefined);
 
-    const { data: displayedUnits } = useFetchUnits();
+    const { data: displayedUnits } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
     const doChangeUnit = (unitId: string) => {
       const unit = displayedUnits.value?.find((unit) => unit.id === unitId);

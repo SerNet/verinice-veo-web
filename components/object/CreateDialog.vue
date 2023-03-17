@@ -62,11 +62,13 @@ import { cloneDeep, omit, upperFirst } from 'lodash';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { isObjectEqual, separateUUIDParam } from '~/lib/utils';
-import { useFetchDomain } from '~/composables/api/domains';
-import { useFetchTranslations } from '~/composables/api/translations';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes';
-import { useFetchSchemas } from '~/composables/api/schemas';
-import { useCreateObject } from '~~/composables/api/objects';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import { useQuery } from '~~/composables/api/utils/query';
+import { useMutation } from '~~/composables/api/utils/mutation';
 
 export default defineComponent({
   props: {
@@ -97,16 +99,16 @@ export default defineComponent({
     const { ability } = useVeoPermissions();
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
-    const { data: endpoints } = useFetchSchemas();
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + translations.value?.lang[locale.value]?.[props.objectType]);
 
     // Seeding of empty form
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
-    const { data: domain, isFetching: domainIsFetching } = useFetchDomain(fetchDomainQueryParameters, {
+    const { data: domain, isFetching: domainIsFetching } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
       onSuccess: () => {
         if (props.objectType === 'scope') {
           seedInitialData();
@@ -174,8 +176,8 @@ export default defineComponent({
     );
 
     // Submitting form
-    const { mutateAsync: create } = useCreateObject({
-      onSuccess: (data: IVeoAPIMessage) => {
+    const { mutateAsync: create } = useMutation(objectQueryDefinitions.mutations.createObject, {
+      onSuccess: (queryClient, data: IVeoAPIMessage) => {
         emit('success', data.resourceId);
         displaySuccessMessage(upperFirst(t('objectCreated', { name: objectData.value.name }).toString()));
         emit('update:model-value', false);

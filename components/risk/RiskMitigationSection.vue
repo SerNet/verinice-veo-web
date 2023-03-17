@@ -104,6 +104,8 @@ import { mdiInformationOutline, mdiPencilOutline } from '@mdi/js';
 
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
+import { useQuerySync } from '~~/composables/api/utils/query';
+import objectQueryDefinitions from '~~/composables/api/queryDefinitions/objects';
 
 export default defineComponent({
   props: {
@@ -127,7 +129,6 @@ export default defineComponent({
   emits: ['mitigations-modified', 'update:mitigations'],
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { $api } = useNuxtApp();
 
     // We don't need the name, as it only gets used by the text in the linkObjectDialog and this text gets overwritten by template#header
     const editedObject = { type: 'control', name: '' };
@@ -153,7 +154,7 @@ export default defineComponent({
         const { id } = getEntityDetailsFromLink(props.data.mitigation);
 
         try {
-          selectedItems.value = await $api.entity.fetchSubEntities('controls', id);
+          selectedItems.value = await useQuerySync(objectQueryDefinitions.queries.fetchObjectChildren, { endpoint: 'controls', id: id });
           emit('mitigations-modified', false);
         } finally {
           fetchingMitigation.value = false;
@@ -165,7 +166,7 @@ export default defineComponent({
     };
 
     const onMitigationCreated = async (objectId: string) => {
-      const newMitigation = await $api.entity.fetch('controls', objectId);
+      const newMitigation = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: 'controls', id: objectId });
       selectedItems.value = [...selectedItems.value, newMitigation]; // We reassign the ref instead of using .push so that the computed setter picks up the changes
     };
 

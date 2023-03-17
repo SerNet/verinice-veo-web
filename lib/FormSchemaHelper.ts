@@ -17,8 +17,9 @@
  */
 import FormSchemaValidator from './FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
-import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaTranslationCollection, IVeoFormSchemaItemRule, IVeoObjectSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { IVeoFormSchemaTranslationCollection, IVeoObjectSchema } from '~/types/VeoTypes';
 import { mdiEyeOffOutline, mdiEyeOutline } from '@mdi/js';
+import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaItemRule, IVeoFormSchemaMeta } from '~~/composables/api/queryDefinitions/forms';
 
 export function generateSchema(
   name: IVeoFormSchemaMeta['name'],

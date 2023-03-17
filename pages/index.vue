@@ -97,20 +97,22 @@ export const ROUTE_NAME = 'index';
 <script lang="ts" setup>
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { mdiTrashCanOutline } from '@mdi/js';
+import { QueryClient } from '@tanstack/query-core';
 
 import { useVeoUser } from '~/composables/VeoUser';
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
-import { IVeoAPIMessage, IVeoDomain, IVeoUnit } from '~/types/VeoTypes';
-import { useFetchUnits, useCreateUnit } from '~/composables/api/units';
+import { IVeoAPIMessage } from '~/types/VeoTypes';
+import unitQueryDefinitions, { IVeoUnit} from '~/composables/api/queryDefinitions/units';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-import { useRequest } from '~/composables/api/utils/request';
 import { useFetchUnitDomains } from '~~/composables/api/domains';
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
+import { useMutation } from '~~/composables/api/utils/mutation';
+import { IVeoDomain } from '~~/composables/api/queryDefinitions/domains';
 
 const { profile, userSettings } = useVeoUser();
 const router = useRouter();
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
-const { request } = useRequest();
 
 useHead({
   title: $t('breadcrumbs.index')
@@ -128,7 +130,7 @@ const redirectIfTwoUnits = async () => {
   if (userSettings.value.maxUnits !== 2) {
     return;
   }
-  const nonDemoUnits: IVeoUnit[] = units.value.filter((unit: IVeoUnit) => unit.name !== 'Demo');
+  const nonDemoUnits: IVeoUnit[] = (units.value || []).filter((unit: IVeoUnit) => unit.name !== 'Demo');
   const myNonDemoUnit = nonDemoUnits.find((unit) => unit.createdBy === profile.value?.username);
 
   // Auto-redirect the user to his non demo unit upon visting the app. If it doesn't exist, create it and then redirect
@@ -157,8 +159,8 @@ const redirectIfTwoUnits = async () => {
   }
 };
 
-const redirectToNewUnit = async (data: IVeoAPIMessage) => {
-  const unit = await request<IVeoUnit>('/api/units/:id', { params: { id: data.resourceId } });
+const redirectToNewUnit = async (queryClient: QueryClient, data: IVeoAPIMessage) => {
+  const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: data.resourceId });
   const domainId = getFirstDomainDomaindId(unit);
 
   if (domainId) {
@@ -172,12 +174,12 @@ const redirectToNewUnit = async (data: IVeoAPIMessage) => {
   }
 };
 
-const { data: units, isFetching: unitsFetching } = useFetchUnits({ onSuccess: redirectIfTwoUnits });
+const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll, undefined, { onSuccess: redirectIfTwoUnits });
 
-const { mutateAsync: createUnitAndRedirect } = useCreateUnit({ onSuccess: redirectToNewUnit });
+const { mutateAsync: createUnitAndRedirect } = useMutation(unitQueryDefinitions.mutations.create, { onSuccess: redirectToNewUnit });
 
 const generateUnitDashboardLink = (unitId: string) => {
-  const unitToLinkTo = units.value.find((unit) => unit.id === unitId);
+  const unitToLinkTo = (units.value || []).find((unit) => unit.id === unitId);
   let domainId;
 
   if (unitToLinkTo) {
@@ -192,8 +194,8 @@ const lastUnit = useStorage(LOCAL_STORAGE_KEYS.LAST_UNIT, undefined, localStorag
 const lastDomain = useStorage(LOCAL_STORAGE_KEYS.LAST_DOMAIN, undefined, localStorage, { serializer: StorageSerializers.string });
 const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: lastUnit.value }));
 const fetchUnitDomainsQueryEnabled = computed(() => !!lastUnit.value && lastUnit.value !== 'undefined' && !!lastDomain.value && lastDomain.value !== 'undefined' && router.options.history.state.position === 1);
-useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled, onSuccess: (domains: IVeoDomain[]) => {
-  if (userSettings.value.maxUnits <= 2 && domains.find((domain) => domain.id === lastDomain.value)) {
+useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled, onSuccess: (domains) => {
+  if (userSettings.value.maxUnits <= 2 && (domains as IVeoDomain[]).find((domain) => domain.id === lastDomain.value)) {
     navigateTo({
       name: 'unit-domains-domain',
       params: {

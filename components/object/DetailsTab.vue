@@ -76,9 +76,12 @@ import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/t
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useFetchSchemas } from '~/composables/api/schemas';
-import { useDeleteRisk, useFetchObjectChildren, useFetchScopeChildren, useFetchParentObjects, useFetchRisks } from '~/composables/api/objects';
-import { useFetchDomain } from '~/composables/api/domains';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import objectQueryDefinitions, { IVeoFetchRisksParameters } from '~/composables/api/queryDefinitions/objects';
+import { useFetchParentObjects } from '~/composables/api/objects';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
+import { useMutation } from '~~/composables/api/utils/mutation';
 
 export default defineComponent({
   props: {
@@ -100,7 +103,6 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t, locale } = useI18n();
     const route = useRoute();
-    const { $api } = useNuxtApp();
     const router = useRouter();
     const { ability } = useVeoPermissions();
 
@@ -119,7 +121,7 @@ export default defineComponent({
     };
     watch(() => props.type, resetQueryOptions);
 
-    const { data: schemas } = useFetchSchemas();
+    const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const parentScopesQueryParameters = computed(() => ({
       parentEndpoint: 'scopes',
       childObjectId: props.object?.id || '',
@@ -142,13 +144,13 @@ export default defineComponent({
     const { data: parentObjects, isFetching: parentObjectsIsFetching } = useFetchParentObjects(parentObjectsQueryParameters, { enabled: parentObjectsQueryEnabled });
     const childScopesQueryParameters = computed(() => ({ id: props.object?.id || '' }));
     const childScopesQueryEnabled = computed(() => props.type.startsWith('child') && props.object?.type === 'scope' && !!props.object?.id);
-    const { data: scopeChildren, isFetching: childScopesIsFetching } = useFetchScopeChildren(childScopesQueryParameters, { enabled: childScopesQueryEnabled });
+    const { data: scopeChildren, isFetching: childScopesIsFetching } = useQuery(objectQueryDefinitions.queries.fetchScopeChildren ,childScopesQueryParameters, { enabled: childScopesQueryEnabled });
     const childObjectsQueryParameters = computed(() => ({ id: props.object?.id || '', endpoint: schemas.value?.[props.object?.type || ''] || '' }));
     const childObjectsQueryEnabled = computed(() => props.type.startsWith('child') && props.object?.type !== 'scope' && !!props.object?.id);
-    const { data: objectChildren, isFetching: childObjectsIsFetching } = useFetchObjectChildren(childObjectsQueryParameters, { enabled: childObjectsQueryEnabled });
-    const risksQueryParameters = computed(() => ({ id: props.object?.id || '', endpoint: schemas.value?.[props.object?.type || ''] || '' }));
+    const { data: objectChildren, isFetching: childObjectsIsFetching } = useQuery(objectQueryDefinitions.queries.fetchObjectChildren, childObjectsQueryParameters, { enabled: childObjectsQueryEnabled });
+    const risksQueryParameters = computed<IVeoFetchRisksParameters>(() => ({ id: props.object?.id || '', endpoint: schemas.value?.[props.object?.type || ''] || '' }));
     const risksQueryEnabled = computed(() => props.type === 'risks' && !!props.object?.id);
-    const { data: risks, isFetching: risksIsFetching } = useFetchRisks(risksQueryParameters, { enabled: risksQueryEnabled });
+    const { data: risks, isFetching: risksIsFetching } = useQuery(objectQueryDefinitions.queries.fetchRisks, risksQueryParameters, { enabled: risksQueryEnabled });
 
     const children = computed(() => props.object?.type === 'scope' ? scopeChildren.value : objectChildren.value);
 
@@ -180,7 +182,7 @@ export default defineComponent({
     });
 
     // Crud stuff
-    const { mutateAsync: deleteRisk } = useDeleteRisk();
+    const { mutateAsync: deleteRisk } = useMutation(objectQueryDefinitions.mutations.deleteRisk);
 
     const createEntityFromLink = (link: IVeoCustomLink) => {
       const name = link.target.displayName;
@@ -326,7 +328,7 @@ export default defineComponent({
                     (parentScopes.value?.items || []).map((item) => item.id)
                   )
                 ).resourceId;
-                const clonedObject = await $api.entity.fetch(schemas.value?.[item.type] || '', clonedObjectId);
+                const clonedObject = await useQuerySync(objectQueryDefinitions.queries.fetch , { endpoint: schemas.value?.[item.type] || '', id: clonedObjectId });
                 if (props.object) {
                   if (['childScopes', 'childObjects'].includes(props.type)) {
                     await link(props.object, clonedObject);
@@ -345,7 +347,7 @@ export default defineComponent({
             label: upperFirst(t(props.object?.type === 'scope' || props.type === 'parentScopes' ? 'removeFromScope' : 'removeFromObject').toString()),
             icon: mdiLinkOff,
             action: async (item: IVeoEntity) => {
-              const parent = await $api.entity.fetch(schemas.value?.[item.type] || '', item.id);
+              const parent = await useQuerySync(objectQueryDefinitions.queries.fetch , { endpoint: schemas.value?.[item.type] || '', id: item.id });
               if (['parentScopes', 'parentObjects'].includes(props.type)) {
                 unlinkEntityDialog.value.objectToRemove = props.object;
                 unlinkEntityDialog.value.parent = parent;
@@ -427,8 +429,8 @@ export default defineComponent({
     };
 
     // Risk tab related stuff
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
-    const { data: domain } = useFetchDomain(fetchDomainQueryParameters);
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
     const domainData = computed(() => domain.value?.riskDefinitions?.DSRA);
 
     const getInherentAndResidualRisk = (item: IVeoRisk, protectionGoal: string) => {

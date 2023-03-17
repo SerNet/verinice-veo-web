@@ -157,6 +157,8 @@
       v-model="objectSchemaDialog.value"
       v-bind="objectSchemaDialog"
       :domain-id="domainId"
+      :form-schemas="forms"
+      :object-types="schemas"
       @success="onEditPropertySuccess"
       @error="onEditPropertyError"
       @delete="showDeleteDialog(objectSchemaDialog.propertyId, objectSchemaDialog.type)"
@@ -174,7 +176,10 @@ import { Ref } from 'vue';
 import { mdiPlus } from '@mdi/js';
 
 import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
+import formQueryDefinitions from '~~/composables/api/queryDefinitions/forms';
+import schemaQueryDefinitions from '~~/composables/api/queryDefinitions/schemas';
 import { IInputType, INPUT_TYPES } from '~/types/VeoEditor';
+import { useQuery } from '~~/composables/api/utils/query';
 
 interface EditorPropertyItem {
   item: IVeoOSHCustomAspect | IVeoOSHCustomLink | IVeoOSHCustomProperty;
@@ -197,7 +202,7 @@ export default defineComponent({
     }
   },
   emits: ['schema-updated'],
-  setup(_props, context) {
+  setup(props, context) {
     const { t } = useI18n();
     const { t: globalT } = useI18n({ useScope: 'global' });
     const { displayErrorMessage } = useVeoAlerts();
@@ -334,6 +339,11 @@ export default defineComponent({
       computeProperties();
     }
 
+    // Stuff needed by CustomPropertiesDialog
+    const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+    const fetchFormsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const { data: forms } = useQuery(formQueryDefinitions.queries.fetchForms, fetchFormsQueryParameters);
+
     return {
       itemContainsAttributeTitle,
       attributeContainsTitle,
@@ -351,6 +361,8 @@ export default defineComponent({
       showDeleteDialog,
       doDeleteItem,
       formattedLinkHeader,
+      forms,
+      schemas,
 
       mdiPlus,
       t,
