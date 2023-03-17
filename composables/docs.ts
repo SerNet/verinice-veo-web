@@ -113,7 +113,6 @@ export const useDocNavigation = (options: {
   const { locale } = useI18n();
 
   const mergedOptions = computed(() => getOptions(options, locale.value));
-
   const navigation = ref<NavItem[] | undefined>();
 
   const normalizedDocs = computed(() => {
@@ -121,22 +120,21 @@ export const useDocNavigation = (options: {
       if(!item.children || !item.children.length) {
         return item;
       }
-
       const children = cloneDeep(item.children);
       const searchCondition = (item: NavItem) => last(item._path.split('/')).startsWith('index');
       const indexChild = item.children.findIndex((child) => searchCondition(child));
       const newIndexPage = children.splice(indexChild, 1);
-
+     
       item.title = newIndexPage[0].title;
       item.children = children;
 
       for(const child in item.children) {
         item.children[child] = removeIndexPages(item.children[child]);
       }
+
       return item;
     };
-
-    return (navigation.value || []).map((item) => removeIndexPages(item));
+    return ((navigation.value || []).map((item) => removeIndexPages(item))).splice(1);
   });
 
   const fetch = async () => {
