@@ -148,3 +148,17 @@ const isLinkEqual = (linkA: IVeoCustomLink[], linkB: IVeoCustomLink[]) => {
   }
   return true;
 };
+
+export const getFormSchemaControlType = ((objectSchemaElement: JSONSchema7) => {
+  // If attribute contains an enum, display as enum, regardless of enum value type.
+  if(Array.isArray(objectSchemaElement.enum)) {
+    return 'enum';
+  }
+
+  // If type isn't set or type is an array, return as default as we don't know how to handle it (likely a corrupt schema)
+  if(!objectSchemaElement.type || Array.isArray(objectSchemaElement.type)) {
+    return 'default';
+  }
+
+  return objectSchemaElement.type;
+});

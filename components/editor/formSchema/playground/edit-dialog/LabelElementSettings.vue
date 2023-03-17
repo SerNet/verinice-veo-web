@@ -34,22 +34,7 @@
               variant="underlined"
               clearable
               :prepend-inner-icon="mdiAlphabeticalVariant"
-              :disabled="isTranslatedLabel"
             />
-            <v-tooltip
-              v-if="isTranslatedLabel"
-              location="top"
-            >
-              <template #activator="{ props: tooltipProps }">
-                <v-icon
-                  :icon="mdiInformationOutline"
-                  v-bind="tooltipProps"
-                />
-              </template>
-              <template #default>
-                {{ t('editingTranslations') }}
-              </template>
-            </v-tooltip>
           </v-col>
           <v-col
             cols="12"
@@ -68,7 +53,7 @@
   
 <script setup lang="ts">
 import { PropType, Ref } from 'vue';
-import { mdiAlphabeticalVariant, mdiInformationOutline } from '@mdi/js';
+import { mdiAlphabeticalVariant } from '@mdi/js';
 
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { IVeoFormSchemaItem, IVeoTranslationCollection } from '~~/types/VeoTypes';
@@ -82,6 +67,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void
+  (event: 'set-translation', translationKey: string, value: string | undefined): void
 }>();
 
 const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.language);
@@ -99,7 +85,7 @@ const text = computed({
   },
   set: (newValue) => {
     if(isTranslatedLabel.value && translations?.value && language?.value) {
-      translations.value[language.value][translatedLabelKey.value] = newValue || '';
+      emit('set-translation', translatedLabelKey.value, newValue);
     } else {
       emit('update:form-schema-element', { ...props.formSchemaElement, text: newValue });
     }
@@ -113,12 +99,10 @@ const { t } = useI18n();
 {
   "en": {
     "common": "Common",
-    "editingTranslations": "To edit translated labels, please use the translation dialog",
     "text": "Text"
   },
   "de": {
     "common": "Allgemein",
-    "editingTranslations": "Bitte nutzen Sie den Übersetzungsdialog, um Übersetzungen zu bearbeiten",
     "text": "Text"
   }
 }

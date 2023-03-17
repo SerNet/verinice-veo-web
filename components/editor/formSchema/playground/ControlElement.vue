@@ -90,6 +90,7 @@ import { IPlaygroundElement } from './Element.vue';
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 import { eligibleInputElements, INPUT_TYPES as CONTROL_APPEARANCE_DEFINITIONS } from '~~/types/VeoEditor';
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
+import { getFormSchemaControlType } from '~~/lib/utils';
 
   
 const props = defineProps({
@@ -108,24 +109,10 @@ const emit = defineEmits(['edit', 'delete']);
 const { t } = useI18n();
 
 const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.objectSchema);
-
 const objectSchemaElement = computed(() => JsonPointer.get(objectSchema?.value, props.formSchemaElement.scope as string) as JSONSchema7); // Can't be undefined, as a control ALWAYS has a scope
 
-const controlType = computed(() => {
-  // If attribute contains an enum, display as enum, regardless of enum value type.
-  if(Array.isArray(objectSchemaElement.value?.enum)) {
-    return 'enum';
-  }
-
-  // If type isn't set or type is an array, return as default as we don't know how to handle it (likely a corrupt schema)
-  if(!objectSchemaElement.value?.type || Array.isArray(objectSchemaElement.value?.type)) {
-    return 'default';
-  }
-
-  return objectSchemaElement.value?.type;
-});
-
-const inputType = computed(() => props.formSchemaElement && objectSchemaElement.value ? eligibleInputElements(controlType.value, { ...props.formSchemaElement, schema: objectSchemaElement.value })[0].name : undefined);
+const controlType = computed(() => getFormSchemaControlType(objectSchemaElement.value));
+const inputType = computed(() => props.formSchemaElement && objectSchemaElement.value ? eligibleInputElements(controlType.value, { ...props.formSchemaElement, schema: objectSchemaElement.value })[0].code : undefined);
 
 const handleColor = computed(() => CONTROL_APPEARANCE_DEFINITIONS[controlType.value].color);
 const attributeKey = computed(() => last(props.formSchemaElement.scope?.split('/')));

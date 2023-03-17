@@ -26,8 +26,10 @@
           <v-col
             cols="12"
             md="6"
+            class="d-flex align-center"
           >
             <v-text-field
+              v-model="label"
               :label="t('label')"
               variant="underlined"
               clearable
@@ -38,11 +40,9 @@
             cols="12"
             md="6"
           >
-            <v-select
-              :items="directionOptions"
-              :label="t('direction')"
-              variant="underlined"
-              :prepend-inner-icon="mdiSwapVertical"
+            <EditorFormSchemaPlaygroundEditDialogElementDirectionOptions
+              :form-schema-element="formSchemaElement"
+              @update:form-schema-element="emit('update:form-schema-element', $event)"
             />
           </v-col>
           <v-col
@@ -61,12 +61,14 @@
 </template>
   
 <script setup lang="ts">
-import { PropType } from 'vue';
-import { mdiLabelOutline, mdiSwapVertical } from '@mdi/js';
+import { PropType, Ref } from 'vue';
+import { cloneDeep } from 'lodash';
+import { mdiLabelOutline } from '@mdi/js';
 
-import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
+import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
+import { IVeoFormSchemaItem, IVeoTranslationCollection } from '~~/types/VeoTypes';
 
-defineProps({
+const props = defineProps({
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
     required: true
@@ -75,37 +77,48 @@ defineProps({
 
 const emit = defineEmits<{
   (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void
+  (event: 'set-translation', translationKey: string, value: string | undefined): void
 }>();
 
 const { t } = useI18n();
 
-const directionOptions = ref([
-  {
-    title: t('vertical'),
-    value: 'vertical'
+const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.language);
+const translations = inject<Ref<Record<string, IVeoTranslationCollection>>>(FORMSCHEMA_PROVIDE_KEYS.translations);
+
+const isTranslatedLabel = computed(() => props.formSchemaElement.options?.label?.startsWith('#lang/'));
+const translatedLabelKey = computed(() => props.formSchemaElement.options?.label?.replace('#lang/', '') as string);
+
+const label = computed({
+  get: () => {
+    if(isTranslatedLabel.value && translations?.value && language?.value) {
+      return translations.value[language.value][translatedLabelKey.value];
+    }
+    return props.formSchemaElement.options?.label;
   },
-  {
-    title: t('horizontal'),
-    value: 'horizontal'
+  set: (newValue) => {
+    if(isTranslatedLabel.value && translations?.value && language?.value) {
+      emit('set-translation', translatedLabelKey.value, newValue);
+    } else {
+      const currentData = cloneDeep(props.formSchemaElement);
+      if(!currentData.options) {
+        currentData.options = {};
+      }
+      currentData.options.label = newValue;
+      emit('update:form-schema-element', currentData);
+    }
   }
-]);
+});
 </script>
 
 <i18n>
 {
   "en": {
     "common": "Common",
-    "direction": "Direction",
-    "horizontal": "Horizontal",
-    "label": "Label",
-    "vertical": "Vertical"
+    "label": "Label"
   },
   "de": {
     "common": "Allgemein",
-    "direction": "Ausrichtung",
-    "horizontal": "Horizontal",
-    "label": "Beschriftung",
-    "vertical": "Vertikal"
+    "label": "Beschriftung"
   }
 }
 </i18n>

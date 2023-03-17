@@ -24,6 +24,7 @@
     @move="onMoveElement"
     @remove="onRemoveElement"
     @form-schema-elements-modified="onFormSchemaModified(playgroundElements)"
+    @set-translations="emit('set-translations', $event)"
   />
 </template>
 
@@ -39,14 +40,15 @@ export const PROVIDE_KEYS = {
 
 <script setup lang="ts">
 import { PropType } from 'vue';
+import { cloneDeep } from 'lodash';
 import { JsonPointer } from 'json-ptr';
 import { v5 as UUIDv5, v4 as UUIDv4 } from 'uuid';
 
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 import { IPlaygroundElement } from './Element.vue';
-import { cloneDeep } from 'lodash';
+import { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
 
-// TODO: Edit Layout & Control (inkl Links), Bedingte Anzeige
+// TODO: LinksField stuff
 
 const props = defineProps({
   modelValue: {
@@ -64,6 +66,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (event: 'update:model-value', formSchema: IVeoFormSchemaItem): void
+  (event: 'set-translations', translations: PENDING_TRANSLATIONS): void
 }>();
 
 // UUID Map stuff

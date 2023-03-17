@@ -42,6 +42,7 @@
           @move="(oldPosition, newPosition) => emit('move', oldPosition, newPosition)"
           @remove="(elementPointer) => emit('remove', elementPointer)"
           @form-schema-elements-modified="emit('form-schema-elements-modified')"
+          @set-translations="emit('set-translations', $event)"
         />
       </template>
     </Draggable>
@@ -51,6 +52,7 @@
     v-model="editElementDialogVisible"
     :form-schema-element="formSchemaElement"
     @update:form-schema-element="onFormSchemaElementEdited"
+    @set-translations="emit('set-translations', $event)"
   />
   <EditorFormSchemaPlaygroundDeleteElementDialog
     v-if="formSchemaElement"
@@ -82,6 +84,7 @@ import ControlElement from './ControlElement.vue';
 import LabelElement from './LabelElement.vue';
 import LayoutElement from './LayoutElement.vue';
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
+import { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
 
 
 const props = defineProps({
@@ -103,6 +106,7 @@ const emit = defineEmits<{
   (event: 'move', oldPosition: string, newPosition: string): void
   (event: 'remove', pointer: string, removeFromSchemaElementMap?: boolean): void
   (event: 'form-schema-elements-modified'): void
+  (event: 'set-translations', translations: PENDING_TRANSLATIONS): void
 }>();
 
 const { t } = useI18n();

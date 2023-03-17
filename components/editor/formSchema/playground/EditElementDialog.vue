@@ -26,6 +26,7 @@
       <component
         :is="fittingEditComponent"
         v-model:form-schema-element="localFormSchemaElement"
+        @set-translation="setPendingTranslation"
       />
       <EditorFormSchemaPlaygroundEditDialogElementConditionalVisibility v-model:form-schema-element="localFormSchemaElement" />
     </template>
@@ -50,13 +51,14 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
+import { PropType, Ref } from 'vue';
+import { cloneDeep, isEqual } from 'lodash';
 
 import EditorFormSchemaPlaygroundEditDialogControlElementSettings from './edit-dialog/ControlElementSettings.vue';
 import EditorFormSchemaPlaygroundEditDialogLabelElementSettings from './edit-dialog/LabelElementSettings.vue';
 import EditorFormSchemaPlaygroundEditDialogLayoutElementSettings from './edit-dialog/LayoutElementSettings.vue';
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
-import { isEqual } from 'lodash';
+import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 
 const props = defineProps({
   modelValue: {
@@ -70,12 +72,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (event: 'update:model-value', value: boolean): void,
+  (event: 'update:model-value', value: boolean): void
   (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void
+  (event: 'set-translations', translations: PENDING_TRANSLATIONS): void
 }>();
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
+
+const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.language);
 
 const translatedElementType = computed(() => t(`type.${props.formSchemaElement.type.toLowerCase()}`));
 
@@ -94,17 +99,42 @@ const fittingEditComponent = computed(() => {
   }
 });
 
-const elementIsDirty = computed(() => !isEqual(props.formSchemaElement, localFormSchemaElement.value));
+const elementIsDirty = computed(() => !isEqual(props.formSchemaElement, localFormSchemaElement.value) || Object.keys(pendingTranslations.value).length);
 
 const localFormSchemaElement = ref(props.formSchemaElement);
+// Reset local element if user reopens dialog
+watch(() => props.modelValue, (newValue) => {
+  if(newValue) {
+    localFormSchemaElement.value = cloneDeep(props.formSchemaElement);
+  }
+});
 watch(() => props.formSchemaElement, (newValue) => {
-  localFormSchemaElement.value = newValue;
+  localFormSchemaElement.value = cloneDeep(newValue);
 }, { deep: true });
 
+// Translations shouldn't be edited immediately, so we write changes to this component and the formschema page handles the rest
+const pendingTranslations = ref<PENDING_TRANSLATIONS>({});
+
+const setPendingTranslation = (translationKey: string, value: string | undefined) => {
+  if(language?.value) {
+    if(!pendingTranslations.value[language.value]) {
+      pendingTranslations.value[language.value] = {};
+    }
+    pendingTranslations.value[language.value][translationKey] = value;
+  }
+};
+
 const onSave = () => {
+  emit('set-translations', pendingTranslations.value);
   emit('update:form-schema-element', localFormSchemaElement.value);
   emit('update:model-value', false);
 };
+</script>
+
+<script lang="ts">
+export type PENDING_TRANSLATIONS = Record<string, Record<string, string | undefined>>;
+
+export default {};
 </script>
 
 <i18n>

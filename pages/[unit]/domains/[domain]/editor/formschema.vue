@@ -171,6 +171,7 @@
         </template>
         <template #default>
           <EditorFormSchemaBacklog
+            v-if="objectSchema && formSchema"
             :object-schema="objectSchema"
             :form-schema="formSchema"
             :search-query="searchQuery"
@@ -191,6 +192,7 @@
             <EditorFormSchemaPlayground
               v-if="formSchema"
               v-model="formSchema.content"
+              @set-translations="updateTranslations"
             />
             <v-progress-circular
               v-else
@@ -237,6 +239,7 @@
           #default
         >
           <DynamicFormEntrypoint
+            v-if="formSchema && objectSchema"
             v-model="objectData"
             :object-schema="objectSchema"
             :form-schema="formSchema.content"
@@ -302,7 +305,7 @@
         @update-name="setFormName"
       />
       <EditorFormSchemaDetailsDialog
-        v-if="formSchema"
+        v-if="formSchema && objectSchema"
         v-model="detailDialogVisible"
         :object-schema="objectSchema"
         :form-schema="formSchema.name[language]"
@@ -344,6 +347,7 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useCreateForm, useUpdateForm } from '~/composables/api/forms';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { useFetchDomain } from '~/composables/api/domains';
+import { PENDING_TRANSLATIONS } from '~~/components/editor/formSchema/playground/EditElementDialog.vue';
 
 export default defineComponent({
   setup() {
@@ -467,6 +471,9 @@ export default defineComponent({
     }
 
     function updateSchemaName(value: string) {
+      if(!formSchema.value) {
+        return;
+      }
       formSchema.value.name[language.value] = value;
     }
 
@@ -481,6 +488,25 @@ export default defineComponent({
         formSchema.value.sorting = value;
       }
     }
+
+    const updateTranslations = (translations: PENDING_TRANSLATIONS) => {
+      if(!formSchema.value) {
+        return;
+      }
+      for(const language of Object.keys(translations)) {
+        if(!formSchema.value.translation[language]) {
+          formSchema.value.translation[language] = {};
+        }
+        for(const translationKey of Object.keys(translations[language])) {
+          const value = translations[language][translationKey];
+          if(value) {
+            formSchema.value.translation[language][translationKey] = value;
+          } else {
+            delete formSchema.value.translation[language][translationKey];
+          }
+        }
+      }
+    };
 
     const invalidSchemaDownloadDialogVisible = ref(false);
     function downloadSchema(forceDownload = false) {
@@ -605,6 +631,7 @@ export default defineComponent({
       PageHeaderAlignment,
       save,
       translations,
+      updateTranslations,
       onWizardFinished,
 
       mdiAlertCircleOutline,
