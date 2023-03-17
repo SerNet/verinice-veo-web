@@ -93,7 +93,7 @@ const getTranslatedHierarchyAsString = (path: string) => {
     parts.pop();
     translatedParts.push(navigation.value.find((item) => item._path === `/${parts.join('/')}`)?.title);
   }
-
+  console.log(1, translatedParts);
   // Pop as the first page is always the welcome page (we don't want to show that)
   translatedParts.pop();
   return translatedParts.reverse().join('/');

@@ -40,7 +40,7 @@
       <v-spacer />
       <DocsDownloadButton v-if="$route.path.startsWith('/docs')" />
       <LayoutLanguageSwitch />
-      <LayoutTutorialButton />
+      <LayoutTutorialButton v-if="!$route.path.startsWith('/docs')"/>
       <v-tooltip
         v-if="ability.can('view', 'documentation')"
         location="bottom"
@@ -55,6 +55,7 @@
             to="/docs/index"
             exact
             v-bind="props"
+            v-if="!$route.path.startsWith('/docs')"
           >
             <v-icon :icon="mdiHelpCircleOutline" />
           </v-btn>
