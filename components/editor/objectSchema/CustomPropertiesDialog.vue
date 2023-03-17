@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -175,6 +175,8 @@ import { IVeoSchemaEndpoints } from '~/plugins/api/schema';
 import { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
 import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
+import { useRules } from '~~/composables/utils';
+
 export default {
   inject: ['objectSchemaHelper', 'displayLanguage'],
   props: {
@@ -196,6 +198,12 @@ export default {
     }
   },
   emits: ['delete', 'update:model-value', 'error', 'success'],
+  setup() {
+    const { banSpecialChars, requireNotEmpty } = useRules();
+    return {
+      banSpecialChars, requireNotEmpty
+    };
+  },
   data() {
     return {
       form: {
@@ -208,7 +216,7 @@ export default {
           attributes: []
         } as IVeoOSHCustomLink,
         rules: {
-          title: [(input: string) => trim(input).length > 0],
+          title: [(input: string) => this.banSpecialChars(input), (input: string) => this.requireNotEmpty(input)],
           description: [(input: string) => this.type === 'aspect' || trim(input).length > 0],
           targetType: [(input: string) => this.type === 'aspect' || trim(input).length > 0]
         } as { [key: string]: ((input: string) => boolean)[] }
@@ -297,7 +305,7 @@ export default {
     }
   },
   mounted() {
-    this.fetchSchemas();    
+    this.fetchSchemas();
   },
   methods: {
     async fetchSchemas() {
