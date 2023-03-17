@@ -150,29 +150,3 @@ const isLinkEqual = (linkA: IVeoCustomLink[], linkB: IVeoCustomLink[]) => {
   }
   return true;
 };
-
-/*
-export const trimObjectValues = (obj: any, {keys = []}: {keys: string[]}) => {
-  const trimmedObject = {...obj} as any;
-  console.log({trimmedObject});
-  for (const [key, value] of Object.entries(trimmedObject)) {
-    if(keys.includes(key) && (typeof value === 'string')) {
-      trimmedObject[key] = value.trim();
-    }
-  }
-  console.log({trimmedObject});
-  return trimmedObject;
-};
-*/
-
-export const trimObjectValues = (obj: any, {keys = []}: {keys: string[]}) => {
-  console.log({obj});
-  const trimmedObj = {
-    ...obj,
-    title: obj.title.trim(),
-    subtype: 'test'
-  } as any;
-  console.log({trimmedObj});
-  return trimmedObj;
-};
-
