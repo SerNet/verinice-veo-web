@@ -26,6 +26,7 @@
           <v-col
             cols="12"
             md="6"
+            class="d-flex flex-row"
           >
             <v-select
               v-model="conditionEffect"
@@ -35,6 +36,20 @@
               :prepend-inner-icon="mdiMagicStaff"
               variant="underlined"
             />
+            <v-tooltip location="top">
+              <template #activator="{ props: tooltipProps }">
+                <v-btn
+                  variant="text"
+                  :disabled="!formSchemaElement.rule"
+                  :icon="mdiTrashCanOutline"
+                  v-bind="tooltipProps"
+                  @click="deleteRule"
+                />
+              </template>
+              <template #default>
+                {{ t('deleteRule') }}
+              </template>
+            </v-tooltip>
           </v-col>
         </v-row>
         <v-row v-if="conditionEffect">
@@ -47,7 +62,6 @@
               :label="t('linkedElement')"
               variant="underlined"
               :items="availableScopes"
-              clearable
               :prepend-inner-icon="mdiFormTextbox"
             >
               <template #item="{ item, props }">
@@ -84,7 +98,6 @@
               :label="t('hasValue')"
               :items="selectedScopeObjectSchemaElement?.enum || []"
               variant="underlined"
-              clearable
               multiple
               :prepend-inner-icon="mdiAlphabetical"
             />
@@ -93,7 +106,6 @@
               v-model="conditionValues"
               :label="t('hasValue')"
               variant="underlined"
-              clearable
               :prepend-inner-icon="mdiAlphabetical"
             />
           </v-col>
@@ -106,7 +118,7 @@
 <script setup lang="ts">
 import { PropType, Ref } from 'vue';
 import { cloneDeep, isArray } from 'lodash';
-import { mdiAlphabetical, mdiFormTextbox, mdiMagicStaff } from '@mdi/js';
+import { mdiAlphabetical, mdiFormTextbox, mdiMagicStaff, mdiTrashCanOutline } from '@mdi/js';
 import { JsonPointer } from 'json-ptr';
 import { JSONSchema7 } from 'json-schema';
 
@@ -173,17 +185,19 @@ const onConditionUpdated = () => {
         }
       }
     } });
-  } else if('rule' in props.formSchemaElement) { // If rule isn't set, we don't have to do anything
-    const oldFormSchemaElement = cloneDeep(props.formSchemaElement);
-    delete oldFormSchemaElement.rule;
-    emit('update:form-schema-element', oldFormSchemaElement)
   }
 }
 
 const onFormSchemaItemModified = (newValue: IVeoFormSchemaItem) => {
   conditionEffect.value = newValue.rule?.effect;
-  scopeUUID.value = [...formSchemaElementMap.value].find(([uuid, element]) => element.scope === newValue.rule?.condition?.scope)?.[0];
+  scopeUUID.value = [...formSchemaElementMap.value].find(([_uuid, element]) => element.scope === newValue.rule?.condition?.scope)?.[0];
   conditionValues.value = newValue.rule?.condition?.schema?.enum || [];
+}
+
+const deleteRule = () => {
+  const oldFormSchemaElement = cloneDeep(props.formSchemaElement);
+  delete oldFormSchemaElement.rule;
+  emit('update:form-schema-element', oldFormSchemaElement)
 }
 
 watch(() => conditionEffect.value, onConditionUpdated);
@@ -196,6 +210,7 @@ watch(() => props.formSchemaElement, onFormSchemaItemModified, { deep: true, imm
 {
   "en": {
     "conditionalVisibility": "Conditional visibility",
+    "deleteRule": "Delete rule",
     "effect": "Effect",
     "hasValue": "has value",
     "hide": "Hide if rule applies",
@@ -204,6 +219,7 @@ watch(() => props.formSchemaElement, onFormSchemaItemModified, { deep: true, imm
   },
   "de": {
     "conditionalVisibility": "Bedingte Sichtbarkeit",
+    "deleteRule": "Regel löschen",
     "effect": "Effekt",
     "hasValue": "hat Wert",
     "hide": "Ausblenden falls Regel zutrifft",
