@@ -324,7 +324,8 @@
 export const PROVIDE_KEYS = {
   language: 'language',
   objectSchema: 'mainObjectSchema',
-  translations: 'translations'
+  objectSchemaTranslations: 'os_translations',
+  formSchemaTranslations: 'fs_translations'
 };
 
 import { Ref } from 'vue';
@@ -594,7 +595,12 @@ export default defineComponent({
 
       return toReturn;
     });
-    provide(PROVIDE_KEYS.translations, translations);
+
+    const objectSchemaTranslations = computed(() => translation.value?.lang);
+    const formSchemaTranslations = computed(() => formSchema.value?.translation);
+
+    provide(PROVIDE_KEYS.objectSchemaTranslations, objectSchemaTranslations);
+    provide(PROVIDE_KEYS.formSchemaTranslations, formSchemaTranslations);
 
     return {
       ability,

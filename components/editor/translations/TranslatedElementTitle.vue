@@ -16,8 +16,16 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <translatedTitle />
+  <translatedTitle v-if="translatedTitle" />
 </template>
+
+<script lang="ts">
+export enum TRANSLATION_SOURCE {
+  OBJECTSCHEMA,
+  FORMSCHEMA,
+  UNSPECIFIED
+}
+</script>
 
 <script setup lang="ts">
 import { PropType, Ref } from 'vue';
@@ -37,6 +45,10 @@ const props = defineProps({
   hideIfMissing: {
     type: Boolean,
     default: false
+  },
+  source: {
+    type: Number as PropType<TRANSLATION_SOURCE>,
+    default: TRANSLATION_SOURCE.UNSPECIFIED
   }
 });
 
@@ -44,7 +56,9 @@ const slots = useSlots();
 
 // Find out element name
 const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.language);
-const translations = inject<Ref<Record<string, IVeoTranslationCollection>>>(FORMSCHEMA_PROVIDE_KEYS.translations);
+
+const formSchemaTranslations = inject<Ref<Record<string, IVeoTranslationCollection>>>(FORMSCHEMA_PROVIDE_KEYS.formSchemaTranslations);
+const objectSchemaTranslations = inject<Ref<Record<string, IVeoTranslationCollection>>>(FORMSCHEMA_PROVIDE_KEYS.objectSchemaTranslations);
 
 const translationString = computed(() => props.formSchemaElement.text || props.formSchemaElement.options?.label || props.formSchemaElement.scope);
 
@@ -61,11 +75,19 @@ const elementName = computed(() => {
     return translationString.value;
   }
 
-  return translations?.value?.[language.value]?.[sanitizedKey] || undefined;
+  if((props.source === TRANSLATION_SOURCE.UNSPECIFIED || props.source === TRANSLATION_SOURCE.FORMSCHEMA) && formSchemaTranslations?.value?.[language.value]?.[sanitizedKey]) {
+    return formSchemaTranslations?.value?.[language.value]?.[sanitizedKey];
+  }
+
+  if((props.source === TRANSLATION_SOURCE.UNSPECIFIED || props.source === TRANSLATION_SOURCE.OBJECTSCHEMA) && objectSchemaTranslations?.value?.[language.value]?.[sanitizedKey]) {
+    return objectSchemaTranslations?.value?.[language.value]?.[sanitizedKey];
+  }
+
+  return undefined;
 });
 
 const translatedTitle = computed(() => (elementName.value || !props.hideIfMissing) ? () => [
   h(props.tag, elementName.value ?? translationString.value),
   slots.default?.({ translatedValue: elementName.value })
-] : null);
+] : undefined);
 </script>

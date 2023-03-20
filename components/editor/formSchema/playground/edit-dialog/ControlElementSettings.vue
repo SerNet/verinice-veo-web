@@ -29,12 +29,10 @@
             md="6"
             class="d-flex align-center"
           >
-            <v-text-field
-              v-model="label"
-              :label="t('label')"
-              variant="underlined"
-              clearable
-              :prepend-inner-icon="mdiLabelOutline"
+            <EditorFormSchemaPlaygroundEditDialogTranslatedInput
+              :form-schema-element="formSchemaElement"
+              @update:form-schema-element="emit('update:form-schema-element', $event)"
+              @set-translation="(translationKey: string, newValue: string | undefined) => emit('set-translation', translationKey, newValue)"
             />
           </v-col>
         </v-row>
@@ -60,11 +58,21 @@
       {{ t('formElementOptions') }}
       <BaseCard>
         <v-card-text>
-          <v-row v-if="elementTypeModelValue === 'Radio'">
+          <v-row v-if="elementTypeModelValue === 'Radio' || elementTypeModelValue === 'LinksField'">
             <v-col cols="12" md="6">
               <EditorFormSchemaPlaygroundEditDialogElementDirectionOptions
                 :form-schema-element="formSchemaElement"
                 @update:form-schema-element="emit('update:form-schema-element', $event)"
+              />
+            </v-col>
+          </v-row>
+          <v-row v-if="elementTypeModelValue === 'LinksField'">
+            <v-col cols="12" md="6">
+              <EditorFormSchemaPlaygroundEditDialogLinkSettings
+                :form-schema-element="formSchemaElement"
+                :object-schema-element="objectSchemaElement"
+                @update:form-schema-element="emit('update:form-schema-element', $event)"
+                @set-translations="emit('set-translations', $event)"
               />
             </v-col>
           </v-row>
@@ -77,15 +85,14 @@
   
 <script setup lang="ts">
 import { PropType, Ref } from 'vue';
-import { cloneDeep } from 'lodash';
-import { mdiLabelOutline } from '@mdi/js';
 import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import { IVeoFormSchemaItem, IVeoTranslationCollection } from '~~/types/VeoTypes';
+import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 import { controlTypeAlternatives, eligibleInputElements, INPUT_ELEMENTS } from '~~/types/VeoEditor';
 import { getFormSchemaControlType } from '~~/lib/utils';
+import { PENDING_TRANSLATIONS } from '../EditElementDialog.vue';
 
 const props = defineProps({
   formSchemaElement: {
@@ -97,36 +104,10 @@ const props = defineProps({
 const emit = defineEmits<{
   (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void
   (event: 'set-translation', translationKey: string, value: string | undefined): void
+  (event: 'set-translations', translations: PENDING_TRANSLATIONS): void
 }>();
 
 const { t, locale } = useI18n();
-
-const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.language);
-const translations = inject<Ref<Record<string, IVeoTranslationCollection>>>(FORMSCHEMA_PROVIDE_KEYS.translations);
-
-const isTranslatedLabel = computed(() => props.formSchemaElement.options?.label?.startsWith('#lang/'));
-const translatedLabelKey = computed(() => props.formSchemaElement.options?.label?.replace('#lang/', '') as string);
-
-const label = computed({
-  get: () => {
-    if(isTranslatedLabel.value && translations?.value && language?.value) {
-      return translations.value[language.value][translatedLabelKey.value];
-    }
-    return props.formSchemaElement.options?.label;
-  },
-  set: (newValue) => {
-    if(isTranslatedLabel.value && translations?.value && language?.value) {
-      emit('set-translation', translatedLabelKey.value, newValue);
-    } else {
-      const currentData = cloneDeep(props.formSchemaElement);
-      if(!currentData.options) {
-        currentData.options = {};
-      }
-      currentData.options.label = newValue;
-      emit('update:form-schema-element', currentData);
-    }
-  }
-});
 
 // Some elements can be displayed with a different input, e.g. a text field can be displayed as a multiline input or with a WYSIWYG editor
 const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.objectSchema);
@@ -161,14 +142,12 @@ const elementsWithOptions = ['Radio', 'LinksField']
   "en": {
     "common": "Common",
     "formElement": "Form element",
-    "formElementOptions": "Form element specific options",
-    "label": "Label"
+    "formElementOptions": "Form element specific options"
   },
   "de": {
     "common": "Allgemein",
     "formElement": "Eingabeelement",
-    "formElementOptions": "Elementspezifische Optionen",
-    "label": "Beschriftung"
+    "formElementOptions": "Elementspezifische Optionen"
   }
 }
 </i18n>

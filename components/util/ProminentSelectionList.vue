@@ -30,7 +30,7 @@
     >
       <template #prepend>
         <v-icon
-          :icon="isActive(item) ? multiple ? mdiCheckboxMarked : mdiRadioboxMarked : multiple ? mdiCheckboxOutline : mdiRadioboxBlank"
+          :icon="isActive(item) ? multiple ? mdiCheckboxMarked : mdiRadioboxMarked : multiple ? mdiCheckboxBlankOutline : mdiRadioboxBlank"
           :color="isActive(item) ? 'primary' : undefined"
         />
       </template>
@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { mdiCheckboxMarked, mdiCheckboxOutline, mdiRadioboxBlank, mdiRadioboxMarked } from '@mdi/js';
+import { mdiCheckboxMarked, mdiCheckboxBlankOutline, mdiRadioboxBlank, mdiRadioboxMarked } from '@mdi/js';
 import { cloneDeep, isArray } from 'lodash';
 import { PropType } from 'vue';
 

@@ -48,8 +48,6 @@ import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 import { IPlaygroundElement } from './Element.vue';
 import { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
 
-// TODO: LinksField stuff
-
 const props = defineProps({
   modelValue: {
     type: Object as PropType<IVeoFormSchemaItem>,

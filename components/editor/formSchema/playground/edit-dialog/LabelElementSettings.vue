@@ -28,12 +28,10 @@
             md="6"
             class="d-flex align-center"
           >
-            <v-text-field
-              v-model="text"
-              :label="t('text')"
-              variant="underlined"
-              clearable
-              :prepend-inner-icon="mdiAlphabeticalVariant"
+            <EditorFormSchemaPlaygroundEditDialogTranslatedInput
+              :form-schema-element="formSchemaElement"
+              @update:form-schema-element="emit('update:form-schema-element', $event)"
+              @set-translation="(translationKey: string, newValue: string | undefined) => emit('set-translation', translationKey, newValue)"
             />
           </v-col>
           <v-col
@@ -52,13 +50,11 @@
 </template>
   
 <script setup lang="ts">
-import { PropType, Ref } from 'vue';
-import { mdiAlphabeticalVariant } from '@mdi/js';
+import { PropType } from 'vue';
 
-import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import { IVeoFormSchemaItem, IVeoTranslationCollection } from '~~/types/VeoTypes';
+import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 
-const props = defineProps({
+defineProps({
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
     required: true
@@ -70,40 +66,16 @@ const emit = defineEmits<{
   (event: 'set-translation', translationKey: string, value: string | undefined): void
 }>();
 
-const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.language);
-const translations = inject<Ref<Record<string, IVeoTranslationCollection>>>(FORMSCHEMA_PROVIDE_KEYS.translations);
-
-const isTranslatedLabel = computed(() => props.formSchemaElement.text?.startsWith('#lang/'));
-const translatedLabelKey = computed(() => props.formSchemaElement.text?.replace('#lang/', '') as string);
-
-const text = computed({
-  get: () => {
-    if(isTranslatedLabel.value && translations?.value && language?.value) {
-      return translations.value[language.value][translatedLabelKey.value];
-    }
-    return props.formSchemaElement.text;
-  },
-  set: (newValue) => {
-    if(isTranslatedLabel.value && translations?.value && language?.value) {
-      emit('set-translation', translatedLabelKey.value, newValue);
-    } else {
-      emit('update:form-schema-element', { ...props.formSchemaElement, text: newValue });
-    }
-  }
-});
-
 const { t } = useI18n();
 </script>
 
 <i18n>
 {
   "en": {
-    "common": "Common",
-    "text": "Text"
+    "common": "Common"
   },
   "de": {
-    "common": "Allgemein",
-    "text": "Text"
+    "common": "Allgemein"
   }
 }
 </i18n>
