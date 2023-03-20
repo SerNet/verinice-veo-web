@@ -64,9 +64,9 @@
               :items="availableScopes"
               :prepend-inner-icon="mdiFormTextbox"
             >
-              <template #item="{ item, props }">
+              <template #item="{ item, props: itemProps }">
                 <v-list-item
-                  v-bind="props"
+                  v-bind="itemProps"
                   :active="scopeUUID === item.value"
                   :title="undefined"
                   two-line
@@ -159,7 +159,7 @@ const selectedScopeFormSchemaElement = computed(() => scopeUUID.value ? formSche
 const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.objectSchema);
 const selectedScopeObjectSchemaElement = computed(() => selectedScopeFormSchemaElement.value?.scope && objectSchema?.value ? JsonPointer.get(objectSchema?.value, selectedScopeFormSchemaElement.value.scope) as JSONSchema7 : undefined);
 
-const selectedScopeHasPredefinedValues = computed(() => !!selectedScopeObjectSchemaElement?.value?.enum)
+const selectedScopeHasPredefinedValues = computed(() => !!selectedScopeObjectSchemaElement?.value?.enum);
 const conditionValues = ref<any>(undefined);
 
 const _formSchemaElementMap = inject<FormSchemaElementMap>(PLAYGROUND_PROVIDE_KEYS.formSchemaElementMap, new Map());
@@ -167,7 +167,7 @@ const formSchemaElementMap = ref<FormSchemaElementMap>(new Map());
 
 // For some reason we have to watch, as vue doesn't pick up the changes
 watch(() => _formSchemaElementMap, (newValue: any) => {
-  formSchemaElementMap.value = unref(newValue)
+  formSchemaElementMap.value = unref(newValue);
 }, { deep: true, immediate: true });
 const availableScopes = computed(() => [...formSchemaElementMap.value]
   .filter(([_uuid, element]) => element.scope && element.type !== 'LinksField' && element.scope !== props.formSchemaElement.scope)
@@ -186,19 +186,19 @@ const onConditionUpdated = () => {
       }
     } });
   }
-}
+};
 
 const onFormSchemaItemModified = (newValue: IVeoFormSchemaItem) => {
   conditionEffect.value = newValue.rule?.effect;
   scopeUUID.value = [...formSchemaElementMap.value].find(([_uuid, element]) => element.scope === newValue.rule?.condition?.scope)?.[0];
   conditionValues.value = newValue.rule?.condition?.schema?.enum || [];
-}
+};
 
 const deleteRule = () => {
   const oldFormSchemaElement = cloneDeep(props.formSchemaElement);
   delete oldFormSchemaElement.rule;
-  emit('update:form-schema-element', oldFormSchemaElement)
-}
+  emit('update:form-schema-element', oldFormSchemaElement);
+};
 
 watch(() => conditionEffect.value, onConditionUpdated);
 watch(() => scopeUUID.value, onConditionUpdated);

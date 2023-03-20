@@ -16,77 +16,79 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <component
-    :is="fittingComponent"
-    :playground-element="playgroundElement"
-    :form-schema-element="formSchemaElement"
-    style="min-width: 300px;"
-    @delete="deleteElementDialogVisible = true"
-    @edit="editElementDialogVisible = true"
-  >
-    <Draggable
-      :model-value="props.playgroundElement.children"
-      handle=".handle"
-      item-key="id"
-      :group="{ name: 'g1' }"
-      :class="$style.dragarea"
-      @add="onElementAdded"
-      @update="onElementMoved"
-      @remove="onElementRemoved"
+  <div class="fill-width">
+    <component
+      :is="fittingComponent"
+      :playground-element="playgroundElement"
+      :form-schema-element="formSchemaElement"
+      style="min-width: 300px;"
+      @delete="deleteElementDialogVisible = true"
+      @edit="editElementDialogVisible = true"
     >
-      <template #item="{ element, index }">
-        <EditorFormSchemaPlaygroundElement
-          :playground-element="element"
-          :pointer="`${pointer}/children/${index}`"
-          @add="(elementPointer, element) => emit('add', elementPointer, element)"
-          @move="(oldPosition, newPosition) => emit('move', oldPosition, newPosition)"
-          @remove="(elementPointer) => emit('remove', elementPointer)"
-          @form-schema-elements-modified="emit('form-schema-elements-modified')"
-          @set-translations="emit('set-translations', $event)"
-        />
-      </template>
-    </Draggable>
-  </component>
-  <EditorFormSchemaPlaygroundEditElementDialog
-    v-if="formSchemaElement"
-    v-model="editElementDialogVisible"
-    :form-schema-element="formSchemaElement"
-    :pointer="pointer"
-    @update:form-schema-element="onFormSchemaElementEdited"
-    @set-translations="emit('set-translations', $event)"
-    @add="(elementPointer, element) => emit('add', elementPointer, element)"
-    @remove="(elementPointer) => emit('remove', elementPointer)"
-  >
-    <Draggable
-      v-if="formSchemaElement.type === 'Control'"
-      :model-value="props.playgroundElement.children"
-      handle=".handle"
-      item-key="id"
-      :group="{ name: 'g1' }"
-      :class="$style.dragarea"
-      @add="onElementAdded"
-      @update="onElementMoved"
-      @remove="onElementRemoved"
+      <Draggable
+        :model-value="props.playgroundElement.children"
+        handle=".handle"
+        item-key="id"
+        :group="{ name: 'g1' }"
+        :class="$style.dragarea"
+        @add="onElementAdded"
+        @update="onElementMoved"
+        @remove="onElementRemoved"
+      >
+        <template #item="{ element, index }">
+          <EditorFormSchemaPlaygroundElement
+            :playground-element="element"
+            :pointer="`${pointer}/children/${index}`"
+            @add="(elementPointer, element) => emit('add', elementPointer, element)"
+            @move="(oldPosition, newPosition) => emit('move', oldPosition, newPosition)"
+            @remove="(elementPointer) => emit('remove', elementPointer)"
+            @form-schema-elements-modified="emit('form-schema-elements-modified')"
+            @set-translations="emit('set-translations', $event)"
+          />
+        </template>
+      </Draggable>
+    </component>
+    <EditorFormSchemaPlaygroundEditElementDialog
+      v-if="formSchemaElement"
+      v-model="editElementDialogVisible"
+      :form-schema-element="formSchemaElement"
+      :pointer="pointer"
+      @update:form-schema-element="onFormSchemaElementEdited"
+      @set-translations="emit('set-translations', $event)"
+      @add="(elementPointer, element) => emit('add', elementPointer, element)"
+      @remove="(elementPointer) => emit('remove', elementPointer)"
     >
-      <template #item="{ element, index }">
-        <EditorFormSchemaPlaygroundElement
-          :playground-element="element"
-          :pointer="`${pointer}/children/${index}`"
-          @add="(elementPointer, element) => emit('add', elementPointer, element)"
-          @move="(oldPosition, newPosition) => emit('move', oldPosition, newPosition)"
-          @remove="(elementPointer) => emit('remove', elementPointer)"
-          @form-schema-elements-modified="emit('form-schema-elements-modified')"
-          @set-translations="emit('set-translations', $event)"
-        />
-      </template>
-    </Draggable>
-  </EditorFormSchemaPlaygroundEditElementDialog>
-  <EditorFormSchemaPlaygroundDeleteElementDialog
-    v-if="formSchemaElement"
-    v-model="deleteElementDialogVisible"
-    :form-schema-element="formSchemaElement"
-    @delete="emit('remove', pointer, true)"
-  />
+      <Draggable
+        v-if="formSchemaElement.type === 'Control'"
+        :model-value="props.playgroundElement.children"
+        handle=".handle"
+        item-key="id"
+        :group="{ name: 'g1' }"
+        :class="$style.dragarea"
+        @add="onElementAdded"
+        @update="onElementMoved"
+        @remove="onElementRemoved"
+      >
+        <template #item="{ element, index }">
+          <EditorFormSchemaPlaygroundElement
+            :playground-element="element"
+            :pointer="`${pointer}/children/${index}`"
+            @add="(elementPointer, element) => emit('add', elementPointer, element)"
+            @move="(oldPosition, newPosition) => emit('move', oldPosition, newPosition)"
+            @remove="(elementPointer) => emit('remove', elementPointer)"
+            @form-schema-elements-modified="emit('form-schema-elements-modified')"
+            @set-translations="emit('set-translations', $event)"
+          />
+        </template>
+      </Draggable>
+    </EditorFormSchemaPlaygroundEditElementDialog>
+    <EditorFormSchemaPlaygroundDeleteElementDialog
+      v-if="formSchemaElement"
+      v-model="deleteElementDialogVisible"
+      :form-schema-element="formSchemaElement"
+      @delete="emit('remove', pointer, true)"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -95,10 +97,6 @@ export interface IPlaygroundElement {
   children: IPlaygroundElement[];
   readonly?: boolean;
 }
-
-export default {
-  inheritAttrs: false
-};
 </script>
 
 <script setup lang="ts">

@@ -17,73 +17,79 @@
 -->
 <template>
   <div>
-  <section>
-    <h2 class="text-h2">
-      {{ t('common') }}
-    </h2>
-    <BaseCard>
-      <v-card-text>
-        <v-row>
-          <v-col
-            cols="12"
-            md="6"
-            class="d-flex align-center"
-          >
-            <EditorFormSchemaPlaygroundEditDialogTranslatedInput
-              :form-schema-element="formSchemaElement"
-              @update:form-schema-element="emit('update:form-schema-element', $event)"
-              @set-translation="(translationKey: string, newValue: string | undefined) => emit('set-translation', translationKey, newValue)"
-            />
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </BaseCard>
-  </section>
-  <section class="mt-4">
-    <h2 class="text-h2">
-      {{ t('formElement') }}
-    </h2>
-    <UtilProminentSelectionList 
-      v-model="elementTypeModelValue"
-      :items="elementInputAlternatives"
-      density="compact"
-      bg-color="transparent"
-    />
-  </section>
-  <section
-    v-if="elementsWithOptions.includes(elementTypeModelValue || '')"
-    class="mt-4"
-  >
-    <h2 class="text-h2">
-      {{ t('formElementOptions') }}
+    <section>
+      <h2 class="text-h2">
+        {{ t('common') }}
+      </h2>
       <BaseCard>
         <v-card-text>
-          <v-row v-if="elementTypeModelValue === 'Radio' || elementTypeModelValue === 'LinksField'">
-            <v-col cols="12" md="6">
-              <EditorFormSchemaPlaygroundEditDialogElementDirectionOptions
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+              class="d-flex align-center"
+            >
+              <EditorFormSchemaPlaygroundEditDialogTranslatedInput
                 :form-schema-element="formSchemaElement"
                 @update:form-schema-element="emit('update:form-schema-element', $event)"
+                @set-translation="(translationKey: string, newValue: string | undefined) => emit('set-translation', translationKey, newValue)"
               />
-            </v-col>
-          </v-row>
-          <v-row v-if="elementTypeModelValue === 'LinksField'">
-            <v-col cols="12" md="6">
-              <EditorFormSchemaPlaygroundEditDialogLinkSettings
-                :form-schema-element="formSchemaElement"
-                :object-schema-element="objectSchemaElement"
-                :pointer="pointer"
-                @add="(elementPointer, element) => emit('add', elementPointer, element)"
-                @remove="(elementPointer) => emit('remove', elementPointer)"
-              >
-                <slot />
-              </EditorFormSchemaPlaygroundEditDialogLinkSettings>
             </v-col>
           </v-row>
         </v-card-text>
       </BaseCard>
-    </h2>
-  </section>
-</div>
+    </section>
+    <section class="mt-4">
+      <h2 class="text-h2">
+        {{ t('formElement') }}
+      </h2>
+      <UtilProminentSelectionList 
+        v-model="elementTypeModelValue"
+        :items="elementInputAlternatives"
+        density="compact"
+        bg-color="transparent"
+      />
+    </section>
+    <section
+      v-if="elementsWithOptions.includes(elementTypeModelValue || '')"
+      class="mt-4"
+    >
+      <h2 class="text-h2">
+        {{ t('formElementOptions') }}
+        <BaseCard>
+          <v-card-text>
+            <v-row v-if="elementTypeModelValue === 'Radio' || elementTypeModelValue === 'LinksField'">
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <EditorFormSchemaPlaygroundEditDialogElementDirectionOptions
+                  :form-schema-element="formSchemaElement"
+                  @update:form-schema-element="emit('update:form-schema-element', $event)"
+                />
+              </v-col>
+            </v-row>
+            <v-row v-if="elementTypeModelValue === 'LinksField'">
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <EditorFormSchemaPlaygroundEditDialogLinkSettings
+                  :form-schema-element="formSchemaElement"
+                  :object-schema-element="objectSchemaElement"
+                  :pointer="pointer"
+                  @add="(elementPointer, element) => emit('add', elementPointer, element)"
+                  @remove="(elementPointer) => emit('remove', elementPointer)"
+                >
+                  <slot />
+                </EditorFormSchemaPlaygroundEditDialogLinkSettings>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </BaseCard>
+      </h2>
+    </section>
+  </div>
 </template>
   
 <script setup lang="ts">
@@ -95,7 +101,6 @@ import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 import { controlTypeAlternatives, eligibleInputElements, INPUT_ELEMENTS } from '~~/types/VeoEditor';
 import { getFormSchemaControlType } from '~~/lib/utils';
-import { PENDING_TRANSLATIONS } from '../EditElementDialog.vue';
 
 const props = defineProps({
   formSchemaElement: {
@@ -142,7 +147,7 @@ const elementTypeModelValue = computed({
 });
 
 // Element specific options
-const elementsWithOptions = ['Radio', 'LinksField']
+const elementsWithOptions = ['Radio', 'LinksField'];
 </script>
 
 <i18n>
