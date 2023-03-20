@@ -224,7 +224,6 @@ export default defineComponent({
   },
   emits: ['delete', 'update'],
   setup(props, context) {
-    console.log(33)
     const { t } = useI18n();
     const prefix = computed(() => props.aspectName + '_');
 
