@@ -55,6 +55,7 @@
   "global.button.yes": "Yes",
   "global.input.required": "The field is required",
   "global.input.requiredfields": "* Required fields",
+  "global.input.hasSpecialChar": "Input contains invalid characters! Only \"A-Z a-z 0-9 _ -\" are accepted.",
   "global.logout": "Logout",
   "global.menu.collapse": "Collapse menu",
   "global.menu.expand": "Fix menu",
