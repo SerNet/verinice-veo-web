@@ -16,55 +16,36 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-select
-    v-model="usedLinkAttributes"
-    :label="t('displayedAttributes')"
-    :items="availableLinkAttributes"
-    multiple
-    :prepend-inner-icon="mdiListBoxOutline"
-    variant="underlined"
-  >
-    <template #item="{ item, props: itemProps }">
-      <v-list-item
-        v-bind="itemProps"
-        :active="usedLinkAttributes.includes(item.value)"
-        two-line
-        style="max-width: 500px"
-      >
-        <template #prepend>
-          <v-icon :icon="usedLinkAttributes.includes(item.value) ? mdiCheckboxMarked : mdiCheckboxBlankOutline" />
-        </template>
-        <v-list-item-title>
-          <EditorTranslationsTranslatedElementTitle :form-schema-element="<any>linksFieldAttributeMap.get(item.value)" />
-        </v-list-item-title>
-        <v-list-item-subtitle>
-          {{ linksFieldAttributeMap.get(item.value)?.scope }}
-        </v-list-item-subtitle>
-      </v-list-item>
-    </template>
-    <template #selection="{ item }">
-      <EditorTranslationsTranslatedElementTitle
-        v-if="linksFieldAttributeMap.get(item.value)"
-        :form-schema-element="<any>linksFieldAttributeMap.get(item.value)"
-      />
-    </template>
-  </v-select>
-  <Draggable
-    :v-model="playground"
-    handle=".handle"
-    item-key="id"
-    :group="{ pull: false, put: false }"
-    :class="$style.dragarea"
-  >
-    <template #item="{ element, index }">
-      <EditorFormSchemaPlaygroundElement
-        :playground-element="element"
-        :pointer="`#/${index}`"
-        @form-schema-elements-modified="bla"
-        @set-translations="emit('set-translations', $event)"
-      />
-    </template>
-  </Draggable>
+  <div>
+    <v-select
+      v-model="usedLinkAttributes"
+      :label="t('displayedAttributes')"
+      :items="availableLinkAttributeUUIDs"
+      multiple
+      :prepend-inner-icon="mdiListBoxOutline"
+      variant="underlined"
+    >
+      <template #item="{ item, props: itemProps }">
+        <v-list-item
+          v-bind="itemProps"
+          :active="usedLinkAttributes.includes(item.value)"
+          :title="undefined"
+          style="max-width: 500px"
+        >
+          <template #prepend>
+            <v-icon :icon="usedLinkAttributes.includes(item.value) ? mdiCheckboxMarked : mdiCheckboxBlankOutline" />
+          </template>
+          <v-list-item-title>
+            {{ last(availableLinkAttributes[item.value].scope?.split('/')) }}
+          </v-list-item-title>
+        </v-list-item>
+      </template>
+      <template #selection="{ item }">
+        {{ last(availableLinkAttributes[item.value].scope?.split('/')) }}
+      </template>
+    </v-select>
+    <div><slot /></div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -72,13 +53,10 @@ import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiListBoxOutline } from '@
 import { JSONSchema7 } from 'json-schema';
 import { PropType } from 'vue';
 import { v5 as UUIDv5 } from 'uuid';
-import Draggable from 'vuedraggable';
+import { difference, last } from 'lodash';
 
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
-import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import { FormSchemaElementMap, FORMSCHEMA_PLAYGROUND_NAMESPACE, PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from '../Playground.vue';
-import { PENDING_TRANSLATIONS } from '../EditElementDialog.vue';
-import { merge } from 'lodash';
+import { FORMSCHEMA_PLAYGROUND_NAMESPACE } from '../Playground.vue';
 
 const props = defineProps({
   formSchemaElement: {
@@ -88,52 +66,46 @@ const props = defineProps({
   objectSchemaElement: {
     type: Object as PropType<JSONSchema7>,
     required: true
+  },
+  pointer: {
+    type: String,
+    required: true
   }
 });
 
 const emit = defineEmits<{
-  (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void
-  (event: 'set-translations', translations: PENDING_TRANSLATIONS): void
+  (event: 'add', pointer: string, element: IVeoFormSchemaItem): void
+  (event: 'remove', pointer: string, removeFromSchemaElementMap?: boolean): void
 }>();
 
 const { t } = useI18n();
 
-// Create a map containing all possible link attributes once the component is mounted (as we are in the form schema editor, the amount of custom links won't change)
-const linksFieldAttributeMap = reactive<FormSchemaElementMap>(new Map<string, IVeoFormSchemaItem>());
-for(const [key, _attribute] of Object.entries((props.objectSchemaElement.items as any)?.properties?.attributes?.properties || {})) {
-  const scope = `#/properties/attributes/properties/${key}`;
-  const uuid = UUIDv5(scope, FORMSCHEMA_PLAYGROUND_NAMESPACE);
-  linksFieldAttributeMap.set(uuid, {
-    type: 'Control',
-    scope,
-    options: {
-      label: `#lang/${key}`
-    }
-  });
-}
-const availableLinkAttributes = computed(() => [...linksFieldAttributeMap].map(([uuid, _element]) => uuid));
+const availableLinkAttributes = computed<{ [uuid:string]: IVeoFormSchemaItem }>(() => Object.entries((props.objectSchemaElement.items as any)?.properties?.attributes?.properties || {})
+  .reduce((previous, [key, _attribute]) => {
+    const newElement = {
+      type: 'Control',
+      scope: `${props.formSchemaElement.scope}/items/properties/attributes/properties/${key}`,
+      options: {
+        label: `#lang/${key}`
+      }
+    };
+    previous[UUIDv5(newElement.scope, FORMSCHEMA_PLAYGROUND_NAMESPACE)] = newElement;
+    return previous;
+  }, Object.create({})));
+
+const availableLinkAttributeUUIDs = computed(() => Object.keys(availableLinkAttributes.value));
+
 const usedLinkAttributes = ref<string[]>([]);
-watch(() => props.formSchemaElement.elements, (newValue) => {
-  if(!newValue) {
-    return;
+watch(() => usedLinkAttributes.value, (newValue, oldValue) => {
+  // New elemnt was added, this is usually app
+  if(newValue.length > oldValue.length) {
+    const newElementUUID = difference(newValue, oldValue)[0];
+    emit('add', `${props.pointer}/children/${newValue.length - 1}`, availableLinkAttributes.value[newElementUUID]);
+  } else {
+    const deleteIndex = oldValue.findIndex((uuid) => !newValue.includes(uuid));
+    emit('remove', `${props.pointer}/children/${deleteIndex}`);
   }
-  usedLinkAttributes.value = [];
-  for(const element of newValue) {
-    const uuid = UUIDv5(element.scope as string, FORMSCHEMA_PLAYGROUND_NAMESPACE); // we can generate a new uuid here, as UUIDv5 will generate the same uuid for the same name
-    usedLinkAttributes.value.push(uuid);
-    linksFieldAttributeMap.set(uuid, merge(linksFieldAttributeMap.get(uuid), { options: element.options }));
-  }
-}, { deep: true, immediate: true });
-
-const playground = computed({
-  get: () => {
-    console.log(usedLinkAttributes.value.map((attribute) => linksFieldAttributeMap.get(attribute)).filter((attribute) => attribute) as IVeoFormSchemaItem[]);
-    return usedLinkAttributes.value.map((attribute) => linksFieldAttributeMap.get(attribute)).filter((attribute) => attribute) as IVeoFormSchemaItem[];
-  },
-  set: (newValue) => emit('update:form-schema-element', { ...props.formSchemaElement, elements: newValue })
 });
-
-const bla = ($event: any) => console.log(123, $event);
 </script>
 
 <i18n>
@@ -146,11 +118,3 @@ const bla = ($event: any) => console.log(123, $event);
   }
 }
 </i18n>
-
-<style module lang="scss">
-.dragarea {
-  min-height: 100px;
-  position: relative;
-  z-index: 2;
-};
-</style>

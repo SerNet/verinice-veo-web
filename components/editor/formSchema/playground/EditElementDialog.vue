@@ -26,8 +26,13 @@
       <component
         :is="fittingEditComponent"
         v-model:form-schema-element="localFormSchemaElement"
+        :pointer="pointer"
+        @add="(elementPointer: string, element: IVeoFormSchemaItem) => emit('add', elementPointer, element)"
+        @remove="(elementPointer: string) => emit('remove', elementPointer)"
         @set-translation="setPendingTranslation"
-      />
+      >
+        <slot />
+      </component>
       <EditorFormSchemaPlaygroundEditDialogElementConditionalVisibility v-model:form-schema-element="localFormSchemaElement" />
     </template>
     <template #dialog-options>
@@ -68,6 +73,10 @@ const props = defineProps({
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
     required: true
+  },
+  pointer: {
+    type: String,
+    required: true
   }
 });
 
@@ -75,6 +84,8 @@ const emit = defineEmits<{
   (event: 'update:model-value', value: boolean): void
   (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void
   (event: 'set-translations', translations: PENDING_TRANSLATIONS): void
+  (event: 'add', pointer: string, element: IVeoFormSchemaItem): void
+  (event: 'remove', pointer: string, removeFromSchemaElementMap?: boolean): void
 }>();
 
 const { t } = useI18n();

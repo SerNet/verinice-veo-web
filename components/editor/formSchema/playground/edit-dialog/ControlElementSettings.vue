@@ -71,9 +71,12 @@
               <EditorFormSchemaPlaygroundEditDialogLinkSettings
                 :form-schema-element="formSchemaElement"
                 :object-schema-element="objectSchemaElement"
-                @update:form-schema-element="emit('update:form-schema-element', $event)"
-                @set-translations="emit('set-translations', $event)"
-              />
+                :pointer="pointer"
+                @add="(elementPointer, element) => emit('add', elementPointer, element)"
+                @remove="(elementPointer) => emit('remove', elementPointer)"
+              >
+                <slot />
+              </EditorFormSchemaPlaygroundEditDialogLinkSettings>
             </v-col>
           </v-row>
         </v-card-text>
@@ -98,13 +101,18 @@ const props = defineProps({
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
     required: true
+  },
+  pointer: {
+    type: String,
+    required: true
   }
 });
 
 const emit = defineEmits<{
   (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void
   (event: 'set-translation', translationKey: string, value: string | undefined): void
-  (event: 'set-translations', translations: PENDING_TRANSLATIONS): void
+  (event: 'add', pointer: string, element: IVeoFormSchemaItem): void
+  (event: 'remove', pointer: string, removeFromSchemaElementMap?: boolean): void
 }>();
 
 const { t, locale } = useI18n();

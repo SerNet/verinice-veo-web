@@ -73,6 +73,8 @@ const playgroundElements = ref<IPlaygroundElement | undefined>(undefined);
 
 provide(PROVIDE_KEYS.formSchemaElementMap, formSchemaElementMap);
 
+const isCustomLinkAttribute = (elementPointer: string) => formSchemaElementMap.get(elementPointer)?.scope?.includes('/properties/attributes/properties');
+
 const getFormSchemaElementName = (formSchemaElement: IVeoFormSchemaItem, pointer: string) => {
   switch(formSchemaElement.type) {
     case 'Control':
@@ -84,7 +86,12 @@ const getFormSchemaElementName = (formSchemaElement: IVeoFormSchemaItem, pointer
   }
 };
 
-const addElementToMap = (formSchemaElement: IVeoFormSchemaItem, pointer: string) => {
+const addElementToMap = (formSchemaElement: IVeoFormSchemaItem, pointer: string, parent: IVeoFormSchemaItem | undefined) => {
+  // Turn relative custom link attribute scopes into absolute scopes. This is undone in buildFormSchemaItem
+  if(isCustomLinkAttribute(formSchemaElement?.scope || '')) {
+    formSchemaElement.scope = `${parent?.scope}/${formSchemaElement.scope?.replace('#/', '')}`;
+  }
+
   const uuid = UUIDv5(getFormSchemaElementName(formSchemaElement, pointer), FORMSCHEMA_PLAYGROUND_NAMESPACE);
   formSchemaElementMap.set(uuid, cloneDeep(formSchemaElement)); // Add formSchema element to uuid map
   if(pointer === '#') {
@@ -94,18 +101,23 @@ const addElementToMap = (formSchemaElement: IVeoFormSchemaItem, pointer: string)
   }
 
   (formSchemaElement.elements || []).forEach((child, childIndex) => {
-    addElementToMap(child, `${pointer}/children/${childIndex}`);
+    addElementToMap(child, `${pointer}/children/${childIndex}`, formSchemaElement);
   });
 };
 
 const initPlayground = (formSchemaRoot: IVeoFormSchemaItem) => {
   formSchemaElementMap.clear();
-  addElementToMap(formSchemaRoot, '#');
+  addElementToMap(formSchemaRoot, '#', undefined);
 };
 initPlayground(props.modelValue); // Call once as soon as the component gets initialized to create the map
 
 const buildFormSchemaItem = (element: IPlaygroundElement) => {
   const formSchemaElement = formSchemaElementMap.get(element.id) as IVeoFormSchemaItem;
+
+  // Undo absolute path scopes for link attributes (See addAllCustomLinkAttributes())
+  if(isCustomLinkAttribute(formSchemaElement?.scope || '')) {
+    formSchemaElement.scope = `#/properties/attributes/properties${formSchemaElement.scope?.split('/properties/attributes/properties')[1]}`;
+  }
   formSchemaElement.elements = 'elements' in formSchemaElement ? [] : undefined;
 
   for(const child of element.children) {
@@ -138,9 +150,8 @@ const isFormElement = (element: IPlaygroundElement | IVeoFormSchemaItem): elemen
 const onAddElement = (elementPointer: string, element: IPlaygroundElement | IVeoFormSchemaItem) => {
   // onAddElement can either be called from within the playground or if the user drags a backlog item to the playground, so we have to check which object we got
   if(isFormElement(element)) {
-    // We use v4 instead of v5 here, as v5 creates reproducable ids, which sucks for label and layouts, as those UUIDs
-    // are generated based on their position in the form schema, meaning it can happen that we create duplicates
-    const uuid = UUIDv4();
+    // We use v4 as a fallback here, as there is no pointer yet, as this elements gets added
+    const uuid = UUIDv5(getFormSchemaElementName(element, UUIDv4()), FORMSCHEMA_PLAYGROUND_NAMESPACE);
     formSchemaElementMap.set(uuid, cloneDeep(element)); // Add formSchema element to uuid map
     element = { id: uuid, children: [] };
   }

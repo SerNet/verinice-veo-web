@@ -51,9 +51,36 @@
     v-if="formSchemaElement"
     v-model="editElementDialogVisible"
     :form-schema-element="formSchemaElement"
+    :pointer="pointer"
     @update:form-schema-element="onFormSchemaElementEdited"
     @set-translations="emit('set-translations', $event)"
-  />
+    @add="(elementPointer, element) => emit('add', elementPointer, element)"
+    @remove="(elementPointer) => emit('remove', elementPointer)"
+  >
+    <Draggable
+      v-if="formSchemaElement.type === 'Control'"
+      :model-value="props.playgroundElement.children"
+      handle=".handle"
+      item-key="id"
+      :group="{ name: 'g1' }"
+      :class="$style.dragarea"
+      @add="onElementAdded"
+      @update="onElementMoved"
+      @remove="onElementRemoved"
+    >
+      <template #item="{ element, index }">
+        <EditorFormSchemaPlaygroundElement
+          :playground-element="element"
+          :pointer="`${pointer}/children/${index}`"
+          @add="(elementPointer, element) => emit('add', elementPointer, element)"
+          @move="(oldPosition, newPosition) => emit('move', oldPosition, newPosition)"
+          @remove="(elementPointer) => emit('remove', elementPointer)"
+          @form-schema-elements-modified="emit('form-schema-elements-modified')"
+          @set-translations="emit('set-translations', $event)"
+        />
+      </template>
+    </Draggable>
+  </EditorFormSchemaPlaygroundEditElementDialog>
   <EditorFormSchemaPlaygroundDeleteElementDialog
     v-if="formSchemaElement"
     v-model="deleteElementDialogVisible"
@@ -102,7 +129,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (event: 'add', pointer: string, element: IPlaygroundElement): void
+  (event: 'add', pointer: string, element: IPlaygroundElement | IVeoFormSchemaItem): void
   (event: 'move', oldPosition: string, newPosition: string): void
   (event: 'remove', pointer: string, removeFromSchemaElementMap?: boolean): void
   (event: 'form-schema-elements-modified'): void
