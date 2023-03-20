@@ -208,9 +208,9 @@ export default {
   },
   emits: ['delete', 'update:model-value', 'error', 'success'],
   setup() {
-    const { banSpecialChars, requireNotEmpty } = useRules();
+    const { banSpecialChars, requiredRule } = useRules();
     return {
-      banSpecialChars, requireNotEmpty
+      banSpecialChars, requiredRule
     };
   },
   data() {
@@ -225,7 +225,7 @@ export default {
           attributes: []
         } as IVeoOSHCustomLink,
         rules: {
-          title: [(input: string) => this.banSpecialChars(input), (input: string) => this.requireNotEmpty(input)],
+          title: [(input: string) => this.banSpecialChars(input), (input: string) => this.requiredRule(input)],
           description: [(input: string) => this.type === 'aspect' || trim(input).length > 0],
           targetType: [(input: string) => this.type === 'aspect' || trim(input).length > 0]
         } as { [key: string]: ((input: string) => boolean)[] }

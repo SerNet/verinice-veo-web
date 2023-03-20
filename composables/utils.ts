@@ -70,7 +70,6 @@ export const useRules = () => {
   const { t } = useI18n({ useScope: 'global' });
 
   const requiredRule = (v: any) => !!v && isString(v) ? !!trim(v) : true || t('global.input.required');
-  const requireNotEmpty = (v: string) => isString(v) && !!v ? true : t('global.input.required');
 
   const banSpecialChars = (v: string) => hasNoSpecialChar(v) ? true : t('global.input.hasSpecialChar');
   function hasNoSpecialChar(s: string): boolean {
@@ -81,7 +80,6 @@ export const useRules = () => {
 
   return {
     requiredRule,
-    requireNotEmpty,
     banSpecialChars
   };
 };

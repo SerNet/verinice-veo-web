@@ -26,7 +26,7 @@
           <v-text-field
             :model-value="form.data.title"
             :label="`${t('aspectName')} *`"
-            :rules="[requireNotEmpty, banSpecialChars]"
+            :rules="[requiredRule, banSpecialChars]"
             :prefix="prefix"
             variant="underlined"
             @update:model-value="doUpdate($event, 'title')"
@@ -227,7 +227,7 @@ export default defineComponent({
     const { t } = useI18n();
     const prefix = computed(() => props.aspectName + '_');
 
-    const { banSpecialChars, requireNotEmpty } = useRules();
+    const { banSpecialChars, requiredRule } = useRules();
 
     watch(
       props,
@@ -355,7 +355,7 @@ export default defineComponent({
       mdiTrashCanOutline,
       t,
       banSpecialChars,
-      requireNotEmpty
+      requiredRule
     };
   }
 });
