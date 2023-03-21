@@ -73,7 +73,12 @@ const playgroundElements = ref<IPlaygroundElement | undefined>(undefined);
 
 provide(PROVIDE_KEYS.formSchemaElementMap, formSchemaElementMap);
 
-const isCustomLinkAttribute = (elementPointer: string) => formSchemaElementMap.get(elementPointer)?.scope?.includes('/properties/attributes/properties');
+const isCustomLinkAttribute = (element: IVeoFormSchemaItem | undefined, parent: IVeoFormSchemaItem | undefined) => {
+  if(!element?.scope) {
+    return false;
+  }
+  return element.scope.includes('/properties/attributes/properties') && (!!element.scope.startsWith('#/properties/links') || !!parent?.scope?.startsWith('#/properties/links'));
+};
 
 const getFormSchemaElementName = (formSchemaElement: IVeoFormSchemaItem, pointer: string) => {
   switch(formSchemaElement.type) {
@@ -88,8 +93,8 @@ const getFormSchemaElementName = (formSchemaElement: IVeoFormSchemaItem, pointer
 
 const addElementToMap = (formSchemaElement: IVeoFormSchemaItem, pointer: string, parent: IVeoFormSchemaItem | undefined) => {
   // Turn relative custom link attribute scopes into absolute scopes. This is undone in buildFormSchemaItem
-  if(isCustomLinkAttribute(formSchemaElement?.scope || '')) {
-    formSchemaElement.scope = `${parent?.scope}/${formSchemaElement.scope?.replace('#/', '')}`;
+  if(isCustomLinkAttribute(formSchemaElement, parent) && !formSchemaElement?.scope?.startsWith('#/properties/links')) {
+    formSchemaElement.scope = `${parent?.scope}/items/${formSchemaElement.scope?.replace('#/', '')}`;
   }
 
   const uuid = UUIDv5(getFormSchemaElementName(formSchemaElement, pointer), FORMSCHEMA_PLAYGROUND_NAMESPACE);
@@ -109,19 +114,20 @@ const initPlayground = (formSchemaRoot: IVeoFormSchemaItem) => {
   formSchemaElementMap.clear();
   addElementToMap(formSchemaRoot, '#', undefined);
 };
-initPlayground(props.modelValue); // Call once as soon as the component gets initialized to create the map
+initPlayground(cloneDeep(props.modelValue)); // Call once as soon as the component gets initialized to create the map
 
-const buildFormSchemaItem = (element: IPlaygroundElement) => {
-  const formSchemaElement = formSchemaElementMap.get(element.id) as IVeoFormSchemaItem;
+const buildFormSchemaItem = (element: IPlaygroundElement, parentElement: IPlaygroundElement | undefined) => {
+  const formSchemaElement = cloneDeep(formSchemaElementMap.get(element.id) as IVeoFormSchemaItem);
+  const parentFormSchemaElement = parentElement ? formSchemaElementMap.get(parentElement.id) : undefined;
 
   // Undo absolute path scopes for link attributes (See addAllCustomLinkAttributes())
-  if(isCustomLinkAttribute(formSchemaElement?.scope || '')) {
+  if(isCustomLinkAttribute(formSchemaElement, parentFormSchemaElement)) {
     formSchemaElement.scope = `#/properties/attributes/properties${formSchemaElement.scope?.split('/properties/attributes/properties')[1]}`;
   }
   formSchemaElement.elements = 'elements' in formSchemaElement ? [] : undefined;
 
   for(const child of element.children) {
-    formSchemaElement.elements?.push(buildFormSchemaItem(child));
+    formSchemaElement.elements?.push(buildFormSchemaItem(child, element));
   }
 
   return formSchemaElement;
@@ -131,8 +137,7 @@ const onFormSchemaModified = (newValue: IPlaygroundElement | undefined) => {
   if(!newValue) {
     return;
   }
-
-  emit('update:model-value', buildFormSchemaItem(newValue));
+  emit('update:model-value', buildFormSchemaItem(newValue, undefined));
 };
 
 watch(() => playgroundElements.value, onFormSchemaModified, { deep: true });

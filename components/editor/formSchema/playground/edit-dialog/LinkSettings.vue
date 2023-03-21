@@ -17,39 +17,55 @@
 -->
 <template>
   <div>
-    <v-select
-      v-model="usedLinkAttributes"
-      :label="t('displayedAttributes')"
-      :items="availableLinkAttributeUUIDs"
-      multiple
-      :prepend-inner-icon="mdiListBoxOutline"
-      variant="underlined"
-    >
-      <template #item="{ item, props: itemProps }">
-        <v-list-item
-          v-bind="itemProps"
-          :active="usedLinkAttributes.includes(item.value)"
-          :title="undefined"
-          style="max-width: 500px"
-        >
-          <template #prepend>
-            <v-icon :icon="usedLinkAttributes.includes(item.value) ? mdiCheckboxMarked : mdiCheckboxBlankOutline" />
-          </template>
-          <v-list-item-title>
-            {{ last(availableLinkAttributes[item.value].scope?.split('/')) }}
-          </v-list-item-title>
-        </v-list-item>
-      </template>
-      <template #selection="{ item }">
-        {{ last(availableLinkAttributes[item.value].scope?.split('/')) }}
-      </template>
-    </v-select>
-    <div><slot /></div>
+    <div class="d-flex flex-row align-center mb-3">
+      <v-select
+        v-model="usedLinkAttributes"
+        :label="t('displayedAttributes')"
+        :items="availableLinkAttributeUUIDs"
+        hide-details
+        multiple
+        :prepend-inner-icon="mdiListBoxOutline"
+        variant="underlined"
+      >
+        <template #item="{ item, props: itemProps }">
+          <v-list-item
+            v-bind="itemProps"
+            :active="usedLinkAttributes.includes(item.value)"
+            :title="undefined"
+            style="max-width: 500px"
+          >
+            <template #prepend>
+              <v-icon :icon="usedLinkAttributes.includes(item.value) ? mdiCheckboxMarked : mdiCheckboxBlankOutline" />
+            </template>
+            <v-list-item-title>
+              {{ last(availableLinkAttributes[item.value].scope?.split('/')) }}
+            </v-list-item-title>
+          </v-list-item>
+        </template>
+        <template #selection="{ item }">
+          {{ last(availableLinkAttributes[item.value].scope?.split('/')) }}
+        </template>
+      </v-select>
+      <v-tooltip location="top">
+        <template #activator="{ props: tooltipProps }">
+          <v-icon
+            :icon="mdiInformationOutline"
+            size="large"
+            end
+            v-bind="tooltipProps"
+          />
+        </template>
+        <template #default>
+          {{ t('changesVisibleImmediately') }}
+        </template>
+      </v-tooltip>
+    </div>
+    <slot />
   </div>
 </template>
 
 <script setup lang="ts">
-import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiListBoxOutline } from '@mdi/js';
+import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiInformationOutline, mdiListBoxOutline } from '@mdi/js';
 import { JSONSchema7 } from 'json-schema';
 import { PropType } from 'vue';
 import { v5 as UUIDv5 } from 'uuid';
@@ -111,10 +127,12 @@ watch(() => usedLinkAttributes.value, (newValue, oldValue) => {
 <i18n>
 {
   "en": {
+    "changesVisibleImmediately": "Changes in the order of custom link attributes are visible immediately without clicking \"Save\"",
     "displayedAttributes": "Displayed attributes"
   },
   "de": {
-    "displayedAttributes": "Angezeigte Felder"
+    "changesVisibleImmediately": "Änderungen in der Reihenfolge sind sofort ohne Klick auf \"Speichern\" sichtbar.",
+    "displayedAttributes": "Angezeigte Felder",
   }
 }
 </i18n>

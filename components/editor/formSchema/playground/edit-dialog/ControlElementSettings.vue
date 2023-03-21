@@ -58,7 +58,7 @@
         {{ t('formElementOptions') }}
         <BaseCard>
           <v-card-text>
-            <v-row v-if="elementTypeModelValue === 'Radio' || elementTypeModelValue === 'LinksField'">
+            <v-row v-if="elementTypeModelValue === 'Radio'">
               <v-col
                 cols="12"
                 md="6"
