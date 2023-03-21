@@ -30,6 +30,8 @@
     :false-value="false"
     :true-value="true"
     color="primary"
+    role="checkbox"
+    :aria-checked="!!modelValue"
     @update:model-value="$emit('update:model-value', $event);"
   >
     <template
