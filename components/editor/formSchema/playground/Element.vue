@@ -52,6 +52,7 @@
       v-if="formSchemaElement"
       v-model="editElementDialogVisible"
       :form-schema-element="formSchemaElement"
+      :playground-element="playgroundElement"
       :pointer="pointer"
       @update:form-schema-element="onFormSchemaElementEdited"
       @set-translations="emit('set-translations', $event)"

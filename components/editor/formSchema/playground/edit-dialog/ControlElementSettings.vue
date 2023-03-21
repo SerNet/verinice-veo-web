@@ -77,6 +77,7 @@
                 <EditorFormSchemaPlaygroundEditDialogLinkSettings
                   :form-schema-element="formSchemaElement"
                   :object-schema-element="objectSchemaElement"
+                  :playground-element="playgroundElement"
                   :pointer="pointer"
                   @add="(elementPointer, element) => emit('add', elementPointer, element)"
                   @remove="(elementPointer) => emit('remove', elementPointer)"
@@ -101,6 +102,7 @@ import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 import { controlTypeAlternatives, eligibleInputElements, INPUT_ELEMENTS } from '~~/types/VeoEditor';
 import { getFormSchemaControlType } from '~~/lib/utils';
+import { IPlaygroundElement } from '../Element.vue';
 
 const props = defineProps({
   formSchemaElement: {
@@ -109,6 +111,10 @@ const props = defineProps({
   },
   pointer: {
     type: String,
+    required: true
+  },
+  playgroundElement: {
+    type: Object as PropType<IPlaygroundElement>,
     required: true
   }
 });

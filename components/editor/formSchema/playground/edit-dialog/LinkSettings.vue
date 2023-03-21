@@ -73,6 +73,7 @@ import { difference, last } from 'lodash';
 
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 import { FORMSCHEMA_PLAYGROUND_NAMESPACE } from '../Playground.vue';
+import { IPlaygroundElement } from '../Element.vue';
 
 const props = defineProps({
   formSchemaElement: {
@@ -81,6 +82,10 @@ const props = defineProps({
   },
   objectSchemaElement: {
     type: Object as PropType<JSONSchema7>,
+    required: true
+  },
+  playgroundElement: {
+    type: Object as PropType<IPlaygroundElement>,
     required: true
   },
   pointer: {
@@ -111,15 +116,19 @@ const availableLinkAttributes = computed<{ [uuid:string]: IVeoFormSchemaItem }>(
 
 const availableLinkAttributeUUIDs = computed(() => Object.keys(availableLinkAttributes.value));
 
-const usedLinkAttributes = ref<string[]>([]);
-watch(() => usedLinkAttributes.value, (newValue, oldValue) => {
-  // New elemnt was added, this is usually app
-  if(newValue.length > oldValue.length) {
-    const newElementUUID = difference(newValue, oldValue)[0];
-    emit('add', `${props.pointer}/children/${newValue.length - 1}`, availableLinkAttributes.value[newElementUUID]);
-  } else {
-    const deleteIndex = oldValue.findIndex((uuid) => !newValue.includes(uuid));
-    emit('remove', `${props.pointer}/children/${deleteIndex}`);
+const usedLinkAttributes = computed<string[]>({
+  get: () => {
+    return props.playgroundElement.children.map((child) => child.id);
+  },
+  set: (newValue) => {
+    // New elemnt was added, this is usually app
+    if(newValue.length > usedLinkAttributes.value.length) {
+      const newElementUUID = difference(newValue, usedLinkAttributes.value)[0];
+      emit('add', `${props.pointer}/children/${newValue.length - 1}`, availableLinkAttributes.value[newElementUUID]);
+    } else {
+      const deleteIndex = usedLinkAttributes.value.findIndex((uuid) => !newValue.includes(uuid));
+      emit('remove', `${props.pointer}/children/${deleteIndex}`);
+    }
   }
 });
 </script>

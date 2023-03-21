@@ -27,6 +27,7 @@
         :is="fittingEditComponent"
         v-model:form-schema-element="localFormSchemaElement"
         :pointer="pointer"
+        :playground-element="playgroundElement"
         @add="(elementPointer: string, element: IVeoFormSchemaItem) => emit('add', elementPointer, element)"
         @remove="(elementPointer: string) => emit('remove', elementPointer)"
         @set-translation="setPendingTranslation"
@@ -64,6 +65,7 @@ import EditorFormSchemaPlaygroundEditDialogLabelElementSettings from './edit-dia
 import EditorFormSchemaPlaygroundEditDialogLayoutElementSettings from './edit-dialog/LayoutElementSettings.vue';
 import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
+import { IPlaygroundElement } from './Element.vue';
 
 const props = defineProps({
   modelValue: {
@@ -76,6 +78,10 @@ const props = defineProps({
   },
   pointer: {
     type: String,
+    required: true
+  },
+  playgroundElement: {
+    type: Object as PropType<IPlaygroundElement>,
     required: true
   }
 });
