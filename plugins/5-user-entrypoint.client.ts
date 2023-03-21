@@ -67,9 +67,13 @@ export default defineNuxtPlugin (async (nuxtApp) => {
 
   // Create first unit if it doesn't exist
   const units = await useQuerySync(unitQueryDefinitions.queries.fetchAll);
-  if(!units.length) {
-    navigateTo({ name: 'init' });
-    return;
+  // If either no unit exists or only a demo unit exists, redirect the user to the init page to create the first unit.
+  if(!units.length || (units.length === 1 && units[0].name === 'Demo')) {
+    // Somehow return navigteTo, await navigateTo and nextTick(() => navigateTo) don't work, so we have to solve it dirty with a timeout.
+    // 50ms seems to work reliably and isn't noticeable by the user, so we use 50ms
+    setTimeout(() => {
+      navigateTo({ name: 'init' });
+    }, 50);
   }
 
   // Navigate the user to his previous unit and domain, if both still exist AND he has at most two units AND the user enters the index page
@@ -89,21 +93,18 @@ export default defineNuxtPlugin (async (nuxtApp) => {
 
       const data = (domains || []).filter((domain) => unit.domains.some((unitDomain) => unitDomain.targetUri.includes(domain.id)));
 
-      if (userSettings.value.maxUnits <= 2 && data.find((domain) => domain.id === _lastDomain)) {
-        console.log({
-          name: 'unit-domains-domain',
-          params: {
-            unit: createUUIDUrlParam('unit', _lastUnit as string),
-            domain: createUUIDUrlParam('domain', _lastDomain)
-          }
-        });
-        navigateTo({
-          name: 'unit-domains-domain',
-          params: {
-            unit: createUUIDUrlParam('unit', _lastUnit as string),
-            domain: createUUIDUrlParam('domain', _lastDomain)
-          }
-        });
+      if (userSettings.value.maxUnits <= 2 && data.find((domain) => domain.id === _lastDomain)) {      
+        // Somehow return navigteTo, await navigateTo and nextTick(() => navigateTo) don't work, so we have to solve it dirty with a timeout.
+        // 50ms seems to work reliably and isn't noticeable by the user, so we use 50ms
+        setTimeout(() => {
+          navigateTo({
+            name: 'unit-domains-domain',
+            params: {
+              unit: createUUIDUrlParam('unit', _lastUnit as string),
+              domain: createUUIDUrlParam('domain', _lastDomain)
+            }
+          });
+        }, 50);
       } else {
         // If the domain doesn't exist, the last unit & domain are outdated, so we remove them
         removeNavigationHelpers();

@@ -55,10 +55,10 @@ const lastUnit = useStorage(LOCAL_STORAGE_KEYS.LAST_UNIT, undefined, localStorag
 const lastDomain = useStorage(LOCAL_STORAGE_KEYS.LAST_DOMAIN, undefined, localStorage, { serializer: StorageSerializers.string });
 
 // Create first unit if it doesn't exist and navigate the user there afterwards
-useQuery(unitQueryDefinitions.queries.fetchAll, undefined, { onSuccess: async (data) => {
+useQuery(unitQueryDefinitions.queries.fetchAll, undefined, { onSuccess: async (data: any) => {
   let unitId;
   let domainId;
-  if(!(data as IVeoUnit[]).length) {
+  if(!(data as IVeoUnit[]).length || (data.length === 1 && data[0].name === 'Demo')) {
     const newUnitEvent = await createUnit({
       name: 'Unit 1',
       description: t('yourFirstUnit')
