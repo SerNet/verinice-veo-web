@@ -16,8 +16,6 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-    {{ localItems }} , {{ modelValue }}
-
   <v-select
     v-if="options.visible"
     :id="objectSchemaPointer"
@@ -34,7 +32,6 @@
     variant="underlined"
     @click:clear="$emit('update:model-value', undefined)"
   >
-
     <template
       v-if="multiple"
       #item="{ props, item }"
@@ -50,15 +47,14 @@
         v-bind="props"
         style="max-height: 48px"
         :title="undefined"
-        :active="modelValue?.includes(item.value)"
+        :active="isArray(modelValue) && modelValue?.includes(item.value)"
         active-color="primary"
       >
         <div class="d-flex align-center">
-          <v-checkbox
-            :model-value="modelValue?.includes(item.value)"
-            color="primary"
-            hide-details
-            class="flex-grow-0"
+          <v-icon
+            :color="isArray(modelValue) && modelValue?.includes(item.value) ? 'primary' : undefined"
+            start
+            :icon="isArray(modelValue) && modelValue?.includes(item.value) ? mdiCheckboxMarked : mdiCheckboxBlankOutline"
           />
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </div>
@@ -68,8 +64,8 @@
 </template>
 
 <script lang="ts">
-import{ last } from 'lodash';
-import { isEmpty } from 'lodash';
+import { isArray, isEmpty, last } from 'lodash';
+import { mdiCheckboxBlankOutline, mdiCheckboxMarked } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
@@ -132,10 +128,13 @@ export default defineComponent({
       localItems,
       multiple,
       onItemsChanged,
+      isArray,
 
       getControlErrorMessages,
       isEmpty,
-      last
+      last,
+      mdiCheckboxBlankOutline,
+      mdiCheckboxMarked
     };
   }
 });

@@ -32,11 +32,6 @@
     variant="underlined"
     @click:clear="$emit('update:model-value', undefined)"
   >
-    <!-- TODO-Vuetify: Currently needed as otherwise selection titles will get displayed twice-->
-    <template
-      v-if="multiple"
-      #selection
-    />
     <template
       v-if="multiple"
       #item="{ props, item }"
@@ -56,11 +51,10 @@
         active-color="primary"
       >
         <div class="d-flex align-center">
-          <v-checkbox
-            :model-value="isArray(modelValue) && modelValue?.includes(item.value)"
-            color="primary"
-            hide-details
-            class="flex-grow-0"
+          <v-icon
+            :color="isArray(modelValue) && modelValue?.includes(item.value) ? 'primary' : undefined"
+            start
+            :icon="isArray(modelValue) && modelValue?.includes(item.value) ? mdiCheckboxMarked : mdiCheckboxBlankOutline"
           />
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </div>
@@ -71,6 +65,7 @@
 
 <script lang="ts">
 import { isArray, isEmpty, last } from 'lodash';
+import { mdiCheckboxBlankOutline, mdiCheckboxMarked } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
@@ -139,7 +134,9 @@ export default defineComponent({
       isArray,
 
       getControlErrorMessages,
-      last
+      last,
+      mdiCheckboxBlankOutline,
+      mdiCheckboxMarked
     };
   }
 });
