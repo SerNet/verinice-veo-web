@@ -52,12 +52,12 @@
         v-bind="props"
         style="max-height: 48px"
         :title="undefined"
-        :active="modelValue.includes(item.value)"
+        :active="isArray(modelValue) && modelValue?.includes(item.value)"
         active-color="primary"
       >
         <div class="d-flex align-center">
           <v-checkbox
-            :model-value="modelValue.includes(item.value)"
+            :model-value="isArray(modelValue) && modelValue?.includes(item.value)"
             color="primary"
             hide-details
             class="flex-grow-0"
@@ -70,7 +70,7 @@
 </template>
 
 <script lang="ts">
-import { isEmpty, last } from 'lodash';
+import { isArray, isEmpty, last } from 'lodash';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
@@ -136,6 +136,7 @@ export default defineComponent({
       isEmpty,
       multiple,
       onItemsChanged,
+      isArray,
 
       getControlErrorMessages,
       last

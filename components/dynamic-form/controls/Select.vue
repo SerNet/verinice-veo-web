@@ -16,6 +16,8 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
+    {{ localItems }} , {{ modelValue }}
+
   <v-select
     v-if="options.visible"
     :id="objectSchemaPointer"
@@ -32,6 +34,7 @@
     variant="underlined"
     @click:clear="$emit('update:model-value', undefined)"
   >
+
     <template
       v-if="multiple"
       #item="{ props, item }"
@@ -47,12 +50,12 @@
         v-bind="props"
         style="max-height: 48px"
         :title="undefined"
-        :active="modelValue.includes(item.value)"
+        :active="modelValue?.includes(item.value)"
         active-color="primary"
       >
         <div class="d-flex align-center">
           <v-checkbox
-            :model-value="modelValue.includes(item.value)"
+            :model-value="modelValue?.includes(item.value)"
             color="primary"
             hide-details
             class="flex-grow-0"
@@ -93,7 +96,6 @@ export default defineComponent({
   emits: ['update:model-value'],
   setup(props, { emit }) {
     const { t } = useI18n();
-
     // @ts-ignore At this point we expect objectSchema to be set, so type WILL exist
     const multiple = computed(() => props.objectSchema.type === 'array' && typeof props.objectSchema.items?.enum !== 'undefined');
 
