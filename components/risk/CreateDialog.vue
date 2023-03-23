@@ -40,7 +40,7 @@
           v-model:sort-by="sortBy"
           show-select
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
-          :items="objects"
+          :items="notAlreadyUsedScenarios"
           :loading="objectsQueryIsLoading"
         />
       </BaseCard>
@@ -68,15 +68,16 @@
 </template>
 
 <script lang="ts">
-import { omit, upperFirst } from 'lodash';
+import { cloneDeep, omit, upperFirst } from 'lodash';
 
-import { IVeoEntity } from '~/types/VeoTypes';
-import { separateUUIDParam } from '~/lib/utils';
+import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import objectQueryDefinitions, { IVeoFetchRisksParameters } from '~/composables/api/queryDefinitions/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useMutation } from '~~/composables/api/utils/mutation';
 import { useFetchObjects } from '~~/composables/api/objects';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
@@ -146,6 +147,23 @@ export default defineComponent({
     }));
 
     const { data: objects, isFetching: objectsQueryIsLoading, refetch } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
+    const risksQueryParameters = computed<IVeoFetchRisksParameters>(() => ({
+      endpoint: 'processes',
+      id: props.objectId
+    }));
+    const { data: risks } = useQuery(objectQueryDefinitions.queries.fetchRisks, risksQueryParameters);
+
+    const notAlreadyUsedScenarios = computed<IVeoPaginatedResponse<IVeoEntity[] & { disabled?: boolean }> | undefined>(() => {
+      const _objects = cloneDeep(objects.value);
+
+      _objects?.items.forEach((item: IVeoEntity & { disabled?: boolean }) => {
+        if(risks.value?.find((risk) => getEntityDetailsFromLink(risk.scenario).id === item.id)) {
+          item.disabled = true;
+        }
+      });
+
+      return _objects;
+    });
 
     // Create risk stuff
     const creatingRisks = ref(false);
@@ -192,6 +210,7 @@ export default defineComponent({
       objectsQueryIsLoading,
       page,
       sortBy,
+      notAlreadyUsedScenarios,
       onSubmit,
       onFilterUpdate,
       selectedScenarios,
