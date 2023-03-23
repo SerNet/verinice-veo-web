@@ -20,6 +20,7 @@
     rounded
     border
     class="fill-width pb-1 my-1"
+    data-component-name="label-form-element"
   >
     <v-card-actions>
       <div class="handle mr-1">

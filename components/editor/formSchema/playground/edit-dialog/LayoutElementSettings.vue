@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <section>
+  <section data-component-name="layout-element-settings">
     <h2 class="text-h2">
       {{ t('common') }}
     </h2>

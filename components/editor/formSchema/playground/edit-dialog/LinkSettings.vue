@@ -20,6 +20,7 @@
     <div class="d-flex flex-row align-center mb-3">
       <v-select
         v-model="usedLinkAttributes"
+        data-component-name="form-element-link-settings-available-attributes"
         :label="t('displayedAttributes')"
         :items="availableLinkAttributeUUIDs"
         hide-details

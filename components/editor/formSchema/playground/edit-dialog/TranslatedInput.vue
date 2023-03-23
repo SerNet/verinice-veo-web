@@ -19,6 +19,7 @@
   <div class="fill-width">
     <v-text-field
       v-model="modelValue"
+      data-component-name="form-element-title"
       :label="label"
       variant="underlined"
       clearable

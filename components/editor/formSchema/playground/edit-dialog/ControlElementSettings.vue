@@ -17,7 +17,7 @@
 -->
 <template>
   <div>
-    <section>
+    <section data-component-name="control-element-settings">
       <h2 class="text-h2">
         {{ t('common') }}
       </h2>
@@ -39,7 +39,10 @@
         </v-card-text>
       </BaseCard>
     </section>
-    <section class="mt-4">
+    <section
+      class="mt-4"
+      data-component-name="control-element-element-specific-settings"
+    >
       <h2 class="text-h2">
         {{ t('formElement') }}
       </h2>

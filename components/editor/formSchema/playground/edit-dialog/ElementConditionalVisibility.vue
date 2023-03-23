@@ -30,6 +30,7 @@
           >
             <v-select
               v-model="conditionEffect"
+              data-component-name="form-element-conditional-visibility"
               :label="t('effect')"
               :items="options"
               clearable

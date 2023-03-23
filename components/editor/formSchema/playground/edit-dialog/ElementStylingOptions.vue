@@ -18,6 +18,7 @@
 <template>
   <v-autocomplete
     v-model="activeOptions"
+    data-component-name="form-element-styling-options"
     multiple
     :items="formattedOptions"
     :prepend-inner-icon="mdiPaletteOutline"

@@ -20,6 +20,7 @@
     rounded
     border
     class="fill-width pb-1 my-1"
+    data-component-name="layout-form-element"
   >
     <v-card-actions v-if="!playgroundElement.readonly">
       <div class="handle mr-1">

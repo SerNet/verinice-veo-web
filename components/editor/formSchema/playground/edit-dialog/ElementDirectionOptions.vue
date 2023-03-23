@@ -19,6 +19,7 @@
   <v-select
     v-model="direction"
     :items="directionOptions"
+    data-component-name="form-element-direction"
     :label="t('direction')"
     variant="underlined"
     :prepend-inner-icon="mdiSwapVertical"

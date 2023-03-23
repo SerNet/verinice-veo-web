@@ -20,6 +20,7 @@
     rounded
     border
     class="fill-width my-1 d-flex overflow-hidden"
+    data-component-name="control-form-element"
   >
     <div
       class="handle mr-1 d-flex align-center px-1"
