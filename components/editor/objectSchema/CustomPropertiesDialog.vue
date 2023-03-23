@@ -342,11 +342,11 @@ export default {
         } else if (this.type === 'aspect') {
           if (this.editedProperty.title !== this.form.data.title) {
             this.objectSchemaHelper.value.renameCustomAspect(this.editedProperty.title, this.form.data.title);
-            this.objectSchemaHelper.value.changeTranslationKey(this.editedProperty.title, this.form.data.title);
+            this.objectSchemaHelper.value.changeTranslationKey(`${this.editedProperty.prefix}${this.editedProperty.title}`, `${this.editedProperty.prefix}${this.form.data.title}`);
           }
         } else if (this.editedProperty.title !== this.form.data.title) {
           this.objectSchemaHelper.value.renameCustomLink(this.editedProperty.title, this.form.data.title);
-          this.objectSchemaHelper.value.changeTranslationKey(this.editedProperty.title, this.form.data.title);
+          this.objectSchemaHelper.value.changeTranslationKey(`${this.editedProperty.prefix}${this.editedProperty.title}`, `${this.editedProperty.prefix}${this.form.data.title}`);
         }
 
         // Remove properties from attributes that shouldn't be saved and are only used here
