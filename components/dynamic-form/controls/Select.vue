@@ -29,6 +29,7 @@
     :data-attribute-name="last(objectSchemaPointer.split('/'))"     
     :items="localItems"
     :multiple="multiple"
+    autocomplete="off"
     variant="underlined"
     @click:clear="$emit('update:model-value', undefined)"
   >
