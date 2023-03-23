@@ -86,7 +86,7 @@ export default defineNuxtPlugin (async (nuxtApp) => {
   };
 
   // localStorage.getItem only returns strings, thus we have to check the string value
-  if(route.name === 'index' && _lastDomain && _lastUnit && _lastDomain !== 'undefined' && _lastUnit !== 'undefined'){
+  if((route.name === 'index') && (_lastDomain && _lastUnit) && (_lastDomain !== 'undefined') && (_lastUnit !== 'undefined')){
     try {
       const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, {id:_lastUnit as string});
       const domains = await useQuerySync(domainQueryDefinitions.queries.fetchDomains, undefined);
