@@ -47,7 +47,8 @@ export interface IVeoMutationParameters<TParams = Record<string, any>, TQuery = 
  */
 export const useMutation = <TVariables, TResult>(
   mutationDefinition: IVeoMutationDefinition<TVariables, TResult>,
-  mutationOptions?: MutationOptions<TVariables, TResult>
+  // Internally (in the mutation definition, we want to force the developer to use onSuccess, as usually every mutation implies invalidating an existing query), however further onSuccess callbacks are optional
+  mutationOptions?: Omit<MutationOptions<TVariables, TResult>, 'onSuccess'> & { onSuccess?: (queryClient: QueryClient, data: TResult, variables: IVeoMutationParameters, context: any) => void }
 ) => {
   const { $config } = useNuxtApp();
   const { request } = useRequest();
