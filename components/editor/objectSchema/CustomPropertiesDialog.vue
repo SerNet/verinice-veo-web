@@ -342,9 +342,11 @@ export default {
         } else if (this.type === 'aspect') {
           if (this.editedProperty.title !== this.form.data.title) {
             this.objectSchemaHelper.value.renameCustomAspect(this.editedProperty.title, this.form.data.title);
+            this.objectSchemaHelper.value.changeTranslationKey(this.editedProperty.title, this.form.data.title);
           }
         } else if (this.editedProperty.title !== this.form.data.title) {
           this.objectSchemaHelper.value.renameCustomLink(this.editedProperty.title, this.form.data.title);
+          this.objectSchemaHelper.value.changeTranslationKey(this.editedProperty.title, this.form.data.title);
         }
 
         // Remove properties from attributes that shouldn't be saved and are only used here
@@ -364,14 +366,6 @@ export default {
         const attributePrefix = `${this.form.data.prefix}${this.form.data.title}_`;
 
         for (const attribute of this.form.data.attributes) {
-          // Update translation key if aspect/link title changed across all languages
-          if (attribute.originalId && this.editedProperty && this.editedProperty.title !== this.form.data.title) {
-            this.objectSchemaHelper.value.changeTranslationKey(
-              `${this.editedProperty.prefix}${this.editedProperty.title}_${attribute.originalId}`,
-              `${attributePrefix}${attribute.originalId}`
-            );
-          }
-
           // Update translation key if attribute title changed across all languages
           if (attribute.originalId && attribute.originalId !== attribute.title) {
             this.objectSchemaHelper.value.changeTranslationKey(`${attributePrefix}${attribute.originalId}`, `${attributePrefix}${attribute.title}`);
