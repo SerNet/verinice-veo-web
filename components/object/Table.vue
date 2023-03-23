@@ -434,7 +434,6 @@ export default defineComponent({
      */
     const defaultRenderer: ObjectTableRenderer = (context: any, header) => {
       const column = context.columns.find((column: any) => column.key === header?.key);
-      console.log(column);
       return h('div', {
         class: [...column.cellClass, ...column.class, ...(context.item.raw.disabled) ? ['v-list-item--disabled'] : []],
         style: {
