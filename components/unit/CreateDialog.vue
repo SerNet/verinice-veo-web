@@ -108,35 +108,29 @@ const form = ref();
 const formIsValid = ref(false);
 const newUnit = reactive<{ name: string | undefined, description: string | undefined }>({ name: undefined, description: undefined });
 
-const { mutateAsync, isLoading: creatingUnit, data: newUnitPayload } = useMutation(
-  unitQueryDefinitions.mutations.create,
-  {
-    onError: (error: any) => {
-      displayErrorMessage(t('createUnitError'), error.message);
-    },
-    onSuccess: () => {
-      //
-    }
-  }
-);
+const { mutateAsync, isLoading: creatingUnit, data: newUnitPayload } = useMutation(unitQueryDefinitions.mutations.create);
 const createUnit = async () => {
   if(!formIsValid.value || ability.value.cannot('manage', 'units')) {
     return;
   }
-  await mutateAsync(newUnit);
-  displaySuccessMessage(t('unitCreated'));
-  emit('update:model-value', false);
-  const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: newUnitPayload.value?.resourceId as string });
-  const domainId = getFirstDomainDomaindId(unit);
+  try {
+    await mutateAsync(newUnit);
+    displaySuccessMessage(t('unitCreated'));
+    emit('update:model-value', false);
+    const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: newUnitPayload.value?.resourceId as string });
+    const domainId = getFirstDomainDomaindId(unit);
 
-  if (domainId) {
-    router.push({
-      name: 'unit-domains-domain',
-      params: {
-        unit: createUUIDUrlParam('unit', unit.id),
-        domain: createUUIDUrlParam('domain', domainId)
-      }
-    });
+    if (domainId) {
+      router.push({
+        name: 'unit-domains-domain',
+        params: {
+          unit: createUUIDUrlParam('unit', unit.id),
+          domain: createUUIDUrlParam('domain', domainId)
+        }
+      });
+    }
+  } catch (error: any) {
+    displayErrorMessage(t('createUnitError'), error.message);
   }
 };
 </script>

@@ -97,20 +97,12 @@ export const ROUTE_NAME = 'index';
 <script lang="ts" setup>
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { mdiTrashCanOutline } from '@mdi/js';
-import { QueryClient } from '@tanstack/query-core';
 
-import { useVeoUser } from '~/composables/VeoUser';
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
-import { IVeoAPIMessage } from '~/types/VeoTypes';
 import unitQueryDefinitions, { IVeoUnit} from '~/composables/api/queryDefinitions/units';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-import { useFetchUnitDomains } from '~~/composables/api/domains';
-import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
-import { useMutation } from '~~/composables/api/utils/mutation';
-import { IVeoDomain } from '~~/composables/api/queryDefinitions/domains';
+import { useQuery } from '~~/composables/api/utils/query';
 
-const { profile, userSettings } = useVeoUser();
-const router = useRouter();
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 
@@ -125,58 +117,7 @@ const showWelcomeDialog = computed({
   set: (newValue) => { firstSetpsCompleted.value = !newValue; }
 });
 
-const redirectIfTwoUnits = async () => {
-  // Only applicable if the user has only two units (one demo and one main)
-  if (userSettings.value.maxUnits !== 2) {
-    return;
-  }
-  const nonDemoUnits: IVeoUnit[] = (units.value || []).filter((unit: IVeoUnit) => unit.name !== 'Demo');
-  const myNonDemoUnit = nonDemoUnits.find((unit) => unit.createdBy === profile.value?.username);
-
-  // Auto-redirect the user to his non demo unit upon visting the app. If it doesn't exist, create it and then redirect
-  if (nonDemoUnits.length > 0) {
-    // Try redirecting the user to the first unit found that was created by him, else redirect him to a unit created by someone else.
-    const unitToRedirectTo = myNonDemoUnit ?? nonDemoUnits[0];
-
-    if (unitToRedirectTo) {
-      const domainId = getFirstDomainDomaindId(unitToRedirectTo);
-
-      if (domainId) {
-        await router.push({
-          name: 'unit-domains-domain',
-          params: {
-            unit: createUUIDUrlParam('unit', unitToRedirectTo.id),
-            domain: createUUIDUrlParam('domain', domainId)
-          }
-        });
-      }
-    }
-  } else {
-    await createUnitAndRedirect({
-      name: 'Unit 1',
-      description: t('firstUnitDescription')
-    });
-  }
-};
-
-const redirectToNewUnit = async (queryClient: QueryClient, data: IVeoAPIMessage) => {
-  const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: data.resourceId });
-  const domainId = getFirstDomainDomaindId(unit);
-
-  if (domainId) {
-    router.push({
-      name: 'unit-domains-domain',
-      params: {
-        unit: createUUIDUrlParam('unit', unit.id),
-        domain: createUUIDUrlParam('domain', domainId)
-      }
-    });
-  }
-};
-
-const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll, undefined, { onSuccess: redirectIfTwoUnits });
-
-const { mutateAsync: createUnitAndRedirect } = useMutation(unitQueryDefinitions.mutations.create, { onSuccess: redirectToNewUnit });
+const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
 const generateUnitDashboardLink = (unitId: string) => {
   const unitToLinkTo = (units.value || []).find((unit) => unit.id === unitId);
@@ -188,27 +129,6 @@ const generateUnitDashboardLink = (unitId: string) => {
 
   return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
 };
-
-// Navigation helper (auto redirect to unit the user was previously in if he accessed the index page as entry point)
-const lastUnit = useStorage(LOCAL_STORAGE_KEYS.LAST_UNIT, undefined, localStorage, { serializer: StorageSerializers.string });
-const lastDomain = useStorage(LOCAL_STORAGE_KEYS.LAST_DOMAIN, undefined, localStorage, { serializer: StorageSerializers.string });
-const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: lastUnit.value }));
-const fetchUnitDomainsQueryEnabled = computed(() => !!lastUnit.value && lastUnit.value !== 'undefined' && !!lastDomain.value && lastDomain.value !== 'undefined' && router.options.history.state.position === 1);
-useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled, onSuccess: (domains) => {
-  if (userSettings.value.maxUnits <= 2 && (domains as IVeoDomain[]).find((domain) => domain.id === lastDomain.value)) {
-    navigateTo({
-      name: 'unit-domains-domain',
-      params: {
-        unit: createUUIDUrlParam('unit', lastUnit.value),
-        domain: createUUIDUrlParam('domain', lastDomain.value)
-      }
-    });
-  } else {
-    // If the domain doesn't exist, the last unit & domain are outdated, so we remove them
-    lastUnit.value = undefined;
-    lastDomain.value = undefined;
-  }
-}});
 
 // Unit deletion stuff
 const deleteUnitDialogVisible = ref(false);

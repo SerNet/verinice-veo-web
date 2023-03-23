@@ -191,6 +191,12 @@ export default defineComponent({
         }
       ],
       [
+        'init',
+        {
+          hidden: true
+        }
+      ],
+      [
         ':unit',
         {
           hidden: true

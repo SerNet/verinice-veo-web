@@ -77,10 +77,6 @@
 
   "domain.index.title": "Dashboard",
 
-  "unit.default.name": "Unit 1",
-  "unit.default.description": "Your first unit",
-  "unit.details.nodescription": "No description provided",
-
   "breadcrumbs": {
     "administration": "Account management",
     "catalogs": "Catalogs",
