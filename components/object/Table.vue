@@ -434,8 +434,12 @@ export default defineComponent({
      */
     const defaultRenderer: ObjectTableRenderer = (context: any, header) => {
       const column = context.columns.find((column: any) => column.key === header?.key);
-      return h('span', {
-        class: [...column.cellClass, ...column.class, ...(context.item.raw.disabled) ? ['v-list-item--disabled'] : []]
+      console.log(column);
+      return h('div', {
+        class: [...column.cellClass, ...column.class, ...(context.item.raw.disabled) ? ['v-list-item--disabled'] : []],
+        style: {
+          width: `${column.width}px`
+        }
       }, context.item.columns[header?.key]);
     };
     const renderers = computed(() => Object.fromEntries(_headers.value.map((header) => [`item.${header.key}`, (context: any) => header.render ? header.render(context) : defaultRenderer(context, header)])));
