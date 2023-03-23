@@ -145,31 +145,29 @@ export default defineComponent({
     const { formatDateTime } = useFormatters();
     const { ability } = useVeoPermissions();
 
-    const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean }[]>(() => {
-      return [
-        {
-          key: 'childScopes',
-          disabled: props.object?.type !== 'scope'
-        },
-        {
-          key: 'childObjects'
-        },
-        {
-          key: 'parentScopes'
-        },
-        {
-          key: 'parentObjects',
-          disabled: props.object?.type === 'scope'
-        },
-        {
-          key: 'links'
-        },
-        {
-          key: 'risks',
-          hidden: !props.loading && props.object?.type !== 'process'
-        }
-      ];
-    });
+    const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean }[]>(() => [
+      {
+        key: 'childScopes',
+        disabled: props.object?.type !== 'scope'
+      },
+      {
+        key: 'childObjects'
+      },
+      {
+        key: 'parentScopes'
+      },
+      {
+        key: 'parentObjects',
+        disabled: props.object?.type === 'scope'
+      },
+      {
+        key: 'links'
+      },
+      {
+        key: 'risks',
+        hidden: !props.loading && (props.object?.type !== 'process' || subType.value === 'PRO_DataTransfer')
+      }
+    ]);
 
     const subType = computed(() => props.object?.domains[props.domainId]?.subType);
 
