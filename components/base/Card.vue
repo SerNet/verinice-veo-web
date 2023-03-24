@@ -25,7 +25,16 @@ const props = defineProps({
   inverted: {
     type: Boolean,
     default: false
+  },
+  padding: {
+    type: Boolean,
+    default: false
+  },
+  flexColumn: {
+    type: Boolean,
+    default: false
   }
+
 });
 
 const slots = useSlots();
@@ -38,7 +47,9 @@ const render = () => h(
     class: {
       'veo-card': true,
       'veo-card--inverted': props.inverted,
-      'veo-border': true
+      'veo-border': true,
+      'px-4 py-4': props.padding,
+      'd-flex flex-column': props.flexColumn
     },
     flat: true,
     rounded: true

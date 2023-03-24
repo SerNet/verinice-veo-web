@@ -93,7 +93,8 @@
     "objects": "Objekte",
     "objectschema": "Objektschema Editor",
     "reports": "Reports",
-    "risks": "Risikodefinitionen"
+    "risks": "Risikodefinitionen",
+    "user-data": "Benutzerdaten"
   },
 
   "error": {
