@@ -527,7 +527,7 @@ export default defineComponent({
       set: (newValue: any[]) => {
         const availableCurrentItems = isPaginatedResponse(props.items) ? props.items.items : props.items;
         const availablePreviousItems = props.modelValue;
-        emit('update:model-value', newValue.map((newValue) => availableCurrentItems.find((item) => item.id === newValue) || availablePreviousItems.find((item) => item.id === newValue)).filter((item) => !item.disabled));
+        emit('update:model-value', newValue.map((newValue) => availableCurrentItems.find((item) => item.id === newValue) || availablePreviousItems.find((item) => item.id === newValue)));
       }
     });
 
