@@ -199,7 +199,7 @@ import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 
-import { useQuery, useQuerySync, useQueries, QueryOptions } from '~~/composables/api/utils/query';
+import { useQuery, useQuerySync, useQueries } from '~~/composables/api/utils/query';
 
 enum SIDE_CONTAINERS {
   HISTORY,
@@ -504,11 +504,11 @@ export default defineComponent({
     const fetchDecisionsQueryParameters = computed(() => Object.keys(props.objectMetaData?.decisionResults || {}).map((key) => ({
         decision: key,
         domain: props.domainId,
-        endpoint: endpoints.value[inspectionData.value.type] ,
+        endpoint: endpoints.value?.[inspectionData.value.type] as string,
         object: inspectionData.value
     })));
     const fetchDecisionsQueryEnabled = computed(() => !!objectData.value?.domains?.[props.domainId] && !!endpoints.value?.[objectData.value.type]);
-    const { data: inspectionResults } = useQuery(
+    const inspectionResults  = useQueries(
       objectQueryDefinitions.queries.fetchWipDecisionEvaluation,
       fetchDecisionsQueryParameters,
       {
@@ -516,6 +516,8 @@ export default defineComponent({
           onSuccess: (data) => emit('update:object-meta-data', data)
       }
     );
+
+    inspectionResults.map((queryResult) => queryResult.data);
 
     const setInspectionData = (newData: any) => {
         inspectionData.value = newData;
