@@ -41,10 +41,10 @@ async function main() {
     const outputFile = `${outputFolder}/${fileName}_${lang}.pdf`;
     console.log(`Printing: ${url} (${lang})...`);
     await page.goto(url + `&lang=${lang}`);
-    await Promise((resolve) => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     await Promise.race([
       page.evaluate((event) => new Promise((resolve) => document.addEventListener(event, resolve, { once: true })), 'PAGEDJS_AFTER_RENDERED'),
-      Promise((resolve) => setTimeout(resolve, 30000))
+      new Promise((resolve) => setTimeout(resolve, 30000))
     ]);
     await page.pdf({ path: outputFile, format: 'A4', printBackground: true });
     console.log(`Successfully created: ${outputFile}`);
