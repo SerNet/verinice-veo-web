@@ -27,7 +27,6 @@
       enable-click
       @click="openItem"
     >
-    {{ "hallo" }}
       <template #actions="{item}">
         <div class="d-flex justify-end">
           <v-tooltip

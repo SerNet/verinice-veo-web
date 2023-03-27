@@ -44,6 +44,7 @@ interface ObjectTableHeaderAdditionalProperties {
   render?: ObjectTableRenderer;
   tooltip?: ObjectTableRenderer;
   value: keyof any | string;
+  key: string;
 }
 
 export type ObjectTableHeader = Omit<DataTableHeader, 'text'> & ObjectTableHeaderAdditionalProperties;
@@ -398,7 +399,10 @@ export default defineComponent({
     /**
      * Create slots to apply renderers
      */
-    const renderers = computed(() => Object.fromEntries(_headers.value.filter((header) => !!header.render).map((header) => [`item.${header.key}`, header.render])));
+    const renderers = computed(() => Object.fromEntries(_headers.value.filter((header) => !!header.render).map((header) => {
+      console.log(header);
+      return [`item.${header.key}`, header.render];
+    })));
 
     /**
      * Calculate which columns should be shown based on overflow
