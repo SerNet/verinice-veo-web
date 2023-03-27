@@ -26,9 +26,10 @@
       {{ t('uploadOverwrite') }}
     </BaseAlert>
     <EditorTranslationUpload
-      v-bind="$props"
+      :available-languages="availableLanguages"
       :import-function="importFunction"
-      @update:replace-translations="$emit('replace-translations', $event)"
+      :replace-translations="replaceTranslations"
+      @update:replace-translations="$emit('update:replace-translations', $event)"
     >
       <template #default>
         <v-expansion-panels
@@ -42,7 +43,7 @@
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <BaseAlert
-                :model-value="true"
+                :model-value="!!usedTranslations.length"
                 :title="t('importedTranslations')"
                 flat
                 no-close-button
@@ -67,7 +68,7 @@
                 </template>
               </BaseAlert>
               <BaseAlert
-                :model-value="true"
+                :model-value="!!duplicateTranslations.length"
                 :title="t('duplicateTranslations')"
                 flat
                 no-close-button
@@ -139,7 +140,7 @@ export default defineComponent({
       default: false
     }
   },
-  emits: ['translations-imported', 'replace-translations'],
+  emits: ['translations-imported', 'update:replace-translations'],
   setup(props, { emit }) {
     const { locales, t } = useI18n();
 
