@@ -282,6 +282,7 @@ export default {
               endpoint: variables.params?.endpoint
             }
           ]});
+          queryClient.invalidateQueries({queryKey: ['evaluation']});
         }
       }
     } as IVeoMutationDefinition<IVeoCreateRiskParameters, IVeoRisk>,
