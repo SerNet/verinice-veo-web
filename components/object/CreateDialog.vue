@@ -22,7 +22,7 @@
     x-large
     :persistent="isFormDirty"
     fixed-footer
-    inner-class="fill-height"
+    inner-class="d-flex flex-column"
     v-bind="$attrs"
     @update:model-value="$emit('update:model-value', $event)"
   >
