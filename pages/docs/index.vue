@@ -110,20 +110,22 @@ useHead(() => ({
       {
         src: '/paged.polyfill.js',
         onload: () => {
-          const _window: any = window;
-          const Paged = _window.Paged;
-          class MyHandler extends Paged.Handler {
-            afterRendered() {
-              document.dispatchEvent(new Event('PAGEDJS_AFTER_RENDERED'));
-              // We have to register the event handler here, as @click gets broken by paged.js
-              document.querySelector('#print-button')?.addEventListener('click', () => {
-                window.print();
-              });
+          setTimeout(() => {
+            const _window: any = window;
+            const Paged = _window.Paged;
+            class MyHandler extends Paged.Handler {
+              afterRendered() {
+                document.dispatchEvent(new Event('PAGEDJS_AFTER_RENDERED'));
+                // We have to register the event handler here, as @click gets broken by paged.js
+                document.querySelector('#print-button')?.addEventListener('click', () => {
+                  window.print();
+                });
 
+              }
             }
-          }
-          Paged.registerHandlers(MyHandler);
-          _window.PagedPolyfill.preview();
+            Paged.registerHandlers(MyHandler);
+            _window.PagedPolyfill.preview();
+          }, 1000);
         }
       }
     ] : []

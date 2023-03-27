@@ -105,3 +105,15 @@ a:not([class^='v-']) {
   position: absolute;
   right: 0;
 }
+
+pre, code {
+  background: $light-grey;
+}
+
+pre {
+  padding: 8px 12px;
+
+  code {
+    white-space: break-spaces;
+  }
+}
