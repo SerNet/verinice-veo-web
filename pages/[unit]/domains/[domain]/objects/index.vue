@@ -368,14 +368,15 @@ export default defineComponent({
             priority: 31,
             order: 51,
             value: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
-            render: ({ item }) =>
-              h('div', item.domains[domainId.value]?.decisionResults?.piaMandatory?.value ? $t('global.button.yes').toString() : t('global.button.no').toString()),
+            render: ({ item }) => { console.log(1, item.raw);
+              return h('div', item.domains[domainId.value]?.decisionResults?.piaMandatory?.value ? $t('global.button.yes').toString() : t('global.button.no').toString())},
             text: t('dpiaMandatory').toString(),
             sortable: false,
             width: 210
+            
           }
         ]
-        : []
+        :[]
     );
 
     return {
