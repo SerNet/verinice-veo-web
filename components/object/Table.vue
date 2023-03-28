@@ -44,6 +44,7 @@ interface ObjectTableHeaderAdditionalProperties {
   render?: ObjectTableRenderer;
   tooltip?: ObjectTableRenderer;
   value: keyof any | string;
+  key: string;
 }
 
 export type ObjectTableHeader = Omit<DataTableHeader, 'text'> & ObjectTableHeaderAdditionalProperties;
