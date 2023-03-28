@@ -190,7 +190,7 @@ import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } 
 import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
 import { getRiskAdditionalContext, getStatusAdditionalContext } from '~/components/dynamic-form/additionalContext';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry, IVeoDecisionEvaluation } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
@@ -199,7 +199,7 @@ import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 
-import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
+import { useQuery, useQuerySync, useQueries } from '~~/composables/api/utils/query';
 
 enum SIDE_CONTAINERS {
   HISTORY,
@@ -498,6 +498,29 @@ export default defineComponent({
     const debouncedFetchDecisions = debounce(fetchDecisions, 1000);
 
     watch(() => objectData.value, debouncedFetchDecisions, { deep: true });
+
+    const inspectionData = ref<any>(objectData.value);
+    const fetchDecisionsQueryParameters = computed(() => Object.keys(props.objectMetaData?.decisionResults || {}).map((key) => ({
+        decision: key,
+        domain: props.domainId,
+        endpoint: endpoints.value?.[inspectionData.value.type] as string,
+        object: inspectionData.value
+    })));
+    const fetchDecisionsQueryEnabled = computed(() => !!objectData.value?.domains?.[props.domainId] && !!endpoints.value?.[objectData.value.type]);
+    const inspectionResults  = useQueries(
+      objectQueryDefinitions.queries.fetchWipDecisionEvaluation,
+      fetchDecisionsQueryParameters,
+      {
+          enabled: fetchDecisionsQueryEnabled,
+          onSuccess: (data) => emit('update:object-meta-data', data)
+      }
+    );
+    const setInspectionData = (newData: any) => {
+        inspectionData.value = newData;
+    }
+    const debouncedSetInspectionData = debounce(setInspectionData, 1000);
+    watch(() => objectData.value, debouncedSetInspectionData, { deep: true });
+
 
     const dataIsLoading = computed<boolean>(
       () => objectSchemaIsFetching.value || props.loading || formSchemasAreFetching.value || formSchemaIsFetching.value || domainIsFetching.value || translationsAreFetching.value

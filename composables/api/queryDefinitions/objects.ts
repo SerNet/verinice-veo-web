@@ -222,6 +222,7 @@ export default {
       },
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
+          queryClient.invalidateQueries({queryKey: ['evaluation']});
           queryClient.invalidateQueries(['objects']);
           queryClient.invalidateQueries([
             'object',
@@ -282,6 +283,7 @@ export default {
               endpoint: variables.params?.endpoint
             }
           ]});
+          queryClient.invalidateQueries({queryKey: ['evaluation']});
         }
       }
     } as IVeoMutationDefinition<IVeoCreateRiskParameters, IVeoRisk>,
@@ -299,7 +301,9 @@ export default {
               endpoint: variables.params?.endpoint,
               id: variables.params?.objectId
             }
-          ]);
+          ]),
+          queryClient.invalidateQueries({queryKey: ['evaluation']});
+          ;
         }
       }
     } as IVeoMutationDefinition<IVeoDeleteRiskParameters, void>
