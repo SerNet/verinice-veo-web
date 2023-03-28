@@ -44,7 +44,7 @@ export function createUUIDUrlParam(type: string, UUID: string): string {
 }
 
 export function separateUUIDParam(param: string | undefined): IUUIDParam {
-  // if param is not defined, make it string; TODO: check if this can cause bugs
+  // if param is not defined, inizialize it with an empty tring so we can call slice on it.
   const stringParam = param || '';
   // returns id with 36 characters from the structure type-UUID
   const id = stringParam.slice(-36);

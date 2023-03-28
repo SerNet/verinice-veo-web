@@ -17,7 +17,7 @@
 -->
 <script lang="ts">
 import { PropType, VNode, VNodeArrayChildren } from 'vue';
-import { VCheckbox, VProgressLinear, VTooltip } from 'vuetify/components';
+import { VCheckbox, VCheckboxBtn, VProgressLinear, VTooltip } from 'vuetify/components';
 import { VDataTable, VDataTableServer } from 'vuetify/labs/VDataTable';
 import type { SortItem } from 'vuetify/labs/VDataTable/composables/sort.mjs';
 import type { DataTableHeader } from 'vuetify/labs/VDataTable/types.mjs';
@@ -524,12 +524,49 @@ export default defineComponent({
     // Internal model value. Used so the data table can work with strings, while returning fully qualified objects. Used as otherwise already selected items won't get shown as selected
     const internalModelValue = computed({
       get: () => props.modelValue.map((item) => item.id),
-      set: (newValue: any[]) => {
+      set: (newValue: string[]) => {
         const availableCurrentItems = isPaginatedResponse(props.items) ? props.items.items : props.items;
         const availablePreviousItems = props.modelValue;
         emit('update:model-value', newValue.map((newValue) => availableCurrentItems.find((item) => item.id === newValue) || availablePreviousItems.find((item) => item.id === newValue)));
       }
     });
+
+    // Stuff needed for select all
+    // Get all selected items on the current page
+    const allItemsOnPage = computed(() => (isPaginatedResponse(props.items) ? props.items.items : props.items.slice(localPage.value * tablePageSize.value, (localPage.value + 1) * tablePageSize.value - 1)));
+    const itemsSelectedOnPage = computed(() => allItemsOnPage.value.filter((item) => internalModelValue.value.includes(item.id)));
+    const allItemsSelected = computed(() => itemsSelectedOnPage.value.length === Math.min(tablePageSize.value, items.value.length));
+    const allItemsDeselected = computed(() => !itemsSelectedOnPage.value.length);
+    const someItemsSelected = computed(() => !!itemsSelectedOnPage.value.length && itemsSelectedOnPage.value.length <  Math.min(tablePageSize.value, items.value.length));
+    const onSelectAllClicked = () => {
+      // If all items on this page are deselected, select all
+      if(allItemsDeselected.value) {
+        internalModelValue.value = internalModelValue.value.concat(allItemsOnPage.value.map((item) => item.id));
+      // If all items on this page are selected, deselect all that items that are on this page AND aren't disabled
+      } else if (allItemsSelected.value) {
+        internalModelValue.value = internalModelValue.value.filter((selectedItemId) => {
+          const fullyQualifiedItem = allItemsOnPage.value.find((item) => item.id === selectedItemId);
+          if(!fullyQualifiedItem) {
+            return true;
+          }
+          return fullyQualifiedItem.disabled;
+        });
+      // If not all items are selected, selet all, however make sure to not enter an item twice if it has alrady been selected.
+      } else {
+        internalModelValue.value = internalModelValue.value.concat(allItemsOnPage.value.map((item) => item.id).filter((itemId) => !internalModelValue.value.includes(itemId)));
+      }
+        
+    };
+
+    // Sadly we have to create our own checkbox that looks exactly like the orignal one, as we can't hook in the onUpdate:modelValue call of the original one
+    const selectAllCheckbox = {
+      'column.data-table-select': () =>  h(VCheckboxBtn, {
+        color: 'primary',
+        indeterminate: someItemsSelected.value,
+        modelValue: allItemsSelected.value,
+        'onUpdate:modelValue': onSelectAllClicked
+      })
+    };
 
     const sharedProps = computed(() => ({
       ...attrs,
@@ -577,13 +614,15 @@ export default defineComponent({
         itemsLength: props.items.totalItemCount
       }, {
         ...slots,
-        ...renderers.value
+        ...renderers.value,
+        ...selectAllCheckbox
       })
       : h('div', [
         ...(props.loading ? [h(VProgressLinear, { indeterminate: true, color: 'primary' })] : []),
         h(VDataTable, sharedProps.value, {
           ...slots,
-          ...renderers.value
+          ...renderers.value,
+          ...selectAllCheckbox
         })
       ]);
   }
