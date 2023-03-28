@@ -25,7 +25,6 @@
     </div>
     <div class="text-body-1">
       <p>{{ t('moreModulesInfo') }}</p>
-      <p>{{ t('moreModulesEta') }}</p>
       <p>
         {{ t('furtherInformation') }} <a
           :href="locale === 'de' ? 'https://verinice.com/veo' : `https://verinice.com/${locale}/veo`"
@@ -46,14 +45,12 @@ const { t, locale } = useI18n();
     "furtherInformation": "An overview of further functions and domains can be found on the",
     "linkName": "verinice.veo webseite",
     "moreModules": "Further domains",
-    "moreModulesEta": "The current planning is to present verinice.veo as an ISMS tool with the domains BSI IT-Grundschutz according to the standards of the 200 series and ISO 27001 to the public at it-sa 2022 and to make it generally available at the beginning of 2023.",
     "moreModulesInfo": "The verinice.TEAM will successively provide further domains for verinice.veo."
   },
   "de": {
     "furtherInformation": "Eine Übersicht über weitere Funktionen und Domänen finden Sie auf der",
     "linkName": "verinice.veo Webseite",
     "moreModules": "Weitere Domänen",
-    "moreModulesEta": "Die aktuelle Planung sieht vor, verinice.veo als ISMS-Tool mit den Domänen BSI IT-Grundschutz nach den Standards der 200er-Reihe und ISO 27001 zur it-sa 2022 der Öffentlichkeit vorzustellen und Anfang 2023 allgemein verfügbar zu machen.",
     "moreModulesInfo": "Das verinice.TEAM wird sukzessive weitere Domänen für verinice.veo zur Verfügung stellen."
   }
 }
