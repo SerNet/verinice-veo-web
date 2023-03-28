@@ -496,11 +496,10 @@ export default defineComponent({
     };
 
     const debouncedFetchDecisions = debounce(fetchDecisions, 1000);
-    
+
     watch(() => objectData.value, debouncedFetchDecisions, { deep: true });
 
     const inspectionData = ref<any>(objectData.value);
-
     const fetchDecisionsQueryParameters = computed(() => Object.keys(props.objectMetaData?.decisionResults || {}).map((key) => ({
         decision: key,
         domain: props.domainId,
@@ -516,9 +515,6 @@ export default defineComponent({
           onSuccess: (data) => emit('update:object-meta-data', data)
       }
     );
-
-    inspectionResults.map((queryResult) => queryResult.data);
-
     const setInspectionData = (newData: any) => {
         inspectionData.value = newData;
     }
