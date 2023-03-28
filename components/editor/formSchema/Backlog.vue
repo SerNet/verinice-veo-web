@@ -367,7 +367,9 @@ export default defineComponent({
             '/members$',
             '/designator$',
             '(\\w+)/properties/domains$',
-            '_self'
+            '_self',
+            '/risks$',
+            '/decisionResults$'
           ]
         },
         Mode.VEO

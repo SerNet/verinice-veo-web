@@ -16,7 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { mdiAlphabeticalVariant, mdiCancel, mdiCheckboxOutline, mdiDecimal, mdiFileTree, mdiHelpBox, mdiLabelOutline, mdiNumeric, mdiViewList } from '@mdi/js';
-import { IVeoFormSchemaItem, IVeoFormSchemaItemOptions, IVeoFormSchemaItemRule } from './VeoTypes';
+import { JSONSchema7 } from 'json-schema';
+
+import { IVeoFormSchemaItem, IVeoFormSchemaItemOptions } from './VeoTypes';
+import { CONTROL_DEFINITION as AUTOCOMPLETE_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/Autocomplete';
+import { CONTROL_DEFINITION as CHECKBOX_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/Checkbox';
+import { CONTROL_DEFINITION as INPUT_DATE_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/InputDate';
+import { CONTROL_DEFINITION as INPUT_DATE_TIME_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/InputDateTime';
+import { CONTROL_DEFINITION as INPUT_NUMBER_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/InputNumber';
+import { CONTROL_DEFINITION as INPUT_TEXT_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/InputText';
+import { CONTROL_DEFINITION as INPUT_TEXT_MULTILINE_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/InputTextMultiline';
+import { CONTROL_DEFINITION as INPUT_URI_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/InputUri';
+import { CONTROL_DEFINITION as LINKS_FIELD_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/LinksField';
+import { CONTROL_DEFINITION as MARKDOWN_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/MarkdownEditor';
+import { CONTROL_DEFINITION as RADIO_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/Radio';
+import { CONTROL_DEFINITION as SELECT_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/Select';
 
 // ===============================
 // File containing multiple helper classes for the object and form schema editors
@@ -51,8 +65,8 @@ export const INPUT_TYPES = {
 /**
  * All information a form element carries in the form schema editor
  */
-export interface IInputElementInfo {
-  schema: any;
+export interface IControlElementContext {
+  schema: JSONSchema7;
   options: IVeoFormSchemaItemOptions;
   elements?: IVeoFormSchemaItem[];
 }
@@ -60,30 +74,29 @@ export interface IInputElementInfo {
 /**
  * Object containing information for all veo forms control elements
  */
-export interface IInputElement {
-  name: string;
-  type: string[];
-  options?: {
-    direction?: string;
-    format?: string;
-  };
-  weight: (weights: IInputElementInfo) => number;
+export interface IControlElement {
+  alternatives: string[]; // Alternatives are only checked for "parent" controls, meaning controls that have no options object (inputText, select, ...)
+  applicableAlternative?: (elementToReplace: IControlElementContext) => boolean;
+  code: string;
+  description: Record<string, string>;
+  name: Record<string, string>;
+  options?: IVeoFormSchemaItemOptions;
+  type: string[];  
+  weight: (weights: IControlElementContext) => number;
 }
+
+export type IControlElementType = Pick<IControlElement, 'code' | 'name' | 'description'>;
 
 /**
  * Const array defining all possible control types and when which input type shall be used
  */
-const INPUT_ELEMENTS = [
+export const INPUT_ELEMENTS = [
   {
-    name: 'ArrayField',
-    type: ['array'],
-    options: { direction: 'vertical' },
-    weight: (weights) => calculateConditionsScore([weights.schema.type === 'array', typeof weights.schema.elements !== 'undefined'])
-  },
-  {
-    name: 'Autocomplete',
-    type: ['undefined', 'enum', 'array'],
+    code: 'Autocomplete',
+    description: AUTOCOMPLETE_CONTROL_DEFINITION.description,
+    name: AUTOCOMPLETE_CONTROL_DEFINITION.name,
     options: { format: 'autocomplete' },
+    type: ['undefined', 'enum', 'array'],
     weight: (weights) =>
       calculateConditionsScore([
         typeof weights.schema.type === 'undefined' ||
@@ -97,45 +110,62 @@ const INPUT_ELEMENTS = [
       ])
   },
   {
-    name: 'Checkbox',
+    code: 'Checkbox',
+    description: CHECKBOX_CONTROL_DEFINITION.description,
+    name: CHECKBOX_CONTROL_DEFINITION.name,
     type: ['boolean'],
     weight: (weights) => calculateConditionsScore([weights.schema.type === 'boolean'])
   },
   {
-    name: 'InputDate',
+    code: 'InputDate',
+    description: INPUT_DATE_CONTROL_DEFINITION.description,
+    name: INPUT_DATE_CONTROL_DEFINITION.name,
     type: ['string'],
     weight: (weights) => calculateConditionsScore([weights.schema.type === 'string', weights.schema.format === 'date'])
   },
   {
-    name: 'InputDateTime',
+    code: 'InputDateTime',
+    description: INPUT_DATE_TIME_CONTROL_DEFINITION.description,
+    name: INPUT_DATE_TIME_CONTROL_DEFINITION.name,
     type: ['string'],
     weight: (weights) => calculateConditionsScore([weights.schema.type === 'string', weights.schema.format === 'date-time'])
   },
   {
-    name: 'InputNumber',
+    code: 'InputNumber',
+    description: INPUT_NUMBER_CONTROL_DEFINITION.description,
+    name: INPUT_NUMBER_CONTROL_DEFINITION.name,
     type: ['number', 'integer'],
     weight: (weights) => calculateConditionsScore([weights.schema.type === 'number' || weights.schema.type === 'integer'])
   },
   {
-    name: 'InputText',
+    alternatives: ['InputTextMultiline', 'MarkdownEditor'],
+    code: 'InputText',
+    description: INPUT_TEXT_CONTROL_DEFINITION.description,
+    name: INPUT_TEXT_CONTROL_DEFINITION.name,
     type: ['string'],
     weight: (weights) => calculateConditionsScore([weights.schema.type === 'string'], Number.EPSILON)
   },
   {
-    name: 'InputTextMultiline',
-    type: ['string'],
+    code: 'InputTextMultiline',
+    description: INPUT_TEXT_MULTILINE_CONTROL_DEFINITION.description,
+    name: INPUT_TEXT_MULTILINE_CONTROL_DEFINITION.name,
     options: { format: 'multiline' },
+    type: ['string'],
     weight: (weights) => calculateConditionsScore([weights.schema.type === 'string', typeof weights.options !== 'undefined' && weights.options.format === 'multiline'])
   },
   {
-    name: 'InputUri',
+    code: 'InputUri',
+    description: INPUT_URI_CONTROL_DEFINITION.description,
+    name: INPUT_URI_CONTROL_DEFINITION.name,
     type: ['string'],
     weight: (weights) => calculateConditionsScore([weights.schema.type === 'string', weights.schema.format === 'uri'])
   },
   {
-    name: 'LinksField',
-    type: ['array'],
+    code: 'LinksField',
+    description: LINKS_FIELD_CONTROL_DEFINITION.description,
+    name: LINKS_FIELD_CONTROL_DEFINITION.name,
     options: { format: 'group', direction: 'vertical' },
+    type: ['array'],
     weight: (weights) => {
       const schemaItemsProperties =
         weights.schema &&
@@ -149,18 +179,25 @@ const INPUT_ELEMENTS = [
     }
   },
   {
-    name: 'MarkdownEditor',
-    type: ['string'],
+    code: 'MarkdownEditor',
+    description: MARKDOWN_CONTROL_DEFINITION.description,
+    name: MARKDOWN_CONTROL_DEFINITION.name,
     options: { format: 'markdown' },
+    type: ['string'],
     weight: (weights) => calculateConditionsScore([weights.schema.type === 'string', typeof weights.options !== 'undefined' && weights.options.format === 'markdown'])
   },
   {
-    name: 'Radio',
-    type: ['undefined', 'enum', 'array'],
+    applicableAlternative: (currentType) => {
+      return !currentType.schema.type || currentType.schema.type !== 'array';
+    },
+    code: 'Radio',
+    description: RADIO_CONTROL_DEFINITION.description,
+    name: RADIO_CONTROL_DEFINITION.name,
     options: {
       format: 'radio',
       direction: 'vertical'
     },
+    type: ['undefined', 'enum', 'array'],
     weight: (weights) =>
       calculateConditionsScore([
         typeof weights.schema.type === 'undefined' || weights.schema.type === 'string' || weights.schema.type === 'integer' || weights.schema.type === 'number',
@@ -169,7 +206,10 @@ const INPUT_ELEMENTS = [
       ])
   },
   {
-    name: 'Select',
+    alternatives: ['Autocomplete', 'Radio'],
+    code: 'Select',
+    description: SELECT_CONTROL_DEFINITION.description,
+    name: SELECT_CONTROL_DEFINITION.name,
     type: ['undefined', 'enum', 'array'],
     weight: (weights) =>
       calculateConditionsScore([
@@ -181,19 +221,8 @@ const INPUT_ELEMENTS = [
         typeof weights.schema.enum !== 'undefined' ||
           (weights.schema.items instanceof Object && !Array.isArray(weights.schema.items) && typeof weights.schema.items.enum !== 'undefined')
       ])
-  },
-  {
-    name: 'Tags',
-    type: ['array'],
-    options: { format: 'tags' },
-    weight: (weights) =>
-      calculateConditionsScore([
-        weights.schema.type === 'array',
-        !!weights.schema.items,
-        weights.schema.items instanceof Object && !Array.isArray(weights.schema.items) && typeof weights.schema.items.anyOf !== 'undefined'
-      ])
   }
-] as IInputElement[];
+] as IControlElement[];
 
 /**
  * Calculates the score a specific control type reaches against certain conditions.
@@ -213,23 +242,10 @@ function isEveryConditionTrue(conditions: boolean[]): boolean {
 /**
  * Returns an array containing all control types with the one fitting best at the front and the one fitting worst at the end of the array.
  */
-export function eligibleInputElements(type: string, weights: any) {
+export function eligibleInputElements(type: string, elementContext: IControlElementContext) {
   return INPUT_ELEMENTS.filter((element) => element.type.includes(type))
-    .sort((a: IInputElement, b: IInputElement) => b.weight(weights) - a.weight(weights))
-    .filter((element) => element.weight(weights) > 0);
-}
-
-interface IControlTypeAlternative {
-  format: string;
-  applicable?: (conditions: any) => boolean;
-  direction?: string;
-}
-
-export interface IControlType {
-  name: string;
-  format?: string;
-  direction?: string;
-  rule?: IVeoFormSchemaItemRule;
+    .sort((a: IControlElement, b: IControlElement) => b.weight(elementContext) - a.weight(elementContext))
+    .filter((element) => element.weight(elementContext) > 0);
 }
 
 /**
@@ -237,71 +253,18 @@ export interface IControlType {
  *
  * @param control The control to search the alternatives to.
  */
-export function controlTypeAlternatives(control: string, controlDetails: any): IControlType[] {
-  const alternatives: Record<string, { format?: string; alternatives: Record<string, IControlTypeAlternative> }> = {
-    InputText: {
-      alternatives: {
-        InputTextMultiline: { format: 'multiline' },
-        MarkdownEditor: { format: 'markdown' }
-      }
-    },
-    Select: {
-      alternatives: {
-        Radio: {
-          format: 'radio',
-          direction: 'horizontal',
-          applicable: (currentType) => {
-            return !currentType.schema.type || currentType.schema.type !== 'array';
-          }
-        },
-        Autocomplete: { format: 'autocomplete' }
-      }
-    },
-    InputNumber: {
-      alternatives: {}
-    },
-    InputUri: {
-      alternatives: {}
-    },
-    InputDate: {
-      alternatives: {}
-    },
-    InputDateTime: {
-      alternatives: {}
-    },
-    Checkbox: {
-      alternatives: {}
-    },
-    Tags: {
-      alternatives: {}
-    },
-    ArrayField: {
-      alternatives: {}
-    },
-    LinksField: {
-      alternatives: {}
-    }
-  };
-
-  const items: IControlType[] = [];
-  // TODO: check if there is another solution than to loop over all keys
-  for (const parent of Object.keys(alternatives)) {
-    if (parent === control || Object.keys(alternatives[parent].alternatives).includes(control)) {
-      items.push(
-        ...Object.keys(alternatives[parent].alternatives)
-          .filter((child) => {
-            const filterFunction = alternatives[parent].alternatives[child].applicable;
-            return filterFunction === undefined || filterFunction(controlDetails);
-          })
-          .map((child) => {
-            const item = { name: child, ...alternatives[parent].alternatives[child] };
-            delete item.applicable;
-            return item;
-          })
-      );
-      items.unshift({ name: parent, format: undefined });
-    }
-  }
-
-  return items;
+export function controlTypeAlternatives(controlType: string, controlDetails: IControlElementContext): IControlElementType[] {
+  const currentElement = INPUT_ELEMENTS.find((element) => element.code === controlType);
+  const parentElement = INPUT_ELEMENTS.find((element) => element.alternatives?.find((alternative) => alternative === controlType));
+  
+  const availableElements = INPUT_ELEMENTS
+    .filter((element) => element.code === controlType || currentElement?.alternatives?.includes(element.code) || parentElement?.alternatives?.includes(element.code))
+    .filter((element) => element.applicableAlternative === undefined || element.applicableAlternative(controlDetails))
+    .map((element) => ({
+      code: element.code,
+      description: element.description,
+      name: element.name
+    }));
+  availableElements.unshift(...(parentElement ? [{ code: parentElement.code, description: parentElement.description, name: parentElement.name }] : []));
+  return availableElements;
 }

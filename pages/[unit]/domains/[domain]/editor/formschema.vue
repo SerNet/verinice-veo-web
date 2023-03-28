@@ -171,6 +171,7 @@
         </template>
         <template #default>
           <EditorFormSchemaBacklog
+            v-if="objectSchema && formSchema"
             :object-schema="objectSchema"
             :form-schema="formSchema"
             :search-query="searchQuery"
@@ -188,15 +189,15 @@
           #default
         >
           <div class="fill-height fill-width d-flex">
-            <EditorFormSchemaGenerator
+            <EditorFormSchemaPlayground
+              v-if="formSchema"
               v-model="formSchema.content"
-              :schema="objectSchema"
-              :general-translation="translation && translation.lang[language]"
-              :custom-translations="formSchema.translation"
-              :language="language"
-              @delete="onDelete"
-              @update="onUpdate"
-              @update-custom-translation="setFormTranslation"
+              @set-translations="updateTranslations"
+            />
+            <v-progress-circular
+              v-else
+              size="64"
+              indeterminate
             />
           </div>
         </template>
@@ -238,6 +239,7 @@
           #default
         >
           <DynamicFormEntrypoint
+            v-if="formSchema && objectSchema"
             v-model="objectData"
             :object-schema="objectSchema"
             :form-schema="formSchema.content"
@@ -282,7 +284,6 @@
       <EditorErrorDialog
         v-model="errorDialogVisible"
         :validation="schemaIsValid"
-        @fix="onFixRequest"
       />
       <EditorFormSchemaCodeEditorDialog
         v-model="codeEditorVisible"
@@ -304,7 +305,7 @@
         @update-name="setFormName"
       />
       <EditorFormSchemaDetailsDialog
-        v-if="formSchema"
+        v-if="formSchema && objectSchema"
         v-model="detailDialogVisible"
         :object-schema="objectSchema"
         :form-schema="formSchema.name[language]"
@@ -320,30 +321,32 @@
 </template>
 
 <script lang="ts">
+export const PROVIDE_KEYS = {
+  language: 'language',
+  objectSchema: 'mainObjectSchema',
+  objectSchemaTranslations: 'os_translations',
+  formSchemaTranslations: 'fs_translations'
+};
+
 import { Ref } from 'vue';
-import { JsonPointer } from 'json-ptr';
 import { mdiAlertCircleOutline, mdiCodeTags, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
 import { useDisplay } from 'vuetify';
 
-import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
+import { validate } from '~/lib/FormSchemaHelper';
 import {
-  IVeoObjectSchema,
-  IVeoFormSchemaItemDeleteEvent,
-  IVeoFormSchemaItemUpdateEvent,
-  IVeoFormSchemaTranslationCollection
-} from '~/types/VeoTypes';
+  IVeoObjectSchema, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
 import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import { isArray } from 'lodash';
 import { IVeoTranslations } from '~~/composables/api/queryDefinitions/translations';
 import { useMutation } from '~~/composables/api/utils/mutation';
 import { useQuery } from '~~/composables/api/utils/query';
+import { PENDING_TRANSLATIONS } from '~~/components/editor/formSchema/playground/EditElementDialog.vue';
 
 export default defineComponent({
   setup() {
@@ -392,6 +395,7 @@ export default defineComponent({
     const translation: Ref<IVeoTranslations | undefined> = ref(undefined);
     const objectData = ref({});
     const language = ref(locale.value);
+    provide(PROVIDE_KEYS.language, language);
 
     watch(
       () => locale.value,
@@ -466,6 +470,9 @@ export default defineComponent({
     }
 
     function updateSchemaName(value: string) {
+      if(!formSchema.value) {
+        return;
+      }
       formSchema.value.name[language.value] = value;
     }
 
@@ -481,6 +488,25 @@ export default defineComponent({
       }
     }
 
+    const updateTranslations = (translations: PENDING_TRANSLATIONS) => {
+      if(!formSchema.value) {
+        return;
+      }
+      for(const language of Object.keys(translations)) {
+        if(!formSchema.value.translation[language]) {
+          formSchema.value.translation[language] = {};
+        }
+        for(const translationKey of Object.keys(translations[language])) {
+          const value = translations[language][translationKey];
+          if(value) {
+            formSchema.value.translation[language][translationKey] = value;
+          } else {
+            delete formSchema.value.translation[language][translationKey];
+          }
+        }
+      }
+    };
+
     const invalidSchemaDownloadDialogVisible = ref(false);
     function downloadSchema(forceDownload = false) {
       if (schemaIsValid.value.valid === false && !forceDownload) {
@@ -490,36 +516,6 @@ export default defineComponent({
         const data = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`;
         downloadButton.value.href = data;
         downloadButton.value.download = `fs_${formSchema.value?.name[language.value] || 'missing_translation'}.json`;
-      }
-    }
-
-    function onDelete(event: IVeoFormSchemaItemDeleteEvent): void {
-      if (formSchema.value) {
-        const pointer = event.formSchemaPointer as string;
-        // Delete custom translation keys for deleted elemented and nested elements
-        const elementFormSchema = JsonPointer.get(formSchema.value.content, pointer) as IVeoFormSchemaItem;
-        deleteElementCustomTranslation(elementFormSchema, formSchema.value.translation, setFormTranslation);
-        const vjpPointer = pointer.replace('#', '');
-        // Not allowed to make changes on the root object
-        if (event.formSchemaPointer !== '#') {
-          const parts = vjpPointer.split('/');
-          const lastPart = parts.pop();
-          const partToModify = JsonPointer.get(formSchema.value.content, parts.join('/'));
-          if(isArray(partToModify)) {
-            partToModify.splice(parseInt(lastPart), 1);
-          } else {
-            delete partToModify[lastPart];
-          }
-          JsonPointer.set(formSchema.value.content, parts.join('/'), partToModify);
-        } else {
-          delete formSchema.value.content;
-        }
-      }
-    }
-
-    function onUpdate(event: IVeoFormSchemaItemUpdateEvent): void {
-      if (formSchema.value?.content) {
-        JsonPointer.set(formSchema.value.content, (event.formSchemaPointer as string).replace('#', ''), event.data);
       }
     }
 
@@ -550,12 +546,6 @@ export default defineComponent({
     function setFormName(event: IVeoFormSchemaMeta['name']) {
       if (formSchema.value) {
         formSchema.value.name = event;
-      }
-    }
-
-    function onFixRequest(code: string, params?: Record<string, any>) {
-      if (code === 'E_PROPERTY_MISSING' && params) {
-        onDelete(params as any);
       }
     }
 
@@ -604,6 +594,12 @@ export default defineComponent({
       return toReturn;
     });
 
+    const objectSchemaTranslations = computed(() => translation.value?.lang);
+    const formSchemaTranslations = computed(() => formSchema.value?.translation);
+
+    provide(PROVIDE_KEYS.objectSchemaTranslations, objectSchemaTranslations);
+    provide(PROVIDE_KEYS.formSchemaTranslations, formSchemaTranslations);
+
     return {
       ability,
       additionalContext,
@@ -627,8 +623,6 @@ export default defineComponent({
       updateSubType,
       updateSorting,
       downloadSchema,
-      onDelete,
-      onUpdate,
       updateControlItems,
       invalidSchemaDownloadDialogVisible,
       downloadButton,
@@ -638,10 +632,10 @@ export default defineComponent({
       availableLanguages,
       setFormTranslation,
       setFormName,
-      onFixRequest,
       PageHeaderAlignment,
       save,
       translations,
+      updateTranslations,
       onWizardFinished,
 
       mdiAlertCircleOutline,
