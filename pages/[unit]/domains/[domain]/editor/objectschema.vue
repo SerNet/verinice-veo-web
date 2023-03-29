@@ -402,6 +402,7 @@ export default defineComponent({
     };
 
     const updateSchemaName = (name: string) => {
+      objectSchemaHelper.value?.changeTranslationKey(objectSchemaHelper.value.getTitle(), name);
       objectSchemaHelper.value?.setTitle(name);
       code.value = JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2);
     };
