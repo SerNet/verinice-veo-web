@@ -185,10 +185,10 @@
 import { PropType } from 'vue';
 
 import { upperFirst, merge, debounce } from 'lodash';
-import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } from '@mdi/js';
+import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiKickstarter, mdiTableOfContents } from '@mdi/js';
 
 import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
-import { getRiskAdditionalContext, getStatusAdditionalContext } from '~/components/dynamic-form/additionalContext';
+import { getRiskAdditionalContext, getStatusAdditionalContext, getSubTypeTranslation } from '~/components/dynamic-form/additionalContext';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import { IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
@@ -297,13 +297,14 @@ export default defineComponent({
       enabled: fetchDomainQueryEnabled
     });
 
-    const localAdditionalContext = computed<IVeoFormsAdditionalContext>(() => ({
+    const localAdditionalContext = computed<IVeoFormsAdditionalContext>(() => {{console.log(1,objectSchema.value), console.log(2,props.modelValue)} return {
       ...props.additionalContext,
       ...(objectSchema.value && domain.value ? getRiskAdditionalContext(objectSchema.value.title, domain.value, locale.value) : {}),
       ...(props.modelValue && objectSchema.value && translations.value
         ? getStatusAdditionalContext(props.modelValue, objectSchema.value, mergedTranslations.value[locale.value], props.domainId)
-        : {})
-    }));
+        : {}),
+      ...(objectSchema.value && props.modelValue ? getSubTypeTranslation(props.modelValue, objectSchema.value, props.domainId, locale.value, formSchemas.value || []):{})
+    }});
 
     const selectedDisplayOption = ref('objectschema');
 
