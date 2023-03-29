@@ -540,9 +540,9 @@ export default defineComponent({
     const allItemsDeselected = computed(() => !itemsSelectedOnPage.value.length);
     const someItemsSelected = computed(() => !!itemsSelectedOnPage.value.length && itemsSelectedOnPage.value.length <  Math.min(tablePageSize.value, items.value.length));
     const onSelectAllClicked = () => {
-      // If all items on this page are deselected, select all
+      // If all items on this page are deselected, select all items that are not disabled
       if(allItemsDeselected.value) {
-        internalModelValue.value = internalModelValue.value.concat(allItemsOnPage.value.map((item) => item.id));
+        internalModelValue.value = internalModelValue.value.concat(allItemsOnPage.value.filter((item) => !item.disabled).map((item) => item.id));
       // If all items on this page are selected, deselect all that items that are on this page AND aren't disabled
       } else if (allItemsSelected.value) {
         internalModelValue.value = internalModelValue.value.filter((selectedItemId) => {
@@ -554,7 +554,7 @@ export default defineComponent({
         });
       // If not all items are selected, selet all, however make sure to not enter an item twice if it has alrady been selected.
       } else {
-        internalModelValue.value = internalModelValue.value.concat(allItemsOnPage.value.map((item) => item.id).filter((itemId) => !internalModelValue.value.includes(itemId)));
+        internalModelValue.value = internalModelValue.value.concat(allItemsOnPage.value.filter((item) => !item.disabled).map((item) => item.id).filter((itemId) => !internalModelValue.value.includes(itemId)));
       }
         
     };
