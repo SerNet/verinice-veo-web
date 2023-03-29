@@ -171,7 +171,7 @@ watch(() => _formSchemaElementMap, (newValue: any) => {
   formSchemaElementMap.value = unref(newValue);
 }, { deep: true, immediate: true });
 const availableScopes = computed(() => [...formSchemaElementMap.value]
-  .filter(([_uuid, element]) => element.scope && element.type !== 'LinksField' && !element.scope.includes(props.formSchemaElement.scope || ''))
+  .filter(([_uuid, element]) => element.scope && element.type !== 'LinksField' && (!props.formSchemaElement.scope || !element.scope.includes(props.formSchemaElement.scope)))
   .map(([uuid, _element]) => uuid)
 );
 
