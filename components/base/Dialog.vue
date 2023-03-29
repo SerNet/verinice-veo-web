@@ -29,45 +29,39 @@
       :color="xLarge ? 'white' : undefined"
       tile
     >
-      <div class="veo-dialog__inner--border-bottom">
-        <v-card-title class="d-flex align-center pt-0 pb-0">
-          <LayoutAppLogoMobile
-            v-if="fullscreen"
-            style="height: 36px"
-          />
-          <span>{{ headline }}</span>
-          <v-spacer />
-          <v-btn
-            :disabled="closeDisabled"
-            :icon="mdiClose"
-            flat
-            class="close-button"
-            @click="closeDialog()"
-          />
-        </v-card-title>
-      </div>
+      <v-card-title class="d-flex align-center pt-0 pb-0 veo-dialog__inner--border-bottom">
+        <LayoutAppLogoMobile
+          v-if="fullscreen"
+          style="height: 36px"
+        />
+        <span>{{ headline }}</span>
+        <v-spacer />
+        <v-btn
+          :disabled="closeDisabled"
+          :icon="mdiClose"
+          flat
+          class="close-button"
+          @click="closeDialog()"
+        />
+      </v-card-title>
       <v-card-text
         class="pa-4 overflow-x-hidden overflow-y-auto flex-grow-1"
+        :class="innerClass"
         style="position: relative;"
       >
-        <div :class="innerClass">
-          <slot />
-        </div>
+        <slot />
         <v-card-actions
           v-if="!!$slots['dialog-options'] && !fixedFooter"
-          class="pt-3 pb-0 px-0"
+          class="pt-3 pb-0 px-0 d-flex"
         >
           <slot name="dialog-options" />
         </v-card-actions>
       </v-card-text>
       <v-card-actions
         v-if="!!$slots['dialog-options'] && fixedFooter"
-        class="veo-dialog__actions--border-top"
-        :class="{ 'pb-3 px-4 d-block pt-0': true }"
+        class="veo-dialog__actions--border-top px-4 py-3 d-flex"
       >
-        <div class="d-flex pt-3">
-          <slot name="dialog-options" />
-        </div>
+        <slot name="dialog-options" />
       </v-card-actions>
     </v-card>
   </v-dialog>
