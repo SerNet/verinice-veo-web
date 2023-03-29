@@ -17,7 +17,7 @@
 -->
 <script lang="ts">
 import { PropType, VNode, VNodeArrayChildren } from 'vue';
-import { VProgressLinear, VTooltip } from 'vuetify/components';
+import { VCheckbox, VCheckboxBtn, VProgressLinear, VTooltip } from 'vuetify/components';
 import { VDataTable, VDataTableServer } from 'vuetify/labs/VDataTable';
 import type { SortItem } from 'vuetify/labs/VDataTable/composables/sort.mjs';
 import type { DataTableHeader } from 'vuetify/labs/VDataTable/types.mjs';
@@ -33,7 +33,7 @@ import { useQuery } from '~~/composables/api/utils/query';
 
 export type ObjectTableFormatter = (value: any) => string;
 export type ObjectTableTooltip = (value: any) => string;
-export type ObjectTableRenderer = (props: { item: any; value: any }) => VNode | VNode[] | string | (() => VNode | VNode[] | string);
+export type ObjectTableRenderer = (props: { item: any; value: any }, header?: ObjectTableHeader) => VNode | VNode[] | string | (() => VNode | VNode[] | string);
 
 interface ObjectTableHeaderAdditionalProperties {
   priority: number;
@@ -54,7 +54,7 @@ export type ExtractProperty<V extends ReadonlyArray<Record<string, any>>, K exte
 /**
  * This component is designed to reduce code duplications for tables that use the same or similar columns across the application.
  * Furthermore it enhances the default vuetify table by only displaying the columns that fit the available space.
- * Can be used for paginated data (that uses the IVeoPaginatedReponse interface) and default arrays
+ * Can be used for paginated data (that uses the IVeoPaginatedResponse interface) and default arrays
  */
 export default defineComponent({
   props: {
@@ -62,7 +62,7 @@ export default defineComponent({
      * Items can be IVeoPaginatedResponse or an array.
      */
     items: {
-      type: [Object, Array] as PropType<IVeoPaginatedResponse<any> | any[]>,
+      type: [Object, Array] as PropType<IVeoPaginatedResponse<any[]> | any[]>,
       default: () => []
     },
     /**
@@ -159,7 +159,8 @@ export default defineComponent({
     /**
      * Distinguish between IVeoPaginatedResponse and basic arrays
      */
-    const isPaginatedResponse = computed(() => 'items' in props.items && 'page' in props.items && 'pageCount' in props.items && 'totalItemCount' in props.items);
+    const isPaginatedResponse = <T = any[]>(items: any | T): items is IVeoPaginatedResponse<T> =>
+      'items' in items && 'page' in items && 'pageCount' in items && 'totalItemCount' in items;
     /**
      * Format date via i18n
      */
@@ -229,10 +230,43 @@ export default defineComponent({
         }
       );
 
+    const toggleSelection = (item: any) => {
+      if(item.raw.disabled) {
+        return;
+      }
+      const newModelValue: any[] = cloneDeep(internalModelValue.value);
+      const existingIndex = newModelValue.findIndex((existingId) => existingId === item.value);
+      if(existingIndex !== -1) {
+        newModelValue.splice(existingIndex, 1);
+      } else {
+        newModelValue.push(item.value);
+      }
+      internalModelValue.value = newModelValue;
+    };
+
     /**
      * Headers that are used by multiple tables, thus it makes sense to define them in one place
      */
     const defaultHeaders: { [key: string]: ObjectTableHeader } = {
+      'data-table-select': {
+        value: 'data-table-select',
+        key: 'data-table-select',
+        sortable: false,
+        width: 50,
+        priority: 100,
+        order: 0,
+        text: '',
+        render: (context) => {
+          const isSelected = internalModelValue.value.includes(context.item.value);
+          return h(VCheckbox, {
+            modelValue: isSelected,
+            color: isSelected ? 'primary' : undefined,
+            disabled: context.item.raw.disabled,
+            hideDetails: true,
+            'onUpdate:model-value': () => toggleSelection(context.item)
+          });
+        }
+      },
       icon: {
         value: 'icon',
         key: 'icon',
@@ -329,7 +363,7 @@ export default defineComponent({
     /**
      * Default cell classes
      */
-    const defaultCellClasses = ['flex-nowrap', 'text-no-wrap'];
+    const defaultCellClasses = ['flex-nowrap', 'text-no-wrap', 'cursor-pointer'];
     /**
      * Classes to apply when truncate is set
      */
@@ -364,7 +398,7 @@ export default defineComponent({
     const _headers = computed<ObjectTableHeader[]>(() =>
       [
         ...Object.entries(defaultHeaders)
-          .filter(([key, _header]) => props.defaultHeaders.includes(key))
+          .filter(([key, _header]) => props.defaultHeaders.includes(key) || key === 'data-table-select' && 'show-select' in attrs)
           .map(([_key, header]) => header),
         ...props.additionalHeaders
       ]
@@ -394,12 +428,21 @@ export default defineComponent({
       return { ...item, ...mappedValues };
     };
 
-    const items = computed(() => (isPaginatedResponse.value ? (props.items as IVeoPaginatedResponse<any>).items : props.items).map(mapItem));
+    const items = computed(() => (isPaginatedResponse(props.items) ? props.items.items : props.items).map(mapItem));
 
     /**
-     * Create slots to apply renderers
+     * Create slots to apply renderers. If none exists, use a default one in order to display disabled table entries
      */
-    const renderers = computed(() => Object.fromEntries(_headers.value.filter((header) => !!header.render).map((header) => [`item.${header.key}`, header.render])));
+    const defaultRenderer: ObjectTableRenderer = (context: any, header) => {
+      const column = context.columns.find((column: any) => column.key === header?.key);
+      return h('div', {
+        class: [...column.cellClass, ...column.class, ...(context.item.raw.disabled) ? ['v-list-item--disabled'] : []],
+        style: {
+          width: `${column.width}px`
+        }
+      }, context.item.columns[header?.key]);
+    };
+    const renderers = computed(() => Object.fromEntries(_headers.value.map((header) => [`item.${header.key}`, (context: any) => header.render ? header.render(context) : defaultRenderer(context, header)])));
 
     /**
      * Calculate which columns should be shown based on overflow
@@ -479,22 +522,52 @@ export default defineComponent({
       }
     });
 
-    // Internal model value (to only use id's internally but return full objects)
+    // Internal model value. Used so the data table can work with strings, while returning fully qualified objects. Used as otherwise already selected items won't get shown as selected
     const internalModelValue = computed({
       get: () => props.modelValue.map((item) => item.id),
-      set: (newValue: any[]) => {
-        if(newValue.length > props.modelValue.length) {
-          const addedId = newValue.find((id) => !props.modelValue.find((item) => item.id === id));
-          const _items = isPaginatedResponse.value ? (props.items as IVeoPaginatedResponse<any[]>).items : props.items as any[];
-          emit('update:model-value', [ ...props.modelValue, _items.find((item) => item.id === addedId) ]);
-        } else {
-          const missingId = props.modelValue.findIndex((item) => !newValue.includes(item.id));
-          const itemsToModify =  cloneDeep(props.modelValue);
-          itemsToModify.splice(missingId, 1);
-          emit('update:model-value', itemsToModify);
-        }
+      set: (newValue: string[]) => {
+        const availableCurrentItems = isPaginatedResponse(props.items) ? props.items.items : props.items;
+        const availablePreviousItems = props.modelValue;
+        emit('update:model-value', newValue.map((newValue) => availableCurrentItems.find((item) => item.id === newValue) || availablePreviousItems.find((item) => item.id === newValue)));
       }
     });
+
+    // Stuff needed for select all
+    // Get all selected items on the current page
+    const allItemsOnPage = computed(() => (isPaginatedResponse(props.items) ? props.items.items : props.items.slice(localPage.value * tablePageSize.value, (localPage.value + 1) * tablePageSize.value - 1)));
+    const itemsSelectedOnPage = computed(() => allItemsOnPage.value.filter((item) => internalModelValue.value.includes(item.id)));
+    const allItemsSelected = computed(() => itemsSelectedOnPage.value.length === Math.min(tablePageSize.value, items.value.length));
+    const allItemsDeselected = computed(() => !itemsSelectedOnPage.value.length);
+    const someItemsSelected = computed(() => !!itemsSelectedOnPage.value.length && itemsSelectedOnPage.value.length <  Math.min(tablePageSize.value, items.value.length));
+    const onSelectAllClicked = () => {
+      // If all items on this page are deselected, select all
+      if(allItemsDeselected.value) {
+        internalModelValue.value = internalModelValue.value.concat(allItemsOnPage.value.map((item) => item.id));
+      // If all items on this page are selected, deselect all that items that are on this page AND aren't disabled
+      } else if (allItemsSelected.value) {
+        internalModelValue.value = internalModelValue.value.filter((selectedItemId) => {
+          const fullyQualifiedItem = allItemsOnPage.value.find((item) => item.id === selectedItemId);
+          if(!fullyQualifiedItem) {
+            return true;
+          }
+          return fullyQualifiedItem.disabled;
+        });
+      // If not all items are selected, selet all, however make sure to not enter an item twice if it has alrady been selected.
+      } else {
+        internalModelValue.value = internalModelValue.value.concat(allItemsOnPage.value.map((item) => item.id).filter((itemId) => !internalModelValue.value.includes(itemId)));
+      }
+        
+    };
+
+    // Sadly we have to create our own checkbox that looks exactly like the orignal one, as we can't hook in the onUpdate:modelValue call of the original one
+    const selectAllCheckbox = {
+      'column.data-table-select': () =>  h(VCheckboxBtn, {
+        color: 'primary',
+        indeterminate: someItemsSelected.value,
+        modelValue: allItemsSelected.value,
+        'onUpdate:modelValue': onSelectAllClicked
+      })
+    };
 
     const sharedProps = computed(() => ({
       ...attrs,
@@ -509,10 +582,9 @@ export default defineComponent({
       sortBy: localSortBy.value,
       ...(props.enableClick || 'show-select' in attrs
         ? {
-          'onClick:row': (_item: any, context: any) => {
+          'onClick:row': (_event: PointerEvent, context: any) => {
             if ('show-select' in attrs) {
-              // TODO-vuetify: Reenable once context is available again
-              // context.select(!context.isSelected);
+              toggleSelection(context.item);
             } else {
               emit('click', context);
             }
@@ -535,25 +607,23 @@ export default defineComponent({
       'data-table-sort-order': localSortBy.value[0].order
     }));
 
-    return () => isPaginatedResponse.value ?
+    return () => isPaginatedResponse(props.items) ?
       h(VDataTableServer, {
-        ...attrs,
         ...sharedProps.value,
         loading: props.loading,
         loadingText: t('loadingData'),
-        itemsLength: (props.items as IVeoPaginatedResponse<any>).totalItemCount
+        itemsLength: props.items.totalItemCount
       }, {
         ...slots,
-        ...renderers.value
+        ...renderers.value,
+        ...selectAllCheckbox
       })
       : h('div', [
         ...(props.loading ? [h(VProgressLinear, { indeterminate: true, color: 'primary' })] : []),
-        h(VDataTable, {
-          ...attrs,
-          ...sharedProps.value
-        }, {
+        h(VDataTable, sharedProps.value, {
           ...slots,
-          ...renderers.value
+          ...renderers.value,
+          ...selectAllCheckbox
         })
       ]);
   }
