@@ -43,7 +43,7 @@ export interface IVeoFormSchemaItemRule {
   };
 }
 
-export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
+export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | 'Widget';
 
 export interface IVeoFormSchemaItem {
   type: IVeoFormSchemaContentType;

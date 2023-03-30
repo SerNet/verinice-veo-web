@@ -39,10 +39,14 @@
         >
           <v-btn
             v-if="item.actions && item.actions.length === 1"
-            text
+            variant="text"
             @click="item.actions && item.actions[0].callback(item, $emit)"
           >
-            {{ item.actions[0].title }}
+            <v-icon
+              :icon="mdiLightbulbOutline"
+              start
+            />
+            {{ isFunction(item.actions[0].title) ? item.actions[0].title(t) : item.actions[0].title }}
           </v-btn>
           <UtilNestedMenu
             v-else-if="item.actions && item.actions.length > 0"
@@ -69,14 +73,6 @@
         </v-list-item-action>
       </v-list-item>
     </template>
-    <v-list-item
-      v-if="!items.length && noErrorPlaceholderVisible"
-      dense
-    >
-      <v-list-item-title class="font-italic text-body-2">
-        {{ t('noErrors') }}
-      </v-list-item-title>
-    </v-list-item>
   </v-list>
 </template>
 
@@ -86,6 +82,7 @@ import { mdiLightbulbOutline } from '@mdi/js';
 
 import { INestedMenuEntries } from './NestedMenu.vue';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
+import { isFunction } from 'lodash';
 
 defineProps({
   items: {
@@ -106,7 +103,7 @@ const { t } = useI18n();
 
 const formattedActions: (actions: VeoSchemaValidatorMessage['actions']) => INestedMenuEntries[] = (actions) =>
   (actions || []).map((action) => ({
-    key: action.title,
+    key: action.key,
     title: action.title,
     action: action.callback
   }));
