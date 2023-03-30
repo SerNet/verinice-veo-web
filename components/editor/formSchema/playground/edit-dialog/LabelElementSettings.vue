@@ -52,7 +52,7 @@
 <script setup lang="ts">
 import { PropType } from 'vue';
 
-import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
+import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 
 defineProps({
   formSchemaElement: {

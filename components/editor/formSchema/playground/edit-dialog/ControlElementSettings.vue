@@ -102,8 +102,8 @@ import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
 import { controlTypeAlternatives, eligibleInputElements, INPUT_ELEMENTS } from '~~/types/VeoEditor';
+import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 import { getFormSchemaControlType } from '~~/lib/utils';
 import { IPlaygroundElement } from '../Element.vue';
 

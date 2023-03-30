@@ -125,7 +125,7 @@ import { JSONSchema7 } from 'json-schema';
 
 import { FormSchemaElementMap, PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from '../Playground.vue';
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
+import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 
 const props = defineProps({
   formSchemaElement: {
