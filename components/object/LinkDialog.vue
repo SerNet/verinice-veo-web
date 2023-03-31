@@ -87,7 +87,7 @@
 import { PropType } from 'vue';
 import { differenceBy, omit, uniqBy, upperFirst } from 'lodash';
 
-import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
+import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useUnlinkObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
@@ -208,13 +208,11 @@ export default defineComponent({
       isFetching: objectsLoading
     } = useFetchObjects(combinedObjectsQueryParameters, { enabled: objectsQueryEnabled, keepPreviousData: true });
 
-    // All objects that are selectable (this includes everyone but the object itself and marks already selected items as disabled)
-    const currentChildrenIds = computed(() => [...(props.object?.members || []), ...(props.object?.parts || [])].map((link) => getEntityDetailsFromLink(link).id));
     const selectableObjects = computed(() => ({
       ...objects.value,
-      items: (objects.value?.items || []).filter((object) => object.id !== props.object?.id).map((selectableObject) => ({
+      items: (objects.value?.items || []).map((selectableObject) => ({
         ...selectableObject,
-        disabled: currentChildrenIds.value.includes(selectableObject.id)
+        disabled: !!originalSelectedItems.value.find((item) => item.id === selectableObject.id) || props.object?.id === selectableObject.id
       }))
     }));
 
