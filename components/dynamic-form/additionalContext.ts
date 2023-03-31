@@ -119,9 +119,7 @@ export const getSubTypeTranslation = (
           const scope = `#/properties/domains/properties/${domainId}/properties/subType`;
           let elementSchema: any = cloneDeep(JsonPointer.get(objectSchema, scope) || {});
           elementSchema = addConditionalSchemaPropertiesToControlSchema(objectSchema, objectData, elementSchema, scope);
-          if(formSchemas != undefined){
-            return elementSchema?.enum?.map((_subType: string) =>  (formSchemas as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === _subType)?.name[language])
-          }
+          return elementSchema?.enum?.map((_subType: string) =>  (formSchemas as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === _subType)?.name[language])
         })()
       } 
     }
