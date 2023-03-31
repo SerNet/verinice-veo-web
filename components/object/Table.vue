@@ -536,9 +536,10 @@ export default defineComponent({
     // Get all selected items on the current page
     const allItemsOnPage = computed(() => (isPaginatedResponse(props.items) ? props.items.items : props.items.slice(localPage.value * tablePageSize.value, (localPage.value + 1) * tablePageSize.value - 1)));
     const itemsSelectedOnPage = computed(() => allItemsOnPage.value.filter((item) => internalModelValue.value.includes(item.id)));
-    const allItemsSelected = computed(() => itemsSelectedOnPage.value.length === Math.min(tablePageSize.value, items.value.length));
+    const availableItemsOnPage = computed(() => allItemsOnPage.value.filter((item) => !item.disabled));
+    const allItemsSelected = computed(() => itemsSelectedOnPage.value.length === allItemsOnPage.value.length || itemsSelectedOnPage.value.length === availableItemsOnPage.value.length);
     const allItemsDeselected = computed(() => !itemsSelectedOnPage.value.length);
-    const someItemsSelected = computed(() => !!itemsSelectedOnPage.value.length && itemsSelectedOnPage.value.length <  Math.min(tablePageSize.value, items.value.length));
+    const someItemsSelected = computed(() => !allItemsSelected.value && !!itemsSelectedOnPage.value.length);
     const onSelectAllClicked = () => {
       // If all items on this page are deselected, select all items that are not disabled
       if(allItemsDeselected.value) {
