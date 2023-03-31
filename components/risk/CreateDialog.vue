@@ -33,6 +33,7 @@
         :required-fields="['objectType']"
         @update:filter="onFilterUpdate"
       />
+      {{ selectedScenarios }}
       <BaseCard>
         <ObjectTable
           v-model="selectedScenarios"
@@ -124,6 +125,28 @@ export default defineComponent({
     // Filter stuff
     const selectedScenarios = ref<IVeoEntity[]>([]);
 
+    const polluteTable = () => {
+      if(!risks.value?.length || !objects.value?.items?.length) {
+        return;
+      }
+
+      for(const risk of risks.value) {
+        // Get id of scenario
+        const objectId = getEntityDetailsFromLink(risk.scenario).id;
+
+        // If scenario is already part of selected scenarios, skip
+        if(selectedScenarios.value.find((object) => object.id === objectId)) {
+          continue;
+        }
+
+        // Add scenario to selected objects
+        const object = objects.value.items.find((object) => object.id === objectId);
+        if(object) {
+          selectedScenarios.value.push(object);
+        }
+      }
+    };
+
     const filter = ref<Record<string, any>>({
       objectType: 'scenario',
       subType: 'SCN_Scenario'
@@ -153,6 +176,9 @@ export default defineComponent({
     }));
     const { data: risks } = useQuery(objectQueryDefinitions.queries.fetchRisks, risksQueryParameters);
 
+    watch(() => objects.value, polluteTable, { deep: true, immediate: true });
+    watch(() => risks.value, polluteTable, { deep: true, immediate: true });
+
     const notAlreadyUsedScenarios = computed<IVeoPaginatedResponse<IVeoEntity[] & { disabled?: boolean }> | undefined>(() => {
       const _objects = cloneDeep(objects.value);
 
@@ -173,24 +199,28 @@ export default defineComponent({
         return;
       }
       creatingRisks.value = true;
-      const risks = selectedScenarios.value.map((scenario) => ({
-        scenario: {
-          targetUri: `${config.public.apiUrl}/scenarios/${scenario.id}`
-        },
-        domains: {
-          [props.domainId]: {
-            reference: {
-              targetUri: `${config.public.apiUrl}/domains/${props.domainId}`
-            },
-            riskDefinitions: {
-              DSRA: {}
+
+      // Create new risks, but only for those scenarios that aren't yet linked to a risk!
+      const newRisks = selectedScenarios.value
+        .filter((scenario) => !risks.value?.find((risk) => getEntityDetailsFromLink(risk.scenario).id === scenario.id))
+        .map((scenario) => ({
+          scenario: {
+            targetUri: `${config.public.apiUrl}/scenarios/${scenario.id}`
+          },
+          domains: {
+            [props.domainId]: {
+              reference: {
+                targetUri: `${config.public.apiUrl}/domains/${props.domainId}`
+              },
+              riskDefinitions: {
+                DSRA: {}
+              }
             }
           }
-        }
-      }));
+        }));
 
       try {
-        await Promise.all(risks.map((risk: any) => createRisk({ endpoint: 'processes', objectId: props.objectId, risk })));
+        await Promise.all(newRisks.map((risk: any) => createRisk({ endpoint: 'processes', objectId: props.objectId, risk })));
         displaySuccessMessage(t('risksCreated', selectedScenarios.value.length));
         selectedScenarios.value = [];
         emit('success');
