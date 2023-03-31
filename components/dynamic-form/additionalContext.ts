@@ -112,22 +112,19 @@ export const getSubTypeTranslation = (
   domainId: string,
   language: string,
   formSchemas: IVeoFormSchemaMeta[]
-  ): IVeoFormsAdditionalContext =>  { {console.log('bla',domainId)} return {
+  ): IVeoFormsAdditionalContext => ({
     [`#/properties/domains/properties/${domainId}/properties/subType`]: {
-      formSchema: {
+      formSchema: { 
         enum: (() => {
           const scope = `#/properties/domains/properties/${domainId}/properties/subType`;
           let elementSchema: any = cloneDeep(JsonPointer.get(objectSchema, scope) || {});
           elementSchema = addConditionalSchemaPropertiesToControlSchema(objectSchema, objectData, elementSchema, scope);
-          console.log(4,elementSchema);
-          console.log(5,formSchemas);
           if(formSchemas != undefined){
             return elementSchema?.enum?.map((_subType: string) =>  (formSchemas as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === _subType)?.name[language])
           }
-        })
-      }
+        })()
+      } 
     }
-  }
-  };
+  });
   
   
