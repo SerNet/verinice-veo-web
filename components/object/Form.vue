@@ -297,14 +297,14 @@ export default defineComponent({
       enabled: fetchDomainQueryEnabled
     });
 
-    const localAdditionalContext = computed<IVeoFormsAdditionalContext>(() => {{console.log(1,objectSchema.value), console.log(2,props.modelValue)} return {
+    const localAdditionalContext = computed<IVeoFormsAdditionalContext>(() => ({
       ...props.additionalContext,
       ...(objectSchema.value && domain.value ? getRiskAdditionalContext(objectSchema.value.title, domain.value, locale.value) : {}),
       ...(props.modelValue && objectSchema.value && translations.value
         ? getStatusAdditionalContext(props.modelValue, objectSchema.value, mergedTranslations.value[locale.value], props.domainId)
         : {}),
       ...(objectSchema.value && props.modelValue ? getSubTypeTranslation(props.modelValue, objectSchema.value, props.domainId, locale.value, formSchemas.value || []):{})
-    }});
+    }));
 
     const selectedDisplayOption = ref('objectschema');
 
