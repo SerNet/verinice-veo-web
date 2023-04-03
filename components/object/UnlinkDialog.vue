@@ -29,7 +29,7 @@
         text
         @click="$emit('update:model-value', false)"
       >
-        {{ t('global.button.no') }}
+        {{ globalT('global.button.no') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -69,6 +69,7 @@ const props = defineProps({
 const emit = defineEmits(['error', 'update:model-value', 'success']);
   
 const { t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
 const { unlink } = useUnlinkObject();
 
 const unlinking = ref(false);
