@@ -33,7 +33,6 @@
         :required-fields="['objectType']"
         @update:filter="onFilterUpdate"
       />
-      {{ selectedScenarios }}
       <BaseCard>
         <ObjectTable
           v-model="selectedScenarios"
