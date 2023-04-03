@@ -109,7 +109,7 @@ import { FormSchemaElementMap, PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from '.
 import ControlElement from './ControlElement.vue';
 import LabelElement from './LabelElement.vue';
 import LayoutElement from './LayoutElement.vue';
-import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
+import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 import { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
 
 

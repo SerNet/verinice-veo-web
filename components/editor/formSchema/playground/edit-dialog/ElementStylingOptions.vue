@@ -30,10 +30,10 @@
   
 <script setup lang="ts">
 import { PropType } from 'vue';
+import { cloneDeep } from 'lodash';
 import { mdiPaletteOutline } from '@mdi/js';
 
-import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
-import { cloneDeep } from 'lodash';
+import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 
 const props = defineProps({
   formSchemaElement: {

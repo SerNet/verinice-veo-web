@@ -27,10 +27,7 @@
       <span class="font-weight-medium text-body-1 px-4">
         {{ upperFirst(t(section).toString()) }} ({{ getMessagesBySeverity(section).length }})
       </span>
-      <UtilValidationResultList
-        :items="getMessagesBySeverity(section)"
-        :no-error-placeholder-visible="section === 'errors'"
-      />
+      <UtilValidationResultList :items="getMessagesBySeverity(section)" />
     </div>
   </div>
 </template>

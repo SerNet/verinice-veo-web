@@ -25,22 +25,10 @@
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
-      <h3 class="text-h3">
-        {{ upperFirst(t('schemaValidationErrors').toString()) }} ({{ validation.errors.length }})
-      </h3>
-      <UtilValidationResultList
+      <UtilValidationResults
         v-bind="$attrs"
-        :items="validation.errors"
-        no-error-placeholder-visible
-        fixing-allowed
-      />
-      <h3 class="text-h3 mt-4">
-        {{ upperFirst(t('schemaValidationWarnings').toString()) }} ({{ validation.warnings.length }})
-      </h3>
-      <UtilValidationResultList
-        v-bind="$attrs"
-        :items="validation.warnings"
-        fixing-allowed
+        :messages="validation"
+        enable-fixing
       />
     </template>
     <template #dialog-options>

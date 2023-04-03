@@ -114,5 +114,6 @@
 
   "imprintText": "Es gilt das {0} der SerNet GmbH.",
   "privacyPolicyText": "Es gilt die {0} der SerNet GmbH.",
-  "deleteText": "Möchten Sie das Element \"{0}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+  "deleteText": "Möchten Sie das Element \"{0}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+  "fix": "Beheben"
 }

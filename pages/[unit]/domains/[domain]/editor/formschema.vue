@@ -19,8 +19,8 @@
   <LayoutPageWrapper
     :title="title"
     title-class="d-flex align-center"
-    collapsable-left
-    collapsable-right
+    :collapsable-left="schemaIsValid.valid"
+    :collapsable-right="schemaIsValid.valid"
   >
     <template
       v-if="formSchema && objectSchema"
@@ -147,7 +147,7 @@
       </v-tooltip>
     </template>
     <template
-      v-if="formSchema && objectSchema"
+      v-if="formSchema && objectSchema && schemaIsValid.valid"
       #default
     >
       <BasePage
@@ -184,10 +184,7 @@
         :title="t('usedControls')"
         :titlebar-alignment="PageHeaderAlignment.CENTER"
       >
-        <template
-          v-if="schemaIsValid.valid"
-          #default
-        >
+        <template #default>
           <div class="fill-height fill-width d-flex">
             <EditorFormSchemaPlayground
               v-if="formSchema"
@@ -201,31 +198,6 @@
             />
           </div>
         </template>
-        <template
-          v-else
-          #default
-        >
-          <v-row class="fill-height flex-column text-center align-center px-8">
-            <v-col
-              cols="auto"
-              style="flex-grow: 0"
-            >
-              <v-icon
-                style="font-size: 8rem; opacity: 0.5"
-                color="primary"
-                :icon="mdiInformationOutline"
-              />
-            </v-col>
-            <v-col
-              cols="auto"
-              class="text-left"
-            >
-              <span class="text-h3">
-                {{ t("invalidFormSchema") }}
-              </span>
-            </v-col>
-          </v-row>
-        </template>
       </BasePage>
       <BasePage
         v-if="!xs"
@@ -234,10 +206,7 @@
         :title="t('preview')"
         :titlebar-alignment="PageHeaderAlignment.CENTER"
       >
-        <template
-          v-if="schemaIsValid.valid"
-          #default
-        >
+        <template #default>
           <DynamicFormEntrypoint
             v-if="formSchema && objectSchema"
             v-model="objectData"
@@ -248,31 +217,18 @@
             :locale="language"
           />
         </template>
-        <template
-          v-else
-          #default
-        >
-          <v-row class="fill-height flex-column text-center align-center px-8">
-            <v-col
-              cols="auto"
-              style="flex-grow: 0"
-            >
-              <v-icon
-                style="font-size: 8rem; opacity: 0.5"
-                color="primary"
-                :icon="mdiInformationOutline"
-              />
-            </v-col>
-            <v-col
-              cols="auto"
-              class="text-left"
-            >
-              <span class="text-h3">
-                {{ t("invalidFormSchema") }}
-              </span>
-            </v-col>
-          </v-row>
-        </template>
+      </BasePage>
+    </template>
+    <template
+      v-else
+      #default
+    >
+      <BasePage>
+        <UtilValidationResults
+          v-if="schemaIsValid.errors.length"
+          v-bind="validationActions"
+          :messages="schemaIsValid"
+        />
       </BasePage>
     </template>
     <template #helpers>
@@ -284,6 +240,7 @@
       <EditorErrorDialog
         v-model="errorDialogVisible"
         :validation="schemaIsValid"
+        v-bind="validationActions"
       />
       <EditorFormSchemaCodeEditorDialog
         v-model="codeEditorVisible"
@@ -332,7 +289,7 @@ import { Ref } from 'vue';
 import { mdiAlertCircleOutline, mdiCodeTags, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
 import { useDisplay } from 'vuetify';
 
-import { validate } from '~/lib/FormSchemaHelper';
+import { deleteElementCustomTranslation, validate } from '~/lib/FormSchemaHelper';
 import {
   IVeoObjectSchema, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
@@ -340,13 +297,15 @@ import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { IVeoTranslations } from '~~/composables/api/queryDefinitions/translations';
 import { useMutation } from '~~/composables/api/utils/mutation';
 import { useQuery } from '~~/composables/api/utils/query';
 import { PENDING_TRANSLATIONS } from '~~/components/editor/formSchema/playground/EditElementDialog.vue';
+import { JsonPointer } from 'json-ptr';
+import { cloneDeep, isArray } from 'lodash';
 
 export default defineComponent({
   setup() {
@@ -600,6 +559,32 @@ export default defineComponent({
     provide(PROVIDE_KEYS.objectSchemaTranslations, objectSchemaTranslations);
     provide(PROVIDE_KEYS.formSchemaTranslations, formSchemaTranslations);
 
+    const validationActions: Record<string, (errorCode: string, details: Record<string, any>) => void> = {
+      onFix: (errorCode, details) => {
+        switch(errorCode) {
+          case 'E_PROPERTY_MISSING':
+            if(formSchema.value) {
+              const toModify = cloneDeep(formSchema.value);
+              const elementFormSchema = JsonPointer.get(toModify.content, details.formSchemaPointer) as IVeoFormSchemaItem;
+              deleteElementCustomTranslation(elementFormSchema, toModify.translation, setFormTranslation);
+              // You can't delete the root object
+              if (details.formSchemaPointer && details.formSchemaPointer !== '#') {
+                const parts = details.formSchemaPointer.split('/');
+                const lastPart = parts.pop();
+                const partToModify: any = JsonPointer.get(toModify.content, parts.join('/'));
+                if(isArray(partToModify)) {
+                  partToModify.splice(parseInt(lastPart), 1);
+                } else {
+                  delete partToModify[lastPart];
+                }
+                JsonPointer.set(toModify.content, parts.join('/'), partToModify);
+              }
+              formSchema.value = toModify;
+            }
+        }
+      }
+    };
+
     return {
       ability,
       additionalContext,
@@ -637,6 +622,7 @@ export default defineComponent({
       translations,
       updateTranslations,
       onWizardFinished,
+      validationActions,
 
       mdiAlertCircleOutline,
       mdiCodeTags,

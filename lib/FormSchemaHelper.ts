@@ -19,6 +19,7 @@ import FormSchemaValidator from './FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
 import { IVeoFormSchemaTranslationCollection, IVeoObjectSchema } from '~/types/VeoTypes';
 import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaMeta } from '~~/composables/api/queryDefinitions/forms';
+import { cloneDeep } from 'lodash';
 
 export function generateSchema(
   name: IVeoFormSchemaMeta['name'],
@@ -58,18 +59,20 @@ export function deleteElementCustomTranslation(
   customTranslations: IVeoFormSchemaTranslationCollection,
   callbackUpdateCustomTranslation: (updatedCustomTranslationValue: IVeoFormSchemaTranslationCollection) => void
 ): void {
-  // Remove the element and also all translation key from customTranslations
-  let translationKeysToRemove = JSON.stringify(elementFormSchema).match(/#lang\/[\w-]+/g);
-  if (translationKeysToRemove) {
-    const localCustomTranslation: IVeoFormSchemaTranslationCollection = JSON.parse(JSON.stringify(customTranslations));
+  let possibleTranslation;
+  if(elementFormSchema.type === 'Label') {
+    possibleTranslation = elementFormSchema.text;
+  } else {
+    possibleTranslation = elementFormSchema.options.label;
+  }
+  if(possibleTranslation) {
+    if(possibleTranslation?.startsWith('#lang/')) {
+      const translations = cloneDeep(customTranslations);
 
-    // @ts-ignore Some type error, but as the editors will get reworked anyways ¯\_(ツ)_/¯
-    translationKeysToRemove = translationKeysToRemove.map((key) => key.replace('#lang/', ''));
-    translationKeysToRemove.forEach((key) => {
-      for (const lang in customTranslations) {
-        delete localCustomTranslation[lang][key];
+      for (const lang in translations) {
+        delete translations[lang][possibleTranslation.replace('#lang/', '')];
       }
-    });
-    callbackUpdateCustomTranslation(localCustomTranslation);
+      callbackUpdateCustomTranslation(translations);
+    }
   }
 }

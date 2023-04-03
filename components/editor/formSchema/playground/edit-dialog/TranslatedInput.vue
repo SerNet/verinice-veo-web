@@ -42,7 +42,8 @@ import { cloneDeep } from 'lodash';
 import { PropType, Ref } from 'vue';
 
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import { IVeoFormSchemaItem, IVeoTranslationCollection } from '~~/types/VeoTypes';
+import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoTranslationCollection } from '~~/types/VeoTypes';
 
 const props = defineProps({
   formSchemaElement: {

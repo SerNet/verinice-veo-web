@@ -125,7 +125,7 @@ import { JSONSchema7 } from 'json-schema';
 
 import { FormSchemaElementMap, PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from '../Playground.vue';
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import { IVeoFormSchemaItem } from '~~/types/VeoTypes';
+import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 
 const props = defineProps({
   formSchemaElement: {
@@ -171,7 +171,8 @@ watch(() => _formSchemaElementMap, (newValue: any) => {
   formSchemaElementMap.value = unref(newValue);
 }, { deep: true, immediate: true });
 const availableScopes = computed(() => [...formSchemaElementMap.value]
-  .filter(([_uuid, element]) => element.scope && element.type !== 'LinksField' && (!props.formSchemaElement.scope || !element.scope.includes(props.formSchemaElement.scope)))
+  // Filter out elements that don't have a scope, are LinkFields (elements that are of type Control and have children) and the element itself.
+  .filter(([_uuid, element]) => element.scope && (element.type !== 'Control' || !element.elements) && (!props.formSchemaElement.scope || !element.scope.includes(props.formSchemaElement.scope)))
   .map(([uuid, _element]) => uuid)
 );
 
@@ -190,9 +191,10 @@ const onConditionUpdated = () => {
 };
 
 const onFormSchemaItemModified = (newValue: IVeoFormSchemaItem) => {
-  conditionEffect.value = newValue.rule?.effect;
-  scopeUUID.value = [...formSchemaElementMap.value].find(([_uuid, element]) => element.scope === newValue.rule?.condition?.scope)?.[0];
-  conditionValues.value = newValue.rule?.condition?.schema?.enum || [];
+  // If the formSchema element gets modified, either use this elements values OR use the ones currently set, if none are passed (avoids removing changes made while rules are still incomplete)
+  conditionEffect.value = newValue.rule?.effect || conditionEffect.value;
+  scopeUUID.value = newValue.rule?.condition?.scope ? [...formSchemaElementMap.value].find(([_uuid, element]) => element.scope === (newValue.rule?.condition?.scope))?.[0] : scopeUUID.value;
+  conditionValues.value = newValue.rule?.condition?.schema?.enum || conditionValues.value;
 };
 
 const deleteRule = () => {

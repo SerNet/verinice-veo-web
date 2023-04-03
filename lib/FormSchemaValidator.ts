@@ -76,7 +76,7 @@ export default class FormSchemaValidator {
         this.errors.push({
           code: 'E_PROPERTY_MISSING',
           message: `The element ${scope} doesn't exist in the object schema.`,
-          actions: [{ title: 'Fix', callback: (item: any, emit: any) => emit('fix', item.code, item.params) }],
+          actions: [{ key: 'fix', title: (t) => t('fix'), callback: (item: any, emit: any) => emit('fix', item.code, item.params) }],
           params: { formSchemaPointer: context.substr(0, context.length - 1) } // We have to remove the trailing slash in order for JsonPointer to pick the currect path
         });
       }
