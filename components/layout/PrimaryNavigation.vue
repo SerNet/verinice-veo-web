@@ -153,6 +153,7 @@ export interface INavItem {
   componentName?: string;
   classes?: string;
   activePath?: string;
+  openInNewtab?: boolean;
 }
 
 const objectTypeSortOrder = new Map<string, number>([
@@ -246,8 +247,9 @@ export default defineComponent({
                     objectType: objectSchema.title
                   }
                 },
-                exact: true
+                exact: true,
               },
+              
               // dynamic sub type routes
               ...sortBy(
                 objectSubTypes.map((subType) => {
@@ -351,7 +353,8 @@ export default defineComponent({
         name: UNIT_SELECTION_ROUTE_NAME
       },
       componentName: 'unit-select-nav-item',
-      exact: true
+      exact: true,
+      openInNewtab: route.path.startsWith("/docs")
     };
 
     const domainDashboardNavEntry = computed<INavItem>(() => ({
@@ -429,7 +432,8 @@ export default defineComponent({
       to: '/',
       icon: mdiHomeOutline,
       componentName: 'veo-nav-item',
-      exact: true
+      exact: true,
+      openInNewtab: route.path.startsWith("/docs")
     }));
 
     const docsNavEntry = computed<INavItem>(() => ({

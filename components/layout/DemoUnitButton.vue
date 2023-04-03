@@ -60,7 +60,7 @@
 
 <script lang="ts">
 import { StorageSerializers, useStorage } from '@vueuse/core';
-import { mdiLoginVariant, mdiLogoutVariant } from '@mdi/js';
+import { mdiLoginVariant, mdiLogoutVariant, mdiOpenInNew } from '@mdi/js';
 
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { useVeoUser } from '~/composables/VeoUser';
@@ -73,12 +73,15 @@ export default defineComponent({
     iconOnly: {
       type: Boolean,
       default: false
+    },
+    openInNewTab: {
+      type: Boolean,
+      default: true
     }
   },
   setup(_props) {
     const { t } = useI18n();
     const { authenticated } = useVeoUser();
-    const router = useRouter();
     const route = useRoute();
 
     // Demo unit/unit selection
@@ -86,7 +89,7 @@ export default defineComponent({
     const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll, undefined,{
       enabled: authenticated
     });
-
+  
     const currentUnit = computed(() => separateUUIDParam(route.params.unit as string).id);
     const demoUnit = computed(() => (units.value || []).find((unit) => unit.name === 'Demo'));
     const nonDemoUnits = computed(() => (units.value || []).filter((unit) => unit.name !== 'Demo'));
@@ -95,7 +98,6 @@ export default defineComponent({
     const buttonIcon = computed(() => (userIsInDemoUnit.value ? mdiLogoutVariant : mdiLoginVariant));
 
     const unitBeforeDemoUnit = useStorage(LOCAL_STORAGE_KEYS.UNIT_BEFORE_DEMOUNIT, false, localStorage, { serializer: StorageSerializers.string });
-
     const nonDemoUnitDetails = computed(() => {
       const unit = unitBeforeDemoUnit.value || nonDemoUnits.value?.[0]?.id;
       const nonDemoUnit = (units.value || []).find((_unit) => _unit.id === unit) as IVeoUnit;
@@ -106,32 +108,22 @@ export default defineComponent({
 
       return { unit, domain };
     });
-
+    
     const toggleDemoUnit = () => {
+      const unit = createUUIDUrlParam('unit', nonDemoUnitDetails.value?.unit);
+      const domain = createUUIDUrlParam('domain', nonDemoUnitDetails.value?.domain as string);
+      const _unit = createUUIDUrlParam('_unit', demoUnit.value?.id as string);
+      const _domain = createUUIDUrlParam('_domain', getFirstDomainDomaindId(demoUnit.value!) || '');
+
       if (userIsInDemoUnit.value) {
         if (!nonDemoUnitDetails.value) {
-          router.push({
-            name: 'index'
-          });
+          navigateTo('/index');
         } else {
-          router.push({
-            name: 'unit-domains-domain',
-            params: {
-              unit: createUUIDUrlParam('unit', nonDemoUnitDetails.value.unit),
-              domain: createUUIDUrlParam('domain', nonDemoUnitDetails.value.domain)
-            }
-          });
+          !_props.openInNewTab ? window.open (`/${unit}/domains/${domain}`): navigateTo(`/${unit}/domains/${domain}`);
         }
       } else if (demoUnit.value) {
         unitBeforeDemoUnit.value = currentUnit.value;
-
-        router.push({
-          name: 'unit-domains-domain',
-          params: {
-            unit: createUUIDUrlParam('unit', demoUnit.value.id),
-            domain: createUUIDUrlParam('domain', getFirstDomainDomaindId(demoUnit.value) || '')
-          }
-        });
+        _props.openInNewTab && route.path.startsWith('/docs') ? window.open (`/${_unit}/domains/${_domain}`): navigateTo(`/${_unit}/domains/${_domain}`);
       }
     };
 

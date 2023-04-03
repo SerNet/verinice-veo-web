@@ -23,6 +23,7 @@
     :class="_classes"
     :data-component-name="componentName"
     density="compact"
+    :target="$props.openInNewtab ? '_blank' : ''"
     @click.stop="onClick"
   >
     <template
@@ -60,7 +61,7 @@
 <script lang="ts" setup>
 import { isEqual, pick } from 'lodash';
 import { mergeProps, PropType } from 'vue';
-import { _RouteLocationBase } from 'vue-router';
+import { RouteLocationRaw, _RouteLocationBase } from 'vue-router';
 import { INavItem } from './PrimaryNavigation.vue';
 
 const props = defineProps({
@@ -77,7 +78,7 @@ const props = defineProps({
     default: undefined
   },
   to: {
-    type: [String, Object] as PropType<_RouteLocationBase>,
+    type: [String, Object] as PropType<RouteLocationRaw>,
     required: true
   },
   exact: {
@@ -107,6 +108,10 @@ const props = defineProps({
   children: {
     type: Array as PropType<INavItem[]>,
     default: () => []
+  },
+  openInNewtab: {
+    type: Boolean,
+    default: false
   }
 });
 const emit = defineEmits(['expand-menu', 'click']);
@@ -119,7 +124,6 @@ const onClick = () => {
   }
   navigateTo(props.to);
 };
-
 const _classes = computed(() => `${props.classes} primary-navigation-entry-level-${props.level}`);
 
 const isActive = computed(() => {
@@ -141,6 +145,7 @@ const isActive = computed(() => {
     return props.exact ? route.fullPath === props.to : route.fullPath.includes(props.to);
   }
 });
+
 </script>
 
 <style lang="scss">
