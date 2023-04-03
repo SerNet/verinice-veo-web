@@ -185,12 +185,12 @@
 import { PropType } from 'vue';
 
 import { upperFirst, merge, debounce } from 'lodash';
-import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiKickstarter, mdiTableOfContents } from '@mdi/js';
+import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } from '@mdi/js';
 
 import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
 import { getRiskAdditionalContext, getStatusAdditionalContext, getSubTypeTranslation } from '~/components/dynamic-form/additionalContext';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry, IVeoDecisionEvaluation } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
@@ -199,7 +199,7 @@ import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 
-import { useQuery, useQuerySync, useQueries } from '~~/composables/api/utils/query';
+import { useQuery, useQueries } from '~~/composables/api/utils/query';
 
 enum SIDE_CONTAINERS {
   HISTORY,
@@ -482,45 +482,36 @@ export default defineComponent({
     };
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-    const fetchDecisions = async () => {
-      const toReturn: any = { ...props.objectMetaData, decisionResults: {}, inspectionFindings: [] };
-
-      // Fetch updated decision results and merge them with the current values
-      if (objectData.value?.domains?.[props.domainId] && endpoints.value?.[objectData.value.type]) {
-        for (const key in props.objectMetaData?.decisionResults || {}) {
-          const result = await useQuerySync(objectQueryDefinitions.queries.fetchWipDecisionEvaluation, {endpoint: endpoints.value[objectData.value.type], object: objectData.value as any, domain: props.domainId, decision: key });
-          toReturn.inspectionFindings.push(...result.inspectionFindings);
-          toReturn.decisionResults[key] = result.decisionResults.piaMandatory;
-        }
-        emit('update:object-meta-data', toReturn);
-      }
-    };
-
-    const debouncedFetchDecisions = debounce(fetchDecisions, 1000);
-
-    watch(() => objectData.value, debouncedFetchDecisions, { deep: true });
-
     const inspectionData = ref<any>(objectData.value);
-    const fetchDecisionsQueryParameters = computed(() => Object.keys(props.objectMetaData?.decisionResults || {}).map((key) => ({
+    const fetchDecisionsQueryParameters = computed(() => {
+      return Object.keys(props.modelValue.domains?.[props.domainId]?.decisionResults || {}).map((key) => ({
         decision: key,
         domain: props.domainId,
         endpoint: endpoints.value?.[inspectionData.value.type] as string,
         object: inspectionData.value
-    })));
-    const fetchDecisionsQueryEnabled = computed(() => !!objectData.value?.domains?.[props.domainId] && !!endpoints.value?.[objectData.value.type]);
-    const inspectionResults  = useQueries(
+      }));
+    });
+    const fetchDecisionsQueryEnabled = computed(() => !!objectData.value?.domains?.[props.domainId] && !!endpoints.value?.[objectData.value.type] && !formErrors.value.size);
+    const decisionResults = useQueries(
       objectQueryDefinitions.queries.fetchWipDecisionEvaluation,
       fetchDecisionsQueryParameters,
       {
-          enabled: fetchDecisionsQueryEnabled,
-          onSuccess: (data) => emit('update:object-meta-data', data)
+        enabled: fetchDecisionsQueryEnabled
       }
     );
     const setInspectionData = (newData: any) => {
-        inspectionData.value = newData;
-    }
+      inspectionData.value = newData;
+    };
     const debouncedSetInspectionData = debounce(setInspectionData, 1000);
     watch(() => objectData.value, debouncedSetInspectionData, { deep: true });
+    watch(() => decisionResults, (newValue) => {
+      const toReturn: any = { ...props.objectMetaData, decisionResults: {}, inspectionFindings: [] };
+      for(const result of newValue) {
+        toReturn.decisionResults = merge(toReturn.decisionResults, result.data?.decisionResults);
+        toReturn.inspectionFindings = toReturn.inspectionFindings.concat(result.data?.inspectionFindings || []);
+      }
+      emit('update:object-meta-data', toReturn);
+    }, { deep: true });
 
 
     const dataIsLoading = computed<boolean>(
