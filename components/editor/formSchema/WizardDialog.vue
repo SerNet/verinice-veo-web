@@ -23,6 +23,7 @@
     fixed-footer
     :large="state !== WIZARD_STATES.START"
     :close-function="onClose"
+    eager
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
