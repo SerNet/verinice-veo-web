@@ -60,7 +60,7 @@
 
 <script lang="ts">
 import { StorageSerializers, useStorage } from '@vueuse/core';
-import { mdiLoginVariant, mdiLogoutVariant, mdiOpenInNew } from '@mdi/js';
+import { mdiLoginVariant, mdiLogoutVariant } from '@mdi/js';
 
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { useVeoUser } from '~/composables/VeoUser';
@@ -113,7 +113,7 @@ export default defineComponent({
       const unit = createUUIDUrlParam('unit', nonDemoUnitDetails.value?.unit);
       const domain = createUUIDUrlParam('domain', nonDemoUnitDetails.value?.domain as string);
       const _unit = createUUIDUrlParam('_unit', demoUnit.value?.id as string);
-      const _domain = createUUIDUrlParam('_domain', getFirstDomainDomaindId(demoUnit.value!) || '');
+      const _domain = createUUIDUrlParam('_domain', demoUnit.value ? getFirstDomainDomaindId(demoUnit.value) || '' : '');
 
       if (userIsInDemoUnit.value) {
         if (!nonDemoUnitDetails.value) {
