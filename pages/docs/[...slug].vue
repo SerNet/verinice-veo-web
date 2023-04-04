@@ -34,7 +34,6 @@
   </BasePage>
 </template>
 <script lang="ts" setup>
-import consolaGlobalInstance from 'consola';
 import { isArray } from 'lodash';
 
 import { useDoc, useDocs } from '~/composables/docs';
@@ -92,11 +91,6 @@ const routeToHeader = () => {
     return;
   }
   scrollTo(0,(document?.querySelector(route.hash)?.getBoundingClientRect())?.y || 0)
-  console.log(document.querySelector(route.hash));
-
-  // const anchor = document.querySelector(route.hash);
-  // anchor?.scrollIntoView();
-  // console.log(anchor);
 }
 
 watch(() => _document.value?._path, updateBreadcrumbs, { immediate: true });

@@ -61,7 +61,7 @@
 <script lang="ts" setup>
 import { isEqual, pick } from 'lodash';
 import { mergeProps, PropType } from 'vue';
-import { RouteLocationRaw, _RouteLocationBase } from 'vue-router';
+import { _RouteLocationBase } from 'vue-router';
 import { INavItem } from './PrimaryNavigation.vue';
 
 const props = defineProps({
@@ -78,7 +78,7 @@ const props = defineProps({
     default: undefined
   },
   to: {
-    type: [String, Object] as PropType<RouteLocationRaw>,
+    type: [String, Object] as PropType<_RouteLocationBase>,
     required: true
   },
   exact: {
