@@ -23,6 +23,7 @@
     :class="{ 'border-top': level === 0, 'veo-primary-navigation__group': level > 0, 'veo-primary-navigation__group--active': $route.fullPath.includes(activePath) }"
     no-action
     :model-value="$route.fullPath.includes(activePath) /* group prop is not working with query parameters, so we have to use a simple hack to expand the active path */"
+    :target="$props.openInNewtab ? '_blank' : ''"
     @click="onClick"
   >
     <template
@@ -152,6 +153,10 @@ const props = defineProps({
   to: {
     type: String,
     default: undefined
+  },
+  openInNewtab: {
+    type: Boolean,
+    default: false
   }
 });
 const emit = defineEmits(['expand-menu', 'click']);

@@ -23,6 +23,7 @@
     :class="_classes"
     :data-component-name="componentName"
     density="compact"
+    :target="$props.openInNewtab ? '_blank' : ''"
     @click.stop="onClick"
   >
     <template
@@ -107,6 +108,10 @@ const props = defineProps({
   children: {
     type: Array as PropType<INavItem[]>,
     default: () => []
+  },
+  openInNewtab: {
+    type: Boolean,
+    default: false
   }
 });
 const emit = defineEmits(['expand-menu', 'click']);
@@ -119,7 +124,6 @@ const onClick = () => {
   }
   navigateTo(props.to);
 };
-
 const _classes = computed(() => `${props.classes} primary-navigation-entry-level-${props.level}`);
 
 const isActive = computed(() => {
@@ -141,6 +145,7 @@ const isActive = computed(() => {
     return props.exact ? route.fullPath === props.to : route.fullPath.includes(props.to);
   }
 });
+
 </script>
 
 <style lang="scss">
