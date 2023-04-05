@@ -169,7 +169,7 @@
 
 <script lang="ts">
 import { Ref } from 'vue';
-import { cloneDeep, omit, upperFirst } from 'lodash';
+import { cloneDeep, isEqual, omit, upperFirst } from 'lodash';
 
 import { isObjectEqual, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
@@ -203,7 +203,7 @@ export default defineComponent({
     const config = useRuntimeConfig();
     const route = useRoute();
     const router = useRouter();
-    const { displaySuccessMessage, displayErrorMessage, expireAlert } = useVeoAlerts();
+    const { displaySuccessMessage, displayErrorMessage, expireAlert, displayInfoMessage } = useVeoAlerts();
     const { link } = useLinkObject();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
     const { ability } = useVeoPermissions();
@@ -353,6 +353,9 @@ export default defineComponent({
 
     async function saveObject() {
       await updateObject(upperFirst(t('objectSaved', { name: object.value?.displayName }).toString()), upperFirst(t('objectNotSaved').toString()));
+      if(!isEqual(object.value?.domains[domainId.value].riskValues , modifiedObject.value?.domains[domainId.value].riskValues)){
+        displayInfoMessage('', upperFirst(t('riskAlert').toString()))
+      }
     }
 
     async function restoreObject() {
@@ -540,6 +543,7 @@ export default defineComponent({
     "outdatedObject": "This dataset has been edited by another user. Do you want to load the changes?",
     "reset": "reset",
     "restore": "restore",
+    "riskAlert": "Changing the potential probability of occurrence\/effect changes risks under certain circumstances. Please check all affected risks!",
     "version": "version {version}"
   },
   "de": {
@@ -553,6 +557,7 @@ export default defineComponent({
     "outdatedObject": "Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?",
     "reset": "zurücksetzen",
     "restore": "wiederherstellen",
+    "riskAlert": "Die Änderung der potentiellen Eintrittswahrscheinlichkeit\/Auswirkung ändert unter Umständen Risiken. Bitte prüfen Sie alle betroffenen Risiken!",
     "version": "version {version}"
   }
 }
