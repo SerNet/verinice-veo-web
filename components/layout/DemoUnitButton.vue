@@ -17,27 +17,45 @@
 -->
 <template>
   <v-tooltip
-    top
-    :disabled="!!demoUnit"
+    :disabled="!!link"
+    location="top"
   >
-    <template #activator="{ props }">
+    <template #activator="{ props: tooltipProps }">
+      <v-btn
+        v-if="link"
+        color="primary"
+        :to="link"
+        :target="openInNewTab ? '_blank' : undefined"
+        variant="flat"
+        block
+        rounded="lg"
+        size="large"
+        data-component-name="demo-unit-button"
+        v-bind="tooltipProps"
+      >
+        <v-icon
+          :start="!iconOnly"
+          :icon="buttonIcon"
+        />
+        <span v-if="userIsInDemoUnit && !iconOnly">
+          {{ t('leaveDemoUnit') }}
+        </span>
+        <span v-else-if="!iconOnly">
+          {{ t('goToDemoUnit') }}
+        </span>
+      </v-btn>
       <div
-        v-bind="props"
-        class="d-block"
-        @click.prevent
+        v-else
+        v-bind="tooltipProps"
       >
         <v-btn
-          v-bind="$attrs"
+          disabled
           color="primary"
-          :disabled="!demoUnit || units.length === 0"
-          :icon="iconOnly"
-          flat
-          :class="{
-            'veo-demo-unit-button': !iconOnly
-          }"
-          style="height: 40px; width: 100%; border-radius: 12px"
+          variant="flat"
+          block
+          rounded="lg"
+          size="large"
           data-component-name="demo-unit-button"
-          @click="toggleDemoUnit"
         >
           <v-icon
             :start="!iconOnly"
@@ -61,6 +79,7 @@
 <script lang="ts">
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { mdiLoginVariant, mdiLogoutVariant } from '@mdi/js';
+import { RouteLocationRaw } from 'vue-router';
 
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { useVeoUser } from '~/composables/VeoUser';
@@ -85,7 +104,6 @@ export default defineComponent({
     const route = useRoute();
 
     // Demo unit/unit selection
-
     const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll, undefined,{
       enabled: authenticated
     });
@@ -108,28 +126,33 @@ export default defineComponent({
 
       return { unit, domain };
     });
-    
-    const toggleDemoUnit = () => {
-      const unit = createUUIDUrlParam('unit', nonDemoUnitDetails.value?.unit);
-      const domain = createUUIDUrlParam('domain', nonDemoUnitDetails.value?.domain as string);
-      const _unit = createUUIDUrlParam('_unit', demoUnit.value?.id as string);
-      const _domain = createUUIDUrlParam('_domain', demoUnit.value ? getFirstDomainDomaindId(demoUnit.value) || '' : '');
 
-      if (userIsInDemoUnit.value) {
-        if (!nonDemoUnitDetails.value) {
-          navigateTo('/index');
-        } else {
-          !_props.openInNewTab ? window.open (`/${unit}/domains/${domain}`): navigateTo(`/${unit}/domains/${domain}`);
+    const link = computed<RouteLocationRaw | undefined>(() => {
+      if(userIsInDemoUnit.value) {
+        if(nonDemoUnitDetails.value) {
+          return {
+            name: 'unit-domains-domain',
+            params: {
+              unit: createUUIDUrlParam('unit', nonDemoUnitDetails.value.unit),
+              domain: createUUIDUrlParam('domain', nonDemoUnitDetails.value.domain)
+            }
+          };
         }
       } else if (demoUnit.value) {
-        unitBeforeDemoUnit.value = currentUnit.value;
-        _props.openInNewTab && route.path.startsWith('/docs') ? window.open (`/${_unit}/domains/${_domain}`): navigateTo(`/${_unit}/domains/${_domain}`);
+        return {
+          name: 'unit-domains-domain',
+          params: {
+            unit: createUUIDUrlParam('unit', demoUnit.value.id),
+            domain: createUUIDUrlParam('domain', getFirstDomainDomaindId(demoUnit.value) || '')
+          }
+        };
       }
-    };
+      return undefined;
+    });
 
     return {
-      toggleDemoUnit,
       demoUnit,
+      link,
       units,
       userIsInDemoUnit,
       buttonIcon,
@@ -154,9 +177,3 @@ export default defineComponent({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-.veo-demo-unit-button {
-  justify-content: start;
-}
-</style>
