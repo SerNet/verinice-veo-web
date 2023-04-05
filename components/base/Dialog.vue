@@ -23,6 +23,7 @@
     :width="width"
     :content-class="dialogClasses"
     v-bind="$attrs"
+    @update:model-value="closeDialog"
   >
     <v-card
       class="d-flex flex-column"
@@ -41,7 +42,7 @@
           :icon="mdiClose"
           flat
           class="close-button"
-          @click="closeDialog()"
+          @click="closeDialog"
         />
       </v-card-title>
       <v-card-text
