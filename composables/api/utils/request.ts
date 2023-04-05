@@ -69,11 +69,11 @@ export const useRequest = () => {
 
   // Remove trailing slashes from each endpoint
   const apiEndpoints = reactive<Record<string, string>>({
-    accounts: context.$config.accountsApiUrl.replace(/\/$/, ''),
-    forms: context.$config.formsApiUrl.replace(/\/$/, ''),
-    history: context.$config.historyApiUrl.replace(/\/$/, ''),
-    reporting: context.$config.reportsApiUrl.replace(/\/$/, ''),
-    default: context.$config.apiUrl.replace(/\/$/, '')
+    accounts: context.$config.public.accountsApiUrl.replace(/\/$/, ''),
+    forms: context.$config.public.formsApiUrl.replace(/\/$/, ''),
+    history: context.$config.public.historyApiUrl.replace(/\/$/, ''),
+    reporting: context.$config.public.reportsApiUrl.replace(/\/$/, ''),
+    default: context.$config.public.apiUrl.replace(/\/$/, '')
   });
 
   const getUrl = (url: string) => {

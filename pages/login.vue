@@ -46,10 +46,10 @@
           </h4>
           <div class="text-center">
             <v-btn
-              v-if="$config.accountPath"
+              v-if="$config.public.accountPath"
               variant="tonal"
               size="x-large"
-              :href="$config.accountPath"
+              :href="$config.public.accountPath"
             >
               {{ t('register') }}
             </v-btn>
