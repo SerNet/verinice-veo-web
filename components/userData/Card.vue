@@ -20,6 +20,7 @@
   <BaseCard
     padding
     flex-column
+    class="justify-space-between flex-grow-1"
   >
     <h2 class="text-h3">
       {{ props.header }}
