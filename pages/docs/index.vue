@@ -123,32 +123,8 @@ useHead(() => ({
 
               }
             }
-            class overflowDetector extends Paged.Handler {
-              constructor(chunker, polisher, caller) {
-                super(chunker, polisher, caller);
-              }
-              afterRendered(pages) {
-                const pageHeight = document.querySelector('.pagedjs_area')?.clientHeight;
-                if (pageHeight) {
-                  let chapter = null;
-                  Array.from(document.getElementsByTagName("*")).map((child) => {
-                    if (child.tagName.match(/H\d+/)) {
-                      chapter = child;
-                    }
-                    if (child.tagName === "P" && child.offsetTop >= pageHeight) {
-                      if (chapter) {
-                        console.log(`Error: text overflow in chapter "${chapter.innerText.substring(0, 40)}" near "${child.innerText.substring(0, 40)}"`);
-                      } else {
-                        console.log(`Error: text overflow near "${child.innerText.substring(0, 40)}"`);
-                      }
-                    }
-                  });
-                }
-              }
-            }
 
             Paged.registerHandlers(MyHandler);
-            Paged.registerHandlers(overflowDetector);
             _window.PagedPolyfill.preview();
           }, 1000);
         }
