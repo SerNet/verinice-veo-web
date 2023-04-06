@@ -3,7 +3,7 @@
     "hint": "This page allows you to export data associated with your account.",
     "unitHeader": "Data of your active Unit(s):",
     "unitBody": "",
-    "domainHeader": "Domains:",
+    "domainHeader": "Data about the domain DS-GVO (simplifies the later reuse in verinice.veo DSMS):",
     "domainBody": "Data about the domain DS-GVO (simplifies the later reuse in verinice.veo DSMS):",
     "historyHeader": "Data history:",
     "historyBody": "",
