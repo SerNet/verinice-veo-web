@@ -114,5 +114,14 @@
 
   "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions,{0} meaning only one mitigation action can be applied to a risk",
 
-  "residualRiskHint": "the displayed residual risk has been derived from the input data.{0}You can overwrite it with a custom value"
+  "residualRiskHint": "the displayed residual risk has been derived from the input data.{0}You can overwrite it with a custom value",
+
+  "userDataExport": {
+    "hint": "Here you can exercise your right to data portability according to { link }. Download your personal data in JSON format (ZIP compressed if necessary) by clicking on the download links:",
+    "footerHint": {
+      "text":"Do you wish to transfer personal data to another provider? Please contact us { email }",
+      "href": "mailto:DSB{'@'}bitte-klaeren.de!",
+      "email": "DSB{'@'}bitte-klaeren.de!"
+    }
+  }
 }

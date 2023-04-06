@@ -114,5 +114,15 @@
 
   "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg,{0} d.h. es kann immer nur eine migitierende Maßnahme pro Risiko ausgewählt werden",
 
-  "residualRiskHint": "Das angezeigte Nettorisiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben."
+  "residualRiskHint": "Das angezeigte Nettorisiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben.",
+
+  "userDataExport": {
+    "hint": "Hier können Sie Ihr Recht auf Datenübertragbarkeit nach { link } wahrnehmen. Laden Sie ihre personenbezogenen Daten im JSON-Format (ZIP-komprimiert) durch Mausklick auf die Downloadlinks herunter:",
+    "footerHint": {
+      "text":"Wünschen Sie die Übertragung personenbezogener Daten an einen anderen Anbieter? Bitte kontaktieren Sie uns { email }",
+      "href": "mailto:DSB{'@'}bitte-klaeren.de!",
+      "email": "DSB{'@'}bitte-klaeren.de!"
+    }
+  }
 }
+
