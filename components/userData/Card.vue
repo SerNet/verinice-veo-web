@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2023 SerNet
+   - Copyright (C) 2023 jae
    -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -24,95 +24,78 @@
     <h2 class="text-h3">
       {{ props.header }}
     </h2>
-    <p>
+    <p v-if="props.body">
       {{ props.body }}
     </p>
 
     <!-- No downloads available -->
     <v-alert
-      v-show="items?.length == 0 && !prepareData && !isLoading"
+      v-show="props.showAlert"
       type="info"
       variant="tonal"
       :title="props.alertHeader"
       :text="props.alertBody"
     />
 
-    <!-- Downloads -->
-    <template
-      v-for="(item, index) in items"
-      :key="index"
-    >
-      <v-divider class="mt-4" />
-      <h3
-        v-if="item.name"
-        class="text-h4 mt-2"
-      >
-        {{ item.name }}
-      </h3>
-      <v-btn
-        v-show="!prepareData"
-        color="primary"
-        flat
-        class="ms-auto mt-4"
-        :loading="item.isLoading"
-        :disabled="item.isLoading"
-        @click="() => handleClick(index)"
-      >
-        <v-icon
-          :icon="mdiDownload"
-        />
-        {{ props.downloadBtnCopy }}
-      </v-btn>
-    </template>
+    <slot
+      v-if="slots.prepareData"
+      name="prepareData"
+    />
 
-    <!-- Prepare Downloads -->
-    <v-btn
-      v-show="prepareData"
-      :loading="isLoading"
-      color="primary"
-      variant="outlined"
-      class="ms-auto mt-4"
-      @click="prepareDownload"
-    >
-      {{ props.prepareBtnCopy }}
-    </v-btn>
+    <template v-if="!slots.prepareData">
+      <!-- Downloads -->
+      <template
+        v-for="(item, index) in items"
+        :key="index"
+      >
+        <v-divider class="mt-4" />
+        <h3
+          v-if="item.name"
+          class="text-h4 mt-2"
+        >
+          {{ item.name }}
+        </h3>
+        <v-btn
+          flat
+          color="primary"
+          class="ms-auto mt-4"
+          :loading="props.isLoading[index]"
+          :disabled="props.isLoading[index]"
+          @click="() => handleClick(index)"
+        >
+          <v-icon
+            :icon="mdiDownload"
+          />
+          {{ props.downloadBtnCopy }}
+        </v-btn>
+      </template>
+    </template>
   </BaseCard>
 </template>
 
 <script setup lang="ts">
+import { useSlots } from "vue";
 import { mdiDownload } from "@mdi/js";
 
 export interface Props {
   header: string,
-  body: string,
+  body?: string,
   downloadBtnCopy: string,
-  prepareBtnCopy: string,
   showDownloadIcon?: boolean,
+  showAlert?: boolean,
   alertHeader: string,
   alertBody: string,
   items: any[],
-  zipArchives?: Blob[],
-  prepareData?: boolean,
-  isLoading?: boolean
+  isLoading: boolean[],
+  handleClick: (index: number) => void,
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  body: '',
   showDownloadIcon: true,
-  zipArchives: () => [],
-  prepareData: false,
-  isLoading: false
+  showAlert: false,
+  zipArchives: () => []
 });
 
-const emit = defineEmits<{
-  (e: 'export-data', index: number): void;
-  (e: 'prepare-download'): void
-}>();
-
-function handleClick(index: number) {
-  emit('export-data', index);
-}
-
-function prepareDownload() {
-  emit('prepare-download');
-}
+const slots = useSlots();
 </script>
