@@ -165,6 +165,9 @@ const route = useRoute();
 const router = useRouter();
 
 const onClick = (event: any) => {
+  if(props.openInNewtab) {
+    return;
+  }
   if (props.miniVariant) {
     emit('expand-menu');
   }

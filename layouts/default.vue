@@ -28,6 +28,7 @@
       />
       <nuxt-link
         to="/"
+        :target="route.path.startsWith('/docs') ? '_blank' : undefined"
         class="text-decoration-none ml-4"
         data-component-name="logo"
       >
@@ -40,13 +41,14 @@
       <v-spacer />
       <DocsDownloadButton v-if="$route.path.startsWith('/docs')" />
       <LayoutLanguageSwitch />
-      <LayoutTutorialButton v-if="!$route.path.startsWith('/docs')"/>
+      <LayoutTutorialButton v-if="!$route.path.startsWith('/docs')" />
       <v-tooltip
         v-if="ability.can('view', 'documentation')"
         location="bottom"
       >
         <template #activator="{ props }">
           <v-btn
+            v-if="!$route.path.startsWith('/docs')"
             active-class="veo-active-list-item-no-background"
             class="mr-3"
             color="black"
@@ -55,7 +57,6 @@
             to="/docs/index"
             exact
             v-bind="props"
-            v-if="!$route.path.startsWith('/docs')"
           >
             <v-icon :icon="mdiHelpCircleOutline" />
           </v-btn>

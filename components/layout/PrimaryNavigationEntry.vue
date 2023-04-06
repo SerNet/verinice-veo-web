@@ -119,6 +119,9 @@ const emit = defineEmits(['expand-menu', 'click']);
 const route = useRoute();
   
 const onClick = () => {
+  if(props.openInNewtab) {
+    return;
+  }
   if (props.miniVariant) {
     emit('expand-menu');
   }
@@ -145,7 +148,6 @@ const isActive = computed(() => {
     return props.exact ? route.fullPath === props.to : route.fullPath.includes(props.to);
   }
 });
-
 </script>
 
 <style lang="scss">

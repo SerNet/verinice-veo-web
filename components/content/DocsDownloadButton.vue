@@ -24,7 +24,7 @@
       <div v-bind="props">
         <v-btn
           :disabled="!pdfExists"
-          :to="pdfExists ? pdfPath : '#'"
+          :href="pdfExists ? pdfPath : '#'"
           variant="flat"
           color="primary"
           class="mr-2"
