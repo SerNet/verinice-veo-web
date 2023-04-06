@@ -32,6 +32,7 @@
         size="large"
         data-component-name="demo-unit-button"
         v-bind="tooltipProps"
+        @click="onChangeUnit"
       >
         <v-icon
           :start="!iconOnly"
@@ -115,7 +116,7 @@ export default defineComponent({
     const userIsInDemoUnit = computed(() => currentUnit.value === demoUnit.value?.id);
     const buttonIcon = computed(() => (userIsInDemoUnit.value ? mdiLogoutVariant : mdiLoginVariant));
 
-    const unitBeforeDemoUnit = useStorage(LOCAL_STORAGE_KEYS.UNIT_BEFORE_DEMOUNIT, false, localStorage, { serializer: StorageSerializers.string });
+    const unitBeforeDemoUnit = useStorage(LOCAL_STORAGE_KEYS.UNIT_BEFORE_DEMOUNIT, '', localStorage, { serializer: StorageSerializers.string });
     const nonDemoUnitDetails = computed(() => {
       const unit = unitBeforeDemoUnit.value || nonDemoUnits.value?.[0]?.id;
       const nonDemoUnit = (units.value || []).find((_unit) => _unit.id === unit) as IVeoUnit;
@@ -150,12 +151,20 @@ export default defineComponent({
       return undefined;
     });
 
+    // Store current unit as last unit if user is in a normal unit (and thus wants to enter the demo unit). Only relevant if the user has at least 2 units.
+    const onChangeUnit = () => {
+      if(!userIsInDemoUnit.value) {
+        unitBeforeDemoUnit.value = currentUnit.value;
+      }
+    };
+
     return {
       demoUnit,
       link,
       units,
       userIsInDemoUnit,
       buttonIcon,
+      onChangeUnit,
 
       t
     };
