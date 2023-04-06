@@ -40,7 +40,6 @@
           :label="options && options.label"
           :class="options && options.class"
           :clearable="!options.required"
-          hide-details="auto"
           :prepend-icon="mdiCalendar"
           :hint="t('hint', [DATE_HINT])"
           readonly
@@ -105,7 +104,7 @@
       :label="options && options.label"
       :class="options && options.class"
       :clearable="!options.required"
-      hide-details="auto"
+      :data-attribute-name="last(objectSchemaPointer.split('/'))"
       :prepend-icon="mdiCalendar"
       :hint="t('hint', [DATE_HINT])"
       variant="underlined"
@@ -120,7 +119,6 @@
       :label="options && options.label"
       :class="options && options.class"
       :clearable="!options.required"
-      hide-details="auto"
       :prepend-icon="mdiClockOutline"
       :hint="t('hint', [DATE_HINT])"
       variant="underlined"
@@ -132,6 +130,7 @@
 </template>
 
 <script lang="ts">
+import{ last } from 'lodash';
 import { mdiCalendar, mdiClockOutline } from '@mdi/js';
 import { formatISO } from 'date-fns';
 
@@ -274,6 +273,7 @@ export default defineComponent({
       time,
 
       getControlErrorMessages,
+      last,
       mdiCalendar,
       mdiClockOutline,
       t,

@@ -50,7 +50,6 @@ get used in because of this bug: https://github.com/intlify/vue-i18n-next/issues
 The translations should get removed from the language files if the fix is also available for v8.x.
 * VSkeletonLoader, VDateInput, VTimeInput, VSpeedDial, VEditDialog and VDataIterator are not yet ported to nuxt 3 (vuetify v3.1), so we currently use local polyfills. Should get replaced by the vuetify components once available as they are more feature rich, more accessible and provide a better UI/UX.
 * The editors were useful to develop all object and formschemas, however constant modifications of them have left a toll on them. Should get integrated into a new, combinded editor, joining the domain editor.
-* API Plugin. While most api calls are now done using VueQuery and don't rely on this plugin anylonger, some synchronous operations still use the plugin. Those calls should use the same useRequest composable as VueQuery (and avoid code duplication as much as possible). Afterwards this plugin can get retired.
 * Externalize-Scripts: Currently there is no "after-everything" hook for node, so the externalize-scripts.mjx file HAS to be called after generating the application if you want to use the frontend in production (due to CSP)
 
 ## Documentation

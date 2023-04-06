@@ -10,12 +10,6 @@ steps:
   - title: 'Verfügbare Units'
     element: '[data-component-name=unit-selection-available-units]'
     intro: Wählen Sie die gewünschte Unit aus.
-  - title: 'Paginierung'
-    element: 'div.v-data-iterator > div.v-data-footer'
-    intro: Existieren viele Units können Sie durch die Paginierung die Anzahl der je Seite dargestellten Units anpassen und zwischen den einzelnen Seiten navigieren.
-  - title: 'Unit suchen'
-    element: '[data-component-name=unit-selection-search]'
-    intro: Um eine Unit zu suchen geben Sie mindestens drei Zeichen ein.
   - title: 'Geschafft'
 # todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
 #    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.

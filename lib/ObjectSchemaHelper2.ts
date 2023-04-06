@@ -275,9 +275,21 @@ export default class ObjectSchemaHelper {
   }
 
   public changeTranslationKey(oldKey: string, newKey: string) {
-    for (const language of Object.keys(this._translations)) {
-      this._translations[language][trim(newKey)] = this._translations[language][oldKey];
+    // Make sure new key is always trimmed
+    newKey = trim(newKey);
+
+    for (const language of Object.keys(this._translations)) {      
+      // Update exact key (for example scnario_threat)
+      this._translations[language][newKey] = this._translations[language][oldKey];
       delete this._translations[language][oldKey];
+
+      // Update child translations (for example scenario_threat_type)
+      this._translations[language] = Object.fromEntries(Object.entries(this._translations[language]).map(([translationKey, value]) => {
+        if(translationKey.includes(`${oldKey}_`)) {
+          translationKey = translationKey.replace(`${oldKey}_`, `${newKey}_`);
+        }
+        return [translationKey, value];
+      }));
     }
   }
 
@@ -751,7 +763,7 @@ export default class ObjectSchemaHelper {
   }
 
   private getAttributeType(attribute: IVeoObjectSchemaProperty) {
-    return attribute.type ? attribute.type : attribute.enum ? 'enum' : 'unknown';
+    return attribute.enum ? 'enum' : attribute.type ? attribute.type : 'unknown';
   }
 
   private cleanCustomObjectName(customObjectName: string) {

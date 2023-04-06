@@ -59,7 +59,7 @@
             :data="chart"
             :options="options[index]"
             :plugins="[ChartDataLabels]"
-            :style="{ height: `${chartHeight}px`, cursor: 'pointer', width: '100%' }"
+            :style="{ height: `${chartHeight}px`, cursor: 'pointer', width: '100%', position: 'relative' }"
           />
           <div
             v-else
@@ -81,16 +81,17 @@
 
 <script lang="ts">
 import { Bar } from 'vue-chartjs';
-import { Chart as ChartJS, BarController, Tooltip, CategoryScale, BarElement, LinearScale } from 'chart.js';
+import { Chart as ChartJS, BarController, Tooltip, CategoryScale, BarElement, LinearScale, ChartOptions } from 'chart.js';
 import { upperFirst } from 'lodash';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { IVeoDomainStatusCount } from '~/plugins/api/domain';
 import { CHART_COLORS } from '~/lib/utils';
-import { useFetchForms } from '~/composables/api/forms';
-import { useFetchTranslations } from '~/composables/api/translations';
-import { useFetchSchema } from '~/composables/api/schemas';
+import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { PropType } from 'vue';
+import { useQuery } from '~~/composables/api/utils/query';
 
 ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
@@ -136,7 +137,7 @@ export default defineComponent({
 
     const fetchSchemaQueryParameters = computed(() => ({ domainIds: [props.domainId], type: props.objectType }));
     const fetchSchemaQueryEnabled = computed(() => !!props.domainId);
-    const { data: objectSchema, isFetching: schemasIsLoading } = useFetchSchema(fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
+    const { data: objectSchema, isFetching: schemasIsLoading } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
 
     const sortedStatusBySubType = computed<Record<string, any>>(() =>
       (objectSchema.value?.properties?.domains?.properties?.[props.domainId]?.allOf || []).reduce((previousValue, currentValue) => {
@@ -146,11 +147,11 @@ export default defineComponent({
     );
 
     const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(translationQueryParameters);
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
 
-    const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const formsQueryParameters = computed(() => ({ domainId: props.domainId as string }));
     const formsQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled });
+    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled });
 
     const sortedSubTypes = computed(() =>
       Object.entries(props.data).sort(
@@ -160,9 +161,10 @@ export default defineComponent({
       )
     );
 
-    const options = computed(() =>
+    const options = computed<ChartOptions[]>(() =>
       sortedSubTypes.value.map(([_subType, subTypeData], index) => ({
         responsive: true,
+        maintainAspectRatio: false,
         onClick: (_point: any, $event: any) => handleClickEvent(index, $event),
         plugins: {
           datalabels: {
@@ -174,8 +176,10 @@ export default defineComponent({
               const index = context.dataIndex;
               const value = context.dataset?.data?.[index] || -1;
               return value > 0;
-            },
-            offset: 12
+            }
+          },
+          tooltip: {
+            enabled: false
           }
         },
         indexAxis: 'y' as 'x' | 'y',

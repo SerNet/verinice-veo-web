@@ -23,7 +23,7 @@
     fixed-footer
     :large="state !== WIZARD_STATES.START"
     :close-function="onClose"
-    @update:model-value="$emit('model-value', $event)"
+    @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
       <LayoutLoadingWrapper v-if="loadingFormSchema || loadingObjectSchema" />
@@ -38,6 +38,8 @@
           v-model:valid="createFormValid"
           v-model:object-type="objectSchemaId"
           v-model:sub-type="formSchemaDetails.subType"
+          v-model:name="formSchemaDetails.name"
+          v-model:sorting="formSchemaDetails.sorting"
           :model-value="WIZARD_STATES.CREATE"
           :domain-id="domainId"
           :object-schema="objectSchema"
@@ -49,7 +51,7 @@
           :model-value="WIZARD_STATES.IMPORT"
           :domain-id="domainId"
           :form-schema="formSchema"
-          :object-schemas-compatible="schemasCompatible"
+          :schemas-compatible="schemasCompatible"
           @force-import="importFormSchema()"
           @update:form-schema="uploadedFormSchema = $event"
           @update:object-schema="uploadedObjectSchema = $event"
@@ -86,10 +88,11 @@ import { JsonPointer } from 'json-ptr';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
-import { IVeoFormSchema, IVeoObjectSchema, IVeoObjectSchemaTranslations, IVeoTranslations } from '~/types/VeoTypes';
-import { useFetchForm } from '~/composables/api/forms';
-import { useFetchSchema } from '~/composables/api/schemas';
-import { useFetchTranslations } from '~/composables/api/translations';
+import { IVeoObjectSchema, IVeoObjectSchemaTranslations } from '~/types/VeoTypes';
+import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import schemaQueryDefinitions, { IVeoFetchSchemaParameters } from '~/composables/api/queryDefinitions/schemas';
+import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import { useQuery } from '~~/composables/api/utils/query';
 
 enum WIZARD_STATES {
   START,
@@ -108,7 +111,7 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['done', 'model-value'],
+  emits: ['done', 'update:model-value'],
   setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();
@@ -180,9 +183,9 @@ export default defineComponent({
     const formSchemaId = ref<string>();
     const uploadedFormSchema = ref<IVeoFormSchema>();
 
-    const fetchFormQueryParameters = computed(() => ({ domainId: props.domainId, id: formSchemaId.value || '' }));
+    const fetchFormQueryParameters = computed(() => ({ domainId: props.domainId as string, id: formSchemaId.value || '' }));
     const fetchFormQueryEnabled = computed(() => !!formSchemaId.value && formSchemaId.value !== 'custom');
-    const { data: remoteFormSchema, isFetching: loadingFormSchema } = useFetchForm(fetchFormQueryParameters, { enabled: fetchFormQueryEnabled });
+    const { data: remoteFormSchema, isFetching: loadingFormSchema } = useQuery(formsQueryDefinitions.queries.fetchForm, fetchFormQueryParameters, { enabled: fetchFormQueryEnabled });
 
     const formSchema = computed(() => {
       let schema = !formSchemaId.value || formSchemaId.value === 'custom' ? uploadedFormSchema.value : remoteFormSchema.value;
@@ -197,9 +200,9 @@ export default defineComponent({
     const objectSchemaId = ref<string>();
     const uploadedObjectSchema = ref<IVeoObjectSchema>();
 
-    const fetchSchemaQueryParameters = computed(() => ({ type: objectSchemaId.value || '', domainIds: [props.domainId] }));
+    const fetchSchemaQueryParameters = computed<IVeoFetchSchemaParameters>(() => ({ type: objectSchemaId.value || '', domainIds: [props.domainId] }));
     const fetchSchemaQueryEnabled = computed(() => !!objectSchemaId.value && objectSchemaId.value !== 'custom');
-    const { data: remoteObjectSchema, isFetching: loadingObjectSchema } = useFetchSchema(fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
+    const { data: remoteObjectSchema, isFetching: loadingObjectSchema } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
 
     const objectSchema = computed(() => {
       let schema = forceOwnObjectSchema.value || objectSchemaId.value === 'custom' ? uploadedObjectSchema.value : remoteObjectSchema.value;
@@ -238,7 +241,7 @@ export default defineComponent({
 
     // translation stuff
     const translationQueryParameters = computed(() => ({ languages: (locales.value as LocaleObject[]).map((locale) => locale.code) }));
-    const { data: translations } = useFetchTranslations(translationQueryParameters);
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
 
     // create stuff
     const createFormValid = ref(true);

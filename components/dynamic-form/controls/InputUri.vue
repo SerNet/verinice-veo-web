@@ -26,7 +26,7 @@
     :class="options && options.class"
     class="vf-form-element vf-input-uri"
     :clearable="!options.required"
-    hide-details="auto"
+    :data-attribute-name="last(objectSchemaPointer.split('/'))"
     variant="underlined"
     @update:model-value="$emit('update:model-value', $event)"
     @click:clear="$emit('update:model-value', undefined)"
@@ -45,6 +45,8 @@
 </template>
 
 <script lang="ts">
+import{ last } from 'lodash';
+
 import { mdiOpenInNew } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
@@ -70,6 +72,8 @@ export default defineComponent({
   setup() {
     return {
       getControlErrorMessages,
+
+      last,
       mdiOpenInNew
     };
   }

@@ -27,7 +27,7 @@
     :class="options && options.class"
     class="vf-form-element vf-input-text-multiline"
     :clearable="!options.required"
-    hide-details="auto"
+    :data-attribute-name="last(objectSchemaPointer.split('/'))"
     auto-grow
     rows="3"
     variant="underlined"
@@ -37,6 +37,8 @@
 </template>
 
 <script lang="ts">
+import{ last } from 'lodash';
+
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
@@ -59,7 +61,9 @@ export default defineComponent({
   emits: ['update:model-value'],
   setup() {
     return {
-      getControlErrorMessages
+      getControlErrorMessages,
+
+      last
     };
   }
 });

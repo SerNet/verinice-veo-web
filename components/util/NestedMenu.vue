@@ -30,7 +30,7 @@
       />
     </template>
     <template #default>
-      <v-list dense>
+      <v-list density="compact">
         <template v-for="item of items">
           <UtilNestedMenu
             v-if="item.children && item.children.length"
@@ -95,12 +95,12 @@
 
 <script lang="ts">
 import { PropType } from 'vue';
-
 import { mdiChevronRight } from '@mdi/js';
+import { ComposerTranslation } from 'vue-i18n';
 
 export interface INestedMenuEntries {
   key: string;
-  title: string;
+  title: string | ComposerTranslation;
   icon?: string;
   action?: CallableFunction;
   children?: INestedMenuEntries[];

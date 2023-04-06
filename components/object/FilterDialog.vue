@@ -42,7 +42,7 @@
           class="mt-2"
         >
           <v-card-text>
-            <v-list>
+            <v-list density="compact">
               <ObjectFilter
                 v-for="(option, index) of additionalFilterOptions"
                 :key="option.name || `${option.type}_${index}`"
@@ -111,10 +111,11 @@ import { clone, omitBy, upperFirst } from 'lodash';
 
 import { IVeoFilterDivider, IVeoFilterOption, IVeoFilterOptionType } from './Filter.vue';
 import { extractSubTypesFromObjectSchema } from '~/lib/utils';
-import { IVeoFormSchemaMeta, IVeoObjectSchema } from '~/types/VeoTypes';
-import { useFetchForms } from '~/composables/api/forms';
-import { useFetchTranslations } from '~/composables/api/translations';
-import { useFetchSchemasDetailed } from '~/composables/api/schemas';
+import { IVeoObjectSchema } from '~/types/VeoTypes';
+import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import { useQuery } from '~~/composables/api/utils/query';
+import { useFetchSchemasDetailed } from '~~/composables/api/schemas';
 
 export default defineComponent({
   props: {
@@ -178,11 +179,11 @@ export default defineComponent({
     // Fetching of object types & translations for status
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
-    const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const formsQueryParameters = computed(() => ({ domainId: props.domainId as string}));
     const formsQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+    const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     // Form actions
     /**

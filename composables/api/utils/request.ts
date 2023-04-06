@@ -15,7 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import Cookies from 'js-cookie';
 import { defaultsDeep } from 'lodash';
+import { Ref } from 'vue';
 
 import { useVeoUser } from '~/composables/VeoUser';
 import { sanitizeURLParams } from '~/lib/utils';
@@ -55,7 +57,15 @@ export interface RequestOptions extends RequestInit {
 export const useRequest = () => {
   const context = useNuxtApp();
   const user = useVeoUser();
-  const { locale } = useI18n();
+
+
+  let locale: Ref<string>;
+  // Get current locale, either through i18n composable or through header. Reason for try catch is use via dev plugin
+  try {
+    locale = useI18n().locale;
+  } catch(e) {
+    locale = ref(Cookies.get('i18n_redirected') || 'en');
+  }
 
   // Remove trailing slashes from each endpoint
   const apiEndpoints = reactive<Record<string, string>>({

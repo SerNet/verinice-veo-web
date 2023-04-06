@@ -70,8 +70,9 @@
 import { upperFirst } from 'lodash';
 
 import { separateUUIDParam } from '~/lib/utils';
-import { IVeoDomain } from '~/types/VeoTypes';
-import { useFetchDomain } from '~/composables/api/domains';
+import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import { useQuery } from '~~/composables/api/utils/query';
+
 
 export default defineComponent({
   setup() {
@@ -87,7 +88,7 @@ export default defineComponent({
 
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
     const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
-    const { data: domain } = useFetchDomain(fetchDomainQueryParameters, { onSuccess: redirectIfNoRiskDefinitionSelected });
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { onSuccess: redirectIfNoRiskDefinitionSelected });
     
     const viewRiskDefinition = (id: string) => {
       router.push({

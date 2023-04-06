@@ -49,7 +49,8 @@
   </BaseTabs>
 </template>
 <script lang="ts" setup>
-import { IVeoObjectSchema, IVeoFormSchema } from '~/types/VeoTypes';
+import { IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
 
 defineProps({
   code: {

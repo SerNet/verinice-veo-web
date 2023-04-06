@@ -21,7 +21,6 @@
     :id="formSchemaPointer"
     class="vf-label"
     :class="options && options.class"
-    :style="options && options.style"
   >
     {{ options.label }}
   </div>

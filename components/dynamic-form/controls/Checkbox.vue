@@ -26,10 +26,12 @@
     :class="options && options.class"
     class="vf-form-element vf-checkbox"
     :indeterminate="modelValue === undefined"
-    hide-details="auto"
+    :data-attribute-name="last(objectSchemaPointer.split('/'))"
     :false-value="false"
     :true-value="true"
     color="primary"
+    role="checkbox"
+    :aria-checked="!!modelValue"
     @update:model-value="$emit('update:model-value', $event);"
   >
     <template
@@ -45,6 +47,7 @@
 </template>
 
 <script lang="ts">
+import{ last } from 'lodash';
 import { mdiClose } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
@@ -57,8 +60,8 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
     de: 'Checkbox'
   },
   description: {
-    en: 'Can either be checked or not (true/false). If not required, value can be deleted by pressing X.',
-    de: 'Kann entweder angekreuzt werden oder nicht (wahr/falsch). Falls nicht erforderlich, kann der Wert per X gelöscht werden.'
+    en: 'Can either contain a boolean value (true/false) or be set to undefined. If not required, value can be deleted by pressing X.',
+    de: 'Kann einen boolschen Wert besitzen (wahr/falsch) oder undefiniert sein. Falls nicht erforderlich, kann der Wert per X gelöscht werden.'
   },
   conditions: (props) => [props.objectSchema.type === 'boolean']
 };
@@ -70,6 +73,7 @@ export default defineComponent({
   setup() {
     return {
       getControlErrorMessages,
+      last,
       mdiClose
     };
   }

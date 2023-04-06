@@ -28,19 +28,23 @@
         class="mr-2"
         color="white"
         rounded
-        primary
-        flat
-        small
+        size="small"
+        variant="flat"
         style="outline: 1px solid black"
+        data-component-name="filter-bar-filter-button"
         @click="filterDialogVisible = true"
       >
-        <v-icon :icon="mdiFilter" />
+        <v-icon
+          :icon="mdiFilter"
+          location="start"
+        />
         {{ upperFirst(t('filter').toString()) }}
       </v-btn>
     </v-col>
     <v-col
       cols="auto"
       class="grow"
+      data-component-name="filter-bar-active-filters"
     >
       <v-chip-group>
         <BaseChip
@@ -66,9 +70,9 @@ import { PropType } from 'vue';
 import { omit, upperFirst } from 'lodash';
 import { mdiFilter } from '@mdi/js';
 
-import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
-import { useFetchTranslations } from '~/composables/api/translations';
-import { useFetchForms } from '~/composables/api/forms';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
@@ -104,11 +108,11 @@ export default defineComponent({
     const { t: $t } = useI18n({ useScope: 'global' });
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
     const formsQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+    const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     const filterDialogVisible = ref(false);
 

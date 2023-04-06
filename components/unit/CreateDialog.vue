@@ -22,6 +22,7 @@
     :persistent="persistent || creatingUnit"
     :close-disabled="creatingUnit"
     v-bind="$attrs"
+    @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
       <v-form
@@ -68,9 +69,10 @@
 </template>
 <script lang="ts" setup>
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
-import { useCreateUnit } from '~/composables/api/units';
-import { useRequest } from '~/composables/api/utils/request';
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useRules } from '~/composables/utils';
+import { useMutation } from '~~/composables/api/utils/mutation';
+import { useQuerySync } from '~~/composables/api/utils/query';
 
 const props = defineProps({
   modelValue: {
@@ -91,7 +93,6 @@ const { t: $t } = useI18n({ useScope: 'global' });
 const router = useRouter();
 const { requiredRule } = useRules();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-const { request } = useRequest();
 const { ability } = useVeoPermissions();
 
 watch(() => props.modelValue, (newValue) => {
@@ -107,27 +108,29 @@ const form = ref();
 const formIsValid = ref(false);
 const newUnit = reactive<{ name: string | undefined, description: string | undefined }>({ name: undefined, description: undefined });
 
-const { mutateAsync, isLoading: creatingUnit, data: newUnitPayload } = useCreateUnit({ onError: (error: any) => {
-  displayErrorMessage(t('createUnitError'), error.message);
-} });
+const { mutateAsync, isLoading: creatingUnit, data: newUnitPayload } = useMutation(unitQueryDefinitions.mutations.create);
 const createUnit = async () => {
   if(!formIsValid.value || ability.value.cannot('manage', 'units')) {
     return;
   }
-  await mutateAsync(newUnit);
-  displaySuccessMessage(t('unitCreated'));
-  emit('update:model-value', false);
-  const unit = await request('/api/units/:id', { params: { id: newUnitPayload.value.resourceId } });
-  const domainId = getFirstDomainDomaindId(unit);
+  try {
+    await mutateAsync(newUnit);
+    displaySuccessMessage(t('unitCreated'));
+    emit('update:model-value', false);
+    const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: newUnitPayload.value?.resourceId as string });
+    const domainId = getFirstDomainDomaindId(unit);
 
-  if (domainId) {
-    router.push({
-      name: 'unit-domains-domain',
-      params: {
-        unit: createUUIDUrlParam('unit', unit.id),
-        domain: createUUIDUrlParam('domain', domainId)
-      }
-    });
+    if (domainId) {
+      router.push({
+        name: 'unit-domains-domain',
+        params: {
+          unit: createUUIDUrlParam('unit', unit.id),
+          domain: createUUIDUrlParam('domain', domainId)
+        }
+      });
+    }
+  } catch (error: any) {
+    displayErrorMessage(t('createUnitError'), error.message);
   }
 };
 </script>

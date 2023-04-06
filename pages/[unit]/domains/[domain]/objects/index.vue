@@ -56,7 +56,7 @@
           @click="openItem"
         >
           <template #actions="{item}">
-            <div class="d-flex">
+            <div class="d-flex justify-end">
               <v-tooltip
                 v-for="btn in actions"
                 :key="btn.id"
@@ -124,16 +124,17 @@ import { omit, upperFirst } from 'lodash';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { IVeoEntity } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject } from '~/composables/VeoObjectUtilities';
 import { ObjectTableHeader } from '~/components/object/Table.vue';
-import { useFetchObjects } from '~/composables/api/objects';
-import { useFetchForms } from '~/composables/api/forms';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useFetchTranslations } from '~/composables/api/translations';
-import { useFetchSchemas } from '~/composables/api/schemas';
+import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import { useQuery } from '~~/composables/api/utils/query';
+import { useFetchObjects } from '~~/composables/api/objects';
 
 export const ROUTE_NAME = 'unit-domains-domain-objects';
 
@@ -150,10 +151,10 @@ export default defineComponent({
     const { displayErrorMessage } = useVeoAlerts();
     const { clone } = useCloneObject();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
-    const { data: endpoints } = useFetchSchemas();
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations, isFetching: translationsLoading } = useFetchTranslations(fetchTranslationsQueryParameters);
+    const { data: translations, isFetching: translationsLoading } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     const itemDelete = ref<IVeoEntity>();
 
@@ -207,11 +208,11 @@ export default defineComponent({
       endpoint: endpoint.value
     }));
     const queryEnabled = computed(() => !!objectType.value && !!endpoint.value);
-    const { data: items, isLoading: isLoadingObjects } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true, placeholderData: [] });
+    const { data: items, isLoading: isLoadingObjects } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true });
 
     const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
     const formsQueryEnabled = computed(() => !!domainId.value);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+    const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
     const isLoading = computed(() => isLoadingObjects.value || translationsLoading.value);
 
@@ -341,11 +342,11 @@ export default defineComponent({
         id: 'clone',
         label: upperFirst(t('cloneObject').toString()),
         icon: mdiContentCopy,
-        async action(item: IVeoEntity) {
+        async action(item: any) {
           try {
-            await clone(item);
+            await clone(item.raw);
           } catch (e: any) {
-            showError('clone', item, e);
+            showError('clone', item.raw, e);
           }
         }
       },
@@ -366,15 +367,16 @@ export default defineComponent({
           {
             priority: 31,
             order: 51,
+            key: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
             value: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
-            render: ({ item }) =>
-              h('div', item.domains[domainId.value]?.decisionResults?.piaMandatory?.value ? $t('global.button.yes').toString() : t('global.button.no').toString()),
+            render: ({ item }) => h('div', item.raw.domains?.[domainId.value]?.decisionResults?.piaMandatory?.value ? $t('global.button.yes').toString() : t('global.button.no').toString()),
             text: t('dpiaMandatory').toString(),
             sortable: false,
             width: 210
+            
           }
         ]
-        : []
+        :[]
     );
 
     return {

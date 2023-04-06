@@ -225,9 +225,10 @@ import { cloneDeep, pick, upperFirst } from 'lodash';
 import { mdiAutoFix, mdiFormatText, mdiFormSelect } from '@mdi/js';
 
 import { INPUT_TYPES } from '~/types/VeoEditor';
-import { IVeoFormSchema, IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { generateFormSchema, Mode } from '~/components/dynamic-form/util';
 import { IVeoFormsElementDefinition } from '~/components/dynamic-form/types';
+import { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
 
 export interface IControl {
   scope: string;
@@ -366,7 +367,9 @@ export default defineComponent({
             '/members$',
             '/designator$',
             '(\\w+)/properties/domains$',
-            '_self'
+            '_self',
+            '/risks$',
+            '/decisionResults$'
           ]
         },
         Mode.VEO

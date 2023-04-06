@@ -35,7 +35,7 @@ import { logError } from './modules/HandleError';
 import { useRequest } from "~~/composables/api/utils/request";
 
 // Types
-import { IVeoAccount } from '~~/composables/api/accounts';
+import { IVeoAccount } from "~~/composables/api/queryDefinitions/accounts";
 
 // Composables
 const { t } = useI18n();

@@ -19,8 +19,8 @@
   <LayoutPageWrapper
     :title="title"
     title-class="d-flex align-center"
-    collapsable-left
-    collapsable-right
+    :collapsable-left="schemaIsValid.valid"
+    :collapsable-right="schemaIsValid.valid"
   >
     <template
       v-if="formSchema && objectSchema"
@@ -147,7 +147,7 @@
       </v-tooltip>
     </template>
     <template
-      v-if="formSchema && objectSchema"
+      v-if="formSchema && objectSchema && schemaIsValid.valid"
       #default
     >
       <BasePage
@@ -171,6 +171,7 @@
         </template>
         <template #default>
           <EditorFormSchemaBacklog
+            v-if="objectSchema && formSchema"
             :object-schema="objectSchema"
             :form-schema="formSchema"
             :search-query="searchQuery"
@@ -183,47 +184,19 @@
         :title="t('usedControls')"
         :titlebar-alignment="PageHeaderAlignment.CENTER"
       >
-        <template
-          v-if="schemaIsValid.valid"
-          #default
-        >
+        <template #default>
           <div class="fill-height fill-width d-flex">
-            <EditorFormSchemaGenerator
+            <EditorFormSchemaPlayground
+              v-if="formSchema"
               v-model="formSchema.content"
-              :schema="objectSchema"
-              :general-translation="translation && translation.lang[language]"
-              :custom-translations="formSchema.translation"
-              :language="language"
-              @delete="onDelete"
-              @update="onUpdate"
-              @update-custom-translation="setFormTranslation"
+              @set-translations="updateTranslations"
+            />
+            <v-progress-circular
+              v-else
+              size="64"
+              indeterminate
             />
           </div>
-        </template>
-        <template
-          v-else
-          #default
-        >
-          <v-row class="fill-height flex-column text-center align-center px-8">
-            <v-col
-              cols="auto"
-              style="flex-grow: 0"
-            >
-              <v-icon
-                style="font-size: 8rem; opacity: 0.5"
-                color="primary"
-                :icon="mdiInformationOutline"
-              />
-            </v-col>
-            <v-col
-              cols="auto"
-              class="text-left"
-            >
-              <span class="text-h3">
-                {{ t("invalidFormSchema") }}
-              </span>
-            </v-col>
-          </v-row>
         </template>
       </BasePage>
       <BasePage
@@ -233,11 +206,9 @@
         :title="t('preview')"
         :titlebar-alignment="PageHeaderAlignment.CENTER"
       >
-        <template
-          v-if="schemaIsValid.valid"
-          #default
-        >
+        <template #default>
           <DynamicFormEntrypoint
+            v-if="formSchema && objectSchema"
             v-model="objectData"
             :object-schema="objectSchema"
             :form-schema="formSchema.content"
@@ -246,31 +217,18 @@
             :locale="language"
           />
         </template>
-        <template
-          v-else
-          #default
-        >
-          <v-row class="fill-height flex-column text-center align-center px-8">
-            <v-col
-              cols="auto"
-              style="flex-grow: 0"
-            >
-              <v-icon
-                style="font-size: 8rem; opacity: 0.5"
-                color="primary"
-                :icon="mdiInformationOutline"
-              />
-            </v-col>
-            <v-col
-              cols="auto"
-              class="text-left"
-            >
-              <span class="text-h3">
-                {{ t("invalidFormSchema") }}
-              </span>
-            </v-col>
-          </v-row>
-        </template>
+      </BasePage>
+    </template>
+    <template
+      v-else
+      #default
+    >
+      <BasePage>
+        <UtilValidationResults
+          v-if="schemaIsValid.errors.length"
+          v-bind="validationActions"
+          :messages="schemaIsValid"
+        />
       </BasePage>
     </template>
     <template #helpers>
@@ -282,7 +240,7 @@
       <EditorErrorDialog
         v-model="errorDialogVisible"
         :validation="schemaIsValid"
-        @fix="onFixRequest"
+        v-bind="validationActions"
       />
       <EditorFormSchemaCodeEditorDialog
         v-model="codeEditorVisible"
@@ -304,7 +262,7 @@
         @update-name="setFormName"
       />
       <EditorFormSchemaDetailsDialog
-        v-if="formSchema"
+        v-if="formSchema && objectSchema"
         v-model="detailDialogVisible"
         :object-schema="objectSchema"
         :form-schema="formSchema.name[language]"
@@ -320,31 +278,34 @@
 </template>
 
 <script lang="ts">
+export const PROVIDE_KEYS = {
+  language: 'language',
+  objectSchema: 'mainObjectSchema',
+  objectSchemaTranslations: 'os_translations',
+  formSchemaTranslations: 'fs_translations'
+};
+
 import { Ref } from 'vue';
-import { JsonPointer } from 'json-ptr';
 import { mdiAlertCircleOutline, mdiCodeTags, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
 import { useDisplay } from 'vuetify';
 
-import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
+import { deleteElementCustomTranslation, validate } from '~/lib/FormSchemaHelper';
 import {
-  IVeoTranslations,
-  IVeoObjectSchema,
-  IVeoFormSchema,
-  IVeoFormSchemaItemDeleteEvent,
-  IVeoFormSchemaItem,
-  IVeoFormSchemaItemUpdateEvent,
-  IVeoFormSchemaTranslationCollection,
-  IVeoFormSchemaMeta
-} from '~/types/VeoTypes';
+  IVeoObjectSchema, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
 import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useCreateForm, useUpdateForm } from '~/composables/api/forms';
+import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
-import { useFetchDomain } from '~/composables/api/domains';
-import { isArray } from 'lodash';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import { IVeoTranslations } from '~~/composables/api/queryDefinitions/translations';
+import { useMutation } from '~~/composables/api/utils/mutation';
+import { useQuery } from '~~/composables/api/utils/query';
+import { PENDING_TRANSLATIONS } from '~~/components/editor/formSchema/playground/EditElementDialog.vue';
+import { JsonPointer } from 'json-ptr';
+import { cloneDeep, isArray } from 'lodash';
 
 export default defineComponent({
   setup() {
@@ -393,6 +354,7 @@ export default defineComponent({
     const translation: Ref<IVeoTranslations | undefined> = ref(undefined);
     const objectData = ref({});
     const language = ref(locale.value);
+    provide(PROVIDE_KEYS.language, language);
 
     watch(
       () => locale.value,
@@ -435,7 +397,7 @@ export default defineComponent({
       domainId: domainId.value,
       form: formSchema.value as IVeoFormSchema
     }));
-    const { mutateAsync: create } = useCreateForm({
+    const { mutateAsync: create } = useMutation(formQueryDefinitions.mutations.createForm, {
       onSuccess: (data: any) => {
         if (formSchema.value) {
           formSchema.value.id = data; // For some reason the interface always returns void, even though this is a string
@@ -447,7 +409,7 @@ export default defineComponent({
       domainId: domainId.value,
       form: formSchema.value as IVeoFormSchema
     }));
-    const { mutateAsync: update } = useUpdateForm();
+    const { mutateAsync: update } = useMutation(formQueryDefinitions.mutations.updateForm);
 
     async function save() {
       // control whether save new or save updated schema
@@ -467,6 +429,9 @@ export default defineComponent({
     }
 
     function updateSchemaName(value: string) {
+      if(!formSchema.value) {
+        return;
+      }
       formSchema.value.name[language.value] = value;
     }
 
@@ -482,6 +447,25 @@ export default defineComponent({
       }
     }
 
+    const updateTranslations = (translations: PENDING_TRANSLATIONS) => {
+      if(!formSchema.value) {
+        return;
+      }
+      for(const language of Object.keys(translations)) {
+        if(!formSchema.value.translation[language]) {
+          formSchema.value.translation[language] = {};
+        }
+        for(const translationKey of Object.keys(translations[language])) {
+          const value = translations[language][translationKey];
+          if(value) {
+            formSchema.value.translation[language][translationKey] = value;
+          } else {
+            delete formSchema.value.translation[language][translationKey];
+          }
+        }
+      }
+    };
+
     const invalidSchemaDownloadDialogVisible = ref(false);
     function downloadSchema(forceDownload = false) {
       if (schemaIsValid.value.valid === false && !forceDownload) {
@@ -494,43 +478,13 @@ export default defineComponent({
       }
     }
 
-    function onDelete(event: IVeoFormSchemaItemDeleteEvent): void {
-      if (formSchema.value) {
-        const pointer = event.formSchemaPointer as string;
-        // Delete custom translation keys for deleted elemented and nested elements
-        const elementFormSchema = JsonPointer.get(formSchema.value.content, pointer) as IVeoFormSchemaItem;
-        deleteElementCustomTranslation(elementFormSchema, formSchema.value.translation, setFormTranslation);
-        const vjpPointer = pointer.replace('#', '');
-        // Not allowed to make changes on the root object
-        if (event.formSchemaPointer !== '#') {
-          const parts = vjpPointer.split('/');
-          const lastPart = parts.pop();
-          const partToModify = JsonPointer.get(formSchema.value.content, parts.join('/'));
-          if(isArray(partToModify)) {
-            partToModify.splice(parseInt(lastPart), 1);
-          } else {
-            delete partToModify[lastPart];
-          }
-          JsonPointer.set(formSchema.value.content, parts.join('/'), partToModify);
-        } else {
-          delete formSchema.value.content;
-        }
-      }
-    }
-
-    function onUpdate(event: IVeoFormSchemaItemUpdateEvent): void {
-      if (formSchema.value?.content) {
-        JsonPointer.set(formSchema.value.content, (event.formSchemaPointer as string).replace('#', ''), event.data);
-      }
-    }
-
     // TODO: during the refactoring process, look if controlItems here and in Backlog can be removed
     function updateControlItems(items: any) {
       controlItems.value = items;
     }
 
     const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
-    const { data: domain } = useFetchDomain(fetchDomainQueryParameters);
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     /**
      * Translations related stuff
@@ -551,12 +505,6 @@ export default defineComponent({
     function setFormName(event: IVeoFormSchemaMeta['name']) {
       if (formSchema.value) {
         formSchema.value.name = event;
-      }
-    }
-
-    function onFixRequest(code: string, params?: Record<string, any>) {
-      if (code === 'E_PROPERTY_MISSING' && params) {
-        onDelete(params as any);
       }
     }
 
@@ -605,6 +553,38 @@ export default defineComponent({
       return toReturn;
     });
 
+    const objectSchemaTranslations = computed(() => translation.value?.lang);
+    const formSchemaTranslations = computed(() => formSchema.value?.translation);
+
+    provide(PROVIDE_KEYS.objectSchemaTranslations, objectSchemaTranslations);
+    provide(PROVIDE_KEYS.formSchemaTranslations, formSchemaTranslations);
+
+    const validationActions: Record<string, (errorCode: string, details: Record<string, any>) => void> = {
+      onFix: (errorCode, details) => {
+        switch(errorCode) {
+          case 'E_PROPERTY_MISSING':
+            if(formSchema.value) {
+              const toModify = cloneDeep(formSchema.value);
+              const elementFormSchema = JsonPointer.get(toModify.content, details.formSchemaPointer) as IVeoFormSchemaItem;
+              deleteElementCustomTranslation(elementFormSchema, toModify.translation, setFormTranslation);
+              // You can't delete the root object
+              if (details.formSchemaPointer && details.formSchemaPointer !== '#') {
+                const parts = details.formSchemaPointer.split('/');
+                const lastPart = parts.pop();
+                const partToModify: any = JsonPointer.get(toModify.content, parts.join('/'));
+                if(isArray(partToModify)) {
+                  partToModify.splice(parseInt(lastPart), 1);
+                } else {
+                  delete partToModify[lastPart];
+                }
+                JsonPointer.set(toModify.content, parts.join('/'), partToModify);
+              }
+              formSchema.value = toModify;
+            }
+        }
+      }
+    };
+
     return {
       ability,
       additionalContext,
@@ -628,8 +608,6 @@ export default defineComponent({
       updateSubType,
       updateSorting,
       downloadSchema,
-      onDelete,
-      onUpdate,
       updateControlItems,
       invalidSchemaDownloadDialogVisible,
       downloadButton,
@@ -639,11 +617,12 @@ export default defineComponent({
       availableLanguages,
       setFormTranslation,
       setFormName,
-      onFixRequest,
       PageHeaderAlignment,
       save,
       translations,
+      updateTranslations,
       onWizardFinished,
+      validationActions,
 
       mdiAlertCircleOutline,
       mdiCodeTags,

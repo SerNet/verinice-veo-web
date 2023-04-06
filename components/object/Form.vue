@@ -185,18 +185,21 @@
 import { PropType } from 'vue';
 
 import { upperFirst, merge, debounce } from 'lodash';
-import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } from '@mdi/js';
+import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiKickstarter, mdiTableOfContents } from '@mdi/js';
 
 import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
-import { getRiskAdditionalContext, getStatusAdditionalContext } from '~/components/dynamic-form/additionalContext';
+import { getRiskAdditionalContext, getStatusAdditionalContext, getSubTypeTranslation } from '~/components/dynamic-form/additionalContext';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoInspectionResult, IVeoObjectHistoryEntry, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry, IVeoDecisionEvaluation } from '~/types/VeoTypes';
 import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
-import { useFetchForm, useFetchForms } from '~/composables/api/forms';
-import { useFetchTranslations } from '~/composables/api/translations';
-import { useFetchDomain } from '~/composables/api/domains';
-import { useFetchSchema, useFetchSchemas } from '~/composables/api/schemas';
+import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+
+import { useQuery, useQuerySync, useQueries } from '~~/composables/api/utils/query';
 
 enum SIDE_CONTAINERS {
   HISTORY,
@@ -239,10 +242,6 @@ export default defineComponent({
       type: String,
       required: true
     },
-    preselectedSubType: {
-      type: String,
-      default: undefined
-    },
     valid: {
       type: Boolean,
       default: true
@@ -267,24 +266,34 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t, locale } = useI18n();
     const { t: $t } = useI18n({ useScope: 'global' });
-    const { $api } = useNuxtApp();
     const { personReactiveFormActions } = useVeoReactiveFormActions();
+
+    // Object stuff
+    const objectData = computed({
+      get() {
+        return props.modelValue as Record<string, any>;
+      },
+      set(newValue: Record<string, any>) {
+        emit('update:model-value', newValue);
+      }
+    });
+    const subType = computed(() => objectData.value?.domains?.[props.domainId]?.subType);
 
     // Formschema/display stuff
     // Fetching object schema
     const fetchSchemaQueryParameters = computed(() => ({ type: props.objectType, domainIds: [props.domainId] }));
     const fetchSchemaQueryEnabled = computed(() => !!props.objectType && !!props.domainId);
-    const { data: objectSchema, isFetching: objectSchemaIsFetching } = useFetchSchema(fetchSchemaQueryParameters, {
+    const { data: objectSchema, isFetching: objectSchemaIsFetching } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, {
       enabled: fetchSchemaQueryEnabled
     });
 
     const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations, isFetching: translationsAreFetching } = useFetchTranslations(translationQueryParameters);
+    const { data: translations, isFetching: translationsAreFetching } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
     const mergedTranslations = computed<IVeoTranslations['lang']>(() => merge({}, translations.value?.lang || {}, currentFormSchema.value?.translation || {}));
 
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
-    const { data: domain, isFetching: domainIsFetching } = useFetchDomain(fetchDomainQueryParameters, {
+    const { data: domain, isFetching: domainIsFetching } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
       enabled: fetchDomainQueryEnabled
     });
 
@@ -293,19 +302,20 @@ export default defineComponent({
       ...(objectSchema.value && domain.value ? getRiskAdditionalContext(objectSchema.value.title, domain.value, locale.value) : {}),
       ...(props.modelValue && objectSchema.value && translations.value
         ? getStatusAdditionalContext(props.modelValue, objectSchema.value, mergedTranslations.value[locale.value], props.domainId)
-        : {})
+        : {}),
+      ...(objectSchema.value && props.modelValue ? getSubTypeTranslation(props.modelValue, objectSchema.value, props.domainId, locale.value, formSchemas.value || []):{})
     }));
 
     const selectedDisplayOption = ref('objectschema');
 
-    const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
+    const formsQueryParameters = computed(() => ({ domainId: props.domainId as string}));
     const formsQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas, isFetching: formSchemasAreFetching } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+    const { data: formSchemas, isFetching: formSchemasAreFetching } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
 
-    const formQueryParameters = computed(() => ({ domainId: props.domainId, id: selectedDisplayOption.value }));
+    const formQueryParameters = computed(() => ({ domainId: props.domainId, id: selectedDisplayOption.value as string }));
     const formQueryEnabled = computed(() => selectedDisplayOption.value !== 'objectschema');
-    const { data: formSchema, isFetching: formSchemaIsFetching } = useFetchForm(formQueryParameters, { enabled: formQueryEnabled });
-    const currentFormSchema = computed(() => (selectedDisplayOption.value === 'objectschema' ? undefined : formSchema.value));
+    const { data: formSchema, isFetching: formSchemaIsFetching } = useQuery(formQueryDefinitions.queries.fetchForm, formQueryParameters, { enabled: formQueryEnabled });
+    const currentFormSchema = computed(() => (selectedDisplayOption.value === 'objectschema' || formSchemaIsFetching.value ? undefined : formSchema.value));
 
     function getFormschemaIdBySubType(subType: string) {
       const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === subType)?.id;
@@ -313,9 +323,18 @@ export default defineComponent({
         return formSchemaId;
       }
     }
+    function getSubTypeByFormSchemaId(id: string) {
+      const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.id === id)?.subType;
+      if (formSchemaId) {
+        return formSchemaId;
+      }
+    }
 
     const setDisplayOptionBasedOnSubtype = () => {
-      const formSchemaId = getFormschemaIdBySubType(props.preselectedSubType);
+      if(!subType.value) {
+        return;
+      }
+      const formSchemaId = getFormschemaIdBySubType(subType.value);
       if (formSchemaId) {
         selectedDisplayOption.value = formSchemaId;
       } else {
@@ -326,28 +345,26 @@ export default defineComponent({
     watch(
       () => formSchemas.value,
       (newValue) => {
-        if (newValue && props.preselectedSubType) {
+        if (newValue && subType.value) {
           setDisplayOptionBasedOnSubtype();
         }
       },
       { deep: true, immediate: true }
     );
+    watch(() => subType.value, (newValue) => {
+      if(newValue) {
+        setDisplayOptionBasedOnSubtype();
+      }
+    });
 
-    watch(
-      () => props.preselectedSubType,
-      () => setDisplayOptionBasedOnSubtype()
-    );
-
-    const setSubType = () => {
-      if (objectData.value && currentFormSchema.value && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
+    watch(() => selectedDisplayOption.value, (newValue) => {
+      if(!!newValue && objectData.value.domains && !objectData.value?.domains?.[props.domainId]?.subType) {
         objectData.value.domains[props.domainId] = {
-          subType: currentFormSchema.value.subType,
+          subType: getSubTypeByFormSchemaId(newValue),
           status: 'NEW'
         };
       }
-    };
-
-    watch(() => currentFormSchema.value, setSubType, { deep: true });
+    });
 
     const displayOptions = computed<{ title: string; value: string | undefined }[]>(() => {
       const currentSubType = objectData.value?.domains?.[props.domainId]?.subType;
@@ -366,14 +383,6 @@ export default defineComponent({
     });
 
     // Form stuff
-    const objectData = computed({
-      get() {
-        return props.modelValue as Record<string, any>;
-      },
-      set(newValue: Record<string, any>) {
-        emit('update:model-value', newValue);
-      }
-    });
     const formErrors = ref<Map<string, string[]>>(new Map());
 
     watch(
@@ -472,14 +481,14 @@ export default defineComponent({
       };
     };
 
-    const { data: endpoints } = useFetchSchemas();
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const fetchDecisions = async () => {
       const toReturn: any = { ...props.objectMetaData, decisionResults: {}, inspectionFindings: [] };
 
       // Fetch updated decision results and merge them with the current values
       if (objectData.value?.domains?.[props.domainId] && endpoints.value?.[objectData.value.type]) {
         for (const key in props.objectMetaData?.decisionResults || {}) {
-          const result = await $api.entity.fetchWipDecisionEvaluation(endpoints.value[objectData.value.type], objectData.value as any, props.domainId, key);
+          const result = await useQuerySync(objectQueryDefinitions.queries.fetchWipDecisionEvaluation, {endpoint: endpoints.value[objectData.value.type], object: objectData.value as any, domain: props.domainId, decision: key });
           toReturn.inspectionFindings.push(...result.inspectionFindings);
           toReturn.decisionResults[key] = result.decisionResults.piaMandatory;
         }
@@ -489,14 +498,30 @@ export default defineComponent({
 
     const debouncedFetchDecisions = debounce(fetchDecisions, 1000);
 
-    watch(
-      () => objectData.value,
-      () => {
-        debouncedFetchDecisions();
-        setSubType();
-      },
-      { deep: true }
+    watch(() => objectData.value, debouncedFetchDecisions, { deep: true });
+
+    const inspectionData = ref<any>(objectData.value);
+    const fetchDecisionsQueryParameters = computed(() => Object.keys(props.objectMetaData?.decisionResults || {}).map((key) => ({
+        decision: key,
+        domain: props.domainId,
+        endpoint: endpoints.value?.[inspectionData.value.type] as string,
+        object: inspectionData.value
+    })));
+    const fetchDecisionsQueryEnabled = computed(() => !!objectData.value?.domains?.[props.domainId] && !!endpoints.value?.[objectData.value.type]);
+    const inspectionResults  = useQueries(
+      objectQueryDefinitions.queries.fetchWipDecisionEvaluation,
+      fetchDecisionsQueryParameters,
+      {
+          enabled: fetchDecisionsQueryEnabled,
+          onSuccess: (data) => emit('update:object-meta-data', data)
+      }
     );
+    const setInspectionData = (newData: any) => {
+        inspectionData.value = newData;
+    }
+    const debouncedSetInspectionData = debounce(setInspectionData, 1000);
+    watch(() => objectData.value, debouncedSetInspectionData, { deep: true });
+
 
     const dataIsLoading = computed<boolean>(
       () => objectSchemaIsFetching.value || props.loading || formSchemasAreFetching.value || formSchemaIsFetching.value || domainIsFetching.value || translationsAreFetching.value
@@ -522,6 +547,7 @@ export default defineComponent({
       reactiveFormActions,
       selectedDisplayOption,
       selectedSideContainer,
+      subType,
 
       mdiEyeOutline,
       mdiHistory,

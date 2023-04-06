@@ -17,9 +17,12 @@
  */
 import { cloneDeep, isString } from 'lodash';
 
-import { useFetchSchemas } from './api/schemas';
-import { useCreateObject, useUpdateObject } from './api/objects';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+
 import { IVeoEntity } from '~/types/VeoTypes';
+import { useQuery } from './api/utils/query';
+import { useMutation } from './api/utils/mutation';
 
 export interface IVeoAPIObjectIdentifier {
   id: string;
@@ -38,8 +41,8 @@ export const useCreateLink = () => {
 
 export const useCloneObject = () => {
   const { t } = useI18n();
-  const { data: endpoints } = useFetchSchemas();
-  const { mutateAsync: createObject } = useCreateObject();
+  const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+  const { mutateAsync: createObject } = useMutation(objectQueryDefinitions.mutations.createObject);
 
   const clone = (object: IVeoEntity, parentScopes?: string[]) => {
     const newObject = cloneDeep(object);
@@ -60,9 +63,9 @@ export const useCloneObject = () => {
 };
 
 export const useUnlinkObject = () => {
-  const { data: endpoints } = useFetchSchemas();
+  const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-  const { mutateAsync: updateObject } = useUpdateObject();
+  const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
   const unlink = (objectToModify: IVeoEntity, objectToRemove: IVeoEntity | string) => {
     const object = cloneDeep(objectToModify);
@@ -82,9 +85,9 @@ export const useUnlinkObject = () => {
 
 export const useLinkObject = () => {
   const { createLink } = useCreateLink();
-  const { data: endpoints } = useFetchSchemas();
+  const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-  const { mutateAsync: updateObject } = useUpdateObject();
+  const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
   const link = (
     objectToModify: IVeoEntity,

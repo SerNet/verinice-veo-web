@@ -51,8 +51,8 @@
 import { PropType } from 'vue';
 
   
-import { IVeoUnit } from '~/types/VeoTypes';
-import { useDeleteUnit } from '~~/composables/api/units';
+import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import { useMutation } from '~~/composables/api/utils/mutation';
   
 const props = defineProps({
   unit: {
@@ -67,7 +67,7 @@ const { t: globalT } = useI18n({ useScope: 'global' });
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { ability } = useVeoPermissions();
 
-const { mutateAsync: doDelete, isLoading: deletionInProgress } = useDeleteUnit();
+const { mutateAsync: doDelete, isLoading: deletionInProgress } = useMutation(unitQueryDefinitions.mutations.delete);
 
 const deleteUnit = async () => {
   if(deletionInProgress.value || ability.value.cannot('manage', 'units')) {

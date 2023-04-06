@@ -29,7 +29,7 @@
         <v-col cols="auto">
           <p
             v-if="report"
-            class="mt-2 mb-0 text-body-1"
+            class="mt-2 mb-0 text-body-1 font-italic"
             data-component-name="report-description"
           >
             {{ report.description[locale] }}
@@ -41,13 +41,13 @@
       <LayoutLoadingWrapper v-if="generatingReport" />
       <p
         v-if="report && report.multipleTargetsSupported"
-        class="text-body-1"
+        class="text-body-1 mt-3"
       >
         {{ t('hintMultiple') }}
       </p>
       <p
         v-else-if="report"
-        class="text-body-1"
+        class="text-body-1 mt-3"
       >
         {{ t('hintSingle') }}
       </p>
@@ -69,7 +69,6 @@
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="objects"
           :loading="objectsFetching"
-          return-object
           data-component-name="report-entity-selection"
           @update:model-value="onReportSelectionUpdated"
         />
@@ -103,13 +102,16 @@
 import { omit, upperCase, upperFirst } from 'lodash';
 
 import { separateUUIDParam } from '~/lib/utils';
-import { useCreateReport, useFetchReports } from '~/composables/api/reports';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useFetchObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
-import { useFetchSchemas } from '~/composables/api/schemas';
 import { RouteRecordName } from 'vue-router';
 import { IVeoEntity } from '~~/types/VeoTypes';
+import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import { useQuery } from '~~/composables/api/utils/query';
+import { useMutation } from '~~/composables/api/utils/mutation';
+import { useFetchObjects } from '~~/composables/api/objects';
+import { QueryClient } from '@tanstack/vue-query';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-report';
 
@@ -120,7 +122,7 @@ export default defineComponent({
     const route = useRoute();
     const { displayErrorMessage } = useVeoAlerts();
     const { tablePageSize } = useVeoUser();
-    const { data: endpoints } = useFetchSchemas();
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
@@ -131,7 +133,7 @@ export default defineComponent({
     // Fetching the right report
     const requestedReportName = computed(() => route.params.report as string);
 
-    const { data: reports, isFetching: reportsFetching } = useFetchReports();
+    const { data: reports, isFetching: reportsFetching } = useQuery(reportQueryDefinitions.queries.fetchAll);
     const report = computed(() => reports.value?.[requestedReportName.value]);
 
     const availableObjectTypes = computed<string[]>(() => (report.value?.targetTypes || []).map((targetType) => targetType.modelType));
@@ -205,7 +207,7 @@ export default defineComponent({
 
     // Generating new report
     const downloadButton = ref<HTMLAnchorElement>();
-    const openReport = (result: any) => {
+    const openReport = (_queryClient: QueryClient, result: any) => {
       if (!downloadButton.value || !report.value) {
         return;
       }
@@ -222,7 +224,7 @@ export default defineComponent({
         targets: selectedObjects.value
       }
     }));
-    const { mutateAsync: create, isLoading: generatingReport } = useCreateReport({ onSuccess: openReport });
+    const { mutateAsync: create, isLoading: generatingReport } = useMutation(reportQueryDefinitions.mutations.create, { onSuccess: openReport });
 
     const generateReport = () => {
       if (report.value) {

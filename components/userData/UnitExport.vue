@@ -31,13 +31,15 @@
 
 <script setup lang="ts">
 import { Ref } from 'vue';
-import { downloadZIP } from "@/lib/jsonToZip";
+import { downloadZIP } from "~~/lib/jsonToZip";
 import { logError } from "./modules/HandleError";
-import { useFetchUnits } from "~~/composables/api/units";
-import { useRequest } from "@/composables/api/utils/request";
+import { useRequest } from "~~/composables/api/utils/request";
+
+import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
+import { useQuery } from '~~/composables/api/utils/query';
 
 // Types
-import { IVeoUnit } from '~~/types/VeoTypes';
+import { IVeoUnit } from '~~/composables/api/queryDefinitions/units';
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -53,7 +55,7 @@ const state = reactive({
 const username = computed(() => profile.value?.username as string);
 
 // Get metadata on all units
-const { data: unitsMeta }: { data: Ref<IVeoUnit[]> | unknown } = useFetchUnits();
+const { data: unitsMeta } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
 // Filter for relevant IDs (we want to export every unit but 'Demo')
 const relevantUnits = computed(() => {

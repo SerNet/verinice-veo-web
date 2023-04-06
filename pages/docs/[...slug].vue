@@ -17,8 +17,8 @@
 -->
 <template>
   <BasePage
-    :title="document && document.title"
-    :loading="!document"
+    :title="_document && _document.title"
+    :loading="!_document"
   >
     <BaseCard
       class="mb-4"
@@ -26,8 +26,8 @@
     >
       <v-card-text class="text-body-1">
         <ContentRendererMarkdown
-          v-if="document"
-          :value="document"
+          v-if="_document"
+          :value="_document"
         />
       </v-card-text>
     </BaseCard>
@@ -39,6 +39,7 @@ import { isArray } from 'lodash';
 import { useDoc, useDocs } from '~/composables/docs';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
+
 const route = useRoute();
 useHead(() => ({
   style: {
@@ -47,7 +48,7 @@ useHead(() => ({
 }));
 
 const normalizedPath = computed(() => !isArray(route.params.slug) ? [route.params.slug] : route.params.slug);
-const document = useDoc({ path: `/${normalizedPath.value.join('/') || 'index'}` });
+const _document = useDoc({ path: `/${normalizedPath.value.join('/') || 'index'}` });
 const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 
 // Navigation stuff (breadcrumbs)
@@ -57,12 +58,12 @@ const updateBreadcrumbs = () => {
   // Remove previous custom breadcrumbs
   clearCustomBreadcrumbs();
 
-  if (!docs.value?.length || !document.value) {
+  if (!docs.value?.length || !_document.value) {
     return;
   }
 
   // Get all path segments and the nesting level to know how many breadcrumb entries have to be created
-  const pathSegments = (document.value?._path || '').split('/').filter((segment) => segment);
+  const pathSegments = (_document.value?._path || '').split('/').filter((segment) => segment);
   const nestingLevel = pathSegments.length;
 
   // Greater than 0 as we don't want to include the index page in the breadcrumbs
@@ -85,9 +86,20 @@ const updateBreadcrumbs = () => {
   }
 };
 
-watch(() => document.value?._path, updateBreadcrumbs, { immediate: true });
+const routeToHeader = () => {
+  if(!_document.value || !route.hash){
+    return;
+  }
+  scrollTo(0,(document?.querySelector(route.hash)?.getBoundingClientRect())?.y || 0)
+}
+
+watch(() => _document.value?._path, updateBreadcrumbs, { immediate: true });
 
 watch(() => docs.value, updateBreadcrumbs, { deep: true, immediate: true });
+
+watch(() => _document.value, routeToHeader, {deep:true, immediate: true});
+
+
 </script>
 
 <style lang="scss" scoped>

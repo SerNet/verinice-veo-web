@@ -27,7 +27,7 @@
       class="mt-n2 text-accent text-body-1"
     >
       <span v-if="domain.description">{{ domain.description }}</span>
-      <i v-else>{{ tGlobal('unit.details.nodescription') }}</i>
+      <i v-else>{{ t('noUnitDescription') }}</i>
     </div>
     <v-skeleton-loader
       v-else
@@ -116,8 +116,9 @@
 import { StorageSerializers, useStorage } from '@vueuse/core';
 
 import { separateUUIDParam } from '~/lib/utils';
-import { useFetchDomain, useFetchDomainElementStatusCount } from '~/composables/api/domains';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export const ROUTE_NAME = 'unit-domains-domain';
 
@@ -140,10 +141,10 @@ export default defineComponent({
 
     // Domain specific stuff
     const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
-    const { data: domain } = useFetchDomain(fetchDomainQueryParameters);
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     const fetchDomainElementStatusCountQueryParameters = computed(() => ({ id: domainId.value, unitId: unitId.value }));
-    const { data: domainObjectInformation, isFetching: elementStatusCountIsFetching } = useFetchDomainElementStatusCount(fetchDomainElementStatusCountQueryParameters);
+    const { data: domainObjectInformation, isFetching: elementStatusCountIsFetching } = useQuery(domainQueryDefinitions.queries.fetchDomainElementStatusCount, fetchDomainElementStatusCountQueryParameters);
 
     // Create chart data
     const chartData = computed(() => {
@@ -199,11 +200,13 @@ export default defineComponent({
 {
   "en": {
     "domainNotFoundText": "The requested domain couldn't be found. You have been returned to the unit dashboard.",
-    "domainOverview": "Module overview"
+    "domainOverview": "Domain overview",
+    "noUnitDescription": "No description provided"
   },
   "de": {
     "domainNotFoundText": "Die gewünschte Domain konnte nicht gefunden werden. Sie wurden zum Unit Dashboard zurückgebracht.",
-    "domainOverview": "Modulübersicht"
+    "domainOverview": "Domänenübersicht",
+    "noUnitDescription": "Keine Beschreibung festgelegt"
   }
 }
 </i18n>

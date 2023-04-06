@@ -55,6 +55,7 @@
   "global.button.yes": "Ja",
   "global.input.required": "Das Feld muss ausgefüllt werden",
   "global.input.requiredfields": "* Pflichtfelder",
+  "global.input.hasSpecialChar": "Eingabe enthält ungültige Zeichen. Nur \"A-Z a-z 0-9 _ -\" sind zulässig.",
   "global.logout": "Logout",
   "global.menu.collapse": "Menü verstecken",
   "global.menu.expand": "Menü fixieren",
@@ -76,20 +77,16 @@
 
   "domain.index.title": "Dashboard",
 
-  "unit.default.name": "Unit 1",
-  "unit.default.description": "Deine erste Unit",
-  "unit.details.nodescription": "Keine Beschreibung festgelegt",
-
   "breadcrumbs": {
     "administration": "Benutzerverwaltung",
     "catalogs": "Kataloge",
     "docs": "Dokumentation",
-    "domain": "Modul",
+    "domain": "Domain",
     "editor": "Editoren",
     "formschema": "Formschema Editor",
     "help": "Handbuch",
     "index": "Unitauswahl",
-    "more": "Weitere Module",
+    "more": "Weitere Domänen",
     "objects": "Objekte",
     "objectschema": "Objektschema Editor",
     "reports": "Reports",
@@ -115,6 +112,11 @@
   "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg,{0} d.h. es kann immer nur eine migitierende Maßnahme pro Risiko ausgewählt werden",
 
   "residualRiskHint": "Das angezeigte Nettorisiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben.",
+
+  "imprintText": "Es gilt das {0} der SerNet GmbH.",
+  "privacyPolicyText": "Es gilt die {0} der SerNet GmbH.",
+  "deleteText": "Möchten Sie das Element \"{0}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+  "fix": "Beheben",
 
   "userDataExport": {
     "hint": {

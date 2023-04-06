@@ -17,27 +17,46 @@
 -->
 <template>
   <v-tooltip
-    top
-    :disabled="!!demoUnit"
+    :disabled="!!link"
+    location="top"
   >
-    <template #activator="{ props }">
+    <template #activator="{ props: tooltipProps }">
+      <v-btn
+        v-if="link"
+        color="primary"
+        :to="link"
+        :target="openInNewTab ? '_blank' : undefined"
+        variant="flat"
+        block
+        rounded="lg"
+        size="large"
+        data-component-name="demo-unit-button"
+        v-bind="tooltipProps"
+        @click="onChangeUnit"
+      >
+        <v-icon
+          :start="!iconOnly"
+          :icon="buttonIcon"
+        />
+        <span v-if="userIsInDemoUnit && !iconOnly">
+          {{ t('leaveDemoUnit') }}
+        </span>
+        <span v-else-if="!iconOnly">
+          {{ t('goToDemoUnit') }}
+        </span>
+      </v-btn>
       <div
-        v-bind="props"
-        class="d-block"
-        @click.prevent
+        v-else
+        v-bind="tooltipProps"
       >
         <v-btn
-          v-bind="$attrs"
+          disabled
           color="primary"
-          :disabled="!demoUnit || units.length === 0"
-          :icon="iconOnly"
-          flat
-          :class="{
-            'veo-demo-unit-button': !iconOnly
-          }"
-          style="height: 40px; width: 100%; border-radius: 12px"
+          variant="flat"
+          block
+          rounded="lg"
+          size="large"
           data-component-name="demo-unit-button"
-          @click="toggleDemoUnit"
         >
           <v-icon
             :start="!iconOnly"
@@ -61,32 +80,35 @@
 <script lang="ts">
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { mdiLoginVariant, mdiLogoutVariant } from '@mdi/js';
+import { RouteLocationRaw } from 'vue-router';
 
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
-import { IVeoUnit } from '~/types/VeoTypes';
 import { useVeoUser } from '~/composables/VeoUser';
-import { useFetchUnits } from '~/composables/api/units';
+import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
     iconOnly: {
       type: Boolean,
       default: false
+    },
+    openInNewTab: {
+      type: Boolean,
+      default: true
     }
   },
   setup(_props) {
     const { t } = useI18n();
     const { authenticated } = useVeoUser();
-    const router = useRouter();
     const route = useRoute();
 
     // Demo unit/unit selection
-
-    const { data: units } = useFetchUnits({
+    const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll, undefined,{
       enabled: authenticated
     });
-
+  
     const currentUnit = computed(() => separateUUIDParam(route.params.unit as string).id);
     const demoUnit = computed(() => (units.value || []).find((unit) => unit.name === 'Demo'));
     const nonDemoUnits = computed(() => (units.value || []).filter((unit) => unit.name !== 'Demo'));
@@ -94,8 +116,7 @@ export default defineComponent({
     const userIsInDemoUnit = computed(() => currentUnit.value === demoUnit.value?.id);
     const buttonIcon = computed(() => (userIsInDemoUnit.value ? mdiLogoutVariant : mdiLoginVariant));
 
-    const unitBeforeDemoUnit = useStorage(LOCAL_STORAGE_KEYS.UNIT_BEFORE_DEMOUNIT, false, localStorage, { serializer: StorageSerializers.string });
-
+    const unitBeforeDemoUnit = useStorage(LOCAL_STORAGE_KEYS.UNIT_BEFORE_DEMOUNIT, '', localStorage, { serializer: StorageSerializers.string });
     const nonDemoUnitDetails = computed(() => {
       const unit = unitBeforeDemoUnit.value || nonDemoUnits.value?.[0]?.id;
       const nonDemoUnit = (units.value || []).find((_unit) => _unit.id === unit) as IVeoUnit;
@@ -107,40 +128,43 @@ export default defineComponent({
       return { unit, domain };
     });
 
-    const toggleDemoUnit = () => {
-      if (userIsInDemoUnit.value) {
-        if (!nonDemoUnitDetails.value) {
-          router.push({
-            name: 'index'
-          });
-        } else {
-          router.push({
+    const link = computed<RouteLocationRaw | undefined>(() => {
+      if(userIsInDemoUnit.value) {
+        if(nonDemoUnitDetails.value) {
+          return {
             name: 'unit-domains-domain',
             params: {
               unit: createUUIDUrlParam('unit', nonDemoUnitDetails.value.unit),
               domain: createUUIDUrlParam('domain', nonDemoUnitDetails.value.domain)
             }
-          });
+          };
         }
       } else if (demoUnit.value) {
-        unitBeforeDemoUnit.value = currentUnit.value;
-
-        router.push({
+        return {
           name: 'unit-domains-domain',
           params: {
             unit: createUUIDUrlParam('unit', demoUnit.value.id),
             domain: createUUIDUrlParam('domain', getFirstDomainDomaindId(demoUnit.value) || '')
           }
-        });
+        };
+      }
+      return undefined;
+    });
+
+    // Store current unit as last unit if user is in a normal unit (and thus wants to enter the demo unit). Only relevant if the user has at least 2 units.
+    const onChangeUnit = () => {
+      if(!userIsInDemoUnit.value) {
+        unitBeforeDemoUnit.value = currentUnit.value;
       }
     };
 
     return {
-      toggleDemoUnit,
       demoUnit,
+      link,
       units,
       userIsInDemoUnit,
       buttonIcon,
+      onChangeUnit,
 
       t
     };
@@ -162,9 +186,3 @@ export default defineComponent({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-.veo-demo-unit-button :deep(.v-btn__content) {
-  justify-content: start;
-}
-</style>

@@ -19,7 +19,9 @@ import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
 import { isEqual, isPlainObject } from 'lodash';
-import { IVeoCustomLink, IVeoEntity, IVeoFormSchema, IVeoLink, IVeoObjectSchema, IVeoUnit } from '~/types/VeoTypes';
+import { IVeoCustomLink, IVeoEntity, IVeoLink, IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoUnit } from '~~/composables/api/queryDefinitions/units';
 
 export const CHART_COLORS = ['#c90000', '#ffc107', '#3f51b5', '#8bc34a', '#858585'];
 
@@ -42,7 +44,7 @@ export function createUUIDUrlParam(type: string, UUID: string): string {
 }
 
 export function separateUUIDParam(param: string | undefined): IUUIDParam {
-  // if param is not defined, make it string; TODO: check if this can cause bugs
+  // if param is not defined, inizialize it with an empty tring so we can call slice on it.
   const stringParam = param || '';
   // returns id with 36 characters from the structure type-UUID
   const id = stringParam.slice(-36);
@@ -148,3 +150,17 @@ const isLinkEqual = (linkA: IVeoCustomLink[], linkB: IVeoCustomLink[]) => {
   }
   return true;
 };
+
+export const getFormSchemaControlType = ((objectSchemaElement: JSONSchema7) => {
+  // If attribute contains an enum, display as enum, regardless of enum value type.
+  if(Array.isArray(objectSchemaElement.enum)) {
+    return 'enum';
+  }
+
+  // If type isn't set or type is an array, return as default as we don't know how to handle it (likely a corrupt schema)
+  if(!objectSchemaElement.type || Array.isArray(objectSchemaElement.type)) {
+    return 'default';
+  }
+
+  return objectSchemaElement.type;
+});

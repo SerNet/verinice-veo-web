@@ -294,14 +294,16 @@ import { useDisplay } from 'vuetify';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
-import { IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useFetchTranslations } from '~/composables/api/translations';
-import { useUpdateTypeDefinition } from '~/composables/api/domains';
+import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+import { useQuery } from '~~/composables/api/utils/query';
+import { useMutation } from '~~/composables/api/utils/mutation';
 
 export default defineComponent({
   name: 'ObjectSchemaEditor',
@@ -340,10 +342,11 @@ export default defineComponent({
       languages: (locales.value as LocaleObject[]).map((locale) => locale.code)
     }));
     const translations = reactive<IVeoTranslations['lang']>({});
-    const { data: _translations, isFetching: translationsLoading } = useFetchTranslations(fetchTranslationQueryParameters);
+    const { data: _translations, isFetching: translationsLoading } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationQueryParameters);
     watch(
       () => _translations.value,
-      (newValue) => Object.assign(translations, newValue?.lang || {})
+      (newValue) => Object.assign(translations, newValue?.lang || {}),
+      { deep: true, immediate: true }
     );
     const availableLanguages = computed(() => Object.keys(translations));
 
@@ -399,6 +402,7 @@ export default defineComponent({
     };
 
     const updateSchemaName = (name: string) => {
+      objectSchemaHelper.value?.changeTranslationKey(objectSchemaHelper.value.getTitle(), name);
       objectSchemaHelper.value?.setTitle(name);
       code.value = JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2);
     };
@@ -442,7 +446,7 @@ export default defineComponent({
 
     // Saving
     const updateTypeDefinitionQueryParameters = computed(() => ({ domainId: domainId.value, objectType: title.value, objectSchema: objectSchemaHelper.value?.toSchema() as any }));
-    const { mutateAsync: update } = useUpdateTypeDefinition();
+    const { mutateAsync: update } = useMutation(domainQueryDefinitions.mutations.updateTypeDefinitions);
 
     const saveSchema = async () => {
       try {

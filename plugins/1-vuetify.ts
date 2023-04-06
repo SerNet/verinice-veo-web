@@ -20,8 +20,9 @@ import * as components from 'vuetify/components';
 import * as labs from 'vuetify/labs/components';
 import * as directives from 'vuetify/directives';
 import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
-import { de } from 'vuetify/locale';
+import { de, en } from 'vuetify/locale';
 import 'vuetify/styles';
+import Cookies from 'js-cookie';
 
 const vuetify = createVuetify({
   components: {
@@ -38,8 +39,9 @@ const vuetify = createVuetify({
     defaultSet: 'mdi' // This is already the default value - only for display purposes
   },
   locale: {
-    locale: 'de',
-    messages: { de }
+    // adapter: createVueI18nAdapter({ i18n, useI18n }) // Currently doesn't work with nuxt
+    locale: Cookies.get('i18n_redirected') || navigator.language.split('-')[0],
+    messages: { de, en }
   },
   theme: {
     themes: {

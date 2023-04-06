@@ -39,9 +39,8 @@
           v-model:page="page"
           v-model:sort-by="sortBy"
           show-select
-          return-object
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
-          :items="objects"
+          :items="notAlreadyUsedScenarios"
           :loading="objectsQueryIsLoading"
         />
       </BaseCard>
@@ -52,7 +51,7 @@
         :disabled="creatingRisks"
         @click="dialog = false"
       >
-        {{ $t('global.button.cancel') }}
+        {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -69,13 +68,16 @@
 </template>
 
 <script lang="ts">
-import { omit, upperFirst } from 'lodash';
+import { cloneDeep, omit, upperFirst } from 'lodash';
 
-import { IVeoEntity } from '~/types/VeoTypes';
-import { separateUUIDParam } from '~/lib/utils';
+import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useCreateRisk, useFetchObjects } from '~/composables/api/objects';
+import objectQueryDefinitions, { IVeoFetchRisksParameters } from '~/composables/api/queryDefinitions/objects';
 import { useVeoUser } from '~/composables/VeoUser';
+import { useMutation } from '~~/composables/api/utils/mutation';
+import { useFetchObjects } from '~~/composables/api/objects';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
@@ -98,11 +100,11 @@ export default defineComponent({
     const { tablePageSize } = useVeoUser();
     const route = useRoute();
     const { t } = useI18n();
-    const { t: $t } = useI18n();
+    const { t: globalT } = useI18n();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
 
-    const { mutateAsync: createRisk } = useCreateRisk();
+    const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createOrUpdateRisk);
 
     const unit = computed(() => separateUUIDParam(route.params.unit as string).id);
 
@@ -121,6 +123,28 @@ export default defineComponent({
 
     // Filter stuff
     const selectedScenarios = ref<IVeoEntity[]>([]);
+
+    const polluteTable = () => {
+      if(!risks.value?.length || !objects.value?.items?.length) {
+        return;
+      }
+
+      for(const risk of risks.value) {
+        // Get id of scenario
+        const objectId = getEntityDetailsFromLink(risk.scenario).id;
+
+        // If scenario is already part of selected scenarios, skip
+        if(selectedScenarios.value.find((object) => object.id === objectId)) {
+          continue;
+        }
+
+        // Add scenario to selected objects
+        const object = objects.value.items.find((object) => object.id === objectId);
+        if(object) {
+          selectedScenarios.value.push(object);
+        }
+      }
+    };
 
     const filter = ref<Record<string, any>>({
       objectType: 'scenario',
@@ -145,6 +169,26 @@ export default defineComponent({
     }));
 
     const { data: objects, isFetching: objectsQueryIsLoading, refetch } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
+    const risksQueryParameters = computed<IVeoFetchRisksParameters>(() => ({
+      endpoint: 'processes',
+      id: props.objectId
+    }));
+    const { data: risks } = useQuery(objectQueryDefinitions.queries.fetchRisks, risksQueryParameters);
+
+    watch(() => objects.value, polluteTable, { deep: true, immediate: true });
+    watch(() => risks.value, polluteTable, { deep: true, immediate: true });
+
+    const notAlreadyUsedScenarios = computed<IVeoPaginatedResponse<IVeoEntity[] & { disabled?: boolean }> | undefined>(() => {
+      const _objects = cloneDeep(objects.value);
+
+      _objects?.items.forEach((item: IVeoEntity & { disabled?: boolean }) => {
+        if(risks.value?.find((risk) => getEntityDetailsFromLink(risk.scenario).id === item.id)) {
+          item.disabled = true;
+        }
+      });
+
+      return _objects;
+    });
 
     // Create risk stuff
     const creatingRisks = ref(false);
@@ -154,24 +198,28 @@ export default defineComponent({
         return;
       }
       creatingRisks.value = true;
-      const risks = selectedScenarios.value.map((scenario) => ({
-        scenario: {
-          targetUri: `${config.public.apiUrl}/scenarios/${scenario.id}`
-        },
-        domains: {
-          [props.domainId]: {
-            reference: {
-              targetUri: `${config.public.apiUrl}/domains/${props.domainId}`
-            },
-            riskDefinitions: {
-              DSRA: {}
+
+      // Create new risks, but only for those scenarios that aren't yet linked to a risk!
+      const newRisks = selectedScenarios.value
+        .filter((scenario) => !risks.value?.find((risk) => getEntityDetailsFromLink(risk.scenario).id === scenario.id))
+        .map((scenario) => ({
+          scenario: {
+            targetUri: `${config.public.apiUrl}/scenarios/${scenario.id}`
+          },
+          domains: {
+            [props.domainId]: {
+              reference: {
+                targetUri: `${config.public.apiUrl}/domains/${props.domainId}`
+              },
+              riskDefinitions: {
+                DSRA: {}
+              }
             }
           }
-        }
-      }));
+        }));
 
       try {
-        await Promise.all(risks.map((risk: any) => createRisk({ endpoint: 'processes', objectId: props.objectId, risk })));
+        await Promise.all(newRisks.map((risk: any) => createRisk({ endpoint: 'processes', objectId: props.objectId, risk })));
         displaySuccessMessage(t('risksCreated', selectedScenarios.value.length));
         selectedScenarios.value = [];
         emit('success');
@@ -191,12 +239,13 @@ export default defineComponent({
       objectsQueryIsLoading,
       page,
       sortBy,
+      notAlreadyUsedScenarios,
       onSubmit,
       onFilterUpdate,
       selectedScenarios,
 
       t,
-      $t,
+      globalT,
       upperFirst
     };
   }

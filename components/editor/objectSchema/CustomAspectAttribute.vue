@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -26,8 +26,7 @@
           <v-text-field
             :model-value="form.data.title"
             :label="`${t('aspectName')} *`"
-            required
-            :rules="form.rules.title"
+            :rules="[requiredRule, banSpecialChars]"
             :prefix="prefix"
             variant="underlined"
             @update:model-value="doUpdate($event, 'title')"
@@ -138,6 +137,7 @@
 import { mdiTrashCanOutline } from '@mdi/js';
 import { cloneDeep, trim } from 'lodash';
 import { INPUT_TYPES } from '~/types/VeoEditor';
+import { useRules } from '~~/composables/utils';
 
 interface IInputFormat {
   name: string;
@@ -227,6 +227,8 @@ export default defineComponent({
     const { t } = useI18n();
     const prefix = computed(() => props.aspectName + '_');
 
+    const { banSpecialChars, requiredRule } = useRules();
+
     watch(
       props,
       (newValue: any) => {
@@ -239,7 +241,6 @@ export default defineComponent({
         deep: true
       }
     );
-
     const form = ref({
       data: {
         ...props
@@ -352,7 +353,9 @@ export default defineComponent({
       currentFormatOption,
 
       mdiTrashCanOutline,
-      t
+      t,
+      banSpecialChars,
+      requiredRule
     };
   }
 });

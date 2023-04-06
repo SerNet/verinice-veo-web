@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { ComposerTranslation } from '@nuxtjs/i18n/dist/runtime/composables';
 import { isArray, isObject } from 'lodash';
 import ObjectSchemaHelper from './ObjectSchemaHelper2';
 
@@ -34,7 +35,7 @@ export interface VeoSchemaValidatorMessage {
   code: string;
   message: string;
   params?: Record<string, any>;
-  actions?: { title: string; callback: CallableFunction }[];
+  actions?: { key: string; title: string | ((t: ComposerTranslation) => string); callback: CallableFunction }[];
 }
 
 export interface VeoSchemaValidatorValidationResult {

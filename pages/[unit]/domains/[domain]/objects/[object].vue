@@ -76,7 +76,6 @@
             :original-object="object"
             :loading="loading || !modifiedObject"
             :domain-id="domainId"
-            :preselected-sub-type="preselectedSubType"
             :additional-context="additionalContext"
             @show-revision="onShowRevision"
             @create-dpia="createDPIADialogVisible = true"
@@ -170,18 +169,21 @@
 
 <script lang="ts">
 import { Ref } from 'vue';
-import { cloneDeep, omit, upperFirst } from 'lodash';
+import { cloneDeep, isEqual, omit, upperFirst } from 'lodash';
 
 import { isObjectEqual, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
-import { useFetchForms } from '~/composables/api/forms';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useFetchTranslations } from '~/composables/api/translations';
-import { useFetchSchemas } from '~/composables/api/schemas';
-import { useFetchObject } from '~/composables/api/objects';
+import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import { useQuery } from '~~/composables/api/utils/query';
+import { useMutation } from '~~/composables/api/utils/mutation';
+
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -198,23 +200,22 @@ export default defineComponent({
   },
   setup() {
     const { locale, t } = useI18n();
-    const { $api } = useNuxtApp();
     const config = useRuntimeConfig();
     const route = useRoute();
     const router = useRouter();
-    const { displaySuccessMessage, displayErrorMessage, expireAlert } = useVeoAlerts();
+    const { displaySuccessMessage, displayErrorMessage, expireAlert, displayInfoMessage } = useVeoAlerts();
     const { link } = useLinkObject();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
     const { ability } = useVeoPermissions();
+    const {mutateAsync: _updateObject} = useMutation(objectQueryDefinitions.mutations.updateObject);
 
-    const { data: endpoints } = useFetchSchemas();
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const objectParameter = computed(() => separateUUIDParam(route.params.object as string));
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-    const preselectedSubType = computed<string | undefined>(() => route.query.subType || (object.value?.domains?.[domainId.value]?.subType as any));
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useFetchTranslations(fetchTranslationsQueryParameters);
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     const modifiedObject = ref<IVeoEntity | undefined>(undefined);
     /* Data that should get merged back into modifiedObject after the object has been reloaded, useful to persist children
@@ -225,20 +226,22 @@ export default defineComponent({
     const metaData = ref<any>({});
     const endpoint = computed(() => endpoints.value?.[objectParameter.value.type]);
 
-    const fetchObjectQueryParameters = computed(() => ({ endpoint: endpoint.value, id: objectParameter.value.id }));
+    const fetchObjectQueryParameters = computed(() => ({ endpoint: endpoint.value as string, id: objectParameter.value.id }));
     const fetchObjectQueryEnabled = computed(() => !!fetchObjectQueryParameters.value.endpoint && !!fetchObjectQueryParameters.value.id);
     const {
       data: object,
       isFetching: loading,
       isError: notFoundError,
       refetch
-    } = useFetchObject(fetchObjectQueryParameters, {
+    } = useQuery(objectQueryDefinitions.queries.fetch, fetchObjectQueryParameters, {
       enabled: fetchObjectQueryEnabled,
       onSuccess: (data) => {
         const _data = data as IVeoEntity;
         modifiedObject.value = cloneDeep(_data);
         metaData.value = cloneDeep(_data.domains[domainId.value]);
-        getAdditionalContext();
+
+        // On the next tick, object is populated so disabling subtype will work
+        nextTick(getAdditionalContext);
 
         if (wipObjectData.value) {
           modifiedObject.value = { ...modifiedObject.value, ...wipObjectData.value };
@@ -278,37 +281,38 @@ export default defineComponent({
 
     const subTypeKey = 'object-detail-view-sub-type';
 
-    const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
-    const formsQueryEnabled = computed(() => !!domainId.value);
-    const { data: formSchemas } = useFetchForms(formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+    const currentSubType = computed(() => object.value?.domains?.[domainId.value]?.subType);
 
-    const onSubTypeChanged = (newSubType?: string) => {
+    const addSubTypeBreadcrumb = (data: any) => {
       if (customBreadcrumbExists(subTypeKey)) {
         removeCustomBreadcrumb(subTypeKey);
       }
 
       // Exit if no subtype is set
-      if (!newSubType) {
+      if (!currentSubType.value) {
         return;
       }
 
-      const formSchema = (formSchemas.value as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === newSubType);
+      const formSchema = (data as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === currentSubType.value);
 
       addCustomBreadcrumb({
         key: subTypeKey,
-        text: formSchema ? formSchema.name[locale.value] || Object.values(formSchema.name[locale.value])[0] : (preselectedSubType.value as string),
-        to: `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${objectParameter.value.type}&subType=${preselectedSubType.value}`,
+        text: formSchema ? formSchema.name[locale.value] || Object.values(formSchema.name[locale.value])[0] : currentSubType.value,
+        to: `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${objectParameter.value.type}&subType=${currentSubType.value}`,
         param: objectTypeKey,
         index: 0,
         position: 12
       });
     };
-    watch(() => preselectedSubType.value, onSubTypeChanged, { immediate: true });
-    watch(
-      () => formSchemas.value,
-      () => onSubTypeChanged(preselectedSubType.value),
-      { deep: true }
-    );
+
+    const formsQueryParameters = computed(() => ({ domainId: domainId.value  }));
+    const formsQueryEnabled = computed(() => !!domainId.value);
+    const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [], onSuccess: addSubTypeBreadcrumb });
+
+    // Change subtype if object subtype changes (As of 2023-02-23 this shouldn't happen as once a subtype is selected it is readonly, but you never know what the future holds)
+    watch(() => currentSubType.value, () => {
+      addSubTypeBreadcrumb(formSchemas.value);
+    });
 
     onUnmounted(() => {
       removeCustomBreadcrumb(objectTypeKey);
@@ -349,6 +353,9 @@ export default defineComponent({
 
     async function saveObject() {
       await updateObject(upperFirst(t('objectSaved', { name: object.value?.displayName }).toString()), upperFirst(t('objectNotSaved').toString()));
+      if(!isEqual(object.value?.domains[domainId.value].riskValues , modifiedObject.value?.domains[domainId.value].riskValues)){
+        displayInfoMessage('', upperFirst(t('riskAlert').toString()))
+      }
     }
 
     async function restoreObject() {
@@ -372,7 +379,7 @@ export default defineComponent({
       expireOptimisticLockingAlert();
       try {
         if (modifiedObject.value && object.value) {
-          await $api.entity.update(endpoint.value || '', objectParameter.value.id, modifiedObject.value);
+          await _updateObject({ endpoint: endpoint.value, object: modifiedObject.value });
           displaySuccessMessage(successText);
           refetch();
           formDataIsRevision.value = false;
@@ -501,7 +508,6 @@ export default defineComponent({
       onDPIACreated,
       onDPIALinked,
       onShowRevision,
-      preselectedSubType,
       resetForm,
       restoreObject,
       saveObject,
@@ -537,6 +543,7 @@ export default defineComponent({
     "outdatedObject": "This dataset has been edited by another user. Do you want to load the changes?",
     "reset": "reset",
     "restore": "restore",
+    "riskAlert": "Changing the potential probability of occurrence\/effect changes risks under certain circumstances. Please check all affected risks!",
     "version": "version {version}"
   },
   "de": {
@@ -550,6 +557,7 @@ export default defineComponent({
     "outdatedObject": "Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?",
     "reset": "zurücksetzen",
     "restore": "wiederherstellen",
+    "riskAlert": "Die Änderung der potentiellen Eintrittswahrscheinlichkeit\/Auswirkung ändert unter Umständen Risiken. Bitte prüfen Sie alle betroffenen Risiken!",
     "version": "version {version}"
   }
 }

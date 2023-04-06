@@ -23,7 +23,8 @@
     :class="_classes"
     :data-component-name="componentName"
     density="compact"
-    @click="onClick"
+    :target="$props.openInNewtab ? '_blank' : ''"
+    @click.stop="onClick"
   >
     <template
       v-if="icon || faIcon"
@@ -61,6 +62,7 @@
 import { isEqual, pick } from 'lodash';
 import { mergeProps, PropType } from 'vue';
 import { _RouteLocationBase } from 'vue-router';
+import { INavItem } from './PrimaryNavigation.vue';
 
 const props = defineProps({
   name: {
@@ -102,19 +104,26 @@ const props = defineProps({
   activePath: {
     type: String,
     default: undefined
+  },
+  children: {
+    type: Array as PropType<INavItem[]>,
+    default: () => []
+  },
+  openInNewtab: {
+    type: Boolean,
+    default: false
   }
 });
 const emit = defineEmits(['expand-menu', 'click']);
 
 const route = useRoute();
   
-const onClick = (event: any) => {
+const onClick = () => {
   if (props.miniVariant) {
     emit('expand-menu');
   }
-  emit('click', event);
+  navigateTo(props.to);
 };
-
 const _classes = computed(() => `${props.classes} primary-navigation-entry-level-${props.level}`);
 
 const isActive = computed(() => {
@@ -124,11 +133,19 @@ const isActive = computed(() => {
     return props.exact ? route.fullPath === props.activePath : route.fullPath.includes(props.activePath);
   } else if(isRouteObject) {
     const toRoute = props.to as _RouteLocationBase;
-    return props.exact ? isEqual(pick(route, 'name', 'query', 'params'), pick(toRoute, 'name', 'query', 'params')) : route.name.toString().includes(toRoute.name.toString());
+    // Set defaults to make comparing route objects easier
+    if(!toRoute.query) {
+      toRoute.query = {};
+    }
+    if(!toRoute.params) {
+      toRoute.params = {};
+    }
+    return props.exact ? isEqual(pick(route, 'name', 'query', 'params'), pick(toRoute, 'name', 'query', 'params')) : route.name?.toString().includes(toRoute.name?.toString() || '');
   } else {
     return props.exact ? route.fullPath === props.to : route.fullPath.includes(props.to);
   }
 });
+
 </script>
 
 <style lang="scss">

@@ -55,6 +55,7 @@
   "global.button.yes": "Yes",
   "global.input.required": "The field is required",
   "global.input.requiredfields": "* Required fields",
+  "global.input.hasSpecialChar": "Input contains invalid characters! Only \"A-Z a-z 0-9 _ -\" are accepted.",
   "global.logout": "Logout",
   "global.menu.collapse": "Collapse menu",
   "global.menu.expand": "Fix menu",
@@ -76,20 +77,16 @@
 
   "domain.index.title": "Dashboard",
 
-  "unit.default.name": "Unit 1",
-  "unit.default.description": "Your first unit",
-  "unit.details.nodescription": "No description provided",
-
   "breadcrumbs": {
     "administration": "Account management",
     "catalogs": "Catalogs",
     "docs": "Documentation",
-    "domain": "Module",
+    "domain": "Domains",
     "editor": "Editors",
     "formschema": "Formschema editor",
     "help": "Manual",
     "index": "Unit selection",
-    "more": "More modules",
+    "more": "Further domains",
     "objects": "Objects",
     "objectschema": "Objektschema editor",
     "reports": "Reports",
@@ -115,6 +112,11 @@
   "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions,{0} meaning only one mitigation action can be applied to a risk",
 
   "residualRiskHint": "the displayed residual risk has been derived from the input data.{0}You can overwrite it with a custom value",
+
+  "imprintText": "The {0} of SerNet GmbH applies.",
+  "privacyPolicyText": "The {0} of SerNet GmbH applies.",
+  "deleteText": "Do you really want to delete the element \"{0}\"? This action cannot be undone.",
+  "fix": "Fix",
 
   "userDataExport": {
     "hint": {

@@ -19,6 +19,7 @@
   <div
     v-if="options.visible"
     class="vf-radio vf-form-element"
+    :data-attribute-name="last(objectSchemaPointer.split('/'))"
   >
     <div
       v-if="options && options.label"
@@ -34,7 +35,6 @@
       :error-messages="getControlErrorMessages($props)"
       :label="options && options.label"
       :class="options && options.class"
-      hide-details="auto"
       @update:model-value="$emit('update:model-value', $event)"
     >
       <template #default>
@@ -61,6 +61,7 @@
 </template>
 
 <script lang="ts">
+import{ last } from 'lodash';
 import { mdiClose } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
@@ -94,7 +95,8 @@ export default defineComponent({
       isVertical,
 
       getControlErrorMessages,
-      mdiClose
+      mdiClose,
+      last
     };
   }
 });

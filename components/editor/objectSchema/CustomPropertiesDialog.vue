@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -173,7 +173,10 @@ import { mdiPlus } from '@mdi/js';
 
 import { IVeoSchemaEndpoints } from '~/plugins/api/schema';
 import { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
-import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { IVeoFormSchemaMeta } from '~~/composables/api/queryDefinitions/forms';
+import { PropType } from 'vue';
+
+import { useRules } from '~~/composables/utils';
 
 export default {
   inject: ['objectSchemaHelper', 'displayLanguage'],
@@ -193,9 +196,23 @@ export default {
     domainId: {
       type: String,
       required: true
+    },
+    objectTypes: {
+      type: Object as PropType<IVeoSchemaEndpoints>,
+      default: undefined
+    },
+    formSchemas: {
+      type: Array as PropType<IVeoFormSchemaMeta[]>,
+      default: () => []
     }
   },
   emits: ['delete', 'update:model-value', 'error', 'success'],
+  setup() {
+    const { banSpecialChars, requiredRule } = useRules();
+    return {
+      banSpecialChars, requiredRule
+    };
+  },
   data() {
     return {
       form: {
@@ -208,13 +225,11 @@ export default {
           attributes: []
         } as IVeoOSHCustomLink,
         rules: {
-          title: [(input: string) => trim(input).length > 0],
+          title: [(input: string) => this.banSpecialChars(input), (input: string) => this.requiredRule(input)],
           description: [(input: string) => this.type === 'aspect' || trim(input).length > 0],
           targetType: [(input: string) => this.type === 'aspect' || trim(input).length > 0]
         } as { [key: string]: ((input: string) => boolean)[] }
       },
-      objectTypes: undefined as IVeoSchemaEndpoints | undefined,
-      formSchemas: [] as IVeoFormSchemaMeta[],
       duplicates: [] as string[],
       dialogMode: 'create' as 'create' | 'edit',
       // Not computed, as changing the aspect/link title would make this undefined -> we want more control
@@ -296,14 +311,7 @@ export default {
       }
     }
   },
-  mounted() {
-    this.fetchSchemas();    
-  },
   methods: {
-    async fetchSchemas() {
-      this.objectTypes = await this.$api.schema.fetchAll();
-      this.formSchemas = await this.$api.form.fetchAll(this.domainId);
-    },
     upperFirst,
     close() {
       this.$emit('update:model-value', false);
@@ -334,9 +342,11 @@ export default {
         } else if (this.type === 'aspect') {
           if (this.editedProperty.title !== this.form.data.title) {
             this.objectSchemaHelper.value.renameCustomAspect(this.editedProperty.title, this.form.data.title);
+            this.objectSchemaHelper.value.changeTranslationKey(`${this.editedProperty.prefix}${this.editedProperty.title}`, `${this.editedProperty.prefix}${this.form.data.title}`);
           }
         } else if (this.editedProperty.title !== this.form.data.title) {
           this.objectSchemaHelper.value.renameCustomLink(this.editedProperty.title, this.form.data.title);
+          this.objectSchemaHelper.value.changeTranslationKey(`${this.editedProperty.prefix}${this.editedProperty.title}`, `${this.editedProperty.prefix}${this.form.data.title}`);
         }
 
         // Remove properties from attributes that shouldn't be saved and are only used here
@@ -356,14 +366,6 @@ export default {
         const attributePrefix = `${this.form.data.prefix}${this.form.data.title}_`;
 
         for (const attribute of this.form.data.attributes) {
-          // Update translation key if aspect/link title changed across all languages
-          if (attribute.originalId && this.editedProperty && this.editedProperty.title !== this.form.data.title) {
-            this.objectSchemaHelper.value.changeTranslationKey(
-              `${this.editedProperty.prefix}${this.editedProperty.title}_${attribute.originalId}`,
-              `${attributePrefix}${attribute.originalId}`
-            );
-          }
-
           // Update translation key if attribute title changed across all languages
           if (attribute.originalId && attribute.originalId !== attribute.title) {
             this.objectSchemaHelper.value.changeTranslationKey(`${attributePrefix}${attribute.originalId}`, `${attributePrefix}${attribute.title}`);

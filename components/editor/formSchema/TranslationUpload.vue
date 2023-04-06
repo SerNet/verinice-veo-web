@@ -26,9 +26,10 @@
       {{ t('uploadOverwrite') }}
     </BaseAlert>
     <EditorTranslationUpload
-      v-bind="$props"
+      :available-languages="availableLanguages"
       :import-function="importFunction"
-      @update:replace-translations="$emit('replace-translations', $event)"
+      :replace-translations="replaceTranslations"
+      @update:replace-translations="$emit('update:replace-translations', $event)"
     >
       <template #default>
         <v-expansion-panels
@@ -42,7 +43,7 @@
             </v-expansion-panel-title>
             <v-expansion-panel-text>
               <BaseAlert
-                :model-value="true"
+                :model-value="!!usedTranslations.length"
                 :title="t('importedTranslations')"
                 flat
                 no-close-button
@@ -67,7 +68,7 @@
                 </template>
               </BaseAlert>
               <BaseAlert
-                :model-value="true"
+                :model-value="!!duplicateTranslations.length"
                 :title="t('duplicateTranslations')"
                 flat
                 no-close-button
@@ -123,8 +124,10 @@ import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { JsonPointer } from 'json-ptr';
 import { trim } from 'lodash';
 
-import { useFetchTranslations } from '~/composables/api/translations';
-import { IVeoFormSchema, VeoAlertType } from '~/types/VeoTypes';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import { VeoAlertType } from '~/types/VeoTypes';
+import { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
+import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
@@ -137,14 +140,14 @@ export default defineComponent({
       default: false
     }
   },
-  emits: ['translations-imported', 'replace-translations'],
+  emits: ['translations-imported', 'update:replace-translations'],
   setup(props, { emit }) {
     const { locales, t } = useI18n();
 
     const formSchema = inject<Ref<IVeoFormSchema | undefined>>('mainFormSchema');
 
     const translationsQueryParameters = computed(() => ({ languages: props.availableLanguages }));
-    const { data: objectSchemaTranslations } = useFetchTranslations(translationsQueryParameters);
+    const { data: objectSchemaTranslations } = useQuery(translationQueryDefinitions.queries.fetch, translationsQueryParameters);
 
     // Layout stuff
     const resultExpansionPanel = ref();

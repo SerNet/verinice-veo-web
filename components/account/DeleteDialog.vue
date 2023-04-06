@@ -56,11 +56,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useDeleteAccount } from '~/composables/api/accounts';
+import accountQueryDefinitions from '~/composables/api/queryDefinitions/accounts';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { VeoAlertType } from '~/types/VeoTypes';
+import { useMutation } from '~~/composables/api/utils/mutation';
 
 const props = defineProps({
   id: {
@@ -82,7 +83,7 @@ const { profile } = useVeoUser();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 const deleteMutationParameters = computed(() => ({ id: props.id }));
-const { mutateAsync: doDelete, isLoading } = useDeleteAccount();
+const { mutateAsync: doDelete, isLoading } = useMutation(accountQueryDefinitions.mutations.deleteAccount);
 
 const deleteAccount = async () => {
   if (!props.id || ability.value.cannot('manage', 'accounts')) {
