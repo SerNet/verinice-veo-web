@@ -44,7 +44,7 @@
         v-else
         color="primary"
         icon
-        :href="$config.accountPath"
+        :href="$config.public.accountPath"
       >
         <v-icon :icon="mdiAccountCircleOutline" />
       </v-btn>

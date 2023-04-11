@@ -54,9 +54,9 @@ export const useVeoUser: () => IVeoUserComposable = () => {
     }
     keycloakInitializationStarted.value = true;
     keycloak.value = new Keycloak({
-      url: context.$config.oidcUrl,
-      realm: context.$config.oidcRealm,
-      clientId: context.$config.oidcClient
+      url: context.$config.public.oidcUrl,
+      realm: context.$config.public.oidcRealm,
+      clientId: context.$config.public.oidcClient
     });
 
     // Refresh token HAS to be set before calling init

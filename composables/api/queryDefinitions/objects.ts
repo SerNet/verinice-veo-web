@@ -102,7 +102,7 @@ export const formatObject = (object: IVeoEntity) => {
     object.members = [];
   }
   // The frontend sets the display name as the backend only sets it for links. Gets used for example in the breadcrumbs.
-  object.displayName = `${object.designator} ${object.abbreviation || ''} ${object.name}`;
+  object.displayName = [object.designator, object.abbreviation, object.name].filter((part) => part).join(' ');
   return object;
 };
 
@@ -303,7 +303,6 @@ export default {
             }
           ]),
           queryClient.invalidateQueries({queryKey: ['evaluation']});
-          ;
         }
       }
     } as IVeoMutationDefinition<IVeoDeleteRiskParameters, void>

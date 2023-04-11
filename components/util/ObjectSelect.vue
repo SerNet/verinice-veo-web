@@ -75,9 +75,9 @@
 
 <script lang="ts">
 import { PropType } from 'vue';
-import { upperFirst } from 'lodash';
-
+import { cloneDeep, upperFirst } from 'lodash';
 import { mdiOpenInNew } from '@mdi/js';
+
 import { createUUIDUrlParam, getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -181,14 +181,19 @@ export default defineComponent({
         } as any)
     );
     const {
-      isFetching: isLoadingObjects,
-      refetch
+      data: _fetchObjectsData,
+      isFetching: isLoadingObjects
     } = useFetchObjects(fetchObjectsQueryParameters, {
       placeholderData: { items: [], pageCount: 0, page: 1 },
-      enabled: searchQueryNotStale, onSuccess: (data) => {
-        fetchObjectsData.value = data as any;
-      }
+      enabled: searchQueryNotStale,
+      refetchOnMount: false // If set to true (the default), refetches queries every time input changes, causing some weird cache issues
     });
+
+    // Assigning fetchObjectsData was moved to watcher as it can get fired immideatly this way
+    // fetchObjectsData and _fetchObjectsData exist, as fetchObjectsData is part of the enabled computed, which it can't be if it isn't defined yet.
+    watch(() => _fetchObjectsData.value, (newValue) => {
+      fetchObjectsData.value = cloneDeep(newValue);
+    }, { deep: true, immediate: true });
 
     const onSearchQueryInput = (newValue: string) => {
       // We have to early exit if the value is undefined or null, as for some reason it can be set to one of those values if the objects get fetched, resulting in an infinite fetch
@@ -196,13 +201,11 @@ export default defineComponent({
         return;
       }
       searchQuery.value = newValue;
-      refetch();
     };
 
     const onClearClicked = () => {
       searchQuery.value = '';
       internalValue.value = undefined;
-      refetch();
     };
 
     const moreItemsAvailable = computed(() => (fetchObjectsData.value?.pageCount || 0) > 1);

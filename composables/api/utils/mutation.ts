@@ -20,7 +20,7 @@ import { UseMutationOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 import { omit } from 'lodash';
 
-import { IVeoQueryDefinition, IVeoQueryParameters } from './query';
+import { debugCacheAsArrayIncludesPrimaryKey, IVeoQueryDefinition, IVeoQueryParameters } from './query';
 import { useRequest } from './request';
 
 export interface MutationOptions<_TVariables, TResult = unknown> extends Omit<UseMutationOptions<TResult, unknown, void, unknown>, 'queryFn' | 'onSuccess'> {
@@ -83,7 +83,7 @@ export const useMutation = <TVariables, TResult>(
     mutateAsync: (mutationParameters: MaybeRef<any>) => {
       const transformedParameters = mutationDefinition.mutationParameterTransformationFn(unref(mutationParameters));
       // Debugging stuff
-      if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(mutationDefinition.primaryQueryKey))) {
+      if ($config.public.debugCache === 'true' || debugCacheAsArrayIncludesPrimaryKey($config.public.debugCache, mutationDefinition.primaryQueryKey)) {
         // eslint-disable-next-line no-console
         console.log(
           `[vueQuery] Mutation "${mutationDefinition.primaryQueryKey}" is running with parameters "${JSON.stringify(mutationParameters)}". Fetching...\nOptions: "${JSON.stringify(

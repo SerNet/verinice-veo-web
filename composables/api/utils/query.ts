@@ -47,6 +47,18 @@ export const STALE_TIME = {
   INFINITY: Infinity // Only refetch on page reload
 };
 
+export const debugCacheAsArrayIncludesPrimaryKey = (configValue: string | undefined, primaryQueryKey: string) => {
+  if(!configValue || !configValue.startsWith('[') || !configValue.endsWith(']')) {
+    return false;
+  }
+  try {
+    return JSON.parse(configValue).includes(primaryQueryKey);
+  } catch (error) {
+    console.warn('Couldn\'t parse debug cache: ', error);
+    return false;
+  }
+};
+
 /**
  * Wrapper for vue-query's useQuery to apply some custom logic to make it work more seamless with the legacy api plugin and add optional debugging output.
  *
@@ -95,7 +107,7 @@ export const useQuery = <TVariables = undefined, TResult = any>(
   );
 
   // Debugging stuff
-  if ($config.debugCache === true || (Array.isArray($config.debugCache) && $config.debugCache.includes(queryDefinition.primaryQueryKey))) {
+  if ($config.public.debugCache === 'true' || debugCacheAsArrayIncludesPrimaryKey($config.public.debugCache, queryDefinition.primaryQueryKey)) {
     const queryClient = useQueryClient();
 
     watch(
