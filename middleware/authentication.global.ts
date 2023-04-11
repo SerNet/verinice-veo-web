@@ -45,6 +45,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return;
   }
 
+  // if the print path is called, immediately exit, as this route might has been called by the print script, which can't auth.
+  if(to.name === 'docs' && to.query.print !== undefined) {
+    return;
+  }
+
   // Prevent the user from accessing the login page if he is logged in
   if (authenticated.value && to.path === '/login') {
     return navigateTo('/');

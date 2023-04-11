@@ -31,8 +31,8 @@ import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains'
 export default defineNuxtPlugin (async (nuxtApp) => {
   const route = useRoute();
 
-  // We don't want any of this to take effect during the login process
-  if(route.path === '/sso') {
+  // We don't want any of this to take effect during the login process or if the print script might be running
+  if(route.path === '/sso' || route.name === 'docs' && route.query.print !== undefined) {
     return;
   }
 
