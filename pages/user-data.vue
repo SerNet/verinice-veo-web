@@ -43,8 +43,6 @@
       <v-col
         class="mt-4"
         cols="12"
-        :md="12"
-        :lg="12"
       >
         <UserDataUnitExport />
       </v-col>
@@ -53,16 +51,16 @@
       <v-col
         class="d-flex mt-4"
         cols="12"
-        :md="12"
-        :lg="6"
+        md="12"
+        lg="6"
       >
         <UserDataAccountExport />
       </v-col>
       <v-col
         class="mt-4"
         cols="12"
-        :md="12"
-        :lg="6"
+        md="12"
+        lg="6"
       >
         <UserDataDomainExport />
       </v-col>
@@ -71,8 +69,6 @@
       <v-col
         class="mt-4"
         cols="12"
-        :md="12"
-        :lg="12"
       >
         <UserDataHistoryExport />
       </v-col>
