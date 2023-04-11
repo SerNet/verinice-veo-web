@@ -59,7 +59,7 @@
             color="primary"
             class="ms-auto mt-4"
             :loading="props.isLoading[index]"
-            :disabled="props.isLoading[index]"
+            :disabled="props.showAlert"
             @click="() => handleClick(index)"
           >
             <v-icon
