@@ -70,6 +70,7 @@ async function exportAccountData(index: number) {
     displaySuccessMessage(t('successHeader'));
 
   } catch (error) {
+    state.showAlert = true;
     handleError(error);
   }
   finally {
