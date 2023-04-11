@@ -17,17 +17,14 @@
 -->
 
 <template>
-  <BaseCard
-    padding
-    flex-column
-    class="justify-space-between flex-grow-1"
-  >
-    <h2 class="text-h3">
-      {{ props.header }}
-    </h2>
-    <p v-if="props.body">
-      {{ props.body }}
-    </p>
+  <BaseCard class="flex-grow-1 d-flex">
+    <v-card-text class="d-flex flex-column justify-space-between">
+      <h2 class="text-h3">
+        {{ props.header }}
+      </h2>
+      <p v-if="props.body">
+        {{ props.body }}
+      </p>
 
     <!-- No downloads available -->
     <v-alert
@@ -38,39 +35,40 @@
       :text="props.alertBody"
     />
 
-    <slot
-      v-if="slots.prepareData"
-      name="prepareData"
-    />
+      <slot
+        v-if="slots.prepareData"
+        name="prepareData"
+      />
 
-    <template v-if="!slots.prepareData">
-      <!-- Downloads -->
-      <template
-        v-for="(item, index) in items"
-        :key="index"
-      >
-        <v-divider class="mt-4" />
-        <h3
-          v-if="item.name"
-          class="text-h4 mt-2"
+      <template v-if="!slots.prepareData">
+        <!-- Downloads -->
+        <template
+          v-for="(item, index) in items"
+          :key="index"
         >
-          {{ item.name }}
-        </h3>
-        <v-btn
-          flat
-          color="primary"
-          class="ms-auto mt-4"
-          :loading="props.isLoading[index]"
-          :disabled="props.isLoading[index]"
-          @click="() => handleClick(index)"
-        >
-          <v-icon
-            :icon="mdiDownload"
-          />
-          {{ props.downloadBtnCopy }}
-        </v-btn>
+          <v-divider class="mt-4" />
+          <h3
+            v-if="item.name"
+            class="text-h4 mt-2"
+          >
+            {{ item.name }}
+          </h3>
+          <v-btn
+            flat
+            color="primary"
+            class="ms-auto mt-4"
+            :loading="props.isLoading[index]"
+            :disabled="props.isLoading[index]"
+            @click="() => handleClick(index)"
+          >
+            <v-icon
+              :icon="mdiDownload"
+            />
+            {{ props.downloadBtnCopy }}
+          </v-btn>
+        </template>
       </template>
-    </template>
+    </v-card-text>
   </BaseCard>
 </template>
 
