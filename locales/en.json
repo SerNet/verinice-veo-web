@@ -90,7 +90,8 @@
     "objects": "Objects",
     "objectschema": "Objektschema editor",
     "reports": "Reports",
-    "risks": "Risk definitions"
+    "risks": "Risk definitions",
+    "user-data": "User data"
   },
 
   "error": {
@@ -115,5 +116,18 @@
   "imprintText": "The {0} of SerNet GmbH applies.",
   "privacyPolicyText": "The {0} of SerNet GmbH applies.",
   "deleteText": "Do you really want to delete the element \"{0}\"? This action cannot be undone.",
-  "fix": "Fix"
+  "fix": "Fix",
+
+  "userDataExport": {
+    "hint": {
+      "text": "Here you can exercise your right to data portability according to { link }. { linebreak } Download your personal data in JSON format (ZIP compressed if necessary) by clicking on the download links:",
+      "href": "https://dsgvo-gesetz.de/art-20-dsgvo/",
+      "linkText": "Article 20 DSGVO"
+    },
+    "footerHint": {
+      "text":"Do you wish to transfer personal data to another provider? Please contact us { email }!",
+      "href": "mailto:DSB{'@'}bitte-klaeren.de",
+      "email": "DSB{'@'}bitte-klaeren.de"
+    }
+  }
 }

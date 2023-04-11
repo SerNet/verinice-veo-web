@@ -1,0 +1,33 @@
+ {
+  "en": {
+    "hint": "This page allows you to export data associated with your account.",
+    "unitHeader": "Data of your active Unit(s):",
+    "domainHeader": "Data about the domain DS-GVO (simplifies the later reuse in verinice.veo DSMS):",
+    "historyHeader": "Data history:",
+    "accountHeader": "Account data:",
+    "btnDownload": "Download",
+    "btnPrepareDownload": "Prepare Download",
+    "alertHeader": "Sorry, no data available.",
+    "alertBody": "Please contact our support team: verinice{'@'}sernet.de.",
+    "errorHeader": "Could not download your data.",
+    "errorBody": "Please contact our support team: verinice{'@'}sernet.de.",
+    "successHeader": "Download Successfull."
+  },
+
+  "de": {
+    "hint": "Hier können Sie Ihr Recht auf Datenübertragbarkeit nach { 0 } wahrnehmen. Laden Sie ihre personenbezogenen Daten im JSON-Format (ZIP-komprimiert) durch Mausklick auf die Downloadlinks herunter:",
+    "linkText": "Artikel 20 DSGVO",
+    "unitHeader": " Daten Ihrer aktiven Unit(s):",
+    "domainHeader": "Daten zur Domäne DS-GVO (vereinfacht die spätere Wiederverwendung in verinice.veo DSMS):",
+    "historyHeader": "Daten-History:",
+    "accountHeader": "Benutzerdaten:",
+    "btnDownload": "Download",
+    "btnPrepareDownload": "Download vorbereiten",
+    "alertHeader": "Leider sind keine Daten vorhanden",
+    "alertBody": "Bitte kontaktieren Sie unseren Support: verinice{'@'}sernet.de.",
+    "errorHeader": "Download fehlgeschlagen.",
+    "errorBody": "Bitte kontaktieren Sie unseren Support: verinice{'@'}sernet.de.",
+    "successHeader": "Download erfolgreich.",
+    "testMessage": "Lorem ipsum dolor sit amet"
+  }
+}

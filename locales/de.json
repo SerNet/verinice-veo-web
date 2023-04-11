@@ -90,7 +90,8 @@
     "objects": "Objekte",
     "objectschema": "Objektschema Editor",
     "reports": "Reports",
-    "risks": "Risikodefinitionen"
+    "risks": "Risikodefinitionen",
+    "user-data": "Benutzerdaten"
   },
 
   "error": {
@@ -115,5 +116,19 @@
   "imprintText": "Es gilt das {0} der SerNet GmbH.",
   "privacyPolicyText": "Es gilt die {0} der SerNet GmbH.",
   "deleteText": "Möchten Sie das Element \"{0}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
-  "fix": "Beheben"
+  "fix": "Beheben",
+
+  "userDataExport": {
+    "hint": {
+      "text": "Hier können Sie Ihr Recht auf Datenübertragbarkeit nach { link } wahrnehmen. { linebreak } Laden Sie ihre personenbezogenen Daten im JSON-Format (ZIP-komprimiert) durch Mausklick auf die Downloadlinks herunter:",
+      "href": "https://dsgvo-gesetz.de/art-20-dsgvo/",
+      "linkText": "Artikel 20 DSGVO"
+    },
+    "footerHint": {
+      "text":"Wünschen Sie die Übertragung personenbezogener Daten an einen anderen Anbieter? Bitte kontaktieren Sie uns { email }!",
+      "href": "mailto:DSB{'@'}bitte-klaeren.de",
+      "email": "DSB{'@'}bitte-klaeren.de"
+    }
+  }
 }
+
