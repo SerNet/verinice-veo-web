@@ -26,14 +26,15 @@
         {{ props.body }}
       </p>
 
-    <!-- No downloads available -->
-    <v-alert
-      v-show="props.showAlert"
-      type="info"
-      variant="tonal"
-      :title="props.alertHeader"
-      :text="props.alertBody"
-    />
+      <!-- No downloads available -->
+      <BaseAlert
+        :model-value="props.showAlert"
+        :title="props.alertHeader"
+        :text="props.alertBody"
+        :type="VeoAlertType.INFO"
+        no-close-button
+        flat
+      />
 
       <slot
         v-if="slots.prepareData"
@@ -75,6 +76,7 @@
 <script setup lang="ts">
 import { useSlots } from "vue";
 import { mdiDownload } from "@mdi/js";
+import { VeoAlertType } from '~~/types/VeoTypes';
 
 export interface Props {
   header: string,
