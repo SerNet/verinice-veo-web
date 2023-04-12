@@ -80,7 +80,7 @@ if (lang) {
 }
 // It is possible to a query parameter root to only print the contents of a folder/chapter
 const root = [...(route.query.root || [])].join('') || undefined;
-const documents = useDocs({ root });
+const documents = useDocs({ root, locale: lang });
 
 // Table of contents
 const navigation = useDocNavigationFlat({ root });
