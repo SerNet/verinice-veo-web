@@ -91,7 +91,7 @@
     "objectschema": "Objektschema Editor",
     "reports": "Reports",
     "risks": "Risikodefinitionen",
-    "user-data": "Benutzerdaten"
+    "user-data": "Datenübertragung"
   },
 
   "error": {
@@ -120,14 +120,9 @@
 
   "userDataExport": {
     "hint": {
-      "text": "Hier können Sie Ihr Recht auf Datenübertragbarkeit nach { link } wahrnehmen. { linebreak } Laden Sie ihre personenbezogenen Daten im JSON-Format (ZIP-komprimiert) durch Mausklick auf die Downloadlinks herunter:",
+      "text": "Hier können Sie Ihr Recht auf Datenübertragbarkeit wahrnehmen. { linebreak } Laden Sie ihre personenbezogenen Daten im JSON-Format (ZIP-komprimiert) durch Mausklick auf die Downloadlinks herunter:",
       "href": "https://dsgvo-gesetz.de/art-20-dsgvo/",
       "linkText": "Artikel 20 DSGVO"
-    },
-    "footerHint": {
-      "text":"Wünschen Sie die Übertragung personenbezogener Daten an einen anderen Anbieter? Bitte kontaktieren Sie uns { email }!",
-      "href": "mailto:DSB{'@'}bitte-klaeren.de",
-      "email": "DSB{'@'}bitte-klaeren.de"
     }
   }
 }
