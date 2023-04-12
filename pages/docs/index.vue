@@ -54,7 +54,7 @@
           </div>
 
           <div class="veo-pdf-preview-copyright">
-            <p>verinice.veo {{ t('documentation') }}<br>&copy; 2022, SerNet GmbH</p>
+            <p>verinice.veo {{ t('documentation') }}<br>&copy; {{ currentYear }}, SerNet GmbH</p>
           </div>
         </div>
       </template>
@@ -74,6 +74,8 @@ if(!('print' in route.query)) {
   navigateTo('/docs/index');
 }
 
+const currentYear = new Date().getFullYear();
+
 const lang = route.query.lang?.toString() || undefined;
 if (lang) {
   locale.value = lang;
@@ -83,7 +85,7 @@ const root = [...(route.query.root || [])].join('') || undefined;
 const documents = useDocs({ root, locale: lang });
 
 // Table of contents
-const navigation = useDocNavigationFlat({ root });
+const navigation = useDocNavigationFlat({ root, locale: lang });
 
 const getTranslatedHierarchyAsString = (path: string) => {
   const parts = path.split('/').filter((path) => path);
