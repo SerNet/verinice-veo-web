@@ -28,15 +28,6 @@
       <template #linebreak>
         <br>
       </template>
-      <template #link>
-        <a
-          :href="t('userDataExport.hint.href')"
-          target="_blank"
-          rel="noopener"
-        >
-          {{ t('userDataExport.hint.linkText') }}
-        </a>
-      </template>
     </i18n-t>
 
     <v-row class="align-start">
@@ -73,18 +64,6 @@
         <UserDataHistoryExport />
       </v-col>
     </v-row>
-    <i18n-t
-      keypath="userDataExport.footerHint.text"
-      tag="p"
-      scope="global"
-      class="my-5"
-    >
-      <template #email>
-        <a
-          :href="t('userDataExport.footerHint.href')"
-        >{{ t('userDataExport.footerHint.email') }}</a>
-      </template>
-    </i18n-t>
   </BasePage>
 </template>
 
