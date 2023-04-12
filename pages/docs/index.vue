@@ -76,12 +76,10 @@ if(!('print' in route.query)) {
 
 const lang = route.query.lang?.toString() || undefined;
 if (lang) {
-  console.log('DocsIndex Setting locale to', lang);
   locale.value = lang;
 }
 // It is possible to a query parameter root to only print the contents of a folder/chapter
 const root = [...(route.query.root || [])].join('') || undefined;
-console.log('Index useDocs');
 const documents = useDocs({ root });
 
 // Table of contents

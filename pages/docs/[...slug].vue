@@ -52,7 +52,6 @@ const _document = useDoc({ path: `/${normalizedPath.value.join('/') || 'index'}`
 const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 
 // Navigation stuff (breadcrumbs)
-console.log('useDocs slug');
 const docs = useDocs({});
 const updateBreadcrumbs = () => {
   // Remove previous custom breadcrumbs

@@ -338,7 +338,6 @@ export function useTutorials() {
   watch(
     () => i18n.locale.value,
     async () => {
-      console.log('Intro fetchDocs');
       fetchDocs();
     }, { immediate: true, deep: true }
   );

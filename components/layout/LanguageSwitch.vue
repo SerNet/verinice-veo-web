@@ -57,7 +57,6 @@ const { current } = useLocale();
 const selectedLocale = computed({
   get: () => [locale.value],
   set: (newValue) => {
-    console.log('LaguageSwitch setting locale to', newValue);
     setLocale(newValue[0]);
     current.value = newValue[0];
   }

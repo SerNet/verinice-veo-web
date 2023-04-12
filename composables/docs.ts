@@ -22,6 +22,7 @@ type ContentOptions = { path?: string; locale?: string; localeSeparator?: string
 const getOptions = (params: ContentOptions, _locale: string) => {
   const fallbackLocale = params.fallbackLocale ?? 'de';
   const localeSeparator = params.localeSeparator ?? '.';
+  console.log('getOptions', params.locale, _locale);
   const locale = params.locale ?? _locale;
   return { ...params, fallbackLocale, localeSeparator, locale };
 };
