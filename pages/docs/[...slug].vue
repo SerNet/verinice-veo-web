@@ -52,7 +52,7 @@ const _document = useDoc({ path: `/${normalizedPath.value.join('/') || 'index'}`
 const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 
 // Navigation stuff (breadcrumbs)
-
+console.log('useDocs slug');
 const docs = useDocs({});
 const updateBreadcrumbs = () => {
   // Remove previous custom breadcrumbs
@@ -90,16 +90,14 @@ const routeToHeader = () => {
   if(!_document.value || !route.hash){
     return;
   }
-  scrollTo(0,(document?.querySelector(route.hash)?.getBoundingClientRect())?.y || 0)
-}
+  scrollTo(0,(document?.querySelector(route.hash)?.getBoundingClientRect())?.y || 0);
+};
 
 watch(() => _document.value?._path, updateBreadcrumbs, { immediate: true });
 
 watch(() => docs.value, updateBreadcrumbs, { deep: true, immediate: true });
 
 watch(() => _document.value, routeToHeader, {deep:true, immediate: true});
-
-
 </script>
 
 <style lang="scss" scoped>

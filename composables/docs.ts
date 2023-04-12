@@ -89,7 +89,7 @@ export const useDocs = (options: {
 
   const fetchDocs = async () => {
     // Language has to be either the current locale or not set, as we only want the docs to contain non-i18n pages and i18n pages in the current languages.
-    console.log('fetchDocs', mergedOptions.value.locale, undefined);
+    console.log('useDocsfetchDocs', mergedOptions.value.locale, undefined);
     return await queryContent(options.root).where({ _extension: 'md', language: { $in: [mergedOptions.value.locale, undefined] }}).find();
   };
 
