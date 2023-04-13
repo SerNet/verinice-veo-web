@@ -95,6 +95,7 @@ export const useDocs = (options: {
   const normalizedDocs = computed(() => (docs.value || []).map((doc) => ({ ...doc, _path: normalizePath(doc._path) })));
 
   // Update docs as soon as content or the options change.
+  watch(() => locale.value, (newValue) => console.log('New lang', newValue), { deep: true, immediate: true });
   watch(
     () => mergedOptions.value,
     async () => {
@@ -152,7 +153,6 @@ export const useDocNavigation = (options: {
   watch(
     () => mergedOptions.value,
     async () => {
-      console.log('docOptions2', JSON.stringify(mergedOptions.value));
       fetch();
     },
     { deep: true, immediate: true }
