@@ -64,7 +64,7 @@
           </div>
 
           <div class="veo-pdf-preview-copyright">
-            <p>verinice.veo {{ t('documentation') }}<br>&copy; {{ currentYear }}, SerNet GmbH</p>
+            <p>&copy; {{ currentYear }}, SerNet GmbH</p>
           </div>
         </div>
       </template>
@@ -92,10 +92,10 @@ if (lang) {
 }
 // It is possible to a query parameter root to only print the contents of a folder/chapter
 const root = [...(route.query.root || [])].join('') || undefined;
-const documents = useDocs({ root, locale: lang });
+const documents = useDocs({ root });
 
 // Table of contents
-const navigation = useDocNavigationFlat({ root, locale: lang });
+const navigation = useDocNavigationFlat({ root });
 
 const getTranslatedHierarchyAsString = (path: string) => {
   const parts = path.split('/').filter((path) => path);
@@ -107,7 +107,8 @@ const getTranslatedHierarchyAsString = (path: string) => {
   }
   // Pop as the first page is always the welcome page (we don't want to show that)
   translatedParts.pop();
-  return translatedParts.reverse().join('/');
+  return translatedParts.reverse()[0];
+  // return translatedParts.reverse().join('/'); // Currently disabled, as only the highest chapter name should be shown
 };
 
 useHead(() => ({

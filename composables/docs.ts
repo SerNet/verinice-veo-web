@@ -64,6 +64,7 @@ export const useDoc = (options: { path: string; locale?: string; localeSeparator
   watch(
     () => mergedOptions.value,
     async () => {
+      console.log(mergedOptions.value);
       doc.value = await fetchDoc();
     },
     { deep: true, immediate: true }
