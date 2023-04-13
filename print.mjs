@@ -21,11 +21,6 @@ import puppeteer from 'puppeteer';
 
 const LANGS = ['de', 'en'];
 
-const setCookie = (name,value) => {
-  var expires = "";
-  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-};
-
 async function main() {
   const outputFolder = path.resolve('./dist');
   const fileName = 'Documentation';
@@ -43,7 +38,12 @@ async function main() {
     .on('requestfailed', (request) => console.error(` ❌  ${request.failure().errorText} ${request.url()}`));
   console.log('Starting printing...');
   for await (const lang of LANGS) {
-    setCookie('i18n_redirected', lang);
+    await page.setCookie([
+      {
+        name: 'i18n_redirected',
+        value: lang
+      }
+    ]);
     const outputFile = `${outputFolder}/${fileName}_${lang}.pdf`;
     console.log(`Printing: ${url} (${lang})...`);
     await page.goto(url + `&lang=${lang}`);
