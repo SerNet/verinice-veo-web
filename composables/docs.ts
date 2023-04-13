@@ -64,7 +64,6 @@ export const useDoc = (options: { path: string; locale?: string; localeSeparator
   watch(
     () => mergedOptions.value,
     async () => {
-      console.log(mergedOptions.value);
       doc.value = await fetchDoc();
     },
     { deep: true, immediate: true }
@@ -99,6 +98,7 @@ export const useDocs = (options: {
   watch(
     () => mergedOptions.value,
     async () => {
+      console.log('docOptions1', mergedOptions.value);
       docs.value = await fetchDocs();
     },
     { deep: true, immediate: true }
@@ -152,6 +152,7 @@ export const useDocNavigation = (options: {
   watch(
     () => mergedOptions.value,
     async () => {
+      console.log('docOptions2', mergedOptions.value);
       fetch();
     },
     { deep: true, immediate: true }
