@@ -38,6 +38,7 @@ async function main() {
     .on('requestfailed', (request) => console.error(` ❌  ${request.failure().errorText} ${request.url()}`));
   console.log('Starting printing...');
   for await (const lang of LANGS) {
+    console.log('docLang', lang, 'start');
     const outputFile = `${outputFolder}/${fileName}_${lang}.pdf`;
     console.log(`Printing: ${url} (${lang})...`);
     await page.goto(url + `&lang=${lang}`);
