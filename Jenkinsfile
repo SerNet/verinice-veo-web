@@ -89,7 +89,7 @@ pipeline {
                                     --build-arg VEO_OIDC_REALM='${env.OIDC_REALM_PROD}' \
                                     --build-arg VEO_OIDC_CLIENT='${env.OIDC_CLIENT_PROD}' \
                                     --label org.opencontainers.image.version='$projectVersion' \
-                                    --label org.opencontainers.image.revision='$env.GIT_COMMIT' \
+                                    --label org.opencontainers.image.revision='${env.GIT_COMMIT[0..7]}' \
                                     .")
                                 withDockerRegistry(credentialsId: 'gcr:verinice-projekt@gcr', url: 'https://eu.gcr.io') {
                                     dockerImageProd.push("git-${env.GIT_COMMIT}")
@@ -114,7 +114,7 @@ pipeline {
                                     --build-arg VEO_OIDC_CLIENT='${env.OIDC_CLIENT_DEV}' \
                                     --build-arg VEO_DEBUG=true \
                                     --label org.opencontainers.image.version='$projectVersion' \
-                                    --label org.opencontainers.image.revision='$env.GIT_COMMIT' \
+                                    --label org.opencontainers.image.revision='${env.GIT_COMMIT[0..7]}' \
                                     .")
                                 withDockerRegistry(credentialsId: 'gcr:verinice-projekt@gcr', url: 'https://eu.gcr.io') {
                                     dockerImage.push("git-${env.GIT_COMMIT}")
