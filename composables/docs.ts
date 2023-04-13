@@ -98,7 +98,7 @@ export const useDocs = (options: {
   watch(
     () => mergedOptions.value,
     async () => {
-      console.log('docOptions1', mergedOptions.value);
+      console.log('docOptions1', JSON.stringify(mergedOptions.value));
       docs.value = await fetchDocs();
     },
     { deep: true, immediate: true }
@@ -152,7 +152,7 @@ export const useDocNavigation = (options: {
   watch(
     () => mergedOptions.value,
     async () => {
-      console.log('docOptions2', mergedOptions.value);
+      console.log('docOptions2', JSON.stringify(mergedOptions.value));
       fetch();
     },
     { deep: true, immediate: true }
