@@ -40,7 +40,8 @@ async function main() {
   for await (const lang of LANGS) {
     const outputFile = `${outputFolder}/${fileName}_${lang}.pdf`;
     console.log(`Printing: ${url} (${lang})...`);
-    await page.goto(url + `&lang=${lang}`);
+    await page.goto(url);
+    // Setting the language via &lang=xyz gets overwritten by the browser locale, so we set the cookie by hand to avoid this. Also means the lang query parameter is only useful if set by hand.
     await page.setCookie({
       name: 'i18n_redirected',
       value: lang
