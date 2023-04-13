@@ -76,7 +76,7 @@ pipeline {
                             if (isMasterBranch){
                                 // we build two images from the master branch, one for staging and one for prod
                                 def dockerImageProd = docker.build("eu.gcr.io/veo-projekt/veo-web:git-${env.GIT_COMMIT}",
-                                   "--build-arg CI_COMMIT_SHA='${env.GIT_COMMIT}' \
+                                   "--build-arg CI_COMMIT_SHORT_SHA='${env.GIT_COMMIT}' \
                                     --build-arg CI_JOB_ID='${env.BUILD_NUMBER}' \
                                     --build-arg CI_COMMIT_TIMESTAMP='${new Date().time}' \
                                     --build-arg NODE_ENV=${nodeEnv} \
@@ -100,7 +100,7 @@ pipeline {
                                 }
                             } else {
                                 def dockerImage = docker.build("eu.gcr.io/veo-projekt/veo-web:git-${env.GIT_COMMIT}",
-                                   "--build-arg CI_COMMIT_SHA='${env.GIT_COMMIT}' \
+                                   "--build-arg CI_COMMIT_SHORT_SHA='${env.GIT_COMMIT}' \
                                     --build-arg CI_JOB_ID='${env.BUILD_NUMBER}' \
                                     --build-arg CI_COMMIT_TIMESTAMP='${new Date().time}' \
                                     --build-arg NODE_ENV=${nodeEnv} \
