@@ -23,7 +23,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       version: process.env.npm_package_version || 'latest',
-      build: process.env.CI_COMMIT_SHA || '0000000',
+      build: process.env.CI_COMMIT_SHORT_SHA || '0000000',
       commitTimestamp: process.env.CI_COMMIT_TIMESTAMP || Date.now().toString(),
       buildNumber: process.env.CI_JOB_ID || '-1',
       apiUrl: process.env.VEO_DEFAULT_API_URL || 'https://api.develop.verinice.com/veo',
