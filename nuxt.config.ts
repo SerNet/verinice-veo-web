@@ -24,7 +24,7 @@ export default defineNuxtConfig({
     public: {
       version: process.env.npm_package_version || 'latest',
       build: process.env.CI_COMMIT_SHA || '0000000',
-      commitTimestamp: process.env.CI_COMMIT_TIMESTAMP || Date.now(),
+      commitTimestamp: process.env.CI_COMMIT_TIMESTAMP || Date.now().toString(),
       buildNumber: process.env.CI_JOB_ID || '-1',
       apiUrl: process.env.VEO_DEFAULT_API_URL || 'https://api.develop.verinice.com/veo',
       formsApiUrl: process.env.VEO_FORMS_API_URL || 'https://api.develop.verinice.com/forms',
@@ -35,8 +35,8 @@ export default defineNuxtConfig({
       oidcRealm: process.env.VEO_OIDC_REALM || 'verinice-veo',
       oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client',
       accountPath: process.env.VEO_ACCOUNT_PATH || 'https://account.verinice.com',
-      debug: process.env.VEO_DEBUG || false,
-      debugCache: process.env.VEO_DEBUG_CACHE || false // Either a boolean or the query string (or first entry of query string if array)
+      debug: process.env.VEO_DEBUG || 'false',
+      debugCache: process.env.VEO_DEBUG_CACHE || 'false' // Either a boolean or the query string (or first entry of query string if array)
     }
   },
 
@@ -128,6 +128,10 @@ export default defineNuxtConfig({
       {
         src: '/Roboto-Regular.ttf',
         family: 'Roboto'
+      },
+      {
+        src: '/OpenSans-Regular.ttf',
+        family: 'Open Sans'
       }
     ]
   }

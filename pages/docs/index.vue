@@ -33,6 +33,16 @@
         {{ t('print') }}
       </v-btn>
     </div>
+    <div class="coverpage document">
+      <h1>verinice.veo</h1>
+      <h3>{{ t('documentation') }}</h3>
+      <img
+        src="/images/documentation/coverpage-icongroup.svg"
+        class="mt-12 mb-2"
+      >
+      <span>{{ t('lastModified') }} {{ new Date().toLocaleDateString() }}</span>
+      <LayoutAppLogoDesktop style="position: absolute; bottom: 0;" />
+    </div>
     <div class="document">
       <template v-if="documents">
         <TableOfContents
@@ -54,7 +64,7 @@
           </div>
 
           <div class="veo-pdf-preview-copyright">
-            <p>verinice.veo {{ t('documentation') }}<br>&copy; {{ currentYear }}, SerNet GmbH</p>
+            <p>&copy; {{ currentYear }}, SerNet GmbH</p>
           </div>
         </div>
       </template>
@@ -82,10 +92,10 @@ if (lang) {
 }
 // It is possible to a query parameter root to only print the contents of a folder/chapter
 const root = [...(route.query.root || [])].join('') || undefined;
-const documents = useDocs({ root, locale: lang });
+const documents = useDocs({ root });
 
 // Table of contents
-const navigation = useDocNavigationFlat({ root, locale: lang });
+const navigation = useDocNavigationFlat({ root });
 
 const getTranslatedHierarchyAsString = (path: string) => {
   const parts = path.split('/').filter((path) => path);
@@ -97,7 +107,8 @@ const getTranslatedHierarchyAsString = (path: string) => {
   }
   // Pop as the first page is always the welcome page (we don't want to show that)
   translatedParts.pop();
-  return translatedParts.reverse().join('/');
+  return translatedParts.reverse()[0];
+  // return translatedParts.reverse().join('/'); // Currently disabled, as only the highest chapter name should be shown
 };
 
 useHead(() => ({
@@ -140,26 +151,42 @@ useHead(() => ({
   "de": {
     "closePreview": "druckvorschau schließen",
     "documentation": "Dokumentation",
+    "lastModified": "Stand",
     "print": "drucken"
   },
   "en": {
     "closePreview": "Close print preview",
     "documentation": "Documentation",
+    "lastModified": "Last modified",
     "print": "print"
   }
 }
 </i18n>
 
-<style lang="scss" scoped>
-@import url('~/assets/styles/docs.scss');
-</style>
-
 <style lang="scss">
 html {
+  color: #878786;
   overflow: initial !important;
 }
+
+.coverpage {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 900px;
+  justify-content: center;
+}
+
+.pagedjs_pagebox > .pagedjs_area {
+    border: 1px solid $medium-grey;
+    border-radius: 12px;
+    padding: 0 12px;
+}
 </style>
+
 <style lang="scss" scoped>
+@import url('~/assets/styles/docs.scss');
+
 .veo-pdf-preview-copyright {
   position: running(copyright);
 }
@@ -169,14 +196,6 @@ html {
 }
 
 @media screen {
-  .page {
-    margin-bottom: 4em;
-  }
-  .document {
-    width: 100%;
-    max-width: 900px;
-    margin: 1em;
-  }
   .preview-controls {
     border-bottom: 1px solid $medium-grey;
     display: flex !important;
