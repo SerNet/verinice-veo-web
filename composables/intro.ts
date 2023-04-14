@@ -175,19 +175,14 @@ export function createIntro() {
           if (o) {
             _instance.setOptions({
               tooltipClass: 'vue-introjs-tooltip',
-              disableInteraction: false,
               showBullets: false,
-              showButtons: true,
-              showProgress: false,
               showStepNumbers: true,
-              hintShowButton: false,
-              hideNext: false,
               ...o
             });
 
             if (stepsVisible.value && tutorialReady) {
               // refresh options & steps
-              _instance.refresh(true);
+              _instance.refresh();
               // make changes visible by refreshing steps
               _instance.goToStep(step.value + 1);
             }
