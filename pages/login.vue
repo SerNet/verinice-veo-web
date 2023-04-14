@@ -46,10 +46,10 @@
           </h4>
           <div class="text-center">
             <v-btn
-              v-if="$config.public.accountPath"
+              v-if="context.$config.public.accountPath"
               variant="tonal"
               size="x-large"
-              :href="$config.public.accountPath"
+              :href="context.$config.public.accountPath"
             >
               {{ t('register') }}
             </v-btn>
@@ -81,6 +81,7 @@ import { useVeoUser } from '~/composables/VeoUser';
 definePageMeta({ layout: 'plain' });
 
 const { t, locale } = useI18n();
+const route = useRoute();
 const context = useNuxtApp();
 const { login: _login, initialize, keycloakInitialized } = useVeoUser();
 useHead({
@@ -92,7 +93,7 @@ if (!keycloakInitialized.value) {
 }
 
 // Needed as a separate function, as _login would be undefined if directly called from within the template.
-const login = () => _login('/');
+const login = () => _login(route.query.redirect_uri as string | undefined || '/');
 
 const dataProtectionRegulationLink = computed(() => (locale.value === 'en' ? 'https://www.sernet.de/en/data-protection-declaration/' : 'https://www.sernet.de/datenschutz/'));
 const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.verinice.com/en/left/Imprint/' : 'https://account.verinice.com/impressum/'));
