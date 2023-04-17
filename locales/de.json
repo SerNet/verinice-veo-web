@@ -109,7 +109,7 @@
 
   "piaMandatoryText": "Basierend auf Daten in diesem Objekt ist eine Datenschutz-Folgeabschätzung verpflichtend.{0}Bitte erstellen Sie diese über die Warnungsleiste rechts.",
 
-  "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg,{0} d.h. es kann immer nur eine migitierende Maßnahme pro Risiko ausgewählt werden",
+  "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg.{lineBreak} Alle hier ausgewählten Maßnahmen sind unter der Maßnahme \"Mitigierende Maßnahme für {risk}\" zu finden",
 
   "residualRiskHint": "Das angezeigte Nettorisiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben.",
 
