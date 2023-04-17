@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <ObjectNotFoundError v-if="!loading && notFoundError" />
+  <UtilNotFoundError
+    v-if="!loading && notFoundError"
+    :text="t('notFound')"
+  />
   <LayoutPageWrapper
     v-else
     class="px-4 pt-4"
@@ -354,7 +357,7 @@ export default defineComponent({
     async function saveObject() {
       await updateObject(upperFirst(t('objectSaved', { name: object.value?.displayName }).toString()), upperFirst(t('objectNotSaved').toString()));
       if(!isEqual(object.value?.domains[domainId.value].riskValues , modifiedObject.value?.domains[domainId.value].riskValues)){
-        displayInfoMessage('', upperFirst(t('riskAlert').toString()))
+        displayInfoMessage('', upperFirst(t('riskAlert').toString()));
       }
     }
 
@@ -533,6 +536,7 @@ export default defineComponent({
 <i18n>
 {
   "en": {
+    "notFound": "The object that you requested could not be found.",
     "objectInfo": "object details",
     "objectForm": "form",
     "objectNotRestored": "couldn't restore object",
@@ -547,6 +551,7 @@ export default defineComponent({
     "version": "version {version}"
   },
   "de": {
+    "notFound": "Das von Ihnen angeforderte Objekt konnte nicht gefunden werden.",
     "objectInfo": "Objektdetails",
     "objectForm": "Formular",
     "objectNotRestored": "objekt konnte nicht wiederhergestellt werden",
