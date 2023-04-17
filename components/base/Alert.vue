@@ -55,15 +55,14 @@
         </p>
       </v-col>
       <v-col cols="auto">
-        <slot name="additional-button" />
+        <slot name="secondary-buttons" />
         <v-btn
-          v-if="!noCloseButton"
+          v-for="(button, index) in localButtons"
+          :key="index"
           variant="text"
-          :color="alertColor"
-          @click="$emit('update:model-value', false)"
+          @click="button.onClick"
         >
-          <span v-if="saveButtonText">{{ saveButtonText }}</span>
-          <span v-else>{{ globalT('global.button.ok') }}</span>
+          {{ button.text }}
         </v-btn>
       </v-col>
     </v-row>
@@ -82,6 +81,11 @@ import { PropType } from 'vue';
 import { mdiAlertCircleOutline, mdiCheckCircleOutline, mdiInformationOutline } from '@mdi/js';
 
 import { VeoAlertType } from '~/types/VeoTypes';
+
+export interface IAlertButton {
+  text: string;
+  onClick: () => void;
+}
 
 export default defineComponent({
   props: {
@@ -109,9 +113,13 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    saveButtonText: {
+    defaultButtonText: {
       type: String,
       default: undefined
+    },
+    buttons: {
+      type: Array as PropType<IAlertButton[]>,
+      default: () => []
     },
     dismissOnClick: {
       type: Boolean,
@@ -120,6 +128,10 @@ export default defineComponent({
     timeout: {
       type: Number,
       default: undefined
+    },
+    enableKeyboardNavigation: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ['update:model-value'],
@@ -151,6 +163,40 @@ export default defineComponent({
         default:
           return mdiAlertCircleOutline;
       }
+    });
+
+    const localButtons = computed<IAlertButton[]>(() =>
+      [
+        {
+          text: props.defaultButtonText || globalT('global.button.ok'),
+          onClick: () => emit('update:model-value', false)
+        },
+        ...props.buttons
+      ].map((button, index) => ({
+        ...button,
+        text: props.enableKeyboardNavigation ?  `(${index + 1}) ${button.text}` : button.text
+      }))
+    );
+
+    // Add keybinds for the buttons
+    const keybindEvents = (event: KeyboardEvent) => {
+      const digits = Array.from(Array(10).keys()).map((key) => `${key}`);
+
+      if(digits.includes(event.key)) {
+        localButtons.value[parseInt(event.key) - 1].onClick();
+      }
+    };
+    onMounted(() => {
+      if(!props.enableKeyboardNavigation) {
+        return;
+      }
+      document.addEventListener('keydown', keybindEvents);
+    });
+    onUnmounted(() => {
+      if(!props.enableKeyboardNavigation) {
+        return;
+      }
+      document.removeEventListener('keydown', keybindEvents);
     });
 
     let interval: any;
@@ -190,6 +236,7 @@ export default defineComponent({
     return {
       alertColor,
       alertIcon,
+      localButtons,
       onContentClick,
       remainingTime,
 

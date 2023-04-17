@@ -19,22 +19,16 @@
   <BaseAlert
     :model-value="value"
     v-bind="$props"
-    :save-button-text="(params && params.buttonText) || globalT('global.button.ok')"
+    :default-button-text="(params && params.defaultButtonText) || globalT('global.button.ok')"
+    :buttons="buttons"
+    enable-keyboard-navigation
     class="veo-global-alert"
     :no-close-button="type === VeoAlertType.SUCCESS"
     :dismiss-on-click="type === VeoAlertType.SUCCESS"
     :timeout="params ? params.timeout : undefined"
     @update:model-value="onInput"
   >
-    <template #additional-button>
-      <v-btn
-        v-if="params && params.objectModified"
-        text
-        color="primary"
-        @click="onCustomButtonClick('refetch')"
-      >
-        {{ globalT('global.button.yes') }}
-      </v-btn>
+    <template #secondary-buttons>
       <div v-if="showDownloadDetailsButton && params && params.details">
         <v-btn
           text
@@ -84,7 +78,7 @@ export default defineComponent({
     const config = useRuntimeConfig();
     const { t } = useI18n();
     const { t: globalT } = useI18n({ useScope: 'global' });
-    const { expireAlert, dispatchEventForCurrentAlert } = useVeoAlerts();
+    const { expireAlert } = useVeoAlerts();
 
     function onInput(newValue: boolean) {
       if (!newValue) {
@@ -97,7 +91,18 @@ export default defineComponent({
       }
     }
 
-    // If the alert key changes, we want to display a new alert from the alert queue, so redisplay the v-snackbar/v-alert
+    // Create buttons for alert
+    const buttons = computed(() => unref((props.params?.actions || [])).map((action) => ({
+      text: action.text,
+      onClick: () => {
+        action.onClick();
+        if(props.alertKey) {
+          expireAlert(props.alertKey);
+        }
+      }
+    })));
+
+    // If the alert key changes, we want to display a new alert from the alert queue, so redisplay the v-alert
     const value = ref(false);
     watch(
       () => props.alertKey,
@@ -108,10 +113,6 @@ export default defineComponent({
         immediate: true
       }
     );
-
-    function onCustomButtonClick(event: string) {
-      dispatchEventForCurrentAlert(event);
-    }
 
     const showDownloadDetailsButton = computed(() => config.public.debug);
     const downloadButton = ref();
@@ -133,12 +134,12 @@ export default defineComponent({
     };
 
     return {
+      buttons,
       downloadButton,
       downloadDetails,
       showDownloadDetailsButton,
 
       VeoAlertType,
-      onCustomButtonClick,
       onInput,
       value,
 

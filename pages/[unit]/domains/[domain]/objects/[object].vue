@@ -184,7 +184,6 @@ import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
 
-
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
   beforeRouteLeave(to, _from, next) {
@@ -200,6 +199,7 @@ export default defineComponent({
   },
   setup() {
     const { locale, t } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
     const config = useRuntimeConfig();
     const route = useRoute();
     const router = useRouter();
@@ -354,7 +354,7 @@ export default defineComponent({
     async function saveObject() {
       await updateObject(upperFirst(t('objectSaved', { name: object.value?.displayName }).toString()), upperFirst(t('objectNotSaved').toString()));
       if(!isEqual(object.value?.domains[domainId.value].riskValues , modifiedObject.value?.domains[domainId.value].riskValues)){
-        displayInfoMessage('', upperFirst(t('riskAlert').toString()))
+        displayInfoMessage('', upperFirst(t('riskAlert')));
       }
     }
 
@@ -386,12 +386,14 @@ export default defineComponent({
         }
       } catch (e: any) {
         if (e.code === 412) {
-          optimisticLockingAlertKey.value = displayErrorMessage(errorText, t('outdatedObject').toString(), {
-            objectModified: true,
-            buttonText: t('global.button.no').toString(),
-            eventCallbacks: {
-              refetch
-            }
+          optimisticLockingAlertKey.value = displayErrorMessage(errorText, t('outdatedObject'), {
+            defaultButtonText: globalT('global.button.no').toString(),
+            actions: [
+              {
+                text: globalT('global.button.yes'),
+                onClick: refetch
+              }
+            ]
           });
         } else {
           displayErrorMessage(errorText, e.message, {

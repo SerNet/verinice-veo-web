@@ -42,27 +42,14 @@
         />
         <BaseAlert
           :model-value="objectTypeMissing || !schemasCompatible"
+          :buttons="schemasCompatible ? [] : [{ text: t('forceProceed'), onClick: () => $emit('force-import') }]"
           :type="!schemasCompatible && !objectTypeMissing ? VeoAlertType.INFO : VeoAlertType.ERROR"
           :title="!schemasCompatible && !objectTypeMissing ? t('objectSchemaIncompatible') : t('objectTypeMissing')"
           :text="t('uploadObjectSchemaHint')"
           class="my-4"
           flat
           no-close-button
-        >
-          <template
-            v-if="!schemasCompatible"
-            #additional-button
-          >
-            <v-btn
-              class="mt-2"
-              variant="flat"
-              color="info"
-              @click="$emit('force-import')"
-            >
-              {{ t('forceProceed') }}
-            </v-btn>
-          </template>
-        </BaseAlert>
+        />
       </v-card-text>
     </BaseCard>
     <h3 class="text-h3 mt-6">
