@@ -387,7 +387,7 @@ export default defineComponent({
       } catch (e: any) {
         if (e.code === 412) {
           optimisticLockingAlertKey.value = displayErrorMessage(errorText, t('outdatedObject'), {
-            defaultButtonText: globalT('global.button.no').toString(),
+            defaultButtonText: globalT('global.button.no'),
             actions: [
               {
                 text: globalT('global.button.yes'),
