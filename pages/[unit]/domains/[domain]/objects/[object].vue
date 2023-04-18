@@ -94,7 +94,7 @@
                 no-close-button
                 flat
                 class="mb-4"
-                :title="upperFirst(t('version', { version: version + 1 }).toString())"
+                :title="upperFirst(t('version', { version: version + 1 }))"
                 :text="t('oldVersionAlert')"
               />
             </template>
@@ -327,7 +327,7 @@ export default defineComponent({
     const pageWidths = ref<number[]>([3, 9]);
     const pageWidthsLg = ref<number[]>([5, 7]);
     const pageWidthsXl = ref<number[]>([5, 7]);
-    const pageTitles = ref<string[]>([t('objectInfo').toString(), t('objectForm').toString()]);
+    const pageTitles = ref<string[]>([t('objectInfo'), t('objectForm')]);
 
     const onPageCollapsed = (collapsedPages: boolean[]) => {
       if (collapsedPages.some((page) => page)) {
@@ -355,14 +355,14 @@ export default defineComponent({
     }
 
     async function saveObject() {
-      await updateObject(upperFirst(t('objectSaved', { name: object.value?.displayName }).toString()), upperFirst(t('objectNotSaved').toString()));
+      await updateObject(upperFirst(t('objectSaved', { name: object.value?.displayName })), upperFirst(t('objectNotSaved')));
       if(!isEqual(object.value?.domains[domainId.value].riskValues , modifiedObject.value?.domains[domainId.value].riskValues)){
         displayInfoMessage('', upperFirst(t('riskAlert')));
       }
     }
 
     async function restoreObject() {
-      await updateObject(upperFirst(t('objectRestored', { name: object.value?.displayName }).toString()), upperFirst(t('objectNotRestored').toString()));
+      await updateObject(upperFirst(t('objectRestored', { name: object.value?.displayName })), upperFirst(t('objectNotRestored')));
     }
 
     function updateObjectRelationships() {
