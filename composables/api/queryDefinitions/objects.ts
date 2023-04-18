@@ -118,7 +118,15 @@ export default {
         result.page = result.page + 1;
         return result;
       },
-      queryParameterTransformationFn:(queryParameters) => ({ params: { endpoint: queryParameters.endpoint }, query: omit(queryParameters, 'endpoint') })
+      queryParameterTransformationFn:(queryParameters) => ({
+        params: {
+          endpoint: queryParameters.endpoint
+        },
+        query: {
+          hasParentElements: queryParameters.hasNoParentElements === true ? false : undefined, // The frontend only works with hasNoParentElements, but the backend expects hasParentElements
+          ...omit(queryParameters, 'endpoint')
+        }
+      })
     } as IVeoQueryDefinition<IVeoFetchObjectsParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetch:{
       primaryQueryKey: 'object',

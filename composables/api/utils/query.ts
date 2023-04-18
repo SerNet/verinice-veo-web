@@ -93,7 +93,7 @@ export const useQuery = <TVariables = undefined, TResult = any>(
   );
 
   // Actual query getting executed
-  const result = vueQueryUseQuery<TResult>(
+  const result = vueQueryUseQuery<TResult, any>(
     queryKey,
     async () => {
       const transformedQueryParameters = queryParameters ? queryDefinition.queryParameterTransformationFn(unref(queryParameters)) : {};

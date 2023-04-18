@@ -73,8 +73,8 @@ export function useVeoAlerts() {
    * @param text Text to display
    * @returns Key of the alert. Can be used to call expireAlert programmatically
    */
-  function displaySuccessMessage(text: string): number {
-    return displayMessage(VeoAlertType.SUCCESS, text, '', { timeout: 5000 });
+  function displaySuccessMessage(text: string, params?: IVeoGlobalAlertParams): number {
+    return displayMessage(VeoAlertType.SUCCESS, text, '', { ...params, timeout: 5000 });
   }
 
   /**
@@ -89,21 +89,8 @@ export function useVeoAlerts() {
     }, 250); // 250ms timeout to not interrupt fade transition
   }
 
-  /**
-   * Calls a callback passed by the component creating the alert upon firing an event hardcoded in the VeoGlobalAlert.vue
-   *
-   * @param event The name of the event to search for and to call
-   */
-  function dispatchEventForCurrentAlert(event: string) {
-    if (alerts.value[0].params?.eventCallbacks?.[event]) {
-      alerts.value[0].params.eventCallbacks[event]();
-      expireAlert(alerts.value[0].alertKey as number);
-    }
-  }
-
   return {
     alerts: readonly(alerts),
-    dispatchEventForCurrentAlert,
     displayErrorMessage,
     displayInfoMessage,
     displaySuccessMessage,

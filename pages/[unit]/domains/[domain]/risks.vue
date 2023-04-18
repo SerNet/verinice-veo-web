@@ -21,7 +21,7 @@
     data-component-name="risk-page"
   >
     <template #default>
-      <div>
+      <!--<div> Not relevant as long as there is only one risk definition
         <p class="pt-3 mb-0 text-body-1">
           {{ t('selectRiskMatrixToView') }}
         </p>
@@ -61,6 +61,12 @@
             </v-window-item>
           </template>
         </BaseTabs>
+      </div>-->
+      <div>
+        <div class="text-h4 mt-2">
+          {{ t('dpia') }}
+        </div>
+        <nuxt-page />
       </div>
     </template>
   </BasePage>
@@ -114,10 +120,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
+    "dpia": "DPIA",
     "risks": "risk definitions",
     "selectRiskMatrixToView": "Select the risk definition to view."
   },
   "de": {
+    "dpia": "DSRA",
     "risks": "Risikodefinitionen",
     "selectRiskMatrixToView": "Bite wählen Sie die Risikodefinition aus, die Sie betrachten möchten."
   }

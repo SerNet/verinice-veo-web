@@ -213,19 +213,19 @@ Apache License
 
 The following npm packages may be included in this product:
 
- - @babel/code-frame@7.18.6
- - @babel/compat-data@7.20.10
- - @babel/core@7.20.12
- - @babel/generator@7.20.7
+ - @babel/code-frame@7.21.4
+ - @babel/compat-data@7.21.4
+ - @babel/core@7.21.4
+ - @babel/generator@7.21.4
  - @babel/helper-annotate-as-pure@7.18.6
- - @babel/helper-compilation-targets@7.20.7
- - @babel/helper-create-class-features-plugin@7.20.12
+ - @babel/helper-compilation-targets@7.21.4
+ - @babel/helper-create-class-features-plugin@7.21.4
  - @babel/helper-environment-visitor@7.18.9
- - @babel/helper-function-name@7.19.0
+ - @babel/helper-function-name@7.21.0
  - @babel/helper-hoist-variables@7.18.6
- - @babel/helper-member-expression-to-functions@7.20.7
- - @babel/helper-module-imports@7.18.6
- - @babel/helper-module-transforms@7.20.11
+ - @babel/helper-member-expression-to-functions@7.21.0
+ - @babel/helper-module-imports@7.21.4
+ - @babel/helper-module-transforms@7.21.2
  - @babel/helper-optimise-call-expression@7.18.6
  - @babel/helper-plugin-utils@7.20.2
  - @babel/helper-replace-supers@7.20.7
@@ -234,16 +234,16 @@ The following npm packages may be included in this product:
  - @babel/helper-split-export-declaration@7.18.6
  - @babel/helper-string-parser@7.19.4
  - @babel/helper-validator-identifier@7.19.1
- - @babel/helper-validator-option@7.18.6
- - @babel/helpers@7.20.7
+ - @babel/helper-validator-option@7.21.0
+ - @babel/helpers@7.21.0
  - @babel/highlight@7.18.6
- - @babel/plugin-syntax-jsx@7.18.6
- - @babel/plugin-syntax-typescript@7.20.0
- - @babel/plugin-transform-typescript@7.20.13
- - @babel/standalone@7.20.12
+ - @babel/plugin-syntax-jsx@7.21.4
+ - @babel/plugin-syntax-typescript@7.21.4
+ - @babel/plugin-transform-typescript@7.21.3
+ - @babel/standalone@7.21.4
  - @babel/template@7.20.7
- - @babel/traverse@7.20.12
- - @babel/types@7.20.7
+ - @babel/traverse@7.21.4
+ - @babel/types@7.21.4
 
 These packages each contain the following license and notice below:
 
@@ -274,7 +274,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @babel/parser@7.20.7
+ - @babel/parser@7.21.4
 
 This package contains the following license and notice below:
 
@@ -749,12 +749,11 @@ THE SOFTWARE.
 
 -----------
 
-The following npm packages may be included in this product:
+The following npm package may be included in this product:
 
- - @esbuild/darwin-arm64@0.16.17
- - @esbuild/darwin-arm64@0.17.6
+ - @esbuild/darwin-arm64@0.17.15
 
-These packages each contain the following license and notice below:
+This package contains the following license and notice below:
 
 # esbuild
 
@@ -1018,7 +1017,6 @@ The following npm packages may be included in this product:
 
  - @humanwhocodes/config-array@0.11.8
  - @humanwhocodes/module-importer@1.0.1
- - @planetscale/database@1.5.0
 
 These packages each contain the following license and notice below:
 
@@ -1264,11 +1262,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -----------
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
  - @intlify/bundle-utils@3.4.0
+ - @intlify/bundle-utils@4.0.0
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 The MIT License (MIT)
 
@@ -1295,11 +1294,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @intlify/core-base@9.3.0-beta.14-77e850b
- - @intlify/message-compiler@9.3.0-beta.14-77e850b
- - @intlify/shared@9.3.0-beta.10
- - @intlify/shared@9.3.0-beta.14-77e850b
- - vue-i18n@9.3.0-beta.14-77e850b
+ - @intlify/core-base@9.2.2
+ - @intlify/core-base@9.3.0-beta.16
+ - @intlify/message-compiler@9.2.2
+ - @intlify/message-compiler@9.3.0-beta.16
+ - @intlify/message-compiler@9.3.0-beta.17
+ - @intlify/shared@9.2.2
+ - @intlify/shared@9.3.0-beta.16
+ - @intlify/shared@9.3.0-beta.17
+ - vue-i18n@9.2.2
+ - vue-i18n@9.3.0-beta.16
 
 These packages each contain the following license and notice below:
 
@@ -1328,8 +1332,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @intlify/devtools-if@9.3.0-beta.14-77e850b
- - @intlify/vue-devtools@9.3.0-beta.14-77e850b
+ - @intlify/devtools-if@9.2.2
+ - @intlify/devtools-if@9.3.0-beta.16
+ - @intlify/vue-devtools@9.2.2
+ - @intlify/vue-devtools@9.3.0-beta.16
  - @intlify/vue-i18n-bridge@0.8.0
  - @intlify/vue-router-bridge@0.8.0
 
@@ -1992,7 +1998,7 @@ USE OR PERFORMANCE OF THIS SOFTWARE.
 The following npm packages may be included in this product:
 
  - @nuxt/content@2.4.3
- - @nuxt/telemetry@2.1.9
+ - @nuxt/telemetry@2.1.10
 
 These packages each contain the following license and notice below:
 
@@ -2040,14 +2046,14 @@ The following npm packages may be included in this product:
 
  - @nuxt/eslint-config@0.1.1
  - @tanstack/match-sorter-utils@8.7.6
- - @unhead/vue@1.0.21
+ - @unhead/vue@1.1.25
  - @vue/devtools-api@6.4.5
  - err-code@2.0.3
  - http-proxy-agent@5.0.0
  - ip@2.0.0
  - socks-proxy-agent@7.0.0
  - tr46@0.0.3
- - unhead@1.0.21
+ - unhead@1.1.25
 
 These packages each contain the following license and notice below:
 
@@ -2058,12 +2064,12 @@ These packages each contain the following license and notice below:
 The following npm packages may be included in this product:
 
  - @nuxt/kit@3.1.1
- - @nuxt/kit@3.1.2
+ - @nuxt/kit@3.3.3
  - @nuxt/schema@3.1.1
- - @nuxt/schema@3.1.2
- - @nuxt/vite-builder@3.1.2
- - nuxi@3.1.2
- - nuxt@3.1.2
+ - @nuxt/schema@3.3.3
+ - @nuxt/vite-builder@3.3.3
+ - nuxi@3.3.3
+ - nuxt@3.3.3
 
 These packages each contain the following license and notice below:
 
@@ -2123,7 +2129,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @nuxtjs/i18n@8.0.0-beta.7
+ - @nuxtjs/i18n@8.0.0-beta.10
 
 This package contains the following license and notice below:
 
@@ -3745,8 +3751,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @tanstack/query-core@4.20.4
- - @tanstack/vue-query@4.20.4
+ - @tanstack/query-core@4.29.1
+ - @tanstack/vue-query@4.29.1
 
 These packages each contain the following license and notice below:
 
@@ -4328,6 +4334,7 @@ The following npm packages may be included in this product:
  - minipass-pipeline@1.2.4
  - minipass-sized@1.0.3
  - mute-stream@0.0.8
+ - mute-stream@1.0.0
  - nopt@5.0.0
  - nopt@6.0.0
  - nopt@7.0.0
@@ -4793,7 +4800,7 @@ Apache License
 
 The following npm package may be included in this product:
 
- - @unhead/dom@1.0.21
+ - @unhead/dom@1.1.25
 
 This package contains the following license and notice below:
 
@@ -4812,11 +4819,12 @@ See the [@unhead/dom](https://unhead.harlanzw.com/guide/getting-started/how-it-w
 
 -----------
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
- - @unhead/schema@1.0.21
+ - @unhead/schema@1.1.25
+ - @unhead/shared@1.1.25
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 # `@unhead/schema`
 
@@ -4839,7 +4847,7 @@ See [head.ts](./src/head.ts) for the full list of types.
 
 The following npm package may be included in this product:
 
- - @unhead/ssr@1.0.21
+ - @unhead/ssr@1.1.25
 
 This package contains the following license and notice below:
 
@@ -4876,8 +4884,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm packages may be included in this product:
 
- - @vitejs/plugin-vue-jsx@3.0.0
- - @vitejs/plugin-vue@4.0.0
+ - @vitejs/plugin-vue-jsx@3.0.1
+ - @vitejs/plugin-vue@4.1.0
 
 These packages each contain the following license and notice below:
 
@@ -5042,36 +5050,6 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @vueuse/head@1.0.25
-
-This package contains the following license and notice below:
-
-MIT License
-
-Copyright (c) 2020 EGOIST (https://egoist.sh)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
------------
-
-The following npm package may be included in this product:
-
  - @zeit/schemas@2.29.0
 
 This package contains the following license and notice below:
@@ -5097,31 +5075,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
------------
-
-The following npm package may be included in this product:
-
- - @zhead/schema@1.1.0
-
-This package contains the following license and notice below:
-
-# `@zhead/schema`
-
-Typescript definitions for document `<head>`.
-
-## Installation
-
-```bash
-npm install --save-dev @zhead/schema
-
-# Using yarn
-yarn add --dev @zhead/schema
-```
-
-## Types
-
-See [head.ts](./src/syncHead.ts) for the full list of types.
 
 -----------
 
@@ -5550,7 +5503,6 @@ The following npm packages may be included in this product:
  - log-update@4.0.0
  - make-dir@3.1.0
  - mimic-fn@2.1.0
- - normalize-url@6.1.0
  - npm-run-path@4.0.1
  - p-limit@2.3.0
  - p-locate@4.1.0
@@ -5702,7 +5654,7 @@ THIS SOFTWARE.
 The following npm packages may be included in this product:
 
  - ansi-escapes@4.3.2
- - ansi-escapes@6.0.0
+ - ansi-escapes@6.1.0
  - ansi-regex@6.0.1
  - ansi-styles@6.2.1
  - boxen@7.0.0
@@ -5728,7 +5680,7 @@ The following npm packages may be included in this product:
  - globals@13.19.0
  - globby@13.1.3
  - gzip-size@7.0.0
- - html-tags@3.2.0
+ - html-tags@3.3.0
  - import-fresh@3.3.0
  - ip-regex@5.0.0
  - is-absolute-url@4.0.1
@@ -5747,8 +5699,8 @@ The following npm packages may be included in this product:
  - npm-run-path@5.1.0
  - onetime@5.1.2
  - onetime@6.0.0
- - open@8.4.0
- - ora@6.1.2
+ - open@8.4.2
+ - ora@6.3.0
  - p-limit@3.1.0
  - p-locate@5.0.0
  - p-map@4.0.0
@@ -5756,6 +5708,7 @@ The following npm packages may be included in this product:
  - pretty-bytes@6.1.0
  - restore-cursor@4.0.0
  - slash@4.0.0
+ - stdin-discarder@0.1.0
  - string-width@5.1.2
  - strip-ansi@7.0.1
  - strip-final-newline@3.0.0
@@ -6354,7 +6307,7 @@ THE SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - autoprefixer@10.4.13
+ - autoprefixer@10.4.14
  - postcss@8.4.21
 
 These packages each contain the following license and notice below:
@@ -6669,7 +6622,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - browserslist@4.21.4
+ - browserslist@4.21.5
 
 This package contains the following license and notice below:
 
@@ -6848,27 +6801,27 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - c12@1.1.0
+ - c12@1.2.0
  - defu@6.1.2
  - destr@1.2.2
  - get-port-please@3.0.1
- - giget@1.0.0
- - h3@1.2.1
- - jiti@1.16.2
+ - giget@1.1.2
+ - h3@1.6.4
+ - jiti@1.18.2
  - knitwork@1.0.0
- - listhen@1.0.2
- - mlly@1.1.0
- - node-fetch-native@1.0.1
- - ofetch@1.0.0
+ - listhen@1.0.4
+ - mlly@1.2.0
+ - node-fetch-native@1.0.2
+ - ofetch@1.0.1
  - ohash@1.0.0
- - radix3@1.0.0
- - rc9@2.0.0
+ - radix3@1.0.1
+ - rc9@2.1.0
  - scule@1.0.0
- - ufo@1.0.1
+ - ufo@1.1.1
  - uncrypto@0.1.2
- - unenv@1.1.0
- - unstorage@1.1.3
- - untyped@1.2.2
+ - unenv@1.2.2
+ - unstorage@1.4.1
+ - untyped@1.3.2
 
 These packages each contain the following license and notice below:
 
@@ -6987,7 +6940,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - caniuse-lite@1.0.30001446
+ - caniuse-lite@1.0.30001473
 
 This package contains the following license and notice below:
 
@@ -7534,7 +7487,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - ci-info@3.7.1
+ - ci-info@3.8.0
 
 This package contains the following license and notice below:
 
@@ -7591,6 +7544,55 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-----------
+
+The following npm package may be included in this product:
+
+ - clear@0.1.0
+
+This package contains the following license and notice below:
+
+clear
+=====
+
+Clear the terminal screen if possible
+
+Usage
+-----
+
+``` js
+var clear = require('clear');
+clear();
+```
+
+Example
+-------
+
+![Node Clear](http://daveeddy.com/static/media/github/node-clear.gif)
+
+### clear([opts])
+
+- `opts` (Object)
+- `opts.fullClear` (Boolean) Defaults to `true`, setting this to `false` will
+  prevent this module from clearing the screen.  This will not remove anything
+  from the screen, but instead move your cursor to position 0,0.  Much like
+  printing a `\r` instead of a `\n` to reset the current line of output.
+
+Installation
+------------
+
+    npm install clear
+
+ANSI Codes
+----------
+
+http://www.inwap.com/pdp10/ansicode.txt
+
+License
+-------
+
+MIT
 
 -----------
 
@@ -8870,7 +8872,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - css-declaration-sorter@6.3.1
+ - css-declaration-sorter@6.4.0
 
 This package contains the following license and notice below:
 
@@ -8894,12 +8896,12 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - css-select@4.3.0
+ - css-select@5.1.0
  - css-what@6.1.0
  - domelementtype@2.3.0
- - domhandler@4.3.1
- - domutils@2.8.0
- - entities@2.2.0
+ - domhandler@5.0.3
+ - domutils@3.0.1
+ - entities@4.4.0
  - nth-check@2.1.1
 
 These packages each contain the following license and notice below:
@@ -8946,13 +8948,14 @@ THE SOFTWARE.
 
 -----------
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
- - css-tree@1.1.3
+ - css-tree@2.2.1
+ - css-tree@2.3.1
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
-Copyright (C) 2016-2019 by Roman Dvornov
+Copyright (C) 2016-2022 by Roman Dvornov
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -9010,34 +9013,34 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - cssnano-preset-default@5.2.13
- - cssnano-utils@3.1.0
- - cssnano@5.1.14
- - postcss-colormin@5.3.0
- - postcss-convert-values@5.1.3
- - postcss-discard-comments@5.1.2
- - postcss-discard-duplicates@5.1.0
- - postcss-discard-empty@5.1.1
- - postcss-merge-longhand@5.1.7
- - postcss-merge-rules@5.1.3
- - postcss-minify-gradients@5.1.1
- - postcss-minify-selectors@5.2.1
- - postcss-normalize-display-values@5.1.0
- - postcss-normalize-positions@5.1.1
- - postcss-normalize-repeat-style@5.1.1
- - postcss-normalize-string@5.1.0
- - postcss-normalize-timing-functions@5.1.0
- - postcss-normalize-unicode@5.1.1
- - postcss-normalize-url@5.1.0
- - postcss-normalize-whitespace@5.1.1
- - postcss-ordered-values@5.1.3
- - postcss-reduce-initial@5.1.1
- - postcss-reduce-transforms@5.1.0
+ - cssnano-preset-default@6.0.0
+ - cssnano-utils@4.0.0
+ - cssnano@6.0.0
+ - postcss-colormin@6.0.0
+ - postcss-convert-values@6.0.0
+ - postcss-discard-comments@6.0.0
+ - postcss-discard-duplicates@6.0.0
+ - postcss-discard-empty@6.0.0
+ - postcss-merge-longhand@6.0.0
+ - postcss-merge-rules@6.0.0
+ - postcss-minify-gradients@6.0.0
+ - postcss-minify-selectors@6.0.0
+ - postcss-normalize-display-values@6.0.0
+ - postcss-normalize-positions@6.0.0
+ - postcss-normalize-repeat-style@6.0.0
+ - postcss-normalize-string@6.0.0
+ - postcss-normalize-timing-functions@6.0.0
+ - postcss-normalize-unicode@6.0.0
+ - postcss-normalize-url@6.0.0
+ - postcss-normalize-whitespace@6.0.0
+ - postcss-ordered-values@6.0.0
+ - postcss-reduce-initial@6.0.0
+ - postcss-reduce-transforms@6.0.0
  - postcss-selector-parser@6.0.10
  - postcss-selector-parser@6.0.11
- - postcss-svgo@5.1.0
- - postcss-unique-selectors@5.1.1
- - stylehacks@5.1.1
+ - postcss-svgo@6.0.0
+ - postcss-unique-selectors@6.0.0
+ - stylehacks@6.0.0
 
 These packages each contain the following license and notice below:
 
@@ -9068,11 +9071,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - csso@4.2.0
+ - csso@5.0.5
 
 This package contains the following license and notice below:
 
-Copyright (C) 2015-2019 by Roman Dvornov
+Copyright (C) 2015-2021 by Roman Dvornov
 Copyright (C) 2011-2015 by Sergey Kryzhanovsky
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -9614,7 +9617,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - deepmerge@4.3.0
+ - deepmerge@4.3.1
 
 This package contains the following license and notice below:
 
@@ -10539,7 +10542,7 @@ END OF TERMS AND CONDITIONS
 
 The following npm package may be included in this product:
 
- - dom-serializer@1.4.1
+ - dom-serializer@2.0.0
 
 This package contains the following license and notice below:
 
@@ -11078,7 +11081,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - electron-to-chromium@1.4.284
+ - electron-to-chromium@1.4.348
 
 This package contains the following license and notice below:
 
@@ -11424,12 +11427,11 @@ SOFTWARE.
 
 -----------
 
-The following npm packages may be included in this product:
+The following npm package may be included in this product:
 
- - esbuild@0.16.17
- - esbuild@0.17.6
+ - esbuild@0.17.15
 
-These packages each contain the following license and notice below:
+This package contains the following license and notice below:
 
 MIT License
 
@@ -12882,7 +12884,7 @@ THE SOFTWARE.
 The following npm packages may be included in this product:
 
  - fs-extra@10.1.0
- - fs-extra@11.1.0
+ - fs-extra@11.1.1
 
 These packages each contain the following license and notice below:
 
@@ -13556,7 +13558,7 @@ abide by its terms.
 
 The following npm package may be included in this product:
 
- - hookable@5.4.2
+ - hookable@5.5.3
 
 This package contains the following license and notice below:
 
@@ -14338,35 +14340,6 @@ SOFTWARE.
 
 -----------
 
-The following npm package may be included in this product:
-
- - i@0.3.7
-
-This package contains the following license and notice below:
-
-Copyright (C) 2020 Pavan Kumar Sunkara
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
------------
-
 The following npm packages may be included in this product:
 
  - iconv-lite@0.4.24
@@ -14425,6 +14398,35 @@ This package contains the following license and notice below:
 
 Copyright (c) 2013 Kael Zhang <i@kael.me>, contributors
 http://kael.me/
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following npm package may be included in this product:
+
+ - immediate@3.0.6
+
+This package contains the following license and notice below:
+
+Copyright (c) 2012 Barnesandnoble.com, llc, Donavon West, Domenic Denicola, Brian Cavalier
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -14634,7 +14636,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 The following npm package may be included in this product:
 
- - inquirer@9.1.4
+ - inquirer@9.1.5
 
 This package contains the following license and notice below:
 
@@ -14665,7 +14667,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - intro.js@6.0.0
+ - intro.js@7.0.1
 
 This package contains the following license and notice below:
 
@@ -15348,7 +15350,7 @@ the GNU AGPL, see <https://www.gnu.org/licenses/>.
 
 The following npm package may be included in this product:
 
- - ioredis@5.3.0
+ - ioredis@5.3.1
 
 This package contains the following license and notice below:
 
@@ -15373,6 +15375,35 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+-----------
+
+The following npm package may be included in this product:
+
+ - iron-webcrypto@0.6.0
+
+This package contains the following license and notice below:
+
+MIT License
+
+Copyright (c) 2021 Divyansh Singh
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
@@ -16217,6 +16248,666 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
+The following npm package may be included in this product:
+
+ - jszip@3.10.1
+
+This package contains the following license and notice below:
+
+JSZip is dual licensed. At your choice you may use it under the MIT license *or* the GPLv3
+license.
+
+The MIT License
+===============
+
+Copyright (c) 2009-2016 Stuart Knightley, David Duponchel, Franz Buchinger, António Afonso
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+GPL version 3
+=============
+
+                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+ Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+
+                            Preamble
+
+  The GNU General Public License is a free, copyleft license for
+software and other kinds of works.
+
+  The licenses for most software and other practical works are designed
+to take away your freedom to share and change the works.  By contrast,
+the GNU General Public License is intended to guarantee your freedom to
+share and change all versions of a program--to make sure it remains free
+software for all its users.  We, the Free Software Foundation, use the
+GNU General Public License for most of our software; it applies also to
+any other work released this way by its authors.  You can apply it to
+your programs, too.
+
+  When we speak of free software, we are referring to freedom, not
+price.  Our General Public Licenses are designed to make sure that you
+have the freedom to distribute copies of free software (and charge for
+them if you wish), that you receive source code or can get it if you
+want it, that you can change the software or use pieces of it in new
+free programs, and that you know you can do these things.
+
+  To protect your rights, we need to prevent others from denying you
+these rights or asking you to surrender the rights.  Therefore, you have
+certain responsibilities if you distribute copies of the software, or if
+you modify it: responsibilities to respect the freedom of others.
+
+  For example, if you distribute copies of such a program, whether
+gratis or for a fee, you must pass on to the recipients the same
+freedoms that you received.  You must make sure that they, too, receive
+or can get the source code.  And you must show them these terms so they
+know their rights.
+
+  Developers that use the GNU GPL protect your rights with two steps:
+(1) assert copyright on the software, and (2) offer you this License
+giving you legal permission to copy, distribute and/or modify it.
+
+  For the developers' and authors' protection, the GPL clearly explains
+that there is no warranty for this free software.  For both users' and
+authors' sake, the GPL requires that modified versions be marked as
+changed, so that their problems will not be attributed erroneously to
+authors of previous versions.
+
+  Some devices are designed to deny users access to install or run
+modified versions of the software inside them, although the manufacturer
+can do so.  This is fundamentally incompatible with the aim of
+protecting users' freedom to change the software.  The systematic
+pattern of such abuse occurs in the area of products for individuals to
+use, which is precisely where it is most unacceptable.  Therefore, we
+have designed this version of the GPL to prohibit the practice for those
+products.  If such problems arise substantially in other domains, we
+stand ready to extend this provision to those domains in future versions
+of the GPL, as needed to protect the freedom of users.
+
+  Finally, every program is threatened constantly by software patents.
+States should not allow patents to restrict development and use of
+software on general-purpose computers, but in those that do, we wish to
+avoid the special danger that patents applied to a free program could
+make it effectively proprietary.  To prevent this, the GPL assures that
+patents cannot be used to render the program non-free.
+
+  The precise terms and conditions for copying, distribution and
+modification follow.
+
+                       TERMS AND CONDITIONS
+
+  0. Definitions.
+
+  "This License" refers to version 3 of the GNU General Public License.
+
+  "Copyright" also means copyright-like laws that apply to other kinds of
+works, such as semiconductor masks.
+
+  "The Program" refers to any copyrightable work licensed under this
+License.  Each licensee is addressed as "you".  "Licensees" and
+"recipients" may be individuals or organizations.
+
+  To "modify" a work means to copy from or adapt all or part of the work
+in a fashion requiring copyright permission, other than the making of an
+exact copy.  The resulting work is called a "modified version" of the
+earlier work or a work "based on" the earlier work.
+
+  A "covered work" means either the unmodified Program or a work based
+on the Program.
+
+  To "propagate" a work means to do anything with it that, without
+permission, would make you directly or secondarily liable for
+infringement under applicable copyright law, except executing it on a
+computer or modifying a private copy.  Propagation includes copying,
+distribution (with or without modification), making available to the
+public, and in some countries other activities as well.
+
+  To "convey" a work means any kind of propagation that enables other
+parties to make or receive copies.  Mere interaction with a user through
+a computer network, with no transfer of a copy, is not conveying.
+
+  An interactive user interface displays "Appropriate Legal Notices"
+to the extent that it includes a convenient and prominently visible
+feature that (1) displays an appropriate copyright notice, and (2)
+tells the user that there is no warranty for the work (except to the
+extent that warranties are provided), that licensees may convey the
+work under this License, and how to view a copy of this License.  If
+the interface presents a list of user commands or options, such as a
+menu, a prominent item in the list meets this criterion.
+
+  1. Source Code.
+
+  The "source code" for a work means the preferred form of the work
+for making modifications to it.  "Object code" means any non-source
+form of a work.
+
+  A "Standard Interface" means an interface that either is an official
+standard defined by a recognized standards body, or, in the case of
+interfaces specified for a particular programming language, one that
+is widely used among developers working in that language.
+
+  The "System Libraries" of an executable work include anything, other
+than the work as a whole, that (a) is included in the normal form of
+packaging a Major Component, but which is not part of that Major
+Component, and (b) serves only to enable use of the work with that
+Major Component, or to implement a Standard Interface for which an
+implementation is available to the public in source code form.  A
+"Major Component", in this context, means a major essential component
+(kernel, window system, and so on) of the specific operating system
+(if any) on which the executable work runs, or a compiler used to
+produce the work, or an object code interpreter used to run it.
+
+  The "Corresponding Source" for a work in object code form means all
+the source code needed to generate, install, and (for an executable
+work) run the object code and to modify the work, including scripts to
+control those activities.  However, it does not include the work's
+System Libraries, or general-purpose tools or generally available free
+programs which are used unmodified in performing those activities but
+which are not part of the work.  For example, Corresponding Source
+includes interface definition files associated with source files for
+the work, and the source code for shared libraries and dynamically
+linked subprograms that the work is specifically designed to require,
+such as by intimate data communication or control flow between those
+subprograms and other parts of the work.
+
+  The Corresponding Source need not include anything that users
+can regenerate automatically from other parts of the Corresponding
+Source.
+
+  The Corresponding Source for a work in source code form is that
+same work.
+
+  2. Basic Permissions.
+
+  All rights granted under this License are granted for the term of
+copyright on the Program, and are irrevocable provided the stated
+conditions are met.  This License explicitly affirms your unlimited
+permission to run the unmodified Program.  The output from running a
+covered work is covered by this License only if the output, given its
+content, constitutes a covered work.  This License acknowledges your
+rights of fair use or other equivalent, as provided by copyright law.
+
+  You may make, run and propagate covered works that you do not
+convey, without conditions so long as your license otherwise remains
+in force.  You may convey covered works to others for the sole purpose
+of having them make modifications exclusively for you, or provide you
+with facilities for running those works, provided that you comply with
+the terms of this License in conveying all material for which you do
+not control copyright.  Those thus making or running the covered works
+for you must do so exclusively on your behalf, under your direction
+and control, on terms that prohibit them from making any copies of
+your copyrighted material outside their relationship with you.
+
+  Conveying under any other circumstances is permitted solely under
+the conditions stated below.  Sublicensing is not allowed; section 10
+makes it unnecessary.
+
+  3. Protecting Users' Legal Rights From Anti-Circumvention Law.
+
+  No covered work shall be deemed part of an effective technological
+measure under any applicable law fulfilling obligations under article
+11 of the WIPO copyright treaty adopted on 20 December 1996, or
+similar laws prohibiting or restricting circumvention of such
+measures.
+
+  When you convey a covered work, you waive any legal power to forbid
+circumvention of technological measures to the extent such circumvention
+is effected by exercising rights under this License with respect to
+the covered work, and you disclaim any intention to limit operation or
+modification of the work as a means of enforcing, against the work's
+users, your or third parties' legal rights to forbid circumvention of
+technological measures.
+
+  4. Conveying Verbatim Copies.
+
+  You may convey verbatim copies of the Program's source code as you
+receive it, in any medium, provided that you conspicuously and
+appropriately publish on each copy an appropriate copyright notice;
+keep intact all notices stating that this License and any
+non-permissive terms added in accord with section 7 apply to the code;
+keep intact all notices of the absence of any warranty; and give all
+recipients a copy of this License along with the Program.
+
+  You may charge any price or no price for each copy that you convey,
+and you may offer support or warranty protection for a fee.
+
+  5. Conveying Modified Source Versions.
+
+  You may convey a work based on the Program, or the modifications to
+produce it from the Program, in the form of source code under the
+terms of section 4, provided that you also meet all of these conditions:
+
+    a) The work must carry prominent notices stating that you modified
+    it, and giving a relevant date.
+
+    b) The work must carry prominent notices stating that it is
+    released under this License and any conditions added under section
+    7.  This requirement modifies the requirement in section 4 to
+    "keep intact all notices".
+
+    c) You must license the entire work, as a whole, under this
+    License to anyone who comes into possession of a copy.  This
+    License will therefore apply, along with any applicable section 7
+    additional terms, to the whole of the work, and all its parts,
+    regardless of how they are packaged.  This License gives no
+    permission to license the work in any other way, but it does not
+    invalidate such permission if you have separately received it.
+
+    d) If the work has interactive user interfaces, each must display
+    Appropriate Legal Notices; however, if the Program has interactive
+    interfaces that do not display Appropriate Legal Notices, your
+    work need not make them do so.
+
+  A compilation of a covered work with other separate and independent
+works, which are not by their nature extensions of the covered work,
+and which are not combined with it such as to form a larger program,
+in or on a volume of a storage or distribution medium, is called an
+"aggregate" if the compilation and its resulting copyright are not
+used to limit the access or legal rights of the compilation's users
+beyond what the individual works permit.  Inclusion of a covered work
+in an aggregate does not cause this License to apply to the other
+parts of the aggregate.
+
+  6. Conveying Non-Source Forms.
+
+  You may convey a covered work in object code form under the terms
+of sections 4 and 5, provided that you also convey the
+machine-readable Corresponding Source under the terms of this License,
+in one of these ways:
+
+    a) Convey the object code in, or embodied in, a physical product
+    (including a physical distribution medium), accompanied by the
+    Corresponding Source fixed on a durable physical medium
+    customarily used for software interchange.
+
+    b) Convey the object code in, or embodied in, a physical product
+    (including a physical distribution medium), accompanied by a
+    written offer, valid for at least three years and valid for as
+    long as you offer spare parts or customer support for that product
+    model, to give anyone who possesses the object code either (1) a
+    copy of the Corresponding Source for all the software in the
+    product that is covered by this License, on a durable physical
+    medium customarily used for software interchange, for a price no
+    more than your reasonable cost of physically performing this
+    conveying of source, or (2) access to copy the
+    Corresponding Source from a network server at no charge.
+
+    c) Convey individual copies of the object code with a copy of the
+    written offer to provide the Corresponding Source.  This
+    alternative is allowed only occasionally and noncommercially, and
+    only if you received the object code with such an offer, in accord
+    with subsection 6b.
+
+    d) Convey the object code by offering access from a designated
+    place (gratis or for a charge), and offer equivalent access to the
+    Corresponding Source in the same way through the same place at no
+    further charge.  You need not require recipients to copy the
+    Corresponding Source along with the object code.  If the place to
+    copy the object code is a network server, the Corresponding Source
+    may be on a different server (operated by you or a third party)
+    that supports equivalent copying facilities, provided you maintain
+    clear directions next to the object code saying where to find the
+    Corresponding Source.  Regardless of what server hosts the
+    Corresponding Source, you remain obligated to ensure that it is
+    available for as long as needed to satisfy these requirements.
+
+    e) Convey the object code using peer-to-peer transmission, provided
+    you inform other peers where the object code and Corresponding
+    Source of the work are being offered to the general public at no
+    charge under subsection 6d.
+
+  A separable portion of the object code, whose source code is excluded
+from the Corresponding Source as a System Library, need not be
+included in conveying the object code work.
+
+  A "User Product" is either (1) a "consumer product", which means any
+tangible personal property which is normally used for personal, family,
+or household purposes, or (2) anything designed or sold for incorporation
+into a dwelling.  In determining whether a product is a consumer product,
+doubtful cases shall be resolved in favor of coverage.  For a particular
+product received by a particular user, "normally used" refers to a
+typical or common use of that class of product, regardless of the status
+of the particular user or of the way in which the particular user
+actually uses, or expects or is expected to use, the product.  A product
+is a consumer product regardless of whether the product has substantial
+commercial, industrial or non-consumer uses, unless such uses represent
+the only significant mode of use of the product.
+
+  "Installation Information" for a User Product means any methods,
+procedures, authorization keys, or other information required to install
+and execute modified versions of a covered work in that User Product from
+a modified version of its Corresponding Source.  The information must
+suffice to ensure that the continued functioning of the modified object
+code is in no case prevented or interfered with solely because
+modification has been made.
+
+  If you convey an object code work under this section in, or with, or
+specifically for use in, a User Product, and the conveying occurs as
+part of a transaction in which the right of possession and use of the
+User Product is transferred to the recipient in perpetuity or for a
+fixed term (regardless of how the transaction is characterized), the
+Corresponding Source conveyed under this section must be accompanied
+by the Installation Information.  But this requirement does not apply
+if neither you nor any third party retains the ability to install
+modified object code on the User Product (for example, the work has
+been installed in ROM).
+
+  The requirement to provide Installation Information does not include a
+requirement to continue to provide support service, warranty, or updates
+for a work that has been modified or installed by the recipient, or for
+the User Product in which it has been modified or installed.  Access to a
+network may be denied when the modification itself materially and
+adversely affects the operation of the network or violates the rules and
+protocols for communication across the network.
+
+  Corresponding Source conveyed, and Installation Information provided,
+in accord with this section must be in a format that is publicly
+documented (and with an implementation available to the public in
+source code form), and must require no special password or key for
+unpacking, reading or copying.
+
+  7. Additional Terms.
+
+  "Additional permissions" are terms that supplement the terms of this
+License by making exceptions from one or more of its conditions.
+Additional permissions that are applicable to the entire Program shall
+be treated as though they were included in this License, to the extent
+that they are valid under applicable law.  If additional permissions
+apply only to part of the Program, that part may be used separately
+under those permissions, but the entire Program remains governed by
+this License without regard to the additional permissions.
+
+  When you convey a copy of a covered work, you may at your option
+remove any additional permissions from that copy, or from any part of
+it.  (Additional permissions may be written to require their own
+removal in certain cases when you modify the work.)  You may place
+additional permissions on material, added by you to a covered work,
+for which you have or can give appropriate copyright permission.
+
+  Notwithstanding any other provision of this License, for material you
+add to a covered work, you may (if authorized by the copyright holders of
+that material) supplement the terms of this License with terms:
+
+    a) Disclaiming warranty or limiting liability differently from the
+    terms of sections 15 and 16 of this License; or
+
+    b) Requiring preservation of specified reasonable legal notices or
+    author attributions in that material or in the Appropriate Legal
+    Notices displayed by works containing it; or
+
+    c) Prohibiting misrepresentation of the origin of that material, or
+    requiring that modified versions of such material be marked in
+    reasonable ways as different from the original version; or
+
+    d) Limiting the use for publicity purposes of names of licensors or
+    authors of the material; or
+
+    e) Declining to grant rights under trademark law for use of some
+    trade names, trademarks, or service marks; or
+
+    f) Requiring indemnification of licensors and authors of that
+    material by anyone who conveys the material (or modified versions of
+    it) with contractual assumptions of liability to the recipient, for
+    any liability that these contractual assumptions directly impose on
+    those licensors and authors.
+
+  All other non-permissive additional terms are considered "further
+restrictions" within the meaning of section 10.  If the Program as you
+received it, or any part of it, contains a notice stating that it is
+governed by this License along with a term that is a further
+restriction, you may remove that term.  If a license document contains
+a further restriction but permits relicensing or conveying under this
+License, you may add to a covered work material governed by the terms
+of that license document, provided that the further restriction does
+not survive such relicensing or conveying.
+
+  If you add terms to a covered work in accord with this section, you
+must place, in the relevant source files, a statement of the
+additional terms that apply to those files, or a notice indicating
+where to find the applicable terms.
+
+  Additional terms, permissive or non-permissive, may be stated in the
+form of a separately written license, or stated as exceptions;
+the above requirements apply either way.
+
+  8. Termination.
+
+  You may not propagate or modify a covered work except as expressly
+provided under this License.  Any attempt otherwise to propagate or
+modify it is void, and will automatically terminate your rights under
+this License (including any patent licenses granted under the third
+paragraph of section 11).
+
+  However, if you cease all violation of this License, then your
+license from a particular copyright holder is reinstated (a)
+provisionally, unless and until the copyright holder explicitly and
+finally terminates your license, and (b) permanently, if the copyright
+holder fails to notify you of the violation by some reasonable means
+prior to 60 days after the cessation.
+
+  Moreover, your license from a particular copyright holder is
+reinstated permanently if the copyright holder notifies you of the
+violation by some reasonable means, this is the first time you have
+received notice of violation of this License (for any work) from that
+copyright holder, and you cure the violation prior to 30 days after
+your receipt of the notice.
+
+  Termination of your rights under this section does not terminate the
+licenses of parties who have received copies or rights from you under
+this License.  If your rights have been terminated and not permanently
+reinstated, you do not qualify to receive new licenses for the same
+material under section 10.
+
+  9. Acceptance Not Required for Having Copies.
+
+  You are not required to accept this License in order to receive or
+run a copy of the Program.  Ancillary propagation of a covered work
+occurring solely as a consequence of using peer-to-peer transmission
+to receive a copy likewise does not require acceptance.  However,
+nothing other than this License grants you permission to propagate or
+modify any covered work.  These actions infringe copyright if you do
+not accept this License.  Therefore, by modifying or propagating a
+covered work, you indicate your acceptance of this License to do so.
+
+  10. Automatic Licensing of Downstream Recipients.
+
+  Each time you convey a covered work, the recipient automatically
+receives a license from the original licensors, to run, modify and
+propagate that work, subject to this License.  You are not responsible
+for enforcing compliance by third parties with this License.
+
+  An "entity transaction" is a transaction transferring control of an
+organization, or substantially all assets of one, or subdividing an
+organization, or merging organizations.  If propagation of a covered
+work results from an entity transaction, each party to that
+transaction who receives a copy of the work also receives whatever
+licenses to the work the party's predecessor in interest had or could
+give under the previous paragraph, plus a right to possession of the
+Corresponding Source of the work from the predecessor in interest, if
+the predecessor has it or can get it with reasonable efforts.
+
+  You may not impose any further restrictions on the exercise of the
+rights granted or affirmed under this License.  For example, you may
+not impose a license fee, royalty, or other charge for exercise of
+rights granted under this License, and you may not initiate litigation
+(including a cross-claim or counterclaim in a lawsuit) alleging that
+any patent claim is infringed by making, using, selling, offering for
+sale, or importing the Program or any portion of it.
+
+  11. Patents.
+
+  A "contributor" is a copyright holder who authorizes use under this
+License of the Program or a work on which the Program is based.  The
+work thus licensed is called the contributor's "contributor version".
+
+  A contributor's "essential patent claims" are all patent claims
+owned or controlled by the contributor, whether already acquired or
+hereafter acquired, that would be infringed by some manner, permitted
+by this License, of making, using, or selling its contributor version,
+but do not include claims that would be infringed only as a
+consequence of further modification of the contributor version.  For
+purposes of this definition, "control" includes the right to grant
+patent sublicenses in a manner consistent with the requirements of
+this License.
+
+  Each contributor grants you a non-exclusive, worldwide, royalty-free
+patent license under the contributor's essential patent claims, to
+make, use, sell, offer for sale, import and otherwise run, modify and
+propagate the contents of its contributor version.
+
+  In the following three paragraphs, a "patent license" is any express
+agreement or commitment, however denominated, not to enforce a patent
+(such as an express permission to practice a patent or covenant not to
+sue for patent infringement).  To "grant" such a patent license to a
+party means to make such an agreement or commitment not to enforce a
+patent against the party.
+
+  If you convey a covered work, knowingly relying on a patent license,
+and the Corresponding Source of the work is not available for anyone
+to copy, free of charge and under the terms of this License, through a
+publicly available network server or other readily accessible means,
+then you must either (1) cause the Corresponding Source to be so
+available, or (2) arrange to deprive yourself of the benefit of the
+patent license for this particular work, or (3) arrange, in a manner
+consistent with the requirements of this License, to extend the patent
+license to downstream recipients.  "Knowingly relying" means you have
+actual knowledge that, but for the patent license, your conveying the
+covered work in a country, or your recipient's use of the covered work
+in a country, would infringe one or more identifiable patents in that
+country that you have reason to believe are valid.
+
+  If, pursuant to or in connection with a single transaction or
+arrangement, you convey, or propagate by procuring conveyance of, a
+covered work, and grant a patent license to some of the parties
+receiving the covered work authorizing them to use, propagate, modify
+or convey a specific copy of the covered work, then the patent license
+you grant is automatically extended to all recipients of the covered
+work and works based on it.
+
+  A patent license is "discriminatory" if it does not include within
+the scope of its coverage, prohibits the exercise of, or is
+conditioned on the non-exercise of one or more of the rights that are
+specifically granted under this License.  You may not convey a covered
+work if you are a party to an arrangement with a third party that is
+in the business of distributing software, under which you make payment
+to the third party based on the extent of your activity of conveying
+the work, and under which the third party grants, to any of the
+parties who would receive the covered work from you, a discriminatory
+patent license (a) in connection with copies of the covered work
+conveyed by you (or copies made from those copies), or (b) primarily
+for and in connection with specific products or compilations that
+contain the covered work, unless you entered into that arrangement,
+or that patent license was granted, prior to 28 March 2007.
+
+  Nothing in this License shall be construed as excluding or limiting
+any implied license or other defenses to infringement that may
+otherwise be available to you under applicable patent law.
+
+  12. No Surrender of Others' Freedom.
+
+  If conditions are imposed on you (whether by court order, agreement or
+otherwise) that contradict the conditions of this License, they do not
+excuse you from the conditions of this License.  If you cannot convey a
+covered work so as to satisfy simultaneously your obligations under this
+License and any other pertinent obligations, then as a consequence you may
+not convey it at all.  For example, if you agree to terms that obligate you
+to collect a royalty for further conveying from those to whom you convey
+the Program, the only way you could satisfy both those terms and this
+License would be to refrain entirely from conveying the Program.
+
+  13. Use with the GNU Affero General Public License.
+
+  Notwithstanding any other provision of this License, you have
+permission to link or combine any covered work with a work licensed
+under version 3 of the GNU Affero General Public License into a single
+combined work, and to convey the resulting work.  The terms of this
+License will continue to apply to the part which is the covered work,
+but the special requirements of the GNU Affero General Public License,
+section 13, concerning interaction through a network will apply to the
+combination as such.
+
+  14. Revised Versions of this License.
+
+  The Free Software Foundation may publish revised and/or new versions of
+the GNU General Public License from time to time.  Such new versions will
+be similar in spirit to the present version, but may differ in detail to
+address new problems or concerns.
+
+  Each version is given a distinguishing version number.  If the
+Program specifies that a certain numbered version of the GNU General
+Public License "or any later version" applies to it, you have the
+option of following the terms and conditions either of that numbered
+version or of any later version published by the Free Software
+Foundation.  If the Program does not specify a version number of the
+GNU General Public License, you may choose any version ever published
+by the Free Software Foundation.
+
+  If the Program specifies that a proxy can decide which future
+versions of the GNU General Public License can be used, that proxy's
+public statement of acceptance of a version permanently authorizes you
+to choose that version for the Program.
+
+  Later license versions may give you additional or different
+permissions.  However, no additional obligations are imposed on any
+author or copyright holder as a result of your choosing to follow a
+later version.
+
+  15. Disclaimer of Warranty.
+
+  THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
+APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
+HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY
+OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM
+IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF
+ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+
+  16. Limitation of Liability.
+
+  IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS
+THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
+GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
+USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF
+DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD
+PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
+EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
+
+  17. Interpretation of Sections 15 and 16.
+
+  If the disclaimer of warranty and limitation of liability provided
+above cannot be given local legal effect according to their terms,
+reviewing courts shall apply local law that most closely approximates
+an absolute waiver of all civil liability in connection with the
+Program, unless a warranty or assumption of liability accompanies a
+copy of the Program in return for a fee.
+
+                     END OF TERMS AND CONDITIONS
+
+-----------
+
 The following npm packages may be included in this product:
 
  - just-diff-apply@5.4.1
@@ -16379,9 +17070,26 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 The following npm package may be included in this product:
 
- - lilconfig@2.0.6
+ - lie@3.3.0
 
 This package contains the following license and notice below:
+
+#Copyright (c) 2014-2018 Calvin Metcalf, Jordan Harband
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+**THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**
+
+-----------
+
+The following npm packages may be included in this product:
+
+ - lilconfig@2.0.6
+ - lilconfig@2.1.0
+
+These packages each contain the following license and notice below:
 
 MIT License
 
@@ -16687,12 +17395,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
-The following npm packages may be included in this product:
+The following npm package may be included in this product:
 
  - lru-cache@7.13.2
- - lru-cache@7.14.1
 
-These packages each contain the following license and notice below:
+This package contains the following license and notice below:
 
 The ISC License
 
@@ -16712,11 +17419,35 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 -----------
 
+The following npm package may be included in this product:
+
+ - lru-cache@7.18.3
+
+This package contains the following license and notice below:
+
+The ISC License
+
+Copyright (c) 2010-2023 Isaac Z. Schlueter and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+-----------
+
 The following npm packages may be included in this product:
 
  - magic-string@0.25.9
- - magic-string@0.26.7
  - magic-string@0.27.0
+ - magic-string@0.30.0
 
 These packages each contain the following license and notice below:
 
@@ -16851,11 +17582,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
- - mdn-data@2.0.14
+ - mdn-data@2.0.28
+ - mdn-data@2.0.30
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 CC0 1.0 Universal
 
@@ -22215,6 +22947,30 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 The following npm package may be included in this product:
 
+ - minipass@4.2.5
+
+This package contains the following license and notice below:
+
+The ISC License
+
+Copyright (c) 2017-2023 npm, Inc., Isaac Z. Schlueter, and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+-----------
+
+The following npm package may be included in this product:
+
  - minizlib@2.1.2
 
 This package contains the following license and notice below:
@@ -22245,28 +23001,6 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
-
------------
-
-The following npm package may be included in this product:
-
- - mkdir@0.0.2
-
-This package contains the following license and notice below:
-
-Copyright 2011 Joe Hewitt
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
- 
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
 
 -----------
 
@@ -22364,7 +23098,7 @@ SOFTWARE.
 The following npm packages may be included in this product:
 
  - nanoid@3.3.4
- - nanoid@4.0.1
+ - nanoid@4.0.2
 
 These packages each contain the following license and notice below:
 
@@ -22689,7 +23423,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - nitropack@2.1.2
+ - nitropack@2.3.2
 
 This package contains the following license and notice below:
 
@@ -22809,7 +23543,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - node-fetch@3.3.0
+ - node-fetch@3.3.1
 
 This package contains the following license and notice below:
 
@@ -23241,7 +23975,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - node-releases@2.0.8
+ - node-releases@2.0.10
 
 This package contains the following license and notice below:
 
@@ -23786,6 +24520,36 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 The following npm package may be included in this product:
 
+ - pako@1.0.11
+
+This package contains the following license and notice below:
+
+(The MIT License)
+
+Copyright (C) 2014-2017 by Vitaly Puzrin and Andrei Tuputcyn
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+-----------
+
+The following npm package may be included in this product:
+
  - parse5@6.0.1
 
 This package contains the following license and notice below:
@@ -23961,11 +24725,12 @@ THE SOFTWARE.
 
 -----------
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
  - pathe@1.1.0
+ - pkg-types@1.0.2
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 MIT License
 
@@ -24018,6 +24783,7 @@ The following npm packages may be included in this product:
 
  - perfect-debounce@0.1.3
  - unimport@2.2.4
+ - unimport@3.0.4
 
 These packages each contain the following license and notice below:
 
@@ -24129,59 +24895,6 @@ SOFTWARE.
 
 -----------
 
-The following npm package may be included in this product:
-
- - pkg-types@1.0.1
-
-This package contains the following license and notice below:
-
-MIT License
-
-Copyright (c) Pooya Parsa <pooya@pi0.io>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
---------------------------------------------------------------------------------
-
-Copyright Joyent, Inc. and other Node contributors.
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to permit
-persons to whom the Software is furnished to do so, subject to the
-following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-USE OR OTHER DEALINGS IN THE SOFTWARE.
-
------------
-
 The following npm packages may be included in this product:
 
  - postcss-calc@8.2.4
@@ -24214,7 +24927,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - postcss-discard-overridden@5.1.0
+ - postcss-discard-overridden@6.0.0
 
 This package contains the following license and notice below:
 
@@ -24302,7 +25015,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - postcss-minify-font-values@5.1.0
+ - postcss-minify-font-values@6.0.0
  - postcss-value-parser@4.2.0
 
 These packages each contain the following license and notice below:
@@ -24334,8 +25047,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - postcss-minify-params@5.1.4
- - postcss-normalize-charset@5.1.0
+ - postcss-minify-params@6.0.0
+ - postcss-normalize-charset@6.0.0
 
 These packages each contain the following license and notice below:
 
@@ -24954,7 +25667,9 @@ PERFORMANCE OF THIS SOFTWARE.
 The following npm packages may be included in this product:
 
  - readable-stream@2.3.7
+ - readable-stream@2.3.8
  - readable-stream@3.6.0
+ - readable-stream@3.6.2
  - readable-stream@4.2.0
 
 These packages each contain the following license and notice below:
@@ -26551,7 +27266,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - rollup@3.14.0
+ - rollup@3.20.2
 
 This package contains the following license and notice below:
 
@@ -29365,6 +30080,35 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 The following npm package may be included in this product:
 
+ - setimmediate@1.0.5
+
+This package contains the following license and notice below:
+
+Copyright (c) 2012 Barnesandnoble.com, llc, Donavon West, and Domenic Denicola
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following npm package may be included in this product:
+
  - setprototypeof@1.2.0
 
 This package contains the following license and notice below:
@@ -30050,100 +30794,6 @@ USE OR PERFORMANCE OF THIS SOFTWARE.
 
 The following npm package may be included in this product:
 
- - stable@0.1.8
-
-This package contains the following license and notice below:
-
-## Stable
-
-A stable array sort, because `Array#sort()` is not guaranteed stable.
-
-MIT licensed.
-
-[![Node.js CI](https://secure.travis-ci.org/Two-Screen/stable.png)](http://travis-ci.org/Two-Screen/stable)
-
-[![Browser CI](http://ci.testling.com/Two-Screen/stable.png)](http://ci.testling.com/Two-Screen/stable)
-
-#### From npm
-
-Install with:
-
-```sh
-npm install stable
-```
-
-Then use it in Node.js or some other CommonJS environment as:
-
-```js
-const stable = require('stable')
-```
-
-#### From the browser
-
-Include [`stable.js`] or the minified version [`stable.min.js`]
-in your page, then call `stable()`.
-
- [`stable.js`]: https://raw.github.com/Two-Screen/stable/master/stable.js
- [`stable.min.js`]: https://raw.github.com/Two-Screen/stable/master/stable.min.js
-
-#### Usage
-
-The default sort is, as with `Array#sort`, lexicographical:
-
-```js
-stable(['foo', 'bar', 'baz'])  // => ['bar', 'baz', 'foo']
-stable([10, 1, 5])             // => [1, 10, 5]
-```
-
-Unlike `Array#sort`, the default sort is **NOT** in-place. To do an in-place
-sort, use `stable.inplace`, which otherwise works the same:
-
-```js
-const arr = [10, 1, 5]
-stable(arr) === arr          // => false
-stable.inplace(arr) === arr  // => true
-```
-
-A comparator function can be specified:
-
-```js
-// Regular sort() compatible comparator, that returns a number.
-// This demonstrates the default behavior.
-const lexCmp = (a, b) => String(a).localeCompare(b)
-stable(['foo', 'bar', 'baz'], lexCmp)  // => ['bar', 'baz', 'foo']
-
-// Boolean comparator. Sorts `b` before `a` if true.
-// This demonstrates a simple way to sort numerically.
-const greaterThan = (a, b) => a > b
-stable([10, 1, 5], greaterThan)  // => [1, 5, 10]
-```
-
-#### License
-
-Copyright (C) 2018 Angry Bytes and contributors.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
------------
-
-The following npm package may be included in this product:
-
  - standard-as-callback@2.1.0
 
 This package contains the following license and notice below:
@@ -30441,7 +31091,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - svgo@2.8.0
+ - svgo@3.0.2
 
 This package contains the following license and notice below:
 
@@ -31723,7 +32373,7 @@ SPDX-License-Identifier: (MIT OR CC0-1.0)
 
 The following npm package may be included in this product:
 
- - type-fest@3.5.6
+ - type-fest@3.7.2
 
 This package contains the following license and notice below:
 
@@ -31849,6 +32499,8 @@ Click the type names for complete docs.
 - [`Primitive`](source/primitive.d.ts) - Matches any [primitive value](https://developer.mozilla.org/en-US/docs/Glossary/Primitive).
 - [`Class`](source/basic.d.ts) - Matches a [`class`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes).
 - [`Constructor`](source/basic.d.ts) - Matches a [`class` constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes).
+- [`AbstractClass`](source/basic.d.ts) - Matches an [`abstract class`](https://www.typescriptlang.org/docs/handbook/classes.html#abstract-classes).
+- [`AbstractConstructor`](source/basic.d.ts) - Matches an [`abstract class`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-2.html#abstract-construct-signatures) constructor.
 - [`TypedArray`](source/typed-array.d.ts) - Matches any [typed array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray), like `Uint8Array` or `Float64Array`.
 - [`ObservableLike`](source/observable-like.d.ts) - Matches a value that is like an [Observable](https://github.com/tc39/proposal-observable).
 
@@ -31858,6 +32510,7 @@ Click the type names for complete docs.
 - [`IsEmptyObject`](source/empty-object.d.ts) - Returns a `boolean` for whether the type is strictly equal to an empty plain object, the `{}` value.
 - [`Except`](source/except.d.ts) - Create a type from an object type without certain keys. This is a stricter version of [`Omit`](https://www.typescriptlang.org/docs/handbook/utility-types.html#omittype-keys).
 - [`Writable`](source/writable.d.ts) - Create a type that strips `readonly` from all or some of an object's keys. The inverse of `Readonly<T>`.
+- [`WritableDeep`](source/writable-deep.d.ts) - Create a deeply mutable version of an `object`/`ReadonlyMap`/`ReadonlySet`/`ReadonlyArray` type. The inverse of `ReadonlyDeep<T>`. Use `Writable<T>` if you only need one level deep.
 - [`Merge`](source/merge.d.ts) - Merge two types into a new type. Keys of the second type overrides keys of the first type.
 - [`MergeDeep`](source/merge-deep.d.ts) - Merge two objects or two arrays/tuples recursively into a new type.
 - [`MergeExclusive`](source/merge-exclusive.d.ts) - Create a type that has mutually exclusive keys.
@@ -31899,6 +32552,12 @@ Click the type names for complete docs.
 - [`HasRequiredKeys`](source/has-required-keys.d.ts) - Create a `true`/`false` type depending on whether the given type has any required fields.
 - [`Spread`](source/spread.d.ts) - Mimic the type inferred by TypeScript when merging two objects or two arrays/tuples using the spread syntax.
 - [`IsEqual`](source/is-equal.d.ts) - Returns a boolean for whether the two given types are equal.
+- [`IsLiteral`](source/is-literal.d.ts) - Returns a boolean for whether the given type is a [literal type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types).
+- [`IsStringLiteral`](source/is-literal.d.ts) - Returns a boolean for whether the given type is a `string` [literal type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types).
+- [`IsNumericLiteral`](source/is-literal.d.ts) - Returns a boolean for whether the given type is a `number` or `bigint` [literal type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types).
+- [`IsBooleanLiteral`](source/is-literal.d.ts) - Returns a boolean for whether the given type is a `true` or `false` [literal type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types).
+- [`IsSymbolLiteral`](source/is-literal.d.ts) - Returns a boolean for whether the given type is a `symbol` [literal type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types).
+- [`TaggedUnion`](source/tagged-union.d.ts) - Create a union of types that share a common discriminant property.
 
 ### JSON
 
@@ -31990,6 +32649,7 @@ Click the type names for complete docs.
 - `PartialBy` - See [`SetOptional`](https://github.com/sindresorhus/type-fest/blob/main/source/set-optional.d.ts)
 - `RecordDeep`- See [`Schema`](https://github.com/sindresorhus/type-fest/blob/main/source/schema.d.ts)
 - `Mutable`- See [`Writable`](https://github.com/sindresorhus/type-fest/blob/main/source/writable.d.ts)
+- `Prettify`- See [`Simplify`](https://github.com/sindresorhus/type-fest/blob/main/source/simplify.d.ts)
 
 ## Tips
 
@@ -32700,51 +33360,7 @@ END OF TERMS AND CONDITIONS
 
 The following npm package may be included in this product:
 
- - ultrahtml@1.2.0
-
-This package contains the following license and notice below:
-
-MIT License Copyright (c) 2022 Nate Moore
-
-Permission is hereby granted, free of
-charge, to any person obtaining a copy of this software and associated
-documentation files (the "Software"), to deal in the Software without
-restriction, including without limitation the rights to use, copy, modify, merge,
-publish, distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to the
-following conditions:
-
-The above copyright notice and this permission notice
-(including the next paragraph) shall be included in all copies or substantial
-portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
-ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
-EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
----
-
-Portions of this code were borrowed from https://github.com/developit/htmlParser
-
-The MIT License (MIT)
-
-Copyright (c) 2013 Jason Miller
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
------------
-
-The following npm package may be included in this product:
-
- - unctx@2.1.1
+ - unctx@2.1.2
 
 This package contains the following license and notice below:
 
@@ -32935,7 +33551,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - unplugin@1.0.1
+ - unplugin@1.3.1
 
 This package contains the following license and notice below:
 
@@ -33111,7 +33727,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 The following npm package may be included in this product:
 
- - vite-node@0.28.4
+ - vite-node@0.29.8
 
 This package contains the following license and notice below:
 
@@ -33142,7 +33758,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - vite-plugin-checker@0.5.5
+ - vite-plugin-checker@0.5.6
 
 This package contains the following license and notice below:
 
@@ -33172,7 +33788,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - vite@4.1.1
+ - vite@4.2.1
 
 This package contains the following license and notice below:
 
@@ -36620,7 +37236,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm package may be included in this product:
 
- - vue-bundle-renderer@1.0.0
+ - vue-bundle-renderer@1.0.3
 
 This package contains the following license and notice below:
 
@@ -36800,7 +37416,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - vue-i18n-routing@0.10.2
+ - vue-i18n-routing@0.12.2
 
 This package contains the following license and notice below:
 
@@ -36892,7 +37508,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - vuetify@3.1.5
+ - vuetify@3.1.14
 
 This package contains the following license and notice below:
 
@@ -37536,7 +38152,7 @@ THIS SOFTWARE.
 
 The following npm package may be included in this product:
 
- - yargs@17.6.2
+ - yargs@17.7.1
 
 This package contains the following license and notice below:
 
@@ -37561,6 +38177,247 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+-----------
+
+The following npm package may be included in this product:
+
+ - zhead@2.0.4
+
+This package contains the following license and notice below:
+
+<h1 align='center'>zhead</h1>
+
+<p align="center">
+<a href='https://github.com/harlan-zw/zhead/actions/workflows/test.yml'>
+</a>
+<a href="https://www.npmjs.com/package/zhead" target="__blank"><img src="https://img.shields.io/npm/v/zhead?style=flat&colorA=002438&colorB=28CF8D" alt="NPM version"></a>
+<a href="https://www.npmjs.com/package/zhead" target="__blank"><img alt="NPM Downloads" src="https://img.shields.io/npm/dm/zhead?flat&colorA=002438&colorB=28CF8D"></a>
+<a href="https://github.com/harlan-zw/zhead" target="__blank"><img alt="GitHub stars" src="https://img.shields.io/github/stars/harlan-zw/zhead?flat&colorA=002438&colorB=28CF8D"></a>
+</p>
+
+
+<p align="center">
+All of the TypeScript definitions for &lt;head&gt;.<br><br>Powering <a href="https://github.com/harlan-zw/unhead">Unhead</a>.
+</p>
+
+<p align="center">
+<table>
+<tbody>
+<td align="center">
+<img width="800" height="0" /><br>
+<i>Status:</i> Stable</b> <br>
+<sup> Please report any issues 🐛</sup><br>
+<sub>Made possible by my <a href="https://github.com/sponsors/harlan-zw">Sponsor Program 💖</a><br> Follow me <a href="https://twitter.com/harlan_zw">@harlan_zw</a> 🐦 • Join <a href="https://discord.gg/275MBUBvgP">Discord</a> for help</sub><br>
+<img width="800" height="0" />
+</td>
+</tbody>
+</table>
+</p>
+
+## Features
+
+- 💎 Fully typed Head schema
+- 💎 Commented with MDN docs
+- 💎 Fully Augmentable
+- 💎 [100+ typed meta's](https://github.com/harlan-zw/zhead/blob/main/packages/schema/src/metaFlat.ts)
+
+## Installation
+
+```bash
+npm install --save-dev zhead
+
+# Using yarn
+yarn add --dev zhead
+```
+
+## Types
+
+### Head
+
+Typescript base schema for document &lt;head&gt;.
+
+```ts
+export interface Head<E extends MergeHead = MergeHead> extends BaseHead {
+  /**
+   * The <title> HTML element defines the document's title that is shown in a browser's title bar or a page's tab.
+   * It only contains text; tags within the element are ignored.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title
+   */
+  title?: string
+  /**
+   * The <base> HTML element specifies the base URL to use for all relative URLs in a document.
+   * There can be only one <base> element in a document.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+   */
+  base?: Partial<Merge<E['base'], Base>>
+  /**
+   * The <link> HTML element specifies relationships between the current document and an external resource.
+   * This element is most commonly used to link to stylesheets, but is also used to establish site icons
+   * (both "favicon" style icons and icons for the home screen and apps on mobile devices) among other things.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#attr-as
+   */
+  link?: (Link & DataKeys & DefinedValueOrEmptyObject<E['link']>)[]
+  /**
+   * The <meta> element represents metadata that cannot be expressed in other HTML elements, like <link> or <script>.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
+   */
+  meta?: (Meta & DataKeys & DefinedValueOrEmptyObject<E['meta']>)[]
+  /**
+   * The <style> HTML element contains style information for a document, or part of a document.
+   * It contains CSS, which is applied to the contents of the document containing the <style> element.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/style
+   */
+  style?: (Style & DataKeys & DefinedValueOrEmptyObject<E['style']>)[]
+  /**
+   * The <script> HTML element is used to embed executable code or data; this is typically used to embed or refer to JavaScript code.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script
+   */
+  script?: (Script & DataKeys & DefinedValueOrEmptyObject<E['script']>)[]
+  /**
+   * The <noscript> HTML element defines a section of HTML to be inserted if a script type on the page is unsupported
+   * or if scripting is currently turned off in the browser.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript
+   */
+  noscript?: (Noscript & DataKeys & DefinedValueOrEmptyObject<E['noscript']>)[]
+  /**
+   * Attributes for the <html> HTML element.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/html
+   */
+  htmlAttrs?: (HtmlAttributes & DataKeys & DefinedValueOrEmptyObject<E['htmlAttrs']>)
+  /**
+   * Attributes for the <body> HTML element.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/body
+   */
+  bodyAttrs?: (BodyAttributes & DataKeys & DefinedValueOrEmptyObject<E['bodyAttrs']>)
+}
+```
+
+### Flat Meta
+
+See [metaFlat.ts](/src/metaFlat.ts) for the full list.
+
+```ts
+// SAMPLE
+
+export interface MetaFlat {
+    /**
+     * This attribute declares the document's character encoding.
+     * If the attribute is present, its value must be an ASCII case-insensitive match for the string "utf-8",
+     * because UTF-8 is the only valid encoding for HTML5 documents.
+     * <meta> elements which declare a character encoding must be located entirely within the first 1024 bytes
+     * of the document.
+     *
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta#attr-charset
+     */
+    charset: string
+    /**
+     * Use this tag to provide a short description of the page.
+     * In some situations, this description is used in the snippet shown in search results.
+     *
+     * @see https://developers.google.com/search/docs/advanced/appearance/snippet#meta-descriptions
+     */
+    description: string
+    /**
+     * This tag tells the browser how to render a page on a mobile device.
+     * Presence of this tag indicates to Google that the page is mobile friendly.
+     *
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name#standard_metadata_names_defined_in_other_specifications
+     */
+    viewport: string | Partial<{
+      /**
+       * Defines the pixel width of the viewport that you want the web site to be rendered at.
+       */
+      width: number | string | 'device-width'
+      /**
+       * Defines the height of the viewport. Not used by any browser.
+       */
+      height: number | string | 'device-height'
+      /**
+       * Defines the ratio between the device width
+       * (device-width in portrait mode or device-height in landscape mode) and the viewport size.
+       *
+       * @minimum 0
+       * @maximum 10
+       */
+      initialScale: number | string
+      /**
+       * Defines the maximum amount to zoom in.
+       * It must be greater or equal to the minimum-scale or the behavior is undefined.
+       * Browser settings can ignore this rule and iOS10+ ignores it by default.
+       *
+       * @minimum 0
+       * @maximum 10
+       */
+      maximumScale: number | string
+      /**
+       * Defines the minimum zoom level. It must be smaller or equal to the maximum-scale or the behavior is undefined.
+       * Browser settings can ignore this rule and iOS10+ ignores it by default.
+       *
+       * @minimum 0
+       * @maximum 10
+       */
+      minimumScale: number | string
+      /**
+       * If set to no, the user is unable to zoom in the webpage.
+       * The default is yes. Browser settings can ignore this rule, and iOS10+ ignores it by default.
+       */
+      userScalable: 'yes' | 'no'
+      /**
+       * The auto value doesn't affect the initial layout viewport, and the whole web page is viewable.
+       *
+       * The contain value means that the viewport is scaled to fit the largest rectangle inscribed within the display.
+       *
+       * The cover value means that the viewport is scaled to fill the device display.
+       * It is highly recommended to make use of the safe area inset variables to ensure that important content
+       * doesn't end up outside the display.
+       */
+      viewportFit: 'auto' | 'contain' | 'cover'
+  }>
+
+  // ...
+}
+```
+
+## API
+
+### defineHead
+
+Use this decorator for a simple fully-typed head schema.
+
+```ts
+import { defineHead } from 'zhead'
+
+const head = defineHead({
+  title: 'My Page',
+})
+
+// {
+//    title: 'My Page',
+// }
+```
+
+## Sponsors
+
+<p align="center">
+  <a href="https://raw.githubusercontent.com/harlan-zw/static/main/sponsors.svg">
+    <img src='https://raw.githubusercontent.com/harlan-zw/static/main/sponsors.svg'/>
+  </a>
+</p>
+
+
+## License
+
+MIT License © 2022-PRESENT [Harlan Wilton](https://github.com/harlan-zw)
 
 -----------
 

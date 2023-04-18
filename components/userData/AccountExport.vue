@@ -1,23 +1,23 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2023  jae
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
 <template>
-  <UserDataCard 
+  <UserDataCard
     :header="t('accountHeader')"
     :download-btn-copy="t('btnDownload')"
     :show-alert="state.showAlert"
@@ -40,15 +40,16 @@ import { IVeoAccount } from "~~/composables/api/queryDefinitions/accounts";
 // Composables
 const { t } = useI18n();
 const { request } = useRequest();
-const { profile } = useVeoUser();
+const { profile, roles } = useVeoUser();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-
 
 const state = reactive({
   accounts: [profile.value] as IVeoAccount[],
   showAlert: false,
   isLoading: [] as boolean[]
 });
+
+const isAccountManager = computed(() => roles.value.length > 0);
 
 function fetchAccountData() {
   return request(`/api/accounts`, {});
@@ -57,8 +58,13 @@ function fetchAccountData() {
 async function exportAccountData(index: number) {
   state.isLoading[index] = true;
   try {
-    // Get data on all accounts managed by current account
-    const accounts = await fetchAccountData();
+
+    let accounts = [];
+
+    if(isAccountManager.value) {
+      // Get data on all accounts managed by current account
+      accounts = await fetchAccountData();
+    }
 
     // Add current account data
     const currentAccount = state.accounts[0];

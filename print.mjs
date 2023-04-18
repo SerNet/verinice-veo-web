@@ -37,10 +37,15 @@ async function main() {
     .on('response', (response) => console.log(` ☑️  ${response.status()} ${shorten(response.url(), 120)}`))
     .on('requestfailed', (request) => console.error(` ❌  ${request.failure().errorText} ${request.url()}`));
   console.log('Starting printing...');
-  for (const lang of LANGS) {
+  for await (const lang of LANGS) {
     const outputFile = `${outputFolder}/${fileName}_${lang}.pdf`;
     console.log(`Printing: ${url} (${lang})...`);
-    await page.goto(url + `&lang=${lang}`);
+    await page.goto(url);
+    // Setting the language via &lang=xyz gets overwritten by the browser locale, so we set the cookie by hand to avoid this. Also means the lang query parameter is only useful if set by hand.
+    await page.setCookie({
+      name: 'i18n_redirected',
+      value: lang
+    });
     await new Promise((resolve) => setTimeout(resolve, 3000));
     await Promise.race([
       page.evaluate((event) => new Promise((resolve) => document.addEventListener(event, resolve, { once: true })), 'PAGEDJS_AFTER_RENDERED'),

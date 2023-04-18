@@ -50,7 +50,7 @@ export interface VeoSchemaValidatorValidationResult {
  * Properties are added in later on on the backend side to provide some sort of meta data.
  * Those won't exist in the scheme so they should get ignored if checking an object.
  */
-const NON_REQUIRED_PROPERTIES = ['members', 'parts', 'designator', 'type'];
+const NON_REQUIRED_PROPERTIES = ['members', 'parts', 'designator', 'type', 'displayName'];
 
 export default class ObjectSchemaValidator {
   private errors: VeoSchemaValidatorMessage[] = [];

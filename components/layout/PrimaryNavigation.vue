@@ -348,9 +348,9 @@ export default defineComponent({
       }))
     );
 
-    const unitSelectionNavEntry: INavItem = {
+    const unitSelectionNavEntry = computed<INavItem>(() =>({
       key: 'unitSelection',
-      name: $t('breadcrumbs.index').toString(),
+      name: $t('breadcrumbs.index'),
       icon: mdiHomeSwitchOutline,
       to: {
         name: UNIT_SELECTION_ROUTE_NAME
@@ -358,7 +358,7 @@ export default defineComponent({
       componentName: 'unit-select-nav-item',
       exact: true,
       openInNewtab: route.path.startsWith("/docs")
-    };
+    }));
 
     const domainDashboardNavEntry = computed<INavItem>(() => ({
       key: 'domainDashboard',
@@ -462,7 +462,7 @@ export default defineComponent({
     );
 
     const items = computed<INavItem[]>(() => [
-      ...(authenticated.value && userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry] : []),
+      ...(authenticated.value && userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry.value] : []),
       ...(props.unitId && props.domainId
         ? [
           domainDashboardNavEntry.value,

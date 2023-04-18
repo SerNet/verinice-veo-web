@@ -181,7 +181,7 @@ export default defineComponent({
     }));
 
     const useFetchSchemasQueryEnabled = computed(() => authenticated.value);
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, { enabled: useFetchSchemasQueryEnabled });
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { enabled: useFetchSchemasQueryEnabled });
 
     const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbReplacementMapBreadcrumb>([
       [
@@ -262,11 +262,13 @@ export default defineComponent({
       [
         'objects',
         {
-          to: () => {
-            const objectType = endpoints.value?.[separateUUIDParam(route.params.entity as string).type];
-
-            return `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${objectType}`;
-          }
+          disabled: true
+        }
+      ],
+      [
+        'risks',
+        {
+          disabled: true
         }
       ],
       [
@@ -331,7 +333,7 @@ export default defineComponent({
           return {
             param: part,
             exact: true,
-            text: ['text', 'icon', 'queriedText', 'dynamicText'].some((key) => key in replacementMapEntry) ? undefined : t(`breadcrumbs.${part}`).toString(),
+            text: ['text', 'icon', 'queriedText', 'dynamicText'].some((key) => key in replacementMapEntry) ? undefined : t(`breadcrumbs.${part}`),
             index,
             key: breadcrumbParts.value.slice(0, breadcrumbParts.value.findIndex((_part) => _part === part) + 1).join('/') || '/',
             position: index * 10,
@@ -413,6 +415,7 @@ export default defineComponent({
       }
     };
 
+    watch(() => locale.value, updateTitle, { immediate: true });
     watch(() => queryResultMap, updateTitle, { deep: true, immediate: true });
     watch(() => breadcrumbs.value, updateTitle, { deep: true, immediate: true });
 

@@ -53,7 +53,7 @@
                   :model-value="data.scenario"
                   object-type="scenario"
                   required
-                  :rules="[(data) => !!data || t('scenarioRequired')]"
+                  :rules="[requiredRule]"
                   sub-type="SCN_Scenario"
                   :domain-id="domainId"
                   :disabled="formDisabled"
@@ -166,6 +166,7 @@ export default defineComponent({
     const { createLink } = useCreateLink();
     const { ability } = useVeoPermissions();
     const { mutateAsync: createObject } = useMutation(objectQueryDefinitions.mutations.createObject);
+    const { requiredRule } = useRules();
   
 
     const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
@@ -311,6 +312,7 @@ export default defineComponent({
       onRiskDefinitionsChanged,
       onRiskOwnerChanged,
       onScenarioChanged,
+      requiredRule,
       risk,
       saveRisk,
       savingRisk,

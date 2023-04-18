@@ -81,12 +81,39 @@ export function createIntro() {
     let _watchOptionsHandle: WatchStopHandle;
     let _watchHintsVisible: WatchStopHandle;
     let _watchStepsVisible: WatchStopHandle;
+    let _watchStep: WatchStopHandle;
     let tutorialReady = false;
     // wait for pending fetches on current page
     const isFetching = useIsFetching();
     const onFetchFinish = () => {
+
+      // Don't create new watchers if old ones already exist, as we don't want two watchers mutating the same instance (we ALWAYS have only one introJs instance,attached to the window).
+      if(!!_watchOptionsHandle || !!_watchHintsVisible || !!_watchStepsVisible) {
+        return;
+      }
       // watch hintsVisible (show hints bubbles)
       _watchHintsVisible = watch(hintsVisible, () => toggleHints(), { immediate: true });
+
+      // Skip step if element is defined but not visible
+      _watchStep = watch(() => step.value, (newValue, oldValue) => {
+        if(!options.value.steps) {
+          return;
+        }
+
+        const currentStep = options.value.steps[newValue];
+
+        // Early exit if no element is specified.
+        if(!currentStep.element) {
+          return;
+        }
+
+        // Skip step if element is not visible
+        const element = document.querySelector(currentStep.element as string) as HTMLElement | undefined;
+        if(!element || element.style.display === 'none') {
+          // Skip step if going forward, else go back two steps (No idea why there is a +1 offset. step.value, newValue and _instance.currentStep() all have the same value)
+          _instance.goToStep(newValue + (newValue > oldValue ? 2 : 0));
+        }
+      });
 
       _watchStepsVisible = watch(
         stepsVisible,
@@ -175,19 +202,14 @@ export function createIntro() {
           if (o) {
             _instance.setOptions({
               tooltipClass: 'vue-introjs-tooltip',
-              disableInteraction: false,
               showBullets: false,
-              showButtons: true,
-              showProgress: false,
               showStepNumbers: true,
-              hintShowButton: false,
-              hideNext: false,
               ...o
             });
 
             if (stepsVisible.value && tutorialReady) {
               // refresh options & steps
-              _instance.refresh(true);
+              _instance.refresh();
               // make changes visible by refreshing steps
               _instance.goToStep(step.value + 1);
             }
@@ -368,7 +390,7 @@ export function useTutorials() {
       // @ts-ignore Some sort of type error, however intro js seems to work
       intro.configure(tutorial);
       if (autoplay) {
-        intro.start();
+        stepsVisible.value = true;
       }
     },
     /**

@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <ObjectNotFoundError v-if="!loading && notFoundError" />
+  <UtilNotFoundError
+    v-if="!loading && notFoundError"
+    :text="t('notFound')"
+  />
   <LayoutPageWrapper
     v-else
     class="px-4 pt-4"
@@ -184,7 +187,6 @@ import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
 
-
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
   beforeRouteLeave(to, _from, next) {
@@ -200,6 +202,7 @@ export default defineComponent({
   },
   setup() {
     const { locale, t } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
     const config = useRuntimeConfig();
     const route = useRoute();
     const router = useRouter();
@@ -387,11 +390,13 @@ export default defineComponent({
       } catch (e: any) {
         if (e.code === 412) {
           optimisticLockingAlertKey.value = displayErrorMessage(errorText, t('outdatedObject'), {
-            objectModified: true,
-            buttonText: t('global.button.no'),
-            eventCallbacks: {
-              refetch
-            }
+            defaultButtonText: globalT('global.button.no'),
+            actions: [
+              {
+                text: globalT('global.button.yes'),
+                onClick: refetch
+              }
+            ]
           });
         } else {
           displayErrorMessage(errorText, e.message, {
@@ -533,6 +538,7 @@ export default defineComponent({
 <i18n>
 {
   "en": {
+    "notFound": "The object that you requested could not be found.",
     "objectInfo": "object details",
     "objectForm": "form",
     "objectNotRestored": "couldn't restore object",
@@ -547,6 +553,7 @@ export default defineComponent({
     "version": "version {version}"
   },
   "de": {
+    "notFound": "Das von Ihnen angeforderte Objekt konnte nicht gefunden werden.",
     "objectInfo": "Objektdetails",
     "objectForm": "Formular",
     "objectNotRestored": "objekt konnte nicht wiederhergestellt werden",

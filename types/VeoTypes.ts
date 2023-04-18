@@ -15,10 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { MaybeRef } from '@vueuse/core';
 import { JSONSchema7TypeName } from 'json-schema';
+
 import { UISchemaElement } from './UISchema';
 import { Mode } from '~/components/dynamic-form/util';
 import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
+import { IAlertButton } from '~~/components/base/Alert.vue';
+
 
 export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
 
@@ -447,8 +451,8 @@ export enum VeoAlertType {
 }
 
 export interface IVeoGlobalAlertParams {
-  buttonText?: string; // If not set defaults to "Okay" in VeoGlobalAlert of types "Info & Error"
-  eventCallbacks?: { [event: string]: CallableFunction };
+  defaultButtonText?: string; // If not set defaults to "Okay" in VeoGlobalAlert of types "Info & Error"
+  actions?: MaybeRef<IAlertButton[]>;
   [key: string]: any;
 }
 
