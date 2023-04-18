@@ -87,6 +87,10 @@ export default defineComponent({
     domainId: {
       type: String,
       required: true
+    },
+    parentScopeIds: {
+      type: Array as PropType<string[]>,
+      default: () => []
     }
   },
   emits: ['success', 'update:model-value'],
@@ -178,6 +182,31 @@ export default defineComponent({
     // Submitting form
     const { mutateAsync: create } = useMutation(objectQueryDefinitions.mutations.createObject, {
       onSuccess: (queryClient, data: IVeoAPIMessage) => {
+        // Invalidate parent scopes (should always be only one), if set directly as a parent via parentScopeIds.
+        if(props.parentScopeIds) {
+          for(const scope of props.parentScopeIds) {
+            queryClient.invalidateQueries([
+              'object',
+              {
+                endpoint: 'scopes',
+                id: scope
+              }
+            ]);
+            queryClient.invalidateQueries([
+              'childObjects',
+              {
+                endpoint: 'scopes',
+                id: scope
+              }
+            ]);
+            queryClient.invalidateQueries([
+              'childScopes',
+              {
+                id: scope
+              }
+            ]);
+          }
+        }
         emit('success', data.resourceId);
         displaySuccessMessage(upperFirst(t('objectCreated', { name: objectData.value.name }).toString()));
         emit('update:model-value', false);
@@ -188,7 +217,7 @@ export default defineComponent({
         return;
       }
       try {
-        await create({ endpoint: endpoints.value?.[props.objectType], object: objectData.value });
+        await create({ endpoint: endpoints.value?.[props.objectType], object: objectData.value, parentScopes: props.parentScopeIds });
       } catch (e: any) {
         displayErrorMessage(upperFirst(t('objectNotCreated', { name: objectData.value.name || upperFirst(t('object').toString()) }).toString()), e.message);
       }

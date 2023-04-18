@@ -69,6 +69,7 @@
       :domain-id="domainId"
       :object-type="createObjectDialog.objectType"
       :sub-type="subType"
+      :parent-scope-ids="createObjectDialog.parentScopeIds"
       @success="onCreateObjectSuccess"
     />
     <RiskCreateDialog
@@ -198,7 +199,8 @@ export default defineComponent({
     const createObjectDialog = ref({
       value: false as boolean,
       objectType: undefined as undefined | string,
-      hierarchicalContext: 'parent'
+      hierarchicalContext: 'parent',
+      parentScopeIds: undefined as undefined | string[]
     });
 
     // control dialogs
@@ -213,7 +215,8 @@ export default defineComponent({
         createObjectDialog.value = {
           objectType,
           value: true,
-          hierarchicalContext: addAsChild === undefined || addAsChild ? 'child' : 'parent'
+          hierarchicalContext: addAsChild === undefined || addAsChild ? 'child' : 'parent',
+          parentScopeIds: props.object?.type === 'scope' ? [props.object?.id] : undefined
         };
       }
     };
@@ -250,6 +253,9 @@ export default defineComponent({
         try {
           const createdObject = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: endpoints.value?.[createObjectDialog.value.objectType || ''] || '' , id: newObjectId });
           if (createObjectDialog.value.hierarchicalContext === 'child') {
+            if(createObjectDialog.value.parentScopeIds?.length) {
+              return; // do not link if scope (current object) has already been linked
+            }
             await link(props.object, createdObject);
           } else {
             await link(createdObject, props.object);
