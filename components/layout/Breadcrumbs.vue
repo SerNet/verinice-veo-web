@@ -181,7 +181,7 @@ export default defineComponent({
     }));
 
     const useFetchSchemasQueryEnabled = computed(() => authenticated.value);
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, { enabled: useFetchSchemasQueryEnabled });
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { enabled: useFetchSchemasQueryEnabled });
 
     const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbReplacementMapBreadcrumb>([
       [
@@ -262,11 +262,13 @@ export default defineComponent({
       [
         'objects',
         {
-          to: () => {
-            const objectType = endpoints.value?.[separateUUIDParam(route.params.entity as string).type];
-
-            return `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${objectType}`;
-          }
+          disabled: true
+        }
+      ],
+      [
+        'risks',
+        {
+          disabled: true
         }
       ],
       [

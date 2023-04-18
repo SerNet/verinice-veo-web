@@ -23,7 +23,7 @@
     class="veo-report-list"
     :items-per-page="tablePageSize"
     :loading="isFetching"
-    @click:row="$emit('create-report', $event.id)"
+    @click:row="onRowClicked"
   >
     <template #no-data>
       <span class="text-center">
@@ -72,7 +72,7 @@ interface IReport {
   targetTypes: string;
 }
 
-defineEmits(['create-report']);
+const emit = defineEmits(['create-report']);
 
 const { t, locale } = useI18n();
 const { tablePageSize } = useVeoUser();
@@ -137,6 +137,10 @@ const headers = computed(() => {
     }
   ];
 });
+
+const onRowClicked = (_event: PointerEvent, context: any) => {
+  emit('create-report', context.item.raw);
+};
 </script>
 
 <i18n>
