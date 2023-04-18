@@ -109,7 +109,7 @@ export const useVeoUser: () => IVeoUserComposable = () => {
   const login = async (destination?: string) => {
     if (keycloak.value) {
       await keycloak.value.login({
-        redirectUri: window.location.origin + destination,
+        redirectUri: `${window.location.origin}${destination}`,
         scope: 'openid'
       });
       await keycloak.value.loadUserProfile();
@@ -126,7 +126,7 @@ export const useVeoUser: () => IVeoUserComposable = () => {
   const logout = async (destination?: string) => {
     if (keycloak.value) {
       await keycloak.value.logout({
-        post_logout_redirect_uri: window.location.origin + destination,
+        redirectUri: `${window.location.origin}${destination}?redirect_uri=false`,
         id_token_hint: keycloak.value.idToken
       } as any); // Keycloak adpater doesn't know that the parameters changed
       keycloak.value.clearToken();
