@@ -38,7 +38,7 @@
         tag="p"
         scope="global"
       >
-        <template v-if="firstUnitId">
+        <template v-if="nonDemoUnitId && nonDemoUnitDomainId">
           <nuxt-link
             v-for="(link, index) in formLinks"
             :key="index"
@@ -49,27 +49,27 @@
           </nuxt-link>
         </template>
         <template v-else>
-          <span
+          <nuxt-link
             v-for="(link, index) in formLinks"
             :key="index"
+            :to="link.to"
           >
             {{ link.name }}
-          </span>
+          </nuxt-link>
         </template>
       </i18n-t>
       <i18n-t
+        v-if="dashboardLink"
         keypath="dashboardCTA"
         tag="p"
         scope="global"
       >
         <nuxt-link
-          v-if="firstUnitId"
           :to="dashboardLink.to"
           @click="$emit('update:model-value', false)"
         >
           {{ dashboardLink.name }}
         </nuxt-link>
-        <span v-else>{{ dashboardLink.name }}</span>
       </i18n-t>
       <i18n-t
         v-if="demoUnitLink"
@@ -121,33 +121,34 @@ export default defineComponent({
     const { t, locale } = useI18n();
     const route = useRoute();
 
-    const firstUnitId: ComputedRef<string | undefined> = computed(() => nonDemoUnits.value[0]?.id);
-
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
     const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
 
-    const queryParameters = computed(() => ({
+    const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
+
+    const demoUnit = computed(() => (units.value || []).find((unit) => unit.name === 'Demo'));
+    const firstNonDemoUnit = computed(() => (units.value || []).find((unit) => unit.name !== 'Demo'));
+
+    const nonDemoUnitId = computed(() => unitId.value && unitId.value !== demoUnit.value?.id ? unitId.value : firstNonDemoUnit.value?.id);
+    const nonDemoUnitDomainId = computed(() => unitId.value ? domainId.value : firstNonDemoUnit.value ? getFirstDomainDomaindId(firstNonDemoUnit.value) : undefined);
+
+    const fetchFormsQueryParameters = computed(() => ({
       domainId: domainId.value
     }));
-    const queryEnabled = computed(() => !!domainId.value);
-    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, { enabled: queryEnabled });
-
-    const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
-    const demoUnit = computed(() => (units.value || []).find((unit) => unit.name === 'Demo'));
-    const nonDemoUnits = computed(() => (units.value || []).filter((unit) => unit.name !== 'Demo' && getFirstDomainDomaindId(unit)));
+    const fetchFormsQueryEnabled = computed(() => !!domainId.value);
+    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, fetchFormsQueryParameters, { enabled: fetchFormsQueryEnabled });
 
     const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: demoUnit.value?.id || '' }));
     const fetchUnitDomainsQueryEnabled = computed(() => !!demoUnit.value);
     const { data: demoUnitDomains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
 
-    const dsgvoDomain = computed(() => demoUnitDomains.value.find((domain) => domain.name === 'DS-GVO'));
-
-    const demoUnitLink = computed<{ name: string; to: RouteLocationRaw } | undefined>(() => dsgvoDomain.value ? {
+    const demoUnitDSVGODomain = computed(() => demoUnitDomains.value.find((domain) => domain.name === 'DS-GVO'));
+    const demoUnitLink = computed<{ name: string; to: RouteLocationRaw } | undefined>(() => demoUnitDSVGODomain.value && demoUnit.value ? {
       to: {
         name: 'unit-domains-domain',
         params: {
-          unit: createUUIDUrlParam('unit', demoUnit.value?.id || ''),
-          domain: createUUIDUrlParam('domain', dsgvoDomain.value.id || '')
+          unit: createUUIDUrlParam('unit', demoUnit.value.id || ''),
+          domain: createUUIDUrlParam('domain', demoUnitDSVGODomain.value.id || '')
         }
       },
       name: 'Demo-Unit'
@@ -159,27 +160,28 @@ export default defineComponent({
       ['process', 'PRO_DataProcessing']
     ];
     const formLinks = computed<any[]>(() => formLinksToCreate.map((details) => createEntityCreateLink(details[0], details[1])).filter((link) => link));
-    const dashboardLink: ComputedRef<{ name: string; to: RouteLocationRaw }> = computed(() => ({
+
+    const dashboardLink: ComputedRef<{ name: string; to: RouteLocationRaw } | undefined> = computed(() =>  nonDemoUnitId.value && nonDemoUnitDomainId.value ? ({
       to: {
         name: 'unit-domains-domain',
         params: {
-          unit: unitId.value || (firstUnitId.value ? createUUIDUrlParam('unit', firstUnitId.value) : ''),
-          domain: domainId.value
+          unit: createUUIDUrlParam('unit', nonDemoUnitId.value),
+          domain: createUUIDUrlParam('domain', nonDemoUnitDomainId.value)
         }
       },
       name: 'Dashboard'
-    }));
+    }) : undefined);
 
     function createEntityCreateLink(objectType: string, subType: string) {
       const form = (formSchemas.value || []).find((form) => form.subType === subType);
-      if (form) {
+      if (form && nonDemoUnitId.value && nonDemoUnitDomainId.value) {
         return {
           name: form.name[locale.value],
           to: {
             name: 'unit-domains-domain-objects',
             params: {
-              unit: unitId.value || (firstUnitId.value ? createUUIDUrlParam('unit', firstUnitId.value) : ''),
-              domain: domainId.value
+              unit: createUUIDUrlParam('unit', nonDemoUnitId.value),
+              domain: createUUIDUrlParam('domain', nonDemoUnitDomainId.value)
             },
             query: {
               objectType,
@@ -196,7 +198,8 @@ export default defineComponent({
       dashboardLink,
       demoUnitLink,
       formLinks,
-      firstUnitId,
+      nonDemoUnitId,
+      nonDemoUnitDomainId,
 
       t
     };
