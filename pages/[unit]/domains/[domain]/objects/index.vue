@@ -148,7 +148,7 @@ export default defineComponent({
     const router = useRouter();
     const { ability } = useVeoPermissions();
 
-    const { displayErrorMessage } = useVeoAlerts();
+    const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { clone } = useCloneObject();
     const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
@@ -325,7 +325,7 @@ export default defineComponent({
     };
 
     const openItem = ({ item }: { item: any }) => {
-      return router.push({
+      return navigateTo({
         name: 'unit-domains-domain-objects-object',
         params: {
           ...route.params,
@@ -340,11 +340,31 @@ export default defineComponent({
     const actions = computed(() => [
       {
         id: 'clone',
-        label: upperFirst(t('cloneObject').toString()),
+        label: upperFirst(t('cloneObject')),
         icon: mdiContentCopy,
         async action(item: any) {
           try {
-            await clone(item.raw);
+            const { resourceId: clonedObjectId } = await clone(item.raw);
+            displaySuccessMessage(
+              t('cloneSuccess'),
+              { actions: [
+                {
+                  text: t('open'),
+                  onClick: () => {
+                    return navigateTo({
+                      name: 'unit-domains-domain-objects-object',
+                      params: {
+                        ...route.params,
+                        object: createUUIDUrlParam(item.raw.type, clonedObjectId)
+                      },
+                      query: {
+                        subType: subType.value
+                      }
+                    });
+                  }
+                }]
+              }
+            );
           } catch (e: any) {
             showError('clone', item.raw, e);
           }
@@ -352,7 +372,7 @@ export default defineComponent({
       },
       {
         id: 'delete',
-        label: upperFirst(t('deleteObject').toString()),
+        label: upperFirst(t('deleteObject')),
         icon: mdiTrashCanOutline,
         action(item: any) {
           itemDelete.value = item.raw;
@@ -416,12 +436,14 @@ export default defineComponent({
     "createObject": "create {0}",
     "clone": "duplicated",
     "cloneObject": "clone object",
+    "cloneSuccess": "Object cloned successfully.",
     "deleteObject": "delete object",
     "dpiaMandatory": "Privacy impact assessment required",
     "errors": {
       "clone": "Could not clone object",
       "delete": "Could not delete object"
-    }
+    },
+    "open": "Open"
   },
   "de": {
     "objectOverview": "Objektübersicht",
@@ -429,12 +451,14 @@ export default defineComponent({
     "createObject": "{0} erstellen",
     "clone": "dupliziert",
     "cloneObject": "objekt duplizieren",
+    "cloneSuccess": "Objekt wurde erfolgreich dupliziert.",
     "deleteObject": "objekt löschen",
     "dpiaMandatory": "DSFA verpflichtend",
     "errors": {
       "clone": "Das Objekt konnte nicht dupliziert werden",
       "delete": "Das Objekt konnte nicht gelöscht werden"
-    }
+    },
+    "open": "Öffnen"
   }
 }
 </i18n>
