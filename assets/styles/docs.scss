@@ -19,28 +19,28 @@
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
-:deep(h1), :deep(h2), :deep(h3), :deep(h4), :deep(h5), :deep(.pagedjs_margin-bottom) {
+:deep(h1:not(.page-title)), :deep(h2:not(.page-title)), :deep(h3:not(.page-title)), :deep(h4:not(.page-title)), :deep(h5:not(.page-title)), :deep(.pagedjs_margin-bottom) {
   font-family: 'Open Sans', 'Helvetica Neue', 'Roboto', sans-serif
 }
 
-:deep(h1), :deep(h2), :deep(h3), :deep(h4), :deep(h5) {
+:deep(h1:not(.page-title)), :deep(h2:not(.page-title)), :deep(h3:not(.page-title)), :deep(h4:not(.page-title)), :deep(h5:not(.page-title)) {
   margin-top: 1em;
   margin-bottom: 0.5em;
 }
 
-:deep(h1) {
+:deep(h1:not(.page-title)) {
   font-size: 2.5rem;
 }
 
-:deep(h2) {
+:deep(h2:not(.page-title)) {
   font-size: 2rem;
 }
 
-:deep(h3) {
+:deep(h3:not(.page-title)) {
   font-size: 1.5rem;
 }
 
-:deep(h4) {
+:deep(h4:not(.page-title)) {
   font-size: 1.2rem;
 }
 

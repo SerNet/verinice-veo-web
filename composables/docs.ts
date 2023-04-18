@@ -51,14 +51,17 @@ export const useDoc = (options: { path: string; locale?: string; localeSeparator
 
   const doc = ref<ParsedContent | undefined>();
 
-  const fetchDoc = async () => await queryContent().where({ $or: [
-    { _path: mergedOptions.value.path + mergedOptions.value.localeSeparator + mergedOptions.value.locale },
-    { _path: mergedOptions.value.path + mergedOptions.value.localeSeparator + mergedOptions.value.fallbackLocale },
-    { _path: mergedOptions.value.path + '/index' + mergedOptions.value.localeSeparator + mergedOptions.value.locale },
-    { _path: mergedOptions.value.path + '/index' + mergedOptions.value.localeSeparator + mergedOptions.value.fallbackLocale },
-    { _path: mergedOptions.value.path }
-  ],
-  _extension: 'md' }).findOne();
+  const fetchDoc = async () => {
+    const eligiblePages = await queryContent().where({ $or: [
+      { _path: mergedOptions.value.path + mergedOptions.value.localeSeparator + mergedOptions.value.locale },
+      { _path: mergedOptions.value.path + '/index' + mergedOptions.value.localeSeparator + mergedOptions.value.locale },
+      { _path: mergedOptions.value.path + mergedOptions.value.localeSeparator + mergedOptions.value.fallbackLocale },
+      { _path: mergedOptions.value.path + '/index' + mergedOptions.value.localeSeparator + mergedOptions.value.fallbackLocale },
+      { _path: mergedOptions.value.path }
+    ],
+    _extension: 'md' }).find();
+    return eligiblePages.find((page) => page.language === mergedOptions.value?.locale) || eligiblePages[0];
+  };
 
   // Update doc as soon as content or the options change.
   watch(
