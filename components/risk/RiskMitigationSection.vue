@@ -32,17 +32,38 @@
             tag="span"
             scope="global"
           >
-            <br>
+            <template #lineBreak>
+              <br>
+            </template>
+            <template #risk>
+              {{ data?.scenario?.displayName }}
+            </template>
           </i18n-t>
         </template>
       </v-tooltip>
     </h2>
     <BaseCard>
       <ObjectTable
-        :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'updatedAt']"
+        :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'updatedAt', 'actions']"
         :loading="fetchingMitigation"
         :items="selectedItems"
-      />
+      >
+        <template #actions="{item}">
+          <div class="d-flex justify-end">
+            <v-tooltip location="start">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  :icon="mdiLinkOff"
+                  variant="text"
+                  @click="removeMitigationPart(item)"
+                />
+              </template>
+              {{ t('unlinkPart') }}
+            </v-tooltip>
+          </div>
+        </template>
+      </ObjectTable>
     </BaseCard>
     <v-menu
       :disabled="disabled"
@@ -100,7 +121,7 @@
 <script lang="ts">
 import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
-import { mdiInformationOutline, mdiPencilOutline } from '@mdi/js';
+import { mdiInformationOutline, mdiLinkOff, mdiPencilOutline } from '@mdi/js';
 
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
@@ -170,6 +191,10 @@ export default defineComponent({
       selectedItems.value = [...selectedItems.value, newMitigation]; // We reassign the ref instead of using .push so that the computed setter picks up the changes
     };
 
+    const removeMitigationPart = (item: any) => {
+      selectedItems.value = selectedItems.value.filter((mitigation) => mitigation.id !== item.raw.id);
+    };
+
     watch(
       () => props.data?.mitigation,
       () => fetchMitigation(),
@@ -181,12 +206,14 @@ export default defineComponent({
       editedObject,
       editMitigationsDialogVisible,
       fetchingMitigation,
+      removeMitigationPart,
       onMitigationCreated,
       selectedItems,
 
       t,
       upperFirst,
       mdiInformationOutline,
+      mdiLinkOff,
       mdiPencilOutline
     };
   }
@@ -199,17 +226,19 @@ export default defineComponent({
     "addMitigation": "add mitigating action",
     "addMitigatingActionsToRisk": "add existing mitigating actions to the risk \"{0}\"",
     "createMitigation": "create mitigating action",
-    "editMitigatingActions": "edit mitigating actions",
-    "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions,{0} meaning only one mitigation action can be applied to a risk",
-    "mitigationSection": "risk reduction actions (mitigating actions)"
+    "editMitigatingActions": "add mitigating actions",
+    "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions.{lineBreak} All selected mitigating actions are available under the action \"Mitigating action for {risk}\"",
+    "mitigationSection": "risk reduction actions (mitigating actions)",
+    "unlinkPart": "Unlink mitigating action"
   },
   "de": {
     "addMitigation": "Mitigierende Maßnahme verknüpfen",
     "addMitigatingActionsToRisk": "Vorhandene mitigierende Maßnahmen mit dem Risiko \"{0}\" verknüpfen",
     "createMitigation": "Mitigierende Maßnahme erstellen",
-    "editMitigatingActions": "Mitigierende Maßnahmen bearbeiten",
-    "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg,{0} d.h. es kann immer nur eine migitierende Maßnahme pro Risiko ausgewählt werden",
-    "mitigationSection": "Maßnahmen zur Risikoreduktion (Mitigierende Maßnahmen)"
+    "editMitigatingActions": "Mitigierende Maßnahmen hinzufügen",
+    "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg.{lineBreak} Alle hier ausgewählten Maßnahmen sind unter der Maßnahme \"Mitigierende Maßnahme für {risk}\" zu finden",
+    "mitigationSection": "Maßnahmen zur Risikoreduktion (Mitigierende Maßnahmen)",
+    "unlinkPart": "Mitigierende Maßnahme entfernen"
   }
 }
 </i18n>
