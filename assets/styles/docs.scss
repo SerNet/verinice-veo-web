@@ -23,13 +23,31 @@
   font-family: 'Open Sans', 'Helvetica Neue', 'Roboto', sans-serif
 }
 
-h1, h2, h3, h4, h5 {
-  margin-top: 8px;
+:deep(h1), :deep(h2), :deep(h3), :deep(h4), :deep(h5) {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+:deep(h1) {
+  font-size: 2.5rem;
+}
+
+:deep(h2) {
+  font-size: 2rem;
+}
+
+:deep(h3) {
+  font-size: 1.5rem;
+}
+
+:deep(h4) {
+  font-size: 1.2rem;
 }
 
 :deep(h1 > a), :deep(h2 > a), :deep(h3 > a), :deep(h4 > a), :deep(h5 > a) {
   color: inherit;
   text-decoration: none;
+  font-size: inherit;
 }
 
 :deep(h1 > a:hover), :deep(h2 > a:hover), :deep(h3 > a:hover), :deep(h4 > a:hover), :deep(h5 > a:hover) {
@@ -50,4 +68,8 @@ h1, h2, h3, h4, h5 {
 
 :deep(li) {
   margin-left: 20px;
+}
+
+:deep(p) {
+  margin-bottom: 1em;
 }
