@@ -309,13 +309,13 @@ export default defineComponent({
           type: IVeoFilterOptionType.TEXT
         },
         {
-          name: 'notPartOfGroup',
-          disabled: props.disabledFields?.includes('notPartOfGroup'),
+          name: 'hasNoParentElements',
+          disabled: props.disabledFields?.includes('hasNoParentElements'),
           type: IVeoFilterOptionType.CHECKBOX
         },
         {
-          name: 'hasChildObjects',
-          disabled: props.disabledFields?.includes('hasChildObjects'),
+          name: 'hasChildElements',
+          disabled: props.disabledFields?.includes('hasChildElements'),
           type: IVeoFilterOptionType.CHECKBOX
         }
       ];

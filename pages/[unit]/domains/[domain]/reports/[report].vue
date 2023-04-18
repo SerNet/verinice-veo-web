@@ -152,7 +152,7 @@ export default defineComponent({
     const requiredFields = computed(() => (availableSubTypes.value.length ? ['objectType', 'subType'] : ['objectType']));
 
     // accepted filter keys (others wont be respected when specified in URL query parameters)
-    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'] as const;
+    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'hasNoParentElements', 'hasChildElements'] as const;
 
     // filter built from URL query parameters
     const filter = computed(() => {

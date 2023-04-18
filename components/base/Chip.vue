@@ -17,18 +17,13 @@
 -->
 <template>
   <v-chip
-    v-bind="$attrs"
-    variant="outlined"
+    color="primary"
     :closable="close"
-    class="pa-0 pr-2 elevation-0"
-    :class="{flag: value === true}"
-    style="height: auto;"
-    color="white"
     data-component-name="veo-object-chip"
   >
     <div
       v-if="label || $slots.label"
-      class="label pa-1 px-2"
+      :class="{ 'chip-label text-black': value === true }"
     >
       <span
         v-if="label"
@@ -41,7 +36,7 @@
     </div>
     <div
       v-if="value !== true"
-      class="py-1 pl-2 text-black"
+      class="chip-value text-black"
     >
       <span
         v-if="value"
@@ -70,50 +65,30 @@ defineProps({
 </script>
 
 <style lang="scss" scoped>
-.v-chip:not(.flag) .label {
-  color: $primary;
-  position: relative;
+.v-chip {
+  border: 1px solid $primary;
+}
+
+.chip-value, .chip-label {
+  background: white;
+  margin-left: -12px;
+  margin-right: -6px;
+  padding: 8px 8px 6px 8px;
   z-index: 1;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.1;
-    z-index: -1;
-    background-color: $primary;
-  }
 }
 
-.v-chip.flag {
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.1;
-    z-index: -1;
-    background-color: currentColor;
-  }
-}
-
-.v-chip.v-chip--variant-outlined.v-chip.v-chip {
-  background-color: white !important;
-  border-color: $primary;
-}
-
-.v-chip--variant-outlined:not(.flag) .label {
-  border-right-style: solid;
-  border-right-width: 1px;
-  border-color: $primary;
+.chip-value{
+  border-left: 1px solid $primary;
+  margin-left: 8px;
+  margin-right: -12px;
 }
 
 :deep(.v-chip__close) {
-  color: #666 !important;
+  background-color: #ffffff;
+  margin-right: -12px !important;
+  max-height: none;
+  max-width: none;
+  padding: 6px 6px 6px 4px;
+  z-index: 1;
 }
 </style>

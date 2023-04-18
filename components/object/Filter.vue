@@ -53,7 +53,7 @@
     />
     <v-checkbox
       v-else-if="type === IVeoFilterOptionType.CHECKBOX"
-      :value="modelValue"
+      :model-value="modelValue"
       :label="upperFirst($t(`objectlist.${name}`).toString()) + (required ? '*' : '')"
       :required="required"
       :rules="required ? [requiredRule] : []"
