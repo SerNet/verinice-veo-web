@@ -36,8 +36,8 @@ export default defineComponent({
     const { t } = useI18n();
     const route = useRoute();
 
-    const createReport = (reportId: string) => {
-      navigateTo(`/${route.params.unit}/domains/${route.params.domain}/reports/${reportId}`);
+    const createReport = (report: any) => {
+      navigateTo(`/${route.params.unit}/domains/${route.params.domain}/reports/${report.id}`);
     };
 
     return {
