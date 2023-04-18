@@ -150,7 +150,7 @@ const deploymentInformation = computed<Record<string, IVeoDeploymentInformation 
         buildnumber: config.public.buildNumber
       },
       version: config.public.version,
-      time: config.public.commitTimestamp
+      time: config.public.buildTime
     }
   },
   default: defaultApiDeploymentDetails.value,
