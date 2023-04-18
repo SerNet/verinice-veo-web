@@ -272,7 +272,7 @@ export default {
         }
       }
     } as IVeoMutationDefinition<IVeoDeleteObjectParameters, void>,
-    createOrUpdateRisk:{
+    createRisk:{
       primaryQueryKey: 'risk',
       url: '/api/:endpoint/:objectId/risks',
       method: 'POST',

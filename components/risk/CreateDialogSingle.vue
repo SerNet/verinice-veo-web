@@ -235,8 +235,8 @@ export default defineComponent({
     watch(() => props.modelValue, init, { immediate: true });
 
     const savingRisk = ref(false);
-    const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createOrUpdateRisk);
-    const { mutateAsync: updateRisk } = useMutation(objectQueryDefinitions.mutations.createOrUpdateRisk);
+    const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createRisk);
+    const { mutateAsync: updateRisk } = useMutation(objectQueryDefinitions.mutations.createRisk);
     const saveRisk = async () => {
       if(ability.value.cannot('manage', 'objects')) {
         return;
