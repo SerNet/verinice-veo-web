@@ -17,7 +17,7 @@
 -->
 <template>
   <v-tooltip location="bottom">
-    <template #activator="{ props: tooltipProps, attrs }">
+    <template #activator="{ props: tooltipProps }">
       <div v-bind="tooltipProps">
         <v-btn
           v-if="tutorialsForRoute.length <= 1"
@@ -26,7 +26,6 @@
           role="submit"
           type="submit"
           :disabled="!tutorialsForRoute.length"
-          v-bind="attrs"
           data-component-name="tutorial-select"
           @click="visible ? stop(): load()"
         >

@@ -18,6 +18,7 @@
 <template>
   <div class="d-flex flex-column align-center justify-center fill-height">
     <v-img
+      class="fill-width"
       src="/images/objectNotFound.svg"
       max-height="300px"
       contain
@@ -26,10 +27,10 @@
       {{ t('notFoundCode').toString() }}
     </h1>
     <p class="mt-2 text-body-1">
-      {{ t('notFound').toString() }}
+      {{ text }}
     </p>
     <v-btn
-      text
+      variant="text"
       color="primary"
       @click="goBackToPreviousPage"
     >
@@ -39,6 +40,13 @@
 </template>
 
 <script lang="ts" setup>
+defineProps({
+  text: {
+    type: String,
+    required: true
+  }
+});
+
 const { t } = useI18n();
 const router = useRouter();
 

@@ -22,93 +22,99 @@
     padding
     data-component-name="domain-dashboard-page"
   >
-    <div
-      v-if="domain"
-      class="mt-n2 text-accent text-body-1"
-    >
-      <span v-if="domain.description">{{ domain.description }}</span>
-      <i v-else>{{ t('noUnitDescription') }}</i>
-    </div>
-    <v-skeleton-loader
-      v-else
-      class="mt-n2 mb-4 skeleton-subtitle"
-      type="text"
+    <UtilNotFoundError
+      v-if="domainNotFound"
+      :text="t('domainNotFoundText')"
     />
-    <v-row>
-      <template v-if="elementStatusCountIsFetching">
-        <v-col
-          v-for="index in 2"
-          :key="index"
-          cols="12"
-          lg="6"
-        >
-          <BaseWidget
-            v-for="j in 4"
-            :key="j"
-            loading
-            class="my-4"
+    <template v-else>
+      <div
+        v-if="domain"
+        class="mt-n2 text-accent text-body-1"
+      >
+        <span v-if="domain.description">{{ domain.description }}</span>
+        <i v-else>{{ t('noUnitDescription') }}</i>
+      </div>
+      <v-skeleton-loader
+        v-else
+        class="mt-n2 mb-4 skeleton-subtitle"
+        type="text"
+      />
+      <v-row>
+        <template v-if="elementStatusCountIsFetching">
+          <v-col
+            v-for="index in 2"
+            :key="index"
+            cols="12"
+            lg="6"
           >
-            <template #skeleton>
-              <v-row
-                v-for="k in [1,2]"
-                :key="k"
-                class="align-center"
-              >
-                <v-col
-                  cols="12"
-                  md="4"
+            <BaseWidget
+              v-for="j in 4"
+              :key="j"
+              loading
+              class="my-4"
+            >
+              <template #skeleton>
+                <v-row
+                  v-for="k in [1,2]"
+                  :key="k"
+                  class="align-center"
                 >
-                  <v-skeleton-loader
-                    class="ml-6"
-                    type="text"
-                    width="70%"
-                  />
-                </v-col>
-                <v-col>
-                  <v-skeleton-loader
-                    class="ml-6"
-                    type="heading"
-                    width="210%"
-                  />
-                </v-col>
-              </v-row>      
-            </template>
-          </BaseWidget>
-        </v-col>
-      </template>
-      <template v-else>
-        <v-col
-          v-for="(row, rowIndex) of chartData"
-          :key="rowIndex"
-          cols="12"
-          lg="6"
-        >
-          <div
-            v-for="widget of row"
-            :key="widget[0]"
-            class="my-4"
+                  <v-col
+                    cols="12"
+                    md="4"
+                  >
+                    <v-skeleton-loader
+                      class="ml-6"
+                      type="text"
+                      width="70%"
+                    />
+                  </v-col>
+                  <v-col>
+                    <v-skeleton-loader
+                      class="ml-6"
+                      type="heading"
+                      width="210%"
+                    />
+                  </v-col>
+                </v-row>      
+              </template>
+            </BaseWidget>
+          </v-col>
+        </template>
+        <template v-else>
+          <v-col
+            v-for="(row, rowIndex) of chartData"
+            :key="rowIndex"
+            cols="12"
+            lg="6"
           >
-            <WidgetMyLatestRevisions
-              v-if="widget[0] === 'my_latest_widget'"
-              data-component-name="domain-dashboard-latest-revisions-widget"
-            />
-            <WidgetStackedStatusBarChart
-              v-else
-              chart-height="30"
-              :data="widget[1]"
-              :domain-id="domainId"
-              :object-type="widget[0]"
-              :data-component-name="`domain-dashboard-${widget[0]}-widget`"
-              @click="onBarClicked"
-            />
-          </div>
-        </v-col>
-      </template>
-    </v-row>
-    <WelcomeDialog
-      v-if="showWelcomeDialog"
-      v-model="showWelcomeDialog"
-    />
+            <div
+              v-for="widget of row"
+              :key="widget[0]"
+              class="my-4"
+            >
+              <WidgetMyLatestRevisions
+                v-if="widget[0] === 'my_latest_widget'"
+                data-component-name="domain-dashboard-latest-revisions-widget"
+              />
+              <WidgetStackedStatusBarChart
+                v-else
+                chart-height="30"
+                :data="widget[1]"
+                :domain-id="domainId"
+                :object-type="widget[0]"
+                :data-component-name="`domain-dashboard-${widget[0]}-widget`"
+                @click="onBarClicked"
+              />
+            </div>
+          </v-col>
+        </template>
+      </v-row>
+      <WelcomeDialog
+        v-if="showWelcomeDialog"
+        v-model="showWelcomeDialog"
+      />
+    </template>
   </BasePage>
 </template>
 
@@ -141,7 +147,8 @@ export default defineComponent({
 
     // Domain specific stuff
     const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
-    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
+    const { data: domain, error } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
+    const domainNotFound = computed(() => error.value?.code === 404);
 
     const fetchDomainElementStatusCountQueryParameters = computed(() => ({ id: domainId.value, unitId: unitId.value }));
     const { data: domainObjectInformation, isFetching: elementStatusCountIsFetching } = useQuery(domainQueryDefinitions.queries.fetchDomainElementStatusCount, fetchDomainElementStatusCountQueryParameters);
@@ -184,6 +191,7 @@ export default defineComponent({
       chartData,
       domain,
       domainId,
+      domainNotFound,
       elementStatusCountIsFetching,
       onBarClicked,
       title,
@@ -199,12 +207,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "domainNotFoundText": "The requested domain couldn't be found. You have been returned to the unit dashboard.",
+    "domainNotFoundText": "The requested domain couldn't be found.",
     "domainOverview": "Domain overview",
     "noUnitDescription": "No description provided"
   },
   "de": {
-    "domainNotFoundText": "Die gewünschte Domain konnte nicht gefunden werden. Sie wurden zum Unit Dashboard zurückgebracht.",
+    "domainNotFoundText": "Die gewünschte Domain konnte nicht gefunden werden.",
     "domainOverview": "Domänenübersicht",
     "noUnitDescription": "Keine Beschreibung festgelegt"
   }

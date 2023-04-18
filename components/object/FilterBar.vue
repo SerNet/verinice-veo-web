@@ -25,7 +25,6 @@
       class="d-flex align-center"
     >
       <v-btn
-        class="mr-2"
         color="white"
         rounded
         size="small"
@@ -43,19 +42,18 @@
     </v-col>
     <v-col
       cols="auto"
-      class="grow"
+      class="grow my-2"
       data-component-name="filter-bar-active-filters"
     >
-      <v-chip-group>
-        <BaseChip
-          v-for="k in activeFilterKeys"
-          :key="k"
-          :label="formatLabel(k)"
-          :value="formatValue(k, filter[k])"
-          :close="!requiredFields.includes(k) && !disabledFields.includes(k)"
-          @click:close="clearFilter(k)"
-        />
-      </v-chip-group>
+      <BaseChip
+        v-for="k in activeFilterKeys"
+        :key="k"
+        class="ml-2"
+        :label="formatLabel(k)"
+        :value="formatValue(k, filter[k])"
+        :close="!requiredFields.includes(k) && !disabledFields.includes(k)"
+        @click:close="clearFilter(k)"
+      />
     </v-col>
     <ObjectFilterDialog
       v-model="filterDialogVisible"
@@ -117,7 +115,7 @@ export default defineComponent({
     const filterDialogVisible = ref(false);
 
     // available & active filter options
-    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'];
+    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'hasNoParentElements', 'hasChildElements'];
     const activeFilterKeys = computed(() => {
       return filterKeys.filter((k) => props.filter[k] !== undefined);
     });

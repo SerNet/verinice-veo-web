@@ -66,7 +66,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   // If keycloak is initialized, the user isn't logged in and the path isn't public, redirect to login
   if (!authenticated.value && !publicRoutes.some((r) => to.path.startsWith(`/${r}`))) {
-    return navigateTo('/login');
+    return navigateTo({
+      path: '/login',
+      query: {
+        redirect_uri: to.query.redirect_uri !== 'false' ? to.fullPath : undefined
+      }
+    });
   }
 
   // check permissions
