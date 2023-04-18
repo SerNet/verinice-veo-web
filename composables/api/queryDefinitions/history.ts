@@ -17,6 +17,7 @@
  */
 import { IVeoEntity } from "~~/types/VeoTypes";
 import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
+import { formatObject } from "./objects";
 
 export interface IVeoObjectHistoryEntry {
   author: string;
@@ -44,7 +45,8 @@ export default {
       queryParameterTransformationFn: (queryParameters) => ({ query: { uri: `/${queryParameters.endpoint}/${queryParameters.object.id}` } }),
       staticQueryOptions: {
         staleTime: STALE_TIME.INFINITY
-      }
+      },
+      onDataFetched: (data) => data.map((entry) => ({ ...entry, content: formatObject(entry.content) }))
     } as IVeoQueryDefinition<IVeoFetchVersionsParameters, IVeoObjectHistoryEntry[]>,
     fetchLatestVersions: {
       primaryQueryKey: 'latestVersions',
@@ -52,7 +54,8 @@ export default {
       queryParameterTransformationFn: (queryParameters) => ({ query: { owner: `/units/${queryParameters.unitId}` } }),
       staticQueryOptions: {
         staleTime: STALE_TIME.REQUEST
-      }
+      },
+      onDataFetched: (data) => data.map((entry) => ({ ...entry, content: formatObject(entry.content) }))
     } as IVeoQueryDefinition<IVeoFetchLatestChangesParameters, IVeoObjectHistoryEntry[]>
   },
   mutations: {}
