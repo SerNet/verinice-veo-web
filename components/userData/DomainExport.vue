@@ -30,13 +30,13 @@
 </template>
 
 <script setup lang="ts">
-import { useRequest } from "~~/composables/api/utils/request";
 import { downloadZIP } from "~~/lib/jsonToZip";
 import { logError } from './modules/HandleError';
+import { useQuerySync } from "~/composables/api/utils/query";
+import domainQueryDefinitions from "~~/composables/api/queryDefinitions/domains";
 
 // Composables
 const { t } = useI18n();
-const { request } = useRequest();
 const { profile } = useVeoUser();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
@@ -48,15 +48,13 @@ const state = reactive({
 
 const username = profile.value?.username;
 
-function fetchDomainData() {
-  return request(`/api/domains`, {});
-}
-
 async function exportDomainData(index: number) {
   state.isLoading[index] = true;
   try {
     const fileName = `${username}_domains`;
-    const domain = await fetchDomainData();
+    const domain = await useQuerySync(domainQueryDefinitions.queries.fetchDomains);
+
+    // const domain = await useQuerySync(domainQueryDefinitions.queries.fetchDomain);
     await downloadZIP(domain, fileName);
     displaySuccessMessage(t('successHeader'));
   } catch (error) {
