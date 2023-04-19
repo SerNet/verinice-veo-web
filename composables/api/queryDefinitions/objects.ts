@@ -77,6 +77,13 @@ export interface IVeoCreateRiskParameters {
   risk: IVeoRisk;
 }
 
+export interface IVeoUpdateRiskParameters {
+  endpoint: string;
+  id: string;
+  scenarioId: string;
+  risk: IVeoRisk;
+}
+
 export interface IVeoDeleteRiskParameters {
   endpoint: string;
   objectId: string;
@@ -295,6 +302,29 @@ export default {
         }
       }
     } as IVeoMutationDefinition<IVeoCreateRiskParameters, IVeoRisk>,
+    updateRisk:{
+      primaryQueryKey: 'risk',
+      url: '/api/:endpoint/:id/risks/:scenarioId',
+      method: 'PUT',
+      mutationParameterTransformationFn: (mutationParameters) => ({
+        params: { endpoint: mutationParameters.endpoint, id: mutationParameters.id, scenarioId: mutationParameters.scenarioId },
+        json: mutationParameters.risk
+      }),
+      staticMutationOptions: {
+        onSuccess: ( queryClient, _data, variables, _context) => {
+          queryClient.invalidateQueries({ queryKey: ['risks'] });
+          queryClient.invalidateQueries({ queryKey: [
+            'risk',
+            {
+              endpoint: variables.params?.endpoint,
+              objectId: variables.params?.id,
+              scenarioId: variables.params?.scenarioId
+            }
+          ]});
+          queryClient.invalidateQueries({queryKey: ['evaluation']});
+        }
+      }
+    } as IVeoMutationDefinition<IVeoUpdateRiskParameters, IVeoRisk>,
     deleteRisk: {
       primaryQueryKey: 'risk',
       url: '/api/:endpoint/:objectId/risks/:scenarioId',
