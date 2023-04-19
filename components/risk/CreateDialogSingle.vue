@@ -177,6 +177,7 @@ export default defineComponent({
     const data = ref<IVeoRisk | undefined>(undefined);
     const originalData = ref<IVeoRisk | undefined>(undefined);
 
+
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
     const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
@@ -213,9 +214,11 @@ export default defineComponent({
 
     const fetchRiskQueryParameters = computed(() => ({ scenarioId: props.scenarioId as string, objectId: props.objectId, endpoint: 'processes' }));
     const fetchRiskQueryEnabled = computed(() => !!props.scenarioId);
+
     const { data: _risk } = useQuery(objectQueryDefinitions.queries.fetchRisk, fetchRiskQueryParameters, { enabled: fetchRiskQueryEnabled, onSuccess: () => {
       init();
     } });
+
     const risk = computed(() => props.scenarioId ? _risk.value : undefined);
 
     const init = () => {
@@ -230,13 +233,14 @@ export default defineComponent({
       }
     };
 
+
     watch(() => domain.value, init, { deep: true, immediate: true });
     watch(() => risk.value, init, { deep: true, immediate: true });
     watch(() => props.modelValue, init, { immediate: true });
 
     const savingRisk = ref(false);
     const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createRisk);
-    const { mutateAsync: updateRisk } = useMutation(objectQueryDefinitions.mutations.createRisk);
+    const { mutateAsync: updateRisk } = useMutation(objectQueryDefinitions.mutations.updateRisk);
     const saveRisk = async () => {
       if(ability.value.cannot('manage', 'objects')) {
         return;
@@ -255,7 +259,7 @@ export default defineComponent({
           }
 
           if (props.scenarioId) {
-            await updateRisk({ endpoint: 'processes', objectId: props.objectId, risk: data.value });
+            await updateRisk({ endpoint: 'processes', id: props.objectId, scenarioId: props.scenarioId, risk: data.value });
           } else {
             await createRisk({ endpoint: 'processes', objectId: props.objectId, risk: data.value });
           }
@@ -392,7 +396,6 @@ const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, ris
       }
     }
   }
-
   return mergedObject;
 };
 </script>
