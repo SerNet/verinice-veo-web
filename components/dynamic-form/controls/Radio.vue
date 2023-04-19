@@ -21,12 +21,6 @@
     class="vf-radio vf-form-element"
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
   >
-    <div
-      v-if="options && options.label"
-      class="subtitle-1"
-    >
-      {{ options.label }}
-    </div>
     <v-radio-group
       :id="objectSchemaPointer"
       :inline="!isVertical"
