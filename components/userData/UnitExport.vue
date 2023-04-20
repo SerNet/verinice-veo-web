@@ -33,17 +33,15 @@
 import { Ref } from 'vue';
 import { downloadZIP } from "~~/lib/jsonToZip";
 import { logError } from "./modules/HandleError";
-import { useRequest } from "~~/composables/api/utils/request";
 
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
-import { useQuery } from '~~/composables/api/utils/query';
 
 // Types
 import { IVeoUnit } from '~~/composables/api/queryDefinitions/units';
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-const { request } = useRequest();
 const { t } = useI18n();
 const { profile } = useVeoUser();
 
@@ -68,17 +66,12 @@ function removeDemoUnit(units: Ref<IVeoUnit[]>) {
   return units.value?.filter((unit: IVeoUnit) => unit.name !== "Demo");
 }
 
-// Fetch a single unit
-function fetchUnit(id: string) {
-  return request("/api/units/:id/export", { params: { id }});
-}
-
 // Export a single unit
 async function exportUnit(index: number) {
   state.isLoading[index] = true;
   try {
-    const unitID = relevantUnits.value[index].id;
-    const unit = await fetchUnit(unitID);
+    const unitId = relevantUnits.value[index].id;
+    const unit = await useQuerySync(unitQueryDefinitions.queries.exportUnit, { unitId });
     const fileName = `${username.value}_${unit.unit.name}`;
     await downloadZIP(unit, fileName);
     displaySuccessMessage(t('successHeader'));
