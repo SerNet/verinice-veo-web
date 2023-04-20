@@ -50,9 +50,9 @@
 <script setup lang="ts">
 import { download } from "~~/lib/jsonToZip";
 import { loadHistoryData, createZipArchives } from './modules/HistoryExport';
-// import { devFetchHistoryData } from './modules/HistoryExport';
 import { logError } from './modules/HandleError';
-import { useRequest } from "@/composables/api/utils/request";
+import { useQuerySync } from "~~/composables/api/utils/query";
+import historyQueryDefinitions from '~~/composables/api/queryDefinitions/history';
 
 // Types
 interface IHistoryState {
@@ -73,7 +73,6 @@ const state: IHistoryState = reactive({
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-const { request } = useRequest();
 const { t } = useI18n();
 
 // HISTORY Entrypoint
@@ -94,10 +93,8 @@ async function prepareData() {
   }
 }
 
-async function fetchHistoryData({ size = 10000, afterId = null} = {} ) {
-  const queryParams = afterId ? `?size=${size}&afterId=${afterId}` : `?size=${size}`;
-  const url = `/api/history/revisions/paged${queryParams}`;
-  return request(url, {});
+async function fetchHistoryData({ size = 10000, afterId } : {size?: number, afterId?: string | undefined} = {}) {
+  return useQuerySync(historyQueryDefinitions.queries.fetchPagedRevisions, {size, afterId});
 }
 
 async function downloadZip(index: number) {

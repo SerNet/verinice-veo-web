@@ -66,14 +66,14 @@ export default {
         staleTime: STALE_TIME.REQUEST
       },
       onDataFetched: (data) => data.map((entry) => ({ ...entry, content: formatObject(entry.content) }))
-    } as IVeoQueryDefinition<IVeoFetchLatestChangesParameters, IVeoObjectHistoryEntry[]>
+    } as IVeoQueryDefinition<IVeoFetchLatestChangesParameters, IVeoObjectHistoryEntry[]>,
+    fetchPagedRevisions: {
+      primaryQueryKey: 'pagedRevisions',
+      url: '/api/history/revisions/paged',
+      queryParameterTransformationFn: (queryParameters) => (
+        { query: {size: queryParameters.size, afterId: queryParameters?.afterId} }
+      )
+    } as IVeoQueryDefinition<IVeoFetchPagedRevisionsParameters, IVeoPagedRevision>
   },
-  fetchPagedRevisions: {
-    primaryQueryKey: 'pagedRevisions',
-    url: '/api/history/revisions/paged',
-    queryParameterTransformationFn: (queryParameters) => (
-      { query: {size: queryParameters.size, afterId: queryParameters.afterId} }
-    )
-  } as IVeoQueryDefinition<IVeoFetchPagedRevisionsParameters, IVeoPagedRevision>,
   mutations: {}
 };

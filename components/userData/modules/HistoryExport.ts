@@ -19,27 +19,22 @@ import { createZIP } from "~~/lib/jsonToZip";
 import { chunk } from "lodash";
 import { IVeoObjectHistoryEntry } from "~~/types/VeoTypes";  
 
-type FetchFnParams = { 
-  size?: number; 
-  afterId?: string | null; 
-}
-
-type FetchFnResult = {items: IVeoObjectHistoryEntryWithId[]}
+export type HistoryExportAfterId = string;
+export type HistoryExportSize = number; 
+export type FetchFn = ({size, afterId} : {size?: HistoryExportSize, afterId?: HistoryExportAfterId}) => Promise<any>
 
 interface IVeoObjectHistoryEntryWithId extends IVeoObjectHistoryEntry {
   id: string;
 }
 
 interface ILoadHistoryParams {
-  fetchFn(params: FetchFnParams): FetchFnResult;
+  fetchFn: FetchFn;
   history?: IVeoObjectHistoryEntryWithId[];
-  size?: number;
-  afterId?: null | string;
+  size?: HistoryExportSize;
+  afterId?: HistoryExportAfterId;
 }
 
-async function loadHistoryData({ 
-  fetchFn, history = [], size = 10000, afterId = null }: ILoadHistoryParams ): 
-  Promise<IVeoObjectHistoryEntryWithId[]> {
+async function loadHistoryData({ fetchFn, history = [], size = 10000, afterId }: ILoadHistoryParams): Promise<IVeoObjectHistoryEntryWithId[]> {
   try {
     const fetchedHistory = await fetchFn({ size, afterId });
     const currentHistory = [...history, ...fetchedHistory.items];
