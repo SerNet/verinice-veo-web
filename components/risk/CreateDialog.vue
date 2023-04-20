@@ -104,7 +104,7 @@ export default defineComponent({
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
 
-    const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createOrUpdateRisk);
+    const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createRisk);
 
     const unit = computed(() => separateUUIDParam(route.params.unit as string).id);
 
