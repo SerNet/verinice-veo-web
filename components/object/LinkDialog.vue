@@ -219,7 +219,6 @@ export default defineComponent({
     watch(
       () => props.preselectedFilters,
       (newValue) => {
-        console.log(1);
         filter.value = { ...filter.value, ...newValue };
       },
       {
@@ -232,7 +231,6 @@ export default defineComponent({
 
     // update filter options
     const updateFilter = (newFilter: Record<string, any>) => {
-      console.log(2);
       filter.value = { ...newFilter };
     };
 
@@ -244,7 +242,7 @@ export default defineComponent({
       } else if (props.object?.type === 'scope') {
         return objectSchemaNames.filter((item) => item !== 'scope');
       } else {
-        return [props.object?.type || ''];
+        return props.object?.type ? [props.object?.type] : [];
       }
     });
 
@@ -252,8 +250,7 @@ export default defineComponent({
       () => availableObjectTypes.value,
       (newValue) => {
         if (newValue?.[0]) {
-          console.log(3);
-          filter.value = { objectType: newValue[0] };
+          filter.value = { ...filter.value, objectType: newValue[0] };
         }
       },
       { immediate: true, deep: true }
