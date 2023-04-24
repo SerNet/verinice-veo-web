@@ -26,7 +26,7 @@
       <template #activator="{ props }">
         <v-btn
           v-bind="mergeProps($attrs, props)"
-          :disabled="!visibleItems.length || $props.disabled"
+          :disabled="!visibleItems.length || disabled"
           :icon="mdiDotsVertical"
           variant="text"
           size="small"

@@ -20,11 +20,10 @@
     active-class="text-black font-weight-bold"
     :sub-group="level > 0"
     :data-component-name="componentName"
-    :class="{ 'border-top': level === 0, 'veo-primary-navigation__group': level > 0, 'veo-primary-navigation__group--active': $route.fullPath.includes(activePath) }"
-    no-action
+    :class="{ 'border-top': level === 0 }"
     :model-value="$route.fullPath.includes(activePath) /* group prop is not working with query parameters, so we have to use a simple hack to expand the active path */"
-    :target="$props.openInNewtab ? '_blank' : ''"
-    @click="onClick"
+    :target="openInNewtab ? '_blank' : ''"
+    @click.stop="onClick"
   >
     <template
       #prependIcon
@@ -64,7 +63,10 @@
             class="pt-1 mr-3"
           />
         </template>
-        <v-list-item-title class="veo-primary-navigation-title">
+        <v-list-item-title
+          class="veo-primary-navigation-title"
+          :class="{ 'font-weight-bold': $route.fullPath.includes(activePath) }"
+        >
           {{ name }}
         </v-list-item-title>
       </v-list-item>
@@ -164,7 +166,7 @@ const emit = defineEmits(['expand-menu', 'click']);
 const route = useRoute();
 const router = useRouter();
 
-const onClick = (event: any) => {
+const onClick = () => {
   if(props.openInNewtab) {
     return;
   }
@@ -173,10 +175,7 @@ const onClick = (event: any) => {
   }
   if (props.to && route.path !== props.to) {
     router.push(props.to);
-  } else {
-    emit('click', event);
   }
-  event.stopPropagation();
 };
 
 const activatorIntendation = computed(() => `primary-navigation-entry-level-${props.level}`);

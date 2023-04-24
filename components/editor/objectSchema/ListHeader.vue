@@ -33,7 +33,7 @@
         label
         variant="outlined"
       >
-        <span v-if="$props.translate">
+        <span v-if="translate">
           {{ t(`editor.inputtypes.${styling.name}`) }}
         </span>
         <span v-else-if="styling.name">

@@ -23,7 +23,7 @@
     :class="_classes"
     :data-component-name="componentName"
     density="compact"
-    :target="$props.openInNewtab ? '_blank' : ''"
+    :target="openInNewtab ? '_blank' : ''"
     @click.stop="onClick"
   >
     <template
@@ -34,10 +34,8 @@
         location="end"
         :disabled="!miniVariant"
       >
-        <template #activator="{ props: tooltip, attrs }">
-          <div
-            v-bind="mergeProps(attrs, tooltip)"
-          >
+        <template #activator="{ props: tooltip }">
+          <div v-bind="tooltip">
             <v-icon
               v-if="icon"
               :icon="icon"
@@ -60,7 +58,7 @@
 
 <script lang="ts" setup>
 import { isEqual, pick } from 'lodash';
-import { mergeProps, PropType } from 'vue';
+import { PropType } from 'vue';
 import { _RouteLocationBase } from 'vue-router';
 import { INavItem } from './PrimaryNavigation.vue';
 
@@ -125,7 +123,6 @@ const onClick = () => {
   if (props.miniVariant) {
     emit('expand-menu');
   }
-  navigateTo(props.to);
 };
 const _classes = computed(() => `${props.classes} primary-navigation-entry-level-${props.level}`);
 
