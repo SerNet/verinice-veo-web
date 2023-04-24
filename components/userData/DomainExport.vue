@@ -53,8 +53,6 @@ async function exportDomainData(index: number) {
   try {
     const fileName = `${username}_domains`;
     const domain = await useQuerySync(domainQueryDefinitions.queries.fetchDomains);
-
-    // const domain = await useQuerySync(domainQueryDefinitions.queries.fetchDomain);
     await downloadZIP(domain, fileName);
     displaySuccessMessage(t('successHeader'));
   } catch (error) {
