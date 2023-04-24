@@ -58,8 +58,8 @@
             lines="two"
             :title="unit.name"
             :subtitle="unit.description"
-            :disabled="!generateUnitLink(unit.id)"
-            :to="generateUnitLink(unit.id)"
+            :disabled="!generateUnitDashboardLink(unit.id)"
+            :to="generateUnitDashboardLink(unit.id)"
           >
             <template #append>
               <v-tooltip location="bottom">
@@ -118,20 +118,6 @@ const showWelcomeDialog = computed({
 });
 
 const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);
-
-
-
-const generateUnitLink = (unitId: string) => {
-  const unitToLinkTo = (units.value || []).find((unit) => unit.id === unitId);
-  let domainId;
-
-  if (unitToLinkTo) {
-    domainId = getFirstDomainDomaindId(unitToLinkTo);
-  }
-
-  return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains` : undefined;
-};
-
 
 const generateUnitDashboardLink = (unitId: string) => {
   const unitToLinkTo = (units.value || []).find((unit) => unit.id === unitId);
