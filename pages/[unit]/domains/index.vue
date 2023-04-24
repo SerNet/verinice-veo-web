@@ -79,15 +79,23 @@ export const ROUTE_NAME = 'index';
           />
         </v-list>
         <v-card-text>
-          <div class="text-body-1">
-            <p>
-              {{ t('furtherDomainInformation') }} 
-              <nuxt-link :to="`/${route.params.unit}/domains/more`">
-                {{ t('linkMoreInfo') }}
-              </nuxt-link>
-              {{ t('moreDomainInfo') }}
-            </p>
-          </div>
+          <template #default>
+            <div class="text-body-1">
+              <p>
+                <i18n-t
+                  keypath="furtherDomainInformation"
+                  tag="span"
+                  scope="global"
+                >
+                  <template #here>
+                    <nuxt-link :to="`/${route.params.unit}/domains/more`">
+                      {{ t('linkMoreInfo') }}
+                    </nuxt-link>
+                  </template>
+                </i18n-t>
+              </p>
+            </div>
+          </template>
         </v-card-text>
       </BaseCard>
     </div>
@@ -100,17 +108,15 @@ export const ROUTE_NAME = 'index';
       "domainpicker": "Please choose a domain",
       "domainpickerPlaceholder": "Search for a domain...",
       "domainselector": "Domain selection",
-      "furtherDomainInformation": "The verinice.TEAM will successively provide further domains for verinice.veo click",
-      "linkMoreInfo": "here",
-      "moreDomainInfo": "for further information."
+      "furtherDomainInformation": "The verinice.TEAM will successively provide further domains for verinice.veo click {here} for further information.",
+      "linkMoreInfo": "here"
     },
     "de": {
       "domainpicker": "Bitte wählen Sie eine Domäne",
       "domainpickerPlaceholder": "Nach einer Domäne suchen...",
       "domainselector": "Domänenauswahl",
-      "furtherDomainInformation": "Das verinice.TEAM wird sukzessive weitere Domänen für verinice.veo zur Verfügung stellen, klicken Sie",
-      "linkMoreInfo": "hier",
-      "moreDomainInfo": "für mehr Informationen."
+      "furtherDomainInformation": "Das verinice.TEAM wird sukzessive weitere Domänen für verinice.veo zur Verfügung stellen, klicken Sie {here} für mehr Informationen.",
+      "linkMoreInfo": "hier"
 
     }
   }

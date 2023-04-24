@@ -111,6 +111,8 @@
 
   "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions.{lineBreak} All selected mitigating actions are available under the action \"Mitigating action for {risk}\"",
 
+  "furtherDomainInformation": "The verinice.TEAM will successively provide further domains for verinice.veo click {here} for further information.",
+
   "residualRiskHint": "the displayed residual risk has been derived from the input data.{0}You can overwrite it with a custom value",
 
   "imprintText": "The {0} of SerNet GmbH applies.",
