@@ -32,14 +32,14 @@
 <script setup lang="ts">
 import { downloadZIP } from "~~/lib/jsonToZip";
 import { logError } from './modules/HandleError';
-import { useRequest } from "~~/composables/api/utils/request";
+import { useQuerySync } from '~~/composables/api/utils/query';
+import accountQueryDefinitions from '~~/composables/api/queryDefinitions/accounts';
 
 // Types
 import { IVeoAccount } from "~~/composables/api/queryDefinitions/accounts";
 
 // Composables
 const { t } = useI18n();
-const { request } = useRequest();
 const { profile, roles } = useVeoUser();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
@@ -51,19 +51,14 @@ const state = reactive({
 
 const isAccountManager = computed(() => roles.value.length > 0);
 
-function fetchAccountData() {
-  return request(`/api/accounts`, {});
-}
-
 async function exportAccountData(index: number) {
   state.isLoading[index] = true;
   try {
-
-    let accounts = [];
+    let accounts = [] as IVeoAccount[];
 
     if(isAccountManager.value) {
       // Get data on all accounts managed by current account
-      accounts = await fetchAccountData();
+      accounts = await useQuerySync(accountQueryDefinitions.queries.fetchAccounts);
     }
 
     // Add current account data
