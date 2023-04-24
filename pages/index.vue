@@ -130,6 +130,7 @@ const generateUnitDashboardLink = (unitId: string) => {
   return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
 };
 
+
 // Unit deletion stuff
 const deleteUnitDialogVisible = ref(false);
 const unitToDelete = ref<undefined | IVeoUnit>();
