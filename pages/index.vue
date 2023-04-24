@@ -132,6 +132,19 @@ const generateUnitLink = (unitId: string) => {
   return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains` : undefined;
 };
 
+
+const generateUnitDashboardLink = (unitId: string) => {
+  const unitToLinkTo = (units.value || []).find((unit) => unit.id === unitId);
+  let domainId;
+
+  if (unitToLinkTo) {
+    domainId = getFirstDomainDomaindId(unitToLinkTo);
+  }
+
+  return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
+};
+
+
 // Unit deletion stuff
 const deleteUnitDialogVisible = ref(false);
 const unitToDelete = ref<undefined | IVeoUnit>();
