@@ -291,10 +291,11 @@
 import { upperFirst, pickBy } from 'lodash';
 import { mdiAlertCircleOutline, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
 import { useDisplay } from 'vuetify';
+import { JsonPointer } from 'json-ptr';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
-import { IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoObjectSchema, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
@@ -445,12 +446,30 @@ export default defineComponent({
     };
 
     // Saving
-    const updateTypeDefinitionQueryParameters = computed(() => ({ domainId: domainId.value, objectType: title.value, objectSchema: objectSchemaHelper.value?.toSchema() as any }));
     const { mutateAsync: update } = useMutation(domainQueryDefinitions.mutations.updateTypeDefinitions);
 
     const saveSchema = async () => {
+      const objectSchemaWithTranslations = objectSchemaHelper.value?.toSchema();
+      if(!objectSchemaWithTranslations) {
+        return;
+      }
+
+      // Filter out translations that are not part of the schema in the current domain
+      // As any as translations aren't part of the objectschema but send along with it on ONLY this request, this dirty workaround will be obsolete if the new element type definition api gets used.
+      let objectSchemaTranslations: { [lang: string]: IVeoTranslationCollection } = (objectSchemaWithTranslations as any).properties.translations || {};
+      // Remove translations from schemas as searching for the key in a schema containing all translations will always score at least one hit in the translations while we only want to score a hit if the aspect/link/attribut exists.
+      const objectSchemaWithoutTranslations = { ...objectSchemaWithTranslations };
+      delete (objectSchemaWithoutTranslations as any).properties.translations;
+      const keys = Object.keys(JsonPointer.flatten(objectSchemaWithoutTranslations));
+
+      // Only return translations that are part of the schema (keys are keys of a custom aspect/link/attribute)
+      objectSchemaTranslations = Object.fromEntries(Object.entries(objectSchemaTranslations).map(([language, translations]) => 
+        ([ language, Object.fromEntries(Object.entries(translations).filter(([key]) =>!!keys.find((_key) => _key.endsWith(key))))])
+      ));
+      objectSchemaWithTranslations.properties.translations = objectSchemaTranslations;
+
       try {
-        await update(updateTypeDefinitionQueryParameters);
+        await update({ domainId: domainId.value, objectType: title.value, objectSchema: objectSchemaWithTranslations });
         displaySuccessMessage(t('saveSchemaSuccess').toString());
       } catch (e: any) {
         displayErrorMessage(t('error.title').toString(), `${t('saveSchemaError').toString()}: ${e.message}`);
