@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
 import { download } from "~~/lib/jsonToZip";
-import { loadHistory, chunkHistory, createZipArchives } from './modules/HistoryExport';
+import { loadHistory, chunkHistory, createZipArchives, devFetchHistoryData } from './modules/HistoryExport';
 import { logError } from './modules/HandleError';
 import { useQuerySync } from "~~/composables/api/utils/query";
 import historyQueryDefinitions from '~~/composables/api/queryDefinitions/history';
@@ -107,7 +107,7 @@ const progressBar = computed(() =>
 async function prepareData() {
   state.prepare.phase = PrepPhase.Download;
   try {
-    const history = await loadHistory({ updateLoadingState, fetchFn: fetchHistoryData });
+    const history = await loadHistory({ updateLoadingState, fetchFn: devFetchHistoryData, size: 10000 });
     const chunkedHistory = chunkHistory(history);
     const zipArchives = await createZipArchives(updateLoadingState, chunkedHistory);
     state.zipArchives.push(...zipArchives);

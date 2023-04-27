@@ -27,9 +27,9 @@ export enum PrepPhase  {
   Done
 }
 
-export type HistoryZipArchive = { name: string; zip: Blob; };
+export type HistoryZipArchive = { displayName: string; fileName: string; zip: Blob; };
 export type UpdateLoadingState  = ({ phase, cur, total }: { phase: PrepPhase, cur: number, total: number } ) => void
-export type HistoryChunk = { name: string, chunk: IVeoObjectHistoryEntry[] }
+export type HistoryChunk = { name: string, displayName: string, chunk: IVeoObjectHistoryEntry[] }
 
 export type FetchFnParams = { size?: number | undefined; afterId?: string | undefined; }
 
@@ -81,17 +81,17 @@ async function loadHistory({
   }
 }
 
-function chunkHistory(historyItems: IVeoObjectHistoryEntry[], archiveSize = 10000) {
-  const archiveName = { prevName: '', name: '', counter: 0 };
+function chunkHistory(historyItems: IVeoObjectHistoryEntry[], archiveSize = 100) {
+  const archiveName = { displayName: '', name: '', counter: 0 };
   const chunks = chunk(historyItems, archiveSize);
 
   const chunkedHistory = chunks.map((chunk) => {
-    const _name = composeFileName(chunk);
+    const { displayName, fileName } = composeFileName(chunk);
 
     // Account for equal names: history_2023-02-13_2023-02-05.zip, history_2023-02-13_2023-02-05_1.zip ...
-    archiveName.counter === 0 ? _name : _name + "_" + archiveName.counter;
+    archiveName.counter === 0 ? fileName : fileName + "_" + archiveName.counter;
 
-    if (_name === archiveName.name) {
+    if (fileName === archiveName.name) {
       archiveName.counter++;
     } else {
       archiveName.counter = 0;
@@ -99,20 +99,25 @@ function chunkHistory(historyItems: IVeoObjectHistoryEntry[], archiveSize = 1000
 
     const countedName =
       archiveName.counter === 0 ?
-        _name :
-        _name + "_" + archiveName.counter;
+        fileName :
+        fileName + "_" + archiveName.counter;
+    const countedDisplayName =
+      archiveName.counter === 0 ?
+        displayName :
+        displayName + ` (${archiveName.counter})`;
 
-    archiveName.name = _name;
-    return {chunk, name: countedName};
+
+    archiveName.name = fileName;
+    return { chunk, name: countedName, displayName: countedDisplayName };
   });
 
   return chunkedHistory;
 }
 
 async function createZipFromHistoryChunk(_chunk: HistoryChunk) {
-  const {name, chunk } = _chunk;
+  const { chunk, name, displayName } = _chunk;
   const zip = await createZIP(chunk, name);
-  return { zip, name };
+  return { zip, fileName: name, displayName };
 }
 
 async function createZipArchives(
@@ -139,7 +144,16 @@ async function createZipArchives(
 function composeFileName(chunk: IVeoObjectHistoryEntry[]) {
   const startDate = transformDateString(chunk[0].time);
   const endDate = transformDateString(chunk[chunk.length - 1].time);
-  return `history_${startDate}_${endDate}`;
+  const displayName = `${formatDate(new Date(startDate))} – ${formatDate(new Date(endDate))}`;
+  const fileName = `history_${startDate}_${endDate}`;
+  return { displayName, fileName }
+}
+
+function formatDate(d) {
+  const day = (d.getDate() < 10 ? '0' : '') + d.getDate();
+  const month = (d.getMonth() < 10 ? '0' : '') + d.getMonth();
+  const year = d.getFullYear();
+  return `${day}.${month}.${year}`
 }
 
 function transformDateString(ISODateString: string) {
