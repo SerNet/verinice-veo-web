@@ -31,7 +31,7 @@ export type HistoryZipArchive = { name: string; zip: Blob; };
 export type UpdateLoadingState  = ({ phase, cur, total }: { phase: PrepPhase, cur: number, total: number } ) => void
 export type HistoryChunk = { name: string, chunk: IVeoObjectHistoryEntry[] }
 
-export type FetchFnParams = { size?: number; afterId?: string | null; }
+export type FetchFnParams = { size?: number | undefined; afterId?: string | undefined; }
 
 export type FetchFnResult = {
   totalItemCount: number,
@@ -43,16 +43,16 @@ interface IVeoObjectHistoryEntryWithId extends IVeoObjectHistoryEntry {
 }
 
 interface ILoadHistoryParams {
-  fetchFn(params: FetchFnParams): Promise<FetchFnResult>;
+  fetchFn: ({ size, afterId }: FetchFnParams) => Promise<FetchFnResult>;
   history?: IVeoObjectHistoryEntryWithId[];
   size?: number;
-  afterId?: null | string;
+  afterId?: undefined | string;
   updateLoadingState?: UpdateLoadingState;
   cur?: number;
 }
 
 async function loadHistory({
-  fetchFn, history = [], size = 2500, afterId = null, updateLoadingState, cur = 0}: ILoadHistoryParams ):
+  fetchFn, history = [], size = 2500, afterId = undefined, updateLoadingState, cur = 0}: ILoadHistoryParams ):
   Promise<IVeoObjectHistoryEntryWithId[]> {
   try {
     const fetchedHistory = await fetchFn({ size, afterId });
@@ -67,12 +67,12 @@ async function loadHistory({
       return currentHistory;
     } else {
       return await loadHistory({
-        cur,
         fetchFn,
-        updateLoadingState,
         history: currentHistory,
         size,
-        afterId: currentAfterId
+        afterId: currentAfterId,
+        updateLoadingState,
+        cur
       });
     }
   }

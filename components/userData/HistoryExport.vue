@@ -15,7 +15,7 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-/*
+
 <template>
   <!-- Downloads -->
   <UserDataCard
@@ -68,12 +68,11 @@
 import { download } from "~~/lib/jsonToZip";
 import { loadHistory, chunkHistory, createZipArchives } from './modules/HistoryExport';
 import { logError } from './modules/HandleError';
-import { useRequest } from "@/composables/api/utils/request";
+import { useQuerySync } from "~~/composables/api/utils/query";
+import historyQueryDefinitions from '~~/composables/api/queryDefinitions/history';
 
 // Types
 import {
-  FetchFnParams,
-  FetchFnResult,
   HistoryZipArchive,
   PrepPhase
 } from './modules/HistoryExport';
@@ -87,14 +86,13 @@ interface IHistoryState {
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-const { request } = useRequest();
 const { t } = useI18n();
 
 // State
 const state: IHistoryState = reactive({
   zipArchives: [],
   isLoading: [],
-  showAlert: computed(() => state.zipArchives.length === 0 && state.showPrepareData === false),
+  showAlert: computed(() => state.zipArchives.length === 0 && state.prepare.phase === PrepPhase.Done),
   prepare: { phase: PrepPhase.Idle,  cur: 1, total: 100 }
 });
 
@@ -123,10 +121,8 @@ async function prepareData() {
   }
 }
 
-async function fetchHistoryData({ size = 10000, afterId = null}: FetchFnParams ): Promise<FetchFnResult> {
-  const queryParams = afterId ? `?size=${size}&afterId=${afterId}` : `?size=${size}`;
-  const url = `/api/history/revisions/paged${queryParams}`;
-  return request(url, {});
+async function fetchHistoryData({ size = 10000, afterId } : {size?: number, afterId?: string | undefined} = {}) {
+  return useQuerySync(historyQueryDefinitions.queries.fetchPagedRevisions, {size, afterId});
 }
 
 async function downloadZip(index: number) {
