@@ -31,18 +31,35 @@
   >
     <!-- Prepare Data -->
     <template
-      v-if="state.showPrepareData"
+      v-if="state.prepare.phase !== PrepPhase.Done"
       #prepareData
     >
-      <v-btn
-        color="primary"
-        variant="outlined"
-        class="ms-auto mt-4"
-        :loading="state.isPreparing"
-        @click="prepareData"
-      >
-        {{ t('btnPrepareDownload') }}
-      </v-btn>
+      <div class="d-flex align-center ms-auto mt-4">
+        <div
+          v-if="state.prepare.phase === PrepPhase.Zip || state.prepare.phase === PrepPhase.Download"
+          class="text-subtitle-1  text-primary me-4"
+        >
+          <span>{{ t(`prepareHistoryPhases.${state.prepare?.phase}`) }}</span>
+          <span
+            class="font-weight-black"
+            style="display: inline-block; width: 48px"
+          >&nbsp;{{ Math.floor(progressBar) }}&nbsp;%</span>
+        </div>
+        <v-btn
+          color="primary"
+          variant="outlined"
+          :loading="state.prepare.phase !== PrepPhase.Idle"
+          @click="prepareData"
+        >
+          {{ t('btnPrepareDownload') }}
+
+          <template #loader>
+            <v-progress-linear
+              :model-value="progressBar"
+            />
+          </template>
+        </v-btn>
+      </div>
     </template>
   </UserDataCard>
 </template>
