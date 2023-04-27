@@ -51,22 +51,28 @@ interface ILoadHistoryParams {
   cur?: number;
 }
 
-async function loadHistoryData({ 
-  fetchFn, history = [], size = 10000, afterId = null }: ILoadHistoryParams ): 
+async function loadHistory({
+  fetchFn, history = [], size = 2500, afterId = null, updateLoadingState, cur = 0}: ILoadHistoryParams ):
   Promise<IVeoObjectHistoryEntryWithId[]> {
   try {
     const fetchedHistory = await fetchFn({ size, afterId });
     const currentHistory = [...history, ...fetchedHistory.items];
-    const currentAfterId = currentHistory[currentHistory.length - 1]?.id; 
+    const currentAfterId = currentHistory[currentHistory.length - 1]?.id;
+
+    cur++;
+    const total = fetchedHistory.totalItemCount % size === 0 ? Math.floor(fetchedHistory.totalItemCount/size) : Math.floor(fetchedHistory.totalItemCount/size) + 1;
+    if(updateLoadingState) updateLoadingState({ phase: PrepPhase.Download, cur, total });
 
     if (fetchedHistory.items.length < size) {
       return currentHistory;
     } else {
-      return await loadHistoryData({
-        fetchFn, 
-        history: currentHistory, 
-        size, 
-        afterId: currentAfterId 
+      return await loadHistory({
+        cur,
+        fetchFn,
+        updateLoadingState,
+        history: currentHistory,
+        size,
+        afterId: currentAfterId
       });
     }
   }
@@ -75,11 +81,11 @@ async function loadHistoryData({
   }
 }
 
-async function createZipArchives(historyItems: IVeoObjectHistoryEntry[], archiveSize = 10000) {
-  const chunks = chunk(historyItems, archiveSize);
+function chunkHistory(historyItems: IVeoObjectHistoryEntry[], archiveSize = 10000) {
   const archiveName = { prevName: '', name: '', counter: 0 };
-  const zipArchives = await Promise.all(chunks.map(async (chunk) => {
+  const chunks = chunk(historyItems, archiveSize);
 
+  const chunkedHistory = chunks.map((chunk) => {
     const _name = composeFileName(chunk);
 
     // Account for equal names: history_2023-02-13_2023-02-05.zip, history_2023-02-13_2023-02-05_1.zip ...
@@ -91,17 +97,43 @@ async function createZipArchives(historyItems: IVeoObjectHistoryEntry[], archive
       archiveName.counter = 0;
     }
 
-    const countedName = 
-      archiveName.counter === 0 ? 
-        _name : 
+    const countedName =
+      archiveName.counter === 0 ?
+        _name :
         _name + "_" + archiveName.counter;
 
     archiveName.name = _name;
+    return {chunk, name: countedName};
+  });
 
-    const zip = await createZIP(chunk, countedName);
-    return ({ name: countedName, zip });
-  }));
-  return zipArchives;
+  return chunkedHistory;
+}
+
+async function createZipFromHistoryChunk(_chunk: HistoryChunk) {
+  const {name, chunk } = _chunk;
+  const zip = await createZIP(chunk, name);
+  return { zip, name };
+}
+
+async function createZipArchives(
+  updateLoadingState: UpdateLoadingState,
+  chunks: HistoryChunk[] = [],
+  _zipArchives: HistoryZipArchive[] = [],
+  _currentChunk = 0
+): Promise<HistoryZipArchive[]>
+
+{
+  const archive = await createZipFromHistoryChunk(chunks[_currentChunk]);
+  const zipArchives = [..._zipArchives, archive];
+
+  updateLoadingState({ phase: PrepPhase.Zip, cur: _currentChunk + 1, total: chunks.length });
+
+  if (chunks.length === _currentChunk + 1) {
+    return zipArchives;
+  }
+
+  _currentChunk++;
+  return await createZipArchives(updateLoadingState, chunks, zipArchives, _currentChunk);
 }
 
 function composeFileName(chunk: IVeoObjectHistoryEntry[]) {
@@ -119,11 +151,12 @@ const devFetchHistoryData = async () => {
   const devUrl='http://localhost:3001/testData';
   const response = await fetch(devUrl);
   const json = await response.json();
-  return {items: [...json]};
+  return json[0];
 };
 
 export {
-  loadHistoryData,
+  loadHistory,
+  chunkHistory,
   createZipArchives,
   devFetchHistoryData
 };

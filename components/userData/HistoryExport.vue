@@ -82,27 +82,36 @@ interface IHistoryState {
   zipArchives: HistoryZipArchive[];
   isLoading: boolean[];
   showAlert: boolean;
+  prepare: { phase: PrepPhase, cur: number, total: number };
 }
-
-const state: IHistoryState = reactive({
-  zipArchives: [],
-  isLoading: [],
-  showPrepareData: true,
-  isPreparing: false,
-  showAlert: computed(() => state.zipArchives.length === 0 && state.showPrepareData === false)
-});
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { request } = useRequest();
 const { t } = useI18n();
 
+// State
+const state: IHistoryState = reactive({
+  zipArchives: [],
+  isLoading: [],
+  showAlert: computed(() => state.zipArchives.length === 0 && state.showPrepareData === false),
+  prepare: { phase: PrepPhase.Idle,  cur: 1, total: 100 }
+});
+
+function updateLoadingState({ phase, cur, total }: { phase: PrepPhase, cur: number, total: number}) {
+  state.prepare = { phase, cur, total };
+}
+
+const progressBar = computed(() =>
+  (state?.prepare?.cur && state?.prepare?.total) ? state?.prepare?.cur / state?.prepare?.total * 100 : 3);
+
 // HISTORY Entrypoint
 async function prepareData() {
-  state.isPreparing = true;
+  state.prepare.phase = PrepPhase.Download;
   try {
-    const historyItems = await loadHistoryData({fetchFn: fetchHistoryData});
-    const zipArchives = await createZipArchives(historyItems);
+    const history = await loadHistory({ updateLoadingState, fetchFn: fetchHistoryData });
+    const chunkedHistory = chunkHistory(history);
+    const zipArchives = await createZipArchives(updateLoadingState, chunkedHistory);
     state.zipArchives.push(...zipArchives);
   }
   catch (error) {
@@ -110,12 +119,11 @@ async function prepareData() {
     displayErrorMessage( t('errorHeader'), t('errorBody'));
   }
   finally {
-    state.showPrepareData = false;
-    state.isPreparing = false;
+    state.prepare.phase = PrepPhase.Done;
   }
 }
 
-async function fetchHistoryData({ size = 10000, afterId = null} = {} ) {
+async function fetchHistoryData({ size = 10000, afterId = null}: FetchFnParams ): Promise<FetchFnResult> {
   const queryParams = afterId ? `?size=${size}&afterId=${afterId}` : `?size=${size}`;
   const url = `/api/history/revisions/paged${queryParams}`;
   return request(url, {});
