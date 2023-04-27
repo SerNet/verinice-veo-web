@@ -66,16 +66,20 @@
 
 <script setup lang="ts">
 import { download } from "~~/lib/jsonToZip";
-import { loadHistoryData, createZipArchives } from './modules/HistoryExport';
-// import { devFetchHistoryData } from './modules/HistoryExport';
+import { loadHistory, chunkHistory, createZipArchives } from './modules/HistoryExport';
 import { logError } from './modules/HandleError';
 import { useRequest } from "@/composables/api/utils/request";
 
 // Types
+import {
+  FetchFnParams,
+  FetchFnResult,
+  HistoryZipArchive,
+  PrepPhase
+} from './modules/HistoryExport';
+
 interface IHistoryState {
-  zipArchives: { name: string; zip: Blob; }[];
-  showPrepareData: boolean;
-  isPreparing: boolean;
+  zipArchives: HistoryZipArchive[];
   isLoading: boolean[];
   showAlert: boolean;
 }

@@ -1,40 +1,54 @@
 /*
  * verinice.veo web
  * Copyright (C) 2023 jae
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { createZIP } from "~~/lib/jsonToZip";
 import { chunk } from "lodash";
-import { IVeoObjectHistoryEntry } from "~~/types/VeoTypes";  
+import { IVeoObjectHistoryEntry } from "~~/types/VeoTypes";
 
-type FetchFnParams = { 
-  size?: number; 
-  afterId?: string | null; 
+// Types
+export enum PrepPhase  {
+  Idle,
+  Download,
+  Zip,
+  Done
 }
 
-type FetchFnResult = {items: IVeoObjectHistoryEntryWithId[]}
+export type HistoryZipArchive = { name: string; zip: Blob; };
+export type UpdateLoadingState  = ({ phase, cur, total }: { phase: PrepPhase, cur: number, total: number } ) => void
+export type HistoryChunk = { name: string, chunk: IVeoObjectHistoryEntry[] }
+
+export type FetchFnParams = { size?: number; afterId?: string | null; }
+
+export type FetchFnResult = {
+  totalItemCount: number,
+  items: IVeoObjectHistoryEntryWithId[]
+}
 
 interface IVeoObjectHistoryEntryWithId extends IVeoObjectHistoryEntry {
   id: string;
 }
 
 interface ILoadHistoryParams {
-  fetchFn(params: FetchFnParams): FetchFnResult;
+  fetchFn(params: FetchFnParams): Promise<FetchFnResult>;
   history?: IVeoObjectHistoryEntryWithId[];
   size?: number;
   afterId?: null | string;
+  updateLoadingState?: UpdateLoadingState;
+  cur?: number;
 }
 
 async function loadHistoryData({ 
