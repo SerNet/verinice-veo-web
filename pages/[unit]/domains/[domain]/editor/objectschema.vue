@@ -288,7 +288,7 @@
 </template>
 
 <script lang="ts">
-import { upperFirst, pickBy } from 'lodash';
+import { upperFirst, pickBy, cloneDeep } from 'lodash';
 import { mdiAlertCircleOutline, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
 import { useDisplay } from 'vuetify';
 import { JsonPointer } from 'json-ptr';
@@ -466,17 +466,13 @@ export default defineComponent({
       return false;
     };
 
-    const saveSchema = async () => {
-      const objectSchemaWithTranslations = objectSchemaHelper.value?.toSchema();
-      if(!objectSchemaWithTranslations) {
-        return;
-      }
-
+    const filterOutUnusedTranslations = (objectSchema: IVeoObjectSchema) => {
+      const localObjectSchema = cloneDeep(objectSchema);
       // Filter out translations that are not part of the schema in the current domain
       // As any as translations aren't part of the objectschema but send along with it on ONLY this request, this dirty workaround will be obsolete if the new element type definition api gets used.
-      let objectSchemaTranslations: { [lang: string]: IVeoTranslationCollection } = (objectSchemaWithTranslations as any).properties.translations || {};
+      let objectSchemaTranslations: { [lang: string]: IVeoTranslationCollection } = localObjectSchema.properties.translations || {};
       // Remove translations from schemas as searching for the key in a schema containing all translations will always score at least one hit in the translations while we only want to score a hit if the aspect/link/attribut exists.
-      const objectSchemaWithoutTranslations = { ...objectSchemaWithTranslations };
+      const objectSchemaWithoutTranslations = cloneDeep(localObjectSchema);
       delete (objectSchemaWithoutTranslations as any).properties.translations;
       const keys = Object.entries(JsonPointer.flatten(objectSchemaWithoutTranslations));
 
@@ -486,10 +482,20 @@ export default defineComponent({
           objectSchemaPropertyPath.endsWith(translationKey) /* Name of attributes/custom links */ || translationKey === objectSchemaValueAtPropertyPath /* Enum values */ || (translationKey.includes('_status_') && isStatusPresentInSchema(translationKey, objectSchemaPropertyPath, objectSchemaValueAtPropertyPath)) /* Status values */
         )))])
       ));
-      objectSchemaWithTranslations.properties.translations = objectSchemaTranslations;
+      localObjectSchema.properties.translations = objectSchemaTranslations;
+      return localObjectSchema;
+    };
+
+    const saveSchema = async () => {
+      let objectSchema = objectSchemaHelper.value?.toSchema();
+      if(!objectSchema) {
+        return;
+      }
+
+      objectSchema = filterOutUnusedTranslations(objectSchema);
 
       try {
-        await update({ domainId: domainId.value, objectType: title.value, objectSchema: objectSchemaWithTranslations });
+        await update({ domainId: domainId.value, objectType: title.value, objectSchema });
         displaySuccessMessage(t('saveSchemaSuccess').toString());
       } catch (e: any) {
         displayErrorMessage(t('error.title').toString(), `${t('saveSchemaError').toString()}: ${e.message}`);
