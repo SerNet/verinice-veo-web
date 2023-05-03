@@ -448,6 +448,24 @@ export default defineComponent({
     // Saving
     const { mutateAsync: update } = useMutation(domainQueryDefinitions.mutations.updateTypeDefinitions);
 
+    const statusSpredRegExp = /process_(\w+)_status_(([A-Z]|_)+)$/;
+
+    const isStatusPresentInSchema = (translationKey: string, objectSchemaPropertyPath: string, objectSchemaValueAtPropertyPath: any) => {
+      if(objectSchemaPropertyPath !== `/properties/domains/properties/${domainId.value}/allOf`) {
+        return false;
+      }
+
+      const [_, subType, status] = translationKey.match(statusSpredRegExp) || [];
+
+      for(const objectSchemaSubType of objectSchemaValueAtPropertyPath) {
+        if(objectSchemaSubType.if.properties.subType.const === subType) {
+          return objectSchemaSubType.then.properties.status.enum.includes(status);
+        }
+      }
+
+      return false;
+    };
+
     const saveSchema = async () => {
       const objectSchemaWithTranslations = objectSchemaHelper.value?.toSchema();
       if(!objectSchemaWithTranslations) {
@@ -460,11 +478,13 @@ export default defineComponent({
       // Remove translations from schemas as searching for the key in a schema containing all translations will always score at least one hit in the translations while we only want to score a hit if the aspect/link/attribut exists.
       const objectSchemaWithoutTranslations = { ...objectSchemaWithTranslations };
       delete (objectSchemaWithoutTranslations as any).properties.translations;
-      const keys = Object.keys(JsonPointer.flatten(objectSchemaWithoutTranslations));
+      const keys = Object.entries(JsonPointer.flatten(objectSchemaWithoutTranslations));
 
       // Only return translations that are part of the schema (keys are keys of a custom aspect/link/attribute)
-      objectSchemaTranslations = Object.fromEntries(Object.entries(objectSchemaTranslations).map(([language, translations]) => 
-        ([ language, Object.fromEntries(Object.entries(translations).filter(([key]) =>!!keys.find((_key) => _key.endsWith(key))))])
+      objectSchemaTranslations = Object.fromEntries(Object.entries(objectSchemaTranslations).map(([language, translations]) =>
+        ([ language, Object.fromEntries(Object.entries(translations).filter(([translationKey]) =>!!keys.find(([objectSchemaPropertyPath, objectSchemaValueAtPropertyPath]) =>
+          objectSchemaPropertyPath.endsWith(translationKey) /* Name of attributes/custom links */ || translationKey === objectSchemaValueAtPropertyPath /* Enum values */ || (translationKey.includes('_status_') && isStatusPresentInSchema(translationKey, objectSchemaPropertyPath, objectSchemaValueAtPropertyPath)) /* Status values */
+        )))])
       ));
       objectSchemaWithTranslations.properties.translations = objectSchemaTranslations;
 
