@@ -147,12 +147,12 @@ export default defineComponent({
 
     // Domain specific stuff
     const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
-    const { data: domain, error } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
-    const domainNotFound = computed(() => error.value?.code === 404);
+    const { data: domain, error: fetchDomainError } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     const fetchDomainElementStatusCountQueryParameters = computed(() => ({ id: domainId.value, unitId: unitId.value }));
-    const { data: domainObjectInformation, isFetching: elementStatusCountIsFetching } = useQuery(domainQueryDefinitions.queries.fetchDomainElementStatusCount, fetchDomainElementStatusCountQueryParameters);
+    const { data: domainObjectInformation, isFetching: elementStatusCountIsFetching, error: fetchElementStatusCountError } = useQuery(domainQueryDefinitions.queries.fetchDomainElementStatusCount, fetchDomainElementStatusCountQueryParameters);
 
+    const domainNotFound = computed(() => fetchDomainError.value?.code === 404 || fetchElementStatusCountError.value?.code === 404);
     // Create chart data
     const chartData = computed(() => {
       const widgets = Object.entries(domainObjectInformation.value || {}).sort(
