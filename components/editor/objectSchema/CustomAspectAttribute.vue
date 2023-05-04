@@ -77,6 +77,7 @@
         <v-col class="py-0">
           <v-combobox
             :model-value="form.data.enum"
+            :rules="[requiredIfEnum]"
             chips
             multiple
             disable-lookup
@@ -340,6 +341,8 @@ export default defineComponent({
       return formatOptions.value.find((item) => item.options.format === form.value.data.format)?.name;
     });
 
+    const requiredIfEnum = ((value: string | undefined) => (form.value.data.type === 'enum' && form.value.data.type === 'enum' && Array.isArray(value) && !!value.length) || t('requiredIfEnum'));
+
     return {
       prefix,
       form,
@@ -351,6 +354,7 @@ export default defineComponent({
       removeValueFromEnum,
       updateOptions,
       currentFormatOption,
+      requiredIfEnum,
 
       mdiTrashCanOutline,
       t,
@@ -376,7 +380,8 @@ export default defineComponent({
       dateTime: 'Date and Time',
       text: 'Text',
       uri: 'URI'
-    }
+    },
+    "requiredIfEnum": "You have to enter at least one value if selecting type \"selection\""
   },
   "de": {
     "multiple": "Mehrfachauswahl",
@@ -391,7 +396,8 @@ export default defineComponent({
       dateTime: 'Datum und Uhrzeit',
       text: 'Text',
       uri: 'URI'
-    }
+    },
+    "requiredIfEnum": "Sie müssen mindestens einen Wert angeben, wenn Sie den Typ \"Auswahl\" auswählen."
   }
 }
 </i18n>
