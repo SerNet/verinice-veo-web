@@ -448,7 +448,7 @@ export default defineComponent({
     // Saving
     const { mutateAsync: update } = useMutation(domainQueryDefinitions.mutations.updateTypeDefinitions);
 
-    const statusSpredRegExp = /process_(\w+)_status_(([A-Z]|_)+)$/;
+    const statusSpredRegExp = /[a-z]+_(\w+)_status_(([A-Z]|_)+)$/;
 
     const isStatusPresentInSchema = (translationKey: string, objectSchemaPropertyPath: string, objectSchemaValueAtPropertyPath: any) => {
       if(objectSchemaPropertyPath !== `/properties/domains/properties/${domainId.value}/allOf`) {
