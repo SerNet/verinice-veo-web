@@ -209,10 +209,10 @@ export default defineComponent({
 
     // objectschema stuff
     const subTypes: Ref<{ subType: string; status: { key: string; [lang: string]: string }[] }[]> = ref([]);
+    const originalSubTypes: Ref<{ subType: string; status: { key: string; [lang: string]: string }[] }[]> = ref([]);
     const subTypeForms: Ref<boolean[]> = ref([]);
     const newStatusForms: Ref<boolean[]> = ref([]);
     const newStatusTextfields: Ref<(string | undefined)[]> = ref([]);
-    updateForm();
 
     watch(
       () => objectSchemaHelper?.value,
@@ -221,7 +221,8 @@ export default defineComponent({
         languages.value = (objectSchemaHelper?.value?.getLanguages() || []).map((key) => ({ title: t(key), value: key }));
       },
       {
-        deep: true
+        deep: true,
+        immediate: true
       }
     );
 
@@ -248,6 +249,7 @@ export default defineComponent({
           }
         }
       }
+      originalSubTypes.value = cloneDeep(subTypes.value);
     }
 
     function addStatusToSubType(index: number) {
@@ -286,7 +288,7 @@ export default defineComponent({
 
     function onSubmit() {
       // Remove old translations
-      for (const subType of subTypes.value) {
+      for (const subType of originalSubTypes.value) {
         objectSchemaHelper?.value?.removeTranslationsContainingKey(`${objectSchemaHelper.value.getTitle()}_${subType.subType}_status`);
       }
 
