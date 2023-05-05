@@ -18,6 +18,7 @@
 import { createZIP } from "~~/lib/jsonToZip";
 import { chunk } from "lodash";
 import { IVeoObjectHistoryEntry } from "~~/types/VeoTypes";
+import { format } from 'date-fns';
 
 // Types
 export enum PrepPhase  {
@@ -142,22 +143,12 @@ async function createZipArchives(
 }
 
 function composeFileName(chunk: IVeoObjectHistoryEntry[]) {
-  const startDate = transformDateString(chunk[0].time);
-  const endDate = transformDateString(chunk[chunk.length - 1].time);
-  const displayName = `${formatDate(new Date(startDate))} – ${formatDate(new Date(endDate))}`;
-  const fileName = `history_${startDate}_${endDate}`;
-  return { displayName, fileName }
-}
+  const startDate = new Date(chunk[0].time);
+  const endDate = new Date(chunk[chunk.length - 1].time);
 
-function formatDate(d) {
-  const day = (d.getDate() < 10 ? '0' : '') + d.getDate();
-  const month = (d.getMonth() < 10 ? '0' : '') + d.getMonth();
-  const year = d.getFullYear();
-  return `${day}.${month}.${year}`
-}
-
-function transformDateString(ISODateString: string) {
-  return ISODateString.split("T")[0];
+  const displayName = `${format(startDate, 'MM.dd.yyyy')} – ${format(endDate, 'dd.MM.yyyy')}`;
+  const fileName = `history_${format(startDate, 'yyyy-MM-dd')}_${format(endDate, 'yyyy-MM-dd')}`;
+  return { displayName, fileName };
 }
 
 // DEVELOPMENT
