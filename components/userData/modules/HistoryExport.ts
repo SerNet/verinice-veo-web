@@ -82,7 +82,7 @@ async function loadHistory({
   }
 }
 
-function chunkHistory(historyItems: IVeoObjectHistoryEntry[], archiveSize = 100) {
+function chunkHistory(historyItems: IVeoObjectHistoryEntry[], archiveSize = 10000) {
   const archiveName = { displayName: '', name: '', counter: 0 };
   const chunks = chunk(historyItems, archiveSize);
 

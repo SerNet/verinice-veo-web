@@ -107,7 +107,7 @@ const progressBar = computed(() =>
 async function prepareData() {
   state.prepare.phase = PrepPhase.DOWNLOAD;
   try {
-    const history = await loadHistory({ updateLoadingState, fetchFn: devFetchHistoryData, size: 10000 });
+    const history = await loadHistory({ updateLoadingState, fetchFn: fetchHistoryData, size: 5000 });
     const chunkedHistory = chunkHistory(history);
     const zipArchives = await createZipArchives(updateLoadingState, chunkedHistory);
     state.zipArchives.push(...zipArchives);
