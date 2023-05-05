@@ -31,12 +31,12 @@
   >
     <!-- Prepare Data -->
     <template
-      v-if="state.prepare.phase !== PrepPhase.Done"
+      v-if="state.prepare.phase !== PrepPhase.DONE"
       #prepareData
     >
       <div class="d-flex align-center ms-auto mt-4">
         <div
-          v-if="state.prepare.phase === PrepPhase.Zip || state.prepare.phase === PrepPhase.Download"
+          v-if="state.prepare.phase === PrepPhase.ZIP || state.prepare.phase === PrepPhase.DOWNLOAD"
           class="text-subtitle-1  text-primary me-4"
         >
           <span>{{ t(`prepareHistoryPhases.${state.prepare?.phase}`) }}</span>
@@ -48,7 +48,7 @@
         <v-btn
           color="primary"
           variant="outlined"
-          :loading="state.prepare.phase !== PrepPhase.Idle"
+          :loading="state.prepare.phase !== PrepPhase.IDLE"
           @click="prepareData"
         >
           {{ t('btnPrepareDownload') }}
@@ -92,8 +92,8 @@ const { t } = useI18n();
 const state: IHistoryState = reactive({
   zipArchives: [],
   isLoading: [],
-  showAlert: computed(() => state.zipArchives.length === 0 && state.prepare.phase === PrepPhase.Done),
-  prepare: { phase: PrepPhase.Idle,  cur: 1, total: 100 }
+  showAlert: computed(() => state.zipArchives.length === 0 && state.prepare.phase === PrepPhase.DONE),
+  prepare: { phase: PrepPhase.IDLE,  cur: 0, total: 100 }
 });
 
 function updateLoadingState({ phase, cur, total }: { phase: PrepPhase, cur: number, total: number}) {
@@ -101,11 +101,11 @@ function updateLoadingState({ phase, cur, total }: { phase: PrepPhase, cur: numb
 }
 
 const progressBar = computed(() =>
-  (state?.prepare?.cur && state?.prepare?.total) ? state?.prepare?.cur / state?.prepare?.total * 100 : 3);
+  (state?.prepare?.cur && state?.prepare?.total) ? state?.prepare?.cur / state?.prepare?.total * 100 : 0);
 
 // HISTORY Entrypoint
 async function prepareData() {
-  state.prepare.phase = PrepPhase.Download;
+  state.prepare.phase = PrepPhase.DOWNLOAD;
   try {
     const history = await loadHistory({ updateLoadingState, fetchFn: devFetchHistoryData, size: 10000 });
     const chunkedHistory = chunkHistory(history);
@@ -117,7 +117,7 @@ async function prepareData() {
     displayErrorMessage( t('errorHeader'), t('errorBody'));
   }
   finally {
-    state.prepare.phase = PrepPhase.Done;
+    state.prepare.phase = PrepPhase.DONE;
   }
 }
 

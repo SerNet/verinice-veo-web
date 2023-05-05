@@ -21,10 +21,10 @@ import { IVeoObjectHistoryEntry } from "~~/types/VeoTypes";
 
 // Types
 export enum PrepPhase  {
-  Idle,
-  Download,
-  Zip,
-  Done
+  IDLE,
+  DOWNLOAD,
+  ZIP,
+  DONE
 }
 
 export type HistoryZipArchive = { displayName: string; fileName: string; zip: Blob; };
@@ -61,7 +61,7 @@ async function loadHistory({
 
     cur++;
     const total = fetchedHistory.totalItemCount % size === 0 ? Math.floor(fetchedHistory.totalItemCount/size) : Math.floor(fetchedHistory.totalItemCount/size) + 1;
-    if(updateLoadingState) updateLoadingState({ phase: PrepPhase.Download, cur, total });
+    if(updateLoadingState) updateLoadingState({ phase: PrepPhase.DOWNLOAD, cur, total });
 
     if (fetchedHistory.items.length < size) {
       return currentHistory;
@@ -131,7 +131,7 @@ async function createZipArchives(
   const archive = await createZipFromHistoryChunk(chunks[_currentChunk]);
   const zipArchives = [..._zipArchives, archive];
 
-  updateLoadingState({ phase: PrepPhase.Zip, cur: _currentChunk + 1, total: chunks.length });
+  updateLoadingState({ phase: PrepPhase.ZIP, cur: _currentChunk + 1, total: chunks.length });
 
   if (chunks.length === _currentChunk + 1) {
     return zipArchives;
