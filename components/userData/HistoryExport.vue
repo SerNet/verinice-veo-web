@@ -15,7 +15,7 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-/*
+
 <template>
   <!-- Downloads -->
   <UserDataCard
@@ -31,56 +31,85 @@
   >
     <!-- Prepare Data -->
     <template
-      v-if="state.showPrepareData"
+      v-if="state.prepare.phase !== PrepPhase.DONE"
       #prepareData
     >
-      <v-btn
-        color="primary"
-        variant="outlined"
-        class="ms-auto mt-4"
-        :loading="state.isPreparing"
-        @click="prepareData"
-      >
-        {{ t('btnPrepareDownload') }}
-      </v-btn>
+      <div class="d-flex align-center ms-auto mt-4">
+        <div
+          v-if="state.prepare.phase === PrepPhase.ZIP || state.prepare.phase === PrepPhase.DOWNLOAD"
+          class="text-subtitle-1  text-primary me-4"
+        >
+          <span>{{ t(`prepareHistoryPhases.${state.prepare?.phase}`) }}</span>
+          <span
+            class="font-weight-black"
+            style="display: inline-block; width: 48px"
+          >&nbsp;{{ Math.floor(progressBar) }}&nbsp;%</span>
+        </div>
+        <v-btn
+          color="primary"
+          variant="outlined"
+          :loading="state.prepare.phase !== PrepPhase.IDLE"
+          @click="prepareData"
+        >
+          {{ t('btnPrepareDownload') }}
+
+          <template #loader>
+            <v-progress-linear
+              :model-value="progressBar"
+            />
+          </template>
+        </v-btn>
+      </div>
     </template>
   </UserDataCard>
 </template>
 
 <script setup lang="ts">
 import { download } from "~~/lib/jsonToZip";
-import { loadHistoryData, createZipArchives } from './modules/HistoryExport';
+import { loadHistory, chunkHistory, createZipArchives, devFetchHistoryData } from './modules/HistoryExport';
 import { logError } from './modules/HandleError';
 import { useQuerySync } from "~~/composables/api/utils/query";
 import historyQueryDefinitions from '~~/composables/api/queryDefinitions/history';
 
 // Types
+import {
+  HistoryZipArchive,
+  PrepPhase
+} from './modules/HistoryExport';
+
 interface IHistoryState {
-  zipArchives: { name: string; zip: Blob; }[];
-  showPrepareData: boolean;
-  isPreparing: boolean;
+  zipArchives: HistoryZipArchive[];
   isLoading: boolean[];
   showAlert: boolean;
+  prepare: { phase: PrepPhase, cur: number, total: number };
 }
-
-const state: IHistoryState = reactive({
-  zipArchives: [],
-  isLoading: [],
-  showPrepareData: true,
-  isPreparing: false,
-  showAlert: computed(() => state.zipArchives.length === 0 && state.showPrepareData === false)
-});
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { t } = useI18n();
 
+// State
+const state: IHistoryState = reactive({
+  zipArchives: [],
+  isLoading: [],
+  showAlert: computed(() => state.zipArchives.length === 0 && state.prepare.phase === PrepPhase.DONE),
+  prepare: { phase: PrepPhase.IDLE,  cur: 0, total: 100 }
+});
+
+function updateLoadingState({ phase, cur, total }: { phase: PrepPhase, cur: number, total: number}) {
+  state.prepare = { phase, cur, total };
+}
+
+const progressBar = computed(() =>
+  (state?.prepare?.cur && state?.prepare?.total) ? state?.prepare?.cur / state?.prepare?.total * 100 : 0);
+
 // HISTORY Entrypoint
 async function prepareData() {
-  state.isPreparing = true;
+  state.prepare.phase = PrepPhase.DOWNLOAD;
   try {
-    const historyItems = await loadHistoryData({fetchFn: fetchHistoryData});
-    const zipArchives = await createZipArchives(historyItems);
+    const history = await loadHistory({ updateLoadingState, fetchFn: fetchHistoryData, size: 5000 });
+    const chunkedHistory = chunkHistory(history);
+    const zipArchives = await createZipArchives(updateLoadingState, chunkedHistory);
     state.zipArchives.push(...zipArchives);
   }
   catch (error) {
@@ -88,8 +117,7 @@ async function prepareData() {
     displayErrorMessage( t('errorHeader'), t('errorBody'));
   }
   finally {
-    state.showPrepareData = false;
-    state.isPreparing = false;
+    state.prepare.phase = PrepPhase.DONE;
   }
 }
 
@@ -100,7 +128,7 @@ async function fetchHistoryData({ size = 10000, afterId } : {size?: number, afte
 async function downloadZip(index: number) {
   state.isLoading[index] = true;
   try {
-    download(state.zipArchives[index].zip, state.zipArchives[index].name);
+    download(state.zipArchives[index].zip, state.zipArchives[index].fileName);
     displaySuccessMessage(t('successHeader'));
   } catch (error) {
     handleError(error);
