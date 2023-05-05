@@ -128,7 +128,7 @@ async function fetchHistoryData({ size = 10000, afterId } : {size?: number, afte
 async function downloadZip(index: number) {
   state.isLoading[index] = true;
   try {
-    download(state.zipArchives[index].zip, state.zipArchives[index].name);
+    download(state.zipArchives[index].zip, state.zipArchives[index].fileName);
     displaySuccessMessage(t('successHeader'));
   } catch (error) {
     handleError(error);
