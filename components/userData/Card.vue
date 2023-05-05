@@ -52,7 +52,7 @@
             v-if="item.name || item.displayName"
             class="text-h4 mt-2"
           >
-            {{ item.name ? item.name : item.displayName }}
+            {{ item.name || item.displayName }}
           </h3>
           <v-btn
             flat
