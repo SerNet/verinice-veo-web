@@ -27,6 +27,7 @@
   >
     <template #default>
       <v-form
+        ref="formRef"
         v-model="form.valid"
         @submit.prevent="onSubmit"
       >
@@ -219,15 +220,44 @@ export default {
     }
   },
   emits: ['delete', 'update:model-value', 'error', 'success'],
-  setup() {
+  setup(props) {
     const { t, locale } = useI18n();
     const { banSpecialChars, requiredRule } = useRules();
 
     const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined = inject('objectSchemaHelper');
     const displayLanguage = inject<Ref<string>>('displayLanguage', locale);
 
+    const form = reactive({
+      valid: false as boolean,
+      data: {
+        title: '',
+        targetType: '',
+        targetSubType: '',
+        description: '',
+        attributes: [],
+        translatedTitle: undefined
+      } as IVeoOSHCustomLink & { translatedTitle: string | undefined },
+      rules: {
+        title: [(input: string) => banSpecialChars(input), (input: string) => requiredRule(input)],
+        description: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
+        targetType: [(input: string) => props.type === 'aspect' || trim(input).length > 0]
+      } as { [key: string]: ((input: string) => boolean)[] }
+    });
+
+    const formRef = ref();
+    watch(() => form, () => {
+      // Validate to immideatly display error messages (needed for enum values)
+      if(formRef.value) {
+        nextTick(() => {
+          formRef.value.validate();
+        });
+      }
+    }, { deep: true, immediate: true });
+
     return {
       displayLanguage,
+      form,
+      formRef,
       objectSchemaHelper,
 
       banSpecialChars,
@@ -237,22 +267,6 @@ export default {
   },
   data() {
     return {
-      form: {
-        valid: false as boolean,
-        data: {
-          title: '',
-          targetType: '',
-          targetSubType: '',
-          description: '',
-          attributes: [],
-          translatedTitle: undefined
-        } as IVeoOSHCustomLink & { translatedTitle: string | undefined },
-        rules: {
-          title: [(input: string) => this.banSpecialChars(input), (input: string) => this.requiredRule(input)],
-          description: [(input: string) => this.type === 'aspect' || trim(input).length > 0],
-          targetType: [(input: string) => this.type === 'aspect' || trim(input).length > 0]
-        } as { [key: string]: ((input: string) => boolean)[] }
-      },
       duplicates: [] as string[],
       dialogMode: 'create' as 'create' | 'edit',
       // Not computed, as changing the aspect/link title would make this undefined -> we want more control
