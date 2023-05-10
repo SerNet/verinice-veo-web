@@ -77,7 +77,7 @@ export const useRequest = () => {
   });
 
   const getUrl = (url: string) => {
-    const parsedUrl = url.match(/\/api\/(\w+)((\/|\?)(.*)|$)/);
+    const parsedUrl = url.match(/\/api\/([\w-]+)((\/|\?)(.*)|$)/);
     if (!parsedUrl) {
       throw new Error(`Request::getUrl: Couldn't parse request url "${url}"`);
     }
