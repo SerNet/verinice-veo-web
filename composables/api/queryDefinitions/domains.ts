@@ -89,7 +89,7 @@ export default {
   mutations: {
     updateTypeDefinitions: {
       primaryQueryKey: 'domain',
-      url: `/api/domains/:id/elementtypedefinitions/:type/updatefromobjectschema`,
+      url: `/api/content-creation/domains/:id/element-type-definitions/:type/object-schema`,
       method: 'POST',
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: {
