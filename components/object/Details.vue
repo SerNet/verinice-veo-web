@@ -34,7 +34,6 @@
                   </p>
                 </v-col>
                 <v-col
-                  v-if="showCreateDPIAMenu"
                   cols="auto"
                   class="text-right ml-auto pt-1"
                 >
@@ -196,13 +195,10 @@ export default defineComponent({
     const createdAtFormatted = computed(() => (props.object ? formatDateTime(new Date(props.object.createdAt)).value : undefined));
     const updatedAtFormatted = computed(() => (props.object ? formatDateTime(new Date(props.object.updatedAt)).value : undefined));
 
-    const showCreateDPIAMenu = computed(() => props.object?.type === 'process' && subType.value === 'PRO_DataProcessing');
-
     return {
       ability,
       createdAtFormatted,
       internalActiveTab,
-      showCreateDPIAMenu,
       subType,
       tabs,
       updatedAtFormatted,
