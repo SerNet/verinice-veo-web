@@ -136,7 +136,7 @@ const manageAccountDialogVisible = computed(
   () => createAccountDialogVisible.value || editAccountDialogVisible.value
 );
 const manageAccountProps = computed(() =>
-  editAccountDialogVisible.value ? editAccountDialogProps.value : {}
+  editAccountDialogVisible.value ? editAccountDialogProps.value : { groups: ['veo-write-access'] }
 );
 const onManageAccountDialogInput = (newValue: boolean) => {
   if (!newValue) {
