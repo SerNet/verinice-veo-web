@@ -127,6 +127,7 @@ import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
 import { useQuerySync } from '~~/composables/api/utils/query';
 import objectQueryDefinitions from '~~/composables/api/queryDefinitions/objects';
+import { useQueryClient } from '@tanstack/vue-query';
 
 export default defineComponent({
   props: {
@@ -150,6 +151,7 @@ export default defineComponent({
   emits: ['mitigations-modified', 'update:mitigations'],
   setup(props, { emit }) {
     const { t } = useI18n();
+    const queryClient = useQueryClient();
 
     // We don't need the name, as it only gets used by the text in the linkObjectDialog and this text gets overwritten by template#header
     const editedObject = { type: 'control', name: '' };
@@ -175,7 +177,7 @@ export default defineComponent({
         const { id } = getEntityDetailsFromLink(props.data.mitigation);
 
         try {
-          selectedItems.value = await useQuerySync(objectQueryDefinitions.queries.fetchObjectChildren, { endpoint: 'controls', id: id });
+          selectedItems.value = await useQuerySync(objectQueryDefinitions.queries.fetchObjectChildren, { endpoint: 'controls', id: id }, queryClient);
           emit('mitigations-modified', false);
         } finally {
           fetchingMitigation.value = false;
@@ -187,7 +189,7 @@ export default defineComponent({
     };
 
     const onMitigationCreated = async (objectId: string) => {
-      const newMitigation = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: 'controls', id: objectId });
+      const newMitigation = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: 'controls', id: objectId }, queryClient);
       selectedItems.value = [...selectedItems.value, newMitigation]; // We reassign the ref instead of using .push so that the computed setter picks up the changes
     };
 
