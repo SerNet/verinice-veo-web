@@ -167,10 +167,10 @@ export default defineComponent({
 
     const localButtons = computed<IAlertButton[]>(() =>
       [
-        {
+        ...(!props.noCloseButton ? [{
           text: props.defaultButtonText || globalT('global.button.ok'),
           onClick: () => emit('update:model-value', false)
-        },
+        }] : []),
         ...props.buttons
       ].map((button, index) => ({
         ...button,
