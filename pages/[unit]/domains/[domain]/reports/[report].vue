@@ -226,10 +226,10 @@ export default defineComponent({
     }));
     const { mutateAsync: create, isLoading: generatingReport } = useMutation(reportQueryDefinitions.mutations.create, { onSuccess: openReport });
 
-    const generateReport = () => {
+    const generateReport = async () => {
       if (report.value) {
         try {
-          create(createMutationParameters);
+          await create(createMutationParameters);
         } catch (error: any) {
           displayErrorMessage(t('generateReportError').toString(), error.message);
         }
