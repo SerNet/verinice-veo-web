@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    :headline="t('formSchemaEditor')"
+    :title="t('formSchemaEditor')"
     persistent
     fixed-footer
     :large="state !== WIZARD_STATES.START"

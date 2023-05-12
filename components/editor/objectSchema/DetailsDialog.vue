@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    :headline="globalT('editor.schema.properties')"
+    :title="globalT('editor.schema.properties')"
     fixed-footer
     large
     persistent

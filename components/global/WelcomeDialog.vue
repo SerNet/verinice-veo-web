@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     v-bind="$attrs"
-    :headline="t('welcome')"
+    :title="t('welcome')"
     large
     @update:model-value="$emit('update:model-value', $event)"
   >

@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    :headline="t('createUnit')"
+    :title="t('createUnit')"
     :persistent="persistent || creatingUnit"
     :close-disabled="creatingUnit"
     v-bind="$attrs"

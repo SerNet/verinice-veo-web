@@ -20,7 +20,7 @@
     :model-value="modelValue"
     v-bind="$attrs"
     large
-    :headline="title"
+    :title="title"
     :persistent="savingObject"
     :close-disabled="savingObject"
     fixed-footer

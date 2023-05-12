@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     v-bind="$attrs"
-    :headline="t('deleteUnit')"
+    :title="t('deleteUnit')"
     :persistent="deletionInProgress"
     :close-disabled="deletionInProgress"
     @update:model-value="emit('update:model-value', $event)"

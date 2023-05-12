@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     v-bind="$attrs"
-    :headline="t('headline')"
+    :title="t('headline')"
   >
     <template #default>
       {{ t('create_entity') }}

@@ -20,7 +20,7 @@
     :model-value="modelValue"
     v-bind="$attrs"
     :close-disabled="isLoading"
-    :headline="id ? t('updateAccount') : t('createAccount')"
+    :title="id ? t('updateAccount') : t('createAccount')"
     large
     @update:model-value="$emit('update:model-value', $event)"
   >

@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    :headline="headline"
+    :title="headline"
     large
     persistent
     fixed-footer

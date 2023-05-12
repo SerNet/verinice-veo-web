@@ -21,7 +21,7 @@
     v-bind="$attrs"
     large
     fixed-footer
-    :headline="t('formSchema')"
+    :title="t('formSchema')"
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>

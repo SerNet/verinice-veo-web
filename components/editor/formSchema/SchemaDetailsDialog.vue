@@ -19,7 +19,7 @@
   <BaseDialog
     v-model="dialog.value"
     large
-    :headline="t('schemaDetailsHeadline')"
+    :title="t('schemaDetailsHeadline')"
     fixed-footer
   >
     <template #default>

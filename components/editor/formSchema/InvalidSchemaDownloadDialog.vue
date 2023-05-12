@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     v-bind="$attrs"
-    :headline="t('downloadSchema')"
+    :title="t('downloadSchema')"
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>

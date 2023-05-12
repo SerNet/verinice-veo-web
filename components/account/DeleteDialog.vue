@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     v-bind="$attrs"
-    :headline="t('deleteAccount')"
+    :title="t('deleteAccount')"
     :close-disabled="isLoading"
     @update:model-value="emit('update:model-value', $event)"
   >

@@ -35,7 +35,7 @@
           v-if="fullscreen"
           style="height: 36px"
         />
-        <span>{{ headline }}</span>
+        <span>{{ title }}</span>
         <v-spacer />
         <v-btn
           :disabled="closeDisabled"
@@ -66,90 +66,135 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+  <v-dialog
+    v-if="confirmClose"
+    v-model="closeConfirmationDialogVisible"
+    width="450px"
+  >
+    <v-card>
+      <v-card-title>
+        {{ t('closeDialog') }}
+      </v-card-title>
+      <v-card-text>
+        {{ isString(confirmClose) ? confirmClose : t('confirmationDialogText') }}
+        <v-card-actions class="px-0 pb-0">
+          <v-btn
+            variant="text"
+            @click="closeConfirmationDialogVisible = false"
+          >
+            {{ t('global.button.cancel') }}
+          </v-btn>
+          <v-spacer />
+          <v-btn
+            color="primary"
+            variant="text"
+            @click="closeDialog(true)"
+          >
+            {{ t('global.button.yes') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { mdiClose } from '@mdi/js';
+import { isString } from 'lodash';
 import { useDisplay } from 'vuetify';
 
-export default defineComponent({
-  props: {
-    modelValue: {
-      type: Boolean,
-      default: false
-    },
-    headline: {
-      type: String,
-      required: true
-    },
-    large: {
-      type: Boolean,
-      default: false
-    },
-    xLarge: {
-      type: Boolean,
-      default: false
-    },
-    closeDisabled: {
-      type: Boolean,
-      default: false
-    },
-    closeFunction: {
-      type: Function,
-      default: () => () => {
-        return true;
-      }
-    },
-    fixedFooter: {
-      type: Boolean,
-      default: false
-    },
-    innerClass: {
-      type: String,
-      default: ''
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false
+  },
+  title: {
+    type: String,
+    required: true
+  },
+  large: {
+    type: Boolean,
+    default: false
+  },
+  xLarge: {
+    type: Boolean,
+    default: false
+  },
+  // If set to true, the close button at the top right will be disabled and all other methods of closing the dialog will be ignored.
+  closeDisabled: {
+    type: Boolean,
+    default: false
+  },
+  // If set to a string or true, a confirm dialog will be shown before closing
+  confirmClose: {
+    type: [Boolean, String],
+    default: false
+  },
+  // If set, gets called before closing the dialog. If returns true the dialog gets closed, if false it stays open
+  closeFunction: {
+    type: Function,
+    default: () => () => {
+      return true;
     }
   },
-  emits: ['update:model-value'],
-  setup(props, { emit }) {
-    const { mdAndDown, smAndDown, xs } = useDisplay();
-
-    const fullscreen = computed(() => (props.xLarge && mdAndDown.value) || (props.large && smAndDown.value) || xs.value);
-
-    const width = computed(() => {
-      if (props.large) return '900px';
-      if (props.xLarge) return '1350px';
-      return '450px';
-    });
-
-    const closeDialog = () => {
-      // @ts-ignore For some reason closeFunction has a value of never, but no Prop type seems to fit a function
-      if (props.closeFunction()) {
-        emit('update:model-value', false);
-      }
-    };
-
-    const dialogClasses = computed(() => {
-      const classes = {
-        'overflow-hidden': true,
-        'd-flex': props.modelValue
-      };
-
-      return Object.entries(classes)
-        .filter(([_, value]) => !!value)
-        .map(([key, _]) => key)
-        .join(' ');
-    });
-
-    return {
-      closeDialog,
-      dialogClasses,
-      fullscreen,
-      width,
-
-      mdiClose
-    };
+  fixedFooter: {
+    type: Boolean,
+    default: false
+  },
+  innerClass: {
+    type: String,
+    default: ''
   }
 });
+
+const emit = defineEmits<{
+  (event: 'update:model-value', value: boolean): void
+}>();
+
+const { mdAndDown, smAndDown, xs } = useDisplay();
+const { t } = useI18n();
+
+const fullscreen = computed(() => (props.xLarge && mdAndDown.value) || (props.large && smAndDown.value) || xs.value);
+
+const width = computed(() => {
+  if (props.large) return '900px';
+  if (props.xLarge) return '1350px';
+  return '450px';
+});
+
+const dialogClasses = computed(() => {
+  const classes = {
+    'overflow-hidden': true,
+    'd-flex': props.modelValue
+  };
+
+  return Object.entries(classes)
+    .filter(([_, value]) => !!value)
+    .map(([key, _]) => key)
+    .join(' ');
+});
+
+// Everything regarding closing the dialog
+const closeConfirmationDialogVisible = ref(false);
+const closeDialog = (ignoreConfirmDialog = false) => {
+  // Hide confirmation dialog if visible (if the dialog is visible and this function gets called, the user confirmed he wants to close the dialog)
+  if(closeConfirmationDialogVisible.value) {
+    closeConfirmationDialogVisible.value = false;
+  }
+
+  if(props.closeDisabled) {
+    return;
+  }
+
+  if(props.confirmClose && !ignoreConfirmDialog) {
+    closeConfirmationDialogVisible.value = true;
+    return;
+  }
+
+  if (props.closeFunction()) {
+    emit('update:model-value', false);
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -170,3 +215,16 @@ export default defineComponent({
   border-top: 1px solid $medium-grey;
 }
 </style>
+
+<i18n>
+{
+  "en": {
+    "closeDialog": "Close dialog",
+    "confirmationDialogText": "Are you sure you want to close this dialog? Unsaved changes might be lost."
+  },
+  "de": {
+    "closeDialog": "Dialog schließen",
+    "confirmationDialogText": "Möchten Sie wirklich den Dialog schließen? Ungespeicherte Änderungen gehen möglicherweise verloren."
+  }
+}
+</i18n>
