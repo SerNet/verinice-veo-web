@@ -39,8 +39,6 @@
         />
         <v-text-field
           v-model="newUnit.description"
-          :rules="[requiredRule]"
-          required
           variant="underlined"
           :label="t('description')"
         />
