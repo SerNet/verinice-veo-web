@@ -197,9 +197,7 @@ export const useRequest = () => {
 
     const combinedUrl = `${url}${queryParameters.toString() ? '?' : ''}${queryParameters.toString()}`;
     const reqURL = getUrl(combinedUrl);
-    console.log('Fetching data: ', JSON.parse(JSON.stringify(reqURL)), JSON.parse(JSON.stringify(combinedOptions)));
     const res = await fetch(reqURL, combinedOptions);
-    console.log('Fetching data: ', JSON.parse(JSON.stringify(reqURL)), JSON.parse(JSON.stringify(combinedOptions)), JSON.parse(JSON.stringify(res)));
     updateETagMapIfEtagExists(res, options);
     return await parseResponse(res, options);
   };
