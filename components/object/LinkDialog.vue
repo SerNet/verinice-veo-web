@@ -21,8 +21,8 @@
     v-bind="$attrs"
     large
     :title="title"
-    :persistent="savingObject"
     :close-disabled="savingObject"
+    :confirm-close="itemsSelected"
     fixed-footer
     @update:model-value="$emit('update:model-value', $event)"
   >
@@ -85,7 +85,7 @@
 
 <script lang="ts">
 import { PropType } from 'vue';
-import { differenceBy, omit, uniqBy, upperFirst } from 'lodash';
+import { differenceBy, isEqual, omit, uniqBy, upperFirst } from 'lodash';
 
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
@@ -294,6 +294,8 @@ export default defineComponent({
       { deep: true, immediate: true }
     );
 
+    const itemsSelected = computed(() => !isEqual(originalSelectedItems.value, modifiedSelectedItems.value));
+
     // Linking logic
     const savingObject = ref(false); // saving status for adding entities
     const linkObjects = async () => {
@@ -356,6 +358,7 @@ export default defineComponent({
       childrenLoading,
       domainId,
       filter,
+      itemsSelected,
       linkObjects,
       modifiedSelectedItems,
       newObjectTypeName,

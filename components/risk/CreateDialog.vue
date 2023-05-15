@@ -19,7 +19,6 @@
   <BaseDialog
     v-model="dialog"
     :close-disabled="creatingRisks"
-    :persistent="creatingRisks"
     :title="upperFirst(t('createRisk', 0).toString())"
     x-large
     fixed-footer

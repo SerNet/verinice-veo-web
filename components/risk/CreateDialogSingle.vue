@@ -19,7 +19,7 @@
   <BaseDialog
     :model-value="modelValue"
     :close-disabled="savingRisk"
-    :persistent="savingRisk || !!Object.keys(dirtyFields).length"
+    :confirm-close="!!Object.keys(dirtyFields).length"
     :title="upperFirst(!!risk ? t('editRisk', [risk.designator]).toString() : t('createRisk').toString())"
     x-large
     fixed-footer

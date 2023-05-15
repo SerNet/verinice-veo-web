@@ -21,7 +21,7 @@
     :title="globalT('editor.schema.properties')"
     fixed-footer
     large
-    persistent
+    :confirm-close="isFormDirty"
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
@@ -157,7 +157,7 @@
       <v-btn
         variant="text"
         color="primary"
-        :disabled="subTypeForms.some((form) => form === false)"
+        :disabled="subTypeForms.some((form) => form === false) || !isFormDirty"
         @click="onSubmit"
       >
         {{ t('global.button.save') }}
@@ -169,7 +169,7 @@
 <script lang="ts">
 import { mdiMenu, mdiPlus, mdiTranslate, mdiTrashCanOutline } from '@mdi/js';
 import Draggable from 'vuedraggable';
-import { upperFirst, cloneDeep } from 'lodash';
+import { upperFirst, cloneDeep, isEqual } from 'lodash';
 
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { CHART_COLORS, separateUUIDParam } from '~/lib/utils';
@@ -286,6 +286,8 @@ export default defineComponent({
     const requiredRule = (v: string) => !!v || t('global.input.required');
     const alphaNumericUnderscoreRule = (v: string) => !v || /^[A-Z0-9_]+$/.test(v) || t('statusAlphaNumericUnderscore');
 
+    const isFormDirty = computed(() => !isEqual(subTypes.value, originalSubTypes.value));
+
     function onSubmit() {
       // Remove old translations
       for (const subType of originalSubTypes.value) {
@@ -324,6 +326,7 @@ export default defineComponent({
       deleteSubType,
       displayLanguage,
       domain,
+      isFormDirty,
       languages,
       newStatusForms,
       newStatusTextfields,

@@ -19,7 +19,6 @@
   <BaseDialog
     v-bind="$attrs"
     :title="t('deleteUnit')"
-    :persistent="deletionInProgress"
     :close-disabled="deletionInProgress"
     @update:model-value="emit('update:model-value', $event)"
   >
