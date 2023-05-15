@@ -126,7 +126,7 @@
         text
         @click="$emit('update:model-value', false)"
       >
-        {{ t('global.button.cancel') }}
+        {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -135,7 +135,7 @@
         :disabled="!form.valid"
         @click="doSave()"
       >
-        {{ t('global.button.save') }}
+        {{ globalT('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -176,6 +176,7 @@ export default defineComponent({
   emits: ['update:model-value', 'update-subtype', 'update-sorting', 'update-schema-name'],
   setup(props, context) {
     const { t } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
 
     /**
      * Common dialog stuff (opening and closing)
@@ -245,7 +246,7 @@ export default defineComponent({
       context.emit('update:model-value', false);
     }
 
-    return { dialog, doSave, form, subTypeOptions, t };
+    return { dialog, doSave, form, subTypeOptions, t, globalT };
   }
 });
 </script>

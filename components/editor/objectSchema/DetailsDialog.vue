@@ -151,7 +151,7 @@
         variant="text"
         @click="$emit('update:model-value', false)"
       >
-        {{ t('global.button.cancel') }}
+        {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -160,7 +160,7 @@
         :disabled="subTypeForms.some((form) => form === false) || !isFormDirty"
         @click="onSubmit"
       >
-        {{ t('global.button.save') }}
+        {{ globalT('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -176,6 +176,7 @@ import { CHART_COLORS, separateUUIDParam } from '~/lib/utils';
 import { Ref } from 'vue';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~~/composables/api/utils/query';
+import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 
 export default defineComponent({
   components: {
@@ -193,7 +194,7 @@ export default defineComponent({
   },
   emits: ['schema-updated', 'update:model-value'],
   setup(props, { emit }) {
-    const { t } = useI18n();
+    const { t, locales } = useI18n();
     const { t: globalT } = useI18n({ useScope: 'global' });
     const route = useRoute();
 
@@ -218,7 +219,7 @@ export default defineComponent({
       () => objectSchemaHelper?.value,
       () => {
         updateForm();
-        languages.value = (objectSchemaHelper?.value?.getLanguages() || []).map((key) => ({ title: t(key), value: key }));
+        languages.value = (objectSchemaHelper?.value?.getLanguages() || []).map((key) => ({ title: (locales.value as LocaleObject[]).find((locale) => locale.code === key)?.name || key, value: key }));
       },
       {
         deep: true,

@@ -67,7 +67,7 @@
         :disabled="savingObject"
         @click="$emit('update:model-value', false)"
       >
-        {{ t('global.button.cancel') }}
+        {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -77,7 +77,7 @@
         :disabled="ability.cannot('manage', 'objects')"
         @click="linkObjects"
       >
-        {{ t('global.button.save') }}
+        {{ globalT('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -151,6 +151,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const route = useRoute();
     const { t, locale } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global'});
     const { tablePageSize } = useVeoUser();
     const { link } = useLinkObject();
     const { unlink } = useUnlinkObject();
@@ -371,6 +372,7 @@ export default defineComponent({
       title,
       updateFilter,
 
+      globalT,
       t,
       upperFirst
     };
