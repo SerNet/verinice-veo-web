@@ -100,6 +100,15 @@
           </v-list-item-title>
         </v-list-item>
         <v-divider />
+        <v-list-item
+          to="/security"
+          @click="displaySecurityPolicy = true"
+        >
+          <v-list-item-title>
+            {{ t('policy') }}
+          </v-list-item-title>
+        </v-list-item>
+        <v-divider />
         <v-list-item @click="displayDeploymentDetails = true">
           <v-list-item-title>
             {{ t('about') }}
@@ -112,6 +121,9 @@
           </v-list-item-title>
         </v-list-item>
       </v-list>
+
+      <SecurityPolicy v-model="displaySecurityPolicy" />
+
       <DeploymentDetailsDialog v-model="displayDeploymentDetails" />
     </v-card>
   </v-menu>
@@ -133,6 +145,7 @@ const { ability } = useVeoPermissions();
 const logout = () => _logout('/');
 
 const displayDeploymentDetails = ref(false);
+const displaySecurityPolicy = ref(false);
 
 const firstName = computed(() => profile.value?.firstName || '');
 const lastName = computed(() => profile.value?.lastName || '');
@@ -142,6 +155,7 @@ const accountLink = computed(() => `${config.public.oidcUrl}/realms/${config.pub
 
 const onMenuClosed = () => {
   displayDeploymentDetails.value = false;
+  displaySecurityPolicy.value = false;
 };
 </script>
 
@@ -151,13 +165,15 @@ const onMenuClosed = () => {
     "about": "About verinice.",
     "logout": "Logout",
     "editAccount": "Edit account",
-    "notAvailable": "Not available"
+    "notAvailable": "Not available",
+    "policy": "Security policy",
   },
   "de": {
     "about": "Über verinice.",
     "logout": "Abmelden",
     "editAccount": "Benutzerkonto bearbeiten",
-    "notAvailable": "Keine Angabe"
+    "notAvailable": "Keine Angabe",
+    "policy": "Sicherheitsrichtlinie",
   }
 }
 </i18n>
