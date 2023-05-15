@@ -109,7 +109,7 @@ export default defineNuxtConfig({
     vueI18n: {
       legacy: false,
       silentFallbackWarn: true,
-      dateTimeFormats: Object.fromEntries(
+      datetimeFormats: Object.fromEntries(
         ['de', 'en'].map((lang) => [
           lang,
           {
