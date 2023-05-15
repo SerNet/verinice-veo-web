@@ -82,15 +82,17 @@
             variant="text"
             @click="closeConfirmationDialogVisible = false"
           >
-            {{ t('global.button.cancel') }}
+            {{ globalT('global.button.cancel') }}
           </v-btn>
           <v-spacer />
           <v-btn
+            ref="confirmButton"
             color="primary"
             variant="text"
             @click="closeDialog(true)"
+            @keydown.enter="closeDialog(true)"
           >
-            {{ t('global.button.yes') }}
+            {{ globalT('global.button.yes') }}
           </v-btn>
         </v-card-actions>
       </v-card-text>
@@ -153,6 +155,7 @@ const emit = defineEmits<{
 
 const { mdAndDown, smAndDown, xs } = useDisplay();
 const { t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
 
 const fullscreen = computed(() => (props.xLarge && mdAndDown.value) || (props.large && smAndDown.value) || xs.value);
 
@@ -176,6 +179,18 @@ const dialogClasses = computed(() => {
 
 // Everything regarding closing the dialog
 const closeConfirmationDialogVisible = ref(false);
+// Focus okay button so the user can leave the dialog by pressing enter
+watch(() => closeConfirmationDialogVisible.value, (value) => {
+  if(value) {
+    nextTick(() => {
+      confirmButton.value.$el.focus();
+    });
+  } else {
+    document.activeElement?.blur?.();
+  }
+});
+
+const confirmButton = ref();
 const closeDialog = (ignoreConfirmDialog = false) => {
   // Hide confirmation dialog if visible (if the dialog is visible and this function gets called, the user confirmed he wants to close the dialog)
   if(closeConfirmationDialogVisible.value) {
@@ -224,7 +239,7 @@ const closeDialog = (ignoreConfirmDialog = false) => {
   },
   "de": {
     "closeDialog": "Dialog schließen",
-    "confirmationDialogText": "Möchten Sie wirklich den Dialog schließen? Ungespeicherte Änderungen gehen möglicherweise verloren."
+    "confirmationDialogText": "Möchten Sie den Dialog wirklich schließen? Ungespeicherte Änderungen gehen möglicherweise verloren."
   }
 }
 </i18n>
