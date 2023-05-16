@@ -30,22 +30,32 @@
   
           <v-list-item-title>
             <a
-              href="mailto:security@verinice.com?subject=Bug report"
+              :href="links.contact"
             >{{ t('contact') }}
             </a>
           </v-list-item-title>
         </v-list-item>
   
-        <v-list-item
-          v-for="item in items"
-          :key="item.title"
-        >
+        <v-list-item>
           <template #prepend>
-            <v-icon :icon="item.icon" />
+            <v-icon :icon="mdiClock" />
           </template>
   
-          <v-list-item-title v-text="`${t(item.title)}: ${t(item.text)}`" />
+          <v-list-item-title>
+            {{ t('expiration') }}: 2023-05-31T22:00:00.000Z
+          </v-list-item-title>
         </v-list-item>
+  
+        <v-list-item>
+          <template #prepend>
+            <v-icon :icon="mdiFlag" />
+          </template>
+
+          <v-list-item-title>
+            {{ t('languageFav') }}: {{ t('languages') }}
+          </v-list-item-title>
+        </v-list-item>
+  
         <v-list-item>
           <template #prepend>
             <v-icon :icon="mdiAccount" />
@@ -53,7 +63,7 @@
   
           <v-list-item-title>
             <a
-              href="https://git.verinice.org/bb/projects/ISMS/repos/verinice-veo-web/browse/SECURITY.md"
+              :href="links.markdown"
               target="_blank"
             >{{ t('policy') }}
             </a>
@@ -69,10 +79,10 @@ import { mdiEmail, mdiClock, mdiAccount, mdiFlag } from '@mdi/js';
 
 const { t } = useI18n();
 
-const items = [
-  { title: 'expiration', text: '2023-05-31T22:00:00.000Z', icon: mdiClock },
-  { title: 'languageFav', text: 'languages', icon: mdiFlag }
-];
+const links = {
+  contact: 'mailto:security@verinice.com?subject=Bug report',
+  markdown: 'https://git.verinice.org/bb/projects/ISMS/repos/verinice-veo-web/browse/SECURITY.md'
+};
 </script>
 
 <i18n>

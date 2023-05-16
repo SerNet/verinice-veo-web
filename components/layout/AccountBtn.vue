@@ -103,7 +103,6 @@
         <v-list-item
           active-class="veo-active-list-item"
           to="/security"
-          @click="displaySecurityPolicy = true"
         >
           <v-list-item-title>
             {{ $t('breadcrumbs.security') }}
@@ -122,8 +121,6 @@
           </v-list-item-title>
         </v-list-item>
       </v-list>
-
-      <SecurityPolicy v-model="displaySecurityPolicy" />
 
       <DeploymentDetailsDialog v-model="displayDeploymentDetails" />
     </v-card>
@@ -146,7 +143,6 @@ const { ability } = useVeoPermissions();
 const logout = () => _logout('/');
 
 const displayDeploymentDetails = ref(false);
-const displaySecurityPolicy = ref(false);
 
 const firstName = computed(() => profile.value?.firstName || '');
 const lastName = computed(() => profile.value?.lastName || '');
@@ -156,7 +152,6 @@ const accountLink = computed(() => `${config.public.oidcUrl}/realms/${config.pub
 
 const onMenuClosed = () => {
   displayDeploymentDetails.value = false;
-  displaySecurityPolicy.value = false;
 };
 </script>
 
