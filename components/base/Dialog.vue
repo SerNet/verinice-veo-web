@@ -105,48 +105,25 @@ import { mdiClose } from '@mdi/js';
 import { isString } from 'lodash';
 import { useDisplay } from 'vuetify';
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false
-  },
-  title: {
-    type: String,
-    required: true
-  },
-  large: {
-    type: Boolean,
-    default: false
-  },
-  xLarge: {
-    type: Boolean,
-    default: false
-  },
-  // If set to true, the close button at the top right will be disabled and all other methods of closing the dialog will be ignored.
-  closeDisabled: {
-    type: Boolean,
-    default: false
-  },
-  // If set to a string or true, a confirm dialog will be shown before closing
-  confirmClose: {
-    type: [Boolean, String],
-    default: false
-  },
-  // If set, gets called before closing the dialog. If returns true the dialog gets closed, if false it stays open
-  closeFunction: {
-    type: Function,
-    default: () => () => {
-      return true;
-    }
-  },
-  fixedFooter: {
-    type: Boolean,
-    default: false
-  },
-  innerClass: {
-    type: String,
-    default: ''
-  }
+const props = withDefaults(defineProps<{
+  modelValue: boolean,
+  title: string,
+  large: boolean,
+  xLarge: boolean,
+  closeDisabled: boolean, // If set to true, the close button at the top right will be disabled and all other methods of closing the dialog will be ignored.
+  confirmClose: boolean | string, // If set to a string or true, a confirm dialog will be shown before closing
+  closeFunction: () => boolean, // If set, gets called before closing the dialog. If returns true the dialog gets closed, if false it stays open
+  fixedFooter: boolean,
+  innerClass: string
+}>(), {
+  modelValue: false,
+  large: false,
+  xLarge: false,
+  closeDisabled: false,
+  confirmClose: false,
+  closeFunction: () => () => true,
+  fixedFooter: false,
+  innerClass: ''
 });
 
 const emit = defineEmits<{
@@ -186,7 +163,7 @@ watch(() => closeConfirmationDialogVisible.value, (value) => {
       confirmButton.value.$el.focus();
     });
   } else {
-    document.activeElement?.blur?.();
+    (document.activeElement as HTMLElement | null)?.blur?.();
   }
 });
 
