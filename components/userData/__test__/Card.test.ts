@@ -20,6 +20,7 @@ import { describe, it, expect } from 'vitest';
 import { mockNuxtImport, mockComponent } from 'nuxt-vitest/utils';
 import { mount } from '@vue/test-utils';
 import { createVuetify } from 'vuetify';
+import { t } from '~~/test/mocks';
 
 // @ts-ignore // TS throws 'cannot find module' error, however this module can be found + used
 import UserDataCard from '../Card.vue';
@@ -41,6 +42,7 @@ mockComponent('BaseAlert', async () => {
 // Setup
 const vuetify = createVuetify();
 const plugins = [vuetify];
+const mocks = { t };
 
 const initialProps = {
   header: 'User Data Card Test',
@@ -57,7 +59,7 @@ const initialProps = {
 
 describe('userDataCard.vue', () => {
   const wrapper = mount(UserDataCard, {
-    global: { plugins },
+    global: { plugins, mocks },
     props: initialProps
   });
 
