@@ -134,11 +134,12 @@ import { useQuery } from '~~/composables/api/utils/query';
 import catalogQueryDefinitions from '~~/composables/api/queryDefinitions/catalogs';
 import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
 import formsQueryDefinitions, { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
+import objectsQueryDefinitions from '~~/composables/api/queryDefinitions/objects';
 import reportQueryDefinitions from '~~/composables/api/queryDefinitions/reports';
 import translationsQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
 
 
-type SupportedQuery = ':domain' | ':subType' | ':report' | ':catalog' | ':objectType';
+type SupportedQuery = ':domain' | ':subType' | ':report' | ':catalog' | ':objectType' | ':object';
 
 interface IVeoBreadcrumbReplacementMapBreadcrumb {
   disabled?: boolean;
@@ -235,6 +236,16 @@ export default defineComponent({
         }
       ],
       [
+        ':object',
+        {
+          queriedText: {
+            query: ':object',
+            parameterTransformationFn: () => ({ id: route.params.object, endpoint: route.params.objectType }),
+            resultTransformationFn: (_param, value, data) => data.displayName
+          }
+        }
+      ],
+      [
         ':report', // Used for reports
         {
           queriedText: {
@@ -303,9 +314,15 @@ export default defineComponent({
     const { data: report } = useQuery(reportQueryDefinitions.queries.fetchAll);
 
     const objectTypeQueryParameters = ref<any>({});
-    const objectTypeQueryEnabled = computed(() => !isEmpty(catalogQueryParameters.value));
+    const objectTypeQueryEnabled = computed(() => !isEmpty(objectTypeQueryParameters.value));
     const { data: objectType } = useQuery(translationsQueryDefinitions.queries.fetch, objectTypeQueryParameters, {
       enabled: objectTypeQueryEnabled
+    });
+
+    const objectQueryParameters = ref<any>({});
+    const objectQueryEnabled = computed(() => !isEmpty(objectQueryParameters.value));
+    const { data: object } = useQuery(objectsQueryDefinitions.queries.fetch, objectQueryParameters, {
+      enabled: objectQueryEnabled
     });
 
     const queryResultMap = computed<{ [key: string]: any }>(() => ({
@@ -317,6 +334,9 @@ export default defineComponent({
         : undefined,
       ':objectType': objectType.value
         ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':objectType')?.queriedText?.resultTransformationFn(':objectType', route.params.objectType as string, objectType.value)
+        : undefined,
+      ':object': object.value
+        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':object')?.queriedText?.resultTransformationFn(':object', route.params.object as string, object.value)
         : undefined,
       ':subType': subType.value
         ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':subType')?.queriedText?.resultTransformationFn(':subType', route.params.subType as string, subType.value)
@@ -401,6 +421,9 @@ export default defineComponent({
                 break;
               case ':objectType':
                 objectTypeQueryParameters.value = transformedParameters;
+                break;
+              case ':object':
+                objectQueryParameters.value = transformedParameters;
                 break;
             }
           }
