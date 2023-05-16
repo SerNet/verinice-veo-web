@@ -230,7 +230,7 @@ export default defineComponent({
           queriedText: {
             query: ':subType',
             parameterTransformationFn: () => ({ domainId: route.params.domain }),
-            resultTransformationFn: (_param, value, data) => data.find((formSchema: IVeoFormSchema) => formSchema.subType === value)?.name?.[locale.value]
+            resultTransformationFn: (_param, value, data) => value === '-' ? t('all') : data.find((formSchema: IVeoFormSchema) => formSchema.subType === value)?.name?.[locale.value]
           }
         }
       ],
@@ -442,6 +442,17 @@ export default defineComponent({
   head: {}
 });
 </script>
+
+<i18n>
+{
+  "en": {
+    "all": "All"
+  },
+  "de": {
+    "all": "Alle"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 a.v-breadcrumbs-item:not(:last-child) {
