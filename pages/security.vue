@@ -18,56 +18,96 @@
 <template>
   <BasePage>
     <v-card
-      class="mt-4"
+      class="ma-4"
       :title="t('headline')"
-      variant="tonal"
+      width="600"
     >
+      <template #append>
+        <v-icon :icon="mdiClock" />
+        {{ t('expiration') }}: 2024-01-01T00:00:00.000Z
+      </template>
+
+      <v-card class="ma-4">
+        <v-list>
+          <v-list-item variant="tonal">
+            <v-list-item-title>Searching for Vulnerabilities</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item variant="plain">
+            We explicitly allow ethical hackers to test our application, but only under these terms:
+            <br><br>
+            - Do not use off-the-shelf scanners, try to avoid useless traffic.<br>
+            - Set a sensible rate limiting (e.g. 600/min)<br>
+            - Do not access customer data, use your own accounts where possible.<br>
+            - No phishing, no DDoS, no post-exploitation...
+          </v-list-item>
+
+          <v-list-item variant="tonal">
+            <v-list-item-title>Scope</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item variant="plain">
+            To be clear, you're only allowed to test
+            <strong>veo-web.verinice.com</strong>,
+            <strong>api.verinice.com</strong>,
+            <strong>auth.verinice.com</strong>,
+            <strong>account.verinice.com</strong>
+            and nothing else.
+            <br><br>
+
+            And of course you can use the open source code in our and other repositories:<br><br>
+            <a
+              v-for="(link, key, index) in links"
+              :key="index"
+              :href="link"
+              target="_blank"
+            >SerNet/verinice-veo-{{ key }}<br>
+            </a>
+          </v-list-item>
+
+          <v-list-item variant="tonal">
+            <v-list-item-title>Reporting a Vulnerability</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item variant="plain">
+            Please e-mail to security@verinice.com if you believe you have found a security issue in verinice.veo.
+            <br><br>
+            In your bug report, please try to cover the following info:
+            <br><br>
+            - Proof of Concept: exact steps to reproduce the bug<br>
+            - How did you discover the vulnerability?<br>
+            - Your estimation of impact<br>
+            - Suggestions for a fix
+            <br><br>
+
+            When receiving a bug report, we will look at it internally before answering,
+            so expect some delay until you get an answer.
+            Once we confirmed and talked about the vulnerability, we will contact you.
+          </v-list-item>
+
+          <v-list-item variant="tonal">
+            <v-list-item-title>Responsible Disclosure</v-list-item-title>
+          </v-list-item>
+          <v-list-item variant="plain">
+            The bug stays yours, but please give us enough time to fix it before disclosing it.
+            We may need up to 120 days to fix the vulnerability you reported.
+            Once we've published a fix for the vulnerability and told you we're done from our end,
+            you can disclose the bug.
+          </v-list-item>
+        </v-list>
+      </v-card>
+
       <v-list>
         <v-list-item>
           <template #prepend>
             <v-icon :icon="mdiEmail" />
           </template>
-  
-          <v-list-item-title>
-            <a
-              :href="links.contact"
-            >{{ t('contact') }}
-            </a>
-          </v-list-item-title>
-        </v-list-item>
-  
-        <v-list-item>
-          <template #prepend>
-            <v-icon :icon="mdiClock" />
-          </template>
-  
-          <v-list-item-title>
-            {{ t('expiration') }}: 2023-05-31T22:00:00.000Z
-          </v-list-item-title>
-        </v-list-item>
-  
-        <v-list-item>
-          <template #prepend>
-            <v-icon :icon="mdiFlag" />
-          </template>
-
-          <v-list-item-title>
-            {{ t('languageFav') }}: {{ t('languages') }}
-          </v-list-item-title>
-        </v-list-item>
-  
-        <v-list-item>
-          <template #prepend>
-            <v-icon :icon="mdiAccount" />
-          </template>
-  
-          <v-list-item-title>
-            <a
-              :href="links.markdown"
-              target="_blank"
-            >{{ t('policy') }}
-            </a>
-          </v-list-item-title>
+          <a
+            :href="mail"
+          >{{ t('contact') }}
+          </a>
+          &nbsp;
+          ({{ t('preferred') }}: DE, EN)
         </v-list-item>
       </v-list>
     </v-card>
@@ -75,13 +115,19 @@
 </template>
 
 <script lang="ts" setup>
-import { mdiEmail, mdiClock, mdiAccount, mdiFlag } from '@mdi/js';
+import { mdiEmail, mdiClock } from '@mdi/js';
 
 const { t } = useI18n();
 
+const mail = 'mailto:security@verinice.com?subject=Bug report';
+
 const links = {
-  contact: 'mailto:security@verinice.com?subject=Bug report',
-  markdown: 'https://git.verinice.org/bb/projects/ISMS/repos/verinice-veo-web/browse/SECURITY.md'
+  web: 'https://github.com/SerNet/verinice-veo-web',
+  veo: 'https://github.com/SerNet/verinice-veo',
+  accounts: 'https://github.com/SerNet/verinice-veo-accounts',
+  reporting: 'https://github.com/SerNet/verinice-veo-reporting',
+  history: 'https://github.com/SerNet/verinice-veo-history',
+  forms: 'https://github.com/SerNet/verinice-veo-forms'
 };
 </script>
 
@@ -91,17 +137,13 @@ const links = {
       "contact": "Contact",
       "expiration": "Expiration date",
       "headline": "Security Policy",
-      "languageFav": "Preferred languages",
-      "languages": "German, English",
-      "policy": "Read the policy",
+      "preferred": "Preferred languages",
     },
     "de": {
       "contact": "Kontakt",
-      "expiration": "Ablaufdatum",
+      "expiration": "Gültigkeit",
       "headline": "Sicherheitsrichtlinie",
-      "languageFav": "Bevorzugte Sprachen",
-      "languages": "deutsch, englisch",
-      "policy": "Lesen Sie die Richtlinien",
+      "preferred": "Bevorzugte Sprachen",
     }
   }
 </i18n>
