@@ -127,6 +127,7 @@ import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
+import { useQueryClient } from '@tanstack/vue-query';
 
 export interface IDirtyFields {
   [field: string]: boolean;
@@ -167,6 +168,7 @@ export default defineComponent({
     const { ability } = useVeoPermissions();
     const { mutateAsync: createObject } = useMutation(objectQueryDefinitions.mutations.createObject);
     const { requiredRule } = useRules();
+    const queryClient = useQueryClient();
   
 
     const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
@@ -255,7 +257,7 @@ export default defineComponent({
           }
 
           if (mitigationsModified.value && data.value.mitigation) {
-            await link(await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: 'controls', id: getEntityDetailsFromLink(data.value.mitigation).id }), mitigations.value, true);
+            await link(await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: 'controls', id: getEntityDetailsFromLink(data.value.mitigation).id }, queryClient), mitigations.value, true);
           }
 
           if (props.scenarioId) {

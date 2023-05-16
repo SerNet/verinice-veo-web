@@ -141,7 +141,7 @@ export default defineComponent({
         // Fetch incarnations for all selected items
         const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: unitId.value, itemIds: selectedItems.value });
         // Apply incarnations
-        incarnate({ incarnations, unitId: unitId.value });
+        await incarnate({ incarnations, unitId: unitId.value });
         displaySuccessMessage(props.successText);
         selectedItems.value = [];
       } catch (e: any) {

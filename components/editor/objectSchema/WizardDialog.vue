@@ -224,6 +224,7 @@ import { separateUUIDParam } from '~/lib/utils';
 import schemaQueryDefinitions from '~~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
+import { useQueryClient } from '@tanstack/vue-query';
 
 const props = defineProps({
   modelValue: {
@@ -238,6 +239,7 @@ const router = useRouter();
 const { locale, t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 const { requiredRule } = useRules();
+const queryClient = useQueryClient();
 
 const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
@@ -288,7 +290,7 @@ const importSchema = async (schema?: any) => {
     emit('completed', { schema, meta: undefined });
     navigateTo({ os: 'custom' });
   } else {
-    const _schema = await useQuerySync(schemaQueryDefinitions.queries.fetchSchema, { type: modelType.value, domainIds: [domainId.value] });
+    const _schema = await useQuerySync(schemaQueryDefinitions.queries.fetchSchema, { type: modelType.value, domainIds: [domainId.value] }, queryClient);
     emit('completed', { schema: _schema, meta: undefined });
     navigateTo({ os: modelType.value });
   }

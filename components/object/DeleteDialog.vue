@@ -71,12 +71,12 @@ const { ability } = useVeoPermissions();
 const displayName = computed(() => props.item?.displayName ?? '');
 
 const deleteButtonEnabled = computed(() => !!endpoints.value?.[props.item?.type]);
-const deleteObject = () => {
+const deleteObject = async () => {
   if (!deleteButtonEnabled.value || ability.value.cannot('manage', 'objects')) {
     return;
   }
   try {
-    doDelete({ endpoint: endpoints.value?.[props.item.type], id: props.item.id });
+    await doDelete({ endpoint: endpoints.value?.[props.item.type], id: props.item.id });
     emit('success');
   } catch (error) {
     emit('error', error);

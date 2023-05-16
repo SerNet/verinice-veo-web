@@ -18,9 +18,7 @@
 <template>
   <div>
     <UtilNestedMenu
-      bottom
-      right
-      offset-y
+      location="bottom left"
       :items="visibleItems"
     >
       <template #activator="{ props }">
@@ -42,10 +40,17 @@
       @success="onCreateObjectSuccess"
     />
     <ObjectLinkDialog
+      v-if="object"
       v-model="linkObjectDialogVisible"
       :object="object"
       :preselected-filters="{ subType: 'PRO_DPIA' }"
       @success="$emit('reload')"
+    />
+    <ObjectDeleteDialog
+      v-if="object"
+      v-model="deleteObjectDialogVisible"
+      :item="object"
+      @success="navigateToObjectOverview"
     />
   </div>
 </template>
@@ -53,7 +58,7 @@
 <script lang="ts">
 import { mergeProps, PropType } from 'vue';
 import { upperFirst } from 'lodash';
-import { mdiDotsVertical } from '@mdi/js';
+import { mdiDotsVertical, mdiTrashCanOutline } from '@mdi/js';
 
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
@@ -82,7 +87,16 @@ export default defineComponent({
 
     const subType = computed(() => props.object?.domains[domainId.value]?.subType);
 
-    const items: (INestedMenuEntries & { objectTypes: string[]; subTypes: string[] })[] = [
+    const items: (INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] })[] = [
+      {
+        key: 'delete',
+        title: t('deleteObject').toString(),
+        icon: mdiTrashCanOutline,
+        color: 'primary',
+        action: () => {
+          deleteObjectDialogVisible.value = true;
+        }
+      },
       {
         key: 'dpia',
         title: t('dpia').toString(),
@@ -109,7 +123,7 @@ export default defineComponent({
 
     // filter allowed actions for current object type & sub type
     const visibleItems = computed(() =>
-      items.filter((a) => props.object?.type && subType.value && a.objectTypes.includes(props.object?.type) && a.subTypes.includes(subType.value))
+      items.filter((a) => props.object?.type && subType.value && (!a.objectTypes || a.objectTypes.includes(props.object?.type)) && (!a.subTypes || a.subTypes.includes(subType.value)))
     );
 
     // dialog stuff
@@ -124,10 +138,27 @@ export default defineComponent({
       }
     };
 
+    const deleteObjectDialogVisible = ref(false);
+    const navigateToObjectOverview = () => {
+      navigateTo({
+        name: 'unit-domains-domain-objects',
+        params: {
+          domain: route.params.domain,
+          unit: route.params.unit
+        },
+        query: {
+          objectType: props.object?.type,
+          subType: props.object?.domains[domainId.value]?.subType
+        }
+      });
+    };
+
     return {
       domainId,
       createObjectDialogVisible,
+      deleteObjectDialogVisible,
       linkObjectDialogVisible,
+      navigateToObjectOverview,
       onCreateObjectSuccess,
 
       mergeProps,
@@ -144,11 +175,13 @@ export default defineComponent({
 {
   "en": {
     "createDPIA": "create DPIA",
+    "deleteObject": "delete object",
     "dpia": "DPIA",
     "linkDPIA": "link DPIA"
   },
   "de": {
     "createDPIA": "DSFA erstellen",
+    "deleteObject": "Objekt löschen",
     "dpia": "DSFA",
     "linkDPIA": "DSFA auswählen"
   }

@@ -21,6 +21,13 @@ export default defineNuxtConfig({
   //==============================================================
   // Base configuration
   //==============================================================
+  telemetry: false,
+
+  sourcemap: {
+    server: true,
+    client: false
+  },
+
   typescript: {
     shim: false // Disabled, as Takeover mode and Volar should be enabled/installed
   },
@@ -61,7 +68,8 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     './modules/externalize-scripts',
     './modules/vuetify-sass-variables.ts',
-    'nuxt-vitest'
+    'nuxt-vitest',
+    'nuxt-font-loader'
   ],
 
   // Transpile vuetify
