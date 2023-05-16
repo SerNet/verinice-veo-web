@@ -16,50 +16,82 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-card
-    title="Security Policy"
-    variant="tonal"
-  >
-    <v-list>
-      <v-list-item
-        v-for="item in items"
-        :key="item.title"
-      >
-        <template #prepend>
-          <v-icon :icon="item.icon" />
-        </template>
-
-        <v-list-item-title v-text="`${item.title}: ${item.text}`" />
-      </v-list-item>
-    </v-list>
-  </v-card>
+  <BasePage>
+    <v-card
+      class="mt-4"
+      :title="t('headline')"
+      variant="tonal"
+    >
+      <v-list>
+        <v-list-item>
+          <template #prepend>
+            <v-icon :icon="mdiEmail" />
+          </template>
+  
+          <v-list-item-title>
+            <a
+              href="mailto:security@verinice.com?subject=Bug report"
+            >{{ t('contact') }}
+            </a>
+          </v-list-item-title>
+        </v-list-item>
+  
+        <v-list-item
+          v-for="item in items"
+          :key="item.title"
+        >
+          <template #prepend>
+            <v-icon :icon="item.icon" />
+          </template>
+  
+          <v-list-item-title v-text="`${t(item.title)}: ${t(item.text)}`" />
+        </v-list-item>
+        <v-list-item>
+          <template #prepend>
+            <v-icon :icon="mdiAccount" />
+          </template>
+  
+          <v-list-item-title>
+            <a
+              href="https://git.verinice.org/bb/projects/ISMS/repos/verinice-veo-web/browse/SECURITY.md"
+              target="_blank"
+            >{{ t('policy') }}
+            </a>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-card>
+  </BasePage>
 </template>
 
 <script lang="ts" setup>
 import { mdiEmail, mdiClock, mdiAccount, mdiFlag } from '@mdi/js';
-// const { locale } = useI18n();
 
-// const imprintLink = computed(() =>
-//   locale.value === 'de' ? 'https://www.sernet.de/impressum' : 'https://www.sernet.de/en/imprint'
-// );
+const { t } = useI18n();
 
 const items = [
-  { title: 'Contact', text: 'security@verinice.com', icon: mdiEmail },
-  { title: 'Expires', text: '2023-05-31T22:00:00.000Z', icon: mdiClock },
-  { title: 'Preferred languages', text: 'de, en', icon: mdiFlag },
-  { title: 'Policy', text: 'https://git.verinice.org/bb/projects/ISMS/repos/verinice-veo-web/browse/SECURITY.md', icon: mdiAccount }
+  { title: 'expiration', text: '2023-05-31T22:00:00.000Z', icon: mdiClock },
+  { title: 'languageFav', text: 'languages', icon: mdiFlag }
 ];
 </script>
 
 <i18n>
   {
     "en": {
-      "aboutText": "verinice is a software provided by SerNet GmbH",
-      "imprint": "imprint",
+      "contact": "Contact",
+      "expiration": "Expiration date",
+      "headline": "Security Policy",
+      "languageFav": "Preferred languages",
+      "languages": "German, English",
+      "policy": "Read the policy",
     },
     "de": {
-      "aboutText": "verinice ist eine Software der SerNet GmbH",
-      "imprint": "Impressum",
+      "contact": "Kontakt",
+      "expiration": "Ablaufdatum",
+      "headline": "Sicherheitsrichtlinie",
+      "languageFav": "Bevorzugte Sprachen",
+      "languages": "deutsch, englisch",
+      "policy": "Lesen Sie die Richtlinien",
     }
   }
 </i18n>

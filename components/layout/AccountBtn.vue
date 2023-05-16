@@ -101,11 +101,12 @@
         </v-list-item>
         <v-divider />
         <v-list-item
+          active-class="veo-active-list-item"
           to="/security"
           @click="displaySecurityPolicy = true"
         >
           <v-list-item-title>
-            {{ t('policy') }}
+            {{ $t('breadcrumbs.security') }}
           </v-list-item-title>
         </v-list-item>
         <v-divider />
@@ -166,14 +167,12 @@ const onMenuClosed = () => {
     "logout": "Logout",
     "editAccount": "Edit account",
     "notAvailable": "Not available",
-    "policy": "Security policy",
   },
   "de": {
     "about": "Über verinice.",
     "logout": "Abmelden",
     "editAccount": "Benutzerkonto bearbeiten",
     "notAvailable": "Keine Angabe",
-    "policy": "Sicherheitsrichtlinie",
   }
 }
 </i18n>
