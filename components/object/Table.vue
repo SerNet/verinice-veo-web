@@ -26,7 +26,6 @@ import { cloneDeep, omit } from 'lodash';
 import ObjectIcon from '~/components/object/Icon.vue';
 import { IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useFormatters } from '~/composables/utils';
-import { separateUUIDParam } from '~/lib/utils';
 import { useVeoUser } from '~/composables/VeoUser';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~~/composables/api/utils/query';
@@ -138,8 +137,6 @@ export default defineComponent({
     const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
 
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-
     // Local sortBy and page property. Used so the table can be paginated if the props aren't set. synced by watchers.
     const localPage = ref(props.page);
     watch(() => localPage.value, (newValue) => {
@@ -176,10 +173,10 @@ export default defineComponent({
      */
     const renderStatus: ObjectTableRenderer = ({ item }) => {
       const _item = item.raw;
-      if (!domainId.value) return '';
-      const domainDetails = _item.domains?.[domainId.value];
+      if (!route.params.domain) return '';
+      const domainDetails = _item.domains?.[route.params.domain as string];
       const key = `${_item.type}_${domainDetails?.subType}_status_${domainDetails?.status}`;
-      return translations.value?.lang?.[locale.value]?.[key] || _item.domains?.[domainId.value]?.status || '';
+      return translations.value?.lang?.[locale.value]?.[key] || _item.domains?.[route.params.domain as string]?.status || '';
     };
     /**
      * Render folder or file icons

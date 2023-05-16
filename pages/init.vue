@@ -39,7 +39,7 @@ import { StorageSerializers, useStorage } from '@vueuse/core';
 import unitQueryDefinitions, { IVeoUnit } from '~~/composables/api/queryDefinitions/units';
 import { useMutation } from '~~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
-import { createUUIDUrlParam, getFirstDomainDomaindId } from '~~/lib/utils';
+import { getFirstDomainDomaindId } from '~~/lib/utils';
 import { LOCAL_STORAGE_KEYS } from '~~/types/localStorage';
 
 const { t } = useI18n();
@@ -69,11 +69,11 @@ useQuery(unitQueryDefinitions.queries.fetchAll, undefined, { onSuccess: async (d
     unitId = newUnitEvent.resourceId;
     domainId = getFirstDomainDomaindId(unit);
   }
-  navigateTo({
+  await navigateTo({
     name: 'unit-domains-domain',
     params: {
-      unit: createUUIDUrlParam('unit', unitId as string || lastUnit.value ),
-      domain: createUUIDUrlParam('domain', domainId as string || lastDomain.value)
+      unit: unitId || lastUnit.value,
+      domain: domainId || lastDomain.value
     }
   });
 }

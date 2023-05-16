@@ -82,7 +82,7 @@ import { StorageSerializers, useStorage } from '@vueuse/core';
 import { mdiLoginVariant, mdiLogoutVariant } from '@mdi/js';
 import { RouteLocationRaw } from 'vue-router';
 
-import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
+import { getFirstDomainDomaindId } from '~/lib/utils';
 import { useVeoUser } from '~/composables/VeoUser';
 import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
@@ -109,7 +109,7 @@ export default defineComponent({
       enabled: authenticated
     });
   
-    const currentUnit = computed(() => separateUUIDParam(route.params.unit as string).id);
+    const currentUnit = computed(() => route.params.unit as string);
     const demoUnit = computed(() => (units.value || []).find((unit) => unit.name === 'Demo'));
     const nonDemoUnits = computed(() => (units.value || []).filter((unit) => unit.name !== 'Demo'));
 
@@ -134,8 +134,8 @@ export default defineComponent({
           return {
             name: 'unit-domains-domain',
             params: {
-              unit: createUUIDUrlParam('unit', nonDemoUnitDetails.value.unit),
-              domain: createUUIDUrlParam('domain', nonDemoUnitDetails.value.domain)
+              unit: nonDemoUnitDetails.value.unit,
+              domain: nonDemoUnitDetails.value.domain
             }
           };
         }
@@ -143,8 +143,8 @@ export default defineComponent({
         return {
           name: 'unit-domains-domain',
           params: {
-            unit: createUUIDUrlParam('unit', demoUnit.value.id),
-            domain: createUUIDUrlParam('domain', getFirstDomainDomaindId(demoUnit.value) || '')
+            unit: demoUnit.value.id,
+            domain: getFirstDomainDomaindId(demoUnit.value)
           }
         };
       }
@@ -154,7 +154,7 @@ export default defineComponent({
     // Store current unit as last unit if user is in a normal unit (and thus wants to enter the demo unit). Only relevant if the user has at least 2 units.
     const onChangeUnit = () => {
       if(!userIsInDemoUnit.value) {
-        unitBeforeDemoUnit.value = currentUnit.value;
+        unitBeforeDemoUnit.value = route.params.unit;
       }
     };
 

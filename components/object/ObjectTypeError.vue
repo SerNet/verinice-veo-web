@@ -18,14 +18,15 @@
 <template>
   <div class="d-flex flex-column align-center">
     <v-img
-      src="/images/noObjecttypeErrorImage.svg"
+      class="fill-width"
+      src="/images/objectNotFound.svg"
       max-height="300px"
       contain
     />
     <h1 class="text-h1 mt-8">
       {{ t('notFoundCode').toString() }}
     </h1>
-    <p class="mt-2">
+    <p class="mt-2 text-body-1">
       {{ t('notFound').toString() }}
     </p>
     <slot />

@@ -108,12 +108,13 @@
 <script lang="ts">
 import { ComputedRef } from 'vue';
 
-import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
+import { getFirstDomainDomaindId } from '~/lib/utils';
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { RouteLocationRaw } from 'vue-router';
 import { useFetchUnitDomains } from '~/composables/api/domains';
 import { useQuery } from '~~/composables/api/utils/query';
+import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 
 export default defineComponent({
   emits: ['update:model-value'],
@@ -121,8 +122,8 @@ export default defineComponent({
     const { t, locale } = useI18n();
     const route = useRoute();
 
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-    const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
+    const domainId = computed(() => route.params.domain as string);
+    const unitId = computed(() => route.params.unit as string);
 
     const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
@@ -147,8 +148,8 @@ export default defineComponent({
       to: {
         name: 'unit-domains-domain',
         params: {
-          unit: createUUIDUrlParam('unit', demoUnit.value.id || ''),
-          domain: createUUIDUrlParam('domain', demoUnitDSVGODomain.value.id || '')
+          unit: demoUnit.value.id,
+          domain: demoUnitDSVGODomain.value.id
         }
       },
       name: 'Demo-Unit'
@@ -165,8 +166,8 @@ export default defineComponent({
       to: {
         name: 'unit-domains-domain',
         params: {
-          unit: createUUIDUrlParam('unit', nonDemoUnitId.value),
-          domain: createUUIDUrlParam('domain', nonDemoUnitDomainId.value)
+          unit: nonDemoUnitId.value,
+          domain: nonDemoUnitDomainId.value
         }
       },
       name: 'Dashboard'
@@ -178,10 +179,10 @@ export default defineComponent({
         return {
           name: form.name[locale.value],
           to: {
-            name: 'unit-domains-domain-objects',
+            name: OBJECT_OVERVIEW_ROUTE,
             params: {
-              unit: createUUIDUrlParam('unit', nonDemoUnitId.value),
-              domain: createUUIDUrlParam('domain', nonDemoUnitDomainId.value)
+              unit: nonDemoUnitId.value,
+              domain: nonDemoUnitDomainId.value
             },
             query: {
               objectType,

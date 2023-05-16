@@ -65,7 +65,6 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { IVeoCatalogItem } from '~~/composables/api/queryDefinitions/catalogs';
 import { useQuerySync } from '~~/composables/api/utils/query';
-import { separateUUIDParam } from '~~/lib/utils';
 import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
 import { useMutation } from '~~/composables/api/utils/mutation';
 
@@ -81,11 +80,11 @@ export default defineComponent({
     },
     successText: {
       type: String,
-      default: undefined
+      default: ''
     },
     errorText: {
       type: String,
-      default: undefined
+      default: ''
     }
   },
   setup(props) {
@@ -96,8 +95,6 @@ export default defineComponent({
     const route = useRoute();
 
     const { mutateAsync: incarnate } =  useMutation(unitQueryDefinitions.mutations.updateIncarnations);
-
-    const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
 
     // Selecting
     const catalogTableHeaders = computed<IVeoCatalogSelectionListHeader[]>(() => [
@@ -139,9 +136,9 @@ export default defineComponent({
 
       try {
         // Fetch incarnations for all selected items
-        const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: unitId.value, itemIds: selectedItems.value });
+        const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: route.params.unit as string, itemIds: selectedItems.value });
         // Apply incarnations
-        incarnate({ incarnations, unitId: unitId.value });
+        incarnate({ incarnations, unitId: route.params.unit });
         displaySuccessMessage(props.successText);
         selectedItems.value = [];
       } catch (e: any) {

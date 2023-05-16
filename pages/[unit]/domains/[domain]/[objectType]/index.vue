@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann
+   - Copyright (C) 2023  Jonas Heitmann
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -15,10 +15,23 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<script lang="ts" setup>
-defineNuxtRouteMiddleware(() => {
-  const route = useRoute();
+<script setup lang="ts">
+import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 
-  return navigateTo(`/${route.params.unit}`);
+const route = useRoute();
+
+// Navigate the user to the object overview page with a placeholder for the subtype
+await navigateTo({
+  name: OBJECT_OVERVIEW_ROUTE,
+  params: {
+    unit: route.params.unit,
+    domain: route.params.domain,
+    objectType: route.params.objectType,
+    subType: '-'
+  }
 });
 </script>
+
+<template>
+  <span>Redirecting...</span>
+</template>

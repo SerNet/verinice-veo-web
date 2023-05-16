@@ -130,16 +130,15 @@ import { isEmpty, last, omit, pick } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal, mdiHomeOutline } from '@mdi/js';
 
 import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
-import { separateUUIDParam } from '~/lib/utils';
 import { useQuery } from '~~/composables/api/utils/query';
 import catalogQueryDefinitions from '~~/composables/api/queryDefinitions/catalogs';
 import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
-import objectQueryDefinitions from '~~/composables/api/queryDefinitions/objects';
+import formsQueryDefinitions, { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
 import reportQueryDefinitions from '~~/composables/api/queryDefinitions/reports';
-import schemaQueryDefinitions from '~~/composables/api/queryDefinitions/schemas';
+import translationsQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
 
 
-type SupportedQuery = ':domain' | ':object' | ':report' | ':catalog';
+type SupportedQuery = ':domain' | ':subType' | ':report' | ':catalog' | ':objectType';
 
 interface IVeoBreadcrumbReplacementMapBreadcrumb {
   disabled?: boolean;
@@ -172,16 +171,12 @@ export default defineComponent({
     const { t, locale } = useI18n();
     const route = useRoute();
     const { breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
-    const { authenticated } = useVeoUser();
 
     const title = ref('');
 
     useHead(() => ({
       title
     }));
-
-    const useFetchSchemasQueryEnabled = computed(() => authenticated.value);
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { enabled: useFetchSchemasQueryEnabled });
 
     const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbReplacementMapBreadcrumb>([
       [
@@ -214,8 +209,28 @@ export default defineComponent({
           icon: mdiHomeOutline,
           queriedText: {
             query: ':domain',
-            parameterTransformationFn: (_param, value) => ({ id: separateUUIDParam(value).id }),
+            parameterTransformationFn: (_param, value) => ({ id: value }),
             resultTransformationFn: (_param, _value, data) => data.name
+          }
+        }
+      ],
+      [
+        ':objectType',
+        {
+          queriedText: {
+            query: ':objectType',
+            parameterTransformationFn: () => ({ languages: [locale.value] }),
+            resultTransformationFn: (_param, value, data) => data.lang[locale.value]?.[value as string]
+          }
+        }
+      ],
+      [
+        ':subType',
+        {
+          queriedText: {
+            query: ':subType',
+            parameterTransformationFn: () => ({ domainId: route.params.domain }),
+            resultTransformationFn: (_param, value, data) => data.find((formSchema: IVeoFormSchema) => formSchema.subType === value)?.name?.[locale.value]
           }
         }
       ],
@@ -230,25 +245,11 @@ export default defineComponent({
         }
       ],
       [
-        ':object',
-        {
-          queriedText: {
-            query: ':object',
-            parameterTransformationFn: (_param, value) => {
-              const { type, id } = separateUUIDParam(value);
-              const endpoint = endpoints.value?.[type];
-              return { endpoint, id };
-            },
-            resultTransformationFn: (_param, _value, data) => data.displayName
-          }
-        }
-      ],
-      [
         ':catalog',
         {
           queriedText: {
             query: ':catalog',
-            parameterTransformationFn: (_param, value) => ({ id: separateUUIDParam(value).id }),
+            parameterTransformationFn: (_param, value) => ({ id: value }),
             resultTransformationFn: (_param, _value, data) => data.name
           }
         }
@@ -257,12 +258,6 @@ export default defineComponent({
         ':matrix',
         {
           dynamicText: (_param, value) => value || ''
-        }
-      ],
-      [
-        'objects',
-        {
-          disabled: true
         }
       ],
       [
@@ -290,10 +285,10 @@ export default defineComponent({
 
     // Queried text. For now we assume that every query type will only be used once (at most one object, one domain, one report is part of the path).
     // Must be refactored if for example two objects are part of the path.
-    const objectQueryParameters = ref<any>({});
-    const objectQueryEnabled = computed(() => !isEmpty(objectQueryParameters.value) && !!objectQueryParameters.endpoint);
-    const { data: object } = useQuery(objectQueryDefinitions.queries.fetch, objectQueryParameters, {
-      enabled: objectQueryEnabled
+    const subTypeQueryParameters = ref<any>({});
+    const subTypeQueryEnabled = computed(() => !isEmpty(subTypeQueryParameters.value));
+    const { data: subType } = useQuery(formsQueryDefinitions.queries.fetchForms, subTypeQueryParameters, {
+      enabled: subTypeQueryEnabled
     });
     const domainQueryParameters = ref<any>({});
     const domainQueryEnabled = computed(() => !isEmpty(domainQueryParameters.value));
@@ -307,6 +302,12 @@ export default defineComponent({
     });
     const { data: report } = useQuery(reportQueryDefinitions.queries.fetchAll);
 
+    const objectTypeQueryParameters = ref<any>({});
+    const objectTypeQueryEnabled = computed(() => !isEmpty(catalogQueryParameters.value));
+    const { data: objectType } = useQuery(translationsQueryDefinitions.queries.fetch, objectTypeQueryParameters, {
+      enabled: objectTypeQueryEnabled
+    });
+
     const queryResultMap = computed<{ [key: string]: any }>(() => ({
       ':catalog': catalog.value
         ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':catalog')?.queriedText?.resultTransformationFn(':catalog', route.params.catalog as string, catalog.value)
@@ -314,8 +315,11 @@ export default defineComponent({
       ':domain': domain.value
         ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':domain')?.queriedText?.resultTransformationFn(':domain', route.params.domain as string, domain.value)
         : undefined,
-      ':object': object.value
-        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':object')?.queriedText?.resultTransformationFn(':object', route.params.object as string, object.value)
+      ':objectType': objectType.value
+        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':objectType')?.queriedText?.resultTransformationFn(':objectType', route.params.objectType as string, objectType.value)
+        : undefined,
+      ':subType': subType.value
+        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':subType')?.queriedText?.resultTransformationFn(':subType', route.params.subType as string, subType.value)
         : undefined,
       ':report': report.value ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':report')?.queriedText?.resultTransformationFn(':report', route.params.report as string, report.value) : undefined
     }));
@@ -392,8 +396,11 @@ export default defineComponent({
               case ':domain':
                 domainQueryParameters.value = transformedParameters;
                 break;
-              case ':object':
-                objectQueryParameters.value = transformedParameters;
+              case ':subType':
+                subTypeQueryParameters.value = transformedParameters;
+                break;
+              case ':objectType':
+                objectTypeQueryParameters.value = transformedParameters;
                 break;
             }
           }

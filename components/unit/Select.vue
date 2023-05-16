@@ -19,7 +19,7 @@
   <div style="display: contents">
     <v-list-item>
       <v-autocomplete
-        :model-value="unit"
+        :model-value="$route.params.unit"
         :items="displayedUnits"
         item-title="name"
         item-value="id"
@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
+import { getFirstDomainDomaindId } from '~/lib/utils';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useQuery } from '~~/composables/api/utils/query';
 
@@ -51,10 +51,7 @@ export default defineComponent({
   emits: ['create-unit'],
   setup() {
     const { t } = useI18n();
-    const route = useRoute();
     const router = useRouter();
-
-    const unit = computed(() => (route.params.unit && separateUUIDParam(route.params.unit as string).id) || undefined);
 
     const { data: displayedUnits } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
@@ -65,8 +62,8 @@ export default defineComponent({
         router.push({
           name: 'unit-domains-domain',
           params: {
-            unit: createUUIDUrlParam('unit', unitId),
-            domain: createUUIDUrlParam('domain', domainId)
+            unit: unitId,
+            domain: domainId
           }
         });
       }
@@ -76,7 +73,6 @@ export default defineComponent({
       getFirstDomainDomaindId,
       displayedUnits,
       doChangeUnit,
-      unit,
 
       t
     };

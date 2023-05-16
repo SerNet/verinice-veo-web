@@ -214,7 +214,7 @@
             v-if="schemaIsValid.valid"
             :search="searchQuery"
             :hide-empty-aspects="hideEmptyAspects"
-            :domain-id="domainId"
+            :domain-id="($route.params.domain as string)"
             @schema-updated="updateCode"
           />
           <v-row
@@ -269,7 +269,7 @@
       />
       <EditorObjectSchemaDetailsDialog
         v-model="detailsDialogVisible"
-        :domain-id="domainId"
+        :domain-id="($route.params.domain as string)"
         @schema-updated="updateCode"
       />
       <EditorErrorDialog
@@ -295,7 +295,6 @@ import { useDisplay } from 'vuetify';
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
-import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -327,8 +326,6 @@ export default defineComponent({
 
     provide('displayLanguage', displayLanguage);
     provide('objectSchemaHelper', objectSchemaHelper);
-
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     // Layout stuff
     const pageWidths = ref([6, 6]);
@@ -373,7 +370,7 @@ export default defineComponent({
     });
 
     const setSchema = (data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) => {
-      objectSchemaHelper.value = data.schema || data.meta ? new ObjectSchemaHelper(data.schema, domainId.value) : undefined;
+      objectSchemaHelper.value = data.schema || data.meta ? new ObjectSchemaHelper(data.schema, route.params.domain as string) : undefined;
 
       if (objectSchemaHelper.value) {
         if (data.meta) {
@@ -445,7 +442,11 @@ export default defineComponent({
     };
 
     // Saving
-    const updateTypeDefinitionQueryParameters = computed(() => ({ domainId: domainId.value, objectType: title.value, objectSchema: objectSchemaHelper.value?.toSchema() as any }));
+    const updateTypeDefinitionQueryParameters = computed(() => ({
+      domainId: route.params.domain as string,
+      objectType: title.value,
+      objectSchema: objectSchemaHelper.value?.toSchema() as any
+    }));
     const { mutateAsync: update } = useMutation(domainQueryDefinitions.mutations.updateTypeDefinitions);
 
     const saveSchema = async () => {
@@ -465,7 +466,6 @@ export default defineComponent({
       description,
       detailsDialogVisible,
       displayLanguage,
-      domainId,
       downloadButton,
       downloadSchema,
       errorDialogVisible,

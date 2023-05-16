@@ -16,15 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { validate } from 'uuid';
-import { separateUUIDParam } from '~/lib/utils';
 
 /**
  * This file checks whether a unit is set as a parameter validates it. If the validation fails, the user gets redirected to the index page.
  */
 export default defineNuxtRouteMiddleware((to) => {
   if (to.params.unit) {
-    const unitId = separateUUIDParam(to.params.unit as string).id;
-    if (!validate(unitId)) {
+    if (!validate(to.params.unit as string)) {
       return navigateTo('/');
     }
   }

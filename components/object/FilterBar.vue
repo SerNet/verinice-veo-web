@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import { PropType } from 'vue';
-import { omit, upperFirst } from 'lodash';
+import { upperFirst } from 'lodash';
 import { mdiFilter } from '@mdi/js';
 
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
@@ -141,7 +141,7 @@ export default defineComponent({
 
     // remove one filter
     const clearFilter = (key: string) => {
-      emit('update:filter', omit(props.filter, key));
+      emit('update:filter', { ...props.filter, [key]: undefined });
     };
 
     return {

@@ -68,7 +68,7 @@
   </BaseDialog>
 </template>
 <script lang="ts" setup>
-import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
+import { getFirstDomainDomaindId } from '~/lib/utils';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useRules } from '~/composables/utils';
 import { useMutation } from '~~/composables/api/utils/mutation';
@@ -124,8 +124,8 @@ const createUnit = async () => {
       router.push({
         name: 'unit-domains-domain',
         params: {
-          unit: createUUIDUrlParam('unit', unit.id),
-          domain: createUUIDUrlParam('domain', domainId)
+          unit: unit.id,
+          domain: domainId
         }
       });
     }

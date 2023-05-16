@@ -23,7 +23,7 @@
   >
     <div
       v-if="label || $slots.label"
-      :class="{ 'chip-label text-black': value === true }"
+      :class="{ 'chip-label text-black': value === 'true' }"
     >
       <span
         v-if="label"
@@ -35,7 +35,7 @@
       />
     </div>
     <div
-      v-if="value !== true"
+      v-if="value !== 'true'"
       class="chip-value text-black"
     >
       <span

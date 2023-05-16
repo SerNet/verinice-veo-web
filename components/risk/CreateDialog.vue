@@ -71,7 +71,7 @@
 import { cloneDeep, omit, upperFirst } from 'lodash';
 
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
-import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
+import { getEntityDetailsFromLink } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import objectQueryDefinitions, { IVeoFetchRisksParameters } from '~/composables/api/queryDefinitions/objects';
 import { useVeoUser } from '~/composables/VeoUser';
@@ -105,8 +105,6 @@ export default defineComponent({
     const { ability } = useVeoPermissions();
 
     const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createOrUpdateRisk);
-
-    const unit = computed(() => separateUUIDParam(route.params.unit as string).id);
 
     // Layout stuff
     const dialog = computed({
@@ -163,7 +161,7 @@ export default defineComponent({
       sortBy: sortBy.value[0].key,
       sortOrder: sortBy.value[0].order,
       page: page.value,
-      unit: unit.value,
+      unit: route.params.unit,
       ...omit(filter.value, 'objectType'),
       endpoint: 'scenarios'
     }));

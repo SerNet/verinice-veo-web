@@ -119,7 +119,7 @@
 import { cloneDeep, isEqual, merge, upperFirst } from 'lodash';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
+import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -167,9 +167,6 @@ export default defineComponent({
     const { ability } = useVeoPermissions();
     const { mutateAsync: createObject } = useMutation(objectQueryDefinitions.mutations.createObject);
     const { requiredRule } = useRules();
-  
-
-    const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
 
     const formDisabled = computed(() => ability.value.cannot('manage', 'objects'));
 
@@ -286,7 +283,7 @@ export default defineComponent({
       type: 'control',
       name: t('mitigatingAction', [data.value?.designator]).toString(),
       owner: {
-        targetUri: `${config.public.apiUrl}/units/${unitId.value}`
+        targetUri: `${config.public.apiUrl}/units/${route.params.unit}`
       },
       domains: {
         [props.domainId]: {

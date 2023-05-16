@@ -98,7 +98,7 @@ export const ROUTE_NAME = 'index';
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { mdiTrashCanOutline } from '@mdi/js';
 
-import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
+import { getFirstDomainDomaindId } from '~/lib/utils';
 import unitQueryDefinitions, { IVeoUnit} from '~/composables/api/queryDefinitions/units';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { useQuery } from '~~/composables/api/utils/query';
@@ -127,7 +127,7 @@ const generateUnitDashboardLink = (unitId: string) => {
     domainId = getFirstDomainDomaindId(unitToLinkTo);
   }
 
-  return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
+  return unitToLinkTo && domainId ? `/${unitToLinkTo.id}/domains/${domainId}` : undefined;
 };
 
 // Unit deletion stuff

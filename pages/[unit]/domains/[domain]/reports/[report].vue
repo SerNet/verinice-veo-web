@@ -53,7 +53,7 @@
       </p>
       <ObjectFilterBar
         data-component-name="report-entity-selection-filter-bar"
-        :domain-id="domainId"
+        :domain-id="($route.params.domain as string)"
         :filter="filter"
         :required-fields="requiredFields"
         :available-object-types="availableObjectTypes"
@@ -101,7 +101,6 @@
 <script lang="ts">
 import { omit, upperCase, upperFirst } from 'lodash';
 
-import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
 import { RouteRecordName } from 'vue-router';
@@ -123,8 +122,6 @@ export default defineComponent({
     const { displayErrorMessage } = useVeoAlerts();
     const { tablePageSize } = useVeoUser();
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     const outputType = computed<string>(() => report.value?.outputTypes?.[0] || '');
 
@@ -183,7 +180,7 @@ export default defineComponent({
       sortBy: sortBy.value[0].key,
       sortOrder: sortBy.value[0].order,
       page: page.value,
-      unit: separateUUIDParam(route.params.unit as string).id,
+      unit: route.params.unit as string,
       ...omit(filter.value, 'objectType'),
       endpoint: endpoint.value
     }));
@@ -247,7 +244,6 @@ export default defineComponent({
     return {
       availableObjectTypes,
       availableSubTypes,
-      domainId,
       downloadButton,
       filter,
       generateReport,

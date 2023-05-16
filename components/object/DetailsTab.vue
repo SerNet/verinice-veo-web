@@ -70,8 +70,9 @@ import { cloneDeep, upperFirst } from 'lodash';
 import { mdiArrowDown, mdiArrowRight, mdiCheck, mdiContentCopy, mdiLinkOff, mdiTransitDetour, mdiTrashCanOutline } from '@mdi/js';
 import { VIcon, VTooltip } from 'vuetify/components';
 
+import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import { ObjectTableHeader } from './Table.vue';
-import { createUUIDUrlParam, getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
+import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
@@ -110,8 +111,6 @@ export default defineComponent({
     const { link } = useLinkObject();
     const { clone } = useCloneObject();
 
-    const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
-
     // Fetching different queries for the table
     const page = ref(1);
     const sortBy = ref([{ key: 'name', order: 'desc' }]);
@@ -125,7 +124,7 @@ export default defineComponent({
     const parentScopesQueryParameters = computed(() => ({
       parentEndpoint: 'scopes',
       childObjectId: props.object?.id || '',
-      unitId: unitId.value,
+      unitId: route.params.unit,
       sortBy: sortBy.value[0].key,
       sortOrder: sortBy.value[0].order as 'desc' | 'asc',
       page: page.value
@@ -135,7 +134,7 @@ export default defineComponent({
     const parentObjectsQueryParameters = computed(() => ({
       parentEndpoint: schemas.value?.[props.object?.type || ''] || '',
       childObjectId: props.object?.id || '',
-      unitId: unitId.value,
+      unitId: route.params.unit,
       sortBy: sortBy.value[0].key,
       sortOrder: sortBy.value[0].order as 'desc' | 'asc',
       page: page.value
@@ -419,10 +418,10 @@ export default defineComponent({
       } else {
         item = item.item.raw as IVeoEntity;
         router.push({
-          name: 'unit-domains-domain-objects-object',
+          name: OBJECT_OVERVIEW_ROUTE,
           params: {
             ...route.params,
-            object: createUUIDUrlParam(item.type, item.id)
+            object: item.id
           }
         });
       }

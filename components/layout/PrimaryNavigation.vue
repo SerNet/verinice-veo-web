@@ -122,11 +122,11 @@ import { StorageSerializers, useStorage } from '@vueuse/core';
 import { useDisplay } from 'vuetify';
 import { NavItem } from '@nuxt/content/dist/runtime/types';
 
-import { createUUIDUrlParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
+import { extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/index.vue';
-import { ROUTE_NAME as OBJECTS_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/objects/index.vue';
+import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/catalogs/[catalog].vue';
 import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/reports/[report].vue';
 import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/risks/[matrix].vue';
@@ -141,6 +141,7 @@ import catalogQueryDefinitions from '~~/composables/api/queryDefinitions/catalog
 import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
 import formsQueryDefinitions from '~~/composables/api/queryDefinitions/forms';
 import reportQueryDefinitions from '~~/composables/api/queryDefinitions/reports';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~~/composables/api/utils/query';
 
@@ -210,6 +211,8 @@ export default defineComponent({
     const allFormSchemasQueryEnabled = computed(() => !!props.domainId);
     const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms ,queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
 
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { placeholderData: {} });
+
     const fetchSchemasDetailedQueryParameters = computed(() => ({ domainIds: [props.domainId as string] }));
     const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId && authenticated.value);
     const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, { enabled: fetchSchemasDetailedQueryEnabled });
@@ -241,13 +244,12 @@ export default defineComponent({
                 key: `${objectSchema.title}_all`,
                 name: upperFirst(t('all').toString()),
                 to: {
-                  name: OBJECTS_ROUTE_NAME,
+                  name: OBJECT_OVERVIEW_ROUTE_NAME,
                   params: {
-                    unit: createUUIDUrlParam('unit', props.unitId as string),
-                    domain: createUUIDUrlParam('domain', props.domainId as string)
-                  },
-                  query: {
-                    objectType: objectSchema.title
+                    unit: props.unitId,
+                    domain: props.domainId,
+                    objectType: endpoints.value?.[objectSchema.title],
+                    subType: '-'
                   }
                 },
                 exact: true
@@ -264,13 +266,11 @@ export default defineComponent({
                     key: displayName,
                     name: displayName,
                     to: {
-                      name: OBJECTS_ROUTE_NAME,
+                      name: OBJECT_OVERVIEW_ROUTE_NAME,
                       params: {
-                        unit: createUUIDUrlParam('unit', props.unitId as string),
-                        domain: createUUIDUrlParam('domain', props.domainId as string)
-                      },
-                      query: {
-                        objectType: objectSchema.title,
+                        unit: props.unitId,
+                        domain: props.domainId,
+                        objectType: endpoints.value?.[objectSchema.title],
                         subType: subType.subType
                       }
                     },
@@ -297,9 +297,9 @@ export default defineComponent({
         to: {
           name: CATALOGS_CATALOG_ROUTE_NAME,
           params: {
-            unit: createUUIDUrlParam('unit', props.unitId as string),
-            domain: createUUIDUrlParam('domain', props.domainId as string),
-            catalog: createUUIDUrlParam('catalog', catalog.id)
+            unit: props.unitId,
+            domain: props.domainId,
+            catalog: catalog.id
           }
         }
       }))
@@ -318,8 +318,8 @@ export default defineComponent({
             to: {
               name: REPORTS_REPORT_ROUTE_NAME,
               params: {
-                unit: createUUIDUrlParam('unit', props.unitId as string),
-                domain: createUUIDUrlParam('domain', props.domainId as string),
+                unit: props.unitId,
+                domain: props.domainId,
                 report: reportId
               }
             }
@@ -340,8 +340,8 @@ export default defineComponent({
         to: {
           name: RISKS_MATRIX_ROUTE_NAME,
           params: {
-            unit: createUUIDUrlParam('unit', props.unitId as string),
-            domain: createUUIDUrlParam('domain', props.domainId as string),
+            unit: props.unitId,
+            domain: props.domainId,
             matrix: id
           }
         }
@@ -367,8 +367,8 @@ export default defineComponent({
       to: {
         name: DOMAIN_DASHBOARD_ROUTE_NAME,
         params: {
-          unit: createUUIDUrlParam('unit', props.unitId as string),
-          domain: createUUIDUrlParam('domain', props.domainId as string)
+          unit: props.unitId,
+          domain: props.domainId
         }
       },
       componentName: 'domain-dashboard-nav-item',
@@ -423,8 +423,8 @@ export default defineComponent({
       to: {
         name: EDITOR_INDEX_ROUTE_NAME,
         params: {
-          unit: createUUIDUrlParam('unit', props.unitId as string),
-          domain: createUUIDUrlParam('domain', props.domainId as string)
+          unit: props.unitId,
+          domain: props.domainId
         }
       }
     }));

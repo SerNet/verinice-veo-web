@@ -220,7 +220,6 @@
 import { isEmpty, isEqual, isString } from 'lodash';
 import { mdiChevronRight } from '@mdi/js';
 
-import { separateUUIDParam } from '~/lib/utils';
 import schemaQueryDefinitions from '~~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
@@ -238,8 +237,6 @@ const router = useRouter();
 const { locale, t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 const { requiredRule } = useRules();
-
-const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
 // Layout stuff
 const state = ref<'start' | 'import' | 'create'>('start');
@@ -273,12 +270,12 @@ const availableObjectSchemas = computed(() => (Object.keys(schemas.value || {}))
 
 const importNextDisabled = computed(() => (modelType.value === 'custom' && !code.value) || !modelType.value);
 
-const createSchema = () => {
+const createSchema = async () => {
   emit('completed', {
     schema: undefined,
     meta: { type: createForm.value.type, description: createForm.value.description }
   });
-  navigateTo({
+  await navigateTo({
     type: createForm.value.type,
     description: createForm.value.description
   });
@@ -286,11 +283,11 @@ const createSchema = () => {
 const importSchema = async (schema?: any) => {
   if (schema) {
     emit('completed', { schema, meta: undefined });
-    navigateTo({ os: 'custom' });
+    await navigateTo({ os: 'custom' });
   } else {
-    const _schema = await useQuerySync(schemaQueryDefinitions.queries.fetchSchema, { type: modelType.value, domainIds: [domainId.value] });
+    const _schema = await useQuerySync(schemaQueryDefinitions.queries.fetchSchema, { type: modelType.value, domainIds: [route.params.domain as string] });
     emit('completed', { schema: _schema, meta: undefined });
-    navigateTo({ os: modelType.value });
+    await navigateTo({ os: modelType.value });
   }
 };
 

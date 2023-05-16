@@ -172,7 +172,7 @@ import Draggable from 'vuedraggable';
 import { upperFirst, cloneDeep } from 'lodash';
 
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
-import { CHART_COLORS, separateUUIDParam } from '~/lib/utils';
+import { CHART_COLORS } from '~/lib/utils';
 import { Ref } from 'vue';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~~/composables/api/utils/query';
@@ -227,7 +227,7 @@ export default defineComponent({
 
     function updateForm() {
       if (objectSchemaHelper?.value) {
-        const oshSubTypes = cloneDeep(objectSchemaHelper.value.getSubTypes(separateUUIDParam(route.params.domain as string).id));
+        const oshSubTypes = cloneDeep(objectSchemaHelper.value.getSubTypes(route.params.domain as string));
         subTypes.value = oshSubTypes.map((subType) => ({ subType: subType.subType, status: subType.status.map((_status) => ({ key: _status })) }));
         subTypeForms.value = Array(subTypes.value.length).fill(true);
         newStatusForms.value = Array(subTypes.value.length).fill(true);
