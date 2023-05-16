@@ -16,40 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// @vitest-environment node
-import { it, describe, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
+import { mockNuxtImport } from 'nuxt-vitest/utils';
+import { mount } from '@vue/test-utils';
 
-// Functions + test data
-import { chunkHistory } from '../modules/HistoryExport';
-import { historyItems } from './data/historyItems';
+import { createVuetify } from 'vuetify';
+import { t } from '~~/test/mocks';
 
-describe('chunkHistory()', () => {
-  // @ts-ignore // Typing of IVeoHistoryEntry.content might might be bit off: historyItems seems to have the wrong type, but is OK
-  const result = chunkHistory(historyItems, 2);
-  const firstItem = result[0];
-  const lastItem = result[result.length - 1];
+// @ts-ignore // TS throws 'cannot find module' error, however this module can be found + used
+import HistoryExport from '../HistoryExport.vue';
 
-  it('should return objects containing veo history items', async () => {
-    const requiredKeys = ['id', 'uri', 'changeNumber', 'type', 'time', 'author'];
-    requiredKeys.every(key => 
-      expect(Object.hasOwn(firstItem.chunk[0], key)).toBe(true)
-    );
-    requiredKeys.every(key => 
-      expect(Object.hasOwn(lastItem.chunk[0], key)).toBe(true)
-    );
-  });
-
-  it('should return objects with a correctly formatted name property', async () => {
-    const expectedNameFirstItem = 'history_2022-01-21_2022-01-21';
-    const expectedNameLastItem = 'history_2022-01-21_2022-01-21_2';
-    expect(firstItem.name).toBe(expectedNameFirstItem);
-    expect(lastItem.name).toBe(expectedNameLastItem);
-  });
-
-  it('should return objects with a correctly formatted displayName property', async () => {
-    const expectedDisplayNameFirstItem = '01.21.2022 – 21.01.2022';
-    const expectedDisplayNameLastItem = '01.21.2022 – 21.01.2022 (2)';
-    expect(firstItem.displayName).toBe(expectedDisplayNameFirstItem);
-    expect(lastItem.displayName).toBe(expectedDisplayNameLastItem);
-  }); 
+// Mock imports
+mockNuxtImport('useI18n', () => {
+  return () => (msg: string) => msg;
 });
+
+// Setup
+const vuetify = createVuetify();
+const plugins = [vuetify];
+const mocks = {t};
+
+describe('HistoryExport.vue', () => {
+  const wrapper = mount(HistoryExport, {
+    global: { plugins, mocks }
+  });
+
+  it('should render a loader', async () => {
+    const prepareDownloadBtn = wrapper.find('button');
+    await prepareDownloadBtn.trigger('click');
+    expect(prepareDownloadBtn.find('.v-btn__loader').exists()).toBe(true);
+  });
+
+});
+
+
