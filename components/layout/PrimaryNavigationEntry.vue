@@ -18,7 +18,6 @@
 <template>
   <v-list-item
     :to="to"
-    :active="isActive"
     active-class="veo-active-list-item veo-active-list-nav-item"
     :class="_classes"
     :data-component-name="componentName"
@@ -57,7 +56,6 @@
 </template>
 
 <script lang="ts" setup>
-import { isEqual, pick } from 'lodash';
 import { PropType } from 'vue';
 import { _RouteLocationBase } from 'vue-router';
 import { INavItem } from './PrimaryNavigation.vue';
@@ -77,7 +75,7 @@ const props = defineProps({
   },
   to: {
     type: [String, Object] as PropType<_RouteLocationBase>,
-    required: true
+    default: undefined
   },
   exact: {
     type: Boolean,
@@ -99,10 +97,6 @@ const props = defineProps({
     type: Number,
     default: 0
   },
-  activePath: {
-    type: String,
-    default: undefined
-  },
   children: {
     type: Array as PropType<INavItem[]>,
     default: () => []
@@ -113,8 +107,6 @@ const props = defineProps({
   }
 });
 const emit = defineEmits(['expand-menu', 'click']);
-
-const route = useRoute();
   
 const onClick = () => {
   if(props.openInNewtab) {
@@ -125,26 +117,6 @@ const onClick = () => {
   }
 };
 const _classes = computed(() => `${props.classes} primary-navigation-entry-level-${props.level}`);
-
-const isActive = computed(() => {
-  const isRouteObject = typeof props.to === 'object';
-
-  if(props.activePath) {
-    return props.exact ? route.fullPath === props.activePath : route.fullPath.includes(props.activePath);
-  } else if(isRouteObject) {
-    const toRoute = props.to as _RouteLocationBase;
-    // Set defaults to make comparing route objects easier
-    if(!toRoute.query) {
-      toRoute.query = {};
-    }
-    if(!toRoute.params) {
-      toRoute.params = {};
-    }
-    return props.exact ? isEqual(pick(route, 'name', 'query', 'params'), pick(toRoute, 'name', 'query', 'params')) : route.name?.toString().includes(toRoute.name?.toString() || '');
-  } else {
-    return props.exact ? route.fullPath === props.to : route.fullPath.includes(props.to);
-  }
-});
 </script>
 
 <style lang="scss">

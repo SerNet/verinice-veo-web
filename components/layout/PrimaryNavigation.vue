@@ -156,7 +156,6 @@ export interface INavItem {
   childrenLoading?: boolean;
   componentName?: string;
   classes?: string;
-  activePath?: string;
   openInNewtab?: boolean;
 }
 
@@ -237,7 +236,6 @@ export default defineComponent({
             name: upperFirst(translations.value?.lang[locale.value]?.[objectSchema.title] || objectSchema.title),
             icon: _icon?.library === 'mdi' ? _icon?.icon as string : undefined,
             faIcon: _icon?.library === 'fa' ? _icon?.icon : undefined,
-            activePath: `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${objectSchema.title}`,
             children: [
               // all of object type
               {
@@ -251,8 +249,7 @@ export default defineComponent({
                     objectType: endpoints.value?.[objectSchema.title],
                     subType: '-'
                   }
-                },
-                exact: true
+                }
               },
               
               // dynamic sub type routes
@@ -274,7 +271,6 @@ export default defineComponent({
                         subType: subType.subType
                       }
                     },
-                    exact: true,
                     sorting: formSchema?.sorting
                   };
                 }),
@@ -379,7 +375,6 @@ export default defineComponent({
     const objectsNavEntry = computed<INavItem>(() => ({
       key: 'objects',
       name: $t('breadcrumbs.objects').toString(),
-      activePath: `${route.params.unit}/domains/${route.params.domain}/objects`,
       faIcon: ['far', 'object-ungroup'],
       children: objectTypesChildItems.value,
       childrenLoading: schemasLoading.value,
@@ -389,7 +384,6 @@ export default defineComponent({
     const catalogsNavEntry = computed<INavItem>(() => ({
       key: 'catalogs',
       name: $t('breadcrumbs.catalogs').toString(),
-      activePath: `${route.params.unit}/domains/${route.params.domain}/catalogs`,
       icon: mdiBookOpenPageVariantOutline,
       children: catalogsEntriesChildItems.value,
       childrenLoading: catalogsEntriesLoading.value,
@@ -399,7 +393,6 @@ export default defineComponent({
     const reportsNavEntry = computed<INavItem>(() => ({
       key: 'reports',
       name: $t('breadcrumbs.reports').toString(),
-      activePath: `${route.params.unit}/domains/${route.params.domain}/reports`,
       icon: mdiFileChartOutline,
       children: reportsEntriesChildItems.value,
       childrenLoading: reportsEntriesLoading.value,
@@ -409,7 +402,6 @@ export default defineComponent({
     const risksNavEntry = computed<INavItem>(() => ({
       key: 'risks',
       name: $t('breadcrumbs.risks').toString(),
-      activePath: `${route.params.unit}/domains/${route.params.domain}/risks`,
       icon: mdiTableSettings,
       children: riskChildItems.value,
       childrenLoading: riskDefinitionsLoading.value,
@@ -445,7 +437,6 @@ export default defineComponent({
       to: '/docs/index',
       icon: mdiFileDocumentOutline,
       componentName: 'docs-nav-item',
-      activePath: '/docs',
       children: docNavItems.value
     }));
     
@@ -453,7 +444,6 @@ export default defineComponent({
       key: file._path,
       name: file.title,
       to: `/docs${ (file._path.startsWith('/index') ? file._path : file._path.replace('index', '')).replace(/\.\w{2}/, '')}`,
-      activePath: file._path,
       children: file.children?.length ? file.children.map((file) => docItemTransformationFn(file)) : undefined
     });
     const docs = useDocNavigation({});

@@ -17,11 +17,9 @@
 -->
 <template>
   <v-list-group
-    active-class="text-black font-weight-bold"
     :sub-group="level > 0"
     :data-component-name="componentName"
     :class="{ 'border-top': level === 0 }"
-    :model-value="$route.fullPath.includes(activePath) /* group prop is not working with query parameters, so we have to use a simple hack to expand the active path */"
     :target="openInNewtab ? '_blank' : ''"
     @click.stop="onClick"
   >
@@ -49,7 +47,7 @@
       >
         <template
           v-if="icon || faIcon"
-          #prepend
+          #prepend="{ isActive }"
         >
           <v-icon
             v-if="icon"
@@ -59,16 +57,18 @@
           <font-awesome-icon
             v-else-if="faIcon"
             :icon="faIcon"
-            :color="$route.fullPath.includes(activePath) ? 'black' : 'grey'"
+            :color="isActive ? 'black' : 'grey'"
             class="pt-1 mr-3"
           />
         </template>
-        <v-list-item-title
-          class="veo-primary-navigation-title"
-          :class="{ 'font-weight-bold': $route.fullPath.includes(activePath) }"
-        >
-          {{ name }}
-        </v-list-item-title>
+        <template #default="{ isActive }">
+          <v-list-item-title
+            class="veo-primary-navigation-title"
+            :class="{ 'font-weight-bold': isActive }"
+          >
+            {{ name }}
+          </v-list-item-title>
+        </template>
       </v-list-item>
     </template>
     <template v-if="childrenLoading">
@@ -94,6 +94,7 @@
           v-if="!child.children"
           v-bind="child"
           :level="level + 1"
+          :mini-variant="miniVariant"
           @expand-menu="$emit('expand-menu')"
           @click="$emit('click')"
         />
@@ -101,6 +102,7 @@
           v-else
           v-bind="child"
           :level="level + 1"
+          :mini-variant="miniVariant"
           @expand-menu="$emit('expand-menu')"
           @click="$emit('click')"
         />
@@ -143,10 +145,6 @@ const props = defineProps({
   level: {
     type: Number,
     default: 0
-  },
-  activePath: {
-    type: String,
-    required: true
   },
   componentName: {
     type: String,
