@@ -106,15 +106,15 @@ import { isString } from 'lodash';
 import { useDisplay } from 'vuetify';
 
 const props = withDefaults(defineProps<{
-  modelValue: boolean,
+  modelValue?: boolean,
   title: string,
-  large: boolean,
-  xLarge: boolean,
-  closeDisabled: boolean, // If set to true, the close button at the top right will be disabled and all other methods of closing the dialog will be ignored.
-  confirmClose: boolean | string, // If set to a string or true, a confirm dialog will be shown before closing
-  closeFunction: () => boolean, // If set, gets called before closing the dialog. If returns true the dialog gets closed, if false it stays open
-  fixedFooter: boolean,
-  innerClass: string
+  large?: boolean,
+  xLarge?: boolean,
+  closeDisabled?: boolean, // If set to true, the close button at the top right will be disabled and all other methods of closing the dialog will be ignored.
+  confirmClose?: boolean | string, // If set to a string or true, a confirm dialog will be shown before closing
+  closeFunction?: () => boolean, // If set, gets called before closing the dialog. If returns true the dialog gets closed, if false it stays open
+  fixedFooter?: boolean,
+  innerClass?: string
 }>(), {
   modelValue: false,
   large: false,
