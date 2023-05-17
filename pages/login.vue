@@ -72,12 +72,9 @@
         {{ t('imprint') }}
       </a>
       <span class="mx-1">|</span>
-      <a
-        :href="policyLink"
-        target="_blank"
-      >
+      <nuxt-link to="/security">
         {{ t('policy') }}
-      </a>
+      </nuxt-link>
     </div>
   </div>
 </template>
@@ -104,7 +101,6 @@ const login = () => _login(route.query.redirect_uri as string | undefined || '/'
 
 const dataProtectionRegulationLink = computed(() => (locale.value === 'en' ? 'https://www.sernet.de/en/data-protection-declaration/' : 'https://www.sernet.de/datenschutz/'));
 const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.verinice.com/en/left/Imprint/' : 'https://account.verinice.com/impressum/'));
-const policyLink = 'https://git.nbrx.de/nbrx/t1/veo/-/blob/master/SECURITY.md';
 </script>
 
 <i18n>
