@@ -71,6 +71,13 @@
       >
         {{ t('imprint') }}
       </a>
+      <span class="mx-1">|</span>
+      <a
+        :href="policyLink"
+        target="_blank"
+      >
+        {{ t('policy') }}
+      </a>
     </div>
   </div>
 </template>
@@ -97,6 +104,7 @@ const login = () => _login(route.query.redirect_uri as string | undefined || '/'
 
 const dataProtectionRegulationLink = computed(() => (locale.value === 'en' ? 'https://www.sernet.de/en/data-protection-declaration/' : 'https://www.sernet.de/datenschutz/'));
 const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.verinice.com/en/left/Imprint/' : 'https://account.verinice.com/impressum/'));
+const policyLink = 'https://git.nbrx.de/nbrx/t1/veo/-/blob/master/SECURITY.md';
 </script>
 
 <i18n>
@@ -107,6 +115,7 @@ const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.ver
     "imprint": "Imprint",
     "login": "Login",
     "loginCTA": "Login with an existing account",
+    "policy": "Security policy",
     "register": "Register"
   },
   "de": {
@@ -115,6 +124,7 @@ const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.ver
     "imprint": "Impressum",
     "login": "Anmelden",
     "loginCTA": "Mit einem vorhandenen Account anmelden",
+    "policy": "Sicherheitsrichtlinie",
     "register": "Registrieren"
   }
 }
