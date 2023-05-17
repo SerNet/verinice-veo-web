@@ -19,7 +19,7 @@
   <BaseDialog
     :model-value="modelValue"
     v-bind="$attrs"
-    :headline="upperFirst(t('schemaValidationWarnings').toString())"
+    :title="upperFirst(t('schemaValidationWarnings').toString())"
     large
     fixed-footer
     @update:model-value="$emit('update:model-value', $event)"

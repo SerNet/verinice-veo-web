@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     :model-value="modelValue && !!item"
-    :headline="t('headline')"
+    :title="t('headline')"
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>

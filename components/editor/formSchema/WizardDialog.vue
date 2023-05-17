@@ -18,8 +18,8 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    :headline="t('formSchemaEditor')"
-    persistent
+    :title="t('formSchemaEditor')"
+    close-disabled
     fixed-footer
     :large="state !== WIZARD_STATES.START"
     :close-function="onClose"

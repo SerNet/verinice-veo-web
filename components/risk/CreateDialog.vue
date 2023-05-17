@@ -19,8 +19,7 @@
   <BaseDialog
     v-model="dialog"
     :close-disabled="creatingRisks"
-    :persistent="creatingRisks"
-    :headline="upperFirst(t('createRisk', 0).toString())"
+    :title="upperFirst(t('createRisk', 0).toString())"
     x-large
     fixed-footer
     v-bind="$attrs"

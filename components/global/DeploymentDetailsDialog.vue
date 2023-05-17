@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     v-bind="$attrs"
-    :headline="t('environmentInformation')"
+    :title="t('environmentInformation')"
     large
   >
     <BaseCard>

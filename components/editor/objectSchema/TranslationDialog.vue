@@ -19,7 +19,7 @@
   <BaseDialog
     v-bind="$attrs"
     large
-    :headline="t('editor.formschema.translation')"
+    :title="t('editor.formschema.translation')"
     fixed-footer
     @update:model-value="$emit('update:model-value', $event)"
   >

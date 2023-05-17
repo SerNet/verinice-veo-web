@@ -19,8 +19,8 @@
   <BaseDialog
     :model-value="modelValue"
     :large="state !== 'start'"
-    :headline="$t('editor.objectschema.headline')"
-    persistent
+    :title="$t('editor.objectschema.headline')"
+    close-disabled
     :close-function="onClose"
     @update:model-value="emit('update:model-value', $event)"
   >

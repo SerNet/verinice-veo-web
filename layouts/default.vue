@@ -95,7 +95,7 @@
     />
     <UnitCreateDialog
       v-model="newUnitDialog.value"
-      v-bind="newUnitDialog"
+      :mandatory="newUnitDialog.mandatory"
     />
   </v-app>
 </template>
@@ -130,11 +130,11 @@ const drawer = ref<boolean>(true);
 //
 // Unit creation and navigation
 //
-const newUnitDialog = ref({ value: false, persistent: false });
+const newUnitDialog = ref({ value: false, mandatory: false });
 
-function createUnit(persistent = false) {
+function createUnit(mandatory = false) {
   newUnitDialog.value.value = true;
-  newUnitDialog.value.persistent = persistent;
+  newUnitDialog.value.mandatory = mandatory;
 }
 
 const domainId = computed((): string | undefined => {
