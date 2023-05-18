@@ -136,7 +136,7 @@ export default defineComponent({
 
     const selectedRevision = ref(0);
     watch(() => selectedRevision.value, (newValue) => {
-      emit('show-revision', historyEntriesWithCompability.value[newValue], newValue);
+      emit('show-revision', historyEntriesWithCompability.value[newValue], !!newValue);
     });
 
     return {

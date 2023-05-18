@@ -351,7 +351,7 @@ export default defineComponent({
     const formDataIsRevision = ref(false);
     const version = ref(0);
 
-    function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: true) {
+    function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: boolean) {
       const displayRevisionCallback = () => {
         formDataIsRevision.value = isRevision;
         entityModifiedDialogVisible.value = false;
