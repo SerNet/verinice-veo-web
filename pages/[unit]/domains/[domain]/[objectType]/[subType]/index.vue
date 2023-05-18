@@ -227,6 +227,10 @@ const filter = computed(() => {
         filterValue = undefined;
       }
 
+      if(filterValue === "true") {
+        filterValue = true;
+      }
+
       // Special handling
       if(filterKey === 'objectType') {
         filterValue = Object.entries(endpoints.value || {}).find(([_, endpoint]) => endpoint === filterValue)?.[0];

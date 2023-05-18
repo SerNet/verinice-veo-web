@@ -60,8 +60,6 @@
       :disabled="disabled"
       :name="name"
       hide-details="auto"
-      true-value="true"
-      :false-value="undefined"
       variant="underlined"
       @update:model-value="onInput($event)"
     />
