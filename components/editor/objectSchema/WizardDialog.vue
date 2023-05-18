@@ -20,7 +20,7 @@
     :model-value="modelValue"
     :large="state !== 'start'"
     :title="$t('editor.objectschema.headline')"
-    close-disabled
+    confirm-close
     :close-function="onClose"
     @update:model-value="emit('update:model-value', $event)"
   >

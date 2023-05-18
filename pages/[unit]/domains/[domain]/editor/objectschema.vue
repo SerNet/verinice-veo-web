@@ -448,14 +448,14 @@ export default defineComponent({
     // Saving
     const { mutateAsync: update } = useMutation(domainQueryDefinitions.mutations.updateTypeDefinitions);
 
-    const statusSpredRegExp = /[a-z]+_(\w+)_status_(([A-Z]|_)+)$/;
+    const statusSpredRegExp = /([a-z]+)_([\w|-]+)_status_([A-Z|_]+)$/;
 
     const isStatusPresentInSchema = (translationKey: string, objectSchemaPropertyPath: string, objectSchemaValueAtPropertyPath: any) => {
       if(objectSchemaPropertyPath !== `/properties/domains/properties/${domainId.value}/allOf`) {
         return false;
       }
 
-      const [_, subType, status] = translationKey.match(statusSpredRegExp) || [];
+      const [_all, _objectType, subType, status] = translationKey.match(statusSpredRegExp) || [];
 
       for(const objectSchemaSubType of objectSchemaValueAtPropertyPath) {
         if(objectSchemaSubType.if.properties.subType.const === subType) {
