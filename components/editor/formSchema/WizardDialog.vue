@@ -19,7 +19,7 @@
   <BaseDialog
     :model-value="modelValue"
     :title="t('formSchemaEditor')"
-    close-disabled
+    confirm-close
     fixed-footer
     :large="state !== WIZARD_STATES.START"
     :close-function="onClose"

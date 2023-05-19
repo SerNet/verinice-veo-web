@@ -71,6 +71,10 @@
       >
         {{ t('imprint') }}
       </a>
+      <span class="mx-1">|</span>
+      <nuxt-link to="/security">
+        {{ t('policy') }}
+      </nuxt-link>
     </div>
   </div>
 </template>
@@ -107,6 +111,7 @@ const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.ver
     "imprint": "Imprint",
     "login": "Login",
     "loginCTA": "Login with an existing account",
+    "policy": "Security policy",
     "register": "Register"
   },
   "de": {
@@ -115,6 +120,7 @@ const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.ver
     "imprint": "Impressum",
     "login": "Anmelden",
     "loginCTA": "Mit einem vorhandenen Account anmelden",
+    "policy": "Sicherheitsrichtlinie",
     "register": "Registrieren"
   }
 }

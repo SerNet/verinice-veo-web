@@ -103,6 +103,15 @@
           </v-list-item-title>
         </v-list-item>
         <v-divider />
+        <v-list-item
+          active-class="veo-active-list-item"
+          to="/security"
+        >
+          <v-list-item-title>
+            {{ $t('breadcrumbs.security') }}
+          </v-list-item-title>
+        </v-list-item>
+        <v-divider />
         <v-list-item @click.stop="displayDeploymentDetails = true">
           <v-list-item-title>
             {{ t('about') }}
@@ -115,6 +124,7 @@
           </v-list-item-title>
         </v-list-item>
       </v-list>
+
       <DeploymentDetailsDialog v-model="displayDeploymentDetails" />
     </v-card>
   </v-menu>
@@ -154,13 +164,13 @@ const onMenuClosed = () => {
     "about": "About verinice.",
     "logout": "Logout",
     "editAccount": "Edit account",
-    "notAvailable": "Not available"
+    "notAvailable": "Not available",
   },
   "de": {
     "about": "Über verinice.",
     "logout": "Abmelden",
     "editAccount": "Benutzerkonto bearbeiten",
-    "notAvailable": "Keine Angabe"
+    "notAvailable": "Keine Angabe",
   }
 }
 </i18n>
