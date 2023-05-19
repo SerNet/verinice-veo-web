@@ -30,7 +30,7 @@
       <BaseCard>
         <p class="mx-3 mt-3 mb-1">
           <b>{{ activeAccounts }}</b> {{ t('of') }}
-          <b>{{ userSettings.maxUsers }}</b> {{ t('activeAccounts') }}
+          <b>{{ userSettings.maxUsers - 1 }}</b> {{ t('activeAccounts') }}
         </p>
         <ObjectTable
           :default-headers="['actions']"
@@ -69,7 +69,7 @@
             color="primary"
             :disabled="
               ability.cannot('manage', 'accounts') ||
-                activeAccounts >= userSettings.maxUsers
+                activeAccounts >= userSettings.maxUsers - 1
             "
             size="large"
             class="veo-primary-action-fab"
