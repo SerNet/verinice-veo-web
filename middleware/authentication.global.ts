@@ -21,7 +21,7 @@ import { useVeoUser } from '~/composables/VeoUser';
 /**
  * These routes will not trigger authentication
  */
-export const publicRoutes = ['help', 'docs', 'login'];
+export const publicRoutes = ['help', 'docs', 'login', 'security'];
 
 export const restrictedRoutes = new Map<string, [string, string]>([
   ['unit-domains-domain-editor', ['view', 'editors']],
