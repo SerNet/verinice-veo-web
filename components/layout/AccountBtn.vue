@@ -82,7 +82,7 @@
         <template v-if="ability.can('manage', 'accounts')">
           <v-divider />
           <v-list-item
-            active-class="veo-active-list-item"
+            active-color="primary"
             to="/administration"
           >
             <v-list-item-title>
@@ -92,7 +92,7 @@
         </template>
         <v-divider />
         <v-list-item
-          active-class="veo-active-list-item"
+          active-color="primary"
           to="/user-data"
         >
           <v-list-item-title>

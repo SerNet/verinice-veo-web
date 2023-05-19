@@ -49,7 +49,6 @@
         <template #activator="{ props }">
           <v-btn
             v-if="!$route.path.startsWith('/docs')"
-            active-class="veo-active-list-item-no-background"
             class="mr-3"
             color="black"
             icon

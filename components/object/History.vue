@@ -55,7 +55,7 @@
                 :disabled="!version.compability.valid"
                 :value="index"
                 :active="selectedRevision === index"
-                active-class="veo-active-list-item"
+                active-color="primary"
                 @click="selectedRevision = index"
               >
                 <v-list-item-title>

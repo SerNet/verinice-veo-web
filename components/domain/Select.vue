@@ -84,7 +84,7 @@
             v-for="domain of selectItems"
             :key="domain.value"
             :active="domainId === domain.value"
-            active-class="veo-active-list-item"
+            active-color="primary"
             :value="domain.value"
             :title="domain.title"
             @click="domainId = domain.value"
