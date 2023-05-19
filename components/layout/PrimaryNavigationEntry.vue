@@ -18,7 +18,9 @@
 <template>
   <v-list-item
     :to="to"
-    active-class="veo-active-list-item veo-active-list-nav-item"
+    :active="active"
+    active-class="veo-active-list-nav-item"
+    active-color="primary"
     :class="_classes"
     :data-component-name="componentName"
     density="compact"
@@ -56,58 +58,53 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType } from 'vue';
 import { _RouteLocationBase } from 'vue-router';
 import { INavItem } from './PrimaryNavigation.vue';
 
-const props = defineProps({
-  name: {
-    type: String,
-    required: true
-  },
-  icon: {
-    type: String,
-    default: undefined
-  },
-  faIcon: {
-    type: [String, Array],
-    default: undefined
-  },
-  to: {
-    type: [String, Object] as PropType<_RouteLocationBase>,
-    default: undefined
-  },
-  exact: {
-    type: Boolean,
-    default: false
-  },
-  miniVariant: {
-    type: Boolean,
-    default: false
-  },
-  componentName: {
-    type: String,
-    default: undefined
-  },
-  classes: {
-    type: String,
-    default: undefined
-  },
-  level: {
-    type: Number,
-    default: 0
-  },
-  children: {
-    type: Array as PropType<INavItem[]>,
-    default: () => []
-  },
-  openInNewtab: {
-    type: Boolean,
-    default: false
-  }
+const props = withDefaults(defineProps<{
+  name: string;
+  icon?: string;
+  faIcon?: string | string[];
+  to?: _RouteLocationBase;
+  exact?: boolean;
+  miniVariant?: boolean;
+  componentName?: string;
+  classes?: string;
+  level?: number;
+  children?: INavItem[];
+  openInNewtab?: boolean;
+}>(), {
+  name: '',
+  icon: undefined,
+  faIcon: undefined,
+  to: undefined,
+  exact: false,
+  miniVariant: false,
+  componentName: undefined,
+  classes: undefined,
+  level: 0,
+  children: [],
+  openInNewtab: false
 });
+
 const emit = defineEmits(['expand-menu', 'click']);
-  
+
+const router = useRouter();
+const route = useRoute();
+
+/* The default match function of the router watches for the same resolved route name, however this means that
+ * /<unit>/domains/<objectType>/<subType> won't match /<unit>/domains/<objectType>/<subType>/<object> and thus the menu
+ * entry won't be highlighted even if we set exact to false, so we need to implement our own match function.
+ */
+const active = computed(() => {
+  if (!props.to) {
+    return false;
+  }
+
+  const resolvedRoute = router.resolve(props.to);
+  return props.exact ? resolvedRoute.fullPath === route.fullPath : route.fullPath.startsWith(resolvedRoute.fullPath);
+});
+
 const onClick = () => {
   if(props.openInNewtab) {
     return;

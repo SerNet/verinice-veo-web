@@ -35,7 +35,10 @@
       />
     </template>
     <template #default>
-      <v-list :rounded="miniVariant">
+      <v-list
+        ref="primaryNavList"
+        :rounded="miniVariant"
+      >
         <template
           v-for="item in items"
           :key="item.key"
@@ -104,7 +107,7 @@
   </v-navigation-drawer>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { RouteLocationRaw } from 'vue-router';
 import {
   mdiBookOpenPageVariantOutline,
@@ -145,6 +148,311 @@ import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~~/composables/api/utils/query';
 
+const objectTypeSortOrder = new Map<string, number>([
+  ['scope', 1],
+  ['process', 2],
+  ['asset', 3],
+  ['person', 4],
+  ['incident', 5],
+  ['document', 6],
+  ['scenario', 7],
+  ['control', 8]
+]);
+
+const props = withDefaults(defineProps<{
+  modelValue: boolean;
+  unitId?: string;
+  domainId?: string;
+}>(), {
+  modelValue: true,
+  unitId: undefined,
+  domainId: undefined
+});
+
+const { t, locale } = useI18n();
+const { t: $t } = useI18n({ useScope: 'global' });
+const { authenticated, userSettings } = useVeoUser();
+const route = useRoute();
+const { ability } = useVeoPermissions();
+const { xs } = useDisplay();
+
+// Layout stuff
+const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
+
+const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+const fetchTranslationsQueryEnabled = computed(() => authenticated.value);  
+const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters,  { enabled: fetchTranslationsQueryEnabled });
+
+// objects specific stuff
+const objectSchemas = ref<IVeoObjectSchema[]>([]);
+const schemasLoading = ref(false);
+
+const queryParameters = computed(() => ({
+  domainId: props.domainId as string
+}));
+const allFormSchemasQueryEnabled = computed(() => !!props.domainId);
+const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms ,queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
+
+const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { placeholderData: {} });
+
+const fetchSchemasDetailedQueryParameters = computed(() => ({ domainIds: [props.domainId as string] }));
+const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId && authenticated.value);
+const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, { enabled: fetchSchemasDetailedQueryEnabled });
+watch(
+  () => _schemas,
+  (newValue) => {
+    objectSchemas.value = (newValue || []).map((schema) => schema.data).filter((schema) => schema) as IVeoObjectSchema[];
+    schemasLoading.value = (newValue || []).some((schema) => schema.isFetching);
+  },
+  { deep: true }
+);
+
+const objectTypesChildItems = computed<INavItem[]>(() =>
+  objectSchemas.value
+    .sort((a, b) => (objectTypeSortOrder.get(a.title) || 0) - (objectTypeSortOrder.get(b.title) || 0))
+    .map((objectSchema) => {
+      const objectSubTypes = extractSubTypesFromObjectSchema(objectSchema);
+      const _icon = OBJECT_TYPE_ICONS.get(objectSchema.title);
+
+      return {
+        key: objectSchema.title,
+        name: upperFirst(translations.value?.lang[locale.value]?.[objectSchema.title] || objectSchema.title),
+        icon: _icon?.library === 'mdi' ? _icon?.icon as string : undefined,
+        faIcon: _icon?.library === 'fa' ? _icon?.icon : undefined,
+        children: [
+          // all of object type
+          {
+            key: `${objectSchema.title}_all`,
+            name: upperFirst(t('all').toString()),
+            to: {
+              name: OBJECT_OVERVIEW_ROUTE_NAME,
+              params: {
+                unit: props.unitId,
+                domain: props.domainId,
+                objectType: endpoints.value?.[objectSchema.title],
+                subType: '-'
+              }
+            }
+          },
+              
+          // dynamic sub type routes
+          ...sortBy(
+            objectSubTypes.map((subType) => {
+              const formSchema = (formSchemas.value || []).find(
+                (formSchema) => formSchema.modelType === objectSchema.title && formSchema.subType === subType.subType
+              );
+              const displayName = formSchema?.name[locale.value] || subType.subType;
+              return {
+                key: displayName,
+                name: displayName,
+                to: {
+                  name: OBJECT_OVERVIEW_ROUTE_NAME,
+                  params: {
+                    unit: props.unitId,
+                    domain: props.domainId,
+                    objectType: endpoints.value?.[objectSchema.title],
+                    subType: subType.subType
+                  }
+                },
+                sorting: formSchema?.sorting
+              };
+            }),
+            'sorting'
+          )
+        ]
+      };
+    })
+);
+
+// catalog specific stuff
+const fetchCatalogsQueryParameters = computed(() => ({ domainId: props.domainId as string }));
+const fetchCatalogsQueryEnabled = computed(() => !!props.domainId);
+const { data: catalogs, isFetching: catalogsEntriesLoading } = useQuery(catalogQueryDefinitions.queries.fetchCatalogs, fetchCatalogsQueryParameters, { enabled: fetchCatalogsQueryEnabled });
+
+const catalogsEntriesChildItems = computed<INavItem[]>(() =>
+  (catalogs.value || []).map((catalog) => ({
+    key: catalog.id,
+    name: catalog.name,
+    to: {
+      name: CATALOGS_CATALOG_ROUTE_NAME,
+      params: {
+        unit: props.unitId,
+        domain: props.domainId,
+        catalog: catalog.id
+      }
+    }
+  }))
+);
+
+// report specific stuff
+const { data: reports, isFetching: reportsEntriesLoading } = useQuery(reportQueryDefinitions.queries.fetchAll);
+
+const reportsEntriesChildItems = computed<INavItem[]>(
+  () =>
+    Object.entries(reports.value || {})
+      .map(([reportId, report]) => ({
+        key: reportId,
+        name: report.name[locale.value],
+        exact: true,
+        to: {
+          name: REPORTS_REPORT_ROUTE_NAME,
+          params: {
+            unit: props.unitId,
+            domain: props.domainId,
+            report: reportId
+          }
+        }
+      }))
+      .filter((entry) => entry.name) // Don't show reports which aren't translated in the users language
+);
+
+// risk specific stuff
+const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
+const fetchDomainQueryEnabled = computed(() => !!props.domainId);
+const { data: domain, isFetching: riskDefinitionsLoading } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
+const riskDefinitions = computed(() => domain.value?.riskDefinitions || {});
+
+const riskChildItems = computed<INavItem[]>(() =>
+  Object.values(riskDefinitions.value).map(({ id }: { id: string }) => ({
+    key: id,
+    name: id,
+    to: {
+      name: RISKS_MATRIX_ROUTE_NAME,
+      params: {
+        unit: props.unitId,
+        domain: props.domainId,
+        matrix: id
+      }
+    }
+  }))
+);
+
+const unitSelectionNavEntry = computed<INavItem>(() =>({
+  key: 'unitSelection',
+  name: $t('breadcrumbs.index'),
+  icon: mdiHomeSwitchOutline,
+  to: {
+    name: UNIT_SELECTION_ROUTE_NAME
+  },
+  componentName: 'unit-select-nav-item',
+  exact: true,
+  openInNewtab: route.path.startsWith("/docs")
+}));
+
+const domainDashboardNavEntry = computed<INavItem>(() => ({
+  key: 'domainDashboard',
+  name: $t('domain.index.title').toString(),
+  icon: mdiHomeOutline,
+  to: {
+    name: DOMAIN_DASHBOARD_ROUTE_NAME,
+    params: {
+      unit: props.unitId,
+      domain: props.domainId
+    }
+  },
+  componentName: 'domain-dashboard-nav-item',
+  exact: true,
+  classes: 'mb-4'
+}));
+
+const objectsNavEntry = computed<INavItem>(() => ({
+  key: 'objects',
+  name: $t('breadcrumbs.objects').toString(),
+  faIcon: ['far', 'object-ungroup'],
+  children: objectTypesChildItems.value,
+  childrenLoading: schemasLoading.value,
+  componentName: 'objects-nav-item'
+}));
+
+const catalogsNavEntry = computed<INavItem>(() => ({
+  key: 'catalogs',
+  name: $t('breadcrumbs.catalogs').toString(),
+  icon: mdiBookOpenPageVariantOutline,
+  children: catalogsEntriesChildItems.value,
+  childrenLoading: catalogsEntriesLoading.value,
+  componentName: 'catalogs-nav-item'
+}));
+
+const reportsNavEntry = computed<INavItem>(() => ({
+  key: 'reports',
+  name: $t('breadcrumbs.reports').toString(),
+  icon: mdiFileChartOutline,
+  children: reportsEntriesChildItems.value,
+  childrenLoading: reportsEntriesLoading.value,
+  componentName: 'reports-nav-item'
+}));
+
+const risksNavEntry = computed<INavItem>(() => ({
+  key: 'risks',
+  name: $t('breadcrumbs.risks').toString(),
+  icon: mdiTableSettings,
+  children: riskChildItems.value,
+  childrenLoading: riskDefinitionsLoading.value,
+  componentName: 'risks-nav-item'
+}));
+
+const editorsNavEntry = computed<INavItem>(() => ({
+  key: 'editors',
+  name: $t('breadcrumbs.editor').toString(),
+  icon: mdiTextBoxEditOutline,
+  to: {
+    name: EDITOR_INDEX_ROUTE_NAME,
+    params: {
+      unit: props.unitId,
+      domain: props.domainId
+    }
+  }
+}));
+
+const backToVeoNavEntry = computed<INavItem>(() => ({
+  key: 'veo',
+  name: t('backToVeo').toString(),
+  to: '/',
+  icon: mdiHomeOutline,
+  componentName: 'veo-nav-item',
+  exact: true,
+  openInNewtab: route.path.startsWith("/docs")
+}));
+
+const docsNavEntry = computed<INavItem>(() => ({
+  key: 'docs',
+  name: $t('breadcrumbs.docs').toString(),
+  to: '/docs/index',
+  icon: mdiFileDocumentOutline,
+  componentName: 'docs-nav-item',
+  children: docNavItems.value
+}));
+    
+const docItemTransformationFn = (file: NavItem): INavItem => ({
+  key: file._path,
+  name: file.title,
+  to: `/docs${ (file._path.startsWith('/index') ? file._path : file._path.replace('index', '')).replace(/\.\w{2}/, '')}`,
+  children: file.children?.length ? file.children.map((file) => docItemTransformationFn(file)) : undefined
+});
+const docs = useDocNavigation({});
+const docNavItems = computed(() => 
+  (docs.value || []).map((file) => docItemTransformationFn(file))
+);
+
+const items = computed<INavItem[]>(() => [
+  ...(authenticated.value && userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry.value] : []),
+  ...(props.unitId && props.domainId
+    ? [
+      domainDashboardNavEntry.value,
+      ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
+      objectsNavEntry.value,
+      catalogsNavEntry.value,
+      reportsNavEntry.value,
+      risksNavEntry.value
+    ]
+    : []),
+  ...(route.path.startsWith('/docs') ? [backToVeoNavEntry.value, docsNavEntry.value] : [])
+]);
+
+const primaryNavList = ref();
+</script>
+
+<script lang="ts">
 export interface INavItem {
   key: string;
   name: string;
@@ -158,333 +466,6 @@ export interface INavItem {
   classes?: string;
   openInNewtab?: boolean;
 }
-
-const objectTypeSortOrder = new Map<string, number>([
-  ['scope', 1],
-  ['process', 2],
-  ['asset', 3],
-  ['person', 4],
-  ['incident', 5],
-  ['document', 6],
-  ['scenario', 7],
-  ['control', 8]
-]);
-
-export default defineComponent({
-  props: {
-    modelValue: {
-      type: Boolean,
-      default: true
-    },
-    unitId: {
-      type: String,
-      default: undefined
-    },
-    domainId: {
-      type: String,
-      default: undefined
-    }
-  },
-  setup(props) {
-    const { t, locale } = useI18n();
-    const { t: $t } = useI18n({ useScope: 'global' });
-    const { authenticated, userSettings } = useVeoUser();
-    const route = useRoute();
-    const { ability } = useVeoPermissions();
-    const { xs } = useDisplay();
-
-    // Layout stuff
-    const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
-
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const fetchTranslationsQueryEnabled = computed(() => authenticated.value);  
-    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters,  { enabled: fetchTranslationsQueryEnabled });
-
-    // objects specific stuff
-    const objectSchemas = ref<IVeoObjectSchema[]>([]);
-    const schemasLoading = ref(false);
-
-    const queryParameters = computed(() => ({
-      domainId: props.domainId as string
-    }));
-    const allFormSchemasQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms ,queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
-
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { placeholderData: {} });
-
-    const fetchSchemasDetailedQueryParameters = computed(() => ({ domainIds: [props.domainId as string] }));
-    const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId && authenticated.value);
-    const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, { enabled: fetchSchemasDetailedQueryEnabled });
-    watch(
-      () => _schemas,
-      (newValue) => {
-        objectSchemas.value = (newValue || []).map((schema) => schema.data).filter((schema) => schema) as IVeoObjectSchema[];
-        schemasLoading.value = (newValue || []).some((schema) => schema.isFetching);
-      },
-      { deep: true }
-    );
-
-    const objectTypesChildItems = computed<INavItem[]>(() =>
-      objectSchemas.value
-        .sort((a, b) => (objectTypeSortOrder.get(a.title) || 0) - (objectTypeSortOrder.get(b.title) || 0))
-        .map((objectSchema) => {
-          const objectSubTypes = extractSubTypesFromObjectSchema(objectSchema);
-          const _icon = OBJECT_TYPE_ICONS.get(objectSchema.title);
-
-          return {
-            key: objectSchema.title,
-            name: upperFirst(translations.value?.lang[locale.value]?.[objectSchema.title] || objectSchema.title),
-            icon: _icon?.library === 'mdi' ? _icon?.icon as string : undefined,
-            faIcon: _icon?.library === 'fa' ? _icon?.icon : undefined,
-            children: [
-              // all of object type
-              {
-                key: `${objectSchema.title}_all`,
-                name: upperFirst(t('all').toString()),
-                to: {
-                  name: OBJECT_OVERVIEW_ROUTE_NAME,
-                  params: {
-                    unit: props.unitId,
-                    domain: props.domainId,
-                    objectType: endpoints.value?.[objectSchema.title],
-                    subType: '-'
-                  }
-                }
-              },
-              
-              // dynamic sub type routes
-              ...sortBy(
-                objectSubTypes.map((subType) => {
-                  const formSchema = (formSchemas.value || []).find(
-                    (formSchema) => formSchema.modelType === objectSchema.title && formSchema.subType === subType.subType
-                  );
-                  const displayName = formSchema?.name[locale.value] || subType.subType;
-                  return {
-                    key: displayName,
-                    name: displayName,
-                    to: {
-                      name: OBJECT_OVERVIEW_ROUTE_NAME,
-                      params: {
-                        unit: props.unitId,
-                        domain: props.domainId,
-                        objectType: endpoints.value?.[objectSchema.title],
-                        subType: subType.subType
-                      }
-                    },
-                    sorting: formSchema?.sorting
-                  };
-                }),
-                'sorting'
-              )
-            ]
-          };
-        })
-    );
-
-    // catalog specific stuff
-    const fetchCatalogsQueryParameters = computed(() => ({ domainId: props.domainId as string }));
-    const fetchCatalogsQueryEnabled = computed(() => !!props.domainId);
-    const { data: catalogs, isFetching: catalogsEntriesLoading } = useQuery(catalogQueryDefinitions.queries.fetchCatalogs, fetchCatalogsQueryParameters, { enabled: fetchCatalogsQueryEnabled });
-
-    const catalogsEntriesChildItems = computed<INavItem[]>(() =>
-      (catalogs.value || []).map((catalog) => ({
-        key: catalog.id,
-        name: catalog.name,
-        to: {
-          name: CATALOGS_CATALOG_ROUTE_NAME,
-          params: {
-            unit: props.unitId,
-            domain: props.domainId,
-            catalog: catalog.id
-          }
-        }
-      }))
-    );
-
-    // report specific stuff
-    const { data: reports, isFetching: reportsEntriesLoading } = useQuery(reportQueryDefinitions.queries.fetchAll);
-
-    const reportsEntriesChildItems = computed<INavItem[]>(
-      () =>
-        Object.entries(reports.value || {})
-          .map(([reportId, report]) => ({
-            key: reportId,
-            name: report.name[locale.value],
-            exact: true,
-            to: {
-              name: REPORTS_REPORT_ROUTE_NAME,
-              params: {
-                unit: props.unitId,
-                domain: props.domainId,
-                report: reportId
-              }
-            }
-          }))
-          .filter((entry) => entry.name) // Don't show reports which aren't translated in the users language
-    );
-
-    // risk specific stuff
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
-    const fetchDomainQueryEnabled = computed(() => !!props.domainId);
-    const { data: domain, isFetching: riskDefinitionsLoading } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
-    const riskDefinitions = computed(() => domain.value?.riskDefinitions || {});
-
-    const riskChildItems = computed<INavItem[]>(() =>
-      Object.values(riskDefinitions.value).map(({ id }: { id: string }) => ({
-        key: id,
-        name: id,
-        to: {
-          name: RISKS_MATRIX_ROUTE_NAME,
-          params: {
-            unit: props.unitId,
-            domain: props.domainId,
-            matrix: id
-          }
-        }
-      }))
-    );
-
-    const unitSelectionNavEntry = computed<INavItem>(() =>({
-      key: 'unitSelection',
-      name: $t('breadcrumbs.index'),
-      icon: mdiHomeSwitchOutline,
-      to: {
-        name: UNIT_SELECTION_ROUTE_NAME
-      },
-      componentName: 'unit-select-nav-item',
-      exact: true,
-      openInNewtab: route.path.startsWith("/docs")
-    }));
-
-    const domainDashboardNavEntry = computed<INavItem>(() => ({
-      key: 'domainDashboard',
-      name: $t('domain.index.title').toString(),
-      icon: mdiHomeOutline,
-      to: {
-        name: DOMAIN_DASHBOARD_ROUTE_NAME,
-        params: {
-          unit: props.unitId,
-          domain: props.domainId
-        }
-      },
-      componentName: 'domain-dashboard-nav-item',
-      exact: true,
-      classes: 'mb-4'
-    }));
-
-    const objectsNavEntry = computed<INavItem>(() => ({
-      key: 'objects',
-      name: $t('breadcrumbs.objects').toString(),
-      faIcon: ['far', 'object-ungroup'],
-      children: objectTypesChildItems.value,
-      childrenLoading: schemasLoading.value,
-      componentName: 'objects-nav-item'
-    }));
-
-    const catalogsNavEntry = computed<INavItem>(() => ({
-      key: 'catalogs',
-      name: $t('breadcrumbs.catalogs').toString(),
-      icon: mdiBookOpenPageVariantOutline,
-      children: catalogsEntriesChildItems.value,
-      childrenLoading: catalogsEntriesLoading.value,
-      componentName: 'catalogs-nav-item'
-    }));
-
-    const reportsNavEntry = computed<INavItem>(() => ({
-      key: 'reports',
-      name: $t('breadcrumbs.reports').toString(),
-      icon: mdiFileChartOutline,
-      children: reportsEntriesChildItems.value,
-      childrenLoading: reportsEntriesLoading.value,
-      componentName: 'reports-nav-item'
-    }));
-
-    const risksNavEntry = computed<INavItem>(() => ({
-      key: 'risks',
-      name: $t('breadcrumbs.risks').toString(),
-      icon: mdiTableSettings,
-      children: riskChildItems.value,
-      childrenLoading: riskDefinitionsLoading.value,
-      componentName: 'risks-nav-item'
-    }));
-
-    const editorsNavEntry = computed<INavItem>(() => ({
-      key: 'editors',
-      name: $t('breadcrumbs.editor').toString(),
-      icon: mdiTextBoxEditOutline,
-      to: {
-        name: EDITOR_INDEX_ROUTE_NAME,
-        params: {
-          unit: props.unitId,
-          domain: props.domainId
-        }
-      }
-    }));
-
-    const backToVeoNavEntry = computed<INavItem>(() => ({
-      key: 'veo',
-      name: t('backToVeo').toString(),
-      to: '/',
-      icon: mdiHomeOutline,
-      componentName: 'veo-nav-item',
-      exact: true,
-      openInNewtab: route.path.startsWith("/docs")
-    }));
-
-    const docsNavEntry = computed<INavItem>(() => ({
-      key: 'docs',
-      name: $t('breadcrumbs.docs').toString(),
-      to: '/docs/index',
-      icon: mdiFileDocumentOutline,
-      componentName: 'docs-nav-item',
-      children: docNavItems.value
-    }));
-    
-    const docItemTransformationFn = (file: NavItem): INavItem => ({
-      key: file._path,
-      name: file.title,
-      to: `/docs${ (file._path.startsWith('/index') ? file._path : file._path.replace('index', '')).replace(/\.\w{2}/, '')}`,
-      children: file.children?.length ? file.children.map((file) => docItemTransformationFn(file)) : undefined
-    });
-    const docs = useDocNavigation({});
-    const docNavItems = computed(() => 
-      (docs.value || []).map((file) => docItemTransformationFn(file))
-    );
-
-    const items = computed<INavItem[]>(() => [
-      ...(authenticated.value && userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry.value] : []),
-      ...(props.unitId && props.domainId
-        ? [
-          domainDashboardNavEntry.value,
-          ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
-          objectsNavEntry.value,
-          catalogsNavEntry.value,
-          reportsNavEntry.value,
-          risksNavEntry.value
-        ]
-        : []),
-      ...(route.path.startsWith('/docs') ? [backToVeoNavEntry.value, docsNavEntry.value] : [])
-    ]);
-
-    // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
-    const homeLink = computed(() =>
-      route.params.domain ? `/${route.params.unit}/domains/${route.params.domain}` : route.params.unit ? `/${route.params.unit}` : '/'
-    );
-
-    return {
-      authenticated,
-      items,
-      homeLink,
-      miniVariant,
-
-      route,
-      t,
-      mdiChevronLeft,
-      mdiChevronRight,
-      xs
-    };
-  }
-});
 </script>
 
 <i18n>

@@ -112,53 +112,32 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType } from 'vue';
 import { mdiChevronDown } from '@mdi/js';
 
 import { INavItem } from './PrimaryNavigation.vue';
 
-const props = defineProps({
-  name: {
-    type: String,
-    required: true
-  },
-  icon: {
-    type: String,
-    default: undefined
-  },
-  faIcon: {
-    type: [String, Array],
-    default: undefined
-  },
-  children: {
-    type: Array as PropType<INavItem[]>,
-    required: true
-  },
-  childrenLoading: {
-    type: Boolean,
-    default: false
-  },
-  miniVariant: {
-    type: Boolean,
-    default: false
-  },
-  level: {
-    type: Number,
-    default: 0
-  },
-  componentName: {
-    type: String,
-    default: undefined
-  },
-  to: {
-    type: String,
-    default: undefined
-  },
-  openInNewtab: {
-    type: Boolean,
-    default: false
-  }
+const props = withDefaults(defineProps<{
+  name: string;
+  icon?: string;
+  faIcon?: string | string[];
+  children: INavItem[];
+  childrenLoading?: boolean;
+  miniVariant?: boolean;
+  level?: number;
+  componentName?: string;
+  to?: string;
+  openInNewtab?: boolean;
+}>(), {
+  icon: undefined,
+  faIcon: undefined,
+  childrenLoading: false,
+  miniVariant: false,
+  level: 0,
+  componentName: undefined,
+  to: undefined,
+  openInNewtab: false
 });
+
 const emit = defineEmits(['expand-menu', 'click']);
 
 const route = useRoute();
