@@ -146,7 +146,7 @@ function composeFileName(chunk: IVeoObjectHistoryEntry[]) {
   const startDate = new Date(chunk[0].time);
   const endDate = new Date(chunk[chunk.length - 1].time);
 
-  const displayName = `${format(startDate, 'MM.dd.yyyy')} – ${format(endDate, 'MM.dd.yyyy')}`;
+  const displayName = `${format(startDate, 'dd.MM.yyyy')} – ${format(endDate, 'dd.MM.yyyy')}`;
   const fileName = `history_${format(startDate, 'yyyy-MM-dd')}_${format(endDate, 'yyyy-MM-dd')}`;
   return { displayName, fileName };
 }
