@@ -70,7 +70,7 @@ export default {
   queries: {
     fetchCatalogs: {
       primaryQueryKey: 'catalogs',
-      url: '/api/catalogs/',
+      url: '/api/catalogs',
       queryParameterTransformationFn: (queryParameters) => ({ query: { domain: queryParameters.domainId } }),
       staticQueryOptions: {
         staleTime: STALE_TIME.INFINITY,
