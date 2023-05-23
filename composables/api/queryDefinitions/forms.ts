@@ -88,7 +88,7 @@ export default {
   queries: {
     fetchForms: {
       primaryQueryKey: 'forms',
-      url: '/api/forms/',
+      url: '/api/forms',
       queryParameterTransformationFn: (queryParameters) => ({ query: queryParameters }),
       staticQueryOptions: {
         staleTime: STALE_TIME.MEDIUM,

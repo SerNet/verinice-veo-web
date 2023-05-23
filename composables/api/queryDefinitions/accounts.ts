@@ -60,7 +60,7 @@ export default {
   queries: {
     fetchAccounts: {
       primaryQueryKey: 'accounts',
-      url: '/api/accounts/',
+      url: '/api/accounts',
       queryParameterTransformationFn: () => ({}),
       staticQueryOptions: { placeholderData: [] }
     } as IVeoQueryDefinition<Record<string, never>, IVeoAccount[]>,

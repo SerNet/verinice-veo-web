@@ -176,7 +176,7 @@ export default {
   mutations:{
     createObject:{
       primaryQueryKey: 'object',
-      url: '/api/:endpoint/',
+      url: '/api/:endpoint',
       method: 'POST',
       mutationParameterTransformationFn: (mutationParameters) => {
         const _object = mutationParameters.object;

@@ -62,7 +62,7 @@ export default {
   queries: {
     fetchDomains: {
       primaryQueryKey: 'domains',
-      url: '/api/domains/',
+      url: '/api/domains',
       queryParameterTransformationFn: () => ({}),
       staticQueryOptions: {
         staleTime: STALE_TIME.LONG,
