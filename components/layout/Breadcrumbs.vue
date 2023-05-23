@@ -241,7 +241,7 @@ export default defineComponent({
           queriedText: {
             query: ':object',
             parameterTransformationFn: () => ({ id: route.params.object, endpoint: route.params.objectType }),
-            resultTransformationFn: (_param, value, data) => data.displayName
+            resultTransformationFn: (_param, _value, data) => data.displayName
           }
         }
       ],
@@ -346,7 +346,7 @@ export default defineComponent({
 
     const pathTemplate = computed(() => last(route.matched)?.path || '');
 
-    const breadcrumbParts = computed(() => pathTemplate.value.split('/'));
+    const breadcrumbParts = computed(() => pathTemplate.value.replaceAll('()', '').split('/'));
 
     const generatedBreadcrumbs = computed<IVeoBreadcrumb[]>(() =>
       breadcrumbParts.value
