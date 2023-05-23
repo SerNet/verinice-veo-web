@@ -1,7 +1,21 @@
 import { resolve } from "path";
-
 import DocsModule from './modules/docs/module.mjs';
+
+
+// Types
 import { LOCALES } from "./types/locales";
+import { PluginOption } from 'vite';
+
+/** UNIT TESTING
+* When testing the application, vue + vuetify are not available,
+* thus we have to import/plug them in manually
+* however, in dev mode or when building this causes an ERROR,
+* that is why we only add vue + vuetify in when testing
+*/
+import vue from "@vitejs/plugin-vue";
+import vuetify from 'vite-plugin-vuetify';
+let vitePlugins: PluginOption[] = [];
+if (process.env.NODE_ENV === 'test') vitePlugins = [vue(), vuetify({autoImport: true})];
 
 export default defineNuxtConfig({
   //==============================================================
@@ -55,6 +69,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     './modules/externalize-scripts',
     './modules/vuetify-sass-variables.ts',
+    'nuxt-vitest',
     'nuxt-font-loader'
   ],
 
@@ -64,6 +79,7 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    plugins: vitePlugins,
     css: {
       preprocessorOptions: {
         scss: {

@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:19-alpine
 # Install Git
 RUN apk --no-cache add git
 # Install Python for node-14
@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 COPY package.json .
 # For npm@5 or later, copy package-lock.json as well
 COPY package-lock.json .
-RUN npm install
+RUN npm ci
 # Bundle app source
 COPY . .
 
