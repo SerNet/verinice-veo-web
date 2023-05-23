@@ -83,7 +83,7 @@ const props = withDefaults(defineProps<{
   componentName: undefined,
   classes: undefined,
   level: 0,
-  children: [],
+  children: () => [],
   openInNewtab: false
 });
 
