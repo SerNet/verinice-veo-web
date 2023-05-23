@@ -47,8 +47,8 @@ describe('chunkHistory()', () => {
   });
 
   it('should return objects with a correctly formatted displayName property', async () => {
-    const expectedDisplayNameFirstItem = '01.21.2022 – 01.21.2022';
-    const expectedDisplayNameLastItem = '01.21.2022 – 01.21.2022 (2)';
+    const expectedDisplayNameFirstItem = '21.01.2022 – 21.01.2022';
+    const expectedDisplayNameLastItem = '21.01.2022 – 21.01.2022 (2)';
     expect(firstItem.displayName).toBe(expectedDisplayNameFirstItem);
     expect(lastItem.displayName).toBe(expectedDisplayNameLastItem);
   });
