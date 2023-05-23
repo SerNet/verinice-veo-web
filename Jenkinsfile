@@ -46,13 +46,13 @@ pipeline {
                     try {
                         sh 'cd /usr/src/app && npm run test'
                     } finally {
-                        dir (outputDir){
-                            sh "cp /usr/src/app/junit.xml ."
-                            junit 'junit.xml'
-                            sh script: "cp /root/.npm/_logs/* .", returnStatus: true
-                            archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
-                        }
-                        sh "rm -fr $outputDir"
+                        // dir (outputDir){
+                        //     sh "cp /usr/src/app/junit.xml ."
+                        //     junit 'junit.xml'
+                        //     sh script: "cp /root/.npm/_logs/* .", returnStatus: true
+                        //     archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
+                        // }
+                        // sh "rm -fr $outputDir"
                     }
                 }
             }
