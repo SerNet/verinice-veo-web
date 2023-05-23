@@ -59,35 +59,27 @@
 
 <script lang="ts" setup>
 import { _RouteLocationBase } from 'vue-router';
+
 import { INavItem } from './PrimaryNavigation.vue';
 
-const props = withDefaults(defineProps<{
-  name: string;
-  icon?: string;
-  faIcon?: string | string[];
-  to?: _RouteLocationBase;
-  exact?: boolean;
-  miniVariant?: boolean;
-  componentName?: string;
-  classes?: string;
-  level?: number;
-  children?: INavItem[];
-  openInNewtab?: boolean;
+const props = withDefaults(defineProps<INavItem & {
+  level: number;
+  miniVariant: boolean;
 }>(), {
-  name: '',
   icon: undefined,
   faIcon: undefined,
   to: undefined,
   exact: false,
-  miniVariant: false,
   componentName: undefined,
   classes: undefined,
-  level: 0,
-  children: () => [],
+  children: undefined,
   openInNewtab: false
 });
 
-const emit = defineEmits(['expand-menu', 'click']);
+const emit = defineEmits<{
+  (event: 'expand-menu'): void;
+  (event: 'open-parent'): void;
+}>();
 
 const router = useRouter();
 const route = useRoute();
@@ -104,6 +96,13 @@ const active = computed(() => {
   const resolvedRoute = router.resolve(props.to);
   return props.exact ? resolvedRoute.fullPath === route.fullPath : route.fullPath.startsWith(resolvedRoute.fullPath);
 });
+
+// For some reason the list doesn't get auto-openend if an object is opened even though active is true (probably because the nav item isn't the full path, so we have to do it by ourselves)
+watch(() => active.value, (newValue) => {
+  if (newValue) {
+    emit('open-parent');
+  }
+}, { immediate: true });
 
 const onClick = () => {
   if(props.openInNewtab) {

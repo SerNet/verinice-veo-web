@@ -21,6 +21,7 @@
     :data-component-name="componentName"
     :class="{ 'border-top': level === 0 }"
     :target="openInNewtab ? '_blank' : ''"
+    :value="id"
     @click.stop="onClick"
   >
     <template
@@ -88,7 +89,7 @@
     <template v-else>
       <template
         v-for="child of children"
-        :key="child.key"
+        :key="child.id"
       >
         <LayoutPrimaryNavigationEntry
           v-if="!child.children"
@@ -96,7 +97,7 @@
           :level="level + 1"
           :mini-variant="miniVariant"
           @expand-menu="$emit('expand-menu')"
-          @click="$emit('click')"
+          @open-parent="openCategory"
         />
         <LayoutPrimaryNavigationCategory
           v-else
@@ -104,7 +105,6 @@
           :level="level + 1"
           :mini-variant="miniVariant"
           @expand-menu="$emit('expand-menu')"
-          @click="$emit('click')"
         />
       </template>
     </template>
@@ -113,28 +113,22 @@
 
 <script lang="ts" setup>
 import { mdiChevronDown } from '@mdi/js';
+import { VList } from 'vuetify/components';
 
-import { INavItem } from './PrimaryNavigation.vue';
+import { INavItem, PROVIDE_KEYS as PRIMARY_NAVIGATION_KEYS } from './PrimaryNavigation.vue';
 
-const props = withDefaults(defineProps<{
-  name: string;
-  icon?: string;
-  faIcon?: string | string[];
-  children: INavItem[];
-  childrenLoading?: boolean;
-  miniVariant?: boolean;
+const props = withDefaults(defineProps<INavItem & {
   level?: number;
-  componentName?: string;
-  to?: string;
-  openInNewtab?: boolean;
+  miniVariant: boolean;
 }>(), {
   icon: undefined,
   faIcon: undefined,
-  childrenLoading: false,
-  miniVariant: false,
-  level: 0,
-  componentName: undefined,
   to: undefined,
+  exact: false,
+  componentName: undefined,
+  classes: undefined,
+  level: 0,
+  children: undefined,
   openInNewtab: false
 });
 
@@ -142,6 +136,8 @@ const emit = defineEmits(['expand-menu', 'click']);
 
 const route = useRoute();
 const router = useRouter();
+
+const navigation = inject<Ref<VList>>(PRIMARY_NAVIGATION_KEYS.navigation);
 
 const onClick = () => {
   if(props.openInNewtab) {
@@ -156,6 +152,10 @@ const onClick = () => {
 };
 
 const activatorIntendation = computed(() => `primary-navigation-entry-level-${props.level}`);
+
+const openCategory = () => {
+  navigation?.value.open(props.id, true);
+};
 </script>
 
 <script lang="ts">

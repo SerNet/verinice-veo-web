@@ -41,7 +41,7 @@
       >
         <template
           v-for="item in items"
-          :key="item.key"
+          :key="item.id"
         >
           <LayoutPrimaryNavigationCategory
             v-if="item.children"
@@ -53,6 +53,7 @@
           <LayoutPrimaryNavigationEntry
             v-else
             v-bind="item"
+            :level="0"
             :mini-variant="miniVariant"
             @expand-menu="miniVariant = false"
           />
@@ -106,6 +107,26 @@
     </template>
   </v-navigation-drawer>
 </template>
+
+<script lang="ts">
+export interface INavItem {
+  id: string;
+  name: string;
+  icon?: string;
+  faIcon?: string | string[];
+  exact?: boolean;
+  to?: RouteLocationRaw;
+  children?: INavItem[];
+  childrenLoading?: boolean;
+  componentName?: string;
+  classes?: string;
+  openInNewtab?: boolean;
+}
+
+export const PROVIDE_KEYS = {
+  navigation: 'primaryNavigationList'
+};
+</script>
 
 <script setup lang="ts">
 import { RouteLocationRaw } from 'vue-router';
@@ -215,14 +236,14 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
       const _icon = OBJECT_TYPE_ICONS.get(objectSchema.title);
 
       return {
-        key: objectSchema.title,
+        id: objectSchema.title,
         name: upperFirst(translations.value?.lang[locale.value]?.[objectSchema.title] || objectSchema.title),
         icon: _icon?.library === 'mdi' ? _icon?.icon as string : undefined,
         faIcon: _icon?.library === 'fa' ? _icon?.icon : undefined,
         children: [
           // all of object type
           {
-            key: `${objectSchema.title}_all`,
+            id: `${objectSchema.title}_all`,
             name: upperFirst(t('all').toString()),
             to: {
               name: OBJECT_OVERVIEW_ROUTE_NAME,
@@ -243,7 +264,7 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
               );
               const displayName = formSchema?.name[locale.value] || subType.subType;
               return {
-                key: displayName,
+                id: displayName,
                 name: displayName,
                 to: {
                   name: OBJECT_OVERVIEW_ROUTE_NAME,
@@ -271,7 +292,7 @@ const { data: catalogs, isFetching: catalogsEntriesLoading } = useQuery(catalogQ
 
 const catalogsEntriesChildItems = computed<INavItem[]>(() =>
   (catalogs.value || []).map((catalog) => ({
-    key: catalog.id,
+    id: catalog.id,
     name: catalog.name,
     to: {
       name: CATALOGS_CATALOG_ROUTE_NAME,
@@ -291,7 +312,7 @@ const reportsEntriesChildItems = computed<INavItem[]>(
   () =>
     Object.entries(reports.value || {})
       .map(([reportId, report]) => ({
-        key: reportId,
+        id: reportId,
         name: report.name[locale.value],
         exact: true,
         to: {
@@ -314,7 +335,7 @@ const riskDefinitions = computed(() => domain.value?.riskDefinitions || {});
 
 const riskChildItems = computed<INavItem[]>(() =>
   Object.values(riskDefinitions.value).map(({ id }: { id: string }) => ({
-    key: id,
+    id: id,
     name: id,
     to: {
       name: RISKS_MATRIX_ROUTE_NAME,
@@ -328,7 +349,7 @@ const riskChildItems = computed<INavItem[]>(() =>
 );
 
 const unitSelectionNavEntry = computed<INavItem>(() =>({
-  key: 'unitSelection',
+  id: 'unitSelection',
   name: $t('breadcrumbs.index'),
   icon: mdiHomeSwitchOutline,
   to: {
@@ -340,7 +361,7 @@ const unitSelectionNavEntry = computed<INavItem>(() =>({
 }));
 
 const domainDashboardNavEntry = computed<INavItem>(() => ({
-  key: 'domainDashboard',
+  id: 'domainDashboard',
   name: $t('domain.index.title').toString(),
   icon: mdiHomeOutline,
   to: {
@@ -356,7 +377,7 @@ const domainDashboardNavEntry = computed<INavItem>(() => ({
 }));
 
 const objectsNavEntry = computed<INavItem>(() => ({
-  key: 'objects',
+  id: 'objects',
   name: $t('breadcrumbs.objects').toString(),
   faIcon: ['far', 'object-ungroup'],
   children: objectTypesChildItems.value,
@@ -365,7 +386,7 @@ const objectsNavEntry = computed<INavItem>(() => ({
 }));
 
 const catalogsNavEntry = computed<INavItem>(() => ({
-  key: 'catalogs',
+  id: 'catalogs',
   name: $t('breadcrumbs.catalogs').toString(),
   icon: mdiBookOpenPageVariantOutline,
   children: catalogsEntriesChildItems.value,
@@ -374,7 +395,7 @@ const catalogsNavEntry = computed<INavItem>(() => ({
 }));
 
 const reportsNavEntry = computed<INavItem>(() => ({
-  key: 'reports',
+  id: 'reports',
   name: $t('breadcrumbs.reports').toString(),
   icon: mdiFileChartOutline,
   children: reportsEntriesChildItems.value,
@@ -383,7 +404,7 @@ const reportsNavEntry = computed<INavItem>(() => ({
 }));
 
 const risksNavEntry = computed<INavItem>(() => ({
-  key: 'risks',
+  id: 'risks',
   name: $t('breadcrumbs.risks').toString(),
   icon: mdiTableSettings,
   children: riskChildItems.value,
@@ -392,7 +413,7 @@ const risksNavEntry = computed<INavItem>(() => ({
 }));
 
 const editorsNavEntry = computed<INavItem>(() => ({
-  key: 'editors',
+  id: 'editors',
   name: $t('breadcrumbs.editor').toString(),
   icon: mdiTextBoxEditOutline,
   to: {
@@ -405,7 +426,7 @@ const editorsNavEntry = computed<INavItem>(() => ({
 }));
 
 const backToVeoNavEntry = computed<INavItem>(() => ({
-  key: 'veo',
+  id: 'veo',
   name: t('backToVeo').toString(),
   to: '/',
   icon: mdiHomeOutline,
@@ -415,7 +436,7 @@ const backToVeoNavEntry = computed<INavItem>(() => ({
 }));
 
 const docsNavEntry = computed<INavItem>(() => ({
-  key: 'docs',
+  id: 'docs',
   name: $t('breadcrumbs.docs').toString(),
   to: '/docs/index',
   icon: mdiFileDocumentOutline,
@@ -424,7 +445,7 @@ const docsNavEntry = computed<INavItem>(() => ({
 }));
     
 const docItemTransformationFn = (file: NavItem): INavItem => ({
-  key: file._path,
+  id: file._path,
   name: file.title,
   to: `/docs${ (file._path.startsWith('/index') ? file._path : file._path.replace('index', '')).replace(/\.\w{2}/, '')}`,
   children: file.children?.length ? file.children.map((file) => docItemTransformationFn(file)) : undefined
@@ -449,23 +470,9 @@ const items = computed<INavItem[]>(() => [
   ...(route.path.startsWith('/docs') ? [backToVeoNavEntry.value, docsNavEntry.value] : [])
 ]);
 
+// Provide the ref to the v-list so children can do stuff with it
 const primaryNavList = ref();
-</script>
-
-<script lang="ts">
-export interface INavItem {
-  key: string;
-  name: string;
-  icon?: string;
-  faIcon?: string | string[];
-  exact?: boolean;
-  to?: RouteLocationRaw;
-  children?: INavItem[];
-  childrenLoading?: boolean;
-  componentName?: string;
-  classes?: string;
-  openInNewtab?: boolean;
-}
+provide(PROVIDE_KEYS.navigation, primaryNavList);
 </script>
 
 <i18n>
