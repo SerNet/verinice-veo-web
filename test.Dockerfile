@@ -1,8 +1,8 @@
 FROM node:19-alpine
 # Install Git
 RUN apk --no-cache add git
-# Install Python for node-14
-RUN apk add python make g++
+# Install Python for node-19
+RUN apk add python3 make g++
 # Create app directory
 WORKDIR /usr/src/app
 # Install app dependencies
