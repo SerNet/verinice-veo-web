@@ -20,9 +20,9 @@
     :model-value="modelValue"
     v-bind="$attrs"
     large
-    :headline="title"
-    :persistent="savingObject"
+    :title="title"
     :close-disabled="savingObject"
+    :confirm-close="itemsSelected"
     fixed-footer
     @update:model-value="$emit('update:model-value', $event)"
   >
@@ -67,7 +67,7 @@
         :disabled="savingObject"
         @click="$emit('update:model-value', false)"
       >
-        {{ t('global.button.cancel') }}
+        {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -77,7 +77,7 @@
         :disabled="ability.cannot('manage', 'objects')"
         @click="linkObjects"
       >
-        {{ t('global.button.save') }}
+        {{ globalT('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -85,7 +85,7 @@
 
 <script lang="ts">
 import { PropType } from 'vue';
-import { differenceBy, omit, uniqBy, upperFirst } from 'lodash';
+import { differenceBy, isEqual, omit, uniqBy, upperFirst } from 'lodash';
 
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
@@ -152,6 +152,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const route = useRoute();
     const { t, locale } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global'});
     const { tablePageSize } = useVeoUser();
     const { link } = useLinkObject();
     const { unlink } = useUnlinkObject();
@@ -296,6 +297,8 @@ export default defineComponent({
       { deep: true, immediate: true }
     );
 
+    const itemsSelected = computed(() => !isEqual(originalSelectedItems.value, modifiedSelectedItems.value));
+
     // Linking logic
     const savingObject = ref(false); // saving status for adding entities
     const linkObjects = async () => {
@@ -358,6 +361,7 @@ export default defineComponent({
       childrenLoading,
       domainId,
       filter,
+      itemsSelected,
       linkObjects,
       modifiedSelectedItems,
       newObjectTypeName,
@@ -370,6 +374,7 @@ export default defineComponent({
       title,
       updateFilter,
 
+      globalT,
       t,
       upperFirst
     };

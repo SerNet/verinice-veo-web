@@ -91,4 +91,9 @@ defineProps({
   padding: 6px 6px 6px 4px;
   z-index: 1;
 }
+
+:deep(.v-chip__content) {
+  align-items: center;
+  display: flex;
+}
 </style>

@@ -38,9 +38,7 @@ const render = () => h(
     class: {
       'veo-card': true,
       'veo-card--inverted': props.inverted,
-      'veo-border': true,
-      'px-4 py-4': props.padding,
-      'd-flex flex-column': props.flexColumn
+      'veo-border': true
     },
     flat: true,
     rounded: true

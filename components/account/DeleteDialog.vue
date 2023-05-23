@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     v-bind="$attrs"
-    :headline="t('deleteAccount')"
+    :title="t('deleteAccount')"
     :close-disabled="isLoading"
     @update:model-value="emit('update:model-value', $event)"
   >
@@ -39,7 +39,7 @@
         :disabled="isLoading"
         @click="$emit('update:model-value', false)"
       >
-        {{ $t('global.button.cancel') }}
+        {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -49,7 +49,7 @@
         :loading="isLoading"
         @click="deleteAccount"
       >
-        {{ $t('global.button.delete') }}
+        {{ globalT('global.button.delete') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -77,7 +77,7 @@ const props = defineProps({
 const emit = defineEmits(['update:model-value', 'success']);
   
 const { t } = useI18n();
-const { t: $t } = useI18n({ useScope: 'global' });
+const { t: globalT } = useI18n({ useScope: 'global' });
 const { ability } = useVeoPermissions();
 const { profile } = useVeoUser();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();

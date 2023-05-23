@@ -57,7 +57,8 @@ export default defineNuxtConfig({
       oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client',
       accountPath: process.env.VEO_ACCOUNT_PATH || 'https://account.verinice.com',
       debug: process.env.VEO_DEBUG || 'false',
-      debugCache: process.env.VEO_DEBUG_CACHE || 'false' // Either a boolean or the query string (or first entry of query string if array)
+      debugCache: process.env.VEO_DEBUG_CACHE || 'false', // Either a boolean or the query string (or first entry of query string if array)
+      securityPolicyInvalidationDate: process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP ? new Date(parseInt(process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP)) : new Date(new Date().getFullYear() + 1, 0, 1)
     }
   },
 
@@ -125,7 +126,7 @@ export default defineNuxtConfig({
     vueI18n: {
       legacy: false,
       silentFallbackWarn: true,
-      dateTimeFormats: Object.fromEntries(
+      datetimeFormats: Object.fromEntries(
         ['de', 'en'].map((lang) => [
           lang,
           {

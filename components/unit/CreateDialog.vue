@@ -18,9 +18,8 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    :headline="t('createUnit')"
-    :persistent="persistent || creatingUnit"
-    :close-disabled="creatingUnit"
+    :title="t('createUnit')"
+    :close-disabled="mandatory || creatingUnit"
     v-bind="$attrs"
     @update:model-value="emit('update:model-value', $event)"
   >
@@ -78,7 +77,7 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  persistent: {
+  mandatory: {
     type: Boolean,
     default: false
   }

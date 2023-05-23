@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     v-bind="$attrs"
-    :headline="t('headline')"
+    :title="t('headline')"
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
@@ -60,7 +60,12 @@ const props = defineProps({
     default: undefined
   }
 });
-const emit = defineEmits(['success', 'error', 'update:model-value']);
+
+const emit = defineEmits<{
+  (event: 'update:model-value', value: boolean): void;
+  (event: 'error', error: Error): void;
+  (event: 'success'): void;
+}>();
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
@@ -76,9 +81,9 @@ const deleteObject = async () => {
     return;
   }
   try {
+    emit('success'); // We have to emit before the mutation gets executed as as soon as the mutation is done a 404 error gets thrown and our navigation request ignored.
     await doDelete({ endpoint: endpoints.value?.[props.item.type], id: props.item.id });
-    emit('success');
-  } catch (error) {
+  } catch (error: any) {
     emit('error', error);
   }
 };

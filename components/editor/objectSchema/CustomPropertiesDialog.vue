@@ -18,9 +18,9 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    :headline="headline"
+    :title="headline"
     large
-    persistent
+    :confirm-close="isFormDirty"
     fixed-footer
     v-bind="$attrs"
     @update:model-value="$emit('update:model-value', $event)"
@@ -162,7 +162,7 @@
         <v-btn
           text
           color="primary"
-          :disabled="form.valid === false || duplicates.length > 0"
+          :disabled="form.valid === false || duplicates.length > 0 || !isFormDirty"
           @click="saveProperty()"
         >
           {{ $t('global.button.save') }}
@@ -182,7 +182,7 @@
   </BaseDialog>
 </template>
 <script lang="ts">
-import { cloneDeep, trim, upperFirst } from 'lodash';
+import { cloneDeep, isEqual, trim, upperFirst } from 'lodash';
 import { mdiPlus } from '@mdi/js';
 
 import { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas';
@@ -243,6 +243,11 @@ export default {
         targetType: [(input: string) => props.type === 'aspect' || trim(input).length > 0]
       } as { [key: string]: ((input: string) => boolean)[] }
     });
+    const pristineForm = ref(cloneDeep(form));
+
+    const isFormDirty = computed(() => {
+      return !isEqual(form.data, pristineForm.value.data);
+    });
 
     const formRef = ref();
     watch(() => form, () => {
@@ -257,8 +262,10 @@ export default {
     return {
       displayLanguage,
       form,
+      isFormDirty,
       formRef,
       objectSchemaHelper,
+      pristineForm,
 
       banSpecialChars,
       requiredRule,
@@ -323,11 +330,14 @@ export default {
       }
 
       if (!newValue) {
-        this.form.data.targetType = '';
-        this.form.data.subType = '';
-        this.form.data.title = '';
-        this.form.data.attributes = [];
-        this.form.data.translatedTitle = undefined;
+        this.form.data = {
+          targetType: '',
+          subType: '',
+          title: '',
+          attributes: [],
+          translatedTitle: undefined
+        };
+        this.pristineForm = cloneDeep(this.form);
       } else if (this.editedProperty) {
         this.dialogMode = 'edit';
         // We have to explicitly set the properties missing in IVeoOSHCustomAspect
@@ -349,6 +359,7 @@ export default {
           // Set the originalId property to later differentiate between new, deleted and renamed attributes
           this.form.data.attributes[attributeIndex].originalId = this.form.data.attributes[attributeIndex].title;
         }
+        this.pristineForm = cloneDeep(this.form);
       } else {
         this.dialogMode = 'create';
       }

@@ -17,7 +17,7 @@
 -->
 <template>
   <v-menu
-    :close-on-content-click="false"
+    :close-on-content-click="true"
     content-class="veo-account-menu"
     max-width="300px"
     @update:model-value="onMenuClosed"
@@ -63,7 +63,10 @@
         </v-list-item>
         <template v-if="!userSettings.maxUnits || userSettings.maxUnits > 2">
           <v-divider />
-          <UnitSelect v-bind="$attrs" />
+          <UnitSelect
+            v-bind="$attrs"
+            @click.stop
+          />
         </template>
         <v-divider />
         <v-list-item
@@ -100,7 +103,16 @@
           </v-list-item-title>
         </v-list-item>
         <v-divider />
-        <v-list-item @click="displayDeploymentDetails = true">
+        <v-list-item
+          active-class="veo-active-list-item"
+          to="/security"
+        >
+          <v-list-item-title>
+            {{ $t('breadcrumbs.security') }}
+          </v-list-item-title>
+        </v-list-item>
+        <v-divider />
+        <v-list-item @click.stop="displayDeploymentDetails = true">
           <v-list-item-title>
             {{ t('about') }}
           </v-list-item-title>
@@ -112,6 +124,7 @@
           </v-list-item-title>
         </v-list-item>
       </v-list>
+
       <DeploymentDetailsDialog v-model="displayDeploymentDetails" />
     </v-card>
   </v-menu>
@@ -151,13 +164,13 @@ const onMenuClosed = () => {
     "about": "About verinice.",
     "logout": "Logout",
     "editAccount": "Edit account",
-    "notAvailable": "Not available"
+    "notAvailable": "Not available",
   },
   "de": {
     "about": "Über verinice.",
     "logout": "Abmelden",
     "editAccount": "Benutzerkonto bearbeiten",
-    "notAvailable": "Keine Angabe"
+    "notAvailable": "Keine Angabe",
   }
 }
 </i18n>

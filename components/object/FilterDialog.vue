@@ -19,7 +19,7 @@
   <BaseDialog
     v-model="dialog"
     v-bind="$attrs"
-    :headline="upperFirst(t('filterList').toString())"
+    :title="upperFirst(t('filterList').toString())"
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
