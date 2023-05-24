@@ -84,7 +84,7 @@
             v-for="domain of selectItems"
             :key="domain.value"
             :active="domainId === domain.value"
-            active-color="primary"
+            color="primary"
             :value="domain.value"
             :title="domain.title"
             @click="domainId = domain.value"

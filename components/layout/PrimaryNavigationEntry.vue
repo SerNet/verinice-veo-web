@@ -20,7 +20,7 @@
     :to="to"
     :active="active"
     active-class="veo-active-list-nav-item"
-    active-color="primary"
+    color="primary"
     :class="_classes"
     :data-component-name="componentName"
     density="compact"
