@@ -34,7 +34,8 @@ export default defineNuxtConfig({
 
   // Apply a transition to every page
   app: {
-    pageTransition: { name: 'page', mode: 'out-in' }
+    pageTransition: { name: 'page', mode: 'out-in' },
+    baseURL: '/'
   },
 
   // Disable SSR as the app is deployed using static site generation (SSG)
