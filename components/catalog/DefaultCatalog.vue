@@ -21,13 +21,20 @@
       <slot name="header" />
     </p>
     <BaseCard>
-      <CatalogItemsSelectionList
+      <v-data-table
         v-model="selectedItems"
         :items="availableItems"
-        :loading="loading"
-        :headers="catalogTableHeaders"
-        selectable
-      />
+        item-value="id"
+        :headers="headers"
+        must-sort
+        show-select
+      >
+        <template #item.title="{ item }">
+          <div class="font-weight-bold text-no-wrap">
+            {{ item.raw.title }}
+          </div>
+        </template>
+      </v-data-table>
     </BaseCard>
     <v-row
       dense
@@ -57,10 +64,7 @@
   </div>
 </template>
 
-<script lang="ts">
-import { PropType } from 'vue';
-
-import { IVeoCatalogSelectionListHeader } from '~/components/catalog/ItemsSelectionList.vue';
+<script lang="ts" setup>
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { IVeoCatalogItem } from '~~/composables/api/queryDefinitions/catalogs';
@@ -68,99 +72,81 @@ import { useQuerySync } from '~~/composables/api/utils/query';
 import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
 import { useMutation } from '~~/composables/api/utils/mutation';
 
-export default defineComponent({
-  props: {
-    catalogItems: {
-      type: Array as PropType<IVeoCatalogItem[]>,
-      default: () => []
-    },
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    successText: {
-      type: String,
-      default: ''
-    },
-    errorText: {
-      type: String,
-      default: ''
-    }
-  },
-  setup(props) {
-    const { t } = useI18n();
-    const { t: globalT } = useI18n({ useScope: 'global' });
-    const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-    const { ability } = useVeoPermissions();
-    const route = useRoute();
-
-    const { mutateAsync: incarnate } =  useMutation(unitQueryDefinitions.mutations.updateIncarnations);
-
-    // Selecting
-    const catalogTableHeaders = computed<IVeoCatalogSelectionListHeader[]>(() => [
-      {
-        sortable: true,
-        title: globalT('objectlist.abbreviation').toString(),
-        value: 'abbreviation',
-        width: 150
-      },
-      {
-        sortable: true,
-        title: globalT('objectlist.name').toString(),
-        value: 'title',
-        key: 'title'
-      },
-      {
-        sortable: false,
-        title: globalT('objectlist.description').toString(),
-        value: 'description'
-      }
-    ]);
-
-    const selectedItems = ref<string[]>([]);
-    const availableItems = computed(() =>
-      props.catalogItems.map((item) => {
-        const displayNameParts = (item.element.displayName as string).split(' ');
-        const designator = displayNameParts.shift() as string;
-        const abbreviation = displayNameParts.shift() as string;
-        const title = displayNameParts.join(' ') as string;
-
-        return { designator, abbreviation, title, id: item.id, description: item.description };
-      })
-    );
-
-    // Applying
-    const applyingItems = ref(false);
-    const applyItems = async () => {
-      applyingItems.value = true;
-
-      try {
-        // Fetch incarnations for all selected items
-        const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: route.params.unit as string, itemIds: selectedItems.value });
-        // Apply incarnations
-        await incarnate({ incarnations, unitId: route.params.unit });
-        displaySuccessMessage(props.successText);
-        selectedItems.value = [];
-      } catch (e: any) {
-        displayErrorMessage(props.errorText, e.message);
-      } finally {
-        applyingItems.value = false;
-      }
-    };
-
-    return {
-      ability,
-      applyingItems,
-      applyItems,
-      availableItems,
-      catalogTableHeaders,
-      selectedItems,
-
-      globalT,
-      t
-    };
-  }
+const props = withDefaults(defineProps<{
+  catalogItems: IVeoCatalogItem[];
+  loading: boolean;
+  successText: string;
+  errorText: string;
+}>(), {
+  catalogItems: () => [],
+  loading: false,
+  successText: '',
+  errorText: ''
 });
+
+const { t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
+const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
+const { ability } = useVeoPermissions();
+const route = useRoute();
+
+const { mutateAsync: incarnate } =  useMutation(unitQueryDefinitions.mutations.updateIncarnations);
+
+// Selecting
+const headers = computed(() => [
+  {
+    sortable: true,
+    title: globalT('objectlist.abbreviation').toString(),
+    key: 'abbreviation'
+  },
+  {
+    sortable: true,
+    title: globalT('objectlist.name').toString(),
+    key: 'title'
+  },
+  {
+    sortable: false,
+    title: globalT('objectlist.description').toString(),
+    key: 'description'
+  }
+]);
+
+const selectedItems = ref<string[]>([]);
+const availableItems = computed(() =>
+  props.catalogItems.map((item) => {
+    const displayNameParts = (item.element.displayName as string).split(' ');
+    const designator = displayNameParts.shift() || '';
+    const abbreviation = displayNameParts.shift() || '';
+    const title = displayNameParts.join(' ');
+
+    return { designator, abbreviation, title, id: item.id, description: item.description };
+  })
+);
+
+// If the available items change (they shouldn't) only select the items that are still available.
+watch(() => availableItems.value, (newValue) => {
+  const newValues = selectedItems.value.filter((selectedItemId: string) => newValue.some((item) => item.id === selectedItemId));
+  selectedItems.value = newValues;
+});
+
+// Applying
+const applyingItems = ref(false);
+const applyItems = async () => {
+  applyingItems.value = true;
+
+  try {
+    // Fetch incarnations for all selected items
+    const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: route.params.unit as string, itemIds: selectedItems.value });
+    // Apply incarnations
+    await incarnate({ incarnations, unitId: route.params.unit });
+    displaySuccessMessage(props.successText);
+    selectedItems.value = [];
+  } catch (e: any) {
+    displayErrorMessage(props.errorText, e.message);
+  } finally {
+    applyingItems.value = false;
+  }
+};
 </script>
 
 <i18n>
