@@ -41,7 +41,7 @@
     "@nuxt/content": "^2.6.0",
     "@nuxt/eslint-config": "^0.1.1",
     "@nuxt/kit": "^3.0.0",
-    "@nuxtjs/i18n": "^8.0.0-beta.12",
+    "@nuxtjs/i18n": "8.0.0-beta.10",
     "@tanstack/vue-query": "^4.27.0",
     "@toast-ui/editor": "^3.2.1",
     "@toast-ui/editor-plugin-code-syntax-highlight": "^3.0.0",
