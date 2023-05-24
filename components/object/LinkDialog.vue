@@ -20,9 +20,9 @@
     :model-value="modelValue"
     v-bind="$attrs"
     large
-    :headline="title"
-    :persistent="savingObject"
+    :title="title"
     :close-disabled="savingObject"
+    :confirm-close="itemsSelected"
     fixed-footer
     @update:model-value="$emit('update:model-value', $event)"
   >
@@ -67,7 +67,7 @@
         :disabled="savingObject"
         @click="$emit('update:model-value', false)"
       >
-        {{ t('global.button.cancel') }}
+        {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -77,7 +77,7 @@
         :disabled="ability.cannot('manage', 'objects')"
         @click="linkObjects"
       >
-        {{ t('global.button.save') }}
+        {{ globalT('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -85,7 +85,7 @@
 
 <script lang="ts">
 import { PropType } from 'vue';
-import { differenceBy, omit, uniqBy, upperFirst } from 'lodash';
+import { differenceBy, isEqual, omit, uniqBy, upperFirst } from 'lodash';
 
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useUnlinkObject, useLinkObject } from '~/composables/VeoObjectUtilities';
@@ -95,6 +95,7 @@ import objectQueryDefinitions, { IVeoFetchScopeChildrenParameters } from '~/comp
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
+import { useQueryClient } from '@tanstack/vue-query';
 
 export default defineComponent({
   props: {
@@ -150,10 +151,12 @@ export default defineComponent({
   setup(props, { emit }) {
     const route = useRoute();
     const { t, locale } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global'});
     const { tablePageSize } = useVeoUser();
     const { link } = useLinkObject();
     const { unlink } = useUnlinkObject();
     const { ability } = useVeoPermissions();
+    const queryClient = useQueryClient();
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const translationsQueryParameters = computed(() => ({ languages: [locale.value] }));
@@ -239,7 +242,7 @@ export default defineComponent({
       } else if (props.object?.type === 'scope') {
         return objectSchemaNames.filter((item) => item !== 'scope');
       } else {
-        return [props.object?.type || ''];
+        return props.object?.type ? [props.object?.type] : [];
       }
     });
 
@@ -247,7 +250,7 @@ export default defineComponent({
       () => availableObjectTypes.value,
       (newValue) => {
         if (newValue?.[0]) {
-          filter.value = { objectType: newValue[0] };
+          filter.value = { ...filter.value, objectType: newValue[0] };
         }
       },
       { immediate: true, deep: true }
@@ -291,6 +294,8 @@ export default defineComponent({
       { deep: true, immediate: true }
     );
 
+    const itemsSelected = computed(() => !isEqual(originalSelectedItems.value, modifiedSelectedItems.value));
+
     // Linking logic
     const savingObject = ref(false); // saving status for adding entities
     const linkObjects = async () => {
@@ -308,11 +313,11 @@ export default defineComponent({
               const parentsToAdd = differenceBy(modifiedSelectedItems.value, originalSelectedItems.value, 'id');
               const parentsToRemove = differenceBy(originalSelectedItems.value, modifiedSelectedItems.value, 'id');
               for (const parent of parentsToAdd) {
-                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: endpoints.value?.[parent.type], id: parent.id });
+                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: endpoints.value?.[parent.type], id: parent.id }, queryClient);
                 await link(_parent, props.object);
               }
               for (const parent of parentsToRemove) {
-                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: endpoints.value?.[parent.type], id: parent.id });
+                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: endpoints.value?.[parent.type], id: parent.id }, queryClient);
                 await unlink(_parent, props.object.id);
               }
             } else {
@@ -352,6 +357,7 @@ export default defineComponent({
       availableObjectTypes,
       childrenLoading,
       filter,
+      itemsSelected,
       linkObjects,
       modifiedSelectedItems,
       newObjectTypeName,
@@ -364,6 +370,7 @@ export default defineComponent({
       title,
       updateFilter,
 
+      globalT,
       t,
       upperFirst
     };

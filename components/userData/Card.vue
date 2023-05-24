@@ -49,10 +49,10 @@
         >
           <v-divider class="mt-4" />
           <h3
-            v-if="item.name"
+            v-if="item.name || item.displayName"
             class="text-h4 mt-2"
           >
-            {{ item.name }}
+            {{ item.name || item.displayName }}
           </h3>
           <v-btn
             flat

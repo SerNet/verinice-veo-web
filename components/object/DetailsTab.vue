@@ -83,6 +83,7 @@ import { useFetchParentObjects } from '~/composables/api/objects';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
+import { useQueryClient } from '@tanstack/vue-query';
 
 export default defineComponent({
   props: {
@@ -110,6 +111,7 @@ export default defineComponent({
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { link } = useLinkObject();
     const { clone } = useCloneObject();
+    const queryClient = useQueryClient();
 
     // Fetching different queries for the table
     const page = ref(1);
@@ -327,7 +329,7 @@ export default defineComponent({
                     (parentScopes.value?.items || []).map((item) => item.id)
                   )
                 ).resourceId;
-                const clonedObject = await useQuerySync(objectQueryDefinitions.queries.fetch , { endpoint: schemas.value?.[item.type] || '', id: clonedObjectId });
+                const clonedObject = await useQuerySync(objectQueryDefinitions.queries.fetch , { endpoint: schemas.value?.[item.type] || '', id: clonedObjectId }, queryClient);
                 if (props.object) {
                   if (['childScopes', 'childObjects'].includes(props.type)) {
                     await link(props.object, clonedObject);
@@ -346,7 +348,7 @@ export default defineComponent({
             label: upperFirst(t(props.object?.type === 'scope' || props.type === 'parentScopes' ? 'removeFromScope' : 'removeFromObject').toString()),
             icon: mdiLinkOff,
             action: async (item: IVeoEntity) => {
-              const parent = await useQuerySync(objectQueryDefinitions.queries.fetch , { endpoint: schemas.value?.[item.type] || '', id: item.id });
+              const parent = await useQuerySync(objectQueryDefinitions.queries.fetch , { endpoint: schemas.value?.[item.type] || '', id: item.id }, queryClient);
               if (['parentScopes', 'parentObjects'].includes(props.type)) {
                 unlinkEntityDialog.value.objectToRemove = props.object;
                 unlinkEntityDialog.value.parent = parent;

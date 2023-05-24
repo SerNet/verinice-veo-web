@@ -1,12 +1,33 @@
 import { resolve } from "path";
-
 import DocsModule from './modules/docs/module.mjs';
+
+
+// Types
 import { LOCALES } from "./types/locales";
+import { PluginOption } from 'vite';
+
+/** UNIT TESTING
+* When testing the application, vue + vuetify are not available,
+* thus we have to import/plug them in manually
+* however, in dev mode or when building this causes an ERROR,
+* that is why we only add vue + vuetify in when testing
+*/
+import vue from "@vitejs/plugin-vue";
+import vuetify from 'vite-plugin-vuetify';
+let vitePlugins: PluginOption[] = [];
+if (process.env.NODE_ENV === 'test') vitePlugins = [vue(), vuetify({autoImport: true})];
 
 export default defineNuxtConfig({
   //==============================================================
   // Base configuration
   //==============================================================
+  telemetry: false,
+
+  sourcemap: {
+    server: true,
+    client: false
+  },
+
   typescript: {
     shim: false // Disabled, as Takeover mode and Volar should be enabled/installed
   },
@@ -36,7 +57,8 @@ export default defineNuxtConfig({
       oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client',
       accountPath: process.env.VEO_ACCOUNT_PATH || 'https://account.verinice.com',
       debug: process.env.VEO_DEBUG || 'false',
-      debugCache: process.env.VEO_DEBUG_CACHE || 'false' // Either a boolean or the query string (or first entry of query string if array)
+      debugCache: process.env.VEO_DEBUG_CACHE || 'false', // Either a boolean or the query string (or first entry of query string if array)
+      securityPolicyInvalidationDate: process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP ? new Date(parseInt(process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP)) : new Date(new Date().getFullYear() + 1, 0, 1)
     }
   },
 
@@ -46,7 +68,9 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxtjs/i18n',
     './modules/externalize-scripts',
-    './modules/vuetify-sass-variables.ts'
+    './modules/vuetify-sass-variables.ts',
+    'nuxt-vitest',
+    'nuxt-font-loader'
   ],
 
   // Transpile vuetify
@@ -55,6 +79,7 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    plugins: vitePlugins,
     css: {
       preprocessorOptions: {
         scss: {
@@ -101,7 +126,7 @@ export default defineNuxtConfig({
     vueI18n: {
       legacy: false,
       silentFallbackWarn: true,
-      dateTimeFormats: Object.fromEntries(
+      datetimeFormats: Object.fromEntries(
         ['de', 'en'].map((lang) => [
           lang,
           {

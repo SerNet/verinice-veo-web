@@ -18,10 +18,10 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    :headline="globalT('editor.schema.properties')"
+    :title="globalT('editor.schema.properties')"
     fixed-footer
     large
-    persistent
+    :confirm-close="isFormDirty"
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
@@ -151,16 +151,16 @@
         variant="text"
         @click="$emit('update:model-value', false)"
       >
-        {{ t('global.button.cancel') }}
+        {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
         variant="text"
         color="primary"
-        :disabled="subTypeForms.some((form) => form === false)"
+        :disabled="subTypeForms.some((form) => form === false) || !isFormDirty"
         @click="onSubmit"
       >
-        {{ t('global.button.save') }}
+        {{ globalT('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -169,13 +169,14 @@
 <script lang="ts">
 import { mdiMenu, mdiPlus, mdiTranslate, mdiTrashCanOutline } from '@mdi/js';
 import Draggable from 'vuedraggable';
-import { upperFirst, cloneDeep } from 'lodash';
+import { upperFirst, cloneDeep, isEqual } from 'lodash';
 
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { CHART_COLORS } from '~/lib/utils';
 import { Ref } from 'vue';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~~/composables/api/utils/query';
+import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 
 export default defineComponent({
   components: {
@@ -193,7 +194,7 @@ export default defineComponent({
   },
   emits: ['schema-updated', 'update:model-value'],
   setup(props, { emit }) {
-    const { t } = useI18n();
+    const { t, locales } = useI18n();
     const { t: globalT } = useI18n({ useScope: 'global' });
     const route = useRoute();
 
@@ -209,19 +210,20 @@ export default defineComponent({
 
     // objectschema stuff
     const subTypes: Ref<{ subType: string; status: { key: string; [lang: string]: string }[] }[]> = ref([]);
+    const originalSubTypes: Ref<{ subType: string; status: { key: string; [lang: string]: string }[] }[]> = ref([]);
     const subTypeForms: Ref<boolean[]> = ref([]);
     const newStatusForms: Ref<boolean[]> = ref([]);
     const newStatusTextfields: Ref<(string | undefined)[]> = ref([]);
-    updateForm();
 
     watch(
       () => objectSchemaHelper?.value,
       () => {
         updateForm();
-        languages.value = (objectSchemaHelper?.value?.getLanguages() || []).map((key) => ({ title: t(key), value: key }));
+        languages.value = (objectSchemaHelper?.value?.getLanguages() || []).map((key) => ({ title: (locales.value as LocaleObject[]).find((locale) => locale.code === key)?.name || key, value: key }));
       },
       {
-        deep: true
+        deep: true,
+        immediate: true
       }
     );
 
@@ -248,6 +250,7 @@ export default defineComponent({
           }
         }
       }
+      originalSubTypes.value = cloneDeep(subTypes.value);
     }
 
     function addStatusToSubType(index: number) {
@@ -284,9 +287,11 @@ export default defineComponent({
     const requiredRule = (v: string) => !!v || t('global.input.required');
     const alphaNumericUnderscoreRule = (v: string) => !v || /^[A-Z0-9_]+$/.test(v) || t('statusAlphaNumericUnderscore');
 
+    const isFormDirty = computed(() => !isEqual(subTypes.value, originalSubTypes.value));
+
     function onSubmit() {
       // Remove old translations
-      for (const subType of subTypes.value) {
+      for (const subType of originalSubTypes.value) {
         objectSchemaHelper?.value?.removeTranslationsContainingKey(`${objectSchemaHelper.value.getTitle()}_${subType.subType}_status`);
       }
 
@@ -322,6 +327,7 @@ export default defineComponent({
       deleteSubType,
       displayLanguage,
       domain,
+      isFormDirty,
       languages,
       newStatusForms,
       newStatusTextfields,

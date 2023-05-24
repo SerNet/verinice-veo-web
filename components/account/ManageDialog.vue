@@ -20,7 +20,7 @@
     :model-value="modelValue"
     v-bind="$attrs"
     :close-disabled="isLoading"
-    :headline="id ? t('updateAccount') : t('createAccount')"
+    :title="id ? t('updateAccount') : t('createAccount')"
     large
     @update:model-value="$emit('update:model-value', $event)"
   >
@@ -211,7 +211,7 @@ export default defineComponent({
       !props.existingAccounts.find((account) => account.username === trim(v) && account.id !== props.id) || t('usernameAlreadyTaken').toString();
     const mailAddressIsDuplicateRule = (v: any) =>
       !props.existingAccounts.find((account) => account.emailAddress === trim(v) && account.id !== props.id) || t('emailAddressAlreadyTaken').toString();
-    const mailRegexRule = (v: string) => (typeof v === 'string' && /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v)) || t('emailAddressWrongFormat').toString();
+    const mailRegexRule = (v: string) => (typeof v === 'string' && /^\w+([+.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v)) || t('emailAddressWrongFormat').toString();
     const requiredRule = (v: any) => (!!v && !!trim(v).length) || t('global.input.required').toString();
 
     const availableGroups = ref([

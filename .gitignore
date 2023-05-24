@@ -13,3 +13,6 @@ dist
 
 .DS_Store
 .history
+
+# Vitest
+coverage

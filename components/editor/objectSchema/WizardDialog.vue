@@ -19,8 +19,8 @@
   <BaseDialog
     :model-value="modelValue"
     :large="state !== 'start'"
-    :headline="$t('editor.objectschema.headline')"
-    persistent
+    :title="$t('editor.objectschema.headline')"
+    confirm-close
     :close-function="onClose"
     @update:model-value="emit('update:model-value', $event)"
   >
@@ -223,6 +223,7 @@ import { mdiChevronRight } from '@mdi/js';
 import schemaQueryDefinitions from '~~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
+import { useQueryClient } from '@tanstack/vue-query';
 
 const props = defineProps({
   modelValue: {
@@ -237,6 +238,7 @@ const router = useRouter();
 const { locale, t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 const { requiredRule } = useRules();
+const queryClient = useQueryClient();
 
 // Layout stuff
 const state = ref<'start' | 'import' | 'create'>('start');
@@ -285,7 +287,7 @@ const importSchema = async (schema?: any) => {
     emit('completed', { schema, meta: undefined });
     await navigateTo({ os: 'custom' });
   } else {
-    const _schema = await useQuerySync(schemaQueryDefinitions.queries.fetchSchema, { type: modelType.value, domainIds: [route.params.domain as string] });
+    const _schema = await useQuerySync(schemaQueryDefinitions.queries.fetchSchema, { type: modelType.value, domainIds: [route.params.domain as string] }, queryClient);
     emit('completed', { schema: _schema, meta: undefined });
     await navigateTo({ os: modelType.value });
   }

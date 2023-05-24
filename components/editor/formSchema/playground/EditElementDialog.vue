@@ -19,7 +19,7 @@
   <BaseDialog
     :model-value="modelValue"
     large
-    :headline="title"
+    :title="title"
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>

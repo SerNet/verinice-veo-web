@@ -13,7 +13,12 @@
     "alertBody": "Please contact our support team: verinice{'@'}sernet.de.",
     "errorHeader": "Could not download your data.",
     "errorBody": "Please contact our support team: verinice{'@'}sernet.de.",
-    "successHeader": "Download Successfull."
+    "successHeader": "Download Successfull.",
+    "prepareHistoryPhases": {
+      "0": "Downloading your data:",
+      "1": "Downloading your data:",
+      "2": "Creating ZIP Archives"
+    }
   },
 
   "de": {
@@ -32,5 +37,10 @@
     "errorHeader": "Download fehlgeschlagen.",
     "errorBody": "Bitte kontaktieren Sie unseren Support: verinice{'@'}sernet.de.",
     "successHeader": "Download erfolgreich.",
+    "prepareHistoryPhases": {
+      "0": "Daten herunterladen:",
+      "1": "Daten herunterladen:",
+      "2": "ZIP-Archive erstellen:"
+    }
   }
 }

@@ -19,8 +19,7 @@
   <BaseDialog
     v-model="dialog"
     :close-disabled="creatingRisks"
-    :persistent="creatingRisks"
-    :headline="upperFirst(t('createRisk', 0).toString())"
+    :title="upperFirst(t('createRisk', 0).toString())"
     x-large
     fixed-footer
     v-bind="$attrs"
@@ -104,7 +103,7 @@ export default defineComponent({
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
 
-    const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createOrUpdateRisk);
+    const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createRisk);
 
     // Layout stuff
     const dialog = computed({

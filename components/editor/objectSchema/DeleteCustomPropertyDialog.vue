@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    :headline="t('deleteCustomAspect')"
+    :title="t('deleteCustomAspect')"
     v-bind="$attrs"
   >
     <template #default>

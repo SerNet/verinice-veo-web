@@ -37,16 +37,14 @@
             :key="item.key"
             :items="item.children"
             open-on-hover
-            right
-            offset-x
-            :bottom="false"
-            :offset-y="false"
+            location="right"
             @close="onCloseMenu"
           >
             <template #activator="{ props }">
               <v-list-item
                 v-bind="props"
                 :key="`0_${item.key}`"
+                @click.stop="() => {}"
               >
                 <template
                   v-if="anyItemHasIcon"
@@ -55,15 +53,17 @@
                   <v-icon
                     v-if="item.icon"
                     :icon="item.icon"
+                    :color="item.color"
+                  />
+                  <div
+                    v-else
+                    style="width: 54px"
                   />
                 </template>
-                <v-list-item-title>
+                <v-list-item-title :class="{ [`text-${item.color}`]: !!item.color }">
                   {{ item.title }}
                 </v-list-item-title>
-                <template
-                  v-if="item.children && item.children.length"
-                  #append
-                >
+                <template #append>
                   <v-icon :icon="mdiChevronRight" />
                 </template>
               </v-list-item>
@@ -81,11 +81,22 @@
               <v-icon
                 v-if="item.icon"
                 :icon="item.icon"
+                :color="item.color"
+              />
+              <div
+                v-else
+                style="width: 54px"
               />
             </template>
-            <v-list-item-title>
+            <v-list-item-title :class="{ [`text-${item.color}`]: !!item.color }">
               {{ item.title }}
             </v-list-item-title>
+            <template
+              v-if="anyItemHasChildren"
+              #append
+            >
+              <div style="width: 54px" />
+            </template>
           </v-list-item>
         </template>
       </v-list>
@@ -104,6 +115,7 @@ export interface INestedMenuEntries {
   icon?: string;
   action?: CallableFunction;
   children?: INestedMenuEntries[];
+  color?: string;
 }
 
 export default defineComponent({

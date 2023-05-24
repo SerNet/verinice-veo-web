@@ -35,6 +35,7 @@
 </template>
 
 <script setup lang="ts">
+import { useQueryClient } from '@tanstack/vue-query';
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import unitQueryDefinitions, { IVeoUnit } from '~~/composables/api/queryDefinitions/units';
 import { useMutation } from '~~/composables/api/utils/mutation';
@@ -43,6 +44,7 @@ import { getFirstDomainDomaindId } from '~~/lib/utils';
 import { LOCAL_STORAGE_KEYS } from '~~/types/localStorage';
 
 const { t } = useI18n();
+const queryClient = useQueryClient();
 
 useHead({
   title: t('setup')
@@ -65,7 +67,7 @@ useQuery(unitQueryDefinitions.queries.fetchAll, undefined, { onSuccess: async (d
     });
 
     // Fetch new unit to get domain
-    const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: newUnitEvent.resourceId });
+    const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: newUnitEvent.resourceId }, queryClient);
     unitId = newUnitEvent.resourceId;
     domainId = getFirstDomainDomaindId(unit);
   }

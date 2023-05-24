@@ -18,9 +18,8 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    :headline="t('createUnit')"
-    :persistent="persistent || creatingUnit"
-    :close-disabled="creatingUnit"
+    :title="t('createUnit')"
+    :close-disabled="mandatory || creatingUnit"
     v-bind="$attrs"
     @update:model-value="emit('update:model-value', $event)"
   >
@@ -39,8 +38,6 @@
         />
         <v-text-field
           v-model="newUnit.description"
-          :rules="[requiredRule]"
-          required
           variant="underlined"
           :label="t('description')"
         />
@@ -73,13 +70,14 @@ import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useRules } from '~/composables/utils';
 import { useMutation } from '~~/composables/api/utils/mutation';
 import { useQuerySync } from '~~/composables/api/utils/query';
+import { useQueryClient } from '@tanstack/vue-query';
 
 const props = defineProps({
   modelValue: {
     type: Boolean,
     default: false
   },
-  persistent: {
+  mandatory: {
     type: Boolean,
     default: false
   }
@@ -94,6 +92,7 @@ const router = useRouter();
 const { requiredRule } = useRules();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { ability } = useVeoPermissions();
+const queryClient = useQueryClient();
 
 watch(() => props.modelValue, (newValue) => {
   if(!newValue) {
@@ -117,7 +116,7 @@ const createUnit = async () => {
     await mutateAsync(newUnit);
     displaySuccessMessage(t('unitCreated'));
     emit('update:model-value', false);
-    const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: newUnitPayload.value?.resourceId as string });
+    const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: newUnitPayload.value?.resourceId as string }, queryClient);
     const domainId = getFirstDomainDomaindId(unit);
 
     if (domainId) {

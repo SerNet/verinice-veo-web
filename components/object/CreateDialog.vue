@@ -18,9 +18,9 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    :headline="headline"
+    :title="headline"
     x-large
-    :persistent="isFormDirty"
+    :confirm-close="isFormDirty"
     fixed-footer
     inner-class="d-flex flex-column"
     v-bind="$attrs"

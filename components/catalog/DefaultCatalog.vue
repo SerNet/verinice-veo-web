@@ -41,7 +41,7 @@
           :disabled="selectedItems.length === 0 || applyingItems"
           @click="selectedItems = []"
         >
-          {{ $t('global.button.cancel') }}
+          {{ globalT('global.button.cancel') }}
         </v-btn>
         <v-btn
           flat
@@ -89,7 +89,7 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n();
-    const { t: $t } = useI18n({ useScope: 'global' });
+    const { t: globalT } = useI18n({ useScope: 'global' });
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
     const route = useRoute();
@@ -100,19 +100,19 @@ export default defineComponent({
     const catalogTableHeaders = computed<IVeoCatalogSelectionListHeader[]>(() => [
       {
         sortable: true,
-        title: $t('objectlist.abbreviation').toString(),
+        title: globalT('objectlist.abbreviation').toString(),
         value: 'abbreviation',
         width: 150
       },
       {
         sortable: true,
-        title: $t('objectlist.name').toString(),
+        title: globalT('objectlist.name').toString(),
         value: 'title',
         key: 'title'
       },
       {
         sortable: false,
-        title: $t('objectlist.description').toString(),
+        title: globalT('objectlist.description').toString(),
         value: 'description'
       }
     ]);
@@ -138,7 +138,7 @@ export default defineComponent({
         // Fetch incarnations for all selected items
         const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: route.params.unit as string, itemIds: selectedItems.value });
         // Apply incarnations
-        incarnate({ incarnations, unitId: route.params.unit });
+        await incarnate({ incarnations, unitId: route.params.unit });
         displaySuccessMessage(props.successText);
         selectedItems.value = [];
       } catch (e: any) {
@@ -156,6 +156,7 @@ export default defineComponent({
       catalogTableHeaders,
       selectedItems,
 
+      globalT,
       t
     };
   }

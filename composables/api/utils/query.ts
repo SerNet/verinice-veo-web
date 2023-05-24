@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Ref } from 'vue';
-import { useQuery as vueQueryUseQuery, useQueries as VueQueryUseQueries, useQueryClient } from '@tanstack/vue-query';
+import { useQuery as vueQueryUseQuery, useQueries as VueQueryUseQueries, useQueryClient, QueryClient } from '@tanstack/vue-query';
 import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
 import { QueryObserverResult } from '@tanstack/query-core/build/lib/types';
 import { omit } from 'lodash';
@@ -147,12 +147,14 @@ export const useQuery = <TVariables = undefined, TResult = any>(
  * 
  * @param queryDefinition Defines url and return type of the request.
  * @param queryParameters Parameters to pass to the request function.
+ * @param queryClient Query client to write the response to. If not provided, data doesn't get written to the cache.
  * @returns Result of request without any additional info.
  * @throws Throws an error if request fails
  */
 export const useQuerySync  = async <TVariables = undefined, TResult = any>(
   queryDefinition: IVeoQueryDefinition<TVariables, TResult>,
-  queryParameters?: TVariables
+  queryParameters?: TVariables,
+  queryClient?: QueryClient
 ) => {
   const { request } = useRequest();
 
@@ -164,13 +166,13 @@ export const useQuerySync  = async <TVariables = undefined, TResult = any>(
   }
 
   // Save to vue query cache
-  try {
-    const queryClient = useQueryClient();
-    queryClient.setQueryData([queryDefinition.primaryQueryKey, queryParameters], result);
-  } catch (e) {
-    console.warn('Couldn\'t set queried data:', e);
+  if(queryClient) {
+    try {
+      queryClient.setQueryData([queryDefinition.primaryQueryKey, queryParameters], result);
+    } catch (e) {
+      console.warn('Couldn\'t set queried data:', e);
+    }
   }
-  
 
   return result as TResult;
 };

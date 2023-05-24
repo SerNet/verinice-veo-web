@@ -33,12 +33,6 @@ pipeline {
             }
         }
         stage('Test') {
-            // FIXME VEO-1783: re-enable test stage
-            when {
-                expression {
-                   return false
-                }
-            }
             agent {
                 dockerfile {
                     filename 'test.Dockerfile'
@@ -52,13 +46,13 @@ pipeline {
                     try {
                         sh 'cd /usr/src/app && npm run test'
                     } finally {
-                        dir (outputDir){
-                            sh "cp /usr/src/app/junit.xml ."
-                            junit 'junit.xml'
-                            sh script: "cp /root/.npm/_logs/* .", returnStatus: true
-                            archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
-                        }
-                        sh "rm -fr $outputDir"
+                        // dir (outputDir){
+                        //     sh "cp /usr/src/app/junit.xml ."
+                        //     junit 'junit.xml'
+                        //     sh script: "cp /root/.npm/_logs/* .", returnStatus: true
+                        //     archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
+                        // }
+                        // sh "rm -fr $outputDir"
                     }
                 }
             }
@@ -149,7 +143,7 @@ pipeline {
                 script {
                   def buildLog = sh(script: "wget -q -O- ${BUILD_URL}/consoleText", returnStdout: true)
                   def lastLines = buildLog.readLines().takeRight(50).join('\n')
-                  rocketSend channel: '#frontend', message: "A veo front-end build failed", attachments: [
+                  rocketSend channel: '#hack', message: "A veo front-end build failed", attachments: [
                     [ title: 'Build log excerpt', collapsed: true, text: "...\n${lastLines}" ]
                   ]
                 }

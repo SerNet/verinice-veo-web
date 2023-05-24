@@ -94,6 +94,7 @@ import translationQueryDefinitions from '~/composables/api/queryDefinitions/tran
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
+import { useQueryClient } from '@tanstack/vue-query';
 
 export default defineComponent({
   props: {
@@ -116,6 +117,7 @@ export default defineComponent({
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { link } = useLinkObject();
+    const queryClient = useQueryClient();
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
@@ -247,7 +249,7 @@ export default defineComponent({
     const onCreateObjectSuccess = async (newObjectId: string) => {
       if (props.object) {
         try {
-          const createdObject = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: endpoints.value?.[createObjectDialog.value.objectType || ''] || '' , id: newObjectId });
+          const createdObject = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: endpoints.value?.[createObjectDialog.value.objectType || ''] || '' , id: newObjectId }, queryClient);
           if (createObjectDialog.value.hierarchicalContext === 'child') {
             if(createObjectDialog.value.parentScopeIds?.length) {
               return; // do not link if scope (current object) has already been linked

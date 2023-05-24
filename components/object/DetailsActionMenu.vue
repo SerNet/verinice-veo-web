@@ -18,15 +18,13 @@
 <template>
   <div>
     <UtilNestedMenu
-      bottom
-      right
-      offset-y
+      location="bottom left"
       :items="visibleItems"
     >
-      <template #activator="{ props }">
+      <template #activator="{ props: menuProps }">
         <v-btn
-          v-bind="mergeProps($attrs, props)"
-          :disabled="!visibleItems.length || disabled"
+          v-bind="mergeProps($attrs, menuProps)"
+          :disabled="!visibleItems.length || $props.disabled"
           :icon="mdiDotsVertical"
           variant="text"
           size="small"
@@ -42,109 +40,126 @@
       @success="onCreateObjectSuccess"
     />
     <ObjectLinkDialog
+      v-if="object"
       v-model="linkObjectDialogVisible"
       :object="object"
       :preselected-filters="{ subType: 'PRO_DPIA' }"
       @success="$emit('reload')"
     />
+    <ObjectDeleteDialog
+      v-model="deleteObjectDialogVisible"
+      :item="object"
+      @success="navigateToObjectOverview"
+      @success123="navigateToObjectOverview"
+    />
   </div>
 </template>
 
-<script lang="ts">
-import { mergeProps, PropType } from 'vue';
-import { upperFirst } from 'lodash';
-import { mdiDotsVertical } from '@mdi/js';
+<script setup lang="ts">
+import { mergeProps } from 'vue';
+import { mdiDotsVertical, mdiTrashCanOutline } from '@mdi/js';
 
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
 
-export default defineComponent({
-  props: {
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    object: {
-      type: Object as PropType<IVeoEntity | undefined>,
-      default: undefined
+const props = withDefaults(defineProps<{
+  disabled: boolean;
+  object: IVeoEntity | undefined;
+}>(), {
+  disabled: false,
+  object: undefined
+});
+
+const emit = defineEmits<{
+  (event: 'reload'): void;
+}>();
+
+const { t } = useI18n();
+const route = useRoute();
+const { link } = useLinkObject();
+
+// general stuff
+const subType = computed(() => props.object?.domains[route.params.domain as string]?.subType);
+
+const items: (INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] })[] = [
+  {
+    key: 'delete',
+    title: t('deleteObject').toString(),
+    icon: mdiTrashCanOutline,
+    color: 'primary',
+    action: () => {
+      deleteObjectDialogVisible.value = true;
     }
   },
-  emits: ['reload'],
-  setup(props, { emit }) {
-    const { t } = useI18n();
-    const route = useRoute();
-    const { link } = useLinkObject();
-
-    // general stuff
-    const subType = computed(() => props.object?.domains[route.params.domain as string]?.subType);
-
-    const items: (INestedMenuEntries & { objectTypes: string[]; subTypes: string[] })[] = [
+  {
+    key: 'dpia',
+    title: t('dpia').toString(),
+    children: [
       {
-        key: 'dpia',
-        title: t('dpia').toString(),
-        children: [
-          {
-            key: 'create_dpia',
-            title: t('createDPIA').toString(),
-            action: () => {
-              createObjectDialogVisible.value = true;
-            }
-          },
-          {
-            key: 'link_dpia',
-            title: t('linkDPIA').toString(),
-            action: () => {
-              linkObjectDialogVisible.value = true;
-            }
-          }
-        ],
-        objectTypes: ['process'],
-        subTypes: ['PRO_DataProcessing']
+        key: 'create_dpia',
+        title: t('createDPIA').toString(),
+        action: () => {
+          createObjectDialogVisible.value = true;
+        }
+      },
+      {
+        key: 'link_dpia',
+        title: t('linkDPIA').toString(),
+        action: () => {
+          linkObjectDialogVisible.value = true;
+        }
       }
-    ];
-
-    // filter allowed actions for current object type & sub type
-    const visibleItems = computed(() =>
-      items.filter((a) => props.object?.type && subType.value && a.objectTypes.includes(props.object?.type) && a.subTypes.includes(subType.value))
-    );
-
-    // dialog stuff
-    const linkObjectDialogVisible = ref(false);
-    const createObjectDialogVisible = ref(false);
-
-    // emit after new object creation for linking
-    const onCreateObjectSuccess = (newObjectId: string) => {
-      if (props.object) {
-        link(props.object, { type: 'process', id: newObjectId });
-        emit('reload');
-      }
-    };
-
-    return {
-      createObjectDialogVisible,
-      linkObjectDialogVisible,
-      onCreateObjectSuccess,
-
-      mergeProps,
-      t,
-      upperFirst,
-      visibleItems,
-      mdiDotsVertical
-    };
+    ],
+    objectTypes: ['process'],
+    subTypes: ['PRO_DataProcessing']
   }
-});
+];
+
+// filter allowed actions for current object type & sub type
+const visibleItems = computed(() =>
+  items.filter((a) => props.object?.type && subType.value && (!a.objectTypes || a.objectTypes.includes(props.object?.type)) && (!a.subTypes || a.subTypes.includes(subType.value)))
+);
+
+// dialog stuff
+const linkObjectDialogVisible = ref(false);
+const createObjectDialogVisible = ref(false);
+
+// emit after new object creation for linking
+const onCreateObjectSuccess = (newObjectId: string) => {
+  if (props.object) {
+    link(props.object, { type: 'process', id: newObjectId });
+    emit('reload');
+  }
+};
+
+const deleteObjectDialogVisible = ref(false);
+const navigateToObjectOverview = () => {
+  navigateTo({
+    name: 'unit-domains-domain-objects',
+    params: {
+      domain: route.params.domain,
+      unit: route.params.unit
+    },
+    query: {
+      objectType: props.object?.type,
+      subType: props.object?.domains[route.params.domain as string]?.subType
+    }
+  });
+};
 </script>
 
 <i18n>
 {
   "en": {
     "createDPIA": "create DPIA",
+    "deleteObject": "delete object",
     "dpia": "DPIA",
     "linkDPIA": "link DPIA"
   },
   "de": {
     "createDPIA": "DSFA erstellen",
+    "deleteObject": "Objekt löschen",
     "dpia": "DSFA",
     "linkDPIA": "DSFA auswählen"
   }

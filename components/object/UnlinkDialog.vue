@@ -19,7 +19,7 @@
   <BaseDialog
     :model-value="modelValue"
     v-bind="$attrs"
-    :headline="t('unlinkObject')"
+    :title="t('unlinkObject')"
   >
     <template #default>
       <span class="text-body-1">{{ t('text', { displayName: objectToRemove && objectToRemove.displayName, parentDisplayName: parent && parent.displayName }) }}</span>

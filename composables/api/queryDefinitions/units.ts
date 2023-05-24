@@ -27,6 +27,10 @@ export interface IVeoUnit extends IVeoBaseObject {
   units: IVeoUnit[];
 }
 
+export interface IVeoExportedUnit {
+  unit: IVeoUnit;
+}
+
 export interface IVeoFetchUnitParameters {
   id: string;
 }
@@ -38,6 +42,10 @@ export interface IVeoCreateUnitParameters {
   
 export interface IVeoDeleteUnitParameters {
   id: string;
+}
+
+export interface IVeoExportUnitParameters {
+  unitId: string;
 }
 
 export interface IVeoFetchIncarnationParameters{
@@ -78,7 +86,16 @@ export default {
         query: {
           itemIds: queryParameters.itemIds
         }})
-    }as IVeoQueryDefinition<IVeoFetchIncarnationParameters, IVeoUnitIncarnations>
+    } as IVeoQueryDefinition<IVeoFetchIncarnationParameters, IVeoUnitIncarnations>,
+    exportUnit:{
+      primaryQueryKey: 'units',
+      url: '/api/units/:unitId/export',
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: {
+          unitId: queryParameters.unitId
+        }
+      })
+    } as IVeoQueryDefinition<IVeoExportUnitParameters, IVeoExportedUnit>
   },
   mutations: {
     create: {

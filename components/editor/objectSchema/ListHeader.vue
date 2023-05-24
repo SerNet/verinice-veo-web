@@ -21,7 +21,7 @@
     lines="two"
   >
     <v-list-item-title class="body-1 font-weight-bold d-flex align-center">
-      {{ item.title }}
+      {{ idWithTitle }}
     </v-list-item-title>
     <v-list-item-subtitle v-text="t('attributecount', item.attributes.length || 0)" />
     <template #append>
@@ -62,10 +62,10 @@ import { upperFirst } from 'lodash';
 import { PropType } from 'vue';
 import { mdiPencil, mdiTrashCanOutline } from '@mdi/js';
 
-import { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2';
+import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2';
 import { IInputType } from '~/types/VeoEditor';
 
-defineProps({
+const props = defineProps({
   item: {
     type: Object as PropType<IVeoOSHCustomAspect | IVeoOSHCustomLink>,
     required: true
@@ -81,8 +81,14 @@ defineProps({
 });
 
 defineEmits(['delete-item', 'edit-item']);
-  
-const { t } = useI18n();
+
+const { t, locale } = useI18n();
+const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined = inject('objectSchemaHelper');
+const displayLanguage = inject<Ref<string>>('displayLanguage', locale);
+
+const translatedTitle = computed(() => objectSchemaHelper?.value?.getTranslation(displayLanguage.value, `${props.item.prefix}${props.item.title}`));
+
+const idWithTitle = computed(() => translatedTitle.value ? `${props.item.title} (${locale.value}: ${translatedTitle.value})` : props.item.title);
 </script>
 
 <i18n>
