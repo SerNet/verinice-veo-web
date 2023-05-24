@@ -65,7 +65,7 @@ COPY --chown=chrome print.mjs .
 RUN mkdir dist
 
 # Start nuxt app in background, wait for startup and generate pdf documentation
-RUN nohup sh -c "(cd /usr/src/veo && (npm run start&))" && sleep 5 && node print.mjs
+RUN nohup sh -c "(cd /usr/src/veo && (npm run start&))" && sleep 20 && node print.mjs
 
 FROM nginx:1.21 AS release
 
