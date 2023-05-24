@@ -52,6 +52,10 @@ FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 WORKDIR /usr/src/veo
 
 COPY --chown=chrome --from=builder /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.ts ./
+# We also have to copy the modules folder because modules/docs/module.mjs is referneced in the nuxt.config.ts
+COPY --chown=chrome --from=builder /usr/src/app/modules ./modules
+# Same goes for types/locales
+COPY --chown=chrome --from=builder /usr/src/app/types ./types
 COPY --chown=chrome --from=builder /usr/src/app/.output ./.output
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 
