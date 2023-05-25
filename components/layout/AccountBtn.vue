@@ -105,7 +105,7 @@
         <v-divider />
         <v-list-item
           active-class="veo-active-list-item"
-          :to="locale === 'de' ? '/sicherheit' : '/security'"
+          to="/security"
         >
           <v-list-item-title>
             {{ $t('breadcrumbs.security') }}
@@ -137,7 +137,7 @@ import { mdiOpenInNew } from '@mdi/js';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 const config = useRuntimeConfig();
 const { logout: _logout, profile, userSettings } = useVeoUser();

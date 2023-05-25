@@ -73,7 +73,7 @@
       </a>
       <span class="mx-1">|</span>
       <nuxt-link
-        :to="locale === 'de' ? '/sicherheit' : '/security'"
+        to="/security"
         target="_blank"
       >
         {{ t('policy') }}
