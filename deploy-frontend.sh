@@ -32,7 +32,7 @@ fi
 # Merge branch to merge into release branch, based on last main branch
 #
 git checkout -b release/$1 origin/$MAIN_BRANCH
-git merge $branchToMerge
+git merge origin/$branchToMerge
 echo "Created new release branch release/$1 based on $MAIN_BRANCH with changes from $branchToMerge"
 
 #
@@ -52,12 +52,10 @@ echo "Updated package.json and LICENSE-3RD-PARTY.txt for release $1"
 #
 # Merge release branch into main branch
 #
-git checkout $MAIN_BRANCH
+git checkout origin/$MAIN_BRANCH
 git merge release/$1
 git branch -d release/$1
-git log -1 --pretty=%B
 git tag -a $1 $(git log -1 --pretty=%H) -m "Release $1"
-exit 1
 git push origin $MAIN_BRANCH
 git push origin $1
 echo "Merged release branch into $MAIN_BRANCH and pushed tag $1"
@@ -65,10 +63,16 @@ echo "Merged release branch into $MAIN_BRANCH and pushed tag $1"
 #
 # Update branch to merge to state of main branch after release
 #
-git checkout $branchToMerge
+git checkout origin/$branchToMerge
 git merge origin/$1
 git push origin $branchToMerge
 echo "Merged $MAIN_BRANCH into $branchToMerge"
 
 git checkout $previousBranch
 echo "Switched back to $previousBranch"
+
+if [ "$previousBranch" = "$branchToMerge" ]
+then
+    git pull
+    echo "Pulled latest changes from $branchToMerge"
+fi
