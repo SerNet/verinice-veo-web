@@ -112,7 +112,6 @@
                   clearable
                   :items="availableGroups"
                   :label="t('groups')"
-                  multiple
                   variant="underlined"
                 />
               </v-col>

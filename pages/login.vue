@@ -72,7 +72,10 @@
         {{ t('imprint') }}
       </a>
       <span class="mx-1">|</span>
-      <nuxt-link to="/security">
+      <nuxt-link
+        to="/security"
+        target="_blank"
+      >
         {{ t('policy') }}
       </nuxt-link>
     </div>
