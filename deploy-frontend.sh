@@ -16,15 +16,16 @@ fi
 # If a second argument is provided, use that as the branch to merge into release branch, otherwise use fallback branch
 if [ -n "$2" ]
 then
-    # If $2 isn't equal to the current branch, store in previousBranch
-    if [ "$2" != "$(git rev-parse --abbrev-ref HEAD)" ]
-    then
-        previousBranch=$(git rev-parse --abbrev-ref HEAD)
-        echo "Switching from previous branch $previousBranch to $2..."
-    fi
     branchToMerge=$2
 else
     branchToMerge=$FALLBACK_BRANCH
+fi
+# If branch to merge isn't equal to the current branch, store in previousBranch
+currentBranch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$branchToMerge" != "$currentBranch" ]
+then
+    previousBranch=$currentBranch
+    echo "Switching from previous branch $previousBranch to $branchToMerge..."
 fi
 
 #
@@ -56,7 +57,7 @@ git merge release/$1
 git branch -d release/$1
 git log -1 --pretty=%B
 git tag -a $1 $(git log -1 --pretty=%H) -m "Release $1"
-exit 12
+exit 1
 git push origin $MAIN_BRANCH
 git push origin $1
 echo "Merged release branch into $MAIN_BRANCH and pushed tag $1"
