@@ -50,7 +50,7 @@
           <strong>account.verinice.com</strong>
           and nothing else.
           <br><br>
-      
+
           And of course you can use the open source code in our and other repositories:<br><br>
           <a
             v-for="(link, key, index) in links"
