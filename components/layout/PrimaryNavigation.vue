@@ -2,17 +2,17 @@
    - verinice.veo web
    - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Tino Groteloh, Philipp Ballhausen, Annemarie Bufe,
    - Samuel Vitzthum
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -115,7 +115,8 @@ import {
   mdiHomeOutline,
   mdiHomeSwitchOutline,
   mdiTableSettings,
-  mdiTextBoxEditOutline
+  mdiTextBoxEditOutline,
+  mdiShapeOutline
 } from '@mdi/js';
 import { sortBy, upperFirst } from 'lodash';
 import { StorageSerializers, useStorage } from '@vueuse/core';
@@ -126,6 +127,7 @@ import { createUUIDUrlParam, extractSubTypesFromObjectSchema } from '~/lib/utils
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/index.vue';
+import { ROUTE_NAME as PROFILE_INDEX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/profiles/index.vue';
 import { ROUTE_NAME as OBJECTS_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/objects/index.vue';
 import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/catalogs/[catalog].vue';
 import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/reports/[report].vue';
@@ -197,7 +199,7 @@ export default defineComponent({
     const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const fetchTranslationsQueryEnabled = computed(() => authenticated.value);  
+    const fetchTranslationsQueryEnabled = computed(() => authenticated.value);
     const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters,  { enabled: fetchTranslationsQueryEnabled });
 
     // objects specific stuff
@@ -252,7 +254,7 @@ export default defineComponent({
                 },
                 exact: true
               },
-              
+
               // dynamic sub type routes
               ...sortBy(
                 objectSubTypes.map((subType) => {
@@ -376,6 +378,31 @@ export default defineComponent({
       classes: 'mb-4'
     }));
 
+    /*
+      key: 'risks',
+      name: $t('breadcrumbs.risks').toString(),
+      activePath: `${route.params.unit}/domains/${route.params.domain}/risks`,
+      icon: mdiTableSettings,
+      children: riskChildItems.value,
+      childrenLoading: riskDefinitionsLoading.value,
+      componentName: 'risks-nav-item'
+      */
+
+    const profilesNavEntry = computed<INavItem>(() => ({
+      key: 'profiles',
+      name: $t('breadcrumbs.profiles'),
+      activePath: `${route.params.unit}/domains/${route.params.domain}/profiles`,
+      icon: mdiShapeOutline,
+      componentName: 'profiles-nav-item',
+      to: {
+        name: PROFILE_INDEX_ROUTE_NAME,
+        params: {
+          unit: createUUIDUrlParam('unit', props.unitId as string),
+          domain: createUUIDUrlParam('domain', props.domainId as string)
+        }
+      }
+    }));
+
     const objectsNavEntry = computed<INavItem>(() => ({
       key: 'objects',
       name: $t('breadcrumbs.objects').toString(),
@@ -448,7 +475,7 @@ export default defineComponent({
       activePath: '/docs',
       children: docNavItems.value
     }));
-    
+
     const docItemTransformationFn = (file: NavItem): INavItem => ({
       key: file._path,
       name: file.title,
@@ -457,7 +484,7 @@ export default defineComponent({
       children: file.children?.length ? file.children.map((file) => docItemTransformationFn(file)) : undefined
     });
     const docs = useDocNavigation({});
-    const docNavItems = computed(() => 
+    const docNavItems = computed(() =>
       (docs.value || []).map((file) => docItemTransformationFn(file))
     );
 
@@ -465,6 +492,7 @@ export default defineComponent({
       ...(authenticated.value && userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry.value] : []),
       ...(props.unitId && props.domainId
         ? [
+      profilesNavEntry.value,
           domainDashboardNavEntry.value,
           ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
           objectsNavEntry.value,
