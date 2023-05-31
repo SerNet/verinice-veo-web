@@ -50,41 +50,29 @@
 </template>
 
 <script lang="ts" setup>
-import { UISchema } from '~/types/UISchema';
+import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 
 interface IItem {
   initialId: string;
-  text: string;
-  layout: UISchema;
+  text?: string;
+  layout: any;
 }
 
-const props = defineProps({
-  formSchema: {
-    type: Object,
-    required: true
-  },
-  customTranslation: {
-    type: Object,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    default: () => {}
-  },
-  initialId: {
-    type: String,
-    default: '#'
-  },
-  nestingLevel: {
-    type: Number,
-    default: 0
-  },
-  scrollWrapperId: {
-    type: String,
-    default: 'scroll-wrapper'
-  }
+const props = withDefaults(defineProps<{
+  formSchema: IVeoFormSchemaItem;
+  customTranslation?: Record<string, string>;
+  initialId?: string;
+  nestingLevel?: number;
+  scrollWrapperId?: string;
+}>(), {
+  customTranslation: () => ({}),
+  initialId: '#',
+  nestingLevel: 0,
+  scrollWrapperId: 'scroll-wrapper'
 });
 
 const { t } = useI18n();
 
-const items = ref<IItem[]>([]);
 const selectedItem = ref<string | undefined>();
 
 const nextNestingLevel = computed(() => props.nestingLevel + 1);
@@ -112,10 +100,31 @@ const scroll = (groupId: string) => {
   }
 };
 
-const scrollWrapper = ref();
-const observer = ref();
+const scrollWrapper = ref<HTMLElement | undefined>();
+const observer = ref<IntersectionObserver | undefined>();
 
 const activateObserver = () => {
+  if(observer.value) {
+    observer.value?.disconnect();
+  }
+
+  scrollWrapper.value = document.getElementById(props.scrollWrapperId) || undefined;
+
+  // Activate Observer when the component is mounted
+  const options = {
+    root: scrollWrapper.value,
+    rootMargin: '-200px 0px 0px 0px', // -72px because of sticky header
+    threshold: 0
+  };
+
+  observer.value = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if(entry.isIntersecting) {
+        selectedItem.value = entry.target.getAttribute('id') as string; // The id is always set by the dynamic forms entrypoint
+      }
+    });
+  }, options);
+
   if (itemsToObserve.value) {
     itemsToObserve.value.forEach((section) => {
       observer.value?.observe(section);
@@ -131,47 +140,27 @@ const deactivateObserver = () => {
   }
 };
 
-onMounted(() => {
-  scrollWrapper.value = document.getElementById(props.scrollWrapperId);
+onMounted(activateObserver);
+onUnmounted(deactivateObserver);
 
-  // Activate Observer when the component is mounted
-  const options = {
-    root: document.getElementById(props.scrollWrapperId),
-    rootMargin: '-200px 0px 0px 0px', // -72px because of sticky header
-    threshold: 0
-  };
-
-  const _items = items.value.map((item) => ({ key: item.initialId, value: false }));
-
-  observer.value = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      const elId = entry.target.getAttribute('id') as string;
-      const index = _items.findIndex((item) => item.key === elId);
-      _items[index].value = entry.isIntersecting;
-    });
-    selectedItem.value = _items.filter((item) => item.value)[0]?.key;
-  }, options);
-
-  activateObserver();
-});
-onUnmounted(() => {
-  deactivateObserver();
+defineExpose({
+  activateObserver
 });
 
-watch(() => props.formSchema, () => {
-  items.value = props.formSchema?.elements
-    ?.map((el: any, index: number) => {
-      // Important to iterate on all elements to have correct indices of Layouts in FormSchema
-      return el.type === 'Layout' && el.options && el.options.format === 'group'
-        ? {
-          initialId: `${props.initialId}${props.initialId ? '/' : ''}elements/${index}`,
-          text: props.customTranslation[el.options?.label?.replace('#lang/', '')] || el.options?.label,
-          layout: el
-        }
-        : {}; // This is generated for non LayoutGroup elements and filtered in the next step
-    })
-    .filter((el: any) => !!el.text);
-}, { deep: true, immediate: true });
+const items = computed(() => (props.formSchema?.elements || [])
+  .map((el: any, index: number) => {
+    if(!el.type || el.options?.format !== 'group') {
+      return undefined;
+    }
+    // Important to iterate on all elements to have correct indices of Layouts in FormSchema
+    return {
+      initialId: `${props.initialId}${props.initialId ? '/' : ''}elements/${index}`,
+      text: props.customTranslation[el.options?.label?.replace('#lang/', '')] || el.options?.label,
+      layout: el
+    };
+  })
+  .filter((element: IItem | undefined) => !!element) as IItem[]
+);
 </script>
 
 <script lang="ts">
