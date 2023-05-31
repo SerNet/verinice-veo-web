@@ -26,6 +26,12 @@ const name = () => {
           return text;
         }
 
+        // Seems to be used for hydration, so we can ignore it as we do SSG. If not ignored either breaks page
+        // loading because __NUXT_DATA__ has no content (content was externalized) or because CSP disallows inline scripts
+        if (args.includes('id="__NUXT_DATA__"')) {
+          return '';
+        }
+
         // Only write config if config array is empty (first file)
         if(configIsWritable) {
           const configFileName = `config${foundOccurence}.${hash(content)}.js`;
