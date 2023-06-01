@@ -110,11 +110,11 @@ useHead({
   title: $t('breadcrumbs.index')
 });
 
-const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
+const firstStepsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
 
 const showWelcomeDialog = computed({
-  get: () => !firstSetpsCompleted.value,
-  set: (newValue) => { firstSetpsCompleted.value = !newValue; }
+  get: () => !firstStepsCompleted.value,
+  set: (newValue) => { firstStepsCompleted.value = !newValue; }
 });
 
 const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);
