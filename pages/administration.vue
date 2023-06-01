@@ -220,6 +220,7 @@ const additionalTableHeaders = ref<TableHeader[]>([
     order: 60,
     priority: 60,
     text: t('groups').toString(),
+    render: ({ item }) => item.raw.groups.join(', '),
     value: 'groups',
     key: 'groups'
   }
