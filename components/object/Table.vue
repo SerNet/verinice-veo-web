@@ -17,7 +17,7 @@
 -->
 <template>
   <BaseTable
-    v-bind="props"
+    v-bind="mergeProps(props, attrs)"
     :additional-headers="mergedAdditionalHeaders"
     :default-headers="unmatchedDefaultHeaders"
     @update:model-value="emit('update:model-value', $event)"
@@ -39,6 +39,7 @@
 </template>
 
 <script setup lang="ts">
+import { mergeProps } from 'vue';
 import type { SortItem } from 'vuetify/labs/VDataTable/composables/sort.mjs';
 
 import ObjectIcon from '~/components/object/Icon.vue';
@@ -111,6 +112,7 @@ const { t, locale } = useI18n();
 const route = useRoute();
 const { formatDateTime } = useFormatters();
 const slots = useSlots();
+const attrs = useAttrs();
 
 const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
@@ -231,7 +233,7 @@ const defaultHeaders: { [key: string]: TableHeader } = {
     sortable: false,
     width: 500,
     truncate: true,
-    tooltip: ({ item }) => item.raw.description || '',
+    tooltip: ({ item }) => item.raw.description,
     priority: 30,
     order: 60
   },

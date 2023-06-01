@@ -16,54 +16,65 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-data-table
+  <BaseTable
     :model-value="modelValue"
     :items="items"
     item-value="id"
-    :headers="headers"
+    :additional-headers="headers"
     must-sort
     :show-select="selectable"
     @update:model-value="$emit('update:model-value', $event)"
-  >
-    <template #item.title="{ item }">
-      <div class="font-weight-bold text-no-wrap">
-        {{ item.title }}
-      </div>
-    </template>
-  </v-data-table>
+  />
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
+import { TableHeader } from '../base/Table.vue';
 
-export interface IVeoCatalogSelectionListHeader {
-  filterable?: boolean;
-  sortable: boolean;
-  title: string;
-  value: string;
-  width?: number;
-}
-
-const props = defineProps({
-  modelValue: {
-    type: Array as PropType<string[]>,
-    default: () => []
-  },
-  items: {
-    type: Array as PropType<any[]>,
-    default: () => []
-  },
-  headers: {
-    type: Array as PropType<IVeoCatalogSelectionListHeader[]>,
-    default: () => []
-  },
-  selectable: {
-    type: Boolean,
-    default: false
-  }
+const props = withDefaults(defineProps<{
+  modelValue?: string[];
+  items?: any[];
+  selectable?: boolean;
+}>(), {
+  modelValue: () => [],
+  items: () => [],
+  selectable: false
 });
 
-const emit = defineEmits(['update:model-value']);
+const headers: TableHeader[] = [
+  {
+    value: 'abbreviation',
+    key: 'abbreviation',
+    sortable: true,
+    truncate: true,
+    width: 80,
+    priority: 60,
+    order: 30
+  },
+  {
+    value: 'name',
+    key: 'name',
+    cellClass: ['font-weight-bold'],
+    width: 600,
+    truncate: true,
+    sortable: true,
+    priority: 100,
+    order: 40
+  },
+  {
+    value: 'description',
+    key: 'description',
+    sortable: false,
+    width: 500,
+    truncate: true,
+    tooltip: ({ item }: { item: any }) => item.raw.description,
+    priority: 30,
+    order: 60
+  }
+];
+
+const emit = defineEmits<{
+  (e: 'update:model-value', value: string[]): void;
+}>();
 
 watch(() => props.items, (newValue) => {
   const newValues = props.modelValue.filter((selectedItemId: string) => newValue.some((item) => item.id === selectedItemId));

@@ -25,7 +25,6 @@
         v-model="selectedItems"
         :items="availableItems"
         :loading="loading"
-        :headers="catalogTableHeaders"
         selectable
       />
     </BaseCard>
@@ -60,7 +59,6 @@
 <script lang="ts">
 import { PropType } from 'vue';
 
-import { IVeoCatalogSelectionListHeader } from '~/components/catalog/ItemsSelectionList.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { IVeoCatalogItem } from '~~/composables/api/queryDefinitions/catalogs';
@@ -99,36 +97,15 @@ export default defineComponent({
 
     const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
 
-    // Selecting
-    const catalogTableHeaders = computed<IVeoCatalogSelectionListHeader[]>(() => [
-      {
-        sortable: true,
-        title: globalT('objectlist.abbreviation').toString(),
-        value: 'abbreviation',
-        width: 150
-      },
-      {
-        sortable: true,
-        title: globalT('objectlist.name').toString(),
-        value: 'title',
-        key: 'title'
-      },
-      {
-        sortable: false,
-        title: globalT('objectlist.description').toString(),
-        value: 'description'
-      }
-    ]);
-
     const selectedItems = ref<string[]>([]);
     const availableItems = computed(() =>
       props.catalogItems.map((item) => {
         const displayNameParts = (item.element.displayName as string).split(' ');
         const designator = displayNameParts.shift() as string;
         const abbreviation = displayNameParts.shift() as string;
-        const title = displayNameParts.join(' ') as string;
+        const name = displayNameParts.join(' ') as string;
 
-        return { designator, abbreviation, title, id: item.id, description: item.description };
+        return { designator, abbreviation, name, id: item.id, description: item.description || '' };
       })
     );
 
@@ -156,7 +133,6 @@ export default defineComponent({
       applyingItems,
       applyItems,
       availableItems,
-      catalogTableHeaders,
       selectedItems,
 
       globalT,
