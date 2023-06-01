@@ -26,14 +26,14 @@
     </template>
     <template #dialog-options>
       <v-btn
-        text
+        variant="text"
         @click="$emit('update:model-value', false)"
       >
         {{ globalT('global.button.no') }}
       </v-btn>
       <v-spacer />
       <v-btn
-        text
+        variant="text"
         color="primary"
         :disabled="!objectToRemove"
         :loading="unlinking"
@@ -45,7 +45,7 @@
   </BaseDialog>
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 import { PropType } from 'vue';
 import { useUnlinkObject } from '~/composables/VeoObjectUtilities';
 

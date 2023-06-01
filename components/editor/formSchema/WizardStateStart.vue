@@ -49,7 +49,7 @@
   </v-window-item>  
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 import { mdiChevronRight } from '@mdi/js';
 
 defineProps({

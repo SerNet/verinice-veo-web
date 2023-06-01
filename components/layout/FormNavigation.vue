@@ -49,7 +49,13 @@
   </div>
 </template>
 
-<script setup lang=ts">
+<script lang="ts">
+export default { 
+  name: 'FormNavigation'
+};
+</script>
+
+<script setup lang="ts">
 import { UISchema } from '~/types/UISchema';
 
 interface IItem {
@@ -173,13 +179,6 @@ watch(() => props.formSchema, () => {
     .filter((el: any) => !!el.text);
 }, { deep: true, immediate: true });
 </script>
-
-<script lang="ts">
-export default { 
-  name: 'FormNavigation'
-};
-</script>
-
 
 <i18n>
 {

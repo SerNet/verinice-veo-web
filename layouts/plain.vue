@@ -56,7 +56,7 @@
   </v-app>
 </template>
   
-<script setup lang=ts">
+<script setup lang="ts">
 import { mdiAccountCircleOutline } from '@mdi/js';
   
 import { useVeoUser } from '~/composables/VeoUser';

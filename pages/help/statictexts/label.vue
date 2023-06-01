@@ -39,7 +39,7 @@
   </BasePage>
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 definePageMeta({ layout: 'plain' });
 
 const form = ref({

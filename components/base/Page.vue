@@ -52,7 +52,7 @@
     </v-row>
   </v-col>
 </template>
-<script setup lang=ts">
+<script setup lang="ts">
 import { PropType } from 'vue';
 import { omit } from 'lodash';
 

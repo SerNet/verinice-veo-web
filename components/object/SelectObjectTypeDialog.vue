@@ -48,7 +48,7 @@
   </BaseDialog>
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~~/composables/api/utils/query';

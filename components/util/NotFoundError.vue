@@ -39,7 +39,7 @@
   </div>
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 defineProps({
   text: {
     type: String,

@@ -100,7 +100,7 @@
   </v-dialog>
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 import { mdiClose } from '@mdi/js';
 import { isString } from 'lodash';
 import { useDisplay } from 'vuetify';
@@ -189,6 +189,19 @@ const closeDialog = (ignoreConfirmDialog = false) => {
 };
 </script>
 
+<i18n>
+{
+  "en": {
+    "closeDialog": "Close dialog",
+    "confirmationDialogText": "Are you sure you want to close this dialog? Unsaved changes might be lost."
+  },
+  "de": {
+    "closeDialog": "Dialog schließen",
+    "confirmationDialogText": "Möchten Sie den Dialog wirklich schließen? Ungespeicherte Änderungen gehen möglicherweise verloren."
+  }
+}
+</i18n>
+
 <style lang="scss" scoped>
 .v-card,
 .v-card-title {
@@ -207,16 +220,3 @@ const closeDialog = (ignoreConfirmDialog = false) => {
   border-top: 1px solid $medium-grey;
 }
 </style>
-
-<i18n>
-{
-  "en": {
-    "closeDialog": "Close dialog",
-    "confirmationDialogText": "Are you sure you want to close this dialog? Unsaved changes might be lost."
-  },
-  "de": {
-    "closeDialog": "Dialog schließen",
-    "confirmationDialogText": "Möchten Sie den Dialog wirklich schließen? Ungespeicherte Änderungen gehen möglicherweise verloren."
-  }
-}
-</i18n>

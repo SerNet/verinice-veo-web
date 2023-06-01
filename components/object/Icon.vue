@@ -37,7 +37,20 @@
   </div>
 </template>
 
-<script setup lang=ts">
+<script lang="ts">
+export const OBJECT_TYPE_ICONS = new Map<string, { icon: string | string[]; library: 'fa' | 'mdi' }>([
+  ['scope', { icon: ['far', 'object-group'], library: 'fa' }],
+  ['process', { icon: ['fas', 'diagram-project'], library: 'fa' }],
+  ['asset', { icon: mdiDevices, library: 'mdi' }],
+  ['person', { icon: mdiAccountOutline, library: 'mdi' }],
+  ['incident', { icon: mdiAlarmLightOutline, library: 'mdi' }],
+  ['document', { icon: mdiFileDocumentOutline, library: 'mdi' }],
+  ['scenario', { icon: mdiShieldAlertOutline, library: 'mdi' }],
+  ['control', { icon: mdiPlaylistCheck, library: 'mdi' }]
+]);
+</script>
+
+<script setup lang="ts">
 import { mdiAccountOutline, mdiAlarmLightOutline, mdiDevices, mdiDotsHorizontal, mdiFileDocumentOutline, mdiPlaylistCheck, mdiShieldAlertOutline } from '@mdi/js';
 
 const props = defineProps({
@@ -52,19 +65,6 @@ const props = defineProps({
 });
 
 const icon = computed(() => OBJECT_TYPE_ICONS.get(props.objectType));
-</script>
-
-<script lang="ts">
-export const OBJECT_TYPE_ICONS = new Map<string, { icon: string | string[]; library: 'fa' | 'mdi' }>([
-  ['scope', { icon: ['far', 'object-group'], library: 'fa' }],
-  ['process', { icon: ['fas', 'diagram-project'], library: 'fa' }],
-  ['asset', { icon: mdiDevices, library: 'mdi' }],
-  ['person', { icon: mdiAccountOutline, library: 'mdi' }],
-  ['incident', { icon: mdiAlarmLightOutline, library: 'mdi' }],
-  ['document', { icon: mdiFileDocumentOutline, library: 'mdi' }],
-  ['scenario', { icon: mdiShieldAlertOutline, library: 'mdi' }],
-  ['control', { icon: mdiPlaylistCheck, library: 'mdi' }]
-]);
 </script>
 
 <style lang="scss" scoped>

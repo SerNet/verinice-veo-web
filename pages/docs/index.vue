@@ -71,7 +71,7 @@
     </div>
   </div>
 </template>
-<script setup lang=ts">
+<script setup lang="ts">
 import { useDocs, useDocNavigationFlat } from '~/composables/docs';
 
 definePageMeta({ layout: 'none' });

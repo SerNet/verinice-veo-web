@@ -27,7 +27,7 @@
     </div>
   </nav>
 </template>
-<script setup lang=ts">
+<script setup lang="ts">
 import { PropType } from 'vue';
 import { NavItem } from '@nuxt/content/dist/runtime/types';
 

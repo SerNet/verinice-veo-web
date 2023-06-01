@@ -26,7 +26,7 @@
     </template>
     <template #dialog-options>
       <v-btn
-        text
+        variant="text"
         @click="$emit('update:model-value', false)"
       >
         {{ $t('global.button.no') }}
@@ -34,7 +34,7 @@
       <v-spacer />
       <v-btn
         color="primary"
-        text
+        variant="text"
         @click="$emit('download')"
       >
         {{ $t('global.button.yes') }}
@@ -43,7 +43,7 @@
   </BaseDialog>
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 const emit = defineEmits(['download', 'update:model-value']);
 
 const { t } = useI18n();

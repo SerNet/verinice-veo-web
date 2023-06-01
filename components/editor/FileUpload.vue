@@ -48,7 +48,7 @@
     </template>
   </BaseTabs>
 </template>
-<script setup lang=ts">
+<script setup lang="ts">
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
 

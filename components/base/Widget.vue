@@ -45,7 +45,7 @@
     </template>
   </BaseCard>
 </template>
-<script setup lang=ts">
+<script setup lang="ts">
 defineProps({
   title: {
     type: String,

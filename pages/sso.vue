@@ -19,7 +19,7 @@
   <div />
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 definePageMeta({
   layout: 'none'
 });

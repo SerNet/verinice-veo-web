@@ -32,7 +32,7 @@
   </div>
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';

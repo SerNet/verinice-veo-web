@@ -29,7 +29,7 @@
   </v-row>
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 const _skeletons = [
   {
     type: 'heading',

@@ -45,7 +45,7 @@
   </v-menu>
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 import { mergeProps } from 'vue';
 import { mdiTranslate } from '@mdi/js';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';

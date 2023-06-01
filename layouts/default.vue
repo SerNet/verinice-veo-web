@@ -100,7 +100,7 @@
   </v-app>
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 import { useDisplay } from 'vuetify';
 import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 import 'intro.js/minified/introjs.min.css';
@@ -151,6 +151,19 @@ const unitId = computed(() =>
 );
 </script>
 
+<i18n>
+{
+  "en": {
+    "firstUnitCreated": "First unit was created successfully",
+    "openDocumentationInNewTab": "Open online documentation in new tab"
+  },
+  "de": {
+    "firstUnitCreated": "Die erste Unit wurde erfolgreich erstellt",
+    "openDocumentationInNewTab": "Online-Dokumentaion in neuem Tab öffnen"
+  }
+}
+</i18n>
+
 <style lang="scss" module>
   .app-bar {
     background-color: $background-accent !important;
@@ -169,16 +182,3 @@ const unitId = computed(() =>
     flex-direction: column;
   }
   </style>
-
-<i18n>
-{
-  "en": {
-    "firstUnitCreated": "First unit was created successfully",
-    "openDocumentationInNewTab": "Open online documentation in new tab"
-  },
-  "de": {
-    "firstUnitCreated": "Die erste Unit wurde erfolgreich erstellt",
-    "openDocumentationInNewTab": "Online-Dokumentaion in neuem Tab öffnen"
-  }
-}
-</i18n>

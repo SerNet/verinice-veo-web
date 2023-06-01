@@ -90,7 +90,7 @@
   </v-col>
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 import { mdiInformationOutline } from '@mdi/js';

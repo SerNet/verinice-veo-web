@@ -57,7 +57,7 @@
     </template>
   </v-list-item>
 </template>
-<script setup lang=ts">
+<script setup lang="ts">
 import { upperFirst } from 'lodash';
 import { PropType } from 'vue';
 import { mdiPencil, mdiTrashCanOutline } from '@mdi/js';

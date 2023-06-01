@@ -35,7 +35,7 @@
   </BasePage>
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 const { t, locale } = useI18n();
 </script>
 

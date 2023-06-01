@@ -15,29 +15,6 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<script setup lang=ts">
-import { useFetchUnitDomains } from '~/composables/api/domains';
-import { separateUUIDParam, createUUIDUrlParam } from '~/lib/utils';
-
-
-
-const route = useRoute();
-const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
-const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: unitId.value }));
-
-const {data: allUnitDomains, isFetching: domainsFetching} =  useFetchUnitDomains( fetchUnitDomainsQueryParameters );
-
-
-const generateDomainDashboardLink = (domainId: string) => {
-  return domainId ? `/${route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
-};
-
-const { t } = useI18n();
-</script>
-<script lang="ts">
-export const ROUTE_NAME = 'index';
-</script>
-
 <template>
   <BasePage
     :title="t('domainselector')"
@@ -102,6 +79,30 @@ export const ROUTE_NAME = 'index';
   </BasePage>
 </template>
 
+<script lang="ts">
+export const ROUTE_NAME = 'index';
+</script>
+
+<script setup lang="ts">
+import { useFetchUnitDomains } from '~/composables/api/domains';
+import { separateUUIDParam, createUUIDUrlParam } from '~/lib/utils';
+
+
+
+const route = useRoute();
+const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
+const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: unitId.value }));
+
+const {data: allUnitDomains, isFetching: domainsFetching} =  useFetchUnitDomains( fetchUnitDomainsQueryParameters );
+
+
+const generateDomainDashboardLink = (domainId: string) => {
+  return domainId ? `/${route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
+};
+
+const { t } = useI18n();
+</script>
+
 <i18n>
   {
     "en": {
@@ -121,4 +122,3 @@ export const ROUTE_NAME = 'index';
     }
   }
   </i18n>
-  

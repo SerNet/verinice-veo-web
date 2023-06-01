@@ -58,7 +58,7 @@
   </v-list-item>
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 import { isEqual, pick } from 'lodash';
 import { mergeProps, PropType } from 'vue';
 import { _RouteLocationBase } from 'vue-router';

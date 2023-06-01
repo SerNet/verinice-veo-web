@@ -33,7 +33,7 @@
   </v-data-table>
 </template>
 
-<script setup lang=ts">
+<script setup lang="ts">
 import { PropType } from 'vue';
 
 export interface IVeoCatalogSelectionListHeader {
