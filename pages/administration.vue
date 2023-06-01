@@ -32,7 +32,7 @@
           <b>{{ activeAccounts }}</b> {{ t('of') }}
           <b>{{ userSettings.maxUsers - 1 }}</b> {{ t('activeAccounts') }}
         </p>
-        <ObjectTable
+        <BaseTable
           :default-headers="['actions']"
           :items="accounts"
           :loading="isFetching"
@@ -58,7 +58,7 @@
               </v-tooltip>
             </div>
           </template>
-        </ObjectTable>
+        </BaseTable>
       </BaseCard>
     </template>
     <template #footer>
@@ -100,7 +100,7 @@
 
 <script setup lang="ts">
 import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
-import { ObjectTableHeader } from '~/components/object/Table.vue';
+import { TableHeader } from '~/components/base/Table.vue';
 import accountQueryDefinition, { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
@@ -171,7 +171,7 @@ const accountTableActions: {
   }
 ];
 
-const additionalTableHeaders = ref<ObjectTableHeader[]>([
+const additionalTableHeaders = ref<TableHeader[]>([
   {
     order: 10,
     priority: 100,

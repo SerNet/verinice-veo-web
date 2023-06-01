@@ -70,7 +70,7 @@ import { cloneDeep, upperFirst } from 'lodash';
 import { mdiArrowDown, mdiArrowRight, mdiCheck, mdiContentCopy, mdiLinkOff, mdiTransitDetour, mdiTrashCanOutline } from '@mdi/js';
 import { VIcon, VTooltip } from 'vuetify/components';
 
-import { ObjectTableHeader } from './Table.vue';
+import { TableHeader } from '~/components/base/Table.vue';
 import { createUUIDUrlParam, getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -202,7 +202,7 @@ export default defineComponent({
           : ['designator', 'updatedAt', 'updatedBy', 'actions']
     );
 
-    const additionalHeaders = computed<ObjectTableHeader[]>(() =>
+    const additionalHeaders = computed<TableHeader[]>(() =>
       props.type === 'risks'
         ? [
           {
