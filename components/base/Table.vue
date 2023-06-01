@@ -425,7 +425,7 @@ const internalModelValue = computed({
 
 // Stuff needed for select all
 // Get all selected items on the current page
-const allItemsOnPage = computed(() => (isPaginatedResponse(props.items) ? props.items.items : props.items.slice(localPage.value * tablePageSize.value, (localPage.value + 1) * tablePageSize.value - 1)) as any[]);
+const allItemsOnPage = computed(() => isPaginatedResponse(props.items) ? props.items.items : props.items.slice((localPage.value -1) * tablePageSize.value, localPage.value * (tablePageSize.value - 1)) as any[]);
 const availableItemsOnPage = computed(() => allItemsOnPage.value.filter((item) => !item.disabled));
 const itemsSelectedOnPage = computed(() => availableItemsOnPage.value.filter((item) => internalModelValue.value.includes(item.id)));
 const allItemsSelected = computed(() => itemsSelectedOnPage.value.length === allItemsOnPage.value.length || itemsSelectedOnPage.value.length === availableItemsOnPage.value.length);
