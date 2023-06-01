@@ -64,7 +64,7 @@
     </template>
   </BaseDialog>
 </template>
-<script lang="ts" setup>
+<script setup lang=ts">
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useRules } from '~/composables/utils';

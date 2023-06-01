@@ -98,7 +98,7 @@
   </BasePage>
 </template>
 
-<script lang="ts" setup>
+<script setup lang=ts">
 import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { ObjectTableHeader } from '~/components/object/Table.vue';
 import accountQueryDefinition, { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';

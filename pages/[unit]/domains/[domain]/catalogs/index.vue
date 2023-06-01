@@ -31,7 +31,7 @@
   </BasePage>
 </template>
 
-<script lang="ts" setup>
+<script setup lang=ts">
 import { separateUUIDParam } from '~/lib/utils';
 import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
 import { useQuery } from '~~/composables/api/utils/query';

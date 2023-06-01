@@ -15,7 +15,7 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<script lang="ts" setup>
+<script setup lang=ts">
 import { useFetchUnitDomains } from '~/composables/api/domains';
 import { separateUUIDParam, createUUIDUrlParam } from '~/lib/utils';
 

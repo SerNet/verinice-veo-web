@@ -44,7 +44,7 @@
     </template>
   </BaseDialog>
 </template>
-<script lang="ts" setup>
+<script setup lang=ts">
 defineProps({
   modelValue: {
     type: Boolean,

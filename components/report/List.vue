@@ -57,7 +57,7 @@
     </template>
   </v-data-table>
 </template>
-<script lang="ts" setup>
+<script setup lang=ts">
 import { upperFirst, toUpper } from 'lodash';
 
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';

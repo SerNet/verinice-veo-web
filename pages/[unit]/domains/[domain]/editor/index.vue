@@ -59,7 +59,7 @@
   </BasePage>
 </template>
 
-<script lang="ts" setup>
+<script setup lang=ts">
 import { mdiChevronRight } from '@mdi/js';
 
 const { t } = useI18n();

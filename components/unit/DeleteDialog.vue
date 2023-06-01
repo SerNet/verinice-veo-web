@@ -46,7 +46,7 @@
   </BaseDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang=ts">
 import { PropType } from 'vue';
 
   

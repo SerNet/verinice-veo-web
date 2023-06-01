@@ -49,7 +49,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang=ts">
 import { UISchema } from '~/types/UISchema';
 
 interface IItem {

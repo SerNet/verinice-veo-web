@@ -44,7 +44,7 @@
   </BaseDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang=ts">
 import { PropType } from 'vue';
 
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';

@@ -100,7 +100,7 @@
   </v-app>
 </template>
 
-<script lang="ts" setup>
+<script setup lang=ts">
 import { useDisplay } from 'vuetify';
 import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 import 'intro.js/minified/introjs.min.css';

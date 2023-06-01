@@ -216,7 +216,7 @@
   </BaseDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang=ts">
 import { isEmpty, isEqual, isString } from 'lodash';
 import { mdiChevronRight } from '@mdi/js';
 

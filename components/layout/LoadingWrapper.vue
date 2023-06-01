@@ -29,7 +29,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang=ts">
 defineProps({
   text: {
     type: String,

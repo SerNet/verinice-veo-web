@@ -43,7 +43,7 @@
   </BaseDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang=ts">
 const emit = defineEmits(['download', 'update:model-value']);
 
 const { t } = useI18n();

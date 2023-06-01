@@ -76,7 +76,7 @@
   </v-list>
 </template>
 
-<script lang="ts" setup>
+<script setup lang=ts">
 import { mergeProps, PropType } from 'vue';
 import { mdiLightbulbOutline } from '@mdi/js';
 
