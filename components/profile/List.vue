@@ -28,7 +28,7 @@
       <BaseCard id="profileStyleScope">
         <v-data-table
           :headers="headers"
-          :items="testprofiles"
+          :items="profiles"
           item-value="name"
           items-per-page="5"
           show-select
