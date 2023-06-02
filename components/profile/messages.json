@@ -1,0 +1,24 @@
+
+{
+  "en": {
+    "hint": "Please, choose a profile you wish to apply.",
+    "thAbbreviation": "Abkürzung",
+    "thName": "Profile name",
+    "thDescription": "Description",
+    "applyBtn": "Choose Unit",
+    "unitSelectionTitle": "Unit Selection",
+    "unitSelectionDropdownLabel": "Units",
+    "unitSelectionApplyBtn": "Apply profile"
+  },
+  "de": {
+    "hint": "Bitte wählen Sie ein Profil aus, die Sie anwenden möchten.",
+    "thAbbreviation": "Abkürzung",
+    "thName": "Profilname",
+    "thDescription": "Beschreibung",
+    "applyBtn": "Unit auswählen",
+    "unitSelectionTitle": "Unitauswahl",
+    "unitSelectionDropdownLabel": "Units",
+    "unitSelectionApplyBtn": "Profil anwenden"
+  }
+}
+
