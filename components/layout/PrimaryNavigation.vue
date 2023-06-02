@@ -490,9 +490,10 @@ export default defineComponent({
 
     const items = computed<INavItem[]>(() => [
       ...(authenticated.value && userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry.value] : []),
+
+      ...(props.domainId && props.unitId ? [profilesNavEntry.value] : []),
       ...(props.unitId && props.domainId
         ? [
-      profilesNavEntry.value,
           domainDashboardNavEntry.value,
           ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
           objectsNavEntry.value,
