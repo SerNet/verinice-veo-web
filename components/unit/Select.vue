@@ -23,7 +23,7 @@
         :items="displayedUnits"
         item-title="name"
         item-value="id"
-        :item-disabled="(item) => !getFirstDomainDomaindId(item)"
+        :item-disabled="(item: any) => !getFirstDomainDomaindId(item)"
         hide-details
         :label="t('unit')"
         flat

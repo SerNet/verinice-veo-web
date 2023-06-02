@@ -46,7 +46,6 @@
     <template #dialog-options>
       <v-btn
         color="black"
-        text
         @click="$emit('update:model-value', false)"
       >
         {{ $t('global.button.cancel') }}
@@ -56,7 +55,6 @@
         :disabled="!formIsValid || ability.cannot('manage', 'units')"
         :loading="creatingUnit"
         color="primary"
-        text
         @click="createUnit"
       >
         {{ $t('global.button.save') }}
