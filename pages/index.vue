@@ -107,7 +107,7 @@
       </v-tooltip>
     </template>
 
-    <UnitCreateDialog v-model="showUnitDialog" />
+    <UnitCreateDialog v-model="showUnitCreateDialog" />
 
     <UnitDeleteDialog
       v-model="deleteUnitDialogVisible"
@@ -145,10 +145,10 @@ const showWelcomeDialog = computed({
   set: (newValue) => { firstStepsCompleted.value = !newValue; }
 });
 
-const showUnitDialog = ref(false);
+const showUnitCreateDialog = ref(false);
 
 function createUnit() {
-  showUnitDialog.value = true;
+  showUnitCreateDialog.value = true;
 }
 
 const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);

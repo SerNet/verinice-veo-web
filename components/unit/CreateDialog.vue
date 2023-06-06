@@ -41,6 +41,20 @@
           variant="underlined"
           :label="t('description')"
         />
+        debug: {{ selected }}
+        <v-list>
+          <v-list-item>{{ t('domainselection') }}</v-list-item>
+          <v-list-item
+            v-for="domain in domains"
+            :key="domain.id"
+          >
+            <v-checkbox
+              v-model="selected"
+              :label="domain.name"
+              :value="domain.id"
+            />
+          </v-list-item>
+        </v-list>
       </v-form>
     </template>
     <template #dialog-options>
@@ -82,7 +96,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:model-value']);
-
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
@@ -130,6 +143,9 @@ const createUnit = async () => {
     displayErrorMessage(t('createUnitError'), error.message);
   }
 };
+
+const domains = ref([{ name: 'DS-GVO', id: 1 }, { name: 'IT-GS', id: 2 }]);
+const selected = ref([1, 2]);
 </script>
 
 <i18n>
@@ -138,6 +154,7 @@ const createUnit = async () => {
     "createUnit": "Create unit",
     "createUnitError": "Couldn't create unit",
     "description": "Description",
+    "domainselection": "Domain selection",
     "name": "Unit name",
     "unitCreated": "New unit was created successfully"
   },
@@ -145,6 +162,7 @@ const createUnit = async () => {
     "createUnit": "Unit erstellen",
     "createUnitError": "Unit konnte nicht erstellt werden",
     "description": "Beschreibung",
+    "domainselection": "Domain-Auswahl",
     "name": "Name der Unit",
     "unitCreated": "Unit wurde erfolgreich erstellt"
   }
