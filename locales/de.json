@@ -92,7 +92,8 @@
     "reports": "Reports",
     "risks": "Risikodefinitionen",
     "security": "Sicherheitsrichtlinie",
-    "user-data": "Datenübertragung"
+    "user-data": "Datenübertragung",
+    "welcome": "Willkommen"
   },
 
   "error": {

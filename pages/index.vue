@@ -29,6 +29,7 @@
             {{ t('unitpicker') }}
           </h3>
         </v-card-text>
+
         <v-list
           lines="two"
           data-component-name="unit-selection-available-units"
@@ -51,6 +52,7 @@
               />
             </div>
           </template>
+
           <v-list-item
             v-for="unit in units"
             v-else
@@ -82,7 +84,9 @@
         </v-list>
       </BaseCard>
     </div>
+
     <WelcomeDialog v-model="showWelcomeDialog" />
+
     <UnitDeleteDialog
       v-model="deleteUnitDialogVisible"
       :unit="unitToDelete"

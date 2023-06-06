@@ -92,7 +92,8 @@
     "reports": "Reports",
     "risks": "Risk definitions",
     "security": "Security policy",
-    "user-data": "Data portability"
+    "user-data": "Data portability",
+    "welcome": "Welcome"
   },
 
   "error": {
