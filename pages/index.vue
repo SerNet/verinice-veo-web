@@ -85,8 +85,6 @@
       </BaseCard>
     </div>
 
-    <WelcomeDialog v-model="showWelcomeDialog" />
-
     <UnitDeleteDialog
       v-model="deleteUnitDialogVisible"
       :unit="unitToDelete"
@@ -115,11 +113,8 @@ useHead({
 });
 
 const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
-
-const showWelcomeDialog = computed({
-  get: () => !firstSetpsCompleted.value,
-  set: (newValue) => { firstSetpsCompleted.value = !newValue; }
-});
+// redirect the user to the welcome page, if the "first steps" aren't completed yet
+if (!firstSetpsCompleted.value) window.location.replace('/welcome');
 
 const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
