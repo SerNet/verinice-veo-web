@@ -21,7 +21,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 useHead(() => ({
   titleTemplate: '%s - verinice.veo'
 }));

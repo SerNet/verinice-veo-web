@@ -66,6 +66,26 @@
         "allowModifiers": true
       }
     ],
+    "vue/component-tags-order": [
+      "error",
+      {
+        "order": [
+          "template",
+          "script:not([setup])",
+          "script[setup]",
+          "i18n",
+          "style"
+        ]
+      }
+    ],
+    "vue/define-emits-declaration": [
+      "error",
+      "type-based"
+    ],
+    "vue/define-props-declaration": [
+      "error",
+      "type-based"
+    ],
     "vue/max-attributes-per-line": [
       "error",
       {

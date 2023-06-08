@@ -26,14 +26,14 @@
     </template>
     <template #dialog-options>
       <v-btn
-        text
+        variant="text"
         @click="$emit('update:model-value', false)"
       >
         {{ globalT('global.button.no') }}
       </v-btn>
       <v-spacer />
       <v-btn
-        text
+        variant="text"
         color="primary"
         :disabled="!deleteButtonEnabled || ability.cannot('manage', 'objects')"
         @click="deleteObject"
@@ -44,7 +44,7 @@
   </BaseDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { PropType } from 'vue';
 
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';

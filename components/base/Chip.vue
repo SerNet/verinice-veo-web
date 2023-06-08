@@ -47,7 +47,7 @@
   </v-chip>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 defineProps({
   label: {
     type: String,

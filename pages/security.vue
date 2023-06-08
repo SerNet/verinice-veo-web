@@ -196,7 +196,7 @@
   </v-layout>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { mdiEmail, mdiClock } from '@mdi/js';
 
 const { d, locale } = useI18n();

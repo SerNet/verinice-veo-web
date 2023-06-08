@@ -19,6 +19,7 @@
   <BasePage
     :title="$t('breadcrumbs.index')"
     data-component-name="unit-selection-page"
+    sticky-footer
   >
     <div class="d-flex justify-center">
       <BaseCard
@@ -68,10 +69,23 @@
                 <template #activator="{ props }">
                   <v-btn
                     v-bind="props"
+                    :icon="mdiPencilOutline"
+                    variant="text"
+                    data-component-name="unit-selection-edit-unit-button"
+                    @click.prevent="editUnit(unit)"
+                  />
+                </template>
+                <template #default>
+                  {{ t('editUnit') }}
+                </template>
+              </v-tooltip>
+              <v-tooltip location="bottom">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
                     :icon="mdiTrashCanOutline"
                     variant="text"
                     data-component-name="unit-selection-delete-unit-button"
-                    :disabled="unit.name === 'Demo'"
                     @click.prevent="deleteUnit(unit)"
                   />
                 </template>
@@ -85,6 +99,31 @@
       </BaseCard>
     </div>
 
+    <template #footer>
+      <v-tooltip location="start">
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            class="veo-primary-action-fab"
+            color="primary"
+            :icon="mdiPlus"
+            size="large"
+            @click="createUnit()"
+          />
+          <div style="height: 76px" />
+        </template>
+
+        <template #default>
+          <span>{{ t('createUnit') }}</span>
+        </template>
+      </v-tooltip>
+    </template>
+
+    <UnitManageDialog
+      v-model="unitManageDialogVisible"
+      :unit-id="unitToEdit"
+    />
+
     <UnitDeleteDialog
       v-model="deleteUnitDialogVisible"
       :unit="unitToDelete"
@@ -96,12 +135,12 @@
 export const ROUTE_NAME = 'index';
 </script>
 
-<script lang="ts" setup>
-import { mdiTrashCanOutline } from '@mdi/js';
+<script setup lang="ts">
+import { mdiTrashCanOutline, mdiPlus, mdiPencilOutline } from '@mdi/js';
 
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
-import unitQueryDefinitions, { IVeoUnit} from '~/composables/api/queryDefinitions/units';
 import { useQuery } from '~~/composables/api/utils/query';
+import unitQueryDefinitions, { IVeoUnit} from '~/composables/api/queryDefinitions/units';
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
@@ -109,6 +148,19 @@ const { t: $t } = useI18n({ useScope: 'global' });
 useHead({
   title: $t('breadcrumbs.index')
 });
+
+const unitManageDialogVisible = ref(false);
+
+function createUnit() {
+  unitToEdit.value = undefined;
+  unitManageDialogVisible.value = true;
+}
+
+const unitToEdit = ref<undefined | string>();
+const editUnit = (unit: IVeoUnit) => {
+  unitToEdit.value = unit.id;
+  unitManageDialogVisible.value = true;
+};
 
 const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
@@ -120,13 +172,15 @@ const generateUnitDashboardLink = (unitId: string) => {
     domainId = getFirstDomainDomaindId(unitToLinkTo);
   }
 
-  return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
+  return unitToLinkTo && domainId
+    ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}`
+    : undefined;
 };
-
 
 // Unit deletion stuff
 const deleteUnitDialogVisible = ref(false);
 const unitToDelete = ref<undefined | IVeoUnit>();
+
 const deleteUnit = (unit: IVeoUnit) => {
   unitToDelete.value = unit;
   deleteUnitDialogVisible.value = true;
@@ -136,16 +190,16 @@ const deleteUnit = (unit: IVeoUnit) => {
 <i18n>
 {
   "en": {
+    "createUnit": "Create unit",
     "deleteUnit": "Delete unit",
-    "firstUnitDescription": "This is your first unit",
+    "editUnit": "Edit unit",
     "unitpicker": "Please choose a unit",
-    "unitpickerPlaceholder": "Search for a unit..."
   },
   "de": {
+    "createUnit": "Unit erstellen",
     "deleteUnit": "Unit löschen",
-    "firstUnitDescription": "Dies ist ihre erste Unit",
+    "editUnit": "Unit bearbeiten",
     "unitpicker": "Bitte wählen Sie eine Unit",
-    "unitpickerPlaceholder": "Nach einer Unit suchen..."
   }
 }
 </i18n>

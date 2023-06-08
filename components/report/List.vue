@@ -16,10 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-data-table
+  <BaseTable
     :items="displayedItems"
     item-key="id"
-    :headers="headers"
+    :additional-headers="headers"
     class="veo-report-list"
     :items-per-page="tablePageSize"
     :loading="isFetching"
@@ -29,9 +29,6 @@
       <span class="text-center">
         {{ t('noReports') }}
       </span>
-    </template>
-    <template #item.name="{ item }">
-      <b>{{ item.raw.name }}</b>
     </template>
     <template #item.description="{ item }">
       <div class="veo-report-list__description">
@@ -55,9 +52,9 @@
     <template #item.outputTypes="{ item }">
       {{ toUpper(item.raw.outputTypes) }}
     </template>
-  </v-data-table>
+  </BaseTable>
 </template>
-<script lang="ts" setup>
+<script setup lang="ts">
 import { upperFirst, toUpper } from 'lodash';
 
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
@@ -72,7 +69,9 @@ interface IReport {
   targetTypes: string;
 }
 
-const emit = defineEmits(['create-report']);
+const emit = defineEmits<{
+  (e: 'create-report', report: IReport): void;
+}>();
 
 const { t, locale } = useI18n();
 const { tablePageSize } = useVeoUser();
@@ -116,24 +115,38 @@ const headers = computed(() => {
     {
       title: t('reportName'),
       value: 'name',
-      key: 'name'
+      key: 'name',
+      cellClass: ['font-weight-bold'],
+      width: 300,
+      truncate: true,
+      sortable: true,
+      priority: 100,
+      order: 10
     },
     {
-      title: t('targetTypes'),
-      filterable: false,
-      sortable: false,
+      text: t('targetTypes'),
       value: 'targetTypes',
-      key: 'targetTypes'
+      key: 'targetTypes',
+      priority: 90,
+      order: 20
     },
     {
       title: t('reportDescription'),
       value: 'description',
-      key: 'description'
+      key: 'description',
+      sortable: false,
+      width: 600,
+      truncate: true,
+      tooltip: ({ item }: { item: any }) => item.raw.description || '',
+      priority: 30,
+      order: 30
     },
     {
-      title: t('outputTypes'),
+      text: t('outputTypes'),
       value: 'outputTypes',
-      key: 'outputTypes'
+      key: 'outputTypes',
+      priority: 80,
+      order: 40
     }
   ];
 });
@@ -163,10 +176,6 @@ const onRowClicked = (_event: PointerEvent, context: any) => {
 </i18n>
 
 <style lang="scss" scoped>
-.veo-report-list {
-  cursor: pointer;
-}
-
 .veo-report-list__description {
   overflow: hidden;
   white-space: nowrap;

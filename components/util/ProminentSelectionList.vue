@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list v-bind="attrs">
+  <v-list
+    v-bind="attrs"
+    bg-color="transparent"
+  >
     <v-list-item
       v-for="item of items"
       :key="item.value"

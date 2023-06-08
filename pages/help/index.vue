@@ -40,7 +40,11 @@
   </BasePage>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
+export const ROUTE = '/help';
+</script>
+
+<script setup lang="ts">
 definePageMeta({ layout: 'plain' });
 
 const docs = [
@@ -85,8 +89,4 @@ const docs = [
     ]
   }
 ];
-</script>
-
-<script lang="ts">
-export const ROUTE = '/help';
 </script>

@@ -18,7 +18,7 @@
 <template>
   <component :is="render" />
 </template>
-<script lang="ts" setup>
+<script setup lang="ts">
 import { VCard } from 'vuetify/components';
 
 const props = defineProps({
