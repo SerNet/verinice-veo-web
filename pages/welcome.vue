@@ -54,8 +54,8 @@
           <v-icon
             :icon="mdiHelpCircleOutline"
             size="x-large"
-          />  
-          &nbsp;&nbsp;
+            start
+          />
           <i18n-t
             keypath="documentation"
             tag="span"
