@@ -72,7 +72,6 @@
                     :icon="mdiTrashCanOutline"
                     variant="text"
                     data-component-name="unit-selection-delete-unit-button"
-                    :disabled="unit.name === 'Demo'"
                     @click.prevent="deleteUnit(unit)"
                   />
                 </template>
@@ -93,7 +92,6 @@
             v-bind="props"
             class="veo-primary-action-fab"
             color="primary"
-            :disabled="false"
             :icon="mdiPlus"
             size="large"
             @click="createUnit()"
