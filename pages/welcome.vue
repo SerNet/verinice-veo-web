@@ -46,8 +46,15 @@
           <v-icon
             :icon="mdiInformationOutline"
             size="x-large"
+            start
           />
-          &nbsp;&nbsp;{{ t('tutorials') }}
+          <i18n-t
+            keypath="firstSteps.tutorial"
+            tag="span"
+            scope="global"
+          >
+            <strong>{{ t('tutorial') }}</strong>
+          </i18n-t>
         </v-card-text>
 
         <v-card-text>
@@ -57,18 +64,16 @@
             start
           />
           <i18n-t
-            keypath="documentation"
+            keypath="firstSteps.documentation"
             tag="span"
             scope="global"
           >
             <template #link>
-              <nuxt-link to="/docs">
-                <strong>{{ t('toDocumentation') }}</strong>
-              </nuxt-link>
-            </template>
-            <template #platzhalter2>
-              <nuxt-link to="/docs">
-                <strong>{{ t('toDocumentation') }}</strong>
+              <nuxt-link
+                to="/docs"
+                target="_blank"
+              >
+                <strong>{{ t('documentation') }}</strong>
               </nuxt-link>
             </template>
           </i18n-t>
@@ -78,8 +83,15 @@
           <v-icon
             :icon="mdiCableData"
             size="x-large"
+            start
           />
-          &nbsp;&nbsp;{{ t('demodata') }}
+          <i18n-t
+            keypath="firstSteps.demodata"
+            tag="span"
+            scope="global"
+          >
+            <strong>{{ t('demodata') }}</strong>
+          </i18n-t>
         </v-card-text>
 
         <v-layout class="mb-4 justify-center">
@@ -101,42 +113,60 @@
           <v-icon
             :icon="mdiYoutubeTv"
             size="x-large"
+            start
           />
-          &nbsp;&nbsp;{{ t('channel') }}
-          <a
-            :href="links.youtube"
-            target="_blank"
+          <i18n-t
+            keypath="firstSteps.channel"
+            tag="span"
+            scope="global"
           >
-            <strong>verinice@Youtube</strong>
-          </a>
+            <a
+              :href="links.youtube"
+              target="_blank"
+            >
+              <strong>{{ t('channel') }}</strong>
+            </a>
+          </i18n-t>
         </v-card-text>
 
         <v-card-text>
           <v-icon
             :icon="mdiSchoolOutline"
             size="x-large"
+            start
           />
-          &nbsp;&nbsp;{{ t('webinars') }}
-          <a
-            :href="links.webinar"
-            target="_blank"
+          <i18n-t
+            keypath="firstSteps.webinar"
+            tag="span"
+            scope="global"
           >
-            <strong>Webinar</strong>
-          </a>
+            <a
+              :href="links.webinar"
+              target="_blank"
+            >
+              <strong>{{ t('webinar') }}</strong>
+            </a>
+          </i18n-t>
         </v-card-text>
 
         <v-card-text>
           <v-icon
             :icon="mdiForumOutline"
             size="x-large"
+            start
           />
-          &nbsp;&nbsp;{{ t('forum') }}
-          <a
-            :href="links.forum"
-            target="_blank"
+          <i18n-t
+            keypath="firstSteps.forum"
+            tag="span"
+            scope="global"
           >
-            <strong>Forum</strong>
-          </a>
+            <a
+              :href="links.forum"
+              target="_blank"
+            >
+              <strong>{{ t('forum') }}</strong>
+            </a>
+          </i18n-t>
         </v-card-text>
 
         <v-divider />
@@ -162,8 +192,8 @@ import {
   mdiInformationOutline,
   mdiHelpCircleOutline
 } from '@mdi/js';
-import { StorageSerializers, useStorage } from '@vueuse/core';
 
+import { StorageSerializers, useStorage } from '@vueuse/core';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 const { t } = useI18n();
@@ -173,6 +203,7 @@ const links = ref({
   webinar: 'https://verinice.com/webinare',
   youtube: 'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf'
 });
+
 const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, true, localStorage, { serializer: StorageSerializers.boolean });
 
 const showAtStartup = computed({
@@ -187,31 +218,31 @@ const showAtStartup = computed({
   {
     "en": {
       "buttoncaption": "Load Demo data now",
-      "channel": "In our *YouTube channel* you can find videos about verinice.veo:",
+      "channel": "YouTube channel",
       "checkboxLabel": "Show at startup",
-      "demodata": "The *demo data* contains a complete sample organization. You can modify the content as you wish to get to know all the features and functions or use it directly as a basis for mapping your organization.",
-      "documentation": "The *online documentation* describes in detail all functions of verinice.veo and explains the technical aspects. You can open the *online documentation* at any time via the icon in the application bar on the top right.",
-      "forum": "In the *verinice.forum* you will find further information and can participate in the lively exchange with other users:",
+      "demodata": "demo data",
+      "documentation": "online documentation",
+      "forum": "verinice.forum",
       "greeting": "Welcome to",
       "headline": "First steps",
-      "hint": "You can access this page again at any time via the *Getting started* account button!",
+      "hint": "You can access this page again at any time via the account button!",
       "intro": "In this section you will find suggestions from the verinice.team to get you started quickly:",
-      "tutorials": "For quick orientation, contextual *tutorials* are available on each page. Available *tutorials* can be accessed at any time via the icon in the application bar at the top right.",
-      "webinars": "You can register for our regular free *webinars* at the following link:"
+      "tutorial": "tutorials",
+      "webinar": "webinars"
     },
     "de": {
       "buttoncaption": "Demodaten jetzt laden",
-      "channel": " In unserem *YouTube channel* finden Sie Videos zu verinice.veo:",
+      "channel": "YouTube Kanal",
       "checkboxLabel": "Beim Start anzeigen",
-      "demodata": "Die *Demodaten* beinhalten eine komplette Beispielorganisation. Sie können die Inhalte nach Belieben ändern um alle Features und Funktionen kennen zu lernen oder direkt als Basis für die Abbildung Ihrer Organisation verwenden.",
-      "documentation": "Die *Online-Dokumentation* beschreibt ausführlich alle Funktionen von verinice.veo und erläutert die technischen Aspekte. Sie können die *Online-Dokumentation* jederzeit über das Symbol in der Anwendungsleiste rechts oben öffnen.",
-      "forum": "Im *verinice.Forum* finden Sie weitergehende Informationen und können am regen Austausch mit anderen Anwenderinnen und Anwendern teilnehmen:",
+      "demodata": "Demodaten",
+      "documentation": "Online-Dokumentation",
+      "forum": "verinice.forum",
       "greeting": "Willkommen bei",
       "headline": "Erste Schritte",
-      "hint": "Sie können diese Seite jederzeit über den Account Button *Erste Schritte* erneut aufrufen!",
+      "hint": "Sie können diese Seite jederzeit über den Account Button erneut aufrufen!",
       "intro": "Im diesem Abschnitt finden Sie Anregungen des verinice.Teams, die Ihnen einen schnellen Einstieg ermöglichen:",
-      "tutorials": "Zur schnellen Orientierung stehen auf jeder Seite kontextbezogene *Tutorials* zur Verfügung. Verfügbare *Tutorials* können Sie jederzeit über das Symbol in der Anwendungsleiste rechts oben aufrufen.",
-      "webinars": "Zu unseren regelmäßigen kostenlosen *Webinaren* können Sie sich unter folgendem Link anmelden:"
+      "tutorial": "Tutorials",
+      "webinar": "Webinaren registrieren."
     }
   }
   </i18n>
