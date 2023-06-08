@@ -55,7 +55,23 @@
             :icon="mdiHelpCircleOutline"
             size="x-large"
           />  
-          &nbsp;&nbsp;{{ t('documentation') }}
+          &nbsp;&nbsp;
+          <i18n-t
+            keypath="documentation"
+            tag="span"
+            scope="global"
+          >
+            <template #link>
+              <nuxt-link to="/docs">
+                <strong>{{ t('toDocumentation') }}</strong>
+              </nuxt-link>
+            </template>
+            <template #platzhalter2>
+              <nuxt-link to="/docs">
+                <strong>{{ t('toDocumentation') }}</strong>
+              </nuxt-link>
+            </template>
+          </i18n-t>
         </v-card-text>
 
         <v-card-text>
