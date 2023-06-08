@@ -46,7 +46,7 @@
     <template #dialog-options>
       <v-btn
         color="black"
-        text
+        variant="text"
         @click="$emit('update:model-value', false)"
       >
         {{ $t('global.button.cancel') }}
@@ -56,7 +56,7 @@
         :disabled="!formIsValid || ability.cannot('manage', 'units')"
         :loading="creatingUnit"
         color="primary"
-        text
+        variant="text"
         @click="createUnit"
       >
         {{ $t('global.button.save') }}
@@ -64,7 +64,7 @@
     </template>
   </BaseDialog>
 </template>
-<script lang="ts" setup>
+<script setup lang="ts">
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useRules } from '~/composables/utils';

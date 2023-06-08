@@ -119,7 +119,7 @@
   </BaseDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import monitoringQueryDefintions, { IVeoDeploymentInformation } from '~/composables/api/queryDefinitions/monitoring';
 import { useQuery } from '~~/composables/api/utils/query';
 

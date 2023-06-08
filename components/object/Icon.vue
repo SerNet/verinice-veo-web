@@ -73,15 +73,11 @@ import {
 import { useQuery } from '~/composables/api/utils/query';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 
-const props = defineProps({
-  objectType: {
-    type: String,
-    required: true
-  },
-  isComposite: {
-    type: Boolean,
-    default: false
-  }
+const props = withDefaults(defineProps<{
+  objectType: string;
+  isComposite?: boolean;
+}>(), {
+  isComposite: false
 });
 
 const { locale } = useI18n();

@@ -94,7 +94,7 @@
 export const ROUTE_NAME = 'index';
 </script>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { mdiTrashCanOutline } from '@mdi/js';
 

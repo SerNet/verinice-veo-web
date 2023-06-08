@@ -49,7 +49,13 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
+export default { 
+  name: 'FormNavigation'
+};
+</script>
+
+<script setup lang="ts">
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 
 interface IItem {
@@ -162,13 +168,6 @@ const items = computed(() => (props.formSchema?.elements || [])
   .filter((element: IItem | undefined) => !!element) as IItem[]
 );
 </script>
-
-<script lang="ts">
-export default { 
-  name: 'FormNavigation'
-};
-</script>
-
 
 <i18n>
 {

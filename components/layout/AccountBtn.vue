@@ -130,7 +130,7 @@
   </v-menu>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { mergeProps } from 'vue';
 import { mdiOpenInNew } from '@mdi/js';
 

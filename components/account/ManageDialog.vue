@@ -110,6 +110,7 @@
                 <v-select
                   v-model="formData.groups"
                   clearable
+                  multiple
                   :items="availableGroups"
                   :label="t('groups')"
                   variant="underlined"
