@@ -127,8 +127,8 @@
 
         <v-card-text>
           <v-checkbox
+            v-model="showAtStartup"
             :label="t('checkboxLabel')"
-            @click="$emit('update:model-value', true)"
           />
           {{ t('hint') }}
         </v-card-text>
@@ -146,8 +146,9 @@ import {
   mdiInformationOutline,
   mdiHelpCircleOutline
 } from '@mdi/js';
+import { StorageSerializers, useStorage } from '@vueuse/core';
 
-defineEmits(['update:model-value']);
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 const { t } = useI18n();
 
@@ -155,6 +156,14 @@ const links = ref({
   forum: 'https://forum.verinice.com',
   webinar: 'https://verinice.com/webinare',
   youtube: 'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf'
+});
+const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, true, localStorage, { serializer: StorageSerializers.boolean });
+
+const showAtStartup = computed({
+  get: () => !firstSetpsCompleted.value,
+  set(newValue: boolean) {
+    firstSetpsCompleted.value = !newValue;
+  }
 });
 </script>
 

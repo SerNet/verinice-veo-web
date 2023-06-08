@@ -97,12 +97,10 @@ export const ROUTE_NAME = 'index';
 </script>
 
 <script lang="ts" setup>
-import { StorageSerializers, useStorage } from '@vueuse/core';
 import { mdiTrashCanOutline } from '@mdi/js';
 
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import unitQueryDefinitions, { IVeoUnit} from '~/composables/api/queryDefinitions/units';
-import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { useQuery } from '~~/composables/api/utils/query';
 
 const { t } = useI18n();
@@ -111,10 +109,6 @@ const { t: $t } = useI18n({ useScope: 'global' });
 useHead({
   title: $t('breadcrumbs.index')
 });
-
-const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
-// redirect the user to the welcome page, if the "first steps" aren't completed yet
-if (!firstSetpsCompleted.value) window.location.replace('/welcome');
 
 const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
