@@ -68,7 +68,6 @@
       <LayoutAccountBtn
         v-if="authenticated"
         class="mr-3"
-        @create-unit="createUnit"
       />
       <v-btn
         v-else
@@ -92,10 +91,6 @@
     <LayoutGlobalAlert
       v-if="alerts[0]"
       v-bind="alerts[0]"
-    />
-    <UnitCreateDialog
-      v-model="newUnitDialog.value"
-      :mandatory="newUnitDialog.mandatory"
     />
   </v-app>
 </template>
@@ -126,16 +121,6 @@ useHead(() => ({
 // Global navigation
 //
 const drawer = ref<boolean>(true);
-
-//
-// Unit creation and navigation
-//
-const newUnitDialog = ref({ value: false, mandatory: false });
-
-function createUnit(mandatory = false) {
-  newUnitDialog.value.value = true;
-  newUnitDialog.value.mandatory = mandatory;
-}
 
 const domainId = computed((): string | undefined => {
   if (route.name === 'unit-domains-more') {

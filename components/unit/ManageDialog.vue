@@ -30,18 +30,17 @@
         class="new-unit-form"
       >
         <v-text-field
-          v-model="newUnit.name"
+          v-model="unitDetails.name"
           :rules="[requiredRule]"
           required
           variant="underlined"
           :label="t('name')"
         />
         <v-text-field
-          v-model="newUnit.description"
+          v-model="unitDetails.description"
           variant="underlined"
           :label="t('description')"
         />
-        debug: {{ selected }}
         <v-list>
           <v-list-item>{{ t('domainselection') }}</v-list-item>
           <v-list-item
@@ -49,7 +48,8 @@
             :key="domain.id"
           >
             <v-checkbox
-              v-model="selected"
+              v-model="selectedDomains"
+              color="primary"
               :label="domain.name"
               :value="domain.id"
             />
@@ -66,7 +66,7 @@
       </v-btn>
       <v-spacer />
       <v-btn
-        :disabled="!formIsValid || ability.cannot('manage', 'units')"
+        :disabled="!actionPermitted"
         :loading="creatingUnit"
         color="primary"
         @click="createUnit"
@@ -77,12 +77,14 @@
   </BaseDialog>
 </template>
 <script lang="ts" setup>
-import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
+import { createUUIDUrlParam, getEntityDetailsFromLink, getFirstDomainDomaindId } from '~/lib/utils';
+import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useRules } from '~/composables/utils';
 import { useMutation } from '~~/composables/api/utils/mutation';
-import { useQuerySync } from '~~/composables/api/utils/query';
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
+import { IVeoLink } from '~/types/VeoTypes';
 
 const props = defineProps({
   modelValue: {
@@ -104,30 +106,37 @@ const { requiredRule } = useRules();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { ability } = useVeoPermissions();
 const queryClient = useQueryClient();
+const { createLink } = useCreateLink();
 
 watch(() => props.modelValue, (newValue) => {
   if(!newValue) {
-    newUnit.name = undefined;
-    newUnit.description = undefined;
+    unitDetails.name = undefined;
+    unitDetails.description = undefined;
     form.value.resetValidation();
   }
 });
 
+const actionPermitted = computed(() => ability.value.can('manage', 'units') && formIsValid.value && unitDetails.domains.length);
+
 // Everything unit related
 const form = ref();
 const formIsValid = ref(false);
-const newUnit = reactive<{ name: string | undefined, description: string | undefined }>({ name: undefined, description: undefined });
+const unitDetails = reactive<{
+  name: string | undefined,
+  description: string | undefined
+  domains: IVeoLink[]
+}>({ name: undefined, description: undefined, domains: [] });
 
-const { mutateAsync, isLoading: creatingUnit, data: newUnitPayload } = useMutation(unitQueryDefinitions.mutations.create);
+const { mutateAsync, isLoading: creatingUnit, data: unitDetailsPayload } = useMutation(unitQueryDefinitions.mutations.create);
 const createUnit = async () => {
-  if(!formIsValid.value || ability.value.cannot('manage', 'units')) {
+  if(!actionPermitted.value) {
     return;
   }
   try {
-    await mutateAsync(newUnit);
+    await mutateAsync(unitDetails);
     displaySuccessMessage(t('unitCreated'));
     emit('update:model-value', false);
-    const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: newUnitPayload.value?.resourceId as string }, queryClient);
+    const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: unitDetailsPayload.value?.resourceId as string }, queryClient);
     const domainId = getFirstDomainDomaindId(unit);
 
     if (domainId) {
@@ -144,8 +153,17 @@ const createUnit = async () => {
   }
 };
 
-const domains = ref([{ name: 'DS-GVO', id: 1 }, { name: 'IT-GS', id: 2 }]);
-const selected = ref([1, 2]);
+const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains, undefined, {
+  onSuccess: (data) => {
+    unitDetails.domains = (data as IVeoDomain[]).map((domain) => createLink('domains', domain.id));
+  }
+});
+const selectedDomains = computed({
+  get: () => unitDetails.domains.map((domain) => getEntityDetailsFromLink(domain).id),
+  set: (newValue) => {
+    unitDetails.domains = newValue.map((domainId) => createLink('domains', domainId));
+  }
+});
 </script>
 
 <i18n>
