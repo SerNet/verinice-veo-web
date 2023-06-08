@@ -298,6 +298,7 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { IVeoTranslations } from '~~/composables/api/queryDefinitions/translations';
@@ -306,6 +307,8 @@ import { useQuery } from '~~/composables/api/utils/query';
 import { PENDING_TRANSLATIONS } from '~~/components/editor/formSchema/playground/EditElementDialog.vue';
 import { JsonPointer } from 'json-ptr';
 import { cloneDeep, isArray } from 'lodash';
+import { IEditorTranslations } from '~/components/editor/translations/Translations.vue';
+import { TRANSLATION_SOURCE } from '~/components/editor/translations/types';
 
 export default defineComponent({
   setup() {
@@ -489,8 +492,37 @@ export default defineComponent({
     /**
      * Translations related stuff
      */
+    const translationsQueryParameters = computed(() => ({ languages: (locales.value as LocaleObject[]).map((locale) => locale.code) }));
+    const { data: translationsQueryData } = useQuery(translationQueryDefinitions.queries.fetch, translationsQueryParameters);
+
+    const translations = computed(() => {
+      const _translations: IEditorTranslations = new Map();
+
+      // If no objectschema is present, no need to iterate over all translations
+      if(objectSchema.value?.title) {
+        // Iterate over all objectschema translations that belong to this formschemas objectschema
+        for(const [locale, osLanguageTranslation] of Object.entries(translationsQueryData.value?.lang || {})) {
+          for(const [translationKey, translationValue] of Object.entries(osLanguageTranslation)) {
+
+            // Skip translations not belonging to this objectschema
+            if(!translationKey.startsWith(objectSchema.value.title)) {
+              continue;
+            }
+
+            if(!_translations.has(translationKey)) {
+              _translations.set(translationKey, new Map());
+            }
+            if(!_translations.get(translationKey)?.has(TRANSLATION_SOURCE.OBJECTSCHEMA)) {
+              _translations.get(translationKey)?.set(TRANSLATION_SOURCE.OBJECTSCHEMA, new Map());
+            }
+            _translations.get(translationKey)?.get(TRANSLATION_SOURCE.OBJECTSCHEMA)?.set(locale, translationValue);
+          }
+        }
+      }
+
+      return _translations;
+    });
     const translationDialogVisible: Ref<boolean> = ref(false);
-    const availableLanguages = computed(() => (locales.value as LocaleObject[]).map((locale) => locale.code));
 
     function onClickTranslationBtn() {
       translationDialogVisible.value = true;
@@ -541,17 +573,6 @@ export default defineComponent({
         }
       }
     }));
-
-    const translations = computed(() => {
-      const toReturn: Record<string, any> = {};
-      const languages = Object.keys(translation.value?.lang || {});
-
-      for (const language of languages) {
-        toReturn[language] = { ...translation.value?.lang[language], ...(formSchema.value?.translation?.[language] || {}) };
-      }
-
-      return toReturn;
-    });
 
     const objectSchemaTranslations = computed(() => translation.value?.lang);
     const formSchemaTranslations = computed(() => formSchema.value?.translation);
@@ -614,7 +635,6 @@ export default defineComponent({
       code,
       translationDialogVisible,
       onClickTranslationBtn,
-      availableLanguages,
       setFormTranslation,
       setFormName,
       PageHeaderAlignment,
