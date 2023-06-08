@@ -19,6 +19,7 @@
   <BasePage
     :title="$t('breadcrumbs.index')"
     data-component-name="unit-selection-page"
+    sticky-footer
   >
     <div class="d-flex justify-center">
       <BaseCard
@@ -29,6 +30,7 @@
             {{ t('unitpicker') }}
           </h3>
         </v-card-text>
+
         <v-list
           lines="two"
           data-component-name="unit-selection-available-units"
@@ -51,6 +53,7 @@
               />
             </div>
           </template>
+
           <v-list-item
             v-for="unit in units"
             v-else
@@ -82,11 +85,36 @@
         </v-list>
       </BaseCard>
     </div>
-    <WelcomeDialog v-model="showWelcomeDialog" />
+
+    <template #footer>
+      <v-tooltip location="start">
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            class="veo-primary-action-fab"
+            color="primary"
+            :disabled="false"
+            :icon="mdiPlus"
+            size="large"
+            @click="createUnit()"
+          />
+          <div style="height: 76px" />
+        </template>
+
+        <template #default>
+          <span>{{ t('createUnit') }}</span>
+        </template>
+      </v-tooltip>
+    </template>
+
+    <UnitManageDialog v-model="unitManageDialogVisible" />
+
     <UnitDeleteDialog
       v-model="deleteUnitDialogVisible"
       :unit="unitToDelete"
     />
+
+    <WelcomeDialog v-model="showWelcomeDialog" />
   </BasePage>
 </template>
 
@@ -96,12 +124,12 @@ export const ROUTE_NAME = 'index';
 
 <script setup lang="ts">
 import { StorageSerializers, useStorage } from '@vueuse/core';
-import { mdiTrashCanOutline } from '@mdi/js';
+import { mdiTrashCanOutline, mdiPlus } from '@mdi/js';
 
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
+import { useQuery } from '~~/composables/api/utils/query';
 import unitQueryDefinitions, { IVeoUnit} from '~/composables/api/queryDefinitions/units';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-import { useQuery } from '~~/composables/api/utils/query';
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
@@ -110,12 +138,18 @@ useHead({
   title: $t('breadcrumbs.index')
 });
 
-const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
+const firstStepsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
 
 const showWelcomeDialog = computed({
-  get: () => !firstSetpsCompleted.value,
-  set: (newValue) => { firstSetpsCompleted.value = !newValue; }
+  get: () => !firstStepsCompleted.value,
+  set: (newValue) => { firstStepsCompleted.value = !newValue; }
 });
+
+const unitManageDialogVisible = ref(false);
+
+function createUnit() {
+  unitManageDialogVisible.value = true;
+}
 
 const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
@@ -127,13 +161,15 @@ const generateUnitDashboardLink = (unitId: string) => {
     domainId = getFirstDomainDomaindId(unitToLinkTo);
   }
 
-  return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
+  return unitToLinkTo && domainId
+    ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}`
+    : undefined;
 };
-
 
 // Unit deletion stuff
 const deleteUnitDialogVisible = ref(false);
 const unitToDelete = ref<undefined | IVeoUnit>();
+
 const deleteUnit = (unit: IVeoUnit) => {
   unitToDelete.value = unit;
   deleteUnitDialogVisible.value = true;
@@ -143,16 +179,14 @@ const deleteUnit = (unit: IVeoUnit) => {
 <i18n>
 {
   "en": {
+    "createUnit": "Create unit",
     "deleteUnit": "Delete unit",
-    "firstUnitDescription": "This is your first unit",
     "unitpicker": "Please choose a unit",
-    "unitpickerPlaceholder": "Search for a unit..."
   },
   "de": {
+    "createUnit": "Unit erstellen",
     "deleteUnit": "Unit löschen",
-    "firstUnitDescription": "Dies ist ihre erste Unit",
     "unitpicker": "Bitte wählen Sie eine Unit",
-    "unitpickerPlaceholder": "Nach einer Unit suchen..."
   }
 }
 </i18n>

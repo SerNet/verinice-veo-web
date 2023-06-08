@@ -61,13 +61,6 @@
           </v-list-item-title>
           <v-list-item-subtitle>{{ profile && profile.email || t('notAvailable') }}</v-list-item-subtitle>
         </v-list-item>
-        <template v-if="!userSettings.maxUnits || userSettings.maxUnits > 2">
-          <v-divider />
-          <UnitSelect
-            v-bind="$attrs"
-            @click.stop
-          />
-        </template>
         <v-divider />
         <v-list-item
           :href="accountLink"
@@ -140,7 +133,7 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 const config = useRuntimeConfig();
-const { logout: _logout, profile, userSettings } = useVeoUser();
+const { logout: _logout, profile } = useVeoUser();
 const { ability } = useVeoPermissions();
 
 const logout = () => _logout('/');
