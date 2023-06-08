@@ -69,6 +69,20 @@
                 <template #activator="{ props }">
                   <v-btn
                     v-bind="props"
+                    :icon="mdiPencilOutline"
+                    variant="text"
+                    data-component-name="unit-selection-edit-unit-button"
+                    @click.prevent="editUnit(unit)"
+                  />
+                </template>
+                <template #default>
+                  {{ t('editUnit') }}
+                </template>
+              </v-tooltip>
+              <v-tooltip location="bottom">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
                     :icon="mdiTrashCanOutline"
                     variant="text"
                     data-component-name="unit-selection-delete-unit-button"
@@ -105,7 +119,10 @@
       </v-tooltip>
     </template>
 
-    <UnitManageDialog v-model="unitManageDialogVisible" />
+    <UnitManageDialog
+      v-model="unitManageDialogVisible"
+      :unit-id="unitToEdit"
+    />
 
     <UnitDeleteDialog
       v-model="deleteUnitDialogVisible"
@@ -122,7 +139,7 @@ export const ROUTE_NAME = 'index';
 
 <script setup lang="ts">
 import { StorageSerializers, useStorage } from '@vueuse/core';
-import { mdiTrashCanOutline, mdiPlus } from '@mdi/js';
+import { mdiTrashCanOutline, mdiPlus, mdiPencilOutline } from '@mdi/js';
 
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import { useQuery } from '~~/composables/api/utils/query';
@@ -146,8 +163,15 @@ const showWelcomeDialog = computed({
 const unitManageDialogVisible = ref(false);
 
 function createUnit() {
+  unitToEdit.value = undefined;
   unitManageDialogVisible.value = true;
 }
+
+const unitToEdit = ref<undefined | string>();
+const editUnit = (unit: IVeoUnit) => {
+  unitToEdit.value = unit.id;
+  unitManageDialogVisible.value = true;
+};
 
 const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
@@ -179,11 +203,13 @@ const deleteUnit = (unit: IVeoUnit) => {
   "en": {
     "createUnit": "Create unit",
     "deleteUnit": "Delete unit",
+    "editUnit": "Edit unit",
     "unitpicker": "Please choose a unit",
   },
   "de": {
     "createUnit": "Unit erstellen",
     "deleteUnit": "Unit löschen",
+    "editUnit": "Unit bearbeiten",
     "unitpicker": "Bitte wählen Sie eine Unit",
   }
 }

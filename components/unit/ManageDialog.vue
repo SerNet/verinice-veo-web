@@ -19,7 +19,7 @@
   <BaseDialog
     :model-value="modelValue"
     :title="t('createUnit')"
-    :close-disabled="mandatory || creatingUnit"
+    :close-disabled="creatingUnit || updatingUnit"
     v-bind="$attrs"
     @update:model-value="emit('update:model-value', $event)"
   >
@@ -65,8 +65,8 @@
       </v-btn>
       <v-spacer />
       <v-btn
-        :disabled="!actionPermitted"
-        :loading="creatingUnit"
+        :disabled="!actionPermitted || !formIsDirty"
+        :loading="creatingUnit || updatingUnit"
         color="primary"
         variant="text"
         @click="createUnit"
@@ -77,13 +77,15 @@
   </BaseDialog>
 </template>
 <script setup lang="ts">
+import { cloneDeep, isEqual } from 'lodash';
+import { useQueryClient } from '@tanstack/vue-query';
+
 import { createUUIDUrlParam, getEntityDetailsFromLink, getFirstDomainDomaindId } from '~/lib/utils';
 import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useRules } from '~/composables/utils';
 import { useMutation } from '~~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
-import { useQueryClient } from '@tanstack/vue-query';
 import { IVeoLink } from '~/types/VeoTypes';
 
 const props = defineProps({
@@ -91,9 +93,9 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  mandatory: {
-    type: Boolean,
-    default: false
+  unitId: {
+    type: String,
+    default: undefined
   }
 });
 
@@ -109,44 +111,83 @@ const queryClient = useQueryClient();
 const { createLink } = useCreateLink();
 
 watch(() => props.modelValue, (newValue) => {
-  if(!newValue) {
-    unitDetails.name = undefined;
-    unitDetails.description = undefined;
-    form.value.resetValidation();
+  if(newValue) {
+    if(props.unitId && props.unitId === unit.value?.id) {
+      unitDetails.name = unit.value?.name;
+      unitDetails.description = unit.value?.description;
+      unitDetails.domains = cloneDeep(unit.value?.domains || []);
+    } else {
+      unitDetails.name = undefined;
+      unitDetails.description = undefined;
+      unitDetails.domains = domains.value?.map((domain) => createLink('domains', domain.id)) || [];
+    }
+    if(form.value) {
+      form.value.resetValidation();
+    }
   }
 });
 
-const actionPermitted = computed(() => ability.value.can('manage', 'units') && formIsValid.value && unitDetails.domains.length);
+const actionPermitted = computed(() => ability.value.can('manage', 'units') && !!formIsValid.value && unitDetails.domains.length);
 
 // Everything unit related
+const fetchUnitQueryParams = computed(() => ({ id: props.unitId as string }));
+const fetchUnitQueryEnabled = computed(() => !!props.unitId);
+const { data: unit } = useQuery(unitQueryDefinitions.queries.fetch, fetchUnitQueryParams, {
+  enabled: fetchUnitQueryEnabled
+});
+watch(() => unit.value, (newValue) => {
+  if(newValue) {
+    unitDetails.name = newValue.name;
+    unitDetails.description = newValue.description;
+    unitDetails.domains = cloneDeep(newValue.domains);
+  }
+});
+
 const form = ref();
 const formIsValid = ref(false);
+const formIsDirty = computed(() => !isEqual(unitDetails, {
+  name: unit.value?.name,
+  description: unit.value?.description,
+  domains: unit.value?.domains
+}));
 const unitDetails = reactive<{
   name: string | undefined,
   description: string | undefined
   domains: IVeoLink[]
 }>({ name: undefined, description: undefined, domains: [] });
+watch(() => unitDetails, () => {
+  if(form.value) {
+    form.value.validate();
+  }
+}, { deep: true })
 
-const { mutateAsync, isLoading: creatingUnit, data: unitDetailsPayload } = useMutation(unitQueryDefinitions.mutations.create);
+const { mutateAsync: create, isLoading: creatingUnit, data: unitDetailsPayload } = useMutation(unitQueryDefinitions.mutations.create);
+const { mutateAsync: update, isLoading: updatingUnit } = useMutation(unitQueryDefinitions.mutations.update);
 const createUnit = async () => {
   if(!actionPermitted.value) {
     return;
   }
   try {
-    await mutateAsync(unitDetails);
-    displaySuccessMessage(t('unitCreated'));
-    emit('update:model-value', false);
-    const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: unitDetailsPayload.value?.resourceId as string }, queryClient);
-    const domainId = getFirstDomainDomaindId(unit);
+    if(props.unitId) {
+      await update({ ...unitDetails, id: props.unitId });
+      displaySuccessMessage(t('unitUpdated'));
+      emit('update:model-value', false);
+    } else {
+      await create(unitDetails);
+      displaySuccessMessage(t('unitCreated'));
+      emit('update:model-value', false);
+      const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: unitDetailsPayload.value?.resourceId as string }, queryClient);
+      const domainId = getFirstDomainDomaindId(unit);
 
-    if (domainId) {
-      router.push({
-        name: 'unit-domains-domain',
-        params: {
-          unit: createUUIDUrlParam('unit', unit.id),
-          domain: createUUIDUrlParam('domain', domainId)
-        }
-      });
+      if (domainId) {
+        router.push({
+          name: 'unit-domains-domain',
+          params: {
+            unit: createUUIDUrlParam('unit', unit.id),
+            domain: createUUIDUrlParam('domain', domainId)
+          }
+        });
+      }
     }
   } catch (error: any) {
     displayErrorMessage(t('createUnitError'), error.message);
@@ -179,7 +220,8 @@ const selectedDomains = computed({
     "description": "Description",
     "domainselection": "Domain selection",
     "name": "Unit name",
-    "unitCreated": "New unit was created successfully"
+    "unitCreated": "New unit was created successfully",
+    "unitUpdated": "Unit was updated successfully"
   },
   "de": {
     "createUnit": "Unit erstellen",
@@ -187,7 +229,8 @@ const selectedDomains = computed({
     "description": "Beschreibung",
     "domainselection": "Domain-Auswahl",
     "name": "Name der Unit",
-    "unitCreated": "Unit wurde erfolgreich erstellt"
+    "unitCreated": "Unit wurde erfolgreich erstellt",
+    "unitUpdated": "Unit wurde erfolgreich aktualisiert"
   }
 }
 </i18n>

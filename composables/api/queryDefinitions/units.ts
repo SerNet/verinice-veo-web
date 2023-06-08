@@ -19,6 +19,7 @@ import { IVeoAPIMessage, IVeoBaseObject, IVeoLink, IVeoUnitIncarnations } from "
 import { IVeoMutationDefinition } from "../utils/mutation";
 import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
 import { VeoApiReponseType } from "../utils/request";
+import { omit } from "lodash";
 
 export interface IVeoUnit extends IVeoBaseObject {
   name: string;
@@ -38,6 +39,11 @@ export interface IVeoFetchUnitParameters {
 export interface IVeoCreateUnitParameters {
   name: string;
   description: string;
+  domains: IVeoLink[];
+}
+
+export interface IVeoUpdateUnitParameters extends IVeoCreateUnitParameters {
+  id: string;
 }
   
 export interface IVeoDeleteUnitParameters {
@@ -111,6 +117,23 @@ export default {
         }
       }
     } as IVeoMutationDefinition<IVeoCreateUnitParameters, IVeoAPIMessage>,
+    update: {
+      primaryQueryKey: 'form',
+      url: '/api/units/:id',
+      method: 'PUT',
+      mutationParameterTransformationFn: (mutationParameters) => ({
+        json: omit(mutationParameters, 'id'),
+        params: {
+          id: mutationParameters.id
+        }
+      }),
+      staticMutationOptions: {
+        onSuccess: (queryClient, _data, variables, _context) => {
+          queryClient.invalidateQueries(['units']);
+          queryClient.invalidateQueries(['unit', { id: variables.params?.id }]);
+        }
+      }
+    } as IVeoMutationDefinition<IVeoUpdateUnitParameters, IVeoUnit>,
     delete: {
       primaryQueryKey: 'unit',
       url: '/api/units/:id',
