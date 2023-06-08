@@ -74,7 +74,7 @@
     </template>
   </BaseDialog>
 </template>
-<script lang="ts" setup>
+<script setup lang="ts">
 import { createUUIDUrlParam, getEntityDetailsFromLink, getFirstDomainDomaindId } from '~/lib/utils';
 import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
