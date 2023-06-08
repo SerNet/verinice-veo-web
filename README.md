@@ -34,15 +34,53 @@ npm run preview
 
 Checkout the [deployment documentation](https://v3.nuxtjs.org/guide/deploy/presets) for more information.
 
-Required env variables:
+For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
+
+## Environment variables
+| Environment variable | Default value | What does it do? |
+|---|---|---|
+| `npm_package_version` | `latest` | Gets automatically set during build time, displays Frontend version in "About verinice." dialog. |
+| `CI_COMMIT_SHORT_SHA` | `0000000` | Short Hash of commit of current build. Gets displayed in "About verinice." dialog |
+| `CI_COMMIT_TIMESTAMP` | ` Date.now().toString()` | Date of current build. Gets set to current date and time when developing.Gets displayed in "About verinice." dialog |
+| `CI_JOB_ID` | ` -1` | Current build ID. Gets displayed in "About verinice." dialog |
+| `VEO_DEFAULT_API_URL` | `https://api.veo.example/veo` | URL of the core api. Gets used throughout the application to fetch objects, catalogs, etc.. |
+| `VEO_FORMS_API_URL` | `https://api.veo.example/forms` | URL of the forms api. Gets used throughout the application to load forms that display objects. |
+| `VEO_HISTORY_API_URL` | `https://api.veo.example/history` | URL of the history api. Gets used to fetch previous versions of an object |
+| `VEO_REPORTING_API_URL` | `https://api.veo.example/reporting` | URL of the reports api. Gets used to generate reports. |
+| `VEO_ACCOUNTS_API_URL`  | `https://api.veo.example/accounts` | URL of the accounts api. Gets used to modify/create accounts apart from the client owner. |
+| `VEO_OIDC_URL` | `https://auth.veo.example/auth` | URL of the OIDC provider (usually keycloak). |
+| `VEO_OIDC_REALM` | `veo-oidcrealm-example` | Realm you use for veo in your OIDC provider. |
+| `VEO_OIDC_CLIENT` | `veo-oidcclient-example` | Client name you use for this webapp in your OIDC provider. |
+| `VEO_ACCOUNT_PATH` | `https://account.veo.example` | URL under which the user can edit his/her account such as changing the password. |
+| `VEO_DEBUG` | `false` | While not exposing any critical information, this variable should only be set to true when developing. |
+| `VEO_DEBUG_CACHE` | `false` | If set to true, additional logging output gets set regarding caching and retrieving of data. |
+
+Required env variables (prod preset):
 ```
-VEO_API_URL=https://api.verinice.com/
+VEO_DEFAULT_API_URL=https://api.verinice.com/
+VEO_FORMS_API_URL=https://api.verinice.com/forms
+VEO_HISTORY_API_URL=https://api.verinice.com/history
+VEO_REPORTING_API_URL=https://api.verinice.com/reporting
+VEO_ACCOUNTS_API_URL=https://api.verinice.com/accounts
 VEO_OIDC_URL=https://auth.verinice.com/auth
 VEO_OIDC_REALM=verinice-veo
 VEO_OIDC_CLIENT=veo-prod
+VEO_ACCOUNT_PATH=https://account.verinice.com
 ```
 
-For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
+Required env variables (dev preset):
+```
+VEO_DEBUG=true
+VEO_DEFAULT_API_URL=https://api.develop.verinice.com/veo
+VEO_FORMS_API_URL=https://api.develop.verinice.com/forms
+VEO_HISTORY_API_URL=https://api.develop.verinice.com/history
+VEO_REPORTING_API_URL=https://api.develop.verinice.com/reporting
+VEO_ACCOUNTS_API_URL=https://api.develop.verinice.com/accounts
+VEO_OIDC_URL=https://auth.staging.verinice.com/auth
+VEO_OIDC_REALM=verinice-veo
+VEO_OIDC_CLIENT=veo-development-client
+VEO_ACCOUNT_PATH=https://account.verinice.com
+```
 
 ## Technical debt
 * All translations used by the `<i18n-t>` component are currently present in the language files and the components they
