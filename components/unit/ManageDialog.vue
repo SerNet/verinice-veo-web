@@ -29,32 +29,30 @@
         v-model="formIsValid"
         class="new-unit-form"
       >
-        <v-text-field
-          v-model="unitDetails.name"
-          :rules="[requiredRule]"
-          required
-          variant="underlined"
-          :label="t('name')"
-        />
-        <v-text-field
-          v-model="unitDetails.description"
-          variant="underlined"
-          :label="t('description')"
-        />
-        <v-list>
-          <v-list-item>{{ t('domainselection') }}</v-list-item>
-          <v-list-item
-            v-for="domain in domains"
-            :key="domain.id"
-          >
-            <v-checkbox
-              v-model="selectedDomains"
-              color="primary"
-              :label="domain.name"
-              :value="domain.id"
+        <BaseCard>
+          <v-card-text>
+            <v-text-field
+              v-model="unitDetails.name"
+              :rules="[requiredRule]"
+              required
+              variant="underlined"
+              :label="t('name')"
             />
-          </v-list-item>
-        </v-list>
+            <v-text-field
+              v-model="unitDetails.description"
+              variant="underlined"
+              :label="t('description')"
+            />
+          </v-card-text>
+        </BaseCard>
+        <h3 class="text-h3 mt-4">
+          {{ t('domainselection') }}
+        </h3>
+        <UtilProminentSelectionList
+          v-model="selectedDomains"
+          multiple
+          :items="availableDomains"
+        />
       </v-form>
     </template>
     <template #dialog-options>
@@ -158,6 +156,11 @@ const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains, 
     unitDetails.domains = (data as IVeoDomain[]).map((domain) => createLink('domains', domain.id));
   }
 });
+const availableDomains = computed(() => domains.value?.map((domain) => ({
+  title: domain.name,
+  subtitle: domain.description,
+  value: domain.id
+})) ?? []);
 const selectedDomains = computed({
   get: () => unitDetails.domains.map((domain) => getEntityDetailsFromLink(domain).id),
   set: (newValue) => {
