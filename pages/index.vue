@@ -122,6 +122,7 @@
     <UnitManageDialog
       v-model="unitManageDialogVisible"
       :unit-id="unitToEdit"
+      :dialog-title="dialogTitle"
     />
 
     <UnitDeleteDialog
@@ -150,16 +151,19 @@ useHead({
 });
 
 const unitManageDialogVisible = ref(false);
+const dialogTitle = ref('');
 
 function createUnit() {
   unitToEdit.value = undefined;
   unitManageDialogVisible.value = true;
+  dialogTitle.value = 'create';
 }
 
 const unitToEdit = ref<undefined | string>();
 const editUnit = (unit: IVeoUnit) => {
   unitToEdit.value = unit.id;
   unitManageDialogVisible.value = true;
+  dialogTitle.value = 'edit';
 };
 
 const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);

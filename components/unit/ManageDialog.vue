@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    :title="t('createUnit')"
+    :title="dialogTitle === 'create' ? t('createUnit') : t('editUnit')"
     :close-disabled="creatingUnit || updatingUnit"
     v-bind="$attrs"
     @update:model-value="emit('update:model-value', $event)"
@@ -96,6 +96,10 @@ const props = defineProps({
   unitId: {
     type: String,
     default: undefined
+  },
+  dialogTitle: {
+    type: String,
+    default: ''
   }
 });
 
@@ -159,7 +163,7 @@ watch(() => unitDetails, () => {
   if(form.value) {
     form.value.validate();
   }
-}, { deep: true })
+}, { deep: true });
 
 const { mutateAsync: create, isLoading: creatingUnit, data: unitDetailsPayload } = useMutation(unitQueryDefinitions.mutations.create);
 const { mutateAsync: update, isLoading: updatingUnit } = useMutation(unitQueryDefinitions.mutations.update);
@@ -219,6 +223,7 @@ const selectedDomains = computed({
     "createUnitError": "Couldn't create unit",
     "description": "Description",
     "domainselection": "Domain selection",
+    "editUnit": "Edit unit",
     "name": "Unit name",
     "unitCreated": "New unit was created successfully",
     "unitUpdated": "Unit was updated successfully"
@@ -228,6 +233,7 @@ const selectedDomains = computed({
     "createUnitError": "Unit konnte nicht erstellt werden",
     "description": "Beschreibung",
     "domainselection": "Domain-Auswahl",
+    "editUnit": "Unit bearbeiten",
     "name": "Name der Unit",
     "unitCreated": "Unit wurde erfolgreich erstellt",
     "unitUpdated": "Unit wurde erfolgreich aktualisiert"
