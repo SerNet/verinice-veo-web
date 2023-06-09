@@ -66,6 +66,7 @@ import { useQuerySync } from '~~/composables/api/utils/query';
 import { separateUUIDParam } from '~~/lib/utils';
 import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
 import { useMutation } from '~~/composables/api/utils/mutation';
+import { IVeoEntity } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -97,7 +98,7 @@ export default defineComponent({
 
     const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
 
-    const selectedItems = ref<string[]>([]);
+    const selectedItems = ref<IVeoEntity[]>([]);
     const availableItems = computed(() =>
       props.catalogItems.map((item) => {
         const displayNameParts = (item.element.displayName as string).split(' ');
@@ -116,7 +117,7 @@ export default defineComponent({
 
       try {
         // Fetch incarnations for all selected items
-        const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: unitId.value, itemIds: selectedItems.value });
+        const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: unitId.value, itemIds: selectedItems.value.map((value) => value.id) });
         // Apply incarnations
         await incarnate({ incarnations, unitId: unitId.value });
         displaySuccessMessage(props.successText);
