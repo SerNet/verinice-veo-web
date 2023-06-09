@@ -89,6 +89,15 @@
         <v-divider />
         <v-list-item
           active-class="veo-active-list-item"
+          to="/welcome"
+        >
+          <v-list-item-title>
+            {{ t('firststeps') }}
+          </v-list-item-title>
+        </v-list-item>
+        <v-divider />
+        <v-list-item
+          active-class="veo-active-list-item"
           to="/user-data"
         >
           <v-list-item-title>
@@ -157,12 +166,14 @@ const onMenuClosed = () => {
     "about": "About verinice.",
     "logout": "Logout",
     "editAccount": "Edit account",
+    "firststeps": "First steps",
     "notAvailable": "Not available",
   },
   "de": {
     "about": "Über verinice.",
     "logout": "Abmelden",
     "editAccount": "Benutzerkonto bearbeiten",
+    "firststeps": "Erste Schritte",
     "notAvailable": "Keine Angabe",
   }
 }

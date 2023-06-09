@@ -128,8 +128,6 @@
       v-model="deleteUnitDialogVisible"
       :unit="unitToDelete"
     />
-
-    <WelcomeDialog v-model="showWelcomeDialog" />
   </BasePage>
 </template>
 
@@ -138,26 +136,17 @@ export const ROUTE_NAME = 'index';
 </script>
 
 <script setup lang="ts">
-import { StorageSerializers, useStorage } from '@vueuse/core';
 import { mdiTrashCanOutline, mdiPlus, mdiPencilOutline } from '@mdi/js';
 
 import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import { useQuery } from '~~/composables/api/utils/query';
 import unitQueryDefinitions, { IVeoUnit} from '~/composables/api/queryDefinitions/units';
-import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 
 useHead({
   title: $t('breadcrumbs.index')
-});
-
-const firstStepsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
-
-const showWelcomeDialog = computed({
-  get: () => !firstStepsCompleted.value,
-  set: (newValue) => { firstStepsCompleted.value = !newValue; }
 });
 
 const unitManageDialogVisible = ref(false);

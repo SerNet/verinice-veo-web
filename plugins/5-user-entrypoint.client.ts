@@ -74,6 +74,12 @@ export default defineNuxtPlugin (async (nuxtApp) => {
     localStorage.removeItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
   };
 
+  if(localStorage.getItem(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED) !== 'true') {
+    setTimeout(() => {
+      navigateTo('/welcome');
+    }, 50);
+  }
+
   // localStorage.getItem only returns strings, thus we have to check the string value
   if((route.name === 'index') && (_lastDomain && _lastUnit) && (_lastDomain !== 'undefined') && (_lastUnit !== 'undefined')){
     try {
