@@ -242,7 +242,7 @@ const showAtStartup = computed({
       "hint": "Sie können diese Seite jederzeit über den Account Button erneut aufrufen!",
       "intro": "Im diesem Abschnitt finden Sie Anregungen des verinice.Teams, die Ihnen einen schnellen Einstieg ermöglichen:",
       "tutorial": "Tutorials",
-      "webinar": "Webinaren registrieren."
+      "webinar": "Webinaren registrieren"
     }
   }
   </i18n>
