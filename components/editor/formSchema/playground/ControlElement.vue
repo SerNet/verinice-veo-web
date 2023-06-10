@@ -82,7 +82,6 @@
   
 <script setup lang="ts">
 import { mdiDrag, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
-import { PropType, Ref } from 'vue';
 import { JsonPointer } from 'json-ptr';
 import { JSONSchema7 } from 'json-schema';
 import { last } from 'lodash';
@@ -93,23 +92,19 @@ import { eligibleInputElements, INPUT_TYPES as CONTROL_APPEARANCE_DEFINITIONS } 
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { getFormSchemaControlType } from '~~/lib/utils';
 
-  
-const props = defineProps({
-  playgroundElement: {
-    type: Object as PropType<IPlaygroundElement>,
-    required: true
-  },
-  formSchemaElement: {
-    type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  }
-});
+const props = withDefaults(defineProps<{
+  playgroundElement: IPlaygroundElement;
+  formSchemaElement: IVeoFormSchemaItem;
+}>(), {});
 
-const emit = defineEmits(['edit', 'delete']);
+const emit = defineEmits<{
+  (e: 'edit'): void;
+  (e: 'delete'): void;
+}>();
 
 const { t } = useI18n();
 
-const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.objectSchema);
+const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.OBJECTSCHEMA);
 const objectSchemaElement = computed(() => JsonPointer.get(objectSchema?.value, props.formSchemaElement.scope as string) as JSONSchema7); // Can't be undefined, as a control ALWAYS has a scope
 const controlType = computed(() => getFormSchemaControlType(objectSchemaElement.value));
 const inputType = computed(() => props.formSchemaElement && objectSchemaElement.value ? eligibleInputElements(controlType.value, { ...props.formSchemaElement, schema: objectSchemaElement.value })[0].code : undefined);

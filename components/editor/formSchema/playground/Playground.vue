@@ -34,12 +34,11 @@ export const FORMSCHEMA_PLAYGROUND_NAMESPACE = 'bdc08095-d80f-4974-aa69-a41d01a6
 export type FormSchemaElementMap = Map<string, IVeoFormSchemaItem>;
 
 export const PROVIDE_KEYS = {
-  formSchemaElementMap: 'formSchemaElementMap'
+  FORM_SCHEMA_ELEMENT_MAP: 'formSchemaElementMap'
 };
 </script>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
 import { cloneDeep } from 'lodash';
 import { JsonPointer } from 'json-ptr';
 import { v5 as UUIDv5, v4 as UUIDv4 } from 'uuid';
@@ -48,18 +47,17 @@ import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 import { IPlaygroundElement } from './Element.vue';
 import { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
 
-const props = defineProps({
-  modelValue: {
-    type: Object as PropType<IVeoFormSchemaItem>,
-    default: () => ({
-      type: "Layout",
-      options: {
-        format: "group",
-        direction: "vertical"
-      },
-      elements: []
-    })
-  }
+const props = withDefaults(defineProps<{
+  modelValue?: IVeoFormSchemaItem;
+}>(), {
+  modelValue: () => ({
+    type: "Layout",
+    options: {
+      format: "group",
+      direction: "vertical"
+    },
+    elements: []
+  })
 });
 
 const emit = defineEmits<{
@@ -71,7 +69,7 @@ const emit = defineEmits<{
 const formSchemaElementMap = reactive<FormSchemaElementMap>(new Map<string, IVeoFormSchemaItem>());
 const playgroundElements = ref<IPlaygroundElement | undefined>(undefined);
 
-provide(PROVIDE_KEYS.formSchemaElementMap, formSchemaElementMap);
+provide(PROVIDE_KEYS.FORM_SCHEMA_ELEMENT_MAP, formSchemaElementMap);
 
 const isCustomLinkAttribute = (element: IVeoFormSchemaItem | undefined, parent: IVeoFormSchemaItem | undefined) => {
   if(!element?.scope) {

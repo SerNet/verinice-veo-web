@@ -101,7 +101,6 @@ export interface IPlaygroundElement {
 </script>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
 import Draggable from 'vuedraggable';
 import { cloneDeep } from 'lodash';
 
@@ -112,20 +111,10 @@ import LayoutElement from './LayoutElement.vue';
 import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 import { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
 
-
-const props = defineProps({
-  playgroundElement: {
-    type: Object as PropType<IPlaygroundElement>,
-    required: true
-  },
-  /**
-   * Pointer to this playground element, used to more efficently mutate elements.
-   */
-  pointer: {
-    type: String,
-    required: true
-  }
-});
+const props = withDefaults(defineProps<{
+  playgroundElement: IPlaygroundElement;
+  pointer: string;
+}>(), {});
 
 const emit = defineEmits<{
   (event: 'add', pointer: string, element: IPlaygroundElement | IVeoFormSchemaItem): void
@@ -137,7 +126,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const formSchemaElementMap = inject<FormSchemaElementMap>(PLAYGROUND_PROVIDE_KEYS.formSchemaElementMap);
+const formSchemaElementMap = inject<FormSchemaElementMap>(PLAYGROUND_PROVIDE_KEYS.FORM_SCHEMA_ELEMENT_MAP);
 
 const formSchemaElement = computed(() => formSchemaElementMap?.get(props.playgroundElement.id));
 

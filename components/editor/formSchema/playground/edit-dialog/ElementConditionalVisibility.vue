@@ -117,7 +117,6 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, Ref } from 'vue';
 import { cloneDeep, isArray } from 'lodash';
 import { mdiAlphabetical, mdiFormTextbox, mdiMagicStaff, mdiTrashCanOutline } from '@mdi/js';
 import { JsonPointer } from 'json-ptr';
@@ -127,12 +126,9 @@ import { FormSchemaElementMap, PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from '.
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 
-const props = defineProps({
-  formSchemaElement: {
-    type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  }
-});
+const props = withDefaults(defineProps<{
+  formSchemaElement: IVeoFormSchemaItem;
+}>(), {});
 
 const emit = defineEmits<{
   (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void
@@ -157,13 +153,13 @@ const conditionEffect = ref<'HIDE' | 'SHOW' | undefined>();
 const scopeUUID = ref<string>();
 const selectedScopeFormSchemaElement = computed(() => scopeUUID.value ? formSchemaElementMap.value.get(scopeUUID.value) : undefined);
 
-const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.objectSchema);
+const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.OBJECTSCHEMA);
 const selectedScopeObjectSchemaElement = computed(() => selectedScopeFormSchemaElement.value?.scope && objectSchema?.value ? JsonPointer.get(objectSchema?.value, selectedScopeFormSchemaElement.value.scope) as JSONSchema7 : undefined);
 
 const selectedScopeHasPredefinedValues = computed(() => !!selectedScopeObjectSchemaElement?.value?.enum);
 const conditionValues = ref<any>(undefined);
 
-const _formSchemaElementMap = inject<FormSchemaElementMap>(PLAYGROUND_PROVIDE_KEYS.formSchemaElementMap, new Map());
+const _formSchemaElementMap = inject<FormSchemaElementMap>(PLAYGROUND_PROVIDE_KEYS.FORM_SCHEMA_ELEMENT_MAP, new Map());
 const formSchemaElementMap = ref<FormSchemaElementMap>(new Map());
 
 // For some reason we have to watch, as vue doesn't pick up the changes

@@ -21,3 +21,7 @@ export enum TRANSLATION_SOURCE {
   UNSPECIFIED
 }
 
+// Type aliases so IEditorTranslations is easier to understand
+type TranslationKey = string;
+type TranslationLanguage = string;
+export type IEditorTranslations = Record<TranslationKey, Record<TRANSLATION_SOURCE, Record<TranslationLanguage, string>>>

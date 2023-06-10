@@ -1,40 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2023  Jonas Heitmann
-   - 
-   - This program is free software: you can redistribute it and/or modify
-   - it under the terms of the GNU Affero General Public License as published by
-   - the Free Software Foundation, either version 3 of the License, or
-   - (at your option) any later version.
-   - 
-   - This program is distributed in the hope that it will be useful,
-   - but WITHOUT ANY WARRANTY; without even the implied warranty of
-   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   - GNU Affero General Public License for more details.
-   - 
-   - You should have received a copy of the GNU Affero General Public License
-   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
-<!--
-   - verinice.veo web
-   - Copyright (C) 2023  Jonas Heitmann
-   - 
-   - This program is free software: you can redistribute it and/or modify
-   - it under the terms of the GNU Affero General Public License as published by
-   - the Free Software Foundation, either version 3 of the License, or
-   - (at your option) any later version.
-   - 
-   - This program is distributed in the hope that it will be useful,
-   - but WITHOUT ANY WARRANTY; without even the implied warranty of
-   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   - GNU Affero General Public License for more details.
-   - 
-   - You should have received a copy of the GNU Affero General Public License
-   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
-<!--
-   - verinice.veo web
-   - Copyright (C) 2021 Markus Werner, Jonas Heitmann
+   - Copyright (C) 2023 Markus Werner, Jonas Heitmann
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -248,13 +214,9 @@ const defaultHeaders: { [key: string]: TableHeader } = {
 };
 
 /**
- * Default header classes
- */
-const defaultClasses: string[] = [];
-/**
  * Default cell classes
  */
-const defaultCellClasses = ['flex-nowrap', 'text-no-wrap', 'cursor-pointer'];
+const defaultCellClasses = ['flex-nowrap', 'text-no-wrap'];
 /**
  * Classes to apply when truncate is set
  */
@@ -278,7 +240,7 @@ const renderTooltip = (header: TableHeader, data?: any): TableRenderer => {
       location: 'bottom',
       width: 350
     }, {
-      activator: ({ attrs, props }: { attrs: Record<string, any>, props: Record<string, any> }) => h('span', { attrs, ...props, ...data }, children),
+      activator: ({ attrs: slotAttrs, props: slotProps }) => h('span', { slotAttrs, ...slotProps, ...data }, children),
       default: () => header.tooltip?.(props)
     });
   };
@@ -294,12 +256,12 @@ const _headers = computed<TableHeader[]>(() =>
     ...props.additionalHeaders
   ]
     .map((header) => {
-      const cellClass = defaultCellClasses.concat(header.cellClass || [], header.truncate ? truncateClasses : []);
+      const cellClass = defaultCellClasses.concat(header.cellClass || [], header.truncate ? truncateClasses : [], props.enableClick ? 'cursor-pointer' : 'cusor-default');
       return {
         ...header,
         title: header.text ?? globalT(`objectlist.${String(header.value)}`),
         cellClass,
-        class: defaultClasses.concat(header.class || [], header.truncate ? truncateClasses : []),
+        class: (header.class || []).concat(header.truncate ? truncateClasses : []),
         render: header.tooltip ? renderTooltip(header, { class: cellClass, style: { maxWidth: `${header.width}px`, display: 'block' }}) : header.render
       };
     })
@@ -463,7 +425,6 @@ const selectAllCheckbox = {
 
 const sharedProps = computed(() => ({
   ...attrs,
-  class: props.enableClick ? 'cursor-pointer' : '',
   id: `veo-object-table-${vm?.uid}`,
   items: items.value,
   itemsPerPage: tablePageSize.value,
@@ -539,7 +500,11 @@ const render = () => isPaginatedResponse(props.items) ?
 
 <style lang="scss" scoped>
 :deep(*) {
-  .cursor-pointer .v-data-table__tr {
+  .cursor-default {
+    cursor: default;
+  }
+
+  .cursor-pointer {
     cursor: pointer;
   }
 }
