@@ -19,7 +19,7 @@
   <BaseDialog
     :model-value="modelValue"
     :confirm-close="dialogIsDirty"
-    large
+    x-large
     :title="t('editTranslations')"
     fixed-footer
     @update:model-value="emit('update:model-value', $event)"

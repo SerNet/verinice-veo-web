@@ -34,7 +34,6 @@
     <slot name="controls" />
   </v-row>
   <BaseCard>
-    {{ editedLanguageItem }}
     <div ref="tableWrapper">
       <BaseTable
         :additional-headers="headers"
