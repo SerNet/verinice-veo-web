@@ -378,16 +378,6 @@ export default defineComponent({
       classes: 'mb-4'
     }));
 
-    /*
-      key: 'risks',
-      name: $t('breadcrumbs.risks').toString(),
-      activePath: `${route.params.unit}/domains/${route.params.domain}/risks`,
-      icon: mdiTableSettings,
-      children: riskChildItems.value,
-      childrenLoading: riskDefinitionsLoading.value,
-      componentName: 'risks-nav-item'
-      */
-
     const profilesNavEntry = computed<INavItem>(() => ({
       key: 'profiles',
       name: $t('breadcrumbs.profiles'),
@@ -515,7 +505,6 @@ export default defineComponent({
       items,
       homeLink,
       miniVariant,
-
       route,
       t,
       mdiChevronLeft,
