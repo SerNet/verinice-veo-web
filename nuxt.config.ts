@@ -146,5 +146,18 @@ export default defineNuxtConfig({
         ])
       )
     }
+  },
+
+  fontLoader: {
+    local: [
+      {
+        src: '/Roboto-Regular.ttf',
+        family: 'Roboto'
+      },
+      {
+        src: '/OpenSans-Regular.ttf',
+        family: 'Open Sans'
+      }
+    ]
   }
 });
