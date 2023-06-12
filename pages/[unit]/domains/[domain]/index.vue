@@ -110,20 +110,13 @@
           </v-col>
         </template>
       </v-row>
-      <WelcomeDialog
-        v-if="showWelcomeDialog"
-        v-model="showWelcomeDialog"
-      />
     </template>
   </BasePage>
 </template>
 
 <script lang="ts">
-import { StorageSerializers, useStorage } from '@vueuse/core';
-
 import { separateUUIDParam } from '~/lib/utils';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { useQuery } from '~~/composables/api/utils/query';
 
 export const ROUTE_NAME = 'unit-domains-domain';
@@ -138,12 +131,6 @@ export default defineComponent({
 
     const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
     const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-
-    const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
-    const showWelcomeDialog = computed({
-      get: () => !firstSetpsCompleted.value,
-      set: (newValue) => { firstSetpsCompleted.value = !newValue; }
-    });
 
     // Domain specific stuff
     const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
@@ -195,7 +182,6 @@ export default defineComponent({
       elementStatusCountIsFetching,
       onBarClicked,
       title,
-      showWelcomeDialog,
 
       t,
       tGlobal

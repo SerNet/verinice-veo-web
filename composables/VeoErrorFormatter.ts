@@ -39,7 +39,10 @@ export const useVeoErrorFormatter = () => {
     const isRequiredRule = error.schemaPath.match(/((.+\/properties\/(\w-)+\b)|(.+(?=\/required)))/g);
     const isEqualRule = !!error.params.allowedValues;
     const isAdditionalPropertiesRule = error.keyword === 'additionalProperties';
-    if (!isRequiredRule && !isEqualRule && !isAdditionalPropertiesRule) {
+    const isPatternRule = error.keyword === 'pattern';
+    const isFormatRule = error.keyword === 'format';
+
+    if (![!!isRequiredRule, isEqualRule, isAdditionalPropertiesRule, isPatternRule, isFormatRule].some((rule) => rule)) {
       throw new Error(`No error formatter found for ${JSON.stringify(error)}`);
     }
 
@@ -55,6 +58,9 @@ export const useVeoErrorFormatter = () => {
       paths.pop();
       affectedProperty = last(paths);
       objectSchemaPointer = paths.join('/');
+    }
+    if (isPatternRule || isFormatRule) {
+      objectSchemaPointer = error.schemaPath.replace(/\/pattern$/, '');
     }
 
     let translatedErrorString = '';

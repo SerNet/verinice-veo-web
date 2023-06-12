@@ -19,7 +19,7 @@
   <component :is="render" />
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { PropType } from 'vue';
 import { isObject } from 'lodash';
 import { useDisplay } from 'vuetify';

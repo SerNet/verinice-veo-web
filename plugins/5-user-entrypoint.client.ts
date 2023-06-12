@@ -65,17 +65,6 @@ export default defineNuxtPlugin (async (nuxtApp) => {
     return;
   }
 
-  // Create first unit if it doesn't exist
-  const units = await useQuerySync(unitQueryDefinitions.queries.fetchAll);
-  // If either no unit exists or only a demo unit exists, redirect the user to the init page to create the first unit.
-  if(!units.length || (units.length === 1 && units[0].name === 'Demo')) {
-    // Somehow return navigteTo, await navigateTo and nextTick(() => navigateTo) don't work, so we have to solve it dirty with a timeout.
-    // 50ms seems to work reliably and isn't noticeable by the user, so we use 50ms
-    setTimeout(() => {
-      navigateTo({ name: 'init' });
-    }, 50);
-  }
-
   // Navigate the user to his previous unit and domain, if both still exist AND he has at most two units AND the user enters the index page
   const  _lastUnit = localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
   const _lastDomain = localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
@@ -84,6 +73,12 @@ export default defineNuxtPlugin (async (nuxtApp) => {
     localStorage.removeItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
     localStorage.removeItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
   };
+
+  if(localStorage.getItem(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED) !== 'true') {
+    setTimeout(() => {
+      navigateTo('/welcome');
+    }, 50);
+  }
 
   // localStorage.getItem only returns strings, thus we have to check the string value
   if((route.name === 'index') && (_lastDomain && _lastUnit) && (_lastDomain !== 'undefined') && (_lastUnit !== 'undefined')){

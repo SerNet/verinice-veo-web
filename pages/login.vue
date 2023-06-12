@@ -82,7 +82,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useVeoUser } from '~/composables/VeoUser';
 
 definePageMeta({ layout: 'plain' });

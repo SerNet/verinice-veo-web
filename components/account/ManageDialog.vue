@@ -110,6 +110,7 @@
                 <v-select
                   v-model="formData.groups"
                   clearable
+                  multiple
                   :items="availableGroups"
                   :label="t('groups')"
                   variant="underlined"
@@ -122,7 +123,6 @@
     </template>
     <template #dialog-options>
       <v-btn
-        text
         :disabled="isLoading"
         @click="$emit('update:model-value', false)"
       >
@@ -130,7 +130,6 @@
       </v-btn>
       <v-spacer />
       <v-btn
-        text
         color="primary"
         :disabled="formIsValid === false || ability.cannot('manage', 'accounts')"
         :loading="isLoading"

@@ -70,7 +70,7 @@ import { cloneDeep, upperFirst } from 'lodash';
 import { mdiArrowDown, mdiArrowRight, mdiCheck, mdiContentCopy, mdiLinkOff, mdiTransitDetour, mdiTrashCanOutline } from '@mdi/js';
 import { VIcon, VTooltip } from 'vuetify/components';
 
-import { ObjectTableHeader } from './Table.vue';
+import { TableHeader } from '~/components/base/Table.vue';
 import { createUUIDUrlParam, getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
 import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -80,6 +80,7 @@ import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions, { IVeoFetchRisksParameters } from '~/composables/api/queryDefinitions/objects';
 import { useFetchParentObjects } from '~/composables/api/objects';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
 import { useQueryClient } from '@tanstack/vue-query';
@@ -122,6 +123,9 @@ export default defineComponent({
       sortBy.value = [{ key: 'name', order: 'desc' }];
     };
     watch(() => props.type, resetQueryOptions);
+
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const parentScopesQueryParameters = computed(() => ({
@@ -174,9 +178,9 @@ export default defineComponent({
           return risks.value || [];
         case 'links':
         default:
-          return Object.values(props.object?.links || {}).reduce((linkArray: { id: string; name?: string; type: string }[], links: IVeoCustomLink[]) => {
+          return Object.entries(props.object?.links || {}).reduce((linkArray: { id: string; name?: string; type: string, linkId: string }[], [linkId, links]: [string, IVeoCustomLink[]]) => {
             for (const link of links) {
-              linkArray.push(createEntityFromLink(link));
+              linkArray.push({ ...createEntityFromLink(link), linkId });
             }
             return linkArray;
           }, []) as any[];
@@ -202,7 +206,7 @@ export default defineComponent({
           : ['designator', 'updatedAt', 'updatedBy', 'actions']
     );
 
-    const additionalHeaders = computed<ObjectTableHeader[]>(() =>
+    const additionalHeaders = computed<TableHeader[]>(() =>
       props.type === 'risks'
         ? [
           {
@@ -292,7 +296,18 @@ export default defineComponent({
             width: 150
           }))
         ]
-        : []
+        : props.type === 'links' ? [
+          {
+            value: 'linkId',
+            key: 'linkId',
+            order: 20,
+            priority: 60,
+            text: t('linkName'),
+            width: 150,
+            render: (data: any) => h('span', translations.value?.lang[locale.value][data.item.raw.linkId] || data.item.raw.linkId)
+          }
+        ]
+          : []
     );
 
     /**
@@ -485,6 +500,7 @@ export default defineComponent({
       "risk": "Couldn't delete risk"
     },
     "inherentRisk": "Inherent risk",
+    "linkName": "Link name",
     "parentType": "parent type",
     "removeFromObject": "Remove from object",
     "removeFromScope": "Remove from scope",
@@ -515,6 +531,7 @@ export default defineComponent({
       "risk": "Risiko konnte nicht gelöscht werden"
     },
     "inherentRisk": "Bruttorisiko",
+    "linkName": "Name des Links",
     "parentType": "Elterntyp",
     "removeFromObject": "Aus Objekt entfernen",
     "removeFromScope": "Aus Scope entfernen",

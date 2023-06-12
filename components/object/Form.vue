@@ -82,6 +82,7 @@
               </div>
               <LayoutFormNavigation
                 v-else-if="selectedSideContainer === SIDE_CONTAINERS.TABLE_OF_CONTENTS && currentFormSchema"
+                ref="formNavigation"
                 :form-schema="currentFormSchema && currentFormSchema.content"
                 :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
                 :scroll-wrapper-id="scrollWrapperId"
@@ -518,6 +519,14 @@ export default defineComponent({
       () => objectSchemaIsFetching.value || props.loading || formSchemasAreFetching.value || formSchemaIsFetching.value || domainIsFetching.value || translationsAreFetching.value
     );
 
+    // We have to reactivate the observer after the form gets readded to the dom after loading, as the formerly observed node no longer exists
+    const formNavigation = ref();
+    watch(() => dataIsLoading.value, (newValue) => {
+      if(!newValue && selectedSideContainer.value === SIDE_CONTAINERS.TABLE_OF_CONTENTS) {
+        nextTick(() => formNavigation.value?.activateObserver());
+      }
+    });
+
     const onShowRevision = (revision: IVeoObjectHistoryEntry, isRevision: boolean) => {
       emit('show-revision', revision, isRevision);
     };
@@ -528,6 +537,7 @@ export default defineComponent({
       dataIsLoading,
       displayOptions,
       formErrors,
+      formNavigation,
       formSchemaHasGroups,
       locale,
       messages,

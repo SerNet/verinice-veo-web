@@ -204,7 +204,7 @@
       <v-btn
         v-if="state === 'import' && modelType !== 'custom'"
         color="primary"
-        text
+        variant="text"
         role="submit"
         type="submit"
         :disabled="importNextDisabled"
@@ -216,7 +216,7 @@
   </BaseDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { isEmpty, isEqual, isString } from 'lodash';
 import { mdiChevronRight } from '@mdi/js';
 

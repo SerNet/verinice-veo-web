@@ -59,15 +59,15 @@
   </BasePage>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
+export const ROUTE_NAME = 'unit-domains-domain-editor';
+</script>
+
+<script setup lang="ts">
 import { mdiChevronRight } from '@mdi/js';
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
-</script>
-
-<script lang="ts">
-export const ROUTE_NAME = 'unit-domains-domain-editor';
 </script>
 
 <i18n>

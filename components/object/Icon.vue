@@ -17,42 +17,34 @@
 -->
 <template>
   <div class="veo-object-icon__outer">
-    <font-awesome-icon
-      v-if="icon && icon.library === 'fa'"
-      color="grey"
-      v-bind="$attrs"
-      :icon="icon.icon"
-    />
-    <v-icon
-      v-else-if="icon && icon.library === 'mdi'"
-      v-bind="$attrs"
-      :icon="icon.icon"
-    />
-    <v-icon
-      v-if="isComposite"
-      class="veo-object-icon--composite"
-      color="primary"
-      :icon="mdiDotsHorizontal"
-    />
+    <v-tooltip location="top">
+      <template #activator="{ props: tooltipProps }">
+        <div v-bind="tooltipProps">
+          <font-awesome-icon
+            v-if="icon && icon.library === 'fa'"
+            color="grey"
+            v-bind="$attrs"
+            :icon="icon.icon"
+          />
+          <v-icon
+            v-else-if="icon && icon.library === 'mdi'"
+            v-bind="$attrs"
+            :icon="icon.icon"
+          />
+          <v-icon
+            v-if="isComposite"
+            class="veo-object-icon--composite"
+            color="primary"
+            :icon="mdiDotsHorizontal"
+          />
+        </div>
+      </template>
+      <template #default>
+        {{ translatedObjectType }}
+      </template>
+    </v-tooltip>
   </div>
 </template>
-
-<script lang="ts" setup>
-import { mdiAccountOutline, mdiAlarmLightOutline, mdiDevices, mdiDotsHorizontal, mdiFileDocumentOutline, mdiPlaylistCheck, mdiShieldAlertOutline } from '@mdi/js';
-
-const props = defineProps({
-  objectType: {
-    type: String,
-    required: true
-  },
-  isComposite: {
-    type: Boolean,
-    default: false
-  }
-});
-
-const icon = computed(() => OBJECT_TYPE_ICONS.get(props.objectType));
-</script>
 
 <script lang="ts">
 export const OBJECT_TYPE_ICONS = new Map<string, { icon: string | string[]; library: 'fa' | 'mdi' }>([
@@ -65,6 +57,36 @@ export const OBJECT_TYPE_ICONS = new Map<string, { icon: string | string[]; libr
   ['scenario', { icon: mdiShieldAlertOutline, library: 'mdi' }],
   ['control', { icon: mdiPlaylistCheck, library: 'mdi' }]
 ]);
+</script>
+
+<script lang="ts" setup>
+import {
+  mdiAccountOutline,
+  mdiAlarmLightOutline,
+  mdiDevices,
+  mdiDotsHorizontal,
+  mdiFileDocumentOutline,
+  mdiPlaylistCheck,
+  mdiShieldAlertOutline
+} from '@mdi/js';
+
+import { useQuery } from '~/composables/api/utils/query';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+
+const props = withDefaults(defineProps<{
+  objectType: string;
+  isComposite?: boolean;
+}>(), {
+  isComposite: false
+});
+
+const { locale } = useI18n();
+
+const icon = computed(() => OBJECT_TYPE_ICONS.get(props.objectType));
+
+const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
+const translatedObjectType = computed(() => translations.value?.lang?.[locale.value]?.[props.objectType] || props.objectType);
 </script>
 
 <style lang="scss" scoped>

@@ -107,7 +107,13 @@
   </v-list-group>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
+export default {
+  name: 'LayoutPrimaryNavigationCategory'
+};
+</script>
+
+<script setup lang="ts">
 import { PropType } from 'vue';
 import { mdiChevronDown } from '@mdi/js';
 
@@ -180,12 +186,6 @@ const onClick = (event: any) => {
 };
 
 const activatorIntendation = computed(() => `primary-navigation-entry-level-${props.level}`);
-</script>
-
-<script lang="ts">
-export default {
-  name: 'LayoutPrimaryNavigationCategory'
-};
 </script>
 
 <style lang="scss" scoped>

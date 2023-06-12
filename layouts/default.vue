@@ -68,7 +68,6 @@
       <LayoutAccountBtn
         v-if="authenticated"
         class="mr-3"
-        @create-unit="createUnit"
       />
       <v-btn
         v-else
@@ -93,14 +92,10 @@
       v-if="alerts[0]"
       v-bind="alerts[0]"
     />
-    <UnitCreateDialog
-      v-model="newUnitDialog.value"
-      :mandatory="newUnitDialog.mandatory"
-    />
   </v-app>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useDisplay } from 'vuetify';
 import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 import 'intro.js/minified/introjs.min.css';
@@ -127,16 +122,6 @@ useHead(() => ({
 //
 const drawer = ref<boolean>(true);
 
-//
-// Unit creation and navigation
-//
-const newUnitDialog = ref({ value: false, mandatory: false });
-
-function createUnit(mandatory = false) {
-  newUnitDialog.value.value = true;
-  newUnitDialog.value.mandatory = mandatory;
-}
-
 const domainId = computed((): string | undefined => {
   if (route.name === 'unit-domains-more') {
     return undefined;
@@ -150,6 +135,19 @@ const unitId = computed(() =>
     : undefined
 );
 </script>
+
+<i18n>
+{
+  "en": {
+    "firstUnitCreated": "First unit was created successfully",
+    "openDocumentationInNewTab": "Open online documentation in new tab"
+  },
+  "de": {
+    "firstUnitCreated": "Die erste Unit wurde erfolgreich erstellt",
+    "openDocumentationInNewTab": "Online-Dokumentaion in neuem Tab öffnen"
+  }
+}
+</i18n>
 
 <style lang="scss" module>
   .app-bar {
@@ -169,16 +167,3 @@ const unitId = computed(() =>
     flex-direction: column;
   }
   </style>
-
-<i18n>
-{
-  "en": {
-    "firstUnitCreated": "First unit was created successfully",
-    "openDocumentationInNewTab": "Open online documentation in new tab"
-  },
-  "de": {
-    "firstUnitCreated": "Die erste Unit wurde erfolgreich erstellt",
-    "openDocumentationInNewTab": "Online-Dokumentaion in neuem Tab öffnen"
-  }
-}
-</i18n>
