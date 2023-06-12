@@ -67,13 +67,14 @@ const { state, profiles, toggleDialog } = useProfiles();
 const { t } = useI18n();
 
 // Table setup
-const headers = [
-  { title: t('thName'), align: 'start', key: 'key'},
-  { title: t('thDescription'), align: 'start', key: 'desc', sortable: false }
-];
+const headers = computed(() => [
+  { title: t('thName'), align: 'start', key: 'name'},
+  { title: t('thDescription'), align: 'start', key: 'description', sortable: false },
+  { title: t('thLanguage'), align: 'start', key: 'language' }
+]);
 
 /*******************
-* THIS IS A WORK ARROUND (JS + CSS):
+* THIS IS A WORK AROUND (JS + CSS):
 * In this table we only want to be able to select one item (profile) at a time.
 * At the time of writing, vuetify 3 v-data-table's `select-strategy='single'` did not work as expected (still part of vuetify LAB).
 * Once it does, TODO:
@@ -83,7 +84,7 @@ const headers = [
 *******************/
 function selectNewItem(val) {
   if (val.length >= 2) val.shift();
-  profileTable.selectedProfiles = val;
+  state.selectedProfiles = val;
 }
 </script>
 
