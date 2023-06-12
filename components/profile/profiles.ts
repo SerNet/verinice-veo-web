@@ -31,96 +31,107 @@ const testprofiles = [
 
 type Profile = {
   key: string;
-  desc: string;
+  name: string;
+  description: string;
+  language: string;
 }
 
-// HELPER
-function createProfileObj(_profile) {
-  const profile: Profile = {
-    key: _profile[0],
-    desc: ''
-  };
-  return profile;
+interface IVeoProfiles {
+  [key: string]: {
+    name: string;
+    description: string;
+    language: string;
+  }
 }
 
 // API CALLS
-async function requestProfileApplication({ domainId, unitId, profileKey }) {
+type RPAParams = { domainId: string, unitId: string, profileKey: string }
+async function requestProfileApplication({ domainId, unitId, profileKey }: RPAParams) {
   const url = `/api/domains/${domainId}/profiles/${profileKey}/units/${unitId}`;
   const response = await request(url, {method: 'POST'});
   return response;
 }
 
-// Profile Table State
-const profileTable = reactive({
-  selectedProfiles: [],
-});
-
-watch(profileTable, () => console.log(profileTable))
-
-// Get current unit
+// STATE
 const currentUnitId = computed(() => (route.params.unit && separateUUIDParam(route.params.unit as string).id) || undefined);
+const currentDomainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
-// UnitDialog state
-const dialog = reactive({
-  show: false,
+const state = reactive({
+  selectedProfiles: [] as string[],
+  showDialog: false,
   isApplyingProfile: false,
-  selectedUnit: unref(currentUnitId)
+  selectedUnit: unref(currentUnitId),
+  domainId: unref(readonly(currentDomainId))
 });
 
+watch(state, () => console.log(state));
 
-export function useProfiles(initialState) {
-  // Get domain + Unit IDs
-  const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-  const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
+function toggleDialog() {
+  state.showDialog = !state.showDialog;
+}
 
-  // Fetch current domain (profiles are a member of the domain object)
-  const fetchDomainQueryParameters = computed(() => ({ id: domainId as string }));
-  const fetchDomainQueryEnabled = computed(() => !!domainId);
-  const { data: domain, isFetching: domainIsLoading } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
+function handleError(err: unknown, genericMsg: string) {
+  let error;
+  if (err instanceof Error) error = { message: err.message, cause: err.cause };
+  else error = { message: String(err), cause: 'unknown' };
 
-  // Get available profiles from domain
-  const profiles = computed(() =>
-    Object.entries(domain.value?.profiles || {})
-      .map(entry => createProfileObj(toRaw(entry))) || []
-  );
+  console.error('applyProfile() failed:', err);
+  displayErrorMessage(genericMsg, error.message);
+}
 
-  async function applyProfile({ profileKey, unitId, domainId = domain?.value?.id  }) {
-    dialog.isApplyingProfile = true;
-    try {
-      const response = await requestProfileApplication({ domainId, unitId, profileKey });
-      displaySuccessMessage();
-    }
-    catch (error) {
-      console.error('Applying a profile failed:', error);
-      displayErrorMessage();
-    }
-    finally {
-      // Clean up state
-      dialog.isApplyingProfile = false;
-      profileTable.selectedProfiles = [];
-      toggleDialog();
-    }
+type AParams = RPAParams & { messages: { [key: string]: string} }
+async function applyProfile({ profileKey, unitId, domainId, messages }: AParams) {
+  state.isApplyingProfile = true;
+  try {
+    await requestProfileApplication({ domainId, unitId, profileKey });
+    displaySuccessMessage(messages.success);
   }
+  catch (err) {
+    handleError(err, messages.error);
+  }
+  finally {
+    // Clean up state
+    state.isApplyingProfile = false;
+    state.selectedProfiles = [];
+    toggleDialog();
+  }
+}
+
+function useDomain() {
+  const fetchDomainQueryParameters = computed(() => ({ id: currentDomainId as string }));
+  const fetchDomainQueryEnabled = computed(() => !!currentDomainId);
+  const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
 
   return {
-    applyProfile,
-    profileTable,
-    profiles,
-    testprofiles
+    domain: readonly(domain)
   };
 }
 
-function toggleDialog() {
-  dialog.show = !dialog.show;
+export function useProfiles() {
+  // Fetch domain: profiles are a member of the domain object
+  const { domain } = useDomain();
+
+  // Get available profiles from domain
+  const profiles = computed(() => {
+    const _profiles: IVeoProfiles = toRaw(domain.value?.profiles);
+    return Object.keys(_profiles || {}).map(key =>({key, ..._profiles[key]} )) as Profile[];
+  });
+
+  return {
+    profiles: readonly(profiles),
+    toggleDialog,
+    state
+  };
 }
 
-export function useUnits(initialState) {
+export function useUnits() {
   const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
   return {
     units: readonly(units),
-    dialog: readonly(dialog),
-    toggleDialog
+    toggleDialog,
+    applyProfile,
+    state
   };
 }
 

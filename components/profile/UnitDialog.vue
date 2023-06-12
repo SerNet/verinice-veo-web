@@ -1,13 +1,13 @@
 <template>
   <BaseDialog
-    :model-value="dialog.show"
+    :model-value="state.showDialog"
     :title="t('unitSelectionTitle')"
     :close-function="toggleDialog"
   >
     <template #default>
       <v-list-item>
         <v-autocomplete
-          v-model="dialog.selectedUnit"
+          v-model="state.selectedUnit"
           :label="t('unitSelectionDropdownLabel')"
           :items="units"
           item-title="name"
@@ -38,10 +38,12 @@
             flat
             color="primary"
             :disabled="false"
-            :loading="dialog.isApplyingProfile"
+            :loading="state.isApplyingProfile"
             @click="() => applyProfile({
-              profileKey: profileTable.selectedProfiles[0].key,
-              unitId: dialog.selectedUnit
+              profileKey: state.selectedProfiles[0],
+              unitId: state.selectedUnit,
+              domainId: state.domainId,
+              messages: {success: t('messageSuccess'), error: t('messageError')}
             })"
           >
             {{ t('unitSelectionApplyBtn') }}
@@ -53,9 +55,8 @@
 </template>
 
 <script setup lang="ts">
-import { useUnits, useProfiles } from './profiles.ts';
-const { dialog, toggleDialog, units } = useUnits();
-const {  profileTable, applyProfile } = useProfiles();
+import { useUnits } from './profiles.ts';
+const { state, units, applyProfile, toggleDialog } = useUnits();
 const { t } = useI18n();
 </script>
 <i18n src="./messages.json"></i18n>

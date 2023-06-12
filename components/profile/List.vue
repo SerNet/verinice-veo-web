@@ -29,11 +29,11 @@
         <v-data-table
           :headers="headers"
           :items="profiles"
-          item-value="name"
+          item-value="key"
           items-per-page="5"
           show-select
           select-strategy="single"
-          :model-value="profileTable.selectedProfiles"
+          :model-value="state.selectedProfiles"
           @update:model-value="newVal => selectNewItem(newVal)"
         />
       </BaseCard>
@@ -51,7 +51,7 @@
           <v-btn
             flat
             color="primary"
-            :disabled="!profileTable.selectedProfiles[0]"
+            :disabled="!state.selectedProfiles[0]"
             @click="toggleDialog"
           >
             {{ t('applyBtn') }}
@@ -62,9 +62,8 @@
   </BasePage>
 </template>
 <script setup lang="ts">
-import { useProfiles, useUnits }  from './profiles.ts';
-const { profileTable, profiles, testprofiles } = useProfiles();
-const { dialog, toggleDialog } = useUnits();
+import { useProfiles }  from './profiles.ts';
+const { state, profiles, toggleDialog } = useProfiles();
 const { t } = useI18n();
 
 // Table setup
