@@ -18,7 +18,7 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    :title="dialogTitle === 'create' ? t('createUnit') : t('editUnit')"
+    :title="unitId ? t('editUnit') : t('createUnit')"
     :close-disabled="creatingUnit || updatingUnit"
     v-bind="$attrs"
     @update:model-value="emit('update:model-value', $event)"
@@ -96,10 +96,6 @@ const props = defineProps({
   unitId: {
     type: String,
     default: undefined
-  },
-  dialogTitle: {
-    type: String,
-    default: ''
   }
 });
 
@@ -115,8 +111,8 @@ const queryClient = useQueryClient();
 const { createLink } = useCreateLink();
 
 watch(() => props.modelValue, (newValue) => {
-  if(newValue) {
-    if(props.unitId && props.unitId === unit.value?.id) {
+  if (newValue) {
+    if (props.unitId && props.unitId === unit.value?.id) {
       unitDetails.name = unit.value?.name;
       unitDetails.description = unit.value?.description;
       unitDetails.domains = cloneDeep(unit.value?.domains || []);
@@ -125,7 +121,7 @@ watch(() => props.modelValue, (newValue) => {
       unitDetails.description = undefined;
       unitDetails.domains = domains.value?.map((domain) => createLink('domains', domain.id)) || [];
     }
-    if(form.value) {
+    if (form.value) {
       form.value.resetValidation();
     }
   }
@@ -140,7 +136,7 @@ const { data: unit } = useQuery(unitQueryDefinitions.queries.fetch, fetchUnitQue
   enabled: fetchUnitQueryEnabled
 });
 watch(() => unit.value, (newValue) => {
-  if(newValue) {
+  if (newValue) {
     unitDetails.name = newValue.name;
     unitDetails.description = newValue.description;
     unitDetails.domains = cloneDeep(newValue.domains);
@@ -160,7 +156,7 @@ const unitDetails = reactive<{
   domains: IVeoLink[]
 }>({ name: undefined, description: undefined, domains: [] });
 watch(() => unitDetails, () => {
-  if(form.value) {
+  if (form.value) {
     form.value.validate();
   }
 }, { deep: true });
@@ -168,11 +164,11 @@ watch(() => unitDetails, () => {
 const { mutateAsync: create, isLoading: creatingUnit, data: unitDetailsPayload } = useMutation(unitQueryDefinitions.mutations.create);
 const { mutateAsync: update, isLoading: updatingUnit } = useMutation(unitQueryDefinitions.mutations.update);
 const createUnit = async () => {
-  if(!actionPermitted.value) {
+  if (!actionPermitted.value) {
     return;
   }
   try {
-    if(props.unitId) {
+    if (props.unitId) {
       await update({ ...unitDetails, id: props.unitId });
       displaySuccessMessage(t('unitUpdated'));
       emit('update:model-value', false);
