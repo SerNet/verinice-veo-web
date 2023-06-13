@@ -157,11 +157,11 @@ export default defineComponent({
       router.push({
         name: OBJECT_OVERVIEW_ROUTE,
         params: {
-          domain: route.params.domain
+          domain: route.params.domain,
+          objectType,
+          subType
         },
         query: {
-          objectType,
-          subType,
           status
         }
       });
