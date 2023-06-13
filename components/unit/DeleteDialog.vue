@@ -26,7 +26,11 @@
     <template #default>
       <div>{{ t('question', { name: unit?.name }) }}</div>
       <div>{{ t('hint') }}</div><br>
-      <div>{{ t('request') }}</div>
+      <div
+        v-if="!showUnitConfirmationForm"
+      >
+        {{ t('request') }}
+      </div>
 
       <BaseCard
         v-if="showUnitConfirmationForm"
@@ -149,7 +153,7 @@ const deleteUnit = async () => {
       "buttonCaption": "Delete irrevocably",
       "cancel": "Cancel",
       "dialogTitle": "Delete unit",
-      "formHeadline": "Unit Name",
+      "formHeadline": "Unit name",
       "hint": "This action cannot be undone.",
       "placeholder": "Please enter the name of the unit to be deleted",
       "question": "Do you really want to irrevocably delete the unit \"{name}\"?",
