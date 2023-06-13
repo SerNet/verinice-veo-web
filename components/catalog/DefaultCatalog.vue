@@ -65,6 +65,7 @@ import { useQuerySync } from '~~/composables/api/utils/query';
 import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
 import { useMutation } from '~~/composables/api/utils/mutation';
 import { TableHeader } from '../base/Table.vue';
+import { IVeoEntity } from '~/types/VeoTypes';
 
 const props = withDefaults(defineProps<{
   catalogItems: IVeoCatalogItem[];
@@ -119,21 +120,21 @@ const headers: TableHeader[] = [
   }
 ];
 
-const selectedItems = ref<string[]>([]);
+const selectedItems = ref<IVeoEntity[]>([]);
 const availableItems = computed(() =>
   props.catalogItems.map((item) => {
     const displayNameParts = (item.element.displayName as string).split(' ');
     const designator = displayNameParts.shift() || '';
     const abbreviation = displayNameParts.shift() || '';
-    const title = displayNameParts.join(' ');
+    const name = displayNameParts.join(' ');
 
-    return { designator, abbreviation, title, id: item.id, description: item.description };
+    return { designator, abbreviation, name, id: item.id, description: item.description || '' };
   })
 );
 
 // If the available items change (they shouldn't) only select the items that are still available.
 watch(() => availableItems.value, (newValue) => {
-  const newValues = selectedItems.value.filter((selectedItemId: string) => newValue.some((item) => item.id === selectedItemId));
+  const newValues = selectedItems.value.filter((selectedItem) => newValue.some((item) => item.id === selectedItem.id));
   selectedItems.value = newValues;
 });
 
@@ -144,7 +145,7 @@ const applyItems = async () => {
 
   try {
     // Fetch incarnations for all selected items
-    const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: route.params.unit as string, itemIds: selectedItems.value });
+    const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: route.params.unit as string, itemIds: selectedItems.value.map((value) => value.id) });
     // Apply incarnations
     await incarnate({ incarnations, unitId: route.params.unit });
     displaySuccessMessage(props.successText);
