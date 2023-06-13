@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// @vitest-environment happy-dom
 import { describe, it, expect } from 'vitest';
 import { mockNuxtImport, mockComponent } from 'nuxt-vitest/utils';
 import { mount } from '@vue/test-utils';
