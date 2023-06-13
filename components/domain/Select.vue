@@ -84,7 +84,7 @@
             v-for="domain of selectItems"
             :key="domain.value"
             :active="domainId === domain.value"
-            active-class="veo-active-list-item"
+            color="primary"
             :value="domain.value"
             :title="domain.title"
             @click="domainId = domain.value"
@@ -99,7 +99,8 @@
 import { mergeProps } from 'vue';
 import { mdiChevronDown, mdiChevronUp, mdiShapeOutline } from '@mdi/js';
 
-import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
+import { ROUTE_NAME as MORE_DOMAINS_ROUTE } from '~~/pages/[unit]/domains/more.vue';
+import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE } from '~~/pages/[unit]/domains/[domain]/index.vue';
 import { useFetchUnitDomains } from '~/composables/api/domains';
 
 export default defineComponent({
@@ -115,32 +116,29 @@ export default defineComponent({
   },
   emits: ['expand-menu'],
   setup() {
-    const router = useRouter();
     const route = useRoute();
     const { t } = useI18n();
-    const { t: $t } = useI18n({ useScope: 'global' });
-
-    const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
+    const { t: globalT } = useI18n({ useScope: 'global' });
 
     const domainId = computed({
       get() {
-        return separateUUIDParam(route.params.domain as string).id || 'more';
+        return route.params.domain as string || 'more';
       },
       set(newValue: string) {
         if (newValue === 'more') {
-          router.push({
-            name: 'unit-domains-more',
+          navigateTo({
+            name: MORE_DOMAINS_ROUTE,
             params: {
-              ...route.params,
-              domain: 'more'
+              ...route.params
             }
           });
         } else {
-          router.push({
-            name: 'unit-domains-domain',
+          navigateTo({
+            ...route,
+            name: route.name === MORE_DOMAINS_ROUTE || !route.name ? DOMAIN_DASHBOARD_ROUTE : route.name,
             params: {
               ...route.params,
-              domain: createUUIDUrlParam('domain', newValue)
+              domain: newValue
             }
           });
         }
@@ -148,11 +146,11 @@ export default defineComponent({
     });
     const domainName = computed(() => selectItems.value.find((domain) => domain.value === domainId.value)?.title || t('noDomainSelected').toString());
 
-    const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: unitId.value }));
-    const fetchUnitDomainsQueryEnabled = computed(() => !!unitId.value);
+    const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
+    const fetchUnitDomainsQueryEnabled = computed(() => !!route.params.unit);
     const { data: domains, isFetching: domainIsFetching } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
 
-    const selectItems = computed(() => (domains.value || []).map((domain) => ({ value: domain.id, title: domain.name })).concat({ value: 'more', title: $t('breadcrumbs.more').toString() }));
+    const selectItems = computed(() => (domains.value || []).map((domain) => ({ value: domain.id, title: domain.name })).concat({ value: 'more', title: globalT('breadcrumbs.more').toString() }));
 
     return {
       domainId,

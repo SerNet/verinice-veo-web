@@ -80,7 +80,7 @@
 import { cloneDeep, isEqual } from 'lodash';
 import { useQueryClient } from '@tanstack/vue-query';
 
-import { createUUIDUrlParam, getEntityDetailsFromLink, getFirstDomainDomaindId } from '~/lib/utils';
+import { getEntityDetailsFromLink, getFirstDomainDomaindId } from '~/lib/utils';
 import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useRules } from '~/composables/utils';
@@ -88,18 +88,17 @@ import { useMutation } from '~~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 import { IVeoLink } from '~/types/VeoTypes';
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false
-  },
-  unitId: {
-    type: String,
-    default: undefined
-  }
+const props = withDefaults(defineProps<{
+  modelValue: boolean,
+  unitId?: string
+}>(), {
+  modelValue: false,
+  unitId: undefined
 });
 
-const emit = defineEmits(['update:model-value']);
+const emit = defineEmits<{
+  (e: 'update:model-value', value: boolean): void
+}>();
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
@@ -183,8 +182,8 @@ const createUnit = async () => {
         router.push({
           name: 'unit-domains-domain',
           params: {
-            unit: createUUIDUrlParam('unit', unit.id),
-            domain: createUUIDUrlParam('domain', domainId)
+            unit: unit.id,
+            domain: domainId
           }
         });
       }

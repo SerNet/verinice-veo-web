@@ -17,7 +17,6 @@
  */
 import { StorageSerializers, useStorage } from '@vueuse/core';
 
-import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { useQuerySync } from '~~/composables/api/utils/query';
 import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
@@ -44,8 +43,8 @@ export default defineNuxtPlugin (async (nuxtApp) => {
   const lastDomain = useStorage(LOCAL_STORAGE_KEYS.LAST_DOMAIN, undefined, localStorage, { serializer: StorageSerializers.string });
 
   router.afterEach((to, _from) => {
-    const currentRouteUnitId = separateUUIDParam(to.params.unit as string).id;
-    const currentRouteDomainId = separateUUIDParam(to.params.domain as string).id;
+    const currentRouteUnitId = to.params.unit;
+    const currentRouteDomainId = to.params.domain as string;
 
     if (currentRouteUnitId && lastUnit.value !== currentRouteUnitId) {
       lastUnit.value = currentRouteUnitId;
@@ -92,11 +91,11 @@ export default defineNuxtPlugin (async (nuxtApp) => {
         // Somehow return navigteTo, await navigateTo and nextTick(() => navigateTo) don't work, so we have to solve it dirty with a timeout.
         // 50ms seems to work reliably and isn't noticeable by the user, so we use 50ms
         setTimeout(() => {
-          navigateTo({
+          return navigateTo({
             name: 'unit-domains-domain',
             params: {
-              unit: createUUIDUrlParam('unit', _lastUnit as string),
-              domain: createUUIDUrlParam('domain', _lastDomain)
+              unit: _lastUnit,
+              domain: _lastDomain
             }
           });
         }, 50);

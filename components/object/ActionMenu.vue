@@ -66,7 +66,7 @@
     <ObjectCreateDialog
       v-if="createObjectDialog.objectType"
       v-model="createObjectDialog.value"
-      :domain-id="domainId"
+      :domain-id="($route.params.domain as string)"
       :object-type="createObjectDialog.objectType"
       :sub-type="subType"
       :parent-scope-ids="createObjectDialog.parentScopeIds"
@@ -75,7 +75,7 @@
     <RiskCreateDialog
       v-if="object && createRiskDialogVisible"
       v-model="createRiskDialogVisible"
-      :domain-id="domainId"
+      :domain-id="($route.params.domain as string)"
       :object-id="object.id"
       @success="onCreateRiskSuccess"
     />
@@ -87,7 +87,6 @@ import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
 
-import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
@@ -124,9 +123,6 @@ export default defineComponent({
 
     const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
-
-    // general stuff
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     const speedDialIsOpen = ref(false);
 
@@ -247,7 +243,7 @@ export default defineComponent({
     /**
      * create scopes & objects
      */
-    const subType = computed(() => (props.object?.type !== 'scope' && props.type.endsWith('Objects') ? props.object?.domains?.[domainId.value]?.subType : undefined));
+    const subType = computed(() => (props.object?.type !== 'scope' && props.type.endsWith('Objects') ? props.object?.domains?.[route.params.domain as string]?.subType : undefined));
 
     // emit after new object creation for linking
     const onCreateObjectSuccess = async (newObjectId: string) => {
@@ -295,7 +291,6 @@ export default defineComponent({
       speedDialIsOpen,
       subType,
       allowedActions,
-      domainId,
 
       t,
       upperFirst,

@@ -44,7 +44,6 @@
 <script lang="ts">
 import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
-import { separateUUIDParam, createUUIDUrlParam } from '~/lib/utils';
 import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 import { useQuery } from '~~/composables/api/utils/query';
 
@@ -53,18 +52,15 @@ export default defineComponent({
     const { t, locale } = useI18n();
     const route = useRoute();
 
-    const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-
-    const latestChangesQueryParameters = computed(() => ({ unitId: unitId.value }));
+    const latestChangesQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
     const { data: revisions } = useQuery(historyQueryDefinitions.queries.fetchLatestVersions, latestChangesQueryParameters);
 
-    const fetchFormsQueryParameters = computed(() => ({ domainId: domainId.value }));
-    const fetchFormsQueryEnabled = computed(() => !!domainId.value);
+    const fetchFormsQueryParameters = computed(() => ({ domainId: route.params.domain as string }));
+    const fetchFormsQueryEnabled = computed(() => !!route.params.domain);
     const { data: forms } = useQuery(formQueryDefinitions.queries.fetchForms, fetchFormsQueryParameters, { enabled: fetchFormsQueryEnabled });
 
     const createUrl = (revision: IVeoObjectHistoryEntry) =>
-      `/${route.params.unit}/domains/${route.params.domain}/objects/${createUUIDUrlParam(revision.content.type, revision.content.id)}/`;
+      `/${route.params.unit}/domains/${route.params.domain}/objects/${revision.content.id}/`;
 
     return {
       createUrl,

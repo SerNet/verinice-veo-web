@@ -35,7 +35,7 @@
     <template #default>
       <v-list
         v-model:selected="selectedLocale"
-        active-color="primary"
+        color="primary"
         mandatory
         :items="availableLocales"
         item-title="name"
