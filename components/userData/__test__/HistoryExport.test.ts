@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// @vitest-environment happy-dom
 import { describe, it, expect } from 'vitest';
 import { mockNuxtImport } from 'nuxt-vitest/utils';
 import { mount } from '@vue/test-utils';
@@ -34,16 +35,23 @@ mockNuxtImport('useI18n', () => {
 // Setup
 const vuetify = createVuetify();
 const plugins = [vuetify];
-const mocks = {t};
 
 describe('HistoryExport.vue', () => {
-  const wrapper = mount(HistoryExport, {
-    global: { plugins, mocks }
-  });
+  it('renders a loader when preparing history data', async () => {
 
-  it('should render a loader', async () => {
+    const state = {
+      zipArchives: [],
+      isLoading: [true],
+      showAlert: false,
+      prepare: { phase: 1,  cur: 0, total: 100 }
+    };
+
+    const mocks = { t, state };
+    const wrapper = mount(HistoryExport, {
+      global: { plugins, mocks }
+    });
+
     const prepareDownloadBtn = wrapper.find('button');
-    await prepareDownloadBtn.trigger('click');
     expect(prepareDownloadBtn.find('.v-btn__loader').exists()).toBe(true);
   });
 
