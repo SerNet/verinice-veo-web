@@ -23,24 +23,61 @@
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
-      <span class="text-body-1">{{ t('text', { name: unit.name }) }}</span>
+      <span class="text-body-1">{{ t('text', { name: unit?.name }) }}</span>
+
+      <v-form
+        v-if="showUnitConfirmationForm"
+        class="mt-4"
+      >
+        <v-card-subtitle>{{ t('deleteInfo') }}</v-card-subtitle>
+
+        <v-text-field
+          v-model="unitName"
+          :counter="unit?.name?.length"
+          :rules="nameRules"
+          label="Unit name"
+          required
+        />
+      </v-form>
     </template>
+
     <template #dialog-options>
       <v-btn
         variant="text"
-        @click="$emit('update:model-value', false)"
+        @click="$emit('update:model-value', false); showUnitConfirmationForm = false"
       >
         {{ globalT('global.button.no') }}
       </v-btn>
       <v-spacer />
+
       <v-btn
+        :disabled="showUnitConfirmationForm"
+        variant="tonal"
+        to="/user-data"
+        @click="showUnitConfirmationForm = false"
+      >
+        Backup
+      </v-btn>
+      <v-spacer />
+
+      <v-btn
+        v-if="!showUnitConfirmationForm"
         variant="text"
         color="primary"
         :disabled="deletionInProgress || ability.cannot('manage', 'units')"
         :loading="deletionInProgress"
-        @click="deleteUnit"
+        @click="showUnitConfirmationForm = true"
       >
         {{ globalT('global.button.delete') }}
+      </v-btn>
+
+      <v-btn
+        v-if="showUnitConfirmationForm && unitNameIsValid"
+        variant="text"
+        color="primary"
+        @click="deleteUnit(); showUnitConfirmationForm = false"
+      >
+        Irrevocably delete
       </v-btn>
     </template>
   </BaseDialog>
@@ -49,18 +86,22 @@
 <script setup lang="ts">
 import { PropType } from 'vue';
 
-  
 import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import { useMutation } from '~~/composables/api/utils/mutation';
-  
+
 const props = defineProps({
   unit: {
     type: Object as PropType<IVeoUnit>,
     default: undefined
   }
 });
-const emit = defineEmits(['success', 'error', 'update:model-value']);
-  
+
+const emit = defineEmits<{
+  (event: 'success'): void
+  (event: 'error'): void
+  (event: 'update:model-value', value: boolean): void
+}>();
+
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -68,16 +109,24 @@ const { ability } = useVeoPermissions();
 
 const { mutateAsync: doDelete, isLoading: deletionInProgress } = useMutation(unitQueryDefinitions.mutations.delete);
 
+const showUnitConfirmationForm = ref(false);
+const unitName = ref('');
+const unitNameIsValid = computed(() => unitName.value === props.unit?.name);
+const nameRules = [
+  (name: any) => !!name || 'Unit name required',
+  (name: any) => (name && name.length === props.unit?.name?.length) || `Unit name must equal ${props.unit?.name?.length} characters`
+];
+
 const deleteUnit = async () => {
   if(deletionInProgress.value || ability.value.cannot('manage', 'units')) {
     return;
   }
   try {
-    await doDelete({ id: props.unit.id });
+    await doDelete({ id: props.unit?.id });
     displaySuccessMessage(t('unitDeleted'));
     emit('success');
     emit('update:model-value', false);
-  } catch (e) {
+  } catch (e: any) {
     emit('error');
     displayErrorMessage(t('unitDeletionError'), e.message);
   }
@@ -87,13 +136,21 @@ const deleteUnit = async () => {
   <i18n>
   {
     "en": {
+      "backup": "Create backup",
       "deleteUnit": "Delete unit",
-      "text": "Do you really want to delete the unit \"{name}\"? This action cannot be undone.",
+      "deleteInfo": "Please enter the name of the unit to be deleted:",
+      "text": "Do you really want to irrevocably delete the unit \"{name}\"?
+      This action cannot be undone.
+      It is recommended to create a local backup of all data before deletion.",
       "unitDeleted": "The unit was deleted successfully."
     },
     "de": {
+      "backup": "Backup anlegen",
       "deleteUnit": "Unit löschen",
-      "text": "Möchten Sie die Unit \"{name}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteInfo": "Bitte geben Sie den Namen der zu löschenden Unit ein:",
+      "text": "Möchten Sie die Unit \"{name}\" unwiderruflich löschen?
+      Diese Aktion kann nicht rückgängig gemacht werden.
+      Es wird empfohlen, vor der Löschung ein lokales Backup aller Daten anzulegen.",
       "unitDeleted": "Die Unit wurde erfolgreich gelöscht."
     }
   }
