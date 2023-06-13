@@ -26,7 +26,7 @@
         >
           <td>
             <nuxt-link
-              :to="createUrl(revision)"
+              :to="createUrl(revision, schemas || {})"
               class="text-body-2"
             >
               {{ revision.content.designator }} <b>{{ revision.content.abbreviation }} {{ revision.content.name }}</b>
@@ -41,38 +41,38 @@
   </BaseWidget>
 </template>
 
-<script lang="ts">
-import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+<script setup lang="ts">
 import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
+import schemaQueryDefinitions, { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas';
 import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 import { useQuery } from '~~/composables/api/utils/query';
 
-export default defineComponent({
-  setup() {
-    const { t, locale } = useI18n();
-    const route = useRoute();
 
-    const latestChangesQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
-    const { data: revisions } = useQuery(historyQueryDefinitions.queries.fetchLatestVersions, latestChangesQueryParameters);
+const { t, locale } = useI18n();
+const route = useRoute();
 
-    const fetchFormsQueryParameters = computed(() => ({ domainId: route.params.domain as string }));
-    const fetchFormsQueryEnabled = computed(() => !!route.params.domain);
-    const { data: forms } = useQuery(formQueryDefinitions.queries.fetchForms, fetchFormsQueryParameters, { enabled: fetchFormsQueryEnabled });
+const latestChangesQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
+const { data: revisions } = useQuery(historyQueryDefinitions.queries.fetchLatestVersions, latestChangesQueryParameters);
 
-    const createUrl = (revision: IVeoObjectHistoryEntry) =>
-      `/${route.params.unit}/domains/${route.params.domain}/objects/${revision.content.id}/`;
+const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-    return {
-      createUrl,
-      forms,
-      revisions,
+const createUrl = (revision: IVeoObjectHistoryEntry, schemas: IVeoSchemaEndpoints) => {
+  const subType = revision.content.domains[route.params.domain as string].subType || '-';
 
-      t,
-      locale
-    };
-  }
-});
+  return `/${route.params.unit}/domains/${route.params.domain}/${schemas[revision.content.type]}/${subType}/${revision.content.id}/`;
+};
 </script>
+
+<i18n>
+{
+  "en": {
+    "myLatestRevisions": "My latest edited revisions"
+  },
+  "de": {
+    "myLatestRevisions": "Meine zuletzt bearbeiteten Objekte"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 a {
@@ -95,14 +95,3 @@ tbody {
   background: transparent;
 }
 </style>
-
-<i18n>
-{
-  "en": {
-    "myLatestRevisions": "My latest edited revisions"
-  },
-  "de": {
-    "myLatestRevisions": "Meine zuletzt bearbeiteten Objekte"
-  }
-}
-</i18n>
