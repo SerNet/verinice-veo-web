@@ -1,51 +1,37 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Samuel Vitzthum
-   -
+   - Copyright (C) 2023  Jonas Heitmann
+   - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   -
+   - 
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   -
+   - 
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<template>
-  <div class="d-flex flex-column align-center">
-    <v-img
-      class="fill-width"
-      src="/images/objectNotFound.svg"
-      max-height="300px"
-      contain
-    />
-    <h1 class="text-h1 mt-8">
-      {{ t('notFoundCode').toString() }}
-    </h1>
-    <p class="mt-2 text-body-1">
-      {{ t('notFound').toString() }}
-    </p>
-    <slot />
-  </div>
-</template>
-
 <script setup lang="ts">
-const { t } = useI18n();
+import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
+
+const route = useRoute();
+
+// Navigate the user to the object overview page with a placeholder for the subtype
+await navigateTo({
+  name: OBJECT_OVERVIEW_ROUTE,
+  params: {
+    unit: route.params.unit,
+    domain: route.params.domain,
+    objectType: route.params.objectType,
+    subType: '-'
+  }
+});
 </script>
 
-<i18n>
-{
-  "en": {
-    "notFoundCode": "404 Not found",
-    "notFound": "The object type could not be found."
-  },
-  "de": {
-    "notFoundCode": "404 Not found",
-    "notFound": "Der von Ihnen angeforderte Objekttyp konnte nicht gefunden werden."
-  }
-}
-</i18n>
+<template>
+  <span>Redirecting...</span>
+</template>

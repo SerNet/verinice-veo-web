@@ -27,7 +27,7 @@
       >
         <v-list-item
           density="compact"
-          active-class="veo-active-list-item"
+          color="primary"
           :value="item.initialId"
           :active="selectedItem === item.initialId"
           @click="onClick(item.initialId)"

@@ -44,7 +44,6 @@ import type { SortItem } from 'vuetify/labs/VDataTable/composables/sort.mjs';
 
 import ObjectIcon from '~/components/object/Icon.vue';
 import { useFormatters } from '~/composables/utils';
-import { separateUUIDParam } from '~/lib/utils';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~~/composables/api/utils/query';
 import { TableFormatter, TableHeader, TableRenderer } from '~/components/base/Table.vue';
@@ -117,8 +116,6 @@ const attrs = useAttrs();
 const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
 
-const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-
 /**
  * Render folder or file icons
  */
@@ -169,10 +166,10 @@ const formatDate: TableFormatter = (v) => {
  */
 const renderStatus: TableRenderer = ({ item }) => {
   const _item = item.raw;
-  if (!domainId.value) return '';
-  const domainDetails = _item.domains?.[domainId.value];
+  if (!route.params.domain) return '';
+  const domainDetails = _item.domains?.[route.params.domain as string];
   const key = `${_item.type}_${domainDetails?.subType}_status_${domainDetails?.status}`;
-  return translations.value?.lang?.[locale.value]?.[key] || _item.domains?.[domainId.value]?.status || '';
+  return translations.value?.lang?.[locale.value]?.[key] || _item.domains?.[route.params.domain as string]?.status || '';
 };
 
 /**
