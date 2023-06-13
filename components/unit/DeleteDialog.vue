@@ -18,41 +18,49 @@
 <template>
   <BaseDialog
     v-bind="$attrs"
-    :title="t('deleteUnit')"
+    :title="t('dialogTitle')"
     :close-disabled="deletionInProgress"
+    width="600px"
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
-      <span class="text-body-1">{{ t('text', { name: unit?.name }) }}</span>
+      <div>{{ t('question', { name: unit?.name }) }}</div>
+      <div>{{ t('hint') }}</div><br>
+      <div>{{ t('request') }}</div>
 
-      <v-form
+      <BaseCard
         v-if="showUnitConfirmationForm"
         class="mt-4"
       >
-        <v-card-subtitle>{{ t('deleteInfo') }}</v-card-subtitle>
-
-        <v-text-field
-          v-model="unitName"
-          :counter="unit?.name?.length"
-          :rules="nameRules"
-          label="Unit name"
-          required
-        />
-      </v-form>
+        <v-card-title>{{ t('formHeadline') }}</v-card-title>
+        <v-form class="mt-4">
+          <v-text-field
+            v-model="unitName"
+            :counter="unit?.name?.length"
+            :placeholder="t('placeholder')"
+            :rules="nameRules"
+            required
+            type="input"
+          />
+        </v-form>
+      </BaseCard>
     </template>
 
     <template #dialog-options>
       <v-btn
-        variant="text"
+        variant="outlined"
+        color="primary"
         @click="$emit('update:model-value', false); showUnitConfirmationForm = false"
       >
-        {{ globalT('global.button.no') }}
+        {{ showUnitConfirmationForm ? t('cancel') : globalT('global.button.no') }}
       </v-btn>
-      <v-spacer />
 
       <v-btn
+        v-if="!showUnitConfirmationForm"
         :disabled="showUnitConfirmationForm"
-        variant="tonal"
+        variant="flat"
+        color="green"
+        elevation="2"
         to="/user-data"
         @click="showUnitConfirmationForm = false"
       >
@@ -62,7 +70,8 @@
 
       <v-btn
         v-if="!showUnitConfirmationForm"
-        variant="text"
+        variant="flat"
+        elevation="2"
         color="primary"
         :disabled="deletionInProgress || ability.cannot('manage', 'units')"
         :loading="deletionInProgress"
@@ -72,12 +81,14 @@
       </v-btn>
 
       <v-btn
-        v-if="showUnitConfirmationForm && unitNameIsValid"
-        variant="text"
+        v-if="showUnitConfirmationForm"
+        :disabled="!unitNameIsValid"
+        variant="flat"
         color="primary"
+        elevation="2"
         @click="deleteUnit(); showUnitConfirmationForm = false"
       >
-        Irrevocably delete
+        {{ t('buttonCaption') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -113,8 +124,7 @@ const showUnitConfirmationForm = ref(false);
 const unitName = ref('');
 const unitNameIsValid = computed(() => unitName.value === props.unit?.name);
 const nameRules = [
-  (name: any) => !!name || 'Unit name required',
-  (name: any) => (name && name.length === props.unit?.name?.length) || `Unit name must equal ${props.unit?.name?.length} characters`
+  (name: any) => !!name || 'Unit name required'
 ];
 
 const deleteUnit = async () => {
@@ -136,21 +146,25 @@ const deleteUnit = async () => {
   <i18n>
   {
     "en": {
-      "backup": "Create backup",
-      "deleteUnit": "Delete unit",
-      "deleteInfo": "Please enter the name of the unit to be deleted:",
-      "text": "Do you really want to irrevocably delete the unit \"{name}\"?
-      This action cannot be undone.
-      It is recommended to create a local backup of all data before deletion.",
+      "buttonCaption": "Delete irrevocably",
+      "cancel": "Cancel",
+      "dialogTitle": "Delete unit",
+      "formHeadline": "Unit Name",
+      "hint": "This action cannot be undone.",
+      "placeholder": "Please enter the name of the unit to be deleted",
+      "question": "Do you really want to irrevocably delete the unit \"{name}\"?",
+      "request": "It is recommended to create a local backup of all data before deletion.",
       "unitDeleted": "The unit was deleted successfully."
     },
     "de": {
-      "backup": "Backup anlegen",
-      "deleteUnit": "Unit löschen",
-      "deleteInfo": "Bitte geben Sie den Namen der zu löschenden Unit ein:",
-      "text": "Möchten Sie die Unit \"{name}\" unwiderruflich löschen?
-      Diese Aktion kann nicht rückgängig gemacht werden.
-      Es wird empfohlen, vor der Löschung ein lokales Backup aller Daten anzulegen.",
+      "buttonCaption": "Unwiderruflich löschen",
+      "cancel": "Abbrechen",
+      "dialogTitle": "Unit löschen",
+      "formHeadline": "Name der Unit",
+      "hint": "Diese Aktion kann nicht rückgängig gemacht werden.",
+      "placeholder": "Bitte geben Sie den Namen der zu löschenden Unit ein",
+      "question": "Möchten Sie die Unit \"{name}\" wirklich löschen?",
+      "request": "Es wird empfohlen, vor der Löschung ein lokales Backup aller Daten anzulegen.",
       "unitDeleted": "Die Unit wurde erfolgreich gelöscht."
     }
   }
