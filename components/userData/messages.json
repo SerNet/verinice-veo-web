@@ -18,7 +18,9 @@
       "0": "Downloading your data:",
       "1": "Downloading your data:",
       "2": "Creating ZIP Archives"
-    }
+    },
+    "alertLeavePageTitle": "Warning: History Download",
+    "alertLeavePageCopy": "Do you really want to leave this page and stop downloading history data?"
   },
 
   "de": {
@@ -41,6 +43,8 @@
       "0": "Daten herunterladen:",
       "1": "Daten herunterladen:",
       "2": "ZIP-Archive erstellen:"
-    }
+    },
+    "alertLeavePageTitle": "Warnung: History Download",
+    "alertLeavePageCopy": "Wollen Sie die Seite wirklich verlassen und den History-Download abbrechen?"
   }
 }

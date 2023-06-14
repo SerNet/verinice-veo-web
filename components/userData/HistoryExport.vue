@@ -62,6 +62,45 @@
       </div>
     </template>
   </UserDataCard>
+
+  <!-- On leaving this route: warn user if data preparation in progress -->
+  <BaseDialog
+    :close-function="toggleWarnOnLeaveDialog"
+    :model-value="state.showWarnOnLeaveDialog"
+    :title="t('alertLeavePageTitle')"
+  >
+    <template #default>
+      <v-card-text>
+        {{ t('alertLeavePageCopy') }}
+      </v-card-text>
+      <v-row
+        dense
+        class="mt-4"
+      >
+        <v-spacer />
+        <v-col
+          cols="auto"
+        >
+          <v-btn
+            flat
+            variant="plain"
+            class="me-2"
+            @click="confirmPageLeave(false)"
+          >
+            {{ t('global.button.cancel') }}
+          </v-btn>
+
+          <v-btn
+            flat
+            color="primary"
+            @click="confirmPageLeave(true)"
+          >
+            {{ t('global.button.ok') }}
+          </v-btn>
+        </v-col>
+      </v-row>
+    </template>
+  </BaseDialog>
 </template>
 
 <script setup lang="ts">
@@ -82,6 +121,8 @@ interface IHistoryState {
   isLoading: boolean[];
   showAlert: boolean;
   prepare: { phase: PrepPhase, cur: number, total: number };
+  warnOnLeave: boolean;
+  resolveWarnOnLeave: () => boolean;
 }
 
 // Composables
@@ -93,7 +134,9 @@ const state: IHistoryState = reactive({
   zipArchives: [],
   isLoading: [],
   showAlert: computed(() => state.zipArchives.length === 0 && state.prepare.phase === PrepPhase.DONE),
-  prepare: { phase: PrepPhase.IDLE,  cur: 0, total: 100 }
+  prepare: { phase: PrepPhase.IDLE,  cur: 0, total: 100 },
+  showWarnOnLeaveDialog: false,
+  resolveWarnOnLeave: undefined
 });
 
 function updateLoadingState({ phase, cur, total }: { phase: PrepPhase, cur: number, total: number}) {
@@ -141,5 +184,34 @@ function handleError(error: unknown) {
   logError(error);
   displayErrorMessage( t('errorHeader'), t('errorBody'));
 }
+
+/***************************
+* Warn before leaving page
+***************************/
+const toggleWarnOnLeaveDialog = () =>
+  state.showWarnOnLeaveDialog = !state.showWarnOnLeaveDialog;
+
+function askForConfirmation() {
+  toggleWarnOnLeaveDialog();
+  return new Promise( resolve => {
+    state.resolveWarnOnLeave = resolve;
+  });
+}
+
+function confirmPageLeave(isLeaving) {
+  state.resolveWarnOnLeave(isLeaving);
+  toggleWarnOnLeaveDialog();
+}
+
+onBeforeRouteLeave((to, from, next) => {
+  // Prompt user if download in progress
+  if(state.prepare.phase === PrepPhase.DOWNLOAD) {
+    askForConfirmation().then( isLeaving => {
+      next(isLeaving);
+    });
+    return;
+  }
+  next();
+});
 </script>
 <i18n src="./messages.json"></i18n>
