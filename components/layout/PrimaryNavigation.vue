@@ -456,7 +456,7 @@ const docNavItems = computed(() =>
 );
 
 const items = computed<INavItem[]>(() => [
-  ...(authenticated.value && userSettings.value.maxUnits && userSettings.value.maxUnits > 2 ? [unitSelectionNavEntry.value] : []),
+  ...(authenticated.value && userSettings.value.maxUnits ? [unitSelectionNavEntry.value] : []),
   ...(props.unitId && props.domainId
     ? [
       domainDashboardNavEntry.value,
