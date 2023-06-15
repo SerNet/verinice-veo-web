@@ -71,7 +71,7 @@ import { mdiPlus } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
-import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
+import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoCustomLink } from '~/types/VeoTypes';
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
@@ -109,7 +109,7 @@ export default defineComponent({
     const config = useRuntimeConfig();
     const { t, locale } = useI18n();
 
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
+    const domainId = computed(() => route.params.domain as string);
 
     const objectType = computed<string>(() => ((props.objectSchema as any).items.properties.target.properties.type.enum[0] + '').toLowerCase());
     const subType = computed<string>(() => (props.objectSchema as any).items.properties.target.properties.subType?.enum?.[0]);

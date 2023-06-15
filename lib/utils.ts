@@ -32,28 +32,6 @@ export interface IForm {
   lang?: Record<string, any>;
 }
 
-interface IUUIDParam {
-  type: string;
-  id: string;
-}
-
-export function createUUIDUrlParam(type: string, UUID: string): string {
-  // UUID is exactly 36 characters long
-  // If it exactly 36 characters long (raw UUID), than add type to it, else return it directly, because type is already in it
-  return UUID.length !== 36 ? UUID : `${type}-${UUID}`;
-}
-
-export function separateUUIDParam(param: string | undefined): IUUIDParam {
-  // if param is not defined, inizialize it with an empty tring so we can call slice on it.
-  const stringParam = param || '';
-  // returns id with 36 characters from the structure type-UUID
-  const id = stringParam.slice(-36);
-  return {
-    type: stringParam.replace(`-${id}`, ''),
-    id
-  };
-}
-
 export function getEntityDetailsFromLink(link: IVeoLink): { type: string; id: string; name: string } {
   const destructedLink = link.targetUri.split('/');
 

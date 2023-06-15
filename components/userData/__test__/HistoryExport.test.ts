@@ -20,7 +20,6 @@
 import { describe, it, expect } from 'vitest';
 import { mockNuxtImport } from 'nuxt-vitest/utils';
 import { mount } from '@vue/test-utils';
-
 import { createVuetify } from 'vuetify';
 import { t } from '~~/test/mocks';
 
@@ -56,5 +55,4 @@ describe('HistoryExport.vue', () => {
   });
 
 });
-
 

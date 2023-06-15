@@ -43,7 +43,7 @@
         {{ t('linkParentExplanation', { displayName: object && object.displayName, newObjectTypeName }) }}
       </p>
       <ObjectFilterBar
-        :domain-id="domainId"
+        :domain-id="($route.params.domain as string)"
         :filter="filter"
         :available-object-types="availableObjectTypes"
         :required-fields="['objectType']"
@@ -87,7 +87,6 @@
 import { PropType } from 'vue';
 import { differenceBy, isEqual, omit, uniqBy, upperFirst } from 'lodash';
 
-import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useUnlinkObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
@@ -163,8 +162,6 @@ export default defineComponent({
     const translationsQueryParameters = computed(() => ({ languages: [locale.value] }));
     const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationsQueryParameters);
 
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-
     const newObjectTypeName = computed(() =>
       props.editScopeRelationship
         ? translations.value?.lang?.[locale.value]?.scope
@@ -201,7 +198,7 @@ export default defineComponent({
       sortBy: sortBy.value[0].key,
       sortOrder: sortBy.value[0].order,
       page: page.value,
-      unit: separateUUIDParam(route.params.unit as string).id,
+      unit: route.params.unit as string,
       ...omit(filter.value, 'objectType'),
       endpoint: objectListEndpoint.value
     }));
@@ -264,7 +261,7 @@ export default defineComponent({
     const parentsQueryParameters = computed(() => ({
       size: -1,
       page: 1,
-      unitId: separateUUIDParam(route.params.unit as string).id,
+      unitId: route.params.unit as string,
       parentEndpoint: objectListEndpoint.value,
       childObjectId: props.object?.id || ''
     }));
@@ -359,7 +356,6 @@ export default defineComponent({
       ability,
       availableObjectTypes,
       childrenLoading,
-      domainId,
       filter,
       itemsSelected,
       linkObjects,

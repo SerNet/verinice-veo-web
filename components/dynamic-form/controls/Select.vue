@@ -41,7 +41,7 @@
         v-if="item.value === '_empty_array_'"
         v-bind="props"
         :active="isEmpty(modelValue)"
-        active-color="primary"
+        color="primary"
       />
       <v-list-item
         v-else
@@ -49,7 +49,7 @@
         style="max-height: 48px"
         :title="undefined"
         :active="isArray(modelValue) && modelValue?.includes(item.value)"
-        active-color="primary"
+        color="primary"
       >
         <div class="d-flex align-center">
           <v-icon
