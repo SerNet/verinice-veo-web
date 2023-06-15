@@ -26,21 +26,26 @@
     <template #default>
       <div>{{ t('question', { name: unit?.name }) }}</div>
       <div>{{ t('hint') }}</div><br>
-      <div
-        v-if="!showUnitConfirmationForm"
+      {{ t('request') }}
+      <BaseAlert
+        :model-value="true"
+        :type="VeoAlertType.INFO"
+        class="mt-4"
+        flat
+        no-close-button
+        to="/user-data"
+        :buttons="[{text: 'backup', onClick: () => navigateTo('/user-data')}]"
       >
         {{ t('request') }}
-      </div>
+      </BaseAlert>
 
       <BaseCard
-        v-if="showUnitConfirmationForm"
         class="mt-4"
       >
-        <v-card-title>{{ t('formHeadline') }}</v-card-title>
-        <v-form class="mt-4">
+        <v-form>
           <v-text-field
             v-model="unitName"
-            :counter="unit?.name?.length"
+            hide-details="auto"
             :placeholder="t('placeholder')"
             :rules="nameRules"
             required
@@ -52,63 +57,36 @@
 
     <template #dialog-options>
       <v-btn
-        variant="outlined"
-        color="primary"
-        @click="$emit('update:model-value', false); showUnitConfirmationForm = false"
+        variant="text"
+        @click="$emit('update:model-value', false)"
       >
-        {{ showUnitConfirmationForm ? t('cancel') : globalT('global.button.no') }}
+        {{ globalT('global.button.no') }}
       </v-btn>
 
-      <v-btn
-        v-if="!showUnitConfirmationForm"
-        :disabled="showUnitConfirmationForm"
-        variant="flat"
-        color="green"
-        elevation="2"
-        to="/user-data"
-        @click="showUnitConfirmationForm = false"
-      >
-        Backup
-      </v-btn>
       <v-spacer />
 
       <v-btn
-        v-if="!showUnitConfirmationForm"
-        variant="flat"
-        elevation="2"
+        variant="text"
         color="primary"
-        :disabled="deletionInProgress || ability.cannot('manage', 'units')"
+        :disabled="unitDeletionDisabled"
         :loading="deletionInProgress"
-        @click="showUnitConfirmationForm = true"
+        @click="deleteUnit"
       >
         {{ globalT('global.button.delete') }}
-      </v-btn>
-
-      <v-btn
-        v-if="showUnitConfirmationForm"
-        :disabled="!unitNameIsValid"
-        variant="flat"
-        color="primary"
-        elevation="2"
-        @click="deleteUnit(); showUnitConfirmationForm = false"
-      >
-        {{ t('buttonCaption') }}
       </v-btn>
     </template>
   </BaseDialog>
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
-
 import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import { useMutation } from '~~/composables/api/utils/mutation';
+import { VeoAlertType } from '~/types/VeoTypes';
 
-const props = defineProps({
-  unit: {
-    type: Object as PropType<IVeoUnit>,
-    default: undefined
-  }
+const props = withDefaults(defineProps<{
+  unit?: IVeoUnit,
+}>(), {
+  unit: undefined
 });
 
 const emit = defineEmits<{
@@ -124,15 +102,15 @@ const { ability } = useVeoPermissions();
 
 const { mutateAsync: doDelete, isLoading: deletionInProgress } = useMutation(unitQueryDefinitions.mutations.delete);
 
-const showUnitConfirmationForm = ref(false);
 const unitName = ref('');
 const unitNameIsValid = computed(() => unitName.value === props.unit?.name);
 const nameRules = [
   (name: any) => !!name || 'Unit name required'
 ];
 
+const unitDeletionDisabled = computed(() => deletionInProgress.value || ability.value.cannot('manage', 'units') || !unitNameIsValid.value);
 const deleteUnit = async () => {
-  if(deletionInProgress.value || ability.value.cannot('manage', 'units')) {
+  if (unitDeletionDisabled.value) {
     return;
   }
   try {
@@ -150,10 +128,8 @@ const deleteUnit = async () => {
   <i18n>
   {
     "en": {
-      "buttonCaption": "Delete irrevocably",
       "cancel": "Cancel",
       "dialogTitle": "Delete unit",
-      "formHeadline": "Unit name",
       "hint": "This action cannot be undone.",
       "placeholder": "Please enter the name of the unit to be deleted",
       "question": "Do you really want to irrevocably delete the unit \"{name}\"?",
@@ -161,10 +137,8 @@ const deleteUnit = async () => {
       "unitDeleted": "The unit was deleted successfully."
     },
     "de": {
-      "buttonCaption": "Unwiderruflich löschen",
       "cancel": "Abbrechen",
       "dialogTitle": "Unit löschen",
-      "formHeadline": "Name der Unit",
       "hint": "Diese Aktion kann nicht rückgängig gemacht werden.",
       "placeholder": "Bitte geben Sie den Namen der zu löschenden Unit ein",
       "question": "Möchten Sie die Unit \"{name}\" wirklich löschen?",
