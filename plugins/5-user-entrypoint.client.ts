@@ -36,7 +36,7 @@ export default defineNuxtPlugin (async (nuxtApp) => {
   }
 
   const router = useRouter();
-  const { userSettings, initialize, keycloakInitialized, authenticated } = useVeoUser();
+  const { initialize, keycloakInitialized, authenticated } = useVeoUser();
 
   // Update last unit and last domain every time the route changes
   const lastUnit = useStorage(LOCAL_STORAGE_KEYS.LAST_UNIT, undefined, localStorage, { serializer: StorageSerializers.string });
@@ -87,7 +87,7 @@ export default defineNuxtPlugin (async (nuxtApp) => {
 
       const data = (domains || []).filter((domain) => unit.domains.some((unitDomain) => unitDomain.targetUri.includes(domain.id)));
 
-      if (userSettings.value.maxUnits <= 2 && data.find((domain) => domain.id === _lastDomain)) {      
+      if (data.find((domain) => domain.id === _lastDomain)) {      
         // Somehow return navigteTo, await navigateTo and nextTick(() => navigateTo) don't work, so we have to solve it dirty with a timeout.
         // 50ms seems to work reliably and isn't noticeable by the user, so we use 50ms
         setTimeout(() => {
