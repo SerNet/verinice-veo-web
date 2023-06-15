@@ -51,7 +51,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { NuxtError } from 'nuxt/app';
 import { upperFirst } from 'lodash';
 import { PropType } from 'vue';

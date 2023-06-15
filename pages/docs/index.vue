@@ -71,7 +71,7 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useDocs, useDocNavigationFlat } from '~/composables/docs';
 
 definePageMeta({ layout: 'none' });
@@ -81,7 +81,7 @@ const { locale, t } = useI18n();
 
 // Redirect user if he enters this page without the print query parameter, as this page is only for generating the pdf file
 if(!('print' in route.query)) {
-  navigateTo('/docs/index');
+  await navigateTo('/docs/index');
 }
 
 const currentYear = new Date().getFullYear();

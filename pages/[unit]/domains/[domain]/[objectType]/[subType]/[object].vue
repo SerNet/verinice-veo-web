@@ -69,13 +69,14 @@
       >
         <template #default>
           <ObjectForm
+            v-if="objectType"
             ref="objectForm"
             v-model="modifiedObject"
             v-model:valid="isFormValid"
             v-model:object-meta-data="metaData"
             class="pb-4"
             :disabled="formDataIsRevision || ability.cannot('manage', 'objects')"
-            :object-type="objectParameter.type"
+            :object-type="objectType"
             :original-object="object"
             :loading="loading || !modifiedObject"
             :domain-id="domainId"
@@ -174,18 +175,17 @@
 import { Ref } from 'vue';
 import { cloneDeep, isEqual, omit, upperFirst } from 'lodash';
 
-import { isObjectEqual, separateUUIDParam } from '~/lib/utils';
+import { isObjectEqual } from '~/lib/utils';
 import { IVeoEntity, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
-import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
-import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
+
+export const ROUTE_NAME = 'unit-domains-domain-objectType-subType-object';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -201,24 +201,17 @@ export default defineComponent({
     }
   },
   setup() {
-    const { locale, t } = useI18n();
+    const { t } = useI18n();
     const { t: globalT } = useI18n({ useScope: 'global' });
     const config = useRuntimeConfig();
     const route = useRoute();
     const router = useRouter();
     const { displaySuccessMessage, displayErrorMessage, expireAlert, displayInfoMessage } = useVeoAlerts();
     const { link } = useLinkObject();
-    const { customBreadcrumbExists, addCustomBreadcrumb, removeCustomBreadcrumb } = useVeoBreadcrumbs();
     const { ability } = useVeoPermissions();
     const {mutateAsync: _updateObject} = useMutation(objectQueryDefinitions.mutations.updateObject);
 
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-
-    const objectParameter = computed(() => separateUUIDParam(route.params.object as string));
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
+    const domainId = computed(() => route.params.domain as string);
 
     const modifiedObject = ref<IVeoEntity | undefined>(undefined);
     /* Data that should get merged back into modifiedObject after the object has been reloaded, useful to persist children
@@ -227,9 +220,8 @@ export default defineComponent({
 
     // Object details are originally part of the object, but as they might get updated independently, we want to avoid refetching the whole object, so we outsorce them.
     const metaData = ref<any>({});
-    const endpoint = computed(() => endpoints.value?.[objectParameter.value.type]);
 
-    const fetchObjectQueryParameters = computed(() => ({ endpoint: endpoint.value as string, id: objectParameter.value.id }));
+    const fetchObjectQueryParameters = computed(() => ({ endpoint: route.params.objectType as string, id: route.params.object as string }));
     const fetchObjectQueryEnabled = computed(() => !!fetchObjectQueryParameters.value.endpoint && !!fetchObjectQueryParameters.value.id);
     const {
       data: object,
@@ -253,73 +245,7 @@ export default defineComponent({
       }
     });
 
-    // Breadcrumb extensions
-    const objectTypeKey = 'object-detail-view-object-type';
-
-    const onObjectTypeChanged = (newObjectType: string) => {
-      if (customBreadcrumbExists(objectTypeKey)) {
-        removeCustomBreadcrumb(objectTypeKey);
-      }
-
-      addCustomBreadcrumb({
-        key: objectTypeKey,
-        text: translations.value?.lang[locale.value]?.[endpoints.value?.[newObjectType] || newObjectType],
-        to: `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${newObjectType}`,
-        param: objectTypeKey,
-        index: 0,
-        position: 11
-      });
-    };
-    watch(() => objectParameter.value.type, onObjectTypeChanged, { immediate: true });
-    watch(
-      () => translations.value,
-      () => onObjectTypeChanged(objectParameter.value.type),
-      { deep: true }
-    );
-    watch(
-      () => endpoints.value,
-      () => onObjectTypeChanged(objectParameter.value.type),
-      { deep: true }
-    );
-
-    const subTypeKey = 'object-detail-view-sub-type';
-
-    const currentSubType = computed(() => object.value?.domains?.[domainId.value]?.subType);
-
-    const addSubTypeBreadcrumb = (data: any) => {
-      if (customBreadcrumbExists(subTypeKey)) {
-        removeCustomBreadcrumb(subTypeKey);
-      }
-
-      // Exit if no subtype is set
-      if (!currentSubType.value) {
-        return;
-      }
-
-      const formSchema = (data as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === currentSubType.value);
-
-      addCustomBreadcrumb({
-        key: subTypeKey,
-        text: formSchema ? formSchema.name[locale.value] || Object.values(formSchema.name[locale.value])[0] : currentSubType.value,
-        to: `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${objectParameter.value.type}&subType=${currentSubType.value}`,
-        param: objectTypeKey,
-        index: 0,
-        position: 12
-      });
-    };
-
-    const formsQueryParameters = computed(() => ({ domainId: domainId.value  }));
-    const formsQueryEnabled = computed(() => !!domainId.value);
-    const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [], onSuccess: addSubTypeBreadcrumb });
-
-    // Change subtype if object subtype changes (As of 2023-02-23 this shouldn't happen as once a subtype is selected it is readonly, but you never know what the future holds)
-    watch(() => currentSubType.value, () => {
-      addSubTypeBreadcrumb(formSchemas.value);
-    });
-
     onUnmounted(() => {
-      removeCustomBreadcrumb(objectTypeKey);
-      removeCustomBreadcrumb(subTypeKey);
       expireOptimisticLockingAlert();
     });
 
@@ -342,6 +268,9 @@ export default defineComponent({
     };
 
     // Forms part specific stuff
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+    const objectType = computed(() => Object.entries(endpoints.value || {}).find(([, endpoint]) => endpoint === route.params.objectType)?.[0]);
+
     const isFormDirty = computed(() => !isObjectEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity).isEqual && !formDataIsRevision.value);
     const isFormValid = ref(false);
     const objectForm = ref();
@@ -382,7 +311,7 @@ export default defineComponent({
       expireOptimisticLockingAlert();
       try {
         if (modifiedObject.value && object.value) {
-          await _updateObject({ endpoint: endpoint.value, object: modifiedObject.value });
+          await _updateObject({ endpoint: route.params.objectType, object: modifiedObject.value });
           displaySuccessMessage(successText);
           refetch();
           formDataIsRevision.value = false;
@@ -422,7 +351,7 @@ export default defineComponent({
     const formDataIsRevision = ref(false);
     const version = ref(0);
 
-    function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: true) {
+    function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: boolean) {
       const displayRevisionCallback = () => {
         formDataIsRevision.value = isRevision;
         entityModifiedDialogVisible.value = false;
@@ -508,7 +437,7 @@ export default defineComponent({
       metaData,
       modifiedObject,
       objectForm,
-      objectParameter,
+      objectType,
       onContinueNavigation,
       onDPIACreated,
       onDPIALinked,

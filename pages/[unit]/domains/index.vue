@@ -15,29 +15,6 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<script lang="ts" setup>
-import { useFetchUnitDomains } from '~/composables/api/domains';
-import { separateUUIDParam, createUUIDUrlParam } from '~/lib/utils';
-
-
-
-const route = useRoute();
-const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
-const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: unitId.value }));
-
-const {data: allUnitDomains, isFetching: domainsFetching} =  useFetchUnitDomains( fetchUnitDomainsQueryParameters );
-
-
-const generateDomainDashboardLink = (domainId: string) => {
-  return domainId ? `/${route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
-};
-
-const { t } = useI18n();
-</script>
-<script lang="ts">
-export const ROUTE_NAME = 'index';
-</script>
-
 <template>
   <BasePage
     :title="t('domainselector')"
@@ -75,7 +52,7 @@ export const ROUTE_NAME = 'index';
             :key="item.id"
             :title="item.name"
             :subtitle="item.description"
-            :to="generateDomainDashboardLink(item.id)"
+            :to="`/${route.params.unit}/domains/${item.id}`"
           />
         </v-list>
         <v-card-text>
@@ -102,6 +79,21 @@ export const ROUTE_NAME = 'index';
   </BasePage>
 </template>
 
+<script lang="ts">
+export const ROUTE_NAME = 'index';
+</script>
+
+<script lang="ts" setup>
+import { useFetchUnitDomains } from '~/composables/api/domains';
+
+const route = useRoute();
+
+const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
+const {data: allUnitDomains, isFetching: domainsFetching} =  useFetchUnitDomains( fetchUnitDomainsQueryParameters );
+
+const { t } = useI18n();
+</script>
+
 <i18n>
   {
     "en": {
@@ -121,4 +113,3 @@ export const ROUTE_NAME = 'index';
     }
   }
   </i18n>
-  

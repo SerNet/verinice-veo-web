@@ -252,7 +252,7 @@ export default defineComponent({
           alwaysVisible: true,
           disabled: !localFilter.value.objectType || props.disabledFields?.includes('subType'),
           selectOptions: localAvailableSubTypes.value
-            .map((subTypes) => ({ title: subTypes.name[locale.value], value: subTypes.subType }))
+            .map((subTypes) => ({ title: subTypes.name[locale.value] || subTypes.subType, value: subTypes.subType }))
             .filter((subTypes) => !props.availableSubTypes.length || props.availableSubTypes.includes(subTypes.value))
             .sort((a, b) => {
               const sortValueA = (formSchemas.value as IVeoFormSchemaMeta[]).find((schema) => schema.subType === a.value)?.sorting;

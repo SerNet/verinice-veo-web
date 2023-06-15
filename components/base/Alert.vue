@@ -182,7 +182,7 @@ export default defineComponent({
     const keybindEvents = (event: KeyboardEvent) => {
       const digits = Array.from(Array(10).keys()).map((key) => `${key}`);
 
-      if(digits.includes(event.key)) {
+      if(digits.includes(event.key) && !!localButtons.value[parseInt(event.key) - 1]) {
         localButtons.value[parseInt(event.key) - 1].onClick();
       }
     };

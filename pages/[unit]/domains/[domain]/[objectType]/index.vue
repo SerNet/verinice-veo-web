@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann
+   - Copyright (C) 2023  Jonas Heitmann
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -15,39 +15,23 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<template>
-  <v-row class="flex-column pt-4">
-    <v-col
-      v-for="(skeleton, index) of skeletons"
-      :key="index"
-    >
-      <v-skeleton-loader
-        :type="skeleton.type"
-        :width="skeleton.width"
-      />
-    </v-col>
-  </v-row>
-</template>
-
 <script setup lang="ts">
-const _skeletons = [
-  {
-    type: 'heading',
-    width: '30%'
-  },
-  {
-    type: 'text',
-    width: '20%'
-  },
-  {
-    type: 'text',
-    width: '100%'
-  },
-  {
-    type: 'text',
-    width: '100%'
-  }
-];
+import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 
-const skeletons = new Array(3).fill(_skeletons).flat();
+const route = useRoute();
+
+// Navigate the user to the object overview page with a placeholder for the subtype
+await navigateTo({
+  name: OBJECT_OVERVIEW_ROUTE,
+  params: {
+    unit: route.params.unit,
+    domain: route.params.domain,
+    objectType: route.params.objectType,
+    subType: '-'
+  }
+});
 </script>
+
+<template>
+  <span>Redirecting...</span>
+</template>

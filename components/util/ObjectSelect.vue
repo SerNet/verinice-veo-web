@@ -78,7 +78,8 @@ import { PropType } from 'vue';
 import { cloneDeep, upperFirst } from 'lodash';
 import { mdiOpenInNew } from '@mdi/js';
 
-import { createUUIDUrlParam, getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
+import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
+import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
@@ -135,8 +136,6 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
 
-    const unit = computed(() => separateUUIDParam(route.params.unit as string).id);
-
     // Value related stuff
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
@@ -173,7 +172,7 @@ export default defineComponent({
     const fetchObjectsQueryParameters = computed(
       () =>
         ({
-          unit: unit.value,
+          unit: route.params.unit,
           endpoint: endpoint.value,
           page: 1,
           subType: props.subType,
@@ -248,10 +247,10 @@ export default defineComponent({
     // Object select display
     const openItem = (item: IVeoEntity) => {
       const routeData = router.resolve({
-        name: 'unit-domains-domain-objects-object',
+        name: OBJECT_OVERVIEW_ROUTE,
         params: {
           ...route.params,
-          object: createUUIDUrlParam(item.type, item.id)
+          object: item.id
         }
       });
       window.open(routeData.href, '_blank');

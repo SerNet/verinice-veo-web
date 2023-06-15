@@ -61,13 +61,6 @@
           </v-list-item-title>
           <v-list-item-subtitle>{{ profile && profile.email || t('notAvailable') }}</v-list-item-subtitle>
         </v-list-item>
-        <template v-if="!userSettings.maxUnits || userSettings.maxUnits > 2">
-          <v-divider />
-          <UnitSelect
-            v-bind="$attrs"
-            @click.stop
-          />
-        </template>
         <v-divider />
         <v-list-item
           :href="accountLink"
@@ -85,7 +78,7 @@
         <template v-if="ability.can('manage', 'accounts')">
           <v-divider />
           <v-list-item
-            active-class="veo-active-list-item"
+            color="primary"
             to="/administration"
           >
             <v-list-item-title>
@@ -95,7 +88,16 @@
         </template>
         <v-divider />
         <v-list-item
-          active-class="veo-active-list-item"
+          color="primary"
+          to="/welcome"
+        >
+          <v-list-item-title>
+            {{ t('firststeps') }}
+          </v-list-item-title>
+        </v-list-item>
+        <v-divider />
+        <v-list-item
+          color="primary"
           to="/user-data"
         >
           <v-list-item-title>
@@ -104,7 +106,7 @@
         </v-list-item>
         <v-divider />
         <v-list-item
-          active-class="veo-active-list-item"
+          color="primary"
           to="/security"
         >
           <v-list-item-title>
@@ -130,7 +132,7 @@
   </v-menu>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { mergeProps } from 'vue';
 import { mdiOpenInNew } from '@mdi/js';
 
@@ -140,7 +142,7 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 const config = useRuntimeConfig();
-const { logout: _logout, profile, userSettings } = useVeoUser();
+const { logout: _logout, profile } = useVeoUser();
 const { ability } = useVeoPermissions();
 
 const logout = () => _logout('/');
@@ -164,12 +166,14 @@ const onMenuClosed = () => {
     "about": "About verinice.",
     "logout": "Logout",
     "editAccount": "Edit account",
+    "firststeps": "First steps",
     "notAvailable": "Not available",
   },
   "de": {
     "about": "Über verinice.",
     "logout": "Abmelden",
     "editAccount": "Benutzerkonto bearbeiten",
+    "firststeps": "Erste Schritte",
     "notAvailable": "Keine Angabe",
   }
 }

@@ -33,7 +33,7 @@
     </BaseCard>
   </BasePage>
 </template>
-<script lang="ts" setup>
+<script setup lang="ts">
 import { isArray } from 'lodash';
 
 import { useDoc, useDocs } from '~/composables/docs';

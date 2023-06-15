@@ -46,11 +46,10 @@
   </BaseCard>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { PropType } from 'vue';
 
-import { createUUIDUrlParam } from '~/lib/utils';
-import { IVeoCatalog } from '~/types/VeoTypes';
+import { IVeoCatalog } from '~/composables/api/queryDefinitions/catalogs';
 
 defineProps({
   catalogs: {
@@ -66,7 +65,7 @@ defineProps({
 const route = useRoute();
 const { t } = useI18n();
 
-const generateRoute = (catalogId: string) => `/${route.params.unit}/domains/${route.params.domain}/catalogs/${createUUIDUrlParam('catalog', catalogId)}`;
+const generateRoute = (catalogId: string) => `/${route.params.unit}/domains/${route.params.domain}/catalogs/${catalogId}`;
 </script>
 
 <i18n>

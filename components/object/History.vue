@@ -55,7 +55,7 @@
                 :disabled="!version.compability.valid"
                 :value="index"
                 :active="selectedRevision === index"
-                active-class="veo-active-list-item"
+                color="primary"
                 @click="selectedRevision = index"
               >
                 <v-list-item-title>
@@ -136,7 +136,7 @@ export default defineComponent({
 
     const selectedRevision = ref(0);
     watch(() => selectedRevision.value, (newValue) => {
-      emit('show-revision', historyEntriesWithCompability.value[newValue], newValue);
+      emit('show-revision', historyEntriesWithCompability.value[newValue], !!newValue);
     });
 
     return {

@@ -35,8 +35,12 @@
   </BasePage>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 const { t, locale } = useI18n();
+</script>
+
+<script lang="ts">
+export const ROUTE_NAME = 'unit-domains-more';
 </script>
 
 <i18n>

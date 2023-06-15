@@ -35,7 +35,6 @@
     </template>
     <template #dialog-options>
       <v-btn
-        text
         :disabled="isLoading"
         @click="$emit('update:model-value', false)"
       >
@@ -43,7 +42,6 @@
       </v-btn>
       <v-spacer />
       <v-btn
-        text
         color="primary"
         :disabled="!id || ability.cannot('manage', 'accounts') || (profile && profile.username === username)"
         :loading="isLoading"
@@ -55,7 +53,7 @@
   </BaseDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import accountQueryDefinitions from '~/composables/api/queryDefinitions/accounts';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';

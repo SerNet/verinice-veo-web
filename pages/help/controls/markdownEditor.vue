@@ -40,7 +40,7 @@
   </BasePage>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 definePageMeta({ layout: 'plain' });
 
 const form = ref({
@@ -61,7 +61,7 @@ const form = ref({
     }
   },
   data: {
-    markdown: '# Header\n\n```js\nconsole.log("Beispiel Code")\n```'
+    markdown: '# Header\n\n```js\nconsole.log("Beispiel Code1")\n```'
   }
 });
 </script>

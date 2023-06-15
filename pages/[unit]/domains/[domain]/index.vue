@@ -101,7 +101,7 @@
                 v-else
                 chart-height="30"
                 :data="widget[1]"
-                :domain-id="domainId"
+                :domain-id="($route.params.domain as string)"
                 :object-type="widget[0]"
                 :data-component-name="`domain-dashboard-${widget[0]}-widget`"
                 @click="onBarClicked"
@@ -110,20 +110,13 @@
           </v-col>
         </template>
       </v-row>
-      <WelcomeDialog
-        v-if="showWelcomeDialog"
-        v-model="showWelcomeDialog"
-      />
     </template>
   </BasePage>
 </template>
 
 <script lang="ts">
-import { StorageSerializers, useStorage } from '@vueuse/core';
-
-import { separateUUIDParam } from '~/lib/utils';
+import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { useQuery } from '~~/composables/api/utils/query';
 
 export const ROUTE_NAME = 'unit-domains-domain';
@@ -136,21 +129,11 @@ export default defineComponent({
     const { t } = useI18n();
     const { t: tGlobal } = useI18n({ useScope: 'global' });
 
-    const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-
-    const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, false, localStorage, { serializer: StorageSerializers.boolean });
-    const showWelcomeDialog = computed({
-      get: () => !firstSetpsCompleted.value,
-      set: (newValue) => { firstSetpsCompleted.value = !newValue; }
-    });
-
     // Domain specific stuff
-    const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
-    const { data: domain, error: fetchDomainError } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
-
-    const fetchDomainElementStatusCountQueryParameters = computed(() => ({ id: domainId.value, unitId: unitId.value }));
+    const fetchDomainElementStatusCountQueryParameters = computed(() => ({ id: route.params.domain as string, unitId: route.params.unit as string }));
     const { data: domainObjectInformation, isFetching: elementStatusCountIsFetching, error: fetchElementStatusCountError } = useQuery(domainQueryDefinitions.queries.fetchDomainElementStatusCount, fetchDomainElementStatusCountQueryParameters);
+    const fetchDomainQueryParameters = computed(() => ({ id: route.params.domain as string }));
+    const { data: domain, error: fetchDomainError } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     const domainNotFound = computed(() => fetchDomainError.value?.code === 404 || fetchElementStatusCountError.value?.code === 404);
     // Create chart data
@@ -172,13 +155,13 @@ export default defineComponent({
 
     const onBarClicked = (objectType: string, subType: string, status: string) => {
       router.push({
-        name: 'unit-domains-domain-objects',
+        name: OBJECT_OVERVIEW_ROUTE,
         params: {
-          domain: route.params.domain
+          domain: route.params.domain,
+          objectType,
+          subType
         },
         query: {
-          objectType,
-          subType,
           status
         }
       });
@@ -190,12 +173,10 @@ export default defineComponent({
     return {
       chartData,
       domain,
-      domainId,
       domainNotFound,
       elementStatusCountIsFetching,
       onBarClicked,
       title,
-      showWelcomeDialog,
 
       t,
       tGlobal

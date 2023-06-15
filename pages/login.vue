@@ -72,14 +72,17 @@
         {{ t('imprint') }}
       </a>
       <span class="mx-1">|</span>
-      <nuxt-link to="/security">
+      <nuxt-link
+        to="/security"
+        target="_blank"
+      >
         {{ t('policy') }}
       </nuxt-link>
     </div>
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useVeoUser } from '~/composables/VeoUser';
 
 definePageMeta({ layout: 'plain' });
