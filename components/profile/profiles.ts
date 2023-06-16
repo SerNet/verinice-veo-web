@@ -68,7 +68,7 @@ function handleError(err: unknown, genericMsg: string) {
 
 
 function useDomain() {
-  const fetchDomainQueryParameters = computed(() => ({ id: currentDomainId as string }));
+  const fetchDomainQueryParameters = computed(() => ({ id: currentDomainId.value as string }));
   const fetchDomainQueryEnabled = computed(() => !!currentDomainId);
   const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
 
