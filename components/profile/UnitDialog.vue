@@ -22,6 +22,9 @@
     :close-function="toggleDialog"
   >
     <template #default>
+      <v-card-text>
+        <p>{{ t('unitSelectionHint') }}</p>
+      </v-card-text>
       <v-list-item>
         <v-autocomplete
           v-model="state.selectedUnit"
@@ -30,41 +33,34 @@
           item-title="name"
           item-value="id"
           flat
-          variant="text"
+          variant="underlined"
         />
       </v-list-item>
-      <v-row
-        dense
-        class="mt-4"
+    </template>
+    <template #dialog-options>
+      <v-btn
+        flat
+        variant="plain"
+        @click="toggleDialog"
       >
-        <v-spacer />
-        <v-col
-          cols="auto"
-        >
-          <v-btn
-            flat
-            variant="plain"
-            @click="toggleDialog"
-          >
-            {{ t('global.button.cancel') }}
-          </v-btn>
+        {{ t('global.button.cancel') }}
+      </v-btn>
+      <v-spacer />
 
-          <v-btn
-            flat
-            color="primary"
-            :disabled="false"
-            :loading="state.isApplyingProfile"
-            @click="() => applyProfile({
-              profileKey: state.selectedProfiles[0],
-              unitId: state.selectedUnit,
-              domainId: state.domainId,
-              messages: {success: t('messageSuccess'), error: t('messageError')}
-            })"
-          >
-            {{ t('unitSelectionApplyBtn') }}
-          </v-btn>
-        </v-col>
-      </v-row>
+      <v-btn
+        flat
+        color="primary"
+        :disabled="false"
+        :loading="state.isApplyingProfile"
+        @click="() => applyProfile({
+          profileKey: state.selectedProfiles[0],
+          unitId: state.selectedUnit,
+          domainId: state.domainId,
+          messages: {success: t('messageSuccess'), error: t('messageError')}
+        })"
+      >
+        {{ t('unitSelectionApplyBtn') }}
+      </v-btn>
     </template>
   </Basedialog>
 </template>

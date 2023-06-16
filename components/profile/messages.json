@@ -1,7 +1,7 @@
 
 {
   "en": {
-    "hint": "Please, choose a profile you wish to apply.",
+    "hint": "Please select a profile. In the next step you can select the unit to which you want to apply the profile.",
     "thAbbreviation": "Abkürzung",
     "thName": "Profile name",
     "thDescription": "Description",
@@ -10,11 +10,12 @@
     "unitSelectionTitle": "Unit Selection",
     "unitSelectionDropdownLabel": "Units",
     "unitSelectionApplyBtn": "Apply profile",
+    "unitSelectionHint": "Please select the unit to which the profile should be applied.",
     "messageSuccess": "Profile successfully applied",
     "messageError": "Could not apply profile"
   },
   "de": {
-    "hint": "Bitte wählen Sie ein Profil aus, die Sie anwenden möchten.",
+    "hint": "Bitte wählen Sie ein Profil aus. Im nächsten Schritt können Sie dann die Unit auswählen auf die Sie das Profil anwenden möchten.",
     "thAbbreviation": "Abkürzung",
     "thName": "Profilname",
     "thDescription": "Beschreibung",
@@ -23,6 +24,7 @@
     "unitSelectionTitle": "Unitauswahl",
     "unitSelectionDropdownLabel": "Units",
     "unitSelectionApplyBtn": "Profil anwenden",
+    "unitSelectionHint": "Bitte wählen Sie die Unit aus, auf die das Profil angewendet werden soll.",
     "messageSuccess": "Profil erfolgreich angewendet",
     "messageError": "Profil konnte nicht angewendet werden"
   }
