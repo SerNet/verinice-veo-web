@@ -58,15 +58,6 @@
             @expand-menu="miniVariant = false"
           />
         </template>
-        <template v-if="authenticated">
-          <v-divider class="mb-2" />
-          <div class="mx-2">
-            <LayoutDemoUnitButton
-              :icon-only="miniVariant"
-              :open-in-new-tab="route.path.startsWith('/docs')"
-            />
-          </div>
-        </template>
       </v-list>
     </template>
     <template #append>
