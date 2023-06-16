@@ -16,14 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { useQuery } from '~~/composables/api/utils/query';
+import { useMutation } from '~~/composables/api/utils/mutation';
 import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-
-// import { separateUUIDParam } from '~/lib/utils';
 
 const route = useRoute();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
+
+// Types
 type Profile = {
   key: string;
   name: string;
@@ -39,13 +40,6 @@ interface IVeoProfiles {
   }
 }
 
-// API CALLS
-type RPAParams = { domainId: string, unitId: string, profileKey: string }
-async function requestProfileApplication({ domainId, unitId, profileKey }: RPAParams) {
-  const url = `/api/domains/${domainId}/profiles/${profileKey}/units/${unitId}`;
-  const response = await request(url, {method: 'POST'});
-  return response;
-}
 
 // STATE
 const currentUnitId = computed(() => (route.params.unit && route.params.unit as string) || undefined);
@@ -72,23 +66,6 @@ function handleError(err: unknown, genericMsg: string) {
   displayErrorMessage(genericMsg, error.message);
 }
 
-type AParams = RPAParams & { messages: { [key: string]: string} }
-async function applyProfile({ profileKey, unitId, domainId, messages }: AParams) {
-  state.isApplyingProfile = true;
-  try {
-    await requestProfileApplication({ domainId, unitId, profileKey });
-    displaySuccessMessage(messages.success);
-  }
-  catch (err) {
-    handleError(err, messages.error);
-  }
-  finally {
-    // Clean up state
-    state.isApplyingProfile = false;
-    state.selectedProfiles = [];
-    toggleDialog();
-  }
-}
 
 function useDomain() {
   const fetchDomainQueryParameters = computed(() => ({ id: currentDomainId as string }));
@@ -119,6 +96,30 @@ export function useProfiles() {
 
 export function useUnits() {
   const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
+  const { mutateAsync: mutateUnitUsingProfile } =  useMutation(domainQueryDefinitions.mutations.applyProfile);
+
+  type ApplyProfilesParams = {
+    domainId: string;
+    unitId: string;
+    profileKey: string;
+    messages: { [key: string]: string }
+  }
+  async function applyProfile({ profileKey, unitId, domainId, messages }: ApplyProfilesParams) {
+    state.isApplyingProfile = true;
+    try {
+      await mutateUnitUsingProfile({ domainId, unitId, profileKey });
+      displaySuccessMessage(messages.success);
+    }
+    catch (err) {
+      handleError(err, messages.error);
+    }
+    finally {
+      // Clean up state
+      state.isApplyingProfile = false;
+      state.selectedProfiles = [];
+      toggleDialog();
+    }
+  }
 
   return {
     units: readonly(units),
