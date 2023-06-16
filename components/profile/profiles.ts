@@ -58,16 +58,14 @@ const state = reactive({
   domainId: unref(readonly(currentDomainId))
 });
 
-watch(state, () => console.log(state));
-
 function toggleDialog() {
   state.showDialog = !state.showDialog;
 }
 
 function handleError(err: unknown, genericMsg: string) {
-  let error;
-  if (err instanceof Error) error = { message: err.message, cause: err.cause };
-  else error = { message: String(err), cause: 'unknown' };
+  const error = (err instanceof Error) ? 
+    { message: err.message, cause: err.cause } : 
+    { message: String(err), cause: 'unknown' };
 
   console.error('applyProfile() failed:', err);
   displayErrorMessage(genericMsg, error.message);
