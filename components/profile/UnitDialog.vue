@@ -22,6 +22,9 @@
     :close-function="toggleDialog"
   >
     <template #default>
+      <v-card-text>
+        <p>{{ t('unitSelectionHint') }}</p>
+      </v-card-text>
       <v-list-item>
         <v-autocomplete
           v-model="state.selectedUnit"
