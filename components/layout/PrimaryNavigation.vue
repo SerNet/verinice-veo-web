@@ -388,9 +388,8 @@ const catalogsNavEntry = computed<INavItem>(() => ({
 }));
 
 const profilesNavEntry = computed<INavItem>(() => ({
-  key: 'profiles',
+  id: 'profiles',
   name: $t('breadcrumbs.profiles'),
-  // activePath: `${route.params.unit}/domains/${route.params.domain}/profiles`,
   icon: mdiShapeOutline,
   componentName: 'profiles-nav-item',
   to: {
