@@ -63,8 +63,8 @@ function toggleDialog() {
 }
 
 function handleError(err: unknown, genericMsg: string) {
-  const error = (err instanceof Error) ? 
-    { message: err.message, cause: err.cause } : 
+  const error = (err instanceof Error) ?
+    { message: err.message, cause: err.cause } :
     { message: String(err), cause: 'unknown' };
 
   console.error('applyProfile() failed:', err);
@@ -90,7 +90,7 @@ async function applyProfile({ profileKey, unitId, domainId, messages }: AParams)
 }
 
 function useDomain() {
-  const fetchDomainQueryParameters = computed(() => ({ id: currentDomainId as string }));
+  const fetchDomainQueryParameters = computed(() => ({ id: currentDomainId.value as string }));
   const fetchDomainQueryEnabled = computed(() => !!currentDomainId);
   const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
 
