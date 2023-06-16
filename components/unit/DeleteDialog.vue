@@ -24,17 +24,19 @@
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
-      <div>{{ t('question', { name: unit?.name }) }}</div>
-      <div>{{ t('hint') }}</div><br>
-      {{ t('request') }}
+      <div>{{ t('question', { name: unit?.name }) }}</div><br>
+      <div style="color: red;">
+        {{ t('hint') }}
+      </div>
+
       <BaseAlert
         :model-value="true"
+        :buttons="[{text: 'backup', onClick: () => navigateTo('/user-data')}]"
         :type="VeoAlertType.INFO"
         class="mt-4"
         flat
         no-close-button
         to="/user-data"
-        :buttons="[{text: 'backup', onClick: () => navigateTo('/user-data')}]"
       >
         {{ t('request') }}
       </BaseAlert>
@@ -60,7 +62,7 @@
         variant="text"
         @click="$emit('update:model-value', false)"
       >
-        {{ globalT('global.button.no') }}
+        {{ globalT('global.button.cancel') }}
       </v-btn>
 
       <v-spacer />
@@ -128,7 +130,6 @@ const deleteUnit = async () => {
   <i18n>
   {
     "en": {
-      "cancel": "Cancel",
       "dialogTitle": "Delete unit",
       "hint": "This action cannot be undone.",
       "placeholder": "Please enter the name of the unit to be deleted",
@@ -137,7 +138,6 @@ const deleteUnit = async () => {
       "unitDeleted": "The unit was deleted successfully."
     },
     "de": {
-      "cancel": "Abbrechen",
       "dialogTitle": "Unit löschen",
       "hint": "Diese Aktion kann nicht rückgängig gemacht werden.",
       "placeholder": "Bitte geben Sie den Namen der zu löschenden Unit ein",
