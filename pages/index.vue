@@ -138,7 +138,7 @@ export const ROUTE_NAME = 'index';
 <script setup lang="ts">
 import { mdiTrashCanOutline, mdiPlus, mdiPencilOutline } from '@mdi/js';
 
-import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
+import { getFirstDomainDomaindId } from '~/lib/utils';
 import { useQuery } from '~~/composables/api/utils/query';
 import unitQueryDefinitions, { IVeoUnit} from '~/composables/api/queryDefinitions/units';
 
@@ -172,9 +172,7 @@ const generateUnitDashboardLink = (unitId: string) => {
     domainId = getFirstDomainDomaindId(unitToLinkTo);
   }
 
-  return unitToLinkTo && domainId
-    ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}`
-    : undefined;
+  return unitToLinkTo && domainId ? `/${unitToLinkTo.id}/domains/${domainId}` : undefined;
 };
 
 // Unit deletion stuff

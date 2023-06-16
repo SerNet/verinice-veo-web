@@ -18,7 +18,8 @@
 import { useQuery } from '~~/composables/api/utils/query';
 import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-import { separateUUIDParam } from '~/lib/utils';
+
+// import { separateUUIDParam } from '~/lib/utils';
 
 const route = useRoute();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -47,8 +48,8 @@ async function requestProfileApplication({ domainId, unitId, profileKey }: RPAPa
 }
 
 // STATE
-const currentUnitId = computed(() => (route.params.unit && separateUUIDParam(route.params.unit as string).id) || undefined);
-const currentDomainId = computed(() => separateUUIDParam(route.params.domain as string).id);
+const currentUnitId = computed(() => (route.params.unit && route.params.unit as string) || undefined);
+const currentDomainId = computed(() => route.params.domain as string);
 
 const state = reactive({
   selectedProfiles: [] as string[],
@@ -63,8 +64,8 @@ function toggleDialog() {
 }
 
 function handleError(err: unknown, genericMsg: string) {
-  const error = (err instanceof Error) ? 
-    { message: err.message, cause: err.cause } : 
+  const error = (err instanceof Error) ?
+    { message: err.message, cause: err.cause } :
     { message: String(err), cause: 'unknown' };
 
   console.error('applyProfile() failed:', err);

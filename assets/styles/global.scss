@@ -57,21 +57,6 @@ a:not([class^='v-']) {
   margin-right: 12px;
 }
 
-.veo-active-list-item {
-  &::before {
-    background-color: $primary !important;
-    opacity: 0.12 !important;
-  }
-
-  color: $primary !important;
-}
-
-.veo-active-list-item-no-background {
-  &::before {
-    opacity: 0 !important;
-  }
-}
-
 .veo-pseudo-hover {
   &::before {
     background-color: rgba(0, 0, 0, 0);

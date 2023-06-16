@@ -62,7 +62,6 @@
 </template>
 
 <script lang="ts">
-import { separateUUIDParam } from '~/lib/utils';
 import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
 import { useQuery } from '~~/composables/api/utils/query';
 
@@ -76,16 +75,13 @@ export default defineComponent({
 
     const title = computed(() => t('catalog', { name: catalogItems.value?.[0]?.catalog?.displayName || '' }));
 
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-    const catalogId = computed(() => separateUUIDParam(route.params.catalog as string).id);
-
     const scenarios = computed(() =>
       // VVT is needed by the backend, however it shouldn't be selectable by the user as this throws an error
       (catalogItems.value || []).filter((catalogItem) => !catalogItem.element.displayName?.includes('TOM-') && !catalogItem.element.displayName?.includes('VVT'))
     );
     const toms = computed(() => (catalogItems.value || []).filter((catalogItem) => catalogItem.element.displayName?.includes('TOM-')));
 
-    const fetchCatalogItemsQueryParameters = computed(() => ({ catalogId: catalogId.value, domainId: domainId.value }));
+    const fetchCatalogItemsQueryParameters = computed(() => ({ catalogId: route.params.catalog as string, domainId: route.params.domain as string }));
     const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(catalogQueryDefinitions.queries.fetchCatalogItems, fetchCatalogItemsQueryParameters);
 
     return {

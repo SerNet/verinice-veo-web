@@ -33,7 +33,7 @@
           class="body-1 text-no-wrap"
         >
           <nuxt-link
-            :to="objectOveriewLink(index)"
+            :to="objectOveriewLink(index, schemas || {})"
             class="text-black text-decoration-none"
           >
             {{ chart.labels[0] }}
@@ -79,23 +79,21 @@
   </BaseWidget>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { Bar } from 'vue-chartjs';
 import { Chart as ChartJS, BarController, Tooltip, CategoryScale, BarElement, LinearScale, ChartOptions } from 'chart.js';
-import { upperFirst } from 'lodash';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-import { IVeoDomainStatusCount } from '~/plugins/api/domain';
 import { CHART_COLORS } from '~/lib/utils';
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import schemaQueryDefinitions, { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import { PropType } from 'vue';
 import { useQuery } from '~~/composables/api/utils/query';
+import { IVeoDomainStatusCount } from '~/composables/api/queryDefinitions/domains';
 
 ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
-export interface IChartValue {
+interface IChartValue {
   totalEntries: number;
   labels: string[];
   datasets: {
@@ -105,149 +103,129 @@ export interface IChartValue {
   }[];
 }
 
-export default defineComponent({
-  components: {
-    Bar
-  },
-  props: {
-    data: {
-      type: Object as PropType<IVeoDomainStatusCount['x']>,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      default: () => {}
-    },
-    chartHeight: {
-      type: [Number, String],
-      default: 50
-    },
-    objectType: {
-      type: String,
-      required: true
-    },
-    domainId: {
-      type: String,
-      required: true
-    }
-  },
-  emits: ['click'],
-  setup(props, { emit }) {
-    const { locale, t } = useI18n();
-    const route = useRoute();
-
-    const barChartRef = ref([]);
-
-    const fetchSchemaQueryParameters = computed(() => ({ domainIds: [props.domainId], type: props.objectType }));
-    const fetchSchemaQueryEnabled = computed(() => !!props.domainId);
-    const { data: objectSchema, isFetching: schemasIsLoading } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
-
-    const sortedStatusBySubType = computed<Record<string, any>>(() =>
-      (objectSchema.value?.properties?.domains?.properties?.[props.domainId]?.allOf || []).reduce((previousValue, currentValue) => {
-        previousValue[currentValue.if.properties.subType.const] = currentValue.then.properties.status.enum;
-        return previousValue;
-      }, Object.assign({}))
-    );
-
-    const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
-    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
-
-    const formsQueryParameters = computed(() => ({ domainId: props.domainId as string }));
-    const formsQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled });
-
-    const sortedSubTypes = computed(() =>
-      Object.entries(props.data).sort(
-        ([subTypeA, _subTypeDataA], [subTypeB, _subTypeDataB]) =>
-          (formSchemas.value || []).findIndex((formSchema) => formSchema.subType === subTypeA) -
-          (formSchemas.value || []).findIndex((formSchema) => formSchema.subType === subTypeB)
-      )
-    );
-
-    const options = computed<ChartOptions[]>(() =>
-      sortedSubTypes.value.map(([_subType, subTypeData], index) => ({
-        responsive: true,
-        maintainAspectRatio: false,
-        onClick: (_point: any, $event: any) => handleClickEvent(index, $event),
-        plugins: {
-          datalabels: {
-            anchor: 'start' as 'start' | 'center' | 'end',
-            align: 'end' as 'start' | 'center' | 'end',
-            clip: true,
-            color: 'white',
-            display(context: any) {
-              const index = context.dataIndex;
-              const value = context.dataset?.data?.[index] || -1;
-              return value > 0;
-            }
-          },
-          tooltip: {
-            enabled: false
-          }
-        },
-        indexAxis: 'y' as 'x' | 'y',
-        barPercentage: 1,
-        categoryPercentage: 1,
-        offset: false,
-        scales: {
-          x: {
-            min: 0,
-            max: Object.values(subTypeData).reduce((previousValue, currentValue) => previousValue + currentValue, 0),
-            stacked: true,
-            ticks: {
-              display: false
-            },
-            grid: {
-              display: false
-            }
-          },
-          y: {
-            min: 1,
-            max: 1,
-            stacked: true,
-            ticks: {
-              display: false
-            },
-            grid: {
-              display: false
-            }
-          }
-        }
-      }))
-    );
-
-    const handleClickEvent = (clickedBarIndex: number, event: any) => {
-      const subType = sortedSubTypes.value[clickedBarIndex][0];
-      emit('click', props.objectType, subType, sortedStatusBySubType.value[subType][event[0].datasetIndex]);
-    };
-
-    const chartData = computed<IChartValue[]>(() =>
-      sortedSubTypes.value.map(([subType, subTypeData]) => ({
-        totalEntries: Object.values(subTypeData).reduce((previosValue, currentValue) => previosValue + currentValue, 0),
-        labels: [(formSchemas.value || []).find((formSchema) => formSchema.subType === subType)?.name?.[locale.value] || subType],
-        datasets: (Object.entries(sortedStatusBySubType.value).find(([sortedStatusSubType, _status]) => sortedStatusSubType === subType)?.[1] || []).map(
-          (status: string, index: number) => ({
-            data: [subTypeData[status]],
-            backgroundColor: CHART_COLORS[index],
-            label: translations.value?.lang[locale.value][`${props.objectType}_${subType}_status_${status}`] || status
-          })
-        )
-      }))
-    );
-
-    const objectOveriewLink = (subTypeIndex: number) =>
-      `/${route.params.unit}/domains/${route.params.domain}/objects?objectType=${props.objectType}&subType=${sortedSubTypes.value[subTypeIndex][0]}`;
-
-    return {
-      barChartRef,
-      chartData,
-      ChartDataLabels,
-      objectOveriewLink,
-      options,
-      schemasIsLoading,
-
-      upperFirst,
-      t
-    };
-  }
+const props = withDefaults(defineProps<{
+  data?: IVeoDomainStatusCount['x'];
+  chartHeight?: number | string;
+  objectType: string;
+  domainId: string;
+}>(), {
+  data: () => ({}),
+  chartHeight: 50
 });
+
+const emit = defineEmits<{
+  (e: 'click', endpoint: string, subType: string, status: string): void;
+}>();
+
+const { locale, t } = useI18n();
+const route = useRoute();
+
+const barChartRef = ref([]);
+
+const fetchSchemaQueryParameters = computed(() => ({ domainIds: [props.domainId], type: props.objectType }));
+const fetchSchemaQueryEnabled = computed(() => !!props.domainId);
+const { data: objectSchema, isFetching: schemasIsLoading } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
+
+const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+
+const sortedStatusBySubType = computed<Record<string, any>>(() =>
+  (objectSchema.value?.properties?.domains?.properties?.[props.domainId]?.allOf || []).reduce((previousValue, currentValue) => {
+    previousValue[currentValue.if.properties.subType.const] = currentValue.then.properties.status.enum;
+    return previousValue;
+  }, Object.assign({}))
+);
+
+const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
+const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
+
+const formsQueryParameters = computed(() => ({ domainId: props.domainId as string }));
+const formsQueryEnabled = computed(() => !!props.domainId);
+const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled });
+
+const sortedSubTypes = computed(() =>
+  Object.entries(props.data).sort(
+    ([subTypeA, _subTypeDataA], [subTypeB, _subTypeDataB]) =>
+      (formSchemas.value || []).findIndex((formSchema) => formSchema.subType === subTypeA) -
+          (formSchemas.value || []).findIndex((formSchema) => formSchema.subType === subTypeB)
+  )
+);
+
+const options = computed<ChartOptions[]>(() =>
+  sortedSubTypes.value.map(([_subType, subTypeData], index) => ({
+    responsive: true,
+    maintainAspectRatio: false,
+    onClick: (_point: any, $event: any) => handleClickEvent(index, $event),
+    plugins: {
+      datalabels: {
+        anchor: 'start' as 'start' | 'center' | 'end',
+        align: 'end' as 'start' | 'center' | 'end',
+        clip: true,
+        color: 'white',
+        display(context: any) {
+          const index = context.dataIndex;
+          const value = context.dataset?.data?.[index] || -1;
+          return value > 0;
+        }
+      },
+      tooltip: {
+        enabled: false
+      }
+    },
+    indexAxis: 'y' as 'x' | 'y',
+    barPercentage: 1,
+    categoryPercentage: 1,
+    offset: false,
+    scales: {
+      x: {
+        min: 0,
+        max: Object.values(subTypeData).reduce((previousValue, currentValue) => previousValue + currentValue, 0),
+        stacked: true,
+        ticks: {
+          display: false
+        },
+        grid: {
+          display: false
+        }
+      },
+      y: {
+        min: 1,
+        max: 1,
+        stacked: true,
+        ticks: {
+          display: false
+        },
+        grid: {
+          display: false
+        }
+      }
+    }
+  }))
+);
+
+const handleClickEvent = (clickedBarIndex: number, event: any) => {
+  if(!schemas.value) {
+    return;
+  }
+  const subType = sortedSubTypes.value[clickedBarIndex][0];
+  emit('click', schemas.value[props.objectType], subType, sortedStatusBySubType.value[subType][event[0].datasetIndex]);
+};
+
+const chartData = computed<IChartValue[]>(() =>
+  sortedSubTypes.value.map(([subType, subTypeData]) => ({
+    totalEntries: Object.values(subTypeData).reduce((previosValue, currentValue) => previosValue + currentValue, 0),
+    labels: [(formSchemas.value || []).find((formSchema) => formSchema.subType === subType)?.name?.[locale.value] || subType],
+    datasets: (Object.entries(sortedStatusBySubType.value).find(([sortedStatusSubType, _status]) => sortedStatusSubType === subType)?.[1] || []).map(
+      (status: string, index: number) => ({
+        data: [subTypeData[status]],
+        backgroundColor: CHART_COLORS[index],
+        label: translations.value?.lang[locale.value][`${props.objectType}_${subType}_status_${status}`] || status
+      })
+    )
+  }))
+);
+
+const objectOveriewLink = (subTypeIndex: number, schemas: IVeoSchemaEndpoints) =>
+  `/${route.params.unit}/domains/${route.params.domain}/${schemas[props.objectType]}/${sortedSubTypes.value[subTypeIndex][0]}`;
 </script>
 
 <i18n>
