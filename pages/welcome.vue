@@ -86,11 +86,11 @@
             start
           />
           <i18n-t
-            keypath="firstSteps.demodata"
+            keypath="firstSteps.sampledata"
             tag="span"
             scope="global"
           >
-            <strong>{{ t('demodata') }}</strong>
+            <strong>{{ t('sampledata') }}</strong>
           </i18n-t>
         </v-card-text>
 
@@ -100,10 +100,10 @@
             elevation="2"
             :prepend-icon="mdiCableData"
             size="large"
-            to="/"
             variant="flat"
+            @click="createUnit"
           >
-            {{ t('buttoncaption') }}
+            {{ t('sampleDataButtonLabel') }}
           </v-btn>
         </v-layout>
 
@@ -196,7 +196,21 @@ import {
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
+import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
+import { getFirstDomainDomaindId } from '~/lib/utils';
+import { useQueryClient } from '@tanstack/vue-query';
+import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
+import { useMutation } from '~~/composables/api/utils/mutation';
+import { IVeoLink } from '~/types/VeoTypes';
+
 const { t } = useI18n();
+
+const router = useRouter();
+const queryClient = useQueryClient();
+
+const { createLink } = useCreateLink();
+const { displayErrorMessage} = useVeoAlerts();
 
 const links = ref({
   forum: 'https://forum.verinice.com',
@@ -208,39 +222,75 @@ const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED,
 
 const showAtStartup = computed({
   get: () => !firstSetpsCompleted.value,
-  set(newValue: boolean) {
-    firstSetpsCompleted.value = !newValue;
+  set: (newValue: boolean) => firstSetpsCompleted.value = !newValue
+});
+
+// *********************************************************************************
+const unitProps = reactive<{
+  name: string | undefined,
+  description: string | undefined,
+  domains: IVeoLink[]
+}>({ name: 'Sample unit', description: 'Sample data', domains: [] });
+
+const { mutateAsync: create, data: unitPropsPayload } = useMutation(unitQueryDefinitions.mutations.create);
+const { mutateAsync: apply } = useMutation(domainQueryDefinitions.mutations.applyProfile);
+
+const { data: _domains } = useQuery(domainQueryDefinitions.queries.fetchDomains, undefined, {
+  onSuccess: (data) => {
+    unitProps.domains = (data as IVeoDomain[]).map((domain) => createLink('domains', domain.id));
   }
 });
+const createUnit = async () => {
+  try {
+    await create(unitProps);
+
+    const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: unitPropsPayload.value?.resourceId as string }, queryClient);
+    const domainId = '213e1506-9fcb-4c9b-acb2-e50c8c206694';
+
+    if (domainId && unit.id) {
+      await apply({ domainId, unitId: unit.id, profileKey: ['demoUnit'] });
+
+      router.push({
+        name: 'unit-domains-domain',
+        params: {
+          unit: unit.id,
+          domain: domainId
+        }
+      });
+    }
+  } catch (error: any) {
+    displayErrorMessage('Error', error.message);
+  }
+};
 </script>
 
 <i18n>
   {
     "en": {
-      "buttoncaption": "Load Demo data now",
       "channel": "YouTube channel",
       "checkboxLabel": "Show at startup",
-      "demodata": "demo data",
       "documentation": "online documentation",
       "forum": "verinice.forum",
       "greeting": "Welcome to",
       "headline": "First steps",
       "hint": "You can access this page again at any time via the account button!",
       "intro": "In this section you will find suggestions from the verinice.team to get you started quickly:",
+      "sampledata": "sample data",
+      "sampleDataButtonLabel": "Load sample data now",
       "tutorial": "tutorials",
       "webinar": "webinars"
     },
     "de": {
-      "buttoncaption": "Demodaten jetzt laden",
       "channel": "YouTube Kanal",
       "checkboxLabel": "Beim Start anzeigen",
-      "demodata": "Demodaten",
       "documentation": "Online-Dokumentation",
       "forum": "verinice.forum",
       "greeting": "Willkommen bei",
       "headline": "Erste Schritte",
       "hint": "Sie können diese Seite jederzeit über den Account Button erneut aufrufen!",
       "intro": "Im diesem Abschnitt finden Sie Anregungen des verinice.Teams, die Ihnen einen schnellen Einstieg ermöglichen:",
+      "sampledata": "Beispieldaten",
+      "sampleDataButtonLabel": "Beispieldaten jetzt laden",
       "tutorial": "Tutorials",
       "webinar": "Webinaren registrieren"
     }
