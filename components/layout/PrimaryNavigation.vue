@@ -2,17 +2,17 @@
    - verinice.veo web
    - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Tino Groteloh, Philipp Ballhausen, Annemarie Bufe,
    - Samuel Vitzthum
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -57,15 +57,6 @@
             :mini-variant="miniVariant"
             @expand-menu="miniVariant = false"
           />
-        </template>
-        <template v-if="authenticated">
-          <v-divider class="mb-2" />
-          <div class="mx-2">
-            <LayoutDemoUnitButton
-              :icon-only="miniVariant"
-              :open-in-new-tab="route.path.startsWith('/docs')"
-            />
-          </div>
         </template>
       </v-list>
     </template>
@@ -139,7 +130,8 @@ import {
   mdiHomeOutline,
   mdiHomeSwitchOutline,
   mdiTableSettings,
-  mdiTextBoxEditOutline
+  mdiTextBoxEditOutline,
+  mdiShapeOutline
 } from '@mdi/js';
 import { sortBy, upperFirst } from 'lodash';
 import { StorageSerializers, useStorage } from '@vueuse/core';
@@ -155,6 +147,7 @@ import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domain
 import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/reports/[report].vue';
 import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/risks/[matrix].vue';
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/editor/index.vue';
+import { ROUTE_NAME as PROFILE_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/profiles.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -201,7 +194,7 @@ const { xs } = useDisplay();
 const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
 
 const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
-const fetchTranslationsQueryEnabled = computed(() => authenticated.value);  
+const fetchTranslationsQueryEnabled = computed(() => authenticated.value);
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters,  { enabled: fetchTranslationsQueryEnabled });
 
 // objects specific stuff
@@ -255,7 +248,7 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
               }
             }
           },
-              
+
           // dynamic sub type routes
           ...sortBy(
             objectSubTypes.map((subType) => {
@@ -394,6 +387,20 @@ const catalogsNavEntry = computed<INavItem>(() => ({
   componentName: 'catalogs-nav-item'
 }));
 
+const profilesNavEntry = computed<INavItem>(() => ({
+  id: 'profiles',
+  name: $t('breadcrumbs.profiles'),
+  icon: mdiShapeOutline,
+  componentName: 'profiles-nav-item',
+  to: {
+    name: PROFILE_ROUTE_NAME,
+    params: {
+      unit: props.unitId as string,
+      domain: props.domainId as string
+    }
+  }
+}));
+
 const reportsNavEntry = computed<INavItem>(() => ({
   id: 'reports',
   name: $t('breadcrumbs.reports').toString(),
@@ -443,7 +450,7 @@ const docsNavEntry = computed<INavItem>(() => ({
   componentName: 'docs-nav-item',
   children: docNavItems.value
 }));
-    
+
 const docItemTransformationFn = (file: NavItem): INavItem => ({
   id: file._path,
   name: file.title,
@@ -451,12 +458,13 @@ const docItemTransformationFn = (file: NavItem): INavItem => ({
   children: file.children?.length ? file.children.map((file) => docItemTransformationFn(file)) : undefined
 });
 const docs = useDocNavigation({});
-const docNavItems = computed(() => 
+const docNavItems = computed(() =>
   (docs.value || []).map((file) => docItemTransformationFn(file))
 );
 
 const items = computed<INavItem[]>(() => [
   ...(authenticated.value && userSettings.value.maxUnits ? [unitSelectionNavEntry.value] : []),
+  ...(props.domainId && props.unitId ? [profilesNavEntry.value] : []),
   ...(props.unitId && props.domainId
     ? [
       domainDashboardNavEntry.value,
