@@ -187,7 +187,7 @@ const generateUnitDashboardLink = (unitId: string) => {
   return unitToLinkTo && domainId ? `/${unitToLinkTo.id}/domains/${domainId}` : undefined;
 };
 
-const maxUnitsExceeded = computed(() => units.value?.length >= userSettings.value.maxUnits);
+const maxUnitsExceeded = computed(() => (units.value?.length || 0) >= userSettings.value.maxUnits);
 
 // Unit deletion stuff
 const deleteUnitDialogVisible = ref(false);
