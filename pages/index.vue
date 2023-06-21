@@ -102,16 +102,19 @@
     <template #footer>
       <v-tooltip location="start">
         <template #activator="{ props }">
-          <v-btn
+          <div
             v-bind="props"
-            class="veo-primary-action-fab"
-            color="primary"
-            :disabled="maxUnitsExceeded || ability.cannot('manage', 'units')"
-            :icon="mdiPlus"
-            size="large"
-            @click="createUnit()"
-          />
-          <div style="height: 76px" />
+            style="height: 76px;"
+          >
+            <v-btn
+              :disabled="maxUnitsExceeded || ability.cannot('manage', 'units')"
+              class="veo-primary-action-fab"
+              color="primary"
+              :icon="mdiPlus"
+              size="large"
+              @click="createUnit()"
+            />
+          </div>
         </template>
 
         <template #default>
