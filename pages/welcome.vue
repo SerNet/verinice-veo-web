@@ -196,13 +196,12 @@ import {
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
-import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { getFirstDomainDomaindId } from '~/lib/utils';
 import { useQueryClient } from '@tanstack/vue-query';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
-import { IVeoLink } from '~/types/VeoTypes';
 
 const { t } = useI18n();
 
@@ -226,26 +225,21 @@ const showAtStartup = computed({
 });
 
 // *********************************************************************************
-const unitProps = reactive<{
-  name: string | undefined,
-  description: string | undefined,
-  domains: IVeoLink[]
-}>({ name: 'Sample unit', description: 'Sample data', domains: [] });
-
 const { mutateAsync: create, data: unitPropsPayload } = useMutation(unitQueryDefinitions.mutations.create);
 const { mutateAsync: apply } = useMutation(domainQueryDefinitions.mutations.applyProfile);
 
-const { data: _domains } = useQuery(domainQueryDefinitions.queries.fetchDomains, undefined, {
-  onSuccess: (data) => {
-    unitProps.domains = (data as IVeoDomain[]).map((domain) => createLink('domains', domain.id));
-  }
-});
+const { data: _domains } = useQuery(domainQueryDefinitions.queries.fetchDomains);
+
 const createUnit = async () => {
   try {
-    await create(unitProps);
+    await create({
+      name: _domains.value?.[0].profiles.demoUnit.name,
+      description: _domains.value?.[0].profiles.demoUnit.description,
+      domains: (_domains.value || []).map((domain) => createLink('domains', domain.id))
+    });
 
     const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: unitPropsPayload.value?.resourceId as string }, queryClient);
-    const domainId = '213e1506-9fcb-4c9b-acb2-e50c8c206694';
+    const domainId = getFirstDomainDomaindId(unit);
 
     if (domainId && unit.id) {
       await apply({ domainId, unitId: unit.id, profileKey: ['demoUnit'] });

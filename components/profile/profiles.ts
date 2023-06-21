@@ -19,27 +19,10 @@ import { useQuery } from '~~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
 import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
+import { IProfile } from '~/composables/api/queryDefinitions/domains';
 
 const route = useRoute();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-
-
-// Types
-type Profile = {
-  key: string;
-  name: string;
-  description: string;
-  language: string;
-}
-
-interface IVeoProfiles {
-  [key: string]: {
-    name: string;
-    description: string;
-    language: string;
-  }
-}
-
 
 // STATE
 const currentUnitId = computed(() => (route.params.unit && route.params.unit as string) || undefined);
@@ -53,8 +36,9 @@ const state = reactive({
   domainId: unref(readonly(currentDomainId))
 });
 
-function toggleDialog() {
+function toggleDialog(): boolean {
   state.showDialog = !state.showDialog;
+  return true;
 }
 
 function handleError(err: unknown, genericMsg: string) {
@@ -73,7 +57,7 @@ function useDomain() {
   const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
 
   return {
-    domain: readonly(domain)
+    domain
   };
 }
 
@@ -83,12 +67,12 @@ export function useProfiles() {
 
   // Get available profiles from domain
   const profiles = computed(() => {
-    const _profiles: IVeoProfiles = toRaw(domain.value?.profiles);
-    return Object.keys(_profiles || {}).map(key =>({key, ..._profiles[key]} )) as Profile[];
+    const _profiles: Record<string, IProfile> | undefined = toRaw(domain.value?.profiles);
+    return Object.entries(_profiles || {}).map(([key, profile]) =>({key, ...profile} )) as IProfile[];
   });
 
   return {
-    profiles: readonly(profiles),
+    profiles: profiles,
     toggleDialog,
     state
   };

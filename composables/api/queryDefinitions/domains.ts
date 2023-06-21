@@ -15,9 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IVeoBaseObject, IVeoDomainRiskDefinition, IVeoPiaMandatoryRule } from "~~/types/VeoTypes";
+import { IVeoBaseObject, IVeoDomainRiskDefinition, IVeoEntity, IVeoPiaMandatoryRule } from "~~/types/VeoTypes";
 import { IVeoMutationDefinition } from "../utils/mutation";
 import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
+import { IVeoRisk } from '~/types/VeoTypes';
+import { VeoApiReponseType } from "../utils/request";
+
+export interface IProfile {
+  description: string,
+  name: string,
+  language: string,
+  elements: IVeoEntity[],
+  risks: IVeoRisk[]
+}
 
 export interface IVeoDomain extends IVeoBaseObject {
   name: string;
@@ -27,6 +37,7 @@ export interface IVeoDomain extends IVeoBaseObject {
   riskDefinitions: {
     [key: string]: IVeoDomainRiskDefinition;
   };
+  profiles: Record<string, IProfile>,
   decisions: {
     piaMandatory: {
       rules: IVeoPiaMandatoryRule[];
@@ -122,8 +133,11 @@ export default {
           unitId: mutationParameters.unitId
         }
       }),
+      responseType: VeoApiReponseType.VOID,
       staticMutationOptions: {
-        onSuccess: (queryClient, _data, _variables, _context) => {}
+        // no invalidation needed
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onSuccess: (_queryClient, _data, _variables, _context) => {}
       }
     } as IVeoMutationDefinition<IVeoApplyProfilesParameters, void>
   }
