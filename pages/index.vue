@@ -104,11 +104,10 @@
         <template #activator="{ props }">
           <div
             v-bind="props"
-            style="height: 76px;"
+            class="veo-primary-action-fab"
           >
             <v-btn
               :disabled="maxUnitsExceeded || ability.cannot('manage', 'units')"
-              class="veo-primary-action-fab"
               color="primary"
               :icon="mdiPlus"
               size="large"
