@@ -147,7 +147,7 @@ import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domain
 import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/reports/[report].vue';
 import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/risks/[matrix].vue';
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/editor/index.vue';
-import { ROUTE_NAME as PROFILE_INDEX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/profiles/index.vue';
+import { ROUTE_NAME as PROFILE_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/profiles.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -393,7 +393,7 @@ const profilesNavEntry = computed<INavItem>(() => ({
   icon: mdiShapeOutline,
   componentName: 'profiles-nav-item',
   to: {
-    name: PROFILE_INDEX_ROUTE_NAME,
+    name: PROFILE_ROUTE_NAME,
     params: {
       unit: props.unitId as string,
       domain: props.domainId as string

@@ -24,5 +24,8 @@
 </template>
 <script lang="ts">
 export const ROUTE_NAME = 'unit-domains-domain-profiles';
-</script>
 
+export default {};
+</script>
+  
+<script setup lang="ts"></script>  
