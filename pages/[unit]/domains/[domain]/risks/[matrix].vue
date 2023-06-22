@@ -50,7 +50,6 @@
 <script lang="ts">
 import { cloneDeep, reverse, upperFirst } from 'lodash';
 
-import { separateUUIDParam } from '~/lib/utils';
 import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~~/composables/api/utils/query';
 export const ROUTE_NAME = 'unit-domains-domain-risks-matrix';
@@ -60,13 +59,10 @@ export default defineComponent({
     const { t, locale } = useI18n();
     const route = useRoute();
 
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-    const riskDefinition = computed(() => route.params.matrix);
-
-    const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
+    const fetchDomainQueryParameters = computed(() => ({ id: route.params.domain as string }));
     const { data: domain, isFetching: domainIsFetching } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
-    const data = computed<undefined | IVeoDomain['riskDefinitions']['x']>(() => domain.value?.riskDefinitions?.[riskDefinition.value as string]);
+    const data = computed<undefined | IVeoDomain['riskDefinitions']['x']>(() => domain.value?.riskDefinitions?.[route.params.matrix as string]);
 
     // Matrix selection
     const protectionGoals = computed(() =>

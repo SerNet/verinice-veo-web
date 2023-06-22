@@ -34,7 +34,7 @@
     <!-- dialogs -->
     <ObjectCreateDialog
       v-model="createObjectDialogVisible"
-      :domain-id="domainId"
+      :domain-id="($route.params.domain as string)"
       object-type="process"
       sub-type="PRO_DPIA"
       @success="onCreateObjectSuccess"
@@ -59,7 +59,6 @@
 import { mergeProps } from 'vue';
 import { mdiDotsVertical, mdiTrashCanOutline } from '@mdi/js';
 
-import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
@@ -81,9 +80,7 @@ const route = useRoute();
 const { link } = useLinkObject();
 
 // general stuff
-const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-
-const subType = computed(() => props.object?.domains[domainId.value]?.subType);
+const subType = computed(() => props.object?.domains[route.params.domain as string]?.subType);
 
 const items: (INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] })[] = [
   {
@@ -146,7 +143,7 @@ const navigateToObjectOverview = () => {
     },
     query: {
       objectType: props.object?.type,
-      subType: props.object?.domains[domainId.value]?.subType
+      subType: props.object?.domains[route.params.domain as string]?.subType
     }
   });
 };

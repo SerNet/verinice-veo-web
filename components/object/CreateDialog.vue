@@ -61,7 +61,7 @@
 import { cloneDeep, omit, upperFirst } from 'lodash';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { isObjectEqual, separateUUIDParam } from '~/lib/utils';
+import { isObjectEqual } from '~/lib/utils';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes';
@@ -130,7 +130,7 @@ export default defineComponent({
     const seedInitialData = () => {
       objectData.value = {
         owner: {
-          targetUri: `${config.public.apiUrl}/units/${separateUUIDParam(route.params.unit as string).id}`
+          targetUri: `${config.public.apiUrl}/units/${route.params.unit as string}`
         },
         domains: {
           [props.domainId]: {}

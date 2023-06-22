@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Samuel Vitzthum
+   - Copyright (C) 2023 jae
    -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -15,37 +15,17 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
 <template>
-  <div class="d-flex flex-column align-center">
-    <v-img
-      class="fill-width"
-      src="/images/objectNotFound.svg"
-      max-height="300px"
-      contain
-    />
-    <h1 class="text-h1 mt-8">
-      {{ t('notFoundCode').toString() }}
-    </h1>
-    <p class="mt-2 text-body-1">
-      {{ t('notFound').toString() }}
-    </p>
-    <slot />
+  <div>
+    <ProfileList />
+    <ProfileUnitDialog />
   </div>
 </template>
+<script lang="ts">
+export const ROUTE_NAME = 'unit-domains-domain-profiles';
 
-<script setup lang="ts">
-const { t } = useI18n();
+export default {};
 </script>
-
-<i18n>
-{
-  "en": {
-    "notFoundCode": "404 Not found",
-    "notFound": "The object type could not be found."
-  },
-  "de": {
-    "notFoundCode": "404 Not found",
-    "notFound": "Der von Ihnen angeforderte Objekttyp konnte nicht gefunden werden."
-  }
-}
-</i18n>
+  
+<script setup lang="ts"></script>  

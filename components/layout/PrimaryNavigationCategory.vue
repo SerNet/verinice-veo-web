@@ -17,14 +17,12 @@
 -->
 <template>
   <v-list-group
-    active-class="text-black font-weight-bold"
     :sub-group="level > 0"
     :data-component-name="componentName"
-    :class="{ 'border-top': level === 0, 'veo-primary-navigation__group': level > 0, 'veo-primary-navigation__group--active': $route.fullPath.includes(activePath) }"
-    no-action
-    :model-value="$route.fullPath.includes(activePath) /* group prop is not working with query parameters, so we have to use a simple hack to expand the active path */"
-    :target="$props.openInNewtab ? '_blank' : ''"
-    @click="onClick"
+    :class="{ 'border-top': level === 0 }"
+    :target="openInNewtab ? '_blank' : ''"
+    :value="id"
+    @click.stop="onClick"
   >
     <template
       #prependIcon
@@ -50,7 +48,7 @@
       >
         <template
           v-if="icon || faIcon"
-          #prepend
+          #prepend="{ isActive }"
         >
           <v-icon
             v-if="icon"
@@ -60,13 +58,18 @@
           <font-awesome-icon
             v-else-if="faIcon"
             :icon="faIcon"
-            :color="$route.fullPath.includes(activePath) ? 'black' : 'grey'"
+            :color="isActive ? 'black' : 'grey'"
             class="pt-1 mr-3"
           />
         </template>
-        <v-list-item-title class="veo-primary-navigation-title">
-          {{ name }}
-        </v-list-item-title>
+        <template #default="{ isActive }">
+          <v-list-item-title
+            class="veo-primary-navigation-title"
+            :class="{ 'font-weight-bold': isActive }"
+          >
+            {{ name }}
+          </v-list-item-title>
+        </template>
       </v-list-item>
     </template>
     <template v-if="childrenLoading">
@@ -86,21 +89,22 @@
     <template v-else>
       <template
         v-for="child of children"
-        :key="child.key"
+        :key="child.id"
       >
         <LayoutPrimaryNavigationEntry
           v-if="!child.children"
           v-bind="child"
           :level="level + 1"
+          :mini-variant="miniVariant"
           @expand-menu="$emit('expand-menu')"
-          @click="$emit('click')"
+          @open-parent="openCategory"
         />
         <LayoutPrimaryNavigationCategory
           v-else
           v-bind="child"
           :level="level + 1"
+          :mini-variant="miniVariant"
           @expand-menu="$emit('expand-menu')"
-          @click="$emit('click')"
         />
       </template>
     </template>
@@ -114,63 +118,34 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
 import { mdiChevronDown } from '@mdi/js';
+import { VList } from 'vuetify/components';
 
-import { INavItem } from './PrimaryNavigation.vue';
+import { INavItem, PROVIDE_KEYS as PRIMARY_NAVIGATION_KEYS } from './PrimaryNavigation.vue';
 
-const props = defineProps({
-  name: {
-    type: String,
-    required: true
-  },
-  icon: {
-    type: String,
-    default: undefined
-  },
-  faIcon: {
-    type: [String, Array],
-    default: undefined
-  },
-  children: {
-    type: Array as PropType<INavItem[]>,
-    required: true
-  },
-  childrenLoading: {
-    type: Boolean,
-    default: false
-  },
-  miniVariant: {
-    type: Boolean,
-    default: false
-  },
-  level: {
-    type: Number,
-    default: 0
-  },
-  activePath: {
-    type: String,
-    required: true
-  },
-  componentName: {
-    type: String,
-    default: undefined
-  },
-  to: {
-    type: String,
-    default: undefined
-  },
-  openInNewtab: {
-    type: Boolean,
-    default: false
-  }
+const props = withDefaults(defineProps<INavItem & {
+  level?: number;
+  miniVariant: boolean;
+}>(), {
+  icon: undefined,
+  faIcon: undefined,
+  to: undefined,
+  exact: false,
+  componentName: undefined,
+  classes: undefined,
+  level: 0,
+  children: undefined,
+  openInNewtab: false
 });
+
 const emit = defineEmits(['expand-menu', 'click']);
 
 const route = useRoute();
 const router = useRouter();
 
-const onClick = (event: any) => {
+const navigation = inject<Ref<VList>>(PRIMARY_NAVIGATION_KEYS.navigation);
+
+const onClick = () => {
   if(props.openInNewtab) {
     return;
   }
@@ -179,13 +154,14 @@ const onClick = (event: any) => {
   }
   if (props.to && route.path !== props.to) {
     router.push(props.to);
-  } else {
-    emit('click', event);
   }
-  event.stopPropagation();
 };
 
 const activatorIntendation = computed(() => `primary-navigation-entry-level-${props.level}`);
+
+const openCategory = () => {
+  navigation?.value.open(props.id, true);
+};
 </script>
 
 <style lang="scss" scoped>

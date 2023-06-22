@@ -1,0 +1,446 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Jonas Heitmann, Samuel Vitzthum
+   -
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   -
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   -
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<template>
+  <BasePage
+    :title="upperFirst(t('objectOverview'))"
+    data-component-name="object-overview-page"
+    sticky-footer
+  >
+    <template #default>
+      <ObjectFilterBar
+        ref="filterBar"
+        :domain-id="domainId"
+        :filter="filter"
+        :required-fields="['objectType']"
+        @update:filter="updateRoute"
+      />
+      <BaseCard v-if="filter.objectType || endpointsLoading">
+        <ObjectTable
+          v-model:page="page"
+          v-model:sort-by="sortBy"
+          :items="items"
+          :loading="isLoading"
+          :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
+          :additional-headers="additionalHeaders"
+          data-component-name="object-overview-table"
+          enable-click
+          @click="openItem"
+        >
+          <template #actions="{item}">
+            <div class="d-flex justify-end">
+              <v-tooltip
+                v-for="btn in actions"
+                :key="btn.id"
+                location="start"
+              >
+                <template #activator="{ props }">
+                  <v-btn
+                    :data-component-name="`object-overview-${btn.id}-button`"
+                    :disabled="ability.cannot('manage', 'objects')"
+                    v-bind="props"
+                    :icon="btn.icon"
+                    variant="text"
+                    @click="btn.action(item)"
+                  />
+                </template>
+                {{ btn.label }}
+              </v-tooltip>
+            </div>
+          </template>
+        </ObjectTable>
+        <ObjectDeleteDialog
+          :model-value="!!itemToDelete"
+          :item="itemToDelete"
+          @update:model-value="onCloseDeleteDialog"
+          @success="onCloseDeleteDialog(false)"
+          @error="showError('delete', itemToDelete, $event)"
+        />
+      </BaseCard>
+      <ObjectTypeError v-else>
+        <v-btn
+          color="primary"
+          variant="text"
+          @click="onOpenFilterDialog"
+        >
+          {{ t('filterObjects') }}
+        </v-btn>
+      </ObjectTypeError>
+    </template>
+    <template #footer>
+      <ObjectCreateDialog
+        v-if="filter.objectType"
+        v-model="createObjectDialogVisible"
+        :domain-id="domainId"
+        :object-type="filter.objectType"
+        :sub-type="filter.subType"
+      />
+      <v-tooltip
+        v-if="filter.objectType"
+        location="start"
+      >
+        <template
+          #activator="{ props }"
+        >
+          <v-btn
+            color="primary"
+            flat
+            :disabled="ability.cannot('manage', 'objects')"
+            :icon="mdiPlus"
+            class="veo-primary-action-fab"
+            data-component-name="create-object-button"
+            v-bind="props"
+            size="large"
+            @click="createObjectDialogVisible = true"
+          />
+          <div style="height: 76px" />
+        </template>
+        <template #default>
+          <span>{{ t('createObject', [createObjectLabel]) }}</span>
+        </template>
+      </v-tooltip>
+    </template>
+  </BasePage>
+</template>
+
+<script setup lang="ts">
+import { mdiContentCopy, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
+import { omit, upperFirst } from 'lodash';
+
+import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+import { IVeoEntity } from '~/types/VeoTypes';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useCloneObject } from '~/composables/VeoObjectUtilities';
+import { ObjectTableHeader } from '~/components/object/Table.vue';
+import { useVeoUser } from '~/composables/VeoUser';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
+import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import { useQuery } from '~~/composables/api/utils/query';
+import { useFetchObjects } from '~~/composables/api/objects';
+
+enum FILTER_SOURCE {
+  QUERY,
+  PARAMS,
+  NONE
+}
+
+type IFilterDefinition = {
+  [filterKey: string]: {
+    source: FILTER_SOURCE,
+    nullValue?: any
+  }
+}
+
+const { t, locale } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
+const { tablePageSize } = useVeoUser();
+const route = useRoute();
+const { ability } = useVeoPermissions();
+
+const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
+const { clone } = useCloneObject();
+
+const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+const { data: translations, isFetching: translationsLoading } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
+
+const domainId = computed(() => route.params.domain as string);
+
+//
+// Filter stuff
+//
+
+// Ref to filter bar to programmatically open filter dialog from outside
+const filterBar = ref();
+const onOpenFilterDialog = () => {
+  filterBar.value.filterDialogVisible = true;
+};
+
+// accepted filter keys (others wont be respected when specified in URL query parameters)
+
+const filterDefinitions: IFilterDefinition = {
+  objectType: {
+    source: FILTER_SOURCE.PARAMS
+  },
+  subType: {
+    source: FILTER_SOURCE.PARAMS,
+    nullValue: '-'
+  },
+  designator: {
+    source: FILTER_SOURCE.QUERY
+  },
+  name: {
+    source: FILTER_SOURCE.QUERY
+  },
+  status: {
+    source: FILTER_SOURCE.QUERY
+  },
+  description: {
+    source: FILTER_SOURCE.QUERY
+  },
+  updatedBy: {
+    source: FILTER_SOURCE.QUERY
+  },
+  hasNoParentElements: {
+    source: FILTER_SOURCE.QUERY
+  },
+  hasChildElements: {
+    source: FILTER_SOURCE.QUERY
+  }
+};
+
+const stringOrFirstValue = (v: string | null | (string | null)[]) => {
+  if (Array.isArray(v)) {
+    return v[0];
+  }
+  return v;
+};
+
+// filter built from URL query parameters
+const { data: endpoints, isFetching: endpointsLoading } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { placeholderData: {} });
+const filter = computed(() => {
+  return Object.fromEntries(
+    Object.entries(filterDefinitions).map(([filterKey, filterDefinition]) => {
+      // Extract first query value
+      let filterValue: any;
+      if(filterDefinition.source === FILTER_SOURCE.QUERY) {
+        filterValue = stringOrFirstValue(route.query[filterKey]);
+      } else if (filterDefinition.source === FILTER_SOURCE.PARAMS) {
+        filterValue = stringOrFirstValue(route.params[filterKey]);
+      }
+      if(filterValue === filterDefinition.nullValue) {
+        filterValue = undefined;
+      }
+
+      if(filterValue === "true") {
+        filterValue = true;
+      }
+
+      // Special handling
+      if(filterKey === 'objectType') {
+        filterValue = Object.entries(endpoints.value || {}).find(([_, endpoint]) => endpoint === filterValue)?.[0];
+      }
+
+      return [filterKey, filterValue];
+    })
+  ) as Record<string, string | undefined>;
+});
+
+//
+// table stuff
+//
+const page = ref(1);
+const sortBy = ref([{ key: 'name', order: 'desc' }]);
+const resetQueryOptions = () => {
+  page.value = 1;
+  sortBy.value = [{ key: 'name', order: 'desc' }];
+};
+
+const combinedQueryParameters = computed<any>(() => ({
+  size: tablePageSize.value,
+  sortBy: sortBy.value[0].key,
+  sortOrder: sortBy.value[0].order,
+  page: page.value,
+  unit: route.params.unit as string,
+  ...omit(filter.value, 'objectType'),
+  endpoint: endpoints.value?.[filter.value.objectType as string]
+}));
+const queryEnabled = computed(() => !!endpoints.value?.[filter.value.objectType as string]);
+const { data: items, isLoading: isLoadingObjects } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true });
+
+const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
+const formsQueryEnabled = computed(() => !!domainId.value);
+const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+
+const isLoading = computed(() => isLoadingObjects.value || translationsLoading.value);
+
+watch(() => filter.value, resetQueryOptions, { deep: true });
+
+// Update query parameters but keep other route options
+const updateRoute = async (newValue: Record<string, string | undefined | null | true>) => {
+  const routeDetails = {
+    name: ROUTE_NAME,
+    query: {} as Record<string, string>,
+    params: {} as Record<string, string>
+  };
+  Object.entries(newValue).forEach(([filterKey, filterValue]) => {
+    // Special handling
+    if(filterKey === 'objectType') {
+      filterValue = endpoints.value?.[filterValue as string];
+    }
+
+    if(filterValue === undefined && filterDefinitions[filterKey].nullValue !== undefined) {
+      if(filterDefinitions[filterKey].source === FILTER_SOURCE.PARAMS) {
+        routeDetails.params[filterKey] = filterDefinitions[filterKey].nullValue;
+      } else {
+        routeDetails.query[filterKey] = filterDefinitions[filterKey].nullValue;
+      }
+    } else {
+      if(filterDefinitions[filterKey].source === FILTER_SOURCE.PARAMS) {
+        routeDetails.params[filterKey] = filterValue as string;
+      } else {
+        routeDetails.query[filterKey] = filterValue as string;
+      }
+    }
+  });
+  await navigateTo(routeDetails);
+};
+
+const formatObjectLabel = (label: string, value?: string) => {
+  switch (label) {
+    // translated object type
+    case 'objectType':
+      return value ? translations.value?.lang[locale.value]?.[value] : undefined;
+      // translated sub type
+    case 'subType':
+      return (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
+  }
+};
+
+const createObjectLabel = computed(() => (filter.value.subType ? formatObjectLabel('subType', filter.value.subType) : formatObjectLabel('objectType', filter.value.objectType)));
+
+const showError = (messageKey: 'clone' | 'delete', _item: IVeoEntity | undefined, error: Error) => {
+  displayErrorMessage(t(`errors.${messageKey}`).toString(), error?.toString());
+};
+
+const openItem = ({ item }: { item: any }) => {
+  return navigateTo({
+    name: OBJECT_DETAIL_ROUTE,
+    params: {
+      ...route.params,
+      object: item.raw.id
+    }
+  });
+};
+
+//
+// CRUD stuff
+//
+
+// Create object
+const createObjectDialogVisible = ref(false);
+
+// Delete object
+const itemToDelete = ref<IVeoEntity>();
+const onCloseDeleteDialog = (visible: boolean) => {
+  if (visible === false) {
+    displaySuccessMessage(t('objectDeleted'));
+    itemToDelete.value = undefined;
+  }
+};
+
+const actions = computed(() => [
+  {
+    id: 'clone',
+    label: upperFirst(t('cloneObject')),
+    icon: mdiContentCopy,
+    async action(item: any) {
+      try {
+        const { resourceId: clonedObjectId } = await clone(item.raw);
+        displaySuccessMessage(
+          t('cloneSuccess'),
+          { actions: [
+            {
+              text: t('open'),
+              onClick: () => {
+                return navigateTo({
+                  name: OBJECT_DETAIL_ROUTE,
+                  params: {
+                    ...route.params,
+                    object: clonedObjectId
+                  }
+                });
+              }
+            }]
+          }
+        );
+      } catch (e: any) {
+        showError('clone', item.raw, e);
+      }
+    }
+  },
+  {
+    id: 'delete',
+    label: upperFirst(t('deleteObject')),
+    icon: mdiTrashCanOutline,
+    action(item: any) {
+      itemToDelete.value = item.raw;
+    }
+  }
+]);
+
+// Additional headers (only if user is viewing processes with subtype PRO_DataProcessing)
+const additionalHeaders = computed<ObjectTableHeader[]>(() =>
+  filter.value.objectType === 'process' && filter.value.subType === 'PRO_DataProcessing'
+    ? [
+      {
+        priority: 31,
+        order: 51,
+        key: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
+        value: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
+        render: ({ item }) => h('div', item.raw.domains?.[domainId.value]?.decisionResults?.piaMandatory?.value ? globalT('global.button.yes').toString() : globalT('global.button.no').toString()),
+        text: t('dpiaMandatory').toString(),
+        sortable: false,
+        width: 210
+            
+      }
+    ]
+    :[]
+);
+</script>
+
+<script lang="ts">
+export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
+</script>
+
+<i18n>
+{
+  "en": {
+    "objectOverview": "object overview",
+    "filterObjects": "filter objects",
+    "createObject": "create {0}",
+    "clone": "duplicated",
+    "cloneObject": "clone object",
+    "cloneSuccess": "Object cloned successfully.",
+    "deleteObject": "delete object",
+    "dpiaMandatory": "Privacy impact assessment required",
+    "errors": {
+      "clone": "Could not clone object",
+      "delete": "Could not delete object"
+    },
+    "objectDeleted": "Object deleted.",
+    "open": "Open"
+  },
+  "de": {
+    "objectOverview": "Objektübersicht",
+    "filterObjects": "Objekte filtern",
+    "createObject": "{0} erstellen",
+    "clone": "dupliziert",
+    "cloneObject": "objekt duplizieren",
+    "cloneSuccess": "Objekt wurde erfolgreich dupliziert.",
+    "deleteObject": "objekt löschen",
+    "dpiaMandatory": "DSFA verpflichtend",
+    "errors": {
+      "clone": "Das Objekt konnte nicht dupliziert werden",
+      "delete": "Das Objekt konnte nicht gelöscht werden"
+    },
+    "objectDeleted": "Objekt wurde gelöscht.",
+    "open": "Öffnen"
+  }
+}
+</i18n>

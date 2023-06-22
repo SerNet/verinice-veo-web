@@ -250,7 +250,7 @@
     <template #helpers>
       <EditorFormSchemaWizardDialog
         :model-value="creationDialogVisible"
-        :domain-id="domainId"
+        :domain-id="($route.params.domain as string)"
         @done="onWizardFinished"
       />
       <EditorErrorDialog
@@ -325,8 +325,6 @@ export default defineComponent({
     const { ability } = useVeoPermissions();
     const { xs } = useDisplay();
 
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-
     /**
      * Layout specific stuff
      */
@@ -373,7 +371,7 @@ export default defineComponent({
 
     // Create/update stuff
     const createFormSchemaQueryParameters = computed(() => ({
-      domainId: domainId.value,
+      domainId: route.params.domain as string,
       form: formSchema.value as IVeoFormSchema
     }));
     const { mutateAsync: create } = useMutation(formQueryDefinitions.mutations.createForm, {
@@ -385,7 +383,7 @@ export default defineComponent({
     });
     const updateFormSchemaQueryParameters = computed(() => ({
       id: formSchema.value?.id || '',
-      domainId: domainId.value,
+      domainId: route.params.domain as string,
       form: formSchema.value as IVeoFormSchema
     }));
     const { mutateAsync: update } = useMutation(formQueryDefinitions.mutations.updateForm);
@@ -431,7 +429,7 @@ export default defineComponent({
       controlItems.value = items;
     }
 
-    const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
+    const fetchDomainQueryParameters = computed(() => ({ id: route.params.domain as string }));
     const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     /**
