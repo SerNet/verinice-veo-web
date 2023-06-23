@@ -4,13 +4,11 @@ route: /
 exact: true
 lang: de
 steps:
-  - title: 'Die Unitauswahl'
-    element: '[data-component-name=unit-selection-page]'
-    intro: Auf der Seite Unitauswahl wählen Sie eine der verfügbaren Units zur weiteren Bearbeitung aus.
   - title: 'Verfügbare Units'
     element: '[data-component-name=unit-selection-available-units]'
-    intro: Wählen Sie die gewünschte Unit aus.
+    intro: Navigieren Sie zur <b>Unitauswahl</b>, um einen Überblick über alle vorhandenen Units zu erhalten.
+  - title: 'Die Unitauswahl'
+    element: '[data-component-name=unit-selection-page]'
+    intro: Auf der Seite <b>Unitauswahl</b> wählen Sie eine der verfügbaren Units zur weiteren Bearbeitung aus.
   - title: 'Geschafft'
-# todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
-#    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.
     intro: Weitere Informationen finden Sie auch in der Online Dokumentation.
