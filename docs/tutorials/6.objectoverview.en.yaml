@@ -31,10 +31,10 @@ steps:
     element: '[data-component-name=object-overview-table] > .v-data-table-footer'
     intro: If there are many objects, you can use pagination to adjust the number of objects displayed per page and navigate between the individual pages.
   - title: 'Edit object'
-    element: '[data-component-name=object-overview-table] tbody tr:nth-child(1)'
+    element: '[data-component-name=object-overview-table]'
     intro: Open an object in the list for editing by a single mouse click.
   - title: 'The Designator'
-    element: '[data-component-name=object-overview-table] tbody tr:nth-child(1) > td:nth-child(2)'
+    element: '[data-component-name=object-overview-table] tbody > tr:nth-child(1) > td:nth-child(2)'
     intro: The designator is assigned by the system as a unique and unchangeable criterion that can be used to quickly search for objects.
   - title: 'Duplicate object'
     element: '[data-component-name=object-overview-clone-button]'
