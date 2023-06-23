@@ -1,11 +1,11 @@
 title: Die Objektübersicht
 description: Beschreibung der Objektübersicht
-route: /unit-:unit/domains/domain-:domain/objects?*
+route: /:unit/domains/:domain/:objectType/:subType
 lang: de
 steps:
   - title: 'Objektübersicht'
     element: '[data-component-name=object-overview-page]'
-    intro: In der Objektübersicht werden alle verfügbare Objekte aufgelistet.
+    intro: In der Objektübersicht werden alle verfügbaren Objekte aufgelistet.
   - title: 'Filter'
     element: '[data-component-name=filter-bar-filter-button]'
     intro: Die Objektübersicht wird dazu immer auf Grundlage eines Filters aufgebaut.
@@ -13,20 +13,20 @@ steps:
     element: '[data-component-name=filter-bar-active-filters]'
     intro: Aktive Filterkriterien werden in sogenannten 'Chips' dargestellt.
   - title: 'Filterkriterien löschen'
-    element: '[data-component-name=veo-object-chip] .v-chip__close'
+    element: '[data-component-name=veo-object-chip]'
     intro: Optionale Filterkriterien können durch Mausklick direkt ohne Aufruf des Filterdialogs gelöscht werden.
   - title: 'WICHTIG!'
     element: '[data-component-name=filter-bar-active-filters] span:nth-child(1)'
     intro: Der Objekttyp als Mindestkriterium kann nur über den Filterdialog geändert werden!
   - title: 'Übrigens...'
     element: '[data-component-name=breadcrumbs]'
-    intro: ...über die Breadcrumb navigieren Sie per Mausklick direkt zu allen aufgelisteten Elementen.
+    intro: ... über die Breadcrumbs navigieren Sie per Mausklick direkt zu allen aufgelisteten Elementen.
   - title: 'Objektliste'
     element: '[data-component-name=object-overview-table]'
     intro: Die Objektliste kann auf unterschiedliche Art und Weise zum schnellen Auffinden von Objekten modifziert werden.
   - title: 'Sortierung'
     element: '[data-component-name=object-overview-table] thead'
-    intro: Sortieren Sie die Objektliste durch Mausklick auf die Spaltenüberschriften um bestimmte Objekte schnell zu finden.
+    intro: Sortieren Sie die Objektliste durch Mausklick auf die Spaltenüberschriften, um bestimmte Objekte schnell zu finden.
   - title: 'Paginierung'
     element: '[data-component-name=object-overview-table] > .v-data-table-footer'
     intro: Existieren viele Objekte können Sie durch die Paginierung die Anzahl der je Seite dargestellten Objekte anpassen und zwischen den einzelnen Seiten navigieren.
@@ -38,7 +38,7 @@ steps:
     intro: Der Designator wird vom System als eindeutiges und nicht änderbares Kriterium vergeben, dass zur schnellen Suche von Objekten verwendet kann.
   - title: 'Objekt duplizieren'
     element: '[data-component-name=object-overview-clone-button]'
-    intro: Sie können jedes Objekt durch Mausklick duplizieren...
+    intro: Sie können jedes Objekt durch Mausklick duplizieren ...
   - title: 'Objekt löschen'
     element: '[data-component-name=object-overview-delete-button]'
     intro: ... und genau so schnell löschen.
@@ -46,6 +46,4 @@ steps:
     element: '[data-component-name=create-object-button]'
     intro: Über die Schältfläche "Objekt erstellen" können Sie ein neues Objekt zu den aktiven Filtereinstellungen erstellen.
   - title: 'Geschafft'
-# todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
-#    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.
     intro: Weitere Informationen finden Sie auch in der Online Dokumentation.

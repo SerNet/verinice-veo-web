@@ -1,6 +1,6 @@
 title: The object overview
 description: Description of the object overview
-route: /unit-:unit/domains/domain-:domain/objects?*
+route: /:unit/domains/:domain/:objectType/:subType
 lang: en
 steps:
   - title: 'Object overview'
@@ -18,9 +18,9 @@ steps:
   - title: 'IMPORTANT!'
     element: '[data-component-name=filter-bar-active-filters] span:nth-child(1)'
     intro: The object type as minimum criterion can only be changed via the filter dialogue!
-  - title: 'By the way...'
+  - title: 'By the way ...'
     element: '[data-component-name=breadcrumbs]'
-    intro: ...via the breadcrumb you navigate directly to all listed elements by mouse click.
+    intro: ... via the breadcrumb you navigate directly to all listed elements by mouse click.
   - title: 'Object list'
     element: '[data-component-name=object-overview-table]'
     intro: The object list can be modified in different ways to find objects quickly.
@@ -38,7 +38,7 @@ steps:
     intro: The designator is assigned by the system as a unique and unchangeable criterion that can be used to quickly search for objects.
   - title: 'Duplicate object'
     element: '[data-component-name=object-overview-clone-button]'
-    intro: You can duplicate any object by mouse click...
+    intro: You can duplicate any object by mouse click ...
   - title: 'Delete object'
     element: '[data-component-name=object-overview-delete-button]'
     intro: ... and delete it just as quickly.
@@ -46,6 +46,4 @@ steps:
     element: '[data-component-name=create-object-button]'
     intro: Use the 'Create object' button to create a new object for the active filter settings.
   - title: 'Created'
-# todo4sernet: Replace hyperlink to online documentation if documentation created.
-# intro: More information can also be found in the <a href="/docs">online documentation</a>.
     intro: Further information can also be found in the online documentation.
