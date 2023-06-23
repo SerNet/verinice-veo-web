@@ -11,7 +11,7 @@ steps:
     intro: Über die Breadcrumbs navigieren Sie jederzeit zu vorab aufgerufenen Objekten.
   - title: 'Sprachauswahl'
     element: '[data-component-name=language-select]'
-    intro: Mit dem Sprachumschalter wählen Sie aus den verfügbaren Sprachen.
+    intro: Mit dem Sprachumschalter wählen Sie eine der verfügbaren Sprachen.
   - title: 'Kontext-Hilfe'
     element: '[data-component-name=tutorial-select]'
     intro: Über die Kontext-Hilfe rufen Sie eines der verfügbaren Tutorials auf.

@@ -56,6 +56,7 @@
             to="/docs/index"
             exact
             v-bind="props"
+            data-component-name="docs-nav-item"
           >
             <v-icon :icon="mdiHelpCircleOutline" />
           </v-btn>
