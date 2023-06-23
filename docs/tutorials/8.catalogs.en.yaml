@@ -1,6 +1,6 @@
 title: The catalogues
 description: Description of the catalogues
-route: /unit-:unit/domains/domain-:domain/catalogs/catalog-:catalog
+route: /:unit/domains/:domain/catalogs/:subType
 lang: en
 steps:
   - title: 'Catalogues'
@@ -13,6 +13,4 @@ steps:
     element: '[data-component-name=catalog-tom-tab]'
     intro: Select the TOM to be copied into your unit for further use.
   - title: 'Done'
-# todo4sernet: Replace hyperlink to online documentation if documentation created.
-# intro: Further information can also be found in the <a href="/docs">online documentation</a>.
     intro: Further information can also be found in the online documentation.

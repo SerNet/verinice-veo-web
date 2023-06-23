@@ -1,14 +1,14 @@
 title: Die Risikodefinitionen
 description: Die Beschreibung der Risikodefinitionen
-route: /unit-:units/domains/domain-:domain/risks/:risk
+route: /:units/domains/:domain/risks/:subType
 lang: de
 steps:
   - title: 'Risikodefinitionen'
     element: '[data-component-name=risk-page]'
     intro: Im Abschnitt Risikodefinitionen können die verfügbaren Risikodefinitionen eingesehen werden.
-  - title: 'Risikodefinition DSRA'
-    element: '[data-component-name=risk-definition-DSRA]'
-    intro: Aktuell steht die Risikodefinition für die Datenschutz-Risikoanalyse (DSRA) zur Verfügung.
+#  - title: 'Risikodefinition DSRA'
+#    element: '[data-component-name=risk-definition-DSRA]'
+#    intro: Aktuell steht die Risikodefinition für die Datenschutz-Risikoanalyse (DSRA) zur Verfügung.
   - title: 'Schutzziele'
     element: '[data-component-name=risk-matrix-wrapper]'
     intro: Für die DSRA wird die Risikomatrix für die Schutzziele Vertraulichkeit, Integrität, Verfügbarkeit und Belastbarkeit dargestellt.
@@ -16,6 +16,4 @@ steps:
     element: '[data-component-name=risk-matrix-wrapper] .veo-card'
     intro: Die Risikomatrix stellt die Zuordnung der Kombination aus Eintrittswahrscheinlichkeit und möglicher Auswirkung zu den Risikokategorien dar.
   - title: 'Geschafft'
-# todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
-#    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.
     intro: Weitere Informationen finden Sie auch in der Online Dokumentation.

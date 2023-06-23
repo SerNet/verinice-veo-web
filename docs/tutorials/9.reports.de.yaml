@@ -1,6 +1,6 @@
 title: Die Reports
 description: Beschreibung der Reports
-route: /unit-:unit/domains/domain-:domain/reports/:reports
+route: /:unit/domains/:domain/reports/:subType
 lang: de
 steps:
   - title: 'Reports'
@@ -8,7 +8,7 @@ steps:
     intro: In diesem Bereich erstellen Sie nach Auswahl einer Reportvorlage den gewünschten Report.
   - title: 'Name der Reportvorlage'
     element: '[data-component-name=report-page] h1'
-    intro: Im oberen Bereich finden Sie den Namen der jeweiligen Reportvorlage...
+    intro: Im oberen Bereich finden Sie den Namen der jeweiligen Reportvorlage ...
   - title: 'Beschreibung der Reportvorlage'
     element: '[data-component-name=report-description]'
     intro: ... sowie eine kurze inhaltliche Beschreibung.
@@ -25,6 +25,4 @@ steps:
     element: '[data-component-name=generate-report-button]'
     intro: Erzeugen Sie den Report zur Ausgabe als PDF.
   - title: 'Geschafft'
-# todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
-#    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.
     intro: Weitere Informationen finden Sie auch in der Online Dokumentation.
