@@ -348,7 +348,7 @@ const unitSelectionNavEntry = computed<INavItem>(() =>({
   to: {
     name: UNIT_SELECTION_ROUTE_NAME
   },
-  componentName: 'unit-select-nav-item',
+  componentName: 'unit-selection-available-units',
   exact: true,
   openInNewtab: route.path.startsWith("/docs")
 }));

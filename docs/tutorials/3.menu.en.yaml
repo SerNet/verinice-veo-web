@@ -1,6 +1,6 @@
 title: The menu
 description: Description of the menu
-route: /unit-:unit
+route: /:unit/domains/:domain
 lang: en
 steps:
   - title: 'The menu'
@@ -12,12 +12,15 @@ steps:
   - title: 'Domain Selector'
     element: '[data-component-name=domain-select]'
     intro: Use the Domain Selector to select one of the available domains.
-  #- title: 'Unitauswahl'
-  #  element: '[data-component-name=unit-select-nav-item]'
-  #  intro: Select one of the available units.
+  - title: 'Unitauswahl'
+    element: '[data-component-name=unit-selection-available-units]'
+    intro: Select one of the available units.
   - title: 'Dashboard'
     element: '[data-component-name=domain-dashboard-nav-item]'
     intro: On the Dashboard you can see all objects per subtype and status (life cycle) at a glance and navigate directly to them.
+  - title: 'Profiles'
+    element: '[data-component-name=profiles-nav-item]'
+    intro: Wenden Sie Profile mit Beispieldaten auf zur Verfügung stehende Units an.
   - title: 'Objects'
     element: '[data-component-name=objects-nav-item]'
     intro: In the Objects section, you navigate directly to the overview pages of the object types <i>Scopes, <i>Processes</i>, <i>Assets</i>, <i>People</i>, <i>Incidents</i>, <i>Documents</i>, <i>Scenarios</i> and <i>Controls</i>.

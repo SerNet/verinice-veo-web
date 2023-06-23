@@ -6,15 +6,18 @@ steps:
   - title: 'Application bar'
     element: '[data-component-name=app-bar]'
     intro: The application bar is used to control basic functions. It is available in all views.
-  - title: 'Breadcrumb'
+  - title: 'Breadcrumbs'
     element: '[data-component-name=breadcrumbs]'
-    intro: Use the breadcrumb to navigate to previously accessed objects at any time.
+    intro: Use the breadcrumbs to navigate to previously accessed objects at any time.
   - title: 'Language selection'
     element: '[data-component-name=language-select]'
     intro: Use the language selector to choose from the available languages.
   - title: 'Context help'
     element: '[data-component-name=tutorial-select]'
     intro: Use the context help to call up one of the available tutorials.
+  - title: 'Documentation'
+    element: '[data-component-name=docs-nav-item]'
+    intro: Use the questionmark to head over to the online documentation.
   - title: 'Account Button'
     element: '[data-component-name=account-menu-button]'
     intro: Via the account button you can log out and get further information about verinice.veo.

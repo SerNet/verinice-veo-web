@@ -1,6 +1,6 @@
 title: The object view
 description: Description of the object view
-route: /unit-:unit/domains/domain-:domain/objects/:object?*
+route: /:unit/domains/:domain/:objectType/:subType
 lang: en
 steps:
   - title: 'Object view'

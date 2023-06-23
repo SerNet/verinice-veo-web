@@ -1,6 +1,6 @@
 title: Das Menü
 description: Beschreibung des Menüs
-route: /unit-:unit
+route: /:unit/domains/:domain
 lang: de
 steps:
   - title: 'Das Menü'
@@ -12,9 +12,12 @@ steps:
   - title: 'Domain Selector'
     element: '[data-component-name=domain-select]'
     intro: Mit dem Domain Selector wählen Sie eine der zur Verfügung stehenden Domänen aus.
-  #- title: 'Unitauswahl'
-  #  element: '[data-component-name=unit-select-nav-item]'
-  #  intro: Wählen Sie eine der zur Verfügung stehenden Units aus.
+  - title: 'Unitauswahl'
+    element: '[data-component-name=unit-selection-available-units]'
+    intro: Wählen Sie eine der zur Verfügung stehenden Units aus.
+  - title: 'Profile'
+    element: '[data-component-name=profiles-nav-item]'
+    intro: Wenden Sie Profile mit Beispieldaten auf zur Verfügung stehende Units an.
   - title: 'Dashboard'
     element: '[data-component-name=domain-dashboard-nav-item]'
     intro: Auf dem Dashboard sehen Sie auf einen Blick alle Objekte je Subtyp und Status (Lebenszyklus) und können direkt zu diesen navigieren.
@@ -31,9 +34,6 @@ steps:
     element: '[data-component-name=risks-nav-item]'
     intro: Im Bereich Risiken können Sie eine der verfügbaren Risikodefinitionen einsehen.
 # todo4sernet: Editoren - nur bei Content Creator Account!
-  - title: 'Demo-Unit'
-    element: '[data-component-name=demo-unit-button]'
-    intro: Die Demo-Unit stellt Ihnen alle Funktionen und Inhalte zur Verfügung, um veo ausgiebig u testen.
   - title: 'Menü verstecken'
     element: '[data-component-name=toggle-navigation]'
     intro: Über Menü verstecken können Sie die Navigation ein- bzw. ausklappen.
