@@ -36,10 +36,6 @@ const state = reactive({
   domainId: unref(readonly(currentDomainId))
 });
 
-console.log('init:', state);
-watch (state, () => {
-  console.log(route.params, state);
-});
 function toggleDialog(): boolean {
   state.showDialog = !state.showDialog;
   return true;

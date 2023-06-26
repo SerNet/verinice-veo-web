@@ -18,11 +18,11 @@ steps:
   - title: 'WICHTIG!'
     element: '[data-component-name=filter-bar-active-filters] span:nth-child(1)'
     intro: Der Objekttyp als Mindestkriterium kann nur über den Filterdialog geändert werden!
-  - title: 'Übrigens...'
+  - title: 'Übrigens ...'
     element: '[data-component-name=breadcrumbs]'
     intro: ... über die Breadcrumbs navigieren Sie per Mausklick direkt zu allen aufgelisteten Elementen.
   - title: 'Objektliste'
-    element: '[data-component-name=object-overview-table]'
+    element: '[data-component-name=object-overview-page]'
     intro: Die Objektliste kann auf unterschiedliche Art und Weise zum schnellen Auffinden von Objekten modifziert werden.
   - title: 'Sortierung'
     element: '[data-component-name=object-overview-table] thead'
@@ -31,7 +31,7 @@ steps:
     element: '[data-component-name=object-overview-table] > .v-data-table-footer'
     intro: Existieren viele Objekte können Sie durch die Paginierung die Anzahl der je Seite dargestellten Objekte anpassen und zwischen den einzelnen Seiten navigieren.
   - title: 'Objekt bearbeiten'
-    element: '[data-component-name=object-overview-table] .v-data-table__tbody > tr:nth-child(1)'
+    element: '[data-component-name=object-overview-page]'
     intro: Öffnen Sie ein Objekt in der Liste durch einfachen Mausklick zum Bearbeiten.
   - title: 'Der Designator'
     element: '[data-component-name=object-overview-table] tbody tr:nth-child(1) > td:nth-child(2)'
