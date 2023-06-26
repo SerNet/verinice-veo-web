@@ -79,7 +79,7 @@
     "npm": "^9.4.0",
     "nuxt": "^3.5.1",
     "nuxt-font-loader": "^2.2.2",
-    "nuxt-vitest": "0.6.12",
+    "nuxt-vitest": "0.8.5",
     "path-to-regexp": "^1.8.0",
     "prismjs": "^1.29.0",
     "rehype-inline": "^2.0.0",
