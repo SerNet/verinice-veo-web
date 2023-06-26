@@ -29,7 +29,9 @@
           <h3 class="text-h4">
             {{ t('unitpicker') }}
           </h3>
-          <h4>{{ activeUnits }} {{ t('of' ) }} {{ userSettings.maxUnits }} {{ t('active') }} Units</h4>
+          <p class="text-body-2">
+            <strong>{{ activeUnits }}</strong> {{ t('of' ) }} <strong>{{ userSettings.maxUnits }}</strong> {{ t('active') }} Units
+          </p>
         </v-card-text>
 
         <v-list
