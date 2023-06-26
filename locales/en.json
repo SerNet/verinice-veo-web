@@ -138,5 +138,9 @@
     "sampledata": "The { 0 } contains a complete sample organization. You can modify the content as you wish to get to know all the features and functions or use it directly as a basis for mapping your organization.",
     "tutorial": "Context-sensitive { 0 } are available on each page for quick orientation. Available { 0 } can be accessed at any time via the icon in the application bar at the top right.",
     "webinar": "You can register anytime for our regular free { 0 }."
+  },
+
+  "formSchemaTranslations": {
+    "formSchemaTranslationNotFoundSearchAll": "No fitting formschema translation found. {0} to search all translations."
   }
 }

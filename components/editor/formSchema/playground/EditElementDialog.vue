@@ -56,8 +56,11 @@
   </BaseDialog>
 </template>
 
+<script lang="ts">
+export type PENDING_TRANSLATIONS = Record<string, Record<string, string | undefined>>;
+</script>
+
 <script setup lang="ts">
-import { PropType, Ref } from 'vue';
 import { cloneDeep, isEqual } from 'lodash';
 
 import EditorFormSchemaPlaygroundEditDialogControlElementSettings from './edit-dialog/ControlElementSettings.vue';
@@ -67,23 +70,13 @@ import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { IPlaygroundElement } from './Element.vue';
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false
-  },
-  formSchemaElement: {
-    type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  },
-  pointer: {
-    type: String,
-    required: true
-  },
-  playgroundElement: {
-    type: Object as PropType<IPlaygroundElement>,
-    required: true
-  }
+const props = withDefaults(defineProps<{
+  modelValue: boolean;
+  formSchemaElement: IVeoFormSchemaItem;
+  pointer: string;
+  playgroundElement: IPlaygroundElement;
+}>(), {
+  modelValue: false
 });
 
 const emit = defineEmits<{
@@ -97,7 +90,7 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
-const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.language);
+const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.EDITOR_LANGUAGE);
 
 const translatedElementType = computed(() => t(`type.${props.formSchemaElement.type.toLowerCase()}`));
 
@@ -146,12 +139,6 @@ const onSave = () => {
   emit('update:form-schema-element', localFormSchemaElement.value);
   emit('update:model-value', false);
 };
-</script>
-
-<script lang="ts">
-export type PENDING_TRANSLATIONS = Record<string, Record<string, string | undefined>>;
-
-export default {};
 </script>
 
 <i18n>

@@ -100,7 +100,6 @@
           <v-btn
             color="primary"
             :disabled="maxUnitsExceeded"
-            elevation="2"
             :prepend-icon="mdiCableData"
             size="large"
             variant="flat"

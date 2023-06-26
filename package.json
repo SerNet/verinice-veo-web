@@ -94,7 +94,7 @@
     "vue-codemirror": "^6.1.1",
     "vue-router": "^4.1.6",
     "vuedraggable": "^4.1.0",
-    "vuetify": "^3.2.4",
+    "vuetify": "^3.3.3",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.0/xlsx-0.19.0.tgz"
   }
 }

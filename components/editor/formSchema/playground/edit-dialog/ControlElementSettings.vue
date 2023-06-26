@@ -97,7 +97,6 @@
 </template>
   
 <script setup lang="ts">
-import { PropType, Ref } from 'vue';
 import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
@@ -107,20 +106,11 @@ import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 import { getFormSchemaControlType } from '~~/lib/utils';
 import { IPlaygroundElement } from '../Element.vue';
 
-const props = defineProps({
-  formSchemaElement: {
-    type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  },
-  pointer: {
-    type: String,
-    required: true
-  },
-  playgroundElement: {
-    type: Object as PropType<IPlaygroundElement>,
-    required: true
-  }
-});
+const props = withDefaults(defineProps<{
+  formSchemaElement: IVeoFormSchemaItem;
+  pointer: string;
+  playgroundElement: IPlaygroundElement;
+}>(), {});
 
 const emit = defineEmits<{
   (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void
@@ -132,7 +122,7 @@ const emit = defineEmits<{
 const { t, locale } = useI18n();
 
 // Some elements can be displayed with a different input, e.g. a text field can be displayed as a multiline input or with a WYSIWYG editor
-const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.objectSchema);
+const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.OBJECTSCHEMA);
 const objectSchemaElement = computed(() => JsonPointer.get(objectSchema?.value, props.formSchemaElement.scope as string) as JSONSchema7); // Can't be undefined, as a control ALWAYS has a scope
 
 const controlType = computed(() => getFormSchemaControlType(objectSchemaElement.value));
