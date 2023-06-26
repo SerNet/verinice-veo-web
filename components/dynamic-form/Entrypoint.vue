@@ -208,7 +208,6 @@ export default defineComponent({
     }));
 
     const createComponent = (element: any, formSchemaPointer: string, translations: Record<string, any>, localObjectSchema: ComputedRef<IVeoObjectSchema>): any => {
-      // console.log('tst', element, formSchemaPointer, translations);
       const rule = evaluateRule(_value.value, element.rule);
 
       const options = merge(cloneDeep(element.options || {}), rule);
