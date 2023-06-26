@@ -17,316 +17,248 @@
 -->
 <template>
   <BaseDialog
-    v-bind="$attrs"
-    large
-    :title="t('editor.formschema.translation')"
+    :model-value="modelValue"
+    :confirm-close="dialogIsDirty"
+    x-large
+    :title="t('editTranslations')"
     fixed-footer
-    @update:model-value="$emit('update:model-value', $event)"
+    @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
-      <div style="min-height: 20vh">
-        <v-form v-model="formIsValid">
-          <v-row
-            no-gutters
-            class="align-center mt-4"
-          >
-            <v-col
-              cols="12"
-              md="5"
-            >
-              <span
-                style="font-size: 1.2rem;"
-              >{{ t('displayLanguageDescription') }}*:</span>
-            </v-col>
-            <v-col
-              cols="12"
-              md="5"
-            >
-              <v-select
-                v-model="displayLanguage"
-                :items="displayLanguageItems"
-                :rules="requiredRule"
-                :label="t('displayLanguage')"
-                required
-              />
-            </v-col>
-          </v-row>
-          <v-row
-            no-gutters
-            class="align-center mt-4"
-          >
-            <v-col
-              cols="12"
-              md="5"
-            >
-              <span
-                style="font-size: 1.2rem;"
-              >{{ t('supportedLanguages') }}*:</span>
-            </v-col>
-            <v-col
-              cols="12"
-              md="5"
-            >
-              <v-select
-                v-model="supportedLanguages"
-                :items="supportedLanguageItems"
-                :rules="requiredRule"
-                multiple
-                :label="t('supportedLanguages')"
-                required
-              />
-            </v-col>
-          </v-row>
-          <EditorFormSchemaTranslationUpload
-            v-model:replace-translations="replaceTranslations"
-            :available-languages="availableLanguages"
-            @translations-imported="onTranslationsImported"
+      <v-form v-model="formSchemaTitleFormIsValid">
+        <h3 class="text-h3">
+          {{ t('formSchemaTitle') }}
+        </h3>
+        <BaseCard>
+          <v-card-text>
+            <v-row>
+              <v-col
+                v-for="locale of locales"
+                :key="locale"
+                md="4"
+                cols="12"
+              >
+                <v-text-field
+                  v-model="localFormSchemaTitles[locale]"
+                  :label="t('title', [locale])"
+                  :rules="[requiredRule]"
+                  variant="underlined"
+                />
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </BaseCard>
+      </v-form>
+      <div class="d-flex justify-space-between align-center mt-4">
+        <h3 class="text-h3">
+          {{ t('translations') }}
+        </h3>
+        <div>
+          <v-switch
+            v-model="expertMode"
+            :label="t('expertMode')"
+            color="primary"
+            hide-details
           />
-          <v-row>
-            <v-col
-              v-for="(_, language) in localTranslations"
-              :key="language"
-              cols="12"
-            >
-              <h3 class="text-h3 mt-6">
-                {{ languageDetails[language] }}
-              </h3>
-              <BaseCard>
-                <v-card-text>
-                  <v-row no-gutters>
-                    <v-col
-                      cols="12"
-                      md="5"
-                    >
-                      <v-text-field
-                        v-model="formSchemaTitles[language]"
-                        flat
-                        :label="t('schemaName')"
-                      />
-                    </v-col>
-                  </v-row>
-
-                  <UtilCodeEditor v-model="localTranslations[language]" />
-                </v-card-text>
-              </BaseCard>
-            </v-col>
-          </v-row>
-        </v-form>
-        <small>{{ t('global.input.requiredfields') }}</small>
+        </div>
       </div>
+      <template v-if="!expertMode">
+        <EditorTranslations
+          v-if="!expertMode"
+          v-model="localTranslations"
+          :sources="formSchemaTranslationsOnly ? [TRANSLATION_SOURCE.FORMSCHEMA] : [TRANSLATION_SOURCE.UNSPECIFIED]"
+          :modifieable-sources="[TRANSLATION_SOURCE.FORMSCHEMA]"
+          @translation-deleted="deletedTranslations.push({ key: $event.key, source: parseInt($event.source, 10) })"
+        >
+          <template #controls>
+            <v-checkbox
+              v-model="formSchemaTranslationsOnly"
+              color="primary"
+              hide-details
+              :label="t('formSchemaTranslationsOnly')"
+            />
+          </template>
+          <template #no-data="{ searchQuery }">
+            <i18n-t
+              v-if="formSchemaTranslationsOnly"
+              keypath="formSchemaTranslations.formSchemaTranslationNotFoundSearchAll"
+              scope="global"
+            >
+              <a
+                class="cursor-pointer"
+                @click.prevent="formSchemaTranslationsOnly = false"
+              >
+                {{ t('click') }}
+              </a>
+            </i18n-t>
+            <span v-else>{{ t('noTranslationsFound', [searchQuery]) }}</span>
+          </template>
+        </EditorTranslations>
+      </template>
+      <EditorTranslationsCodeEditor
+        v-else
+        v-model="localTranslations"
+        :source="TRANSLATION_SOURCE.FORMSCHEMA"
+      />
+      <BaseCard class="mt-6">
+        <v-expansion-panels>
+          <v-expansion-panel>
+            <template #title>
+              <v-icon start>
+                {{ mdiUpload }}
+              </v-icon>
+              <h3 class="text-h3">
+                {{ t('import') }}
+              </h3>
+            </template>
+            <template #text>
+              <EditorFormSchemaTranslationUpload
+                v-model:replace-translations="replaceTranslationsWithUploadedTranslations"
+                @translations-imported="onTranslationsImported"
+              />
+            </template>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </BaseCard>
     </template>
     <template #dialog-options>
       <v-btn
-        text
-        @click="$emit('update:model-value', false)"
+        variant="text"
+        @click="emit('update:model-value', false)"
       >
-        {{ t('global.button.close') }}
+        {{ globalT('global.button.close') }}
       </v-btn>
       <v-spacer />
       <v-btn
-        text
+        variant="text"
         color="primary"
-        :disabled="!formIsValid"
+        :disabled="!dialogIsDirty || !dialogIsValid"
         @click="onSave"
       >
-        {{ t('global.button.save') }}
+        {{ globalT('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
 </template>
-<script lang="ts">
-import { PropType } from 'vue';
-import { difference, merge } from 'lodash';
+<script setup lang="ts">
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+import { cloneDeep, isEqual } from 'lodash';
 
-import { IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
-import { useVeoAlerts } from '~/composables/VeoAlert';
-import { IVeoFormSchemaMeta } from '~~/composables/api/queryDefinitions/forms';
-import { IVeoTranslations } from '~~/composables/api/queryDefinitions/translations';
+import { IEditorTranslations, TRANSLATION_SOURCE } from '../translations/types';
+import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
+import { mdiUpload } from '@mdi/js';
+import { IVeoFormsTranslations } from '~/components/dynamic-form/types';
+import { formsTranslationsToEditorTranslations } from '../translations/util';
+import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import { JsonPointer } from 'json-ptr';
 
-export default defineComponent({
-  props: {
-    availableLanguages: {
-      type: Array as PropType<string[]>,
-      default: () => []
-    },
-    currentDisplayLanguage: {
-      type: String,
-      default: ''
-    },
-    name: {
-      type: Object as PropType<IVeoFormSchemaMeta['name']>,
-      required: true
-    },
-    translations: {
-      type: Object as PropType<IVeoFormSchemaTranslationCollection>,
-      required: true
-    }
-  },
-  emits: ['update:model-value', 'update:current-display-language', 'update-translation', 'update-name'],
-  setup(props, { emit }) {
-    const { locales, t } = useI18n();
-    const { displayErrorMessage } = useVeoAlerts();
+const props = withDefaults(defineProps<{
+  formSchemaTitles?: Record<string, string>;
+  modelValue: boolean;
+}>(), {
+  formSchemaTitles: () => ({})
+});
 
-    const EMPTY_OBJECT_STRING = '{\n  \n}';
-    const localTranslations = reactive<{ [lang: string]: string }>(
-      Object.entries(props.translations).reduce((prevValue, [language, translations]) => {
-        prevValue[language] = JSON.stringify(translations, undefined, 2);
-        return prevValue;
-      }, {} as Record<string, any>)
-    );
-    const formSchemaTitles = reactive<IVeoFormSchemaMeta['name']>(props.name);
+const emit = defineEmits<{
+  (e: 'update:model-value', newValue: boolean): void;
+  (e: 'update:form-schema-titles', titles: Record<string, string>): void;
+}>();
 
-    // Form stuff
-    const formIsValid = ref(true);
-    const displayLanguage = ref<string>(props.currentDisplayLanguage);
-    const supportedLanguages = ref<string[]>(Object.keys(props.translations));
+const translations = inject<Ref<IEditorTranslations>>(FORMSCHEMA_PROVIDE_KEYS.TRANSLATIONS);
+const formSchema = inject<Ref<IVeoFormSchema>>(FORMSCHEMA_PROVIDE_KEYS.FORMSCHEMA);
 
-    const requiredRule = computed(() => [(v: any) => (Array.isArray(v) ? v.length > 0 : !!v)]);
+const deletedTranslations = ref<{ key: string, source: TRANSLATION_SOURCE}[]>([]);
 
-    const languageDetails = computed(() =>
-      (locales.value as LocaleObject[]).reduce((previousValue, currentValue) => {
-        previousValue[currentValue.code] = currentValue.name;
-        return previousValue;
-      }, {} as Record<string, any>)
-    );
+const { locales: _locales, t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
+const { requiredRule } = useRules();
 
-    const supportedLanguageItems = computed(() =>
-      props.availableLanguages.map((languageCode) => ({ title: languageDetails.value[languageCode] || languageCode, value: languageCode }))
-    );
+const locales = computed(() => (_locales.value as LocaleObject[]).map(locale => locale.code));
 
-    const displayLanguageItems = computed(() =>
-      supportedLanguages.value.map((languageCode) => ({ title: languageDetails.value[languageCode] || languageCode, value: languageCode }))
-    );
-
-    watch(
-      () => supportedLanguages.value,
-      (newValue, oldValue) => {
-        const removedLanguageCodes = difference(oldValue, newValue);
-
-        newValue.forEach((languageCode) => {
-          if (!localTranslations[languageCode]) {
-            localTranslations[languageCode] = EMPTY_OBJECT_STRING;
-          }
-        });
-        // If the display language is removed, fallback to another eligible language
-        if (!newValue.includes(displayLanguage.value)) {
-          if (newValue.length > 0) {
-            displayLanguage.value = newValue[0];
-          } else {
-            displayLanguage.value = '';
-          }
-        }
-        // If a language code has been removed, removed it from formschema name
-        removedLanguageCodes.forEach((removedLanguageCode) => {
-          delete formSchemaTitles[removedLanguageCode];
-        });
-      }
-    );
-
-    watch(
-      () => displayLanguage.value,
-      (newValue) => {
-        if (newValue) {
-          emit('update:current-display-language', newValue);
-        }
-      }
-    );
-
-    watch(
-      () => props.currentDisplayLanguage,
-      (newValue, oldValue) => {
-        if (newValue !== oldValue) {
-          displayLanguage.value = newValue;
-        }
-      }
-    );
-
-    watch(
-      () => props.name,
-      (newValue) => {
-        Object.assign(formSchemaTitles, newValue);
-      }
-    );
-
-    watch(
-      () => props.translations,
-      (newValue) => {
-        Object.assign(
-          localTranslations,
-          Object.entries(newValue).reduce((prevValue, [language, translations]) => {
-            prevValue[language] = JSON.stringify(translations, undefined, 2);
-            return prevValue;
-          }, {} as Record<string, any>)
-        );
-      }
-    );
-
-    // Translation upload stuff
-    const replaceTranslations = ref(false);
-
-    const onTranslationsImported = (translations: IVeoTranslations['lang']) => {
-      for (const language of Object.keys(translations)) {
-        if (replaceTranslations.value) {
-          localTranslations[language] = JSON.stringify(translations[language], undefined, 2);
-        } else {
-          localTranslations[language] = JSON.stringify(merge(props.translations[language], translations[language]), undefined, 2);
-        }
-      }
-    };
-
-    const onSave = () => {
-      try {
-        const translationsAsJSON = Object.fromEntries(
-          Object.entries(localTranslations).map(([language, translations]) => {
-            const parsedTranslation = JSON.parse(translations);
-            return [language, parsedTranslation];
-          })
-        );
-
-        emit('update:model-value', false);
-        emit('update-translation', translationsAsJSON);
-        emit('update-name', formSchemaTitles);
-      } catch (e: any) {
-        displayErrorMessage(t('updateTranslationsError').toString(), e.message);
-      }
-    };
-
-    return {
-      displayLanguage,
-      displayLanguageItems,
-      formIsValid,
-      formSchemaTitles,
-      languageDetails,
-      localTranslations,
-      onSave,
-      onTranslationsImported,
-      replaceTranslations,
-      requiredRule,
-      supportedLanguages,
-      supportedLanguageItems,
-
-      t
-    };
+watch(() => props.modelValue, (newValue) =>{
+  if(newValue) {
+    localFormSchemaTitles.value = cloneDeep(props.formSchemaTitles);
+    localTranslations.value = cloneDeep(translations?.value);
   }
 });
+
+const expertMode = ref(false);
+
+// Code regarding changing the title of the formschema
+const localFormSchemaTitles = ref<Record<string, string>>(props.formSchemaTitles);
+
+const formSchemaTitleFormIsValid = ref(false);
+const formSchemaTitleFormIsDirty = computed(() => !isEqual(props.formSchemaTitles, localFormSchemaTitles.value));
+const saveNewFormSchemaTitles = () => {
+  emit('update:form-schema-titles', cloneDeep(localFormSchemaTitles.value));
+};
+
+// Code regarding editing formschema translations
+const formSchemaTranslationsOnly = ref(true);
+const localTranslations = ref(cloneDeep(translations?.value));
+const translationsModified = computed(() => !isEqual(translations?.value, localTranslations.value));
+
+// Code regarding importing/exporting translations
+const replaceTranslationsWithUploadedTranslations = ref(true);
+const onTranslationsImported = (newTranslations: IVeoFormsTranslations) => {
+  localTranslations.value = formsTranslationsToEditorTranslations(newTranslations, TRANSLATION_SOURCE.FORMSCHEMA, translations?.value, replaceTranslationsWithUploadedTranslations.value);
+};
+
+// Saving stuff
+const dialogIsDirty = computed(() => formSchemaTitleFormIsDirty.value || translationsModified.value);
+const dialogIsValid = computed(() => formSchemaTitleFormIsValid.value);
+const onSave = () => {
+  if(formSchemaTitleFormIsDirty.value) {
+    saveNewFormSchemaTitles();
+  }
+  if(translationsModified.value && translations && localTranslations.value) {
+    translations.value = cloneDeep(localTranslations.value);
+  }
+
+  // Remove all deleted translations from formschema if they are a formschema specific translation (starting with #lang/)
+  const flattedFormSchemaKeyMap = Object.entries(JsonPointer.flatten(formSchema?.value));
+  for(const deletedTranslation of deletedTranslations.value) {
+    // Don't delete if either the deleted translations is not a formschema translations (shouldn't happen) or if there are still other translations for the key
+    if(deletedTranslation.source !== TRANSLATION_SOURCE.FORMSCHEMA || !!Object.keys(localTranslations.value?.[deletedTranslation.key] || {}).length) {
+      continue;
+    }
+    for(const [key, value] of flattedFormSchemaKeyMap) {
+      if(value === `#lang/${deletedTranslation.key}`) {
+        JsonPointer.unset(formSchema?.value, key);
+        break;
+      }
+    }
+  }
+  deletedTranslations.value = [];
+  emit('update:model-value', false);
+};
 </script>
 
 <i18n>
 {
   "en": {
-    "displayLanguage": "Languages",
-    "displayLanguageDescription": "Display language in form schema editor",
-    "supportedLanguages": "Supported Languages",
-    "schemaName": "Name of the form schema",
-    "updateTranslationsError": "Couldn't update translations"
+    "click": "Click here",
+    "editTranslations": "Edit formschema translations",
+    "expertMode": "Expert mode",
+    "formSchemaTitle": "Formschema title",
+    "formSchemaTranslationNotFoundSearchAll": "No fitting formschema translation found. {0} to search all translations.",
+    "formSchemaTranslationsOnly": "Only show form schema translations",
+    "import": "Import",
+    "noTranslationsFound": "No translations found for \"{0}\"",
+    "title": "Formschema title ({0})",
+    "translations": "Translations"
   },
   "de": {
-    "displayLanguage": "Sprache",
-    "displayLanguageDescription": "Anzeigesprache im Formschema Editor",
-    "supportedLanguages": "Sprachen",
-    "schemaName": "Name des Formschemas",
-    "updateTranslationsError": "Übersetzungen konnten nicht aktualisiert werden"
+    "click": "Klicken Sie hier",
+    "editTranslations": "Formschema-Übersetzungen bearbeiten",
+    "expertMode": "Expertenmodus",
+    "formSchemaTitle": "Formschema-Titel",
+    "formSchemaTranslationNotFoundSearchAll": "Keine passende Formschema-Übersetzung gefunden. {0}, um alle Übersetzungen zu durchsuchen.",
+    "formSchemaTranslationsOnly": "Nur Formschema Übersetzungen anzeigen",
+    "import": "Importieren",
+    "noTranslationsFound": "Keine Übersetzungen für \"{0}\" gefunden",
+    "title": "Formschema-Titel ({0})",
+    "translations": "Übersetzungen"
   }
 }
 </i18n>

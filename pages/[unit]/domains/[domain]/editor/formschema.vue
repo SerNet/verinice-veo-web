@@ -26,6 +26,22 @@
       v-if="formSchema && objectSchema"
       #header
     >
+      <div
+        style="width: 120px"
+        class="ml-2"
+      >
+        <v-select
+          v-model="editorLanguage"
+          :items="locales"
+          item-value="code"
+          item-title="code"
+          :label="t('viewIn')"
+          density="compact"
+          variant="solo"
+          hide-details
+          flat
+        />
+      </div>
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <a
@@ -88,7 +104,7 @@
             variant="text"
             color="primary"
             v-bind="props"
-            @click="onClickTranslationBtn"
+            @click="translationDialogVisible = true"
           />
         </template>
         <template #default>
@@ -189,7 +205,7 @@
             <EditorFormSchemaPlayground
               v-if="formSchema"
               v-model="formSchema.content"
-              @set-translations="updateTranslations"
+              @set-translations="setElementTranslation"
             />
             <v-progress-circular
               v-else
@@ -212,9 +228,9 @@
             v-model="objectData"
             :object-schema="objectSchema"
             :form-schema="formSchema.content"
-            :translations="translations"
+            :translations="eligibleTranslations"
             :additional-context="additionalContext"
-            :locale="language"
+            :locale="editorLanguage"
           />
         </template>
       </BasePage>
@@ -250,28 +266,20 @@
         v-model="invalidSchemaDownloadDialogVisible"
         @download="downloadSchema(true)"
       />
-      <!-- Important: translationDialogVisible should be in v-if to only run code in the dialog when it is open  -->
       <EditorFormSchemaTranslationDialog
-        v-if="translationDialogVisible && formSchema && formSchema.translation"
         v-model="translationDialogVisible"
-        v-model:current-display-language="language"
-        :translations="formSchema.translation"
-        :available-languages="availableLanguages"
-        :name="formSchema.name"
-        @update-translation="setFormTranslation"
-        @update-name="setFormName"
+        :form-schema-titles="formSchema?.name"
+        @update:form-schema-titles="formSchema ? formSchema.name = $event : undefined"
       />
       <EditorFormSchemaDetailsDialog
         v-if="formSchema && objectSchema"
         v-model="detailDialogVisible"
+        v-model:subType="formSchema.subType"
+        v-model:sorting="formSchema.sorting"
         :object-schema="objectSchema"
-        :form-schema="formSchema.name[language]"
-        :subtype="formSchema.subType"
-        :sorting="formSchema.sorting"
+        :form-schema="formSchema.name[editorLanguage]"
         :domain-id="($route.params.domain as string)"
         @update-schema-name="updateSchemaName"
-        @update-subtype="updateSubType"
-        @update-sorting="updateSorting"
       />
     </template>
   </LayoutPageWrapper>
@@ -279,32 +287,33 @@
 
 <script lang="ts">
 export const PROVIDE_KEYS = {
-  language: 'language',
-  objectSchema: 'mainObjectSchema',
-  objectSchemaTranslations: 'os_translations',
-  formSchemaTranslations: 'fs_translations'
+  EDITOR_LANGUAGE: 'editorLanguage',
+  TRANSLATIONS: 'translations',
+  FORMSCHEMA: 'mainFormSchema',
+  OBJECTSCHEMA: 'mainObjectSchema'
 };
 
 import { Ref } from 'vue';
 import { mdiAlertCircleOutline, mdiCodeTags, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
 import { useDisplay } from 'vuetify';
 
-import { deleteElementCustomTranslation, validate } from '~/lib/FormSchemaHelper';
-import {
-  IVeoObjectSchema, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
+import { deleteFormSchemaElementTranslations, validate } from '~/lib/FormSchemaHelper';
+import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import { IVeoTranslations } from '~~/composables/api/queryDefinitions/translations';
 import { useMutation } from '~~/composables/api/utils/mutation';
 import { useQuery } from '~~/composables/api/utils/query';
 import { PENDING_TRANSLATIONS } from '~~/components/editor/formSchema/playground/EditElementDialog.vue';
 import { JsonPointer } from 'json-ptr';
 import { cloneDeep, isArray } from 'lodash';
+import { IEditorTranslations, TRANSLATION_SOURCE } from '~/components/editor/translations/types';
+import { editorTranslationsToFormsTranslations } from '~/components/editor/translations/util';
 
 export default defineComponent({
   setup() {
@@ -334,7 +343,7 @@ export default defineComponent({
       // Name property must generally exist, but before it is created in Wizard, only headline should be visible
       // If Name property exists and e.g. 'de' sub-property is empty then missing translation should be visible
       if (formSchema.value?.name) {
-        const formSchemaName = formSchema.value?.name[language.value] ?? `Missing translation for ${language.value.toUpperCase()}`;
+        const formSchemaName = formSchema.value?.name[editorLanguage.value] ?? `Missing translation for ${editorLanguage.value.toUpperCase()}`;
         return headline + ` - ${formSchemaName}`;
       } else {
         return headline;
@@ -346,47 +355,17 @@ export default defineComponent({
      */
     const objectSchema: Ref<IVeoObjectSchema | undefined> = ref(undefined);
     const formSchema: Ref<IVeoFormSchema | undefined> = ref(undefined);
-    provide('mainObjectSchema', objectSchema);
-    provide('mainFormSchema', formSchema);
-    const translation: Ref<IVeoTranslations | undefined> = ref(undefined);
+    provide(PROVIDE_KEYS.OBJECTSCHEMA, objectSchema);
+    provide(PROVIDE_KEYS.FORMSCHEMA, formSchema);
     const objectData = ref({});
-    const language = ref(locale.value);
-    provide(PROVIDE_KEYS.language, language);
-
-    watch(
-      () => locale.value,
-      (newLanguageVal) => {
-        language.value = newLanguageVal;
-      }
-    );
 
     const schemaIsValid = computed(() => (formSchema.value ? validate(formSchema.value, objectSchema.value) : { valid: false, errors: [], warnings: [] }));
 
     const code = computed(() => (formSchema.value ? JSON.stringify(formSchema.value, undefined, 2) : ''));
 
-    function setFormSchema(schema: IVeoFormSchema) {
-      formSchema.value = schema;
-      // If a translation for current app language does not exist, initialise it
-      if (formSchema.value && !formSchema.value.translation?.[locale.value]) {
-        setFormTranslation({
-          ...formSchema.value.translation,
-          ...{ [locale.value]: {} }
-        });
-      }
-    }
-
-    function setObjectSchema(schema: IVeoObjectSchema) {
-      objectSchema.value = schema;
-    }
-
-    function setTranslation(newTranslation: IVeoTranslations) {
-      translation.value = newTranslation;
-    }
-
-    const onWizardFinished = (payload: { formSchema: IVeoFormSchema; objectSchema: IVeoObjectSchema; translations: IVeoTranslations }) => {
-      setTranslation(payload.translations);
-      setObjectSchema(payload.objectSchema);
-      setFormSchema(payload.formSchema);
+    const onWizardFinished = (payload: { formSchema: IVeoFormSchema; objectSchema: IVeoObjectSchema; }) => {
+      formSchema.value = payload.formSchema;
+      objectSchema.value = payload.objectSchema;
     };
 
     // Create/update stuff
@@ -429,39 +408,8 @@ export default defineComponent({
       if(!formSchema.value) {
         return;
       }
-      formSchema.value.name[language.value] = value;
+      formSchema.value.name[editorLanguage.value] = value;
     }
-
-    function updateSubType(value: string) {
-      if (formSchema.value) {
-        formSchema.value.subType = value;
-      }
-    }
-
-    function updateSorting(value: string) {
-      if (formSchema.value) {
-        formSchema.value.sorting = value;
-      }
-    }
-
-    const updateTranslations = (translations: PENDING_TRANSLATIONS) => {
-      if(!formSchema.value) {
-        return;
-      }
-      for(const language of Object.keys(translations)) {
-        if(!formSchema.value.translation[language]) {
-          formSchema.value.translation[language] = {};
-        }
-        for(const translationKey of Object.keys(translations[language])) {
-          const value = translations[language][translationKey];
-          if(value) {
-            formSchema.value.translation[language][translationKey] = value;
-          } else {
-            delete formSchema.value.translation[language][translationKey];
-          }
-        }
-      }
-    };
 
     const invalidSchemaDownloadDialogVisible = ref(false);
     function downloadSchema(forceDownload = false) {
@@ -471,7 +419,7 @@ export default defineComponent({
         invalidSchemaDownloadDialogVisible.value = false;
         const data = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`;
         downloadButton.value.href = data;
-        downloadButton.value.download = `fs_${formSchema.value?.name[language.value] || 'missing_translation'}.json`;
+        downloadButton.value.download = `fs_${formSchema.value?.name[editorLanguage.value] || 'missing_translation'}.json`;
       }
     }
 
@@ -484,26 +432,104 @@ export default defineComponent({
     const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     /**
-     * Translations related stuff
+     * Translations/language related stuff
      */
+    const editorLanguage = ref(locale.value);
+    provide(PROVIDE_KEYS.EDITOR_LANGUAGE, editorLanguage);
+
+    const translationsQueryParameters = computed(() => ({ languages: (locales.value as LocaleObject[]).map((locale) => locale.code) }));
+    const { data: translationsQueryData } = useQuery(translationQueryDefinitions.queries.fetch, translationsQueryParameters);
+
+    const setTranslation = (translations: IEditorTranslations, key: string, source: TRANSLATION_SOURCE, locale: string, value: string) => {
+      const _translations = cloneDeep(translations);
+
+      if(!_translations[key]) {
+        _translations[key] = Object.create(null);
+      }
+      if(!_translations[key][source]) {
+        _translations[key][source] = Object.create(null);
+      }
+      _translations[key][source][locale] = value;
+      return _translations;
+    };
+
+    const translations = computed({
+      get:() => {
+        let _translations: IEditorTranslations = Object.create(null);
+
+        // If no objectschema is present, no need to iterate over all translations
+        if(objectSchema.value?.title) {
+          // Iterate over all objectschema translations that belong to this formschemas objectschema
+          for(const [locale, osLanguageTranslations] of Object.entries(translationsQueryData.value?.lang || {})) {
+            for(const [translationKey, translationValue] of Object.entries(osLanguageTranslations)) {
+
+              // Skip translations not belonging to a different objectschema
+              if(translationKey.includes('_') && !translationKey.startsWith(objectSchema.value.title)) {
+                continue;
+              }
+              _translations = setTranslation(_translations, translationKey, TRANSLATION_SOURCE.OBJECTSCHEMA, locale, translationValue);
+            }
+          }
+
+          // Iterate over all formschema translations
+          for(const [locale, fsLanguageTranslations] of Object.entries(formSchema.value?.translation || {})) {
+            for(const [translationKey, translationValue] of Object.entries(fsLanguageTranslations)) {
+              _translations = setTranslation(_translations, translationKey, TRANSLATION_SOURCE.FORMSCHEMA, locale, translationValue);
+            }
+          }
+        }
+
+        return _translations;
+      },
+      set: (newTranslations) => {
+        if(!formSchema.value) {
+          throw new Error('FormschemaEditor::translations:setter: Formschema not defined');
+        }
+        const newFormSchemaTranslations = Object.create(null);
+
+        // Iterate over all translations
+        for(const [translationKey, translation] of Object.entries(newTranslations)) {
+          for(const [translationSource, values] of Object.entries(translation)) {
+            // The formschema editor is only allowed to update formschema translations!!!
+            if(parseInt(translationSource, 10) !== TRANSLATION_SOURCE.FORMSCHEMA) {
+              continue;
+            }
+
+            for(const [locale, localeValue] of Object.entries(values)) {
+              if(!newFormSchemaTranslations[locale]) {
+                newFormSchemaTranslations[locale] = Object.create(null);
+              }
+              if(!newFormSchemaTranslations[locale][translationKey]) {
+                newFormSchemaTranslations[locale][translationKey] = Object.create(null);
+              }
+              newFormSchemaTranslations[locale][translationKey] = localeValue;
+            }
+          }
+        }
+        formSchema.value.translation = newFormSchemaTranslations;
+      }
+    });
+    provide(PROVIDE_KEYS.TRANSLATIONS, translations);
+
+    const eligibleTranslations = computed(() => editorTranslationsToFormsTranslations(translations.value));
+
     const translationDialogVisible: Ref<boolean> = ref(false);
-    const availableLanguages = computed(() => (locales.value as LocaleObject[]).map((locale) => locale.code));
 
-    function onClickTranslationBtn() {
-      translationDialogVisible.value = true;
-    }
+    const setElementTranslation = (translations: PENDING_TRANSLATIONS) => {
+      Object.entries(translations).forEach(([translationLocale, translationsForLocale]) => {
+        Object.entries(translationsForLocale).forEach(([translationKey, translationValue]) => {
+          if(!formSchema.value) {
+            throw new Error('FormschemaEditor::setElementTranslation: Formschema not defined');
+          }
 
-    function setFormTranslation(event: IVeoFormSchemaTranslationCollection) {
-      if (formSchema.value) {
-        formSchema.value.translation = event;
-      }
-    }
-
-    function setFormName(event: IVeoFormSchemaMeta['name']) {
-      if (formSchema.value) {
-        formSchema.value.name = event;
-      }
-    }
+          if(translationValue) {
+            formSchema.value.translation[translationLocale][translationKey] = translationValue;
+          } else {
+            delete formSchema.value.translation[translationLocale][translationKey];
+          }
+        });
+      });
+    };
 
     // Circumventing {CURRENT_DOMAIN_ID} in fse controls
     const additionalContext = computed(() => ({
@@ -539,23 +565,6 @@ export default defineComponent({
       }
     }));
 
-    const translations = computed(() => {
-      const toReturn: Record<string, any> = {};
-      const languages = Object.keys(translation.value?.lang || {});
-
-      for (const language of languages) {
-        toReturn[language] = { ...translation.value?.lang[language], ...(formSchema.value?.translation?.[language] || {}) };
-      }
-
-      return toReturn;
-    });
-
-    const objectSchemaTranslations = computed(() => translation.value?.lang);
-    const formSchemaTranslations = computed(() => formSchema.value?.translation);
-
-    provide(PROVIDE_KEYS.objectSchemaTranslations, objectSchemaTranslations);
-    provide(PROVIDE_KEYS.formSchemaTranslations, formSchemaTranslations);
-
     const validationActions: Record<string, (errorCode: string, details: Record<string, any>) => void> = {
       onFix: (errorCode, details) => {
         switch(errorCode) {
@@ -563,7 +572,8 @@ export default defineComponent({
             if(formSchema.value) {
               const toModify = cloneDeep(formSchema.value);
               const elementFormSchema = JsonPointer.get(toModify.content, details.formSchemaPointer) as IVeoFormSchemaItem;
-              deleteElementCustomTranslation(elementFormSchema, toModify.translation, setFormTranslation);
+              
+              formSchema.value = deleteFormSchemaElementTranslations(formSchema.value, elementFormSchema);
               // You can't delete the root object
               if (details.formSchemaPointer && details.formSchemaPointer !== '#') {
                 const parts = details.formSchemaPointer.split('/');
@@ -586,6 +596,8 @@ export default defineComponent({
       ability,
       additionalContext,
       creationDialogVisible,
+      editorLanguage,
+      eligibleTranslations,
       errorDialogVisible,
       codeEditorVisible,
       detailDialogVisible,
@@ -594,29 +606,18 @@ export default defineComponent({
       objectSchema,
       formSchema,
       objectData,
-      language,
-      translation,
       schemaIsValid,
-      setFormSchema,
-      setObjectSchema,
-      setTranslation,
       updateSchemaName,
-      updateSubType,
-      updateSorting,
       downloadSchema,
       updateControlItems,
       invalidSchemaDownloadDialogVisible,
       downloadButton,
+      locales,
       code,
       translationDialogVisible,
-      onClickTranslationBtn,
-      availableLanguages,
-      setFormTranslation,
-      setFormName,
       PageHeaderAlignment,
       save,
-      translations,
-      updateTranslations,
+      setElementTranslation,
       onWizardFinished,
       validationActions,
 
@@ -653,7 +654,8 @@ export default defineComponent({
     "saveSchemaSuccess": "Schema saved! The change will be visible to other users in less than 30 minutes.",
     "saveSchemaError": "Couldn't save schema!",
     "error": "Error",
-    "saveContentCreator": "You need the role \"Content Creator\" to save the formschema."
+    "saveContentCreator": "You need the role \"Content Creator\" to save the formschema.",
+    "viewIn": "View in",
   },
   "de": {
     "availableControls": "Verfügbare Steuerelemente",
@@ -668,7 +670,8 @@ export default defineComponent({
     "saveSchemaSuccess": "Schema wurde gespeichert! Andere User werden die Änderung in spätestens 30 Minuten sehen.",
     "saveSchemaError": "Schema konnte nicht gespeichert werden",
     "error": "Fehler",
-    "saveContentCreator": "Sie müssen die Rolle \"Content Creator\" besitzen, um das Formschema zu speichern."
+    "saveContentCreator": "Sie müssen die Rolle \"Content Creator\" besitzen, um das Formschema zu speichern.",
+    "viewIn": "Ansehen in",
   }
 }
 </i18n>

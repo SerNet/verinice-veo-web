@@ -93,6 +93,7 @@
             <div class="d-flex justify-space-between align-center">
               <v-checkbox
                 :model-value="replaceTranslations"
+                color="primary"
                 :label="t('replaceTranslations')"
                 @update:model-value="$emit('update:replace-translations', $event)"
               />
@@ -142,6 +143,7 @@ export default defineComponent({
   emits: ['update:replace-translations'],
   setup() {
     const { locales, t } = useI18n();
+    const { t: globalT } = useI18n();
     const { displayErrorMessage } = useVeoAlerts();
 
     // Layout / form stuff
@@ -156,7 +158,7 @@ export default defineComponent({
     const idColumn = ref<number>();
     const languageColumns = ref<{ [key: string]: number }>({});
 
-    const requiredRule = (v: any) => (!!v && !!trim(v).length) || t('global.input.required').toString();
+    const requiredRule = (v: any) => (!!v && !!trim(v).length) || globalT('global.input.required').toString();
 
     // xlsx stuff
     const uploadingLanguageFile = ref(false);
@@ -274,7 +276,7 @@ export default defineComponent({
     "languageFile": "Language file",
     "replaceTranslations": "Delete and replace existing translations",
     "sheet": "Sheet",
-    "uploadLanguageFile": "Upload language file"
+    "uploadLanguageFile": "Upload language file (.xlsx)"
   },
   "de": {
     "column": "Spalte",
@@ -285,7 +287,7 @@ export default defineComponent({
     "languageFile": "Sprachdatei",
     "replaceTranslations": "Vorhandene Übersetzungen löschen und ersetzen",
     "sheet": "Tabellenblatt",
-    "uploadLanguageFile": "Sprachdatei hochladen"
+    "uploadLanguageFile": "Sprachdatei hochladen (.xlsx)"
   }
 }
 </i18n>

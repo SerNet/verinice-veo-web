@@ -51,28 +51,30 @@ export function validate(schema: IVeoFormSchema, objectSchema: undefined | IVeoO
 }
 
 /**
- * FormSchemaEditorHelpers
+ * This function deletes the translations of a form schema element from the form schema translations object.
+ * 
+ * @param formschema The form schema to modify
+ * @param elementFormSchema The element to delete the translations for
+ * @returns The form schema without the translations for the specified element
  */
-
-export function deleteElementCustomTranslation(
-  elementFormSchema: IVeoFormSchemaItem,
-  customTranslations: IVeoFormSchemaTranslationCollection,
-  callbackUpdateCustomTranslation: (updatedCustomTranslationValue: IVeoFormSchemaTranslationCollection) => void
-): void {
-  let possibleTranslation;
+export const deleteFormSchemaElementTranslations = (formschema: IVeoFormSchema, elementFormSchema: IVeoFormSchemaItem) => {
+  const _formSchema = cloneDeep(formschema);
+  let possibleTranslationKey: string | undefined;
   if(elementFormSchema.type === 'Label') {
-    possibleTranslation = elementFormSchema.text;
+    possibleTranslationKey = elementFormSchema.text;
   } else {
-    possibleTranslation = elementFormSchema.options.label;
+    possibleTranslationKey = elementFormSchema.options.label;
   }
-  if(possibleTranslation) {
-    if(possibleTranslation?.startsWith('#lang/')) {
-      const translations = cloneDeep(customTranslations);
 
-      for (const lang in translations) {
-        delete translations[lang][possibleTranslation.replace('#lang/', '')];
-      }
-      callbackUpdateCustomTranslation(translations);
-    }
+  if(!possibleTranslationKey) {
+    return _formSchema;
   }
-}
+
+  Object.entries(_formSchema.translation).forEach(([locale, _]) => {
+    if(!possibleTranslationKey) {
+      return;
+    }
+    delete _formSchema.translation[locale][possibleTranslationKey];
+  });
+  return _formSchema;
+};

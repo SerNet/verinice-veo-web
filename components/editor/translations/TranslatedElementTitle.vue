@@ -16,49 +16,34 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <translatedTitle v-if="translatedTitle" />
+  <component
+    :is="translatedTitle"
+    v-if="translatedTitle"
+  />
 </template>
 
-<script lang="ts">
-export enum TRANSLATION_SOURCE {
-  OBJECTSCHEMA,
-  FORMSCHEMA,
-  UNSPECIFIED
-}
-</script>
-
 <script setup lang="ts">
-import { PropType, Ref } from 'vue';
-
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import { IVeoFormSchemaItem, IVeoTranslationCollection } from '~~/types/VeoTypes';
+import { IEditorTranslations, TRANSLATION_SOURCE } from './types';
+import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 
-const props = defineProps({
-  formSchemaElement: {
-    type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  },
-  tag: {
-    type: String,
-    default: 'span'
-  },
-  hideIfMissing: {
-    type: Boolean,
-    default: false
-  },
-  source: {
-    type: Number as PropType<TRANSLATION_SOURCE>,
-    default: TRANSLATION_SOURCE.UNSPECIFIED
-  }
+const props = withDefaults(defineProps<{
+  formSchemaElement: IVeoFormSchemaItem;
+  tag?: string;
+  hideIfMissing?: boolean;
+  source?: TRANSLATION_SOURCE;
+}>(), {
+  tag: 'span',
+  hideIfMissing: false,
+  source: TRANSLATION_SOURCE.UNSPECIFIED
 });
 
 const slots = useSlots();
 
 // Find out element name
-const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.language);
+const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.EDITOR_LANGUAGE);
 
-const formSchemaTranslations = inject<Ref<Record<string, IVeoTranslationCollection>>>(FORMSCHEMA_PROVIDE_KEYS.formSchemaTranslations);
-const objectSchemaTranslations = inject<Ref<Record<string, IVeoTranslationCollection>>>(FORMSCHEMA_PROVIDE_KEYS.objectSchemaTranslations);
+const translations = inject<Ref<IEditorTranslations>>(FORMSCHEMA_PROVIDE_KEYS.TRANSLATIONS);
 
 const translationString = computed(() => props.formSchemaElement.text || props.formSchemaElement.options?.label || props.formSchemaElement.scope);
 
@@ -75,12 +60,15 @@ const elementName = computed(() => {
     return translationString.value;
   }
 
-  if((props.source === TRANSLATION_SOURCE.UNSPECIFIED || props.source === TRANSLATION_SOURCE.FORMSCHEMA) && formSchemaTranslations?.value?.[language.value]?.[sanitizedKey]) {
-    return formSchemaTranslations?.value?.[language.value]?.[sanitizedKey];
+  const formSchemaTranslation = translations?.value?.[sanitizedKey]?.[TRANSLATION_SOURCE.FORMSCHEMA]?.[language.value];
+  const objectSchemaTranslation = translations?.value?.[sanitizedKey]?.[TRANSLATION_SOURCE.OBJECTSCHEMA]?.[language.value];
+
+  if((props.source === TRANSLATION_SOURCE.UNSPECIFIED || props.source === TRANSLATION_SOURCE.FORMSCHEMA) && formSchemaTranslation) {
+    return formSchemaTranslation;
   }
 
-  if((props.source === TRANSLATION_SOURCE.UNSPECIFIED || props.source === TRANSLATION_SOURCE.OBJECTSCHEMA) && objectSchemaTranslations?.value?.[language.value]?.[sanitizedKey]) {
-    return objectSchemaTranslations?.value?.[language.value]?.[sanitizedKey];
+  if((props.source === TRANSLATION_SOURCE.UNSPECIFIED || props.source === TRANSLATION_SOURCE.OBJECTSCHEMA) && objectSchemaTranslation) {
+    return objectSchemaTranslation;
   }
 
   return undefined;

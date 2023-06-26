@@ -39,18 +39,14 @@
 <script setup lang="ts">
 import { mdiAlphabeticalVariant, mdiLabelOutline, mdiTranslate } from '@mdi/js';
 import { cloneDeep } from 'lodash';
-import { PropType, Ref } from 'vue';
 
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
-import { IVeoTranslationCollection } from '~~/types/VeoTypes';
+import { IEditorTranslations, TRANSLATION_SOURCE } from '~/components/editor/translations/types';
 
-const props = defineProps({
-  formSchemaElement: {
-    type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  }
-});
+const props = withDefaults(defineProps<{
+  formSchemaElement: IVeoFormSchemaItem;
+}>(), {});
 
 const emit = defineEmits<{
   (event: 'set-translation', translatedLabelKey: string, newValue: string | undefined): void
@@ -59,9 +55,8 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.language);
-const formSchemaTranslations = inject<Ref<Record<string, IVeoTranslationCollection>>>(FORMSCHEMA_PROVIDE_KEYS.formSchemaTranslations);
-const objectSchemaTranslations = inject<Ref<Record<string, IVeoTranslationCollection>>>(FORMSCHEMA_PROVIDE_KEYS.objectSchemaTranslations);
+const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.EDITOR_LANGUAGE);
+const translations = inject<Ref<IEditorTranslations>>(FORMSCHEMA_PROVIDE_KEYS.TRANSLATIONS);
 
 const label = computed(() => props.formSchemaElement.type === 'Label' ? t('text') : t('label'));
 const noValueText = computed(() => props.formSchemaElement.type === 'Label' ? t('noText') : t('noLabel'));
@@ -72,12 +67,15 @@ const labelExists = computed(() => !!props.formSchemaElement.text || !!props.for
 const isTranslatedLabel = computed(() => (props.formSchemaElement.text || props.formSchemaElement.options?.label)?.startsWith('#lang/') || false);
 const translatedLabelKey = computed(() => (props.formSchemaElement.text || props.formSchemaElement.options?.label || '').replace('#lang/', ''));
 
+const formSchemaTranslation = computed(() => language?.value ? translations?.value?.[translatedLabelKey.value]?.[TRANSLATION_SOURCE.FORMSCHEMA]?.[language.value] : undefined);
+const objectSchemaTranslation = computed(() => language?.value ? translations?.value?.[translatedLabelKey.value]?.[TRANSLATION_SOURCE.OBJECTSCHEMA]?.[language.value] : undefined);
+
 const displayedValue = computed(() => {
-  if(isTranslatedLabel.value && language?.value && formSchemaTranslations?.value?.[language.value]?.[translatedLabelKey.value]) {
-    return formSchemaTranslations?.value?.[language.value]?.[translatedLabelKey.value];
+  if(isTranslatedLabel.value && formSchemaTranslation.value) {
+    return formSchemaTranslation.value;
   }
-  if (language?.value && objectSchemaTranslations?.value?.[language.value]?.[translatedLabelKey.value]) {
-    return objectSchemaTranslations?.value?.[language.value]?.[translatedLabelKey.value];
+  if (objectSchemaTranslation.value) {
+    return objectSchemaTranslation.value;
   }
   if(labelExists.value) {
     return props.formSchemaElement.text || props.formSchemaElement.options?.label;
@@ -87,10 +85,10 @@ const displayedValue = computed(() => {
 });
 
 const source = computed(() => {
-  if(isTranslatedLabel.value && language?.value && formSchemaTranslations?.value?.[language.value]?.[translatedLabelKey.value]) {
+  if(isTranslatedLabel.value && formSchemaTranslation.value) {
     return t('source.formSchemaTranslations');
   }
-  if(language?.value && objectSchemaTranslations?.value?.[language.value]?.[translatedLabelKey.value]) {
+  if(objectSchemaTranslation.value) {
     return t('source.objectSchema');
   }
   if(labelExists.value) {
@@ -107,7 +105,7 @@ const getElementName = () => {
   }
 
   if(isTranslatedLabel.value) {
-    return formSchemaTranslations?.value?.[language.value]?.[translatedLabelKey.value];
+    return formSchemaTranslation.value;
   } else {
     return props.formSchemaElement.text || props.formSchemaElement.options?.label;
   }
