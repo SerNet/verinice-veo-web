@@ -29,6 +29,9 @@
           <h3 class="text-h4">
             {{ t('unitpicker') }}
           </h3>
+          <p class="text-body-2">
+            <strong>{{ activeUnits }}</strong> {{ t('of' ) }} <strong>{{ userSettings.maxUnits }}</strong> {{ t('active') }} Units
+          </p>
         </v-card-text>
 
         <v-list
@@ -178,6 +181,8 @@ const editUnit = (unit: IVeoUnit) => {
 
 const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
+const activeUnits = computed(() => units.value?.length || undefined);
+
 const generateUnitDashboardLink = (unitId: string) => {
   const unitToLinkTo = (units.value || []).find((unit) => unit.id === unitId);
   let domainId;
@@ -204,17 +209,21 @@ const deleteUnit = (unit: IVeoUnit) => {
 <i18n>
 {
   "en": {
+    "active": "active",
     "createUnit": "Create unit",
     "deleteUnit": "Delete unit",
     "editUnit": "Edit unit",
     "exceeded": "You have reached the maximum amount of units",
+    "of": "of",
     "unitpicker": "Please choose a unit",
   },
   "de": {
+    "active": "aktive",
     "createUnit": "Unit erstellen",
     "deleteUnit": "Unit löschen",
     "editUnit": "Unit bearbeiten",
     "exceeded": "Sie haben die maximale Anzahl an Units erreicht",
+    "of": "von",
     "unitpicker": "Bitte wählen Sie eine Unit",
   }
 }
