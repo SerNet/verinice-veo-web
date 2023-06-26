@@ -40,18 +40,25 @@
         :items="transformedTranslations"
         :search="searchQuery"
         :sort-by="[{ key: 'key', order: 'asc' }]"
-      />
+      >
+        <template #no-data>
+          <slot
+            name="no-data"
+            v-bind="{ searchQuery }"
+          />
+        </template>
+      </BaseTable>
     </div>
   </BaseCard>
 </template>
 
 <script setup lang="ts">
-import { VBtn, VTextField } from 'vuetify/lib/components/index.mjs';
+import { VBtn, VTextField, VTooltip } from 'vuetify/lib/components/index.mjs';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 
 import { TableHeader } from '~/components/base/Table.vue';
 import { IEditorTranslations, TRANSLATION_SOURCE } from './types';
-import { mdiPencilOutline } from '@mdi/js';
+import { mdiContentCopy, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
 import { cloneDeep } from 'lodash';
 
 
@@ -73,6 +80,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
   (e: 'update:modelValue', newValue: IEditorTranslations): void,
+  (e: 'translation-deleted', payload: { key: string; source: string; }): void
 }>();
 
 const { t, locales } = useI18n();
@@ -248,7 +256,49 @@ const headers = computed<TableHeader[]>(() => [
     order: 10,
     priority: 100,
     value: 'key',
-    text: t('key')
+    text: t('key'),
+    render: (itemProps) => {
+      const itemSource: string = itemProps.item.raw.source;
+      const isModifiable = props.modifieableSources.includes(parseInt(itemSource, 10));
+      return h(
+        'div',
+        {
+          class: 'd-flex align-center justify-space-between text-no-wrap'
+        },
+        [
+          itemProps.item.raw.key,
+          isModifiable ?
+            h(VBtn, {
+              icon: mdiTrashCanOutline,
+              size: 'small',
+              variant: 'plain',
+              onClick: () => {
+                const toReturn = cloneDeep(props.modelValue);
+                delete toReturn[itemProps.item.raw.key][itemSource as any as TRANSLATION_SOURCE];
+                emit('update:modelValue', toReturn);
+                emit('translation-deleted', { key: itemProps.item.raw.key, source: itemSource });
+              }
+            }) :  !props.modelValue[itemProps.item.raw.key][TRANSLATION_SOURCE.FORMSCHEMA] ? h(VTooltip, {
+              location: 'bottom'
+            }, {
+              activator: ({ props: slotProps }: { props: any }) => h(VBtn, {
+                icon: mdiContentCopy,
+                size: 'small',
+                variant: 'plain',
+                onClick: () => {
+                  const toReturn = cloneDeep(props.modelValue);
+                  for(const source of props.modifieableSources) {
+                    toReturn[itemProps.item.raw.key][source] = toReturn[itemProps.item.raw.key][itemSource as any as TRANSLATION_SOURCE];
+                  }
+                  emit('update:modelValue', toReturn);
+                },
+                ...slotProps
+              }),
+              default: () => t('createEditableTranslation')
+            }) : undefined
+        ]
+      );
+    }
   },
   {
     key: 'source',
@@ -297,6 +347,7 @@ const transformedTranslations = computed(() => Object.entries(cloneDeep(props.mo
 <i18n>
 {
   "en": {
+    "createEditableTranslation": "Create an editable translation based on this translation",
     "formschema": "Form schema",
     "key": "Key",
     "objectschema": "Object schema",
@@ -306,6 +357,7 @@ const transformedTranslations = computed(() => Object.entries(cloneDeep(props.mo
     "value": "Value ({0})"
   },
   "de": {
+    "createEditableTranslation": "Editierbare Übersetzung basierend auf dieser Übersetzung erstellen",
     "formschema": "Formschema",
     "key": "Schlüssel",
     "objectschema": "Objektschema",

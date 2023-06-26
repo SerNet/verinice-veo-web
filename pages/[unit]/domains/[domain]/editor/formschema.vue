@@ -278,7 +278,7 @@
         v-model:sorting="formSchema.sorting"
         :object-schema="objectSchema"
         :form-schema="formSchema.name[editorLanguage]"
-        :domain-id="domainId"
+        :domain-id="($route.params.domain as string)"
         @update-schema-name="updateSchemaName"
       />
     </template>
@@ -299,7 +299,6 @@ import { useDisplay } from 'vuetify';
 
 import { deleteFormSchemaElementTranslations, validate } from '~/lib/FormSchemaHelper';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
-import { separateUUIDParam } from '~/lib/utils';
 import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
@@ -486,6 +485,8 @@ export default defineComponent({
         if(!formSchema.value) {
           throw new Error('FormschemaEditor::translations:setter: Formschema not defined');
         }
+        const newFormSchemaTranslations = Object.create(null);
+
         // Iterate over all translations
         for(const [translationKey, translation] of Object.entries(newTranslations)) {
           for(const [translationSource, values] of Object.entries(translation)) {
@@ -495,10 +496,17 @@ export default defineComponent({
             }
 
             for(const [locale, localeValue] of Object.entries(values)) {
-              formSchema.value.translation[locale][translationKey] = localeValue;
+              if(!newFormSchemaTranslations[locale]) {
+                newFormSchemaTranslations[locale] = Object.create(null);
+              }
+              if(!newFormSchemaTranslations[locale][translationKey]) {
+                newFormSchemaTranslations[locale][translationKey] = Object.create(null);
+              }
+              newFormSchemaTranslations[locale][translationKey] = localeValue;
             }
           }
         }
+        formSchema.value.translation = newFormSchemaTranslations;
       }
     });
     provide(PROVIDE_KEYS.TRANSLATIONS, translations);
@@ -588,7 +596,6 @@ export default defineComponent({
       ability,
       additionalContext,
       creationDialogVisible,
-      domainId,
       editorLanguage,
       eligibleTranslations,
       errorDialogVisible,

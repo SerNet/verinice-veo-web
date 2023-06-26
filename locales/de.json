@@ -138,6 +138,10 @@
     "forum": "Im { 0 } finden Sie weitergehende Informationen und können am regen Austausch mit anderen Anwenderinnen und Anwendern teilnehmen.",
     "tutorial": "Zur schnellen Orientierung stehen auf jeder Seite kontextbezogene { 0 } zur Verfügung. Verfügbare { 0 } können Sie jederzeit über das Symbol in der Anwendungsleiste rechts oben aufrufen.",
     "webinar": "Sie können sich jederzeit zu unseren regelmäßigen, kostenlosen { 0 }."
+  },
+
+  "formSchemaTranslations": {
+    "formSchemaTranslationNotFoundSearchAll": "Keine passende Formschema-Übersetzung gefunden. {0}, um alle Übersetzungen zu durchsuchen."
   }
 }
 

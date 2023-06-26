@@ -62,21 +62,39 @@
           />
         </div>
       </div>
-      <EditorTranslations
-        v-if="!expertMode"
-        v-model="localTranslations"
-        :sources="formSchemaTranslationsOnly ? [TRANSLATION_SOURCE.FORMSCHEMA] : [TRANSLATION_SOURCE.UNSPECIFIED]"
-        :modifieable-sources="[TRANSLATION_SOURCE.FORMSCHEMA]"
-      >
-        <template #controls>
-          <v-checkbox
-            v-model="formSchemaTranslationsOnly"
-            color="primary"
-            hide-details
-            :label="t('formSchemaTranslationsOnly')"
-          />
-        </template>
-      </EditorTranslations>
+      <template v-if="!expertMode">
+        <EditorTranslations
+          v-if="!expertMode"
+          v-model="localTranslations"
+          :sources="formSchemaTranslationsOnly ? [TRANSLATION_SOURCE.FORMSCHEMA] : [TRANSLATION_SOURCE.UNSPECIFIED]"
+          :modifieable-sources="[TRANSLATION_SOURCE.FORMSCHEMA]"
+          @translation-deleted="deletedTranslations.push({ key: $event.key, source: parseInt($event.source, 10) })"
+        >
+          <template #controls>
+            <v-checkbox
+              v-model="formSchemaTranslationsOnly"
+              color="primary"
+              hide-details
+              :label="t('formSchemaTranslationsOnly')"
+            />
+          </template>
+          <template #no-data="{ searchQuery }">
+            <i18n-t
+              v-if="formSchemaTranslationsOnly"
+              keypath="formSchemaTranslations.formSchemaTranslationNotFoundSearchAll"
+              scope="global"
+            >
+              <a
+                class="cursor-pointer"
+                @click.prevent="formSchemaTranslationsOnly = false"
+              >
+                {{ t('click') }}
+              </a>
+            </i18n-t>
+            <span v-else>{{ t('noTranslationsFound', [searchQuery]) }}</span>
+          </template>
+        </EditorTranslations>
+      </template>
       <EditorTranslationsCodeEditor
         v-else
         v-model="localTranslations"
@@ -105,14 +123,14 @@
     </template>
     <template #dialog-options>
       <v-btn
-        text
+        variant="text"
         @click="emit('update:model-value', false)"
       >
         {{ globalT('global.button.close') }}
       </v-btn>
       <v-spacer />
       <v-btn
-        text
+        variant="text"
         color="primary"
         :disabled="!dialogIsDirty || !dialogIsValid"
         @click="onSave"
@@ -131,6 +149,8 @@ import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/
 import { mdiUpload } from '@mdi/js';
 import { IVeoFormsTranslations } from '~/components/dynamic-form/types';
 import { formsTranslationsToEditorTranslations } from '../translations/util';
+import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import { JsonPointer } from 'json-ptr';
 
 const props = withDefaults(defineProps<{
   formSchemaTitles?: Record<string, string>;
@@ -145,6 +165,9 @@ const emit = defineEmits<{
 }>();
 
 const translations = inject<Ref<IEditorTranslations>>(FORMSCHEMA_PROVIDE_KEYS.TRANSLATIONS);
+const formSchema = inject<Ref<IVeoFormSchema>>(FORMSCHEMA_PROVIDE_KEYS.FORMSCHEMA);
+
+const deletedTranslations = ref<{ key: string, source: TRANSLATION_SOURCE}[]>([]);
 
 const { locales: _locales, t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
@@ -191,6 +214,22 @@ const onSave = () => {
   if(translationsModified.value && translations && localTranslations.value) {
     translations.value = cloneDeep(localTranslations.value);
   }
+
+  // Remove all deleted translations from formschema if they are a formschema specific translation (starting with #lang/)
+  const flattedFormSchemaKeyMap = Object.entries(JsonPointer.flatten(formSchema?.value));
+  for(const deletedTranslation of deletedTranslations.value) {
+    // Don't delete if either the deleted translations is not a formschema translations (shouldn't happen) or if there are still other translations for the key
+    if(deletedTranslation.source !== TRANSLATION_SOURCE.FORMSCHEMA || !!Object.keys(localTranslations.value?.[deletedTranslation.key] || {}).length) {
+      continue;
+    }
+    for(const [key, value] of flattedFormSchemaKeyMap) {
+      if(value === `#lang/${deletedTranslation.key}`) {
+        JsonPointer.unset(formSchema?.value, key);
+        break;
+      }
+    }
+  }
+  deletedTranslations.value = [];
   emit('update:model-value', false);
 };
 </script>
@@ -198,20 +237,26 @@ const onSave = () => {
 <i18n>
 {
   "en": {
+    "click": "Click here",
     "editTranslations": "Edit formschema translations",
     "expertMode": "Expert mode",
     "formSchemaTitle": "Formschema title",
+    "formSchemaTranslationNotFoundSearchAll": "No fitting formschema translation found. {0} to search all translations.",
     "formSchemaTranslationsOnly": "Only show form schema translations",
     "import": "Import",
+    "noTranslationsFound": "No translations found for \"{0}\"",
     "title": "Formschema title ({0})",
     "translations": "Translations"
   },
   "de": {
+    "click": "Klicken Sie hier",
     "editTranslations": "Formschema-Übersetzungen bearbeiten",
     "expertMode": "Expertenmodus",
     "formSchemaTitle": "Formschema-Titel",
+    "formSchemaTranslationNotFoundSearchAll": "Keine passende Formschema-Übersetzung gefunden. {0}, um alle Übersetzungen zu durchsuchen.",
     "formSchemaTranslationsOnly": "Nur Formschema Übersetzungen anzeigen",
     "import": "Importieren",
+    "noTranslationsFound": "Keine Übersetzungen für \"{0}\" gefunden",
     "title": "Formschema-Titel ({0})",
     "translations": "Übersetzungen"
   }

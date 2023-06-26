@@ -138,5 +138,9 @@
     "forum": "In the { 0 } you will find further information and can participate in the lively exchange with other users.",
     "tutorial": "Context-sensitive { 0 } are available on each page for quick orientation. Available { 0 } can be accessed at any time via the icon in the application bar at the top right.",
     "webinar": "You can register anytime for our regular free { 0 }."
+  },
+
+  "formSchemaTranslations": {
+    "formSchemaTranslationNotFoundSearchAll": "No fitting formschema translation found. {0} to search all translations."
   }
 }

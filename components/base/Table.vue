@@ -240,7 +240,7 @@ const renderTooltip = (header: TableHeader, data?: any): TableRenderer => {
       location: 'bottom',
       width: 350
     }, {
-      activator: ({ attrs: slotAttrs, props: slotProps }) => h('span', { slotAttrs, ...slotProps, ...data }, children),
+      activator: ({ attrs: slotAttrs, props: slotProps }: { attrs: any, props: any}) => h('span', { slotAttrs, ...slotProps, ...data }, children),
       default: () => header.tooltip?.(props)
     });
   };
