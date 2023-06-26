@@ -2,8 +2,8 @@
   "name": "veo-web",
   "version": "1.0.117",
   "engines": {
-    "npm": "9.5.1",
-    "node": "18.16.1"
+    "npm": "9.5.x",
+    "node": "18.16.x"
   },
   "description": "veo-web",
   "author": "NBRX AG <info@nbrx.de>",
