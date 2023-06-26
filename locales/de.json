@@ -138,6 +138,10 @@
     "sampledata": "Die { 0 } beinhalten eine komplette Beispielorganisation. Sie können die Inhalte nach Belieben ändern, um alle Features und Funktionen kennen zu lernen oder direkt als Basis für die Abbildung Ihrer Organisation verwenden.",
     "tutorial": "Zur schnellen Orientierung stehen auf jeder Seite kontextbezogene { 0 } zur Verfügung. Verfügbare { 0 } können Sie jederzeit über das Symbol in der Anwendungsleiste rechts oben aufrufen.",
     "webinar": "Sie können sich jederzeit zu unseren regelmäßigen, kostenlosen { 0 }."
+  },
+
+  "formSchemaTranslations": {
+    "formSchemaTranslationNotFoundSearchAll": "Keine passende Formschema-Übersetzung gefunden. {0}, um alle Übersetzungen zu durchsuchen."
   }
 }
 

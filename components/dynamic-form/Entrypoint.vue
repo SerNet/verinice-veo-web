@@ -207,7 +207,7 @@ export default defineComponent({
       debug: props.debug
     }));
 
-    const createComponent = (element: any, formSchemaPointer: string, translations: ComputedRef<Record<string, any>>, localObjectSchema: ComputedRef<IVeoObjectSchema>): any => {
+    const createComponent = (element: any, formSchemaPointer: string, translations: Record<string, any>, localObjectSchema: ComputedRef<IVeoObjectSchema>): any => {
       const rule = evaluateRule(_value.value, element.rule);
 
       const options = merge(cloneDeep(element.options || {}), rule);
@@ -217,7 +217,7 @@ export default defineComponent({
       }
       if (options.label && options.label.startsWith('#lang/')) {
         const key = options.label.split('/')[1];
-        options.label = translations.value[key] || key;
+        options.label = translations[key] || key;
 
         // Add an asterix to required fields
         const parentPointer = (element.scope || '').split('/');
@@ -249,7 +249,7 @@ export default defineComponent({
     const createChildren = (
       element: IVeoFormElementFormSchema,
       formSchemaPointer: string,
-      translations: ComputedRef<Record<string, any>>,
+      translations: Record<string, any>,
       localObjectSchema: ComputedRef<IVeoObjectSchema>
     ) => {
       if(!element.elements || !element.elements.length) {
@@ -261,7 +261,7 @@ export default defineComponent({
     const createLayout = (
       element: IVeoFormElementFormSchema,
       formSchemaPointer: string,
-      translations: ComputedRef<Record<string, any>>,
+      translations: Record<string, any>,
       localObjectSchema: ComputedRef<IVeoObjectSchema>
     ) => {
       return h(
@@ -298,7 +298,7 @@ export default defineComponent({
     const createControl = (
       element: IVeoFormControlFormSchema,
       formSchemaPointer: string,
-      translations: ComputedRef<Record<string, any>>,
+      translations: Record<string, any>,
       localObjectSchema: ComputedRef<IVeoObjectSchema>
     ) => {
       let scope = cloneDeep(element.scope);
@@ -408,7 +408,7 @@ export default defineComponent({
     return () =>
       !formSchemaFitsObjectSchema.value?.valid
         ? h(ValidationFailedError, { errors: formSchemaFitsObjectSchema.value?.errors })
-        : h('div', { class: 'vf-wrapper' }, [createComponent(localFormSchema.value, '#', localTranslations, localObjectSchema)]);
+        : h('div', { class: 'vf-wrapper' }, [createComponent(localFormSchema.value, '#', localTranslations.value, localObjectSchema)]);
   }
 });
 </script>

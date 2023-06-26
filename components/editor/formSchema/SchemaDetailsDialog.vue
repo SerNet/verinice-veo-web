@@ -17,14 +17,15 @@
 -->
 <template>
   <BaseDialog
-    v-model="dialog.value"
+    :model-value="modelValue"
     large
     :title="t('schemaDetailsHeadline')"
     fixed-footer
+    @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
       <v-form
-        v-model="form.valid"
+        v-model="formIsValid"
         class="mx-4"
         @submit="doSave()"
       >
@@ -43,10 +44,10 @@
             :md="5"
           >
             <v-text-field
-              v-model="form.data.formSchema"
+              v-model="form.formSchema"
               required
               flat
-              :rules="form.rules.formSchema"
+              :rules="[requiredRule]"
               :label="t('schemaName')"
             />
           </v-col>
@@ -59,15 +60,15 @@
             cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;">{{ t('editor.formschema.sorting') }}:</span>
+            <span style="font-size: 1.2rem;">{{ globalT('editor.formschema.sorting') }}:</span>
           </v-col>
           <v-col
             cols="12"
             :md="5"
           >
             <v-text-field
-              v-model="form.data.sorting"
-              :label="t('editor.formschema.sorting')"
+              v-model="form.sorting"
+              :label="globalT('editor.formschema.sorting')"
               flat
             />
           </v-col>
@@ -80,7 +81,7 @@
             cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;">{{ t('editor.formschema.create.type.text') }}*:</span>
+            <span style="font-size: 1.2rem;">{{ globalT('editor.formschema.create.type.text') }}*:</span>
           </v-col>
           <v-col
             cols="12"
@@ -89,10 +90,9 @@
             <v-text-field
               :model-value="objectSchema.title"
               flat
-              :label="t('editor.formschema.create.type')"
+              :label="globalT('editor.formschema.create.type')"
               readonly
               disabled
-              class="objectschema-type-field"
             />
           </v-col>
         </v-row>
@@ -104,21 +104,22 @@
             cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;">{{ t('editor.formschema.subtype') }}:</span>
+            <span style="font-size: 1.2rem;">{{ globalT('editor.formschema.subtype') }}:</span>
           </v-col>
           <v-col
             cols="12"
             :md="5"
           >
             <v-select
-              v-model="form.data.subType"
-              :label="t('editor.formschema.subtype')"
+              v-model="form.subType"
+              :label="globalT('editor.formschema.subtype')"
               :items="subTypeOptions"
+              :rules="[requiredRule]"
               flat
             />
           </v-col>
         </v-row>
-        <small>{{ t('global.input.requiredfields') }}</small>
+        <small>{{ globalT('global.input.requiredfields') }}</small>
       </v-form>
     </template>
     <template #dialog-options>
@@ -132,7 +133,7 @@
       <v-btn
         text
         color="primary"
-        :disabled="!form.valid"
+        :disabled="!formIsValid"
         @click="doSave()"
       >
         {{ globalT('global.button.save') }}
@@ -140,115 +141,65 @@
     </template>
   </BaseDialog>
 </template>
-<script lang="ts">
-import { PropType } from 'vue';
-import { trim } from 'lodash';
-
+<script setup lang="ts">
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 
-export default defineComponent({
-  props: {
-    modelValue: {
-      type: Boolean,
-      required: true
-    },
-    objectSchema: {
-      type: Object as PropType<IVeoObjectSchema>,
-      required: true
-    },
-    formSchema: {
-      type: String,
-      default: ''
-    },
-    subtype: {
-      type: String,
-      default: null
-    },
-    sorting: {
-      type: String,
-      default: null
-    },
-    domainId: {
-      type: String,
-      required: true
-    }
-  },
-  emits: ['update:model-value', 'update-subtype', 'update-sorting', 'update-schema-name'],
-  setup(props, context) {
-    const { t } = useI18n();
-    const { t: globalT } = useI18n({ useScope: 'global' });
-
-    /**
-     * Common dialog stuff (opening and closing)
-     */
-    const dialog = ref({ value: props.modelValue });
-
-    const form = ref({
-      data: {
-        formSchema: props.formSchema,
-        subType: props.subtype,
-        sorting: props.sorting
-      },
-      rules: {
-        formSchema: [(input: string) => trim(input).length > 0 || t('global.input.required')]
-      },
-      valid: false
-    });
-
-    watch(
-      () => props.modelValue,
-      (val: boolean) => {
-        dialog.value.value = val;
-      }
-    );
-
-    watch(
-      () => dialog.value.value,
-      (val: boolean) => {
-        if (!val) {
-          context.emit('update:model-value', val);
-        }
-      }
-    );
-
-    watch(
-      () => props.formSchema,
-      (val: string) => {
-        form.value.data.formSchema = val;
-      }
-    );
-
-    watch(
-      () => props.subtype,
-      (val: string | null) => {
-        form.value.data.subType = val as string;
-      }
-    );
-
-    watch(
-      () => props.sorting,
-      (val: string | null) => {
-        form.value.data.sorting = val as string;
-      }
-    );
-
-    const subTypeOptions = computed(() =>
-      (props.objectSchema?.properties?.domains?.properties?.['{CURRENT_DOMAIN_ID}']?.properties?.subType?.enum || []).map((subType: string) => ({
-        title: subType,
-        value: subType
-      }))
-    );
-
-    function doSave() {
-      context.emit('update-subtype', form.value.data.subType);
-      context.emit('update-sorting', form.value.data.sorting ?? null);
-      context.emit('update-schema-name', form.value.data.formSchema);
-      context.emit('update:model-value', false);
-    }
-
-    return { dialog, doSave, form, subTypeOptions, t, globalT };
-  }
+const props = withDefaults(defineProps<{
+  modelValue: boolean;
+  objectSchema: IVeoObjectSchema;
+  formSchema: string;
+  subType: string | null;
+  sorting: string | null;
+  domainId: string;
+}>(), {
+  formSchema: '',
+  subType: null,
+  sorting: null
 });
+
+const emit = defineEmits<{
+  (e: 'update:model-value', newValue: boolean): void,
+  (e: 'update-schema-name', newValue: string): void,
+  (e: 'update:sub-type', newValue: string | null): void,
+  (e: 'update:sorting', newValue: string | null): void,
+}>();
+
+const { t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
+const { requiredRule } = useRules();
+
+const formIsValid = ref(true);
+const form = ref({
+  formSchema: props.formSchema,
+  subType: props.subType,
+  sorting: props.sorting
+});
+
+watch(() => props.formSchema, (val: string) => {
+  form.value.formSchema = val;
+});
+
+watch(() => props.subType, (val: string | null) => {
+  form.value.subType = val as string;
+});
+
+watch(() => props.sorting, (val) => {
+  form.value.sorting = val as string;
+});
+
+const subTypeOptions = computed(() =>
+  (props.objectSchema?.properties?.domains?.properties?.['{CURRENT_DOMAIN_ID}']?.properties?.subType?.enum || []).map((subType: string) => ({
+    title: subType,
+    value: subType
+  }))
+);
+
+function doSave() {
+  emit('update:sub-type', form.value.subType);
+  emit('update:sorting', form.value.sorting ?? null);
+  emit('update-schema-name', form.value.formSchema);
+  emit('update:model-value', false);
+}
 </script>
 
 <i18n>
@@ -263,13 +214,3 @@ export default defineComponent({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-.objectschema-type-field :deep(label) {
-  color: rgba(0, 0, 0, 0.6) !important;
-}
-
-.objectschema-type-field :deep(input) {
-  color: rgba(0, 0, 0, 0.87) !important;
-}
-</style>
