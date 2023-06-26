@@ -54,7 +54,7 @@
         :loading="state.isApplyingProfile"
         @click="() => applyProfile({
           profileKey: state.selectedProfiles[0],
-          unitId: state.selectedUnit,
+          unitId: (state.selectedUnit as string),
           domainId: state.domainId,
           messages: {success: t('messageSuccess'), error: t('messageError')}
         })"
