@@ -31,7 +31,7 @@ steps:
     element: '[data-component-name=object-overview-table] > .v-data-table-footer'
     intro: Existieren viele Objekte können Sie durch die Paginierung die Anzahl der je Seite dargestellten Objekte anpassen und zwischen den einzelnen Seiten navigieren.
   - title: 'Objekt bearbeiten'
-    element: '[data-component-name=object-overview-table]'
+    element: '[data-component-name=object-overview-table] .v-data-table__tbody > tr:nth-child(1)'
     intro: Öffnen Sie ein Objekt in der Liste durch einfachen Mausklick zum Bearbeiten.
   - title: 'Der Designator'
     element: '[data-component-name=object-overview-table] tbody tr:nth-child(1) > td:nth-child(2)'

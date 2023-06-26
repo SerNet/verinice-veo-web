@@ -25,7 +25,7 @@ const route = useRoute();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 // STATE
-const currentUnitId = computed(() => (route.params.unit && route.params.unit as string) || undefined);
+const currentUnitId = computed(() => route.params.unit as string || undefined);
 const currentDomainId = computed(() => route.params.domain as string);
 
 const state = reactive({
@@ -36,6 +36,10 @@ const state = reactive({
   domainId: unref(readonly(currentDomainId))
 });
 
+console.log('init:', state);
+watch (state, () => {
+  console.log(route.params, state);
+});
 function toggleDialog(): boolean {
   state.showDialog = !state.showDialog;
   return true;
