@@ -62,7 +62,7 @@
   </BasePage>
 </template>
 <script setup lang="ts">
-import { useProfiles }  from './profiles.ts';
+import { useProfiles }  from '~/components/profile/profiles';
 const { state, profiles, toggleDialog } = useProfiles();
 const { t } = useI18n();
 
@@ -82,11 +82,13 @@ const headers = computed(() => [
 * => remove CSS (#profileStyleScope ...)
 * => remove this code:
 *******************/
-function selectNewItem(val) {
+function selectNewItem(val: string[]) {
   if (val.length >= 2) val.shift();
   state.selectedProfiles = val;
 }
 </script>
+
+<i18n src="./messages.json"></i18n>
 
 <style>
 /* Do not show a checkbox in table header */
@@ -94,4 +96,3 @@ function selectNewItem(val) {
   display: none;
 }
 </style>
-<i18n src="./messages.json"></i18n>
