@@ -9,7 +9,7 @@ variables:
   npm_config_cache: '$CI_PROJECT_DIR/.npm'
 
 test:
-  image: node:18
+  image: node:19
   stage: test
   script:
     - npm -d --legacy-peer-deps ci
