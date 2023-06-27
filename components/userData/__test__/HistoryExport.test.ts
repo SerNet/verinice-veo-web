@@ -16,18 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { describe, it, expect } from 'vitest';
-import { mockNuxtImport } from 'nuxt-vitest/utils';
 import { mount } from '@vue/test-utils';
 import { createVuetify } from 'vuetify';
-import { t } from '~~/test/mocks';
 
 // @ts-ignore // TS throws 'cannot find module' error, however this module can be found + used
 import HistoryExport from '../HistoryExport.vue';
-
-// Mock imports
-mockNuxtImport('useI18n', () => {
-  return () => (msg: string) => msg;
-});
 
 // Setup
 const vuetify = createVuetify();
@@ -43,7 +36,7 @@ describe('HistoryExport.vue', () => {
       prepare: { phase: 1,  cur: 0, total: 100 }
     };
 
-    const mocks = { t, state };
+    const mocks = { state };
     const wrapper = mount(HistoryExport, {
       global: { plugins, mocks }
     });
