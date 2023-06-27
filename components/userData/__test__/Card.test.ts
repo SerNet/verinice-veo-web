@@ -56,7 +56,6 @@ describe('userDataCard.vue', () => {
     await wrapper.setProps({ items });
 
     const itemNames = wrapper.findAll('h3.text-h4').map(item => item.text());
-    console.log(wrapper.html());
     expect(itemNames[0]).toBe(items[0].name);
     expect(itemNames[1]).toBe(items[1].name);
   });
