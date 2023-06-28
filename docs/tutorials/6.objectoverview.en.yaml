@@ -14,7 +14,7 @@ steps:
     element: '[data-component-name=filter-bar-active-filters]'
     intro: Active filter criteria are displayed in so-called 'chips'.
   - title: 'Delete filter criteria'
-    element: '[data-component-name=veo-object-chip]:nth-child(1) .v-chip__close'
+    element: '[data-component-name=veo-object-chip]:nth-child(2) .v-chip__close'
     intro: Optional filter criteria can be deleted directly by mouse click without calling up the filter dialogue.
   - title: 'IMPORTANT!'
     element: '[data-component-name=filter-bar-active-filters] span:nth-child(1)'
