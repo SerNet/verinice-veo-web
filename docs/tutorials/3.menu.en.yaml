@@ -13,7 +13,7 @@ steps:
     element: '[data-component-name=domain-select]'
     intro: Use the Domain Selector to select one of the available domains.
   - title: 'Unit selection'
-    element: '[data-component-name=unit-selection-available-units]'
+    element: '[data-component-name=unit-selection-nav-item]'
     intro: Select one of the available units.
   - title: 'Profiles'
     element: '[data-component-name=profiles-nav-item]'
@@ -33,10 +33,6 @@ steps:
   - title: 'Risks'
     element: '[data-component-name=risks-nav-item]'
     intro: In the Risks section you can view one of the available risk definitions.
-# todo4sernet: Editors - only for content creator account!
-  - title: 'Demo-Unit'
-    element: '[data-component-name=demo-unit-button]'
-    intro: The Demo-Unit provides you with all functions and contents to test veo extensively.
   - title: 'Hide menu'
     element: '[data-component-name=toggle-navigation]'
     intro: With hide menu you can expand or collapse the navigation.

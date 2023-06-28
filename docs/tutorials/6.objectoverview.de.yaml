@@ -1,6 +1,7 @@
 title: Die Objektübersicht
 description: Beschreibung der Objektübersicht
 route: /:unit/domains/:domain/:objectType/:subType
+exact: true
 lang: de
 steps:
   - title: 'Objektübersicht'
@@ -13,7 +14,7 @@ steps:
     element: '[data-component-name=filter-bar-active-filters]'
     intro: Aktive Filterkriterien werden in sogenannten 'Chips' dargestellt.
   - title: 'Filterkriterien löschen'
-    element: '[data-component-name=veo-object-chip]'
+    element: '[data-component-name=veo-object-chip]:nth-child(2) .v-chip__close'
     intro: Optionale Filterkriterien können durch Mausklick direkt ohne Aufruf des Filterdialogs gelöscht werden.
   - title: 'WICHTIG!'
     element: '[data-component-name=filter-bar-active-filters] span:nth-child(1)'

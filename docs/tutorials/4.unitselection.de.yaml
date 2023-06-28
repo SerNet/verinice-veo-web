@@ -5,7 +5,7 @@ exact: true
 lang: de
 steps:
   - title: 'Verfügbare Units'
-    element: '[data-component-name=unit-selection-available-units]'
+    element: '[data-component-name=unit-selection-nav-item]'
     intro: Navigieren Sie zur <b>Unitauswahl</b>, um einen Überblick über alle vorhandenen Units zu erhalten.
   - title: 'Die Unitauswahl'
     element: '[data-component-name=unit-selection-page]'

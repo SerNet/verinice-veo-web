@@ -1,6 +1,6 @@
 title: Die Reports
 description: Beschreibung der Reports
-route: /:unit/domains/:domain/reports/:subType
+route: /:unit/domains/:domain/reports/:report
 lang: de
 steps:
   - title: 'Reports'

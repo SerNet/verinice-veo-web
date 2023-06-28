@@ -1,14 +1,14 @@
 title: The risk definitions
 description: The description of the risk definitions
-route: /:units/domains/:domain/risks/:subType
+route: /:units/domains/:domain/risks/:matrix
 lang: en
 steps:
   - title: 'Risk definitions'
     element: '[data-component-name=risk-page]'
     intro: In the section Risk definitions the available risk definitions can be viewed.
-#  - title: 'Risk definition DSRA'
-#    element: '[data-component-name=risk-definition-DSRA]'
-#    intro: The risk definition for the Data Protection Risk Analysis (DSRA) is currently available.
+  - title: 'Risk definition DSRA'
+    element: '[data-component-name=risk-definition-DSRA]'
+    intro: The risk definition for the Data Protection Risk Analysis (DSRA) is currently available.
   - title: 'Protection goals'
     element: '[data-component-name=risk-matrix-wrapper]'
     intro: For the DSRA, the risk matrix for the protection goals confidentiality, integrity, availability and resilience is presented.

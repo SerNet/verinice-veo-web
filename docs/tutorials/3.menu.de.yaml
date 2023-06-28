@@ -13,7 +13,7 @@ steps:
     element: '[data-component-name=domain-select]'
     intro: Mit dem Domain Selector wählen Sie eine der zur Verfügung stehenden Domänen aus.
   - title: 'Unitauswahl'
-    element: '[data-component-name=unit-selection-available-units]'
+    element: '[data-component-name=unit-selection-nav-item]'
     intro: Wählen Sie eine der zur Verfügung stehenden Units aus.
   - title: 'Profile'
     element: '[data-component-name=profiles-nav-item]'
