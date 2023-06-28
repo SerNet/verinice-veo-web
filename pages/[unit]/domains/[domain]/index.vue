@@ -31,8 +31,7 @@
         v-if="domain"
         class="mt-n2 text-accent text-body-1"
       >
-        <span v-if="domain.description">{{ domain.description }}</span>
-        <i v-else>{{ t('noUnitDescription') }}</i>
+        <span>{{ unit?.description || '' }}</span>
       </div>
       <v-skeleton-loader
         v-else
@@ -117,6 +116,7 @@
 <script lang="ts">
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useQuery } from '~~/composables/api/utils/query';
 
 export const ROUTE_NAME = 'unit-domains-domain';
@@ -168,7 +168,15 @@ export default defineComponent({
     };
 
     // page title
-    const title = computed(() => domain.value?.name || t('domainOverview').toString());
+    const fetchUnitQueryParams = computed(() => ({ id: route.params.unit as string }));
+    const fetchUnitQueryEnabled = computed(() => !!route.params.unit);
+
+    const { data: unit } = useQuery(unitQueryDefinitions.queries.fetch, fetchUnitQueryParams, {
+      enabled: fetchUnitQueryEnabled
+    });
+
+    const title = computed(() => `${domain.value?.name} > ${unit.value?.name}` || t('domainOverview').toString());
+    // const description = computed(() => unit.value?.description || '');
 
     return {
       chartData,
@@ -177,6 +185,7 @@ export default defineComponent({
       elementStatusCountIsFetching,
       onBarClicked,
       title,
+      unit,
 
       t,
       tGlobal
