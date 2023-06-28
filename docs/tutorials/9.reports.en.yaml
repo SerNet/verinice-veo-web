@@ -1,6 +1,6 @@
 title: The reports
 description: Description of the reports
-route: /:unit/domains/:domain/reports/:report
+route: /:unit()/domains/:domain()/reports/:report()
 lang: en
 steps:
   - title: 'Reports'

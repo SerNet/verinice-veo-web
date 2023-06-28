@@ -1,6 +1,6 @@
 title: Das Menü
 description: Beschreibung des Menüs
-route: /:unit/domains/:domain
+route: /:unit()/domains/:domain()
 lang: de
 steps:
   - title: 'Das Menü'

@@ -1,6 +1,6 @@
 title: The risk definitions
 description: The description of the risk definitions
-route: /:units/domains/:domain/risks/:matrix
+route: /:unit()/domains/:domain()/risks/:matrix()
 lang: en
 steps:
   - title: 'Risk definitions'

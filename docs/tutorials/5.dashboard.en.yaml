@@ -1,6 +1,6 @@
 title: The Dashboard
 description: Description of the dashboard
-route: /:unit/domains/:domain
+route: /:unit()/domains/:domain()
 exact: true
 lang: en
 steps:

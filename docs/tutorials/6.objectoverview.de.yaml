@@ -1,6 +1,6 @@
 title: Die Objektübersicht
 description: Beschreibung der Objektübersicht
-route: /:unit/domains/:domain/:objectType/:subType
+route: /:unit()/domains/:domain()/:objectType()/:subType()
 exact: true
 lang: de
 steps:

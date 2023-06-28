@@ -1,6 +1,6 @@
 title: The catalogues
 description: Description of the catalogues
-route: /:unit/domains/:domain/catalogs/:catalog
+route: /:unit()/domains/:domain()/catalogs/:catalog()
 lang: en
 steps:
   - title: 'Catalogues'

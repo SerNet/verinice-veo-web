@@ -1,6 +1,6 @@
 title: Die Objektansicht
 description: Beschreibung der Objektansicht
-route: /:unit/domains/:domain/:objectType/:subType/:object
+route: /:unit()/domains/:domain()/:objectType()/:subType()/:object()
 lang: de
 steps:
   - title: 'Objektansicht'

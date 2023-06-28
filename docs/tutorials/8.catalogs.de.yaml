@@ -1,6 +1,6 @@
 title: Die Kataloge
 description: Beschreibung der Kataloge
-route: /:unit/domains/:domain/catalogs/:catalog
+route: /:unit()/domains/:domain()/catalogs/:catalog()
 lang: de
 steps:
   - title: 'Kataloge'
