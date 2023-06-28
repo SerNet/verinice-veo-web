@@ -113,6 +113,13 @@ export function createIntro() {
           // Skip step if going forward, else go back two steps (No idea why there is a +1 offset. step.value, newValue and _instance.currentStep() all have the same value)
           _instance.goToStep(newValue + (newValue > oldValue ? 2 : 0));
         }
+
+        // For some reason intro.js does not always scroll to the element, so we do it manually to always have then element on screen
+        document.querySelector(currentStep.element as string)?.scrollIntoView({
+          behavior: 'auto',
+          block: 'center',
+          inline: 'center'
+        });
       });
 
       _watchStepsVisible = watch(
@@ -204,7 +211,8 @@ export function createIntro() {
               tooltipClass: 'vue-introjs-tooltip',
               showBullets: false,
               showStepNumbers: true,
-              ...o
+              ...o,
+              scrollToElement: false
             });
 
             if (stepsVisible.value && tutorialReady) {
