@@ -60,13 +60,22 @@ const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 // STATE
 const currentDomainId = computed(() => route.params.domain as string);
 
-const state = reactive({
+const initialState = {
   selectedProfiles: [] as string[],
   showDialog: false,
   isApplyingProfile: false,
-  selectedUnit: unref(currentUnitId),
-  domainId: unref(readonly(currentDomainId))
-});
+  isCreatingUnit: false,
+  domainId: unref(readonly(currentDomainId)),
+  selectedUnit: null,
+  newUnit: {name: null, description: null, domains: [], selectedDomains: []}
+};
+
+const state = reactive({ ...initialState })
+
+// Manipulate state
+function resetState() {
+  Object.assign(state, initialState);
+}
 
 function toggleDialog() {
   state.showDialog = !state.showDialog;
