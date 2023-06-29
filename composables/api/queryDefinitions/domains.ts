@@ -1,23 +1,33 @@
 /*
  * verinice.veo web
  * Copyright (C) 2023  Jonas Heitmann
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IVeoBaseObject, IVeoDomainRiskDefinition, IVeoPiaMandatoryRule } from "~~/types/VeoTypes";
+import { IVeoBaseObject, IVeoDomainRiskDefinition, IVeoEntity, IVeoPiaMandatoryRule } from "~~/types/VeoTypes";
 import { IVeoMutationDefinition } from "../utils/mutation";
 import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
+import { IVeoRisk } from '~/types/VeoTypes';
+import { VeoApiReponseType } from "../utils/request";
+
+export interface IProfile {
+  description: string,
+  name: string,
+  language: string,
+  elements: IVeoEntity[],
+  risks: IVeoRisk[]
+}
 
 export interface IVeoDomain extends IVeoBaseObject {
   name: string;
@@ -27,6 +37,7 @@ export interface IVeoDomain extends IVeoBaseObject {
   riskDefinitions: {
     [key: string]: IVeoDomainRiskDefinition;
   };
+  profiles: Record<string, IProfile>,
   decisions: {
     piaMandatory: {
       rules: IVeoPiaMandatoryRule[];
@@ -56,6 +67,12 @@ export interface IVeoUpdateTypeDefinitionParameters {
   domainId: string;
   objectType: string;
   objectSchema: string;
+}
+
+export interface IVeoApplyProfilesParameters {
+  domainId: string;
+  profileKey: string;
+  unitId: string;
 }
 
 export default {
@@ -104,6 +121,24 @@ export default {
           queryClient.invalidateQueries(['translations']);
         }
       }
-    } as IVeoMutationDefinition<IVeoUpdateTypeDefinitionParameters, void>
+    } as IVeoMutationDefinition<IVeoUpdateTypeDefinitionParameters, void>,
+    applyProfile: {
+      primaryQueryKey: 'domain',
+      url: `/api/domains/:domainId/profiles/:profileKey/units/:unitId`,
+      method: 'POST',
+      mutationParameterTransformationFn: (mutationParameters) => ({
+        params: {
+          domainId: mutationParameters.domainId,
+          profileKey: mutationParameters.profileKey,
+          unitId: mutationParameters.unitId
+        }
+      }),
+      responseType: VeoApiReponseType.VOID,
+      staticMutationOptions: {
+        // no invalidation needed
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onSuccess: (_queryClient, _data, _variables, _context) => {}
+      }
+    } as IVeoMutationDefinition<IVeoApplyProfilesParameters, void>
   }
 };

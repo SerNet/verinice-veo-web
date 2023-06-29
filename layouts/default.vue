@@ -49,7 +49,6 @@
         <template #activator="{ props }">
           <v-btn
             v-if="!$route.path.startsWith('/docs')"
-            active-class="veo-active-list-item-no-background"
             class="mr-3"
             color="black"
             icon
@@ -57,6 +56,7 @@
             to="/docs/index"
             exact
             v-bind="props"
+            data-component-name="docs-nav-item"
           >
             <v-icon :icon="mdiHelpCircleOutline" />
           </v-btn>
@@ -81,7 +81,7 @@
     <LayoutPrimaryNavigation
       v-model="drawer"
       :domain-id="domainId"
-      :unit-id="unitId"
+      :unit-id="(route.params.unit as string)"
       data-component-name="primary-navigation"
     />
     <v-main :class="$style.main">
@@ -100,7 +100,6 @@ import { useDisplay } from 'vuetify';
 import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 import 'intro.js/minified/introjs.min.css';
 
-import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -126,14 +125,8 @@ const domainId = computed((): string | undefined => {
   if (route.name === 'unit-domains-more') {
     return undefined;
   }
-  return separateUUIDParam(route.params.domain as string).id;
+  return route.params.domain as string;
 });
-
-const unitId = computed(() =>
-  separateUUIDParam(route.params.unit as string).id.length > 0
-    ? separateUUIDParam(route.params.unit as string).id
-    : undefined
-);
 </script>
 
 <i18n>

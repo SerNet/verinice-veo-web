@@ -214,7 +214,7 @@
             v-if="schemaIsValid.valid"
             :search="searchQuery"
             :hide-empty-aspects="hideEmptyAspects"
-            :domain-id="domainId"
+            :domain-id="($route.params.domain as string)"
             @schema-updated="updateCode"
           />
           <v-row
@@ -269,7 +269,7 @@
       />
       <EditorObjectSchemaDetailsDialog
         v-model="detailsDialogVisible"
-        :domain-id="domainId"
+        :domain-id="($route.params.domain as string)"
         @schema-updated="updateCode"
       />
       <EditorErrorDialog
@@ -296,7 +296,6 @@ import { JsonPointer } from 'json-ptr';
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { IVeoObjectSchema, IVeoTranslationCollection } from '~/types/VeoTypes';
-import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -328,8 +327,6 @@ export default defineComponent({
 
     provide('displayLanguage', displayLanguage);
     provide('objectSchemaHelper', objectSchemaHelper);
-
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
 
     // Layout stuff
     const pageWidths = ref([6, 6]);
@@ -374,7 +371,7 @@ export default defineComponent({
     });
 
     const setSchema = (data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) => {
-      objectSchemaHelper.value = data.schema || data.meta ? new ObjectSchemaHelper(data.schema, domainId.value) : undefined;
+      objectSchemaHelper.value = data.schema || data.meta ? new ObjectSchemaHelper(data.schema, route.params.domain as string) : undefined;
 
       if (objectSchemaHelper.value) {
         if (data.meta) {
@@ -451,7 +448,7 @@ export default defineComponent({
     const statusSpredRegExp = /([a-z]+)_([\w|-]+)_status_([A-Z|_]+)$/;
 
     const isStatusPresentInSchema = (translationKey: string, objectSchemaPropertyPath: string, objectSchemaValueAtPropertyPath: any) => {
-      if(objectSchemaPropertyPath !== `/properties/domains/properties/${domainId.value}/allOf`) {
+      if(objectSchemaPropertyPath !== `/properties/domains/properties/${route.params.domain}/allOf`) {
         return false;
       }
 
@@ -495,7 +492,7 @@ export default defineComponent({
       objectSchema = filterOutUnusedTranslations(objectSchema);
 
       try {
-        await update({ domainId: domainId.value, objectType: title.value, objectSchema });
+        await update({ domainId: route.params.domain, objectType: title.value, objectSchema });
         displaySuccessMessage(t('saveSchemaSuccess').toString());
       } catch (e: any) {
         displayErrorMessage(t('error.title').toString(), `${t('saveSchemaError').toString()}: ${e.message}`);
@@ -510,7 +507,6 @@ export default defineComponent({
       description,
       detailsDialogVisible,
       displayLanguage,
-      domainId,
       downloadButton,
       downloadSchema,
       errorDialogVisible,

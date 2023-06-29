@@ -64,7 +64,9 @@
       </div>-->
       <div>
         <div class="text-h4 mt-2">
-          {{ t('dpia') }}
+          <span data-component-name="risk-definition-DSRA">
+            {{ t('dpia') }}
+          </span>
         </div>
         <nuxt-page />
       </div>
@@ -75,7 +77,6 @@
 <script lang="ts">
 import { upperFirst } from 'lodash';
 
-import { separateUUIDParam } from '~/lib/utils';
 import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~~/composables/api/utils/query';
 
@@ -92,8 +93,7 @@ export default defineComponent({
       }
     };
 
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
-    const fetchDomainQueryParameters = computed(() => ({ id: domainId.value }));
+    const fetchDomainQueryParameters = computed(() => ({ id: route.params.domain as string }));
     const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { onSuccess: redirectIfNoRiskDefinitionSelected });
     
     const viewRiskDefinition = (id: string) => {

@@ -1,6 +1,6 @@
 title: The menu
 description: Description of the menu
-route: /unit-:unit
+route: /:unit()/domains/:domain()
 lang: en
 steps:
   - title: 'The menu'
@@ -12,15 +12,18 @@ steps:
   - title: 'Domain Selector'
     element: '[data-component-name=domain-select]'
     intro: Use the Domain Selector to select one of the available domains.
-  #- title: 'Unitauswahl'
-  #  element: '[data-component-name=unit-select-nav-item]'
-  #  intro: Select one of the available units.
+  - title: 'Unit selection'
+    element: '[data-component-name=unit-selection-nav-item]'
+    intro: Select one of the available units.
+  - title: 'Profiles'
+    element: '[data-component-name=profiles-nav-item]'
+    intro: Apply profiles providing sample data on existing units.
   - title: 'Dashboard'
     element: '[data-component-name=domain-dashboard-nav-item]'
     intro: On the Dashboard you can see all objects per subtype and status (life cycle) at a glance and navigate directly to them.
   - title: 'Objects'
     element: '[data-component-name=objects-nav-item]'
-    intro: In the Objects section, you navigate directly to the overview pages of the object types <i>Scopes, <i>Processes</i>, <i>Assets</i>, <i>People</i>, <i>Incidents</i>, <i>Documents</i>, <i>Scenarios</i> and <i>Controls</i>.
+    intro: In the Objects section, you navigate directly to the overview pages of the object types <i>Scopes</i>, <i>Processes</i>, <i>Assets</i>, <i>People</i>, <i>Incidents</i>, <i>Documents</i>, <i>Scenarios</i> and <i>Controls</i>.
   - title: 'Catalogues'
     element: '[data-component-name=catalogs-nav-item]'
     intro: Under Catalogues you can apply <i>TOM</i> or <i>Hazards</i> from one of the available catalogues.
@@ -30,14 +33,8 @@ steps:
   - title: 'Risks'
     element: '[data-component-name=risks-nav-item]'
     intro: In the Risks section you can view one of the available risk definitions.
-# todo4sernet: Editors - only for content creator account!
-  - title: 'Demo-Unit'
-    element: '[data-component-name=demo-unit-button]'
-    intro: The Demo-Unit provides you with all functions and contents to test veo extensively.
   - title: 'Hide menu'
     element: '[data-component-name=toggle-navigation]'
     intro: With hide menu you can expand or collapse the navigation.
   - title: 'Done'
-# todo4sernet: Replace hyperlink to online documentation if documentation created.
-# intro: Further information can also be found in the <a href="/docs">online documentation</a>.
     intro: Further information can also be found in the online documentation.

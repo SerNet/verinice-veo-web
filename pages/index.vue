@@ -29,6 +29,9 @@
           <h3 class="text-h4">
             {{ t('unitpicker') }}
           </h3>
+          <p class="text-body-2">
+            <strong>{{ activeUnits }}</strong> {{ t('of' ) }} <strong>{{ userSettings.maxUnits }}</strong> {{ t('active') }} Units
+          </p>
         </v-card-text>
 
         <v-list
@@ -102,19 +105,27 @@
     <template #footer>
       <v-tooltip location="start">
         <template #activator="{ props }">
-          <v-btn
+          <div
             v-bind="props"
             class="veo-primary-action-fab"
-            color="primary"
-            :icon="mdiPlus"
-            size="large"
-            @click="createUnit()"
-          />
-          <div style="height: 76px" />
+          >
+            <v-btn
+              :disabled="maxUnitsExceeded || ability.cannot('manage', 'units')"
+              color="primary"
+              :icon="mdiPlus"
+              size="large"
+              @click="createUnit()"
+            />
+          </div>
         </template>
 
         <template #default>
-          <span>{{ t('createUnit') }}</span>
+          <span v-if="maxUnitsExceeded">
+            {{ t('exceeded') }}
+          </span>
+          <span v-else>
+            {{ t('createUnit') }}
+          </span>
         </template>
       </v-tooltip>
     </template>
@@ -138,12 +149,18 @@ export const ROUTE_NAME = 'index';
 <script setup lang="ts">
 import { mdiTrashCanOutline, mdiPlus, mdiPencilOutline } from '@mdi/js';
 
-import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
+import { getFirstDomainDomaindId } from '~/lib/utils';
 import { useQuery } from '~~/composables/api/utils/query';
 import unitQueryDefinitions, { IVeoUnit} from '~/composables/api/queryDefinitions/units';
+import { useVeoUser } from '~/composables/VeoUser';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
+
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
+
+const { ability } = useVeoPermissions();
+const { userSettings } = useVeoUser();
 
 useHead({
   title: $t('breadcrumbs.index')
@@ -164,18 +181,20 @@ const editUnit = (unit: IVeoUnit) => {
 
 const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
+const activeUnits = computed(() => units.value?.length || undefined);
+
 const generateUnitDashboardLink = (unitId: string) => {
   const unitToLinkTo = (units.value || []).find((unit) => unit.id === unitId);
   let domainId;
-
+  
   if (unitToLinkTo) {
     domainId = getFirstDomainDomaindId(unitToLinkTo);
   }
-
-  return unitToLinkTo && domainId
-    ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}`
-    : undefined;
+  
+  return unitToLinkTo && domainId ? `/${unitToLinkTo.id}/domains/${domainId}` : undefined;
 };
+
+const maxUnitsExceeded = computed(() => (units.value?.length || 0) >= userSettings.value.maxUnits);
 
 // Unit deletion stuff
 const deleteUnitDialogVisible = ref(false);
@@ -190,15 +209,21 @@ const deleteUnit = (unit: IVeoUnit) => {
 <i18n>
 {
   "en": {
+    "active": "active",
     "createUnit": "Create unit",
     "deleteUnit": "Delete unit",
     "editUnit": "Edit unit",
+    "exceeded": "You have reached the maximum amount of units",
+    "of": "of",
     "unitpicker": "Please choose a unit",
   },
   "de": {
+    "active": "aktive",
     "createUnit": "Unit erstellen",
     "deleteUnit": "Unit löschen",
     "editUnit": "Unit bearbeiten",
+    "exceeded": "Sie haben die maximale Anzahl an Units erreicht",
+    "of": "von",
     "unitpicker": "Bitte wählen Sie eine Unit",
   }
 }

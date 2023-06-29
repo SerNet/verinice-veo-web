@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Jessica Lühnen, Annemarie Bufe, Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -26,7 +26,7 @@
         >
           <td>
             <nuxt-link
-              :to="createUrl(revision)"
+              :to="createUrl(revision, schemas || {})"
               class="text-body-2"
             >
               {{ revision.content.designator }} <b>{{ revision.content.abbreviation }} {{ revision.content.name }}</b>
@@ -41,42 +41,38 @@
   </BaseWidget>
 </template>
 
-<script lang="ts">
-import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+<script setup lang="ts">
 import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
-import { separateUUIDParam, createUUIDUrlParam } from '~/lib/utils';
+import schemaQueryDefinitions, { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas';
 import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 import { useQuery } from '~~/composables/api/utils/query';
 
-export default defineComponent({
-  setup() {
-    const { t, locale } = useI18n();
-    const route = useRoute();
 
-    const unitId = computed(() => separateUUIDParam(route.params.unit as string).id);
-    const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
+const { t, locale } = useI18n();
+const route = useRoute();
 
-    const latestChangesQueryParameters = computed(() => ({ unitId: unitId.value }));
-    const { data: revisions } = useQuery(historyQueryDefinitions.queries.fetchLatestVersions, latestChangesQueryParameters);
+const latestChangesQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
+const { data: revisions } = useQuery(historyQueryDefinitions.queries.fetchLatestVersions, latestChangesQueryParameters);
 
-    const fetchFormsQueryParameters = computed(() => ({ domainId: domainId.value }));
-    const fetchFormsQueryEnabled = computed(() => !!domainId.value);
-    const { data: forms } = useQuery(formQueryDefinitions.queries.fetchForms, fetchFormsQueryParameters, { enabled: fetchFormsQueryEnabled });
+const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-    const createUrl = (revision: IVeoObjectHistoryEntry) =>
-      `/${route.params.unit}/domains/${route.params.domain}/objects/${createUUIDUrlParam(revision.content.type, revision.content.id)}/`;
+const createUrl = (revision: IVeoObjectHistoryEntry, schemas: IVeoSchemaEndpoints) => {
+  const subType = revision.content.domains[route.params.domain as string]?.subType || '-';
 
-    return {
-      createUrl,
-      forms,
-      revisions,
-
-      t,
-      locale
-    };
-  }
-});
+  return `/${route.params.unit}/domains/${route.params.domain}/${schemas[revision.content.type]}/${subType}/${revision.content.id}/`;
+};
 </script>
+
+<i18n>
+{
+  "en": {
+    "myLatestRevisions": "My latest edited revisions"
+  },
+  "de": {
+    "myLatestRevisions": "Meine zuletzt bearbeiteten Objekte"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 a {
@@ -99,14 +95,3 @@ tbody {
   background: transparent;
 }
 </style>
-
-<i18n>
-{
-  "en": {
-    "myLatestRevisions": "My latest edited revisions"
-  },
-  "de": {
-    "myLatestRevisions": "Meine zuletzt bearbeiteten Objekte"
-  }
-}
-</i18n>

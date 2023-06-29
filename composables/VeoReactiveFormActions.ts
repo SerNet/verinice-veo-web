@@ -18,12 +18,11 @@
 import { trim } from 'lodash';
 
 import { IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
-import { separateUUIDParam } from '~/lib/utils';
 
 export function useVeoReactiveFormActions() {
   const route = useRoute();
 
-  const domainId = computed(() => separateUUIDParam(route.params.domain as string).id);
+  const domainId = computed(() => route.params.domain as string);
 
   function defaultReactiveFormActions(): IVeoFormsReactiveFormActions {
     return domainId.value

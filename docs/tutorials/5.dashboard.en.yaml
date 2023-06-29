@@ -1,6 +1,6 @@
 title: The Dashboard
 description: Description of the dashboard
-route: /unit-:unit/domains/domain-:domain
+route: /:unit()/domains/:domain()
 exact: true
 lang: en
 steps:
@@ -21,7 +21,7 @@ steps:
     intro: Each subtype can have a specific status. By default, a life cycle of the individual objects is presented, e.g. for the assets.
   - title: 'People'
     element: '[data-component-name=domain-dashboard-person-widget]'
-    intro: The status of the objects are colour-coded - red = new, yellow = in progress, blue = under review, green = released and grey = archived.
+    intro: The status of the objects are colour-coded<br>red = new<br>yellow = in progress<br>blue = under review<br>green = released and<br>grey = archived.
   - title: 'Controls'
     element: '[data-component-name=domain-dashboard-control-widget]'
     intro: Red, yellow and blue objects require further documentation, green and grey ones you have defined as sufficiently documented.
@@ -35,6 +35,4 @@ steps:
     element: '[data-component-name=domain-dashboard-scenario-widget]'
     intro: Navigate from the dashboard directly to the yellow scenarios that need further consideration.
   - title: 'Done'
-# todo4sernet: Replace hyperlink to online documentation when documentation created.
-# intro: Further information can also be found in the <a href="/docs">online documentation</a>.
     intro: Further information can also be found in the online documentation.

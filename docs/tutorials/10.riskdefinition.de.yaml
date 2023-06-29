@@ -1,6 +1,6 @@
 title: Die Risikodefinitionen
 description: Die Beschreibung der Risikodefinitionen
-route: /unit-:units/domains/domain-:domain/risks/:risk
+route: /:unit()/domains/:domain()/risks/:matrix()
 lang: de
 steps:
   - title: 'Risikodefinitionen'
@@ -16,6 +16,4 @@ steps:
     element: '[data-component-name=risk-matrix-wrapper] .veo-card'
     intro: Die Risikomatrix stellt die Zuordnung der Kombination aus Eintrittswahrscheinlichkeit und möglicher Auswirkung zu den Risikokategorien dar.
   - title: 'Geschafft'
-# todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
-#    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.
     intro: Weitere Informationen finden Sie auch in der Online Dokumentation.

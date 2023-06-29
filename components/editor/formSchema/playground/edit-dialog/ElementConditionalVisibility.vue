@@ -97,9 +97,9 @@
               v-if="selectedScopeHasPredefinedValues"
               v-model="conditionValues"
               :label="t('hasValue')"
-              :items="selectedScopeObjectSchemaElement?.enum || []"
+              :items="predefinedValues"
               variant="underlined"
-              multiple
+              :multiple="selectedScopeObjectSchemaElement?.type !== 'boolean'"
               :prepend-inner-icon="mdiAlphabetical"
             />
             <v-text-field
@@ -117,7 +117,6 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, Ref } from 'vue';
 import { cloneDeep, isArray } from 'lodash';
 import { mdiAlphabetical, mdiFormTextbox, mdiMagicStaff, mdiTrashCanOutline } from '@mdi/js';
 import { JsonPointer } from 'json-ptr';
@@ -127,12 +126,9 @@ import { FormSchemaElementMap, PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from '.
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
 
-const props = defineProps({
-  formSchemaElement: {
-    type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  }
-});
+const props = withDefaults(defineProps<{
+  formSchemaElement: IVeoFormSchemaItem;
+}>(), {});
 
 const emit = defineEmits<{
   (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void
@@ -157,13 +153,17 @@ const conditionEffect = ref<'HIDE' | 'SHOW' | undefined>();
 const scopeUUID = ref<string>();
 const selectedScopeFormSchemaElement = computed(() => scopeUUID.value ? formSchemaElementMap.value.get(scopeUUID.value) : undefined);
 
-const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.objectSchema);
+const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.OBJECTSCHEMA);
 const selectedScopeObjectSchemaElement = computed(() => selectedScopeFormSchemaElement.value?.scope && objectSchema?.value ? JsonPointer.get(objectSchema?.value, selectedScopeFormSchemaElement.value.scope) as JSONSchema7 : undefined);
 
-const selectedScopeHasPredefinedValues = computed(() => !!selectedScopeObjectSchemaElement?.value?.enum);
+const predefinedValues = computed(() => selectedScopeObjectSchemaElement.value?.type === 'boolean'
+  ? [{ title: t('true'), value: true }, { title: t('false'), value: false }]
+  : selectedScopeObjectSchemaElement.value?.enum || []
+);
+const selectedScopeHasPredefinedValues = computed(() => !!predefinedValues.value.length);
 const conditionValues = ref<any>(undefined);
 
-const _formSchemaElementMap = inject<FormSchemaElementMap>(PLAYGROUND_PROVIDE_KEYS.formSchemaElementMap, new Map());
+const _formSchemaElementMap = inject<FormSchemaElementMap>(PLAYGROUND_PROVIDE_KEYS.FORM_SCHEMA_ELEMENT_MAP, new Map());
 const formSchemaElementMap = ref<FormSchemaElementMap>(new Map());
 
 // For some reason we have to watch, as vue doesn't pick up the changes
@@ -183,7 +183,11 @@ const onConditionUpdated = () => {
       condition: {
         scope: selectedScopeFormSchemaElement.value.scope as string,
         schema: {
-          enum: isArray(conditionValues.value) ? conditionValues.value : [conditionValues.value]
+          enum: isArray(conditionValues.value)
+            ? conditionValues.value
+            : selectedScopeObjectSchemaElement.value?.type === 'integer' || selectedScopeObjectSchemaElement.value?.type === 'number'
+              ? [parseInt(conditionValues.value, 10)]
+              : [conditionValues.value]
         }
       }
     } });
@@ -215,19 +219,23 @@ watch(() => props.formSchemaElement, onFormSchemaItemModified, { deep: true, imm
     "conditionalVisibility": "Conditional visibility",
     "deleteRule": "Delete rule",
     "effect": "Effect",
+    "false": "False",
     "hasValue": "has value",
     "hide": "Hide if rule applies",
     "linkedElement": "Linked element",
-    "show": "Show if rule applies"
+    "show": "Show if rule applies",
+    "true": "True"
   },
   "de": {
     "conditionalVisibility": "Bedingte Sichtbarkeit",
     "deleteRule": "Regel löschen",
     "effect": "Effekt",
+    "false": "Falsch",
     "hasValue": "hat Wert",
     "hide": "Ausblenden falls Regel zutrifft",
     "linkedElement": "Verknüpftes Element",
-    "show": "Anzeigen falls Regel zutrifft"
+    "show": "Anzeigen falls Regel zutrifft",
+    "true": "Wahr"
   }
 }
 </i18n>
