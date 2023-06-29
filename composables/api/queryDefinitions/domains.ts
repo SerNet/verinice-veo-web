@@ -20,6 +20,7 @@ import { IVeoMutationDefinition } from "../utils/mutation";
 import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
 
 export interface IVeoDomain extends IVeoBaseObject {
+  _self: string;
   name: string;
   abbreviation: string;
   description: string;
