@@ -156,9 +156,9 @@ const selectedScopeFormSchemaElement = computed(() => scopeUUID.value ? formSche
 const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.OBJECTSCHEMA);
 const selectedScopeObjectSchemaElement = computed(() => selectedScopeFormSchemaElement.value?.scope && objectSchema?.value ? JsonPointer.get(objectSchema?.value, selectedScopeFormSchemaElement.value.scope) as JSONSchema7 : undefined);
 
-const predefinedValues = computed(() => selectedScopeObjectSchemaElement.value?.type === 'boolean' ?
-  [{ title: t('true'), value: true }, { title: t('false'), value: false }] :
-  selectedScopeObjectSchemaElement.value?.enum || []
+const predefinedValues = computed(() => selectedScopeObjectSchemaElement.value?.type === 'boolean'
+  ? [{ title: t('true'), value: true }, { title: t('false'), value: false }]
+  : selectedScopeObjectSchemaElement.value?.enum || []
 );
 const selectedScopeHasPredefinedValues = computed(() => !!predefinedValues.value.length);
 const conditionValues = ref<any>(undefined);
