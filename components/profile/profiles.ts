@@ -122,8 +122,10 @@ export function useProfiles() {
 }
 
 export function useUnits() {
+  const { mutateAsync: mutateExistingUnit } = useMutation(domainQueryDefinitions.mutations.applyProfile);
+  const { mutateAsync: createNewUnit, data: unitDetailsPayload } = useMutation(unitQueryDefinitions.mutations.create);
   const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
-  const { mutateAsync: mutateUnitUsingProfile } =  useMutation(domainQueryDefinitions.mutations.applyProfile);
+  const { domains } = useDomain(); // Needed if user wants to create a new unit
 
   async function applyProfile({ profileKey, unitId, domainId, messages }: ApplyProfileParams) {
     state.isApplyingProfile = true;
@@ -135,17 +137,38 @@ export function useUnits() {
       handleError(err, messages.error);
     }
     finally {
-      // Clean up state
-      state.isApplyingProfile = false;
-      state.selectedProfiles = [];
-      toggleDialog();
+      resetState();
+    }
+  }
+
+  async function createUnitAndApplyProfile({name, domains, description, messages}: createUnitAndApplyProfileParams) {
+    state.isCreatingUnit = true;
+    await createNewUnit({ name, domains, description });
+    try {
+      if(unitDetailsPayload.value?.resourceId) {
+        await applyProfile({
+          profileKey: state.selectedProfiles[0],
+          unitId: unitDetailsPayload.value.resourceId as string,
+          domainId: state.domainId,
+          messages
+        });
+      }
+      else {
+        throw new Error('Could not apply profile: unitId is undefined')
+      }
+    }
+    catch (err) {
+      handleError(err, messages.error);
+      resetState();
     }
   }
 
   return {
     units: readonly(units),
+    domains: readonly(domains),
     toggleDialog,
     applyProfile,
+    createUnitAndApplyProfile,
     state
   };
 }
