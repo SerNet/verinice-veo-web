@@ -73,32 +73,25 @@
       <v-card-text>
         {{ t('alertLeavePageCopy') }}
       </v-card-text>
-      <v-row
-        dense
-        class="mt-4"
-      >
-        <v-spacer />
-        <v-col
-          cols="auto"
-        >
-          <v-btn
-            flat
-            variant="plain"
-            class="me-2"
-            @click="confirmPageLeave(false)"
-          >
-            {{ t('global.button.cancel') }}
-          </v-btn>
+    </template>
 
-          <v-btn
-            flat
-            color="primary"
-            @click="confirmPageLeave(true)"
-          >
-            {{ t('global.button.ok') }}
-          </v-btn>
-        </v-col>
-      </v-row>
+    <template #dialog-options>
+      <v-btn
+        flat
+        variant="plain"
+        class="me-2"
+        @click="confirmPageLeave(false)"
+      >
+        {{ t('global.button.cancel') }}
+      </v-btn>
+      <v-spacer />
+      <v-btn
+        flat
+        color="primary"
+        @click="confirmPageLeave(true)"
+      >
+        {{ t('global.button.ok') }}
+      </v-btn>
     </template>
   </BaseDialog>
 </template>
