@@ -20,19 +20,17 @@ import { useMutation } from '~~/composables/api/utils/mutation';
 import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 
-const route = useRoute();
-const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
+import { IVeoLink } from '~/types/VeoTypes';
 
-
-// Types
-type Profile = {
+// TYPES
+export type Profile = {
   key: string;
   name: string;
   description: string;
   language: string;
 }
 
-interface IVeoProfiles {
+type Profiles = {
   [key: string]: {
     name: string;
     description: string;
@@ -40,9 +38,26 @@ interface IVeoProfiles {
   }
 }
 
+// useUnits
+type ApplyProfileParams = {
+  domainId: string;
+  unitId: string;
+  profileKey: string;
+  messages: { [key: string]: string }
+}
+
+type createUnitAndApplyProfileParams = {
+  name: string;
+  domains: IVeoLink[];
+  description?: string | undefined;
+  messages: { [key: string]: string };
+}
+
+// GLOBAL COMPOSABLES
+const route = useRoute();
+const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 // STATE
-const currentUnitId = computed(() => (route.params.unit && route.params.unit as string) || undefined);
 const currentDomainId = computed(() => route.params.domain as string);
 
 const state = reactive({
@@ -57,6 +72,7 @@ function toggleDialog() {
   state.showDialog = !state.showDialog;
 }
 
+// Helpers
 function handleError(err: unknown, genericMsg: string) {
   const error = (err instanceof Error) ?
     { message: err.message, cause: err.cause } :
@@ -66,24 +82,26 @@ function handleError(err: unknown, genericMsg: string) {
   displayErrorMessage(genericMsg, error.message);
 }
 
-
+// Local Composables
 function useDomain() {
   const fetchDomainQueryParameters = computed(() => ({ id: currentDomainId.value as string }));
   const fetchDomainQueryEnabled = computed(() => !!currentDomainId);
   const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
+  const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains);
 
   return {
-    domain: readonly(domain)
+    domain: readonly(domain),
+    domains: readonly(domains)
   };
 }
 
 export function useProfiles() {
-  // Fetch domain: profiles are a member of the domain object
+  // Fetch domain, because profiles are a member of the domain object
   const { domain } = useDomain();
 
-  // Get available profiles from domain
+  // Unpack available profiles
   const profiles = computed(() => {
-    const _profiles: IVeoProfiles = toRaw(domain.value?.profiles);
+    const _profiles: Profiles = toRaw(domain.value?.profiles);
     return Object.keys(_profiles || {}).map(key =>({key, ..._profiles[key]} )) as Profile[];
   });
 
@@ -98,16 +116,10 @@ export function useUnits() {
   const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
   const { mutateAsync: mutateUnitUsingProfile } =  useMutation(domainQueryDefinitions.mutations.applyProfile);
 
-  type ApplyProfilesParams = {
-    domainId: string;
-    unitId: string;
-    profileKey: string;
-    messages: { [key: string]: string }
-  }
-  async function applyProfile({ profileKey, unitId, domainId, messages }: ApplyProfilesParams) {
+  async function applyProfile({ profileKey, unitId, domainId, messages }: ApplyProfileParams) {
     state.isApplyingProfile = true;
     try {
-      await mutateUnitUsingProfile({ domainId, unitId, profileKey });
+      await mutateExistingUnit({ domainId, unitId, profileKey });
       displaySuccessMessage(messages.success);
     }
     catch (err) {
@@ -128,4 +140,3 @@ export function useUnits() {
     state
   };
 }
-
