@@ -20,13 +20,11 @@
     :sub-group="level > 0"
     :data-component-name="componentName"
     :class="{ 'border-top': level === 0 }"
-    :target="openInNewtab ? '_blank' : ''"
+    :target="openInNewtab ? '_blank' : undefined"
     :value="id"
     @click.stop="onClick"
   >
-    <template
-      #prependIcon
-    >
+    <template #prependIcon>
       <v-icon
         v-if="level > 0"
         :icon="mdiChevronDown"
@@ -96,7 +94,7 @@
           v-bind="child"
           :level="level + 1"
           :mini-variant="miniVariant"
-          @expand-menu="$emit('expand-menu')"
+          @expand-menu="emit('expand-menu')"
           @open-parent="openCategory"
         />
         <LayoutPrimaryNavigationCategory
@@ -104,7 +102,7 @@
           v-bind="child"
           :level="level + 1"
           :mini-variant="miniVariant"
-          @expand-menu="$emit('expand-menu')"
+          @expand-menu="emit('expand-menu')"
         />
       </template>
     </template>
@@ -138,7 +136,10 @@ const props = withDefaults(defineProps<INavItem & {
   openInNewtab: false
 });
 
-const emit = defineEmits(['expand-menu', 'click']);
+const emit = defineEmits<{
+  (event: 'expand-menu'): void;
+  (event: 'click'): void;
+}>();
 
 const route = useRoute();
 const router = useRouter();

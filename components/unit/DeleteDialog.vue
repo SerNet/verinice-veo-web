@@ -44,9 +44,10 @@
       <BaseCard
         class="mt-4"
       >
-        <v-form>
+        <v-form @submit.prevent="deleteUnit">
           <v-text-field
             v-model="unitName"
+            autofocus
             hide-details="auto"
             :placeholder="t('placeholder')"
             :rules="nameRules"

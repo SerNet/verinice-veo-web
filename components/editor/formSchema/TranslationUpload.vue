@@ -16,110 +16,100 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div>
-    <BaseAlert
-      :model-value="true"
-      flat
-      no-close-button
-      :type="VeoAlertType.INFO"
-    >
-      {{ t('uploadOverwrite') }}
-    </BaseAlert>
-    <EditorTranslationUpload
-      :available-languages="availableLanguages"
-      :import-function="importFunction"
-      :replace-translations="replaceTranslations"
-      @update:replace-translations="$emit('update:replace-translations', $event)"
-    >
-      <template #default>
-        <v-expansion-panels
-          v-model="resultExpansionPanel"
-          flat
-          class="veo-border mt-6"
-        >
-          <v-expansion-panel>
-            <v-expansion-panel-title>
-              {{ t('result') }}
-            </v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <BaseAlert
-                :model-value="!!usedTranslations.length"
-                :title="t('importedTranslations')"
-                flat
-                no-close-button
-                :type="VeoAlertType.SUCCESS"
-              >
-                <template #default>
-                  <div
-                    v-for="language of Object.entries(usedTranslations)"
-                    :key="language[0]"
-                    class="mt-2"
-                  >
-                    {{ localeDetailsMap[language[0]].name }}
-                    <ul>
-                      <li
-                        v-for="translation of language[1]"
-                        :key="translation"
-                      >
-                        {{ translation }}
-                      </li>
-                    </ul>
-                  </div>
-                </template>
-              </BaseAlert>
-              <BaseAlert
-                :model-value="!!duplicateTranslations.length"
-                :title="t('duplicateTranslations')"
-                flat
-                no-close-button
-                :type="VeoAlertType.INFO"
-              >
-                <template #default>
-                  <div
-                    v-for="language of Object.entries(duplicateTranslations)"
-                    :key="language[0]"
-                    class="mt-2"
-                  >
-                    {{ localeDetailsMap[language[0]].name }}
-                    <ul>
-                      <li
-                        v-for="translation of language[1]"
-                        :key="translation"
-                      >
-                        {{ translation }}
-                      </li>
-                    </ul>
-                  </div>
-                </template>
-              </BaseAlert>
-              <BaseAlert
-                :model-value="!!unusedTranslations.length"
-                :title="t('unusedTranslations')"
-                flat
-                no-close-button
-                :type="VeoAlertType.INFO"
-              >
-                <template #default>
+  <EditorTranslationUpload
+    :available-languages="availableLanguages"
+    :import-function="importFunction"
+    :replace-translations="replaceTranslations"
+    @update:replace-translations="$emit('update:replace-translations', $event)"
+  >
+    <template #default>
+      <v-expansion-panels
+        v-model="resultExpansionPanel"
+        flat
+        class="veo-border mt-6"
+      >
+        <v-expansion-panel>
+          <template #title>
+            {{ t('result') }}
+          </template>
+          <template #text>
+            <BaseAlert
+              :model-value="!!usedTranslations.length"
+              :title="t('importedTranslations')"
+              flat
+              no-close-button
+              :type="VeoAlertType.SUCCESS"
+            >
+              <template #default>
+                <div
+                  v-for="language of Object.entries(usedTranslations)"
+                  :key="language[0]"
+                  class="mt-2"
+                >
+                  {{ localeDetailsMap[language[0]].name }}
                   <ul>
                     <li
-                      v-for="translation of unusedTranslations"
+                      v-for="translation of language[1]"
                       :key="translation"
                     >
                       {{ translation }}
                     </li>
                   </ul>
-                </template>
-              </BaseAlert>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </template>
-    </EditorTranslationUpload>
-  </div>
+                </div>
+              </template>
+            </BaseAlert>
+            <BaseAlert
+              :model-value="!!duplicateTranslations.length"
+              :title="t('duplicateTranslations')"
+              flat
+              no-close-button
+              :type="VeoAlertType.INFO"
+            >
+              <template #default>
+                <div
+                  v-for="language of Object.entries(duplicateTranslations)"
+                  :key="language[0]"
+                  class="mt-2"
+                >
+                  {{ localeDetailsMap[language[0]].name }}
+                  <ul>
+                    <li
+                      v-for="translation of language[1]"
+                      :key="translation"
+                    >
+                      {{ translation }}
+                    </li>
+                  </ul>
+                </div>
+              </template>
+            </BaseAlert>
+            <BaseAlert
+              :model-value="!!unusedTranslations.length"
+              :title="t('unusedTranslations')"
+              flat
+              no-close-button
+              :type="VeoAlertType.INFO"
+            >
+              <template #default>
+                <ul>
+                  <li
+                    v-for="translation of unusedTranslations"
+                    :key="translation"
+                  >
+                    {{ translation }}
+                  </li>
+                </ul>
+              </template>
+            </BaseAlert>
+          </template>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </template>
+  </EditorTranslationUpload>
 </template>
 
 <script lang="ts">
-import { PropType, Ref } from 'vue';
+import { Ref } from 'vue';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { JsonPointer } from 'json-ptr';
 import { trim } from 'lodash';
@@ -131,10 +121,6 @@ import { useQuery } from '~~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
-    availableLanguages: {
-      type: Array as PropType<string[]>,
-      required: true
-    },
     replaceTranslations: {
       type: Boolean,
       default: false
@@ -146,7 +132,9 @@ export default defineComponent({
 
     const formSchema = inject<Ref<IVeoFormSchema | undefined>>('mainFormSchema');
 
-    const translationsQueryParameters = computed(() => ({ languages: props.availableLanguages }));
+    const availableLanguages = computed(() => (locales.value as LocaleObject[]).map((locale) => locale.code));
+
+    const translationsQueryParameters = computed(() => ({ languages: availableLanguages.value }));
     const { data: objectSchemaTranslations } = useQuery(translationQueryDefinitions.queries.fetch, translationsQueryParameters);
 
     // Layout stuff
@@ -165,11 +153,11 @@ export default defineComponent({
     const usedTranslations = reactive<{ [lang: string]: string[] }>({});
 
     const importFunction = (columns: string[][], idColumn: number, languageColumns: { [language: string]: number }) => {
-      if (!idColumn || Object.keys(languageColumns).length < props.availableLanguages.length) {
+      if (!idColumn || Object.keys(languageColumns).length < availableLanguages.value.length) {
         return;
       }
       unusedTranslations.value = [];
-      const translations = props.availableLanguages.reduce((previousValue, currentValue) => {
+      const translations = availableLanguages.value.reduce((previousValue, currentValue) => {
         previousValue[currentValue] = {};
         return previousValue;
       }, Object.create(null));
@@ -180,7 +168,7 @@ export default defineComponent({
       unusedTranslations.value = [];
       Object.assign(
         duplicateTranslations,
-        props.availableLanguages.reduce((previousValue, currentValue) => {
+        availableLanguages.value.reduce((previousValue, currentValue) => {
           previousValue[currentValue] = [];
           return previousValue;
         }, Object.create(null))
@@ -227,6 +215,7 @@ export default defineComponent({
     };
 
     return {
+      availableLanguages,
       duplicateTranslations,
       importFunction,
       localeDetailsMap,
@@ -248,14 +237,12 @@ export default defineComponent({
     "importedTranslations": "Imported translations",
     "result": "Upload details",
     "unusedTranslations": "Translations of controls not present in form schema (not imported)",
-    "uploadOverwrite": "Uploading a language file overwrites changes made in the code editor since the last time you hit save."
   },
   "de": {
     "duplicateTranslations": "Bereits im Objektschema vorhandene Übersetzungen (nicht importiert)",
     "importedTranslations": "Importierte Übersetzungen",
     "result": "Upload-Details",
     "unusedTranslations": "Übersetzungen von nicht im Formschema vorhandenen Controls (nicht importiert)",
-    "uploadOverwrite": "Das Hochladen einer Sprachdatei überschreibt alle Änderungen im Codeeditor seit Sie das letzte Mal speichern gedrückt haben."
   }
 }
 </i18n>
