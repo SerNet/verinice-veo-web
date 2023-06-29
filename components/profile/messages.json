@@ -6,13 +6,19 @@
     "thName": "Profile name",
     "thDescription": "Description",
     "thLanguage": "Language",
-    "applyBtn": "Choose Unit",
-    "unitSelectionTitle": "Unit Selection",
+    "applyBtn": "Apply Profile",
+    "unitSelectionTitle": "Apply Profile to Unit",
     "unitSelectionDropdownLabel": "Units",
-    "unitSelectionApplyBtn": "Apply profile",
-    "unitSelectionHint": "Please select the unit to which the profile should be applied.",
+    "unitSelectionApplyBtn": "Apply",
+    "unitSelectionCreateNewHint": "Create a new Unit. (Selected Profile will be applied automatically.)",
+    "unitSelectionCreateName": "Name",
+    "unitSelectionCreateDesc": "Description",
+    "unitSelectionCreateDomains": "Choose Domains",
+    "unitSelectionHint": "Or select the unit to which the profile should be applied.",
     "messageSuccess": "Profile successfully applied",
-    "messageError": "Could not apply profile"
+    "messageError": "Could not apply profile",
+    "messageUnitWithProfileSuccess": "New Unit created and successfully applied profile.",
+    "messageUnitWithProfileError": "Could not create new unit and apply profile."
   },
   "de": {
     "hint": "Bitte wählen Sie ein Profil aus. Im nächsten Schritt können Sie dann die Unit auswählen auf die Sie das Profil anwenden möchten.",
@@ -20,13 +26,19 @@
     "thName": "Profilname",
     "thDescription": "Beschreibung",
     "thLanguage": "Sprache",
-    "applyBtn": "Unit auswählen",
-    "unitSelectionTitle": "Unitauswahl",
+    "applyBtn": "Profil anwenden",
+    "unitSelectionTitle": "Profil auf Unit anwenden",
     "unitSelectionDropdownLabel": "Units",
-    "unitSelectionApplyBtn": "Profil anwenden",
-    "unitSelectionHint": "Bitte wählen Sie die Unit aus, auf die das Profil angewendet werden soll.",
+    "unitSelectionApplyBtn": "Anwenden",
+    "unitSelectionCreateNewHint": "Erstellen Sie ein neue Unit. (Das gewählte Profil wird automatisch auf die neue Unit angewendet.)",
+    "unitSelectionCreateName": "Name",
+    "unitSelectionCreateDesc": "Beschreibung",
+    "unitSelectionCreateDomains": "Domänen auswählen",
+    "unitSelectionHint": "Oder wählen Sie eine bestehende Unit aus, auf die das gewählte Profil anwenden wollen.",
     "messageSuccess": "Profil erfolgreich angewendet",
-    "messageError": "Profil konnte nicht angewendet werden"
+    "messageError": "Profil konnte nicht angewendet werden",
+    "messageUnitWithProfileSuccess": "Profile wurde auf neue Unit angewendet.",
+    "messageUnitWithProfileError": "Profil konnte nicht auf neue Unit angewendet werden."
   }
 }
 
