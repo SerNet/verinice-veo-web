@@ -24,7 +24,7 @@
     :class="_classes"
     :data-component-name="componentName"
     density="compact"
-    :target="openInNewtab ? '_blank' : ''"
+    :target="openInNewtab ? '_blank' : undefined"
     @click.stop="onClick"
   >
     <template

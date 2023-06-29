@@ -1,6 +1,6 @@
 title: Das Dashboard
 description: Beschreibung des Dashboard
-route: /unit-:unit/domains/domain-:domain
+route: /:unit()/domains/:domain()
 exact: true
 lang: de
 steps:
@@ -30,11 +30,9 @@ steps:
     intro: Ein neuer Datenschutzvorfall, der eine fristgerechte Reaktion erfordert, wird Ihnen im Bereich Incidents rot dargestellt.<br>
   - title: 'Documents'
     element: '[data-component-name=domain-dashboard-document-widget]'
-    intro: Oder steht ein Vertrag zur Prüfung an, so finden Sie diesen blau im Balkendiagramm im Bereich Dokumente.
+    intro: Steht ein Vertrag zur Prüfung an, so finden Sie diesen blau im Balkendiagramm im Bereich Dokumente.
   - title: 'Scenarios'
     element: '[data-component-name=domain-dashboard-scenario-widget]'
     intro: Navigieren Sie vom Dashboard direkt zu den gelben Gefährdungen, die weiter betrachtet werden müssen.
   - title: 'Geschafft'
-# todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
-#    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.
     intro: Weitere Informationen finden Sie auch in der Online Dokumentation.

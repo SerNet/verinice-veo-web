@@ -1,6 +1,6 @@
 title: The object view
 description: Description of the object view
-route: /unit-:unit/domains/domain-:domain/objects/:object?*
+route: /:unit()/domains/:domain()/:objectType()/:subType()/:object()
 lang: en
 steps:
   - title: 'Object view'
@@ -73,6 +73,4 @@ steps:
     element: '[data-component-name=object-form-messages-tab]'
     intro: In the Validation section, you will see errors or warnings about the content entered in the form.
   - title: 'Done'
-# todo4sernet: Replace hyperlink to online documentation if documentation created.
-# intro: More information can also be found in the <a href="/docs">online documentation</a>.
     intro: Further information can also be found in the online documentation.

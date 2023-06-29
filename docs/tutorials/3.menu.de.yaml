@@ -1,6 +1,6 @@
 title: Das Menü
 description: Beschreibung des Menüs
-route: /unit-:unit
+route: /:unit()/domains/:domain()
 lang: de
 steps:
   - title: 'Das Menü'
@@ -12,32 +12,30 @@ steps:
   - title: 'Domain Selector'
     element: '[data-component-name=domain-select]'
     intro: Mit dem Domain Selector wählen Sie eine der zur Verfügung stehenden Domänen aus.
-  #- title: 'Unitauswahl'
-  #  element: '[data-component-name=unit-select-nav-item]'
-  #  intro: Wählen Sie eine der zur Verfügung stehenden Units aus.
+  - title: 'Unitauswahl'
+    element: '[data-component-name=unit-selection-nav-item]'
+    intro: Wählen Sie eine der zur Verfügung stehenden Units aus.
+  - title: 'Profile'
+    element: '[data-component-name=profiles-nav-item]'
+    intro: Wenden Sie Profile mit Beispieldaten auf bestehende Units an.
   - title: 'Dashboard'
     element: '[data-component-name=domain-dashboard-nav-item]'
     intro: Auf dem Dashboard sehen Sie auf einen Blick alle Objekte je Subtyp und Status (Lebenszyklus) und können direkt zu diesen navigieren.
   - title: 'Objekte'
     element: '[data-component-name=objects-nav-item]'
-    intro: Im Bereich Objekte navigieren Sie direkt zu den Übersichtsseiten der Objekttypen <i>Scopes, <i>Prozesse</i>, <i>Assets</i>, <i>Personen</i>, <i>Incidents</i>, <i>Dokumente</i>, <i>Szenarien</i> und <i>Controls</i>.
+    intro: Im Bereich Objekte navigieren Sie direkt zu den Übersichtsseiten der Objekttypen <i>Scopes</i>, <i>Prozesse</i>, <i>Assets</i>, <i>Personen</i>, <i>Incidents</i>, <i>Dokumente</i>, <i>Szenarien</i> und <i>Controls</i>.
   - title: 'Kataloge'
     element: '[data-component-name=catalogs-nav-item]'
-    intro: Unter Kataloge können Sie <i>TOM</i> oder <i>Gefährdungen</i> aus einem der verfügbaren Katalogen anwenden.
+    intro: Unter Kataloge können Sie <i>TOM</i> oder <i>Gefährdungen</i> aus einem der verfügbaren Kataloge anwenden.
   - title: 'Reports'
     element: '[data-component-name=reports-nav-item]'
-    intro: Um einen Report auszugeben wählen Sie im Bereich Reports eine der verfügbaren Reportvorlagen aus.
+    intro: Um einen Report auszugeben, wählen Sie im Bereich Reports eine der verfügbaren Reportvorlagen aus.
   - title: 'Risiken'
     element: '[data-component-name=risks-nav-item]'
     intro: Im Bereich Risiken können Sie eine der verfügbaren Risikodefinitionen einsehen.
 # todo4sernet: Editoren - nur bei Content Creator Account!
-  - title: 'Demo-Unit'
-    element: '[data-component-name=demo-unit-button]'
-    intro: Die Demo-Unit stellt Ihnen alle Funktionen und Inhalte zur Verfügung, um veo ausgiebig u testen.
   - title: 'Menü verstecken'
     element: '[data-component-name=toggle-navigation]'
     intro: Über Menü verstecken können Sie die Navigation ein- bzw. ausklappen.
   - title: 'Geschafft'
-# todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
-#    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.
     intro: Weitere Informationen finden Sie auch in der Online Dokumentation.
