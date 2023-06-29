@@ -29,7 +29,7 @@
       />
     </template>
     <template #default>
-      {{ t(rule?.effect === 'SHOW' ? 'showRule' : 'hiddenRule') }}
+      {{ t(rule?.effect === 'SHOW' ? 'showRule' : 'hideRule') }}
     </template>
   </v-tooltip>
 </template>
