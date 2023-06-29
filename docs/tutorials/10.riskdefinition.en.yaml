@@ -1,11 +1,11 @@
 title: The risk definitions
 description: The description of the risk definitions
-route: /unit-:units/domains/domain-:domain/risks/:risk
+route: /:unit()/domains/:domain()/risks/:matrix()
 lang: en
 steps:
   - title: 'Risk definitions'
     element: '[data-component-name=risk-page]'
-    intro: In the section 'Risk definitions' the available risk definitions can be viewed.
+    intro: In the section Risk definitions the available risk definitions can be viewed.
   - title: 'Risk definition DSRA'
     element: '[data-component-name=risk-definition-DSRA]'
     intro: The risk definition for the Data Protection Risk Analysis (DSRA) is currently available.
@@ -16,6 +16,4 @@ steps:
     element: '[data-component-name=risk-matrix-wrapper] .veo-card'
     intro: The risk matrix represents the assignment of the combination of probability of occurrence and potential impact to the risk categories.
   - title: 'Done'
-# todo4sernet: Replace hyperlink to online documentation if documentation created.
-# intro: Further information can also be found in the <a href="/docs">online documentation</a>.
     intro: Further information can also be found in the online documentation.

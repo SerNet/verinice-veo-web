@@ -1,6 +1,6 @@
 title: Die Objektansicht
 description: Beschreibung der Objektansicht
-route: /unit-:unit/domains/domain-:domain/objects/:object?*
+route: /:unit()/domains/:domain()/:objectType()/:subType()/:object()
 lang: de
 steps:
   - title: 'Objektansicht'
@@ -73,6 +73,4 @@ steps:
     element: '[data-component-name=object-form-messages-tab]'
     intro: Im Abschnitt Validierung werden Ihnen Fehler oder Warnungen zu den im Formular eingegebenen Inhalten angezeigt.
   - title: 'Geschafft'
-# todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
-#    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.
     intro: Weitere Informationen finden Sie auch in der Online Dokumentation.

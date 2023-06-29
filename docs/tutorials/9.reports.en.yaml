@@ -1,6 +1,6 @@
 title: The reports
 description: Description of the reports
-route: /unit-:unit/domains/domain-:domain/reports/:reports
+route: /:unit()/domains/:domain()/reports/:report()
 lang: en
 steps:
   - title: 'Reports'
@@ -8,7 +8,7 @@ steps:
     intro: In this section you create the desired report after selecting a report template.
   - title: 'Name of the report template'
     element: '[data-component-name=report-page] h1'
-    intro: In the upper area you will find the name of the respective report template...
+    intro: In the upper area you will find the name of the respective report template ...
   - title: 'Description of the report template'
     element: '[data-component-name=report-description]'
     intro: ... and a description of the contents.
@@ -25,6 +25,4 @@ steps:
     element: '[data-component-name=generate-report-button]'
     intro: Generate the report for output as a PDF.
   - title: 'Done'
-# todo4sernet: Replace hyperlink to online documentation if documentation created.
-# intro: Further information can also be found in the <a href="/docs">online documentation</a>.
     intro: Further information can also be found in the online documentation.

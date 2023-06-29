@@ -64,7 +64,9 @@
       </div>-->
       <div>
         <div class="text-h4 mt-2">
-          {{ t('dpia') }}
+          <span data-component-name="risk-definition-DSRA">
+            {{ t('dpia') }}
+          </span>
         </div>
         <nuxt-page />
       </div>

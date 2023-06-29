@@ -17,9 +17,9 @@
  */
 import { Ref, WatchStopHandle } from 'vue';
 import introJs, { Hint, IntroJs } from 'intro.js';
-import pathToRegexp from 'path-to-regexp';
 import { ParsedContent } from '@nuxt/content/dist/runtime/types';
 import { useIsFetching } from '@tanstack/vue-query';
+import { last } from 'lodash';
 
 interface ITutorialDocument extends introJs.Options {
   title?: string;
@@ -113,6 +113,13 @@ export function createIntro() {
           // Skip step if going forward, else go back two steps (No idea why there is a +1 offset. step.value, newValue and _instance.currentStep() all have the same value)
           _instance.goToStep(newValue + (newValue > oldValue ? 2 : 0));
         }
+
+        // For some reason intro.js does not always scroll to the element, so we do it manually to always have then element on screen
+        document.querySelector(currentStep.element as string)?.scrollIntoView({
+          behavior: 'auto',
+          block: 'center',
+          inline: 'center'
+        });
       });
 
       _watchStepsVisible = watch(
@@ -204,7 +211,8 @@ export function createIntro() {
               tooltipClass: 'vue-introjs-tooltip',
               showBullets: false,
               showStepNumbers: true,
-              ...o
+              ...o,
+              scrollToElement: false
             });
 
             if (stepsVisible.value && tutorialReady) {
@@ -349,14 +357,6 @@ export function useTutorials() {
     docs.value = await queryContent().where({ _extension: 'yaml', language: { $in: [i18n.locale.value, undefined] } }).find();
   };
 
-  const _tutorials = computed(() => (docs.value || []).map((doc) => {
-    const regex = pathToRegex(doc.route, doc.exact);
-    return {
-      ...doc,
-      match: (path: string) => (regex ? regex.test(path) : true)
-    };
-  }));
-
   watch(
     () => i18n.locale.value,
     async () => {
@@ -364,10 +364,12 @@ export function useTutorials() {
     }, { immediate: true, deep: true }
   );
 
-  // Ignore hash part in current route url
-  const currentRouteHref = computed(() => route.fullPath.replace(/#.*$/, ''));
   // Make sure tutorials is always present
-  const tutorials = computed(() => _tutorials.value?.map((tutorial) => ({ ...tutorial, applicable: tutorial.match(currentRouteHref.value) })) || []);
+  const tutorials = computed(() => (docs.value || [])?.map((tutorial) => {
+    // We always match the last entry as this is the most specific one. The array would contain two entries if for example a page containing <nuxt-page /> gets matched (for example /pages/[unit]/domains/[domain]/risks.vue)
+    const routeToMatch = last(route.matched)?.path || '';
+    return { ...tutorial, applicable: tutorial.exact ? routeToMatch === tutorial.route : routeToMatch.startsWith(tutorial.route) };
+  }) || []);
 
   type Tutorial = typeof tutorials.value extends Array<infer U> ? U : never;
 
@@ -406,16 +408,4 @@ export function useTutorials() {
      */
     hasTutorials
   };
-}
-
-/**
- * Vue uses path-to-regexp 1.7.0 (wildcard asterisk support)
- * @see https://router.vuejs.org/guide/essentials/dynamic-matching.html#advanced-matching-patterns
- */
-function pathToRegex(route?: string, exact = false) {
-  try {
-    return route && pathToRegexp(route, { end: exact });
-  } catch (e) {
-    throw new Error(`${e} while parsing route: ${route}`);
-  }
 }

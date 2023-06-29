@@ -4,13 +4,11 @@ route: /
 exact: true
 lang: en
 steps:
+  - title: 'Available units'
+    element: '[data-component-name=unit-selection-nav-item]'
+    intro: Navigate to the <b>Unit selection</b> page to get an overview of all available units.
   - title: 'The unit selection'
     element: '[data-component-name=unit-selection-page]'
-    intro: On the unit selection page, select one of the available units for further processing.
-  - title: 'Available units'
-    element: '[data-component-name=unit-selection-available-units]'
-    intro: Select the desired unit.
+    intro: On the <b>Unit selection</b> page, select one of the available units for further processing.
   - title: 'Done'
-# todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
-# intro: Further information can also be found in the <a href="/docs">online documentation</a>.
     intro: Further information can also be found in the online documentation.
