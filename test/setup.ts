@@ -26,7 +26,6 @@ export const vuetify = createVuetify({
 });
 
 try {
-  // For .nuxt.test files reuse the nuxt's i18n instance
   const nuxtApp = useNuxtApp();
 
   config.global.plugins.push({
@@ -36,6 +35,4 @@ try {
       await i18n.install(app, ...options);
     }
   });
-} catch {
-  // For .test files we don't make i18n available
-}
+} catch { /* empty */ }
