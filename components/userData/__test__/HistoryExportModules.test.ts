@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// @vitest-environment node
 import { it, describe, expect } from 'vitest';
 
 // Functions + test data
