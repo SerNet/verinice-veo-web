@@ -26,7 +26,7 @@
     :class="{ 'veo-pseudo-hover': dismissOnClick, 'cursor-pointer': dismissOnClick }"
     :icon="alertIcon"
     variant="outlined"
-    style="border-radius: 12px"
+    style="border-radius: 8px"
     @click="onContentClick"
   >
     <v-row
@@ -38,13 +38,14 @@
         class="d-flex justify-center flex-column"
       >
         <h3
-          class="text-h3"
+          class="text-h3 mb-6"
+          style="font-variant: small-caps;"
           v-text="title"
         />
         <slot />
         <p
           v-if="text"
-          class="mb-0 text-body-1"
+          class="mb-0 text-body-2"
           v-text="text"
         />
         <p
@@ -54,18 +55,22 @@
           {{ t('clickToDismiss') }}
         </p>
       </v-col>
-      <v-col cols="auto">
+
+      <v-col class="d-flex justify-end">
         <slot name="secondary-buttons" />
+
         <v-btn
           v-for="(button, index) in localButtons"
           :key="index"
-          variant="text"
+          class="mt-4"
+          variant="outlined"
           @click="button.onClick"
         >
           {{ button.text }}
         </v-btn>
       </v-col>
     </v-row>
+
     <v-progress-linear
       v-if="timeout"
       class="veo-alert-timeout-bar"

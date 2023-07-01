@@ -18,91 +18,152 @@
 <template>
   <v-layout>
     <!-- English version -->
-    <BasePage
-      v-if="locale === 'en'"
-      title="Security Policy"
-    >
-      <template #header>
-        <v-icon :icon="mdiClock" />
-        Expiration date: {{ d(config.public.securityPolicyInvalidationDate) }}
-      </template>
+    <BasePage v-if="locale === 'en'">
+      <div class="d-flex justify-center">
+        <BaseCard
+          class="my-12"
+          style="width: 35%; max-width: 720px; min-width: 480px;"
+        >
+          <v-card-title>
+            <span class="mx-2">Security Policy</span>
 
-      <BaseCard class="my-4">
-        <v-card-title>Searching for Vulnerabilities</v-card-title>
+            <div
+              class="mx-8 d-flex"
+              style="height: 75px; width: 300px;"
+            >
+              <LayoutAppLogoDesktop />
+            </div>
+          </v-card-title>
 
-        <v-card-text>
-          We explicitly allow ethical hackers to test our application, but only under these terms:
-          <br><br>
-          - Do not use off-the-shelf scanners, try to avoid useless traffic.<br>
-          - Set a sensible rate limiting (e.g. 600/min)<br>
-          - Do not access customer data, use your own accounts where possible.<br>
-          - No phishing, no DDoS, no post-exploitation...
-        </v-card-text>
-      </BaseCard>
+          <v-card-subtitle class="mt-8">
+            <v-row class="">
+              <v-col class="mx-4 text-h4">
+                <v-icon :icon="mdiClock" />
+                Expiration date: {{ d(config.public.securityPolicyInvalidationDate) }}
+              </v-col>
+            </v-row>
+          </v-card-subtitle>
 
-      <BaseCard class="my-4">
-        <v-card-title>Scope</v-card-title>
-        <v-card-text>
-          To be clear, you're only allowed to test
-          <strong>veo-web.verinice.com</strong>,
-          <strong>api.verinice.com</strong>,
-          <strong>auth.verinice.com</strong>,
-          <strong>account.verinice.com</strong>
-          and nothing else.
-          <br><br>
+          <v-col class="d-flex">
+            <BaseCard
+              class="mt-8"
+              :border="false"
+            >
+              <v-card-title class="small-caps">
+                Searching for Vulnerabilities
+              </v-card-title>
+      
+              <v-card-text class="mt-6 text-justify">
+                <p>We explicitly allow ethical hackers to test our application, but only under the following terms:</p>
+                <br>
+    
+                <ul class="mx-4">
+                  <li>Do not use off-the-shelf scanners, try to avoid useless traffic</li>
+                  <li>Set a sensible rate limit (e.g. 600/min)</li>
+                  <li>Do not access customer data; use your own accounts where possible</li>
+                  <li>No phishing, no DDoS, no post-exploitation ...</li>
+                </ul>
+              </v-card-text>
+            </BaseCard>
+          </v-col>
 
-          And of course you can use the open source code in our and other repositories:<br><br>
-          <a
-            v-for="(link, key, index) in links"
-            :key="index"
-            :href="link"
-            target="_blank"
-          >SerNet/verinice-veo-{{ key }}<br>
-          </a>
-        </v-card-text>
-      </BaseCard>
+          <v-col class="d-flex">
+            <BaseCard :border="false">
+              <v-card-title class="small-caps">
+                Scope
+              </v-card-title>
+  
+              <v-card-text class="mt-6 text-justify">
+                <p>
+                  To be clear, you're only allowed to test
+                  <strong>veo-web.verinice.com</strong>,
+                  <strong>api.verinice.com</strong>,
+                  <strong>auth.verinice.com</strong>,
+                  <strong>account.verinice.com</strong>
+                  and nothing else.
+                </p>
+                <br>
+      
+                <p>And of course you can use the open source code in our and other repositories:</p>
+                <br>
 
-      <BaseCard class="my-4">
-        <v-card-title>Reporting a Vulnerability</v-card-title>
-        <v-card-text>
-          Please e-mail to security@verinice.com if you believe you have found a security issue in verinice.veo.
-          <br><br>
-          In your bug report, please try to cover the following info:
-          <br><br>
-          - Proof of Concept: exact steps to reproduce the bug<br>
-          - How did you discover the vulnerability?<br>
-          - Your estimation of impact<br>
-          - Suggestions for a fix
-          <br><br>
+                <ul class="mx-4">
+                  <li
+                    v-for="(link, key, index) in links"
+                    :key="index"
+                  >
+                    <a
+                      :href="link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >SerNet/verinice-veo-{{ key }}
+                    </a>
+                  </li>
+                </ul>
+              </v-card-text>
+            </BaseCard>
+          </v-col>
 
-          When receiving a bug report, we will look at it internally before answering,
-          so expect some delay until you get an answer.
-          Once we confirmed and talked about the vulnerability, we will contact you.
-        </v-card-text>
-      </BaseCard>
-
-      <BaseCard class="my-4">
-        <v-card-title>Responsible Disclosure</v-card-title>
-        <v-card-text>
-          The bug stays yours, but please give us enough time to fix it before disclosing it.
-          We may need up to 120 days to fix the vulnerability you reported.
-          Once we've published a fix for the vulnerability and told you we're done from our end,
-          you can disclose the bug.
-        </v-card-text>
-        <v-list>
-          <v-list-item>
-            <template #prepend>
-              <v-icon :icon="mdiEmail" />
-            </template>
-            <a
-              :href="mail"
-            >Contact
-            </a>
-            &nbsp;
-            ( Preferred languages: DE, EN )
-          </v-list-item>
-        </v-list>
-      </BaseCard>
+          <v-col class="d-flex">
+            <BaseCard :border="false">
+              <v-card-title class="small-caps">
+                Reporting a Vulnerability
+              </v-card-title>
+    
+              <v-card-text class="mt-6 text-justify">
+                <p>Please e-mail to <strong>security@verinice.com</strong> if you believe you have found a security issue in verinice.veo.</p>
+                <br>
+    
+                <p>In your bug report, please try to cover the following info:</p>
+                <br>
+    
+                <ul class="mx-4">
+                  <li>Proof of Concept: exact steps to reproduce the bug</li>
+                  <li>How did you discover the vulnerability?</li>
+                  <li>Your estimation of impact</li>
+                  <li>Suggestions for a fix</li>
+                </ul>
+                <br>
+      
+                <p class="text-justify">
+                  When receiving a bug report, we will look at it internally before answering,
+                  so expect some delay until you get an answer.
+                  Once we confirmed and talked about the vulnerability, we will contact you.
+                </p>
+              </v-card-text>
+            </BaseCard>
+          </v-col>
+    
+          <v-col class="d-flex">
+            <BaseCard :border="false">
+              <v-card-title class="small-caps">
+                Responsible Disclosure
+              </v-card-title>
+    
+              <v-card-text class="mt-6 text-justify">
+                <p>
+                  The bug stays yours, but please give us enough time to fix it before disclosing it.
+                  We may need up to 120 days to fix the vulnerability you reported.
+                </p>
+                <p class="mt-4">
+                  Once we've published a fix for the vulnerability and told you we're done from our end,
+                  you can disclose the bug.
+                </p>
+              </v-card-text>
+    
+              <v-list class="d-flex align-end">
+                <v-list-item>
+                  <template #prepend>
+                    <v-icon :icon="mdiEmail" />
+                    <a :href="mail">Contact</a>&nbsp;
+                    ( Preferred languages: DE, EN )
+                  </template>
+                </v-list-item>
+              </v-list>
+            </BaseCard>
+          </v-col>
+        </BaseCard>  
+      </div>
     </BasePage>
 
     <!-- German version -->
@@ -115,83 +176,126 @@
         Gültig bis: {{ d(config.public.securityPolicyInvalidationDate) }}
       </template>
 
-      <BaseCard class="my-4">
-        <v-card-title>Suche nach Schwachstellen</v-card-title>
+      <v-row class="d-flex justify-center">
+        <v-col class="d-flex">
+          <BaseCard class="mt-8">
+            <v-card-title class="small-caps">
+              Suche nach Schwachstellen
+            </v-card-title>
+    
+            <v-card-text class="mt-6 text-justify">
+              <p>Wir erlauben ethischen Hackern ausdrücklich unsere Anwendung zu testen, aber nur unter den folgenden Bedingungen:</p>
+              <br>
 
-        <v-card-text>
-          Wir erlauben ethischen Hackern ausdrücklich unsere Anwendung zu testen, aber nur unter den folgenden Bedingungen:
-          <br><br>
-          - Verwenden Sie keine Scanner von der Stange und versuchen Sie, nutzlosen Datenverkehr zu vermeiden.<br>
-          - Setzen Sie ein vernünftiges Rate-Limit (z.B. 600/min)<br>
-          - Greifen Sie nicht auf Kundendaten zu und verwenden Sie nach Möglichkeit Ihre eigenen Konten.<br>
-          - Kein Phishing, kein DDoS, keine Post-Exploitation...
-        </v-card-text>
-      </BaseCard>
+              <ul class="mx-4">
+                <li>Verwenden Sie keine Scanner von der Stange und versuchen Sie, nutzlosen Datenverkehr zu vermeiden</li>
+                <li>Setzen Sie ein vernünftiges Rate-Limit</li>
+                <li>Greifen Sie nicht auf Kundendaten zu und verwenden Sie nach Möglichkeit Ihre eigenen Konten</li>
+                <li>Kein Phishing, kein DDoS, keine Post-Exploitation ...</li>
+              </ul>
+            </v-card-text>
+          </BaseCard>
+        </v-col>
 
-      <BaseCard class="my-4">
-        <v-card-title>Geltungsbereich</v-card-title>
-        <v-card-text>
-          Zur Verdeutlichung: Sie dürfen nur
-          <strong>veo-web.verinice.com</strong>,
-          <strong>api.verinice.com</strong>,
-          <strong>auth.verinice.com</strong>,
-          <strong>account.verinice.com</strong>
-          testen und nichts anderes.
-          <br><br>
+        <v-col class="d-flex">
+          <BaseCard class="mt-8">
+            <v-card-title class="small-caps">
+              Geltungsbereich
+            </v-card-title>
+ 
+            <v-card-text class="mt-6 text-justify">
+              <p>
+                Zur Verdeutlichung: Sie dürfen nur
+                <strong>veo-web.verinice.com</strong>,
+                <strong>api.verinice.com</strong>,
+                <strong>auth.verinice.com</strong>,
+                <strong>account.verinice.com</strong>
+                testen und nichts anderes.
+              </p>
+              <br>
+    
+              <p>Und natürlich können Sie den Open-Source-Code in unseren und anderen Repositories verwenden:</p>
+              <br>
 
-          Und natürlich können Sie den Open-Source-Code in unseren und anderen Repositories verwenden:<br><br>
-          <a
-            v-for="(link, key, index) in links"
-            :key="index"
-            :href="link"
-            target="_blank"
-          >SerNet/verinice-veo-{{ key }}<br>
-          </a>
-        </v-card-text>
-      </BaseCard>
+              <ul class="mx-4">
+                <li
+                  v-for="(link, key, index) in links"
+                  :key="index"
+                >
+                  <a
+                    :href="link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >SerNet/verinice-veo-{{ key }}
+                  </a>
+                </li>
+              </ul>
+            </v-card-text>
+          </BaseCard>
+        </v-col>
 
-      <BaseCard class="my-4">
-        <v-card-title>Meldung einer Schwachstelle</v-card-title>
-        <v-card-text>
-          Bitte senden Sie eine E-Mail an <em>security@verinice.com</em>, wenn Sie glauben,
-          dass Sie ein Sicherheitsproblem in verinice.veo gefunden haben.
-          <br><br>
-          Versuchen Sie bitte in Ihrem Fehlerbericht die folgenden Informationen anzugeben:
-          <br><br>
-          - Proof of Concept: genaue Schritte zur Reproduktion des Fehlers<br>
-          - Wie haben Sie die Sicherheitslücke entdeckt?<br>
-          - Ihre Schätzung der Auswirkungen<br>
-          - Vorschläge für eine Behebung
-          <br><br>
+        <v-col class="d-flex">
+          <BaseCard class="mt-8">
+            <v-card-title class="small-caps">
+              Meldung einer Schwachstelle
+            </v-card-title>
 
-          Wenn wir einen Fehlerbericht erhalten, werden wir ihn intern prüfen, bevor wir ihn beantworten;
-          rechnen Sie also mit einer gewissen Verzögerung, bis Sie eine Antwort erhalten.
-          Sobald wir die Schwachstelle bestätigt und besprochen haben, werden wir Sie kontaktieren.
-        </v-card-text>
-      </BaseCard>
+            <v-card-text class="mt-6 text-justify">
+              <p>
+                Bitte senden Sie eine E-Mail an <strong>security@verinice.com</strong>, wenn Sie glauben,
+                dass Sie ein Sicherheitsproblem in verinice.veo gefunden haben.
+              </p>
+              <br>
 
-      <BaseCard class="my-4">
-        <v-card-title>Verantwortungsvolle Offenlegung</v-card-title>
-        <v-card-text>
-          Der Fehler gehört Ihnen, aber bitte geben Sie uns genügend Zeit ihn zu beheben, bevor Sie ihn veröffentlichen.
-          Wir können bis zu 120 Tage brauchen, um die von Ihnen gemeldete Schwachstelle zu schließen.
-          Sobald wir eine Lösung für die Sicherheitslücke veröffentlicht und Ihnen mitgeteilt haben,
-          dass wir damit fertig sind, können Sie den Fehler veröffentlichen.
-        </v-card-text>
-        <v-list>
-          <v-list-item>
-            <template #prepend>
-              <v-icon :icon="mdiEmail" />
-            </template>
-            <a
-              :href="mail"
-            >Kontakt
-            </a>
-            &nbsp;
-            ( Bevorzugte Sprachen: DE, EN )
-          </v-list-item>
-        </v-list>
-      </BaseCard>
+              <p>Versuchen Sie bitte in Ihrem Fehlerbericht die folgenden Informationen anzugeben:</p>
+              <br>
+
+              <ul class="mx-4">
+                <li>Proof of Concept: genaue Schritte zur Reproduktion des Fehlers</li>
+                <li>Wie haben Sie die Sicherheitslücke entdeckt?</li>
+                <li>Ihre Abschätzung der Auswirkungen</li>
+                <li>Vorschläge für eine Behebung</li>
+              </ul>
+              <br>
+    
+              <p class="text-justify">
+                Wenn wir einen Fehlerbericht erhalten, werden wir ihn intern prüfen, bevor wir ihn beantworten;
+                rechnen Sie also mit einer gewissen Verzögerung, bis Sie eine Antwort erhalten.
+                Sobald wir die Schwachstelle bestätigt und besprochen haben, werden wir Sie kontaktieren.
+              </p>
+            </v-card-text>
+          </BaseCard>
+        </v-col>
+
+        <v-col class="d-flex">
+          <BaseCard class="mt-8">
+            <v-card-title class="small-caps">
+              Verantwortungsvolle Offenlegung
+            </v-card-title>
+
+            <v-card-text class="mt-6 text-justify">
+              <p>
+                Der Fehler gehört Ihnen, aber bitte geben Sie uns genügend Zeit ihn zu beheben, bevor Sie ihn veröffentlichen.
+                Wir können bis zu 120 Tage brauchen, um die von Ihnen gemeldete Schwachstelle zu schließen.
+              </p>
+              <p class="mt-4">
+                Sobald wir eine Lösung für die Sicherheitslücke veröffentlicht und Ihnen mitgeteilt haben,
+                dass wir damit fertig sind, können Sie den Fehler veröffentlichen.
+              </p>
+            </v-card-text>
+
+            <v-list class="d-flex align-end">
+              <v-list-item>
+                <template #prepend>
+                  <v-icon :icon="mdiEmail" />
+                  <a :href="mail">Kontakt</a>&nbsp;
+                  ( Bevorzugte Sprachen: DE, EN )
+                </template>
+              </v-list-item>
+            </v-list>
+          </BaseCard>
+        </v-col>
+      </v-row>
     </BasePage>
   </v-layout>
 </template>
@@ -213,3 +317,9 @@ const links = {
   forms: 'https://github.com/SerNet/verinice-veo-forms'
 };
 </script>
+
+<style lang="scss" scoped>
+.small-caps {
+  font-variant: small-caps;
+}
+</style>
