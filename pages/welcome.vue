@@ -83,8 +83,9 @@
             >
               <template #link>
                 <nuxt-link
-                  to="/docs"
+                  rel="noopener noreferrer"
                   target="_blank"
+                  to="/docs"
                 >
                   <strong>{{ t('documentation') }}</strong>
                 </nuxt-link>
@@ -166,6 +167,7 @@
             >
               <a
                 :href="links.youtube"
+                rel="noopener noreferrer"
                 target="_blank"
               >
                 <strong>{{ t('channel') }}</strong>
@@ -188,6 +190,7 @@
             >
               <a
                 :href="links.webinar"
+                rel="noopener noreferrer"
                 target="_blank"
               >
                 <strong>{{ t('webinar') }}</strong>
@@ -210,6 +213,7 @@
             >
               <a
                 :href="links.forum"
+                rel="noopener noreferrer"
                 target="_blank"
               >
                 <strong>{{ t('forum') }}</strong>

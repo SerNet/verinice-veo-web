@@ -22,7 +22,7 @@
 import { VCard } from 'vuetify/components';
 
 const props = withDefaults(defineProps<{
-  inverted: boolean,
+  inverted?: boolean,
   border?: boolean
 }>(), {
   inverted: false,
