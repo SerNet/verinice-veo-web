@@ -31,6 +31,7 @@
         v-if="domain"
         class="mt-n2 text-accent text-body-1"
       >
+        <span>{{ domain.description || t('noDescription') }}</span>
         <span>{{ unit?.description || '' }}</span>
       </div>
       <v-skeleton-loader
@@ -167,7 +168,6 @@ export default defineComponent({
       });
     };
 
-    // page title
     const fetchUnitQueryParams = computed(() => ({ id: route.params.unit as string }));
     const fetchUnitQueryEnabled = computed(() => !!route.params.unit);
 
@@ -176,7 +176,6 @@ export default defineComponent({
     });
 
     const title = computed(() => `${domain.value?.name} > ${unit.value?.name}` || t('domainOverview').toString());
-    // const description = computed(() => unit.value?.description || '');
 
     return {
       chartData,
@@ -199,12 +198,12 @@ export default defineComponent({
   "en": {
     "domainNotFoundText": "The requested domain couldn't be found.",
     "domainOverview": "Domain overview",
-    "noUnitDescription": "No description provided"
+    "noDescription": "No description provided"
   },
   "de": {
     "domainNotFoundText": "Die gewünschte Domain konnte nicht gefunden werden.",
     "domainOverview": "Domänenübersicht",
-    "noUnitDescription": "Keine Beschreibung festgelegt"
+    "noDescription": "Keine Beschreibung festgelegt"
   }
 }
 </i18n>
