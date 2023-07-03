@@ -31,12 +31,12 @@
   >
     <!-- Prepare Data -->
     <template
-      v-if="state.prepare.phase !== PrepPhase.DONE"
+      v-if="state.prepare.phase !== PrepPhase.Done"
       #prepareData
     >
       <div class="d-flex align-center ms-auto mt-4">
         <div
-          v-if="state.prepare.phase === PrepPhase.ZIP || state.prepare.phase === PrepPhase.DOWNLOAD"
+          v-if="state.prepare.phase === PrepPhase.Zip || state.prepare.phase === PrepPhase.Download"
           class="text-subtitle-1  text-primary me-4"
         >
           <span>{{ t(`prepareHistoryPhases.${state.prepare?.phase}`) }}</span>
@@ -48,7 +48,7 @@
         <v-btn
           color="primary"
           variant="outlined"
-          :loading="state.prepare.phase !== PrepPhase.IDLE"
+          :loading="state.prepare.phase !== PrepPhase.Idle"
           @click="prepareData"
         >
           {{ t('btnPrepareDownload') }}
@@ -126,8 +126,8 @@ const { t } = useI18n();
 const state: IHistoryState = reactive({
   zipArchives: [],
   isLoading: [],
-  showAlert: computed(() => state.zipArchives.length === 0 && state.prepare.phase === PrepPhase.DONE),
-  prepare: { phase: PrepPhase.IDLE,  cur: 0, total: 100 },
+  showAlert: computed(() => state.zipArchives.length === 0 && state.prepare.phase === PrepPhase.Done),
+  prepare: { phase: PrepPhase.Idle,  currentPercentage: 0, totalPercentage: 100 },
   showWarnOnLeaveDialog: false,
   resolveWarnOnLeave: undefined
 });
@@ -141,7 +141,7 @@ const progressBar = computed(() =>
 
 // HISTORY Entrypoint
 async function prepareData() {
-  state.prepare.phase = PrepPhase.DOWNLOAD;
+  state.prepare.phase = PrepPhase.Download;
   try {
     const history = await loadHistory({ updateLoadingState, fetchFn: fetchHistoryData, size: 5000 });
     const chunkedHistory = chunkHistory(history);
@@ -153,7 +153,7 @@ async function prepareData() {
     displayErrorMessage( t('errorHeader'), t('errorBody'));
   }
   finally {
-    state.prepare.phase = PrepPhase.DONE;
+    state.prepare.phase = PrepPhase.Done;
   }
 }
 

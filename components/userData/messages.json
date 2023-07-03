@@ -15,9 +15,9 @@
     "errorBody": "Please contact our support team: verinice{'@'}sernet.de.",
     "successHeader": "Download Successfull.",
     "prepareHistoryPhases": {
-      "0": "Downloading your data:",
-      "1": "Downloading your data:",
-      "2": "Creating ZIP Archives"
+      "IDLE":  "Downloading your data:",
+      "DOWNLOAD": "Downloading your data:",
+      "ZIP": "Creating ZIP Archives"
     },
     "alertLeavePageTitle": "Warning: History Download",
     "alertLeavePageCopy": "Do you really want to leave this page and stop downloading history data?"
@@ -40,9 +40,9 @@
     "errorBody": "Bitte kontaktieren Sie unseren Support: verinice{'@'}sernet.de.",
     "successHeader": "Download erfolgreich.",
     "prepareHistoryPhases": {
-      "0": "Daten herunterladen:",
-      "1": "Daten herunterladen:",
-      "2": "ZIP-Archive erstellen:"
+      "IDLE": "Daten herunterladen:",
+      "DOWNLOAD": "Daten herunterladen:",
+      "ZIP": "ZIP-Archive erstellen:"
     },
     "alertLeavePageTitle": "Warnung: History Download",
     "alertLeavePageCopy": "Wollen Sie die Seite wirklich verlassen und den History-Download abbrechen?"

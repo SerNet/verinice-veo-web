@@ -22,10 +22,10 @@ import { format } from 'date-fns';
 
 // Types
 export enum PrepPhase  {
-  IDLE,
-  DOWNLOAD,
-  ZIP,
-  DONE
+  Idle = "IDLE",
+  Download = "DOWNLOAD",
+  Zip = "ZIP",
+  Done = "DONE"
 }
 
 export type HistoryZipArchive = { displayName: string; fileName: string; zip: Blob; };
@@ -132,7 +132,7 @@ async function createZipArchives(
   const archive = await createZipFromHistoryChunk(chunks[_currentChunk]);
   const zipArchives = [..._zipArchives, archive];
 
-  updateLoadingState({ phase: PrepPhase.ZIP, cur: _currentChunk + 1, total: chunks.length });
+  updateLoadingState({ phase: PrepPhase.Zip, currentPercentage: _currentChunk + 1, totalPercentage: chunks.length });
 
   if (chunks.length === _currentChunk + 1) {
     return zipArchives;
