@@ -31,7 +31,8 @@
 
       <BaseAlert
         :model-value="true"
-        :buttons="[{text: 'backup', onClick: () => navigateTo('/user-data')}]"
+        :buttons="[ {text: 'backup', onClick: () => navigateTo('/user-data')} ]"
+        title="Backup"
         :type="VeoAlertType.INFO"
         class="mt-4"
         flat
