@@ -30,6 +30,7 @@ export interface IProfile {
 }
 
 export interface IVeoDomain extends IVeoBaseObject {
+  _self: string;
   name: string;
   abbreviation: string;
   description: string;
