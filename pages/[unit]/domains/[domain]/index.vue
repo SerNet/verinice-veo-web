@@ -17,23 +17,54 @@
 -->
 <template>
   <BasePage
-    :title="title"
     :loading="!domain"
-    padding
+    :title="t('domainOverview')"
     data-component-name="domain-dashboard-page"
+    padding
   >
     <UtilNotFoundError
       v-if="domainNotFound"
       :text="t('domainNotFoundText')"
     />
     <template v-else>
-      <div
+      <v-row
         v-if="domain"
-        class="mt-n2 text-accent text-body-1"
+        class="mt-0"
       >
-        <span>{{ domain.description || t('noDescription') }}</span>
-        <span>{{ unit?.description || '' }}</span>
-      </div>
+        <v-col>
+          <v-btn
+            class="bg-red-lighten-1"
+            style="cursor: default;"
+            variant="flat"
+          >
+            <span>{{ domain?.name || t('domainOverview') }}</span>
+
+            <v-btn
+              class="ml-2 bg-accent"
+              style="cursor: default;"
+              variant="flat"
+            >
+              <span>{{ domain?.description || t('noDescription') }}</span>
+            </v-btn>
+          </v-btn>
+          &nbsp;
+          <v-btn
+            class="bg-red-lighten-1"
+            style="cursor: default;"
+            variant="flat"
+          >
+            <span>{{ unit?.name }}</span>
+            <v-btn
+              class="ml-2 bg-accent"
+              style="cursor: default;"
+              variant="flat"
+            >
+              <span>{{ unit?.description || t('noDescription') }}</span>
+            </v-btn>
+          </v-btn>
+        </v-col>
+      </v-row>
+
       <v-skeleton-loader
         v-else
         class="mt-n2 mb-4 skeleton-subtitle"
@@ -175,15 +206,12 @@ export default defineComponent({
       enabled: fetchUnitQueryEnabled
     });
 
-    const title = computed(() => `${domain.value?.name} > ${unit.value?.name}` || t('domainOverview').toString());
-
     return {
       chartData,
       domain,
       domainNotFound,
       elementStatusCountIsFetching,
       onBarClicked,
-      title,
       unit,
 
       t,
@@ -202,7 +230,7 @@ export default defineComponent({
   },
   "de": {
     "domainNotFoundText": "Die gewünschte Domain konnte nicht gefunden werden.",
-    "domainOverview": "Domänenübersicht",
+    "domainOverview": "Domänen-Übersicht",
     "noDescription": "Keine Beschreibung festgelegt"
   }
 }
