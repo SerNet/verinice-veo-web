@@ -21,7 +21,7 @@
     "messageUnitWithProfileError": "Could not create new unit and apply profile."
   },
   "de": {
-    "hint": "Bitte wählen Sie ein Profil aus. Im nächsten Schritt können Sie dann die Unit auswählen auf die Sie das Profil anwenden möchten.",
+    "hint": "Bitte wählen Sie ein Profil aus. Im nächsten Schritt können Sie dann die Unit auswählen, auf die Sie das Profil anwenden möchten.",
     "thAbbreviation": "Abkürzung",
     "thName": "Profilname",
     "thDescription": "Beschreibung",
@@ -34,7 +34,7 @@
     "unitSelectionCreateName": "Name",
     "unitSelectionCreateDesc": "Beschreibung",
     "unitSelectionCreateDomains": "Domänen auswählen",
-    "unitSelectionHint": "Oder wählen Sie eine bestehende Unit aus, auf die das gewählte Profil anwenden wollen.",
+    "unitSelectionHint": "Oder wählen Sie eine bestehende Unit aus, auf die Sie das gewählte Profil anwenden wollen.",
     "messageSuccess": "Profil erfolgreich angewendet",
     "messageError": "Profil konnte nicht angewendet werden",
     "messageUnitWithProfileSuccess": "Profile wurde auf neue Unit angewendet.",
