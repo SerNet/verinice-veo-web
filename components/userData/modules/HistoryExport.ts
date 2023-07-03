@@ -29,7 +29,7 @@ export enum PrepPhase  {
 }
 
 export type HistoryZipArchive = { displayName: string; fileName: string; zip: Blob; };
-export type UpdateLoadingState  = ({ phase, cur, total }: { phase: PrepPhase, cur: number, total: number } ) => void
+export type UpdateLoadingState  = ({ phase, currentPercentage, totalPercentage }: { phase: PrepPhase, currentPercentage: number, totalPercentage: number } ) => void
 export type HistoryChunk = { name: string, displayName: string, chunk: IVeoObjectHistoryEntry[] }
 
 export type FetchFnParams = { size?: number | undefined; afterId?: string | undefined; }
@@ -49,20 +49,20 @@ interface ILoadHistoryParams {
   size?: number;
   afterId?: undefined | string;
   updateLoadingState?: UpdateLoadingState;
-  cur?: number;
+  currentPercentage?: number;
 }
 
 async function loadHistory({
-  fetchFn, history = [], size = 2500, afterId = undefined, updateLoadingState, cur = 0}: ILoadHistoryParams ):
+  fetchFn, history = [], size = 2500, afterId = undefined, updateLoadingState, currentPercentage = 0}: ILoadHistoryParams ):
   Promise<IVeoObjectHistoryEntryWithId[]> {
   try {
     const fetchedHistory = await fetchFn({ size, afterId });
     const currentHistory = [...history, ...fetchedHistory.items];
     const currentAfterId = currentHistory[currentHistory.length - 1]?.id;
 
-    cur++;
-    const total = fetchedHistory.totalItemCount % size === 0 ? Math.floor(fetchedHistory.totalItemCount/size) : Math.floor(fetchedHistory.totalItemCount/size) + 1;
-    if(updateLoadingState) updateLoadingState({ phase: PrepPhase.DOWNLOAD, cur, total });
+    currentPercentage++;
+    const totalPercentage = fetchedHistory.totalItemCount % size === 0 ? Math.floor(fetchedHistory.totalItemCount/size) : Math.floor(fetchedHistory.totalItemCount/size) + 1;
+    if(updateLoadingState) updateLoadingState({ phase: PrepPhase.Download, currentPercentage, totalPercentage });
 
     if (fetchedHistory.items.length < size) {
       return currentHistory;
@@ -73,7 +73,7 @@ async function loadHistory({
         size,
         afterId: currentAfterId,
         updateLoadingState,
-        cur
+        currentPercentage
       });
     }
   }

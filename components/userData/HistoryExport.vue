@@ -113,7 +113,7 @@ interface IHistoryState {
   zipArchives: HistoryZipArchive[];
   isLoading: boolean[];
   showAlert: boolean;
-  prepare: { phase: PrepPhase, cur: number, total: number };
+  prepare: { phase: PrepPhase, currentPercentage: number, totalPercentage: number };
   warnOnLeave: boolean;
   resolveWarnOnLeave: () => boolean;
 }
@@ -132,12 +132,12 @@ const state: IHistoryState = reactive({
   resolveWarnOnLeave: undefined
 });
 
-function updateLoadingState({ phase, cur, total }: { phase: PrepPhase, cur: number, total: number}) {
-  state.prepare = { phase, cur, total };
+function updateLoadingState({ phase, currentPercentage, totalPercentage }: { phase: PrepPhase, currentPercentage: number, totalPercentage: number}) {
+  state.prepare = { phase, currentPercentage, totalPercentage };
 }
 
 const progressBar = computed(() =>
-  (state?.prepare?.cur && state?.prepare?.total) ? state?.prepare?.cur / state?.prepare?.total * 100 : 0);
+  (state?.prepare?.currentPercentage && state?.prepare?.totalPercentage) ? state?.prepare?.currentPercentage / state?.prepare?.totalPercentage * 100 : 0);
 
 // HISTORY Entrypoint
 async function prepareData() {
