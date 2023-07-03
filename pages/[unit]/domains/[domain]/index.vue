@@ -17,23 +17,54 @@
 -->
 <template>
   <BasePage
-    :title="title"
     :loading="!domain"
-    padding
+    :title="t('domainOverview')"
     data-component-name="domain-dashboard-page"
+    padding
   >
     <UtilNotFoundError
       v-if="domainNotFound"
       :text="t('domainNotFoundText')"
     />
     <template v-else>
-      <div
+      <v-row
         v-if="domain"
-        class="mt-n2 text-accent text-body-1"
+        class="mt-0"
       >
-        <span v-if="domain.description">{{ domain.description }}</span>
-        <i v-else>{{ t('noUnitDescription') }}</i>
-      </div>
+        <v-col>
+          <v-btn
+            class="bg-red-lighten-1"
+            style="cursor: default;"
+            variant="flat"
+          >
+            <span>{{ domain?.name || t('domainOverview') }}</span>
+
+            <v-btn
+              class="ml-2 bg-accent"
+              style="cursor: default;"
+              variant="flat"
+            >
+              <span>{{ domain?.description || t('noDescription') }}</span>
+            </v-btn>
+          </v-btn>
+          &nbsp;
+          <v-btn
+            class="bg-red-lighten-1"
+            style="cursor: default;"
+            variant="flat"
+          >
+            <span>{{ unit?.name }}</span>
+            <v-btn
+              class="ml-2 bg-accent"
+              style="cursor: default;"
+              variant="flat"
+            >
+              <span>{{ unit?.description || t('noDescription') }}</span>
+            </v-btn>
+          </v-btn>
+        </v-col>
+      </v-row>
+
       <v-skeleton-loader
         v-else
         class="mt-n2 mb-4 skeleton-subtitle"
@@ -117,6 +148,7 @@
 <script lang="ts">
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useQuery } from '~~/composables/api/utils/query';
 
 export const ROUTE_NAME = 'unit-domains-domain';
@@ -167,8 +199,12 @@ export default defineComponent({
       });
     };
 
-    // page title
-    const title = computed(() => domain.value?.name || t('domainOverview').toString());
+    const fetchUnitQueryParams = computed(() => ({ id: route.params.unit as string }));
+    const fetchUnitQueryEnabled = computed(() => !!route.params.unit);
+
+    const { data: unit } = useQuery(unitQueryDefinitions.queries.fetch, fetchUnitQueryParams, {
+      enabled: fetchUnitQueryEnabled
+    });
 
     return {
       chartData,
@@ -176,7 +212,7 @@ export default defineComponent({
       domainNotFound,
       elementStatusCountIsFetching,
       onBarClicked,
-      title,
+      unit,
 
       t,
       tGlobal
@@ -190,12 +226,12 @@ export default defineComponent({
   "en": {
     "domainNotFoundText": "The requested domain couldn't be found.",
     "domainOverview": "Domain overview",
-    "noUnitDescription": "No description provided"
+    "noDescription": "No description provided"
   },
   "de": {
     "domainNotFoundText": "Die gewünschte Domain konnte nicht gefunden werden.",
-    "domainOverview": "Domänenübersicht",
-    "noUnitDescription": "Keine Beschreibung festgelegt"
+    "domainOverview": "Domänen-Übersicht",
+    "noDescription": "Keine Beschreibung festgelegt"
   }
 }
 </i18n>
