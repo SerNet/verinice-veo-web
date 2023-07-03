@@ -198,7 +198,7 @@ function confirmPageLeave(isLeaving) {
 
 onBeforeRouteLeave((to, from, next) => {
   // Prompt user if download in progress
-  if(state.prepare.phase === PrepPhase.DOWNLOAD) {
+  if(state.prepare.phase === PrepPhase.Download || PrepPhase.Zip) {
     askForConfirmation().then( isLeaving => {
       next(isLeaving);
     });
