@@ -38,7 +38,7 @@
         class="d-flex justify-center flex-column"
       >
         <h3
-          class="text-h3 mb-6"
+          class="text-h3 mb-3"
           style="font-variant: small-caps;"
           v-text="title"
         />
