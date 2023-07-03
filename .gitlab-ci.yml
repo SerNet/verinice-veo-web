@@ -8,6 +8,13 @@ variables:
   AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS: '--network=host --build-arg CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME --build-arg CI_COMMIT_SHORT_SHA=$CI_COMMIT_SHORT_SHA --build-arg CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP --build-arg CI_JOB_ID=$CI_JOB_ID --build-arg VEO_DEFAULT_API_URL=$VEO_DEFAULT_API_URL --build-arg VEO_FORMS_API_URL=$VEO_FORMS_API_URL --build-arg VEO_HISTORY_API_URL=$VEO_HISTORY_API_URL --build-arg VEO_REPORTING_API_URL=$VEO_REPORTING_API_URL --build-arg VEO_OIDC_URL=$VEO_OIDC_URL --build-arg VEO_OIDC_REALM=$VEO_OIDC_REALM --build-arg VEO_OIDC_CLIENT=$VEO_OIDC_CLIENT --build-arg VEO_DEBUG=true --build-arg BUILDKIT_INLINE_CACHE=1'
   npm_config_cache: '$CI_PROJECT_DIR/.npm'
 
+test:
+  image: node:19
+  stage: test
+  script:
+    - npm -d --legacy-peer-deps ci
+    - npm run test
+
 review:
   environment:
     auto_stop_in: 4 week

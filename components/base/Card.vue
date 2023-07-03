@@ -21,11 +21,12 @@
 <script setup lang="ts">
 import { VCard } from 'vuetify/components';
 
-const props = defineProps({
-  inverted: {
-    type: Boolean,
-    default: false
-  }
+const props = withDefaults(defineProps<{
+  inverted?: boolean,
+  border?: boolean
+}>(), {
+  inverted: false,
+  border: true
 });
 
 const slots = useSlots();
@@ -38,7 +39,7 @@ const render = () => h(
     class: {
       'veo-card': true,
       'veo-card--inverted': props.inverted,
-      'veo-border': true
+      'veo-border': props.border
     },
     flat: true,
     rounded: true

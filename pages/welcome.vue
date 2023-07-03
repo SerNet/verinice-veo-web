@@ -17,87 +17,105 @@
 -->
 <template>
   <BasePage>
-    <div class="d-flex justify-center">      
+    <div class="d-flex justify-center">
       <BaseCard
         class="my-12"
-        style="width: 33%; max-width: 640px; min-width: 400px;"
+        style="width: 35%; max-width: 720px; min-width: 480px;"
       >
         <v-card-title>
-          {{ t('greeting') }}
+          <span class="mx-2">{{ t('greeting') }}</span>
+
           <div
-            class="mx-4 d-flex"
-            style="height: 60px; width: 240px;"
+            class="mx-8 d-flex"
+            style="height: 75px; width: 300px;"
           >
             <LayoutAppLogoDesktop />
-          </div>        
+          </div>
         </v-card-title>
 
-        <br><br>
-        
-        <v-card-subtitle>{{ t('headline') }}</v-card-subtitle>
+        <v-card-subtitle class="mt-8">
+          <v-row class="">
+            <v-col class="mx-4 text-h4">
+              {{ t('headline') }}
+            </v-col>
+
+            <v-col class="pt-0">
+              <v-checkbox
+                v-model="showAtStartup"
+                :label="t('checkboxLabel')"
+              />
+            </v-col>
+          </v-row>
+        </v-card-subtitle>
 
         <v-card-text>
-          {{ t('intro') }}
-        </v-card-text>
+          <v-col class="text-justify">
+            {{ t('intro') }}
+          </v-col>
 
-        <v-divider />
-
-        <v-card-text>
-          <v-icon
-            :icon="mdiInformationOutline"
-            size="x-large"
-            start
-          />
-          <i18n-t
-            keypath="firstSteps.tutorial"
-            tag="span"
-            scope="global"
-          >
-            <strong>{{ t('tutorial') }}</strong>
-          </i18n-t>
-        </v-card-text>
-
-        <v-card-text>
-          <v-icon
-            :icon="mdiHelpCircleOutline"
-            size="x-large"
-            start
-          />
-          <i18n-t
-            keypath="firstSteps.documentation"
-            tag="span"
-            scope="global"
-          >
-            <template #link>
-              <nuxt-link
-                to="/docs"
-                target="_blank"
-              >
-                <strong>{{ t('documentation') }}</strong>
-              </nuxt-link>
-            </template>
-          </i18n-t>
+          <v-col class="mt-4 text-justify">
+            <v-icon
+              :icon="mdiInformationOutline"
+              size="x-large"
+              start
+            />
+            <i18n-t
+              keypath="firstSteps.tutorial"
+              tag="span"
+              scope="global"
+            >
+              <strong>{{ t('tutorial') }}</strong>
+            </i18n-t>
+          </v-col>
         </v-card-text>
 
         <v-card-text>
-          <v-icon
-            :icon="mdiCableData"
-            size="x-large"
-            start
-          />
-          <i18n-t
-            keypath="firstSteps.sampledata"
-            tag="span"
-            scope="global"
-          >
-            <strong>{{ t('sampledata') }}</strong>
-          </i18n-t>
+          <v-col class="text-justify">
+            <v-icon
+              :icon="mdiHelpCircleOutline"
+              size="x-large"
+              start
+            />
+            <i18n-t
+              keypath="firstSteps.documentation"
+              tag="span"
+              scope="global"
+            >
+              <template #link>
+                <nuxt-link
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  to="/docs"
+                >
+                  <strong>{{ t('documentation') }}</strong>
+                </nuxt-link>
+              </template>
+            </i18n-t>
+          </v-col>
+        </v-card-text>
+
+        <v-card-text>
+          <v-col class="text-justify">
+            <v-icon
+              :icon="mdiCableData"
+              size="x-large"
+              start
+            />
+            <i18n-t
+              keypath="firstSteps.sampledata"
+              tag="span"
+              scope="global"
+            >
+              <strong>{{ t('sampledata') }}</strong>
+            </i18n-t>
+          </v-col>
         </v-card-text>
 
         <v-layout
           class="mb-4 justify-center"
         >
           <v-btn
+            v-if="!maxUnitsExceeded"
             color="primary"
             :disabled="maxUnitsExceeded"
             :prepend-icon="mdiCableData"
@@ -108,11 +126,12 @@
             {{ t('sampleDataButtonLabel') }}
           </v-btn>
         </v-layout>
+
         <v-progress-linear
           v-if="isLoading"
           class="my-4"
           color="primary"
-          height="32"
+          height="40"
           indeterminate
           striped
         >
@@ -122,8 +141,9 @@
         <BaseAlert
           v-if="maxUnitsExceeded && !isLoading"
           :model-value="true"
+          :buttons="[{ text: t('goto'), onClick: () => navigateTo('/') }]"
+          :title="t('requestHeadline')"
           :type="VeoAlertType.INFO"
-          :buttons="[{text: t('goto'), onClick: () => navigateTo('/')}]"
           class="ma-4"
           flat
           no-close-button
@@ -134,73 +154,78 @@
         <v-divider />
 
         <v-card-text>
-          <v-icon
-            :icon="mdiYoutubeTv"
-            size="x-large"
-            start
-          />
-          <i18n-t
-            keypath="firstSteps.channel"
-            tag="span"
-            scope="global"
-          >
-            <a
-              :href="links.youtube"
-              target="_blank"
+          <v-col class="text-justify">
+            <v-icon
+              :icon="mdiYoutubeTv"
+              size="x-large"
+              start
+            />
+            <i18n-t
+              keypath="firstSteps.channel"
+              tag="span"
+              scope="global"
             >
-              <strong>{{ t('channel') }}</strong>
-            </a>
-          </i18n-t>
+              <a
+                :href="links.youtube"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <strong>{{ t('channel') }}</strong>
+              </a>
+            </i18n-t>
+          </v-col>
         </v-card-text>
 
         <v-card-text>
-          <v-icon
-            :icon="mdiSchoolOutline"
-            size="x-large"
-            start
-          />
-          <i18n-t
-            keypath="firstSteps.webinar"
-            tag="span"
-            scope="global"
-          >
-            <a
-              :href="links.webinar"
-              target="_blank"
+          <v-col class="text-justify">
+            <v-icon
+              :icon="mdiSchoolOutline"
+              size="x-large"
+              start
+            />
+            <i18n-t
+              keypath="firstSteps.webinar"
+              tag="span"
+              scope="global"
             >
-              <strong>{{ t('webinar') }}</strong>
-            </a>
-          </i18n-t>
+              <a
+                :href="links.webinar"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <strong>{{ t('webinar') }}</strong>
+              </a>
+            </i18n-t>
+          </v-col>
         </v-card-text>
 
         <v-card-text>
-          <v-icon
-            :icon="mdiForumOutline"
-            size="x-large"
-            start
-          />
-          <i18n-t
-            keypath="firstSteps.forum"
-            tag="span"
-            scope="global"
-          >
-            <a
-              :href="links.forum"
-              target="_blank"
+          <v-col class="text-justify">
+            <v-icon
+              :icon="mdiForumOutline"
+              size="x-large"
+              start
+            />
+            <i18n-t
+              keypath="firstSteps.forum"
+              tag="span"
+              scope="global"
             >
-              <strong>{{ t('forum') }}</strong>
-            </a>
-          </i18n-t>
+              <a
+                :href="links.forum"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <strong>{{ t('forum') }}</strong>
+              </a>
+            </i18n-t>
+          </v-col>
         </v-card-text>
 
         <v-divider />
 
         <v-card-text>
-          <v-checkbox
-            v-model="showAtStartup"
-            :label="t('checkboxLabel')"
-          />
-          {{ t('hint') }}
+          <span class="mx-4">{{ t('hint') }}</span>
         </v-card-text>
       </BaseCard>
     </div>
@@ -250,34 +275,41 @@ const links = ref({
 
 const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, true, localStorage, { serializer: StorageSerializers.boolean });
 
+// toggle the cookie value via setter
 const showAtStartup = computed({
   get: () => !firstSetpsCompleted.value,
   set: (newValue: boolean) => firstSetpsCompleted.value = !newValue
 });
 
-// *********************************************************************************
+// fetch all domains and units
+const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains);
 const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
+
+// determine the ratio between the available units and the restrictions set via keyCloak (maxUnits allowed)
 const maxUnitsExceeded = computed(() => (units.value?.length || 0) >= userSettings.value.maxUnits);
 
+// mutations
 const { mutateAsync: create, data: unitPropsPayload } = useMutation(unitQueryDefinitions.mutations.create);
 const { mutateAsync: apply, isLoading } = useMutation(domainQueryDefinitions.mutations.applyProfile);
-
-const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains);
 
 const createUnit = async () => {
   try {
     await create({
-      name: domains.value?.[0].profiles.demoUnit.name,
-      description: domains.value?.[0].profiles.demoUnit.description,
+      // name and description still hardcoded, since atm there is the DS-GVO only
+      // providing a fallback for name and description, if the API call fails for whatever reason
+      name: domains.value?.[0].profiles?.demoUnit?.name || 'Sample Unit',
+      description: domains.value?.[0].profiles?.demoUnit?.description || 'A sample data organization',
       domains: (domains.value || []).map((domain) => createLink('domains', domain.id))
     });
 
+    // get unitId and domainId; needed to form a proper route
     const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: unitPropsPayload.value?.resourceId as string }, queryClient);
     const domainId = getFirstDomainDomaindId(unit);
 
     if (domainId && unit.id) {
+      // apply the profile / sample data to the unit recently created
       await apply({ domainId, unitId: unit.id, profileKey: ['demoUnit'] });
-
+      // link to the dashboard
       router.push({
         name: 'unit-domains-domain',
         params: {
@@ -305,8 +337,8 @@ const createUnit = async () => {
       "headline": "First steps",
       "hint": "You can access this page again at any time via the account button!",
       "intro": "In this section you will find suggestions from the verinice.team to get you started quickly:",
-      "requestForDeletion": "You have reached the maximum amount of units.
-        To enable the sample profile again, you have to delete an existing unit first.",
+      "requestForDeletion": "To enable the sample profile again, you have to delete an existing unit first.",
+      "requestHeadline": "Maximum amount of Units reached",
       "sampledata": "sample data",
       "sampleDataButtonLabel": "Load sample data now",
       "tutorial": "tutorials",
@@ -323,8 +355,8 @@ const createUnit = async () => {
       "headline": "Erste Schritte",
       "hint": "Sie können diese Seite jederzeit über den Account Button erneut aufrufen!",
       "intro": "Im diesem Abschnitt finden Sie Anregungen des verinice.Teams, die Ihnen einen schnellen Einstieg ermöglichen:",
-      "requestForDeletion": "Sie haben die maximale Anzahl an Units erreicht.
-        Um das Anwenden des Demoprofils wieder zu aktivieren, müssen Sie zunächst eine bestehende Unit löschen.",
+      "requestForDeletion": "Um das Anwenden des Demoprofils wieder zu aktivieren, müssen Sie zunächst eine bestehende Unit löschen.",
+      "requestHeadline": "Maximale Anzahl an Units erreicht",
       "sampledata": "Beispieldaten",
       "sampleDataButtonLabel": "Beispieldaten jetzt laden",
       "tutorial": "Tutorials",

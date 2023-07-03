@@ -15,38 +15,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { describe, it, expect } from 'vitest';
-import { mockNuxtImport } from 'nuxt-vitest/utils';
 import { mount } from '@vue/test-utils';
 import { createVuetify } from 'vuetify';
-import { t } from '~~/test/mocks';
 
 // @ts-ignore // TS throws 'cannot find module' error, however this module can be found + used
 import HistoryExport from '../HistoryExport.vue';
 
-// Mock imports
-mockNuxtImport('useI18n', () => {
-  return () => (msg: string) => msg;
-});
-
 // Setup
 const vuetify = createVuetify();
 const plugins = [vuetify];
-const mocks = { t };
 
 describe('HistoryExport.vue', () => {
-  const wrapper = mount(HistoryExport, {
-    global: { plugins, mocks }
-  });
+  it('renders a loader when preparing history data', async () => {
 
-  it('should render a loader', async () => {
-    /*
+    const state = {
+      zipArchives: [],
+      isLoading: [true],
+      showAlert: false,
+      prepare: { phase: 1,  cur: 0, total: 100 }
+    };
+
+    const mocks = { state };
+    const wrapper = mount(HistoryExport, {
+      global: { plugins, mocks }
+    });
+
     const prepareDownloadBtn = wrapper.find('button');
-    console.log(prepareDownloadBtn.html())
-    await prepareDownloadBtn.trigger('click');
     expect(prepareDownloadBtn.find('.v-btn__loader').exists()).toBe(true);
-    */
   });
 
 });

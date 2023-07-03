@@ -97,9 +97,9 @@
               v-if="selectedScopeHasPredefinedValues"
               v-model="conditionValues"
               :label="t('hasValue')"
-              :items="selectedScopeObjectSchemaElement?.enum || []"
+              :items="predefinedValues"
               variant="underlined"
-              multiple
+              :multiple="selectedScopeObjectSchemaElement?.type !== 'boolean'"
               :prepend-inner-icon="mdiAlphabetical"
             />
             <v-text-field
@@ -156,7 +156,11 @@ const selectedScopeFormSchemaElement = computed(() => scopeUUID.value ? formSche
 const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.OBJECTSCHEMA);
 const selectedScopeObjectSchemaElement = computed(() => selectedScopeFormSchemaElement.value?.scope && objectSchema?.value ? JsonPointer.get(objectSchema?.value, selectedScopeFormSchemaElement.value.scope) as JSONSchema7 : undefined);
 
-const selectedScopeHasPredefinedValues = computed(() => !!selectedScopeObjectSchemaElement?.value?.enum);
+const predefinedValues = computed(() => selectedScopeObjectSchemaElement.value?.type === 'boolean'
+  ? [{ title: t('true'), value: true }, { title: t('false'), value: false }]
+  : selectedScopeObjectSchemaElement.value?.enum || []
+);
+const selectedScopeHasPredefinedValues = computed(() => !!predefinedValues.value.length);
 const conditionValues = ref<any>(undefined);
 
 const _formSchemaElementMap = inject<FormSchemaElementMap>(PLAYGROUND_PROVIDE_KEYS.FORM_SCHEMA_ELEMENT_MAP, new Map());
@@ -179,7 +183,11 @@ const onConditionUpdated = () => {
       condition: {
         scope: selectedScopeFormSchemaElement.value.scope as string,
         schema: {
-          enum: isArray(conditionValues.value) ? conditionValues.value : [conditionValues.value]
+          enum: isArray(conditionValues.value)
+            ? conditionValues.value
+            : selectedScopeObjectSchemaElement.value?.type === 'integer' || selectedScopeObjectSchemaElement.value?.type === 'number'
+              ? [parseInt(conditionValues.value, 10)]
+              : [conditionValues.value]
         }
       }
     } });
@@ -211,19 +219,23 @@ watch(() => props.formSchemaElement, onFormSchemaItemModified, { deep: true, imm
     "conditionalVisibility": "Conditional visibility",
     "deleteRule": "Delete rule",
     "effect": "Effect",
+    "false": "False",
     "hasValue": "has value",
     "hide": "Hide if rule applies",
     "linkedElement": "Linked element",
-    "show": "Show if rule applies"
+    "show": "Show if rule applies",
+    "true": "True"
   },
   "de": {
     "conditionalVisibility": "Bedingte Sichtbarkeit",
     "deleteRule": "Regel löschen",
     "effect": "Effekt",
+    "false": "Falsch",
     "hasValue": "hat Wert",
     "hide": "Ausblenden falls Regel zutrifft",
     "linkedElement": "Verknüpftes Element",
-    "show": "Anzeigen falls Regel zutrifft"
+    "show": "Anzeigen falls Regel zutrifft",
+    "true": "Wahr"
   }
 }
 </i18n>

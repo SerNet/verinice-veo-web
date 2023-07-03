@@ -31,12 +31,12 @@
   >
     <!-- Prepare Data -->
     <template
-      v-if="state.prepare.phase !== PrepPhase.DONE"
+      v-if="state.prepare.phase !== PrepPhase.Done"
       #prepareData
     >
       <div class="d-flex align-center ms-auto mt-4">
         <div
-          v-if="state.prepare.phase === PrepPhase.ZIP || state.prepare.phase === PrepPhase.DOWNLOAD"
+          v-if="state.prepare.phase === PrepPhase.Zip || state.prepare.phase === PrepPhase.Download"
           class="text-subtitle-1  text-primary me-4"
         >
           <span>{{ t(`prepareHistoryPhases.${state.prepare?.phase}`) }}</span>
@@ -48,7 +48,7 @@
         <v-btn
           color="primary"
           variant="outlined"
-          :loading="state.prepare.phase !== PrepPhase.IDLE"
+          :loading="state.prepare.phase !== PrepPhase.Idle"
           @click="prepareData"
         >
           {{ t('btnPrepareDownload') }}
@@ -62,6 +62,38 @@
       </div>
     </template>
   </UserDataCard>
+
+  <!-- On leaving this route: warn user if data preparation in progress -->
+  <BaseDialog
+    :close-function="toggleWarnOnLeaveDialog"
+    :model-value="state.showWarnOnLeaveDialog"
+    :title="t('alertLeavePageTitle')"
+  >
+    <template #default>
+      <v-card-text>
+        {{ t('alertLeavePageCopy') }}
+      </v-card-text>
+    </template>
+
+    <template #dialog-options>
+      <v-btn
+        flat
+        variant="plain"
+        class="me-2"
+        @click="confirmPageLeave(false)"
+      >
+        {{ t('global.button.cancel') }}
+      </v-btn>
+      <v-spacer />
+      <v-btn
+        flat
+        color="primary"
+        @click="confirmPageLeave(true)"
+      >
+        {{ t('global.button.ok') }}
+      </v-btn>
+    </template>
+  </BaseDialog>
 </template>
 
 <script setup lang="ts">
@@ -81,7 +113,9 @@ interface IHistoryState {
   zipArchives: HistoryZipArchive[];
   isLoading: boolean[];
   showAlert: boolean;
-  prepare: { phase: PrepPhase, cur: number, total: number };
+  prepare: { phase: PrepPhase, currentPercentage: number, totalPercentage: number };
+  warnOnLeave: boolean;
+  resolveWarnOnLeave: () => boolean;
 }
 
 // Composables
@@ -92,20 +126,22 @@ const { t } = useI18n();
 const state: IHistoryState = reactive({
   zipArchives: [],
   isLoading: [],
-  showAlert: computed(() => state.zipArchives.length === 0 && state.prepare.phase === PrepPhase.DONE),
-  prepare: { phase: PrepPhase.IDLE,  cur: 0, total: 100 }
+  showAlert: computed(() => state.zipArchives.length === 0 && state.prepare.phase === PrepPhase.Done),
+  prepare: { phase: PrepPhase.Idle,  currentPercentage: 0, totalPercentage: 100 },
+  showWarnOnLeaveDialog: false,
+  resolveWarnOnLeave: undefined
 });
 
-function updateLoadingState({ phase, cur, total }: { phase: PrepPhase, cur: number, total: number}) {
-  state.prepare = { phase, cur, total };
+function updateLoadingState({ phase, currentPercentage, totalPercentage }: { phase: PrepPhase, currentPercentage: number, totalPercentage: number}) {
+  state.prepare = { phase, currentPercentage, totalPercentage };
 }
 
 const progressBar = computed(() =>
-  (state?.prepare?.cur && state?.prepare?.total) ? state?.prepare?.cur / state?.prepare?.total * 100 : 0);
+  (state?.prepare?.currentPercentage && state?.prepare?.totalPercentage) ? state?.prepare?.currentPercentage / state?.prepare?.totalPercentage * 100 : 0);
 
 // HISTORY Entrypoint
 async function prepareData() {
-  state.prepare.phase = PrepPhase.DOWNLOAD;
+  state.prepare.phase = PrepPhase.Download;
   try {
     const history = await loadHistory({ updateLoadingState, fetchFn: fetchHistoryData, size: 5000 });
     const chunkedHistory = chunkHistory(history);
@@ -117,7 +153,7 @@ async function prepareData() {
     displayErrorMessage( t('errorHeader'), t('errorBody'));
   }
   finally {
-    state.prepare.phase = PrepPhase.DONE;
+    state.prepare.phase = PrepPhase.Done;
   }
 }
 
@@ -141,5 +177,34 @@ function handleError(error: unknown) {
   logError(error);
   displayErrorMessage( t('errorHeader'), t('errorBody'));
 }
+
+/***************************
+* Warn before leaving page
+***************************/
+const toggleWarnOnLeaveDialog = () =>
+  state.showWarnOnLeaveDialog = !state.showWarnOnLeaveDialog;
+
+function askForConfirmation() {
+  toggleWarnOnLeaveDialog();
+  return new Promise( resolve => {
+    state.resolveWarnOnLeave = resolve;
+  });
+}
+
+function confirmPageLeave(isLeaving) {
+  state.resolveWarnOnLeave(isLeaving);
+  toggleWarnOnLeaveDialog();
+}
+
+onBeforeRouteLeave((to, from, next) => {
+  // Prompt user if download in progress
+  if(state.prepare.phase === PrepPhase.Download || PrepPhase.Zip) {
+    askForConfirmation().then( isLeaving => {
+      next(isLeaving);
+    });
+    return;
+  }
+  next();
+});
 </script>
 <i18n src="./messages.json"></i18n>
