@@ -44,7 +44,7 @@
       "DOWNLOAD": "Daten herunterladen:",
       "ZIP": "ZIP-Archive erstellen:"
     },
-    "alertLeavePageTitle": "Warnung: History Download",
+    "alertLeavePageTitle": "Warnung: History-Download",
     "alertLeavePageCopy": "Wollen Sie die Seite wirklich verlassen und den History-Download abbrechen?"
   }
 }
