@@ -18,7 +18,7 @@
 <template>
   <BasePage
     :loading="!domain"
-    :title="t('domainOverview')"
+    :title="t('overview')"
     data-component-name="domain-dashboard-page"
     padding
   >
@@ -32,36 +32,18 @@
         class="mt-0"
       >
         <v-col>
-          <v-btn
-            class="bg-red-lighten-1"
-            style="cursor: default;"
-            variant="flat"
+          <div
+            class="bg-red-lighten-1 rounded"
+            style="display: flex; align-items: center; height: 40px; width: max-content; cursor: default;"
           >
-            <span>{{ domain?.name || t('domainOverview') }}</span>
-
-            <v-btn
-              class="ml-2 bg-accent"
-              style="cursor: default;"
-              variant="flat"
+            <span class="mx-4 text-h5 font-bold">{{ unit?.name.toUpperCase() }}</span>
+            <span
+              class="mr-4 px-2 bg-accent text-body-1"
+              style="display: flex; align-items: center; height: inherit;"
             >
-              <span>{{ domain?.description || t('noDescription') }}</span>
-            </v-btn>
-          </v-btn>
-          &nbsp;
-          <v-btn
-            class="bg-red-lighten-1"
-            style="cursor: default;"
-            variant="flat"
-          >
-            <span>{{ unit?.name }}</span>
-            <v-btn
-              class="ml-2 bg-accent"
-              style="cursor: default;"
-              variant="flat"
-            >
-              <span>{{ unit?.description || t('noDescription') }}</span>
-            </v-btn>
-          </v-btn>
+              {{ unit?.description.toUpperCase() || '' }}
+            </span>
+          </div>
         </v-col>
       </v-row>
 
@@ -225,13 +207,11 @@ export default defineComponent({
 {
   "en": {
     "domainNotFoundText": "The requested domain couldn't be found.",
-    "domainOverview": "Domain overview",
-    "noDescription": "No description provided"
+    "overview": "Unit overview",
   },
   "de": {
     "domainNotFoundText": "Die gewünschte Domain konnte nicht gefunden werden.",
-    "domainOverview": "Domänen-Übersicht",
-    "noDescription": "Keine Beschreibung festgelegt"
+    "overview": "Unit-Übersicht",
   }
 }
 </i18n>
@@ -246,5 +226,8 @@ export default defineComponent({
   :deep(.v-skeleton-loader__text) {
     height: 16px;
   }
+}
+.small-caps {
+  font-variant: small-caps;
 }
 </style>
