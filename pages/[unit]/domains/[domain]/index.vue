@@ -34,7 +34,7 @@
         <v-col>
           <div
             class="bg-red-lighten-1 rounded"
-            style="display: flex; align-items: center; height: 40px; width: max-content"
+            style="display: flex; align-items: center; height: 40px; width: max-content; cursor: default;"
           >
             <span class="mx-4 text-h5 font-bold">{{ unit?.name.toUpperCase() }}</span>
             <span
