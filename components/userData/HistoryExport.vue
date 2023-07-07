@@ -66,7 +66,7 @@
   <!-- On leaving this route: warn user if data preparation in progress -->
   <BaseDialog
     :close-function="toggleWarnOnLeaveDialog"
-    :model-value="state.showWarnOnLeaveDialog"
+    :model-value="state.warnOnLeave"
     :title="t('alertLeavePageTitle')"
   >
     <template #default>
@@ -98,7 +98,7 @@
 
 <script setup lang="ts">
 import { download } from "~~/lib/jsonToZip";
-import { loadHistory, chunkHistory, createZipArchives, devFetchHistoryData } from './modules/HistoryExport';
+import { loadHistory, chunkHistory, createZipArchives } from './modules/HistoryExport';
 import { logError } from './modules/HandleError';
 import { useQuerySync } from "~~/composables/api/utils/query";
 import historyQueryDefinitions from '~~/composables/api/queryDefinitions/history';
@@ -115,7 +115,7 @@ interface IHistoryState {
   showAlert: boolean;
   prepare: { phase: PrepPhase, currentPercentage: number, totalPercentage: number };
   warnOnLeave: boolean;
-  resolveWarnOnLeave: () => boolean;
+  resolveWarnOnLeave: any;
 }
 
 // Composables
@@ -128,7 +128,7 @@ const state: IHistoryState = reactive({
   isLoading: [],
   showAlert: computed(() => state.zipArchives.length === 0 && state.prepare.phase === PrepPhase.Done),
   prepare: { phase: PrepPhase.Idle,  currentPercentage: 0, totalPercentage: 100 },
-  showWarnOnLeaveDialog: false,
+  warnOnLeave: false,
   resolveWarnOnLeave: undefined
 });
 
@@ -158,7 +158,7 @@ async function prepareData() {
 }
 
 async function fetchHistoryData({ size = 10000, afterId } : {size?: number, afterId?: string | undefined} = {}) {
-  return useQuerySync(historyQueryDefinitions.queries.fetchPagedRevisions, {size, afterId});
+  return useQuerySync(historyQueryDefinitions.queries.fetchPagedRevisions, {size: size.toString(), afterId});
 }
 
 async function downloadZip(index: number) {
@@ -182,7 +182,7 @@ function handleError(error: unknown) {
 * Warn before leaving page
 ***************************/
 const toggleWarnOnLeaveDialog = () =>
-  state.showWarnOnLeaveDialog = !state.showWarnOnLeaveDialog;
+  state.warnOnLeave = !state.warnOnLeave;
 
 function askForConfirmation() {
   toggleWarnOnLeaveDialog();
@@ -191,16 +191,16 @@ function askForConfirmation() {
   });
 }
 
-function confirmPageLeave(isLeaving) {
+function confirmPageLeave(isLeaving: boolean) {
   state.resolveWarnOnLeave(isLeaving);
   toggleWarnOnLeaveDialog();
 }
 
 onBeforeRouteLeave((to, from, next) => {
   // Prompt user if download in progress
-  if(state.prepare.phase === PrepPhase.Download || PrepPhase.Zip) {
+  if(state.prepare.phase === PrepPhase.Download || state.prepare.phase ===PrepPhase.Zip) {
     askForConfirmation().then( isLeaving => {
-      next(isLeaving);
+      if(isLeaving) next();
     });
     return;
   }

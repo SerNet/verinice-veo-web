@@ -442,6 +442,7 @@ export interface IVeoObjectHistoryEntry {
   type: string;
   changeNumber: number;
   uri: string;
+  id?: string;
 }
 
 export enum VeoAlertType {
