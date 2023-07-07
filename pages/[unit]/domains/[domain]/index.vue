@@ -36,12 +36,13 @@
             class="bg-red-lighten-1 rounded"
             style="display: flex; align-items: center; height: 40px; width: max-content; cursor: default;"
           >
-            <span class="mx-4 text-h5 font-bold">{{ unit?.name.toUpperCase() }}</span>
+            <span class="mx-4 text-h5 font-bold text-uppercase">{{ unit?.name }}</span>
             <span
-              class="mr-4 px-2 bg-accent text-body-1"
+              v-if="unit?.description"
+              class="mr-4 px-4 bg-accent text-body-1 text-uppercase"
               style="display: flex; align-items: center; height: inherit;"
             >
-              {{ unit?.description.toUpperCase() || '' }}
+              {{ unit?.description || '' }}
             </span>
           </div>
         </v-col>
