@@ -18,6 +18,7 @@
 import { createZIP } from "~~/lib/jsonToZip";
 import { chunk } from "lodash";
 import { IVeoObjectHistoryEntry } from "~~/types/VeoTypes";
+import { IVeoPagedRevision } from "~/composables/api/queryDefinitions/history";
 import { format } from 'date-fns';
 
 // Types
@@ -36,16 +37,12 @@ export type FetchFnParams = { size?: number | undefined; afterId?: string | unde
 
 export type FetchFnResult = {
   totalItemCount: number,
-  items: IVeoObjectHistoryEntryWithId[]
-}
-
-interface IVeoObjectHistoryEntryWithId extends IVeoObjectHistoryEntry {
-  id: string;
+  items: IVeoObjectHistoryEntry[]
 }
 
 interface ILoadHistoryParams {
-  fetchFn: ({ size, afterId }: FetchFnParams) => Promise<FetchFnResult>;
-  history?: IVeoObjectHistoryEntryWithId[];
+  fetchFn: ({ size, afterId }: FetchFnParams) => Promise<FetchFnResult | IVeoPagedRevision>;
+  history?: IVeoObjectHistoryEntry[];
   size?: number;
   afterId?: undefined | string;
   updateLoadingState?: UpdateLoadingState;
@@ -54,7 +51,7 @@ interface ILoadHistoryParams {
 
 async function loadHistory({
   fetchFn, history = [], size = 2500, afterId = undefined, updateLoadingState, currentPercentage = 0}: ILoadHistoryParams ):
-  Promise<IVeoObjectHistoryEntryWithId[]> {
+  Promise<IVeoObjectHistoryEntry[]> {
   try {
     const fetchedHistory = await fetchFn({ size, afterId });
     const currentHistory = [...history, ...fetchedHistory.items];
