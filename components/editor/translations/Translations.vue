@@ -288,7 +288,7 @@ const headers = computed<TableHeader[]>(() => [
                 onClick: () => {
                   const toReturn = cloneDeep(props.modelValue);
                   for(const source of props.modifieableSources) {
-                    toReturn[itemProps.item.raw.key][source] = toReturn[itemProps.item.raw.key][itemSource as any as TRANSLATION_SOURCE];
+                    toReturn[itemProps.item.raw.key][source] = cloneDeep(toReturn[itemProps.item.raw.key][itemSource as any as TRANSLATION_SOURCE]);
                   }
                   emit('update:modelValue', toReturn);
                 },
