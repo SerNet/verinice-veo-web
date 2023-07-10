@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { isString, trim } from "lodash";
+import { trim } from "lodash";
 
 export const useFormatters = () => {
   const { locale } = useI18n();
@@ -69,7 +69,14 @@ export const useThrottleNextTick = () => {
 export const useRules = () => {
   const { t } = useI18n({ useScope: 'global' });
 
-  const requiredRule = (v: string | undefined) => !!v && isString(v) && !!trim(v) || t('global.input.required');
+  const requiredRule = (v: string | undefined) => {
+    switch (typeof v) {
+      case 'string':
+        return !!trim(v) || t('global.input.required');
+      default:
+        return v !== undefined && v !== null || t('global.input.required');
+    }
+  };
 
   const banSpecialChars = (v: string) => hasNoSpecialChar(v) ? true : t('global.input.hasSpecialChar');
   function hasNoSpecialChar(s: string): boolean {

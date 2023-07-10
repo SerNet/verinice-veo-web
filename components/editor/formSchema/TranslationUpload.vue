@@ -153,7 +153,7 @@ export default defineComponent({
     const usedTranslations = reactive<{ [lang: string]: string[] }>({});
 
     const importFunction = (columns: string[][], idColumn: number, languageColumns: { [language: string]: number }) => {
-      if (!idColumn || Object.keys(languageColumns).length < availableLanguages.value.length) {
+      if (idColumn === undefined || Object.keys(languageColumns).length < availableLanguages.value.length) {
         return;
       }
       unusedTranslations.value = [];

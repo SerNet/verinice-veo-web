@@ -121,7 +121,6 @@ import { PropType } from 'vue';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { mdiTranslate } from '@mdi/js';
 import { read, WorkBook, WorkSheet } from 'xlsx';
-import { trim } from 'lodash';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
@@ -143,8 +142,8 @@ export default defineComponent({
   emits: ['update:replace-translations'],
   setup() {
     const { locales, t } = useI18n();
-    const { t: globalT } = useI18n();
     const { displayErrorMessage } = useVeoAlerts();
+    const { requiredRule } = useRules();
 
     // Layout / form stuff
     const localeDetailsMap = computed(() =>
@@ -157,8 +156,6 @@ export default defineComponent({
     const formIsValid = ref(false);
     const idColumn = ref<number>();
     const languageColumns = ref<{ [key: string]: number }>({});
-
-    const requiredRule = (v: any) => (!!v && !!trim(v).length) || globalT('global.input.required').toString();
 
     // xlsx stuff
     const uploadingLanguageFile = ref(false);
