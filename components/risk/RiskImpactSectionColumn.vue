@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2022  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -24,6 +24,7 @@
       {{ protectionGoal.translations[locale].name }}
     </h3>
     <v-select
+      data-test-selector="potential-impact"
       :model-value="potentialImpact"
       color="primary"
       :label="upperFirst(t('potentialImpact').toString())"
@@ -33,6 +34,7 @@
       hide-details
     />
     <v-select
+      data-test-selector="specific-impact"
       :model-value="specificImpact"
       :disabled="disabled"
       color="primary"
@@ -46,6 +48,7 @@
     <v-edit-dialog>
       <template #default="{ props: dialogProps }">
         <v-text-field
+          data-test-selector="specific-impact-explanation-text-field"
           :model-value="specificImpactExplanation"
           :label="upperFirst(t('explanation').toString())"
           :disabled="disabled"
@@ -57,6 +60,7 @@
       </template>
       <template #input>
         <v-textarea
+          data-test-selector="specific-impact-explanation-textarea"
           :model-value="specificImpactExplanation"
           :disabled="disabled"
           :label="upperFirst(t('explanation').toString())"
@@ -71,6 +75,7 @@
       </template>
     </v-edit-dialog>
     <v-select
+      data-test-selector="effective-impact"
       :model-value="effectiveImpact"
       color="primary"
       :label="upperFirst(t('effectiveImpact').toString())"

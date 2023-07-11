@@ -51,6 +51,7 @@
                 md="6"
               >
                 <UtilObjectSelect
+                  data-test-selector="risk-scenario"
                   :model-value="data.scenario"
                   object-type="scenario"
                   required
@@ -68,6 +69,7 @@
                 md="6"
               >
                 <UtilObjectSelect
+                  data-test-selector="risk-owner"
                   :model-value="data.riskOwner"
                   object-type="person"
                   :label="upperFirst(t('riskOwner').toString())"
