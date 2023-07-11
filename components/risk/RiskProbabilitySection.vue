@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2022  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -28,6 +28,7 @@
             md="3"
           >
             <v-select
+              data-test-id="risk-potential-probability"
               :model-value="data.potentialProbability"
               color="primary"
               :label="upperFirst(t('potentialProbability').toString())"
@@ -49,6 +50,7 @@
             md="3"
           >
             <v-select
+              data-test-id="risk-specific-probability"
               :model-value="data.specificProbability"
               color="primary"
               :disabled="disabled"
@@ -65,6 +67,7 @@
             md="3"
           >
             <v-select
+              data-test-id="risk-effective-probability"
               :model-value="data.effectiveProbability"
               color="primary"
               :label="upperFirst(t('effectiveProbability').toString())"
@@ -88,6 +91,7 @@
             <v-edit-dialog>
               <template #default="{ props: dialogProps }">
                 <v-text-field
+                  data-test-id="risk-probability-explanation-text-field"
                   :model-value="data.specificProbabilityExplanation"
                   :disabled="disabled"
                   :label="upperFirst(t('explanation').toString())"
@@ -99,6 +103,7 @@
               </template>
               <template #input>
                 <v-textarea
+                  :data-test-id="'risk-probability-explanation-textarea'"
                   :model-value="data.specificProbabilityExplanation"
                   :disabled="disabled"
                   :label="upperFirst(t('explanation').toString())"
