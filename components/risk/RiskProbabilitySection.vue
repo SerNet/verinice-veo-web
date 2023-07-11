@@ -28,7 +28,7 @@
             md="3"
           >
             <v-select
-              data-test-id="risk-potential-probability"
+              data-test-selector="risk-potential-probability"
               :model-value="data.potentialProbability"
               color="primary"
               :label="upperFirst(t('potentialProbability').toString())"
@@ -50,7 +50,7 @@
             md="3"
           >
             <v-select
-              data-test-id="risk-specific-probability"
+              data-test-selector="risk-specific-probability"
               :model-value="data.specificProbability"
               color="primary"
               :disabled="disabled"
@@ -67,7 +67,7 @@
             md="3"
           >
             <v-select
-              data-test-id="risk-effective-probability"
+              data-test-selector="risk-effective-probability"
               :model-value="data.effectiveProbability"
               color="primary"
               :label="upperFirst(t('effectiveProbability').toString())"
@@ -91,7 +91,7 @@
             <v-edit-dialog>
               <template #default="{ props: dialogProps }">
                 <v-text-field
-                  data-test-id="risk-probability-explanation-text-field"
+                  data-test-selector="risk-probability-explanation-text-field"
                   :model-value="data.specificProbabilityExplanation"
                   :disabled="disabled"
                   :label="upperFirst(t('explanation').toString())"
@@ -103,7 +103,7 @@
               </template>
               <template #input>
                 <v-textarea
-                  :data-test-id="'risk-probability-explanation-textarea'"
+                  :data-test-selector="'risk-probability-explanation-textarea'"
                   :model-value="data.specificProbabilityExplanation"
                   :disabled="disabled"
                   :label="upperFirst(t('explanation').toString())"

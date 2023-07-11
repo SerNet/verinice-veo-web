@@ -17,7 +17,7 @@
 -->
 <template>
   <BaseDialog
-    data-test-id="create-dialog-single"
+    data-test-selector="create-dialog-single"
     :model-value="modelValue"
     :close-disabled="savingRisk"
     :confirm-close="!!Object.keys(dirtyFields).length"
