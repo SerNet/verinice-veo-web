@@ -103,7 +103,7 @@
               </template>
               <template #input>
                 <v-textarea
-                  :data-test-selector="'risk-probability-explanation-textarea'"
+                  data-test-selector="'risk-probability-explanation-textarea'"
                   :model-value="data.specificProbabilityExplanation"
                   :disabled="disabled"
                   :label="upperFirst(t('explanation').toString())"
