@@ -69,7 +69,6 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     './modules/externalize-scripts',
     './modules/vuetify-sass-variables.ts',
-    'nuxt-vitest',
     'nuxt-font-loader'
   ],
 
