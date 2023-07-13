@@ -1,14 +1,19 @@
-image: node:19
-
 stages:
   - setup
   - build
   - test
   - deploy
 
-cache:
-  paths:
-    - node_modules/
+default:
+  image: node:19
+  cache:  # Cache modules in between jobs
+    key:
+      files:
+      - package-lock.json
+    paths:
+      - .npm/
+  before_script:
+    - npm ci --cache .npm --prefer-offline --legacy-peer-deps
 
 store_project_version:
   stage: setup
@@ -24,7 +29,6 @@ check_license:
   needs: []
   script:
     - mv LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
-    - npm ci
     - npx generate-license-file --ci --input ./package.json --output LICENSE-3RD-PARTY.txt
     - diff LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
     - if [ $? -ne 0 ]; then echo "LICENSE-3RD-PARTY.txt is not up to date, please re-run npx generate-license-file --input ./package.json --output LICENSE-3RD-PARTY.txt --overwrite"; exit 1; fi
@@ -59,6 +63,7 @@ docker_image:
     - /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --cache=true
       $DESTINATION_ARG
       --build-arg VEO_DEBUG="${VEO_DEBUG}"
       --build-arg NODE_ENV="${NODE_ENV}"
