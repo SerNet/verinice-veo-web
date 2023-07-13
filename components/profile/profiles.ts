@@ -20,9 +20,8 @@ import { useMutation } from '~~/composables/api/utils/mutation';
 import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 
-import { IVeoLink } from '~/types/VeoTypes';
-
 // TYPES
+import { IVeoLink } from '~/types/VeoTypes';
 export type Profile = {
   key: string;
   name: string;
