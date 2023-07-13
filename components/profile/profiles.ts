@@ -99,11 +99,9 @@ function useDomain() {
   const fetchDomainQueryParameters = computed(() => ({ id: state.domainId as string }));
   const fetchDomainQueryEnabled = computed(() => !!state.domainId);
   const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
-  const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains);
 
   return {
     domain: readonly(domain),
-    domains: readonly(domains)
   };
 }
 
@@ -129,7 +127,7 @@ export function useUnits() {
   const { mutateAsync: mutateExistingUnit } = useMutation(domainQueryDefinitions.mutations.applyProfile);
   const { mutateAsync: createNewUnit, data: unitDetailsPayload } = useMutation(unitQueryDefinitions.mutations.create);
   const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
-  const { domains } = useDomain(); // Needed if user wants to create a new unit
+  const { domain } = useDomain(); // Needed if user wants to create a new unit
 
   async function applyProfile({ profileKey, unitId, domainId, messages }: ApplyProfileParams) {
     state.isApplyingProfile = true;
@@ -170,7 +168,7 @@ export function useUnits() {
 
   return {
     units: readonly(units),
-    domains: readonly(domains),
+    domain: readonly(domain),
     toggleDialog,
     applyProfile,
     createUnitAndApplyProfile,
