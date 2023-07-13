@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 # Copy package.json and lock file
 COPY package.json package-lock.json ./
 # Install packages
-RUN npm -d --legacy-peer-deps ci
+RUN npm -d ci
 # Bundle app source
 COPY . .
 
