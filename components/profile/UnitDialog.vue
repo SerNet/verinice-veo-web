@@ -48,6 +48,7 @@
             variant="underlined"
             clearable
           />
+            <!--
           <v-autocomplete
             v-model="state.newUnit.selectedDomains"
             :items="toRaw(domains)"
@@ -61,6 +62,7 @@
             return-object
             variant="underlined"
           />
+            -->
         </v-card-text>
       </BaseCard>
       <BaseCard class="mt-4">
@@ -117,21 +119,18 @@ import {
 } from '@mdi/js';
 import { useUnits } from './profiles';
 const { requiredRule } = useRules();
-const { state, units, domains, applyProfile, createUnitAndApplyProfile, toggleDialog } = useUnits();
+const { state, units, domain, applyProfile, createUnitAndApplyProfile, toggleDialog } = useUnits();
 const { t } = useI18n();
 
 const applyIsDisabled = computed(() =>
-  (state.newUnit.name  === null || toRaw(state.newUnit.selectedDomains).length === 0) && state.selectedUnit === null
+  (state.newUnit.name  === null) && state.selectedUnit === null
 );
 
 function apply() {
   if (state.newUnit.name) {
     createUnitAndApplyProfile({
       name: state.newUnit.name,
-      domains:
-        state.newUnit.selectedDomains.map(domain =>
-          toRaw(({targetUri: domain._self}))
-        ),
+      domains:[{targetUri: (domain?.value?._self || '')}],
       description: state.newUnit.description || undefined,
       messages: {
         success: t('messageUnitWithProfileSuccess'),
