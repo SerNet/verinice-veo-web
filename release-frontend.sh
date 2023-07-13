@@ -37,11 +37,9 @@ echo "Created new release branch release/$1 based on $MAIN_BRANCH with changes f
 #
 # Modify files for release
 #
-# Open package.json and change version number
-current_version=$(sed -n 's/.*"version": "\(.*\)".*/\1/p' package.json)
-sed -i "" -e "s/\"version\": \"$current_version\"/\"version\": \"$1\"/" package.json
-# Run npm i to update package-lock.json version
-npm i
+# Change version number
+npm --no-git-tag-version $1
+
 # Update third party license file
 npx generate-license-file --input ./package.json --output LICENSE-3RD-PARTY.txt --overwrite
 git add .
