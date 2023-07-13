@@ -57,14 +57,14 @@ const route = useRoute();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 // STATE
-const currentDomainId = computed(() => route.params.domain as string);
+watch( route, () => updateDomainId());
 
 const initialState = {
   selectedProfiles: [] as string[],
   showDialog: false,
   isApplyingProfile: false,
   isCreatingUnit: false,
-  domainId: unref(readonly(currentDomainId)),
+  domainId: '',
   selectedUnit: null,
   newUnit: {name: null, description: null, domains: [], selectedDomains: []}
 };
@@ -74,6 +74,10 @@ const state = reactive({ ...initialState })
 // Manipulate state
 function resetState() {
   Object.assign(state, initialState);
+}
+
+function updateDomainId() {
+  state.domainId = route.params.domain as string;
 }
 
 function toggleDialog() {
@@ -92,8 +96,8 @@ function handleError(err: unknown, genericMsg: string) {
 
 // Local Composables
 function useDomain() {
-  const fetchDomainQueryParameters = computed(() => ({ id: currentDomainId.value as string }));
-  const fetchDomainQueryEnabled = computed(() => !!currentDomainId);
+  const fetchDomainQueryParameters = computed(() => ({ id: state.domainId as string }));
+  const fetchDomainQueryEnabled = computed(() => !!state.domainId);
   const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
   const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains);
 
@@ -109,13 +113,14 @@ export function useProfiles() {
 
   // Unpack available profiles
   const profiles = computed(() => {
-    const _profiles: Profiles = toRaw(domain.value?.profiles);
+    const _profiles: Profiles = toRaw(domain?.value?.profiles);
     return Object.keys(_profiles || {}).map(key =>({key, ..._profiles[key]} )) as Profile[];
   });
 
   return {
     profiles: readonly(profiles),
     toggleDialog,
+    updateDomainId,
     state
   };
 }
@@ -137,6 +142,7 @@ export function useUnits() {
     }
     finally {
       resetState();
+      updateDomainId();
     }
   }
 

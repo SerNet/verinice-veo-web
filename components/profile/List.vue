@@ -63,7 +63,7 @@
 </template>
 <script setup lang="ts">
 import { useProfiles }  from '~/components/profile/profiles';
-const { state, profiles, toggleDialog } = useProfiles();
+const { state, profiles, toggleDialog, updateDomainId } = useProfiles();
 const { t } = useI18n();
 
 // Table setup
@@ -72,6 +72,8 @@ const headers = computed(() => [
   { title: t('thDescription'), align: 'start', key: 'description', sortable: false },
   { title: t('thLanguage'), align: 'start', key: 'language' }
 ]);
+
+onMounted(() => updateDomainId())
 
 /*******************
 * THIS IS A WORK AROUND (JS + CSS):
