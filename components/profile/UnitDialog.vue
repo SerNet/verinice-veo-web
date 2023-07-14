@@ -65,7 +65,6 @@
             v-model="state.selectedUnit"
             :label="t('unitSelectionDropdownLabel')"
             :items="units"
-            :disabled="!!(state.newUnitName || state.newUnitDescription)"
             item-title="name"
             item-value="id"
             flat
@@ -113,9 +112,9 @@ const applyIsDisabled = computed(() =>
 );
 
 function apply() {
-  if (state.newUnitName) {
+  if (!state.selectedUnit) {
     createUnitAndApplyProfile({
-      name: state.newUnitName,
+      name: state.newUnitName as string,
       domains:[{targetUri: (domain?.value?._self || '')}],
       description: state.newUnitDescription || undefined,
       messages: {

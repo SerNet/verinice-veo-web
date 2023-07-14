@@ -73,20 +73,26 @@ const headers = computed(() => [
   { title: t('thLanguage'), align: 'start', key: 'language' }
 ]);
 
+// Make sure to allways write currently active domain into state
 onMounted(() => updateDomainId())
 
-/*******************
-* THIS IS A WORK AROUND (JS + CSS):
-* In this table we only want to be able to select one item (profile) at a time.
-* At the time of writing, vuetify 3 v-data-table's `select-strategy='single'` did not work as expected (still part of vuetify LAB).
-* Once it does, TODO:
-* => on the component: use `v-model` instead of `model-value` + `@update`
-* => remove CSS (#profileStyleScope ...)
-* => remove this code:
-*******************/
 function selectNewItem(val: string[]) {
+
+  /*******************
+  * THIS IS A WORK AROUND (JS + CSS):
+  * In this table we only want to be able to select one item (profile) at a time.
+  * At the time of writing, vuetify 3 v-data-table's `select-strategy='single'` did not work as expected (still part of vuetify LAB).
+  * Once it does, TODO:
+  * => on the component: use `v-model` instead of `model-value` + `@update`
+  * => remove CSS (#profileStyleScope ...)
+  * => remove this code:
+  *******************/
   if (val.length >= 2) val.shift();
   state.selectedProfiles = val;
+
+  // Use the profile's name prop as a default name
+  const profileObj = profiles.value.filter((profile) => profile.key === state.selectedProfiles[0])[0]
+  state.newUnitName = profileObj.name;
 }
 </script>
 

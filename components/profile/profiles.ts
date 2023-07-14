@@ -65,9 +65,9 @@ const initialState = {
   isApplyingProfile: false,
   isCreatingUnit: false,
   domainId: route.params.domain as string,
-  selectedUnit: null,
-  newUnitName: null,
-  newUnitDescription: null,
+  selectedUnit: null as null | string,
+  newUnitName: null as null | string,
+  newUnitDescription: null as null | string,
 };
 
 const state = reactive({ ...initialState })
