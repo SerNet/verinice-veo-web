@@ -20,6 +20,7 @@
     :model-value="state.showDialog"
     :title="t('unitSelectionTitle')"
     :close-function="toggleDialog"
+    @keydown.enter="apply"
   >
     <template #default>
       <BaseCard>
