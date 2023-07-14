@@ -82,7 +82,11 @@ function updateDomainId() {
 }
 
 function toggleDialog() {
+  if(state.isApplyingProfile || state.isCreatingUnit) return
   state.showDialog = !state.showDialog;
+
+  if (state.showDialog) return
+  resetState();
 }
 
 // Helpers
