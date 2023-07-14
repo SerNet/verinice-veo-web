@@ -37,7 +37,7 @@
     "unitSelectionHint": "Oder wählen Sie eine bestehende Unit aus, auf die Sie das gewählte Profil anwenden wollen.",
     "messageSuccess": "Profil erfolgreich angewendet",
     "messageError": "Profil konnte nicht angewendet werden",
-    "messageUnitWithProfileSuccess": "Profile wurde auf neue Unit angewendet.",
+    "messageUnitWithProfileSuccess": "Profil wurde auf die neue Unit angewendet.",
     "messageUnitWithProfileError": "Profil konnte nicht auf neue Unit angewendet werden."
   }
 }
