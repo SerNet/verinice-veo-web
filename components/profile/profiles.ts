@@ -64,9 +64,10 @@ const initialState = {
   showDialog: false,
   isApplyingProfile: false,
   isCreatingUnit: false,
-  domainId: '',
+  domainId: route.params.domain,
   selectedUnit: null,
-  newUnit: {name: null, description: null, domains: [], selectedDomains: []}
+  newUnitName: null,
+  newUnitDescription: null,
 };
 
 const state = reactive({ ...initialState })

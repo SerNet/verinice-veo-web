@@ -33,7 +33,7 @@
         </v-card-text>
         <v-card-text>
           <v-text-field
-            v-model="state.newUnit.name"
+            v-model="state.newUnitName"
             :label="t('unitSelectionCreateName')"
             :disabled="!!state.selectedUnit"
             :rules="[requiredRule]"
@@ -42,27 +42,12 @@
             variant="underlined"
           />
           <v-text-field
-            v-model="state.newUnit.description"
+            v-model="state.newUnitDescription"
             :label="t('unitSelectionCreateDesc')"
             :disabled="!!state.selectedUnit"
             variant="underlined"
             clearable
           />
-            <!--
-          <v-autocomplete
-            v-model="state.newUnit.selectedDomains"
-            :items="toRaw(domains)"
-            item-title="name"
-            item-key="id"
-            :label="t('unitSelectionCreateDomains')"
-            chips
-            multiple
-            flat
-            clearable
-            return-object
-            variant="underlined"
-          />
-            -->
         </v-card-text>
       </BaseCard>
       <BaseCard class="mt-4">
@@ -79,7 +64,7 @@
             v-model="state.selectedUnit"
             :label="t('unitSelectionDropdownLabel')"
             :items="units"
-            :disabled="!!(state.newUnit.name || state.newUnit.description) || state.newUnit.selectedDomains.length !== 0"
+            :disabled="!!(state.newUnitName || state.newUnitDescription)"
             item-title="name"
             item-value="id"
             flat
@@ -123,15 +108,15 @@ const { state, units, domain, applyProfile, createUnitAndApplyProfile, toggleDia
 const { t } = useI18n();
 
 const applyIsDisabled = computed(() =>
-  (state.newUnit.name  === null) && state.selectedUnit === null
+  (state.newUnitName  === null) && state.selectedUnit === null
 );
 
 function apply() {
-  if (state.newUnit.name) {
+  if (state.newUnitName) {
     createUnitAndApplyProfile({
-      name: state.newUnit.name,
+      name: state.newUnitName,
       domains:[{targetUri: (domain?.value?._self || '')}],
-      description: state.newUnit.description || undefined,
+      description: state.newUnitDescription || undefined,
       messages: {
         success: t('messageUnitWithProfileSuccess'),
         error: t('messageUnitWithProfileError')
