@@ -159,8 +159,8 @@ export function useUnits() {
 
   async function createUnitAndApplyProfile({name, domains, description, messages}: createUnitAndApplyProfileParams) {
     state.isCreatingUnit = true;
-    await createNewUnit({ name, domains, description });
     try {
+      await createNewUnit({ name, domains, description });
       if(unitDetailsPayload.value?.resourceId) {
         await applyProfile({
           profileKey: state.selectedProfiles[0],
