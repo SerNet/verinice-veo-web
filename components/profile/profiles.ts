@@ -133,8 +133,14 @@ export function useProfiles() {
 export function useUnits() {
   const { mutateAsync: mutateExistingUnit } = useMutation(domainQueryDefinitions.mutations.applyProfile);
   const { mutateAsync: createNewUnit, data: unitDetailsPayload } = useMutation(unitQueryDefinitions.mutations.create);
-  const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
   const { domain } = useDomain(); // Needed if user wants to create a new unit
+  const { data: _units } = useQuery(unitQueryDefinitions.queries.fetchAll);
+
+  // Remove all units which are not in the current domain
+  const units = computed(()=> _units.value ?
+    _units.value.filter(unit => {
+      return unit.domains.some(({targetUri}) => targetUri === domain?.value?._self)
+  }) : [] )
 
   async function applyProfile({ profileKey, unitId, domainId, messages }: ApplyProfileParams) {
     state.isApplyingProfile = true;
