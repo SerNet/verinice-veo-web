@@ -80,6 +80,7 @@ docker_image:
       --build-arg "NO_PROXY=${no_proxy}"
 
 trigger_deployment:
+  before_script: []
   stage: deploy
   only:
     - develop
