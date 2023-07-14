@@ -64,7 +64,7 @@ const initialState = {
   showDialog: false,
   isApplyingProfile: false,
   isCreatingUnit: false,
-  domainId: route.params.domain,
+  domainId: route.params.domain as string,
   selectedUnit: null,
   newUnitName: null,
   newUnitDescription: null,
@@ -112,7 +112,9 @@ export function useProfiles() {
 
   // Unpack available profiles
   const profiles = computed(() => {
-    const _profiles: Profiles = toRaw(domain?.value?.profiles);
+    const _profiles: Profiles | undefined = toRaw(domain?.value?.profiles);
+
+    if(!_profiles) return [];
     return Object.keys(_profiles || {}).map(key =>({key, ..._profiles[key]} )) as Profile[];
   });
 
