@@ -351,16 +351,22 @@ export default defineComponent({
     };
 
     // Input handling
+    const formError = ref<string | undefined>();
     const validateFormData = (data: Record<string, any>) => {
       // Validate new form data
-      const formIsValid = validateFunction.value(data);
-      if (!formIsValid) {
-        errorMessages.value = formatErrors(validateFunction.value.errors as ErrorObject[], localTranslations.value);
-      } else {
-        errorMessages.value = new Map();
+      try {
+        const formIsValid = validateFunction.value(data);
+        if (!formIsValid) {
+          errorMessages.value = formatErrors(validateFunction.value.errors as ErrorObject[], localTranslations.value);
+        } else {
+          errorMessages.value = new Map();
+        }
+        emit('update:messages', errorMessages.value);
+        emit('update:valid', formIsValid);
+      } catch (e: any) {
+        formError.value = e.message;
       }
-      emit('update:messages', errorMessages.value);
-      emit('update:valid', formIsValid);
+      
     };
 
     const onControlInput = (objectSchemaPointer: string, newValue: any, oldValue: string, index?: number) => {
@@ -406,8 +412,8 @@ export default defineComponent({
     );
 
     return () =>
-      !formSchemaFitsObjectSchema.value?.valid
-        ? h(ValidationFailedError, { errors: formSchemaFitsObjectSchema.value?.errors })
+      !formSchemaFitsObjectSchema.value?.valid || !!formError.value
+        ? h(ValidationFailedError, { errors: [...formSchemaFitsObjectSchema.value?.errors || [], ...(formError.value ? [{ code: 'OS_Error', message: formError.value}] : [])] })
         : h('div', { class: 'vf-wrapper' }, [createComponent(localFormSchema.value, '#', localTranslations.value, localObjectSchema)]);
   }
 });
