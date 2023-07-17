@@ -22,7 +22,6 @@
       data-component-name="form-element-title"
       :label="label"
       variant="underlined"
-      clearable
       :placeholder="noValueText"
       :prepend-inner-icon="icon"
       @update:model-value="onInput"
