@@ -170,7 +170,7 @@ export function useUnits() {
         });
       }
       else {
-        throw new Error('Could not apply profile: unitId is undefined')
+        throw new Error('Could not apply profile')
       }
     }
     catch (err) {
