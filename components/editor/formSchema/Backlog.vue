@@ -490,29 +490,29 @@ export default defineComponent({
 });
 </script>
 
+<i18n>
+  {
+    "en": {
+      "collapse": "collapse all",
+      "expand": "expand all",
+      "formElements": "form elements",
+      "formWidgets": "form widgets",
+      "searchNoMatch": "no matching controls",
+      "widget": "widget"
+    },
+    "de": {
+      "collapse": "alle einklappen",
+      "expand": "alle ausklappen",
+      "formElements": "steuerelemente",
+      "formWidgets": "Formular-Widgets",
+      "searchNoMatch": "keine passenden Steuerelemente vorhanden",
+      "widget": "Widget"
+    }
+  }
+</i18n>
+
 <style lang="scss" scoped>
 .v-expansion-panel-text:deep(.v-expansion-panel-text__wrap) {
   padding: 0 0 16px !important;
 }
 </style>
-
-<i18n>
-{
-  "en": {
-    "collapse": "collapse all",
-    "expand": "expand all",
-    "formElements": "form elements",
-    "formWidgets": "form widgets",
-    "searchNoMatch": "no matching controls",
-    "widget": "widget"
-  },
-  "de": {
-    "collapse": "alle einklappen",
-    "expand": "alle ausklappen",
-    "formElements": "steuerelemente",
-    "formWidgets": "Formular-Widgets",
-    "searchNoMatch": "keine passenden Steuerelemente vorhanden",
-    "widget": "Widget"
-  }
-}
-</i18n>
