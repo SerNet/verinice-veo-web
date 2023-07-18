@@ -354,6 +354,14 @@ export default defineComponent({
     const formError = ref<string | undefined>();
     const validateFormData = (data: Record<string, any>) => {
       // Validate new form data
+      /**
+       * Why try/catch?
+       * Usually the validateFunction should return true/false and if it returns false, validateFunction.errors should be set, however in some cases the
+       * validate function throws an error with a single string as the cause. In this case the form crashes. To avoid this,
+       * next to formatting the error messages, we wrap the validateFunction in a try/catch and if it throws an error,
+       * we expect a serious problem to have occured (usually within the object schema parsing) and display a
+       * prominent error message instead of the form as this problem isn't user-fixable
+       */
       try {
         const formIsValid = validateFunction.value(data);
         if (!formIsValid) {
