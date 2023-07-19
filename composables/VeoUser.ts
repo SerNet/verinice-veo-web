@@ -80,6 +80,7 @@ export const useVeoUser: () => IVeoUserComposable = () => {
         silentCheckSsoRedirectUri: window.location.origin + '/sso',
         checkLoginIframe: false
       });
+
       if (keycloak.value.authenticated) {
         await keycloak.value.loadUserProfile();
       }
@@ -150,6 +151,12 @@ export const useVeoUser: () => IVeoUserComposable = () => {
     maxUnits: keycloak.value?.tokenParsed?.max_units || 2,
     maxUsers: keycloak.value?.tokenParsed?.max_users || -1
   }));
+
+  const accountDisabled = computed<boolean>(() => !keycloak.value?.tokenParsed?.groups.includes('/veo-userclass/veo-user'));
+
+  if (authenticated.value && accountDisabled.value) {
+    throw createError({ statusCode: 451, statusMessage: 'Account disabled: User is not a member of the group "veo-user"!' });
+  }
 
   watch(
     () => roles.value,
