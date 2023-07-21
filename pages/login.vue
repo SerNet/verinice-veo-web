@@ -18,6 +18,14 @@
 <template>
   <div class="wrapper">
     <LayoutAppLogoDesktop />
+    <BaseAlert
+      :model-value="!!route.query.client_disabled"
+      flat
+      no-close-button
+      :type="VeoAlertType.ERROR"
+      :title="t('access')"
+      :text="t('error-message')"
+    />
     <BaseCard class="mt-2">
       <v-card-text class="d-flex justify-space-around">
         <div style="flex-basis: 0; flex-grow: 1">
@@ -84,6 +92,7 @@
 
 <script setup lang="ts">
 import { useVeoUser } from '~/composables/VeoUser';
+import { VeoAlertType } from '~/types/VeoTypes';
 
 definePageMeta({ layout: 'plain' });
 
@@ -109,8 +118,10 @@ const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.ver
 <i18n>
 {
   "en": {
+    "access": "Account disabled.",
     "createAccountCTA": "Create a new account",
     "dataProtectionRegulations": "Data protection regulations",
+    "error-message": "Please contact your account manager.",
     "imprint": "Imprint",
     "login": "Login",
     "loginCTA": "Login with an existing account",
@@ -118,8 +129,10 @@ const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.ver
     "register": "Register"
   },
   "de": {
+    "access": "Account deaktiviert.",
     "createAccountCTA": "Einen neuen Account erstellen",
     "dataProtectionRegulations": "Datenschutzerklärung",
+    "error-message": "Bitte kontaktieren Sie Ihren Account-Manager.",
     "imprint": "Impressum",
     "login": "Anmelden",
     "loginCTA": "Mit einem vorhandenen Account anmelden",

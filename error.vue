@@ -30,16 +30,6 @@
         {{ upperFirst(t(errorIsCustomized ? `texts.${error.statusCode}` : 'texts.default').toString()) }}
       </p>
       <div>
-        <!-- fake-code 451: purpose: need a different error message; backend returns 403 in case of a deactivated account -->
-        <v-btn
-          v-if="error.statusCode === 451"
-          variant="text"
-          color="primary"
-          @click="$router.push('/login')"
-        >
-          {{ t('gotoLogin') }}
-        </v-btn>
-
         <v-btn
           v-if="error.statusCode === 403 || error.statusCode === 404"
           variant="text"
@@ -49,7 +39,7 @@
           {{ $t('global.button.previous') }}
         </v-btn>
         <v-btn
-          v-if="![401, 451].includes(error.statusCode)"
+          v-if="error.statusCode !== 401"
           variant="text"
           color="primary"
           @click="$router.push('/')"
@@ -90,37 +80,31 @@ const image = computed(() => `/images/${props.error.statusCode === 404 ? 'pageNo
 {
   "en": {
     "goToHomepage": "go to homepage",
-    "gotoLogin": "go to login",
     "texts": {
       "401": "Please come back later",
       "403": "You don't have the required permissions to enter this page.",
       "404": "The page you are looking for could not be found.",
-      "451": "Please contact your account manager.",
       "default": "An unknown error occured."
     },
     "titles": {
       "401": "login unavailable",
       "403": "access forbidden",
       "404": "404 not found",
-      "451": "Account disabled",
       "default": "unknown error"
     }
   },
   "de": {
     "goToHomepage": "Zur Startseite",
-    "gotoLogin": "Zurück zum Login",
     "texts": {
       "401": "Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut",
       "403": "Sie besitzen nicht die notwendigen Berechtigungen, um diese Seite aufzurufen.",
       "404": "Die gesuchte Seite konnte leider nicht gefunden werden.",
-      "451": "Bitte kontaktieren Sie Ihren Account-Manager.",
       "default": "An unknown error occured."
     },
     "titles": {
       "401": "login nicht verfügbar",
       "403": "zugriff verweigert",
       "404": "nicht gefunden",
-      "451": "Account deaktiviert",
       "default": "unbekannter Fehler"
     }
   }

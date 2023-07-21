@@ -124,10 +124,12 @@ export const useVeoUser: () => IVeoUserComposable = () => {
    *
    * @param destination If set the user gets redirected to a different page than the one he logged out from.
    */
-  const logout = async (destination?: string) => {
+  const logout = async (destination?: string, queryParameters?: Record<string, any>) => {
     if (keycloak.value) {
+      if (!queryParameters) queryParameters = {};
+      queryParameters.redirect_uri = false;
       await keycloak.value.logout({
-        redirectUri: `${window.location.origin}${destination}?redirect_uri=false`,
+        redirectUri: `${window.location.origin}${destination}?${Object.entries(queryParameters).map(([key, value]) => `${key}=${value}`).join('&')}`,
         id_token_hint: keycloak.value.idToken
       } as any); // Keycloak adpater doesn't know that the parameters changed
       keycloak.value.clearToken();
@@ -155,7 +157,7 @@ export const useVeoUser: () => IVeoUserComposable = () => {
   const accountDisabled = computed<boolean>(() => !keycloak.value?.tokenParsed?.groups.includes('/veo-userclass/veo-user'));
 
   if (authenticated.value && accountDisabled.value) {
-    throw createError({ statusCode: 451, statusMessage: 'Account disabled: User is not a member of the group "veo-user"!' });
+    logout('/login', { client_disabled: true });
   }
 
   watch(
