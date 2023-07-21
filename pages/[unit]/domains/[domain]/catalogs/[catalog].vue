@@ -62,34 +62,27 @@
 </template>
 
 <script lang="ts">
+export default {
+  name: 'VeoCatalogPage'
+}
+export const ROUTE_NAME = 'unit-domains-domain-catalogs-catalog';
+</script>
+
+<script setup lang="ts">
 import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
 import { useQuery } from '~~/composables/api/utils/query';
 
-export const ROUTE_NAME = 'unit-domains-domain-catalogs-catalog';
 
-export default defineComponent({
-  name: 'VeoCatalogPage',
-  setup() {
-    const { t } = useI18n();
-    const route = useRoute();
-    const title = computed(() => t('catalog', { name: catalogItems.value?.[0]?.catalog?.displayName || '' }));
+const { t } = useI18n();
+const route = useRoute();
+const title = computed(() => t('catalog', { name: catalogItems.value?.[0]?.catalog?.displayName || '' }));
 
-    const scenarios = computed(() => (catalogItems.value || []).filter((catalogItem) => catalogItem.namespace?.includes('TOM.DS-G')));
-    const toms = computed(() => (catalogItems.value || []).filter((catalogItem) => catalogItem.namespace?.includes('TOM.TOM')));
+const scenarios = computed(() => (catalogItems.value || []).filter((catalogItem) => catalogItem.namespace?.includes('TOM.DS-G')));
+const toms = computed(() => (catalogItems.value || []).filter((catalogItem) => catalogItem.namespace?.includes('TOM.TOM')));
 
-    const fetchCatalogItemsQueryParameters = computed(() => ({ catalogId: route.params.catalog as string, domainId: route.params.domain as string }));
-    const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(catalogQueryDefinitions.queries.fetchCatalogItems, fetchCatalogItemsQueryParameters);
+const fetchCatalogItemsQueryParameters = computed(() => ({ catalogId: route.params.catalog as string, domainId: route.params.domain as string }));
+const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(catalogQueryDefinitions.queries.fetchCatalogItems, fetchCatalogItemsQueryParameters);
 
-    return {
-      catalogItemsAreFetching,
-      scenarios,
-      title,
-      toms,
-
-      t
-    };
-  }
-});
 </script>
 
 <i18n>
