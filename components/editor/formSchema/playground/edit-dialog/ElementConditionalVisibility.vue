@@ -177,23 +177,20 @@ const availableScopes = computed(() => [...formSchemaElementMap.value]
 );
 
 const onConditionUpdated = () => {
-  if(conditionEffect.value && selectedScopeFormSchemaElement.value && conditionValues.value?.length) {
+  if(conditionEffect.value && selectedScopeFormSchemaElement.value && formattedConditionValues.value?.length) {
     emit('update:form-schema-element', { ...props.formSchemaElement, rule: {
       effect: conditionEffect.value,
       condition: {
         scope: selectedScopeFormSchemaElement.value.scope as string,
         schema: {
-          enum: isArray(conditionValues.value)
-            ? conditionValues.value
-            : selectedScopeObjectSchemaElement.value?.type === 'integer' || selectedScopeObjectSchemaElement.value?.type === 'number'
-              ? [parseInt(conditionValues.value, 10)]
-              : [conditionValues.value]
+          enum: formattedConditionValues.value.map((item: any) => selectedScopeObjectSchemaElement.value?.type === 'integer' || selectedScopeObjectSchemaElement.value?.type === 'number' ? parseInt(item, 10) : item)
         }
       }
     } });
   }
 };
 
+const formattedConditionValues = computed(() => Array.isArray(conditionValues.value) ? conditionValues.value : [conditionValues.value]);
 const onFormSchemaItemModified = (newValue: IVeoFormSchemaItem) => {
   // If the formSchema element gets modified, either use this elements values OR use the ones currently set, if none are passed (avoids removing changes made while rules are still incomplete)
   conditionEffect.value = newValue.rule?.effect || conditionEffect.value;

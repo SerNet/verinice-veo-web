@@ -161,8 +161,7 @@ export const useRequest = () => {
         if (replaceValue) {
           splittedUrl[index] = sanitizeURLParams(String(replaceValue));
         } else {
-          // eslint-disable-next-line no-console
-          console.warn(`API Request is missing the value for parameter "${splittedUrl[index]}"`);
+          throw new Error(`API Request is missing the value for parameter "${splittedUrl[index]}"`);
         }
       }
     }

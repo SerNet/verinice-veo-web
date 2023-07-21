@@ -88,16 +88,19 @@
 
 <script lang="ts">
 import { cloneDeep } from 'lodash';
-import { PropType } from 'vue';
 
 import { useFetchVersions } from '~/composables/api/history';
 import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
-import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
-    object: {
-      type: Object as PropType<IVeoEntity>,
+    objectId: {
+      type: String,
+      required: true
+    },
+    objectType: {
+      type: String,
       required: true
     },
     objectSchema: {
@@ -109,10 +112,8 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t, locale } = useI18n();
 
-    const fetchVersionsQueryParameters = computed(() => ({ object: props.object }));
-    const fetchVersionsQueryEnabled = computed(() => !!props.object);
+    const fetchVersionsQueryParameters = computed(() => ({ id: props.objectId, objectType: props.objectType }));
     const { data: history, isLoading } = useFetchVersions(fetchVersionsQueryParameters, {
-      enabled: fetchVersionsQueryEnabled,
       keepPreviousData: true,
       refetchInterval: 2000 // The history service gets updated asynchronusly, but as soon as an object gets saved, the history gets refetched. To avoid using outdated data, we refetch ever 2 seconds.
     });
