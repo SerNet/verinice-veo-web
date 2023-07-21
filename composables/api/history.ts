@@ -19,19 +19,19 @@ import { Ref } from 'vue';
 import { QueryOptions, useQuery } from './utils/query';
 import schemaQueryDefinitions from './queryDefinitions/schemas';
 import historyQueryDefinitions from './queryDefinitions/history';
-import { IVeoEntity } from '~~/types/VeoTypes';
 
 export interface IVeoFetchVersionsParameters {
-  object: IVeoEntity;
+  id: string;
+  objectType: string;
 }
 
 export const useFetchVersions = (queryParameters: Ref<IVeoFetchVersionsParameters>, queryOptions?: QueryOptions) => {
   const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-  const endpoint = computed(() => endpoints.value?.[queryParameters.value.object.type]);
+  const endpoint = computed(() => endpoints.value?.[queryParameters.value.objectType]);
   const queryEnabled = computed(() => (!!endpoint.value && queryOptions?.enabled ? unref(queryOptions?.enabled) : true));
 
-  const combinedQueryParameters = computed(() => ({ ...queryParameters.value, endpoint: endpoint.value as string }));
+  const combinedQueryParameters = computed(() => ({ id: queryParameters.value.id, endpoint: endpoint.value as string }));
 
   return useQuery(
     historyQueryDefinitions.queries.fetchVersions,

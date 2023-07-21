@@ -87,7 +87,7 @@ export const useVeoUser: () => IVeoUserComposable = () => {
       // Update permissions immediately as the middleware can't wait for the next tick
       updatePermissions([...(keycloak.value?.tokenParsed?.realm_access?.roles || []), ...(keycloak.value?.tokenParsed?.resource_access?.['veo-accounts']?.roles || [])]);
     } catch (error) {
-      throw new Error(`Error while setting up authentication provider: ${error}`);
+      throw new Error(`Error while setting up authentication provider: ${JSON.stringify(error)}`);
     }
 
     keycloakInitialized.value = true;

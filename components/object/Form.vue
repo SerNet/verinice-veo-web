@@ -61,99 +61,31 @@
         <template #default>
           <div class="d-flex flex-row fill-height pb-13 ml-2 align-start">
             <BaseCard
-              v-show="selectedSideContainer !== undefined"
+              v-if="selectedSideBarAction"
               class="overflow-y-auto"
               style="max-height: 100%; width: 300px"
             >
-              <div v-if="selectedSideContainer === SIDE_CONTAINERS.VIEW">
-                <h2 class="text-h2 px-4 pt-1">
-                  {{ t('display') }}
-                </h2>
-                <v-card-text>
-                  <v-select
-                    v-model="selectedDisplayOption"
-                    class="mt-n2"
-                    :label="upperFirst(t('viewAs').toString())"
-                    hide-details
-                    variant="underlined"
-                    :items="displayOptions"
-                  />
-                </v-card-text>
-              </div>
-              <LayoutFormNavigation
-                v-else-if="selectedSideContainer === SIDE_CONTAINERS.TABLE_OF_CONTENTS && currentFormSchema"
-                ref="formNavigation"
-                :form-schema="currentFormSchema && currentFormSchema.content"
-                :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
-                :scroll-wrapper-id="scrollWrapperId"
-              />
-              <ObjectHistory
-                v-else-if="objectData && selectedSideContainer === SIDE_CONTAINERS.HISTORY"
-                class="fill-height overflow-y-auto"
-                :object="originalObject || objectData"
-                :loading="loading"
-                :object-schema="objectSchema"
-                @show-revision="onShowRevision"
-              />
-              <ObjectMessagesTab
-                v-else-if="selectedSideContainer === SIDE_CONTAINERS.MESSAGES"
-                :messages="messages"
+              <component
+                :is="sideBarActions[selectedSideBarAction].component"
+                v-bind="sideBarActions[selectedSideBarAction].props"
               />
             </BaseCard>
             <v-btn-toggle
-              v-model="selectedSideContainer"
+              v-model="selectedSideBarAction"
               :class="$style['object-side-container-select']"
               color="primary"
               variant="plain"
             >
-              <v-tooltip location="start">
-                <template #activator="{ props }">
-                  <v-btn
-                    v-bind="props"
-                    data-component-name="object-form-view-tab"
-                    :icon="mdiEyeOutline"
-                    class="my-1 py-1"
-                    :value="SIDE_CONTAINERS.VIEW"
-                  />
-                </template>
-                <template #default>
-                  {{ t('display') }}
-                </template>
-              </v-tooltip>
-              <v-tooltip location="start">
-                <template #activator="{ props }">
-                  <div v-bind="props">
-                    <v-btn
-                      :disabled="!currentFormSchema"
-                      data-component-name="object-form-toc-tab"
-                      :icon="mdiTableOfContents"
-                      class="my-1 py-1"
-                      :value="SIDE_CONTAINERS.TABLE_OF_CONTENTS"
-                    />
-                  </div>
-                </template>
-                <template #default>
-                  {{ t('tableOfContents') }}
-                </template>
-              </v-tooltip>
-              <v-tooltip location="start">
-                <template #activator="{ props }">
-                  <div v-bind="props">
-                    <v-btn
-                      data-component-name="object-form-history-tab"
-                      :disabled="disableHistory"
-                      :icon="mdiHistory"
-                      class="my-1 py-1"
-                      :value="SIDE_CONTAINERS.HISTORY"
-                    />
-                  </div>
-                </template>
-                <template #default>
-                  {{ t('history') }}
-                </template>
-              </v-tooltip>
-              <v-tooltip location="start">
-                <template #activator="{ props }">
+              <ObjectSideBarAction
+                v-for="(action, actionName) in sideBarActions"
+                v-bind="action"
+                :key="actionName"
+                :value="actionName"
+              >
+                <template
+                  v-if="actionName === 'messages'"
+                  #default="{ props: actionProps, activatorProps }"
+                >
                   <div>
                     <v-badge
                       :content="messages.errors.length + messages.warnings.length + messages.information.length"
@@ -161,19 +93,17 @@
                       :color="messages.errors.length ? 'error' : messages.warnings.length ? 'warning' : 'info'"
                     >
                       <v-btn
-                        v-bind="props"
-                        data-component-name="object-form-messages-tab"
+                        v-bind="activatorProps"
+                        :data-component-name="actionProps.dataComponentName"
                         class="my-1 py-1"
-                        :icon="mdiInformationOutline"
-                        :value="SIDE_CONTAINERS.MESSAGES"
+                        :disabled="actionProps.disabled"
+                        :icon="actionProps.icon"
+                        :value="actionProps.value"
                       />
                     </v-badge>
                   </div>
                 </template>
-                <template #default>
-                  {{ t('messages') }}
-                </template>
-              </v-tooltip>
+              </ObjectSideBarAction>
             </v-btn-toggle>
           </div>
         </template>
@@ -200,14 +130,13 @@ import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 
-import { useQuery, useQueries } from '~~/composables/api/utils/query';
+import ObjectDisplayOptions from '~~/components/object/DisplayOptions.vue';
+import LayoutFormNavigation from '~~/components/layout/FormNavigation.vue';
+import ObjectHistory from '~~/components/object/History.vue';
+import Messages from '~~/components/object/MessagesTab.vue';
 
-enum SIDE_CONTAINERS {
-  HISTORY,
-  MESSAGES,
-  TABLE_OF_CONTENTS,
-  VIEW
-}
+import { useQuery, useQueries } from '~~/composables/api/utils/query';
+import { SideBarAction } from './SideBarAction.vue';
 
 export default defineComponent({
   props: {
@@ -307,81 +236,10 @@ export default defineComponent({
       ...(objectSchema.value && props.modelValue ? getSubTypeTranslation(props.modelValue, objectSchema.value, props.domainId, locale.value, formSchemas.value || []):{})
     }));
 
-    const selectedDisplayOption = ref('objectschema');
-
+    // Stuff that manages which form schema gets used to display the object
     const formsQueryParameters = computed(() => ({ domainId: props.domainId as string}));
     const formsQueryEnabled = computed(() => !!props.domainId);
     const { data: formSchemas, isFetching: formSchemasAreFetching } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
-
-    const formQueryParameters = computed(() => ({ domainId: props.domainId, id: selectedDisplayOption.value as string }));
-    const formQueryEnabled = computed(() => selectedDisplayOption.value !== 'objectschema');
-    const { data: formSchema, isFetching: formSchemaIsFetching } = useQuery(formQueryDefinitions.queries.fetchForm, formQueryParameters, { enabled: formQueryEnabled });
-    const currentFormSchema = computed(() => (selectedDisplayOption.value === 'objectschema' || formSchemaIsFetching.value ? undefined : formSchema.value));
-
-    function getFormschemaIdBySubType(subType: string) {
-      const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === subType)?.id;
-      if (formSchemaId) {
-        return formSchemaId;
-      }
-    }
-    function getSubTypeByFormSchemaId(id: string) {
-      const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.id === id)?.subType;
-      if (formSchemaId) {
-        return formSchemaId;
-      }
-    }
-
-    const setDisplayOptionBasedOnSubtype = () => {
-      if(!subType.value) {
-        return;
-      }
-      const formSchemaId = getFormschemaIdBySubType(subType.value);
-      if (formSchemaId) {
-        selectedDisplayOption.value = formSchemaId;
-      } else {
-        selectedDisplayOption.value = 'objectschema';
-      }
-    };
-
-    watch(
-      () => formSchemas.value,
-      (newValue) => {
-        if (newValue && subType.value) {
-          setDisplayOptionBasedOnSubtype();
-        }
-      },
-      { deep: true, immediate: true }
-    );
-    watch(() => subType.value, (newValue) => {
-      if(newValue) {
-        setDisplayOptionBasedOnSubtype();
-      }
-    });
-
-    watch(() => selectedDisplayOption.value, (newValue) => {
-      if(!!newValue && objectData.value.domains && !objectData.value?.domains?.[props.domainId]?.subType) {
-        objectData.value.domains[props.domainId] = {
-          subType: getSubTypeByFormSchemaId(newValue),
-          status: 'NEW'
-        };
-      }
-    });
-
-    const displayOptions = computed<{ title: string; value: string | undefined }[]>(() => {
-      const currentSubType = objectData.value?.domains?.[props.domainId]?.subType;
-      const availableFormSchemas: { title: string; value: string | undefined }[] = (formSchemas.value as IVeoFormSchemaMeta[])
-        .filter((formSchema) => formSchema.modelType === objectSchema.value?.title && (!currentSubType || currentSubType === formSchema.subType))
-        .map((formSchema) => ({
-          title: formSchema.name[locale.value] || formSchema.subType,
-          value: formSchema.id
-        }));
-      availableFormSchemas.unshift({ title: upperFirst(t('objectView').toString()), value: 'objectschema' });
-      return availableFormSchemas;
-    });
-
-    const formSchemaHasGroups = computed(() => {
-      return currentFormSchema.value?.content.elements?.some((element: any) => (element.type === 'Layout' || element.type === 'Group') && element.options.label);
-    });
 
     // Form stuff
     const formErrors = ref<Map<string, string[]>>(new Map());
@@ -398,8 +256,6 @@ export default defineComponent({
     });
 
     // side menu stuff
-    const selectedSideContainer = ref<undefined | SIDE_CONTAINERS>(undefined);
-
     // Messages stuff
     const messages = computed(() => ({
       errors: Array.from(formErrors.value).map(([objectSchemaPointer, messages]) => ({ code: objectSchemaPointer, message: messages[0], params: { type: 'error' } })),
@@ -482,6 +338,109 @@ export default defineComponent({
       };
     };
 
+    // Stuff that handles which formschema the object gets displayed with
+    const displayOption = ref<string>('objectschema');
+    const formQueryParameters = computed(() => ({ domainId: props.domainId, id: displayOption.value as string }));
+    const formQueryEnabled = computed(() => displayOption.value !== 'objectschema');
+    const { data: formSchema, isFetching: formSchemaIsFetching } = useQuery(formQueryDefinitions.queries.fetchForm, formQueryParameters, { enabled: formQueryEnabled });
+    const currentFormSchema = computed(() => (displayOption.value === 'objectschema' || formSchemaIsFetching.value ? undefined : formSchema.value));
+
+    const getFormschemaIdBySubType = (subType: string) => {
+      const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === subType)?.id;
+      if (formSchemaId) {
+        return formSchemaId;
+      }
+    };
+    
+    const getSubTypeByFormSchemaId = (id: string) => {
+      const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.id === id)?.subType;
+      if (formSchemaId) {
+        return formSchemaId;
+      }
+    };
+
+    const setDisplayOptionBasedOnSubtype = () => {
+      if(!subType.value) {
+        return;
+      }
+      const formSchemaId = getFormschemaIdBySubType(subType.value);
+      if (formSchemaId) {
+        displayOption.value = formSchemaId;
+      } else {
+        displayOption.value = 'objectschema';
+      }
+    };
+
+    // If the available form schemas change check if a subtype is set and get a formschema for that sub type
+    watch(() => formSchemas.value, setDisplayOptionBasedOnSubtype, { deep: true, immediate: true });
+    // If the subtype changes, check if a formschema for the subtype exists and set it's id
+    watch(() => subType.value, setDisplayOptionBasedOnSubtype, { deep: true, immediate: true });
+
+    // If no subtype is set but the users switches to a formschema, automatically set that schemas subtype
+    watch(() => displayOption.value, (newValue) => {
+      if(!!newValue && objectData.value.domains && !objectData.value?.domains?.[props.domainId]?.subType) {
+        objectData.value.domains[props.domainId] = {
+          subType: getSubTypeByFormSchemaId(newValue),
+          status: 'NEW'
+        };
+      }
+    });
+
+    type SIDE_BAR_ACTIONS = 'display' | 'tableOfContents' | 'history' | 'messages'
+    const selectedSideBarAction = ref<SIDE_BAR_ACTIONS | undefined>(undefined);
+    const sideBarActions = computed<Record<SIDE_BAR_ACTIONS, SideBarAction>>(() =>
+      ({
+        display: {
+          icon: mdiEyeOutline,
+          name: t('display'),
+          dataComponentName: 'object-form-view-tab',
+          component: ObjectDisplayOptions,
+          props: {
+            displayOption: displayOption.value,
+            domainId: props.domainId,
+            formSchemas: formSchemas.value,
+            objectSchema: objectSchema.value,
+            objectData: objectData.value,
+            'onUpdate:displayOption': (newDisplayOption: string) => displayOption.value = newDisplayOption
+          }
+        },
+        tableOfContents: {
+          icon: mdiTableOfContents,
+          name: t('tableOfContents'),
+          dataComponentName: 'object-form-toc-tab',
+          disabled: !currentFormSchema.value,
+          component: LayoutFormNavigation,
+          props: {
+            formSchema: currentFormSchema.value?.content,
+            customTranslation: currentFormSchema.value?.translation?.[locale.value],
+            scrollWrapperId: props.scrollWrapperId
+          }
+        },
+        history: {
+          icon: mdiHistory,
+          name: t('history'),
+          dataComponentName: 'object-form-history-tab',
+          component: ObjectHistory,
+          disabled: props.disableHistory,
+          props: {
+            objectType: props.originalObject?.type,
+            objectId: props.originalObject?.id,
+            objectSchema: objectSchema?.value,
+            onShowRevision
+          }
+        },
+        messages: {
+          icon: mdiInformationOutline,
+          name: t('messages'),
+          dataComponentName: 'object-form-messages-tab',
+          component: Messages,
+          props: {
+            messages: messages.value
+          }
+        }
+      })
+    );
+
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const inspectionData = ref<any>(objectData.value);
     const fetchDecisionsQueryParameters = computed(() => {
@@ -519,14 +478,6 @@ export default defineComponent({
       () => objectSchemaIsFetching.value || props.loading || formSchemasAreFetching.value || formSchemaIsFetching.value || domainIsFetching.value || translationsAreFetching.value
     );
 
-    // We have to reactivate the observer after the form gets readded to the dom after loading, as the formerly observed node no longer exists
-    const formNavigation = ref();
-    watch(() => dataIsLoading.value, (newValue) => {
-      if(!newValue && selectedSideContainer.value === SIDE_CONTAINERS.TABLE_OF_CONTENTS) {
-        nextTick(() => formNavigation.value?.activateObserver());
-      }
-    });
-
     const onShowRevision = (revision: IVeoObjectHistoryEntry, isRevision: boolean) => {
       emit('show-revision', revision, isRevision);
     };
@@ -535,10 +486,8 @@ export default defineComponent({
       localAdditionalContext,
       currentFormSchema,
       dataIsLoading,
-      displayOptions,
+      displayOption,
       formErrors,
-      formNavigation,
-      formSchemaHasGroups,
       locale,
       messages,
       mergedTranslations,
@@ -546,8 +495,8 @@ export default defineComponent({
       objectSchema,
       onShowRevision,
       reactiveFormActions,
-      selectedDisplayOption,
-      selectedSideContainer,
+      selectedSideBarAction,
+      sideBarActions,
       subType,
 
       mdiEyeOutline,
@@ -555,8 +504,7 @@ export default defineComponent({
       mdiInformationOutline,
       mdiTableOfContents,
       upperFirst,
-      t,
-      SIDE_CONTAINERS
+      t
     };
   }
 });
@@ -571,10 +519,8 @@ export default defineComponent({
     "linkDPIA": "link DPIA",
     "messages": "messages",
     "objects": "objects",
-    "objectView": "object view",
     "tableOfContents": "contents",
-    "unknown": "unknown",
-    "viewAs": "view as"
+    "unknown": "unknown"
   },
   "de": {
     "createDPIA": "DSFA erstellen",
@@ -583,10 +529,8 @@ export default defineComponent({
     "linkDPIA": "DSFA auswählen",
     "messages": "Meldungen",
     "objects": "Objekte",
-    "objectView": "Objektansicht",
     "tableOfContents": "Inhalt",
-    "unknown": "unbestimmt",
-    "viewAs": "darstellen als"
+    "unknown": "unbestimmt"
   }
 }
 </i18n>
