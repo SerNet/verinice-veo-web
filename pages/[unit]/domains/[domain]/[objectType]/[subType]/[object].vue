@@ -410,14 +410,7 @@ export default defineComponent({
         }
         : {};
 
-      const disabledRiskDefinition = object.value?.domains?.[domainId.value]?.riskDefinition
-        ? {
-          [`#/properties/domains/properties/${domainId.value}/properties/riskDefinition`]: {
-            formSchema: { disabled: true }
-          }
-        }
-        : {};
-      additionalContext.value = { ...disabledSubType, ...disabledRiskDefinition };
+      additionalContext.value = { ...disabledSubType };
     };
 
     watch(() => () => domainId.value, getAdditionalContext, { deep: true, immediate: true });
