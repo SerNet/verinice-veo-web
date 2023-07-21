@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -72,14 +72,10 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
     const route = useRoute();
-
     const title = computed(() => t('catalog', { name: catalogItems.value?.[0]?.catalog?.displayName || '' }));
 
-    const scenarios = computed(() =>
-      // VVT is needed by the backend, however it shouldn't be selectable by the user as this throws an error
-      (catalogItems.value || []).filter((catalogItem) => !catalogItem.element.displayName?.includes('TOM-') && !catalogItem.element.displayName?.includes('VVT'))
-    );
-    const toms = computed(() => (catalogItems.value || []).filter((catalogItem) => catalogItem.element.displayName?.includes('TOM-')));
+    const scenarios = computed(() => (catalogItems.value || []).filter((catalogItem) => catalogItem.namespace?.includes('TOM.DS-G')));
+    const toms = computed(() => (catalogItems.value || []).filter((catalogItem) => catalogItem.namespace?.includes('TOM.TOM')));
 
     const fetchCatalogItemsQueryParameters = computed(() => ({ catalogId: route.params.catalog as string, domainId: route.params.domain as string }));
     const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(catalogQueryDefinitions.queries.fetchCatalogItems, fetchCatalogItemsQueryParameters);

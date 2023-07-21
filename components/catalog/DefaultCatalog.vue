@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2022  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -123,12 +123,8 @@ const headers: TableHeader[] = [
 const selectedItems = ref<IVeoEntity[]>([]);
 const availableItems = computed(() =>
   props.catalogItems.map((item) => {
-    const displayNameParts = (item.element.displayName as string).split(' ');
-    const designator = displayNameParts.shift() || '';
-    const abbreviation = displayNameParts.shift() || '';
-    const name = displayNameParts.join(' ');
-
-    return { designator, abbreviation, name, id: item.id, description: item.description || '' };
+    const {namespace, abbreviation, name, id, description = '' } = item;
+    return { designator: namespace, abbreviation, name, id, description } || ''
   })
 );
 
@@ -145,7 +141,9 @@ const applyItems = async () => {
 
   try {
     // Fetch incarnations for all selected items
-    const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: route.params.unit as string, itemIds: selectedItems.value.map((value) => value.id) });
+    const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: route.params.unit as string, itemIds:
+      selectedItems.value.map((item) => item.id) });
+
     // Apply incarnations
     await incarnate({ incarnations, unitId: route.params.unit });
     displaySuccessMessage(props.successText);
