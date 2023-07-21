@@ -69,7 +69,7 @@ const props = defineProps({
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 
-const CUSTOMIZED_ERROR_PAGES = [401, 403, 404, 451];
+const CUSTOMIZED_ERROR_PAGES = [401, 403, 404];
 
 const errorIsCustomized = computed(() => CUSTOMIZED_ERROR_PAGES.includes(props.error.statusCode || -1));
 
