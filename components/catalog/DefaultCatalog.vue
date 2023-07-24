@@ -31,7 +31,7 @@
     </BaseCard>
     <v-row
       dense
-      class="mt-4"
+      class="my-4"
     >
       <v-spacer />
       <v-col cols="auto">
