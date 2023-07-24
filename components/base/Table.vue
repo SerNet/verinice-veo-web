@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2023 Markus Werner, Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -117,7 +117,7 @@ const emit = defineEmits<{
   (e: 'click', event: any): void;
   (e: 'update:model-value', newValue: any[]): void;
 }>();
-  
+
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { tablePageSize } = useVeoUser();
@@ -385,44 +385,6 @@ const internalModelValue = computed({
   }
 });
 
-// Stuff needed for select all
-// Get all selected items on the current page
-const allItemsOnPage = computed(() => isPaginatedResponse(props.items) ? props.items.items : props.items.slice((localPage.value -1) * tablePageSize.value, localPage.value * (tablePageSize.value - 1)) as any[]);
-const availableItemsOnPage = computed(() => allItemsOnPage.value.filter((item) => !item.disabled));
-const itemsSelectedOnPage = computed(() => availableItemsOnPage.value.filter((item) => internalModelValue.value.includes(item.id)));
-const allItemsSelected = computed(() => itemsSelectedOnPage.value.length === allItemsOnPage.value.length || itemsSelectedOnPage.value.length === availableItemsOnPage.value.length);
-const allItemsDeselected = computed(() => !itemsSelectedOnPage.value.length);
-const someItemsSelected = computed(() => !allItemsSelected.value && !!itemsSelectedOnPage.value.length);
-const onSelectAllClicked = () => {
-  // If all items on this page are deselected, select all items that are not disabled
-  if(allItemsDeselected.value) {
-    internalModelValue.value = internalModelValue.value.concat(allItemsOnPage.value.filter((item) => !item.disabled).map((item) => item.id));
-    // If all items on this page are selected, deselect all that items that are on this page AND aren't disabled
-  } else if (allItemsSelected.value) {
-    internalModelValue.value = internalModelValue.value.filter((selectedItemId) => {
-      const fullyQualifiedItem = allItemsOnPage.value.find((item) => item.id === selectedItemId);
-      if(!fullyQualifiedItem) {
-        return true;
-      }
-      return fullyQualifiedItem.disabled;
-    });
-    // If not all items are selected, selet all, however make sure to not enter an item twice if it has alrady been selected.
-  } else {
-    internalModelValue.value = internalModelValue.value.concat(allItemsOnPage.value.filter((item) => !item.disabled).map((item) => item.id).filter((itemId) => !internalModelValue.value.includes(itemId)));
-  }
-        
-};
-
-// Sadly we have to create our own checkbox that looks exactly like the orignal one, as we can't hook in the onUpdate:modelValue call of the original one
-const selectAllCheckbox = {
-  'column.data-table-select': () =>  h(VCheckboxBtn, {
-    color: 'primary',
-    indeterminate: someItemsSelected.value,
-    modelValue: allItemsSelected.value,
-    'onUpdate:modelValue': onSelectAllClicked
-  })
-};
-
 const sharedProps = computed(() => ({
   ...attrs,
   id: `veo-object-table-${vm?.uid}`,
@@ -469,14 +431,12 @@ const render = () => isPaginatedResponse(props.items) ?
   }, {
     ...slots,
     ...renderers.value,
-    ...selectAllCheckbox
   })
   : h('div', [
     ...(props.loading ? [h(VProgressLinear, { indeterminate: true, color: 'primary' })] : []),
     h(VDataTable, sharedProps.value, {
       ...slots,
       ...renderers.value,
-      ...selectAllCheckbox
     })
   ]);
 </script>
