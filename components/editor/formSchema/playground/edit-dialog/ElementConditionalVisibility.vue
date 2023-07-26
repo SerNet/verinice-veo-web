@@ -117,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-import { cloneDeep, isArray } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { mdiAlphabetical, mdiFormTextbox, mdiMagicStaff, mdiTrashCanOutline } from '@mdi/js';
 import { JsonPointer } from 'json-ptr';
 import { JSONSchema7 } from 'json-schema';
@@ -176,7 +176,16 @@ const availableScopes = computed(() => [...formSchemaElementMap.value]
   .map(([uuid, _element]) => uuid)
 );
 
+/* Sadly needed as else when a part of the condition gets updated, onConditionUpdated gets called, which emits the
+ * formschema element which then triggers onFormSchemaItem modified which sets the parts of the condition which
+ * triggers onConditionUpdated and so on.
+ */
+const ignoreUpdate = ref(false);
+
 const onConditionUpdated = () => {
+  if(ignoreUpdate.value) {
+    return;
+  }
   if(conditionEffect.value && selectedScopeFormSchemaElement.value && formattedConditionValues.value?.length) {
     emit('update:form-schema-element', { ...props.formSchemaElement, rule: {
       effect: conditionEffect.value,
@@ -192,10 +201,14 @@ const onConditionUpdated = () => {
 
 const formattedConditionValues = computed(() => Array.isArray(conditionValues.value) ? conditionValues.value : [conditionValues.value]);
 const onFormSchemaItemModified = (newValue: IVeoFormSchemaItem) => {
+  ignoreUpdate.value = true;
   // If the formSchema element gets modified, either use this elements values OR use the ones currently set, if none are passed (avoids removing changes made while rules are still incomplete)
   conditionEffect.value = newValue.rule?.effect || conditionEffect.value;
   scopeUUID.value = newValue.rule?.condition?.scope ? [...formSchemaElementMap.value].find(([_uuid, element]) => element.scope === (newValue.rule?.condition?.scope))?.[0] : scopeUUID.value;
   conditionValues.value = newValue.rule?.condition?.schema?.enum || conditionValues.value;
+  nextTick(() => {
+    ignoreUpdate.value = false;
+  });
 };
 
 const deleteRule = () => {
