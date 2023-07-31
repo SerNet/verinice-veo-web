@@ -158,6 +158,18 @@ export function useUnits() {
     }
   }
 
+  async function redirectToUnit({ unitId, domainId }:{unitId: string, domainId: string}) {
+    const router = useRouter();
+    if (!domainId || !unitId) return;
+    router.push({
+      name: 'unit-domains-domain',
+      params: {
+        unit: unitId,
+        domain: domainId
+      }
+    });
+  }
+
   async function createUnitAndApplyProfile({name, domains, description, messages}: createUnitAndApplyProfileParams) {
     state.isCreatingUnit = true;
     try {
