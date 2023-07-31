@@ -1,11 +1,12 @@
  {
   "en": {
     "hint": "This page allows you to export data associated with your account.",
-    "unitHeader": "Data of your active Units:",
+    "linkText": "Article 20 DSGVO",
+    "unitHeader": "Data of your active units:",
     "domainHeader": "Domain data:",
-    "domainBody": "(Simplifies the later reuse in verinice.veo DSMS.)",
+    "domainBody": "(Simplifies the later reuse in verinice.veo ISMS.)",
     "historyHeader": "Data history:",
-    "historyBody": "(The optional download of the entire data history may take some time, depending on it's size.)",
+    "historyBody": "(The optional download of the entire data history may take some time, depending on its size.)",
     "accountHeader": "Account data:",
     "btnDownload": "Download",
     "btnPrepareDownload": "Prepare Download",
@@ -15,9 +16,9 @@
     "errorBody": "Please contact our support team at verinice{'@'}sernet.de.",
     "successHeader": "Download successful.",
     "prepareHistoryPhases": {
-      "IDLE":  "Downloading your data:",
-      "DOWNLOAD": "Downloading your data:",
-      "ZIP": "Creating ZIP Archives"
+      "IDLE":  "Downloading your data ...",
+      "DOWNLOAD": "Downloading your data ...",
+      "ZIP": "Creating ZIP Archives ..."
     },
     "alertLeavePageTitle": "Warning: History Download",
     "alertLeavePageCopy": "Do you really want to leave this page and stop downloading the history data?"
@@ -26,7 +27,7 @@
   "de": {
     "hint": "Hier können Sie Ihr Recht auf Datenübertragbarkeit nach { 0 } wahrnehmen. Laden Sie ihre personenbezogenen Daten im JSON-Format (ZIP-komprimiert) durch Mausklick auf die Downloadlinks herunter:",
     "linkText": "Artikel 20 DSGVO",
-    "unitHeader": " Daten Ihrer aktiven Units:",
+    "unitHeader": "Daten Ihrer aktiven Units:",
     "domainHeader": "Daten zu Domänen:",
     "domainBody": "(Vereinfacht die spätere Wiederverwendung in verinice.veo DSMS.)",
     "historyHeader": "Daten-Historie:",
@@ -34,15 +35,15 @@
     "accountHeader": "Benutzerdaten:",
     "btnDownload": "Download",
     "btnPrepareDownload": "Download vorbereiten",
-    "alertHeader": "Leider sind keine Daten vorhanden",
+    "alertHeader": "Leider sind keine Daten vorhanden.",
     "alertBody": "Bitte kontaktieren Sie unseren Support unter verinice{'@'}sernet.de.",
     "errorHeader": "Download fehlgeschlagen.",
     "errorBody": "Bitte kontaktieren Sie unseren Support unter verinice{'@'}sernet.de.",
     "successHeader": "Download erfolgreich.",
     "prepareHistoryPhases": {
-      "IDLE": "Daten herunterladen:",
-      "DOWNLOAD": "Daten herunterladen:",
-      "ZIP": "ZIP-Archive erstellen:"
+      "IDLE": "Daten herunterladen ...",
+      "DOWNLOAD": "Daten herunterladen ...",
+      "ZIP": "ZIP-Archive erstellen ..."
     },
     "alertLeavePageTitle": "Warnung: History-Download",
     "alertLeavePageCopy": "Wollen Sie die Seite wirklich verlassen und den History-Download abbrechen?"
