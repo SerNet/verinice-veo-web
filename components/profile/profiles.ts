@@ -67,10 +67,10 @@ const initialState = {
   domainId: route.params.domain as string,
   selectedUnit: null as null | string,
   newUnitName: null as null | string,
-  newUnitDescription: null as null | string,
+  newUnitDescription: null as null | string
 };
 
-const state = reactive({ ...initialState })
+const state = reactive({ ...initialState });
 
 // Manipulate state
 function resetState() {
@@ -82,10 +82,10 @@ function updateDomainId() {
 }
 
 function toggleDialog() {
-  if(state.isApplyingProfile || state.isCreatingUnit) return
+  if(state.isApplyingProfile || state.isCreatingUnit) return;
   state.showDialog = !state.showDialog;
 
-  if (state.showDialog) return
+  if (state.showDialog) return;
   resetState();
 }
 
@@ -106,7 +106,7 @@ function useDomain() {
   const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
 
   return {
-    domain: readonly(domain),
+    domain: readonly(domain)
   };
 }
 
@@ -139,13 +139,14 @@ export function useUnits() {
   // Remove all units which are not in the current domain
   const units = computed(()=> _units.value ?
     _units.value.filter(unit => {
-      return unit.domains.some(({targetUri}) => targetUri === domain?.value?._self)
-  }) : [] )
+      return unit.domains.some(({targetUri}) => targetUri === domain?.value?._self);
+    }) : [] );
 
   async function applyProfile({ profileKey, unitId, domainId, messages }: ApplyProfileParams) {
     state.isApplyingProfile = true;
     try {
       await mutateExistingUnit({ domainId, unitId, profileKey });
+      redirectToUnit({ unitId, domainId });
       displaySuccessMessage(messages.success);
     }
     catch (err) {
@@ -170,7 +171,7 @@ export function useUnits() {
         });
       }
       else {
-        throw new Error('Could not apply profile')
+        throw new Error('Could not apply profile');
       }
     }
     catch (err) {
