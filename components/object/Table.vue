@@ -113,7 +113,7 @@ const { formatDateTime } = useFormatters();
 const slots = useSlots();
 const attrs = useAttrs();
 
-const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
+const translationQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain }));
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
 
 /**

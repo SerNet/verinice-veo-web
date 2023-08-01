@@ -217,7 +217,7 @@ export default defineComponent({
       enabled: fetchSchemaQueryEnabled
     });
 
-    const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const translationQueryParameters = computed(() => ({ languages: [locale.value], domain: props.domainId }));
     const { data: translations, isFetching: translationsAreFetching } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
     const mergedTranslations = computed<IVeoTranslations['lang']>(() => merge({}, translations.value?.lang || {}, currentFormSchema.value?.translation || {}));
 

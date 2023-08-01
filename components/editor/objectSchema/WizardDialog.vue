@@ -265,7 +265,7 @@ const code = ref();
 const modelType = ref();
 
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain }));
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
 const availableObjectSchemas = computed(() => (Object.keys(schemas.value || {})).map((objectType) => ({ title: translations.value?.lang[locale.value]?.[objectType] || '', value: objectType })).concat({ title: t('customObjectSchema'), value: 'custom' }));

@@ -156,7 +156,7 @@ const { ability } = useVeoPermissions();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
 
-const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain }));
 const { data: translations, isFetching: translationsLoading } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
 const domainId = computed(() => route.params.domain as string);

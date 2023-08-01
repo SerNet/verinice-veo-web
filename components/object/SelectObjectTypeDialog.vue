@@ -64,8 +64,9 @@ defineEmits(['create-entity', 'update:model-value']);
 
 const { t, locale } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
+const route = useRoute();
 
-const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain }));
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);

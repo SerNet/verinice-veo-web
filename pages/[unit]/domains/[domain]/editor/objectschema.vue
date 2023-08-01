@@ -337,7 +337,8 @@ export default defineComponent({
     const detailsDialogVisible = ref(false);
 
     const fetchTranslationQueryParameters = computed(() => ({
-      languages: (locales.value as LocaleObject[]).map((locale) => locale.code)
+      languages: (locales.value as LocaleObject[]).map((locale) => locale.code),
+      domain: route.params.domain
     }));
     const translations = reactive<IVeoTranslations['lang']>({});
     const { data: _translations, isFetching: translationsLoading } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationQueryParameters);

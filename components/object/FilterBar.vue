@@ -105,7 +105,7 @@ export default defineComponent({
     const { t, locale } = useI18n();
     const { t: $t } = useI18n({ useScope: 'global' });
 
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: props.domainId }));
     const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     const formsQueryParameters = computed(() => ({ domainId: props.domainId }));

@@ -193,7 +193,7 @@ const { xs } = useDisplay();
 // Layout stuff
 const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
 
-const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: props.domainId }));
 const fetchTranslationsQueryEnabled = computed(() => authenticated.value);
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters,  { enabled: fetchTranslationsQueryEnabled });
 

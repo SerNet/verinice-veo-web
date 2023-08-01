@@ -178,7 +178,7 @@ export default defineComponent({
 
     // Fetching of object types & translations for status
 
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: props.domainId }));
     const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     const formsQueryParameters = computed(() => ({ domainId: props.domainId as string}));

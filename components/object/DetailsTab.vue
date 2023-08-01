@@ -123,7 +123,7 @@ export default defineComponent({
     };
     watch(() => props.type, resetQueryOptions);
 
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: props.domainId }));
     const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);

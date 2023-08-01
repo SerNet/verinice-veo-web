@@ -437,7 +437,7 @@ export default defineComponent({
     const editorLanguage = ref(locale.value);
     provide(PROVIDE_KEYS.EDITOR_LANGUAGE, editorLanguage);
 
-    const translationsQueryParameters = computed(() => ({ languages: (locales.value as LocaleObject[]).map((locale) => locale.code) }));
+    const translationsQueryParameters = computed(() => ({ languages: (locales.value as LocaleObject[]).map((locale) => locale.code), domain: route.params.domain }));
     const { data: translationsQueryData } = useQuery(translationQueryDefinitions.queries.fetch, translationsQueryParameters);
 
     const setTranslation = (translations: IEditorTranslations, key: string, source: TRANSLATION_SOURCE, locale: string, value: string) => {

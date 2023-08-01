@@ -129,12 +129,13 @@ export default defineComponent({
   emits: ['translations-imported', 'update:replace-translations'],
   setup(props, { emit }) {
     const { locales, t } = useI18n();
+    const route = useRoute();
 
     const formSchema = inject<Ref<IVeoFormSchema | undefined>>('mainFormSchema');
 
     const availableLanguages = computed(() => (locales.value as LocaleObject[]).map((locale) => locale.code));
 
-    const translationsQueryParameters = computed(() => ({ languages: availableLanguages.value }));
+    const translationsQueryParameters = computed(() => ({ languages: availableLanguages.value, domain: route.params.domain }));
     const { data: objectSchemaTranslations } = useQuery(translationQueryDefinitions.queries.fetch, translationsQueryParameters);
 
     // Layout stuff

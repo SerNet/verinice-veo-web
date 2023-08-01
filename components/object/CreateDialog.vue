@@ -102,7 +102,7 @@ export default defineComponent({
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
 
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: props.domainId }));
     const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);

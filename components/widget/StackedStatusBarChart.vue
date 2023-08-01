@@ -135,7 +135,7 @@ const sortedStatusBySubType = computed<Record<string, any>>(() =>
   }, Object.assign({}))
 );
 
-const translationQueryParameters = computed(() => ({ languages: [locale.value] }));
+const translationQueryParameters = computed(() => ({ languages: [locale.value], domain: props.domainId }));
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
 
 const formsQueryParameters = computed(() => ({ domainId: props.domainId as string }));

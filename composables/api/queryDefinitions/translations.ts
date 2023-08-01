@@ -25,6 +25,7 @@ export interface IVeoTranslations {
 
 export interface IVeoFetchTranslationsParameters {
   languages: string[];
+  domain?: string;
 }
 
 export default {
@@ -32,7 +33,7 @@ export default {
     fetch: {
       primaryQueryKey: 'translations',
       url: '/api/translations',
-      queryParameterTransformationFn: (queryParameters) => ({ query: { languages: queryParameters.languages.toString() } }),
+      queryParameterTransformationFn: (queryParameters) => ({ query: { languages: queryParameters.languages.toString(), domain: queryParameters.domain } }),
       staticQueryOptions: {
         staleTime: STALE_TIME.LONG,
         placeholderData: { lang: {} }

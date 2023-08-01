@@ -121,7 +121,7 @@ export default defineComponent({
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value] }));
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain }));
     const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
     const speedDialIsOpen = ref(false);
