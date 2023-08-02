@@ -308,9 +308,10 @@ export default defineComponent({
     });
     const catalogQueryParameters = ref<any>({});
     const catalogQueryEnabled = computed(() => !isEmpty(catalogQueryParameters.value));
-    const { data: catalog } = useQuery(catalogQueryDefinitions.queries.fetchCatalog, catalogQueryParameters, {
+    const { data: catalogs } = useQuery(catalogQueryDefinitions.queries.fetchCatalogs, catalogQueryParameters, {
       enabled: catalogQueryEnabled
     });
+
     const { data: report } = useQuery(reportQueryDefinitions.queries.fetchAll);
 
     const objectTypeQueryParameters = ref<any>({});
@@ -326,8 +327,8 @@ export default defineComponent({
     });
 
     const queryResultMap = computed<{ [key: string]: any }>(() => ({
-      ':catalog': catalog.value
-        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':catalog')?.queriedText?.resultTransformationFn(':catalog', route.params.catalog as string, catalog.value)
+      ':catalog': catalogs.value
+        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':catalog')?.queriedText?.resultTransformationFn(':catalogs', route.params.catalog as string, catalogs.value)
         : undefined,
       ':domain': domain.value
         ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':domain')?.queriedText?.resultTransformationFn(':domain', route.params.domain as string, domain.value)
@@ -444,6 +445,7 @@ export default defineComponent({
           .join(' - ');
       }
     };
+
 
     watch(() => locale.value, updateTitle, { immediate: true });
     watch(() => queryResultMap, updateTitle, { deep: true, immediate: true });
