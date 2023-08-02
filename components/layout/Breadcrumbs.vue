@@ -130,6 +130,7 @@ import { isEmpty, last, omit, pick } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal, mdiHomeOutline } from '@mdi/js';
 
 import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
+import { IVeoCatalog } from '~~/composables/api/queryDefinitions/catalogs';
 import { useQuery } from '~~/composables/api/utils/query';
 import catalogQueryDefinitions from '~~/composables/api/queryDefinitions/catalogs';
 import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
@@ -261,7 +262,7 @@ export default defineComponent({
           queriedText: {
             query: ':catalog',
             parameterTransformationFn: (_param, value) => ({ id: value }),
-            resultTransformationFn: (_param, _value, data) => data.name
+            resultTransformationFn: catalogsTransformationFn
           }
         }
       ],
@@ -290,6 +291,15 @@ export default defineComponent({
         }
       ]
     ]);
+
+    function catalogsTransformationFn(_param: string, value: string, data: IVeoCatalog[] ) {
+      const catalogUUID = value;
+      const catalogs = data;
+      const currentCatalog = catalogs.find(catalog => {
+        return catalog.id === catalogUUID;
+      });
+      return currentCatalog?.name;
+    }
 
     // After this position, all breadcrumbs will be moved to a menu to avoid scrolling
     const BREADCRUMB_BREAKOFF = 4;
