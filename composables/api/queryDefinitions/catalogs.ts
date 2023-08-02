@@ -79,14 +79,6 @@ export default {
         placeholderData: []
       }
     } as IVeoQueryDefinition<IVeoFetchCatalogsParameters, IVeoCatalog[]>,
-    fetchCatalog: {
-      primaryQueryKey: 'catalog',
-      url: '/api/catalogs/:id',
-      queryParameterTransformationFn: (queryParameters) => ({ params: queryParameters }),
-      staticQueryOptions: {
-        staleTime: STALE_TIME.INFINITY
-      }
-    } as IVeoQueryDefinition<IVeoFetchCatalogParameters, IVeoCatalog>,
     fetchCatalogItems: {
       primaryQueryKey: 'catalogItems',
       url: '/api/catalogs/:catalogId/items',
