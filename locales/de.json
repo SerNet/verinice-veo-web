@@ -126,8 +126,7 @@
   "userDataExport": {
     "hint": {
       "text": "Hier können Sie Ihr Recht auf Datenübertragbarkeit wahrnehmen. { linebreak } Laden Sie ihre personenbezogenen Daten im JSON-Format (ZIP-komprimiert) durch Mausklick auf die Downloadlinks herunter:",
-      "href": "https://dsgvo-gesetz.de/art-20-dsgvo/",
-      "linkText": "Artikel 20 DSGVO"
+      "href": "https://dsgvo-gesetz.de/art-20-dsgvo/"
     }
   },
 
