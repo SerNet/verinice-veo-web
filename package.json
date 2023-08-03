@@ -2,7 +2,7 @@
   "name": "veo-web",
   "version": "1.2.0",
   "engines": {
-    "npm": "9.5.x",
+    "npm": "9.8.x",
     "node": "18.16.x"
   },
   "description": "veo-web",
@@ -69,7 +69,7 @@
     "keycloak-js": "^20.0.1",
     "lint-staged": "^13.1.0",
     "lodash": "^4.17.21",
-    "npm": "^9.4.0",
+    "npm": "^9.8.1",
     "nuxt": "^3.5.2",
     "nuxt-font-loader": "^2.2.2",
     "prismjs": "^1.29.0",
