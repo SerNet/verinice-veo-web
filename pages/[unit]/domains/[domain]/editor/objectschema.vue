@@ -37,7 +37,7 @@
       >
         <template #header>
           <div
-            class="d-flex flex-row"
+            class="d-flex flex-row bg-basepage"
           >
             <v-spacer />
             <v-tooltip location="bottom">
@@ -152,7 +152,7 @@
           <v-row
             v-if="schemaIsValid.valid"
             no-gutters
-            class="flex-column overflow-hidden py-2 fill-width"
+            class="flex-column overflow-hidden fill-width bg-basepage"
           >
             <v-col>
               <v-row>
@@ -189,7 +189,7 @@
           <v-row
             v-if="schemaIsValid.valid"
             dense
-            class="flex-column"
+            class="bg-basepage"
           >
             <v-col>
               <v-text-field
