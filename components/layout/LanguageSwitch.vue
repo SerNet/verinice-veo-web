@@ -25,7 +25,6 @@
     <template #activator="{ props }">
       <v-btn
         v-bind="mergeProps($attrs, props)"
-        color="black"
         icon
         data-component-name="language-select"
       >

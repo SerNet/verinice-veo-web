@@ -130,7 +130,9 @@ export default defineComponent({
         title: t('customFormSchema').toString(),
         value: 'custom'
       },
-      ...(formSchemas.value || []).map((formSchema) => ({ title: formSchema.name[locale.value], value: formSchema.id as string }))
+      ...(formSchemas.value || []).map((formSchema) =>
+        ({ title: (formSchema?.name[locale.value] || ''), value: formSchema.id as string })
+      )
     ]);
 
     // objectschema stuff

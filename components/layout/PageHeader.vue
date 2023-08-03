@@ -110,12 +110,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-page__title {
-  background: $background-primary;
   flex-grow: 0;
 }
 
 .veo-page__header {
-  background: $background-primary;
   flex-grow: 0;
   position: relative;
   top: 0;

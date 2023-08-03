@@ -44,20 +44,37 @@ const vuetify = createVuetify({
     messages: { de, en }
   },
   theme: {
+    defaultTheme: 'light',
     themes: {
       light: {
         colors: {
           primary: '#c90000',
-          secondary: '#C62828',
-          accent: '#757575',
-          error: '#c90000',
-          info: '#2196f3',
-          warning: '#fb8c00',
-          success: '#4caf50',
-          grey: '#d7d7d7',
-          lightGrey: '#fafafa'
+          // secondary: '#',
+          accent: '#ddd',
+          surface: '#fff',
+          color: '#000',
+          basepage: '#f3f3f3'
+          // error: '#',
+          // info: '#'
+          // success: '#',
+          // warning: '#'
+        }
+      },
+      dark: {
+        colors: {
+          primary: '#c90000',
+          // secondary: '#',
+          accent: '#000',
+          surface: '#1c1c1c',
+          color: '#fff',
+          basepage: '#303030'
+          // error: '#',
+          // info: '#'
+          // success: '#',
+          // warning: '#'
         }
       }
+
     }
   }
 });

@@ -18,12 +18,19 @@
 
 
 <template>
-  <BasePage :title="$t('breadcrumbs.profiles')">
+  <BasePage style="height: 100vh;">
     <template #header>
-      <p class="mt-4 text-body-1">
+      <LayoutHeadline
+        class="mb-4"
+        :title="$t('breadcrumbs.profiles')"
+        :element="profiles[0]?.key || ''"
+      />
+  
+      <p class="mt-8 mb-4 text-body-1">
         {{ t('hint') }}
       </p>
     </template>
+
     <template #default>
       <BaseCard id="profileStyleScope">
         <v-data-table
@@ -61,6 +68,7 @@
     </template>
   </BasePage>
 </template>
+
 <script setup lang="ts">
 import { useProfiles }  from '~/components/profile/profiles';
 const { state, profiles, toggleDialog, updateDomainId } = useProfiles();
@@ -74,7 +82,7 @@ const headers = computed(() => [
 ]);
 
 // Make sure to allways write currently active domain into state
-onMounted(() => updateDomainId())
+onMounted(() => updateDomainId());
 
 function selectNewItem(val: string[]) {
 
@@ -91,7 +99,7 @@ function selectNewItem(val: string[]) {
   state.selectedProfiles = val;
 
   // Use the profile's name prop as a default name
-  const profileObj = profiles.value.filter((profile) => profile.key === state.selectedProfiles[0])[0]
+  const profileObj = profiles.value.filter((profile) => profile.key === state.selectedProfiles[0])[0];
   state.newUnitName = profileObj?.name || '';
 }
 </script>

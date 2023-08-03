@@ -17,7 +17,7 @@
 -->
 <template>
   <v-col
-    class="veo-page py-0"
+    class="veo-page bg-basepage py-0"
     cols="12"
     :class="noPadding ? 'px-0' : 'px-4'"
   >

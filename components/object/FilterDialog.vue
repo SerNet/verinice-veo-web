@@ -86,7 +86,7 @@
     </template>
     <template #dialog-options>
       <v-btn
-        text
+        variant="text"
         @click="onReset"
       >
         {{ t(`resetFilter`) }}
@@ -94,7 +94,7 @@
       <v-spacer />
       <v-btn
         color="primary"
-        text
+        variant="text"
         :disabled="filterFormValid === false"
         @click="onSubmit"
       >
@@ -383,9 +383,3 @@ export default defineComponent({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-.v-list {
-  background: $background-accent;
-}
-</style>

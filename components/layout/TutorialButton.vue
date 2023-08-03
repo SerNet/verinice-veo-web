@@ -21,7 +21,6 @@
       <div v-bind="tooltipProps">
         <v-btn
           v-if="tutorialsForRoute.length <= 1"
-          color="black"
           icon
           role="submit"
           type="submit"
@@ -40,7 +39,6 @@
         >
           <template #activator="{props: menu }">
             <v-btn
-              color="black"
               icon
               data-component-name="tutorial-select"
               v-bind="menu"

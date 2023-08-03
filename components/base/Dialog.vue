@@ -27,10 +27,9 @@
   >
     <v-card
       class="d-flex flex-column"
-      :color="xLarge ? 'white' : undefined"
       tile
     >
-      <v-card-title class="d-flex align-center pt-0 pb-0 veo-dialog__inner--border-bottom">
+      <v-card-title class="d-flex align-center py-0 bg-accent small-caps">
         <LayoutAppLogoMobile
           v-if="fullscreen"
           style="height: 36px"
@@ -41,7 +40,7 @@
           :disabled="closeDisabled"
           :icon="mdiClose"
           flat
-          class="close-button"
+          class="close-button bg-accent"
           @click="closeDialog"
         />
       </v-card-title>
@@ -60,7 +59,7 @@
       </v-card-text>
       <v-card-actions
         v-if="!!$slots['dialog-options'] && fixedFooter"
-        class="veo-dialog__actions--border-top px-4 py-3 d-flex"
+        class="bg-accent px-4 py-3 d-flex"
       >
         <slot name="dialog-options" />
       </v-card-actions>
@@ -72,7 +71,7 @@
     width="450px"
   >
     <v-card>
-      <v-card-title>
+      <v-card-title class="bg-accent small-caps">
         {{ t('closeDialog') }}
       </v-card-title>
       <v-card-text>
@@ -201,22 +200,3 @@ const closeDialog = (ignoreConfirmDialog = false) => {
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-.v-card,
-.v-card-title {
-  background-color: $background-accent;
-}
-
-.v-card-text {
-  background-color: $background-primary;
-}
-
-.veo-dialog__inner--border-bottom {
-  border-bottom: 1px solid $medium-grey;
-}
-
-.veo-dialog__actions--border-top {
-  border-top: 1px solid $medium-grey;
-}
-</style>

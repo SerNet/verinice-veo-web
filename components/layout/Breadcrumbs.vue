@@ -29,7 +29,6 @@
     >
       <span v-if="index">
         <v-icon
-          color="black"
           :icon="mdiChevronRight"
           size="small"
         /></span>
@@ -490,10 +489,6 @@ export default defineComponent({
 </i18n>
 
 <style lang="scss" scoped>
-a.v-breadcrumbs-item:not(:last-child) {
-  color: $primary
-}
-
 .v-breadcrumbs-item .v-icon {
     font-size: 1.4rem;
 }

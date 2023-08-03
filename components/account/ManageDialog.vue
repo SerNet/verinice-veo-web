@@ -26,6 +26,7 @@
   >
     <template #default>
       <BaseAlert
+        :title="t('password')"
         :model-value="(profile && profile.username === username) || !id"
         flat
         no-close-button
@@ -314,6 +315,7 @@ export default defineComponent({
     "groups": "Assigned groups",
     "lastName": "Last name",
     "noPassword": "The password can be set by the user after verifying his email address.",
+    "password": "Password",
     "permissions": {
       "veo-write": "Write access"
     },
@@ -336,6 +338,7 @@ export default defineComponent({
     "groups": "Zugehörige Gruppen",
     "lastName": "Nachname",
     "noPassword": "Das Passwort kann vom Benutzer nach dem Verifizieren der E-Mail-Adresse gesetzt werden.",
+    "password": "Passwort",
     "permissions": {
       "veo-write": "Schreibzugriff"
     },

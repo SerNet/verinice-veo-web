@@ -16,15 +16,19 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    :title="t('calltoaction').toString()"
-    :heading-level="2"
-  >
+  <BasePage :heading-level="2">
+    <LayoutHeadline
+      :title="t('editors')"
+      :element="t('calltoaction').toString()"
+    />
     <div class="d-flex justify-center">
       <BaseCard
         class="mt-10"
         style="width: 70%; max-width: 1000px;"
       >
+        <v-card-title class="bg-accent small-caps">
+          {{ t('editors') }}
+        </v-card-title>
         <v-list
           lines="two"
           class="overflow-hidden"
@@ -74,11 +78,13 @@ const { t: $t } = useI18n({ useScope: 'global' });
 {
   "en": {
     "calltoaction": "What do you want to do?",
+    "editors": "Editors",
     "formSchemaDescription": "Create, edit, import or export form schemas",
     "objectSchemaDescription": "Create, edit, import or export object schemas"
   },
   "de": {
     "calltoaction": "Was möchten Sie tun?",
+    "editors": "Editoren",
     "formSchemaDescription": "Formschemas erstellen, bearbeiten, importieren und exportieren",
     "objectSchemaDescription": "Objektschemas erstellen, bearbeiten, importieren und exportieren"
   }

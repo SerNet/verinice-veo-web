@@ -407,7 +407,7 @@ const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, ris
   "en": {
     "common": "common",
     "computedValues": "Some values are computed in the backend.",
-    "computedValuesCTA": "Please press \"Save\" to recomputed those values.",
+    "computedValuesCTA": "Please press \"Save\" to recompute these values.",
     "createRisk": "create risk",
     "editRisk": "edit risk \"{0}\"",
     "mitigatingAction": "Mitigating action for \"{0}\"",

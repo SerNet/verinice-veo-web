@@ -16,13 +16,19 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage :title="$t('breadcrumbs.catalogs')">
+  <BasePage>
     <template #header>
-      <p class="mt-4">
+      <LayoutHeadline
+        class="mb-4"
+        :title="$t('breadcrumbs.catalogs')"
+      />
+    </template>
+    
+    <template #default>
+      <p class="my-4">
         {{ t('hint') }}
       </p>
-    </template>
-    <template #default>
+  
       <CatalogList
         :catalogs="catalogs"
         :loading="catalogsAreFetching"

@@ -262,6 +262,7 @@ export function useIntro() {
         opts,
         (opts) => {
           if (opts) {
+            opts.tooltipClass = 'bg-surface';
             options.value = opts;
           } else {
             stop();

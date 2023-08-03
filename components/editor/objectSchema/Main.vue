@@ -28,7 +28,7 @@
     >
       <v-expansion-panel>
         <v-expansion-panel-title
-          class="overline"
+          class="text-h5 overline small-caps px-2"
         >
           {{ globalT('editor.basicproperties') }} ({{ basicProps.length }})
         </v-expansion-panel-title>
@@ -54,13 +54,12 @@
         </v-expansion-panel-text>
       </v-expansion-panel>
       <v-expansion-panel>
-        <v-expansion-panel-title class="overline">
+        <v-expansion-panel-title class="text-h5 overline small-caps px-2">
           {{ globalT('editor.customaspects') }} ({{ customAspects.length }})
           <div class="d-flex">
             <v-spacer />
             <v-btn
               small
-              text
               color="primary"
               variant="text"
               @click.stop="showAddDialog('aspect')"
@@ -103,7 +102,7 @@
         </v-expansion-panel-text>
       </v-expansion-panel>
       <v-expansion-panel>
-        <v-expansion-panel-title class="overline">
+        <v-expansion-panel-title class="text-h5 overline small-caps px-2">
           {{ globalT('editor.customlinks') }} ({{ customLinks.length }})
           <div class="d-flex">
             <v-spacer />

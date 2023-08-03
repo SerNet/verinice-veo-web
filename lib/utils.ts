@@ -24,6 +24,7 @@ import { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
 import { IVeoUnit } from '~~/composables/api/queryDefinitions/units';
 
 export const CHART_COLORS = ['#c90000', '#ffc107', '#3f51b5', '#8bc34a', '#858585'];
+// export const CHART_COLORS = ['#5c3f5a', '#304655', '#2892e4', '#8d9ac5', '#36384c'];
 
 export interface IForm {
   objectSchema: JSONSchema7 | IVeoObjectSchema;

@@ -37,11 +37,17 @@
           class="d-flex align-center"
         />
       </nuxt-link>
+
       <LayoutBreadcrumbs write-to-title />
       <v-spacer />
+
       <DocsDownloadButton v-if="$route.path.startsWith('/docs')" />
+
+      <LayoutThemeSwitch />
       <LayoutLanguageSwitch />
+
       <LayoutTutorialButton v-if="!$route.path.startsWith('/docs')" />
+
       <v-tooltip
         v-if="ability.can('view', 'documentation')"
         location="bottom"
@@ -50,7 +56,6 @@
           <v-btn
             v-if="!$route.path.startsWith('/docs')"
             class="mr-3"
-            color="black"
             icon
             target="_blank"
             to="/docs/index"
@@ -65,6 +70,7 @@
           {{ t('openDocumentationInNewTab') }}
         </template>
       </v-tooltip>
+
       <LayoutAccountBtn
         v-if="authenticated"
         class="mr-3"
@@ -78,16 +84,19 @@
         <v-icon :icon="mdiAccountCircleOutline" />
       </v-btn>
     </v-app-bar>
+
     <LayoutPrimaryNavigation
       v-model="drawer"
       :domain-id="domainId"
       :unit-id="(route.params.unit as string)"
       data-component-name="primary-navigation"
     />
+
     <v-main :class="$style.main">
       <slot />
       <LayoutCookieBanner />
     </v-main>
+
     <LayoutGlobalAlert
       v-if="alerts[0]"
       v-bind="alerts[0]"
@@ -96,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from 'vuetify';
+import { useDisplay, useTheme } from 'vuetify';
 import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 import 'intro.js/minified/introjs.min.css';
 
@@ -111,6 +120,7 @@ const { ability } = useVeoPermissions();
 
 const { alerts } = useVeoAlerts();
 const { t } = useI18n();
+const theme = useTheme();
 
 useHead(() => ({
   titleTemplate: '%s - verinice.veo'
@@ -127,16 +137,25 @@ const domainId = computed((): string | undefined => {
   }
   return route.params.domain as string;
 });
+
+// Theme stuff
+onBeforeMount(() => {
+  // check if browser supports dark mode
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme)').media !== 'not all') {
+    // if user prefers light mode switch to it
+    if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+      theme.global.name.value = 'light';
+    }
+  }
+});
 </script>
 
 <i18n>
 {
   "en": {
-    "firstUnitCreated": "First unit was created successfully",
     "openDocumentationInNewTab": "Open online documentation in new tab"
   },
   "de": {
-    "firstUnitCreated": "Die erste Unit wurde erfolgreich erstellt",
     "openDocumentationInNewTab": "Online-Dokumentaion in neuem Tab öffnen"
   }
 }
@@ -144,15 +163,9 @@ const domainId = computed((): string | undefined => {
 
 <style lang="scss" module>
   .app-bar {
-    background-color: $background-accent !important;
-    border-bottom: 1px solid $medium-grey;
-  
     :deep(.v-toolbar__content) {
       padding-left: 0;
     }
-  }
-  .main {
-    background: $background-primary;
   }
   
   .main {

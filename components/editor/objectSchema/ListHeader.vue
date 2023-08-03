@@ -17,7 +17,7 @@
 -->
 <template>
   <v-list-item
-    style="background-color: #FAFAFA"
+    class="bg-basepage"
     lines="two"
   >
     <v-list-item-title class="body-1 font-weight-bold d-flex align-center">

@@ -19,34 +19,36 @@
   <v-layout>
     <!-- German version -->
     <BasePage v-if="locale === 'de'">
+      <LayoutHeadline
+        :title="'Sicherheitsrichtlinie'"
+      />
+  
       <div class="d-flex justify-center">
         <BaseCard
           class="my-12"
-          style="width: 35%; max-width: 720px; min-width: 480px;"
+          style="max-width: 500px; min-width: 500px;"
         >
-          <v-card-title>
-            <span class="mx-2">Sicherheitsrichtlinie</span>
-
+          <v-card-title class="bg-accent">
             <div
-              class="mx-8 d-flex"
+              class="mx-4 d-flex"
               style="height: 75px; width: 300px;"
             >
               <LayoutAppLogoDesktop />
             </div>
-          </v-card-title>
 
-          <v-card-subtitle class="mt-8">
-            <v-row>
-              <v-col class="mx-4 text-h4">
-                <v-icon :icon="mdiClock" />
-                Gültig bis: {{ d(config.public.securityPolicyInvalidationDate) }}
-              </v-col>
-            </v-row>
-          </v-card-subtitle>
+            <v-card-subtitle class="my-4 bg-accent">
+              <v-row>
+                <v-col class="text-h4">
+                  <v-icon :icon="mdiClock" />
+                  Gültig bis: {{ d(config.public.securityPolicyInvalidationDate) }}
+                </v-col>
+              </v-row>
+            </v-card-subtitle>
+          </v-card-title>
 
           <v-col class="d-flex">
             <BaseCard
-              class="mt-12"
+              class="mt-4"
               :border="false"
             >
               <v-card-title class="small-caps">
@@ -93,6 +95,7 @@
                     :key="index"
                   >
                     <a
+                      class="text-decoration-none text-primary"
                       :href="link"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -154,11 +157,15 @@
                 </p>
               </v-card-text>
     
+              <v-divider />
               <v-list class="d-flex align-end">
                 <v-list-item>
                   <template #prepend>
                     <v-icon :icon="mdiEmail" />
-                    <a :href="mail">Kontakt</a>&nbsp;
+                    <a
+                      class="text-decoration-none text-red"
+                      :href="mail"
+                    >Kontakt</a>&nbsp;
                     ( Bevorzugte Sprachen: DE, EN )
                   </template>
                 </v-list-item>
@@ -171,34 +178,37 @@
 
     <!-- English version -->
     <BasePage v-else>
+      <LayoutHeadline
+        :title="'Security Policy'"
+      />
+  
       <div class="d-flex justify-center">
         <BaseCard
           class="my-12"
-          style="width: 35%; max-width: 720px; min-width: 480px;"
+          style="max-width: 500px; min-width: 500px;"
         >
-          <v-card-title>
-            <span class="mx-2">Security policy</span>
-
+          <v-card-title class="bg-accent">
             <div
-              class="mx-8 d-flex"
+              class="mx-4 d-flex"
               style="height: 75px; width: 300px;"
             >
               <LayoutAppLogoDesktop />
             </div>
+
+            <v-card-subtitle class="my-4 bg-accent">
+              <v-row>
+                <v-col class="text-h4">
+                  <v-icon :icon="mdiClock" />
+                  Expiration date: {{ d(config.public.securityPolicyInvalidationDate) }}
+                </v-col>
+              </v-row>
+            </v-card-subtitle>
           </v-card-title>
 
-          <v-card-subtitle class="mt-8">
-            <v-row>
-              <v-col class="mx-4 text-h4">
-                <v-icon :icon="mdiClock" />
-                Expiration date: {{ d(config.public.securityPolicyInvalidationDate) }}
-              </v-col>
-            </v-row>
-          </v-card-subtitle>
 
           <v-col class="d-flex">
             <BaseCard
-              class="mt-12"
+              class="mt-4"
               :border="false"
             >
               <v-card-title class="small-caps">
@@ -245,6 +255,7 @@
                     :key="index"
                   >
                     <a
+                      class="text-decoration-none text-primary"
                       :href="link"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -303,11 +314,15 @@
                 </p>
               </v-card-text>
     
+              <v-divider />
               <v-list class="d-flex align-end">
                 <v-list-item>
                   <template #prepend>
                     <v-icon :icon="mdiEmail" />
-                    <a :href="mail">Contact</a>&nbsp;
+                    <a
+                      class="text-decoration-none text-red"
+                      :href="mail"
+                    >Contact</a>&nbsp;
                     ( Preferred languages: DE, EN )
                   </template>
                 </v-list-item>
@@ -337,9 +352,3 @@ const links = {
   forms: 'https://github.com/SerNet/verinice-veo-forms'
 };
 </script>
-
-<style lang="scss" scoped>
-.small-caps {
-  font-variant: small-caps;
-}
-</style>

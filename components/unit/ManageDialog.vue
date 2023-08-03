@@ -33,10 +33,10 @@
           <v-card-text>
             <v-text-field
               v-model="unitDetails.name"
+              :label="t('name')"
               :rules="[requiredRule]"
               required
               variant="underlined"
-              :label="t('name')"
             />
             <v-text-field
               v-model="unitDetails.description"
@@ -45,24 +45,29 @@
             />
           </v-card-text>
         </BaseCard>
-        <h3 class="text-h3 mt-4">
-          {{ t('domainselection') }}
-        </h3>
-        <UtilProminentSelectionList
-          v-model="selectedDomains"
-          multiple
-          :items="availableDomains"
-        />
+
+        <div class="mx-4">
+          <h3 class="text-h3 mt-4">
+            {{ t('domainselection') }}
+          </h3>
+
+          <UtilProminentSelectionList
+            v-model="selectedDomains"
+            :items="availableDomains"
+            multiple
+          />
+        </div>
       </v-form>
     </template>
+
     <template #dialog-options>
       <v-btn
-        color="black"
         variant="text"
         @click="$emit('update:model-value', false)"
       >
         {{ $t('global.button.cancel') }}
       </v-btn>
+
       <v-spacer />
       <v-btn
         :disabled="!actionPermitted || !formIsDirty"
@@ -214,12 +219,12 @@ const selectedDomains = computed({
 <i18n>
 {
   "en": {
-    "createUnit": "Create unit",
-    "createUnitError": "Couldn't create unit",
+    "createUnit": "Create Unit",
+    "createUnitError": "Couldn't create Unit",
     "description": "Description",
     "domainselection": "Domain selection",
-    "editUnit": "Edit unit",
-    "name": "Unit name",
+    "editUnit": "Edit Unit",
+    "name": "Name",
     "unitCreated": "New unit was created successfully",
     "unitUpdated": "Unit was updated successfully"
   },
@@ -229,7 +234,7 @@ const selectedDomains = computed({
     "description": "Beschreibung",
     "domainselection": "Domain-Auswahl",
     "editUnit": "Unit bearbeiten",
-    "name": "Name der Unit",
+    "name": "Name",
     "unitCreated": "Unit wurde erfolgreich erstellt",
     "unitUpdated": "Unit wurde erfolgreich aktualisiert"
   }

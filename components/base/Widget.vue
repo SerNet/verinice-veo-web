@@ -18,7 +18,10 @@
 <template>
   <BaseCard>
     <template v-if="loading">
-      <v-card-title v-if="title">
+      <v-card-title
+        v-if="title"
+        class="bg-accent mb-2 small-caps"
+      >
         <v-skeleton-loader
           type="heading"
           width="400"
@@ -36,8 +39,14 @@
       </v-card-text>
     </template>
     <template v-else>
-      <v-card-title v-if="title">
-        {{ title }}
+      <v-card-title
+        v-if="title"
+        class="bg-accent mb-2"
+      >
+        <h3
+          class="text-h3 small-caps"
+          v-text="title"
+        />
       </v-card-title>
       <v-card-text>
         <slot />
@@ -46,14 +55,11 @@
   </BaseCard>
 </template>
 <script setup lang="ts">
-defineProps({
-  title: {
-    type: String,
-    default: undefined
-  },
-  loading: {
-    type: Boolean,
-    default: false
-  }
+const _props = withDefaults(defineProps<{
+  title?: string,
+  loading?: boolean
+}>(), {
+  title: undefined,
+  border: false
 });
 </script>

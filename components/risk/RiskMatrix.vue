@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <table>
+  <table class="my-2">
     <thead>
       <tr>
         <th
@@ -211,13 +211,8 @@ export default defineComponent({
 </i18n>
 
 <style lang="scss" scoped>
-table {
-  border-collapse: collapse;
-}
-
 td,
 th {
-  border: 2px solid #ffffff;
   font-weight: normal;
   height: 100px;
   text-align: center;

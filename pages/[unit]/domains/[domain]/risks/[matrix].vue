@@ -17,26 +17,27 @@
 -->
 <template>
   <v-row
-    class="mb-2"
     data-component-name="risk-matrix-wrapper"
   >
     <v-col
       v-for="protectionGoal of protectionGoals"
       :key="protectionGoal.id"
-      cols="12"
       md="6"
     >
-      <BaseCard style="margin-right: 1px">
-        <v-card-text>
+      <BaseCard>
+        <v-card-title class="bg-accent mb-2">
           <h3
-            class="text-h3"
-            v-text="protectionGoal.text"
+            class="text-h3 small-caps"
+            v-text="upperFirst(t(protectionGoal.text).toString())"
           />
-        </v-card-text>
+        </v-card-title>
+
         <RiskMatrix
           v-if="!domainIsFetching"
           v-bind="getMatrixData(protectionGoal.id)"
+          class="my-2"
         />
+
         <v-skeleton-loader
           v-else
           type="image"
@@ -96,10 +97,18 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "protectionGoal": "protection goal"
+    "Availability": "availability",
+    "Confidentiality": "confidentiality",
+    "Integrity": "integrity",
+    "protectionGoal": "protection goal",
+    "Resilience": "resilience"
   },
   "de": {
-    "protectionGoal": "Schutzziel"
+    "Availability": "Verfügbarkeit",
+    "Confidentiality": "Vertraulichkeit",
+    "Integrity": "Integrität",
+    "protectionGoal": "Schutzziel",
+    "Resilience": "Belastbarkeit"
   }
 }
 </i18n>

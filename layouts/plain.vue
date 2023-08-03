@@ -30,8 +30,13 @@
           class="d-flex align-center"
         />
       </nuxt-link>
+
       <v-spacer />
+
+      <LayoutThemeSwitch />
+
       <LayoutLanguageSwitch />
+
       <LayoutAccountBtn
         v-if="profile"
         :username="profile.username"
@@ -49,7 +54,7 @@
         <v-icon :icon="mdiAccountCircleOutline" />
       </v-btn>
     </v-app-bar>
-    <v-main :class="$style.main">
+    <v-main class="main bg-basepage">
       <slot />
       <LayoutCookieBanner />
     </v-main>
@@ -72,17 +77,11 @@ const logout = () => _logout('/');
 
 <style lang="scss" module>
   .app-bar {
-    background-color: $background-accent !important;
-    border-bottom: 1px solid $medium-grey;
-  
     :deep(.v-toolbar__content) {
       padding-left: 0;
     }
   }
-  .main {
-    background: $background-primary;
-  }
-  
+
   .main {
     display: flex;
     flex-direction: column;

@@ -37,6 +37,7 @@
     <template #default>
       <v-list
         ref="primaryNavList"
+        class="mt-4"
         :rounded="miniVariant"
       >
         <template
@@ -104,7 +105,6 @@ export interface INavItem {
   id: string;
   name: string;
   icon?: string;
-  faIcon?: string | string[];
   exact?: boolean;
   to?: RouteLocationRaw;
   children?: INavItem[];
@@ -123,15 +123,16 @@ export const PROVIDE_KEYS = {
 import { RouteLocationRaw } from 'vue-router';
 import {
   mdiBookOpenPageVariantOutline,
+  mdiChartBar,
   mdiChevronLeft,
   mdiChevronRight,
   mdiFileChartOutline,
   mdiFileDocumentOutline,
   mdiHomeOutline,
-  mdiHomeSwitchOutline,
-  mdiTableSettings,
+  mdiShapeOutline,
   mdiTextBoxEditOutline,
-  mdiShapeOutline
+  mdiUngroup,
+  mdiViewDashboardOutline
 } from '@mdi/js';
 import { sortBy, upperFirst } from 'lodash';
 import { StorageSerializers, useStorage } from '@vueuse/core';
@@ -232,7 +233,6 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
         id: objectSchema.title,
         name: upperFirst(translations.value?.lang[locale.value]?.[objectSchema.title] || objectSchema.title),
         icon: _icon?.library === 'mdi' ? _icon?.icon as string : undefined,
-        faIcon: _icon?.library === 'fa' ? _icon?.icon : undefined,
         children: [
           // all of object type
           {
@@ -344,7 +344,7 @@ const riskChildItems = computed<INavItem[]>(() =>
 const unitSelectionNavEntry = computed<INavItem>(() =>({
   id: 'unitSelection',
   name: $t('breadcrumbs.index'),
-  icon: mdiHomeSwitchOutline,
+  icon: mdiHomeOutline,
   to: {
     name: UNIT_SELECTION_ROUTE_NAME
   },
@@ -356,7 +356,7 @@ const unitSelectionNavEntry = computed<INavItem>(() =>({
 const domainDashboardNavEntry = computed<INavItem>(() => ({
   id: 'domainDashboard',
   name: $t('domain.index.title').toString(),
-  icon: mdiHomeOutline,
+  icon: mdiViewDashboardOutline,
   to: {
     name: DOMAIN_DASHBOARD_ROUTE_NAME,
     params: {
@@ -372,7 +372,7 @@ const domainDashboardNavEntry = computed<INavItem>(() => ({
 const objectsNavEntry = computed<INavItem>(() => ({
   id: 'objects',
   name: $t('breadcrumbs.objects').toString(),
-  faIcon: ['far', 'object-ungroup'],
+  icon: mdiUngroup,
   children: objectTypesChildItems.value,
   childrenLoading: schemasLoading.value,
   componentName: 'objects-nav-item'
@@ -413,7 +413,7 @@ const reportsNavEntry = computed<INavItem>(() => ({
 const risksNavEntry = computed<INavItem>(() => ({
   id: 'risks',
   name: $t('breadcrumbs.risks').toString(),
-  icon: mdiTableSettings,
+  icon: mdiChartBar,
   children: riskChildItems.value,
   childrenLoading: riskDefinitionsLoading.value,
   componentName: 'risks-nav-item'
@@ -464,10 +464,10 @@ const docNavItems = computed(() =>
 
 const items = computed<INavItem[]>(() => [
   ...(authenticated.value && userSettings.value.maxUnits ? [unitSelectionNavEntry.value] : []),
-  ...(props.domainId && props.unitId ? [profilesNavEntry.value] : []),
   ...(props.unitId && props.domainId
     ? [
       domainDashboardNavEntry.value,
+      ...(props.domainId && props.unitId ? [profilesNavEntry.value] : []),
       ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
       objectsNavEntry.value,
       catalogsNavEntry.value,

@@ -26,12 +26,12 @@
     >
       <template #activator="{ props: menuProps }">
         <v-btn
-          color="primary"
-          :disabled="!allowedActions.length || disabled"
           :icon="speedDialIsOpen && !disabled && allowedActions.length ? mdiClose : mdiPlus"
+          :disabled="!allowedActions.length || disabled"
+          class="veo-primary-action-fab mr-2"
+          color="primary"
           data-component-name="object-details-actions-button"
           v-bind="menuProps"
-          class="veo-primary-action-fab"
         />
       </template>
       <template

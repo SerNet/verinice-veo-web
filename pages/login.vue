@@ -18,15 +18,18 @@
 <template>
   <div class="wrapper">
     <LayoutAppLogoDesktop />
+
     <BaseAlert
       :model-value="!!route.query.client_disabled"
+      class="my-4"
       flat
       no-close-button
       :type="VeoAlertType.ERROR"
       :title="t('access')"
       :text="t('error-message')"
     />
-    <BaseCard class="mt-2">
+
+    <BaseCard class="mt-2 bg-accent">
       <v-card-text class="d-flex justify-space-around">
         <div style="flex-basis: 0; flex-grow: 1">
           <h4 class="text-h4 mb-4 cta">
@@ -157,6 +160,7 @@ const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.ver
 
   .cta {
     height: 75px;
+    text-align: center;
   }
 }
 </style>

@@ -18,7 +18,7 @@
 <template>
   <v-list
     v-bind="attrs"
-    bg-color="transparent"
+    class="mt-2"
   >
     <v-list-item
       v-for="item of items"
@@ -26,8 +26,7 @@
       :title="item.title"
       :subtitle="item.subtitle"
       two-line
-      class="prominent-selection-list__item rounded-lg mb-3 py-3 veo-border"
-      active-class="prominent-selection-list__item--active"
+      class="rounded mb-2 py-2 bg-accent"
       :active="isActive(item)"
       @click="onItemSelected(item)"
     >
@@ -91,17 +90,3 @@ const onItemSelected = (item: IProminentSelectionListItem) => {
   emit('update:model-value', oldModelValue);
 };
 </script>
-
-<style lang="scss" scoped>
-.prominent-selection-list__item {
-   background-color: #ffffff;
-}
-
-.prominent-selection-list__item--active {
-  border-color: $primary !important;
-
-  :deep(.v-list-item__overlay) {
-    background-color: #ffffff;
-  }
-}
-</style>

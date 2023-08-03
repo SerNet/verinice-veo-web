@@ -17,11 +17,16 @@
 -->
 <template>
   <BasePage
-    :title="title"
     :loading="reportsFetching"
     data-component-name="report-page"
   >
     <template #header>
+      <LayoutHeadline
+        class="mb-4"
+        title="Report"
+        :element="title"
+      />
+
       <v-row
         dense
         class="justify-space-between"
@@ -29,7 +34,7 @@
         <v-col cols="auto">
           <p
             v-if="report"
-            class="mt-2 mb-0 text-body-1 font-italic"
+            class="mb-0 text-body-1 font-italic"
             data-component-name="report-description"
           >
             {{ report.description[locale] }}
@@ -39,27 +44,25 @@
     </template>
     <template #default>
       <LayoutLoadingWrapper v-if="generatingReport" />
-      <p
-        v-if="report && report.multipleTargetsSupported"
-        class="text-body-1 mt-3"
-      >
-        {{ t('hintMultiple') }}
-      </p>
-      <p
-        v-else-if="report"
-        class="text-body-1 mt-3"
-      >
-        {{ t('hintSingle') }}
-      </p>
+
       <ObjectFilterBar
+        class="mt-8"
         data-component-name="report-entity-selection-filter-bar"
+        :available-object-types="availableObjectTypes"
+        :available-sub-types="availableSubTypes"
         :domain-id="($route.params.domain as string)"
         :filter="filter"
         :required-fields="requiredFields"
-        :available-object-types="availableObjectTypes"
-        :available-sub-types="availableSubTypes"
         @update:filter="updateRouteQuery"
       />
+
+      <p
+        v-if="report"
+        class="text-body-1 my-2"
+      >
+        {{ report.multipleTargetsSupported? t('hintMultiple') : t('hintSingle') }}
+      </p>
+
       <BaseCard>
         <ObjectTable
           v-model:page="page"
@@ -272,14 +275,14 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "create": "Create {type} ({format})",
+    "create": "{type}",
     "generateReport": "Generate report",
     "generateReportError": "Couldn't generate report",
     "hintMultiple": "Please select the object you want to create the report for.",
     "hintSingle": "Please select the object you want to create the report for."
   },
   "de": {
-    "create": "{type} ({format}) erstellen",
+    "create": "{type}",
     "generateReport": "Report generieren",
     "generateReportError": "Report konnte nicht erstellt werden",
     "hintMultiple": "Bitte wählen Sie die Objekte aus, für die Sie den Report erstellen möchten.",

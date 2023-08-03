@@ -17,40 +17,53 @@
 -->
 <template>
   <BasePage>
+    <LayoutHeadline
+      :title="t('headline')"
+    />
+
     <div class="d-flex justify-center">
       <BaseCard
         class="my-12"
-        style="width: 35%; max-width: 720px; min-width: 480px;"
+        style="max-width: 500px; min-width: 500px;"
       >
-        <v-card-title>
-          <span class="mx-2">{{ t('greeting') }}</span>
-
+        <v-card-title class="bg-accent">
           <div
-            class="mx-8 d-flex"
+            class="mx-4 d-flex"
             style="height: 75px; width: 300px;"
           >
             <LayoutAppLogoDesktop />
           </div>
+
+          <v-card-subtitle class="bg-accent">
+            <v-row>
+              <v-col cols="6" />
+              <v-col>
+                <v-checkbox
+                  v-model="showAtStartup"
+                  :label="t('checkboxLabel')"
+                />
+              </v-col>
+            </v-row>
+          </v-card-subtitle>
         </v-card-title>
 
-        <v-card-subtitle class="mt-8">
-          <v-row class="">
-            <v-col class="mx-4 text-h4">
-              {{ t('headline') }}
-            </v-col>
-
-            <v-col class="pt-0">
-              <v-checkbox
-                v-model="showAtStartup"
-                :label="t('checkboxLabel')"
-              />
-            </v-col>
-          </v-row>
-        </v-card-subtitle>
 
         <v-card-text>
-          <v-col class="text-justify">
+          <v-col class="mt-8 text-justify">
             {{ t('intro') }}
+          </v-col>
+
+          <v-col class="mt-4 text-justify">
+            <v-icon
+              :icon="mdiThemeLightDark"
+              size="x-large"
+              start
+            />
+            <i18n-t
+              keypath="firstSteps.mode"
+              tag="span"
+              scope="global"
+            />
           </v-col>
 
           <v-col class="mt-4 text-justify">
@@ -83,6 +96,7 @@
             >
               <template #link>
                 <nuxt-link
+                  class="text-decoration-none text-primary"
                   rel="noopener noreferrer"
                   target="_blank"
                   to="/docs"
@@ -135,7 +149,7 @@
           indeterminate
           striped
         >
-          <span style="color: white;">{{ t('applyProfile').toUpperCase() }}</span>
+          <span>{{ t('applyProfile').toUpperCase() }}</span>
         </v-progress-linear>
 
         <BaseAlert
@@ -166,6 +180,7 @@
               scope="global"
             >
               <a
+                class="text-decoration-none text-primary"
                 :href="links.youtube"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -189,6 +204,7 @@
               scope="global"
             >
               <a
+                class="text-decoration-none text-primary"
                 :href="links.webinar"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -212,6 +228,7 @@
               scope="global"
             >
               <a
+                class="text-decoration-none text-primary"
                 :href="links.forum"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -239,7 +256,8 @@ import {
   mdiSchoolOutline,
   mdiYoutubeTv,
   mdiInformationOutline,
-  mdiHelpCircleOutline
+  mdiHelpCircleOutline,
+  mdiThemeLightDark
 } from '@mdi/js';
 
 import { StorageSerializers, useStorage } from '@vueuse/core';
@@ -333,7 +351,6 @@ const createUnit = async () => {
       "documentation": "online documentation",
       "forum": "verinice.forum",
       "goto": "Goto unit selection",
-      "greeting": "Welcome to",
       "headline": "First steps",
       "hint": "You can access this page again at any time via the account button!",
       "intro": "In this section you will find suggestions from the verinice.team to get you started quickly:",
@@ -350,7 +367,6 @@ const createUnit = async () => {
       "checkboxLabel": "Beim Start anzeigen",
       "documentation": "Online-Dokumentation",
       "forum": "verinice.forum",
-      "greeting": "Willkommen bei",
       "goto": "Zur Unit-Auswahl",
       "headline": "Erste Schritte",
       "hint": "Sie können diese Seite jederzeit über den Account Button erneut aufrufen!",

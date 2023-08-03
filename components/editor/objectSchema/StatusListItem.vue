@@ -129,7 +129,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .schema-details__status-list-item {
-  background-color: $background-primary;
   border: 1px solid $medium-grey;
   border-radius: 0px;
   overflow: hidden;

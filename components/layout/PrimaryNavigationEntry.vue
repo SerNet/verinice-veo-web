@@ -20,7 +20,8 @@
     :to="to"
     :active="active"
     active-class="veo-active-list-nav-item"
-    color="primary"
+    class="veo-list-nav-item"
+    color="color"
     :class="_classes"
     :data-component-name="componentName"
     density="compact"
@@ -28,7 +29,7 @@
     @click.stop="onClick"
   >
     <template
-      v-if="icon || faIcon"
+      v-if="icon"
       #prepend
     >
       <v-tooltip
@@ -41,10 +42,6 @@
               v-if="icon"
               :icon="icon"
               start
-            />
-            <font-awesome-icon
-              v-else-if="faIcon"
-              :icon="faIcon"
             />
           </div>
         </template>
@@ -67,7 +64,6 @@ const props = withDefaults(defineProps<INavItem & {
   miniVariant: boolean;
 }>(), {
   icon: undefined,
-  faIcon: undefined,
   to: undefined,
   exact: false,
   componentName: undefined,
@@ -116,6 +112,10 @@ const _classes = computed(() => `${props.classes} primary-navigation-entry-level
 </script>
 
 <style lang="scss">
+.veo-list-nav-item {
+  border-left: 4px solid transparent;
+}
+
 .veo-active-list-nav-item {
   border-left: 4px solid $primary;
 }

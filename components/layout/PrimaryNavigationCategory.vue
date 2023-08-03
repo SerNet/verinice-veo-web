@@ -33,10 +33,6 @@
         v-else-if="icon"
         :icon="icon"
       />
-      <font-awesome-icon
-        v-else-if="faIcon"
-        :icon="faIcon"
-      />
     </template>
     <template #activator="{ props: activatorProps }">
       <v-list-item
@@ -44,20 +40,11 @@
         :density="level > 0 ? 'compact' : 'default'"
         :class="activatorIntendation"
       >
-        <template
-          v-if="icon || faIcon"
-          #prepend="{ isActive }"
-        >
+        <template #prepend>
           <v-icon
             v-if="icon"
             :icon="icon"
             class="mr-3"
-          />
-          <font-awesome-icon
-            v-else-if="faIcon"
-            :icon="faIcon"
-            :color="isActive ? 'black' : 'grey'"
-            class="pt-1 mr-3"
           />
         </template>
         <template #default="{ isActive }">
@@ -126,7 +113,6 @@ const props = withDefaults(defineProps<INavItem & {
   miniVariant: boolean;
 }>(), {
   icon: undefined,
-  faIcon: undefined,
   to: undefined,
   exact: false,
   componentName: undefined,

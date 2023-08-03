@@ -22,11 +22,11 @@
     :color="alertColor"
     border="start"
     :elevation="flat ? undefined : 2"
-    class="veo-alert veo-border overflow-hidden"
+    class="overflow-hidden bg-basepage"
     :class="{ 'veo-pseudo-hover': dismissOnClick, 'cursor-pointer': dismissOnClick }"
     :icon="alertIcon"
-    variant="outlined"
-    style="border-radius: 8px"
+    variant="tonal"
+    style="border-radius: 6px"
     @click="onContentClick"
   >
     <v-row
@@ -38,8 +38,7 @@
         class="d-flex justify-center flex-column"
       >
         <h3
-          class="text-h3 mb-3"
-          style="font-variant: small-caps;"
+          class="text-h3 small-caps mb-3"
           v-text="title"
         />
         <slot />
@@ -264,10 +263,6 @@ export default defineComponent({
 </i18n>
 
 <style lang="scss" scoped>
-.veo-alert {
-  background-color: white;
-}
-
 .veo-alert :deep(i) {
   align-self: center;
 }

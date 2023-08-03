@@ -17,18 +17,25 @@
 -->
 <template>
   <LayoutPageWrapper
-    :title="title"
-    title-class="d-flex align-center"
+    title-class="d-flex align-center bg-basepage"
     :collapsable-left="schemaIsValid.valid"
     :collapsable-right="schemaIsValid.valid"
   >
+    <template #title>
+      <LayoutHeadline
+        class="ml-1 mb-2"
+        :title="globalT('editor.formschema.headline')"
+        :element="title"
+      />
+    </template>
+
     <template
       v-if="formSchema && objectSchema"
       #header
     >
       <div
         style="width: 120px"
-        class="ml-2"
+        class="mr-8"
       >
         <v-select
           v-model="editorLanguage"
@@ -54,9 +61,9 @@
           >
             <v-btn
               :icon="mdiDownload"
-              size="large"
+              class="bg-surface mr-1"
+              size="small"
               variant="text"
-              color="primary"
             />
           </a>
         </template>
@@ -67,11 +74,11 @@
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
-            :icon="mdiCodeTags"
-            size="large"
-            variant="text"
-            color="primary"
             v-bind="props"
+            :icon="mdiCodeTags"
+            class="bg-surface mr-1"
+            size="small"
+            variant="text"
             @click="codeEditorVisible = true"
           />
         </template>
@@ -84,7 +91,7 @@
           <v-btn
             v-if="!schemaIsValid.valid"
             :icon="mdiAlertCircleOutline"
-            size="large"
+            size="small"
             variant="text"
             color="warning"
             class="ml-2"
@@ -100,9 +107,9 @@
         <template #activator="{ props }">
           <v-btn
             :icon="mdiTranslate"
-            size="large"
+            class="bg-surface mr-1"
+            size="small"
             variant="text"
-            color="primary"
             v-bind="props"
             @click="translationDialogVisible = true"
           />
@@ -114,11 +121,11 @@
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
-            :icon="mdiWrench"
-            size="large"
-            variant="text"
-            color="primary"
             v-bind="props"
+            :icon="mdiWrench"
+            class="bg-surface mr-1"
+            size="small"
+            variant="text"
             @click="detailDialogVisible = !detailDialogVisible"
           />
         </template>
@@ -130,12 +137,11 @@
         <template #activator="{ props }">
           <v-btn
             :icon="mdiHelpCircleOutline"
-            size="large"
+            size="small"
             variant="text"
             target="_blank"
             :to="HELP_ROUTE"
-            class="help-button"
-            color="primary"
+            class="help-button bg-surface mr-1"
             v-bind="props"
           />
         </template>
@@ -148,9 +154,9 @@
           <div v-bind="props">
             <v-btn
               :icon="mdiContentSave"
-              size="large"
+              class="bg-surface mr-3"
+              size="small"
               variant="text"
-              color="primary"
               :disabled="ability.cannot('manage', 'editors')"
               @click="save"
             />
@@ -167,15 +173,15 @@
       #default
     >
       <BasePage
+        heading-level="3"
         sticky-header
+        :title="t('availableControls')"
+        :titlebar-alignment="PageHeaderAlignment.CENTER"
       >
         <template #header>
-          <h3 class="text-h3 text-center pb-1">
-            {{ t("availableControls") }}
-          </h3>
           <v-text-field
             v-model="searchQuery"
-            class="mb-1"
+            class="mt-0 bg-surface"
             dense
             flat
             clearable
@@ -201,7 +207,7 @@
         :titlebar-alignment="PageHeaderAlignment.CENTER"
       >
         <template #default>
-          <div class="fill-height fill-width d-flex">
+          <div class="fill-height fill-width d-flex mt-2">
             <EditorFormSchemaPlayground
               v-if="formSchema"
               v-model="formSchema.content"
@@ -226,6 +232,7 @@
           <DynamicFormEntrypoint
             v-if="formSchema && objectSchema"
             v-model="objectData"
+            class="bg-surface"
             :object-schema="objectSchema"
             :form-schema="formSchema.content"
             :translations="eligibleTranslations"
@@ -339,14 +346,11 @@ export default defineComponent({
     provide('controlsItems', controlItems);
 
     const title = computed(() => {
-      const headline = globalT('editor.formschema.headline');
       // Name property must generally exist, but before it is created in Wizard, only headline should be visible
       // If Name property exists and e.g. 'de' sub-property is empty then missing translation should be visible
       if (formSchema.value?.name) {
         const formSchemaName = formSchema.value?.name[editorLanguage.value] ?? `Missing translation for ${editorLanguage.value.toUpperCase()}`;
-        return headline + ` - ${formSchemaName}`;
-      } else {
-        return headline;
+        return formSchemaName;
       }
     });
 

@@ -39,14 +39,14 @@
     </template>
     <template #dialog-options>
       <v-btn
-        text
+        variant="text"
         @click="$emit('update:model-value', false)"
       >
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
-        text
+        variant="text"
         color="primary"
         :disabled="!isFormValid || !isFormDirty"
         @click="onSubmit"

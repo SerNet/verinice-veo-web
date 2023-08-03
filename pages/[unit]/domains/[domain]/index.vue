@@ -18,7 +18,6 @@
 <template>
   <BasePage
     :loading="!domain"
-    :title="t('overview')"
     data-component-name="domain-dashboard-page"
     padding
   >
@@ -26,34 +25,25 @@
       v-if="domainNotFound"
       :text="t('domainNotFoundText')"
     />
+
     <template v-else>
-      <v-row
+      <div
         v-if="domain"
         class="mt-0"
       >
-        <v-col>
-          <div
-            class="bg-red-lighten-1 rounded"
-            style="display: flex; align-items: center; height: 40px; width: max-content; cursor: default;"
-          >
-            <span class="mx-4 text-h5 font-bold">{{ unit?.name.toUpperCase() }}</span>
-            <span
-              v-if="unit?.description"
-              class="mr-4 px-2 bg-accent text-body-1"
-              style="display: flex; align-items: center; height: inherit; text-uppercase"
-            >
-              {{ unit?.description || '' }}
-            </span>
-          </div>
-        </v-col>
-      </v-row>
+        <LayoutHeadline
+          :title="t('overview')"
+          :element="unit?.name"
+        />
+      </div>
 
       <v-skeleton-loader
         v-else
         class="mt-n2 mb-4 skeleton-subtitle"
         type="text"
       />
-      <v-row>
+
+      <v-row class="mt-4">
         <template v-if="elementStatusCountIsFetching">
           <v-col
             v-for="index in 2"
@@ -95,6 +85,7 @@
             </BaseWidget>
           </v-col>
         </template>
+
         <template v-else>
           <v-col
             v-for="(row, rowIndex) of chartData"
@@ -227,8 +218,5 @@ export default defineComponent({
   :deep(.v-skeleton-loader__text) {
     height: 16px;
   }
-}
-.small-caps {
-  font-variant: small-caps;
 }
 </style>

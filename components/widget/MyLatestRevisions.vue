@@ -27,7 +27,7 @@
           <td>
             <nuxt-link
               :to="createUrl(revision, schemas || {})"
-              class="text-body-2"
+              class="text-body-2 text-color"
             >
               {{ revision.content.designator }} <b>{{ revision.content.abbreviation }} {{ revision.content.name }}</b>
             </nuxt-link>

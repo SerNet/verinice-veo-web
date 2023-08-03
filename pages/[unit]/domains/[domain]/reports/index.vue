@@ -16,9 +16,14 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage :title="$t('breadcrumbs.reports')">
+  <BasePage>
     <template #header>
-      <p class="mt-4 text-body-1">
+      <LayoutHeadline
+        class="mb-4"
+        :title="$t('breadcrumbs.reports')"
+      />
+
+      <p class="mt-8 mb-4 text-body-1">
         {{ t('hint') }}
       </p>
     </template>
@@ -52,10 +57,10 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "hint": "Choose the report type, for which you want to generate a report."
+    "hint": "Choose the report type for which you want to generate a report."
   },
   "de": {
-    "hint": "Wählen Sie aus der Liste den Reporttyp aus, für den Sie einen Report erstellen möchten."
+    "hint": "Wählen Sie den Reporttyp aus der Liste aus, für den Sie einen Report erstellen möchten."
   }
 }
 </i18n>

@@ -9,6 +9,9 @@ steps:
   - title: 'Breadcrumbs'
     element: '[data-component-name=breadcrumbs]'
     intro: Über die Breadcrumbs navigieren Sie jederzeit zu vorab aufgerufenen Objekten.
+  - title: 'Theme-Switch'
+    element: '[data-component-name=theme-switch]'
+    intro: Mit Klick auf das Icon wechseln Sie komfortabel zwischen <i>light-</i> und <i>dark-mode</i>.
   - title: 'Sprachauswahl'
     element: '[data-component-name=language-select]'
     intro: Mit dem Sprachumschalter wählen Sie eine der verfügbaren Sprachen.

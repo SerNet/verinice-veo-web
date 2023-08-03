@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2022  Jonas Heitmann
+   - Copyright (C) 2023 Frank Schneider
    -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -16,41 +16,19 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <component :is="render" />
+  <v-btn
+    data-component-name="theme-switch"
+    :icon="mdiThemeLightDark"
+    title="Toggle Theme"
+    @click="_switch"
+  />
 </template>
+
 <script setup lang="ts">
-import { VCard } from 'vuetify/components';
+import { useTheme } from 'vuetify';
+import { mdiThemeLightDark } from '@mdi/js';
 
-const props = withDefaults(defineProps<{
-  inverted?: boolean,
-  border?: boolean
-}>(), {
-  inverted: false,
-  border: false
-});
+const theme = useTheme();
 
-const slots = useSlots();
-const attrs = useAttrs();
-
-const render = () => h(
-  VCard,
-  {
-    ...attrs,
-    class: {
-      'veo-card': true,
-      'veo-card--inverted': props.inverted,
-      'veo-border': props.border
-    },
-    flat: true,
-    rounded: true
-  },
-  ...(slots.default ? [slots.default] : [])
-);
+const _switch = () => theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark';
 </script>
-
-<style lang="scss" scoped>
-.veo-card {
-  border-radius: 6px;
-  overflow: hidden;
-}
-</style>

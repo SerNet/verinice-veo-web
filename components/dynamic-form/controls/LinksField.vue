@@ -52,7 +52,6 @@
     </v-list>
     <v-btn
       v-if="!options.singleLink"
-      text
       :disabled="disabled || options.disabled"
       color="primary"
       variant="text"

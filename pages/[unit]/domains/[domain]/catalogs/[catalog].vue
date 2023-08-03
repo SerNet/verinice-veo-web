@@ -17,11 +17,16 @@
 -->
 <template>
   <BasePage
-    :title="title"
     data-component-name="catalog-page"
   >
     <template #default>
-      <BaseTabs class="mt-6">
+      <LayoutHeadline
+        class="mb-4"
+        :title="locale === 'de' ? 'Katalog': 'Catalog'"
+        :element="title"
+      />
+
+      <BaseTabs class="mt-4">
         <template #tabs>
           <v-tab data-component-name="catalog-hazards-tab">
             {{ t('applyEntries') }}
@@ -30,19 +35,22 @@
             {{ t('applyTOMs') }}
           </v-tab>
         </template>
+
         <template #items>
           <v-window-item>
             <CatalogDefaultCatalog
+              class="mb-4"
               :catalog-items="scenarios"
               :loading="catalogItemsAreFetching"
               :success-text="t('scenariosApplied').toString()"
               :error-text="t('applyScenariosError').toString()"
             >
               <template #header>
-                {{ t('selectScenariosCTA') }}
+                <span class="my-2">{{ t('selectScenariosCTA') }}</span>
               </template>
             </CatalogDefaultCatalog>
           </v-window-item>
+
           <v-window-item>
             <CatalogDefaultCatalog
               :catalog-items="toms"
@@ -51,7 +59,7 @@
               :error-text="t('applyTOMsError').toString()"
             >
               <template #header>
-                {{ t('selectTOMsCTA') }}
+                <span class="my-2">{{ t('selectTOMsCTA') }}</span>
               </template>
             </CatalogDefaultCatalog>
           </v-window-item>
@@ -64,7 +72,7 @@
 <script lang="ts">
 export default {
   name: 'VeoCatalogPage'
-}
+};
 export const ROUTE_NAME = 'unit-domains-domain-catalogs-catalog';
 </script>
 
@@ -73,7 +81,7 @@ import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs
 import { useQuery } from '~~/composables/api/utils/query';
 
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const route = useRoute();
 const title = computed(() => t('catalog', { name: catalogItems.value?.[0]?.catalog?.displayName || '' }));
 
@@ -82,7 +90,6 @@ const toms = computed(() => (catalogItems.value || []).filter((catalogItem) => c
 
 const fetchCatalogItemsQueryParameters = computed(() => ({ catalogId: route.params.catalog as string, domainId: route.params.domain as string }));
 const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(catalogQueryDefinitions.queries.fetchCatalogItems, fetchCatalogItemsQueryParameters);
-
 </script>
 
 <i18n>
@@ -92,7 +99,7 @@ const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(cat
     "applyScenariosError": "Couldn't apply scenarios",
     "applyTOMs": "apply TOMs",
     "applyTOMsError": "Couldn't apply TOMs",
-    "catalog": "Catalog {name}",
+    "catalog": "{name}",
     "scenariosApplied": "Scenarios were applied successfully",
     "selectScenariosCTA": "Please select the scenarios you want to apply.",
     "selectTOMsCTA": "Please choose one or more technical organizational measures to apply.",
@@ -103,7 +110,7 @@ const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(cat
     "applyScenariosError": "Gefährdungen konnten nicht angewandt werden",
     "applyTOMs": "TOMs anwenden",
     "applyTOMsError": "Die TOMs konnten nicht angewendet werden",
-    "catalog": "Katalog {name}",
+    "catalog": "{name}",
     "scenariosApplied": "Gefährdungen wurden erfolgreich angewandt",
     "selectScenariosCTA": "Bitte wählen Sie die Gefährdungen aus, die Sie anwenden möchten.",
     "selectTOMsCTA": "Wählen Sie eine oder mehrere technische und organisatorische Maßnahmen aus, die angewendet werden sollen.",

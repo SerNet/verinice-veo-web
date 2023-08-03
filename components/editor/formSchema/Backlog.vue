@@ -51,7 +51,7 @@
       flat
     >
       <v-expansion-panel v-show="filteredFormElements.length">
-        <v-expansion-panel-title class="overline px-0">
+        <v-expansion-panel-title class="text-h5 overline small-caps px-2">
           {{ t('formElements') }} ({{ filteredFormElements.length }})
         </v-expansion-panel-title>
         <v-expansion-panel-text>
@@ -67,7 +67,7 @@
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
                 :clone="onCloneFormElement"
-                :item-key="(element) => element.description.title"
+                :item-key="(element: any) => element.description.title"
               >
                 <template #item="{ element }">
                   <EditorListItem
@@ -83,7 +83,7 @@
       </v-expansion-panel>
 
       <v-expansion-panel v-show="filteredBasics.length">
-        <v-expansion-panel-title class="overline px-0">
+        <v-expansion-panel-title class="text-h5 overline small-caps px-2">
           {{ globalT('editor.basicproperties') }} ({{ filteredBasics.length }})
         </v-expansion-panel-title>
         <v-expansion-panel-text>
@@ -117,7 +117,7 @@
       </v-expansion-panel>
 
       <v-expansion-panel v-show="filteredAspects.length">
-        <v-expansion-panel-title class="overline px-0">
+        <v-expansion-panel-title class="text-h5 overline small-caps px-2">
           {{ globalT('editor.customaspects') }} ({{ filteredAspects.length }})
         </v-expansion-panel-title>
         <v-expansion-panel-text>
@@ -151,7 +151,7 @@
       </v-expansion-panel>
 
       <v-expansion-panel v-show="filteredLinks.length">
-        <v-expansion-panel-title class="overline px-0">
+        <v-expansion-panel-title class="text-h5 overline small-caps px-2">
           {{ globalT('editor.customlinks') }} ({{ filteredLinks.length }})
         </v-expansion-panel-title>
         <v-expansion-panel-text>
@@ -495,17 +495,17 @@ export default defineComponent({
     "en": {
       "collapse": "collapse all",
       "expand": "expand all",
-      "formElements": "form elements",
+      "formElements": "Form elements",
       "formWidgets": "form widgets",
       "searchNoMatch": "no matching controls",
       "widget": "widget"
     },
     "de": {
-      "collapse": "alle einklappen",
-      "expand": "alle ausklappen",
-      "formElements": "steuerelemente",
+      "collapse": "Alle einklappen",
+      "expand": "Alle ausklappen",
+      "formElements": "Steuerelemente",
       "formWidgets": "Formular-Widgets",
-      "searchNoMatch": "keine passenden Steuerelemente vorhanden",
+      "searchNoMatch": "Keine passenden Steuerelemente vorhanden",
       "widget": "Widget"
     }
   }

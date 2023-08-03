@@ -20,19 +20,13 @@
     <v-tooltip location="top">
       <template #activator="{ props: tooltipProps }">
         <div v-bind="tooltipProps">
-          <font-awesome-icon
-            v-if="icon && icon.library === 'fa'"
-            color="grey"
+          <v-icon
+            v-if="icon && icon.library === 'mdi'"
             v-bind="$attrs"
             :icon="icon.icon"
           />
           <v-icon
-            v-else-if="icon && icon.library === 'mdi'"
-            v-bind="$attrs"
-            :icon="icon.icon"
-          />
-          <v-icon
-            v-if="isComposite"
+            v-else-if="isComposite"
             class="veo-object-icon--composite"
             color="primary"
             :icon="mdiDotsHorizontal"
@@ -47,9 +41,9 @@
 </template>
 
 <script lang="ts">
-export const OBJECT_TYPE_ICONS = new Map<string, { icon: string | string[]; library: 'fa' | 'mdi' }>([
-  ['scope', { icon: ['far', 'object-group'], library: 'fa' }],
-  ['process', { icon: ['fas', 'diagram-project'], library: 'fa' }],
+export const OBJECT_TYPE_ICONS = new Map<string, { icon: string | string[]; library: 'mdi' }>([
+  ['scope', { icon: mdiFocusField, library: 'mdi' }],
+  ['process', { icon: mdiDatabaseCogOutline, library: 'mdi' }],
   ['asset', { icon: mdiDevices, library: 'mdi' }],
   ['person', { icon: mdiAccountOutline, library: 'mdi' }],
   ['incident', { icon: mdiAlarmLightOutline, library: 'mdi' }],
@@ -63,9 +57,11 @@ export const OBJECT_TYPE_ICONS = new Map<string, { icon: string | string[]; libr
 import {
   mdiAccountOutline,
   mdiAlarmLightOutline,
+  mdiDatabaseCogOutline,
   mdiDevices,
   mdiDotsHorizontal,
   mdiFileDocumentOutline,
+  mdiFocusField,
   mdiPlaylistCheck,
   mdiShieldAlertOutline
 } from '@mdi/js';

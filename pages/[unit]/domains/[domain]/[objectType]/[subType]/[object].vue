@@ -22,11 +22,10 @@
   />
   <LayoutPageWrapper
     v-else
-    class="px-4 pt-4"
+    class="px-4 bg-basepage"
     collapsable-left
     collapsable-right
     :loading="loading"
-    :title="(object && object.displayName) || ''"
     :page-widths="pageWidths"
     :page-widths-xl="pageWidthsXl"
     :page-widths-lg="pageWidthsLg"
@@ -34,6 +33,13 @@
     data-component-name="object-details-page"
     @page-collapsed="onPageCollapsed"
   >
+    <template #title>
+      <LayoutHeadline
+        class="mb-2"
+        :title="(object && object.displayName) || ''"
+      />
+    </template>
+
     <template #default>
       <BasePage
         sticky-footer
@@ -53,6 +59,7 @@
         </template>
         <template #footer>
           <div style="height: 36px" />
+
           <ObjectActionMenu
             color="primary"
             :disabled="ability.cannot('manage', 'objects')"
@@ -62,6 +69,7 @@
           />
         </template>
       </BasePage>
+
       <BasePage
         content-class="fill-height"
         no-padding
@@ -107,17 +115,20 @@
               >
                 <template v-if="!formDataIsRevision">
                   <v-btn
-                    variant="text"
                     :disabled="loading || !isFormDirty || ability.cannot('manage', 'objects')"
+                    class="mb-4"
+                    color="primary"
+                    flat
                     @click="resetForm"
                   >
                     {{ t('reset') }}
                   </v-btn>
                   <v-spacer />
                   <v-btn
-                    flat
-                    color="primary"
                     :disabled="loading || !isFormDirty || !isFormValid || ability.cannot('manage', 'objects')"
+                    class="mb-4"
+                    color="primary"
+                    flat
                     @click="saveObject"
                   >
                     {{ $t('global.button.save') }}
@@ -491,14 +502,3 @@ export default defineComponent({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-.object-details-actions {
-  background-color: $background-primary;
-}
-
-.object-details-actions__fade {
-  background-image: linear-gradient(to bottom, transparent, $background-primary);
-  height: 16px;
-}
-</style>

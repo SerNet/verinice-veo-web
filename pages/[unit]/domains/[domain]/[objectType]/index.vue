@@ -15,6 +15,10 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+<template>
+  <span>Redirecting...</span>
+</template>
+
 <script setup lang="ts">
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 
@@ -31,7 +35,3 @@ await navigateTo({
   }
 });
 </script>
-
-<template>
-  <span>Redirecting...</span>
-</template>

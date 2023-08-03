@@ -17,13 +17,12 @@
 -->
 <template>
   <v-chip
-    color="primary"
     :closable="close"
     data-component-name="veo-object-chip"
+    label
   >
     <div
       v-if="label || $slots.label"
-      :class="{ 'chip-label text-black': value === true }"
     >
       <span
         v-if="label"
@@ -36,7 +35,7 @@
     </div>
     <div
       v-if="value !== true"
-      class="chip-value text-black"
+      class="chip-value"
     >
       <span
         v-if="value"
@@ -48,47 +47,35 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
-  label: {
-    type: String,
-    default: ''
-  },
-  close: {
-    type: Boolean,
-    default: true
-  },
-  value: {
-    type: [String, Boolean],
-    default: undefined
-  }
+const _props = withDefaults(defineProps<{
+  label: string,
+  close: boolean,
+  value: string | boolean | undefined
+}>(), {
+  label: '',
+  close: true,
+  value: undefined
 });
 </script>
 
 <style lang="scss" scoped>
-.v-chip {
-  border: 1px solid $primary;
-}
-
 .chip-value, .chip-label {
-  background: white;
-  margin-left: -12px;
-  margin-right: -6px;
-  padding: 8px 8px 6px 8px;
+  background: #36384c;
+  color: white;
+  padding: 6px 12px 6px 12px;
   z-index: 1;
 }
 
-.chip-value{
-  border-left: 1px solid $primary;
+.chip-value {
+  border-left: 4px solid slategrey;
   margin-left: 8px;
   margin-right: -12px;
 }
 
 :deep(.v-chip__close) {
-  background-color: #ffffff;
-  margin-right: -12px !important;
   max-height: none;
   max-width: none;
-  padding: 6px 6px 6px 4px;
+  padding: 6px 6px 6px 16px;
   z-index: 1;
 }
 

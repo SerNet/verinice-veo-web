@@ -16,22 +16,32 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    :title="$t('breadcrumbs.administration')"
-    sticky-footer
-  >
+  <BasePage sticky-footer>
     <template #default>
-      <h2 class="text-h2 mt-6">
-        {{ t('accounts') }}
-      </h2>
-      <p class="text-body-2">
+      <LayoutHeadline
+        :title="$t('breadcrumbs.administration')"
+      />
+
+      <BaseAlert
+        :model-value="true"
+        class="mt-8 mb-4"
+        flat
+        no-close-button
+        :title="t('access')"
+        :type="VeoAlertType.INFO"
+        style="width: max-content;"
+      >
         {{ t('accountAdministrationHint') }}
-      </p>
+      </BaseAlert>
+
       <BaseCard>
-        <p class="mx-3 mt-3 mb-1">
-          <b>{{ activeAccounts }}</b> {{ t('of') }}
-          <b>{{ userSettings.maxUsers - 1 }}</b> {{ t('activeAccounts') }}
-        </p>
+        <v-card-title class="bg-accent small-caps text-h4">
+          <span>{{ t('accounts') }}</span>
+          <span style="float: right;">
+            <b>{{ activeAccounts }}</b> {{ t('of') }} <b>{{ userSettings.maxUsers - 1 }}</b> {{ t('activeAccounts') }}
+          </span>
+        </v-card-title>
+
         <BaseTable
           :default-headers="['actions']"
           :items="accounts"
@@ -105,6 +115,7 @@ import accountQueryDefinition, { IVeoAccount } from '~/composables/api/queryDefi
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useQuery } from '~~/composables/api/utils/query';
+import { VeoAlertType } from '~/types/VeoTypes';
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
@@ -230,9 +241,10 @@ const additionalTableHeaders = ref<TableHeader[]>([
 <i18n>
 {
    "en": {
-    "accountAdministrationHint": "Every account has access to all units and objects in this client.",
+    "access": "Access",
     "accounts": "Accounts",
-    "activeAccounts": "active accounts",
+    "accountAdministrationHint": "Every account has access to all units and objects in this client.",
+    "activeAccounts": "active",
     "createAccount": "Create account",
     "edit": "Edit",
     "email": "Email address",
@@ -244,9 +256,10 @@ const additionalTableHeaders = ref<TableHeader[]>([
     "username": "Username"
    },
    "de": {
-    "accountAdministrationHint": "Jeder Benutzer hat Zugriff auf alle Units und Objekte in diesem Client.",
+    "access": "Zugriff",
     "accounts": "Benutzer",
-    "activeAccounts": "aktive Benutzer",
+    "accountAdministrationHint": "Jeder Benutzer hat Zugriff auf alle Units und Objekte in diesem Client.",
+    "activeAccounts": "aktiv",
     "createAccount": "Benutzer erstellen",
     "edit": "Bearbeiten",
     "email": "E-Mail-Adresse",

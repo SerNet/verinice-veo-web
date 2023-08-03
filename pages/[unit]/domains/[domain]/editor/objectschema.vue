@@ -17,20 +17,29 @@
 -->
 <template>
   <LayoutPageWrapper
+    class="bg-surface"
     collapsable-right
     :page-widths="pageWidths"
     @page-collapsed="onPageCollapsed"
   >
+    <template #title>
+      <LayoutHeadline
+        class="ml-1 mb-2"
+        :title="globalT('editor.objectschema.headline')"
+        :element="title"
+      />
+    </template>
+
     <template #default>
       <BasePage
         v-if="objectSchemaHelper"
         sticky-header
       >
         <template #header>
-          <div class="d-flex flex-row align-center">
-            <h1 class="text-h1">
-              {{ globalT('editor.objectschema.headline') }}
-            </h1>
+          <div
+            class="d-flex flex-row"
+          >
+            <v-spacer />
             <v-tooltip location="bottom">
               <template #activator="{ props }">
                 <a
@@ -42,10 +51,10 @@
                   @click="downloadSchema()"
                 >
                   <v-btn
+                    class="bg-basepage"
                     icon
                     large
                     variant="text"
-                    color="primary"
                   >
                     <v-icon :icon="mdiDownload" />
                   </v-btn>
@@ -77,8 +86,7 @@
                 <v-btn
                   :icon="mdiTranslate"
                   large
-                  class="translate-button"
-                  color="primary"
+                  class="translate-button bg-basepage"
                   v-bind="props"
                   variant="text"
                   @click="translationDialogVisible = true"
@@ -93,7 +101,7 @@
                 <v-btn
                   :icon="mdiWrench"
                   large
-                  color="primary"
+                  class="bg-basepage"
                   v-bind="props"
                   variant="text"
                   @click="detailsDialogVisible = !detailsDialogVisible"
@@ -110,8 +118,7 @@
                   large
                   target="_blank"
                   :to="HELP_ROUTE"
-                  class="help-button"
-                  color="primary"
+                  class="help-button bg-basepage"
                   variant="text"
                   v-bind="props"
                 />
@@ -130,7 +137,7 @@
                     :disabled="!schemaIsValid.valid || ability.cannot('manage', 'editors')"
                     :icon="mdiContentSave"
                     large
-                    color="primary"
+                    class="bg-basepage"
                     variant="text"
                     @click="saveSchema"
                   />

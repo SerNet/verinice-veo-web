@@ -17,22 +17,23 @@
 -->
 <template>
   <BasePage
-    :title="$t('breadcrumbs.index')"
     data-component-name="unit-selection-page"
     sticky-footer
   >
-    <div class="d-flex justify-center">
+    <LayoutHeadline
+      :title="t('management')"
+    />
+
+    <div class="d-flex justify-center my-8">
       <BaseCard
         style="width: 70%; max-width: 1000px;"
       >
-        <v-card-text>
-          <h3 class="text-h4">
-            {{ t('unitpicker') }}
-          </h3>
-          <p class="text-body-2">
-            <strong>{{ activeUnits }}</strong> {{ t('of' ) }} <strong>{{ userSettings.maxUnits }}</strong> {{ t('active') }} Units
-          </p>
-        </v-card-text>
+        <v-card-title class="bg-accent small-caps text-h4">
+          <span>Units</span>
+          <span style="float: right;">
+            {{ activeUnits }} {{ t('of' ) }} {{ userSettings.maxUnits }} {{ t('active') }}
+          </span>
+        </v-card-title>
 
         <v-list
           lines="two"
@@ -97,6 +98,7 @@
                 </template>
               </v-tooltip>
             </template>
+            <v-divider v-if="units && units?.length > 1" />
           </v-list-item>
         </v-list>
       </BaseCard>
@@ -210,21 +212,21 @@ const deleteUnit = (unit: IVeoUnit) => {
 {
   "en": {
     "active": "active",
-    "createUnit": "Create unit",
-    "deleteUnit": "Delete unit",
-    "editUnit": "Edit unit",
-    "exceeded": "You have reached the maximum amount of units",
-    "of": "of",
-    "unitpicker": "Please choose a unit",
+    "createUnit": "Create Unit",
+    "deleteUnit": "Delete Unit",
+    "editUnit": "Edit Unit",
+    "exceeded": "You have reached the maximum amount of Units",
+    "management": "Unit management",
+    "of": "of"
   },
   "de": {
-    "active": "aktive",
+    "active": "aktiv",
     "createUnit": "Unit erstellen",
     "deleteUnit": "Unit löschen",
     "editUnit": "Unit bearbeiten",
     "exceeded": "Sie haben die maximale Anzahl an Units erreicht",
-    "of": "von",
-    "unitpicker": "Bitte wählen Sie eine Unit",
+    "management": "Unit-Verwaltung",
+    "of": "von"
   }
 }
 </i18n>

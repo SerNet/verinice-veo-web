@@ -17,11 +17,15 @@
 -->
 <template>
   <BasePage
-    :title="upperFirst(t('objectOverview'))"
     data-component-name="object-overview-page"
     sticky-footer
   >
     <template #default>
+      <LayoutHeadline
+        class="mb-4"
+        :title="upperFirst(t('objectOverview'))"
+      />
+
       <ObjectFilterBar
         ref="filterBar"
         :domain-id="domainId"
@@ -116,6 +120,10 @@
     </template>
   </BasePage>
 </template>
+
+<script lang="ts">
+export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
+</script>
 
 <script setup lang="ts">
 import { mdiContentCopy, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
@@ -402,10 +410,6 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
     ]
     :[]
 );
-</script>
-
-<script lang="ts">
-export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
 </script>
 
 <i18n>

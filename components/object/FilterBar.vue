@@ -17,6 +17,7 @@
 -->
 <template>
   <v-row
+    class="mb-4"
     no-gutters
     v-bind="$attrs"
   >
@@ -25,11 +26,10 @@
       class="d-flex align-center"
     >
       <v-btn
+        class="bg-primary"
         color="white"
-        rounded
         size="small"
         variant="flat"
-        style="outline: 1px solid black"
         data-component-name="filter-bar-filter-button"
         @click="filterDialogVisible = true"
       >
@@ -48,7 +48,7 @@
       <BaseChip
         v-for="k in activeFilterKeys"
         :key="k"
-        class="ml-2"
+        class="ml-2 text-uppercase"
         :label="formatLabel(k)"
         :value="formatValue(k, filter[k])"
         :close="!requiredFields.includes(k) && !disabledFields.includes(k)"

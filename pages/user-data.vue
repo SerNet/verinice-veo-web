@@ -16,10 +16,13 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    :title="$t('breadcrumbs.user-data')"
-    sticky-footer
-  >
+  <BasePage sticky-footer>
+    <LayoutHeadline
+      class="mb-4"
+      :title="t('breadcrumbs.user-data')"
+    />
+
+
     <i18n-t
       keypath="userDataExport.hint.text"
       tag="p"
@@ -68,6 +71,6 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n();
 // i18n message are in global en.json/de.json, because they are used with `<i18n-t>` => compare README
+const { t } = useI18n();
 </script>

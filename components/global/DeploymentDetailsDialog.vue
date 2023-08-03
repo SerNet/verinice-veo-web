@@ -84,6 +84,8 @@
         </tbody>
       </v-table>
     </BaseCard>
+
+    <v-divider />
     <BaseCard class="mt-2">
       <v-card-text>
         <p>{{ t('aboutText') }}</p>
@@ -110,7 +112,7 @@
           >{{ t('privacyPolicy') }}</a>
         </i18n-t>
         <br>
-        &copy; 2023 - <a
+        &copy; {{ currentYear }} - <a
           href="https://www.sernet.de"
           target="_blank"
         >SerNet GmbH</a>
@@ -136,6 +138,9 @@ const fetchReportingApiDeploymentDetailsQueryParameters = ref({ api: 'reporting'
 const { data: reportingApiDeploymentDetails } = useQuery(monitoringQueryDefintions.queries.fetch, fetchReportingApiDeploymentDetailsQueryParameters);
 const fetchAccountingApiDeploymentDetailsQueryParameters = ref({ api: 'accounts' as 'default' | 'history' | 'forms' | 'reporting' | 'accounts' });
 const { data: accountingApiDeploymentDetails } = useQuery(monitoringQueryDefintions.queries.fetch, fetchAccountingApiDeploymentDetailsQueryParameters);
+
+const date = new Date();
+const currentYear = date.getFullYear();
 
 const deploymentInformation = computed<Record<string, IVeoDeploymentInformation | undefined>>(() => ({
   app: {

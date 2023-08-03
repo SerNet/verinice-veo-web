@@ -93,6 +93,7 @@ a:not([class^='v-']) {
 
 pre, code {
   background: $light-grey;
+  color: $code-black;
 }
 
 pre {
@@ -101,4 +102,8 @@ pre {
   code {
     white-space: break-spaces;
   }
+}
+
+.small-caps {
+  font-variant: small-caps;
 }

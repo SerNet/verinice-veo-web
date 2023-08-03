@@ -23,13 +23,14 @@
   >
     <template #activator="{ props: menuProps, isActive }">
       <v-list
+        class="mt-4"
         nav
         density="compact"
         :rounded="miniVariant"
       >
         <v-list-item
           v-show="!miniVariant"
-          class="veo-domain-select"
+          class="veo-domain-select bg-basepage"
           data-component-name="domain-select"
           v-bind="menuProps"
           :disabled="disabled"
@@ -183,8 +184,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-domain-select {
-  background: rgba(0, 0, 0, 0.06);
-  border-radius: 12px;
+  border-radius: 6px;
 }
 
 .veo-domain-select.v-list-item--disabled {

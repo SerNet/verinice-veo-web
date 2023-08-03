@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseWidget>
+  <BaseWidget :title="t(statusBarTitle)">
     <template #default>
       <v-row
         v-for="(chart, index) of chartData"
@@ -34,7 +34,7 @@
         >
           <nuxt-link
             :to="objectOveriewLink(index, schemas || {})"
-            class="text-black text-decoration-none"
+            class="text-decoration-none text-color"
           >
             {{ chart.labels[0] }}
           </nuxt-link>
@@ -106,11 +106,13 @@ interface IChartValue {
 const props = withDefaults(defineProps<{
   data?: IVeoDomainStatusCount['x'];
   chartHeight?: number | string;
+  title?: string;
   objectType: string;
   domainId: string;
 }>(), {
   data: () => ({}),
-  chartHeight: 50
+  chartHeight: 50,
+  title: ' '
 });
 
 const emit = defineEmits<{
@@ -120,7 +122,9 @@ const emit = defineEmits<{
 const { locale, t } = useI18n();
 const route = useRoute();
 
+
 const barChartRef = ref([]);
+const statusBarTitle = computed(() => (props.objectType.charAt(0).toUpperCase() + props.objectType.slice(1)) || ' ');
 
 const fetchSchemaQueryParameters = computed(() => ({ domainIds: [props.domainId], type: props.objectType }));
 const fetchSchemaQueryEnabled = computed(() => !!props.domainId);
@@ -232,11 +236,27 @@ const objectOveriewLink = (subTypeIndex: number, schemas: IVeoSchemaEndpoints) =
 {
   "en": {
     "noObjects": "No objects available",
-    "noSubtypes": "There are no subtypes for this object type"
+    "noSubtypes": "There are no subtypes for this object type",
+    "Asset": "asset",
+    "Control": "control",
+    "Document": "document",
+    "Incident": "incident",
+    "Person": "Person",
+    "Process": "process",
+    "Scenario": "scenario",
+    "Scope": "scope"
   },
   "de": {
     "noObjects": "Keine Objekte vorhanden",
-    "noSubtypes": "Für diesen Objekttyp existieren keine Subtypen"
+    "noSubtypes": "Für diesen Objekttyp existieren keine Subtypen",
+    "Asset": "Asset",
+    "Control": "Maßnahme",
+    "Document": "Dokument",
+    "Incident": "Vorfall",
+    "Person": "Person",
+    "Process": "Prozess",
+    "Scenario": "Szenario",
+    "Scope": "Scope"
   }
 }
 </i18n>

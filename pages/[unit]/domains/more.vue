@@ -16,9 +16,13 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage :title="t('moreModules')">
+  <BasePage>
+    <LayoutHeadline
+      :title="t('moreModules')"
+    />
+
     <div
-      class="my-3"
+      class="my-8"
       style="width: 300px"
     >
       <LayoutAppLogoDesktop />
@@ -35,12 +39,12 @@
   </BasePage>
 </template>
 
-<script setup lang="ts">
-const { t, locale } = useI18n();
-</script>
-
 <script lang="ts">
 export const ROUTE_NAME = 'unit-domains-more';
+</script>
+
+<script setup lang="ts">
+const { t, locale } = useI18n();
 </script>
 
 <i18n>
