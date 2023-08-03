@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div class="schema-editor-wrapper d-flex flex-column fill-height">
+  <div class="schema-editor-wrapper d-flex flex-column fill-height bg-surface">
     <UtilCodeEditor
       :model-value="code"
       @update:model-value="onInput"
