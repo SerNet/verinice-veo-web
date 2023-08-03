@@ -222,7 +222,7 @@ const chartData = computed<IChartValue[]>(() =>
       (status: string, index: number) => ({
         data: [subTypeData[status]],
         backgroundColor: CHART_COLORS[index],
-        label: translations.value?.lang[locale.value][`${props.objectType}_${subType}_status_${status}`] || status
+        label: translations.value?.lang?.[locale.value]?.[`${props.objectType}_${subType}_status_${status}`] || status
       })
     )
   }))
