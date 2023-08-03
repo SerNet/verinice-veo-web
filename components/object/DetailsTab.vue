@@ -38,6 +38,7 @@
               <v-btn
                 v-bind="props"
                 :icon="btn.icon"
+                size="small"
                 variant="flat"
                 :disabled="ability.cannot('manage', 'objects')"
                 @click="btn.action(item.raw)"

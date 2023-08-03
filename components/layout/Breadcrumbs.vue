@@ -126,7 +126,7 @@
 
 <script lang="ts">
 import { isEmpty, last, omit, pick } from 'lodash';
-import { mdiChevronRight, mdiDotsHorizontal, mdiHomeOutline } from '@mdi/js';
+import { mdiChevronRight, mdiDotsHorizontal, mdiViewDashboardOutline } from '@mdi/js';
 
 import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 import { IVeoCatalog } from '~~/composables/api/queryDefinitions/catalogs';
@@ -207,7 +207,7 @@ export default defineComponent({
       [
         ':domain',
         {
-          icon: mdiHomeOutline,
+          icon: mdiViewDashboardOutline,
           queriedText: {
             query: ':domain',
             parameterTransformationFn: (_param, value) => ({ id: value }),
