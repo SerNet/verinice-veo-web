@@ -17,7 +17,7 @@
 -->
 <template>
   <LayoutPageWrapper
-    class="bg-surface"
+    class="bg-basepage"
     collapsable-right
     :page-widths="pageWidths"
     @page-collapsed="onPageCollapsed"
@@ -37,7 +37,7 @@
       >
         <template #header>
           <div
-            class="d-flex flex-row bg-basepage"
+            class="d-flex flex-row bg-accent"
           >
             <v-spacer />
             <v-tooltip location="bottom">
@@ -51,7 +51,7 @@
                   @click="downloadSchema()"
                 >
                   <v-btn
-                    class="bg-basepage"
+                    class="bg-accent"
                     icon
                     large
                     variant="text"
@@ -86,7 +86,7 @@
                 <v-btn
                   :icon="mdiTranslate"
                   large
-                  class="translate-button bg-basepage"
+                  class="translate-button bg-accent"
                   v-bind="props"
                   variant="text"
                   @click="translationDialogVisible = true"
@@ -101,7 +101,7 @@
                 <v-btn
                   :icon="mdiWrench"
                   large
-                  class="bg-basepage"
+                  class="bg-accent"
                   v-bind="props"
                   variant="text"
                   @click="detailsDialogVisible = !detailsDialogVisible"
@@ -118,7 +118,7 @@
                   large
                   target="_blank"
                   :to="HELP_ROUTE"
-                  class="help-button bg-basepage"
+                  class="help-button bg-accent"
                   variant="text"
                   v-bind="props"
                 />
@@ -137,7 +137,7 @@
                     :disabled="!schemaIsValid.valid || ability.cannot('manage', 'editors')"
                     :icon="mdiContentSave"
                     large
-                    class="bg-basepage"
+                    class="bg-accent"
                     variant="text"
                     @click="saveSchema"
                   />
@@ -152,13 +152,13 @@
           <v-row
             v-if="schemaIsValid.valid"
             no-gutters
-            class="flex-column overflow-hidden fill-width bg-basepage"
+            class="flex-column overflow-hidden fill-width bg-surface"
           >
             <v-col>
-              <v-row>
+              <v-row class="mx-2 mt-1">
                 <v-col
                   cols="12"
-                  lg="4"
+                  lg="6"
                 >
                   <v-text-field
                     :model-value="title"
@@ -172,7 +172,7 @@
                 </v-col>
                 <v-col
                   cols="12"
-                  lg="8"
+                  lg="6"
                 >
                   <v-text-field
                     :model-value="description"
@@ -188,33 +188,40 @@
           </v-row>
           <v-row
             v-if="schemaIsValid.valid"
-            dense
-            class="bg-basepage"
+            no-gutters
+            class="flex-column overflow-hidden fill-width bg-surface"
           >
             <v-col>
-              <v-text-field
-                v-model="searchQuery"
-                dense
-                clearable
-                flat
-                filled
-                hide-details
-                :prepend-inner-icon="mdiMagnify"
-                :label="t('search')"
-                variant="underlined"
-              />
-            </v-col>
-            <v-col>
-              <v-checkbox
-                v-model="hideEmptyAspects"
-                class="caption"
-                dense
-                hide-details
-                :label="t('hideemptyaspects')"
-              />
+              <v-row class="ml-2 my-1">
+                <v-col
+                  cols="12"
+                  lg="6"
+                >
+                  <v-text-field
+                    v-model="searchQuery"
+                    dense
+                    clearable
+                    flat
+                    filled
+                    hide-details
+                    :prepend-inner-icon="mdiMagnify"
+                    :label="t('search')"
+                    variant="underlined"
+                  />
+                </v-col>
+                <v-col>
+                  <v-checkbox
+                    v-model="hideEmptyAspects"
+                    class="caption"
+                    dense
+                    hide-details
+                    :label="t('hideemptyaspects')"
+                  />
+                </v-col>
+              </v-row>
             </v-col>
           </v-row>
-          <v-divider class="mt-2" />
+          <v-divider class="mt-4" />
         </template>
         <template #default>
           <EditorObjectSchemaMain
