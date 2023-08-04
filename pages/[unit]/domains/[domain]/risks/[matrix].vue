@@ -25,11 +25,10 @@
       md="6"
     >
       <BaseCard>
-        <v-card-title class="bg-accent mb-2">
-          <h3
-            class="text-h3 small-caps"
-            v-text="upperFirst(t(protectionGoal.text).toString())"
-          />
+        <v-card-title
+          class="bg-accent mb-2 small-caps"
+        >
+          {{ protectionGoal.text }}
         </v-card-title>
 
         <RiskMatrix
@@ -64,7 +63,6 @@ export default defineComponent({
     const { data: domain, isFetching: domainIsFetching } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     const data = computed<undefined | IVeoDomain['riskDefinitions']['x']>(() => domain.value?.riskDefinitions?.[route.params.matrix as string]);
-
     // Matrix selection
     const protectionGoals = computed(() =>
       (data.value?.categories || []).map((category) => ({ text: category.translations[locale.value]?.name || Object.values(category.translations)[0].name, id: category.id }))
@@ -97,18 +95,10 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "Availability": "availability",
-    "Confidentiality": "confidentiality",
-    "Integrity": "integrity",
-    "protectionGoal": "protection goal",
-    "Resilience": "resilience"
+    "protectionGoal": "protection goal"
   },
   "de": {
-    "Availability": "Verfügbarkeit",
-    "Confidentiality": "Vertraulichkeit",
-    "Integrity": "Integrität",
-    "protectionGoal": "Schutzziel",
-    "Resilience": "Belastbarkeit"
+    "protectionGoal": "Schutzziel"
   }
 }
 </i18n>
