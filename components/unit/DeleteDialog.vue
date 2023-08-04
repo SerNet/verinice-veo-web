@@ -122,6 +122,7 @@ const deleteUnit = async () => {
     displaySuccessMessage(t('unitDeleted'));
     emit('success');
     emit('update:model-value', false);
+    unitName.value = '';
   } catch (e: any) {
     emit('error');
     displayErrorMessage(t('unitDeletionError'), e.message);
