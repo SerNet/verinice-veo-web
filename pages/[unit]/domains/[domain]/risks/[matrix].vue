@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { cloneDeep, reverse, upperFirst } from 'lodash';
+import { cloneDeep, reverse } from 'lodash';
 
 import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~~/composables/api/utils/query';
@@ -56,7 +56,7 @@ export const ROUTE_NAME = 'unit-domains-domain-risks-matrix';
 
 export default defineComponent({
   setup() {
-    const { t, locale } = useI18n();
+    const { locale } = useI18n();
     const route = useRoute();
 
     const fetchDomainQueryParameters = computed(() => ({ id: route.params.domain as string }));
@@ -83,22 +83,8 @@ export default defineComponent({
     return {
       domainIsFetching,
       getMatrixData,
-      protectionGoals,
-
-      t,
-      upperFirst
+      protectionGoals
     };
   }
 });
 </script>
-
-<i18n>
-{
-  "en": {
-    "protectionGoal": "protection goal"
-  },
-  "de": {
-    "protectionGoal": "Schutzziel"
-  }
-}
-</i18n>
