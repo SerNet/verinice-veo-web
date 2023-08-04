@@ -29,7 +29,7 @@
       :text="t('error-message')"
     />
 
-    <BaseCard class="mt-2 bg-accent">
+    <BaseCard class="mt-2 bg-surface">
       <v-card-text class="d-flex justify-space-around">
         <div style="flex-basis: 0; flex-grow: 1">
           <h4 class="text-h4 mb-4 cta">
