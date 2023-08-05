@@ -73,7 +73,7 @@ export default defineNuxtPlugin (async (nuxtApp) => {
     localStorage.removeItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
   };
 
-  if(localStorage.getItem(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED) !== 'true') {
+  if (localStorage.getItem(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED) !== 'true' && route.name !== 'docs') {
     setTimeout(() => {
       navigateTo('/welcome');
     }, 50);
