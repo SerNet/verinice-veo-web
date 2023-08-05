@@ -114,7 +114,11 @@
           </v-list-item-title>
         </v-list-item>
         <v-divider />
-        <v-list-item @click.stop="displayDeploymentDetails = true">
+        <v-list-item
+          :active="displayDeploymentDetails"
+          color="primary"
+          @click.stop="displayDeploymentDetails = true"
+        >
           <v-list-item-title>
             {{ t('about') }}
           </v-list-item-title>
