@@ -72,7 +72,7 @@ import { mdiArrowDown, mdiArrowRight, mdiCheck, mdiContentCopy, mdiLinkOff, mdiT
 import { VIcon, VTooltip } from 'vuetify/components';
 
 import { TableHeader } from '~/components/base/Table.vue';
-import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
+import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -427,6 +427,19 @@ export default defineComponent({
       scenarioId: undefined
     });
 
+    // Map object types to corresponding url paths segments
+    type ObjectTypeToUrlMap = { [key: string]: string }
+    const OBJECT_TYPE_TO_URL_MAP: ObjectTypeToUrlMap = {
+      scope: 'scopes',
+      process: 'processes',
+      asset: 'assets',
+      person: 'persons',
+      incident: 'incidents',
+      document: 'documents',
+      scenario: 'scenarios',
+      control: 'controls'
+    };
+
     // push to object detail site (on click in table)
     const openItem = (item: any) => {
       if (props.type === 'risks') {
@@ -434,13 +447,15 @@ export default defineComponent({
         editRiskDialog.value.scenarioId = getEntityDetailsFromLink(item.scenario).id;
         editRiskDialog.value.visible = true;
       } else {
-        item = item.item.raw as IVeoEntity;
+
+        // Put together route params together
+        const { id: itemId, type: itemType } = item.item.raw as IVeoEntity;
+        const objectType = OBJECT_TYPE_TO_URL_MAP[itemType] || route.params.objectType;
+        const params = { ...route.params, object: itemId, objectType, subType: '-' };
+
         router.push({
-          name: OBJECT_OVERVIEW_ROUTE,
-          params: {
-            ...route.params,
-            object: item.id
-          }
+          name: OBJECT_DETAIL_ROUTE,
+          params
         });
       }
     };
