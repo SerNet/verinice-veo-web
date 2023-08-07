@@ -19,8 +19,10 @@
   <BaseDialog
     v-bind="$attrs"
     :title="t('dialogTitle')"
+    :close-button-visible="false"
     :close-disabled="deletionInProgress"
     width="600px"
+    @keyup.escape.prevent="closeDeleteDialog"
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
@@ -62,7 +64,7 @@
     <template #dialog-options>
       <v-btn
         variant="text"
-        @click="$emit('update:model-value', false)"
+        @click="closeDeleteDialog"
       >
         {{ globalT('global.button.cancel') }}
       </v-btn>
@@ -113,6 +115,11 @@ const nameRules = [
 ];
 
 const unitDeletionDisabled = computed(() => deletionInProgress.value || ability.value.cannot('manage', 'units') || !unitNameIsValid.value);
+const closeDeleteDialog = () => {
+  emit('update:model-value', false);
+  unitName.value = '';
+};
+
 const deleteUnit = async () => {
   if (unitDeletionDisabled.value) {
     return;
@@ -121,11 +128,11 @@ const deleteUnit = async () => {
     await doDelete({ id: props.unit?.id });
     displaySuccessMessage(t('unitDeleted'));
     emit('success');
-    emit('update:model-value', false);
-    unitName.value = '';
   } catch (e: any) {
     emit('error');
     displayErrorMessage(t('unitDeletionError'), e.message);
+  } finally {
+    closeDeleteDialog();
   }
 };
 </script>

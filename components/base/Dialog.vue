@@ -29,7 +29,7 @@
       class="d-flex flex-column"
       tile
     >
-      <v-card-title class="d-flex align-center py-0 bg-accent small-caps">
+      <v-card-title class="d-flex align-center bg-accent small-caps text-h4">
         <LayoutAppLogoMobile
           v-if="fullscreen"
           style="height: 36px"
@@ -37,6 +37,7 @@
         <span>{{ title }}</span>
         <v-spacer />
         <v-btn
+          v-if="closeButtonVisible"
           :disabled="closeDisabled"
           :icon="mdiClose"
           flat
@@ -109,6 +110,7 @@ const props = withDefaults(defineProps<{
   title: string,
   large?: boolean,
   xLarge?: boolean,
+  closeButtonVisible?: boolean,
   closeDisabled?: boolean, // If set to true, the close button at the top right will be disabled and all other methods of closing the dialog will be ignored.
   confirmClose?: boolean | string, // If set to a string or true, a confirm dialog will be shown before closing
   closeFunction?: () => boolean, // If set, gets called before closing the dialog. If returns true the dialog gets closed, if false it stays open
@@ -118,6 +120,7 @@ const props = withDefaults(defineProps<{
   modelValue: false,
   large: false,
   xLarge: false,
+  closeButtonVisible: true,
   closeDisabled: false,
   confirmClose: false,
   closeFunction: () => () => true,
