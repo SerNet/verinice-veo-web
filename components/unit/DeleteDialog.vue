@@ -19,10 +19,9 @@
   <BaseDialog
     v-bind="$attrs"
     :title="t('dialogTitle')"
-    :close-button-visible="false"
     :close-disabled="deletionInProgress"
+    :close-function="closeDeleteDialog" 
     width="600px"
-    @keyup.escape.prevent="closeDeleteDialog"
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
@@ -118,6 +117,7 @@ const unitDeletionDisabled = computed(() => deletionInProgress.value || ability.
 const closeDeleteDialog = () => {
   emit('update:model-value', false);
   unitName.value = '';
+  return true;
 };
 
 const deleteUnit = async () => {
