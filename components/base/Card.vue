@@ -16,36 +16,28 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <component :is="render" />
+  <VCard
+    v-bind="attrs"
+    class="veo-card"
+    :class="{
+      'veo-border': border
+    }"
+    flat
+    rounded
+  >
+    <slot />
+  </VCard>
 </template>
 <script setup lang="ts">
 import { VCard } from 'vuetify/components';
 
-const props = withDefaults(defineProps<{
-  inverted?: boolean,
+withDefaults(defineProps<{
   border?: boolean
 }>(), {
-  inverted: false,
   border: false
 });
 
-const slots = useSlots();
 const attrs = useAttrs();
-
-const render = () => h(
-  VCard,
-  {
-    ...attrs,
-    class: {
-      'veo-card': true,
-      'veo-card--inverted': props.inverted,
-      'veo-border': props.border
-    },
-    flat: true,
-    rounded: true
-  },
-  ...(slots.default ? [slots.default] : [])
-);
 </script>
 
 <style lang="scss" scoped>
