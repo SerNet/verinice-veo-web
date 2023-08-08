@@ -29,7 +29,7 @@
       class="d-flex flex-column"
       tile
     >
-      <v-card-title class="d-flex align-center py-0 bg-accent small-caps">
+      <v-card-title class="d-flex align-center bg-accent small-caps text-h4">
         <LayoutAppLogoMobile
           v-if="fullscreen"
           style="height: 36px"
