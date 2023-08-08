@@ -117,7 +117,6 @@ const unitDeletionDisabled = computed(() => deletionInProgress.value || ability.
 const closeDeleteDialog = () => {
   emit('update:model-value', false);
   unitName.value = '';
-  return true;
 };
 
 const deleteUnit = async () => {
