@@ -126,10 +126,10 @@
         </v-card-text>
 
         <v-layout
+          v-if="!maxUnitsExceeded"
           class="mb-4 justify-center"
         >
           <v-btn
-            v-if="!maxUnitsExceeded"
             color="primary"
             :disabled="maxUnitsExceeded"
             :prepend-icon="mdiCableData"
@@ -266,7 +266,6 @@ import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 
-import { getFirstDomainDomaindId } from '~/lib/utils';
 import { useQueryClient } from '@tanstack/vue-query';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
@@ -310,19 +309,28 @@ const maxUnitsExceeded = computed(() => (units.value?.length || 0) >= userSettin
 const { mutateAsync: create, data: unitPropsPayload } = useMutation(unitQueryDefinitions.mutations.create);
 const { mutateAsync: apply, isLoading } = useMutation(domainQueryDefinitions.mutations.applyProfile);
 
+const getDomainsContainingProfile = async () => {
+  // fetch all domains
+  const domains = await useQuerySync(domainQueryDefinitions.queries.fetchDomains, undefined, queryClient);
+  // return the domains containing profiles / sample data only
+  return domains.filter((domain) => domain.profiles && Object.keys(domain.profiles).length);
+};
+
 const createUnit = async () => {
   try {
+    const domainsContainingProfile = await getDomainsContainingProfile();
+
     await create({
       // name and description still hardcoded, since atm there is the DS-GVO only
       // providing a fallback for name and description, if the API call fails for whatever reason
-      name: domains.value?.[0].profiles?.demoUnit?.name || 'Sample Unit',
-      description: domains.value?.[0].profiles?.demoUnit?.description || 'A sample data organization',
+      name: domainsContainingProfile[0].profiles?.demoUnit?.name || 'Sample Unit',
+      description: domainsContainingProfile[0].profiles?.demoUnit?.description || 'A sample data organization',
       domains: (domains.value || []).map((domain) => createLink('domains', domain.id))
     });
 
     // get unitId and domainId; needed to form a proper route
     const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: unitPropsPayload.value?.resourceId as string }, queryClient);
-    const domainId = getFirstDomainDomaindId(unit);
+    const domainId = domainsContainingProfile[0].id;
 
     if (domainId && unit.id) {
       // apply the profile / sample data to the unit recently created
