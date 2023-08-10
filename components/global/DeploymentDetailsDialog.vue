@@ -44,11 +44,8 @@
             v-for="(deployment, index) of deploymentInformation"
             :key="index"
           >
-            <td v-if="deployment?.build?.name">
-              {{ deployment.build.name }}
-            </td>
-            <td v-else>
-              {{ t('unknown') }}
+            <td>
+              {{ deployment?.build?.name || t('unknown') }}
             </td>
             <td v-if="deployment?.build?.version && deployment?.build?.ci?.buildnumber">
               {{ deployment.build.version }} ({{ t('build') }} {{ deployment.build.ci.buildnumber }})
@@ -56,11 +53,8 @@
             <td v-else>
               {{ t('unknown') }}
             </td>
-            <td v-if="deployment?.git?.commit?.id">
-              {{ deployment.git.commit.id }}
-            </td>
-            <td v-else>
-              {{ t('unknown') }}
+            <td>
+              {{ deployment?.git?.commit?.id || t('unknown') }}
             </td>
             <td v-if="deployment?.build?.time">
               {{ new Date(deployment.build.time).toLocaleString(locale) }}
