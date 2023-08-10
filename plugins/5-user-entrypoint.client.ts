@@ -63,48 +63,11 @@ export default defineNuxtPlugin (async (nuxtApp) => {
     return;
   }
 
-  // Navigate the user to his previous unit and domain, if both still exist AND the user enters the index page
-  const  _lastUnit = localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
-  const _lastDomain = localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
+  const dontShowWelcomePage = ['security', 'docs-slug'];
 
-  const removeNavigationHelpers = () => {
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
-    localStorage.removeItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
-  };
-
-  if (localStorage.getItem(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED) !== 'true' && route.name !== 'docs-slug') {
+  if (localStorage.getItem(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED) !== 'true' && !dontShowWelcomePage.includes(route.name as string)) {
     setTimeout(() => {
-      navigateTo('/welcome');
+      return navigateTo('/welcome');
     }, 50);
-  }
-
-  // localStorage.getItem only returns strings, thus we have to check the string value
-  if (_lastDomain && _lastUnit && _lastDomain !== 'undefined' && _lastUnit !== 'undefined') {
-    try {
-      const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, {id: _lastUnit as string});
-      const domains = await useQuerySync(domainQueryDefinitions.queries.fetchDomains, undefined);
-
-      const data = (domains || []).filter((domain) => unit.domains.some((unitDomain) => unitDomain.targetUri.includes(domain.id)));
-
-      if (data.find((domain) => domain.id === _lastDomain)) {      
-        // Somehow return navigteTo, await navigateTo and nextTick(() => navigateTo) don't work, so we have to solve it dirty with a timeout.
-        // 50ms seems to work reliably and isn't noticeable by the user, so we use 50ms
-        setTimeout(() => {
-          return navigateTo({
-            name: 'unit-domains-domain',
-            params: {
-              unit: _lastUnit,
-              domain: _lastDomain
-            }
-          });
-        }, 50);
-      } else {
-        // If the domain doesn't exist, the last unit & domain are outdated, so we remove them
-        removeNavigationHelpers();
-      }
-    } catch (_e) {
-      // The error usually gets thrown by either of the unit or domain fetch, because the unit doesn't exist anymore
-      removeNavigationHelpers();
-    }
   }
 });
