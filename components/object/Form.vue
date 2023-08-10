@@ -88,9 +88,9 @@
                 >
                   <div>
                     <v-badge
-                      :content="messages.errors.length + messages.warnings.length + messages.information.length"
-                      :model-value="messages.errors.length + messages.warnings.length + messages.information.length > 0"
-                      :color="messages.errors.length ? 'error' : messages.warnings.length ? 'warning' : 'info'"
+                      :content="messages.length"
+                      :model-value="!!messages.length"
+                      :color="messagesBadgeColor"
                     >
                       <v-btn
                         v-bind="activatorProps"
@@ -115,14 +115,13 @@
 <script lang="ts">
 import { PropType } from 'vue';
 
-import { upperFirst, merge, debounce } from 'lodash';
+import { upperFirst, merge, debounce, isEmpty } from 'lodash';
 import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } from '@mdi/js';
 
 import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
 import { getRiskAdditionalContext, getStatusAdditionalContext, getSubTypeTranslation } from '~/components/dynamic-form/additionalContext';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
-import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
+import { IVeoDecisionResults, IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
@@ -133,10 +132,13 @@ import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import ObjectDisplayOptions from '~~/components/object/DisplayOptions.vue';
 import LayoutFormNavigation from '~~/components/layout/FormNavigation.vue';
 import ObjectHistory from '~~/components/object/History.vue';
-import Messages from '~~/components/object/MessagesTab.vue';
+import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
+import ObjectLinkDialog from '~/components/object/LinkDialog.vue';
+import Messages, { Message } from '~~/components/object/messages/Messages.vue';
 
-import { useQuery, useQueries } from '~~/composables/api/utils/query';
+import { useQuery } from '~~/composables/api/utils/query';
 import { SideBarAction } from './SideBarAction.vue';
+import { INestedMenuEntries } from '../util/NestedMenu.vue';
 
 export default defineComponent({
   props: {
@@ -155,10 +157,6 @@ export default defineComponent({
     objectType: {
       type: String,
       required: true
-    },
-    objectMetaData: {
-      type: Object,
-      default: () => ({})
     },
     disableHistory: {
       type: Boolean,
@@ -257,86 +255,94 @@ export default defineComponent({
 
     // side menu stuff
     // Messages stuff
-    const messages = computed(() => ({
-      errors: Array.from(formErrors.value).map(([objectSchemaPointer, messages]) => ({ code: objectSchemaPointer, message: messages[0], params: { type: 'error' } })),
-      warnings: (props.objectMetaData?.inspectionFindings || [])
-        .filter((warning: IVeoInspectionResult) => warning.severity === 'WARNING')
-        .map((warning: IVeoInspectionResult) => formatWarning(warning)),
-      information: objectInformation.value
+    const transformFormErrors = (formErrors: Map<string, string[]>): Message[] => Array.from(formErrors).map(([objectSchemaPointer, text]) => ({
+      key: objectSchemaPointer,
+      type: 'error',
+      text: text[0]
     }));
 
-    const objectInformation = computed<VeoSchemaValidatorMessage[]>(() => {
-      const information: VeoSchemaValidatorMessage[] = [];
-      const decisionRules = domain.value?.decisions?.piaMandatory?.rules || [];
-
-      if (objectData.value?.domains?.[props.domainId]?.subType === 'PRO_DataProcessing') {
-        const decisionName = domain.value?.decisions?.piaMandatory?.name[locale.value] || Object.values(domain.value?.decisions?.piaMandatory?.name || {})[0];
-        const decisiveRuleDescription =
-          decisionRules[props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule]?.description[locale.value] ||
-          Object.values(decisionRules[props.objectMetaData?.decisionResults?.piaMandatory?.decisiveRule]?.description || {})[0];
-        if (props.objectMetaData?.decisionResults?.piaMandatory?.value !== undefined) {
-          if (props.objectMetaData.decisionResults.piaMandatory.value) {
-            information.push({
-              code: 'I_PIA_MANDATORY',
-              message: `${decisionName}: ${$t('global.button.yes').toString()}` + (decisiveRuleDescription ? ` (${decisiveRuleDescription})` : ''),
-              params: {
-                type: 'info'
-              }
-            });
-          } else {
-            information.push({
-              code: 'I_PIA_NOT_MANDATORY',
-              message: `${decisionName}: ${$t('global.button.no').toString()}` + (decisiveRuleDescription ? ` (${decisiveRuleDescription})` : ''),
-              params: {
-                type: 'success'
-              }
-            });
+    const transformDecisionResults = (decisionResults: IVeoDecisionResults | undefined): Message[] =>
+      Object.entries(decisionResults || {})
+        .map(([decision, result]) => {
+          const decisionInDomain = domain.value?.decisions?.[decision];
+          if(!decisionInDomain) {
+            return {
+              key: `${decision}_unknown`,
+              type: 'warning',
+              text: `Text for decision ${decision} not found`
+            };
           }
-        } else {
-          information.push({
-            code: 'I_PIA_MANDATORY_UNKNOWN',
-            message: `${decisionName}: ${upperFirst(t('unknown').toString())}` + (decisiveRuleDescription ? ` (${decisiveRuleDescription})` : ''),
-            params: {
-              type: 'info'
-            }
-          });
-        }
-      }
 
-      return information;
-    });
+          const decisionResultStrings:Record<string, string> = {
+            'true': $t('global.button.yes'),
+            'false': $t('global.button.no'),
+            'undefined': t('unknown')
+          };
+          // Returns true, false or undefined as string
+          const decisionResultAsString = typeof result.value === 'undefined' ? 'undefined' : `${result.value}`;
 
-    const formatWarning = (warning: IVeoInspectionResult) => {
-      let actions: VeoSchemaValidatorMessage['actions'] = [];
+          const decisionName = decisionInDomain.name[locale.value] || Object.values(decisionInDomain.name || {})[0];
+          const decisiveRuleDescription = result.decisiveRule ? decisionInDomain.rules[result.decisiveRule]?.description[locale.value] ||
+            Object.values(decisionInDomain.rules[result.decisiveRule]?.description || {})[0] : '';
+          return {
+            key: `${decision}_${decisionResultAsString}`,
+            type: result.value === false ? 'success' : 'info',
+            text: `${decisionName}: ${decisionResultStrings[decisionResultAsString]} (${decisiveRuleDescription})`
+          };
+        });
 
-      for (const suggestion of warning.suggestions) {
-        if (suggestion.type === 'addPart') {
-          actions = [
-            ...actions,
-            {
-              title: t('createDPIA').toString(),
-              callback: () => {
-                emit('create-dpia');
+    const transformInspectionFindingSuggestions = (suggestions: IVeoInspectionResult['suggestions']): INestedMenuEntries[] =>
+      suggestions.map((suggestion) => {
+        switch(suggestion.type) {
+          case 'addPart':
+            return [
+              {
+                key: `${suggestion.partSubType}_create`,
+                title: t('createDPIA'),
+                component: ObjectCreateDialog,
+                componentProps: {
+                  objectType: props.objectType,
+                  subType: suggestion.partSubType,
+                  domainId: props.domainId
+                }
+              },
+              {
+                key: `${suggestion.partSubType}_link`,
+                title: t('linkDPIA'),
+                component: ObjectLinkDialog,
+                componentProps: {
+                  object: props.originalObject
+                }
               }
-            },
-            {
-              title: t('linkDPIA').toString(),
-              callback: () => {
-                emit('link-dpia');
-              }
-            }
-          ];
+            ];
+          default:
+            return [];
         }
-      }
+      // [[{ text: Action 1 }, { text: Action 2 }], [...]] => [{ text: Action 1 }, { text: Action 2 }, ...]
+      }).reduce((previousValue, currentValue) => {
+        previousValue.push(...currentValue);
+        return previousValue;
+      }, []);
 
-      return {
-        message: warning.description[locale.value] || Object.values(warning.description)[0],
-        actions,
-        params: {
-          type: 'warning'
-        }
-      };
-    };
+    const transformInspectionFindings = (inspectionFindings: IVeoInspectionResult[]) => inspectionFindings.map((finding) => ({
+      key: JSON.stringify(finding.suggestions),
+      type: finding.severity.toLowerCase(),
+      text: finding.description[locale.value] || Object.values(finding.description)[0],
+      actions: transformInspectionFindingSuggestions(finding.suggestions)
+    }));
+
+    const messages = computed(() => [
+      ...transformFormErrors(formErrors.value),
+      ...transformDecisionResults(inspectionFindings.value?.decisionResults),
+      ...transformInspectionFindings(inspectionFindings.value?.inspectionFindings || [])
+    ]);
+
+    const messagesBadgeColor = computed(() =>
+      messages.value.some((message) => message.type === 'error') ?
+        'error' : messages.value.some((message) => message.type === 'warning') ?
+          'warning' :
+          'info'
+    );
 
     // Stuff that handles which formschema the object gets displayed with
     const displayOption = ref<string>('objectschema');
@@ -442,37 +448,34 @@ export default defineComponent({
     );
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-    const inspectionData = ref<any>(objectData.value);
-    const fetchDecisionsQueryParameters = computed(() => {
-      return Object.keys(props.modelValue.domains?.[props.domainId]?.decisionResults || {}).map((key) => ({
-        decision: key,
-        domain: props.domainId,
-        endpoint: endpoints.value?.[inspectionData.value.type] as string,
-        object: inspectionData.value
-      }));
-    });
-    const fetchDecisionsQueryEnabled = computed(() => !!objectData.value?.domains?.[props.domainId] && !!endpoints.value?.[objectData.value.type] && !formErrors.value.size);
-    const decisionResults = useQueries(
-      objectQueryDefinitions.queries.fetchWipDecisionEvaluation,
-      fetchDecisionsQueryParameters,
-      {
-        enabled: fetchDecisionsQueryEnabled
-      }
-    );
-    const setInspectionData = (newData: any) => {
-      inspectionData.value = newData;
-    };
-    const debouncedSetInspectionData = debounce(setInspectionData, 1000);
-    watch(() => objectData.value, debouncedSetInspectionData, { deep: true });
-    watch(() => decisionResults, (newValue) => {
-      const toReturn: any = { ...props.objectMetaData, decisionResults: {}, inspectionFindings: [] };
-      for(const result of newValue) {
-        toReturn.decisionResults = merge(toReturn.decisionResults, result.data?.decisionResults);
-        toReturn.inspectionFindings = toReturn.inspectionFindings.concat(result.data?.inspectionFindings || []);
-      }
-      emit('update:object-meta-data', toReturn);
-    }, { deep: true });
 
+    const debouncedObjectData = ref<any>(objectData.value);
+
+    const fetchInspectionFindingsQueryParameters = computed(() => ({
+      object: debouncedObjectData.value,
+      domain: props.domainId,
+      endpoint: endpoints.value?.[props.objectType] as string
+    }));
+    const fetchInspectionFindingsQueryEnabled = computed(() =>
+      !!endpoints.value?.[props.objectType]
+      &&  !isEmpty(debouncedObjectData.value)
+      && !!debouncedObjectData.value.name
+    );
+    const { data: inspectionFindings } = useQuery(objectQueryDefinitions.queries.fetchWipDecisionEvaluation, fetchInspectionFindingsQueryParameters, {
+      enabled: fetchInspectionFindingsQueryEnabled,
+      keepPreviousData: true
+    });
+
+    const setDebouncedObjectData = (newData: any) => {
+      debouncedObjectData.value = newData;
+    };
+    const debouncedSetObjectData = debounce(setDebouncedObjectData, 1000);
+    watch(() => objectData.value, debouncedSetObjectData, { deep: true });
+
+    const objectMetaData = computed(() => ({
+      messages: messages.value,
+      objectData: props.modelValue
+    }));
 
     const dataIsLoading = computed<boolean>(
       () => objectSchemaIsFetching.value || props.loading || formSchemasAreFetching.value || formSchemaIsFetching.value || domainIsFetching.value || translationsAreFetching.value
@@ -490,8 +493,10 @@ export default defineComponent({
       formErrors,
       locale,
       messages,
+      messagesBadgeColor,
       mergedTranslations,
       objectData,
+      objectMetaData,
       objectSchema,
       onShowRevision,
       reactiveFormActions,

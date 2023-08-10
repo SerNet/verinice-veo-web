@@ -45,8 +45,6 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
-
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 
@@ -54,11 +52,10 @@ import { IVeoEntity } from '~/types/VeoTypes';
 import { useMutation } from '~~/composables/api/utils/mutation';
 import { useQuery } from '~~/composables/api/utils/query';
 
-const props = defineProps({
-  item: {
-    type: Object as PropType<IVeoEntity>,
-    default: undefined
-  }
+const props = withDefaults(defineProps<{
+  item: IVeoEntity | undefined
+}>(), {
+  item: undefined
 });
 
 const emit = defineEmits<{
@@ -75,9 +72,9 @@ const { ability } = useVeoPermissions();
 
 const displayName = computed(() => props.item?.displayName ?? '');
 
-const deleteButtonEnabled = computed(() => !!endpoints.value?.[props.item?.type]);
+const deleteButtonEnabled = computed(() => !props.item || !!endpoints.value?.[props.item.type]);
 const deleteObject = async () => {
-  if (!deleteButtonEnabled.value || ability.value.cannot('manage', 'objects')) {
+  if (!deleteButtonEnabled.value || ability.value.cannot('manage', 'objects') || !props.item) {
     return;
   }
   try {

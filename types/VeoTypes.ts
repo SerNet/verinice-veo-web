@@ -323,7 +323,7 @@ export interface IVeoUnitIncarnations {
 }
 
 export interface IVeoDecisionResults {
-  piaMandatory?: {
+  [decision: string]: {
     value?: boolean;
     decisiveRule?: number;
     matchingRules?: number[];
@@ -337,7 +337,8 @@ export interface IVeoInspectionResult {
   };
   severity: string;
   suggestions: {
-    type: string;
+    type: 'addPart' | string;
+    partSubType?: string;
     [key: string]: any;
   }[];
 }

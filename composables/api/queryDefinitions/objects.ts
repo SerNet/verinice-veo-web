@@ -94,7 +94,6 @@ export interface IVeoFetchWipDecisionEvaluationParameters{
   endpoint: string,
   object: IVeoEntity,
   domain: string,
-  decision: string
 }
 
 export const formatObject = (object: IVeoEntity) => {
@@ -171,8 +170,7 @@ export default {
           endpoint: queryParameters.endpoint
         },
         query: {
-          domain: queryParameters.domain,
-          decision: queryParameters.decision
+          domain: queryParameters.domain
         },
         json: queryParameters.object}),
       staticQueryOptions: {

@@ -19,6 +19,7 @@
   <v-menu
     v-model="menu"
     v-bind="$attrs"
+    :close-on-content-click="false"
   >
     <template
       v-if="!!$slots.activator"
@@ -38,11 +39,11 @@
             :items="item.children"
             open-on-hover
             location="right"
-            @close="onCloseMenu"
+            @close="closeMenu"
           >
-            <template #activator="{ props }">
+            <template #activator="{ props: activatorProps }">
               <v-list-item
-                v-bind="props"
+                v-bind="activatorProps"
                 :key="`0_${item.key}`"
                 @click.stop="() => {}"
               >
@@ -72,7 +73,7 @@
           <v-list-item
             v-else
             :key="`1_${item.key}`"
-            @click="item.action ? onActionClicked(item.action) : () => {}"
+            @click="onItemClicked(`1_${item.key}`, item)"
           >
             <template
               v-if="anyItemHasIcon"
@@ -91,6 +92,13 @@
             <v-list-item-title :class="{ [`text-${item.color}`]: !!item.color }">
               {{ item.title }}
             </v-list-item-title>
+            <component
+              :is="item.component"
+              v-if="item.component"
+              v-bind="item.componentProps"
+              :model-value="!!componentIsVisible[`1_${item.key}`]"
+              @update:model-value="onUpdateComponentModelValue(`1_${item.key}`, $event)"
+            />
             <template
               v-if="anyItemHasChildren"
               #append
@@ -104,8 +112,7 @@
   </v-menu>
 </template>
 
-<script lang="ts">
-import { PropType } from 'vue';
+<script setup lang="ts">
 import { mdiChevronRight } from '@mdi/js';
 import { ComposerTranslation } from 'vue-i18n';
 
@@ -113,46 +120,52 @@ export interface INestedMenuEntries {
   key: string;
   title: string | ComposerTranslation;
   icon?: string;
-  action?: CallableFunction;
+  component?: any;
+  componentProps?: Record<string, any>
+  callback?: CallableFunction; // Currently unused, but might make sense in the future to trigger a programmatic action not requiring user input
   children?: INestedMenuEntries[];
   color?: string;
 }
-
-export default defineComponent({
-  props: {
-    items: {
-      type: Array as PropType<INestedMenuEntries[]>,
-      default: () => []
-    }
-  },
-  emits: ['close'],
-  setup(props, { emit }) {
-    const anyItemHasIcon = computed(() => (props.items || []).some((item) => !!item.icon));
-
-    const anyItemHasChildren = computed(() => (props.items || []).some((item) => !!item.children));
-
-    const menu = ref(false);
-
-    const onActionClicked = (action: CallableFunction) => {
-      action();
-      // Closing this menu and emitting an event to close the parent menu if it exists (onContentClick is false, as we don't want to close the menu if the user clicks on a menu entry containing a submenu)
-      onCloseMenu();
-    };
-
-    const onCloseMenu = () => {
-      menu.value = false;
-      emit('close');
-    };
-
-    return {
-      anyItemHasChildren,
-      anyItemHasIcon,
-      menu,
-      onActionClicked,
-      onCloseMenu,
-
-      mdiChevronRight
-    };
-  }
+const props = withDefaults(defineProps<{
+  items: INestedMenuEntries[]
+}>(), {
+  items: () => []
 });
+
+const emit = defineEmits<{
+  (event: 'close'): void
+}>();
+
+const anyItemHasIcon = computed(() => (props.items || []).some((item) => !!item.icon));
+
+const anyItemHasChildren = computed(() => (props.items || []).some((item) => !!item.children));
+
+const menu = ref(false);
+
+const componentIsVisible = ref<Record<string, boolean>>({});
+
+const onItemClicked = (itemKey: string, item: INestedMenuEntries) => {
+  if(item.component) {
+    componentIsVisible.value[itemKey] = true;
+  }
+  if(item.callback) {
+    item.callback();
+    closeMenu();
+  }
+};
+
+const onUpdateComponentModelValue = (itemKey: string, newValue: boolean) => {
+  if(itemKey) {
+    componentIsVisible.value[itemKey] = newValue;
+  }
+
+  if(!newValue) {
+    closeMenu();
+  }
+};
+
+const closeMenu = () => {
+  menu.value = false;
+  emit('close');
+};
 </script>

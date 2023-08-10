@@ -81,7 +81,6 @@
             ref="objectForm"
             v-model="modifiedObject"
             v-model:valid="isFormValid"
-            v-model:object-meta-data="metaData"
             class="pb-4"
             :disabled="formDataIsRevision || ability.cannot('manage', 'objects')"
             :object-type="objectType"
@@ -229,9 +228,6 @@ export default defineComponent({
      * of objects while keeping form changes */
     const wipObjectData = ref<Record<string, any> | undefined>(undefined);
 
-    // Object details are originally part of the object, but as they might get updated independently, we want to avoid refetching the whole object, so we outsorce them.
-    const metaData = ref<any>({});
-
     const fetchObjectQueryParameters = computed(() => ({ endpoint: route.params.objectType as string, id: route.params.object as string }));
     const fetchObjectQueryEnabled = computed(() => !!fetchObjectQueryParameters.value.endpoint && !!fetchObjectQueryParameters.value.id);
     const {
@@ -244,7 +240,6 @@ export default defineComponent({
       onSuccess: (data) => {
         const _data = data as IVeoEntity;
         modifiedObject.value = cloneDeep(_data);
-        metaData.value = cloneDeep(_data.domains[domainId.value]);
 
         // On the next tick, object is populated so disabling subtype will work
         nextTick(getAdditionalContext);
@@ -438,7 +433,6 @@ export default defineComponent({
       isFormDirty,
       isFormValid,
       linkObjectDialogVisible,
-      metaData,
       modifiedObject,
       objectForm,
       objectType,
