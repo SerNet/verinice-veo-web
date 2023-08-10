@@ -44,41 +44,23 @@
             v-for="(deployment, index) of deploymentInformation"
             :key="index"
           >
-            <td v-if="deployment && deployment.build && deployment.build.name">
-              {{ deployment.build.name }}
+            <td>
+              {{ deployment?.build?.name || t('unknown') }}
             </td>
-            <td v-else>
-              <v-skeleton-loader
-                type="text"
-                width="100"
-              />
-            </td>
-            <td v-if="deployment && deployment.build">
+            <td v-if="deployment?.build?.version && deployment?.build?.ci?.buildnumber">
               {{ deployment.build.version }} ({{ t('build') }} {{ deployment.build.ci.buildnumber }})
             </td>
             <td v-else>
-              <v-skeleton-loader
-                type="text"
-                width="100"
-              />
+              {{ t('unknown') }}
             </td>
-            <td v-if="deployment && deployment.git && deployment.git.commit">
-              {{ deployment.git.commit.id }}
+            <td>
+              {{ deployment?.git?.commit?.id || t('unknown') }}
             </td>
-            <td v-else>
-              <v-skeleton-loader
-                type="text"
-                width="100"
-              />
-            </td>
-            <td v-if="deployment && deployment.build">
-              {{ new Date(deployment.build.time || 0).toLocaleString(locale) }}
+            <td v-if="deployment?.build?.time">
+              {{ new Date(deployment.build.time).toLocaleString(locale) }}
             </td>
             <td v-else>
-              <v-skeleton-loader
-                type="text"
-                width="100"
-              />
+              {{ t('unknown') }}
             </td>
           </tr>
         </tbody>
@@ -86,7 +68,7 @@
     </BaseCard>
 
     <v-divider />
-    <BaseCard class="mt-2">
+    <BaseCard class="mt-4">
       <v-card-text>
         <p>{{ t('aboutText') }}</p>
         <br>
@@ -179,7 +161,8 @@ const privacyPolicyLink = computed(() => locale.value === 'de' ? 'https://www.se
     "component": "Component",
     "environmentInformation": "Product information",
     "imprint": "imprint",
-    "privacyPolicy": "privacy policy"
+    "privacyPolicy": "privacy policy",
+    "unknown": "unknown"
   },
   "de": {
     "aboutText": "verinice ist eine Software der SerNet GmbH, \"verinice\" und \"SerNet\" sind eingetragene Marken der SerNet GmbH in Deutschland, Europa und weiteren Ländern. Wenn Sie Fragen zu verinice haben, wenden Sie sich bitte per E-Mail an vertrieb{'@'}sernet.de. Diese Adresse gilt auch für technische und rechtliche Fragen.",
@@ -189,7 +172,8 @@ const privacyPolicyLink = computed(() => locale.value === 'de' ? 'https://www.se
     "component": "Komponente",
     "environmentInformation": "Produktinformationen",
     "imprint": "Impressum",
-    "privacyPolicy": "Datenschutzerklärung"
+    "privacyPolicy": "Datenschutzerklärung",
+    "unknown": "unbekannt"
   }
 }
 </i18n>
