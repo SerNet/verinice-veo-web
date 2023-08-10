@@ -60,6 +60,12 @@ export interface IVeoFetchCatalogParameters {
 export interface IVeoFetchCatalogItemsParameters {
   catalogId: string;
   domainId: string;
+  elementType: string;
+  subType: string;
+  size: string;
+  page: string;
+  sortBy: string;
+  sortOrder: string;
 }
 
 export interface IVeoFetchCatalogItemParameters {
@@ -79,10 +85,30 @@ export default {
         placeholderData: []
       }
     } as IVeoQueryDefinition<IVeoFetchCatalogsParameters, IVeoCatalog[]>,
-    fetchCatalogItems: {
+    fetchCatalogItemsFromCatalogsEndpoint: {
       primaryQueryKey: 'catalogItems',
       url: '/api/catalogs/:catalogId/items',
       queryParameterTransformationFn: (queryParameters) => ({ params: { catalogId: queryParameters.catalogId }, query: { domain: queryParameters.domainId } }),
+      staticQueryOptions: {
+        staleTime: STALE_TIME.INFINITY,
+        placeholderData: []
+      }
+    } as IVeoQueryDefinition<IVeoFetchCatalogItemsParameters, IVeoCatalogItem[]>,
+    fetchCatalogItems: {
+      primaryQueryKey: 'catalogItems7',
+      url: '/api/domains/:domainId/catalog-items',
+      queryParameterTransformationFn: (queryParameters) => {
+        return ({
+          params: { domainId: queryParameters.domainId },
+          query: {
+            elementType: queryParameters.elementType,
+            subType: queryParameters.subType,
+            size: queryParameters.size,
+            page: queryParameters.page,
+            sortBy: queryParameters.sortBy,
+            sortOrder: queryParameters.sortOrder
+          }
+        });},
       staticQueryOptions: {
         staleTime: STALE_TIME.INFINITY,
         placeholderData: []
@@ -98,7 +124,16 @@ export default {
       staticQueryOptions: {
         staleTime: STALE_TIME.INFINITY
       }
-    } as IVeoQueryDefinition<IVeoFetchCatalogItemParameters, IVeoCatalogItem>
+    } as IVeoQueryDefinition<IVeoFetchCatalogItemParameters, IVeoCatalogItem>,
+    fetchCatalogItemTypeCount: {
+      primaryQueryKey: 'catalogItemTypeCount',
+      url: '/api/domains/:domainId/catalog-items/type-count',
+      queryParameterTransformationFn: (queryParameters) => ({ params: { domainId: queryParameters.domainId } }),
+      staticQueryOptions: {
+        staleTime: STALE_TIME.INFINITY
+      }
+    }
+
   },
   mutations: {}
 };
