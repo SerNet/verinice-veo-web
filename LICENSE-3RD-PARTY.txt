@@ -1819,6 +1819,7 @@ The following npm packages may be included in this product:
  - @unhead/vue@1.1.27
  - @vue/devtools-api@6.5.0
  - err-code@2.0.3
+ - imurmurhash@0.1.4
  - ip@2.0.0
  - socks-proxy-agent@7.0.0
  - tr46@0.0.3
@@ -4307,7 +4308,6 @@ The following npm packages may be included in this product:
  - ini@4.1.1
  - isexe@2.0.0
  - json-stringify-nice@1.1.4
- - lru-cache@4.1.5
  - lru-cache@5.1.1
  - lru-cache@6.0.0
  - minimatch@3.0.8
@@ -4323,20 +4323,15 @@ The following npm packages may be included in this product:
  - npm-packlist@7.0.4
  - npmlog@5.0.1
  - once@1.4.0
- - proto-list@1.2.4
- - pseudomap@1.0.2
  - read@2.1.0
  - rimraf@3.0.2
- - semver@5.7.2
  - semver@6.3.1
  - semver@7.5.4
- - sigmund@1.0.1
  - tar@6.1.13
  - tar@6.1.15
  - which@2.0.2
  - which@3.0.1
  - wrappy@1.0.2
- - yallist@2.1.2
  - yallist@3.1.1
  - yallist@4.0.0
 
@@ -4396,21 +4391,15 @@ The following npm packages may be included in this product:
 
  - @types/debug@4.1.7
  - @types/estree@1.0.0
- - @types/glob@8.0.1
  - @types/hast@2.3.4
  - @types/http-proxy@1.17.11
- - @types/intro.js@5.1.0
- - @types/js-cookie@3.0.3
  - @types/json-schema@7.0.11
- - @types/lodash@4.14.191
  - @types/mdast@3.0.10
- - @types/minimatch@5.1.2
  - @types/node@18.11.18
  - @types/parse5@6.0.3
  - @types/resolve@1.20.2
  - @types/semver@7.3.13
  - @types/unist@2.0.6
- - @types/uuid@9.0.0
  - @types/web-bluetooth@0.0.16
 
 These packages each contain the following license and notice below:
@@ -4418,36 +4407,6 @@ These packages each contain the following license and notice below:
 MIT License
 
     Copyright (c) Microsoft Corporation.
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE
-
------------
-
-The following npm package may be included in this product:
-
- - @types/hash-sum@1.0.0
-
-This package contains the following license and notice below:
-
-MIT License
-
-    Copyright (c) Microsoft Corporation. All rights reserved.
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -5027,36 +4986,6 @@ These packages each contain the following license and notice below:
 The MIT License (MIT)
 
 Copyright (c) 2018-present, Yuxi (Evan) You
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
------------
-
-The following npm package may be included in this product:
-
- - @vue/test-utils@2.3.2
-
-This package contains the following license and notice below:
-
-The MIT License (MIT)
-
-Copyright (c) 2021-present vuejs
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -8411,37 +8340,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - config-chain@1.1.13
-
-This package contains the following license and notice below:
-
-Copyright (c) 2011 Dominic Tarr
-
-Permission is hereby granted, free of charge, 
-to any person obtaining a copy of this software and 
-associated documentation files (the "Software"), to 
-deal in the Software without restriction, including 
-without limitation the rights to use, copy, modify, 
-merge, publish, distribute, sublicense, and/or sell 
-copies of the Software, and to permit persons to whom 
-the Software is furnished to do so, 
-subject to the following conditions:
-
-The above copyright notice and this permission notice 
-shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
-ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
------------
-
-The following npm package may be included in this product:
-
  - consola@3.1.0
 
 This package contains the following license and notice below:
@@ -11177,34 +11075,6 @@ Original Code is [東アジアの文字幅 (East Asian Width) の判定 - 中途
 
 -----------
 
-The following npm package may be included in this product:
-
- - editorconfig@0.15.3
-
-This package contains the following license and notice below:
-
-Copyright © 2012 EditorConfig Team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
------------
-
 The following npm packages may be included in this product:
 
  - ee-first@1.1.1
@@ -11699,36 +11569,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
------------
-
-The following npm package may be included in this product:
-
- - eslint-plugin-nuxt@4.0.0
-
-This package contains the following license and notice below:
-
-MIT License
-
-Copyright (c) 2018 Xin (Clark) Du <clark.duxin@gmail.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 -----------
 
@@ -15185,137 +15025,6 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - imurmurhash@0.1.4
-
-This package contains the following license and notice below:
-
-iMurmurHash.js
-==============
-
-An incremental implementation of the MurmurHash3 (32-bit) hashing algorithm for JavaScript based on [Gary Court's implementation](https://github.com/garycourt/murmurhash-js) with [kazuyukitanimura's modifications](https://github.com/kazuyukitanimura/murmurhash-js).
-
-This version works significantly faster than the non-incremental version if you need to hash many small strings into a single hash, since string concatenation (to build the single string to pass the non-incremental version) is fairly costly. In one case tested, using the incremental version was about 50% faster than concatenating 5-10 strings and then hashing.
-
-Installation
-------------
-
-To use iMurmurHash in the browser, [download the latest version](https://raw.github.com/jensyt/imurmurhash-js/master/imurmurhash.min.js) and include it as a script on your site.
-
-```html
-<script type="text/javascript" src="/scripts/imurmurhash.min.js"></script>
-<script>
-// Your code here, access iMurmurHash using the global object MurmurHash3
-</script>
-```
-
----
-
-To use iMurmurHash in Node.js, install the module using NPM:
-
-```bash
-npm install imurmurhash
-```
-
-Then simply include it in your scripts:
-
-```javascript
-MurmurHash3 = require('imurmurhash');
-```
-
-Quick Example
--------------
-
-```javascript
-// Create the initial hash
-var hashState = MurmurHash3('string');
-
-// Incrementally add text
-hashState.hash('more strings');
-hashState.hash('even more strings');
-
-// All calls can be chained if desired
-hashState.hash('and').hash('some').hash('more');
-
-// Get a result
-hashState.result();
-// returns 0xe4ccfe6b
-```
-
-Functions
----------
-
-### MurmurHash3 ([string], [seed])
-Get a hash state object, optionally initialized with the given _string_ and _seed_. _Seed_ must be a positive integer if provided. Calling this function without the `new` keyword will return a cached state object that has been reset. This is safe to use as long as the object is only used from a single thread and no other hashes are created while operating on this one. If this constraint cannot be met, you can use `new` to create a new state object. For example:
-
-```javascript
-// Use the cached object, calling the function again will return the same
-// object (but reset, so the current state would be lost)
-hashState = MurmurHash3();
-...
-
-// Create a new object that can be safely used however you wish. Calling the
-// function again will simply return a new state object, and no state loss
-// will occur, at the cost of creating more objects.
-hashState = new MurmurHash3();
-```
-
-Both methods can be mixed however you like if you have different use cases.
-
----
-
-### MurmurHash3.prototype.hash (string)
-Incrementally add _string_ to the hash. This can be called as many times as you want for the hash state object, including after a call to `result()`. Returns `this` so calls can be chained.
-
----
-
-### MurmurHash3.prototype.result ()
-Get the result of the hash as a 32-bit positive integer. This performs the tail and finalizer portions of the algorithm, but does not store the result in the state object. This means that it is perfectly safe to get results and then continue adding strings via `hash`.
-
-```javascript
-// Do the whole string at once
-MurmurHash3('this is a test string').result();
-// 0x70529328
-
-// Do part of the string, get a result, then the other part
-var m = MurmurHash3('this is a');
-m.result();
-// 0xbfc4f834
-m.hash(' test string').result();
-// 0x70529328 (same as above)
-```
-
----
-
-### MurmurHash3.prototype.reset ([seed])
-Reset the state object for reuse, optionally using the given _seed_ (defaults to 0 like the constructor). Returns `this` so calls can be chained.
-
----
-
-License (MIT)
--------------
-Copyright (c) 2013 Gary Court, Jens Taylor
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
------------
-
-The following npm package may be included in this product:
-
  - inherits@2.0.4
 
 This package contains the following license and notice below:
@@ -16602,24 +16311,6 @@ No contributor can revoke this license.
 without any warranty or condition, and no contributor
 will be liable to anyone for any damages related to this
 software or this license, under any kind of legal claim.***
-
------------
-
-The following npm package may be included in this product:
-
- - js-beautify@1.14.6
-
-This package contains the following license and notice below:
-
-The MIT License (MIT)
-
-Copyright (c) 2007-2018 Einar Lielmanis, Liam Newman, and contributors.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
