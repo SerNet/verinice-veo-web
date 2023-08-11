@@ -16,16 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { StorageSerializers, useStorage } from '@vueuse/core';
-
 import { LOCAL_STORAGE_KEYS } from '~~/types/localStorage';
-import { useQuerySync } from '~~/composables/api/utils/query';
-import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
-import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
 
-/**
- * Navigates the user to the domain dashboard of the unit and domain he was previously in, if he accesses the application from outside and enters the unit management page (/).
- * The redirect magic happens on that page instead of in here, as the api composable won't work here
- */
 export default defineNuxtPlugin (async (nuxtApp) => {
   const route = useRoute();
 
@@ -58,7 +50,6 @@ export default defineNuxtPlugin (async (nuxtApp) => {
     await initialize(nuxtApp);
   }
 
-  // The following stuff is only important if the user is logged in
   if (!authenticated.value || route.name === 'index') {
     return;
   }

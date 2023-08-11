@@ -27,8 +27,21 @@
 <script setup lang="ts">
 import { useTheme } from 'vuetify';
 import { mdiThemeLightDark } from '@mdi/js';
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+
+const DARK = 'dark';
+const LIGHT = 'light';
 
 const theme = useTheme();
 
-const _switch = () => theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark';
+const darkModeSet = localStorage.getItem(LOCAL_STORAGE_KEYS.DARK_MODE);
+
+if (darkModeSet === 'true' && theme.global.name.value === LIGHT) {
+  theme.global.name.value = DARK;
+}
+
+const _switch = () => {
+  theme.global.name.value = theme.global.current.value.dark ? LIGHT : DARK;
+  localStorage.setItem(LOCAL_STORAGE_KEYS.DARK_MODE, (theme.global.name.value === DARK).toString());
+};
 </script>

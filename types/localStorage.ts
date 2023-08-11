@@ -17,6 +17,7 @@
  */
 export const LOCAL_STORAGE_KEYS = {
   ACCEPTED_COOKIES: 'accepted-cookies',
+  DARK_MODE: 'dark-mode',
   FIRST_STEPS_COMPLETED: 'first-steps-completed',
   LAST_DOMAIN: 'last-domain',
   LAST_UNIT: 'last-unit',
