@@ -16,6 +16,7 @@ default:
     - npm ci --cache .npm --prefer-offline
 
 store_project_version:
+  before_script: []
   stage: setup
   script:
     - echo "PROJECT_VERSION=$(node -p "require('./package.json').version")" >> variables.env
