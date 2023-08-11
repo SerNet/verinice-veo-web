@@ -25,6 +25,7 @@
         v-model="selectedItems"
         :items="catalogItems"
         :additional-headers="headers"
+        :loading="props.isLoading"
         must-sort
         show-select
       />
@@ -72,11 +73,13 @@ const props = withDefaults(defineProps<{
   loading: boolean;
   successText: string;
   errorText: string;
+  isLoading?: boolean;
 }>(), {
   catalogItems: () => [],
   loading: false,
   successText: '',
-  errorText: ''
+  errorText: '',
+  isLoading: false,
 });
 
 const { t } = useI18n();
