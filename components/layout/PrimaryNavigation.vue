@@ -502,13 +502,17 @@ provide(PROVIDE_KEYS.navigation, primaryNavList);
     "collapse": "Collapse menu",
     "fix": "Fix menu",
     "all": "all",
-    "backToVeo": "Go to verinice.veo"
+    "backToVeo": "Go to verinice.veo",
+    "scenario": "Scenario",
+    "control": "TOM"
   },
   "de": {
     "collapse": "Menü verstecken",
     "fix": "Menü fixieren",
     "all": "alle",
-    "backToVeo": "Zu verinice.veo"
+    "backToVeo": "Zu verinice.veo",
+    "scenario": "Gefährdung",
+    "control": "TOM"
   }
 }
 </i18n>
