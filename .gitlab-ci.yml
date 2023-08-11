@@ -17,6 +17,7 @@ default:
 
 store_project_version:
   before_script: []
+  cache: []
   stage: setup
   script:
     - echo "PROJECT_VERSION=$(node -p "require('./package.json').version")" >> variables.env
@@ -84,6 +85,7 @@ docker_image:
 
 trigger_deployment:
   before_script: []
+  cache: []
   stage: deploy
   only:
     - develop
