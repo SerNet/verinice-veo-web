@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Tino Groteloh, Philipp Ballhausen, Annemarie Bufe,
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Tino Groteloh, Philipp Ballhausen, Annemarie Bufe, jae
    - Samuel Vitzthum
    -
    - This program is free software: you can redistribute it and/or modify
@@ -134,7 +134,7 @@ import {
   mdiUngroup,
   mdiViewDashboardOutline
 } from '@mdi/js';
-import { sortBy, upperFirst } from 'lodash';
+import { sortBy, upperFirst, isEmpty } from 'lodash';
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { useDisplay } from 'vuetify';
 import { NavItem } from '@nuxt/content/dist/runtime/types';
@@ -150,6 +150,7 @@ import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[d
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/editor/index.vue';
 import { ROUTE_NAME as PROFILE_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/profiles.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
+import { CATALOG_TYPE_ICONS } from '~/components/catalog/Icon.vue';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemasDetailed } from '~/composables/api/schemas';
@@ -279,24 +280,36 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
 );
 
 // catalog specific stuff
-const fetchCatalogsQueryParameters = computed(() => ({ domainId: props.domainId as string }));
-const fetchCatalogsQueryEnabled = computed(() => !!props.domainId);
-const { data: catalogs, isFetching: catalogsEntriesLoading } = useQuery(catalogQueryDefinitions.queries.fetchCatalogs, fetchCatalogsQueryParameters, { enabled: fetchCatalogsQueryEnabled });
+const typeCountQueryParameters = computed(() => ({ domainId: props.domainId as string } ));
+const typeCountQueryEnabled = computed(() => !!props.domainId);
+const { data: catalogItemTypes, isFetching: catalogItemTypeCountIsLoading } =
+  useQuery(catalogQueryDefinitions.queries.fetchCatalogItemTypeCount, typeCountQueryParameters, { enabled: typeCountQueryEnabled });
 
-const catalogsEntriesChildItems = computed<INavItem[]>(() =>
-  (catalogs.value || []).map((catalog) => ({
-    id: catalog.id,
-    name: catalog.name,
-    to: {
-      name: CATALOGS_CATALOG_ROUTE_NAME,
-      params: {
-        unit: props.unitId,
-        domain: props.domainId,
-        catalog: catalog.id
+const catalogsEntriesChildItems = computed<INavItem[]>(() => {
+  if(isEmpty(catalogItemTypes?.value || {})) return [];
+
+  const catalogItems = [ ['all'], ...Object.entries(catalogItemTypes?.value || [])];
+
+  return (catalogItems || []).map(catalogItems => {
+    const _icon = CATALOG_TYPE_ICONS.get(catalogItems[0]);
+    return ({
+      id: `${catalogItems[0]}`,
+      name: upperFirst(t(catalogItems[0])),
+      icon: _icon?.library === 'mdi' ? _icon?.icon as string : undefined,
+      to: {
+        name: CATALOGS_CATALOG_ROUTE_NAME,
+        params: {
+          unit: props.unitId,
+          domain: props.domainId,
+          catalog: props.domainId
+        },
+        query: {
+          type: catalogItems[0]
+        }
       }
-    }
-  }))
-);
+    });
+  });
+});
 
 // report specific stuff
 const { data: reports, isFetching: reportsEntriesLoading } = useQuery(reportQueryDefinitions.queries.fetchAll);
@@ -379,11 +392,11 @@ const objectsNavEntry = computed<INavItem>(() => ({
 }));
 
 const catalogsNavEntry = computed<INavItem>(() => ({
-  id: 'catalogs',
-  name: $t('breadcrumbs.catalogs').toString(),
+  id: 'catalog',
+  name: $t('breadcrumbs.catalog').toString(),
   icon: mdiBookOpenPageVariantOutline,
   children: catalogsEntriesChildItems.value,
-  childrenLoading: catalogsEntriesLoading.value,
+  childrenLoading: catalogItemTypeCountIsLoading.value,
   componentName: 'catalogs-nav-item'
 }));
 
@@ -470,7 +483,7 @@ const items = computed<INavItem[]>(() => [
       ...(props.domainId && props.unitId ? [profilesNavEntry.value] : []),
       ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
       objectsNavEntry.value,
-      catalogsNavEntry.value,
+      ...(!isEmpty(catalogsEntriesChildItems.value) ? [catalogsNavEntry.value] : []),
       reportsNavEntry.value,
       risksNavEntry.value
     ]
