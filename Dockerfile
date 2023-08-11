@@ -16,28 +16,18 @@ COPY . .
 ARG CI_COMMIT_REF_NAME=master
 ARG CI_COMMIT_SHORT_SHA=latest
 ARG CI_JOB_ID=-1
-ARG VEO_DEFAULT_API_URL
-ARG VEO_FORMS_API_URL
-ARG VEO_HISTORY_API_URL
-ARG VEO_REPORTING_API_URL
-ARG VEO_ACCOUNTS_API_URL
-ARG VEO_OIDC_URL
-ARG VEO_OIDC_REALM
-ARG VEO_OIDC_CLIENT
 ARG VEO_DEBUG
 ARG NODE_ENV=production
 
-ENV CI_COMMIT_REF_NAME ${CI_COMMIT_REF_NAME}
-ENV CI_COMMIT_SHORT_SHA ${CI_COMMIT_SHORT_SHA}
-ENV CI_JOB_ID ${CI_JOB_ID}
-ENV VEO_DEFAULT_API_URL ${VEO_DEFAULT_API_URL}
-ENV VEO_FORMS_API_URL ${VEO_FORMS_API_URL}
-ENV VEO_HISTORY_API_URL ${VEO_HISTORY_API_URL}
-ENV VEO_REPORTING_API_URL ${VEO_REPORTING_API_URL}
-ENV VEO_ACCOUNTS_API_URL ${VEO_ACCOUNTS_API_URL}
-ENV VEO_OIDC_URL ${VEO_OIDC_URL}
-ENV VEO_OIDC_REALM ${VEO_OIDC_REALM}
-ENV VEO_OIDC_CLIENT ${VEO_OIDC_CLIENT}
+ENV VEO_DEFAULT_API_URL=
+ENV VEO_FORMS_API_URL=
+ENV VEO_HISTORY_API_URL=
+ENV VEO_REPORTING_API_URL=
+ENV VEO_ACCOUNTS_API_URL=
+ENV VEO_ACCOUNT_PATH=
+ENV VEO_OIDC_URL=
+ENV VEO_OIDC_REALM=
+ENV VEO_OIDC_CLIENT=
 ENV VEO_DEBUG ${VEO_DEBUG}
 ENV NODE_ENV=$NODE_ENV
 
@@ -75,6 +65,19 @@ COPY --from=printer usr/src/app/dist/*.pdf /usr/src/app/
 # Add custom config to serve the index.html as entrypoint if the server would otherwise return a 404
 COPY  nginx.conf /etc/nginx/conf.d/custom.conf
 
+COPY startup.sh /usr/src/app
+RUN chmod +x /usr/src/app/startup.sh
+
+ENV VEO_DEFAULT_API_URL=https://api.veo.example/veo
+ENV VEO_FORMS_API_URL=https://api.veo.example/forms
+ENV VEO_HISTORY_API_URL=https://api.veo.example/history
+ENV VEO_REPORTING_API_URL=https://api.veo.example/reporting
+ENV VEO_ACCOUNTS_API_URL=https://api.veo.example/accounts
+ENV VEO_ACCOUNT_PATH=https://account.veo.example
+ENV VEO_OIDC_URL=https://auth.veo.example/auth
+ENV VEO_OIDC_REALM=veo-oidcrealm-example
+ENV VEO_OIDC_CLIENT=veo-oidcclient-example
+
 EXPOSE 80
 
-CMD ["nginx", "-c", "/etc/nginx/conf.d/custom.conf", "-g", "pid /tmp/nginx.pid; daemon off;"]
+CMD ["/usr/src/app/startup.sh"]
