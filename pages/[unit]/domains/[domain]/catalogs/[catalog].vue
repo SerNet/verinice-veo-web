@@ -25,46 +25,15 @@
         :title="locale === 'de' ? 'Katalog': 'Catalog'"
         :element="title"
       />
-
-      <BaseTabs class="mt-4">
-        <template #tabs>
-          <v-tab data-component-name="catalog-hazards-tab">
-            {{ t('applyEntries') }}
-          </v-tab>
-          <v-tab data-component-name="catalog-tom-tab">
-            {{ t('applyTOMs') }}
-          </v-tab>
-        </template>
-
-        <template #items>
-          <v-window-item>
-            <CatalogDefaultCatalog
-              class="mb-4"
-              :catalog-items="scenarios"
-              :loading="catalogItemsAreFetching"
-              :success-text="t('scenariosApplied').toString()"
-              :error-text="t('applyScenariosError').toString()"
-            >
-              <template #header>
-                <span class="my-2">{{ t('selectScenariosCTA') }}</span>
-              </template>
-            </CatalogDefaultCatalog>
-          </v-window-item>
-
-          <v-window-item>
-            <CatalogDefaultCatalog
-              :catalog-items="toms"
-              :loading="catalogItemsAreFetching"
-              :success-text="t('TOMsApplied').toString()"
-              :error-text="t('applyTOMsError').toString()"
-            >
-              <template #header>
-                <span class="my-2">{{ t('selectTOMsCTA') }}</span>
-              </template>
-            </CatalogDefaultCatalog>
-          </v-window-item>
-        </template>
-      </BaseTabs>
+      <CatalogDefaultCatalog
+        class="mb-4"
+        :catalog-items="catalogItems.items"
+        :isLoading="catalogItemsAreFetching"
+        :success-text="t('scenariosApplied').toString()"
+        :error-text="t('applyScenariosError').toString()"
+      >
+        <span class="my-2">{{ t('selectScenariosCTA') }}</span>
+      </CatalogDefaultCatalog>
     </template>
   </BasePage>
 </template>
@@ -80,16 +49,21 @@ export const ROUTE_NAME = 'unit-domains-domain-catalogs-catalog';
 import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
 import { useQuery } from '~~/composables/api/utils/query';
 
-
 const { t, locale } = useI18n();
 const route = useRoute();
-const title = computed(() => t('catalog', { name: catalogItems.value?.[0]?.catalog?.displayName || '' }));
 
-const scenarios = computed(() => (catalogItems.value || []).filter((catalogItem) => catalogItem.namespace?.includes('TOM.DS-G')));
-const toms = computed(() => (catalogItems.value || []).filter((catalogItem) => catalogItem.namespace?.includes('TOM.TOM')));
+const title = computed(() => t('catalog', { name: catalogItems.value?.[0]?.catalog?.displayName || 'DS-GVO' }));
 
-const fetchCatalogItemsQueryParameters = computed(() => ({ catalogId: route.params.catalog as string, domainId: route.params.domain as string }));
+const fetchCatalogItemsQueryParameters = computed(() => (
+  {
+    domainId: route.params.domain as string,
+    elementType: route.query.type === 'all' ? undefined : route.query.type as string,
+    size: 100
+  }
+));
+
 const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(catalogQueryDefinitions.queries.fetchCatalogItems, fetchCatalogItemsQueryParameters);
+
 </script>
 
 <i18n>

@@ -23,7 +23,7 @@
     <BaseCard>
       <BaseTable
         v-model="selectedItems"
-        :items="availableItems"
+        :items="catalogItems"
         :additional-headers="headers"
         must-sort
         show-select
