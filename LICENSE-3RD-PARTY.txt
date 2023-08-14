@@ -4395,7 +4395,7 @@ The following npm packages may be included in this product:
  - @types/http-proxy@1.17.11
  - @types/json-schema@7.0.11
  - @types/mdast@3.0.10
- - @types/node@18.11.18
+ - @types/node@18.17.5
  - @types/parse5@6.0.3
  - @types/resolve@1.20.2
  - @types/semver@7.3.13
