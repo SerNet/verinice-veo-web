@@ -1218,11 +1218,12 @@ SOFTWARE.
 
 -----------
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
  - @jridgewell/sourcemap-codec@1.4.14
+ - @jridgewell/sourcemap-codec@1.4.15
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 The MIT License
 
@@ -1458,7 +1459,7 @@ The following npm packages may be included in this product:
  - @nodelib/fs.scandir@2.1.5
  - @nodelib/fs.stat@2.0.5
  - @nodelib/fs.walk@1.2.8
- - fast-glob@3.2.12
+ - fast-glob@3.3.1
 
 These packages each contain the following license and notice below:
 
@@ -4864,7 +4865,7 @@ The following npm packages may be included in this product:
  - find-up@5.0.0
  - get-stream@6.0.1
  - globals@13.19.0
- - globby@13.1.4
+ - globby@13.2.2
  - gzip-size@7.0.0
  - html-tags@3.3.0
  - import-fresh@3.3.0
@@ -6033,25 +6034,26 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - c12@1.4.1
+ - c12@1.4.2
  - defu@6.1.2
  - destr@1.2.2
+ - destr@2.0.1
  - get-port-please@3.0.1
  - giget@1.1.2
  - h3@1.6.6
- - jiti@1.18.2
+ - jiti@1.19.1
  - knitwork@1.0.0
  - listhen@1.0.4
- - mlly@1.3.0
+ - mlly@1.4.0
  - node-fetch-native@1.2.0
  - nypm@0.2.1
  - ofetch@1.0.1
  - ohash@1.1.2
  - perfect-debounce@1.0.0
  - radix3@1.0.1
- - rc9@2.1.0
+ - rc9@2.1.1
  - scule@1.0.0
- - ufo@1.1.2
+ - ufo@1.2.0
  - uncrypto@0.1.2
  - unenv@1.5.1
  - unstorage@1.6.1
@@ -7254,7 +7256,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - consola@3.1.0
+ - consola@3.2.3
 
 This package contains the following license and notice below:
 
@@ -7282,7 +7284,7 @@ SOFTWARE.
 
 ---
 
-Prompt support is based on https://github.com/natemoo-re/clack/
+Prompt support is based on https://github.com/natemoo-re/clack
 
 MIT License
 
@@ -7293,6 +7295,18 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
+Color support is based on https://github.com/jorgebucaran/colorette
+
+Copyright © Jorge Bucaran <https://jorgebucaran.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
@@ -9883,7 +9897,7 @@ Exhibit B - “Incompatible With Secondary Licenses” Notice
 
 The following npm package may be included in this product:
 
- - dotenv@16.0.3
+ - dotenv@16.3.1
 
 This package contains the following license and notice below:
 
@@ -15866,6 +15880,7 @@ The following npm packages may be included in this product:
 
  - magic-string@0.27.0
  - magic-string@0.30.0
+ - magic-string@0.30.2
 
 These packages each contain the following license and notice below:
 
@@ -22540,37 +22555,6 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
-The following npm packages may be included in this product:
-
- - perfect-debounce@0.1.3
- - unimport@3.0.8
-
-These packages each contain the following license and notice below:
-
-MIT License
-
-Copyright (c) 2022 - UnJS
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
------------
-
 The following npm package may be included in this product:
 
  - picocolors@1.0.0
@@ -28013,7 +27997,7 @@ IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - strip-literal@1.0.1
+ - strip-literal@1.3.0
 
 This package contains the following license and notice below:
 
@@ -29632,6 +29616,36 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
+ - unimport@3.1.3
+
+This package contains the following license and notice below:
+
+MIT License
+
+Copyright (c) 2022 - UnJS
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-----------
+
+The following npm package may be included in this product:
+
  - unist-builder@3.0.1
 
 This package contains the following license and notice below:
@@ -29753,7 +29767,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - unplugin@1.3.1
+ - unplugin@1.4.0
 
 This package contains the following license and notice below:
 

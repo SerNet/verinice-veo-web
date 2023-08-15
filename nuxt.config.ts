@@ -121,30 +121,7 @@ export default defineNuxtConfig({
     locales: LOCALES,
     defaultLocale: 'de',
     lazy: true,
-    langDir: 'locales/',
-    vueI18n: {
-      legacy: false,
-      silentFallbackWarn: true,
-      datetimeFormats: Object.fromEntries(
-        ['de', 'en'].map((lang) => [
-          lang,
-          {
-            long: {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-            },
-            short: {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric'
-            }
-          }
-        ])
-      )
-    }
+    langDir: 'locales/'
   },
 
   fontLoader: {
