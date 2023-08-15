@@ -7912,7 +7912,7 @@ The following npm packages may be included in this product:
  - postcss-ordered-values@6.0.0
  - postcss-reduce-initial@6.0.0
  - postcss-reduce-transforms@6.0.0
- - postcss-selector-parser@6.0.11
+ - postcss-selector-parser@6.0.13
  - postcss-svgo@6.0.0
  - postcss-unique-selectors@6.0.0
  - stylehacks@6.0.0
