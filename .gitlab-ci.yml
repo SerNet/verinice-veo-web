@@ -5,7 +5,7 @@ stages:
   - deploy
 
 default:
-  image: node:19
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:19
   cache:  # Cache modules in between jobs
     key:
       files:
@@ -90,6 +90,6 @@ trigger_deployment:
   only:
     - develop
     - master
-  image: 'curlimages/curl:latest'
+  image: "${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/curlimages/curl:latest"
   script:
     - curl -i -k -X POST --user gitlab:$JENKINS_API_TOKEN https://bob.int.sernet.de:8443/job/verinice-veo-deployment/job/master/build
