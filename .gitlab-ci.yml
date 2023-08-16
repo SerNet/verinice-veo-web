@@ -21,6 +21,7 @@ store_project_version:
   stage: setup
   script:
     - echo "PROJECT_VERSION=$(node -p "require('./package.json').version")" >> variables.env
+  interruptible: true
   artifacts:
     when: always
     reports:
@@ -35,6 +36,7 @@ check_license:
     - npx generate-license-file --ci --input ./package.json --output LICENSE-3RD-PARTY.txt
     - diff LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
     - if [ $? -ne 0 ]; then echo "LICENSE-3RD-PARTY.txt is not up to date, please re-run npx generate-license-file --input ./package.json --output LICENSE-3RD-PARTY.txt --overwrite"; exit 1; fi
+  interruptible: true
 
 docker_image:
   stage: build
@@ -82,6 +84,7 @@ docker_image:
       --build-arg "HTTPS_PROXY=${https_proxy}"
       --build-arg "no_proxy=${no_proxy}"
       --build-arg "NO_PROXY=${no_proxy}"
+  interruptible: true
 
 trigger_deployment:
   before_script: []
