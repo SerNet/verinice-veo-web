@@ -99,7 +99,7 @@
                   class="text-decoration-none text-primary"
                   rel="noopener noreferrer"
                   target="_blank"
-                  to="/docs"
+                  to="/docs/index"
                 >
                   <strong>{{ t('documentation') }}</strong>
                 </nuxt-link>
