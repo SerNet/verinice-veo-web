@@ -107,7 +107,6 @@
               />
             </template>
             <template #append-form-outer>
-              <div class="object-details-actions__fade" />
               <div
                 class="d-flex object-details-actions pt-4"
                 data-component-name="object-details-actions"
@@ -151,15 +150,7 @@
             v-model="entityModifiedDialogVisible"
             :item="object"
             @exit="onContinueNavigation"
-          >
-            <template
-              v-if="additionalDirtyInfo.mismatchingValues || additionalDirtyInfo.missingKeys"
-              #append
-            >
-              Missing keys: {{ additionalDirtyInfo.missingKeys }}<br>
-              Mismatching values: {{ additionalDirtyInfo.mismatchingValues }}
-            </template>
-          </ObjectUnsavedChangesDialog>
+          />
           <UtilUnloadPrevention :model-value="isFormDirty" />
           <ObjectCreateDialog
             v-model="createDPIADialogVisible"
@@ -192,8 +183,8 @@ import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { useQuery } from '~~/composables/api/utils/query';
-import { useMutation } from '~~/composables/api/utils/mutation';
+import { useQuery } from '~/composables/api/utils/query';
+import { useMutation } from '~/composables/api/utils/mutation';
 
 export const ROUTE_NAME = 'unit-domains-domain-objectType-subType-object';
 
@@ -281,9 +272,6 @@ export default defineComponent({
     const isFormValid = ref(false);
     const objectForm = ref();
 
-    // TODO: Remove once form is dirty issue is debugged
-    const additionalDirtyInfo = computed(() => config.public.debug ? isObjectEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity) : { mismatchingValues: {}, missingKeys: {} });
-
     // Form actions
     function resetForm() {
       modifiedObject.value = cloneDeep(object.value);
@@ -344,14 +332,6 @@ export default defineComponent({
     // navigation prevention stuff
     const entityModifiedDialogVisible = ref(false);
     const onContinueNavigation: Ref<CallableFunction> = ref(() => undefined);
-
-    // TODO: Remove once form is dirty issue is debugged
-    watch(() => entityModifiedDialogVisible.value, (newValue) => {
-      if(newValue) {
-        console.log('Original data:', object.value);
-        console.log('Form data:', modifiedObject.value);
-      }
-    });
 
     // history stuff
     const formDataIsRevision = ref(false);
@@ -423,7 +403,6 @@ export default defineComponent({
 
     return {
       ability,
-      additionalDirtyInfo,
       VeoAlertType,
       additionalContext,
       createDPIADialogVisible,
