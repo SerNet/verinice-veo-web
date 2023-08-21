@@ -3752,7 +3752,7 @@ The following npm packages may be included in this product:
  - @types/hast@2.3.4
  - @types/http-proxy@1.17.11
  - @types/mdast@3.0.10
- - @types/node@18.17.5
+ - @types/node@18.17.6
  - @types/resolve@1.20.2
  - @types/unist@2.0.6
  - @types/web-bluetooth@0.0.16
