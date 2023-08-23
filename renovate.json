@@ -7,6 +7,9 @@
 	"automerge": true,
 	"automergeType": "pr",
 	"assignAutomerge": true,
+	"dependencyDashboard": true,
+	"dependencyDashboardOSVVulnerabilitySummary": "all",
+	"osvVulnerabilityAlerts": true,
 	"postUpgradeTasks": {
 		"commands": [
 			"npm ci",
