@@ -70,7 +70,6 @@ import { IVeoEntity } from '~/types/VeoTypes';
 
 const props = withDefaults(defineProps<{
   catalogItems: IVeoCatalogItem[];
-  loading: boolean;
   successText: string;
   errorText: string;
   isLoading?: boolean;
