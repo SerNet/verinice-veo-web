@@ -173,6 +173,10 @@
 </template>
 
 <script lang="ts">
+export const ROUTE_NAME = 'unit-domains-domain-objectType-subType-object';
+</script>
+
+<script setup lang="ts">
 import { Ref } from 'vue';
 import { cloneDeep, isEqual, omit, upperFirst } from 'lodash';
 
@@ -186,259 +190,215 @@ import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
 
-export const ROUTE_NAME = 'unit-domains-domain-objectType-subType-object';
-
-export default defineComponent({
-  name: 'VeoObjectsIndexPage',
-  beforeRouteLeave(to, _from, next) {
-    // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
-    if (this.entityModifiedDialogVisible || !this.isFormDirty) {
-      next();
-    } else {
-      // If the form was modified and the dialog is closed, show it and abort navigation
-      this.onContinueNavigation = () => this.$router.push({ name: to.name || undefined, params: to.params, query: to.query });
-      this.entityModifiedDialogVisible = true;
-      next(false);
-    }
-  },
-  setup() {
-    const { t } = useI18n();
-    const { t: globalT } = useI18n({ useScope: 'global' });
-    const config = useRuntimeConfig();
-    const route = useRoute();
-    const router = useRouter();
-    const { displaySuccessMessage, displayErrorMessage, expireAlert, displayInfoMessage } = useVeoAlerts();
-    const { link } = useLinkObject();
-    const { ability } = useVeoPermissions();
-    const {mutateAsync: _updateObject} = useMutation(objectQueryDefinitions.mutations.updateObject);
-
-    const domainId = computed(() => route.params.domain as string);
-
-    const modifiedObject = ref<IVeoEntity | undefined>(undefined);
-    /* Data that should get merged back into modifiedObject after the object has been reloaded, useful to persist children
-     * of objects while keeping form changes */
-    const wipObjectData = ref<Record<string, any> | undefined>(undefined);
-
-    const fetchObjectQueryParameters = computed(() => ({ endpoint: route.params.objectType as string, id: route.params.object as string }));
-    const fetchObjectQueryEnabled = computed(() => !!fetchObjectQueryParameters.value.endpoint && !!fetchObjectQueryParameters.value.id);
-    const {
-      data: object,
-      isFetching: loading,
-      isError: notFoundError,
-      refetch
-    } = useQuery(objectQueryDefinitions.queries.fetch, fetchObjectQueryParameters, {
-      enabled: fetchObjectQueryEnabled,
-      onSuccess: (data) => {
-        const _data = data as IVeoEntity;
-        modifiedObject.value = cloneDeep(_data);
-
-        // On the next tick, object is populated so disabling subtype will work
-        nextTick(getAdditionalContext);
-
-        if (wipObjectData.value) {
-          modifiedObject.value = { ...modifiedObject.value, ...wipObjectData.value };
-          wipObjectData.value = undefined;
-        }
-      }
-    });
-
-    onUnmounted(() => {
-      expireOptimisticLockingAlert();
-    });
-
-    // Display stuff
-    const pageWidths = ref<number[]>([3, 9]);
-    const pageWidthsLg = ref<number[]>([5, 7]);
-    const pageWidthsXl = ref<number[]>([5, 7]);
-    const pageTitles = ref<string[]>([t('objectInfo'), t('objectForm')]);
-
-    const onPageCollapsed = (collapsedPages: boolean[]) => {
-      if (collapsedPages.some((page) => page)) {
-        pageWidths.value = [12, 0];
-        pageWidthsLg.value = [12, 0];
-        pageWidthsXl.value = [12, 0];
-      } else {
-        pageWidths.value = [3, 9];
-        pageWidthsLg.value = [4, 8];
-        pageWidthsXl.value = [5, 7];
-      }
-    };
-
-    // Forms part specific stuff
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-    const objectType = computed(() => Object.entries(endpoints.value || {}).find(([, endpoint]) => endpoint === route.params.objectType)?.[0]);
-
-    const isFormDirty = computed(() => !isObjectEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity).isEqual && !formDataIsRevision.value);
-    const isFormValid = ref(false);
-    const objectForm = ref();
-
-    // Form actions
-    function resetForm() {
-      modifiedObject.value = cloneDeep(object.value);
-    }
-
-    async function saveObject() {
-      await updateObject(upperFirst(t('objectSaved', { name: object.value?.displayName })), upperFirst(t('objectNotSaved')));
-      if(!isEqual(object.value?.domains[domainId.value].riskValues , modifiedObject.value?.domains[domainId.value].riskValues)){
-        displayInfoMessage('', upperFirst(t('riskAlert')));
-      }
-    }
-
-    async function restoreObject() {
-      await updateObject(upperFirst(t('objectRestored', { name: object.value?.displayName })), upperFirst(t('objectNotRestored')));
-    }
-
-    function updateObjectRelationships() {
-      wipObjectData.value = omit(cloneDeep(modifiedObject.value), 'createdAt', 'createdBy', 'updatedAt', 'updatedBy', 'parts', 'members');
-      refetch();
-    }
-
-    const optimisticLockingAlertKey = ref<undefined | number>(undefined);
-    const expireOptimisticLockingAlert = () => {
-      if (optimisticLockingAlertKey.value) {
-        expireAlert(optimisticLockingAlertKey.value);
-        optimisticLockingAlertKey.value = undefined;
-      }
-    };
-
-    async function updateObject(successText: string, errorText: string) {
-      expireOptimisticLockingAlert();
-      try {
-        if (modifiedObject.value && object.value) {
-          await _updateObject({ endpoint: route.params.objectType, object: modifiedObject.value });
-          displaySuccessMessage(successText);
-          refetch();
-          formDataIsRevision.value = false;
-        }
-      } catch (e: any) {
-        if (e.code === 412) {
-          optimisticLockingAlertKey.value = displayErrorMessage(errorText, t('outdatedObject'), {
-            defaultButtonText: globalT('global.button.no'),
-            actions: [
-              {
-                text: globalT('global.button.yes'),
-                onClick: refetch
-              }
-            ]
-          });
-        } else {
-          displayErrorMessage(errorText, e.message, {
-            details: cloneDeep({ object: modifiedObject.value, objectSchema: objectForm.value.objectSchema, error: JSON.stringify(e) })
-          });
-        }
-      }
-    }
-
-    // navigation prevention stuff
-    const entityModifiedDialogVisible = ref(false);
-    const onContinueNavigation: Ref<CallableFunction> = ref(() => undefined);
-
-    // history stuff
-    const formDataIsRevision = ref(false);
-    const version = ref(0);
-
-    function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: boolean) {
-      const displayRevisionCallback = () => {
-        formDataIsRevision.value = isRevision;
-        entityModifiedDialogVisible.value = false;
-
-        // We have to stringify the content and then manually add the host, as the history api currently doesn't support absolute urls 18-01-2022
-        modifiedObject.value = JSON.parse(JSON.stringify(data.content).replaceAll(/"\//g, `"${config.public.apiUrl}/`));
-        // @ts-ignore We don't set the display name when loading objects from the history, so we have to do it here
-        modifiedObject.value.displayName = `${data.content.designator} ${data.content.abbreviation || ''} ${data.content.name}`;
-        version.value = data.changeNumber;
-      };
-      if (isFormDirty.value) {
-        onContinueNavigation.value = displayRevisionCallback;
-        entityModifiedDialogVisible.value = true;
-      } else {
-        displayRevisionCallback();
-      }
-    }
-
-    // object details stuff
-    // get active tab by route hash & set route hash by switching tabs
-    const activeTab = computed<string>({
-      get(): string {
-        return route.hash.substring(1) || 'childObjects'; // childObjects as default tab
-      },
-      set(hash: string): void {
-        router.push({ hash: `#${hash}`, query: route.query });
-      }
-    });
-
-    // pia stuff
-    const createDPIADialogVisible = ref(false);
-    const linkObjectDialogVisible = ref(false);
-
-    const onDPIACreated = async (newObjectId: string) => {
-      if (object.value) {
-        await link(object.value, { type: 'process', id: newObjectId });
-      }
-      createDPIADialogVisible.value = false;
-      updateObjectRelationships();
-    };
-
-    const onDPIALinked = () => {
-      linkObjectDialogVisible.value = false;
-      updateObjectRelationships();
-    };
-
-    // disabling inputs
-    const additionalContext = ref({});
-
-    const getAdditionalContext = () => {
-      const disabledSubType = object.value?.domains?.[domainId.value]?.subType
-        ? {
-          [`#/properties/domains/properties/${domainId.value}/properties/subType`]: {
-            formSchema: { disabled: true }
-          }
-        }
-        : {};
-
-      additionalContext.value = { ...disabledSubType };
-    };
-
-    watch(() => () => domainId.value, getAdditionalContext, { deep: true, immediate: true });
-
-    return {
-      ability,
-      VeoAlertType,
-      additionalContext,
-      createDPIADialogVisible,
-      domainId,
-      entityModifiedDialogVisible,
-      formDataIsRevision,
-      isFormDirty,
-      isFormValid,
-      linkObjectDialogVisible,
-      modifiedObject,
-      objectForm,
-      objectType,
-      onContinueNavigation,
-      onDPIACreated,
-      onDPIALinked,
-      onShowRevision,
-      resetForm,
-      restoreObject,
-      saveObject,
-      t,
-      pageWidths,
-      pageWidthsLg,
-      pageWidthsXl,
-      pageTitles,
-      version,
-      onPageCollapsed,
-      loading,
-      notFoundError,
-      object,
-      upperFirst,
-      updateObjectRelationships,
-      refetch,
-      activeTab
-    };
+onBeforeRouteLeave((to, _from, next) => {
+  // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
+  if (entityModifiedDialogVisible.value || !isFormDirty.value) {
+    next();
+  } else {
+    // If the form was modified and the dialog is closed, show it and abort navigation
+    onContinueNavigation.value = () => router.push({ name: to.name || undefined, params: to.params, query: to.query });
+    entityModifiedDialogVisible.value = true;
+    next(false);
   }
 });
+
+const { t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
+const config = useRuntimeConfig();
+const route = useRoute();
+const router = useRouter();
+const { displaySuccessMessage, displayErrorMessage, expireAlert, displayInfoMessage } = useVeoAlerts();
+const { link } = useLinkObject();
+const { ability } = useVeoPermissions();
+const {mutateAsync: _updateObject} = useMutation(objectQueryDefinitions.mutations.updateObject);
+
+const domainId = computed(() => route.params.domain as string);
+
+const modifiedObject = ref<IVeoEntity | undefined>(undefined);
+// Data that should get merged back into modifiedObject after the object has been reloaded, useful to persist children of objects while keeping form changes
+const wipObjectData = ref<Record<string, any> | undefined>(undefined);
+
+const fetchObjectQueryParameters = computed(() => ({ endpoint: route.params.objectType as string, id: route.params.object as string }));
+const fetchObjectQueryEnabled = computed(() => !!fetchObjectQueryParameters.value.endpoint && !!fetchObjectQueryParameters.value.id);
+const {
+  data: object,
+  isFetching: loading,
+  isError: notFoundError,
+  refetch
+} = useQuery(objectQueryDefinitions.queries.fetch, fetchObjectQueryParameters, {
+  enabled: fetchObjectQueryEnabled,
+  onSuccess: (data) => {
+    const _data = data as IVeoEntity;
+    modifiedObject.value = cloneDeep(_data);
+
+    // On the next tick, object is populated so disabling subtype will work
+    nextTick(getAdditionalContext);
+
+    if (wipObjectData.value) {
+      modifiedObject.value = { ...modifiedObject.value, ...wipObjectData.value };
+      wipObjectData.value = undefined;
+    }
+  }
+});
+
+onUnmounted(() => {
+  expireOptimisticLockingAlert();
+});
+
+// Display stuff
+const pageWidths = ref<number[]>([3, 9]);
+const pageWidthsLg = ref<number[]>([5, 7]);
+const pageWidthsXl = ref<number[]>([5, 7]);
+const pageTitles = ref<string[]>([t('objectInfo'), t('objectForm')]);
+
+const onPageCollapsed = (collapsedPages: boolean[]) => {
+  if (collapsedPages.some((page) => page)) {
+    pageWidths.value = [12, 0];
+    pageWidthsLg.value = [12, 0];
+    pageWidthsXl.value = [12, 0];
+  } else {
+    pageWidths.value = [3, 9];
+    pageWidthsLg.value = [4, 8];
+    pageWidthsXl.value = [5, 7];
+  }
+};
+
+// Forms part specific stuff
+const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+const objectType = computed(() => Object.entries(endpoints.value || {}).find(([, endpoint]) => endpoint === route.params.objectType)?.[0]);
+
+const isFormDirty = computed(() => !isObjectEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity).isEqual && !formDataIsRevision.value);
+const isFormValid = ref(false);
+const objectForm = ref();
+
+// Form actions
+function resetForm() {
+  modifiedObject.value = cloneDeep(object.value);
+}
+
+async function saveObject() {
+  await updateObject(upperFirst(t('objectSaved', { name: object.value?.displayName })), upperFirst(t('objectNotSaved')));
+  if(!isEqual(object.value?.domains[domainId.value].riskValues , modifiedObject.value?.domains[domainId.value].riskValues)){
+    displayInfoMessage('', upperFirst(t('riskAlert')));
+  }
+}
+
+async function restoreObject() {
+  await updateObject(upperFirst(t('objectRestored', { name: object.value?.displayName })), upperFirst(t('objectNotRestored')));
+}
+
+function updateObjectRelationships() {
+  wipObjectData.value = omit(cloneDeep(modifiedObject.value), 'createdAt', 'createdBy', 'updatedAt', 'updatedBy', 'parts', 'members');
+  refetch();
+}
+
+const optimisticLockingAlertKey = ref<undefined | number>(undefined);
+const expireOptimisticLockingAlert = () => {
+  if (optimisticLockingAlertKey.value) {
+    expireAlert(optimisticLockingAlertKey.value);
+    optimisticLockingAlertKey.value = undefined;
+  }
+};
+
+async function updateObject(successText: string, errorText: string) {
+  expireOptimisticLockingAlert();
+  try {
+    if (modifiedObject.value && object.value) {
+      await _updateObject({ endpoint: route.params.objectType, object: modifiedObject.value });
+      displaySuccessMessage(successText);
+      refetch();
+      formDataIsRevision.value = false;
+    }
+  } catch (e: any) {
+    if (e.code === 412) {
+      optimisticLockingAlertKey.value = displayErrorMessage(errorText, t('outdatedObject'), {
+        defaultButtonText: globalT('global.button.no'),
+        actions: [
+          {
+            text: globalT('global.button.yes'),
+            onClick: refetch
+          }
+        ]
+      });
+    } else {
+      displayErrorMessage(errorText, e.message, {
+        details: cloneDeep({ object: modifiedObject.value, objectSchema: objectForm.value.objectSchema, error: JSON.stringify(e) })
+      });
+    }
+  }
+}
+
+// navigation prevention stuff
+const entityModifiedDialogVisible = ref(false);
+const onContinueNavigation: Ref<CallableFunction> = ref(() => undefined);
+
+// history stuff
+const formDataIsRevision = ref(false);
+const version = ref(0);
+
+function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: boolean) {
+  const displayRevisionCallback = () => {
+    formDataIsRevision.value = isRevision;
+    entityModifiedDialogVisible.value = false;
+
+    // We have to stringify the content and then manually add the host, as the history api currently doesn't support absolute urls 18-01-2022
+    modifiedObject.value = JSON.parse(JSON.stringify(data.content).replaceAll(/"\//g, `"${config.public.apiUrl}/`));
+    // @ts-ignore We don't set the display name when loading objects from the history, so we have to do it here
+    modifiedObject.value.displayName = `${data.content.designator} ${data.content.abbreviation || ''} ${data.content.name}`;
+    version.value = data.changeNumber;
+  };
+  if (isFormDirty.value) {
+    onContinueNavigation.value = displayRevisionCallback;
+    entityModifiedDialogVisible.value = true;
+  } else {
+    displayRevisionCallback();
+  }
+}
+
+// object details stuff
+// get active tab by route hash & set route hash by switching tabs
+const activeTab = computed<string>({
+  get(): string {
+    return route.hash.substring(1) || 'childObjects'; // childObjects as default tab
+  },
+  set(hash: string): void {
+    router.push({ hash: `#${hash}`, query: route.query });
+  }
+});
+
+// pia stuff
+const createDPIADialogVisible = ref(false);
+const linkObjectDialogVisible = ref(false);
+
+const onDPIACreated = async (newObjectId: string) => {
+  if (object.value) {
+    await link(object.value, { type: 'process', id: newObjectId });
+  }
+  createDPIADialogVisible.value = false;
+  updateObjectRelationships();
+};
+
+const onDPIALinked = () => {
+  linkObjectDialogVisible.value = false;
+  updateObjectRelationships();
+};
+
+// disabling inputs
+const additionalContext = ref({});
+
+const getAdditionalContext = () => {
+  const disabledSubType = object.value?.domains?.[domainId.value]?.subType
+    ? {
+      [`#/properties/domains/properties/${domainId.value}/properties/subType`]: {
+        formSchema: { disabled: true }
+      }
+    }
+    : {};
+
+  additionalContext.value = { ...disabledSubType };
+};
+
+watch(() => () => domainId.value, getAdditionalContext, { deep: true, immediate: true });
 </script>
 
 <i18n>
