@@ -192,6 +192,30 @@ const route = useRoute();
 const { ability } = useVeoPermissions();
 const { xs } = useDisplay();
 
+// Helpers
+/** Returns a form schema corresponding to an object/elementType and subType */
+function getFormSchema(
+  { formSchemas, elementType, subType }:
+  { formSchemas: IVeoFormSchema[] | undefined, elementType: string, subType: string }
+): IVeoFormSchema | undefined {
+  if(!formSchemas) return;
+
+  return formSchemas.find(formSchema =>
+    formSchema.modelType === elementType &&
+    formSchema.subType === subType
+  );
+}
+
+/**
+ * Translates a subType using values from form schemas.
+ * Necessary because objects/elements do not come with a translation.
+ */
+function getDisplayName({ formSchema }: { formSchema: IVeoFormSchema }) {
+
+  const translation = formSchema?.name[locale.value];
+  return translation;
+}
+
 // Layout stuff
 const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
 
@@ -253,10 +277,14 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
           // dynamic sub type routes
           ...sortBy(
             objectSubTypes.map((subType) => {
-              const formSchema = (formSchemas.value || []).find(
-                (formSchema) => formSchema.modelType === objectSchema.title && formSchema.subType === subType.subType
-              );
-              const displayName = formSchema?.name[locale.value] || subType.subType;
+              const formSchema = getFormSchema({
+                formSchemas: formSchemas?.value,
+                elementType: objectSchema?.title,
+                subType: subType.subType
+              });
+
+              const displayName = getDisplayName({ formSchema }) || subType.subType;
+
               return {
                 id: displayName,
                 name: displayName,
