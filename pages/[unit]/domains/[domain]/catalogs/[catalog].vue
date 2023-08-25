@@ -27,8 +27,8 @@
       />
       <CatalogDefaultCatalog
         class="mb-4"
-        :catalog-items="catalogItems.items"
-        :isLoading="catalogItemsAreFetching"
+        :catalog-items="catalogItems?.items"
+        :is-loading="catalogItemsAreFetching"
         :success-text="t('scenariosApplied').toString()"
         :error-text="t('applyScenariosError').toString()"
       >
