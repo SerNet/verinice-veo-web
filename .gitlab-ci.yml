@@ -32,7 +32,6 @@ check_license:
   needs: []
   script:
     - mv LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
-    - npm ci
     - npx generate-license-file --ci --input ./package.json --output LICENSE-3RD-PARTY.txt
     - diff LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
     - if [ $? -ne 0 ]; then echo "LICENSE-3RD-PARTY.txt is not up to date, please re-run npx generate-license-file --input ./package.json --output LICENSE-3RD-PARTY.txt --overwrite"; exit 1; fi
@@ -42,7 +41,7 @@ docker_image:
   stage: build
   needs: ["store_project_version"]
   image:
-    name: gcr.io/kaniko-project/executor:v1.12.1-debug
+    name: gcr.io/kaniko-project/executor:v1.14.0-debug
     entrypoint: [""]
   variables:
     IMAGE_NAME: eu.gcr.io/veo-projekt/veo-web
