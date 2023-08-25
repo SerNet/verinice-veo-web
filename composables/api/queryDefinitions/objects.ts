@@ -31,6 +31,7 @@ export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
 }
 
 export interface IVeoFetchObjectParameters {
+  domain: string;
   endpoint: string;
   id: string;
 }
@@ -62,6 +63,7 @@ export interface IVeoCreateObjectParameters {
 }
 
 export interface IVeoUpdateObjectParameters {
+  domain: string;
   endpoint: string;
   object: IVeoEntity;
 }
@@ -126,6 +128,7 @@ export default {
       },
       queryParameterTransformationFn:(queryParameters) => ({
         params: {
+          domain: queryParameters.domain,
           endpoint: queryParameters.endpoint
         },
         query: {
@@ -136,7 +139,7 @@ export default {
     } as IVeoQueryDefinition<IVeoFetchObjectsParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetch:{
       primaryQueryKey: 'object',
-      url: '/api/:endpoint/:id',
+      url: '/api/domains/:domain/:endpoint/:id',
       onDataFetched: (result) => formatObject(result),
       queryParameterTransformationFn:(queryParameters) => ({ params: queryParameters })
     } as IVeoQueryDefinition<IVeoFetchObjectParameters, IVeoEntity>,
@@ -203,7 +206,7 @@ export default {
     } as IVeoMutationDefinition<IVeoCreateObjectParameters, IVeoAPIMessage>,
     updateObject: {
       primaryQueryKey: 'object',
-      url: '/api/:endpoint/:id',
+      url: '/api/domains/:domain/:endpoint/:id',
       method: 'PUT', 
       onDataFetched: (result) => {
         if (!result.parts) {
@@ -231,7 +234,7 @@ export default {
         delete _object.updatedAt;
         // @ts-ignore Display name is generated in the frontend, so we remove it from the DTO before sending it to the backend
         delete _object.displayName;
-        return { params: { endpoint: mutationParameters.endpoint, id: mutationParameters.object.id }, json: _object };
+        return { params: { domain: mutationParameters.domain, endpoint: mutationParameters.endpoint, id: mutationParameters.object.id }, json: _object };
       },
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
@@ -342,5 +345,24 @@ export default {
         }
       }
     } as IVeoMutationDefinition<IVeoDeleteRiskParameters, void>
+    // deleteControl: {
+    //   primaryQueryKey: 'control',
+    //   url: '/api/:endpoint/:objectId/controls/:controlId',
+    //   method: 'DELETE',
+    //   reponseType: VeoApiReponseType.VOID,
+    //   mutationParameterTransformationFn: (mutationParameters) => ({ params: mutationParameters }),
+    //   staticMutationOptions: {
+    //     onSuccess: (queryClient, _data, variables, _context) => {
+    //       queryClient.invalidateQueries([
+    //         'controls',
+    //         {
+    //           endpoint: variables.params?.endpoint,
+    //           id: variables.params?.objectId
+    //         }
+    //       ]),
+    //       queryClient.invalidateQueries({queryKey: ['evaluation']});
+    //     }
+    //   }
+    // } as IVeoMutationDefinition<IVeoDeleteControlParameters, void>
   }
 };

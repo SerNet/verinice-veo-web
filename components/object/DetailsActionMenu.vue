@@ -73,7 +73,8 @@ const navigateToObjectOverview = () => {
     },
     query: {
       objectType: props.object?.type,
-      subType: props.object?.domains[route.params.domain as string]?.subType
+      // subType: props.object?.domains[route.params.domain as string]?.subType
+      subType: props.object?.subType
     }
   });
 };
@@ -86,7 +87,8 @@ const onCreateObjectSuccess = (newObjectId: string) => {
 };
 
 // general stuff
-const subType = computed(() => props.object?.domains[route.params.domain as string]?.subType);
+// const subType = computed(() => props.object?.domains[route.params.domain as string]?.subType);
+const subType = computed(() => props.object?.subType);
 
 const items = computed<(INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] })[]>(() => [
   {

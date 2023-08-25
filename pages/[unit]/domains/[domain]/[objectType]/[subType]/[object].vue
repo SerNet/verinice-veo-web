@@ -210,7 +210,7 @@ const router = useRouter();
 const { displaySuccessMessage, displayErrorMessage, expireAlert, displayInfoMessage } = useVeoAlerts();
 const { link } = useLinkObject();
 const { ability } = useVeoPermissions();
-const {mutateAsync: _updateObject} = useMutation(objectQueryDefinitions.mutations.updateObject);
+const { mutateAsync: _updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
 const domainId = computed(() => route.params.domain as string);
 
@@ -218,8 +218,8 @@ const modifiedObject = ref<IVeoEntity | undefined>(undefined);
 // Data that should get merged back into modifiedObject after the object has been reloaded, useful to persist children of objects while keeping form changes
 const wipObjectData = ref<Record<string, any> | undefined>(undefined);
 
-const fetchObjectQueryParameters = computed(() => ({ endpoint: route.params.objectType as string, id: route.params.object as string }));
-const fetchObjectQueryEnabled = computed(() => !!fetchObjectQueryParameters.value.endpoint && !!fetchObjectQueryParameters.value.id);
+const fetchObjectQueryParameters = computed(() => ({ domain: route.params.domain as string, endpoint: route.params.objectType as string, id: route.params.object as string }));
+const fetchObjectQueryEnabled = computed(() => !!fetchObjectQueryParameters.value.domain && !!fetchObjectQueryParameters.value.endpoint && !!fetchObjectQueryParameters.value.id);
 const {
   data: object,
   isFetching: loading,
@@ -278,7 +278,7 @@ function resetForm() {
 
 async function saveObject() {
   await updateObject(upperFirst(t('objectSaved', { name: object.value?.displayName })), upperFirst(t('objectNotSaved')));
-  if(!isEqual(object.value?.domains[domainId.value].riskValues , modifiedObject.value?.domains[domainId.value].riskValues)){
+  if(!isEqual(object.value?.riskValues , modifiedObject.value?.riskValues)){
     displayInfoMessage('', upperFirst(t('riskAlert')));
   }
 }
@@ -304,7 +304,7 @@ async function updateObject(successText: string, errorText: string) {
   expireOptimisticLockingAlert();
   try {
     if (modifiedObject.value && object.value) {
-      await _updateObject({ endpoint: route.params.objectType, object: modifiedObject.value });
+      await _updateObject({ domain: route.params.domain, endpoint: route.params.objectType, object: modifiedObject.value });
       displaySuccessMessage(successText);
       refetch();
       formDataIsRevision.value = false;
@@ -387,7 +387,7 @@ const onDPIALinked = () => {
 const additionalContext = ref({});
 
 const getAdditionalContext = () => {
-  const disabledSubType = object.value?.domains?.[domainId.value]?.subType
+  const disabledSubType = object.value?.subType
     ? {
       [`#/properties/domains/properties/${domainId.value}/properties/subType`]: {
         formSchema: { disabled: true }

@@ -24,6 +24,8 @@ import { IVeoEntity } from '~/types/VeoTypes';
 import { useQuery } from './api/utils/query';
 import { useMutation } from './api/utils/mutation';
 
+const route = useRoute();
+
 export interface IVeoAPIObjectIdentifier {
   id: string;
   type: string;
@@ -77,7 +79,7 @@ export const useUnlinkObject = () => {
     } else {
       object.parts = object.parts.filter((part) => !part.targetUri.includes(objcectToRemoveUUID));
     }
-    return updateObject({ endpoint: endpoints.value?.[object.type], object });
+    return updateObject({ domain: route.params.domain, endpoint: endpoints.value?.[object.type], object });
   };
 
   return { unlink };
@@ -106,7 +108,7 @@ export const useLinkObject = () => {
       object[property].push(createLink(endpoints.value?.[_objectToAdd.type] as string, _objectToAdd.id));
     });
 
-    return updateObject({ endpoint: endpoints.value?.[object.type], object });
+    return updateObject({ domain: route.params.domain, endpoint: endpoints.value?.[object.type], object });
   };
 
   return { link };
