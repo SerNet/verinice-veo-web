@@ -141,6 +141,7 @@ import { NavItem } from '@nuxt/content/dist/runtime/types';
 
 import { extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
@@ -307,6 +308,7 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
     })
 );
 
+
 // catalog specific stuff
 const typeCountQueryParameters = computed(() => ({ domainId: props.domainId as string } ));
 const typeCountQueryEnabled = computed(() => !!props.domainId);
@@ -316,13 +318,25 @@ const { data: catalogItemTypes, isFetching: catalogItemTypeCountIsLoading } =
 const catalogsEntriesChildItems = computed<INavItem[]>(() => {
   if(isEmpty(catalogItemTypes?.value || {})) return [];
 
-  const catalogItems = [ ['all'], ...Object.entries(catalogItemTypes?.value || [])];
+  const catalogItems = [ ['all', { all: 'MISC' }], ...Object.entries(catalogItemTypes?.value || [])];
 
-  return (catalogItems || []).map(catalogItems => {
-    const _icon = CATALOG_TYPE_ICONS.get(catalogItems[0]);
+  return (catalogItems || []).map(catalogItem => {
+    const _icon = CATALOG_TYPE_ICONS.get(catalogItem[0]);
+    const _subType = Object.keys(catalogItem[1] || {})[0];
+
+    const formSchema = getFormSchema({
+      formSchemas: formSchemas?.value,
+      elementType: catalogItem[0],
+      subType: _subType,
+    });
+
+    const displayName = _subType === 'all' ? t('all') : getDisplayName({formSchema: formSchema}) || _subType;
+
     return ({
-      id: `${catalogItems[0]}`,
-      name: upperFirst(t(catalogItems[0])),
+      id: `${catalogItem[0]}`,
+      name: displayName, // upperFirst(t(catalogItem[0])),
+      subtype: _subType,
+      elementType: catalogItem[0],
       icon: _icon?.library === 'mdi' ? _icon?.icon as string : undefined,
       to: {
         name: CATALOGS_CATALOG_ROUTE_NAME,
@@ -332,7 +346,7 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
           catalog: props.domainId
         },
         query: {
-          type: catalogItems[0]
+          type: catalogItem[0]
         }
       }
     });
