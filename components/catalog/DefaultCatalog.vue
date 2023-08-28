@@ -47,9 +47,9 @@
         <v-btn
           flat
           color="primary"
-          :disabled="selectedItems.length === 0 || applyingItems || ability.cannot('manage', 'catalogs')"
-          :loading="applyingItems"
-          @click="applyItems"
+          :disabled="selectedItems.length === 0 || isApplyingItems || ability.cannot('manage', 'catalogs')"
+          :loading="props.isApplyingItems"
+          @click="$emit('applyItems')"
         >
           {{ t('apply') }}
         </v-btn>
@@ -75,11 +75,18 @@ const props = withDefaults(defineProps<{
   isLoading?: boolean;
 }>(), {
   catalogItems: () => [],
+  modelValue: () => [],
   loading: false,
   successText: '',
   errorText: '',
   isLoading: false,
 });
+
+interface Emits {
+  (e: 'update:modelValue', selectedItems: IVeoEntity[]): void,
+  (e: 'applyItems'): void
+}
+const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
