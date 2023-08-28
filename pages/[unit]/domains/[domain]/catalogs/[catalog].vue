@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann
+   - Copyright (C) 2021  Jonas Heitmann, jae
    -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -26,11 +26,12 @@
         :element="title"
       />
       <CatalogDefaultCatalog
+        v-model="selectedItems"
         class="mb-4"
         :catalog-items="catalogItems?.items"
         :is-loading="catalogItemsAreFetching"
-        :success-text="t('scenariosApplied').toString()"
-        :error-text="t('applyScenariosError').toString()"
+        :is-applying-items="isApplyingItems"
+        @apply-items="applyItems"
       >
         <span class="my-2">{{ t('selectScenariosCTA') }}</span>
       </CatalogDefaultCatalog>
@@ -46,29 +47,106 @@ export const ROUTE_NAME = 'unit-domains-domain-catalogs-catalog';
 </script>
 
 <script setup lang="ts">
-import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
 import { useQuery } from '~~/composables/api/utils/query';
+import { useQuerySync } from '~~/composables/api/utils/query';
+import { useMutation } from '~~/composables/api/utils/mutation';
+import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
+import formsQueryDefinitions from '~~/composables/api/queryDefinitions/forms';
+import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
 
+// Types
+import { IVeoFormSchemaMeta } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoEntity } from '~/types/VeoTypes';
+
+// Composables
+const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { t, locale } = useI18n();
 const route = useRoute();
 
-const title = computed(() => t('catalog', { name: catalogItems.value?.[0]?.catalog?.displayName || 'DS-GVO' }));
+// State
+const title = computed(() => t('catalog', { name: currentSubTypeTranslated.value || t('all')}));
+const currentDomainId = computed(() => route.params.domain as string);
+const currentElementType = computed(() =>
+  route.query.type === 'all' ? undefined : route.query.type as string);
+const currentSubType = computed(() =>
+  route.query.subType === 'all' ? undefined : route.query.subType as string);
 
+// Fetch catalog items
 const fetchCatalogItemsQueryParameters = computed(() => (
   {
-    domainId: route.params.domain as string,
-    elementType: route.query.type === 'all' ? undefined : route.query.type as string,
-    size: 100
+    domainId: currentDomainId?.value,
+    subType: currentSubType?.value,
+    size: '100'
   }
 ));
+const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(
+  catalogQueryDefinitions.queries.fetchCatalogItems,
+  fetchCatalogItemsQueryParameters
+);
 
-const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(catalogQueryDefinitions.queries.fetchCatalogItems, fetchCatalogItemsQueryParameters);
+// Translate sub types
+// Translations are found in forms, so we fetch them:
+const allFormSchemasQueryEnabled = computed(() => !!currentDomainId);
+const queryParameters = computed(() => ({
+  domainId: currentDomainId.value
+}));
+const { data: formSchemas } = useQuery(
+  formsQueryDefinitions.queries.fetchForms,
+  queryParameters,
+  { enabled: allFormSchemasQueryEnabled, placeholderData: [] }
+);
 
+const currentSubTypeTranslated = computed(() =>
+  translateSubType({
+    formSchemas: formSchemas?.value,
+    elementType: currentElementType?.value,
+    subType: currentSubType.value
+  })
+);
+
+// Incarnate, create objects, from selected catalog items
+const { mutateAsync: incarnate } = useMutation(unitQueryDefinitions.mutations.updateIncarnations);
+const selectedItems = ref<IVeoEntity[]>([]);
+const isApplyingItems = ref(false);
+
+async function applyItems() {
+  isApplyingItems.value = true;
+  try {
+    // Fetch incarnations for all selected items
+    const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: route.params.unit as string, itemIds:
+      selectedItems.value.map((item) => item.id) });
+
+    // Apply incarnations
+    await incarnate({ incarnations, unitId: route.params.unit });
+    displaySuccessMessage(t('itemsApplied', { name: currentSubTypeTranslated.value}));
+    selectedItems.value = [];
+  } catch (e: any) {
+    displayErrorMessage(t('applyItemsError'), e.message);
+  } finally {
+    isApplyingItems.value = false;
+  }
+}
+
+// Helpers
+type TranslateSubTypeParams = {
+  formSchemas: IVeoFormSchemaMeta[] | undefined,
+  elementType: string | undefined,
+  subType: string | undefined
+}
+
+function translateSubType({ formSchemas, elementType, subType }: TranslateSubTypeParams) {
+  const formSchema = formSchemas?.find(formSchema =>
+    formSchema.modelType === elementType &&
+    formSchema.subType === subType
+  );
+  return formSchema?.name[locale.value];
+}
 </script>
 
 <i18n>
 {
   "en": {
+    "all": "All",
     "applyEntries": "apply scenarios",
     "applyScenariosError": "Couldn't apply scenarios",
     "applyTOMs": "apply TOMs",
@@ -77,9 +155,12 @@ const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(cat
     "scenariosApplied": "Scenarios were applied successfully",
     "selectScenariosCTA": "Please select the scenarios you want to apply.",
     "selectTOMsCTA": "Please choose one or more technical organizational measures to apply.",
-    "TOMsApplied": "TOMs were applied"
+    "TOMsApplied": "TOMs were applied",
+    "itemsApplied": "Successfully applied catalog elements with a subtype of '{name}'.",
+    "applyItemsError": "Could not apply catalog elements.",
   },
   "de": {
+    "all": "Alle",
     "applyEntries": "Gefährdungen anwenden",
     "applyScenariosError": "Gefährdungen konnten nicht angewandt werden",
     "applyTOMs": "TOMs anwenden",
@@ -88,7 +169,9 @@ const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(cat
     "scenariosApplied": "Gefährdungen wurden erfolgreich angewandt",
     "selectScenariosCTA": "Bitte wählen Sie die Gefährdungen aus, die Sie anwenden möchten.",
     "selectTOMsCTA": "Wählen Sie eine oder mehrere technische und organisatorische Maßnahmen aus, die angewendet werden sollen.",
-    "TOMsApplied": "TOMs wurden angewendet"
+    "TOMsApplied": "TOM wurden angewendet",
+    "itemsApplied": "Katalogelemente mit dem Subtypen '{name}' wurden erfolgreich angewendet.",
+    "applyItemsError": "Katalogelemente konnten nicht angewandt werden.",
   }
 }
 </i18n>
