@@ -792,8 +792,8 @@ SOFTWARE.
 The following npm packages may be included in this product:
 
  - @eslint/eslintrc@2.1.2
- - @eslint/js@8.47.0
- - eslint@8.47.0
+ - @eslint/js@8.48.0
+ - eslint@8.48.0
 
 These packages each contain the following license and notice below:
 
