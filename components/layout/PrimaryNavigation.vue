@@ -213,6 +213,7 @@ function getFormSchema(
  */
 function getDisplayName({ formSchema }: { formSchema: IVeoFormSchema }) {
 
+  console.log({ navFs: formSchema })
   const translation = formSchema?.name[locale.value];
   return translation;
 }
@@ -327,14 +328,14 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
     const formSchema = getFormSchema({
       formSchemas: formSchemas?.value,
       elementType: catalogItem[0],
-      subType: _subType,
+      subType: _subType
     });
 
     const displayName = _subType === 'all' ? t('all') : getDisplayName({formSchema: formSchema}) || _subType;
 
     return ({
       id: `${catalogItem[0]}`,
-      name: displayName, // upperFirst(t(catalogItem[0])),
+      name: displayName,
       subtype: _subType,
       elementType: catalogItem[0],
       icon: _icon?.library === 'mdi' ? _icon?.icon as string : undefined,
@@ -346,7 +347,8 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
           catalog: props.domainId
         },
         query: {
-          type: catalogItem[0]
+          type: catalogItem[0],
+          subType: _subType
         }
       }
     });
