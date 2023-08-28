@@ -24,29 +24,22 @@ export interface IVeoCatalog extends IVeoBaseObject {
   catalogItems: IVeoLink[];
 }
 
+export interface IVeoCatalogItemCollection {
+  items: IVeoCatalogItem[];
+}
+
 export interface IVeoCatalogItem extends IVeoBaseObject {
   id: string;
   name: string;
   abbreviation: string;
   description: string;
+  elementType: string;
+  subType: string;
   createdAt: string;
   createdBy: string;
   updatedAt: string;
   updatedBy: string;
-  catalog: IVeoLink;
-  tailoringReferences: {
-    createdAt: string;
-    createdBy: string;
-    updatedAt: string;
-    updatedBy: string;
-    referenceType: string;
-    catalogItem: IVeoLink;
-    attributes: Record<string, any>;
-    type: string;
-    id: string;
-  }[];
-  namespace: string;
-  element: IVeoLink;
+  _self: string;
 }
 
 export interface IVeoFetchCatalogsParameters {
@@ -58,14 +51,13 @@ export interface IVeoFetchCatalogParameters {
 }
 
 export interface IVeoFetchCatalogItemsParameters {
-  catalogId: string;
-  domainId: string;
-  elementType: string;
-  subType: string;
-  size: string;
-  page: string;
-  sortBy: string;
-  sortOrder: string;
+  domainId?: string | undefined;
+  elementType?: string | undefined;
+  subType?: string;
+  size?: string;
+  page?: string;
+  sortBy?: string;
+  sortOrder?: string;
 }
 
 export interface IVeoFetchCatalogItemParameters {
@@ -85,17 +77,8 @@ export default {
         placeholderData: []
       }
     } as IVeoQueryDefinition<IVeoFetchCatalogsParameters, IVeoCatalog[]>,
-    fetchCatalogItemsFromCatalogsEndpoint: {
-      primaryQueryKey: 'catalogItems',
-      url: '/api/catalogs/:catalogId/items',
-      queryParameterTransformationFn: (queryParameters) => ({ params: { catalogId: queryParameters.catalogId }, query: { domain: queryParameters.domainId } }),
-      staticQueryOptions: {
-        staleTime: STALE_TIME.INFINITY,
-        placeholderData: []
-      }
-    } as IVeoQueryDefinition<IVeoFetchCatalogItemsParameters, IVeoCatalogItem[]>,
     fetchCatalogItems: {
-      primaryQueryKey: 'catalogItems7',
+      primaryQueryKey: 'catalogItems',
       url: '/api/domains/:domainId/catalog-items',
       queryParameterTransformationFn: (queryParameters) => {
         return ({
@@ -113,7 +96,7 @@ export default {
         staleTime: STALE_TIME.INFINITY,
         placeholderData: []
       }
-    } as IVeoQueryDefinition<IVeoFetchCatalogItemsParameters, IVeoCatalogItem[]>,
+    } as IVeoQueryDefinition<IVeoFetchCatalogItemsParameters, IVeoCatalogItemCollection>,
     fetchCatalogItem: {
       primaryQueryKey: 'catalogItem',
       url: '/api/catalogs/:catalogId/items/:itemId',
