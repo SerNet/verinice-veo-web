@@ -29655,7 +29655,7 @@ SPDX-License-Identifier: (MIT OR CC0-1.0)
 
 The following npm package may be included in this product:
 
- - typescript@4.9.4
+ - typescript@5.2.2
 
 This package contains the following license and notice below:
 
