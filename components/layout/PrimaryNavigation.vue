@@ -212,8 +212,6 @@ function getFormSchema(
  * Necessary because objects/elements do not come with a translation.
  */
 function getDisplayName({ formSchema }: { formSchema: IVeoFormSchema }) {
-
-  console.log({ navFs: formSchema })
   const translation = formSchema?.name[locale.value];
   return translation;
 }
