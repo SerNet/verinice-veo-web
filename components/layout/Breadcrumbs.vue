@@ -129,9 +129,7 @@ import { isEmpty, last, omit, pick } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal, mdiViewDashboardOutline } from '@mdi/js';
 
 import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
-import { IVeoCatalog } from '~~/composables/api/queryDefinitions/catalogs';
 import { useQuery } from '~~/composables/api/utils/query';
-import catalogQueryDefinitions from '~~/composables/api/queryDefinitions/catalogs';
 import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
 import formsQueryDefinitions, { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
 import objectsQueryDefinitions from '~~/composables/api/queryDefinitions/objects';
