@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2022  Jonas Heitmann
-   - 
+   - Copyright (C) 2022  Jonas Heitmann, jae
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -32,7 +32,7 @@
       </v-list-item>
       <template v-else>
         <v-list-item
-          v-for="catalog of catalogs"
+          v-for="catalog in currentCatalogs"
           :key="catalog.id"
           :to="generateRoute(catalog.id)"
         >
@@ -48,7 +48,6 @@
 
 <script setup lang="ts">
 import { PropType } from 'vue';
-
 import { IVeoCatalog } from '~/composables/api/queryDefinitions/catalogs';
 
 interface Props {
@@ -63,6 +62,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 const route = useRoute();
 const { t } = useI18n();
+
+const currentDomainId = route.params.domain;
+const currentCatalogs = computed(() => props.catalogs.filter(catalog => catalog.id === currentDomainId) || []);
 
 const generateRoute = (catalogId: string) => `/${route.params.unit}/domains/${route.params.domain}/catalogs/${catalogId}`;
 </script>

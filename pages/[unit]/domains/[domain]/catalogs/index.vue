@@ -56,7 +56,7 @@ const { data: catalogs, isFetching: catalogsAreFetching } = useQuery(catalogQuer
     "hint": "Please choose the catalog you want to apply items from."
   },
   "de": {
-    "hint": "Bitte wählen Sie aus der Liste den Katalog aus, aus dem Sie Einträge anwenden möchten."
+    "hint": "Bitte wählen Sie den Katalog aus, aus dem Sie Einträge anwenden möchten."
   }
 }
 </i18n>
