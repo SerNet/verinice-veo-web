@@ -51,17 +51,16 @@ import { PropType } from 'vue';
 
 import { IVeoCatalog } from '~/composables/api/queryDefinitions/catalogs';
 
-defineProps({
-  catalogs: {
-    type: Array as PropType<IVeoCatalog[]>,
-    default: () => []
-  },
-  loading: {
-    type: Boolean,
-    default: false
-  }
+interface Props {
+  catalogs: IVeoCatalog[];
+  loading: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  catalogs: () => [],
+  loading: false
 });
- 
+
 const route = useRoute();
 const { t } = useI18n();
 
