@@ -10,6 +10,7 @@ type TranslateSubTypeParams = {
 }
 
 function translateSubType({ formSchemas, locale, subType, elementType }: TranslateSubTypeParams) {
+  if(!subType) subType = 'all';
   if (!formSchemas) return;
 
   const formSchema = formSchemas?.find(formSchema => {
