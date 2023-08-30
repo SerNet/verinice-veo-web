@@ -16,13 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { omit } from "lodash";
-import { getEntityDetailsFromLink } from "~~/lib/utils";
-import { IVeoAPIMessage, IVeoDecisionEvaluation, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from "~~/types/VeoTypes";
+import { getEntityDetailsFromLink } from "~/lib/utils";
+import { IVeoAPIMessage, IVeoDecisionEvaluation, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from "~/types/VeoTypes";
 import { IVeoMutationDefinition } from "../utils/mutation";
 import { IVeoQueryDefinition } from "../utils/query";
 import { VeoApiReponseType } from "../utils/request";
 
+const route = useRoute();
+
 export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
+  domain: string;
   unit: string;
   endpoint: string;
   displayName?: string;
@@ -31,17 +34,19 @@ export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
 }
 
 export interface IVeoFetchObjectParameters {
-  domain: string;
+  domain: string | string[];
   endpoint: string;
   id: string;
 }
 
 export interface IVeoFetchObjectChildrenParameters {
+  domain: string;
   endpoint: string;
   id: string;
 }
 
 export interface IVeoFetchScopeChildrenParameters {
+  domain: string;
   id: string;
 }
 
@@ -57,12 +62,15 @@ export interface IVeoFetchRiskParameters {
 }
 
 export interface IVeoCreateObjectParameters {
+  domain: string;
   endpoint: string;
   object: IVeoEntity;
+  id: string;
   parentScopes?: string[];
 }
 
 export interface IVeoUpdateObjectParameters {
+  id: string;
   domain: string;
   endpoint: string;
   object: IVeoEntity;
@@ -93,9 +101,10 @@ export interface IVeoDeleteRiskParameters {
 }
 
 export interface IVeoFetchWipDecisionEvaluationParameters{
-  endpoint: string,
-  object: IVeoEntity,
-  domain: string,
+  endpoint: string;
+  object: IVeoEntity;
+  id: string;
+  domain: string;
 }
 
 export const formatObject = (object: IVeoEntity) => {
@@ -118,7 +127,7 @@ export default {
   queries:{
     fetchAll:{
       primaryQueryKey: 'objects',
-      url: '/api/:endpoint',
+      url: '/api/domains/:domain/:endpoint',
       onDataFetched: (result) => {
         result.items.map((item) => formatObject(item));
 
@@ -128,7 +137,7 @@ export default {
       },
       queryParameterTransformationFn:(queryParameters) => ({
         params: {
-          domain: queryParameters.domain,
+          domain: route.params.domain,
           endpoint: queryParameters.endpoint
         },
         query: {
@@ -141,19 +150,19 @@ export default {
       primaryQueryKey: 'object',
       url: '/api/domains/:domain/:endpoint/:id',
       onDataFetched: (result) => formatObject(result),
-      queryParameterTransformationFn:(queryParameters) => ({ params: queryParameters })
+      queryParameterTransformationFn:(queryParameters) => ({ params: { domain: route.params.domain, endpoint: queryParameters.endpoint, id: queryParameters.id } })
     } as IVeoQueryDefinition<IVeoFetchObjectParameters, IVeoEntity>,
     fetchObjectChildren:{
       primaryQueryKey: 'childObjects',
-      url: '/api/:endpoint/:id/parts',
+      url: '/api/domains/:domain/:endpoint/:id/parts',
       onDataFetched: (result) => result.map((item) => formatObject(item)),
-      queryParameterTransformationFn:(queryParameters) => ({ params: queryParameters })
+      queryParameterTransformationFn:(queryParameters) => ({ params: { domain: route.params.domain, endpoint: queryParameters.endpoint, id: queryParameters.id } })
     } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoEntity[]>,
     fetchScopeChildren:{
       primaryQueryKey: 'childScopes',
-      url: '/api/scopes/:id/members',
+      url: '/api/domains/:domain/scopes/:id/members',
       onDataFetched: (result) => result.map((item) => formatObject(item)),
-      queryParameterTransformationFn:(queryParameters) => ({ params: queryParameters })
+      queryParameterTransformationFn:(queryParameters) => ({ params: { domain: route.params.domain, id: queryParameters.id } })
     } as IVeoQueryDefinition<IVeoFetchScopeChildrenParameters, IVeoEntity[]>,
     fetchRisks:{
       primaryQueryKey: 'risks',
@@ -167,9 +176,11 @@ export default {
     } as IVeoQueryDefinition<IVeoFetchRiskParameters, IVeoRisk>,
     fetchWipDecisionEvaluation: {
       primaryQueryKey: 'evaluation',
-      url: '/api/:endpoint/evaluation',
+      url: '/api/domains/:domain/:endpoint/evaluation',
       queryParameterTransformationFn: (queryParameters) => ({
         params: {
+          id: queryParameters.object.id,
+          domain: route.params.domain,
           endpoint: queryParameters.endpoint
         },
         query: {
@@ -184,7 +195,7 @@ export default {
   mutations:{
     createObject:{
       primaryQueryKey: 'object',
-      url: '/api/:endpoint',
+      url: '/api/domains/:domain/:endpoint/:id',
       method: 'POST',
       mutationParameterTransformationFn: (mutationParameters) => {
         const _object = mutationParameters.object;
@@ -196,7 +207,9 @@ export default {
           // @ts-ignore Is only set in DTO if object is of type scope
           delete _object.members;
         }
-        return { params: { endpoint: mutationParameters.endpoint }, query: { scopes: mutationParameters.parentScopes?.join(',') }, json: _object };
+        return { params:
+          { domain: route.params.domain, endpoint: mutationParameters.endpoint, id: mutationParameters.object.id },
+        query: { scopes: mutationParameters.parentScopes?.join(',') }, json: _object };
       },
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
@@ -234,7 +247,7 @@ export default {
         delete _object.updatedAt;
         // @ts-ignore Display name is generated in the frontend, so we remove it from the DTO before sending it to the backend
         delete _object.displayName;
-        return { params: { domain: mutationParameters.domain, endpoint: mutationParameters.endpoint, id: mutationParameters.object.id }, json: _object };
+        return { params: { domain: route.params.domain, endpoint: mutationParameters.endpoint, id: mutationParameters.object.id }, json: _object };
       },
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
@@ -267,6 +280,7 @@ export default {
         }
       }
     } as IVeoMutationDefinition<IVeoUpdateObjectParameters, IVeoEntity>,
+    // DELETE isn't processed by the multi-domain-API as opposed to create, read and update
     deleteObject:{
       primaryQueryKey: 'object',
       url: '/api/:endpoint/:id',
@@ -345,24 +359,5 @@ export default {
         }
       }
     } as IVeoMutationDefinition<IVeoDeleteRiskParameters, void>
-    // deleteControl: {
-    //   primaryQueryKey: 'control',
-    //   url: '/api/:endpoint/:objectId/controls/:controlId',
-    //   method: 'DELETE',
-    //   reponseType: VeoApiReponseType.VOID,
-    //   mutationParameterTransformationFn: (mutationParameters) => ({ params: mutationParameters }),
-    //   staticMutationOptions: {
-    //     onSuccess: (queryClient, _data, variables, _context) => {
-    //       queryClient.invalidateQueries([
-    //         'controls',
-    //         {
-    //           endpoint: variables.params?.endpoint,
-    //           id: variables.params?.objectId
-    //         }
-    //       ]),
-    //       queryClient.invalidateQueries({queryKey: ['evaluation']});
-    //     }
-    //   }
-    // } as IVeoMutationDefinition<IVeoDeleteControlParameters, void>
   }
 };

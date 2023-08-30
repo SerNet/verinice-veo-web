@@ -58,7 +58,7 @@ export const useCloneObject = () => {
     // @ts-ignore Remove the designator, as a new object doesn't have a designator yet.
     delete newObject.designator;
 
-    return createObject({ endpoint: endpoints.value?.[newObject.type], object: newObject, parentScopes });
+    return createObject({ domain: route.params.domain, endpoint: endpoints.value?.[newObject.type], object: newObject, parentScopes });
   };
 
   return { clone };

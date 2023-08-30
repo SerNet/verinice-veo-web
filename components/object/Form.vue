@@ -452,6 +452,7 @@ export default defineComponent({
     const debouncedObjectData = ref<any>(objectData.value);
 
     const fetchInspectionFindingsQueryParameters = computed(() => ({
+      id: debouncedObjectData.value.id,
       object: debouncedObjectData.value,
       domain: props.domainId,
       endpoint: endpoints.value?.[props.objectType] as string

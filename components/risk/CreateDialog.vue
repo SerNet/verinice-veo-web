@@ -17,8 +17,8 @@
 -->
 <template>
   <BaseDialog
-    data-test-id="risk-create-dialog"
     v-model="dialog"
+    data-test-id="risk-create-dialog"
     :close-disabled="creatingRisks"
     :title="upperFirst(t('createRisk', 0).toString())"
     x-large
@@ -47,7 +47,7 @@
     </template>
     <template #dialog-options>
       <v-btn
-        text
+        variant="text"
         :disabled="creatingRisks"
         @click="dialog = false"
       >
@@ -55,7 +55,7 @@
       </v-btn>
       <v-spacer />
       <v-btn
-        text
+        variant="text"
         color="primary"
         :loading="creatingRisks"
         :disabled="!selectedScenarios.length || ability.cannot('manage', 'objects')"

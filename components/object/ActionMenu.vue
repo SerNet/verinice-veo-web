@@ -243,13 +243,12 @@ export default defineComponent({
     /**
      * create scopes & objects
      */
-    const subType = computed(() => (props.object?.type !== 'scope' && props.type.endsWith('Objects') ? props.object?.domains?.[route.params.domain as string]?.subType : undefined));
-
+    const subType = computed(() => (props.object?.type !== 'scope' && props.type.endsWith('Objects') ? props.object?.subType : undefined));
     // emit after new object creation for linking
     const onCreateObjectSuccess = async (newObjectId: string) => {
       if (props.object) {
         try {
-          const createdObject = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: endpoints.value?.[createObjectDialog.value.objectType || ''] || '' , id: newObjectId }, queryClient);
+          const createdObject = await useQuerySync(objectQueryDefinitions.queries.fetch, { domain: route.params.domain, endpoint: endpoints.value?.[createObjectDialog.value?.objectType || ''] || '' , id: newObjectId }, queryClient);
           if (createObjectDialog.value.hierarchicalContext === 'child') {
             if(createObjectDialog.value.parentScopeIds?.length) {
               return; // do not link if scope (current object) has already been linked
