@@ -118,7 +118,7 @@ async function applyItems() {
 
     // Apply incarnations
     await incarnate({ incarnations, unitId: route.params.unit });
-    displaySuccessMessage(t('itemsApplied', { name: currentSubTypeTranslated.value}));
+    displaySuccessMessage(t('itemsApplied'));
     selectedItems.value = [];
   } catch (e: any) {
     displayErrorMessage(t('applyItemsError'), e.message);
@@ -156,7 +156,7 @@ function translateSubType({ formSchemas, elementType, subType }: TranslateSubTyp
     "selectScenariosCTA": "Please select the scenarios you want to apply.",
     "selectTOMsCTA": "Please choose one or more technical organizational measures to apply.",
     "TOMsApplied": "TOMs were applied",
-    "itemsApplied": "Successfully applied catalog elements with a subtype of '{name}'.",
+    "itemsApplied": "Successfully applied catalog elements.",
     "applyItemsError": "Could not apply catalog elements.",
   },
   "de": {
@@ -170,7 +170,7 @@ function translateSubType({ formSchemas, elementType, subType }: TranslateSubTyp
     "selectScenariosCTA": "Bitte wählen Sie die Gefährdungen aus, die Sie anwenden möchten.",
     "selectTOMsCTA": "Wählen Sie eine oder mehrere technische und organisatorische Maßnahmen aus, die angewendet werden sollen.",
     "TOMsApplied": "TOM wurden angewendet",
-    "itemsApplied": "Katalogelemente mit dem Subtypen '{name}' wurden erfolgreich angewendet.",
+    "itemsApplied": "Katalogelemente wurden erfolgreich angewendet.",
     "applyItemsError": "Katalogelemente konnten nicht angewandt werden.",
   }
 }
