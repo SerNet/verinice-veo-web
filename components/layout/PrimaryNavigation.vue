@@ -543,7 +543,7 @@ provide(PROVIDE_KEYS.navigation, primaryNavList);
   "en": {
     "collapse": "Collapse menu",
     "fix": "Fix menu",
-    "all": "all",
+    "all": "All",
     "backToVeo": "Go to verinice.veo",
     "scenario": "Scenario",
     "control": "TOM"
@@ -551,7 +551,7 @@ provide(PROVIDE_KEYS.navigation, primaryNavList);
   "de": {
     "collapse": "Menü verstecken",
     "fix": "Menü fixieren",
-    "all": "alle",
+    "all": "Alle",
     "backToVeo": "Zu verinice.veo",
     "scenario": "Gefährdung",
     "control": "TOM"
