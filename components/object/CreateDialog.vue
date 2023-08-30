@@ -139,10 +139,8 @@ export default defineComponent({
 
       // Set subtype if a subtype is preselected
       if (props.domainId && props.subType) {
-        objectData.value.domains[props.domainId] = {
-          subType: props.subType,
-          status: 'NEW'
-        };
+        objectData.value.subType = props.subType;
+        objectData.value.status = 'NEW';
       }
 
       setDefaultRiskDefinitionIfScope();

@@ -65,7 +65,6 @@ export interface IVeoCreateObjectParameters {
   domain: string;
   endpoint: string;
   object: IVeoEntity;
-  id: string;
   parentScopes?: string[];
 }
 
@@ -195,7 +194,7 @@ export default {
   mutations:{
     createObject:{
       primaryQueryKey: 'object',
-      url: '/api/domains/:domain/:endpoint/:id',
+      url: '/api/domains/:domain/:endpoint',
       method: 'POST',
       mutationParameterTransformationFn: (mutationParameters) => {
         const _object = mutationParameters.object;
@@ -207,9 +206,8 @@ export default {
           // @ts-ignore Is only set in DTO if object is of type scope
           delete _object.members;
         }
-        return { params:
-          { domain: route.params.domain, endpoint: mutationParameters.endpoint, id: mutationParameters.object.id },
-        query: { scopes: mutationParameters.parentScopes?.join(',') }, json: _object };
+        return { params: { domain: route.params.domain, endpoint: mutationParameters.endpoint },
+          query: { scopes: mutationParameters.parentScopes?.join(',') }, json: _object };
       },
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
