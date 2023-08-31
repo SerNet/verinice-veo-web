@@ -106,7 +106,7 @@ export interface IVeoFetchWipDecisionEvaluationParameters{
   domain: string;
 }
 
-export const formatObject = (object: IVeoEntity) => {
+export const formatObject = (object: any) => {
   /*
    * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
    * members. However we combine both entity types as they get used more or less the same way
@@ -154,13 +154,13 @@ export default {
     fetchObjectChildren:{
       primaryQueryKey: 'childObjects',
       url: '/api/domains/:domain/:endpoint/:id/parts',
-      onDataFetched: (result) => result.map((item) => formatObject(item)),
+      onDataFetched: (result) => (result.items || []).map((item) => formatObject(item)),
       queryParameterTransformationFn:(queryParameters) => ({ params: { domain: route.params.domain, endpoint: queryParameters.endpoint, id: queryParameters.id } })
     } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoEntity[]>,
     fetchScopeChildren:{
       primaryQueryKey: 'childScopes',
       url: '/api/domains/:domain/scopes/:id/members',
-      onDataFetched: (result) => result.map((item) => formatObject(item)),
+      onDataFetched: (result) => (result.items || []).map((item) => formatObject(item)),
       queryParameterTransformationFn:(queryParameters) => ({ params: { domain: route.params.domain, id: queryParameters.id } })
     } as IVeoQueryDefinition<IVeoFetchScopeChildrenParameters, IVeoEntity[]>,
     fetchRisks:{

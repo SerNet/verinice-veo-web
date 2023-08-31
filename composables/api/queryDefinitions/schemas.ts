@@ -50,8 +50,8 @@ export default {
     } as IVeoQueryDefinition<Record<string, never>, IVeoSchemaEndpoints>,
     fetchSchema: {
       primaryQueryKey: 'schema',
-      url: '/api/domains/:domain/:type/json-schema',
-      queryParameterTransformationFn: (queryParameters) => ({ params: { domain: route.params.domain, type: queryParameters.type }}),
+      url: '/api/schemas/:type',
+      queryParameterTransformationFn: (queryParameters) => ({ params: { type: queryParameters.type }, query: { domains: (queryParameters.domainIds || []).toString() } }),
       staticQueryOptions: { staleTime: STALE_TIME.MEDIUM }
     } as IVeoQueryDefinition<IVeoFetchSchemaParameters, IVeoObjectSchema>
   },
