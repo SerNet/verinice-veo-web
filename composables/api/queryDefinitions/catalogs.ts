@@ -60,12 +60,6 @@ export interface IVeoFetchCatalogItemsParameters {
   sortOrder?: string;
 }
 
-export interface IVeoFetchCatalogItemParameters {
-  catalogId: string;
-  itemId: string;
-  domainId: string;
-}
-
 export default {
   queries: {
     fetchCatalogs: {
@@ -97,17 +91,6 @@ export default {
         placeholderData: []
       }
     } as IVeoQueryDefinition<IVeoFetchCatalogItemsParameters, IVeoCatalogItemCollection>,
-    fetchCatalogItem: {
-      primaryQueryKey: 'catalogItem',
-      url: '/api/catalogs/:catalogId/items/:itemId',
-      queryParameterTransformationFn: (queryParameters) => ({
-        params: { catalogId: queryParameters.catalogId, itemId: queryParameters.itemId },
-        query: { domain: queryParameters.domainId }
-      }),
-      staticQueryOptions: {
-        staleTime: STALE_TIME.INFINITY
-      }
-    } as IVeoQueryDefinition<IVeoFetchCatalogItemParameters, IVeoCatalogItem>,
     fetchCatalogItemTypeCount: {
       primaryQueryKey: 'catalogItemTypeCount',
       url: '/api/domains/:domainId/catalog-items/type-count',

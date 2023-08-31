@@ -368,7 +368,7 @@ export default defineComponent({
                 .join('/') || '/'
           };
         })
-        .map((breadcrumb, i, a) => {
+        .map((breadcrumb) => {
           const replacementMapEntry = BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(breadcrumb.param) || {};
           if (replacementMapEntry?.dynamicText) {
             return {

@@ -47,7 +47,6 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
 import { IVeoCatalog } from '~/composables/api/queryDefinitions/catalogs';
 
 interface Props {
