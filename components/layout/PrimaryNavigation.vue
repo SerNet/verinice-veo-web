@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Tino Groteloh, Philipp Ballhausen, Annemarie Bufe,
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Tino Groteloh, Philipp Ballhausen, Annemarie Bufe, jae
    - Samuel Vitzthum
    -
    - This program is free software: you can redistribute it and/or modify
@@ -134,13 +134,14 @@ import {
   mdiUngroup,
   mdiViewDashboardOutline
 } from '@mdi/js';
-import { sortBy, upperFirst } from 'lodash';
+import { sortBy, upperFirst, isEmpty } from 'lodash';
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { useDisplay } from 'vuetify';
 import { NavItem } from '@nuxt/content/dist/runtime/types';
 
 import { extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
@@ -150,6 +151,7 @@ import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[d
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/editor/index.vue';
 import { ROUTE_NAME as PROFILE_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/profiles.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
+import { CATALOG_TYPE_ICONS } from '~/components/catalog/Icon.vue';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemasDetailed } from '~/composables/api/schemas';
@@ -190,6 +192,29 @@ const { authenticated, userSettings } = useVeoUser();
 const route = useRoute();
 const { ability } = useVeoPermissions();
 const { xs } = useDisplay();
+
+// Helpers
+/** Returns a form schema corresponding to an object/elementType and subType */
+function getFormSchema(
+  { formSchemas, elementType, subType }:
+  { formSchemas: IVeoFormSchema[] | undefined, elementType: string, subType: string }
+): IVeoFormSchema | undefined {
+  if(!formSchemas) return;
+
+  return formSchemas.find(formSchema =>
+    formSchema.modelType === elementType &&
+    formSchema.subType === subType
+  );
+}
+
+/**
+ * Translates a subType using values from form schemas.
+ * Necessary because objects/elements do not come with a translation.
+ */
+function getDisplayName({ formSchema }: { formSchema: IVeoFormSchema }) {
+  const translation = formSchema?.name[locale.value];
+  return translation;
+}
 
 // Layout stuff
 const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
@@ -252,10 +277,14 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
           // dynamic sub type routes
           ...sortBy(
             objectSubTypes.map((subType) => {
-              const formSchema = (formSchemas.value || []).find(
-                (formSchema) => formSchema.modelType === objectSchema.title && formSchema.subType === subType.subType
-              );
-              const displayName = formSchema?.name[locale.value] || subType.subType;
+              const formSchema = getFormSchema({
+                formSchemas: formSchemas?.value,
+                elementType: objectSchema?.title,
+                subType: subType.subType
+              });
+
+              const displayName = getDisplayName({ formSchema }) || subType.subType;
+
               return {
                 id: displayName,
                 name: displayName,
@@ -278,25 +307,51 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
     })
 );
 
-// catalog specific stuff
-const fetchCatalogsQueryParameters = computed(() => ({ domainId: props.domainId as string }));
-const fetchCatalogsQueryEnabled = computed(() => !!props.domainId);
-const { data: catalogs, isFetching: catalogsEntriesLoading } = useQuery(catalogQueryDefinitions.queries.fetchCatalogs, fetchCatalogsQueryParameters, { enabled: fetchCatalogsQueryEnabled });
 
-const catalogsEntriesChildItems = computed<INavItem[]>(() =>
-  (catalogs.value || []).map((catalog) => ({
-    id: catalog.id,
-    name: catalog.name,
-    to: {
-      name: CATALOGS_CATALOG_ROUTE_NAME,
-      params: {
-        unit: props.unitId,
-        domain: props.domainId,
-        catalog: catalog.id
+// catalog specific stuff
+const typeCountQueryParameters = computed(() => ({ domainId: props.domainId as string } ));
+const typeCountQueryEnabled = computed(() => !!props.domainId);
+const { data: catalogItemTypes, isFetching: catalogItemTypeCountIsLoading } =
+  useQuery(catalogQueryDefinitions.queries.fetchCatalogItemTypeCount, typeCountQueryParameters, { enabled: typeCountQueryEnabled });
+
+const catalogsEntriesChildItems = computed<INavItem[]>(() => {
+  if(isEmpty(catalogItemTypes?.value || {})) return [];
+
+  const catalogItems = [ ['all', { all: 'MISC' }], ...Object.entries(catalogItemTypes?.value || [])];
+
+  return (catalogItems || []).map(catalogItem => {
+    const _icon = CATALOG_TYPE_ICONS.get(catalogItem[0]);
+    const _subType = Object.keys(catalogItem[1] || {})[0];
+
+    const formSchema = getFormSchema({
+      formSchemas: formSchemas?.value,
+      elementType: catalogItem[0],
+      subType: _subType
+    });
+
+    const displayName = _subType === 'all' ? t('all') : getDisplayName({formSchema: formSchema}) || _subType;
+
+    return ({
+      id: `${catalogItem[0]}`,
+      name: displayName,
+      subtype: _subType,
+      elementType: catalogItem[0],
+      icon: _icon?.library === 'mdi' ? _icon?.icon as string : undefined,
+      to: {
+        name: CATALOGS_CATALOG_ROUTE_NAME,
+        params: {
+          unit: props.unitId,
+          domain: props.domainId,
+          catalog: props.domainId
+        },
+        query: {
+          type: catalogItem[0],
+          subType: _subType
+        }
       }
-    }
-  }))
-);
+    });
+  });
+});
 
 // report specific stuff
 const { data: reports, isFetching: reportsEntriesLoading } = useQuery(reportQueryDefinitions.queries.fetchAll);
@@ -379,11 +434,11 @@ const objectsNavEntry = computed<INavItem>(() => ({
 }));
 
 const catalogsNavEntry = computed<INavItem>(() => ({
-  id: 'catalogs',
-  name: $t('breadcrumbs.catalogs').toString(),
+  id: 'catalog',
+  name: $t('breadcrumbs.catalog').toString(),
   icon: mdiBookOpenPageVariantOutline,
   children: catalogsEntriesChildItems.value,
-  childrenLoading: catalogsEntriesLoading.value,
+  childrenLoading: catalogItemTypeCountIsLoading.value,
   componentName: 'catalogs-nav-item'
 }));
 
@@ -470,7 +525,7 @@ const items = computed<INavItem[]>(() => [
       ...(props.domainId && props.unitId ? [profilesNavEntry.value] : []),
       ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
       objectsNavEntry.value,
-      catalogsNavEntry.value,
+      ...(!isEmpty(catalogsEntriesChildItems.value) ? [catalogsNavEntry.value] : []),
       reportsNavEntry.value,
       risksNavEntry.value
     ]
@@ -488,14 +543,18 @@ provide(PROVIDE_KEYS.navigation, primaryNavList);
   "en": {
     "collapse": "Collapse menu",
     "fix": "Fix menu",
-    "all": "all",
-    "backToVeo": "Go to verinice.veo"
+    "all": "All",
+    "backToVeo": "Go to verinice.veo",
+    "scenario": "Scenario",
+    "control": "TOM"
   },
   "de": {
     "collapse": "Menü verstecken",
     "fix": "Menü fixieren",
-    "all": "alle",
-    "backToVeo": "Zu verinice.veo"
+    "all": "Alle",
+    "backToVeo": "Zu verinice.veo",
+    "scenario": "Gefährdung",
+    "control": "TOM"
   }
 }
 </i18n>
