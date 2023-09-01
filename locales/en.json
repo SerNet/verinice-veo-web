@@ -79,7 +79,8 @@
 
   "breadcrumbs": {
     "administration": "Account management",
-    "catalogs": "Catalogs",
+    "catalog": "Catalog",
+    "catalogs": "Catalog",
     "docs": "Documentation",
     "domain": "Domains",
     "editor": "Editors",

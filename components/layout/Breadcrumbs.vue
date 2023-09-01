@@ -129,15 +129,13 @@ import { isEmpty, last, omit, pick } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal, mdiViewDashboardOutline } from '@mdi/js';
 
 import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
-import { IVeoCatalog } from '~~/composables/api/queryDefinitions/catalogs';
 import { useQuery } from '~~/composables/api/utils/query';
-import catalogQueryDefinitions from '~~/composables/api/queryDefinitions/catalogs';
 import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
 import formsQueryDefinitions, { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
 import objectsQueryDefinitions from '~~/composables/api/queryDefinitions/objects';
 import reportQueryDefinitions from '~~/composables/api/queryDefinitions/reports';
 import translationsQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
-
+import { useSubTypeTranslation } from '~/composables/Translations';
 
 type SupportedQuery = ':domain' | ':subType' | ':report' | ':catalog' | ':objectType' | ':object';
 
@@ -172,6 +170,7 @@ export default defineComponent({
     const { t, locale } = useI18n();
     const route = useRoute();
     const { breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
+    const { subTypeTranslation } = useSubTypeTranslation();
 
     const title = ref('');
 
@@ -261,7 +260,7 @@ export default defineComponent({
           queriedText: {
             query: ':catalog',
             parameterTransformationFn: (_param, value) => ({ id: value }),
-            resultTransformationFn: catalogsTransformationFn
+            resultTransformationFn: () => unref(subTypeTranslation) === 'all' ? t('all') : unref(subTypeTranslation)
           }
         }
       ],
@@ -291,15 +290,6 @@ export default defineComponent({
       ]
     ]);
 
-    function catalogsTransformationFn(_param: string, value: string, data: IVeoCatalog[] ) {
-      const catalogUUID = value;
-      const catalogs = data;
-      const currentCatalog = catalogs.find(catalog => {
-        return catalog.id === catalogUUID;
-      });
-      return currentCatalog?.name;
-    }
-
     // After this position, all breadcrumbs will be moved to a menu to avoid scrolling
     const BREADCRUMB_BREAKOFF = 4;
 
@@ -316,10 +306,6 @@ export default defineComponent({
       enabled: domainQueryEnabled
     });
     const catalogQueryParameters = ref<any>({});
-    const catalogQueryEnabled = computed(() => !isEmpty(catalogQueryParameters.value));
-    const { data: catalogs } = useQuery(catalogQueryDefinitions.queries.fetchCatalogs, catalogQueryParameters, {
-      enabled: catalogQueryEnabled
-    });
 
     const { data: report } = useQuery(reportQueryDefinitions.queries.fetchAll);
 
@@ -336,8 +322,8 @@ export default defineComponent({
     });
 
     const queryResultMap = computed<{ [key: string]: any }>(() => ({
-      ':catalog': catalogs.value
-        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':catalog')?.queriedText?.resultTransformationFn(':catalogs', route.params.catalog as string, catalogs.value)
+      ':catalog': domain.value
+        ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':catalog')?.queriedText?.resultTransformationFn(':catalogSubType', route.query.subType as string, subType.value)
         : undefined,
       ':domain': domain.value
         ? BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':domain')?.queriedText?.resultTransformationFn(':domain', route.params.domain as string, domain.value)

@@ -244,38 +244,38 @@ Apache License
 
 The following npm packages may be included in this product:
 
- - @babel/code-frame@7.21.4
- - @babel/compat-data@7.21.4
- - @babel/core@7.21.4
- - @babel/generator@7.21.4
+ - @babel/code-frame@7.22.10
+ - @babel/compat-data@7.22.9
+ - @babel/core@7.22.11
+ - @babel/generator@7.22.10
  - @babel/helper-annotate-as-pure@7.18.6
- - @babel/helper-compilation-targets@7.21.4
+ - @babel/helper-compilation-targets@7.22.10
  - @babel/helper-create-class-features-plugin@7.21.4
- - @babel/helper-environment-visitor@7.18.9
- - @babel/helper-function-name@7.21.0
- - @babel/helper-hoist-variables@7.18.6
+ - @babel/helper-environment-visitor@7.22.5
+ - @babel/helper-function-name@7.22.5
+ - @babel/helper-hoist-variables@7.22.5
  - @babel/helper-member-expression-to-functions@7.21.0
- - @babel/helper-module-imports@7.21.4
- - @babel/helper-module-transforms@7.21.2
+ - @babel/helper-module-imports@7.22.5
+ - @babel/helper-module-transforms@7.22.9
  - @babel/helper-optimise-call-expression@7.18.6
  - @babel/helper-plugin-utils@7.20.2
  - @babel/helper-replace-supers@7.20.7
- - @babel/helper-simple-access@7.20.2
+ - @babel/helper-simple-access@7.22.5
  - @babel/helper-skip-transparent-expression-wrappers@7.20.0
- - @babel/helper-split-export-declaration@7.18.6
+ - @babel/helper-split-export-declaration@7.22.6
  - @babel/helper-string-parser@7.22.5
  - @babel/helper-validator-identifier@7.22.5
- - @babel/helper-validator-option@7.21.0
- - @babel/helpers@7.21.0
- - @babel/highlight@7.18.6
+ - @babel/helper-validator-option@7.22.5
+ - @babel/helpers@7.22.11
+ - @babel/highlight@7.22.10
  - @babel/plugin-syntax-jsx@7.21.4
  - @babel/plugin-syntax-typescript@7.21.4
  - @babel/plugin-transform-typescript@7.21.3
  - @babel/runtime@7.22.10
- - @babel/standalone@7.21.4
- - @babel/template@7.20.7
- - @babel/traverse@7.21.4
- - @babel/types@7.22.5
+ - @babel/standalone@7.22.12
+ - @babel/template@7.22.5
+ - @babel/traverse@7.22.11
+ - @babel/types@7.22.11
 
 These packages each contain the following license and notice below:
 
@@ -306,7 +306,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @babel/parser@7.22.5
+ - @babel/parser@7.22.11
 
 This package contains the following license and notice below:
 
@@ -792,8 +792,8 @@ SOFTWARE.
 The following npm packages may be included in this product:
 
  - @eslint/eslintrc@2.1.2
- - @eslint/js@8.47.0
- - eslint@8.47.0
+ - @eslint/js@8.48.0
+ - eslint@8.48.0
 
 These packages each contain the following license and notice below:
 
@@ -1396,7 +1396,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 The following npm packages may be included in this product:
 
- - @mdi/font@6.9.96
+ - @mdi/font@7.2.96
  - @mdi/js@7.2.96
 
 These packages each contain the following license and notice below:
@@ -1570,7 +1570,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @nuxt/ui-templates@1.1.1
+ - @nuxt/ui-templates@1.3.1
 
 This package contains the following license and notice below:
 
@@ -1595,6 +1595,182 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+-----------
+
+The following npm packages may be included in this product:
+
+ - @parcel/watcher-linux-x64-glibc@2.3.0
+ - @parcel/watcher-linux-x64-musl@2.3.0
+ - @parcel/watcher@2.3.0
+
+These packages each contain the following license and notice below:
+
+MIT License
+
+Copyright (c) 2017-present Devon Govett
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-----------
+
+The following npm package may be included in this product:
+
+ - @parcel/watcher-wasm@2.3.0
+
+This package contains the following license and notice below:
+
+# @parcel/watcher
+
+A native C++ Node module for querying and subscribing to filesystem events. Used by [Parcel 2](https://github.com/parcel-bundler/parcel).
+
+## Features
+
+- **Watch** - subscribe to realtime recursive directory change notifications when files or directories are created, updated, or deleted.
+- **Query** - performantly query for historical change events in a directory, even when your program is not running.
+- **Native** - implemented in C++ for performance and low-level integration with the operating system.
+- **Cross platform** - includes backends for macOS, Linux, Windows, FreeBSD, and Watchman.
+- **Performant** - events are throttled in C++ so the JavaScript thread is not overwhelmed during large filesystem changes (e.g. `git checkout` or `npm install`).
+- **Scalable** - tens of thousands of files can be watched or queried at once with good performance.
+
+## Example
+
+```javascript
+const watcher = require('@parcel/watcher');
+const path = require('path');
+
+// Subscribe to events
+let subscription = await watcher.subscribe(process.cwd(), (err, events) => {
+  console.log(events);
+});
+
+// later on...
+await subscription.unsubscribe();
+
+// Get events since some saved snapshot in the past
+let snapshotPath = path.join(process.cwd(), 'snapshot.txt');
+let events = await watcher.getEventsSince(process.cwd(), snapshotPath);
+
+// Save a snapshot for later
+await watcher.writeSnapshot(process.cwd(), snapshotPath);
+```
+
+## Watching
+
+`@parcel/watcher` supports subscribing to realtime notifications of changes in a directory. It works recursively, so changes in sub-directories will also be emitted.
+
+Events are throttled and coalesced for performance during large changes like `git checkout` or `npm install`, and a single notification will be emitted with all of the events at the end.
+
+Only one notification will be emitted per file. For example, if a file was both created and updated since the last event, you'll get only a `create` event. If a file is both created and deleted, you will not be notifed of that file. Renames cause two events: a `delete` for the old name, and a `create` for the new name.
+
+```javascript
+let subscription = await watcher.subscribe(process.cwd(), (err, events) => {
+  console.log(events);
+});
+```
+
+Events have two properties:
+
+- `type` - the event type: `create`, `update`, or `delete`.
+- `path` - the absolute path to the file or directory.
+
+To unsubscribe from change notifications, call the `unsubscribe` method on the returned subscription object.
+
+```javascript
+await subscription.unsubscribe();
+```
+
+`@parcel/watcher` has the following watcher backends, listed in priority order:
+
+- [FSEvents](https://developer.apple.com/documentation/coreservices/file_system_events) on macOS
+- [Watchman](https://facebook.github.io/watchman/) if installed
+- [inotify](http://man7.org/linux/man-pages/man7/inotify.7.html) on Linux
+- [ReadDirectoryChangesW](https://msdn.microsoft.com/en-us/library/windows/desktop/aa365465%28v%3Dvs.85%29.aspx) on Windows
+- [kqueue](https://man.freebsd.org/cgi/man.cgi?kqueue) on FreeBSD, or as an alternative to FSEvents on macOS
+
+You can specify the exact backend you wish to use by passing the `backend` option. If that backend is not available on the current platform, the default backend will be used instead. See below for the list of backend names that can be passed to the options.
+
+## Querying
+
+`@parcel/watcher` also supports querying for historical changes made in a directory, even when your program is not running. This makes it easy to invalidate a cache and re-build only the files that have changed, for example. It can be **significantly** faster than traversing the entire filesystem to determine what files changed, depending on the platform.
+
+In order to query for historical changes, you first need a previous snapshot to compare to. This can be saved to a file with the `writeSnapshot` function, e.g. just before your program exits.
+
+```javascript
+await watcher.writeSnapshot(dirPath, snapshotPath);
+```
+
+When your program starts up, you can query for changes that have occurred since that snapshot using the `getEventsSince` function.
+
+```javascript
+let events = await watcher.getEventsSince(dirPath, snapshotPath);
+```
+
+The events returned are exactly the same as the events that would be passed to the `subscribe` callback (see above).
+
+`@parcel/watcher` has the following watcher backends, listed in priority order:
+
+- [FSEvents](https://developer.apple.com/documentation/coreservices/file_system_events) on macOS
+- [Watchman](https://facebook.github.io/watchman/) if installed
+- [fts](http://man7.org/linux/man-pages/man3/fts.3.html) (brute force) on Linux and FreeBSD
+- [FindFirstFile](https://docs.microsoft.com/en-us/windows/desktop/api/fileapi/nf-fileapi-findfirstfilea) (brute force) on Windows
+
+The FSEvents (macOS) and Watchman backends are significantly more performant than the brute force backends used by default on Linux and Windows, for example returning results in miliseconds instead of seconds for large directory trees. This is because a background daemon monitoring filesystem changes on those platforms allows us to query cached data rather than traversing the filesystem manually (brute force).
+
+macOS has good performance with FSEvents by default. For the best performance on other platforms, install [Watchman](https://facebook.github.io/watchman/) and it will be used by `@parcel/watcher` automatically.
+
+You can specify the exact backend you wish to use by passing the `backend` option. If that backend is not available on the current platform, the default backend will be used instead. See below for the list of backend names that can be passed to the options.
+
+## Options
+
+All of the APIs in `@parcel/watcher` support the following options, which are passed as an object as the last function argument.
+
+- `ignore` - an array of paths or glob patterns to ignore. uses [`is-glob`](https://github.com/micromatch/is-glob) to distinguish paths from globs. glob patterns are parsed with [`micromatch`](https://github.com/micromatch/micromatch) (see [features](https://github.com/micromatch/micromatch#matching-features)).
+  - paths can be relative or absolute and can either be files or directories. No events will be emitted about these files or directories or their children.
+  - glob patterns match on relative paths from the root that is watched. No events will be emitted for matching paths.
+- `backend` - the name of an explicitly chosen backend to use. Allowed options are `"fs-events"`, `"watchman"`, `"inotify"`, `"kqueue"`, `"windows"`, or `"brute-force"` (only for querying). If the specified backend is not available on the current platform, the default backend will be used instead.
+
+## WASM
+
+The `@parcel/watcher-wasm` package can be used in place of `@parcel/watcher` on unsupported platforms. It relies on the Node `fs` module, so in non-Node environments such as browsers, an `fs` polyfill will be needed. The `@parcel/watcher-wasm` package is published as an ESM-only module.
+
+**Note**: the WASM implementation is significantly less efficient than the native implementations because it must crawl the file system to watch each directory individually. Use the native `@parcel/watcher` package wherever possible.
+
+```js
+import {subscribe} from '@parcel/watcher-wasm';
+
+// Use the module as documented above.
+subscribe(/* ... */);
+```
+
+## Who is using this?
+
+- [Parcel 2](https://parceljs.org/)
+- [VSCode](https://code.visualstudio.com/updates/v1_62#_file-watching-changes)
+- [Tailwind CSS Intellisense](https://github.com/tailwindlabs/tailwindcss-intellisense)
+- [Gatsby Cloud](https://twitter.com/chatsidhartha/status/1435647412828196867)
+- [Nx](https://nx.dev)
+- [Nuxt](https://nuxt.com)
+
+## License
+
+MIT
 
 -----------
 
@@ -3121,6 +3297,270 @@ normalizePath('foo/bar'); // 'foo/bar'
 
 -----------
 
+The following npm package may be included in this product:
+
+ - @rollup/pluginutils@5.0.4
+
+This package contains the following license and notice below:
+
+[npm]: https://img.shields.io/npm/v/@rollup/pluginutils
+[npm-url]: https://www.npmjs.com/package/@rollup/pluginutils
+[size]: https://packagephobia.now.sh/badge?p=@rollup/pluginutils
+[size-url]: https://packagephobia.now.sh/result?p=@rollup/pluginutils
+
+[![npm][npm]][npm-url]
+[![size][size]][size-url]
+[![libera manifesto](https://img.shields.io/badge/libera-manifesto-lightgrey.svg)](https://liberamanifesto.com)
+
+# @rollup/pluginutils
+
+A set of utility functions commonly used by 🍣 Rollup plugins.
+
+## Requirements
+
+The plugin utils require an [LTS](https://github.com/nodejs/Release) Node version (v14.0.0+) and Rollup v1.20.0+.
+
+## Install
+
+Using npm:
+
+```console
+npm install @rollup/pluginutils --save-dev
+```
+
+## Usage
+
+```js
+import utils from '@rollup/pluginutils';
+//...
+```
+
+## API
+
+Available utility functions are listed below:
+
+_Note: Parameter names immediately followed by a `?` indicate that the parameter is optional._
+
+### addExtension
+
+Adds an extension to a module ID if one does not exist.
+
+Parameters: `(filename: String, ext?: String)`<br>
+Returns: `String`
+
+```js
+import { addExtension } from '@rollup/pluginutils';
+
+export default function myPlugin(options = {}) {
+  return {
+    resolveId(code, id) {
+      // only adds an extension if there isn't one already
+      id = addExtension(id); // `foo` -> `foo.js`, `foo.js` -> `foo.js`
+      id = addExtension(id, '.myext'); // `foo` -> `foo.myext`, `foo.js` -> `foo.js`
+    }
+  };
+}
+```
+
+### attachScopes
+
+Attaches `Scope` objects to the relevant nodes of an AST. Each `Scope` object has a `scope.contains(name)` method that returns `true` if a given name is defined in the current scope or a parent scope.
+
+Parameters: `(ast: Node, propertyName?: String)`<br>
+Returns: `Object`
+
+See [rollup-plugin-inject](https://github.com/rollup/rollup-plugin-inject) or [rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs) for an example of usage.
+
+```js
+import { attachScopes } from '@rollup/pluginutils';
+import { walk } from 'estree-walker';
+
+export default function myPlugin(options = {}) {
+  return {
+    transform(code) {
+      const ast = this.parse(code);
+
+      let scope = attachScopes(ast, 'scope');
+
+      walk(ast, {
+        enter(node) {
+          if (node.scope) scope = node.scope;
+
+          if (!scope.contains('foo')) {
+            // `foo` is not defined, so if we encounter it,
+            // we assume it's a global
+          }
+        },
+        leave(node) {
+          if (node.scope) scope = scope.parent;
+        }
+      });
+    }
+  };
+}
+```
+
+### createFilter
+
+Constructs a filter function which can be used to determine whether or not certain modules should be operated upon.
+
+Parameters: `(include?: <picomatch>, exclude?: <picomatch>, options?: Object)`<br>
+Returns: `String`
+
+#### `include` and `exclude`
+
+Type: `String | RegExp | Array[...String|RegExp]`<br>
+
+A valid [`picomatch`](https://github.com/micromatch/picomatch#globbing-features) pattern, or array of patterns. If `options.include` is omitted or has zero length, filter will return `true` by default. Otherwise, an ID must match one or more of the `picomatch` patterns, and must not match any of the `options.exclude` patterns.
+
+Note that `picomatch` patterns are very similar to [`minimatch`](https://github.com/isaacs/minimatch#readme) patterns, and in most use cases, they are interchangeable. If you have more specific pattern matching needs, you can view [this comparison table](https://github.com/micromatch/picomatch#library-comparisons) to learn more about where the libraries differ.
+
+#### `options`
+
+##### `resolve`
+
+Type: `String | Boolean | null`
+
+Optionally resolves the patterns against a directory other than `process.cwd()`. If a `String` is specified, then the value will be used as the base directory. Relative paths will be resolved against `process.cwd()` first. If `false`, then the patterns will not be resolved against any directory. This can be useful if you want to create a filter for virtual module names.
+
+#### Usage
+
+```js
+import { createFilter } from '@rollup/pluginutils';
+
+export default function myPlugin(options = {}) {
+  // assume that the myPlugin accepts options of `options.include` and `options.exclude`
+  var filter = createFilter(options.include, options.exclude, {
+    resolve: '/my/base/dir'
+  });
+
+  return {
+    transform(code, id) {
+      if (!filter(id)) return;
+
+      // proceed with the transformation...
+    }
+  };
+}
+```
+
+### dataToEsm
+
+Transforms objects into tree-shakable ES Module imports.
+
+Parameters: `(data: Object)`<br>
+Returns: `String`
+
+#### `data`
+
+Type: `Object`
+
+An object to transform into an ES module.
+
+#### Usage
+
+```js
+import { dataToEsm } from '@rollup/pluginutils';
+
+const esModuleSource = dataToEsm(
+  {
+    custom: 'data',
+    to: ['treeshake']
+  },
+  {
+    compact: false,
+    indent: '\t',
+    preferConst: true,
+    objectShorthand: true,
+    namedExports: true
+  }
+);
+/*
+Outputs the string ES module source:
+  export const custom = 'data';
+  export const to = ['treeshake'];
+  export default { custom, to };
+*/
+```
+
+### extractAssignedNames
+
+Extracts the names of all assignment targets based upon specified patterns.
+
+Parameters: `(param: Node)`<br>
+Returns: `Array[...String]`
+
+#### `param`
+
+Type: `Node`
+
+An `acorn` AST Node.
+
+#### Usage
+
+```js
+import { extractAssignedNames } from '@rollup/pluginutils';
+import { walk } from 'estree-walker';
+
+export default function myPlugin(options = {}) {
+  return {
+    transform(code) {
+      const ast = this.parse(code);
+
+      walk(ast, {
+        enter(node) {
+          if (node.type === 'VariableDeclarator') {
+            const declaredNames = extractAssignedNames(node.id);
+            // do something with the declared names
+            // e.g. for `const {x, y: z} = ...` => declaredNames = ['x', 'z']
+          }
+        }
+      });
+    }
+  };
+}
+```
+
+### makeLegalIdentifier
+
+Constructs a bundle-safe identifier from a `String`.
+
+Parameters: `(str: String)`<br>
+Returns: `String`
+
+#### Usage
+
+```js
+import { makeLegalIdentifier } from '@rollup/pluginutils';
+
+makeLegalIdentifier('foo-bar'); // 'foo_bar'
+makeLegalIdentifier('typeof'); // '_typeof'
+```
+
+### normalizePath
+
+Converts path separators to forward slash.
+
+Parameters: `(filename: String)`<br>
+Returns: `String`
+
+#### Usage
+
+```js
+import { normalizePath } from '@rollup/pluginutils';
+
+normalizePath('foo\\bar'); // 'foo/bar'
+normalizePath('foo/bar'); // 'foo/bar'
+```
+
+## Meta
+
+[CONTRIBUTING](/.github/CONTRIBUTING.md)
+
+[LICENSE (MIT)](/LICENSE)
+
+-----------
+
 The following npm packages may be included in this product:
 
  - @tanstack/match-sorter-utils@8.7.6
@@ -3752,7 +4192,7 @@ The following npm packages may be included in this product:
  - @types/hast@2.3.4
  - @types/http-proxy@1.17.11
  - @types/mdast@3.0.10
- - @types/node@18.17.9
+ - @types/node@20.5.7
  - @types/resolve@1.20.2
  - @types/unist@2.0.6
  - @types/web-bluetooth@0.0.16
@@ -4090,7 +4530,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 The following npm packages may be included in this product:
 
  - @vitejs/plugin-vue-jsx@3.0.1
- - @vitejs/plugin-vue@4.3.3
+ - @vitejs/plugin-vue@4.3.4
 
 These packages each contain the following license and notice below:
 
@@ -4253,9 +4693,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm packages may be included in this product:
 
- - @vueuse/core@9.11.0
- - @vueuse/metadata@9.11.0
- - @vueuse/shared@9.11.0
+ - @vueuse/core@9.13.0
+ - @vueuse/metadata@9.13.0
+ - @vueuse/shared@9.13.0
 
 These packages each contain the following license and notice below:
 
@@ -4807,7 +5247,6 @@ The following npm packages may be included in this product:
  - gzip-size@7.0.0
  - html-tags@3.3.0
  - import-fresh@3.3.0
- - ip-regex@5.0.0
  - is-docker@2.2.1
  - is-docker@3.0.0
  - is-plain-obj@4.1.0
@@ -5829,7 +6268,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - browserslist@4.21.5
+ - browserslist@4.21.10
 
 This package contains the following license and notice below:
 
@@ -6010,26 +6449,25 @@ The following npm packages may be included in this product:
  - defu@6.1.2
  - destr@1.2.2
  - destr@2.0.1
- - get-port-please@3.0.1
+ - get-port-please@3.0.2
  - giget@1.1.2
- - h3@1.6.6
- - jiti@1.19.1
+ - h3@1.8.1
+ - jiti@1.19.3
  - knitwork@1.0.0
- - listhen@1.0.4
- - mlly@1.4.0
- - node-fetch-native@1.2.0
+ - mlly@1.4.1
+ - node-fetch-native@1.4.0
  - nypm@0.2.1
- - ofetch@1.0.1
+ - ofetch@1.3.3
  - ohash@1.1.2
  - perfect-debounce@1.0.0
- - radix3@1.0.1
+ - radix3@1.1.0
  - rc9@2.1.1
  - scule@1.0.0
- - ufo@1.2.0
- - uncrypto@0.1.2
- - unenv@1.5.1
- - unstorage@1.6.1
- - untyped@1.3.2
+ - ufo@1.3.0
+ - uncrypto@0.1.3
+ - unenv@1.7.4
+ - unstorage@1.9.0
+ - untyped@1.4.0
 
 These packages each contain the following license and notice below:
 
@@ -6119,7 +6557,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - caniuse-lite@1.0.30001473
+ - caniuse-lite@1.0.30001524
 
 This package contains the following license and notice below:
 
@@ -6666,7 +7104,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - citty@0.1.1
+ - citty@0.1.3
 
 This package contains the following license and notice below:
 
@@ -6705,18 +7143,6 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
----
-
-Colorette dependency is bundled (https://github.com/jorgebucaran/colorette)
-
-Copyright © Jorge Bucaran <https://jorgebucaran.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
@@ -8948,11 +9374,12 @@ THE SOFTWARE.
 
 -----------
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
+ - detect-libc@1.0.3
  - detect-libc@2.0.1
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 Apache License
                            Version 2.0, January 2004
@@ -10020,7 +10447,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - electron-to-chromium@1.4.348
+ - electron-to-chromium@1.4.503
 
 This package contains the following license and notice below:
 
@@ -14018,7 +14445,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - iron-webcrypto@0.7.0
+ - iron-webcrypto@0.8.0
 
 This package contains the following license and notice below:
 
@@ -14505,7 +14932,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - jsdom@22.0.0
+ - jsdom@22.1.0
 
 This package contains the following license and notice below:
 
@@ -15421,6 +15848,83 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
+ - listhen@1.4.3
+
+This package contains the following license and notice below:
+
+MIT License
+
+Copyright (c) Pooya Parsa <pooya@pi0.io>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+src/lib/open forked from https://github.com/sindresorhus/open
+
+MIT License
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
+src/lib/xdg-open
+
+Utility script to open a URL in the registered default application.
+
+Refer to the usage() function below for usage.
+
+Copyright 2009-2010, Fathi Boudra <fabo@freedesktop.org>
+Copyright 2009-2010, Rex Dieter <rdieter@fedoraproject.org>
+Copyright 2006, Kevin Krammer <kevin.krammer@gmx.at>
+Copyright 2006, Jeremy White <jwhite@codeweavers.com>
+
+LICENSE:
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following npm package may be included in this product:
+
  - local-pkg@0.4.3
 
 This package contains the following license and notice below:
@@ -15573,7 +16077,7 @@ terms above.
 
 The following npm package may be included in this product:
 
- - lru-cache@9.1.2
+ - lru-cache@10.0.1
 
 This package contains the following license and notice below:
 
@@ -15599,7 +16103,7 @@ The following npm packages may be included in this product:
 
  - magic-string@0.27.0
  - magic-string@0.30.0
- - magic-string@0.30.2
+ - magic-string@0.30.3
 
 These packages each contain the following license and notice below:
 
@@ -21120,6 +21624,115 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
+ - napi-wasm@1.1.0
+
+This package contains the following license and notice below:
+
+# napi-wasm
+
+An implementation of the [napi](https://nodejs.org/api/n-api.html) API for WASM. Enables using some native Node modules in browsers and other environments.
+
+## Setup
+
+To use napi-wasm, there are a few requirements:
+
+1. Configure your linker to export an indirect function table. With ldd, this is the `--export-table` flag. This enables JavaScript to call callback functions registered by WASM. It is exposed in the WebAssembly exports as `__indirect_function_table`.
+2. Export a function from your WASM build named `napi_register_module_v1` (Node's default), or `napi_register_wasm_v1` for WASM-specific builds. This is called during initialization to setup the `exports` object for your module. It receives an environment and an exports object pointer as arguments, which you can add properties to.
+3. Include a function named `napi_wasm_malloc` in your WASM build. This is called from JavaScript by napi-wasm to allocate memory in the WASM heap. It should accept a `uint32` size argument indicating the number of bytes to allocate, and return a `uint8` pointer to allocated memory.
+4. Compile for the `wasm32-unknown-unknown` target.
+
+### In Rust
+
+The above steps should apply for any programming language, but here's an example in Rust. First, define a `napi_wasm_malloc` function so JavaScript can allocate memory in the WASM heap using the default allocator.
+
+```rust
+use std::alloc::{alloc, Layout};
+
+#[no_mangle]
+pub extern "C" fn napi_wasm_malloc(size: usize) -> *mut u8 {
+  let align = std::mem::align_of::<usize>();
+  if let Ok(layout) = Layout::from_size_align(size, align) {
+    unsafe {
+      if layout.size() > 0 {
+        let ptr = alloc(layout);
+        if !ptr.is_null() {
+          return ptr;
+        }
+      } else {
+        return align as *mut u8;
+      }
+    }
+  }
+
+  std::process::abort();
+}
+```
+
+Next, implement `napi_register_wasm_v1` to register your module exports. We'll use the [napi-rs](https://github.com/napi-rs/napi-rs) bindings in this example to make it a bit nicer than calling C APIs directly. Note that the napi-rs `#[module_exports]` macro currently doesn't work in WASM because Rust doesn't support ctor setup functions in WASM targets yet, so we'll need to do this manually.
+
+```rust
+use napi::{Env, JsObject, NapiValue};
+
+#[no_mangle]
+pub unsafe extern "C" fn napi_register_wasm_v1(raw_env: napi::sys::napi_env, raw_exports: napi::sys::napi_value) {
+  let env = Env::from_raw(raw_env);
+  let exports = JsObject::from_raw_unchecked(raw_env, raw_exports);
+
+  exports.create_named_method("transform", transform);
+}
+
+#[js_function(1)]
+fn transform(ctx: CallContext) -> napi::Result<JsUnknown> {
+  // ...
+}
+```
+
+To compile, you need to export a function table and use the correct target.
+
+```shell
+ RUSTFLAGS="-C link-arg=--export-table" cargo build --target wasm32-unknown-unknown
+```
+
+This will output a file in `target/wasm32-unknown-unknown/debug/YOUR_CRATE.wasm` which you can load in a JavaScript environment.
+
+You can also put the rust flags in a `.cargo/config.toml` file so you don't need to provide the environment variable each time you run `cargo build`.
+
+```toml
+[target.wasm32-unknown-unknown]
+rustflags = ["-C", "link-arg=--export-table"]
+```
+
+### Loading
+
+To load a WASM file and initialize a napi environment, you'll need to import the `napi-wasm` package. You instantiate a WASM module as usual, providing `napi` as the `env` import key. This provides the napi functions for your WASM module to use.
+
+Then, pass the WASM instance to the `Environment` constructor to setup a napi environment. This will call `napi_register_wasm_v1` or `napi_register_module_v1` to setup the exports object. Then you can call functions on the exports object as you would in Node.
+
+```js
+import { Environment, napi } from 'napi-wasm';
+
+// Construct a URL and instantiate a WebAssembly module as usual.
+const url = new URL('path/to/lib.wasm', import.meta.url);
+const { instance } = await WebAssembly.instantiateStreaming(fetch(url), {
+  env: napi
+});
+
+// Create an environment.
+let env = new Environment(instance);
+let exports = env.exports;
+
+// Use exports as usual!
+exports.transform({
+  // ...
+});
+```
+
+When you are done with an `Environment`, call the `destroy()` function to clean up memory.
+
+-----------
+
+The following npm package may be included in this product:
+
  - natural-compare@1.4.0
 
 This package contains the following license and notice below:
@@ -21309,6 +21922,28 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+-----------
+
+The following npm package may be included in this product:
+
+ - node-addon-api@7.0.0
+
+This package contains the following license and notice below:
+
+The MIT License (MIT)
+=====================
+
+Copyright (c) 2017 Node.js API collaborators
+-----------------------------------
+
+*Node.js API collaborators listed at <https://github.com/nodejs/node-addon-api#collaborators>*
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -----------
 
@@ -21773,7 +22408,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - node-releases@2.0.10
+ - node-releases@2.0.13
 
 This package contains the following license and notice below:
 
@@ -21833,7 +22468,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - nuxt-font-loader@2.2.2
+ - nuxt-font-loader@2.3.1
 
 This package contains the following license and notice below:
 
@@ -23826,7 +24461,7 @@ Support this effort and give back by sponsoring on [OpenCollective][collective]!
 
 The following npm package may be included in this product:
 
- - remark-parse@10.0.1
+ - remark-parse@10.0.2
 
 This package contains the following license and notice below:
 
@@ -27166,7 +27801,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - serve@14.2.0
+ - serve@14.2.1
 
 This package contains the following license and notice below:
 
@@ -27485,7 +28120,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - std-env@3.3.3
+ - std-env@3.4.3
 
 This package contains the following license and notice below:
 
@@ -29020,7 +29655,7 @@ SPDX-License-Identifier: (MIT OR CC0-1.0)
 
 The following npm package may be included in this product:
 
- - typescript@4.9.4
+ - typescript@5.2.2
 
 This package contains the following license and notice below:
 
@@ -29219,7 +29854,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - unimport@3.1.3
+ - unimport@3.2.0
 
 This package contains the following license and notice below:
 
@@ -29400,6 +30035,62 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
+ - untun@0.1.2
+
+This package contains the following license and notice below:
+
+MIT License
+
+Copyright (c) Pooya Parsa <pooya@pi0.io>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+----
+
+cloudflared forked from https://github.com/JacobLinCool/node-cloudflared/
+
+MIT License
+
+Copyright (c) 2022 JacobLinCool
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-----------
+
+The following npm package may be included in this product:
+
  - upath@2.0.1
 
 This package contains the following license and notice below:
@@ -29431,7 +30122,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - update-browserslist-db@1.0.10
+ - update-browserslist-db@1.0.11
 
 This package contains the following license and notice below:
 
@@ -29455,6 +30146,37 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-----------
+
+The following npm package may be included in this product:
+
+ - uqr@0.1.2
+
+This package contains the following license and notice below:
+
+MIT License
+
+Copyright (c) Project Nayuki
+Copyright (c) 2023 Anthony Fu <https://github.com/antfu>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 -----------
 
@@ -33159,11 +33881,12 @@ SOFTWARE.
 
 -----------
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
  - vue-demi@0.13.11
+ - vue-demi@0.14.6
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 MIT License
 

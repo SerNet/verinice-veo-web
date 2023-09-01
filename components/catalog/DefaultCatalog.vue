@@ -23,8 +23,9 @@
     <BaseCard>
       <BaseTable
         v-model="selectedItems"
-        :items="availableItems"
+        :items="catalogItems"
         :additional-headers="headers"
+        :loading="props.isLoading"
         must-sort
         show-select
       />
@@ -38,7 +39,7 @@
         <v-btn
           variant="text"
           class="mr-2"
-          :disabled="selectedItems.length === 0 || applyingItems"
+          :disabled="selectedItems.length === 0 || isApplyingItems"
           @click="selectedItems = []"
         >
           {{ globalT('global.button.cancel') }}
@@ -46,9 +47,9 @@
         <v-btn
           flat
           color="primary"
-          :disabled="selectedItems.length === 0 || applyingItems || ability.cannot('manage', 'catalogs')"
-          :loading="applyingItems"
-          @click="applyItems"
+          :disabled="selectedItems.length === 0 || isApplyingItems || ability.cannot('manage', 'catalogs')"
+          :loading="props.isApplyingItems"
+          @click="$emit('applyItems')"
         >
           {{ t('apply') }}
         </v-btn>
@@ -58,36 +59,34 @@
 </template>
 
 <script setup lang="ts">
-import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { IVeoCatalogItem } from '~~/composables/api/queryDefinitions/catalogs';
-import { useQuerySync } from '~~/composables/api/utils/query';
-import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
-import { useMutation } from '~~/composables/api/utils/mutation';
 import { TableHeader } from '../base/Table.vue';
 import { IVeoEntity } from '~/types/VeoTypes';
 
 const props = withDefaults(defineProps<{
   catalogItems: IVeoCatalogItem[];
-  loading: boolean;
-  successText: string;
-  errorText: string;
+  modelValue: IVeoEntity[] | [];
+  isLoading?: boolean;
+  isApplyingItems?: boolean;
 }>(), {
   catalogItems: () => [],
+  modelValue: () => [],
   loading: false,
-  successText: '',
-  errorText: ''
+  isLoading: false,
+  isApplyingItems: false
 });
+
+interface Emits {
+  (e: 'update:modelValue', selectedItems: IVeoEntity[]): void,
+  (e: 'applyItems'): void
+}
+const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { ability } = useVeoPermissions();
-const route = useRoute();
 
-const { mutateAsync: incarnate } =  useMutation(unitQueryDefinitions.mutations.updateIncarnations);
-
-// Selecting
 const headers: TableHeader[] = [
   {
     value: 'abbreviation',
@@ -120,11 +119,19 @@ const headers: TableHeader[] = [
   }
 ];
 
-const selectedItems = ref<IVeoEntity[]>([]);
+const selectedItems = computed({
+  get() {
+    return props.modelValue;
+  },
+  set(selectedItems) {
+    emit('update:modelValue', selectedItems);
+  }
+});
+
 const availableItems = computed(() =>
   props.catalogItems.map((item) => {
-    const {namespace, abbreviation, name, id, description = '' } = item;
-    return { designator: namespace, abbreviation, name, id, description } || ''
+    const { abbreviation, name, id, description = '' } = item;
+    return { abbreviation, name, id, description } || ''
   })
 );
 
@@ -133,27 +140,6 @@ watch(() => availableItems.value, (newValue) => {
   const newValues = selectedItems.value.filter((selectedItem) => newValue.some((item) => item.id === selectedItem.id));
   selectedItems.value = newValues;
 });
-
-// Applying
-const applyingItems = ref(false);
-const applyItems = async () => {
-  applyingItems.value = true;
-
-  try {
-    // Fetch incarnations for all selected items
-    const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: route.params.unit as string, itemIds:
-      selectedItems.value.map((item) => item.id) });
-
-    // Apply incarnations
-    await incarnate({ incarnations, unitId: route.params.unit });
-    displaySuccessMessage(props.successText);
-    selectedItems.value = [];
-  } catch (e: any) {
-    displayErrorMessage(props.errorText, e.message);
-  } finally {
-    applyingItems.value = false;
-  }
-};
 </script>
 
 <i18n>

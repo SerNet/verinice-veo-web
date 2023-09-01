@@ -24,29 +24,22 @@ export interface IVeoCatalog extends IVeoBaseObject {
   catalogItems: IVeoLink[];
 }
 
+export interface IVeoCatalogItemCollection {
+  items: IVeoCatalogItem[];
+}
+
 export interface IVeoCatalogItem extends IVeoBaseObject {
   id: string;
   name: string;
   abbreviation: string;
   description: string;
+  elementType: string;
+  subType: string;
   createdAt: string;
   createdBy: string;
   updatedAt: string;
   updatedBy: string;
-  catalog: IVeoLink;
-  tailoringReferences: {
-    createdAt: string;
-    createdBy: string;
-    updatedAt: string;
-    updatedBy: string;
-    referenceType: string;
-    catalogItem: IVeoLink;
-    attributes: Record<string, any>;
-    type: string;
-    id: string;
-  }[];
-  namespace: string;
-  element: IVeoLink;
+  _self: string;
 }
 
 export interface IVeoFetchCatalogsParameters {
@@ -58,14 +51,13 @@ export interface IVeoFetchCatalogParameters {
 }
 
 export interface IVeoFetchCatalogItemsParameters {
-  catalogId: string;
-  domainId: string;
-}
-
-export interface IVeoFetchCatalogItemParameters {
-  catalogId: string;
-  itemId: string;
-  domainId: string;
+  domainId?: string | undefined;
+  elementType?: string | undefined;
+  subType?: string;
+  size?: string;
+  page?: string;
+  sortBy?: string;
+  sortOrder?: string;
 }
 
 export default {
@@ -81,24 +73,33 @@ export default {
     } as IVeoQueryDefinition<IVeoFetchCatalogsParameters, IVeoCatalog[]>,
     fetchCatalogItems: {
       primaryQueryKey: 'catalogItems',
-      url: '/api/catalogs/:catalogId/items',
-      queryParameterTransformationFn: (queryParameters) => ({ params: { catalogId: queryParameters.catalogId }, query: { domain: queryParameters.domainId } }),
+      url: '/api/domains/:domainId/catalog-items',
+      queryParameterTransformationFn: (queryParameters) => {
+        return ({
+          params: { domainId: queryParameters.domainId },
+          query: {
+            elementType: queryParameters.elementType,
+            subType: queryParameters.subType,
+            size: queryParameters.size,
+            page: queryParameters.page,
+            sortBy: queryParameters.sortBy,
+            sortOrder: queryParameters.sortOrder
+          }
+        });},
       staticQueryOptions: {
         staleTime: STALE_TIME.INFINITY,
         placeholderData: []
       }
-    } as IVeoQueryDefinition<IVeoFetchCatalogItemsParameters, IVeoCatalogItem[]>,
-    fetchCatalogItem: {
-      primaryQueryKey: 'catalogItem',
-      url: '/api/catalogs/:catalogId/items/:itemId',
-      queryParameterTransformationFn: (queryParameters) => ({
-        params: { catalogId: queryParameters.catalogId, itemId: queryParameters.itemId },
-        query: { domain: queryParameters.domainId }
-      }),
+    } as IVeoQueryDefinition<IVeoFetchCatalogItemsParameters, IVeoCatalogItemCollection>,
+    fetchCatalogItemTypeCount: {
+      primaryQueryKey: 'catalogItemTypeCount',
+      url: '/api/domains/:domainId/catalog-items/type-count',
+      queryParameterTransformationFn: (queryParameters) => ({ params: { domainId: queryParameters.domainId } }),
       staticQueryOptions: {
         staleTime: STALE_TIME.INFINITY
       }
-    } as IVeoQueryDefinition<IVeoFetchCatalogItemParameters, IVeoCatalogItem>
+    }
+
   },
   mutations: {}
 };
