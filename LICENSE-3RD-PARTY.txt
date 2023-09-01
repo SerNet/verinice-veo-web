@@ -4192,7 +4192,7 @@ The following npm packages may be included in this product:
  - @types/hast@2.3.4
  - @types/http-proxy@1.17.11
  - @types/mdast@3.0.10
- - @types/node@18.17.12
+ - @types/node@20.5.7
  - @types/resolve@1.20.2
  - @types/unist@2.0.6
  - @types/web-bluetooth@0.0.16
@@ -4693,9 +4693,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm packages may be included in this product:
 
- - @vueuse/core@9.11.0
- - @vueuse/metadata@9.11.0
- - @vueuse/shared@9.11.0
+ - @vueuse/core@9.13.0
+ - @vueuse/metadata@9.13.0
+ - @vueuse/shared@9.13.0
 
 These packages each contain the following license and notice below:
 
@@ -22468,7 +22468,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - nuxt-font-loader@2.2.2
+ - nuxt-font-loader@2.3.1
 
 This package contains the following license and notice below:
 
@@ -33881,11 +33881,12 @@ SOFTWARE.
 
 -----------
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
  - vue-demi@0.13.11
+ - vue-demi@0.14.6
 
-This package contains the following license and notice below:
+These packages each contain the following license and notice below:
 
 MIT License
 

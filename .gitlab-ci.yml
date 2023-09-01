@@ -5,7 +5,7 @@ stages:
   - deploy
 
 default:
-  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:19
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:20
   cache:  # Cache modules in between jobs
     key:
       files:
