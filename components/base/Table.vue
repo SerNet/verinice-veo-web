@@ -103,7 +103,7 @@ const props = withDefaults(defineProps<{
   loading: false,
   modelValue: () => [],
   page: 1,
-  sortBy: () => [{ key: 'name', order: 'desc' }],
+  sortBy: () => [{ key: 'name', order: 'asc' }],
   defaultHeaders: () => [],
   additionalHeaders: () => [],
   showAllColumns: false,
