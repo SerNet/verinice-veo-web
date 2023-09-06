@@ -22468,13 +22468,13 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - nuxt-font-loader@2.3.1
+ - nuxt-font-loader@2.3.3
 
 This package contains the following license and notice below:
 
 MIT License
 
-Copyright (c) 2022 Ivo Dolenc
+Copyright (c) 2023 Ivo Dolenc
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
