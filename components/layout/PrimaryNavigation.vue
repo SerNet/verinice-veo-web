@@ -353,13 +353,29 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
   });
 });
 
+const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
+const fetchDomainQueryEnabled = computed(() => !!props.domainId);
+const { data: domain, isFetching: riskDefinitionsLoading } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
+
+
 // report specific stuff
 const { data: reports, isFetching: reportsEntriesLoading } = useQuery(reportQueryDefinitions.queries.fetchAll);
 
 const reportsEntriesChildItems = computed<INavItem[]>(
-  () =>
-    Object.entries(reports.value || {})
-      .map(([reportId, report]) => ({
+  () => {
+    const availableReports = Object.entries(reports.value || {})
+    const reportsApplicableInDomain = domain.value == null ? [] :
+      availableReports.filter(([reportId, reportDef]) => {
+        const targetTypesForReport = reportDef.targetTypes;
+        return targetTypesForReport.some(({modelType, subTypes}) => {
+          if (subTypes == null) return true; // if there is no subType filter, the report is always applicable
+          const subTypesInDomain = Object.keys(domain.value.elementTypeDefinitions[modelType].subTypes)
+          return subTypesInDomain.some(subTypeInDomain =>
+            subTypes.indexOf(subTypeInDomain) >= 0
+          )
+        });
+      });
+    const selectionItems = reportsApplicableInDomain.map(([reportId, report]) => ({
         id: reportId,
         name: report.name[locale.value],
         exact: true,
@@ -371,14 +387,12 @@ const reportsEntriesChildItems = computed<INavItem[]>(
             report: reportId
           }
         }
-      }))
-      .filter((entry) => entry.name) // Don't show reports which aren't translated in the users language
+      }));
+      return selectionItems.filter((entry) => entry.name) // Don't show reports which aren't translated in the users language
+  }
 );
 
 // risk specific stuff
-const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
-const fetchDomainQueryEnabled = computed(() => !!props.domainId);
-const { data: domain, isFetching: riskDefinitionsLoading } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
 const riskDefinitions = computed(() => domain.value?.riskDefinitions || {});
 
 const riskChildItems = computed<INavItem[]>(() =>
@@ -461,7 +475,7 @@ const reportsNavEntry = computed<INavItem>(() => ({
   name: $t('breadcrumbs.reports').toString(),
   icon: mdiFileChartOutline,
   children: reportsEntriesChildItems.value,
-  childrenLoading: reportsEntriesLoading.value,
+  childrenLoading: riskDefinitionsLoading.value || reportsEntriesLoading.value,
   componentName: 'reports-nav-item'
 }));
 
