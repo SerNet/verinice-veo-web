@@ -91,10 +91,6 @@
           >
             {{ t('generateReport') }}
           </v-btn>
-          <a
-            ref="downloadButton"
-            href="#"
-          />
         </v-col>
       </v-row>
     </template>
@@ -206,15 +202,14 @@ export default defineComponent({
     };
 
     // Generating new report
-    const downloadButton = ref<HTMLAnchorElement>();
     const openReport = (_queryClient: QueryClient, result: any) => {
-      if (!downloadButton.value || !report.value) {
+      if (!report.value) {
         return;
       }
 
-      downloadButton.value.href = URL.createObjectURL(result);
-      downloadButton.value.download = `${report.value.name[locale.value]}.${outputType.value.split('/').pop()}`;
-      downloadButton.value.click();
+      const objUrl = URL.createObjectURL(result);
+      window.open(objUrl, '_blank');
+      URL.revokeObjectURL(objUrl);
     };
 
     const createMutationParameters = computed(() => ({
@@ -247,7 +242,6 @@ export default defineComponent({
     return {
       availableObjectTypes,
       availableSubTypes,
-      downloadButton,
       filter,
       generateReport,
       generatingReport,
