@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2022  Jonas Heitmann
+ * Copyright (C) 2022  Jonas Heitmann, jae
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,7 @@
  */
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { LOCAL_STORAGE_KEYS } from '~~/types/localStorage';
+import {SESSION_STORAGE_KEYS } from '~~/types/SessionStorage';
 
 export default defineNuxtPlugin (async (nuxtApp) => {
   const route = useRoute();
@@ -50,15 +51,31 @@ export default defineNuxtPlugin (async (nuxtApp) => {
     await initialize(nuxtApp);
   }
 
-  if (!authenticated.value || route.name === 'index') {
+  if (!authenticated.value) {
     return;
   }
 
-  const dontShowWelcomePage = ['security', 'docs-slug'];
+  /*
+   * Show welcome page
+   */
 
-  if (localStorage.getItem(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED) !== 'true' && !dontShowWelcomePage.includes(route.name as string)) {
-    setTimeout(() => {
-      return navigateTo('/welcome');
-    }, 50);
-  }
+  // Is set to true on loging into veo (VeoUser.ts).
+  // This value will only be true the first time this code runs after logging in.
+  const isFreshLogin =
+    sessionStorage.getItem(SESSION_STORAGE_KEYS.IS_FRESH_LOGIN) === 'true';
+
+  if(!isFreshLogin) return;
+
+  sessionStorage.setItem(SESSION_STORAGE_KEYS.IS_FRESH_LOGIN, 'false');
+
+  const excludedRoutes = ['security', 'docs-slug'];
+  const hasFirstStepsCompleted =
+    localStorage.getItem(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED) === 'true';
+
+  if(hasFirstStepsCompleted) return;
+  if(excludedRoutes.includes(route.name as string)) return;
+
+  setTimeout(() => {
+    return navigateTo('/welcome');
+  }, 50);
 });
