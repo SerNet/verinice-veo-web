@@ -290,12 +290,13 @@ const links = ref({
   youtube: 'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf'
 });
 
-const firstSetpsCompleted = useStorage(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED, true, localStorage, { serializer: StorageSerializers.boolean });
+// Use storage ignores defaults, if a value is already present in local storage
+const showWelcomePage = useStorage(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, false);
 
 // toggle the cookie value via setter
 const showAtStartup = computed({
-  get: () => !firstSetpsCompleted.value,
-  set: (newValue: boolean) => firstSetpsCompleted.value = !newValue
+  get: () => showWelcomePage.value,
+  set: (newValue: boolean) => showWelcomePage.value = newValue
 });
 
 // fetch all domains and units
@@ -387,4 +388,4 @@ const createUnit = async () => {
       "webinar": "Webinaren registrieren"
     }
   }
-  </i18n>
+</i18n>

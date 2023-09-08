@@ -69,10 +69,9 @@ export default defineNuxtPlugin (async (nuxtApp) => {
   sessionStorage.setItem(SESSION_STORAGE_KEYS.IS_FRESH_LOGIN, 'false');
 
   const excludedRoutes = ['security', 'docs-slug'];
-  const hasFirstStepsCompleted =
-    localStorage.getItem(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED) === 'true';
+  const showWelcomePage = localStorage.getItem(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE) === 'true';
 
-  if(hasFirstStepsCompleted) return;
+  if(!showWelcomePage) return;
   if(excludedRoutes.includes(route.name as string)) return;
 
   setTimeout(() => {
