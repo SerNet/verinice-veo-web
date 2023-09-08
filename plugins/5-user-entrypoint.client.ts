@@ -64,9 +64,18 @@ export default defineNuxtPlugin (async (nuxtApp) => {
   const isFreshLogin =
     sessionStorage.getItem(SESSION_STORAGE_KEYS.IS_FRESH_LOGIN) === 'true';
 
+  // User hits the index route for the first++ time
   if(!isFreshLogin) return;
 
+  // User hits the 'index' route for the first time:
   sessionStorage.setItem(SESSION_STORAGE_KEYS.IS_FRESH_LOGIN, 'false');
+
+  // If a completely new user logs in, the SHOW_WELCOME_PAGE key is not present in localStorage
+  // (or if localStorage was cleared etc)
+  // We will then set it to show the welcome page
+  if(!Object.hasOwn(localStorage, LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE)) {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, 'true');
+  }
 
   const excludedRoutes = ['security', 'docs-slug'];
   const showWelcomePage = localStorage.getItem(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE) === 'true';
@@ -78,3 +87,4 @@ export default defineNuxtPlugin (async (nuxtApp) => {
     return navigateTo('/welcome');
   }, 50);
 });
+
