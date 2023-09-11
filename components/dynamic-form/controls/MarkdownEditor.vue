@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2022  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -28,7 +28,15 @@
     >
       {{ options.label }}
     </div>
-    <div ref="editor" />
+    <div
+      v-if="!options.disabled"
+      ref="editor"
+    />
+    <div
+      class="no-editor-html-output"
+      v-else
+      v-html="modelValue"
+    />
   </div>
 </template>
 
@@ -89,9 +97,10 @@ export default defineComponent({
     watch(() => props.modelValue, onCreated, { immediate: true });
     watch(() => editor.value, onCreated, { immediate: true });
 
-    
+
 
     onMounted(() => {
+      if(props.options.disabled) return;
       localEditor = new Editor({
         el: editor.value,
         initialEditType: 'markdown',
@@ -138,7 +147,7 @@ export default defineComponent({
   "de": {
     "clear": "Inhalt löschen"
   }
-}  
+}
 </i18n>
 
 <style lang="scss">
@@ -184,5 +193,16 @@ export default defineComponent({
       z-index: 101;
     }
   }
+}
+
+// Minimal makeshift styling, non editor output
+.no-editor-html-output {
+  margin-top: 16px;
+}
+.no-editor-html-output * + * {
+  margin-top: 16px;
+}
+.no-editor-html-output * + *:not(h1, h2, h3, h4, h5, h6) {
+  margin-top: 8px;
 }
 </style>
