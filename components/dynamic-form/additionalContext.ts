@@ -71,18 +71,18 @@ export const getRiskAdditionalContext = (objectType: string, domain: IVeoDomain,
       return translateProcessRisks({ domain, riskDefinitionCategories, language, riskDefinitionName });
     case 'scenario':
       return {
-        [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/DSRA/properties/potentialProbability`]: {
+        [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/${riskDefinitionName}/properties/potentialProbability`]: {
           formSchema: {
-            enum: (() => (domain.riskDefinitions.DSRA?.probability?.levels || []).map((level) => level.translations[language]?.name || Object.values(level.translations)[0].name))()
+            enum: (() => (domain.riskDefinitions[riskDefinitionName]?.probability?.levels || []).map((level) => level.translations[language]?.name || Object.values(level.translations)[0].name))()
           }
         }
       };
     case 'control':
       return {
-        [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/DSRA/properties/implementationStatus`]: {
+        [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/${riskDefinitionName}/properties/implementationStatus`]: {
           formSchema: {
             enum: (() =>
-              (domain.riskDefinitions.DSRA?.implementationStateDefinition?.levels || []).map(
+              (domain.riskDefinitions[riskDefinitionName]?.implementationStateDefinition?.levels || []).map(
                 (level) => level.translations[language]?.name || Object.values(level.translations)[0].name
               ))()
           }
@@ -120,15 +120,13 @@ export const getSubTypeTranslation = (
   formSchemas: IVeoFormSchemaMeta[]
   ): IVeoFormsAdditionalContext => ({
     [`#/properties/domains/properties/${domainId}/properties/subType`]: {
-      formSchema: { 
+      formSchema: {
         enum: (() => {
           const scope = `#/properties/domains/properties/${domainId}/properties/subType`;
           let elementSchema: any = cloneDeep(JsonPointer.get(objectSchema, scope) || {});
           elementSchema = addConditionalSchemaPropertiesToControlSchema(objectSchema, objectData, elementSchema, scope);
           return elementSchema?.enum?.map((_subType: string) =>  (formSchemas as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === _subType)?.name[language])
         })()
-      } 
+      }
     }
   });
-  
-  
