@@ -395,7 +395,13 @@ const getAdditionalContext = () => {
     }
     : {};
 
-  additionalContext.value = { ...disabledSubType };
+  const disabledRequirement = route.params.subType === 'CTL_Requirement' ? {
+    ["#/properties/customAspects/properties/control_bpCompendium/properties/attributes/properties/control_bpCompendium_content"]: {
+      formSchema: { disabled: true }
+    }
+  } : {};
+
+  additionalContext.value = { ...disabledSubType, ...disabledRequirement };
 };
 
 watch(() => () => domainId.value, getAdditionalContext, { deep: true, immediate: true });
