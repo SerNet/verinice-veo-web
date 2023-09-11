@@ -27,7 +27,7 @@ import { IVeoFormSchemaMeta } from '~~/composables/api/queryDefinitions/forms';
 export default {};
 
 function getTranslatedRiskValues(
-  { domain, categoryId, language, riskDefinitionName}: 
+  { domain, categoryId, language, riskDefinitionName}:
   { domain: IVeoDomain, language: string, riskDefinitionName: string, categoryId: string }
 ) {
   const potentialImpacts =
@@ -36,7 +36,6 @@ function getTranslatedRiskValues(
 
   const translations = potentialImpacts.map((level) =>
     level.translations[language]?.name || Object.values(level.translations)[0].name);
-console.log({ translations })
   return translations;
 }
 
@@ -56,7 +55,6 @@ function translateProcessRisks(
     };
   }
   );
-  console.log({ translations })
   return translations;
 }
 
