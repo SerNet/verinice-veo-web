@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { StorageSerializers, useStorage } from '@vueuse/core';
-import { LOCAL_STORAGE_KEYS } from '~~/types/localStorage';
-import {SESSION_STORAGE_KEYS } from '~~/types/SessionStorage';
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 export default defineNuxtPlugin (async (nuxtApp) => {
   const route = useRoute();
@@ -54,37 +53,5 @@ export default defineNuxtPlugin (async (nuxtApp) => {
   if (!authenticated.value) {
     return;
   }
-
-  /*
-   * Show welcome page
-   */
-
-  // Is set to true on loging into veo (VeoUser.ts).
-  // This value will only be true the first time this code runs after logging in.
-  const isFreshLogin =
-    sessionStorage.getItem(SESSION_STORAGE_KEYS.IS_FRESH_LOGIN) === 'true';
-
-  // User hits the index route for the first++ time
-  if(!isFreshLogin) return;
-
-  // User hits the 'index' route for the first time:
-  sessionStorage.setItem(SESSION_STORAGE_KEYS.IS_FRESH_LOGIN, 'false');
-
-  // If a completely new user logs in, the SHOW_WELCOME_PAGE key is not present in localStorage
-  // (or if localStorage was cleared etc)
-  // We will then set it to show the welcome page
-  if(!Object.hasOwn(localStorage, LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE)) {
-    localStorage.setItem(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, 'true');
-  }
-
-  const excludedRoutes = ['security', 'docs-slug'];
-  const showWelcomePage = localStorage.getItem(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE) === 'true';
-
-  if(!showWelcomePage) return;
-  if(excludedRoutes.includes(route.name as string)) return;
-
-  setTimeout(() => {
-    return navigateTo('/welcome');
-  }, 50);
 });
 
