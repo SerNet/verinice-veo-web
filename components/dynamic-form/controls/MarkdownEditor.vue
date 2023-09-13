@@ -198,7 +198,12 @@ export default defineComponent({
 // Minimal makeshift styling, non editor output
 .no-editor-html-output {
   margin-top: 16px;
+
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 120%;
+  }
 }
+
 .no-editor-html-output * + * {
   margin-top: 16px;
 }

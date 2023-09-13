@@ -395,13 +395,27 @@ const getAdditionalContext = () => {
     }
     : {};
 
-  const disabledRequirement = route.params.subType === 'CTL_Requirement' ? {
+  // Temporary solution: Disable markdown editor for certain subTypes,
+  // and output html instead (see controls/MarkdownEditor.vue)
+  const subTypesCTL = ['CTL_Requirement', 'CTL_Module', 'CTL_Safeguard', '-'];
+  const subTypesSCN = ['SCN_AppliedThreat', '-'];
+  const disabledRequirementCTL = subTypesCTL.includes(route.params.subType as string) ? {
     ["#/properties/customAspects/properties/control_bpCompendium/properties/attributes/properties/control_bpCompendium_content"]: {
       formSchema: { disabled: true }
     }
   } : {};
 
-  additionalContext.value = { ...disabledSubType, ...disabledRequirement };
+  const disabledRequirementSCN = subTypesSCN.includes(route.params.subType as string) ? {
+    ["#/properties/customAspects/properties/scenario_bpCompendium/properties/attributes/properties/scenario_bpCompendium_content"]: {
+      formSchema: { disabled: true }
+    }
+  } : {};
+
+  additionalContext.value = {
+    ...disabledSubType,
+    ...disabledRequirementCTL,
+    ...disabledRequirementSCN
+  };
 };
 
 watch(() => () => domainId.value, getAdditionalContext, { deep: true, immediate: true });
