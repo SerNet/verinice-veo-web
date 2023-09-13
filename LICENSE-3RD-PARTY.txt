@@ -4195,7 +4195,7 @@ The following npm packages may be included in this product:
  - @types/node@18.17.15
  - @types/resolve@1.20.2
  - @types/unist@2.0.6
- - @types/web-bluetooth@0.0.16
+ - @types/web-bluetooth@0.0.17
 
 These packages each contain the following license and notice below:
 
@@ -4693,9 +4693,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm packages may be included in this product:
 
- - @vueuse/core@9.13.0
- - @vueuse/metadata@9.13.0
- - @vueuse/shared@9.13.0
+ - @vueuse/core@10.4.1
+ - @vueuse/metadata@10.4.1
+ - @vueuse/shared@10.4.1
 
 These packages each contain the following license and notice below:
 
