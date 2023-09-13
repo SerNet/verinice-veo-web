@@ -67,6 +67,10 @@ export const getRiskAdditionalContext = (objectType: string, domain: IVeoDomain,
   switch (objectType) {
     case 'process':
       return translateProcessRisks({ domain, riskDefinitionCategories, language, riskDefinitionName });
+    case 'scope':
+      return translateProcessRisks({ domain, riskDefinitionCategories, language, riskDefinitionName });
+    case 'asset':
+      return translateProcessRisks({ domain, riskDefinitionCategories, language, riskDefinitionName });
     case 'scenario':
       return {
         [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/${riskDefinitionName}/properties/potentialProbability`]: {
