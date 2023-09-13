@@ -97,15 +97,22 @@ export default defineComponent({
     watch(() => props.modelValue, onCreated, { immediate: true });
     watch(() => editor.value, onCreated, { immediate: true });
 
-
-
     onMounted(() => {
       if(props.options.disabled) return;
       localEditor = new Editor({
         el: editor.value,
         initialEditType: 'markdown',
+        autofocus: false, // For some reason this config is buggy, workaround in `events`, cp. https://github.com/nhn/tui.editor/issues/1802
         previewStyle: 'vertical',
         events: {
+          focus: () => {
+            nextTick(() =>  {
+              // Focus name control and not the editor (cp. above)
+              localEditor.blur()
+              document.querySelector<HTMLElement>('[data-component-name="object-form-form"]')?.scrollTo(0,0)
+              document.querySelector<HTMLElement>('[id="#/properties/name"]')?.focus()
+            })
+          },
           change: () => {
             const markdownText = localEditor.getMarkdown();
             emit('update:model-value', (typeof props.modelValue === 'undefined' || props.modelValue === null) && markdownText === '' ? props.modelValue : markdownText);
