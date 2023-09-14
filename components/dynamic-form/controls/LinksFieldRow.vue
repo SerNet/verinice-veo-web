@@ -111,7 +111,7 @@ export default defineComponent({
 
     const domainId = computed(() => route.params.domain as string);
 
-    const objectType = computed<string>(() => ((props.objectSchema as any).items?.properties?.target?.properties?.type.enum[0] + '').toLowerCase());
+    const objectType = computed<string>(() => ((props.objectSchema as any).items?.properties?.target?.properties?.type?.enum?.[0] + '').toLowerCase());
     const subType = computed<string>(() => (props.objectSchema as any).items?.properties?.target?.properties?.subType?.enum?.[0]);
 
     const queryParameters = computed(() => ({ domainId: domainId.value }));
