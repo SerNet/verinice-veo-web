@@ -95,7 +95,8 @@
     "risks": "Risk definitions",
     "security": "Security policy",
     "user-data": "Data portability",
-    "welcome": "Welcome"
+    "welcome": "Welcome",
+    "compliance": "Compliance"
   },
 
   "error": {
