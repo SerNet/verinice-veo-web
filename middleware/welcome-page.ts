@@ -19,9 +19,13 @@
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { SESSION_STORAGE_KEYS } from '~/types/sessionStorage';
 
-export default defineNuxtRouteMiddleware((to) => {
-  if(to.path !== '/') return;
-
+/**
+ * After a successful login users are redirected to the `/` route.
+ * This middleware then redirects them to a welcome page if
+ * a localStorage key `SHOW_WELCOME_PAGE` is either absent (new user)
+ * or of the value `true`.
+ */
+export default defineNuxtRouteMiddleware(() => {
   const { authenticated } = useVeoUser();
   if(!authenticated.value) return;
 
@@ -36,7 +40,7 @@ export default defineNuxtRouteMiddleware((to) => {
 
 
 async function showWelcomePage() {
-  // If a completely new user logs in, the SHOW_WELCOME_PAGE key is not present in localStorage:
+  // If a new user logs in, the SHOW_WELCOME_PAGE key does not exist:
   // set this value to show the welcome page!
   if(!Object.hasOwn(localStorage, LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE)) {
     localStorage.setItem(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, 'true');
