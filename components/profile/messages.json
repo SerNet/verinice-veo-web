@@ -1,7 +1,7 @@
 
 {
   "en": {
-    "hint": "Please select a profile. In the next step you can select the unit to which you want to apply the profile.",
+    "hint": "You can apply the profile to the demo unit to learn all the features or use it as a starting point for mapping your own organization to your unit (existing content in your unit will be extended with all the profile content).",
     "thAbbreviation": "Abkürzung",
     "thName": "Profile name",
     "thDescription": "Description",
@@ -23,7 +23,7 @@
     "messageHasMaxUnitsText": "Sorry, you cannot create a new unit."
   },
   "de": {
-    "hint": "Bitte wählen Sie ein Profil aus. Im nächsten Schritt können Sie dann die Unit auswählen, auf die Sie das Profil anwenden möchten.",
+    "hint": "Sie können das Profil auf die Demo-Unit anwenden, um alle Funktionen kennenzulernen oder als Ausgangspunkt für die Abbildung der eigenen Organisation auf ihre Unit anwenden (vorhandene Inhalte in Ihrer Unit werden dabei um alle Profilinhalte erweitert).",
     "thAbbreviation": "Abkürzung",
     "thName": "Profilname",
     "thDescription": "Beschreibung",
