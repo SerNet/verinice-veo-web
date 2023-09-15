@@ -32,11 +32,19 @@
           />
           {{ t('unitSelectionCreateNewHint') }}
         </v-card-text>
+        <BaseAlert
+          :model-value="hasMaxUnits"
+          :title="t('messageHasMaxUnitsTitle')"
+          :text="t('messageHasMaxUnitsText')"
+          :type="VeoAlertType.INFO"
+          no-close-button
+          flat
+        />
         <v-card-text>
           <v-text-field
             v-model="state.newUnitName"
             :label="t('unitSelectionCreateName')"
-            :disabled="!!state.selectedUnit"
+            :disabled="!!state.selectedUnit || hasMaxUnits"
             :rules="[requiredRule]"
             required
             clearable
@@ -45,7 +53,7 @@
           <v-text-field
             v-model="state.newUnitDescription"
             :label="t('unitSelectionCreateDesc')"
-            :disabled="!!state.selectedUnit"
+            :disabled="!!state.selectedUnit || hasMaxUnits"
             variant="underlined"
             clearable
           />
@@ -98,14 +106,23 @@
 </template>
 
 <script setup lang="ts">
+import { VeoAlertType } from '~~/types/VeoTypes';
 import {
   mdiFolderOpenOutline,
   mdiFilePlusOutline
 } from '@mdi/js';
 import { useUnits } from './profiles';
 const { requiredRule } = useRules();
-const { state, units, domain, applyProfile, createUnitAndApplyProfile, toggleDialog } = useUnits();
 const { t } = useI18n();
+const {
+  state,
+  units,
+  hasMaxUnits,
+  domain,
+  applyProfile,
+  createUnitAndApplyProfile,
+  toggleDialog
+} = useUnits();
 
 const applyIsDisabled = computed(() =>
   (state.newUnitName  === null) && state.selectedUnit === null

@@ -18,7 +18,9 @@
     "messageSuccess": "Profile successfully applied",
     "messageError": "Could not apply profile",
     "messageUnitWithProfileSuccess": "New Unit created and successfully applied profile.",
-    "messageUnitWithProfileError": "Could not create new unit and apply profile."
+    "messageUnitWithProfileError": "Could not create new unit and apply profile.",
+    "messageHasMaxUnitsTitle": "You have reached the maximum number of units.",
+    "messageHasMaxUnitsText": "Sorry, you cannot create a new unit."
   },
   "de": {
     "hint": "Bitte wählen Sie ein Profil aus. Im nächsten Schritt können Sie dann die Unit auswählen, auf die Sie das Profil anwenden möchten.",
@@ -38,7 +40,9 @@
     "messageSuccess": "Profil erfolgreich angewendet",
     "messageError": "Profil konnte nicht angewendet werden",
     "messageUnitWithProfileSuccess": "Profil wurde auf die neue Unit angewendet.",
-    "messageUnitWithProfileError": "Profil konnte nicht auf neue Unit angewendet werden."
+    "messageUnitWithProfileError": "Profil konnte nicht auf neue Unit angewendet werden.",
+    "messageHasMaxUnitsTitle": "Sie haben die maximale Anzahl an Units erreich.",
+    "messageHasMaxUnitsText": "Sie können leider keine neue Unit anlegen."
   }
 }
 
