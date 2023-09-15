@@ -1,6 +1,5 @@
 before(() => {
-  const testUser = Cypress.env('testUserDSGVO');
-  cy.login({username: testUser.name, password: testUser.pw});
+  cy.login({});
 });
 
 it('creates an empty unit and acquaints it with the DSG-VO domain', () =>  {

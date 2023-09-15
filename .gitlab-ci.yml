@@ -26,6 +26,34 @@ store_project_version:
     when: always
     reports:
       dotenv: variables.env
+test:
+  image: cypress/browsers:node18.12.0-chrome103-ff107
+  stage: test
+  cache:  # Cache modules in between jobs
+    key:
+      files:
+      - package-lock.json
+    paths:
+      - .npm/
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+    # Write .env file
+    - chmod +x ./setup-env.sh
+    - ./setup-env.sh
+  script:
+    - export {http,https}_proxy="${http_proxy}"
+    # Install TS (cypress image does not support TS out of the box)
+    - npm i typescript
+    # Build and run veo
+    - npm run generate
+    - npx serve .output/public/ &
+    - npm run e2e
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+    - ${CI_PROJECT_DIR}/cypress/screenshots
+    - ${CI_PROJECT_DIR}/cypress/videos
 
 check_license:
   stage: test

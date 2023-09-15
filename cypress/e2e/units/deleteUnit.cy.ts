@@ -1,6 +1,5 @@
 before(() => {
-  const testUser = Cypress.env('testUserDSGVO');
-  cy.login({username: testUser.name, password: testUser.pw});
+  cy.login({});
 });
 
 it('deletes the test unit', () => {

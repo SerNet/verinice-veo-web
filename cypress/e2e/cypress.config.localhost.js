@@ -4,6 +4,9 @@ const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
   e2e: {
-    baseUrl: 'https://veo-web.develop.verinice.com',
+    baseUrl: 'http://localhost:3000'
+  },
+  env: {
+    "isLocalhost": "true"
   }
 });

@@ -24,6 +24,7 @@
     color="color"
     :class="_classes"
     :data-component-name="componentName"
+    :data-veo-test="componentName"
     density="compact"
     :target="openInNewtab ? '_blank' : undefined"
     @click.stop="onClick"

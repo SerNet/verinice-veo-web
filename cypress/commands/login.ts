@@ -9,8 +9,29 @@ declare global {
   }
 }
 
-export function login({ username, password, localhost}:
-{ username: string, password: string, localhost?: boolean }) {
+interface LoginParams {
+  username?: string;
+  password?: string;
+  localhost?: boolean;
+}
+
+const testUser =
+  Cypress.env('testUser') ||
+  {
+    name: Cypress.env('TESTUSER_NAME'),
+    pw: Cypress.env('TESTUSER_PASS')
+  };
+
+  console.log({testUser})
+
+const isLocalhost = Cypress.env('isLocalhost') || false;
+
+export function login({
+  username = testUser.name,
+  password = testUser.pw,
+  localhost = isLocalhost
+}: LoginParams = {}) {
+
   cy.session([username, password], () => {
     cy.visit('/login');
     cy.get('button').contains('Login').click();
@@ -21,8 +42,12 @@ export function login({ username, password, localhost}:
     else {
       cy.origin(
         'https://auth.staging.verinice.com',
-        { args: {username, password, applyCredentials} }, ({ username, password }) => {
-          applyCredentials({ username, password });
+        { args: { username, password } }, ({ username, password }) => {
+          // Currently Cypress does not allow passing a fn,
+          // using a custom command could work, but is still experimental
+          cy.get('input').first().type(username);
+          cy.get('input#password').type(password);
+          cy.get('input#kc-login').click();
         }
       );
       cy.wait(4000);
