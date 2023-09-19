@@ -66,8 +66,8 @@ VEO_OIDC_URL=https://auth.verinice.com/auth
 VEO_OIDC_REALM=verinice-veo
 VEO_OIDC_CLIENT=veo-prod
 VEO_ACCOUNT_PATH=https://account.verinice.com
+VEO_OIDC_ACCOUNT_APPLICATION=https://auth.verinice.com/auth/realms/verinice-veo/account
 ```
-
 Required env variables (dev preset):
 ```
 VEO_DEBUG=true
@@ -80,6 +80,7 @@ VEO_OIDC_URL=https://auth.staging.verinice.com/auth
 VEO_OIDC_REALM=verinice-veo
 VEO_OIDC_CLIENT=veo-development-client
 VEO_ACCOUNT_PATH=https://account.verinice.com
+VEO_OIDC_ACCOUNT_APPLICATION=https://auth.staging.verinice.com/auth/realms/verinice-veo/account
 ```
 
 ## Technical debt

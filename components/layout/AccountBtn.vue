@@ -157,7 +157,7 @@ const firstName = computed(() => profile.value?.firstName || '');
 const lastName = computed(() => profile.value?.lastName || '');
 const initials = computed(() => firstName.value.substring(0, 1) + lastName.value.substring(0, 1) || '??');
 
-const accountLink = computed(() => `${config.public.oidcUrl}/realms/${config.public.oidcRealm}/account`);
+const accountLink = computed(() => `${config.public.oidcAccountApplication}`);
 
 const onMenuClosed = () => {
   displayDeploymentDetails.value = false;

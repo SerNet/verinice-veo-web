@@ -53,6 +53,7 @@ export default defineNuxtConfig({
       reportsApiUrl: process.env.VEO_REPORTING_API_URL || 'https://api.veo.example/reporting',
       accountsApiUrl: process.env.VEO_ACCOUNTS_API_URL || 'https://api.veo.example/accounts',
       oidcUrl: process.env.VEO_OIDC_URL || 'https://auth.veo.example/auth',
+      oidcAccountApplication: process.env.VEO_OIDC_ACCOUNT_APPLICATION || 'https://auth.veo.example/auth/realms/veo-oidcrealm-example/account',
       oidcRealm: process.env.VEO_OIDC_REALM || 'veo-oidcrealm-example',
       oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-oidcclient-example',
       accountPath: process.env.VEO_ACCOUNT_PATH || 'https://account.veo.example',
