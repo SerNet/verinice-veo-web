@@ -1,6 +1,8 @@
 # veo-web
 
-Look at the [nuxt 3 documentation](https://v3.nuxtjs.org) to learn more.
+Welcome to the GitHub repository for the web frontend of the verinice.veo tool, the next generation solution for data protection and information security management. Leveraging modern web technologies, this software-as-a-service (SaaS) solution aims to provide a user-friendly and comprehensive approach to fulfilling data protection obligations in accordance with GDPR, ISO 27001 and other regulations. Whether you are a novice or a professional, the tool facilitates easy data collection, intuitive operation, and the generation of valuable reports, all within a web-based environment. Developed by the experienced verinice team, this frontend is part of a continuous development effort to build upon a legacy of expertise dating back to 2007 and over 10.000 customers worldwide, aiming to create a flexible, reliable, and efficient security management tool. Explore the repository to learn more about how verinice.veo is shaping the future of data protection and information security management.
+
+![Screenshot](readme_imgs/dashboard.png)
 
 ## Setup
 
@@ -68,20 +70,6 @@ VEO_OIDC_REALM=verinice-veo
 VEO_OIDC_CLIENT=veo-prod
 VEO_ACCOUNT_PATH=https://account.verinice.com
 VEO_OIDC_ACCOUNT_APPLICATION=https://auth.verinice.com/auth/realms/verinice-veo/account
-```
-Required env variables (dev preset):
-```
-VEO_DEBUG=true
-VEO_DEFAULT_API_URL=https://api.develop.verinice.com/veo
-VEO_FORMS_API_URL=https://api.develop.verinice.com/forms
-VEO_HISTORY_API_URL=https://api.develop.verinice.com/history
-VEO_REPORTING_API_URL=https://api.develop.verinice.com/reporting
-VEO_ACCOUNTS_API_URL=https://api.develop.verinice.com/accounts
-VEO_OIDC_URL=https://auth.staging.verinice.com/auth
-VEO_OIDC_REALM=verinice-veo
-VEO_OIDC_CLIENT=veo-development-client
-VEO_ACCOUNT_PATH=https://account.verinice.com
-VEO_OIDC_ACCOUNT_APPLICATION=https://auth.staging.verinice.com/auth/realms/verinice-veo/account
 ```
 
 ## Technical debt
