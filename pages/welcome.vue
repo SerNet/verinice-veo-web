@@ -16,7 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage>
+  <BasePage
+    data-test-selector="welcome-page"
+  >
     <LayoutHeadline
       :title="t('headline')"
     />
