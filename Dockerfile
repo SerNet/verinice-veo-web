@@ -28,6 +28,7 @@ ENV VEO_ACCOUNT_PATH=
 ENV VEO_OIDC_URL=
 ENV VEO_OIDC_REALM=
 ENV VEO_OIDC_CLIENT=
+ENV VEO_OIDC_ACCOUNT_APPLICATION=
 ENV VEO_DEBUG ${VEO_DEBUG}
 ENV NODE_ENV=$NODE_ENV
 
@@ -77,6 +78,8 @@ ENV VEO_ACCOUNT_PATH=https://account.veo.example
 ENV VEO_OIDC_URL=https://auth.veo.example/auth
 ENV VEO_OIDC_REALM=veo-oidcrealm-example
 ENV VEO_OIDC_CLIENT=veo-oidcclient-example
+ENV VEO_OIDC_CLIENT=veo-oidcclient-example
+ENV VEO_OIDC_ACCOUNT_APPLICATION=https://auth.veo.example/auth/realms/veo-oidcrealm-example/account
 
 EXPOSE 80
 

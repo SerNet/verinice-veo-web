@@ -9,4 +9,5 @@ sed -i "s,https://account\.veo\.example,$VEO_ACCOUNT_PATH,g" $file
 sed -i "s,https://auth\.veo\.example/auth,$VEO_OIDC_URL,g" $file
 sed -i "s/veo-oidcrealm-example/$VEO_OIDC_REALM/g" $file
 sed -i "s/veo-oidcclient-example/$VEO_OIDC_CLIENT/g" $file
+sed -i "s/https://auth\.veo\.example/auth/realms/veo-oidcrealm-example/account/$VEO_OIDC_ACCOUNT_APPLICATION/g" $file
 nginx -c /etc/nginx/conf.d/custom.conf -g 'pid /tmp/nginx.pid; daemon off;'

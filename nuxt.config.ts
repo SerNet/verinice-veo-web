@@ -41,6 +41,7 @@ export default defineNuxtConfig({
   ssr: false,
 
   // Available via useRuntimeConfig().public
+  // When changing env vars: change `Dockerfile` and `startup.sh` accordingly!
   runtimeConfig: {
     public: {
       version: process.env.npm_package_version || 'latest',
