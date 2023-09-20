@@ -34,8 +34,7 @@ ENV NODE_ENV=$NODE_ENV
 
 RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > public/VERSION && echo ${CI_COMMIT_SHORT_SHA} > BUILD && echo ${CI_COMMIT_SHORT_SHA} > public/BUILD
 
-RUN npm run generate
-RUN node externalize-scripts.mjs
+RUN npm run generate && node externalize-scripts.mjs
 
 FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 
