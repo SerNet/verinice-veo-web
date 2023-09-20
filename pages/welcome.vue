@@ -245,6 +245,7 @@ const links = ref({
 
 const isValidProfileLink = ref(false);
 const profileLink = ref('');
+
 // useStorage ignores defaults, if a value is already present in local storage
 const showWelcomePage = useStorage(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, false);
 
@@ -275,8 +276,6 @@ onMounted(async () => {
 
   if (domainId && unitId) {
     profileLink.value = `/${unitId}/domains/${domainId}/profiles`;
-  } else {
-    isValidProfileLink.value = false;
   }
 });
 </script>
