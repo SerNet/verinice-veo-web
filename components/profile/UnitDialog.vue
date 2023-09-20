@@ -96,7 +96,7 @@
         flat
         color="primary"
         :loading="state.isApplyingProfile || state.isCreatingUnit"
-        :disabled="applyIsDisabled"
+        :disabled="applyIsDisabled || hasMaxUnits && !state.selectedUnit"
         @click="apply"
       >
         {{ t('unitSelectionApplyBtn') }}

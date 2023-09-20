@@ -41,7 +41,7 @@
     "messageError": "Profil konnte nicht angewendet werden",
     "messageUnitWithProfileSuccess": "Profil wurde auf die neue Unit angewendet.",
     "messageUnitWithProfileError": "Profil konnte nicht auf neue Unit angewendet werden.",
-    "messageHasMaxUnitsTitle": "Sie haben die maximale Anzahl an Units erreich.",
+    "messageHasMaxUnitsTitle": "Sie haben die maximale Anzahl an Units erreicht.",
     "messageHasMaxUnitsText": "Sie können leider keine neue Unit anlegen."
   }
 }
