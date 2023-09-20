@@ -1,7 +1,7 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Samuel Vitzthum, Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
@@ -311,7 +311,8 @@ export default defineComponent({
                 title: t('linkDPIA'),
                 component: ObjectLinkDialog,
                 componentProps: {
-                  object: props.originalObject
+                  object: props.originalObject,
+                  preselectedFilters: { subType: suggestion?.partSubType }
                 }
               }
             ];
@@ -357,7 +358,7 @@ export default defineComponent({
         return formSchemaId;
       }
     };
-    
+
     const getSubTypeByFormSchemaId = (id: string) => {
       const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.id === id)?.subType;
       if (formSchemaId) {
