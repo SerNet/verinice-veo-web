@@ -110,7 +110,7 @@
           </v-col>
         </v-card-text>
 
-        <v-card-text>
+        <v-card-text v-if="isValidProfileLink">
           <v-col class="text-justify">
             <v-icon
               :icon="mdiShapeOutline"
@@ -122,10 +122,7 @@
               tag="span"
               scope="global"
             >
-              <nuxt-link
-                style="cursor: pointer;"
-                @click="linkToProfile"
-              >
+              <nuxt-link :to="profileLink">
                 <strong>{{ t('profile') }}</strong>
               </nuxt-link>
             </i18n-t>
@@ -238,10 +235,7 @@ import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 
 const { t } = useI18n();
 
-const router = useRouter();
 const queryClient = useQueryClient();
-
-const { displayErrorMessage} = useVeoAlerts();
 
 const links = ref({
   forum: 'https://forum.verinice.com',
@@ -249,6 +243,8 @@ const links = ref({
   youtube: 'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf'
 });
 
+const isValidProfileLink = ref(false);
+const profileLink = ref('');
 // useStorage ignores defaults, if a value is already present in local storage
 const showWelcomePage = useStorage(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, false);
 
@@ -268,29 +264,21 @@ const getDomainsContainingProfile = async () => {
   return domains.filter((domain) => domain.profiles && Object.keys(domain.profiles).length);
 };
 
-const linkToProfile = async () => {
-  try {
-    const domainsContainingProfile = await getDomainsContainingProfile();
-    // get unitId and domainId; needed to form a proper route
-    const unitId =  units.value?.[0].id;
-    // atm there is only sampledata for the DS-GVO, so we pass the appropriate id filtered before in getDomainsContainingProfile()
-    const domainId = domainsContainingProfile[0].id;
+onMounted(async () => {
+  const domainsContainingProfile = await getDomainsContainingProfile();
+  // get unitId and domainId; needed to form a proper route
+  const unitId =  units.value?.[0].id;
+  // atm there is only sampledata for the DS-GVO, so we pass the appropriate id filtered before in getDomainsContainingProfile()
+  const domainId = domainsContainingProfile[0].id;
 
-    if (domainId && unitId) {
-      // link to the dashboard
-      router.push({
-        name: 'unit-domains-domain-profiles',
-        params: {
-          unit: unitId,
-          domain: domainId
-        }
-      });
-    }
+  isValidProfileLink.value = !!domainId && !!unitId;
+
+  if (domainId && unitId) {
+    profileLink.value = `/${unitId}/domains/${domainId}/profiles`;
+  } else {
+    isValidProfileLink.value = false;
   }
-  catch (error: any) {
-    displayErrorMessage('Error', error.message);
-  }
-};
+});
 </script>
 
 <i18n>
