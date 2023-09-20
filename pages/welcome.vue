@@ -122,7 +122,10 @@
               tag="span"
               scope="global"
             >
-              <nuxt-link :to="profileLink">
+              <nuxt-link
+                :to="profileLink"
+                style="text-decoration: none;"
+              >
                 <strong>{{ t('profile') }}</strong>
               </nuxt-link>
             </i18n-t>
