@@ -122,12 +122,12 @@
               tag="span"
               scope="global"
             >
-              <a
+              <nuxt-link
                 style="cursor: pointer;"
                 @click="linkToProfile"
               >
                 <strong>{{ t('profile') }}</strong>
-              </a>
+              </nuxt-link>
             </i18n-t>
           </v-col>
         </v-card-text>
