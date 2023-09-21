@@ -55,6 +55,7 @@
           v-model:page="page"
           v-model:sort-by="sortBy"
           show-select
+          select-strategy="single"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="selectableObjects"
           :loading="objectsLoading || childrenLoading || parentsLoading"
@@ -63,7 +64,7 @@
     </template>
     <template #dialog-options>
       <v-btn
-        text
+        variant="text"
         :disabled="savingObject"
         @click="$emit('update:model-value', false)"
       >
@@ -71,7 +72,7 @@
       </v-btn>
       <v-spacer />
       <v-btn
-        text
+        variant="text"
         color="primary"
         :loading="savingObject"
         :disabled="ability.cannot('manage', 'objects')"
@@ -94,7 +95,7 @@ import { useVeoUser } from '~/composables/VeoUser';
 import objectQueryDefinitions, { IVeoFetchScopeChildrenParameters } from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
 
 export default defineComponent({
@@ -400,9 +401,3 @@ export default defineComponent({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-.v-data-table {
-  background-color: transparent;
-}
-</style>
