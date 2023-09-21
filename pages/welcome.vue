@@ -110,7 +110,7 @@
           </v-col>
         </v-card-text>
 
-        <v-card-text v-if="isValidProfileLink">
+        <v-card-text v-if="profileLink">
           <v-col class="text-justify">
             <v-icon
               :icon="mdiShapeOutline"
@@ -232,22 +232,15 @@ import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-
-import { useQueryClient } from '@tanstack/vue-query';
-import { useQuery, useQuerySync } from '~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 
 const { t } = useI18n();
-
-const queryClient = useQueryClient();
 
 const links = ref({
   forum: 'https://forum.verinice.com',
   webinar: 'https://verinice.com/webinare',
   youtube: 'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf'
 });
-
-const isValidProfileLink = ref(false);
-const profileLink = ref('');
 
 // useStorage ignores defaults, if a value is already present in local storage
 const showWelcomePage = useStorage(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, false);
@@ -258,29 +251,17 @@ const showAtStartup = computed({
   set: (newValue: boolean) => showWelcomePage.value = newValue
 });
 
-// fetch all units
+// fetch all domains and units
+const { data: domains} = useQuery(domainQueryDefinitions.queries.fetchDomains);
 const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
-// fetch all domains and filter the ones containing profiles / sampledata only
-const getDomainsContainingProfile = async () => {
-  const domains = await useQuerySync(domainQueryDefinitions.queries.fetchDomains, undefined, queryClient);
+const domainId = computed(() => domains.value?.filter((domain) => domain.profiles && Object.keys(domain.profiles).length)?.[0].id || null);
+const unitId = computed(() => units.value?.[0]?.id || null);
 
-  return domains.filter((domain) => domain.profiles && Object.keys(domain.profiles).length);
-};
-
-onMounted(async () => {
-  const domainsContainingProfile = await getDomainsContainingProfile();
-  // get unitId and domainId; needed to form a proper route
-  const unitId =  units.value?.[0].id;
-  // atm there is only sampledata for the DS-GVO, so we pass the appropriate id filtered before in getDomainsContainingProfile()
-  const domainId = domainsContainingProfile[0].id;
-
-  isValidProfileLink.value = !!domainId && !!unitId;
-
-  if (domainId && unitId) {
-    profileLink.value = `/${unitId}/domains/${domainId}/profiles`;
-  }
-});
+const profileLink = computed(() => domainId && unitId
+  ? `/${unitId.value}/domains/${domainId.value}/profiles`
+  : null
+);
 </script>
 
 <i18n>
