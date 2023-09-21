@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2022  Jonas Heitmann
+ * Copyright (C) 2022  Jonas Heitmann, jae
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,8 +17,8 @@
  */
 import { ComputedRef, Ref } from 'vue';
 import Keycloak from 'keycloak-js';
-
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { SESSION_STORAGE_KEYS } from '~/types/sessionStorage';
 
 export interface IVeoUserSettings {
   maxUnits: number;
@@ -108,6 +108,9 @@ export const useVeoUser: () => IVeoUserComposable = () => {
    * @param destination If set the user gets redirected to a different page than the one he tried to login from.
    */
   const login = async (destination?: string) => {
+    // set this value to determine, if user has just logged in.
+    // Is used and then set to false in plugins/5-user-entrypoint.client.ts.
+    sessionStorage.setItem(SESSION_STORAGE_KEYS.IS_FRESH_LOGIN, 'true');
     if (keycloak.value) {
       await keycloak.value.login({
         redirectUri: `${window.location.origin}${destination}`,

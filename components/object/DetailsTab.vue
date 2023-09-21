@@ -117,10 +117,10 @@ export default defineComponent({
 
     // Fetching different queries for the table
     const page = ref(1);
-    const sortBy = ref([{ key: 'name', order: 'desc' }]);
+    const sortBy = ref([{ key: 'name', order: 'asc' }]);
     const resetQueryOptions = () => {
       page.value = 1;
-      sortBy.value = [{ key: 'name', order: 'desc' }];
+      sortBy.value = [{ key: 'name', order: 'asc' }];
     };
     watch(() => props.type, resetQueryOptions);
 
@@ -133,7 +133,7 @@ export default defineComponent({
       childObjectId: props.object?.id || '',
       unitId: route.params.unit as string,
       sortBy: sortBy.value[0].key,
-      sortOrder: sortBy.value[0].order as 'desc' | 'asc',
+      sortOrder: sortBy.value[0].order as 'asc' | 'desc',
       page: page.value
     }));
     const parentScopesQueryEnabled = computed(() => props.type !== 'risks' && !!props.object?.id);
@@ -143,7 +143,7 @@ export default defineComponent({
       childObjectId: props.object?.id || '',
       unitId: route.params.unit as string,
       sortBy: sortBy.value[0].key,
-      sortOrder: sortBy.value[0].order as 'desc' | 'asc',
+      sortOrder: sortBy.value[0].order as 'asc' | 'desc',
       page: page.value
     }));
     const parentObjectsQueryEnabled = computed(() => props.type === 'parentObjects' && !!props.object?.id);

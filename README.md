@@ -51,7 +51,8 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 | `VEO_OIDC_URL` | `https://auth.veo.example/auth` | URL of the OIDC provider (usually keycloak). |
 | `VEO_OIDC_REALM` | `veo-oidcrealm-example` | Realm you use for veo in your OIDC provider. |
 | `VEO_OIDC_CLIENT` | `veo-oidcclient-example` | Client name you use for this webapp in your OIDC provider. |
-| `VEO_ACCOUNT_PATH` | `https://account.veo.example` | URL under which the user can edit his/her account such as changing the password. |
+| `VEO_ACCOUNT_PATH` | `https://account.veo.example` | URL under which the user can edit his/her subscription. |
+| `VEO_OIDC_ACCOUNT_APPLICATION` | `https://auth.veo.example/auth/realms/veo-oidcrealm-example/account` | URL under which the user can self manage his/her account. |
 | `VEO_DEBUG` | `false` | While not exposing any critical information, this variable should only be set to true when developing. |
 | `VEO_DEBUG_CACHE` | `false` | If set to true, additional logging output gets set regarding caching and retrieving of data. |
 
@@ -66,8 +67,8 @@ VEO_OIDC_URL=https://auth.verinice.com/auth
 VEO_OIDC_REALM=verinice-veo
 VEO_OIDC_CLIENT=veo-prod
 VEO_ACCOUNT_PATH=https://account.verinice.com
+VEO_OIDC_ACCOUNT_APPLICATION=https://auth.verinice.com/auth/realms/verinice-veo/account
 ```
-
 Required env variables (dev preset):
 ```
 VEO_DEBUG=true
@@ -80,6 +81,7 @@ VEO_OIDC_URL=https://auth.staging.verinice.com/auth
 VEO_OIDC_REALM=verinice-veo
 VEO_OIDC_CLIENT=veo-development-client
 VEO_ACCOUNT_PATH=https://account.verinice.com
+VEO_OIDC_ACCOUNT_APPLICATION=https://auth.staging.verinice.com/auth/realms/verinice-veo/account
 ```
 
 ## Technical debt

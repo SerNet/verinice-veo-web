@@ -136,7 +136,7 @@
     "documentation": "The { link } describes in detail all functions of verinice.veo and explains the technical aspects. You can open the online documentation at any time via the icon in the application bar at the top right.",
     "forum": "In the { 0 } you will find further information and can participate in the lively exchange with other users.",
     "mode": "Toggle the app mode from light to dark and vice versa.",
-    "sampledata": "The { 0 } contains a complete sample organization. You can modify the content as you wish to get to know all the features and functions or use it directly as a basis for mapping your organization.",
+    "profile": "Load a { 0 } with sample data into your Unit \"Demo\" to learn all the features or into your production \"Unit 1\" as a starting point for building your own organization.",
     "tutorial": "Context-sensitive { 0 } are available on each page for quick orientation. Available { 0 } can be accessed at any time via the icon in the application bar at the top right.",
     "webinar": "You can register anytime for our regular free { 0 }."
   },

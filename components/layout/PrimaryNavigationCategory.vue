@@ -19,7 +19,8 @@
   <v-list-group
     :sub-group="level > 0"
     :data-component-name="componentName"
-    :class="{ 'border-top': level === 0 }"
+    active-class="veo-active-list-nav-item"
+    :class="[{ 'border-top': level === 0 }, 'veo-list-nav-item']"
     :target="openInNewtab ? '_blank' : undefined"
     :value="id"
     @click.stop="onClick"
@@ -166,5 +167,13 @@ const openCategory = () => {
 
 .v-list-item--density-compact.primary-navigation-entry-level-3 {
   padding-inline-start: 116px !important;
+}
+
+.veo-list-nav-item {
+  border-left: 4px solid transparent;
+}
+
+.veo-active-list-nav-item {
+  border-left: 4px solid $primary;
 }
 </style>

@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2022  Jonas Heitmann
+ * Copyright (C) 2022  Jonas Heitmann, jae
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { StorageSerializers, useStorage } from '@vueuse/core';
-import { LOCAL_STORAGE_KEYS } from '~~/types/localStorage';
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 export default defineNuxtPlugin (async (nuxtApp) => {
   const route = useRoute();
@@ -50,15 +50,8 @@ export default defineNuxtPlugin (async (nuxtApp) => {
     await initialize(nuxtApp);
   }
 
-  if (!authenticated.value || route.name === 'index') {
+  if (!authenticated.value) {
     return;
   }
-
-  const dontShowWelcomePage = ['security', 'docs-slug'];
-
-  if (localStorage.getItem(LOCAL_STORAGE_KEYS.FIRST_STEPS_COMPLETED) !== 'true' && !dontShowWelcomePage.includes(route.name as string)) {
-    setTimeout(() => {
-      return navigateTo('/welcome');
-    }, 50);
-  }
 });
+

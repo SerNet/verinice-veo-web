@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2023  Jonas Heitmann
+ * Copyright (C) 2023 jae
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,12 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-export const LOCAL_STORAGE_KEYS = {
-  ACCEPTED_COOKIES: 'accepted-cookies',
-  DARK_MODE: 'dark-mode',
-  SHOW_WELCOME_PAGE: 'show-welcome-page',
-  LAST_DOMAIN: 'last-domain',
-  LAST_UNIT: 'last-unit',
-  PRIMARY_NAV_MINI_VARIANT: 'primary-navigation-drawer--mini-variant',
-  UNIT_BEFORE_DEMOUNIT: 'unit-before-demounit'
+export const SESSION_STORAGE_KEYS = {
+  IS_FRESH_LOGIN: 'is-fresh-login'
 };

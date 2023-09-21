@@ -5,7 +5,7 @@ stages:
   - deploy
 
 default:
-  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:20
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/node:19
   cache:  # Cache modules in between jobs
     key:
       files:
@@ -41,7 +41,7 @@ docker_image:
   stage: build
   needs: ["store_project_version"]
   image:
-    name: gcr.io/kaniko-project/executor:v1.14.0-debug
+    name: gcr.io/kaniko-project/executor:v1.15.0-debug
     entrypoint: [""]
   variables:
     IMAGE_NAME: eu.gcr.io/veo-projekt/veo-web
@@ -67,7 +67,7 @@ docker_image:
     - /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --cache=true
+      --cache=false
       $DESTINATION_ARG
       --build-arg VEO_DEBUG="${VEO_DEBUG}"
       --build-arg NODE_ENV="${NODE_ENV}"

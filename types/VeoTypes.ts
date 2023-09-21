@@ -479,3 +479,14 @@ export interface IVeoFormsWidgetDefinition {
     [lang: string]: string;
   };
 }
+
+export interface IVeoElementTypeDefinition {
+  subTypes:  {
+    [key: string]: any
+  };
+  translations: {
+    [lang: string]: {
+      [key: string]: string
+    }
+  }
+}

@@ -3577,8 +3577,8 @@ These packages each contain the following license and notice below:
 
 The following npm packages may be included in this product:
 
- - @tanstack/query-core@4.29.1
- - @tanstack/vue-query@4.29.1
+ - @tanstack/query-core@4.35.3
+ - @tanstack/vue-query@4.35.3
 
 These packages each contain the following license and notice below:
 
@@ -4192,10 +4192,10 @@ The following npm packages may be included in this product:
  - @types/hast@2.3.4
  - @types/http-proxy@1.17.11
  - @types/mdast@3.0.10
- - @types/node@20.5.7
+ - @types/node@18.17.17
  - @types/resolve@1.20.2
  - @types/unist@2.0.6
- - @types/web-bluetooth@0.0.16
+ - @types/web-bluetooth@0.0.17
 
 These packages each contain the following license and notice below:
 
@@ -4693,9 +4693,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm packages may be included in this product:
 
- - @vueuse/core@9.13.0
- - @vueuse/metadata@9.13.0
- - @vueuse/shared@9.13.0
+ - @vueuse/core@10.4.1
+ - @vueuse/metadata@10.4.1
+ - @vueuse/shared@10.4.1
 
 These packages each contain the following license and notice below:
 
@@ -7008,7 +7008,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - chart.js@4.2.0
+ - chart.js@4.4.0
 
 This package contains the following license and notice below:
 
@@ -22468,13 +22468,13 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - nuxt-font-loader@2.3.1
+ - nuxt-font-loader@2.3.3
 
 This package contains the following license and notice below:
 
 MIT License
 
-Copyright (c) 2022 Ivo Dolenc
+Copyright (c) 2023 Ivo Dolenc
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30235,7 +30235,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - uuid@9.0.0
+ - uuid@9.0.1
 
 This package contains the following license and notice below:
 
@@ -34004,7 +34004,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - vuetify@3.3.14
+ - vuetify@3.3.15
 
 This package contains the following license and notice below:
 

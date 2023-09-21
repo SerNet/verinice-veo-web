@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:experimental
-FROM node:20-alpine AS builder
+FROM node:19-alpine AS builder
 
 # Install Git & Install Python for node-14
 RUN apk --no-cache add git python3 make g++
@@ -28,13 +28,13 @@ ENV VEO_ACCOUNT_PATH=
 ENV VEO_OIDC_URL=
 ENV VEO_OIDC_REALM=
 ENV VEO_OIDC_CLIENT=
+ENV VEO_OIDC_ACCOUNT_APPLICATION=
 ENV VEO_DEBUG ${VEO_DEBUG}
 ENV NODE_ENV=$NODE_ENV
 
 RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > public/VERSION && echo ${CI_COMMIT_SHORT_SHA} > BUILD && echo ${CI_COMMIT_SHORT_SHA} > public/BUILD
 
-RUN npm run generate
-RUN node externalize-scripts.mjs
+RUN npm run generate && node externalize-scripts.mjs
 
 FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 
@@ -77,6 +77,8 @@ ENV VEO_ACCOUNT_PATH=https://account.veo.example
 ENV VEO_OIDC_URL=https://auth.veo.example/auth
 ENV VEO_OIDC_REALM=veo-oidcrealm-example
 ENV VEO_OIDC_CLIENT=veo-oidcclient-example
+ENV VEO_OIDC_CLIENT=veo-oidcclient-example
+ENV VEO_OIDC_ACCOUNT_APPLICATION=https://auth.veo.example/auth/realms/veo-oidcrealm-example/account
 
 EXPOSE 80
 
