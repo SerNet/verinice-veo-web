@@ -67,7 +67,7 @@ docker_image:
     - /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --cache=false
+      --cache=true
       $DESTINATION_ARG
       --build-arg VEO_DEBUG="${VEO_DEBUG}"
       --build-arg NODE_ENV="${NODE_ENV}"
