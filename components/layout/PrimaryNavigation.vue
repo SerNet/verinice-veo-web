@@ -434,8 +434,7 @@ const domainDashboardNavEntry = computed<INavItem>(() => ({
     }
   },
   componentName: 'domain-dashboard-nav-item',
-  exact: true,
-  classes: 'mb-4'
+  exact: true
 }));
 
 const objectsNavEntry = computed<INavItem>(() => ({
@@ -498,7 +497,8 @@ const editorsNavEntry = computed<INavItem>(() => ({
       unit: props.unitId,
       domain: props.domainId
     }
-  }
+  },
+  classes: 'mb-4'
 }));
 
 const backToVeoNavEntry = computed<INavItem>(() => ({
