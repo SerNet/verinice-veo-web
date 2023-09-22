@@ -255,7 +255,7 @@ const showAtStartup = computed({
 const { data: domains} = useQuery(domainQueryDefinitions.queries.fetchDomains);
 const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
-const domainId = computed(() => domains.value?.filter((domain) => domain.profiles && Object.keys(domain.profiles).length)?.[0].id || null);
+const domainId = computed(() => domains.value?.filter((domain) => domain.profiles && Object.keys(domain.profiles).length)?.[0]?.id || null);
 const unitId = computed(() => units.value?.[0]?.id || null);
 
 const profileLink = computed(() => domainId && unitId

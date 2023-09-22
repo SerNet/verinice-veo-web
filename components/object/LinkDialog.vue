@@ -49,13 +49,12 @@
         :required-fields="['objectType']"
         @update:filter="updateFilter"
       />
-      <BaseCard>
+      <BaseCard id="link-dialog-select-all">
         <ObjectTable
           v-model="modifiedSelectedItems"
           v-model:page="page"
           v-model:sort-by="sortBy"
           show-select
-          select-strategy="single"
           :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
           :items="selectableObjects"
           :loading="objectsLoading || childrenLoading || parentsLoading"
@@ -401,3 +400,9 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style>
+#link-dialog-select-all .v-data-table__thead .v-selection-control__input {
+  display:none;
+}
+</style>
