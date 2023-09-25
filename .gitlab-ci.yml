@@ -41,7 +41,7 @@ docker_image:
   stage: build
   needs: ["store_project_version"]
   image:
-    name: gcr.io/kaniko-project/executor:v1.15.0-debug
+    name: gcr.io/kaniko-project/executor:v1.16.0-debug
     entrypoint: [""]
   variables:
     IMAGE_NAME: eu.gcr.io/veo-projekt/veo-web
