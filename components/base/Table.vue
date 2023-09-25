@@ -39,7 +39,7 @@ interface TableHeaderAdditionalProperties {
   text?: string;
   render?: TableRenderer;
   tooltip?: TableRenderer;
-  value: keyof any | string;
+  value?: keyof any | string;
   key: string;
 }
 
