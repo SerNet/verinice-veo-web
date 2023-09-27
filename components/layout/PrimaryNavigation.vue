@@ -211,7 +211,7 @@ function getFormSchema(
  * Translates a subType using values from form schemas.
  * Necessary because objects/elements do not come with a translation.
  */
-function getDisplayName({ formSchema }: { formSchema: IVeoFormSchema }) {
+function getDisplayName({ formSchema }: { formSchema: IVeoFormSchema | undefined }) {
   const translation = formSchema?.name[locale.value];
   return translation;
 }
@@ -278,7 +278,7 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
           ...sortBy(
             objectSubTypes.map((subType) => {
               const formSchema = getFormSchema({
-                formSchemas: formSchemas?.value,
+                formSchemas: formSchemas?.value as IVeoFormSchema[],
                 elementType: objectSchema?.title,
                 subType: subType.subType
               });
@@ -317,40 +317,45 @@ const { data: catalogItemTypes, isFetching: catalogItemTypeCountIsLoading } =
 const catalogsEntriesChildItems = computed<INavItem[]>(() => {
   if(isEmpty(catalogItemTypes?.value || {})) return [];
 
-  const catalogItems = [ ['all', { all: 'MISC' }], ...Object.entries(catalogItemTypes?.value || [])];
+  const catalogItems = [ ['all', { all: 'MISC' } ], ...Object.entries(catalogItemTypes?.value || [])];
 
-  return (catalogItems || []).map(catalogItem => {
-    const _icon = CATALOG_TYPE_ICONS.get(catalogItem[0]);
-    const _subType = Object.keys(catalogItem[1] || {})[0];
+  const catalogNavItems = (catalogItems || []).map(catalogItem => {
+    const _icon = CATALOG_TYPE_ICONS.get(catalogItem[0] as string);
+    const _subTypes = Object.keys(catalogItem[1] || {});
 
-    const formSchema = getFormSchema({
-      formSchemas: formSchemas?.value,
-      elementType: catalogItem[0],
-      subType: _subType
-    });
+    return _subTypes.map(_subType => {
+      const formSchema = getFormSchema({
+        formSchemas: formSchemas?.value as IVeoFormSchema[],
+        elementType: catalogItem[0] as string,
+        subType: _subType
+      });
 
-    const displayName = _subType === 'all' ? t('all') : getDisplayName({formSchema: formSchema}) || _subType;
+      const displayName =
+        _subType === 'all' ? t('all') : getDisplayName({formSchema: formSchema}) || _subType;
 
-    return ({
-      id: `${catalogItem[0]}`,
-      name: displayName,
-      subtype: _subType,
-      elementType: catalogItem[0],
-      icon: _icon?.library === 'mdi' ? _icon?.icon as string : undefined,
-      to: {
-        name: CATALOGS_CATALOG_ROUTE_NAME,
-        params: {
-          unit: props.unitId,
-          domain: props.domainId,
-          catalog: props.domainId
-        },
-        query: {
-          type: catalogItem[0],
-          subType: _subType
+      const item = ({
+        id: `${catalogItem[0]}`,
+        name: displayName,
+        subtype: _subType,
+        elementType: catalogItem[0],
+        icon: _icon?.library === 'mdi' ? _icon?.icon as string : undefined,
+        to: {
+          name: CATALOGS_CATALOG_ROUTE_NAME,
+          params: {
+            unit: props.unitId,
+            domain: props.domainId,
+            catalog: props.domainId
+          },
+          query: {
+            type: catalogItem[0],
+            subType: _subType
+          }
         }
-      }
+      });
+      return item;
     });
   });
+  return catalogNavItems.flat();
 });
 
 const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
