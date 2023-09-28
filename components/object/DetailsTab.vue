@@ -340,7 +340,9 @@ export default defineComponent({
                 priority: 90,
                 order: 60,
                 render: (data: any) => {
-                  return h('span', { class: "text-truncate d-inline-block" }, <string>data.item.raw.implementationStatus.toLowerCase() || 'n/a');
+                  return h('span',
+                    { class: "text-truncate d-inline-block" },
+                    t(`controls.implementation.${data.item.raw.implementationStatus}`.toLowerCase()) || 'n/a');
                 }
               },
               {
@@ -526,7 +528,7 @@ export default defineComponent({
       incident: 'incidents',
       document: 'documents',
       scenario: 'scenarios',
-      controls: 'controls'
+      control: 'controls'
     };
 
     // push to object detail site (on click in table)
@@ -603,15 +605,20 @@ export default defineComponent({
 {
   "en": {
     "cloneObject": "clone object",
+    "controlDeleted": "The control link has been removed",
     "controls": {
       "abbreviation": "Abbreviation",
+      "implementation": {
+        "no": "no",
+        "partially": "partially",
+        "unknown": "unknown",
+        "yes": "yes"
+      },
       "responsible": "Responsible",
-      "status": "Implementation status",
-      "title": "Title"
+      "status": "Implementation status"
     },
     "deleteControl": "Delete control",
     "deleteRisk": "delete risk",
-    "objectCloned": "Object successfully cloned",
     "errors": {
       "clone": "Could not clone object",
       "control": "Could not delete control link",
@@ -621,6 +628,7 @@ export default defineComponent({
     "inherentRisk": "Inherent risk",
     "linkName": "Link name",
     "no": "no",
+    "objectCloned": "Object successfully cloned",
     "partial": "partially",
     "parentType": "parent type",
     "removeFromObject": "Remove from object",
@@ -632,7 +640,6 @@ export default defineComponent({
     "removeScopeFromScopeError": "Couldn't remove scope",
     "removeScopeFromScopeSuccess": "Scope was removed successfully",
     "residualRisk": "Residual risk",
-    "controlDeleted": "The control link has been removed",
     "riskDeleted": "The risk was removed",
     "riskTreatments": {
       "RISK_TREATMENT_ACCEPTANCE": "risk retention",
@@ -644,15 +651,20 @@ export default defineComponent({
   },
   "de": {
     "cloneObject": "Objekt duplizieren",
+    "controlDeleted": "Die Bausteinverknüpfung wurde entfernt",
     "controls": {
       "abbreviation": "Abkürzung",
+      "implementation": {
+        "no": "nein",
+        "partially": "teilweise",
+        "unknown": "unbekannt",
+        "yes": "ja"
+      },
       "responsible": "Verantwortlich",
-      "status": "Umsetzungsstatus",
-      "title": "Titel"
+      "status": "Umsetzungsstatus"
     },
     "deleteControl": "Bausteinverknüpfung löschen",
     "deleteRisk": "Risiko löschen",
-    "objectCloned": "Das Objekt wurde erfolgreich dupliziert",
     "errors": {
       "clone": "Das Objekt konnte nicht dupliziert werden",
       "control": "Die Bausteinverknüpfung konnte nicht gelöscht werden",
@@ -661,6 +673,7 @@ export default defineComponent({
     },
     "inherentRisk": "Bruttorisiko",
     "linkName": "Name des Links",
+    "objectCloned": "Das Objekt wurde erfolgreich dupliziert",
     "parentType": "Elterntyp",
     "removeFromObject": "Aus Objekt entfernen",
     "removeFromScope": "Aus Scope entfernen",
@@ -671,7 +684,6 @@ export default defineComponent({
     "removeScopeFromScopeError": "Scope konnte nicht entfernt werden",
     "removeScopeFromScopeSuccess": "Scope wurde entfernt",
     "residualRisk": "NettoUmsetzungsrisiko",
-    "controlDeleted": "Die Bausteinverknüpfung wurde entfernt",
     "riskDeleted": "Das Risiko wurde entfernt",
     "riskTreatments": {
       "RISK_TREATMENT_ACCEPTANCE": "Risikoakzeptanz",
