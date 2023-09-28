@@ -140,9 +140,19 @@ export default defineComponent({
         key: 'linkObject',
         title: t('linkObject', [props.object?.type !== 'scope' ? translations.value?.lang[locale.value]?.[props.object?.type || ''] : t('object')]).toString(),
         icon: mdiLinkPlus,
-        tab: ['childObjects', 'parentObjects'],
+        tab: ['childObjects', 'parentObjects', 'controls'],
         objectTypes: ['entity'],
-        action: () => openLinkObjectDialog(props.object?.type === 'scope' ? undefined : props.object?.type, props.type === 'childObjects')
+        action: () => {
+          let type = props.object?.type;
+
+          if (props.object?.type === 'scope') {
+            type = undefined;
+          }
+          if (props.type === 'controls') {
+            type === 'control';
+          }
+          openLinkObjectDialog(type, props.type !== 'parentObjects');
+        }
       },
       {
         key: 'createScope',

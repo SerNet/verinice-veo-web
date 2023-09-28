@@ -57,11 +57,12 @@
       @error="onUnlinkEntityError"
     />
     <RiskCreateDialogSingle
+      v-if="object"
       v-model="editRiskDialog.visible"
       v-bind="editRiskDialog"
       :domain-id="domainId"
-      :object-type="object && object.type"
-      :object-id="object && object.id"
+      :object-type="object.type"
+      :object-id="object.id"
     />
   </div>
 </template>
@@ -72,7 +73,7 @@ import { mdiArrowDown, mdiArrowRight, mdiCheck, mdiContentCopy, mdiLinkOff, mdiT
 import { VIcon, VTooltip } from 'vuetify/components';
 
 import { TableHeader } from '~/components/base/Table.vue';
-import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -83,13 +84,16 @@ import objectQueryDefinitions, { IVeoFetchRisksParameters } from '~/composables/
 import { useFetchParentObjects } from '~/composables/api/objects';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
-import { useMutation } from '~~/composables/api/utils/mutation';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
+import { useMutation } from '~/composables/api/utils/mutation';
 import { useQueryClient } from '@tanstack/vue-query';
 
 export default defineComponent({
   props: {
-    type: { type: String, default: '' },
+    type: {
+      type: String,
+      default: ''
+    },
     object: {
       type: Object as PropType<IVeoEntity>,
       default: undefined
@@ -184,6 +188,11 @@ export default defineComponent({
           return parentObjects.value || [];
         case 'risks':
           return risks.value || [];
+        case 'controls':
+          return (props.object?.controlImplementations || []).map((control) => {
+            const details = getEntityDetailsFromLink(control.control);
+            return { ...control, type: details.type, name: details.name, id: details.id };
+          });
         case 'links':
         default:
           return Object.entries(props.object?.links || {}).reduce((linkArray: { id: string; name?: string; type: string, linkId: string }[], [linkId, links]: [string, IVeoCustomLink[]]) => {
@@ -195,17 +204,13 @@ export default defineComponent({
       }
     });
 
-    // Crud stuff
-    const { mutateAsync: deleteRisk } = useMutation(objectQueryDefinitions.mutations.deleteRisk);
-    // const { mutateAsync: deleteControl } = useMutation(objectQueryDefinitions.mutations.deleteControl);
-
     const defaultHeaders = computed(() =>
       props.type !== 'risks' && props.type !== 'links' && props.type !== 'controls'
         ? ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']
         : props.type === 'links'
           ? ['icon', 'name']
           : props.type === 'controls'
-            ? ['icon', 'actions']
+            ? ['icon', 'name', 'actions']
             : ['designator', 'updatedAt', 'updatedBy', 'actions']
     );
 
@@ -314,52 +319,61 @@ export default defineComponent({
           : props.type === 'controls'
             ? [
               {
-                value: 'ci',
-                key: 'ci',
-                text: t('abbreviation'),
+                value: 'abbreviation',
+                key: 'abbreviation',
+                text: t('controls.abbreviation'),
                 width: 50,
                 truncate: false,
                 priority: 100,
-                order: 20,
+                order: 10,
                 render: (data: any) => {
                   // display designator only
-                  const titleParts = data.item.raw.name.split(' ');
-                  return h('span', titleParts[0]);
+                  return h('span', data.item.raw.control.displayName.split(' ')[0]);
                 }
               },
               {
-                value: 'control',
-                key: 'control',
-                text: t('title'),
-                width: 250,
-                truncate: true,
-                priority: 100,
-                order: 30,
-                render: (data: any) => {
-                  // extract designator from title
-                  const titleParts = data.item.raw.name.split(' ');
-                  return h('span', data.item.raw.name.slice(titleParts[0].length));
-                }
-              },
-              {
-                value: 'ri',
-                key: 'ri',
-                text: t('implementationStatus'),
+                value: 'status',
+                key: 'status',
+                text: t('controls.status'),
                 width: 50,
                 truncate: true,
-                priority: 100,
-                order: 40,
-                render: (data: any) => h('span', (data.item.raw.name.startsWith('AST') ? t('no') : t('partial')))
+                priority: 90,
+                order: 60,
+                render: (data: any) => {
+                  return h('span', { class: "text-truncate d-inline-block" }, <string>data.item.raw.implementationStatus.toLowerCase() || 'n/a');
+                }
+              },
+              {
+                value: 'responsibility',
+                key: 'responsibility',
+                text: t('controls.responsible'),
+                width: 50,
+                truncate: true,
+                priority: 80,
+                order: 80,
+                render: (data: any) => {
+                  // strip designator; 
+                  return h('span', { class: "text-truncate d-inline-block" }, data.item.raw.responsible.displayName.split(' ').slice(1).join(' '));
+                }
               }
             ]
             : []
     );
-    console.log('additional Headers:', additionalHeaders.value);
+
+    // Crud stuff
+    const { mutateAsync: deleteRisk } = useMutation(objectQueryDefinitions.mutations.deleteRisk);
+    const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
+
+    // atm the BE doesn't provide a separate control ID, so we have to extract it
+    function getControlId(item: any): string {
+      const controlUriParts = item.control?.targetUri?.split('/');
+      // get the last index of the control's targetUri, that holds the UUID
+      return controlUriParts[controlUriParts.length - 1].trim();
+    }
 
     /**
      * actions for cloning or unlinking objects
      */
-
     const actions = computed(() => {
       switch(props.type) {
         case 'risks':
@@ -387,12 +401,24 @@ export default defineComponent({
               label: upperFirst(t('deleteControl').toString()),
               icon: mdiTrashCanOutline,
 
-              async action() {
+              async action(item: any) {
                 try {
-                  // await deleteControl();
-                  displaySuccessMessage(t('controlDeleted').toString());
+                  const controlId = getControlId(item);
+                  // since props mustn't be mutated, we need a shallow copy of the object which can be changed
+                  const copy = cloneDeep(props.object);
+
+                  const controlIndex = (copy?.controlImplementations || []).findIndex((ci) => {
+                    // if the ID matches, get the appropriate CI index that will be deleted from the object
+                    return ci.control.targetUri.endsWith(controlId);
+                  });
+                  // mutate the object if an ID matched
+                  if (controlIndex >= 0) {
+                    copy?.controlImplementations?.splice(controlIndex, 1);
+                    await updateObject({ endpoint: route.params?.objectType, id: copy?.id, object: copy });
+                    displaySuccessMessage(t('controlDeleted').toString());
+                  }
                 } catch (e: any) {
-                  displayErrorMessage(t('deleteControlError').toString(), e.message);
+                  displayErrorMessage(t('errors.control').toString(), e.message);
                 }
               }
             }
@@ -451,7 +477,6 @@ export default defineComponent({
     /**
      * control unlink dialogs
      */
-
     const unlinkEntityDialog = ref({
       value: false as boolean,
       objectToRemove: undefined as IVeoEntity | undefined,
@@ -506,26 +531,33 @@ export default defineComponent({
       incident: 'incidents',
       document: 'documents',
       scenario: 'scenarios',
-      control: 'controls'
+      controls: 'controls'
     };
 
     // push to object detail site (on click in table)
     const openItem = (item: any) => {
-      if (props.type === 'risks') {
-        item = item.item.raw as IVeoRisk;
-        editRiskDialog.value.scenarioId = getEntityDetailsFromLink(item.scenario).id;
-        editRiskDialog.value.visible = true;
-      } else {
+      // assemble route params
+      const { id: itemId, type: itemType } = item.item.raw as IVeoEntity;
+      const objectType = OBJECT_TYPE_TO_URL_MAP[itemType] || route.params.objectType;
+      const params = { ...route.params, object: itemId, objectType, subType: '-' };
 
-        // Put together route params together
-        const { id: itemId, type: itemType } = item.item.raw as IVeoEntity;
-        const objectType = OBJECT_TYPE_TO_URL_MAP[itemType] || route.params.objectType;
-        const params = { ...route.params, object: itemId, objectType, subType: '-' };
-
-        router.push({
-          name: OBJECT_DETAIL_ROUTE,
-          params
-        });
+      switch (props.type)  {
+        case 'risks':
+          item = item.item.raw as IVeoRisk;
+          editRiskDialog.value.scenarioId = getEntityDetailsFromLink(item.scenario).id;
+          editRiskDialog.value.visible = true;
+          break;
+        case 'controls':
+          router.push({
+            name: 'unit-domains-domain-compliance',
+            params: { ...route.params, object: props.object?.id, control: getControlId(item) }
+          });
+          break;
+        default:
+          router.push({
+            name: OBJECT_DETAIL_ROUTE,
+            params
+          });
       }
     };
 
@@ -575,16 +607,22 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "abbreviation": "Abbreviation",
     "cloneObject": "clone object",
-    "deleteRisk": "delete risk",
-    "objectCloned": "Object successfully cloned.",
-    "errors": {
-      "clone": "Could not clone object.",
-      "link": "Could not link new object.",
-      "risk": "Couldn't delete risk"
+    "controls": {
+      "abbreviation": "Abbreviation",
+      "responsible": "Responsible",
+      "status": "Implementation status",
+      "title": "Title"
     },
-    "implementationStatus": "Implementation status",
+    "deleteControl": "Delete control",
+    "deleteRisk": "delete risk",
+    "objectCloned": "Object successfully cloned",
+    "errors": {
+      "clone": "Could not clone object",
+      "control": "Could not delete control link",
+      "link": "Could not link new object",
+      "risk": "Could not delete risk"
+    },
     "inherentRisk": "Inherent risk",
     "linkName": "Link name",
     "no": "no",
@@ -599,6 +637,7 @@ export default defineComponent({
     "removeScopeFromScopeError": "Couldn't remove scope",
     "removeScopeFromScopeSuccess": "Scope was removed successfully",
     "residualRisk": "Residual risk",
+    "controlDeleted": "The control link has been removed",
     "riskDeleted": "The risk was removed",
     "riskTreatments": {
       "RISK_TREATMENT_ACCEPTANCE": "risk retention",
@@ -606,26 +645,27 @@ export default defineComponent({
       "RISK_TREATMENT_REDUCTION": "risk reduction",
       "RISK_TREATMENT_TRANSFER": "risk transfer"
     },
-    "scenario": "Scenario",
-    "status": "Implementation status",
-    "title": "Title"
-
+    "scenario": "Scenario"
   },
   "de": {
-    "abbreviation": "Abkürzung",
     "cloneObject": "Objekt duplizieren",
-    "deleteRisk": "Risiko löschen",
-    "objectCloned": "Das Objekt wurde erfolgreich dupliziert.",
-    "errors": {
-      "clone": "Das Objekt konnte nicht dupliziert werden.",
-      "link": "Das neue Objekt konnte nicht verknüpft werden.",
-      "risk": "Risiko konnte nicht gelöscht werden"
+    "controls": {
+      "abbreviation": "Abkürzung",
+      "responsible": "Verantwortlich",
+      "status": "Umsetzungsstatus",
+      "title": "Titel"
     },
-    "implementationStatus": "Umsetzungsstatus",
+    "deleteControl": "Bausteinverknüpfung löschen",
+    "deleteRisk": "Risiko löschen",
+    "objectCloned": "Das Objekt wurde erfolgreich dupliziert",
+    "errors": {
+      "clone": "Das Objekt konnte nicht dupliziert werden",
+      "control": "Die Bausteinverknüpfung konnte nicht gelöscht werden",
+      "link": "Das neue Objekt konnte nicht verknüpft werden",
+      "risk": "Das Risiko konnte nicht gelöscht werden"
+    },
     "inherentRisk": "Bruttorisiko",
     "linkName": "Name des Links",
-    "no": "nein",
-    "partial": "teilweise",
     "parentType": "Elterntyp",
     "removeFromObject": "Aus Objekt entfernen",
     "removeFromScope": "Aus Scope entfernen",
@@ -636,6 +676,7 @@ export default defineComponent({
     "removeScopeFromScopeError": "Scope konnte nicht entfernt werden",
     "removeScopeFromScopeSuccess": "Scope wurde entfernt",
     "residualRisk": "NettoUmsetzungsrisiko",
+    "controlDeleted": "Die Bausteinverknüpfung wurde entfernt",
     "riskDeleted": "Das Risiko wurde entfernt",
     "riskTreatments": {
       "RISK_TREATMENT_ACCEPTANCE": "Risikoakzeptanz",
@@ -643,9 +684,7 @@ export default defineComponent({
       "RISK_TREATMENT_REDUCTION": "Risikoreduktion",
       "RISK_TREATMENT_TRANSFER": "Risikotransfer"
     },
-    "scenario": "Szenario",
-    "status": "Umsetzungsstatus",
-    "title": "Titel"
+    "scenario": "Szenario"
   }
 }
 </i18n>

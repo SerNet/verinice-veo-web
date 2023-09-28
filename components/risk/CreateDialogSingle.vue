@@ -98,7 +98,7 @@
     <template #dialog-options>
       <v-spacer />
       <v-btn
-        text
+        variant="text"
         color="primary"
         :loading="savingRisk"
         :disabled="formIsValid === false || !formModified || ability.cannot('manage', 'objects')"
@@ -107,7 +107,7 @@
         {{ globalT('global.button.save') }}
       </v-btn>
       <v-btn
-        text
+        variant="text"
         color="primary"
         :disabled="savingRisk"
         @click="$emit('update:model-value', false)"

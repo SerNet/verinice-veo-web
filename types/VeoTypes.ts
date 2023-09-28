@@ -361,6 +361,7 @@ export interface IVeoEntityDomain {
 export interface IVeoEntity extends IVeoBaseObject {
   name: string;
   abbreviation?: string;
+  controlImplementations?: any[],
   designator: string;
   displayName: string;
   description?: string;

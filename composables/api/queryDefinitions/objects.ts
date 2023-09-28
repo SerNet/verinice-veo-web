@@ -91,14 +91,9 @@ export interface IVeoDeleteRiskParameters {
 }
 
 export interface IVeoFetchWipDecisionEvaluationParameters{
-  endpoint: string,
-  object: IVeoEntity,
-  domain: string,
-}
-
-export interface IVeoDeleteControlParameters {
   endpoint: string;
-  objectId: string;
+  object: IVeoEntity;
+  domain: string;
 }
 
 export const formatObject = (object: IVeoEntity) => {
@@ -347,25 +342,5 @@ export default {
         }
       }
     } as IVeoMutationDefinition<IVeoDeleteRiskParameters, void>
-    // template / placeholder; to be implemented, once we get data from BE
-    // deleteControl: {
-    //   primaryQueryKey: 'control',
-    //   url: '/api/:endpoint/:objectId/controls/:controlId',
-    //   method: 'DELETE',
-    //   reponseType: VeoApiReponseType.VOID,
-    //   mutationParameterTransformationFn: (mutationParameters) => ({ params: mutationParameters }),
-    //   staticMutationOptions: {
-    //     onSuccess: (queryClient, _data, variables, _context) => {
-    //       queryClient.invalidateQueries([
-    //         'controls',
-    //         {
-    //           endpoint: variables.params?.endpoint,
-    //           id: variables.params?.objectId
-    //         }
-    //       ]),
-    //       queryClient.invalidateQueries({queryKey: ['evaluation']});
-    //     }
-    //   }
-    // } as IVeoMutationDefinition<IVeoDeleteControlParameters, void>
   }
 };
