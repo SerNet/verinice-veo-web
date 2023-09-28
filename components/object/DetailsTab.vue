@@ -326,9 +326,9 @@ export default defineComponent({
                 truncate: false,
                 priority: 100,
                 order: 10,
-                render: (data: any) => {
-                  // display designator only
-                  return h('span', data.item.raw.control.displayName.split(' ')[0]);
+                render: () => {
+                  // abbreviations aren't provided by the BE yet
+                  return h('span', 'n/a');
                 }
               },
               {
@@ -364,13 +364,6 @@ export default defineComponent({
     const { mutateAsync: deleteRisk } = useMutation(objectQueryDefinitions.mutations.deleteRisk);
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
-    // atm the BE doesn't provide a separate control ID, so we have to extract it
-    function getControlId(item: any): string {
-      const controlUriParts = item.control?.targetUri?.split('/');
-      // get the last index of the control's targetUri, that holds the UUID
-      return controlUriParts[controlUriParts.length - 1].trim();
-    }
-
     /**
      * actions for cloning or unlinking objects
      */
@@ -403,17 +396,19 @@ export default defineComponent({
 
               async action(item: any) {
                 try {
-                  const controlId = getControlId(item);
+                  // atm the BE doesn't provide a separate control ID, so we have to extract it
+                  const controlUriParts = item.control?.targetUri?.split('/');
+                  // get the last index of the control's targetUri, that holds the UUID
+                  const controlId = controlUriParts[controlUriParts.length - 1].trim();
                   // since props mustn't be mutated, we need a shallow copy of the object which can be changed
                   const copy = cloneDeep(props.object);
-
-                  const controlIndex = (copy?.controlImplementations || []).findIndex((ci) => {
-                    // if the ID matches, get the appropriate CI index that will be deleted from the object
-                    return ci.control.targetUri.endsWith(controlId);
-                  });
-                  // mutate the object if an ID matched
+                  // if the ID matches, get the appropriate CI index that will be deleted from the object
+                  const controlIndex = (copy?.controlImplementations || []).findIndex((ci) => ci.control.targetUri.endsWith(controlId));
+                  // finally mutate the object, if an ID matched
                   if (controlIndex >= 0) {
+                    // delete the appropriate key at <controlIndex>
                     copy?.controlImplementations?.splice(controlIndex, 1);
+                    // patch the object / PUT changed riskAffected
                     await updateObject({ endpoint: route.params?.objectType, id: copy?.id, object: copy });
                     displaySuccessMessage(t('controlDeleted').toString());
                   }
@@ -550,7 +545,7 @@ export default defineComponent({
         case 'controls':
           router.push({
             name: 'unit-domains-domain-compliance',
-            params: { ...route.params, object: props.object?.id, control: getControlId(item) }
+            params: { ...route.params, riskAffected: props.object?.id, control: item.item.raw.id }
           });
           break;
         default:
