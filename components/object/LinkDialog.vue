@@ -159,7 +159,7 @@ export default defineComponent({
     const queryClient = useQueryClient();
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-    const translationsQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain }));
+    const translationsQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain as string }));
     const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationsQueryParameters);
 
     const newObjectTypeName = computed(() =>
