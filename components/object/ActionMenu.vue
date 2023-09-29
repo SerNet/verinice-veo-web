@@ -57,6 +57,7 @@
       v-bind="addEntityDialog"
       @success="onAddEntitySuccess"
       @error="onAddEntityError"
+      @update:preselected-items="onItemsUpdated"
     />
     <ObjectSelectObjectTypeDialog
       v-model="createEntityDialog.value"
@@ -84,16 +85,17 @@
 
 <script lang="ts">
 import { PropType } from 'vue';
-import { upperFirst } from 'lodash';
+import { upperFirst, cloneDeep } from 'lodash';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
 
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useLinkObject } from '~/composables/VeoObjectUtilities';
+import { useLinkObject, useCreateLink } from '~/composables/VeoObjectUtilities';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
+import { useMutation } from '~/composables/api/utils/mutation';
 import { useQueryClient } from '@tanstack/vue-query';
 
 export default defineComponent({
@@ -117,13 +119,14 @@ export default defineComponent({
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { link } = useLinkObject();
+    const { createLink } = useCreateLink();
     const queryClient = useQueryClient();
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain }));
+    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain as string}));
     const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
-
+    const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
     const speedDialIsOpen = ref(false);
 
     // configure possible action items
@@ -151,7 +154,7 @@ export default defineComponent({
           if (props.type === 'controls') {
             type === 'control';
           }
-          openLinkObjectDialog(type, props.type !== 'parentObjects');
+          openLinkObjectDialog(type, props.type !== 'parentObjects', props.type === 'controls');
         }
       },
       {
@@ -193,11 +196,14 @@ export default defineComponent({
      */
 
     // dialog options
-    const addEntityDialog = ref<{ object: IVeoEntity | undefined; editScopeRelationship: boolean; value: boolean; editParents: boolean }>({
+    const addEntityDialog = ref<{ object: IVeoEntity | undefined; editScopeRelationship: boolean; value: boolean; editParents: boolean, preselectedItems: (IVeoLink | IVeoEntity)[], returnObjects: boolean, preselectedFilters: Record<string, any> }>({
       object: undefined,
       editScopeRelationship: false,
       value: false,
-      editParents: false
+      editParents: false,
+      preselectedItems: [],
+      returnObjects: false,
+      preselectedFilters: {}
     });
 
     const createEntityDialog = ref({
@@ -230,15 +236,30 @@ export default defineComponent({
     };
 
     // control dialogs
-    const openLinkObjectDialog = (objectType?: string, addAsChild?: boolean) => {
+    const openLinkObjectDialog = (objectType?: string, addAsChild?: boolean, isControlImplementation?: boolean) => {
       addEntityDialog.value = {
-        object: props.object,
+        object: isControlImplementation
+          ? { type: 'control', displayName: 'CI' }
+          : props.object,
         editScopeRelationship: objectType === 'scope',
         value: true,
-        editParents: addAsChild !== undefined && !addAsChild
+        editParents: addAsChild !== undefined && !addAsChild,
+        preselectedItems: isControlImplementation
+          ? props.object?.controlImplementations?.map((control) => control.control)
+          : [],
+        returnObjects: !!isControlImplementation,
+        preselectedFilters: isControlImplementation
+          ? { subType: 'CTL_Module'}
+          : {}
       };
     };
 
+    const onItemsUpdated = async (newItems: (IVeoEntity | IVeoLink)[]) => {
+      const copy = cloneDeep(props.object);
+      if (!copy) return;
+      copy.controlImplementations = newItems.map((item) => ({ control: ('targetUri' in item ? item : createLink('controls', item.id)), implementationStatus: 'UNKNOWN' }));
+      await updateObject({ endpoint: route.params?.objectType, id: copy?.id, object: copy });
+    };
     // show error or success message
     const onAddEntitySuccess = () => {
       displaySuccessMessage(upperFirst(t('objectLinked').toString()));
@@ -295,6 +316,7 @@ export default defineComponent({
       onAddEntityError,
       onCreateObjectSuccess,
       onCreateRiskSuccess,
+      onItemsUpdated,
       openCreateObjectDialog,
       openLinkObjectDialog,
       addEntityDialog,

@@ -87,7 +87,7 @@
 import { PropType } from 'vue';
 import { differenceBy, isEqual, omit, uniqBy, upperFirst } from 'lodash';
 
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import { useUnlinkObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
@@ -96,6 +96,7 @@ import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
+import { getEntityDetailsFromLink } from '~/lib/utils';
 
 export default defineComponent({
   props: {
@@ -212,9 +213,15 @@ export default defineComponent({
       ...objects.value,
       items: (objects.value?.items || []).map((selectableObject) => ({
         ...selectableObject,
-        disabled: !!originalSelectedItems.value.find((item) => item.id === selectableObject.id) || props.object?.id === selectableObject.id
+        disabled: !!originalSelectedItems.value.find((item) => getIdFromItem(item) === selectableObject.id) || props.object?.id === selectableObject.id
       }))
     }));
+
+    const getIdFromItem = (item: IVeoLink | IVeoEntity) => {
+      return 'targetUri' in item
+        ? getEntityDetailsFromLink(item).id
+        : item.id;
+    };
 
     watch(
       () => props.preselectedFilters,
@@ -281,7 +288,7 @@ export default defineComponent({
     const childScopesQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && !props.editParents && objectEndpoint.value === 'scopes');
     const { data: childScopes, isFetching: childScopesLoading } = useQuery(objectQueryDefinitions.queries.fetchScopeChildren, childScopesQueryParameters, { enabled: childScopesQueryEnabled });
 
-    const children = computed(() => uniqBy([...(childObjects.value || []), ...(childScopes.value || []), ...props.preselectedItems], (arrayEntry) => arrayEntry.id));
+    const children = computed(() => uniqBy([...(childObjects.value || []), ...(childScopes.value || []), ...props.preselectedItems], (arrayEntry) => getIdFromItem(arrayEntry)));
     const childrenLoading = computed(() => childObjectsLoading.value || childScopesLoading.value);
 
     const originalSelectedItems = computed(() => (props.editParents ? parents.value?.items || [] : children.value)); // Doesn't get modified to compare which parents have been added removed

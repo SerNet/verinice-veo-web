@@ -262,7 +262,7 @@ export default defineComponent({
                     location: 'bottom',
                     maxWidth: 600
                   }, {
-                    activator: ({ attrs, props }) => h('span', { ...attrs, ...props, class: 'text-grey text--darken-4' }, translatedInherentRisk),
+                    activator: ({ attrs, props }: any) => h('span', { ...attrs, ...props, class: 'text-grey text--darken-4' }, translatedInherentRisk),
                     default: () => h('span', t('inherentRisk').toString()) })
                   : undefined,
                 translatedInherentRisk && translatedResidualRisk ? h('span', ' / ') : undefined,
@@ -271,7 +271,7 @@ export default defineComponent({
                     location: 'bottom',
                     maxWidth: 600
                   }, {
-                    activator: ({ attrs, props }) => h('span', { ...attrs, ...props, class: 'pr-1' }, translatedResidualRisk),
+                    activator: ({ attrs, props }: any) => h('span', { ...attrs, ...props, class: 'pr-1' }, translatedResidualRisk),
                     default: () => h('span', t('residualRisk').toString())
                   })
                   : undefined,
@@ -293,7 +293,7 @@ export default defineComponent({
                     location: 'bottom',
                     maxWidth: 600
                   }, {
-                    activator: ({ attrs, props }) => h(VIcon, { ...attrs, ...props, size: 'small', icon }),
+                    activator: ({ attrs, props }: any) => h(VIcon, { ...attrs, ...props, size: 'small', icon }),
                     default: () => h('span', t(`riskTreatments.${riskTreatment}`).toString())
                   });
                 })
@@ -355,7 +355,7 @@ export default defineComponent({
                 order: 80,
                 render: (data: any) => {
                   // strip designator; 
-                  return h('span', { class: "text-truncate d-inline-block" }, data.item.raw.responsible.displayName.split(' ').slice(1).join(' '));
+                  return h('span', { class: "text-truncate d-inline-block" }, (data.item.raw.responsible?.displayName || '').split(' ').slice(1).join(' '));
                 }
               }
             ]
@@ -544,9 +544,9 @@ export default defineComponent({
           editRiskDialog.value.visible = true;
           break;
         case 'controls':
-          router.push({
-            name: `unit-domains-domain-compliance?riskAffected=${props.object?.id}&control=${item.item.raw.id}&type=${props.object?.type}`,
-            params
+          navigateTo({
+            name: 'unit-domains-domain-compliance',
+            params: { ...route.params, riskAffected: props.object?.id, control: item.item.raw.id, type: props.object?.type }
           });
           break;
         default:
