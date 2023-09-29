@@ -119,8 +119,6 @@
 
   "residualRiskHint": "the displayed residual risk has been derived from the input data.{0}You can overwrite it with a custom value",
 
-  "imprintText": "The {0} of SerNet GmbH applies.",
-  "privacyPolicyText": "The {0} of SerNet GmbH applies.",
   "deleteText": "Do you really want to delete the element \"{0}\"? This action cannot be undone.",
   "fix": "Fix",
 
