@@ -530,14 +530,13 @@ export default defineComponent({
       scenario: 'scenarios',
       control: 'controls'
     };
-
     // push to object detail site (on click in table)
     const openItem = (item: any) => {
       // assemble route params
       const { id: itemId, type: itemType } = item.item.raw as IVeoEntity;
       const objectType = OBJECT_TYPE_TO_URL_MAP[itemType] || route.params.objectType;
       const params = { ...route.params, object: itemId, objectType, subType: '-' };
-
+      
       switch (props.type)  {
         case 'risks':
           item = item.item.raw as IVeoRisk;
@@ -546,8 +545,8 @@ export default defineComponent({
           break;
         case 'controls':
           router.push({
-            name: 'unit-domains-domain-compliance',
-            params: { ...route.params, riskAffected: props.object?.id, control: item.item.raw.id }
+            name: `unit-domains-domain-compliance?riskAffected=${props.object?.id}&control=${item.item.raw.id}&type=${props.object?.type}`,
+            params
           });
           break;
         default:
