@@ -35,9 +35,7 @@
       </v-tab>
     </v-tabs>
 
-    <LayoutAppLogoDesktop
-      style="height: 25%; width: 25%; margin-left: 16px;"
-    />
+    <LayoutAppLogoDesktop class="d-flex logo-size ml-4 mt-4 mb-6" />
 
     <v-window v-model="tab">
       <v-window-item
@@ -252,3 +250,10 @@ const privacyPolicyLink = computed(() => locale.value === 'de' ? 'https://www.se
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.logo-size {
+  height: 25%;
+  width: 25%;
+}
+</style>
