@@ -259,6 +259,7 @@ export default defineComponent({
       if (!copy) return;
       copy.controlImplementations = newItems.map((item) => ({ control: ('targetUri' in item ? item : createLink('controls', item.id)), implementationStatus: 'UNKNOWN' }));
       await updateObject({ endpoint: route.params?.objectType, id: copy?.id, object: copy });
+      displaySuccessMessage(upperFirst(t('objectLinked').toString()));
     };
     // show error or success message
     const onAddEntitySuccess = () => {

@@ -609,7 +609,7 @@ export default defineComponent({
       "abbreviation": "Abbreviation",
       "implementation": {
         "no": "no",
-        "partially": "partially",
+        "partial": "partially",
         "unknown": "unknown",
         "yes": "yes"
       },
