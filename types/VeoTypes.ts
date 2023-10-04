@@ -358,10 +358,14 @@ export interface IVeoEntityDomain {
   };
 }
 
+export interface IVeoControlImplementation {
+  control: IVeoLink;
+}
+
 export interface IVeoEntity extends IVeoBaseObject {
   name: string;
   abbreviation?: string;
-  controlImplementations?: any[],
+  controlImplementations?: IVeoControlImplementation[],
   designator: string;
   displayName: string;
   description?: string;

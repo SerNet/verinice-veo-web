@@ -257,7 +257,9 @@ export default defineComponent({
     const onItemsUpdated = async (newItems: (IVeoEntity | IVeoLink)[]) => {
       const copy = cloneDeep(props.object);
       if (!copy) return;
-      copy.controlImplementations = newItems.map((item) => ({ control: ('targetUri' in item ? item : createLink('controls', item.id)), implementationStatus: 'UNKNOWN' }));
+      copy.controlImplementations?.push(...newItems.map((item) => {
+        return { control: ('targetUri' in item ? item : createLink('controls', item.id)) };
+      }));
       await updateObject({ endpoint: route.params?.objectType, id: copy?.id, object: copy });
       displaySuccessMessage(upperFirst(t('objectLinked').toString()));
     };

@@ -51,7 +51,7 @@
         class="ml-2 text-uppercase"
         :label="formatLabel(k)"
         :value="formatValue(k, filter[k])"
-        :close="!requiredFields.includes(k) && !disabledFields.includes(k)"
+        :close="!requiredFields.includes(k) && !disabledFields.includes(k) && $props.filter?.subType !== 'CTL_Module'"
         @click:close="clearFilter(k)"
       />
     </v-col>

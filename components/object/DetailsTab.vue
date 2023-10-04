@@ -210,7 +210,7 @@ export default defineComponent({
         : props.type === 'links'
           ? ['icon', 'name']
           : props.type === 'controls'
-            ? ['icon', 'name', 'actions']
+            ? ['icon', 'actions']
             : ['designator', 'updatedAt', 'updatedBy', 'actions']
     );
 
@@ -318,6 +318,7 @@ export default defineComponent({
           ]
           : props.type === 'controls'
             ? [
+              // NOTE: abbreviation, name and ID aren't provided by the BE yet, hence we have to solve it dirty for now
               {
                 value: 'abbreviation',
                 key: 'abbreviation',
@@ -326,9 +327,21 @@ export default defineComponent({
                 truncate: false,
                 priority: 100,
                 order: 10,
-                render: () => {
+                render: (data: any) => {
                   // abbreviations aren't provided by the BE yet
-                  return h('span', 'n/a');
+                  return h('span', data.item?.raw?.control?.displayName.split(' ')?.[1] || 'n/a');
+                }
+              },
+              {
+                value: 'name',
+                key: 'name',
+                text: 'Name',
+                width: 200,
+                truncate: true,
+                priority: 100,
+                order: 20,
+                render: (data: any) => {
+                  return h('span', data.item?.raw?.control?.displayName.split(' ')?.slice(2).join(' '));
                 }
               },
               {
