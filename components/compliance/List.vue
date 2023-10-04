@@ -1,131 +1,142 @@
 <template>
-  <BaseTable
-    :items="requirementImplementations"
-    item-key="id"
-    :additional-headers="headers"
-  >
-    <!--
-    class="veo-report-list"
-    :items-per-page="tablePageSize"
-    :loading="isFetching"
-    @click:row="onRowClicked"
-    -->
-    <template #no-data>
-      <span class="text-center">
-        {{ t('noRequirementImplementations') }}
-      </span>
-    </template>
-    <!--
-    <template #item.description="{ item }">
-      <div class="veo-report-list__description">
-        <v-tooltip
-          v-if="item.descriptionShort"
-          location="bottom"
-        >
-          <template #activator="{ props: tooltipProps }">
-            <span
-              v-bind="tooltipProps"
-              class="veo-report-list__description--description"
-            >{{ item.descriptionShort }}</span>
-          </template>
-          <template #default>
-            <span>{{ item.raw.description }}</span>
-          </template>
-        </v-tooltip>
-        <span v-else>{{ item.raw.description }}</span>
-      </div>
-    </template>
-    <template #item.outputTypes="{ item }">
-      {{ toUpper(item.raw.outputTypes) }}
-    </template>
-    -->
-  </BaseTable>
+  <BaseCard class="mb-8">
+    <BaseTable
+      :items="requirementImplementations.items"
+      item-key="id"
+      :additional-headers="headers"
+      enable-click
+      @click="(e) => openItem({
+        type: state.type.value,
+        riskAffected: state.riskAffected.value,
+        item: e.item
+      })"
+    >
+      <template #no-data>
+        <span class="text-center">
+          {{ t('noRequirementImplementations') }}
+        </span>
+      </template>
+    </BaseTable>
+
+    <ComplianceEditor
+      :item="requirementImplementation"
+      :show-dialog="showDialog"
+      @update:show-dialog="showDialog = !showDialog"
+      @update:item="reloadRequirementImplementations"
+    />
+  </BaseCard>
 </template>
 
 <script setup lang="ts">
 import { TableHeader } from '../base/Table.vue';
+import { useCompliance } from './compliance';
+
+const {
+  fetchRequirementImplementations,
+  fetchRequirementImplementation,
+  state
+} = useCompliance();
+
 const { t } = useI18n();
 
-// Table setup
-/*
-Abkürzung: Abkürzung der Anforderung
-Anforderung: Titel der Anforderung
-Umsetzungsherkunft: Herkunft der Umsetzung [ Systemspezifisch | Vererbung | Organisation ]
-Verantwortlich: Abkürzung der verantwortlichen Person
-Status: Status der Umsetzung [ Unbearbeitet | Ja | Teilweise | Nein | Nicht anwendbar ]
-*/
+interface Emits {
+  (e: 'update:currentName', currentName: string): void
+}
+const emit = defineEmits<Emits>()
 
-const headers: TableHeader[] = [
-  // { title: t('thAbbreviation'), align: 'start', key: 'name'},
-  {
-    value: t('thName'), // Values seem to be set in BaseTable (only pass string here?)
+
+const requirementImplementations =
+  ref(await fetchRequirementImplementations({
+    type: state.type.value as string,
+    riskAffected: state.riskAffected.value as string,
+    control: state.control.value as string
+  }));
+
+const currentName = computed(() => requirementImplementations?.value?.items?.[0]?.origin?.displayName);
+
+// Emit the current name
+emit('update:currentName', currentName.value);
+watch(currentName, () => emit('update:currentName', currentName.value));
+
+// Open a single RI
+const requirementImplementation = ref(null);
+const showDialog = ref(false);
+
+async function openItem({ type, riskAffected, item }:
+{ type: string | null, riskAffected: string | null, item: any }) {
+  if(!type || !riskAffected) return;
+
+  showDialog.value = true;
+
+  requirementImplementation.value =
+    await fetchRequirementImplementation({
+      type: type as string,
+      riskAffected: riskAffected as string,
+      item
+    });
+}
+
+const reloadRequirementImplementations = async () => {
+  requirementImplementations.value = await fetchRequirementImplementations({
+    type: state.type.value as string,
+    riskAffected: state.riskAffected.value as string,
+    control: state.control.value as string
+  });
+};
+
+// Table setup
+const headers: ComputedRef<TableHeader[]> = computed(()=> [
+{
+    text: t('thName'),
     key: 'control.displayName',
-    sortable: false,
+    cellClass: ['font-weight-bold'],
+    sortable: true,
     priority: 60,
     order: 30
   },
   {
-    value: t('thOrigin'),
-    align: 'start',
+    text: t('thOrigin'),
     key: 'origination',
-    priority: 60,
+    sortable: true,
+    priority: 80,
     order: 30
   },
   {
-    value: t('thResponsibleBody'),
-    align: 'start',
+    text: t('thResponsibleBody'),
     key: 'responsible.displayName',
+    sortable: true,
     priority: 60,
     order: 30
   },
   {
-    value: t('thStatus'),
-    align: 'start',
-    key: 'implementationStatus',
+    text: t('thStatus'),
+    key: 'status',
+    sortable: true,
     priority: 60,
     order: 30
   }
-];
-
-
-/**************** >>>
-/**************** >>>
-riskAffected: Lohnabrechnung
-assetId: 910c01e8-6413-425f-a08c-4896981d3d63
-load asset:
-
-/api/domains/{domainId}/assets/{uuid}
-
-rist
-/**************** >>> */
-
-// check asset + find out, if we have any control implementations
-const aId = '910c01e8-6413-425f-a08c-4896981d3d63';
-const route = useRoute();
-
-const domainId = computed(() => route.params.domain);
-const url = '/api/processes/910c01e8-6413-425f-a08c-4896981d3d63/control-implementations/e043d69b-b4c4-457e-9e96-5a46046a8bb7/requirement-implementations';
-const requirementImplementations = await request(url, {});
-
-console.log({requirementImplementations});
-
+]);
 </script>
 
 <i18n>
 {
 "en": {
+  "hint": "Lorem ipsum dolor sit amet.",
   "thAbbreviation": "Abkürzung",
   "thName": "Anforderung",
   "thOrigin": "Umsetzungsherkunft",
   "thResponsibleBody": "Verantwortlich",
-  "thStatus": "Status"
+  "thStatus": "Status",
+  "noRequirementImplementations": "Keine Requirement Implementations vorhanden."
 },
 "de": {
+  "hint": "Lorem ipsum dolor sit amet.",
   "thAbbreviation": "Abkürzung",
   "thName": "Anforderung",
   "thOrigin": "Umsetzungsherkunft",
   "thResponsibleBody": "Verantwortlich",
-  "thStatus": "Status"
+  "thStatus": "Status",
+  "noRequirementImplementations": "Keine Requirement Implementations vorhanden."
 }
 }
 </i18n>
