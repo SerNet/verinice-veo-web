@@ -1,7 +1,7 @@
 <template>
   <BaseCard class="mb-8">
     <BaseTable
-      :items="requirementImplementations.items"
+      :items="requirementImplementations?.items"
       item-key="id"
       :additional-headers="headers"
       enable-click
@@ -44,13 +44,15 @@ interface Emits {
 }
 const emit = defineEmits<Emits>()
 
+const fetchParams = computed(() => ({
+  type: state.type.value as string,
+  riskAffected: state.riskAffected.value as string,
+  control: state.control.value as string
+}));
 
-const requirementImplementations =
-  ref(await fetchRequirementImplementations({
-    type: state.type.value as string,
-    riskAffected: state.riskAffected.value as string,
-    control: state.control.value as string
-  }));
+const requirementImplementations = ref(null);
+
+watch(fetchParams, async () => requirementImplementations.value = await fetchRequirementImplementations({...fetchParams.value}));
 
 const currentName = computed(() => requirementImplementations?.value?.items?.[0]?.origin?.displayName);
 

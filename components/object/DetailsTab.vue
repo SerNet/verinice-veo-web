@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2022  Jessica Lühnen, Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -367,7 +367,7 @@ export default defineComponent({
                 priority: 80,
                 order: 80,
                 render: (data: any) => {
-                  // strip designator; 
+                  // strip designator;
                   return h('span', { class: "text-truncate d-inline-block" }, (data.item.raw.responsible?.displayName || '').split(' ').slice(1).join(' '));
                 }
               }
@@ -549,7 +549,7 @@ export default defineComponent({
       const { id: itemId, type: itemType } = item.item.raw as IVeoEntity;
       const objectType = OBJECT_TYPE_TO_URL_MAP[itemType] || route.params.objectType;
       const params = { ...route.params, object: itemId, objectType, subType: '-' };
-      
+
       switch (props.type)  {
         case 'risks':
           item = item.item.raw as IVeoRisk;
@@ -557,11 +557,15 @@ export default defineComponent({
           editRiskDialog.value.visible = true;
           break;
         case 'controls':
-          navigateTo({
+          return navigateTo({
             name: 'unit-domains-domain-compliance',
-            params: { ...route.params, riskAffected: props.object?.id, control: item.item.raw.id, type: props.object?.type }
+            params: { ...route.params },
+            query: {
+              type: props.object?.type,
+              riskAffected: props.object?.id,
+              control: item.item.raw.id
+            }
           });
-          break;
         default:
           router.push({
             name: OBJECT_DETAIL_ROUTE,
