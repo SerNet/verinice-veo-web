@@ -81,6 +81,7 @@
     "administration": "Benutzerverwaltung",
     "catalog": "Katalog",
     "catalogs": "Katalog",
+    "compliance": "Compliance",
     "docs": "Dokumentation",
     "domain": "Domain",
     "editor": "Editoren",
@@ -95,8 +96,7 @@
     "risks": "Risikodefinitionen",
     "security": "Sicherheitsrichtlinie",
     "user-data": "Datenübertragung",
-    "welcome": "Willkommen",
-    "compliance": "Compliance"
+    "welcome": "Willkommen"
   },
 
   "error": {
