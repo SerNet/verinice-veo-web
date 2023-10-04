@@ -50,6 +50,15 @@
       </template>
     </ObjectTable>
     <!-- dialogs -->
+    <UtilConfirmationDialog
+      v-model="confirmationDialogVisible"
+      :text="t('deleteText')"
+      :title="t('deleteControl')"
+      :confirmation-text="globalT('global.button.delete')"
+      :callback="confirmationDialogCallBack"
+      @success="displaySuccessMessage(t('controlDeleted'))"
+      @error="displayErrorMessage(t('errors.control'), JSON.stringify($event))"
+    />
     <ObjectUnlinkDialog
       v-model="unlinkEntityDialog.value"
       v-bind="unlinkEntityDialog"
@@ -110,6 +119,7 @@ export default defineComponent({
   emits: ['reload'],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
+    const { t: globalT } = useI18n({ useScope: 'global' });
     const route = useRoute();
     const router = useRouter();
     const { ability } = useVeoPermissions();
@@ -379,6 +389,27 @@ export default defineComponent({
     const { mutateAsync: deleteRisk } = useMutation(objectQueryDefinitions.mutations.deleteRisk);
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
+    async function onDeleteControl(item: any) {
+      // atm the BE doesn't provide a separate control ID, so we have to extract it
+      const controlUriParts = item.control?.targetUri?.split('/');
+      // get the last index of the control's targetUri, that holds the UUID
+      const controlId = controlUriParts[controlUriParts.length - 1].trim();
+      // since props mustn't be mutated, we need a shallow copy of the object which can be changed
+      const copy = cloneDeep(props.object);
+      // if the ID matches, get the appropriate CI index that will be deleted from the object
+      const controlIndex = (copy?.controlImplementations || []).findIndex((ci) => ci.control.targetUri.endsWith(controlId));
+      // finally mutate the object, if an ID matched
+      if (controlIndex >= 0) {
+        // delete the appropriate key at <controlIndex>
+        copy?.controlImplementations?.splice(controlIndex, 1);
+        // patch the object / PUT changed riskAffected
+        await updateObject({ endpoint: route.params?.objectType, id: copy?.id, object: copy });
+      }
+    }
+
+    const confirmationDialogVisible = ref(false);
+    const confirmationDialogCallBack = ref<(...args: any[]) => any>(() => {});
+
     /**
      * actions for cloning or unlinking objects
      */
@@ -410,26 +441,8 @@ export default defineComponent({
               icon: mdiTrashCanOutline,
 
               async action(item: any) {
-                try {
-                  // atm the BE doesn't provide a separate control ID, so we have to extract it
-                  const controlUriParts = item.control?.targetUri?.split('/');
-                  // get the last index of the control's targetUri, that holds the UUID
-                  const controlId = controlUriParts[controlUriParts.length - 1].trim();
-                  // since props mustn't be mutated, we need a shallow copy of the object which can be changed
-                  const copy = cloneDeep(props.object);
-                  // if the ID matches, get the appropriate CI index that will be deleted from the object
-                  const controlIndex = (copy?.controlImplementations || []).findIndex((ci) => ci.control.targetUri.endsWith(controlId));
-                  // finally mutate the object, if an ID matched
-                  if (controlIndex >= 0) {
-                    // delete the appropriate key at <controlIndex>
-                    copy?.controlImplementations?.splice(controlIndex, 1);
-                    // patch the object / PUT changed riskAffected
-                    await updateObject({ endpoint: route.params?.objectType, id: copy?.id, object: copy });
-                    displaySuccessMessage(t('controlDeleted').toString());
-                  }
-                } catch (e: any) {
-                  displayErrorMessage(t('errors.control').toString(), e.message);
-                }
+                confirmationDialogCallBack.value = () => onDeleteControl(item);
+                confirmationDialogVisible.value = true;
               }
             }
           ];
@@ -598,8 +611,13 @@ export default defineComponent({
     return {
       ability,
       additionalHeaders,
+      confirmationDialogCallBack,
+      confirmationDialogVisible,
       defaultHeaders,
+      displayErrorMessage,
+      displaySuccessMessage,
       editRiskDialog,
+      globalT,
       onUnlinkEntitySuccess,
       onUnlinkEntityError,
       unlinkEntityDialog,
@@ -633,6 +651,7 @@ export default defineComponent({
       "responsible": "Responsible",
       "status": "Implementation status"
     },
+    "deleteText": "Do you really want to delete this Control?",
     "deleteControl": "Delete control",
     "deleteRisk": "delete risk",
     "errors": {
@@ -679,6 +698,7 @@ export default defineComponent({
       "responsible": "Verantwortlich",
       "status": "Umsetzungsstatus"
     },
+    "deleteText": "Möchten Sie diesen Baustein wirklich löschen?",
     "deleteControl": "Bausteinverknüpfung löschen",
     "deleteRisk": "Risiko löschen",
     "errors": {

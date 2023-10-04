@@ -196,14 +196,15 @@ export default defineComponent({
      */
 
     // dialog options
-    const addEntityDialog = ref<{ object: IVeoEntity | undefined; editScopeRelationship: boolean; value: boolean; editParents: boolean, preselectedItems: (IVeoLink | IVeoEntity)[], returnObjects: boolean, preselectedFilters: Record<string, any> }>({
+    const addEntityDialog = ref<{ object: IVeoEntity | undefined; editScopeRelationship: boolean; value: boolean; editParents: boolean, preselectedItems: (IVeoLink | IVeoEntity)[], returnObjects: boolean, preselectedFilters: Record<string, any>, disabledFields: string[] }>({
       object: undefined,
       editScopeRelationship: false,
       value: false,
       editParents: false,
       preselectedItems: [],
       returnObjects: false,
-      preselectedFilters: {}
+      preselectedFilters: {},
+      disabledFields: []
     });
 
     const createEntityDialog = ref({
@@ -250,7 +251,10 @@ export default defineComponent({
         returnObjects: !!isControlImplementation,
         preselectedFilters: isControlImplementation
           ? { subType: 'CTL_Module'}
-          : {}
+          : {},
+        disabledFields: isControlImplementation
+          ? ['subType']
+          : []
       };
     };
 

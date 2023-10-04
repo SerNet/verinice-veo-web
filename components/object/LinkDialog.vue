@@ -44,6 +44,7 @@
       </p>
       <ObjectFilterBar
         :domain-id="($route.params.domain as string)"
+        :disabled-fields="disabledFields"
         :filter="filter"
         :available-object-types="availableObjectTypes"
         :required-fields="['objectType']"
@@ -74,7 +75,7 @@
         variant="text"
         color="primary"
         :loading="savingObject"
-        :disabled="ability.cannot('manage', 'objects')"
+        :disabled="ability.cannot('manage', 'objects') || !isDirty"
         @click="linkObjects"
       >
         {{ globalT('global.button.save') }}
@@ -146,6 +147,10 @@ export default defineComponent({
     preselectedFilters: {
       type: Object,
       default: () => ({})
+    },
+    disabledFields: {
+      type: Array as PropType<string[]>,
+      default: () => []
     }
   },
   emits: ['update:preselected-items', 'update:model-value', 'success', 'error'],
@@ -293,6 +298,8 @@ export default defineComponent({
 
     const originalSelectedItems = computed(() => (props.editParents ? parents.value?.items || [] : children.value)); // Doesn't get modified to compare which parents have been added removed
     const modifiedSelectedItems = ref<IVeoEntity[]>([]);
+    const isDirty = computed(() => !isEqual(originalSelectedItems.value, modifiedSelectedItems.value));
+
     watch(
       () => originalSelectedItems.value,
       (newValue) => {
@@ -364,6 +371,7 @@ export default defineComponent({
       availableObjectTypes,
       childrenLoading,
       filter,
+      isDirty,
       itemsSelected,
       linkObjects,
       modifiedSelectedItems,
