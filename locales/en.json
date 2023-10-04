@@ -99,6 +99,15 @@
     "welcome": "Welcome"
   },
 
+  "compliance": {
+      "implementation": {
+        "no": "no",
+        "partial": "partially",
+        "unknown": "unknown",
+        "yes": "yes"
+      }
+  },
+
   "error": {
     "additionalProperties": "The field \"{field}\" contains attributes that aren\"t part of the object schema",
     "enum": "The field \"{field}\" contains an invalid value",

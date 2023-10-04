@@ -99,6 +99,15 @@
     "welcome": "Willkommen"
   },
 
+  "compliance": {
+    "implementation": {
+      "no": "nein",
+      "partially": "teilweise",
+      "unknown": "unbekannt",
+      "yes": "ja"
+    }
+  },
+
   "error": {
     "additionalProperties": "Das Feld \"{field}\" besitzt nicht im Objektschemas erlaubte Attribute.",
     "enum": "Das Feld \"{field}\" besitzt einen nicht erlaubten Wert",
