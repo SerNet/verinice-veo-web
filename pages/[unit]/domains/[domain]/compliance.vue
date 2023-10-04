@@ -17,11 +17,45 @@
 -->
 
 <template>
-  <div>
-  </div>
+  <BasePage style="height: 100vh;">
+    <template #header>
+      <LayoutHeadline
+        class="mb-4"
+        :title="globalT('breadcrumbs.compliance')"
+        :element="currentName || ''"
+      />
+
+      <p class="mt-8 mb-4 text-body-1">
+        {{ t('hint', {currentName}) }}
+      </p>
+    </template>
+
+    <template #default>
+      <ComplianceList
+        @update:current-name="currentName = $event"
+      />
+    </template>
+  </BasePage>
 </template>
 <script lang="ts">
 export const ROUTE_NAME = 'unit-domains-domain-compliance';
 </script>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const { t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
+
+const currentName = ref('');
+</script>
+
+<i18n>
+{
+"de": {
+  "hint": "Umgesetzte Anforderung \"{currentName}\" bearbeiten.",
+},
+"en": {
+  "hint": "Umgesetzte Anforderung \"{currentName}\" bearbeiten.",
+}
+
+}
+</i18n>
