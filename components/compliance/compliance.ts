@@ -19,7 +19,7 @@ async function fetchRequirementImplementations({ type, riskAffected, control }: 
   if(type === 'all') return; // API did not yet implement an endpoint to fetch all RIs
   if(!type || !riskAffected || !control) return;
 
-  const url = `/api/${type}/${riskAffected}/control-implementations/${control}/requirement-implementations`;
+  const url = `/api/${type}/${riskAffected}/control-implementations/${control}/requirement-implementations?size=10000`;
 
   return await request(url, {});
 }
