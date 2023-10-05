@@ -103,7 +103,7 @@
       "status": {
         "NO": "no",
         "PARTIAL": "partially",
-        "UNKNOWN": "unknown",
+        "UNKNOWN": "unedited",
         "YES": "yes",
         "N_A": "not applicable"
       },

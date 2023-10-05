@@ -103,7 +103,7 @@
       "status": {
         "NO": "nein",
         "PARTIAL": "teilweise",
-        "UNKNOWN": "unbekannt",
+        "UNKNOWN": "unbearbeitet",
         "YES": "ja",
         "N_A": "nicht anwendbar"
       },
