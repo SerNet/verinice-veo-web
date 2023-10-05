@@ -640,7 +640,7 @@ export default defineComponent({
       "implementation": {
         "no": "no",
         "partial": "partially",
-        "unknown": "unknown",
+        "unknown": "unedited",
         "yes": "yes"
       },
       "responsible": "Responsible",
@@ -687,7 +687,7 @@ export default defineComponent({
       "implementation": {
         "no": "nein",
         "partially": "teilweise",
-        "unknown": "unbekannt",
+        "unknown": "unbearbeitet",
         "yes": "ja"
       },
       "responsible": "Verantwortlich",

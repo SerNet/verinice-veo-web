@@ -30,18 +30,7 @@
       <p v-if="!!$slots.header">
         <slot name="header" />
       </p>
-      <p
-        v-else-if="!editParents"
-        class="text-body-1"
-      >
-        {{ t('linkChildExplanation', { displayName: object && object.displayName, newObjectTypeName }) }}
-      </p>
-      <p
-        v-else
-        class="text-body-1"
-      >
-        {{ t('linkParentExplanation', { displayName: object && object.displayName, newObjectTypeName }) }}
-      </p>
+
       <ObjectFilterBar
         :domain-id="($route.params.domain as string)"
         :disabled-fields="disabledFields"
@@ -50,6 +39,7 @@
         :required-fields="['objectType']"
         @update:filter="updateFilter"
       />
+
       <BaseCard id="link-dialog-select-all">
         <ObjectTable
           v-model="modifiedSelectedItems"
@@ -62,6 +52,7 @@
         />
       </BaseCard>
     </template>
+
     <template #dialog-options>
       <v-btn
         variant="text"
@@ -70,6 +61,7 @@
       >
         {{ globalT('global.button.cancel') }}
       </v-btn>
+
       <v-spacer />
       <v-btn
         variant="text"
@@ -94,7 +86,6 @@ import { useFetchObjects, useFetchParentObjects } from '~/composables/api/object
 import { useVeoUser } from '~/composables/VeoUser';
 import objectQueryDefinitions, { IVeoFetchScopeChildrenParameters } from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
 import { getEntityDetailsFromLink } from '~/lib/utils';
@@ -156,7 +147,7 @@ export default defineComponent({
   emits: ['update:preselected-items', 'update:model-value', 'success', 'error'],
   setup(props, { emit }) {
     const route = useRoute();
-    const { t, locale } = useI18n();
+    const { t } = useI18n();
     const { t: globalT } = useI18n({ useScope: 'global'});
     const { tablePageSize } = useVeoUser();
     const { link } = useLinkObject();
@@ -165,28 +156,20 @@ export default defineComponent({
     const queryClient = useQueryClient();
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-    const translationsQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain as string }));
-    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationsQueryParameters);
 
-    const newObjectTypeName = computed(() =>
-      props.editScopeRelationship
-        ? translations.value?.lang?.[locale.value]?.scope
-        : props.object?.type === 'scope'
-          ? t('object')
-          : translations.value?.lang?.[locale.value][props.object?.type || '']
-    );
     const title = computed(() =>
       t(
-        props.editParents && props.editScopeRelationship
-          ? 'editParentScopes'
-          : props.editScopeRelationship
-            ? 'editChildScopes'
-            : props.editParents
-              ? 'editParentObjects'
-              : 'editChildObjects',
+        props.object?.type === 'control'
+          ? 'addControls'
+          : props.editParents && props.editScopeRelationship
+            ? 'editParentScopes'
+            : props.editScopeRelationship
+              ? 'editChildScopes'
+              : props.editParents
+                ? 'editParentObjects'
+                : 'editChildObjects',
         [props.object?.displayName]
-      )
-    );
+      ));
 
     // Table/filter logic
     const filter = ref<Record<string, any>>({});
@@ -375,7 +358,6 @@ export default defineComponent({
       itemsSelected,
       linkObjects,
       modifiedSelectedItems,
-      newObjectTypeName,
       objectsLoading,
       page,
       parentsLoading,
@@ -396,21 +378,19 @@ export default defineComponent({
 <i18n>
 {
   "en": {
+    "addControls": "Add Controls",
     "editChildObjects": "Edit parts of \"{0}\"",
     "editChildScopes": "Edit scopes of \"{0}\"",
     "editParentObjects": "Edit parent parts of \"{0}\"",
     "editParentScopes": "Edit parent scopes of \"{0}\"",
-    "linkChildExplanation": "Add {newObjectTypeName} as a part to \"{parentName}\"",
-    "linkParentExplanation": "Add {newObjectTypeName} as a parent to \"{parentName}\"",
     "object": "object"
   },
   "de": {
+    "addControls": "Maßnahmen hinzufügen",
     "editChildObjects": "Teile von \"{0}\" bearbeiten",
     "editChildScopes": "Scopes von \"{0}\" bearbeiten",
     "editParentObjects": "Teile über \"{0}\" bearbeiten",
     "editParentScopes": "Scopes über \"{0}\" bearbeiten",
-    "linkChildExplanation": "{newObjectTypeName} unter \"{displayName}\" einfügen",
-    "linkParentExplanation": "{newObjectTypeName} über \"{displayName}\" einfügen",
     "object": "Objekt"
   }
 }

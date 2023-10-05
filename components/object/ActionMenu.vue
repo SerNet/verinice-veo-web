@@ -141,7 +141,7 @@ export default defineComponent({
       },
       {
         key: 'linkObject',
-        title: t('linkObject', [props.object?.type !== 'scope' ? translations.value?.lang[locale.value]?.[props.object?.type || ''] : t('object')]).toString(),
+        title: t('linkObject', [props.type === 'controls' ? (locale.value === 'de' ? 'Maßnahmen' : 'Controls') : props.object?.type !== 'scope' ? translations.value?.lang[locale.value]?.[props.object?.type || ''] : t('object')]).toString(),
         icon: mdiLinkPlus,
         tab: ['childObjects', 'parentObjects', 'controls'],
         objectTypes: ['entity'],

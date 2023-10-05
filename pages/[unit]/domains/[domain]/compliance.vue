@@ -25,7 +25,12 @@
         :element="currentName || ''"
       />
 
-      <p class="mt-8 mb-4 text-body-1">
+      <!-- Link back to Control-Object: to be changed when the IT-SA is done -->
+      <p
+        class="mt-8 mb-4 text-body-1"
+        style="cursor: pointer;"
+        @click="$router.go(-1)"
+      >
         {{ t('hint', {currentName}) }}
       </p>
     </template>
