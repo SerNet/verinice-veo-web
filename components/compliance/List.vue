@@ -117,7 +117,6 @@ const headers: ComputedRef<TableHeader[]> = computed(()=> [
   {
     text: t('thAbbreviation'),
     key: 'control.abbreviation',
-    cellClass: ['font-weight-bold'],
     sortable: true,
     priority: 60,
     order: 30
