@@ -100,11 +100,15 @@
   },
 
   "compliance": {
-      "implementation": {
-        "no": "no",
-        "partial": "partially",
-        "unknown": "unknown",
-        "yes": "yes"
+      "status": {
+        "NO": "no",
+        "PARTIAL": "partially",
+        "UNKNOWN": "unknown",
+        "YES": "yes",
+        "N_A": "not applicable"
+      },
+      "origination": {
+        "SYSTEM_SPECIFIC": "system specific"
       }
   },
 

@@ -1,7 +1,10 @@
 <template>
   <BaseCard class="mb-8">
-    <BaseTable
+  <!--
       :items="requirementImplementations?.items"
+  -->
+    <BaseTable
+      :items="translatedRequirementImplementations"
       item-key="id"
       :additional-headers="headers"
       enable-click
@@ -26,6 +29,16 @@
     />
   </BaseCard>
 </template>
+<script lang="ts">
+function translate(requirementImplementations, t) {
+  if (!requirementImplementations) return;
+  return requirementImplementations.items.map( item => {
+    const status = t(`compliance.status.${item.status}`);
+    const origination = t(`compliance.origination.${item.origination}`);
+    return ({...item, translations: {status , origination} });
+  } );
+}
+</script>
 
 <script setup lang="ts">
 import { TableHeader } from '../base/Table.vue';
@@ -37,12 +50,12 @@ const {
   state
 } = useCompliance();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 interface Emits {
   (e: 'update:currentName', currentName: string): void
 }
-const emit = defineEmits<Emits>()
+const emit = defineEmits<Emits>();
 
 const fetchParams = computed(() => ({
   type: state.type.value as string,
@@ -54,6 +67,17 @@ const requirementImplementations = ref(null);
 
 requirementImplementations.value = await fetchRequirementImplementations({...fetchParams.value });
 watch(fetchParams, async () => requirementImplementations.value = await fetchRequirementImplementations({...fetchParams.value}));
+
+// Translate
+const translatedRequirementImplementations = ref(translate(requirementImplementations.value, t));
+
+watch(requirementImplementations, () => {
+  translatedRequirementImplementations.value = translate(requirementImplementations.value, t);
+});
+
+watch(locale, () => {
+  translatedRequirementImplementations.value = translate(requirementImplementations.value, t);
+});
 
 const currentName = computed(() => requirementImplementations?.value?.items?.[0]?.origin?.displayName);
 
@@ -99,7 +123,7 @@ const headers: ComputedRef<TableHeader[]> = computed(()=> [
   },
   {
     text: t('thOrigin'),
-    key: 'origination',
+    key: 'translations.origination',
     sortable: true,
     priority: 80,
     order: 30
@@ -113,7 +137,7 @@ const headers: ComputedRef<TableHeader[]> = computed(()=> [
   },
   {
     text: t('thStatus'),
-    key: 'status',
+    key: 'translations.status',
     sortable: true,
     priority: 60,
     order: 30

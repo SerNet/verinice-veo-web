@@ -100,12 +100,16 @@
   },
 
   "compliance": {
-    "implementation": {
-      "no": "nein",
-      "partially": "teilweise",
-      "unknown": "unbekannt",
-      "yes": "ja"
-    }
+      "status": {
+        "NO": "nein",
+        "PARTIAL": "teilweise",
+        "UNKNOWN": "unbekannt",
+        "YES": "ja",
+        "N_A": "nicht anwendbar"
+      },
+      "origination": {
+        "SYSTEM_SPECIFIC": "system spezifisch"
+      }
   },
 
   "error": {
