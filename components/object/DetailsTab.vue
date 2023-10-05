@@ -328,7 +328,6 @@ export default defineComponent({
           ]
           : props.type === 'controls'
             ? [
-              // NOTE: abbreviation, name and ID aren't provided by the BE yet, hence we have to solve it dirty for now
               {
                 value: 'abbreviation',
                 key: 'abbreviation',
@@ -338,8 +337,7 @@ export default defineComponent({
                 priority: 100,
                 order: 10,
                 render: (data: any) => {
-                  // abbreviations aren't provided by the BE yet
-                  return h('span', data.item?.raw?.control?.displayName.split(' ')?.[1] || 'n/a');
+                  return h('span', data.item.raw.control?.abbreviation || 'n/a');
                 }
               },
               {
@@ -351,7 +349,7 @@ export default defineComponent({
                 priority: 100,
                 order: 20,
                 render: (data: any) => {
-                  return h('span', data.item?.raw?.control?.displayName.split(' ')?.slice(2).join(' '));
+                  return h('span', data.item.raw.control?.name);
                 }
               },
               {
@@ -378,7 +376,7 @@ export default defineComponent({
                 order: 80,
                 render: (data: any) => {
                   // strip designator;
-                  return h('span', { class: "text-truncate d-inline-block" }, (data.item.raw.responsible?.displayName || '').split(' ').slice(1).join(' '));
+                  return h('span', { class: "text-truncate d-inline-block" }, data.item.raw.responsible?.name);
                 }
               }
             ]
@@ -390,10 +388,7 @@ export default defineComponent({
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
     async function onDeleteControl(item: any) {
-      // atm the BE doesn't provide a separate control ID, so we have to extract it
-      const controlUriParts = item.control?.targetUri?.split('/');
-      // get the last index of the control's targetUri, that holds the UUID
-      const controlId = controlUriParts[controlUriParts.length - 1].trim();
+      const controlId = item.control?.id;
       // since props mustn't be mutated, we need a shallow copy of the object which can be changed
       const copy = cloneDeep(props.object);
       // if the ID matches, get the appropriate CI index that will be deleted from the object
