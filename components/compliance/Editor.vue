@@ -259,6 +259,7 @@ async function submitForm({
   }
   finally {
     view.isLoading = false;
+    emit('update:show-dialog', false);
   }
 }
 
