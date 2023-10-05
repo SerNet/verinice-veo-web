@@ -79,7 +79,8 @@ watch(locale, () => {
   translatedRequirementImplementations.value = translate(requirementImplementations.value, t);
 });
 
-const currentName = computed(() => requirementImplementations?.value?.items?.[0]?.origin?.displayName);
+const currentName = computed(() =>
+  requirementImplementations?.value?.items?.[0]?.origin?.displayName);
 
 // Emit the current name
 emit('update:currentName', currentName.value);
@@ -113,19 +114,20 @@ const reloadRequirementImplementations = async () => {
 
 // Table setup
 const headers: ComputedRef<TableHeader[]> = computed(()=> [
-{
-    text: t('thName'),
-    key: 'control.displayName',
+  {
+    text: t('thAbbreviation'),
+    key: 'control.abbreviation',
     cellClass: ['font-weight-bold'],
     sortable: true,
     priority: 60,
     order: 30
   },
   {
-    text: t('thOrigin'),
-    key: 'translations.origination',
+    text: t('thName'),
+    key: 'control.name',
+    cellClass: ['font-weight-bold'],
     sortable: true,
-    priority: 80,
+    priority: 60,
     order: 30
   },
   {
@@ -141,14 +143,20 @@ const headers: ComputedRef<TableHeader[]> = computed(()=> [
     sortable: true,
     priority: 60,
     order: 30
+  },
+  {
+    text: t('thOrigin'),
+    key: 'translations.origination',
+    sortable: true,
+    priority: 80,
+    order: 30
   }
 ]);
 </script>
 
 <i18n>
 {
-"en": {
-  "hint": "Lorem ipsum dolor sit amet.",
+"de": {
   "thAbbreviation": "Abkürzung",
   "thName": "Anforderung",
   "thOrigin": "Umsetzungsherkunft",
@@ -156,14 +164,13 @@ const headers: ComputedRef<TableHeader[]> = computed(()=> [
   "thStatus": "Status",
   "noRequirementImplementations": "Keine Requirement Implementations vorhanden."
 },
-"de": {
-  "hint": "Lorem ipsum dolor sit amet.",
-  "thAbbreviation": "Abkürzung",
-  "thName": "Anforderung",
-  "thOrigin": "Umsetzungsherkunft",
-  "thResponsibleBody": "Verantwortlich",
+"en": {
+  "thAbbreviation": "Abbreviation",
+  "thName": "Requirement",
+  "thOrigin": "Origin",
+  "thResponsibleBody": "Responsible",
   "thStatus": "Status",
-  "noRequirementImplementations": "Keine Requirement Implementations vorhanden."
+  "noRequirementImplementations": "No requirement implementations available."
 }
 }
 </i18n>

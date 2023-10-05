@@ -51,10 +51,10 @@ const currentName = ref('');
 <i18n>
 {
 "de": {
-  "hint": "Umgesetzte Anforderung \"{currentName}\" bearbeiten.",
+  "hint": "Umgesetzte Anforderungen \"{currentName}\" bearbeiten.",
 },
 "en": {
-  "hint": "Umgesetzte Anforderung \"{currentName}\" bearbeiten.",
+  "hint": "Edit requirement \"{currentName}\".",
 }
 
 }
