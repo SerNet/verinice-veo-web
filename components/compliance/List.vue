@@ -52,6 +52,7 @@ const fetchParams = computed(() => ({
 
 const requirementImplementations = ref(null);
 
+requirementImplementations.value = await fetchRequirementImplementations({...fetchParams.value });
 watch(fetchParams, async () => requirementImplementations.value = await fetchRequirementImplementations({...fetchParams.value}));
 
 const currentName = computed(() => requirementImplementations?.value?.items?.[0]?.origin?.displayName);
