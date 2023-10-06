@@ -1,9 +1,9 @@
 {
   "name": "veo-web",
-  "version": "1.3.0",
+  "version": "1.6.0",
   "engines": {
     "npm": "9.8.x",
-    "node": "18.16.x"
+    "node": "18.17.x"
   },
   "description": "veo-web",
   "author": "NBRX AG <info@nbrx.de>",
@@ -36,7 +36,7 @@
     "@toast-ui/editor": "^3.2.1",
     "@toast-ui/editor-plugin-code-syntax-highlight": "^3.0.0",
     "@vitejs/plugin-vue": "^4.2.1",
-    "@vueuse/core": "^9.6.0",
+    "@vueuse/core": "^10.0.0",
     "ajv": "^8.11.2",
     "ajv-formats": "^2.1.1",
     "chart.js": "^4.0.1",
@@ -71,15 +71,15 @@
   "devDependencies": {
     "@nuxt/content": "^2.6.0",
     "@nuxt/eslint-config": "^0.2.0",
-    "@nuxtjs/i18n": "8.0.0-rc.4",
+    "@nuxtjs/i18n": "8.0.0-rc.2",
     "@types/glob": "^8.0.1",
     "@types/hash-sum": "^1.0.0",
     "@types/intro.js": "^5.1.0",
     "@types/js-cookie": "^3.0.3",
     "@types/lodash": "^4.14.191",
-    "@types/node": "^20.0.0",
+    "@types/node": "^18.11.15",
     "@types/uuid": "^9.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.46.1",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@vue/test-utils": "^2.3.2",
     "eslint": "^8.31.0",
     "eslint-plugin-nuxt": "^4.0.0",

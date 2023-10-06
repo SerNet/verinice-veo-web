@@ -135,6 +135,9 @@ export function useUnits() {
   const { mutateAsync: createNewUnit, data: unitDetailsPayload } = useMutation(unitQueryDefinitions.mutations.create);
   const { domain } = useDomain(); // Needed if user wants to create a new unit
   const { data: _units } = useQuery(unitQueryDefinitions.queries.fetchAll);
+  const { userSettings } = useVeoUser();
+
+  const hasMaxUnits = computed(() => (_units.value?.length || 0) >= userSettings.value.maxUnits);
 
   // Remove all units which are not in the current domain
   const units = computed(()=> _units.value ?
@@ -172,6 +175,7 @@ export function useUnits() {
 
   async function createUnitAndApplyProfile({name, domains, description, messages}: createUnitAndApplyProfileParams) {
     state.isCreatingUnit = true;
+
     try {
       await createNewUnit({ name, domains, description });
       if(unitDetailsPayload.value?.resourceId) {
@@ -195,6 +199,7 @@ export function useUnits() {
   return {
     units: readonly(units),
     domain: readonly(domain),
+    hasMaxUnits: readonly(hasMaxUnits),
     toggleDialog,
     applyProfile,
     createUnitAndApplyProfile,

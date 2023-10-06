@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann
+   - Copyright (C) 2023 Jonas Heitmann Frank Schneider
    -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -18,88 +18,126 @@
 <template>
   <BaseDialog
     v-bind="$attrs"
-    :title="t('environmentInformation')"
+    :title="t('about')"
     large
   >
-    <BaseCard>
-      <v-table density="comfortable">
-        <thead>
-          <tr>
-            <th>
-              {{ t('component') }}
-            </th>
-            <th>
-              {{ t('build') }}
-            </th>
-            <th>
-              {{ t('commit') }}
-            </th>
-            <th>
-              {{ t('buildDate') }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(deployment, index) of deploymentInformation"
-            :key="index"
-          >
-            <td>
-              {{ deployment?.build?.name || t('unknown') }}
-            </td>
-            <td v-if="deployment?.build?.version && deployment?.build?.ci?.buildnumber">
-              {{ deployment.build.version }} ({{ t('build') }} {{ deployment.build.ci.buildnumber }})
-            </td>
-            <td v-else>
-              {{ t('unknown') }}
-            </td>
-            <td>
-              {{ deployment?.git?.commit?.id || t('unknown') }}
-            </td>
-            <td v-if="deployment?.build?.time">
-              {{ new Date(deployment.build.time).toLocaleString(locale) }}
-            </td>
-            <td v-else>
-              {{ t('unknown') }}
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
-    </BaseCard>
+    <v-tabs
+      v-model="tab"
+      align-tabs="start"
+      grow
+    >
+      <v-tab value="product">
+        {{ t('productinfo') }}
+      </v-tab>
 
-    <v-divider />
-    <BaseCard class="mt-4">
-      <v-card-text>
-        <p>{{ t('aboutText') }}</p>
-        <br>
-        <!-- We have to use scope global as local throws an error for some reason -->
-        <i18n-t
-          keypath="imprintText"
-          tag="p"
-          scope="global"
-        >
-          <a
-            :href="imprintLink"
-            target="_blank"
-          >{{ t('imprint') }}</a>
-        </i18n-t>
-        <i18n-t
-          keypath="privacyPolicyText"
-          tag="p"
-          scope="global"
-        >
-          <a
-            :href="privacyPolicyLink"
-            target="_blank"
-          >{{ t('privacyPolicy') }}</a>
-        </i18n-t>
-        <br>
-        &copy; {{ currentYear }} - <a
-          href="https://www.sernet.de"
-          target="_blank"
-        >SerNet GmbH</a>
-      </v-card-text>
-    </BaseCard>
+      <v-tab value="version">
+        {{ t('versioninfo') }}
+      </v-tab>
+    </v-tabs>
+
+    <LayoutAppLogoDesktop class="d-flex logo-size ml-4 mt-4 mb-6" />
+
+    <v-window v-model="tab">
+      <v-window-item
+        value="product"
+      >
+        <BaseCard class="mt-0">
+          <v-card-text>
+            <span>{{ t('version.header') }}</span><br><br>
+
+            <p>{{ t('version.paragraph.1') }}</p><br>
+            <p>{{ t('version.paragraph.2') }}</p><br>
+            <p>{{ t('version.paragraph.3') }}</p>
+
+            <div class="mt-6 text-center">
+              &copy; {{ currentYear }} &hyphen;
+              <a
+                href="https://www.sernet.de"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                SerNet GmbH
+              </a>
+              &hyphen;&nbsp;
+              Es gelten
+              <a
+                :href="privacyPolicyLink"
+                rel="noopener noreferrer"
+                target="_blank"
+              >{{ t('privacyPolicy') }}</a>
+              {{ locale === 'de' ? 'und' : 'and' }}
+              <a
+                :href="imprintLink"
+                rel="noopener noreferrer"
+                target="_blank"
+              >{{ t('imprint') }}</a>
+              der SerNet GmbH.
+            </div>
+          </v-card-text>
+        </BaseCard>
+      </v-window-item>
+
+      <v-window-item
+        value="version"
+      >
+        <BaseCard class="mt-0">
+          <v-table density="comfortable">
+            <thead>
+              <tr>
+                <th>{{ t('component') }}</th>
+                <th>{{ t('build') }}</th>
+                <th>{{ t('commit') }}</th>
+                <th>{{ t('buildDate') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(deployment, index) of deploymentInformation"
+                :key="index"
+              >
+                <td>
+                  {{ deployment?.build?.name || t('unknown') }}
+                </td>
+                <td v-if="deployment?.build?.version && deployment?.build?.ci?.buildnumber">
+                  {{ deployment.build.version }} ({{ t('build') }} {{ deployment.build.ci.buildnumber }})
+                </td>
+                <td v-else>
+                  {{ t('unknown') }}
+                </td>
+                <td>
+                  {{ deployment?.git?.commit?.id || t('unknown') }}
+                </td>
+                <td v-if="deployment?.build?.time">
+                  {{ new Date(deployment.build.time).toLocaleString(locale) }}
+                </td>
+                <td v-else>
+                  {{ t('unknown') }}
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
+
+          <v-divider />
+          <div class="mt-4 text-center">
+            <span>{{ t('contributors') }}:</span>&nbsp;
+
+            <span
+              v-for="(link, key, index) in links"
+              :key="index"
+            >
+              <a
+                class="text-decoration-none text-primary"
+                :href="link"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                veo-{{ key }}&nbsp;&nbsp;
+              </a>
+            </span>
+          </div>
+        </BaseCard>
+      </v-window-item>
+    </v-window>
   </BaseDialog>
 </template>
 
@@ -121,8 +159,7 @@ const { data: reportingApiDeploymentDetails } = useQuery(monitoringQueryDefintio
 const fetchAccountingApiDeploymentDetailsQueryParameters = ref({ api: 'accounts' as 'default' | 'history' | 'forms' | 'reporting' | 'accounts' });
 const { data: accountingApiDeploymentDetails } = useQuery(monitoringQueryDefintions.queries.fetch, fetchAccountingApiDeploymentDetailsQueryParameters);
 
-const date = new Date();
-const currentYear = date.getFullYear();
+const tab = ref(null);
 
 const deploymentInformation = computed<Record<string, IVeoDeploymentInformation | undefined>>(() => ({
   app: {
@@ -147,6 +184,18 @@ const deploymentInformation = computed<Record<string, IVeoDeploymentInformation 
   accounts: accountingApiDeploymentDetails.value
 }));
 
+const links = {
+  webapp: 'https://github.com/SerNet/verinice-veo-web/graphs/contributors',
+  rest: 'https://github.com/SerNet/verinice-veo/graphs/contributors',
+  forms: 'https://github.com/SerNet/verinice-veo-forms/graphs/contributors',
+  history: 'https://github.com/SerNet/verinice-veo-history/graphs/contributors',
+  reporting: 'https://github.com/SerNet/verinice-veo-reporting/graphs/contributors',
+  accounts: 'https://github.com/SerNet/verinice-veo-accounts/graphs/contributors'
+};
+
+const date = new Date();
+const currentYear = date.getFullYear();
+
 const imprintLink = computed(() => locale.value === 'de' ? 'https://www.sernet.de/impressum' : 'https://www.sernet.de/en/imprint');
 const privacyPolicyLink = computed(() => locale.value === 'de' ? 'https://www.sernet.de/datenschutz' : 'https://www.sernet.de/privacy');
 </script>
@@ -154,26 +203,57 @@ const privacyPolicyLink = computed(() => locale.value === 'de' ? 'https://www.se
 <i18n>
 {
   "en": {
-    "aboutText": "verinice is a software provided by SerNet GmbH, \"verinice\" and \"SerNet\" are registered trademarks of SerNet GmbH in Germany, Europe and other countries. If you have any questions about verinice, please contact us by email at sales{'@'}sernet.de. This address is also valid for technical and legal questions.",
+    "about": "About verinice",
     "build": "Build",
     "buildDate": "Build date",
     "commit": "Commit",
     "component": "Component",
-    "environmentInformation": "Product information",
-    "imprint": "imprint",
-    "privacyPolicy": "privacy policy",
-    "unknown": "unknown"
+    "contributors": "Contributors",
+    "imprint": "Imprint",
+    "privacyPolicy": "Privacy policy",
+    "productinfo": "Product information",
+    "unknown": "unknown",
+    "version": {
+      "header": "verinice is the open source framework for integrated management systems.",
+      "paragraph": {
+        1: "The new verinice generation is completely web-based. It combines many years of experience with advanced technology. Continuous development and customer orientation remain a priority.",
+        2: "The modular approach goes beyond proven ISMS and DSMS solutions: The underlying, cross-industry expertise is a universal basis for further management systems.
+        verinice thus addresses the diverse requirements of organizations and authorities. As an efficient and adaptable tool, it is suitable for for beginners to get started in an uncomplicated way as well as
+        for the complex procedure of professionals.",
+        3: "The publisher of verinice is SerNet GmbH, with more than 25 years of experience in the in the IT security industry."
+      }
+    },
+    "versioninfo": "Version information"
   },
   "de": {
-    "aboutText": "verinice ist eine Software der SerNet GmbH, \"verinice\" und \"SerNet\" sind eingetragene Marken der SerNet GmbH in Deutschland, Europa und weiteren Ländern. Wenn Sie Fragen zu verinice haben, wenden Sie sich bitte per E-Mail an vertrieb{'@'}sernet.de. Diese Adresse gilt auch für technische und rechtliche Fragen.",
+    "about": "Über verinice",
     "build": "Build",
     "buildDate": "Build-Datum",
     "commit": "Commit",
     "component": "Komponente",
-    "environmentInformation": "Produktinformationen",
+    "contributors": "Beiträge",
     "imprint": "Impressum",
     "privacyPolicy": "Datenschutzerklärung",
-    "unknown": "unbekannt"
+    "productinfo": "Produktinformation",
+    "unknown": "unbekannt",
+    "version": {
+      "header": "verinice ist das Open-Source Framework für integrierte Management-Systeme.",
+      "paragraph": {
+        1: "Die neue verinice-Generation ist vollständig webbasiert. Sie vereint langjährige Erfahrung mit fortschrittlicher Technologie. Kontinuierliche Entwicklung und Kundenorientierung haben weiterhin Priorität.",
+        2: "Der modulare Ansatz geht über bewährte ISMS- und DSMS-Lösungen hinaus: Die zugrundeliegende, branchenübergreifende Expertise ist universale Basis für weitere Management-Systeme.
+        verinice adressiert dadurch die vielfältigen Anforderungen an Organisationen und Behörden. Als effizientes und anpassungsfähiges Werkzeug eignet es sich zum unkomplizierten Loslegen für Einsteiger ebenso wie
+        für das komplexe Vorgehen von Profis.",
+        3: "Herausgeberin von verinice ist die SerNet GmbH mit mehr als 25 Jahren Erfahrung in der IT-Security-Branche."
+      }
+    },
+    "versioninfo": "Versionsinformation"
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.logo-size {
+  height: 25%;
+  width: 25%;
+}
+</style>

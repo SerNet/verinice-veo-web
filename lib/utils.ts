@@ -34,11 +34,11 @@ export interface IForm {
 }
 
 export function getEntityDetailsFromLink(link: IVeoLink): { type: string; id: string; name: string } {
-  const destructedLink = link.targetUri.split('/');
+  const destructedLink = link.targetUri?.split('/');
 
   return {
-    id: destructedLink.pop() || '',
-    type: destructedLink.pop() || '',
+    id: destructedLink?.pop() || '',
+    type: destructedLink?.pop() || '',
     name: link.displayName || ''
   };
 }

@@ -358,9 +358,14 @@ export interface IVeoEntityDomain {
   };
 }
 
+export interface IVeoControlImplementation {
+  control: IVeoLink;
+}
+
 export interface IVeoEntity extends IVeoBaseObject {
   name: string;
   abbreviation?: string;
+  controlImplementations?: IVeoControlImplementation[],
   designator: string;
   displayName: string;
   description?: string;
@@ -480,4 +485,15 @@ export interface IVeoFormsWidgetDefinition {
   description: {
     [lang: string]: string;
   };
+}
+
+export interface IVeoElementTypeDefinition {
+  subTypes:  {
+    [key: string]: any
+  };
+  translations: {
+    [lang: string]: {
+      [key: string]: string
+    }
+  }
 }

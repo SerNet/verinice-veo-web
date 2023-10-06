@@ -145,6 +145,10 @@
 </template>
 
 <script lang="ts">
+definePageMeta({
+  middleware: 'welcome-page'
+});
+
 export const ROUTE_NAME = 'index';
 </script>
 
@@ -188,11 +192,11 @@ const activeUnits = computed(() => units.value?.length || undefined);
 const generateUnitDashboardLink = (unitId: string) => {
   const unitToLinkTo = (units.value || []).find((unit) => unit.id === unitId);
   let domainId;
-  
+
   if (unitToLinkTo) {
     domainId = getFirstDomainDomaindId(unitToLinkTo);
   }
-  
+
   return unitToLinkTo && domainId ? `/${unitToLinkTo.id}/domains/${domainId}` : undefined;
 };
 

@@ -30,26 +30,17 @@
       <p v-if="!!$slots.header">
         <slot name="header" />
       </p>
-      <p
-        v-else-if="!editParents"
-        class="text-body-1"
-      >
-        {{ t('linkChildExplanation', { displayName: object && object.displayName, newObjectTypeName }) }}
-      </p>
-      <p
-        v-else
-        class="text-body-1"
-      >
-        {{ t('linkParentExplanation', { displayName: object && object.displayName, newObjectTypeName }) }}
-      </p>
+
       <ObjectFilterBar
         :domain-id="($route.params.domain as string)"
+        :disabled-fields="disabledFields"
         :filter="filter"
         :available-object-types="availableObjectTypes"
         :required-fields="['objectType']"
         @update:filter="updateFilter"
       />
-      <BaseCard>
+
+      <BaseCard id="link-dialog-select-all">
         <ObjectTable
           v-model="modifiedSelectedItems"
           v-model:page="page"
@@ -61,20 +52,22 @@
         />
       </BaseCard>
     </template>
+
     <template #dialog-options>
       <v-btn
-        text
+        variant="text"
         :disabled="savingObject"
         @click="$emit('update:model-value', false)"
       >
         {{ globalT('global.button.cancel') }}
       </v-btn>
+
       <v-spacer />
       <v-btn
-        text
+        variant="text"
         color="primary"
         :loading="savingObject"
-        :disabled="ability.cannot('manage', 'objects')"
+        :disabled="ability.cannot('manage', 'objects') || !isDirty"
         @click="linkObjects"
       >
         {{ globalT('global.button.save') }}
@@ -87,15 +80,15 @@
 import { PropType } from 'vue';
 import { differenceBy, isEqual, omit, uniqBy, upperFirst } from 'lodash';
 
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import { useUnlinkObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 import objectQueryDefinitions, { IVeoFetchScopeChildrenParameters } from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
+import { getEntityDetailsFromLink } from '~/lib/utils';
 
 export default defineComponent({
   props: {
@@ -145,12 +138,16 @@ export default defineComponent({
     preselectedFilters: {
       type: Object,
       default: () => ({})
+    },
+    disabledFields: {
+      type: Array as PropType<string[]>,
+      default: () => []
     }
   },
   emits: ['update:preselected-items', 'update:model-value', 'success', 'error'],
   setup(props, { emit }) {
     const route = useRoute();
-    const { t, locale } = useI18n();
+    const { t } = useI18n();
     const { t: globalT } = useI18n({ useScope: 'global'});
     const { tablePageSize } = useVeoUser();
     const { link } = useLinkObject();
@@ -159,37 +156,29 @@ export default defineComponent({
     const queryClient = useQueryClient();
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-    const translationsQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain }));
-    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationsQueryParameters);
 
-    const newObjectTypeName = computed(() =>
-      props.editScopeRelationship
-        ? translations.value?.lang?.[locale.value]?.scope
-        : props.object?.type === 'scope'
-          ? t('object')
-          : translations.value?.lang?.[locale.value][props.object?.type || '']
-    );
     const title = computed(() =>
       t(
-        props.editParents && props.editScopeRelationship
-          ? 'editParentScopes'
-          : props.editScopeRelationship
-            ? 'editChildScopes'
-            : props.editParents
-              ? 'editParentObjects'
-              : 'editChildObjects',
+        props.object?.type === 'control'
+          ? 'addControls'
+          : props.editParents && props.editScopeRelationship
+            ? 'editParentScopes'
+            : props.editScopeRelationship
+              ? 'editChildScopes'
+              : props.editParents
+                ? 'editParentObjects'
+                : 'editChildObjects',
         [props.object?.displayName]
-      )
-    );
+      ));
 
     // Table/filter logic
     const filter = ref<Record<string, any>>({});
 
     const page = ref(1);
-    const sortBy = ref([{ key: 'name', order: 'desc' }]);
+    const sortBy = ref([{ key: 'name', order: 'asc' }]);
     const resetQueryOptions = () => {
       page.value = 1;
-      sortBy.value = [{ key: 'name', order: 'desc' }];
+      sortBy.value = [{ key: 'name', order: 'asc' }];
     };
 
     const objectListEndpoint = computed(() => endpoints.value?.[filter.value.objectType] || '');
@@ -212,9 +201,15 @@ export default defineComponent({
       ...objects.value,
       items: (objects.value?.items || []).map((selectableObject) => ({
         ...selectableObject,
-        disabled: !!originalSelectedItems.value.find((item) => item.id === selectableObject.id) || props.object?.id === selectableObject.id
+        disabled: !!originalSelectedItems.value.find((item) => getIdFromItem(item) === selectableObject.id) || props.object?.id === selectableObject.id
       }))
     }));
+
+    const getIdFromItem = (item: IVeoLink | IVeoEntity) => {
+      return 'targetUri' in item
+        ? getEntityDetailsFromLink(item).id
+        : item.id;
+    };
 
     watch(
       () => props.preselectedFilters,
@@ -281,11 +276,13 @@ export default defineComponent({
     const childScopesQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && !props.editParents && objectEndpoint.value === 'scopes');
     const { data: childScopes, isFetching: childScopesLoading } = useQuery(objectQueryDefinitions.queries.fetchScopeChildren, childScopesQueryParameters, { enabled: childScopesQueryEnabled });
 
-    const children = computed(() => uniqBy([...(childObjects.value || []), ...(childScopes.value || []), ...props.preselectedItems], (arrayEntry) => arrayEntry.id));
+    const children = computed(() => uniqBy([...(childObjects.value || []), ...(childScopes.value || []), ...props.preselectedItems], (arrayEntry) => getIdFromItem(arrayEntry)));
     const childrenLoading = computed(() => childObjectsLoading.value || childScopesLoading.value);
 
     const originalSelectedItems = computed(() => (props.editParents ? parents.value?.items || [] : children.value)); // Doesn't get modified to compare which parents have been added removed
     const modifiedSelectedItems = ref<IVeoEntity[]>([]);
+    const isDirty = computed(() => !isEqual(originalSelectedItems.value, modifiedSelectedItems.value));
+
     watch(
       () => originalSelectedItems.value,
       (newValue) => {
@@ -357,10 +354,10 @@ export default defineComponent({
       availableObjectTypes,
       childrenLoading,
       filter,
+      isDirty,
       itemsSelected,
       linkObjects,
       modifiedSelectedItems,
-      newObjectTypeName,
       objectsLoading,
       page,
       parentsLoading,
@@ -381,28 +378,26 @@ export default defineComponent({
 <i18n>
 {
   "en": {
+    "addControls": "Add Controls",
     "editChildObjects": "Edit parts of \"{0}\"",
     "editChildScopes": "Edit scopes of \"{0}\"",
     "editParentObjects": "Edit parent parts of \"{0}\"",
     "editParentScopes": "Edit parent scopes of \"{0}\"",
-    "linkChildExplanation": "Add {newObjectTypeName} as a part to \"{parentName}\"",
-    "linkParentExplanation": "Add {newObjectTypeName} as a parent to \"{parentName}\"",
     "object": "object"
   },
   "de": {
+    "addControls": "Maßnahmen hinzufügen",
     "editChildObjects": "Teile von \"{0}\" bearbeiten",
     "editChildScopes": "Scopes von \"{0}\" bearbeiten",
     "editParentObjects": "Teile über \"{0}\" bearbeiten",
     "editParentScopes": "Scopes über \"{0}\" bearbeiten",
-    "linkChildExplanation": "{newObjectTypeName} unter \"{displayName}\" einfügen",
-    "linkParentExplanation": "{newObjectTypeName} über \"{displayName}\" einfügen",
     "object": "Objekt"
   }
 }
 </i18n>
 
-<style lang="scss" scoped>
-.v-data-table {
-  background-color: transparent;
+<style>
+#link-dialog-select-all .v-data-table__thead .v-selection-control__input {
+  display:none;
 }
 </style>

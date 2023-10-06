@@ -143,10 +143,10 @@ export default defineComponent({
     const selectedObjects = ref<{ id: string; type: string }[]>([]);
 
     const page = ref(1);
-    const sortBy = ref([{ key: 'name', order: 'desc' }]);
+    const sortBy = ref([{ key: 'name', order: 'asc' }]);
     const resetQueryOptions = () => {
       page.value = 1;
-      sortBy.value = [{ key: 'name', order: 'desc' }];
+      sortBy.value = [{ key: 'name', order: 'asc' }];
     };
 
     const requiredFields = computed(() => (availableSubTypes.value.length ? ['objectType', 'subType'] : ['objectType']));

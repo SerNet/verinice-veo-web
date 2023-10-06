@@ -66,7 +66,7 @@
     "designator": "Designator",
     "description": "Beschreibung",
     "hasChildElements": "hat Bestandteile",
-    "name": "Objektname",
+    "name": "Name",
     "hasNoParentElements": "nicht Teil eines anderen Objektes",
     "objectType": "Objekttyp",
     "status": "Status",
@@ -81,6 +81,7 @@
     "administration": "Benutzerverwaltung",
     "catalog": "Katalog",
     "catalogs": "Katalog",
+    "compliance": "Compliance",
     "docs": "Dokumentation",
     "domain": "Domain",
     "editor": "Editoren",
@@ -96,6 +97,19 @@
     "security": "Sicherheitsrichtlinie",
     "user-data": "Datenübertragung",
     "welcome": "Willkommen"
+  },
+
+  "compliance": {
+      "status": {
+        "NO": "nein",
+        "PARTIAL": "teilweise",
+        "UNKNOWN": "unbearbeitet",
+        "YES": "ja",
+        "N_A": "nicht anwendbar"
+      },
+      "origination": {
+        "SYSTEM_SPECIFIC": "system spezifisch"
+      }
   },
 
   "error": {
@@ -119,8 +133,6 @@
 
   "residualRiskHint": "Das angezeigte Nettorisiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben.",
 
-  "imprintText": "Es gilt das {0} der SerNet GmbH.",
-  "privacyPolicyText": "Es gilt die {0} der SerNet GmbH.",
   "deleteText": "Möchten Sie das Element \"{0}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
   "fix": "Beheben",
 
@@ -136,7 +148,7 @@
     "documentation": "Die { link } beschreibt ausführlich alle Funktionen von verinice.veo und erläutert die technischen Aspekte. Sie können die Online-Dokumentation jederzeit über das Symbol in der Anwendungsleiste rechts oben öffnen.",
     "forum": "Im { 0 } finden Sie weitergehende Informationen und können am regen Austausch mit anderen Anwenderinnen und Anwendern teilnehmen.",
     "mode": "Wechseln Sie den Darstellungsmodus der App von hell auf dunkel und umgekehrt.",
-    "sampledata": "Die { 0 } beinhalten eine komplette Beispielorganisation. Sie können die Inhalte nach Belieben ändern, um alle Features und Funktionen kennen zu lernen oder direkt als Basis für die Abbildung Ihrer Organisation verwenden.",
+    "profile": "Laden Sie ein { 0 } mit Beispieldaten in Ihre Unit \"Demo\", um alle Funktionen kennenzulernen oder in Ihre produktive \"Unit 1\" als Ausgangspunkt für den Aufbau Ihrer eigenen Organisation.",
     "tutorial": "Zur schnellen Orientierung stehen auf jeder Seite kontextbezogene { 0 } zur Verfügung. Verfügbare { 0 } können Sie jederzeit über das Symbol in der Anwendungsleiste rechts oben aufrufen.",
     "webinar": "Sie können sich jederzeit zu unseren regelmäßigen, kostenlosen { 0 }."
   },

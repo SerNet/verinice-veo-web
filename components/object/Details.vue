@@ -165,6 +165,10 @@ export default defineComponent({
       {
         key: 'risks',
         hidden: !props.loading && (props.object?.type !== 'process' || subType.value === 'PRO_DataTransfer')
+      },
+      {
+        key: 'controls',
+        hidden: props.object?.type !== 'asset' && props.object?.type !== 'process' && props.object?.type !== 'scope'
       }
     ]);
 
@@ -217,6 +221,7 @@ export default defineComponent({
     "by": "by",
     "childObjects": "Parts",
     "childScopes": "Scopes",
+    "controls": "Controls",
     "createdAt": "created",
     "links": "links",
     "noDescription": "No description provided",
@@ -229,6 +234,7 @@ export default defineComponent({
     "by": "von",
     "childObjects": "Teile",
     "childScopes": "Scopes",
+    "controls": "Maßnahmen",
     "createdAt": "erstellt",
     "links": "links",
     "noDescription": "Keine Beschreibung vorhanden",

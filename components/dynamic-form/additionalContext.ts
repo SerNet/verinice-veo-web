@@ -26,57 +26,65 @@ import { IVeoFormSchemaMeta } from '~~/composables/api/queryDefinitions/forms';
 
 export default {};
 
+function getTranslatedRiskValues(
+  { domain, categoryId, language, riskDefinitionName}:
+  { domain: IVeoDomain, language: string, riskDefinitionName: string, categoryId: string }
+) {
+  const potentialImpacts =
+    domain.riskDefinitions[riskDefinitionName]?.categories?.find(
+      (category) => category.id === categoryId)?.potentialImpacts || [];
+
+  const translations = potentialImpacts.map((level) =>
+    level.translations[language]?.name || Object.values(level.translations)[0].name);
+  return translations;
+}
+
+function translateProcessRisks(
+  { domain, riskDefinitionName, language, riskDefinitionCategories }:
+  { domain: IVeoDomain, language: string, riskDefinitionName: string, riskDefinitionCategories: string[] }
+) {
+
+  const translations: Record<string, Record<string, Record<string, string[]>>> = {};
+  riskDefinitionCategories.forEach((categoryId: string) => {
+    const key = `#/properties/domains/properties/${domain.id}/properties/riskValues/properties/${riskDefinitionName}/properties/potentialImpacts/properties/${categoryId}`;
+
+    translations[key] = {
+      formSchema: {
+        enum: getTranslatedRiskValues({ domain, categoryId, language, riskDefinitionName })
+      }
+    };
+  }
+  );
+  return translations;
+}
+
+
 export const getRiskAdditionalContext = (objectType: string, domain: IVeoDomain, language: string): IVeoFormsAdditionalContext => {
+
+  const riskDefinitionName = Object.keys(domain.riskDefinitions)[0];
+  const riskDefinitionCategories = ['C', 'I', 'A', 'R'];
+
   switch (objectType) {
     case 'process':
-      return {
-        [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/C`]: {
-          formSchema: {
-            enum: (() =>
-              (domain.riskDefinitions.DSRA?.categories?.find((category) => category.id === 'C')?.potentialImpacts || []).map(
-                (level) => level.translations[language]?.name || Object.values(level.translations)[0].name
-              ))()
-          }
-        },
-        [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/I`]: {
-          formSchema: {
-            enum: (() =>
-              (domain.riskDefinitions.DSRA?.categories?.find((category) => category.id === 'I')?.potentialImpacts || []).map(
-                (level) => level.translations[language]?.name || Object.values(level.translations)[0].name
-              ))()
-          }
-        },
-        [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/A`]: {
-          formSchema: {
-            enum: (() =>
-              (domain.riskDefinitions.DSRA?.categories?.find((category) => category.id === 'A')?.potentialImpacts || []).map(
-                (level) => level.translations[language]?.name || Object.values(level.translations)[0].name
-              ))()
-          }
-        },
-        [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/R`]: {
-          formSchema: {
-            enum: (() =>
-              (domain.riskDefinitions.DSRA?.categories?.find((category) => category.id === 'R')?.potentialImpacts || []).map(
-                (level) => level.translations[language]?.name || Object.values(level.translations)[0].name
-              ))()
-          }
-        }
-      };
+      return translateProcessRisks({ domain, riskDefinitionCategories, language, riskDefinitionName });
+    case 'scope':
+      return translateProcessRisks({ domain, riskDefinitionCategories, language, riskDefinitionName });
+    case 'asset':
+      return translateProcessRisks({ domain, riskDefinitionCategories, language, riskDefinitionName });
     case 'scenario':
       return {
-        [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/DSRA/properties/potentialProbability`]: {
+        [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/${riskDefinitionName}/properties/potentialProbability`]: {
           formSchema: {
-            enum: (() => (domain.riskDefinitions.DSRA?.probability?.levels || []).map((level) => level.translations[language]?.name || Object.values(level.translations)[0].name))()
+            enum: (() => (domain.riskDefinitions[riskDefinitionName]?.probability?.levels || []).map((level) => level.translations[language]?.name || Object.values(level.translations)[0].name))()
           }
         }
       };
     case 'control':
       return {
-        [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/DSRA/properties/implementationStatus`]: {
+        [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/${riskDefinitionName}/properties/implementationStatus`]: {
           formSchema: {
             enum: (() =>
-              (domain.riskDefinitions.DSRA?.implementationStateDefinition?.levels || []).map(
+              (domain.riskDefinitions[riskDefinitionName]?.implementationStateDefinition?.levels || []).map(
                 (level) => level.translations[language]?.name || Object.values(level.translations)[0].name
               ))()
           }
@@ -114,15 +122,13 @@ export const getSubTypeTranslation = (
   formSchemas: IVeoFormSchemaMeta[]
   ): IVeoFormsAdditionalContext => ({
     [`#/properties/domains/properties/${domainId}/properties/subType`]: {
-      formSchema: { 
+      formSchema: {
         enum: (() => {
           const scope = `#/properties/domains/properties/${domainId}/properties/subType`;
           let elementSchema: any = cloneDeep(JsonPointer.get(objectSchema, scope) || {});
           elementSchema = addConditionalSchemaPropertiesToControlSchema(objectSchema, objectData, elementSchema, scope);
           return elementSchema?.enum?.map((_subType: string) =>  (formSchemas as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === _subType)?.name[language])
         })()
-      } 
+      }
     }
   });
-  
-  

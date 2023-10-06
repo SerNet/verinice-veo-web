@@ -253,10 +253,10 @@ const filter = computed(() => {
 // table stuff
 //
 const page = ref(1);
-const sortBy = ref([{ key: 'name', order: 'desc' }]);
+const sortBy = ref([{ key: 'name', order: 'asc' }]);
 const resetQueryOptions = () => {
   page.value = 1;
-  sortBy.value = [{ key: 'name', order: 'desc' }];
+  sortBy.value = [{ key: 'name', order: 'asc' }];
 };
 
 const combinedQueryParameters = computed<any>(() => ({

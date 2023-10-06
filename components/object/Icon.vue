@@ -26,7 +26,7 @@
             :icon="icon.icon"
           />
           <v-icon
-            v-else-if="isComposite"
+            v-if="isComposite"
             class="veo-object-icon--composite"
             color="primary"
             :icon="mdiDotsHorizontal"

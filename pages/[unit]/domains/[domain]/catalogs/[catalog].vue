@@ -76,7 +76,7 @@ const fetchCatalogItemsQueryParameters = computed(() => (
   {
     domainId: currentDomainId?.value,
     subType: currentSubType?.value,
-    size: '100'
+    size: '10000'
   }
 ));
 const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(

@@ -39,7 +39,7 @@ interface TableHeaderAdditionalProperties {
   text?: string;
   render?: TableRenderer;
   tooltip?: TableRenderer;
-  value: keyof any | string;
+  value?: keyof any | string;
   key: string;
 }
 
@@ -50,7 +50,7 @@ export type ExtractProperty<V extends ReadonlyArray<Record<string, any>>, K exte
 
 <script setup lang="ts">
 import { VNode, VNodeArrayChildren } from 'vue';
-import { VCheckbox, VCheckboxBtn, VProgressLinear, VTooltip } from 'vuetify/components';
+import { VCheckbox, VProgressLinear, VTooltip } from 'vuetify/components';
 import { VDataTable, VDataTableServer } from 'vuetify/labs/VDataTable';
 import type { SortItem } from 'vuetify/labs/VDataTable/composables/sort.mjs';
 import type { DataTableHeader } from 'vuetify/labs/VDataTable/types.mjs';
@@ -103,7 +103,7 @@ const props = withDefaults(defineProps<{
   loading: false,
   modelValue: () => [],
   page: 1,
-  sortBy: () => [{ key: 'name', order: 'desc' }],
+  sortBy: () => [{ key: 'name', order: 'asc' }],
   defaultHeaders: () => [],
   additionalHeaders: () => [],
   showAllColumns: false,
@@ -181,7 +181,7 @@ const toggleSelection = (item: any) => {
 /**
      * Headers that are used by multiple tables, thus it makes sense to define them in one place
      */
-const defaultHeaders: { [key: string]: TableHeader } = {
+const presetHeaders: { [key: string]: TableHeader } = {
   'data-table-select': {
     value: 'data-table-select',
     key: 'data-table-select',
@@ -250,7 +250,7 @@ const renderTooltip = (header: TableHeader, data?: any): TableRenderer => {
  */
 const _headers = computed<TableHeader[]>(() =>
   [
-    ...Object.entries(defaultHeaders)
+    ...Object.entries(presetHeaders)
       .filter(([key, _header]) => props.defaultHeaders.includes(key) || key === 'data-table-select' && 'show-select' in attrs)
       .map(([_key, header]) => header),
     ...props.additionalHeaders
@@ -430,13 +430,13 @@ const render = () => isPaginatedResponse(props.items) ?
     itemsLength: props.items.totalItemCount
   }, {
     ...slots,
-    ...renderers.value,
+    ...renderers.value
   })
   : h('div', [
     ...(props.loading ? [h(VProgressLinear, { indeterminate: true, color: 'primary' })] : []),
     h(VDataTable, sharedProps.value, {
       ...slots,
-      ...renderers.value,
+      ...renderers.value
     })
   ]);
 </script>
