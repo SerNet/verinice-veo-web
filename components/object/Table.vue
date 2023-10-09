@@ -175,7 +175,7 @@ const renderStatus: TableRenderer = ({ item }) => {
 /**
  * Headers that are used by multiple tables, thus it makes sense to define them in one place
  */
-const defaultHeaders: { [key: string]: TableHeader } = {
+const recurringHeaders: { [key: string]: TableHeader } = {
   icon: {
     value: 'icon',
     key: 'icon',
@@ -256,11 +256,11 @@ const defaultHeaders: { [key: string]: TableHeader } = {
 };
 
 // We assume all headers not matching here are defind in BaseTable.vue, so we pass them along
-const unmatchedDefaultHeaders = computed(() => props.defaultHeaders.filter((header) => !defaultHeaders[header]));
+const unmatchedDefaultHeaders = computed(() => props.defaultHeaders.filter((header) => !recurringHeaders[header]));
 
 // Merge default headers from object table with additional headers
 const mergedAdditionalHeaders = computed(() => [
-  ...props.defaultHeaders.map((header) => defaultHeaders[header]).filter(header => header),
+  ...props.defaultHeaders.map((header) => recurringHeaders[header]).filter(header => header),
   ...props.additionalHeaders
 ]);
 </script>

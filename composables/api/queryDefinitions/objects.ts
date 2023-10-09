@@ -1,19 +1,18 @@
 /*
  * verinice.veo web
- * Copyright (C) 2023  Jonas Heitmann
+ * Copyright (C) 2023 Jonas Heitmann
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 import { omit } from "lodash";
 import { getEntityDetailsFromLink } from "~/lib/utils";
@@ -25,11 +24,11 @@ import { VeoApiReponseType } from "../utils/request";
 const route = useRoute();
 
 export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
-  endpoint: string;
-  unit?: string;
+  childElementIds?: string | string[];
   displayName?: string;
+  endpoint: string;
   subType?: string;
-  childElementIds?: string;
+  unit?: string;
 }
 
 export interface IVeoFetchObjectParameters {
@@ -39,13 +38,13 @@ export interface IVeoFetchObjectParameters {
 }
 
 export interface IVeoFetchObjectChildrenParameters {
-  domain: string;
+  domain: string | string[];
   endpoint: string;
   id: string;
 }
 
 export interface IVeoFetchScopeChildrenParameters {
-  domain: string;
+  domain: string | string[];
   id: string;
 }
 
@@ -61,16 +60,16 @@ export interface IVeoFetchRiskParameters {
 }
 
 export interface IVeoCreateObjectParameters {
-  domain: string;
+  domain: string | string[];
   endpoint: string;
   object: IVeoEntity;
   parentScopes?: string[];
 }
 
 export interface IVeoUpdateObjectParameters {
-  id: string;
-  domain: string;
+  domain: string | string[];
   endpoint: string;
+  id: string;
   object: IVeoEntity;
 }
 
@@ -88,8 +87,8 @@ export interface IVeoCreateRiskParameters {
 export interface IVeoUpdateRiskParameters {
   endpoint: string;
   id: string;
-  scenarioId: string;
   risk: IVeoRisk;
+  scenarioId: string;
 }
 
 export interface IVeoDeleteRiskParameters {
@@ -99,9 +98,9 @@ export interface IVeoDeleteRiskParameters {
 }
 
 export interface IVeoFetchWipDecisionEvaluationParameters{
+  domain: string | string[];
   endpoint: string;
   object: IVeoEntity;
-  domain: string;
 }
 
 export const formatObject = (object: any) => {
@@ -117,6 +116,7 @@ export const formatObject = (object: any) => {
   }
   // The frontend sets the display name as the backend only sets it for links. Gets used for example in the breadcrumbs.
   object.displayName = [object.designator, object.abbreviation, object.name].filter((part) => part).join(' ');
+
   return object;
 };
 
@@ -127,18 +127,15 @@ export default {
       url: '/api/domains/:domain/:endpoint',
       onDataFetched: (result) => {
         result.items.map((item) => formatObject(item));
-
         // +1, because the first page for the api is 0, however vuetify expects it to be 1
         result.page = result.page + 1;
         return result;
       },
       queryParameterTransformationFn:(queryParameters) => ({
-        params: {
-          domain: route.params.domain,
-          endpoint: queryParameters.endpoint
-        },
+        params: { domain: route.params.domain, endpoint: queryParameters.endpoint },
         query: {
-          hasParentElements: queryParameters.hasNoParentElements === true ? false : undefined, // The frontend only works with hasNoParentElements, but the backend expects hasParentElements
+          // The frontend only works with hasNoParentElements, but the backend expects hasParentElements
+          hasParentElements: queryParameters.hasNoParentElements === true ? false : undefined,
           ...omit(queryParameters, 'endpoint')
         }
       })
@@ -147,19 +144,25 @@ export default {
       primaryQueryKey: 'object',
       url: '/api/domains/:domain/:endpoint/:id',
       onDataFetched: (result) => formatObject(result),
-      queryParameterTransformationFn:(queryParameters) => ({ params: { domain: route.params.domain, endpoint: queryParameters.endpoint, id: queryParameters.id } })
+      queryParameterTransformationFn:(queryParameters) => ({
+        params: { domain: route.params.domain, endpoint: queryParameters.endpoint, id: queryParameters.id }
+      })
     } as IVeoQueryDefinition<IVeoFetchObjectParameters, IVeoEntity>,
     fetchObjectChildren:{
       primaryQueryKey: 'childObjects',
       url: '/api/domains/:domain/:endpoint/:id/parts',
-      onDataFetched: (result) => (result.items || []).map((item) => formatObject(item)),
-      queryParameterTransformationFn:(queryParameters) => ({ params: { domain: route.params.domain, endpoint: queryParameters.endpoint, id: queryParameters.id } })
+      onDataFetched: (result) => (result.items || []).map((item: any) => formatObject(item)),
+      queryParameterTransformationFn:(queryParameters) => ({
+        params: { domain: route.params.domain, endpoint: queryParameters.endpoint, id: queryParameters.id }
+      })
     } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoEntity[]>,
     fetchScopeChildren:{
       primaryQueryKey: 'childScopes',
       url: '/api/domains/:domain/scopes/:id/members',
-      onDataFetched: (result) => (result.items || []).map((item) => formatObject(item)),
-      queryParameterTransformationFn:(queryParameters) => ({ params: { domain: route.params.domain, id: queryParameters.id } })
+      onDataFetched: (result) => (result.items || []).map((item: any) => formatObject(item)),
+      queryParameterTransformationFn:(queryParameters) => ({
+        params: { domain: route.params.domain, id: queryParameters.id }
+      })
     } as IVeoQueryDefinition<IVeoFetchScopeChildrenParameters, IVeoEntity[]>,
     fetchRisks:{
       primaryQueryKey: 'risks',
@@ -169,17 +172,14 @@ export default {
     fetchRisk:{
       primaryQueryKey: 'risk',
       url: '/api/:endpoint/:id/risks/:scenarioId',
-      queryParameterTransformationFn: (queryParameters) => ({ params: { id: queryParameters.objectId, endpoint: queryParameters.endpoint, scenarioId: queryParameters.scenarioId } })
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: { endpoint: queryParameters.endpoint, id: queryParameters.objectId, scenarioId: queryParameters.scenarioId } })
     } as IVeoQueryDefinition<IVeoFetchRiskParameters, IVeoRisk>,
     fetchWipDecisionEvaluation: {
       primaryQueryKey: 'evaluation',
       url: '/api/domains/:domain/:endpoint/evaluation',
       queryParameterTransformationFn: (queryParameters) => ({
-        params: {
-          id: queryParameters.object.id,
-          domain: route.params.domain,
-          endpoint: queryParameters.endpoint
-        },
+        params: { domain: route.params.domain, endpoint: queryParameters.endpoint },
         query: {
           domain: queryParameters.domain
         },
@@ -204,8 +204,11 @@ export default {
           // @ts-ignore Is only set in DTO if object is of type scope
           delete _object.members;
         }
-        return { params: { domain: route.params.domain, endpoint: mutationParameters.endpoint },
-          query: { scopes: mutationParameters.parentScopes?.join(',') }, json: _object };
+        return {
+          params: { domain: route.params.domain, endpoint: mutationParameters.endpoint },
+          query: { scopes: mutationParameters.parentScopes?.join(',') },
+          json: _object
+        };
       },
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
@@ -243,7 +246,11 @@ export default {
         delete _object.updatedAt;
         // @ts-ignore Display name is generated in the frontend, so we remove it from the DTO before sending it to the backend
         delete _object.displayName;
-        return { params: { domain: route.params.domain, endpoint: mutationParameters.endpoint, id: mutationParameters.object.id }, json: _object };
+
+        return {
+          params: { domain: route.params.domain, endpoint: mutationParameters.endpoint, id: mutationParameters.object.id },
+          json: _object
+        };
       },
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
@@ -269,10 +276,12 @@ export default {
               id: variables.params?.id
             }
           ]);
-          queryClient.invalidateQueries(['objects']); // Invalid all object lists, as the parent endpoint uses the same key (and we want an updated edit date in the list for this object)
+          // Invalid all object lists, as the parent endpoint uses the same key (and we want an updated edit date in the list for this object)
+          queryClient.invalidateQueries(['objects']);
+          // Only invalidate after 5 seconds, as the history sevice isn't updated as sonn as the object is updated
           setTimeout(() => {
             queryClient.invalidateQueries(['versions']);
-          }, 5000); // Only invalidate after 5 seconds, as the history sevice isn't updated as sonn as the object is updated
+          }, 5000);
         }
       }
     } as IVeoMutationDefinition<IVeoUpdateObjectParameters, IVeoEntity>,

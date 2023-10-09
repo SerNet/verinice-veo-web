@@ -129,7 +129,7 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
 import { mdiContentCopy, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
 
-import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject } from '~/composables/VeoObjectUtilities';
@@ -139,8 +139,8 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { useQuery } from '~~/composables/api/utils/query';
-import { useFetchObjects } from '~~/composables/api/objects';
+import { useQuery } from '~/composables/api/utils/query';
+import { useFetchObjects } from '~/composables/api/objects';
 
 enum FILTER_SOURCE {
   QUERY,
@@ -401,7 +401,7 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
         order: 51,
         key: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
         value: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
-        render: ({ item }) => h('div', item.raw.domains?.[domainId.value]?.decisionResults?.piaMandatory?.value ? globalT('global.button.yes').toString() : globalT('global.button.no').toString()),
+        render: ({ item }: any) => h('div', item.raw.domains?.[domainId.value]?.decisionResults?.piaMandatory?.value ? globalT('global.button.yes').toString() : globalT('global.button.no').toString()),
         text: t('dpiaMandatory').toString(),
         sortable: false,
         width: 210
