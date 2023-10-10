@@ -260,7 +260,7 @@ const unmatchedDefaultHeaders = computed(() => props.defaultHeaders.filter((head
 
 // Merge default headers from object table with additional headers
 const mergedAdditionalHeaders = computed(() => [
-  ...props.defaultHeaders.map((header) => recurringHeaders[header]).filter(header => header),
+  ...(props.defaultHeaders || []).map((header) => recurringHeaders[header]).filter(header => header),
   ...props.additionalHeaders
 ]);
 </script>

@@ -274,14 +274,20 @@ const mapItem = (item: any) => {
   const mappedValues = Object.fromEntries(
     mappers.map((formatter) => {
       const name = formatter.value;
-      const value = formatter.map ? formatter.map(item[name]) : item[name];
+      const value = formatter.map ? formatter.map(item[name || '']) : item[name || ''];
       return [name, value];
     })
   );
   return { ...item, ...mappedValues };
 };
 
-const items = computed(() => (isPaginatedResponse(props.items) ? props.items.items : props.items).map(mapItem));
+const items = computed(() => {
+  const data = isPaginatedResponse(props.items)
+    ? props.items.items
+    : props.items;
+
+  return (data || []).map(mapItem);
+});
 
 /**
      * Create slots to apply renderers. If none exists, use a default one in order to display disabled table entries
@@ -371,7 +377,7 @@ watch(() => tableWrapper.value, (newValue, oldValue) => {
   if(newValue) {
     resizeObserver.observe(newValue.$el);
   } else {
-    resizeObserver.unobserve(oldValue.$el);
+    resizeObserver.unobserve(oldValue?.$el);
   }
 });
 

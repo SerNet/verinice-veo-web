@@ -84,7 +84,7 @@ import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import { useUnlinkObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
-import objectQueryDefinitions, { IVeoFetchScopeChildrenParameters } from '~/composables/api/queryDefinitions/objects';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
@@ -264,13 +264,15 @@ export default defineComponent({
     const { data: parents, isFetching: parentsLoading } = useFetchParentObjects(parentsQueryParameters, { enabled: parentsQueryEnabled, keepPreviousData: false });
 
     const childObjectsQueryParameters = computed(() => ({
+      domain: route.params.domain,
       endpoint: objectEndpoint.value,
       id: props.object?.id || ''
     }));
     const childObjectsQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && !props.editParents && objectEndpoint.value !== 'scopes');
     const { data: childObjects, isFetching: childObjectsLoading } = useQuery(objectQueryDefinitions.queries.fetchObjectChildren, childObjectsQueryParameters, { enabled: childObjectsQueryEnabled });
 
-    const childScopesQueryParameters = computed<IVeoFetchScopeChildrenParameters>(() => ({
+    const childScopesQueryParameters = computed(() => ({
+      domain: route.params.domain,
       id: props.object?.id || ''
     }));
     const childScopesQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && !props.editParents && objectEndpoint.value === 'scopes');
@@ -310,11 +312,11 @@ export default defineComponent({
               const parentsToAdd = differenceBy(modifiedSelectedItems.value, originalSelectedItems.value, 'id');
               const parentsToRemove = differenceBy(originalSelectedItems.value, modifiedSelectedItems.value, 'id');
               for (const parent of parentsToAdd) {
-                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: endpoints.value?.[parent.type], id: parent.id }, queryClient);
+                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, { domain: route.params.domain, endpoint: endpoints.value?.[parent.type], id: parent.id }, queryClient);
                 await link(_parent, props.object);
               }
               for (const parent of parentsToRemove) {
-                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: endpoints.value?.[parent.type], id: parent.id }, queryClient);
+                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, { domain: route.params.domain, endpoint: endpoints.value?.[parent.type], id: parent.id }, queryClient);
                 await unlink(_parent, props.object.id);
               }
             } else {
