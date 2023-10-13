@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2022  Jonas Heitmann
+ * Copyright (C) 2022  Jonas Heitmann, jae
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,9 +41,9 @@ export const useVeoErrorFormatter = () => {
     const isAdditionalPropertiesRule = error.keyword === 'additionalProperties';
     const isPatternRule = error.keyword === 'pattern';
     const isFormatRule = error.keyword === 'format';
-    const isIntegerRule = error.message.match(/must be integer/g);
+    const isTypeRule = error.keyword === 'type';
 
-    if (![!!isRequiredRule, isEqualRule, isAdditionalPropertiesRule, isPatternRule, isFormatRule, isIntegerRule].some((rule) => rule)) {
+    if (![!!isRequiredRule, isEqualRule, isAdditionalPropertiesRule, isPatternRule, isFormatRule, isTypeRule].some((rule) => rule)) {
       throw new Error(`No error formatter found for ${JSON.stringify(error)}`);
     }
 
@@ -60,11 +60,17 @@ export const useVeoErrorFormatter = () => {
       affectedProperty = last(paths);
       objectSchemaPointer = paths.join('/');
     }
-    if (isPatternRule || isFormatRule || isIntegerRule) {
+    if (isPatternRule || isFormatRule || isTypeRule) {
       objectSchemaPointer = error.schemaPath.replace(/\/pattern$/, '');
     }
-    if (isIntegerRule) {
-      error.keyword = "format";
+    if (isTypeRule) {
+      objectSchemaPointer = error.schemaPath.replace(/\/type/, '');
+
+      // Check for link elements
+      const pointerIndexMatch = error.instancePath.match(/(\/\d+$)|(\/\d+\/)/);
+      if (pointerIndexMatch) {
+        objectSchemaPointer = objectSchemaPointer.replace('/items/', pointerIndexMatch[0]);
+      }
     }
 
     let translatedErrorString = '';
@@ -81,8 +87,9 @@ export const useVeoErrorFormatter = () => {
         }
         translatedErrorString = t(`error.${error.keyword}`, { field: getInvalidFieldLabel(affectedProperty, translations) }).toString();
         break;
-      // While pattern and format are separate errors, we want to display the same error message for both, as both have to be fixed the same way by the user
+      // While pattern, type and format are separate errors, we want to display the same error message, because all of them have to be fixed the same way by the user
       case 'format':
+      case 'type':
       case 'pattern':
         translatedErrorString = t('error.format', {
           field: getInvalidFieldLabel(error.instancePath.split('/').pop() || error.instancePath, translations),
