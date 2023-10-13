@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2022  Jonas Heitmann
+ * Copyright (C) 2022  Jonas Heitmann, jae
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -303,7 +303,15 @@ export function generateFormSchema(objectSchema: JSONSchema7, generatorOptions: 
   return formSchema;
 }
 
-export const getControlErrorMessages = (props: any, modifier = '') =>
-  props.index !== undefined
-    ? props.errors.get(props.objectSchemaPointer.replace('/items/', `/${props.index}/`) + modifier)
-    : props.errors.get(props.objectSchemaPointer + modifier);
+export const getControlErrorMessages = (props: any, modifier = '')  => {
+
+  // Handle link elements (link elements have an index prop)
+  if (props.index !== undefined && props.objectSchemaPointer.includes('/items/')) {
+    return props.errors.get(
+      props.objectSchemaPointer.replace('/items/', `/${props.index}/`) + modifier
+    );
+  }
+
+  // Handle everything else
+  return props.errors.get(props.objectSchemaPointer + modifier);
+};
