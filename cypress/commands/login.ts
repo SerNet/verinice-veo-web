@@ -22,8 +22,6 @@ const testUser =
     pw: Cypress.env('TESTUSER_PASS')
   };
 
-  console.log({testUser})
-
 const isLocalhost = Cypress.env('isLocalhost') || false;
 
 export function login({
@@ -50,8 +48,6 @@ export function login({
           cy.get('input#kc-login').click();
         }
       );
-      cy.wait(4000);
-      cy.reload();
     }
   }, { cacheAcrossSpecs: true } );
 }

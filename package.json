@@ -19,7 +19,7 @@
     "test": "echo 0",
     "e2e": "cypress run --config-file cypress/e2e/cypress.config.localhost.js --config watchForFileChanges=false --browser firefox",
     "cy-gui:local": "cypress open --config-file cypress/e2e/cypress.config.localhost.js",
-    "cy:local": "cypress run --config-file cypress.config.localhost.js",
+    "cy:local": "cypress run --config-file cypress/e2e/cypress.config.localhost.js",
     "cy-gui:develop": "cypress open --config-file cypress/e2e/cypress.config.js",
     "cy:develop": "cypress run --config-file cypress/e2e/cypress.config.js",
     "test:cov": "vitest run --coverage",

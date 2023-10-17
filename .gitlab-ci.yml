@@ -26,6 +26,17 @@ store_project_version:
     when: always
     reports:
       dotenv: variables.env
+
+check_license:
+  stage: test
+  needs: []
+  script:
+    - mv LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
+    - npx generate-license-file --ci --input ./package.json --output LICENSE-3RD-PARTY.txt
+    - diff LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
+    - if [ $? -ne 0 ]; then echo "LICENSE-3RD-PARTY.txt is not up to date, please re-run npx generate-license-file --input ./package.json --output LICENSE-3RD-PARTY.txt --overwrite"; exit 1; fi
+  interruptible: true
+
 test:
   image: cypress/browsers:node18.12.0-chrome103-ff107
   stage: test
@@ -54,16 +65,6 @@ test:
     paths:
     - ${CI_PROJECT_DIR}/cypress/screenshots
     - ${CI_PROJECT_DIR}/cypress/videos
-
-check_license:
-  stage: test
-  needs: []
-  script:
-    - mv LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
-    - npx generate-license-file --ci --input ./package.json --output LICENSE-3RD-PARTY.txt
-    - diff LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
-    - if [ $? -ne 0 ]; then echo "LICENSE-3RD-PARTY.txt is not up to date, please re-run npx generate-license-file --input ./package.json --output LICENSE-3RD-PARTY.txt --overwrite"; exit 1; fi
-  interruptible: true
 
 docker_image:
   stage: build
