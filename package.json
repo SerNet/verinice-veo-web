@@ -14,8 +14,6 @@
     "build": "nuxi build",
     "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore .",
     "precommit": "npm run lint",
-    "start": "nuxi start",
-    "test0": "nuxi prepare && vitest --reporter verbose",
     "test": "echo 0",
     "e2e": "cypress run --config-file cypress/e2e/cypress.config.localhost.js --config watchForFileChanges=false --browser firefox",
     "cy-gui:local": "cypress open --config-file cypress/e2e/cypress.config.localhost.js",
