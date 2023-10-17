@@ -1,7 +1,7 @@
 const testUnitName = 'CY-TEST-UNIT';
 
 beforeEach(() => {
-  cy.login({});
+  cy.login();
 });
 
 describe('Apply Profiles', () => {

@@ -38,6 +38,7 @@
         <v-list
           lines="two"
           data-component-name="unit-selection-available-units"
+          data-veo-test="unit-selection-available-units"
         >
           <template v-if="unitsFetching">
             <div

@@ -1,5 +1,5 @@
 before(() => {
-  cy.login({});
+  cy.login();
 });
 
 it('deletes the test unit', () => {

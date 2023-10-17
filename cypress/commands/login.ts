@@ -32,7 +32,7 @@ export function login({
 
   cy.session([username, password], () => {
     cy.visit('/login');
-    cy.get('button').contains('Login').click();
+    cy.get('[data-veo-test="login-btn-login"]').click();
 
     if(!localhost) {
       applyCredentials({ username, password });

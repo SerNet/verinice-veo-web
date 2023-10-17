@@ -1,5 +1,5 @@
 before(() => {
-  cy.login({});
+  cy.login();
 });
 
 it('creates an empty unit and acquaints it with the DSG-VO domain', () =>  {

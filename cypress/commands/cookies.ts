@@ -10,5 +10,5 @@ declare global {
 }
 
 export function acceptAllCookies() {
-  cy.get('button').contains('Accept all cookies').click();
+  cy.get('[data-veo-test="cookies-btn-accept-all"]').click();
 }

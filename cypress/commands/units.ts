@@ -16,12 +16,12 @@ export function goToUnitSelection():void {
   cy.visit('/');
   cy.intercept('GET', 'https://api.develop.verinice.com/veo/units').as('getUnits');
   cy.wait(['@getUnits'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 200);
-  cy.get('nav a').contains('Unit management').click();
+  cy.get('[data-veo-test="unit-selection-nav-item"]').click();
 }
 
 export function selectUnit({ name }:{name: string}):void {
-  cy.get('[data-component-name="unit-selection-available-units"] a').contains(name).click()
-};
+  cy.get('[data-veo-test="unit-selection-available-units"] a').contains(name).click();
+}
 
 export function createUnit({
   name="CY-TEST-UNIT", description="CY-TEST-UNIT-DESCRIPTON",
@@ -35,7 +35,7 @@ export function createUnit({
 
     if( numAvailableDomains > 1 ) {
       cy.get('@availableDomains').click({ multiple: true });
-      desiredDomains.forEach( domain => cy.get('@availableDomains').contains(domain).click() )
+      desiredDomains.forEach( domain => cy.get('@availableDomains').contains(domain).click() );
     }
 
     else if( numAvailableDomains < desiredDomains.length ){
@@ -65,9 +65,10 @@ export function deleteUnit({ unitName }:{unitName: string}):void {
     .get('.v-list-item--link').contains(unitName).parent().parent()
     .find('[data-component-name="unit-selection-delete-unit-button"]').click();
 
+
   // Get delete dialog
   cy
-    .get('.v-card-title').contains('Delete unit').parent().parent()
+    .get('[data-veo-test="units-delete-dialog"]')
     .as('deleteDialog');
 
   // Set up a listener for API responses
@@ -78,7 +79,7 @@ export function deleteUnit({ unitName }:{unitName: string}):void {
   // Request delete unit
   cy
     .get('@deleteDialog').find('input').type(unitName)
-    .get('@deleteDialog').find('button').last().click();
+    .get('@deleteDialog').find('[data-veo-test="units-delete-dialog-btn-delete"]').last().click();
 
   // Wait for API response and assert
   cy
