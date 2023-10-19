@@ -14,7 +14,7 @@ declare global {
 
 export function goToUnitSelection():void {
   cy.visit('/');
-  cy.intercept('GET', 'https://api.develop.verinice.com/veo/units').as('getUnits');
+  cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units`).as('getUnits');
   cy.wait(['@getUnits'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 200);
   cy.get('[data-veo-test="unit-selection-nav-item"]').click();
 }
@@ -50,7 +50,7 @@ export function createUnit({
   });
 
   // Create new unit
-  cy.intercept('GET', 'https://api.develop.verinice.com/veo/units/**').as('getNewUnit');
+  cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units/**`).as('getNewUnit');
   cy
     .get('.new-unit-form input').first().type(name)
     .get('.new-unit-form input').last().type(description)
@@ -73,7 +73,7 @@ export function deleteUnit({ unitName }:{unitName: string}):void {
 
   // Set up a listener for API responses
   cy
-    .intercept('DELETE', 'https://api.develop.verinice.com/veo/units/**')
+    .intercept('DELETE', `${Cypress.env('veoApiUrl')}/units/**`)
     .as('deleteUnit');
 
   // Request delete unit

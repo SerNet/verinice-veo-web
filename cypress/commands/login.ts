@@ -12,36 +12,28 @@ declare global {
 interface LoginParams {
   username?: string;
   password?: string;
-  localhost?: boolean;
+  isLocalhost?: boolean;
 }
 
-const testUser =
-  Cypress.env('testUser') ||
-  {
-    name: Cypress.env('TESTUSER_NAME'),
-    pw: Cypress.env('TESTUSER_PASS')
-  };
-
-const isLocalhost = Cypress.env('isLocalhost') || false;
-
 export function login({
-  username = testUser.name,
-  password = testUser.pw,
-  localhost = isLocalhost
+  username = Cypress.env('testUser').name,
+  password = Cypress.env('testUser').pw,
+  isLocalhost = Cypress.env('isLocalhost') || false
 }: LoginParams = {}) {
 
   cy.session([username, password], () => {
     cy.visit('/login');
     cy.get('[data-veo-test="login-btn-login"]').click();
 
-    if(!localhost) {
+    if(!isLocalhost) {
       applyCredentials({ username, password });
     }
     else {
       cy.origin(
-        'https://auth.staging.verinice.com',
+        Cypress.env('veoOidcUrl'),
         { args: { username, password } }, ({ username, password }) => {
-          // Currently Cypress does not allow passing a fn,
+
+          // Currently Cypress does not allow passing a fn to cy.origin,
           // using a custom command could work, but is still experimental
           cy.get('input').first().type(username);
           cy.get('input#password').type(password);

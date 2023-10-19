@@ -66,6 +66,7 @@ test:
     - ${CI_PROJECT_DIR}/cypress/screenshots
     - ${CI_PROJECT_DIR}/cypress/videos
 
+
 docker_image:
   stage: build
   needs: ["store_project_version"]

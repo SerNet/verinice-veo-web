@@ -33,7 +33,7 @@ describe('Apply Profiles', () => {
     cy.get('.v-autocomplete__content .v-list-item').click();
 
     // Set up a listener for API responses
-    cy.intercept('POST', 'https://api.develop.verinice.com/veo/domains/**/profiles/demoUnit/units/**').as('applyProfile');
+    cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/profiles/demoUnit/units/**`).as('applyProfile');
     cy.get('.v-card-actions button').last().click();
 
     // Wait for API response
