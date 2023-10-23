@@ -70,8 +70,8 @@
         <ObjectDeleteDialog
           :model-value="!!itemToDelete"
           :item="itemToDelete"
-          @update:model-value="onCloseDeleteDialog"
-          @success="onCloseDeleteDialog(false)"
+          @update:model-value="onCloseDeleteDialog({isOpen: false, isCancel: true})"
+          @success="onCloseDeleteDialog({ isOpen: false })"
           @error="showError('delete', itemToDelete, $event)"
         />
       </BaseCard>
@@ -345,10 +345,17 @@ const createObjectDialogVisible = ref(false);
 
 // Delete object
 const itemToDelete = ref<IVeoEntity>();
-const onCloseDeleteDialog = (visible: boolean) => {
-  if (visible === false) {
+const resetItemToDelete = () => itemToDelete.value = undefined;
+
+const onCloseDeleteDialog = (
+  {isOpen, isCancel = false}: {isOpen: boolean, isCancel?: boolean}
+) => {
+  if(!isOpen && isCancel){
+    return resetItemToDelete();
+  }
+  if (!isOpen && !isCancel) {
     displaySuccessMessage(t('objectDeleted'));
-    itemToDelete.value = undefined;
+    return resetItemToDelete();
   }
 };
 
@@ -405,7 +412,7 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
         text: t('dpiaMandatory').toString(),
         sortable: false,
         width: 210
-            
+
       }
     ]
     :[]
