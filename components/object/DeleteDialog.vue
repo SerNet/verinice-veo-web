@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Jonas Heitmann, Davit Svandize
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -66,20 +66,25 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-const { mutateAsync: doDelete } = useMutation(objectQueryDefinitions.mutations.deleteObject);
+const { mutateAsync: doDelete } = useMutation(
+  objectQueryDefinitions.mutations.deleteObject,
+  {},
+  { isInvalidating: false }
+);
 const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 const { ability } = useVeoPermissions();
 
 const displayName = computed(() => props.item?.displayName ?? '');
 
 const deleteButtonEnabled = computed(() => !props.item || !!endpoints.value?.[props.item.type]);
+
 const deleteObject = async () => {
   if (!deleteButtonEnabled.value || ability.value.cannot('manage', 'objects') || !props.item) {
     return;
   }
   try {
-    emit('success'); // We have to emit before the mutation gets executed as as soon as the mutation is done a 404 error gets thrown and our navigation request ignored.
-    await doDelete({ endpoint: endpoints.value?.[props.item.type], id: props.item.id });
+    await doDelete({ endpoint: endpoints.value?.[props.item.type], id: props.item.id});
+    emit('success');
   } catch (error: any) {
     emit('error', error);
   }
