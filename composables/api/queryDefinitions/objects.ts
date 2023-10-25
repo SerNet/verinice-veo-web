@@ -32,19 +32,19 @@ export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
 }
 
 export interface IVeoFetchObjectParameters {
-  domain: string | string[];
+  domain: string;
   endpoint: string;
   id: string;
 }
 
 export interface IVeoFetchObjectChildrenParameters {
-  domain: string | string[];
+  domain: string;
   endpoint: string;
   id: string;
 }
 
 export interface IVeoFetchScopeChildrenParameters {
-  domain: string | string[];
+  domain: string;
   id: string;
 }
 
@@ -60,14 +60,14 @@ export interface IVeoFetchRiskParameters {
 }
 
 export interface IVeoCreateObjectParameters {
-  domain: string | string[];
+  domain: string;
   endpoint: string;
   object: IVeoEntity;
   parentScopes?: string[];
 }
 
 export interface IVeoUpdateObjectParameters {
-  domain: string | string[];
+  domain: string;
   endpoint: string;
   id: string;
   object: IVeoEntity;
@@ -98,7 +98,7 @@ export interface IVeoDeleteRiskParameters {
 }
 
 export interface IVeoFetchWipDecisionEvaluationParameters{
-  domain: string | string[];
+  domain: string;
   endpoint: string;
   object: IVeoEntity;
 }
