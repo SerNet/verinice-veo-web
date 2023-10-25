@@ -98,17 +98,16 @@ export const getRiskAdditionalContext = (objectType: string, domain: IVeoDomain,
 export const getStatusAdditionalContext = (
   objectData: Record<string, any>,
   objectSchema: JSONSchema7,
-  translations: IVeoTranslationCollection,
-  domainId: string
+  translations: IVeoTranslationCollection
 ): IVeoFormsAdditionalContext => ({
   [`#/properties/status`]: {
     formSchema: {
-      disabled: !objectData.domains?.[domainId]?.subType,
+      disabled: !objectData?.subType,
       enum: (() => {
         const scope = `#/properties/status`;
         let elementSchema: any = cloneDeep(JsonPointer.get(objectSchema, scope) || {});
         elementSchema = addConditionalSchemaPropertiesToControlSchema(objectSchema, objectData, elementSchema, scope);
-        return elementSchema?.enum?.map((status: string) => translations?.[`${objectSchema.title}_${objectData.domains?.[domainId]?.subType}_status_${status}`] || status);
+        return elementSchema?.enum?.map((status: string) => translations?.[`${objectSchema.title}_${objectData?.subType}_status_${status}`] || status);
       })()
     }
   }
@@ -117,13 +116,12 @@ export const getStatusAdditionalContext = (
 export const getSubTypeTranslation = (
   objectData: Record<string, any>,
   objectSchema: JSONSchema7,
-  domainId: string,
   language: string,
   formSchemas: IVeoFormSchemaMeta[]): IVeoFormsAdditionalContext => ({
-  [`#/properties/domains/properties/${domainId}/properties/subType`]: {
+  [`#/properties/subType`]: {
     formSchema: {
       enum: (() => {
-        const scope = `#/properties/domains/properties/${domainId}/properties/subType`;
+        const scope = `#/properties/subType`;
         let elementSchema: any = cloneDeep(JsonPointer.get(objectSchema, scope) || {});
         elementSchema = addConditionalSchemaPropertiesToControlSchema(objectSchema, objectData, elementSchema, scope);
         return elementSchema?.enum?.map((_subType: string) =>  (formSchemas as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === _subType)?.name[language]);

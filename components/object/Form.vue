@@ -229,9 +229,9 @@ export default defineComponent({
       ...props.additionalContext,
       ...(objectSchema.value && domain.value ? getRiskAdditionalContext(objectSchema.value.title, domain.value, locale.value) : {}),
       ...(props.modelValue && objectSchema.value && translations.value
-        ? getStatusAdditionalContext(props.modelValue, objectSchema.value, mergedTranslations.value[locale.value], props.domainId)
+        ? getStatusAdditionalContext(props.modelValue, objectSchema.value, mergedTranslations.value[locale.value])
         : {}),
-      ...(objectSchema.value && props.modelValue ? getSubTypeTranslation(props.modelValue, objectSchema.value, props.domainId, locale.value, formSchemas.value || []):{})
+      ...(objectSchema.value && props.modelValue ? getSubTypeTranslation(props.modelValue, objectSchema.value, locale.value, formSchemas.value || []):{})
     }));
 
     // Stuff that manages which form schema gets used to display the object
