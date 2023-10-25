@@ -29,8 +29,7 @@ import {
   IVeoFormElementFormSchema,
   IVeoFormControlFormSchema,
   IVeoFormLabelFormSchema,
-  IVeoFormWidgetFormSchema,
-  IVeoFormElementDefaultProps
+  IVeoFormWidgetFormSchema
 } from './types';
 import {
   evaluateRule,
@@ -175,12 +174,13 @@ export default defineComponent({
     const localFormSchema = computed(() => cloneDeep(props.formSchema) || generateFormSchema(localObjectSchema.value, GENERATOR_OPTIONS(props), Mode.VEO));
     const localReactiveFormActions = computed(() => {
       const toReturn = defaultReactiveFormActions();
-
-      for (const key in props.reactiveFormActions || {}) {
-        if (toReturn[key]) {
-          toReturn[key].push(...props.reactiveFormActions[key]);
-        } else {
-          toReturn[key] = props.reactiveFormActions[key];
+      if (props.reactiveFormActions !== undefined) {
+        for (const key in props.reactiveFormActions || {}) {
+          if (toReturn[key]) {
+            toReturn[key].push(...props.reactiveFormActions[key]);
+          } else {
+            toReturn[key] = props.reactiveFormActions[key];
+          }
         }
       }
       return toReturn;
@@ -200,7 +200,7 @@ export default defineComponent({
     provide('objectData', _value);
 
     // Form generation
-    const defaultProps = computed<IVeoFormElementDefaultProps>(() => ({
+    const defaultProps = computed(() => ({
       metaData: props.metaData,
       disabled: props.disabled,
       objectCreationDisabled: props.objectCreationDisabled,

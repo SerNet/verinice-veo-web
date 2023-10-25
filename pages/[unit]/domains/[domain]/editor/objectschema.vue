@@ -463,7 +463,7 @@ export default defineComponent({
     const statusSpredRegExp = /([a-z]+)_([\w|-]+)_status_([A-Z|_]+)$/;
 
     const isStatusPresentInSchema = (translationKey: string, objectSchemaPropertyPath: string, objectSchemaValueAtPropertyPath: any) => {
-      if(objectSchemaPropertyPath !== `/properties/domains/properties/${route.params.domain}/allOf`) {
+      if(objectSchemaPropertyPath !== `/allOf`) {
         return false;
       }
 

@@ -389,7 +389,7 @@ const additionalContext = ref({});
 const getAdditionalContext = () => {
   const disabledSubType = object.value?.subType
     ? {
-      [`#/properties/domains/properties/${domainId.value}/properties/subType`]: {
+      [`#/properties/subType`]: {
         formSchema: { disabled: true }
       }
     }
@@ -400,13 +400,13 @@ const getAdditionalContext = () => {
   const subTypesCTL = ['CTL_Requirement', 'CTL_Module', 'CTL_Safeguard', '-'];
   const subTypesSCN = ['SCN_AppliedThreat', '-'];
   const disabledRequirementCTL = subTypesCTL.includes(route.params.subType as string) ? {
-    ["#/properties/customAspects/properties/control_bpCompendium/properties/attributes/properties/control_bpCompendium_content"]: {
+    ["#/properties/customAspects/properties/control_bpCompendium/properties/control_bpCompendium_content"]: {
       formSchema: { disabled: true }
     }
   } : {};
 
   const disabledRequirementSCN = subTypesSCN.includes(route.params.subType as string) ? {
-    ["#/properties/customAspects/properties/scenario_bpCompendium/properties/attributes/properties/scenario_bpCompendium_content"]: {
+    ["#/properties/customAspects/properties/scenario_bpCompendium/properties/scenario_bpCompendium_content"]: {
       formSchema: { disabled: true }
     }
   } : {};

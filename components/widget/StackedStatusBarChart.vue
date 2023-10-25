@@ -126,7 +126,7 @@ const route = useRoute();
 const barChartRef = ref([]);
 const statusBarTitle = computed(() => (props.objectType.charAt(0).toUpperCase() + props.objectType.slice(1)) || ' ');
 
-const fetchSchemaQueryParameters = computed(() => ({ domainIds: [props.domainId], type: props.objectType }));
+const fetchSchemaQueryParameters = computed(() => ({ domainId: props.domainId, types: props.objectType }));
 const fetchSchemaQueryEnabled = computed(() => !!props.domainId);
 const { data: objectSchema, isFetching: schemasIsLoading } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
 

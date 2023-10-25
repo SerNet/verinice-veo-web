@@ -200,7 +200,7 @@ export default defineComponent({
     const objectSchemaId = ref<string>();
     const uploadedObjectSchema = ref<IVeoObjectSchema>();
 
-    const fetchSchemaQueryParameters = computed<IVeoFetchSchemaParameters>(() => ({ type: objectSchemaId.value || '', domainIds: [props.domainId] }));
+    const fetchSchemaQueryParameters = computed<IVeoFetchSchemaParameters>(() => ({ types: objectSchemaId.value || '', domainId: props.domainId }));
     const fetchSchemaQueryEnabled = computed(() => !!objectSchemaId.value && objectSchemaId.value !== 'custom');
     const { data: remoteObjectSchema, isFetching: loadingObjectSchema } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
 

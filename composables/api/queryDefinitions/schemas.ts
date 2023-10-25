@@ -18,7 +18,6 @@
 import { IVeoObjectSchema } from "~~/types/VeoTypes";
 import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
 
-const route = useRoute();
 export interface IVeoEntityMetaInfo {
   collectionUri: string;
   searchUri: string;
@@ -34,8 +33,8 @@ export interface IVeoSchemaEndpoints {
 }
 
 export interface IVeoFetchSchemaParameters {
-  type: string;
-  domainIds: string[];
+  types: string;
+  domainId: string;
 }
 
 export default {
@@ -50,8 +49,8 @@ export default {
     } as IVeoQueryDefinition<Record<string, never>, IVeoSchemaEndpoints>,
     fetchSchema: {
       primaryQueryKey: 'schema',
-      url: '/api/schemas/:type',
-      queryParameterTransformationFn: (queryParameters) => ({ params: { type: queryParameters.type }, query: { domains: (queryParameters.domainIds || []).toString() } }),
+      url: '/api/domains/:domainId/:types/json-schema',
+      queryParameterTransformationFn: (queryParameters) => ({ params: { type: queryParameters.types }, query: { domain: (queryParameters.domainId || []).toString() } }),
       staticQueryOptions: { staleTime: STALE_TIME.MEDIUM }
     } as IVeoQueryDefinition<IVeoFetchSchemaParameters, IVeoObjectSchema>
   },

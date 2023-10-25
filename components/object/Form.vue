@@ -32,7 +32,7 @@
           <BaseCard>
             <v-card-text>
               <DynamicFormEntrypoint
-                v-if="!dataIsLoading"
+                v-if="!dataIsLoading && objectSchema"
                 v-model="objectData"
                 :disabled="disabled"
                 :object-schema="objectSchema"
@@ -209,7 +209,7 @@ export default defineComponent({
 
     // Formschema/display stuff
     // Fetching object schema
-    const fetchSchemaQueryParameters = computed(() => ({ type: props.objectType, domainIds: [props.domainId] }));
+    const fetchSchemaQueryParameters = computed(() => ({ types: props.objectType, domainId: props.domainId }));
     const fetchSchemaQueryEnabled = computed(() => !!props.objectType && !!props.domainId);
     const { data: objectSchema, isFetching: objectSchemaIsFetching } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, {
       enabled: fetchSchemaQueryEnabled

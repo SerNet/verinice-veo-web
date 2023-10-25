@@ -46,7 +46,7 @@ function translateProcessRisks(
 
   const translations: Record<string, Record<string, Record<string, string[]>>> = {};
   riskDefinitionCategories.forEach((categoryId: string) => {
-    const key = `#/properties/domains/properties/${domain.id}/properties/riskValues/properties/${riskDefinitionName}/properties/potentialImpacts/properties/${categoryId}`;
+    const key = `#/properties/riskValues/properties/${riskDefinitionName}/properties/potentialImpacts/properties/${categoryId}`;
 
     translations[key] = {
       formSchema: {
@@ -73,7 +73,7 @@ export const getRiskAdditionalContext = (objectType: string, domain: IVeoDomain,
       return translateProcessRisks({ domain, riskDefinitionCategories, language, riskDefinitionName });
     case 'scenario':
       return {
-        [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/${riskDefinitionName}/properties/potentialProbability`]: {
+        [`#/properties/riskValues/properties/${riskDefinitionName}/properties/potentialProbability`]: {
           formSchema: {
             enum: (() => (domain.riskDefinitions[riskDefinitionName]?.probability?.levels || []).map((level) => level.translations[language]?.name || Object.values(level.translations)[0].name))()
           }
@@ -81,7 +81,7 @@ export const getRiskAdditionalContext = (objectType: string, domain: IVeoDomain,
       };
     case 'control':
       return {
-        [`#/properties/domains/properties/${domain.id}/properties/riskValues/properties/${riskDefinitionName}/properties/implementationStatus`]: {
+        [`#/properties/riskValues/properties/${riskDefinitionName}/properties/implementationStatus`]: {
           formSchema: {
             enum: (() =>
               (domain.riskDefinitions[riskDefinitionName]?.implementationStateDefinition?.levels || []).map(
@@ -101,11 +101,11 @@ export const getStatusAdditionalContext = (
   translations: IVeoTranslationCollection,
   domainId: string
 ): IVeoFormsAdditionalContext => ({
-  [`#/properties/domains/properties/${domainId}/properties/status`]: {
+  [`#/properties/status`]: {
     formSchema: {
       disabled: !objectData.domains?.[domainId]?.subType,
       enum: (() => {
-        const scope = `#/properties/domains/properties/${domainId}/properties/status`;
+        const scope = `#/properties/status`;
         let elementSchema: any = cloneDeep(JsonPointer.get(objectSchema, scope) || {});
         elementSchema = addConditionalSchemaPropertiesToControlSchema(objectSchema, objectData, elementSchema, scope);
         return elementSchema?.enum?.map((status: string) => translations?.[`${objectSchema.title}_${objectData.domains?.[domainId]?.subType}_status_${status}`] || status);
@@ -119,16 +119,15 @@ export const getSubTypeTranslation = (
   objectSchema: JSONSchema7,
   domainId: string,
   language: string,
-  formSchemas: IVeoFormSchemaMeta[]
-  ): IVeoFormsAdditionalContext => ({
-    [`#/properties/domains/properties/${domainId}/properties/subType`]: {
-      formSchema: {
-        enum: (() => {
-          const scope = `#/properties/domains/properties/${domainId}/properties/subType`;
-          let elementSchema: any = cloneDeep(JsonPointer.get(objectSchema, scope) || {});
-          elementSchema = addConditionalSchemaPropertiesToControlSchema(objectSchema, objectData, elementSchema, scope);
-          return elementSchema?.enum?.map((_subType: string) =>  (formSchemas as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === _subType)?.name[language])
-        })()
-      }
+  formSchemas: IVeoFormSchemaMeta[]): IVeoFormsAdditionalContext => ({
+  [`#/properties/domains/properties/${domainId}/properties/subType`]: {
+    formSchema: {
+      enum: (() => {
+        const scope = `#/properties/domains/properties/${domainId}/properties/subType`;
+        let elementSchema: any = cloneDeep(JsonPointer.get(objectSchema, scope) || {});
+        elementSchema = addConditionalSchemaPropertiesToControlSchema(objectSchema, objectData, elementSchema, scope);
+        return elementSchema?.enum?.map((_subType: string) =>  (formSchemas as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === _subType)?.name[language]);
+      })()
     }
-  });
+  }
+});

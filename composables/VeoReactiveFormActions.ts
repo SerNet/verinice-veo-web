@@ -27,7 +27,7 @@ export function useVeoReactiveFormActions() {
   function defaultReactiveFormActions(): IVeoFormsReactiveFormActions {
     return domainId.value
       ? {
-        [`#/properties/domains/properties/${domainId.value}/properties/subType`]: [
+        [`#/properties/subType`]: [
           (newValue, _oldValue, newObject, _oldObject) => {
             if (domainId.value && !!newValue) {
               delete newObject.domains[domainId.value].status;
