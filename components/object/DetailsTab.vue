@@ -641,7 +641,8 @@ export default defineComponent({
         "no": "no",
         "partial": "partially",
         "unknown": "unedited",
-        "yes": "yes"
+        "yes": "yes",
+        "n_a": "not applicable"
       },
       "responsible": "Responsible",
       "status": "Implementation status"
@@ -686,9 +687,10 @@ export default defineComponent({
       "abbreviation": "Abkürzung",
       "implementation": {
         "no": "nein",
-        "partially": "teilweise",
+        "partial": "teilweise",
         "unknown": "unbearbeitet",
-        "yes": "ja"
+        "yes": "ja",
+        "n_a": "nicht anwendbar"
       },
       "responsible": "Verantwortlich",
       "status": "Umsetzungsstatus"
