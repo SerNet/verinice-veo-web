@@ -66,11 +66,17 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
+const route = useRoute();
+
 const { mutateAsync: doDelete } = useMutation(
+  objectQueryDefinitions.mutations.deleteObject
+);
+const { mutateAsync: deleteWithoutInvalidating } = useMutation(
   objectQueryDefinitions.mutations.deleteObject,
   {},
   { isInvalidating: false }
 );
+
 const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 const { ability } = useVeoPermissions();
 
@@ -83,7 +89,12 @@ const deleteObject = async () => {
     return;
   }
   try {
-    await doDelete({ endpoint: endpoints.value?.[props.item.type], id: props.item.id});
+    if(route.params.object) {
+      await deleteWithoutInvalidating({ endpoint: endpoints.value?.[props.item.type], id: props.item.id});
+    }
+    else {
+      await doDelete({ endpoint: endpoints.value?.[props.item.type], id: props.item.id});
+    }
     emit('success');
   } catch (error: any) {
     emit('error', error);
