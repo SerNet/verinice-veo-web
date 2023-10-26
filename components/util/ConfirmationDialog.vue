@@ -20,6 +20,7 @@
     :model-value="modelValue"
     v-bind="$attrs"
     :title="title"
+    @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
       {{ text }}
@@ -46,17 +47,17 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  modelValue: boolean,
-  title: string,
+  callback: () => any,
   confirmationText: string,
+  modelValue: boolean,
   text: string,
-  callback: () => any
+  title: string
 }>();
 
 const emit = defineEmits<{
   ( event: 'error', error: any): void;
-  ( event: 'update:model-value', newValue: boolean): void;
   ( event: 'success'): void;
+  ( event: 'update:model-value', newValue: boolean): void;
 }>();
 
 const handler = () => {
