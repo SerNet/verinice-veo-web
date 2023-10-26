@@ -162,10 +162,10 @@ export default defineComponent({
     }));
     const parentObjectsQueryEnabled = computed(() => props.type === 'parentObjects' && !!props.object?.id);
     const { data: parentObjects, isFetching: parentObjectsIsFetching } = useFetchParentObjects(parentObjectsQueryParameters, { enabled: parentObjectsQueryEnabled });
-    const childScopesQueryParameters = computed<IVeoFetchScopeChildrenParameters>(() => ({ id: props.object?.id || '', domain: route.params.domain || '' }));
+    const childScopesQueryParameters = computed<IVeoFetchScopeChildrenParameters>(() => ({ id: props.object?.id || '', domain: route.params.domain as string || '' }));
     const childScopesQueryEnabled = computed(() => props.type.startsWith('child') && props.object?.type === 'scope' && !!props.object?.id);
     const { data: scopeChildren, isFetching: childScopesIsFetching } = useQuery(objectQueryDefinitions.queries.fetchScopeChildren, childScopesQueryParameters, { enabled: childScopesQueryEnabled });
-    const childObjectsQueryParameters = computed(() => ({ id: props.object?.id || '', endpoint: schemas.value?.[props.object?.type || ''] || '', domain: route.params.domain || '' }));
+    const childObjectsQueryParameters = computed(() => ({ id: props.object?.id || '', endpoint: schemas.value?.[props.object?.type || ''] || '', domain: route.params.domain as string || '' }));
     const childObjectsQueryEnabled = computed(() => props.type.startsWith('child') && props.object?.type !== 'scope' && !!props.object?.id);
     const { data: objectChildren, isFetching: childObjectsIsFetching } = useQuery(objectQueryDefinitions.queries.fetchObjectChildren, childObjectsQueryParameters, { enabled: childObjectsQueryEnabled });
     const risksQueryParameters = computed<IVeoFetchRisksParameters>(() => ({ id: props.object?.id || '', endpoint: schemas.value?.[props.object?.type || ''] || '' }));
@@ -456,7 +456,7 @@ export default defineComponent({
                       (parentScopes.value?.items || []).map((item) => item.id)
                     )
                   ).resourceId;
-                  const clonedObject = await useQuerySync(objectQueryDefinitions.queries.fetch, { domain: route.params.domain, endpoint: schemas.value?.[item.type] || '', id: clonedObjectId }, queryClient);
+                  const clonedObject = await useQuerySync(objectQueryDefinitions.queries.fetch, { domain: route.params.domain as string, endpoint: schemas.value?.[item.type] || '', id: clonedObjectId }, queryClient);
                   if (props.object) {
                     if (['childScopes', 'childObjects'].includes(props.type)) {
                       await link(props.object, clonedObject);
@@ -476,7 +476,7 @@ export default defineComponent({
               icon: mdiLinkOff,
 
               action: async (item: IVeoEntity) => {
-                const parent = await useQuerySync(objectQueryDefinitions.queries.fetch , { domain: route.params.domain, endpoint: schemas.value?.[item.type] || '', id: item.id }, queryClient);
+                const parent = await useQuerySync(objectQueryDefinitions.queries.fetch , { domain: route.params.domain as string, endpoint: schemas.value?.[item.type] || '', id: item.id }, queryClient);
                 if (['parentScopes', 'parentObjects'].includes(props.type)) {
                   unlinkEntityDialog.value.objectToRemove = props.object;
                   unlinkEntityDialog.value.parent = parent;
