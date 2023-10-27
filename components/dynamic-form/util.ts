@@ -112,7 +112,7 @@ export const VeoFormsControlProps = {
 
 export const ajv = new Ajv2019({
   allErrors: true,
-  strict: true
+  strict: false
 });
 addFormats(ajv);
 

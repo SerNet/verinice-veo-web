@@ -33,7 +33,7 @@ export interface IVeoSchemaEndpoints {
 }
 
 export interface IVeoFetchSchemaParameters {
-  types: string;
+  type: string;
   domainId: string;
 }
 
@@ -49,8 +49,12 @@ export default {
     } as IVeoQueryDefinition<Record<string, never>, IVeoSchemaEndpoints>,
     fetchSchema: {
       primaryQueryKey: 'schema',
-      url: '/api/domains/:domainId/:types/json-schema',
-      queryParameterTransformationFn: (queryParameters) => ({ params: { type: queryParameters.types }, query: { domain: (queryParameters.domainId || []).toString() } }),
+      url: '/api/domains/:domainId/:type/json-schema',
+      onDataFetched: (result: any) => {
+        result.title = result.title.toLowerCase();
+        return result;
+      },
+      queryParameterTransformationFn: (queryParameters) => ({ params: { domainId: queryParameters.domainId, type: queryParameters.type } }),
       staticQueryOptions: { staleTime: STALE_TIME.MEDIUM }
     } as IVeoQueryDefinition<IVeoFetchSchemaParameters, IVeoObjectSchema>
   },

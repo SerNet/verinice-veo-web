@@ -287,7 +287,7 @@ const importSchema = async (schema?: any) => {
     emit('completed', { schema, meta: undefined });
     await navigateTo({ os: 'custom' });
   } else {
-    const _schema = await useQuerySync(schemaQueryDefinitions.queries.fetchSchema, { types: modelType.value, domainId: route.params.domain as string }, queryClient);
+    const _schema = await useQuerySync(schemaQueryDefinitions.queries.fetchSchema, { type: modelType.value, domainId: route.params.domain as string }, queryClient);
     emit('completed', { schema: _schema, meta: undefined });
     await navigateTo({ os: modelType.value });
   }

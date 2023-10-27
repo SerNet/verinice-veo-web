@@ -284,13 +284,20 @@ export interface IVeoObjectSchemaCustomObjects {
 export interface IVeoObjectSchema {
   $schema: string;
   type: JSONSchema7TypeName;
+  allOf?: {
+    if: {
+      properties: Record<string, any>;
+    };
+    then: {
+      properties: Record<string, any>;
+    };
+  }[];
   properties: {
     abbreviation: IVeoObjectSchemaProperty;
     createdAt: IVeoObjectSchemaProperty;
     createdBy: IVeoObjectSchemaProperty;
     customAspects: IVeoObjectSchemaCustomObjects;
     description: IVeoObjectSchemaProperty;
-    domains: IVeoObjectSchemaPatternObject;
     id: IVeoObjectSchemaProperty;
     links: IVeoObjectSchemaCustomObjects;
     name: IVeoObjectSchemaProperty;

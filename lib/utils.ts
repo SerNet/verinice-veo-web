@@ -49,7 +49,7 @@ export function sanitizeURLParams(url: string) {
 
 export function extractSubTypesFromObjectSchema(schema: IVeoObjectSchema): { subType: string; status: string[] }[] {
   return (
-    Object.values(schema.properties.domains.properties)[0]?.allOf?.map((mapping) => ({
+    schema.allOf?.map((mapping) => ({
       subType: mapping.if.properties.subType.const,
       status: mapping.then.properties.status.enum
     })) || []

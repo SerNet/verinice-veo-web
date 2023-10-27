@@ -151,19 +151,29 @@ export default {
     fetchObjectChildren:{
       primaryQueryKey: 'childObjects',
       url: '/api/domains/:domain/:endpoint/:id/parts',
-      onDataFetched: (result) => (result.items || []).map((item: any) => formatObject(item)),
+      onDataFetched: (result) => {
+        result.items.map((item) => formatObject(item));
+        // +1, because the first page for the api is 0, however vuetify expects it to be 1
+        result.page = result.page + 1;
+        return result;
+      },
       queryParameterTransformationFn:(queryParameters) => ({
         params: { domain: route.params.domain, endpoint: queryParameters.endpoint, id: queryParameters.id }
       })
-    } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoEntity[]>,
+    } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchScopeChildren:{
       primaryQueryKey: 'childScopes',
       url: '/api/domains/:domain/scopes/:id/members',
-      onDataFetched: (result) => (result.items || []).map((item: any) => formatObject(item)),
+      onDataFetched: (result) => {
+        result.items.map((item) => formatObject(item));
+        // +1, because the first page for the api is 0, however vuetify expects it to be 1
+        result.page = result.page + 1;
+        return result;
+      },
       queryParameterTransformationFn:(queryParameters) => ({
         params: { domain: route.params.domain, id: queryParameters.id }
       })
-    } as IVeoQueryDefinition<IVeoFetchScopeChildrenParameters, IVeoEntity[]>,
+    } as IVeoQueryDefinition<IVeoFetchScopeChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchRisks:{
       primaryQueryKey: 'risks',
       url: '/api/:endpoint/:id/risks',

@@ -152,7 +152,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t, locale } = useI18n();
 
-    const queryParameters = computed(() => ({ domainIds: [props.domainId] }));
+    const queryParameters = computed(() => ({ domainId: props.domainId }));
     const _schemas = useFetchSchemasDetailed(queryParameters);
     const schemas = ref<IVeoObjectSchema[]>([]);
 

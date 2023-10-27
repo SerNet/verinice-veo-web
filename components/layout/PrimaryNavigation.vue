@@ -219,7 +219,7 @@ function getDisplayName({ formSchema }: { formSchema: IVeoFormSchema | undefined
 // Layout stuff
 const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
 
-const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: props.domainId }));
+const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: props.domainId as string }));
 const fetchTranslationsQueryEnabled = computed(() => authenticated.value);
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters,  { enabled: fetchTranslationsQueryEnabled });
 
@@ -235,7 +235,7 @@ const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms 
 
 const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { placeholderData: {} });
 
-const fetchSchemasDetailedQueryParameters = computed(() => ({ domainIds: [props.domainId as string] }));
+const fetchSchemasDetailedQueryParameters = computed(() => ({ domainId: props.domainId as string }));
 const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId && authenticated.value);
 const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, { enabled: fetchSchemasDetailedQueryEnabled });
 watch(
@@ -330,8 +330,7 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
         subType: _subType
       });
 
-      const displayName =
-        _subType === 'all' ? t('all') : getDisplayName({formSchema: formSchema}) || _subType;
+      const displayName = _subType === 'all' ? t('all') : getDisplayName({formSchema: formSchema}) || _subType;
 
       const item = ({
         id: `${catalogItem[0]}`,
@@ -368,32 +367,32 @@ const { data: reports, isFetching: reportsEntriesLoading } = useQuery(reportQuer
 
 const reportsEntriesChildItems = computed<INavItem[]>(
   () => {
-    const availableReports = Object.entries(reports.value || {})
+    const availableReports = Object.entries(reports.value || {});
     const reportsApplicableInDomain = domain.value == null ? [] :
       availableReports.filter(([reportId, reportDef]) => {
         const targetTypesForReport = reportDef.targetTypes;
         return targetTypesForReport.some(({modelType, subTypes}) => {
           if (subTypes == null) return true; // if there is no subType filter, the report is always applicable
-          const subTypesInDomain = Object.keys(domain.value.elementTypeDefinitions[modelType].subTypes)
+          const subTypesInDomain = Object.keys(domain.value.elementTypeDefinitions[modelType].subTypes);
           return subTypesInDomain.some(subTypeInDomain =>
             subTypes.indexOf(subTypeInDomain) >= 0
-          )
+          );
         });
       });
     const selectionItems = reportsApplicableInDomain.map(([reportId, report]) => ({
-        id: reportId,
-        name: report.name[locale.value],
-        exact: true,
-        to: {
-          name: REPORTS_REPORT_ROUTE_NAME,
-          params: {
-            unit: props.unitId,
-            domain: props.domainId,
-            report: reportId
-          }
+      id: reportId,
+      name: report.name[locale.value],
+      exact: true,
+      to: {
+        name: REPORTS_REPORT_ROUTE_NAME,
+        params: {
+          unit: props.unitId,
+          domain: props.domainId,
+          report: reportId
         }
-      }));
-      return selectionItems.filter((entry) => entry.name) // Don't show reports which aren't translated in the users language
+      }
+    }));
+    return selectionItems.filter((entry) => entry.name); // Don't show reports which aren't translated in the users language
   }
 );
 

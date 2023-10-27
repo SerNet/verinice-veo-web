@@ -122,18 +122,18 @@ const emit = defineEmits<{
 const { locale, t } = useI18n();
 const route = useRoute();
 
-
 const barChartRef = ref([]);
 const statusBarTitle = computed(() => (props.objectType.charAt(0).toUpperCase() + props.objectType.slice(1)) || ' ');
 
-const fetchSchemaQueryParameters = computed(() => ({ domainId: props.domainId, types: props.objectType }));
-const fetchSchemaQueryEnabled = computed(() => !!props.domainId);
+const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+const objectTypePlural = computed(() => schemas.value?.[props.objectType]);
+
+const fetchSchemaQueryParameters = computed(() => ({ domainId: props.domainId, type: objectTypePlural.value as string }));
+const fetchSchemaQueryEnabled = computed(() => !!props.domainId && !!objectTypePlural.value);
 const { data: objectSchema, isFetching: schemasIsLoading } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
 
-const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-
 const sortedStatusBySubType = computed<Record<string, any>>(() =>
-  (objectSchema.value?.properties?.domains?.properties?.[props.domainId]?.allOf || []).reduce((previousValue, currentValue) => {
+  (objectSchema.value?.allOf || []).reduce((previousValue, currentValue) => {
     previousValue[currentValue.if.properties.subType.const] = currentValue.then.properties.status.enum;
     return previousValue;
   }, Object.assign({}))
@@ -229,7 +229,7 @@ const chartData = computed<IChartValue[]>(() =>
 );
 
 const objectOveriewLink = (subTypeIndex: number, schemas: IVeoSchemaEndpoints) =>
-  `/${route.params.unit}/domains/${route.params.domain}/${schemas[props.objectType]}/${sortedSubTypes.value[subTypeIndex][0]}`;
+  `/${route.params.unit}/domains/${route.params.domain}/${objectTypePlural.value}/${sortedSubTypes.value[subTypeIndex][0]}`;
 </script>
 
 <i18n>

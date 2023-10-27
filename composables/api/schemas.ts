@@ -22,7 +22,7 @@ import schemaQueryDefinitions from './queryDefinitions/schemas';
 
 
 export interface IVeoFetchSchemasDetailedParameters {
-  domainIds: string[];
+  domainId: string;
 }
 
 export const useFetchSchemasDetailed = (queryParameters: MaybeRef<IVeoFetchSchemasDetailedParameters>, queryOptions?: QueryOptions) => {
@@ -30,7 +30,7 @@ export const useFetchSchemasDetailed = (queryParameters: MaybeRef<IVeoFetchSchem
   const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
   // Parameters for the depending queries. As this function only gets called once, we have to add reactivity under the hood to make the magic happen
-  const dependentQueryParameters = computed(() => Object.keys(schemas.value || {}).map((schemaName) => ({ domainIds: unref(queryParameters).domainIds, type: schemaName })));
+  const dependentQueryParameters = computed(() => Object.values(schemas.value || {}).map((schemaName) => ({ domainId: unref(queryParameters).domainId, type: schemaName })));
 
   return useQueries(
     schemaQueryDefinitions.queries.fetchSchema,

@@ -750,7 +750,7 @@ export default class ObjectSchemaHelper {
     const domains = Object.keys(schema.properties);
     for (const domain of domains) {
       this._domains[domain] = Object.values(
-        schema.properties[domain].allOf?.map((mapping: any) => ({
+        schema.allOf?.map((mapping: any) => ({
           subType: mapping.if.properties.subType.const,
           status: mapping.then.properties.status.enum
         }))

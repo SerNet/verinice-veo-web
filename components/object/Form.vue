@@ -207,10 +207,13 @@ export default defineComponent({
     });
     const subType = computed(() => objectData.value?.domains?.[props.domainId]?.subType);
 
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+    const objectTypePlural = computed(() => endpoints.value?.[props.objectType]);
+
     // Formschema/display stuff
     // Fetching object schema
-    const fetchSchemaQueryParameters = computed(() => ({ types: props.objectType, domainId: props.domainId }));
-    const fetchSchemaQueryEnabled = computed(() => !!props.objectType && !!props.domainId);
+    const fetchSchemaQueryParameters = computed(() => ({ type: objectTypePlural.value as string, domainId: props.domainId }));
+    const fetchSchemaQueryEnabled = computed(() => !!objectTypePlural.value && !!props.domainId);
     const { data: objectSchema, isFetching: objectSchemaIsFetching } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, {
       enabled: fetchSchemaQueryEnabled
     });
@@ -448,18 +451,16 @@ export default defineComponent({
       })
     );
 
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-
     const debouncedObjectData = ref<any>(objectData.value);
 
     const fetchInspectionFindingsQueryParameters = computed(() => ({
       id: debouncedObjectData.value.id,
       object: debouncedObjectData.value,
       domain: props.domainId,
-      endpoint: endpoints.value?.[props.objectType] as string
+      endpoint: objectTypePlural.value as string
     }));
     const fetchInspectionFindingsQueryEnabled = computed(() =>
-      !!endpoints.value?.[props.objectType]
+      !!objectTypePlural.value
       &&  !isEmpty(debouncedObjectData.value)
       && !!debouncedObjectData.value.name
     );
