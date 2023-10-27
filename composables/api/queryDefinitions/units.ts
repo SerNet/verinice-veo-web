@@ -57,6 +57,7 @@ export interface IVeoExportUnitParameters {
 export interface IVeoFetchIncarnationParameters{
   unitId: string;
   itemIds: string[];
+  exclude: string[];
 }
 
 export interface IVeoUpdateIncarnationParameters{
@@ -90,7 +91,8 @@ export default {
           unitId: queryParameters.unitId
         },
         query: {
-          itemIds: queryParameters.itemIds
+          itemIds: queryParameters.itemIds,
+          exclude: queryParameters.exclude
         }})
     } as IVeoQueryDefinition<IVeoFetchIncarnationParameters, IVeoUnitIncarnations>,
     exportUnit:{

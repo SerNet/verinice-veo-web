@@ -113,8 +113,12 @@ async function applyItems() {
   isApplyingItems.value = true;
   try {
     // Fetch incarnations for all selected items
-    const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, { unitId: route.params.unit as string, itemIds:
-      selectedItems.value.map((item) => item.id) });
+    const fetchParameters= { unitId: route.params.unit as string, itemIds: selectedItems.value.map((item) => item.id), exclude: ["COMPOSITE", "LINK", "LINK_EXTERNAL"]  };
+
+    const incarnations = await useQuerySync(
+      unitQueryDefinitions.queries.fetchIncarnations,
+      fetchParameters
+    );
 
     // Apply incarnations
     await incarnate({ incarnations, unitId: route.params.unit });
