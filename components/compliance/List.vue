@@ -1,8 +1,5 @@
 <template>
   <BaseCard class="mb-8">
-  <!--
-      :items="requirementImplementations?.items"
-  -->
     <BaseTable
       :items="translatedRequirementImplementations"
       item-key="id"
@@ -43,6 +40,7 @@ function translate(requirementImplementations, t) {
 <script setup lang="ts">
 import { TableHeader } from '../base/Table.vue';
 import { useCompliance } from './compliance';
+import { RequirementImplementation } from './Editor.vue';
 
 const {
   fetchRequirementImplementations,
@@ -87,7 +85,7 @@ emit('update:currentName', currentName.value);
 watch(currentName, () => emit('update:currentName', currentName.value));
 
 // Open a single RI
-const requirementImplementation = ref(null);
+const requirementImplementation: Ref<RequirementImplementation | null> = ref(null);
 const showDialog = ref(false);
 
 async function openItem({ type, riskAffected, item }:

@@ -57,9 +57,7 @@
         <v-autocomplete
           v-model="form.responsible"
           :label="t('responsible')"
-          :items="persons || []"
-          :hint="!view.isEditingResponsiblePerson ? t('autocompleteHint'): ''"
-          :readonly="!view.isEditingResponsiblePerson"
+          :items="persons"
           clearable
           item-title="name"
           item-value="name"
@@ -97,7 +95,7 @@
         :disabled="view.isLoading"
         @click="emit('update:show-dialog', false)"
       >
-        {{ t('global.button.cancel') }}
+        {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -106,15 +104,15 @@
         color="primary"
         :loading="view.isLoading"
         :disabled="view.isLoading"
-        @click="() => submitForm({
+        @click="() => void(state.riskAffected.value && submitForm({
           type: state.type.value,
           riskAffected: state.riskAffected.value,
           form,
           item: item,
           request
-        })"
+        }))"
       >
-        {{ t('global.button.save') }}
+        {{ globalT('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -124,7 +122,7 @@
 import { useCompliance } from './compliance';
 import { cloneDeep } from 'lodash';
 import { useQuery } from '~/composables/api/utils/query';
-import objectQueryDefinitions, { IVeoFetchObjectsParameters } from '~/composables/api/queryDefinitions/objects';
+import domainQueryDefinitions, { IVeoFetchPersonsInDomainParameters, IVeoPersonInDomain } from '~/composables/api/queryDefinitions/domains';
 
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
@@ -132,10 +130,11 @@ import { useRequest } from '@/composables/api/utils/request';
 const { request } = useRequest();
 
 const { t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
 const { getRequirementImplementationId, state } = useCompliance();
 
 interface Props {
-  item: RequirementImplementation;
+  item: RequirementImplementation | null;
   showDialog: boolean;
 }
 
@@ -144,27 +143,13 @@ interface Emits {
   (e: 'update:item'): void
 }
 
-interface RequirementImplementation {
-  origin: {
-    displayName: string,
-    targetUri: string,
-    searchesUri: string
-  },
-  control: {
-    displayName: string,
-    targetUri: string,
-    searchesUri: string
-  },
-  status: 'UNKNOWN | YES | PARTIAL | NO | N_A',
-  origination: "SYSTEM_SPECIFIC",
-  _self: string,
-  implementationStatement?: string | null,
-  responsible?: null | {
-    displayName: string,
-    targetUri: string,
-    searchesUri: string,
-    resourcesUri: string
-  }
+export type RequirementImplementation = {
+  origin: { displayName?: string };
+  control: { displayName?: string };
+  responsible: ResponsiblePerson | null;
+  status: string;
+  implementationStatement?: string | null;
+  origination: string;
 }
 
 type ResponsiblePerson = {
@@ -254,14 +239,12 @@ async function submitForm({
   item,
   request
 }:{type: string, riskAffected: string, form: RequirementImplementation , item: any, request: any}) {
-  view.isLoading = true;
-  const _form  = cloneDeep(form);
+  if(!form) return;
 
-  if (_form.responsible) {
-    _form.responsible = mapResponsible(_form);
-  }
+  view.isLoading = true;
 
   // Filter out empty properties
+  const _form = cloneDeep(form);
   const requirementImplementation = Object.fromEntries(
     Object.entries(_form)
       .filter(([,value]) => value !== null)
@@ -276,7 +259,7 @@ async function submitForm({
       json: requirementImplementation,
       params: {id: requirementImplementationId}
     });
-    emit('update:item')
+    emit('update:item');
     displaySuccessMessage(t('requirementImplementationUpdated'));
   }
   catch (error: any) {
