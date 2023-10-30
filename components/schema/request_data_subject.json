@@ -1,0 +1,688 @@
+{
+    "id": "f63f0d1b-16eb-4220-866f-21c378009dec",
+    "domainId": "53c4434f-7181-43a3-a448-b9b6465d142e",
+    "name": {
+        "de": "Betroffenenanfrage",
+        "en": "Request data subject"
+    },
+    "modelType": "document",
+    "subType": "DOC_RequestDataSubject",
+    "sorting": "u300",
+    "content": {
+        "type": "Layout",
+        "options": {
+            "format": "group",
+            "direction": "vertical"
+        },
+        "elements": [
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_d4a4a440-68b0-4162-97c4-f47d1069d833",
+                    "format": "group",
+                    "direction": "vertical"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/abbreviation",
+                                "options": {
+                                    "label": "#lang/abbreviation"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/name",
+                                "options": {
+                                    "label": "#lang/name"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/status",
+                                "options": {
+                                    "label": "#lang/status"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/description",
+                        "options": {
+                            "label": "#lang/description",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_generalInformation/properties/document_generalInformation_document",
+                        "options": {
+                            "label": "#lang/document_generalInformation_document"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_dae82834-d48c-4cb3-87c3-f047e02a6c02",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_rightType",
+                        "options": {
+                            "label": "#lang/document_dataSubjectRight_rightType"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_otherRightType",
+                        "options": {
+                            "label": "#lang/document_dataSubjectRight_otherRightType"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/document_editedBy",
+                        "options": {
+                            "label": "#lang/document_editedBy"
+                        },
+                        "elements": []
+                    },
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_dateOfReceipt",
+                                "options": {
+                                    "label": "#lang/document_dataSubjectRight_dateOfReceipt"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_deadline",
+                                "options": {
+                                    "label": "#lang/document_dataSubjectRight_deadline"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_receiptConfirmation",
+                        "options": {
+                            "label": "#lang/document_dataSubjectRight_receiptConfirmation"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_extensionOfDeadline",
+                        "options": {
+                            "label": "#lang/document_dataSubjectRight_extensionOfDeadline"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_extensionOfDeadline",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Layout",
+                        "options": {
+                            "format": "group"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_extendedUntil",
+                                "options": {
+                                    "label": "#lang/document_dataSubjectRight_extendedUntil"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_informationAboutExtensionOfDeadline",
+                                "options": {
+                                    "label": "#lang/document_dataSubjectRight_informationAboutExtensionOfDeadline"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_dateOfInformationAboutExtension",
+                                "options": {
+                                    "label": "#lang/document_dataSubjectRight_dateOfInformationAboutExtension"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_reasonForExtensionOfDeadline",
+                                "options": {
+                                    "label": "#lang/document_dataSubjectRight_reasonForExtensionOfDeadline"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_contentRequest",
+                        "options": {
+                            "label": "#lang/document_dataSubjectRight_contentRequest",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_document",
+                        "options": {
+                            "label": "#lang/document_dataSubjectRight_document"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_formOfRequest",
+                        "options": {
+                            "label": "#lang/document_dataSubjectRight_formOfRequest"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_otherFormOfRequest",
+                        "options": {
+                            "label": "#lang/document_dataSubjectRight_otherFormOfRequest"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_ed040315-8619-4ca1-bd4f-835b18a36e77",
+                    "format": "group",
+                    "direction": "vertical"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_contactDetailsOfRequester/properties/document_contactDetailsOfRequester_salutation",
+                                "options": {
+                                    "label": "#lang/document_contactDetailsOfRequester_salutation"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_contactDetailsOfRequester/properties/document_contactDetailsOfRequester_title",
+                                "options": {
+                                    "label": "#lang/document_contactDetailsOfRequester_title"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_contactDetailsOfRequester/properties/document_contactDetailsOfRequester_givenName",
+                                "options": {
+                                    "label": "#lang/document_contactDetailsOfRequester_givenName"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_contactDetailsOfRequester/properties/document_contactDetailsOfRequester_familyName",
+                                "options": {
+                                    "label": "#lang/document_contactDetailsOfRequester_familyName"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_contactDetailsOfRequester/properties/document_contactDetailsOfRequester_address",
+                        "options": {
+                            "label": "#lang/document_contactDetailsOfRequester_address"
+                        }
+                    },
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_contactDetailsOfRequester/properties/document_contactDetailsOfRequester_postcode",
+                                "options": {
+                                    "label": "#lang/document_contactDetailsOfRequester_postcode"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_contactDetailsOfRequester/properties/document_contactDetailsOfRequester_city",
+                                "options": {
+                                    "label": "#lang/document_contactDetailsOfRequester_city"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_contactDetailsOfRequester/properties/document_contactDetailsOfRequester_state",
+                                "options": {
+                                    "label": "#lang/document_contactDetailsOfRequester_state"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_contactDetailsOfRequester/properties/document_contactDetailsOfRequester_country",
+                                "options": {
+                                    "label": "#lang/document_contactDetailsOfRequester_country"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_contactDetailsOfRequester/properties/document_contactDetailsOfRequester_phone",
+                                "options": {
+                                    "label": "#lang/document_contactDetailsOfRequester_phone"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_contactDetailsOfRequester/properties/document_contactDetailsOfRequester_mobile",
+                                "options": {
+                                    "label": "#lang/document_contactDetailsOfRequester_mobile"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_contactDetailsOfRequester/properties/document_contactDetailsOfRequester_email",
+                                "options": {
+                                    "label": "#lang/document_contactDetailsOfRequester_email"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_abff2574-d601-43e1-b725-5b06b81f0197",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_categoriesDataSubjects",
+                        "options": {
+                            "label": "#lang/document_dataSubjectRight_categoriesDataSubjects"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_dataSubjectRight/properties/document_dataSubjectRight_otherDataSubjects",
+                        "options": {
+                            "label": "#lang/document_dataSubjectRight_otherDataSubjects"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_8daa6efe-774e-488d-bd43-782a4ccec378",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/document_dataProcessing",
+                        "options": {
+                            "label": "#lang/document_dataProcessing"
+                        },
+                        "elements": []
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_5a5a2c85-0b2b-4b6d-a34b-62bb69add1b6",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_identify/properties/document_identify_dataSubject",
+                        "options": {
+                            "label": "#lang/document_identify_dataSubject"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/document_identify/properties/document_identify_dataSubject",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Layout",
+                        "options": {
+                            "format": "group"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_identify/properties/document_identify_identityChecked",
+                                "options": {
+                                    "label": "#lang/document_identify_identityChecked"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_identify/properties/document_identify_methodOfIdentification",
+                                "options": {
+                                    "label": "#lang/document_identify_methodOfIdentification"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_identify/properties/document_identify_other",
+                                "options": {
+                                    "label": "#lang/document_identify_other"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/links/properties/document_identityVerifiedBy",
+                                "options": {
+                                    "label": "#lang/document_identityVerifiedBy"
+                                },
+                                "elements": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_bedb7d7a-41de-486e-ae52-9f6b2c4a0596",
+                    "format": "group",
+                    "direction": "vertical"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/document_requestVerifiedBy",
+                        "options": {
+                            "label": "#lang/document_requestVerifiedBy"
+                        },
+                        "elements": []
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_dateOfRequestVerification",
+                        "options": {
+                            "label": "#lang/document_decisionRequest_dateOfRequestVerification"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_fc6165b9-60c4-48ac-9315-12e32a9c9b34",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_requestRejection",
+                        "options": {
+                            "label": "#lang/document_decisionRequest_requestRejection"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_requestRejection",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Layout",
+                        "options": {
+                            "format": "group"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_rejectionReason",
+                                "options": {
+                                    "label": "#lang/document_decisionRequest_rejectionReason",
+                                    "format": "multiline"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_rejectionDocument",
+                                "options": {
+                                    "label": "#lang/document_decisionRequest_rejectionDocument"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_negativeMessage",
+                        "options": {
+                            "label": "#lang/document_decisionRequest_negativeMessage"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_negativeMessage",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Layout",
+                        "options": {
+                            "format": "group"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_negativeMessageReason",
+                                "options": {
+                                    "label": "#lang/document_decisionRequest_negativeMessageReason",
+                                    "format": "multiline"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_negativeMessageDocument",
+                                "options": {
+                                    "label": "#lang/document_decisionRequest_negativeMessageDocument"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_grantingOfRequest",
+                        "options": {
+                            "label": "#lang/document_decisionRequest_grantingOfRequest"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_grantingOfRequest",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Layout",
+                        "options": {
+                            "format": "group"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_grantingReason",
+                                "options": {
+                                    "label": "#lang/document_decisionRequest_grantingReason",
+                                    "format": "multiline"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_grantingDocument",
+                                "options": {
+                                    "label": "#lang/document_decisionRequest_grantingDocument"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_approvaleffected",
+                        "options": {
+                            "label": "#lang/document_decisionRequest_approvaleffected"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_approvaleffected",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/document_decisionApprovalBy",
+                        "options": {
+                            "label": "#lang/document_decisionApprovalBy"
+                        },
+                        "elements": []
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_requestAnswered",
+                        "options": {
+                            "label": "#lang/document_decisionRequest_requestAnswered"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_FormOfResponse",
+                        "options": {
+                            "label": "#lang/document_decisionRequest_FormOfResponse"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_decisionRequest/properties/document_decisionRequest_otherForm",
+                        "options": {
+                            "label": "#lang/document_decisionRequest_otherForm"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "translation": {
+        "de": {
+            "group_5a5a2c85-0b2b-4b6d-a34b-62bb69add1b6": "Prüfung der Identität",
+            "group_8daa6efe-774e-488d-bd43-782a4ccec378": "Betroffene Verarbeitungstätigkeit(en)",
+            "group_abff2574-d601-43e1-b725-5b06b81f0197": "Zuordnung zu Betroffenenkategorie",
+            "group_bedb7d7a-41de-486e-ae52-9f6b2c4a0596": "Prüfung und Entscheidung der Anfrage",
+            "group_d4a4a440-68b0-4162-97c4-f47d1069d833": "Allgemeine Angaben",
+            "group_dae82834-d48c-4cb3-87c3-f047e02a6c02": "Allgemeine Informationen zur Anfrage",
+            "group_ed040315-8619-4ca1-bd4f-835b18a36e77": "Kontaktdaten des/der Anfragenden",
+            "group_fc6165b9-60c4-48ac-9315-12e32a9c9b34": "Ergebnis der Anfrage"
+        },
+        "en": {
+            "group_5a5a2c85-0b2b-4b6d-a34b-62bb69add1b6": "Identity verification",
+            "group_8daa6efe-774e-488d-bd43-782a4ccec378": "Processing activity(ies) concerned",
+            "group_abff2574-d601-43e1-b725-5b06b81f0197": "Assignment to category of data subject",
+            "group_bedb7d7a-41de-486e-ae52-9f6b2c4a0596": "Review and decision of the request",
+            "group_d4a4a440-68b0-4162-97c4-f47d1069d833": "General information",
+            "group_dae82834-d48c-4cb3-87c3-f047e02a6c02": "General information about the request",
+            "group_ed040315-8619-4ca1-bd4f-835b18a36e77": "Contact details of the requester",
+            "group_fc6165b9-60c4-48ac-9315-12e32a9c9b34": "Result of the request"
+        }
+    }
+}

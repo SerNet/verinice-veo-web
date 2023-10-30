@@ -97,18 +97,6 @@ export default class ObjectSchemaValidator {
             }
           }
           break;
-        case 'domains':
-          for (const domainId of Object.keys(data.domains)) {
-            const subTypes = helper.getSubTypes(domainId);
-
-            if (data.domains[domainId].subType && !subTypes.find((subType) => subType.subType === data.domains[domainId].subType)) {
-              errors.push({ code: 'E_SUBTYPE_MISSING', message: `The schema "${schema.title}" is missing the subtype "${data.domains[domainId].subType}"` });
-            }
-            if (data.domains[domainId].status && !subTypes.some((subType) => subType.status.includes(data.domains[domainId].status))) {
-              // errors.push({ code: 'E_STATUS_MISSING', message: `The schema "${schema.title}" is missing the status "${data.domains[domainId].status}"` });
-            }
-          }
-          break;
         default:
           if (
             !helper

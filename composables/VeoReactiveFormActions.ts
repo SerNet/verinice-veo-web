@@ -30,7 +30,7 @@ export function useVeoReactiveFormActions() {
         [`#/properties/subType`]: [
           (newValue, _oldValue, newObject, _oldObject) => {
             if (domainId.value && !!newValue) {
-              delete newObject.domains[domainId.value].status;
+              delete newObject.status;
             }
             return newObject;
           }

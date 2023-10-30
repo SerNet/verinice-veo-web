@@ -1,0 +1,109 @@
+{
+    "id": "bbecddf0-7a75-48fc-8dba-b15a74409e82",
+    "domainId": "53c4434f-7181-43a3-a448-b9b6465d142e",
+    "name": {
+        "de": "Anwendung",
+        "en": "Application"
+    },
+    "modelType": "asset",
+    "subType": "AST_Application",
+    "sorting": "i200",
+    "content": {
+        "type": "Layout",
+        "options": {
+            "format": "group",
+            "direction": "vertical"
+        },
+        "elements": [
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_7dda6d0a-03f1-410f-a0aa-e1b083315cb5",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/abbreviation",
+                                "options": {
+                                    "label": "#lang/abbreviation"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/name",
+                                "options": {
+                                    "label": "#lang/name"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/status",
+                                "options": {
+                                    "label": "#lang/status",
+                                    "format": "autocomplete"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/description",
+                        "options": {
+                            "label": "#lang/description",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/asset_generalInformation/properties/asset_generalInformation_document",
+                        "options": {
+                            "label": "#lang/asset_generalInformation_document"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_bf3027b2-922d-4d29-8308-14f330cb7762",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/asset_details/properties/asset_details_number",
+                        "options": {
+                            "label": "#lang/asset_details_number"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/asset_details/properties/asset_details_operatingStage",
+                        "options": {
+                            "label": "#lang/asset_details_operatingStage",
+                            "format": "autocomplete"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "translation": {
+        "de": {
+            "group_7dda6d0a-03f1-410f-a0aa-e1b083315cb5": "Allgemeine Angaben",
+            "group_bf3027b2-922d-4d29-8308-14f330cb7762": "Details"
+        },
+        "en": {
+            "group_7dda6d0a-03f1-410f-a0aa-e1b083315cb5": "General information",
+            "group_bf3027b2-922d-4d29-8308-14f330cb7762": "Details"
+        }
+    }
+}

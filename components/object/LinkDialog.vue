@@ -264,21 +264,23 @@ export default defineComponent({
     const { data: parents, isFetching: parentsLoading } = useFetchParentObjects(parentsQueryParameters, { enabled: parentsQueryEnabled, keepPreviousData: false });
 
     const childObjectsQueryParameters = computed(() => ({
-      domain: route.params.domain,
+      domain: route.params.domain as string,
       endpoint: objectEndpoint.value,
-      id: props.object?.id || ''
+      id: props.object?.id || '',
+      size: 9999
     }));
     const childObjectsQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && !props.editParents && objectEndpoint.value !== 'scopes');
     const { data: childObjects, isFetching: childObjectsLoading } = useQuery(objectQueryDefinitions.queries.fetchObjectChildren, childObjectsQueryParameters, { enabled: childObjectsQueryEnabled });
 
     const childScopesQueryParameters = computed(() => ({
-      domain: route.params.domain,
-      id: props.object?.id || ''
+      domain: route.params.domain as string,
+      id: props.object?.id || '',
+      size: 9999
     }));
     const childScopesQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && !props.editParents && objectEndpoint.value === 'scopes');
     const { data: childScopes, isFetching: childScopesLoading } = useQuery(objectQueryDefinitions.queries.fetchScopeChildren, childScopesQueryParameters, { enabled: childScopesQueryEnabled });
 
-    const children = computed(() => uniqBy([...(childObjects.value || []), ...(childScopes.value || []), ...props.preselectedItems], (arrayEntry) => getIdFromItem(arrayEntry)));
+    const children = computed(() => uniqBy([...(childObjects.value?.items || []), ...(childScopes.value?.items || []), ...props.preselectedItems], (arrayEntry) => getIdFromItem(arrayEntry)));
     const childrenLoading = computed(() => childObjectsLoading.value || childScopesLoading.value);
 
     const originalSelectedItems = computed(() => (props.editParents ? parents.value?.items || [] : children.value)); // Doesn't get modified to compare which parents have been added removed
@@ -312,11 +314,11 @@ export default defineComponent({
               const parentsToAdd = differenceBy(modifiedSelectedItems.value, originalSelectedItems.value, 'id');
               const parentsToRemove = differenceBy(originalSelectedItems.value, modifiedSelectedItems.value, 'id');
               for (const parent of parentsToAdd) {
-                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, { domain: route.params.domain, endpoint: endpoints.value?.[parent.type], id: parent.id }, queryClient);
+                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, { domain: route.params.domain as string, endpoint: endpoints.value?.[parent.type], id: parent.id }, queryClient);
                 await link(_parent, props.object);
               }
               for (const parent of parentsToRemove) {
-                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, { domain: route.params.domain, endpoint: endpoints.value?.[parent.type], id: parent.id }, queryClient);
+                const _parent = await useQuerySync(objectQueryDefinitions.queries.fetch, { domain: route.params.domain as string, endpoint: endpoints.value?.[parent.type], id: parent.id }, queryClient);
                 await unlink(_parent, props.object.id);
               }
             } else {

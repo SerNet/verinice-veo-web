@@ -56,7 +56,7 @@ const emit = defineEmits<{
 const { t, locale } = useI18n();
 
 const displayOptions = computed<{ title: string; value: string | undefined }[]>(() => {
-  const currentSubType = props.objectData?.domains?.[props.domainId]?.subType;
+  const currentSubType = props.objectData?.subType;
   const availableFormSchemas: { title: string; value: string | undefined }[] = (props.formSchemas)
     .filter((formSchema) => formSchema.modelType === props.objectSchema?.title && (!currentSubType || currentSubType === formSchema.subType))
     .map((formSchema) => ({

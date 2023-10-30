@@ -1,0 +1,930 @@
+{
+    "id": "76bc9036-6c3b-499a-b385-09b66c6ac7d9",
+    "domainId": "53c4434f-7181-43a3-a448-b9b6465d142e",
+    "name": {
+        "de": "Datenschutzvorfall",
+        "en": "Data privacy incident"
+    },
+    "modelType": "incident",
+    "subType": "INC_DataPrivacyIncident",
+    "sorting": "x100",
+    "content": {
+        "type": "Layout",
+        "options": {
+            "format": "group",
+            "direction": "vertical"
+        },
+        "elements": [
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_e803f4d4-6b2c-4782-b781-f7f87331e81b",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/abbreviation",
+                                "options": {
+                                    "label": "#lang/abbreviation"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/name",
+                                "options": {
+                                    "label": "#lang/name"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/status",
+                                "options": {
+                                    "label": "#lang/status"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/description",
+                        "options": {
+                            "label": "#lang/description",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_generalInformation/properties/incident_generalInformation_document",
+                        "options": {
+                            "label": "#lang/incident_generalInformation_document"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_generalInformation/properties/incident_generalInformation_dataBreach",
+                        "options": {
+                            "label": "#lang/incident_generalInformation_dataBreach"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_generalInformation/properties/incident_generalInformation_informationSecurityIncident",
+                        "options": {
+                            "label": "#lang/incident_generalInformation_informationSecurityIncident"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_generalInformation/properties/incident_generalInformation_notificationType",
+                        "options": {
+                            "label": "#lang/incident_generalInformation_notificationType"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_accebe24-26bd-4546-a3c3-deae723cb2fa",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/incident_notifyingCompany",
+                        "options": {
+                            "label": "#lang/incident_notifyingCompany"
+                        },
+                        "elements": []
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_8bcb85db-5563-4e43-ad00-1c1d473ff3d4",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/incident_contactPerson",
+                        "options": {
+                            "label": "#lang/incident_contactPerson"
+                        },
+                        "elements": []
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_580efe08-1c94-46a3-b577-dc8842bc1444",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_involvedParticipants/properties/incident_involvedParticipants_processor",
+                        "options": {
+                            "label": "#lang/incident_involvedParticipants_processor"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/incident_involvedParticipants/properties/incident_involvedParticipants_processor",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/incident_processor",
+                        "options": {
+                            "label": "#lang/incident_processor"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/attributes/properties/incident_processor_comments",
+                                "options": {
+                                    "label": "#lang/incident_processor_comments"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_involvedParticipants/properties/incident_involvedParticipants_jointController",
+                        "options": {
+                            "label": "#lang/incident_involvedParticipants_jointController"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/incident_involvedParticipants/properties/incident_involvedParticipants_jointController",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/incident_jointController",
+                        "options": {
+                            "label": "#lang/incident_jointController"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/attributes/properties/incident_jointController_comments",
+                                "options": {
+                                    "label": "#lang/incident_jointController_comments"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_involvedParticipants/properties/incident_involvedParticipants_additional",
+                        "options": {
+                            "label": "#lang/incident_involvedParticipants_additional"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_609a8a0c-4af9-4808-9e34-4023bf7c834c",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_description/properties/incident_description_description",
+                        "options": {
+                            "label": "#lang/incident_description_description",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_description/properties/incident_description_affectedProtectiongoals",
+                        "options": {
+                            "label": "#lang/incident_description_affectedProtectiongoals"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_description/properties/incident_description_timeOfIncidentknown",
+                        "options": {
+                            "label": "#lang/incident_description_timeOfIncidentknown"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_description/properties/incident_description_dateTimeOfIncident",
+                        "options": {
+                            "label": "#lang/incident_description_dateTimeOfIncident"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_description/properties/incident_description_discoveryDateTimeOfIncident",
+                        "options": {
+                            "label": "#lang/incident_description_discoveryDateTimeOfIncident"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_description/properties/incident_description_reportDateTimeOfIncident",
+                        "options": {
+                            "label": "#lang/incident_description_reportDateTimeOfIncident"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/incident_reportingPerson",
+                        "options": {
+                            "label": "#lang/incident_reportingPerson"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/attributes/properties/incident_reportingPerson_role",
+                                "options": {
+                                    "label": "#lang/incident_reportingPerson_role"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_description/properties/incident_description_stillContinues",
+                        "options": {
+                            "label": "#lang/incident_description_stillContinues"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_description/properties/incident_description_durationOfIncident",
+                        "options": {
+                            "label": "#lang/incident_description_durationOfIncident"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_description/properties/incident_description_locationOfIncident",
+                        "options": {
+                            "label": "#lang/incident_description_locationOfIncident"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_description/properties/incident_description_howIncidentNoticed",
+                        "options": {
+                            "label": "#lang/incident_description_howIncidentNoticed"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_description/properties/incident_description_others",
+                        "options": {
+                            "label": "#lang/incident_description_others"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_50d80138-3721-46de-b1ae-aaafdcbba3c5",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_presumedMotivation/properties/incident_presumedMotivation_typeOfAttack",
+                        "options": {
+                            "label": "#lang/incident_presumedMotivation_typeOfAttack"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_presumedMotivation/properties/incident_presumedMotivation_presumedMotivation",
+                        "options": {
+                            "label": "#lang/incident_presumedMotivation_presumedMotivation"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_presumedMotivation/properties/incident_presumedMotivation_others",
+                        "options": {
+                            "label": "#lang/incident_presumedMotivation_others"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_presumedMotivation/properties/incident_presumedMotivation_collectedData",
+                        "options": {
+                            "label": "#lang/incident_presumedMotivation_collectedData"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_presumedMotivation/properties/incident_presumedMotivation_collectedDataOthers",
+                        "options": {
+                            "label": "#lang/incident_presumedMotivation_collectedDataOthers"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_presumedMotivation/properties/incident_presumedMotivation_lawEnforcement",
+                        "options": {
+                            "label": "#lang/incident_presumedMotivation_lawEnforcement"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_presumedMotivation/properties/incident_presumedMotivation_policeStation",
+                        "options": {
+                            "label": "#lang/incident_presumedMotivation_policeStation"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_presumedMotivation/properties/incident_presumedMotivation_federalState",
+                        "options": {
+                            "label": "#lang/incident_presumedMotivation_federalState"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_presumedMotivation/properties/incident_presumedMotivation_referenceNumber",
+                        "options": {
+                            "label": "#lang/incident_presumedMotivation_referenceNumber"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_8d7ca466-90cc-45d1-90db-3689326f9712",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_cause/properties/incident_cause_physicalDamage",
+                        "options": {
+                            "label": "#lang/incident_cause_physicalDamage"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_cause/properties/incident_cause_technicalFailure",
+                        "options": {
+                            "label": "#lang/incident_cause_technicalFailure"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_cause/properties/incident_cause_organizationalCause",
+                        "options": {
+                            "label": "#lang/incident_cause_organizationalCause"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_cause/properties/incident_cause_failureOfInfrastructureUsed",
+                        "options": {
+                            "label": "#lang/incident_cause_failureOfInfrastructureUsed"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_cause/properties/incident_cause_technicalAttack",
+                        "options": {
+                            "label": "#lang/incident_cause_technicalAttack"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_cause/properties/incident_cause_others",
+                        "options": {
+                            "label": "#lang/incident_cause_others"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_cause/properties/incident_cause_details",
+                        "options": {
+                            "label": "#lang/incident_cause_details"
+                        }
+                    },
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "label": "#lang/group_10c17175-4f6d-4c7c-9c53-33d37c65dd27",
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/links/properties/incident_concernedItsystems",
+                                "options": {
+                                    "label": "#lang/incident_concernedItsystems"
+                                },
+                                "elements": [
+                                    {
+                                        "type": "Control",
+                                        "scope": "#/properties/attributes/properties/incident_concernedItsystems_description",
+                                        "options": {
+                                            "label": "#lang/incident_concernedItsystems_description"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/links/properties/incident_concernedApplications",
+                                "options": {
+                                    "label": "#lang/incident_concernedApplications"
+                                },
+                                "elements": [
+                                    {
+                                        "type": "Control",
+                                        "scope": "#/properties/attributes/properties/incident_concernedApplications_description",
+                                        "options": {
+                                            "label": "#lang/incident_concernedApplications_description"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/incident_dataProcessing",
+                        "options": {
+                            "label": "#lang/incident_dataProcessing"
+                        },
+                        "elements": []
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_5fee3d76-4fb5-4b80-b1e1-15e0528b2167",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/incident_dataType",
+                        "options": {
+                            "label": "#lang/incident_dataType"
+                        },
+                        "elements": []
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_dataConcerned/properties/incident_dataConcerned_numberOfPersonalDataRecords",
+                        "options": {
+                            "label": "#lang/incident_dataConcerned_numberOfPersonalDataRecords"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_dataConcerned/properties/incident_dataConcerned_categoriesDataSubjects",
+                        "options": {
+                            "label": "#lang/incident_dataConcerned_categoriesDataSubjects"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_dataConcerned/properties/incident_dataConcerned_otherDataSubjects",
+                        "options": {
+                            "label": "#lang/incident_dataConcerned_otherDataSubjects"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_dataConcerned/properties/incident_dataConcerned_numberOfDataSubjectsConcerned",
+                        "options": {
+                            "label": "#lang/incident_dataConcerned_numberOfDataSubjectsConcerned"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_dataConcerned/properties/incident_dataConcerned_comments",
+                        "options": {
+                            "label": "#lang/incident_dataConcerned_comments"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_87dc0330-ae2b-40bd-9657-ca0b14724362",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_potentialEffect/properties/incident_potentialEffect_impactOnDataSubjects",
+                        "options": {
+                            "label": "#lang/incident_potentialEffect_impactOnDataSubjects"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_potentialEffect/properties/incident_potentialEffect_other",
+                        "options": {
+                            "label": "#lang/incident_potentialEffect_other"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_potentialEffect/properties/incident_potentialEffect_reason",
+                        "options": {
+                            "label": "#lang/incident_potentialEffect_reason",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_potentialEffect/properties/incident_potentialEffect_valuationDataBreach",
+                        "options": {
+                            "label": "#lang/incident_potentialEffect_valuationDataBreach"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_bbd0dfe3-5b0a-4e8e-9c30-de5e9afaad66",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_notificationAffectedPersons/properties/incident_notificationAffectedPersons_highRisk",
+                        "options": {
+                            "label": "#lang/incident_notificationAffectedPersons_highRisk"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_notificationAffectedPersons/properties/incident_notificationAffectedPersons_reasonRisk",
+                        "options": {
+                            "label": "#lang/incident_notificationAffectedPersons_reasonRisk"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_notificationAffectedPersons/properties/incident_notificationAffectedPersons_dataSubjectsInformed",
+                        "options": {
+                            "label": "#lang/incident_notificationAffectedPersons_dataSubjectsInformed"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/incident_notificationAffectedPersons/properties/incident_notificationAffectedPersons_dataSubjectsInformed",
+                                "schema": {
+                                    "enum": [
+                                        false
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_notificationAffectedPersons/properties/incident_notificationAffectedPersons_reasonNonNotification",
+                        "options": {
+                            "label": "#lang/incident_notificationAffectedPersons_reasonNonNotification"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/incident_notificationAffectedPersons/properties/incident_notificationAffectedPersons_dataSubjectsInformed",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_notificationAffectedPersons/properties/incident_notificationAffectedPersons_timeOfNotification",
+                        "options": {
+                            "label": "#lang/incident_notificationAffectedPersons_timeOfNotification"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/incident_notificationAffectedPersons/properties/incident_notificationAffectedPersons_dataSubjectsInformed",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_notificationAffectedPersons/properties/incident_notificationAffectedPersons_formOfNotification",
+                        "options": {
+                            "label": "#lang/incident_notificationAffectedPersons_formOfNotification"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/incident_notificationAffectedPersons/properties/incident_notificationAffectedPersons_dataSubjectsInformed",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_notificationAffectedPersons/properties/incident_notificationAffectedPersons_contentNotification",
+                        "options": {
+                            "label": "#lang/incident_notificationAffectedPersons_contentNotification",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/incident_notificationAffectedPersons/properties/incident_notificationAffectedPersons_dataSubjectsInformed",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_notificationAffectedPersons/properties/incident_notificationAffectedPersons_document",
+                        "options": {
+                            "label": "#lang/incident_notificationAffectedPersons_document"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_notificationAffectedPersons/properties/incident_notificationAffectedPersons_comments",
+                        "options": {
+                            "label": "#lang/incident_notificationAffectedPersons_comments"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_5c99dbc0-c305-43a1-8c8c-0ade6399f4cc",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/incident_measuresTaken",
+                        "options": {
+                            "label": "#lang/incident_measuresTaken"
+                        },
+                        "elements": []
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/incident_measuresPlaned",
+                        "options": {
+                            "label": "#lang/incident_measuresPlaned"
+                        },
+                        "elements": []
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/incident_privacyRisk",
+                        "options": {
+                            "label": "#lang/incident_privacyRisk"
+                        },
+                        "elements": []
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_6c543f56-9710-441d-b871-cdba1cbded3b",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_supervisoryAuthority/properties/incident_supervisoryAuthority_notificationMade",
+                        "options": {
+                            "label": "#lang/incident_supervisoryAuthority_notificationMade"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/incident_supervisoryAuthority/properties/incident_supervisoryAuthority_notificationMade",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_supervisoryAuthority/properties/incident_supervisoryAuthority_timeDateNotification",
+                        "options": {
+                            "label": "#lang/incident_supervisoryAuthority_timeDateNotification"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/incident_supervisoryAuthority/properties/incident_supervisoryAuthority_notificationMade",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_supervisoryAuthority/properties/incident_supervisoryAuthority_withinHours",
+                        "options": {
+                            "label": "#lang/incident_supervisoryAuthority_withinHours",
+                            "format": "radio",
+                            "direction": "vertical"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/incident_supervisoryAuthority/properties/incident_supervisoryAuthority_withinHours",
+                                "schema": {
+                                    "enum": [
+                                        "incident_supervisoryAuthority_withinHours_laterThan72Hours"
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_supervisoryAuthority/properties/incident_supervisoryAuthority_delayReason",
+                        "options": {
+                            "label": "#lang/incident_supervisoryAuthority_delayReason",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_supervisoryAuthority/properties/incident_supervisoryAuthority_otherAuthorities",
+                        "options": {
+                            "label": "#lang/incident_supervisoryAuthority_otherAuthorities"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/incident_supervisoryAuthority/properties/incident_supervisoryAuthority_otherAuthorities",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_supervisoryAuthority/properties/incident_supervisoryAuthority_nameOfOtherAuthorities",
+                        "options": {
+                            "label": "#lang/incident_supervisoryAuthority_nameOfOtherAuthorities",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_supervisoryAuthority/properties/incident_supervisoryAuthority_comments",
+                        "options": {
+                            "label": "#lang/incident_supervisoryAuthority_comments"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_253ae8ef-bf12-4919-930d-4947c23a2607",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/incident_crossBorder/properties/incident_crossBorder_crossBorder",
+                                "options": {
+                                    "label": "#lang/incident_crossBorder_crossBorder"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/incident_crossBorder/properties/incident_crossBorder_crossBorder",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_crossBorder/properties/incident_crossBorder_affectedStates",
+                        "options": {
+                            "label": "#lang/incident_crossBorder_affectedStates"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "translation": {
+        "de": {
+            "group_10c17175-4f6d-4c7c-9c53-33d37c65dd27": "Betroffene Zielobjekte",
+            "group_253ae8ef-bf12-4919-930d-4947c23a2607": "Vorfall mit Auslandsbezug",
+            "group_50d80138-3721-46de-b1ae-aaafdcbba3c5": "Vermutete Motivation des Verursachers",
+            "group_580efe08-1c94-46a3-b577-dc8842bc1444": "Beteiligte am Datenschutzvorfall",
+            "group_5c99dbc0-c305-43a1-8c8c-0ade6399f4cc": "Eingeleitete Gegenmaßnahmen",
+            "group_5fee3d76-4fb5-4b80-b1e1-15e0528b2167": "Betroffene Daten/Datenkategorien",
+            "group_609a8a0c-4af9-4808-9e34-4023bf7c834c": "Allgemeine Informationen zum Vorfall",
+            "group_6c543f56-9710-441d-b871-cdba1cbded3b": "Meldung an Aufsichtsbehörde",
+            "group_87dc0330-ae2b-40bd-9657-ca0b14724362": "Mögliche Folgen und Auswirkungen für betroffene Personen",
+            "group_8bcb85db-5563-4e43-ad00-1c1d473ff3d4": "Ansprechpartner für Rückfragen",
+            "group_8d7ca466-90cc-45d1-90db-3689326f9712": "Vermutete oder tatsächliche Ursachen",
+            "group_accebe24-26bd-4546-a3c3-deae723cb2fa": "Meldende Organisation",
+            "group_bbd0dfe3-5b0a-4e8e-9c30-de5e9afaad66": "Benachrichtigung betroffener Personen",
+            "group_e803f4d4-6b2c-4782-b781-f7f87331e81b": "Allgemeine Angaben"
+        },
+        "en": {
+            "group_10c17175-4f6d-4c7c-9c53-33d37c65dd27": "Concerned Targets",
+            "group_253ae8ef-bf12-4919-930d-4947c23a2607": "Cross border incident",
+            "group_50d80138-3721-46de-b1ae-aaafdcbba3c5": "Presumed motivation",
+            "group_580efe08-1c94-46a3-b577-dc8842bc1444": "Involved participants in incident",
+            "group_5c99dbc0-c305-43a1-8c8c-0ade6399f4cc": "Countermeasures initiated",
+            "group_5fee3d76-4fb5-4b80-b1e1-15e0528b2167": "Concerned data type/data category",
+            "group_609a8a0c-4af9-4808-9e34-4023bf7c834c": "General information about the incident",
+            "group_6c543f56-9710-441d-b871-cdba1cbded3b": "Notification to supervisory authority",
+            "group_87dc0330-ae2b-40bd-9657-ca0b14724362": "Likely consequences and impacts for data subjects",
+            "group_8bcb85db-5563-4e43-ad00-1c1d473ff3d4": "Contact person",
+            "group_8d7ca466-90cc-45d1-90db-3689326f9712": "Presumed or actual causes",
+            "group_accebe24-26bd-4546-a3c3-deae723cb2fa": "Notifying company",
+            "group_bbd0dfe3-5b0a-4e8e-9c30-de5e9afaad66": "Notification of persons concerned",
+            "group_e803f4d4-6b2c-4782-b781-f7f87331e81b": "General information"
+        }
+    }
+}

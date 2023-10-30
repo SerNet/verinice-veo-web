@@ -63,14 +63,14 @@
       #dialog-options
     >
       <v-btn
-        text
+        variant="text"
         @click="state = WIZARD_STATES.START"
       >
         {{ globalT('global.button.previous') }}
       </v-btn>
       <v-spacer />
       <v-btn
-        text
+        variant="text"
         color="primary"
         :disabled="(state === WIZARD_STATES.CREATE && createFormValid === false) || (state === WIZARD_STATES.IMPORT && (!objectSchema || !formSchema || !schemasCompatible))"
         @click="state === WIZARD_STATES.CREATE ? createFormSchema() : importFormSchema()"

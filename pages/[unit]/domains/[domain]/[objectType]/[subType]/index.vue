@@ -408,7 +408,7 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
         order: 51,
         key: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
         value: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
-        render: ({ item }: any) => h('div', item.raw.domains?.[domainId.value]?.decisionResults?.piaMandatory?.value ? globalT('global.button.yes').toString() : globalT('global.button.no').toString()),
+        render: ({ item }: any) => h('div', item.raw?.decisionResults?.piaMandatory?.value ? globalT('global.button.yes').toString() : globalT('global.button.no').toString()),
         text: t('dpiaMandatory').toString(),
         sortable: false,
         width: 210

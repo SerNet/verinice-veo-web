@@ -188,10 +188,11 @@ export default defineComponent({
 
     const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>(() => {
       switch (props.type) {
+        // TODO: BE task: make children filterable by object type!
         case 'childScopes':
-          return (children.value || []).filter((child) => child.type === 'scope');
+          return children.value || [];
         case 'childObjects':
-          return (children.value || []).filter((child) => child.type !== 'scope');
+          return children.value || [];
         case 'parentScopes':
           return cloneDeep(parentScopes.value || []);
         case 'parentObjects':

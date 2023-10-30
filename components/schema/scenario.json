@@ -1,0 +1,134 @@
+{
+    "id": "515c1691-4ebe-43d2-8387-a8d8c96fe2a0",
+    "domainId": "53c4434f-7181-43a3-a448-b9b6465d142e",
+    "name": {
+        "de": "Gefährdung",
+        "en": "Scenario"
+    },
+    "modelType": "scenario",
+    "subType": "SCN_Scenario",
+    "sorting": "r100",
+    "content": {
+        "type": "Layout",
+        "options": {
+            "format": "group",
+            "direction": "vertical"
+        },
+        "elements": [
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_2f64c348-87c2-4da0-a4f1-89679f1d9078",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/abbreviation",
+                                "options": {
+                                    "label": "#lang/abbreviation"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/name",
+                                "options": {
+                                    "label": "#lang/name"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/status",
+                                "options": {
+                                    "label": "#lang/status",
+                                    "format": "autocomplete"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/description",
+                        "options": {
+                            "label": "#lang/description",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/scenario_generalInformation/properties/scenario_generalInformation_document",
+                        "options": {
+                            "label": "#lang/scenario_generalInformation_document"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_4b0f84ca-52fa-4363-9722-209938fbf0f7",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/riskValues/properties/DSRA/properties/potentialProbability",
+                        "options": {
+                            "label": "#lang/potentialProbability",
+                            "format": "autocomplete"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/riskValues/properties/DSRA/properties/potentialProbabilityExplanation",
+                        "options": {
+                            "label": "#lang/potentialProbabilityExplanation"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_d92a8be1-54c4-46ad-8934-2f97e001e3d3",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/scenario_cause/properties/scenario_cause_threat",
+                        "options": {
+                            "label": "#lang/scenario_cause_threat"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/scenario_cause/properties/scenario_cause_vulnerability",
+                        "options": {
+                            "label": "#lang/scenario_cause_vulnerability"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "translation": {
+        "de": {
+            "group_2f64c348-87c2-4da0-a4f1-89679f1d9078": "Allgemeine Angaben",
+            "group_4b0f84ca-52fa-4363-9722-209938fbf0f7": "Eintrittswahrscheinlichkeit",
+            "group_d92a8be1-54c4-46ad-8934-2f97e001e3d3": "Ursache"
+        },
+        "en": {
+            "group_2f64c348-87c2-4da0-a4f1-89679f1d9078": "General information",
+            "group_4b0f84ca-52fa-4363-9722-209938fbf0f7": "Probability",
+            "group_d92a8be1-54c4-46ad-8934-2f97e001e3d3": "Cause"
+        }
+    }
+}

@@ -1,0 +1,225 @@
+{
+    "id": "47336b5a-4c0b-416d-a345-4ef8a3ffd7d2",
+    "domainId": "53c4434f-7181-43a3-a448-b9b6465d142e",
+    "name": {
+        "de": "Vertrag",
+        "en": "Contract"
+    },
+    "modelType": "document",
+    "subType": "DOC_Contract",
+    "sorting": "u100",
+    "content": {
+        "type": "Layout",
+        "options": {
+            "format": "group",
+            "direction": "vertical"
+        },
+        "elements": [
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_548008f6-a13a-4033-a095-1d089d6a7a64",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/abbreviation",
+                                "options": {
+                                    "label": "#lang/abbreviation"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/name",
+                                "options": {
+                                    "label": "#lang/name"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/status",
+                                "options": {
+                                    "label": "#lang/status",
+                                    "format": "autocomplete"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/description",
+                        "options": {
+                            "label": "#lang/description",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_generalInformation/properties/document_generalInformation_document",
+                        "options": {
+                            "label": "#lang/document_generalInformation_document"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_8288dbee-f293-4f08-b0a4-ea58b00b5733",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_details/properties/document_details_typeOfDocument",
+                        "options": {
+                            "label": "#lang/document_details_typeOfDocument",
+                            "format": "autocomplete"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/document_details/properties/document_details_typeOfDocument",
+                                "schema": {
+                                    "enum": [
+                                        "document_details_typeOfDocument_other"
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_details/properties/document_details_otherTypeOfDocument",
+                        "options": {
+                            "label": "#lang/document_details_otherTypeOfDocument"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_details/properties/document_details_classification",
+                        "options": {
+                            "label": "#lang/document_details_classification",
+                            "format": "autocomplete"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_details/properties/document_details_version",
+                        "options": {
+                            "label": "#lang/document_details_version"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_details/properties/document_details_approvalDate",
+                        "options": {
+                            "label": "#lang/document_details_approvalDate"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_e6b7114b-2bef-46f0-bc23-62634657da67",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_contract/properties/document_contract_type",
+                        "options": {
+                            "label": "#lang/document_contract_type",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_contract/properties/document_contract_location",
+                        "options": {
+                            "label": "#lang/document_contract_location",
+                            "format": "radio"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_contract/properties/document_contract_thirdCountry",
+                        "options": {
+                            "label": "#lang/document_contract_thirdCountry"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_contract/properties/document_contract_subcontractor",
+                        "options": {
+                            "label": "#lang/document_contract_subcontractor"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_78dbe00f-4df6-4da9-9684-03ae912b9433",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_revision/properties/document_revision_last",
+                                "options": {
+                                    "label": "#lang/document_revision_last"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_revision/properties/document_revision_next",
+                                "options": {
+                                    "label": "#lang/document_revision_next"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_revision/properties/document_revision_comment",
+                        "options": {
+                            "label": "#lang/document_revision_comment",
+                            "format": "multiline"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "translation": {
+        "de": {
+            "group_548008f6-a13a-4033-a095-1d089d6a7a64": "Allgemeine Angaben",
+            "group_78dbe00f-4df6-4da9-9684-03ae912b9433": "Revision",
+            "group_8288dbee-f293-4f08-b0a4-ea58b00b5733": "Details",
+            "group_e6b7114b-2bef-46f0-bc23-62634657da67": "Vertragsangaben"
+        },
+        "en": {
+            "group_548008f6-a13a-4033-a095-1d089d6a7a64": "General information",
+            "group_78dbe00f-4df6-4da9-9684-03ae912b9433": "Revision",
+            "group_8288dbee-f293-4f08-b0a4-ea58b00b5733": "Details",
+            "group_e6b7114b-2bef-46f0-bc23-62634657da67": "Contract details"
+        }
+    }
+}

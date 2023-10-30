@@ -131,9 +131,6 @@ export default defineComponent({
       objectData.value = {
         owner: {
           targetUri: `${config.public.apiUrl}/units/${route.params.unit as string}`
-        },
-        domains: {
-          [props.domainId]: {}
         }
       };
 
@@ -152,14 +149,7 @@ export default defineComponent({
     const setDefaultRiskDefinitionIfScope = () => {
       if (props.objectType === 'scope' && domain.value) {
         if (Object.keys(domain.value.riskDefinitions).length === 1) {
-          if (!objectData.value.domains) {
-            objectData.value.domains = {};
-          }
-          if (!objectData.value.domains[props.domainId]) {
-            objectData.value.domains[props.domainId] = {};
-          }
-
-          objectData.value.domains[props.domainId].riskDefinition = Object.keys(domain.value.riskDefinitions)[0];
+          objectData.value.riskDefinition = Object.keys(domain.value.riskDefinitions)[0];
         }
       }
     };

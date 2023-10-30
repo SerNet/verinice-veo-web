@@ -37,13 +37,13 @@ export interface IVeoFetchObjectParameters {
   id: string;
 }
 
-export interface IVeoFetchObjectChildrenParameters {
+export interface IVeoFetchObjectChildrenParameters extends IVeoPaginationOptions{
   domain: string;
   endpoint: string;
   id: string;
 }
 
-export interface IVeoFetchScopeChildrenParameters {
+export interface IVeoFetchScopeChildrenParameters extends IVeoPaginationOptions{
   domain: string;
   id: string;
 }

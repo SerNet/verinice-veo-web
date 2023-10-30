@@ -205,7 +205,7 @@ export default defineComponent({
         emit('update:model-value', newValue);
       }
     });
-    const subType = computed(() => objectData.value?.domains?.[props.domainId]?.subType);
+    const subType = computed(() => objectData.value?.subType);
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const objectTypePlural = computed(() => endpoints.value?.[props.objectType]);
@@ -368,7 +368,6 @@ export default defineComponent({
         return formSchemaId;
       }
     };
-
     const setDisplayOptionBasedOnSubtype = () => {
       if(!subType.value) {
         return;
@@ -388,11 +387,9 @@ export default defineComponent({
 
     // If no subtype is set but the users switches to a formschema, automatically set that schemas subtype
     watch(() => displayOption.value, (newValue) => {
-      if(!!newValue && objectData.value.domains && !objectData.value?.domains?.[props.domainId]?.subType) {
-        objectData.value.domains[props.domainId] = {
-          subType: getSubTypeByFormSchemaId(newValue),
-          status: 'NEW'
-        };
+      if(!!newValue && !objectData.value?.subType) {
+        objectData.value.subType = getSubTypeByFormSchemaId(newValue);
+        objectData.value.status = 'NEW';
       }
     });
 
