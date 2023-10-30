@@ -61,8 +61,8 @@
           :hint="!view.isEditingResponsiblePerson ? t('autocompleteHint'): ''"
           :readonly="!view.isEditingResponsiblePerson"
           clearable
-          item-title="displayName"
-          item-value="displayName"
+          item-title="name"
+          item-value="name"
           return-object
           variant="underlined"
           class="my-4"
@@ -167,7 +167,10 @@ interface RequirementImplementation {
   }
 }
 
-type Form = RequirementImplementation | null;
+type ResponsiblePerson = {
+  name: string;
+  targetUri: string;
+}
 
 enum Origination {
   SystemSpecific = 'SYSTEM_SPECIFIC',
@@ -186,6 +189,8 @@ enum Status {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
+const route = useRoute();
+
 /** STATE */
 // data
 const initialForm = {
@@ -197,30 +202,50 @@ const initialForm = {
   origination: "SYSTEM_SPECIFIC"
 };
 
-const form: Ref<Form> = ref(null);
-const _item = computed(() => props.item);
+const form: Ref<RequirementImplementation> = ref(initialForm);
 
+// React on changing props, e.g. if a new item is passed
+const _item = computed(() => props.item);
 watch(_item, () => {
+  if(!_item.value) return;
   form.value = {
-    ...initialForm,
     ..._item.value
   };
 });
 
-// Responsible persons => loaded from all domains
-const fetchPersonsQueryParameters = computed<IVeoFetchObjectsParameters>(() => ({
-  endpoint: 'persons'
-}));
-
-const { data: _persons } = useQuery(objectQueryDefinitions.queries.fetchAll, fetchPersonsQueryParameters);
-const persons = computed(() => _persons?.value?.items || []);
-
 // view
 const view = reactive({
-  isEditingResponsiblePerson: props?.item?.responsible?.displayName ? false : true,
   isLoading: false,
   formIsDirty: false
 });
+
+// Load persons from current unit + current domain
+const unitId = computed(()=> route.params.unit);
+const domainId = computed(()=> route.params.domain);
+const FetchPersonsInDomainIsEnabled = computed(() => !!domainId.value && !!unitId.value );
+const fetchPersonsInDomainQueryParameters =
+  computed<IVeoFetchPersonsInDomainParameters>(() => (
+    {
+      domainId: domainId.value as string,
+      unitId: unitId.value as string
+    }
+  ));
+
+const { data: _persons } = useQuery(
+  domainQueryDefinitions.queries.fetchPersonsInDomain,
+  fetchPersonsInDomainQueryParameters,
+  { enabled: FetchPersonsInDomainIsEnabled.value }
+);
+
+const persons = computed(() => mapPersons( _persons?.value?.items as IVeoPersonInDomain[] ));
+
+function mapPersons(persons: IVeoPersonInDomain[]): ResponsiblePerson[] {
+  return persons.map(person => ({
+    name: person.name,
+    targetUri: person._self
+  }));
+}
+
 
 async function submitForm({
   type,
@@ -261,17 +286,6 @@ async function submitForm({
     view.isLoading = false;
     emit('update:show-dialog', false);
   }
-}
-
-function mapResponsible(form: any) {
-  return {
-    displayName: form.responsible.displayName,
-    resourcesUri: form.control.resourcesUri,
-    searchesUri: form.control.searchesUri,
-    targetUri: form.responsible.targetUri ?
-      form.responsible.targetUri :
-      form.responsible._self
-  };
 }
 </script>
 
