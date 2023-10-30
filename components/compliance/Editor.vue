@@ -294,7 +294,9 @@ async function submitForm({
   },
   "responsible": "Verantwortlich",
   "autocompleteHint": "Click the icon to edit",
-  "editRequirementImplementation": "RequirementImplementation bearbeiten"
+  "editRequirementImplementation": "RequirementImplementation bearbeiten",
+  "requirementImplementationNotUpdated": "Requirement Implementation konnten nicht aktualisiert werden.",
+  "requirementImplementationUpdated": "Requirement Implementation erfolgreich aktualisiert."
 },
 "en": {
   "requirement": "Anforderung:",
@@ -316,7 +318,9 @@ async function submitForm({
   },
   "responsible": "Verantwortlich",
   "autocompleteHint": "Click the icon to edit",
-  "editRequirementImplementation": "RequirementImplementation bearbeiten"
+  "editRequirementImplementation": "RequirementImplementation bearbeiten",
+  "requirementImplementationNotUpdated": "Requirement Implementation konnten nicht aktualisiert werden.",
+  "requirementImplementationUpdated": "Requirement Implementation erfolgreich aktualisiert."
 }
 }
 </i18n>

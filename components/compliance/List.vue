@@ -49,6 +49,7 @@ const {
 } = useCompliance();
 
 const { t, locale } = useI18n();
+const { t: globalT } = useI18n({ useScope:  'global' });
 
 interface Emits {
   (e: 'update:currentName', currentName: string): void
@@ -67,14 +68,14 @@ requirementImplementations.value = await fetchRequirementImplementations({...fet
 watch(fetchParams, async () => requirementImplementations.value = await fetchRequirementImplementations({...fetchParams.value}));
 
 // Translate
-const translatedRequirementImplementations = ref(translate(requirementImplementations.value, t));
+const translatedRequirementImplementations = ref(translate(requirementImplementations.value, globalT));
 
 watch(requirementImplementations, () => {
-  translatedRequirementImplementations.value = translate(requirementImplementations.value, t);
+  translatedRequirementImplementations.value = translate(requirementImplementations.value, globalT);
 });
 
 watch(locale, () => {
-  translatedRequirementImplementations.value = translate(requirementImplementations.value, t);
+  translatedRequirementImplementations.value = translate(requirementImplementations.value, globalT);
 });
 
 const currentName = computed(() =>
