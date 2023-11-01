@@ -1396,7 +1396,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 The following npm packages may be included in this product:
 
- - @mdi/font@7.2.96
+ - @mdi/font@7.3.67
  - @mdi/js@7.2.96
 
 These packages each contain the following license and notice below:
