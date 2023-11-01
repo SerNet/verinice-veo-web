@@ -207,19 +207,49 @@ const view = reactive({
 // Load persons from current unit + current domain
 const unitId = computed(()=> route.params.unit);
 const domainId = computed(()=> route.params.domain);
-const FetchPersonsInDomainIsEnabled = computed(() => !!domainId.value && !!unitId.value );
+const totalItemCount = computed(() => _personsForTotalItemCount?.value?.totalItemCount);
+
+// Fetch to get total number of persons
+const isFetchingTotalItemCount = computed(() =>
+  !!domainId.value &&
+  !!unitId.value
+);
+
+const totalItemCountQueryParameters =
+  computed<IVeoFetchPersonsInDomainParameters>(() => (
+    {
+      domainId: domainId.value as string,
+      unitId: unitId.value as string,
+      size: '1'
+    }
+  ));
+
+const { data: _personsForTotalItemCount } = useQuery(
+  domainQueryDefinitions.queries.fetchPersonsInDomain,
+  totalItemCountQueryParameters,
+  { enabled: isFetchingTotalItemCount.value }
+);
+
+// Fetch again to get all persons in current domain + unit
+const isFetchingPersons = computed(() =>
+  !!domainId.value &&
+  !!unitId.value &&
+  !!totalItemCount
+);
+
 const fetchPersonsInDomainQueryParameters =
   computed<IVeoFetchPersonsInDomainParameters>(() => (
     {
       domainId: domainId.value as string,
-      unitId: unitId.value as string
+      unitId: unitId.value as string,
+      size: totalItemCount.value
     }
   ));
 
 const { data: _persons } = useQuery(
   domainQueryDefinitions.queries.fetchPersonsInDomain,
   fetchPersonsInDomainQueryParameters,
-  { enabled: FetchPersonsInDomainIsEnabled.value }
+  { enabled: isFetchingPersons.value }
 );
 
 const persons = computed(() => mapPersons( _persons?.value?.items as IVeoPersonInDomain[] ));

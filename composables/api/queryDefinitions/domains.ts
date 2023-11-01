@@ -26,6 +26,7 @@ export interface IVeoFetchPersonsInDomainParameters {
   unitId?: string,
   sortBy?: string,
   sortOrder?: string,
+  size?: string,
 }
 
 export interface IVeoPersonInDomain {
@@ -40,7 +41,8 @@ export interface IVeoPersonInDomain {
 }
 
 export interface IVeoPersonsInDomain {
-  [items: string]: IVeoPersonInDomain[];
+  items: IVeoPersonInDomain[];
+  totalItemCount: string;
 }
 
 export interface IProfile {
@@ -136,7 +138,8 @@ export default {
         query: {
           unit: queryParameters.unitId,
           sortBy: queryParameters.sortBy || 'name',
-          sortOrder: queryParameters.sortOrder || 'asc'
+          sortOrder: queryParameters.sortOrder || 'asc',
+          size: queryParameters.size || '20'
         }
       }),
       staticQueryOptions: {
