@@ -1,0 +1,83 @@
+{
+    "id": "f68e2999-14e1-4d48-b9f8-5cc4dfc50053",
+    "domainId": "517001e6-2ac4-4afa-a0c9-4d6d12fd4ad1",
+    "name": {
+        "de": "Informationssicherheitsvorfall",
+        "en": "Information security incident"
+    },
+    "modelType": "incident",
+    "subType": "INC_InformationSecurityIncident",
+    "sorting": "x200",
+    "content": {
+        "type": "Layout",
+        "options": {
+            "format": "group",
+            "direction": "vertical"
+        },
+        "elements": [
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_6ac9b1e0-d6ac-4c21-bd75-9366d3a6eabe",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/abbreviation",
+                                "options": {
+                                    "label": "#lang/abbreviation"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/name",
+                                "options": {
+                                    "label": "#lang/name"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/status",
+                                "options": {
+                                    "label": "#lang/status",
+                                    "format": "autocomplete"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/description",
+                        "options": {
+                            "label": "#lang/description",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/incident_generalInformation/properties/incident_generalInformation_document",
+                        "options": {
+                            "label": "#lang/incident_generalInformation_document"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "translation": {
+        "de": {
+            "group_6ac9b1e0-d6ac-4c21-bd75-9366d3a6eabe": "Allgemeine Angaben"
+        },
+        "en": {
+            "group_6ac9b1e0-d6ac-4c21-bd75-9366d3a6eabe": "General information"
+        }
+    }
+}

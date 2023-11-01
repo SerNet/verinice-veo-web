@@ -1,0 +1,195 @@
+{
+    "id": "8a87f04b-8528-472c-a6c2-092350e95e29",
+    "domainId": "517001e6-2ac4-4afa-a0c9-4d6d12fd4ad1",
+    "name": {
+        "de": "Anwendung",
+        "en": "Application"
+    },
+    "modelType": "asset",
+    "subType": "AST_Application",
+    "sorting": "i210",
+    "content": {
+        "type": "Layout",
+        "options": {
+            "format": "group",
+            "direction": "vertical"
+        },
+        "elements": [
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_835ab343-e843-4e07-b728-08356d36264f",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/abbreviation",
+                                "options": {
+                                    "label": "#lang/abbreviation"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/name",
+                                "options": {
+                                    "label": "#lang/name"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/status",
+                                "options": {
+                                    "label": "#lang/status"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/description",
+                        "options": {
+                            "label": "#lang/description",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/asset_generalInformation/properties/asset_generalInformation_document",
+                        "options": {
+                            "label": "#lang/asset_generalInformation_document"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_ad862478-3362-46a6-822f-77ead7278012",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/asset_details/properties/asset_details_number",
+                                "options": {
+                                    "label": "#lang/asset_details_number"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/asset_details/properties/asset_details_operatingStage",
+                                "options": {
+                                    "label": "#lang/asset_details_operatingStage",
+                                    "format": "autocomplete"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/asset_details/properties/asset_details_platform",
+                        "options": {
+                            "label": "#lang/asset_details_platform"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/asset_userType",
+                        "options": {
+                            "label": "#lang/asset_userType"
+                        },
+                        "elements": []
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/asset_responsiblePerson",
+                        "options": {
+                            "label": "#lang/asset_responsiblePerson"
+                        },
+                        "elements": []
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "class": "",
+                    "label": "#lang/group_4fff4fce-edf9-4032-b03d-8c0ac1a931cd",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/riskValues/properties/GSRA/properties/potentialImpacts/properties/C",
+                                "options": {
+                                    "label": "#lang/C",
+                                    "format": "autocomplete"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/riskValues/properties/GSRA/properties/potentialImpacts/properties/I",
+                                "options": {
+                                    "label": "#lang/I",
+                                    "format": "autocomplete"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/riskValues/properties/GSRA/properties/potentialImpacts/properties/A",
+                                "options": {
+                                    "label": "#lang/A",
+                                    "format": "autocomplete"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "translation": {
+        "de": {
+            "A": "Verfügbarkeit",
+            "C": "Vertraulichkeit",
+            "I": "Integrität",
+            "text_80580b57-06f6-4116-a9a5-95d4713d16bc": "Schutzbedarfsdefinition/-vererbung",
+            "group_4fff4fce-edf9-4032-b03d-8c0ac1a931cd": "Schutzbedarf",
+            "group_835ab343-e843-4e07-b728-08356d36264f": "Allgemeine Angaben",
+            "group_ad862478-3362-46a6-822f-77ead7278012": "Details",
+            "group_bfeefa5e-7c08-479f-b420-96400af371be": "Verantwortliche"
+        },
+        "en": {
+            "A": "Availability",
+            "C": "Confidentiality",
+            "I": "Intergity",
+            "text_80580b57-06f6-4116-a9a5-95d4713d16bc": "Protection need definition/inheritance",
+            "group_4fff4fce-edf9-4032-b03d-8c0ac1a931cd": "Protection need",
+            "group_835ab343-e843-4e07-b728-08356d36264f": "General information",
+            "group_ad862478-3362-46a6-822f-77ead7278012": "Details",
+            "group_bfeefa5e-7c08-479f-b420-96400af371be": "Responsible"
+        }
+    }
+}

@@ -1,0 +1,270 @@
+{
+    "id": "a9f8806d-1abc-4b94-807a-a67892496e03",
+    "domainId": "517001e6-2ac4-4afa-a0c9-4d6d12fd4ad1",
+    "name": {
+        "de": "Kommunikationsverbindung",
+        "en": "Network"
+    },
+    "modelType": "asset",
+    "subType": "AST_Network",
+    "sorting": "i340",
+    "content": {
+        "type": "Layout",
+        "options": {
+            "format": "group",
+            "direction": "vertical"
+        },
+        "elements": [
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_b7559fbd-e734-4918-9919-3a10d0e4726c",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/abbreviation",
+                                "options": {
+                                    "label": "#lang/abbreviation"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/name",
+                                "options": {
+                                    "label": "#lang/name"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/status",
+                                "options": {
+                                    "label": "#lang/status"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/description",
+                        "options": {
+                            "label": "#lang/description",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/asset_generalInformation/properties/asset_generalInformation_document",
+                        "options": {
+                            "label": "#lang/asset_generalInformation_document"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/asset_networkPlan",
+                        "options": {
+                            "label": "#lang/asset_networkPlan"
+                        },
+                        "elements": []
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_d0c90736-880a-487f-86d2-0dd926b266f9",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/asset_details/properties/asset_details_number",
+                                "options": {
+                                    "label": "#lang/asset_details_number"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/asset_details/properties/asset_details_operatingStage",
+                                "options": {
+                                    "label": "#lang/asset_details_operatingStage",
+                                    "format": "autocomplete"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/asset_details/properties/asset_details_platform",
+                        "options": {
+                            "label": "#lang/asset_details_platform"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/asset_userType",
+                        "options": {
+                            "label": "#lang/asset_userType"
+                        },
+                        "elements": []
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/asset_responsiblePerson",
+                        "options": {
+                            "label": "#lang/asset_responsiblePerson"
+                        },
+                        "elements": []
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_d2f8df2c-4efc-4c86-a9a4-0760ff175146",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/asset_interfaceDetails/properties/asset_interfaceDetails_communicationInterfaces",
+                        "options": {
+                            "label": "#lang/asset_interfaceDetails_communicationInterfaces"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/asset_interfaceDetails/properties/asset_interfaceDetails_connectionType",
+                        "options": {
+                            "label": "#lang/asset_interfaceDetails_connectionType"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/asset_interfaceDetails/properties/asset_interfaceDetails_networkAddresses",
+                        "options": {
+                            "label": "#lang/asset_interfaceDetails_networkAddresses"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/asset_interfaceDetails/properties/asset_interfaceDetails_externalConnection",
+                        "options": {
+                            "label": "#lang/asset_interfaceDetails_externalConnection"
+                        }
+                    },
+                    {
+                        "rule": {
+                            "effect": "SHOW",
+                            "condition": {
+                                "scope": "#/properties/customAspects/properties/asset_interfaceDetails/properties/asset_interfaceDetails_externalConnection",
+                                "schema": {
+                                    "enum": [
+                                        true
+                                    ]
+                                }
+                            }
+                        },
+                        "type": "Layout",
+                        "options": {
+                            "format": "group"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/asset_interfaceDetails/properties/asset_interfaceDetails_typeOfLine",
+                                "options": {
+                                    "label": "#lang/asset_interfaceDetails_typeOfLine"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/asset_interfaceDetails/properties/asset_interfaceDetails_connectionDetails",
+                                "options": {
+                                    "label": "#lang/asset_interfaceDetails_connectionDetails"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_daf66eb4-2db1-4b17-a6fa-972517c35cae",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/riskValues/properties/GSRA/properties/potentialImpacts/properties/C",
+                                "options": {
+                                    "label": "#lang/C",
+                                    "format": "autocomplete"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/riskValues/properties/GSRA/properties/potentialImpacts/properties/I",
+                                "options": {
+                                    "label": "#lang/I",
+                                    "format": "autocomplete"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/riskValues/properties/GSRA/properties/potentialImpacts/properties/A",
+                                "options": {
+                                    "label": "#lang/A",
+                                    "format": "autocomplete"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "translation": {
+        "de": {
+            "A": "Verfügbarkeit",
+            "C": "Vertraulichkeit",
+            "I": "Integrität",
+            "group_b7559fbd-e734-4918-9919-3a10d0e4726c": "Allgemeine Angaben",
+            "group_d0c90736-880a-487f-86d2-0dd926b266f9": "Details",
+            "group_d2f8df2c-4efc-4c86-a9a4-0760ff175146": "Schnittstellen",
+            "group_daf66eb4-2db1-4b17-a6fa-972517c35cae": "Schutzbedarf"
+        },
+        "en": {
+            "A": "Availability",
+            "C": "Confidentiality",
+            "I": "Integrity",
+            "group_b7559fbd-e734-4918-9919-3a10d0e4726c": "General information",
+            "group_d0c90736-880a-487f-86d2-0dd926b266f9": "Details",
+            "group_d2f8df2c-4efc-4c86-a9a4-0760ff175146": "Interfaces",
+            "group_daf66eb4-2db1-4b17-a6fa-972517c35cae": "Protection need"
+        }
+    }
+}

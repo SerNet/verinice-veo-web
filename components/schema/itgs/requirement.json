@@ -1,0 +1,275 @@
+{
+    "id": "b464de9e-d271-4edb-a194-efe25b577341",
+    "domainId": "517001e6-2ac4-4afa-a0c9-4d6d12fd4ad1",
+    "name": {
+        "de": "Anforderung",
+        "en": "Requirement"
+    },
+    "modelType": "control",
+    "subType": "CTL_Requirement",
+    "sorting": "o210",
+    "content": {
+        "type": "Layout",
+        "options": {
+            "format": "group",
+            "direction": "vertical"
+        },
+        "elements": [
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_1d4c8403-86d1-4a7e-959f-3d0c730270a1",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/abbreviation",
+                                "options": {
+                                    "label": "#lang/abbreviation"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/control_bpInformation/properties/control_bpInformation_protectionApproach",
+                                "options": {
+                                    "label": "#lang/control_bpInformation_protectionApproach"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/status",
+                                "options": {
+                                    "label": "#lang/status"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/name",
+                        "options": {
+                            "label": "#lang/name"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/description",
+                        "options": {
+                            "label": "#lang/description",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/control_generalInformation/properties/control_generalInformation_document",
+                        "options": {
+                            "label": "#lang/control_generalInformation_document"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_c8f33b85-943f-4581-8086-8127ea9efba7",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/control_interviewPartner",
+                        "options": {
+                            "label": "#lang/control_interviewPartner"
+                        },
+                        "elements": []
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/control_externalBodies",
+                        "options": {
+                            "label": "#lang/control_externalBodies"
+                        },
+                        "elements": []
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/control_otherPartiesInvolved",
+                        "options": {
+                            "label": "#lang/control_otherPartiesInvolved"
+                        },
+                        "elements": []
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_14e1f7fe-01f9-4b81-9086-ff4280c6b7f0",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/control_bpRevision/properties/control_bpRevision_last",
+                                "options": {
+                                    "label": "#lang/control_bpRevision_last"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/control_bpRevision/properties/control_bpRevision_next",
+                                "options": {
+                                    "label": "#lang/control_bpRevision_next"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/control_bpRevision/properties/control_bpRevision_comment",
+                        "options": {
+                            "label": "#lang/control_bpRevision_comment",
+                            "format": "multiline"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_b81b9502-a2d7-4d81-8a17-46923adda800",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/control_cost/properties/control_cost_personFix",
+                                "options": {
+                                    "label": "#lang/control_cost_personFix"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/control_cost/properties/control_cost_personVariable",
+                                "options": {
+                                    "label": "#lang/control_cost_personVariable"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/control_cost/properties/control_cost_personPeriod",
+                                "options": {
+                                    "label": "#lang/control_cost_personPeriod"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/control_cost/properties/control_cost_materialFix",
+                                "options": {
+                                    "label": "#lang/control_cost_materialFix"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/control_cost/properties/control_cost_materialVariable",
+                                "options": {
+                                    "label": "#lang/control_cost_materialVariable"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/control_cost/properties/control_cost_materialPeriod",
+                                "options": {
+                                    "label": "#lang/control_cost_materialPeriod"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_8463093f-ff64-43b9-8d5d-ab3b85212f7f",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/links/properties/control_relevantAppliedThreat",
+                        "options": {
+                            "label": "#lang/control_relevantAppliedThreat"
+                        },
+                        "elements": []
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_5b8067cd-523e-441d-88da-2d314a8702fa",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/control_bpCompendium/properties/control_bpCompendium_content",
+                        "options": {
+                            "label": "#lang/control_bpCompendium_content",
+                            "format": "markdown"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "translation": {
+        "de": {
+            "group_14e1f7fe-01f9-4b81-9086-ff4280c6b7f0": "Revision",
+            "group_1d4c8403-86d1-4a7e-959f-3d0c730270a1": "Allgemeine Angaben",
+            "group_5b8067cd-523e-441d-88da-2d314a8702fa": "IT-Grundschutz-Anforderung",
+            "group_8463093f-ff64-43b9-8d5d-ab3b85212f7f": "Relevante Gefährdungen laut IT-Grundschutz-Kompendium",
+            "group_b81b9502-a2d7-4d81-8a17-46923adda800": "Kosten",
+            "group_c8f33b85-943f-4581-8086-8127ea9efba7": "Beteiligte"
+        },
+        "en": {
+            "group_14e1f7fe-01f9-4b81-9086-ff4280c6b7f0": "Revision",
+            "group_1d4c8403-86d1-4a7e-959f-3d0c730270a1": "General information",
+            "group_5b8067cd-523e-441d-88da-2d314a8702fa": "IT-Grundschutz requirement",
+            "group_8463093f-ff64-43b9-8d5d-ab3b85212f7f": "Relevant applied threats according to the IT-Grundschutz Compendium",
+            "group_b81b9502-a2d7-4d81-8a17-46923adda800": "Cost",
+            "group_c8f33b85-943f-4581-8086-8127ea9efba7": "Involved"
+        }
+    }
+}

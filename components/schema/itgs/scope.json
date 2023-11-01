@@ -1,0 +1,270 @@
+{
+    "id": "d9ecc2df-ac7b-4189-92c2-54f79c0451c0",
+    "domainId": "517001e6-2ac4-4afa-a0c9-4d6d12fd4ad1",
+    "name": {
+        "de": "Scope",
+        "en": "Scope"
+    },
+    "modelType": "scope",
+    "subType": "SCP_Scope",
+    "sorting": "c510",
+    "content": {
+        "type": "Layout",
+        "options": {
+            "format": "group",
+            "direction": "vertical"
+        },
+        "elements": [
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_0aff0ed5-6353-403e-a610-17491e70ba5e",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/abbreviation",
+                                "options": {
+                                    "label": "#lang/abbreviation"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/name",
+                                "options": {
+                                    "label": "#lang/name"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/status",
+                                "options": {
+                                    "label": "#lang/status"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/description",
+                        "options": {
+                            "label": "#lang/description",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/scope_generalInformation/properties/scope_generalInformation_document",
+                        "options": {
+                            "label": "#lang/scope_generalInformation_document"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "class": "",
+                    "label": "#lang/group_0ddd97ed-c47e-4138-8daf-7c4017863706",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/riskDefinition",
+                        "options": {
+                            "label": "#lang/riskDefinition"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_5202a22b-1214-419d-940d-a4e84f725dc0",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/scope_address/properties/scope_address_address1",
+                        "options": {
+                            "label": "#lang/scope_address_address1"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/scope_address/properties/scope_address_address2",
+                        "options": {
+                            "label": "#lang/scope_address_address2"
+                        }
+                    },
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/scope_address/properties/scope_address_postcode",
+                                "options": {
+                                    "label": "#lang/scope_address_postcode"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/scope_address/properties/scope_address_city",
+                                "options": {
+                                    "label": "#lang/scope_address_city"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/scope_address/properties/scope_address_country",
+                                "options": {
+                                    "label": "#lang/scope_address_country"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/scope_address/properties/scope_address_state",
+                                "options": {
+                                    "label": "#lang/scope_address_state"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_b70e5d87-fe87-4ca9-95d8-291cef1b8313",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/scope_contactInformation/properties/scope_contactInformation_phone",
+                                "options": {
+                                    "label": "#lang/scope_contactInformation_phone"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/scope_contactInformation/properties/scope_contactInformation_fax",
+                                "options": {
+                                    "label": "#lang/scope_contactInformation_fax"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/scope_contactInformation/properties/scope_contactInformation_email",
+                        "options": {
+                            "label": "#lang/scope_contactInformation_email"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/scope_contactInformation/properties/scope_contactInformation_website",
+                        "options": {
+                            "label": "#lang/scope_contactInformation_website"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_b27d365d-0e73-40d4-96b7-0a45cbd5da06",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/riskValues/properties/GSRA/properties/potentialImpacts/properties/C",
+                                "options": {
+                                    "label": "#lang/C",
+                                    "format": "autocomplete"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/riskValues/properties/GSRA/properties/potentialImpacts/properties/I",
+                                "options": {
+                                    "label": "#lang/I",
+                                    "format": "autocomplete"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/riskValues/properties/GSRA/properties/potentialImpacts/properties/A",
+                                "options": {
+                                    "label": "#lang/A",
+                                    "format": "autocomplete"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "translation": {
+        "de": {
+            "A": "Verfügbarkeit",
+            "C": "Vertraulichkeit",
+            "I": "Integrität",
+            "group_0aff0ed5-6353-403e-a610-17491e70ba5e": "Allgemeine Angaben",
+            "group_0ddd97ed-c47e-4138-8daf-7c4017863706": "Risikodefinition",
+            "group_5202a22b-1214-419d-940d-a4e84f725dc0": "Adresse",
+            "group_b27d365d-0e73-40d4-96b7-0a45cbd5da06": "Schutzbedarf",
+            "group_b70e5d87-fe87-4ca9-95d8-291cef1b8313": "Kontaktinformation"
+        },
+        "en": {
+            "A": "Availability",
+            "C": "Confidentiality",
+            "I": "Integrity",
+            "group_0aff0ed5-6353-403e-a610-17491e70ba5e": "General information",
+            "group_0ddd97ed-c47e-4138-8daf-7c4017863706": "Risk definition",
+            "group_5202a22b-1214-419d-940d-a4e84f725dc0": "Address",
+            "group_b27d365d-0e73-40d4-96b7-0a45cbd5da06": "Protection need",
+            "group_b70e5d87-fe87-4ca9-95d8-291cef1b8313": "Contact information"
+        }
+    }
+}

@@ -1,0 +1,108 @@
+{
+    "id": "eecfbd97-03b5-455a-8cfc-859ab7c944e8",
+    "domainId": "517001e6-2ac4-4afa-a0c9-4d6d12fd4ad1",
+    "name": {
+        "de": "Baustein",
+        "en": "Module"
+    },
+    "modelType": "control",
+    "subType": "CTL_Module",
+    "sorting": "o200",
+    "content": {
+        "type": "Layout",
+        "options": {
+            "format": "group",
+            "direction": "vertical"
+        },
+        "elements": [
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_8462798e-6f28-46e9-96a0-17ccf63823a3",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/abbreviation",
+                                "options": {
+                                    "label": "#lang/abbreviation"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/control_bpInformation/properties/control_bpInformation_protectionSequence",
+                                "options": {
+                                    "label": "#lang/control_bpInformation_protectionSequence"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/status",
+                                "options": {
+                                    "label": "#lang/status"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/name",
+                        "options": {
+                            "label": "#lang/name"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/description",
+                        "options": {
+                            "label": "#lang/description",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/control_generalInformation/properties/control_generalInformation_document",
+                        "options": {
+                            "label": "#lang/control_generalInformation_document"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_9a6ff6d4-17f2-4d08-b08a-d54d66880712",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/control_bpCompendium/properties/control_bpCompendium_content",
+                        "options": {
+                            "label": "#lang/control_bpCompendium_content",
+                            "format": "markdown"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "translation": {
+        "de": {
+            "group_8462798e-6f28-46e9-96a0-17ccf63823a3": "Allgemeine Angabe",
+            "group_9a6ff6d4-17f2-4d08-b08a-d54d66880712": "IT-Grundschutz-Baustein"
+        },
+        "en": {
+            "group_8462798e-6f28-46e9-96a0-17ccf63823a3": "General information",
+            "group_9a6ff6d4-17f2-4d08-b08a-d54d66880712": "IT-Grundschutz module"
+        }
+    }
+}

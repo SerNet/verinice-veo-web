@@ -1,0 +1,125 @@
+{
+    "id": "00e8d8df-9460-44a3-8180-fc83c23b69e0",
+    "domainId": "517001e6-2ac4-4afa-a0c9-4d6d12fd4ad1",
+    "name": {
+        "de": "Dokument",
+        "en": "Document"
+    },
+    "modelType": "document",
+    "subType": "DOC_Document",
+    "sorting": "u220",
+    "content": {
+        "type": "Layout",
+        "options": {
+            "format": "group",
+            "direction": "vertical"
+        },
+        "elements": [
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_47dc958c-95b2-4405-bb5a-7c46fb1f896b",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/abbreviation",
+                                "options": {
+                                    "label": "#lang/abbreviation"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/name",
+                                "options": {
+                                    "label": "#lang/name"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/status",
+                                "options": {
+                                    "label": "#lang/status",
+                                    "format": "autocomplete"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/description",
+                        "options": {
+                            "label": "#lang/description",
+                            "format": "multiline"
+                        }
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_generalInformation/properties/document_generalInformation_externalLink",
+                        "options": {
+                            "label": "#lang/document_generalInformation_externalLink"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "Layout",
+                "options": {
+                    "label": "#lang/group_a05fafa0-360c-4044-abf3-985b70c6b794",
+                    "format": "group"
+                },
+                "elements": [
+                    {
+                        "type": "Layout",
+                        "options": {
+                            "format": "group",
+                            "direction": "horizontal"
+                        },
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_revision/properties/document_revision_last",
+                                "options": {
+                                    "label": "#lang/document_revision_last"
+                                }
+                            },
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/customAspects/properties/document_revision/properties/document_revision_next",
+                                "options": {
+                                    "label": "#lang/document_revision_next"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/customAspects/properties/document_revision/properties/document_revision_comment",
+                        "options": {
+                            "label": "#lang/document_revision_comment",
+                            "format": "multiline"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "translation": {
+        "de": {
+            "group_47dc958c-95b2-4405-bb5a-7c46fb1f896b": "Allgemeinen Angaben",
+            "group_a05fafa0-360c-4044-abf3-985b70c6b794": "Revision"
+        },
+        "en": {
+            "group_47dc958c-95b2-4405-bb5a-7c46fb1f896b": "General information",
+            "group_a05fafa0-360c-4044-abf3-985b70c6b794": "Revision"
+        }
+    }
+}
