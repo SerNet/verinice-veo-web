@@ -55,6 +55,11 @@ const NON_REQUIRED_PROPERTIES = ['members', 'parts', 'domains', 'designator', 't
 export default class ObjectSchemaValidator {
   private errors: VeoSchemaValidatorMessage[] = [];
   private warnings: VeoSchemaValidatorMessage[] = [];
+  private domainSpecificObjectSchema = true;
+
+  constructor(domainSpecificObjectSchema: boolean) {
+    this.domainSpecificObjectSchema = domainSpecificObjectSchema;
+  }
 
   public static fitsObjectSchema(schema: any, data: any): VeoSchemaValidatorValidationResult {
     const errors: VeoSchemaValidatorMessage[] = [];
@@ -186,7 +191,7 @@ export default class ObjectSchemaValidator {
     const dummy = ObjectSchemaHelper.generateAspectSchema({
       title: '',
       attributes: []
-    });
+    }, this.domainSpecificObjectSchema);
     const attributes = aspect.properties.attributes.properties;
 
     for (const property of Object.keys(dummy.properties)) {

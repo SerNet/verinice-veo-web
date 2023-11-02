@@ -56,6 +56,16 @@ export default {
       },
       queryParameterTransformationFn: (queryParameters) => ({ params: { domainId: queryParameters.domainId, type: queryParameters.type } }),
       staticQueryOptions: { staleTime: STALE_TIME.MEDIUM }
+    } as IVeoQueryDefinition<IVeoFetchSchemaParameters, IVeoObjectSchema>,
+    fetchSchemaLegacy: {
+      primaryQueryKey: 'schema',
+      url: '/api/schemas/:type',
+      onDataFetched: (result: any) => {
+        result.title = result.title.toLowerCase();
+        return result;
+      },
+      queryParameterTransformationFn: (queryParameters) => ({ params: { type: queryParameters.type }, query: { domains: queryParameters.domainId } }),
+      staticQueryOptions: { staleTime: STALE_TIME.MEDIUM }
     } as IVeoQueryDefinition<IVeoFetchSchemaParameters, IVeoObjectSchema>
   },
   mutations: {}

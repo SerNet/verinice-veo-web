@@ -282,12 +282,13 @@ const createSchema = async () => {
     description: createForm.value.description
   });
 };
+
 const importSchema = async (schema?: any) => {
   if (schema) {
     emit('completed', { schema, meta: undefined });
     await navigateTo({ os: 'custom' });
   } else {
-    const _schema = await useQuerySync(schemaQueryDefinitions.queries.fetchSchema, { type: modelType.value, domainId: route.params.domain as string }, queryClient);
+    const _schema = await useQuerySync(schemaQueryDefinitions.queries.fetchSchemaLegacy, { type: modelType.value || '', domainId: route.params.domain as string}, queryClient);
     emit('completed', { schema: _schema, meta: undefined });
     await navigateTo({ os: modelType.value });
   }

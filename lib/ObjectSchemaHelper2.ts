@@ -378,7 +378,7 @@ export default class ObjectSchemaHelper {
   }
 
   public validate(): VeoSchemaValidatorValidationResult {
-    const validator = new ObjectSchemaValidator();
+    const validator = new ObjectSchemaValidator(this._options.domainSpecificObjectSchema as boolean);
     return validator.validate(this.toSchema());
   }
 
@@ -500,13 +500,22 @@ export default class ObjectSchemaHelper {
     return schemaLink;
   }
 
-  public static generateAspectSchema(aspect: IVeoOSHCustomAspect): IVeoObjectSchemaCustomAspect {
+  public static generateAspectSchema(aspect: IVeoOSHCustomAspect, domainSpecificObjectSchema?: boolean): IVeoObjectSchemaCustomAspect {
     const schemaAspect = {
       additionalProperties: false,
       properties: {
       } as Record<string, any>,
       type: 'object'
     };
+
+    if (!domainSpecificObjectSchema) {
+      schemaAspect.properties = {
+        attributes: {
+          additionalProperties: false,
+          properties: {},
+          type: 'object'
+        }};
+    }
 
     for (const attribute of aspect.attributes) {
       // @ts-ignore Some type error, but as the editors will get reworked anyways ¯\_(ツ)_/¯
@@ -536,7 +545,11 @@ export default class ObjectSchemaHelper {
       // #168 Description is no longer used,as now all attributes are internationalized
       delete dummy.title;
 
-      schemaAspect.properties[`${attribute.prefix}${attribute.title}`] = dummy;
+      if (domainSpecificObjectSchema) {
+        schemaAspect.properties[`${attribute.prefix}${attribute.title}`] = dummy;
+      } else {
+        schemaAspect.properties.attributes.properties[`${attribute.prefix}${attribute.title}`] = dummy;
+      }
     }
 
     // @ts-ignore Some type error, but as the editors will get reworked anyways ¯\_(ツ)_/¯
@@ -702,17 +715,14 @@ export default class ObjectSchemaHelper {
   }
 
   private loadDomains(schema: IVeoObjectSchemaProperty) {
-    this._domains = {};
-
-    const domains = Object.keys(schema.properties);
-    for (const domain of domains) {
-      this._domains[domain] = Object.values(
-        schema.allOf?.map((mapping: any) => ({
+    this._domains = Object.fromEntries(Object.entries(schema.properties).map(
+      ([domainId, content]: [string, any]) => [domainId, content.allOf?.map(
+        (mapping: any) => ({
           subType: mapping.if.properties.subType.const,
           status: mapping.then.properties.status.enum
-        }))
-      );
-    }
+        })
+      )]
+    ));
   }
 
   private loadTranslations(translations: IVeoObjectSchemaTranslations) {
