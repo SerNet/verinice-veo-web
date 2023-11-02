@@ -50,7 +50,7 @@ export interface VeoSchemaValidatorValidationResult {
  * Properties are added in later on on the backend side to provide some sort of meta data.
  * Those won't exist in the scheme so they should get ignored if checking an object.
  */
-const NON_REQUIRED_PROPERTIES = ['members', 'parts', 'designator', 'type', 'displayName'];
+const NON_REQUIRED_PROPERTIES = ['members', 'parts', 'domains', 'designator', 'type', 'displayName'];
 
 export default class ObjectSchemaValidator {
   private errors: VeoSchemaValidatorMessage[] = [];
@@ -58,7 +58,7 @@ export default class ObjectSchemaValidator {
 
   public static fitsObjectSchema(schema: any, data: any): VeoSchemaValidatorValidationResult {
     const errors: VeoSchemaValidatorMessage[] = [];
-    const helper = new ObjectSchemaHelper(schema);
+    const helper = new ObjectSchemaHelper(schema, undefined, { domainSpecificObjectSchema: true });
 
     for (const attribute in data) {
       if (NON_REQUIRED_PROPERTIES.includes(attribute)) {

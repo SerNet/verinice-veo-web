@@ -55,6 +55,7 @@ export interface IVeoOSHOptions {
   customLinksKey?: string;
   translationsKey?: string;
   domainsKey?: string;
+  domainSpecificObjectSchema?: boolean;
 }
 
 export interface IVeoOSHDomains {
@@ -97,7 +98,7 @@ export default class ObjectSchemaHelper {
     this._translations = {};
     this._domains = {};
 
-    this._options = { customAspectsKey: 'customAspects', customLinksKey: 'links', translationsKey: 'translations', domainsKey: 'domains' };
+    this._options = { customAspectsKey: 'customAspects', customLinksKey: 'links', translationsKey: 'translations', domainsKey: 'domains', domainSpecificObjectSchema: false };
     merge(this._options, options);
 
     if (!objectSchema) {
@@ -503,55 +504,7 @@ export default class ObjectSchemaHelper {
     const schemaAspect = {
       additionalProperties: false,
       properties: {
-        attributes: {
-          additionalProperties: false,
-          properties: {},
-          type: 'object'
-        },
-        domains: {
-          description: 'The ids of elements of the type domain.',
-          items: {
-            properties: {
-              displayName: {
-                description: 'A friendly human readable title of the referenced domain.',
-                type: 'string'
-              },
-              targetUri: {
-                description: 'The resource URL of the referenced domain.',
-                type: 'string'
-              }
-            },
-            required: ['targetUri'],
-            type: 'object'
-          },
-          title: 'The list of domains in which this element is present.',
-          type: 'array',
-          uniqueItems: true
-        },
-        id: {
-          format: 'regex',
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}',
-          title: 'The UUID to identify the element',
-          type: 'string'
-        },
-        references: {
-          items: {
-            properties: {
-              displayName: {
-                description: 'A friendly human readable title of the referenced object.',
-                type: 'string'
-              },
-              targetUri: {
-                description: 'The resource URL of the referenced object.',
-                type: 'string'
-              }
-            },
-            type: 'object',
-            required: ['targetUri']
-          },
-          type: 'array'
-        }
-      },
+      } as Record<string, any>,
       type: 'object'
     };
 
@@ -583,7 +536,7 @@ export default class ObjectSchemaHelper {
       // #168 Description is no longer used,as now all attributes are internationalized
       delete dummy.title;
 
-      schemaAspect.properties.attributes.properties[`${attribute.prefix}${attribute.title}`] = dummy;
+      schemaAspect.properties[`${attribute.prefix}${attribute.title}`] = dummy;
     }
 
     // @ts-ignore Some type error, but as the editors will get reworked anyways ¯\_(ツ)_/¯
@@ -675,8 +628,12 @@ export default class ObjectSchemaHelper {
       dummy.attributes = [];
       dummy.prefix = `${this._title}_`;
 
-      for (const attributeName in aspect.properties.attributes.properties) {
-        const attribute = aspect.properties.attributes.properties[attributeName];
+      const attributes: Record<string, any> = this._options.domainSpecificObjectSchema
+        ? aspect.properties
+        : aspect.properties.attributes.properties;
+
+      for (const attributeName in attributes) {
+        const attribute = attributes[attributeName];
 
         const toPush = {
           ...attribute,

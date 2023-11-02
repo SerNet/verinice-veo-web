@@ -195,13 +195,15 @@ export default defineComponent({
       }
       return schema;
     });
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const forceOwnObjectSchema = ref(false);
     const objectSchemaId = ref<string>();
     const uploadedObjectSchema = ref<IVeoObjectSchema>();
 
-    const fetchSchemaQueryParameters = computed<IVeoFetchSchemaParameters>(() => ({ type: objectSchemaId.value || '', domainId: props.domainId }));
-    const fetchSchemaQueryEnabled = computed(() => !!objectSchemaId.value && objectSchemaId.value !== 'custom');
+    const objectTypePlural = computed(() => endpoints.value?.[objectSchemaId.value || '']);
+    const fetchSchemaQueryParameters = computed<IVeoFetchSchemaParameters>(() => ({ type: objectTypePlural.value || '', domainId: props.domainId }));
+    const fetchSchemaQueryEnabled = computed(() => !!objectTypePlural.value);
     const { data: remoteObjectSchema, isFetching: loadingObjectSchema } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, { enabled: fetchSchemaQueryEnabled });
 
     const objectSchema = computed(() => {
