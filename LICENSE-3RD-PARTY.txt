@@ -1425,7 +1425,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The following npm packages may be included in this product:
 
  - @mdi/font@7.3.67
- - @mdi/js@7.3.67
+ - @mdi/js@7.2.96
 
 These packages each contain the following license and notice below:
 
@@ -4220,7 +4220,7 @@ The following npm packages may be included in this product:
  - @types/hast@2.3.4
  - @types/http-proxy@1.17.11
  - @types/mdast@3.0.10
- - @types/node@18.18.8
+ - @types/node@18.17.19
  - @types/resolve@1.20.2
  - @types/unist@2.0.6
  - @types/web-bluetooth@0.0.17
@@ -4558,7 +4558,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 The following npm packages may be included in this product:
 
  - @vitejs/plugin-vue-jsx@3.0.1
- - @vitejs/plugin-vue@4.4.0
+ - @vitejs/plugin-vue@4.3.4
 
 These packages each contain the following license and notice below:
 
@@ -29765,22 +29765,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - undici-types@5.26.5
-
-This package contains the following license and notice below:
-
-# undici-types
-
-This package is a dual-publish of the [undici](https://www.npmjs.com/package/undici) library types. The `undici` package **still contains types**. This package is for users who _only_ need undici types (such as for `@types/node`). It is published alongside every release of `undici`, so you can always use the same version.
-
-- [GitHub nodejs/undici](https://github.com/nodejs/undici)
-- [Undici Documentation](https://undici.nodejs.org/#/)
-
------------
-
-The following npm package may be included in this product:
-
- - undici@5.22.1
+ - undici@5.26.5
 
 This package contains the following license and notice below:
 
