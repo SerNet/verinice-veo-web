@@ -231,7 +231,7 @@ const queryParameters = computed(() => ({
   domainId: props.domainId as string
 }));
 const allFormSchemasQueryEnabled = computed(() => !!props.domainId);
-const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms ,queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
+const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
 
 const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { placeholderData: {} });
 

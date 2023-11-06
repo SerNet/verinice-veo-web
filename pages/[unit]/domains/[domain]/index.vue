@@ -137,7 +137,12 @@ export default defineComponent({
 
     // Domain specific stuff
     const fetchDomainElementStatusCountQueryParameters = computed(() => ({ id: route.params.domain as string, unitId: route.params.unit as string }));
-    const { data: domainObjectInformation, isFetching: elementStatusCountIsFetching, error: fetchElementStatusCountError } = useQuery(domainQueryDefinitions.queries.fetchDomainElementStatusCount, fetchDomainElementStatusCountQueryParameters);
+    const {
+      data: domainObjectInformation,
+      isFetching: elementStatusCountIsFetching,
+      error: fetchElementStatusCountError
+    } = useQuery(domainQueryDefinitions.queries.fetchDomainElementStatusCount, fetchDomainElementStatusCountQueryParameters);
+
     const fetchDomainQueryParameters = computed(() => ({ id: route.params.domain as string }));
     const { data: domain, error: fetchDomainError } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
