@@ -567,7 +567,6 @@ export default defineComponent({
         case 'controls':
           return navigateTo({
             name: 'unit-domains-domain-compliance',
-            params: { ...route.params },
             query: {
               type: props.object?.type,
               riskAffected: props.object?.id,
