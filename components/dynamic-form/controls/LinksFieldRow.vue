@@ -100,7 +100,8 @@ export default defineComponent({
     },
     index: {
       type: Number,
-      required: true
+      default: 0
+      //required: true
     }
   },
   emits: ['update:model-value'],

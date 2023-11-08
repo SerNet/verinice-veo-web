@@ -323,37 +323,32 @@ async function submitForm({
     "NA": "Nicht anwendbar"
   },
   "responsible": "Verantwortlich",
-  "autocompleteHint": "Click the icon to edit",
-  "editRequirementImplementation": "RequirementImplementation bearbeiten",
-  "requirementImplementationNotUpdated": "Requirement Implementation konnten nicht aktualisiert werden.",
-  "requirementImplementationUpdated": "Requirement Implementation erfolgreich aktualisiert."
+  "editRequirementImplementation": "Anforderung bearbeiten",
+  "requirementImplementationNotUpdated": "Anforderung konnte nicht aktualisiert werden.",
+  "requirementImplementationUpdated": "Anforderung wurde erfolgreich aktualisiert."
 },
 "en": {
-  "requirement": "Anforderung:",
-  "riskAffected": "Objekt:",
+  "requirement": "Requirement Implementation:",
+  "riskAffected": "Target object:",
   "description": "Umsetzungsbeschreibung",
   "origination": "Umsetzungsherkunft",
   "originationValues": {
-    "SystemSpecific": "Systemspezifisch",
-    "Inherited": "Vererbung",
-    "Organisation": "Organisation"
+    "SystemSpecific": "system specific",
+    "Inherited": "Inheritance",
+    "Organisation": "Organization"
   },
-  "status": "Status der Umsetzung",
+  "status": "Implementation status",
   "statusValues": {
-    "Unknown": "Unbearbeitet",
-    "Yes": "Ja",
-    "Partial": "Teilweise",
-    "No": "Nein",
-    "NA": "Nicht anwendbar"
+    "Unknown": "unedited",
+    "Yes": "yes",
+    "Partial": "partial",
+    "No": "no",
+    "NA": "not applicable"
   },
-  "responsible": "Verantwortlich",
-  "autocompleteHint": "Click the icon to edit",
-  "editRequirementImplementation": "RequirementImplementation bearbeiten",
-  "requirementImplementationNotUpdated": "Requirement Implementation konnten nicht aktualisiert werden.",
-  "requirementImplementationUpdated": "Requirement Implementation erfolgreich aktualisiert."
+  "responsible": "responsible",
+  "editRequirementImplementation": "edit Requirement Implementation",
+  "requirementImplementationNotUpdated": "Requirement Implementation could not be updated.",
+  "requirementImplementationUpdated": "Requirement Implementation successfully updated."
 }
 }
 </i18n>
-
-<style scoped lang="scss">
-</style>
