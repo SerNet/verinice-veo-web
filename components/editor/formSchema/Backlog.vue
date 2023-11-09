@@ -311,7 +311,7 @@ export default defineComponent({
 
     // We want to group links but show each custom aspect attribute on their own, thus we use two different regex
     const objectSchemaPropertiesPatterns = {
-      regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/,
+      regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/\w+$/,
       regexLinks: /^#\/properties\/links\/properties\/\w+/
     };
 
@@ -366,7 +366,6 @@ export default defineComponent({
             '/parts$',
             '/members$',
             '/designator$',
-            '(\\w+)/properties/domains$',
             '_self',
             '/risks$',
             '/decisionResults$'
