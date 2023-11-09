@@ -245,12 +245,16 @@ Apache License
 The following npm packages may be included in this product:
 
  - @babel/code-frame@7.22.13
+ - @babel/code-frame@7.22.13
  - @babel/compat-data@7.22.9
  - @babel/core@7.22.11
+ - @babel/generator@7.23.3
  - @babel/generator@7.23.0
  - @babel/helper-annotate-as-pure@7.18.6
  - @babel/helper-compilation-targets@7.22.10
  - @babel/helper-create-class-features-plugin@7.21.4
+ - @babel/helper-environment-visitor@7.22.20
+ - @babel/helper-function-name@7.23.0
  - @babel/helper-environment-visitor@7.22.20
  - @babel/helper-function-name@7.23.0
  - @babel/helper-hoist-variables@7.22.5
@@ -265,14 +269,19 @@ The following npm packages may be included in this product:
  - @babel/helper-split-export-declaration@7.22.6
  - @babel/helper-string-parser@7.22.5
  - @babel/helper-validator-identifier@7.22.20
+ - @babel/helper-validator-identifier@7.22.20
  - @babel/helper-validator-option@7.22.5
  - @babel/helpers@7.22.11
+ - @babel/highlight@7.22.20
  - @babel/highlight@7.22.20
  - @babel/plugin-syntax-jsx@7.21.4
  - @babel/plugin-syntax-typescript@7.21.4
  - @babel/plugin-transform-typescript@7.21.3
  - @babel/runtime@7.22.10
  - @babel/standalone@7.22.12
+ - @babel/template@7.22.15
+ - @babel/traverse@7.23.3
+ - @babel/types@7.23.3
  - @babel/template@7.22.15
  - @babel/traverse@7.23.2
  - @babel/types@7.23.0
@@ -306,7 +315,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @babel/parser@7.23.0
+ - @babel/parser@7.23.3
 
 This package contains the following license and notice below:
 
@@ -29765,7 +29774,22 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - undici@5.26.5
+ - undici-types@5.26.5
+
+This package contains the following license and notice below:
+
+# undici-types
+
+This package is a dual-publish of the [undici](https://www.npmjs.com/package/undici) library types. The `undici` package **still contains types**. This package is for users who _only_ need undici types (such as for `@types/node`). It is published alongside every release of `undici`, so you can always use the same version.
+
+- [GitHub nodejs/undici](https://github.com/nodejs/undici)
+- [Undici Documentation](https://undici.nodejs.org/#/)
+
+-----------
+
+The following npm package may be included in this product:
+
+ - undici@5.27.2
 
 This package contains the following license and notice below:
 

@@ -57,12 +57,10 @@
         <v-autocomplete
           v-model="form.responsible"
           :label="t('responsible')"
-          :items="persons || []"
-          :hint="!view.isEditingResponsiblePerson ? t('autocompleteHint'): ''"
-          :readonly="!view.isEditingResponsiblePerson"
+          :items="persons"
           clearable
-          item-title="displayName"
-          item-value="displayName"
+          item-title="name"
+          item-value="name"
           return-object
           variant="underlined"
           class="my-4"
@@ -97,7 +95,7 @@
         :disabled="view.isLoading"
         @click="emit('update:show-dialog', false)"
       >
-        {{ t('global.button.cancel') }}
+        {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -106,15 +104,15 @@
         color="primary"
         :loading="view.isLoading"
         :disabled="view.isLoading"
-        @click="() => submitForm({
+        @click="() => void(state.riskAffected.value && submitForm({
           type: state.type.value,
           riskAffected: state.riskAffected.value,
           form,
           item: item,
           request
-        })"
+        }))"
       >
-        {{ t('global.button.save') }}
+        {{ globalT('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -124,7 +122,7 @@
 import { useCompliance } from './compliance';
 import { cloneDeep } from 'lodash';
 import { useQuery } from '~/composables/api/utils/query';
-import objectQueryDefinitions, { IVeoFetchObjectsParameters } from '~/composables/api/queryDefinitions/objects';
+import domainQueryDefinitions, { IVeoFetchPersonsInDomainParameters, IVeoPersonInDomain } from '~/composables/api/queryDefinitions/domains';
 
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
@@ -132,10 +130,11 @@ import { useRequest } from '@/composables/api/utils/request';
 const { request } = useRequest();
 
 const { t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
 const { getRequirementImplementationId, state } = useCompliance();
 
 interface Props {
-  item: RequirementImplementation;
+  item: RequirementImplementation | null;
   showDialog: boolean;
 }
 
@@ -144,30 +143,19 @@ interface Emits {
   (e: 'update:item'): void
 }
 
-interface RequirementImplementation {
-  origin: {
-    displayName: string,
-    targetUri: string,
-    searchesUri: string
-  },
-  control: {
-    displayName: string,
-    targetUri: string,
-    searchesUri: string
-  },
-  status: 'UNKNOWN | YES | PARTIAL | NO | N_A',
-  origination: "SYSTEM_SPECIFIC",
-  _self: string,
-  implementationStatement?: string | null,
-  responsible?: null | {
-    displayName: string,
-    targetUri: string,
-    searchesUri: string,
-    resourcesUri: string
-  }
+export type RequirementImplementation = {
+  origin: { displayName?: string };
+  control: { displayName?: string };
+  responsible: ResponsiblePerson | null;
+  status: string;
+  implementationStatement?: string | null;
+  origination: string;
 }
 
-type Form = RequirementImplementation | null;
+type ResponsiblePerson = {
+  name: string;
+  targetUri: string;
+}
 
 enum Origination {
   SystemSpecific = 'SYSTEM_SPECIFIC',
@@ -186,6 +174,8 @@ enum Status {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
+const route = useRoute();
+
 /** STATE */
 // data
 const initialForm = {
@@ -197,30 +187,80 @@ const initialForm = {
   origination: "SYSTEM_SPECIFIC"
 };
 
-const form: Ref<Form> = ref(null);
-const _item = computed(() => props.item);
+const form: Ref<RequirementImplementation> = ref(initialForm);
 
+// React on changing props, e.g. if a new item is passed
+const _item = computed(() => props.item);
 watch(_item, () => {
+  if(!_item.value) return;
   form.value = {
-    ...initialForm,
     ..._item.value
   };
 });
 
-// Responsible persons => loaded from all domains
-const fetchPersonsQueryParameters = computed<IVeoFetchObjectsParameters>(() => ({
-  endpoint: 'persons'
-}));
-
-const { data: _persons } = useQuery(objectQueryDefinitions.queries.fetchAll, fetchPersonsQueryParameters);
-const persons = computed(() => _persons?.value?.items || []);
-
 // view
 const view = reactive({
-  isEditingResponsiblePerson: props?.item?.responsible?.displayName ? false : true,
   isLoading: false,
   formIsDirty: false
 });
+
+// Load persons from current unit + current domain
+const unitId = computed(()=> route.params.unit);
+const domainId = computed(()=> route.params.domain);
+const totalItemCount = computed(() => _personsForTotalItemCount?.value?.totalItemCount);
+
+// Fetch to get total number of persons
+const isFetchingTotalItemCount = computed(() =>
+  !!domainId.value &&
+  !!unitId.value
+);
+
+const totalItemCountQueryParameters =
+  computed<IVeoFetchPersonsInDomainParameters>(() => (
+    {
+      domainId: domainId.value as string,
+      unitId: unitId.value as string,
+      size: '1'
+    }
+  ));
+
+const { data: _personsForTotalItemCount } = useQuery(
+  domainQueryDefinitions.queries.fetchPersonsInDomain,
+  totalItemCountQueryParameters,
+  { enabled: isFetchingTotalItemCount.value }
+);
+
+// Fetch again to get all persons in current domain + unit
+const isFetchingPersons = computed(() =>
+  !!domainId.value &&
+  !!unitId.value &&
+  !!totalItemCount
+);
+
+const fetchPersonsInDomainQueryParameters =
+  computed<IVeoFetchPersonsInDomainParameters>(() => (
+    {
+      domainId: domainId.value as string,
+      unitId: unitId.value as string,
+      size: totalItemCount.value
+    }
+  ));
+
+const { data: _persons } = useQuery(
+  domainQueryDefinitions.queries.fetchPersonsInDomain,
+  fetchPersonsInDomainQueryParameters,
+  { enabled: isFetchingPersons.value }
+);
+
+const persons = computed(() => mapPersons( _persons?.value?.items as IVeoPersonInDomain[] ));
+
+function mapPersons(persons: IVeoPersonInDomain[]): ResponsiblePerson[] {
+  return persons.map(person => ({
+    name: person.name,
+    targetUri: person._self
+  }));
+}
+
 
 async function submitForm({
   type,
@@ -229,14 +269,12 @@ async function submitForm({
   item,
   request
 }:{type: string, riskAffected: string, form: RequirementImplementation , item: any, request: any}) {
-  view.isLoading = true;
-  const _form  = cloneDeep(form);
+  if(!form) return;
 
-  if (_form.responsible) {
-    _form.responsible = mapResponsible(_form);
-  }
+  view.isLoading = true;
 
   // Filter out empty properties
+  const _form = cloneDeep(form);
   const requirementImplementation = Object.fromEntries(
     Object.entries(_form)
       .filter(([,value]) => value !== null)
@@ -251,7 +289,7 @@ async function submitForm({
       json: requirementImplementation,
       params: {id: requirementImplementationId}
     });
-    emit('update:item')
+    emit('update:item');
     displaySuccessMessage(t('requirementImplementationUpdated'));
   }
   catch (error: any) {
@@ -261,17 +299,6 @@ async function submitForm({
     view.isLoading = false;
     emit('update:show-dialog', false);
   }
-}
-
-function mapResponsible(form: any) {
-  return {
-    displayName: form.responsible.displayName,
-    resourcesUri: form.control.resourcesUri,
-    searchesUri: form.control.searchesUri,
-    targetUri: form.responsible.targetUri ?
-      form.responsible.targetUri :
-      form.responsible._self
-  };
 }
 </script>
 
@@ -296,33 +323,32 @@ function mapResponsible(form: any) {
     "NA": "Nicht anwendbar"
   },
   "responsible": "Verantwortlich",
-  "autocompleteHint": "Click the icon to edit",
-  "editRequirementImplementation": "RequirementImplementation bearbeiten"
+  "editRequirementImplementation": "Anforderung bearbeiten",
+  "requirementImplementationNotUpdated": "Anforderung konnte nicht aktualisiert werden.",
+  "requirementImplementationUpdated": "Anforderung wurde erfolgreich aktualisiert."
 },
 "en": {
-  "requirement": "Anforderung:",
-  "riskAffected": "Objekt:",
+  "requirement": "Requirement Implementation:",
+  "riskAffected": "Target object:",
   "description": "Umsetzungsbeschreibung",
   "origination": "Umsetzungsherkunft",
   "originationValues": {
-    "SystemSpecific": "Systemspezifisch",
-    "Inherited": "Vererbung",
-    "Organisation": "Organisation"
+    "SystemSpecific": "system specific",
+    "Inherited": "Inheritance",
+    "Organisation": "Organization"
   },
-  "status": "Status der Umsetzung",
+  "status": "Implementation status",
   "statusValues": {
-    "Unknown": "Unbearbeitet",
-    "Yes": "Ja",
-    "Partial": "Teilweise",
-    "No": "Nein",
-    "NA": "Nicht anwendbar"
+    "Unknown": "unedited",
+    "Yes": "yes",
+    "Partial": "partial",
+    "No": "no",
+    "NA": "not applicable"
   },
-  "responsible": "Verantwortlich",
-  "autocompleteHint": "Click the icon to edit",
-  "editRequirementImplementation": "RequirementImplementation bearbeiten"
+  "responsible": "responsible",
+  "editRequirementImplementation": "edit Requirement Implementation",
+  "requirementImplementationNotUpdated": "Requirement Implementation could not be updated.",
+  "requirementImplementationUpdated": "Requirement Implementation successfully updated."
 }
 }
 </i18n>
-
-<style scoped lang="scss">
-</style>

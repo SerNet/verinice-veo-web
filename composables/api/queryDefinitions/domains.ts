@@ -21,6 +21,30 @@ import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
 import { IVeoRisk } from '~/types/VeoTypes';
 import { VeoApiReponseType } from "../utils/request";
 
+export interface IVeoFetchPersonsInDomainParameters {
+  domainId: string,
+  unitId?: string,
+  sortBy?: string,
+  sortOrder?: string,
+  size?: string,
+}
+
+export interface IVeoPersonInDomain {
+  id: string;
+  designator: string;
+  name: string;
+  description: string;
+  status: string;
+  type: string;
+  subType: string;
+  _self: string;
+}
+
+export interface IVeoPersonsInDomain {
+  items: IVeoPersonInDomain[];
+  totalItemCount: string;
+}
+
 export interface IProfile {
   description: string,
   name: string,
@@ -86,7 +110,7 @@ export default {
       url: '/api/domains',
       queryParameterTransformationFn: () => ({}),
       staticQueryOptions: {
-        staleTime: STALE_TIME.LONG,
+        staleTime: STALE_TIME.REQUEST,
         placeholderData: []
       }
     } as IVeoQueryDefinition<Record<string, never>, IVeoDomain[]>,
@@ -105,7 +129,23 @@ export default {
       staticQueryOptions: {
         staleTime: STALE_TIME.REQUEST
       }
-    } as IVeoQueryDefinition<IVeoFetchDomainElementStatusCount, IVeoDomainStatusCount>
+    } as IVeoQueryDefinition<IVeoFetchDomainElementStatusCount, IVeoDomainStatusCount>,
+    fetchPersonsInDomain: {
+      primaryQueryKey: 'personsInDomain',
+      url: '/api/domains/:domainId/persons',
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: { domainId: queryParameters.domainId },
+        query: {
+          unit: queryParameters.unitId,
+          sortBy: queryParameters.sortBy || 'name',
+          sortOrder: queryParameters.sortOrder || 'asc',
+          size: queryParameters.size || '20'
+        }
+      }),
+      staticQueryOptions: {
+        staleTime: STALE_TIME.REQUEST
+      }
+    } as IVeoQueryDefinition<IVeoFetchPersonsInDomainParameters, IVeoPersonsInDomain>
   },
   mutations: {
     updateTypeDefinitions: {
