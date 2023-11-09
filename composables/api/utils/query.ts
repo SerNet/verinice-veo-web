@@ -191,10 +191,17 @@ export const useQueries = <TVariables = Record<string, any>, TResult = any>(
   queryOptions?: QueryOptions
 ) => {
   const { request } = useRequest();
-
+  const enabled = ref(false);
+  // convenience feature. sometimes query is already enabled, while params are still assembeled
+  watch(() => unref(queryOptions?.enabled),
+    (newValue) => {
+      nextTick(() => enabled.value = newValue === undefined ? true : newValue);
+    }
+  );
   const combinedOptions = computed(() => ({
     ...queryDefinition.staticQueryOptions,
-    ...queryOptions
+    ...queryOptions,
+    enabled
   }));
 
   const queries = ref<any[]>([]);
