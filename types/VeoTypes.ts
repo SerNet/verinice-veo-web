@@ -376,14 +376,14 @@ export interface IVeoEntity extends IVeoBaseObject {
   designator: string;
   displayName: string;
   description?: string;
-  domains: IVeoEntityDomain;
   owner: IVeoLink;
   links: IVeoCustomLinks;
   customAspects: IVeoCustomAspects;
   members: IVeoLink[]; // Only contains values for scopes
   parts: IVeoLink[]; // Only contains values for objects not of type scope
   riskValues: any;
-  subType?: string;
+  subType: string;
+  status: string;
   type: string;
   _self: string;
 }

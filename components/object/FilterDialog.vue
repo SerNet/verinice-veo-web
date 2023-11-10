@@ -275,6 +275,12 @@ export default defineComponent({
           type: IVeoFilterOptionType.DIVIDER
         } as IVeoFilterDivider,
         {
+          name: 'abbreviation',
+          disabled: props.disabledFields?.includes('abbreviation'),
+          type: IVeoFilterOptionType.TEXT,
+          alwaysVisible: true
+        },
+        {
           name: 'designator',
           disabled: props.disabledFields?.includes('designator'),
           type: IVeoFilterOptionType.TEXT,

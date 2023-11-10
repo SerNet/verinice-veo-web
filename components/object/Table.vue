@@ -202,7 +202,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     sortable: true,
     truncate: true,
     width: 80,
-    priority: 60,
+    priority: 90,
     order: 30
   },
   name: {
