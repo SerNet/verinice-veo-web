@@ -193,7 +193,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     key: 'designator',
     sortable: true,
     width: 110,
-    priority: 90,
+    priority: 60,
     order: 20
   },
   abbreviation: {
@@ -202,7 +202,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     sortable: true,
     truncate: true,
     width: 80,
-    priority: 60,
+    priority: 90,
     order: 30
   },
   name: {
@@ -221,7 +221,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     sortable: false,
     width: 110,
     render: renderStatus,
-    priority: 40,
+    priority: 50,
     order: 50
   },
   description: {
@@ -240,7 +240,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     sortable: true,
     truncate: true,
     width: 80,
-    priority: 50,
+    priority: 40,
     order: 70
   },
   updatedAt: {

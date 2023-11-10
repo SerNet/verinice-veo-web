@@ -338,7 +338,7 @@ export default defineComponent({
                 priority: 100,
                 order: 10,
                 render: (data: any) => {
-                  return h('span', data.item.raw.control?.abbreviation || 'n/a');
+                  return h('span', data.item.raw.control?.abbreviation || '');
                 }
               },
               {
@@ -364,7 +364,7 @@ export default defineComponent({
                 render: (data: any) => {
                   return h('span',
                     { class: "text-truncate d-inline-block" },
-                    t(`controls.implementation.${data.item.raw.implementationStatus}`.toLowerCase()) || 'n/a');
+                    t(`controls.implementation.${data.item.raw.implementationStatus}`.toLowerCase()) || '');
                 }
               },
               {
@@ -377,7 +377,7 @@ export default defineComponent({
                 order: 80,
                 render: (data: any) => {
                   // strip designator;
-                  return h('span', { class: "text-truncate d-inline-block" }, data.item.raw.responsible?.name);
+                  return h('span', { class: "text-truncate d-inline-block" }, data.item.raw.responsible?.name || '');
                 }
               }
             ]
