@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2022  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -73,8 +73,7 @@
   </v-autocomplete>
 </template>
 
-<script lang="ts">
-import { PropType } from 'vue';
+<script setup lang="ts">
 import { cloneDeep, upperFirst } from 'lodash';
 import { mdiOpenInNew } from '@mdi/js';
 
@@ -89,193 +88,162 @@ import { useQuery } from '~~/composables/api/utils/query';
 import { useFetchObjects } from '~~/composables/api/objects';
 
 
-export default defineComponent({
-  props: {
-    modelValue: {
-      type: [String, Object] as PropType<string | IVeoLink | IVeoEntity>,
-      default: undefined
-    },
-    required: {
-      type: Boolean,
-      default: false
-    },
-    label: {
-      type: String,
-      default: undefined
-    },
-    objectType: {
-      type: String,
-      required: true
-    },
-    subType: {
-      type: String,
-      default: undefined
-    },
-    domainId: {
-      type: String,
-      default: undefined
-    },
-    valueAsLink: {
-      type: Boolean,
-      default: false
-    },
-    valueAsEntity: {
-      type: Boolean,
-      default: false
-    },
-    hiddenValues: {
-      type: Array as PropType<string[]>,
-      default: () => []
+
+type ModelVal = string | IVeoLink | IVeoEntity | undefined;
+interface Props {
+  modelValue?: ModelVal;
+  required: boolean;
+  label: string | undefined;
+  objectType: string;
+  subType: string | undefined;
+  domainId: string | undefined;
+  valueAsLink?: boolean;
+  valueAsEntity?: boolean;
+  hiddenValues?: string[];
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: undefined,
+  required: false,
+  label: undefined,
+  subType: undefined,
+  domainId: undefined,
+  valueAsLink: false,
+  valueAsEntity: false,
+  hiddenValues: () => []
+});
+
+// const emit = defineEmits(['update:model-value']);
+
+const emit = defineEmits<{
+  (e: 'update:model-value', modelValue: IVeoEntity): void
+}>();
+
+const config = useRuntimeConfig();
+const { locale, t } = useI18n();
+const { displayErrorMessage } = useVeoAlerts();
+const router = useRouter();
+const route = useRoute();
+
+// v-autocomplete's current value (model-value)
+const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+
+const internalValue = computed<string | undefined>({
+  get: () => {
+    if (typeof props.modelValue === 'object' && props.modelValue !== null) {
+      if (props.valueAsEntity) {
+        return (props.modelValue as IVeoEntity).id;
+      } else {
+        return getEntityDetailsFromLink(props.modelValue as IVeoLink).id;
+      }
+    } else {
+      return props.modelValue as string;
     }
   },
-  emits: ['update:model-value'],
-  setup(props, { emit }) {
-    const config = useRuntimeConfig();
-    const { locale, t } = useI18n();
-    const { displayErrorMessage } = useVeoAlerts();
-    const router = useRouter();
-    const route = useRoute();
-
-    // Value related stuff
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-
-    const internalValue = computed<string | undefined>({
-      get: () => {
-        if (typeof props.modelValue === 'object' && props.modelValue !== null) {
-          if (props.valueAsEntity) {
-            return (props.modelValue as IVeoEntity).id;
-          } else {
-            return getEntityDetailsFromLink(props.modelValue as IVeoLink).id;
-          }
-        } else {
-          return props.modelValue as string;
-        }
-      },
-      set: (newValue: string | undefined | null) => 
-      {
-        if (!newValue && !props.required) {
-          emit('update:model-value', newValue);
-        } else if (props.valueAsLink) {
-          emit('update:model-value', newValue ? { targetUri: `${config.public.apiUrl}/${endpoints.value?.[props.objectType]}/${newValue}` } : undefined);
-        } else {
-          emit('update:model-value', newValue);
-        }
-      }
-    });
-
-    // Select options related stuff
-    const searchQuery = ref();
-
-    const fetchObjectsData = ref<IVeoPaginatedResponse<IVeoEntity[]>>();
-    const endpoint = computed(() => endpoints.value?.[props.objectType]);
-    const searchQueryNotStale = computed(() => !fetchObjectsData?.value?.items?.find((item) => item.displayName === searchQuery.value) && !!endpoint.value);
-    const fetchObjectsQueryParameters = computed(
-      () =>
-        ({
-          unit: route.params.unit,
-          endpoint: endpoint.value,
-          page: 1,
-          subType: props.subType,
-          displayName: searchQuery.value ?? undefined
-        } as any)
-    );
-    const {
-      data: _fetchObjectsData,
-      isFetching: isLoadingObjects
-    } = useFetchObjects(fetchObjectsQueryParameters, {
-      placeholderData: { items: [], pageCount: 0, page: 1 },
-      enabled: searchQueryNotStale,
-      refetchOnMount: false // If set to true (the default), refetches queries every time input changes, causing some weird cache issues
-    });
-
-    // Assigning fetchObjectsData was moved to watcher as it can get fired immideatly this way
-    // fetchObjectsData and _fetchObjectsData exist, as fetchObjectsData is part of the enabled computed, which it can't be if it isn't defined yet.
-    watch(() => _fetchObjectsData.value, (newValue) => {
-      fetchObjectsData.value = cloneDeep(newValue);
-    }, { deep: true, immediate: true });
-
-    const onSearchQueryInput = (newValue: string) => {
-      // We have to early exit if the value is undefined or null, as for some reason it can be set to one of those values if the objects get fetched, resulting in an infinite fetch
-      if (!newValue) {
-        return;
-      }
-      searchQuery.value = newValue;
-    };
-
-    const onClearClicked = () => {
-      searchQuery.value = '';
-      internalValue.value = undefined;
-    };
-
-    const moreItemsAvailable = computed(() => (fetchObjectsData.value?.pageCount || 0) > 1);
-
-    const fetchObjectQueryParameters = computed(
-      () =>
-        ({
-          endpoint: endpoints.value?.[props.objectType],
-          id: internalValue.value
-        } as any)
-    );
-    const fetchObjectQueryEnabled = computed(() => !!unref(internalValue) && !!endpoints.value?.[props.objectType]);
-    const { data: fetchObjectData, isFetching: isLoadingObject, isError } = useQuery(objectQueryDefinitions.queries.fetch, fetchObjectQueryParameters, { enabled: fetchObjectQueryEnabled });
-
-    watch(
-      () => isError.value,
-      (newValue) => {
-        if (newValue) {
-          displayErrorMessage(upperFirst(t('objectNotFound').toString()), t('objectNotFoundExplanation', [props.label, internalValue.value]).toString());
-        }
-      }
-    );
-
-    const isLoading = computed(() => isLoadingObjects.value || isLoadingObject.value);
-
-    const items = computed<IVeoEntity[]>(() => [
-      ...(fetchObjectsData.value?.items || []),
-      ...(!!unref(internalValue) && fetchObjectData.value && !fetchObjectsData.value?.items?.find((item) => item.id === fetchObjectData.value.id) ? [fetchObjectData.value] : [])
-    ]);
-    const displayedItems = computed(() => (props.hiddenValues.length ? items.value.filter((item) => !props.hiddenValues.includes(item.id)) : items.value));
-
-    // Label stuff
-    const formsQueryParameters = computed(() => ({ domainId: props.domainId as string }));
-    const formsQueryEnabled = computed(() => !props.domainId);
-    const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled });
-
-    const currentSubTypeFormName = computed(() => props.subType && (formSchemas.value || []).find((formSchema) => formSchema.subType === props.subType)?.name[locale.value]);
-    const localLabel = computed(() => props.label ?? `${currentSubTypeFormName.value ? currentSubTypeFormName.value : upperFirst(props.objectType)}${props.required ? '*' : ''}`);
-
-    // Object select display
-    const openItem = (item: IVeoEntity) => {
-      const routeData = router.resolve({
-        name: OBJECT_OVERVIEW_ROUTE,
-        params: {
-          ...route.params,
-          object: item.id
-        }
-      });
-      window.open(routeData.href, '_blank');
-    };
-
-    return {
-      displayedItems,
-      fetchObjectsData,
-      localLabel,
-      internalValue,
-      isLoading,
-      isLoadingObjects,
-      isLoadingObject,
-      items,
-      moreItemsAvailable,
-      onSearchQueryInput,
-      searchQuery,
-      mdiOpenInNew,
-      onClearClicked,
-      openItem,
-
-      t
-    };
+  set: (newValue: string | undefined | null) =>
+  {
+    if (!newValue && !props.required) {
+      emit('update:model-value', newValue);
+    } else if (props.valueAsLink) {
+      emit('update:model-value', newValue ? { targetUri: `${config.public.apiUrl}/${endpoints.value?.[props.objectType]}/${newValue}` } : undefined);
+    } else {
+      emit('update:model-value', newValue);
+    }
   }
 });
+
+// Select options related stuff
+const searchQuery = ref();
+
+const fetchObjectsData = ref<IVeoPaginatedResponse<IVeoEntity[]>>();
+const endpoint = computed(() => endpoints.value?.[props.objectType]);
+const searchQueryNotStale = computed(() => !fetchObjectsData?.value?.items?.find((item) => item.displayName === searchQuery.value) && !!endpoint.value);
+const fetchObjectsQueryParameters = computed(
+  () =>
+    ({
+      unit: route.params.unit,
+      endpoint: endpoint.value,
+      page: 1,
+      subType: props.subType,
+      displayName: searchQuery.value ?? undefined
+    } as any)
+);
+const {
+  data: _fetchObjectsData,
+  isFetching: isLoadingObjects
+} = useFetchObjects(fetchObjectsQueryParameters, {
+  placeholderData: { items: [], pageCount: 0, page: 1 },
+  enabled: searchQueryNotStale,
+  refetchOnMount: false // If set to true (the default), refetches queries every time input changes, causing some weird cache issues
+});
+
+// Assigning fetchObjectsData was moved to watcher as it can get fired immideatly this way
+// fetchObjectsData and _fetchObjectsData exist, as fetchObjectsData is part of the enabled computed, which it can't be if it isn't defined yet.
+watch(() => _fetchObjectsData.value, (newValue) => {
+  fetchObjectsData.value = cloneDeep(newValue);
+}, { deep: true, immediate: true });
+
+const onSearchQueryInput = (newValue: string) => {
+  // We have to early exit if the value is undefined or null, as for some reason it can be set to one of those values if the objects get fetched, resulting in an infinite fetch
+  if (!newValue) {
+    return;
+  }
+  searchQuery.value = newValue;
+};
+
+const onClearClicked = () => {
+  searchQuery.value = '';
+  internalValue.value = undefined;
+};
+
+const moreItemsAvailable = computed(() => (fetchObjectsData.value?.pageCount || 0) > 1);
+
+const fetchObjectQueryParameters = computed(
+  () =>
+    ({
+      endpoint: endpoints.value?.[props.objectType],
+      id: internalValue.value
+    } as any)
+);
+const fetchObjectQueryEnabled = computed(() => !!unref(internalValue) && !!endpoints.value?.[props.objectType]);
+const { data: fetchObjectData, isFetching: isLoadingObject, isError } = useQuery(objectQueryDefinitions.queries.fetch, fetchObjectQueryParameters, { enabled: fetchObjectQueryEnabled });
+
+watch(
+  () => isError.value,
+  (newValue) => {
+    if (newValue) {
+      displayErrorMessage(upperFirst(t('objectNotFound').toString()), t('objectNotFoundExplanation', [props.label, internalValue.value]).toString());
+    }
+  }
+);
+
+const isLoading = computed(() => isLoadingObjects.value || isLoadingObject.value);
+
+const items = computed<IVeoEntity[]>(() => [
+  ...(fetchObjectsData.value?.items || []),
+  ...(!!unref(internalValue) && fetchObjectData.value && !fetchObjectsData.value?.items?.find((item) => item.id === fetchObjectData.value.id) ? [fetchObjectData.value] : [])
+]);
+const displayedItems = computed(() => (props.hiddenValues.length ? items.value.filter((item) => !props.hiddenValues.includes(item.id)) : items.value));
+
+// Label
+const formsQueryParameters = computed(() => ({ domainId: props.domainId as string }));
+const formsQueryEnabled = computed(() => !props.domainId);
+const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled });
+
+const currentSubTypeFormName = computed(() => props.subType && (formSchemas.value || []).find((formSchema) => formSchema.subType === props.subType)?.name[locale.value]);
+const localLabel = computed(() => props.label ?? `${currentSubTypeFormName.value ? currentSubTypeFormName.value : upperFirst(props.objectType)}${props.required ? '*' : ''}`);
+
+// Object select display
+const openItem = (item: IVeoEntity) => {
+  const routeData = router.resolve({
+    name: OBJECT_OVERVIEW_ROUTE,
+    params: {
+      ...route.params,
+      object: item.id
+    }
+  });
+  window.open(routeData.href, '_blank');
+};
 </script>
 
 <i18n>
