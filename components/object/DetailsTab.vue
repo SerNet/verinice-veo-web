@@ -52,8 +52,8 @@
     <!-- dialogs -->
     <UtilConfirmationDialog
       v-model="confirmationDialogVisible"
-      :text="t('deleteText')"
-      :title="t('deleteControl')"
+      :text="t('deleteDialogText', { name: controlNameToUnlink })"
+      :title="t('deleteDialogTitle')"
       :confirmation-text="globalT('global.button.delete')"
       :callback="confirmationDialogCallBack"
       @success="displaySuccessMessage(t('controlDeleted'))"
@@ -75,6 +75,7 @@
     />
   </div>
 </template>
+
 <script lang="ts">
 import { PropType } from 'vue';
 import { cloneDeep, upperFirst } from 'lodash';
@@ -188,7 +189,7 @@ export default defineComponent({
 
     const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>(() => {
       switch (props.type) {
-        // TODO: BE task: make children filterable by object type!
+        // TODO (Backend): make children filterable by object type!
         case 'childScopes':
           return children.value || [];
         case 'childObjects':
@@ -337,9 +338,7 @@ export default defineComponent({
                 truncate: false,
                 priority: 100,
                 order: 10,
-                render: (data: any) => {
-                  return h('span', data.item.raw.control?.abbreviation || '');
-                }
+                render: (data: any) => h('span', data.item.raw.control?.abbreviation || '')
               },
               {
                 value: 'name',
@@ -349,9 +348,7 @@ export default defineComponent({
                 truncate: true,
                 priority: 100,
                 order: 20,
-                render: (data: any) => {
-                  return h('span', data.item.raw.control?.name);
-                }
+                render: (data: any) => h('span', data.item.raw.control?.name)
               },
               {
                 value: 'status',
@@ -375,10 +372,7 @@ export default defineComponent({
                 truncate: true,
                 priority: 80,
                 order: 80,
-                render: (data: any) => {
-                  // strip designator;
-                  return h('span', { class: "text-truncate d-inline-block" }, data.item.raw.responsible?.name || '');
-                }
+                render: (data: any) => h('span', { class: "text-truncate d-inline-block" }, data.item.raw.responsible?.name || '')
               }
             ]
             : []
@@ -406,6 +400,7 @@ export default defineComponent({
     const confirmationDialogVisible = ref(false);
     const confirmationDialogCallBack = ref<(...args: any[]) => any>(() => {});
 
+    const controlNameToUnlink = ref<string>('');
     /**
      * actions for cloning or unlinking objects
      */
@@ -433,10 +428,11 @@ export default defineComponent({
           return [
             {
               id: 'delete',
-              label: upperFirst(t('deleteControl').toString()),
-              icon: mdiTrashCanOutline,
+              label: upperFirst(t('deleteDialogTitle').toString()),
+              icon: mdiLinkOff,
 
               async action(item: any) {
+                controlNameToUnlink.value = item.name.split(' ').slice(1).join(' ');
                 confirmationDialogCallBack.value = () => onDeleteControl(item);
                 confirmationDialogVisible.value = true;
               }
@@ -608,6 +604,7 @@ export default defineComponent({
       additionalHeaders,
       confirmationDialogCallBack,
       confirmationDialogVisible,
+      controlNameToUnlink,
       defaultHeaders,
       displayErrorMessage,
       displaySuccessMessage,
@@ -634,7 +631,7 @@ export default defineComponent({
 {
   "en": {
     "cloneObject": "clone object",
-    "controlDeleted": "The control link has been removed",
+    "controlDeleted": "The control implementation has been removed",
     "controls": {
       "abbreviation": "Abbreviation",
       "implementation": {
@@ -647,12 +644,12 @@ export default defineComponent({
       "responsible": "Responsible",
       "status": "Implementation status"
     },
-    "deleteText": "Do you really want to delete this Control?",
-    "deleteControl": "Delete control",
+    "deleteDialogText": "Only the control implementation of \"{ name }\" will be removed!",
+    "deleteDialogTitle": "Remove control implementation",
     "deleteRisk": "delete risk",
     "errors": {
       "clone": "Could not clone object",
-      "control": "Could not delete control link",
+      "control": "Could not remove control implementation link",
       "link": "Could not link new object",
       "risk": "Could not delete risk"
     },
@@ -682,7 +679,7 @@ export default defineComponent({
   },
   "de": {
     "cloneObject": "Objekt duplizieren",
-    "controlDeleted": "Die Bausteinverknüpfung wurde entfernt",
+    "controlDeleted": "Die Bausteinmodellierung wurde entfernt",
     "controls": {
       "abbreviation": "Abkürzung",
       "implementation": {
@@ -695,8 +692,8 @@ export default defineComponent({
       "responsible": "Verantwortlich",
       "status": "Umsetzungsstatus"
     },
-    "deleteText": "Möchten Sie diesen Baustein wirklich löschen?",
-    "deleteControl": "Bausteinverknüpfung löschen",
+    "deleteDialogText": "Es wird nur die Modellierung von Baustein \"{ name }\" entfernt!",
+    "deleteDialogTitle": "Bausteinmodellierung entfernen",
     "deleteRisk": "Risiko löschen",
     "errors": {
       "clone": "Das Objekt konnte nicht dupliziert werden",

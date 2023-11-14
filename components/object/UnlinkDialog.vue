@@ -22,7 +22,7 @@
     :title="t('unlinkObject')"
   >
     <template #default>
-      <span class="text-body-1">{{ t('text', { displayName: objectToRemove && objectToRemove.displayName, parentDisplayName: parent && parent.displayName }) }}</span>
+      <span class="text-body-1">{{ t('text', { displayName: objectToRemove?.displayName, parentDisplayName: parent?.displayName }) }}</span>
     </template>
     <template #dialog-options>
       <v-btn
@@ -46,37 +46,35 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
 import { useUnlinkObject } from '~/composables/VeoObjectUtilities';
-
 import { IVeoEntity } from '~/types/VeoTypes';
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    required: true
-  },
-  objectToRemove: {
-    type: Object as PropType<IVeoEntity>,
-    default: undefined
-  },
-  parent: {
-    type: Object as PropType<IVeoEntity>,
-    default: undefined
-  }
+const props = withDefaults(defineProps<{
+  modelValue: boolean,
+  objectToRemove: IVeoEntity,
+  parent: IVeoEntity
+}>(), {
+  modelValue: false,
+  objectToRemove: undefined,
+  parent: undefined
 });
 
-const emit = defineEmits(['error', 'update:model-value', 'success']);
-  
+const emit = defineEmits<{
+  (event: 'error', error: any): void;
+  (event: 'success'): void;
+  (event: 'update:model-value', newValue: boolean): void;
+}>();
+
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { unlink } = useUnlinkObject();
 
 const unlinking = ref(false);
+
 const unlinkObject = async () => {
   unlinking.value = true;
   try {
-    await unlink(props.parent, props.objectToRemove);
+    await unlink(<IVeoEntity>props.parent, <IVeoEntity>props.objectToRemove);
     emit('success');
   } catch (error) {
     emit('error', error);
