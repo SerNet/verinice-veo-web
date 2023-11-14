@@ -75,6 +75,7 @@
     />
   </div>
 </template>
+
 <script lang="ts">
 import { PropType } from 'vue';
 import { cloneDeep, upperFirst } from 'lodash';
@@ -217,7 +218,7 @@ export default defineComponent({
 
     const defaultHeaders = computed(() =>
       props.type !== 'risks' && props.type !== 'links' && props.type !== 'controls'
-        ? ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']
+        ? ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedAt', 'updatedBy', 'actions']
         : props.type === 'links'
           ? ['icon', 'name']
           : props.type === 'controls'
@@ -229,6 +230,16 @@ export default defineComponent({
       props.type === 'risks'
         ? [
           {
+            value: 'scenario.abbreviation',
+            key: 'scenario.abbreviation',
+            text: t('controls.abbreviation').toString(),
+            width: 50,
+            truncate: false,
+            priority: 100,
+            order: 30,
+            render: (data: any) => data.item.raw.scenario?.abbreviation || ''
+          },
+          {
             value: 'scenario.displayName',
             key: 'scenario.displayName',
             text: t('scenario').toString(),
@@ -239,8 +250,9 @@ export default defineComponent({
             order: 40,
             render: (data: any) => {
               // The display name contains designator, abbreviation and name of the scenario, however we only want the name, so we split the string
-              // As the abbreviation is optional and at this point we have no ability to check whether it is set here, we simply remove the designator and display everything else
-              return data.item.raw.scenario.displayName.split(' ').slice(1).join(' ');
+              // As the abbreviation is optional, we check for it and slice accordingly
+              const sliceIndex = data.item.raw?.scenario?.abbreviation ? 2 : 1;
+              return data.item.raw.scenario.displayName.split(' ').slice(sliceIndex).join(' ');
             }
           },
           ...['C', 'I', 'A', 'R'].map((categoryId, index) => ({
@@ -318,9 +330,19 @@ export default defineComponent({
         : props.type === 'links'
           ? [
             {
+              value: 'abbreviation',
+              key: 'abbreviation',
+              text: t('controls.abbreviation'),
+              width: 50,
+              truncate: false,
+              priority: 100,
+              order: 20,
+              render: (data: any) => h('span', data.item.raw?.abbreviation || '')
+            },
+            {
               value: 'linkId',
               key: 'linkId',
-              order: 20,
+              order: 30,
               priority: 60,
               text: t('linkName'),
               width: 150,
@@ -336,10 +358,8 @@ export default defineComponent({
                 width: 50,
                 truncate: false,
                 priority: 100,
-                order: 10,
-                render: (data: any) => {
-                  return h('span', data.item.raw.control?.abbreviation || '');
-                }
+                order: 20,
+                render: (data: any) => h('span', data.item.raw.control?.abbreviation || '')
               },
               {
                 value: 'name',
@@ -348,37 +368,28 @@ export default defineComponent({
                 width: 200,
                 truncate: true,
                 priority: 100,
-                order: 20,
-                render: (data: any) => {
-                  return h('span', data.item.raw.control?.name);
-                }
+                order: 30,
+                render: (data: any) => h('span', data.item.raw.control?.name || '')
               },
               {
                 value: 'status',
                 key: 'status',
                 text: t('controls.status'),
                 width: 50,
-                truncate: true,
-                priority: 90,
-                order: 60,
-                render: (data: any) => {
-                  return h('span',
-                    { class: "text-truncate d-inline-block" },
-                    t(`controls.implementation.${data.item.raw.implementationStatus}`.toLowerCase()) || '');
-                }
+                truncate: false,
+                priority: 100,
+                order: 40,
+                render: (data: any) => h('span', { class: "text-truncate d-inline-block" }, t(`controls.implementation.${data.item.raw.implementationStatus}`) || '')
               },
               {
                 value: 'responsibility',
                 key: 'responsibility',
                 text: t('controls.responsible'),
-                width: 50,
+                width: 100,
                 truncate: true,
-                priority: 80,
-                order: 80,
-                render: (data: any) => {
-                  // strip designator;
-                  return h('span', { class: "text-truncate d-inline-block" }, data.item.raw.responsible?.name || '');
-                }
+                priority: 50,
+                order: 50,
+                render: (data: any) => h('span', { class: "text-truncate d-inline-block" }, data.item.raw.responsible?.name || '')
               }
             ]
             : []
@@ -638,11 +649,11 @@ export default defineComponent({
     "controls": {
       "abbreviation": "Abbreviation",
       "implementation": {
-        "no": "no",
-        "partial": "partially",
-        "unknown": "unedited",
-        "yes": "yes",
-        "n_a": "not applicable"
+        "NO": "no",
+        "PARTIAL": "partially",
+        "UNKNOWN": "unedited",
+        "YES": "yes",
+        "N_A": "not applicable"
       },
       "responsible": "Responsible",
       "status": "Implementation status"
@@ -686,11 +697,11 @@ export default defineComponent({
     "controls": {
       "abbreviation": "Abkürzung",
       "implementation": {
-        "no": "nein",
-        "partial": "teilweise",
-        "unknown": "unbearbeitet",
-        "yes": "ja",
-        "n_a": "nicht anwendbar"
+        "NO": "nein",
+        "PARTIAL": "teilweise",
+        "UNKNOWN": "unbearbeitet",
+        "YES": "ja",
+        "N_A": "nicht anwendbar"
       },
       "responsible": "Verantwortlich",
       "status": "Umsetzungsstatus"
