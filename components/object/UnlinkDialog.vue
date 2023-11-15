@@ -22,7 +22,13 @@
     :title="t('unlinkObject')"
   >
     <template #default>
-      <span class="text-body-1">{{ t('text', { displayName: objectToRemove?.displayName, parentDisplayName: parent?.displayName }) }}</span>
+      <span class="text-body-1">
+        {{
+          messageFallback
+            ? t('')
+            : t('text', { displayName: objectToRemove?.displayName, parentDisplayName: parent?.displayName })
+        }}
+      </span>
     </template>
     <template #dialog-options>
       <v-btn
@@ -82,15 +88,20 @@ const unlinkObject = async () => {
     unlinking.value = false;
   }
 };
+
+// providing a message fallback if either of the props  objectToRemove.displayName or parent.displayName is undefined
+const messageFallback = computed<boolean>(() => props.objectToRemove?.displayName === undefined || props.parent?.displayName === undefined);
 </script>
 
 <i18n>
 {
   "en": {
+    "genericText": "This action only removes the link from its parent.",
     "text": "Unlinking \"{displayName}\" only removes the object from \"{parentDisplayName}\".",
     "unlinkObject": "Unlink object"
   },
   "de": {
+    "genericText": "Diese Aktion entfernt nur die Verknüpfung zum Objekt.",
     "text": "Es wird nur die Verknüpfung von \"{displayName}\" zu \"{parentDisplayName}\" entfernt.",
     "unlinkObject": "Verknüpfung entfernen"
   }
