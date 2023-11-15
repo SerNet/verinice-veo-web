@@ -25,7 +25,7 @@
       <span class="text-body-1">
         {{
           messageFallback
-            ? t('')
+            ? t('genericText')
             : t('text', { displayName: objectToRemove?.displayName, parentDisplayName: parent?.displayName })
         }}
       </span>
