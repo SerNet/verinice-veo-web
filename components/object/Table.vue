@@ -185,7 +185,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     cellClass: ['pr-0'],
     width: 30,
     render: renderIcon,
-    priority: 70,
+    priority: 100,
     order: 10
   },
   designator: {
@@ -193,7 +193,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     key: 'designator',
     sortable: true,
     width: 110,
-    priority: 60,
+    priority: 40,
     order: 20
   },
   abbreviation: {
@@ -202,7 +202,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     sortable: true,
     truncate: true,
     width: 80,
-    priority: 90,
+    priority: 100,
     order: 30
   },
   name: {
@@ -221,7 +221,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     sortable: false,
     width: 110,
     render: renderStatus,
-    priority: 50,
+    priority: 100,
     order: 50
   },
   description: {
@@ -234,15 +234,6 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     priority: 30,
     order: 60
   },
-  updatedBy: {
-    value: 'updatedBy',
-    key: 'updatedBy',
-    sortable: true,
-    truncate: true,
-    width: 80,
-    priority: 40,
-    order: 70
-  },
   updatedAt: {
     value: 'updatedAt',
     key: 'updatedAt',
@@ -251,6 +242,15 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     tooltip: renderUpdatedAtTooltip,
     render: renderDate,
     priority: 80,
+    order: 70
+  },
+  updatedBy: {
+    value: 'updatedBy',
+    key: 'updatedBy',
+    sortable: true,
+    truncate: true,
+    width: 80,
+    priority: 40,
     order: 80
   }
 };

@@ -4192,7 +4192,7 @@ The following npm packages may be included in this product:
  - @types/hast@2.3.4
  - @types/http-proxy@1.17.11
  - @types/mdast@3.0.10
- - @types/node@18.18.8
+ - @types/node@18.18.9
  - @types/resolve@1.20.2
  - @types/unist@2.0.6
  - @types/web-bluetooth@0.0.20
@@ -4530,7 +4530,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 The following npm packages may be included in this product:
 
  - @vitejs/plugin-vue-jsx@3.0.1
- - @vitejs/plugin-vue@4.4.0
+ - @vitejs/plugin-vue@4.4.1
 
 These packages each contain the following license and notice below:
 
@@ -4693,9 +4693,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm packages may be included in this product:
 
- - @vueuse/core@10.6.0
- - @vueuse/metadata@10.6.0
- - @vueuse/shared@10.6.0
+ - @vueuse/core@10.6.1
+ - @vueuse/metadata@10.6.1
+ - @vueuse/shared@10.6.1
 
 These packages each contain the following license and notice below:
 
