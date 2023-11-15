@@ -183,16 +183,17 @@ const availableScopes = computed(() => [...formSchemaElementMap.value]
 const ignoreUpdate = ref(false);
 
 const onConditionUpdated = () => {
-  if(ignoreUpdate.value) {
+  if (ignoreUpdate.value) {
     return;
   }
-  if(conditionEffect.value && selectedScopeFormSchemaElement.value && formattedConditionValues.value?.length) {
+
+  if (conditionEffect.value && selectedScopeFormSchemaElement.value && formattedConditionValues.value?.length) {
     emit('update:form-schema-element', { ...props.formSchemaElement, rule: {
       effect: conditionEffect.value,
       condition: {
         scope: selectedScopeFormSchemaElement.value.scope as string,
         schema: {
-          enum: formattedConditionValues.value.map((item: any) => selectedScopeObjectSchemaElement.value?.type === 'integer' || selectedScopeObjectSchemaElement.value?.type === 'number' ? parseInt(item, 10) : item)
+          enum: formattedConditionValues.value.map((item: any) => selectedScopeObjectSchemaElement.value?.type === 'integer' || selectedScopeObjectSchemaElement.value?.type === 'number' ? parseInt(item, 10) : item).filter((item: any) => item !== undefined)
         }
       }
     } });
