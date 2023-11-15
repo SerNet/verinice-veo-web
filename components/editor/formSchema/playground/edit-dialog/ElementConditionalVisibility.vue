@@ -213,6 +213,7 @@ const onFormSchemaItemModified = (newValue: IVeoFormSchemaItem) => {
 };
 
 const deleteRule = () => {
+  conditionEffect.value = undefined;
   const oldFormSchemaElement = cloneDeep(props.formSchemaElement);
   delete oldFormSchemaElement.rule;
   emit('update:form-schema-element', oldFormSchemaElement);
