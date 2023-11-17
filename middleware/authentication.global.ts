@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Markus Werner, Tino Groteloh
+ * Copyright (C) 2023 Jonas Heitmann, Davit Svandize, Markus Werner, Tino Groteloh, Frank Schneider
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -81,5 +81,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
   // If the route is restricted and the user doesn't have the required permissions, display an error
   if (isRouteRestricted && ability.value.cannot(requiredPermission[0], requiredPermission[1])) {
     throw createError({ statusCode: 403 });
+  }
+
+  // strips the hash off the route to prevent the console warnings nuxt introduced since its update to v3.x
+  if (to.hash.includes('#state')) {
+    return navigateTo(to.path);
   }
 });
