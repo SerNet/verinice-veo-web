@@ -268,7 +268,8 @@ export default defineComponent({
       Object.entries(decisionResults || {})
         .map(([decision, result]) => {
           const decisionInDomain = domain.value?.decisions?.[decision];
-          if(!decisionInDomain) {
+
+          if (!decisionInDomain) {
             return {
               key: `${decision}_unknown`,
               type: 'warning',
@@ -285,12 +286,14 @@ export default defineComponent({
           const decisionResultAsString = typeof result.value === 'undefined' ? 'undefined' : `${result.value}`;
 
           const decisionName = decisionInDomain.name[locale.value] || Object.values(decisionInDomain.name || {})[0];
-          const decisiveRuleDescription = result.decisiveRule ? decisionInDomain.rules[result.decisiveRule]?.description[locale.value] ||
-            Object.values(decisionInDomain.rules[result.decisiveRule]?.description || {})[0] : '';
+          const decisiveRuleDescription = result.decisiveRule !== undefined
+            ? decisionInDomain.rules[result.decisiveRule]?.description[locale.value] || Object.values(decisionInDomain.rules[result.decisiveRule]?.description || {})[0]
+            : '';
+
           return {
             key: `${decision}_${decisionResultAsString}`,
             type: result.value === false ? 'success' : 'info',
-            text: `${decisionName}: ${decisionResultStrings[decisionResultAsString]} (${decisiveRuleDescription})`
+            text: `${decisionName}: ${decisionResultStrings[decisionResultAsString]}` + (result.decisiveRule !== undefined ? ` (${decisiveRuleDescription})` : '')
           };
         });
 
