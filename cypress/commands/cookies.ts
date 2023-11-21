@@ -10,5 +10,11 @@ declare global {
 }
 
 export function acceptAllCookies() {
-  cy.get('[data-veo-test="cookies-btn-accept-all"]').click();
+  cy.get("body").then(($body) => {
+    if ($body.find('[data-veo-test="cookies-btn-accept-all"]').length) {
+      cy.get('[data-veo-test="cookies-btn-accept-all"]').click();
+    } else {
+      cy.log('no cookie banner present');
+    }
+  });
 }
