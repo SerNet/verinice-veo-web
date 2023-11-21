@@ -146,10 +146,6 @@
 </template>
 
 <script lang="ts">
-definePageMeta({
-  middleware: 'welcome-page'
-});
-
 export const ROUTE_NAME = 'index';
 </script>
 
@@ -162,12 +158,15 @@ import unitQueryDefinitions, { IVeoUnit} from '~/composables/api/queryDefinition
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
-
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 
 const { ability } = useVeoPermissions();
 const { userSettings } = useVeoUser();
+
+definePageMeta({
+  middleware: 'welcome-page'
+});
 
 useHead({
   title: $t('breadcrumbs.index')

@@ -1,7 +1,7 @@
 import { writeFileSync, readFile } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import glob from 'glob';
+import { glob } from 'glob';
 import hash from 'hash-sum';
 
 const __filename = fileURLToPath(import.meta.url);
