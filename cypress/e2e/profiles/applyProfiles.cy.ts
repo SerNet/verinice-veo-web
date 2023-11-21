@@ -1,14 +1,10 @@
-const testUnitName = 'CY-TEST-UNIT';
-
 beforeEach(() => {
   cy.login();
 });
 
 describe('Apply Profiles', () => {
   it('creates a new unit', () => {
-    cy.goToUnitSelection();
-    cy.acceptAllCookies();
-    cy.createUnit({ name: testUnitName });
+    cy.createUnit({ name: 'CY-TEST-UNIT' });
   });
 
   it('applys the DS-GVO demo profile to the test unit', () => {
@@ -16,7 +12,7 @@ describe('Apply Profiles', () => {
 
     // Select unit associated with DS-GVO Domain
     cy.goToUnitSelection();
-    cy.selectUnit({ name: testUnitName });
+    cy.selectUnit({ name: 'CY-TEST-UNIT' });
 
     // Go to /profiles
     cy.get('[data-veo-test="profiles-nav-item"]').click();
@@ -42,8 +38,7 @@ describe('Apply Profiles', () => {
   });
 
   it('deletes the test unit', () => {
-    cy.goToUnitSelection();
-    cy.deleteUnit({unitName: testUnitName});
+    cy.deleteUnit({unitName: 'CY-TEST-UNIT'});
   });
 });
 

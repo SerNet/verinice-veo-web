@@ -27,6 +27,10 @@ export function createUnit({
   name="CY-TEST-UNIT", description="CY-TEST-UNIT-DESCRIPTON",
   desiredDomains=['DS-GVO']
 }:{name: string, description?: string, desiredDomains?: string[]}):void {
+
+  cy.goToUnitSelection();
+  cy.acceptAllCookies();
+
   cy.get('.veo-primary-action-fab button').click();
 
   // Choose domains
@@ -61,6 +65,8 @@ export function createUnit({
 }
 
 export function deleteUnit({ unitName }:{unitName: string}):void {
+  cy.goToUnitSelection();
+  cy.acceptAllCookies();
   cy
     .get('.v-list-item--link').contains(unitName).parent().parent()
     .find('[data-component-name="unit-selection-delete-unit-button"]').click();
