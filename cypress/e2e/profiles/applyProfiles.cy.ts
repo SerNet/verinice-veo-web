@@ -1,16 +1,15 @@
-beforeEach(() => {
-  cy.login();
-});
-
 describe('Apply Profiles', () => {
-  it('creates a new unit', () => {
-    cy.createUnit({ name: 'CY-TEST-UNIT' });
+  before(() => {
+    cy.login();
+    cy.createUnit({name: 'CY-TEST-UNIT'});
   });
 
-  it('applys the DS-GVO demo profile to the test unit', () => {
+  after(() => cy.deleteUnit({unitName: 'CY-TEST-UNIT'}));
+
+  it('applies the DS-GVO demo profile to the test unit', () => {
     const profileName = 'Beispieldaten';
 
-    // Select unit associated with DS-GVO Domain
+    // Per default test units are associated with the DS-GVO Domain
     cy.goToUnitSelection();
     cy.selectUnit({ name: 'CY-TEST-UNIT' });
 
@@ -36,9 +35,4 @@ describe('Apply Profiles', () => {
     cy.wait(['@applyProfile'], { responseTimeout: 15000 })
       .its('response.statusCode').should('eq', 204);
   });
-
-  it('deletes the test unit', () => {
-    cy.deleteUnit({unitName: 'CY-TEST-UNIT'});
-  });
 });
-
