@@ -74,6 +74,9 @@
           @success="onCloseDeleteDialog({ isOpen: false })"
           @error="showError('delete', itemToDelete, $event)"
         />
+        <ObjectAssignDialog
+          :model-value="ObjectAssignDialogVisible"
+        />
       </BaseCard>
       <ObjectTypeError v-else>
         <v-btn
@@ -128,6 +131,7 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
 <script setup lang="ts">
 import { mdiContentCopy, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
+import { useFetchUnitDomains } from '~/composables/api/domains';
 
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import { IVeoEntity } from '~/types/VeoTypes';
@@ -167,6 +171,10 @@ const { clone } = useCloneObject();
 const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain }));
 const { data: translations, isFetching: translationsLoading } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
+const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
+const fetchUnitDomainsQueryEnabled = computed(() => !!route.params.unit);
+const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
+console.log(domains.value.filter((domain) => domain.id || undefined));
 const domainId = computed(() => route.params.domain as string);
 
 //
@@ -362,6 +370,8 @@ const onCloseDeleteDialog = (
   }
 };
 
+const ObjectAssignDialogVisible = ref(false);
+
 const actions = computed(() => [
   {
     id: 'clone',
@@ -399,6 +409,14 @@ const actions = computed(() => [
     action(item: any) {
       itemToDelete.value = item.raw;
     }
+  },
+  {
+    id: 'assign',
+    label: t('assignObject'),
+    icon: mdiPlus,
+    action(item: any) {
+      ObjectAssignDialogVisible.value = true;
+    }
   }
 ]);
 
@@ -425,6 +443,7 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
 <i18n>
 {
   "en": {
+    "assignObject": "Assign object to another domain",
     "objectOverview": "object overview",
     "filterObjects": "filter objects",
     "createObject": "create {0}",
@@ -441,6 +460,7 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
     "open": "Open"
   },
   "de": {
+    "assignObject": "Objekt einer anderen Domäne zuordnen",
     "objectOverview": "Objektübersicht",
     "filterObjects": "Objekte filtern",
     "createObject": "{0} erstellen",
