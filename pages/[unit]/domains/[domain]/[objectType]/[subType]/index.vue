@@ -55,9 +55,9 @@
                 <template #activator="{ props }">
                   <v-btn
                     :data-component-name="`object-overview-${btn.id}-button`"
-                    :disabled="ability.cannot('manage', 'objects')"
-                    v-bind="props"
+                    :disabled="ability.cannot('manage', 'objects') || btn.disabled"
                     :icon="btn.icon"
+                    v-bind="props"
                     variant="text"
                     @click="btn.action(item)"
                   />
@@ -67,6 +67,8 @@
             </div>
           </template>
         </ObjectTable>
+
+        <!-- Dialogs -->
         <ObjectDeleteDialog
           :model-value="!!itemToDelete"
           :item="itemToDelete"
@@ -74,8 +76,9 @@
           @success="onCloseDeleteDialog({ isOpen: false })"
           @error="showError('delete', itemToDelete, $event)"
         />
+
         <ObjectAssignDialog
-          :model-value="ObjectAssignDialogVisible"
+          :model-value="objectAssignDialogVisible"
         />
       </BaseCard>
       <ObjectTypeError v-else>
@@ -129,7 +132,7 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
 </script>
 
 <script setup lang="ts">
-import { mdiContentCopy, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
+import { mdiContentCopy, mdiDotsHorizontal, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
 import { useFetchUnitDomains } from '~/composables/api/domains';
 
@@ -161,9 +164,11 @@ type IFilterDefinition = {
 
 const { t, locale } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
+
 const { tablePageSize } = useVeoUser();
-const route = useRoute();
 const { ability } = useVeoPermissions();
+
+const route = useRoute();
 
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
@@ -174,7 +179,7 @@ const { data: translations, isFetching: translationsLoading } = useQuery(transla
 const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
 const fetchUnitDomainsQueryEnabled = computed(() => !!route.params.unit);
 const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
-console.log(domains.value.filter((domain) => domain.id || undefined));
+
 const domainId = computed(() => route.params.domain as string);
 
 //
@@ -232,6 +237,7 @@ const stringOrFirstValue = (v: string | null | (string | null)[]) => {
 
 // filter built from URL query parameters
 const { data: endpoints, isFetching: endpointsLoading } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { placeholderData: {} });
+
 const filter = computed(() => {
   return Object.fromEntries(
     Object.entries(filterDefinitions).map(([filterKey, filterDefinition]) => {
@@ -370,7 +376,10 @@ const onCloseDeleteDialog = (
   }
 };
 
-const ObjectAssignDialogVisible = ref(false);
+const objectAssignDialogVisible = ref(false);
+
+const objectId = ref<string>('');
+const subType = ref<string | undefined>(undefined);
 
 const actions = computed(() => [
   {
@@ -411,11 +420,14 @@ const actions = computed(() => [
     }
   },
   {
+    disabled: domains.value?.length <= 1,
     id: 'assign',
     label: t('assignObject'),
-    icon: mdiPlus,
+    icon: mdiDotsHorizontal,
     action(item: any) {
-      ObjectAssignDialogVisible.value = true;
+      objectAssignDialogVisible.value = true;
+      objectId.value = item.raw.id;
+      subType.value = endpoints.value?.[item.raw?.type];
     }
   }
 ]);
@@ -460,7 +472,7 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
     "open": "Open"
   },
   "de": {
-    "assignObject": "Objekt einer anderen Domäne zuordnen",
+    "assignObject": "Objekt einer weiteren Domäne zuordnen",
     "objectOverview": "Objektübersicht",
     "filterObjects": "Objekte filtern",
     "createObject": "{0} erstellen",
