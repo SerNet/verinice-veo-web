@@ -1,6 +1,7 @@
 import { login } from '../commands/login';
 import { acceptAllCookies } from '../commands/cookies';
 import { goToUnitSelection, selectUnit, createUnit, deleteUnit } from '../commands/units';
+import { generateUnitDetails } from './setupHelpers';
 
 Cypress.Commands.addAll({
   login,
@@ -11,7 +12,9 @@ Cypress.Commands.addAll({
   deleteUnit
 });
 
-
+before(() => {
+  generateUnitDetails();
+});
 
 // Uncaught exeptions make cypress test runs fail
 // However, this is not always correct, some errors can be ignored
