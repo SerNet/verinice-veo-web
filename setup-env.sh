@@ -22,9 +22,11 @@ CY_CONFIG_LOCAL='{
   "pw": "'${CYPRESS_TESTUSER_PASS}'"
 },
 "baseUrl": "'${CYPRESS_BASE_URL_LOCAL}'",
-  "veoOidcUrl": "'${VEO_OIDC_URL}'",
-  "veoApiUrl" : "'${VEO_DEFAULT_API_URL}'",
-  "isLocalhost": "true"
+"veoOidcUrl": "'${VEO_OIDC_URL}'",
+"veoApiUrl" : "'${VEO_DEFAULT_API_URL}'",
+"pipelineId": "'${CI_PIPELINE_ID}'",
+"isLocalhost": "true",
+"testUnitPrefix": "CY-TEST-pipeline-"
 }'
 
 echo ${CY_CONFIG_LOCAL} >> ${CY_CONFIG_LOCAL_PATH}
