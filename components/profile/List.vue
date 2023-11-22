@@ -25,7 +25,7 @@
         :title="$t('breadcrumbs.profiles')"
         :element="profiles[0]?.key || ''"
       />
-  
+
       <p class="mt-8 mb-4 text-body-1">
         {{ t('hint') }}
       </p>
@@ -58,6 +58,7 @@
           <v-btn
             flat
             color="primary"
+            data-veo-test="profiles-btn-apply"
             :disabled="!state.selectedProfiles[0]"
             @click="toggleDialog"
           >

@@ -14,7 +14,12 @@
     "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore .",
     "precommit": "npm run lint",
     "start": "nuxi start",
-    "print": "docker run --add-host=host.docker.internal:host-gateway -v $(pwd)/print.js:/usr/src/app/print.mjs -v $(pwd)/dist:/usr/src/app/dist ghcr.io/drpayyne/chrome-puppeteer:latest node print.mjs http://host.docker.internal:3000/docs?print"
+    "print": "docker run --add-host=host.docker.internal:host-gateway -v $(pwd)/print.js:/usr/src/app/print.mjs -v $(pwd)/dist:/usr/src/app/dist ghcr.io/drpayyne/chrome-puppeteer:latest node print.mjs http://host.docker.internal:3000/docs?print",
+    "e2e": "cypress run --env environment=local --browser firefox",
+    "cy:local": "cypress run --env environment=local",
+    "cy-gui:local": "cypress open --env environment=local",
+    "cy:develop": "cypress run --env environment=develop",
+    "cy-gui:develop": "cypress open --env environment=develop"
   },
   "husky": {
     "hooks": {
@@ -43,7 +48,8 @@
     "chartjs-plugin-datalabels": "^2.2.0",
     "codemirror": "^6.0.1",
     "date-fns": "^2.29.3",
-    "glob": "^8.1.0",
+    "develop": "^1.0.0",
+    "glob": "^10.3.10",
     "hash-sum": "^2.0.0",
     "husky": "^8.0.2",
     "intro.js": "^7.0.1",
@@ -81,10 +87,11 @@
     "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@vue/test-utils": "^2.3.2",
+    "cypress": "^13.5.0",
     "eslint": "^8.31.0",
     "eslint-plugin-nuxt": "^4.0.0",
     "eslint-plugin-vue": "^9.8.0",
-    "lint-staged": "^14.0.0",
+    "lint-staged": "^15.0.0",
     "npm": "^9.8.1",
     "sass": "^1.57.1"
   }

@@ -382,8 +382,8 @@ export interface IVeoEntity extends IVeoBaseObject {
   members: IVeoLink[]; // Only contains values for scopes
   parts: IVeoLink[]; // Only contains values for objects not of type scope
   riskValues: any;
-  subType: string;
   status: string;
+  subType: string;
   type: string;
   _self: string;
 }

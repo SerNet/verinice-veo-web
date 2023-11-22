@@ -37,11 +37,41 @@ check_license:
     - if [ $? -ne 0 ]; then echo "LICENSE-3RD-PARTY.txt is not up to date, please re-run npx generate-license-file --input ./package.json --output LICENSE-3RD-PARTY.txt --overwrite"; exit 1; fi
   interruptible: true
 
+test:
+  image: cypress/browsers:node18.12.0-chrome103-ff107
+  stage: test
+  cache:  # Cache modules in between jobs
+    key:
+      files:
+      - package-lock.json
+    paths:
+      - .npm/
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+    # Write .env file
+    - chmod +x ./setup-env.sh
+    - ./setup-env.sh
+  script:
+    - export {http,https}_proxy="${http_proxy}"
+    # Install TS (cypress image does not support TS out of the box)
+    - npm i typescript
+    # Build and run veo
+    - npm run generate
+    - npx serve .output/public/ &
+    - npm run e2e
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+    - ${CI_PROJECT_DIR}/cypress/screenshots
+    - ${CI_PROJECT_DIR}/cypress/videos
+
+
 docker_image:
   stage: build
   needs: ["store_project_version"]
   image:
-    name: gcr.io/kaniko-project/executor:v1.16.0-debug
+    name: gcr.io/kaniko-project/executor:v1.18.0-debug
     entrypoint: [""]
   variables:
     IMAGE_NAME: eu.gcr.io/veo-projekt/veo-web

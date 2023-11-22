@@ -196,6 +196,9 @@ export const useQueries = <TVariables = Record<string, any>, TResult = any>(
   watch(() => unref(queryOptions?.enabled),
     (newValue) => {
       nextTick(() => enabled.value = newValue === undefined ? true : newValue);
+    },
+    {
+      immediate: true
     }
   );
   const combinedOptions = computed(() => ({

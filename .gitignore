@@ -16,3 +16,11 @@ dist
 
 # Vitest
 coverage
+
+# Cypress
+cypress.env.json
+cypress/config
+cypress/downloads
+cypress/screenshots
+cypress/videos
+cypress/config
