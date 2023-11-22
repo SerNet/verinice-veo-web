@@ -2,7 +2,7 @@
   "name": "veo-web",
   "version": "1.7.0",
   "engines": {
-    "npm": "9.8.x",
+    "npm": "9.9.x",
     "node": "18.17.x"
   },
   "description": "veo-web",
