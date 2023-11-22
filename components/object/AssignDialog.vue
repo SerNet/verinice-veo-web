@@ -28,10 +28,7 @@
           {{ t('domainselection') }}
         </span>
 
-        <v-list
-          v-bind="$attrs"
-          class="mt-2"
-        >
+        <v-list class="mt-2">
           <v-list-item
             v-for="domain of availableDomains"
             :key="domain.id"
@@ -53,13 +50,16 @@
       <v-row class="ma-2">
         <v-col>
           <v-select
-            :label="t('Subtype')"
+            v-model="selectedSubType"
+            :label="t('subtype')"
             :items="subTypes"
+            clearable
             variant="solo-filled"
           />
           <v-select
             label="Status"
             :items="['New', 'In progress', 'Archived']"
+            :disabled="!selectedSubType"
             variant="solo-filled"
           />
         </v-col>
@@ -78,7 +78,7 @@
       <v-btn
         color="primary"
         variant="text"
-        @click="emit('update:model-value', false)"
+        @click="assignObject()"
       >
         {{ $t('global.button.save') }}
       </v-btn>
@@ -91,12 +91,17 @@ import { mdiCheck } from '@mdi/js';
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+
+import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~~/composables/api/utils/query';
 
-withDefaults(defineProps<{
-  modelValue: boolean
+const props = withDefaults(defineProps<{
+  modelValue: boolean,
+  objectId: string
 }>(), {
-  modelValue: false
+  modelValue: false,
+  objectId: ''
 });
 
 const emit = defineEmits<{
@@ -104,11 +109,15 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+const route = useRoute();
+const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
 const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains);
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
 const subTypes = computed(() => Object.entries(schemas.value || {}).map(([k, _v]) => k));
+const selectedSubType = ref(undefined);
 
 const availableDomains = computed(() => domains.value?.map((domain) => ({
   abbreviation: domain.abbreviation,
@@ -116,17 +125,30 @@ const availableDomains = computed(() => domains.value?.map((domain) => ({
   id: domain.id,
   name: domain.name
 })) ?? []);
+
+const assignObject = async () => {
+  try {
+    await updateObject({ domain: route.params.domain, endpoint: route.params?.objectType, id: props.objectId });
+    displaySuccessMessage(t('objectLinked').toString());
+    emit('update:model-value', false);
+  }
+  catch (error: any) {
+    displayErrorMessage(t('deletingAccountFailed').toString(), error.message);
+  }
+};
 </script>
 
 <i18n>
 {
   "en": {
     "domainselection": "Domain selection",
-    "title": "Assign object",
+    "subtype": "Subtype",
+    "title": "Assign object"
   },
   "de": {
-    "title": "Objekt zuordnen",
     "domainselection": "Domänenauswahl",
+    "subtype": "Subtyp",
+    "title": "Objekt zuordnen"
   }
 }
 </i18n>
