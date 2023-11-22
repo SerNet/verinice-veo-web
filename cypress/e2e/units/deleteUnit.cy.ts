@@ -1,8 +1,8 @@
 before(() => {
   cy.login();
-  cy.createUnit({name: 'CY-TEST-UNIT'});
+  cy.createUnit();
 });
 
 it('deletes a unit', () => {
-  cy.deleteUnit({unitName: 'CY-TEST-UNIT'});
+  cy.deleteUnit();
 });

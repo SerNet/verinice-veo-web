@@ -1,17 +1,18 @@
 describe('Apply Profiles', () => {
   before(() => {
     cy.login();
-    cy.createUnit({name: 'CY-TEST-UNIT'});
+    cy.createUnit();
   });
 
-  after(() => cy.deleteUnit({unitName: 'CY-TEST-UNIT'}));
+  after(() => cy.deleteUnit());
 
   it('applies the DS-GVO demo profile to the test unit', () => {
     const profileName = 'Beispieldaten';
+    const unitName = Cypress.env('unitDetails').name;
 
     // Per default test units are associated with the DS-GVO Domain
     cy.goToUnitSelection();
-    cy.selectUnit({ name: 'CY-TEST-UNIT' });
+    cy.selectUnit();
 
     // Go to /profiles
     cy.get('[data-veo-test="profiles-nav-item"]').click();
@@ -24,7 +25,7 @@ describe('Apply Profiles', () => {
     // Select a unit to which the profile will be applied
     cy.get('[data-veo-test="profiles-btn-apply"]').click();
 
-    cy.get('[role="dialog"] .v-card input').eq(2).type('CY-TEST-UNIT').type('{upArrow}');
+    cy.get('[role="dialog"] .v-card input').eq(2).type(unitName).type('{upArrow}');
     cy.get('.v-autocomplete__content .v-list-item').click();
 
     // Set up a listener for API responses
