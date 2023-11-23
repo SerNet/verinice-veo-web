@@ -25,12 +25,12 @@
     :loading="isLoading"
     no-filter
     :label="localLabel"
-    :search="searchQuery"
     :clearable="!required"
     :return-object="valueAsEntity"
     v-bind="$attrs"
     variant="underlined"
-    @update:search="onSearchQueryInput"
+    @update:search="updateSearchQuery"
+    @click="() => updateSearchQuery()"
     @click:clear="onClearClicked"
   >
     <template #prepend-item>
@@ -113,8 +113,6 @@ const props = withDefaults(defineProps<Props>(), {
   hiddenValues: () => []
 });
 
-// const emit = defineEmits(['update:model-value']);
-
 const emit = defineEmits<{
   (e: 'update:model-value', modelValue: IVeoEntity): void
 }>();
@@ -125,7 +123,6 @@ const { displayErrorMessage } = useVeoAlerts();
 const router = useRouter();
 const route = useRoute();
 
-// v-autocomplete's current value (model-value)
 const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
 const internalValue = computed<string | undefined>({
@@ -177,17 +174,11 @@ const {
   refetchOnMount: false // If set to true (the default), refetches queries every time input changes, causing some weird cache issues
 });
 
-// Assigning fetchObjectsData was moved to watcher as it can get fired immideatly this way
-// fetchObjectsData and _fetchObjectsData exist, as fetchObjectsData is part of the enabled computed, which it can't be if it isn't defined yet.
 watch(() => _fetchObjectsData.value, (newValue) => {
   fetchObjectsData.value = cloneDeep(newValue);
 }, { deep: true, immediate: true });
 
-const onSearchQueryInput = (newValue: string) => {
-  // We have to early exit if the value is undefined or null, as for some reason it can be set to one of those values if the objects get fetched, resulting in an infinite fetch
-  if (!newValue) {
-    return;
-  }
+const updateSearchQuery = (newValue = '') => {
   searchQuery.value = newValue;
 };
 
