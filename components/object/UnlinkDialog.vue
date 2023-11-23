@@ -24,7 +24,7 @@
     <template #default>
       <span class="text-body-1">
         {{
-          messageFallback
+          isMessageFallback
             ? t('genericText')
             : t('text', { displayName: objectToRemove?.displayName, parentDisplayName: parent?.displayName })
         }}
@@ -90,7 +90,7 @@ const unlinkObject = async () => {
 };
 
 // providing a message fallback if either of the props  objectToRemove.displayName or parent.displayName is undefined
-const messageFallback = computed<boolean>(() => props.objectToRemove?.displayName === undefined || props.parent?.displayName === undefined);
+const isMessageFallback = computed<boolean>(() => props.objectToRemove?.displayName === undefined || props.parent?.displayName === undefined);
 </script>
 
 <i18n>
