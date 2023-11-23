@@ -369,6 +369,23 @@ export interface IVeoControlImplementation {
   control: IVeoLink;
 }
 
+export interface IVeoEntityLegacy extends IVeoBaseObject {
+  name: string;
+  abbreviation?: string;
+  controlImplementations?: IVeoControlImplementation[],
+  designator: string;
+  displayName: string;
+  description?: string;
+  domains: IVeoEntityDomain;
+  owner: IVeoLink;
+  links: IVeoCustomLinks;
+  customAspects: IVeoCustomAspects;
+  members: IVeoLink[]; // Only contains values for scopes
+  parts: IVeoLink[]; // Only contains values for objects not of type scope
+  type: string;
+  _self: string;
+}
+
 export interface IVeoEntity extends IVeoBaseObject {
   name: string;
   abbreviation?: string;

@@ -26,10 +26,15 @@
       :title="item.title"
       :subtitle="item.subtitle"
       two-line
+      :disabled="item.disabled"
       class="rounded mb-2 py-2 bg-accent"
       :active="isActive(item)"
       @click="onItemSelected(item)"
     >
+      <template #default>
+        <slot :name="`item-${item.value}`" />
+      </template>
+
       <template #prepend>
         <v-icon
           :icon="isActive(item) ? multiple ? mdiCheckboxMarked : mdiRadioboxMarked : multiple ? mdiCheckboxBlankOutline : mdiRadioboxBlank"
@@ -49,6 +54,7 @@ export interface IProminentSelectionListItem {
   title: string;
   subtitle: string;
   value: string | number;
+  disabled?: boolean;
 }
 
 const props = defineProps({

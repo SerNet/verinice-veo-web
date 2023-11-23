@@ -20,6 +20,7 @@
     :model-value="modelValue"
     v-bind="$attrs"
     :title="t('title')"
+    large
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
@@ -28,42 +29,45 @@
           {{ t('domainselection') }}
         </span>
 
-        <v-list class="mt-2">
-          <v-list-item
+        <UtilProminentSelectionList
+          v-model="selectedDomains"
+          :items="availableDomains.map((domain) => ({ title: domain.name, subtitle: domain.description, value: domain.id, disabled: disabledDomains.includes(domain.id) }))"
+          multiple
+        >
+          <template
             v-for="domain of availableDomains"
-            :key="domain.id"
-            :subtitle="domain.description"
-            :title="domain.name"
-            two-line
-            class="rounded mb-2 bg-accent"
+            #[`item-${domain.id}`]
           >
-            <template #prepend>
-              <v-icon
-                :icon="mdiCheck"
-                color="primary"
-              />
-            </template>
-          </v-list-item>
-        </v-list>
+            <div
+              v-if="selectedDomains.includes(domain.id)"
+              :key="domain.id"
+            >
+              <v-row class="mt-2">
+                <v-col>
+                  <v-select
+                    :model-value="selectedSubType[domain.id]"
+                    :label="t('subtype')"
+                    :items="subTypes[domain.id]"
+                    variant="solo-filled"
+                    @click.stop
+                    @update:model-value="($event: string) => onSubTypeChange($event, domain.id)"
+                  />
+                </v-col>
+                <v-col>
+                  <v-select
+                    v-model="selectedStatus[domain.id]"
+                    label="Status"
+                    :items="statuses[domain.id]"
+                    :disabled="!selectedSubType[domain.id]"
+                    variant="solo-filled"
+                    @click.stop
+                  />
+                </v-col>
+              </v-row>
+            </div>
+          </template>
+        </UtilProminentSelectionList>
       </div>
-
-      <v-row class="ma-2">
-        <v-col>
-          <v-select
-            v-model="selectedSubType"
-            :label="t('subtype')"
-            :items="subTypes"
-            clearable
-            variant="solo-filled"
-          />
-          <v-select
-            label="Status"
-            :items="['New', 'In progress', 'Archived']"
-            :disabled="!selectedSubType"
-            variant="solo-filled"
-          />
-        </v-col>
-      </v-row>
     </template>
 
     <template #dialog-options>
@@ -87,38 +91,81 @@
 </template>
 
 <script setup lang="ts">
-import { mdiCheck } from '@mdi/js';
-
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 
 import { useMutation } from '~/composables/api/utils/mutation';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
+import { IVeoEntityLegacy } from '~/types/VeoTypes';
 
 const props = withDefaults(defineProps<{
   modelValue: boolean,
-  objectId: string
+  objectId: string,
+  objectType: string
 }>(), {
   modelValue: false,
-  objectId: ''
+  objectId: '',
+  objectType: ''
 });
 
 const emit = defineEmits<{
   (e: 'update:model-value', value: boolean): void
 }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
+const { t: $t } = useI18n({ useScope: 'global' });
+
 const route = useRoute();
 const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
 const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains);
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
-const subTypes = computed(() => Object.entries(schemas.value || {}).map(([k, _v]) => k));
-const selectedSubType = ref(undefined);
+const fetchLegacyObjectQueryParameters = computed(() => ({
+  endpoint: schemas.value?.[props.objectType],
+  id: props.objectId
+} as any));
 
+const { data: legacyObject } = useQuery(
+  objectQueryDefinitions.queries.fetchLegacy,
+  fetchLegacyObjectQueryParameters,
+  {
+    onSuccess: (data: any) => {
+      selectedDomains.value = Object.keys(data.domains || {});
+      prePolluteList(data);
+    }
+  }
+);
+
+const prePolluteList = (data: IVeoEntityLegacy) => {
+  selectedSubType.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.subType]));
+  selectedStatus.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.status]));
+};
+
+const { mutateAsync: assign } = useMutation(objectQueryDefinitions.mutations.assignObject);
+
+const subTypes = computed(() => (domains.value || []).reduce((prevValue, currentValue) => {
+  prevValue[currentValue.id] = Object.keys(currentValue.elementTypeDefinitions[props.objectType].subTypes).map((subType) => ({ title: currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][`${props.objectType}_${subType}_singular`], value: subType }));
+  return prevValue;
+}, {} as Record<string, { title: string, value: string }[]>));
+
+const statuses = computed(() => (domains.value || []).reduce((prevValue, currentValue) => {
+  if (!selectedSubType.value[currentValue.id]) {
+    return prevValue;
+  }
+  prevValue[currentValue.id] = currentValue.elementTypeDefinitions[props.objectType].subTypes[selectedSubType.value[currentValue.id]].statuses.map((status) => ({ title: currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][`${props.objectType}_${selectedSubType.value[currentValue.id]}_status_${status}`], value: status }));
+  return prevValue;
+}, {} as Record<string, { title: string, value: string }[]>));
+
+const selectedSubType = ref<Record<string, string | undefined>>({});
+const selectedStatus = ref<Record<string, string | undefined>>({});
+const selectedDomains = ref<string[]>([]);
+
+const onSubTypeChange = (newValue: string, domainId: string) => {
+  selectedSubType.value[domainId] = newValue;
+  selectedStatus.value[domainId] = undefined;
+};
 const availableDomains = computed(() => domains.value?.map((domain) => ({
   abbreviation: domain.abbreviation,
   description: domain.description,
@@ -126,27 +173,43 @@ const availableDomains = computed(() => domains.value?.map((domain) => ({
   name: domain.name
 })) ?? []);
 
+const disabledDomains = computed(() => Object.keys(legacyObject.value?.domains || {}));
 const assignObject = async () => {
   try {
-    await updateObject({ domain: route.params.domain, endpoint: route.params?.objectType, id: props.objectId });
-    displaySuccessMessage(t('objectLinked').toString());
+    for (const domain of selectedDomains.value.filter((domain) => !disabledDomains.value.includes(domain))) {
+      await assign({ domain: domain, endpoint: route.params?.objectType, objectId: props.objectId, subType: selectedSubType.value[domain], status: selectedStatus.value[domain] });
+    }
+    displaySuccessMessage(t('objectAssigned').toString());
     emit('update:model-value', false);
   }
   catch (error: any) {
-    displayErrorMessage(t('deletingAccountFailed').toString(), error.message);
+    displayErrorMessage(t('assignmentFailed').toString(), error.message);
+    emit('update:model-value', false);
   }
 };
+
+watch(() => props.modelValue, () => {
+  selectedSubType.value = {};
+  selectedStatus.value = {};
+  if (legacyObject.value) {
+    prePolluteList(legacyObject.value);
+  }
+});
 </script>
 
 <i18n>
 {
   "en": {
+    "assignmentFailed": "The object could not be assigned to another domain.",
     "domainselection": "Domain selection",
+    "objectAssigned": "The object has been assigned to another domain successfully.",
     "subtype": "Subtype",
     "title": "Assign object"
   },
   "de": {
-    "domainselection": "Domänenauswahl",
+    "assignmentFailed": "Das Objekt konnte keiner weiteren Domäne zugewiesen werden.",
+      "domainselection": "Domänenauswahl",
+    "objectAssigned": "Das Objekt wurde einer weiteren Domäne erfolgreich zugewiesen.",
     "subtype": "Subtyp",
     "title": "Objekt zuordnen"
   }

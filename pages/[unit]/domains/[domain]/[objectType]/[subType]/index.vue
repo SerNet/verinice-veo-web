@@ -79,7 +79,9 @@
 
         <ObjectAssignDialog
           :model-value="objectAssignDialogVisible"
-          object-id="objectId"
+          :object-id="objectId"
+          :object-type="objectType"
+          @update:model-value="objectAssignDialogVisible = false"
         />
       </BaseCard>
       <ObjectTypeError v-else>
@@ -380,7 +382,7 @@ const onCloseDeleteDialog = (
 const objectAssignDialogVisible = ref(false);
 
 const objectId = ref<string | undefined>(undefined);
-const subType = ref<string | undefined>(undefined);
+const objectType = ref<string | undefined>(undefined);
 
 const actions = computed(() => [
   {
@@ -428,7 +430,7 @@ const actions = computed(() => [
     action(item: any) {
       objectAssignDialogVisible.value = true;
       objectId.value = item.raw.id;
-      subType.value = endpoints.value?.[item.raw?.type];
+      objectType.value = item.raw?.type;
     }
   }
 ]);
