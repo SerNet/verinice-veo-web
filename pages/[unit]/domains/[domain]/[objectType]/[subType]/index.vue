@@ -189,6 +189,9 @@ const filterDefinitions: IFilterDefinition = {
     source: FILTER_SOURCE.PARAMS,
     nullValue: '-'
   },
+  abbreviation: {
+    source: FILTER_SOURCE.QUERY
+  },
   designator: {
     source: FILTER_SOURCE.QUERY
   },

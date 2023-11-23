@@ -115,7 +115,7 @@ export default defineComponent({
     const filterDialogVisible = ref(false);
 
     // available & active filter options
-    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'hasNoParentElements', 'hasChildElements'];
+    const filterKeys = ['objectType', 'subType', 'abbreviation', 'designator', 'name', 'status', 'description', 'updatedBy', 'hasNoParentElements', 'hasChildElements'];
     const activeFilterKeys = computed(() => {
       return filterKeys.filter((k) => props.filter[k] !== undefined);
     });

@@ -40,6 +40,7 @@ check_license:
 test:
   image: cypress/browsers:node18.12.0-chrome103-ff107
   stage: test
+  resource_group: browser-tests-dev
   cache:  # Cache modules in between jobs
     key:
       files:
