@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2022  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -343,7 +343,7 @@ export default defineComponent({
           valuePointer: valuePointer.value,
           modelValue: JsonPointer.get(_value.value, valuePointer.value),
           errors: errorMessages.value,
-          'onUpdate:modelValue': onDelayedInput
+          'onUpdate:modelValue': onUpdate
         },
         {
           default: () => createChildren(element, formSchemaPointer, translations, localObjectSchema)
@@ -374,19 +374,40 @@ export default defineComponent({
       } catch (e: any) {
         formError.value = e.message;
       }
-      
+
     };
 
-    const onControlInput = (objectSchemaPointer: string, newValue: any, oldValue: string, index?: number) => {
+    /**
+      * UPDATE DYNMIC-FORMS:
+      */
+    let formData: Record<string,any>;
+
+    function updateForm() {
+      emit('update:model-value', formData);
+    }
+
+    const updateFormDebounced = debounce(updateForm, 250);
+
+    // Every input uses this fn to store its state in `updateFormData`
+    function onUpdate(objectSchemaPointer: string, newValue: any, oldValue: string, index?: number) {
+      updateFormData({ objectSchemaPointer, newValue, oldValue, index });
+      updateFormDebounced();
+    }
+
+    type updateFormDataParams = {
+      objectSchemaPointer: string,
+      newValue: any,
+      oldValue: string,
+      index?: number
+    }
+
+    function updateFormData({ objectSchemaPointer, newValue, oldValue, index }: updateFormDataParams) {
       let valuePointer = removePropertiesKeywordFromPath(objectSchemaPointer);
 
       // If this condition is truthy, we have a link attribute and have to replace /items/ with the index.
       if (index !== undefined && valuePointer.includes('/items/')) {
         valuePointer = valuePointer.replace('/items/', `/${index}/`);
       }
-
-      // Clone object to avoid mutating the original data
-      let updatedForm = cloneDeep(_value.value);
 
       // '' should be handled as if the value was deleted (an empty input field cleared with backspace returns '', while an input field cleared with the clear button returns undefined)
       if (newValue === '' || newValue === null) {
@@ -395,27 +416,25 @@ export default defineComponent({
 
       // Set new value
       if (newValue === undefined) {
-        JsonPointer.unset(updatedForm, valuePointer);
+        JsonPointer.unset(formData, valuePointer);
       } else {
-        JsonPointer.set(updatedForm, valuePointer, newValue, true);
+        JsonPointer.set(formData, valuePointer, newValue, true);
       }
 
       // Apply reactive form actions
       for (const action of localReactiveFormActions.value[objectSchemaPointer] || []) {
-        updatedForm = action(newValue, oldValue, updatedForm, _value.value);
+        formData = action(newValue, oldValue, formData, _value.value);
       }
+    }
 
-      validateFormData(updatedForm);
 
-      // Send updated form
-      emit('update:model-value', updatedForm);
-    };
-
-    const onDelayedInput = debounce(onControlInput, 250);
 
     watch(
       () => props.modelValue,
-      (newValue) => validateFormData(newValue),
+      (newValue) => {
+        formData = cloneDeep(props.modelValue);
+        validateFormData(newValue);
+      },
       { immediate: true }
     );
 
