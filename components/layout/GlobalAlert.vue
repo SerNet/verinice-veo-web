@@ -31,7 +31,7 @@
     <template #secondary-buttons>
       <div v-if="showDownloadDetailsButton && params && params.details">
         <v-btn
-          text
+          variant="text"
           @click="downloadDetails"
         >
           {{ t('downloadDetails') }}
@@ -63,7 +63,7 @@ export default defineComponent({
     },
     text: {
       type: String,
-      required: true
+      default: ''
     },
     params: {
       type: Object as PropType<IVeoGlobalAlertParams>,

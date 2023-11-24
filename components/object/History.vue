@@ -111,8 +111,9 @@ export default defineComponent({
   emits: ['show-revision'],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
+    const route = useRoute();
 
-    const fetchVersionsQueryParameters = computed(() => ({ id: props.objectId, objectType: props.objectType }));
+    const fetchVersionsQueryParameters = computed(() => ({ id: props.objectId, objectType: props.objectType, domainId: route.params.domain }));
     const { data: history, isLoading } = useFetchVersions(fetchVersionsQueryParameters, {
       keepPreviousData: true,
       refetchInterval: 2000 // The history service gets updated asynchronusly, but as soon as an object gets saved, the history gets refetched. To avoid using outdated data, we refetch ever 2 seconds.

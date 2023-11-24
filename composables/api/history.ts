@@ -23,6 +23,7 @@ import historyQueryDefinitions from './queryDefinitions/history';
 export interface IVeoFetchVersionsParameters {
   id: string;
   objectType: string;
+  domainId: string;
 }
 
 export const useFetchVersions = (queryParameters: Ref<IVeoFetchVersionsParameters>, queryOptions?: QueryOptions) => {
@@ -31,7 +32,7 @@ export const useFetchVersions = (queryParameters: Ref<IVeoFetchVersionsParameter
   const endpoint = computed(() => endpoints.value?.[queryParameters.value.objectType]);
   const queryEnabled = computed(() => (!!endpoint.value && queryOptions?.enabled ? unref(queryOptions?.enabled) : true));
 
-  const combinedQueryParameters = computed(() => ({ id: queryParameters.value.id, endpoint: endpoint.value as string }));
+  const combinedQueryParameters = computed(() => ({ domainId: queryParameters.value.domainId, id: queryParameters.value.id, endpoint: endpoint.value as string }));
 
   return useQuery(
     historyQueryDefinitions.queries.fetchVersions,

@@ -122,6 +122,8 @@ export interface IVeoFetchWipDecisionEvaluationParameters{
   domain: string;
   endpoint: string;
   object: IVeoEntity;
+  status: string;
+  subType: string;
 }
 
 export const formatObject = (object: any) => {
@@ -216,12 +218,15 @@ export default {
     fetchWipDecisionEvaluation: {
       primaryQueryKey: 'evaluation',
       url: '/api/domains/:domain/:endpoint/evaluation',
-      queryParameterTransformationFn: (queryParameters) => ({
-        params: { domain: route.params.domain, endpoint: queryParameters.endpoint },
-        query: {
-          domain: queryParameters.domain
-        },
-        json: queryParameters.object}),
+      queryParameterTransformationFn: (queryParameters) => (
+        {
+          params: { domain: route.params.domain, endpoint: queryParameters.endpoint },
+          query: {
+            domain: queryParameters.domain
+          },
+          json: { ...queryParameters.object, status: queryParameters.status, subType: queryParameters.subType }
+        }
+      ),
       staticQueryOptions: {
         method: 'POST'
       }

@@ -457,7 +457,9 @@ export default defineComponent({
       id: debouncedObjectData.value.id,
       object: debouncedObjectData.value,
       domain: props.domainId,
-      endpoint: objectTypePlural.value as string
+      endpoint: objectTypePlural.value as string,
+      status: debouncedObjectData.value.status,
+      subType: debouncedObjectData.value.subType
     }));
     const fetchInspectionFindingsQueryEnabled = computed(() =>
       !!objectTypePlural.value

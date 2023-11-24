@@ -31,6 +31,7 @@ export interface IVeoObjectHistoryEntry {
 export interface IVeoFetchVersionsParameters {
   id: string;
   endpoint: string;
+  domainId: string;
 }
 
 export interface IVeoFetchLatestChangesParameters {
@@ -52,7 +53,7 @@ export default {
     fetchVersions: {
       primaryQueryKey: 'versions',
       url: '/api/history/revisions',
-      queryParameterTransformationFn: (queryParameters) => ({ query: { uri: `/${queryParameters.endpoint}/${queryParameters.id}` } }),
+      queryParameterTransformationFn: (queryParameters) => ({ query: { uri: `/domains/${queryParameters.domainId}/${queryParameters.endpoint}/${queryParameters.id}` } }),
       staticQueryOptions: {
         staleTime: STALE_TIME.INFINITY
       },
