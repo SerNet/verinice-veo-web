@@ -16,10 +16,18 @@
  */
 import { omit } from "lodash";
 import { getEntityDetailsFromLink } from "~/lib/utils";
-import { IVeoAPIMessage, IVeoDecisionEvaluation, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from "~/types/VeoTypes";
 import { IVeoMutationDefinition } from "../utils/mutation";
 import { IVeoQueryDefinition } from "../utils/query";
 import { VeoApiReponseType } from "../utils/request";
+import {
+  IVeoAPIMessage,
+  IVeoDecisionEvaluation,
+  IVeoEntity,
+  IVeoEntityLegacy,
+  IVeoPaginatedResponse,
+  IVeoPaginationOptions,
+  IVeoRisk
+} from "~/types/VeoTypes";
 
 const route = useRoute();
 
@@ -33,6 +41,11 @@ export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
 
 export interface IVeoFetchObjectParameters {
   domain: string;
+  endpoint: string;
+  id: string;
+}
+
+export interface IVeoFetchObjectLegacyParameters {
   endpoint: string;
   id: string;
 }
@@ -64,6 +77,14 @@ export interface IVeoCreateObjectParameters {
   endpoint: string;
   object: IVeoEntity;
   parentScopes?: string[];
+}
+
+export interface IVeoAssigObjectParameters {
+  domain: string;
+  endpoint: string;
+  objectId: string;
+  status: string;
+  subType: string;
 }
 
 export interface IVeoUpdateObjectParameters {
@@ -140,6 +161,13 @@ export default {
         }
       })
     } as IVeoQueryDefinition<IVeoFetchObjectsParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
+    fetchLegacy:{
+      primaryQueryKey: 'object',
+      url: '/api/:endpoint/:id',
+      onDataFetched: (result) => formatObject(result),
+      queryParameterTransformationFn:(queryParameters) => ({ params: queryParameters })
+    } as IVeoQueryDefinition<IVeoFetchObjectLegacyParameters, IVeoEntityLegacy>,
+
     fetch:{
       primaryQueryKey: 'object',
       url: '/api/domains/:domain/:endpoint/:id',
@@ -226,6 +254,23 @@ export default {
         }
       }
     } as IVeoMutationDefinition<IVeoCreateObjectParameters, IVeoAPIMessage>,
+    assignObject:{
+      primaryQueryKey: 'object',
+      url: '/api/domains/:domain/:endpoint/:objectId',
+      method: 'POST',
+      mutationParameterTransformationFn: (mutationParameters) => {
+        return {
+          params: { domain: mutationParameters.domain, endpoint: mutationParameters.endpoint, objectId: mutationParameters.objectId },
+          json: { status: mutationParameters.status, subType: mutationParameters.subType }
+        };
+      },
+      staticMutationOptions: {
+        onSuccess: (queryClient, _data, _variables, _context) => {
+          queryClient.invalidateQueries(['objects']);
+        }
+      }
+    } as IVeoMutationDefinition<IVeoAssigObjectParameters, IVeoAPIMessage>,
+
     updateObject: {
       primaryQueryKey: 'object',
       url: '/api/domains/:domain/:endpoint/:id',
