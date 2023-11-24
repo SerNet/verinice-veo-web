@@ -25,7 +25,7 @@
       :key="severity"
     >
       <span class="font-weight-medium text-body-1 px-4">
-        {{ t(severity, messagesBySeverity.length) }} ({{ messagesBySeverity.length }})
+        Information ({{ messagesBySeverity.length }})
       </span>
       <v-list>
         <ObjectMessagesMessage
