@@ -57,8 +57,8 @@ import { IVeoEntity } from '~/types/VeoTypes';
 
 const props = withDefaults(defineProps<{
   modelValue: boolean,
-  objectToRemove: IVeoEntity,
-  parent: IVeoEntity
+  objectToRemove?: IVeoEntity,
+  parent?: IVeoEntity
 }>(), {
   modelValue: false,
   objectToRemove: undefined,
