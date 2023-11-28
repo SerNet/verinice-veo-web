@@ -47,15 +47,15 @@ export const ROUTE_NAME = 'unit-domains-domain-catalogs-catalog';
 </script>
 
 <script setup lang="ts">
-import { useQuery } from '~~/composables/api/utils/query';
-import { useQuerySync } from '~~/composables/api/utils/query';
-import { useMutation } from '~~/composables/api/utils/mutation';
+import { useQuery } from '~/composables/api/utils/query';
+import { useQuerySync } from '~/composables/api/utils/query';
+import { useMutation } from '~/composables/api/utils/mutation';
 import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
-import formsQueryDefinitions from '~~/composables/api/queryDefinitions/forms';
-import unitQueryDefinitions from '~~/composables/api/queryDefinitions/units';
+import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 
 // Types
-import { IVeoFormSchemaMeta } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import { IVeoEntity } from '~/types/VeoTypes';
 
 // Composables

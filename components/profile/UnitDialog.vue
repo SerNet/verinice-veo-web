@@ -106,7 +106,7 @@
 </template>
 
 <script setup lang="ts">
-import { VeoAlertType } from '~~/types/VeoTypes';
+import { VeoAlertType } from '~/types/VeoTypes';
 import {
   mdiFolderOpenOutline,
   mdiFilePlusOutline

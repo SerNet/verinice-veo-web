@@ -187,10 +187,10 @@ import { mdiPlus } from '@mdi/js';
 
 import { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas';
 import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
-import { IVeoFormSchemaMeta } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import { PropType } from 'vue';
 
-import { useRules } from '~~/composables/utils';
+import { useRules } from '~/composables/utils';
 
 export default {
   props: {

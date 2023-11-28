@@ -17,7 +17,7 @@
  */
 import { ParsedContent } from "@nuxt/content/dist/runtime/types";
 
-import { LOCALES } from "~~/types/locales";
+import { LOCALES } from "~/types/locales";
 
 /*
 * We can't use defineTransformer here, as the package currently doesn't export it in the directory we need it to. (TODO-NuxtContent 2.3.0)

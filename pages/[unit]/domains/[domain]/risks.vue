@@ -78,7 +78,7 @@
 import { upperFirst } from 'lodash';
 
 import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 
 
 export default defineComponent({

@@ -40,8 +40,8 @@ import { mdiAlphabeticalVariant, mdiLabelOutline, mdiTranslate } from '@mdi/js';
 import { cloneDeep } from 'lodash';
 import { v4 as UUIDv4 } from 'uuid';
 
-import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
+import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
+import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { IEditorTranslations, TRANSLATION_SOURCE } from '~/components/editor/translations/types';
 
 const props = withDefaults(defineProps<{

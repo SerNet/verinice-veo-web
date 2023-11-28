@@ -116,8 +116,8 @@ import { trim } from 'lodash';
 
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { VeoAlertType } from '~/types/VeoTypes';
-import { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
-import { useQuery } from '~~/composables/api/utils/query';
+import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import { useQuery } from '~/composables/api/utils/query';
 
 export default defineComponent({
   props: {

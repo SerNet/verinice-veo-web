@@ -51,7 +51,7 @@ import FormSchemaValidator from '~/lib/FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import { useVeoErrorFormatter } from '~/composables/VeoErrorFormatter';
-import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 
 const DEBUG_MAP = new Map<string, string>();
 // @ts-ignore We add a new property to the window to debug veo forms

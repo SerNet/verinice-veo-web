@@ -38,7 +38,7 @@
 import { mdiEyeOffOutline, mdiEyeOutline } from '@mdi/js';
 import { PropType } from 'vue';
 
-import { IVeoFormSchemaItemRule } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchemaItemRule } from '~/composables/api/queryDefinitions/forms';
 
 const props = defineProps({
   rule: {

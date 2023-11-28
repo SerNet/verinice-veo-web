@@ -107,12 +107,12 @@ import { omit, upperCase, upperFirst } from 'lodash';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
 import { RouteRecordName } from 'vue-router';
-import { IVeoEntity } from '~~/types/VeoTypes';
+import { IVeoEntity } from '~/types/VeoTypes';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { useQuery } from '~~/composables/api/utils/query';
-import { useMutation } from '~~/composables/api/utils/mutation';
-import { useFetchObjects } from '~~/composables/api/objects';
+import { useQuery } from '~/composables/api/utils/query';
+import { useMutation } from '~/composables/api/utils/mutation';
+import { useFetchObjects } from '~/composables/api/objects';
 import { QueryClient } from '@tanstack/vue-query';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-report';

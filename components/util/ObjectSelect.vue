@@ -77,15 +77,15 @@
 import { cloneDeep, upperFirst } from 'lodash';
 import { mdiOpenInNew } from '@mdi/js';
 
-import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
+import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { useQuery } from '~~/composables/api/utils/query';
-import { useFetchObjects } from '~~/composables/api/objects';
+import { useQuery } from '~/composables/api/utils/query';
+import { useFetchObjects } from '~/composables/api/objects';
 
 
 

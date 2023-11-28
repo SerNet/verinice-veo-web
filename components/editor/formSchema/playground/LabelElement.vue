@@ -53,7 +53,7 @@
 import { mdiDrag, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
 import { PropType } from 'vue';
 
-import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { IPlaygroundElement } from './Element.vue';
   
 defineProps({

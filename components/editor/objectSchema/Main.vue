@@ -175,10 +175,10 @@ import { Ref } from 'vue';
 import { mdiPlus } from '@mdi/js';
 
 import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
-import formQueryDefinitions from '~~/composables/api/queryDefinitions/forms';
-import schemaQueryDefinitions from '~~/composables/api/queryDefinitions/schemas';
+import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { IInputType, INPUT_TYPES } from '~/types/VeoEditor';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 
 interface EditorPropertyItem {
   item: IVeoOSHCustomAspect | IVeoOSHCustomLink | IVeoOSHCustomProperty;

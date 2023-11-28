@@ -51,7 +51,7 @@
 import { cloneDeep, reverse } from 'lodash';
 
 import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 export const ROUTE_NAME = 'unit-domains-domain-risks-matrix';
 
 export default defineComponent({

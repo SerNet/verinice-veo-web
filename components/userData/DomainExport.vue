@@ -30,10 +30,10 @@
 </template>
 
 <script setup lang="ts">
-import { downloadZIP } from "~~/lib/jsonToZip";
+import { downloadZIP } from "~/lib/jsonToZip";
 import { logError } from './modules/HandleError';
 import { useQuerySync } from "~/composables/api/utils/query";
-import domainQueryDefinitions from "~~/composables/api/queryDefinitions/domains";
+import domainQueryDefinitions from "~/composables/api/queryDefinitions/domains";
 
 // Composables
 const { t } = useI18n();

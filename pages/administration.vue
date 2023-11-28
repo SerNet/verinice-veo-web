@@ -114,7 +114,7 @@ import { TableHeader } from '~/components/base/Table.vue';
 import accountQueryDefinition, { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 const { t } = useI18n();

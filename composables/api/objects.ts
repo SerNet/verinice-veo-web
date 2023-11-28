@@ -17,7 +17,7 @@
  */
 import { max, omit } from 'lodash';
 import { Ref } from 'vue';
-import { IVeoPaginationOptions } from '~~/types/VeoTypes';
+import { IVeoPaginationOptions } from '~/types/VeoTypes';
 import { QueryOptions, useQuery } from './utils/query';
 import objectQueryDefinitions, { IVeoFetchObjectsParameters } from './queryDefinitions/objects';
 

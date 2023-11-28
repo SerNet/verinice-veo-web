@@ -45,7 +45,7 @@
 import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
 import schemaQueryDefinitions, { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas';
 import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 
 
 const { t, locale } = useI18n();

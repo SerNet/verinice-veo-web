@@ -30,13 +30,13 @@
 </template>
 
 <script setup lang="ts">
-import { downloadZIP } from "~~/lib/jsonToZip";
+import { downloadZIP } from "~/lib/jsonToZip";
 import { logError } from './modules/HandleError';
-import { useQuerySync } from '~~/composables/api/utils/query';
-import accountQueryDefinitions from '~~/composables/api/queryDefinitions/accounts';
+import { useQuerySync } from '~/composables/api/utils/query';
+import accountQueryDefinitions from '~/composables/api/queryDefinitions/accounts';
 
 // Types
-import { IVeoAccount } from "~~/composables/api/queryDefinitions/accounts";
+import { IVeoAccount } from "~/composables/api/queryDefinitions/accounts";
 
 // Composables
 const { t } = useI18n();

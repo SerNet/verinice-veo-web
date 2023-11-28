@@ -33,7 +33,7 @@ import { PropType } from 'vue';
 import { cloneDeep } from 'lodash';
 import { mdiPaletteOutline } from '@mdi/js';
 
-import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 
 const props = defineProps({
   formSchemaElement: {

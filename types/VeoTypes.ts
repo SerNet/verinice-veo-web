@@ -20,8 +20,8 @@ import { JSONSchema7TypeName } from 'json-schema';
 
 import { UISchemaElement } from './UISchema';
 import { Mode } from '~/components/dynamic-form/util';
-import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
-import { IAlertButton } from '~~/components/base/Alert.vue';
+import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import { IAlertButton } from '~/components/base/Alert.vue';
 
 
 export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;

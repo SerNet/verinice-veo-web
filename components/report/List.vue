@@ -58,7 +58,7 @@
 import { upperFirst, toUpper } from 'lodash';
 
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 
 interface IReport {
   id: string;

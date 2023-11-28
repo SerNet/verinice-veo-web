@@ -100,8 +100,8 @@
 import { mergeProps } from 'vue';
 import { mdiChevronDown, mdiChevronUp, mdiShapeOutline } from '@mdi/js';
 
-import { ROUTE_NAME as MORE_DOMAINS_ROUTE } from '~~/pages/[unit]/domains/more.vue';
-import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE } from '~~/pages/[unit]/domains/[domain]/index.vue';
+import { ROUTE_NAME as MORE_DOMAINS_ROUTE } from '~/pages/[unit]/domains/more.vue';
+import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { useFetchUnitDomains } from '~/composables/api/domains';
 
 export default defineComponent({

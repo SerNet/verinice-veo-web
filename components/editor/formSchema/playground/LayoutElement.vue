@@ -72,7 +72,7 @@ import { mdiDrag, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
 import { upperFirst } from 'lodash';
 import { PropType } from 'vue';
 
-import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { IPlaygroundElement } from './Element.vue';
   
 defineProps({

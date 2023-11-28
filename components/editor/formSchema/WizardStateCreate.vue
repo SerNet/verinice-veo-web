@@ -167,7 +167,7 @@ import { upperFirst } from 'lodash';
 
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 
 export default defineComponent({
   props: {

@@ -109,7 +109,7 @@ import { cloneDeep } from 'lodash';
 
 import { IDirtyFields } from './CreateDialogSingle.vue';
 import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
-import { IVeoDomain } from '~~/composables/api/queryDefinitions/domains';
+import { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 
 export default defineComponent({
   props: {

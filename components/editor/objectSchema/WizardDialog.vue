@@ -220,9 +220,9 @@
 import { isEmpty, isEqual, isString } from 'lodash';
 import { mdiChevronRight } from '@mdi/js';
 
-import schemaQueryDefinitions from '~~/composables/api/queryDefinitions/schemas';
-import translationQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
-import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
 
 const props = defineProps({

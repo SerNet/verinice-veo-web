@@ -1,6 +1,6 @@
 import { useQuery } from './api/utils/query';
 import formsQueryDefinitions from './api/queryDefinitions/forms';
-import { IVeoFormSchemaMeta } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 
 type TranslateSubTypeParams = {
   formSchemas: IVeoFormSchemaMeta[] | undefined,

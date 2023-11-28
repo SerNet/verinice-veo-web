@@ -21,8 +21,8 @@ import { cloneDeep } from 'lodash';
 import { addConditionalSchemaPropertiesToControlSchema } from './util';
 import { IVeoFormsAdditionalContext } from '~/components/dynamic-form/types';
 import { IVeoTranslationCollection } from '~/types/VeoTypes';
-import { IVeoDomain } from '~~/composables/api/queryDefinitions/domains';
-import { IVeoFormSchemaMeta } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 
 export default {};
 

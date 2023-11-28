@@ -89,8 +89,8 @@ import { getEntityDetailsFromLink, getFirstDomainDomaindId } from '~/lib/utils';
 import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useRules } from '~/composables/utils';
-import { useMutation } from '~~/composables/api/utils/mutation';
-import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
+import { useMutation } from '~/composables/api/utils/mutation';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { IVeoLink } from '~/types/VeoTypes';
 
 const props = withDefaults(defineProps<{

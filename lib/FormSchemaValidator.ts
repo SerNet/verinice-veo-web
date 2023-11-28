@@ -19,7 +19,7 @@ import { JsonPointer } from 'json-ptr';
 
 import { VeoSchemaValidatorMessage, VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
-import { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 
 export type VeoSchemaValidatorRequiredProperty = string | { key: string; value: any };
 

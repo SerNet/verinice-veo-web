@@ -94,7 +94,7 @@ import { useLinkObject, useCreateLink } from '~/composables/VeoObjectUtilities';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import { useQuery, useQuerySync } from '~~/composables/api/utils/query';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQueryClient } from '@tanstack/vue-query';
 

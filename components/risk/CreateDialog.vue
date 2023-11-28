@@ -75,9 +75,9 @@ import { getEntityDetailsFromLink } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import objectQueryDefinitions, { IVeoFetchRisksParameters } from '~/composables/api/queryDefinitions/objects';
 import { useVeoUser } from '~/composables/VeoUser';
-import { useMutation } from '~~/composables/api/utils/mutation';
-import { useFetchObjects } from '~~/composables/api/objects';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useMutation } from '~/composables/api/utils/mutation';
+import { useFetchObjects } from '~/composables/api/objects';
+import { useQuery } from '~/composables/api/utils/query';
 
 export default defineComponent({
   props: {

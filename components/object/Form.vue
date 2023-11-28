@@ -129,14 +129,14 @@ import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 
-import ObjectDisplayOptions from '~~/components/object/DisplayOptions.vue';
-import LayoutFormNavigation from '~~/components/layout/FormNavigation.vue';
-import ObjectHistory from '~~/components/object/History.vue';
+import ObjectDisplayOptions from '~/components/object/DisplayOptions.vue';
+import LayoutFormNavigation from '~/components/layout/FormNavigation.vue';
+import ObjectHistory from '~/components/object/History.vue';
 import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
 import ObjectLinkDialog from '~/components/object/LinkDialog.vue';
-import Messages, { Message } from '~~/components/object/messages/Messages.vue';
+import Messages, { Message } from '~/components/object/messages/Messages.vue';
 
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 import { SideBarAction } from './SideBarAction.vue';
 import { INestedMenuEntries } from '../util/NestedMenu.vue';
 

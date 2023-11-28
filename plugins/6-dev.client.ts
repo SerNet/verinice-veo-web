@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useRequest } from "~~/composables/api/utils/request";
+import { useRequest } from "~/composables/api/utils/request";
 
 /**
  * This plugin allows developers to use the request function of the frontend in the console, enabling them to develop e2e tests easier
