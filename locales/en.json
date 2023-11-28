@@ -40,7 +40,7 @@
   "editor.schema.warnings": "Warnings",
   "editor.schema.properties": "Schema properties",
 
-  "error.title": "An error occured",
+  "error.title": "An error occurred",
 
   "global.button.cancel": "Cancel",
   "global.button.close": "Close",

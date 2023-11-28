@@ -84,7 +84,7 @@ const image = computed(() => `/images/${props.error.statusCode === 404 ? 'pageNo
       "401": "Please come back later",
       "403": "You don't have the required permissions to enter this page.",
       "404": "The page you are looking for could not be found.",
-      "default": "An unknown error occured."
+      "default": "An unknown error occurred."
     },
     "titles": {
       "401": "login unavailable",
@@ -99,7 +99,7 @@ const image = computed(() => `/images/${props.error.statusCode === 404 ? 'pageNo
       "401": "Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut",
       "403": "Sie besitzen nicht die notwendigen Berechtigungen, um diese Seite aufzurufen.",
       "404": "Die gesuchte Seite konnte leider nicht gefunden werden.",
-      "default": "An unknown error occured."
+      "default": "An unknown error occurred."
     },
     "titles": {
       "401": "login nicht verfügbar",
