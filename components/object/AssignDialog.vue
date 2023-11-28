@@ -24,14 +24,25 @@
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
+      <BaseAlert
+        :model-value="true"
+        :title="t('domainAssignmentHintTitle')"
+        :type="VeoAlertType.INFO"
+        class="ma-4"
+        flat
+        no-close-button
+      >
+        {{ t('domainAssignmentHint') }}
+      </BaseAlert>
+
       <div class="mx-4">
         <span class="text-h3 mt-8">
           {{ t('domainselection') }}
-        </span>
+        </span>  
 
         <UtilProminentSelectionList
           v-model="selectedDomains"
-          :items="availableDomains.map((domain) => ({ title: domain.name, subtitle: domain.description, value: domain.id, disabled: disabledDomains.includes(domain.id) }))"
+          :items="domainProperties"
           multiple
         >
           <template
@@ -97,7 +108,7 @@ import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
-import { IVeoEntityLegacy } from '~/types/VeoTypes';
+import { IVeoEntityLegacy, VeoAlertType } from '~/types/VeoTypes';
 
 const props = withDefaults(defineProps<{
   modelValue: boolean,
@@ -121,6 +132,10 @@ const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
 const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains);
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+
+const selectedSubType = ref<Record<string, string | undefined>>({});
+const selectedStatus = ref<Record<string, string | undefined>>({});
+const selectedDomains = ref<string[]>([]);
 
 const fetchLegacyObjectQueryParameters = computed(() => ({
   endpoint: schemas.value?.[props.objectType],
@@ -154,18 +169,15 @@ const statuses = computed(() => (domains.value || []).reduce((prevValue, current
   if (!selectedSubType.value[currentValue.id]) {
     return prevValue;
   }
-  prevValue[currentValue.id] = currentValue.elementTypeDefinitions[props.objectType].subTypes[selectedSubType.value[currentValue.id]].statuses.map((status) => ({ title: currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][`${props.objectType}_${selectedSubType.value[currentValue.id]}_status_${status}`], value: status }));
+  prevValue[currentValue.id] = currentValue.elementTypeDefinitions[props.objectType].subTypes[selectedSubType.value[currentValue.id]].statuses.map((status: any) => ({ title: currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][`${props.objectType}_${selectedSubType.value[currentValue.id]}_status_${status}`], value: status }));
   return prevValue;
 }, {} as Record<string, { title: string, value: string }[]>));
-
-const selectedSubType = ref<Record<string, string | undefined>>({});
-const selectedStatus = ref<Record<string, string | undefined>>({});
-const selectedDomains = ref<string[]>([]);
 
 const onSubTypeChange = (newValue: string, domainId: string) => {
   selectedSubType.value[domainId] = newValue;
   selectedStatus.value[domainId] = undefined;
 };
+
 const availableDomains = computed(() => domains.value?.map((domain) => ({
   abbreviation: domain.abbreviation,
   description: domain.description,
@@ -188,9 +200,14 @@ const assignObject = async () => {
   }
 };
 
+const domainProperties = computed(() => availableDomains.value.map((domain) => {
+  return { title: domain.name, subtitle: domain.description, value: domain.id, disabled: disabledDomains.value.includes(domain.id) };
+}));
+
 watch(() => props.modelValue, () => {
   selectedSubType.value = {};
   selectedStatus.value = {};
+
   if (legacyObject.value) {
     prePolluteList(legacyObject.value);
   }
@@ -201,6 +218,8 @@ watch(() => props.modelValue, () => {
 {
   "en": {
     "assignmentFailed": "The object could not be assigned to another domain.",
+    "domainAssignmentHint": "Assigning an object to a further domain cannot be reversed!",
+    "domainAssignmentHintTitle": "Domain assignment",
     "domainselection": "Domain selection",
     "objectAssigned": "The object has been assigned to another domain successfully.",
     "subtype": "Subtype",
@@ -208,6 +227,8 @@ watch(() => props.modelValue, () => {
   },
   "de": {
     "assignmentFailed": "Das Objekt konnte keiner weiteren Domäne zugewiesen werden.",
+      "domainAssignmentHint": "Die Zuweisung eines Objektes zu einer weiteren Domäne kann nicht wieder rückgängig gemacht werden!",
+      "domainAssignmentHintTitle": "Domänenzuordnung",
       "domainselection": "Domänenauswahl",
     "objectAssigned": "Das Objekt wurde einer weiteren Domäne erfolgreich zugewiesen.",
     "subtype": "Subtyp",

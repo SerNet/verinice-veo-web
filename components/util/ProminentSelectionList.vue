@@ -34,11 +34,12 @@
       <template #default>
         <slot :name="`item-${item.value}`" />
       </template>
-
+      
       <template #prepend>
         <v-icon
           :icon="isActive(item) ? multiple ? mdiCheckboxMarked : mdiRadioboxMarked : multiple ? mdiCheckboxBlankOutline : mdiRadioboxBlank"
           :color="isActive(item) ? 'primary' : undefined"
+          @click="onItemSelected(item)"
         />
       </template>
     </v-list-item>
@@ -72,7 +73,9 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['update:model-value']);
+const emit = defineEmits<{
+  (e: 'update:model-value', value: boolean): void
+}>();
 
 const attrs = useAttrs();
 
