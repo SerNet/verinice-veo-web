@@ -135,7 +135,7 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
 </script>
 
 <script setup lang="ts">
-import { mdiContentCopy, mdiDotsHorizontal, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
+import { mdiContentCopy, mdiDotsVertical, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
 import { useFetchUnitDomains } from '~/composables/api/domains';
 
@@ -426,7 +426,7 @@ const actions = computed(() => [
     disabled: domains.value?.length <= 1,
     id: 'assign',
     label: t('assignObject'),
-    icon: mdiDotsHorizontal,
+    icon: mdiDotsVertical,
     action(item: any) {
       objectAssignDialogVisible.value = true;
       objectId.value = item.raw.id;
