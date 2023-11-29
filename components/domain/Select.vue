@@ -126,25 +126,19 @@ export default defineComponent({
         return route.params.domain as string || 'more';
       },
       set(newValue: string) {
-        if (newValue === 'more') {
-          navigateTo({
-            name: MORE_DOMAINS_ROUTE,
-            params: {
-              ...route.params
-            }
-          });
-        } else {
-          navigateTo({
-            ...route,
-            name: route.name === MORE_DOMAINS_ROUTE || !route.name ? DOMAIN_DASHBOARD_ROUTE : route.name,
-            params: {
-              ...route.params,
-              domain: newValue
-            }
-          });
-        }
+        const params = newValue === 'more'
+          ? { ...route.params }
+          : { domain: newValue };
+
+        navigateTo({
+          name: newValue === 'more' ? MORE_DOMAINS_ROUTE : DOMAIN_DASHBOARD_ROUTE,
+          params: {
+            ...params
+          }
+        });
       }
     });
+
     const domainName = computed(() => selectItems.value.find((domain) => domain.value === domainId.value)?.title || t('noDomainSelected').toString());
 
     const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
