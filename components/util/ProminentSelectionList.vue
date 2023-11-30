@@ -29,7 +29,6 @@
       :disabled="item.disabled"
       class="rounded mb-2 py-2 bg-accent"
       :active="isActive(item)"
-      @click="onItemSelected(item)"
     >
       <template #default>
         <slot :name="`item-${item.value}`" />
