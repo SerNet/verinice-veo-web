@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 
 
 const route = useRoute();

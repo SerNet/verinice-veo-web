@@ -66,8 +66,8 @@
 import { isArray } from 'lodash';
 import { PropType } from 'vue';
 
-import { VeoSchemaValidatorMessage, VeoSchemaValidatorValidationResult } from '~~/lib/ObjectSchemaValidator';
-import { VeoAlertType } from '~~/types/VeoTypes';
+import { VeoSchemaValidatorMessage, VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+import { VeoAlertType } from '~/types/VeoTypes';
 
 const props = defineProps({
   enableFixing: {

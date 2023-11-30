@@ -153,7 +153,7 @@ export const ROUTE_NAME = 'index';
 import { mdiTrashCanOutline, mdiPlus, mdiPencilOutline } from '@mdi/js';
 
 import { getFirstDomainDomaindId } from '~/lib/utils';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 import unitQueryDefinitions, { IVeoUnit} from '~/composables/api/queryDefinitions/units';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';

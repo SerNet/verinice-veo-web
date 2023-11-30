@@ -70,7 +70,7 @@ import { mdiFilter } from '@mdi/js';
 
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 
 export default defineComponent({
   props: {

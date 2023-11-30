@@ -81,7 +81,7 @@ import { isObject } from 'lodash';
 import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { VeoAlertType } from '~/types/VeoTypes';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 
 export default defineComponent({
   props: {

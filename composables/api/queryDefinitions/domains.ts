@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IVeoBaseObject, IVeoDomainRiskDefinition, IVeoEntity, IVeoPiaMandatoryRule, IVeoElementTypeDefinition } from "~~/types/VeoTypes";
+import { IVeoBaseObject, IVeoDomainRiskDefinition, IVeoEntity, IVeoPiaMandatoryRule, IVeoElementTypeDefinition } from "~/types/VeoTypes";
 import { IVeoMutationDefinition } from "../utils/mutation";
 import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
 import { IVeoRisk } from '~/types/VeoTypes';

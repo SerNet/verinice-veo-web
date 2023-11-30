@@ -125,8 +125,8 @@ import { mdiInformationOutline, mdiLinkOff, mdiPencilOutline } from '@mdi/js';
 
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
-import { useQuerySync } from '~~/composables/api/utils/query';
-import objectQueryDefinitions from '~~/composables/api/queryDefinitions/objects';
+import { useQuerySync } from '~/composables/api/utils/query';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQueryClient } from '@tanstack/vue-query';
 
 export default defineComponent({

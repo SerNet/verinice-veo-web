@@ -59,7 +59,7 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { VeoAlertType } from '~/types/VeoTypes';
-import { useMutation } from '~~/composables/api/utils/mutation';
+import { useMutation } from '~/composables/api/utils/mutation';
 
 const props = defineProps({
   id: {

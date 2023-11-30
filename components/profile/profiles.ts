@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useQuery } from '~~/composables/api/utils/query';
-import { useMutation } from '~~/composables/api/utils/mutation';
-import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
+import { useQuery } from '~/composables/api/utils/query';
+import { useMutation } from '~/composables/api/utils/mutation';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 
 // TYPES

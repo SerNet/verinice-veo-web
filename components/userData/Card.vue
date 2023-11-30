@@ -76,7 +76,7 @@
 <script setup lang="ts">
 import { useSlots } from "vue";
 import { mdiDownload } from "@mdi/js";
-import { VeoAlertType } from '~~/types/VeoTypes';
+import { VeoAlertType } from '~/types/VeoTypes';
 
 export interface Props {
   header: string,

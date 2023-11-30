@@ -49,8 +49,8 @@ import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 
 import { IVeoEntity } from '~/types/VeoTypes';
-import { useMutation } from '~~/composables/api/utils/mutation';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useMutation } from '~/composables/api/utils/mutation';
+import { useQuery } from '~/composables/api/utils/query';
 
 const props = withDefaults(defineProps<{
   item: IVeoEntity | undefined

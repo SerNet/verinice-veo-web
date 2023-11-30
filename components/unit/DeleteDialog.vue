@@ -87,7 +87,7 @@
 
 <script setup lang="ts">
 import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
-import { useMutation } from '~~/composables/api/utils/mutation';
+import { useMutation } from '~/composables/api/utils/mutation';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 const props = withDefaults(defineProps<{

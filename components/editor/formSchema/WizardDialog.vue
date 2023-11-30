@@ -92,7 +92,7 @@ import { IVeoObjectSchema, IVeoObjectSchemaTranslations } from '~/types/VeoTypes
 import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import schemaQueryDefinitions, { IVeoFetchSchemaParameters } from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 
 enum WIZARD_STATES {
   START,

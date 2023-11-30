@@ -314,9 +314,9 @@ import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaItem } from '~/comp
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import { useMutation } from '~~/composables/api/utils/mutation';
-import { useQuery } from '~~/composables/api/utils/query';
-import { PENDING_TRANSLATIONS } from '~~/components/editor/formSchema/playground/EditElementDialog.vue';
+import { useMutation } from '~/composables/api/utils/mutation';
+import { useQuery } from '~/composables/api/utils/query';
+import { PENDING_TRANSLATIONS } from '~/components/editor/formSchema/playground/EditElementDialog.vue';
 import { JsonPointer } from 'json-ptr';
 import { cloneDeep, isArray } from 'lodash';
 import { IEditorTranslations, TRANSLATION_SOURCE } from '~/components/editor/translations/types';

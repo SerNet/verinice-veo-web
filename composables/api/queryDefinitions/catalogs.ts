@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IVeoBaseObject, IVeoLink } from "~~/types/VeoTypes";
+import { IVeoBaseObject, IVeoLink } from "~/types/VeoTypes";
 import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
 
 export interface IVeoCatalog extends IVeoBaseObject {

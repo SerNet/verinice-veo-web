@@ -138,7 +138,7 @@
 import { mdiTrashCanOutline } from '@mdi/js';
 import { cloneDeep, trim } from 'lodash';
 import { INPUT_TYPES } from '~/types/VeoEditor';
-import { useRules } from '~~/composables/utils';
+import { useRules } from '~/composables/utils';
 
 interface IInputFormat {
   name: string;

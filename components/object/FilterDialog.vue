@@ -114,8 +114,8 @@ import { extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import { useQuery } from '~~/composables/api/utils/query';
-import { useFetchSchemasDetailed } from '~~/composables/api/schemas';
+import { useQuery } from '~/composables/api/utils/query';
+import { useFetchSchemasDetailed } from '~/composables/api/schemas';
 
 export default defineComponent({
   props: {

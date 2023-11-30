@@ -43,7 +43,7 @@ import { cloneDeep } from 'lodash';
 import { JsonPointer } from 'json-ptr';
 import { v5 as UUIDv5, v4 as UUIDv4 } from 'uuid';
 
-import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { IPlaygroundElement } from './Element.vue';
 import { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
 

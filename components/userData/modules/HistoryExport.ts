@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { createZIP } from "~~/lib/jsonToZip";
+import { createZIP } from "~/lib/jsonToZip";
 import { chunk } from "lodash";
-import { IVeoObjectHistoryEntry } from "~~/types/VeoTypes";
+import { IVeoObjectHistoryEntry } from "~/types/VeoTypes";
 import { IVeoPagedRevision } from "~/composables/api/queryDefinitions/history";
 import { format } from 'date-fns';
 

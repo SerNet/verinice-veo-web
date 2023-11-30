@@ -129,12 +129,12 @@ import { isEmpty, last, omit, pick } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal, mdiViewDashboardOutline } from '@mdi/js';
 
 import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
-import { useQuery } from '~~/composables/api/utils/query';
-import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
-import formsQueryDefinitions, { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
-import objectsQueryDefinitions from '~~/composables/api/queryDefinitions/objects';
-import reportQueryDefinitions from '~~/composables/api/queryDefinitions/reports';
-import translationsQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
+import { useQuery } from '~/composables/api/utils/query';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import objectsQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
+import translationsQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useSubTypeTranslation } from '~/composables/Translations';
 
 type SupportedQuery = ':domain' | ':subType' | ':report' | ':catalog' | ':objectType' | ':object';

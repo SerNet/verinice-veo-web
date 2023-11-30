@@ -97,11 +97,11 @@
 </template>
 
 <script setup lang="ts">
-import { download } from "~~/lib/jsonToZip";
+import { download } from "~/lib/jsonToZip";
 import { loadHistory, chunkHistory, createZipArchives } from './modules/HistoryExport';
 import { logError } from './modules/HandleError';
-import { useQuerySync } from "~~/composables/api/utils/query";
-import historyQueryDefinitions from '~~/composables/api/queryDefinitions/history';
+import { useQuerySync } from "~/composables/api/utils/query";
+import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
 
 // Types
 import {

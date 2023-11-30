@@ -76,7 +76,7 @@ import { IVeoCustomLink } from '~/types/VeoTypes';
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { PropType } from 'vue';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field-row',

@@ -88,7 +88,7 @@ import { CHART_COLORS } from '~/lib/utils';
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import schemaQueryDefinitions, { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import { useQuery } from '~~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 import { IVeoDomainStatusCount } from '~/composables/api/queryDefinitions/domains';
 
 ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);

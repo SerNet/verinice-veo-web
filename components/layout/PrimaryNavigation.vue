@@ -141,7 +141,7 @@ import { NavItem } from '@nuxt/content/dist/runtime/types';
 
 import { extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
-import { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
@@ -157,13 +157,13 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemasDetailed } from '~/composables/api/schemas';
 import { useDocNavigation } from '~/composables/docs';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-import catalogQueryDefinitions from '~~/composables/api/queryDefinitions/catalogs';
-import domainQueryDefinitions from '~~/composables/api/queryDefinitions/domains';
-import formsQueryDefinitions from '~~/composables/api/queryDefinitions/forms';
-import reportQueryDefinitions from '~~/composables/api/queryDefinitions/reports';
+import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import translationQueryDefinitions from '~~/composables/api/queryDefinitions/translations';
-import { useQuery } from '~~/composables/api/utils/query';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import { useQuery } from '~/composables/api/utils/query';
 
 const objectTypeSortOrder = new Map<string, number>([
   ['scope', 1],

@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
+import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { IEditorTranslations, TRANSLATION_SOURCE } from './types';
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 

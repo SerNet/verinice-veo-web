@@ -67,8 +67,8 @@ import translationQueryDefinitions from '~/composables/api/queryDefinitions/tran
 import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import { useQuery } from '~~/composables/api/utils/query';
-import { useMutation } from '~~/composables/api/utils/mutation';
+import { useQuery } from '~/composables/api/utils/query';
+import { useMutation } from '~/composables/api/utils/mutation';
 
 export default defineComponent({
   props: {

@@ -72,7 +72,7 @@ import { PropType } from 'vue';
 import { v5 as UUIDv5 } from 'uuid';
 import { difference, last } from 'lodash';
 
-import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { FORMSCHEMA_PLAYGROUND_NAMESPACE } from '../Playground.vue';
 import { IPlaygroundElement } from '../Element.vue';
 

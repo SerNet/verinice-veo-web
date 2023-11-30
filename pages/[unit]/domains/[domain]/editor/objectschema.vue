@@ -316,8 +316,8 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
-import { useQuery } from '~~/composables/api/utils/query';
-import { useMutation } from '~~/composables/api/utils/mutation';
+import { useQuery } from '~/composables/api/utils/query';
+import { useMutation } from '~/composables/api/utils/mutation';
 
 export default defineComponent({
   name: 'ObjectSchemaEditor',

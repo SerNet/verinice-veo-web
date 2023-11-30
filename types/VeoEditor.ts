@@ -19,18 +19,18 @@ import { mdiAlphabeticalVariant, mdiCancel, mdiCheckboxOutline, mdiDecimal, mdiF
 import { JSONSchema7 } from 'json-schema';
 
 import { IVeoFormSchemaItem, IVeoFormSchemaItemOptions } from './VeoTypes';
-import { CONTROL_DEFINITION as AUTOCOMPLETE_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/Autocomplete';
-import { CONTROL_DEFINITION as CHECKBOX_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/Checkbox';
-import { CONTROL_DEFINITION as INPUT_DATE_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/InputDate';
-import { CONTROL_DEFINITION as INPUT_DATE_TIME_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/InputDateTime';
-import { CONTROL_DEFINITION as INPUT_NUMBER_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/InputNumber';
-import { CONTROL_DEFINITION as INPUT_TEXT_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/InputText';
-import { CONTROL_DEFINITION as INPUT_TEXT_MULTILINE_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/InputTextMultiline';
-import { CONTROL_DEFINITION as INPUT_URI_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/InputUri';
-import { CONTROL_DEFINITION as LINKS_FIELD_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/LinksField';
-import { CONTROL_DEFINITION as MARKDOWN_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/MarkdownEditor';
-import { CONTROL_DEFINITION as RADIO_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/Radio';
-import { CONTROL_DEFINITION as SELECT_CONTROL_DEFINITION } from '~~/components/dynamic-form/controls/Select';
+import { CONTROL_DEFINITION as AUTOCOMPLETE_CONTROL_DEFINITION } from '~/components/dynamic-form/controls/Autocomplete';
+import { CONTROL_DEFINITION as CHECKBOX_CONTROL_DEFINITION } from '~/components/dynamic-form/controls/Checkbox';
+import { CONTROL_DEFINITION as INPUT_DATE_CONTROL_DEFINITION } from '~/components/dynamic-form/controls/InputDate';
+import { CONTROL_DEFINITION as INPUT_DATE_TIME_CONTROL_DEFINITION } from '~/components/dynamic-form/controls/InputDateTime';
+import { CONTROL_DEFINITION as INPUT_NUMBER_CONTROL_DEFINITION } from '~/components/dynamic-form/controls/InputNumber';
+import { CONTROL_DEFINITION as INPUT_TEXT_CONTROL_DEFINITION } from '~/components/dynamic-form/controls/InputText';
+import { CONTROL_DEFINITION as INPUT_TEXT_MULTILINE_CONTROL_DEFINITION } from '~/components/dynamic-form/controls/InputTextMultiline';
+import { CONTROL_DEFINITION as INPUT_URI_CONTROL_DEFINITION } from '~/components/dynamic-form/controls/InputUri';
+import { CONTROL_DEFINITION as LINKS_FIELD_CONTROL_DEFINITION } from '~/components/dynamic-form/controls/LinksField';
+import { CONTROL_DEFINITION as MARKDOWN_CONTROL_DEFINITION } from '~/components/dynamic-form/controls/MarkdownEditor';
+import { CONTROL_DEFINITION as RADIO_CONTROL_DEFINITION } from '~/components/dynamic-form/controls/Radio';
+import { CONTROL_DEFINITION as SELECT_CONTROL_DEFINITION } from '~/components/dynamic-form/controls/Select';
 
 // ===============================
 // File containing multiple helper classes for the object and form schema editors

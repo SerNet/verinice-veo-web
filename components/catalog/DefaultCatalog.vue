@@ -60,7 +60,7 @@
 
 <script setup lang="ts">
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { IVeoCatalogItem } from '~~/composables/api/queryDefinitions/catalogs';
+import { IVeoCatalogItem } from '~/composables/api/queryDefinitions/catalogs';
 import { TableHeader } from '../base/Table.vue';
 import { IVeoEntity } from '~/types/VeoTypes';
 
@@ -131,7 +131,7 @@ const selectedItems = computed({
 const availableItems = computed(() =>
   props.catalogItems.map((item) => {
     const { abbreviation, name, id, description = '' } = item;
-    return { abbreviation, name, id, description } || ''
+    return { abbreviation, name, id, description } || '';
   })
 );
 

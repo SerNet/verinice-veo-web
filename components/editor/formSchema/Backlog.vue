@@ -228,7 +228,7 @@ import { INPUT_TYPES } from '~/types/VeoEditor';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { generateFormSchema, Mode } from '~/components/dynamic-form/util';
 import { IVeoFormsElementDefinition } from '~/components/dynamic-form/types';
-import { IVeoFormSchema } from '~~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 
 export interface IControl {
   scope: string;

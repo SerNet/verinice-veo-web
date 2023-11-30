@@ -87,10 +87,10 @@ import { JSONSchema7 } from 'json-schema';
 import { last } from 'lodash';
 
 import { IPlaygroundElement } from './Element.vue';
-import { IVeoFormSchemaItem } from '~~/composables/api/queryDefinitions/forms';
-import { eligibleInputElements, INPUT_TYPES as CONTROL_APPEARANCE_DEFINITIONS } from '~~/types/VeoEditor';
-import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import { getFormSchemaControlType } from '~~/lib/utils';
+import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import { eligibleInputElements, INPUT_TYPES as CONTROL_APPEARANCE_DEFINITIONS } from '~/types/VeoEditor';
+import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
+import { getFormSchemaControlType } from '~/lib/utils';
 
 const props = withDefaults(defineProps<{
   playgroundElement: IPlaygroundElement;
