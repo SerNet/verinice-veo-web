@@ -37,7 +37,7 @@ export function createUnit({
   cy.get('.veo-primary-action-fab button').click();
 
   // Choose domains
-  cy.get('.new-unit-form .v-list-item').as('availableDomains').then( $el => {
+  cy.get('.new-unit-form .v-list-item .v-icon').as('availableDomains').then( $el => {
     const numAvailableDomains = $el.length;
 
     if( numAvailableDomains > 1 ) {
