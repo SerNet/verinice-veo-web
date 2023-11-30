@@ -4135,36 +4135,6 @@ Find out more options [here](https://nhn.github.io/tui.editor/latest/ToastUIEdit
 
 -----------
 
-The following npm package may be included in this product:
-
- - @tootallnate/once@2.0.0
-
-This package contains the following license and notice below:
-
-MIT License
-
-Copyright (c) 2020 Nathan Rajlich
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
------------
-
 The following npm packages may be included in this product:
 
  - @trysound/sax@0.2.0
@@ -4285,7 +4255,7 @@ The following npm packages may be included in this product:
  - @ucast/js@3.0.2
  - @ucast/mongo2js@1.3.3
  - @ucast/mongo@2.4.2
- - xml-name-validator@4.0.0
+ - xml-name-validator@5.0.0
 
 These packages each contain the following license and notice below:
 
@@ -4804,28 +4774,6 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - abab@2.0.6
-
-This package contains the following license and notice below:
-
-Copyright © 2019 W3C and Jeff Carpenter \<jeffcarp@chromium.org\>
-
-Both the original source code and new contributions in this repository are released under the [3-Clause BSD license](https://opensource.org/licenses/BSD-3-Clause).
-
-# The 3-Clause BSD License
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
------------
-
-The following npm package may be included in this product:
-
  - abbrev@1.1.1
 
 This package contains the following license and notice below:
@@ -5121,6 +5069,110 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [https-proxy-agent]: https://github.com/TooTallNate/node-https-proxy-agent
 [pac-proxy-agent]: https://github.com/TooTallNate/node-pac-proxy-agent
 [socks-proxy-agent]: https://github.com/TooTallNate/node-socks-proxy-agent
+[http.Agent]: https://nodejs.org/api/http.html#http_class_http_agent
+
+-----------
+
+The following npm package may be included in this product:
+
+ - agent-base@7.1.0
+
+This package contains the following license and notice below:
+
+agent-base
+==========
+### Turn a function into an [`http.Agent`][http.Agent] instance
+
+This module is a thin wrapper around the base `http.Agent` class.
+
+It provides an abstract class that must define a `connect()` function,
+which is responsible for creating the underlying socket that the HTTP
+client requests will use.
+
+The `connect()` function may return an arbitrary `Duplex` stream, or
+another `http.Agent` instance to delegate the request to, and may be
+asynchronous (by defining an `async` function).
+
+Instances of this agent can be used with the `http` and `https`
+modules. To differentiate, the options parameter in the `connect()`
+function includes a `secureEndpoint` property, which can be checked
+to determine what type of socket should be returned.
+
+#### Some subclasses:
+
+Here are some more interesting uses of `agent-base`.
+Send a pull request to list yours!
+
+ * [`http-proxy-agent`][http-proxy-agent]: An HTTP(s) proxy `http.Agent` implementation for HTTP endpoints
+ * [`https-proxy-agent`][https-proxy-agent]: An HTTP(s) proxy `http.Agent` implementation for HTTPS endpoints
+ * [`pac-proxy-agent`][pac-proxy-agent]: A PAC file proxy `http.Agent` implementation for HTTP and HTTPS
+ * [`socks-proxy-agent`][socks-proxy-agent]: A SOCKS proxy `http.Agent` implementation for HTTP and HTTPS
+
+Example
+-------
+
+Here's a minimal example that creates a new `net.Socket` or `tls.Socket`
+based on the `secureEndpoint` property. This agent can be used with both
+the `http` and `https` modules.
+
+```ts
+import * as net from 'net';
+import * as tls from 'tls';
+import * as http from 'http';
+import { Agent } from 'agent-base';
+
+class MyAgent extends Agent {
+  connect(req, opts) {
+    // `secureEndpoint` is true when using the "https" module
+    if (opts.secureEndpoint) {
+      return tls.connect(opts);
+    } else {
+      return net.connect(opts);
+    }
+  }
+});
+
+// Keep alive enabled means that `connect()` will only be
+// invoked when a new connection needs to be created
+const agent = new MyAgent({ keepAlive: true });
+
+// Pass the `agent` option when creating the HTTP request
+http.get('http://nodejs.org/api/', { agent }, (res) => {
+  console.log('"response" event!', res.headers);
+  res.pipe(process.stdout);
+});
+```
+
+License
+-------
+
+(The MIT License)
+
+Copyright (c) 2013 Nathan Rajlich &lt;nathan@tootallnate.net&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[http-proxy-agent]: ../http-proxy-agent
+[https-proxy-agent]: ../https-proxy-agent
+[pac-proxy-agent]: ../pac-proxy-agent
+[socks-proxy-agent]: ../socks-proxy-agent
 [http.Agent]: https://nodejs.org/api/http.html#http_class_http_agent
 
 -----------
@@ -8298,7 +8350,7 @@ The following npm packages may be included in this product:
  - is-potential-custom-element-name@1.0.1
  - jsesc@2.5.2
  - punycode@1.4.1
- - punycode@2.3.0
+ - punycode@2.3.1
 
 These packages each contain the following license and notice below:
 
@@ -8781,10 +8833,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - data-urls@4.0.0
- - html-encoding-sniffer@3.0.0
- - whatwg-encoding@2.0.0
- - whatwg-mimetype@3.0.0
+ - data-urls@5.0.0
+ - html-encoding-sniffer@4.0.0
+ - whatwg-encoding@3.1.1
+ - whatwg-mimetype@4.0.0
 
 These packages each contain the following license and notice below:
 
@@ -9930,36 +9982,6 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
------------
-
-The following npm package may be included in this product:
-
- - domexception@4.0.0
-
-This package contains the following license and notice below:
-
-MIT License
-
-Copyright © Domenic Denicola
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 -----------
 
@@ -12728,58 +12750,9 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - http-proxy-agent@5.0.0
+ - http-proxy-agent@7.0.0
 
 This package contains the following license and notice below:
-
-http-proxy-agent
-================
-### An HTTP(s) proxy `http.Agent` implementation for HTTP
-[![Build Status](https://github.com/TooTallNate/node-http-proxy-agent/workflows/Node%20CI/badge.svg)](https://github.com/TooTallNate/node-http-proxy-agent/actions?workflow=Node+CI)
-
-This module provides an `http.Agent` implementation that connects to a specified
-HTTP or HTTPS proxy server, and can be used with the built-in `http` module.
-
-__Note:__ For HTTP proxy usage with the `https` module, check out
-[`node-https-proxy-agent`](https://github.com/TooTallNate/node-https-proxy-agent).
-
-Installation
-------------
-
-Install with `npm`:
-
-``` bash
-$ npm install http-proxy-agent
-```
-
-
-Example
--------
-
-``` js
-var url = require('url');
-var http = require('http');
-var HttpProxyAgent = require('http-proxy-agent');
-
-// HTTP/HTTPS proxy to connect to
-var proxy = process.env.http_proxy || 'http://168.63.76.32:3128';
-console.log('using proxy server %j', proxy);
-
-// HTTP endpoint for the proxy to connect to
-var endpoint = process.argv[2] || 'http://nodejs.org/api/';
-console.log('attempting to GET %j', endpoint);
-var opts = url.parse(endpoint);
-
-// create an instance of the `HttpProxyAgent` class with the proxy server information
-var agent = new HttpProxyAgent(proxy);
-opts.agent = agent;
-
-http.get(opts, function (res) {
-  console.log('"response" event!', res.headers);
-  res.pipe(process.stdout);
-});
-```
-
 
 License
 -------
@@ -12984,6 +12957,112 @@ The `options` argument may either be a string URI of the proxy server to use, or
   * `protocol` - String - If `https:`, then use TLS to connect to the proxy.
   * `headers` - Object - Additional HTTP headers to be sent on the HTTP CONNECT method.
   * Any other options given are passed to the `net.connect()`/`tls.connect()` functions.
+
+
+License
+-------
+
+(The MIT License)
+
+Copyright (c) 2013 Nathan Rajlich &lt;nathan@tootallnate.net&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[CONNECT]: http://en.wikipedia.org/wiki/HTTP_tunnel#HTTP_CONNECT_Tunneling
+
+-----------
+
+The following npm package may be included in this product:
+
+ - https-proxy-agent@7.0.2
+
+This package contains the following license and notice below:
+
+https-proxy-agent
+================
+### An HTTP(s) proxy `http.Agent` implementation for HTTPS
+
+This module provides an `http.Agent` implementation that connects to a specified
+HTTP or HTTPS proxy server, and can be used with the built-in `https` module.
+
+Specifically, this `Agent` implementation connects to an intermediary "proxy"
+server and issues the [CONNECT HTTP method][CONNECT], which tells the proxy to
+open a direct TCP connection to the destination server.
+
+Since this agent implements the CONNECT HTTP method, it also works with other
+protocols that use this method when connecting over proxies (i.e. WebSockets).
+See the "Examples" section below for more.
+
+Examples
+--------
+
+#### `https` module example
+
+```ts
+import * as https from 'https';
+import { HttpsProxyAgent } from 'https-proxy-agent';
+
+const agent = new HttpsProxyAgent('http://168.63.76.32:3128');
+
+https.get('https://example.com', { agent }, (res) => {
+  console.log('"response" event!', res.headers);
+  res.pipe(process.stdout);
+});
+```
+
+#### `ws` WebSocket connection example
+
+```ts
+import WebSocket from 'ws';
+import { HttpsProxyAgent } from 'https-proxy-agent';
+
+const agent = new HttpsProxyAgent('http://168.63.76.32:3128');
+const socket = new WebSocket('ws://echo.websocket.org', { agent });
+
+socket.on('open', function () {
+  console.log('"open" event!');
+  socket.send('hello world');
+});
+
+socket.on('message', function (data, flags) {
+  console.log('"message" event! %j %j', data, flags);
+  socket.close();
+});
+```
+
+API
+---
+
+### new HttpsProxyAgent(proxy: string | URL, options?: HttpsProxyAgentOptions)
+
+The `HttpsProxyAgent` class implements an `http.Agent` subclass that connects
+to the specified "HTTP(s) proxy server" in order to proxy HTTPS and/or WebSocket
+requests. This is achieved by using the [HTTP `CONNECT` method][CONNECT].
+
+The `proxy` argument is the URL for the proxy server.
+
+The `options` argument accepts the usual `http.Agent` constructor options, and
+some additional properties:
+
+ * `headers` - Object containing additional headers to send to the proxy server
+   in the `CONNECT` request.
 
 
 License
@@ -15082,7 +15161,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - jsdom@22.1.0
+ - jsdom@23.0.1
 
 This package contains the following license and notice below:
 
@@ -22681,7 +22760,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - nwsapi@2.2.4
+ - nwsapi@2.2.7
 
 This package contains the following license and notice below:
 
@@ -28882,7 +28961,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 The following npm package may be included in this product:
 
- - tr46@4.1.1
+ - tr46@5.0.0
 
 This package contains the following license and notice below:
 
@@ -34290,7 +34369,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - w3c-xmlserializer@4.0.0
+ - w3c-xmlserializer@5.0.0
 
 This package contains the following license and notice below:
 
@@ -34475,7 +34554,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - whatwg-url@12.0.1
+ - whatwg-url@14.0.0
 
 This package contains the following license and notice below:
 
@@ -34535,7 +34614,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - ws@8.13.0
+ - ws@8.14.2
 
 This package contains the following license and notice below:
 
