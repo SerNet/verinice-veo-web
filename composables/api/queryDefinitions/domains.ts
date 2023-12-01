@@ -117,7 +117,7 @@ export default {
     fetchDomain: {
       primaryQueryKey: 'domain',
       url: '/api/domains/:id',
-      queryParameterTransformationFn: (queryParameters) => ({ params: queryParameters }),
+      queryParameterTransformationFn: (queryParameters) => ({ params: { id: queryParameters.id } }),
       staticQueryOptions: {
         staleTime: STALE_TIME.MEDIUM
       }
