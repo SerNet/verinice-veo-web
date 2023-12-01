@@ -4549,7 +4549,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 The following npm packages may be included in this product:
 
  - @vitejs/plugin-vue-jsx@3.0.1
- - @vitejs/plugin-vue@4.5.0
+ - @vitejs/plugin-vue@4.5.1
 
 These packages each contain the following license and notice below:
 
