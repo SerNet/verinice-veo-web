@@ -37,7 +37,7 @@
 
       <div class="mx-4">
         <span class="text-h3 mt-8">
-          {{ t('domainselection') }}
+          {{ t('domainSelection') }}
         </span>  
 
         <UtilProminentSelectionList
@@ -108,6 +108,7 @@ import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
+
 import { IVeoEntityLegacy, VeoAlertType } from '~/types/VeoTypes';
 
 const props = withDefaults(defineProps<{
@@ -133,14 +134,13 @@ const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains);
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
+const { mutateAsync: assign } = useMutation(objectQueryDefinitions.mutations.assignObject);
+
 const selectedSubType = ref<Record<string, string | undefined>>({});
 const selectedStatus = ref<Record<string, string | undefined>>({});
 const selectedDomains = ref<string[]>([]);
 
-const fetchLegacyObjectQueryParameters = computed(() => ({
-  endpoint: schemas.value?.[props.objectType],
-  id: props.objectId
-} as any));
+const fetchLegacyObjectQueryParameters = computed(() => ({ endpoint: schemas.value?.[props.objectType], id: props.objectId } as any));
 
 const { data: legacyObject } = useQuery(
   objectQueryDefinitions.queries.fetchLegacy,
@@ -158,10 +158,13 @@ const prePolluteList = (data: IVeoEntityLegacy) => {
   selectedStatus.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.status]));
 };
 
-const { mutateAsync: assign } = useMutation(objectQueryDefinitions.mutations.assignObject);
-
 const subTypes = computed(() => (domains.value || []).reduce((prevValue, currentValue) => {
-  prevValue[currentValue.id] = Object.keys(currentValue.elementTypeDefinitions[props.objectType].subTypes).map((subType) => ({ title: currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][`${props.objectType}_${subType}_singular`], value: subType }));
+  prevValue[currentValue.id] = Object.keys(currentValue.elementTypeDefinitions[props.objectType].subTypes).map(
+    (subType) => (
+      { title: currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][`${props.objectType}_${subType}_singular`], value: subType }
+    )
+  );
+
   return prevValue;
 }, {} as Record<string, { title: string, value: string }[]>));
 
@@ -169,7 +172,12 @@ const statuses = computed(() => (domains.value || []).reduce((prevValue, current
   if (!selectedSubType.value[currentValue.id]) {
     return prevValue;
   }
-  prevValue[currentValue.id] = currentValue.elementTypeDefinitions[props.objectType].subTypes[selectedSubType.value[currentValue.id]].statuses.map((status: any) => ({ title: currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][`${props.objectType}_${selectedSubType.value[currentValue.id]}_status_${status}`], value: status }));
+  prevValue[currentValue.id] = currentValue.elementTypeDefinitions[props.objectType].subTypes[selectedSubType.value[currentValue.id]].statuses.map(
+    (status: any) => (
+      { title: currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][`${props.objectType}_${selectedSubType.value[currentValue.id]}_status_${status}`], value: status }
+    )
+  );
+
   return prevValue;
 }, {} as Record<string, { title: string, value: string }[]>));
 
@@ -186,23 +194,25 @@ const availableDomains = computed(() => domains.value?.map((domain) => ({
 })) ?? []);
 
 const disabledDomains = computed(() => Object.keys(legacyObject.value?.domains || {}));
+
+const domainProperties = computed(() => availableDomains.value.map((domain) => {
+  return { title: domain.name, subtitle: domain.description, value: domain.id, disabled: disabledDomains.value.includes(domain.id) };
+}));
+
 const assignObject = async () => {
   try {
     for (const domain of selectedDomains.value.filter((domain) => !disabledDomains.value.includes(domain))) {
       await assign({ domain: domain, endpoint: route.params?.objectType, objectId: props.objectId, subType: selectedSubType.value[domain], status: selectedStatus.value[domain] });
     }
     displaySuccessMessage(t('objectAssigned').toString());
-    emit('update:model-value', false);
   }
   catch (error: any) {
     displayErrorMessage(t('assignmentFailed').toString(), error.message);
+  }
+  finally {
     emit('update:model-value', false);
   }
 };
-
-const domainProperties = computed(() => availableDomains.value.map((domain) => {
-  return { title: domain.name, subtitle: domain.description, value: domain.id, disabled: disabledDomains.value.includes(domain.id) };
-}));
 
 watch(() => props.modelValue, () => {
   selectedSubType.value = {};
@@ -220,16 +230,16 @@ watch(() => props.modelValue, () => {
     "assignmentFailed": "The object could not be assigned to another domain.",
     "domainAssignmentHint": "Assigning an object to a further domain cannot be reversed!",
     "domainAssignmentHintTitle": "Domain assignment",
-    "domainselection": "Domain selection",
+    "domainSelection": "Domain selection",
     "objectAssigned": "The object has been assigned to another domain successfully.",
     "subtype": "Subtype",
     "title": "Assign object"
   },
   "de": {
     "assignmentFailed": "Das Objekt konnte keiner weiteren Domäne zugewiesen werden.",
-      "domainAssignmentHint": "Die Zuweisung eines Objektes zu einer weiteren Domäne kann nicht wieder rückgängig gemacht werden!",
-      "domainAssignmentHintTitle": "Domänenzuordnung",
-      "domainselection": "Domänenauswahl",
+    "domainAssignmentHint": "Die Zuweisung eines Objektes zu einer weiteren Domäne kann nicht wieder rückgängig gemacht werden!",
+    "domainAssignmentHintTitle": "Domänenzuordnung",
+    "domainSelection": "Domänenauswahl",
     "objectAssigned": "Das Objekt wurde einer weiteren Domäne erfolgreich zugewiesen.",
     "subtype": "Subtyp",
     "title": "Objekt zuordnen"
