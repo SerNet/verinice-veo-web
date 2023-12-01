@@ -43,6 +43,7 @@
         <UtilProminentSelectionList
           v-model="selectedDomains"
           :items="domainProperties"
+          check-box-selection-only
           multiple
         >
           <template

@@ -29,6 +29,7 @@
       :title="item.title"
       class="rounded mb-2 py-2 bg-accent"
       two-line
+      @click="checkBoxSelectionOnly ? undefined : onItemSelected(item)"
     >
       <template #default>
         <slot :name="`item-${item.value}`" />
@@ -44,7 +45,7 @@
             : multiple
               ? mdiCheckboxBlankOutline
               : mdiRadioboxBlank"
-          @click="onItemSelected(item)"
+          @click="checkBoxSelectionOnly ? onItemSelected(item) : undefined"
         />
       </template>
     </v-list-item>
@@ -78,6 +79,10 @@ const props = defineProps({
     default: undefined
   },
   multiple: {
+    type: Boolean,
+    default: false
+  },
+  checkBoxSelectionOnly: {
     type: Boolean,
     default: false
   }
