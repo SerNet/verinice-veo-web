@@ -5,7 +5,7 @@ stages:
   - deploy
 
 default:
-  image: node:19
+  image: node:21
   cache:  # Cache modules in between jobs
     key:
       files:
