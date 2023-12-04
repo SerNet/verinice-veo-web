@@ -47,7 +47,7 @@
       </v-list-item>
     </template>
     <template
-      #item="{ props, item }"
+      #item="{ item }"
     >
       <v-list-item v-bind="props">
         <template #prepend>
@@ -93,7 +93,7 @@ type ModelVal = string | IVeoLink | IVeoEntity | undefined;
 interface Props {
   modelValue?: ModelVal;
   required: boolean;
-  label: string | undefined;
+  label?: string | undefined;
   objectType: string;
   subType: string | undefined;
   domainId: string | undefined;

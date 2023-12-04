@@ -145,8 +145,7 @@ export default defineComponent({
     };
 
     const filter = ref<Record<string, any>>({
-      objectType: 'scenario',
-      subType: 'SCN_Scenario'
+      objectType: 'scenario'
     });
 
     const onFilterUpdate = (newFilter: any) => {
@@ -168,7 +167,7 @@ export default defineComponent({
 
     const { data: objects, isFetching: objectsQueryIsLoading, refetch } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
     const risksQueryParameters = computed<IVeoFetchRisksParameters>(() => ({
-      endpoint: 'processes',
+      endpoint: route.params.objectType as string,
       id: props.objectId
     }));
     const { data: risks } = useQuery(objectQueryDefinitions.queries.fetchRisks, risksQueryParameters);
@@ -217,7 +216,7 @@ export default defineComponent({
         }));
 
       try {
-        await Promise.all(newRisks.map((risk: any) => createRisk({ endpoint: 'processes', objectId: props.objectId, risk })));
+        await Promise.all(newRisks.map((risk: any) => createRisk({ endpoint: route.params.objectType as string, objectId: props.objectId, risk })));
         displaySuccessMessage(t('risksCreated', selectedScenarios.value.length));
         selectedScenarios.value = [];
         emit('success');

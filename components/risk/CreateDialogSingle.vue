@@ -54,9 +54,9 @@
                   data-test-selector="risk-scenario"
                   :model-value="data.scenario"
                   object-type="scenario"
+                  sub-type="route.params.subType"
                   required
                   :rules="[requiredRule]"
-                  sub-type="SCN_Scenario"
                   :domain-id="domainId"
                   :disabled="formDisabled"
                   value-as-link
@@ -72,7 +72,10 @@
                   data-test-selector="risk-owner"
                   :model-value="data.riskOwner"
                   object-type="person"
+                  sub-type="route.params.subType"
+                  required
                   :label="upperFirst(t('riskOwner').toString())"
+                  :domain-id="domainId"
                   :disabled="formDisabled"
                   value-as-link
                   hide-details
@@ -214,7 +217,7 @@ export default defineComponent({
       validate();
     };
 
-    const fetchRiskQueryParameters = computed(() => ({ scenarioId: props.scenarioId as string, objectId: props.objectId, endpoint: 'processes' }));
+    const fetchRiskQueryParameters = computed(() => ({ scenarioId: props.scenarioId as string, objectId: props.objectId, endpoint: route.params.objectType as string }));
     const fetchRiskQueryEnabled = computed(() => !!props.scenarioId);
 
     const { data: _risk } = useQuery(objectQueryDefinitions.queries.fetchRisk, fetchRiskQueryParameters, { enabled: fetchRiskQueryEnabled, onSuccess: () => {
@@ -234,7 +237,6 @@ export default defineComponent({
         });
       }
     };
-
 
     watch(() => domain.value, init, { deep: true, immediate: true });
     watch(() => risk.value, init, { deep: true, immediate: true });
@@ -257,7 +259,7 @@ export default defineComponent({
           }
 
           if (mitigationsModified.value && data.value.mitigation) {
-            await link(await useQuerySync(objectQueryDefinitions.queries.fetch, { endpoint: 'controls', id: getEntityDetailsFromLink(data.value.mitigation).id }, queryClient), mitigations.value, true);
+            await link(await useQuerySync(objectQueryDefinitions.queries.fetch, { domain: props.domainId, endpoint: 'controls', id: getEntityDetailsFromLink(data.value.mitigation).id }, queryClient), mitigations.value, true);
           }
 
           if (props.scenarioId) {

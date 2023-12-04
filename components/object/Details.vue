@@ -144,13 +144,20 @@ export default defineComponent({
     const { formatDateTime } = useFormatters();
     const { ability } = useVeoPermissions();
 
+    const riskAffectedElements = ['asset', 'process', 'scope'];
+
+    const isRiskAffected = computed(() => {
+      return riskAffectedElements.includes(props.object?.type || '');
+    });
+
     const isRiskTabHidden = computed(() => {
       return !props.loading
         && (
-          !(['asset', 'process', 'scope'].includes(props.object?.type || ''))
+          !isRiskAffected.value
           || (props.object?.type === 'process' && subType.value === 'PRO_DataTransfer')
         );
     });
+
     const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean }[]>(() => [
       {
         key: 'childScopes',
@@ -175,7 +182,7 @@ export default defineComponent({
       },
       {
         key: 'controls',
-        hidden: props.object?.type !== 'asset' && props.object?.type !== 'process' && props.object?.type !== 'scope'
+        hidden: !isRiskAffected.value
       }
     ]);
 
