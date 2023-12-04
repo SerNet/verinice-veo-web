@@ -263,9 +263,9 @@ export default defineComponent({
           }
 
           if (props.scenarioId) {
-            await updateRisk({ endpoint: 'processes', id: props.objectId, scenarioId: props.scenarioId, risk: data.value });
+            await updateRisk({ endpoint: route.params.objectType, id: props.objectId, scenarioId: props.scenarioId, risk: data.value });
           } else {
-            await createRisk({ endpoint: 'processes', objectId: props.objectId, risk: data.value });
+            await createRisk({ endpoint: route.params.objectType, objectId: props.objectId, risk: data.value });
           }
           displaySuccessMessage(props.scenarioId ? upperFirst(t('riskUpdated').toString()) : upperFirst(t('riskCreated').toString()));
         } catch (e: any) {
