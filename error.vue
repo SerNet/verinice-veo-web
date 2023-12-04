@@ -23,13 +23,19 @@
         max-height="300px"
         contain
       />
-      <h1 class="text-h1 mt-8">
+      <h1
+        v-if="error"
+        class="text-h1 mt-8"
+      >
         {{ upperFirst(t(errorIsCustomized ? `titles.${error.statusCode}` : 'titles.default').toString()) }}
       </h1>
-      <p class="mt-2">
+      <p
+        v-if="error"
+        class="mt-2"
+      >
         {{ upperFirst(t(errorIsCustomized ? `texts.${error.statusCode}` : 'texts.default').toString()) }}
       </p>
-      <div>
+      <div v-if="error">
         <v-btn
           v-if="error.statusCode === 403 || error.statusCode === 404"
           variant="text"
@@ -54,17 +60,12 @@
 <script setup lang="ts">
 import { NuxtError } from '#app';
 import { upperFirst } from 'lodash';
-import { PropType } from 'vue';
 
-definePageMeta({ layout: 'plain' });
-
-const props = defineProps({
-  error: {
-    type: Object as PropType<NuxtError>,
-    default: null
-  }
+const props = withDefaults(defineProps<{
+  error: NuxtError
+}>(), {
+  error: undefined
 });
-
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
