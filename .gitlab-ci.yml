@@ -32,9 +32,9 @@ check_license:
   needs: []
   script:
     - mv LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
-    - npx generate-license-file --ci --input ./package.json --output LICENSE-3RD-PARTY.txt
+    - npm run generate-3rd-party-license-file
     - diff LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
-    - if [ $? -ne 0 ]; then echo "LICENSE-3RD-PARTY.txt is not up to date, please re-run npx generate-license-file --input ./package.json --output LICENSE-3RD-PARTY.txt --overwrite"; exit 1; fi
+    - if [ $? -ne 0 ]; then echo "LICENSE-3RD-PARTY.txt is not up to date, please re-run 'npm run generate-3rd-party-license-file'"; exit 1; fi
   interruptible: true
 
 test:

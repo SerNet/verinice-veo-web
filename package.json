@@ -19,7 +19,8 @@
     "cy:local": "cypress run --env environment=local",
     "cy-gui:local": "cypress open --env environment=local",
     "cy:develop": "cypress run --env environment=develop",
-    "cy-gui:develop": "cypress open --env environment=develop"
+    "cy-gui:develop": "cypress open --env environment=develop",
+    "generate-3rd-party-license-file": "generate-license-file --config ./.generatelicensefile.json"
   },
   "husky": {
     "hooks": {
