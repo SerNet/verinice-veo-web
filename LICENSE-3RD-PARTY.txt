@@ -17166,9 +17166,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm packages may be included in this product:
 
- - @vueuse/core@10.6.1
- - @vueuse/metadata@10.6.1
- - @vueuse/shared@10.6.1
+ - @vueuse/core@10.7.0
+ - @vueuse/metadata@10.7.0
+ - @vueuse/shared@10.7.0
 
 These packages each contain the following license and notice below:
 
