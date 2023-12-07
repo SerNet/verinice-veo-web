@@ -17,25 +17,24 @@
 -->
 <template>
   <div class="d-flex fill-height overflow-y-auto">
-    <div class="ma-auto pa-4 text-center">
+    <div
+      v-if="error"
+      class="ma-auto pa-4 text-center"
+    >
       <v-img
         :src="image"
         max-height="300px"
         contain
       />
-      <h1
-        v-if="error"
-        class="text-h1 mt-8"
-      >
+
+      <h1 class="text-h1 mt-8">
         {{ upperFirst(t(errorIsCustomized ? `titles.${error.statusCode}` : 'titles.default').toString()) }}
       </h1>
-      <p
-        v-if="error"
-        class="mt-2"
-      >
+      <p class="mt-2">
         {{ upperFirst(t(errorIsCustomized ? `texts.${error.statusCode}` : 'texts.default').toString()) }}
       </p>
-      <div v-if="error">
+
+      <div>
         <v-btn
           v-if="error.statusCode === 403 || error.statusCode === 404"
           variant="text"
@@ -44,6 +43,7 @@
         >
           {{ $t('global.button.previous') }}
         </v-btn>
+
         <v-btn
           v-if="error.statusCode !== 401"
           variant="text"
@@ -61,11 +61,9 @@
 import { NuxtError } from '#app';
 import { upperFirst } from 'lodash';
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   error: NuxtError
-}>(), {
-  error: undefined
-});
+}>();
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
