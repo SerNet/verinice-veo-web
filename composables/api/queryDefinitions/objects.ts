@@ -308,7 +308,7 @@ export default {
         delete _object.displayName;
 
         return {
-          params: { domain: route.params.domain, endpoint: mutationParameters.endpoint, id: mutationParameters.object.id },
+          params: { domain: mutationParameters.domain, endpoint: mutationParameters.endpoint, id: mutationParameters.object.id },
           json: _object
         };
       },

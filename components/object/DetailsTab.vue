@@ -410,7 +410,7 @@ export default defineComponent({
         // delete the appropriate key at <controlIndex>
         copy?.controlImplementations?.splice(controlIndex, 1);
         // patch the object / PUT changed riskAffected
-        await updateObject({ endpoint: route.params?.objectType, id: copy?.id, object: copy });
+        await updateObject({ domain: props.domainId, endpoint: route.params?.objectType, id: copy?.id, object: copy });
       }
     }
 

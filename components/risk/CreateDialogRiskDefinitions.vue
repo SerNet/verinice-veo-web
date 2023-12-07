@@ -49,7 +49,7 @@
           </v-tab>
         </template>-->
         <template
-          v-if="!!domain"
+          v-if="!!domain && internalValue?.domains[domain.id].riskDefinitions"
           #items
         >
           <v-window-item
@@ -164,11 +164,11 @@ export default defineComponent({
 
     // setting residual risk to the inherent risk if no risk treatment is selected
     watch(
-      () => internalValue.value.domains[props.domain.id].riskDefinitions[activeRiskDefinition.value.id].riskValues,
+      () => internalValue.value?.domains[props.domain?.id || ''].riskDefinitions[activeRiskDefinition.value.id].riskValues,
       (newValue) => {
         for (const protectionGoalIndex in newValue) {
-          if (!internalValue.value.domains[props.domain.id].riskDefinitions[activeRiskDefinition.value.id].riskValues[protectionGoalIndex].riskTreatments.length) {
-            internalValue.value.domains[props.domain.id].riskDefinitions[activeRiskDefinition.value.id].riskValues[protectionGoalIndex].userDefinedResidualRisk = undefined;
+          if (!internalValue.value?.domains[props.domain?.id || ''].riskDefinitions[activeRiskDefinition.value.id].riskValues[protectionGoalIndex].riskTreatments.length) {
+            internalValue.value.domains[props.domain?.id || ''].riskDefinitions[activeRiskDefinition.value.id].riskValues[protectionGoalIndex].userDefinedResidualRisk = undefined;
           }
         }
       },

@@ -264,7 +264,7 @@ export default defineComponent({
       copy.controlImplementations?.push(...newItems.map((item) => {
         return { control: ('targetUri' in item ? item : createLink('controls', item.id)) };
       }));
-      await updateObject({ endpoint: route.params?.objectType, id: copy?.id, object: copy });
+      await updateObject({ domain: route.params.domain, endpoint: route.params?.objectType, id: copy?.id, object: copy });
       displaySuccessMessage(upperFirst(t('objectLinked').toString()));
     };
     // show error or success message
@@ -286,7 +286,7 @@ export default defineComponent({
     const onCreateObjectSuccess = async (newObjectId: string) => {
       if (props.object) {
         try {
-          const createdObject = await useQuerySync(objectQueryDefinitions.queries.fetch, { domain: route.params.domain, endpoint: endpoints.value?.[createObjectDialog.value?.objectType || ''] || '' , id: newObjectId }, queryClient);
+          const createdObject = await useQuerySync(objectQueryDefinitions.queries.fetch, { domain: route.params.domain as string, endpoint: endpoints.value?.[createObjectDialog.value?.objectType || ''] || '' , id: newObjectId }, queryClient);
           if (createObjectDialog.value.hierarchicalContext === 'child') {
             if(createObjectDialog.value.parentScopeIds?.length) {
               return; // do not link if scope (current object) has already been linked
