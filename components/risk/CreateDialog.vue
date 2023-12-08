@@ -73,6 +73,7 @@ import { cloneDeep, omit, upperFirst } from 'lodash';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions, { IVeoFetchRisksParameters } from '~/composables/api/queryDefinitions/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useMutation } from '~/composables/api/utils/mutation';
@@ -105,6 +106,8 @@ export default defineComponent({
     const { ability } = useVeoPermissions();
 
     const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createRisk);
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     // Layout stuff
     const dialog = computed({
@@ -187,6 +190,7 @@ export default defineComponent({
       return _objects;
     });
 
+    const domainRiskDefinitionKey = computed(() => Object.keys(domain.value?.riskDefinitions || {})[0]);
     // Create risk stuff
     const creatingRisks = ref(false);
 
@@ -209,7 +213,7 @@ export default defineComponent({
                 targetUri: `${config.public.apiUrl}/domains/${props.domainId}`
               },
               riskDefinitions: {
-                DSRA: {}
+                [domainRiskDefinitionKey.value]: {}
               }
             }
           }

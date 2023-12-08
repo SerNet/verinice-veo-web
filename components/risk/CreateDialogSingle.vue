@@ -185,7 +185,7 @@ export default defineComponent({
 
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
     const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
-
+    
     const formIsValid = ref(true);
     const formModified = ref(false);
     const validate = () => {
@@ -296,12 +296,8 @@ export default defineComponent({
       owner: {
         targetUri: `${config.public.apiUrl}/units/${route.params.unit}`
       },
-      domains: {
-        [props.domainId]: {
-          subType: 'CTL_TOM',
-          status: 'NEW'
-        }
-      }
+      subType: 'CTL_TOM',
+      status: 'NEW'
     }));
 
     return {

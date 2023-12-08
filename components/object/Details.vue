@@ -169,7 +169,7 @@ export default defineComponent({
       },
       {
         key: 'risks',
-        hidden: !isRiskAffected || isRiskAffectedException.value
+        hidden: !isRiskAffected.value || isRiskAffectedException.value
       },
       {
         key: 'controls',
