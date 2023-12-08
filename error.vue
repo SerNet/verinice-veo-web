@@ -54,6 +54,32 @@
         </v-btn>
       </div>
     </div>
+
+    <div
+      v-else
+      class="ma-auto pa-4 text-center"
+    >
+      <v-img
+        :src="image"
+        max-height="300px"
+        contain
+      />
+
+      <h1 class="text-h1 mt-8">
+        {{ upperFirst(t('titles.default').toString()) }}
+      </h1>
+      <p class="mt-2">
+        {{ upperFirst(t('texts.default').toString()) }}
+      </p>
+
+      <v-btn
+        variant="text"
+        color="primary"
+        @click="$router.push('/')"
+      >
+        {{ t('goToHomepage') }}
+      </v-btn>
+    </div>
   </div>
 </template>
 
