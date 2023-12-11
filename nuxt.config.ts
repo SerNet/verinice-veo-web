@@ -81,9 +81,12 @@ export default defineNuxtConfig({
     'nuxt-font-loader'
   ],
 
-  // Transpile vuetify
   build: {
-    transpile: ['vuetify']
+    transpile: [
+      'vuetify',
+      "hast-util-to-string",
+      "micromark"
+    ]
   },
 
   vite: {
