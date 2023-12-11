@@ -29,7 +29,14 @@ export default defineNuxtConfig({
   },
 
   typescript: {
-    shim: false // Disabled, as Takeover mode and Volar should be enabled/installed
+    // Disable, because Takeover mode and Volar should be used
+    shim: false,
+    tsConfig: {
+      compilerOptions: {
+        // Allow type imports without `type` modifier
+        verbatimModuleSyntax: false
+      }
+    }
   },
 
   // Apply a transition to every page
