@@ -144,10 +144,12 @@ export default defineComponent({
     const { formatDateTime } = useFormatters();
     const { ability } = useVeoPermissions();
 
-    const isRiskAffected = computed(() => ['asset', 'process', 'scope'].includes(props.object?.type || ''));
+    const isRiskAffected = computed(() => (['asset', 'process', 'scope'] as (string | undefined)[]).includes(props.object?.type));
 
-    // don't show the risk tab for data transfers
-    const isRiskAffectedException = computed(() => props.object?.type === 'process' && subType.value === 'PRO_DataTransfer');
+    const riskTabIsHidden = computed(() => {
+      const isDataTransferObject = props.object?.type === 'process' && subType.value === 'PRO_DataTransfer';
+      return !isRiskAffected || isDataTransferObject;
+    });
 
     const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean }[]>(() => [
       {
@@ -169,7 +171,7 @@ export default defineComponent({
       },
       {
         key: 'risks',
-        hidden: !isRiskAffected.value || isRiskAffectedException.value
+        hidden: riskTabIsHidden.value
       },
       {
         key: 'controls',
