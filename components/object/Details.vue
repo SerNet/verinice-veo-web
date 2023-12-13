@@ -111,6 +111,9 @@
 import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import { useQuery } from '~/composables/api/utils/query';
+
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useFormatters } from '~/composables/utils';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -144,11 +147,31 @@ export default defineComponent({
     const { formatDateTime } = useFormatters();
     const { ability } = useVeoPermissions();
 
+    // Hide tabs
+
+    /**
+      * VEO-2602 will introduce domain specific configuration data.
+      * This makes the hard coded solution below obsolete.
+      * @todo Replace and use the new domain specific config instead.
+      */
+
+    /** Fetch current domain: veo hides some tabs in certain domains */
+    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
+    const fetchDomainQueryEnabled = computed(() => !!props.domainId);
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
+      enabled: fetchDomainQueryEnabled
+    });
+
     const isRiskAffected = computed(() => (['asset', 'process', 'scope'] as (string | undefined)[]).includes(props.object?.type));
 
-    const riskTabIsHidden = computed(() => {
+    const isRiskTabHidden = computed(() => {
       const isDataTransferObject = props.object?.type === 'process' && subType.value === 'PRO_DataTransfer';
       return !isRiskAffected || isDataTransferObject;
+    });
+
+    const isControlsTabHidden = computed(() => {
+      const isDomainGDPR = domain?.value?.name === "DS-GVO"
+      return !isRiskAffected || isDomainGDPR;
     });
 
     const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean }[]>(() => [
@@ -171,11 +194,11 @@ export default defineComponent({
       },
       {
         key: 'risks',
-        hidden: riskTabIsHidden.value
+        hidden: isRiskTabHidden.value
       },
       {
         key: 'controls',
-        hidden: !isRiskAffected.value
+        hidden: isControlsTabHidden.value
       }
     ]);
 
