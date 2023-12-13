@@ -460,51 +460,11 @@ export default defineComponent({
     // Saving
     const { mutateAsync: update } = useMutation(domainQueryDefinitions.mutations.updateTypeDefinitions);
 
-    const statusSpredRegExp = /([a-z]+)_([\w|-]+)_status_([A-Z|_]+)$/;
-
-    const isStatusPresentInSchema = (translationKey: string, objectSchemaPropertyPath: string, objectSchemaValueAtPropertyPath: any) => {
-      if(objectSchemaPropertyPath !== `/allOf`) {
-        return false;
-      }
-
-      const [_all, _objectType, subType, status] = translationKey.match(statusSpredRegExp) || [];
-
-      for(const objectSchemaSubType of objectSchemaValueAtPropertyPath) {
-        if(objectSchemaSubType.if.properties.subType.const === subType) {
-          return objectSchemaSubType.then.properties.status.enum.includes(status);
-        }
-      }
-
-      return false;
-    };
-
-    const filterOutUnusedTranslations = (objectSchema: IVeoObjectSchema) => {
-      const localObjectSchema = cloneDeep(objectSchema);
-      // Filter out translations that are not part of the schema in the current domain
-      // As any as translations aren't part of the objectschema but send along with it on ONLY this request, this dirty workaround will be obsolete if the new element type definition api gets used.
-      let objectSchemaTranslations: { [lang: string]: IVeoTranslationCollection } = localObjectSchema.properties.translations || {};
-      // Remove translations from schemas as searching for the key in a schema containing all translations will always score at least one hit in the translations while we only want to score a hit if the aspect/link/attribut exists.
-      const objectSchemaWithoutTranslations = cloneDeep(localObjectSchema);
-      delete (objectSchemaWithoutTranslations as any).properties.translations;
-      const keys = Object.entries(JsonPointer.flatten(objectSchemaWithoutTranslations));
-
-      // Only return translations that are part of the schema (keys are keys of a custom aspect/link/attribute)
-      objectSchemaTranslations = Object.fromEntries(Object.entries(objectSchemaTranslations).map(([language, translations]) =>
-        ([ language, Object.fromEntries(Object.entries(translations).filter(([translationKey]) =>!!keys.find(([objectSchemaPropertyPath, objectSchemaValueAtPropertyPath]) =>
-          objectSchemaPropertyPath.endsWith(translationKey) /* Name of attributes/custom links */ || translationKey === objectSchemaValueAtPropertyPath /* Enum values */ || (translationKey.includes('_status_') && isStatusPresentInSchema(translationKey, objectSchemaPropertyPath, objectSchemaValueAtPropertyPath)) /* Status values */
-        )))])
-      ));
-      localObjectSchema.properties.translations = objectSchemaTranslations;
-      return localObjectSchema;
-    };
-
     const saveSchema = async () => {
-      let objectSchema = objectSchemaHelper.value?.toSchema();
+      const objectSchema = objectSchemaHelper.value?.toSchema();
       if(!objectSchema) {
         return;
       }
-
-      objectSchema = filterOutUnusedTranslations(objectSchema);
 
       try {
         await update({ domainId: route.params.domain, objectType: title.value, objectSchema });
