@@ -20,7 +20,7 @@
     <h2 class="text-h2 mb-1">
       {{ upperFirst(t('probability').toString()) }}
     </h2>
-    <BaseCard>
+    <BaseCard class="veo-section-border">
       <v-card-text class="pa-3 px-4">
         <v-row class="pt-0">
           <v-col

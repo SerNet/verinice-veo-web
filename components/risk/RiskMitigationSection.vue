@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2022  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -42,7 +42,7 @@
         </template>
       </v-tooltip>
     </h2>
-    <BaseCard>
+    <BaseCard class="veo-section-border">
       <ObjectTable
         :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'updatedAt', 'actions']"
         :loading="fetchingMitigation"
@@ -64,38 +64,40 @@
           </div>
         </template>
       </ObjectTable>
-    </BaseCard>
-    <v-menu
-      :disabled="disabled"
-      top
-      offset-y
-    >
-      <template #activator="{ props }">
-        <v-btn
-          v-bind="props"
-          class="mt-2"
-          color="primary"
-          flat
+      <div class="d-flex justify-end px-2">
+        <v-menu
           :disabled="disabled"
+          top
+          offset-y
         >
-          <v-icon
-            start
-            :icon="mdiPencilOutline"
-          />
-          {{ t('editMitigatingActions').toString() }}
-        </v-btn>
-      </template>
-      <template #default>
-        <v-list dense>
-          <v-list-item @click="createMitigationDialogVisible = true">
-            <v-list-item-title>{{ t('createMitigation') }}</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="editMitigationsDialogVisible = true">
-            <v-list-item-title>{{ t('addMitigation') }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </template>
-    </v-menu>
+          <template #activator="{ props }">
+            <v-btn
+              v-bind="props"
+              class="mt-2 mb-2"
+              color="primary"
+              flat
+              :disabled="disabled"
+            >
+              <v-icon
+                start
+                :icon="mdiPencilOutline"
+              />
+              {{ t('editMitigatingActions').toString() }}
+            </v-btn>
+          </template>
+          <template #default>
+            <v-list dense>
+              <v-list-item @click="createMitigationDialogVisible = true">
+                <v-list-item-title>{{ t('createMitigation') }}</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="editMitigationsDialogVisible = true">
+                <v-list-item-title>{{ t('addMitigation') }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </template>
+        </v-menu>
+      </div>
+    </BaseCard>
     <ObjectLinkDialog
       v-if="editMitigationsDialogVisible"
       v-model="editMitigationsDialogVisible"

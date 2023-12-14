@@ -43,7 +43,7 @@
         <h2 class="text-h2 mb-1">
           {{ upperFirst(t('common').toString()) }}
         </h2>
-        <BaseCard>
+        <BaseCard class="veo-section-border">
           <v-card-text class="pa-3 px-4">
             <v-row>
               <v-col
@@ -185,7 +185,7 @@ export default defineComponent({
 
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
     const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
-    
+
     const formIsValid = ref(true);
     const formModified = ref(false);
     const validate = () => {
@@ -430,3 +430,19 @@ const makeRiskObject = (initialData: IVeoRisk | undefined, domainId: string, ris
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+:deep .text-h2 {
+  margin-top: 16px !important;
+}
+
+:deep .veo-section-border {
+  border: 1px solid #d7d7d7;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+:deep .v-divider {
+  display: none
+}
+</style>

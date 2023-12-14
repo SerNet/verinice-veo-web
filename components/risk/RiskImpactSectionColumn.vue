@@ -18,7 +18,7 @@
 <template>
   <v-col
     cols="6"
-    md="3"
+    md="4"
   >
     <h3 class="text-h3">
       {{ protectionGoal.translations[locale].name }}
