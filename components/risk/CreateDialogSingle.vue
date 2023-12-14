@@ -99,7 +99,17 @@
       </v-form>
     </template>
     <template #dialog-options>
+      <v-btn
+        variant="text"
+        color="primary"
+        :disabled="savingRisk"
+        @click="$emit('update:model-value', false)"
+      >
+        {{ globalT('global.button.close') }}
+      </v-btn>
+
       <v-spacer />
+
       <v-btn
         variant="text"
         color="primary"
@@ -108,14 +118,6 @@
         @click="saveRisk"
       >
         {{ globalT('global.button.save') }}
-      </v-btn>
-      <v-btn
-        variant="text"
-        color="primary"
-        :disabled="savingRisk"
-        @click="$emit('update:model-value', false)"
-      >
-        {{ globalT('global.button.close') }}
       </v-btn>
     </template>
   </BaseDialog>
