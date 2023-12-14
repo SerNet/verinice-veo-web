@@ -30,6 +30,7 @@
               :disabled="disabled"
               :protection-goal="protectionGoal"
               :risk-definition="riskDefinition"
+              :num-of-cols="riskDefinition.categories.length"
               v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
               @update:user-defined-residual-risk="onUserDefinedResidualRiskChanged(protectionGoal.id, $event)"
               @update:residual-risk-explanation="onResidualRiskExplanationChanged(protectionGoal.id, $event)"

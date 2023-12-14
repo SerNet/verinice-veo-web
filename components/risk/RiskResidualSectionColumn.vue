@@ -18,7 +18,7 @@
 <template>
   <v-col
     cols="6"
-    md="3"
+    :md="12 / numOfCols"
   >
     <h3 class="text-h3">
       {{ protectionGoal.translations[locale].name }}
@@ -128,7 +128,12 @@ const props = defineProps({
   residualRiskExplanation: {
     type: String,
     default: undefined
+  },
+  numOfCols: {
+    type: Number,
+    default: 4
   }
+
 });
 
 const emit = defineEmits(['update:residual-risk-explanation', 'update:user-defined-residual-risk']);

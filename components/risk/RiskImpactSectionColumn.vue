@@ -18,7 +18,7 @@
 <template>
   <v-col
     cols="6"
-    md="4"
+    :md="12 / numOfCols"
   >
     <h3 class="text-h3">
       {{ protectionGoal.translations[locale].name }}
@@ -135,6 +135,10 @@ export default defineComponent({
     effectiveImpact: {
       type: Number,
       default: undefined
+    },
+    numOfCols: {
+      type: Number,
+      default: 4,
     }
   },
   emits: ['update:specific-impact-explanation', 'update:specific-impact'],

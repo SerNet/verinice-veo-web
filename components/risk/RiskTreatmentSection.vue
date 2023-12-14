@@ -30,6 +30,7 @@
               :disabled="disabled"
               :protection-goal="protectionGoal"
               :risk-definition="riskDefinition"
+              :num-of-cols="riskDefinition.categories.length"
               v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
               @update:risk-treatments="onRiskTreatmentChanged(protectionGoal.id, $event)"
               @update:risk-treatment-explanation="onRiskTreatmentExplanationChanged(protectionGoal.id, $event)"
