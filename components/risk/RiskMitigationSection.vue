@@ -113,7 +113,6 @@
       v-if="createMitigationDialogVisible"
       v-model="createMitigationDialogVisible"
       object-type="control"
-      sub-type="CTL_TOM"
       :domain-id="domainId"
       @success="onMitigationCreated"
     />

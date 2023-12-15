@@ -47,9 +47,9 @@
       </v-list-item>
     </template>
     <template
-      #item="{ item }"
+      #item="{ props: _props, item }"
     >
-      <v-list-item v-bind="props">
+      <v-list-item v-bind="_props">
         <template #prepend>
           <ObjectIcon
             :object-type="item.raw.type"
@@ -161,7 +161,7 @@ const fetchObjectsQueryParameters = computed(
       unit: route.params.unit,
       endpoint: endpoint.value,
       page: 1,
-      subType: props.subType,
+      ...(props.subType !== undefined ? { subType: props.subType } : {}),
       displayName: searchQuery.value ?? undefined
     } as any)
 );
