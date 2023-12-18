@@ -7,6 +7,8 @@
 </template>
 
 <script setup>
+import {addHolidayTheme} from "~/components/holidayThemes";
+
 useHead({
   meta: [
     {
@@ -23,4 +25,5 @@ useHead({
   ],
   link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
 });
+addHolidayTheme()
 </script>

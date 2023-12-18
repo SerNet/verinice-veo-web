@@ -1,0 +1,48 @@
+body {
+  cursor: url("/images/halloween/ghost.gif"), auto;
+}
+
+a[data-component-name="logo"] {
+  background-image: url("/images/halloween/logo_light.gif");
+  background-size: 90%;
+
+  > div {
+    visibility: hidden;
+  }
+}
+
+div.v-theme--dark a[data-component-name="logo"] {
+  background-image: url("/images/halloween/logo_dark.gif");
+}
+
+#witch {
+  background-image: url("/images/halloween/witch.gif");
+  width: 62px;
+  height: 61px;
+  z-index: 900000;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  margin-left: -62px;
+  margin-bottom: 0;
+  animation-duration: 20s;
+  animation-iteration-count: infinite;
+  animation-name: fly;
+}
+
+@keyframes fly {
+  from {
+    margin-left: -62px;
+    margin-bottom: 0;
+  }
+
+  75% {
+    margin-left: -62px;
+    margin-bottom: 0;
+  }
+
+  to {
+    margin-left: 100%;
+    margin-bottom: 30%;
+  }
+}
