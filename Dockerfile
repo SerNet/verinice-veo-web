@@ -36,31 +36,9 @@ RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > public/
 
 RUN npm run generate && node externalize-scripts.mjs
 
-FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
-
-# copy generated application and install dependencies
-WORKDIR /usr/src/veo
-
-COPY --chown=chrome --from=builder /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.ts ./
-# We also have to copy the modules folder because modules/docs/module.mjs is referneced in the nuxt.config.ts
-COPY --chown=chrome --from=builder /usr/src/app/modules ./modules
-# Same goes for types/locales
-COPY --chown=chrome --from=builder /usr/src/app/types ./types
-COPY --chown=chrome --from=builder /usr/src/app/.output ./.output
-COPY --from=builder /usr/src/app/node_modules ./node_modules
-
-# copy print.mjs
-WORKDIR /usr/src/app
-COPY --chown=chrome print.mjs .
-RUN mkdir dist
-
-# Start nuxt app in background, wait for startup and generate pdf documentation
-RUN nohup sh -c "(cd /usr/src/veo && (npm run start&))" && sleep 20 && node print.mjs
-
 FROM nginx:1.25 AS release
 
-COPY --from=printer /usr/src/veo/.output/public /usr/src/app
-COPY --from=printer usr/src/app/dist/*.pdf /usr/src/app/
+COPY --from=builder /usr/src/app/.output/public /usr/src/app
 
 # Add custom config to serve the index.html as entrypoint if the server would otherwise return a 404
 COPY  nginx.conf /etc/nginx/conf.d/custom.conf
