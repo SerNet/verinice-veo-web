@@ -1,6 +1,6 @@
 {
   "name": "veo-web",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "engines": {
     "npm": "9.9.x",
     "node": "18.19.x"
