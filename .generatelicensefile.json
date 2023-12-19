@@ -14,6 +14,7 @@
     "@cloudflare/kv-asset-handler@0.3.0": "./node_modules/@cloudflare/kv-asset-handler/LICENSE_MIT",
     "through@2.3.8":"./node_modules/through/LICENSE.MIT",
     "type-fest@2.19.0": "./node_modules/type-fest/license",
+    "type-fest@3.13.1": "./node_modules/type-fest/license",
     "rc@1.2.8": "./node_modules/rc/LICENSE.MIT"
   }
 }
