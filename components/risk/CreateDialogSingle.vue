@@ -72,7 +72,6 @@
                   data-test-selector="risk-owner"
                   :model-value="data.riskOwner"
                   object-type="person"
-                  sub-type="route.params.subType"
                   required
                   :label="upperFirst(t('riskOwner').toString())"
                   :domain-id="domainId"
