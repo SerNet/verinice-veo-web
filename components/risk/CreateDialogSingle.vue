@@ -130,7 +130,7 @@ import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
@@ -291,13 +291,22 @@ export default defineComponent({
       dirtyFields.value.mitigation = true;
     };
 
+    const getFirstControlSubType = (domain: IVeoDomain | undefined) => {
+      if(!domain) return;
+      return Object.keys(domain.elementTypeDefinitions.control.subTypes)[0];
+    };
+
     const newMitigatingAction = computed(() => ({
       type: 'control',
       name: t('mitigatingAction', [data.value?.designator]).toString(),
       owner: {
         targetUri: `${config.public.apiUrl}/units/${route.params.unit}`
       },
-      subType: 'CTL_TOM',
+      /*
+       * Pass a subtype which exists in the current domain.
+       * Which one exactly does not matter: getting the first one is arbitrary.
+       */
+      subType: getFirstControlSubType(domain.value),
       status: 'NEW'
     }));
 
