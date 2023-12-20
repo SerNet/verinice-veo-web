@@ -85,7 +85,7 @@ import { VIcon, VTooltip } from 'vuetify/components';
 import { TableHeader } from '~/components/base/Table.vue';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import { getEntityDetailsFromLink } from '~/lib/utils';
-import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
+import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk, IVeoRiskCategory, IVeoRiskDefinition, IVeoRiskValue, VeoRiskTreatment } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -176,7 +176,13 @@ export default defineComponent({
     const children = computed(() => props.object?.type === 'scope' ? scopeChildren.value : objectChildren.value);
 
     const tableIsLoading = computed(
-      () => parentScopesIsFetching.value || parentObjectsIsFetching.value || childScopesIsFetching.value || childObjectsIsFetching.value || risksIsFetching.value
+      () =>
+        parentScopesIsFetching.value ||
+        parentObjectsIsFetching.value ||
+        childScopesIsFetching.value ||
+        childObjectsIsFetching.value ||
+        risksIsFetching.value ||
+        domainIsFetching.value
     );
 
     const createEntityFromLink = (link: IVeoCustomLink) => {
@@ -226,8 +232,10 @@ export default defineComponent({
             : ['designator', 'updatedAt', 'updatedBy', 'actions']
     );
 
-    const additionalHeaders = computed<TableHeader[]>(() =>
-      props.type === 'risks'
+    const additionalHeaders = computed<TableHeader[]>(() => {
+      if(!riskDefinitionCategories.value || !riskDefinitionId.value) return [];
+
+      return props.type === 'risks'
         ? [
           {
             value: 'scenario.abbreviation',
@@ -255,13 +263,13 @@ export default defineComponent({
               return data.item.raw.scenario.displayName.split(' ').slice(sliceIndex).join(' ');
             }
           },
-          ...['C', 'I', 'A', 'R'].map((categoryId, index) => ({
+          ...riskDefinitionCategories.value.map((categoryId: string, index: number) => ({
             value: `riskValues_${categoryId}`,
             key: `riskValues_${categoryId}`,
-            text: domainData.value?.categories?.find((category) => category.id === categoryId)?.translations[locale.value].name || '',
+            text: riskDefinition.value?.categories?.find((category: IVeoRiskCategory) => category.id === categoryId)?.translations[locale.value].name || '',
             sortable: false, // TODO 2023-02-27: Currently disabled, as sort is not working at the moment (vuetify 3.1.6)
             sort: (a: any, b: any) => {
-              const values = domainData.value?.riskValues;
+              const values = riskDefinition.value?.riskValues;
 
               const { inherentRisk: inherentRisk1 } = getInherentAndResidualRisk(a, categoryId);
               const translatedInherentRisk1 = values?.find((entry) => entry.ordinalValue === inherentRisk1)?.translations[locale.value].name;
@@ -274,7 +282,7 @@ export default defineComponent({
             render: (data: any) => {
               const { inherentRisk, residualRisk } = getInherentAndResidualRisk(data.item.raw, categoryId);
               const riskTreatments = getRiskTreatments(data.item.raw, categoryId);
-              const values = domainData.value?.riskValues;
+              const values = riskDefinition.value?.riskValues;
 
               const translatedInherentRisk = values?.find((entry) => entry.ordinalValue === inherentRisk)?.translations[locale.value].name;
               const translatedResidualRisk = values?.find((entry) => entry.ordinalValue === residualRisk)?.translations[locale.value].name;
@@ -392,8 +400,8 @@ export default defineComponent({
                 render: (data: any) => h('span', { class: "text-truncate d-inline-block" }, data.item.raw.responsible?.name || '')
               }
             ]
-            : []
-    );
+            : [];
+    }); // end additionalHeaders
 
     // Crud stuff
     const { mutateAsync: deleteRisk } = useMutation(objectQueryDefinitions.mutations.deleteRisk);
@@ -595,22 +603,41 @@ export default defineComponent({
       }
     };
 
-    // Risk tab related stuff
+    // Risk tab
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
-    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
-    const domainData = computed(() => domain.value?.riskDefinitions?.DSRA);
+    const { data: domain, isFetching: domainIsFetching } = useQuery(
+      domainQueryDefinitions.queries.fetchDomain,
+      fetchDomainQueryParameters
+    );
 
-    const getInherentAndResidualRisk = (item: IVeoRisk, protectionGoal: string) => {
-      const category = item.domains?.[props.domainId]?.riskDefinitions?.DSRA?.riskValues?.find((category: any) => category.category === protectionGoal);
+    const riskDefinition: ComputedRef<IVeoRiskDefinition> = computed(() =>
+      Object.values(domain.value?.riskDefinitions as object || {})[0]
+    );
+    const riskDefinitionId = computed(() =>
+      Object.keys(domain.value?.riskDefinitions as object || {})[0]
+    );
+    const riskDefinitionCategories = computed(() =>
+      riskDefinition.value?.categories.map(cat => cat.id)
+    );
+
+    function getRiskValues(item: IVeoRisk): IVeoRiskValue[] {
+      return item?.domains?.[props.domainId]?.riskDefinitions[riskDefinitionId?.value]?.riskValues || [];
+    }
+
+    function getInherentAndResidualRisk(item: IVeoRisk, category: string): {inherentRisk?: number, residualRisk?: number} {
+      const riskValues = getRiskValues(item);
+      const categorySpecificRiskValues = riskValues.find((cat) => cat.category === category);
 
       return {
-        inherentRisk: category?.inherentRisk,
-        residualRisk: category?.userDefinedResidualRisk || category?.residualRisk
+        inherentRisk: categorySpecificRiskValues?.inherentRisk,
+        residualRisk: categorySpecificRiskValues?.userDefinedResidualRisk || categorySpecificRiskValues?.residualRisk
       };
-    };
+    }
 
-    const getRiskTreatments = (item: IVeoRisk, protectionGoal: string) =>
-      item.domains?.[props.domainId]?.riskDefinitions?.DSRA?.riskValues?.find((category: any) => category.category === protectionGoal)?.riskTreatments || [];
+    function getRiskTreatments(item: IVeoRisk, category: string): VeoRiskTreatment[] {
+      const riskValues = getRiskValues(item);
+      return riskValues.find((cat) => cat.category === category)?.riskTreatments || [];
+    }
 
     const onRelatedObjectModified = () => {
       emit('reload');
