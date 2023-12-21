@@ -155,7 +155,7 @@ export default defineComponent({
       * @todo Replace and use the new domain specific config instead.
       */
 
-    /** Fetch current domain: veo hides some tabs in certain domains */
+    /** Fetch current domain: veo hides some tabs according to the current domain, type and subtype */
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
     const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
@@ -164,13 +164,25 @@ export default defineComponent({
 
     const isRiskAffected = computed(() => (['asset', 'process', 'scope'] as (string | undefined)[]).includes(props.object?.type));
 
-    const isRiskTabHidden = computed(() => {
-      const isDataTransferObject = props.object?.type === 'process' && subType.value === 'PRO_DataTransfer';
-      return !isRiskAffected || isDataTransferObject;
+    const hasRiskTab: ComputedRef<boolean> = computed(() => {
+      if (!domain.value || !subType.value || !props.object?.type) return false;
+
+      if(domain.value.name === 'DS-GVO') {
+        return (
+          ['scope'].includes(props.object.type) ||
+          ['PRO_DataProcessing', 'PRO_DPIA'].includes(subType.value)
+        );
+      }
+
+      if(domain.value.name === 'IT-Grundschutz') {
+        return ['asset', 'process', 'scope'].includes(props.object?.type);
+      }
+
+      return false;
     });
 
     const isControlsTabHidden = computed(() => {
-      const isDomainGDPR = domain?.value?.name === "DS-GVO"
+      const isDomainGDPR = domain?.value?.name === "DS-GVO";
       return !isRiskAffected || isDomainGDPR;
     });
 
@@ -194,7 +206,7 @@ export default defineComponent({
       },
       {
         key: 'risks',
-        hidden: isRiskTabHidden.value
+        hidden: !hasRiskTab.value
       },
       {
         key: 'controls',
