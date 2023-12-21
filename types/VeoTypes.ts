@@ -52,7 +52,7 @@ export interface IVeoRiskDefinitionItemTranslations {
   };
 }
 
-export interface IVeoRiskValue {
+export interface IVeoRiskValueLevel {
   htmlColor: string;
   translations: IVeoRiskDefinitionItemTranslations;
   ordinalValue: number;
@@ -63,14 +63,14 @@ export interface IVeoRiskPotentialImpact {
   htmlColor: string;
   translations: IVeoRiskDefinitionItemTranslations;
   ordinalValue: string;
-  valueMatrix?: IVeoRiskValue[][];
+  valueMatrix?: IVeoRiskValueLevel[][];
 }
 
 export interface IVeoRiskCategory {
   id: string;
   translations: IVeoRiskDefinitionItemTranslations;
   potentialImpacts: IVeoRiskPotentialImpact[];
-  valueMatrix: IVeoRiskValue[][];
+  valueMatrix: IVeoRiskValueLevel[][];
 }
 
 export interface IVeoRiskProbabilityLevel {
@@ -100,7 +100,7 @@ export interface IVeoDomainRiskDefinition {
     levels: IVeoRiskImplementationState[];
   };
   categories: IVeoRiskCategory[];
-  riskValues: IVeoRiskValue[];
+  riskValues: IVeoRiskValueLevel[];
   riskMethod: {
     impactMethod: string;
     translations: {

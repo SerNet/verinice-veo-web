@@ -147,13 +147,13 @@ import { PropType } from 'vue';
 import { mdiInformationOutline } from '@mdi/js';
 import { upperFirst } from 'lodash';
 
-import { IVeoRiskProbabilityLevel, IVeoRiskValue, IVeoRiskPotentialImpact } from '~/types/VeoTypes';
+import { IVeoRiskProbabilityLevel, IVeoRiskValueLevel, IVeoRiskPotentialImpact } from '~/types/VeoTypes';
 
 export default defineComponent({
   inheritAttrs: false,
   props: {
     value: {
-      type: Array as PropType<IVeoRiskValue[][]>,
+      type: Array as PropType<IVeoRiskValueLevel[][]>,
       default: () => []
     },
     probabilities: {
@@ -165,7 +165,7 @@ export default defineComponent({
       default: () => []
     },
     riskValues: {
-      type: Array as PropType<IVeoRiskValue[]>,
+      type: Array as PropType<IVeoRiskValueLevel[]>,
       default: () => []
     }
   },
