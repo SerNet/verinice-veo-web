@@ -110,6 +110,14 @@ export interface IVeoDomainRiskDefinition {
     };
   };
 }
+
+export type VeoRiskTreatment =
+  'RISK_TREATMENT_NONE' |
+  'RISK_TREATMENT_AVOIDANCE' |
+  'RISK_TREATMENT_ACCEPTANCE' |
+  'RISK_TREATMENT_TRANSFER' |
+  'RISK_TREATMENT_REDUCTION';
+
 export interface IVeoPiaMandatoryRule {
   description: {
     [key: string]: string;
@@ -405,6 +413,17 @@ export interface IVeoEntity extends IVeoBaseObject {
   _self: string;
 }
 
+export interface IVeoRiskValue {
+  category: string;
+  residualRisk: number;
+  userDefinedResidualRisk?: number;
+  residualRiskExplanation: string;
+  riskTreatments: VeoRiskTreatment[];
+  riskTreatmentExplanation: string;
+  inherentRisk: number;
+  effectiveRisk: number;
+}
+
 export interface IVeoRiskDefinition {
   probability: {
     effectiveProbability: number;
@@ -419,16 +438,8 @@ export interface IVeoRiskDefinition {
     specificImpactExplanation: string;
     potentialImpact: string;
   }[];
-  riskValues: {
-    category: string;
-    residualRisk: number;
-    userDefinedResidualRisk?: number;
-    residualRiskExplanation: string;
-    riskTreatments: string[];
-    riskTreatmentExplanation: string;
-    inherentRisk: number;
-    effectiveRisk: number;
-  }[];
+  riskValues: IVeoRiskValue[];
+  categories: IVeoRiskCategory[];
 }
 
 export interface IVeoRisk {
