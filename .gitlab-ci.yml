@@ -27,6 +27,14 @@ store_project_version:
     reports:
       dotenv: variables.env
 
+check_formatting:
+  stage: test
+  needs: []
+  script:
+    - npm run format:check
+    - if [[ ${?} -ne 0 ]]; then echo "Use 'npm run format' to format your code"; exit 1; fi
+  interruptible: true
+
 check_license:
   stage: test
   needs: []
