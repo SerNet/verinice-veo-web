@@ -20,7 +20,9 @@
     "cy-gui:local": "cypress open --env environment=local",
     "cy:develop": "cypress run --env environment=develop",
     "cy-gui:develop": "cypress open --env environment=develop",
-    "generate-3rd-party-license-file": "generate-license-file --config ./.generatelicensefile.json"
+    "generate-3rd-party-license-file": "generate-license-file --config ./.generatelicensefile.json",
+    "format":"prettier . --ignore-unknown --write",
+    "format:check": "prettier . --check"
   },
   "husky": {
     "hooks": {
