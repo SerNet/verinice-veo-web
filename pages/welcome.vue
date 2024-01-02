@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2023 Frank Schneider
+   - Copyright (C) 2024 Frank Schneider
    -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -23,196 +23,98 @@
       :title="t('headline')"
     />
 
-    <div class="d-flex justify-center">
-      <BaseCard
-        class="my-12"
-        style="max-width: 500px; min-width: 500px;"
-      >
-        <v-card-title class="bg-accent">
-          <div
-            class="mx-4 d-flex"
-            style="height: 75px; width: 300px;"
-          >
-            <LayoutAppLogoDesktop />
-          </div>
+    <BaseCard class="ma-12">
+      <v-container fluid>
+        <v-row dense>
+          <BaseCard>
+            <v-card-title class="small-caps">
+              {{ t('greeting') }}
+            </v-card-title>
+            <v-card-subtitle>
+              {{ t('subTitle') }}
+            </v-card-subtitle>
+          </BaseCard>
+        </v-row>
 
-          <v-card-subtitle class="bg-accent">
-            <v-row>
-              <v-col cols="6" />
-              <v-col>
-                <v-checkbox
-                  v-model="showAtStartup"
-                  :label="t('checkboxLabel')"
-                />
-              </v-col>
-            </v-row>
-          </v-card-subtitle>
-        </v-card-title>
-
-
-        <v-card-text>
-          <v-col class="mt-8 text-justify">
-            {{ t('intro') }}
+        <v-row class="mx-auto mt-12">
+          <v-col cols="6">
+            <p>
+              {{ t('selection.noob.question') }}
+            </p>
           </v-col>
-
-          <v-col class="mt-4 text-justify">
-            <v-icon
-              :icon="mdiThemeLightDark"
-              size="x-large"
-              start
-            />
-            <i18n-t
-              keypath="firstSteps.mode"
-              tag="span"
-              scope="global"
-            />
+          <v-col>
+            <p>
+              {{ t('selection.seasoned.question') }}
+            </p>
           </v-col>
+        </v-row>
 
-          <v-col class="mt-4 text-justify">
-            <v-icon
-              :icon="mdiInformationOutline"
-              size="x-large"
-              start
-            />
-            <i18n-t
-              keypath="firstSteps.tutorial"
-              tag="span"
-              scope="global"
-            >
-              <strong>{{ t('tutorial') }}</strong>
-            </i18n-t>
-          </v-col>
-        </v-card-text>
+        <v-row class="mx-auto">
+          <v-col cols="6">
+            <v-card class="pa-8 bg-accent">
+              <v-card class="pa-8 bg-surface">
+                <p>{{ t('selection.noob.advice') }}</p>
+              </v-card>
 
-        <v-card-text>
-          <v-col class="text-justify">
-            <v-icon
-              :icon="mdiHelpCircleOutline"
-              size="x-large"
-              start
-            />
-            <i18n-t
-              keypath="firstSteps.documentation"
-              tag="span"
-              scope="global"
-            >
-              <template #link>
-                <nuxt-link
-                  class="text-decoration-none text-primary"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  to="/docs/index"
+              <div class="d-flex justify-center">
+                <v-btn
+                  class="mt-4"
+                  color="primary"
                 >
-                  <strong>{{ t('documentation') }}</strong>
-                </nuxt-link>
-              </template>
-            </i18n-t>
+                  {{ t('selection.noob.buttonCaption') }}
+                </v-btn>
+              </div>
+            </v-card>
           </v-col>
-        </v-card-text>
 
-        <v-card-text v-if="profileLink">
-          <v-col class="text-justify">
-            <v-icon
-              :icon="mdiShapeOutline"
-              size="x-large"
-              start
-            />
-            <i18n-t
-              keypath="firstSteps.profile"
-              tag="span"
-              scope="global"
-            >
-              <nuxt-link
-                :to="profileLink"
-                style="text-decoration: none;"
-              >
-                <strong>{{ t('profile') }}</strong>
-              </nuxt-link>
-            </i18n-t>
+          <v-col cols="6">
+            <v-card class="pa-8 bg-accent">
+              <v-card class="pa-8 bg-surface">
+                <p>{{ t('selection.seasoned.advice') }}</p>
+              </v-card>
+
+              <div class="d-flex justify-center">
+                <v-btn
+                  class="mt-4"
+                  color="primary"
+                >
+                  {{ t('selection.seasoned.buttonCaption') }}
+                </v-btn>
+              </div>
+            </v-card>
           </v-col>
-        </v-card-text>
+        </v-row>
+      </v-container>
 
-        <v-divider />
+      <div class="d-flex justify-center my-12">
+        <v-row dense>
+          <p class="mx-auto">
+            {{ t('hints.profile') }}
+          </p>
+        </v-row>
+      </div>
 
-        <v-card-text>
-          <v-col class="text-justify">
-            <v-icon
-              :icon="mdiYoutubeTv"
-              size="x-large"
-              start
-            />
-            <i18n-t
-              keypath="firstSteps.channel"
-              tag="span"
-              scope="global"
-            >
-              <a
-                class="text-decoration-none text-primary"
-                :href="links.youtube"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <strong>{{ t('channel') }}</strong>
-              </a>
-            </i18n-t>
-          </v-col>
-        </v-card-text>
+      <div>
+        <v-row dense>
+          <p class="mx-auto">
+            {{ t('hints.docs') }}
+          </p>
+        </v-row>
+        <v-row dense>
+          <p class="mx-auto">
+            {{ t('hints.externalLinks') }}
+          </p>
+        </v-row>
+      </div>
 
-        <v-card-text>
-          <v-col class="text-justify">
-            <v-icon
-              :icon="mdiSchoolOutline"
-              size="x-large"
-              start
-            />
-            <i18n-t
-              keypath="firstSteps.webinar"
-              tag="span"
-              scope="global"
-            >
-              <a
-                class="text-decoration-none text-primary"
-                :href="links.webinar"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <strong>{{ t('webinar') }}</strong>
-              </a>
-            </i18n-t>
-          </v-col>
-        </v-card-text>
-
-        <v-card-text>
-          <v-col class="text-justify">
-            <v-icon
-              :icon="mdiForumOutline"
-              size="x-large"
-              start
-            />
-            <i18n-t
-              keypath="firstSteps.forum"
-              tag="span"
-              scope="global"
-            >
-              <a
-                class="text-decoration-none text-primary"
-                :href="links.forum"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                <strong>{{ t('forum') }}</strong>
-              </a>
-            </i18n-t>
-          </v-col>
-        </v-card-text>
-
-        <v-divider />
-
-        <v-card-text>
-          <span class="mx-4">{{ t('hint') }}</span>
-        </v-card-text>
-      </BaseCard>
-    </div>
+      <div class="d-flex justify-center">
+        <v-row dense>
+          <p class="mx-auto my-12">
+            {{ t('hints.reminder') }}
+          </p>
+        </v-row>
+      </div>
+    </BaseCard>
   </BasePage>
 </template>
 
@@ -245,12 +147,6 @@ const links = ref({
 // useStorage ignores defaults, if a value is already present in local storage
 const showWelcomePage = useStorage(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, false);
 
-// toggle the cookie value via setter
-const showAtStartup = computed({
-  get: () => showWelcomePage.value,
-  set: (newValue: boolean) => showWelcomePage.value = newValue
-});
-
 // fetch all domains and units
 const { data: domains} = useQuery(domainQueryDefinitions.queries.fetchDomains);
 const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
@@ -268,27 +164,61 @@ const profileLink = computed(() => domainId && unitId
   {
     "en": {
       "channel": "YouTube channel",
-      "checkboxLabel": "Show at startup",
       "documentation": "documentation",
       "forum": "verinice.forum",
+      "greeting": "Welcome!",
       "headline": "First steps",
-      "hint": "You can access this page again at any time via the account button!",
-      "intro": "In this section you will find suggestions from the verinice.team to get you started quickly:",
-      "profile": "profile",
+      "hints": {
+        "profile": "In the Profiles area, you can load further sample data or load it as a template into your productive unit.",
+        "docs": "You can find out more about how to use verinice in the documentation (?), the tutorials (i) will help you find your way around quickly.",
+        "externalLinks": "Further information can be found in the verinice.forum, on our YouTube channel and in our free webinars.",
+        "reminder": "You can call up this page again at any time using the account button!"
+      },
+      "profile": "profiles",
+      "selection": {
+        "noob": {
+            "question": "Are you new to verinice and want to find your way around?",
+            "advice": "Download a sample organization to get to know all the functions ...",
+            "buttonCaption": "Load example data"
+        },
+        "seasoned": {
+            "question": "You already know your way around and want to get started right away?",
+            "advice": "Load an empty unit and map your organization ...",
+            "buttonCaption": "Load empty unit"
+        }
+      },
+      "subTitle": "Your first steps in verinice:",
       "tutorial": "tutorials",
       "webinar": "webinars"
     },
     "de": {
       "channel": "YouTube Kanal",
-      "checkboxLabel": "Beim Start anzeigen",
-      "documentation": "Online-Dokumentation",
+      "documentation": "Dokumentation",
       "forum": "verinice.forum",
+      "greeting": "Willkommen!",
       "headline": "Erste Schritte",
-      "hint": "Sie können diese Seite jederzeit über den Account Button erneut aufrufen!",
-      "intro": "Im diesem Abschnitt finden Sie Anregungen des verinice.Teams, die Ihnen einen schnellen Einstieg ermöglichen:",
-      "profile": "Profil",
+      "hints": {
+        "profile": "Im Bereich Profile können Sie weitere Beispieldaten laden oder diese als Vorlage in Ihre produktive Unit laden.",
+        "docs": "Mehr zur Bedienung von verinice finden Sie in der Dokumentation (?), die Tutorials (i) helfen bei der schnellen Orientierung.",
+        "externalLinks": "Weitergehende Informationen finden Sie im verinice.forum, auf unserem YouTube Kanal und in unseren kostenlosen Webinaren.",
+        "reminder": "Sie können diese Seite jederzeit über den Account Button erneut aufrufen!"
+      },
+      "profile": "Profile",
+      "selection": {
+        "noob": {
+            "question": "Sie sind neu in verinice und möchten sich orientieren?",
+            "advice": "Laden Sie eine Beispielorganisation um alle Funktionen kennenzulernen ...",
+            "buttonCaption": "Beispielorganisation laden"
+        },
+        "seasoned": {
+            "question": "Sie kennen sich bereits aus und möchten direkt starten?",
+            "advice": "Laden Sie eine leere Unit und bilden Sie Ihre Organisation ab ...",
+            "buttonCaption": "Leere Unit laden"
+        }
+      },
+      "subTitle": "Ihre ersten Schritte in verinice:",
       "tutorial": "Tutorials",
-      "webinar": "Webinaren registrieren"
+      "webinar": "Webinaren"
     }
   }
 </i18n>
