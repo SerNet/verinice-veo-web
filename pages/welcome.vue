@@ -23,10 +23,10 @@
       :title="t('headline')"
     />
 
-    <BaseCard class="ma-12">
+    <BaseCard class="ma-12 bg-basepage">
       <v-container fluid>
         <v-row dense>
-          <BaseCard>
+          <BaseCard class="bg-basepage">
             <v-card-title class="small-caps">
               {{ t('greeting') }}
             </v-card-title>
@@ -51,8 +51,8 @@
 
         <v-row class="mx-auto">
           <v-col cols="6">
-            <v-card class="pa-8 bg-accent">
-              <v-card class="pa-8 bg-surface">
+            <v-card class="pa-8 bg-surface">
+              <v-card class="pa-8 bg-basepage">
                 <p>{{ t('selection.noob.advice') }}</p>
               </v-card>
 
@@ -60,23 +60,25 @@
                 <v-btn
                   class="mt-4"
                   color="primary"
+                  @click="applyProfile()"
                 >
                   {{ t('selection.noob.buttonCaption') }}
                 </v-btn>
               </div>
             </v-card>
           </v-col>
-
+          
           <v-col cols="6">
-            <v-card class="pa-8 bg-accent">
-              <v-card class="pa-8 bg-surface">
+            <v-card class="pa-8 bg-surface">
+              <v-card class="pa-8 bg-basepage">
                 <p>{{ t('selection.seasoned.advice') }}</p>
               </v-card>
-
+              
               <div class="d-flex justify-center">
                 <v-btn
                   class="mt-4"
                   color="primary"
+                  @click="loadUnit()"
                 >
                   {{ t('selection.seasoned.buttonCaption') }}
                 </v-btn>
@@ -119,45 +121,95 @@
 </template>
 
 <script setup lang="ts">
-import {
-  mdiForumOutline,
-  mdiSchoolOutline,
-  mdiShapeOutline,
-  mdiYoutubeTv,
-  mdiInformationOutline,
-  mdiHelpCircleOutline,
-  mdiThemeLightDark
-} from '@mdi/js';
+// import {
+//   mdiForumOutline,
+//   mdiSchoolOutline,
+//   mdiShapeOutline,
+//   mdiYoutubeTv,
+//   mdiInformationOutline,
+//   mdiHelpCircleOutline,
+//   mdiThemeLightDark
+// } from '@mdi/js';
 
 import { useStorage } from '@vueuse/core';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
+const { displayErrorMessage } = useVeoAlerts();
+
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useQuery } from '~/composables/api/utils/query';
+import { useMutation } from '~~/composables/api/utils/mutation';
 
+const { mutateAsync: apply } = useMutation(domainQueryDefinitions.mutations.applyProfile);
+
+const router = useRouter();
 const { t } = useI18n();
 
-const links = ref({
-  forum: 'https://forum.verinice.com',
-  webinar: 'https://verinice.com/webinare',
-  youtube: 'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf'
-});
+// const links = ref({
+//   forum: 'https://forum.verinice.com',
+//   webinar: 'https://verinice.com/webinare',
+//   youtube: 'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf'
+// });
 
 // useStorage ignores defaults, if a value is already present in local storage
 const showWelcomePage = useStorage(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, false);
 
-// fetch all domains and units
-const { data: domains} = useQuery(domainQueryDefinitions.queries.fetchDomains);
+// fetch all units
 const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
-const domainId = computed(() => domains.value?.filter((domain) => domain.profiles && Object.keys(domain.profiles).length)?.[0]?.id || null);
-const unitId = computed(() => units.value?.[0]?.id || null);
+// get unit- and domain-id according to the param given
+const routeIds = (unitName: any) => {
+  // find either unit <Demo> or unit <Unit 1> ...
+  const unit = units.value?.find((unit) => unit.name === unitName);
+  // ... and get the DS-GVO-Id of the unit's allocated domains
+  const domain = unit?.domains?.find((domain) => domain.name === 'DS-GVO');
 
-const profileLink = computed(() => domainId && unitId
-  ? `/${unitId.value}/domains/${domainId.value}/profiles`
-  : null
-);
+  return [unit?.id, domain?.id];
+};
+
+const loadUnit = () => {
+  const [unit, domain] = [...routeIds('Unit 1')];
+
+  if (unit && domain) {
+    // link to the dashboard
+    router.push({
+      name: 'unit-domains-domain',
+      params: {
+        unit,
+        domain
+      }
+    });
+  }
+};
+
+const applyProfile = async () => {
+  const [unit, domain] = [...routeIds('Demo')];
+
+  if (unit && domain) {
+    try {
+      // apply the profile / sample data to the unit <Demo>
+      await apply({ domainId: domain, unitId: unit, profileKey: ['demoUnit'] });
+      // link to the dashboard
+      router.push({
+        name: 'unit-domains-domain',
+        params: {
+          unit,
+          domain
+        }
+      });
+
+    }
+    catch (error: any) {
+      displayErrorMessage('Error', t('errormessage'));
+    }
+  }
+};
+
+// const profileLink = computed(() => domainId && unitId
+//   ? `/${unitId.value}/domains/${domainId.value}/profiles`
+//   : null
+// );
 </script>
 
 <i18n>
@@ -165,6 +217,7 @@ const profileLink = computed(() => domainId && unitId
     "en": {
       "channel": "YouTube channel",
       "documentation": "documentation",
+      "errormessage": "Could not apply profile!",
       "forum": "verinice.forum",
       "greeting": "Welcome!",
       "headline": "First steps",
@@ -194,6 +247,7 @@ const profileLink = computed(() => domainId && unitId
     "de": {
       "channel": "YouTube Kanal",
       "documentation": "Dokumentation",
+      "errormessage": "Profil konnte nicht angewendet werden!",
       "forum": "verinice.forum",
       "greeting": "Willkommen!",
       "headline": "Erste Schritte",
