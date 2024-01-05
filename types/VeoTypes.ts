@@ -42,6 +42,8 @@ export interface IVeoLink {
   resourcesUri?: string;
   targetUri: string;
   searchesUri?: string;
+  name?: string;
+  id?: string;
 }
 
 export interface IVeoRiskDefinitionItemTranslations {

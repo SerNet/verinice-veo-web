@@ -38,8 +38,34 @@
 
       <LayoutLanguageSwitch />
 
+      <LayoutTutorialButton v-if="!$route.path.startsWith('/docs')" />
+
+      <v-tooltip
+        v-if="ability.can('view', 'documentation')"
+        location="bottom"
+      >
+        <template #activator="{ props }">
+          <v-btn
+            v-if="!$route.path.startsWith('/docs')"
+            class="mr-3"
+            icon
+            target="_blank"
+            to="/docs/index"
+            exact
+            v-bind="props"
+            data-component-name="docs-nav-item"
+          >
+            <v-icon :icon="mdiBookOpenBlankVariant" />
+          </v-btn>
+        </template>
+        <template #default>
+          {{ t('openDocumentationInNewTab') }}
+        </template>
+      </v-tooltip>
+
       <LayoutAccountBtn
         v-if="profile"
+        class="mr-3"
         :username="profile.username"
         :prename="profile.firstName"
         :lastname="profile.lastName"
@@ -63,10 +89,11 @@
 </template>
   
 <script setup lang="ts">
-import { mdiAccountCircleOutline } from '@mdi/js';
-  
+import { mdiAccountCircleOutline, mdiBookOpenBlankVariant } from '@mdi/js';
 import { useVeoUser } from '~/composables/VeoUser';
 
+const { t } = useI18n();
+const { ability } = useVeoPermissions();
 const { logout: _logout, profile } = useVeoUser();
   
 useHead(() => ({

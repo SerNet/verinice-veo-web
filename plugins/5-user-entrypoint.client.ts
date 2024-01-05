@@ -17,10 +17,12 @@
  */
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
+import { useQuerySync } from '~/composables/api/utils/query';
 
 export default defineNuxtPlugin (async (nuxtApp) => {
   const route = useRoute();
-
+  
   // We don't want any of this to take effect during the login process or if the print script might be running
   if (route.path === '/sso' || route.name === 'docs' && route.query.print !== undefined) {
     return;
@@ -28,6 +30,20 @@ export default defineNuxtPlugin (async (nuxtApp) => {
 
   const router = useRouter();
   const { initialize, keycloakInitialized, authenticated } = useVeoUser();
+  
+  if (route.path === '/') {
+    const units = await useQuerySync(unitQueryDefinitions.queries.fetchAll);
+    const unitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
+    const unit = units.find((unit) => unit.id === unitId);
+
+    const domainId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
+
+    if (unit && domainId && unit.domains.find((domain) => domain.targetUri.includes(domainId))) {
+      setTimeout(() => {
+        navigateTo(`/${unitId}/domains/${domainId}`);
+      }, 50);
+    }
+  }
 
   // Update last unit and last domain every time the route changes
   const lastUnit = useStorage(LOCAL_STORAGE_KEYS.LAST_UNIT, undefined, localStorage, { serializer: StorageSerializers.string });

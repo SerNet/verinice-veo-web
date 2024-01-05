@@ -323,14 +323,17 @@ import {
   mdiInformationOutline
 } from '@mdi/js';
 
-const { displayErrorMessage } = useVeoAlerts();
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useQuery } from '~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+
+definePageMeta({ layout: 'plain' });
 
 const { mutateAsync: apply, isLoading } = useMutation(domainQueryDefinitions.mutations.applyProfile);
+const { displayErrorMessage } = useVeoAlerts();
 
 const router = useRouter();
 const { t } = useI18n();
@@ -389,6 +392,8 @@ const profileLink = computed(() => {
 
   return `/${unit}/domains/${domain}/profiles`;
 });
+
+localStorage.setItem(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, 'false');
 </script>
 
 <i18n>
