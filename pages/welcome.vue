@@ -23,116 +23,305 @@
       :title="t('headline')"
     />
 
-    <BaseCard class="ma-12 bg-basepage">
-      <v-container fluid>
+    <v-container fluid>
+      <BaseCard class="mx-12 my-4 bg-basepage">
         <v-row dense>
-          <BaseCard class="bg-basepage">
+          <v-card
+            flat
+            class="bg-basepage"
+          >
             <v-card-title class="small-caps">
               {{ t('greeting') }}
             </v-card-title>
+
             <v-card-subtitle>
               {{ t('subTitle') }}
             </v-card-subtitle>
-          </BaseCard>
+          </v-card>
         </v-row>
 
-        <v-row class="mx-auto mt-12">
-          <v-col cols="6">
-            <p>
-              {{ t('selection.noob.question') }}
-            </p>
-          </v-col>
-          <v-col>
-            <p>
-              {{ t('selection.seasoned.question') }}
-            </p>
-          </v-col>
-        </v-row>
-
-        <v-row class="mx-auto">
-          <v-col cols="6">
-            <v-card class="pa-8 bg-surface">
-              <v-card class="pa-8 bg-basepage">
-                <p>{{ t('selection.noob.advice') }}</p>
-              </v-card>
-
-              <div class="d-flex justify-center">
-                <v-btn
-                  class="mt-4"
-                  color="primary"
-                  @click="applyProfile()"
-                >
-                  {{ t('selection.noob.buttonCaption') }}
-                </v-btn>
+        <v-row dense>
+          <v-card
+            class="my-8 bg-surface"
+          >
+            <v-card-title class="bg-accent">
+              <div
+                class="d-flex ml-8"
+                style="height: 75px; width: 300px;"
+              >
+                <LayoutAppLogoDesktop />
               </div>
-            </v-card>
-          </v-col>
-          
-          <v-col cols="6">
-            <v-card class="pa-8 bg-surface">
-              <v-card class="pa-8 bg-basepage">
-                <p>{{ t('selection.seasoned.advice') }}</p>
-              </v-card>
-              
-              <div class="d-flex justify-center">
-                <v-btn
-                  class="mt-4"
-                  color="primary"
-                  @click="loadUnit()"
+            </v-card-title>
+
+            <!-- Decisions: load a profile or an empty unit -->
+            <v-row
+              dense
+              class="mt-4 mb-8"
+            >
+              <v-col cols="6">
+                <v-card class="mx-8 fill-height bg-background">
+                  <v-card-title
+                    class="pt-4 bg-accent small-caps"
+                    style="min-height: 60px;"
+                  >
+                    {{ t('selection.noob.question') }}
+                  </v-card-title>
+
+                  <v-card-text class="mt-8 text-center text-h3">
+                    {{ t('selection.noob.advice') }}
+                  </v-card-text>
+
+                  <div class="d-flex justify-center my-4">
+                    <v-btn
+                      v-if="!isLoading"
+                      :disbaled="isLoading"
+                      color="primary"
+                      @click="applyProfile()"
+                    >
+                      <span>
+                        {{ t('selection.noob.buttonCaption') }}
+                      </span>
+                    </v-btn>
+                    <v-progress-linear
+                      v-else
+                      color="primary"
+                      height="30"
+                      :indeterminate="isLoading"
+                    >
+                      <span class="small-caps text-h2">{{ t('applyProfile') }}</span>
+                    </v-progress-linear>
+                  </div>
+                </v-card>
+              </v-col>
+
+              <v-col cols="6">
+                <v-card class="mr-8 fill-height bg-background">
+                  <v-card-title
+                    class="pt-4 bg-accent small-caps"
+                    style="min-height: 60px;"
+                  >
+                    {{ t('selection.seasoned.question') }}
+                  </v-card-title>
+  
+                  <v-card-text class="mt-8 text-center text-h3">
+                    {{ t('selection.seasoned.advice') }}
+                  </v-card-text>
+  
+                  <div class="d-flex justify-center my-8">
+                    <v-btn
+                      color="primary"
+                      @click="loadUnit()"
+                    >
+                      {{ t('selection.seasoned.buttonCaption') }}
+                    </v-btn>
+                  </div>
+                </v-card>
+              </v-col>
+            </v-row>
+
+            <!-- Links / Timeline -->
+            <v-row dense>
+              <v-timeline
+                align="center"
+                class="ma-4"
+                density="compact"
+                direction="horizontal"
+              >
+                <v-timeline-item
+                  v-if="profileLink"
+                  dot-color="primary"
+                  size="x-large"
+                  :icon="mdiShapeOutline"
                 >
-                  {{ t('selection.seasoned.buttonCaption') }}
-                </v-btn>
-              </div>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
+                  <v-card-text>
+                    <v-col
+                      cols="12"
+                      class="text-justify"
+                    >
+                      <i18n-t
+                        keypath="firstSteps.profile"
+                        tag="span"
+                        scope="global"
+                      >
+                        <nuxt-link
+                          class="text-decoration-none text-primary"
+                          rel="noopener noreferrer"
+                          :to="profileLink"
+                        >
+                          <strong>{{ t('injector.profile') }}</strong>
+                        </nuxt-link>
+                      </i18n-t>
+                    </v-col>
+                  </v-card-text>
+                </v-timeline-item>
 
-      <div class="d-flex justify-center my-12">
-        <v-row dense>
-          <p class="mx-auto">
-            {{ t('hints.profile') }}
-          </p>
-        </v-row>
-      </div>
+                <v-timeline-item
+                  dot-color="primary"
+                  size="x-large"
+                  :icon="mdiInformationOutline"
+                >
+                  <v-card-text>
+                    <v-col
+                      cols="12"
+                      class="text-justify"
+                    >
+                      <i18n-t
+                        keypath="firstSteps.tutorial"
+                        tag="span"
+                        scope="global"
+                      >
+                        <span class="text-decoration-none text-primary">
+                          <strong>{{ t('injector.tutorial') }}</strong>
+                        </span>
+                      </i18n-t>
+                    </v-col>
+                  </v-card-text>
+                </v-timeline-item>
 
-      <div>
-        <v-row dense>
-          <p class="mx-auto">
-            {{ t('hints.docs') }}
-          </p>
-        </v-row>
-        <v-row dense>
-          <p class="mx-auto">
-            {{ t('hints.externalLinks') }}
-          </p>
-        </v-row>
-      </div>
+                <v-timeline-item
+                  dot-color="primary"
+                  size="x-large"
+                  :icon="mdiBookOpenBlankVariant"
+                >
+                  <v-card-text>
+                    <v-col
+                      cols="12"
+                      class="text-justify"
+                    >
+                      <i18n-t
+                        keypath="firstSteps.documentation"
+                        tag="span"
+                        scope="global"
+                      >
+                        <nuxt-link
+                          class="text-decoration-none text-primary"
+                          rel="noopener noreferrer"
+                          target="_blank"
+                          to="/docs/index"
+                        >
+                          <strong>{{ t('injector.documentation') }}</strong>
+                        </nuxt-link>
+                      </i18n-t>
+                    </v-col>
+                  </v-card-text>
+                </v-timeline-item>
+              </v-timeline>
+            </v-row>
+            <!-- external Links -->
+            <v-row dense>
+              <v-timeline
+                align="center"
+                class="mx-4"
+                density="compact"
+                direction="horizontal"
+              >
+                <v-timeline-item
+                  dot-color="primary"
+                  size="x-large"
+                  :icon="mdiForumOutline"
+                >
+                  <v-card-text>
+                    <v-col
+                      cols="12"
+                      class="text-justify"
+                    >
+                      <i18n-t
+                        keypath="firstSteps.forum"
+                        tag="span"
+                        scope="global"
+                      >
+                        <nuxt-link
+                          class="text-decoration-none text-primary"
+                          rel="noopener noreferrer"
+                          target="_blank"
+                          :to="links.forum"
+                        >
+                          <strong>{{ t('injector.forum') }}</strong>
+                        </nuxt-link>
+                      </i18n-t>
+                    </v-col>
+                  </v-card-text>
+                </v-timeline-item>
 
-      <div class="d-flex justify-center">
-        <v-row dense>
-          <p class="mx-auto my-12">
-            {{ t('hints.reminder') }}
-          </p>
+                <v-timeline-item
+                  dot-color="primary"
+                  size="x-large"
+                  :icon="mdiYoutubeTv"
+                >
+                  <v-card-text>
+                    <v-col
+                      cols="12"
+                      class="text-justify"
+                    >
+                      <i18n-t
+                        keypath="firstSteps.channel"
+                        tag="span"
+                        scope="global"
+                      >
+                        <nuxt-link
+                          class="text-decoration-none text-primary"
+                          rel="noopener noreferrer"
+                          target="_blank"
+                          :to="links.channel"
+                        >
+                          <strong>{{ t('injector.channel') }}</strong>
+                        </nuxt-link>
+                      </i18n-t>
+                    </v-col>
+                  </v-card-text>
+                </v-timeline-item>
+
+                <v-timeline-item
+                  dot-color="primary"
+                  size="x-large"
+                  :icon="mdiSchoolOutline"
+                >
+                  <v-card-text>
+                    <v-col
+                      cols="12"
+                      class="text-justify"
+                    >
+                      <i18n-t
+                        keypath="firstSteps.webinar"
+                        tag="span"
+                        scope="global"
+                      >
+                        <nuxt-link
+                          class="text-decoration-none text-primary"
+                          rel="noopener noreferrer"
+                          target="_blank"
+                          :to="links.webinar"
+                        >
+                          <strong>{{ t('injector.webinar') }}</strong>
+                        </nuxt-link>
+                      </i18n-t>
+                    </v-col>
+                  </v-card-text>
+                </v-timeline-item>
+              </v-timeline>
+            </v-row>
+
+            <v-divider />
+
+            <v-card-text class="text-center">
+              <span>{{ t('reminder') }}</span>
+            </v-card-text>
+          </v-card>
         </v-row>
-      </div>
-    </BaseCard>
+      </BaseCard>
+    </v-container>
   </BasePage>
 </template>
 
 <script setup lang="ts">
-// import {
-//   mdiForumOutline,
-//   mdiSchoolOutline,
-//   mdiShapeOutline,
-//   mdiYoutubeTv,
-//   mdiInformationOutline,
-//   mdiHelpCircleOutline,
-//   mdiThemeLightDark
-// } from '@mdi/js';
-
-import { useStorage } from '@vueuse/core';
-import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+import {
+  mdiBookOpenBlankVariant,
+  mdiForumOutline,
+  mdiSchoolOutline,
+  mdiShapeOutline,
+  mdiYoutubeTv,
+  mdiInformationOutline
+} from '@mdi/js';
 
 const { displayErrorMessage } = useVeoAlerts();
 
@@ -141,35 +330,31 @@ import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useQuery } from '~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
 
-const { mutateAsync: apply } = useMutation(domainQueryDefinitions.mutations.applyProfile);
+const { mutateAsync: apply, isLoading } = useMutation(domainQueryDefinitions.mutations.applyProfile);
 
 const router = useRouter();
 const { t } = useI18n();
 
-// const links = ref({
-//   forum: 'https://forum.verinice.com',
-//   webinar: 'https://verinice.com/webinare',
-//   youtube: 'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf'
-// });
+const links = ref({
+  channel: 'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf',
+  forum: 'https://forum.verinice.com',
+  webinar: 'https://verinice.com/webinare'
+});
 
-// useStorage ignores defaults, if a value is already present in local storage
-const showWelcomePage = useStorage(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, false);
-
-// fetch all units
+// fetch all client units
 const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
-// get unit- and domain-id according to the param given
+// get unit- and domain-id according to the param given: <Demo> || <Unit 1>
 const routeIds = (unitName: any) => {
-  // find either unit <Demo> or unit <Unit 1> ...
   const unit = units.value?.find((unit) => unit.name === unitName);
-  // ... and get the DS-GVO-Id of the unit's allocated domains
+  // get the DS-GVO-Id of the unit's allocated domains
   const domain = unit?.domains?.find((domain) => domain.name === 'DS-GVO');
 
   return [unit?.id, domain?.id];
 };
 
-const loadUnit = () => {
-  const [unit, domain] = [...routeIds('Unit 1')];
+const loadUnit = (unitname = 'Unit 1') => {
+  const [unit, domain] = [...routeIds(unitname)];
 
   if (unit && domain) {
     // link to the dashboard
@@ -191,43 +376,37 @@ const applyProfile = async () => {
       // apply the profile / sample data to the unit <Demo>
       await apply({ domainId: domain, unitId: unit, profileKey: ['demoUnit'] });
       // link to the dashboard
-      router.push({
-        name: 'unit-domains-domain',
-        params: {
-          unit,
-          domain
-        }
-      });
-
+      loadUnit('Demo');
     }
     catch (error: any) {
-      displayErrorMessage('Error', t('errormessage'));
+      displayErrorMessage('Error', t('errorMessage'));
     }
   }
 };
 
-// const profileLink = computed(() => domainId && unitId
-//   ? `/${unitId.value}/domains/${domainId.value}/profiles`
-//   : null
-// );
+const profileLink = computed(() => {
+  const [unit, domain] = [...routeIds('Unit 1')];
+
+  return `/${unit}/domains/${domain}/profiles`;
+});
 </script>
 
 <i18n>
   {
     "en": {
-      "channel": "YouTube channel",
-      "documentation": "documentation",
-      "errormessage": "Could not apply profile!",
-      "forum": "verinice.forum",
+      "applyProfile": "Profile is applying...",
+      "errorMessage": "Could not apply profile!",
       "greeting": "Welcome!",
       "headline": "First steps",
-      "hints": {
-        "profile": "In the Profiles area, you can load further sample data or load it as a template into your productive unit.",
-        "docs": "You can find out more about how to use verinice in the documentation (?), the tutorials (i) will help you find your way around quickly.",
-        "externalLinks": "Further information can be found in the verinice.forum, on our YouTube channel and in our free webinars.",
-        "reminder": "You can call up this page again at any time using the account button!"
+      "injector": {
+        "channel": "YouTube channel",
+        "documentation": "documentation",
+        "forum": "verinice.forum",
+        "profile": "profiles",
+        "tutorial": "tutorials",
+        "webinar": "webinars"
       },
-      "profile": "profiles",
+      "reminder": "You can call up this page again at any time using the account button!",
       "selection": {
         "noob": {
             "question": "Are you new to verinice and want to find your way around?",
@@ -235,29 +414,27 @@ const applyProfile = async () => {
             "buttonCaption": "Load example data"
         },
         "seasoned": {
-            "question": "You already know your way around and want to get started right away?",
+            "question": "You want to get started right away?",
             "advice": "Load an empty unit and map your organization ...",
             "buttonCaption": "Load empty unit"
         }
       },
-      "subTitle": "Your first steps in verinice:",
-      "tutorial": "tutorials",
-      "webinar": "webinars"
+      "subTitle": "Your first steps in verinice:"
     },
     "de": {
-      "channel": "YouTube Kanal",
-      "documentation": "Dokumentation",
-      "errormessage": "Profil konnte nicht angewendet werden!",
-      "forum": "verinice.forum",
+      "applyProfile": "Profil wird geladen ...",
+      "errorMessage": "Profil konnte nicht angewendet werden!",
       "greeting": "Willkommen!",
       "headline": "Erste Schritte",
-      "hints": {
-        "profile": "Im Bereich Profile können Sie weitere Beispieldaten laden oder diese als Vorlage in Ihre produktive Unit laden.",
-        "docs": "Mehr zur Bedienung von verinice finden Sie in der Dokumentation (?), die Tutorials (i) helfen bei der schnellen Orientierung.",
-        "externalLinks": "Weitergehende Informationen finden Sie im verinice.forum, auf unserem YouTube Kanal und in unseren kostenlosen Webinaren.",
-        "reminder": "Sie können diese Seite jederzeit über den Account Button erneut aufrufen!"
+      "injector": {
+        "channel": "YouTube Channel",
+        "documentation": "Dokumentation",
+        "forum": "verinice.forum",
+        "profile": "Profile",
+        "tutorial": "Tutorials",
+        "webinar": "Webinaren"
       },
-      "profile": "Profile",
+      "reminder": "Sie können diese Seite jederzeit über den Account Button erneut aufrufen!",
       "selection": {
         "noob": {
             "question": "Sie sind neu in verinice und möchten sich orientieren?",
@@ -270,9 +447,7 @@ const applyProfile = async () => {
             "buttonCaption": "Leere Unit laden"
         }
       },
-      "subTitle": "Ihre ersten Schritte in verinice:",
-      "tutorial": "Tutorials",
-      "webinar": "Webinaren"
+      "subTitle": "Ihre ersten Schritte in verinice:"
     }
   }
 </i18n>
