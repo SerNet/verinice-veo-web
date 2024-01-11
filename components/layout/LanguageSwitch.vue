@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2022  Jonas Heitmann
+   - Copyright (C) 2022 Jonas Heitmann
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -16,41 +16,46 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-menu
-    offset-y
-    bottom
-    left
-    nudge-bottom="2"
-  >
-    <template #activator="{ props }">
-      <v-btn
-        v-bind="mergeProps($attrs, props)"
-        icon
-        data-component-name="language-select"
-      >
-        <v-icon :icon="mdiTranslate" />
-      </v-btn>
+  <v-tooltip location="bottom">
+    <template #activator="{ props: tooltip }">
+      <div v-bind="tooltip">
+        <v-menu
+          offset-y
+          bottom
+          left
+          nudge-bottom="2"
+        >
+          <template #activator="{ props: menu }">
+            <v-btn
+              v-bind="menu"
+              data-component-name="language-select"
+              :icon="mdiTranslate"
+            />
+          </template>
+
+          <template #default>
+            <v-list
+              v-model:selected="selectedLocale"
+              color="primary"
+              mandatory
+              :items="availableLocales"
+              item-title="name"
+              item-value="code"
+            />
+          </template>
+        </v-menu>
+      </div>
     </template>
-    <template #default>
-      <v-list
-        v-model:selected="selectedLocale"
-        color="primary"
-        mandatory
-        :items="availableLocales"
-        item-title="name"
-        item-value="code"
-      />
-    </template>
-  </v-menu>
+    <span>{{ t('showHelp') }}</span>
+  </v-tooltip>
 </template>
 
 <script setup lang="ts">
-import { mergeProps } from 'vue';
 import { mdiTranslate } from '@mdi/js';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { useLocale } from 'vuetify/lib/framework.mjs';
 
-const { locale, locales, setLocale } = useI18n();
+const { t, locale, locales, setLocale } = useI18n();
 const { current } = useLocale();
 
 const selectedLocale = computed({
@@ -63,3 +68,14 @@ const selectedLocale = computed({
 
 const availableLocales = computed<LocaleObject[]>(() => locales.value as LocaleObject[]);
 </script>
+
+<i18n>
+{
+  "de": {
+    "showHelp": "Sprache wechseln"
+  },
+  "en": {
+    "showHelp": "Switch language"
+  }
+}
+</i18n>
