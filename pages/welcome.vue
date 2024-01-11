@@ -87,7 +87,7 @@
         <v-card-text>
           <v-col class="text-justify">
             <v-icon
-              :icon="mdiHelpCircleOutline"
+              :icon="mdiBookSearchOutline"
               size="x-large"
               start
             />
@@ -223,7 +223,7 @@ import {
   mdiShapeOutline,
   mdiYoutubeTv,
   mdiInformationOutline,
-  mdiHelpCircleOutline,
+  mdiBookSearchOutline,
   mdiThemeLightDark
 } from '@mdi/js';
 
@@ -269,7 +269,7 @@ const profileLink = computed(() => domainId && unitId
     "en": {
       "channel": "YouTube channel",
       "checkboxLabel": "Show at startup",
-      "documentation": "online documentation",
+      "documentation": "documentation",
       "forum": "verinice.forum",
       "headline": "First steps",
       "hint": "You can access this page again at any time via the account button!",

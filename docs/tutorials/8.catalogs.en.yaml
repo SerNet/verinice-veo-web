@@ -13,4 +13,4 @@ steps:
     element: '[data-component-name=catalog-tom-tab]'
     intro: Select the TOM to be copied into your unit for further use.
   - title: 'Done'
-    intro: Further information can also be found in the online documentation.
+    intro: Further information can also be found in the documentation.

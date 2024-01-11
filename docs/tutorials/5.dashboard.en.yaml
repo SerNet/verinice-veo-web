@@ -35,4 +35,4 @@ steps:
     element: '[data-component-name=domain-dashboard-scenario-widget]'
     intro: Navigate from the dashboard directly to the yellow scenarios that need further consideration.
   - title: 'Done'
-    intro: Further information can also be found in the online documentation.
+    intro: Further information can also be found in the documentation.

@@ -73,4 +73,4 @@ steps:
     element: '[data-component-name=object-form-messages-tab]'
     intro: In the Validation section, you will see errors or warnings about the content entered in the form.
   - title: 'Done'
-    intro: Further information can also be found in the online documentation.
+    intro: Further information can also be found in the documentation.

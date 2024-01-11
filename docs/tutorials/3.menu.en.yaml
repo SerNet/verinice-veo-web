@@ -37,4 +37,4 @@ steps:
     element: '[data-component-name=toggle-navigation]'
     intro: With hide menu you can expand or collapse the navigation.
   - title: 'Done'
-    intro: Further information can also be found in the online documentation.
+    intro: Further information can also be found in the documentation.

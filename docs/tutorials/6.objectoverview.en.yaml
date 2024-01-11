@@ -47,4 +47,4 @@ steps:
     element: '[data-component-name=create-object-button]'
     intro: Use the 'Create object' button to create a new object for the active filter settings.
   - title: 'Created'
-    intro: Further information can also be found in the online documentation.
+    intro: Further information can also be found in the documentation.

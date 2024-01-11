@@ -16,4 +16,4 @@ steps:
     element: '[data-component-name=risk-matrix-wrapper] .veo-card'
     intro: The risk matrix represents the assignment of the combination of probability of occurrence and potential impact to the risk categories.
   - title: 'Done'
-    intro: Further information can also be found in the online documentation.
+    intro: Further information can also be found in the documentation.

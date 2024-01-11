@@ -25,4 +25,4 @@ steps:
     element: '[data-component-name=generate-report-button]'
     intro: Generate the report for output as a PDF.
   - title: 'Done'
-    intro: Further information can also be found in the online documentation.
+    intro: Further information can also be found in the documentation.

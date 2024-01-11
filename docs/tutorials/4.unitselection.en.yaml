@@ -11,4 +11,4 @@ steps:
     element: '[data-component-name=unit-selection-page]'
     intro: On the <b>Unit selection</b> page, select one of the available units for further processing.
   - title: 'Done'
-    intro: Further information can also be found in the online documentation.
+    intro: Further information can also be found in the documentation.
