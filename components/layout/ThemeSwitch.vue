@@ -16,18 +16,29 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-btn
-    data-component-name="theme-switch"
-    :icon="mdiThemeLightDark"
-    title="Toggle Theme"
-    @click="_switch"
-  />
+  <v-tooltip location="bottom">
+    <template #activator="{ props }">
+      <div v-bind="props">
+        <v-btn
+          data-component-name="theme-switch"
+          :icon="mdiThemeLightDark"
+          @click="_switch"
+        />
+      </div>
+    </template>
+
+    <template #default>
+      {{ t('mode') }}
+    </template>
+  </v-tooltip>
 </template>
 
 <script setup lang="ts">
 import { useTheme } from 'vuetify';
 import { mdiThemeLightDark } from '@mdi/js';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+
+const { t } = useI18n();
 
 const DARK = 'dark';
 const LIGHT = 'light';
@@ -45,3 +56,14 @@ const _switch = () => {
   localStorage.setItem(LOCAL_STORAGE_KEYS.DARK_MODE, (theme.global.name.value === DARK).toString());
 };
 </script>
+
+<i18n>
+  {
+    "de": {
+      "mode": "Hell/Dunkel-Modus"
+    },
+    "en": {
+      "mode": "Light/dark mode"
+    }
+  }
+</i18n>
