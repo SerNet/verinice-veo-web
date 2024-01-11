@@ -290,7 +290,7 @@
                           class="text-decoration-none text-primary"
                           rel="noopener noreferrer"
                           target="_blank"
-                          :to="links.webinar"
+                          :to="locale === 'de' ? links.webinar.de : links.webinar.en"
                         >
                           <strong>{{ t('injector.webinar') }}</strong>
                         </nuxt-link>
@@ -323,11 +323,11 @@ import {
   mdiInformationOutline
 } from '@mdi/js';
 
-
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useQuery } from '~/composables/api/utils/query';
 import { useMutation } from '~~/composables/api/utils/mutation';
+
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 definePageMeta({ layout: 'plain' });
@@ -336,13 +336,7 @@ const { mutateAsync: apply, isLoading } = useMutation(domainQueryDefinitions.mut
 const { displayErrorMessage } = useVeoAlerts();
 
 const router = useRouter();
-const { t } = useI18n();
-
-const links = ref({
-  channel: 'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf',
-  forum: 'https://forum.verinice.com',
-  webinar: 'https://verinice.com/webinare'
-});
+const { t, locale } = useI18n();
 
 // fetch all client units
 const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
@@ -355,7 +349,7 @@ const routeIds = (unitName: any) => {
 
   return [unit?.id, domain?.id];
 };
-
+// point the router to the dashboard of the unit given
 const loadUnit = (unitname = 'Unit 1') => {
   const [unit, domain] = [...routeIds(unitname)];
 
@@ -387,12 +381,23 @@ const applyProfile = async () => {
   }
 };
 
+// external links
+const links = ref({
+  channel: 'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf',
+  forum: 'https://forum.verinice.com',
+  webinar: {
+    de: 'https://verinice.com/webinare',
+    en: 'https://verinice.com/en/pro/webinars-1'
+  }
+});
+
 const profileLink = computed(() => {
   const [unit, domain] = [...routeIds('Unit 1')];
 
   return `/${unit}/domains/${domain}/profiles`;
 });
 
+// prevent the welcome page to be loaded automatically at login (except for the first time; handled by the middleware)
 localStorage.setItem(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, 'false');
 </script>
 
