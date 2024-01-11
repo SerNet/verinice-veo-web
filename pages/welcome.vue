@@ -24,7 +24,10 @@
     />
 
     <v-container fluid>
-      <BaseCard class="mx-12 my-4 bg-basepage">
+      <BaseCard
+        class="mx-12 my-4 bg-basepage"
+        style="max-width: 1280px"
+      >
         <v-row dense>
           <v-card
             flat
@@ -326,11 +329,9 @@ import {
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useQuery } from '~/composables/api/utils/query';
-import { useMutation } from '~~/composables/api/utils/mutation';
+import { useMutation } from '~/composables/api/utils/mutation';
 
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-
-definePageMeta({ layout: 'plain' });
 
 const { mutateAsync: apply, isLoading } = useMutation(domainQueryDefinitions.mutations.applyProfile);
 const { displayErrorMessage } = useVeoAlerts();
