@@ -82,7 +82,7 @@
       <v-card>
         <v-list density="compact">
           <v-list-item
-            v-for="domain of selectItems"
+            v-for="domain of itemSelection"
             :key="domain.value"
             :active="domainId === domain.value"
             color="primary"
@@ -96,71 +96,54 @@
   </v-menu>
 </template>
 
-<script lang="ts">
-import { mergeProps } from 'vue';
-import { mdiChevronDown, mdiChevronUp, mdiShapeOutline } from '@mdi/js';
-
-import { ROUTE_NAME as MORE_DOMAINS_ROUTE } from '~/pages/[unit]/domains/more.vue';
-import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE } from '~/pages/[unit]/domains/[domain]/index.vue';
+<script setup lang="ts">
+import { ROUTE_NAME as ROUTE_MORE_DOMAINS } from '~/pages/[unit]/domains/more.vue';
+import { ROUTE_NAME as ROUTE_DOMAIN_DASHBOARD } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { useFetchUnitDomains } from '~/composables/api/domains';
 
-export default defineComponent({
-  props: {
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    miniVariant: {
-      type: Boolean,
-      default: false
-    }
+import { mdiChevronDown, mdiChevronUp, mdiShapeOutline } from '@mdi/js';
+
+withDefaults(defineProps<{
+  disabled?: boolean,
+  miniVariant: boolean
+}>(), {
+  disabled: false,
+  miniVariant: false
+});
+
+defineEmits<{
+  (event: 'expand-menu'): void;
+}>();
+
+const route = useRoute();
+const { t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
+
+const domainId = computed({
+  get() {
+    return route.params.domain as string || 'more';
   },
-  emits: ['expand-menu'],
-  setup() {
-    const route = useRoute();
-    const { t } = useI18n();
-    const { t: globalT } = useI18n({ useScope: 'global' });
+  set(newValue: string) {
+    const params = newValue === 'more'
+      ? { ...route.params }
+      : { domain: newValue };
 
-    const domainId = computed({
-      get() {
-        return route.params.domain as string || 'more';
-      },
-      set(newValue: string) {
-        const params = newValue === 'more'
-          ? { ...route.params }
-          : { domain: newValue };
-
-        navigateTo({
-          name: newValue === 'more' ? MORE_DOMAINS_ROUTE : DOMAIN_DASHBOARD_ROUTE,
-          params: {
-            ...params
-          }
-        });
+    navigateTo({
+      name: newValue === 'more' ? ROUTE_MORE_DOMAINS : ROUTE_DOMAIN_DASHBOARD,
+      params: {
+        ...params
       }
     });
-
-    const domainName = computed(() => selectItems.value.find((domain) => domain.value === domainId.value)?.title || t('noDomainSelected').toString());
-
-    const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
-    const fetchUnitDomainsQueryEnabled = computed(() => !!route.params.unit);
-    const { data: domains, isFetching: domainIsFetching } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
-
-    const selectItems = computed(() => (domains.value || []).map((domain) => ({ value: domain.id, title: domain.name })).concat({ value: 'more', title: globalT('breadcrumbs.more').toString() }));
-
-    return {
-      domainId,
-      domainIsFetching,
-      domainName,
-      selectItems,
-
-      mergeProps,
-      t,
-      mdiChevronDown,
-      mdiChevronUp,
-      mdiShapeOutline
-    };
   }
 });
+
+const domainName = computed(() => itemSelection.value.find((domain: any) => domain.value === domainId.value)?.title || t('noDomainSelected').toString());
+
+const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
+const fetchUnitDomainsQueryEnabled = computed(() => !!route.params.unit);
+const { data: domains, isFetching: domainIsFetching } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
+
+const itemSelection = computed(() => (domains.value || []).map((domain: any) => ({ value: domain.id, title: domain.name })).concat({ value: 'more', title: globalT('breadcrumbs.more').toString() }));
 </script>
 
 <i18n>
@@ -171,7 +154,7 @@ export default defineComponent({
   },
   "de": {
     "noDomainSelected": "Keine Domäne ausgewählt",
-    "domainSelection": "Domainauswahl"
+    "domainSelection": "Domänenauswahl"
   }
 }
 </i18n>

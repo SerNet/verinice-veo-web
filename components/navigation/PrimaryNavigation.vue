@@ -28,7 +28,7 @@
     v-bind="$attrs"
   >
     <template #prepend>
-      <NavigationSelect
+      <NavigationDomainSelect
         v-if="route.params.unit"
         :mini-variant="miniVariant"
         @expand-menu="miniVariant = false"
