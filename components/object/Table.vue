@@ -119,21 +119,21 @@ const { data: translations } = useQuery(translationQueryDefinitions.queries.fetc
 /**
  * Render folder or file icons
  */
-const renderIcon: TableRenderer = ({ item }) =>
-  h(ObjectIcon, {
-    objectType: item.raw.type,
-    isComposite: !!item.raw.parts?.length
+const renderIcon: TableRenderer = ({ item }) => {
+  return h(ObjectIcon, {
+    objectType: item.type,
+    isComposite: !!item.parts?.length
   });
-
+}
 /**
  * Render date column using date formatter
  */
-const renderDate: TableRenderer = ({ item }) => (item.raw.updatedAt ? formatDate(item.raw.updatedAt) : '');
+const renderDate: TableRenderer = ({ internalItem: item }) => (item.raw.updatedAt ? formatDate(item.raw.updatedAt) : '');
 
 /**
  * Render created at / updated at tooltip
  */
-const renderUpdatedAtTooltip: TableRenderer = ({ item }) => {
+const renderUpdatedAtTooltip: TableRenderer = ({ internalItem: item }) => {
   return h('table', [
     item.raw.createdAt
       ? [h('tr', [
@@ -165,10 +165,10 @@ const formatDate: TableFormatter = (v) => {
  * Render translated status
  */
 const renderStatus: TableRenderer = ({ item }) => {
-  const _item = item.raw;
   if (!route.params.domain) return '';
-  const key = `${_item.type}_${_item.subType}_status_${_item.status}`;
-  return translations.value?.lang?.[locale.value]?.[key] || _item?.status || '';
+  const domainDetails = item.domains?.[route.params.domain as string];
+  const key = `${item.type}_${domainDetails?.subType}_status_${domainDetails?.status}`;
+  return translations.value?.lang?.[locale.value]?.[key] || item.domains?.[route.params.domain as string]?.status || '';
 };
 
 /**
@@ -229,7 +229,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     sortable: false,
     width: 500,
     truncate: true,
-    tooltip: ({ item }) => item.raw.description,
+    tooltip: ({ internalItem: item }) => item.raw.description,
     priority: 30,
     order: 60
   },

@@ -113,7 +113,7 @@ const headers: TableHeader[] = [
     sortable: false,
     width: 500,
     truncate: true,
-    tooltip: ({ item }: { item: any }) => item.raw.description,
+    tooltip: ({ internalItem: item }: { internalItem: any }) => item.raw.description,
     priority: 30,
     order: 60
   }

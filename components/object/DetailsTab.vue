@@ -41,7 +41,7 @@
                 size="small"
                 variant="flat"
                 :disabled="ability.cannot('manage', 'objects')"
-                @click="btn.action(item.raw)"
+                @click="btn.action(item)"
               />
             </template>
             {{ btn.label }}
@@ -245,7 +245,7 @@ export default defineComponent({
             truncate: false,
             priority: 100,
             order: 30,
-            render: (data: any) => data.item.raw.scenario?.abbreviation || ''
+            render: (data: any) => data.internalItem.raw.scenario?.abbreviation || ''
           },
           {
             value: 'scenario.displayName',
@@ -259,8 +259,8 @@ export default defineComponent({
             render: (data: any) => {
               // The display name contains designator, abbreviation and name of the scenario, however we only want the name, so we split the string
               // As the abbreviation is optional, we check for it and slice accordingly
-              const sliceIndex = data.item.raw?.scenario?.abbreviation ? 2 : 1;
-              return data.item.raw.scenario.displayName.split(' ').slice(sliceIndex).join(' ');
+              const sliceIndex = data.internalItem.raw?.scenario?.abbreviation ? 2 : 1;
+              return data.internalItem.raw.scenario.displayName.split(' ').slice(sliceIndex).join(' ');
             }
           },
           ...riskDefinitionCategories.value.map((categoryId: string, index: number) => ({
@@ -280,7 +280,7 @@ export default defineComponent({
               return (translatedInherentRisk1 || '').localeCompare(translatedInherentRisk2 || '');
             },
             render: (data: any) => {
-              const { inherentRisk, residualRisk } = getInherentAndResidualRisk(data.item.raw, categoryId);
+              const { inherentRisk, residualRisk } = getInherentAndResidualRisk(data.internalItem.raw, categoryId);
               const riskTreatments = getRiskTreatments(data.item.raw, categoryId);
               const values = riskDefinition.value?.riskValues;
 
@@ -345,7 +345,7 @@ export default defineComponent({
               truncate: false,
               priority: 100,
               order: 20,
-              render: (data: any) => h('span', data.item.raw?.abbreviation || '')
+              render: (data: any) => h('span', data.internalItem.raw?.abbreviation || '')
             },
             {
               value: 'linkId',
@@ -354,7 +354,7 @@ export default defineComponent({
               priority: 60,
               text: t('linkName'),
               width: 150,
-              render: (data: any) => h('span', translations.value?.lang[locale.value][data.item.raw.linkId] || data.item.raw.linkId)
+              render: (data: any) => h('span', translations.value?.lang[locale.value][data.internalItem.raw.linkId] || data.internalItem.raw.linkId)
             }
           ]
           : props.type === 'controls'
@@ -367,7 +367,7 @@ export default defineComponent({
                 truncate: false,
                 priority: 100,
                 order: 20,
-                render: (data: any) => h('span', data.item.raw.control?.abbreviation || '')
+                render: (data: any) => h('span', data.internalItem.raw.control?.abbreviation || '')
               },
               {
                 value: 'name',
@@ -377,7 +377,7 @@ export default defineComponent({
                 truncate: true,
                 priority: 100,
                 order: 30,
-                render: (data: any) => h('span', data.item.raw.control?.name || '')
+                render: (data: any) => h('span', data.internalItem.raw.control?.name || '')
               },
               {
                 value: 'status',
@@ -387,7 +387,7 @@ export default defineComponent({
                 truncate: false,
                 priority: 100,
                 order: 40,
-                render: (data: any) => h('span', { class: "text-truncate d-inline-block" }, t(`controls.implementation.${data.item.raw.implementationStatus}`) || '')
+                render: (data: any) => h('span', { class: "text-truncate d-inline-block" }, t(`controls.implementation.${data.internalItem.raw.implementationStatus}`) || '')
               },
               {
                 value: 'responsibility',
@@ -397,7 +397,7 @@ export default defineComponent({
                 truncate: true,
                 priority: 50,
                 order: 50,
-                render: (data: any) => h('span', { class: "text-truncate d-inline-block" }, data.item.raw.responsible?.name || '')
+                render: (data: any) => h('span', { class: "text-truncate d-inline-block" }, data.internalItem.raw.responsible?.name || '')
               }
             ]
             : [];
@@ -574,15 +574,15 @@ export default defineComponent({
       control: 'controls'
     };
     // push to object detail site (on click in table)
-    const openItem = (item: any) => {
+    const openItem = ({ internalItem }) => {
       // assemble route params
-      const { id: itemId, type: itemType } = item.item.raw as IVeoEntity;
+      const { id: itemId, type: itemType } = internalItem.raw as IVeoEntity;
       const objectType = OBJECT_TYPE_TO_URL_MAP[itemType] || route.params.objectType;
       const params = { ...route.params, object: itemId, objectType, subType: '-' };
 
       switch (props.type)  {
         case 'risks':
-          item = item.item.raw as IVeoRisk;
+          const item = internalItem.raw as IVeoRisk;
           editRiskDialog.value.scenarioId = getEntityDetailsFromLink(item.scenario).id;
           editRiskDialog.value.visible = true;
           break;
@@ -592,7 +592,7 @@ export default defineComponent({
             query: {
               type: props.object?.type,
               riskAffected: props.object?.id,
-              control: item.item.raw.id
+              control: internalItem.raw.id
             }
           });
         default:

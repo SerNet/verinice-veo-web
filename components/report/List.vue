@@ -212,7 +212,7 @@ const headers = computed(() => {
       sortable: false,
       width: 600,
       truncate: true,
-      tooltip: ({ item }: { item: any }) => item.raw.description || '',
+      tooltip: ({ internalItem: item }: { internalItem: any }) => item.raw.description || '',
       priority: 30,
       order: 30
     },
@@ -227,7 +227,7 @@ const headers = computed(() => {
 });
 
 const onRowClicked = (_event: PointerEvent, context: any) => {
-  emit('create-report', context.item.raw);
+  emit('create-report', context.internalItem.raw);
 };
 </script>
 

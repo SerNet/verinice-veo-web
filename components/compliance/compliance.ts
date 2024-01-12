@@ -29,7 +29,7 @@ async function fetchRequirementImplementation({
   riskAffected,
   item
 }:{ type: string, riskAffected: string, item: any}) {
-  const { _self  } = item.raw;
+  const { _self  } = item;
   const requirementImplementationId = getRequirementImplementationId(_self);
   const url = `/api/${type}/${riskAffected}/requirement-implementations/${requirementImplementationId}`;
 

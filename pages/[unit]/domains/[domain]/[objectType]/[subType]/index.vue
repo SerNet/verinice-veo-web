@@ -351,7 +351,7 @@ const openItem = ({ item }: { item: any }) => {
     name: OBJECT_DETAIL_ROUTE,
     params: {
       ...route.params,
-      object: item.raw.id
+      object: item.id
     }
   });
 };
@@ -391,7 +391,7 @@ const actions = computed(() => [
     icon: mdiContentCopy,
     async action(item: any) {
       try {
-        const { resourceId: clonedObjectId } = await clone(item.raw);
+        const { resourceId: clonedObjectId } = await clone(item);
         displaySuccessMessage(
           t('cloneSuccess'),
           { actions: [
@@ -410,7 +410,7 @@ const actions = computed(() => [
           }
         );
       } catch (e: any) {
-        showError('clone', item.raw, e);
+        showError('clone', item, e);
       }
     }
   },
@@ -419,7 +419,7 @@ const actions = computed(() => [
     label: upperFirst(t('deleteObject')),
     icon: mdiTrashCanOutline,
     action(item: any) {
-      itemToDelete.value = item.raw;
+      itemToDelete.value = item;
     }
   },
   {

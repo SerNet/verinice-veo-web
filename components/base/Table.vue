@@ -29,7 +29,7 @@
 
 export type TableFormatter = (value: any) => string;
 export type TableTooltip = (value: any) => string;
-export type TableRenderer = (props: { item: any; value: any }, header?: TableHeader) => VNode | VNode[] | string | (() => VNode | VNode[] | string);
+export type TableRenderer = (props: { item: any, internalItem: any, value: any }, header?: TableHeader) => VNode | VNode[] | string | (() => VNode | VNode[] | string);
 
 interface TableHeaderAdditionalProperties {
   priority: number;
@@ -164,16 +164,16 @@ const renderActions: TableRenderer = (context) =>
     }
   );
 
-const toggleSelection = (item: any) => {
-  if(item.raw.disabled) {
+const toggleSelection = (context: any) => {
+  if(context.item.disabled) {
     return;
   }
   const newModelValue: any[] = cloneDeep(internalModelValue.value);
-  const existingIndex = newModelValue.findIndex((existingId) => existingId === item.value);
+  const existingIndex = newModelValue.findIndex((existingId) => existingId === context.internalItem.value);
   if(existingIndex !== -1) {
     newModelValue.splice(existingIndex, 1);
   } else {
-    newModelValue.push(item.value);
+    newModelValue.push(context.internalItem.value);
   }
   internalModelValue.value = newModelValue;
 };
@@ -191,13 +191,13 @@ const presetHeaders: { [key: string]: TableHeader } = {
     order: 0,
     text: '',
     render: (context) => {
-      const isSelected = internalModelValue.value.includes(context.item.value);
+      const isSelected = internalModelValue.value.includes(context.internalItem.value);
       return h(VCheckbox, {
         modelValue: isSelected,
         color: isSelected ? 'primary' : undefined,
-        disabled: context.item.raw.disabled,
+        disabled: context.internalItem.raw.disabled,
         hideDetails: true,
-        'onUpdate:model-value': () => toggleSelection(context.item)
+        'onUpdate:model-value': () => toggleSelection(context)
       });
     }
   },
@@ -225,7 +225,7 @@ const truncateClasses = ['text-truncate'];
 /**
  * Render value inside a cell
  */
-const renderValue = (item: any, key: keyof any | string) => (key in item.raw ? String(item.raw[key]) : '');
+const renderValue = (item: any, key: keyof any | string) => (key in item ? String(item[key]) : '');
 /**
  * Convert TableRenderer to VNode array
  */
@@ -293,13 +293,13 @@ const items = computed(() => {
      * Create slots to apply renderers. If none exists, use a default one in order to display disabled table entries
      */
 const defaultRenderer: TableRenderer = (context: any, header) => {
-  const column = context.columns.find((column: any) => column.key === header?.key);
+  const column = context.column
   return h('div', {
-    class: [...column.cellClass, ...column.class, ...(context.item.raw.disabled) ? ['v-list-item--disabled'] : []],
+    class: [...column.cellClass, ...column.class, ...(context.internalItem.raw.disabled) ? ['v-list-item--disabled'] : []],
     style: {
       width: `${column.width}px`
     }
-  }, header?.key ? context.item.columns[header.key] : undefined);
+  }, header?.key ? context.internalItem.columns[header.key] : undefined);
 };
 const renderers = computed(() => Object.fromEntries(_headers.value.map((header) => [`item.${header.key}`, (context: any) => header.render ? header.render(context) : defaultRenderer(context, header)])));
 
@@ -405,7 +405,7 @@ const sharedProps = computed(() => ({
     ? {
       'onClick:row': (_event: PointerEvent, context: any) => {
         if ('show-select' in attrs) {
-          toggleSelection(context.item);
+          toggleSelection(context);
         } else {
           emit('click', context);
         }
