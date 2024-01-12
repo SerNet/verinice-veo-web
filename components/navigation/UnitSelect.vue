@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021 Jonas Heitmann, Annemarie Bufe, Frank Schneider
-   - 
+   - Copyright (C) 2024 Frank Schneider
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -20,24 +20,24 @@
     location="bottom"
     width="275px"
     :transition="false"
-    offset="200"
+    offset="130"
   >
     <template #activator="{ props: menuProps, isActive }">
       <v-list
-        class="mt-0"
+        class="mt-4"
         nav
         density="compact"
         :rounded="miniVariant"
       >
         <v-list-item
           v-show="!miniVariant"
-          class="veo-domain-select bg-basepage"
-          data-component-name="domain-select"
+          class="veo-unit-select bg-basepage"
+          data-component-name="unit-select"
           v-bind="menuProps"
           :disabled="disabled"
         >
           <v-skeleton-loader
-            v-if="domainIsFetching"
+            v-if="isFetching"
             height="24px"
             style="border-radius: 999px"
             type="image"
@@ -45,9 +45,9 @@
           />
           <span
             v-else
-            class="veo-domain-select__selection text-no-wrap"
+            class="veo-unit-select__selection text-no-wrap"
           >
-            {{ domainName }}
+            {{ unitName }}
           </span>
           <template #append>
             <v-icon
@@ -70,11 +70,11 @@
               <div v-bind="tooltip">
                 <v-icon
                   color="black"
-                  :icon="mdiDomain"
+                  :icon="mdiUnity"
                 />
               </div>
             </template>
-            <span>{{ t('domainSelection') }}</span>
+            <span>{{ t('unitSelection') }}</span>
           </v-tooltip>
         </v-list-item>
       </v-list>
@@ -84,13 +84,13 @@
       <v-card>
         <v-list density="compact">
           <v-list-item
-            v-for="domain of itemSelection"
-            :key="domain.value"
-            :active="domainId === domain.value"
+            v-for="unit of itemSelection"
+            :key="unit.value"
+            :active="unitId === unit.value"
             color="primary"
-            :value="domain.value"
-            :title="domain.title"
-            @click="domainId = domain.value"
+            :value="unit.value"
+            :title="unit.title"
+            @click="unitId = unit.value"
           />
         </v-list>
       </v-card>
@@ -99,11 +99,13 @@
 </template>
 
 <script setup lang="ts">
-import { ROUTE_NAME as ROUTE_MORE_DOMAINS } from '~/pages/[unit]/domains/more.vue';
 import { ROUTE_NAME as ROUTE_DOMAIN_DASHBOARD } from '~/pages/[unit]/domains/[domain]/index.vue';
-import { useFetchUnitDomains } from '~/composables/api/domains';
+import { ROUTE_NAME as ROUTE_INDEX } from '~/pages/index.vue';
 
-import { mdiChevronDown, mdiChevronUp, mdiDomain } from '@mdi/js';
+import { useQuery } from '~/composables/api/utils/query';
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
+
+import { mdiChevronDown, mdiChevronUp, mdiUnity } from '@mdi/js';
 
 withDefaults(defineProps<{
   disabled?: boolean,
@@ -119,19 +121,26 @@ defineEmits<{
 
 const route = useRoute();
 const { t } = useI18n();
-const { t: globalT } = useI18n({ useScope: 'global' });
 
-const domainId = computed({
+// fetch all client units
+const { data: units, isFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);
+
+const unitId = computed({
   get() {
-    return route.params.domain as string || 'more';
+    return route.params.unit as string || 'management';
   },
   set(newValue: string) {
-    const params = newValue === 'more'
-      ? { ...route.params }
-      : { domain: newValue };
+    
+    let params;
+    if (newValue === 'management') {
+      params = { ...route.params };
+    } else {
+      const domainId = units.value?.find((unit: any) => unit.id === newValue).domains.find((domain: any) => (domain.id === route.params.domain))?.id || units.value?.find((unit: any) => unit.id === newValue).domains?.[0]?.id;
+      params = { unit: newValue, domain: domainId };
+    }
 
     navigateTo({
-      name: newValue === 'more' ? ROUTE_MORE_DOMAINS : ROUTE_DOMAIN_DASHBOARD,
+      name: newValue === 'management' ? ROUTE_INDEX : ROUTE_DOMAIN_DASHBOARD,
       params: {
         ...params
       }
@@ -139,37 +148,35 @@ const domainId = computed({
   }
 });
 
-const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
-const fetchUnitDomainsQueryEnabled = computed(() => !!route.params.unit);
-const { data: domains, isFetching: domainIsFetching } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
-
-const itemSelection = computed(() => (domains.value || []).map((domain: any) => ({ value: domain.id, title: domain.name })).concat({ value: 'more', title: globalT('breadcrumbs.more').toString() }));
-const domainName = computed(() => domainId.value === undefined ? t('noDomainSelected').toString() : (itemSelection.value.find((domain: any) => domain.value === domainId.value)?.title));
+const itemSelection = computed(() => (units.value || []).map((unit: any) => ({ value: unit.id, title: unit.name })).concat({ value: 'management', title: t('management').toString() }));
+const unitName = computed(() => units.value?.find((unit: any) => (unitId.value === unit.id))?.name || t('noUnitSelected').toString());
 </script>
 
 <i18n>
 {
   "en": {
-    "noDomainSelected": "No domain selected",
-    "domainSelection": "Domain selection"
+    "management": "Unit management",
+    "noUnitSelected": "No unit selected",
+    "unitSelection": "Unit selection"
   },
   "de": {
-    "noDomainSelected": "Keine Domäne ausgewählt",
-    "domainSelection": "Domänenauswahl"
+    "management": "Unit-Verwaltung",
+    "noUnitSelected": "Keine Unit ausgewählt",
+    "unitSelection": "Unit-Auswahl"
   }
 }
 </i18n>
 
 <style lang="scss" scoped>
-.veo-domain-select {
+.veo-unit-select {
   border-radius: 6px;
 }
 
-.veo-domain-select.v-list-item--disabled {
+.veo-unit-select.v-list-item--disabled {
   background: rgba(0, 0, 0, 0.16);
 }
 
-.veo-domain-select__selection {
+.veo-unit-select__selection {
   color: #666666;
   font-size: 1.2rem;
   overflow: hidden;

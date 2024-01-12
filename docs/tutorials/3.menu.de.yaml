@@ -9,12 +9,12 @@ steps:
   - title: 'Logo'
     element: '[data-component-name=logo]'
     intro: Über das Logo kommen Sie jederzeit zurück auf das Dashboard der aktiven Unit.
-  - title: 'Domain Selector'
+  - title: 'Unit-Selektor'
+    element: '[data-component-name=unit-select]'
+    intro: Mit dem Unit-Selektor wählen Sie eine der zur Verfügung stehenden Units aus.
+  - title: 'Domänen-Selektor'
     element: '[data-component-name=domain-select]'
-    intro: Mit dem Domain Selector wählen Sie eine der zur Verfügung stehenden Domänen aus.
-  - title: 'Unit-Verwaltung'
-    element: '[data-component-name=unit-selection-nav-item]'
-    intro: In der Unit-Verwaltung können Sie bestehende Units editieren und löschen, zu anderen Units wechseln oder eine neue Unit unten rechts über den Plus-Button erstellen.
+    intro: Mit dem Domänen-Selektor wählen Sie eine der zur Verfügung stehenden Domänen aus.
   - title: 'Dashboard'
     element: '[data-component-name=domain-dashboard-nav-item]'
     intro: Auf dem Dashboard sehen Sie auf einen Blick alle Objekte je Subtyp und Status (Lebenszyklus) und können direkt zu diesen navigieren.

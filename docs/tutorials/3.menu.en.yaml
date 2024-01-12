@@ -9,12 +9,12 @@ steps:
   - title: 'Logo'
     element: '[data-component-name=logo]'
     intro: Via the logo you can always return to the dashboard of the active unit.
+  - title: 'Unit Selector'
+    element: '[data-component-name=unit-select]'
+    intro: Use the Unit Selector to select one of the available units
   - title: 'Domain Selector'
     element: '[data-component-name=domain-select]'
     intro: Use the Domain Selector to select one of the available domains.
-  - title: 'Unit management'
-    element: '[data-component-name=unit-selection-nav-item]'
-    intro: In the Unit management section you can edit and delete existing units, select another unit as well as create a new unit via the Plus-Button at the lower right.
   - title: 'Dashboard'
     element: '[data-component-name=domain-dashboard-nav-item]'
     intro: On the Dashboard you can see all objects per subtype and status (life cycle) at a glance and navigate directly to them.

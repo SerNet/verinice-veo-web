@@ -24,15 +24,20 @@
     :permanent="!xs"
     :temporary="xs"
     scrim
-    class="veo-primary-navigation"
     v-bind="$attrs"
   >
     <template #prepend>
-      <NavigationDomainSelect
-        v-if="route.params.unit"
-        :mini-variant="miniVariant"
-        @expand-menu="miniVariant = false"
-      />
+      <div class="mb-8">
+        <NavigationUnitSelect
+          :mini-variant="miniVariant"
+          @expand-menu="miniVariant = false"
+        />
+        <NavigationDomainSelect
+          :disabled="!$route.params.unit"
+          :mini-variant="miniVariant"
+          @expand-menu="miniVariant = false"
+        />
+      </div>
     </template>
     <template #default>
       <v-list
@@ -142,7 +147,6 @@ import { NavItem } from '@nuxt/content/dist/runtime/types';
 import { extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
-import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/catalogs/[catalog].vue';
@@ -188,7 +192,7 @@ const props = withDefaults(defineProps<{
 
 const { t, locale } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
-const { authenticated, userSettings } = useVeoUser();
+const { authenticated } = useVeoUser();
 const route = useRoute();
 const { ability } = useVeoPermissions();
 const { xs } = useDisplay();
@@ -414,18 +418,6 @@ const riskChildItems = computed<INavItem[]>(() =>
   }))
 );
 
-const unitSelectionNavEntry = computed<INavItem>(() =>({
-  id: 'unitSelection',
-  name: $t('breadcrumbs.index'),
-  icon: mdiHomeOutline,
-  to: {
-    name: UNIT_SELECTION_ROUTE_NAME
-  },
-  componentName: 'unit-selection-nav-item',
-  exact: true,
-  openInNewtab: route.path.startsWith("/docs")
-}));
-
 const domainDashboardNavEntry = computed<INavItem>(() => ({
   id: 'domainDashboard',
   name: $t('domain.index.title').toString(),
@@ -536,7 +528,6 @@ const docNavItems = computed(() =>
 );
 
 const items = computed<INavItem[]>(() => [
-  ...(authenticated.value && userSettings.value.maxUnits ? [unitSelectionNavEntry.value] : []),
   ...(props.unitId && props.domainId
     ? [
       domainDashboardNavEntry.value,
