@@ -85,7 +85,7 @@
       </v-btn>
     </v-app-bar>
 
-    <LayoutPrimaryNavigation
+    <NavigationPrimaryNavigation
       v-model="drawer"
       :domain-id="domainId"
       :unit-id="(route.params.unit as string)"

@@ -77,7 +77,7 @@
         v-for="child of children"
         :key="child.id"
       >
-        <LayoutPrimaryNavigationEntry
+        <NavigationPrimaryNavigationEntry
           v-if="!child.children"
           v-bind="child"
           :level="level + 1"
@@ -85,7 +85,7 @@
           @expand-menu="emit('expand-menu')"
           @open-parent="openCategory"
         />
-        <LayoutPrimaryNavigationCategory
+        <NavigationPrimaryNavigationCategory
           v-else
           v-bind="child"
           :level="level + 1"
@@ -96,12 +96,6 @@
     </template>
   </v-list-group>
 </template>
-
-<script lang="ts">
-export default {
-  name: 'LayoutPrimaryNavigationCategory'
-};
-</script>
 
 <script setup lang="ts">
 import { mdiChevronDown } from '@mdi/js';

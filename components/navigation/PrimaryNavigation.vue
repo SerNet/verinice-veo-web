@@ -28,7 +28,7 @@
     v-bind="$attrs"
   >
     <template #prepend>
-      <DomainSelect
+      <NavigationSelect
         v-if="route.params.unit"
         :mini-variant="miniVariant"
         @expand-menu="miniVariant = false"
@@ -44,14 +44,14 @@
           v-for="item in items"
           :key="item.id"
         >
-          <LayoutPrimaryNavigationCategory
+          <NavigationPrimaryNavigationCategory
             v-if="item.children"
             v-bind="item"
             :level="0"
             :mini-variant="miniVariant"
             @expand-menu="miniVariant = false"
           />
-          <LayoutPrimaryNavigationEntry
+          <NavigationPrimaryNavigationEntry
             v-else
             v-bind="item"
             :level="0"
