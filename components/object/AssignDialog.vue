@@ -72,6 +72,7 @@
                     :disabled="!selectedSubType[domain.id]"
                     variant="solo-filled"
                     @click.stop
+                    @update:model-value="($event: string) => onStatusChange($event, domain.id)"
                   />
                 </v-col>
               </v-row>
@@ -92,7 +93,7 @@
       <v-spacer />
       <v-btn
         color="primary"
-        :disabled="!isDirty"
+        :disabled="saveButtonDisabled"
         variant="text"
         @click="assignObject()"
       >
@@ -154,7 +155,6 @@ const { data: legacyObject } = useQuery(
   }
 );
 
-const isDirty = computed(() => true);
 const prePolluteList = (data: IVeoEntityLegacy) => {
   selectedSubType.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.subType]));
   selectedStatus.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.status]));
@@ -184,8 +184,14 @@ const statuses = computed(() => (domains.value || []).reduce((prevValue, current
 }, {} as Record<string, { title: string, value: string }[]>));
 
 const onSubTypeChange = (newValue: string, domainId: string) => {
+  isSubTypeSelected.value = true;
   selectedSubType.value[domainId] = newValue;
   selectedStatus.value[domainId] = undefined;
+};
+
+const onStatusChange = (newValue: string, domainId: string) => {
+  isStatusSelected.value = true;
+  selectedStatus.value[domainId] = newValue;
 };
 
 const availableDomains = computed(() => domains.value?.map((domain) => ({
@@ -201,10 +207,15 @@ const domainProperties = computed(() => availableDomains.value.map((domain) => {
   return { title: domain.name, subtitle: domain.description, value: domain.id, disabled: disabledDomains.value.includes(domain.id) };
 }));
 
+const isSubTypeSelected = ref(false);
+const isStatusSelected = ref(false);
+const saveButtonDisabled = computed(() => !(isSubTypeSelected.value && isStatusSelected.value));
+
 const assignObject = async () => {
   try {
     for (const domain of selectedDomains.value.filter((domain) => !disabledDomains.value.includes(domain))) {
       await assign({ domain: domain, endpoint: route.params?.objectType, objectId: props.objectId, subType: selectedSubType.value[domain], status: selectedStatus.value[domain] });
+      disabledDomains.value.push(domain);
     }
     displaySuccessMessage(t('objectAssigned').toString());
   }
@@ -219,6 +230,9 @@ const assignObject = async () => {
 watch(() => props.modelValue, () => {
   selectedSubType.value = {};
   selectedStatus.value = {};
+  
+  isSubTypeSelected.value = false;
+  isStatusSelected.value = false;
 
   if (legacyObject.value) {
     prePolluteList(legacyObject.value);
