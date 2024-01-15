@@ -115,7 +115,7 @@
                       color="primary"
                       @click="loadUnit()"
                     >
-                      {{ t('selection.seasoned.buttonCaption') }}
+                      {{ isUnitExisting ? t('selection.seasoned.buttonCaption') : t('unitManagement') }}
                     </v-btn>
                   </div>
                 </v-card>
@@ -352,6 +352,10 @@ const routeIds = (unitName: any) => {
 };
 // point the router to the dashboard of the unit given
 const loadUnit = (unitname = 'Unit 1') => {
+  if (!isUnitExisting.value) {
+    router.push({ name: 'index' });
+  }
+
   const [unit, domain] = [...routeIds(unitname)];
 
   if (unit && domain) {
@@ -381,6 +385,8 @@ const applyProfile = async () => {
     }
   }
 };
+
+const isUnitExisting = computed(() => units.value?.find((unit: any) => unit.name === 'Unit 1'));
 
 // external links
 const links = ref({
@@ -430,7 +436,8 @@ localStorage.setItem(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, 'false');
             "buttonCaption": "Load empty unit"
         }
       },
-      "subTitle": "Your first steps in verinice:"
+      "subTitle": "Your first steps in verinice:",
+      "unitManagement": "Goto unit management"
     },
     "de": {
       "applyProfile": "Profil wird geladen ...",
@@ -458,7 +465,8 @@ localStorage.setItem(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, 'false');
             "buttonCaption": "Leere Unit laden"
         }
       },
-      "subTitle": "Ihre ersten Schritte in verinice:"
+      "subTitle": "Ihre ersten Schritte in verinice:",
+      "unitManagement": "Zur Unit-Verwaltung wechseln"
     }
   }
 </i18n>
