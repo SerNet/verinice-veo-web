@@ -31,7 +31,7 @@
       <p>{{ t('moreModulesInfo') }}</p>
       <p>
         {{ t('furtherInformation') }} <a
-          :href="locale === 'de' ? 'https://verinice.com/' : 'https://verinice.com/en/'"
+          :href="locale === 'de' ? 'https://verinice.com/veo' : 'https://verinice.com/en/veo'"
           target="_blank"
         >{{ t('linkName') }}</a>.
       </p>
