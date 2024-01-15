@@ -18,9 +18,9 @@
 export const LOCAL_STORAGE_KEYS = {
   ACCEPTED_COOKIES: 'accepted-cookies',
   DARK_MODE: 'dark-mode',
+  DEMO_UNIT_PROFILE_APPLIED: 'demo-unit-profile-applied',
   SHOW_WELCOME_PAGE: 'show-welcome-page',
   LAST_DOMAIN: 'last-domain',
   LAST_UNIT: 'last-unit',
-  PRIMARY_NAV_MINI_VARIANT: 'primary-navigation-drawer--mini-variant',
-  UNIT_BEFORE_DEMOUNIT: 'unit-before-demounit'
+  PRIMARY_NAV_MINI_VARIANT: 'primary-navigation-drawer--mini-variant'
 };

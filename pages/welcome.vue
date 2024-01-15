@@ -82,7 +82,7 @@
                       @click="applyProfile()"
                     >
                       <span>
-                        {{ t('selection.noob.buttonCaption') }}
+                        {{ isUnitExisting('Demo') ? t('selection.noob.buttonCaption') : t('unitManagement') }}
                       </span>
                     </v-btn>
                     <v-progress-linear
@@ -115,7 +115,7 @@
                       color="primary"
                       @click="loadUnit()"
                     >
-                      {{ isUnitExisting ? t('selection.seasoned.buttonCaption') : t('unitManagement') }}
+                      {{ isUnitExisting('Unit 1') ? t('selection.seasoned.buttonCaption') : t('unitManagement') }}
                     </v-btn>
                   </div>
                 </v-card>
@@ -344,15 +344,15 @@ const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
 // get unit- and domain-id according to the param given: <Demo> || <Unit 1>
 const routeIds = (unitName: any) => {
-  const unit = units.value?.find((unit) => unit.name === unitName);
+  const unit = units.value?.find((unit: any) => unit.name === unitName);
   // get the DS-GVO-Id of the unit's allocated domains
-  const domain = unit?.domains?.find((domain) => domain.name === 'DS-GVO');
+  const domain = unit?.domains?.find((domain: any) => domain.name === 'DS-GVO');
 
   return [unit?.id, domain?.id];
 };
 // point the router to the dashboard of the unit given
 const loadUnit = (unitname = 'Unit 1') => {
-  if (!isUnitExisting.value) {
+  if (!isUnitExisting(unitname)) {
     router.push({ name: 'index' });
   }
 
@@ -371,10 +371,22 @@ const loadUnit = (unitname = 'Unit 1') => {
 };
 
 const applyProfile = async () => {
+  // navigate to indexpage if the UNIT 'Demo' has been renamed or deleted
+  if (!isUnitExisting('Demo')) {
+    router.push({ name: 'index' });
+  }
+  const isProfileApplied = localStorage.getItem(LOCAL_STORAGE_KEYS.DEMO_UNIT_PROFILE_APPLIED);
+  // navigate to the dashboard if the profile already has been applied
+  if (isProfileApplied) {
+    loadUnit('Demo');
+  }
+
   const [unit, domain] = [...routeIds('Demo')];
 
   if (unit && domain) {
     try {
+      // set DEMO_UNIT_PROFILE_APPLIED to true on first call to ensure, that the profile is applied only once
+      localStorage.setItem(LOCAL_STORAGE_KEYS.DEMO_UNIT_PROFILE_APPLIED, true.toString());
       // apply the profile / sample data to the unit <Demo>
       await apply({ domainId: domain, unitId: unit, profileKey: ['demoUnit'] });
       // link to the dashboard
@@ -386,7 +398,7 @@ const applyProfile = async () => {
   }
 };
 
-const isUnitExisting = computed(() => units.value?.find((unit: any) => unit.name === 'Unit 1'));
+const isUnitExisting = (unitName: any) => units.value?.find((unit: any) => unit.name === unitName);
 
 // external links
 const links = ref({
