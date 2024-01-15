@@ -4,12 +4,11 @@
    -
    - This program is free software: you can redistribute it and/or modify it
    - under the terms of the GNU Affero General Public License
-   - as published bythe Free Software Foundation,
+   - as published by the Free Software Foundation,
    - either version 3 of the License, or (at your option) any later version.
    -
-   - This program is distributed in the hope that it will be useful,
-   - but WITHOUT ANY WARRANTY; without even the implied warranty of
-   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   - This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+   - without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    - See the GNU Affero General Public License for more details.
    -
    - You should have received a copy of the GNU Affero General Public License
@@ -58,7 +57,7 @@
                 <v-col>
                   <v-select
                     :model-value="selectedSubType[domain.id]"
-                    :label="t('subtype')"
+                    :label="`${t('subtype')}*`"
                     :items="subTypes[domain.id]"
                     variant="solo-filled"
                     @click.stop
@@ -68,7 +67,7 @@
                 <v-col>
                   <v-select
                     v-model="selectedStatus[domain.id]"
-                    label="Status"
+                    label="Status*"
                     :items="statuses[domain.id]"
                     :disabled="!selectedSubType[domain.id]"
                     variant="solo-filled"
@@ -93,6 +92,7 @@
       <v-spacer />
       <v-btn
         color="primary"
+        :disabled="!isDirty"
         variant="text"
         @click="assignObject()"
       >
@@ -154,6 +154,7 @@ const { data: legacyObject } = useQuery(
   }
 );
 
+const isDirty = computed(() => true);
 const prePolluteList = (data: IVeoEntityLegacy) => {
   selectedSubType.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.subType]));
   selectedStatus.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.status]));
