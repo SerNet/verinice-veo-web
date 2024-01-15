@@ -87,7 +87,7 @@
         <v-card-text>
           <v-col class="text-justify">
             <v-icon
-              :icon="mdiBookSearchOutline"
+              :icon="mdiHelpCircleOutline"
               size="x-large"
               start
             />
@@ -223,7 +223,7 @@ import {
   mdiShapeOutline,
   mdiYoutubeTv,
   mdiInformationOutline,
-  mdiBookSearchOutline,
+  mdiHelpCircleOutline,
   mdiThemeLightDark
 } from '@mdi/js';
 
