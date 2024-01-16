@@ -96,6 +96,7 @@
           <v-list-item
             :active="unitId === 'management'"
             color="primary"
+            data-veo-test="unit-selection-nav-item"
             value="management"
             :title="t('management')"
             @click="unitId = 'management'"
