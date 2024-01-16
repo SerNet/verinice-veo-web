@@ -349,7 +349,6 @@ function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: boolean) {
   };
   if (isFormDirty.value) {
     onContinueNavigation.value = displayRevisionCallback;
-    entityModifiedDialogVisible.value = true;
   } else {
     displayRevisionCallback();
   }
