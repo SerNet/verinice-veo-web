@@ -92,6 +92,14 @@
             :title="domain.title"
             @click="domainId = domain.value"
           />
+          <v-divider v-show="!miniVariant" />
+          <v-list-item
+            :active="domainId === 'more'"
+            color="primary"
+            value="more"
+            :title="globalT('breadcrumbs.more')"
+            @click="domainId = 'more'"
+          />
         </v-list>
       </v-card>
     </template>
@@ -143,7 +151,7 @@ const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: route.params.u
 const fetchUnitDomainsQueryEnabled = computed(() => !!route.params.unit);
 const { data: domains, isFetching: domainIsFetching } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
 
-const itemSelection = computed(() => (domains.value || []).map((domain: any) => ({ value: domain.id, title: domain.name })).concat({ value: 'more', title: globalT('breadcrumbs.more').toString() }));
+const itemSelection = computed(() => (domains.value || []).map((domain: any) => ({ value: domain.id, title: domain.name })));
 const domainName = computed(() => domainId.value === undefined ? t('noDomainSelected').toString() : (itemSelection.value.find((domain: any) => domain.value === domainId.value)?.title));
 </script>
 

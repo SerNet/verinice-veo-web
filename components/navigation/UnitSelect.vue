@@ -74,7 +74,7 @@
                 />
               </div>
             </template>
-            <span>{{ t('unitSelection') }}</span>
+            <span>{{ t('management') }}</span>
           </v-tooltip>
         </v-list-item>
       </v-list>
@@ -91,6 +91,14 @@
             :value="unit.value"
             :title="unit.title"
             @click="unitId = unit.value"
+          />
+          <v-divider v-show="!miniVariant" />
+          <v-list-item
+            :active="unitId === 'management'"
+            color="primary"
+            value="management"
+            :title="t('management')"
+            @click="unitId = 'management'"
           />
         </v-list>
       </v-card>
@@ -148,7 +156,7 @@ const unitId = computed({
   }
 });
 
-const itemSelection = computed(() => (units.value || []).map((unit: any) => ({ value: unit.id, title: unit.name })).concat({ value: 'management', title: t('management').toString() }));
+const itemSelection = computed(() => (units.value || []).map((unit: any) => ({ value: unit.id, title: unit.name })));
 const unitName = computed(() => units.value?.find((unit: any) => (unitId.value === unit.id))?.name || t('noUnitSelected').toString());
 </script>
 
@@ -156,13 +164,11 @@ const unitName = computed(() => units.value?.find((unit: any) => (unitId.value =
 {
   "en": {
     "management": "Unit management",
-    "noUnitSelected": "No unit selected",
-    "unitSelection": "Unit selection"
+    "noUnitSelected": "No unit selected"
   },
   "de": {
     "management": "Unit-Verwaltung",
-    "noUnitSelected": "Keine Unit ausgewählt",
-    "unitSelection": "Unit-Auswahl"
+    "noUnitSelected": "Keine Unit ausgewählt"
   }
 }
 </i18n>
