@@ -115,7 +115,7 @@ import { mdiChevronDown, mdiChevronUp, mdiDomain } from '@mdi/js';
 
 withDefaults(defineProps<{
   disabled?: boolean,
-  miniVariant: boolean
+  miniVariant?: boolean
 }>(), {
   disabled: false,
   miniVariant: false
