@@ -2,7 +2,7 @@
   "name": "veo-web",
   "version": "1.9.0",
   "engines": {
-    "npm": "9.9.x",
+    "npm": "10.3.x",
     "node": "18.19.x"
   },
   "description": "veo-web",
@@ -94,7 +94,7 @@
     "eslint-plugin-vue": "^9.8.0",
     "generate-license-file": "^3.0.0",
     "lint-staged": "^15.0.0",
-    "npm": "^9.8.1",
+    "npm": "^10.0.0",
     "sass": "^1.57.1"
   }
 }
