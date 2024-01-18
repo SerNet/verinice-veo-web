@@ -55,8 +55,8 @@ import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 
 // Types
-import { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
-import { IVeoEntity } from '~/types/VeoTypes';
+import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoEntity } from '~/types/VeoTypes';
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();

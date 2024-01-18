@@ -347,7 +347,6 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
           params: {
             unit: props.unitId,
             domain: props.domainId,
-            catalog: props.domainId
           },
           query: {
             type: catalogItem[0],
