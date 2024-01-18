@@ -59,6 +59,8 @@
                     :model-value="selectedSubType[domain.id]"
                     :label="`${t('subtype')}*`"
                     :items="subTypes[domain.id]"
+                    required
+                    :rules="[requiredRule]"
                     variant="solo-filled"
                     @click.stop
                     @update:model-value="($event: string) => onSubTypeChange($event, domain.id)"
@@ -70,6 +72,8 @@
                     label="Status*"
                     :items="statuses[domain.id]"
                     :disabled="!selectedSubType[domain.id]"
+                    required
+                    :rules="[requiredRule]"
                     variant="solo-filled"
                     @click.stop
                     @update:model-value="($event: string) => onStatusChange($event, domain.id)"
@@ -132,6 +136,8 @@ const { t: $t } = useI18n({ useScope: 'global' });
 
 const route = useRoute();
 const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+
+const { requiredRule } = useRules();
 
 const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains);
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
