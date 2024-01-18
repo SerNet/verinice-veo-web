@@ -18267,7 +18267,7 @@ SOFTWARE.
 The following npm packages may be included in this product:
 
  - @vitejs/plugin-vue-jsx@3.1.0
- - @vitejs/plugin-vue@4.5.2
+ - @vitejs/plugin-vue@4.6.2
 
 These packages each contain the following license and notice below:
 
