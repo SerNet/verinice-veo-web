@@ -39,50 +39,52 @@
           {{ t('domainSelection') }}
         </span>  
 
-        <UtilProminentSelectionList
-          v-model="selectedDomains"
-          :items="domainProperties"
-          check-box-selection-only
-          multiple
-        >
-          <template
-            v-for="domain of availableDomains"
-            #[`item-${domain.id}`]
+        <v-form v-model="formIsValid">
+          <UtilProminentSelectionList
+            v-model="selectedDomains"
+            :items="domainProperties"
+            check-box-selection-only
+            multiple
           >
-            <div
-              v-if="selectedDomains.includes(domain.id)"
-              :key="domain.id"
+            <template
+              v-for="domain of availableDomains"
+              #[`item-${domain.id}`]
             >
-              <v-row class="mt-2">
-                <v-col>
-                  <v-select
-                    :model-value="selectedSubType[domain.id]"
-                    :label="`${t('subtype')}*`"
-                    :items="subTypes[domain.id]"
-                    required
-                    :rules="[requiredRule]"
-                    variant="solo-filled"
-                    @click.stop
-                    @update:model-value="($event: string) => onSubTypeChange($event, domain.id)"
-                  />
-                </v-col>
-                <v-col>
-                  <v-select
-                    v-model="selectedStatus[domain.id]"
-                    label="Status*"
-                    :items="statuses[domain.id]"
-                    :disabled="!selectedSubType[domain.id]"
-                    required
-                    :rules="[requiredRule]"
-                    variant="solo-filled"
-                    @click.stop
-                    @update:model-value="($event: string) => onStatusChange($event, domain.id)"
-                  />
-                </v-col>
-              </v-row>
-            </div>
-          </template>
-        </UtilProminentSelectionList>
+              <div
+                v-if="selectedDomains.includes(domain.id)"
+                :key="domain.id"
+              >
+                <v-row class="mt-2">
+                  <v-col>
+                    <v-select
+                      :model-value="selectedSubType[domain.id]"
+                      :label="`${t('subtype')}*`"
+                      :items="subTypes[domain.id]"
+                      required
+                      :rules="[requiredRule]"
+                      variant="solo-filled"
+                      @click.stop
+                      @update:model-value="($event: string) => onSubTypeChange($event, domain.id)"
+                    />
+                  </v-col>
+                  <v-col>
+                    <v-select
+                      v-model="selectedStatus[domain.id]"
+                      label="Status*"
+                      :items="statuses[domain.id]"
+                      :disabled="!selectedSubType[domain.id]"
+                      required
+                      :rules="[requiredRule]"
+                      variant="solo-filled"
+                      @click.stop
+                      @update:model-value="($event: string) => onStatusChange($event, domain.id)"
+                    />
+                  </v-col>
+                </v-row>
+              </div>
+            </template>
+          </UtilProminentSelectionList>
+        </v-form>
       </div>
     </template>
 
@@ -97,10 +99,11 @@
       <v-spacer />
       <v-btn
         color="primary"
-        :disabled="isSaveButtonDisabled"
+        :disabled="!isDirty || !formIsValid"
         variant="text"
         @click="assignObject()"
       >
+        {{ isDirty }} ::: {{ formIsValid }}
         {{ $t('global.button.save') }}
       </v-btn>
     </template>
@@ -108,6 +111,8 @@
 </template>
 
 <script setup lang="ts">
+import { isEqual } from 'lodash';
+
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
@@ -150,6 +155,8 @@ const selectedDomains = ref<string[]>([]);
 
 const fetchLegacyObjectQueryParameters = computed(() => ({ endpoint: schemas.value?.[props.objectType], id: props.objectId } as any));
 
+const formIsValid = ref(undefined);
+
 const { data: legacyObject } = useQuery(
   objectQueryDefinitions.queries.fetchLegacy,
   fetchLegacyObjectQueryParameters,
@@ -161,13 +168,14 @@ const { data: legacyObject } = useQuery(
   }
 );
 
+const isDirty = computed(() => !isEqual(Object.keys(legacyObject.value?.domains || {}), selectedDomains.value));
 const prePolluteList = (data: IVeoEntityLegacy) => {
   selectedSubType.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.subType]));
   selectedStatus.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.status]));
 };
 
 const subTypes = computed(() => (domains.value || []).reduce((prevValue, currentValue) => {
-  prevValue[currentValue.id] = Object.keys(currentValue.elementTypeDefinitions[props.objectType].subTypes).map(
+  prevValue[currentValue.id] = Object.keys(currentValue.elementTypeDefinitions?.[props.objectType]?.subTypes || {}).map(
     (subType) => (
       { title: currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][`${props.objectType}_${subType}_singular`], value: subType }
     )
@@ -189,20 +197,14 @@ const statuses = computed(() => (domains.value || []).reduce((prevValue, current
   return prevValue;
 }, {} as Record<string, { title: string, value: string }[]>));
 
-const isSubTypeSelected = ref(false);
 const onSubTypeChange = (newValue: string, domainId: string) => {
-  isSubTypeSelected.value = true;
   selectedSubType.value[domainId] = newValue;
   selectedStatus.value[domainId] = undefined;
 };
 
-const isStatusSelected = ref(false);
 const onStatusChange = (newValue: string, domainId: string) => {
-  isStatusSelected.value = true;
   selectedStatus.value[domainId] = newValue;
 };
-
-const isSaveButtonDisabled = computed(() => !(isSubTypeSelected.value && isStatusSelected.value));
 
 const availableDomains = computed(() => domains.value?.map((domain) => ({
   abbreviation: domain.abbreviation,
@@ -236,12 +238,8 @@ const assignObject = async () => {
 watch(() => props.modelValue, () => {
   selectedSubType.value = {};
   selectedStatus.value = {};
-  
-  isSubTypeSelected.value = false;
-  isStatusSelected.value = false;
 
   if (legacyObject.value) {
-    console.log(JSON.parse(JSON.stringify(legacyObject.value)));
     prePolluteList(legacyObject.value);
   }
 });

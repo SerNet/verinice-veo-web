@@ -164,7 +164,7 @@ export default {
       })
     } as IVeoQueryDefinition<IVeoFetchObjectsParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchLegacy:{
-      primaryQueryKey: 'object',
+      primaryQueryKey: 'legacyObject',
       url: '/api/:endpoint/:id',
       onDataFetched: (result) => formatObject(result),
       queryParameterTransformationFn:(queryParameters) => ({ params: queryParameters })
