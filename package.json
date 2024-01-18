@@ -3,7 +3,7 @@
   "version": "1.9.0",
   "engines": {
     "npm": "10.3.x",
-    "node": "18.19.x"
+    "node": "20.11.x"
   },
   "description": "veo-web",
   "author": "NBRX AG <info@nbrx.de>",
@@ -84,7 +84,7 @@
     "@types/intro.js": "^5.1.0",
     "@types/js-cookie": "^3.0.3",
     "@types/lodash": "^4.14.191",
-    "@types/node": "^18.11.15",
+    "@types/node": "^20.0.0",
     "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@vue/test-utils": "^2.3.2",
