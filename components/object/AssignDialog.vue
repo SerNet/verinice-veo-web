@@ -93,7 +93,7 @@
       <v-spacer />
       <v-btn
         color="primary"
-        :disabled="saveButtonDisabled"
+        :disabled="isSaveButtonDisabled"
         variant="text"
         @click="assignObject()"
       >
@@ -183,16 +183,20 @@ const statuses = computed(() => (domains.value || []).reduce((prevValue, current
   return prevValue;
 }, {} as Record<string, { title: string, value: string }[]>));
 
+const isSubTypeSelected = ref(false);
 const onSubTypeChange = (newValue: string, domainId: string) => {
   isSubTypeSelected.value = true;
   selectedSubType.value[domainId] = newValue;
   selectedStatus.value[domainId] = undefined;
 };
 
+const isStatusSelected = ref(false);
 const onStatusChange = (newValue: string, domainId: string) => {
   isStatusSelected.value = true;
   selectedStatus.value[domainId] = newValue;
 };
+
+const isSaveButtonDisabled = computed(() => !(isSubTypeSelected.value && isStatusSelected.value));
 
 const availableDomains = computed(() => domains.value?.map((domain) => ({
   abbreviation: domain.abbreviation,
@@ -206,10 +210,6 @@ const disabledDomains = computed(() => Object.keys(legacyObject.value?.domains |
 const domainProperties = computed(() => availableDomains.value.map((domain) => {
   return { title: domain.name, subtitle: domain.description, value: domain.id, disabled: disabledDomains.value.includes(domain.id) };
 }));
-
-const isSubTypeSelected = ref(false);
-const isStatusSelected = ref(false);
-const saveButtonDisabled = computed(() => !(isSubTypeSelected.value && isStatusSelected.value));
 
 const assignObject = async () => {
   try {
@@ -235,6 +235,7 @@ watch(() => props.modelValue, () => {
   isStatusSelected.value = false;
 
   if (legacyObject.value) {
+    console.log(JSON.parse(JSON.stringify(legacyObject.value)));
     prePolluteList(legacyObject.value);
   }
 });
