@@ -43,7 +43,7 @@
 export default {
   name: 'VeoCatalogPage'
 };
-export const ROUTE_NAME = 'unit-domains-domain-catalogs-catalog';
+export const ROUTE_NAME = 'unit-domains-domain-catalog';
 </script>
 
 <script setup lang="ts">
@@ -64,12 +64,18 @@ const { t, locale } = useI18n();
 const route = useRoute();
 
 // State
-const title = computed(() => t('catalog', { name: currentSubTypeTranslated.value || t('all')}));
-const currentDomainId = computed(() => route.params.domain as string);
+const title = computed(() =>
+  t('catalog', { name: currentSubTypeTranslated.value || t('all')})
+);
+const currentDomainId = computed(() =>
+  route.params.domain as string
+);
 const currentElementType = computed(() =>
-  route.query.type === 'all' ? undefined : route.query.type as string);
+  route.query.type === 'all' ? undefined : route.query.type as string
+);
 const currentSubType = computed(() =>
-  route.query.subType === 'all' ? undefined : route.query.subType as string);
+  route.query.subType === 'all' ? undefined : route.query.subType as string
+);
 
 // Fetch catalog items
 const fetchCatalogItemsQueryParameters = computed(() => (
@@ -79,6 +85,7 @@ const fetchCatalogItemsQueryParameters = computed(() => (
     size: '10000'
   }
 ));
+
 const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(
   catalogQueryDefinitions.queries.fetchCatalogItems,
   fetchCatalogItemsQueryParameters
