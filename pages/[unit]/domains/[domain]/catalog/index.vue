@@ -54,6 +54,9 @@ import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
+const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
+
 // Types
 import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import type { IVeoEntity } from '~/types/VeoTypes';
@@ -76,6 +79,18 @@ const currentElementType = computed(() =>
 const currentSubType = computed(() =>
   route.query.subType === 'all' ? undefined : route.query.subType as string
 );
+
+// Always show query params in url
+// This ensures an active state in the navbar (e.g. after a reload)
+if(!currentSubType.value) {
+  navigateTo({
+    name: 'unit-domains-domain-catalog',
+    query: {
+      type: 'all',
+      subType: 'all',
+    }
+  })
+}
 
 // Fetch catalog items
 const fetchCatalogItemsQueryParameters = computed(() => (
@@ -110,6 +125,32 @@ const currentSubTypeTranslated = computed(() =>
     subType: currentSubType.value
   })
 );
+
+/* BREADCRUMBS */
+// Add breadcrumb for current filter
+const customBreadcrumbArgs = computed(() => ({
+  to: `/${route.params.unit}/domains/${route.params.domain}/catalog?type=${route.query.type}&subType=${route.query.subType}`,
+  exact: true,
+  key: 'catalog',
+  index: 1,
+  text: currentSubTypeTranslated.value || t('all'),
+  position: 11,
+  param: '',
+  disabled: true
+}))
+
+onMounted(() => addCustomBreadcrumb(customBreadcrumbArgs.value))
+
+// Update breadcrumb if a filter is changed
+watch(route, () => {
+  clearCustomBreadcrumbs();
+  addCustomBreadcrumb(customBreadcrumbArgs.value);
+})
+
+// Remove breadcrumb on leaving route: otherwise they persist in other views
+onBeforeRouteLeave(async (_to, _from) => {
+  clearCustomBreadcrumbs();
+})
 
 // Incarnate, create objects, from selected catalog items
 const { mutateAsync: incarnate } = useMutation(unitQueryDefinitions.mutations.updateIncarnations);
