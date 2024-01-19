@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { mergeProps } from 'vue';
-import type { SortItem } from 'vuetify/labs/VDataTable/composables/sort.mjs';
+import type { SortItem } from 'vuetify/components/VDataTable/composables/sort.mjs';
 
 import ObjectIcon from '~/components/object/Icon.vue';
 import { useFormatters } from '~/composables/utils';

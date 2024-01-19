@@ -51,9 +51,9 @@ export type ExtractProperty<V extends ReadonlyArray<Record<string, any>>, K exte
 <script setup lang="ts">
 import { VNode, VNodeArrayChildren } from 'vue';
 import { VCheckbox, VProgressLinear, VTooltip } from 'vuetify/components';
-import { VDataTable, VDataTableServer } from 'vuetify/labs/VDataTable';
-import type { SortItem } from 'vuetify/labs/VDataTable/composables/sort.mjs';
-import type { DataTableHeader } from 'vuetify/labs/VDataTable/types.mjs';
+import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
+import type { SortItem } from 'vuetify/components/VDataTable/composables/sort.mjs';
+import type { DataTableHeader } from 'vuetify/components/VDataTable/types.mjs';
 import { cloneDeep, omit } from 'lodash';
 
 import { IVeoPaginatedResponse } from '~/types/VeoTypes';
