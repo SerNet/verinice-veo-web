@@ -16,8 +16,7 @@ export function goToUnitSelection():void {
   cy.visit('/');
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units`).as('getUnits');
   cy.wait(['@getUnits'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 200);
-  cy.get('[data-component-name="unit-select"]').click();
-  cy.get('[data-veo-test="unit-selection-nav-item"]').click();
+  cy.get('[data-veo-test="unit-page-link"]').click();
 }
 
 export function selectUnit({

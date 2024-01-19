@@ -24,6 +24,7 @@
       <nuxt-link
         to="/"
         class="text-decoration-none ml-4"
+        data-veo-test="unit-page-link"
       >
         <LayoutAppBarLogo
           style="height: 60px"
