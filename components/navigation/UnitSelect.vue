@@ -164,12 +164,12 @@ const unitName = computed(() => units.value?.find((unit: any) => (unitId.value =
 <i18n>
 {
   "en": {
-    "management": "Unit management",
-    "noUnitSelected": "No unit selected"
+    "management": "Manage units",
+    "noUnitSelected": "Select unit"
   },
   "de": {
-    "management": "Unit-Verwaltung",
-    "noUnitSelected": "Keine Unit ausgewählt"
+    "management": "Units verwalten",
+    "noUnitSelected": "Unit auswählen"
   }
 }
 </i18n>

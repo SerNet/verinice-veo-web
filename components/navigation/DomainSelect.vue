@@ -74,7 +74,7 @@
                 />
               </div>
             </template>
-            <span>{{ t('domainSelection') }}</span>
+            <span>{{ t('noDomainSelected') }}</span>
           </v-tooltip>
         </v-list-item>
       </v-list>
@@ -158,12 +158,10 @@ const domainName = computed(() => domainId.value === undefined ? t('noDomainSele
 <i18n>
 {
   "en": {
-    "noDomainSelected": "No domain selected",
-    "domainSelection": "Domain selection"
+    "noDomainSelected": "Select domain"
   },
   "de": {
-    "noDomainSelected": "Keine Domäne ausgewählt",
-    "domainSelection": "Domänenauswahl"
+    "noDomainSelected": "Domäne auswählen"
   }
 }
 </i18n>
