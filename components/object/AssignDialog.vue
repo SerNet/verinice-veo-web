@@ -103,7 +103,6 @@
         variant="text"
         @click="assignObject()"
       >
-        {{ isDirty }} ::: {{ formIsValid }}
         {{ $t('global.button.save') }}
       </v-btn>
     </template>
