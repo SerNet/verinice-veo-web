@@ -184,7 +184,7 @@
                 <v-timeline-item
                   dot-color="primary"
                   size="x-large"
-                  :icon="mdiBookOpenBlankVariant"
+                  :icon="mdiHelpCircleOutline"
                 >
                   <v-card-text>
                     <v-col
@@ -318,7 +318,7 @@
 
 <script setup lang="ts">
 import {
-  mdiBookOpenBlankVariant,
+  mdiHelpCircleOutline,
   mdiForumOutline,
   mdiSchoolOutline,
   mdiShapeOutline,

@@ -64,7 +64,7 @@
             v-bind="props"
             data-component-name="docs-nav-item"
           >
-            <v-icon :icon="mdiBookOpenBlankVariant" />
+            <v-icon :icon="mdiHelpCircleOutline" />
           </v-btn>
         </template>
         <template #default>
@@ -107,7 +107,7 @@
 
 <script setup lang="ts">
 import { useDisplay, useTheme } from 'vuetify';
-import { mdiAccountCircleOutline, mdiBookOpenBlankVariant } from '@mdi/js';
+import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 import 'intro.js/minified/introjs.min.css';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
