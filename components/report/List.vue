@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -22,7 +22,7 @@
     :additional-headers="headers"
     class="veo-report-list"
     :items-per-page="tablePageSize"
-    :loading="isFetching"
+    :loading="isFetchingReports || isFetchingDomains"
     @click:row="onRowClicked"
   >
     <template #no-data>
@@ -57,8 +57,12 @@
 <script setup lang="ts">
 import { upperFirst, toUpper } from 'lodash';
 
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
-import { useQuery } from '~/composables/api/utils/query';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
+
+import type { IVeoReport } from '~/types/VeoTypes';
+import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 
 interface IReport {
   id: string;
@@ -75,22 +79,77 @@ const emit = defineEmits<{
 
 const { t, locale } = useI18n();
 const { tablePageSize } = useVeoUser();
-const { data: reports, isFetching } = useQuery(reportQueryDefinitions.queries.fetchAll);
 
-const displayedItems = computed<IReport[]>(() => {
-  return Object.entries(reports.value || {}).map(([id, item]) => {
-    const name = item.name[locale.value] || item.name[0];
-    let description = item.description[locale.value] || item.description[0];
-    const targetTypes = item.targetTypes.map((type) => upperFirst(type.modelType)).join(', ');
-    const outputTypes = item.outputTypes
+const route = useRoute();
+const fetchDomainQueryParameters = computed(() => ({ id: route?.params.domain as string }));
+const fetchDomainQueryEnabled = computed(() => !!route?.params?.domain);
+const { data: domain, isFetching: isFetchingDomains } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
+const { data: reports, isFetching: isFetchingReports } = useQuery(reportQueryDefinitions.queries.fetchAll);
+
+/**
+ * Filter reports according to domain and GUI language.
+ * @param _domain {IVeoDomain} - The currently active veo domain.
+ * @param _allReports {IVeoReport[]} - All reports from all domains.
+ * @param _locale {string} - The current GUI language.
+ */
+type TFilterReportsParams = {
+  _domain: IVeoDomain;
+  _allReports: IVeoReport[];
+  _locale: string;
+}
+function filterReports({_domain, _allReports, _locale}: TFilterReportsParams) {
+  if(!_domain || !_allReports) return [];
+
+  const allReports = Object.entries(_allReports || {});
+  const reportsInCurrentDomain = domain.value === null ? [] :
+    allReports.filter(([, report]) => {
+      const targetTypesForReport = report.targetTypes;
+      return targetTypesForReport.some(({ modelType, subTypes }) => {
+
+        // if there is no subType, the report exists in the current domain
+        if (subTypes === null) return true;
+        const subTypesInDomain = Object.keys(_domain.elementTypeDefinitions[modelType].subTypes);
+        return subTypesInDomain.some(subTypeInDomain =>
+          subTypes.indexOf(subTypeInDomain) >= 0
+        );
+      });
+    });
+
+  // Return reports in current GUI language only
+  return reportsInCurrentDomain.filter(r => {
+    const [, report] = r;
+    return report.name?.[_locale] !== undefined;
+  })
+}
+
+/*
+ * Prepare report data so it can be rendered into a table.
+ * @param reports {TReports} - An array of reports.
+ * @param locale {string}- The current locale.
+ */
+type TMapFilteredReportsParams = {
+  reports: [id: string, report: IVeoReport][];
+  locale: string;
+}
+function mapFilterdReports({reports, locale }: TMapFilteredReportsParams) {
+  if(!reports || !locale) return [];
+  return reports.map(r => {
+    const [id, report] = r;
+
+    const name = report.name[locale] || Object.values(report.name)[0];
+    const targetTypes = report.targetTypes.map((type) => upperFirst(type.modelType)).join(', ');
+    const outputTypes = report.outputTypes
       .map((type) => {
         const formatParts = type.split('/');
         return formatParts[formatParts.length - 1];
       })
       .join(', ');
-    let descriptionShort;
 
     // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
+    let descriptionShort;
+    let description =
+      report.description[locale] ||
+      Object.values(report.description)[0] || t('noDescriptionAvailable');
     if (description.length > 80) {
       descriptionShort = description.substring(0, 80) + '...';
 
@@ -98,17 +157,33 @@ const displayedItems = computed<IReport[]>(() => {
         description = description.substring(0, 1000) + '...';
       }
     }
+
     return {
       id,
       name,
       description,
-      multipleTargetsSupported: item.multipleTargetsSupported,
+      multipleTargetsSupported: report.multipleTargetsSupported,
       outputTypes,
       targetTypes,
       descriptionShort
     };
   });
+}
+
+const displayedItems = computed(() => {
+  const _locale = locale.value;
+  const filteredReports = filterReports({
+    _domain: toRaw(domain.value),
+    _allReports: toRaw(reports.value),
+    _locale
+  })
+
+  if(filterReports.length === 0) return;
+
+  return mapFilterdReports({reports: filteredReports, locale: _locale})
 });
+
+
 
 const headers = computed(() => {
   return [
@@ -160,6 +235,7 @@ const onRowClicked = (_event: PointerEvent, context: any) => {
 {
   "en": {
     "noReports": "There are no reports",
+    "noDescriptionAvailable": "N/A",
     "outputTypes": "Output format",
     "reportDescription": "Description",
     "reportName": "Report type",
@@ -167,6 +243,7 @@ const onRowClicked = (_event: PointerEvent, context: any) => {
   },
   "de": {
     "noReports": "Es existieren keine Reports",
+    "noDescriptionAvailable": "N/A",
     "outputTypes": "Ausgabeformat",
     "reportDescription": "Beschreibung",
     "reportName": "Reporttyp",

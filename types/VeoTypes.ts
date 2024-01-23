@@ -534,3 +534,12 @@ export interface IVeoElementTypeDefinition {
     }
   }
 }
+
+export interface IVeoReport {
+  name: Record<string, string>;
+  description: Record<string, string>;
+  multipleTargetsSupported: boolean;
+  outputTypes: string[];
+  targetTypes: { modelType: string, subTypes: string[]}[];
+}
+
