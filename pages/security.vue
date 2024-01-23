@@ -40,7 +40,7 @@
               <v-row>
                 <v-col class="text-h4">
                   <v-icon :icon="mdiClock" />
-                  Gültig bis: {{ d(config.public.securityPolicyInvalidationDate) }}
+                  <span class="ml-4">Erzeugt am: {{ creationDate }}</span>
                 </v-col>
               </v-row>
             </v-card-subtitle>
@@ -199,7 +199,7 @@
               <v-row>
                 <v-col class="text-h4">
                   <v-icon :icon="mdiClock" />
-                  Expiration date: {{ d(config.public.securityPolicyInvalidationDate) }}
+                  <span class="ml-4">Created on: {{ creationDate }}</span>
                 </v-col>
               </v-row>
             </v-card-subtitle>
@@ -338,8 +338,15 @@
 <script setup lang="ts">
 import { mdiEmail, mdiClock } from '@mdi/js';
 
-const { d, locale } = useI18n();
-const config = useRuntimeConfig();
+const { locale } = useI18n();
+
+const date = new Date();
+
+const creationDate = computed(() => date.toLocaleDateString(locale.value, {
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric'
+}));
 
 const mail = 'mailto:security@verinice.com?subject=Bug report';
 
