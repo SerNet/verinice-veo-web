@@ -19,6 +19,9 @@
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { SESSION_STORAGE_KEYS } from '~/types/sessionStorage';
 
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
+import { useQuerySync } from '~/composables/api/utils/query';
+
 /**
  * After a successful login users are redirected to the `/` route.
  * This middleware then redirects them to a welcome page if
@@ -52,3 +55,20 @@ async function showWelcomePage() {
   return navigateTo('/welcome');
 }
 
+const route = useRoute();
+
+if (route.path === '/units') {
+  const unitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
+  const domainId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
+
+  if (unitId && domainId) {
+    navigateTo(`/${unitId}/domains/${domainId}`);
+  }
+
+  const units = await useQuerySync(unitQueryDefinitions.queries.fetchAll);
+  const unit = units.find((unit) => unit.id === unitId);
+
+  if (unit && domainId && unit.domains.find((domain) => domain.targetUri.includes(domainId))) {
+    navigateTo(`/${unitId}/domains/${domainId}`);
+  }
+}

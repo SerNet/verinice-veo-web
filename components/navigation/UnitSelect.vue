@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
 import { ROUTE_NAME as ROUTE_DOMAIN_DASHBOARD } from '~/pages/[unit]/domains/[domain]/index.vue';
-import { ROUTE_NAME as ROUTE_INDEX } from '~/pages/index.vue';
+import { ROUTE_NAME as ROUTE_UNITS } from '~/pages/units/index.vue';
 
 import { useQuery } from '~/composables/api/utils/query';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
@@ -120,7 +120,7 @@ const unitId = computed({
     }
 
     navigateTo({
-      name: newValue === 'management' ? ROUTE_INDEX : ROUTE_DOMAIN_DASHBOARD,
+      name: newValue === 'management' ? ROUTE_UNITS : ROUTE_DOMAIN_DASHBOARD,
       params: {
         ...params
       }
