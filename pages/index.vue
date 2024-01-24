@@ -165,7 +165,7 @@ const { ability } = useVeoPermissions();
 const { userSettings } = useVeoUser();
 
 definePageMeta({
-  // middleware: 'welcome-page'
+  middleware: 'welcome-page'
 });
 
 useHead({
