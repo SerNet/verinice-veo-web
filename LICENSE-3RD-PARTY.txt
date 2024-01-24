@@ -23092,7 +23092,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm package may be included in this product:
 
- - vuetify@3.3.15
+ - vuetify@3.4.11
 
 This package contains the following license and notice below:
 
