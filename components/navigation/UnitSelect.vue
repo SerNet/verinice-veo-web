@@ -42,7 +42,7 @@
     data-component-name="unit-select"
     :disabled="disabled"
     :items="itemSelection"
-    :label="items.length ? 'Unit' : t('select')"
+    :label="items.length ? t('unit') : t('select')"
   >
     <template #item="{ props, item }">
       <v-list-item
@@ -102,8 +102,8 @@ const closeMenu = ref();
 // fetch all client units
 const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
-const items = computed(() => ((units.value || []).find((unit: any) => unit.id === route.params.unit))?.name || []);
-const itemSelection = computed(() => (units.value || []).map((unit: any) => ({ value: unit.id, title: unit.name, description: unit.description })));
+const items = computed(() => ((units.value || []).find((unit) => unit.id === route.params.unit))?.name || []);
+const itemSelection = computed(() => (units.value || []).map((unit) => ({ value: unit.id, title: unit.name, description: unit.description })));
 
 const unitId = computed({
   get() {
@@ -133,11 +133,13 @@ const unitId = computed({
 {
   "en": {
     "management": "Manage units",
-    "select": "Select unit"
+    "select": "Select unit",
+    "unit": "Unit"
   },
   "de": {
     "management": "Units verwalten",
-    "select": "Unit auswählen"
+    "select": "Unit auswählen",
+    "unit": "Unit"
   }
 }
 </i18n>
