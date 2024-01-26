@@ -19,10 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { ROUTE_NAME as ROUTE_UNITS } from '~/pages/units/index.vue';
-
-// Navigate to /units
-await navigateTo({
-  name: ROUTE_UNITS
+definePageMeta({
+  middleware: 'onboarding'
 });
 </script>

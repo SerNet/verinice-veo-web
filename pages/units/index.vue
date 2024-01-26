@@ -154,27 +154,23 @@ import { mdiTrashCanOutline, mdiPlus, mdiPencilOutline } from '@mdi/js';
 
 import { getFirstDomainDomaindId } from '~/lib/utils';
 import { useQuery } from '~/composables/api/utils/query';
-import unitQueryDefinitions, { IVeoUnit} from '~/composables/api/queryDefinitions/units';
+import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
-definePageMeta({
-  middleware: 'welcome-page'
-});
+// definePageMeta({
+//   middleware: 'onboarding'
+// });
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 
-const { ability } = useVeoPermissions();
-const { userSettings } = useVeoUser();
-
-definePageMeta({
-  middleware: 'welcome-page'
-});
-
 useHead({
   title: $t('breadcrumbs.index')
 });
+
+const { ability } = useVeoPermissions();
+const { userSettings } = useVeoUser();
 
 const unitManageDialogVisible = ref(false);
 
@@ -194,7 +190,7 @@ const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions
 const activeUnits = computed(() => units.value?.length || undefined);
 
 const generateUnitDashboardLink = (unitId: string) => {
-  const unitToLinkTo = (units.value || []).find((unit) => unit.id === unitId);
+  const unitToLinkTo = (units.value || []).find((unit: IVeoUnit) => unit.id === unitId);
   let domainId;
 
   if (unitToLinkTo) {

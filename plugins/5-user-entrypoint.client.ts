@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2022  Jonas Heitmann, jae
+ * Copyright (C) 2022  Jonas Heitmann, jae, Frank Schneider
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,21 +20,29 @@ import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 export default defineNuxtPlugin (async (nuxtApp) => {
   const route = useRoute();
-  
   // We don't want any of this to take effect during the login process or if the print script might be running
-  if (route.path === '/sso' || route.name === 'docs' && route.query.print !== undefined) {
+  if (route.path === '/sso' || (route.name === 'docs' && route.query.print !== undefined)) {
     return;
   }
 
-  const router = useRouter();
-  const { initialize, keycloakInitialized, authenticated } = useVeoUser();
+  const { authenticated, initialize, keycloakInitialized } = useVeoUser();
 
-  // Update last unit and last domain every time the route changes
+  if (!keycloakInitialized.value) {
+    await initialize(nuxtApp);
+  }
+
+  if (!authenticated.value) {
+    return;
+  }
+
   const lastUnit = useStorage(LOCAL_STORAGE_KEYS.LAST_UNIT, undefined, localStorage, { serializer: StorageSerializers.string });
   const lastDomain = useStorage(LOCAL_STORAGE_KEYS.LAST_DOMAIN, undefined, localStorage, { serializer: StorageSerializers.string });
 
-  router.afterEach((to, _from) => {
-    const currentRouteUnitId = to.params.unit;
+  const router = useRouter();
+
+  // Update last unit and last domain every time the route changes
+  router.afterEach((to: any) => {
+    const currentRouteUnitId = to.params.unit as string;
     const currentRouteDomainId = to.params.domain as string;
 
     if (currentRouteUnitId && lastUnit.value !== currentRouteUnitId) {
@@ -45,13 +53,4 @@ export default defineNuxtPlugin (async (nuxtApp) => {
       lastDomain.value = currentRouteDomainId;
     }
   });
-
-  if (!keycloakInitialized.value) {
-    await initialize(nuxtApp);
-  }
-
-  if (!authenticated.value) {
-    return;
-  }
 });
-
