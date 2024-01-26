@@ -40,10 +40,7 @@
 
       <LayoutTutorialButton v-if="!$route.path.startsWith('/docs')" />
 
-      <v-tooltip
-        v-if="ability.can('view', 'documentation')"
-        location="bottom"
-      >
+      <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
             v-if="!$route.path.startsWith('/docs')"
@@ -87,19 +84,18 @@
     </v-main>
   </v-app>
 </template>
-  
+
 <script setup lang="ts">
 import { mdiAccountCircleOutline, mdiBookOpenBlankVariant } from '@mdi/js';
 import { useVeoUser } from '~/composables/VeoUser';
 
 const { t } = useI18n();
-const { ability } = useVeoPermissions();
 const { logout: _logout, profile } = useVeoUser();
-  
+
 useHead(() => ({
   titleTemplate: '%s - verinice.veo'
 }));
-  
+
 const logout = () => _logout('/');
 </script>
 
