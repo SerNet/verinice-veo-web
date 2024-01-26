@@ -40,6 +40,7 @@
     :model-value="items"
     class="mx-2"
     data-component-name="domain-select"
+    density="compact"
     :disabled="disabled"
     :items="itemSelection"
     :label="items.length ? t('domain') : t('select')"

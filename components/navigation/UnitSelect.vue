@@ -40,6 +40,7 @@
     :model-value="items"
     class="ma-2 mt-4"
     data-component-name="unit-select"
+    density="compact"
     :disabled="disabled"
     :items="itemSelection"
     :label="items.length ? t('unit') : t('select')"
