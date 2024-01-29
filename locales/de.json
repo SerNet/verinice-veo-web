@@ -144,10 +144,9 @@
   },
 
   "firstSteps": {
-    "channel": "Auf unserem { 0 } finden Sie Videos zu verinice.veo.",
-    "documentation": "Die { 0 } beschreibt ausführlich alle Funktionen von verinice.veo und erläutert die technischen Aspekte. Sie können die Online-Dokumentation jederzeit über das Symbol in der Anwendungsleiste rechts oben öffnen.",
+    "channel": "Auf unserem { 0 } finden Sie Videos zu verinice.",
+    "documentation": "Die { 0 } beschreibt ausführlich alle Funktionen von verinice.veo und erläutert die technischen Aspekte. Sie können diese Dokumentation jederzeit über das Symbol in der Anwendungsleiste rechts oben öffnen.",
     "forum": "Im { 0 } finden Sie weitergehende Informationen und können am regen Austausch mit anderen Anwenderinnen und Anwendern teilnehmen.",
-    "profile": "Im Bereich { 0 } können Sie weitere Beispieldaten laden oder diese als Vorlage in Ihre produktive Unit laden.",
     "tutorial": "Zur schnellen Orientierung stehen auf jeder Seite kontextbezogene { 0 } zur Verfügung. Verfügbare Tutorials können Sie jederzeit über das Symbol in der Anwendungsleiste rechts oben aufrufen.",
     "webinar": "Sie können sich jederzeit zu unseren regelmäßigen, kostenlosen { 0 } anmelden."
   },

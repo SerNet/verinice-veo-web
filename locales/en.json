@@ -144,10 +144,9 @@
   },
 
   "firstSteps": {
-    "channel": "On our { 0 } you can find videos about verinice.veo.",
-    "documentation": "The { 0 } describes in detail all functions of verinice.veo and explains the technical aspects. You can open the online documentation at any time via the icon in the application bar at the top right.",
+    "channel": "On our { 0 } you can find videos about verinice.",
+    "documentation": "The { 0 } describes in detail all functions of verinice.veo and explains the technical aspects. You can open this documentation at any time via the icon in the application bar at the top right.",
     "forum": "In the { 0 } you will find further information and can participate in the lively exchange with other users.",
-    "profile": "In the { 0 } area, you can load further sample data or load it as a template into your productive unit.",
     "tutorial": "Context-sensitive { 0 } are available on each page for quick orientation. Available tutorials can be accessed at any time via the icon in the application bar at the top right.",
     "webinar": "You can register anytime for our regular free { 0 }."
   },

@@ -28,289 +28,248 @@
         class="mx-12 my-4 bg-basepage"
         style="max-width: 1280px"
       >
-        <v-row dense>
-          <v-card
-            flat
-            class="bg-basepage"
+        <v-card
+          class="my-4 bg-surface"
+        >
+          <div
+            class="bg-accent"
+            style="height: 75px"
           >
-            <v-card-title class="small-caps">
+            <v-card-title class="ml-4 small-caps">
               {{ t('greeting') }}
             </v-card-title>
 
-            <v-card-subtitle>
+            <v-card-subtitle class="ml-4">
               {{ t('subTitle') }}
             </v-card-subtitle>
-          </v-card>
-        </v-row>
+          </div>
 
-        <v-row dense>
-          <v-card
-            class="my-8 bg-surface"
+          <!-- Decisions: load a profile or an empty unit -->
+          <v-row
+            dense
+            class="mt-8 mb-12"
           >
-            <v-card-title class="bg-accent">
-              <div
-                class="d-flex ml-8"
-                style="height: 75px; width: 300px;"
-              >
-                <LayoutAppLogoDesktop />
-              </div>
-            </v-card-title>
+            <v-col cols="6">
+              <v-card class="mx-8 fill-height bg-background">
+                <v-card-title
+                  class="pt-4 bg-accent small-caps"
+                  style="min-height: 60px;"
+                >
+                  {{ t('selection.noob.question') }}
+                </v-card-title>
 
-            <!-- Decisions: load a profile or an empty unit -->
-            <v-row
-              dense
-              class="mt-4 mb-8"
+                <v-card-text class="mt-8 text-center text-h3">
+                  {{ isUnitExisting('Demo') ? t('selection.noob.advice') :t('selection.noob.adviceNoUnit') }}
+                </v-card-text>
+
+                <div class="d-flex justify-center my-4">
+                  <v-btn
+                    v-if="!isLoading"
+                    :disbaled="isLoading"
+                    color="primary"
+                    @click="applyProfile()"
+                  >
+                    <span>
+                      {{ isUnitExisting('Demo') ? t('selection.noob.buttonCaption') : t('unitManagement') }}
+                    </span>
+                  </v-btn>
+                  <v-progress-linear
+                    v-else
+                    color="primary"
+                    height="30"
+                    :indeterminate="isLoading"
+                  >
+                    <span class="small-caps text-h2">{{ t('applyProfile') }}</span>
+                  </v-progress-linear>
+                </div>
+              </v-card>
+            </v-col>
+
+            <v-col cols="6">
+              <v-card class="mr-8 fill-height bg-background">
+                <v-card-title
+                  class="pt-4 bg-accent small-caps"
+                  style="min-height: 60px;"
+                >
+                  {{ t('selection.seasoned.question') }}
+                </v-card-title>
+
+                <v-card-text class="mt-8 text-center text-h3">
+                  {{ isUnitExisting('Unit 1') ? t('selection.seasoned.advice') : t('selection.seasoned.adviceNoUnit') }}
+                </v-card-text>
+
+                <div class="d-flex justify-center my-8">
+                  <v-btn
+                    color="primary"
+                    @click="loadUnit()"
+                  >
+                    {{ isUnitExisting('Unit 1') ? t('selection.seasoned.buttonCaption') : t('unitManagement') }}
+                  </v-btn>
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <!-- Links / Timeline -->
+          <v-row dense>
+            <v-timeline
+              align="center"
+              class="ma-4 mt-12"
+              density="compact"
+              direction="horizontal"
             >
-              <v-col cols="6">
-                <v-card class="mx-8 fill-height bg-background">
-                  <v-card-title
-                    class="pt-4 bg-accent small-caps"
-                    style="min-height: 60px;"
+              <v-timeline-item
+                dot-color="primary"
+                size="x-large"
+                :icon="mdiInformationOutline"
+              >
+                <v-card-text>
+                  <v-col
+                    cols="12"
+                    class="text-justify"
                   >
-                    {{ t('selection.noob.question') }}
-                  </v-card-title>
-
-                  <v-card-text class="mt-8 text-center text-h3">
-                    {{ t('selection.noob.advice') }}
-                  </v-card-text>
-
-                  <div class="d-flex justify-center my-4">
-                    <v-btn
-                      v-if="!isLoading"
-                      :disbaled="isLoading"
-                      color="primary"
-                      @click="applyProfile()"
+                    <i18n-t
+                      keypath="firstSteps.tutorial"
+                      tag="span"
+                      scope="global"
                     >
-                      <span>
-                        {{ isUnitExisting('Demo') ? t('selection.noob.buttonCaption') : t('unitManagement') }}
+                      <span class="text-decoration-none">
+                        <strong>{{ t('injector.tutorial') }}</strong>
                       </span>
-                    </v-btn>
-                    <v-progress-linear
-                      v-else
-                      color="primary"
-                      height="30"
-                      :indeterminate="isLoading"
-                    >
-                      <span class="small-caps text-h2">{{ t('applyProfile') }}</span>
-                    </v-progress-linear>
-                  </div>
-                </v-card>
-              </v-col>
+                    </i18n-t>
+                  </v-col>
+                </v-card-text>
+              </v-timeline-item>
 
-              <v-col cols="6">
-                <v-card class="mr-8 fill-height bg-background">
-                  <v-card-title
-                    class="pt-4 bg-accent small-caps"
-                    style="min-height: 60px;"
+              <v-timeline-item
+                dot-color="primary"
+                size="x-large"
+                :icon="mdiHelpCircleOutline"
+              >
+                <v-card-text>
+                  <v-col
+                    cols="12"
+                    class="text-justify"
                   >
-                    {{ t('selection.seasoned.question') }}
-                  </v-card-title>
-  
-                  <v-card-text class="mt-8 text-center text-h3">
-                    {{ t('selection.seasoned.advice') }}
-                  </v-card-text>
-  
-                  <div class="d-flex justify-center my-8">
-                    <v-btn
-                      color="primary"
-                      @click="loadUnit()"
+                    <i18n-t
+                      keypath="firstSteps.documentation"
+                      tag="span"
+                      scope="global"
                     >
-                      {{ isUnitExisting('Unit 1') ? t('selection.seasoned.buttonCaption') : t('unitManagement') }}
-                    </v-btn>
-                  </div>
-                </v-card>
-              </v-col>
-            </v-row>
-
-            <!-- Links / Timeline -->
-            <v-row dense>
-              <v-timeline
-                align="center"
-                class="ma-4"
-                density="compact"
-                direction="horizontal"
+                      <nuxt-link
+                        class="text-decoration-none text-primary"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        to="/docs/index"
+                      >
+                        <strong>{{ t('injector.documentation') }}</strong>
+                      </nuxt-link>
+                    </i18n-t>
+                  </v-col>
+                </v-card-text>
+              </v-timeline-item>
+            </v-timeline>
+          </v-row>
+          <!-- external Links -->
+          <v-row dense>
+            <v-timeline
+              align="center"
+              class="mx-4"
+              density="compact"
+              direction="horizontal"
+            >
+              <v-timeline-item
+                dot-color="primary"
+                size="x-large"
+                :icon="mdiForumOutline"
               >
-                <v-timeline-item
-                  v-if="profileLink"
-                  dot-color="primary"
-                  size="x-large"
-                  :icon="mdiShapeOutline"
-                >
-                  <v-card-text>
-                    <v-col
-                      cols="12"
-                      class="text-justify"
+                <v-card-text>
+                  <v-col
+                    cols="12"
+                    class="text-justify"
+                  >
+                    <i18n-t
+                      keypath="firstSteps.forum"
+                      tag="span"
+                      scope="global"
                     >
-                      <i18n-t
-                        keypath="firstSteps.profile"
-                        tag="span"
-                        scope="global"
+                      <nuxt-link
+                        class="text-decoration-none text-primary"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        :to="links.forum"
                       >
-                        <nuxt-link
-                          class="text-decoration-none text-primary"
-                          rel="noopener noreferrer"
-                          :to="profileLink"
-                        >
-                          <strong>{{ t('injector.profile') }}</strong>
-                        </nuxt-link>
-                      </i18n-t>
-                    </v-col>
-                  </v-card-text>
-                </v-timeline-item>
+                        <strong>{{ t('injector.forum') }}</strong>
+                      </nuxt-link>
+                    </i18n-t>
+                  </v-col>
+                </v-card-text>
+              </v-timeline-item>
 
-                <v-timeline-item
-                  dot-color="primary"
-                  size="x-large"
-                  :icon="mdiInformationOutline"
-                >
-                  <v-card-text>
-                    <v-col
-                      cols="12"
-                      class="text-justify"
-                    >
-                      <i18n-t
-                        keypath="firstSteps.tutorial"
-                        tag="span"
-                        scope="global"
-                      >
-                        <span class="text-decoration-none text-primary">
-                          <strong>{{ t('injector.tutorial') }}</strong>
-                        </span>
-                      </i18n-t>
-                    </v-col>
-                  </v-card-text>
-                </v-timeline-item>
-
-                <v-timeline-item
-                  dot-color="primary"
-                  size="x-large"
-                  :icon="mdiHelpCircleOutline"
-                >
-                  <v-card-text>
-                    <v-col
-                      cols="12"
-                      class="text-justify"
-                    >
-                      <i18n-t
-                        keypath="firstSteps.documentation"
-                        tag="span"
-                        scope="global"
-                      >
-                        <nuxt-link
-                          class="text-decoration-none text-primary"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                          to="/docs/index"
-                        >
-                          <strong>{{ t('injector.documentation') }}</strong>
-                        </nuxt-link>
-                      </i18n-t>
-                    </v-col>
-                  </v-card-text>
-                </v-timeline-item>
-              </v-timeline>
-            </v-row>
-            <!-- external Links -->
-            <v-row dense>
-              <v-timeline
-                align="center"
-                class="mx-4"
-                density="compact"
-                direction="horizontal"
+              <v-timeline-item
+                dot-color="primary"
+                size="x-large"
+                :icon="mdiYoutubeTv"
               >
-                <v-timeline-item
-                  dot-color="primary"
-                  size="x-large"
-                  :icon="mdiForumOutline"
-                >
-                  <v-card-text>
-                    <v-col
-                      cols="12"
-                      class="text-justify"
+                <v-card-text>
+                  <v-col
+                    cols="12"
+                    class="text-justify"
+                  >
+                    <i18n-t
+                      keypath="firstSteps.channel"
+                      tag="span"
+                      scope="global"
                     >
-                      <i18n-t
-                        keypath="firstSteps.forum"
-                        tag="span"
-                        scope="global"
+                      <nuxt-link
+                        class="text-decoration-none text-primary"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        :to="links.channel"
                       >
-                        <nuxt-link
-                          class="text-decoration-none text-primary"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                          :to="links.forum"
-                        >
-                          <strong>{{ t('injector.forum') }}</strong>
-                        </nuxt-link>
-                      </i18n-t>
-                    </v-col>
-                  </v-card-text>
-                </v-timeline-item>
+                        <strong>{{ t('injector.channel') }}</strong>
+                      </nuxt-link>
+                    </i18n-t>
+                  </v-col>
+                </v-card-text>
+              </v-timeline-item>
 
-                <v-timeline-item
-                  dot-color="primary"
-                  size="x-large"
-                  :icon="mdiYoutubeTv"
-                >
-                  <v-card-text>
-                    <v-col
-                      cols="12"
-                      class="text-justify"
+              <v-timeline-item
+                dot-color="primary"
+                size="x-large"
+                :icon="mdiSchoolOutline"
+              >
+                <v-card-text>
+                  <v-col
+                    cols="12"
+                    class="text-justify"
+                  >
+                    <i18n-t
+                      keypath="firstSteps.webinar"
+                      tag="span"
+                      scope="global"
                     >
-                      <i18n-t
-                        keypath="firstSteps.channel"
-                        tag="span"
-                        scope="global"
+                      <nuxt-link
+                        class="text-decoration-none text-primary"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        :to="locale === 'de' ? links.webinar.de : links.webinar.en"
                       >
-                        <nuxt-link
-                          class="text-decoration-none text-primary"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                          :to="links.channel"
-                        >
-                          <strong>{{ t('injector.channel') }}</strong>
-                        </nuxt-link>
-                      </i18n-t>
-                    </v-col>
-                  </v-card-text>
-                </v-timeline-item>
+                        <strong>{{ t('injector.webinar') }}</strong>
+                      </nuxt-link>
+                    </i18n-t>
+                  </v-col>
+                </v-card-text>
+              </v-timeline-item>
+            </v-timeline>
+          </v-row>
 
-                <v-timeline-item
-                  dot-color="primary"
-                  size="x-large"
-                  :icon="mdiSchoolOutline"
-                >
-                  <v-card-text>
-                    <v-col
-                      cols="12"
-                      class="text-justify"
-                    >
-                      <i18n-t
-                        keypath="firstSteps.webinar"
-                        tag="span"
-                        scope="global"
-                      >
-                        <nuxt-link
-                          class="text-decoration-none text-primary"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                          :to="locale === 'de' ? links.webinar.de : links.webinar.en"
-                        >
-                          <strong>{{ t('injector.webinar') }}</strong>
-                        </nuxt-link>
-                      </i18n-t>
-                    </v-col>
-                  </v-card-text>
-                </v-timeline-item>
-              </v-timeline>
-            </v-row>
+          <v-divider />
 
-            <v-divider />
-
-            <v-card-text class="text-center">
-              <span>{{ t('reminder') }}</span>
-            </v-card-text>
-          </v-card>
-        </v-row>
+          <v-card-text class="text-center">
+            <span>{{ t('reminder') }}</span>
+          </v-card-text>
+        </v-card>
       </BaseCard>
     </v-container>
   </BasePage>
@@ -321,7 +280,6 @@ import {
   mdiHelpCircleOutline,
   mdiForumOutline,
   mdiSchoolOutline,
-  mdiShapeOutline,
   mdiYoutubeTv,
   mdiInformationOutline
 } from '@mdi/js';
@@ -410,12 +368,6 @@ const links = ref({
   }
 });
 
-const profileLink = computed(() => {
-  const [unit, domain] = [...routeIds('Unit 1')];
-
-  return `/${unit}/domains/${domain}/profiles`;
-});
-
 // prevent the welcome page to be loaded automatically at login (except for the first time; handled by the middleware)
 localStorage.setItem(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, 'false');
 </script>
@@ -440,11 +392,13 @@ localStorage.setItem(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, 'false');
         "noob": {
             "question": "Are you new to verinice and want to find your way around?",
             "advice": "Download a sample organization to get to know all the functions ...",
+            "adviceNoUnit": "Create a sample organization ...",
             "buttonCaption": "Load example data"
         },
         "seasoned": {
             "question": "You want to get started right away?",
             "advice": "Load an empty unit and map your organization ...",
+            "adviceNoUnit": "Select a unit ...",
             "buttonCaption": "Load empty unit"
         }
       },
@@ -469,11 +423,13 @@ localStorage.setItem(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, 'false');
         "noob": {
             "question": "Sie sind neu in verinice und möchten sich orientieren?",
             "advice": "Laden Sie eine Beispielorganisation um alle Funktionen kennenzulernen ...",
+            "adviceNoUnit": "Legen Sie eine Beispielorganisation an ...",
             "buttonCaption": "Beispielorganisation laden"
         },
         "seasoned": {
             "question": "Sie kennen sich bereits aus und möchten direkt starten?",
             "advice": "Laden Sie eine leere Unit und bilden Sie Ihre Organisation ab ...",
+            "adviceNoUnit": "Wählen Sie eine Unit aus ...",
             "buttonCaption": "Leere Unit laden"
         }
       },
