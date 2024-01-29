@@ -13,7 +13,7 @@ declare global {
 }
 
 export function goToUnitSelection():void {
-  cy.visit('/');
+  cy.visit('/units');
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units`).as('getUnits');
   cy.wait(['@getUnits'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 200);
   cy.get('[data-veo-test="unit-page-link"]').click();
