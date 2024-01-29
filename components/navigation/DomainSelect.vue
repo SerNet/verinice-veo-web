@@ -51,7 +51,7 @@
         :active="domainId === item.value"
         color="primary"
         data-veo-test="domain-selection-nav-item"
-        max-width="550"
+        width="500"
         :title="item.title"
         :value="item.value"
         @click="domainId = item.value"

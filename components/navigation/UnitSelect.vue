@@ -50,7 +50,7 @@
         :active="unitId === item.value"
         color="primary"
         data-veo-test="unit-selection-nav-item"
-        max-width="550"
+        width="500"
         :subtitle="item.raw.description"
         :title="item.title"
         :value="item.value"
