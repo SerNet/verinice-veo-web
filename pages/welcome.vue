@@ -311,7 +311,7 @@ const routeIds = (unitName: any) => {
 // point the router to the dashboard of the unit given
 const loadUnit = (unitname = 'Unit 1') => {
   if (!isUnitExisting(unitname)) {
-    router.push({ name: 'index' });
+    router.push({ name: 'units' });
   }
 
   const [unit, domain] = [...routeIds(unitname)];
@@ -331,7 +331,7 @@ const loadUnit = (unitname = 'Unit 1') => {
 const applyProfile = async () => {
   // navigate to indexpage if the UNIT 'Demo' has been renamed or deleted
   if (!isUnitExisting('Demo')) {
-    router.push({ name: 'index' });
+    router.push({ name: 'units' });
   }
   const isProfileApplied = localStorage.getItem(LOCAL_STORAGE_KEYS.DEMO_UNIT_PROFILE_APPLIED);
   // navigate to the dashboard if the profile already has been applied
