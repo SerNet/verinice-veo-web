@@ -41,7 +41,10 @@
 </template>
 
 <script lang="ts">
-export const OBJECT_TYPE_ICONS = new Map<string, { icon: string | string[]; library: 'mdi' }>([
+export const OBJECT_TYPE_ICONS = new Map<
+  string,
+  { icon: string | string[]; library: 'mdi' }
+>([
   ['scope', { icon: mdiFocusField, library: 'mdi' }],
   ['process', { icon: mdiDatabaseCogOutline, library: 'mdi' }],
   ['asset', { icon: mdiDevices, library: 'mdi' }],
@@ -49,7 +52,7 @@ export const OBJECT_TYPE_ICONS = new Map<string, { icon: string | string[]; libr
   ['incident', { icon: mdiAlarmLightOutline, library: 'mdi' }],
   ['document', { icon: mdiFileDocumentOutline, library: 'mdi' }],
   ['scenario', { icon: mdiShieldAlertOutline, library: 'mdi' }],
-  ['control', { icon: mdiPlaylistCheck, library: 'mdi' }]
+  ['control', { icon: mdiPlaylistCheck, library: 'mdi' }],
 ]);
 </script>
 
@@ -63,27 +66,40 @@ import {
   mdiFileDocumentOutline,
   mdiFocusField,
   mdiPlaylistCheck,
-  mdiShieldAlertOutline
+  mdiShieldAlertOutline,
 } from '@mdi/js';
 
 import { useQuery } from '~/composables/api/utils/query';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 
-const props = withDefaults(defineProps<{
-  objectType: string;
-  isComposite?: boolean;
-}>(), {
-  isComposite: false
-});
+const props = withDefaults(
+  defineProps<{
+    objectType: string;
+    isComposite?: boolean;
+  }>(),
+  {
+    isComposite: false,
+  }
+);
 
 const { locale } = useI18n();
 const route = useRoute();
 
 const icon = computed(() => OBJECT_TYPE_ICONS.get(props.objectType));
 
-const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain }));
-const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
-const translatedObjectType = computed(() => translations.value?.lang?.[locale.value]?.[props.objectType] || props.objectType);
+const fetchTranslationsQueryParameters = computed(() => ({
+  languages: [locale.value],
+  domain: route.params.domain,
+}));
+const { data: translations } = useQuery(
+  translationQueryDefinitions.queries.fetch,
+  fetchTranslationsQueryParameters
+);
+const translatedObjectType = computed(
+  () =>
+    translations.value?.lang?.[locale.value]?.[props.objectType] ||
+    props.objectType
+);
 </script>
 
 <style lang="scss" scoped>

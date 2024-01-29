@@ -19,13 +19,14 @@
   <div v-if="!cookieSelection">
     <div class="veo-border veo-cookie-banner">
       <v-card style="border-radius: 0">
-        <v-card-text class="d-flex flex-row align-center justify-space-between py-0">
+        <v-card-text
+          class="d-flex flex-row align-center justify-space-between py-0"
+        >
           <span class="text-body-1">
             {{ t('cookieBannerText') }}
-            <a
-              :href="dataProtectionDeclarationLink"
-              target="_blank"
-            >{{ t('moreInformation') }}</a>
+            <a :href="dataProtectionDeclarationLink" target="_blank">{{
+              t('moreInformation')
+            }}</a>
           </span>
           <div>
             <v-btn
@@ -69,16 +70,11 @@
         </h2>
         <span class="text-body-1">
           {{ t('cookieBannerText') }}
-          <a
-            :href="dataProtectionDeclarationLink"
-            target="_blank"
-          >{{ t('moreInformation') }}</a>
+          <a :href="dataProtectionDeclarationLink" target="_blank">{{
+            t('moreInformation')
+          }}</a>
         </span>
-        <v-expansion-panels
-          :model-value="[0]"
-          multiple
-          variant="accordion"
-        >
+        <v-expansion-panels :model-value="[0]" multiple variant="accordion">
           <v-expansion-panel
             v-for="(category, index) of categories"
             :key="index"
@@ -116,13 +112,7 @@
         >
           {{ t('acceptAllCookies') }}
         </v-btn>
-        <v-btn
-          flat
-          class="mt-2"
-          color="primary"
-          block
-          @click="acceptSelection"
-        >
+        <v-btn flat class="mt-2" color="primary" block @click="acceptSelection">
           {{ t('save') }}
         </v-btn>
       </template>
@@ -150,7 +140,9 @@ export default defineComponent({
     const { t, locale } = useI18n();
 
     const dataProtectionDeclarationLink = computed(() =>
-      locale.value === 'en' ? 'https://www.sernet.de/en/data-protection-declaration/' : 'https://www.sernet.de/de/datenschutz/'
+      locale.value === 'en' ?
+        'https://www.sernet.de/en/data-protection-declaration/'
+      : 'https://www.sernet.de/de/datenschutz/'
     );
     const cookieConfigurationVisible = ref(false);
 
@@ -160,20 +152,29 @@ export default defineComponent({
     }[] = [
       {
         label: t('requiredCookies').toString(),
-        options: REQUIRED_COOKIES
+        options: REQUIRED_COOKIES,
       },
       {
         label: t('optionalCookies').toString(),
-        options: OPTIONAL_COOKIES
-      }
+        options: OPTIONAL_COOKIES,
+      },
     ];
 
     // Cookie handling
     const localCookieSelection = ref<COOKIE_OPTIONS[]>([]);
-    const cookieSelection = useStorage<ACCEPTED_COOKIES>(LOCAL_STORAGE_KEYS.ACCEPTED_COOKIES, null, localStorage, { serializer: StorageSerializers.object });
+    const cookieSelection = useStorage<ACCEPTED_COOKIES>(
+      LOCAL_STORAGE_KEYS.ACCEPTED_COOKIES,
+      null,
+      localStorage,
+      { serializer: StorageSerializers.object }
+    );
     watch(
       () => cookieSelection.value,
-      (newValue) => (localCookieSelection.value = [...(newValue?.selected || []), ...REQUIRED_COOKIES]),
+      (newValue) =>
+        (localCookieSelection.value = [
+          ...(newValue?.selected || []),
+          ...REQUIRED_COOKIES,
+        ]),
       { immediate: true }
     );
 
@@ -188,8 +189,11 @@ export default defineComponent({
     const acceptSelection = () => {
       cookieSelection.value = {
         required: true,
-        optional: OPTIONAL_COOKIES.every((cookie) => localCookieSelection.value.includes(cookie)) && !!OPTIONAL_COOKIES.length,
-        selected: localCookieSelection.value
+        optional:
+          OPTIONAL_COOKIES.every((cookie) =>
+            localCookieSelection.value.includes(cookie)
+          ) && !!OPTIONAL_COOKIES.length,
+        selected: localCookieSelection.value,
       };
     };
 
@@ -203,9 +207,9 @@ export default defineComponent({
       dataProtectionDeclarationLink,
       localCookieSelection,
 
-      t
+      t,
     };
-  }
+  },
 });
 </script>
 

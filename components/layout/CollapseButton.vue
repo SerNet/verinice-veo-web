@@ -21,18 +21,22 @@
       <v-btn
         v-bind="props"
         class="collapse-button px-0 white mt-6"
-        :class="{'collapse-button--right': right}"
+        :class="{ 'collapse-button--right': right }"
         elevation="1"
         :icon="chevron"
         size="small"
         @click="$emit('update:model-value', !modelValue)"
       />
     </template>
-    <template
-      #default
-    >
-      {{ t(modelValue ? 'expand' : 'collapse', { elementName: elementName || t('page').toString() }) }}
-      <span v-if="index !== undefined"><br>(Alt/{{ t('control') }} + {{ index + 1 }})</span>
+    <template #default>
+      {{
+        t(modelValue ? 'expand' : 'collapse', {
+          elementName: elementName || t('page').toString(),
+        })
+      }}
+      <span v-if="index !== undefined"
+        ><br />(Alt/{{ t('control') }} + {{ index + 1 }})</span
+      >
     </template>
   </v-tooltip>
 </template>
@@ -44,20 +48,20 @@ export default defineComponent({
   props: {
     modelValue: {
       default: false, // true if collapsed
-      type: Boolean
+      type: Boolean,
     },
     right: {
       type: Boolean,
-      default: false
+      default: false,
     },
     elementName: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     index: {
       type: Number,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
   emits: ['update:model-value'],
   setup(props) {
@@ -72,7 +76,7 @@ export default defineComponent({
     });
 
     return { chevron, t };
-  }
+  },
 });
 </script>
 

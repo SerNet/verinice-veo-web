@@ -17,10 +17,7 @@
 -->
 <template>
   <div>
-    <UtilNestedMenu
-      location="bottom left"
-      :items="visibleItems"
-    >
+    <UtilNestedMenu location="bottom left" :items="visibleItems">
       <template #activator="{ props: menuProps }">
         <v-btn
           v-bind="mergeProps($attrs, menuProps)"
@@ -46,13 +43,16 @@ import ObjectLinkDialog from '~/components/object/LinkDialog.vue';
 import ObjectDeleteDialog from '~/components/object/DeleteDialog.vue';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 
-const props = withDefaults(defineProps<{
-  disabled: boolean;
-  object: IVeoEntity | undefined;
-}>(), {
-  disabled: false,
-  object: undefined
-});
+const props = withDefaults(
+  defineProps<{
+    disabled: boolean;
+    object: IVeoEntity | undefined;
+  }>(),
+  {
+    disabled: false,
+    object: undefined,
+  }
+);
 
 const emit = defineEmits<{
   (event: 'reload'): void;
@@ -69,13 +69,13 @@ const navigateToObjectOverview = () => {
     name: OBJECT_OVERVIEW_ROUTE_NAME,
     params: {
       domain: route.params.domain,
-      unit: route.params.unit
+      unit: route.params.unit,
     },
     query: {
       objectType: props.object?.type,
       // subType: props.object?.domains[route.params.domain as string]?.subType
-      subType: props.object?.subType
-    }
+      subType: props.object?.subType,
+    },
   });
 };
 
@@ -90,7 +90,9 @@ const onCreateObjectSuccess = (newObjectId: string) => {
 // const subType = computed(() => props.object?.domains[route.params.domain as string]?.subType);
 const subType = computed(() => props.object?.subType);
 
-const items = computed<(INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] })[]>(() => [
+const items = computed<
+  (INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] })[]
+>(() => [
   {
     key: 'delete',
     title: t('deleteObject').toString(),
@@ -100,8 +102,9 @@ const items = computed<(INestedMenuEntries & { objectTypes?: string[]; subTypes?
     componentProps: {
       item: props.object,
       onSuccess: navigateToObjectOverview,
-      onError: (error: any) => displayErrorMessage(t('delteObjectFailed'), JSON.stringify(error))
-    }
+      onError: (error: any) =>
+        displayErrorMessage(t('delteObjectFailed'), JSON.stringify(error)),
+    },
   },
   {
     key: 'dpia',
@@ -115,8 +118,8 @@ const items = computed<(INestedMenuEntries & { objectTypes?: string[]; subTypes?
           domainId: route.params.domain,
           objectType: 'process',
           subType: 'PRO_DPIA',
-          onSuccess: onCreateObjectSuccess
-        }
+          onSuccess: onCreateObjectSuccess,
+        },
       },
       {
         key: 'link_dpia',
@@ -125,18 +128,24 @@ const items = computed<(INestedMenuEntries & { objectTypes?: string[]; subTypes?
         componentProps: {
           object: props.object,
           preselectedFilters: { subType: 'PRO_DPIA' },
-          onSuccess: () => emit('reload')
-        }
-      }
+          onSuccess: () => emit('reload'),
+        },
+      },
     ],
     objectTypes: ['process'],
-    subTypes: ['PRO_DataProcessing']
-  }
+    subTypes: ['PRO_DataProcessing'],
+  },
 ]);
 
 // filter allowed actions for current object type & sub type
 const visibleItems = computed(() =>
-  items.value.filter((a) => props.object?.type && subType.value && (!a.objectTypes || a.objectTypes.includes(props.object?.type)) && (!a.subTypes || a.subTypes.includes(subType.value)))
+  items.value.filter(
+    (a) =>
+      props.object?.type &&
+      subType.value &&
+      (!a.objectTypes || a.objectTypes.includes(props.object?.type)) &&
+      (!a.subTypes || a.subTypes.includes(subType.value))
+  )
 );
 </script>
 

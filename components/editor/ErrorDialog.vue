@@ -53,16 +53,16 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Boolean,
-      default: false
+      default: false,
     },
     validation: {
       type: Object as PropType<VeoSchemaValidatorValidationResult>,
       default: () => ({
         valid: true,
         errors: [],
-        warnings: []
-      })
-    }
+        warnings: [],
+      }),
+    },
   },
   emits: ['update:model-value'],
   setup() {
@@ -70,9 +70,9 @@ export default defineComponent({
 
     return {
       t,
-      upperFirst
+      upperFirst,
     };
-  }
+  },
 });
 </script>
 

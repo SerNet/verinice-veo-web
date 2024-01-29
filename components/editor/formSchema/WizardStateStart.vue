@@ -20,10 +20,7 @@
     <h2 class="text-h2 mb-2">
       {{ t('start') }}
     </h2>
-    <v-list
-      lines="two"
-      color="transparent"
-    >
+    <v-list lines="two" color="transparent">
       <v-list-item
         v-for="action of actions"
         :key="action.title"
@@ -38,15 +35,12 @@
         </v-list-item-subtitle>
         <template #append>
           <v-list-item-action>
-            <v-icon
-              size="x-large"
-              :icon="mdiChevronRight"
-            />
+            <v-icon size="x-large" :icon="mdiChevronRight" />
           </v-list-item-action>
         </template>
       </v-list-item>
     </v-list>
-  </v-window-item>  
+  </v-window-item>
 </template>
 
 <script setup lang="ts">
@@ -55,25 +49,25 @@ import { mdiChevronRight } from '@mdi/js';
 defineProps({
   modelValue: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const emit = defineEmits(['create', 'import']);
-  
+
 const { t } = useI18n();
 
 const actions = [
   {
     title: t('createFormSchema'),
     text: t('createFormSchemaDescription'),
-    onClick: () => emit('create')
+    onClick: () => emit('create'),
   },
   {
     title: t('importFormSchema'),
     text: t('importFormSchemaDescription'),
-    onClick: () => emit('import')
-  }
+    onClick: () => emit('import'),
+  },
 ];
 </script>
 

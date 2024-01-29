@@ -19,12 +19,7 @@
   <v-tooltip location="bottom">
     <template #activator="{ props: tooltip }">
       <div v-bind="tooltip">
-        <v-menu
-          offset-y
-          bottom
-          left
-          nudge-bottom="2"
-        >
+        <v-menu offset-y bottom left nudge-bottom="2">
           <template #activator="{ props: menu }">
             <v-btn
               v-bind="menu"
@@ -63,10 +58,12 @@ const selectedLocale = computed({
   set: (newValue) => {
     setLocale(newValue[0]);
     current.value = newValue[0];
-  }
+  },
 });
 
-const availableLocales = computed<LocaleObject[]>(() => locales.value as LocaleObject[]);
+const availableLocales = computed<LocaleObject[]>(
+  () => locales.value as LocaleObject[]
+);
 </script>
 
 <i18n>

@@ -27,37 +27,37 @@ export type Profile = {
   name: string;
   description: string;
   language: string;
-}
+};
 
 type Profiles = {
   [key: string]: {
     name: string;
     description: string;
     language: string;
-  }
-}
+  };
+};
 
 // useUnits
 type ApplyProfileParams = {
   domainId: string;
   unitId: string;
   profileKey: string;
-  messages: { [key: string]: string }
-}
+  messages: { [key: string]: string };
+};
 
 type createUnitAndApplyProfileParams = {
   name: string;
   domains: IVeoLink[];
   description?: string | undefined;
   messages: { [key: string]: string };
-}
+};
 
 // GLOBAL COMPOSABLES
 const route = useRoute();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 // STATE
-watch( route, () => updateDomainId());
+watch(route, () => updateDomainId());
 
 const initialState = {
   selectedProfiles: [] as string[],
@@ -67,7 +67,7 @@ const initialState = {
   domainId: route.params.domain as string,
   selectedUnit: null as null | string,
   newUnitName: null as null | string,
-  newUnitDescription: null as null | string
+  newUnitDescription: null as null | string,
 };
 
 const state = reactive({ ...initialState });
@@ -82,7 +82,7 @@ function updateDomainId() {
 }
 
 function toggleDialog() {
-  if(state.isApplyingProfile || state.isCreatingUnit) return;
+  if (state.isApplyingProfile || state.isCreatingUnit) return;
   state.showDialog = !state.showDialog;
 
   if (state.showDialog) return;
@@ -91,9 +91,10 @@ function toggleDialog() {
 
 // Helpers
 function handleError(err: unknown, genericMsg: string) {
-  const error = (err instanceof Error) ?
-    { message: err.message, cause: err.cause } :
-    { message: String(err), cause: 'unknown' };
+  const error =
+    err instanceof Error ?
+      { message: err.message, cause: err.cause }
+    : { message: String(err), cause: 'unknown' };
 
   console.error('applyProfile() failed:', err);
   displayErrorMessage(genericMsg, error.message);
@@ -101,12 +102,18 @@ function handleError(err: unknown, genericMsg: string) {
 
 // Local Composables
 function useDomain() {
-  const fetchDomainQueryParameters = computed(() => ({ id: state.domainId as string }));
+  const fetchDomainQueryParameters = computed(() => ({
+    id: state.domainId as string,
+  }));
   const fetchDomainQueryEnabled = computed(() => !!state.domainId);
-  const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
+  const { data: domain } = useQuery(
+    domainQueryDefinitions.queries.fetchDomain,
+    fetchDomainQueryParameters,
+    { enabled: fetchDomainQueryEnabled }
+  );
 
   return {
-    domain: readonly(domain)
+    domain: readonly(domain),
   };
 }
 
@@ -118,79 +125,105 @@ export function useProfiles() {
   const profiles = computed(() => {
     const _profiles: Profiles | undefined = toRaw(domain?.value?.profiles);
 
-    if(!_profiles) return [];
-    return Object.keys(_profiles || {}).map(key =>({key, ..._profiles[key]} )) as Profile[];
+    if (!_profiles) return [];
+    return Object.keys(_profiles || {}).map((key) => ({
+      key,
+      ..._profiles[key],
+    })) as Profile[];
   });
 
   return {
     profiles: readonly(profiles),
     toggleDialog,
     updateDomainId,
-    state
+    state,
   };
 }
 
 export function useUnits() {
-  const { mutateAsync: mutateExistingUnit } = useMutation(domainQueryDefinitions.mutations.applyProfile);
-  const { mutateAsync: createNewUnit, data: unitDetailsPayload } = useMutation(unitQueryDefinitions.mutations.create);
+  const { mutateAsync: mutateExistingUnit } = useMutation(
+    domainQueryDefinitions.mutations.applyProfile
+  );
+  const { mutateAsync: createNewUnit, data: unitDetailsPayload } = useMutation(
+    unitQueryDefinitions.mutations.create
+  );
   const { domain } = useDomain(); // Needed if user wants to create a new unit
   const { data: _units } = useQuery(unitQueryDefinitions.queries.fetchAll);
   const { userSettings } = useVeoUser();
 
-  const hasMaxUnits = computed(() => (_units.value?.length || 0) >= userSettings.value.maxUnits);
+  const hasMaxUnits = computed(
+    () => (_units.value?.length || 0) >= userSettings.value.maxUnits
+  );
 
   // Remove all units which are not in the current domain
-  const units = computed(()=> _units.value ?
-    _units.value.filter(unit => {
-      return unit.domains.some(({targetUri}) => targetUri === domain?.value?._self);
-    }) : [] );
+  const units = computed(() =>
+    _units.value ?
+      _units.value.filter((unit) => {
+        return unit.domains.some(
+          ({ targetUri }) => targetUri === domain?.value?._self
+        );
+      })
+    : []
+  );
 
-  async function applyProfile({ profileKey, unitId, domainId, messages }: ApplyProfileParams) {
+  async function applyProfile({
+    profileKey,
+    unitId,
+    domainId,
+    messages,
+  }: ApplyProfileParams) {
     state.isApplyingProfile = true;
     try {
       await mutateExistingUnit({ domainId, unitId, profileKey });
       redirectToUnit({ unitId, domainId });
       displaySuccessMessage(messages.success);
-    }
-    catch (err) {
+    } catch (err) {
       handleError(err, messages.error);
-    }
-    finally {
+    } finally {
       resetState();
       updateDomainId();
     }
   }
 
-  async function redirectToUnit({ unitId, domainId }:{unitId: string, domainId: string}) {
+  async function redirectToUnit({
+    unitId,
+    domainId,
+  }: {
+    unitId: string;
+    domainId: string;
+  }) {
     const router = useRouter();
     if (!domainId || !unitId) return;
     router.push({
       name: 'unit-domains-domain',
       params: {
         unit: unitId,
-        domain: domainId
-      }
+        domain: domainId,
+      },
     });
   }
 
-  async function createUnitAndApplyProfile({name, domains, description, messages}: createUnitAndApplyProfileParams) {
+  async function createUnitAndApplyProfile({
+    name,
+    domains,
+    description,
+    messages,
+  }: createUnitAndApplyProfileParams) {
     state.isCreatingUnit = true;
 
     try {
       await createNewUnit({ name, domains, description });
-      if(unitDetailsPayload.value?.resourceId) {
+      if (unitDetailsPayload.value?.resourceId) {
         await applyProfile({
           profileKey: state.selectedProfiles[0],
           unitId: unitDetailsPayload.value.resourceId as string,
           domainId: state.domainId,
-          messages
+          messages,
         });
-      }
-      else {
+      } else {
         throw new Error('Could not apply profile');
       }
-    }
-    catch (err) {
+    } catch (err) {
       handleError(err, messages.error);
       resetState();
     }
@@ -203,6 +236,6 @@ export function useUnits() {
     toggleDialog,
     applyProfile,
     createUnitAndApplyProfile,
-    state
+    state,
   };
 }

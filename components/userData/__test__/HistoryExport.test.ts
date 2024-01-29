@@ -28,22 +28,19 @@ const plugins = [vuetify];
 
 describe('HistoryExport.vue', () => {
   it('renders a loader when preparing history data', async () => {
-
     const state = {
       zipArchives: [],
       isLoading: [true],
       showAlert: false,
-      prepare: { phase: 1,  cur: 0, total: 100 }
+      prepare: { phase: 1, cur: 0, total: 100 },
     };
 
     const mocks = { state };
     const wrapper = mount(HistoryExport, {
-      global: { plugins, mocks }
+      global: { plugins, mocks },
     });
 
     const prepareDownloadBtn = wrapper.find('button');
     expect(prepareDownloadBtn.find('.v-btn__loader').exists()).toBe(true);
   });
-
 });
-

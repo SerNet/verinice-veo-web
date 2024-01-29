@@ -29,7 +29,11 @@
               :to="createUrl(revision, schemas || {})"
               class="text-body-2 text-color"
             >
-              {{ revision.content.designator }} <b>{{ revision.content.abbreviation }} {{ revision.content.name }}</b>
+              {{ revision.content.designator }}
+              <b
+                >{{ revision.content.abbreviation }}
+                {{ revision.content.name }}</b
+              >
             </nuxt-link>
           </td>
           <td class="text-right text-body-2">
@@ -43,23 +47,35 @@
 
 <script setup lang="ts">
 import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
-import schemaQueryDefinitions, { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas';
+import schemaQueryDefinitions, {
+  IVeoSchemaEndpoints,
+} from '~/composables/api/queryDefinitions/schemas';
 import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 import { useQuery } from '~/composables/api/utils/query';
-
 
 const { t, locale } = useI18n();
 const route = useRoute();
 
-const latestChangesQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
-const { data: revisions } = useQuery(historyQueryDefinitions.queries.fetchLatestVersions, latestChangesQueryParameters);
+const latestChangesQueryParameters = computed(() => ({
+  unitId: route.params.unit as string,
+}));
+const { data: revisions } = useQuery(
+  historyQueryDefinitions.queries.fetchLatestVersions,
+  latestChangesQueryParameters
+);
 
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-const createUrl = (revision: IVeoObjectHistoryEntry, schemas: IVeoSchemaEndpoints) => {
-  const subType = revision.content.domains[route.params.domain as string]?.subType || '-';
+const createUrl = (
+  revision: IVeoObjectHistoryEntry,
+  schemas: IVeoSchemaEndpoints
+) => {
+  const subType =
+    revision.content.domains[route.params.domain as string]?.subType || '-';
 
-  return `/${route.params.unit}/domains/${route.params.domain}/${schemas[revision.content.type]}/${subType}/${revision.content.id}/`;
+  return `/${route.params.unit}/domains/${route.params.domain}/${
+    schemas[revision.content.type]
+  }/${subType}/${revision.content.id}/`;
 };
 </script>
 

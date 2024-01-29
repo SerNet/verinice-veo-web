@@ -27,13 +27,9 @@
       enable-click
       @click="openItem"
     >
-      <template #actions="{item}">
+      <template #actions="{ item }">
         <div class="d-flex justify-end">
-          <v-tooltip
-            v-for="btn in actions"
-            :key="btn.id"
-            location="bottom"
-          >
+          <v-tooltip v-for="btn in actions" :key="btn.id" location="bottom">
             <template #activator="{ props }">
               <v-btn
                 v-bind="props"
@@ -79,18 +75,41 @@
 <script lang="ts">
 import { PropType } from 'vue';
 import { cloneDeep, upperFirst } from 'lodash';
-import { mdiArrowDown, mdiArrowRight, mdiCheck, mdiContentCopy, mdiLinkOff, mdiTransitDetour, mdiTrashCanOutline } from '@mdi/js';
+import {
+  mdiArrowDown,
+  mdiArrowRight,
+  mdiCheck,
+  mdiContentCopy,
+  mdiLinkOff,
+  mdiTransitDetour,
+  mdiTrashCanOutline,
+} from '@mdi/js';
 import { VIcon, VTooltip } from 'vuetify/components';
 
 import { TableHeader } from '~/components/base/Table.vue';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import { getEntityDetailsFromLink } from '~/lib/utils';
-import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk, IVeoRiskCategory, IVeoRiskDefinition, IVeoRiskValue, VeoRiskTreatment } from '~/types/VeoTypes';
+import {
+  IVeoCustomLink,
+  IVeoEntity,
+  IVeoPaginatedResponse,
+  IVeoRisk,
+  IVeoRiskCategory,
+  IVeoRiskDefinition,
+  IVeoRiskValue,
+  VeoRiskTreatment,
+} from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
+import {
+  useCloneObject,
+  useLinkObject,
+} from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import objectQueryDefinitions, { IVeoFetchRisksParameters, IVeoFetchScopeChildrenParameters } from '~/composables/api/queryDefinitions/objects';
+import objectQueryDefinitions, {
+  IVeoFetchRisksParameters,
+  IVeoFetchScopeChildrenParameters,
+} from '~/composables/api/queryDefinitions/objects';
 import { useFetchParentObjects } from '~/composables/api/objects';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
@@ -102,20 +121,20 @@ export default defineComponent({
   props: {
     type: {
       type: String,
-      default: ''
+      default: '',
     },
     object: {
       type: Object as PropType<IVeoEntity>,
-      default: undefined
+      default: undefined,
     },
     dense: {
       type: Boolean,
-      default: false
+      default: false,
     },
     domainId: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['reload'],
   setup(props, { emit }) {
@@ -139,41 +158,99 @@ export default defineComponent({
     };
     watch(() => props.type, resetQueryOptions);
 
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: props.domainId }));
-    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
+    const fetchTranslationsQueryParameters = computed(() => ({
+      languages: [locale.value],
+      domain: props.domainId,
+    }));
+    const { data: translations } = useQuery(
+      translationQueryDefinitions.queries.fetch,
+      fetchTranslationsQueryParameters
+    );
 
-    const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+    const { data: schemas } = useQuery(
+      schemaQueryDefinitions.queries.fetchSchemas
+    );
     const parentScopesQueryParameters = computed(() => ({
       parentEndpoint: 'scopes',
       childObjectId: props.object?.id || '',
       unitId: route.params.unit as string,
       sortBy: sortBy.value[0].key,
       sortOrder: sortBy.value[0].order as 'asc' | 'desc',
-      page: page.value
+      page: page.value,
     }));
-    const parentScopesQueryEnabled = computed(() => props.type !== 'risks' && !!props.object?.id);
-    const { data: parentScopes, isFetching: parentScopesIsFetching } = useFetchParentObjects(parentScopesQueryParameters, { enabled: parentScopesQueryEnabled }); // Used by table and cloning objects
+    const parentScopesQueryEnabled = computed(
+      () => props.type !== 'risks' && !!props.object?.id
+    );
+    const { data: parentScopes, isFetching: parentScopesIsFetching } =
+      useFetchParentObjects(parentScopesQueryParameters, {
+        enabled: parentScopesQueryEnabled,
+      }); // Used by table and cloning objects
     const parentObjectsQueryParameters = computed(() => ({
       parentEndpoint: schemas.value?.[props.object?.type || ''] || '',
       childObjectId: props.object?.id || '',
       unitId: route.params.unit as string,
       sortBy: sortBy.value[0].key,
       sortOrder: sortBy.value[0].order as 'asc' | 'desc',
-      page: page.value
+      page: page.value,
     }));
-    const parentObjectsQueryEnabled = computed(() => props.type === 'parentObjects' && !!props.object?.id);
-    const { data: parentObjects, isFetching: parentObjectsIsFetching } = useFetchParentObjects(parentObjectsQueryParameters, { enabled: parentObjectsQueryEnabled });
-    const childScopesQueryParameters = computed<IVeoFetchScopeChildrenParameters>(() => ({ id: props.object?.id || '', domain: route.params.domain as string || '' }));
-    const childScopesQueryEnabled = computed(() => props.type.startsWith('child') && props.object?.type === 'scope' && !!props.object?.id);
-    const { data: scopeChildren, isFetching: childScopesIsFetching } = useQuery(objectQueryDefinitions.queries.fetchScopeChildren, childScopesQueryParameters, { enabled: childScopesQueryEnabled });
-    const childObjectsQueryParameters = computed(() => ({ id: props.object?.id || '', endpoint: schemas.value?.[props.object?.type || ''] || '', domain: route.params.domain as string || '' }));
-    const childObjectsQueryEnabled = computed(() => props.type.startsWith('child') && props.object?.type !== 'scope' && !!props.object?.id);
-    const { data: objectChildren, isFetching: childObjectsIsFetching } = useQuery(objectQueryDefinitions.queries.fetchObjectChildren, childObjectsQueryParameters, { enabled: childObjectsQueryEnabled });
-    const risksQueryParameters = computed<IVeoFetchRisksParameters>(() => ({ id: props.object?.id || '', endpoint: schemas.value?.[props.object?.type || ''] || '' }));
-    const risksQueryEnabled = computed(() => props.type === 'risks' && !!props.object?.id);
-    const { data: risks, isFetching: risksIsFetching } = useQuery(objectQueryDefinitions.queries.fetchRisks, risksQueryParameters, { enabled: risksQueryEnabled });
+    const parentObjectsQueryEnabled = computed(
+      () => props.type === 'parentObjects' && !!props.object?.id
+    );
+    const { data: parentObjects, isFetching: parentObjectsIsFetching } =
+      useFetchParentObjects(parentObjectsQueryParameters, {
+        enabled: parentObjectsQueryEnabled,
+      });
+    const childScopesQueryParameters =
+      computed<IVeoFetchScopeChildrenParameters>(() => ({
+        id: props.object?.id || '',
+        domain: (route.params.domain as string) || '',
+      }));
+    const childScopesQueryEnabled = computed(
+      () =>
+        props.type.startsWith('child') &&
+        props.object?.type === 'scope' &&
+        !!props.object?.id
+    );
+    const { data: scopeChildren, isFetching: childScopesIsFetching } = useQuery(
+      objectQueryDefinitions.queries.fetchScopeChildren,
+      childScopesQueryParameters,
+      { enabled: childScopesQueryEnabled }
+    );
+    const childObjectsQueryParameters = computed(() => ({
+      id: props.object?.id || '',
+      endpoint: schemas.value?.[props.object?.type || ''] || '',
+      domain: (route.params.domain as string) || '',
+    }));
+    const childObjectsQueryEnabled = computed(
+      () =>
+        props.type.startsWith('child') &&
+        props.object?.type !== 'scope' &&
+        !!props.object?.id
+    );
+    const { data: objectChildren, isFetching: childObjectsIsFetching } =
+      useQuery(
+        objectQueryDefinitions.queries.fetchObjectChildren,
+        childObjectsQueryParameters,
+        { enabled: childObjectsQueryEnabled }
+      );
+    const risksQueryParameters = computed<IVeoFetchRisksParameters>(() => ({
+      id: props.object?.id || '',
+      endpoint: schemas.value?.[props.object?.type || ''] || '',
+    }));
+    const risksQueryEnabled = computed(
+      () => props.type === 'risks' && !!props.object?.id
+    );
+    const { data: risks, isFetching: risksIsFetching } = useQuery(
+      objectQueryDefinitions.queries.fetchRisks,
+      risksQueryParameters,
+      { enabled: risksQueryEnabled }
+    );
 
-    const children = computed(() => props.object?.type === 'scope' ? scopeChildren.value : objectChildren.value);
+    const children = computed(() =>
+      props.object?.type === 'scope' ?
+        scopeChildren.value
+      : objectChildren.value
+    );
 
     const tableIsLoading = computed(
       () =>
@@ -188,155 +265,261 @@ export default defineComponent({
     const createEntityFromLink = (link: IVeoCustomLink) => {
       const name = link.target.displayName;
       const splitted = link.target.targetUri.split('/');
-      const type = Object.entries(schemas.value || {}).find(([_key, value]) => value === splitted[4])?.[0] || splitted[4];
+      const type =
+        Object.entries(schemas.value || {}).find(
+          ([_key, value]) => value === splitted[4]
+        )?.[0] || splitted[4];
       const id = splitted[5];
       return { id, name, type };
     };
 
-    const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>(() => {
-      switch (props.type) {
-        // TODO (Backend): make children filterable by object type!
-        case 'childScopes':
-          return children.value || [];
-        case 'childObjects':
-          return children.value || [];
-        case 'parentScopes':
-          return cloneDeep(parentScopes.value || []);
-        case 'parentObjects':
-          return parentObjects.value || [];
-        case 'risks':
-          return risks.value || [];
-        case 'controls':
-          return (props.object?.controlImplementations || []).map((control) => {
-            const details = getEntityDetailsFromLink(control.control);
-            return { ...control, type: details.type, name: details.name, id: details.id };
-          });
-        case 'links':
-        default:
-          return Object.entries(props.object?.links || {}).reduce((linkArray: { id: string; name?: string; type: string, linkId: string }[], [linkId, links]: [string, IVeoCustomLink[]]) => {
-            for (const link of links) {
-              linkArray.push({ ...createEntityFromLink(link), linkId });
-            }
-            return linkArray;
-          }, []) as any[];
+    const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>(
+      () => {
+        switch (props.type) {
+          // TODO (Backend): make children filterable by object type!
+          case 'childScopes':
+            return children.value || [];
+          case 'childObjects':
+            return children.value || [];
+          case 'parentScopes':
+            return cloneDeep(parentScopes.value || []);
+          case 'parentObjects':
+            return parentObjects.value || [];
+          case 'risks':
+            return risks.value || [];
+          case 'controls':
+            return (props.object?.controlImplementations || []).map(
+              (control) => {
+                const details = getEntityDetailsFromLink(control.control);
+                return {
+                  ...control,
+                  type: details.type,
+                  name: details.name,
+                  id: details.id,
+                };
+              }
+            );
+          case 'links':
+          default:
+            return Object.entries(props.object?.links || {}).reduce(
+              (
+                linkArray: {
+                  id: string;
+                  name?: string;
+                  type: string;
+                  linkId: string;
+                }[],
+                [linkId, links]: [string, IVeoCustomLink[]]
+              ) => {
+                for (const link of links) {
+                  linkArray.push({ ...createEntityFromLink(link), linkId });
+                }
+                return linkArray;
+              },
+              []
+            ) as any[];
+        }
       }
-    });
+    );
 
     const defaultHeaders = computed(() =>
-      props.type !== 'risks' && props.type !== 'links' && props.type !== 'controls'
-        ? ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedAt', 'updatedBy', 'actions']
-        : props.type === 'links'
-          ? ['icon', 'name']
-          : props.type === 'controls'
-            ? ['icon', 'actions']
-            : ['designator', 'updatedAt', 'updatedBy', 'actions']
+      (
+        props.type !== 'risks' &&
+        props.type !== 'links' &&
+        props.type !== 'controls'
+      ) ?
+        [
+          'icon',
+          'designator',
+          'abbreviation',
+          'name',
+          'status',
+          'description',
+          'updatedAt',
+          'updatedBy',
+          'actions',
+        ]
+      : props.type === 'links' ? ['icon', 'name']
+      : props.type === 'controls' ? ['icon', 'actions']
+      : ['designator', 'updatedAt', 'updatedBy', 'actions']
     );
 
     const additionalHeaders = computed<TableHeader[]>(() => {
-      if(!riskDefinitionCategories.value || !riskDefinitionId.value) return [];
+      if (!riskDefinitionCategories.value || !riskDefinitionId.value) return [];
 
-      return props.type === 'risks'
-        ? [
-          {
-            value: 'scenario.abbreviation',
-            key: 'scenario.abbreviation',
-            text: t('controls.abbreviation').toString(),
-            width: 50,
-            truncate: false,
-            priority: 100,
-            order: 30,
-            render: (data: any) => data.internalItem.raw.scenario?.abbreviation || ''
-          },
-          {
-            value: 'scenario.displayName',
-            key: 'scenario.displayName',
-            text: t('scenario').toString(),
-            cellClass: ['font-weight-bold'],
-            width: 200,
-            truncate: true,
-            priority: 100,
-            order: 40,
-            render: (data: any) => {
-              // The display name contains designator, abbreviation and name of the scenario, however we only want the name, so we split the string
-              // As the abbreviation is optional, we check for it and slice accordingly
-              const sliceIndex = data.internalItem.raw?.scenario?.abbreviation ? 2 : 1;
-              return data.internalItem.raw.scenario.displayName.split(' ').slice(sliceIndex).join(' ');
-            }
-          },
-          ...riskDefinitionCategories.value.map((categoryId: string, index: number) => ({
-            value: `riskValues_${categoryId}`,
-            key: `riskValues_${categoryId}`,
-            text: riskDefinition.value?.categories?.find((category: IVeoRiskCategory) => category.id === categoryId)?.translations[locale.value].name || '',
-            sortable: false, // TODO 2023-02-27: Currently disabled, as sort is not working at the moment (vuetify 3.1.6)
-            sort: (a: any, b: any) => {
-              const values = riskDefinition.value?.riskValues;
-
-              const { inherentRisk: inherentRisk1 } = getInherentAndResidualRisk(a, categoryId);
-              const translatedInherentRisk1 = values?.find((entry) => entry.ordinalValue === inherentRisk1)?.translations[locale.value].name;
-
-              const { inherentRisk: inherentRisk2 } = getInherentAndResidualRisk(b, categoryId);
-              const translatedInherentRisk2 = values?.find((entry) => entry.ordinalValue === inherentRisk2)?.translations[locale.value].name;
-
-              return (translatedInherentRisk1 || '').localeCompare(translatedInherentRisk2 || '');
+      return (
+        props.type === 'risks' ?
+          [
+            {
+              value: 'scenario.abbreviation',
+              key: 'scenario.abbreviation',
+              text: t('controls.abbreviation').toString(),
+              width: 50,
+              truncate: false,
+              priority: 100,
+              order: 30,
+              render: (data: any) =>
+                data.internalItem.raw.scenario?.abbreviation || '',
             },
-            render: (data: any) => {
-              const { inherentRisk, residualRisk } = getInherentAndResidualRisk(data.internalItem.raw, categoryId);
-              const riskTreatments = getRiskTreatments(data.item.raw, categoryId);
-              const values = riskDefinition.value?.riskValues;
-
-              const translatedInherentRisk = values?.find((entry) => entry.ordinalValue === inherentRisk)?.translations[locale.value].name;
-              const translatedResidualRisk = values?.find((entry) => entry.ordinalValue === residualRisk)?.translations[locale.value].name;
-
-              return h('div', [
-                translatedInherentRisk
-                  ? h(VTooltip, {
-                    location: 'bottom',
-                    maxWidth: 600
-                  }, {
-                    activator: ({ attrs, props }: any) => h('span', { ...attrs, ...props, class: 'text-grey text--darken-4' }, translatedInherentRisk),
-                    default: () => h('span', t('inherentRisk').toString()) })
-                  : undefined,
-                translatedInherentRisk && translatedResidualRisk ? h('span', ' / ') : undefined,
-                translatedResidualRisk
-                  ? h(VTooltip, {
-                    location: 'bottom',
-                    maxWidth: 600
-                  }, {
-                    activator: ({ attrs, props }: any) => h('span', { ...attrs, ...props, class: 'pr-1' }, translatedResidualRisk),
-                    default: () => h('span', t('residualRisk').toString())
-                  })
-                  : undefined,
-                riskTreatments.map((riskTreatment) => {
-                  let icon = mdiCheck;
-                  switch (riskTreatment) {
-                    case 'RISK_TREATMENT_AVOIDANCE':
-                      icon = mdiTransitDetour;
-                      break;
-                    case 'RISK_TREATMENT_REDUCTION':
-                      icon = mdiArrowDown;
-                      break;
-                    case 'RISK_TREATMENT_TRANSFER':
-                      icon = mdiArrowRight;
-                      break;
-                  }
-
-                  return h(VTooltip, {
-                    location: 'bottom',
-                    maxWidth: 600
-                  }, {
-                    activator: ({ attrs, props }: any) => h(VIcon, { ...attrs, ...props, size: 'small', icon }),
-                    default: () => h('span', t(`riskTreatments.${riskTreatment}`).toString())
-                  });
-                })
-              ]);
+            {
+              value: 'scenario.displayName',
+              key: 'scenario.displayName',
+              text: t('scenario').toString(),
+              cellClass: ['font-weight-bold'],
+              width: 200,
+              truncate: true,
+              priority: 100,
+              order: 40,
+              render: (data: any) => {
+                // The display name contains designator, abbreviation and name of the scenario, however we only want the name, so we split the string
+                // As the abbreviation is optional, we check for it and slice accordingly
+                const sliceIndex =
+                  data.internalItem.raw?.scenario?.abbreviation ? 2 : 1;
+                return data.internalItem.raw.scenario.displayName
+                  .split(' ')
+                  .slice(sliceIndex)
+                  .join(' ');
+              },
             },
-            priority: 89 - index,
-            order: 41 + index,
-            width: 150
-          }))
-        ]
-        : props.type === 'links'
-          ? [
+            ...riskDefinitionCategories.value.map(
+              (categoryId: string, index: number) => ({
+                value: `riskValues_${categoryId}`,
+                key: `riskValues_${categoryId}`,
+                text:
+                  riskDefinition.value?.categories?.find(
+                    (category: IVeoRiskCategory) => category.id === categoryId
+                  )?.translations[locale.value].name || '',
+                sortable: false, // TODO 2023-02-27: Currently disabled, as sort is not working at the moment (vuetify 3.1.6)
+                sort: (a: any, b: any) => {
+                  const values = riskDefinition.value?.riskValues;
+
+                  const { inherentRisk: inherentRisk1 } =
+                    getInherentAndResidualRisk(a, categoryId);
+                  const translatedInherentRisk1 = values?.find(
+                    (entry) => entry.ordinalValue === inherentRisk1
+                  )?.translations[locale.value].name;
+
+                  const { inherentRisk: inherentRisk2 } =
+                    getInherentAndResidualRisk(b, categoryId);
+                  const translatedInherentRisk2 = values?.find(
+                    (entry) => entry.ordinalValue === inherentRisk2
+                  )?.translations[locale.value].name;
+
+                  return (translatedInherentRisk1 || '').localeCompare(
+                    translatedInherentRisk2 || ''
+                  );
+                },
+                render: (data: any) => {
+                  const { inherentRisk, residualRisk } =
+                    getInherentAndResidualRisk(
+                      data.internalItem.raw,
+                      categoryId
+                    );
+                  const riskTreatments = getRiskTreatments(
+                    data.item.raw,
+                    categoryId
+                  );
+                  const values = riskDefinition.value?.riskValues;
+
+                  const translatedInherentRisk = values?.find(
+                    (entry) => entry.ordinalValue === inherentRisk
+                  )?.translations[locale.value].name;
+                  const translatedResidualRisk = values?.find(
+                    (entry) => entry.ordinalValue === residualRisk
+                  )?.translations[locale.value].name;
+
+                  return h('div', [
+                    translatedInherentRisk ?
+                      h(
+                        VTooltip,
+                        {
+                          location: 'bottom',
+                          maxWidth: 600,
+                        },
+                        {
+                          activator: ({ attrs, props }: any) =>
+                            h(
+                              'span',
+                              {
+                                ...attrs,
+                                ...props,
+                                class: 'text-grey text--darken-4',
+                              },
+                              translatedInherentRisk
+                            ),
+                          default: () =>
+                            h('span', t('inherentRisk').toString()),
+                        }
+                      )
+                    : undefined,
+                    translatedInherentRisk && translatedResidualRisk ?
+                      h('span', ' / ')
+                    : undefined,
+                    translatedResidualRisk ?
+                      h(
+                        VTooltip,
+                        {
+                          location: 'bottom',
+                          maxWidth: 600,
+                        },
+                        {
+                          activator: ({ attrs, props }: any) =>
+                            h(
+                              'span',
+                              { ...attrs, ...props, class: 'pr-1' },
+                              translatedResidualRisk
+                            ),
+                          default: () =>
+                            h('span', t('residualRisk').toString()),
+                        }
+                      )
+                    : undefined,
+                    riskTreatments.map((riskTreatment) => {
+                      let icon = mdiCheck;
+                      switch (riskTreatment) {
+                        case 'RISK_TREATMENT_AVOIDANCE':
+                          icon = mdiTransitDetour;
+                          break;
+                        case 'RISK_TREATMENT_REDUCTION':
+                          icon = mdiArrowDown;
+                          break;
+                        case 'RISK_TREATMENT_TRANSFER':
+                          icon = mdiArrowRight;
+                          break;
+                      }
+
+                      return h(
+                        VTooltip,
+                        {
+                          location: 'bottom',
+                          maxWidth: 600,
+                        },
+                        {
+                          activator: ({ attrs, props }: any) =>
+                            h(VIcon, {
+                              ...attrs,
+                              ...props,
+                              size: 'small',
+                              icon,
+                            }),
+                          default: () =>
+                            h(
+                              'span',
+                              t(`riskTreatments.${riskTreatment}`).toString()
+                            ),
+                        }
+                      );
+                    }),
+                  ]);
+                },
+                priority: 89 - index,
+                order: 41 + index,
+                width: 150,
+              })
+            ),
+          ]
+        : props.type === 'links' ?
+          [
             {
               value: 'abbreviation',
               key: 'abbreviation',
@@ -345,7 +528,8 @@ export default defineComponent({
               truncate: false,
               priority: 100,
               order: 20,
-              render: (data: any) => h('span', data.internalItem.raw?.abbreviation || '')
+              render: (data: any) =>
+                h('span', data.internalItem.raw?.abbreviation || ''),
             },
             {
               value: 'linkId',
@@ -354,71 +538,103 @@ export default defineComponent({
               priority: 60,
               text: t('linkName'),
               width: 150,
-              render: (data: any) => h('span', translations.value?.lang[locale.value][data.internalItem.raw.linkId] || data.internalItem.raw.linkId)
-            }
+              render: (data: any) =>
+                h(
+                  'span',
+                  translations.value?.lang[locale.value][
+                    data.internalItem.raw.linkId
+                  ] || data.internalItem.raw.linkId
+                ),
+            },
           ]
-          : props.type === 'controls'
-            ? [
-              {
-                value: 'abbreviation',
-                key: 'abbreviation',
-                text: t('controls.abbreviation'),
-                width: 50,
-                truncate: false,
-                priority: 100,
-                order: 20,
-                render: (data: any) => h('span', data.internalItem.raw.control?.abbreviation || '')
-              },
-              {
-                value: 'name',
-                key: 'name',
-                text: 'Name',
-                width: 200,
-                truncate: true,
-                priority: 100,
-                order: 30,
-                render: (data: any) => h('span', data.internalItem.raw.control?.name || '')
-              },
-              {
-                value: 'status',
-                key: 'status',
-                text: t('controls.status'),
-                width: 50,
-                truncate: false,
-                priority: 100,
-                order: 40,
-                render: (data: any) => h('span', { class: "text-truncate d-inline-block" }, t(`controls.implementation.${data.internalItem.raw.implementationStatus}`) || '')
-              },
-              {
-                value: 'responsibility',
-                key: 'responsibility',
-                text: t('controls.responsible'),
-                width: 100,
-                truncate: true,
-                priority: 50,
-                order: 50,
-                render: (data: any) => h('span', { class: "text-truncate d-inline-block" }, data.internalItem.raw.responsible?.name || '')
-              }
-            ]
-            : [];
+        : props.type === 'controls' ?
+          [
+            {
+              value: 'abbreviation',
+              key: 'abbreviation',
+              text: t('controls.abbreviation'),
+              width: 50,
+              truncate: false,
+              priority: 100,
+              order: 20,
+              render: (data: any) =>
+                h('span', data.internalItem.raw.control?.abbreviation || ''),
+            },
+            {
+              value: 'name',
+              key: 'name',
+              text: 'Name',
+              width: 200,
+              truncate: true,
+              priority: 100,
+              order: 30,
+              render: (data: any) =>
+                h('span', data.internalItem.raw.control?.name || ''),
+            },
+            {
+              value: 'status',
+              key: 'status',
+              text: t('controls.status'),
+              width: 50,
+              truncate: false,
+              priority: 100,
+              order: 40,
+              render: (data: any) =>
+                h(
+                  'span',
+                  { class: 'text-truncate d-inline-block' },
+                  t(
+                    `controls.implementation.${data.internalItem.raw.implementationStatus}`
+                  ) || ''
+                ),
+            },
+            {
+              value: 'responsibility',
+              key: 'responsibility',
+              text: t('controls.responsible'),
+              width: 100,
+              truncate: true,
+              priority: 50,
+              order: 50,
+              render: (data: any) =>
+                h(
+                  'span',
+                  { class: 'text-truncate d-inline-block' },
+                  data.internalItem.raw.responsible?.name || ''
+                ),
+            },
+          ]
+        : []
+      );
     }); // end additionalHeaders
 
     // Crud stuff
-    const { mutateAsync: deleteRisk } = useMutation(objectQueryDefinitions.mutations.deleteRisk);
-    const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
+    const { mutateAsync: deleteRisk } = useMutation(
+      objectQueryDefinitions.mutations.deleteRisk
+    );
+    const { mutateAsync: updateObject } = useMutation(
+      objectQueryDefinitions.mutations.updateObject
+    );
 
     async function onDeleteControl(item: any) {
       const controlId = item.control?.id;
       // since props mustn't be mutated, we need a shallow copy of the object which can be changed
       const copy = cloneDeep(props.object);
       // if the ID matches, get the appropriate CI index that will be deleted from the object
-      const controlIndex = (copy?.controlImplementations || []).findIndex((ci) => ci.control.targetUri.endsWith(controlId));
+      const controlIndex = (copy?.controlImplementations || []).findIndex(
+        (ci) => ci.control.targetUri.endsWith(controlId)
+      );
       // finally mutate the object, if an ID matched
       if (controlIndex >= 0) {
         // delete the appropriate key at <controlIndex>
         copy?.controlImplementations?.splice(controlIndex, 1);
         // patch the object / PUT changed riskAffected
-        await updateObject({ domain: props.domainId, endpoint: route.params?.objectType, id: copy?.id, object: copy });
+        await updateObject({
+          domain: props.domainId,
+          endpoint: route.params?.objectType,
+          id: copy?.id,
+          object: copy,
+        });
       }
     }
 
@@ -430,7 +646,7 @@ export default defineComponent({
      * actions for cloning or unlinking objects
      */
     const actions = computed(() => {
-      switch(props.type) {
+      switch (props.type) {
         case 'risks':
           return [
             {
@@ -441,13 +657,22 @@ export default defineComponent({
               async action(item: IVeoRisk) {
                 try {
                   const { id } = getEntityDetailsFromLink(item.scenario);
-                  await deleteRisk({ objectId: props.object?.id, endpoint: schemas.value?.[props.object?.type || ''] || '', scenarioId: id });
-                  displaySuccessMessage(upperFirst(t('riskDeleted').toString()));
+                  await deleteRisk({
+                    objectId: props.object?.id,
+                    endpoint: schemas.value?.[props.object?.type || ''] || '',
+                    scenarioId: id,
+                  });
+                  displaySuccessMessage(
+                    upperFirst(t('riskDeleted').toString())
+                  );
                 } catch (e: any) {
-                  displayErrorMessage(upperFirst(t('deleteRiskError').toString()), e.message);
+                  displayErrorMessage(
+                    upperFirst(t('deleteRiskError').toString()),
+                    e.message
+                  );
                 }
-              }
-            }
+              },
+            },
           ];
         case 'controls':
           return [
@@ -457,11 +682,14 @@ export default defineComponent({
               icon: mdiLinkOff,
 
               async action(item: any) {
-                controlNameToUnlink.value = item.name.split(' ').slice(1).join(' ');
+                controlNameToUnlink.value = item.name
+                  .split(' ')
+                  .slice(1)
+                  .join(' ');
                 confirmationDialogCallBack.value = () => onDeleteControl(item);
                 confirmationDialogVisible.value = true;
-              }
-            }
+              },
+            },
           ];
         // element type is neither risk nor control
         default:
@@ -478,7 +706,15 @@ export default defineComponent({
                       (parentScopes.value?.items || []).map((item) => item.id)
                     )
                   ).resourceId;
-                  const clonedObject = await useQuerySync(objectQueryDefinitions.queries.fetch, { domain: route.params.domain as string, endpoint: schemas.value?.[item.type] || '', id: clonedObjectId }, queryClient);
+                  const clonedObject = await useQuerySync(
+                    objectQueryDefinitions.queries.fetch,
+                    {
+                      domain: route.params.domain as string,
+                      endpoint: schemas.value?.[item.type] || '',
+                      id: clonedObjectId,
+                    },
+                    queryClient
+                  );
                   if (props.object) {
                     if (['childScopes', 'childObjects'].includes(props.type)) {
                       await link(props.object, clonedObject);
@@ -486,19 +722,41 @@ export default defineComponent({
                       await link(clonedObject, props.object);
                     }
                   }
-                  displaySuccessMessage(upperFirst(t('objectCloned').toString()));
+                  displaySuccessMessage(
+                    upperFirst(t('objectCloned').toString())
+                  );
                 } catch (e: any) {
-                  displayErrorMessage(upperFirst(t('errors.clone').toString()), e.message);
+                  displayErrorMessage(
+                    upperFirst(t('errors.clone').toString()),
+                    e.message
+                  );
                 }
-              }
+              },
             },
             {
               id: 'unlink',
-              label: upperFirst(t(props.object?.type === 'scope' || props.type === 'parentScopes' ? 'removeFromScope' : 'removeFromObject').toString()),
+              label: upperFirst(
+                t(
+                  (
+                    props.object?.type === 'scope' ||
+                      props.type === 'parentScopes'
+                  ) ?
+                    'removeFromScope'
+                  : 'removeFromObject'
+                ).toString()
+              ),
               icon: mdiLinkOff,
 
               action: async (item: IVeoEntity) => {
-                const parent = await useQuerySync(objectQueryDefinitions.queries.fetch , { domain: route.params.domain as string, endpoint: schemas.value?.[item.type] || '', id: item.id }, queryClient);
+                const parent = await useQuerySync(
+                  objectQueryDefinitions.queries.fetch,
+                  {
+                    domain: route.params.domain as string,
+                    endpoint: schemas.value?.[item.type] || '',
+                    id: item.id,
+                  },
+                  queryClient
+                );
                 if (['parentScopes', 'parentObjects'].includes(props.type)) {
                   unlinkEntityDialog.value.objectToRemove = props.object;
                   unlinkEntityDialog.value.parent = parent;
@@ -508,8 +766,8 @@ export default defineComponent({
                 }
 
                 unlinkEntityDialog.value.value = true;
-              }
-            }
+              },
+            },
           ];
       }
     });
@@ -520,7 +778,7 @@ export default defineComponent({
     const unlinkEntityDialog = ref({
       value: false as boolean,
       objectToRemove: undefined as IVeoEntity | undefined,
-      parent: undefined as IVeoEntity | undefined
+      parent: undefined as IVeoEntity | undefined,
     });
 
     const onUnlinkEntitySuccess = () => {
@@ -528,11 +786,10 @@ export default defineComponent({
       displaySuccessMessage(
         upperFirst(
           t(
-            props.type === 'parentScopes' && props.object?.type === 'scope'
-              ? 'removeScopeFromScopeSuccess'
-              : props.type === 'parentScopes'
-                ? 'removeObjectFromScopeSuccess'
-                : 'removeObjectFromObjectSuccess'
+            props.type === 'parentScopes' && props.object?.type === 'scope' ?
+              'removeScopeFromScopeSuccess'
+            : props.type === 'parentScopes' ? 'removeObjectFromScopeSuccess'
+            : 'removeObjectFromObjectSuccess'
           ).toString()
         )
       );
@@ -544,11 +801,10 @@ export default defineComponent({
       displayErrorMessage(
         upperFirst(
           t(
-            props.type === 'parentScopes' && props.object?.type === 'scope'
-              ? 'removeScopeFromScopeError'
-              : props.type === 'parentScopes'
-                ? 'removeObjectFromScopeError'
-                : 'removeObjectFromObjectError'
+            props.type === 'parentScopes' && props.object?.type === 'scope' ?
+              'removeScopeFromScopeError'
+            : props.type === 'parentScopes' ? 'removeObjectFromScopeError'
+            : 'removeObjectFromObjectError'
           ).toString()
         ),
         error?.toString()
@@ -558,11 +814,11 @@ export default defineComponent({
     // Edit risk dialog stuff
     const editRiskDialog = ref<{ visible: boolean; scenarioId?: string }>({
       visible: false,
-      scenarioId: undefined
+      scenarioId: undefined,
     });
 
     // Map object types to corresponding url paths segments
-    type ObjectTypeToUrlMap = { [key: string]: string }
+    type ObjectTypeToUrlMap = { [key: string]: string };
     const OBJECT_TYPE_TO_URL_MAP: ObjectTypeToUrlMap = {
       scope: 'scopes',
       process: 'processes',
@@ -571,19 +827,27 @@ export default defineComponent({
       incident: 'incidents',
       document: 'documents',
       scenario: 'scenarios',
-      control: 'controls'
+      control: 'controls',
     };
     // push to object detail site (on click in table)
     const openItem = ({ internalItem }) => {
       // assemble route params
       const { id: itemId, type: itemType } = internalItem.raw as IVeoEntity;
-      const objectType = OBJECT_TYPE_TO_URL_MAP[itemType] || route.params.objectType;
-      const params = { ...route.params, object: itemId, objectType, subType: '-' };
+      const objectType =
+        OBJECT_TYPE_TO_URL_MAP[itemType] || route.params.objectType;
+      const params = {
+        ...route.params,
+        object: itemId,
+        objectType,
+        subType: '-',
+      };
 
-      switch (props.type)  {
+      switch (props.type) {
         case 'risks':
           const item = internalItem.raw as IVeoRisk;
-          editRiskDialog.value.scenarioId = getEntityDetailsFromLink(item.scenario).id;
+          editRiskDialog.value.scenarioId = getEntityDetailsFromLink(
+            item.scenario
+          ).id;
           editRiskDialog.value.visible = true;
           break;
         case 'controls':
@@ -592,51 +856,70 @@ export default defineComponent({
             query: {
               type: props.object?.type,
               riskAffected: props.object?.id,
-              control: internalItem.raw.id
-            }
+              control: internalItem.raw.id,
+            },
           });
         default:
           router.push({
             name: OBJECT_DETAIL_ROUTE,
-            params
+            params,
           });
       }
     };
 
     // Risk tab
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
+    const fetchDomainQueryParameters = computed(() => ({
+      id: props.domainId as string,
+    }));
     const { data: domain, isFetching: domainIsFetching } = useQuery(
       domainQueryDefinitions.queries.fetchDomain,
       fetchDomainQueryParameters
     );
 
-    const riskDefinition: ComputedRef<IVeoRiskDefinition> = computed(() =>
-      Object.values(domain.value?.riskDefinitions as object || {})[0]
+    const riskDefinition: ComputedRef<IVeoRiskDefinition> = computed(
+      () => Object.values((domain.value?.riskDefinitions as object) || {})[0]
     );
-    const riskDefinitionId = computed(() =>
-      Object.keys(domain.value?.riskDefinitions as object || {})[0]
+    const riskDefinitionId = computed(
+      () => Object.keys((domain.value?.riskDefinitions as object) || {})[0]
     );
-    const riskDefinitionCategories = computed(() =>
-      riskDefinition.value?.categories.map(cat => cat.id)
+    const riskDefinitionCategories = computed(
+      () => riskDefinition.value?.categories.map((cat) => cat.id)
     );
 
     function getRiskValues(item: IVeoRisk): IVeoRiskValue[] {
-      return item?.domains?.[props.domainId]?.riskDefinitions[riskDefinitionId?.value]?.riskValues || [];
+      return (
+        item?.domains?.[props.domainId]?.riskDefinitions[
+          riskDefinitionId?.value
+        ]?.riskValues || []
+      );
     }
 
-    function getInherentAndResidualRisk(item: IVeoRisk, category: string): {inherentRisk?: number, residualRisk?: number} {
+    function getInherentAndResidualRisk(
+      item: IVeoRisk,
+      category: string
+    ): { inherentRisk?: number; residualRisk?: number } {
       const riskValues = getRiskValues(item);
-      const categorySpecificRiskValues = riskValues.find((cat) => cat.category === category);
+      const categorySpecificRiskValues = riskValues.find(
+        (cat) => cat.category === category
+      );
 
       return {
         inherentRisk: categorySpecificRiskValues?.inherentRisk,
-        residualRisk: categorySpecificRiskValues?.userDefinedResidualRisk || categorySpecificRiskValues?.residualRisk
+        residualRisk:
+          categorySpecificRiskValues?.userDefinedResidualRisk ||
+          categorySpecificRiskValues?.residualRisk,
       };
     }
 
-    function getRiskTreatments(item: IVeoRisk, category: string): VeoRiskTreatment[] {
+    function getRiskTreatments(
+      item: IVeoRisk,
+      category: string
+    ): VeoRiskTreatment[] {
       const riskValues = getRiskValues(item);
-      return riskValues.find((cat) => cat.category === category)?.riskTreatments || [];
+      return (
+        riskValues.find((cat) => cat.category === category)?.riskTreatments ||
+        []
+      );
     }
 
     const onRelatedObjectModified = () => {
@@ -665,9 +948,9 @@ export default defineComponent({
       sortBy,
 
       t,
-      upperFirst
+      upperFirst,
     };
-  }
+  },
 });
 </script>
 

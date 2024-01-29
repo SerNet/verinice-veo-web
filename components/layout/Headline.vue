@@ -24,19 +24,11 @@
           {{ title }}
         </span>
 
-        <span
-          v-if="element"
-          class="headline"
-          style="background: #36384c;"
-        >
+        <span v-if="element" class="headline" style="background: #36384c">
           {{ element }}
         </span>
 
-        <span
-          v-if="description"
-          class="headline"
-          style="background: #56586c;"
-        >
+        <span v-if="description" class="headline" style="background: #56586c">
           {{ description }}
         </span>
       </div>
@@ -45,15 +37,18 @@
 </template>
 
 <script setup lang="ts">
-const _props = withDefaults(defineProps<{
-  title: string,
-  element?: string,
-  description?: string
-}>(), {
-  title: '',
-  element: '',
-  description: ''
-});
+const _props = withDefaults(
+  defineProps<{
+    title: string;
+    element?: string;
+    description?: string;
+  }>(),
+  {
+    title: '',
+    element: '',
+    description: '',
+  }
+);
 </script>
 
 <style scoped lang="scss">

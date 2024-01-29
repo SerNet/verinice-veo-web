@@ -22,7 +22,9 @@ const AVAILABLE_WIDGETS: any[] = [];
 export default defineComponent({
   props: VeoFormsWidgetProps,
   setup(props) {
-    const fittingComponent = computed(() => AVAILABLE_WIDGETS.find((widget) => widget.name === props.name));
+    const fittingComponent = computed(() =>
+      AVAILABLE_WIDGETS.find((widget) => widget.name === props.name)
+    );
 
     if (!fittingComponent) {
       // eslint-disable-next-line no-console
@@ -30,5 +32,5 @@ export default defineComponent({
       return null;
     }
     return () => h(fittingComponent.value, { ...props });
-  }
+  },
 });

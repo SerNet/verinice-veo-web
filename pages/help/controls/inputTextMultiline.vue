@@ -16,17 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    title="Input Text Multiline"
-    fixed-header
-  >
+  <BasePage title="Input Text Multiline" fixed-header>
     <v-row justify="center">
-      <v-col
-        cols="12"
-        sm="6"
-        lg="4"
-        class="docs-form-sector"
-      >
+      <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
@@ -50,20 +42,20 @@ const form = ref({
     type: 'object',
     properties: {
       inputTextMultiline: {
-        type: 'string'
-      }
-    }
+        type: 'string',
+      },
+    },
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/inputTextMultiline',
     options: {
       label: 'Input Text Multiline',
-      format: 'multiline'
-    }
+      format: 'multiline',
+    },
   },
   data: {
-    inputTextMultiline: 'Beispiel 1\nBeispiel 2\nBeispiel 3'
-  }
+    inputTextMultiline: 'Beispiel 1\nBeispiel 2\nBeispiel 3',
+  },
 });
 </script>

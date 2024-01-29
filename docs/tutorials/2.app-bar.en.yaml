@@ -25,6 +25,6 @@ steps:
     element: '[data-component-name=account-menu-button]'
     intro: Via the account button you can log out and get further information about verinice.veo.
   - title: 'Done'
-# todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
-# intro: Further information can also be found in the <a href="/docs">documentation</a>.
+    # todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
+    # intro: Further information can also be found in the <a href="/docs">documentation</a>.
     intro: Further information can also be found in the documentation.

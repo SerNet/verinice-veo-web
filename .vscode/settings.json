@@ -1,14 +1,7 @@
 {
-  "editor.rulers": [
-    120
-  ],
+  "editor.rulers": [120],
   "editor.formatOnSave": false,
-  "eslint.validate": [
-    "vue",
-    "javascript",
-    "typescript",
-    "html"
-  ],
+  "eslint.validate": ["vue", "javascript", "typescript", "html"],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
@@ -17,12 +10,7 @@
     "autoHeader": "autoSave",
     "enforceHeader": true,
     "isActive": true,
-    "exclude": [
-      "markdown",
-      "json",
-      "svg",
-      "plaintext"
-    ],
+    "exclude": ["markdown", "json", "svg", "plaintext"],
     "include": [],
     "includeGlob": [
       "**/assets/**",

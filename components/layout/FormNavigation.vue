@@ -21,10 +21,7 @@
       {{ t('tableOfContents').toString() }}
     </h2>
     <v-list density="compact">
-      <template
-        v-for="item in items"
-        :key="item.initialId + '0'"
-      >
+      <template v-for="item in items" :key="item.initialId + '0'">
         <v-list-item
           density="compact"
           color="primary"
@@ -50,8 +47,8 @@
 </template>
 
 <script lang="ts">
-export default { 
-  name: 'FormNavigation'
+export default {
+  name: 'FormNavigation',
 };
 </script>
 
@@ -64,18 +61,21 @@ interface IItem {
   layout: any;
 }
 
-const props = withDefaults(defineProps<{
-  formSchema: IVeoFormSchemaItem;
-  customTranslation?: Record<string, string>;
-  initialId?: string;
-  nestingLevel?: number;
-  scrollWrapperId?: string;
-}>(), {
-  customTranslation: () => ({}),
-  initialId: '#',
-  nestingLevel: 0,
-  scrollWrapperId: 'scroll-wrapper'
-});
+const props = withDefaults(
+  defineProps<{
+    formSchema: IVeoFormSchemaItem;
+    customTranslation?: Record<string, string>;
+    initialId?: string;
+    nestingLevel?: number;
+    scrollWrapperId?: string;
+  }>(),
+  {
+    customTranslation: () => ({}),
+    initialId: '#',
+    nestingLevel: 0,
+    scrollWrapperId: 'scroll-wrapper',
+  }
+);
 
 const { t } = useI18n();
 
@@ -85,7 +85,13 @@ const nextNestingLevel = computed(() => props.nestingLevel + 1);
 
 const currentLevelLeftMargin = computed(() => `ml-${props.nestingLevel * 4}`);
 
-const itemsToObserve = computed(() => items.value.length ? document.querySelectorAll(items.value.map((item) => `[id="${item.initialId}"]`).join(', ')) : false);
+const itemsToObserve = computed(() =>
+  items.value.length ?
+    document.querySelectorAll(
+      items.value.map((item) => `[id="${item.initialId}"]`).join(', ')
+    )
+  : false
+);
 
 const onClick = (groupId: string) => {
   selectedItem.value = groupId;
@@ -97,7 +103,9 @@ const scroll = (groupId: string) => {
   const item = document.getElementById(groupId);
   // The wrapper we will scroll inside
   const wrapper = scrollWrapper.value;
-  const header = scrollWrapper.value?.getElementsByClassName('veo-page__header')[0] as HTMLElement | null;
+  const header = scrollWrapper.value?.getElementsByClassName(
+    'veo-page__header'
+  )[0] as HTMLElement | null;
   const headerOffset = header?.offsetHeight || 0;
   // extra distance from top (=sticky-header height)
   if (item && wrapper) {
@@ -110,22 +118,23 @@ const scrollWrapper = ref<HTMLElement | undefined>();
 const observer = ref<IntersectionObserver | undefined>();
 
 const activateObserver = () => {
-  if(observer.value) {
+  if (observer.value) {
     observer.value?.disconnect();
   }
 
-  scrollWrapper.value = document.getElementById(props.scrollWrapperId) || undefined;
+  scrollWrapper.value =
+    document.getElementById(props.scrollWrapperId) || undefined;
 
   // Activate Observer when the component is mounted
   const options = {
     root: scrollWrapper.value,
     rootMargin: '-200px 0px 0px 0px', // -72px because of sticky header
-    threshold: 0
+    threshold: 0,
   };
 
   observer.value = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if(entry.isIntersecting) {
+      if (entry.isIntersecting) {
         selectedItem.value = entry.target.getAttribute('id') as string; // The id is always set by the dynamic forms entrypoint
       }
     });
@@ -150,22 +159,28 @@ onMounted(activateObserver);
 onUnmounted(deactivateObserver);
 
 defineExpose({
-  activateObserver
+  activateObserver,
 });
 
-const items = computed(() => (props.formSchema?.elements || [])
-  .map((el: any, index: number) => {
-    if(!el.type || el.options?.format !== 'group') {
-      return undefined;
-    }
-    // Important to iterate on all elements to have correct indices of Layouts in FormSchema
-    return {
-      initialId: `${props.initialId}${props.initialId ? '/' : ''}elements/${index}`,
-      text: props.customTranslation[el.options?.label?.replace('#lang/', '')] || el.options?.label,
-      layout: el
-    };
-  })
-  .filter((element: IItem | undefined) => !!element) as IItem[]
+const items = computed(
+  () =>
+    (props.formSchema?.elements || [])
+      .map((el: any, index: number) => {
+        if (!el.type || el.options?.format !== 'group') {
+          return undefined;
+        }
+        // Important to iterate on all elements to have correct indices of Layouts in FormSchema
+        return {
+          initialId: `${props.initialId}${
+            props.initialId ? '/' : ''
+          }elements/${index}`,
+          text:
+            props.customTranslation[el.options?.label?.replace('#lang/', '')] ||
+            el.options?.label,
+          layout: el,
+        };
+      })
+      .filter((element: IItem | undefined) => !!element) as IItem[]
 );
 </script>
 

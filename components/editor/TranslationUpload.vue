@@ -23,10 +23,7 @@
     <BaseCard>
       <template #default>
         <v-card-text>
-          <v-form
-            v-model="formIsValid"
-            @submit.prevent
-          >
+          <v-form v-model="formIsValid" @submit.prevent>
             <v-file-input
               v-model="languageFile"
               accept=".xlsx"
@@ -40,14 +37,8 @@
               show-size
               @update:model-value="uploadLanguageFile"
             />
-            <v-row
-              v-if="sheets.length > 1"
-              class="mt-3"
-            >
-              <v-col
-                cols="12"
-                md="4"
-              >
+            <v-row v-if="sheets.length > 1" class="mt-3">
+              <v-col cols="12" md="4">
                 <v-select
                   v-model="sheet"
                   :disabled="!languageFile || uploadingLanguageFile"
@@ -57,10 +48,7 @@
               </v-col>
             </v-row>
             <v-row class="mt-3">
-              <v-col
-                cols="12"
-                md="4"
-              >
+              <v-col cols="12" md="4">
                 <p class="text-body-2 mb-0">
                   {{ t('idColumn') }}
                 </p>
@@ -72,14 +60,13 @@
                   :label="`${t('column')}*`"
                 />
               </v-col>
-              <v-col
-                v-for="language of availableLanguages"
-                :key="language"
-              >
-                <p
-                  class="text-body-2 mb-0"
-                >
-                  {{ t('langColumn', [localeDetailsMap[language].name || language]) }}
+              <v-col v-for="language of availableLanguages" :key="language">
+                <p class="text-body-2 mb-0">
+                  {{
+                    t('langColumn', [
+                      localeDetailsMap[language].name || language,
+                    ])
+                  }}
                 </p>
                 <v-select
                   v-model="languageColumns[language]"
@@ -95,7 +82,9 @@
                 :model-value="replaceTranslations"
                 color="primary"
                 :label="t('replaceTranslations')"
-                @update:model-value="$emit('update:replace-translations', $event)"
+                @update:model-value="
+                  $emit('update:replace-translations', $event)
+                "
               />
               <v-btn
                 color="primary"
@@ -128,16 +117,22 @@ export default defineComponent({
   props: {
     availableLanguages: {
       type: Array as PropType<string[]>,
-      required: true
+      required: true,
     },
     importFunction: {
-      type: Function as PropType<(columns: string[][], idColumn: number, languageColumns: { [lang: string]: number }) => void>,
-      required: true
+      type: Function as PropType<
+        (
+          columns: string[][],
+          idColumn: number,
+          languageColumns: { [lang: string]: number }
+        ) => void
+      >,
+      required: true,
     },
     replaceTranslations: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['update:replace-translations'],
   setup() {
@@ -147,10 +142,13 @@ export default defineComponent({
 
     // Layout / form stuff
     const localeDetailsMap = computed(() =>
-      (locales.value as LocaleObject[]).reduce((previousValue, currentValue) => {
-        previousValue[currentValue.code] = currentValue;
-        return previousValue;
-      }, Object.create(null))
+      (locales.value as LocaleObject[]).reduce(
+        (previousValue, currentValue) => {
+          previousValue[currentValue.code] = currentValue;
+          return previousValue;
+        },
+        Object.create(null)
+      )
     );
 
     const formIsValid = ref(false);
@@ -184,7 +182,7 @@ export default defineComponent({
         if (fileContent) {
           workbook.value = read(fileContent, {
             cellHTML: false,
-            cellFormula: false
+            cellFormula: false,
           });
           if (workbook.value.SheetNames.length === 1) {
             sheet.value = workbook.value.SheetNames[0];
@@ -193,7 +191,10 @@ export default defineComponent({
         uploadingLanguageFile.value = false;
       };
       fileReader.onerror = () => {
-        displayErrorMessage(t('fileUploadFailed').toString(), JSON.stringify(fileReader.error));
+        displayErrorMessage(
+          t('fileUploadFailed').toString(),
+          JSON.stringify(fileReader.error)
+        );
         uploadingLanguageFile.value = false;
       };
 
@@ -236,7 +237,7 @@ export default defineComponent({
         .filter((column) => column[0])
         .map((column, index) => ({
           title: column[0].replace(/[^\w]/g, ''), // Remove special characters from column names
-          value: index
+          value: index,
         }))
         .filter((array) => array); // Filter out empty columns
     };
@@ -256,9 +257,9 @@ export default defineComponent({
       uploadingLanguageFile,
 
       t,
-      mdiTranslate
+      mdiTranslate,
     };
-  }
+  },
 });
 </script>
 

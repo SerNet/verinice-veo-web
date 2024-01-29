@@ -25,31 +25,63 @@ export interface IVeoFetchUnitDomainsParameters {
   unitId: string;
 }
 
-export const useFetchUnitDomains = (queryParameters: Ref<IVeoFetchUnitDomainsParameters>, queryOptions?: QueryOptions) => {
-  const fetchUnitQueryParameters = computed(() => ({ id: queryParameters.value.unitId }));
-  const fetchUnitQueryEnabled = computed(() => !!queryParameters.value.unitId && unref(queryOptions?.enabled));
-  const { data: unit, isFetching: isFetchingUnits } = useQuery(unitQueryDefinitions.queries.fetch, fetchUnitQueryParameters, { enabled: fetchUnitQueryEnabled });
+export const useFetchUnitDomains = (
+  queryParameters: Ref<IVeoFetchUnitDomainsParameters>,
+  queryOptions?: QueryOptions
+) => {
+  const fetchUnitQueryParameters = computed(() => ({
+    id: queryParameters.value.unitId,
+  }));
+  const fetchUnitQueryEnabled = computed(
+    () => !!queryParameters.value.unitId && unref(queryOptions?.enabled)
+  );
+  const { data: unit, isFetching: isFetchingUnits } = useQuery(
+    unitQueryDefinitions.queries.fetch,
+    fetchUnitQueryParameters,
+    { enabled: fetchUnitQueryEnabled }
+  );
 
-  const { data: domains, isFetching: isFetchingDomains } = useQuery(domainQueryDefinitions.queries.fetchDomains, undefined, queryOptions);
+  const { data: domains, isFetching: isFetchingDomains } = useQuery(
+    domainQueryDefinitions.queries.fetchDomains,
+    undefined,
+    queryOptions
+  );
 
   const onSuccess = () => {
-    if(!unit.value || !domains.value?.length) {
+    if (!unit.value || !domains.value?.length) {
       return;
     }
-    if(queryOptions?.onSuccess) {
+    if (queryOptions?.onSuccess) {
       unref(queryOptions.onSuccess)?.(toReturn.data.value);
     }
   };
 
-  watch(() => domains.value, () => onSuccess, { deep: true, immediate: true });
-  watch(() => unit.value, () => onSuccess, { deep: true, immediate: true });
+  watch(
+    () => domains.value,
+    () => onSuccess,
+    { deep: true, immediate: true }
+  );
+  watch(
+    () => unit.value,
+    () => onSuccess,
+    { deep: true, immediate: true }
+  );
 
-  const data = computed(() => (domains.value || []).filter((domain) => unit.value?.domains?.some((unitDomain) => unitDomain.targetUri.includes(domain.id))));
-  const isFetching = computed(() => isFetchingUnits.value || isFetchingDomains.value);
+  const data = computed(() =>
+    (domains.value || []).filter(
+      (domain) =>
+        unit.value?.domains?.some((unitDomain) =>
+          unitDomain.targetUri.includes(domain.id)
+        )
+    )
+  );
+  const isFetching = computed(
+    () => isFetchingUnits.value || isFetchingDomains.value
+  );
 
   const toReturn = {
     data,
-    isFetching
+    isFetching,
   };
 
   return toReturn;

@@ -130,7 +130,7 @@
 </template>
 
 <script lang="ts">
-import{ last } from 'lodash';
+import { last } from 'lodash';
 import { mdiCalendar, mdiClockOutline } from '@mdi/js';
 import { formatISO } from 'date-fns';
 
@@ -143,13 +143,16 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-date-time-input',
   name: {
     en: 'date time input',
-    de: 'Datums- und Zeiteingabe'
+    de: 'Datums- und Zeiteingabe',
   },
   description: {
     en: 'Lets the user choose a date and time from a calender-like component.',
-    de: 'Lässt den User mithilfe einer kalendermäßigen Komponente ein Datum und die dazugehörige Uhrzeit auswählen.'
+    de: 'Lässt den User mithilfe einer kalendermäßigen Komponente ein Datum und die dazugehörige Uhrzeit auswählen.',
   },
-  conditions: (props) => [props.objectSchema.type === 'string', props.objectSchema.format === 'date-time']
+  conditions: (props) => [
+    props.objectSchema.type === 'string',
+    props.objectSchema.format === 'date-time',
+  ],
 };
 
 export default defineComponent({
@@ -212,14 +215,16 @@ export default defineComponent({
     });
     const time = computed(() => {
       if (internalDateObject.value) {
-        return formatISO(internalDateObject.value, { representation: 'time' }).split('+')[0];
+        return formatISO(internalDateObject.value, {
+          representation: 'time',
+        }).split('+')[0];
       }
       return undefined;
     });
 
     const onDateInput = (newValue: string) => {
       let dateObject;
-      if(!newValue) {
+      if (!newValue) {
         emit('update:model-value', undefined);
         return;
       }
@@ -243,7 +248,7 @@ export default defineComponent({
 
     const onTimeInput = (newValue: string) => {
       let dateObject;
-      if(!newValue) {
+      if (!newValue) {
         emit('update:model-value', undefined);
         return;
       }
@@ -277,9 +282,9 @@ export default defineComponent({
       mdiCalendar,
       mdiClockOutline,
       t,
-      DATE_HINT
+      DATE_HINT,
     };
-  }
+  },
 });
 </script>
 

@@ -17,14 +17,8 @@
 -->
 <template>
   <div class="schema-editor-wrapper d-flex flex-column fill-height bg-surface">
-    <UtilCodeEditor
-      :model-value="code"
-      @update:model-value="onInput"
-    />
-    <div
-      v-if="!readonly"
-      class="veo-editor-save-button"
-    >
+    <UtilCodeEditor :model-value="code" @update:model-value="onInput" />
+    <div v-if="!readonly" class="veo-editor-save-button">
       <v-btn
         class="mx-4 my-2"
         color="primary"
@@ -32,9 +26,7 @@
         :disabled="saveButtonDisabled"
         @click="updateSchema()"
       >
-        {{
-          submitButtonText || t('saveSchema')
-        }}
+        {{ submitButtonText || t('saveSchema') }}
       </v-btn>
     </div>
   </div>
@@ -45,16 +37,16 @@ export default defineComponent({
   props: {
     modelValue: {
       type: String,
-      default: ''
+      default: '',
     },
     readonly: {
       type: Boolean,
-      default: false
+      default: false,
     },
     submitButtonText: {
       type: String,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
   emits: ['update:model-value', 'schema-updated'],
   setup(props, context) {
@@ -70,7 +62,7 @@ export default defineComponent({
         code.value = props.modelValue;
       },
       {
-        immediate: true
+        immediate: true,
       }
     );
 
@@ -99,9 +91,9 @@ export default defineComponent({
       onInput,
       updateSchema,
 
-      t
+      t,
     };
-  }
+  },
 });
 </script>
 

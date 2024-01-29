@@ -32,24 +32,24 @@ import { json } from '@codemirror/lang-json';
 const props = defineProps({
   modelValue: {
     type: String,
-    default: ''
+    default: '',
   },
   wordwrap: {
     type: Boolean,
-    default: false
+    default: false,
   },
   language: {
     type: Object as PropType<any>,
-    default: () => json()
+    default: () => json(),
   },
   error: {
     type: Object,
-    default: undefined
+    default: undefined,
   },
   readonly: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 const emit = defineEmits(['update:error', 'update:model-value']);
 

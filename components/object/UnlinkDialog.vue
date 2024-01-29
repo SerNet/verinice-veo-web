@@ -24,17 +24,17 @@
     <template #default>
       <span class="text-body-1">
         {{
-          isMessageFallback
-            ? t('genericText')
-            : t('text', { displayName: objectToRemove?.displayName, parentDisplayName: parent?.displayName })
+          isMessageFallback ?
+            t('genericText')
+          : t('text', {
+              displayName: objectToRemove?.displayName,
+              parentDisplayName: parent?.displayName,
+            })
         }}
       </span>
     </template>
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        @click="$emit('update:model-value', false)"
-      >
+      <v-btn variant="text" @click="$emit('update:model-value', false)">
         {{ globalT('global.button.no') }}
       </v-btn>
       <v-spacer />
@@ -55,15 +55,18 @@
 import { useUnlinkObject } from '~/composables/VeoObjectUtilities';
 import { IVeoEntity } from '~/types/VeoTypes';
 
-const props = withDefaults(defineProps<{
-  modelValue: boolean,
-  objectToRemove?: IVeoEntity,
-  parent?: IVeoEntity
-}>(), {
-  modelValue: false,
-  objectToRemove: undefined,
-  parent: undefined
-});
+const props = withDefaults(
+  defineProps<{
+    modelValue: boolean;
+    objectToRemove?: IVeoEntity;
+    parent?: IVeoEntity;
+  }>(),
+  {
+    modelValue: false,
+    objectToRemove: undefined,
+    parent: undefined,
+  }
+);
 
 const emit = defineEmits<{
   (event: 'error', error: any): void;
@@ -90,7 +93,11 @@ const unlinkObject = async () => {
 };
 
 // providing a message fallback if either of the props  objectToRemove.displayName or parent.displayName is undefined
-const isMessageFallback = computed<boolean>(() => props.objectToRemove?.displayName === undefined || props.parent?.displayName === undefined);
+const isMessageFallback = computed<boolean>(
+  () =>
+    props.objectToRemove?.displayName === undefined ||
+    props.parent?.displayName === undefined
+);
 </script>
 
 <i18n>

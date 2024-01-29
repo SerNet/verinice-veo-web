@@ -1,4 +1,3 @@
-
 {
   "en": {
     "hint": "Please select a profile. In the next step you can select the unit to which you want to apply the profile.",
@@ -41,4 +40,3 @@
     "messageUnitWithProfileError": "Profil konnte nicht auf neue Unit angewendet werden."
   }
 }
-

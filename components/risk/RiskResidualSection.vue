@@ -31,9 +31,17 @@
               :protection-goal="protectionGoal"
               :risk-definition="riskDefinition"
               :num-of-cols="riskDefinition.categories.length"
-              v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
-              @update:user-defined-residual-risk="onUserDefinedResidualRiskChanged(protectionGoal.id, $event)"
-              @update:residual-risk-explanation="onResidualRiskExplanationChanged(protectionGoal.id, $event)"
+              v-bind="
+                data.find(
+                  (riskValue) => riskValue.category === protectionGoal.id
+                )
+              "
+              @update:user-defined-residual-risk="
+                onUserDefinedResidualRiskChanged(protectionGoal.id, $event)
+              "
+              @update:residual-risk-explanation="
+                onResidualRiskExplanationChanged(protectionGoal.id, $event)
+              "
             />
           </template>
         </v-row>
@@ -52,35 +60,46 @@ export default defineComponent({
   props: {
     data: {
       type: Array as PropType<IVeoRiskDefinition['riskValues']>,
-      required: true
+      required: true,
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['update:data'],
   setup(props, { emit }) {
     const { t } = useI18n();
 
-    const protectionGoalExists = (protectionGoal: string) => !!props.data.find((riskValue) => riskValue.category === protectionGoal);
+    const protectionGoalExists = (protectionGoal: string) =>
+      !!props.data.find((riskValue) => riskValue.category === protectionGoal);
 
-    const onUserDefinedResidualRiskChanged = (protectionGoal: string, newValue: number) => {
+    const onUserDefinedResidualRiskChanged = (
+      protectionGoal: string,
+      newValue: number
+    ) => {
       const localData = cloneDeep(props.data);
-      const riskValueIndex = localData.findIndex((riskValue) => riskValue.category === protectionGoal);
+      const riskValueIndex = localData.findIndex(
+        (riskValue) => riskValue.category === protectionGoal
+      );
       if (riskValueIndex >= 0) {
         localData[riskValueIndex].userDefinedResidualRisk = newValue;
       }
       emit('update:data', localData);
     };
 
-    const onResidualRiskExplanationChanged = (protectionGoal: string, newValue: string) => {
+    const onResidualRiskExplanationChanged = (
+      protectionGoal: string,
+      newValue: string
+    ) => {
       const localData = cloneDeep(props.data);
-      const riskValue = localData.find((riskValue) => riskValue.category === protectionGoal);
+      const riskValue = localData.find(
+        (riskValue) => riskValue.category === protectionGoal
+      );
       if (riskValue) {
         riskValue.residualRiskExplanation = newValue;
       }
@@ -93,9 +112,9 @@ export default defineComponent({
       protectionGoalExists,
 
       t,
-      upperFirst
+      upperFirst,
     };
-  }
+  },
 });
 </script>
 

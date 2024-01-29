@@ -31,20 +31,14 @@
         value-as-link
         @update:model-value="$emit('update:model-value', $event)"
       >
-        <template
-          v-if="!objectCreationDisabled"
-          #prepend-item
-        >
+        <template v-if="!objectCreationDisabled" #prepend-item>
           <v-btn
             block
             color="primary"
             variant="text"
             @click="createObjectDialogVisible = true"
           >
-            <v-icon
-              start
-              :icon="mdiPlus"
-            />
+            <v-icon start :icon="mdiPlus" />
             {{ t('create', [createButtonLabel]).toString() }}
           </v-btn>
         </template>
@@ -82,12 +76,12 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field-row',
   name: {
     en: 'links field row',
-    de: 'Link-Feld-Eintrag'
+    de: 'Link-Feld-Eintrag',
   },
   description: {
     en: 'Row of the links field. Not used independently.',
-    de: 'Einzelner Eintrag des Link-Feldes. Wird nicht alleine genutzt.'
-  }
+    de: 'Einzelner Eintrag des Link-Feldes. Wird nicht alleine genutzt.',
+  },
 };
 
 export default defineComponent({
@@ -96,12 +90,12 @@ export default defineComponent({
     ...VeoFormsControlProps,
     otherSelectedLinks: {
       type: Array as PropType<IVeoCustomLink[]>,
-      default: () => []
+      default: () => [],
     },
     index: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   emits: ['update:model-value'],
   setup(props, { emit }) {
@@ -111,27 +105,54 @@ export default defineComponent({
 
     const domainId = computed(() => route.params.domain as string);
 
-    const objectType = computed<string>(() => ((props.objectSchema as any).items?.properties?.target?.properties?.type?.enum?.[0] + '').toLowerCase());
-    const subType = computed<string>(() => (props.objectSchema as any).items?.properties?.target?.properties?.subType?.enum?.[0]);
+    const objectType = computed<string>(() =>
+      (
+        (props.objectSchema as any).items?.properties?.target?.properties?.type
+          ?.enum?.[0] + ''
+      ).toLowerCase()
+    );
+    const subType = computed<string>(
+      () =>
+        (props.objectSchema as any).items?.properties?.target?.properties
+          ?.subType?.enum?.[0]
+    );
 
     const queryParameters = computed(() => ({ domainId: domainId.value }));
     const queryEnabled = computed(() => !!domainId.value);
 
-    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, { enabled: queryEnabled });
+    const { data: formSchemas } = useQuery(
+      formsQueryDefinitions.queries.fetchForms,
+      queryParameters,
+      { enabled: queryEnabled }
+    );
 
     const createButtonLabel = computed(() =>
-      subType.value ? formSchemas.value?.find((formSchema) => formSchema.subType === subType.value)?.name?.[locale.value] || objectType.value : objectType.value
+      subType.value ?
+        formSchemas.value?.find(
+          (formSchema) => formSchema.subType === subType.value
+        )?.name?.[locale.value] || objectType.value
+      : objectType.value
     );
 
     // new object creation
     const createObjectDialogVisible = ref(false);
-    const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+    const { data: schemas } = useQuery(
+      schemaQueryDefinitions.queries.fetchSchemas
+    );
     const onTargetCreated = (newElementId: string) => {
-      emit('update:model-value', { targetUri: `${config.public.apiUrl}/${schemas.value?.[objectType.value]}/${newElementId}` });
+      emit('update:model-value', {
+        targetUri: `${config.public.apiUrl}/${schemas.value?.[
+          objectType.value
+        ]}/${newElementId}`,
+      });
     };
 
     // Users should only be able to select an item once per link, thus we have to remove all already selected items from the VeoObjectSelect
-    const hiddenValues = computed(() => props.otherSelectedLinks.filter((link) => link.target?.targetUri).map((link) => getEntityDetailsFromLink(link.target).id));
+    const hiddenValues = computed(() =>
+      props.otherSelectedLinks
+        .filter((link) => link.target?.targetUri)
+        .map((link) => getEntityDetailsFromLink(link.target).id)
+    );
 
     return {
       createButtonLabel,
@@ -144,9 +165,9 @@ export default defineComponent({
 
       getControlErrorMessages,
       mdiPlus,
-      t
+      t,
     };
-  }
+  },
 });
 </script>
 

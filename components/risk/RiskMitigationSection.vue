@@ -21,10 +21,7 @@
       {{ upperFirst(t('mitigationSection').toString()) }}
       <v-tooltip location="bottom">
         <template #activator="{ props }">
-          <v-icon
-            v-bind="props"
-            :icon="mdiInformationOutline"
-          />
+          <v-icon v-bind="props" :icon="mdiInformationOutline" />
         </template>
         <template #default>
           <i18n-t
@@ -33,7 +30,7 @@
             scope="global"
           >
             <template #lineBreak>
-              <br>
+              <br />
             </template>
             <template #risk>
               {{ data?.scenario?.displayName }}
@@ -44,11 +41,19 @@
     </h2>
     <BaseCard class="veo-section-border">
       <ObjectTable
-        :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'updatedAt', 'actions']"
+        :default-headers="[
+          'icon',
+          'designator',
+          'abbreviation',
+          'name',
+          'status',
+          'updatedAt',
+          'actions',
+        ]"
         :loading="fetchingMitigation"
         :items="selectedItems"
       >
-        <template #actions="{item}">
+        <template #actions="{ item }">
           <div class="d-flex justify-end">
             <v-tooltip location="start">
               <template #activator="{ props }">
@@ -65,11 +70,7 @@
         </template>
       </ObjectTable>
       <div class="d-flex justify-end px-2">
-        <v-menu
-          :disabled="disabled"
-          top
-          offset-y
-        >
+        <v-menu :disabled="disabled" top offset-y>
           <template #activator="{ props }">
             <v-btn
               v-bind="props"
@@ -78,17 +79,16 @@
               flat
               :disabled="disabled"
             >
-              <v-icon
-                start
-                :icon="mdiPencilOutline"
-              />
+              <v-icon start :icon="mdiPencilOutline" />
               {{ t('editMitigatingActions').toString() }}
             </v-btn>
           </template>
           <template #default>
             <v-list dense>
               <v-list-item @click="createMitigationDialogVisible = true">
-                <v-list-item-title>{{ t('createMitigation') }}</v-list-item-title>
+                <v-list-item-title>{{
+                  t('createMitigation')
+                }}</v-list-item-title>
               </v-list-item>
               <v-list-item @click="editMitigationsDialogVisible = true">
                 <v-list-item-title>{{ t('addMitigation') }}</v-list-item-title>
@@ -106,7 +106,9 @@
       return-objects
     >
       <template #header>
-        {{ t('addMitigatingActionsToRisk', [data && data.designator]).toString() }}
+        {{
+          t('addMitigatingActionsToRisk', [data && data.designator]).toString()
+        }}
       </template>
     </ObjectLinkDialog>
     <ObjectCreateDialog
@@ -134,20 +136,20 @@ export default defineComponent({
   props: {
     data: {
       type: Object as PropType<IVeoRisk>,
-      default: undefined
+      default: undefined,
     },
     mitigations: {
       type: Array as PropType<IVeoEntity[]>,
-      default: () => []
+      default: () => [],
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     domainId: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['mitigations-modified', 'update:mitigations'],
   setup(props, { emit }) {
@@ -167,7 +169,7 @@ export default defineComponent({
       set(newValue: IVeoEntity[]) {
         emit('update:mitigations', newValue);
         emit('mitigations-modified', true);
-      }
+      },
     });
 
     const fetchingMitigation = ref(false);
@@ -178,7 +180,18 @@ export default defineComponent({
         const { id } = getEntityDetailsFromLink(props.data.mitigation);
 
         try {
-          selectedItems.value = (await useQuerySync(objectQueryDefinitions.queries.fetchObjectChildren, { domain: props.domainId, endpoint: 'controls', id: id, size: 9999 }, queryClient)).items;
+          selectedItems.value = (
+            await useQuerySync(
+              objectQueryDefinitions.queries.fetchObjectChildren,
+              {
+                domain: props.domainId,
+                endpoint: 'controls',
+                id: id,
+                size: 9999,
+              },
+              queryClient
+            )
+          ).items;
           emit('mitigations-modified', false);
         } finally {
           fetchingMitigation.value = false;
@@ -190,12 +203,18 @@ export default defineComponent({
     };
 
     const onMitigationCreated = async (objectId: string) => {
-      const newMitigation = await useQuerySync(objectQueryDefinitions.queries.fetch, { domain: props.domainId, endpoint: 'controls', id: objectId }, queryClient);
+      const newMitigation = await useQuerySync(
+        objectQueryDefinitions.queries.fetch,
+        { domain: props.domainId, endpoint: 'controls', id: objectId },
+        queryClient
+      );
       selectedItems.value = [...selectedItems.value, newMitigation]; // We reassign the ref instead of using .push so that the computed setter picks up the changes
     };
 
     const removeMitigationPart = (item: any) => {
-      selectedItems.value = selectedItems.value.filter((mitigation) => mitigation.id !== item.raw.id);
+      selectedItems.value = selectedItems.value.filter(
+        (mitigation) => mitigation.id !== item.raw.id
+      );
     };
 
     watch(
@@ -217,9 +236,9 @@ export default defineComponent({
       upperFirst,
       mdiInformationOutline,
       mdiLinkOff,
-      mdiPencilOutline
+      mdiPencilOutline,
     };
-  }
+  },
 });
 </script>
 

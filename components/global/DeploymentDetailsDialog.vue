@@ -16,16 +16,8 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseDialog
-    v-bind="$attrs"
-    :title="t('about')"
-    large
-  >
-    <v-tabs
-      v-model="tab"
-      align-tabs="start"
-      grow
-    >
+  <BaseDialog v-bind="$attrs" :title="t('about')" large>
+    <v-tabs v-model="tab" align-tabs="start" grow>
       <v-tab value="product">
         {{ t('productinfo') }}
       </v-tab>
@@ -38,15 +30,16 @@
     <LayoutAppLogoDesktop class="d-flex logo-size ml-4 mt-4 mb-6" />
 
     <v-window v-model="tab">
-      <v-window-item
-        value="product"
-      >
+      <v-window-item value="product">
         <BaseCard class="mt-0">
           <v-card-text>
-            <span>{{ t('version.header') }}</span><br><br>
+            <span>{{ t('version.header') }}</span
+            ><br /><br />
 
-            <p>{{ t('version.paragraph.1') }}</p><br>
-            <p>{{ t('version.paragraph.2') }}</p><br>
+            <p>{{ t('version.paragraph.1') }}</p
+            ><br />
+            <p>{{ t('version.paragraph.2') }}</p
+            ><br />
             <p>{{ t('version.paragraph.3') }}</p>
 
             <div class="mt-6 text-center">
@@ -58,28 +51,27 @@
               >
                 SerNet GmbH
               </a>
-              &hyphen;&nbsp;
-              Es gelten
+              &hyphen;&nbsp; Es gelten
               <a
                 :href="privacyPolicyLink"
                 rel="noopener noreferrer"
                 target="_blank"
-              >{{ t('privacyPolicy') }}</a>
+                >{{ t('privacyPolicy') }}</a
+              >
               {{ locale === 'de' ? 'und' : 'and' }}
               <a
                 :href="imprintLink"
                 rel="noopener noreferrer"
                 target="_blank"
-              >{{ t('imprint') }}</a>
+                >{{ t('imprint') }}</a
+              >
               der SerNet GmbH.
             </div>
           </v-card-text>
         </BaseCard>
       </v-window-item>
 
-      <v-window-item
-        value="version"
-      >
+      <v-window-item value="version">
         <BaseCard class="mt-0">
           <v-table density="comfortable">
             <thead>
@@ -98,8 +90,14 @@
                 <td>
                   {{ deployment?.build?.name || t('unknown') }}
                 </td>
-                <td v-if="deployment?.build?.version && deployment?.build?.ci?.buildnumber">
-                  {{ deployment.build.version }} ({{ t('build') }} {{ deployment.build.ci.buildnumber }})
+                <td
+                  v-if="
+                    deployment?.build?.version &&
+                    deployment?.build?.ci?.buildnumber
+                  "
+                >
+                  {{ deployment.build.version }} ({{ t('build') }}
+                  {{ deployment.build.ci.buildnumber }})
                 </td>
                 <td v-else>
                   {{ t('unknown') }}
@@ -121,10 +119,7 @@
           <div class="mt-4 text-center">
             <span>{{ t('contributors') }}:</span>&nbsp;
 
-            <span
-              v-for="(link, key, index) in links"
-              :key="index"
-            >
+            <span v-for="(link, key, index) in links" :key="index">
               <a
                 class="text-decoration-none text-primary"
                 :href="link"
@@ -142,46 +137,75 @@
 </template>
 
 <script setup lang="ts">
-import monitoringQueryDefintions, { IVeoDeploymentInformation } from '~/composables/api/queryDefinitions/monitoring';
+import monitoringQueryDefintions, {
+  IVeoDeploymentInformation,
+} from '~/composables/api/queryDefinitions/monitoring';
 import { useQuery } from '~/composables/api/utils/query';
 
 const config = useRuntimeConfig();
 const { t, locale } = useI18n();
 
-const fetchDefaultApiDeploymentDetailsQueryParameters = ref({ api: 'default' as 'default' | 'history' | 'forms' | 'reporting' });
-const { data: defaultApiDeploymentDetails } = useQuery(monitoringQueryDefintions.queries.fetch, fetchDefaultApiDeploymentDetailsQueryParameters);
-const fetchFormsApiDeploymentDetailsQueryParameters = ref({ api: 'forms' as 'default' | 'history' | 'forms' | 'reporting' });
-const { data: formsApiDeploymentDetails } = useQuery(monitoringQueryDefintions.queries.fetch, fetchFormsApiDeploymentDetailsQueryParameters);
-const fetchHistoryApiDeploymentDetailsQueryParameters = ref({ api: 'history' as 'default' | 'history' | 'forms' | 'reporting' });
-const { data: historyApiDeploymentDetails } = useQuery(monitoringQueryDefintions.queries.fetch, fetchHistoryApiDeploymentDetailsQueryParameters);
-const fetchReportingApiDeploymentDetailsQueryParameters = ref({ api: 'reporting' as 'default' | 'history' | 'forms' | 'reporting' });
-const { data: reportingApiDeploymentDetails } = useQuery(monitoringQueryDefintions.queries.fetch, fetchReportingApiDeploymentDetailsQueryParameters);
-const fetchAccountingApiDeploymentDetailsQueryParameters = ref({ api: 'accounts' as 'default' | 'history' | 'forms' | 'reporting' | 'accounts' });
-const { data: accountingApiDeploymentDetails } = useQuery(monitoringQueryDefintions.queries.fetch, fetchAccountingApiDeploymentDetailsQueryParameters);
+const fetchDefaultApiDeploymentDetailsQueryParameters = ref({
+  api: 'default' as 'default' | 'history' | 'forms' | 'reporting',
+});
+const { data: defaultApiDeploymentDetails } = useQuery(
+  monitoringQueryDefintions.queries.fetch,
+  fetchDefaultApiDeploymentDetailsQueryParameters
+);
+const fetchFormsApiDeploymentDetailsQueryParameters = ref({
+  api: 'forms' as 'default' | 'history' | 'forms' | 'reporting',
+});
+const { data: formsApiDeploymentDetails } = useQuery(
+  monitoringQueryDefintions.queries.fetch,
+  fetchFormsApiDeploymentDetailsQueryParameters
+);
+const fetchHistoryApiDeploymentDetailsQueryParameters = ref({
+  api: 'history' as 'default' | 'history' | 'forms' | 'reporting',
+});
+const { data: historyApiDeploymentDetails } = useQuery(
+  monitoringQueryDefintions.queries.fetch,
+  fetchHistoryApiDeploymentDetailsQueryParameters
+);
+const fetchReportingApiDeploymentDetailsQueryParameters = ref({
+  api: 'reporting' as 'default' | 'history' | 'forms' | 'reporting',
+});
+const { data: reportingApiDeploymentDetails } = useQuery(
+  monitoringQueryDefintions.queries.fetch,
+  fetchReportingApiDeploymentDetailsQueryParameters
+);
+const fetchAccountingApiDeploymentDetailsQueryParameters = ref({
+  api: 'accounts' as 'default' | 'history' | 'forms' | 'reporting' | 'accounts',
+});
+const { data: accountingApiDeploymentDetails } = useQuery(
+  monitoringQueryDefintions.queries.fetch,
+  fetchAccountingApiDeploymentDetailsQueryParameters
+);
 
 const tab = ref(null);
 
-const deploymentInformation = computed<Record<string, IVeoDeploymentInformation | undefined>>(() => ({
+const deploymentInformation = computed<
+  Record<string, IVeoDeploymentInformation | undefined>
+>(() => ({
   app: {
     git: {
       commit: {
-        id: config.public.build
-      }
+        id: config.public.build,
+      },
     },
     build: {
       name: 'webapp',
       ci: {
-        buildnumber: config.public.buildNumber
+        buildnumber: config.public.buildNumber,
       },
       version: config.public.version,
-      time: config.public.buildTime
-    }
+      time: config.public.buildTime,
+    },
   },
   default: defaultApiDeploymentDetails.value,
   forms: formsApiDeploymentDetails.value,
   history: historyApiDeploymentDetails.value,
   reports: reportingApiDeploymentDetails.value,
-  accounts: accountingApiDeploymentDetails.value
+  accounts: accountingApiDeploymentDetails.value,
 }));
 
 const links = {
@@ -189,15 +213,25 @@ const links = {
   rest: 'https://github.com/SerNet/verinice-veo/graphs/contributors',
   forms: 'https://github.com/SerNet/verinice-veo-forms/graphs/contributors',
   history: 'https://github.com/SerNet/verinice-veo-history/graphs/contributors',
-  reporting: 'https://github.com/SerNet/verinice-veo-reporting/graphs/contributors',
-  accounts: 'https://github.com/SerNet/verinice-veo-accounts/graphs/contributors'
+  reporting:
+    'https://github.com/SerNet/verinice-veo-reporting/graphs/contributors',
+  accounts:
+    'https://github.com/SerNet/verinice-veo-accounts/graphs/contributors',
 };
 
 const date = new Date();
 const currentYear = date.getFullYear();
 
-const imprintLink = computed(() => locale.value === 'de' ? 'https://www.sernet.de/impressum' : 'https://www.sernet.de/en/imprint');
-const privacyPolicyLink = computed(() => locale.value === 'de' ? 'https://www.sernet.de/datenschutz' : 'https://www.sernet.de/privacy');
+const imprintLink = computed(() =>
+  locale.value === 'de' ?
+    'https://www.sernet.de/impressum'
+  : 'https://www.sernet.de/en/imprint'
+);
+const privacyPolicyLink = computed(() =>
+  locale.value === 'de' ?
+    'https://www.sernet.de/datenschutz'
+  : 'https://www.sernet.de/privacy'
+);
 </script>
 
 <i18n>

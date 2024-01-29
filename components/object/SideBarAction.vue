@@ -18,7 +18,7 @@
 <template>
   <v-tooltip location="start">
     <template #activator="{ props: activatorProps }">
-      <slot v-bind="{ props, activatorProps}">
+      <slot v-bind="{ props, activatorProps }">
         <v-btn
           v-bind="activatorProps"
           :data-component-name="dataComponentName"
@@ -41,11 +41,11 @@ export type SideBarAction = {
   icon: string;
   name: string;
   component: any;
-  props?: Record<string, any>
+  props?: Record<string, any>;
   disabled?: boolean;
 };
 </script>
 
 <script setup lang="ts">
-const props = defineProps<SideBarAction & { value: string; }>();
+const props = defineProps<SideBarAction & { value: string }>();
 </script>

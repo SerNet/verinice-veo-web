@@ -16,19 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    :title="_document && _document.title"
-    :loading="!_document"
-  >
-    <BaseCard
-      class="mb-4"
-      style="max-width: 1024px"
-    >
+  <BasePage :title="_document && _document.title" :loading="!_document">
+    <BaseCard class="mb-4" style="max-width: 1024px">
       <v-card-text class="text-body-1">
-        <ContentRendererMarkdown
-          v-if="_document"
-          :value="_document"
-        />
+        <ContentRendererMarkdown v-if="_document" :value="_document" />
       </v-card-text>
     </BaseCard>
   </BasePage>
@@ -39,16 +30,19 @@ import { isArray } from 'lodash';
 import { useDoc, useDocs } from '~/composables/docs';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
-
 const route = useRoute();
 useHead(() => ({
   style: {
-    src: './assets/styles/docs.scss'
-  }
+    src: './assets/styles/docs.scss',
+  },
 }));
 
-const normalizedPath = computed(() => !isArray(route.params.slug) ? [route.params.slug] : route.params.slug);
-const _document = useDoc({ path: `/${normalizedPath.value.join('/') || 'index'}` });
+const normalizedPath = computed(() =>
+  !isArray(route.params.slug) ? [route.params.slug] : route.params.slug
+);
+const _document = useDoc({
+  path: `/${normalizedPath.value.join('/') || 'index'}`,
+});
 const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 
 // Navigation stuff (breadcrumbs)
@@ -62,15 +56,21 @@ const updateBreadcrumbs = () => {
   }
 
   // Get all path segments and the nesting level to know how many breadcrumb entries have to be created
-  const pathSegments = (_document.value?._path || '').split('/').filter((segment) => segment);
+  const pathSegments = (_document.value?._path || '')
+    .split('/')
+    .filter((segment) => segment);
   const nestingLevel = pathSegments.length;
 
   // Greater than 0 as we don't want to include the index page in the breadcrumbs
   for (let i = nestingLevel; i > 0; i--) {
     const currentPathSegments = pathSegments.slice(0, i);
-    const unlocalizedCurrentPath = currentPathSegments.join('/').replace(/(\.\w+)/, '');
+    const unlocalizedCurrentPath = currentPathSegments
+      .join('/')
+      .replace(/(\.\w+)/, '');
 
-    const breadcrumbItem = (docs.value || []).find((doc) => doc._path === `/${unlocalizedCurrentPath}`);
+    const breadcrumbItem = (docs.value || []).find(
+      (doc) => doc._path === `/${unlocalizedCurrentPath}`
+    );
     if (breadcrumbItem) {
       addCustomBreadcrumb({
         to: `/docs${breadcrumbItem._path}`,
@@ -79,24 +79,27 @@ const updateBreadcrumbs = () => {
         index: 0,
         text: breadcrumbItem.title,
         position: i * 10,
-        param: ''
+        param: '',
       });
     }
   }
 };
 
 const routeToHeader = () => {
-  if(!_document.value || !route.hash){
+  if (!_document.value || !route.hash) {
     return;
   }
-  scrollTo(0,(document?.querySelector(route.hash)?.getBoundingClientRect())?.y || 0);
+  scrollTo(
+    0,
+    document?.querySelector(route.hash)?.getBoundingClientRect()?.y || 0
+  );
 };
 
 watch(() => _document.value?._path, updateBreadcrumbs, { immediate: true });
 
 watch(() => docs.value, updateBreadcrumbs, { deep: true, immediate: true });
 
-watch(() => _document.value, routeToHeader, {deep:true, immediate: true});
+watch(() => _document.value, routeToHeader, { deep: true, immediate: true });
 </script>
 
 <style lang="scss" scoped>

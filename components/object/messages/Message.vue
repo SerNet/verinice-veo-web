@@ -21,15 +21,10 @@
       {{ message.text }}
     </v-list-item-title>
     <v-list-item-action v-if="message.actions?.length">
-      <UtilNestedMenu
-        :items="message.actions"
-        bottom
-        right
-        offset-y
-      >
+      <UtilNestedMenu :items="message.actions" bottom right offset-y>
         <template #activator="{ props: menu }">
           <v-tooltip location="left">
-            <template #activator="{ props: tooltip}">
+            <template #activator="{ props: tooltip }">
               <v-btn
                 :icon="mdiLightbulbOutline"
                 variant="text"
@@ -53,7 +48,7 @@ import { mdiLightbulbOutline } from '@mdi/js';
 import { Message } from '~/components/object/messages/Messages.vue';
 
 defineProps<{
-  message: Message
+  message: Message;
 }>();
 
 const { t } = useI18n();

@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-import { omit } from "lodash";
-import { getEntityDetailsFromLink } from "~/lib/utils";
-import { IVeoMutationDefinition } from "../utils/mutation";
-import { IVeoQueryDefinition } from "../utils/query";
-import { VeoApiReponseType } from "../utils/request";
+import { omit } from 'lodash';
+import { getEntityDetailsFromLink } from '~/lib/utils';
+import { IVeoMutationDefinition } from '../utils/mutation';
+import { IVeoQueryDefinition } from '../utils/query';
+import { VeoApiReponseType } from '../utils/request';
 import {
   IVeoAPIMessage,
   IVeoDecisionEvaluation,
@@ -26,8 +26,8 @@ import {
   IVeoEntityLegacy,
   IVeoPaginatedResponse,
   IVeoPaginationOptions,
-  IVeoRisk
-} from "~/types/VeoTypes";
+  IVeoRisk,
+} from '~/types/VeoTypes';
 
 const route = useRoute();
 
@@ -50,13 +50,15 @@ export interface IVeoFetchObjectLegacyParameters {
   id: string;
 }
 
-export interface IVeoFetchObjectChildrenParameters extends IVeoPaginationOptions{
+export interface IVeoFetchObjectChildrenParameters
+  extends IVeoPaginationOptions {
   domain: string;
   endpoint: string;
   id: string;
 }
 
-export interface IVeoFetchScopeChildrenParameters extends IVeoPaginationOptions{
+export interface IVeoFetchScopeChildrenParameters
+  extends IVeoPaginationOptions {
   domain: string;
   id: string;
 }
@@ -118,7 +120,7 @@ export interface IVeoDeleteRiskParameters {
   scenarioId: string;
 }
 
-export interface IVeoFetchWipDecisionEvaluationParameters{
+export interface IVeoFetchWipDecisionEvaluationParameters {
   domain: string;
   endpoint: string;
   object: IVeoEntity;
@@ -138,14 +140,16 @@ export const formatObject = (object: any) => {
     object.members = [];
   }
   // The frontend sets the display name as the backend only sets it for links. Gets used for example in the breadcrumbs.
-  object.displayName = [object.designator, object.abbreviation, object.name].filter((part) => part).join(' ');
+  object.displayName = [object.designator, object.abbreviation, object.name]
+    .filter((part) => part)
+    .join(' ');
 
   return object;
 };
 
 export default {
-  queries:{
-    fetchAll:{
+  queries: {
+    fetchAll: {
       primaryQueryKey: 'objects',
       url: '/api/domains/:domain/:endpoint',
       onDataFetched: (result) => {
@@ -154,31 +158,44 @@ export default {
         result.page = result.page + 1;
         return result;
       },
-      queryParameterTransformationFn:(queryParameters) => ({
-        params: { domain: route.params.domain, endpoint: queryParameters.endpoint },
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: {
+          domain: route.params.domain,
+          endpoint: queryParameters.endpoint,
+        },
         query: {
           // The frontend only works with hasNoParentElements, but the backend expects hasParentElements
-          hasParentElements: queryParameters.hasNoParentElements === true ? false : undefined,
-          ...omit(queryParameters, 'endpoint')
-        }
-      })
-    } as IVeoQueryDefinition<IVeoFetchObjectsParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
-    fetchLegacy:{
+          hasParentElements:
+            queryParameters.hasNoParentElements === true ? false : undefined,
+          ...omit(queryParameters, 'endpoint'),
+        },
+      }),
+    } as IVeoQueryDefinition<
+      IVeoFetchObjectsParameters,
+      IVeoPaginatedResponse<IVeoEntity[]>
+    >,
+    fetchLegacy: {
       primaryQueryKey: 'legacyObject',
       url: '/api/:endpoint/:id',
       onDataFetched: (result) => formatObject(result),
-      queryParameterTransformationFn:(queryParameters) => ({ params: queryParameters })
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: queryParameters,
+      }),
     } as IVeoQueryDefinition<IVeoFetchObjectLegacyParameters, IVeoEntityLegacy>,
 
-    fetch:{
+    fetch: {
       primaryQueryKey: 'object',
       url: '/api/domains/:domain/:endpoint/:id',
       onDataFetched: (result) => formatObject(result),
-      queryParameterTransformationFn:(queryParameters) => ({
-        params: { domain: route.params.domain, endpoint: queryParameters.endpoint, id: queryParameters.id }
-      })
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: {
+          domain: route.params.domain,
+          endpoint: queryParameters.endpoint,
+          id: queryParameters.id,
+        },
+      }),
     } as IVeoQueryDefinition<IVeoFetchObjectParameters, IVeoEntity>,
-    fetchObjectChildren:{
+    fetchObjectChildren: {
       primaryQueryKey: 'childObjects',
       url: '/api/domains/:domain/:endpoint/:id/parts',
       onDataFetched: (result) => {
@@ -187,11 +204,18 @@ export default {
         result.page = result.page + 1;
         return result;
       },
-      queryParameterTransformationFn:(queryParameters) => ({
-        params: { domain: route.params.domain, endpoint: queryParameters.endpoint, id: queryParameters.id }
-      })
-    } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
-    fetchScopeChildren:{
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: {
+          domain: route.params.domain,
+          endpoint: queryParameters.endpoint,
+          id: queryParameters.id,
+        },
+      }),
+    } as IVeoQueryDefinition<
+      IVeoFetchObjectChildrenParameters,
+      IVeoPaginatedResponse<IVeoEntity[]>
+    >,
+    fetchScopeChildren: {
       primaryQueryKey: 'childScopes',
       url: '/api/domains/:domain/scopes/:id/members',
       onDataFetched: (result) => {
@@ -200,40 +224,58 @@ export default {
         result.page = result.page + 1;
         return result;
       },
-      queryParameterTransformationFn:(queryParameters) => ({
-        params: { domain: route.params.domain, id: queryParameters.id }
-      })
-    } as IVeoQueryDefinition<IVeoFetchScopeChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
-    fetchRisks:{
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: { domain: route.params.domain, id: queryParameters.id },
+      }),
+    } as IVeoQueryDefinition<
+      IVeoFetchScopeChildrenParameters,
+      IVeoPaginatedResponse<IVeoEntity[]>
+    >,
+    fetchRisks: {
       primaryQueryKey: 'risks',
       url: '/api/:endpoint/:id/risks',
-      queryParameterTransformationFn: (queryParameters) => ({ params: queryParameters })
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: queryParameters,
+      }),
     } as IVeoQueryDefinition<IVeoFetchRisksParameters, IVeoRisk[]>,
-    fetchRisk:{
+    fetchRisk: {
       primaryQueryKey: 'risk',
       url: '/api/:endpoint/:id/risks/:scenarioId',
       queryParameterTransformationFn: (queryParameters) => ({
-        params: { endpoint: queryParameters.endpoint, id: queryParameters.objectId, scenarioId: queryParameters.scenarioId } })
+        params: {
+          endpoint: queryParameters.endpoint,
+          id: queryParameters.objectId,
+          scenarioId: queryParameters.scenarioId,
+        },
+      }),
     } as IVeoQueryDefinition<IVeoFetchRiskParameters, IVeoRisk>,
     fetchWipDecisionEvaluation: {
       primaryQueryKey: 'evaluation',
       url: '/api/domains/:domain/:endpoint/evaluation',
-      queryParameterTransformationFn: (queryParameters) => (
-        {
-          params: { domain: route.params.domain, endpoint: queryParameters.endpoint },
-          query: {
-            domain: queryParameters.domain
-          },
-          json: { ...queryParameters.object, status: queryParameters.status, subType: queryParameters.subType }
-        }
-      ),
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: {
+          domain: route.params.domain,
+          endpoint: queryParameters.endpoint,
+        },
+        query: {
+          domain: queryParameters.domain,
+        },
+        json: {
+          ...queryParameters.object,
+          status: queryParameters.status,
+          subType: queryParameters.subType,
+        },
+      }),
       staticQueryOptions: {
-        method: 'POST'
-      }
-    } as IVeoQueryDefinition<IVeoFetchWipDecisionEvaluationParameters,IVeoDecisionEvaluation>
+        method: 'POST',
+      },
+    } as IVeoQueryDefinition<
+      IVeoFetchWipDecisionEvaluationParameters,
+      IVeoDecisionEvaluation
+    >,
   },
-  mutations:{
-    createObject:{
+  mutations: {
+    createObject: {
       primaryQueryKey: 'object',
       url: '/api/domains/:domain/:endpoint',
       method: 'POST',
@@ -248,38 +290,48 @@ export default {
           delete _object.members;
         }
         return {
-          params: { domain: route.params.domain, endpoint: mutationParameters.endpoint },
+          params: {
+            domain: route.params.domain,
+            endpoint: mutationParameters.endpoint,
+          },
           query: { scopes: mutationParameters.parentScopes?.join(',') },
-          json: _object
+          json: _object,
         };
       },
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
           queryClient.invalidateQueries(['objects']);
-        }
-      }
+        },
+      },
     } as IVeoMutationDefinition<IVeoCreateObjectParameters, IVeoAPIMessage>,
-    assignObject:{
+    assignObject: {
       primaryQueryKey: 'object',
       url: '/api/domains/:domain/:endpoint/:objectId',
       method: 'POST',
       mutationParameterTransformationFn: (mutationParameters) => {
         return {
-          params: { domain: mutationParameters.domain, endpoint: mutationParameters.endpoint, objectId: mutationParameters.objectId },
-          json: { status: mutationParameters.status, subType: mutationParameters.subType }
+          params: {
+            domain: mutationParameters.domain,
+            endpoint: mutationParameters.endpoint,
+            objectId: mutationParameters.objectId,
+          },
+          json: {
+            status: mutationParameters.status,
+            subType: mutationParameters.subType,
+          },
         };
       },
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
           queryClient.invalidateQueries(['objects']);
-        }
-      }
+        },
+      },
     } as IVeoMutationDefinition<IVeoAssigObjectParameters, IVeoAPIMessage>,
 
     updateObject: {
       primaryQueryKey: 'object',
       url: '/api/domains/:domain/:endpoint/:id',
-      method: 'PUT', 
+      method: 'PUT',
       onDataFetched: (result) => {
         if (!result.parts) {
           result.parts = [];
@@ -287,7 +339,9 @@ export default {
         if (!result.members) {
           result.members = [];
         }
-        result.displayName = `${result.designator} ${result.abbreviation || ''} ${result.name}`;
+        result.displayName = `${result.designator} ${
+          result.abbreviation || ''
+        } ${result.name}`;
         return result;
       },
       mutationParameterTransformationFn: (mutationParameters) => {
@@ -308,33 +362,37 @@ export default {
         delete _object.displayName;
 
         return {
-          params: { domain: mutationParameters.domain, endpoint: mutationParameters.endpoint, id: mutationParameters.object.id },
-          json: _object
+          params: {
+            domain: mutationParameters.domain,
+            endpoint: mutationParameters.endpoint,
+            id: mutationParameters.object.id,
+          },
+          json: _object,
         };
       },
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
-          queryClient.invalidateQueries({queryKey: ['evaluation']});
+          queryClient.invalidateQueries({ queryKey: ['evaluation'] });
           queryClient.invalidateQueries(['objects']);
           queryClient.invalidateQueries([
             'object',
             {
               endpoint: variables.params?.endpoint,
-              id: variables.params?.id
-            }
+              id: variables.params?.id,
+            },
           ]);
           queryClient.invalidateQueries([
             'childObjects',
             {
               endpoint: variables.params?.endpoint,
-              id: variables.params?.id
-            }
+              id: variables.params?.id,
+            },
           ]);
           queryClient.invalidateQueries([
             'childScopes',
             {
-              id: variables.params?.id
-            }
+              id: variables.params?.id,
+            },
           ]);
           // Invalid all object lists, as the parent endpoint uses the same key (and we want an updated edit date in the list for this object)
           queryClient.invalidateQueries(['objects']);
@@ -342,87 +400,103 @@ export default {
           setTimeout(() => {
             queryClient.invalidateQueries(['versions']);
           }, 5000);
-        }
-      }
+        },
+      },
     } as IVeoMutationDefinition<IVeoUpdateObjectParameters, IVeoEntity>,
     // DELETE isn't processed by the multi-domain-API as opposed to create, read and update
-    deleteObject:{
+    deleteObject: {
       primaryQueryKey: 'object',
       url: '/api/:endpoint/:id',
       method: 'DELETE',
       reponseType: VeoApiReponseType.VOID,
-      mutationParameterTransformationFn: (mutationParameters) => ({ params: mutationParameters }),
+      mutationParameterTransformationFn: (mutationParameters) => ({
+        params: mutationParameters,
+      }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
           queryClient.invalidateQueries(['objects']);
           queryClient.invalidateQueries(['object', variables.params]);
-        }
-      }
+        },
+      },
     } as IVeoMutationDefinition<IVeoDeleteObjectParameters, void>,
-    createRisk:{
+    createRisk: {
       primaryQueryKey: 'risk',
       url: '/api/:endpoint/:objectId/risks',
       method: 'POST',
       mutationParameterTransformationFn: (mutationParameters) => ({
-        params: { endpoint: mutationParameters.endpoint, objectId: mutationParameters.objectId },
-        json: mutationParameters.risk
+        params: {
+          endpoint: mutationParameters.endpoint,
+          objectId: mutationParameters.objectId,
+        },
+        json: mutationParameters.risk,
       }),
       staticMutationOptions: {
-        onSuccess: ( queryClient, _data, variables, _context) => {
+        onSuccess: (queryClient, _data, variables, _context) => {
           queryClient.invalidateQueries({ queryKey: ['risks'] });
-          queryClient.invalidateQueries({ queryKey: [
-            'risk',
-            {
-              scenarioId: getEntityDetailsFromLink(variables.json.scenario).id,
-              objectId: variables.params?.objectId,
-              endpoint: variables.params?.endpoint
-            }
-          ]});
-          queryClient.invalidateQueries({queryKey: ['evaluation']});
-        }
-      }
+          queryClient.invalidateQueries({
+            queryKey: [
+              'risk',
+              {
+                scenarioId: getEntityDetailsFromLink(variables.json.scenario)
+                  .id,
+                objectId: variables.params?.objectId,
+                endpoint: variables.params?.endpoint,
+              },
+            ],
+          });
+          queryClient.invalidateQueries({ queryKey: ['evaluation'] });
+        },
+      },
     } as IVeoMutationDefinition<IVeoCreateRiskParameters, IVeoRisk>,
-    updateRisk:{
+    updateRisk: {
       primaryQueryKey: 'risk',
       url: '/api/:endpoint/:id/risks/:scenarioId',
       method: 'PUT',
       mutationParameterTransformationFn: (mutationParameters) => ({
-        params: { endpoint: mutationParameters.endpoint, id: mutationParameters.id, scenarioId: mutationParameters.scenarioId },
-        json: mutationParameters.risk
+        params: {
+          endpoint: mutationParameters.endpoint,
+          id: mutationParameters.id,
+          scenarioId: mutationParameters.scenarioId,
+        },
+        json: mutationParameters.risk,
       }),
       staticMutationOptions: {
-        onSuccess: ( queryClient, _data, variables, _context) => {
+        onSuccess: (queryClient, _data, variables, _context) => {
           queryClient.invalidateQueries({ queryKey: ['risks'] });
-          queryClient.invalidateQueries({ queryKey: [
-            'risk',
-            {
-              endpoint: variables.params?.endpoint,
-              objectId: variables.params?.id,
-              scenarioId: variables.params?.scenarioId
-            }
-          ]});
-          queryClient.invalidateQueries({queryKey: ['evaluation']});
-        }
-      }
+          queryClient.invalidateQueries({
+            queryKey: [
+              'risk',
+              {
+                endpoint: variables.params?.endpoint,
+                objectId: variables.params?.id,
+                scenarioId: variables.params?.scenarioId,
+              },
+            ],
+          });
+          queryClient.invalidateQueries({ queryKey: ['evaluation'] });
+        },
+      },
     } as IVeoMutationDefinition<IVeoUpdateRiskParameters, IVeoRisk>,
     deleteRisk: {
       primaryQueryKey: 'risk',
       url: '/api/:endpoint/:objectId/risks/:scenarioId',
       method: 'DELETE',
       reponseType: VeoApiReponseType.VOID,
-      mutationParameterTransformationFn: (mutationParameters) => ({ params: mutationParameters }),
+      mutationParameterTransformationFn: (mutationParameters) => ({
+        params: mutationParameters,
+      }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
           queryClient.invalidateQueries([
             'risks',
             {
               endpoint: variables.params?.endpoint,
-              id: variables.params?.objectId
-            }
+              id: variables.params?.objectId,
+            },
           ]),
-          queryClient.invalidateQueries({queryKey: ['evaluation']});
-        }
-      }
-    } as IVeoMutationDefinition<IVeoDeleteRiskParameters, void>
-  }
+            queryClient.invalidateQueries({ queryKey: ['evaluation'] });
+        },
+      },
+    } as IVeoMutationDefinition<IVeoDeleteRiskParameters, void>,
+  },
 };

@@ -17,22 +17,12 @@
 -->
 <template>
   <v-list-item :lines="lines">
-    <template 
-      v-if="styling"
-      #prepend
-    >
+    <template v-if="styling" #prepend>
       <v-avatar :color="styling.color">
-        <v-icon
-          size="small"
-          :icon="styling.icon"
-          color="white"
-        />
+        <v-icon size="small" :icon="styling.icon" color="white" />
       </v-avatar>
     </template>
-    <v-list-item-title
-      class="caption"
-      v-text="title"
-    />
+    <v-list-item-title class="caption" v-text="title" />
     <slot name="description" />
     <template #append>
       <v-list-item-action class="ml-3">
@@ -64,27 +54,27 @@ export default defineComponent({
   props: {
     title: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     lines: {
       type: String as PropType<'one' | 'two' | 'three'>,
-      default: 'one'
+      default: 'one',
     },
     styling: {
       type: Object as PropType<IInputType>,
-      default: () => ({})
+      default: () => ({}),
     },
     translate: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   setup() {
     const { t } = useI18n();
 
     return {
-      t
+      t,
     };
-  }
+  },
 });
 </script>

@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    title="Autocomplete"
-    fixed-header
-  >
+  <BasePage title="Autocomplete" fixed-header>
     <v-row justify="center">
       <v-col cols="12">
         <v-switch
@@ -29,12 +26,7 @@
           color="primary"
         />
       </v-col>
-      <v-col
-        cols="12"
-        sm="6"
-        lg="4"
-        class="docs-form-sector"
-      >
+      <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <DynamicFormEntrypoint
           v-model="dynamicForm.data"
           :object-schema="dynamicForm.objectSchema"
@@ -58,21 +50,21 @@ const form = ref({
     type: 'object',
     properties: {
       autocomplete: {
-        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
-      }
-    }
+        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3'],
+      },
+    },
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/autocomplete',
     options: {
       label: 'Autocomplete',
-      format: 'autocomplete'
-    }
+      format: 'autocomplete',
+    },
   },
   data: {
-    autocomplete: 'Beispiel-1'
-  }
+    autocomplete: 'Beispiel-1',
+  },
 });
 
 const formMultiselect = ref({
@@ -82,25 +74,27 @@ const formMultiselect = ref({
       autocomplete: {
         type: 'array',
         items: {
-          enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
-        }
-      }
-    }
+          enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3'],
+        },
+      },
+    },
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/autocomplete',
     options: {
       label: 'Autocomplete',
-      format: 'autocomplete'
-    }
+      format: 'autocomplete',
+    },
   },
   data: {
-    autocomplete: ['Beispiel-1']
-  }
+    autocomplete: ['Beispiel-1'],
+  },
 });
 
 const isMultiselect = ref(true);
 
-const dynamicForm = computed(() => isMultiselect.value ? formMultiselect.value : form.value);
+const dynamicForm = computed(() =>
+  isMultiselect.value ? formMultiselect.value : form.value
+);
 </script>

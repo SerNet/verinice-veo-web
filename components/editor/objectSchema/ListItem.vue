@@ -23,7 +23,9 @@
     lines="two"
   >
     <template #description>
-      <v-list-item-subtitle><span v-text="localizedDescription" /></v-list-item-subtitle>
+      <v-list-item-subtitle
+        ><span v-text="localizedDescription"
+      /></v-list-item-subtitle>
     </template>
   </EditorListItem>
 </template>
@@ -37,31 +39,33 @@ export default defineComponent({
   props: {
     title: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     prefix: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     description: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     twoLine: {
-      type: Boolean
+      type: Boolean,
     },
     styling: {
       type: Object as PropType<IInputType>,
-      default: () => ({})
+      default: () => ({}),
     },
     translate: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   setup(props) {
     const displayLanguage = inject<Ref<string> | undefined>('displayLanguage');
-    const objectSchemaHelper = inject<Ref<ObjectSchemaHelper> | undefined>('objectSchemaHelper');
+    const objectSchemaHelper = inject<Ref<ObjectSchemaHelper> | undefined>(
+      'objectSchemaHelper'
+    );
 
     /**
      * We sadly can't use a computed ref to get the localized description as vue won't
@@ -85,9 +89,15 @@ export default defineComponent({
 
     function i18n() {
       if (objectSchemaHelper && displayLanguage) {
-        const _localizedDescription = (objectSchemaHelper.value as ObjectSchemaHelper).getTranslation(displayLanguage.value as string, `${props.prefix}${props.title}`);
+        const _localizedDescription = (
+          objectSchemaHelper.value as ObjectSchemaHelper
+        ).getTranslation(
+          displayLanguage.value as string,
+          `${props.prefix}${props.title}`
+        );
 
-        localizedDescription.value = _localizedDescription || props.description || '';
+        localizedDescription.value =
+          _localizedDescription || props.description || '';
       }
     }
 
@@ -96,8 +106,8 @@ export default defineComponent({
     });
 
     return {
-      localizedDescription
+      localizedDescription,
     };
-  }
+  },
 });
 </script>

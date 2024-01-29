@@ -1,9 +1,9 @@
 body {
-  cursor: url("/images/halloween/ghost.gif"), auto;
+  cursor: url('/images/halloween/ghost.gif'), auto;
 }
 
-a[data-component-name="logo"] {
-  background-image: url("/images/halloween/logo_light.gif");
+a[data-component-name='logo'] {
+  background-image: url('/images/halloween/logo_light.gif');
   background-size: 90%;
 
   > div {
@@ -11,12 +11,12 @@ a[data-component-name="logo"] {
   }
 }
 
-div.v-theme--dark a[data-component-name="logo"] {
-  background-image: url("/images/halloween/logo_dark.gif");
+div.v-theme--dark a[data-component-name='logo'] {
+  background-image: url('/images/halloween/logo_dark.gif');
 }
 
 #witch {
-  background-image: url("/images/halloween/witch.gif");
+  background-image: url('/images/halloween/witch.gif');
   width: 62px;
   height: 61px;
   z-index: 900000;

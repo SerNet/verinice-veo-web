@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip
-    v-if="miniVariant"
-    location="bottom"
-  >
+  <v-tooltip v-if="miniVariant" location="bottom">
     <template #activator="{ props: toolTips }">
       <v-icon
         class="ma-4"
@@ -67,7 +64,10 @@
         color="primary"
         value="more"
         :title="globalT('breadcrumbs.more')"
-        @click="domainId = 'more'; closeMenu.menu = false"
+        @click="
+          domainId = 'more';
+          closeMenu.menu = false;
+        "
       />
     </template>
   </v-select>
@@ -81,13 +81,16 @@ import { useFetchUnitDomains } from '~/composables/api/domains';
 
 import { mdiDomain } from '@mdi/js';
 
-withDefaults(defineProps<{
-  disabled?: boolean,
-  miniVariant?: boolean
-}>(), {
-  disabled: false,
-  miniVariant: false
-});
+withDefaults(
+  defineProps<{
+    disabled?: boolean;
+    miniVariant?: boolean;
+  }>(),
+  {
+    disabled: false,
+    miniVariant: false,
+  }
+);
 
 defineEmits<{
   (event: 'expand-menu'): void;
@@ -97,32 +100,45 @@ const route = useRoute();
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
-const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
+const fetchUnitDomainsQueryParameters = computed(() => ({
+  unitId: route.params.unit as string,
+}));
 const fetchUnitDomainsQueryEnabled = computed(() => !!route.params.unit);
-const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
+const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, {
+  enabled: fetchUnitDomainsQueryEnabled,
+});
 
 // v-select's append-item slot has no events (!), hence we have to reference it
 const closeMenu = ref();
 
-const items = computed(() => ((domains.value || []).find((domain: any) => domain.id === route.params.domain))?.name || []);
-const itemSelection = computed(() => (domains.value || []).map((domain: any) => ({ value: domain.id, title: domain.name })));
+const items = computed(
+  () =>
+    (domains.value || []).find(
+      (domain: any) => domain.id === route.params.domain
+    )?.name || []
+);
+const itemSelection = computed(() =>
+  (domains.value || []).map((domain: any) => ({
+    value: domain.id,
+    title: domain.name,
+  }))
+);
 
 const domainId = computed({
   get() {
-    return route.params.domain as string || 'more';
+    return (route.params.domain as string) || 'more';
   },
   set(newValue: string) {
-    const params = newValue === 'more'
-      ? { ...route.params }
-      : { domain: newValue };
+    const params =
+      newValue === 'more' ? { ...route.params } : { domain: newValue };
 
     navigateTo({
       name: newValue === 'more' ? ROUTE_MORE_DOMAINS : ROUTE_DOMAIN_DASHBOARD,
       params: {
-        ...params
-      }
+        ...params,
+      },
     });
-  }
+  },
 });
 </script>
 

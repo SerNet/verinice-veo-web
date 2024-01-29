@@ -29,10 +29,7 @@
     </template>
 
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        @click="emit('update:model-value', false)"
-      >
+      <v-btn variant="text" @click="emit('update:model-value', false)">
         {{ $t('global.button.no') }}
       </v-btn>
 
@@ -53,19 +50,22 @@
 <script setup lang="ts">
 import { IVeoEntity } from '~/types/VeoTypes';
 
-withDefaults(defineProps<{
-  modelValue: boolean,
-  item: IVeoEntity | undefined
-}>(), {
-  modelValue: false,
-  item: undefined
-});
+withDefaults(
+  defineProps<{
+    modelValue: boolean;
+    item: IVeoEntity | undefined;
+  }>(),
+  {
+    modelValue: false,
+    item: undefined,
+  }
+);
 
 const emit = defineEmits<{
-  (event: 'update:model-value', value: boolean): void,
-  (event: 'exit', value: boolean): void
+  (event: 'update:model-value', value: boolean): void;
+  (event: 'exit', value: boolean): void;
 }>();
-  
+
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 </script>

@@ -17,23 +17,24 @@
 -->
 <template>
   <BasePage>
-    <LayoutHeadline
-      :title="t('moreModules')"
-    />
+    <LayoutHeadline :title="t('moreModules')" />
 
-    <div
-      class="my-8"
-      style="width: 300px"
-    >
+    <div class="my-8" style="width: 300px">
       <LayoutAppLogoDesktop />
     </div>
     <div class="text-body-1">
       <p>{{ t('moreModulesInfo') }}</p>
       <p>
-        {{ t('furtherInformation') }} <a
-          :href="locale === 'de' ? 'https://verinice.com/veo' : 'https://verinice.com/en/veo'"
+        {{ t('furtherInformation') }}
+        <a
+          :href="
+            locale === 'de' ?
+              'https://verinice.com/veo'
+            : 'https://verinice.com/en/veo'
+          "
           target="_blank"
-        >{{ t('linkName') }}</a>.
+          >{{ t('linkName') }}</a
+        >.
       </p>
     </div>
   </BasePage>

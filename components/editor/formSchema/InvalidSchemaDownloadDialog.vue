@@ -25,18 +25,11 @@
       {{ t('invalidSchemaConfirmation') }}
     </template>
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        @click="$emit('update:model-value', false)"
-      >
+      <v-btn variant="text" @click="$emit('update:model-value', false)">
         {{ $t('global.button.no') }}
       </v-btn>
       <v-spacer />
-      <v-btn
-        color="primary"
-        variant="text"
-        @click="$emit('download')"
-      >
+      <v-btn color="primary" variant="text" @click="$emit('download')">
         {{ $t('global.button.yes') }}
       </v-btn>
     </template>

@@ -17,53 +17,29 @@
 -->
 <template>
   <BasePage sticky-footer>
-    <LayoutHeadline
-      class="mb-4"
-      :title="t('breadcrumbs.user-data')"
-    />
+    <LayoutHeadline class="mb-4" :title="t('breadcrumbs.user-data')" />
 
-
-    <i18n-t
-      keypath="userDataExport.hint.text"
-      tag="p"
-      scope="global"
-    >
+    <i18n-t keypath="userDataExport.hint.text" tag="p" scope="global">
       <template #linebreak>
-        <br>
+        <br />
       </template>
     </i18n-t>
 
     <v-row class="align-start">
-      <v-col
-        class="mt-4"
-        cols="12"
-      >
+      <v-col class="mt-4" cols="12">
         <UserDataUnitExport />
       </v-col>
     </v-row>
     <v-row>
-      <v-col
-        class="d-flex mt-4"
-        cols="12"
-        md="12"
-        lg="6"
-      >
+      <v-col class="d-flex mt-4" cols="12" md="12" lg="6">
         <UserDataAccountExport />
       </v-col>
-      <v-col
-        class="mt-4"
-        cols="12"
-        md="12"
-        lg="6"
-      >
+      <v-col class="mt-4" cols="12" md="12" lg="6">
         <UserDataDomainExport />
       </v-col>
     </v-row>
     <v-row class="align-start">
-      <v-col
-        class="mt-4"
-        cols="12"
-      >
+      <v-col class="mt-4" cols="12">
         <UserDataHistoryExport />
       </v-col>
     </v-row>

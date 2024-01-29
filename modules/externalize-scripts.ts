@@ -24,17 +24,14 @@ import { Nuxt } from '@nuxt/schema';
 /**
  * Hook running after the build process to externalize all scripts
  */
-export default ((_inlineOptions: object, nuxt: Nuxt) => {
+export default (_inlineOptions: object, nuxt: Nuxt) => {
   // CURRENTLY DOESN'T WORK AS THERE IS NO "AFTER EVERYTHING" HOOK. CURRENTLY externalize-scripts.js is used instead in the dockerfile
   // nuxt.hooks.hook('build:done', () => {
   //   const BUILD_OUTPUT_DIR = resolve(nuxt.options.rootDir, '.output', 'public');
-
   //   let configData: string;
   //   let configFileName: string;
-
   //   // Get a list of all compiled html files (those could contain <script>)
   //   const htmlFiles = glob.sync(`${BUILD_OUTPUT_DIR}/**/*.html`);
-
   //   for(const file of htmlFiles) {
   //     // Read every file and check whether <script> exists within. if so, replace it with a link to the config file (created as soon as the first match is found with the config data of the match (all files contain the same config))
   //     readFile(file, (_error, fileContent) => {
@@ -49,7 +46,6 @@ export default ((_inlineOptions: object, nuxt: Nuxt) => {
   //           configFileName = `config.${hash(content)}.js`;
   //           writeFileSync(resolve(BUILD_OUTPUT_DIR, '_nuxt', configFileName), configData);
   //         }
-
   //         // Replace old script tag with new one with the link
   //         return `<script${args} src="/_nuxt/${configFileName}"></script>`;
   //       });
@@ -57,4 +53,4 @@ export default ((_inlineOptions: object, nuxt: Nuxt) => {
   //     });
   //   }
   // });
-});
+};

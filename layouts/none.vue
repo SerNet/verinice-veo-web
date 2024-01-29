@@ -23,6 +23,6 @@
 
 <script setup lang="ts">
 useHead(() => ({
-  titleTemplate: '%s - verinice.veo'
+  titleTemplate: '%s - verinice.veo',
 }));
 </script>

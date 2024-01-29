@@ -30,19 +30,13 @@
         v-bind="mergeProps(props, $attrs)"
         icon
       >
-        <v-avatar
-          color="primary"
-          size="48"
-        >
+        <v-avatar color="primary" size="48">
           {{ initials }}
         </v-avatar>
       </v-btn>
     </template>
     <v-card flat>
-      <v-list
-        density="compact"
-        class="pb-0"
-      >
+      <v-list density="compact" class="pb-0">
         <v-list-item lines="two">
           <template #prepend>
             <v-avatar color="primary">
@@ -50,65 +44,49 @@
             </v-avatar>
           </template>
           <v-list-item-title>
-            <span v-if="(profile && profile.firstName) || (profile && profile.lastName)">
+            <span
+              v-if="
+                (profile && profile.firstName) || (profile && profile.lastName)
+              "
+            >
               {{ profile.firstName }}
               {{ profile.lastName }}
             </span>
-            <span
-              v-else
-              v-text="t('notAvailable')"
-            />
+            <span v-else v-text="t('notAvailable')" />
           </v-list-item-title>
-          <v-list-item-subtitle>{{ profile && profile.email || t('notAvailable') }}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{
+            (profile && profile.email) || t('notAvailable')
+          }}</v-list-item-subtitle>
         </v-list-item>
         <v-divider />
-        <v-list-item
-          :href="accountLink"
-          target="_blank"
-        >
+        <v-list-item :href="accountLink" target="_blank">
           <v-list-item-title class="d-flex align-center">
             {{ t('editAccount') }}
-            <v-icon
-              class="ml-1"
-              size="x-small"
-              :icon="mdiOpenInNew"
-            />
+            <v-icon class="ml-1" size="x-small" :icon="mdiOpenInNew" />
           </v-list-item-title>
         </v-list-item>
         <template v-if="ability.can('manage', 'accounts')">
           <v-divider />
-          <v-list-item
-            color="primary"
-            to="/administration"
-          >
+          <v-list-item color="primary" to="/administration">
             <v-list-item-title>
               {{ $t('breadcrumbs.administration') }}
             </v-list-item-title>
           </v-list-item>
         </template>
         <v-divider />
-        <v-list-item
-          color="primary"
-          to="/welcome"
-        >
+        <v-list-item color="primary" to="/welcome">
           <v-list-item-title>
             {{ t('firststeps') }}
           </v-list-item-title>
         </v-list-item>
         <v-divider />
-        <v-list-item
-          color="primary"
-          to="/user-data"
-        >
+        <v-list-item color="primary" to="/user-data">
           <v-list-item-title>
             {{ $t('breadcrumbs.user-data') }}
           </v-list-item-title>
         </v-list-item>
         <v-divider />
-        <v-list-item
-          color="primary"
-          to="/security"
-        >
+        <v-list-item color="primary" to="/security">
           <v-list-item-title>
             {{ $t('breadcrumbs.security') }}
           </v-list-item-title>
@@ -155,7 +133,9 @@ const displayDeploymentDetails = ref(false);
 
 const firstName = computed(() => profile.value?.firstName || '');
 const lastName = computed(() => profile.value?.lastName || '');
-const initials = computed(() => firstName.value.substring(0, 1) + lastName.value.substring(0, 1) || '??');
+const initials = computed(
+  () => firstName.value.substring(0, 1) + lastName.value.substring(0, 1) || '??'
+);
 
 const accountLink = computed(() => `${config.public.oidcAccountApplication}`);
 

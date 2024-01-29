@@ -31,7 +31,7 @@ await navigateTo({
     unit: route.params.unit,
     domain: route.params.domain,
     objectType: route.params.objectType,
-    subType: '-'
-  }
+    subType: '-',
+  },
 });
 </script>

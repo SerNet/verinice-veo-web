@@ -1,21 +1,21 @@
-import { resolve } from "path";
+import { resolve } from 'path';
 import DocsModule from './modules/docs/module.mjs';
 
-
 // Types
-import { LOCALES } from "./types/locales";
+import { LOCALES } from './types/locales';
 import { PluginOption } from 'vite';
 
 /** UNIT TESTING
-* When testing the application, vue + vuetify are not available,
-* thus we have to import/plug them in manually
-* however, in dev mode or when building this causes an ERROR,
-* that is why we only add vue + vuetify in when testing
-*/
-import vue from "@vitejs/plugin-vue";
+ * When testing the application, vue + vuetify are not available,
+ * thus we have to import/plug them in manually
+ * however, in dev mode or when building this causes an ERROR,
+ * that is why we only add vue + vuetify in when testing
+ */
+import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 let vitePlugins: PluginOption[] = [];
-if (process.env.NODE_ENV === 'test') vitePlugins = [vue(), vuetify({autoImport: true})];
+if (process.env.NODE_ENV === 'test')
+  vitePlugins = [vue(), vuetify({ autoImport: true })];
 
 export default defineNuxtConfig({
   //==============================================================
@@ -25,7 +25,7 @@ export default defineNuxtConfig({
 
   sourcemap: {
     server: true,
-    client: false
+    client: false,
   },
 
   typescript: {
@@ -34,14 +34,14 @@ export default defineNuxtConfig({
     tsConfig: {
       compilerOptions: {
         // Allow type imports without `type` modifier
-        verbatimModuleSyntax: false
-      }
-    }
+        verbatimModuleSyntax: false,
+      },
+    },
   },
 
   // Apply a transition to every page
   app: {
-    pageTransition: { name: 'page', mode: 'out-in' }
+    pageTransition: { name: 'page', mode: 'out-in' },
   },
 
   // Disable SSR as the app is deployed using static site generation (SSG)
@@ -53,22 +53,39 @@ export default defineNuxtConfig({
     public: {
       version: process.env.npm_package_version || 'latest',
       build: process.env.CI_COMMIT_SHORT_SHA || '0000000',
-      buildTime: new Date(parseInt(process.env.CI_COMMIT_TIMESTAMP || Date.now().toString(), 10)).toISOString(),
+      buildTime: new Date(
+        parseInt(process.env.CI_COMMIT_TIMESTAMP || Date.now().toString(), 10)
+      ).toISOString(),
       buildNumber: process.env.CI_JOB_ID || '-1',
       apiUrl: process.env.VEO_DEFAULT_API_URL || 'https://api.veo.example/veo',
-      formsApiUrl: process.env.VEO_FORMS_API_URL || 'https://api.veo.example/forms',
-      historyApiUrl: process.env.VEO_HISTORY_API_URL || 'https://api.veo.example/history',
-      reportsApiUrl: process.env.VEO_REPORTING_API_URL || 'https://api.veo.example/reporting',
-      accountsApiUrl: process.env.VEO_ACCOUNTS_API_URL || 'https://api.veo.example/accounts',
+      formsApiUrl:
+        process.env.VEO_FORMS_API_URL || 'https://api.veo.example/forms',
+      historyApiUrl:
+        process.env.VEO_HISTORY_API_URL || 'https://api.veo.example/history',
+      reportsApiUrl:
+        process.env.VEO_REPORTING_API_URL ||
+        'https://api.veo.example/reporting',
+      accountsApiUrl:
+        process.env.VEO_ACCOUNTS_API_URL || 'https://api.veo.example/accounts',
       oidcUrl: process.env.VEO_OIDC_URL || 'https://auth.veo.example/auth',
-      oidcAccountApplication: process.env.VEO_OIDC_ACCOUNT_APPLICATION || 'https://auth.veo.example/auth/realms/veo-oidcrealm-example/account',
+      oidcAccountApplication:
+        process.env.VEO_OIDC_ACCOUNT_APPLICATION ||
+        'https://auth.veo.example/auth/realms/veo-oidcrealm-example/account',
       oidcRealm: process.env.VEO_OIDC_REALM || 'veo-oidcrealm-example',
       oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-oidcclient-example',
-      accountPath: process.env.VEO_ACCOUNT_PATH || 'https://account.veo.example',
+      accountPath:
+        process.env.VEO_ACCOUNT_PATH || 'https://account.veo.example',
       debug: process.env.VEO_DEBUG || 'false',
       debugCache: process.env.VEO_DEBUG_CACHE || 'false', // Either a boolean or the query string (or first entry of query string if array)
-      securityPolicyInvalidationDate: process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP ? new Date(parseInt(process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP)) : new Date(new Date().getFullYear() + 1, 0, 1)
-    }
+      securityPolicyInvalidationDate:
+        process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP ?
+          new Date(
+            parseInt(
+              process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP
+            )
+          )
+        : new Date(new Date().getFullYear() + 1, 0, 1),
+    },
   },
 
   // Modules are buildtime only. Can be used to modify build behaviour
@@ -78,15 +95,11 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     './modules/externalize-scripts',
     './modules/vuetify-sass-variables.ts',
-    'nuxt-font-loader'
+    'nuxt-font-loader',
   ],
 
   build: {
-    transpile: [
-      'vuetify',
-      "hast-util-to-string",
-      "micromark"
-    ]
+    transpile: ['vuetify', 'hast-util-to-string', 'micromark'],
   },
 
   vite: {
@@ -94,10 +107,10 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: '@import "@/assets/styles/global.scss";'
-        }
-      }
-    }
+          additionalData: '@import "@/assets/styles/global.scss";',
+        },
+      },
+    },
   },
 
   //==============================================================
@@ -109,22 +122,20 @@ export default defineNuxtConfig({
       // overwrite default source AKA `content` directory
       content: {
         driver: 'fs',
-        base: resolve(__dirname, 'docs')
-      }
+        base: resolve(__dirname, 'docs'),
+      },
     },
     markdown: {
-      rehypePlugins: [
-        'rehype-inline'
-      ]
+      rehypePlugins: ['rehype-inline'],
     },
     experimental: {
-      clientDB: true
+      clientDB: true,
     },
     locales: LOCALES.map((locale) => locale.code),
     defaultLocale: 'de',
     toc: {
-      depth: 5
-    }
+      depth: 5,
+    },
   },
 
   // i18n configuration
@@ -133,19 +144,19 @@ export default defineNuxtConfig({
     locales: LOCALES,
     defaultLocale: 'de',
     lazy: true,
-    langDir: 'locales/'
+    langDir: 'locales/',
   },
 
   fontLoader: {
     local: [
       {
         src: '/Roboto-Regular.ttf',
-        family: 'Roboto'
+        family: 'Roboto',
       },
       {
         src: '/OpenSans-Regular.ttf',
-        family: 'Open Sans'
-      }
-    ]
-  }
+        family: 'Open Sans',
+      },
+    ],
+  },
 });

@@ -17,14 +17,8 @@
 -->
 <template>
   <v-row class="flex-column pt-4">
-    <v-col
-      v-for="(skeleton, index) of skeletons"
-      :key="index"
-    >
-      <v-skeleton-loader
-        :type="skeleton.type"
-        :width="skeleton.width"
-      />
+    <v-col v-for="(skeleton, index) of skeletons" :key="index">
+      <v-skeleton-loader :type="skeleton.type" :width="skeleton.width" />
     </v-col>
   </v-row>
 </template>
@@ -33,20 +27,20 @@
 const _skeletons = [
   {
     type: 'heading',
-    width: '30%'
+    width: '30%',
   },
   {
     type: 'text',
-    width: '20%'
+    width: '20%',
   },
   {
     type: 'text',
-    width: '100%'
+    width: '100%',
   },
   {
     type: 'text',
-    width: '100%'
-  }
+    width: '100%',
+  },
 ];
 
 const skeletons = new Array(3).fill(_skeletons).flat();

@@ -24,18 +24,36 @@ const LANGS = ['de', 'en'];
 async function main() {
   const outputFolder = path.resolve('./dist');
   const fileName = 'Documentation';
-  const shorten = (str, len) => (str.length > len ? str.substr(0, len) + '...' : str);
+  const shorten = (str, len) =>
+    str.length > len ? str.substr(0, len) + '...' : str;
   const url = process.argv[2] || `http://localhost:3000/docs/?print`;
   console.log('Opening browser...');
-  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--export-tagged-pdf'], pipe: true });
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-setuid-sandbox',
+      '--export-tagged-pdf',
+    ],
+    pipe: true,
+  });
   console.log('Browser openend, creating new page');
   const page = await browser.newPage();
   console.log('New page created, registering event listeners');
   page
-    .on('console', (message) => console.log(`    ${message.type().substr(0, 3).toUpperCase()} ${message.text()}`))
+    .on('console', (message) =>
+      console.log(
+        `    ${message.type().substr(0, 3).toUpperCase()} ${message.text()}`
+      )
+    )
     .on('pageerror', ({ message }) => console.error('    ' + message))
-    .on('response', (response) => console.log(` ☑️  ${response.status()} ${shorten(response.url(), 120)}`))
-    .on('requestfailed', (request) => console.error(` ❌  ${request.failure().errorText} ${request.url()}`));
+    .on('response', (response) =>
+      console.log(` ☑️  ${response.status()} ${shorten(response.url(), 120)}`)
+    )
+    .on('requestfailed', (request) =>
+      console.error(` ❌  ${request.failure().errorText} ${request.url()}`)
+    );
   console.log('Starting printing...');
   for await (const lang of LANGS) {
     const outputFile = `${outputFolder}/${fileName}_${lang}.pdf`;
@@ -44,12 +62,18 @@ async function main() {
     // Setting the language via &lang=xyz gets overwritten by the browser locale, so we set the cookie by hand to avoid this. Also means the lang query parameter is only useful if set by hand.
     await page.setCookie({
       name: 'i18n_redirected',
-      value: lang
+      value: lang,
     });
     await new Promise((resolve) => setTimeout(resolve, 3000));
     await Promise.race([
-      page.evaluate((event) => new Promise((resolve) => document.addEventListener(event, resolve, { once: true })), 'PAGEDJS_AFTER_RENDERED'),
-      new Promise((resolve) => setTimeout(resolve, 30000))
+      page.evaluate(
+        (event) =>
+          new Promise((resolve) =>
+            document.addEventListener(event, resolve, { once: true })
+          ),
+        'PAGEDJS_AFTER_RENDERED'
+      ),
+      new Promise((resolve) => setTimeout(resolve, 30000)),
     ]);
     await page.pdf({ path: outputFile, format: 'A4', printBackground: true });
     console.log(`Successfully created: ${outputFile}`);

@@ -47,8 +47,8 @@ const form = ref({
   formSchema: {
     type: 'Label',
     text: 'Ein Beispiel für den statischen Text.',
-    options: {}
+    options: {},
   },
-  data: {}
+  data: {},
 });
 </script>

@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-col
-    cols="6"
-    :md="12 / numOfCols"
-  >
+  <v-col cols="6" :md="12 / numOfCols">
     <h3 class="text-h3">
       {{ protectionGoal.translations[locale].name }}
     </h3>
@@ -37,16 +34,10 @@
       @update:model-value="$emit('update:risk-treatments', $event)"
     >
       <template #selection="{ item, index }">
-        <span
-          v-if="index === 0"
-          class="text-no-wrap"
-        >
+        <span v-if="index === 0" class="text-no-wrap">
           {{ item.title }}
         </span>
-        <v-chip
-          v-else-if="index === 1"
-          size="small"
-        >
+        <v-chip v-else-if="index === 1" size="small">
           +{{ riskTreatments.length - 1 }} {{ t('more') }}
         </v-chip>
       </template>
@@ -61,7 +52,9 @@
           hide-details
           variant="underlined"
           v-bind="dialogProps"
-          @update:model-value="$emit('update:risk-treatment-explanation', $event)"
+          @update:model-value="
+            $emit('update:risk-treatment-explanation', $event)
+          "
         />
       </template>
       <template #input>
@@ -76,7 +69,9 @@
           rows="3"
           no-resize
           variant="underlined"
-          @update:model-value="$emit('update:risk-treatment-explanation', $event)"
+          @update:model-value="
+            $emit('update:risk-treatment-explanation', $event)
+          "
         />
       </template>
     </v-edit-dialog>
@@ -93,37 +88,42 @@ export default defineComponent({
   props: {
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true
+      required: true,
     },
     protectionGoal: {
       type: Object as PropType<IVeoRiskCategory>,
-      required: true
+      required: true,
     },
     riskTreatments: {
       type: Array as PropType<string[]>,
-      default: undefined
+      default: undefined,
     },
     riskTreatmentExplanation: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     numOfCols: {
       type: Number,
-      default: 4
-    }
+      default: 4,
+    },
   },
   emits: ['update:risk-treatment-explanation', 'update:risk-treatments'],
   setup() {
     const { t, locale } = useI18n();
 
     const treatmentOptions = computed(() =>
-      ['RISK_TREATMENT_ACCEPTANCE', 'RISK_TREATMENT_AVOIDANCE', 'RISK_TREATMENT_REDUCTION', 'RISK_TREATMENT_TRANSFER'].map((option) => ({
+      [
+        'RISK_TREATMENT_ACCEPTANCE',
+        'RISK_TREATMENT_AVOIDANCE',
+        'RISK_TREATMENT_REDUCTION',
+        'RISK_TREATMENT_TRANSFER',
+      ].map((option) => ({
         title: t(`riskTreatments.${option}`).toString(),
-        value: option
+        value: option,
       }))
     );
 
@@ -132,9 +132,9 @@ export default defineComponent({
 
       t,
       locale,
-      upperFirst
+      upperFirst,
     };
-  }
+  },
 });
 </script>
 
@@ -164,7 +164,6 @@ export default defineComponent({
   }
 }
 </i18n>
-
 
 <style lang="scss" scoped>
 .veo-risk-dialog__risk-treatment-selection :deep(.v-select__selections) {

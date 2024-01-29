@@ -16,19 +16,16 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list-item  
-    class="schema-details__status-list-item pl-0 my-0"
-    dense
-  >
+  <v-list-item class="schema-details__status-list-item pl-0 my-0" dense>
     <template #prepend>
       <div
         class="handle d-flex align-center justify-center my-0 px-4"
-        :style="{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length], height: '58px' }"
+        :style="{
+          backgroundColor: CHART_COLORS[index % CHART_COLORS.length],
+          height: '58px',
+        }"
       >
-        <v-icon
-          color="white"
-          :icon="mdiMenu"
-        />
+        <v-icon color="white" :icon="mdiMenu" />
       </div>
     </template>
     <v-row no-gutters>
@@ -78,16 +75,16 @@ export default defineComponent({
   props: {
     status: {
       type: Object as PropType<{ key: string; [lang: string]: string }>,
-      required: true
+      required: true,
     },
     index: {
       type: Number,
-      required: true
+      required: true,
     },
     lang: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['update-status', 'delete'],
   setup(props, { emit }) {
@@ -96,7 +93,7 @@ export default defineComponent({
     function onTranslationInput(value: string) {
       emit('update-status', {
         ...props.status,
-        [props.lang]: value
+        [props.lang]: value,
       });
     }
 
@@ -108,9 +105,9 @@ export default defineComponent({
       mdiMenu,
       mdiTrashCanOutline,
       mdiTranslate,
-      CHART_COLORS
+      CHART_COLORS,
     };
-  }
+  },
 });
 </script>
 

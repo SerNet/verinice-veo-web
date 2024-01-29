@@ -17,11 +17,7 @@
 -->
 <template>
   <div>
-    <LayoutAppLogoDesktop
-      v-if="showDesktop"
-      height="60%"
-      width="85%"
-    />
+    <LayoutAppLogoDesktop v-if="showDesktop" height="60%" width="85%" />
     <LayoutAppLogoMobile
       v-else-if="showMobile"
       height="80%"
@@ -37,12 +33,14 @@ import { useDisplay } from 'vuetify';
 const props = defineProps({
   size: {
     type: String,
-    default: 'auto'
-  }
+    default: 'auto',
+  },
 });
 
 const { mdAndUp } = useDisplay();
 
-const showDesktop = computed(() => props.size !== 'small' && (mdAndUp.value || props.size === 'large'));
+const showDesktop = computed(
+  () => props.size !== 'small' && (mdAndUp.value || props.size === 'large')
+);
 const showMobile = computed(() => props.size !== 'large');
 </script>

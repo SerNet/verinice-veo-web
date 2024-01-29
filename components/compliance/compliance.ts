@@ -6,18 +6,28 @@ const { request } = useRequest();
 const route = useRoute();
 
 const state = {
-  type: computed(() => OBJECT_TYPE_TO_URL_MAP[route.query.type as string] || 'all'),
-  riskAffected: computed(() => route.query.riskAffected as string || null),
-  control: computed(() => route.query.control as string || null)
+  type: computed(
+    () => OBJECT_TYPE_TO_URL_MAP[route.query.type as string] || 'all'
+  ),
+  riskAffected: computed(() => (route.query.riskAffected as string) || null),
+  control: computed(() => (route.query.control as string) || null),
 };
 
 function getRequirementImplementationId(url: string) {
   return url.split('requirement-implementations/').pop();
 }
 
-async function fetchRequirementImplementations({ type, riskAffected, control }: {type: string, riskAffected: string, control: string}) {
-  if(type === 'all') return; // API did not yet implement an endpoint to fetch all RIs
-  if(!type || !riskAffected || !control) return;
+async function fetchRequirementImplementations({
+  type,
+  riskAffected,
+  control,
+}: {
+  type: string;
+  riskAffected: string;
+  control: string;
+}) {
+  if (type === 'all') return; // API did not yet implement an endpoint to fetch all RIs
+  if (!type || !riskAffected || !control) return;
 
   const url = `/api/${type}/${riskAffected}/control-implementations/${control}/requirement-implementations?size=10000`;
 
@@ -27,13 +37,17 @@ async function fetchRequirementImplementations({ type, riskAffected, control }: 
 async function fetchRequirementImplementation({
   type,
   riskAffected,
-  item
-}:{ type: string, riskAffected: string, item: any}) {
-  const { _self  } = item;
+  item,
+}: {
+  type: string;
+  riskAffected: string;
+  item: any;
+}) {
+  const { _self } = item;
   const requirementImplementationId = getRequirementImplementationId(_self);
   const url = `/api/${type}/${riskAffected}/requirement-implementations/${requirementImplementationId}`;
 
-  return await request(url, {params: {id: requirementImplementationId}});
+  return await request(url, { params: { id: requirementImplementationId } });
 }
 
 export function useCompliance() {
@@ -41,12 +55,12 @@ export function useCompliance() {
     fetchRequirementImplementations,
     fetchRequirementImplementation,
     getRequirementImplementationId,
-    state: state
+    state: state,
   };
 }
 
 // Map object types to corresponding url paths segments
-type ObjectTypeToUrlMap = { [key: string]: string }
+type ObjectTypeToUrlMap = { [key: string]: string };
 const OBJECT_TYPE_TO_URL_MAP: ObjectTypeToUrlMap = {
   scope: 'scopes',
   process: 'processes',
@@ -55,5 +69,5 @@ const OBJECT_TYPE_TO_URL_MAP: ObjectTypeToUrlMap = {
   incident: 'incidents',
   document: 'documents',
   scenario: 'scenarios',
-  control: 'controls'
+  control: 'controls',
 };

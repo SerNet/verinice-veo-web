@@ -36,13 +36,13 @@ const initialProps = {
   alertBody: 'Test Alert Body',
   items: [],
   isLoading: [],
-  handleClick: (index: number) => index
+  handleClick: (index: number) => index,
 };
 
 describe('userDataCard.vue', () => {
   const wrapper = mount(UserDataCard, {
     global: { plugins },
-    props: initialProps
+    props: initialProps,
   });
 
   it('should show an alert', async () => {
@@ -52,10 +52,10 @@ describe('userDataCard.vue', () => {
   });
 
   it('should list items to be downloaded', async () => {
-    const items = [{name: 'test item 1'}, {name: 'test item 2'}];
+    const items = [{ name: 'test item 1' }, { name: 'test item 2' }];
     await wrapper.setProps({ items });
 
-    const itemNames = wrapper.findAll('h3.text-h4').map(item => item.text());
+    const itemNames = wrapper.findAll('h3.text-h4').map((item) => item.text());
     expect(itemNames[0]).toBe(items[0].name);
     expect(itemNames[1]).toBe(items[1].name);
   });

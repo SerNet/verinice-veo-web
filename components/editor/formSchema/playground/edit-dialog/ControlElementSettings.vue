@@ -24,15 +24,16 @@
       <BaseCard>
         <v-card-text>
           <v-row>
-            <v-col
-              cols="12"
-              md="6"
-              class="d-flex align-center"
-            >
+            <v-col cols="12" md="6" class="d-flex align-center">
               <EditorFormSchemaPlaygroundEditDialogTranslatedInput
                 :form-schema-element="formSchemaElement"
-                @update:form-schema-element="emit('update:form-schema-element', $event)"
-                @set-translation="(translationKey: string, newValue: string | undefined) => emit('set-translation', translationKey, newValue)"
+                @update:form-schema-element="
+                  emit('update:form-schema-element', $event)
+                "
+                @set-translation="
+                  (translationKey: string, newValue: string | undefined) =>
+                    emit('set-translation', translationKey, newValue)
+                "
               />
             </v-col>
           </v-row>
@@ -46,7 +47,7 @@
       <h2 class="text-h2">
         {{ t('formElement') }}
       </h2>
-      <UtilProminentSelectionList 
+      <UtilProminentSelectionList
         v-model="elementTypeModelValue"
         :items="elementInputAlternatives"
         density="compact"
@@ -62,27 +63,26 @@
         <BaseCard>
           <v-card-text>
             <v-row v-if="elementTypeModelValue === 'Radio'">
-              <v-col
-                cols="12"
-                md="6"
-              >
+              <v-col cols="12" md="6">
                 <EditorFormSchemaPlaygroundEditDialogElementDirectionOptions
                   :form-schema-element="formSchemaElement"
-                  @update:form-schema-element="emit('update:form-schema-element', $event)"
+                  @update:form-schema-element="
+                    emit('update:form-schema-element', $event)
+                  "
                 />
               </v-col>
             </v-row>
             <v-row v-if="elementTypeModelValue === 'LinksField'">
-              <v-col
-                cols="12"
-                md="6"
-              >
+              <v-col cols="12" md="6">
                 <EditorFormSchemaPlaygroundEditDialogLinkSettings
                   :form-schema-element="formSchemaElement"
                   :object-schema-element="objectSchemaElement"
                   :playground-element="playgroundElement"
                   :pointer="pointer"
-                  @add="(elementPointer, element) => emit('add', elementPointer, element)"
+                  @add="
+                    (elementPointer, element) =>
+                      emit('add', elementPointer, element)
+                  "
                   @remove="(elementPointer) => emit('remove', elementPointer)"
                 >
                   <slot />
@@ -95,41 +95,88 @@
     </section>
   </div>
 </template>
-  
+
 <script setup lang="ts">
 import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import { controlTypeAlternatives, eligibleInputElements, INPUT_ELEMENTS } from '~/types/VeoEditor';
+import {
+  controlTypeAlternatives,
+  eligibleInputElements,
+  INPUT_ELEMENTS,
+} from '~/types/VeoEditor';
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { getFormSchemaControlType } from '~/lib/utils';
 import { IPlaygroundElement } from '../Element.vue';
 
-const props = withDefaults(defineProps<{
-  formSchemaElement: IVeoFormSchemaItem;
-  pointer: string;
-  playgroundElement: IPlaygroundElement;
-}>(), {});
+const props = withDefaults(
+  defineProps<{
+    formSchemaElement: IVeoFormSchemaItem;
+    pointer: string;
+    playgroundElement: IPlaygroundElement;
+  }>(),
+  {}
+);
 
 const emit = defineEmits<{
-  (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void
-  (event: 'set-translation', translationKey: string, value: string | undefined): void
-  (event: 'add', pointer: string, element: IVeoFormSchemaItem): void
-  (event: 'remove', pointer: string, removeFromSchemaElementMap?: boolean): void
+  (
+    event: 'update:form-schema-element',
+    formSchemaElement: IVeoFormSchemaItem
+  ): void;
+  (
+    event: 'set-translation',
+    translationKey: string,
+    value: string | undefined
+  ): void;
+  (event: 'add', pointer: string, element: IVeoFormSchemaItem): void;
+  (
+    event: 'remove',
+    pointer: string,
+    removeFromSchemaElementMap?: boolean
+  ): void;
 }>();
 
 const { t, locale } = useI18n();
 
 // Some elements can be displayed with a different input, e.g. a text field can be displayed as a multiline input or with a WYSIWYG editor
-const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.OBJECTSCHEMA);
-const objectSchemaElement = computed(() => JsonPointer.get(objectSchema?.value, props.formSchemaElement.scope as string) as JSONSchema7); // Can't be undefined, as a control ALWAYS has a scope
+const objectSchema = inject<Ref<JSONSchema7>>(
+  FORMSCHEMA_PROVIDE_KEYS.OBJECTSCHEMA
+);
+const objectSchemaElement = computed(
+  () =>
+    JsonPointer.get(
+      objectSchema?.value,
+      props.formSchemaElement.scope as string
+    ) as JSONSchema7
+); // Can't be undefined, as a control ALWAYS has a scope
 
-const controlType = computed(() => getFormSchemaControlType(objectSchemaElement.value));
-const inputType = computed(() => props.formSchemaElement && objectSchemaElement.value ? eligibleInputElements(controlType.value, { ...props.formSchemaElement, schema: objectSchemaElement.value })[0].code : undefined);
-const elementInputAlternatives = computed(() => (inputType.value ? controlTypeAlternatives(inputType.value, { elements: props.formSchemaElement.elements, options: props.formSchemaElement.options, schema: objectSchemaElement.value }) : [])
-  .map((element) => ({ title: element.name[locale.value], subtitle: element.description[locale.value], value: element.code }))
-  .sort((elementA, elementB) => elementA.title.localeCompare(elementB.title))
+const controlType = computed(() =>
+  getFormSchemaControlType(objectSchemaElement.value)
+);
+const inputType = computed(() =>
+  props.formSchemaElement && objectSchemaElement.value ?
+    eligibleInputElements(controlType.value, {
+      ...props.formSchemaElement,
+      schema: objectSchemaElement.value,
+    })[0].code
+  : undefined
+);
+const elementInputAlternatives = computed(() =>
+  (inputType.value ?
+    controlTypeAlternatives(inputType.value, {
+      elements: props.formSchemaElement.elements,
+      options: props.formSchemaElement.options,
+      schema: objectSchemaElement.value,
+    })
+  : []
+  )
+    .map((element) => ({
+      title: element.name[locale.value],
+      subtitle: element.description[locale.value],
+      value: element.code,
+    }))
+    .sort((elementA, elementB) => elementA.title.localeCompare(elementB.title))
 );
 
 const elementTypeModelValue = computed({
@@ -139,10 +186,11 @@ const elementTypeModelValue = computed({
       ...props.formSchemaElement,
       options: {
         label: props.formSchemaElement.options.label,
-        ...INPUT_ELEMENTS.find((inputElement) => inputElement.code === newValue)?.options
-      }
+        ...INPUT_ELEMENTS.find((inputElement) => inputElement.code === newValue)
+          ?.options,
+      },
     });
-  }
+  },
 });
 
 // Element specific options

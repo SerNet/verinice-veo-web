@@ -30,10 +30,7 @@
         show-select
       />
     </BaseCard>
-    <v-row
-      dense
-      class="my-4"
-    >
+    <v-row dense class="my-4">
       <v-spacer />
       <v-col cols="auto">
         <v-btn
@@ -47,7 +44,11 @@
         <v-btn
           flat
           color="primary"
-          :disabled="selectedItems.length === 0 || isApplyingItems || ability.cannot('manage', 'catalogs')"
+          :disabled="
+            selectedItems.length === 0 ||
+            isApplyingItems ||
+            ability.cannot('manage', 'catalogs')
+          "
           :loading="props.isApplyingItems"
           @click="$emit('applyItems')"
         >
@@ -64,22 +65,25 @@ import { IVeoCatalogItem } from '~/composables/api/queryDefinitions/catalogs';
 import { TableHeader } from '../base/Table.vue';
 import { IVeoEntity } from '~/types/VeoTypes';
 
-const props = withDefaults(defineProps<{
-  catalogItems: IVeoCatalogItem[];
-  modelValue: IVeoEntity[] | [];
-  isLoading?: boolean;
-  isApplyingItems?: boolean;
-}>(), {
-  catalogItems: () => [],
-  modelValue: () => [],
-  loading: false,
-  isLoading: false,
-  isApplyingItems: false
-});
+const props = withDefaults(
+  defineProps<{
+    catalogItems: IVeoCatalogItem[];
+    modelValue: IVeoEntity[] | [];
+    isLoading?: boolean;
+    isApplyingItems?: boolean;
+  }>(),
+  {
+    catalogItems: () => [],
+    modelValue: () => [],
+    loading: false,
+    isLoading: false,
+    isApplyingItems: false,
+  }
+);
 
 interface Emits {
-  (e: 'update:modelValue', selectedItems: IVeoEntity[]): void,
-  (e: 'applyItems'): void
+  (e: 'update:modelValue', selectedItems: IVeoEntity[]): void;
+  (e: 'applyItems'): void;
 }
 const emit = defineEmits<Emits>();
 
@@ -95,7 +99,7 @@ const headers: TableHeader[] = [
     truncate: true,
     width: 80,
     priority: 60,
-    order: 30
+    order: 30,
   },
   {
     value: 'name',
@@ -105,7 +109,7 @@ const headers: TableHeader[] = [
     truncate: true,
     sortable: true,
     priority: 100,
-    order: 40
+    order: 40,
   },
   {
     value: 'description',
@@ -113,10 +117,11 @@ const headers: TableHeader[] = [
     sortable: false,
     width: 500,
     truncate: true,
-    tooltip: ({ internalItem: item }: { internalItem: any }) => item.raw.description,
+    tooltip: ({ internalItem: item }: { internalItem: any }) =>
+      item.raw.description,
     priority: 30,
-    order: 60
-  }
+    order: 60,
+  },
 ];
 
 const selectedItems = computed({
@@ -125,7 +130,7 @@ const selectedItems = computed({
   },
   set(selectedItems) {
     emit('update:modelValue', selectedItems);
-  }
+  },
 });
 
 const availableItems = computed(() =>
@@ -136,10 +141,15 @@ const availableItems = computed(() =>
 );
 
 // If the available items change (they shouldn't) only select the items that are still available.
-watch(() => availableItems.value, (newValue) => {
-  const newValues = selectedItems.value.filter((selectedItem) => newValue.some((item) => item.id === selectedItem.id));
-  selectedItems.value = newValues;
-});
+watch(
+  () => availableItems.value,
+  (newValue) => {
+    const newValues = selectedItems.value.filter((selectedItem) =>
+      newValue.some((item) => item.id === selectedItem.id)
+    );
+    selectedItems.value = newValues;
+  }
+);
 </script>
 
 <i18n>

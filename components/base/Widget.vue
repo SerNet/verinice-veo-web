@@ -18,35 +18,17 @@
 <template>
   <BaseCard>
     <template v-if="loading">
-      <v-card-title
-        v-if="title"
-        class="bg-accent mb-2 small-caps"
-      >
-        <v-skeleton-loader
-          type="heading"
-          width="400"
-        />
+      <v-card-title v-if="title" class="bg-accent mb-2 small-caps">
+        <v-skeleton-loader type="heading" width="400" />
       </v-card-title>
       <v-card-text>
-        <slot
-          v-if="!!$slots.skeleton"
-          name="skeleton"
-        />
-        <v-skeleton-loader
-          v-else
-          type="image"
-        />
+        <slot v-if="!!$slots.skeleton" name="skeleton" />
+        <v-skeleton-loader v-else type="image" />
       </v-card-text>
     </template>
     <template v-else>
-      <v-card-title
-        v-if="title"
-        class="bg-accent mb-2"
-      >
-        <h3
-          class="text-h3 small-caps"
-          v-text="title"
-        />
+      <v-card-title v-if="title" class="bg-accent mb-2">
+        <h3 class="text-h3 small-caps" v-text="title" />
       </v-card-title>
       <v-card-text>
         <slot />
@@ -55,11 +37,14 @@
   </BaseCard>
 </template>
 <script setup lang="ts">
-const _props = withDefaults(defineProps<{
-  title?: string,
-  loading?: boolean
-}>(), {
-  title: undefined,
-  border: false
-});
+const _props = withDefaults(
+  defineProps<{
+    title?: string;
+    loading?: boolean;
+  }>(),
+  {
+    title: undefined,
+    border: false,
+  }
+);
 </script>

@@ -42,8 +42,8 @@
 export type Message = {
   key: string;
   text: string;
-  type: 'error' | 'warning' | 'info' | 'success'
-  actions?: INestedMenuEntries[]
+  type: 'error' | 'warning' | 'info' | 'success';
+  actions?: INestedMenuEntries[];
 };
 </script>
 
@@ -53,20 +53,23 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 
 const SEVERITIES = ['error', 'warning', 'info', 'success'];
 
-const props = withDefaults(defineProps<{
-  messages: Message[]
-}>(), {
-  messages: () => []
-});
+const props = withDefaults(
+  defineProps<{
+    messages: Message[];
+  }>(),
+  {
+    messages: () => [],
+  }
+);
 
 const { t } = useI18n();
 const { displayInfoMessage } = useVeoAlerts();
 
 const categorizedMessages = computed(() => {
   const toReturn: Record<string, Message[]> = {};
-  for(const message of props.messages) {
-    if(SEVERITIES.includes(message.type)) {
-      if(!toReturn[message.type]) {
+  for (const message of props.messages) {
+    if (SEVERITIES.includes(message.type)) {
+      if (!toReturn[message.type]) {
         toReturn[message.type] = [];
       }
       toReturn[message.type].push(message);
@@ -75,15 +78,20 @@ const categorizedMessages = computed(() => {
   return toReturn;
 });
 
-watch(() => props.messages, (newMessages, oldMessages) => {
-  for(const newMessage of newMessages) {
-    if(!oldMessages.some((oldMessage) => oldMessage.key === newMessage.key)) {
-      displayInfoMessage(t('info', 1), newMessage.text, {
-        timeout: 5000
-      });
+watch(
+  () => props.messages,
+  (newMessages, oldMessages) => {
+    for (const newMessage of newMessages) {
+      if (
+        !oldMessages.some((oldMessage) => oldMessage.key === newMessage.key)
+      ) {
+        displayInfoMessage(t('info', 1), newMessage.text, {
+          timeout: 5000,
+        });
+      }
     }
   }
-});
+);
 </script>
 
 <i18n>

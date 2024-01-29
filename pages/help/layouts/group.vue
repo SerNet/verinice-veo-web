@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    title="Group"
-    fixed-header
-  >
+  <BasePage title="Group" fixed-header>
     <v-row justify="center">
       <v-col cols="12">
         <v-row>
@@ -41,10 +38,7 @@
               color="primary"
             />
           </v-col>
-          <v-col
-            cols="2"
-            class="ml-10"
-          >
+          <v-col cols="2" class="ml-10">
             <v-text-field
               v-model="groupTitle"
               label="Group title"
@@ -55,12 +49,7 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col
-        cols="12"
-        sm="6"
-        lg="4"
-        class="docs-form-sector"
-      >
+      <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
@@ -84,55 +73,64 @@ const form = ref({
     type: 'object',
     properties: {
       inputText: {
-        type: 'string'
+        type: 'string',
       },
       select: {
         type: 'string',
-        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
-      }
-    }
+        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3'],
+      },
+    },
   },
   formSchema: {
     type: 'Layout',
     options: {
-      format: 'group'
+      format: 'group',
     },
     elements: [
       {
         type: 'Control',
         scope: '#/properties/inputText',
         options: {
-          label: 'Input Text'
-        }
+          label: 'Input Text',
+        },
       },
       {
         type: 'Control',
         scope: '#/properties/select',
         options: {
-          label: 'Select'
-        }
-      }
-    ]
+          label: 'Select',
+        },
+      },
+    ],
   },
   data: {
     inputText: 'Beispiel',
-    select: 'Beispiel-1'
-  }
+    select: 'Beispiel-1',
+  },
 });
 
 const direction = ref('vertical');
 const border = ref(false);
 const groupTitle = ref(undefined);
 
-watch(() => direction.value, (newValue) => {
-  form.value.formSchema.options.direction = newValue;
-});
-  
-watch(() => border.value, (newValue) => {
-  form.value.formSchema.options.class = newValue ? 'border' : '';
-});
+watch(
+  () => direction.value,
+  (newValue) => {
+    form.value.formSchema.options.direction = newValue;
+  }
+);
 
-watch(() => groupTitle.value, (newValue) => {
-  form.value.formSchema.options.label = newValue;
-});
+watch(
+  () => border.value,
+  (newValue) => {
+    form.value.formSchema.options.class = newValue ? 'border' : '';
+  }
+);
+
+watch(
+  () => groupTitle.value,
+  (newValue) => {
+    form.value.formSchema.options.label = newValue;
+  }
+);
 </script>

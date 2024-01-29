@@ -29,21 +29,11 @@
     :target="openInNewtab ? '_blank' : undefined"
     @click.stop="onClick"
   >
-    <template
-      v-if="icon"
-      #prepend
-    >
-      <v-tooltip
-        location="end"
-        :disabled="!miniVariant"
-      >
+    <template v-if="icon" #prepend>
+      <v-tooltip location="end" :disabled="!miniVariant">
         <template #activator="{ props: tooltip }">
           <div v-bind="tooltip">
-            <v-icon
-              v-if="icon"
-              :icon="icon"
-              start
-            />
+            <v-icon v-if="icon" :icon="icon" start />
           </div>
         </template>
         <span>{{ name }}</span>
@@ -60,18 +50,23 @@ import { _RouteLocationBase } from 'vue-router';
 
 import { INavItem } from './PrimaryNavigation.vue';
 
-const props = withDefaults(defineProps<INavItem & {
-  level: number;
-  miniVariant: boolean;
-}>(), {
-  icon: undefined,
-  to: undefined,
-  exact: false,
-  componentName: undefined,
-  classes: undefined,
-  children: undefined,
-  openInNewtab: false
-});
+const props = withDefaults(
+  defineProps<
+    INavItem & {
+      level: number;
+      miniVariant: boolean;
+    }
+  >(),
+  {
+    icon: undefined,
+    to: undefined,
+    exact: false,
+    componentName: undefined,
+    classes: undefined,
+    children: undefined,
+    openInNewtab: false,
+  }
+);
 
 const emit = defineEmits<{
   (event: 'expand-menu'): void;
@@ -91,25 +86,33 @@ const active = computed(() => {
   }
 
   const resolvedRoute = router.resolve(props.to);
-  return props.exact ? resolvedRoute.fullPath === route.fullPath : route.fullPath.startsWith(resolvedRoute.fullPath);
+  return props.exact ?
+      resolvedRoute.fullPath === route.fullPath
+    : route.fullPath.startsWith(resolvedRoute.fullPath);
 });
 
 // For some reason the list doesn't get auto-openend if an object is opened even though active is true (probably because the nav item isn't the full path, so we have to do it by ourselves)
-watch(() => active.value, (newValue) => {
-  if (newValue) {
-    emit('open-parent');
-  }
-}, { immediate: true });
+watch(
+  () => active.value,
+  (newValue) => {
+    if (newValue) {
+      emit('open-parent');
+    }
+  },
+  { immediate: true }
+);
 
 const onClick = () => {
-  if(props.openInNewtab) {
+  if (props.openInNewtab) {
     return;
   }
   if (props.miniVariant) {
     emit('expand-menu');
   }
 };
-const _classes = computed(() => `${props.classes} primary-navigation-entry-level-${props.level}`);
+const _classes = computed(
+  () => `${props.classes} primary-navigation-entry-level-${props.level}`
+);
 </script>
 
 <style lang="scss">

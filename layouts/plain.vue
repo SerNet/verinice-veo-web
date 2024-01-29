@@ -17,19 +17,13 @@
 -->
 <template>
   <v-app>
-    <v-app-bar
-      :class="$style['app-bar']"
-      flat
-    >
+    <v-app-bar :class="$style['app-bar']" flat>
       <nuxt-link
         to="/"
         class="text-decoration-none ml-4"
         data-veo-test="unit-page-link"
       >
-        <LayoutAppBarLogo
-          style="height: 60px"
-          class="d-flex align-center"
-        />
+        <LayoutAppBarLogo style="height: 60px" class="d-flex align-center" />
       </nuxt-link>
 
       <v-spacer />
@@ -69,12 +63,7 @@
         :email="profile.email"
         @logout="logout"
       />
-      <v-btn
-        v-else
-        color="primary"
-        icon
-        :href="$config.public.accountPath"
-      >
+      <v-btn v-else color="primary" icon :href="$config.public.accountPath">
         <v-icon :icon="mdiAccountCircleOutline" />
       </v-btn>
     </v-app-bar>
@@ -93,21 +82,21 @@ const { t } = useI18n();
 const { logout: _logout, profile } = useVeoUser();
 
 useHead(() => ({
-  titleTemplate: '%s - verinice.veo'
+  titleTemplate: '%s - verinice.veo',
 }));
 
 const logout = () => _logout('/');
 </script>
 
 <style lang="scss" module>
-  .app-bar {
-    :deep(.v-toolbar__content) {
-      padding-left: 0;
-    }
+.app-bar {
+  :deep(.v-toolbar__content) {
+    padding-left: 0;
   }
+}
 
-  .main {
-    display: flex;
-    flex-direction: column;
-  }
-  </style>
+.main {
+  display: flex;
+  flex-direction: column;
+}
+</style>

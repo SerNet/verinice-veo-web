@@ -39,18 +39,24 @@
           v-model:page="page"
           v-model:sort-by="sortBy"
           show-select
-          :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
+          :default-headers="[
+            'icon',
+            'designator',
+            'abbreviation',
+            'name',
+            'status',
+            'description',
+            'updatedBy',
+            'updatedAt',
+            'actions',
+          ]"
           :items="notAlreadyUsedScenarios"
           :loading="objectsQueryIsLoading"
         />
       </BaseCard>
     </template>
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        :disabled="creatingRisks"
-        @click="dialog = false"
-      >
+      <v-btn variant="text" :disabled="creatingRisks" @click="dialog = false">
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
@@ -58,10 +64,17 @@
         variant="text"
         color="primary"
         :loading="creatingRisks"
-        :disabled="!selectedScenarios.length || ability.cannot('manage', 'objects')"
+        :disabled="
+          !selectedScenarios.length || ability.cannot('manage', 'objects')
+        "
         @click="onSubmit"
       >
-        {{ t('createRisk', { plural: selectedScenarios.length, named: { count: selectedScenarios.length } }) }}
+        {{
+          t('createRisk', {
+            plural: selectedScenarios.length,
+            named: { count: selectedScenarios.length },
+          })
+        }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -74,7 +87,9 @@ import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import objectQueryDefinitions, { IVeoFetchRisksParameters } from '~/composables/api/queryDefinitions/objects';
+import objectQueryDefinitions, {
+  IVeoFetchRisksParameters,
+} from '~/composables/api/queryDefinitions/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useFetchObjects } from '~/composables/api/objects';
@@ -84,16 +99,16 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Boolean,
-      default: false
+      default: false,
     },
     objectId: {
       type: String,
-      required: true
+      required: true,
     },
     domainId: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['update:model-value', 'success'],
   setup(props, { emit }) {
@@ -105,9 +120,14 @@ export default defineComponent({
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
 
-    const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createRisk);
+    const { mutateAsync: createRisk } = useMutation(
+      objectQueryDefinitions.mutations.createRisk
+    );
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
-    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
+    const { data: domain } = useQuery(
+      domainQueryDefinitions.queries.fetchDomain,
+      fetchDomainQueryParameters
+    );
 
     // Layout stuff
     const dialog = computed({
@@ -119,36 +139,38 @@ export default defineComponent({
           selectedScenarios.value = [];
         }
         emit('update:model-value', newValue);
-      }
+      },
     });
 
     // Filter stuff
     const selectedScenarios = ref<IVeoEntity[]>([]);
 
     const polluteTable = () => {
-      if(!risks.value?.length || !objects.value?.items?.length) {
+      if (!risks.value?.length || !objects.value?.items?.length) {
         return;
       }
 
-      for(const risk of risks.value) {
+      for (const risk of risks.value) {
         // Get id of scenario
         const objectId = getEntityDetailsFromLink(risk.scenario).id;
 
         // If scenario is already part of selected scenarios, skip
-        if(selectedScenarios.value.find((object) => object.id === objectId)) {
+        if (selectedScenarios.value.find((object) => object.id === objectId)) {
           continue;
         }
 
         // Add scenario to selected objects
-        const object = objects.value.items.find((object) => object.id === objectId);
-        if(object) {
+        const object = objects.value.items.find(
+          (object) => object.id === objectId
+        );
+        if (object) {
           selectedScenarios.value.push(object);
         }
       }
     };
 
     const filter = ref<Record<string, any>>({
-      objectType: 'scenario'
+      objectType: 'scenario',
     });
 
     const onFilterUpdate = (newFilter: any) => {
@@ -165,24 +187,37 @@ export default defineComponent({
       page: page.value,
       unit: route.params.unit,
       ...omit(filter.value, 'objectType'),
-      endpoint: 'scenarios'
+      endpoint: 'scenarios',
     }));
 
-    const { data: objects, isFetching: objectsQueryIsLoading, refetch } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
+    const {
+      data: objects,
+      isFetching: objectsQueryIsLoading,
+      refetch,
+    } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
     const risksQueryParameters = computed<IVeoFetchRisksParameters>(() => ({
       endpoint: route.params.objectType as string,
-      id: props.objectId
+      id: props.objectId,
     }));
-    const { data: risks } = useQuery(objectQueryDefinitions.queries.fetchRisks, risksQueryParameters);
+    const { data: risks } = useQuery(
+      objectQueryDefinitions.queries.fetchRisks,
+      risksQueryParameters
+    );
 
     watch(() => objects.value, polluteTable, { deep: true, immediate: true });
     watch(() => risks.value, polluteTable, { deep: true, immediate: true });
 
-    const notAlreadyUsedScenarios = computed<IVeoPaginatedResponse<IVeoEntity[] & { disabled?: boolean }> | undefined>(() => {
+    const notAlreadyUsedScenarios = computed<
+      IVeoPaginatedResponse<IVeoEntity[] & { disabled?: boolean }> | undefined
+    >(() => {
       const _objects = cloneDeep(objects.value);
 
       _objects?.items.forEach((item: IVeoEntity & { disabled?: boolean }) => {
-        if(risks.value?.find((risk) => getEntityDetailsFromLink(risk.scenario).id === item.id)) {
+        if (
+          risks.value?.find(
+            (risk) => getEntityDetailsFromLink(risk.scenario).id === item.id
+          )
+        ) {
           item.disabled = true;
         }
       });
@@ -190,42 +225,63 @@ export default defineComponent({
       return _objects;
     });
 
-    const domainRiskDefinitionKey = computed(() => Object.keys(domain.value?.riskDefinitions || {})[0]);
+    const domainRiskDefinitionKey = computed(
+      () => Object.keys(domain.value?.riskDefinitions || {})[0]
+    );
     // Create risk stuff
     const creatingRisks = ref(false);
 
     const onSubmit = async () => {
-      if(ability.value.cannot('manage', 'objects')) {
+      if (ability.value.cannot('manage', 'objects')) {
         return;
       }
       creatingRisks.value = true;
 
       // Create new risks, but only for those scenarios that aren't yet linked to a risk!
       const newRisks = selectedScenarios.value
-        .filter((scenario) => !risks.value?.find((risk) => getEntityDetailsFromLink(risk.scenario).id === scenario.id))
+        .filter(
+          (scenario) =>
+            !risks.value?.find(
+              (risk) =>
+                getEntityDetailsFromLink(risk.scenario).id === scenario.id
+            )
+        )
         .map((scenario) => ({
           scenario: {
-            targetUri: `${config.public.apiUrl}/scenarios/${scenario.id}`
+            targetUri: `${config.public.apiUrl}/scenarios/${scenario.id}`,
           },
           domains: {
             [props.domainId]: {
               reference: {
-                targetUri: `${config.public.apiUrl}/domains/${props.domainId}`
+                targetUri: `${config.public.apiUrl}/domains/${props.domainId}`,
               },
               riskDefinitions: {
-                [domainRiskDefinitionKey.value]: {}
-              }
-            }
-          }
+                [domainRiskDefinitionKey.value]: {},
+              },
+            },
+          },
         }));
 
       try {
-        await Promise.all(newRisks.map((risk: any) => createRisk({ endpoint: route.params.objectType as string, objectId: props.objectId, risk })));
-        displaySuccessMessage(t('risksCreated', selectedScenarios.value.length));
+        await Promise.all(
+          newRisks.map((risk: any) =>
+            createRisk({
+              endpoint: route.params.objectType as string,
+              objectId: props.objectId,
+              risk,
+            })
+          )
+        );
+        displaySuccessMessage(
+          t('risksCreated', selectedScenarios.value.length)
+        );
         selectedScenarios.value = [];
         emit('success');
       } catch (e: any) {
-        displayErrorMessage(t('createRiskError', selectedScenarios.value.length), e.message);
+        displayErrorMessage(
+          t('createRiskError', selectedScenarios.value.length),
+          e.message
+        );
       }
 
       creatingRisks.value = false;
@@ -247,9 +303,9 @@ export default defineComponent({
 
       t,
       globalT,
-      upperFirst
+      upperFirst,
     };
-  }
+  },
 });
 </script>
 

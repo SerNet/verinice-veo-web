@@ -40,15 +40,8 @@
       </div>
     </template>
     <template #default>
-      <v-list
-        ref="primaryNavList"
-        class="mt-4"
-        :rounded="miniVariant"
-      >
-        <template
-          v-for="item in items"
-          :key="item.id"
-        >
+      <v-list ref="primaryNavList" class="mt-4" :rounded="miniVariant">
+        <template v-for="item in items" :key="item.id">
           <NavigationPrimaryNavigationCategory
             v-if="item.children"
             v-bind="item"
@@ -67,10 +60,7 @@
       </v-list>
     </template>
     <template #append>
-      <v-list
-        density="compact"
-        class="pa-0"
-      >
+      <v-list density="compact" class="pa-0">
         <v-divider style="background: rgba(255, 255, 255, 0.2)" />
         <v-list-item
           v-if="!xs"
@@ -86,12 +76,7 @@
               class="mr-3"
               :icon="mdiChevronRight"
             />
-            <v-icon
-              v-else
-              color="black"
-              class="mr-3"
-              :icon="mdiChevronLeft"
-            />
+            <v-icon v-else color="black" class="mr-3" :icon="mdiChevronLeft" />
           </template>
           <v-list-item-title v-if="miniVariant">
             {{ t('fix') }}
@@ -120,7 +105,7 @@ export interface INavItem {
 }
 
 export const PROVIDE_KEYS = {
-  navigation: 'primaryNavigationList'
+  navigation: 'primaryNavigationList',
 };
 </script>
 
@@ -137,7 +122,7 @@ import {
   mdiShapeOutline,
   mdiTextBoxEditOutline,
   mdiUngroup,
-  mdiViewDashboardOutline
+  mdiViewDashboardOutline,
 } from '@mdi/js';
 import { sortBy, upperFirst, isEmpty } from 'lodash';
 import { StorageSerializers, useStorage } from '@vueuse/core';
@@ -177,18 +162,21 @@ const objectTypeSortOrder = new Map<string, number>([
   ['incident', 5],
   ['document', 6],
   ['scenario', 7],
-  ['control', 8]
+  ['control', 8],
 ]);
 
-const props = withDefaults(defineProps<{
-  modelValue: boolean;
-  unitId?: string;
-  domainId?: string;
-}>(), {
-  modelValue: true,
-  unitId: undefined,
-  domainId: undefined
-});
+const props = withDefaults(
+  defineProps<{
+    modelValue: boolean;
+    unitId?: string;
+    domainId?: string;
+  }>(),
+  {
+    modelValue: true,
+    unitId: undefined,
+    domainId: undefined,
+  }
+);
 
 const { t, locale } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
@@ -199,15 +187,20 @@ const { xs } = useDisplay();
 
 // Helpers
 /** Returns a form schema corresponding to an object/elementType and subType */
-function getFormSchema(
-  { formSchemas, elementType, subType }:
-  { formSchemas: IVeoFormSchema[] | undefined, elementType: string, subType: string }
-): IVeoFormSchema | undefined {
-  if(!formSchemas) return;
+function getFormSchema({
+  formSchemas,
+  elementType,
+  subType,
+}: {
+  formSchemas: IVeoFormSchema[] | undefined;
+  elementType: string;
+  subType: string;
+}): IVeoFormSchema | undefined {
+  if (!formSchemas) return;
 
-  return formSchemas.find(formSchema =>
-    formSchema.modelType === elementType &&
-    formSchema.subType === subType
+  return formSchemas.find(
+    (formSchema) =>
+      formSchema.modelType === elementType && formSchema.subType === subType
   );
 }
 
@@ -215,37 +208,69 @@ function getFormSchema(
  * Translates a subType using values from form schemas.
  * Necessary because objects/elements do not come with a translation.
  */
-function getDisplayName({ formSchema }: { formSchema: IVeoFormSchema | undefined }) {
+function getDisplayName({
+  formSchema,
+}: {
+  formSchema: IVeoFormSchema | undefined;
+}) {
   const translation = formSchema?.name[locale.value];
   return translation;
 }
 
 // Layout stuff
-const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, { serializer: StorageSerializers.boolean });
+const miniVariant = useStorage(
+  LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT,
+  false,
+  localStorage,
+  { serializer: StorageSerializers.boolean }
+);
 
-const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: props.domainId as string }));
+const fetchTranslationsQueryParameters = computed(() => ({
+  languages: [locale.value],
+  domain: props.domainId as string,
+}));
 const fetchTranslationsQueryEnabled = computed(() => authenticated.value);
-const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters,  { enabled: fetchTranslationsQueryEnabled });
+const { data: translations } = useQuery(
+  translationQueryDefinitions.queries.fetch,
+  fetchTranslationsQueryParameters,
+  { enabled: fetchTranslationsQueryEnabled }
+);
 
 // objects specific stuff
 const objectSchemas = ref<IVeoObjectSchema[]>([]);
 const schemasLoading = ref(false);
 
 const queryParameters = computed(() => ({
-  domainId: props.domainId as string
+  domainId: props.domainId as string,
 }));
 const allFormSchemasQueryEnabled = computed(() => !!props.domainId);
-const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, { enabled: allFormSchemasQueryEnabled, placeholderData: [] });
+const { data: formSchemas } = useQuery(
+  formsQueryDefinitions.queries.fetchForms,
+  queryParameters,
+  { enabled: allFormSchemasQueryEnabled, placeholderData: [] }
+);
 
-const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { placeholderData: {} });
+const { data: endpoints } = useQuery(
+  schemaQueryDefinitions.queries.fetchSchemas,
+  undefined,
+  { placeholderData: {} }
+);
 
-const fetchSchemasDetailedQueryParameters = computed(() => ({ domainId: props.domainId as string }));
-const fetchSchemasDetailedQueryEnabled = computed(() => !!props.domainId && authenticated.value);
-const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, { enabled: fetchSchemasDetailedQueryEnabled });
+const fetchSchemasDetailedQueryParameters = computed(() => ({
+  domainId: props.domainId as string,
+}));
+const fetchSchemasDetailedQueryEnabled = computed(
+  () => !!props.domainId && authenticated.value
+);
+const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, {
+  enabled: fetchSchemasDetailedQueryEnabled,
+});
 watch(
   () => _schemas,
   (newValue) => {
-    objectSchemas.value = (newValue || []).map((schema) => schema.data).filter((schema) => schema) as IVeoObjectSchema[];
+    objectSchemas.value = (newValue || [])
+      .map((schema) => schema.data)
+      .filter((schema) => schema) as IVeoObjectSchema[];
     schemasLoading.value = (newValue || []).some((schema) => schema.isFetching);
   },
   { deep: true }
@@ -253,15 +278,22 @@ watch(
 
 const objectTypesChildItems = computed<INavItem[]>(() =>
   objectSchemas.value
-    .sort((a, b) => (objectTypeSortOrder.get(a.title) || 0) - (objectTypeSortOrder.get(b.title) || 0))
+    .sort(
+      (a, b) =>
+        (objectTypeSortOrder.get(a.title) || 0) -
+        (objectTypeSortOrder.get(b.title) || 0)
+    )
     .map((objectSchema) => {
       const objectSubTypes = extractSubTypesFromObjectSchema(objectSchema);
       const _icon = OBJECT_TYPE_ICONS.get(objectSchema.title);
 
       return {
         id: objectSchema.title,
-        name: upperFirst(translations.value?.lang[locale.value]?.[objectSchema.title] || objectSchema.title),
-        icon: _icon?.library === 'mdi' ? _icon?.icon as string : undefined,
+        name: upperFirst(
+          translations.value?.lang[locale.value]?.[objectSchema.title] ||
+            objectSchema.title
+        ),
+        icon: _icon?.library === 'mdi' ? (_icon?.icon as string) : undefined,
         children: [
           // all of object type
           {
@@ -273,9 +305,9 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
                 unit: props.unitId,
                 domain: props.domainId,
                 objectType: endpoints.value?.[objectSchema.title],
-                subType: '-'
-              }
-            }
+                subType: '-',
+              },
+            },
           },
 
           // dynamic sub type routes
@@ -284,10 +316,11 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
               const formSchema = getFormSchema({
                 formSchemas: formSchemas?.value as IVeoFormSchema[],
                 elementType: objectSchema?.title,
-                subType: subType.subType
+                subType: subType.subType,
               });
 
-              const displayName = getDisplayName({ formSchema }) || subType.subType;
+              const displayName =
+                getDisplayName({ formSchema }) || subType.subType;
 
               return {
                 id: displayName,
@@ -298,50 +331,61 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
                     unit: props.unitId,
                     domain: props.domainId,
                     objectType: endpoints.value?.[objectSchema.title],
-                    subType: subType.subType
-                  }
+                    subType: subType.subType,
+                  },
                 },
-                sorting: formSchema?.sorting
+                sorting: formSchema?.sorting,
               };
             }),
             'sorting'
-          )
-        ]
+          ),
+        ],
       };
     })
 );
 
-
 // catalog specific stuff
-const typeCountQueryParameters = computed(() => ({ domainId: props.domainId as string } ));
+const typeCountQueryParameters = computed(() => ({
+  domainId: props.domainId as string,
+}));
 const typeCountQueryEnabled = computed(() => !!props.domainId);
 const { data: catalogItemTypes, isFetching: catalogItemTypeCountIsLoading } =
-  useQuery(catalogQueryDefinitions.queries.fetchCatalogItemTypeCount, typeCountQueryParameters, { enabled: typeCountQueryEnabled });
+  useQuery(
+    catalogQueryDefinitions.queries.fetchCatalogItemTypeCount,
+    typeCountQueryParameters,
+    { enabled: typeCountQueryEnabled }
+  );
 
 const catalogsEntriesChildItems = computed<INavItem[]>(() => {
-  if(isEmpty(catalogItemTypes?.value || {})) return [];
+  if (isEmpty(catalogItemTypes?.value || {})) return [];
 
-  const catalogItems = [ ['all', { all: 'MISC' } ], ...Object.entries(catalogItemTypes?.value || [])];
+  const catalogItems = [
+    ['all', { all: 'MISC' }],
+    ...Object.entries(catalogItemTypes?.value || []),
+  ];
 
-  const catalogNavItems = (catalogItems || []).map(catalogItem => {
+  const catalogNavItems = (catalogItems || []).map((catalogItem) => {
     const _icon = CATALOG_TYPE_ICONS.get(catalogItem[0] as string);
     const _subTypes = Object.keys(catalogItem[1] || {});
 
-    return _subTypes.map(_subType => {
+    return _subTypes.map((_subType) => {
       const formSchema = getFormSchema({
         formSchemas: formSchemas?.value as IVeoFormSchema[],
         elementType: catalogItem[0] as string,
-        subType: _subType
+        subType: _subType,
       });
 
-      const displayName = _subType === 'all' ? t('all') : getDisplayName({formSchema: formSchema}) || _subType;
+      const displayName =
+        _subType === 'all' ?
+          t('all')
+        : getDisplayName({ formSchema: formSchema }) || _subType;
 
-      const item = ({
+      const item = {
         id: `${catalogItem[0]}`,
         name: displayName,
         subtype: _subType,
         elementType: catalogItem[0],
-        icon: _icon?.library === 'mdi' ? _icon?.icon as string : undefined,
+        icon: _icon?.library === 'mdi' ? (_icon?.icon as string) : undefined,
         to: {
           name: CATALOGS_CATALOG_ROUTE_NAME,
           params: {
@@ -350,39 +394,50 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
           },
           query: {
             type: catalogItem[0],
-            subType: _subType
-          }
-        }
-      });
+            subType: _subType,
+          },
+        },
+      };
       return item;
     });
   });
   return catalogNavItems.flat();
 });
 
-const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
+const fetchDomainQueryParameters = computed(() => ({
+  id: props.domainId as string,
+}));
 const fetchDomainQueryEnabled = computed(() => !!props.domainId);
-const { data: domain, isFetching: riskDefinitionsLoading } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
-
+const { data: domain, isFetching: riskDefinitionsLoading } = useQuery(
+  domainQueryDefinitions.queries.fetchDomain,
+  fetchDomainQueryParameters,
+  { enabled: fetchDomainQueryEnabled }
+);
 
 // report specific stuff
-const { data: reports, isFetching: reportsEntriesLoading } = useQuery(reportQueryDefinitions.queries.fetchAll);
+const { data: reports, isFetching: reportsEntriesLoading } = useQuery(
+  reportQueryDefinitions.queries.fetchAll
+);
 
-const reportsEntriesChildItems = computed<INavItem[]>(
-  () => {
-    const availableReports = Object.entries(reports.value || {});
-    const reportsApplicableInDomain = domain.value == null ? [] :
-      availableReports.filter(([reportId, reportDef]) => {
+const reportsEntriesChildItems = computed<INavItem[]>(() => {
+  const availableReports = Object.entries(reports.value || {});
+  const reportsApplicableInDomain =
+    domain.value == null ?
+      []
+    : availableReports.filter(([reportId, reportDef]) => {
         const targetTypesForReport = reportDef.targetTypes;
-        return targetTypesForReport.some(({modelType, subTypes}) => {
+        return targetTypesForReport.some(({ modelType, subTypes }) => {
           if (subTypes == null) return true; // if there is no subType filter, the report is always applicable
-          const subTypesInDomain = Object.keys(domain.value.elementTypeDefinitions[modelType].subTypes);
-          return subTypesInDomain.some(subTypeInDomain =>
-            subTypes.indexOf(subTypeInDomain) >= 0
+          const subTypesInDomain = Object.keys(
+            domain.value.elementTypeDefinitions[modelType].subTypes
+          );
+          return subTypesInDomain.some(
+            (subTypeInDomain) => subTypes.indexOf(subTypeInDomain) >= 0
           );
         });
       });
-    const selectionItems = reportsApplicableInDomain.map(([reportId, report]) => ({
+  const selectionItems = reportsApplicableInDomain.map(
+    ([reportId, report]) => ({
       id: reportId,
       name: report.name[locale.value],
       exact: true,
@@ -391,13 +446,13 @@ const reportsEntriesChildItems = computed<INavItem[]>(
         params: {
           unit: props.unitId,
           domain: props.domainId,
-          report: reportId
-        }
-      }
-    }));
-    return selectionItems.filter((entry) => entry.name); // Don't show reports which aren't translated in the users language
-  }
-);
+          report: reportId,
+        },
+      },
+    })
+  );
+  return selectionItems.filter((entry) => entry.name); // Don't show reports which aren't translated in the users language
+});
 
 // risk specific stuff
 const riskDefinitions = computed(() => domain.value?.riskDefinitions || {});
@@ -411,9 +466,9 @@ const riskChildItems = computed<INavItem[]>(() =>
       params: {
         unit: props.unitId,
         domain: props.domainId,
-        matrix: id
-      }
-    }
+        matrix: id,
+      },
+    },
   }))
 );
 
@@ -425,11 +480,11 @@ const domainDashboardNavEntry = computed<INavItem>(() => ({
     name: DOMAIN_DASHBOARD_ROUTE_NAME,
     params: {
       unit: props.unitId,
-      domain: props.domainId
-    }
+      domain: props.domainId,
+    },
   },
   componentName: 'domain-dashboard-nav-item',
-  exact: true
+  exact: true,
 }));
 
 const objectsNavEntry = computed<INavItem>(() => ({
@@ -438,7 +493,7 @@ const objectsNavEntry = computed<INavItem>(() => ({
   icon: mdiUngroup,
   children: objectTypesChildItems.value,
   childrenLoading: schemasLoading.value,
-  componentName: 'objects-nav-item'
+  componentName: 'objects-nav-item',
 }));
 
 const catalogsNavEntry = computed<INavItem>(() => ({
@@ -447,7 +502,7 @@ const catalogsNavEntry = computed<INavItem>(() => ({
   icon: mdiBookOpenPageVariantOutline,
   children: catalogsEntriesChildItems.value,
   childrenLoading: catalogItemTypeCountIsLoading.value,
-  componentName: 'catalogs-nav-item'
+  componentName: 'catalogs-nav-item',
 }));
 
 const profilesNavEntry = computed<INavItem>(() => ({
@@ -459,9 +514,9 @@ const profilesNavEntry = computed<INavItem>(() => ({
     name: PROFILE_ROUTE_NAME,
     params: {
       unit: props.unitId as string,
-      domain: props.domainId as string
-    }
-  }
+      domain: props.domainId as string,
+    },
+  },
 }));
 
 const reportsNavEntry = computed<INavItem>(() => ({
@@ -470,7 +525,7 @@ const reportsNavEntry = computed<INavItem>(() => ({
   icon: mdiFileChartOutline,
   children: reportsEntriesChildItems.value,
   childrenLoading: riskDefinitionsLoading.value || reportsEntriesLoading.value,
-  componentName: 'reports-nav-item'
+  componentName: 'reports-nav-item',
 }));
 
 const risksNavEntry = computed<INavItem>(() => ({
@@ -479,7 +534,7 @@ const risksNavEntry = computed<INavItem>(() => ({
   icon: mdiChartBar,
   children: riskChildItems.value,
   childrenLoading: riskDefinitionsLoading.value,
-  componentName: 'risks-nav-item'
+  componentName: 'risks-nav-item',
 }));
 
 const editorsNavEntry = computed<INavItem>(() => ({
@@ -490,10 +545,10 @@ const editorsNavEntry = computed<INavItem>(() => ({
     name: EDITOR_INDEX_ROUTE_NAME,
     params: {
       unit: props.unitId,
-      domain: props.domainId
-    }
+      domain: props.domainId,
+    },
   },
-  classes: 'mb-4'
+  classes: 'mb-4',
 }));
 
 const backToVeoNavEntry = computed<INavItem>(() => ({
@@ -503,7 +558,7 @@ const backToVeoNavEntry = computed<INavItem>(() => ({
   icon: mdiHomeOutline,
   componentName: 'veo-nav-item',
   exact: true,
-  openInNewtab: route.path.startsWith("/docs")
+  openInNewtab: route.path.startsWith('/docs'),
 }));
 
 const docsNavEntry = computed<INavItem>(() => ({
@@ -512,14 +567,20 @@ const docsNavEntry = computed<INavItem>(() => ({
   to: '/docs/index',
   icon: mdiFileDocumentOutline,
   componentName: 'docs-nav-item',
-  children: docNavItems.value
+  children: docNavItems.value,
 }));
 
 const docItemTransformationFn = (file: NavItem): INavItem => ({
   id: file._path,
   name: file.title,
-  to: `/docs${ (file._path.startsWith('/index') ? file._path : file._path.replace('index', '')).replace(/\.\w{2}/, '')}`,
-  children: file.children?.length ? file.children.map((file) => docItemTransformationFn(file)) : undefined
+  to: `/docs${(file._path.startsWith('/index') ?
+    file._path
+  : file._path.replace('index', '')
+  ).replace(/\.\w{2}/, '')}`,
+  children:
+    file.children?.length ?
+      file.children.map((file) => docItemTransformationFn(file))
+    : undefined,
 });
 const docs = useDocNavigation({});
 const docNavItems = computed(() =>
@@ -527,18 +588,26 @@ const docNavItems = computed(() =>
 );
 
 const items = computed<INavItem[]>(() => [
-  ...(props.unitId && props.domainId
-    ? [
+  ...(props.unitId && props.domainId ?
+    [
       domainDashboardNavEntry.value,
       ...(props.domainId && props.unitId ? [profilesNavEntry.value] : []),
-      ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
+      ...((
+        props.domainId && props.unitId && ability.value.can('view', 'editors')
+      ) ?
+        [editorsNavEntry.value]
+      : []),
       objectsNavEntry.value,
-      ...(!isEmpty(catalogsEntriesChildItems.value) ? [catalogsNavEntry.value] : []),
+      ...(!isEmpty(catalogsEntriesChildItems.value) ?
+        [catalogsNavEntry.value]
+      : []),
       reportsNavEntry.value,
-      risksNavEntry.value
+      risksNavEntry.value,
     ]
-    : []),
-  ...(route.path.startsWith('/docs') ? [backToVeoNavEntry.value, docsNavEntry.value] : [])
+  : []),
+  ...(route.path.startsWith('/docs') ?
+    [backToVeoNavEntry.value, docsNavEntry.value]
+  : []),
 ]);
 
 // Provide the ref to the v-list so children can do stuff with it

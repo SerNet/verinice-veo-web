@@ -25,11 +25,7 @@
     <template #default>
       <BaseCard>
         <v-card-text>
-          <v-icon
-            :icon="mdiFilePlusOutline"
-            size="x-large"
-            start
-          />
+          <v-icon :icon="mdiFilePlusOutline" size="x-large" start />
           {{ t('unitSelectionCreateNewHint') }}
         </v-card-text>
         <BaseAlert
@@ -61,11 +57,7 @@
       </BaseCard>
       <BaseCard class="mt-4">
         <v-card-text>
-          <v-icon
-            :icon="mdiFolderOpenOutline"
-            size="x-large"
-            start
-          />
+          <v-icon :icon="mdiFolderOpenOutline" size="x-large" start />
           {{ t('unitSelectionHint') }}
         </v-card-text>
         <v-list-item>
@@ -83,11 +75,7 @@
       </BaseCard>
     </template>
     <template #dialog-options>
-      <v-btn
-        flat
-        variant="plain"
-        @click="toggleDialog"
-      >
+      <v-btn flat variant="plain" @click="toggleDialog">
         {{ t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
@@ -96,21 +84,18 @@
         flat
         color="primary"
         :loading="state.isApplyingProfile || state.isCreatingUnit"
-        :disabled="applyIsDisabled || hasMaxUnits && !state.selectedUnit"
+        :disabled="applyIsDisabled || (hasMaxUnits && !state.selectedUnit)"
         @click="apply"
       >
         {{ t('unitSelectionApplyBtn') }}
       </v-btn>
     </template>
-  </Basedialog>
+  </BaseDialog>
 </template>
 
 <script setup lang="ts">
 import { VeoAlertType } from '~/types/VeoTypes';
-import {
-  mdiFolderOpenOutline,
-  mdiFilePlusOutline
-} from '@mdi/js';
+import { mdiFolderOpenOutline, mdiFilePlusOutline } from '@mdi/js';
 import { useUnits } from './profiles';
 const { requiredRule } = useRules();
 const { t } = useI18n();
@@ -121,31 +106,30 @@ const {
   domain,
   applyProfile,
   createUnitAndApplyProfile,
-  toggleDialog
+  toggleDialog,
 } = useUnits();
 
-const applyIsDisabled = computed(() =>
-  (state.newUnitName  === null) && state.selectedUnit === null
+const applyIsDisabled = computed(
+  () => state.newUnitName === null && state.selectedUnit === null
 );
 
 function apply() {
   if (!state.selectedUnit) {
     createUnitAndApplyProfile({
       name: state.newUnitName as string,
-      domains:[{targetUri: (domain?.value?._self || '')}],
+      domains: [{ targetUri: domain?.value?._self || '' }],
       description: state.newUnitDescription || undefined,
       messages: {
         success: t('messageUnitWithProfileSuccess'),
-        error: t('messageUnitWithProfileError')
-      }
+        error: t('messageUnitWithProfileError'),
+      },
     });
-  }
-  else {
+  } else {
     applyProfile({
       profileKey: state.selectedProfiles[0],
       unitId: state.selectedUnit,
       domainId: state.domainId,
-      messages: {success: t('messageSuccess'), error: t('messageError')}
+      messages: { success: t('messageSuccess'), error: t('messageError') },
     });
   }
 }

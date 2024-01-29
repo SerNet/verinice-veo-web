@@ -16,10 +16,7 @@
    - along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list
-    class="mt-2"
-    v-bind="$attrs"
-  >
+  <v-list class="mt-2" v-bind="$attrs">
     <v-list-item
       v-for="item of items"
       :key="item.value"
@@ -38,13 +35,13 @@
       <template #prepend>
         <v-icon
           :color="isActive(item) ? 'primary' : undefined"
-          :icon="isActive(item)
-            ? multiple
-              ? mdiCheckboxMarked
+          :icon="
+            isActive(item) ?
+              multiple ? mdiCheckboxMarked
               : mdiRadioboxMarked
-            : multiple
-              ? mdiCheckboxBlankOutline
-              : mdiRadioboxBlank"
+            : multiple ? mdiCheckboxBlankOutline
+            : mdiRadioboxBlank
+          "
           @click="checkBoxSelectionOnly ? onItemSelected(item) : undefined"
         />
       </template>
@@ -59,7 +56,7 @@ import {
   mdiCheckboxBlankOutline,
   mdiCheckboxMarked,
   mdiRadioboxBlank,
-  mdiRadioboxMarked
+  mdiRadioboxMarked,
 } from '@mdi/js';
 
 export interface IProminentSelectionListItem {
@@ -72,33 +69,38 @@ export interface IProminentSelectionListItem {
 const props = defineProps({
   items: {
     type: Array as PropType<IProminentSelectionListItem[]>,
-    default: () => []
+    default: () => [],
   },
   modelValue: {
     type: [String, Number, Array],
-    default: undefined
+    default: undefined,
   },
   multiple: {
     type: Boolean,
-    default: false
+    default: false,
   },
   checkBoxSelectionOnly: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 const emit = defineEmits<{
-  (event: 'update:model-value', value: any): void
+  (event: 'update:model-value', value: any): void;
 }>();
 
-const isActive = (item: IProminentSelectionListItem) => item.value === props.modelValue || (isArray(props.modelValue) && props.modelValue.includes(item.value));
+const isActive = (item: IProminentSelectionListItem) =>
+  item.value === props.modelValue ||
+  (isArray(props.modelValue) && props.modelValue.includes(item.value));
 
 const onItemSelected = (item: IProminentSelectionListItem) => {
   let oldModelValue = cloneDeep(props.modelValue);
 
   if (props.multiple) {
-    const existingItemPosition = !isArray(props.modelValue) ? -1 : props.modelValue.findIndex((value) => item.value === value);
+    const existingItemPosition =
+      !isArray(props.modelValue) ? -1 : (
+        props.modelValue.findIndex((value) => item.value === value)
+      );
 
     if (existingItemPosition !== -1) {
       (oldModelValue as any[]).splice(existingItemPosition, 1);

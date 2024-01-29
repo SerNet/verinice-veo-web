@@ -32,12 +32,9 @@
     color="primary"
     role="checkbox"
     :aria-checked="!!modelValue"
-    @update:model-value="$emit('update:model-value', $event);"
+    @update:model-value="$emit('update:model-value', $event)"
   >
-    <template
-      v-if="modelValue !== undefined"
-      #append
-    >
+    <template v-if="modelValue !== undefined" #append>
       <v-icon
         :icon="mdiClose"
         @click="$emit('update:model-value', undefined)"
@@ -47,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import{ last } from 'lodash';
+import { last } from 'lodash';
 import { mdiClose } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
@@ -57,13 +54,13 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-checkbox',
   name: {
     en: 'checkbox',
-    de: 'Checkbox'
+    de: 'Checkbox',
   },
   description: {
     en: 'Can either contain a boolean value (true/false) or be set to undefined. If not required, value can be deleted by pressing X.',
-    de: 'Kann einen boolschen Wert besitzen (wahr/falsch) oder undefiniert sein. Falls nicht erforderlich, kann der Wert per X gelöscht werden.'
+    de: 'Kann einen boolschen Wert besitzen (wahr/falsch) oder undefiniert sein. Falls nicht erforderlich, kann der Wert per X gelöscht werden.',
   },
-  conditions: (props) => [props.objectSchema.type === 'boolean']
+  conditions: (props) => [props.objectSchema.type === 'boolean'],
 };
 
 export default defineComponent({
@@ -74,8 +71,8 @@ export default defineComponent({
     return {
       getControlErrorMessages,
       last,
-      mdiClose
+      mdiClose,
     };
-  }
+  },
 });
 </script>

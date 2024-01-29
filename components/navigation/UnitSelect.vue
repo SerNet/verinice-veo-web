@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip
-    v-if="miniVariant"
-    location="bottom"
-  >
+  <v-tooltip v-if="miniVariant" location="bottom">
     <template #activator="{ props: toolTips }">
       <v-icon
         class="ma-4"
@@ -66,7 +63,10 @@
         :active="unitId === 'management'"
         color="primary"
         value="management"
-        @click="unitId = 'management'; closeMenu.menu = false"
+        @click="
+          unitId = 'management';
+          closeMenu.menu = false;
+        "
       >
         {{ t('management') }}
       </v-list-item>
@@ -83,13 +83,16 @@ import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 
 import { mdiUnity } from '@mdi/js';
 
-withDefaults(defineProps<{
-  disabled?: boolean,
-  miniVariant: boolean
-}>(), {
-  disabled: false,
-  miniVariant: false
-});
+withDefaults(
+  defineProps<{
+    disabled?: boolean;
+    miniVariant: boolean;
+  }>(),
+  {
+    disabled: false,
+    miniVariant: false,
+  }
+);
 
 defineEmits<{
   (event: 'expand-menu'): void;
@@ -103,12 +106,22 @@ const closeMenu = ref();
 // fetch all client units
 const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
-const items = computed(() => ((units.value || []).find((unit) => unit.id === route.params.unit))?.name || []);
-const itemSelection = computed(() => (units.value || []).map((unit) => ({ value: unit.id, title: unit.name, description: unit.description })));
+const items = computed(
+  () =>
+    (units.value || []).find((unit) => unit.id === route.params.unit)?.name ||
+    []
+);
+const itemSelection = computed(() =>
+  (units.value || []).map((unit) => ({
+    value: unit.id,
+    title: unit.name,
+    description: unit.description,
+  }))
+);
 
 const unitId = computed({
   get() {
-    return route.params.unit as string || 'management';
+    return (route.params.unit as string) || 'management';
   },
   set(newValue: string) {
     let params;
@@ -116,17 +129,22 @@ const unitId = computed({
     if (newValue === 'management') {
       params = { ...route.params };
     } else {
-      const domainId = units.value?.find((unit: any) => unit.id === newValue).domains.find((domain: any) => (domain.id === route.params.domain))?.id || units.value?.find((unit: any) => unit.id === newValue).domains?.[0]?.id;
+      const domainId =
+        units.value
+          ?.find((unit: any) => unit.id === newValue)
+          .domains.find((domain: any) => domain.id === route.params.domain)
+          ?.id ||
+        units.value?.find((unit: any) => unit.id === newValue).domains?.[0]?.id;
       params = { unit: newValue, domain: domainId };
     }
 
     navigateTo({
       name: newValue === 'management' ? ROUTE_UNITS : ROUTE_DOMAIN_DASHBOARD,
       params: {
-        ...params
-      }
+        ...params,
+      },
     });
-  }
+  },
 });
 </script>
 

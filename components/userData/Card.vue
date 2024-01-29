@@ -36,22 +36,13 @@
         flat
       />
 
-      <slot
-        v-if="slots.prepareData"
-        name="prepareData"
-      />
+      <slot v-if="slots.prepareData" name="prepareData" />
 
       <template v-if="!slots.prepareData">
         <!-- Downloads -->
-        <template
-          v-for="(item, index) in items"
-          :key="index"
-        >
+        <template v-for="(item, index) in items" :key="index">
           <v-divider class="mt-4" />
-          <h3
-            v-if="item.name || item.displayName"
-            class="text-h4 mt-2"
-          >
+          <h3 v-if="item.name || item.displayName" class="text-h4 mt-2">
             {{ item.name || item.displayName }}
           </h3>
           <v-btn
@@ -62,9 +53,7 @@
             :disabled="props.showAlert"
             @click="() => handleClick(index)"
           >
-            <v-icon
-              :icon="mdiDownload"
-            />
+            <v-icon :icon="mdiDownload" />
             {{ props.downloadBtnCopy }}
           </v-btn>
         </template>
@@ -74,28 +63,28 @@
 </template>
 
 <script setup lang="ts">
-import { useSlots } from "vue";
-import { mdiDownload } from "@mdi/js";
+import { useSlots } from 'vue';
+import { mdiDownload } from '@mdi/js';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 export interface Props {
-  header: string,
-  body?: string,
-  downloadBtnCopy: string,
-  showDownloadIcon?: boolean,
-  showAlert?: boolean,
-  alertHeader: string,
-  alertBody: string,
-  items: any[],
-  isLoading: boolean[],
-  handleClick: (index: number) => void,
+  header: string;
+  body?: string;
+  downloadBtnCopy: string;
+  showDownloadIcon?: boolean;
+  showAlert?: boolean;
+  alertHeader: string;
+  alertBody: string;
+  items: any[];
+  isLoading: boolean[];
+  handleClick: (index: number) => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   body: '',
   showDownloadIcon: true,
   showAlert: false,
-  zipArchives: () => []
+  zipArchives: () => [],
 });
 
 const slots = useSlots();

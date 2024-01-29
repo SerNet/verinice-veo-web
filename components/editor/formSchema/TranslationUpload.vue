@@ -48,10 +48,7 @@
                 >
                   {{ localeDetailsMap[language[0]].name }}
                   <ul>
-                    <li
-                      v-for="translation of language[1]"
-                      :key="translation"
-                    >
+                    <li v-for="translation of language[1]" :key="translation">
                       {{ translation }}
                     </li>
                   </ul>
@@ -73,10 +70,7 @@
                 >
                   {{ localeDetailsMap[language[0]].name }}
                   <ul>
-                    <li
-                      v-for="translation of language[1]"
-                      :key="translation"
-                    >
+                    <li v-for="translation of language[1]" :key="translation">
                       {{ translation }}
                     </li>
                   </ul>
@@ -123,29 +117,41 @@ export default defineComponent({
   props: {
     replaceTranslations: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['translations-imported', 'update:replace-translations'],
   setup(props, { emit }) {
     const { locales, t } = useI18n();
     const route = useRoute();
 
-    const formSchema = inject<Ref<IVeoFormSchema | undefined>>('mainFormSchema');
+    const formSchema =
+      inject<Ref<IVeoFormSchema | undefined>>('mainFormSchema');
 
-    const availableLanguages = computed(() => (locales.value as LocaleObject[]).map((locale) => locale.code));
+    const availableLanguages = computed(() =>
+      (locales.value as LocaleObject[]).map((locale) => locale.code)
+    );
 
-    const translationsQueryParameters = computed(() => ({ languages: availableLanguages.value, domain: route.params.domain }));
-    const { data: objectSchemaTranslations } = useQuery(translationQueryDefinitions.queries.fetch, translationsQueryParameters);
+    const translationsQueryParameters = computed(() => ({
+      languages: availableLanguages.value,
+      domain: route.params.domain,
+    }));
+    const { data: objectSchemaTranslations } = useQuery(
+      translationQueryDefinitions.queries.fetch,
+      translationsQueryParameters
+    );
 
     // Layout stuff
     const resultExpansionPanel = ref();
 
     const localeDetailsMap = computed(() =>
-      (locales.value as LocaleObject[]).reduce((previousValue, currentValue) => {
-        previousValue[currentValue.code] = currentValue;
-        return previousValue;
-      }, Object.create(null))
+      (locales.value as LocaleObject[]).reduce(
+        (previousValue, currentValue) => {
+          previousValue[currentValue.code] = currentValue;
+          return previousValue;
+        },
+        Object.create(null)
+      )
     );
 
     // Import stuff
@@ -153,17 +159,29 @@ export default defineComponent({
     const duplicateTranslations = reactive<{ [lang: string]: string[] }>({});
     const usedTranslations = reactive<{ [lang: string]: string[] }>({});
 
-    const importFunction = (columns: string[][], idColumn: number, languageColumns: { [language: string]: number }) => {
-      if (idColumn === undefined || Object.keys(languageColumns).length < availableLanguages.value.length) {
+    const importFunction = (
+      columns: string[][],
+      idColumn: number,
+      languageColumns: { [language: string]: number }
+    ) => {
+      if (
+        idColumn === undefined ||
+        Object.keys(languageColumns).length < availableLanguages.value.length
+      ) {
         return;
       }
       unusedTranslations.value = [];
-      const translations = availableLanguages.value.reduce((previousValue, currentValue) => {
-        previousValue[currentValue] = {};
-        return previousValue;
-      }, Object.create(null));
+      const translations = availableLanguages.value.reduce(
+        (previousValue, currentValue) => {
+          previousValue[currentValue] = {};
+          return previousValue;
+        },
+        Object.create(null)
+      );
 
-      const usedLanguageKeys = Object.entries(JsonPointer.flatten(formSchema?.value))
+      const usedLanguageKeys = Object.entries(
+        JsonPointer.flatten(formSchema?.value)
+      )
         .filter(([key, _value]) => key.endsWith('/label'))
         .map(([_, value]) => (value as string).split('#lang/')[1]);
       unusedTranslations.value = [];
@@ -184,7 +202,10 @@ export default defineComponent({
         }
 
         // If id is not used in this form schema, add to unusedTranslations array and go to next id
-        if (!usedLanguageKeys.includes(id) && !unusedTranslations.value.includes(id)) {
+        if (
+          !usedLanguageKeys.includes(id) &&
+          !unusedTranslations.value.includes(id)
+        ) {
           unusedTranslations.value.push(id);
           continue;
         }
@@ -193,7 +214,11 @@ export default defineComponent({
           const translatedValue = trim(columns[language[1]][i]);
 
           if (translatedValue) {
-            if (objectSchemaTranslations.value?.lang?.[language[0]]?.[id] === translatedValue && !duplicateTranslations[language[0]].includes(id)) {
+            if (
+              objectSchemaTranslations.value?.lang?.[language[0]]?.[id] ===
+                translatedValue &&
+              !duplicateTranslations[language[0]].includes(id)
+            ) {
               duplicateTranslations[language[0]].push(id);
               continue;
             }
@@ -204,11 +229,14 @@ export default defineComponent({
       }
       Object.assign(
         usedTranslations,
-        Object.entries(translations).reduce((previousValue, [language, entries]) => {
-          previousValue[language] = Object.keys(entries as any);
+        Object.entries(translations).reduce(
+          (previousValue, [language, entries]) => {
+            previousValue[language] = Object.keys(entries as any);
 
-          return previousValue;
-        }, Object.create(null))
+            return previousValue;
+          },
+          Object.create(null)
+        )
       );
 
       resultExpansionPanel.value = 0;
@@ -225,9 +253,9 @@ export default defineComponent({
       usedTranslations,
 
       VeoAlertType,
-      t
+      t,
     };
-  }
+  },
 });
 </script>
 

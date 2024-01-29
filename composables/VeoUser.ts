@@ -55,7 +55,7 @@ export const useVeoUser: () => IVeoUserComposable = () => {
     keycloak.value = new Keycloak({
       url: context.$config.public.oidcUrl,
       realm: context.$config.public.oidcRealm,
-      clientId: context.$config.public.oidcClient
+      clientId: context.$config.public.oidcClient,
     });
 
     // Refresh token HAS to be set before calling init
@@ -64,7 +64,9 @@ export const useVeoUser: () => IVeoUserComposable = () => {
         await refreshKeycloakSession();
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.error('VeoUser::initialize_ Automatically refreshing keycloak session failed...');
+        console.error(
+          'VeoUser::initialize_ Automatically refreshing keycloak session failed...'
+        );
         keycloakInitialized.value = false;
         keycloakInitializationStarted.value = false;
         await initialize(context);
@@ -75,7 +77,7 @@ export const useVeoUser: () => IVeoUserComposable = () => {
       await keycloak.value.init({
         onLoad: 'check-sso',
         silentCheckSsoRedirectUri: window.location.origin + '/sso',
-        checkLoginIframe: false
+        checkLoginIframe: false,
       });
 
       if (keycloak.value.authenticated) {
@@ -83,9 +85,17 @@ export const useVeoUser: () => IVeoUserComposable = () => {
       }
 
       // Update permissions immediately as the middleware can't wait for the next tick
-      updatePermissions([...(keycloak.value?.tokenParsed?.realm_access?.roles || []), ...(keycloak.value?.tokenParsed?.resource_access?.['veo-accounts']?.roles || [])]);
+      updatePermissions([
+        ...(keycloak.value?.tokenParsed?.realm_access?.roles || []),
+        ...(keycloak.value?.tokenParsed?.resource_access?.['veo-accounts']
+          ?.roles || []),
+      ]);
     } catch (error) {
-      throw new Error(`Error while setting up authentication provider: ${JSON.stringify(error)}`);
+      throw new Error(
+        `Error while setting up authentication provider: ${JSON.stringify(
+          error
+        )}`
+      );
     }
 
     keycloakInitialized.value = true;
@@ -108,7 +118,7 @@ export const useVeoUser: () => IVeoUserComposable = () => {
     if (keycloak.value) {
       await keycloak.value.login({
         redirectUri: `${window.location.origin}${destination}`,
-        scope: 'openid'
+        scope: 'openid',
       });
       await keycloak.value.loadUserProfile();
     } else {
@@ -121,13 +131,20 @@ export const useVeoUser: () => IVeoUserComposable = () => {
    *
    * @param destination If set the user gets redirected to a different page than the one he logged out from.
    */
-  const logout = async (destination?: string, queryParameters?: Record<string, any>) => {
+  const logout = async (
+    destination?: string,
+    queryParameters?: Record<string, any>
+  ) => {
     if (keycloak.value) {
       if (!queryParameters) queryParameters = {};
       queryParameters.redirect_uri = false;
       await keycloak.value.logout({
-        redirectUri: `${window.location.origin}${destination}?${Object.entries(queryParameters).map(([key, value]) => `${key}=${value}`).join('&')}`,
-        id_token_hint: keycloak.value.idToken
+        redirectUri: `${window.location.origin}${destination}?${Object.entries(
+          queryParameters
+        )
+          .map(([key, value]) => `${key}=${value}`)
+          .join('&')}`,
+        id_token_hint: keycloak.value.idToken,
       } as any); // Keycloak adpater doesn't know that the parameters changed
       keycloak.value.clearToken();
     } else {
@@ -135,23 +152,29 @@ export const useVeoUser: () => IVeoUserComposable = () => {
     }
   };
 
-  const authenticated = computed<boolean>(() => keycloak.value?.authenticated || false);
+  const authenticated = computed<boolean>(
+    () => keycloak.value?.authenticated || false
+  );
 
   const token = computed<string | undefined>(() => keycloak.value?.token);
 
   const roles = computed<string[]>(() => [
     ...(keycloak.value?.tokenParsed?.realm_accessRoles || []),
-    ...(keycloak.value?.tokenParsed?.resource_access?.['veo-accounts']?.roles || [])
+    ...(keycloak.value?.tokenParsed?.resource_access?.['veo-accounts']?.roles ||
+      []),
   ]);
 
   const profile = computed(() => keycloak.value?.profile);
 
   const userSettings = computed<IVeoUserSettings>(() => ({
     maxUnits: keycloak.value?.tokenParsed?.max_units || 2,
-    maxUsers: keycloak.value?.tokenParsed?.max_users || -1
+    maxUsers: keycloak.value?.tokenParsed?.max_users || -1,
   }));
 
-  const accountDisabled = computed<boolean>(() => !keycloak.value?.tokenParsed?.groups.includes('/veo-userclass/veo-user'));
+  const accountDisabled = computed<boolean>(
+    () =>
+      !keycloak.value?.tokenParsed?.groups.includes('/veo-userclass/veo-user')
+  );
 
   if (authenticated.value && accountDisabled.value) {
     logout('/login', { client_disabled: true });
@@ -176,6 +199,6 @@ export const useVeoUser: () => IVeoUserComposable = () => {
     roles,
     tablePageSize,
     token,
-    userSettings
+    userSettings,
   };
 };

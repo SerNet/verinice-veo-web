@@ -22,10 +22,7 @@
     class="vf-layout vf-group my-2 py-1 px-2 pb-2"
     :class="classes"
   >
-    <h3
-      v-if="options && options.label"
-      class="text-h3"
-    >
+    <h3 v-if="options && options.label" class="text-h3">
       {{ options.label }}
     </h3>
     <div
@@ -46,12 +43,12 @@ export const GROUP_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-group',
   name: {
     en: 'group',
-    de: 'Gruppe'
+    de: 'Gruppe',
   },
   description: {
     en: 'Adds a wrapper around other elements that can be styled.',
-    de: 'Fügt einen Container um andere Elemente hinzu, der optional gestyled werden kann.'
-  }
+    de: 'Fügt einen Container um andere Elemente hinzu, der optional gestyled werden kann.',
+  },
 };
 
 export default defineComponent({
@@ -60,12 +57,14 @@ export default defineComponent({
   setup(props) {
     const classes = computed(() => props.options.class || '');
 
-    const isHorizontal = computed(() => props.options.direction === 'horizontal');
+    const isHorizontal = computed(
+      () => props.options.direction === 'horizontal'
+    );
 
     return {
       classes,
-      isHorizontal
+      isHorizontal,
     };
-  }
+  },
 });
 </script>

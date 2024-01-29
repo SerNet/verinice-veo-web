@@ -36,7 +36,12 @@
             style="max-width: 500px"
           >
             <template #prepend>
-              <v-icon :icon="usedLinkAttributes.includes(item.value) ? mdiCheckboxMarked : mdiCheckboxBlankOutline" />
+              <v-icon
+                :icon="
+                  usedLinkAttributes.includes(item.value) ? mdiCheckboxMarked
+                  : mdiCheckboxBlankOutline
+                "
+              />
             </template>
             <v-list-item-title>
               {{ last(availableLinkAttributes[item.value].scope?.split('/')) }}
@@ -66,7 +71,12 @@
 </template>
 
 <script setup lang="ts">
-import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiInformationOutline, mdiListBoxOutline } from '@mdi/js';
+import {
+  mdiCheckboxBlankOutline,
+  mdiCheckboxMarked,
+  mdiInformationOutline,
+  mdiListBoxOutline,
+} from '@mdi/js';
 import { JSONSchema7 } from 'json-schema';
 import { PropType } from 'vue';
 import { v5 as UUIDv5 } from 'uuid';
@@ -79,43 +89,56 @@ import { IPlaygroundElement } from '../Element.vue';
 const props = defineProps({
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
+    required: true,
   },
   objectSchemaElement: {
     type: Object as PropType<JSONSchema7>,
-    required: true
+    required: true,
   },
   playgroundElement: {
     type: Object as PropType<IPlaygroundElement>,
-    required: true
+    required: true,
   },
   pointer: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const emit = defineEmits<{
-  (event: 'add', pointer: string, element: IVeoFormSchemaItem): void
-  (event: 'remove', pointer: string, removeFromSchemaElementMap?: boolean): void
+  (event: 'add', pointer: string, element: IVeoFormSchemaItem): void;
+  (
+    event: 'remove',
+    pointer: string,
+    removeFromSchemaElementMap?: boolean
+  ): void;
 }>();
 
 const { t } = useI18n();
 
-const availableLinkAttributes = computed<{ [uuid:string]: IVeoFormSchemaItem }>(() => Object.entries((props.objectSchemaElement.items as any)?.properties?.attributes?.properties || {})
-  .reduce((previous, [key, _attribute]) => {
+const availableLinkAttributes = computed<{
+  [uuid: string]: IVeoFormSchemaItem;
+}>(() =>
+  Object.entries(
+    (props.objectSchemaElement.items as any)?.properties?.attributes
+      ?.properties || {}
+  ).reduce((previous, [key, _attribute]) => {
     const newElement = {
       type: 'Control',
       scope: `${props.formSchemaElement.scope}/items/properties/attributes/properties/${key}`,
       options: {
-        label: `#lang/${key}`
-      }
+        label: `#lang/${key}`,
+      },
     };
-    previous[UUIDv5(newElement.scope, FORMSCHEMA_PLAYGROUND_NAMESPACE)] = newElement;
+    previous[UUIDv5(newElement.scope, FORMSCHEMA_PLAYGROUND_NAMESPACE)] =
+      newElement;
     return previous;
-  }, Object.create({})));
+  }, Object.create({}))
+);
 
-const availableLinkAttributeUUIDs = computed(() => Object.keys(availableLinkAttributes.value));
+const availableLinkAttributeUUIDs = computed(() =>
+  Object.keys(availableLinkAttributes.value)
+);
 
 const usedLinkAttributes = computed<string[]>({
   get: () => {
@@ -123,14 +146,20 @@ const usedLinkAttributes = computed<string[]>({
   },
   set: (newValue) => {
     // New elemnt was added, this is usually app
-    if(newValue.length > usedLinkAttributes.value.length) {
+    if (newValue.length > usedLinkAttributes.value.length) {
       const newElementUUID = difference(newValue, usedLinkAttributes.value)[0];
-      emit('add', `${props.pointer}/children/${newValue.length - 1}`, availableLinkAttributes.value[newElementUUID]);
+      emit(
+        'add',
+        `${props.pointer}/children/${newValue.length - 1}`,
+        availableLinkAttributes.value[newElementUUID]
+      );
     } else {
-      const deleteIndex = usedLinkAttributes.value.findIndex((uuid) => !newValue.includes(uuid));
+      const deleteIndex = usedLinkAttributes.value.findIndex(
+        (uuid) => !newValue.includes(uuid)
+      );
       emit('remove', `${props.pointer}/children/${deleteIndex}`);
     }
-  }
+  },
 });
 </script>
 

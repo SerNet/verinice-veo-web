@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <UtilNotFoundError
-    v-if="!loading && notFoundError"
-    :text="t('notFound')"
-  />
+  <UtilNotFoundError v-if="!loading && notFoundError" :text="t('notFound')" />
   <LayoutPageWrapper
     v-else
     class="px-4 bg-basepage"
@@ -82,7 +79,9 @@
             v-model="modifiedObject"
             v-model:valid="isFormValid"
             class="pb-4"
-            :disabled="formDataIsRevision || ability.cannot('manage', 'objects')"
+            :disabled="
+              formDataIsRevision || ability.cannot('manage', 'objects')
+            "
             :object-type="objectType"
             :original-object="object"
             :loading="loading || !modifiedObject"
@@ -92,10 +91,7 @@
             @create-dpia="createDPIADialogVisible = true"
             @link-dpia="linkObjectDialogVisible = true"
           >
-            <template
-              v-if="formDataIsRevision"
-              #prepend-form
-            >
+            <template v-if="formDataIsRevision" #prepend-form>
               <BaseAlert
                 :model-value="true"
                 :type="VeoAlertType.INFO"
@@ -113,7 +109,11 @@
               >
                 <template v-if="!formDataIsRevision">
                   <v-btn
-                    :disabled="loading || !isFormDirty || ability.cannot('manage', 'objects')"
+                    :disabled="
+                      loading ||
+                      !isFormDirty ||
+                      ability.cannot('manage', 'objects')
+                    "
                     class="mb-4"
                     color="primary"
                     flat
@@ -123,7 +123,12 @@
                   </v-btn>
                   <v-spacer />
                   <v-btn
-                    :disabled="loading || !isFormDirty || !isFormValid || ability.cannot('manage', 'objects')"
+                    :disabled="
+                      loading ||
+                      !isFormDirty ||
+                      !isFormValid ||
+                      ability.cannot('manage', 'objects')
+                    "
                     class="mb-4"
                     color="primary"
                     flat
@@ -181,7 +186,11 @@ import { Ref } from 'vue';
 import { cloneDeep, isEqual, omit, upperFirst } from 'lodash';
 
 import { isObjectEqual } from '~/lib/utils';
-import { IVeoEntity, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
+import {
+  IVeoEntity,
+  IVeoObjectHistoryEntry,
+  VeoAlertType,
+} from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -196,7 +205,12 @@ onBeforeRouteLeave((to, _from, next) => {
     next();
   } else {
     // If the form was modified and the dialog is closed, show it and abort navigation
-    onContinueNavigation.value = () => router.push({ name: to.name || undefined, params: to.params, query: to.query });
+    onContinueNavigation.value = () =>
+      router.push({
+        name: to.name || undefined,
+        params: to.params,
+        query: to.query,
+      });
     entityModifiedDialogVisible.value = true;
     next(false);
   }
@@ -207,10 +221,17 @@ const { t: globalT } = useI18n({ useScope: 'global' });
 const config = useRuntimeConfig();
 const route = useRoute();
 const router = useRouter();
-const { displaySuccessMessage, displayErrorMessage, expireAlert, displayInfoMessage } = useVeoAlerts();
+const {
+  displaySuccessMessage,
+  displayErrorMessage,
+  expireAlert,
+  displayInfoMessage,
+} = useVeoAlerts();
 const { link } = useLinkObject();
 const { ability } = useVeoPermissions();
-const { mutateAsync: _updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
+const { mutateAsync: _updateObject } = useMutation(
+  objectQueryDefinitions.mutations.updateObject
+);
 
 const domainId = computed(() => route.params.domain as string);
 
@@ -218,13 +239,22 @@ const modifiedObject = ref<IVeoEntity | undefined>(undefined);
 // Data that should get merged back into modifiedObject after the object has been reloaded, useful to persist children of objects while keeping form changes
 const wipObjectData = ref<Record<string, any> | undefined>(undefined);
 
-const fetchObjectQueryParameters = computed(() => ({ domain: route.params.domain as string, endpoint: route.params.objectType as string, id: route.params.object as string }));
-const fetchObjectQueryEnabled = computed(() => !!fetchObjectQueryParameters.value.domain && !!fetchObjectQueryParameters.value.endpoint && !!fetchObjectQueryParameters.value.id);
+const fetchObjectQueryParameters = computed(() => ({
+  domain: route.params.domain as string,
+  endpoint: route.params.objectType as string,
+  id: route.params.object as string,
+}));
+const fetchObjectQueryEnabled = computed(
+  () =>
+    !!fetchObjectQueryParameters.value.domain &&
+    !!fetchObjectQueryParameters.value.endpoint &&
+    !!fetchObjectQueryParameters.value.id
+);
 const {
   data: object,
   isFetching: loading,
   isError: notFoundError,
-  refetch
+  refetch,
 } = useQuery(objectQueryDefinitions.queries.fetch, fetchObjectQueryParameters, {
   enabled: fetchObjectQueryEnabled,
   onSuccess: (data) => {
@@ -235,10 +265,13 @@ const {
     nextTick(getAdditionalContext);
 
     if (wipObjectData.value) {
-      modifiedObject.value = { ...modifiedObject.value, ...wipObjectData.value };
+      modifiedObject.value = {
+        ...modifiedObject.value,
+        ...wipObjectData.value,
+      };
       wipObjectData.value = undefined;
     }
-  }
+  },
 });
 
 onUnmounted(() => {
@@ -264,10 +297,23 @@ const onPageCollapsed = (collapsedPages: boolean[]) => {
 };
 
 // Forms part specific stuff
-const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-const objectType = computed(() => Object.entries(endpoints.value || {}).find(([, endpoint]) => endpoint === route.params.objectType)?.[0]);
+const { data: endpoints } = useQuery(
+  schemaQueryDefinitions.queries.fetchSchemas
+);
+const objectType = computed(
+  () =>
+    Object.entries(endpoints.value || {}).find(
+      ([, endpoint]) => endpoint === route.params.objectType
+    )?.[0]
+);
 
-const isFormDirty = computed(() => !isObjectEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity).isEqual && !formDataIsRevision.value);
+const isFormDirty = computed(
+  () =>
+    !isObjectEqual(
+      object.value as IVeoEntity,
+      modifiedObject.value as IVeoEntity
+    ).isEqual && !formDataIsRevision.value
+);
 const isFormValid = ref(false);
 const objectForm = ref();
 
@@ -277,18 +323,32 @@ function resetForm() {
 }
 
 async function saveObject() {
-  await updateObject(upperFirst(t('objectSaved', { name: object.value?.displayName })), upperFirst(t('objectNotSaved')));
-  if(!isEqual(object.value?.riskValues , modifiedObject.value?.riskValues)){
+  await updateObject(
+    upperFirst(t('objectSaved', { name: object.value?.displayName })),
+    upperFirst(t('objectNotSaved'))
+  );
+  if (!isEqual(object.value?.riskValues, modifiedObject.value?.riskValues)) {
     displayInfoMessage('', upperFirst(t('riskAlert')));
   }
 }
 
 async function restoreObject() {
-  await updateObject(upperFirst(t('objectRestored', { name: object.value?.displayName })), upperFirst(t('objectNotRestored')));
+  await updateObject(
+    upperFirst(t('objectRestored', { name: object.value?.displayName })),
+    upperFirst(t('objectNotRestored'))
+  );
 }
 
 function updateObjectRelationships() {
-  wipObjectData.value = omit(cloneDeep(modifiedObject.value), 'createdAt', 'createdBy', 'updatedAt', 'updatedBy', 'parts', 'members');
+  wipObjectData.value = omit(
+    cloneDeep(modifiedObject.value),
+    'createdAt',
+    'createdBy',
+    'updatedAt',
+    'updatedBy',
+    'parts',
+    'members'
+  );
   refetch();
 }
 
@@ -304,25 +364,37 @@ async function updateObject(successText: string, errorText: string) {
   expireOptimisticLockingAlert();
   try {
     if (modifiedObject.value && object.value) {
-      await _updateObject({ domain: route.params.domain, endpoint: route.params.objectType, object: modifiedObject.value });
+      await _updateObject({
+        domain: route.params.domain,
+        endpoint: route.params.objectType,
+        object: modifiedObject.value,
+      });
       displaySuccessMessage(successText);
       refetch();
       formDataIsRevision.value = false;
     }
   } catch (e: any) {
     if (e.code === 412) {
-      optimisticLockingAlertKey.value = displayErrorMessage(errorText, t('outdatedObject'), {
-        defaultButtonText: globalT('global.button.no'),
-        actions: [
-          {
-            text: globalT('global.button.yes'),
-            onClick: refetch
-          }
-        ]
-      });
+      optimisticLockingAlertKey.value = displayErrorMessage(
+        errorText,
+        t('outdatedObject'),
+        {
+          defaultButtonText: globalT('global.button.no'),
+          actions: [
+            {
+              text: globalT('global.button.yes'),
+              onClick: refetch,
+            },
+          ],
+        }
+      );
     } else {
       displayErrorMessage(errorText, e.message, {
-        details: cloneDeep({ object: modifiedObject.value, objectSchema: objectForm.value.objectSchema, error: JSON.stringify(e) })
+        details: cloneDeep({
+          object: modifiedObject.value,
+          objectSchema: objectForm.value.objectSchema,
+          error: JSON.stringify(e),
+        }),
       });
     }
   }
@@ -342,9 +414,16 @@ function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: boolean) {
     entityModifiedDialogVisible.value = false;
 
     // We have to stringify the content and then manually add the host, as the history api currently doesn't support absolute urls 18-01-2022
-    modifiedObject.value = JSON.parse(JSON.stringify(data.content).replaceAll(/"\//g, `"${config.public.apiUrl}/`));
+    modifiedObject.value = JSON.parse(
+      JSON.stringify(data.content).replaceAll(
+        /"\//g,
+        `"${config.public.apiUrl}/`
+      )
+    );
     // @ts-ignore We don't set the display name when loading objects from the history, so we have to do it here
-    modifiedObject.value.displayName = `${data.content.designator} ${data.content.abbreviation || ''} ${data.content.name}`;
+    modifiedObject.value.displayName = `${data.content.designator} ${
+      data.content.abbreviation || ''
+    } ${data.content.name}`;
     version.value = data.changeNumber;
   };
   if (isFormDirty.value) {
@@ -362,7 +441,7 @@ const activeTab = computed<string>({
   },
   set(hash: string): void {
     router.push({ hash: `#${hash}`, query: route.query });
-  }
+  },
 });
 
 // pia stuff
@@ -386,38 +465,50 @@ const onDPIALinked = () => {
 const additionalContext = ref({});
 
 const getAdditionalContext = () => {
-  const disabledSubType = object.value?.subType
-    ? {
-      [`#/properties/subType`]: {
-        formSchema: { disabled: true }
+  const disabledSubType =
+    object.value?.subType ?
+      {
+        [`#/properties/subType`]: {
+          formSchema: { disabled: true },
+        },
       }
-    }
     : {};
 
   // Temporary solution: Disable markdown editor for certain subTypes,
   // and output html instead (see controls/MarkdownEditor.vue)
   const subTypesCTL = ['CTL_Requirement', 'CTL_Module', 'CTL_Safeguard', '-'];
   const subTypesSCN = ['SCN_AppliedThreat', '-'];
-  const disabledRequirementCTL = subTypesCTL.includes(route.params.subType as string) ? {
-    ["#/properties/customAspects/properties/control_bpCompendium/properties/control_bpCompendium_content"]: {
-      formSchema: { disabled: true }
-    }
-  } : {};
+  const disabledRequirementCTL =
+    subTypesCTL.includes(route.params.subType as string) ?
+      {
+        ['#/properties/customAspects/properties/control_bpCompendium/properties/control_bpCompendium_content']:
+          {
+            formSchema: { disabled: true },
+          },
+      }
+    : {};
 
-  const disabledRequirementSCN = subTypesSCN.includes(route.params.subType as string) ? {
-    ["#/properties/customAspects/properties/scenario_bpCompendium/properties/scenario_bpCompendium_content"]: {
-      formSchema: { disabled: true }
-    }
-  } : {};
+  const disabledRequirementSCN =
+    subTypesSCN.includes(route.params.subType as string) ?
+      {
+        ['#/properties/customAspects/properties/scenario_bpCompendium/properties/scenario_bpCompendium_content']:
+          {
+            formSchema: { disabled: true },
+          },
+      }
+    : {};
 
   additionalContext.value = {
     ...disabledSubType,
     ...disabledRequirementCTL,
-    ...disabledRequirementSCN
+    ...disabledRequirementSCN,
   };
 };
 
-watch(() => () => domainId.value, getAdditionalContext, { deep: true, immediate: true });
+watch(() => () => domainId.value, getAdditionalContext, {
+  deep: true,
+  immediate: true,
+});
 </script>
 
 <i18n>

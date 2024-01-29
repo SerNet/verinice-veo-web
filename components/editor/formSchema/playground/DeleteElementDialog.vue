@@ -22,27 +22,18 @@
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
-      <i18n-t
-        keypath="deleteText"
-        tag="span"
-        scope="global"
-      >
-        <EditorTranslationsTranslatedElementTitle :form-schema-element="formSchemaElement" />
+      <i18n-t keypath="deleteText" tag="span" scope="global">
+        <EditorTranslationsTranslatedElementTitle
+          :form-schema-element="formSchemaElement"
+        />
       </i18n-t>
     </template>
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        @click="emit('update:model-value', false)"
-      >
+      <v-btn variant="text" @click="emit('update:model-value', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn
-        variant="text"
-        color="primary"
-        @click="onConfirm"
-      >
+      <v-btn variant="text" color="primary" @click="onConfirm">
         {{ globalT('global.button.delete') }}
       </v-btn>
     </template>
@@ -57,12 +48,12 @@ import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 const props = defineProps({
   modelValue: {
     type: Boolean,
-    default: false
+    default: false,
   },
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const emit = defineEmits(['update:model-value', 'delete']);
@@ -70,7 +61,9 @@ const emit = defineEmits(['update:model-value', 'delete']);
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
-const translatedElementType = computed(() => t(`type.${props.formSchemaElement.type.toLowerCase()}`));
+const translatedElementType = computed(() =>
+  t(`type.${props.formSchemaElement.type.toLowerCase()}`)
+);
 
 const title = computed(() => t('delete', [translatedElementType.value]));
 

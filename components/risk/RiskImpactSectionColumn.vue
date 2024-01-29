@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-col
-    cols="6"
-    :md="12 / numOfCols"
-  >
+  <v-col cols="6" :md="12 / numOfCols">
     <h3 class="text-h3">
       {{ protectionGoal.translations[locale].name }}
     </h3>
@@ -55,7 +52,9 @@
           hide-details
           variant="underlined"
           v-bind="dialogProps"
-          @update:model-value="$emit('update:specific-impact-explanation', $event)"
+          @update:model-value="
+            $emit('update:specific-impact-explanation', $event)
+          "
         />
       </template>
       <template #input>
@@ -70,7 +69,9 @@
           rows="3"
           no-resize
           variant="underlined"
-          @update:model-value="$emit('update:specific-impact-explanation', $event)"
+          @update:model-value="
+            $emit('update:specific-impact-explanation', $event)
+          "
         />
       </template>
     </v-edit-dialog>
@@ -85,7 +86,12 @@
       hide-details
     >
       <template
-        v-if="dirtyFields && dirtyFields[`${riskDefinition.id}_${protectionGoal.id}_specificImpact`]"
+        v-if="
+          dirtyFields &&
+          dirtyFields[
+            `${riskDefinition.id}_${protectionGoal.id}_specificImpact`
+          ]
+        "
         #selection
       >
         {{ t('saveCTA') }}
@@ -99,61 +105,78 @@ import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
 import { IDirtyFields } from './CreateDialogSingle.vue';
-import { IVeoDomainRiskDefinition, IVeoRisk, IVeoRiskCategory } from '~/types/VeoTypes';
+import {
+  IVeoDomainRiskDefinition,
+  IVeoRisk,
+  IVeoRiskCategory,
+} from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true
+      required: true,
     },
     protectionGoal: {
       type: Object as PropType<IVeoRiskCategory>,
-      required: true
+      required: true,
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      default: () => {}
+      default: () => {},
     },
     potentialImpact: {
       type: Number,
-      default: undefined
+      default: undefined,
     },
     specificImpact: {
       type: Number,
-      default: undefined
+      default: undefined,
     },
     specificImpactExplanation: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     effectiveImpact: {
       type: Number,
-      default: undefined
+      default: undefined,
     },
     numOfCols: {
       type: Number,
       default: 4,
-    }
+    },
   },
   emits: ['update:specific-impact-explanation', 'update:specific-impact'],
   setup(props) {
     const { t, locale } = useI18n();
 
     const impacts = computed(() =>
-      props.riskDefinition.categories.reduce((previousValue: Record<string, any>, currentValue) => {
-        previousValue[currentValue.id] = currentValue.potentialImpacts.map((level) => ({ title: level.translations[locale.value].name, value: level.ordinalValue }));
-        return previousValue;
-      }, {})
+      props.riskDefinition.categories.reduce(
+        (previousValue: Record<string, any>, currentValue) => {
+          previousValue[currentValue.id] = currentValue.potentialImpacts.map(
+            (level) => ({
+              title: level.translations[locale.value].name,
+              value: level.ordinalValue,
+            })
+          );
+          return previousValue;
+        },
+        {}
+      )
     );
 
-    const getImpactValuesByProtectionGoal = (riskDefinition: IVeoRisk['domains']['x']['riskDefinitions']['y'], protectionGoal: string) => {
-      return riskDefinition.impactValues.find((value) => value.category === protectionGoal);
+    const getImpactValuesByProtectionGoal = (
+      riskDefinition: IVeoRisk['domains']['x']['riskDefinitions']['y'],
+      protectionGoal: string
+    ) => {
+      return riskDefinition.impactValues.find(
+        (value) => value.category === protectionGoal
+      );
     };
 
     return {
@@ -162,9 +185,9 @@ export default defineComponent({
 
       t,
       locale,
-      upperFirst
+      upperFirst,
     };
-  }
+  },
 });
 </script>
 

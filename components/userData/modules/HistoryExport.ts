@@ -15,33 +15,55 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { createZIP } from "~/lib/jsonToZip";
-import { chunk } from "lodash";
-import { IVeoObjectHistoryEntry } from "~/types/VeoTypes";
-import { IVeoPagedRevision } from "~/composables/api/queryDefinitions/history";
+import { createZIP } from '~/lib/jsonToZip';
+import { chunk } from 'lodash';
+import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { IVeoPagedRevision } from '~/composables/api/queryDefinitions/history';
 import { format } from 'date-fns';
 
 // Types
-export enum PrepPhase  {
-  Idle = "IDLE",
-  Download = "DOWNLOAD",
-  Zip = "ZIP",
-  Done = "DONE"
+export enum PrepPhase {
+  Idle = 'IDLE',
+  Download = 'DOWNLOAD',
+  Zip = 'ZIP',
+  Done = 'DONE',
 }
 
-export type HistoryZipArchive = { displayName: string; fileName: string; zip: Blob; };
-export type UpdateLoadingState  = ({ phase, currentPercentage, totalPercentage }: { phase: PrepPhase, currentPercentage: number, totalPercentage: number } ) => void
-export type HistoryChunk = { name: string, displayName: string, chunk: IVeoObjectHistoryEntry[] }
+export type HistoryZipArchive = {
+  displayName: string;
+  fileName: string;
+  zip: Blob;
+};
+export type UpdateLoadingState = ({
+  phase,
+  currentPercentage,
+  totalPercentage,
+}: {
+  phase: PrepPhase;
+  currentPercentage: number;
+  totalPercentage: number;
+}) => void;
+export type HistoryChunk = {
+  name: string;
+  displayName: string;
+  chunk: IVeoObjectHistoryEntry[];
+};
 
-export type FetchFnParams = { size?: number | undefined; afterId?: string | undefined; }
+export type FetchFnParams = {
+  size?: number | undefined;
+  afterId?: string | undefined;
+};
 
 export type FetchFnResult = {
-  totalItemCount: number,
-  items: IVeoObjectHistoryEntry[]
-}
+  totalItemCount: number;
+  items: IVeoObjectHistoryEntry[];
+};
 
 interface ILoadHistoryParams {
-  fetchFn: ({ size, afterId }: FetchFnParams) => Promise<FetchFnResult | IVeoPagedRevision>;
+  fetchFn: ({
+    size,
+    afterId,
+  }: FetchFnParams) => Promise<FetchFnResult | IVeoPagedRevision>;
   history?: IVeoObjectHistoryEntry[];
   size?: number;
   afterId?: undefined | string;
@@ -50,16 +72,29 @@ interface ILoadHistoryParams {
 }
 
 async function loadHistory({
-  fetchFn, history = [], size = 2500, afterId = undefined, updateLoadingState, currentPercentage = 0}: ILoadHistoryParams ):
-  Promise<IVeoObjectHistoryEntry[]> {
+  fetchFn,
+  history = [],
+  size = 2500,
+  afterId = undefined,
+  updateLoadingState,
+  currentPercentage = 0,
+}: ILoadHistoryParams): Promise<IVeoObjectHistoryEntry[]> {
   try {
     const fetchedHistory = await fetchFn({ size, afterId });
     const currentHistory = [...history, ...fetchedHistory.items];
     const currentAfterId = currentHistory[currentHistory.length - 1]?.id;
 
     currentPercentage++;
-    const totalPercentage = fetchedHistory.totalItemCount % size === 0 ? Math.floor(fetchedHistory.totalItemCount/size) : Math.floor(fetchedHistory.totalItemCount/size) + 1;
-    if(updateLoadingState) updateLoadingState({ phase: PrepPhase.Download, currentPercentage, totalPercentage });
+    const totalPercentage =
+      fetchedHistory.totalItemCount % size === 0 ?
+        Math.floor(fetchedHistory.totalItemCount / size)
+      : Math.floor(fetchedHistory.totalItemCount / size) + 1;
+    if (updateLoadingState)
+      updateLoadingState({
+        phase: PrepPhase.Download,
+        currentPercentage,
+        totalPercentage,
+      });
 
     if (fetchedHistory.items.length < size) {
       return currentHistory;
@@ -70,16 +105,18 @@ async function loadHistory({
         size,
         afterId: currentAfterId,
         updateLoadingState,
-        currentPercentage
+        currentPercentage,
       });
     }
-  }
-  catch (error) {
+  } catch (error) {
     throw new Error('Could not fetch history data.', { cause: error });
   }
 }
 
-function chunkHistory(historyItems: IVeoObjectHistoryEntry[], archiveSize = 10000) {
+function chunkHistory(
+  historyItems: IVeoObjectHistoryEntry[],
+  archiveSize = 10000
+) {
   const archiveName = { displayName: '', name: '', counter: 0 };
   const chunks = chunk(historyItems, archiveSize);
 
@@ -87,7 +124,7 @@ function chunkHistory(historyItems: IVeoObjectHistoryEntry[], archiveSize = 1000
     const { displayName, fileName } = composeFileName(chunk);
 
     // Account for equal names: history_2023-02-13_2023-02-05.zip, history_2023-02-13_2023-02-05_1.zip ...
-    archiveName.counter === 0 ? fileName : fileName + "_" + archiveName.counter;
+    archiveName.counter === 0 ? fileName : fileName + '_' + archiveName.counter;
 
     if (fileName === archiveName.name) {
       archiveName.counter++;
@@ -97,13 +134,12 @@ function chunkHistory(historyItems: IVeoObjectHistoryEntry[], archiveSize = 1000
 
     const countedName =
       archiveName.counter === 0 ?
-        fileName :
-        fileName + "_" + archiveName.counter;
+        fileName
+      : fileName + '_' + archiveName.counter;
     const countedDisplayName =
       archiveName.counter === 0 ?
-        displayName :
-        displayName + ` (${archiveName.counter})`;
-
+        displayName
+      : displayName + ` (${archiveName.counter})`;
 
     archiveName.name = fileName;
     return { chunk, name: countedName, displayName: countedDisplayName };
@@ -123,42 +159,50 @@ async function createZipArchives(
   chunks: HistoryChunk[] = [],
   _zipArchives: HistoryZipArchive[] = [],
   _currentChunk = 0
-): Promise<HistoryZipArchive[]>
-
-{
+): Promise<HistoryZipArchive[]> {
   const archive = await createZipFromHistoryChunk(chunks[_currentChunk]);
   const zipArchives = [..._zipArchives, archive];
 
-  updateLoadingState({ phase: PrepPhase.Zip, currentPercentage: _currentChunk + 1, totalPercentage: chunks.length });
+  updateLoadingState({
+    phase: PrepPhase.Zip,
+    currentPercentage: _currentChunk + 1,
+    totalPercentage: chunks.length,
+  });
 
   if (chunks.length === _currentChunk + 1) {
     return zipArchives;
   }
 
   _currentChunk++;
-  return await createZipArchives(updateLoadingState, chunks, zipArchives, _currentChunk);
+  return await createZipArchives(
+    updateLoadingState,
+    chunks,
+    zipArchives,
+    _currentChunk
+  );
 }
 
 function composeFileName(chunk: IVeoObjectHistoryEntry[]) {
   const startDate = new Date(chunk[0].time);
   const endDate = new Date(chunk[chunk.length - 1].time);
 
-  const displayName = `${format(startDate, 'dd.MM.yyyy')} – ${format(endDate, 'dd.MM.yyyy')}`;
-  const fileName = `history_${format(startDate, 'yyyy-MM-dd')}_${format(endDate, 'yyyy-MM-dd')}`;
+  const displayName = `${format(startDate, 'dd.MM.yyyy')} – ${format(
+    endDate,
+    'dd.MM.yyyy'
+  )}`;
+  const fileName = `history_${format(startDate, 'yyyy-MM-dd')}_${format(
+    endDate,
+    'yyyy-MM-dd'
+  )}`;
   return { displayName, fileName };
 }
 
 // DEVELOPMENT
 const devFetchHistoryData = async () => {
-  const devUrl='http://localhost:3001/testData';
+  const devUrl = 'http://localhost:3001/testData';
   const response = await fetch(devUrl);
   const json = await response.json();
   return json[0];
 };
 
-export {
-  loadHistory,
-  chunkHistory,
-  createZipArchives,
-  devFetchHistoryData
-};
+export { loadHistory, chunkHistory, createZipArchives, devFetchHistoryData };

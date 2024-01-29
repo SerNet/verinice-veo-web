@@ -86,41 +86,53 @@ export function createIntro() {
     // wait for pending fetches on current page
     const isFetching = useIsFetching();
     const onFetchFinish = () => {
-
       // Don't create new watchers if old ones already exist, as we don't want two watchers mutating the same instance (we ALWAYS have only one introJs instance,attached to the window).
-      if(!!_watchOptionsHandle || !!_watchHintsVisible || !!_watchStepsVisible) {
+      if (
+        !!_watchOptionsHandle ||
+        !!_watchHintsVisible ||
+        !!_watchStepsVisible
+      ) {
         return;
       }
       // watch hintsVisible (show hints bubbles)
-      _watchHintsVisible = watch(hintsVisible, () => toggleHints(), { immediate: true });
+      _watchHintsVisible = watch(hintsVisible, () => toggleHints(), {
+        immediate: true,
+      });
 
       // Skip step if element is defined but not visible
-      _watchStep = watch(() => step.value, (newValue, oldValue) => {
-        if(!options.value.steps) {
-          return;
+      _watchStep = watch(
+        () => step.value,
+        (newValue, oldValue) => {
+          if (!options.value.steps) {
+            return;
+          }
+
+          const currentStep = options.value.steps[newValue];
+
+          // Early exit if no element is specified.
+          if (!currentStep.element) {
+            return;
+          }
+
+          // Skip step if element is not visible
+          const element = document.querySelector(
+            currentStep.element as string
+          ) as HTMLElement | undefined;
+          if (!element || element.style.display === 'none') {
+            // Skip step if going forward, else go back two steps (No idea why there is a +1 offset. step.value, newValue and _instance.currentStep() all have the same value)
+            _instance.goToStep(newValue + (newValue > oldValue ? 2 : 0));
+          }
+
+          // For some reason intro.js does not always scroll to the element, so we do it manually to always have then element on screen
+          document
+            .querySelector(currentStep.element as string)
+            ?.scrollIntoView({
+              behavior: 'auto',
+              block: 'center',
+              inline: 'center',
+            });
         }
-
-        const currentStep = options.value.steps[newValue];
-
-        // Early exit if no element is specified.
-        if(!currentStep.element) {
-          return;
-        }
-
-        // Skip step if element is not visible
-        const element = document.querySelector(currentStep.element as string) as HTMLElement | undefined;
-        if(!element || element.style.display === 'none') {
-          // Skip step if going forward, else go back two steps (No idea why there is a +1 offset. step.value, newValue and _instance.currentStep() all have the same value)
-          _instance.goToStep(newValue + (newValue > oldValue ? 2 : 0));
-        }
-
-        // For some reason intro.js does not always scroll to the element, so we do it manually to always have then element on screen
-        document.querySelector(currentStep.element as string)?.scrollIntoView({
-          behavior: 'auto',
-          block: 'center',
-          inline: 'center'
-        });
-      });
+      );
 
       _watchStepsVisible = watch(
         stepsVisible,
@@ -135,16 +147,22 @@ export function createIntro() {
                 _instance.goToStep(step.value + 1);
 
                 // check wether element is a link element
-                const isAnchorElement = (el: HTMLElement): el is HTMLAnchorElement => el && el.tagName === 'A';
+                const isAnchorElement = (
+                  el: HTMLElement
+                ): el is HTMLAnchorElement => el && el.tagName === 'A';
                 // emulate nuxt-link behaviour
                 const onClickHandler = (event: MouseEvent) => {
                   const target = event.target as HTMLElement;
                   if (isAnchorElement(target)) {
                     const url = new URL(target.href, document.location.href);
                     const isRelative = url.host === document.location.host;
-                    if (isRelative && (!target.target || target.target === '_self')) {
+                    if (
+                      isRelative &&
+                      (!target.target || target.target === '_self')
+                    ) {
                       // Keep tutorial open while navigating inside tooltip
-                      const _oldStopOnRouteChangeValue = stopOnRouteChange.value;
+                      const _oldStopOnRouteChangeValue =
+                        stopOnRouteChange.value;
                       stopOnRouteChange.value = false;
                       // prevent default browser behaviour
                       event.preventDefault();
@@ -156,7 +174,9 @@ export function createIntro() {
                   }
                 };
 
-                const tooltipEl = document.querySelector<HTMLDivElement>('.vue-introjs-tooltip');
+                const tooltipEl = document.querySelector<HTMLDivElement>(
+                  '.vue-introjs-tooltip'
+                );
                 tooltipEl?.addEventListener('click', onClickHandler);
 
                 // tutorial has been completed
@@ -212,7 +232,7 @@ export function createIntro() {
               showBullets: false,
               showStepNumbers: true,
               ...o,
-              scrollToElement: false
+              scrollToElement: false,
             });
 
             if (stepsVisible.value && tutorialReady) {
@@ -226,11 +246,15 @@ export function createIntro() {
         { immediate: true, deep: true }
       );
     };
-    watch(() => isFetching.value, (newValue) => {
-      if(!newValue) {
-        onFetchFinish();
-      }
-    }, { immediate: true });
+    watch(
+      () => isFetching.value,
+      (newValue) => {
+        if (!newValue) {
+          onFetchFinish();
+        }
+      },
+      { immediate: true }
+    );
 
     onBeforeUnmount(() => {
       hintsVisible.value = false;
@@ -254,7 +278,9 @@ export function useIntro() {
    * Configure intro.js
    * @param opts Options
    */
-  const configure = (opts: introJs.Options | Ref<introJs.Options | undefined>) => {
+  const configure = (
+    opts: introJs.Options | Ref<introJs.Options | undefined>
+  ) => {
     _watchHandle?.();
     // support reactive tutorials
     if (isRef(opts)) {
@@ -344,7 +370,7 @@ export function useIntro() {
      */
     removeAllHints() {
       options.value = { ...options.value, hints: [] };
-    }
+    },
   };
 }
 
@@ -355,26 +381,43 @@ export function useTutorials() {
 
   const docs = ref<ParsedContent[]>();
   const fetchDocs = async () => {
-    docs.value = await queryContent().where({ _extension: 'yaml', language: { $in: [i18n.locale.value, undefined] } }).find();
+    docs.value = await queryContent()
+      .where({
+        _extension: 'yaml',
+        language: { $in: [i18n.locale.value, undefined] },
+      })
+      .find();
   };
 
   watch(
     () => i18n.locale.value,
     async () => {
       fetchDocs();
-    }, { immediate: true, deep: true }
+    },
+    { immediate: true, deep: true }
   );
 
   // Make sure tutorials is always present
-  const tutorials = computed(() => (docs.value || [])?.map((tutorial) => {
-    // We always match the last entry as this is the most specific one. The array would contain two entries if for example a page containing <nuxt-page /> gets matched (for example /pages/[unit]/domains/[domain]/risks.vue)
-    const routeToMatch = last(route.matched)?.path || '';
-    return { ...tutorial, applicable: tutorial.exact ? routeToMatch === tutorial.route : routeToMatch.startsWith(tutorial.route) };
-  }) || []);
+  const tutorials = computed(
+    () =>
+      (docs.value || [])?.map((tutorial) => {
+        // We always match the last entry as this is the most specific one. The array would contain two entries if for example a page containing <nuxt-page /> gets matched (for example /pages/[unit]/domains/[domain]/risks.vue)
+        const routeToMatch = last(route.matched)?.path || '';
+        return {
+          ...tutorial,
+          applicable:
+            tutorial.exact ?
+              routeToMatch === tutorial.route
+            : routeToMatch.startsWith(tutorial.route),
+        };
+      }) || []
+  );
 
   type Tutorial = typeof tutorials.value extends Array<infer U> ? U : never;
 
-  const tutorialsForRoute = computed(() => tutorials.value?.filter((tutorial) => tutorial.applicable));
+  const tutorialsForRoute = computed(
+    () => tutorials.value?.filter((tutorial) => tutorial.applicable)
+  );
 
   const hasTutorials = computed(() => !!tutorialsForRoute.value?.length);
 
@@ -388,8 +431,13 @@ export function useTutorials() {
      * @example `load('/tutorials/tutorial-test-steps')`
      */
     load(predicate?: string | TutorialPredicate, autoplay = true) {
-      const _find: TutorialPredicate = typeof predicate === 'function' ? predicate : (_) => _._path === predicate;
-      const tutorial = computed(() => (predicate ? tutorials.value?.find(_find) : tutorialsForRoute.value?.[0]));
+      const _find: TutorialPredicate =
+        typeof predicate === 'function' ? predicate : (
+          (_) => _._path === predicate
+        );
+      const tutorial = computed(() =>
+        predicate ? tutorials.value?.find(_find) : tutorialsForRoute.value?.[0]
+      );
       // @ts-ignore Some sort of type error, however intro js seems to work
       intro.configure(tutorial);
       if (autoplay) {
@@ -407,6 +455,6 @@ export function useTutorials() {
     /**
      * Are tutorials available for current route?
      */
-    hasTutorials
+    hasTutorials,
   };
 }

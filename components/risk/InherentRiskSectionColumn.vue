@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-col
-    cols="6"
-    :md="12 / numOfCols"
-  >
+  <v-col cols="6" :md="12 / numOfCols">
     <h3 class="text-h3">
       {{ protectionGoal.translations[locale].name }}
     </h3>
@@ -34,7 +31,14 @@
       hide-details
     >
       <template
-        v-if="dirtyFields && (dirtyFields.scenario || dirtyFields[`${riskDefinition.id}_specificProbability`] || dirtyFields[`${riskDefinition.id}_${protectionGoal.id}_specificImpact`])"
+        v-if="
+          dirtyFields &&
+          (dirtyFields.scenario ||
+            dirtyFields[`${riskDefinition.id}_specificProbability`] ||
+            dirtyFields[
+              `${riskDefinition.id}_${protectionGoal.id}_specificImpact`
+            ])
+        "
         #selection
       >
         {{ t('saveCTA') }}
@@ -54,43 +58,48 @@ export default defineComponent({
   props: {
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true
+      required: true,
     },
     protectionGoal: {
       type: Object as PropType<IVeoRiskCategory>,
-      required: true
+      required: true,
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      default: () => {}
+      default: () => {},
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     inherentRisk: {
       type: Number,
-      default: undefined
+      default: undefined,
     },
     numOfCols: {
       type: Number,
       default: 4,
-    }
+    },
   },
   setup(props) {
     const { t, locale } = useI18n();
 
-    const riskValues = computed(() => props.riskDefinition.riskValues.map((level) => ({ title: level.translations[locale.value].name, value: level.ordinalValue })));
+    const riskValues = computed(() =>
+      props.riskDefinition.riskValues.map((level) => ({
+        title: level.translations[locale.value].name,
+        value: level.ordinalValue,
+      }))
+    );
 
     return {
       riskValues,
 
       t,
       locale,
-      upperFirst
+      upperFirst,
     };
-  }
+  },
 });
 </script>
 

@@ -34,14 +34,20 @@
           :key="probability.ordinalValue"
           scope="col"
           class="px-4 py-2"
-          :style="{ backgroundColor: probability.htmlColor, color: getMostContrastyColor(probability.htmlColor) }"
+          :style="{
+            backgroundColor: probability.htmlColor,
+            color: getMostContrastyColor(probability.htmlColor),
+          }"
         >
           <div class="d-flex flex-wrap justify-center">
-            <span>{{ probability.translations[locale] && probability.translations[locale].name || Object.values(probability.translations)[0].name }}&nbsp;</span>
-            <v-tooltip
-              max-width="400px"
-              top
+            <span
+              >{{
+                (probability.translations[locale] &&
+                  probability.translations[locale].name) ||
+                Object.values(probability.translations)[0].name
+              }}&nbsp;</span
             >
+            <v-tooltip max-width="400px" top>
               <template #activator="{ props }">
                 <v-icon
                   v-bind="props"
@@ -51,7 +57,11 @@
                 />
               </template>
               <template #default>
-                {{ probability.translations[locale] && probability.translations[locale].description || Object.values(probability.translations)[0].description }}
+                {{
+                  (probability.translations[locale] &&
+                    probability.translations[locale].description) ||
+                  Object.values(probability.translations)[0].description
+                }}
               </template>
             </v-tooltip>
           </div>
@@ -63,26 +73,34 @@
         <th
           :rowspan="impacts.length + 1"
           class="px-2"
-          style="text-orientation: upright; writing-mode: tb; width: auto; min-width: 44px"
+          style="
+            text-orientation: upright;
+            writing-mode: tb;
+            width: auto;
+            min-width: 44px;
+          "
         >
           {{ upperFirst(t('impact').toString()) }}
         </th>
       </tr>
-      <tr
-        v-for="(impact, rowIndex) of impacts"
-        :key="impact.ordinalValue"
-      >
+      <tr v-for="(impact, rowIndex) of impacts" :key="impact.ordinalValue">
         <th
           scope="row"
           class="px-4 py-2"
-          :style="{ backgroundColor: impact.htmlColor, color: getMostContrastyColor(impact.htmlColor) }"
+          :style="{
+            backgroundColor: impact.htmlColor,
+            color: getMostContrastyColor(impact.htmlColor),
+          }"
         >
           <div class="d-flex flex-wrap justify-center">
-            <span>{{ impact.translations[locale] && impact.translations[locale].name || Object.values(impact.translations)[0].name }}&nbsp;</span>
-            <v-tooltip
-              max-width="400px"
-              top
+            <span
+              >{{
+                (impact.translations[locale] &&
+                  impact.translations[locale].name) ||
+                Object.values(impact.translations)[0].name
+              }}&nbsp;</span
             >
+            <v-tooltip max-width="400px" top>
               <template #activator="{ props }">
                 <v-icon
                   v-bind="props"
@@ -91,7 +109,11 @@
                 />
               </template>
               <template #default>
-                {{ impact.translations[locale] && impact.translations[locale].description || Object.values(impact.translations)[0].description }}
+                {{
+                  (impact.translations[locale] &&
+                    impact.translations[locale].description) ||
+                  Object.values(impact.translations)[0].description
+                }}
               </template>
             </v-tooltip>
           </div>
@@ -101,14 +123,22 @@
             v-for="(_value, colIndex) of value[rowIndex]"
             :key="colIndex"
             class="px-4 py-2"
-            :style="{ backgroundColor: _value.htmlColor, color: getMostContrastyColor(_value.htmlColor) }"
+            :style="{
+              backgroundColor: _value.htmlColor,
+              color: getMostContrastyColor(_value.htmlColor),
+            }"
           >
             <div class="d-flex flex-wrap justify-center">
-              <span>{{ riskValues[_value.ordinalValue].translations[locale] && riskValues[_value.ordinalValue].translations[locale].name || Object.values(riskValues[_value.ordinalValue].translations)[0].name }}&nbsp;</span>
-              <v-tooltip
-                max-width="400px"
-                top
+              <span
+                >{{
+                  (riskValues[_value.ordinalValue].translations[locale] &&
+                    riskValues[_value.ordinalValue].translations[locale]
+                      .name) ||
+                  Object.values(riskValues[_value.ordinalValue].translations)[0]
+                    .name
+                }}&nbsp;</span
               >
+              <v-tooltip max-width="400px" top>
                 <template #activator="{ props }">
                   <v-icon
                     v-bind="props"
@@ -117,7 +147,14 @@
                   />
                 </template>
                 <template #default>
-                  {{ riskValues[_value.ordinalValue].translations[locale] && riskValues[_value.ordinalValue].translations[locale].description || Object.values(riskValues[_value.ordinalValue].translations)[0].description }}
+                  {{
+                    (riskValues[_value.ordinalValue].translations[locale] &&
+                      riskValues[_value.ordinalValue].translations[locale]
+                        .description) ||
+                    Object.values(
+                      riskValues[_value.ordinalValue].translations
+                    )[0].description
+                  }}
                 </template>
               </v-tooltip>
             </div>
@@ -130,11 +167,7 @@
             {{ upperFirst(t('noData').toString()) }}
           </td>
         </template>
-        <td
-          v-else
-          :colspan="impacts.length"
-          class="px-4 py-2"
-        >
+        <td v-else :colspan="impacts.length" class="px-4 py-2">
           {{ upperFirst(t('noData').toString()) }}
         </td>
       </tr>
@@ -147,27 +180,31 @@ import { PropType } from 'vue';
 import { mdiInformationOutline } from '@mdi/js';
 import { upperFirst } from 'lodash';
 
-import { IVeoRiskProbabilityLevel, IVeoRiskValueLevel, IVeoRiskPotentialImpact } from '~/types/VeoTypes';
+import {
+  IVeoRiskProbabilityLevel,
+  IVeoRiskValueLevel,
+  IVeoRiskPotentialImpact,
+} from '~/types/VeoTypes';
 
 export default defineComponent({
   inheritAttrs: false,
   props: {
     value: {
       type: Array as PropType<IVeoRiskValueLevel[][]>,
-      default: () => []
+      default: () => [],
     },
     probabilities: {
       type: Array as PropType<IVeoRiskProbabilityLevel[]>,
-      default: () => []
+      default: () => [],
     },
     impacts: {
       type: Array as PropType<IVeoRiskPotentialImpact[]>,
-      default: () => []
+      default: () => [],
     },
     riskValues: {
       type: Array as PropType<IVeoRiskValueLevel[]>,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   setup() {
     const { t, locale } = useI18n();
@@ -180,7 +217,9 @@ export default defineComponent({
       const g = parseInt(hex.slice(2, 4), 16);
       const b = parseInt(hex.slice(4, 6), 16);
 
-      return r * 0.299 + g * 0.587 + b * 0.114 > CONTRAST_THRESHOLD ? '#000000' : '#ffffff';
+      return r * 0.299 + g * 0.587 + b * 0.114 > CONTRAST_THRESHOLD ?
+          '#000000'
+        : '#ffffff';
     };
 
     return {
@@ -189,9 +228,9 @@ export default defineComponent({
       mdiInformationOutline,
       upperFirst,
       t,
-      locale
+      locale,
     };
-  }
+  },
 });
 </script>
 

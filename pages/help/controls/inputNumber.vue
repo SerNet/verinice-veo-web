@@ -16,17 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    title="Input Number"
-    fixed-header
-  >
+  <BasePage title="Input Number" fixed-header>
     <v-row justify="center">
-      <v-col
-        cols="12"
-        sm="6"
-        lg="4"
-        class="docs-form-sector"
-      >
+      <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
@@ -50,19 +42,19 @@ const form = ref({
     type: 'object',
     properties: {
       inputNumber: {
-        type: 'number'
-      }
-    }
+        type: 'number',
+      },
+    },
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/inputNumber',
     options: {
-      label: 'Input Number'
-    }
+      label: 'Input Number',
+    },
   },
   data: {
-    inputNumber: 999
-  }
+    inputNumber: 999,
+  },
 });
 </script>

@@ -22,7 +22,6 @@
     xmlns="http://www.w3.org/2000/svg"
     v-bind="$attrs"
   >
-
     <g>
       <polygon
         id="svg_1"
@@ -102,5 +101,4 @@
   </svg>
 </template>
 
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>

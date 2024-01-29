@@ -33,7 +33,7 @@ steps:
   - title: 'Risiken'
     element: '[data-component-name=risks-nav-item]'
     intro: Im Bereich Risiken können Sie eine der verfügbaren Risikodefinitionen einsehen.
-# todo4sernet: Editoren - nur bei Content Creator Account!
+  # todo4sernet: Editoren - nur bei Content Creator Account!
   - title: 'Menü verstecken'
     element: '[data-component-name=toggle-navigation]'
     intro: Über Menü verstecken können Sie die Navigation ein- bzw. ausklappen.

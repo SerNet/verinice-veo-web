@@ -57,28 +57,44 @@
             :key="riskDefinition.id"
           >
             <RiskProbabilitySection
-              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].probability"
+              v-model:data="
+                internalValue.domains[domain.id].riskDefinitions[
+                  riskDefinition.id
+                ].probability
+              "
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
               @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
             <RiskImpactSection
-              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].impactValues"
+              v-model:data="
+                internalValue.domains[domain.id].riskDefinitions[
+                  riskDefinition.id
+                ].impactValues
+              "
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
               @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
             <RiskInherentRiskSection
-              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
+              v-model:data="
+                internalValue.domains[domain.id].riskDefinitions[
+                  riskDefinition.id
+                ].riskValues
+              "
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
               @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
             <RiskTreatmentSection
-              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
+              v-model:data="
+                internalValue.domains[domain.id].riskDefinitions[
+                  riskDefinition.id
+                ].riskValues
+              "
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
@@ -92,7 +108,11 @@
               v-bind="$attrs"
             />
             <RiskResidualSection
-              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
+              v-model:data="
+                internalValue.domains[domain.id].riskDefinitions[
+                  riskDefinition.id
+                ].riskValues
+              "
               :risk-definition="riskDefinition"
               :disabled="disabled"
             />
@@ -115,25 +135,25 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Object as PropType<IVeoRisk>,
-      required: true
+      required: true,
     },
     domain: {
       type: Object as PropType<IVeoDomain>,
-      default: () => undefined
+      default: () => undefined,
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      default: () => {}
+      default: () => {},
     },
     mitigations: {
       type: Array as PropType<IVeoEntity[]>,
-      default: () => []
+      default: () => [],
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['update:mitigations', 'update:model-value', 'update:dirty-fields'],
   setup(props, { emit }) {
@@ -141,34 +161,60 @@ export default defineComponent({
 
     // Internal value is a ref and not a computed, as a computed doesn't pick up changes somewhere deep down in the structure, so we have to explicitly watch deep.
     const ignoreUpdate = ref(false);
-    watch(() => props.modelValue, (newValue) => {
-      if(!ignoreUpdate.value) {
-        internalValue.value = cloneDeep(newValue);
-      }
-    }, { deep: true, immediate: true });
-    watch(() => internalValue.value, (newValue) => {
-      ignoreUpdate.value = true;
-      emit('update:model-value', newValue);
-      nextTick(() => {
-        ignoreUpdate.value = false;
-      });
-    }, { deep: true });
+    watch(
+      () => props.modelValue,
+      (newValue) => {
+        if (!ignoreUpdate.value) {
+          internalValue.value = cloneDeep(newValue);
+        }
+      },
+      { deep: true, immediate: true }
+    );
+    watch(
+      () => internalValue.value,
+      (newValue) => {
+        ignoreUpdate.value = true;
+        emit('update:model-value', newValue);
+        nextTick(() => {
+          ignoreUpdate.value = false;
+        });
+      },
+      { deep: true }
+    );
 
     // layout stuff
-    const getRiskValuesByProtectionGoal = (riskDefinition: IVeoRisk['domains']['x']['riskDefinitions']['y'], protectionGoal: string) => {
-      return riskDefinition.riskValues.find((value) => value.category === protectionGoal);
+    const getRiskValuesByProtectionGoal = (
+      riskDefinition: IVeoRisk['domains']['x']['riskDefinitions']['y'],
+      protectionGoal: string
+    ) => {
+      return riskDefinition.riskValues.find(
+        (value) => value.category === protectionGoal
+      );
     };
 
     const activeTab = ref(0);
-    const activeRiskDefinition = computed(() => Object.values(props.domain?.riskDefinitions || {})[activeTab.value]);
+    const activeRiskDefinition = computed(
+      () => Object.values(props.domain?.riskDefinitions || {})[activeTab.value]
+    );
 
     // setting residual risk to the inherent risk if no risk treatment is selected
     watch(
-      () => internalValue.value?.domains[props.domain?.id || ''].riskDefinitions[activeRiskDefinition.value.id].riskValues,
+      () =>
+        internalValue.value?.domains[props.domain?.id || ''].riskDefinitions[
+          activeRiskDefinition.value.id
+        ].riskValues,
       (newValue) => {
         for (const protectionGoalIndex in newValue) {
-          if (!internalValue.value?.domains[props.domain?.id || ''].riskDefinitions[activeRiskDefinition.value.id].riskValues[protectionGoalIndex].riskTreatments.length) {
-            internalValue.value.domains[props.domain?.id || ''].riskDefinitions[activeRiskDefinition.value.id].riskValues[protectionGoalIndex].userDefinedResidualRisk = undefined;
+          if (
+            !internalValue.value?.domains[props.domain?.id || '']
+              .riskDefinitions[activeRiskDefinition.value.id].riskValues[
+              protectionGoalIndex
+            ].riskTreatments.length
+          ) {
+            internalValue.value.domains[props.domain?.id || ''].riskDefinitions[
+              activeRiskDefinition.value.id
+            ].riskValues[protectionGoalIndex].userDefinedResidualRisk =
+              undefined;
           }
         }
       },
@@ -181,7 +227,7 @@ export default defineComponent({
       },
       set(newValue: IVeoEntity[]) {
         emit('update:mitigations', newValue);
-      }
+      },
     });
 
     return {
@@ -189,9 +235,9 @@ export default defineComponent({
       activeRiskDefinition,
       getRiskValuesByProtectionGoal,
       internalValue,
-      localMitigations
+      localMitigations,
     };
-  }
+  },
 });
 </script>
 

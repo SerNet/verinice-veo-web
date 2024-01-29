@@ -16,50 +16,36 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-chip
-    :closable="close"
-    data-component-name="veo-object-chip"
-    label
-  >
-    <div
-      v-if="label || $slots.label"
-    >
-      <span
-        v-if="label"
-        v-text="label"
-      />
-      <slot
-        v-else
-        name="label"
-      />
+  <v-chip :closable="close" data-component-name="veo-object-chip" label>
+    <div v-if="label || $slots.label">
+      <span v-if="label" v-text="label" />
+      <slot v-else name="label" />
     </div>
-    <div
-      v-if="value !== true"
-      class="chip-value"
-    >
-      <span
-        v-if="value"
-        v-text="value"
-      />
+    <div v-if="value !== true" class="chip-value">
+      <span v-if="value" v-text="value" />
       <slot v-else />
     </div>
   </v-chip>
 </template>
 
 <script setup lang="ts">
-const _props = withDefaults(defineProps<{
-  label: string,
-  close: boolean,
-  value: string | boolean | undefined
-}>(), {
-  label: '',
-  close: true,
-  value: undefined
-});
+const _props = withDefaults(
+  defineProps<{
+    label: string;
+    close: boolean;
+    value: string | boolean | undefined;
+  }>(),
+  {
+    label: '',
+    close: true,
+    value: undefined,
+  }
+);
 </script>
 
 <style lang="scss" scoped>
-.chip-value, .chip-label {
+.chip-value,
+.chip-label {
   background: #36384c;
   color: white;
   padding: 6px 12px 6px 12px;

@@ -16,17 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    title="Input Date"
-    fixed-header
-  >
+  <BasePage title="Input Date" fixed-header>
     <v-row justify="center">
-      <v-col
-        cols="12"
-        sm="6"
-        lg="4"
-        class="docs-form-sector"
-      >
+      <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
@@ -51,20 +43,20 @@ const form = ref({
     properties: {
       inputDate: {
         type: 'string',
-        format: 'date'
-      }
-    }
+        format: 'date',
+      },
+    },
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/inputDate',
     options: {
-      label: 'Input Date'
-    }
+      label: 'Input Date',
+    },
   },
   data: {
-    inputDate: '2020-02-20'
-  }
+    inputDate: '2020-02-20',
+  },
 });
 </script>
 

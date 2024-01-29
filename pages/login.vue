@@ -47,11 +47,7 @@
             </v-btn>
           </div>
         </div>
-        <v-divider
-          class="mx-7"
-          vertical
-          light
-        />
+        <v-divider class="mx-7" vertical light />
         <div style="flex-basis: 0; flex-grow: 1">
           <h4 class="text-h4 mb-4 cta">
             {{ t('createAccountCTA') }}
@@ -70,24 +66,15 @@
       </v-card-text>
     </BaseCard>
     <div class="text-center mt-2">
-      <a
-        :href="dataProtectionRegulationLink"
-        target="_blank"
-      >
+      <a :href="dataProtectionRegulationLink" target="_blank">
         {{ t('dataProtectionRegulations') }}
       </a>
       <span class="mx-1">|</span>
-      <a
-        :href="imprintLink"
-        target="_blank"
-      >
+      <a :href="imprintLink" target="_blank">
         {{ t('imprint') }}
       </a>
       <span class="mx-1">|</span>
-      <nuxt-link
-        to="/security"
-        target="_blank"
-      >
+      <nuxt-link to="/security" target="_blank">
         {{ t('policy') }}
       </nuxt-link>
     </div>
@@ -105,7 +92,7 @@ const route = useRoute();
 const context = useNuxtApp();
 const { login: _login, initialize, keycloakInitialized } = useVeoUser();
 useHead({
-  title: t('login')
+  title: t('login'),
 });
 
 if (!keycloakInitialized.value) {
@@ -113,10 +100,19 @@ if (!keycloakInitialized.value) {
 }
 
 // Needed as a separate function, as _login would be undefined if directly called from within the template.
-const login = () => _login(route.query.redirect_uri as string | undefined || '/');
+const login = () =>
+  _login((route.query.redirect_uri as string | undefined) || '/');
 
-const dataProtectionRegulationLink = computed(() => (locale.value === 'en' ? 'https://www.sernet.de/en/data-protection-declaration/' : 'https://www.sernet.de/datenschutz/'));
-const imprintLink = computed(() => (locale.value === 'en' ? 'https://account.verinice.com/en/left/Imprint/' : 'https://account.verinice.com/impressum/'));
+const dataProtectionRegulationLink = computed(() =>
+  locale.value === 'en' ?
+    'https://www.sernet.de/en/data-protection-declaration/'
+  : 'https://www.sernet.de/datenschutz/'
+);
+const imprintLink = computed(() =>
+  locale.value === 'en' ?
+    'https://account.verinice.com/en/left/Imprint/'
+  : 'https://account.verinice.com/impressum/'
+);
 </script>
 
 <i18n>

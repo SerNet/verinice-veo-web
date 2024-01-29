@@ -24,7 +24,11 @@
       no-close-button
       flat
       :title="t('noValidationErrors')"
-      :text="messages.warnings.length || messages.information?.length ? t('warningInformationHint') : undefined"
+      :text="
+        messages.warnings.length || messages.information?.length ?
+          t('warningInformationHint')
+        : undefined
+      "
     />
     <section v-else>
       <BaseAlert
@@ -34,16 +38,19 @@
         flat
         :title="t('validationErrors', [messages.errors.length])"
       >
-        {{ t('validationErrorsText') }}<br>{{ t('validationErrorsAutoFixHint') }}
+        {{ t('validationErrorsText') }}<br />{{
+          t('validationErrorsAutoFixHint')
+        }}
       </BaseAlert>
       <template
         v-for="level of levels"
-        :key="level.key + level.items.length /* for some reason if only level.key is used, the result list won't pick up changes in the items array. */"
+        :key="
+          level.key +
+          level.items
+            .length /* for some reason if only level.key is used, the result list won't pick up changes in the items array. */
+        "
       >
-        <div
-          v-if="level.items.length"
-          class="mt-4"
-        >
+        <div v-if="level.items.length" class="mt-4">
           <h3 class="text-h3">
             {{ level.title }}
           </h3>
@@ -66,13 +73,16 @@
 import { isArray } from 'lodash';
 import { PropType } from 'vue';
 
-import { VeoSchemaValidatorMessage, VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+import {
+  VeoSchemaValidatorMessage,
+  VeoSchemaValidatorValidationResult,
+} from '~/lib/ObjectSchemaValidator';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 const props = defineProps({
   enableFixing: {
     type: Boolean,
-    default: false
+    default: false,
   },
   messages: {
     type: Object as PropType<VeoSchemaValidatorValidationResult>,
@@ -80,21 +90,22 @@ const props = defineProps({
       valid: true,
       errors: [],
       information: [],
-      warnings: []
-    })
-  }
+      warnings: [],
+    }),
+  },
 });
 
 const attrs = useAttrs();
 const { t } = useI18n();
 
-const levels = computed(() => Object.entries(props.messages)
-  .filter(([_key, value]) => isArray(value))
-  .map(([key, items]) => ({
-    key,
-    items: items as VeoSchemaValidatorMessage[],
-    title: t(`level.${key}`)
-  }))
+const levels = computed(() =>
+  Object.entries(props.messages)
+    .filter(([_key, value]) => isArray(value))
+    .map(([key, items]) => ({
+      key,
+      items: items as VeoSchemaValidatorMessage[],
+      title: t(`level.${key}`),
+    }))
 );
 </script>
 

@@ -16,14 +16,13 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list-item
-    class="bg-basepage"
-    lines="two"
-  >
+  <v-list-item class="bg-basepage" lines="two">
     <v-list-item-title class="body-1 font-weight-bold d-flex align-center">
       {{ idWithTitle }}
     </v-list-item-title>
-    <v-list-item-subtitle v-text="t('attributecount', item.attributes.length || 0)" />
+    <v-list-item-subtitle
+      v-text="t('attributecount', item.attributes.length || 0)"
+    />
     <template #append>
       <v-chip
         v-if="styling.name"
@@ -62,33 +61,47 @@ import { upperFirst } from 'lodash';
 import { PropType } from 'vue';
 import { mdiPencil, mdiTrashCanOutline } from '@mdi/js';
 
-import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2';
+import ObjectSchemaHelper, {
+  IVeoOSHCustomAspect,
+  IVeoOSHCustomLink,
+} from '~/lib/ObjectSchemaHelper2';
 import { IInputType } from '~/types/VeoEditor';
 
 const props = defineProps({
   item: {
     type: Object as PropType<IVeoOSHCustomAspect | IVeoOSHCustomLink>,
-    required: true
+    required: true,
   },
   styling: {
     type: Object as PropType<IInputType>,
-    default: () => ({})
+    default: () => ({}),
   },
   translate: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 defineEmits(['delete-item', 'edit-item']);
 
 const { t, locale } = useI18n();
-const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined = inject('objectSchemaHelper');
+const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined =
+  inject('objectSchemaHelper');
 const displayLanguage = inject<Ref<string>>('displayLanguage', locale);
 
-const translatedTitle = computed(() => objectSchemaHelper?.value?.getTranslation(displayLanguage.value, `${props.item.prefix}${props.item.title}`));
+const translatedTitle = computed(
+  () =>
+    objectSchemaHelper?.value?.getTranslation(
+      displayLanguage.value,
+      `${props.item.prefix}${props.item.title}`
+    )
+);
 
-const idWithTitle = computed(() => translatedTitle.value ? `${props.item.title} (${locale.value}: ${translatedTitle.value})` : props.item.title);
+const idWithTitle = computed(() =>
+  translatedTitle.value ?
+    `${props.item.title} (${locale.value}: ${translatedTitle.value})`
+  : props.item.title
+);
 </script>
 
 <i18n>

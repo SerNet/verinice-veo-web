@@ -16,25 +16,13 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    data-test-selector="welcome-page"
-  >
-    <LayoutHeadline
-      :title="t('headline')"
-    />
+  <BasePage data-test-selector="welcome-page">
+    <LayoutHeadline :title="t('headline')" />
 
     <v-container fluid>
-      <BaseCard
-        class="mx-12 my-4 bg-basepage"
-        style="max-width: 1280px"
-      >
-        <v-card
-          class="my-4 bg-surface"
-        >
-          <div
-            class="bg-accent"
-            style="height: 75px"
-          >
+      <BaseCard class="mx-12 my-4 bg-basepage" style="max-width: 1280px">
+        <v-card class="my-4 bg-surface">
+          <div class="bg-accent" style="height: 75px">
             <v-card-title class="ml-4 small-caps">
               {{ t('greeting') }}
             </v-card-title>
@@ -45,21 +33,22 @@
           </div>
 
           <!-- Decisions: load a profile or an empty unit -->
-          <v-row
-            dense
-            class="mt-8 mb-12"
-          >
+          <v-row dense class="mt-8 mb-12">
             <v-col cols="6">
               <v-card class="mx-8 fill-height bg-background">
                 <v-card-title
                   class="pt-4 bg-accent small-caps"
-                  style="min-height: 60px;"
+                  style="min-height: 60px"
                 >
                   {{ t('selection.noob.question') }}
                 </v-card-title>
 
                 <v-card-text class="mt-8 text-center text-h3">
-                  {{ isUnitExisting('Demo') ? t('selection.noob.advice') :t('selection.noob.adviceNoUnit') }}
+                  {{
+                    isUnitExisting('Demo') ?
+                      t('selection.noob.advice')
+                    : t('selection.noob.adviceNoUnit')
+                  }}
                 </v-card-text>
 
                 <div class="d-flex justify-center my-4">
@@ -70,7 +59,11 @@
                     @click="applyProfile()"
                   >
                     <span>
-                      {{ isUnitExisting('Demo') ? t('selection.noob.buttonCaption') : t('unitManagement') }}
+                      {{
+                        isUnitExisting('Demo') ?
+                          t('selection.noob.buttonCaption')
+                        : t('unitManagement')
+                      }}
                     </span>
                   </v-btn>
                   <v-progress-linear
@@ -79,7 +72,9 @@
                     height="30"
                     :indeterminate="isLoading"
                   >
-                    <span class="small-caps text-h2">{{ t('applyProfile') }}</span>
+                    <span class="small-caps text-h2">{{
+                      t('applyProfile')
+                    }}</span>
                   </v-progress-linear>
                 </div>
               </v-card>
@@ -89,21 +84,26 @@
               <v-card class="mr-8 fill-height bg-background">
                 <v-card-title
                   class="pt-4 bg-accent small-caps"
-                  style="min-height: 60px;"
+                  style="min-height: 60px"
                 >
                   {{ t('selection.seasoned.question') }}
                 </v-card-title>
 
                 <v-card-text class="mt-8 text-center text-h3">
-                  {{ isUnitExisting('Unit 1') ? t('selection.seasoned.advice') : t('selection.seasoned.adviceNoUnit') }}
+                  {{
+                    isUnitExisting('Unit 1') ?
+                      t('selection.seasoned.advice')
+                    : t('selection.seasoned.adviceNoUnit')
+                  }}
                 </v-card-text>
 
                 <div class="d-flex justify-center my-8">
-                  <v-btn
-                    color="primary"
-                    @click="loadUnit()"
-                  >
-                    {{ isUnitExisting('Unit 1') ? t('selection.seasoned.buttonCaption') : t('unitManagement') }}
+                  <v-btn color="primary" @click="loadUnit()">
+                    {{
+                      isUnitExisting('Unit 1') ?
+                        t('selection.seasoned.buttonCaption')
+                      : t('unitManagement')
+                    }}
                   </v-btn>
                 </div>
               </v-card>
@@ -124,10 +124,7 @@
                 :icon="mdiInformationOutline"
               >
                 <v-card-text>
-                  <v-col
-                    cols="12"
-                    class="text-justify"
-                  >
+                  <v-col cols="12" class="text-justify">
                     <i18n-t
                       keypath="firstSteps.tutorial"
                       tag="span"
@@ -147,10 +144,7 @@
                 :icon="mdiHelpCircleOutline"
               >
                 <v-card-text>
-                  <v-col
-                    cols="12"
-                    class="text-justify"
-                  >
+                  <v-col cols="12" class="text-justify">
                     <i18n-t
                       keypath="firstSteps.documentation"
                       tag="span"
@@ -184,10 +178,7 @@
                 :icon="mdiForumOutline"
               >
                 <v-card-text>
-                  <v-col
-                    cols="12"
-                    class="text-justify"
-                  >
+                  <v-col cols="12" class="text-justify">
                     <i18n-t
                       keypath="firstSteps.forum"
                       tag="span"
@@ -212,10 +203,7 @@
                 :icon="mdiYoutubeTv"
               >
                 <v-card-text>
-                  <v-col
-                    cols="12"
-                    class="text-justify"
-                  >
+                  <v-col cols="12" class="text-justify">
                     <i18n-t
                       keypath="firstSteps.channel"
                       tag="span"
@@ -240,10 +228,7 @@
                 :icon="mdiSchoolOutline"
               >
                 <v-card-text>
-                  <v-col
-                    cols="12"
-                    class="text-justify"
-                  >
+                  <v-col cols="12" class="text-justify">
                     <i18n-t
                       keypath="firstSteps.webinar"
                       tag="span"
@@ -253,7 +238,9 @@
                         class="text-decoration-none text-primary"
                         rel="noopener noreferrer"
                         target="_blank"
-                        :to="locale === 'de' ? links.webinar.de : links.webinar.en"
+                        :to="
+                          locale === 'de' ? links.webinar.de : links.webinar.en
+                        "
                       >
                         <strong>{{ t('injector.webinar') }}</strong>
                       </nuxt-link>
@@ -281,7 +268,7 @@ import {
   mdiForumOutline,
   mdiSchoolOutline,
   mdiYoutubeTv,
-  mdiInformationOutline
+  mdiInformationOutline,
 } from '@mdi/js';
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
@@ -291,7 +278,9 @@ import { useMutation } from '~/composables/api/utils/mutation';
 
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
-const { mutateAsync: apply, isLoading } = useMutation(domainQueryDefinitions.mutations.applyProfile);
+const { mutateAsync: apply, isLoading } = useMutation(
+  domainQueryDefinitions.mutations.applyProfile
+);
 const { displayErrorMessage } = useVeoAlerts();
 
 const router = useRouter();
@@ -322,8 +311,8 @@ const loadUnit = (unitname = 'Unit 1') => {
       name: 'unit-domains-domain',
       params: {
         unit,
-        domain
-      }
+        domain,
+      },
     });
   }
 };
@@ -333,7 +322,9 @@ const applyProfile = async () => {
   if (!isUnitExisting('Demo')) {
     router.push({ name: 'units' });
   }
-  const isProfileApplied = localStorage.getItem(LOCAL_STORAGE_KEYS.DEMO_UNIT_PROFILE_APPLIED);
+  const isProfileApplied = localStorage.getItem(
+    LOCAL_STORAGE_KEYS.DEMO_UNIT_PROFILE_APPLIED
+  );
   // navigate to the dashboard if the profile already has been applied
   if (isProfileApplied) {
     loadUnit('Demo');
@@ -344,28 +335,32 @@ const applyProfile = async () => {
   if (unit && domain) {
     try {
       // set DEMO_UNIT_PROFILE_APPLIED to true on first call to ensure, that the profile is applied only once
-      localStorage.setItem(LOCAL_STORAGE_KEYS.DEMO_UNIT_PROFILE_APPLIED, true.toString());
+      localStorage.setItem(
+        LOCAL_STORAGE_KEYS.DEMO_UNIT_PROFILE_APPLIED,
+        true.toString()
+      );
       // apply the profile / sample data to the unit <Demo>
       await apply({ domainId: domain, unitId: unit, profileKey: ['demoUnit'] });
       // link to the dashboard
       loadUnit('Demo');
-    }
-    catch (error: any) {
+    } catch (error: any) {
       displayErrorMessage('Error', t('errorMessage'));
     }
   }
 };
 
-const isUnitExisting = (unitName: any) => units.value?.find((unit: any) => unit.name === unitName);
+const isUnitExisting = (unitName: any) =>
+  units.value?.find((unit: any) => unit.name === unitName);
 
 // external links
 const links = ref({
-  channel: 'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf',
+  channel:
+    'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf',
   forum: 'https://forum.verinice.com',
   webinar: {
     de: 'https://verinice.com/webinare',
-    en: 'https://verinice.com/en/pro/webinars-1'
-  }
+    en: 'https://verinice.com/en/pro/webinars-1',
+  },
 });
 
 // prevent the welcome page to be loaded automatically at login (except for the first time; handled by the middleware)

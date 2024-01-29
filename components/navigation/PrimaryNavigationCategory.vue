@@ -26,14 +26,8 @@
     @click.stop="onClick"
   >
     <template #prependIcon>
-      <v-icon
-        v-if="level > 0"
-        :icon="mdiChevronDown"
-      />
-      <v-icon
-        v-else-if="icon"
-        :icon="icon"
-      />
+      <v-icon v-if="level > 0" :icon="mdiChevronDown" />
+      <v-icon v-else-if="icon" :icon="icon" />
     </template>
     <template #activator="{ props: activatorProps }">
       <v-list-item
@@ -42,11 +36,7 @@
         :class="activatorIntendation"
       >
         <template #prepend>
-          <v-icon
-            v-if="icon"
-            :icon="icon"
-            class="mr-3"
-          />
+          <v-icon v-if="icon" :icon="icon" class="mr-3" />
         </template>
         <template #default="{ isActive }">
           <v-list-item-title
@@ -59,24 +49,14 @@
       </v-list-item>
     </template>
     <template v-if="childrenLoading">
-      <v-list-item
-        v-for="index in 3"
-        :key="index"
-        disabled
-      >
+      <v-list-item v-for="index in 3" :key="index" disabled>
         <v-list-item-title>
-          <v-skeleton-loader
-            type="text"
-            width="100%"
-          />
+          <v-skeleton-loader type="text" width="100%" />
         </v-list-item-title>
       </v-list-item>
     </template>
     <template v-else>
-      <template
-        v-for="child of children"
-        :key="child.id"
-      >
+      <template v-for="child of children" :key="child.id">
         <NavigationPrimaryNavigationEntry
           v-if="!child.children"
           v-bind="child"
@@ -101,21 +81,29 @@
 import { mdiChevronDown } from '@mdi/js';
 import { VList } from 'vuetify/components';
 
-import { INavItem, PROVIDE_KEYS as PRIMARY_NAVIGATION_KEYS } from './PrimaryNavigation.vue';
+import {
+  INavItem,
+  PROVIDE_KEYS as PRIMARY_NAVIGATION_KEYS,
+} from './PrimaryNavigation.vue';
 
-const props = withDefaults(defineProps<INavItem & {
-  level?: number;
-  miniVariant: boolean;
-}>(), {
-  icon: undefined,
-  to: undefined,
-  exact: false,
-  componentName: undefined,
-  classes: undefined,
-  level: 0,
-  children: undefined,
-  openInNewtab: false
-});
+const props = withDefaults(
+  defineProps<
+    INavItem & {
+      level?: number;
+      miniVariant: boolean;
+    }
+  >(),
+  {
+    icon: undefined,
+    to: undefined,
+    exact: false,
+    componentName: undefined,
+    classes: undefined,
+    level: 0,
+    children: undefined,
+    openInNewtab: false,
+  }
+);
 
 const emit = defineEmits<{
   (event: 'expand-menu'): void;
@@ -128,7 +116,7 @@ const router = useRouter();
 const navigation = inject<Ref<VList>>(PRIMARY_NAVIGATION_KEYS.navigation);
 
 const onClick = () => {
-  if(props.openInNewtab) {
+  if (props.openInNewtab) {
     return;
   }
   if (props.miniVariant) {
@@ -139,7 +127,9 @@ const onClick = () => {
   }
 };
 
-const activatorIntendation = computed(() => `primary-navigation-entry-level-${props.level}`);
+const activatorIntendation = computed(
+  () => `primary-navigation-entry-level-${props.level}`
+);
 
 const openCategory = () => {
   navigation?.value.open(props.id, true);

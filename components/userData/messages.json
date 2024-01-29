@@ -1,4 +1,4 @@
- {
+{
   "en": {
     "hint": "This page allows you to export data associated with your account.",
     "unitHeader": "Data of your active units:",
@@ -15,7 +15,7 @@
     "errorBody": "Please contact our support team: verinice{'@'}sernet.de.",
     "successHeader": "Download successful.",
     "prepareHistoryPhases": {
-      "IDLE":  "Downloading your data ...",
+      "IDLE": "Downloading your data ...",
       "DOWNLOAD": "Downloading your data ...",
       "ZIP": "Creating ZIP Archives ..."
     },

@@ -16,18 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <svg
-    viewBox="0 0 24 21"
-    version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-
+  <svg viewBox="0 0 24 21" version="1.1" xmlns="http://www.w3.org/2000/svg">
     <g>
-      <g
-        id="svg_1"
-        fill-rule="evenodd"
-        fill="none"
-      >
+      <g id="svg_1" fill-rule="evenodd" fill="none">
         <path
           id="v."
           fill="#E53935"
@@ -38,5 +29,4 @@
   </svg>
 </template>
 
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>

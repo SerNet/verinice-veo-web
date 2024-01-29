@@ -36,7 +36,7 @@
           dense
           hide-details
           :items="languages"
-          style="max-width: 200px;"
+          style="max-width: 200px"
         />
       </div>
       <v-row>
@@ -48,14 +48,8 @@
           <BaseCard>
             <v-card-text>
               <v-row>
-                <v-col
-                  cols="auto"
-                  class="flex-grow-1"
-                >
-                  <v-form
-                    v-model="subTypeForms[subTypeIndex]"
-                    @submit.prevent
-                  >
+                <v-col cols="auto" class="flex-grow-1">
+                  <v-form v-model="subTypeForms[subTypeIndex]" @submit.prevent>
                     <v-text-field
                       v-model="subType.subType"
                       :label="`${upperFirst(t('subtype').toString())}*`"
@@ -94,7 +88,9 @@
                     :status="element"
                     :index="index"
                     :lang="displayLanguage"
-                    @update-status="(status) => onUpdateStatus(subTypeIndex, index, status)"
+                    @update-status="
+                      (status) => onUpdateStatus(subTypeIndex, index, status)
+                    "
                     @delete="onDeleteStatus(subTypeIndex, index)"
                   />
                 </template>
@@ -103,10 +99,7 @@
                 v-model="newStatusForms[subTypeIndex]"
                 @submit.prevent="addStatusToSubType(subTypeIndex)"
               >
-                <v-list-item
-                  class="px-0"
-                  dense
-                >
+                <v-list-item class="px-0" dense>
                   <v-text-field
                     v-model="newStatusTextfields[subTypeIndex]"
                     :label="upperFirst(t('status').toString())"
@@ -117,13 +110,13 @@
                   <v-list-item-action>
                     <v-btn
                       variant="text"
-                      :disabled="!newStatusForms[subTypeIndex] || !newStatusTextfields[subTypeIndex]"
+                      :disabled="
+                        !newStatusForms[subTypeIndex] ||
+                        !newStatusTextfields[subTypeIndex]
+                      "
                       @click="addStatusToSubType(subTypeIndex)"
                     >
-                      <v-icon
-                        :icon="mdiPlus"
-                        start
-                      />
+                      <v-icon :icon="mdiPlus" start />
                       {{ t('add') }}
                     </v-btn>
                   </v-list-item-action>
@@ -133,24 +126,15 @@
           </BaseCard>
         </v-col>
         <v-col cols="12">
-          <v-btn
-            variant="text"
-            @click="addSubType"
-          >
-            <v-icon
-              :icon="mdiPlus"
-              start
-            />
+          <v-btn variant="text" @click="addSubType">
+            <v-icon :icon="mdiPlus" start />
             {{ t('addSubtype') }}
           </v-btn>
         </v-col>
       </v-row>
     </template>
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        @click="$emit('update:model-value', false)"
-      >
+      <v-btn variant="text" @click="$emit('update:model-value', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
@@ -180,17 +164,17 @@ import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 
 export default defineComponent({
   components: {
-    Draggable
+    Draggable,
   },
   props: {
     modelValue: {
       type: Boolean,
-      default: false
+      default: false,
     },
     domainId: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['schema-updated', 'update:model-value'],
   setup(props, { emit }) {
@@ -198,19 +182,34 @@ export default defineComponent({
     const { t: globalT } = useI18n({ useScope: 'global' });
     const route = useRoute();
 
-    const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined = inject('objectSchemaHelper');
+    const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined =
+      inject('objectSchemaHelper');
 
     // display stuff
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
-    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
+    const fetchDomainQueryParameters = computed(() => ({
+      id: props.domainId as string,
+    }));
+    const { data: domain } = useQuery(
+      domainQueryDefinitions.queries.fetchDomain,
+      fetchDomainQueryParameters
+    );
 
     const displayLanguage = inject<Ref<string>>('displayLanguage');
     // We can't use a computed here, as changes sadly won't get picked up.
-    const languages = ref((objectSchemaHelper?.value?.getLanguages() || []).map((key) => ({ title: t(key), value: key })));
+    const languages = ref(
+      (objectSchemaHelper?.value?.getLanguages() || []).map((key) => ({
+        title: t(key),
+        value: key,
+      }))
+    );
 
     // objectschema stuff
-    const subTypes: Ref<{ subType: string; status: { key: string; [lang: string]: string }[] }[]> = ref([]);
-    const originalSubTypes: Ref<{ subType: string; status: { key: string; [lang: string]: string }[] }[]> = ref([]);
+    const subTypes: Ref<
+      { subType: string; status: { key: string; [lang: string]: string }[] }[]
+    > = ref([]);
+    const originalSubTypes: Ref<
+      { subType: string; status: { key: string; [lang: string]: string }[] }[]
+    > = ref([]);
     const subTypeForms: Ref<boolean[]> = ref([]);
     const newStatusForms: Ref<boolean[]> = ref([]);
     const newStatusTextfields: Ref<(string | undefined)[]> = ref([]);
@@ -219,21 +218,36 @@ export default defineComponent({
       () => objectSchemaHelper?.value,
       () => {
         updateForm();
-        languages.value = (objectSchemaHelper?.value?.getLanguages() || []).map((key) => ({ title: (locales.value as LocaleObject[]).find((locale) => locale.code === key)?.name || key, value: key }));
+        languages.value = (objectSchemaHelper?.value?.getLanguages() || []).map(
+          (key) => ({
+            title:
+              (locales.value as LocaleObject[]).find(
+                (locale) => locale.code === key
+              )?.name || key,
+            value: key,
+          })
+        );
       },
       {
         deep: true,
-        immediate: true
+        immediate: true,
       }
     );
 
     function updateForm() {
       if (objectSchemaHelper?.value) {
-        const oshSubTypes = cloneDeep(objectSchemaHelper.value.getSubTypes(route.params.domain as string));
-        subTypes.value = oshSubTypes.map((subType) => ({ subType: subType.subType, status: subType.status.map((_status) => ({ key: _status })) }));
+        const oshSubTypes = cloneDeep(
+          objectSchemaHelper.value.getSubTypes(route.params.domain as string)
+        );
+        subTypes.value = oshSubTypes.map((subType) => ({
+          subType: subType.subType,
+          status: subType.status.map((_status) => ({ key: _status })),
+        }));
         subTypeForms.value = Array(subTypes.value.length).fill(true);
         newStatusForms.value = Array(subTypes.value.length).fill(true);
-        newStatusTextfields.value = Array(subTypes.value.length).fill(undefined);
+        newStatusTextfields.value = Array(subTypes.value.length).fill(
+          undefined
+        );
 
         // Add translations to status
         for (const lang of objectSchemaHelper.value.getLanguages()) {
@@ -241,10 +255,15 @@ export default defineComponent({
             for (const statusIndex in subTypes.value[subTypeIndex].status) {
               const translation = objectSchemaHelper.value.getTranslation(
                 lang,
-                `${objectSchemaHelper.value.getTitle()}_${subTypes.value[subTypeIndex].subType}_status_${subTypes.value[subTypeIndex].status[statusIndex].key}`
+                `${objectSchemaHelper.value.getTitle()}_${
+                  subTypes.value[subTypeIndex].subType
+                }_status_${
+                  subTypes.value[subTypeIndex].status[statusIndex].key
+                }`
               );
               if (translation) {
-                subTypes.value[subTypeIndex].status[statusIndex][lang] = translation;
+                subTypes.value[subTypeIndex].status[statusIndex][lang] =
+                  translation;
               }
             }
           }
@@ -254,10 +273,16 @@ export default defineComponent({
     }
 
     function addStatusToSubType(index: number) {
-      if (requiredRule(newStatusTextfields.value[index] || '') !== true || alphaNumericUnderscoreRule(newStatusTextfields.value[index] || '') !== true) {
+      if (
+        requiredRule(newStatusTextfields.value[index] || '') !== true ||
+        alphaNumericUnderscoreRule(newStatusTextfields.value[index] || '') !==
+          true
+      ) {
         return;
       }
-      subTypes.value[index].status.push({ key: newStatusTextfields.value[index] as string });
+      subTypes.value[index].status.push({
+        key: newStatusTextfields.value[index] as string,
+      });
       newStatusTextfields.value[index] = undefined;
     }
 
@@ -275,7 +300,11 @@ export default defineComponent({
       newStatusTextfields.value.splice(index, 1);
     }
 
-    function onUpdateStatus(subTypeIndex: number, statusIndex: number, status: { key: string; [lang: string]: string }) {
+    function onUpdateStatus(
+      subTypeIndex: number,
+      statusIndex: number,
+      status: { key: string; [lang: string]: string }
+    ) {
       subTypes.value[subTypeIndex].status[statusIndex] = status;
     }
 
@@ -285,20 +314,28 @@ export default defineComponent({
 
     // Validation
     const requiredRule = (v: string) => !!v || t('global.input.required');
-    const alphaNumericUnderscoreRule = (v: string) => !v || /^[A-Z0-9_]+$/.test(v) || t('statusAlphaNumericUnderscore');
+    const alphaNumericUnderscoreRule = (v: string) =>
+      !v || /^[A-Z0-9_]+$/.test(v) || t('statusAlphaNumericUnderscore');
 
-    const isFormDirty = computed(() => !isEqual(subTypes.value, originalSubTypes.value));
+    const isFormDirty = computed(
+      () => !isEqual(subTypes.value, originalSubTypes.value)
+    );
 
     function onSubmit() {
       // Remove old translations
       for (const subType of originalSubTypes.value) {
-        objectSchemaHelper?.value?.removeTranslationsContainingKey(`${objectSchemaHelper.value.getTitle()}_${subType.subType}_status`);
+        objectSchemaHelper?.value?.removeTranslationsContainingKey(
+          `${objectSchemaHelper.value.getTitle()}_${subType.subType}_status`
+        );
       }
 
       // Save domain
       objectSchemaHelper?.value?.updateDomain(
         props.domainId,
-        subTypes.value.map((subType) => ({ subType: subType.subType, status: subType.status.map((status) => status.key) }))
+        subTypes.value.map((subType) => ({
+          subType: subType.subType,
+          status: subType.status.map((status) => status.key),
+        }))
       );
 
       // Save translations
@@ -308,7 +345,11 @@ export default defineComponent({
             if (subTypes.value[subTypeIndex].status[statusIndex][lang]) {
               objectSchemaHelper?.value?.updateTranslation(
                 lang,
-                `${objectSchemaHelper.value.getTitle()}_${subTypes.value[subTypeIndex].subType}_status_${subTypes.value[subTypeIndex].status[statusIndex].key}`,
+                `${objectSchemaHelper.value.getTitle()}_${
+                  subTypes.value[subTypeIndex].subType
+                }_status_${
+                  subTypes.value[subTypeIndex].status[statusIndex].key
+                }`,
                 subTypes.value[subTypeIndex].status[statusIndex][lang]
               );
             }
@@ -345,9 +386,9 @@ export default defineComponent({
       mdiTranslate,
       mdiTrashCanOutline,
       upperFirst,
-      CHART_COLORS
+      CHART_COLORS,
     };
-  }
+  },
 });
 </script>
 

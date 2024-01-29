@@ -7,16 +7,16 @@ steps:
     element: '[data-component-name=object-details-page]'
     intro: The object view consists of the two areas object-details (left) and form (right).
   - title: 'Show or hide areas'
-# element: '[data-component-name=object-details-page] > div:nth-child(2) > div > button'
-# element: '[data-component-name=object-details-page] > div:nth-child(2) > div:nth-child(2) > button'
+    # element: '[data-component-name=object-details-page] > div:nth-child(2) > div > button'
+    # element: '[data-component-name=object-details-page] > div:nth-child(2) > div:nth-child(2) > button'
     intro: The object details on the left can be hidden or displayed by button or shortcut Alt/STRG + 1.<br>The form can be hidden or displayed by button or shortcut Alt/STRG + 2.
-# details
+  # details
   - title: 'Object details'
     element: '[data-component-name=object-details-details]'
     intro: On the left side you can see the environment of the selected object in detail.
-# - title: 'Hide/display object-details' element: '[data-component-name=object-details
-# element: '[data-component-name=object-details-page] > div:nth-child(2) > div > button'
-# intro: The object details can be hidden or displayed via button or shortcut Alt/STRG + 1.
+  # - title: 'Hide/display object-details' element: '[data-component-name=object-details
+  # element: '[data-component-name=object-details-page] > div:nth-child(2) > div > button'
+  # intro: The object details can be hidden or displayed via button or shortcut Alt/STRG + 1.
   - title: 'Object name'
     element: '[data-component-name=object-details-page] h1'
     intro: The object name contains the designer, the abbreviation and the name of the object.
@@ -47,13 +47,13 @@ steps:
   - title: 'Add'
     element: '[data-component-name=object-details-actions-button]'
     intro: Depending on the active section, you can use the Add button to add objects and scopes as components or make the active object part of another and add risks if available.
-# form
+  # form
   - title: 'Form'
     element: '[data-component-name=object-form-form]'
     intro: On the right side, all details in the form are displayed.
-# title: 'Hide/display form
-# element: '[data-component-name=object-details-page] > div:nth-child(2) > div:nth-child(2) > button'
-# intro: The form can be hidden or displayed via button or shortcut Alt/STRG + 2.
+  # title: 'Hide/display form
+  # element: '[data-component-name=object-details-page] > div:nth-child(2) > div:nth-child(2) > button'
+  # intro: The form can be hidden or displayed via button or shortcut Alt/STRG + 2.
   - title: 'Save form'
     element: '[data-component-name=object-details-actions]'
     intro: You can save forms after changes or reset all changes.

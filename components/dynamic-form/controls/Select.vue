@@ -26,17 +26,14 @@
     :class="options && options.class"
     class="vf-form-element vf-select"
     :clearable="!options.required"
-    :data-attribute-name="last(objectSchemaPointer.split('/'))"     
+    :data-attribute-name="last(objectSchemaPointer.split('/'))"
     :items="localItems"
     :multiple="multiple"
     autocomplete="off"
     variant="underlined"
     @click:clear="$emit('update:model-value', undefined)"
   >
-    <template
-      v-if="multiple"
-      #item="{ props, item }"
-    >
+    <template v-if="multiple" #item="{ props, item }">
       <v-list-item
         v-if="item.value === '_empty_array_'"
         v-bind="props"
@@ -53,9 +50,17 @@
       >
         <div class="d-flex align-center">
           <v-icon
-            :color="isArray(modelValue) && modelValue?.includes(item.value) ? 'primary' : undefined"
+            :color="
+              isArray(modelValue) && modelValue?.includes(item.value) ?
+                'primary'
+              : undefined
+            "
             start
-            :icon="isArray(modelValue) && modelValue?.includes(item.value) ? mdiCheckboxMarked : mdiCheckboxBlankOutline"
+            :icon="
+              isArray(modelValue) && modelValue?.includes(item.value) ?
+                mdiCheckboxMarked
+              : mdiCheckboxBlankOutline
+            "
           />
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </div>
@@ -75,16 +80,19 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-select-input',
   name: {
     en: 'select input',
-    de: 'Auswahl'
+    de: 'Auswahl',
   },
   description: {
     en: 'Lets the user select an option from a dropdown list. Can be configured to allow multi select.',
-    de: 'Lässt den User einen Eintrag aus einer Dropdown-Liste auswählen. Kann als Mehrfachauswahl konfiguriert werden.'
+    de: 'Lässt den User einen Eintrag aus einer Dropdown-Liste auswählen. Kann als Mehrfachauswahl konfiguriert werden.',
   },
   conditions: (props) => [
-    [undefined, 'string', 'integer', 'number', 'array'].includes(props.objectSchema.type),
-    typeof props.objectSchema.enum !== 'undefined' || typeof props.objectSchema.items?.enum !== 'undefined'
-  ]
+    [undefined, 'string', 'integer', 'number', 'array'].includes(
+      props.objectSchema.type
+    ),
+    typeof props.objectSchema.enum !== 'undefined' ||
+      typeof props.objectSchema.items?.enum !== 'undefined',
+  ],
 };
 
 export default defineComponent({
@@ -94,34 +102,60 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     // @ts-ignore At this point we expect objectSchema to be set, so type WILL exist
-    const multiple = computed(() => props.objectSchema.type === 'array' && typeof props.objectSchema.items?.enum !== 'undefined');
+    const multiple = computed(
+      () =>
+        props.objectSchema.type === 'array' &&
+        typeof props.objectSchema.items?.enum !== 'undefined'
+    );
 
     // If the user deselects from one item to zero items, we want to pass undefined instead of an empty array as an empty array has to be explicitly selected
     const onItemsChanged = (newValue: any) => {
       if (multiple.value && Array.isArray(newValue) && !newValue.length) {
         emit('update:model-value', undefined);
       } else {
-        emit('update:model-value', Array.isArray(newValue) ? newValue.filter((entry) => entry !== '_empty_array_') : newValue);
+        emit(
+          'update:model-value',
+          Array.isArray(newValue) ?
+            newValue.filter((entry) => entry !== '_empty_array_')
+          : newValue
+        );
       }
     };
 
-    const localItems = computed(() => (multiple.value ? [{ title: t('nothing'), value: '_empty_array_' }] : []).concat(props.items));
+    const localItems = computed(() =>
+      (multiple.value ?
+        [{ title: t('nothing'), value: '_empty_array_' }]
+      : []
+      ).concat(props.items)
+    );
 
     // Needed as _empty_array_ is needed as a value to display the text when selected while it should never be passed down to VeoForms
     const internalValue = computed({
       get() {
-        return props.modelValue && Array.isArray(props.modelValue) && props.modelValue.length === 0 ? ['_empty_array_'] : props.modelValue;
+        return (
+            props.modelValue &&
+              Array.isArray(props.modelValue) &&
+              props.modelValue.length === 0
+          ) ?
+            ['_empty_array_']
+          : props.modelValue;
       },
       set(newValue: any) {
         const newValueIsArray = Array.isArray(newValue);
         const oldValueIsArray = Array.isArray(props.modelValue);
-        const newValueIsEmpty = Array.isArray(newValue) && newValue?.includes('_empty_array_');
-        if (newValueIsArray && newValueIsEmpty && oldValueIsArray && !(!props.modelValue.length && newValue.length > 1)) {
+        const newValueIsEmpty =
+          Array.isArray(newValue) && newValue?.includes('_empty_array_');
+        if (
+          newValueIsArray &&
+          newValueIsEmpty &&
+          oldValueIsArray &&
+          !(!props.modelValue.length && newValue.length > 1)
+        ) {
           emit('update:model-value', []);
         } else {
           onItemsChanged(newValue);
         }
-      }
+      },
     });
 
     return {
@@ -135,9 +169,9 @@ export default defineComponent({
       isEmpty,
       last,
       mdiCheckboxBlankOutline,
-      mdiCheckboxMarked
+      mdiCheckboxMarked,
     };
-  }
+  },
 });
 </script>
 

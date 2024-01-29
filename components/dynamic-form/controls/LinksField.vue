@@ -57,11 +57,7 @@
       variant="text"
       @click="addLink"
     >
-      <v-icon
-        size="small"
-        start
-        :icon="mdiPlus"
-      />
+      <v-icon size="small" start :icon="mdiPlus" />
       {{ t('addLink') }}
     </v-btn>
   </div>
@@ -78,13 +74,16 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field',
   name: {
     en: 'links field',
-    de: 'Link-Feld'
+    de: 'Link-Feld',
   },
   description: {
     en: 'Lets the user select 0-n objects to link. Object type and sub type can be restricted in the object schema.',
-    de: 'Lässt den User 0-n links auf andere Objekte erstellen. Objekttyp und Subtyp können durch das Objektschema bestimmt werden.'
+    de: 'Lässt den User 0-n links auf andere Objekte erstellen. Objekttyp und Subtyp können durch das Objektschema bestimmt werden.',
   },
-  conditions: (props) => [props.objectSchema.type === 'array', typeof props.objectSchema.items?.properties?.target !== 'undefined']
+  conditions: (props) => [
+    props.objectSchema.type === 'array',
+    typeof props.objectSchema.items?.properties?.target !== 'undefined',
+  ],
 };
 
 export default defineComponent({
@@ -95,17 +94,25 @@ export default defineComponent({
     const { t } = useI18n();
 
     const emptyLink = { target: undefined };
-    
 
     const internalValue = computed<any[]>({
       get: () => {
         // We have to cast value to an any array, as value has the general definition of string | number | boolean | undefined | any[] | object here
         const _value: any[] = props.modelValue as any[];
-        return (_value && _value.length ? _value : [cloneDeep(emptyLink)]);
+        return _value && _value.length ? _value : [cloneDeep(emptyLink)];
       },
       set: (newValue: undefined | any[]) => {
-        emit('update:model-value', !newValue || (newValue.length === 1 && JSON.stringify(emptyLink) === JSON.stringify(newValue[0])) ? undefined : newValue);
-      }
+        emit(
+          'update:model-value',
+          (
+            !newValue ||
+              (newValue.length === 1 &&
+                JSON.stringify(emptyLink) === JSON.stringify(newValue[0]))
+          ) ?
+            undefined
+          : newValue
+        );
+      },
     });
 
     const addLink = () => {
@@ -131,7 +138,9 @@ export default defineComponent({
     };
 
     const getOtherSelectedLinks = (index: number) => {
-      return ((props.modelValue || []) as any[]).filter((_item, _index) => _index !== index);
+      return ((props.modelValue || []) as any[]).filter(
+        (_item, _index) => _index !== index
+      );
     };
 
     return {
@@ -144,9 +153,9 @@ export default defineComponent({
       last,
       mdiPlus,
       mdiTrashCanOutline,
-      t
+      t,
     };
-  }
+  },
 });
 </script>
 

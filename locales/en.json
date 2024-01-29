@@ -100,16 +100,16 @@
   },
 
   "compliance": {
-      "status": {
-        "NO": "no",
-        "PARTIAL": "partially",
-        "UNKNOWN": "unedited",
-        "YES": "yes",
-        "N_A": "not applicable"
-      },
-      "origination": {
-        "SYSTEM_SPECIFIC": "system specific"
-      }
+    "status": {
+      "NO": "no",
+      "PARTIAL": "partially",
+      "UNKNOWN": "unedited",
+      "YES": "yes",
+      "N_A": "not applicable"
+    },
+    "origination": {
+      "SYSTEM_SPECIFIC": "system specific"
+    }
   },
 
   "error": {

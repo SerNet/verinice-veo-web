@@ -16,17 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    title="Disabled"
-    fixed-header
-  >
+  <BasePage title="Disabled" fixed-header>
     <v-row justify="center">
-      <v-col
-        cols="12"
-        sm="6"
-        lg="4"
-        class="docs-form-sector"
-      >
+      <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
@@ -50,47 +42,47 @@ const form = ref({
     type: 'object',
     properties: {
       inputText: {
-        type: 'string'
+        type: 'string',
       },
       select: {
         type: 'string',
-        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
-      }
-    }
+        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3'],
+      },
+    },
   },
   formSchema: {
     type: 'Layout',
     options: {
       format: 'group',
-      direction: 'vertical'
+      direction: 'vertical',
     },
     elements: [
       {
         type: 'Control',
         scope: '#/properties/inputText',
         options: {
-          label: 'Input Text'
+          label: 'Input Text',
         },
         rule: {
           effect: 'DISABLE',
           condition: {
             scope: '#/properties/select',
-            schema: { const: 'Beispiel-3' }
-          }
-        }
+            schema: { const: 'Beispiel-3' },
+          },
+        },
       },
       {
         type: 'Control',
         scope: '#/properties/select',
         options: {
-          label: 'Select'
-        }
-      }
-    ]
+          label: 'Select',
+        },
+      },
+    ],
   },
   data: {
     inputText: 'Beispiel',
-    select: 'Beispiel-1'
-  }
+    select: 'Beispiel-1',
+  },
 });
 </script>

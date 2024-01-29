@@ -34,16 +34,17 @@
       {{ t('deleteAccountHint') }}
     </template>
     <template #dialog-options>
-      <v-btn
-        :disabled="isLoading"
-        @click="$emit('update:model-value', false)"
-      >
+      <v-btn :disabled="isLoading" @click="$emit('update:model-value', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
         color="primary"
-        :disabled="!id || ability.cannot('manage', 'accounts') || (profile && profile.username === username)"
+        :disabled="
+          !id ||
+          ability.cannot('manage', 'accounts') ||
+          (profile && profile.username === username)
+        "
         :loading="isLoading"
         @click="deleteAccount"
       >
@@ -64,16 +65,16 @@ import { useMutation } from '~/composables/api/utils/mutation';
 const props = defineProps({
   id: {
     type: String,
-    required: true
+    required: true,
   },
   username: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const emit = defineEmits(['update:model-value', 'success']);
-  
+
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { ability } = useVeoPermissions();
@@ -81,7 +82,9 @@ const { profile } = useVeoUser();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 const deleteMutationParameters = computed(() => ({ id: props.id }));
-const { mutateAsync: doDelete, isLoading } = useMutation(accountQueryDefinitions.mutations.deleteAccount);
+const { mutateAsync: doDelete, isLoading } = useMutation(
+  accountQueryDefinitions.mutations.deleteAccount
+);
 
 const deleteAccount = async () => {
   if (!props.id || ability.value.cannot('manage', 'accounts')) {

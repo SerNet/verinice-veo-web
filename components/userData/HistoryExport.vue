@@ -30,20 +30,21 @@
     :handle-click="downloadZip"
   >
     <!-- Prepare Data -->
-    <template
-      v-if="state.prepare.phase !== PrepPhase.Done"
-      #prepareData
-    >
+    <template v-if="state.prepare.phase !== PrepPhase.Done" #prepareData>
       <div class="d-flex align-center ms-auto mt-4">
         <div
-          v-if="state.prepare.phase === PrepPhase.Zip || state.prepare.phase === PrepPhase.Download"
-          class="text-subtitle-1  text-primary me-4"
+          v-if="
+            state.prepare.phase === PrepPhase.Zip ||
+            state.prepare.phase === PrepPhase.Download
+          "
+          class="text-subtitle-1 text-primary me-4"
         >
           <span>{{ t(`prepareHistoryPhases.${state.prepare?.phase}`) }}</span>
           <span
             class="font-weight-black"
             style="display: inline-block; width: 48px"
-          >&nbsp;{{ Math.floor(progressBar) }}&nbsp;%</span>
+            >&nbsp;{{ Math.floor(progressBar) }}&nbsp;%</span
+          >
         </div>
         <v-btn
           color="primary"
@@ -54,9 +55,7 @@
           {{ t('btnPrepareDownload') }}
 
           <template #loader>
-            <v-progress-linear
-              :model-value="progressBar"
-            />
+            <v-progress-linear :model-value="progressBar" />
           </template>
         </v-btn>
       </div>
@@ -76,20 +75,11 @@
     </template>
 
     <template #dialog-options>
-      <v-btn
-        flat
-        variant="plain"
-        class="me-2"
-        @click="confirmPageLeave(false)"
-      >
+      <v-btn flat variant="plain" class="me-2" @click="confirmPageLeave(false)">
         {{ t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn
-        flat
-        color="primary"
-        @click="confirmPageLeave(true)"
-      >
+      <v-btn flat color="primary" @click="confirmPageLeave(true)">
         {{ t('global.button.ok') }}
       </v-btn>
     </template>
@@ -97,23 +87,28 @@
 </template>
 
 <script setup lang="ts">
-import { download } from "~/lib/jsonToZip";
-import { loadHistory, chunkHistory, createZipArchives } from './modules/HistoryExport';
+import { download } from '~/lib/jsonToZip';
+import {
+  loadHistory,
+  chunkHistory,
+  createZipArchives,
+} from './modules/HistoryExport';
 import { logError } from './modules/HandleError';
-import { useQuerySync } from "~/composables/api/utils/query";
+import { useQuerySync } from '~/composables/api/utils/query';
 import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
 
 // Types
-import {
-  HistoryZipArchive,
-  PrepPhase
-} from './modules/HistoryExport';
+import { HistoryZipArchive, PrepPhase } from './modules/HistoryExport';
 
 interface IHistoryState {
   zipArchives: HistoryZipArchive[];
   isLoading: boolean[];
   showAlert: boolean;
-  prepare: { phase: PrepPhase, currentPercentage: number, totalPercentage: number };
+  prepare: {
+    phase: PrepPhase;
+    currentPercentage: number;
+    totalPercentage: number;
+  };
   warnOnLeave: boolean;
   resolveWarnOnLeave: any;
 }
@@ -126,39 +121,68 @@ const { t } = useI18n();
 const state: IHistoryState = reactive({
   zipArchives: [],
   isLoading: [],
-  showAlert: computed(() => state.zipArchives.length === 0 && state.prepare.phase === PrepPhase.Done),
-  prepare: { phase: PrepPhase.Idle,  currentPercentage: 0, totalPercentage: 100 },
+  showAlert: computed(
+    () =>
+      state.zipArchives.length === 0 && state.prepare.phase === PrepPhase.Done
+  ),
+  prepare: {
+    phase: PrepPhase.Idle,
+    currentPercentage: 0,
+    totalPercentage: 100,
+  },
   warnOnLeave: false,
-  resolveWarnOnLeave: undefined
+  resolveWarnOnLeave: undefined,
 });
 
-function updateLoadingState({ phase, currentPercentage, totalPercentage }: { phase: PrepPhase, currentPercentage: number, totalPercentage: number}) {
+function updateLoadingState({
+  phase,
+  currentPercentage,
+  totalPercentage,
+}: {
+  phase: PrepPhase;
+  currentPercentage: number;
+  totalPercentage: number;
+}) {
   state.prepare = { phase, currentPercentage, totalPercentage };
 }
 
 const progressBar = computed(() =>
-  (state?.prepare?.currentPercentage && state?.prepare?.totalPercentage) ? state?.prepare?.currentPercentage / state?.prepare?.totalPercentage * 100 : 0);
+  state?.prepare?.currentPercentage && state?.prepare?.totalPercentage ?
+    (state?.prepare?.currentPercentage / state?.prepare?.totalPercentage) * 100
+  : 0
+);
 
 // HISTORY Entrypoint
 async function prepareData() {
   state.prepare.phase = PrepPhase.Download;
   try {
-    const history = await loadHistory({ updateLoadingState, fetchFn: fetchHistoryData, size: 5000 });
+    const history = await loadHistory({
+      updateLoadingState,
+      fetchFn: fetchHistoryData,
+      size: 5000,
+    });
     const chunkedHistory = chunkHistory(history);
-    const zipArchives = await createZipArchives(updateLoadingState, chunkedHistory);
+    const zipArchives = await createZipArchives(
+      updateLoadingState,
+      chunkedHistory
+    );
     state.zipArchives.push(...zipArchives);
-  }
-  catch (error) {
+  } catch (error) {
     handleError(error);
-    displayErrorMessage( t('errorHeader'), t('errorBody'));
-  }
-  finally {
+    displayErrorMessage(t('errorHeader'), t('errorBody'));
+  } finally {
     state.prepare.phase = PrepPhase.Done;
   }
 }
 
-async function fetchHistoryData({ size = 10000, afterId } : {size?: number, afterId?: string | undefined} = {}) {
-  return useQuerySync(historyQueryDefinitions.queries.fetchPagedRevisions, {size: size.toString(), afterId});
+async function fetchHistoryData({
+  size = 10000,
+  afterId,
+}: { size?: number; afterId?: string | undefined } = {}) {
+  return useQuerySync(historyQueryDefinitions.queries.fetchPagedRevisions, {
+    size: size.toString(),
+    afterId,
+  });
 }
 
 async function downloadZip(index: number) {
@@ -175,18 +199,17 @@ async function downloadZip(index: number) {
 
 function handleError(error: unknown) {
   logError(error);
-  displayErrorMessage( t('errorHeader'), t('errorBody'));
+  displayErrorMessage(t('errorHeader'), t('errorBody'));
 }
 
 /***************************
-* Warn before leaving page
-***************************/
-const toggleWarnOnLeaveDialog = () =>
-  state.warnOnLeave = !state.warnOnLeave;
+ * Warn before leaving page
+ ***************************/
+const toggleWarnOnLeaveDialog = () => (state.warnOnLeave = !state.warnOnLeave);
 
 function askForConfirmation() {
   toggleWarnOnLeaveDialog();
-  return new Promise( resolve => {
+  return new Promise((resolve) => {
     state.resolveWarnOnLeave = resolve;
   });
 }
@@ -198,9 +221,12 @@ function confirmPageLeave(isLeaving: boolean) {
 
 onBeforeRouteLeave((to, from, next) => {
   // Prompt user if download in progress
-  if(state.prepare.phase === PrepPhase.Download || state.prepare.phase ===PrepPhase.Zip) {
-    askForConfirmation().then( isLeaving => {
-      if(isLeaving) next();
+  if (
+    state.prepare.phase === PrepPhase.Download ||
+    state.prepare.phase === PrepPhase.Zip
+  ) {
+    askForConfirmation().then((isLeaving) => {
+      if (isLeaving) next();
     });
     return;
   }

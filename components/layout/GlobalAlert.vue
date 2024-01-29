@@ -19,7 +19,9 @@
   <BaseAlert
     :model-value="value"
     v-bind="$props"
-    :default-button-text="(params && params.defaultButtonText) || globalT('global.button.ok')"
+    :default-button-text="
+      (params && params.defaultButtonText) || globalT('global.button.ok')
+    "
     :buttons="buttons"
     enable-keyboard-navigation
     class="veo-global-alert"
@@ -30,16 +32,10 @@
   >
     <template #secondary-buttons>
       <div v-if="showDownloadDetailsButton && params && params.details">
-        <v-btn
-          variant="text"
-          @click="downloadDetails"
-        >
+        <v-btn variant="text" @click="downloadDetails">
           {{ t('downloadDetails') }}
         </v-btn>
-        <a
-          ref="downloadButton"
-          href="#"
-        />
+        <a ref="downloadButton" href="#" />
       </div>
     </template>
   </BaseAlert>
@@ -55,24 +51,24 @@ export default defineComponent({
   props: {
     type: {
       type: Number as PropType<VeoAlertType>,
-      required: true
+      required: true,
     },
     title: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     text: {
       type: String,
-      default: ''
+      default: '',
     },
     params: {
       type: Object as PropType<IVeoGlobalAlertParams>,
-      default: undefined
+      default: undefined,
     },
     alertKey: {
       type: Number,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
   setup(props) {
     const config = useRuntimeConfig();
@@ -92,15 +88,17 @@ export default defineComponent({
     }
 
     // Create buttons for alert
-    const buttons = computed(() => unref((props.params?.actions || [])).map((action) => ({
-      text: action.text,
-      onClick: () => {
-        action.onClick();
-        if(props.alertKey) {
-          expireAlert(props.alertKey);
-        }
-      }
-    })));
+    const buttons = computed(() =>
+      unref(props.params?.actions || []).map((action) => ({
+        text: action.text,
+        onClick: () => {
+          action.onClick();
+          if (props.alertKey) {
+            expireAlert(props.alertKey);
+          }
+        },
+      }))
+    );
 
     // If the alert key changes, we want to display a new alert from the alert queue, so redisplay the v-alert
     const value = ref(false);
@@ -110,7 +108,7 @@ export default defineComponent({
         value.value = true;
       },
       {
-        immediate: true
+        immediate: true,
       }
     );
 
@@ -118,16 +116,22 @@ export default defineComponent({
     const downloadButton = ref();
 
     const downloadDetails = () => {
-      const blob = new Blob([JSON.stringify(props.params?.details)], { type: 'text/json' });
+      const blob = new Blob([JSON.stringify(props.params?.details)], {
+        type: 'text/json',
+      });
 
       downloadButton.value.download = `error_${new Date().toISOString()}.json`;
       downloadButton.value.href = window.URL.createObjectURL(blob);
-      downloadButton.value.dataset.downloadurl = ['text/json', downloadButton.value.download, downloadButton.value.href].join(':');
+      downloadButton.value.dataset.downloadurl = [
+        'text/json',
+        downloadButton.value.download,
+        downloadButton.value.href,
+      ].join(':');
 
       const evt = new MouseEvent('click', {
         view: window,
         bubbles: true,
-        cancelable: true
+        cancelable: true,
       });
 
       downloadButton.value.dispatchEvent(evt);
@@ -144,9 +148,9 @@ export default defineComponent({
       value,
 
       t,
-      globalT
+      globalT,
     };
-  }
+  },
 });
 </script>
 

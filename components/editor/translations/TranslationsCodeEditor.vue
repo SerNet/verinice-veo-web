@@ -39,31 +39,53 @@
 <script setup lang="ts">
 import { VeoAlertType } from '~/types/VeoTypes';
 import { IEditorTranslations, TRANSLATION_SOURCE } from './types';
-import { editorTranslationsToFormsTranslations, formsTranslationsToEditorTranslations } from './util';
+import {
+  editorTranslationsToFormsTranslations,
+  formsTranslationsToEditorTranslations,
+} from './util';
 import { IVeoFormsTranslations } from '~/components/dynamic-form/types';
 
-const props = withDefaults(defineProps<{
-  modelValue?: IEditorTranslations;
-  source: TRANSLATION_SOURCE;
-}>(), {
-  modelValue: () => ({})
-});
+const props = withDefaults(
+  defineProps<{
+    modelValue?: IEditorTranslations;
+    source: TRANSLATION_SOURCE;
+  }>(),
+  {
+    modelValue: () => ({}),
+  }
+);
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', newValue: IEditorTranslations): void,
+  (e: 'update:modelValue', newValue: IEditorTranslations): void;
 }>();
 
 const { t } = useI18n();
 
-const editorContent = computed(() => JSON.stringify(editorTranslationsToFormsTranslations(props.modelValue, [TRANSLATION_SOURCE.FORMSCHEMA]), undefined, 2));
+const editorContent = computed(() =>
+  JSON.stringify(
+    editorTranslationsToFormsTranslations(props.modelValue, [
+      TRANSLATION_SOURCE.FORMSCHEMA,
+    ]),
+    undefined,
+    2
+  )
+);
 
 const validationError = ref<string | undefined>(undefined);
 const onTranslationsUpdated = (newTranslations: string) => {
   try {
-    const parsedTranslations: IVeoFormsTranslations = JSON.parse(newTranslations);
+    const parsedTranslations: IVeoFormsTranslations =
+      JSON.parse(newTranslations);
     validationError.value = undefined;
-    
-    emit('update:modelValue', formsTranslationsToEditorTranslations(parsedTranslations, TRANSLATION_SOURCE.FORMSCHEMA, props.modelValue));
+
+    emit(
+      'update:modelValue',
+      formsTranslationsToEditorTranslations(
+        parsedTranslations,
+        TRANSLATION_SOURCE.FORMSCHEMA,
+        props.modelValue
+      )
+    );
   } catch (error: any) {
     validationError.value = error.message;
   }

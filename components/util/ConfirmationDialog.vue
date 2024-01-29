@@ -27,18 +27,11 @@
     </template>
 
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        @click="$emit('update:model-value', false)"
-      >
+      <v-btn variant="text" @click="$emit('update:model-value', false)">
         {{ globalT('global.button.no') }}
       </v-btn>
       <v-spacer />
-      <v-btn
-        variant="text"
-        color="primary"
-        @click="handler"
-      >
+      <v-btn variant="text" color="primary" @click="handler">
         {{ confirmationText }}
       </v-btn>
     </template>
@@ -47,17 +40,17 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  callback: () => any,
-  confirmationText: string,
-  modelValue: boolean,
-  text: string,
-  title: string
+  callback: () => any;
+  confirmationText: string;
+  modelValue: boolean;
+  text: string;
+  title: string;
 }>();
 
 const emit = defineEmits<{
-  ( event: 'error', error: any): void;
-  ( event: 'success'): void;
-  ( event: 'update:model-value', newValue: boolean): void;
+  (event: 'error', error: any): void;
+  (event: 'success'): void;
+  (event: 'update:model-value', newValue: boolean): void;
 }>();
 
 const handler = () => {

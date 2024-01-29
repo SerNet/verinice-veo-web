@@ -16,9 +16,8 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-
 <template>
-  <BasePage style="height: 100vh;">
+  <BasePage style="height: 100vh">
     <template #header>
       <LayoutHeadline
         class="mb-4"
@@ -41,20 +40,14 @@
           show-select
           select-strategy="single"
           :model-value="state.selectedProfiles"
-          @update:model-value="newVal => selectNewItem(newVal)"
+          @update:model-value="(newVal) => selectNewItem(newVal)"
         />
       </BaseCard>
 
       <!-- Table actions -->
-      <v-row
-        dense
-        class="mt-4"
-      >
+      <v-row dense class="mt-4">
         <v-spacer />
-        <v-col
-          cols="auto"
-          class="justify-end"
-        >
+        <v-col cols="auto" class="justify-end">
           <v-btn
             flat
             color="primary"
@@ -71,36 +64,42 @@
 </template>
 
 <script setup lang="ts">
-import { useProfiles }  from '~/components/profile/profiles';
+import { useProfiles } from '~/components/profile/profiles';
 const { state, profiles, toggleDialog, updateDomainId } = useProfiles();
 const { t } = useI18n();
 
 // Table setup
 const headers = computed(() => [
-  { title: t('thName'), align: 'start', key: 'name'},
-  { title: t('thDescription'), align: 'start', key: 'description', sortable: false },
-  { title: t('thLanguage'), align: 'start', key: 'language' }
+  { title: t('thName'), align: 'start', key: 'name' },
+  {
+    title: t('thDescription'),
+    align: 'start',
+    key: 'description',
+    sortable: false,
+  },
+  { title: t('thLanguage'), align: 'start', key: 'language' },
 ]);
 
 // Make sure to allways write currently active domain into state
 onMounted(() => updateDomainId());
 
 function selectNewItem(val: string[]) {
-
   /*******************
-  * THIS IS A WORK AROUND (JS + CSS):
-  * In this table we only want to be able to select one item (profile) at a time.
-  * At the time of writing, vuetify 3 v-data-table's `select-strategy='single'` did not work as expected (still part of vuetify LAB).
-  * Once it does, TODO:
-  * => on the component: use `v-model` instead of `model-value` + `@update`
-  * => remove CSS (#profileStyleScope ...)
-  * => remove this code:
-  *******************/
+   * THIS IS A WORK AROUND (JS + CSS):
+   * In this table we only want to be able to select one item (profile) at a time.
+   * At the time of writing, vuetify 3 v-data-table's `select-strategy='single'` did not work as expected (still part of vuetify LAB).
+   * Once it does, TODO:
+   * => on the component: use `v-model` instead of `model-value` + `@update`
+   * => remove CSS (#profileStyleScope ...)
+   * => remove this code:
+   *******************/
   if (val.length >= 2) val.shift();
   state.selectedProfiles = val;
 
   // Use the profile's name prop as a default name
-  const profileObj = profiles.value.filter((profile) => profile.key === state.selectedProfiles[0])[0];
+  const profileObj = profiles.value.filter(
+    (profile) => profile.key === state.selectedProfiles[0]
+  )[0];
   state.newUnitName = profileObj?.name || '';
 }
 </script>

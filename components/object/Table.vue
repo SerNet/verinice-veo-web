@@ -26,14 +26,8 @@
     @update:sort-by="emit('update:sort-by', $event)"
     @click="emit('click', $event)"
   >
-    <template
-      v-for="(_, name) in slots"
-      #[name]="slotData"
-    >
-      <slot
-        :name="name"
-        v-bind="slotData"
-      />
+    <template v-for="(_, name) in slots" #[name]="slotData">
+      <slot :name="name" v-bind="slotData" />
     </template>
   </BaseTable>
 </template>
@@ -46,58 +40,65 @@ import ObjectIcon from '~/components/object/Icon.vue';
 import { useFormatters } from '~/composables/utils';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
-import { TableFormatter, TableHeader, TableRenderer } from '~/components/base/Table.vue';
+import {
+  TableFormatter,
+  TableHeader,
+  TableRenderer,
+} from '~/components/base/Table.vue';
 
-const props = withDefaults(defineProps<{
-  /**
-   * Items can be IVeoPaginatedResponse or an array.
-   * @type IVeoPaginatedResponse<any[]> | any[], however if we write this instead of any, vue complains if the prop is of type IVeoPaginatedResponse<any[]> because it isn't an array
-   */
-  items?: any;
-  /**
-   * Displays a loading indicator. Works regardless of PaginatedResponse or array
-   */
-  loading?: boolean;
-  /**
-   * Array containing all elements selected in the table. As the stringified value is used by vuetify, internally we only select by id
-   */
-  modelValue?: any[];
-  /**
-   * Reflects the current page displayed in the table. Can be used with paginated data and simple arrays.
-   */
-  page?: number;
-  /**
-   * Defines how the table should be sorted.
-   * NOTE: Paginated data can only be sorted by one column, all entries besides [0] will be ignored.
-   */
-  sortBy?: SortItem[];
-  /**
-   * Array containing the keys of commonly shown headers so that they don't have to get redefined every time.
-   */
-  defaultHeaders?: string[];
-  /**
-   * Array containing additional table headers that should get shown besides the default headers.
-   */
-  additionalHeaders?: TableHeader[];
-  /**
-   * Force-show all columns, even if this makes the table scrollable on the x-axis.
-   */
-  showAllColumns?: boolean;
-  /**
-   * Needed as we can't check whether @click is set in the attrs as soon as it is defiend as an emit.
-   */
-  enableClick?: boolean;
-}>(), {
-  items: () => [],
-  loading: false,
-  modelValue: () => [],
-  page: 1,
-  sortBy: () => [{ key: 'name', order: 'asc' }],
-  defaultHeaders: () => [],
-  additionalHeaders: () => [],
-  showAllColumns: false,
-  enableClick: false
-});
+const props = withDefaults(
+  defineProps<{
+    /**
+     * Items can be IVeoPaginatedResponse or an array.
+     * @type IVeoPaginatedResponse<any[]> | any[], however if we write this instead of any, vue complains if the prop is of type IVeoPaginatedResponse<any[]> because it isn't an array
+     */
+    items?: any;
+    /**
+     * Displays a loading indicator. Works regardless of PaginatedResponse or array
+     */
+    loading?: boolean;
+    /**
+     * Array containing all elements selected in the table. As the stringified value is used by vuetify, internally we only select by id
+     */
+    modelValue?: any[];
+    /**
+     * Reflects the current page displayed in the table. Can be used with paginated data and simple arrays.
+     */
+    page?: number;
+    /**
+     * Defines how the table should be sorted.
+     * NOTE: Paginated data can only be sorted by one column, all entries besides [0] will be ignored.
+     */
+    sortBy?: SortItem[];
+    /**
+     * Array containing the keys of commonly shown headers so that they don't have to get redefined every time.
+     */
+    defaultHeaders?: string[];
+    /**
+     * Array containing additional table headers that should get shown besides the default headers.
+     */
+    additionalHeaders?: TableHeader[];
+    /**
+     * Force-show all columns, even if this makes the table scrollable on the x-axis.
+     */
+    showAllColumns?: boolean;
+    /**
+     * Needed as we can't check whether @click is set in the attrs as soon as it is defiend as an emit.
+     */
+    enableClick?: boolean;
+  }>(),
+  {
+    items: () => [],
+    loading: false,
+    modelValue: () => [],
+    page: 1,
+    sortBy: () => [{ key: 'name', order: 'asc' }],
+    defaultHeaders: () => [],
+    additionalHeaders: () => [],
+    showAllColumns: false,
+    enableClick: false,
+  }
+);
 
 const emit = defineEmits<{
   (e: 'update:sort-by', newSorting: SortItem[]): void;
@@ -113,8 +114,14 @@ const { formatDateTime } = useFormatters();
 const slots = useSlots();
 const attrs = useAttrs();
 
-const translationQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain }));
-const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
+const translationQueryParameters = computed(() => ({
+  languages: [locale.value],
+  domain: route.params.domain,
+}));
+const { data: translations } = useQuery(
+  translationQueryDefinitions.queries.fetch,
+  translationQueryParameters
+);
 
 /**
  * Render folder or file icons
@@ -122,31 +129,48 @@ const { data: translations } = useQuery(translationQueryDefinitions.queries.fetc
 const renderIcon: TableRenderer = ({ item }) => {
   return h(ObjectIcon, {
     objectType: item.type,
-    isComposite: !!item.parts?.length
+    isComposite: !!item.parts?.length,
   });
-}
+};
 /**
  * Render date column using date formatter
  */
-const renderDate: TableRenderer = ({ internalItem: item }) => (item.raw.updatedAt ? formatDate(item.raw.updatedAt) : '');
+const renderDate: TableRenderer = ({ internalItem: item }) =>
+  item.raw.updatedAt ? formatDate(item.raw.updatedAt) : '';
 
 /**
  * Render created at / updated at tooltip
  */
 const renderUpdatedAtTooltip: TableRenderer = ({ internalItem: item }) => {
   return h('table', [
-    item.raw.createdAt
-      ? [h('tr', [
-        h('td', [t('createdAt').toString(), ': ']),
-        h('td', [h('strong', formatDate(item.raw.createdAt) || '???'), ' ', t('by').toString(), ' ', h('strong', item.raw.createdBy)])
-      ])]
-      : [],
-    item.raw.updatedAt
-      ? [h('tr', [
-        h('td', [t('updatedAt').toString(), ': ']),
-        h('td', [h('strong', formatDate(item.raw.updatedAt) || '???'), ' ', t('by').toString(), ' ', h('strong', item.raw.updatedBy)])
-      ])]
-      : []
+    item.raw.createdAt ?
+      [
+        h('tr', [
+          h('td', [t('createdAt').toString(), ': ']),
+          h('td', [
+            h('strong', formatDate(item.raw.createdAt) || '???'),
+            ' ',
+            t('by').toString(),
+            ' ',
+            h('strong', item.raw.createdBy),
+          ]),
+        ]),
+      ]
+    : [],
+    item.raw.updatedAt ?
+      [
+        h('tr', [
+          h('td', [t('updatedAt').toString(), ': ']),
+          h('td', [
+            h('strong', formatDate(item.raw.updatedAt) || '???'),
+            ' ',
+            t('by').toString(),
+            ' ',
+            h('strong', item.raw.updatedBy),
+          ]),
+        ]),
+      ]
+    : [],
   ]);
 };
 
@@ -168,7 +192,11 @@ const renderStatus: TableRenderer = ({ item }) => {
   if (!route.params.domain) return '';
   const domainDetails = item.domains?.[route.params.domain as string];
   const key = `${item.type}_${domainDetails?.subType}_status_${domainDetails?.status}`;
-  return translations.value?.lang?.[locale.value]?.[key] || item.domains?.[route.params.domain as string]?.status || '';
+  return (
+    translations.value?.lang?.[locale.value]?.[key] ||
+    item.domains?.[route.params.domain as string]?.status ||
+    ''
+  );
 };
 
 /**
@@ -185,7 +213,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     width: 30,
     render: renderIcon,
     priority: 100,
-    order: 10
+    order: 10,
   },
   designator: {
     value: 'designator',
@@ -193,7 +221,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     sortable: true,
     width: 110,
     priority: 40,
-    order: 20
+    order: 20,
   },
   abbreviation: {
     value: 'abbreviation',
@@ -202,7 +230,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     truncate: true,
     width: 80,
     priority: 100,
-    order: 30
+    order: 30,
   },
   name: {
     value: 'name',
@@ -212,7 +240,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     truncate: true,
     sortable: true,
     priority: 100,
-    order: 40
+    order: 40,
   },
   status: {
     value: 'status',
@@ -221,7 +249,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     width: 110,
     render: renderStatus,
     priority: 100,
-    order: 50
+    order: 50,
   },
   description: {
     value: 'description',
@@ -231,7 +259,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     truncate: true,
     tooltip: ({ internalItem: item }) => item.raw.description,
     priority: 30,
-    order: 60
+    order: 60,
   },
   updatedAt: {
     value: 'updatedAt',
@@ -241,7 +269,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     tooltip: renderUpdatedAtTooltip,
     render: renderDate,
     priority: 80,
-    order: 70
+    order: 70,
   },
   updatedBy: {
     value: 'updatedBy',
@@ -250,17 +278,21 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     truncate: true,
     width: 80,
     priority: 40,
-    order: 80
-  }
+    order: 80,
+  },
 };
 
 // We assume all headers not matching here are defind in BaseTable.vue, so we pass them along
-const unmatchedDefaultHeaders = computed(() => props.defaultHeaders.filter((header) => !recurringHeaders[header]));
+const unmatchedDefaultHeaders = computed(() =>
+  props.defaultHeaders.filter((header) => !recurringHeaders[header])
+);
 
 // Merge default headers from object table with additional headers
 const mergedAdditionalHeaders = computed(() => [
-  ...(props.defaultHeaders || []).map((header) => recurringHeaders[header]).filter(header => header),
-  ...props.additionalHeaders
+  ...(props.defaultHeaders || [])
+    .map((header) => recurringHeaders[header])
+    .filter((header) => header),
+  ...props.additionalHeaders,
 ]);
 </script>
 

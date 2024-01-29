@@ -16,18 +16,14 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list-item
-    v-bind="$attrs"
-    class="px-0"
-    density="compact"
-  >
-    <v-divider
-      v-if="type === IVeoFilterOptionType.DIVIDER"
-    />
+  <v-list-item v-bind="$attrs" class="px-0" density="compact">
+    <v-divider v-if="type === IVeoFilterOptionType.DIVIDER" />
     <v-text-field
       v-else-if="type === IVeoFilterOptionType.TEXT"
       :model-value="modelValue"
-      :label="upperFirst($t(`objectlist.${name}`).toString()) + (required ? '*' : '')"
+      :label="
+        upperFirst($t(`objectlist.${name}`).toString()) + (required ? '*' : '')
+      "
       :required="required"
       :rules="required ? [requiredRule] : []"
       :disabled="disabled"
@@ -40,7 +36,9 @@
     <v-select
       v-else-if="type === IVeoFilterOptionType.SELECT"
       :model-value="modelValue"
-      :label="upperFirst($t(`objectlist.${name}`).toString()) + (required ? '*' : '')"
+      :label="
+        upperFirst($t(`objectlist.${name}`).toString()) + (required ? '*' : '')
+      "
       :required="required"
       :rules="required ? [requiredRule] : []"
       :items="selectOptions"
@@ -54,7 +52,9 @@
     <v-checkbox
       v-else-if="type === IVeoFilterOptionType.CHECKBOX"
       :model-value="modelValue"
-      :label="upperFirst($t(`objectlist.${name}`).toString()) + (required ? '*' : '')"
+      :label="
+        upperFirst($t(`objectlist.${name}`).toString()) + (required ? '*' : '')
+      "
       :required="required"
       :rules="required ? [requiredRule] : []"
       :disabled="disabled"
@@ -74,7 +74,7 @@ export enum IVeoFilterOptionType {
   TEXT,
   SELECT,
   CHECKBOX,
-  DIVIDER
+  DIVIDER,
 }
 
 export interface IVeoFilterOption {
@@ -95,36 +95,36 @@ export default defineComponent({
   props: {
     modelValue: {
       type: [String, Number, Array, Boolean],
-      default: undefined
+      default: undefined,
     },
     name: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     type: {
       type: Number as PropType<IVeoFilterOptionType>,
-      required: true
+      required: true,
     },
     required: {
       type: Boolean,
-      default: undefined
+      default: undefined,
     },
     alwaysVisible: {
       type: Boolean,
-      default: undefined
+      default: undefined,
     },
     selectOptions: {
       type: Array as PropType<{ title: string; value: string }[]>,
-      default: undefined
+      default: undefined,
     },
     disabled: {
       type: Boolean,
-      default: undefined
+      default: undefined,
     },
     onChange: {
       type: Function as PropType<(_: string) => void>,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
   emits: ['update:model-value'],
   setup(props, { emit }) {
@@ -144,8 +144,8 @@ export default defineComponent({
       IVeoFilterOptionType,
 
       t,
-      upperFirst
+      upperFirst,
     };
-  }
+  },
 });
 </script>

@@ -30,18 +30,12 @@
         :rule="formSchemaElement.rule"
         class="mr-1"
       />
-      {{ t('layout') }} ({{ upperFirst(t(`layoutType.${formSchemaElement.options.format}`)) }})
+      {{ t('layout') }} ({{
+        upperFirst(t(`layoutType.${formSchemaElement.options.format}`))
+      }})
       <v-spacer />
-      <v-btn
-        :icon="mdiPencilOutline"
-        size="small"
-        @click="emit('edit')"
-      />
-      <v-btn
-        :icon="mdiTrashCanOutline"
-        size="small"
-        @click="emit('delete')"
-      />
+      <v-btn :icon="mdiPencilOutline" size="small" @click="emit('edit')" />
+      <v-btn :icon="mdiTrashCanOutline" size="small" @click="emit('delete')" />
     </v-card-actions>
     <div class="mx-2">
       <EditorTranslationsTranslatedElementTitle
@@ -51,7 +45,9 @@
       <div
         :class="[
           $style['child-layout-wrapper'],
-          formSchemaElement.options?.direction === 'horizontal' ? $style['child-layout-wrapper--horizontal'] : $style['child-layout-wrapper--vertical']
+          formSchemaElement.options?.direction === 'horizontal' ?
+            $style['child-layout-wrapper--horizontal']
+          : $style['child-layout-wrapper--vertical'],
         ]"
       >
         <slot />
@@ -66,7 +62,7 @@
     </div>
   </v-sheet>
 </template>
-  
+
 <script setup lang="ts">
 import { mdiDrag, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
 import { upperFirst } from 'lodash';
@@ -74,16 +70,16 @@ import { PropType } from 'vue';
 
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { IPlaygroundElement } from './Element.vue';
-  
+
 defineProps({
   playgroundElement: {
     type: Object as PropType<IPlaygroundElement>,
-    required: true
+    required: true,
   },
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const emit = defineEmits(['edit', 'delete']);

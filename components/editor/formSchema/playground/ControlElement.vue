@@ -26,15 +26,9 @@
       class="handle mr-1 d-flex align-center px-1"
       :style="{ background: handleColor }"
     >
-      <v-icon
-        :icon="mdiDrag"
-        color="white"
-      />
+      <v-icon :icon="mdiDrag" color="white" />
     </div>
-    <div
-      class="overflow-hidden"
-      style="flex-grow: 1"
-    >
+    <div class="overflow-hidden" style="flex-grow: 1">
       <v-card-actions class="d-flex py-0">
         <EditorFormSchemaPlaygroundRuleIcon
           :rule="formSchemaElement.rule"
@@ -42,11 +36,7 @@
         />
         {{ t('control') }} ({{ inputType }})
         <v-spacer />
-        <v-btn
-          :icon="mdiPencilOutline"
-          size="small"
-          @click="emit('edit')"
-        />
+        <v-btn :icon="mdiPencilOutline" size="small" @click="emit('edit')" />
         <v-btn
           :icon="mdiTrashCanOutline"
           size="small"
@@ -67,10 +57,7 @@
             >
               ({{ attributeKey }})
             </span>
-            <span
-              v-else
-              style="overflow-wrap: break-word"
-            >
+            <span v-else style="overflow-wrap: break-word">
               <b>{{ attributeKey }}</b>
             </span>
           </template>
@@ -79,7 +66,7 @@
     </div>
   </v-sheet>
 </template>
-  
+
 <script setup lang="ts">
 import { mdiDrag, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
 import { JsonPointer } from 'json-ptr';
@@ -88,14 +75,20 @@ import { last } from 'lodash';
 
 import { IPlaygroundElement } from './Element.vue';
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
-import { eligibleInputElements, INPUT_TYPES as CONTROL_APPEARANCE_DEFINITIONS } from '~/types/VeoEditor';
+import {
+  eligibleInputElements,
+  INPUT_TYPES as CONTROL_APPEARANCE_DEFINITIONS,
+} from '~/types/VeoEditor';
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { getFormSchemaControlType } from '~/lib/utils';
 
-const props = withDefaults(defineProps<{
-  playgroundElement: IPlaygroundElement;
-  formSchemaElement: IVeoFormSchemaItem;
-}>(), {});
+const props = withDefaults(
+  defineProps<{
+    playgroundElement: IPlaygroundElement;
+    formSchemaElement: IVeoFormSchemaItem;
+  }>(),
+  {}
+);
 
 const emit = defineEmits<{
   (e: 'edit'): void;
@@ -104,13 +97,34 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.OBJECTSCHEMA);
-const objectSchemaElement = computed(() => JsonPointer.get(objectSchema?.value, props.formSchemaElement.scope as string) as JSONSchema7); // Can't be undefined, as a control ALWAYS has a scope
-const controlType = computed(() => getFormSchemaControlType(objectSchemaElement.value));
-const inputType = computed(() => props.formSchemaElement && objectSchemaElement.value ? eligibleInputElements(controlType.value, { ...props.formSchemaElement, schema: objectSchemaElement.value })[0].code : undefined);
+const objectSchema = inject<Ref<JSONSchema7>>(
+  FORMSCHEMA_PROVIDE_KEYS.OBJECTSCHEMA
+);
+const objectSchemaElement = computed(
+  () =>
+    JsonPointer.get(
+      objectSchema?.value,
+      props.formSchemaElement.scope as string
+    ) as JSONSchema7
+); // Can't be undefined, as a control ALWAYS has a scope
+const controlType = computed(() =>
+  getFormSchemaControlType(objectSchemaElement.value)
+);
+const inputType = computed(() =>
+  props.formSchemaElement && objectSchemaElement.value ?
+    eligibleInputElements(controlType.value, {
+      ...props.formSchemaElement,
+      schema: objectSchemaElement.value,
+    })[0].code
+  : undefined
+);
 
-const handleColor = computed(() => CONTROL_APPEARANCE_DEFINITIONS[controlType.value].color);
-const attributeKey = computed(() => last(props.formSchemaElement.scope?.split('/')));
+const handleColor = computed(
+  () => CONTROL_APPEARANCE_DEFINITIONS[controlType.value].color
+);
+const attributeKey = computed(() =>
+  last(props.formSchemaElement.scope?.split('/'))
+);
 </script>
 
 <i18n>

@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import{ last } from 'lodash';
+import { last } from 'lodash';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
@@ -44,13 +44,16 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-number-input',
   name: {
     en: 'number input',
-    de: 'Zahleneingabe'
+    de: 'Zahleneingabe',
   },
   description: {
     en: 'Lets the user enter a number, optionally by using spin buttons.',
-    de: 'Lässt den User Zahlen eingeben, die Zahl kann mit Buttons rechts höher oder niedriger gestellt werden.'
+    de: 'Lässt den User Zahlen eingeben, die Zahl kann mit Buttons rechts höher oder niedriger gestellt werden.',
   },
-  conditions: (props) => [props.objectSchema.type === 'number' || props.objectSchema.type === 'integer']
+  conditions: (props) => [
+    props.objectSchema.type === 'number' ||
+      props.objectSchema.type === 'integer',
+  ],
 };
 
 export default defineComponent({
@@ -75,8 +78,8 @@ export default defineComponent({
       getControlErrorMessages,
       onInput,
 
-      last
+      last,
     };
-  }
+  },
 });
 </script>

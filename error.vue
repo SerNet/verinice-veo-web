@@ -17,21 +17,28 @@
 -->
 <template>
   <div class="d-flex fill-height overflow-y-auto">
-    <div
-      v-if="error"
-      class="ma-auto pa-4 text-center"
-    >
-      <v-img
-        :src="image"
-        max-height="300px"
-        contain
-      />
+    <div v-if="error" class="ma-auto pa-4 text-center">
+      <v-img :src="image" max-height="300px" contain />
 
       <h1 class="text-h1 mt-8">
-        {{ upperFirst(t(errorIsCustomized ? `titles.${error.statusCode}` : 'titles.default').toString()) }}
+        {{
+          upperFirst(
+            t(
+              errorIsCustomized ?
+                `titles.${error.statusCode}`
+              : 'titles.default'
+            ).toString()
+          )
+        }}
       </h1>
       <p class="mt-2">
-        {{ upperFirst(t(errorIsCustomized ? `texts.${error.statusCode}` : 'texts.default').toString()) }}
+        {{
+          upperFirst(
+            t(
+              errorIsCustomized ? `texts.${error.statusCode}` : 'texts.default'
+            ).toString()
+          )
+        }}
       </p>
 
       <div>
@@ -55,15 +62,8 @@
       </div>
     </div>
 
-    <div
-      v-else
-      class="ma-auto pa-4 text-center"
-    >
-      <v-img
-        :src="image"
-        max-height="300px"
-        contain
-      />
+    <div v-else class="ma-auto pa-4 text-center">
+      <v-img :src="image" max-height="300px" contain />
 
       <h1 class="text-h1 mt-8">
         {{ upperFirst(t('titles.default').toString()) }}
@@ -72,11 +72,7 @@
         {{ upperFirst(t('texts.default').toString()) }}
       </p>
 
-      <v-btn
-        variant="text"
-        color="primary"
-        @click="$router.push('/')"
-      >
+      <v-btn variant="text" color="primary" @click="$router.push('/')">
         {{ t('goToHomepage') }}
       </v-btn>
     </div>
@@ -88,7 +84,7 @@ import { NuxtError } from '#app';
 import { upperFirst } from 'lodash';
 
 const props = defineProps<{
-  error: NuxtError
+  error: NuxtError;
 }>();
 
 const { t } = useI18n();
@@ -96,9 +92,16 @@ const { t: $t } = useI18n({ useScope: 'global' });
 
 const CUSTOMIZED_ERROR_PAGES = [401, 403, 404];
 
-const errorIsCustomized = computed(() => CUSTOMIZED_ERROR_PAGES.includes(props.error.statusCode || -1));
+const errorIsCustomized = computed(() =>
+  CUSTOMIZED_ERROR_PAGES.includes(props.error.statusCode || -1)
+);
 
-const image = computed(() => `/images/${props.error.statusCode === 404 ? 'pageNotFound' : 'defaultError'}.svg`);
+const image = computed(
+  () =>
+    `/images/${
+      props.error.statusCode === 404 ? 'pageNotFound' : 'defaultError'
+    }.svg`
+);
 </script>
 
 <i18n>

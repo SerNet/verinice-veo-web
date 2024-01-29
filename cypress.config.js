@@ -13,6 +13,6 @@ module.exports = defineConfig({
       // change baseUrl
       config.baseUrl = config.env.baseUrl;
       return config;
-    }
-  }
+    },
+  },
 });

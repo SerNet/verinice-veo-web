@@ -37,7 +37,7 @@
       <div class="mx-4">
         <span class="text-h3 mt-8">
           {{ t('domainSelection') }}
-        </span>  
+        </span>
 
         <v-form v-model="formIsValid">
           <UtilProminentSelectionList
@@ -46,14 +46,8 @@
             check-box-selection-only
             multiple
           >
-            <template
-              v-for="domain of availableDomains"
-              #[`item-${domain.id}`]
-            >
-              <div
-                v-if="selectedDomains.includes(domain.id)"
-                :key="domain.id"
-              >
+            <template v-for="domain of availableDomains" #[`item-${domain.id}`]>
+              <div v-if="selectedDomains.includes(domain.id)" :key="domain.id">
                 <v-row class="mt-2">
                   <v-col>
                     <v-select
@@ -64,7 +58,9 @@
                       :rules="[requiredRule]"
                       variant="solo-filled"
                       @click.stop
-                      @update:model-value="($event: string) => onSubTypeChange($event, domain.id)"
+                      @update:model-value="
+                        ($event: string) => onSubTypeChange($event, domain.id)
+                      "
                     />
                   </v-col>
                   <v-col>
@@ -77,7 +73,9 @@
                       :rules="[requiredRule]"
                       variant="solo-filled"
                       @click.stop
-                      @update:model-value="($event: string) => onStatusChange($event, domain.id)"
+                      @update:model-value="
+                        ($event: string) => onStatusChange($event, domain.id)
+                      "
                     />
                   </v-col>
                 </v-row>
@@ -89,10 +87,7 @@
     </template>
 
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        @click="emit('update:model-value', false)"
-      >
+      <v-btn variant="text" @click="emit('update:model-value', false)">
         {{ $t('global.button.cancel') }}
       </v-btn>
 
@@ -121,18 +116,21 @@ import { useQuery } from '~/composables/api/utils/query';
 
 import { IVeoEntityLegacy, VeoAlertType } from '~/types/VeoTypes';
 
-const props = withDefaults(defineProps<{
-  modelValue: boolean,
-  objectId: string,
-  objectType: string
-}>(), {
-  modelValue: false,
-  objectId: '',
-  objectType: ''
-});
+const props = withDefaults(
+  defineProps<{
+    modelValue: boolean;
+    objectId: string;
+    objectType: string;
+  }>(),
+  {
+    modelValue: false,
+    objectId: '',
+    objectType: '',
+  }
+);
 
 const emit = defineEmits<{
-  (e: 'update:model-value', value: boolean): void
+  (e: 'update:model-value', value: boolean): void;
 }>();
 
 const { t, locale } = useI18n();
@@ -146,13 +144,18 @@ const { requiredRule } = useRules();
 const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains);
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-const { mutateAsync: assign } = useMutation(objectQueryDefinitions.mutations.assignObject);
+const { mutateAsync: assign } = useMutation(
+  objectQueryDefinitions.mutations.assignObject
+);
 
 const selectedSubType = ref<Record<string, string | undefined>>({});
 const selectedStatus = ref<Record<string, string | undefined>>({});
 const selectedDomains = ref<string[]>([]);
 
-const fetchLegacyObjectQueryParameters = computed(() => ({ endpoint: schemas.value?.[props.objectType], id: props.objectId } as any));
+const fetchLegacyObjectQueryParameters = computed(
+  () =>
+    ({ endpoint: schemas.value?.[props.objectType], id: props.objectId }) as any
+);
 
 const formIsValid = ref(undefined);
 
@@ -163,38 +166,72 @@ const { data: legacyObject } = useQuery(
     onSuccess: (data: any) => {
       selectedDomains.value = Object.keys(data.domains || {});
       prePolluteList(data);
-    }
+    },
   }
 );
 
-const isDirty = computed(() => !isEqual(Object.keys(legacyObject.value?.domains || {}), selectedDomains.value));
+const isDirty = computed(
+  () =>
+    !isEqual(
+      Object.keys(legacyObject.value?.domains || {}),
+      selectedDomains.value
+    )
+);
 const prePolluteList = (data: IVeoEntityLegacy) => {
-  selectedSubType.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.subType]));
-  selectedStatus.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.status]));
+  selectedSubType.value = Object.fromEntries(
+    Object.entries(data.domains).map(([id, domain]) => [id, domain.subType])
+  );
+  selectedStatus.value = Object.fromEntries(
+    Object.entries(data.domains).map(([id, domain]) => [id, domain.status])
+  );
 };
 
-const subTypes = computed(() => (domains.value || []).reduce((prevValue, currentValue) => {
-  prevValue[currentValue.id] = Object.keys(currentValue.elementTypeDefinitions?.[props.objectType]?.subTypes || {}).map(
-    (subType) => (
-      { title: currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][`${props.objectType}_${subType}_singular`], value: subType }
-    )
-  );
+const subTypes = computed(() =>
+  (domains.value || []).reduce(
+    (prevValue, currentValue) => {
+      prevValue[currentValue.id] = Object.keys(
+        currentValue.elementTypeDefinitions?.[props.objectType]?.subTypes || {}
+      ).map((subType) => ({
+        title:
+          currentValue.elementTypeDefinitions[props.objectType].translations[
+            locale.value
+          ][`${props.objectType}_${subType}_singular`],
+        value: subType,
+      }));
 
-  return prevValue;
-}, {} as Record<string, { title: string, value: string }[]>));
+      return prevValue;
+    },
+    {} as Record<string, { title: string; value: string }[]>
+  )
+);
 
-const statuses = computed(() => (domains.value || []).reduce((prevValue, currentValue) => {
-  if (!selectedSubType.value[currentValue.id]) {
-    return prevValue;
-  }
-  prevValue[currentValue.id] = currentValue.elementTypeDefinitions[props.objectType].subTypes[selectedSubType.value[currentValue.id]].statuses.map(
-    (status: any) => (
-      { title: currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][`${props.objectType}_${selectedSubType.value[currentValue.id]}_status_${status}`], value: status }
-    )
-  );
+const statuses = computed(() =>
+  (domains.value || []).reduce(
+    (prevValue, currentValue) => {
+      if (!selectedSubType.value[currentValue.id]) {
+        return prevValue;
+      }
+      prevValue[currentValue.id] = currentValue.elementTypeDefinitions[
+        props.objectType
+      ].subTypes[selectedSubType.value[currentValue.id]].statuses.map(
+        (status: any) => ({
+          title:
+            currentValue.elementTypeDefinitions[props.objectType].translations[
+              locale.value
+            ][
+              `${props.objectType}_${
+                selectedSubType.value[currentValue.id]
+              }_status_${status}`
+            ],
+          value: status,
+        })
+      );
 
-  return prevValue;
-}, {} as Record<string, { title: string, value: string }[]>));
+      return prevValue;
+    },
+    {} as Record<string, { title: string; value: string }[]>
+  )
+);
 
 const onSubTypeChange = (newValue: string, domainId: string) => {
   selectedSubType.value[domainId] = newValue;
@@ -205,43 +242,64 @@ const onStatusChange = (newValue: string, domainId: string) => {
   selectedStatus.value[domainId] = newValue;
 };
 
-const availableDomains = computed(() => domains.value?.map((domain) => ({
-  abbreviation: domain.abbreviation,
-  description: domain.description,
-  id: domain.id,
-  name: domain.name
-})) ?? []);
+const availableDomains = computed(
+  () =>
+    domains.value?.map((domain) => ({
+      abbreviation: domain.abbreviation,
+      description: domain.description,
+      id: domain.id,
+      name: domain.name,
+    })) ?? []
+);
 
-const disabledDomains = computed(() => Object.keys(legacyObject.value?.domains || {}));
+const disabledDomains = computed(() =>
+  Object.keys(legacyObject.value?.domains || {})
+);
 
-const domainProperties = computed(() => availableDomains.value.map((domain) => {
-  return { title: domain.name, subtitle: domain.description, value: domain.id, disabled: disabledDomains.value.includes(domain.id) };
-}));
+const domainProperties = computed(() =>
+  availableDomains.value.map((domain) => {
+    return {
+      title: domain.name,
+      subtitle: domain.description,
+      value: domain.id,
+      disabled: disabledDomains.value.includes(domain.id),
+    };
+  })
+);
 
 const assignObject = async () => {
   try {
-    for (const domain of selectedDomains.value.filter((domain) => !disabledDomains.value.includes(domain))) {
-      await assign({ domain: domain, endpoint: route.params?.objectType, objectId: props.objectId, subType: selectedSubType.value[domain], status: selectedStatus.value[domain] });
+    for (const domain of selectedDomains.value.filter(
+      (domain) => !disabledDomains.value.includes(domain)
+    )) {
+      await assign({
+        domain: domain,
+        endpoint: route.params?.objectType,
+        objectId: props.objectId,
+        subType: selectedSubType.value[domain],
+        status: selectedStatus.value[domain],
+      });
       disabledDomains.value.push(domain);
     }
     displaySuccessMessage(t('objectAssigned').toString());
-  }
-  catch (error: any) {
+  } catch (error: any) {
     displayErrorMessage(t('assignmentFailed').toString(), error.message);
-  }
-  finally {
+  } finally {
     emit('update:model-value', false);
   }
 };
 
-watch(() => props.modelValue, () => {
-  selectedSubType.value = {};
-  selectedStatus.value = {};
+watch(
+  () => props.modelValue,
+  () => {
+    selectedSubType.value = {};
+    selectedStatus.value = {};
 
-  if (legacyObject.value) {
-    prePolluteList(legacyObject.value);
+    if (legacyObject.value) {
+      prePolluteList(legacyObject.value);
+    }
   }
-});
+);
 </script>
 
 <i18n>

@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div
-    v-if="options.visible"
-    class="vf-input-date vf-form-element"
-  >
+  <div v-if="options.visible" class="vf-input-date vf-form-element">
     <!-- TODO-Vuetify: As of 3.1.0, v-date-picker is not yet supported, so we use the browser fallback
     <v-menu
       v-model="menu"
@@ -80,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import{ last } from 'lodash';
+import { last } from 'lodash';
 import { mdiCalendar } from '@mdi/js';
 import { formatISO } from 'date-fns';
 
@@ -93,13 +90,16 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-date-input',
   name: {
     en: 'date input',
-    de: 'Datumseingabe'
+    de: 'Datumseingabe',
   },
   description: {
     en: 'Lets the user choose a date from a calender-like component.',
-    de: 'Lässt den User mithilfe einer kalendermäßigen Komponente ein Datum auswählen.'
+    de: 'Lässt den User mithilfe einer kalendermäßigen Komponente ein Datum auswählen.',
   },
-  conditions: (props) => [props.objectSchema.type === 'string', props.objectSchema.format === 'date']
+  conditions: (props) => [
+    props.objectSchema.type === 'string',
+    props.objectSchema.format === 'date',
+  ],
 };
 
 export default defineComponent({
@@ -146,7 +146,7 @@ export default defineComponent({
       let dateObject;
 
       // TODO-Vuetify: Should be able to be removed, once the textfield listens to @click:clear again
-      if(!newValue) {
+      if (!newValue) {
         emit('update:model-value', undefined);
         return;
       }
@@ -161,7 +161,10 @@ export default defineComponent({
       const date = parseInt(splittedDateString[2] || '', 10);
       if (year && month && date) {
         dateObject.setFullYear(year, month - 1, date);
-        emit('update:model-value', formatISO(dateObject, { representation: 'date' }));
+        emit(
+          'update:model-value',
+          formatISO(dateObject, { representation: 'date' })
+        );
       } else {
         emit('update:model-value', newValue);
       }
@@ -177,9 +180,9 @@ export default defineComponent({
       last,
       mdiCalendar,
       t,
-      DATE_HINT
+      DATE_HINT,
     };
-  }
+  },
 });
 </script>
 

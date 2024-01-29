@@ -7,16 +7,16 @@ steps:
     element: '[data-component-name=object-details-page]'
     intro: Die Objektansicht besteht aus den beiden Bereichen Objektdetails (links) und Formular (rechts).
   - title: 'Bereiche ein- oder ausblenden'
-#    element: '[data-component-name=object-details-page] > div:nth-child(2) > div > button'
-#    element: '[data-component-name=object-details-page] > div:nth-child(2) > div:nth-child(2) > button'
+    #    element: '[data-component-name=object-details-page] > div:nth-child(2) > div > button'
+    #    element: '[data-component-name=object-details-page] > div:nth-child(2) > div:nth-child(2) > button'
     intro: Die Objektdetails links können per Schaltfläche oder Shortcut Alt/STRG + 1 versteckt bzw. angezeigt werden.<br>Das Formular kann per Schaltfläche oder Shortcut Alt/STRG + 2 versteckt bzw. angezeigt werden.
-# details
+  # details
   - title: 'Objektdetails'
     element: '[data-component-name=object-details-details]'
     intro: Auf der linken Seite sehen Sie das Umfeld des ausgewählten Objekts im Detail.
-#  - title: 'Objektdetails verstecken/anzeigen'
-#    element: '[data-component-name=object-details-page] > div:nth-child(2) > div > button'
-#    intro: Die Objektdetails können per Schaltfläche oder Shortcut Alt/STRG + 1 versteckt bzw. angezeigt werden.
+  #  - title: 'Objektdetails verstecken/anzeigen'
+  #    element: '[data-component-name=object-details-page] > div:nth-child(2) > div > button'
+  #    intro: Die Objektdetails können per Schaltfläche oder Shortcut Alt/STRG + 1 versteckt bzw. angezeigt werden.
   - title: 'Objektbezeichnung'
     element: '[data-component-name=object-details-page] h1'
     intro: Die Objektbezeichnung enthält den Designator, die Abkürzung und den Namen des Objektes.
@@ -47,13 +47,13 @@ steps:
   - title: 'Hinzufügen'
     element: '[data-component-name=object-details-actions-button]'
     intro: Über die Schaltfläsche Hinzufügen können Sie je nach aktivem Abschnitt Objekte und Scopes als Bestandteile hinzufügen bzw. das aktive Objekt zum Teil eines anderen machen und falls vorhanden Risiken hinzufügen.
-# form
+  # form
   - title: 'Formular'
     element: '[data-component-name=object-form-form]'
     intro: Auf der rechten Seite werden alle Details im Formular dargestellt
-#  - title: 'Formular verstecken/anzeigen'
-#    element: '[data-component-name=object-details-page] > div:nth-child(2) > div:nth-child(2) > button'
-#    intro: Das Formular kann per Schaltfläche oder Shortcut Alt/STRG + 2 versteckt bzw. angezeigt werden.
+  #  - title: 'Formular verstecken/anzeigen'
+  #    element: '[data-component-name=object-details-page] > div:nth-child(2) > div:nth-child(2) > button'
+  #    intro: Das Formular kann per Schaltfläche oder Shortcut Alt/STRG + 2 versteckt bzw. angezeigt werden.
   - title: 'Formular speichern'
     element: '[data-component-name=object-details-actions]'
     intro: Sie können Formulare nach Änderungen speichern oder alle Änderungen zurücksetzen.

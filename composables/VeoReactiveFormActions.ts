@@ -25,28 +25,32 @@ export function useVeoReactiveFormActions() {
   const domainId = computed(() => route.params.domain as string);
 
   function defaultReactiveFormActions(): IVeoFormsReactiveFormActions {
-    return domainId.value
-      ? {
-        [`#/properties/subType`]: [
-          (newValue, _oldValue, newObject, _oldObject) => {
-            if (domainId.value && !!newValue) {
-              delete newObject.status;
-            }
-            return newObject;
-          }
-        ]
-      }
+    return domainId.value ?
+        {
+          [`#/properties/subType`]: [
+            (newValue, _oldValue, newObject, _oldObject) => {
+              if (domainId.value && !!newValue) {
+                delete newObject.status;
+              }
+              return newObject;
+            },
+          ],
+        }
       : {};
   }
 
   function personReactiveFormActions(): IVeoFormsReactiveFormActions {
     return {
-      '#/properties/customAspects/properties/person_generalInformation/properties/attributes/properties/person_generalInformation_givenName': [
-        (_newValue, _oldValue, newObject, oldObject) => getFullName(newObject, oldObject)
-      ],
-      '#/properties/customAspects/properties/person_generalInformation/properties/attributes/properties/person_generalInformation_familyName': [
-        (_newValue, _oldValue, newObject, oldObject) => getFullName(newObject, oldObject)
-      ]
+      '#/properties/customAspects/properties/person_generalInformation/properties/attributes/properties/person_generalInformation_givenName':
+        [
+          (_newValue, _oldValue, newObject, oldObject) =>
+            getFullName(newObject, oldObject),
+        ],
+      '#/properties/customAspects/properties/person_generalInformation/properties/attributes/properties/person_generalInformation_familyName':
+        [
+          (_newValue, _oldValue, newObject, oldObject) =>
+            getFullName(newObject, oldObject),
+        ],
     };
   }
 
@@ -54,7 +58,10 @@ export function useVeoReactiveFormActions() {
    Helpers for previously defined reactive form actions
   
   */
-  function getFullName(newObject: Record<string, any>, oldObject: Record<string, any>) {
+  function getFullName(
+    newObject: Record<string, any>,
+    oldObject: Record<string, any>
+  ) {
     let fullnameOld = '';
     let givenNameOld = '';
     let familyNameOld = '';
@@ -67,22 +74,30 @@ export function useVeoReactiveFormActions() {
       // If the name couldn't be found, simply do nothing
     }
     try {
-      givenNameOld = oldObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_givenName;
+      givenNameOld =
+        oldObject?.customAspects?.person_generalInformation?.attributes
+          ?.person_generalInformation_givenName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
     try {
-      familyNameOld = oldObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_familyName;
+      familyNameOld =
+        oldObject?.customAspects?.person_generalInformation?.attributes
+          ?.person_generalInformation_familyName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
     try {
-      givenNameNew = newObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_givenName;
+      givenNameNew =
+        newObject?.customAspects?.person_generalInformation?.attributes
+          ?.person_generalInformation_givenName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
     try {
-      familyNameNew = newObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_familyName;
+      familyNameNew =
+        newObject?.customAspects?.person_generalInformation?.attributes
+          ?.person_generalInformation_familyName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
@@ -91,7 +106,11 @@ export function useVeoReactiveFormActions() {
     const computedFullNameOld = trim(`${givenNameOld} ${familyNameOld}`);
     const computedFullNameNew = trim(`${givenNameNew} ${familyNameNew}`);
 
-    if (fullnameOld === computedFullNameOld || fullnameOld === '' || fullnameOld === undefined) {
+    if (
+      fullnameOld === computedFullNameOld ||
+      fullnameOld === '' ||
+      fullnameOld === undefined
+    ) {
       newObject.name = computedFullNameNew;
     }
     return newObject;
@@ -99,6 +118,6 @@ export function useVeoReactiveFormActions() {
 
   return {
     defaultReactiveFormActions,
-    personReactiveFormActions
+    personReactiveFormActions,
   };
 }

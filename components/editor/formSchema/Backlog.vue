@@ -16,54 +16,33 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div
-    style="height: 100%"
-  >
+  <div style="height: 100%">
     <div
       v-show="!controlElementsVisible && searchQuery"
       class="text-center mt-1"
     >
       <span class="text--disabled">{{ t('searchNoMatch') }}</span>
     </div>
-    <div
-      v-show="controlElementsVisible"
-      class="pt-4 text-center"
-    >
-      <v-btn
-        variant="text"
-        size="small"
-        @click="onExpandAll"
-      >
+    <div v-show="controlElementsVisible" class="pt-4 text-center">
+      <v-btn variant="text" size="small" @click="onExpandAll">
         {{ t('expand') }}
       </v-btn>
-      <v-btn
-        variant="text"
-        size="small"
-        @click="onCollapseAll"
-      >
+      <v-btn variant="text" size="small" @click="onCollapseAll">
         {{ t('collapse') }}
       </v-btn>
     </div>
-    <v-expansion-panels
-      v-model="expansionPanels"
-      accordion
-      multiple
-      flat
-    >
+    <v-expansion-panels v-model="expansionPanels" accordion multiple flat>
       <v-expansion-panel v-show="filteredFormElements.length">
         <v-expansion-panel-title class="text-h5 overline small-caps px-2">
           {{ t('formElements') }} ({{ filteredFormElements.length }})
         </v-expansion-panel-title>
         <v-expansion-panel-text>
-          <v-card
-            variant="outlined"
-            class="overflow-hidden"
-          >
+          <v-card variant="outlined" class="overflow-hidden">
             <v-list class="py-0">
               <Draggable
                 :list="filteredFormElements"
                 class="drag-form-elements"
-                style="overflow: auto; min-width:300;"
+                style="overflow: auto; min-width: 300"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
                 :clone="onCloneFormElement"
@@ -97,7 +76,7 @@
                 v-model="filteredBasics"
                 class="drag-unused-basic-properties"
                 tag="div"
-                style="overflow: auto; min-width:300;"
+                style="overflow: auto; min-width: 300"
                 item-key="scope"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
@@ -131,7 +110,7 @@
                 :list="filteredAspects"
                 class="drag-unused-aspects"
                 tag="div"
-                style="overflow: auto; min-width:300;"
+                style="overflow: auto; min-width: 300"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
                 :clone="onCloneControl"
@@ -164,7 +143,7 @@
               <Draggable
                 :list="filteredLinks"
                 class="drag-unused-links"
-                style="overflow: auto; min-width:300;"
+                style="overflow: auto; min-width: 300"
                 item-key="scope"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
@@ -197,15 +176,21 @@
                 :list="filteredWidgets"
                 item-key="code"
                 class="drag-unused-widgets"
-                style="overflow: auto; min-width:300;"
+                style="overflow: auto; min-width: 300"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
                 :clone="onCloneWidget"
               >
                 <template #item="{ element }">
                   <EditorListItem
-                    :title="element.name[locale] || Object.values(element.name)[0]"
-                    :styling="{ icon: mdiAutoFix, color: 'grey darken-4', name: upperFirst(t('widget').toString()) }"
+                    :title="
+                      element.name[locale] || Object.values(element.name)[0]
+                    "
+                    :styling="{
+                      icon: mdiAutoFix,
+                      color: 'grey darken-4',
+                      name: upperFirst(t('widget').toString()),
+                    }"
                   />
                 </template>
               </Draggable>
@@ -234,7 +219,16 @@ export interface IControl {
   scope: string;
   // TODO: These types are assumed for us to describe easily property type, however e.g. "type: enum" does not exist in JSONSchema standard
   // Therefore, "type: enum", describes the JSONSchema element, which includes "enum: []"
-  type: 'string' | 'boolean' | 'object' | 'number' | 'integer' | 'array' | 'enum' | 'null' | 'default';
+  type:
+    | 'string'
+    | 'boolean'
+    | 'object'
+    | 'number'
+    | 'integer'
+    | 'array'
+    | 'enum'
+    | 'null'
+    | 'default';
   label: string;
   backlogTitle: string;
   propertyName: string;
@@ -256,21 +250,21 @@ const WIDGETS: IVeoFormsElementDefinition[] = [];
 
 export default defineComponent({
   components: {
-    Draggable
+    Draggable,
   },
   props: {
     searchQuery: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     formSchema: {
       type: Object as PropType<IVeoFormSchema>,
-      required: true
+      required: true,
     },
     objectSchema: {
       type: Object as PropType<IVeoObjectSchema>,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['control-items'],
   setup(props, context) {
@@ -283,15 +277,15 @@ export default defineComponent({
       {
         type: 'Layout',
         options: {
-          format: 'group'
+          format: 'group',
         },
         elements: [],
         description: {
           title: 'group',
           icon: mdiFormSelect,
           name: 'layout',
-          color: 'grey darken-2'
-        }
+          color: 'grey darken-2',
+        },
       },
       {
         type: 'Label',
@@ -299,9 +293,9 @@ export default defineComponent({
           title: 'text',
           icon: mdiFormatText,
           name: 'label',
-          color: 'grey darken-2'
-        }
-      }
+          color: 'grey darken-2',
+        },
+      },
     ];
 
     const controls: Ref<IControl[]> = ref([]);
@@ -311,13 +305,18 @@ export default defineComponent({
 
     // We want to group links but show each custom aspect attribute on their own, thus we use two different regex
     const objectSchemaPropertiesPatterns = {
-      regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/\w+$/,
-      regexLinks: /^#\/properties\/links\/properties\/\w+/
+      regexAspectsAttributes:
+        /^#\/properties\/customAspects\/properties\/\w+\/properties\/\w+$/,
+      regexLinks: /^#\/properties\/links\/properties\/\w+/,
     };
 
     // When ObjectSchema is loaded, controls and controlsItems should be initialized to use them in other functions
     function initializeControls() {
-      const createControl = (key: string, value: Record<string, any>, mode: Mode): IControl => {
+      const createControl = (
+        key: string,
+        value: Record<string, any>,
+        mode: Mode
+      ): IControl => {
         const propertyName = key.split('/').slice(-1)[0];
         const label = propertyName.split('_').pop() || '';
         let backlogTitle = propertyName;
@@ -326,18 +325,30 @@ export default defineComponent({
           category = 'aspects';
         } else if (objectSchemaPropertiesPatterns.regexLinks.test(key)) {
           category = 'links';
-          const attributes = value.items?.properties?.attributes?.properties || [];
+          const attributes =
+            value.items?.properties?.attributes?.properties || [];
 
-          for (const [attributeKey, attributeValue] of Object.entries<Record<string, any>>(attributes)) {
+          for (const [attributeKey, attributeValue] of Object.entries<
+            Record<string, any>
+          >(attributes)) {
             if (!nestedControls.value[key]) {
               nestedControls.value[key] = [];
             }
-            nestedControls.value[key].push(createControl(`#/properties/attributes/properties/${attributeKey}`, attributeValue, mode));
+            nestedControls.value[key].push(
+              createControl(
+                `#/properties/attributes/properties/${attributeKey}`,
+                attributeValue,
+                mode
+              )
+            );
           }
         }
 
         if (category !== 'basics') {
-          backlogTitle = backlogTitle.replace(`${props.formSchema.modelType}_`, '');
+          backlogTitle = backlogTitle.replace(
+            `${props.formSchema.modelType}_`,
+            ''
+          );
           backlogTitle = backlogTitle.replace('_', ' / ');
         }
         return {
@@ -346,7 +357,7 @@ export default defineComponent({
           label,
           backlogTitle,
           propertyName,
-          category
+          category,
         };
       };
 
@@ -368,8 +379,8 @@ export default defineComponent({
             '/designator$',
             '_self',
             '/risks$',
-            '/decisionResults$'
-          ]
+            '/decisionResults$',
+          ],
         },
         Mode.VEO
       );
@@ -378,10 +389,17 @@ export default defineComponent({
     }
     initializeControls();
 
-    const nonLayoutFormSchemaElements = computed<{ type: string; name?: string; scope?: string }[]>(
+    const nonLayoutFormSchemaElements = computed<
+      { type: string; name?: string; scope?: string }[]
+    >(
       () =>
         Object.values(JsonPointer.flatten(props.formSchema.content, true))
-          .filter((element: any) => typeof element === 'object' && element.type && element.type !== 'Layout')
+          .filter(
+            (element: any) =>
+              typeof element === 'object' &&
+              element.type &&
+              element.type !== 'Layout'
+          )
           .map((element: any) => pick(element, 'type', 'scope', 'name')) as any
     );
 
@@ -401,38 +419,86 @@ export default defineComponent({
     const unused: ComputedRef<IUnused> = computed(() => {
       return {
         basics: controls.value.filter(
-          (obj) => obj.category === 'basics' && !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Control' && element.scope === obj.scope)
+          (obj) =>
+            obj.category === 'basics' &&
+            !nonLayoutFormSchemaElements.value.find(
+              (element) =>
+                element.type === 'Control' && element.scope === obj.scope
+            )
         ),
         aspects: controls.value.filter(
-          (obj) => obj.category === 'aspects' && !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Control' && element.scope === obj.scope)
+          (obj) =>
+            obj.category === 'aspects' &&
+            !nonLayoutFormSchemaElements.value.find(
+              (element) =>
+                element.type === 'Control' && element.scope === obj.scope
+            )
         ),
         links: controls.value.filter(
-          (obj) => obj.category === 'links' && !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Control' && element.scope === obj.scope)
+          (obj) =>
+            obj.category === 'links' &&
+            !nonLayoutFormSchemaElements.value.find(
+              (element) =>
+                element.type === 'Control' && element.scope === obj.scope
+            )
         ),
-        widgets: WIDGETS.filter((widget) => !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Widget' && element.name === widget.code))
+        widgets: WIDGETS.filter(
+          (widget) =>
+            !nonLayoutFormSchemaElements.value.find(
+              (element) =>
+                element.type === 'Widget' && element.name === widget.code
+            )
+        ),
       };
     });
 
     const filteredBasics: ComputedRef<IControl[]> = computed(() => {
-      return unused.value.basics.filter((b: any) => !props.searchQuery || b.label?.toLowerCase().includes(props.searchQuery));
+      return unused.value.basics.filter(
+        (b: any) =>
+          !props.searchQuery ||
+          b.label?.toLowerCase().includes(props.searchQuery)
+      );
     });
 
     const filteredAspects: ComputedRef<IControl[]> = computed(() => {
-      return unused.value.aspects.filter((a: any) => !props.searchQuery || a.label?.toLowerCase().includes(props.searchQuery));
+      return unused.value.aspects.filter(
+        (a: any) =>
+          !props.searchQuery ||
+          a.label?.toLowerCase().includes(props.searchQuery)
+      );
     });
 
     const filteredLinks: ComputedRef<IControl[]> = computed(() => {
-      return unused.value.links.filter((l: any) => !props.searchQuery || l.label?.toLowerCase().includes(props.searchQuery));
+      return unused.value.links.filter(
+        (l: any) =>
+          !props.searchQuery ||
+          l.label?.toLowerCase().includes(props.searchQuery)
+      );
     });
 
     const filteredFormElements: ComputedRef<any> = computed(() => {
-      return formElements.filter((f: any) => !props.searchQuery || f.description.title?.toLowerCase().includes(props.searchQuery));
+      return formElements.filter(
+        (f: any) =>
+          !props.searchQuery ||
+          f.description.title?.toLowerCase().includes(props.searchQuery)
+      );
     });
 
-    const filteredWidgets = computed(() => unused.value.widgets.filter((widget) => !props.searchQuery || widget.code.toLowerCase().includes(props.searchQuery)));
+    const filteredWidgets = computed(() =>
+      unused.value.widgets.filter(
+        (widget) =>
+          !props.searchQuery ||
+          widget.code.toLowerCase().includes(props.searchQuery)
+      )
+    );
 
     const controlElementsVisible: ComputedRef<boolean> = computed(() => {
-      return !!(filteredFormElements.value.length + filteredBasics.value.length + filteredAspects.value.length + filteredLinks.value.length);
+      return !!(
+        filteredFormElements.value.length +
+        filteredBasics.value.length +
+        filteredAspects.value.length +
+        filteredLinks.value.length
+      );
     });
 
     /**
@@ -453,15 +519,15 @@ export default defineComponent({
         type: 'Control',
         scope: dataToClone.scope,
         options: {
-          label: `#lang/${dataToClone.propertyName}`
+          label: `#lang/${dataToClone.propertyName}`,
         },
-        ...(dataToClone.category === 'links' && { elements: [] })
+        ...(dataToClone.category === 'links' && { elements: [] }),
       };
     }
 
     const onCloneWidget = (widget: IVeoFormsElementDefinition) => ({
       type: 'Widget',
-      name: widget.name[locale.value] || Object.values(widget.name)[0]
+      name: widget.name[locale.value] || Object.values(widget.name)[0],
     });
 
     return {
@@ -483,9 +549,9 @@ export default defineComponent({
       mdiAutoFix,
       t,
       globalT,
-      upperFirst
+      upperFirst,
     };
-  }
+  },
 });
 </script>
 

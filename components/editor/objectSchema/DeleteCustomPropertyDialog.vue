@@ -25,18 +25,11 @@
       <span>{{ t(`delete.${type}`, { title }) }}</span>
     </template>
     <template #dialog-options>
-      <v-btn
-        text
-        @click="$emit('update:model-value', false)"
-      >
+      <v-btn text @click="$emit('update:model-value', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn
-        text
-        color="primary"
-        @click="$emit('delete-item')"
-      >
+      <v-btn text color="primary" @click="$emit('delete-item')">
         {{ globalT('global.button.delete') }}
       </v-btn>
     </template>
@@ -49,16 +42,16 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Boolean,
-      required: true
+      required: true,
     },
     title: {
       type: String,
-      required: true
+      required: true,
     },
     type: {
       type: String as PropType<'aspect' | 'link'>,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['update:model-value', 'delete-item'],
   setup() {
@@ -66,7 +59,7 @@ export default defineComponent({
     const { t: globalT } = useI18n({ useScope: 'global' });
 
     return { t, globalT };
-  }
+  },
 });
 </script>
 

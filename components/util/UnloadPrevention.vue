@@ -24,8 +24,8 @@ export default {
   props: {
     modelValue: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   watch: {
     modelValue: {
@@ -34,12 +34,12 @@ export default {
 
         window.onbeforeunload = value ? () => this.$t('unsavedChanges') : null;
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   beforeUnmount() {
     if (window) window.onbeforeunload = null;
-  }
+  },
 };
 </script>
 

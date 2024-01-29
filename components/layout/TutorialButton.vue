@@ -26,24 +26,20 @@
           type="submit"
           :disabled="!tutorialsForRoute.length"
           data-component-name="tutorial-select"
-          @click="visible ? stop(): load()"
+          @click="visible ? stop() : load()"
         >
-          <v-icon :icon="visible ? mdiInformationOffOutline : mdiInformationOutline" />
+          <v-icon
+            :icon="visible ? mdiInformationOffOutline : mdiInformationOutline"
+          />
         </v-btn>
-        <v-menu
-          v-else
-          offset-y
-          bottom
-          left
-          nudge-bottom="2"
-        >
-          <template #activator="{props: menu }">
-            <v-btn
-              icon
-              data-component-name="tutorial-select"
-              v-bind="menu"
-            >
-              <v-icon :icon="visible ? mdiInformationOffOutline : mdiInformationOutline" />
+        <v-menu v-else offset-y bottom left nudge-bottom="2">
+          <template #activator="{ props: menu }">
+            <v-btn icon data-component-name="tutorial-select" v-bind="menu">
+              <v-icon
+                :icon="
+                  visible ? mdiInformationOffOutline : mdiInformationOutline
+                "
+              />
             </v-btn>
           </template>
           <template #default>
@@ -62,7 +58,7 @@
         </v-menu>
       </div>
     </template>
-    <span v-text="t(visible?'hideHelp':'showHelp')" />
+    <span v-text="t(visible ? 'hideHelp' : 'showHelp')" />
   </v-tooltip>
 </template>
 
@@ -84,9 +80,9 @@ export default defineComponent({
 
       mdiInformationOffOutline,
       mdiInformationOutline,
-      t
+      t,
     };
-  }
+  },
 });
 </script>
 

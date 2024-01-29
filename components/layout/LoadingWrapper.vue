@@ -17,15 +17,8 @@
 -->
 <template>
   <div class="veo-loading-wrapper d-flex align-center justify-center">
-    <v-progress-circular
-      size="64"
-      color="primary"
-      indeterminate
-    />
-    <span
-      v-if="text"
-      class="font-size: 1.5rem;"
-    >{{ text }}</span>
+    <v-progress-circular size="64" color="primary" indeterminate />
+    <span v-if="text" class="font-size: 1.5rem;">{{ text }}</span>
   </div>
 </template>
 
@@ -33,8 +26,8 @@
 defineProps({
   text: {
     type: String,
-    default: undefined
-  }
+    default: undefined,
+  },
 });
 </script>
 

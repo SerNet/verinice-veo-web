@@ -18,9 +18,7 @@
 <template>
   <BasePage sticky-footer>
     <template #default>
-      <LayoutHeadline
-        :title="$t('breadcrumbs.administration')"
-      />
+      <LayoutHeadline :title="$t('breadcrumbs.administration')" />
 
       <BaseAlert
         :model-value="true"
@@ -29,7 +27,7 @@
         no-close-button
         :title="t('access')"
         :type="VeoAlertType.INFO"
-        style="width: max-content;"
+        style="width: max-content"
       >
         {{ t('accountAdministrationHint') }}
       </BaseAlert>
@@ -37,8 +35,9 @@
       <BaseCard>
         <v-card-title class="bg-accent small-caps text-h4">
           <span>{{ t('accounts') }}</span>
-          <span style="float: right;">
-            <b>{{ activeAccounts }}</b> {{ t('of') }} <b>{{ userSettings.maxUsers - 1 }}</b> {{ t('activeAccounts') }}
+          <span style="float: right">
+            <b>{{ activeAccounts }}</b> {{ t('of') }}
+            <b>{{ userSettings.maxUsers - 1 }}</b> {{ t('activeAccounts') }}
           </span>
         </v-card-title>
 
@@ -79,7 +78,7 @@
             color="primary"
             :disabled="
               ability.cannot('manage', 'accounts') ||
-                activeAccounts >= userSettings.maxUsers - 1
+              activeAccounts >= userSettings.maxUsers - 1
             "
             size="large"
             class="veo-primary-action-fab"
@@ -111,7 +110,9 @@
 <script setup lang="ts">
 import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { TableHeader } from '~/components/base/Table.vue';
-import accountQueryDefinition, { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
+import accountQueryDefinition, {
+  IVeoAccount,
+} from '~/composables/api/queryDefinitions/accounts';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useQuery } from '~/composables/api/utils/query';
@@ -122,7 +123,9 @@ const { t: $t } = useI18n({ useScope: 'global' });
 const { profile, userSettings } = useVeoUser();
 const { ability } = useVeoPermissions();
 
-const { data: accounts, isFetching } = useQuery(accountQueryDefinition.queries.fetchAccounts);
+const { data: accounts, isFetching } = useQuery(
+  accountQueryDefinition.queries.fetchAccounts
+);
 const activeAccounts = computed(
   () => (accounts.value || []).filter((account) => account.enabled).length
 );
@@ -147,7 +150,9 @@ const manageAccountDialogVisible = computed(
   () => createAccountDialogVisible.value || editAccountDialogVisible.value
 );
 const manageAccountProps = computed(() =>
-  editAccountDialogVisible.value ? editAccountDialogProps.value : { groups: ['veo-write-access'] }
+  editAccountDialogVisible.value ?
+    editAccountDialogProps.value
+  : { groups: ['veo-write-access'] }
 );
 const onManageAccountDialogInput = (newValue: boolean) => {
   if (!newValue) {
@@ -171,15 +176,16 @@ const accountTableActions: {
     id: 'edit',
     action: onEditAccount,
     icon: mdiPencilOutline,
-    label: t('edit')
+    label: t('edit'),
   },
   {
     id: 'delete',
     action: onDeleteAccount,
     icon: mdiTrashCanOutline,
     label: $t('global.button.delete'),
-    isDisabled: (item: IVeoAccount) => item.username === profile.value?.username
-  }
+    isDisabled: (item: IVeoAccount) =>
+      item.username === profile.value?.username,
+  },
 ];
 
 const additionalTableHeaders = ref<TableHeader[]>([
@@ -189,7 +195,7 @@ const additionalTableHeaders = ref<TableHeader[]>([
     text: t('username').toString(),
     value: 'username',
     key: 'username',
-    width: 180
+    width: 180,
   },
   {
     order: 20,
@@ -198,18 +204,17 @@ const additionalTableHeaders = ref<TableHeader[]>([
     value: 'enabled',
     key: 'enabled',
     render: ({ item }) =>
-      item.raw.enabled
-        ? $t('global.button.yes').toString()
-        : $t('global.button.no').toString()
-    ,
-    width: 80
+      item.raw.enabled ?
+        $t('global.button.yes').toString()
+      : $t('global.button.no').toString(),
+    width: 80,
   },
   {
     order: 30,
     priority: 80,
     text: t('email').toString(),
     value: 'emailAddress',
-    key: 'emailAddress'
+    key: 'emailAddress',
   },
   {
     order: 40,
@@ -217,7 +222,7 @@ const additionalTableHeaders = ref<TableHeader[]>([
     text: t('firstName').toString(),
     value: 'firstName',
     key: 'firstName',
-    width: 180
+    width: 180,
   },
   {
     order: 50,
@@ -225,7 +230,7 @@ const additionalTableHeaders = ref<TableHeader[]>([
     text: t('lastName').toString(),
     value: 'lastName',
     key: 'lastName',
-    width: 180
+    width: 180,
   },
   {
     order: 60,
@@ -233,8 +238,8 @@ const additionalTableHeaders = ref<TableHeader[]>([
     text: t('groups').toString(),
     render: ({ item }) => item.raw.groups.join(', '),
     value: 'groups',
-    key: 'groups'
-  }
+    key: 'groups',
+  },
 ]);
 </script>
 

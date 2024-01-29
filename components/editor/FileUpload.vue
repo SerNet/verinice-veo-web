@@ -55,16 +55,16 @@ import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 defineProps({
   code: {
     type: String,
-    default: ''
+    default: '',
   },
   inputLabel: {
     type: String,
-    required: true
+    required: true,
   },
   submitButtonText: {
     type: String,
-    default: undefined
-  }
+    default: undefined,
+  },
 });
 
 const emit = defineEmits(['schema-uploaded']);

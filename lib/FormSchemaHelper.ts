@@ -17,8 +17,15 @@
  */
 import FormSchemaValidator from './FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
-import { IVeoFormSchemaTranslationCollection, IVeoObjectSchema } from '~/types/VeoTypes';
-import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import {
+  IVeoFormSchemaTranslationCollection,
+  IVeoObjectSchema,
+} from '~/types/VeoTypes';
+import {
+  IVeoFormSchema,
+  IVeoFormSchemaItem,
+  IVeoFormSchemaMeta,
+} from '~/composables/api/queryDefinitions/forms';
 import { cloneDeep } from 'lodash';
 
 export function generateSchema(
@@ -37,41 +44,47 @@ export function generateSchema(
       type: 'Layout',
       options: {
         format: 'group',
-        direction: 'vertical'
+        direction: 'vertical',
       },
-      elements: []
+      elements: [],
     },
-    sorting
+    sorting,
   };
 }
 
-export function validate(schema: IVeoFormSchema, objectSchema: undefined | IVeoObjectSchema): VeoSchemaValidatorValidationResult {
+export function validate(
+  schema: IVeoFormSchema,
+  objectSchema: undefined | IVeoObjectSchema
+): VeoSchemaValidatorValidationResult {
   const validator = new FormSchemaValidator();
   return validator.validate(schema, objectSchema);
 }
 
 /**
  * This function deletes the translations of a form schema element from the form schema translations object.
- * 
+ *
  * @param formschema The form schema to modify
  * @param elementFormSchema The element to delete the translations for
  * @returns The form schema without the translations for the specified element
  */
-export const deleteFormSchemaElementTranslations = (formschema: IVeoFormSchema, elementFormSchema: IVeoFormSchemaItem) => {
+export const deleteFormSchemaElementTranslations = (
+  formschema: IVeoFormSchema,
+  elementFormSchema: IVeoFormSchemaItem
+) => {
   const _formSchema = cloneDeep(formschema);
   let possibleTranslationKey: string | undefined;
-  if(elementFormSchema.type === 'Label') {
+  if (elementFormSchema.type === 'Label') {
     possibleTranslationKey = elementFormSchema.text;
   } else {
     possibleTranslationKey = elementFormSchema.options.label;
   }
 
-  if(!possibleTranslationKey) {
+  if (!possibleTranslationKey) {
     return _formSchema;
   }
 
   Object.entries(_formSchema.translation).forEach(([locale, _]) => {
-    if(!possibleTranslationKey) {
+    if (!possibleTranslationKey) {
       return;
     }
     delete _formSchema.translation[locale][possibleTranslationKey];

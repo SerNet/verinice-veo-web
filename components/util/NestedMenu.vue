@@ -16,19 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-menu
-    v-model="menu"
-    v-bind="$attrs"
-    :close-on-content-click="false"
-  >
-    <template
-      v-if="!!$slots.activator"
-      #activator="slotListeners"
-    >
-      <slot
-        name="activator"
-        v-bind="slotListeners"
-      />
+  <v-menu v-model="menu" v-bind="$attrs" :close-on-content-click="false">
+    <template v-if="!!$slots.activator" #activator="slotListeners">
+      <slot name="activator" v-bind="slotListeners" />
     </template>
     <template #default>
       <v-list density="compact">
@@ -47,21 +37,17 @@
                 :key="`0_${item.key}`"
                 @click.stop="() => {}"
               >
-                <template
-                  v-if="anyItemHasIcon"
-                  #prepend
-                >
+                <template v-if="anyItemHasIcon" #prepend>
                   <v-icon
                     v-if="item.icon"
                     :icon="item.icon"
                     :color="item.color"
                   />
-                  <div
-                    v-else
-                    style="width: 54px"
-                  />
+                  <div v-else style="width: 54px" />
                 </template>
-                <v-list-item-title :class="{ [`text-${item.color}`]: !!item.color }">
+                <v-list-item-title
+                  :class="{ [`text-${item.color}`]: !!item.color }"
+                >
                   {{ item.title }}
                 </v-list-item-title>
                 <template #append>
@@ -75,21 +61,13 @@
             :key="`1_${item.key}`"
             @click="onItemClicked(`1_${item.key}`, item)"
           >
-            <template
-              v-if="anyItemHasIcon"
-              #prepend
-            >
-              <v-icon
-                v-if="item.icon"
-                :icon="item.icon"
-                :color="item.color"
-              />
-              <div
-                v-else
-                style="width: 54px"
-              />
+            <template v-if="anyItemHasIcon" #prepend>
+              <v-icon v-if="item.icon" :icon="item.icon" :color="item.color" />
+              <div v-else style="width: 54px" />
             </template>
-            <v-list-item-title :class="{ [`text-${item.color}`]: !!item.color }">
+            <v-list-item-title
+              :class="{ [`text-${item.color}`]: !!item.color }"
+            >
               {{ item.title }}
             </v-list-item-title>
             <component
@@ -97,12 +75,11 @@
               v-if="item.component"
               v-bind="item.componentProps"
               :model-value="!!componentIsVisible[`1_${item.key}`]"
-              @update:model-value="onUpdateComponentModelValue(`1_${item.key}`, $event)"
+              @update:model-value="
+                onUpdateComponentModelValue(`1_${item.key}`, $event)
+              "
             />
-            <template
-              v-if="anyItemHasChildren"
-              #append
-            >
+            <template v-if="anyItemHasChildren" #append>
               <div style="width: 54px" />
             </template>
           </v-list-item>
@@ -121,45 +98,52 @@ export interface INestedMenuEntries {
   title: string | ComposerTranslation;
   icon?: string;
   component?: any;
-  componentProps?: Record<string, any>
+  componentProps?: Record<string, any>;
   callback?: CallableFunction; // Currently unused, but might make sense in the future to trigger a programmatic action not requiring user input
   children?: INestedMenuEntries[];
   color?: string;
 }
-const props = withDefaults(defineProps<{
-  items: INestedMenuEntries[]
-}>(), {
-  items: () => []
-});
+const props = withDefaults(
+  defineProps<{
+    items: INestedMenuEntries[];
+  }>(),
+  {
+    items: () => [],
+  }
+);
 
 const emit = defineEmits<{
-  (event: 'close'): void
+  (event: 'close'): void;
 }>();
 
-const anyItemHasIcon = computed(() => (props.items || []).some((item) => !!item.icon));
+const anyItemHasIcon = computed(() =>
+  (props.items || []).some((item) => !!item.icon)
+);
 
-const anyItemHasChildren = computed(() => (props.items || []).some((item) => !!item.children));
+const anyItemHasChildren = computed(() =>
+  (props.items || []).some((item) => !!item.children)
+);
 
 const menu = ref(false);
 
 const componentIsVisible = ref<Record<string, boolean>>({});
 
 const onItemClicked = (itemKey: string, item: INestedMenuEntries) => {
-  if(item.component) {
+  if (item.component) {
     componentIsVisible.value[itemKey] = true;
   }
-  if(item.callback) {
+  if (item.callback) {
     item.callback();
     closeMenu();
   }
 };
 
 const onUpdateComponentModelValue = (itemKey: string, newValue: boolean) => {
-  if(itemKey) {
+  if (itemKey) {
     componentIsVisible.value[itemKey] = newValue;
   }
 
-  if(!newValue) {
+  if (!newValue) {
     closeMenu();
   }
 };

@@ -22,26 +22,16 @@
     :class="{ 'is-disabled': disabled || options.disabled }"
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
   >
-    <div
-      v-if="options.label"
-      class="subtitle-1"
-    >
+    <div v-if="options.label" class="subtitle-1">
       {{ options.label }}
     </div>
-    <div
-      v-if="!options.disabled"
-      ref="editor"
-    />
-    <div
-      class="no-editor-html-output"
-      v-else
-      v-html="modelValue"
-    />
+    <div v-if="!options.disabled" ref="editor" />
+    <div class="no-editor-html-output" v-else v-html="modelValue" />
   </div>
 </template>
 
 <script lang="ts">
-import{ last } from 'lodash';
+import { last } from 'lodash';
 import Prism from 'prismjs';
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
 import Editor from '@toast-ui/editor';
@@ -54,13 +44,16 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-markdown-editor',
   name: {
     en: 'markdown editor',
-    de: 'Markdown editor'
+    de: 'Markdown editor',
   },
   description: {
     en: 'WYSIWYG markdown editor to style input.',
-    de: 'WYSIWYG Markdown editor um Eingaben zu formatieren.'
+    de: 'WYSIWYG Markdown editor um Eingaben zu formatieren.',
   },
-  conditions: (props) => [props.objectSchema.type === 'string', typeof props.options !== 'undefined' && props.options.format === 'markdown']
+  conditions: (props) => [
+    props.objectSchema.type === 'string',
+    typeof props.options !== 'undefined' && props.options.format === 'markdown',
+  ],
 };
 
 // Outside of vue as the editor can't handle the function being part of the vue methods or computed properties.
@@ -89,7 +82,7 @@ export default defineComponent({
     const editor = ref();
 
     const onCreated = () => {
-      if(editor.value) {
+      if (editor.value) {
         localEditor.setMarkdown(props.modelValue);
       }
     };
@@ -98,7 +91,7 @@ export default defineComponent({
     watch(() => editor.value, onCreated, { immediate: true });
 
     onMounted(() => {
-      if(props.options.disabled) return;
+      if (props.options.disabled) return;
       let firstFocus = true;
 
       localEditor = new Editor({
@@ -108,19 +101,32 @@ export default defineComponent({
         autofocus: false, // For some reason this config is buggy, workaround in `events`, cp. https://github.com/nhn/tui.editor/issues/1802
         events: {
           focus: () => {
-            if(firstFocus) {
-              nextTick(() =>  {
+            if (firstFocus) {
+              nextTick(() => {
                 // Focus name control and not the editor (cp. above)
-                localEditor.blur()
-                document.querySelector<HTMLElement>('[data-component-name="object-form-form"]')?.scrollTo(0,0)
+                localEditor.blur();
+                document
+                  .querySelector<HTMLElement>(
+                    '[data-component-name="object-form-form"]'
+                  )
+                  ?.scrollTo(0, 0);
                 firstFocus = false;
-              })
+              });
             }
           },
           change: () => {
             const markdownText = localEditor.getMarkdown();
-            emit('update:model-value', (typeof props.modelValue === 'undefined' || props.modelValue === null) && markdownText === '' ? props.modelValue : markdownText);
-          }
+            emit(
+              'update:model-value',
+              (
+                (typeof props.modelValue === 'undefined' ||
+                  props.modelValue === null) &&
+                  markdownText === ''
+              ) ?
+                props.modelValue
+              : markdownText
+            );
+          },
         },
         usageStatistics: false,
         plugins: [[codeSyntaxHighlightPlugin, { highlighter: Prism }]],
@@ -130,13 +136,15 @@ export default defineComponent({
           ['ul', 'ol', 'task', 'indent', 'outdent'],
           ['table', 'image', 'link'],
           ['code', 'codeblock'],
-          [{
-            el: clearButton(() => emit('update:model-value', undefined)),
-            command: 'clear-button',
-            name: 'clear-button',
-            tooltip: t('clear')
-          }]
-        ]
+          [
+            {
+              el: clearButton(() => emit('update:model-value', undefined)),
+              command: 'clear-button',
+              name: 'clear-button',
+              tooltip: t('clear'),
+            },
+          ],
+        ],
       });
     });
 
@@ -144,9 +152,9 @@ export default defineComponent({
       editor,
 
       getControlErrorMessages,
-      last
+      last,
     };
-  }
+  },
 });
 </script>
 
@@ -210,7 +218,12 @@ export default defineComponent({
 .no-editor-html-output {
   margin-top: 16px;
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     line-height: 120%;
   }
 }

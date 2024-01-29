@@ -16,15 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    data-component-name="object-overview-page"
-    sticky-footer
-  >
+  <BasePage data-component-name="object-overview-page" sticky-footer>
     <template #default>
-      <LayoutHeadline
-        class="mb-4"
-        :title="upperFirst(t('objectOverview'))"
-      />
+      <LayoutHeadline class="mb-4" :title="upperFirst(t('objectOverview'))" />
 
       <ObjectFilterBar
         ref="filterBar"
@@ -39,23 +33,31 @@
           v-model:sort-by="sortBy"
           :items="items"
           :loading="isLoading"
-          :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
+          :default-headers="[
+            'icon',
+            'designator',
+            'abbreviation',
+            'name',
+            'status',
+            'description',
+            'updatedBy',
+            'updatedAt',
+            'actions',
+          ]"
           :additional-headers="additionalHeaders"
           data-component-name="object-overview-table"
           enable-click
           @click="openItem"
         >
-          <template #actions="{item}">
+          <template #actions="{ item }">
             <div class="d-flex justify-end">
-              <v-tooltip
-                v-for="btn in actions"
-                :key="btn.id"
-                location="start"
-              >
+              <v-tooltip v-for="btn in actions" :key="btn.id" location="start">
                 <template #activator="{ props }">
                   <v-btn
                     :data-component-name="`object-overview-${btn.id}-button`"
-                    :disabled="ability.cannot('manage', 'objects') || btn.disabled"
+                    :disabled="
+                      ability.cannot('manage', 'objects') || btn.disabled
+                    "
                     :icon="btn.icon"
                     v-bind="props"
                     variant="text"
@@ -72,7 +74,9 @@
         <ObjectDeleteDialog
           :model-value="!!itemToDelete"
           :item="itemToDelete"
-          @update:model-value="onCloseDeleteDialog({isOpen: false, isCancel: true})"
+          @update:model-value="
+            onCloseDeleteDialog({ isOpen: false, isCancel: true })
+          "
           @success="onCloseDeleteDialog({ isOpen: false })"
           @error="showError('delete', itemToDelete, $event)"
         />
@@ -85,11 +89,7 @@
         />
       </BaseCard>
       <ObjectTypeError v-else>
-        <v-btn
-          color="primary"
-          variant="text"
-          @click="onOpenFilterDialog"
-        >
+        <v-btn color="primary" variant="text" @click="onOpenFilterDialog">
           {{ t('filterObjects') }}
         </v-btn>
       </ObjectTypeError>
@@ -102,13 +102,8 @@
         :object-type="filter.objectType"
         :sub-type="filter.subType"
       />
-      <v-tooltip
-        v-if="filter.objectType"
-        location="start"
-      >
-        <template
-          #activator="{ props }"
-        >
+      <v-tooltip v-if="filter.objectType" location="start">
+        <template #activator="{ props }">
           <v-btn
             color="primary"
             flat
@@ -135,7 +130,12 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
 </script>
 
 <script setup lang="ts">
-import { mdiContentCopy, mdiDotsVertical, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
+import {
+  mdiContentCopy,
+  mdiDotsVertical,
+  mdiPlus,
+  mdiTrashCanOutline,
+} from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
 import { useFetchUnitDomains } from '~/composables/api/domains';
 
@@ -146,7 +146,9 @@ import { useCloneObject } from '~/composables/VeoObjectUtilities';
 import { ObjectTableHeader } from '~/components/object/Table.vue';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import formQueryDefinitions, {
+  IVeoFormSchemaMeta,
+} from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~/composables/api/utils/query';
@@ -155,15 +157,15 @@ import { useFetchObjects } from '~/composables/api/objects';
 enum FILTER_SOURCE {
   QUERY,
   PARAMS,
-  NONE
+  NONE,
 }
 
 type IFilterDefinition = {
   [filterKey: string]: {
-    source: FILTER_SOURCE,
-    nullValue?: any
-  }
-}
+    source: FILTER_SOURCE;
+    nullValue?: any;
+  };
+};
 
 const { t, locale } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
@@ -176,12 +178,22 @@ const route = useRoute();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
 
-const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain }));
-const { data: translations, isFetching: translationsLoading } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
+const fetchTranslationsQueryParameters = computed(() => ({
+  languages: [locale.value],
+  domain: route.params.domain,
+}));
+const { data: translations, isFetching: translationsLoading } = useQuery(
+  translationQueryDefinitions.queries.fetch,
+  fetchTranslationsQueryParameters
+);
 
-const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
+const fetchUnitDomainsQueryParameters = computed(() => ({
+  unitId: route.params.unit as string,
+}));
 const fetchUnitDomainsQueryEnabled = computed(() => !!route.params.unit);
-const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, { enabled: fetchUnitDomainsQueryEnabled });
+const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, {
+  enabled: fetchUnitDomainsQueryEnabled,
+});
 
 const domainId = computed(() => route.params.domain as string);
 
@@ -199,36 +211,36 @@ const onOpenFilterDialog = () => {
 
 const filterDefinitions: IFilterDefinition = {
   objectType: {
-    source: FILTER_SOURCE.PARAMS
+    source: FILTER_SOURCE.PARAMS,
   },
   subType: {
     source: FILTER_SOURCE.PARAMS,
-    nullValue: '-'
+    nullValue: '-',
   },
   abbreviation: {
-    source: FILTER_SOURCE.QUERY
+    source: FILTER_SOURCE.QUERY,
   },
   designator: {
-    source: FILTER_SOURCE.QUERY
+    source: FILTER_SOURCE.QUERY,
   },
   name: {
-    source: FILTER_SOURCE.QUERY
+    source: FILTER_SOURCE.QUERY,
   },
   status: {
-    source: FILTER_SOURCE.QUERY
+    source: FILTER_SOURCE.QUERY,
   },
   description: {
-    source: FILTER_SOURCE.QUERY
+    source: FILTER_SOURCE.QUERY,
   },
   updatedBy: {
-    source: FILTER_SOURCE.QUERY
+    source: FILTER_SOURCE.QUERY,
   },
   hasNoParentElements: {
-    source: FILTER_SOURCE.QUERY
+    source: FILTER_SOURCE.QUERY,
   },
   hasChildElements: {
-    source: FILTER_SOURCE.QUERY
-  }
+    source: FILTER_SOURCE.QUERY,
+  },
 };
 
 const stringOrFirstValue = (v: string | null | (string | null)[]) => {
@@ -239,29 +251,35 @@ const stringOrFirstValue = (v: string | null | (string | null)[]) => {
 };
 
 // filter built from URL query parameters
-const { data: endpoints, isFetching: endpointsLoading } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { placeholderData: {} });
+const { data: endpoints, isFetching: endpointsLoading } = useQuery(
+  schemaQueryDefinitions.queries.fetchSchemas,
+  undefined,
+  { placeholderData: {} }
+);
 
 const filter = computed(() => {
   return Object.fromEntries(
     Object.entries(filterDefinitions).map(([filterKey, filterDefinition]) => {
       // Extract first query value
       let filterValue: any;
-      if(filterDefinition.source === FILTER_SOURCE.QUERY) {
+      if (filterDefinition.source === FILTER_SOURCE.QUERY) {
         filterValue = stringOrFirstValue(route.query[filterKey]);
       } else if (filterDefinition.source === FILTER_SOURCE.PARAMS) {
         filterValue = stringOrFirstValue(route.params[filterKey]);
       }
-      if(filterValue === filterDefinition.nullValue) {
+      if (filterValue === filterDefinition.nullValue) {
         filterValue = undefined;
       }
 
-      if(filterValue === "true") {
+      if (filterValue === 'true') {
         filterValue = true;
       }
 
       // Special handling
-      if(filterKey === 'objectType') {
-        filterValue = Object.entries(endpoints.value || {}).find(([_, endpoint]) => endpoint === filterValue)?.[0];
+      if (filterKey === 'objectType') {
+        filterValue = Object.entries(endpoints.value || {}).find(
+          ([_, endpoint]) => endpoint === filterValue
+        )?.[0];
       }
 
       return [filterKey, filterValue];
@@ -286,40 +304,56 @@ const combinedQueryParameters = computed<any>(() => ({
   page: page.value,
   unit: route.params.unit as string,
   ...omit(filter.value, 'objectType'),
-  endpoint: endpoints.value?.[filter.value.objectType as string]
+  endpoint: endpoints.value?.[filter.value.objectType as string],
 }));
-const queryEnabled = computed(() => !!endpoints.value?.[filter.value.objectType as string]);
-const { data: items, isLoading: isLoadingObjects } = useFetchObjects(combinedQueryParameters, { enabled: queryEnabled, keepPreviousData: true });
+const queryEnabled = computed(
+  () => !!endpoints.value?.[filter.value.objectType as string]
+);
+const { data: items, isLoading: isLoadingObjects } = useFetchObjects(
+  combinedQueryParameters,
+  { enabled: queryEnabled, keepPreviousData: true }
+);
 
 const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
 const formsQueryEnabled = computed(() => !!domainId.value);
-const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+const { data: formSchemas } = useQuery(
+  formQueryDefinitions.queries.fetchForms,
+  formsQueryParameters,
+  { enabled: formsQueryEnabled, placeholderData: [] }
+);
 
-const isLoading = computed(() => isLoadingObjects.value || translationsLoading.value);
+const isLoading = computed(
+  () => isLoadingObjects.value || translationsLoading.value
+);
 
 watch(() => filter.value, resetQueryOptions, { deep: true });
 
 // Update query parameters but keep other route options
-const updateRoute = async (newValue: Record<string, string | undefined | null | true>) => {
+const updateRoute = async (
+  newValue: Record<string, string | undefined | null | true>
+) => {
   const routeDetails = {
     name: ROUTE_NAME,
     query: {} as Record<string, string>,
-    params: {} as Record<string, string>
+    params: {} as Record<string, string>,
   };
   Object.entries(newValue).forEach(([filterKey, filterValue]) => {
     // Special handling
-    if(filterKey === 'objectType') {
+    if (filterKey === 'objectType') {
       filterValue = endpoints.value?.[filterValue as string];
     }
 
-    if(filterValue === undefined && filterDefinitions[filterKey].nullValue !== undefined) {
-      if(filterDefinitions[filterKey].source === FILTER_SOURCE.PARAMS) {
+    if (
+      filterValue === undefined &&
+      filterDefinitions[filterKey].nullValue !== undefined
+    ) {
+      if (filterDefinitions[filterKey].source === FILTER_SOURCE.PARAMS) {
         routeDetails.params[filterKey] = filterDefinitions[filterKey].nullValue;
       } else {
         routeDetails.query[filterKey] = filterDefinitions[filterKey].nullValue;
       }
     } else {
-      if(filterDefinitions[filterKey].source === FILTER_SOURCE.PARAMS) {
+      if (filterDefinitions[filterKey].source === FILTER_SOURCE.PARAMS) {
         routeDetails.params[filterKey] = filterValue as string;
       } else {
         routeDetails.query[filterKey] = filterValue as string;
@@ -333,16 +367,30 @@ const formatObjectLabel = (label: string, value?: string) => {
   switch (label) {
     // translated object type
     case 'objectType':
-      return value ? translations.value?.lang[locale.value]?.[value] : undefined;
-      // translated sub type
+      return value ?
+          translations.value?.lang[locale.value]?.[value]
+        : undefined;
+    // translated sub type
     case 'subType':
-      return (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
+      return (
+        (formSchemas.value as IVeoFormSchemaMeta[]).find(
+          (formschema) => formschema.subType === value
+        )?.name?.[locale.value] || value
+      );
   }
 };
 
-const createObjectLabel = computed(() => (filter.value.subType ? formatObjectLabel('subType', filter.value.subType) : formatObjectLabel('objectType', filter.value.objectType)));
+const createObjectLabel = computed(() =>
+  filter.value.subType ?
+    formatObjectLabel('subType', filter.value.subType)
+  : formatObjectLabel('objectType', filter.value.objectType)
+);
 
-const showError = (messageKey: 'clone' | 'delete', _item: IVeoEntity | undefined, error: Error) => {
+const showError = (
+  messageKey: 'clone' | 'delete',
+  _item: IVeoEntity | undefined,
+  error: Error
+) => {
   displayErrorMessage(t(`errors.${messageKey}`).toString(), error?.toString());
 };
 
@@ -351,8 +399,8 @@ const openItem = ({ item }: { item: any }) => {
     name: OBJECT_DETAIL_ROUTE,
     params: {
       ...route.params,
-      object: item.id
-    }
+      object: item.id,
+    },
   });
 };
 
@@ -365,12 +413,16 @@ const createObjectDialogVisible = ref(false);
 
 // Delete object
 const itemToDelete = ref<IVeoEntity>();
-const resetItemToDelete = () => itemToDelete.value = undefined;
+const resetItemToDelete = () => (itemToDelete.value = undefined);
 
-const onCloseDeleteDialog = (
-  {isOpen, isCancel = false}: {isOpen: boolean, isCancel?: boolean}
-) => {
-  if(!isOpen && isCancel){
+const onCloseDeleteDialog = ({
+  isOpen,
+  isCancel = false,
+}: {
+  isOpen: boolean;
+  isCancel?: boolean;
+}) => {
+  if (!isOpen && isCancel) {
     return resetItemToDelete();
   }
   if (!isOpen && !isCancel) {
@@ -392,9 +444,8 @@ const actions = computed(() => [
     async action(item: any) {
       try {
         const { resourceId: clonedObjectId } = await clone(item);
-        displaySuccessMessage(
-          t('cloneSuccess'),
-          { actions: [
+        displaySuccessMessage(t('cloneSuccess'), {
+          actions: [
             {
               text: t('open'),
               onClick: () => {
@@ -402,17 +453,17 @@ const actions = computed(() => [
                   name: OBJECT_DETAIL_ROUTE,
                   params: {
                     ...route.params,
-                    object: clonedObjectId
-                  }
+                    object: clonedObjectId,
+                  },
                 });
-              }
-            }]
-          }
-        );
+              },
+            },
+          ],
+        });
       } catch (e: any) {
         showError('clone', item, e);
       }
-    }
+    },
   },
   {
     id: 'delete',
@@ -420,7 +471,7 @@ const actions = computed(() => [
     icon: mdiTrashCanOutline,
     action(item: any) {
       itemToDelete.value = item;
-    }
+    },
   },
   {
     disabled: domains.value?.length <= 1,
@@ -431,27 +482,35 @@ const actions = computed(() => [
       objectAssignDialogVisible.value = true;
       objectId.value = item.raw.id;
       objectType.value = item.raw?.type;
-    }
-  }
+    },
+  },
 ]);
 
 // Additional headers (only if user is viewing processes with subtype PRO_DataProcessing)
 const additionalHeaders = computed<ObjectTableHeader[]>(() =>
-  filter.value.objectType === 'process' && filter.value.subType === 'PRO_DataProcessing'
-    ? [
+  (
+    filter.value.objectType === 'process' &&
+    filter.value.subType === 'PRO_DataProcessing'
+  ) ?
+    [
       {
         priority: 31,
         order: 51,
         key: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
         value: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
-        render: ({ item }: any) => h('div', item.raw?.decisionResults?.piaMandatory?.value ? globalT('global.button.yes').toString() : globalT('global.button.no').toString()),
+        render: ({ item }: any) =>
+          h(
+            'div',
+            item.raw?.decisionResults?.piaMandatory?.value ?
+              globalT('global.button.yes').toString()
+            : globalT('global.button.no').toString()
+          ),
         text: t('dpiaMandatory').toString(),
         sortable: false,
-        width: 210
-
-      }
+        width: 210,
+      },
     ]
-    :[]
+  : []
 );
 </script>
 

@@ -25,18 +25,21 @@
               <v-row no-gutters>
                 <v-col data-component-name="object-details-date-time">
                   <p class="text-no-wrap mb-0">
-                    <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
-                    {{ updatedAtFormatted || '-' }} {{ t('by') }} {{ object && object.updatedBy || '-' }}
+                    <strong
+                      >{{ upperFirst(t('updatedAt').toString()) }}:</strong
+                    >
+                    {{ updatedAtFormatted || '-' }} {{ t('by') }}
+                    {{ (object && object.updatedBy) || '-' }}
                   </p>
                   <p class="text-no-wrap mb-0">
-                    <strong>{{ upperFirst(t('createdAt').toString()) }}:</strong>
-                    {{ createdAtFormatted || '-' }} {{ t('by') }} {{ object && object.createdBy || '-' }}
+                    <strong
+                      >{{ upperFirst(t('createdAt').toString()) }}:</strong
+                    >
+                    {{ createdAtFormatted || '-' }} {{ t('by') }}
+                    {{ (object && object.createdBy) || '-' }}
                   </p>
                 </v-col>
-                <v-col
-                  cols="auto"
-                  class="text-right ml-auto pt-1"
-                >
+                <v-col cols="auto" class="text-right ml-auto pt-1">
                   <ObjectDetailsActionMenu
                     :disabled="ability.cannot('manage', 'objects')"
                     :object="object"
@@ -46,14 +49,8 @@
               </v-row>
             </template>
             <template v-else>
-              <v-skeleton-loader
-                type="text"
-                width="60%"
-              />
-              <v-skeleton-loader
-                type="text"
-                width="60%"
-              />
+              <v-skeleton-loader type="text" width="60%" />
+              <v-skeleton-loader type="text" width="60%" />
             </template>
           </div>
           <div
@@ -61,13 +58,12 @@
             class="text-body-2 overflow-y-auto object-details__description"
             data-component-name="object-details-description"
           >
-            <span v-if="object && object.description">{{ object.description }}</span>
+            <span v-if="object && object.description">{{
+              object.description
+            }}</span>
             <i v-else>{{ t('noDescription') }}</i>
           </div>
-          <div
-            v-else
-            class="flex-grow-0"
-          >
+          <div v-else class="flex-grow-0">
             <v-skeleton-loader type="paragraph" />
           </div>
         </v-card-text>
@@ -87,10 +83,7 @@
         </v-tab>
       </template>
       <template #items>
-        <v-window-item
-          v-for="tab in tabs"
-          :key="tab.key"
-        >
+        <v-window-item v-for="tab in tabs" :key="tab.key">
           <BaseCard>
             <ObjectDetailsTab
               v-if="object"
@@ -122,24 +115,24 @@ export default defineComponent({
   props: {
     object: {
       type: Object as PropType<IVeoEntity>,
-      default: undefined
+      default: undefined,
     },
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     activeTab: {
       type: String,
-      default: 'childObjects'
+      default: 'childObjects',
     },
     domainId: {
       type: String,
-      required: true
+      required: true,
     },
     dense: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['reload', 'update:activeTab'],
   setup(props, { emit }) {
@@ -150,31 +143,41 @@ export default defineComponent({
     // Hide tabs
 
     /**
-      * VEO-2602 will introduce domain specific configuration data.
-      * This makes the hard coded solution below obsolete.
-      * @todo Replace and use the new domain specific config instead.
-      */
+     * VEO-2602 will introduce domain specific configuration data.
+     * This makes the hard coded solution below obsolete.
+     * @todo Replace and use the new domain specific config instead.
+     */
 
     /** Fetch current domain: veo hides some tabs according to the current domain, type and subtype */
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
+    const fetchDomainQueryParameters = computed(() => ({
+      id: props.domainId as string,
+    }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
-    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
-      enabled: fetchDomainQueryEnabled
-    });
+    const { data: domain } = useQuery(
+      domainQueryDefinitions.queries.fetchDomain,
+      fetchDomainQueryParameters,
+      {
+        enabled: fetchDomainQueryEnabled,
+      }
+    );
 
-    const isRiskAffected = computed(() => (['asset', 'process', 'scope'] as (string | undefined)[]).includes(props.object?.type));
+    const isRiskAffected = computed(() =>
+      (['asset', 'process', 'scope'] as (string | undefined)[]).includes(
+        props.object?.type
+      )
+    );
 
     const hasRiskTab: ComputedRef<boolean> = computed(() => {
       if (!domain.value || !subType.value || !props.object?.type) return false;
 
-      if(domain.value.name === 'DS-GVO') {
+      if (domain.value.name === 'DS-GVO') {
         return (
           ['scope'].includes(props.object.type) ||
           ['PRO_DataProcessing', 'PRO_DPIA'].includes(subType.value)
         );
       }
 
-      if(domain.value.name === 'IT-Grundschutz') {
+      if (domain.value.name === 'IT-Grundschutz') {
         return ['asset', 'process', 'scope'].includes(props.object?.type);
       }
 
@@ -182,36 +185,38 @@ export default defineComponent({
     });
 
     const isControlsTabHidden = computed(() => {
-      const isDomainGDPR = domain?.value?.name === "DS-GVO";
+      const isDomainGDPR = domain?.value?.name === 'DS-GVO';
       return !isRiskAffected || isDomainGDPR;
     });
 
-    const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean }[]>(() => [
+    const tabs = computed<
+      { key: string; disabled?: boolean; hidden?: boolean }[]
+    >(() => [
       {
         key: 'childScopes',
-        disabled: props.object?.type !== 'scope'
+        disabled: props.object?.type !== 'scope',
       },
       {
-        key: 'childObjects'
+        key: 'childObjects',
       },
       {
-        key: 'parentScopes'
+        key: 'parentScopes',
       },
       {
         key: 'parentObjects',
-        disabled: props.object?.type === 'scope'
+        disabled: props.object?.type === 'scope',
       },
       {
-        key: 'links'
+        key: 'links',
       },
       {
         key: 'risks',
-        hidden: !hasRiskTab.value
+        hidden: !hasRiskTab.value,
       },
       {
         key: 'controls',
-        hidden: isControlsTabHidden.value
-      }
+        hidden: isControlsTabHidden.value,
+      },
     ]);
 
     const subType = computed(() => props.object?.subType);
@@ -220,7 +225,12 @@ export default defineComponent({
     watch(
       () => props.loading,
       (newValue, previousValue) => {
-        if (previousValue && !newValue && subType.value !== 'PRO_DataProcessing' && props.activeTab === 'risks') {
+        if (
+          previousValue &&
+          !newValue &&
+          subType.value !== 'PRO_DataProcessing' &&
+          props.activeTab === 'risks'
+        ) {
           emit('update:activeTab', 'childObjects');
         }
       }
@@ -235,11 +245,19 @@ export default defineComponent({
       },
       set(newValue: number) {
         emit('update:activeTab', tabs.value[newValue].key || 'childObjects');
-      }
+      },
     });
 
-    const createdAtFormatted = computed(() => (props.object ? formatDateTime(new Date(props.object.createdAt)).value : undefined));
-    const updatedAtFormatted = computed(() => (props.object ? formatDateTime(new Date(props.object.updatedAt)).value : undefined));
+    const createdAtFormatted = computed(() =>
+      props.object ?
+        formatDateTime(new Date(props.object.createdAt)).value
+      : undefined
+    );
+    const updatedAtFormatted = computed(() =>
+      props.object ?
+        formatDateTime(new Date(props.object.updatedAt)).value
+      : undefined
+    );
 
     return {
       ability,
@@ -250,9 +268,9 @@ export default defineComponent({
       updatedAtFormatted,
 
       upperFirst,
-      t
+      t,
     };
-  }
+  },
 });
 </script>
 

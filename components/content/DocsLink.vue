@@ -16,16 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <a
-    v-if="isPrintView"
-    :href="`#${transformedLink}`"
-  >
+  <a v-if="isPrintView" :href="`#${transformedLink}`">
     <slot name="default" />
   </a>
-  <nuxt-link
-    v-else
-    :to="`/docs${transformedLink}`"
-  >
+  <nuxt-link v-else :to="`/docs${transformedLink}`">
     <slot name="default" />
   </nuxt-link>
 </template>
@@ -35,8 +29,8 @@ export default defineComponent({
   props: {
     to: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props) {
     const route = useRoute();
@@ -46,15 +40,23 @@ export default defineComponent({
     const linkContainsId = computed(() => props.to.includes('#'));
     const linkId = computed(() => props.to.split('#')[1]);
 
-    const addLeadingSlashIfNotExists = (link: string) => (link.startsWith('/') ? link : '/' + link);
-    const removeTrailingSlashIfExists = (link: string) => (link.endsWith('/') ? link.substr(0, link.length - 1) : link);
+    const addLeadingSlashIfNotExists = (link: string) =>
+      link.startsWith('/') ? link : '/' + link;
+    const removeTrailingSlashIfExists = (link: string) =>
+      link.endsWith('/') ? link.substr(0, link.length - 1) : link;
 
-    const transformedLink = computed(() => removeTrailingSlashIfExists(linkContainsId.value && isPrintView ? linkId.value : addLeadingSlashIfNotExists(props.to)));
+    const transformedLink = computed(() =>
+      removeTrailingSlashIfExists(
+        linkContainsId.value && isPrintView ?
+          linkId.value
+        : addLeadingSlashIfNotExists(props.to)
+      )
+    );
 
     return {
       isPrintView,
-      transformedLink
+      transformedLink,
     };
-  }
+  },
 });
 </script>

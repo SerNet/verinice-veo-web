@@ -23,7 +23,7 @@
     class="v-skeleton-loader pulse"
     :style="{
       width,
-      height
+      height,
     }"
   />
 </template>
@@ -36,26 +36,26 @@ type SKELETON_TYPE = 'text' | 'image' | 'paragraph' | 'heading';
 const props = defineProps({
   height: {
     type: String,
-    default: undefined
+    default: undefined,
   },
   type: {
     type: String as PropType<SKELETON_TYPE>,
-    required: true
+    required: true,
   },
   width: {
     type: String,
-    default: undefined
-  }
+    default: undefined,
+  },
 });
 
 const type = computed(() => props.type.split('@')[0]);
 const instances = computed(() => Number(props.type.split('@')[1]) || 1);
 
 const width = computed(() => {
-  if(props.width) {
+  if (props.width) {
     return props.width;
   }
-  switch(type.value) {
+  switch (type.value) {
     case 'text':
     case 'heading':
     case 'image':
@@ -66,10 +66,10 @@ const width = computed(() => {
 });
 
 const height = computed(() => {
-  if(props.height) {
+  if (props.height) {
     return props.height;
   }
-  switch(type.value) {
+  switch (type.value) {
     case 'text':
     case 'paragraph':
       return '20px';

@@ -24,11 +24,7 @@
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
-      <v-form
-        ref="form"
-        v-model="formIsValid"
-        class="new-unit-form"
-      >
+      <v-form ref="form" v-model="formIsValid" class="new-unit-form">
         <BaseCard>
           <v-card-text>
             <v-text-field
@@ -61,10 +57,7 @@
     </template>
 
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        @click="$emit('update:model-value', false)"
-      >
+      <v-btn variant="text" @click="$emit('update:model-value', false)">
         {{ $t('global.button.cancel') }}
       </v-btn>
 
@@ -86,23 +79,28 @@ import { cloneDeep, isEqual } from 'lodash';
 import { useQueryClient } from '@tanstack/vue-query';
 
 import { getEntityDetailsFromLink, getFirstDomainDomaindId } from '~/lib/utils';
-import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions, {
+  IVeoDomain,
+} from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useRules } from '~/composables/utils';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { IVeoLink } from '~/types/VeoTypes';
 
-const props = withDefaults(defineProps<{
-  modelValue: boolean,
-  unitId?: string
-}>(), {
-  modelValue: false,
-  unitId: undefined
-});
+const props = withDefaults(
+  defineProps<{
+    modelValue: boolean;
+    unitId?: string;
+  }>(),
+  {
+    modelValue: false,
+    unitId: undefined,
+  }
+);
 
 const emit = defineEmits<{
-  (e: 'update:model-value', value: boolean): void
+  (e: 'update:model-value', value: boolean): void;
 }>();
 
 const { t } = useI18n();
@@ -114,59 +112,89 @@ const { ability } = useVeoPermissions();
 const queryClient = useQueryClient();
 const { createLink } = useCreateLink();
 
-watch(() => props.modelValue, (newValue) => {
-  if (newValue) {
-    if (props.unitId && props.unitId === unit.value?.id) {
-      unitDetails.name = unit.value?.name;
-      unitDetails.description = unit.value?.description;
-      unitDetails.domains = cloneDeep(unit.value?.domains || []);
-    } else {
-      unitDetails.name = undefined;
-      unitDetails.description = undefined;
-      unitDetails.domains = domains.value?.map((domain) => createLink('domains', domain.id)) || [];
-    }
-    if (form.value) {
-      form.value.resetValidation();
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue) {
+      if (props.unitId && props.unitId === unit.value?.id) {
+        unitDetails.name = unit.value?.name;
+        unitDetails.description = unit.value?.description;
+        unitDetails.domains = cloneDeep(unit.value?.domains || []);
+      } else {
+        unitDetails.name = undefined;
+        unitDetails.description = undefined;
+        unitDetails.domains =
+          domains.value?.map((domain) => createLink('domains', domain.id)) ||
+          [];
+      }
+      if (form.value) {
+        form.value.resetValidation();
+      }
     }
   }
-});
+);
 
-const actionPermitted = computed(() => ability.value.can('manage', 'units') && !!formIsValid.value && unitDetails.domains.length);
+const actionPermitted = computed(
+  () =>
+    ability.value.can('manage', 'units') &&
+    !!formIsValid.value &&
+    unitDetails.domains.length
+);
 
 // Everything unit related
 const fetchUnitQueryParams = computed(() => ({ id: props.unitId as string }));
 const fetchUnitQueryEnabled = computed(() => !!props.unitId);
-const { data: unit } = useQuery(unitQueryDefinitions.queries.fetch, fetchUnitQueryParams, {
-  enabled: fetchUnitQueryEnabled
-});
-watch(() => unit.value, (newValue) => {
-  if (newValue) {
-    unitDetails.name = newValue.name;
-    unitDetails.description = newValue.description;
-    unitDetails.domains = cloneDeep(newValue.domains);
+const { data: unit } = useQuery(
+  unitQueryDefinitions.queries.fetch,
+  fetchUnitQueryParams,
+  {
+    enabled: fetchUnitQueryEnabled,
   }
-});
+);
+watch(
+  () => unit.value,
+  (newValue) => {
+    if (newValue) {
+      unitDetails.name = newValue.name;
+      unitDetails.description = newValue.description;
+      unitDetails.domains = cloneDeep(newValue.domains);
+    }
+  }
+);
 
 const form = ref();
 const formIsValid = ref(false);
-const formIsDirty = computed(() => !isEqual(unitDetails, {
-  name: unit.value?.name,
-  description: unit.value?.description,
-  domains: unit.value?.domains
-}));
+const formIsDirty = computed(
+  () =>
+    !isEqual(unitDetails, {
+      name: unit.value?.name,
+      description: unit.value?.description,
+      domains: unit.value?.domains,
+    })
+);
 const unitDetails = reactive<{
-  name: string | undefined,
-  description: string | undefined
-  domains: IVeoLink[]
+  name: string | undefined;
+  description: string | undefined;
+  domains: IVeoLink[];
 }>({ name: undefined, description: undefined, domains: [] });
-watch(() => unitDetails, () => {
-  if (form.value) {
-    form.value.validate();
-  }
-}, { deep: true });
+watch(
+  () => unitDetails,
+  () => {
+    if (form.value) {
+      form.value.validate();
+    }
+  },
+  { deep: true }
+);
 
-const { mutateAsync: create, isLoading: creatingUnit, data: unitDetailsPayload } = useMutation(unitQueryDefinitions.mutations.create);
-const { mutateAsync: update, isLoading: updatingUnit } = useMutation(unitQueryDefinitions.mutations.update);
+const {
+  mutateAsync: create,
+  isLoading: creatingUnit,
+  data: unitDetailsPayload,
+} = useMutation(unitQueryDefinitions.mutations.create);
+const { mutateAsync: update, isLoading: updatingUnit } = useMutation(
+  unitQueryDefinitions.mutations.update
+);
 const createUnit = async () => {
   if (!actionPermitted.value) {
     return;
@@ -180,7 +208,11 @@ const createUnit = async () => {
       await create(unitDetails);
       displaySuccessMessage(t('unitCreated'));
       emit('update:model-value', false);
-      const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: unitDetailsPayload.value?.resourceId as string }, queryClient);
+      const unit = await useQuerySync(
+        unitQueryDefinitions.queries.fetch,
+        { id: unitDetailsPayload.value?.resourceId as string },
+        queryClient
+      );
       const domainId = getFirstDomainDomaindId(unit);
 
       if (domainId) {
@@ -188,8 +220,8 @@ const createUnit = async () => {
           name: 'unit-domains-domain',
           params: {
             unit: unit.id,
-            domain: domainId
-          }
+            domain: domainId,
+          },
         });
       }
     }
@@ -198,21 +230,33 @@ const createUnit = async () => {
   }
 };
 
-const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains, undefined, {
-  onSuccess: (data) => {
-    unitDetails.domains = (data as IVeoDomain[]).map((domain) => createLink('domains', domain.id));
+const { data: domains } = useQuery(
+  domainQueryDefinitions.queries.fetchDomains,
+  undefined,
+  {
+    onSuccess: (data) => {
+      unitDetails.domains = (data as IVeoDomain[]).map((domain) =>
+        createLink('domains', domain.id)
+      );
+    },
   }
-});
-const availableDomains = computed(() => domains.value?.map((domain) => ({
-  title: domain.name,
-  subtitle: domain.description,
-  value: domain.id
-})) ?? []);
+);
+const availableDomains = computed(
+  () =>
+    domains.value?.map((domain) => ({
+      title: domain.name,
+      subtitle: domain.description,
+      value: domain.id,
+    })) ?? []
+);
 const selectedDomains = computed({
-  get: () => unitDetails.domains.map((domain) => getEntityDetailsFromLink(domain).id),
+  get: () =>
+    unitDetails.domains.map((domain) => getEntityDetailsFromLink(domain).id),
   set: (newValue) => {
-    unitDetails.domains = newValue.map((domainId) => createLink('domains', domainId));
-  }
+    unitDetails.domains = newValue.map((domainId) =>
+      createLink('domains', domainId)
+    );
+  },
 });
 </script>
 

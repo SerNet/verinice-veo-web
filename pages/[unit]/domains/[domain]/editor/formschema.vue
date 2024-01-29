@@ -29,14 +29,8 @@
       />
     </template>
 
-    <template
-      v-if="formSchema && objectSchema"
-      #header
-    >
-      <div
-        style="width: 120px"
-        class="mr-8"
-      >
+    <template v-if="formSchema && objectSchema" #header>
+      <div style="width: 120px" class="mr-8">
         <v-select
           v-model="editorLanguage"
           :items="locales"
@@ -68,7 +62,7 @@
           </a>
         </template>
         <template #default>
-          {{ globalT("editor.schema.download") }}
+          {{ globalT('editor.schema.download') }}
         </template>
       </v-tooltip>
       <v-tooltip location="bottom">
@@ -83,7 +77,7 @@
           />
         </template>
         <template #default>
-          {{ t("formSchemaCode") }}
+          {{ t('formSchemaCode') }}
         </template>
       </v-tooltip>
       <v-tooltip location="bottom">
@@ -100,7 +94,7 @@
           />
         </template>
         <template #default>
-          {{ globalT("editor.schema.warnings") }}
+          {{ globalT('editor.schema.warnings') }}
         </template>
       </v-tooltip>
       <v-tooltip location="bottom">
@@ -115,7 +109,7 @@
           />
         </template>
         <template #default>
-          {{ globalT("editor.formschema.translation") }}
+          {{ globalT('editor.formschema.translation') }}
         </template>
       </v-tooltip>
       <v-tooltip location="bottom">
@@ -130,7 +124,7 @@
           />
         </template>
         <template #default>
-          {{ globalT("editor.schema.properties") }}
+          {{ globalT('editor.schema.properties') }}
         </template>
       </v-tooltip>
       <v-tooltip location="bottom">
@@ -168,10 +162,7 @@
         </template>
       </v-tooltip>
     </template>
-    <template
-      v-if="formSchema && objectSchema && schemaIsValid.valid"
-      #default
-    >
+    <template v-if="formSchema && objectSchema && schemaIsValid.valid" #default>
       <BasePage
         heading-level="3"
         sticky-header
@@ -213,11 +204,7 @@
               v-model="formSchema.content"
               @set-translations="setElementTranslation"
             />
-            <v-progress-circular
-              v-else
-              size="64"
-              indeterminate
-            />
+            <v-progress-circular v-else size="64" indeterminate />
           </div>
         </template>
       </BasePage>
@@ -242,10 +229,7 @@
         </template>
       </BasePage>
     </template>
-    <template
-      v-else
-      #default
-    >
+    <template v-else #default>
       <BasePage>
         <UtilValidationResults
           v-if="schemaIsValid.errors.length"
@@ -257,7 +241,7 @@
     <template #helpers>
       <EditorFormSchemaWizardDialog
         :model-value="creationDialogVisible"
-        :domain-id="($route.params.domain as string)"
+        :domain-id="$route.params.domain as string"
         @done="onWizardFinished"
       />
       <EditorErrorDialog
@@ -276,7 +260,9 @@
       <EditorFormSchemaTranslationDialog
         v-model="translationDialogVisible"
         :form-schema-titles="formSchema?.name"
-        @update:form-schema-titles="formSchema ? formSchema.name = $event : undefined"
+        @update:form-schema-titles="
+          formSchema ? (formSchema.name = $event) : undefined
+        "
       />
       <EditorFormSchemaDetailsDialog
         v-if="formSchema && objectSchema"
@@ -285,7 +271,7 @@
         v-model:sorting="formSchema.sorting"
         :object-schema="objectSchema"
         :form-schema="formSchema.name[editorLanguage]"
-        :domain-id="($route.params.domain as string)"
+        :domain-id="$route.params.domain as string"
         @update-schema-name="updateSchemaName"
       />
     </template>
@@ -297,20 +283,36 @@ export const PROVIDE_KEYS = {
   EDITOR_LANGUAGE: 'editorLanguage',
   TRANSLATIONS: 'translations',
   FORMSCHEMA: 'mainFormSchema',
-  OBJECTSCHEMA: 'mainObjectSchema'
+  OBJECTSCHEMA: 'mainObjectSchema',
 };
 
 import { Ref } from 'vue';
-import { mdiAlertCircleOutline, mdiCodeTags, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
+import {
+  mdiAlertCircleOutline,
+  mdiCodeTags,
+  mdiContentSave,
+  mdiDownload,
+  mdiHelpCircleOutline,
+  mdiInformationOutline,
+  mdiMagnify,
+  mdiTranslate,
+  mdiWrench,
+} from '@mdi/js';
 import { useDisplay } from 'vuetify';
 
-import { deleteFormSchemaElementTranslations, validate } from '~/lib/FormSchemaHelper';
+import {
+  deleteFormSchemaElementTranslations,
+  validate,
+} from '~/lib/FormSchemaHelper';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import formQueryDefinitions, {
+  IVeoFormSchema,
+  IVeoFormSchemaItem,
+} from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
@@ -319,7 +321,10 @@ import { useQuery } from '~/composables/api/utils/query';
 import { PENDING_TRANSLATIONS } from '~/components/editor/formSchema/playground/EditElementDialog.vue';
 import { JsonPointer } from 'json-ptr';
 import { cloneDeep, isArray } from 'lodash';
-import { IEditorTranslations, TRANSLATION_SOURCE } from '~/components/editor/translations/types';
+import {
+  IEditorTranslations,
+  TRANSLATION_SOURCE,
+} from '~/components/editor/translations/types';
 import { editorTranslationsToFormsTranslations } from '~/components/editor/translations/util';
 
 export default defineComponent({
@@ -334,7 +339,9 @@ export default defineComponent({
     /**
      * Layout specific stuff
      */
-    const creationDialogVisible = computed(() => !objectSchema.value || !formSchema.value);
+    const creationDialogVisible = computed(
+      () => !objectSchema.value || !formSchema.value
+    );
     const errorDialogVisible = ref(false);
     const detailDialogVisible = ref(false);
     const codeEditorVisible = ref(false);
@@ -349,7 +356,9 @@ export default defineComponent({
       // Name property must generally exist, but before it is created in Wizard, only headline should be visible
       // If Name property exists and e.g. 'de' sub-property is empty then missing translation should be visible
       if (formSchema.value?.name) {
-        const formSchemaName = formSchema.value?.name[editorLanguage.value] ?? `Missing translation for ${editorLanguage.value.toUpperCase()}`;
+        const formSchemaName =
+          formSchema.value?.name[editorLanguage.value] ??
+          `Missing translation for ${editorLanguage.value.toUpperCase()}`;
         return formSchemaName;
       }
     });
@@ -363,11 +372,20 @@ export default defineComponent({
     provide(PROVIDE_KEYS.FORMSCHEMA, formSchema);
     const objectData = ref({});
 
-    const schemaIsValid = computed(() => (formSchema.value ? validate(formSchema.value, objectSchema.value) : { valid: false, errors: [], warnings: [] }));
+    const schemaIsValid = computed(() =>
+      formSchema.value ?
+        validate(formSchema.value, objectSchema.value)
+      : { valid: false, errors: [], warnings: [] }
+    );
 
-    const code = computed(() => (formSchema.value ? JSON.stringify(formSchema.value, undefined, 2) : ''));
+    const code = computed(() =>
+      formSchema.value ? JSON.stringify(formSchema.value, undefined, 2) : ''
+    );
 
-    const onWizardFinished = (payload: { formSchema: IVeoFormSchema; objectSchema: IVeoObjectSchema; }) => {
+    const onWizardFinished = (payload: {
+      formSchema: IVeoFormSchema;
+      objectSchema: IVeoObjectSchema;
+    }) => {
       formSchema.value = payload.formSchema;
       objectSchema.value = payload.objectSchema;
     };
@@ -375,21 +393,26 @@ export default defineComponent({
     // Create/update stuff
     const createFormSchemaQueryParameters = computed(() => ({
       domainId: route.params.domain as string,
-      form: formSchema.value as IVeoFormSchema
+      form: formSchema.value as IVeoFormSchema,
     }));
-    const { mutateAsync: create } = useMutation(formQueryDefinitions.mutations.createForm, {
-      onSuccess: (data: any) => {
-        if (formSchema.value) {
-          formSchema.value.id = data; // For some reason the interface always returns void, even though this is a string
-        }
+    const { mutateAsync: create } = useMutation(
+      formQueryDefinitions.mutations.createForm,
+      {
+        onSuccess: (data: any) => {
+          if (formSchema.value) {
+            formSchema.value.id = data; // For some reason the interface always returns void, even though this is a string
+          }
+        },
       }
-    });
+    );
     const updateFormSchemaQueryParameters = computed(() => ({
       id: formSchema.value?.id || '',
       domainId: route.params.domain as string,
-      form: formSchema.value as IVeoFormSchema
+      form: formSchema.value as IVeoFormSchema,
     }));
-    const { mutateAsync: update } = useMutation(formQueryDefinitions.mutations.updateForm);
+    const { mutateAsync: update } = useMutation(
+      formQueryDefinitions.mutations.updateForm
+    );
 
     async function save() {
       // control whether save new or save updated schema
@@ -404,12 +427,15 @@ export default defineComponent({
         }
         displaySuccessMessage(t('saveSchemaSuccess').toString());
       } catch (err: any) {
-        displayErrorMessage(t('error').toString(), `${t('saveSchemaError').toString()}: ${err.message}`);
+        displayErrorMessage(
+          t('error').toString(),
+          `${t('saveSchemaError').toString()}: ${err.message}`
+        );
       }
     }
 
     function updateSchemaName(value: string) {
-      if(!formSchema.value) {
+      if (!formSchema.value) {
         return;
       }
       formSchema.value.name[editorLanguage.value] = value;
@@ -421,9 +447,13 @@ export default defineComponent({
         invalidSchemaDownloadDialogVisible.value = true;
       } else if (downloadButton.value && downloadButton.value !== null) {
         invalidSchemaDownloadDialogVisible.value = false;
-        const data = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`;
+        const data = `data:text/json;charset=utf-8,${encodeURIComponent(
+          JSON.stringify(formSchema.value, undefined, 2)
+        )}`;
         downloadButton.value.href = data;
-        downloadButton.value.download = `fs_${formSchema.value?.name[editorLanguage.value] || 'missing_translation'}.json`;
+        downloadButton.value.download = `fs_${
+          formSchema.value?.name[editorLanguage.value] || 'missing_translation'
+        }.json`;
       }
     }
 
@@ -432,8 +462,13 @@ export default defineComponent({
       controlItems.value = items;
     }
 
-    const fetchDomainQueryParameters = computed(() => ({ id: route.params.domain as string }));
-    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
+    const fetchDomainQueryParameters = computed(() => ({
+      id: route.params.domain as string,
+    }));
+    const { data: domain } = useQuery(
+      domainQueryDefinitions.queries.fetchDomain,
+      fetchDomainQueryParameters
+    );
 
     /**
      * Translations/language related stuff
@@ -441,16 +476,28 @@ export default defineComponent({
     const editorLanguage = ref(locale.value);
     provide(PROVIDE_KEYS.EDITOR_LANGUAGE, editorLanguage);
 
-    const translationsQueryParameters = computed(() => ({ languages: (locales.value as LocaleObject[]).map((locale) => locale.code), domain: route.params.domain }));
-    const { data: translationsQueryData } = useQuery(translationQueryDefinitions.queries.fetch, translationsQueryParameters);
+    const translationsQueryParameters = computed(() => ({
+      languages: (locales.value as LocaleObject[]).map((locale) => locale.code),
+      domain: route.params.domain,
+    }));
+    const { data: translationsQueryData } = useQuery(
+      translationQueryDefinitions.queries.fetch,
+      translationsQueryParameters
+    );
 
-    const setTranslation = (translations: IEditorTranslations, key: string, source: TRANSLATION_SOURCE, locale: string, value: string) => {
+    const setTranslation = (
+      translations: IEditorTranslations,
+      key: string,
+      source: TRANSLATION_SOURCE,
+      locale: string,
+      value: string
+    ) => {
       const _translations = cloneDeep(translations);
 
-      if(!_translations[key]) {
+      if (!_translations[key]) {
         _translations[key] = Object.create(null);
       }
-      if(!_translations[key][source]) {
+      if (!_translations[key][source]) {
         _translations[key][source] = Object.create(null);
       }
       _translations[key][source][locale] = value;
@@ -458,27 +505,49 @@ export default defineComponent({
     };
 
     const translations = computed({
-      get:() => {
+      get: () => {
         let _translations: IEditorTranslations = Object.create(null);
 
         // If no objectschema is present, no need to iterate over all translations
-        if(objectSchema.value?.title) {
+        if (objectSchema.value?.title) {
           // Iterate over all objectschema translations that belong to this formschemas objectschema
-          for(const [locale, osLanguageTranslations] of Object.entries(translationsQueryData.value?.lang || {})) {
-            for(const [translationKey, translationValue] of Object.entries(osLanguageTranslations)) {
-
+          for (const [locale, osLanguageTranslations] of Object.entries(
+            translationsQueryData.value?.lang || {}
+          )) {
+            for (const [translationKey, translationValue] of Object.entries(
+              osLanguageTranslations
+            )) {
               // Skip translations not belonging to a different objectschema
-              if(translationKey.includes('_') && !translationKey.startsWith(objectSchema.value.title)) {
+              if (
+                translationKey.includes('_') &&
+                !translationKey.startsWith(objectSchema.value.title)
+              ) {
                 continue;
               }
-              _translations = setTranslation(_translations, translationKey, TRANSLATION_SOURCE.OBJECTSCHEMA, locale, translationValue);
+              _translations = setTranslation(
+                _translations,
+                translationKey,
+                TRANSLATION_SOURCE.OBJECTSCHEMA,
+                locale,
+                translationValue
+              );
             }
           }
 
           // Iterate over all formschema translations
-          for(const [locale, fsLanguageTranslations] of Object.entries(formSchema.value?.translation || {})) {
-            for(const [translationKey, translationValue] of Object.entries(fsLanguageTranslations)) {
-              _translations = setTranslation(_translations, translationKey, TRANSLATION_SOURCE.FORMSCHEMA, locale, translationValue);
+          for (const [locale, fsLanguageTranslations] of Object.entries(
+            formSchema.value?.translation || {}
+          )) {
+            for (const [translationKey, translationValue] of Object.entries(
+              fsLanguageTranslations
+            )) {
+              _translations = setTranslation(
+                _translations,
+                translationKey,
+                TRANSLATION_SOURCE.FORMSCHEMA,
+                locale,
+                translationValue
+              );
             }
           }
         }
@@ -486,114 +555,187 @@ export default defineComponent({
         return _translations;
       },
       set: (newTranslations) => {
-        if(!formSchema.value) {
-          throw new Error('FormschemaEditor::translations:setter: Formschema not defined');
+        if (!formSchema.value) {
+          throw new Error(
+            'FormschemaEditor::translations:setter: Formschema not defined'
+          );
         }
         const newFormSchemaTranslations = Object.create(null);
 
         // Iterate over all translations
-        for(const [translationKey, translation] of Object.entries(newTranslations)) {
-          for(const [translationSource, values] of Object.entries(translation)) {
+        for (const [translationKey, translation] of Object.entries(
+          newTranslations
+        )) {
+          for (const [translationSource, values] of Object.entries(
+            translation
+          )) {
             // The formschema editor is only allowed to update formschema translations!!!
-            if(parseInt(translationSource, 10) !== TRANSLATION_SOURCE.FORMSCHEMA) {
+            if (
+              parseInt(translationSource, 10) !== TRANSLATION_SOURCE.FORMSCHEMA
+            ) {
               continue;
             }
 
-            for(const [locale, localeValue] of Object.entries(values)) {
-              if(!newFormSchemaTranslations[locale]) {
+            for (const [locale, localeValue] of Object.entries(values)) {
+              if (!newFormSchemaTranslations[locale]) {
                 newFormSchemaTranslations[locale] = Object.create(null);
               }
-              if(!newFormSchemaTranslations[locale][translationKey]) {
-                newFormSchemaTranslations[locale][translationKey] = Object.create(null);
+              if (!newFormSchemaTranslations[locale][translationKey]) {
+                newFormSchemaTranslations[locale][translationKey] =
+                  Object.create(null);
               }
               newFormSchemaTranslations[locale][translationKey] = localeValue;
             }
           }
         }
         formSchema.value.translation = newFormSchemaTranslations;
-      }
+      },
     });
     provide(PROVIDE_KEYS.TRANSLATIONS, translations);
 
-    const eligibleTranslations = computed(() => editorTranslationsToFormsTranslations(translations.value));
+    const eligibleTranslations = computed(() =>
+      editorTranslationsToFormsTranslations(translations.value)
+    );
 
     const translationDialogVisible: Ref<boolean> = ref(false);
 
     const setElementTranslation = (translations: PENDING_TRANSLATIONS) => {
-      Object.entries(translations).forEach(([translationLocale, translationsForLocale]) => {
-        Object.entries(translationsForLocale).forEach(([translationKey, translationValue]) => {
-          if(!formSchema.value) {
-            throw new Error('FormschemaEditor::setElementTranslation: Formschema not defined');
-          }
+      Object.entries(translations).forEach(
+        ([translationLocale, translationsForLocale]) => {
+          Object.entries(translationsForLocale).forEach(
+            ([translationKey, translationValue]) => {
+              if (!formSchema.value) {
+                throw new Error(
+                  'FormschemaEditor::setElementTranslation: Formschema not defined'
+                );
+              }
 
-          if(translationValue) {
-            formSchema.value.translation[translationLocale][translationKey] = translationValue;
-          } else {
-            delete formSchema.value.translation[translationLocale][translationKey];
-          }
-        });
-      });
+              if (translationValue) {
+                formSchema.value.translation[translationLocale][
+                  translationKey
+                ] = translationValue;
+              } else {
+                delete formSchema.value.translation[translationLocale][
+                  translationKey
+                ];
+              }
+            }
+          );
+        }
+      );
     };
 
     // Circumventing {CURRENT_DOMAIN_ID} in fse controls
     const additionalContext = computed(() => ({
-      [`#/properties/riskValues/properties/DSRA/properties/implementationStatus`]: {
-        formSchema: {
-          enum: (() => (domain.value?.riskDefinitions?.DSRA?.implementationStateDefinition?.levels || []).map((level: any) => level.name))()
-        }
-      },
-      [`#/properties/riskValues/properties/DSRA/properties/potentialProbability`]: {
-        formSchema: {
-          enum: (() => (domain.value?.riskDefinitions?.DSRA?.probability?.levels || []).map((level: any) => level.name))()
-        }
-      },
-      [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/C`]: {
-        formSchema: {
-          enum: (() => (domain.value?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'C')?.potentialImpacts || []).map((level: any) => level.name))()
-        }
-      },
-      [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/I`]: {
-        formSchema: {
-          enum: (() => (domain.value?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'I')?.potentialImpacts || []).map((level: any) => level.name))()
-        }
-      },
-      [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/A`]: {
-        formSchema: {
-          enum: (() => (domain.value?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'A')?.potentialImpacts || []).map((level: any) => level.name))()
-        }
-      },
-      [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/R`]: {
-        formSchema: {
-          enum: (() => (domain.value?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'R')?.potentialImpacts || []).map((level: any) => level.name))()
-        }
-      }
+      [`#/properties/riskValues/properties/DSRA/properties/implementationStatus`]:
+        {
+          formSchema: {
+            enum: (() =>
+              (
+                domain.value?.riskDefinitions?.DSRA
+                  ?.implementationStateDefinition?.levels || []
+              ).map((level: any) => level.name))(),
+          },
+        },
+      [`#/properties/riskValues/properties/DSRA/properties/potentialProbability`]:
+        {
+          formSchema: {
+            enum: (() =>
+              (
+                domain.value?.riskDefinitions?.DSRA?.probability?.levels || []
+              ).map((level: any) => level.name))(),
+          },
+        },
+      [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/C`]:
+        {
+          formSchema: {
+            enum: (() =>
+              (
+                domain.value?.riskDefinitions?.DSRA?.categories?.find(
+                  (category) => category.id === 'C'
+                )?.potentialImpacts || []
+              ).map((level: any) => level.name))(),
+          },
+        },
+      [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/I`]:
+        {
+          formSchema: {
+            enum: (() =>
+              (
+                domain.value?.riskDefinitions?.DSRA?.categories?.find(
+                  (category) => category.id === 'I'
+                )?.potentialImpacts || []
+              ).map((level: any) => level.name))(),
+          },
+        },
+      [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/A`]:
+        {
+          formSchema: {
+            enum: (() =>
+              (
+                domain.value?.riskDefinitions?.DSRA?.categories?.find(
+                  (category) => category.id === 'A'
+                )?.potentialImpacts || []
+              ).map((level: any) => level.name))(),
+          },
+        },
+      [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/R`]:
+        {
+          formSchema: {
+            enum: (() =>
+              (
+                domain.value?.riskDefinitions?.DSRA?.categories?.find(
+                  (category) => category.id === 'R'
+                )?.potentialImpacts || []
+              ).map((level: any) => level.name))(),
+          },
+        },
     }));
 
-    const validationActions: Record<string, (errorCode: string, details: Record<string, any>) => void> = {
+    const validationActions: Record<
+      string,
+      (errorCode: string, details: Record<string, any>) => void
+    > = {
       onFix: (errorCode, details) => {
-        switch(errorCode) {
+        switch (errorCode) {
           case 'E_PROPERTY_MISSING':
-            if(formSchema.value) {
+            if (formSchema.value) {
               const toModify = cloneDeep(formSchema.value);
-              const elementFormSchema = JsonPointer.get(toModify.content, details.formSchemaPointer) as IVeoFormSchemaItem;
-              
-              formSchema.value = deleteFormSchemaElementTranslations(formSchema.value, elementFormSchema);
+              const elementFormSchema = JsonPointer.get(
+                toModify.content,
+                details.formSchemaPointer
+              ) as IVeoFormSchemaItem;
+
+              formSchema.value = deleteFormSchemaElementTranslations(
+                formSchema.value,
+                elementFormSchema
+              );
               // You can't delete the root object
-              if (details.formSchemaPointer && details.formSchemaPointer !== '#') {
+              if (
+                details.formSchemaPointer &&
+                details.formSchemaPointer !== '#'
+              ) {
                 const parts = details.formSchemaPointer.split('/');
                 const lastPart = parts.pop();
-                const partToModify: any = JsonPointer.get(toModify.content, parts.join('/'));
-                if(isArray(partToModify)) {
+                const partToModify: any = JsonPointer.get(
+                  toModify.content,
+                  parts.join('/')
+                );
+                if (isArray(partToModify)) {
                   partToModify.splice(parseInt(lastPart), 1);
                 } else {
                   delete partToModify[lastPart];
                 }
-                JsonPointer.set(toModify.content, parts.join('/'), partToModify);
+                JsonPointer.set(
+                  toModify.content,
+                  parts.join('/'),
+                  partToModify
+                );
               }
               formSchema.value = toModify;
             }
         }
-      }
+      },
     };
 
     return {
@@ -637,9 +779,9 @@ export default defineComponent({
       t,
       globalT,
       HELP_ROUTE,
-      xs
+      xs,
     };
-  }
+  },
 });
 </script>
 

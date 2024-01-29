@@ -6,10 +6,10 @@ stages:
 
 default:
   image: node:21
-  cache:  # Cache modules in between jobs
+  cache: # Cache modules in between jobs
     key:
       files:
-      - package-lock.json
+        - package-lock.json
     paths:
       - .npm/
   before_script:
@@ -48,10 +48,10 @@ check_license:
 test:
   image: cypress/browsers:node18.12.0-chrome103-ff107
   stage: test
-  cache:  # Cache modules in between jobs
+  cache: # Cache modules in between jobs
     key:
       files:
-      - package-lock.json
+        - package-lock.json
     paths:
       - .npm/
   before_script:
@@ -71,16 +71,15 @@ test:
     expire_in: 1 week
     when: always
     paths:
-    - ${CI_PROJECT_DIR}/cypress/screenshots
-    - ${CI_PROJECT_DIR}/cypress/videos
-
+      - ${CI_PROJECT_DIR}/cypress/screenshots
+      - ${CI_PROJECT_DIR}/cypress/videos
 
 docker_image:
   stage: build
-  needs: ["store_project_version"]
+  needs: ['store_project_version']
   image:
     name: gcr.io/kaniko-project/executor:v1.20.0-debug
-    entrypoint: [""]
+    entrypoint: ['']
   variables:
     IMAGE_NAME: eu.gcr.io/veo-projekt/veo-web
     # this does not work in Gitlab < 15.7, so we need the before_script workaround
@@ -102,25 +101,7 @@ docker_image:
         if [ "$CI_COMMIT_REF_NAME" = "master" ]; then export DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:latest-prod"; fi;
       fi;
       if [ "$CI_COMMIT_REF_NAME" = "develop" ]; then export DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:develop"; fi;
-    - /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --cache=true
-      $DESTINATION_ARG
-      --build-arg VEO_DEBUG="${VEO_DEBUG}"
-      --build-arg NODE_ENV="${NODE_ENV}"
-      --build-arg CI_COMMIT_SHORT_SHA=${CI_COMMIT_SHORT_SHA}
-      --build-arg CI_JOB_ID=${CI_JOB_ID}
-      --label org.opencontainers.image.version="${PROJECT_VERSION}"
-      --label org.opencontainers.image.revision=${CI_COMMIT_SHA}
-      --build-arg "ftp_proxy=${ftp_proxy}"
-      --build-arg "FTP_PROXY=${ftp_proxy}"
-      --build-arg "http_proxy=${http_proxy}"
-      --build-arg "HTTP_PROXY=${http_proxy}"
-      --build-arg "https_proxy=${https_proxy}"
-      --build-arg "HTTPS_PROXY=${https_proxy}"
-      --build-arg "no_proxy=${no_proxy}"
-      --build-arg "NO_PROXY=${no_proxy}"
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/Dockerfile" --cache=true $DESTINATION_ARG --build-arg VEO_DEBUG="${VEO_DEBUG}" --build-arg NODE_ENV="${NODE_ENV}" --build-arg CI_COMMIT_SHORT_SHA=${CI_COMMIT_SHORT_SHA} --build-arg CI_JOB_ID=${CI_JOB_ID} --label org.opencontainers.image.version="${PROJECT_VERSION}" --label org.opencontainers.image.revision=${CI_COMMIT_SHA} --build-arg "ftp_proxy=${ftp_proxy}" --build-arg "FTP_PROXY=${ftp_proxy}" --build-arg "http_proxy=${http_proxy}" --build-arg "HTTP_PROXY=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "HTTPS_PROXY=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg "NO_PROXY=${no_proxy}"
   interruptible: true
 
 trigger_deployment:

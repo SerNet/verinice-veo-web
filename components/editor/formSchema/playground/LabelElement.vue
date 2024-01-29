@@ -32,39 +32,33 @@
       />
       {{ t('text') }}
       <v-spacer />
-      <v-btn
-        :icon="mdiPencilOutline"
-        size="small"
-        @click="emit('edit')"
-      />
-      <v-btn
-        :icon="mdiTrashCanOutline"
-        size="small"
-        @click="emit('delete')"
-      />
+      <v-btn :icon="mdiPencilOutline" size="small" @click="emit('edit')" />
+      <v-btn :icon="mdiTrashCanOutline" size="small" @click="emit('delete')" />
     </v-card-actions>
     <div class="mx-2">
-      <EditorTranslationsTranslatedElementTitle :form-schema-element="formSchemaElement" />
+      <EditorTranslationsTranslatedElementTitle
+        :form-schema-element="formSchemaElement"
+      />
     </div>
   </v-sheet>
 </template>
-  
+
 <script setup lang="ts">
 import { mdiDrag, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
 import { PropType } from 'vue';
 
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { IPlaygroundElement } from './Element.vue';
-  
+
 defineProps({
   playgroundElement: {
     type: Object as PropType<IPlaygroundElement>,
-    required: true
+    required: true,
   },
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const emit = defineEmits(['edit', 'delete']);

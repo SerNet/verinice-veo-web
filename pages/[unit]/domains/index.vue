@@ -16,13 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    :title="t('domainselector')"
-  >
+  <BasePage :title="t('domainselector')">
     <div class="d-flex justify-center">
-      <BaseCard
-        style="width: 70%; max-width: 1000px;"
-      >
+      <BaseCard style="width: 70%; max-width: 1000px">
         <v-card-text>
           <h3 class="text-h4">
             {{ t('domainpicker') }}
@@ -30,21 +26,9 @@
         </v-card-text>
         <v-list lines="one">
           <template v-if="domainsFetching">
-            <div
-              v-for="i in 2"
-              :key="i"
-              class="mb-4"
-            >
-              <VSkeletonLoader
-                type="text"
-                width="150px"
-                class="mx-4 my-1"
-              />
-              <VSkeletonLoader
-                type="text"
-                width="250px"
-                class="mx-4 my-1"
-              />
+            <div v-for="i in 2" :key="i" class="mb-4">
+              <VSkeletonLoader type="text" width="150px" class="mx-4 my-1" />
+              <VSkeletonLoader type="text" width="250px" class="mx-4 my-1" />
             </div>
           </template>
           <v-list-item
@@ -88,8 +72,11 @@ import { useFetchUnitDomains } from '~/composables/api/domains';
 
 const route = useRoute();
 
-const fetchUnitDomainsQueryParameters = computed(() => ({ unitId: route.params.unit as string }));
-const {data: allUnitDomains, isFetching: domainsFetching} =  useFetchUnitDomains( fetchUnitDomainsQueryParameters );
+const fetchUnitDomainsQueryParameters = computed(() => ({
+  unitId: route.params.unit as string,
+}));
+const { data: allUnitDomains, isFetching: domainsFetching } =
+  useFetchUnitDomains(fetchUnitDomainsQueryParameters);
 
 const { t } = useI18n();
 </script>

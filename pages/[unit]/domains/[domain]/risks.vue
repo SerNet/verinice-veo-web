@@ -16,16 +16,14 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    data-component-name="risk-page"
-  >
+  <BasePage data-component-name="risk-page">
     <template #default>
       <LayoutHeadline
         class="mb-8"
         :title="upperFirst(t('risks').toString())"
         :element="t('dpia')"
       />
-  
+
       <!--<div> Not relevant as long as there is only one risk definition
         <p class="pt-3 mb-0 text-body-1">
           {{ t('selectRiskMatrixToView') }}
@@ -77,9 +75,10 @@
 <script lang="ts">
 import { upperFirst } from 'lodash';
 
-import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions, {
+  IVeoDomain,
+} from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~/composables/api/utils/query';
-
 
 export default defineComponent({
   setup() {
@@ -93,16 +92,22 @@ export default defineComponent({
       }
     };
 
-    const fetchDomainQueryParameters = computed(() => ({ id: route.params.domain as string }));
-    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { onSuccess: redirectIfNoRiskDefinitionSelected });
-    
+    const fetchDomainQueryParameters = computed(() => ({
+      id: route.params.domain as string,
+    }));
+    const { data: domain } = useQuery(
+      domainQueryDefinitions.queries.fetchDomain,
+      fetchDomainQueryParameters,
+      { onSuccess: redirectIfNoRiskDefinitionSelected }
+    );
+
     const viewRiskDefinition = (id: string) => {
       router.push({
         name: 'unit-domains-domain-risks-matrix',
         params: {
           ...route.params,
-          matrix: id
-        }
+          matrix: id,
+        },
       });
     };
 
@@ -111,9 +116,9 @@ export default defineComponent({
       viewRiskDefinition,
 
       t,
-      upperFirst
+      upperFirst,
     };
-  }
+  },
 });
 </script>
 

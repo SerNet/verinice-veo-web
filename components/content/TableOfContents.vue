@@ -21,9 +21,9 @@
       v-for="(item, index) in items"
       :key="index"
       class="toc-element"
-      :class="'toc-element-level-'+item.level"
+      :class="'toc-element-level-' + item.level"
     >
-      <a :href="'#'+item._path">{{ item.title }}</a>
+      <a :href="'#' + item._path">{{ item.title }}</a>
     </div>
   </nav>
 </template>
@@ -34,15 +34,20 @@ import { NavItem } from '@nuxt/content/dist/runtime/types';
 const props = defineProps({
   modelValue: {
     type: Array as PropType<NavItem[]>,
-    default: () => []
+    default: () => [],
   },
   localeSeparator: {
     type: String,
-    default: '.'
-  }
+    default: '.',
+  },
 });
 
-const items = computed(() => props.modelValue.map((navItem) => ({ ...navItem, level: navItem._path.split('/').length - 1 })));
+const items = computed(() =>
+  props.modelValue.map((navItem) => ({
+    ...navItem,
+    level: navItem._path.split('/').length - 1,
+  }))
+);
 </script>
 
 <style lang="scss" scoped>
@@ -96,7 +101,8 @@ const items = computed(() => props.modelValue.map((navItem) => ({ ...navItem, le
     counter-increment: counterTocLevel3;
     counter-reset: counterTocLevel4;
     &::before {
-      content: counter(counterTocLevel1) '. ' counter(counterTocLevel2) '. ' counter(counterTocLevel3);
+      content: counter(counterTocLevel1) '. ' counter(counterTocLevel2) '. '
+        counter(counterTocLevel3);
       padding-right: 5px;
     }
   }
@@ -104,7 +110,8 @@ const items = computed(() => props.modelValue.map((navItem) => ({ ...navItem, le
     margin-left: 25px;
     counter-increment: counterTocLevel4;
     &::before {
-      content: counter(counterTocLevel1) '. ' counter(counterTocLevel2) '. ' counter(counterTocLevel3) '. ' counter(counterTocLevel4);
+      content: counter(counterTocLevel1) '. ' counter(counterTocLevel2) '. '
+        counter(counterTocLevel3) '. ' counter(counterTocLevel4);
       padding-right: 5px;
     }
   }

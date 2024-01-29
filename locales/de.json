@@ -100,16 +100,16 @@
   },
 
   "compliance": {
-      "status": {
-        "NO": "nein",
-        "PARTIAL": "teilweise",
-        "UNKNOWN": "unbearbeitet",
-        "YES": "ja",
-        "N_A": "nicht anwendbar"
-      },
-      "origination": {
-        "SYSTEM_SPECIFIC": "systemspezifisch"
-      }
+    "status": {
+      "NO": "nein",
+      "PARTIAL": "teilweise",
+      "UNKNOWN": "unbearbeitet",
+      "YES": "ja",
+      "N_A": "nicht anwendbar"
+    },
+    "origination": {
+      "SYSTEM_SPECIFIC": "systemspezifisch"
+    }
   },
 
   "error": {
@@ -155,4 +155,3 @@
     "formSchemaTranslationNotFoundSearchAll": "Keine passende Formschema-Übersetzung gefunden. {0}, um alle Übersetzungen zu durchsuchen."
   }
 }
-

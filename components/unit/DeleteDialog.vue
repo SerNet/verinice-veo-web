@@ -26,14 +26,15 @@
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
-      <div>{{ t('question', { name: unit?.name }) }}</div><br>
-      <div style="color: red;">
+      <div>{{ t('question', { name: unit?.name }) }}</div
+      ><br />
+      <div style="color: red">
         {{ t('hint') }}
       </div>
 
       <BaseAlert
         :model-value="true"
-        :buttons="[ {text: 'backup', onClick: () => navigateTo('/user-data')} ]"
+        :buttons="[{ text: 'backup', onClick: () => navigateTo('/user-data') }]"
         title="Backup"
         :type="VeoAlertType.INFO"
         class="mt-4"
@@ -44,9 +45,7 @@
         {{ t('request') }}
       </BaseAlert>
 
-      <BaseCard
-        class="mt-4"
-      >
+      <BaseCard class="mt-4">
         <v-form @submit.prevent="deleteUnit">
           <v-text-field
             v-model="unitName"
@@ -62,10 +61,7 @@
     </template>
 
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        @click="closeDeleteDialog"
-      >
+      <v-btn variant="text" @click="closeDeleteDialog">
         {{ globalT('global.button.cancel') }}
       </v-btn>
 
@@ -86,20 +82,25 @@
 </template>
 
 <script setup lang="ts">
-import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import unitQueryDefinitions, {
+  IVeoUnit,
+} from '~/composables/api/queryDefinitions/units';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { VeoAlertType } from '~/types/VeoTypes';
 
-const props = withDefaults(defineProps<{
-  unit?: IVeoUnit,
-}>(), {
-  unit: undefined
-});
+const props = withDefaults(
+  defineProps<{
+    unit?: IVeoUnit;
+  }>(),
+  {
+    unit: undefined,
+  }
+);
 
 const emit = defineEmits<{
-  (event: 'success'): void
-  (event: 'error'): void
-  (event: 'update:model-value', value: boolean): void
+  (event: 'success'): void;
+  (event: 'error'): void;
+  (event: 'update:model-value', value: boolean): void;
 }>();
 
 const { t } = useI18n();
@@ -107,15 +108,20 @@ const { t: globalT } = useI18n({ useScope: 'global' });
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { ability } = useVeoPermissions();
 
-const { mutateAsync: doDelete, isLoading: deletionInProgress } = useMutation(unitQueryDefinitions.mutations.delete);
+const { mutateAsync: doDelete, isLoading: deletionInProgress } = useMutation(
+  unitQueryDefinitions.mutations.delete
+);
 
 const unitName = ref('');
 const unitNameIsValid = computed(() => unitName.value === props.unit?.name);
-const nameRules = [
-  (name: any) => !!name || 'Unit name required'
-];
+const nameRules = [(name: any) => !!name || 'Unit name required'];
 
-const unitDeletionDisabled = computed(() => deletionInProgress.value || ability.value.cannot('manage', 'units') || !unitNameIsValid.value);
+const unitDeletionDisabled = computed(
+  () =>
+    deletionInProgress.value ||
+    ability.value.cannot('manage', 'units') ||
+    !unitNameIsValid.value
+);
 const closeDeleteDialog = () => {
   emit('update:model-value', false);
   unitName.value = '';
@@ -138,7 +144,7 @@ const deleteUnit = async () => {
 };
 </script>
 
-  <i18n>
+<i18n>
   {
     "en": {
       "dialogTitle": "Delete unit",

@@ -29,11 +29,18 @@ describe('chunkHistory()', () => {
   const lastItem = result[result.length - 1];
 
   it('should return objects containing veo history items', async () => {
-    const requiredKeys = ['id', 'uri', 'changeNumber', 'type', 'time', 'author'];
-    requiredKeys.every(key =>
+    const requiredKeys = [
+      'id',
+      'uri',
+      'changeNumber',
+      'type',
+      'time',
+      'author',
+    ];
+    requiredKeys.every((key) =>
       expect(Object.hasOwn(firstItem.chunk[0], key)).toBe(true)
     );
-    requiredKeys.every(key =>
+    requiredKeys.every((key) =>
       expect(Object.hasOwn(lastItem.chunk[0], key)).toBe(true)
     );
   });

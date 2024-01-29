@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: 'none'
+  layout: 'none',
 });
 
 onMounted(() => parent.postMessage(location.href, location.origin));

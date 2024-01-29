@@ -31,7 +31,8 @@ import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 export default defineNuxtRouteMiddleware((to) => {
   if (to.path !== '/') return;
 
-  const isRecurringUser = localStorage.getItem(LOCAL_STORAGE_KEYS.IS_FRESH_LOGIN) === 'false';
+  const isRecurringUser =
+    localStorage.getItem(LOCAL_STORAGE_KEYS.IS_FRESH_LOGIN) === 'false';
 
   if (isRecurringUser) {
     return showDashBoard();
@@ -53,9 +54,16 @@ async function showDashBoard() {
   }
 
   // neither of the keys was found, so we fetch the appropriate unit
-  const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: unitId });
+  const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, {
+    id: unitId,
+  });
   // ... and link to the dashboard
-  if (unit && unit.domains.find((domain: IVeoDomain) => domain.targetUri.includes(domainId))) {
+  if (
+    unit &&
+    unit.domains.find((domain: IVeoDomain) =>
+      domain.targetUri.includes(domainId)
+    )
+  ) {
     return navigateTo(`/${unit.id}/domains/${domainId}`);
   } else return navigateTo('/units');
 }

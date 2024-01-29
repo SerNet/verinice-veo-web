@@ -26,7 +26,7 @@ import { IVeoPaginationOptions } from '~/types/VeoTypes';
 export enum VeoApiReponseType {
   JSON,
   BLOB,
-  VOID
+  VOID,
 }
 
 export class VeoApiError extends Error {
@@ -34,7 +34,12 @@ export class VeoApiError extends Error {
   public readonly url;
   public additionalInformation: any;
 
-  constructor(url: string, code: number, message: string, additionalInformation: any) {
+  constructor(
+    url: string,
+    code: number,
+    message: string,
+    additionalInformation: any
+  ) {
     super(`Error ${code} while accessing ${url}: ${message}`);
 
     this.url = url;
@@ -58,12 +63,11 @@ export const useRequest = () => {
   const context = useNuxtApp();
   const user = useVeoUser();
 
-
   let locale: Ref<string>;
   // Get current locale, either through i18n composable or through header. Reason for try catch is use via dev plugin
   try {
     locale = useI18n().locale;
-  } catch(e) {
+  } catch (e) {
     locale = ref(Cookies.get('i18n_redirected') || 'en');
   }
 
@@ -73,7 +77,7 @@ export const useRequest = () => {
     forms: context.$config.public.formsApiUrl.replace(/\/$/, ''),
     history: context.$config.public.historyApiUrl.replace(/\/$/, ''),
     reporting: context.$config.public.reportsApiUrl.replace(/\/$/, ''),
-    default: context.$config.public.apiUrl.replace(/\/$/, '')
+    default: context.$config.public.apiUrl.replace(/\/$/, ''),
   });
 
   const getUrl = (url: string) => {
@@ -98,7 +102,10 @@ export const useRequest = () => {
     return `${endpoint}/${path}`;
   };
 
-  const parseResponse = async <T>(res: Response, options: RequestOptions): Promise<T> => {
+  const parseResponse = async <T>(
+    res: Response,
+    options: RequestOptions
+  ): Promise<T> => {
     let parsedResponseBody;
 
     try {
@@ -114,7 +121,9 @@ export const useRequest = () => {
       }
     } catch (e: any) {
       // eslint-disable-next-line no-console
-      console.error(`API Plugin::parseResponse: Error while parsing response for ${res.url}`);
+      console.error(
+        `API Plugin::parseResponse: Error while parsing response for ${res.url}`
+      );
     }
 
     const status = Number(res.status);
@@ -127,7 +136,12 @@ export const useRequest = () => {
         return request(res.url, options);
       }
     }
-    throw new VeoApiError(res.url, res.status, parsedResponseBody?.message, parsedResponseBody);
+    throw new VeoApiError(
+      res.url,
+      res.status,
+      parsedResponseBody?.message,
+      parsedResponseBody
+    );
   };
 
   const parseJson = async (res: Response): Promise<any> => {
@@ -135,21 +149,29 @@ export const useRequest = () => {
 
     if (!raw) {
       // eslint-disable-next-line no-console
-      console.warn(`API Plugin::parseJson: Empty response body for request ${res.url} with response type JSON`);
+      console.warn(
+        `API Plugin::parseJson: Empty response body for request ${res.url} with response type JSON`
+      );
       return undefined;
     }
     const parsed = JSON.parse(raw);
     return parsed;
   };
 
-  const updateETagMapIfEtagExists = (response: Response, options: RequestOptions) => {
+  const updateETagMapIfEtagExists = (
+    response: Response,
+    options: RequestOptions
+  ) => {
     const etag = response.headers.get('etag');
     if (etag && options.params?.id) {
       ETAG_MAP.set(options.params.id as string, etag);
     }
   };
 
-  const request = async <TResult = any>(url: string, options: RequestOptions): Promise<TResult> => {
+  const request = async <TResult = any>(
+    url: string,
+    options: RequestOptions
+  ): Promise<TResult> => {
     if (!user.keycloakInitialized.value) {
       await user.initialize(context);
     }
@@ -161,7 +183,9 @@ export const useRequest = () => {
         if (replaceValue) {
           splittedUrl[index] = sanitizeURLParams(String(replaceValue));
         } else {
-          throw new Error(`API Request is missing the value for parameter "${splittedUrl[index]}"`);
+          throw new Error(
+            `API Request is missing the value for parameter "${splittedUrl[index]}"`
+          );
         }
       }
     }
@@ -171,15 +195,23 @@ export const useRequest = () => {
       headers: {
         Accept: 'application/json',
         Authorization: 'Bearer ' + user.keycloak.value?.token,
-        'Accept-Language': locale.value
+        'Accept-Language': locale.value,
       } as Record<string, string>,
       method: 'GET',
-      mode: 'cors'
+      mode: 'cors',
     };
 
     // Some requests, but not all use an ETag header. To automate setting and getting the etag header, we assume that every query that uses an ETag has a parameter called id
-    if (options.method !== 'GET' && options.params?.id && ETAG_MAP.has(options.params.id as string)) {
-      defaults.headers['If-Match'] = (ETAG_MAP.get(options.params.id as string) as string).replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
+    if (
+      options.method !== 'GET' &&
+      options.params?.id &&
+      ETAG_MAP.has(options.params.id as string)
+    ) {
+      defaults.headers['If-Match'] = (
+        ETAG_MAP.get(options.params.id as string) as string
+      )
+        .replace(/["]+/g, '')
+        .replace(/^(.*)W\//gi, '');
     }
 
     if (options.json) {
@@ -192,9 +224,17 @@ export const useRequest = () => {
     combinedOptions.headers.Authorization = defaults.headers.Authorization;
 
     // Create an URLSearchParams Object after filtering out all undefined query options
-    const queryParameters = new URLSearchParams(Object.fromEntries(Object.entries(options.query || {}).filter(([_param, value]) => value !== undefined)));
+    const queryParameters = new URLSearchParams(
+      Object.fromEntries(
+        Object.entries(options.query || {}).filter(
+          ([_param, value]) => value !== undefined
+        )
+      )
+    );
 
-    const combinedUrl = `${url}${queryParameters.toString() ? '?' : ''}${queryParameters.toString()}`;
+    const combinedUrl = `${url}${
+      queryParameters.toString() ? '?' : ''
+    }${queryParameters.toString()}`;
     const reqURL = getUrl(combinedUrl);
     const res = await fetch(reqURL, combinedOptions);
     updateETagMapIfEtagExists(res, options);

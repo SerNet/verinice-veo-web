@@ -30,13 +30,13 @@
 </template>
 
 <script setup lang="ts">
-import { downloadZIP } from "~/lib/jsonToZip";
+import { downloadZIP } from '~/lib/jsonToZip';
 import { logError } from './modules/HandleError';
 import { useQuerySync } from '~/composables/api/utils/query';
 import accountQueryDefinitions from '~/composables/api/queryDefinitions/accounts';
 
 // Types
-import { IVeoAccount } from "~/composables/api/queryDefinitions/accounts";
+import { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
 
 // Composables
 const { t } = useI18n();
@@ -46,7 +46,7 @@ const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const state = reactive({
   accounts: [profile.value] as IVeoAccount[],
   showAlert: false,
-  isLoading: [] as boolean[]
+  isLoading: [] as boolean[],
 });
 
 const isAccountManager = computed(() => roles.value.length > 0);
@@ -56,9 +56,11 @@ async function exportAccountData(index: number) {
   try {
     let accounts = [] as IVeoAccount[];
 
-    if(isAccountManager.value) {
+    if (isAccountManager.value) {
       // Get data on all accounts managed by current account
-      accounts = await useQuerySync(accountQueryDefinitions.queries.fetchAccounts);
+      accounts = await useQuerySync(
+        accountQueryDefinitions.queries.fetchAccounts
+      );
     }
 
     // Add current account data
@@ -69,19 +71,17 @@ async function exportAccountData(index: number) {
     await downloadZIP(accounts, fileName);
 
     displaySuccessMessage(t('successHeader'));
-
   } catch (error) {
     state.showAlert = true;
     handleError(error);
-  }
-  finally {
+  } finally {
     state.isLoading[index] = false;
   }
 }
 
 function handleError(error: unknown) {
   logError(error);
-  displayErrorMessage( t('errorHeader'), t('errorBody'));
+  displayErrorMessage(t('errorHeader'), t('errorBody'));
 }
 </script>
 <i18n src="./messages.json"></i18n>

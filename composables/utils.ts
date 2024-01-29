@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { trim } from "lodash";
+import { trim } from 'lodash';
 
 export const useFormatters = () => {
   const { locale } = useI18n();
@@ -25,19 +25,33 @@ export const useFormatters = () => {
       date.toLocaleDateString(locale.value, {
         day: '2-digit',
         month: '2-digit',
-        year: 'numeric'
+        year: 'numeric',
       })
     );
 
-  const formatTime = (date: Date) => computed(() => date.toLocaleDateString(locale.value, { hour: '2-digit', minute: '2-digit' }));
+  const formatTime = (date: Date) =>
+    computed(() =>
+      date.toLocaleDateString(locale.value, {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    );
 
   const formatDateTime = (date: Date) =>
-    computed(() => date.toLocaleDateString(locale.value, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }));
+    computed(() =>
+      date.toLocaleDateString(locale.value, {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    );
 
   return {
     formatDate,
     formatDateTime,
-    formatTime
+    formatTime,
   };
 };
 
@@ -65,7 +79,6 @@ export const useThrottleNextTick = () => {
   return { throttle };
 };
 
-
 export const useRules = () => {
   const { t } = useI18n({ useScope: 'global' });
 
@@ -74,19 +87,20 @@ export const useRules = () => {
       case 'string':
         return !!trim(v) || t('global.input.required');
       default:
-        return v !== undefined && v !== null || t('global.input.required');
+        return (v !== undefined && v !== null) || t('global.input.required');
     }
   };
 
-  const banSpecialChars = (v: string) => hasNoSpecialChar(v) ? true : t('global.input.hasSpecialChar');
+  const banSpecialChars = (v: string) =>
+    hasNoSpecialChar(v) ? true : t('global.input.hasSpecialChar');
   function hasNoSpecialChar(s: string): boolean {
-    if(s === '') return true; // do not test empty strings
+    if (s === '') return true; // do not test empty strings
     const re = /^[a-zA-Z0-9_-]+$/; // allowed characters
     return re.test(s);
   }
 
   return {
     requiredRule,
-    banSpecialChars
+    banSpecialChars,
   };
 };

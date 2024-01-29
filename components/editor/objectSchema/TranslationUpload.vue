@@ -29,7 +29,9 @@
       :available-languages="availableLanguages"
       :import-function="importFunction"
       :replace-translations="replaceTranslations"
-      @update:replace-translations="$emit('update:replace-translations', $event)"
+      @update:replace-translations="
+        $emit('update:replace-translations', $event)
+      "
     >
       <template #default>
         <v-expansion-panels
@@ -57,10 +59,7 @@
                   >
                     {{ localeDetailsMap[language[0]].name }}
                     <ul>
-                      <li
-                        v-for="translation of language[1]"
-                        :key="translation"
-                      >
+                      <li v-for="translation of language[1]" :key="translation">
                         {{ translation }}
                       </li>
                     </ul>
@@ -98,7 +97,10 @@ import { trim } from 'lodash';
 import { PropType, Ref } from 'vue';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 
-import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2';
+import ObjectSchemaHelper, {
+  IVeoOSHCustomAspect,
+  IVeoOSHCustomLink,
+} from '~/lib/ObjectSchemaHelper2';
 
 import { VeoAlertType } from '~/types/VeoTypes';
 
@@ -106,44 +108,60 @@ export default defineComponent({
   props: {
     availableLanguages: {
       type: Array as PropType<string[]>,
-      required: true
+      required: true,
     },
     replaceTranslations: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['translations-imported', 'update:replace-translations'],
   setup(props, { emit }) {
     const { locales, t } = useI18n();
 
-    const objectSchemaHelper = inject<Ref<ObjectSchemaHelper>>('objectSchemaHelper');
+    const objectSchemaHelper =
+      inject<Ref<ObjectSchemaHelper>>('objectSchemaHelper');
 
     // Layout stuff
     const resultExpansionPanel = ref();
 
     const localeDetailsMap = computed(() =>
-      (locales.value as LocaleObject[]).reduce((previousValue, currentValue) => {
-        previousValue[currentValue.code] = currentValue;
-        return previousValue;
-      }, Object.create(null))
+      (locales.value as LocaleObject[]).reduce(
+        (previousValue, currentValue) => {
+          previousValue[currentValue.code] = currentValue;
+          return previousValue;
+        },
+        Object.create(null)
+      )
     );
 
     // Import stuff
     const unusedTranslations = ref<string[]>([]);
     const usedTranslations = reactive<{ [lang: string]: string[] }>({});
 
-    const importFunction = (columns: string[][], idColumn: number, languageColumns: { [language: string]: number }) => {
-      if (!idColumn || Object.keys(languageColumns).length < props.availableLanguages.length) {
+    const importFunction = (
+      columns: string[][],
+      idColumn: number,
+      languageColumns: { [language: string]: number }
+    ) => {
+      if (
+        !idColumn ||
+        Object.keys(languageColumns).length < props.availableLanguages.length
+      ) {
         return;
       }
       unusedTranslations.value = [];
-      const translations = props.availableLanguages.reduce((previousValue, currentValue) => {
-        previousValue[currentValue] = {};
-        return previousValue;
-      }, Object.create(null));
+      const translations = props.availableLanguages.reduce(
+        (previousValue, currentValue) => {
+          previousValue[currentValue] = {};
+          return previousValue;
+        },
+        Object.create(null)
+      );
 
-      const extractAttributeTitles = (properties: (IVeoOSHCustomAspect | IVeoOSHCustomLink)[]) =>
+      const extractAttributeTitles = (
+        properties: (IVeoOSHCustomAspect | IVeoOSHCustomLink)[]
+      ) =>
         properties.reduce((previousValue, currentValue) => {
           previousValue.push(currentValue.title);
           for (const child of currentValue.attributes) {
@@ -154,9 +172,15 @@ export default defineComponent({
 
       const prefix = objectSchemaHelper?.value?.getTitle();
       const usedLanguageKeys: string[] = [
-        ...extractAttributeTitles(objectSchemaHelper?.value?.getCustomAspects() || []).map((property) => `${prefix}_${property}`),
-        ...extractAttributeTitles(objectSchemaHelper?.value?.getCustomLinks() || []).map((property) => `${prefix}_${property}`),
-        ...(objectSchemaHelper?.value?.getBasicProperties() || []).map((property) => property.title)
+        ...extractAttributeTitles(
+          objectSchemaHelper?.value?.getCustomAspects() || []
+        ).map((property) => `${prefix}_${property}`),
+        ...extractAttributeTitles(
+          objectSchemaHelper?.value?.getCustomLinks() || []
+        ).map((property) => `${prefix}_${property}`),
+        ...(objectSchemaHelper?.value?.getBasicProperties() || []).map(
+          (property) => property.title
+        ),
       ];
       unusedTranslations.value = [];
 
@@ -169,7 +193,10 @@ export default defineComponent({
         }
 
         // If id is not used in this form schema, add to unusedTranslations array and go to next id
-        if (!usedLanguageKeys.includes(id) && !unusedTranslations.value.includes(id)) {
+        if (
+          !usedLanguageKeys.includes(id) &&
+          !unusedTranslations.value.includes(id)
+        ) {
           unusedTranslations.value.push(id);
           continue;
         }
@@ -184,11 +211,14 @@ export default defineComponent({
       }
       Object.assign(
         usedTranslations,
-        Object.entries(translations).reduce((previousValue, [language, entries]) => {
-          previousValue[language] = Object.keys(entries as any);
+        Object.entries(translations).reduce(
+          (previousValue, [language, entries]) => {
+            previousValue[language] = Object.keys(entries as any);
 
-          return previousValue;
-        }, Object.create(null))
+            return previousValue;
+          },
+          Object.create(null)
+        )
       );
 
       resultExpansionPanel.value = 0;
@@ -203,9 +233,9 @@ export default defineComponent({
       usedTranslations,
 
       VeoAlertType,
-      t
+      t,
     };
-  }
+  },
 });
 </script>
 

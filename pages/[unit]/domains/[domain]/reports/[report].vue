@@ -16,21 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    :loading="reportsFetching"
-    data-component-name="report-page"
-  >
+  <BasePage :loading="reportsFetching" data-component-name="report-page">
     <template #header>
-      <LayoutHeadline
-        class="mb-4"
-        title="Report"
-        :element="title"
-      />
+      <LayoutHeadline class="mb-4" title="Report" :element="title" />
 
-      <v-row
-        dense
-        class="justify-space-between"
-      >
+      <v-row dense class="justify-space-between">
         <v-col cols="auto">
           <p
             v-if="report"
@@ -50,17 +40,16 @@
         data-component-name="report-entity-selection-filter-bar"
         :available-object-types="availableObjectTypes"
         :available-sub-types="availableSubTypes"
-        :domain-id="($route.params.domain as string)"
+        :domain-id="$route.params.domain as string"
         :filter="filter"
         :required-fields="requiredFields"
         @update:filter="updateRouteQuery"
       />
 
-      <p
-        v-if="report"
-        class="text-body-1 my-2"
-      >
-        {{ report.multipleTargetsSupported? t('hintMultiple') : t('hintSingle') }}
+      <p v-if="report" class="text-body-1 my-2">
+        {{
+          report.multipleTargetsSupported ? t('hintMultiple') : t('hintSingle')
+        }}
       </p>
 
       <BaseCard>
@@ -69,17 +58,24 @@
           v-model:sort-by="sortBy"
           :model-value="selectedObjects"
           show-select
-          :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
+          :default-headers="[
+            'icon',
+            'designator',
+            'abbreviation',
+            'name',
+            'status',
+            'description',
+            'updatedBy',
+            'updatedAt',
+            'actions',
+          ]"
           :items="objects"
           :loading="objectsFetching"
           data-component-name="report-entity-selection"
           @update:model-value="onReportSelectionUpdated"
         />
       </BaseCard>
-      <v-row
-        no-gutters
-        class="mt-4"
-      >
+      <v-row no-gutters class="mt-4">
         <v-spacer />
         <v-col cols="auto">
           <v-btn
@@ -91,10 +87,7 @@
           >
             {{ t('generateReport') }}
           </v-btn>
-          <a
-            ref="downloadButton"
-            href="#"
-          />
+          <a ref="downloadButton" href="#" />
         </v-col>
       </v-row>
     </template>
@@ -124,20 +117,40 @@ export default defineComponent({
     const route = useRoute();
     const { displayErrorMessage } = useVeoAlerts();
     const { tablePageSize } = useVeoUser();
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+    const { data: endpoints } = useQuery(
+      schemaQueryDefinitions.queries.fetchSchemas
+    );
 
-    const outputType = computed<string>(() => report.value?.outputTypes?.[0] || '');
+    const outputType = computed<string>(
+      () => report.value?.outputTypes?.[0] || ''
+    );
 
-    const title = computed(() => t('create', { type: report.value?.name?.[locale.value] || '', format: upperCase(outputType.value.split('/').pop()) }).toString());
+    const title = computed(() =>
+      t('create', {
+        type: report.value?.name?.[locale.value] || '',
+        format: upperCase(outputType.value.split('/').pop()),
+      }).toString()
+    );
 
     // Fetching the right report
     const requestedReportName = computed(() => route.params.report as string);
 
-    const { data: reports, isFetching: reportsFetching } = useQuery(reportQueryDefinitions.queries.fetchAll);
+    const { data: reports, isFetching: reportsFetching } = useQuery(
+      reportQueryDefinitions.queries.fetchAll
+    );
     const report = computed(() => reports.value?.[requestedReportName.value]);
 
-    const availableObjectTypes = computed<string[]>(() => (report.value?.targetTypes || []).map((targetType) => targetType.modelType));
-    const availableSubTypes = computed<string[]>(() => (report.value?.targetTypes || []).find((targetType) => targetType.modelType === filter.value.objectType)?.subTypes || []);
+    const availableObjectTypes = computed<string[]>(() =>
+      (report.value?.targetTypes || []).map(
+        (targetType) => targetType.modelType
+      )
+    );
+    const availableSubTypes = computed<string[]>(
+      () =>
+        (report.value?.targetTypes || []).find(
+          (targetType) => targetType.modelType === filter.value.objectType
+        )?.subTypes || []
+    );
 
     // Table stuff
     const selectedObjects = ref<{ id: string; type: string }[]>([]);
@@ -149,10 +162,24 @@ export default defineComponent({
       sortBy.value = [{ key: 'name', order: 'asc' }];
     };
 
-    const requiredFields = computed(() => (availableSubTypes.value.length ? ['objectType', 'subType'] : ['objectType']));
+    const requiredFields = computed(() =>
+      availableSubTypes.value.length ?
+        ['objectType', 'subType']
+      : ['objectType']
+    );
 
     // accepted filter keys (others wont be respected when specified in URL query parameters)
-    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'hasNoParentElements', 'hasChildElements'] as const;
+    const filterKeys = [
+      'objectType',
+      'subType',
+      'designator',
+      'name',
+      'status',
+      'description',
+      'updatedBy',
+      'hasNoParentElements',
+      'hasChildElements',
+    ] as const;
 
     // filter built from URL query parameters
     const filter = computed(() => {
@@ -170,14 +197,16 @@ export default defineComponent({
       filterObject = {
         ...filterObject,
         objectType: report?.value?.targetTypes?.[0]?.modelType,
-        subType: fixedSubTypes.length === 1 ? fixedSubTypes[0] : undefined
+        subType: fixedSubTypes.length === 1 ? fixedSubTypes[0] : undefined,
       };
       return filterObject;
     });
 
     watch(() => filter.value, resetQueryOptions, { deep: true });
 
-    const endpoint = computed(() => endpoints.value?.[filter.value.objectType as string]);
+    const endpoint = computed(
+      () => endpoints.value?.[filter.value.objectType as string]
+    );
     const combinedObjectsQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
       sortBy: sortBy.value[0].key,
@@ -185,24 +214,48 @@ export default defineComponent({
       page: page.value,
       unit: route.params.unit as string,
       ...omit(filter.value, 'objectType'),
-      endpoint: endpoint.value
+      endpoint: endpoint.value,
     }));
-    const objectType = computed<string | undefined>(() => filter.value.objectType as string | undefined);
-    const objectsQueryEnabled = computed(() => !!objectType.value && !!endpoint.value);
+    const objectType = computed<string | undefined>(
+      () => filter.value.objectType as string | undefined
+    );
+    const objectsQueryEnabled = computed(
+      () => !!objectType.value && !!endpoint.value
+    );
 
     const {
       data: objects,
       isLoading: objectsFetching,
-      refetch: refetchObjects
-    } = useFetchObjects(combinedObjectsQueryParameters as any, { enabled: objectsQueryEnabled, keepPreviousData: true, placeholderData: [] });
+      refetch: refetchObjects,
+    } = useFetchObjects(combinedObjectsQueryParameters as any, {
+      enabled: objectsQueryEnabled,
+      keepPreviousData: true,
+      placeholderData: [],
+    });
 
-    const updateRouteQuery = async (v: Record<string, string | undefined | null | true>, reset = true) => {
-      const resetValues = reset ? filterKeys.map((key) => [key, undefined as string | undefined | null]) : [];
-      const newValues = Object.fromEntries(resetValues.concat(Object.entries(v).map(([k, v]) => [k, v === true ? null : v])));
+    const updateRouteQuery = async (
+      v: Record<string, string | undefined | null | true>,
+      reset = true
+    ) => {
+      const resetValues =
+        reset ?
+          filterKeys.map((key) => [key, undefined as string | undefined | null])
+        : [];
+      const newValues = Object.fromEntries(
+        resetValues.concat(
+          Object.entries(v).map(([k, v]) => [k, v === true ? null : v])
+        )
+      );
       const query = { ...route.query, ...newValues };
       // obsolete params need to be removed from the query to match the route exactly in the NavigationDrawer
-      Object.keys(query).forEach((key) => query[key] === undefined && delete query[key]);
-      await navigateTo({ ...route, name: route.name as RouteRecordName | undefined, query });
+      Object.keys(query).forEach(
+        (key) => query[key] === undefined && delete query[key]
+      );
+      await navigateTo({
+        ...route,
+        name: route.name as RouteRecordName | undefined,
+        query,
+      });
     };
 
     // Generating new report
@@ -213,7 +266,9 @@ export default defineComponent({
       }
 
       downloadButton.value.href = URL.createObjectURL(result);
-      downloadButton.value.download = `${report.value.name[locale.value]}.${outputType.value.split('/').pop()}`;
+      downloadButton.value.download = `${
+        report.value.name[locale.value]
+      }.${outputType.value.split('/').pop()}`;
       downloadButton.value.click();
     };
 
@@ -221,23 +276,29 @@ export default defineComponent({
       type: requestedReportName.value,
       body: {
         outputType: outputType.value,
-        targets: selectedObjects.value
-      }
+        targets: selectedObjects.value,
+      },
     }));
-    const { mutateAsync: create, isLoading: generatingReport } = useMutation(reportQueryDefinitions.mutations.create, { onSuccess: openReport });
+    const { mutateAsync: create, isLoading: generatingReport } = useMutation(
+      reportQueryDefinitions.mutations.create,
+      { onSuccess: openReport }
+    );
 
     const generateReport = async () => {
       if (report.value) {
         try {
           await create(createMutationParameters);
         } catch (error: any) {
-          displayErrorMessage(t('generateReportError').toString(), error.message);
+          displayErrorMessage(
+            t('generateReportError').toString(),
+            error.message
+          );
         }
       }
     };
 
     const onReportSelectionUpdated = (newObjects: IVeoEntity[]) => {
-      if(newObjects?.length) {
+      if (newObjects?.length) {
         selectedObjects.value = [newObjects[0]];
       } else {
         selectedObjects.value = [];
@@ -266,9 +327,9 @@ export default defineComponent({
 
       t,
       locale,
-      upperFirst
+      upperFirst,
     };
-  }
+  },
 });
 </script>
 

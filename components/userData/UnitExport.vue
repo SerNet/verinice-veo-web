@@ -31,8 +31,8 @@
 
 <script setup lang="ts">
 import { Ref } from 'vue';
-import { downloadZIP } from "~/lib/jsonToZip";
-import { logError } from "./modules/HandleError";
+import { downloadZIP } from '~/lib/jsonToZip';
+import { logError } from './modules/HandleError';
 
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
@@ -47,7 +47,7 @@ const { profile } = useVeoUser();
 
 const state = reactive({
   isLoading: [] as boolean[],
-  showAlert: false
+  showAlert: false,
 });
 
 const username = computed(() => profile.value?.username as string);
@@ -57,13 +57,13 @@ const { data: unitsMeta } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
 // Filter for relevant IDs (we want to export every unit but 'Demo')
 const relevantUnits = computed(() => {
-  if(!unitsMeta) return [];
+  if (!unitsMeta) return [];
   else return removeDemoUnit(unitsMeta);
 });
 
 function removeDemoUnit(units: Ref<IVeoUnit[]>) {
   if (!units) return [];
-  return units.value?.filter((unit: IVeoUnit) => unit.name !== "Demo");
+  return units.value?.filter((unit: IVeoUnit) => unit.name !== 'Demo');
 }
 
 // Export a single unit
@@ -71,22 +71,22 @@ async function exportUnit(index: number) {
   state.isLoading[index] = true;
   try {
     const unitId = relevantUnits.value[index].id;
-    const unit = await useQuerySync(unitQueryDefinitions.queries.exportUnit, { unitId });
+    const unit = await useQuerySync(unitQueryDefinitions.queries.exportUnit, {
+      unitId,
+    });
     const fileName = `${username.value}_${unit.unit.name}`;
     await downloadZIP(unit, fileName);
     displaySuccessMessage(t('successHeader'));
-  }
-  catch (error) {
+  } catch (error) {
     handleError(error);
-  }
-  finally {
+  } finally {
     state.isLoading[index] = false;
   }
 }
 
 function handleError(error: unknown) {
   logError(error);
-  displayErrorMessage( t('errorHeader'), t('errorBody'));
+  displayErrorMessage(t('errorHeader'), t('errorBody'));
 }
 </script>
 <i18n src="./messages.json"></i18n>

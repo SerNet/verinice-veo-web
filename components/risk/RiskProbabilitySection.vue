@@ -23,10 +23,7 @@
     <BaseCard class="veo-section-border">
       <v-card-text class="pa-3 px-4">
         <v-row class="pt-0">
-          <v-col
-            xs="12"
-            md="3"
-          >
+          <v-col xs="12" md="3">
             <v-select
               data-test-selector="risk-potential-probability"
               :model-value="data.potentialProbability"
@@ -37,18 +34,12 @@
               variant="underlined"
               hide-details
             >
-              <template
-                v-if="dirtyFields.scenario"
-                #selection
-              >
+              <template v-if="dirtyFields.scenario" #selection>
                 {{ t('saveCTA') }}
               </template>
             </v-select>
           </v-col>
-          <v-col
-            xs="12"
-            md="3"
-          >
+          <v-col xs="12" md="3">
             <v-select
               data-test-selector="risk-specific-probability"
               :model-value="data.specificProbability"
@@ -62,10 +53,7 @@
               @update:model-value="onSpecificProbabilityChanged"
             />
           </v-col>
-          <v-col
-            xs="12"
-            md="3"
-          >
+          <v-col xs="12" md="3">
             <v-select
               data-test-selector="risk-effective-probability"
               :model-value="data.effectiveProbability"
@@ -77,17 +65,18 @@
               hide-details
             >
               <template
-                v-if="dirtyFields && (dirtyFields.scenario || dirtyFields[`${riskDefinition.id}_specificProbability`])"
+                v-if="
+                  dirtyFields &&
+                  (dirtyFields.scenario ||
+                    dirtyFields[`${riskDefinition.id}_specificProbability`])
+                "
                 #selection
               >
                 {{ t('saveCTA') }}
               </template>
             </v-select>
           </v-col>
-          <v-col
-            xs="12"
-            md="3"
-          >
+          <v-col xs="12" md="3">
             <v-edit-dialog>
               <template #default="{ props: dialogProps }">
                 <v-text-field
@@ -137,34 +126,45 @@ export default defineComponent({
   props: {
     data: {
       type: Object as PropType<IVeoRiskDefinition['probability']>,
-      required: true
+      required: true,
     },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true
+      required: true,
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      default: () => {}
+      default: () => {},
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['update:data', 'update:dirty-fields'],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
 
-    const probabilities = computed(() => props.riskDefinition.probability.levels.map((level) => ({ title: level.translations[locale.value].name, value: level.ordinalValue })));
+    const probabilities = computed(() =>
+      props.riskDefinition.probability.levels.map((level) => ({
+        title: level.translations[locale.value].name,
+        value: level.ordinalValue,
+      }))
+    );
 
     const onSpecificProbabilityExplanationChanged = (newValue: string) => {
-      emit('update:data', { ...props.data, specificProbabilityExplanation: newValue });
+      emit('update:data', {
+        ...props.data,
+        specificProbabilityExplanation: newValue,
+      });
     };
 
     const onSpecificProbabilityChanged = (newValue: number) => {
-      emit('update:dirty-fields', { ...props.dirtyFields, [`${props.riskDefinition.id}_specificProbability`]: true });
+      emit('update:dirty-fields', {
+        ...props.dirtyFields,
+        [`${props.riskDefinition.id}_specificProbability`]: true,
+      });
       emit('update:data', { ...props.data, specificProbability: newValue });
     };
 
@@ -174,9 +174,9 @@ export default defineComponent({
       probabilities,
 
       t,
-      upperFirst
+      upperFirst,
     };
-  }
+  },
 });
 </script>
 

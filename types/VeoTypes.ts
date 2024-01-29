@@ -23,7 +23,6 @@ import { Mode } from '~/components/dynamic-form/util';
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { IAlertButton } from '~/components/base/Alert.vue';
 
-
 export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
 
 /**
@@ -114,11 +113,11 @@ export interface IVeoDomainRiskDefinition {
 }
 
 export type VeoRiskTreatment =
-  'RISK_TREATMENT_NONE' |
-  'RISK_TREATMENT_AVOIDANCE' |
-  'RISK_TREATMENT_ACCEPTANCE' |
-  'RISK_TREATMENT_TRANSFER' |
-  'RISK_TREATMENT_REDUCTION';
+  | 'RISK_TREATMENT_NONE'
+  | 'RISK_TREATMENT_AVOIDANCE'
+  | 'RISK_TREATMENT_ACCEPTANCE'
+  | 'RISK_TREATMENT_TRANSFER'
+  | 'RISK_TREATMENT_REDUCTION';
 
 export interface IVeoPiaMandatoryRule {
   description: {
@@ -153,7 +152,7 @@ export interface IVeoCustomLink extends IVeoCustomObject {
   target: IVeoLink;
 }
 
-export type IVeoCustomAspect = IVeoCustomObject
+export type IVeoCustomAspect = IVeoCustomObject;
 
 export interface IVeoCustomLinks {
   [key: string]: IVeoCustomLink[];
@@ -169,7 +168,11 @@ export interface IVeoTranslationCollection {
 
 export interface IVeoReactiveFormAction {
   attributeName: string;
-  handler: (newValue: string, newObject: Record<string, any>, oldObject: Record<string, any>) => void;
+  handler: (
+    newValue: string,
+    newObject: Record<string, any>,
+    oldObject: Record<string, any>
+  ) => void;
 }
 
 export interface IVeoFormsAdditionalContext {
@@ -237,7 +240,8 @@ export interface IVeoObjectSchemaObject extends IVeoObjectSchemaProperty {
   };
 }
 
-export interface IVeoObjectSchemaPatternObject extends IVeoObjectSchemaProperty {
+export interface IVeoObjectSchemaPatternObject
+  extends IVeoObjectSchemaProperty {
   type: 'object';
   properties: {
     [key: string]: IVeoObjectSchemaProperty;
@@ -382,7 +386,7 @@ export interface IVeoControlImplementation {
 export interface IVeoEntityLegacy extends IVeoBaseObject {
   name: string;
   abbreviation?: string;
-  controlImplementations?: IVeoControlImplementation[],
+  controlImplementations?: IVeoControlImplementation[];
   designator: string;
   displayName: string;
   description?: string;
@@ -399,7 +403,7 @@ export interface IVeoEntityLegacy extends IVeoBaseObject {
 export interface IVeoEntity extends IVeoBaseObject {
   name: string;
   abbreviation?: string;
-  controlImplementations?: IVeoControlImplementation[],
+  controlImplementations?: IVeoControlImplementation[];
   designator: string;
   displayName: string;
   description?: string;
@@ -493,7 +497,7 @@ export interface IVeoObjectHistoryEntry {
 export enum VeoAlertType {
   ERROR,
   INFO,
-  SUCCESS
+  SUCCESS,
 }
 
 export interface IVeoGlobalAlertParams {
@@ -513,7 +517,11 @@ export interface IVeoGlobalAlert {
 export interface IVeoFormSchemaGeneratorOptions {
   excludedProperties?: string[];
   groupedNamespaces?: { namespace: string; label?: string }[];
-  generateControlFunction: (pointer: string, schema: Record<string, any>, mode: Mode) => any;
+  generateControlFunction: (
+    pointer: string,
+    schema: Record<string, any>,
+    mode: Mode
+  ) => any;
   generateGroupFunction: (children: any[], label?: string) => any;
 }
 
@@ -525,14 +533,14 @@ export interface IVeoFormsWidgetDefinition {
 }
 
 export interface IVeoElementTypeDefinition {
-  subTypes:  {
-    [key: string]: any
+  subTypes: {
+    [key: string]: any;
   };
   translations: {
     [lang: string]: {
-      [key: string]: string
-    }
-  }
+      [key: string]: string;
+    };
+  };
 }
 
 export interface IVeoReport {
@@ -540,6 +548,5 @@ export interface IVeoReport {
   description: Record<string, string>;
   multipleTargetsSupported: boolean;
   outputTypes: string[];
-  targetTypes: { modelType: string, subTypes: string[]}[];
+  targetTypes: { modelType: string; subTypes: string[] }[];
 }
-

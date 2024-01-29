@@ -37,10 +37,7 @@
             </v-list>
           </v-card-text>
         </BaseCard>
-        <BaseCard
-          v-if="showAllFilters"
-          class="mt-2"
-        >
+        <BaseCard v-if="showAllFilters" class="mt-2">
           <v-card-text>
             <v-list density="compact">
               <ObjectFilter
@@ -54,41 +51,23 @@
           </v-card-text>
         </BaseCard>
         <div class="d-flex justify-center fill-width my-2">
-          <v-btn
-            variant="text"
-            @click="showAllFilters = !showAllFilters"
-          >
+          <v-btn variant="text" @click="showAllFilters = !showAllFilters">
             <template v-if="showAllFilters">
-              <v-icon
-                start
-                :icon="mdiChevronUp"
-              />
+              <v-icon start :icon="mdiChevronUp" />
               <span>{{ upperFirst(t('collapseOptions').toString()) }}</span>
-              <v-icon
-                end
-                :icon="mdiChevronUp"
-              />
+              <v-icon end :icon="mdiChevronUp" />
             </template>
             <template v-else>
-              <v-icon
-                start
-                :icon="mdiChevronDown"
-              />
+              <v-icon start :icon="mdiChevronDown" />
               <span>{{ upperFirst(t('expandOptions').toString()) }}</span>
-              <v-icon
-                end
-                :icon="mdiChevronDown"
-              />
+              <v-icon end :icon="mdiChevronDown" />
             </template>
           </v-btn>
         </div>
       </v-form>
     </template>
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        @click="onReset"
-      >
+      <v-btn variant="text" @click="onReset">
         {{ t(`resetFilter`) }}
       </v-btn>
       <v-spacer />
@@ -109,10 +88,16 @@ import { PropType } from 'vue';
 import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
 import { clone, omitBy, upperFirst } from 'lodash';
 
-import { IVeoFilterDivider, IVeoFilterOption, IVeoFilterOptionType } from './Filter.vue';
+import {
+  IVeoFilterDivider,
+  IVeoFilterOption,
+  IVeoFilterOptionType,
+} from './Filter.vue';
 import { extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
-import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import formQueryDefinitions, {
+  IVeoFormSchemaMeta,
+} from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 import { useFetchSchemasDetailed } from '~/composables/api/schemas';
@@ -121,32 +106,32 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Boolean,
-      default: false
+      default: false,
     },
     filter: {
       type: Object as PropType<Record<string, any>>,
-      default: () => ({})
+      default: () => ({}),
     },
     domainId: {
       type: String,
-      required: true
+      required: true,
     },
     availableObjectTypes: {
       type: Array as PropType<string[]>,
-      default: () => []
+      default: () => [],
     },
     availableSubTypes: {
       type: Array as PropType<string[]>,
-      default: () => []
+      default: () => [],
     },
     disabledFields: {
       type: Array as PropType<string[]>,
-      default: () => []
+      default: () => [],
     },
     requiredFields: {
       type: Array as PropType<string[]>,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   emits: ['update:model-value', 'update:filter'],
   setup(props, { emit }) {
@@ -160,17 +145,32 @@ export default defineComponent({
     watch(
       () => _schemas,
       (newValue) => {
-        schemas.value = newValue.map((query) => query.data).filter((schema) => schema) as IVeoObjectSchema[];
+        schemas.value = newValue
+          .map((query) => query.data)
+          .filter((schema) => schema) as IVeoObjectSchema[];
       },
       { deep: true, immediate: true }
     );
 
-    const objectTypes = computed<string[]>(() => schemas.value.map((schema) => schema.title));
-    const subTypes = computed<{ [schemaName: string]: { subType: string; name: Record<string, any>; status: string[] }[] }>(() =>
+    const objectTypes = computed<string[]>(() =>
+      schemas.value.map((schema) => schema.title)
+    );
+    const subTypes = computed<{
+      [schemaName: string]: {
+        subType: string;
+        name: Record<string, any>;
+        status: string[];
+      }[];
+    }>(() =>
       schemas.value.reduce((previousValue, currentValue) => {
-        previousValue[currentValue.title] = extractSubTypesFromObjectSchema(currentValue).map((subType) => ({
+        previousValue[currentValue.title] = extractSubTypesFromObjectSchema(
+          currentValue
+        ).map((subType) => ({
           ...subType,
-          name: (formSchemas.value as IVeoFormSchemaMeta[]).find((fs) => fs.subType === subType.subType)?.name || {}
+          name:
+            (formSchemas.value as IVeoFormSchemaMeta[]).find(
+              (fs) => fs.subType === subType.subType
+            )?.name || {},
         }));
         return previousValue;
       }, Object.create(null))
@@ -178,12 +178,24 @@ export default defineComponent({
 
     // Fetching of object types & translations for status
 
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: props.domainId }));
-    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
+    const fetchTranslationsQueryParameters = computed(() => ({
+      languages: [locale.value],
+      domain: props.domainId,
+    }));
+    const { data: translations } = useQuery(
+      translationQueryDefinitions.queries.fetch,
+      fetchTranslationsQueryParameters
+    );
 
-    const formsQueryParameters = computed(() => ({ domainId: props.domainId as string}));
+    const formsQueryParameters = computed(() => ({
+      domainId: props.domainId as string,
+    }));
     const formsQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+    const { data: formSchemas } = useQuery(
+      formQueryDefinitions.queries.fetchForms,
+      formsQueryParameters,
+      { enabled: formsQueryEnabled, placeholderData: [] }
+    );
 
     // Form actions
     /**
@@ -203,7 +215,10 @@ export default defineComponent({
       const newFilterObject: Record<string, any> = {};
 
       for (const key of Object.keys(localFilter.value)) {
-        if (props.disabledFields.includes(key) || props.requiredFields.includes(key)) {
+        if (
+          props.disabledFields.includes(key) ||
+          props.requiredFields.includes(key)
+        ) {
           newFilterObject[key] = localFilter.value[key];
         }
       }
@@ -224,108 +239,145 @@ export default defineComponent({
       }
     );
 
-    const localAvailableSubTypes = computed(() => subTypes.value[localFilter.value.objectType] || []);
+    const localAvailableSubTypes = computed(
+      () => subTypes.value[localFilter.value.objectType] || []
+    );
 
-    const filterOptions = computed<(IVeoFilterOption | IVeoFilterDivider)[]>(() => {
-      return [
-        {
-          name: 'objectType',
-          type: IVeoFilterOptionType.SELECT,
-          required: props.requiredFields.includes('objectType'),
-          disabled: props.disabledFields?.includes('objectType'),
-          alwaysVisible: true,
-          selectOptions: props.availableObjectTypes.length
-            ? objectTypes.value
-              .filter((objectType) => props.availableObjectTypes.includes(objectType))
-              .map((objectType) => ({ title: translations.value?.lang[locale.value]?.[objectType] || '', value: objectType }))
-            : objectTypes.value.map((objectType) => ({ title: translations.value?.lang[locale.value]?.[objectType] || '', value: objectType })),
-          onChange: () => {
-            nextTick(() => {
-              delete localFilter.value.subType;
+    const filterOptions = computed<(IVeoFilterOption | IVeoFilterDivider)[]>(
+      () => {
+        return [
+          {
+            name: 'objectType',
+            type: IVeoFilterOptionType.SELECT,
+            required: props.requiredFields.includes('objectType'),
+            disabled: props.disabledFields?.includes('objectType'),
+            alwaysVisible: true,
+            selectOptions:
+              props.availableObjectTypes.length ?
+                objectTypes.value
+                  .filter((objectType) =>
+                    props.availableObjectTypes.includes(objectType)
+                  )
+                  .map((objectType) => ({
+                    title:
+                      translations.value?.lang[locale.value]?.[objectType] ||
+                      '',
+                    value: objectType,
+                  }))
+              : objectTypes.value.map((objectType) => ({
+                  title:
+                    translations.value?.lang[locale.value]?.[objectType] || '',
+                  value: objectType,
+                })),
+            onChange: () => {
+              nextTick(() => {
+                delete localFilter.value.subType;
+                delete localFilter.value.status;
+              });
+            },
+          },
+          {
+            name: 'subType',
+            type: IVeoFilterOptionType.SELECT,
+            alwaysVisible: true,
+            disabled:
+              !localFilter.value.objectType ||
+              props.disabledFields?.includes('subType'),
+            selectOptions: localAvailableSubTypes.value
+              .map((subTypes) => ({
+                title: subTypes.name[locale.value] || subTypes.subType,
+                value: subTypes.subType,
+              }))
+              .filter(
+                (subTypes) =>
+                  !props.availableSubTypes.length ||
+                  props.availableSubTypes.includes(subTypes.value)
+              )
+              .sort((a, b) => {
+                const sortValueA = (
+                  formSchemas.value as IVeoFormSchemaMeta[]
+                ).find((schema) => schema.subType === a.value)?.sorting;
+                const sortValueB = (
+                  formSchemas.value as IVeoFormSchemaMeta[]
+                ).find((schema) => schema.subType === b.value)?.sorting;
+
+                if (!sortValueA) {
+                  return 1;
+                }
+                if (!sortValueB) {
+                  return 0;
+                }
+
+                return sortValueA.localeCompare(sortValueB);
+              }),
+            onChange: () => {
               delete localFilter.value.status;
-            });
-          }
-        },
-        {
-          name: 'subType',
-          type: IVeoFilterOptionType.SELECT,
-          alwaysVisible: true,
-          disabled: !localFilter.value.objectType || props.disabledFields?.includes('subType'),
-          selectOptions: localAvailableSubTypes.value
-            .map((subTypes) => ({ title: subTypes.name[locale.value] || subTypes.subType, value: subTypes.subType }))
-            .filter((subTypes) => !props.availableSubTypes.length || props.availableSubTypes.includes(subTypes.value))
-            .sort((a, b) => {
-              const sortValueA = (formSchemas.value as IVeoFormSchemaMeta[]).find((schema) => schema.subType === a.value)?.sorting;
-              const sortValueB = (formSchemas.value as IVeoFormSchemaMeta[]).find((schema) => schema.subType === b.value)?.sorting;
-
-              if (!sortValueA) {
-                return 1;
-              }
-              if (!sortValueB) {
-                return 0;
-              }
-
-              return sortValueA.localeCompare(sortValueB);
-            }),
-          onChange: () => {
-            delete localFilter.value.status;
-          }
-        },
-        {
-          type: IVeoFilterOptionType.DIVIDER
-        } as IVeoFilterDivider,
-        {
-          name: 'abbreviation',
-          disabled: props.disabledFields?.includes('abbreviation'),
-          type: IVeoFilterOptionType.TEXT,
-          alwaysVisible: true
-        },
-        {
-          name: 'designator',
-          disabled: props.disabledFields?.includes('designator'),
-          type: IVeoFilterOptionType.TEXT,
-          alwaysVisible: true
-        },
-        {
-          name: 'name',
-          disabled: props.disabledFields?.includes('name'),
-          type: IVeoFilterOptionType.TEXT,
-          alwaysVisible: true
-        },
-        {
-          name: 'status',
-          type: IVeoFilterOptionType.SELECT,
-          alwaysVisible: true,
-          disabled: !localFilter.value.objectType || !localFilter.value.subType || props.disabledFields?.includes('status'),
-          selectOptions: localAvailableSubTypes.value
-            .find((subType) => subType.subType === localFilter.value.subType)
-            ?.status.map((status) => ({
-              title: translations.value ? translations.value.lang[locale.value][`${localFilter.value.objectType}_${localFilter.value.subType}_status_${status}`] : status,
-              value: status
-            }))
-        },
-        {
-          name: 'description',
-          disabled: props.disabledFields?.includes('description'),
-          type: IVeoFilterOptionType.TEXT
-        },
-        {
-          name: 'updatedBy',
-          disabled: props.disabledFields?.includes('updatedBy'),
-          type: IVeoFilterOptionType.TEXT
-        },
-        {
-          name: 'hasNoParentElements',
-          disabled: props.disabledFields?.includes('hasNoParentElements'),
-          type: IVeoFilterOptionType.CHECKBOX
-        },
-        {
-          name: 'hasChildElements',
-          disabled: props.disabledFields?.includes('hasChildElements'),
-          type: IVeoFilterOptionType.CHECKBOX
-        }
-      ];
-    });
+            },
+          },
+          {
+            type: IVeoFilterOptionType.DIVIDER,
+          } as IVeoFilterDivider,
+          {
+            name: 'abbreviation',
+            disabled: props.disabledFields?.includes('abbreviation'),
+            type: IVeoFilterOptionType.TEXT,
+            alwaysVisible: true,
+          },
+          {
+            name: 'designator',
+            disabled: props.disabledFields?.includes('designator'),
+            type: IVeoFilterOptionType.TEXT,
+            alwaysVisible: true,
+          },
+          {
+            name: 'name',
+            disabled: props.disabledFields?.includes('name'),
+            type: IVeoFilterOptionType.TEXT,
+            alwaysVisible: true,
+          },
+          {
+            name: 'status',
+            type: IVeoFilterOptionType.SELECT,
+            alwaysVisible: true,
+            disabled:
+              !localFilter.value.objectType ||
+              !localFilter.value.subType ||
+              props.disabledFields?.includes('status'),
+            selectOptions: localAvailableSubTypes.value
+              .find((subType) => subType.subType === localFilter.value.subType)
+              ?.status.map((status) => ({
+                title:
+                  translations.value ?
+                    translations.value.lang[locale.value][
+                      `${localFilter.value.objectType}_${localFilter.value.subType}_status_${status}`
+                    ]
+                  : status,
+                value: status,
+              })),
+          },
+          {
+            name: 'description',
+            disabled: props.disabledFields?.includes('description'),
+            type: IVeoFilterOptionType.TEXT,
+          },
+          {
+            name: 'updatedBy',
+            disabled: props.disabledFields?.includes('updatedBy'),
+            type: IVeoFilterOptionType.TEXT,
+          },
+          {
+            name: 'hasNoParentElements',
+            disabled: props.disabledFields?.includes('hasNoParentElements'),
+            type: IVeoFilterOptionType.CHECKBOX,
+          },
+          {
+            name: 'hasChildElements',
+            disabled: props.disabledFields?.includes('hasChildElements'),
+            type: IVeoFilterOptionType.CHECKBOX,
+          },
+        ];
+      }
+    );
 
     // Display stuff
     const dialog = computed({
@@ -341,14 +393,25 @@ export default defineComponent({
             localFilter.value = clone(props.filter) as Record<string, any>;
           }, 150);
         }
-      }
+      },
     });
     const showAllFilters = ref(false);
-    const defaultFilterOptions = computed(() => filterOptions.value.filter((filter) => filter.type === IVeoFilterOptionType.DIVIDER || filter.alwaysVisible));
+    const defaultFilterOptions = computed(() =>
+      filterOptions.value.filter(
+        (filter) =>
+          filter.type === IVeoFilterOptionType.DIVIDER || filter.alwaysVisible
+      )
+    );
 
-    const additionalFilterOptions = computed(() => filterOptions.value.filter((filter) => filter.type !== IVeoFilterOptionType.DIVIDER && !filter.alwaysVisible));
+    const additionalFilterOptions = computed(() =>
+      filterOptions.value.filter(
+        (filter) =>
+          filter.type !== IVeoFilterOptionType.DIVIDER && !filter.alwaysVisible
+      )
+    );
 
-    const onFilterInput = ($event: any, filter: string) => (localFilter.value = { ...localFilter.value, [filter]: $event });
+    const onFilterInput = ($event: any, filter: string) =>
+      (localFilter.value = { ...localFilter.value, [filter]: $event });
 
     return {
       additionalFilterOptions,
@@ -365,9 +428,9 @@ export default defineComponent({
       t,
       upperFirst,
       mdiChevronDown,
-      mdiChevronUp
+      mdiChevronUp,
     };
-  }
+  },
 });
 </script>
 

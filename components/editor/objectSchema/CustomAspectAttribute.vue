@@ -19,10 +19,7 @@
   <BaseCard class="mb-6">
     <v-list-item>
       <v-row>
-        <v-col
-          :cols="8"
-          class="py-0"
-        >
+        <v-col :cols="8" class="py-0">
           <v-text-field
             :model-value="form.data.title"
             :label="`${t('aspectName')} *`"
@@ -32,10 +29,7 @@
             @update:model-value="doUpdate($event, 'title')"
           />
         </v-col>
-        <v-col
-          :cols="4"
-          class="py-0"
-        >
+        <v-col :cols="4" class="py-0">
           <v-select
             :model-value="form.data.type"
             :label="t('aspectType')"
@@ -56,11 +50,7 @@
           />
         </v-col>
       </v-row>
-      <v-row
-        v-if="form.data.type === 'enum'"
-        class="flex-column"
-        dense
-      >
+      <v-row v-if="form.data.type === 'enum'" class="flex-column" dense>
         <v-col class="py-0 d-flex align-center">
           <h4 class="text-h4">
             {{ t('values') }}
@@ -105,10 +95,7 @@
           </v-combobox>
         </v-col>
       </v-row>
-      <v-row
-        v-if="formatOptions.length > 0"
-        class="flex-column"
-      >
+      <v-row v-if="formatOptions.length > 0" class="flex-column">
         <v-col class="py-0">
           <v-select
             :model-value="currentFormatOption"
@@ -157,71 +144,71 @@ const INPUT_FORMATS: IInputFormats = {
       name: 'text',
       options: {
         format: undefined,
-        pattern: undefined
-      }
+        pattern: undefined,
+      },
     },
     {
       name: 'date',
       options: {
         format: 'date',
-        pattern: undefined
-      }
+        pattern: undefined,
+      },
     },
     {
       name: 'dateTime',
       options: {
         format: 'date-time',
-        pattern: undefined
-      }
+        pattern: undefined,
+      },
     },
     {
       name: 'uri',
       options: {
         format: 'uri',
-        pattern: '^(https?|ftp)://'
-      }
-    }
-  ]
+        pattern: '^(https?|ftp)://',
+      },
+    },
+  ],
 };
 
 export default defineComponent({
   props: {
     title: {
       type: String,
-      default: ''
+      default: '',
     },
     type: {
       type: String,
-      default: 'enum'
+      default: 'enum',
     },
     description: {
       type: String,
-      default: ''
+      default: '',
     },
     aspectName: {
       type: String,
-      required: true
+      required: true,
     },
     enum: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     multiple: {
       type: Boolean,
-      default: false
+      default: false,
     },
     format: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     pattern: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     originalId: {
       type: String,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
   emits: ['delete', 'update'],
   setup(props, context) {
@@ -239,16 +226,16 @@ export default defineComponent({
         });
       },
       {
-        deep: true
+        deep: true,
       }
     );
     const form = ref({
       data: {
-        ...props
+        ...props,
       },
       rules: {
-        title: [(value: string) => trim(value).length > 0]
-      }
+        title: [(value: string) => trim(value).length > 0],
+      },
     });
 
     nextTick().then(() => {
@@ -259,10 +246,16 @@ export default defineComponent({
       const dummy: { title: string; value: string }[] = [];
       const availableTypes = INPUT_TYPES as any;
       for (const entry in availableTypes) {
-        if (!['null', 'unknown', 'array', 'object'].includes(availableTypes[entry].name)) {
+        if (
+          !['null', 'unknown', 'array', 'object'].includes(
+            availableTypes[entry].name
+          )
+        ) {
           dummy.push({
-            title: t(`editor.inputtypes.${availableTypes[entry].name}`) as string,
-            value: availableTypes[entry].name
+            title: t(
+              `editor.inputtypes.${availableTypes[entry].name}`
+            ) as string,
+            value: availableTypes[entry].name,
           });
         }
       }
@@ -274,7 +267,10 @@ export default defineComponent({
     }
 
     function doObjectUpdate(newObject: any) {
-      const object = { ...form.value.data, originalId: props.originalId } as any;
+      const object = {
+        ...form.value.data,
+        originalId: props.originalId,
+      } as any;
 
       // Delete properties only used for ui
       delete object.aspectName;
@@ -290,8 +286,13 @@ export default defineComponent({
 
       // If the object type changes, we have to delete all custom properties belonging to the previous type
       if (newObject.type && newObject.type !== form.value.data.type) {
-        const newProperties = INPUT_FORMATS[newObject.type]?.find((item) => !item.options.format)?.options || {};
-        const oldProperties = INPUT_FORMATS[form.value.data.type]?.find((item) => item.options.format === form.value.data.format)?.options || {};
+        const newProperties =
+          INPUT_FORMATS[newObject.type]?.find((item) => !item.options.format)
+            ?.options || {};
+        const oldProperties =
+          INPUT_FORMATS[form.value.data.type]?.find(
+            (item) => item.options.format === form.value.data.format
+          )?.options || {};
 
         // Iterate over new
         for (const key in object) {
@@ -311,7 +312,7 @@ export default defineComponent({
     const attributeTypes = ref([
       { title: 'Zahl', value: 'number' },
       { title: 'Ganzzahl', value: 'integer' },
-      { title: 'Text', value: 'string' }
+      { title: 'Text', value: 'string' },
     ]);
 
     function removeValueFromEnum(value: string) {
@@ -322,7 +323,9 @@ export default defineComponent({
     }
 
     function updateOptions(formatType: string) {
-      const object = cloneDeep(formatOptions.value.find((item) => item.name === formatType));
+      const object = cloneDeep(
+        formatOptions.value.find((item) => item.name === formatType)
+      );
       if (object) {
         doObjectUpdate(object.options);
       }
@@ -338,10 +341,17 @@ export default defineComponent({
 
     const currentFormatOption = computed<string | undefined>(() => {
       // We have to iterate over every object in the formatOptions array and only if the format property matches, we have the correct one.
-      return formatOptions.value.find((item) => item.options.format === form.value.data.format)?.name;
+      return formatOptions.value.find(
+        (item) => item.options.format === form.value.data.format
+      )?.name;
     });
 
-    const requiredIfEnum = ((value: string | undefined) => (form.value.data.type === 'enum' && form.value.data.type === 'enum' && Array.isArray(value) && !!value.length) || t('requiredIfEnum'));
+    const requiredIfEnum = (value: string | undefined) =>
+      (form.value.data.type === 'enum' &&
+        form.value.data.type === 'enum' &&
+        Array.isArray(value) &&
+        !!value.length) ||
+      t('requiredIfEnum');
 
     return {
       prefix,
@@ -359,9 +369,9 @@ export default defineComponent({
       mdiTrashCanOutline,
       t,
       banSpecialChars,
-      requiredRule
+      requiredRule,
     };
-  }
+  },
 });
 </script>
 
@@ -401,4 +411,3 @@ export default defineComponent({
   }
 }
 </i18n>
-

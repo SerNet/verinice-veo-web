@@ -1,13 +1,7 @@
 <template>
-  <v-menu
-    :close-on-content-click="false"
-    origin="overlap"
-  >
+  <v-menu :close-on-content-click="false" origin="overlap">
     <template #activator="{ props }">
-      <slot
-        name="default"
-        v-bind="{ props }"
-      />
+      <slot name="default" v-bind="{ props }" />
     </template>
     <template #default>
       <v-card>
@@ -19,6 +13,4 @@
   </v-menu>
 </template>
 
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>

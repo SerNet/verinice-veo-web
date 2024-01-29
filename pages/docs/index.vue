@@ -18,18 +18,10 @@
 <template>
   <div>
     <div class="preview-controls justify-space-between pb-2">
-      <v-btn
-        variant="text"
-        plain
-        to="/docs/index"
-      >
+      <v-btn variant="text" plain to="/docs/index">
         {{ t('closePreview') }}
       </v-btn>
-      <v-btn
-        id="print-button"
-        variant="text"
-        color="primary"
-      >
+      <v-btn id="print-button" variant="text" color="primary">
         {{ t('print') }}
       </v-btn>
     </div>
@@ -39,16 +31,13 @@
       <img
         src="/images/documentation/coverpage-icongroup.svg"
         class="mt-12 mb-2"
-      >
+      />
       <span>{{ t('lastModified') }} {{ new Date().toLocaleDateString() }}</span>
-      <LayoutAppLogoDesktop style="position: absolute; bottom: 0;" />
+      <LayoutAppLogoDesktop style="position: absolute; bottom: 0" />
     </div>
     <div class="document">
       <template v-if="documents">
-        <TableOfContents
-          class="page"
-          :model-value="navigation"
-        />
+        <TableOfContents class="page" :model-value="navigation" />
         <div
           v-for="document in documents"
           :id="document._path"
@@ -80,7 +69,7 @@ const route = useRoute();
 const { locale, t } = useI18n();
 
 // Redirect user if he enters this page without the print query parameter, as this page is only for generating the pdf file
-if(!('print' in route.query)) {
+if (!('print' in route.query)) {
   await navigateTo('/docs/index');
 }
 
@@ -101,9 +90,12 @@ const getTranslatedHierarchyAsString = (path: string) => {
   const parts = path.split('/').filter((path) => path);
 
   const translatedParts = [];
-  while(parts.length > 0) {
+  while (parts.length > 0) {
     parts.pop();
-    translatedParts.push(navigation.value.find((item) => item._path === `/${parts.join('/')}`)?.title);
+    translatedParts.push(
+      navigation.value.find((item) => item._path === `/${parts.join('/')}`)
+        ?.title
+    );
   }
   // Pop as the first page is always the welcome page (we don't want to show that)
   translatedParts.pop();
@@ -116,33 +108,36 @@ useHead(() => ({
   script: [
     {
       // Do not execute PagedJS automatically
-      innerHTML: 'window.PagedConfig = { auto: false };'
+      innerHTML: 'window.PagedConfig = { auto: false };',
     },
-    ...documents.value?.length && navigation.value?.length ? [
-      {
-        src: '/paged.polyfill.js',
-        onload: () => {
-          setTimeout(() => {
-            const _window: any = window;
-            const Paged = _window.Paged;
-            class MyHandler extends Paged.Handler {
-              afterRendered() {
-                document.dispatchEvent(new Event('PAGEDJS_AFTER_RENDERED'));
-                // We have to register the event handler here, as @click gets broken by paged.js
-                document.querySelector('#print-button')?.addEventListener('click', () => {
-                  window.print();
-                });
-
+    ...(documents.value?.length && navigation.value?.length ?
+      [
+        {
+          src: '/paged.polyfill.js',
+          onload: () => {
+            setTimeout(() => {
+              const _window: any = window;
+              const Paged = _window.Paged;
+              class MyHandler extends Paged.Handler {
+                afterRendered() {
+                  document.dispatchEvent(new Event('PAGEDJS_AFTER_RENDERED'));
+                  // We have to register the event handler here, as @click gets broken by paged.js
+                  document
+                    .querySelector('#print-button')
+                    ?.addEventListener('click', () => {
+                      window.print();
+                    });
+                }
               }
-            }
 
-            Paged.registerHandlers(MyHandler);
-            _window.PagedPolyfill.preview();
-          }, 1000);
-        }
-      }
-    ] : []
-  ]
+              Paged.registerHandlers(MyHandler);
+              _window.PagedPolyfill.preview();
+            }, 1000);
+          },
+        },
+      ]
+    : []),
+  ],
 }));
 </script>
 
@@ -178,9 +173,9 @@ html {
 }
 
 .pagedjs_pagebox > .pagedjs_area {
-    border: 1px solid $medium-grey;
-    border-radius: 12px;
-    padding: 0 12px;
+  border: 1px solid $medium-grey;
+  border-radius: 12px;
+  padding: 0 12px;
 }
 </style>
 
@@ -212,7 +207,9 @@ html {
   @page {
     @bottom-right {
       content: counter(page) '/' counter(pages);
-      font-family: Arial, Sans Serif;
+      font-family:
+        Arial,
+        Sans Serif;
     }
 
     @bottom-center {

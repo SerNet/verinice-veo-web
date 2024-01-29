@@ -23,34 +23,21 @@
     border="start"
     :elevation="flat ? undefined : 2"
     class="overflow-hidden bg-basepage"
-    :class="{ 'veo-pseudo-hover': dismissOnClick, 'cursor-pointer': dismissOnClick }"
+    :class="{
+      'veo-pseudo-hover': dismissOnClick,
+      'cursor-pointer': dismissOnClick,
+    }"
     :icon="alertIcon"
     variant="tonal"
     style="border-radius: 6px"
     @click="onContentClick"
   >
-    <v-row
-      no-gutters
-      class="justify-lg-space-between"
-    >
-      <v-col
-        cols="auto"
-        class="d-flex justify-center flex-column"
-      >
-        <h3
-          class="text-h3 small-caps mb-3"
-          v-text="title"
-        />
+    <v-row no-gutters class="justify-lg-space-between">
+      <v-col cols="auto" class="d-flex justify-center flex-column">
+        <h3 class="text-h3 small-caps mb-3" v-text="title" />
         <slot />
-        <p
-          v-if="text"
-          class="mb-0 text-body-2"
-          v-text="text"
-        />
-        <p
-          v-if="dismissOnClick"
-          class="caption mt-2"
-        >
+        <p v-if="text" class="mb-0 text-body-2" v-text="text" />
+        <p v-if="dismissOnClick" class="caption mt-2">
           {{ t('clickToDismiss') }}
         </p>
       </v-col>
@@ -75,14 +62,18 @@
       class="veo-alert-timeout-bar"
       :color="alertColor"
       height="4"
-      :model-value="remainingTime / timeout * 100"
+      :model-value="(remainingTime / timeout) * 100"
     />
   </v-alert>
 </template>
 
 <script lang="ts">
 import { PropType } from 'vue';
-import { mdiAlertCircleOutline, mdiCheckCircleOutline, mdiInformationOutline } from '@mdi/js';
+import {
+  mdiAlertCircleOutline,
+  mdiCheckCircleOutline,
+  mdiInformationOutline,
+} from '@mdi/js';
 
 import { VeoAlertType } from '~/types/VeoTypes';
 
@@ -95,48 +86,48 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Boolean,
-      default: false
+      default: false,
     },
     text: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     title: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     type: {
       type: Number as PropType<VeoAlertType>,
-      default: VeoAlertType.ERROR
+      default: VeoAlertType.ERROR,
     },
     flat: {
       type: Boolean,
-      default: false
+      default: false,
     },
     noCloseButton: {
       type: Boolean,
-      default: false
+      default: false,
     },
     defaultButtonText: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     buttons: {
       type: Array as PropType<IAlertButton[]>,
-      default: () => []
+      default: () => [],
     },
     dismissOnClick: {
       type: Boolean,
-      default: false
+      default: false,
     },
     timeout: {
       type: Number,
-      default: undefined
+      default: undefined,
     },
     enableKeyboardNavigation: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['update:model-value'],
   setup(props, { emit }) {
@@ -171,14 +162,21 @@ export default defineComponent({
 
     const localButtons = computed<IAlertButton[]>(() =>
       [
-        ...(!props.noCloseButton ? [{
-          text: props.defaultButtonText || globalT('global.button.ok'),
-          onClick: () => emit('update:model-value', false)
-        }] : []),
-        ...props.buttons
+        ...(!props.noCloseButton ?
+          [
+            {
+              text: props.defaultButtonText || globalT('global.button.ok'),
+              onClick: () => emit('update:model-value', false),
+            },
+          ]
+        : []),
+        ...props.buttons,
       ].map((button, index) => ({
         ...button,
-        text: props.enableKeyboardNavigation ?  `(${index + 1}) ${button.text}` : button.text
+        text:
+          props.enableKeyboardNavigation ?
+            `(${index + 1}) ${button.text}`
+          : button.text,
       }))
     );
 
@@ -186,18 +184,21 @@ export default defineComponent({
     const keybindEvents = (event: KeyboardEvent) => {
       const digits = Array.from(Array(10).keys()).map((key) => `${key}`);
 
-      if(digits.includes(event.key) && !!localButtons.value[parseInt(event.key) - 1]) {
+      if (
+        digits.includes(event.key) &&
+        !!localButtons.value[parseInt(event.key) - 1]
+      ) {
         localButtons.value[parseInt(event.key) - 1].onClick();
       }
     };
     onMounted(() => {
-      if(!props.enableKeyboardNavigation) {
+      if (!props.enableKeyboardNavigation) {
         return;
       }
       document.addEventListener('keydown', keybindEvents);
     });
     onUnmounted(() => {
-      if(!props.enableKeyboardNavigation) {
+      if (!props.enableKeyboardNavigation) {
         return;
       }
       document.removeEventListener('keydown', keybindEvents);
@@ -245,9 +246,9 @@ export default defineComponent({
       remainingTime,
 
       t,
-      globalT
+      globalT,
     };
-  }
+  },
 });
 </script>
 

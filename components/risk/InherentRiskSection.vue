@@ -32,7 +32,11 @@
               :risk-definition="riskDefinition"
               :dirty-fields="dirtyFields"
               :num-of-cols="riskDefinition.categories.length"
-              v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
+              v-bind="
+                data.find(
+                  (riskValue) => riskValue.category === protectionGoal.id
+                )
+              "
               @update:dirty-fields="$emit('update:dirty-fields', $event)"
             />
           </template>
@@ -53,35 +57,36 @@ export default defineComponent({
   props: {
     data: {
       type: Array as PropType<IVeoRiskDefinition['riskValues']>,
-      required: true
+      required: true,
     },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true
+      required: true,
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      default: () => {}
+      default: () => {},
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['update:dirty-fields'],
   setup(props) {
     const { t } = useI18n();
 
-    const protectionGoalExists = (protectionGoal: string) => !!props.data.find((riskValue) => riskValue.category === protectionGoal);
+    const protectionGoalExists = (protectionGoal: string) =>
+      !!props.data.find((riskValue) => riskValue.category === protectionGoal);
 
     return {
       protectionGoalExists,
 
       t,
-      upperFirst
+      upperFirst,
     };
-  }
+  },
 });
 </script>
 

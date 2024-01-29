@@ -20,6 +20,6 @@
 
 <script setup lang="ts">
 definePageMeta({
-  middleware: 'onboarding'
+  middleware: 'onboarding',
 });
 </script>

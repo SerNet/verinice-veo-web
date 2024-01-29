@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    title="Radio"
-    fixed-header
-  >
+  <BasePage title="Radio" fixed-header>
     <v-row justify="center">
       <v-col cols="12">
         <v-switch
@@ -29,10 +26,7 @@
           color="primary"
         />
       </v-col>
-      <v-col
-        cols="auto"
-        class="docs-form-sector"
-      >
+      <v-col cols="auto" class="docs-form-sector">
         <DynamicFormEntrypoint
           v-model="dynamicForm.data"
           :object-schema="dynamicForm.objectSchema"
@@ -56,31 +50,9 @@ const form = ref({
     type: 'object',
     properties: {
       radio: {
-        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
-      }
-    }
-  },
-  formSchema: {
-    type: 'Control',
-    scope: '#/properties/radio',
-    options: {
-      label: 'Radio',
-      format: 'radio'
-    }
-  },
-  data: {
-    radio: 'Beispiel-1'
-  }
-});
-
-const formVertical = ref({
-  objectSchema: {
-    type: 'object',
-    properties: {
-      radio: {
-        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
-      }
-    }
+        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3'],
+      },
+    },
   },
   formSchema: {
     type: 'Control',
@@ -88,12 +60,34 @@ const formVertical = ref({
     options: {
       label: 'Radio',
       format: 'radio',
-      direction: 'vertical'
-    }
+    },
   },
   data: {
-    radio: 'Beispiel-1'
-  }
+    radio: 'Beispiel-1',
+  },
+});
+
+const formVertical = ref({
+  objectSchema: {
+    type: 'object',
+    properties: {
+      radio: {
+        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3'],
+      },
+    },
+  },
+  formSchema: {
+    type: 'Control',
+    scope: '#/properties/radio',
+    options: {
+      label: 'Radio',
+      format: 'radio',
+      direction: 'vertical',
+    },
+  },
+  data: {
+    radio: 'Beispiel-1',
+  },
 });
 
 const isVertical = ref(false);

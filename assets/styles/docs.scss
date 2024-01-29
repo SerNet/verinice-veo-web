@@ -16,14 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 :deep(html) {
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
+    'Lucida Sans', Arial, sans-serif;
 }
 
-:deep(h1:not(.page-title)), :deep(h2:not(.page-title)), :deep(h3:not(.page-title)), :deep(h4:not(.page-title)), :deep(h5:not(.page-title)), :deep(.pagedjs_margin-bottom) {
-  font-family: 'Open Sans', 'Helvetica Neue', 'Roboto', sans-serif
+:deep(h1:not(.page-title)),
+:deep(h2:not(.page-title)),
+:deep(h3:not(.page-title)),
+:deep(h4:not(.page-title)),
+:deep(h5:not(.page-title)),
+:deep(.pagedjs_margin-bottom) {
+  font-family: 'Open Sans', 'Helvetica Neue', 'Roboto', sans-serif;
 }
 
-:deep(h1:not(.page-title)), :deep(h2:not(.page-title)), :deep(h3:not(.page-title)), :deep(h4:not(.page-title)), :deep(h5:not(.page-title)) {
+:deep(h1:not(.page-title)),
+:deep(h2:not(.page-title)),
+:deep(h3:not(.page-title)),
+:deep(h4:not(.page-title)),
+:deep(h5:not(.page-title)) {
   margin-top: 1em;
   margin-bottom: 0.5em;
 }
@@ -44,13 +54,21 @@
   font-size: 1.2rem;
 }
 
-:deep(h1 > a), :deep(h2 > a), :deep(h3 > a), :deep(h4 > a), :deep(h5 > a) {
+:deep(h1 > a),
+:deep(h2 > a),
+:deep(h3 > a),
+:deep(h4 > a),
+:deep(h5 > a) {
   color: inherit;
   text-decoration: none;
   font-size: inherit;
 }
 
-:deep(h1 > a:hover), :deep(h2 > a:hover), :deep(h3 > a:hover), :deep(h4 > a:hover), :deep(h5 > a:hover) {
+:deep(h1 > a:hover),
+:deep(h2 > a:hover),
+:deep(h3 > a:hover),
+:deep(h4 > a:hover),
+:deep(h5 > a:hover) {
   text-decoration: underline;
 }
 
@@ -62,7 +80,7 @@
   white-space: normal;
 }
 
-:deep(:not(h1,h2,h3,h4,h5)) {
+:deep(:not(h1, h2, h3, h4, h5)) {
   font-size: 14px;
 }
 

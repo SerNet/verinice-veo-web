@@ -27,5 +27,5 @@ export const ROUTE_NAME = 'unit-domains-domain-profiles';
 
 export default {};
 </script>
-  
-<script setup lang="ts"></script>  
+
+<script setup lang="ts"></script>

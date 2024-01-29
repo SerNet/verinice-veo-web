@@ -16,15 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    title="Markdown Editor"
-    fixed-header
-  >
+  <BasePage title="Markdown Editor" fixed-header>
     <v-row justify="center">
-      <v-col
-        cols="auto"
-        class="docs-form-sector"
-      >
+      <v-col cols="auto" class="docs-form-sector">
         <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
@@ -48,20 +42,20 @@ const form = ref({
     type: 'object',
     properties: {
       markdown: {
-        type: 'string'
-      }
-    }
+        type: 'string',
+      },
+    },
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/markdown',
     options: {
       label: 'Markdown Editor',
-      format: 'markdown'
-    }
+      format: 'markdown',
+    },
   },
   data: {
-    markdown: '# Header\n\n```js\nconsole.log("Beispiel Code1")\n```'
-  }
+    markdown: '# Header\n\n```js\nconsole.log("Beispiel Code1")\n```',
+  },
 });
 </script>

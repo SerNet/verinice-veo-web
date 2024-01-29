@@ -27,7 +27,12 @@ export interface IVeoFormsAdditionalContext {
 }
 
 export interface IVeoFormsReactiveFormActions {
-  [pointer: string]: ((newValue: any, oldValue: any, newObject: Record<string, any>, oldObject: Record<string, any>) => Record<string, any>)[];
+  [pointer: string]: ((
+    newValue: any,
+    oldValue: any,
+    newObject: Record<string, any>,
+    oldObject: Record<string, any>
+  ) => Record<string, any>)[];
 }
 
 export interface IVeoFormsTranslations {
@@ -39,7 +44,8 @@ export interface IVeoFormElementRule {
   disabled: boolean;
 }
 
-export type IDynamicFormElementOptions = Record<string, any> & IVeoFormElementRule;
+export type IDynamicFormElementOptions = Record<string, any> &
+  IVeoFormElementRule;
 
 export interface IVeoFormElementDefaultProps {
   metaData: JSONSchema7;

@@ -31,14 +31,9 @@
     </template>
 
     <template #default>
-      <BasePage
-        v-if="objectSchemaHelper"
-        sticky-header
-      >
+      <BasePage v-if="objectSchemaHelper" sticky-header>
         <template #header>
-          <div
-            class="d-flex flex-row bg-accent"
-          >
+          <div class="d-flex flex-row bg-accent">
             <v-spacer />
             <v-tooltip location="bottom">
               <template #activator="{ props }">
@@ -47,15 +42,10 @@
                   ref="downloadButton"
                   href="#"
                   class="text-decoration-none"
-                  style="vertical-align: bottom;"
+                  style="vertical-align: bottom"
                   @click="downloadSchema()"
                 >
-                  <v-btn
-                    class="bg-accent"
-                    icon
-                    large
-                    variant="text"
-                  >
+                  <v-btn class="bg-accent" icon large variant="text">
                     <v-icon :icon="mdiDownload" />
                   </v-btn>
                 </a>
@@ -108,7 +98,7 @@
                 />
               </template>
               <template #default>
-                {{ globalT("editor.schema.properties") }}
+                {{ globalT('editor.schema.properties') }}
               </template>
             </v-tooltip>
             <v-tooltip location="bottom">
@@ -127,14 +117,14 @@
                 {{ t('help') }}
               </template>
             </v-tooltip>
-            <v-tooltip
-              v-if="$route.query.os"
-              location="bottom"
-            >
+            <v-tooltip v-if="$route.query.os" location="bottom">
               <template #activator="{ props }">
                 <div v-bind="props">
                   <v-btn
-                    :disabled="!schemaIsValid.valid || ability.cannot('manage', 'editors')"
+                    :disabled="
+                      !schemaIsValid.valid ||
+                      ability.cannot('manage', 'editors')
+                    "
                     :icon="mdiContentSave"
                     large
                     class="bg-accent"
@@ -144,7 +134,9 @@
                 </div>
               </template>
               <template #default>
-                <span v-if="ability.can('manage', 'editors')">{{ upperFirst(t('save').toString()) }}</span>
+                <span v-if="ability.can('manage', 'editors')">{{
+                  upperFirst(t('save').toString())
+                }}</span>
                 <span v-else>{{ t('saveContentCreator') }}</span>
               </template>
             </v-tooltip>
@@ -156,10 +148,7 @@
           >
             <v-col>
               <v-row class="mx-2 mt-1">
-                <v-col
-                  cols="12"
-                  lg="6"
-                >
+                <v-col cols="12" lg="6">
                   <v-text-field
                     :model-value="title"
                     dense
@@ -170,10 +159,7 @@
                     @update:model-value="updateSchemaName"
                   />
                 </v-col>
-                <v-col
-                  cols="12"
-                  lg="6"
-                >
+                <v-col cols="12" lg="6">
                   <v-text-field
                     :model-value="description"
                     dense
@@ -193,10 +179,7 @@
           >
             <v-col>
               <v-row class="ml-2 my-1">
-                <v-col
-                  cols="12"
-                  lg="6"
-                >
+                <v-col cols="12" lg="6">
                   <v-text-field
                     v-model="searchQuery"
                     dense
@@ -228,27 +211,21 @@
             v-if="schemaIsValid.valid"
             :search="searchQuery"
             :hide-empty-aspects="hideEmptyAspects"
-            :domain-id="($route.params.domain as string)"
+            :domain-id="$route.params.domain as string"
             @schema-updated="updateCode"
           />
           <v-row
             v-else
             class="fill-height flex-column text-center align-center px-8"
           >
-            <v-col
-              cols="auto"
-              style="flex-grow: 0"
-            >
+            <v-col cols="auto" style="flex-grow: 0">
               <v-icon
-                style="font-size: 8rem; opacity: 0.5;"
+                style="font-size: 8rem; opacity: 0.5"
                 color="primary"
                 :icon="mdiInformationOutline"
               />
             </v-col>
-            <v-col
-              cols="auto"
-              class="text-left"
-            >
+            <v-col cols="auto" class="text-left">
               <h3 class="text-h3">
                 {{ t('invalidObjectSchema') }}
               </h3>
@@ -270,10 +247,7 @@
         height="100%"
         content-class="ose__code-editor"
       >
-        <EditorSchemaCodeEditor
-          v-model="code"
-          @schema-updated="updateSchema"
-        />
+        <EditorSchemaCodeEditor v-model="code" @schema-updated="updateSchema" />
       </BasePage>
     </template>
     <template #helpers>
@@ -283,7 +257,7 @@
       />
       <EditorObjectSchemaDetailsDialog
         v-model="detailsDialogVisible"
-        :domain-id="($route.params.domain as string)"
+        :domain-id="$route.params.domain as string"
         @schema-updated="updateCode"
       />
       <EditorErrorDialog
@@ -303,7 +277,16 @@
 
 <script lang="ts">
 import { upperFirst, pickBy, cloneDeep } from 'lodash';
-import { mdiAlertCircleOutline, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
+import {
+  mdiAlertCircleOutline,
+  mdiContentSave,
+  mdiDownload,
+  mdiHelpCircleOutline,
+  mdiInformationOutline,
+  mdiMagnify,
+  mdiTranslate,
+  mdiWrench,
+} from '@mdi/js';
 import { useDisplay } from 'vuetify';
 import { JsonPointer } from 'json-ptr';
 
@@ -313,7 +296,9 @@ import { IVeoObjectSchema, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import translationQueryDefinitions, {
+  IVeoTranslations,
+} from '~/composables/api/queryDefinitions/translations';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { useQuery } from '~/composables/api/utils/query';
@@ -352,10 +337,13 @@ export default defineComponent({
 
     const fetchTranslationQueryParameters = computed(() => ({
       languages: (locales.value as LocaleObject[]).map((locale) => locale.code),
-      domain: route.params.domain
+      domain: route.params.domain,
     }));
     const translations = reactive<IVeoTranslations['lang']>({});
-    const { data: _translations, isFetching: translationsLoading } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationQueryParameters);
+    const { data: _translations, isFetching: translationsLoading } = useQuery(
+      translationQueryDefinitions.queries.fetch,
+      fetchTranslationQueryParameters
+    );
     watch(
       () => _translations.value,
       (newValue) => Object.assign(translations, newValue?.lang || {}),
@@ -364,7 +352,11 @@ export default defineComponent({
     const availableLanguages = computed(() => Object.keys(translations));
 
     const code = ref('');
-    const schemaIsValid = ref<VeoSchemaValidatorValidationResult>({ valid: false, errors: [], warnings: [] });
+    const schemaIsValid = ref<VeoSchemaValidatorValidationResult>({
+      valid: false,
+      errors: [],
+      warnings: [],
+    });
 
     // Editor stuff
     const hideEmptyAspects = ref(false);
@@ -372,21 +364,34 @@ export default defineComponent({
 
     // Schema stuff
     const title = computed(() => objectSchemaHelper.value?.getTitle() || '');
-    const description = computed(() => objectSchemaHelper.value?.getDescription() || '');
+    const description = computed(
+      () => objectSchemaHelper.value?.getDescription() || ''
+    );
 
-    const schemaSpecificTranslations = computed<IVeoTranslations['lang']>(() => {
-      const translationsToReturn: IVeoTranslations['lang'] = {};
-      const schemaTitle = `${objectSchemaHelper.value?.getTitle()}_` || '';
+    const schemaSpecificTranslations = computed<IVeoTranslations['lang']>(
+      () => {
+        const translationsToReturn: IVeoTranslations['lang'] = {};
+        const schemaTitle = `${objectSchemaHelper.value?.getTitle()}_` || '';
 
-      for (const language of availableLanguages.value) {
-        translationsToReturn[language] = pickBy(translations[language], (_value, key) => key.startsWith(schemaTitle));
+        for (const language of availableLanguages.value) {
+          translationsToReturn[language] = pickBy(
+            translations[language],
+            (_value, key) => key.startsWith(schemaTitle)
+          );
+        }
+
+        return translationsToReturn;
       }
+    );
 
-      return translationsToReturn;
-    });
-
-    const setSchema = (data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) => {
-      objectSchemaHelper.value = data.schema || data.meta ? new ObjectSchemaHelper(data.schema, route.params.domain as string) : undefined;
+    const setSchema = (data: {
+      schema?: IVeoObjectSchema;
+      meta: { type: string; description: string };
+    }) => {
+      objectSchemaHelper.value =
+        data.schema || data.meta ?
+          new ObjectSchemaHelper(data.schema, route.params.domain as string)
+        : undefined;
 
       if (objectSchemaHelper.value) {
         if (data.meta) {
@@ -395,11 +400,20 @@ export default defineComponent({
         }
 
         if (objectSchemaHelper.value.getLanguages().length === 0) {
-          for (const [languageKey, translations] of Object.entries(schemaSpecificTranslations.value)) {
-            objectSchemaHelper.value.updateTranslations(languageKey, translations);
+          for (const [languageKey, translations] of Object.entries(
+            schemaSpecificTranslations.value
+          )) {
+            objectSchemaHelper.value.updateTranslations(
+              languageKey,
+              translations
+            );
           }
         }
-        code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
+        code.value = JSON.stringify(
+          objectSchemaHelper.value.toSchema(),
+          undefined,
+          2
+        );
         validate();
       }
 
@@ -408,26 +422,45 @@ export default defineComponent({
 
     const updateSchema = (schema: IVeoObjectSchema) => {
       objectSchemaHelper.value = new ObjectSchemaHelper(schema);
-      code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
+      code.value = JSON.stringify(
+        objectSchemaHelper.value.toSchema(),
+        undefined,
+        2
+      );
       objectSchemaHelper.value = new ObjectSchemaHelper(JSON.parse(code.value));
 
       validate();
     };
 
     const updateSchemaName = (name: string) => {
-      objectSchemaHelper.value?.changeTranslationKey(objectSchemaHelper.value.getTitle(), name);
+      objectSchemaHelper.value?.changeTranslationKey(
+        objectSchemaHelper.value.getTitle(),
+        name
+      );
       objectSchemaHelper.value?.setTitle(name);
-      code.value = JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2);
+      code.value = JSON.stringify(
+        objectSchemaHelper.value?.toSchema(),
+        undefined,
+        2
+      );
     };
 
     const updateDescription = (description: string) => {
       objectSchemaHelper.value?.setDescription(description);
-      code.value = JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2);
+      code.value = JSON.stringify(
+        objectSchemaHelper.value?.toSchema(),
+        undefined,
+        2
+      );
     };
 
     const updateCode = () => {
       if (objectSchemaHelper.value) {
-        code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
+        code.value = JSON.stringify(
+          objectSchemaHelper.value.toSchema(),
+          undefined,
+          2
+        );
         validate();
       }
     };
@@ -435,14 +468,22 @@ export default defineComponent({
     const downloadButton = ref();
     const downloadSchema = () => {
       if (downloadButton.value) {
-        const data = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2))}`;
+        const data = `data:text/json;charset=utf-8,${encodeURIComponent(
+          JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2)
+        )}`;
         (downloadButton.value as any).href = data;
-        (downloadButton.value as any).download = `os_${objectSchemaHelper.value?.getTitle() || 'download'}.json`;
+        (downloadButton.value as any).download = `os_${
+          objectSchemaHelper.value?.getTitle() || 'download'
+        }.json`;
       }
     };
 
     const validate = () => {
-      schemaIsValid.value = objectSchemaHelper.value?.validate() || { valid: false, errors: [], warnings: [] };
+      schemaIsValid.value = objectSchemaHelper.value?.validate() || {
+        valid: false,
+        errors: [],
+        warnings: [],
+      };
     };
 
     const onDisplayLanguageUpdate = (newLanguage: string) => {
@@ -458,19 +499,28 @@ export default defineComponent({
     };
 
     // Saving
-    const { mutateAsync: update } = useMutation(domainQueryDefinitions.mutations.updateTypeDefinitions);
+    const { mutateAsync: update } = useMutation(
+      domainQueryDefinitions.mutations.updateTypeDefinitions
+    );
 
     const saveSchema = async () => {
       const objectSchema = objectSchemaHelper.value?.toSchema();
-      if(!objectSchema) {
+      if (!objectSchema) {
         return;
       }
 
       try {
-        await update({ domainId: route.params.domain, objectType: title.value, objectSchema });
+        await update({
+          domainId: route.params.domain,
+          objectType: title.value,
+          objectSchema,
+        });
         displaySuccessMessage(t('saveSchemaSuccess').toString());
       } catch (e: any) {
-        displayErrorMessage(t('error.title').toString(), `${t('saveSchemaError').toString()}: ${e.message}`);
+        displayErrorMessage(
+          t('error.title').toString(),
+          `${t('saveSchemaError').toString()}: ${e.message}`
+        );
       }
     };
 
@@ -514,9 +564,9 @@ export default defineComponent({
       mdiTranslate,
       mdiWrench,
       HELP_ROUTE,
-      xs
+      xs,
     };
-  }
+  },
 });
 </script>
 

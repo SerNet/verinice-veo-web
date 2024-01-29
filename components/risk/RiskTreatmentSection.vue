@@ -31,9 +31,17 @@
               :protection-goal="protectionGoal"
               :risk-definition="riskDefinition"
               :num-of-cols="riskDefinition.categories.length"
-              v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
-              @update:risk-treatments="onRiskTreatmentChanged(protectionGoal.id, $event)"
-              @update:risk-treatment-explanation="onRiskTreatmentExplanationChanged(protectionGoal.id, $event)"
+              v-bind="
+                data.find(
+                  (riskValue) => riskValue.category === protectionGoal.id
+                )
+              "
+              @update:risk-treatments="
+                onRiskTreatmentChanged(protectionGoal.id, $event)
+              "
+              @update:risk-treatment-explanation="
+                onRiskTreatmentExplanationChanged(protectionGoal.id, $event)
+              "
             />
           </template>
         </v-row>
@@ -53,41 +61,55 @@ export default defineComponent({
   props: {
     data: {
       type: Array as PropType<IVeoRiskDefinition['riskValues']>,
-      required: true
+      required: true,
     },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true
+      required: true,
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      default: () => {}
+      default: () => {},
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['update:data', 'update:dirty-fields'],
   setup(props, { emit }) {
     const { t } = useI18n();
 
-    const protectionGoalExists = (protectionGoal: string) => !!props.data.find((riskValue) => riskValue.category === protectionGoal);
+    const protectionGoalExists = (protectionGoal: string) =>
+      !!props.data.find((riskValue) => riskValue.category === protectionGoal);
 
-    const onRiskTreatmentChanged = (protectionGoal: string, newValue: string[]) => {
+    const onRiskTreatmentChanged = (
+      protectionGoal: string,
+      newValue: string[]
+    ) => {
       const localData = cloneDeep(props.data);
-      const riskValue = localData.find((riskValue) => riskValue.category === protectionGoal);
+      const riskValue = localData.find(
+        (riskValue) => riskValue.category === protectionGoal
+      );
       if (riskValue) {
         riskValue.riskTreatments = newValue;
       }
       emit('update:data', localData);
-      emit('update:dirty-fields', { ...props.dirtyFields, [`${props.riskDefinition.id}_${protectionGoal}_riskTreatments`]: true });
+      emit('update:dirty-fields', {
+        ...props.dirtyFields,
+        [`${props.riskDefinition.id}_${protectionGoal}_riskTreatments`]: true,
+      });
     };
 
-    const onRiskTreatmentExplanationChanged = (protectionGoal: string, newValue: string) => {
+    const onRiskTreatmentExplanationChanged = (
+      protectionGoal: string,
+      newValue: string
+    ) => {
       const localData = cloneDeep(props.data);
-      const riskValue = localData.find((riskValue) => riskValue.category === protectionGoal);
+      const riskValue = localData.find(
+        (riskValue) => riskValue.category === protectionGoal
+      );
       if (riskValue) {
         riskValue.riskTreatmentExplanation = newValue;
       }
@@ -100,9 +122,9 @@ export default defineComponent({
       protectionGoalExists,
 
       t,
-      upperFirst
+      upperFirst,
     };
-  }
+  },
 });
 </script>
 

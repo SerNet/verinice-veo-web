@@ -16,15 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    title="Checkbox"
-    fixed-header
-  >
+  <BasePage title="Checkbox" fixed-header>
     <v-row justify="center">
-      <v-col
-        cols="auto"
-        class="docs-form-sector"
-      >
+      <v-col cols="auto" class="docs-form-sector">
         <DynamicFormEntrypoint
           v-model="data"
           :object-schema="objectSchema"
@@ -47,20 +41,20 @@ const objectSchema = {
   type: 'object',
   properties: {
     checkbox: {
-      type: 'boolean'
-    }
-  }
+      type: 'boolean',
+    },
+  },
 };
 
 const formSchema = {
   type: 'Control',
   scope: '#/properties/checkbox',
   options: {
-    label: 'Checkbox'
-  }
+    label: 'Checkbox',
+  },
 };
 
 const data = ref({
-  checkbox: false
+  checkbox: false,
 });
 </script>

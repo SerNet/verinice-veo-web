@@ -21,20 +21,11 @@
     data-component-name="domain-dashboard-page"
     padding
   >
-    <UtilNotFoundError
-      v-if="domainNotFound"
-      :text="t('domainNotFoundText')"
-    />
+    <UtilNotFoundError v-if="domainNotFound" :text="t('domainNotFoundText')" />
 
     <template v-else>
-      <div
-        v-if="domain"
-        class="mt-0"
-      >
-        <LayoutHeadline
-          :title="t('overview')"
-          :element="unit?.name"
-        />
+      <div v-if="domain" class="mt-0">
+        <LayoutHeadline :title="t('overview')" :element="unit?.name" />
       </div>
 
       <v-skeleton-loader
@@ -45,33 +36,12 @@
 
       <v-row class="mt-4">
         <template v-if="elementStatusCountIsFetching">
-          <v-col
-            v-for="index in 2"
-            :key="index"
-            cols="12"
-            lg="6"
-          >
-            <BaseWidget
-              v-for="j in 4"
-              :key="j"
-              loading
-              class="my-4"
-            >
+          <v-col v-for="index in 2" :key="index" cols="12" lg="6">
+            <BaseWidget v-for="j in 4" :key="j" loading class="my-4">
               <template #skeleton>
-                <v-row
-                  v-for="k in [1,2]"
-                  :key="k"
-                  class="align-center"
-                >
-                  <v-col
-                    cols="12"
-                    md="4"
-                  >
-                    <v-skeleton-loader
-                      class="ml-6"
-                      type="text"
-                      width="70%"
-                    />
+                <v-row v-for="k in [1, 2]" :key="k" class="align-center">
+                  <v-col cols="12" md="4">
+                    <v-skeleton-loader class="ml-6" type="text" width="70%" />
                   </v-col>
                   <v-col>
                     <v-skeleton-loader
@@ -93,11 +63,7 @@
             cols="12"
             lg="6"
           >
-            <div
-              v-for="widget of row"
-              :key="widget[0]"
-              class="my-4"
-            >
+            <div v-for="widget of row" :key="widget[0]" class="my-4">
               <WidgetMyLatestRevisions
                 v-if="widget[0] === 'my_latest_widget'"
                 data-component-name="domain-dashboard-latest-revisions-widget"
@@ -106,7 +72,7 @@
                 v-else
                 chart-height="30"
                 :data="widget[1]"
-                :domain-id="($route.params.domain as string)"
+                :domain-id="$route.params.domain as string"
                 :object-type="widget[0]"
                 :data-component-name="`domain-dashboard-${widget[0]}-widget`"
                 @click="onBarClicked"
@@ -136,21 +102,38 @@ export default defineComponent({
     const { t: tGlobal } = useI18n({ useScope: 'global' });
 
     // Domain specific stuff
-    const fetchDomainElementStatusCountQueryParameters = computed(() => ({ id: route.params.domain as string, unitId: route.params.unit as string }));
+    const fetchDomainElementStatusCountQueryParameters = computed(() => ({
+      id: route.params.domain as string,
+      unitId: route.params.unit as string,
+    }));
     const {
       data: domainObjectInformation,
       isFetching: elementStatusCountIsFetching,
-      error: fetchElementStatusCountError
-    } = useQuery(domainQueryDefinitions.queries.fetchDomainElementStatusCount, fetchDomainElementStatusCountQueryParameters);
+      error: fetchElementStatusCountError,
+    } = useQuery(
+      domainQueryDefinitions.queries.fetchDomainElementStatusCount,
+      fetchDomainElementStatusCountQueryParameters
+    );
 
-    const fetchDomainQueryParameters = computed(() => ({ id: route.params.domain as string }));
-    const { data: domain, error: fetchDomainError } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
+    const fetchDomainQueryParameters = computed(() => ({
+      id: route.params.domain as string,
+    }));
+    const { data: domain, error: fetchDomainError } = useQuery(
+      domainQueryDefinitions.queries.fetchDomain,
+      fetchDomainQueryParameters
+    );
 
-    const domainNotFound = computed(() => fetchDomainError.value?.code === 404 || fetchElementStatusCountError.value?.code === 404);
+    const domainNotFound = computed(
+      () =>
+        fetchDomainError.value?.code === 404 ||
+        fetchElementStatusCountError.value?.code === 404
+    );
     // Create chart data
     const chartData = computed(() => {
       const widgets = Object.entries(domainObjectInformation.value || {}).sort(
-        ([keyA, _valueA], [keyB, _valueB]) => WIDGET_LAYOUT.findIndex((widgetName) => widgetName === keyA) - WIDGET_LAYOUT.findIndex((widgetName) => widgetName === keyB)
+        ([keyA, _valueA], [keyB, _valueB]) =>
+          WIDGET_LAYOUT.findIndex((widgetName) => widgetName === keyA) -
+          WIDGET_LAYOUT.findIndex((widgetName) => widgetName === keyB)
       );
       widgets.push(['my_latest_widget', {}]);
 
@@ -161,29 +144,48 @@ export default defineComponent({
       return rows;
     });
 
-    const WIDGET_LAYOUT = ['scope', 'process', 'asset', 'person', 'control', 'incident', 'document', 'scenario'];
+    const WIDGET_LAYOUT = [
+      'scope',
+      'process',
+      'asset',
+      'person',
+      'control',
+      'incident',
+      'document',
+      'scenario',
+    ];
     const WIDGETS_PER_ROW = 5;
 
-    const onBarClicked = (objectType: string, subType: string, status: string) => {
+    const onBarClicked = (
+      objectType: string,
+      subType: string,
+      status: string
+    ) => {
       router.push({
         name: OBJECT_OVERVIEW_ROUTE,
         params: {
           domain: route.params.domain,
           objectType,
-          subType
+          subType,
         },
         query: {
-          status
-        }
+          status,
+        },
       });
     };
 
-    const fetchUnitQueryParams = computed(() => ({ id: route.params.unit as string }));
+    const fetchUnitQueryParams = computed(() => ({
+      id: route.params.unit as string,
+    }));
     const fetchUnitQueryEnabled = computed(() => !!route.params.unit);
 
-    const { data: unit } = useQuery(unitQueryDefinitions.queries.fetch, fetchUnitQueryParams, {
-      enabled: fetchUnitQueryEnabled
-    });
+    const { data: unit } = useQuery(
+      unitQueryDefinitions.queries.fetch,
+      fetchUnitQueryParams,
+      {
+        enabled: fetchUnitQueryEnabled,
+      }
+    );
 
     return {
       chartData,
@@ -194,9 +196,9 @@ export default defineComponent({
       unit,
 
       t,
-      tGlobal
+      tGlobal,
     };
-  }
+  },
 });
 </script>
 

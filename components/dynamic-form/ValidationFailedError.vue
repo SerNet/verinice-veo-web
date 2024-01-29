@@ -17,11 +17,7 @@
 -->
 <template>
   <div>
-    <v-img
-      src="/images/defaultError.svg"
-      max-height="300px"
-      contain
-    />
+    <v-img src="/images/defaultError.svg" max-height="300px" contain />
     <h2 class="text-h2 mt-8 text-center">
       {{ t('formInvalid') }}
     </h2>
@@ -39,8 +35,8 @@ import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 defineProps({
   errors: {
     type: Array as PropType<VeoSchemaValidatorMessage[]>,
-    default: () => []
-  }
+    default: () => [],
+  },
 });
 
 const { t } = useI18n();

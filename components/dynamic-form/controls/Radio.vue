@@ -40,10 +40,7 @@
           color="primary"
         />
       </template>
-      <template
-        v-if="modelValue !== undefined"
-        #append
-      >
+      <template v-if="modelValue !== undefined" #append>
         <v-btn
           :icon="mdiClose"
           variant="text"
@@ -55,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import{ last } from 'lodash';
+import { last } from 'lodash';
 import { mdiClose } from '@mdi/js';
 
 import { IVeoFormsElementDefinition } from '../types';
@@ -65,17 +62,19 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-radio-button',
   name: {
     en: 'radio button',
-    de: 'Radio Auswahl'
+    de: 'Radio Auswahl',
   },
   description: {
     en: 'radio button to select one of multiple options.',
-    de: 'Radio Auswahl um einen von mehreren Einträgen auszuwählen.'
+    de: 'Radio Auswahl um einen von mehreren Einträgen auszuwählen.',
   },
   conditions: (props) => [
-    [undefined, 'string', 'integer', 'number'].includes(props.objectSchema.type),
+    [undefined, 'string', 'integer', 'number'].includes(
+      props.objectSchema.type
+    ),
     typeof props.objectSchema.enum !== 'undefined',
-    props.options?.format === 'radio'
-  ]
+    props.options?.format === 'radio',
+  ],
 };
 
 export default defineComponent({
@@ -90,13 +89,13 @@ export default defineComponent({
 
       getControlErrorMessages,
       mdiClose,
-      last
+      last,
     };
-  }
+  },
 });
 </script>
 <style lang="scss">
 .v-radio-group > .v-input__control > .v-label {
-    margin-inline-start: 0;
+  margin-inline-start: 0;
 }
 </style>

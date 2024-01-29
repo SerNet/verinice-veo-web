@@ -38,10 +38,7 @@
       />
     </template>
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        @click="$emit('update:model-value', false)"
-      >
+      <v-btn variant="text" @click="$emit('update:model-value', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
@@ -74,24 +71,24 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Boolean,
-      default: false
+      default: false,
     },
     objectType: {
       type: String,
-      required: true
+      required: true,
     },
     subType: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     domainId: {
       type: String,
-      required: true
+      required: true,
     },
     parentScopeIds: {
       type: Array as PropType<string[]>,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   emits: ['success', 'update:model-value'],
   setup(props, { emit }) {
@@ -102,36 +99,63 @@ export default defineComponent({
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
 
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: props.domainId }));
-    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
+    const fetchTranslationsQueryParameters = computed(() => ({
+      languages: [locale.value],
+      domain: props.domainId,
+    }));
+    const { data: translations } = useQuery(
+      translationQueryDefinitions.queries.fetch,
+      fetchTranslationsQueryParameters
+    );
 
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+    const { data: endpoints } = useQuery(
+      schemaQueryDefinitions.queries.fetchSchemas
+    );
 
-    const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + translations.value?.lang[locale.value]?.[props.objectType]);
+    const headline = computed(
+      () =>
+        upperFirst(t('createObject').toString()) +
+        ': ' +
+        translations.value?.lang[locale.value]?.[props.objectType]
+    );
 
     // Seeding of empty form
-    const fetchDomainQueryParameters = computed(() => ({ id: props.domainId as string }));
+    const fetchDomainQueryParameters = computed(() => ({
+      id: props.domainId as string,
+    }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
-    const { data: domain, isFetching: domainIsFetching } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
-      onSuccess: () => {
-        if (props.objectType === 'scope') {
-          seedInitialData();
-        }
-      },
-      enabled: fetchDomainQueryEnabled
-    });
+    const { data: domain, isFetching: domainIsFetching } = useQuery(
+      domainQueryDefinitions.queries.fetchDomain,
+      fetchDomainQueryParameters,
+      {
+        onSuccess: () => {
+          if (props.objectType === 'scope') {
+            seedInitialData();
+          }
+        },
+        enabled: fetchDomainQueryEnabled,
+      }
+    );
 
     const objectData = ref<Record<string, any>>({});
     const pristineObjectData = ref<Record<string, any>>({});
 
-    const isFormDirty = computed(() => !isObjectEqual(objectData.value as IVeoEntity, pristineObjectData.value as IVeoEntity).isEqual);
+    const isFormDirty = computed(
+      () =>
+        !isObjectEqual(
+          objectData.value as IVeoEntity,
+          pristineObjectData.value as IVeoEntity
+        ).isEqual
+    );
     const isFormValid = ref(false);
 
     const seedInitialData = () => {
       objectData.value = {
         owner: {
-          targetUri: `${config.public.apiUrl}/units/${route.params.unit as string}`
-        }
+          targetUri: `${config.public.apiUrl}/units/${
+            route.params.unit as string
+          }`,
+        },
       };
 
       // Set subtype if a subtype is preselected
@@ -149,7 +173,9 @@ export default defineComponent({
     const setDefaultRiskDefinitionIfScope = () => {
       if (props.objectType === 'scope' && domain.value) {
         if (Object.keys(domain.value.riskDefinitions).length === 1) {
-          objectData.value.riskDefinition = Object.keys(domain.value.riskDefinitions)[0];
+          objectData.value.riskDefinition = Object.keys(
+            domain.value.riskDefinitions
+          )[0];
         }
       }
     };
@@ -168,46 +194,68 @@ export default defineComponent({
     );
 
     // Submitting form
-    const { mutateAsync: create } = useMutation(objectQueryDefinitions.mutations.createObject, {
-      onSuccess: (queryClient, data: IVeoAPIMessage) => {
-        // Invalidate parent scopes (should always be only one), if set directly as a parent via parentScopeIds.
-        if(props.parentScopeIds) {
-          for(const scope of props.parentScopeIds) {
-            queryClient.invalidateQueries([
-              'object',
-              {
-                endpoint: 'scopes',
-                id: scope
-              }
-            ]);
-            queryClient.invalidateQueries([
-              'childObjects',
-              {
-                endpoint: 'scopes',
-                id: scope
-              }
-            ]);
-            queryClient.invalidateQueries([
-              'childScopes',
-              {
-                id: scope
-              }
-            ]);
+    const { mutateAsync: create } = useMutation(
+      objectQueryDefinitions.mutations.createObject,
+      {
+        onSuccess: (queryClient, data: IVeoAPIMessage) => {
+          // Invalidate parent scopes (should always be only one), if set directly as a parent via parentScopeIds.
+          if (props.parentScopeIds) {
+            for (const scope of props.parentScopeIds) {
+              queryClient.invalidateQueries([
+                'object',
+                {
+                  endpoint: 'scopes',
+                  id: scope,
+                },
+              ]);
+              queryClient.invalidateQueries([
+                'childObjects',
+                {
+                  endpoint: 'scopes',
+                  id: scope,
+                },
+              ]);
+              queryClient.invalidateQueries([
+                'childScopes',
+                {
+                  id: scope,
+                },
+              ]);
+            }
           }
-        }
-        emit('success', data.resourceId);
-        displaySuccessMessage(upperFirst(t('objectCreated', { name: objectData.value.name }).toString()));
-        emit('update:model-value', false);
+          emit('success', data.resourceId);
+          displaySuccessMessage(
+            upperFirst(
+              t('objectCreated', { name: objectData.value.name }).toString()
+            )
+          );
+          emit('update:model-value', false);
+        },
       }
-    });
+    );
     const onSubmit = async () => {
-      if(!isFormValid.value || !isFormDirty.value || ability.value.cannot('manage', 'objects')) {
+      if (
+        !isFormValid.value ||
+        !isFormDirty.value ||
+        ability.value.cannot('manage', 'objects')
+      ) {
         return;
       }
       try {
-        await create({ endpoint: endpoints.value?.[props.objectType], object: objectData.value, parentScopes: props.parentScopeIds });
+        await create({
+          endpoint: endpoints.value?.[props.objectType],
+          object: objectData.value,
+          parentScopes: props.parentScopeIds,
+        });
       } catch (e: any) {
-        displayErrorMessage(upperFirst(t('objectNotCreated', { name: objectData.value.name || upperFirst(t('object').toString()) }).toString()), e.message);
+        displayErrorMessage(
+          upperFirst(
+            t('objectNotCreated', {
+              name: objectData.value.name || upperFirst(t('object').toString()),
+            }).toString()
+          ),
+          e.message
+        );
       }
     };
 
@@ -222,9 +270,9 @@ export default defineComponent({
       omit,
       upperFirst,
       t,
-      globalT
+      globalT,
     };
-  }
+  },
 });
 </script>
 

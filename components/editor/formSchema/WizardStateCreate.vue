@@ -23,31 +23,16 @@
     <v-form
       :model-value="valid"
       @update:model-value="$emit('update:valid', $event)"
-      @submit.prevent="() => valid ? $emit('submit') : () => {}"
+      @submit.prevent="() => (valid ? $emit('submit') : () => {})"
     >
-      <input
-        type="submit"
-        role="submit"
-        class="d-none"
-      >
-      <BaseCard
-        class="mb-4"
-      >
+      <input type="submit" role="submit" class="d-none" />
+      <BaseCard class="mb-4">
         <v-card-text>
-          <v-row
-            no-gutters
-            class="align-center mt-4"
-          >
-            <v-col
-              cols="12"
-              md="5"
-            >
+          <v-row no-gutters class="align-center mt-4">
+            <v-col cols="12" md="5">
               <span>{{ t('editor.formschema.create.title.text') }}*:</span>
             </v-col>
-            <v-col
-              cols="12"
-              md="7"
-            >
+            <v-col cols="12" md="7">
               <v-text-field
                 :model-value="name"
                 :label="t('editor.formschema.create.title')"
@@ -58,20 +43,11 @@
               />
             </v-col>
           </v-row>
-          <v-row
-            no-gutters
-            class="align-center mt-4"
-          >
-            <v-col
-              cols="12"
-              md="5"
-            >
+          <v-row no-gutters class="align-center mt-4">
+            <v-col cols="12" md="5">
               <span>{{ t('editor.formschema.sorting') }}:</span>
             </v-col>
-            <v-col
-              cols="12"
-              md="7"
-            >
+            <v-col cols="12" md="7">
               <v-text-field
                 :model-value="sorting"
                 :label="t('editor.formschema.sorting')"
@@ -84,20 +60,11 @@
       </BaseCard>
       <BaseCard>
         <v-card-text>
-          <v-row
-            no-gutters
-            class="align-center"
-          >
-            <v-col
-              cols="12"
-              md="5"
-            >
+          <v-row no-gutters class="align-center">
+            <v-col cols="12" md="5">
               <span>{{ t('editor.formschema.create.type.text') }}*:</span>
             </v-col>
-            <v-col
-              cols="12"
-              md="7"
-            >
+            <v-col cols="12" md="7">
               <v-select
                 :model-value="objectType"
                 :label="t('editor.formschema.create.type')"
@@ -109,18 +76,9 @@
               />
             </v-col>
           </v-row>
-          <v-row
-            v-if="objectType === 'custom'"
-            no-gutters
-          >
-            <v-col
-              cols="0"
-              md="5"
-            />
-            <v-col
-              cols="12"
-              md="7"
-            >
+          <v-row v-if="objectType === 'custom'" no-gutters>
+            <v-col cols="0" md="5" />
+            <v-col cols="12" md="7">
               <EditorFileUpload
                 :input-label="t('objectSchemaUploadLabel')"
                 :submit-button-text="t('importObjectSchema')"
@@ -128,23 +86,16 @@
               />
             </v-col>
           </v-row>
-          <v-row
-            no-gutters
-            class="align-center mt-4"
-          >
-            <v-col
-              cols="12"
-              md="5"
-            >
+          <v-row no-gutters class="align-center mt-4">
+            <v-col cols="12" md="5">
               <span>{{ t('editor.formschema.subtype') }}*:</span>
             </v-col>
-            <v-col
-              cols="12"
-              md="7"
-            >
+            <v-col cols="12" md="7">
               <v-select
                 :model-value="subType"
-                :disabled="!objectType || (objectType === 'custom' && !objectSchema)"
+                :disabled="
+                  !objectType || (objectType === 'custom' && !objectSchema)
+                "
                 :items="subTypes"
                 :loading="!!objectType && !objectSchema"
                 :label="t('editor.formschema.subtype')"
@@ -173,38 +124,46 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Number,
-      required: true
+      required: true,
     },
     domainId: {
       type: String,
-      required: true
+      required: true,
     },
     valid: {
       type: Boolean,
-      default: true
+      default: true,
     },
     name: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     sorting: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     objectType: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     subType: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     objectSchema: {
       type: Object as PropType<IVeoObjectSchema | undefined>,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
-  emits: ['update:sub-type', 'update:object-schema', 'update:object-type', 'update:sorting', 'update:name', 'submit', 'update:valid'],
+  emits: [
+    'update:sub-type',
+    'update:object-schema',
+    'update:object-type',
+    'update:sorting',
+    'update:name',
+    'submit',
+    'update:valid',
+  ],
   setup(props) {
     const { t } = useI18n();
 
@@ -213,27 +172,36 @@ export default defineComponent({
     }
 
     // Select options
-    const { data: objectSchemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+    const { data: objectSchemas } = useQuery(
+      schemaQueryDefinitions.queries.fetchSchemas
+    );
 
     const objectTypes = computed(() => {
-      const objectSchemaOptions = Object.keys(objectSchemas.value || {}).map((schemaName) => ({ title: upperFirst(schemaName), value: schemaName }));
+      const objectSchemaOptions = Object.keys(objectSchemas.value || {}).map(
+        (schemaName) => ({ title: upperFirst(schemaName), value: schemaName })
+      );
       objectSchemaOptions.unshift({
         title: t('customObjectSchema').toString(),
-        value: 'custom'
+        value: 'custom',
       });
       return objectSchemaOptions;
     });
 
-    const subTypes = computed(() => props.objectSchema?.properties?.domains?.properties?.['{CURRENT_DOMAIN_ID}']?.properties?.subType?.enum || []);
+    const subTypes = computed(
+      () =>
+        props.objectSchema?.properties?.domains?.properties?.[
+          '{CURRENT_DOMAIN_ID}'
+        ]?.properties?.subType?.enum || []
+    );
 
     return {
       objectTypes,
       requiredRule,
       subTypes,
 
-      t
+      t,
     };
-  }
+  },
 });
 </script>
 

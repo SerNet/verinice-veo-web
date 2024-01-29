@@ -25,10 +25,7 @@
       <span class="text-body-1">{{ t('text', { displayName }) }}</span>
     </template>
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        @click="$emit('update:model-value', false)"
-      >
+      <v-btn variant="text" @click="$emit('update:model-value', false)">
         {{ globalT('global.button.no') }}
       </v-btn>
       <v-spacer />
@@ -52,11 +49,14 @@ import { IVeoEntity } from '~/types/VeoTypes';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 
-const props = withDefaults(defineProps<{
-  item: IVeoEntity | undefined
-}>(), {
-  item: undefined
-});
+const props = withDefaults(
+  defineProps<{
+    item: IVeoEntity | undefined;
+  }>(),
+  {
+    item: undefined,
+  }
+);
 
 const emit = defineEmits<{
   (event: 'update:model-value', value: boolean): void;
@@ -77,23 +77,36 @@ const { mutateAsync: deleteWithoutInvalidating } = useMutation(
   { isInvalidating: false }
 );
 
-const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+const { data: endpoints } = useQuery(
+  schemaQueryDefinitions.queries.fetchSchemas
+);
 const { ability } = useVeoPermissions();
 
 const displayName = computed(() => props.item?.displayName ?? '');
 
-const deleteButtonEnabled = computed(() => !props.item || !!endpoints.value?.[props.item.type]);
+const deleteButtonEnabled = computed(
+  () => !props.item || !!endpoints.value?.[props.item.type]
+);
 
 const deleteObject = async () => {
-  if (!deleteButtonEnabled.value || ability.value.cannot('manage', 'objects') || !props.item) {
+  if (
+    !deleteButtonEnabled.value ||
+    ability.value.cannot('manage', 'objects') ||
+    !props.item
+  ) {
     return;
   }
   try {
-    if(route.params.object) {
-      await deleteWithoutInvalidating({ endpoint: endpoints.value?.[props.item.type], id: props.item.id});
-    }
-    else {
-      await doDelete({ endpoint: endpoints.value?.[props.item.type], id: props.item.id});
+    if (route.params.object) {
+      await deleteWithoutInvalidating({
+        endpoint: endpoints.value?.[props.item.type],
+        id: props.item.id,
+      });
+    } else {
+      await doDelete({
+        endpoint: endpoints.value?.[props.item.type],
+        id: props.item.id,
+      });
     }
     emit('success');
   } catch (error: any) {

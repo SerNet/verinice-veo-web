@@ -29,11 +29,7 @@
     <p class="mt-2 text-body-1">
       {{ text }}
     </p>
-    <v-btn
-      variant="text"
-      color="primary"
-      @click="goBackToPreviousPage"
-    >
+    <v-btn variant="text" color="primary" @click="goBackToPreviousPage">
       {{ t('backToPrevious').toString() }}
     </v-btn>
   </div>
@@ -43,8 +39,8 @@
 defineProps({
   text: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const { t } = useI18n();

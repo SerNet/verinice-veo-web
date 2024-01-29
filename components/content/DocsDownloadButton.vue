@@ -16,9 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip
-    location="bottom"
-  >
+  <v-tooltip location="bottom">
     <template #activator="{ props }">
       <div v-bind="props">
         <v-btn

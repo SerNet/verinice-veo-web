@@ -24,25 +24,12 @@
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
-      <v-form
-        v-model="formIsValid"
-        class="mx-4"
-        @submit="doSave()"
-      >
-        <v-row
-          no-gutters
-          class="align-center mt-4"
-        >
-          <v-col
-            cols="12"
-            :md="5"
-          >
-            <span style="font-size: 1.2rem;">{{ t('schemaName') }}*:</span>
+      <v-form v-model="formIsValid" class="mx-4" @submit="doSave()">
+        <v-row no-gutters class="align-center mt-4">
+          <v-col cols="12" :md="5">
+            <span style="font-size: 1.2rem">{{ t('schemaName') }}*:</span>
           </v-col>
-          <v-col
-            cols="12"
-            :md="5"
-          >
+          <v-col cols="12" :md="5">
             <v-text-field
               v-model="form.formSchema"
               required
@@ -52,20 +39,13 @@
             />
           </v-col>
         </v-row>
-        <v-row
-          no-gutters
-          class="align-center mt-4"
-        >
-          <v-col
-            cols="12"
-            :md="5"
-          >
-            <span style="font-size: 1.2rem;">{{ globalT('editor.formschema.sorting') }}:</span>
+        <v-row no-gutters class="align-center mt-4">
+          <v-col cols="12" :md="5">
+            <span style="font-size: 1.2rem"
+              >{{ globalT('editor.formschema.sorting') }}:</span
+            >
           </v-col>
-          <v-col
-            cols="12"
-            :md="5"
-          >
+          <v-col cols="12" :md="5">
             <v-text-field
               v-model="form.sorting"
               :label="globalT('editor.formschema.sorting')"
@@ -73,20 +53,13 @@
             />
           </v-col>
         </v-row>
-        <v-row
-          no-gutters
-          class="align-center mt-4"
-        >
-          <v-col
-            cols="12"
-            :md="5"
-          >
-            <span style="font-size: 1.2rem;">{{ globalT('editor.formschema.create.type.text') }}*:</span>
+        <v-row no-gutters class="align-center mt-4">
+          <v-col cols="12" :md="5">
+            <span style="font-size: 1.2rem"
+              >{{ globalT('editor.formschema.create.type.text') }}*:</span
+            >
           </v-col>
-          <v-col
-            cols="12"
-            :md="5"
-          >
+          <v-col cols="12" :md="5">
             <v-text-field
               :model-value="objectSchema.title"
               flat
@@ -96,20 +69,13 @@
             />
           </v-col>
         </v-row>
-        <v-row
-          no-gutters
-          class="align-center mt-4"
-        >
-          <v-col
-            cols="12"
-            :md="5"
-          >
-            <span style="font-size: 1.2rem;">{{ globalT('editor.formschema.subtype') }}:</span>
+        <v-row no-gutters class="align-center mt-4">
+          <v-col cols="12" :md="5">
+            <span style="font-size: 1.2rem"
+              >{{ globalT('editor.formschema.subtype') }}:</span
+            >
           </v-col>
-          <v-col
-            cols="12"
-            :md="5"
-          >
+          <v-col cols="12" :md="5">
             <v-select
               v-model="form.subType"
               :label="globalT('editor.formschema.subtype')"
@@ -123,19 +89,11 @@
       </v-form>
     </template>
     <template #dialog-options>
-      <v-btn
-        text
-        @click="$emit('update:model-value', false)"
-      >
+      <v-btn text @click="$emit('update:model-value', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn
-        text
-        color="primary"
-        :disabled="!formIsValid"
-        @click="doSave()"
-      >
+      <v-btn text color="primary" :disabled="!formIsValid" @click="doSave()">
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>
@@ -144,24 +102,27 @@
 <script setup lang="ts">
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 
-const props = withDefaults(defineProps<{
-  modelValue: boolean;
-  objectSchema: IVeoObjectSchema;
-  formSchema: string;
-  subType: string | null;
-  sorting: string | null;
-  domainId: string;
-}>(), {
-  formSchema: '',
-  subType: null,
-  sorting: null
-});
+const props = withDefaults(
+  defineProps<{
+    modelValue: boolean;
+    objectSchema: IVeoObjectSchema;
+    formSchema: string;
+    subType: string | null;
+    sorting: string | null;
+    domainId: string;
+  }>(),
+  {
+    formSchema: '',
+    subType: null,
+    sorting: null,
+  }
+);
 
 const emit = defineEmits<{
-  (e: 'update:model-value', newValue: boolean): void,
-  (e: 'update-schema-name', newValue: string): void,
-  (e: 'update:sub-type', newValue: string | null): void,
-  (e: 'update:sorting', newValue: string | null): void,
+  (e: 'update:model-value', newValue: boolean): void;
+  (e: 'update-schema-name', newValue: string): void;
+  (e: 'update:sub-type', newValue: string | null): void;
+  (e: 'update:sorting', newValue: string | null): void;
 }>();
 
 const { t } = useI18n();
@@ -172,25 +133,37 @@ const formIsValid = ref(true);
 const form = ref({
   formSchema: props.formSchema,
   subType: props.subType,
-  sorting: props.sorting
+  sorting: props.sorting,
 });
 
-watch(() => props.formSchema, (val: string) => {
-  form.value.formSchema = val;
-});
+watch(
+  () => props.formSchema,
+  (val: string) => {
+    form.value.formSchema = val;
+  }
+);
 
-watch(() => props.subType, (val: string | null) => {
-  form.value.subType = val as string;
-});
+watch(
+  () => props.subType,
+  (val: string | null) => {
+    form.value.subType = val as string;
+  }
+);
 
-watch(() => props.sorting, (val) => {
-  form.value.sorting = val as string;
-});
+watch(
+  () => props.sorting,
+  (val) => {
+    form.value.sorting = val as string;
+  }
+);
 
 const subTypeOptions = computed(() =>
-  (props.objectSchema?.properties?.domains?.properties?.['{CURRENT_DOMAIN_ID}']?.properties?.subType?.enum || []).map((subType: string) => ({
+  (
+    props.objectSchema?.properties?.domains?.properties?.['{CURRENT_DOMAIN_ID}']
+      ?.properties?.subType?.enum || []
+  ).map((subType: string) => ({
     title: subType,
-    value: subType
+    value: subType,
   }))
 );
 

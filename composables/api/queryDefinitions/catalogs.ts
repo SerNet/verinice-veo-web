@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IVeoBaseObject, IVeoLink } from "~/types/VeoTypes";
-import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
+import { IVeoBaseObject, IVeoLink } from '~/types/VeoTypes';
+import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
 
 export interface IVeoCatalog extends IVeoBaseObject {
   name: string;
@@ -65,17 +65,19 @@ export default {
     fetchCatalogs: {
       primaryQueryKey: 'catalogs',
       url: '/api/catalogs',
-      queryParameterTransformationFn: (queryParameters) => ({ query: { domain: queryParameters.domainId } }),
+      queryParameterTransformationFn: (queryParameters) => ({
+        query: { domain: queryParameters.domainId },
+      }),
       staticQueryOptions: {
         staleTime: STALE_TIME.INFINITY,
-        placeholderData: []
-      }
+        placeholderData: [],
+      },
     } as IVeoQueryDefinition<IVeoFetchCatalogsParameters, IVeoCatalog[]>,
     fetchCatalogItems: {
       primaryQueryKey: 'catalogItems',
       url: '/api/domains/:domainId/catalog-items',
       queryParameterTransformationFn: (queryParameters) => {
-        return ({
+        return {
           params: { domainId: queryParameters.domainId },
           query: {
             elementType: queryParameters.elementType,
@@ -83,23 +85,28 @@ export default {
             size: queryParameters.size,
             page: queryParameters.page,
             sortBy: queryParameters.sortBy,
-            sortOrder: queryParameters.sortOrder
-          }
-        });},
+            sortOrder: queryParameters.sortOrder,
+          },
+        };
+      },
       staticQueryOptions: {
         staleTime: STALE_TIME.INFINITY,
-        placeholderData: []
-      }
-    } as IVeoQueryDefinition<IVeoFetchCatalogItemsParameters, IVeoCatalogItemCollection>,
+        placeholderData: [],
+      },
+    } as IVeoQueryDefinition<
+      IVeoFetchCatalogItemsParameters,
+      IVeoCatalogItemCollection
+    >,
     fetchCatalogItemTypeCount: {
       primaryQueryKey: 'catalogItemTypeCount',
       url: '/api/domains/:domainId/catalog-items/type-count',
-      queryParameterTransformationFn: (queryParameters) => ({ params: { domainId: queryParameters.domainId } }),
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: { domainId: queryParameters.domainId },
+      }),
       staticQueryOptions: {
-        staleTime: STALE_TIME.INFINITY
-      }
-    }
-
+        staleTime: STALE_TIME.INFINITY,
+      },
+    },
   },
-  mutations: {}
+  mutations: {},
 };

@@ -27,7 +27,7 @@
     clearable
   />
 </template>
-  
+
 <script setup lang="ts">
 import { PropType } from 'vue';
 import { cloneDeep } from 'lodash';
@@ -38,30 +38,43 @@ import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 const props = defineProps({
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const emit = defineEmits<{
-  (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void
+  (
+    event: 'update:form-schema-element',
+    formSchemaElement: IVeoFormSchemaItem
+  ): void;
 }>();
 
 const { t } = useI18n();
 
-const options = ['border', 'bg-warning', 'bg-info', 'bg-error', 'text-warning', 'text-info', 'text-error'];
+const options = [
+  'border',
+  'bg-warning',
+  'bg-info',
+  'bg-error',
+  'text-warning',
+  'text-info',
+  'text-error',
+];
 
-const formattedOptions = computed(() => options.map((option) => ({ value: option, title: t(`options.${option}`) })));
+const formattedOptions = computed(() =>
+  options.map((option) => ({ value: option, title: t(`options.${option}`) }))
+);
 
 const activeOptions = computed({
   get: () => props.formSchemaElement.options?.class?.split(' ') || [],
   set: (newValue) => {
     const currentData = cloneDeep(props.formSchemaElement);
-    if(!currentData.options) {
+    if (!currentData.options) {
       currentData.options = {};
     }
     currentData.options.class = newValue.join(' ');
     emit('update:form-schema-element', currentData);
-  }
+  },
 });
 </script>
 

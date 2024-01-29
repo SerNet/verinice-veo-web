@@ -16,15 +16,8 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-row
-    class="mb-4"
-    no-gutters
-    v-bind="$attrs"
-  >
-    <v-col
-      cols="auto"
-      class="d-flex align-center"
-    >
+  <v-row class="mb-4" no-gutters v-bind="$attrs">
+    <v-col cols="auto" class="d-flex align-center">
       <v-btn
         class="bg-primary"
         color="white"
@@ -33,10 +26,7 @@
         data-component-name="filter-bar-filter-button"
         @click="filterDialogVisible = true"
       >
-        <v-icon
-          :icon="mdiFilter"
-          location="start"
-        />
+        <v-icon :icon="mdiFilter" location="start" />
         {{ upperFirst(t('filter').toString()) }}
       </v-btn>
     </v-col>
@@ -69,53 +59,76 @@ import { upperFirst } from 'lodash';
 import { mdiFilter } from '@mdi/js';
 
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import formQueryDefinitions, {
+  IVeoFormSchemaMeta,
+} from '~/composables/api/queryDefinitions/forms';
 import { useQuery } from '~/composables/api/utils/query';
 
 export default defineComponent({
   props: {
     filter: {
       type: Object as PropType<Record<string, any>>,
-      required: true
+      required: true,
     },
     domainId: {
       type: String,
-      required: true
+      required: true,
     },
     disabledFields: {
       type: Array as PropType<string[]>,
-      default: () => []
+      default: () => [],
     },
     requiredFields: {
       type: Array as PropType<string[]>,
-      default: () => []
+      default: () => [],
     },
     // Props only required by the filter dialog. We define them explicitly here as $attrs gets binded to the container, so we use $props for binding to the filter. Also better readability
     availableObjectTypes: {
       type: Array as PropType<string[]>,
-      default: () => []
+      default: () => [],
     },
     availableSubTypes: {
       type: Array as PropType<string[]>,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   emits: ['update:filter'],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
     const { t: $t } = useI18n({ useScope: 'global' });
 
-    const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: props.domainId }));
-    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
+    const fetchTranslationsQueryParameters = computed(() => ({
+      languages: [locale.value],
+      domain: props.domainId,
+    }));
+    const { data: translations } = useQuery(
+      translationQueryDefinitions.queries.fetch,
+      fetchTranslationsQueryParameters
+    );
 
     const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
     const formsQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, { enabled: formsQueryEnabled, placeholderData: [] });
+    const { data: formSchemas } = useQuery(
+      formQueryDefinitions.queries.fetchForms,
+      formsQueryParameters,
+      { enabled: formsQueryEnabled, placeholderData: [] }
+    );
 
     const filterDialogVisible = ref(false);
 
     // available & active filter options
-    const filterKeys = ['objectType', 'subType', 'abbreviation', 'designator', 'name', 'status', 'description', 'updatedBy', 'hasNoParentElements', 'hasChildElements'];
+    const filterKeys = [
+      'objectType',
+      'subType',
+      'abbreviation',
+      'designator',
+      'name',
+      'status',
+      'description',
+      'updatedBy',
+      'hasNoParentElements',
+      'hasChildElements',
+    ];
     const activeFilterKeys = computed(() => {
       return filterKeys.filter((k) => props.filter[k] !== undefined);
     });
@@ -128,12 +141,22 @@ export default defineComponent({
       switch (label) {
         // Uppercase object types
         case 'objectType':
-          return value ? translations.value?.lang[locale.value]?.[value] : undefined;
+          return value ?
+              translations.value?.lang[locale.value]?.[value]
+            : undefined;
         // Translate sub types
         case 'subType':
-          return (formSchemas.value as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === value)?.name?.[locale.value] || value;
+          return (
+            (formSchemas.value as IVeoFormSchemaMeta[]).find(
+              (formSchema) => formSchema.subType === value
+            )?.name?.[locale.value] || value
+          );
         case 'status':
-          return translations.value?.lang[locale.value]?.[`${props.filter.objectType}_${props.filter.subType}_status_${value}`] || value;
+          return (
+            translations.value?.lang[locale.value]?.[
+              `${props.filter.objectType}_${props.filter.subType}_status_${value}`
+            ] || value
+          );
         default:
           return value;
       }
@@ -153,9 +176,9 @@ export default defineComponent({
 
       t,
       upperFirst,
-      mdiFilter
+      mdiFilter,
     };
-  }
+  },
 });
 </script>
 

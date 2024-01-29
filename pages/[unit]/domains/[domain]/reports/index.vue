@@ -18,10 +18,7 @@
 <template>
   <BasePage>
     <template #header>
-      <LayoutHeadline
-        class="mb-4"
-        :title="$t('breadcrumbs.reports')"
-      />
+      <LayoutHeadline class="mb-4" :title="$t('breadcrumbs.reports')" />
 
       <p class="mt-8 mb-4 text-body-1">
         {{ t('hint') }}
@@ -42,15 +39,17 @@ export default defineComponent({
     const route = useRoute();
 
     const createReport = async (report: any) => {
-      await navigateTo(`/${route.params.unit}/domains/${route.params.domain}/reports/${report.id}`);
+      await navigateTo(
+        `/${route.params.unit}/domains/${route.params.domain}/reports/${report.id}`
+      );
     };
 
     return {
       createReport,
 
-      t
+      t,
     };
-  }
+  },
 });
 </script>
 

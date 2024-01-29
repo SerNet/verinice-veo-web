@@ -16,13 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    data-component-name="catalog-page"
-  >
+  <BasePage data-component-name="catalog-page">
     <template #default>
       <LayoutHeadline
         class="mb-4"
-        :title="locale === 'de' ? 'Katalog': 'Catalog'"
+        :title="locale === 'de' ? 'Katalog' : 'Catalog'"
         :element="title"
       />
       <CatalogDefaultCatalog
@@ -41,7 +39,7 @@
 
 <script lang="ts">
 export default {
-  name: 'VeoCatalogPage'
+  name: 'VeoCatalogPage',
 };
 export const ROUTE_NAME = 'unit-domains-domain-catalog';
 </script>
@@ -54,7 +52,7 @@ import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 
-import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 
 // Types
@@ -68,38 +66,34 @@ const route = useRoute();
 
 // State
 const title = computed(() =>
-  t('catalog', { name: currentSubTypeTranslated.value || t('all')})
+  t('catalog', { name: currentSubTypeTranslated.value || t('all') })
 );
-const currentDomainId = computed(() =>
-  route.params.domain as string
-);
+const currentDomainId = computed(() => route.params.domain as string);
 const currentElementType = computed(() =>
-  route.query.type === 'all' ? undefined : route.query.type as string
+  route.query.type === 'all' ? undefined : (route.query.type as string)
 );
 const currentSubType = computed(() =>
-  route.query.subType === 'all' ? undefined : route.query.subType as string
+  route.query.subType === 'all' ? undefined : (route.query.subType as string)
 );
 
 // Always show query params in url
 // This ensures an active state in the navbar (e.g. after a reload)
-if(!currentSubType.value) {
+if (!currentSubType.value) {
   navigateTo({
     name: 'unit-domains-domain-catalog',
     query: {
       type: 'all',
       subType: 'all',
-    }
-  })
+    },
+  });
 }
 
 // Fetch catalog items
-const fetchCatalogItemsQueryParameters = computed(() => (
-  {
-    domainId: currentDomainId?.value,
-    subType: currentSubType?.value,
-    size: '10000'
-  }
-));
+const fetchCatalogItemsQueryParameters = computed(() => ({
+  domainId: currentDomainId?.value,
+  subType: currentSubType?.value,
+  size: '10000',
+}));
 
 const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(
   catalogQueryDefinitions.queries.fetchCatalogItems,
@@ -110,7 +104,7 @@ const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(
 // Translations are found in forms, so we fetch them:
 const allFormSchemasQueryEnabled = computed(() => !!currentDomainId);
 const queryParameters = computed(() => ({
-  domainId: currentDomainId.value
+  domainId: currentDomainId.value,
 }));
 const { data: formSchemas } = useQuery(
   formsQueryDefinitions.queries.fetchForms,
@@ -122,7 +116,7 @@ const currentSubTypeTranslated = computed(() =>
   translateSubType({
     formSchemas: formSchemas?.value,
     elementType: currentElementType?.value,
-    subType: currentSubType.value
+    subType: currentSubType.value,
   })
 );
 
@@ -136,24 +130,26 @@ const customBreadcrumbArgs = computed(() => ({
   text: currentSubTypeTranslated.value || t('all'),
   position: 11,
   param: '',
-  disabled: true
-}))
+  disabled: true,
+}));
 
-onMounted(() => addCustomBreadcrumb(customBreadcrumbArgs.value))
+onMounted(() => addCustomBreadcrumb(customBreadcrumbArgs.value));
 
 // Update breadcrumb if a filter is changed
 watch(route, () => {
   clearCustomBreadcrumbs();
   addCustomBreadcrumb(customBreadcrumbArgs.value);
-})
+});
 
 // Remove breadcrumb on leaving route: otherwise they persist in other views
 onBeforeRouteLeave(async (_to, _from) => {
   clearCustomBreadcrumbs();
-})
+});
 
 // Incarnate, create objects, from selected catalog items
-const { mutateAsync: incarnate } = useMutation(unitQueryDefinitions.mutations.updateIncarnations);
+const { mutateAsync: incarnate } = useMutation(
+  unitQueryDefinitions.mutations.updateIncarnations
+);
 const selectedItems = ref<IVeoEntity[]>([]);
 const isApplyingItems = ref(false);
 
@@ -161,7 +157,11 @@ async function applyItems() {
   isApplyingItems.value = true;
   try {
     // Fetch incarnations for all selected items
-    const fetchParameters= { unitId: route.params.unit as string, itemIds: selectedItems.value.map((item) => item.id), exclude: ["COMPOSITE", "LINK", "LINK_EXTERNAL"]  };
+    const fetchParameters = {
+      unitId: route.params.unit as string,
+      itemIds: selectedItems.value.map((item) => item.id),
+      exclude: ['COMPOSITE', 'LINK', 'LINK_EXTERNAL'],
+    };
 
     const incarnations = await useQuerySync(
       unitQueryDefinitions.queries.fetchIncarnations,
@@ -181,15 +181,19 @@ async function applyItems() {
 
 // Helpers
 type TranslateSubTypeParams = {
-  formSchemas: IVeoFormSchemaMeta[] | undefined,
-  elementType: string | undefined,
-  subType: string | undefined
-}
+  formSchemas: IVeoFormSchemaMeta[] | undefined;
+  elementType: string | undefined;
+  subType: string | undefined;
+};
 
-function translateSubType({ formSchemas, elementType, subType }: TranslateSubTypeParams) {
-  const formSchema = formSchemas?.find(formSchema =>
-    formSchema.modelType === elementType &&
-    formSchema.subType === subType
+function translateSubType({
+  formSchemas,
+  elementType,
+  subType,
+}: TranslateSubTypeParams) {
+  const formSchema = formSchemas?.find(
+    (formSchema) =>
+      formSchema.modelType === elementType && formSchema.subType === subType
   );
   return formSchema?.name[locale.value];
 }

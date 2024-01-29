@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import{ last } from 'lodash';
+import { last } from 'lodash';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
@@ -43,14 +43,14 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-text-input',
   name: {
     en: 'text input',
-    de: 'Texteingabe'
+    de: 'Texteingabe',
   },
   description: {
     en: 'Lets the user enter text.',
-    de: 'Lässt den User Text eingeben.'
+    de: 'Lässt den User Text eingeben.',
   },
   conditions: (props) => [props.objectSchema.type === 'string'],
-  bias: Number.EPSILON
+  bias: Number.EPSILON,
 };
 
 export default defineComponent({
@@ -61,8 +61,8 @@ export default defineComponent({
     return {
       getControlErrorMessages,
 
-      last
+      last,
     };
-  }
+  },
 });
 </script>

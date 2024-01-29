@@ -16,7 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Ref } from 'vue';
-import { useQuery as vueQueryUseQuery, useQueries as VueQueryUseQueries, useQueryClient, QueryClient } from '@tanstack/vue-query';
+import {
+  useQuery as vueQueryUseQuery,
+  useQueries as VueQueryUseQueries,
+  useQueryClient,
+  QueryClient,
+} from '@tanstack/vue-query';
 import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
 import { QueryObserverResult } from '@tanstack/query-core/build/lib/types';
 import { omit } from 'lodash';
@@ -28,13 +33,21 @@ export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
 export interface IVeoQueryDefinition<TVariables, TResult = any> {
   primaryQueryKey: string;
   url: string;
-  queryParameterTransformationFn: (_queryParameters: TVariables) => IVeoQueryParameters;
+  queryParameterTransformationFn: (
+    _queryParameters: TVariables
+  ) => IVeoQueryParameters;
   reponseType?: VeoApiReponseType;
-  onDataFetched?: (result: TResult, queryParameters: IVeoQueryParameters) => TResult;
+  onDataFetched?: (
+    result: TResult,
+    queryParameters: IVeoQueryParameters
+  ) => TResult;
   staticQueryOptions?: QueryOptions;
 }
 
-export interface IVeoQueryParameters<TParams = Record<string, any>, TQuery = Record<string, any>> {
+export interface IVeoQueryParameters<
+  TParams = Record<string, any>,
+  TQuery = Record<string, any>,
+> {
   params?: TParams;
   query?: TQuery;
 }
@@ -44,17 +57,24 @@ export const STALE_TIME = {
   REQUEST: 1000, // 1 seconds
   LONG: 60 * 60 * 1000, // 60 minutes
   MEDIUM: 10 * 60 * 1000, // 10 minutes
-  INFINITY: Infinity // Only refetch on page reload
+  INFINITY: Infinity, // Only refetch on page reload
 };
 
-export const debugCacheAsArrayIncludesPrimaryKey = (configValue: string | undefined, primaryQueryKey: string) => {
-  if(!configValue || !configValue.startsWith('[') || !configValue.endsWith(']')) {
+export const debugCacheAsArrayIncludesPrimaryKey = (
+  configValue: string | undefined,
+  primaryQueryKey: string
+) => {
+  if (
+    !configValue ||
+    !configValue.startsWith('[') ||
+    !configValue.endsWith(']')
+  ) {
     return false;
   }
   try {
     return JSON.parse(configValue).includes(primaryQueryKey);
   } catch (error) {
-    console.warn('Couldn\'t parse debug cache: ', error);
+    console.warn("Couldn't parse debug cache: ", error);
     return false;
   }
 };
@@ -77,7 +97,7 @@ export const useQuery = <TVariables = undefined, TResult = any>(
 
   const combinedOptions = computed(() => ({
     ...queryDefinition.staticQueryOptions,
-    ...queryOptions
+    ...queryOptions,
   }));
 
   // Generating query key based on identifier and the query parameters. This causes the query to get executed again if the query parameters change
@@ -96,10 +116,19 @@ export const useQuery = <TVariables = undefined, TResult = any>(
   const result = vueQueryUseQuery<TResult, any>(
     queryKey,
     async () => {
-      const transformedQueryParameters = queryParameters ? queryDefinition.queryParameterTransformationFn(unref(queryParameters)) : {};
-      let result = await request(queryDefinition.url, { ...transformedQueryParameters, ...omit(queryDefinition, 'url', 'onDataFetched') });
+      const transformedQueryParameters =
+        queryParameters ?
+          queryDefinition.queryParameterTransformationFn(unref(queryParameters))
+        : {};
+      let result = await request(queryDefinition.url, {
+        ...transformedQueryParameters,
+        ...omit(queryDefinition, 'url', 'onDataFetched'),
+      });
       if (queryDefinition.onDataFetched) {
-        result = queryDefinition.onDataFetched(result, transformedQueryParameters);
+        result = queryDefinition.onDataFetched(
+          result,
+          transformedQueryParameters
+        );
       }
       return result;
     },
@@ -107,17 +136,27 @@ export const useQuery = <TVariables = undefined, TResult = any>(
   );
 
   // Debugging stuff
-  if ($config.public.debugCache === 'true' || debugCacheAsArrayIncludesPrimaryKey($config.public.debugCache, queryDefinition.primaryQueryKey)) {
+  if (
+    $config.public.debugCache === 'true' ||
+    debugCacheAsArrayIncludesPrimaryKey(
+      $config.public.debugCache,
+      queryDefinition.primaryQueryKey
+    )
+  ) {
     const queryClient = useQueryClient();
 
     watch(
       () => result.isFetching?.value,
       (newValue) => {
         if (newValue && result.isStale.value) {
-          const staleTime = combinedOptions.value?.staleTime || queryClient.getDefaultOptions().queries?.staleTime;
+          const staleTime =
+            combinedOptions.value?.staleTime ||
+            queryClient.getDefaultOptions().queries?.staleTime;
           // eslint-disable-next-line no-console
           console.log(
-            `[vueQuery] data for query "${JSON.stringify(queryDefinition.primaryQueryKey)}" with parameters "${JSON.stringify(
+            `[vueQuery] data for query "${JSON.stringify(
+              queryDefinition.primaryQueryKey
+            )}" with parameters "${JSON.stringify(
               queryParameters?.value
             )}" is considered stale (stale time is ${staleTime}). Last updated at ${new Date(
               result.dataUpdatedAt.value
@@ -126,9 +165,13 @@ export const useQuery = <TVariables = undefined, TResult = any>(
         } else if (newValue) {
           // eslint-disable-next-line no-console
           console.log(
-            `[vueQuery] data for query "${JSON.stringify(queryDefinition.primaryQueryKey)}" with parameters "${JSON.stringify(
+            `[vueQuery] data for query "${JSON.stringify(
+              queryDefinition.primaryQueryKey
+            )}" with parameters "${JSON.stringify(
               queryParameters?.value
-            )}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(combinedOptions.value)}"`
+            )}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(
+              combinedOptions.value
+            )}"`
           );
         }
       },
@@ -144,14 +187,14 @@ export const useQuery = <TVariables = undefined, TResult = any>(
  * can either be made synchronous or asynchronous.
  * Responses of requests made by this composable get written to the vue query cache the same way as the query
  * composable would do.
- * 
+ *
  * @param queryDefinition Defines url and return type of the request.
  * @param queryParameters Parameters to pass to the request function.
  * @param queryClient Query client to write the response to. If not provided, data doesn't get written to the cache.
  * @returns Result of request without any additional info.
  * @throws Throws an error if request fails
  */
-export const useQuerySync  = async <TVariables = undefined, TResult = any>(
+export const useQuerySync = async <TVariables = undefined, TResult = any>(
   queryDefinition: IVeoQueryDefinition<TVariables, TResult>,
   queryParameters?: TVariables,
   queryClient?: QueryClient
@@ -159,18 +202,27 @@ export const useQuerySync  = async <TVariables = undefined, TResult = any>(
   const { request } = useRequest();
 
   // Make sync request
-  const transformedQueryParameters = queryParameters ? queryDefinition.queryParameterTransformationFn(queryParameters) : {};
-  let result = await request(queryDefinition.url, { ...transformedQueryParameters, ...omit(queryDefinition, 'url', 'onDataFetched') });
+  const transformedQueryParameters =
+    queryParameters ?
+      queryDefinition.queryParameterTransformationFn(queryParameters)
+    : {};
+  let result = await request(queryDefinition.url, {
+    ...transformedQueryParameters,
+    ...omit(queryDefinition, 'url', 'onDataFetched'),
+  });
   if (queryDefinition.onDataFetched) {
     result = queryDefinition.onDataFetched(result, transformedQueryParameters);
   }
 
   // Save to vue query cache
-  if(queryClient) {
+  if (queryClient) {
     try {
-      queryClient.setQueryData([queryDefinition.primaryQueryKey, queryParameters], result);
+      queryClient.setQueryData(
+        [queryDefinition.primaryQueryKey, queryParameters],
+        result
+      );
     } catch (e) {
-      console.warn('Couldn\'t set queried data:', e);
+      console.warn("Couldn't set queried data:", e);
     }
   }
 
@@ -193,41 +245,49 @@ export const useQueries = <TVariables = Record<string, any>, TResult = any>(
   const { request } = useRequest();
   const enabled = ref(false);
   // convenience feature. sometimes query is already enabled, while params are still assembeled
-  watch(() => unref(queryOptions?.enabled),
+  watch(
+    () => unref(queryOptions?.enabled),
     (newValue) => {
-      nextTick(() => enabled.value = newValue === undefined ? true : newValue);
+      nextTick(
+        () => (enabled.value = newValue === undefined ? true : newValue)
+      );
     },
     {
-      immediate: true
+      immediate: true,
     }
   );
   const combinedOptions = computed(() => ({
     ...queryDefinition.staticQueryOptions,
     ...queryOptions,
-    enabled
+    enabled,
   }));
 
   const queries = ref<any[]>([]);
-  
+
   watch(
     () => queryParameters.value,
     (newValue) => {
-      queries.value = newValue.length
-        ? newValue.map((query) => ({
-          queryKey: [queryDefinition.primaryQueryKey, query],
-          queryFn: async () => {
-            const transformedQueryParameters = queryDefinition.queryParameterTransformationFn(unref(query));
-            let result = await request(queryDefinition.url, {
-              ...transformedQueryParameters,
-              ...omit(queryDefinition, 'url', 'onDataFetched')
-            });
-            if (queryDefinition.onDataFetched) {
-              result = queryDefinition.onDataFetched(result, transformedQueryParameters);
-            }
-            return result;
-          },
-          ...combinedOptions.value
-        }))
+      queries.value =
+        newValue.length ?
+          newValue.map((query) => ({
+            queryKey: [queryDefinition.primaryQueryKey, query],
+            queryFn: async () => {
+              const transformedQueryParameters =
+                queryDefinition.queryParameterTransformationFn(unref(query));
+              let result = await request(queryDefinition.url, {
+                ...transformedQueryParameters,
+                ...omit(queryDefinition, 'url', 'onDataFetched'),
+              });
+              if (queryDefinition.onDataFetched) {
+                result = queryDefinition.onDataFetched(
+                  result,
+                  transformedQueryParameters
+                );
+              }
+              return result;
+            },
+            ...combinedOptions.value,
+          }))
         : [{ queryKey: ['unnecessary'], queryFn: () => null }];
     },
     { deep: true, immediate: true }

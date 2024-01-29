@@ -16,22 +16,16 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    data-component-name="unit-selection-page"
-    sticky-footer
-  >
-    <LayoutHeadline
-      :title="t('management')"
-    />
+  <BasePage data-component-name="unit-selection-page" sticky-footer>
+    <LayoutHeadline :title="t('management')" />
 
     <div class="d-flex justify-center my-8">
-      <BaseCard
-        style="width: 70%; max-width: 1000px;"
-      >
+      <BaseCard style="width: 70%; max-width: 1000px">
         <v-card-title class="bg-accent small-caps text-h4">
           <span>Units</span>
-          <span style="float: right;">
-            {{ activeUnits }} {{ t('of' ) }} {{ userSettings.maxUnits }} {{ t('active') }}
+          <span style="float: right">
+            {{ activeUnits }} {{ t('of') }} {{ userSettings.maxUnits }}
+            {{ t('active') }}
           </span>
         </v-card-title>
 
@@ -41,21 +35,9 @@
           data-veo-test="unit-selection-available-units"
         >
           <template v-if="unitsFetching">
-            <div
-              v-for="i in 2"
-              :key="i"
-              class="mb-4"
-            >
-              <VSkeletonLoader
-                type="text"
-                width="150px"
-                class="mx-4 my-1"
-              />
-              <VSkeletonLoader
-                type="text"
-                width="250px"
-                class="mx-4 my-1"
-              />
+            <div v-for="i in 2" :key="i" class="mb-4">
+              <VSkeletonLoader type="text" width="150px" class="mx-4 my-1" />
+              <VSkeletonLoader type="text" width="250px" class="mx-4 my-1" />
             </div>
           </template>
 
@@ -108,10 +90,7 @@
     <template #footer>
       <v-tooltip location="start">
         <template #activator="{ props }">
-          <div
-            v-bind="props"
-            class="veo-primary-action-fab"
-          >
+          <div v-bind="props" class="veo-primary-action-fab">
             <v-btn
               :disabled="maxUnitsExceeded || ability.cannot('manage', 'units')"
               color="primary"
@@ -133,15 +112,9 @@
       </v-tooltip>
     </template>
 
-    <UnitManageDialog
-      v-model="unitManageDialogVisible"
-      :unit-id="unitToEdit"
-    />
+    <UnitManageDialog v-model="unitManageDialogVisible" :unit-id="unitToEdit" />
 
-    <UnitDeleteDialog
-      v-model="deleteUnitDialogVisible"
-      :unit="unitToDelete"
-    />
+    <UnitDeleteDialog v-model="deleteUnitDialogVisible" :unit="unitToDelete" />
   </BasePage>
 </template>
 
@@ -154,7 +127,9 @@ import { mdiTrashCanOutline, mdiPlus, mdiPencilOutline } from '@mdi/js';
 
 import { getFirstDomainDomaindId } from '~/lib/utils';
 import { useQuery } from '~/composables/api/utils/query';
-import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import unitQueryDefinitions, {
+  IVeoUnit,
+} from '~/composables/api/queryDefinitions/units';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
@@ -166,7 +141,7 @@ const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 
 useHead({
-  title: $t('breadcrumbs.index')
+  title: $t('breadcrumbs.index'),
 });
 
 const { ability } = useVeoPermissions();
@@ -185,22 +160,30 @@ const editUnit = (unit: IVeoUnit) => {
   unitManageDialogVisible.value = true;
 };
 
-const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);
+const { data: units, isFetching: unitsFetching } = useQuery(
+  unitQueryDefinitions.queries.fetchAll
+);
 
 const activeUnits = computed(() => units.value?.length || undefined);
 
 const generateUnitDashboardLink = (unitId: string) => {
-  const unitToLinkTo = (units.value || []).find((unit: IVeoUnit) => unit.id === unitId);
+  const unitToLinkTo = (units.value || []).find(
+    (unit: IVeoUnit) => unit.id === unitId
+  );
   let domainId;
 
   if (unitToLinkTo) {
     domainId = getFirstDomainDomaindId(unitToLinkTo);
   }
 
-  return unitToLinkTo && domainId ? `/${unitToLinkTo.id}/domains/${domainId}` : undefined;
+  return unitToLinkTo && domainId ?
+      `/${unitToLinkTo.id}/domains/${domainId}`
+    : undefined;
 };
 
-const maxUnitsExceeded = computed(() => (units.value?.length || 0) >= userSettings.value.maxUnits);
+const maxUnitsExceeded = computed(
+  () => (units.value?.length || 0) >= userSettings.value.maxUnits
+);
 
 // Unit deletion stuff
 const deleteUnitDialogVisible = ref(false);

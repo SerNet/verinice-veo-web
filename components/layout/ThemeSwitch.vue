@@ -53,7 +53,10 @@ if (darkModeSet === 'true' && theme.global.name.value === LIGHT) {
 
 const _switch = () => {
   theme.global.name.value = theme.global.current.value.dark ? LIGHT : DARK;
-  localStorage.setItem(LOCAL_STORAGE_KEYS.DARK_MODE, (theme.global.name.value === DARK).toString());
+  localStorage.setItem(
+    LOCAL_STORAGE_KEYS.DARK_MODE,
+    (theme.global.name.value === DARK).toString()
+  );
 };
 </script>
 

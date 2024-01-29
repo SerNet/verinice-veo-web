@@ -21,33 +21,19 @@
       {{ t('history').toString() }}
     </h2>
     <div v-if="isLoading">
-      <div
-        v-for="index in [1, 2]"
-        :key="index"
-        class="my-6 px-4"
-      >
+      <div v-for="index in [1, 2]" :key="index" class="my-6 px-4">
         <v-skeleton-loader type="heading" />
-        <v-skeleton-loader
-          type="text"
-          class="my-2"
-        />
+        <v-skeleton-loader type="text" class="my-2" />
         <v-skeleton-loader type="text" />
       </div>
     </div>
-    <v-list
-      v-else
-      class="py-0"
-      mandatory
-    >
+    <v-list v-else class="py-0" mandatory>
       <div
         v-for="(version, index) of historyEntriesWithCompability"
         :key="version.changeNumber"
       >
         <v-divider v-if="index > 0" />
-        <v-tooltip
-          location="bottom"
-          :disabled="version.compability.valid"
-        >
+        <v-tooltip location="bottom" :disabled="version.compability.valid">
           <template #activator="{ props }">
             <div v-bind="props">
               <v-list-item
@@ -61,13 +47,16 @@
                 <v-list-item-title>
                   {{ t('version') }}
                   <b>{{ version.changeNumber + 1 }}</b>
-                  : {{ (new Date(version.time)).toLocaleString(locale) }}
+                  : {{ new Date(version.time).toLocaleString(locale) }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
                   {{ t('by') }}
                   <b>{{ version.author }}</b>
                 </v-list-item-subtitle>
-                <v-list-item-subtitle>{{ t('type') }}: {{ t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
+                <v-list-item-subtitle
+                  >{{ t('type') }}:
+                  {{ t(`revisionType.${version.type}`) }}</v-list-item-subtitle
+                >
               </v-list-item>
             </div>
           </template>
@@ -76,10 +65,7 @@
           </template>
         </v-tooltip>
       </div>
-      <v-list-item
-        v-if="!historyEntriesWithCompability.length"
-        disabled
-      >
+      <v-list-item v-if="!historyEntriesWithCompability.length" disabled>
         <i class="text-body-2">{{ t('noPriorVersions') }}</i>
       </v-list-item>
     </v-list>
@@ -90,56 +76,88 @@
 import { cloneDeep } from 'lodash';
 
 import { useFetchVersions } from '~/composables/api/history';
-import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+import ObjectSchemaValidator, {
+  VeoSchemaValidatorValidationResult,
+} from '~/lib/ObjectSchemaValidator';
 import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
     objectId: {
       type: String,
-      required: true
+      required: true,
     },
     objectType: {
       type: String,
-      required: true
+      required: true,
     },
     objectSchema: {
       type: Object,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
   emits: ['show-revision'],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
     const route = useRoute();
 
-    const fetchVersionsQueryParameters = computed(() => ({ id: props.objectId, objectType: props.objectType, domainId: route.params.domain }));
-    const { data: history, isLoading } = useFetchVersions(fetchVersionsQueryParameters, {
-      keepPreviousData: true,
-      refetchInterval: 2000 // The history service gets updated asynchronusly, but as soon as an object gets saved, the history gets refetched. To avoid using outdated data, we refetch ever 2 seconds.
-    });
+    const fetchVersionsQueryParameters = computed(() => ({
+      id: props.objectId,
+      objectType: props.objectType,
+      domainId: route.params.domain,
+    }));
+    const { data: history, isLoading } = useFetchVersions(
+      fetchVersionsQueryParameters,
+      {
+        keepPreviousData: true,
+        refetchInterval: 2000, // The history service gets updated asynchronusly, but as soon as an object gets saved, the history gets refetched. To avoid using outdated data, we refetch ever 2 seconds.
+      }
+    );
 
     const historyEntries = computed(() =>
-      cloneDeep((history.value || [])).sort((a, b) => {
-        return a.changeNumber > b.changeNumber ? -1 : a.changeNumber < b.changeNumber ? 1 : 0;
+      cloneDeep(history.value || []).sort((a, b) => {
+        return (
+          a.changeNumber > b.changeNumber ? -1
+          : a.changeNumber < b.changeNumber ? 1
+          : 0
+        );
       })
     );
 
-    const historyEntriesWithCompability = computed<(IVeoObjectHistoryEntry & { compability: VeoSchemaValidatorValidationResult })[]>(() =>
-      historyEntries.value.map((entry) => ({ ...entry, compability: isDataCompatible(entry) }))
+    const historyEntriesWithCompability = computed<
+      (IVeoObjectHistoryEntry & {
+        compability: VeoSchemaValidatorValidationResult;
+      })[]
+    >(() =>
+      historyEntries.value.map((entry) => ({
+        ...entry,
+        compability: isDataCompatible(entry),
+      }))
     );
 
-    const isDataCompatible = (data: IVeoObjectHistoryEntry): VeoSchemaValidatorValidationResult => {
+    const isDataCompatible = (
+      data: IVeoObjectHistoryEntry
+    ): VeoSchemaValidatorValidationResult => {
       if (!props.objectSchema) {
         return { valid: true, errors: [], warnings: [] };
       }
-      return ObjectSchemaValidator.fitsObjectSchema(props.objectSchema, data.content);
+      return ObjectSchemaValidator.fitsObjectSchema(
+        props.objectSchema,
+        data.content
+      );
     };
 
     const selectedRevision = ref(0);
-    watch(() => selectedRevision.value, (newValue) => {
-      emit('show-revision', historyEntriesWithCompability.value[newValue], !!newValue);
-    });
+    watch(
+      () => selectedRevision.value,
+      (newValue) => {
+        emit(
+          'show-revision',
+          historyEntriesWithCompability.value[newValue],
+          !!newValue
+        );
+      }
+    );
 
     return {
       historyEntriesWithCompability,
@@ -147,9 +165,9 @@ export default defineComponent({
       selectedRevision,
 
       t,
-      locale
+      locale,
     };
-  }
+  },
 });
 </script>
 

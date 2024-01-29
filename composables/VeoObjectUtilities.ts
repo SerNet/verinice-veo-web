@@ -35,7 +35,7 @@ export const useCreateLink = () => {
   const config = useRuntimeConfig();
 
   const createLink = (endpoint: string, objectId: string) => ({
-    targetUri: `${config.public.apiUrl}/${endpoint}/${objectId}`
+    targetUri: `${config.public.apiUrl}/${endpoint}/${objectId}`,
   });
 
   return { createLink };
@@ -43,8 +43,12 @@ export const useCreateLink = () => {
 
 export const useCloneObject = () => {
   const { t } = useI18n();
-  const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-  const { mutateAsync: createObject } = useMutation(objectQueryDefinitions.mutations.createObject);
+  const { data: endpoints } = useQuery(
+    schemaQueryDefinitions.queries.fetchSchemas
+  );
+  const { mutateAsync: createObject } = useMutation(
+    objectQueryDefinitions.mutations.createObject
+  );
 
   const clone = (object: IVeoEntity, parentScopes?: string[]) => {
     const newObject = cloneDeep(object);
@@ -58,28 +62,49 @@ export const useCloneObject = () => {
     // @ts-ignore Remove the designator, as a new object doesn't have a designator yet.
     delete newObject.designator;
 
-    return createObject({ domain: route.params.domain, endpoint: endpoints.value?.[newObject.type], object: newObject, parentScopes });
+    return createObject({
+      domain: route.params.domain,
+      endpoint: endpoints.value?.[newObject.type],
+      object: newObject,
+      parentScopes,
+    });
   };
 
   return { clone };
 };
 
 export const useUnlinkObject = () => {
-  const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+  const { data: endpoints } = useQuery(
+    schemaQueryDefinitions.queries.fetchSchemas
+  );
 
-  const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
+  const { mutateAsync: updateObject } = useMutation(
+    objectQueryDefinitions.mutations.updateObject
+  );
 
-  const unlink = (objectToModify: IVeoEntity, objectToRemove: IVeoEntity | string) => {
+  const unlink = (
+    objectToModify: IVeoEntity,
+    objectToRemove: IVeoEntity | string
+  ) => {
     const object = cloneDeep(objectToModify);
 
-    const objcectToRemoveUUID = isString(objectToRemove) ? objectToRemove : objectToRemove.id;
+    const objcectToRemoveUUID =
+      isString(objectToRemove) ? objectToRemove : objectToRemove.id;
 
     if (object.type === 'scope') {
-      object.members = object.members.filter((member) => !member.targetUri.includes(objcectToRemoveUUID));
+      object.members = object.members.filter(
+        (member) => !member.targetUri.includes(objcectToRemoveUUID)
+      );
     } else {
-      object.parts = object.parts.filter((part) => !part.targetUri.includes(objcectToRemoveUUID));
+      object.parts = object.parts.filter(
+        (part) => !part.targetUri.includes(objcectToRemoveUUID)
+      );
     }
-    return updateObject({ domain: route.params.domain, endpoint: endpoints.value?.[object.type], object });
+    return updateObject({
+      domain: route.params.domain,
+      endpoint: endpoints.value?.[object.type],
+      object,
+    });
   };
 
   return { unlink };
@@ -87,17 +112,24 @@ export const useUnlinkObject = () => {
 
 export const useLinkObject = () => {
   const { createLink } = useCreateLink();
-  const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+  const { data: endpoints } = useQuery(
+    schemaQueryDefinitions.queries.fetchSchemas
+  );
 
-  const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
+  const { mutateAsync: updateObject } = useMutation(
+    objectQueryDefinitions.mutations.updateObject
+  );
 
   const link = (
     objectToModify: IVeoEntity,
-    objectsToAdd: (IVeoEntity | IVeoAPIObjectIdentifier)[] | (IVeoEntity | IVeoAPIObjectIdentifier),
+    objectsToAdd:
+      | (IVeoEntity | IVeoAPIObjectIdentifier)[]
+      | (IVeoEntity | IVeoAPIObjectIdentifier),
     replaceExistingLinks = false
   ) => {
     const object = cloneDeep(objectToModify);
-    const _objectsToAdd = !Array.isArray(objectsToAdd) ? [objectsToAdd] : objectsToAdd;
+    const _objectsToAdd =
+      !Array.isArray(objectsToAdd) ? [objectsToAdd] : objectsToAdd;
 
     const property = objectToModify.type === 'scope' ? 'members' : 'parts';
 
@@ -105,10 +137,19 @@ export const useLinkObject = () => {
       object[property] = [];
     }
     _objectsToAdd.forEach((_objectToAdd) => {
-      object[property].push(createLink(endpoints.value?.[_objectToAdd.type] as string, _objectToAdd.id));
+      object[property].push(
+        createLink(
+          endpoints.value?.[_objectToAdd.type] as string,
+          _objectToAdd.id
+        )
+      );
     });
 
-    return updateObject({ domain: route.params.domain, endpoint: endpoints.value?.[object.type], object });
+    return updateObject({
+      domain: route.params.domain,
+      endpoint: endpoints.value?.[object.type],
+      object,
+    });
   };
 
   return { link };

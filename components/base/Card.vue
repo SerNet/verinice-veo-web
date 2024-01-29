@@ -20,7 +20,7 @@
     v-bind="attrs"
     class="veo-card"
     :class="{
-      'veo-border': border
+      'veo-border': border,
     }"
     flat
     rounded
@@ -31,11 +31,14 @@
 <script setup lang="ts">
 import { VCard } from 'vuetify/components';
 
-withDefaults(defineProps<{
-  border?: boolean
-}>(), {
-  border: false
-});
+withDefaults(
+  defineProps<{
+    border?: boolean;
+  }>(),
+  {
+    border: false,
+  }
+);
 
 const attrs = useAttrs();
 </script>

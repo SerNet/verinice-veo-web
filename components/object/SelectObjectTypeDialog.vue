@@ -16,23 +16,13 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseDialog
-    v-bind="$attrs"
-    :title="t('headline')"
-  >
+  <BaseDialog v-bind="$attrs" :title="t('headline')">
     <template #default>
       {{ t('create_entity') }}
-      <v-select
-        v-model="type"
-        :items="options"
-        variant="underlined"
-      />
+      <v-select v-model="type" :items="options" variant="underlined" />
     </template>
     <template #dialog-options>
-      <v-btn
-        text
-        @click="$emit('update:model-value', false)"
-      >
+      <v-btn text @click="$emit('update:model-value', false)">
         {{ $t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
@@ -56,8 +46,8 @@ import { useQuery } from '~/composables/api/utils/query';
 defineProps({
   eventPayload: {
     type: Object,
-    default: () => ({})
-  }
+    default: () => ({}),
+  },
 });
 
 defineEmits(['create-entity', 'update:model-value']);
@@ -66,15 +56,24 @@ const { t, locale } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 const route = useRoute();
 
-const fetchTranslationsQueryParameters = computed(() => ({ languages: [locale.value], domain: route.params.domain }));
-const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
+const fetchTranslationsQueryParameters = computed(() => ({
+  languages: [locale.value],
+  domain: route.params.domain,
+}));
+const { data: translations } = useQuery(
+  translationQueryDefinitions.queries.fetch,
+  fetchTranslationsQueryParameters
+);
 
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
 const type = ref<string | undefined>();
 
 const options = computed<{ title: string; value: string }[]>(() =>
-  Object.keys(schemas.value || {}).map((schemaName) => ({ value: schemaName, title: translations.value?.lang[locale.value]?.[schemaName] || schemaName }))
+  Object.keys(schemas.value || {}).map((schemaName) => ({
+    value: schemaName,
+    title: translations.value?.lang[locale.value]?.[schemaName] || schemaName,
+  }))
 );
 </script>
 

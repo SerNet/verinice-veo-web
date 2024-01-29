@@ -10,19 +10,13 @@
     "plugin:vue/vue3-recommended",
     "@nuxt/eslint-config"
   ],
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "plugins": ["@typescript-eslint"],
   "parserOptions": {
-    "project": [
-      "./tsconfig.json"
-    ]
+    "project": ["./tsconfig.json"]
   },
   "overrides": [
     {
-      "files": [
-        "*.vue"
-      ],
+      "files": ["*.vue"],
       "parser": "vue-eslint-parser",
       "parserOptions": {
         "parser": "@typescript-eslint/parser"
@@ -30,10 +24,7 @@
     }
   ],
   "rules": {
-    "comma-dangle": [
-      "error",
-      "never"
-    ],
+    "comma-dangle": ["error", "never"],
     "eol-last": "error",
     "indent": "off",
     "no-console": ["warn", { "allow": ["warn", "error"] }],
@@ -78,14 +69,8 @@
         ]
       }
     ],
-    "vue/define-emits-declaration": [
-      "error",
-      "type-based"
-    ],
-    "vue/define-props-declaration": [
-      "error",
-      "type-based"
-    ],
+    "vue/define-emits-declaration": ["error", "type-based"],
+    "vue/define-props-declaration": ["error", "type-based"],
     "vue/max-attributes-per-line": [
       "error",
       {

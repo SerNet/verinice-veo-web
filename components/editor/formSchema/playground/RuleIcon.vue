@@ -16,17 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip
-    v-if="icon"
-    location="top"
-  >
+  <v-tooltip v-if="icon" location="top">
     <template #activator="{ props: tooltipProps }">
-      <v-icon
-        :icon="icon"
-        class="mr-1"
-        size="small"
-        v-bind="tooltipProps"
-      />
+      <v-icon :icon="icon" class="mr-1" size="small" v-bind="tooltipProps" />
     </template>
     <template #default>
       {{ t(rule?.effect === 'SHOW' ? 'showRule' : 'hideRule') }}
@@ -43,13 +35,17 @@ import { IVeoFormSchemaItemRule } from '~/composables/api/queryDefinitions/forms
 const props = defineProps({
   rule: {
     type: Object as PropType<IVeoFormSchemaItemRule>,
-    default: undefined
-  }
+    default: undefined,
+  },
 });
 
 const { t } = useI18n();
 
-const icon = computed(() => !props.rule ? undefined : props.rule.effect === 'SHOW' ? mdiEyeOutline : mdiEyeOffOutline);
+const icon = computed(() =>
+  !props.rule ? undefined
+  : props.rule.effect === 'SHOW' ? mdiEyeOutline
+  : mdiEyeOffOutline
+);
 </script>
 
 <i18n>

@@ -36,12 +36,15 @@ import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 const props = defineProps({
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const emit = defineEmits<{
-  (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void
+  (
+    event: 'update:form-schema-element',
+    formSchemaElement: IVeoFormSchemaItem
+  ): void;
 }>();
 
 const { t } = useI18n();
@@ -49,24 +52,24 @@ const { t } = useI18n();
 const directionOptions = ref([
   {
     title: t('vertical'),
-    value: 'vertical'
+    value: 'vertical',
   },
   {
     title: t('horizontal'),
-    value: 'horizontal'
-  }
+    value: 'horizontal',
+  },
 ]);
 
 const direction = computed({
   get: () => props.formSchemaElement.options.direction || 'vertical',
   set: (newValue) => {
     const currentData = cloneDeep(props.formSchemaElement);
-    if(!currentData.options) {
+    if (!currentData.options) {
       currentData.options = {};
     }
     currentData.options.direction = newValue;
     emit('update:form-schema-element', currentData);
-  }
+  },
 });
 </script>
 

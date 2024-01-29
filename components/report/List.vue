@@ -32,15 +32,13 @@
     </template>
     <template #item.description="{ item }">
       <div class="veo-report-list__description">
-        <v-tooltip
-          v-if="item.descriptionShort"
-          location="bottom"
-        >
+        <v-tooltip v-if="item.descriptionShort" location="bottom">
           <template #activator="{ props: tooltipProps }">
             <span
               v-bind="tooltipProps"
               class="veo-report-list__description--description"
-            >{{ item.descriptionShort }}</span>
+              >{{ item.descriptionShort }}</span
+            >
           </template>
           <template #default>
             <span>{{ item.raw.description }}</span>
@@ -81,10 +79,18 @@ const { t, locale } = useI18n();
 const { tablePageSize } = useVeoUser();
 
 const route = useRoute();
-const fetchDomainQueryParameters = computed(() => ({ id: route?.params.domain as string }));
+const fetchDomainQueryParameters = computed(() => ({
+  id: route?.params.domain as string,
+}));
 const fetchDomainQueryEnabled = computed(() => !!route?.params?.domain);
-const { data: domain, isFetching: isFetchingDomains } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, { enabled: fetchDomainQueryEnabled });
-const { data: reports, isFetching: isFetchingReports } = useQuery(reportQueryDefinitions.queries.fetchAll);
+const { data: domain, isFetching: isFetchingDomains } = useQuery(
+  domainQueryDefinitions.queries.fetchDomain,
+  fetchDomainQueryParameters,
+  { enabled: fetchDomainQueryEnabled }
+);
+const { data: reports, isFetching: isFetchingReports } = useQuery(
+  reportQueryDefinitions.queries.fetchAll
+);
 
 /**
  * Filter reports according to domain and GUI language.
@@ -96,30 +102,37 @@ type TFilterReportsParams = {
   _domain: IVeoDomain;
   _allReports: IVeoReport[];
   _locale: string;
-}
-function filterReports({_domain, _allReports, _locale}: TFilterReportsParams) {
-  if(!_domain || !_allReports) return [];
+};
+function filterReports({
+  _domain,
+  _allReports,
+  _locale,
+}: TFilterReportsParams) {
+  if (!_domain || !_allReports) return [];
 
   const allReports = Object.entries(_allReports || {});
-  const reportsInCurrentDomain = domain.value === null ? [] :
-    allReports.filter(([, report]) => {
-      const targetTypesForReport = report.targetTypes;
-      return targetTypesForReport.some(({ modelType, subTypes }) => {
-
-        // if there is no subType, the report exists in the current domain
-        if (subTypes === null) return true;
-        const subTypesInDomain = Object.keys(_domain.elementTypeDefinitions[modelType].subTypes);
-        return subTypesInDomain.some(subTypeInDomain =>
-          subTypes.indexOf(subTypeInDomain) >= 0
-        );
+  const reportsInCurrentDomain =
+    domain.value === null ?
+      []
+    : allReports.filter(([, report]) => {
+        const targetTypesForReport = report.targetTypes;
+        return targetTypesForReport.some(({ modelType, subTypes }) => {
+          // if there is no subType, the report exists in the current domain
+          if (subTypes === null) return true;
+          const subTypesInDomain = Object.keys(
+            _domain.elementTypeDefinitions[modelType].subTypes
+          );
+          return subTypesInDomain.some(
+            (subTypeInDomain) => subTypes.indexOf(subTypeInDomain) >= 0
+          );
+        });
       });
-    });
 
   // Return reports in current GUI language only
-  return reportsInCurrentDomain.filter(r => {
+  return reportsInCurrentDomain.filter((r) => {
     const [, report] = r;
     return report.name?.[_locale] !== undefined;
-  })
+  });
 }
 
 /*
@@ -130,14 +143,16 @@ function filterReports({_domain, _allReports, _locale}: TFilterReportsParams) {
 type TMapFilteredReportsParams = {
   reports: [id: string, report: IVeoReport][];
   locale: string;
-}
-function mapFilterdReports({reports, locale }: TMapFilteredReportsParams) {
-  if(!reports || !locale) return [];
-  return reports.map(r => {
+};
+function mapFilterdReports({ reports, locale }: TMapFilteredReportsParams) {
+  if (!reports || !locale) return [];
+  return reports.map((r) => {
     const [id, report] = r;
 
     const name = report.name[locale] || Object.values(report.name)[0];
-    const targetTypes = report.targetTypes.map((type) => upperFirst(type.modelType)).join(', ');
+    const targetTypes = report.targetTypes
+      .map((type) => upperFirst(type.modelType))
+      .join(', ');
     const outputTypes = report.outputTypes
       .map((type) => {
         const formatParts = type.split('/');
@@ -149,7 +164,8 @@ function mapFilterdReports({reports, locale }: TMapFilteredReportsParams) {
     let descriptionShort;
     let description =
       report.description[locale] ||
-      Object.values(report.description)[0] || t('noDescriptionAvailable');
+      Object.values(report.description)[0] ||
+      t('noDescriptionAvailable');
     if (description.length > 80) {
       descriptionShort = description.substring(0, 80) + '...';
 
@@ -165,7 +181,7 @@ function mapFilterdReports({reports, locale }: TMapFilteredReportsParams) {
       multipleTargetsSupported: report.multipleTargetsSupported,
       outputTypes,
       targetTypes,
-      descriptionShort
+      descriptionShort,
     };
   });
 }
@@ -175,15 +191,13 @@ const displayedItems = computed(() => {
   const filteredReports = filterReports({
     _domain: toRaw(domain.value),
     _allReports: toRaw(reports.value),
-    _locale
-  })
+    _locale,
+  });
 
-  if(filterReports.length === 0) return;
+  if (filterReports.length === 0) return;
 
-  return mapFilterdReports({reports: filteredReports, locale: _locale})
+  return mapFilterdReports({ reports: filteredReports, locale: _locale });
 });
-
-
 
 const headers = computed(() => {
   return [
@@ -196,14 +210,14 @@ const headers = computed(() => {
       truncate: true,
       sortable: true,
       priority: 100,
-      order: 10
+      order: 10,
     },
     {
       text: t('targetTypes'),
       value: 'targetTypes',
       key: 'targetTypes',
       priority: 90,
-      order: 20
+      order: 20,
     },
     {
       title: t('reportDescription'),
@@ -212,17 +226,18 @@ const headers = computed(() => {
       sortable: false,
       width: 600,
       truncate: true,
-      tooltip: ({ internalItem: item }: { internalItem: any }) => item.raw.description || '',
+      tooltip: ({ internalItem: item }: { internalItem: any }) =>
+        item.raw.description || '',
       priority: 30,
-      order: 30
+      order: 30,
     },
     {
       text: t('outputTypes'),
       value: 'outputTypes',
       key: 'outputTypes',
       priority: 80,
-      order: 40
-    }
+      order: 40,
+    },
   ];
 });
 

@@ -25,15 +25,9 @@
     v-bind="$attrs"
     @update:model-value="closeDialog"
   >
-    <v-card
-      class="d-flex flex-column"
-      tile
-    >
+    <v-card class="d-flex flex-column" tile>
       <v-card-title class="d-flex align-center bg-accent small-caps text-h4">
-        <LayoutAppLogoMobile
-          v-if="fullscreen"
-          style="height: 36px"
-        />
+        <LayoutAppLogoMobile v-if="fullscreen" style="height: 36px" />
         <span>{{ title }}</span>
         <v-spacer />
         <v-btn
@@ -47,7 +41,7 @@
       <v-card-text
         class="pa-4 overflow-x-hidden overflow-y-auto flex-grow-1"
         :class="innerClass"
-        style="position: relative;"
+        style="position: relative"
       >
         <slot />
         <v-card-actions
@@ -75,12 +69,11 @@
         {{ t('closeDialog') }}
       </v-card-title>
       <v-card-text>
-        {{ isString(confirmClose) ? confirmClose : t('confirmationDialogText') }}
+        {{
+          isString(confirmClose) ? confirmClose : t('confirmationDialogText')
+        }}
         <v-card-actions class="px-0 pb-0">
-          <v-btn
-            variant="text"
-            @click="closeConfirmationDialogVisible = false"
-          >
+          <v-btn variant="text" @click="closeConfirmationDialogVisible = false">
             {{ globalT('global.button.cancel') }}
           </v-btn>
           <v-spacer />
@@ -104,36 +97,44 @@ import { mdiClose } from '@mdi/js';
 import { isString } from 'lodash';
 import { useDisplay } from 'vuetify';
 
-const props = withDefaults(defineProps<{
-  modelValue?: boolean,
-  title: string,
-  large?: boolean,
-  xLarge?: boolean,
-  closeDisabled?: boolean, // If set to true, the close button at the top right will be disabled and all other methods of closing the dialog will be ignored.
-  confirmClose?: boolean | string, // If set to a string or true, a confirm dialog will be shown before closing
-  closeFunction?: () => boolean, // If set, gets called before closing the dialog. If returns true the dialog gets closed, if false it stays open
-  fixedFooter?: boolean,
-  innerClass?: string
-}>(), {
-  modelValue: false,
-  large: false,
-  xLarge: false,
-  closeDisabled: false,
-  confirmClose: false,
-  closeFunction: () => () => true,
-  fixedFooter: false,
-  innerClass: ''
-});
+const props = withDefaults(
+  defineProps<{
+    modelValue?: boolean;
+    title: string;
+    large?: boolean;
+    xLarge?: boolean;
+    closeDisabled?: boolean; // If set to true, the close button at the top right will be disabled and all other methods of closing the dialog will be ignored.
+    confirmClose?: boolean | string; // If set to a string or true, a confirm dialog will be shown before closing
+    closeFunction?: () => boolean; // If set, gets called before closing the dialog. If returns true the dialog gets closed, if false it stays open
+    fixedFooter?: boolean;
+    innerClass?: string;
+  }>(),
+  {
+    modelValue: false,
+    large: false,
+    xLarge: false,
+    closeDisabled: false,
+    confirmClose: false,
+    closeFunction: () => () => true,
+    fixedFooter: false,
+    innerClass: '',
+  }
+);
 
 const emit = defineEmits<{
-  (event: 'update:model-value', value: boolean): void
+  (event: 'update:model-value', value: boolean): void;
 }>();
 
 const { mdAndDown, smAndDown, xs } = useDisplay();
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
-const fullscreen = computed(() => (props.xLarge && mdAndDown.value) || (props.large && smAndDown.value) || xs.value);
+const fullscreen = computed(
+  () =>
+    (props.xLarge && mdAndDown.value) ||
+    (props.large && smAndDown.value) ||
+    xs.value
+);
 
 const width = computed(() => {
   if (props.large) return '900px';
@@ -144,7 +145,7 @@ const width = computed(() => {
 const dialogClasses = computed(() => {
   const classes = {
     'overflow-hidden': true,
-    'd-flex': props.modelValue
+    'd-flex': props.modelValue,
   };
 
   return Object.entries(classes)
@@ -156,28 +157,31 @@ const dialogClasses = computed(() => {
 // Everything regarding closing the dialog
 const closeConfirmationDialogVisible = ref(false);
 // Focus okay button so the user can leave the dialog by pressing enter
-watch(() => closeConfirmationDialogVisible.value, (value) => {
-  if(value) {
-    nextTick(() => {
-      confirmButton.value.$el.focus();
-    });
-  } else {
-    (document.activeElement as HTMLElement | null)?.blur?.();
+watch(
+  () => closeConfirmationDialogVisible.value,
+  (value) => {
+    if (value) {
+      nextTick(() => {
+        confirmButton.value.$el.focus();
+      });
+    } else {
+      (document.activeElement as HTMLElement | null)?.blur?.();
+    }
   }
-});
+);
 
 const confirmButton = ref();
 const closeDialog = (ignoreConfirmDialog = false) => {
   // Hide confirmation dialog if visible (if the dialog is visible and this function gets called, the user confirmed he wants to close the dialog)
-  if(closeConfirmationDialogVisible.value) {
+  if (closeConfirmationDialogVisible.value) {
     closeConfirmationDialogVisible.value = false;
   }
 
-  if(props.closeDisabled) {
+  if (props.closeDisabled) {
     return;
   }
 
-  if(props.confirmClose && !ignoreConfirmDialog) {
+  if (props.confirmClose && !ignoreConfirmDialog) {
     closeConfirmationDialogVisible.value = true;
     return;
   }

@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IVeoEntity } from "~/types/VeoTypes";
-import { IVeoQueryDefinition, STALE_TIME } from "../utils/query";
-import { formatObject } from "./objects";
+import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
+import { formatObject } from './objects';
 
 export interface IVeoObjectHistoryEntry {
   author: string;
@@ -44,8 +44,8 @@ export interface IVeoFetchPagedRevisionsParameters {
 }
 
 export interface IVeoPagedRevision {
-  "totalItemCount": 0,
-  "items": IVeoObjectHistoryEntry[] 
+  totalItemCount: 0;
+  items: IVeoObjectHistoryEntry[];
 }
 
 export default {
@@ -53,28 +53,54 @@ export default {
     fetchVersions: {
       primaryQueryKey: 'versions',
       url: '/api/history/revisions',
-      queryParameterTransformationFn: (queryParameters) => ({ query: { uri: `/domains/${queryParameters.domainId}/${queryParameters.endpoint}/${queryParameters.id}` } }),
+      queryParameterTransformationFn: (queryParameters) => ({
+        query: {
+          uri: `/domains/${queryParameters.domainId}/${queryParameters.endpoint}/${queryParameters.id}`,
+        },
+      }),
       staticQueryOptions: {
-        staleTime: STALE_TIME.INFINITY
+        staleTime: STALE_TIME.INFINITY,
       },
-      onDataFetched: (data) => data.map((entry) => ({ ...entry, content: formatObject(entry.content) }))
-    } as IVeoQueryDefinition<IVeoFetchVersionsParameters, IVeoObjectHistoryEntry[]>,
+      onDataFetched: (data) =>
+        data.map((entry) => ({
+          ...entry,
+          content: formatObject(entry.content),
+        })),
+    } as IVeoQueryDefinition<
+      IVeoFetchVersionsParameters,
+      IVeoObjectHistoryEntry[]
+    >,
     fetchLatestVersions: {
       primaryQueryKey: 'latestVersions',
       url: '/api/history/revisions/my-latest',
-      queryParameterTransformationFn: (queryParameters) => ({ query: { owner: `/units/${queryParameters.unitId}` } }),
+      queryParameterTransformationFn: (queryParameters) => ({
+        query: { owner: `/units/${queryParameters.unitId}` },
+      }),
       staticQueryOptions: {
-        staleTime: STALE_TIME.REQUEST
+        staleTime: STALE_TIME.REQUEST,
       },
-      onDataFetched: (data) => data.map((entry) => ({ ...entry, content: formatObject(entry.content) }))
-    } as IVeoQueryDefinition<IVeoFetchLatestChangesParameters, IVeoObjectHistoryEntry[]>,
+      onDataFetched: (data) =>
+        data.map((entry) => ({
+          ...entry,
+          content: formatObject(entry.content),
+        })),
+    } as IVeoQueryDefinition<
+      IVeoFetchLatestChangesParameters,
+      IVeoObjectHistoryEntry[]
+    >,
     fetchPagedRevisions: {
       primaryQueryKey: 'pagedRevisions',
       url: '/api/history/revisions/paged',
-      queryParameterTransformationFn: (queryParameters) => (
-        { query: {size: queryParameters.size, afterId: queryParameters?.afterId} }
-      )
-    } as IVeoQueryDefinition<IVeoFetchPagedRevisionsParameters, IVeoPagedRevision>
+      queryParameterTransformationFn: (queryParameters) => ({
+        query: {
+          size: queryParameters.size,
+          afterId: queryParameters?.afterId,
+        },
+      }),
+    } as IVeoQueryDefinition<
+      IVeoFetchPagedRevisionsParameters,
+      IVeoPagedRevision
+    >,
   },
-  mutations: {}
+  mutations: {},
 };

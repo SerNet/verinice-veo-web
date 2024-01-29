@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import{ last } from 'lodash';
+import { last } from 'lodash';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
@@ -46,13 +46,16 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-text-area',
   name: {
     en: 'text area',
-    de: 'Mehrzeilige Texteingabe'
+    de: 'Mehrzeilige Texteingabe',
   },
   description: {
     en: 'Lets the user enter text in multiple lines.',
-    de: 'Lässt den User mehrzeiligen Text eingeben.'
+    de: 'Lässt den User mehrzeiligen Text eingeben.',
   },
-  conditions: (props) => [props.objectSchema.type === 'string', props.options.format === 'multiline']
+  conditions: (props) => [
+    props.objectSchema.type === 'string',
+    props.options.format === 'multiline',
+  ],
 };
 
 export default defineComponent({
@@ -63,8 +66,8 @@ export default defineComponent({
     return {
       getControlErrorMessages,
 
-      last
+      last,
     };
-  }
+  },
 });
 </script>

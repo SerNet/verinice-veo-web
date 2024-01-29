@@ -16,17 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    title="Input URI"
-    fixed-header
-  >
+  <BasePage title="Input URI" fixed-header>
     <v-row justify="center">
-      <v-col
-        cols="12"
-        sm="6"
-        lg="4"
-        class="docs-form-sector"
-      >
+      <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
@@ -52,20 +44,20 @@ const form = ref({
       inputUri: {
         type: 'string',
         format: 'uri',
-        pattern: '^(https?|ftp)://'
-      }
-    }
+        pattern: '^(https?|ftp)://',
+      },
+    },
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/inputUri',
     options: {
-      label: 'Input URI'
-    }
+      label: 'Input URI',
+    },
   },
   data: {
-    inputUri: 'https://verinice.com/'
-  }
+    inputUri: 'https://verinice.com/',
+  },
 });
 </script>
 

@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -32,12 +32,7 @@
         <BaseCard>
           <v-card-text>
             <v-row>
-              <v-col
-                v-for="locale of locales"
-                :key="locale"
-                md="4"
-                cols="12"
-              >
+              <v-col v-for="locale of locales" :key="locale" md="4" cols="12">
                 <v-text-field
                   v-model="localFormSchemaTitles[locale]"
                   :label="t('title', [locale])"
@@ -66,9 +61,18 @@
         <EditorTranslations
           v-if="!expertMode"
           v-model="localTranslations"
-          :sources="formSchemaTranslationsOnly ? [TRANSLATION_SOURCE.FORMSCHEMA] : [TRANSLATION_SOURCE.UNSPECIFIED]"
+          :sources="
+            formSchemaTranslationsOnly ?
+              [TRANSLATION_SOURCE.FORMSCHEMA]
+            : [TRANSLATION_SOURCE.UNSPECIFIED]
+          "
           :modifieable-sources="[TRANSLATION_SOURCE.FORMSCHEMA]"
-          @translation-deleted="deletedTranslations.push({ key: $event.key, source: parseInt($event.source, 10) })"
+          @translation-deleted="
+            deletedTranslations.push({
+              key: $event.key,
+              source: parseInt($event.source, 10),
+            })
+          "
         >
           <template #controls>
             <v-checkbox
@@ -112,6 +116,8 @@
               </h3>
             </template>
             <template #text>
+              <!-- formatting this block breaks the build -->
+              <!-- prettier-ignore -->
               <EditorFormSchemaTranslationUpload
                 v-model:replace-translations="replaceTranslationsWithUploadedTranslations"
                 @translations-imported="onTranslationsImported"
@@ -122,10 +128,7 @@
       </BaseCard>
     </template>
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        @click="emit('update:model-value', false)"
-      >
+      <v-btn variant="text" @click="emit('update:model-value', false)">
         {{ globalT('global.button.close') }}
       </v-btn>
       <v-spacer />
@@ -152,43 +155,61 @@ import { formsTranslationsToEditorTranslations } from '../translations/util';
 import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import { JsonPointer } from 'json-ptr';
 
-const props = withDefaults(defineProps<{
-  formSchemaTitles?: Record<string, string>;
-  modelValue: boolean;
-}>(), {
-  formSchemaTitles: () => ({})
-});
+const props = withDefaults(
+  defineProps<{
+    formSchemaTitles?: Record<string, string>;
+    modelValue: boolean;
+  }>(),
+  {
+    formSchemaTitles: () => ({}),
+  }
+);
 
 const emit = defineEmits<{
   (e: 'update:model-value', newValue: boolean): void;
   (e: 'update:form-schema-titles', titles: Record<string, string>): void;
 }>();
 
-const translations = inject<Ref<IEditorTranslations>>(FORMSCHEMA_PROVIDE_KEYS.TRANSLATIONS);
-const formSchema = inject<Ref<IVeoFormSchema>>(FORMSCHEMA_PROVIDE_KEYS.FORMSCHEMA);
+const translations = inject<Ref<IEditorTranslations>>(
+  FORMSCHEMA_PROVIDE_KEYS.TRANSLATIONS
+);
+const formSchema = inject<Ref<IVeoFormSchema>>(
+  FORMSCHEMA_PROVIDE_KEYS.FORMSCHEMA
+);
 
-const deletedTranslations = ref<{ key: string, source: TRANSLATION_SOURCE}[]>([]);
+const deletedTranslations = ref<{ key: string; source: TRANSLATION_SOURCE }[]>(
+  []
+);
 
 const { locales: _locales, t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { requiredRule } = useRules();
 
-const locales = computed(() => (_locales.value as LocaleObject[]).map(locale => locale.code));
+const locales = computed(() =>
+  (_locales.value as LocaleObject[]).map((locale) => locale.code)
+);
 
-watch(() => props.modelValue, (newValue) =>{
-  if(newValue) {
-    localFormSchemaTitles.value = cloneDeep(props.formSchemaTitles);
-    localTranslations.value = cloneDeep(translations?.value);
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (newValue) {
+      localFormSchemaTitles.value = cloneDeep(props.formSchemaTitles);
+      localTranslations.value = cloneDeep(translations?.value);
+    }
   }
-});
+);
 
 const expertMode = ref(false);
 
 // Code regarding changing the title of the formschema
-const localFormSchemaTitles = ref<Record<string, string>>(props.formSchemaTitles);
+const localFormSchemaTitles = ref<Record<string, string>>(
+  props.formSchemaTitles
+);
 
 const formSchemaTitleFormIsValid = ref(false);
-const formSchemaTitleFormIsDirty = computed(() => !isEqual(props.formSchemaTitles, localFormSchemaTitles.value));
+const formSchemaTitleFormIsDirty = computed(
+  () => !isEqual(props.formSchemaTitles, localFormSchemaTitles.value)
+);
 const saveNewFormSchemaTitles = () => {
   emit('update:form-schema-titles', cloneDeep(localFormSchemaTitles.value));
 };
@@ -196,34 +217,49 @@ const saveNewFormSchemaTitles = () => {
 // Code regarding editing formschema translations
 const formSchemaTranslationsOnly = ref(true);
 const localTranslations = ref(cloneDeep(translations?.value));
-const translationsModified = computed(() => !isEqual(translations?.value, localTranslations.value));
+const translationsModified = computed(
+  () => !isEqual(translations?.value, localTranslations.value)
+);
 
 // Code regarding importing/exporting translations
 const replaceTranslationsWithUploadedTranslations = ref(true);
 const onTranslationsImported = (newTranslations: IVeoFormsTranslations) => {
-  localTranslations.value = formsTranslationsToEditorTranslations(newTranslations, TRANSLATION_SOURCE.FORMSCHEMA, translations?.value, replaceTranslationsWithUploadedTranslations.value);
+  localTranslations.value = formsTranslationsToEditorTranslations(
+    newTranslations,
+    TRANSLATION_SOURCE.FORMSCHEMA,
+    translations?.value,
+    replaceTranslationsWithUploadedTranslations.value
+  );
 };
 
 // Saving stuff
-const dialogIsDirty = computed(() => formSchemaTitleFormIsDirty.value || translationsModified.value);
+const dialogIsDirty = computed(
+  () => formSchemaTitleFormIsDirty.value || translationsModified.value
+);
 const dialogIsValid = computed(() => formSchemaTitleFormIsValid.value);
 const onSave = () => {
-  if(formSchemaTitleFormIsDirty.value) {
+  if (formSchemaTitleFormIsDirty.value) {
     saveNewFormSchemaTitles();
   }
-  if(translationsModified.value && translations && localTranslations.value) {
+  if (translationsModified.value && translations && localTranslations.value) {
     translations.value = cloneDeep(localTranslations.value);
   }
 
   // Remove all deleted translations from formschema if they are a formschema specific translation (starting with #lang/)
-  const flattedFormSchemaKeyMap = Object.entries(JsonPointer.flatten(formSchema?.value));
-  for(const deletedTranslation of deletedTranslations.value) {
+  const flattedFormSchemaKeyMap = Object.entries(
+    JsonPointer.flatten(formSchema?.value)
+  );
+  for (const deletedTranslation of deletedTranslations.value) {
     // Don't delete if either the deleted translations is not a formschema translations (shouldn't happen) or if there are still other translations for the key
-    if(deletedTranslation.source !== TRANSLATION_SOURCE.FORMSCHEMA || !!Object.keys(localTranslations.value?.[deletedTranslation.key] || {}).length) {
+    if (
+      deletedTranslation.source !== TRANSLATION_SOURCE.FORMSCHEMA ||
+      !!Object.keys(localTranslations.value?.[deletedTranslation.key] || {})
+        .length
+    ) {
       continue;
     }
-    for(const [key, value] of flattedFormSchemaKeyMap) {
-      if(value === `#lang/${deletedTranslation.key}`) {
+    for (const [key, value] of flattedFormSchemaKeyMap) {
+      if (value === `#lang/${deletedTranslation.key}`) {
         JsonPointer.unset(formSchema?.value, key);
         break;
       }

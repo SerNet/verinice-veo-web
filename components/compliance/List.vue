@@ -5,11 +5,14 @@
       item-key="id"
       :additional-headers="headers"
       enable-click
-      @click="(e) => openItem({
-        type: state.type.value,
-        riskAffected: state.riskAffected.value,
-        item: e.item
-      })"
+      @click="
+        (e) =>
+          openItem({
+            type: state.type.value,
+            riskAffected: state.riskAffected.value,
+            item: e.item,
+          })
+      "
     >
       <template #no-data>
         <span class="text-center">
@@ -29,11 +32,11 @@
 <script lang="ts">
 function translate(requirementImplementations, t) {
   if (!requirementImplementations) return;
-  return requirementImplementations.items.map( item => {
+  return requirementImplementations.items.map((item) => {
     const status = t(`compliance.status.${item.status}`);
     const origination = t(`compliance.origination.${item.origination}`);
-    return ({...item, translations: {status , origination} });
-  } );
+    return { ...item, translations: { status, origination } };
+  });
 }
 </script>
 
@@ -45,80 +48,104 @@ import { RequirementImplementation } from './Editor.vue';
 const {
   fetchRequirementImplementations,
   fetchRequirementImplementation,
-  state
+  state,
 } = useCompliance();
 
 const { t, locale } = useI18n();
-const { t: globalT } = useI18n({ useScope:  'global' });
+const { t: globalT } = useI18n({ useScope: 'global' });
 
 interface Emits {
-  (e: 'update:currentName', currentName: string): void
+  (e: 'update:currentName', currentName: string): void;
 }
 const emit = defineEmits<Emits>();
 
 const fetchParams = computed(() => ({
   type: state.type.value as string,
   riskAffected: state.riskAffected.value as string,
-  control: state.control.value as string
+  control: state.control.value as string,
 }));
 
 const requirementImplementations = ref(null);
 
-requirementImplementations.value = await fetchRequirementImplementations({...fetchParams.value });
-watch(fetchParams, async () => requirementImplementations.value = await fetchRequirementImplementations({...fetchParams.value}));
+requirementImplementations.value = await fetchRequirementImplementations({
+  ...fetchParams.value,
+});
+watch(
+  fetchParams,
+  async () =>
+    (requirementImplementations.value = await fetchRequirementImplementations({
+      ...fetchParams.value,
+    }))
+);
 
 // Translate
-const translatedRequirementImplementations = ref(translate(requirementImplementations.value, globalT));
+const translatedRequirementImplementations = ref(
+  translate(requirementImplementations.value, globalT)
+);
 
 watch(requirementImplementations, () => {
-  translatedRequirementImplementations.value = translate(requirementImplementations.value, globalT);
+  translatedRequirementImplementations.value = translate(
+    requirementImplementations.value,
+    globalT
+  );
 });
 
 watch(locale, () => {
-  translatedRequirementImplementations.value = translate(requirementImplementations.value, globalT);
+  translatedRequirementImplementations.value = translate(
+    requirementImplementations.value,
+    globalT
+  );
 });
 
-const currentName = computed(() =>
-  requirementImplementations?.value?.items?.[0]?.origin?.displayName);
+const currentName = computed(
+  () => requirementImplementations?.value?.items?.[0]?.origin?.displayName
+);
 
 // Emit the current name
 emit('update:currentName', currentName.value);
 watch(currentName, () => emit('update:currentName', currentName.value));
 
 // Open a single RI
-const requirementImplementation: Ref<RequirementImplementation | null> = ref(null);
+const requirementImplementation: Ref<RequirementImplementation | null> =
+  ref(null);
 const showDialog = ref(false);
 
-async function openItem({ type, riskAffected, item }:
-{ type: string | null, riskAffected: string | null, item: any }) {
-  if(!type || !riskAffected) return;
+async function openItem({
+  type,
+  riskAffected,
+  item,
+}: {
+  type: string | null;
+  riskAffected: string | null;
+  item: any;
+}) {
+  if (!type || !riskAffected) return;
 
   showDialog.value = true;
 
-  requirementImplementation.value =
-    await fetchRequirementImplementation({
-      type: type as string,
-      riskAffected: riskAffected as string,
-      item
-    });
+  requirementImplementation.value = await fetchRequirementImplementation({
+    type: type as string,
+    riskAffected: riskAffected as string,
+    item,
+  });
 }
 
 const reloadRequirementImplementations = async () => {
   requirementImplementations.value = await fetchRequirementImplementations({
     type: state.type.value as string,
     riskAffected: state.riskAffected.value as string,
-    control: state.control.value as string
+    control: state.control.value as string,
   });
 };
 
 // Table setup
-const headers: ComputedRef<TableHeader[]> = computed(()=> [
+const headers: ComputedRef<TableHeader[]> = computed(() => [
   {
     text: t('thAbbreviation'),
     key: 'control.abbreviation',
     sortable: true,
     priority: 60,
-    order: 30
+    order: 30,
   },
   {
     text: t('thName'),
@@ -126,29 +153,29 @@ const headers: ComputedRef<TableHeader[]> = computed(()=> [
     cellClass: ['font-weight-bold'],
     sortable: true,
     priority: 60,
-    order: 30
+    order: 30,
   },
   {
     text: t('thResponsibleBody'),
     key: 'responsible.displayName',
     sortable: true,
     priority: 60,
-    order: 30
+    order: 30,
   },
   {
     text: t('thStatus'),
     key: 'translations.status',
     sortable: true,
     priority: 60,
-    order: 30
+    order: 30,
   },
   {
     text: t('thOrigin'),
     key: 'translations.origination',
     sortable: true,
     priority: 80,
-    order: 30
-  }
+    order: 30,
+  },
 ]);
 </script>
 

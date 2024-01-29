@@ -26,13 +26,28 @@ export interface IVeoFetchVersionsParameters {
   domainId: string;
 }
 
-export const useFetchVersions = (queryParameters: Ref<IVeoFetchVersionsParameters>, queryOptions?: QueryOptions) => {
-  const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+export const useFetchVersions = (
+  queryParameters: Ref<IVeoFetchVersionsParameters>,
+  queryOptions?: QueryOptions
+) => {
+  const { data: endpoints } = useQuery(
+    schemaQueryDefinitions.queries.fetchSchemas
+  );
 
-  const endpoint = computed(() => endpoints.value?.[queryParameters.value.objectType]);
-  const queryEnabled = computed(() => (!!endpoint.value && queryOptions?.enabled ? unref(queryOptions?.enabled) : true));
+  const endpoint = computed(
+    () => endpoints.value?.[queryParameters.value.objectType]
+  );
+  const queryEnabled = computed(() =>
+    !!endpoint.value && queryOptions?.enabled ?
+      unref(queryOptions?.enabled)
+    : true
+  );
 
-  const combinedQueryParameters = computed(() => ({ domainId: queryParameters.value.domainId, id: queryParameters.value.id, endpoint: endpoint.value as string }));
+  const combinedQueryParameters = computed(() => ({
+    domainId: queryParameters.value.domainId,
+    id: queryParameters.value.id,
+    endpoint: endpoint.value as string,
+  }));
 
   return useQuery(
     historyQueryDefinitions.queries.fetchVersions,

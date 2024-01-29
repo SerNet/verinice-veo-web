@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import{ last } from 'lodash';
+import { last } from 'lodash';
 
 import { mdiOpenInNew } from '@mdi/js';
 
@@ -56,13 +56,16 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-uri-input',
   name: {
     en: 'uri input',
-    de: 'URI-Eingabe'
+    de: 'URI-Eingabe',
   },
   description: {
     en: 'Lets the user enter text following an uri schema.',
-    de: 'Lässt den User Text eingeben der wie eine URI formatiert ist.'
+    de: 'Lässt den User Text eingeben der wie eine URI formatiert ist.',
   },
-  conditions: (props) => [props.objectSchema.type === 'string', props.objectSchema.format === 'uri']
+  conditions: (props) => [
+    props.objectSchema.type === 'string',
+    props.objectSchema.format === 'uri',
+  ],
 };
 
 export default defineComponent({
@@ -74,8 +77,8 @@ export default defineComponent({
       getControlErrorMessages,
 
       last,
-      mdiOpenInNew
+      mdiOpenInNew,
     };
-  }
+  },
 });
 </script>

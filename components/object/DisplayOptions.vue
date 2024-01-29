@@ -37,35 +37,48 @@ import { upperFirst } from 'lodash';
 import { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 
-const props = withDefaults(defineProps<{
-  displayOption: string;
-  domainId: string;
-  formSchemas: IVeoFormSchemaMeta[],
-  objectData: Record<string, any>
-  objectSchema: IVeoObjectSchema
-}>(), {
-  objectData: undefined,
-  objectSchema: undefined,
-  formSchemas: () => []
-});
+const props = withDefaults(
+  defineProps<{
+    displayOption: string;
+    domainId: string;
+    formSchemas: IVeoFormSchemaMeta[];
+    objectData: Record<string, any>;
+    objectSchema: IVeoObjectSchema;
+  }>(),
+  {
+    objectData: undefined,
+    objectSchema: undefined,
+    formSchemas: () => [],
+  }
+);
 
 const emit = defineEmits<{
-  (event: 'update:display-option', value: string): void
+  (event: 'update:display-option', value: string): void;
 }>();
 
 const { t, locale } = useI18n();
 
-const displayOptions = computed<{ title: string; value: string | undefined }[]>(() => {
-  const currentSubType = props.objectData?.subType;
-  const availableFormSchemas: { title: string; value: string | undefined }[] = (props.formSchemas)
-    .filter((formSchema) => formSchema.modelType === props.objectSchema?.title && (!currentSubType || currentSubType === formSchema.subType))
-    .map((formSchema) => ({
-      title: formSchema.name[locale.value] || formSchema.subType,
-      value: formSchema.id
-    }));
-  availableFormSchemas.unshift({ title: upperFirst(t('objectView').toString()), value: 'objectschema' });
-  return availableFormSchemas;
-});
+const displayOptions = computed<{ title: string; value: string | undefined }[]>(
+  () => {
+    const currentSubType = props.objectData?.subType;
+    const availableFormSchemas: { title: string; value: string | undefined }[] =
+      props.formSchemas
+        .filter(
+          (formSchema) =>
+            formSchema.modelType === props.objectSchema?.title &&
+            (!currentSubType || currentSubType === formSchema.subType)
+        )
+        .map((formSchema) => ({
+          title: formSchema.name[locale.value] || formSchema.subType,
+          value: formSchema.id,
+        }));
+    availableFormSchemas.unshift({
+      title: upperFirst(t('objectView').toString()),
+      value: 'objectschema',
+    });
+    return availableFormSchemas;
+  }
+);
 </script>
 
 <i18n>

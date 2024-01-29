@@ -18,7 +18,13 @@
 import { NavItem, ParsedContent } from '@nuxt/content/dist/runtime/types';
 import { cloneDeep, last } from 'lodash';
 
-type ContentOptions = { path?: string; locale?: string; localeSeparator?: string; fallbackLocale?: string; where?: object };
+type ContentOptions = {
+  path?: string;
+  locale?: string;
+  localeSeparator?: string;
+  fallbackLocale?: string;
+  where?: object;
+};
 const getOptions = (params: ContentOptions, _locale: string) => {
   const fallbackLocale = params.fallbackLocale ?? 'de';
   const localeSeparator = params.localeSeparator ?? '.';
@@ -30,7 +36,7 @@ export const normalizePath = (path: string, localeSeparator = '.') => {
   const parts = path.split(localeSeparator);
 
   // Pop language extension. If there is no dot present in the path, the file hasn't been localized and there is nothing to pop
-  if(parts.length > 1) {
+  if (parts.length > 1) {
     parts.pop();
   }
 
@@ -40,11 +46,16 @@ export const normalizePath = (path: string, localeSeparator = '.') => {
 
 /**
  * Load a single doc, based on path. Tries to fetch documents in falback locale if the localized document doesn't exist.
- * 
+ *
  * @param options Parameters containing the path and optionally locale, localeSeperator and fallbackLocale to overwrite defaults.
  * @returns The fetched page or undefined if not found.
  */
-export const useDoc = (options: { path: string; locale?: string; localeSeparator?: string; fallbackLocale?: string }) => {
+export const useDoc = (options: {
+  path: string;
+  locale?: string;
+  localeSeparator?: string;
+  fallbackLocale?: string;
+}) => {
   const i18n = useI18n();
 
   const mergedOptions = computed(() => getOptions(options, i18n.locale.value));
@@ -52,15 +63,45 @@ export const useDoc = (options: { path: string; locale?: string; localeSeparator
   const doc = ref<ParsedContent | undefined>();
 
   const fetchDoc = async () => {
-    const eligiblePages = await queryContent().where({ $or: [
-      { _path: mergedOptions.value.path + mergedOptions.value.localeSeparator + mergedOptions.value.locale },
-      { _path: mergedOptions.value.path + '/index' + mergedOptions.value.localeSeparator + mergedOptions.value.locale },
-      { _path: mergedOptions.value.path + mergedOptions.value.localeSeparator + mergedOptions.value.fallbackLocale },
-      { _path: mergedOptions.value.path + '/index' + mergedOptions.value.localeSeparator + mergedOptions.value.fallbackLocale },
-      { _path: mergedOptions.value.path }
-    ],
-    _extension: 'md' }).find();
-    return eligiblePages.find((page) => page.language === mergedOptions.value?.locale) || eligiblePages[0];
+    const eligiblePages = await queryContent()
+      .where({
+        $or: [
+          {
+            _path:
+              mergedOptions.value.path +
+              mergedOptions.value.localeSeparator +
+              mergedOptions.value.locale,
+          },
+          {
+            _path:
+              mergedOptions.value.path +
+              '/index' +
+              mergedOptions.value.localeSeparator +
+              mergedOptions.value.locale,
+          },
+          {
+            _path:
+              mergedOptions.value.path +
+              mergedOptions.value.localeSeparator +
+              mergedOptions.value.fallbackLocale,
+          },
+          {
+            _path:
+              mergedOptions.value.path +
+              '/index' +
+              mergedOptions.value.localeSeparator +
+              mergedOptions.value.fallbackLocale,
+          },
+          { _path: mergedOptions.value.path },
+        ],
+        _extension: 'md',
+      })
+      .find();
+    return (
+      eligiblePages.find(
+        (page) => page.language === mergedOptions.value?.locale
+      ) || eligiblePages[0]
+    );
   };
 
   // Update doc as soon as content or the options change.
@@ -77,25 +118,32 @@ export const useDoc = (options: { path: string; locale?: string; localeSeparator
 
 /**
  * Fetches a document and all child documents. Returns them in an array, NOT a tree. To return them in a tree, use useDocTree
- * 
+ *
  * @param options Parameters to overwrite default behaviour, such as root directory, locale, localeSeparator, fallbackLocale and createDirs
  */
-export const useDocs = (options: {
-  root?: string;
-  locale?: string;
-}) => {
+export const useDocs = (options: { root?: string; locale?: string }) => {
   const { locale } = useI18n();
 
   const mergedOptions = computed(() => getOptions(options, locale.value));
-  
+
   const docs = ref<ParsedContent[] | undefined>();
 
   const fetchDocs = async () => {
     // Language has to be either the current locale or not set, as we only want the docs to contain non-i18n pages and i18n pages in the current languages.
-    return await queryContent(options.root).where({ _extension: 'md', language: { $in: [mergedOptions.value.locale, undefined] }}).find();
+    return await queryContent(options.root)
+      .where({
+        _extension: 'md',
+        language: { $in: [mergedOptions.value.locale, undefined] },
+      })
+      .find();
   };
 
-  const normalizedDocs = computed(() => (docs.value || []).map((doc) => ({ ...doc, _path: normalizePath(doc._path) })));
+  const normalizedDocs = computed(() =>
+    (docs.value || []).map((doc) => ({
+      ...doc,
+      _path: normalizePath(doc._path),
+    }))
+  );
 
   // Update docs as soon as content or the options change.
   watch(
@@ -120,24 +168,29 @@ export const useDocNavigation = (options: {
 
   const normalizedDocs = computed(() => {
     const removeIndexPages = (item: NavItem) => {
-      if(!item.children || !item.children.length) {
+      if (!item.children || !item.children.length) {
         return item;
       }
       const children = cloneDeep(item.children);
-      const searchCondition = (item: NavItem) => last(item._path.split('/')).startsWith('index');
-      const indexChild = item.children.findIndex((child) => searchCondition(child));
+      const searchCondition = (item: NavItem) =>
+        last(item._path.split('/')).startsWith('index');
+      const indexChild = item.children.findIndex((child) =>
+        searchCondition(child)
+      );
       const newIndexPage = children.splice(indexChild, 1);
-     
+
       item.title = newIndexPage[0].title;
       item.children = children;
 
-      for(const child in item.children) {
+      for (const child in item.children) {
         item.children[child] = removeIndexPages(item.children[child]);
       }
 
       return item;
     };
-    return ((navigation.value || []).map((item) => removeIndexPages(item))).splice(1);
+    return (navigation.value || [])
+      .map((item) => removeIndexPages(item))
+      .splice(1);
   });
 
   const fetch = async () => {
@@ -145,8 +198,8 @@ export const useDocNavigation = (options: {
       where: [
         { _extension: 'md' },
         { language: { $in: [mergedOptions.value.locale, undefined] } },
-        ...options.root ? [{ _path: new RegExp(`/^/${options.root}/`) }] : []
-      ]
+        ...(options.root ? [{ _path: new RegExp(`/^/${options.root}/`) }] : []),
+      ],
     });
   };
 
@@ -169,28 +222,31 @@ export const useDocNavigationFlat = (options: {
   const docEntries = useDocNavigation(options);
 
   const navigation = computed<NavItem[]>(() => {
-    const reduceItems = (items: NavItem[]): any[] => 
+    const reduceItems = (items: NavItem[]): any[] =>
       items.reduce((previous, current) => {
         let item = {
           title: current.title,
-          _path: normalizePath(current._path)
+          _path: normalizePath(current._path),
         };
-  
-        if(current.children) {
-          const searchCondition = (item: NavItem) => last(item._path.split('/')).startsWith('index');
-          const indexChild = current.children.findIndex((child) => searchCondition(child));
-  
+
+        if (current.children) {
+          const searchCondition = (item: NavItem) =>
+            last(item._path.split('/')).startsWith('index');
+          const indexChild = current.children.findIndex((child) =>
+            searchCondition(child)
+          );
+
           const children = cloneDeep(current.children);
-          if(indexChild >= 0) {
+          if (indexChild >= 0) {
             const newIndexPage = children.splice(indexChild, 1);
             item = {
               title: newIndexPage[0].title,
-              _path: normalizePath(newIndexPage[0]._path)
+              _path: normalizePath(newIndexPage[0]._path),
             };
           }
           return previous.concat(item, reduceItems(children));
         }
-  
+
         return previous.concat(item);
       }, []);
     return reduceItems(docEntries.value || []);

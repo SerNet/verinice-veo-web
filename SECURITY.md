@@ -11,8 +11,8 @@ We explicitly allow ethical hackers to test our application, but only under thes
 
 ### Scope
 
-To be clear, you're only allowed to test veo-web.verinice.com, api.verinice.com, auth.verinice.com, account.verinice.com and nothing else.
-And of course you can use the open source code in our and other repositories:
+To be clear, you're only allowed to test veo-web.verinice.com, api.verinice.com, auth.verinice.com, account.verinice.com and nothing else. And of course you can use the open source code in our and other repositories:
+
 - [github.com/SerNet/verinice-veo-web](https://github.com/SerNet/verinice-veo-web)
 - [github.com/SerNet/verinice-veo](https://github.com/SerNet/verinice-veo)
 - [github.com/SerNet/verinice-veo-accounts](https://github.com/SerNet/verinice-veo-accounts)
@@ -31,10 +31,8 @@ In your bug report, please try to cover the following info:
 - Your estimation of impact
 - Suggestions for a fix
 
-When receiving a bug report, we will look at it internally before answering, so expect some delay until you get an answer.
-Once we confirmed and talked about the vulnerability, we will contact you.
+When receiving a bug report, we will look at it internally before answering, so expect some delay until you get an answer. Once we confirmed and talked about the vulnerability, we will contact you.
 
 ## Responsible Disclosure
 
-The bug stays yours, but please give us enough time to fix it before disclosing it.
-We may need up to 120 days to fix the vulnerability you reported. Once we've published a fix for the vulnerability and told you we're done from our end, you can disclose the bug.
+The bug stays yours, but please give us enough time to fix it before disclosing it. We may need up to 120 days to fix the vulnerability you reported. Once we've published a fix for the vulnerability and told you we're done from our end, you can disclose the bug.

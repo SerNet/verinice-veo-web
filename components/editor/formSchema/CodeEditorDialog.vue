@@ -26,10 +26,7 @@
   >
     <template #default>
       <BaseCard style="min-height: 20vh">
-        <UtilCodeEditor
-          :model-value="code"
-          readonly
-        />
+        <UtilCodeEditor :model-value="code" readonly />
       </BaseCard>
     </template>
     <template #dialog-options>
@@ -48,12 +45,12 @@
 defineProps({
   modelValue: {
     type: Boolean,
-    default: false
+    default: false,
   },
   code: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const emit = defineEmits(['update:model-value']);

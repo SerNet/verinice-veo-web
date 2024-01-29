@@ -16,16 +16,15 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-col
-    cols="6"
-    :md="12 / numOfCols"
-  >
+  <v-col cols="6" :md="12 / numOfCols">
     <h3 class="text-h3">
       {{ protectionGoal.translations[locale].name }}
     </h3>
     <v-select
       data-test-selector="residual-risk"
-      :model-value="userDefinedResidualRiskPresent ? userDefinedResidualRisk : residualRisk"
+      :model-value="
+        userDefinedResidualRiskPresent ? userDefinedResidualRisk : residualRisk
+      "
       color="primary"
       :label="upperFirst(t('residualRisk').toString())"
       :items="riskValues"
@@ -39,22 +38,17 @@
         <div class="d-flex justify-space-between fill-width">
           <span>{{ item.title }}</span>
           <v-tooltip
-            v-if="userDefinedResidualRisk === undefined && riskTreatments.length"
+            v-if="
+              userDefinedResidualRisk === undefined && riskTreatments.length
+            "
             top
           >
             <template #activator="{ props: tooltipProps }">
-              <v-icon
-                v-bind="tooltipProps"
-                :icon="mdiInformationOutline"
-              />
+              <v-icon v-bind="tooltipProps" :icon="mdiInformationOutline" />
             </template>
             <template #default>
-              <i18n-t
-                tag="span"
-                keypath="residualRiskHint"
-                scope="global"
-              >
-                <br>
+              <i18n-t tag="span" keypath="residualRiskHint" scope="global">
+                <br />
               </i18n-t>
             </template>
           </v-tooltip>
@@ -71,7 +65,9 @@
           hide-details
           variant="underlined"
           v-bind="dialogProps"
-          @update:model-value="$emit('update:residual-risk-explanation', $event)"
+          @update:model-value="
+            $emit('update:residual-risk-explanation', $event)
+          "
         />
       </template>
       <template #input>
@@ -86,7 +82,9 @@
           rows="3"
           no-resize
           variant="underlined"
-          @update:model-value="$emit('update:residual-risk-explanation', $event)"
+          @update:model-value="
+            $emit('update:residual-risk-explanation', $event)
+          "
         />
       </template>
     </v-edit-dialog>
@@ -103,46 +101,55 @@ import { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
 const props = defineProps({
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   riskDefinition: {
     type: Object as PropType<IVeoDomainRiskDefinition>,
-    required: true
+    required: true,
   },
   protectionGoal: {
     type: Object as PropType<IVeoRiskCategory>,
-    required: true
+    required: true,
   },
   riskTreatments: {
     type: Array as PropType<string[]>,
-    default: undefined
+    default: undefined,
   },
   userDefinedResidualRisk: {
     type: Number,
-    default: undefined
+    default: undefined,
   },
   residualRisk: {
     type: Number,
-    default: undefined
+    default: undefined,
   },
   residualRiskExplanation: {
     type: String,
-    default: undefined
+    default: undefined,
   },
   numOfCols: {
     type: Number,
-    default: 4
-  }
-
+    default: 4,
+  },
 });
 
-const emit = defineEmits(['update:residual-risk-explanation', 'update:user-defined-residual-risk']);
+const emit = defineEmits([
+  'update:residual-risk-explanation',
+  'update:user-defined-residual-risk',
+]);
 
 const { t, locale } = useI18n();
 
-const userDefinedResidualRiskPresent = computed(() => props.userDefinedResidualRisk !== undefined);
+const userDefinedResidualRiskPresent = computed(
+  () => props.userDefinedResidualRisk !== undefined
+);
 
-const riskValues = computed(() => props.riskDefinition.riskValues.map((level) => ({ title: level.translations[locale.value].name, value: level.ordinalValue })));
+const riskValues = computed(() =>
+  props.riskDefinition.riskValues.map((level) => ({
+    title: level.translations[locale.value].name,
+    value: level.ordinalValue,
+  }))
+);
 </script>
 
 <i18n>

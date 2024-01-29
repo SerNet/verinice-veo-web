@@ -22,7 +22,11 @@ import addFormats from 'ajv-formats';
 import { cloneDeep, dropRight, merge, partition, pull } from 'lodash';
 import { JSONSchema7 } from 'json-schema';
 
-import { IDynamicFormElementOptions, IVeoFormElementFormSchemaRule, IVeoFormElementRule } from './types';
+import {
+  IDynamicFormElementOptions,
+  IVeoFormElementFormSchemaRule,
+  IVeoFormElementRule,
+} from './types';
 import { IVeoFormSchemaControl, UISchemaElement } from '~/types/UISchema';
 import { IVeoFormSchemaGeneratorOptions } from '~/types/VeoTypes';
 
@@ -31,36 +35,36 @@ export default {};
 export const VeoFormsElementProps = {
   metaData: {
     type: Object as PropType<Record<string, any>>,
-    default: undefined
+    default: undefined,
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   objectCreationDisabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   debug: {
     type: Boolean,
-    default: false
+    default: false,
   },
   formSchemaPointer: {
     type: String,
-    required: true
+    required: true,
   },
   options: {
     type: Object as PropType<IDynamicFormElementOptions>,
-    default: () => ({})
-  }
+    default: () => ({}),
+  },
 };
 
 export const VeoFormsWidgetProps = {
   ...VeoFormsElementProps,
   name: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 };
 
 export const VeoFormsControlProps = {
@@ -69,50 +73,50 @@ export const VeoFormsControlProps = {
   objectSchemaPointer: {
     type: String,
     default: '',
-    required: true
+    required: true,
   },
   // Complete object schema
   objectSchema: {
     type: Object as PropType<JSONSchema7>,
     default: () => ({}),
-    required: true
+    required: true,
   },
   // Points to where the value can be found in the object (usually the object schema pointer without /properties, however if the control is part of a custom link, the index omes into play)
   valuePointer: {
     type: String,
     default: '',
-    required: true
+    required: true,
   },
   // The value of this control. Might get modified in the Control.ts if control is part of a custom link.
   modelValue: {
     type: [Number, String, Object, Array, Boolean],
-    default: undefined
+    default: undefined,
   },
   // Map containing all errors present in the form
   errors: {
     type: Map as PropType<Map<string, string[]>>,
-    default: () => ({})
+    default: () => ({}),
   },
   // Marks this control as being part of a link (and gets passed in the onInput call. Usually gets set in the background by the VeoLinksFieldRowAttribute component)
   index: {
     type: Number,
-    default: undefined
+    default: undefined,
   },
   // Contains all items available in VeoAutocomplete, VeoSelect and VeoRadio
   items: {
     type: Array as PropType<{ title: string; value: any }[]>,
-    default: () => []
+    default: () => [],
   },
   // Used by vue the identify each Node so that it only gets repainted if the key changes. Makes forms more performant
   elementKey: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 };
 
 export const ajv = new Ajv2019({
   allErrors: true,
-  strict: false
+  strict: false,
 });
 addFormats(ajv);
 
@@ -121,10 +125,13 @@ export const removePropertiesKeywordFromPath = (path: string) => {
   return String(path || '').replace(/\/properties\//g, '/');
 };
 
-export const evaluateRule = (value: any, rule: IVeoFormElementFormSchemaRule | undefined): IVeoFormElementRule => {
+export const evaluateRule = (
+  value: any,
+  rule: IVeoFormElementFormSchemaRule | undefined
+): IVeoFormElementRule => {
   const defaults = {
     visible: true,
-    disabled: false
+    disabled: false,
   };
   if (!rule) {
     return defaults;
@@ -132,11 +139,17 @@ export const evaluateRule = (value: any, rule: IVeoFormElementFormSchemaRule | u
 
   if (!['HIDE', 'SHOW', 'DISABLE', 'ENABLE'].includes(rule.effect)) {
     // eslint-disable-next-line no-console
-    console.error(`Your rule effect "${rule.effect}" is not available!`, 'Only these rule effects are permitted: "SHOW", "HIDE", "ENABLED", "DISABLED".');
+    console.error(
+      `Your rule effect "${rule.effect}" is not available!`,
+      'Only these rule effects are permitted: "SHOW", "HIDE", "ENABLED", "DISABLED".'
+    );
     return defaults;
   }
 
-  const v = JsonPointer.get(value, removePropertiesKeywordFromPath(rule.condition.scope));
+  const v = JsonPointer.get(
+    value,
+    removePropertiesKeywordFromPath(rule.condition.scope)
+  );
 
   // if rule condition is true
   if (ajv.validate(rule.condition.schema, v)) {
@@ -172,7 +185,12 @@ const getParentPointer = (elementPointer: string): string => {
   return dropRight(parentParts, 2).join('/');
 };
 
-export const addConditionalSchemaPropertiesToControlSchema = (objectSchema: JSONSchema7, objectData: any, controlObjectSchema: JSONSchema7, pointer: string) => {
+export const addConditionalSchemaPropertiesToControlSchema = (
+  objectSchema: JSONSchema7,
+  objectData: any,
+  controlObjectSchema: JSONSchema7,
+  pointer: string
+) => {
   let schema = cloneDeep(controlObjectSchema);
 
   const controlName = pointer.split('/').pop() as string;
@@ -182,17 +200,32 @@ export const addConditionalSchemaPropertiesToControlSchema = (objectSchema: JSON
 
   if (parentSchema) {
     const getSchemaCompositionConditions = (schemaCompositionObject: any) =>
-      schemaCompositionObject?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
+      schemaCompositionObject?.filter(
+        (condition: any) =>
+          condition.then?.properties?.[controlName] ||
+          condition.else?.properties?.[controlName]
+      ) || [];
 
     const conditionsToCheck = [
-      ...(parentSchema.then?.properties?.[controlName] || parentSchema.else?.properties?.[controlName] ? [parentSchema] : []),
+      ...((
+        parentSchema.then?.properties?.[controlName] ||
+        parentSchema.else?.properties?.[controlName]
+      ) ?
+        [parentSchema]
+      : []),
       ...getSchemaCompositionConditions(parentSchema.allOf),
       ...getSchemaCompositionConditions(parentSchema.AnyOf),
-      ...getSchemaCompositionConditions(parentSchema.OneOf)
+      ...getSchemaCompositionConditions(parentSchema.OneOf),
     ];
 
     for (const condition of conditionsToCheck) {
-      schema = getSchemaWithAppliedConditionalSchemaProperties(objectData, schema, condition, parentPointer, controlName);
+      schema = getSchemaWithAppliedConditionalSchemaProperties(
+        objectData,
+        schema,
+        condition,
+        parentPointer,
+        controlName
+      );
     }
   }
 
@@ -207,15 +240,30 @@ const getSchemaWithAppliedConditionalSchemaProperties = (
   controlName: string
 ) => {
   let schema;
-  for (const propertyWithCondition of Object.keys(ifElseThenBlock.if?.properties)) {
-    const pathInFormDataParts = pull(parentPointer.split('/'), 'properties', 'attributes');
+  for (const propertyWithCondition of Object.keys(
+    ifElseThenBlock.if?.properties
+  )) {
+    const pathInFormDataParts = pull(
+      parentPointer.split('/'),
+      'properties',
+      'attributes'
+    );
     pathInFormDataParts.push(propertyWithCondition);
     const pathInFormData = pathInFormDataParts.join('/');
 
-    if (JsonPointer.get(objectData, pathInFormData) === ifElseThenBlock.if.properties[propertyWithCondition].const) {
-      schema = merge(controlObjectSchema, ifElseThenBlock.then?.properties?.[controlName]);
+    if (
+      JsonPointer.get(objectData, pathInFormData) ===
+      ifElseThenBlock.if.properties[propertyWithCondition].const
+    ) {
+      schema = merge(
+        controlObjectSchema,
+        ifElseThenBlock.then?.properties?.[controlName]
+      );
     } else {
-      schema = merge(controlObjectSchema, ifElseThenBlock.else?.properties?.[controlName]);
+      schema = merge(
+        controlObjectSchema,
+        ifElseThenBlock.else?.properties?.[controlName]
+      );
     }
   }
   return schema;
@@ -223,78 +271,137 @@ const getSchemaWithAppliedConditionalSchemaProperties = (
 
 export enum Mode {
   GENERAL = 'GENERAL',
-  VEO = 'VEO'
+  VEO = 'VEO',
 }
 
 function isGroup(schema: JSONSchema7): boolean {
   return !!schema.properties;
 }
 
-function isPropertyExcludedFromFormSchema(pointer: string, excludedProperties: string[]): boolean {
-  const excludedPropertiesRegexp = excludedProperties.map((prop) => new RegExp(prop));
+function isPropertyExcludedFromFormSchema(
+  pointer: string,
+  excludedProperties: string[]
+): boolean {
+  const excludedPropertiesRegexp = excludedProperties.map(
+    (prop) => new RegExp(prop)
+  );
 
   return excludedPropertiesRegexp.some((regexp) => regexp.test(pointer));
 }
 
-export function generateFormSchemaGroup(children: UISchemaElement[], label?: string): UISchemaElement {
-  const labelElement = label
-    ? {
-      type: 'Label',
-      text: label,
-      options: { class: 'font-italic text-accent text-body-2' }
-    }
+export function generateFormSchemaGroup(
+  children: UISchemaElement[],
+  label?: string
+): UISchemaElement {
+  const labelElement =
+    label ?
+      {
+        type: 'Label',
+        text: label,
+        options: { class: 'font-italic text-accent text-body-2' },
+      }
     : undefined;
 
   return {
     type: 'Layout',
     options: {
       class: 'veo-generated-fs-group-border',
-      direction: 'vertical'
+      direction: 'vertical',
     },
-    elements: [...(labelElement ? [labelElement as any] : []), ...children]
+    elements: [...(labelElement ? [labelElement as any] : []), ...children],
   };
 }
 
-export function generateFormSchemaControl(pointer: string, schema: Record<string, any>, mode: Mode): IVeoFormSchemaControl {
+export function generateFormSchemaControl(
+  pointer: string,
+  schema: Record<string, any>,
+  mode: Mode
+): IVeoFormSchemaControl {
   const propertyName = pointer.split('/').pop();
-  const label = propertyName ? (mode === Mode.VEO ? `#lang/${propertyName}` : propertyName) : '';
+  const label =
+    propertyName ?
+      mode === Mode.VEO ?
+        `#lang/${propertyName}`
+      : propertyName
+    : '';
 
   return {
     type: 'Control',
     scope: pointer,
     options: {
-      label
+      label,
     },
-    ...(schema?.items?.required?.includes('target') ? { elements: [] } : {})
+    ...(schema?.items?.required?.includes('target') ? { elements: [] } : {}),
   };
 }
 
-function generateFormSchemaControls(pointer: string, schema: JSONSchema7, generatorOptions: IVeoFormSchemaGeneratorOptions, mode: Mode = Mode.GENERAL): any[] {
+function generateFormSchemaControls(
+  pointer: string,
+  schema: JSONSchema7,
+  generatorOptions: IVeoFormSchemaGeneratorOptions,
+  mode: Mode = Mode.GENERAL
+): any[] {
   const controls: IVeoFormSchemaControl[] = [];
 
-  if (isPropertyExcludedFromFormSchema(pointer, generatorOptions.excludedProperties as string[])) {
+  if (
+    isPropertyExcludedFromFormSchema(
+      pointer,
+      generatorOptions.excludedProperties as string[]
+    )
+  ) {
     return [];
   }
 
   if (!isGroup(schema)) {
-    controls.push(generatorOptions.generateControlFunction(pointer, schema, mode));
+    controls.push(
+      generatorOptions.generateControlFunction(pointer, schema, mode)
+    );
   } else {
     const properties = schema.properties || {};
     for (const property of Object.keys(properties)) {
-      controls.push(...generateFormSchemaControls(`${pointer}/properties/${property}`, properties[property] as any, generatorOptions, mode));
+      controls.push(
+        ...generateFormSchemaControls(
+          `${pointer}/properties/${property}`,
+          properties[property] as any,
+          generatorOptions,
+          mode
+        )
+      );
     }
   }
 
   return controls;
 }
 
-export function generateFormSchema(objectSchema: JSONSchema7, generatorOptions: IVeoFormSchemaGeneratorOptions, mode: Mode = Mode.GENERAL): any {
-  const _generatorOptions = merge({ excludedProperties: [] as string[], groupedNamespaces: [] as string[] }, generatorOptions);
-  let schema: UISchemaElement[] = generateFormSchemaControls('#', objectSchema, _generatorOptions, mode);
+export function generateFormSchema(
+  objectSchema: JSONSchema7,
+  generatorOptions: IVeoFormSchemaGeneratorOptions,
+  mode: Mode = Mode.GENERAL
+): any {
+  const _generatorOptions = merge(
+    { excludedProperties: [] as string[], groupedNamespaces: [] as string[] },
+    generatorOptions
+  );
+  let schema: UISchemaElement[] = generateFormSchemaControls(
+    '#',
+    objectSchema,
+    _generatorOptions,
+    mode
+  );
 
   for (const namespace of _generatorOptions.groupedNamespaces) {
-    const [controlsToAddToGroup, untouchedControls] = partition(schema, (control) => new RegExp(namespace.namespace).test((control as any).scope || ''));
-    schema = [...untouchedControls, generatorOptions.generateGroupFunction(controlsToAddToGroup, namespace.label)];
+    const [controlsToAddToGroup, untouchedControls] = partition(
+      schema,
+      (control) =>
+        new RegExp(namespace.namespace).test((control as any).scope || '')
+    );
+    schema = [
+      ...untouchedControls,
+      generatorOptions.generateGroupFunction(
+        controlsToAddToGroup,
+        namespace.label
+      ),
+    ];
   }
 
   const formSchema = generatorOptions.generateGroupFunction(schema);
@@ -303,12 +410,15 @@ export function generateFormSchema(objectSchema: JSONSchema7, generatorOptions: 
   return formSchema;
 }
 
-export const getControlErrorMessages = (props: any, modifier = '')  => {
-
+export const getControlErrorMessages = (props: any, modifier = '') => {
   // Handle link elements (link elements have an index prop)
-  if (props.index !== undefined && props.objectSchemaPointer.includes('/items/')) {
+  if (
+    props.index !== undefined &&
+    props.objectSchemaPointer.includes('/items/')
+  ) {
     return props.errors.get(
-      props.objectSchemaPointer.replace('/items/', `/${props.index}/`) + modifier
+      props.objectSchemaPointer.replace('/items/', `/${props.index}/`) +
+        modifier
     );
   }
 
