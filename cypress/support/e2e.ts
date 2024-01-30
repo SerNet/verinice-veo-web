@@ -41,4 +41,6 @@ Cypress.on('uncaught:exception', (err, _runnable) => {
   if (err.message.includes('ResizeObserver loop limit exceeded')) {
     return false;
   }
+
+  return false;
 });
