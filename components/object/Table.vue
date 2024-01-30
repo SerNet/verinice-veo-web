@@ -177,7 +177,7 @@ const renderUpdatedAtTooltip: TableRenderer = ({ internalItem: item }) => {
 /**
  * Format date via i18n
  */
-const formatDate: TableFormatter = (v) => {
+const formatDate: TableFormatter = (v: any) => {
   try {
     return formatDateTime(new Date(v)).value;
   } catch (e) {
@@ -188,15 +188,9 @@ const formatDate: TableFormatter = (v) => {
 /**
  * Render translated status
  */
-const renderStatus: TableRenderer = ({ item }) => {
-  if (!route.params.domain) return '';
-  const domainDetails = item.domains?.[route.params.domain as string];
-  const key = `${item.type}_${domainDetails?.subType}_status_${domainDetails?.status}`;
-  return (
-    translations.value?.lang?.[locale.value]?.[key] ||
-    item.domains?.[route.params.domain as string]?.status ||
-    ''
-  );
+const renderStatus: TableRenderer = ({ item }: { item: any }) => {
+  const key = `${item.type}_${item.subType}_status_${item.status}`;
+  return translations.value?.lang?.[locale.value]?.[key] || item?.status || '';
 };
 
 /**
