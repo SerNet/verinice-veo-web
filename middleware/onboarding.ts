@@ -21,7 +21,6 @@ import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useQuerySync } from '~/composables/api/utils/query';
 
-import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 /**
  * After a successful login users are redirected to the `/units` route.
  * This middleware then redirects them to a welcome page if
@@ -45,25 +44,23 @@ export default defineNuxtRouteMiddleware((to) => {
 
 async function showDashBoard() {
   // check localStorage for unit- and domainkey
-  const unitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
-  const domainId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
+  let unitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
+  let domainId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
 
-  // if the keys aren't present, link to /units
-  if (!domainId || !unitId) {
-    return navigateTo('/units');
+  // if the keys are present, link to the appropriate dashboard
+  if (unitId && domainId) {
+    return navigateTo(`/${unitId}/domains/${domainId}`);
   }
+  // if neither of the keys is present (shouldn't happen; either both or neither of it are present)
+  // fetch all units and link to the "first" unit / domain returned by the backend
+  const units = await useQuerySync(unitQueryDefinitions.queries.fetchAll);
 
-  // neither of the keys was found, so we fetch the appropriate unit
-  const unit = await useQuerySync(unitQueryDefinitions.queries.fetch, {
-    id: unitId,
-  });
-  // ... and link to the dashboard
-  if (
-    unit &&
-    unit.domains.find((domain: IVeoDomain) =>
-      domain.targetUri.includes(domainId)
-    )
-  ) {
-    return navigateTo(`/${unit.id}/domains/${domainId}`);
-  } else return navigateTo('/units');
+  unitId = units?.[0]?.id;
+  domainId = units?.[0]?.domains?.[0]?.id;
+
+  // check the IDs again; if the API call fails, link to the unit management
+  const linkTarget =
+    unitId && domainId ? `/${unitId}/domains/${domainId}` : '/units';
+
+  return navigateTo(linkTarget);
 }
