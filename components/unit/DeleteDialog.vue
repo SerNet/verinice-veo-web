@@ -88,6 +88,8 @@ import unitQueryDefinitions, {
 import { useMutation } from '~/composables/api/utils/mutation';
 import { VeoAlertType } from '~/types/VeoTypes';
 
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+
 const props = withDefaults(
   defineProps<{
     unit?: IVeoUnit;
@@ -133,6 +135,16 @@ const deleteUnit = async () => {
   }
   try {
     await doDelete({ id: props.unit?.id });
+    // if the unit's to be deleted equals the unit ID in the storage, we delete it from the storage to circumvent a 404 code at login
+    const storageUnitId = window.localStorage.getItem(
+      LOCAL_STORAGE_KEYS.LAST_UNIT
+    );
+
+    if (props.unit?.id === storageUnitId) {
+      localStorage.removeItem('last-unit');
+      localStorage.removeItem('last-domain');
+    }
+
     displaySuccessMessage(t('unitDeleted'));
     emit('success');
   } catch (e: any) {

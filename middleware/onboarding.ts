@@ -44,19 +44,22 @@ export default defineNuxtRouteMiddleware((to) => {
 
 async function showDashBoard() {
   // check localStorage for unit- and domainkey
-  let unitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
-  let domainId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
+  const storageUnitId = window.localStorage.getItem(
+    LOCAL_STORAGE_KEYS.LAST_UNIT
+  );
+  const storageDomainId = window.localStorage.getItem(
+    LOCAL_STORAGE_KEYS.LAST_DOMAIN
+  );
 
   // if the keys are present, link to the appropriate dashboard
-  if (unitId && domainId) {
-    return navigateTo(`/${unitId}/domains/${domainId}`);
+  if (storageUnitId && storageDomainId) {
+    return navigateTo(`/${storageUnitId}/domains/${storageDomainId}`);
   }
-  // if neither of the keys is present (shouldn't happen; either both or neither of it are present)
-  // fetch all units and link to the "first" unit / domain returned by the backend
+  // if neither of the keys is found fetch all units and link to the "first" unit / domain returned by the backend
   const units = await useQuerySync(unitQueryDefinitions.queries.fetchAll);
 
-  unitId = units?.[0]?.id;
-  domainId = units?.[0]?.domains?.[0]?.id;
+  const unitId = units?.[0]?.id;
+  const domainId = units?.[0]?.domains?.[0]?.id;
 
   // check the IDs again; if the API call fails, link to the unit management
   const linkTarget =
