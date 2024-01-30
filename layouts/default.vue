@@ -17,16 +17,26 @@
 -->
 <template>
   <v-app>
-    <v-app-bar :class="$style['app-bar']" data-component-name="app-bar" flat>
-      <v-app-bar-nav-icon v-if="xs" @click="drawer = !drawer" />
+    <v-app-bar
+      :class="$style['app-bar']"
+      data-component-name="app-bar"
+      flat
+    >
+      <v-app-bar-nav-icon
+        v-if="xs"
+        @click="drawer = !drawer"
+      />
       <nuxt-link
-        to="/"
+        to="/units"
         :target="route.path.startsWith('/docs') ? '_blank' : undefined"
         class="text-decoration-none ml-4"
         data-component-name="logo"
         data-veo-test="unit-page-link"
       >
-        <LayoutAppBarLogo style="height: 60px" class="d-flex align-center" />
+        <LayoutAppBarLogo
+          style="height: 60px"
+          class="d-flex align-center"
+        />
       </nuxt-link>
 
       <LayoutBreadcrumbs write-to-title />
@@ -39,7 +49,10 @@
 
       <LayoutTutorialButton v-if="!$route.path.startsWith('/docs')" />
 
-      <v-tooltip v-if="ability.can('view', 'documentation')" location="bottom">
+      <v-tooltip
+        v-if="ability.can('view', 'documentation')"
+        location="bottom"
+      >
         <template #activator="{ props }">
           <v-btn
             v-if="!$route.path.startsWith('/docs')"
@@ -59,8 +72,16 @@
         </template>
       </v-tooltip>
 
-      <LayoutAccountBtn v-if="authenticated" class="mr-3" />
-      <v-btn v-else color="primary" icon to="/login">
+      <LayoutAccountBtn
+        v-if="authenticated"
+        class="mr-3"
+      />
+      <v-btn
+        v-else
+        color="primary"
+        icon
+        to="/login"
+      >
         <v-icon :icon="mdiAccountCircleOutline" />
       </v-btn>
     </v-app-bar>
@@ -77,7 +98,10 @@
       <LayoutCookieBanner />
     </v-main>
 
-    <LayoutGlobalAlert v-if="alerts[0]" v-bind="alerts[0]" />
+    <LayoutGlobalAlert
+      v-if="alerts[0]"
+      v-bind="alerts[0]"
+    />
   </v-app>
 </template>
 
@@ -100,7 +124,7 @@ const { t } = useI18n();
 const theme = useTheme();
 
 useHead(() => ({
-  titleTemplate: '%s - verinice.veo',
+  titleTemplate: '%s - verinice.veo'
 }));
 
 //

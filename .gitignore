@@ -24,3 +24,7 @@ cypress/downloads
 cypress/screenshots
 cypress/videos
 cypress/config
+
+# VS Code
+*.code-workspace
+.vscode/*
