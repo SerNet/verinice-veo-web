@@ -24,7 +24,7 @@ export function login({
     [username, password],
     () => {
       cy.visit('/login');
-      cy.get('[data-veo-test="login-btn-login"]').click();
+      cy.get('[data-veo-test="login-btn-login"]', { timeout: 30000 }).click();
 
       if (!isLocalhost) {
         applyCredentials({ username, password });
