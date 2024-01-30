@@ -44,6 +44,10 @@ export function login({
     },
     { cacheAcrossSpecs: true }
   );
+
+  cy.visit('/units');
+  cy.url().should('contain', '/units');
+  cy.acceptAllCookies();
 }
 
 function applyCredentials({

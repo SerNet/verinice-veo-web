@@ -15,10 +15,7 @@ declare global {
 export function goToUnitSelection(): void {
   cy.visit('/units');
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units`).as('getUnits');
-  cy.wait(['@getUnits'], { responseTimeout: 15000 })
-    .its('response.statusCode')
-    .should('eq', 200);
-  cy.get('[data-veo-test="unit-page-link"]').click();
+  cy.wait(['@getUnits']).its('response.statusCode').should('eq', 200);
 }
 
 export function selectUnit({
@@ -35,8 +32,6 @@ export function createUnit({
   domains = Cypress.env('unitDetails').domains,
 }: { unitName?: string; unitDesc?: string; domains?: string[] } = {}): void {
   cy.goToUnitSelection();
-  cy.acceptAllCookies();
-
   cy.get('.veo-primary-action-fab button').click();
 
   // Choose domains
@@ -80,7 +75,6 @@ export function deleteUnit({
   unitName = Cypress.env('unitDetails').name,
 }: { unitName?: string } = {}): void {
   cy.goToUnitSelection();
-  cy.acceptAllCookies();
   cy.get('.v-list-item--link')
     .contains(unitName)
     .parent()
