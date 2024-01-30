@@ -480,8 +480,8 @@ const actions = computed(() => [
     icon: mdiDotsVertical,
     action(item: any) {
       objectAssignDialogVisible.value = true;
-      objectId.value = item.raw.id;
-      objectType.value = item.raw?.type;
+      objectId.value = item.id;
+      objectType.value = item.type;
     },
   },
 ]);
