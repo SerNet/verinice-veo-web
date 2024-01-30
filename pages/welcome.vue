@@ -362,9 +362,6 @@ const links = ref({
     en: 'https://verinice.com/en/pro/webinars-1',
   },
 });
-
-// prevent the welcome page to be loaded automatically at login (except for the first time; handled by the middleware)
-localStorage.setItem(LOCAL_STORAGE_KEYS.SHOW_WELCOME_PAGE, 'false');
 </script>
 
 <i18n>

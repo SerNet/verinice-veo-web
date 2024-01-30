@@ -22,10 +22,10 @@ import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useQuerySync } from '~/composables/api/utils/query';
 
 /**
- * After a successful login users are redirected to the `/units` route.
+ * After a successful login users are redirected to the `/` route.
  * This middleware then redirects them to a welcome page if
- * a localStorage key `SHOW_WELCOME_PAGE` is either absent (new user)
- * or of the value `true`.
+ * a localStorage key `IS_FRESH_LOGIN` is absent (new user)
+ * or to the dashboard if the user is recurring.
  */
 export default defineNuxtRouteMiddleware((to) => {
   if (to.path !== '/') return;

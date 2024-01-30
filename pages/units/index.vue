@@ -133,10 +133,6 @@ import unitQueryDefinitions, {
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
-// definePageMeta({
-//   middleware: 'onboarding'
-// });
-
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 
