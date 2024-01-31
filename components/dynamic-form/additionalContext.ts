@@ -88,7 +88,7 @@ export const getRiskAdditionalContext = (
   language: string
 ): IVeoFormsAdditionalContext => {
   const riskDefinitionName = Object.keys(domain.riskDefinitions)[0];
-  const riskDefinitionCategories = ['C', 'I', 'A', 'R'];
+  const riskDefinitionCategories = ['C', 'I', 'A', 'R', 'AU'];
 
   switch (objectType) {
     case 'process':
