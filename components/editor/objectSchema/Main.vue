@@ -33,8 +33,7 @@
                 :description="child.item.description"
                 :styling="child.styling"
                 lines="two"
-                translate
-              />
+                translate />
             </v-list>
           </v-card>
         </v-expansion-panel-text>
@@ -48,8 +47,7 @@
               small
               color="primary"
               variant="text"
-              @click.stop="showAddDialog('aspect')"
-            >
+              @click.stop="showAddDialog('aspect')">
               <v-icon size="small" :icon="mdiPlus" />
               <span>{{ globalT('editor.customaspects.add') }}</span>
             </v-btn>
@@ -64,14 +62,12 @@
             "
             :key="index"
             class="mb-2 overflow-hidden"
-            variant="outlined"
-          >
+            variant="outlined">
             <v-list class="py-0">
               <EditorObjectSchemaListHeader
                 v-bind="aspect"
                 @edit-item="showEditDialog(aspect.item, 'aspect')"
-                @delete-item="showDeleteDialog(aspect.item.title, 'aspect')"
-              />
+                @delete-item="showDeleteDialog(aspect.item.title, 'aspect')" />
               <EditorObjectSchemaListItem
                 v-for="(attribute, index2) of aspect.item.attributes"
                 v-show="attributeContainsTitle(attribute, search)"
@@ -79,8 +75,7 @@
                 v-bind="attribute"
                 :styling="newItemTypes[attribute.type]"
                 lines="two"
-                translate
-              />
+                translate />
             </v-list>
           </v-card>
         </v-expansion-panel-text>
@@ -94,8 +89,7 @@
               small
               variant="text"
               color="primary"
-              @click.stop="showAddDialog('link')"
-            >
+              @click.stop="showAddDialog('link')">
               <v-icon size="small" :icon="mdiPlus" />
               <span>{{ t('addCustomLink') }}</span>
             </v-btn>
@@ -107,18 +101,16 @@
             v-show="itemContainsAttributeTitle(link, search)"
             :key="index"
             class="mb-2 overflow-hidden"
-            variant="outlined"
-          >
+            variant="outlined">
             <v-list class="py-0">
               <EditorObjectSchemaListHeader
                 v-bind="link"
                 :styling="{
                   name: formattedLinkHeader(link.item),
-                  color: 'black',
+                  color: 'black'
                 }"
                 @edit-item="showEditDialog(link.item, 'link')"
-                @delete-item="showDeleteDialog(link.item.title, 'link')"
-              />
+                @delete-item="showDeleteDialog(link.item.title, 'link')" />
               <EditorObjectSchemaListItem
                 v-for="(attribute, index2) of link.item.attributes"
                 v-show="attributeContainsTitle(attribute, search)"
@@ -126,8 +118,7 @@
                 v-bind="attribute"
                 :styling="newItemTypes[attribute.type]"
                 lines="two"
-                translate
-              />
+                translate />
             </v-list>
           </v-card>
         </v-expansion-panel-text>
@@ -143,13 +134,11 @@
       @error="onEditPropertyError"
       @delete="
         showDeleteDialog(objectSchemaDialog.propertyId, objectSchemaDialog.type)
-      "
-    />
+      " />
     <EditorObjectSchemaDeleteCustomPropertyDialog
       v-model="deleteDialog.value"
       v-bind="deleteDialog"
-      @delete-item="doDeleteItem()"
-    />
+      @delete-item="doDeleteItem()" />
   </div>
 </template>
 
@@ -160,7 +149,7 @@ import { mdiPlus } from '@mdi/js';
 import ObjectSchemaHelper, {
   IVeoOSHCustomAspect,
   IVeoOSHCustomLink,
-  IVeoOSHCustomProperty,
+  IVeoOSHCustomProperty
 } from '~/lib/ObjectSchemaHelper2';
 import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
@@ -176,16 +165,16 @@ export default defineComponent({
   props: {
     search: {
       type: String,
-      default: '',
+      default: ''
     },
     hideEmptyAspects: {
       type: Boolean,
-      default: false,
+      default: false
     },
     domainId: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: ['schema-updated'],
   setup(props, context) {
@@ -248,7 +237,7 @@ export default defineComponent({
         .map((entry: IVeoOSHCustomAspect) => {
           return {
             item: entry,
-            styling: undefined,
+            styling: undefined
           };
         });
       customLinks.value = objectSchemaHelper.value
@@ -258,7 +247,7 @@ export default defineComponent({
           entry.type = entry.targetType;
           return {
             item: entry,
-            styling: undefined,
+            styling: undefined
           };
         });
       basicProps.value = objectSchemaHelper.value
@@ -266,7 +255,7 @@ export default defineComponent({
         .map((entry: IVeoOSHCustomProperty) => {
           return {
             item: entry,
-            styling: INPUT_TYPES[entry.type],
+            styling: INPUT_TYPES[entry.type]
           };
         });
     }
@@ -287,7 +276,7 @@ export default defineComponent({
     const objectSchemaDialog = ref({
       value: false,
       type: 'aspect' as 'aspect' | 'link',
-      propertyId: undefined as undefined | string,
+      propertyId: undefined as undefined | string
     });
 
     function showAddDialog(type: 'aspect' | 'link') {
@@ -328,7 +317,7 @@ export default defineComponent({
     const deleteDialog = ref({
       value: false,
       title: '',
-      type: 'aspect' as 'link' | 'aspect',
+      type: 'aspect' as 'link' | 'aspect'
     });
     function showDeleteDialog(propertyId: string, type: 'aspect' | 'link') {
       deleteDialog.value.type = type;
@@ -356,7 +345,7 @@ export default defineComponent({
       schemaQueryDefinitions.queries.fetchSchemas
     );
     const fetchFormsQueryParameters = computed(() => ({
-      domainId: props.domainId,
+      domainId: props.domainId
     }));
     const { data: forms } = useQuery(
       formQueryDefinitions.queries.fetchForms,
@@ -385,9 +374,9 @@ export default defineComponent({
 
       mdiPlus,
       t,
-      globalT,
+      globalT
     };
-  },
+  }
 });
 </script>
 

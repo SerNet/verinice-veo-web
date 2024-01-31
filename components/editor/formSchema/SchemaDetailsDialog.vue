@@ -21,8 +21,7 @@
     large
     :title="t('schemaDetailsHeadline')"
     fixed-footer
-    @update:model-value="emit('update:model-value', $event)"
-  >
+    @update:model-value="emit('update:model-value', $event)">
     <template #default>
       <v-form v-model="formIsValid" class="mx-4" @submit="doSave()">
         <v-row no-gutters class="align-center mt-4">
@@ -35,8 +34,7 @@
               required
               flat
               :rules="[requiredRule]"
-              :label="t('schemaName')"
-            />
+              :label="t('schemaName')" />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
@@ -49,8 +47,7 @@
             <v-text-field
               v-model="form.sorting"
               :label="globalT('editor.formschema.sorting')"
-              flat
-            />
+              flat />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
@@ -65,8 +62,7 @@
               flat
               :label="globalT('editor.formschema.create.type')"
               readonly
-              disabled
-            />
+              disabled />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
@@ -81,8 +77,7 @@
               :label="globalT('editor.formschema.subtype')"
               :items="subTypeOptions"
               :rules="[requiredRule]"
-              flat
-            />
+              flat />
           </v-col>
         </v-row>
         <small>{{ globalT('global.input.requiredfields') }}</small>
@@ -114,7 +109,7 @@ const props = withDefaults(
   {
     formSchema: '',
     subType: null,
-    sorting: null,
+    sorting: null
   }
 );
 
@@ -133,7 +128,7 @@ const formIsValid = ref(true);
 const form = ref({
   formSchema: props.formSchema,
   subType: props.subType,
-  sorting: props.sorting,
+  sorting: props.sorting
 });
 
 watch(
@@ -163,7 +158,7 @@ const subTypeOptions = computed(() =>
       ?.properties?.subType?.enum || []
   ).map((subType: string) => ({
     title: subType,
-    value: subType,
+    value: subType
   }))
 );
 

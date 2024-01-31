@@ -31,8 +31,7 @@
       :clearable="!required"
       variant="underlined"
       hide-details="auto"
-      @update:model-value="onInput($event)"
-    />
+      @update:model-value="onInput($event)" />
     <v-select
       v-else-if="type === IVeoFilterOptionType.SELECT"
       :model-value="modelValue"
@@ -47,8 +46,7 @@
       :clearable="!required"
       hide-details="auto"
       variant="underlined"
-      @update:model-value="onInput($event)"
-    />
+      @update:model-value="onInput($event)" />
     <v-checkbox
       v-else-if="type === IVeoFilterOptionType.CHECKBOX"
       :model-value="modelValue"
@@ -61,8 +59,7 @@
       :name="name"
       hide-details="auto"
       variant="underlined"
-      @update:model-value="onInput($event)"
-    />
+      @update:model-value="onInput($event)" />
   </v-list-item>
 </template>
 
@@ -74,7 +71,7 @@ export enum IVeoFilterOptionType {
   TEXT,
   SELECT,
   CHECKBOX,
-  DIVIDER,
+  DIVIDER
 }
 
 export interface IVeoFilterOption {
@@ -95,36 +92,36 @@ export default defineComponent({
   props: {
     modelValue: {
       type: [String, Number, Array, Boolean],
-      default: undefined,
+      default: undefined
     },
     name: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     type: {
       type: Number as PropType<IVeoFilterOptionType>,
-      required: true,
+      required: true
     },
     required: {
       type: Boolean,
-      default: undefined,
+      default: undefined
     },
     alwaysVisible: {
       type: Boolean,
-      default: undefined,
+      default: undefined
     },
     selectOptions: {
       type: Array as PropType<{ title: string; value: string }[]>,
-      default: undefined,
+      default: undefined
     },
     disabled: {
       type: Boolean,
-      default: undefined,
+      default: undefined
     },
     onChange: {
       type: Function as PropType<(_: string) => void>,
-      default: undefined,
-    },
+      default: undefined
+    }
   },
   emits: ['update:model-value'],
   setup(props, { emit }) {
@@ -144,8 +141,8 @@ export default defineComponent({
       IVeoFilterOptionType,
 
       t,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>

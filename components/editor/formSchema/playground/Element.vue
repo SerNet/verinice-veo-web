@@ -23,8 +23,7 @@
       :form-schema-element="formSchemaElement"
       style="min-width: 300px"
       @delete="deleteElementDialogVisible = true"
-      @edit="editElementDialogVisible = true"
-    >
+      @edit="editElementDialogVisible = true">
       <Draggable
         :model-value="props.playgroundElement.children"
         handle=".handle"
@@ -33,8 +32,7 @@
         :class="$style.dragarea"
         @add="onElementAdded"
         @update="onElementMoved"
-        @remove="onElementRemoved"
-      >
+        @remove="onElementRemoved">
         <template #item="{ element, index }">
           <EditorFormSchemaPlaygroundElement
             :playground-element="element"
@@ -50,8 +48,7 @@
             @form-schema-elements-modified="
               emit('form-schema-elements-modified')
             "
-            @set-translations="emit('set-translations', $event)"
-          />
+            @set-translations="emit('set-translations', $event)" />
         </template>
       </Draggable>
     </component>
@@ -64,8 +61,7 @@
       @update:form-schema-element="onFormSchemaElementEdited"
       @set-translations="emit('set-translations', $event)"
       @add="(elementPointer, element) => emit('add', elementPointer, element)"
-      @remove="(elementPointer) => emit('remove', elementPointer)"
-    >
+      @remove="(elementPointer) => emit('remove', elementPointer)">
       <Draggable
         v-if="formSchemaElement.type === 'Control'"
         :model-value="props.playgroundElement.children"
@@ -75,8 +71,7 @@
         :class="$style.dragarea"
         @add="onElementAdded"
         @update="onElementMoved"
-        @remove="onElementRemoved"
-      >
+        @remove="onElementRemoved">
         <template #item="{ element, index }">
           <EditorFormSchemaPlaygroundElement
             :playground-element="element"
@@ -92,8 +87,7 @@
             @form-schema-elements-modified="
               emit('form-schema-elements-modified')
             "
-            @set-translations="emit('set-translations', $event)"
-          />
+            @set-translations="emit('set-translations', $event)" />
         </template>
       </Draggable>
     </EditorFormSchemaPlaygroundEditElementDialog>
@@ -101,8 +95,7 @@
       v-if="formSchemaElement"
       v-model="deleteElementDialogVisible"
       :form-schema-element="formSchemaElement"
-      @delete="emit('remove', pointer, true)"
-    />
+      @delete="emit('remove', pointer, true)" />
   </div>
 </template>
 
@@ -120,7 +113,7 @@ import { cloneDeep } from 'lodash';
 
 import {
   FormSchemaElementMap,
-  PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS,
+  PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS
 } from './Playground.vue';
 import ControlElement from './ControlElement.vue';
 import LabelElement from './LabelElement.vue';
@@ -177,7 +170,7 @@ const fittingComponent = computed(() => {
         'div',
         t('componentNotFound', [
           props.playgroundElement.id,
-          formSchemaElement.value?.type,
+          formSchemaElement.value?.type
         ])
       );
   }

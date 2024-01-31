@@ -6,7 +6,7 @@ export default async (_inlineOptions: object, nuxt: Nuxt) => {
   nuxt.hooks.hook('vite:extendConfig', (config) => {
     config.plugins.push(
       vuetify({
-        styles: { configFile: './assets/styles/vuetify/variables.scss' },
+        styles: { configFile: './assets/styles/vuetify/variables.scss' }
       })
     );
   });

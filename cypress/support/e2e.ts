@@ -4,7 +4,7 @@ import {
   goToUnitSelection,
   selectUnit,
   createUnit,
-  deleteUnit,
+  deleteUnit
 } from '../commands/units';
 import { generateUnitDetails } from './setupHelpers';
 
@@ -14,7 +14,7 @@ Cypress.Commands.addAll({
   goToUnitSelection,
   selectUnit,
   createUnit,
-  deleteUnit,
+  deleteUnit
 });
 
 before(() => {

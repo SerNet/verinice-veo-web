@@ -13,7 +13,7 @@ function translateSubType({
   formSchemas,
   locale,
   subType,
-  elementType,
+  elementType
 }: TranslateSubTypeParams) {
   if (!subType) subType = 'all';
   if (!formSchemas) return;
@@ -43,7 +43,7 @@ export function useSubTypeTranslation() {
   // Translations are found in forms, so we fetch them:
   const allFormSchemasQueryEnabled = computed(() => !!domainId);
   const queryParameters = computed(() => ({
-    domainId: domainId.value,
+    domainId: domainId.value
   }));
   const { data: formSchemas } = useQuery(
     formsQueryDefinitions.queries.fetchForms,
@@ -57,8 +57,8 @@ export function useSubTypeTranslation() {
         formSchemas: formSchemas.value,
         locale: locale.value,
         subType: subType.value,
-        elementType: elementType.value,
+        elementType: elementType.value
       })
-    ),
+    )
   };
 }

@@ -19,12 +19,12 @@ import FormSchemaValidator from './FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
 import {
   IVeoFormSchemaTranslationCollection,
-  IVeoObjectSchema,
+  IVeoObjectSchema
 } from '~/types/VeoTypes';
 import {
   IVeoFormSchema,
   IVeoFormSchemaItem,
-  IVeoFormSchemaMeta,
+  IVeoFormSchemaMeta
 } from '~/composables/api/queryDefinitions/forms';
 import { cloneDeep } from 'lodash';
 
@@ -44,11 +44,11 @@ export function generateSchema(
       type: 'Layout',
       options: {
         format: 'group',
-        direction: 'vertical',
+        direction: 'vertical'
       },
-      elements: [],
+      elements: []
     },
-    sorting,
+    sorting
   };
 }
 

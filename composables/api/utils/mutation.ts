@@ -18,7 +18,7 @@
 import {
   QueryClient,
   useMutation as vueQueryUseMutation,
-  useQueryClient,
+  useQueryClient
 } from '@tanstack/vue-query';
 import { UseMutationOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
@@ -27,7 +27,7 @@ import { omit } from 'lodash';
 import {
   debugCacheAsArrayIncludesPrimaryKey,
   IVeoQueryDefinition,
-  IVeoQueryParameters,
+  IVeoQueryParameters
 } from './query';
 import { useRequest } from './request';
 
@@ -58,7 +58,7 @@ export interface IVeoMutationDefinition<TVariables, TResult>
 
 export interface IVeoMutationParameters<
   TParams = Record<string, any>,
-  TQuery = Record<string, any>,
+  TQuery = Record<string, any>
 > extends IVeoQueryParameters<TParams, TQuery> {
   body?: any;
   json?: any;
@@ -107,7 +107,7 @@ export const useMutation = <TVariables, TResult>(
       if (mutationOptions?.onSuccess) {
         await mutationOptions.onSuccess(queryClient, data, variables, context);
       }
-    },
+    }
   }));
 
   // Actual mutation getting execute
@@ -116,14 +116,14 @@ export const useMutation = <TVariables, TResult>(
     mutationFn: async (mutationParameters: IVeoMutationParameters) => {
       let result = await request(mutationDefinition.url, {
         ...mutationParameters,
-        ...omit(mutationDefinition, 'url', 'onDataFetched'),
+        ...omit(mutationDefinition, 'url', 'onDataFetched')
       });
       if (mutationDefinition.onDataFetched) {
         result = mutationDefinition.onDataFetched(result, mutationParameters);
       }
       return result;
     },
-    ...combinedOptions.value,
+    ...combinedOptions.value
   });
 
   return {
@@ -152,6 +152,6 @@ export const useMutation = <TVariables, TResult>(
       }
 
       return result.mutateAsync(transformedParameters);
-    },
+    }
   };
 };

@@ -22,20 +22,17 @@
         cols="12"
         sm="6"
         lg="4"
-        class="docs-form-sector d-flex justify-center"
-      >
+        class="docs-form-sector d-flex justify-center">
         <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
-          :form-schema="form.formSchema"
-        />
+          :form-schema="form.formSchema" />
       </v-col>
     </v-row>
     <HelpFormDescription
       :object-schema="form.objectSchema"
       :form-schema="form.formSchema"
-      :data="form.data"
-    />
+      :data="form.data" />
   </BasePage>
 </template>
 
@@ -47,8 +44,8 @@ const form = ref({
   formSchema: {
     type: 'Label',
     text: 'Ein Beispiel für den statischen Text.',
-    options: {},
+    options: {}
   },
-  data: {},
+  data: {}
 });
 </script>

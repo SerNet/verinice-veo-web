@@ -26,8 +26,7 @@
       :title="item.title"
       class="rounded mb-2 py-2 bg-accent"
       two-line
-      @click="checkBoxSelectionOnly ? undefined : onItemSelected(item)"
-    >
+      @click="checkBoxSelectionOnly ? undefined : onItemSelected(item)">
       <template #default>
         <slot :name="`item-${item.value}`" />
       </template>
@@ -42,8 +41,7 @@
             : multiple ? mdiCheckboxBlankOutline
             : mdiRadioboxBlank
           "
-          @click="checkBoxSelectionOnly ? onItemSelected(item) : undefined"
-        />
+          @click="checkBoxSelectionOnly ? onItemSelected(item) : undefined" />
       </template>
     </v-list-item>
   </v-list>
@@ -56,7 +54,7 @@ import {
   mdiCheckboxBlankOutline,
   mdiCheckboxMarked,
   mdiRadioboxBlank,
-  mdiRadioboxMarked,
+  mdiRadioboxMarked
 } from '@mdi/js';
 
 export interface IProminentSelectionListItem {
@@ -69,20 +67,20 @@ export interface IProminentSelectionListItem {
 const props = defineProps({
   items: {
     type: Array as PropType<IProminentSelectionListItem[]>,
-    default: () => [],
+    default: () => []
   },
   modelValue: {
     type: [String, Number, Array],
-    default: undefined,
+    default: undefined
   },
   multiple: {
     type: Boolean,
-    default: false,
+    default: false
   },
   checkBoxSelectionOnly: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 });
 
 const emit = defineEmits<{

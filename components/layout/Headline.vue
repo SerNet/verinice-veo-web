@@ -46,7 +46,7 @@ const _props = withDefaults(
   {
     title: '',
     element: '',
-    description: '',
+    description: ''
   }
 );
 </script>

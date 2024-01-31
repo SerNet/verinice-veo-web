@@ -25,7 +25,7 @@ import { JSONSchema7 } from 'json-schema';
 import {
   IDynamicFormElementOptions,
   IVeoFormElementFormSchemaRule,
-  IVeoFormElementRule,
+  IVeoFormElementRule
 } from './types';
 import { IVeoFormSchemaControl, UISchemaElement } from '~/types/UISchema';
 import { IVeoFormSchemaGeneratorOptions } from '~/types/VeoTypes';
@@ -35,36 +35,36 @@ export default {};
 export const VeoFormsElementProps = {
   metaData: {
     type: Object as PropType<Record<string, any>>,
-    default: undefined,
+    default: undefined
   },
   disabled: {
     type: Boolean,
-    default: false,
+    default: false
   },
   objectCreationDisabled: {
     type: Boolean,
-    default: false,
+    default: false
   },
   debug: {
     type: Boolean,
-    default: false,
+    default: false
   },
   formSchemaPointer: {
     type: String,
-    required: true,
+    required: true
   },
   options: {
     type: Object as PropType<IDynamicFormElementOptions>,
-    default: () => ({}),
-  },
+    default: () => ({})
+  }
 };
 
 export const VeoFormsWidgetProps = {
   ...VeoFormsElementProps,
   name: {
     type: String,
-    required: true,
-  },
+    required: true
+  }
 };
 
 export const VeoFormsControlProps = {
@@ -73,50 +73,50 @@ export const VeoFormsControlProps = {
   objectSchemaPointer: {
     type: String,
     default: '',
-    required: true,
+    required: true
   },
   // Complete object schema
   objectSchema: {
     type: Object as PropType<JSONSchema7>,
     default: () => ({}),
-    required: true,
+    required: true
   },
   // Points to where the value can be found in the object (usually the object schema pointer without /properties, however if the control is part of a custom link, the index omes into play)
   valuePointer: {
     type: String,
     default: '',
-    required: true,
+    required: true
   },
   // The value of this control. Might get modified in the Control.ts if control is part of a custom link.
   modelValue: {
     type: [Number, String, Object, Array, Boolean],
-    default: undefined,
+    default: undefined
   },
   // Map containing all errors present in the form
   errors: {
     type: Map as PropType<Map<string, string[]>>,
-    default: () => ({}),
+    default: () => ({})
   },
   // Marks this control as being part of a link (and gets passed in the onInput call. Usually gets set in the background by the VeoLinksFieldRowAttribute component)
   index: {
     type: Number,
-    default: undefined,
+    default: undefined
   },
   // Contains all items available in VeoAutocomplete, VeoSelect and VeoRadio
   items: {
     type: Array as PropType<{ title: string; value: any }[]>,
-    default: () => [],
+    default: () => []
   },
   // Used by vue the identify each Node so that it only gets repainted if the key changes. Makes forms more performant
   elementKey: {
     type: String,
-    required: true,
-  },
+    required: true
+  }
 };
 
 export const ajv = new Ajv2019({
   allErrors: true,
-  strict: false,
+  strict: false
 });
 addFormats(ajv);
 
@@ -131,7 +131,7 @@ export const evaluateRule = (
 ): IVeoFormElementRule => {
   const defaults = {
     visible: true,
-    disabled: false,
+    disabled: false
   };
   if (!rule) {
     return defaults;
@@ -215,7 +215,7 @@ export const addConditionalSchemaPropertiesToControlSchema = (
       : []),
       ...getSchemaCompositionConditions(parentSchema.allOf),
       ...getSchemaCompositionConditions(parentSchema.AnyOf),
-      ...getSchemaCompositionConditions(parentSchema.OneOf),
+      ...getSchemaCompositionConditions(parentSchema.OneOf)
     ];
 
     for (const condition of conditionsToCheck) {
@@ -271,7 +271,7 @@ const getSchemaWithAppliedConditionalSchemaProperties = (
 
 export enum Mode {
   GENERAL = 'GENERAL',
-  VEO = 'VEO',
+  VEO = 'VEO'
 }
 
 function isGroup(schema: JSONSchema7): boolean {
@@ -298,7 +298,7 @@ export function generateFormSchemaGroup(
       {
         type: 'Label',
         text: label,
-        options: { class: 'font-italic text-accent text-body-2' },
+        options: { class: 'font-italic text-accent text-body-2' }
       }
     : undefined;
 
@@ -306,9 +306,9 @@ export function generateFormSchemaGroup(
     type: 'Layout',
     options: {
       class: 'veo-generated-fs-group-border',
-      direction: 'vertical',
+      direction: 'vertical'
     },
-    elements: [...(labelElement ? [labelElement as any] : []), ...children],
+    elements: [...(labelElement ? [labelElement as any] : []), ...children]
   };
 }
 
@@ -329,9 +329,9 @@ export function generateFormSchemaControl(
     type: 'Control',
     scope: pointer,
     options: {
-      label,
+      label
     },
-    ...(schema?.items?.required?.includes('target') ? { elements: [] } : {}),
+    ...(schema?.items?.required?.includes('target') ? { elements: [] } : {})
   };
 }
 
@@ -400,7 +400,7 @@ export function generateFormSchema(
       generatorOptions.generateGroupFunction(
         controlsToAddToGroup,
         namespace.label
-      ),
+      )
     ];
   }
 

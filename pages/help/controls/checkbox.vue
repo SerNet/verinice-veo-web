@@ -22,15 +22,13 @@
         <DynamicFormEntrypoint
           v-model="data"
           :object-schema="objectSchema"
-          :form-schema="formSchema"
-        />
+          :form-schema="formSchema" />
       </v-col>
     </v-row>
     <HelpFormDescription
       :object-schema="objectSchema"
       :form-schema="formSchema"
-      :data="data"
-    />
+      :data="data" />
   </BasePage>
 </template>
 
@@ -41,20 +39,20 @@ const objectSchema = {
   type: 'object',
   properties: {
     checkbox: {
-      type: 'boolean',
-    },
-  },
+      type: 'boolean'
+    }
+  }
 };
 
 const formSchema = {
   type: 'Control',
   scope: '#/properties/checkbox',
   options: {
-    label: 'Checkbox',
-  },
+    label: 'Checkbox'
+  }
 };
 
 const data = ref({
-  checkbox: false,
+  checkbox: false
 });
 </script>

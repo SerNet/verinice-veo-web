@@ -20,8 +20,7 @@
     :title="title"
     :styling="styling"
     :translate="translate"
-    lines="two"
-  >
+    lines="two">
     <template #description>
       <v-list-item-subtitle
         ><span v-text="localizedDescription"
@@ -39,27 +38,27 @@ export default defineComponent({
   props: {
     title: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     prefix: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     description: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     twoLine: {
-      type: Boolean,
+      type: Boolean
     },
     styling: {
       type: Object as PropType<IInputType>,
-      default: () => ({}),
+      default: () => ({})
     },
     translate: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   setup(props) {
     const displayLanguage = inject<Ref<string> | undefined>('displayLanguage');
@@ -106,8 +105,8 @@ export default defineComponent({
     });
 
     return {
-      localizedDescription,
+      localizedDescription
     };
-  },
+  }
 });
 </script>

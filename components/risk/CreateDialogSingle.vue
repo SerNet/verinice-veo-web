@@ -31,8 +31,7 @@
     x-large
     fixed-footer
     v-bind="$attrs"
-    @update:model-value="$emit('update:model-value', $event)"
-  >
+    @update:model-value="$emit('update:model-value', $event)">
     <template #default>
       <BaseAlert
         :model-value="true"
@@ -40,8 +39,7 @@
         :title="t('computedValues')"
         :text="t('computedValuesCTA')"
         flat
-        no-close-button
-      />
+        no-close-button />
       <v-form v-if="data" v-model="formIsValid">
         <h2 class="text-h2 mb-1">
           {{ upperFirst(t('common').toString()) }}
@@ -61,8 +59,7 @@
                   :disabled="formDisabled"
                   value-as-link
                   hide-details
-                  @update:model-value="onScenarioChanged"
-                />
+                  @update:model-value="onScenarioChanged" />
               </v-col>
               <v-col xs="12" md="6">
                 <UtilObjectSelect
@@ -75,8 +72,7 @@
                   :disabled="formDisabled"
                   value-as-link
                   hide-details
-                  @update:model-value="onRiskOwnerChanged"
-                />
+                  @update:model-value="onRiskOwnerChanged" />
               </v-col>
             </v-row>
           </v-card-text>
@@ -90,8 +86,7 @@
           @update:mitigations="onMitigationsChanged"
           @update:new-mitigating-action="newMitigatingAction = $event"
           @mitigations-modified="onMitigationsModified"
-          @update:model-value="onRiskDefinitionsChanged"
-        />
+          @update:model-value="onRiskDefinitionsChanged" />
       </v-form>
     </template>
     <template #dialog-options>
@@ -99,8 +94,7 @@
         variant="text"
         color="primary"
         :disabled="savingRisk"
-        @click="$emit('update:model-value', false)"
-      >
+        @click="$emit('update:model-value', false)">
         {{ globalT('global.button.close') }}
       </v-btn>
 
@@ -115,8 +109,7 @@
           !formModified ||
           ability.cannot('manage', 'objects')
         "
-        @click="saveRisk"
-      >
+        @click="saveRisk">
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>
@@ -133,12 +126,12 @@ import {
   IVeoRisk,
   IVeoDomainRiskDefinition,
   VeoAlertType,
-  IVeoEntity,
+  IVeoEntity
 } from '~/types/VeoTypes';
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import domainQueryDefinitions, {
-  IVeoDomain,
+  IVeoDomain
 } from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
@@ -153,24 +146,24 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Boolean,
-      default: false,
+      default: false
     },
     scenarioId: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     domainId: {
       type: String,
-      required: true,
+      required: true
     },
     objectId: {
       type: String,
-      required: true,
+      required: true
     },
     objectType: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: ['update:model-value'],
   setup(props) {
@@ -237,7 +230,7 @@ export default defineComponent({
     const fetchRiskQueryParameters = computed(() => ({
       scenarioId: props.scenarioId as string,
       objectId: props.objectId,
-      endpoint: route.params.objectType as string,
+      endpoint: route.params.objectType as string
     }));
     const fetchRiskQueryEnabled = computed(() => !!props.scenarioId);
 
@@ -248,7 +241,7 @@ export default defineComponent({
         enabled: fetchRiskQueryEnabled,
         onSuccess: () => {
           init();
-        },
+        }
       }
     );
 
@@ -297,7 +290,7 @@ export default defineComponent({
             const newMitigationId = (
               await createObject({
                 endpoint: 'controls',
-                object: newMitigatingAction.value,
+                object: newMitigatingAction.value
               })
             ).resourceId;
             data.value.mitigation = createLink('controls', newMitigationId);
@@ -310,7 +303,7 @@ export default defineComponent({
                 {
                   domain: props.domainId,
                   endpoint: 'controls',
-                  id: getEntityDetailsFromLink(data.value.mitigation).id,
+                  id: getEntityDetailsFromLink(data.value.mitigation).id
                 },
                 queryClient
               ),
@@ -324,13 +317,13 @@ export default defineComponent({
               endpoint: route.params.objectType,
               id: props.objectId,
               scenarioId: props.scenarioId,
-              risk: data.value,
+              risk: data.value
             });
           } else {
             await createRisk({
               endpoint: route.params.objectType,
               objectId: props.objectId,
-              risk: data.value,
+              risk: data.value
             });
           }
           displaySuccessMessage(
@@ -372,14 +365,14 @@ export default defineComponent({
       type: 'control',
       name: t('mitigatingAction', [data.value?.designator]).toString(),
       owner: {
-        targetUri: `${config.public.apiUrl}/units/${route.params.unit}`,
+        targetUri: `${config.public.apiUrl}/units/${route.params.unit}`
       },
       /*
        * Pass a subtype which exists in the current domain.
        * Which one exactly does not matter: getting the first one is arbitrary.
        */
       subType: getFirstControlSubType(domain.value),
-      status: 'NEW',
+      status: 'NEW'
     }));
 
     return {
@@ -406,9 +399,9 @@ export default defineComponent({
       upperFirst,
       t,
       globalT,
-      VeoAlertType,
+      VeoAlertType
     };
-  },
+  }
 });
 
 const makeRiskObject = (
@@ -424,9 +417,9 @@ const makeRiskObject = (
     process: undefined,
     domains: {
       [domainId]: {
-        riskDefinitions: {},
-      },
-    },
+        riskDefinitions: {}
+      }
+    }
   };
 
   const mergedObject = _initialData ? merge(_initialData, object) : object;
@@ -435,7 +428,7 @@ const makeRiskObject = (
     if (!mergedObject.domains[domainId].riskDefinitions[riskDefinition]) {
       mergedObject.domains[domainId].riskDefinitions[riskDefinition] = {
         impactValues: [],
-        riskValues: [],
+        riskValues: []
       };
     }
     merge(mergedObject.domains[domainId].riskDefinitions[riskDefinition], {
@@ -443,8 +436,8 @@ const makeRiskObject = (
         effectiveProbability: undefined,
         potentialProbability: undefined,
         specificProbability: undefined,
-        specificProbabilityExplanation: undefined,
-      },
+        specificProbabilityExplanation: undefined
+      }
     });
 
     for (const category of riskDefinitions[riskDefinition].categories.map(
@@ -455,7 +448,7 @@ const makeRiskObject = (
         effectiveImpact: undefined,
         specificImpact: undefined,
         specificImpactExplanation: undefined,
-        potentialImpact: undefined,
+        potentialImpact: undefined
       };
       if (
         !mergedObject.domains[domainId].riskDefinitions[
@@ -484,7 +477,7 @@ const makeRiskObject = (
         residualRisk: undefined,
         residualRiskExplanation: undefined,
         riskTreatments: [],
-        riskTreatmentExplanation: undefined,
+        riskTreatmentExplanation: undefined
       };
       if (
         !mergedObject.domains[domainId].riskDefinitions[

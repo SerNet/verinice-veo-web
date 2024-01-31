@@ -32,8 +32,7 @@
     rows="3"
     variant="underlined"
     @update:model-value="$emit('update:model-value', $event)"
-    @click:clear="$emit('update:model-value', undefined)"
-  />
+    @click:clear="$emit('update:model-value', undefined)" />
 </template>
 
 <script lang="ts">
@@ -46,16 +45,16 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-text-area',
   name: {
     en: 'text area',
-    de: 'Mehrzeilige Texteingabe',
+    de: 'Mehrzeilige Texteingabe'
   },
   description: {
     en: 'Lets the user enter text in multiple lines.',
-    de: 'Lässt den User mehrzeiligen Text eingeben.',
+    de: 'Lässt den User mehrzeiligen Text eingeben.'
   },
   conditions: (props) => [
     props.objectSchema.type === 'string',
-    props.options.format === 'multiline',
-  ],
+    props.options.format === 'multiline'
+  ]
 };
 
 export default defineComponent({
@@ -66,8 +65,8 @@ export default defineComponent({
     return {
       getControlErrorMessages,
 
-      last,
+      last
     };
-  },
+  }
 });
 </script>

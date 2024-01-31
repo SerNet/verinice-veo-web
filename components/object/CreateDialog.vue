@@ -24,8 +24,7 @@
     fixed-footer
     inner-class="d-flex flex-column"
     v-bind="$attrs"
-    @update:model-value="$emit('update:model-value', $event)"
-  >
+    @update:model-value="$emit('update:model-value', $event)">
     <template #default>
       <ObjectForm
         v-model="objectData"
@@ -34,8 +33,7 @@
         :loading="domainIsFetching"
         disable-history
         scroll-wrapper-id="scroll-wrapper-create-dialog"
-        object-creation-disabled
-      />
+        object-creation-disabled />
     </template>
     <template #dialog-options>
       <v-btn variant="text" @click="$emit('update:model-value', false)">
@@ -46,8 +44,7 @@
         variant="text"
         color="primary"
         :disabled="!isFormValid || !isFormDirty"
-        @click="onSubmit"
-      >
+        @click="onSubmit">
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>
@@ -71,24 +68,24 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Boolean,
-      default: false,
+      default: false
     },
     objectType: {
       type: String,
-      required: true,
+      required: true
     },
     subType: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     domainId: {
       type: String,
-      required: true,
+      required: true
     },
     parentScopeIds: {
       type: Array as PropType<string[]>,
-      default: () => [],
-    },
+      default: () => []
+    }
   },
   emits: ['success', 'update:model-value'],
   setup(props, { emit }) {
@@ -101,7 +98,7 @@ export default defineComponent({
 
     const fetchTranslationsQueryParameters = computed(() => ({
       languages: [locale.value],
-      domain: props.domainId,
+      domain: props.domainId
     }));
     const { data: translations } = useQuery(
       translationQueryDefinitions.queries.fetch,
@@ -121,7 +118,7 @@ export default defineComponent({
 
     // Seeding of empty form
     const fetchDomainQueryParameters = computed(() => ({
-      id: props.domainId as string,
+      id: props.domainId as string
     }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
     const { data: domain, isFetching: domainIsFetching } = useQuery(
@@ -133,7 +130,7 @@ export default defineComponent({
             seedInitialData();
           }
         },
-        enabled: fetchDomainQueryEnabled,
+        enabled: fetchDomainQueryEnabled
       }
     );
 
@@ -154,8 +151,8 @@ export default defineComponent({
         owner: {
           targetUri: `${config.public.apiUrl}/units/${
             route.params.unit as string
-          }`,
-        },
+          }`
+        }
       };
 
       // Set subtype if a subtype is preselected
@@ -205,21 +202,21 @@ export default defineComponent({
                 'object',
                 {
                   endpoint: 'scopes',
-                  id: scope,
-                },
+                  id: scope
+                }
               ]);
               queryClient.invalidateQueries([
                 'childObjects',
                 {
                   endpoint: 'scopes',
-                  id: scope,
-                },
+                  id: scope
+                }
               ]);
               queryClient.invalidateQueries([
                 'childScopes',
                 {
-                  id: scope,
-                },
+                  id: scope
+                }
               ]);
             }
           }
@@ -230,7 +227,7 @@ export default defineComponent({
             )
           );
           emit('update:model-value', false);
-        },
+        }
       }
     );
     const onSubmit = async () => {
@@ -245,13 +242,13 @@ export default defineComponent({
         await create({
           endpoint: endpoints.value?.[props.objectType],
           object: objectData.value,
-          parentScopes: props.parentScopeIds,
+          parentScopes: props.parentScopeIds
         });
       } catch (e: any) {
         displayErrorMessage(
           upperFirst(
             t('objectNotCreated', {
-              name: objectData.value.name || upperFirst(t('object').toString()),
+              name: objectData.value.name || upperFirst(t('object').toString())
             }).toString()
           ),
           e.message
@@ -270,9 +267,9 @@ export default defineComponent({
       omit,
       upperFirst,
       t,
-      globalT,
+      globalT
     };
-  },
+  }
 });
 </script>
 

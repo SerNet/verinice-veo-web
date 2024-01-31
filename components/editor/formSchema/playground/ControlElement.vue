@@ -20,41 +20,35 @@
     rounded
     border
     class="fill-width my-1 d-flex overflow-hidden"
-    data-component-name="control-form-element"
-  >
+    data-component-name="control-form-element">
     <div
       class="handle mr-1 d-flex align-center px-1"
-      :style="{ background: handleColor }"
-    >
+      :style="{ background: handleColor }">
       <v-icon :icon="mdiDrag" color="white" />
     </div>
     <div class="overflow-hidden" style="flex-grow: 1">
       <v-card-actions class="d-flex py-0">
         <EditorFormSchemaPlaygroundRuleIcon
           :rule="formSchemaElement.rule"
-          class="mr-1"
-        />
+          class="mr-1" />
         {{ t('control') }} ({{ inputType }})
         <v-spacer />
         <v-btn :icon="mdiPencilOutline" size="small" @click="emit('edit')" />
         <v-btn
           :icon="mdiTrashCanOutline"
           size="small"
-          @click="emit('delete')"
-        />
+          @click="emit('delete')" />
       </v-card-actions>
       <div class="mx-2 mb-1">
         <EditorTranslationsTranslatedElementTitle
           :form-schema-element="formSchemaElement"
           tag="b"
-          hide-if-missing
-        >
+          hide-if-missing>
           <template #default="{ translatedValue }">
             <span
               v-if="translatedValue"
               class="text-body-2"
-              style="overflow-wrap: break-word"
-            >
+              style="overflow-wrap: break-word">
               ({{ attributeKey }})
             </span>
             <span v-else style="overflow-wrap: break-word">
@@ -77,7 +71,7 @@ import { IPlaygroundElement } from './Element.vue';
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import {
   eligibleInputElements,
-  INPUT_TYPES as CONTROL_APPEARANCE_DEFINITIONS,
+  INPUT_TYPES as CONTROL_APPEARANCE_DEFINITIONS
 } from '~/types/VeoEditor';
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { getFormSchemaControlType } from '~/lib/utils';
@@ -114,7 +108,7 @@ const inputType = computed(() =>
   props.formSchemaElement && objectSchemaElement.value ?
     eligibleInputElements(controlType.value, {
       ...props.formSchemaElement,
-      schema: objectSchemaElement.value,
+      schema: objectSchemaElement.value
     })[0].code
   : undefined
 );

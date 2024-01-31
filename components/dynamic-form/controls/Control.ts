@@ -47,7 +47,7 @@ const AVAILABLE_CONTROLS = [
   LinksFieldRow,
   MarkdownEditor,
   Radio,
-  Select,
+  Select
 ];
 
 export default defineComponent({
@@ -153,7 +153,7 @@ export default defineComponent({
       items: items.value,
       valuePointer: valuePointer.value,
       modelValue: JsonPointer.get(objectData?.value, valuePointer.value),
-      elementKey: elementKey.value,
+      elementKey: elementKey.value
     }));
 
     return () =>
@@ -169,11 +169,11 @@ export default defineComponent({
               newValue,
               _props.value.modelValue,
               _props.value.index
-            ),
+            )
         },
         {
-          default: slots.default ? () => slots.default() : undefined,
+          default: slots.default ? () => slots.default() : undefined
         }
       );
-  },
+  }
 });

@@ -36,8 +36,7 @@
             :key="item.id"
             :title="item.name"
             :subtitle="item.description"
-            :to="`/${route.params.unit}/domains/${item.id}`"
-          />
+            :to="`/${route.params.unit}/domains/${item.id}`" />
         </v-list>
         <v-card-text>
           <template #default>
@@ -46,8 +45,7 @@
                 <i18n-t
                   keypath="furtherDomainInformation"
                   tag="span"
-                  scope="global"
-                >
+                  scope="global">
                   <template #here>
                     <nuxt-link :to="`/${route.params.unit}/domains/more`">
                       {{ t('linkMoreInfo') }}
@@ -73,7 +71,7 @@ import { useFetchUnitDomains } from '~/composables/api/domains';
 const route = useRoute();
 
 const fetchUnitDomainsQueryParameters = computed(() => ({
-  unitId: route.params.unit as string,
+  unitId: route.params.unit as string
 }));
 const { data: allUnitDomains, isFetching: domainsFetching } =
   useFetchUnitDomains(fetchUnitDomainsQueryParameters);

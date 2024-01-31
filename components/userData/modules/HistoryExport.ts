@@ -26,7 +26,7 @@ export enum PrepPhase {
   Idle = 'IDLE',
   Download = 'DOWNLOAD',
   Zip = 'ZIP',
-  Done = 'DONE',
+  Done = 'DONE'
 }
 
 export type HistoryZipArchive = {
@@ -37,7 +37,7 @@ export type HistoryZipArchive = {
 export type UpdateLoadingState = ({
   phase,
   currentPercentage,
-  totalPercentage,
+  totalPercentage
 }: {
   phase: PrepPhase;
   currentPercentage: number;
@@ -62,7 +62,7 @@ export type FetchFnResult = {
 interface ILoadHistoryParams {
   fetchFn: ({
     size,
-    afterId,
+    afterId
   }: FetchFnParams) => Promise<FetchFnResult | IVeoPagedRevision>;
   history?: IVeoObjectHistoryEntry[];
   size?: number;
@@ -77,7 +77,7 @@ async function loadHistory({
   size = 2500,
   afterId = undefined,
   updateLoadingState,
-  currentPercentage = 0,
+  currentPercentage = 0
 }: ILoadHistoryParams): Promise<IVeoObjectHistoryEntry[]> {
   try {
     const fetchedHistory = await fetchFn({ size, afterId });
@@ -93,7 +93,7 @@ async function loadHistory({
       updateLoadingState({
         phase: PrepPhase.Download,
         currentPercentage,
-        totalPercentage,
+        totalPercentage
       });
 
     if (fetchedHistory.items.length < size) {
@@ -105,7 +105,7 @@ async function loadHistory({
         size,
         afterId: currentAfterId,
         updateLoadingState,
-        currentPercentage,
+        currentPercentage
       });
     }
   } catch (error) {
@@ -166,7 +166,7 @@ async function createZipArchives(
   updateLoadingState({
     phase: PrepPhase.Zip,
     currentPercentage: _currentChunk + 1,
-    totalPercentage: chunks.length,
+    totalPercentage: chunks.length
   });
 
   if (chunks.length === _currentChunk + 1) {

@@ -28,8 +28,7 @@
               <v-btn
                 :icon="mdiLightbulbOutline"
                 variant="text"
-                v-bind="mergeProps(menu, tooltip)"
-              />
+                v-bind="mergeProps(menu, tooltip)" />
             </template>
             <template #default>
               {{ t('fix') }}

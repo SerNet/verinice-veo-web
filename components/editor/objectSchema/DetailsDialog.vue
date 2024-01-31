@@ -22,8 +22,7 @@
     fixed-footer
     large
     :confirm-close="isFormDirty"
-    @update:model-value="$emit('update:model-value', $event)"
-  >
+    @update:model-value="$emit('update:model-value', $event)">
     <template #default>
       <div class="d-flex justify-space-between align-center px-1 pb-2">
         <h2 class="text-h2">
@@ -36,15 +35,13 @@
           dense
           hide-details
           :items="languages"
-          style="max-width: 200px"
-        />
+          style="max-width: 200px" />
       </div>
       <v-row>
         <v-col
           v-for="(subType, subTypeIndex) of subTypes"
           :key="subTypeIndex"
-          cols="6"
-        >
+          cols="6">
           <BaseCard>
             <v-card-text>
               <v-row>
@@ -55,8 +52,7 @@
                       :label="`${upperFirst(t('subtype').toString())}*`"
                       dense
                       required
-                      :rules="[requiredRule]"
-                    />
+                      :rules="[requiredRule]" />
                   </v-form>
                 </v-col>
                 <v-col cols="auto">
@@ -66,8 +62,7 @@
                         v-bind="props"
                         :icon="mdiTrashCanOutline"
                         variant="text"
-                        @click="deleteSubType(subTypeIndex)"
-                      />
+                        @click="deleteSubType(subTypeIndex)" />
                     </template>
                     <template #default>
                       {{ upperFirst(t('deleteSubtype').toString()) }}
@@ -81,8 +76,7 @@
               <Draggable
                 v-model="subType.status"
                 item-key="key"
-                handle=".handle"
-              >
+                handle=".handle">
                 <template #item="{ element, index }">
                   <EditorObjectSchemaStatusListItem
                     :status="element"
@@ -91,22 +85,19 @@
                     @update-status="
                       (status) => onUpdateStatus(subTypeIndex, index, status)
                     "
-                    @delete="onDeleteStatus(subTypeIndex, index)"
-                  />
+                    @delete="onDeleteStatus(subTypeIndex, index)" />
                 </template>
               </Draggable>
               <v-form
                 v-model="newStatusForms[subTypeIndex]"
-                @submit.prevent="addStatusToSubType(subTypeIndex)"
-              >
+                @submit.prevent="addStatusToSubType(subTypeIndex)">
                 <v-list-item class="px-0" dense>
                   <v-text-field
                     v-model="newStatusTextfields[subTypeIndex]"
                     :label="upperFirst(t('status').toString())"
                     dense
                     variant="underlined"
-                    :rules="[alphaNumericUnderscoreRule]"
-                  />
+                    :rules="[alphaNumericUnderscoreRule]" />
                   <v-list-item-action>
                     <v-btn
                       variant="text"
@@ -114,8 +105,7 @@
                         !newStatusForms[subTypeIndex] ||
                         !newStatusTextfields[subTypeIndex]
                       "
-                      @click="addStatusToSubType(subTypeIndex)"
-                    >
+                      @click="addStatusToSubType(subTypeIndex)">
                       <v-icon :icon="mdiPlus" start />
                       {{ t('add') }}
                     </v-btn>
@@ -142,8 +132,7 @@
         variant="text"
         color="primary"
         :disabled="subTypeForms.some((form) => form === false) || !isFormDirty"
-        @click="onSubmit"
-      >
+        @click="onSubmit">
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>
@@ -164,17 +153,17 @@ import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 
 export default defineComponent({
   components: {
-    Draggable,
+    Draggable
   },
   props: {
     modelValue: {
       type: Boolean,
-      default: false,
+      default: false
     },
     domainId: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: ['schema-updated', 'update:model-value'],
   setup(props, { emit }) {
@@ -187,7 +176,7 @@ export default defineComponent({
 
     // display stuff
     const fetchDomainQueryParameters = computed(() => ({
-      id: props.domainId as string,
+      id: props.domainId as string
     }));
     const { data: domain } = useQuery(
       domainQueryDefinitions.queries.fetchDomain,
@@ -199,7 +188,7 @@ export default defineComponent({
     const languages = ref(
       (objectSchemaHelper?.value?.getLanguages() || []).map((key) => ({
         title: t(key),
-        value: key,
+        value: key
       }))
     );
 
@@ -224,13 +213,13 @@ export default defineComponent({
               (locales.value as LocaleObject[]).find(
                 (locale) => locale.code === key
               )?.name || key,
-            value: key,
+            value: key
           })
         );
       },
       {
         deep: true,
-        immediate: true,
+        immediate: true
       }
     );
 
@@ -241,7 +230,7 @@ export default defineComponent({
         );
         subTypes.value = oshSubTypes.map((subType) => ({
           subType: subType.subType,
-          status: subType.status.map((_status) => ({ key: _status })),
+          status: subType.status.map((_status) => ({ key: _status }))
         }));
         subTypeForms.value = Array(subTypes.value.length).fill(true);
         newStatusForms.value = Array(subTypes.value.length).fill(true);
@@ -281,7 +270,7 @@ export default defineComponent({
         return;
       }
       subTypes.value[index].status.push({
-        key: newStatusTextfields.value[index] as string,
+        key: newStatusTextfields.value[index] as string
       });
       newStatusTextfields.value[index] = undefined;
     }
@@ -334,7 +323,7 @@ export default defineComponent({
         props.domainId,
         subTypes.value.map((subType) => ({
           subType: subType.subType,
-          status: subType.status.map((status) => status.key),
+          status: subType.status.map((status) => status.key)
         }))
       );
 
@@ -386,9 +375,9 @@ export default defineComponent({
       mdiTranslate,
       mdiTrashCanOutline,
       upperFirst,
-      CHART_COLORS,
+      CHART_COLORS
     };
-  },
+  }
 });
 </script>
 

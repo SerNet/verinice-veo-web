@@ -22,8 +22,7 @@
         <v-btn
           data-component-name="theme-switch"
           :icon="mdiThemeLightDark"
-          @click="_switch"
-        />
+          @click="_switch" />
       </div>
     </template>
 

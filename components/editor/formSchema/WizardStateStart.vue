@@ -25,8 +25,7 @@
         v-for="action of actions"
         :key="action.title"
         lines="two"
-        @click="action.onClick()"
-      >
+        @click="action.onClick()">
         <v-list-item-title class="font-weight-bold">
           {{ action.title }}
         </v-list-item-title>
@@ -49,8 +48,8 @@ import { mdiChevronRight } from '@mdi/js';
 defineProps({
   modelValue: {
     type: Number,
-    required: true,
-  },
+    required: true
+  }
 });
 
 const emit = defineEmits(['create', 'import']);
@@ -61,13 +60,13 @@ const actions = [
   {
     title: t('createFormSchema'),
     text: t('createFormSchemaDescription'),
-    onClick: () => emit('create'),
+    onClick: () => emit('create')
   },
   {
     title: t('importFormSchema'),
     text: t('importFormSchemaDescription'),
-    onClick: () => emit('import'),
-  },
+    onClick: () => emit('import')
+  }
 ];
 </script>
 

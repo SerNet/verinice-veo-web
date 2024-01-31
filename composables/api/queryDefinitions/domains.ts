@@ -20,7 +20,7 @@ import {
   IVeoDomainRiskDefinition,
   IVeoEntity,
   IVeoPiaMandatoryRule,
-  IVeoElementTypeDefinition,
+  IVeoElementTypeDefinition
 } from '~/types/VeoTypes';
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
@@ -117,29 +117,29 @@ export default {
       queryParameterTransformationFn: () => ({}),
       staticQueryOptions: {
         staleTime: STALE_TIME.REQUEST,
-        placeholderData: [],
-      },
+        placeholderData: []
+      }
     } as IVeoQueryDefinition<Record<string, never>, IVeoDomain[]>,
     fetchDomain: {
       primaryQueryKey: 'domain',
       url: '/api/domains/:id',
       queryParameterTransformationFn: (queryParameters) => ({
-        params: { id: queryParameters.id },
+        params: { id: queryParameters.id }
       }),
       staticQueryOptions: {
-        staleTime: STALE_TIME.MEDIUM,
-      },
+        staleTime: STALE_TIME.MEDIUM
+      }
     } as IVeoQueryDefinition<IVeoFetchDomainParameters, IVeoDomain>,
     fetchDomainElementStatusCount: {
       primaryQueryKey: 'domainElementStatusCount',
       url: '/api/domains/:id/element-status-count',
       queryParameterTransformationFn: (queryParameters) => ({
         params: { id: queryParameters.id },
-        query: { unit: queryParameters.unitId },
+        query: { unit: queryParameters.unitId }
       }),
       staticQueryOptions: {
-        staleTime: STALE_TIME.REQUEST,
-      },
+        staleTime: STALE_TIME.REQUEST
+      }
     } as IVeoQueryDefinition<
       IVeoFetchDomainElementStatusCount,
       IVeoDomainStatusCount
@@ -153,16 +153,16 @@ export default {
           unit: queryParameters.unitId,
           sortBy: queryParameters.sortBy || 'name',
           sortOrder: queryParameters.sortOrder || 'asc',
-          size: queryParameters.size || '20',
-        },
+          size: queryParameters.size || '20'
+        }
       }),
       staticQueryOptions: {
-        staleTime: STALE_TIME.REQUEST,
-      },
+        staleTime: STALE_TIME.REQUEST
+      }
     } as IVeoQueryDefinition<
       IVeoFetchPersonsInDomainParameters,
       IVeoPersonsInDomain
-    >,
+    >
   },
   mutations: {
     updateTypeDefinitions: {
@@ -172,16 +172,16 @@ export default {
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: {
           id: mutationParameters.domainId,
-          type: mutationParameters.objectType,
+          type: mutationParameters.objectType
         },
-        json: mutationParameters.objectSchema,
+        json: mutationParameters.objectSchema
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
           queryClient.invalidateQueries(['object']);
           queryClient.invalidateQueries(['translations']);
-        },
-      },
+        }
+      }
     } as IVeoMutationDefinition<IVeoUpdateTypeDefinitionParameters, void>,
     applyProfile: {
       primaryQueryKey: 'domain',
@@ -191,15 +191,15 @@ export default {
         params: {
           domainId: mutationParameters.domainId,
           profileKey: mutationParameters.profileKey,
-          unitId: mutationParameters.unitId,
-        },
+          unitId: mutationParameters.unitId
+        }
       }),
       responseType: VeoApiReponseType.VOID,
       staticMutationOptions: {
         // no invalidation needed
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onSuccess: (_queryClient, _data, _variables, _context) => {},
-      },
-    } as IVeoMutationDefinition<IVeoApplyProfilesParameters, void>,
-  },
+        onSuccess: (_queryClient, _data, _variables, _context) => {}
+      }
+    } as IVeoMutationDefinition<IVeoApplyProfilesParameters, void>
+  }
 };

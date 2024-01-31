@@ -32,8 +32,7 @@
           class="mr-2"
           small
           label
-          outlined
-        >
+          outlined>
           <span v-if="translate">
             {{ t(`editor.inputtypes.${styling.name}`) }}
           </span>
@@ -54,27 +53,27 @@ export default defineComponent({
   props: {
     title: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     lines: {
       type: String as PropType<'one' | 'two' | 'three'>,
-      default: 'one',
+      default: 'one'
     },
     styling: {
       type: Object as PropType<IInputType>,
-      default: () => ({}),
+      default: () => ({})
     },
     translate: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   setup() {
     const { t } = useI18n();
 
     return {
-      t,
+      t
     };
-  },
+  }
 });
 </script>

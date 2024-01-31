@@ -30,8 +30,7 @@
     <v-list v-else class="py-0" mandatory>
       <div
         v-for="(version, index) of historyEntriesWithCompability"
-        :key="version.changeNumber"
-      >
+        :key="version.changeNumber">
         <v-divider v-if="index > 0" />
         <v-tooltip location="bottom" :disabled="version.compability.valid">
           <template #activator="{ props }">
@@ -42,8 +41,7 @@
                 :value="index"
                 :active="selectedRevision === index"
                 color="primary"
-                @click="selectedRevision = index"
-              >
+                @click="selectedRevision = index">
                 <v-list-item-title>
                   {{ t('version') }}
                   <b>{{ version.changeNumber + 1 }}</b>
@@ -77,7 +75,7 @@ import { cloneDeep } from 'lodash';
 
 import { useFetchVersions } from '~/composables/api/history';
 import ObjectSchemaValidator, {
-  VeoSchemaValidatorValidationResult,
+  VeoSchemaValidatorValidationResult
 } from '~/lib/ObjectSchemaValidator';
 import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
@@ -85,16 +83,16 @@ export default defineComponent({
   props: {
     objectId: {
       type: String,
-      required: true,
+      required: true
     },
     objectType: {
       type: String,
-      required: true,
+      required: true
     },
     objectSchema: {
       type: Object,
-      default: undefined,
-    },
+      default: undefined
+    }
   },
   emits: ['show-revision'],
   setup(props, { emit }) {
@@ -104,13 +102,13 @@ export default defineComponent({
     const fetchVersionsQueryParameters = computed(() => ({
       id: props.objectId,
       objectType: props.objectType,
-      domainId: route.params.domain,
+      domainId: route.params.domain
     }));
     const { data: history, isLoading } = useFetchVersions(
       fetchVersionsQueryParameters,
       {
         keepPreviousData: true,
-        refetchInterval: 2000, // The history service gets updated asynchronusly, but as soon as an object gets saved, the history gets refetched. To avoid using outdated data, we refetch ever 2 seconds.
+        refetchInterval: 2000 // The history service gets updated asynchronusly, but as soon as an object gets saved, the history gets refetched. To avoid using outdated data, we refetch ever 2 seconds.
       }
     );
 
@@ -131,7 +129,7 @@ export default defineComponent({
     >(() =>
       historyEntries.value.map((entry) => ({
         ...entry,
-        compability: isDataCompatible(entry),
+        compability: isDataCompatible(entry)
       }))
     );
 
@@ -165,9 +163,9 @@ export default defineComponent({
       selectedRevision,
 
       t,
-      locale,
+      locale
     };
-  },
+  }
 });
 </script>
 

@@ -29,13 +29,13 @@ export const historyItems = [
         '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/cd512ea7-01c8-4b22-b0cd-d3bc8b0f9d64',
       catalog: {
         targetUri: '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6',
-        displayName: 'DS-GVO-Controls',
+        displayName: 'DS-GVO-Controls'
       },
       element: {
         targetUri: '/controls/39422d24-8456-4693-a109-1cfdb08a9220',
         searchesUri: '/controls/searches',
         resourcesUri:
-          '/controls{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}',
+          '/controls{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
       },
       createdAt: '2022-01-21T15:06:31.763513Z',
       createdBy: 'stce',
@@ -52,12 +52,12 @@ export const historyItems = [
           attributes: {},
           catalogItem: {
             targetUri:
-              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/cd512ea7-01c8-4b22-b0cd-d3bc8b0f9d64',
+              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/cd512ea7-01c8-4b22-b0cd-d3bc8b0f9d64'
           },
-          referenceType: 'LINK_EXTERNAL',
-        },
-      ],
-    },
+          referenceType: 'LINK_EXTERNAL'
+        }
+      ]
+    }
   },
   {
     id: '5925dd2a-6345-4416-8dd4-e7b990e9d887',
@@ -72,13 +72,13 @@ export const historyItems = [
         '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/fcc9f19d-4148-4f04-bdc7-b3df92386d35',
       catalog: {
         targetUri: '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6',
-        displayName: 'DS-GVO-Controls',
+        displayName: 'DS-GVO-Controls'
       },
       element: {
         targetUri: '/controls/640f83b6-b60c-458b-a2e0-fd5b09f0eca5',
         searchesUri: '/controls/searches',
         resourcesUri:
-          '/controls{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}',
+          '/controls{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
       },
       createdAt: '2022-01-21T15:06:31.696299Z',
       createdBy: 'stce',
@@ -95,12 +95,12 @@ export const historyItems = [
           attributes: {},
           catalogItem: {
             targetUri:
-              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/fcc9f19d-4148-4f04-bdc7-b3df92386d35',
+              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/fcc9f19d-4148-4f04-bdc7-b3df92386d35'
           },
-          referenceType: 'LINK_EXTERNAL',
-        },
-      ],
-    },
+          referenceType: 'LINK_EXTERNAL'
+        }
+      ]
+    }
   },
   {
     id: '6a06dd9f-efa5-46f0-a201-063e9f1bf998',
@@ -115,13 +115,13 @@ export const historyItems = [
         '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/dde38594-a14a-4791-94f1-71ff1455fb69',
       catalog: {
         targetUri: '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6',
-        displayName: 'DS-GVO-Controls',
+        displayName: 'DS-GVO-Controls'
       },
       element: {
         targetUri: '/controls/c7dabb1f-7e14-4386-b127-a51ecb369bef',
         searchesUri: '/controls/searches',
         resourcesUri:
-          '/controls{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}',
+          '/controls{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
       },
       createdAt: '2022-01-21T15:06:31.767124Z',
       createdBy: 'stce',
@@ -138,12 +138,12 @@ export const historyItems = [
           attributes: {},
           catalogItem: {
             targetUri:
-              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/dde38594-a14a-4791-94f1-71ff1455fb69',
+              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/dde38594-a14a-4791-94f1-71ff1455fb69'
           },
-          referenceType: 'LINK_EXTERNAL',
-        },
-      ],
-    },
+          referenceType: 'LINK_EXTERNAL'
+        }
+      ]
+    }
   },
   {
     id: 'bbec0344-2793-4364-a21f-1f79cfff2167',
@@ -158,13 +158,13 @@ export const historyItems = [
         '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/78023d75-ab40-40aa-88d9-2c4db5c10ef1',
       catalog: {
         targetUri: '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6',
-        displayName: 'DS-GVO-Controls',
+        displayName: 'DS-GVO-Controls'
       },
       element: {
         targetUri: '/controls/4086fbb0-8d0a-40fd-9937-0e2440359599',
         searchesUri: '/controls/searches',
         resourcesUri:
-          '/controls{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}',
+          '/controls{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
       },
       createdAt: '2022-01-21T15:06:31.770702Z',
       createdBy: 'stce',
@@ -181,12 +181,12 @@ export const historyItems = [
           attributes: {},
           catalogItem: {
             targetUri:
-              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/78023d75-ab40-40aa-88d9-2c4db5c10ef1',
+              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/78023d75-ab40-40aa-88d9-2c4db5c10ef1'
           },
-          referenceType: 'LINK_EXTERNAL',
-        },
-      ],
-    },
+          referenceType: 'LINK_EXTERNAL'
+        }
+      ]
+    }
   },
   {
     id: 'bce1f24b-2fbd-4484-b68c-313dbf77542a',
@@ -201,13 +201,13 @@ export const historyItems = [
         '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/192972c2-d41e-4196-b32d-e6681ba06b74',
       catalog: {
         targetUri: '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6',
-        displayName: 'DS-GVO-Controls',
+        displayName: 'DS-GVO-Controls'
       },
       element: {
         targetUri: '/processes/69905992-5ded-41ae-9f25-c901be26f72e',
         searchesUri: '/processes/searches',
         resourcesUri:
-          '/processes{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}',
+          '/processes{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
       },
       createdAt: '2022-01-21T15:06:31.775182Z',
       createdBy: 'stce',
@@ -224,9 +224,9 @@ export const historyItems = [
           attributes: {},
           catalogItem: {
             targetUri:
-              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/fcc9f19d-4148-4f04-bdc7-b3df92386d35',
+              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/fcc9f19d-4148-4f04-bdc7-b3df92386d35'
           },
-          referenceType: 'LINK',
+          referenceType: 'LINK'
         },
         {
           linkType: 'process_tom',
@@ -237,9 +237,9 @@ export const historyItems = [
           attributes: {},
           catalogItem: {
             targetUri:
-              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/7548806e-9d11-4306-a2b7-ca2e71c25a1d',
+              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/7548806e-9d11-4306-a2b7-ca2e71c25a1d'
           },
-          referenceType: 'LINK',
+          referenceType: 'LINK'
         },
         {
           linkType: 'process_tom',
@@ -250,9 +250,9 @@ export const historyItems = [
           attributes: {},
           catalogItem: {
             targetUri:
-              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/78023d75-ab40-40aa-88d9-2c4db5c10ef1',
+              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/78023d75-ab40-40aa-88d9-2c4db5c10ef1'
           },
-          referenceType: 'LINK',
+          referenceType: 'LINK'
         },
         {
           linkType: 'process_tom',
@@ -263,9 +263,9 @@ export const historyItems = [
           attributes: {},
           catalogItem: {
             targetUri:
-              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/dde38594-a14a-4791-94f1-71ff1455fb69',
+              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/dde38594-a14a-4791-94f1-71ff1455fb69'
           },
-          referenceType: 'LINK',
+          referenceType: 'LINK'
         },
         {
           linkType: 'process_tom',
@@ -276,9 +276,9 @@ export const historyItems = [
           attributes: {},
           catalogItem: {
             targetUri:
-              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/a8d2fd2b-c218-432d-95d4-6c33a0f04d7a',
+              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/a8d2fd2b-c218-432d-95d4-6c33a0f04d7a'
           },
-          referenceType: 'LINK',
+          referenceType: 'LINK'
         },
         {
           linkType: 'process_tom',
@@ -289,9 +289,9 @@ export const historyItems = [
           attributes: {},
           catalogItem: {
             targetUri:
-              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/5ec3bc62-fea4-4618-bed6-6cd974d7ecef',
+              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/5ec3bc62-fea4-4618-bed6-6cd974d7ecef'
           },
-          referenceType: 'LINK',
+          referenceType: 'LINK'
         },
         {
           linkType: 'process_tom',
@@ -302,9 +302,9 @@ export const historyItems = [
           attributes: {},
           catalogItem: {
             targetUri:
-              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/cd512ea7-01c8-4b22-b0cd-d3bc8b0f9d64',
+              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/cd512ea7-01c8-4b22-b0cd-d3bc8b0f9d64'
           },
-          referenceType: 'LINK',
+          referenceType: 'LINK'
         },
         {
           linkType: 'process_tom',
@@ -315,11 +315,11 @@ export const historyItems = [
           attributes: {},
           catalogItem: {
             targetUri:
-              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/5c77eeab-0415-498e-b23b-4ea454308839',
+              '/catalogs/b346fd1f-2d62-4d4b-b1d4-ba98a782f2b6/items/5c77eeab-0415-498e-b23b-4ea454308839'
           },
-          referenceType: 'LINK',
-        },
-      ],
-    },
-  },
+          referenceType: 'LINK'
+        }
+      ]
+    }
+  }
 ];

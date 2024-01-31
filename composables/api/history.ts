@@ -46,7 +46,7 @@ export const useFetchVersions = (
   const combinedQueryParameters = computed(() => ({
     domainId: queryParameters.value.domainId,
     id: queryParameters.value.id,
-    endpoint: endpoint.value as string,
+    endpoint: endpoint.value as string
   }));
 
   return useQuery(

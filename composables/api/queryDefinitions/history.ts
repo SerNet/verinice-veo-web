@@ -55,17 +55,17 @@ export default {
       url: '/api/history/revisions',
       queryParameterTransformationFn: (queryParameters) => ({
         query: {
-          uri: `/domains/${queryParameters.domainId}/${queryParameters.endpoint}/${queryParameters.id}`,
-        },
+          uri: `/domains/${queryParameters.domainId}/${queryParameters.endpoint}/${queryParameters.id}`
+        }
       }),
       staticQueryOptions: {
-        staleTime: STALE_TIME.INFINITY,
+        staleTime: STALE_TIME.INFINITY
       },
       onDataFetched: (data) =>
         data.map((entry) => ({
           ...entry,
-          content: formatObject(entry.content),
-        })),
+          content: formatObject(entry.content)
+        }))
     } as IVeoQueryDefinition<
       IVeoFetchVersionsParameters,
       IVeoObjectHistoryEntry[]
@@ -74,16 +74,16 @@ export default {
       primaryQueryKey: 'latestVersions',
       url: '/api/history/revisions/my-latest',
       queryParameterTransformationFn: (queryParameters) => ({
-        query: { owner: `/units/${queryParameters.unitId}` },
+        query: { owner: `/units/${queryParameters.unitId}` }
       }),
       staticQueryOptions: {
-        staleTime: STALE_TIME.REQUEST,
+        staleTime: STALE_TIME.REQUEST
       },
       onDataFetched: (data) =>
         data.map((entry) => ({
           ...entry,
-          content: formatObject(entry.content),
-        })),
+          content: formatObject(entry.content)
+        }))
     } as IVeoQueryDefinition<
       IVeoFetchLatestChangesParameters,
       IVeoObjectHistoryEntry[]
@@ -94,13 +94,13 @@ export default {
       queryParameterTransformationFn: (queryParameters) => ({
         query: {
           size: queryParameters.size,
-          afterId: queryParameters?.afterId,
-        },
-      }),
+          afterId: queryParameters?.afterId
+        }
+      })
     } as IVeoQueryDefinition<
       IVeoFetchPagedRevisionsParameters,
       IVeoPagedRevision
-    >,
+    >
   },
-  mutations: {},
+  mutations: {}
 };

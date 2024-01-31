@@ -31,8 +31,7 @@
               :items="options"
               clearable
               :prepend-inner-icon="mdiMagicStaff"
-              variant="underlined"
-            />
+              variant="underlined" />
             <v-tooltip location="top">
               <template #activator="{ props: tooltipProps }">
                 <v-btn
@@ -40,8 +39,7 @@
                   :disabled="!formSchemaElement.rule"
                   :icon="mdiTrashCanOutline"
                   v-bind="tooltipProps"
-                  @click="deleteRule"
-                />
+                  @click="deleteRule" />
               </template>
               <template #default>
                 {{ t('deleteRule') }}
@@ -56,22 +54,19 @@
               :label="t('linkedElement')"
               variant="underlined"
               :items="availableScopes"
-              :prepend-inner-icon="mdiFormTextbox"
-            >
+              :prepend-inner-icon="mdiFormTextbox">
               <template #item="{ item, props: itemProps }">
                 <v-list-item
                   v-bind="itemProps"
                   :active="scopeUUID === item.value"
                   :title="undefined"
                   two-line
-                  style="max-width: 500px"
-                >
+                  style="max-width: 500px">
                   <v-list-item-title>
                     <EditorTranslationsTranslatedElementTitle
                       :form-schema-element="
                         <any>formSchemaElementMap.get(item.value)
-                      "
-                    />
+                      " />
                   </v-list-item-title>
                   <v-list-item-subtitle>
                     {{ formSchemaElementMap.get(item.value)?.scope }}
@@ -81,8 +76,7 @@
               <template #selection>
                 <EditorTranslationsTranslatedElementTitle
                   v-if="selectedScopeFormSchemaElement"
-                  :form-schema-element="selectedScopeFormSchemaElement"
-                />
+                  :form-schema-element="selectedScopeFormSchemaElement" />
               </template>
             </v-combobox>
           </v-col>
@@ -94,15 +88,13 @@
               :items="predefinedValues"
               variant="underlined"
               :multiple="selectedScopeObjectSchemaElement?.type !== 'boolean'"
-              :prepend-inner-icon="mdiAlphabetical"
-            />
+              :prepend-inner-icon="mdiAlphabetical" />
             <v-text-field
               v-else
               v-model="conditionValues"
               :label="t('hasValue')"
               variant="underlined"
-              :prepend-inner-icon="mdiAlphabetical"
-            />
+              :prepend-inner-icon="mdiAlphabetical" />
           </v-col>
         </v-row>
       </v-card-text>
@@ -116,14 +108,14 @@ import {
   mdiAlphabetical,
   mdiFormTextbox,
   mdiMagicStaff,
-  mdiTrashCanOutline,
+  mdiTrashCanOutline
 } from '@mdi/js';
 import { JsonPointer } from 'json-ptr';
 import { JSONSchema7 } from 'json-schema';
 
 import {
   FormSchemaElementMap,
-  PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS,
+  PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS
 } from '../Playground.vue';
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
@@ -147,12 +139,12 @@ const { t } = useI18n();
 const options = computed(() => [
   {
     title: t('hide'),
-    value: 'HIDE',
+    value: 'HIDE'
   },
   {
     title: t('show'),
-    value: 'SHOW',
-  },
+    value: 'SHOW'
+  }
 ]);
 
 const conditionEffect = ref<'HIDE' | 'SHOW' | undefined>();
@@ -179,7 +171,7 @@ const predefinedValues = computed(() =>
   selectedScopeObjectSchemaElement.value?.type === 'boolean' ?
     [
       { title: t('true'), value: true },
-      { title: t('false'), value: false },
+      { title: t('false'), value: false }
     ]
   : selectedScopeObjectSchemaElement.value?.enum || []
 );
@@ -247,10 +239,10 @@ const onConditionUpdated = () => {
                   parseInt(item, 10)
                 : item
               )
-              .filter((item: any) => item !== undefined),
-          },
-        },
-      },
+              .filter((item: any) => item !== undefined)
+          }
+        }
+      }
     });
   }
 };
@@ -289,7 +281,7 @@ watch(() => scopeUUID.value, onConditionUpdated);
 watch(() => conditionValues.value, onConditionUpdated);
 watch(() => props.formSchemaElement, onFormSchemaItemModified, {
   deep: true,
-  immediate: true,
+  immediate: true
 });
 </script>
 

@@ -24,8 +24,7 @@
         :target="route.path.startsWith('/docs') ? '_blank' : undefined"
         class="text-decoration-none ml-4"
         data-component-name="logo"
-        data-veo-test="unit-page-link"
-      >
+        data-veo-test="unit-page-link">
         <LayoutAppBarLogo style="height: 60px" class="d-flex align-center" />
       </nuxt-link>
 
@@ -49,8 +48,7 @@
             to="/docs/index"
             exact
             v-bind="props"
-            data-component-name="docs-nav-item"
-          >
+            data-component-name="docs-nav-item">
             <v-icon :icon="mdiHelpCircleOutline" />
           </v-btn>
         </template>
@@ -69,8 +67,7 @@
       v-model="drawer"
       :domain-id="domainId"
       :unit-id="route.params.unit as string"
-      data-component-name="primary-navigation"
-    />
+      data-component-name="primary-navigation" />
 
     <v-main :class="$style.main">
       <slot />
@@ -100,7 +97,7 @@ const { t } = useI18n();
 const theme = useTheme();
 
 useHead(() => ({
-  titleTemplate: '%s - verinice.veo',
+  titleTemplate: '%s - verinice.veo'
 }));
 
 //

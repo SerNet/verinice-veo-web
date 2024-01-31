@@ -26,8 +26,8 @@
 defineProps({
   text: {
     type: String,
-    default: undefined,
-  },
+    default: undefined
+  }
 });
 </script>
 

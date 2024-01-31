@@ -29,8 +29,7 @@
           class="veo-primary-action-fab mr-2"
           color="primary"
           data-component-name="object-details-actions-button"
-          v-bind="menuProps"
-        />
+          v-bind="menuProps" />
       </template>
       <template v-if="allowedActions.length && !disabled" #default>
         <v-list>
@@ -40,8 +39,7 @@
             :title="action.title"
             :prepend-icon="action.icon"
             density="compact"
-            @click="action.action"
-          />
+            @click="action.action" />
         </v-list>
       </template>
     </v-menu>
@@ -52,13 +50,11 @@
       v-bind="addEntityDialog"
       @success="onAddEntitySuccess"
       @error="onAddEntityError"
-      @update:preselected-items="onItemsUpdated"
-    />
+      @update:preselected-items="onItemsUpdated" />
     <ObjectSelectObjectTypeDialog
       v-model="createEntityDialog.value"
       :v-bind="createEntityDialog"
-      @create-entity="openCreateObjectDialog($event.type, $event.addAsChild)"
-    />
+      @create-entity="openCreateObjectDialog($event.type, $event.addAsChild)" />
     <ObjectCreateDialog
       v-if="createObjectDialog.objectType"
       v-model="createObjectDialog.value"
@@ -66,15 +62,13 @@
       :object-type="createObjectDialog.objectType"
       :sub-type="subType"
       :parent-scope-ids="createObjectDialog.parentScopeIds"
-      @success="onCreateObjectSuccess"
-    />
+      @success="onCreateObjectSuccess" />
     <RiskCreateDialog
       v-if="object && createRiskDialogVisible"
       v-model="createRiskDialogVisible"
       :domain-id="$route.params.domain as string"
       :object-id="object.id"
-      @success="onCreateRiskSuccess"
-    />
+      @success="onCreateRiskSuccess" />
   </div>
 </template>
 
@@ -97,16 +91,16 @@ export default defineComponent({
   props: {
     type: {
       type: String,
-      default: '',
+      default: ''
     },
     object: {
       type: Object as PropType<IVeoEntity | undefined>,
-      default: undefined,
+      default: undefined
     },
     disabled: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: ['reload'],
   setup(props, { emit }) {
@@ -123,7 +117,7 @@ export default defineComponent({
 
     const fetchTranslationsQueryParameters = computed(() => ({
       languages: [locale.value],
-      domain: route.params.domain as string,
+      domain: route.params.domain as string
     }));
     const { data: translations } = useQuery(
       translationQueryDefinitions.queries.fetch,
@@ -141,7 +135,7 @@ export default defineComponent({
         title: t('createObject', [
           props.object?.type !== 'scope' ?
             translations.value?.lang[locale.value]?.[props.object?.type || '']
-          : t('object'),
+          : t('object')
         ]).toString(),
         icon: mdiPlus,
         tab: ['childObjects', 'parentObjects'],
@@ -150,7 +144,7 @@ export default defineComponent({
           openCreateObjectDialog(
             props.object?.type === 'scope' ? undefined : props.object?.type,
             props.type === 'childObjects'
-          ),
+          )
       },
       {
         key: 'linkObject',
@@ -161,7 +155,7 @@ export default defineComponent({
             : 'Controls'
           : props.object?.type !== 'scope' ?
             translations.value?.lang[locale.value]?.[props.object?.type || '']
-          : t('object'),
+          : t('object')
         ]).toString(),
         icon: mdiLinkPlus,
         tab: ['childObjects', 'parentObjects', 'controls'],
@@ -180,7 +174,7 @@ export default defineComponent({
             props.type !== 'parentObjects',
             props.type === 'controls'
           );
-        },
+        }
       },
       {
         key: 'createScope',
@@ -189,7 +183,7 @@ export default defineComponent({
         tab: ['childScopes', 'parentScopes'],
         objectTypes: ['scope', 'entity'],
         action: () =>
-          openCreateObjectDialog('scope', props.type === 'childScopes'),
+          openCreateObjectDialog('scope', props.type === 'childScopes')
       },
       {
         key: 'linkScope',
@@ -198,7 +192,7 @@ export default defineComponent({
         tab: ['childScopes', 'parentScopes'],
         objectTypes: ['scope', 'entity'],
         action: () =>
-          openLinkObjectDialog('scope', props.type === 'childScopes'),
+          openLinkObjectDialog('scope', props.type === 'childScopes')
       },
       {
         key: 'createRisk',
@@ -206,8 +200,8 @@ export default defineComponent({
         icon: mdiPlus,
         tab: ['risks'],
         objectTypes: ['entity'],
-        action: () => onCreateRisk(),
-      },
+        action: () => onCreateRisk()
+      }
     ]);
     // filter allowed actions for current type
     const allowedActions = computed(() => {
@@ -240,18 +234,18 @@ export default defineComponent({
       preselectedItems: [],
       returnObjects: false,
       preselectedFilters: {},
-      disabledFields: [],
+      disabledFields: []
     });
 
     const createEntityDialog = ref({
       value: false,
-      eventPayload: undefined as undefined | Record<string, any>,
+      eventPayload: undefined as undefined | Record<string, any>
     });
     const createObjectDialog = ref({
       value: false as boolean,
       objectType: undefined as undefined | string,
       hierarchicalContext: 'parent',
-      parentScopeIds: undefined as undefined | string[],
+      parentScopeIds: undefined as undefined | string[]
     });
 
     // control dialogs
@@ -262,7 +256,7 @@ export default defineComponent({
       if (!objectType) {
         createEntityDialog.value = {
           value: true,
-          eventPayload: { objectType, addAsChild },
+          eventPayload: { objectType, addAsChild }
         };
       } else {
         createEntityDialog.value.value = false;
@@ -272,7 +266,7 @@ export default defineComponent({
           hierarchicalContext:
             addAsChild === undefined || addAsChild ? 'child' : 'parent',
           parentScopeIds:
-            props.object?.type === 'scope' ? [props.object?.id] : undefined,
+            props.object?.type === 'scope' ? [props.object?.id] : undefined
         };
       }
     };
@@ -300,7 +294,7 @@ export default defineComponent({
         returnObjects: !!isControlImplementation,
         preselectedFilters:
           isControlImplementation ? { subType: 'CTL_Module' } : {},
-        disabledFields: isControlImplementation ? ['subType'] : [],
+        disabledFields: isControlImplementation ? ['subType'] : []
       };
     };
 
@@ -311,7 +305,7 @@ export default defineComponent({
         ...newItems.map((item) => {
           return {
             control:
-              'targetUri' in item ? item : createLink('controls', item.id),
+              'targetUri' in item ? item : createLink('controls', item.id)
           };
         })
       );
@@ -319,7 +313,7 @@ export default defineComponent({
         domain: route.params.domain,
         endpoint: route.params?.objectType,
         id: copy?.id,
-        object: copy,
+        object: copy
       });
       displaySuccessMessage(upperFirst(t('objectLinked').toString()));
     };
@@ -356,7 +350,7 @@ export default defineComponent({
               endpoint:
                 endpoints.value?.[createObjectDialog.value?.objectType || ''] ||
                 '',
-              id: newObjectId,
+              id: newObjectId
             },
             queryClient
           );
@@ -409,9 +403,9 @@ export default defineComponent({
       t,
       upperFirst,
       mdiClose,
-      mdiPlus,
+      mdiPlus
     };
-  },
+  }
 });
 </script>
 

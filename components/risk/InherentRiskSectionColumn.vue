@@ -28,8 +28,7 @@
       :items="riskValues"
       disabled
       variant="underlined"
-      hide-details
-    >
+      hide-details>
       <template
         v-if="
           dirtyFields &&
@@ -39,8 +38,7 @@
               `${riskDefinition.id}_${protectionGoal.id}_specificImpact`
             ])
         "
-        #selection
-      >
+        #selection>
         {{ t('saveCTA') }}
       </template>
     </v-select>
@@ -58,29 +56,29 @@ export default defineComponent({
   props: {
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true,
+      required: true
     },
     protectionGoal: {
       type: Object as PropType<IVeoRiskCategory>,
-      required: true,
+      required: true
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      default: () => {},
+      default: () => {}
     },
     disabled: {
       type: Boolean,
-      default: false,
+      default: false
     },
     inherentRisk: {
       type: Number,
-      default: undefined,
+      default: undefined
     },
     numOfCols: {
       type: Number,
-      default: 4,
-    },
+      default: 4
+    }
   },
   setup(props) {
     const { t, locale } = useI18n();
@@ -88,7 +86,7 @@ export default defineComponent({
     const riskValues = computed(() =>
       props.riskDefinition.riskValues.map((level) => ({
         title: level.translations[locale.value].name,
-        value: level.ordinalValue,
+        value: level.ordinalValue
       }))
     );
 
@@ -97,9 +95,9 @@ export default defineComponent({
 
       t,
       locale,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>
 

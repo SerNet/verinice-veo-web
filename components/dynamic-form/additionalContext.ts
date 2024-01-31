@@ -30,7 +30,7 @@ function getTranslatedRiskValues({
   domain,
   categoryId,
   language,
-  riskDefinitionName,
+  riskDefinitionName
 }: {
   domain: IVeoDomain;
   language: string;
@@ -54,7 +54,7 @@ function translateProcessRisks({
   domain,
   riskDefinitionName,
   language,
-  riskDefinitionCategories,
+  riskDefinitionCategories
 }: {
   domain: IVeoDomain;
   language: string;
@@ -74,9 +74,9 @@ function translateProcessRisks({
           domain,
           categoryId,
           language,
-          riskDefinitionName,
-        }),
-      },
+          riskDefinitionName
+        })
+      }
     };
   });
   return translations;
@@ -96,21 +96,21 @@ export const getRiskAdditionalContext = (
         domain,
         riskDefinitionCategories,
         language,
-        riskDefinitionName,
+        riskDefinitionName
       });
     case 'scope':
       return translateProcessRisks({
         domain,
         riskDefinitionCategories,
         language,
-        riskDefinitionName,
+        riskDefinitionName
       });
     case 'asset':
       return translateProcessRisks({
         domain,
         riskDefinitionCategories,
         language,
-        riskDefinitionName,
+        riskDefinitionName
       });
     case 'scenario':
       return {
@@ -125,9 +125,9 @@ export const getRiskAdditionalContext = (
                   (level) =>
                     level.translations[language]?.name ||
                     Object.values(level.translations)[0].name
-                ))(),
-            },
-          },
+                ))()
+            }
+          }
       };
     case 'control':
       return {
@@ -142,9 +142,9 @@ export const getRiskAdditionalContext = (
                   (level) =>
                     level.translations[language]?.name ||
                     Object.values(level.translations)[0].name
-                ))(),
-            },
-          },
+                ))()
+            }
+          }
       };
     default:
       return {};
@@ -176,9 +176,9 @@ export const getStatusAdditionalContext = (
               `${objectSchema.title}_${objectData?.subType}_status_${status}`
             ] || status
         );
-      })(),
-    },
-  },
+      })()
+    }
+  }
 });
 
 export const getSubTypeTranslation = (
@@ -206,7 +206,7 @@ export const getSubTypeTranslation = (
               (formschema) => formschema.subType === _subType
             )?.name[language]
         );
-      })(),
-    },
-  },
+      })()
+    }
+  }
 });

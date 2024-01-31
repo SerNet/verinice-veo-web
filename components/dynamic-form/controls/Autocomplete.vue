@@ -31,23 +31,20 @@
     :multiple="multiple"
     autocomplete="off"
     variant="underlined"
-    @click:clear="$emit('update:model-value', undefined)"
-  >
+    @click:clear="$emit('update:model-value', undefined)">
     <template v-if="multiple" #item="{ props, item }">
       <v-list-item
         v-if="item.value === '_empty_array_'"
         v-bind="props"
         :active="isEmpty(modelValue)"
-        color="primary"
-      />
+        color="primary" />
       <v-list-item
         v-else
         v-bind="props"
         style="max-height: 48px"
         :title="undefined"
         :active="isArray(modelValue) && modelValue?.includes(item.value)"
-        color="primary"
-      >
+        color="primary">
         <div class="d-flex align-center">
           <v-icon
             :color="
@@ -60,8 +57,7 @@
               isArray(modelValue) && modelValue?.includes(item.value) ?
                 mdiCheckboxMarked
               : mdiCheckboxBlankOutline
-            "
-          />
+            " />
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </div>
       </v-list-item>
@@ -80,11 +76,11 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-autocomplete',
   name: {
     en: 'autocomplete',
-    de: 'Autovervollständigung',
+    de: 'Autovervollständigung'
   },
   description: {
     en: 'Lets the user choose a preconfigured option and filter those options by text input.',
-    de: 'Lässt den Nutzer aus einer Liste vorkonfigurierter Einträge auswählen, die Liste kann per Textfeld gefiltert werden.',
+    de: 'Lässt den Nutzer aus einer Liste vorkonfigurierter Einträge auswählen, die Liste kann per Textfeld gefiltert werden.'
   },
   conditions: (props) => [
     [undefined, 'string', 'array', 'integer', 'number'].includes(
@@ -93,8 +89,8 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
     typeof props.objectSchema.enum !== 'undefined' ||
       typeof props.objectSchema.items?.enum !== 'undefined',
     typeof props.options !== 'undefined' &&
-      props.options.format === 'autocomplete',
-  ],
+      props.options.format === 'autocomplete'
+  ]
 };
 
 export default defineComponent({
@@ -158,7 +154,7 @@ export default defineComponent({
         } else {
           onItemsChanged(newValue);
         }
-      },
+      }
     });
 
     return {
@@ -172,9 +168,9 @@ export default defineComponent({
       getControlErrorMessages,
       last,
       mdiCheckboxBlankOutline,
-      mdiCheckboxMarked,
+      mdiCheckboxMarked
     };
-  },
+  }
 });
 </script>
 

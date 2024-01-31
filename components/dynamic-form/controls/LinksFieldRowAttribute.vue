@@ -23,12 +23,12 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field-row',
   name: {
     en: 'links field row',
-    de: 'Link-Feld-Eintrag',
+    de: 'Link-Feld-Eintrag'
   },
   description: {
     en: 'Row of the links field. Not used independently.',
-    de: 'Einzelner Eintrag des Link-Feldes. Wird nicht alleine genutzt.',
-  },
+    de: 'Einzelner Eintrag des Link-Feldes. Wird nicht alleine genutzt.'
+  }
 };
 
 export default defineComponent({
@@ -37,12 +37,12 @@ export default defineComponent({
     ...VeoFormsControlProps,
     otherSelectedLinks: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     index: {
       type: Number,
-      required: true,
-    },
+      required: true
+    }
   },
   setup(props, { slots }) {
     return () =>
@@ -57,6 +57,6 @@ export default defineComponent({
           return linkAttribute;
         })
       : null;
-  },
+  }
 });
 </script>

@@ -24,8 +24,7 @@
         color="primary"
         outlined
         :disabled="saveButtonDisabled"
-        @click="updateSchema()"
-      >
+        @click="updateSchema()">
         {{ submitButtonText || t('saveSchema') }}
       </v-btn>
     </div>
@@ -37,16 +36,16 @@ export default defineComponent({
   props: {
     modelValue: {
       type: String,
-      default: '',
+      default: ''
     },
     readonly: {
       type: Boolean,
-      default: false,
+      default: false
     },
     submitButtonText: {
       type: String,
-      default: undefined,
-    },
+      default: undefined
+    }
   },
   emits: ['update:model-value', 'schema-updated'],
   setup(props, context) {
@@ -62,7 +61,7 @@ export default defineComponent({
         code.value = props.modelValue;
       },
       {
-        immediate: true,
+        immediate: true
       }
     );
 
@@ -91,9 +90,9 @@ export default defineComponent({
       onInput,
       updateSchema,
 
-      t,
+      t
     };
-  },
+  }
 });
 </script>
 

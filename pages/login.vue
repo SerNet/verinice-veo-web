@@ -26,8 +26,7 @@
       no-close-button
       :type="VeoAlertType.ERROR"
       :title="t('access')"
-      :text="t('error-message')"
-    />
+      :text="t('error-message')" />
 
     <BaseCard class="mt-2 bg-surface">
       <v-card-text class="d-flex justify-space-around">
@@ -41,8 +40,7 @@
               data-veo-test="login-btn-login"
               flat
               size="x-large"
-              @click="login"
-            >
+              @click="login">
               {{ t('login') }}
             </v-btn>
           </div>
@@ -57,8 +55,7 @@
               v-if="context.$config.public.accountPath"
               variant="tonal"
               size="x-large"
-              :href="context.$config.public.accountPath"
-            >
+              :href="context.$config.public.accountPath">
               {{ t('register') }}
             </v-btn>
           </div>
@@ -92,7 +89,7 @@ const route = useRoute();
 const context = useNuxtApp();
 const { login: _login, initialize, keycloakInitialized } = useVeoUser();
 useHead({
-  title: t('login'),
+  title: t('login')
 });
 
 if (!keycloakInitialized.value) {

@@ -24,8 +24,7 @@
           variant="flat"
           color="primary"
           class="mr-2"
-          target="_blank"
-        >
+          target="_blank">
           {{ t('buttonCopy') }}
         </v-btn>
       </div>

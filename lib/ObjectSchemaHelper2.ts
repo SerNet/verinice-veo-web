@@ -18,7 +18,7 @@
 import { cloneDeep, merge, trim } from 'lodash';
 
 import ObjectSchemaValidator, {
-  VeoSchemaValidatorValidationResult,
+  VeoSchemaValidatorValidationResult
 } from './ObjectSchemaValidator';
 import {
   IVeoObjectSchema,
@@ -26,7 +26,7 @@ import {
   IVeoObjectSchemaCustomLink,
   IVeoObjectSchemaProperty,
   IVeoObjectSchemaTranslations,
-  IVeoTranslationCollection,
+  IVeoTranslationCollection
 } from '~/types/VeoTypes';
 
 export interface IVeoOSHCustomProperty {
@@ -109,7 +109,7 @@ export default class ObjectSchemaHelper {
       customLinksKey: 'links',
       translationsKey: 'translations',
       domainsKey: 'domains',
-      domainSpecificObjectSchema: false,
+      domainSpecificObjectSchema: false
     };
     merge(this._options, options);
 
@@ -150,7 +150,7 @@ export default class ObjectSchemaHelper {
     const aspect: IVeoOSHCustomAspect = {
       title: name,
       prefix: `${this._title}_`,
-      attributes: [],
+      attributes: []
     };
     this._customAspects.push(aspect);
   }
@@ -233,7 +233,7 @@ export default class ObjectSchemaHelper {
       prefix: `${this._title}_`,
       attributes: [],
       targetType: type,
-      subType,
+      subType
     };
     this._customLinks.push(link);
   }
@@ -461,7 +461,7 @@ export default class ObjectSchemaHelper {
           attributes: {
             additionalProperties: false,
             properties: {},
-            type: 'object',
+            type: 'object'
           },
           domains: {
             description: 'The ids of elements of the type domain.',
@@ -470,26 +470,26 @@ export default class ObjectSchemaHelper {
                 displayName: {
                   description:
                     'A friendly human readable title of the referenced domain.',
-                  type: 'string',
+                  type: 'string'
                 },
                 targetUri: {
                   description: 'The resource URL of the referenced domain.',
-                  type: 'string',
-                },
+                  type: 'string'
+                }
               },
               required: ['targetUri'],
-              type: 'object',
+              type: 'object'
             },
             title: 'The list of domains in which this element is present.',
             type: 'array',
-            uniqueItems: true,
+            uniqueItems: true
           },
           id: {
             format: 'regex',
             pattern:
               '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}',
             title: 'The UUID to identify the element',
-            type: 'string',
+            type: 'string'
           },
           references: {
             items: {
@@ -497,45 +497,45 @@ export default class ObjectSchemaHelper {
                 displayName: {
                   description:
                     'A friendly human readable title of the referenced object.',
-                  type: 'string',
+                  type: 'string'
                 },
                 targetUri: {
                   description: 'The resource URL of the referenced object.',
-                  type: 'string',
-                },
+                  type: 'string'
+                }
               },
               type: 'object',
-              required: ['targetUri'],
+              required: ['targetUri']
             },
-            type: 'array',
+            type: 'array'
           },
           target: {
             properties: {
               subType: {
-                enum: [link.subType],
+                enum: [link.subType]
               },
               targetUri: {
                 title: 'The id of the target object.',
-                type: 'string',
+                type: 'string'
               },
               type: {
-                enum: [link.targetType],
-              },
+                enum: [link.targetType]
+              }
             },
             required: ['targetUri'],
-            type: 'object',
-          },
+            type: 'object'
+          }
         },
         required: ['target'],
-        type: 'object',
+        type: 'object'
       },
-      type: 'array',
+      type: 'array'
     };
 
     // Add optional properties
     if (link.subType) {
       schemaLink.items.properties.target.properties.subType = {
-        enum: [link.subType],
+        enum: [link.subType]
       };
     }
 
@@ -582,7 +582,7 @@ export default class ObjectSchemaHelper {
     const schemaAspect = {
       additionalProperties: false,
       properties: {} as Record<string, any>,
-      type: 'object',
+      type: 'object'
     };
 
     if (!domainSpecificObjectSchema) {
@@ -590,8 +590,8 @@ export default class ObjectSchemaHelper {
         attributes: {
           additionalProperties: false,
           properties: {},
-          type: 'object',
-        },
+          type: 'object'
+        }
       };
     }
 
@@ -648,20 +648,20 @@ export default class ObjectSchemaHelper {
         status: {
           type: 'string',
           minLength: 1,
-          maxLength: 255,
+          maxLength: 255
         },
         subType: {
           type: 'string',
           minLength: 1,
           maxLength: 255,
-          enum: [] as string[],
-        },
+          enum: [] as string[]
+        }
       },
       dependentRequired: {
         subType: ['status'],
-        status: ['subType'],
+        status: ['subType']
       },
-      allOf: [] as any[],
+      allOf: [] as any[]
     };
 
     dummy.properties.subType.enum = domain.map((subType) => subType.subType);
@@ -671,17 +671,17 @@ export default class ObjectSchemaHelper {
         if: {
           properties: {
             subType: {
-              const: subType.subType,
-            },
-          },
+              const: subType.subType
+            }
+          }
         },
         then: {
           properties: {
             status: {
-              enum: subType.status,
-            },
-          },
-        },
+              enum: subType.status
+            }
+          }
+        }
       });
     }
 
@@ -741,7 +741,7 @@ export default class ObjectSchemaHelper {
           ...attribute,
           title: this.cleanAttributeName(attributeName, dummy.title),
           type: this.getAttributeType(attribute),
-          prefix: `${dummy.prefix}${dummy.title}_`,
+          prefix: `${dummy.prefix}${dummy.title}_`
         } as any;
 
         // Multi selects are stored as arrays, so we have to manually transform them to an enum.
@@ -782,7 +782,7 @@ export default class ObjectSchemaHelper {
           ...attribute,
           title: this.cleanAttributeName(attributeName, dummy.title),
           type: this.getAttributeType(attribute),
-          prefix: `${dummy.prefix}${dummy.title}_`,
+          prefix: `${dummy.prefix}${dummy.title}_`
         } as any;
 
         // Multi selects are stored as arrays, os we have to manually transform them to an enum.
@@ -814,7 +814,7 @@ export default class ObjectSchemaHelper {
       title: key,
       description: property.description || '',
       type: this.getAttributeType(property),
-      prefix: '',
+      prefix: ''
     });
   }
 
@@ -825,8 +825,8 @@ export default class ObjectSchemaHelper {
           domainId,
           content.allOf?.map((mapping: any) => ({
             subType: mapping.if.properties.subType.const,
-            status: mapping.then.properties.status.enum,
-          })),
+            status: mapping.then.properties.status.enum
+          }))
         ]
       )
     );
@@ -926,40 +926,40 @@ export default class ObjectSchemaHelper {
           type: 'string',
           description: 'A valid reference to this resource.',
           readOnly: true,
-          format: 'uri',
+          format: 'uri'
         },
         abbreviation: {
           type: 'string',
           description: 'The abbreviation for the Element.',
-          maxLength: 255,
+          maxLength: 255
         },
         createdAt: {
           type: 'string',
           description:
             'A timestamp acc. to RFC 3339 specifying when this entity was created.',
-          readOnly: true,
+          readOnly: true
         },
         createdBy: {
           type: 'string',
           description: 'The username of the user who created this object.',
-          readOnly: true,
+          readOnly: true
         },
         customAspects: {
           type: 'object',
           title: 'CustomAspect',
           description: "Groups of customizable attributes - see '/schemas'",
-          properties: {},
+          properties: {}
         },
         description: {
           type: 'string',
           description: 'The description for the Element.',
-          maxLength: 65535,
+          maxLength: 65535
         },
         designator: {
           type: 'string',
           description:
             'Compact human-readable identifier that is unique within the client.',
-          readOnly: true,
+          readOnly: true
         },
         domains: {
           type: 'object',
@@ -972,36 +972,36 @@ export default class ObjectSchemaHelper {
               properties: {
                 subType: {
                   type: 'string',
-                  enum: [],
+                  enum: []
                 },
                 status: {
-                  type: 'string',
-                },
+                  type: 'string'
+                }
               },
               dependentRequired: {
                 subType: ['status'],
-                status: ['subType'],
+                status: ['subType']
               },
-              allOf: [],
-            },
+              allOf: []
+            }
           },
-          additionalProperties: false,
+          additionalProperties: false
         },
         id: {
           type: 'string',
           description: 'ID must be a valid UUID string following RFC 4122.',
-          format: 'uuid',
+          format: 'uuid'
         },
         links: {
           type: 'object',
           title: 'CustomLink',
           description: 'Custom relations which do not affect the behavior.',
-          properties: {},
+          properties: {}
         },
         name: {
           type: 'string',
           description: 'The name for the Element.',
-          maxLength: 255,
+          maxLength: 255
         },
         owner: {
           type: 'object',
@@ -1010,24 +1010,24 @@ export default class ObjectSchemaHelper {
               type: 'string',
               description:
                 'A friendly human readable title of the referenced unit.',
-              readOnly: true,
+              readOnly: true
             },
             resourcesUri: {
               type: 'string',
-              readOnly: true,
+              readOnly: true
             },
             searchesUri: {
               type: 'string',
-              readOnly: true,
+              readOnly: true
             },
             targetUri: {
               type: 'string',
               description: 'The resource URL of the referenced unit.',
-              format: 'uri',
-            },
+              format: 'uri'
+            }
           },
           required: ['targetUri'],
-          description: 'A reference to the unit containing this entity.',
+          description: 'A reference to the unit containing this entity.'
         },
         parts: {
           type: 'array',
@@ -1038,46 +1038,46 @@ export default class ObjectSchemaHelper {
                 type: 'string',
                 description:
                   'A friendly human readable title of the referenced entity.',
-                readOnly: true,
+                readOnly: true
               },
               resourcesUri: {
                 type: 'string',
-                readOnly: true,
+                readOnly: true
               },
               searchesUri: {
                 type: 'string',
-                readOnly: true,
+                readOnly: true
               },
               targetUri: {
                 type: 'string',
                 description: 'The resource URL of the referenced entity.',
-                format: 'uri',
-              },
+                format: 'uri'
+              }
             },
             required: ['targetUri'],
-            description: "A reference to an entity's part",
-          },
+            description: "A reference to an entity's part"
+          }
         },
         type: {
           type: 'string',
           description: 'Entity type identifier',
-          readOnly: true,
+          readOnly: true
         },
         updatedAt: {
           type: 'string',
           description:
             'A timestamp acc. to RFC 3339 specifying when this entity was created.',
-          readOnly: true,
+          readOnly: true
         },
         updatedBy: {
           type: 'string',
           description: 'The username of the user who last updated this object.',
-          readOnly: true,
-        },
+          readOnly: true
+        }
       },
       required: ['_self', 'designator', 'name', 'owner'],
       title: '',
-      description: '',
+      description: ''
     };
   }
 }

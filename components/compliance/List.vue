@@ -10,10 +10,9 @@
           openItem({
             type: state.type.value,
             riskAffected: state.riskAffected.value,
-            item: e.item,
+            item: e.item
           })
-      "
-    >
+      ">
       <template #no-data>
         <span class="text-center">
           {{ t('noRequirementImplementations') }}
@@ -25,8 +24,7 @@
       :item="requirementImplementation"
       :show-dialog="showDialog"
       @update:show-dialog="showDialog = !showDialog"
-      @update:item="reloadRequirementImplementations"
-    />
+      @update:item="reloadRequirementImplementations" />
   </BaseCard>
 </template>
 <script lang="ts">
@@ -48,7 +46,7 @@ import { RequirementImplementation } from './Editor.vue';
 const {
   fetchRequirementImplementations,
   fetchRequirementImplementation,
-  state,
+  state
 } = useCompliance();
 
 const { t, locale } = useI18n();
@@ -62,19 +60,19 @@ const emit = defineEmits<Emits>();
 const fetchParams = computed(() => ({
   type: state.type.value as string,
   riskAffected: state.riskAffected.value as string,
-  control: state.control.value as string,
+  control: state.control.value as string
 }));
 
 const requirementImplementations = ref(null);
 
 requirementImplementations.value = await fetchRequirementImplementations({
-  ...fetchParams.value,
+  ...fetchParams.value
 });
 watch(
   fetchParams,
   async () =>
     (requirementImplementations.value = await fetchRequirementImplementations({
-      ...fetchParams.value,
+      ...fetchParams.value
     }))
 );
 
@@ -113,7 +111,7 @@ const showDialog = ref(false);
 async function openItem({
   type,
   riskAffected,
-  item,
+  item
 }: {
   type: string | null;
   riskAffected: string | null;
@@ -126,7 +124,7 @@ async function openItem({
   requirementImplementation.value = await fetchRequirementImplementation({
     type: type as string,
     riskAffected: riskAffected as string,
-    item,
+    item
   });
 }
 
@@ -134,7 +132,7 @@ const reloadRequirementImplementations = async () => {
   requirementImplementations.value = await fetchRequirementImplementations({
     type: state.type.value as string,
     riskAffected: state.riskAffected.value as string,
-    control: state.control.value as string,
+    control: state.control.value as string
   });
 };
 
@@ -145,7 +143,7 @@ const headers: ComputedRef<TableHeader[]> = computed(() => [
     key: 'control.abbreviation',
     sortable: true,
     priority: 60,
-    order: 30,
+    order: 30
   },
   {
     text: t('thName'),
@@ -153,29 +151,29 @@ const headers: ComputedRef<TableHeader[]> = computed(() => [
     cellClass: ['font-weight-bold'],
     sortable: true,
     priority: 60,
-    order: 30,
+    order: 30
   },
   {
     text: t('thResponsibleBody'),
     key: 'responsible.displayName',
     sortable: true,
     priority: 60,
-    order: 30,
+    order: 30
   },
   {
     text: t('thStatus'),
     key: 'translations.status',
     sortable: true,
     priority: 60,
-    order: 30,
+    order: 30
   },
   {
     text: t('thOrigin'),
     key: 'translations.origination',
     sortable: true,
     priority: 80,
-    order: 30,
-  },
+    order: 30
+  }
 ]);
 </script>
 

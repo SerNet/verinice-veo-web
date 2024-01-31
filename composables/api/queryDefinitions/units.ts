@@ -19,7 +19,7 @@ import {
   IVeoAPIMessage,
   IVeoBaseObject,
   IVeoLink,
-  IVeoUnitIncarnations,
+  IVeoUnitIncarnations
 } from '~/types/VeoTypes';
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
@@ -77,31 +77,31 @@ export default {
       queryParameterTransformationFn: () => ({}),
       staticQueryOptions: {
         staleTime: STALE_TIME.MEDIUM,
-        placeholderData: [],
-      },
+        placeholderData: []
+      }
     } as IVeoQueryDefinition<Record<string, never>, IVeoUnit[]>,
     fetch: {
       primaryQueryKey: 'unit',
       url: '/api/units/:id',
       queryParameterTransformationFn: (queryParameters) => ({
-        params: queryParameters,
+        params: queryParameters
       }),
       staticQueryOptions: {
-        staleTime: STALE_TIME.MEDIUM,
-      },
+        staleTime: STALE_TIME.MEDIUM
+      }
     } as IVeoQueryDefinition<IVeoFetchUnitParameters, IVeoUnit>,
     fetchIncarnations: {
       primaryQueryKey: 'incarnations',
       url: '/api/units/:unitId/incarnations',
       queryParameterTransformationFn: (queryParameters) => ({
         params: {
-          unitId: queryParameters.unitId,
+          unitId: queryParameters.unitId
         },
         query: {
           itemIds: queryParameters.itemIds,
-          exclude: queryParameters.exclude,
-        },
-      }),
+          exclude: queryParameters.exclude
+        }
+      })
     } as IVeoQueryDefinition<
       IVeoFetchIncarnationParameters,
       IVeoUnitIncarnations
@@ -111,10 +111,10 @@ export default {
       url: '/api/units/:unitId/export',
       queryParameterTransformationFn: (queryParameters) => ({
         params: {
-          unitId: queryParameters.unitId,
-        },
-      }),
-    } as IVeoQueryDefinition<IVeoExportUnitParameters, IVeoExportedUnit>,
+          unitId: queryParameters.unitId
+        }
+      })
+    } as IVeoQueryDefinition<IVeoExportUnitParameters, IVeoExportedUnit>
   },
   mutations: {
     create: {
@@ -122,13 +122,13 @@ export default {
       url: '/api/units',
       method: 'POST',
       mutationParameterTransformationFn: (mutationParameters) => ({
-        json: mutationParameters,
+        json: mutationParameters
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
           queryClient.invalidateQueries(['units']);
-        },
-      },
+        }
+      }
     } as IVeoMutationDefinition<IVeoCreateUnitParameters, IVeoAPIMessage>,
     update: {
       primaryQueryKey: 'form',
@@ -137,15 +137,15 @@ export default {
       mutationParameterTransformationFn: (mutationParameters) => ({
         json: omit(mutationParameters, 'id'),
         params: {
-          id: mutationParameters.id,
-        },
+          id: mutationParameters.id
+        }
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
           queryClient.invalidateQueries(['units']);
           queryClient.invalidateQueries(['unit', { id: variables.params?.id }]);
-        },
-      },
+        }
+      }
     } as IVeoMutationDefinition<IVeoUpdateUnitParameters, IVeoUnit>,
     delete: {
       primaryQueryKey: 'unit',
@@ -153,14 +153,14 @@ export default {
       method: 'DELETE',
       reponseType: VeoApiReponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
-        params: mutationParameters,
+        params: mutationParameters
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
           queryClient.invalidateQueries(['units']);
           queryClient.invalidateQueries(['unit', variables.params]);
-        },
-      },
+        }
+      }
     } as IVeoMutationDefinition<IVeoDeleteUnitParameters, void>,
     updateIncarnations: {
       primaryQueryKey: 'incarnations',
@@ -168,18 +168,18 @@ export default {
       method: 'POST',
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: {
-          unitId: mutationParameters.unitId,
+          unitId: mutationParameters.unitId
         },
-        json: mutationParameters.incarnations,
+        json: mutationParameters.incarnations
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variable, _context) => {
           queryClient.invalidateQueries(['incarnations']);
-        },
-      },
+        }
+      }
     } as IVeoMutationDefinition<
       IVeoUpdateIncarnationParameters,
       IVeoUnitIncarnations
-    >,
-  },
+    >
+  }
 };

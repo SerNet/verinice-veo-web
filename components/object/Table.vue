@@ -24,8 +24,7 @@
     @update:items-per-page="emit('update:items-per-page', $event)"
     @update:page="emit('update:page', $event)"
     @update:sort-by="emit('update:sort-by', $event)"
-    @click="emit('click', $event)"
-  >
+    @click="emit('click', $event)">
     <template v-for="(_, name) in slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData" />
     </template>
@@ -43,7 +42,7 @@ import { useQuery } from '~/composables/api/utils/query';
 import {
   TableFormatter,
   TableHeader,
-  TableRenderer,
+  TableRenderer
 } from '~/components/base/Table.vue';
 
 const props = withDefaults(
@@ -96,7 +95,7 @@ const props = withDefaults(
     defaultHeaders: () => [],
     additionalHeaders: () => [],
     showAllColumns: false,
-    enableClick: false,
+    enableClick: false
   }
 );
 
@@ -116,7 +115,7 @@ const attrs = useAttrs();
 
 const translationQueryParameters = computed(() => ({
   languages: [locale.value],
-  domain: route.params.domain,
+  domain: route.params.domain
 }));
 const { data: translations } = useQuery(
   translationQueryDefinitions.queries.fetch,
@@ -129,7 +128,7 @@ const { data: translations } = useQuery(
 const renderIcon: TableRenderer = ({ item }) => {
   return h(ObjectIcon, {
     objectType: item.type,
-    isComposite: !!item.parts?.length,
+    isComposite: !!item.parts?.length
   });
 };
 /**
@@ -152,9 +151,9 @@ const renderUpdatedAtTooltip: TableRenderer = ({ internalItem: item }) => {
             ' ',
             t('by').toString(),
             ' ',
-            h('strong', item.raw.createdBy),
-          ]),
-        ]),
+            h('strong', item.raw.createdBy)
+          ])
+        ])
       ]
     : [],
     item.raw.updatedAt ?
@@ -166,11 +165,11 @@ const renderUpdatedAtTooltip: TableRenderer = ({ internalItem: item }) => {
             ' ',
             t('by').toString(),
             ' ',
-            h('strong', item.raw.updatedBy),
-          ]),
-        ]),
+            h('strong', item.raw.updatedBy)
+          ])
+        ])
       ]
-    : [],
+    : []
   ]);
 };
 
@@ -207,7 +206,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     width: 30,
     render: renderIcon,
     priority: 100,
-    order: 10,
+    order: 10
   },
   designator: {
     value: 'designator',
@@ -215,7 +214,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     sortable: true,
     width: 110,
     priority: 40,
-    order: 20,
+    order: 20
   },
   abbreviation: {
     value: 'abbreviation',
@@ -224,7 +223,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     truncate: true,
     width: 80,
     priority: 100,
-    order: 30,
+    order: 30
   },
   name: {
     value: 'name',
@@ -234,7 +233,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     truncate: true,
     sortable: true,
     priority: 100,
-    order: 40,
+    order: 40
   },
   status: {
     value: 'status',
@@ -243,7 +242,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     width: 110,
     render: renderStatus,
     priority: 100,
-    order: 50,
+    order: 50
   },
   description: {
     value: 'description',
@@ -253,7 +252,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     truncate: true,
     tooltip: ({ internalItem: item }) => item.raw.description,
     priority: 30,
-    order: 60,
+    order: 60
   },
   updatedAt: {
     value: 'updatedAt',
@@ -263,7 +262,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     tooltip: renderUpdatedAtTooltip,
     render: renderDate,
     priority: 80,
-    order: 70,
+    order: 70
   },
   updatedBy: {
     value: 'updatedBy',
@@ -272,8 +271,8 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     truncate: true,
     width: 80,
     priority: 40,
-    order: 80,
-  },
+    order: 80
+  }
 };
 
 // We assume all headers not matching here are defind in BaseTable.vue, so we pass them along
@@ -286,7 +285,7 @@ const mergedAdditionalHeaders = computed(() => [
   ...(props.defaultHeaders || [])
     .map((header) => recurringHeaders[header])
     .filter((header) => header),
-  ...props.additionalHeaders,
+  ...props.additionalHeaders
 ]);
 </script>
 

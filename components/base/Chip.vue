@@ -38,7 +38,7 @@ const _props = withDefaults(
   {
     label: '',
     close: true,
-    value: undefined,
+    value: undefined
   }
 );
 </script>

@@ -24,8 +24,7 @@
             <v-btn
               v-bind="menu"
               data-component-name="language-select"
-              :icon="mdiTranslate"
-            />
+              :icon="mdiTranslate" />
           </template>
 
           <template #default>
@@ -35,8 +34,7 @@
               mandatory
               :items="availableLocales"
               item-title="name"
-              item-value="code"
-            />
+              item-value="code" />
           </template>
         </v-menu>
       </div>
@@ -58,7 +56,7 @@ const selectedLocale = computed({
   set: (newValue) => {
     setLocale(newValue[0]);
     current.value = newValue[0];
-  },
+  }
 });
 
 const availableLocales = computed<LocaleObject[]>(

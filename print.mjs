@@ -34,9 +34,9 @@ async function main() {
       '--no-sandbox',
       '--disable-dev-shm-usage',
       '--disable-setuid-sandbox',
-      '--export-tagged-pdf',
+      '--export-tagged-pdf'
     ],
-    pipe: true,
+    pipe: true
   });
   console.log('Browser openend, creating new page');
   const page = await browser.newPage();
@@ -62,7 +62,7 @@ async function main() {
     // Setting the language via &lang=xyz gets overwritten by the browser locale, so we set the cookie by hand to avoid this. Also means the lang query parameter is only useful if set by hand.
     await page.setCookie({
       name: 'i18n_redirected',
-      value: lang,
+      value: lang
     });
     await new Promise((resolve) => setTimeout(resolve, 3000));
     await Promise.race([
@@ -73,7 +73,7 @@ async function main() {
           ),
         'PAGEDJS_AFTER_RENDERED'
       ),
-      new Promise((resolve) => setTimeout(resolve, 30000)),
+      new Promise((resolve) => setTimeout(resolve, 30000))
     ]);
     await page.pdf({ path: outputFile, format: 'A4', printBackground: true });
     console.log(`Successfully created: ${outputFile}`);

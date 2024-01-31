@@ -19,13 +19,11 @@
   <BaseDialog
     :model-value="modelValue"
     :title="title"
-    @update:model-value="emit('update:model-value', $event)"
-  >
+    @update:model-value="emit('update:model-value', $event)">
     <template #default>
       <i18n-t keypath="deleteText" tag="span" scope="global">
         <EditorTranslationsTranslatedElementTitle
-          :form-schema-element="formSchemaElement"
-        />
+          :form-schema-element="formSchemaElement" />
       </i18n-t>
     </template>
     <template #dialog-options>
@@ -48,12 +46,12 @@ import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 const props = defineProps({
   modelValue: {
     type: Boolean,
-    default: false,
+    default: false
   },
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
-    required: true,
-  },
+    required: true
+  }
 });
 
 const emit = defineEmits(['update:model-value', 'delete']);

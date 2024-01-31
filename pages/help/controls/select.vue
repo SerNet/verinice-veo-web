@@ -23,22 +23,19 @@
           v-model="isMultiselect"
           label="Multiselect"
           hide-details
-          color="primary"
-        />
+          color="primary" />
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <DynamicFormEntrypoint
           v-model="dynamicForm.data"
           :object-schema="dynamicForm.objectSchema"
-          :form-schema="dynamicForm.formSchema"
-        />
+          :form-schema="dynamicForm.formSchema" />
       </v-col>
     </v-row>
     <HelpFormDescription
       :object-schema="dynamicForm.objectSchema"
       :form-schema="dynamicForm.formSchema"
-      :data="dynamicForm.data"
-    />
+      :data="dynamicForm.data" />
   </BasePage>
 </template>
 
@@ -50,20 +47,20 @@ const form = ref({
     type: 'object',
     properties: {
       select: {
-        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3'],
-      },
-    },
+        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
+      }
+    }
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/select',
     options: {
-      label: 'Select',
-    },
+      label: 'Select'
+    }
   },
   data: {
-    select: 'Beispiel-1',
-  },
+    select: 'Beispiel-1'
+  }
 });
 const formMultiselect = ref({
   objectSchema: {
@@ -72,21 +69,21 @@ const formMultiselect = ref({
       select: {
         type: 'array',
         items: {
-          enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3'],
-        },
-      },
-    },
+          enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
+        }
+      }
+    }
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/select',
     options: {
-      label: 'Select',
-    },
+      label: 'Select'
+    }
   },
   data: {
-    select: ['Beispiel-1'],
-  },
+    select: ['Beispiel-1']
+  }
 });
 
 const isMultiselect = ref(true);

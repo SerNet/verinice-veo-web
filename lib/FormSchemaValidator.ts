@@ -19,7 +19,7 @@ import { JsonPointer } from 'json-ptr';
 
 import {
   VeoSchemaValidatorMessage,
-  VeoSchemaValidatorValidationResult,
+  VeoSchemaValidatorValidationResult
 } from './ObjectSchemaValidator';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
@@ -52,14 +52,14 @@ export default class FormSchemaValidator {
       this.warnings.push({
         code: 'W_OBJECTSCHEMA_MISSING',
         message:
-          'No object schema provided. Provide one for more in depth validation.',
+          'No object schema provided. Provide one for more in depth validation.'
       });
     }
 
     return {
       valid: this.errors.length === 0,
       errors: this.errors,
-      warnings: this.warnings,
+      warnings: this.warnings
     };
   }
 
@@ -74,7 +74,7 @@ export default class FormSchemaValidator {
     } else {
       this.warnings.push({
         code: 'W_CONTENT_MISSING',
-        message: 'This formschema has no controls and thus no use.',
+        message: 'This formschema has no controls and thus no use.'
       });
     }
   }
@@ -88,7 +88,7 @@ export default class FormSchemaValidator {
     if (!element.scope && element.type === 'Control') {
       this.errors.push({
         code: 'E_SCOPE_MISSING',
-        message: `The element ${context} is missing its scope.`,
+        message: `The element ${context} is missing its scope.`
       });
     } else if (element.scope) {
       let scope = element.scope;
@@ -111,10 +111,10 @@ export default class FormSchemaValidator {
               key: 'fix',
               title: (t) => t('fix'),
               callback: (item: any, emit: any) =>
-                emit('fix', item.code, item.params),
-            },
+                emit('fix', item.code, item.params)
+            }
           ],
-          params: { formSchemaPointer: context.substr(0, context.length - 1) }, // We have to remove the trailing slash in order for JsonPointer to pick the currect path
+          params: { formSchemaPointer: context.substr(0, context.length - 1) } // We have to remove the trailing slash in order for JsonPointer to pick the currect path
         });
       }
     }

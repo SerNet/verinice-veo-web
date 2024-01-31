@@ -71,8 +71,7 @@
       :hint="t('hint', [DATE_HINT])"
       variant="underlined"
       @update:model-value="onDateInput"
-      @click:clear="$emit('update:model-value', undefined)"
-    />
+      @click:clear="$emit('update:model-value', undefined)" />
   </div>
 </template>
 
@@ -90,16 +89,16 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-date-input',
   name: {
     en: 'date input',
-    de: 'Datumseingabe',
+    de: 'Datumseingabe'
   },
   description: {
     en: 'Lets the user choose a date from a calender-like component.',
-    de: 'Lässt den User mithilfe einer kalendermäßigen Komponente ein Datum auswählen.',
+    de: 'Lässt den User mithilfe einer kalendermäßigen Komponente ein Datum auswählen.'
   },
   conditions: (props) => [
     props.objectSchema.type === 'string',
-    props.objectSchema.format === 'date',
-  ],
+    props.objectSchema.format === 'date'
+  ]
 };
 
 export default defineComponent({
@@ -180,9 +179,9 @@ export default defineComponent({
       last,
       mdiCalendar,
       t,
-      DATE_HINT,
+      DATE_HINT
     };
-  },
+  }
 });
 </script>
 

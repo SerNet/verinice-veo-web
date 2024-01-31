@@ -25,8 +25,7 @@
         single-line
         hide-details
         variant="solo"
-        flat
-      />
+        flat />
     </v-col>
     <slot name="controls" />
   </v-row>
@@ -36,8 +35,7 @@
         :additional-headers="headers"
         :items="transformedTranslations"
         :search="searchQuery"
-        :sort-by="[{ key: 'key', order: 'asc' }]"
-      >
+        :sort-by="[{ key: 'key', order: 'asc' }]">
         <template #no-data>
           <slot name="no-data" v-bind="{ searchQuery }" />
         </template>
@@ -70,7 +68,7 @@ const props = withDefaults(
   {
     modelValue: () => ({}),
     sources: () => [TRANSLATION_SOURCE.UNSPECIFIED],
-    modifieableSources: () => [],
+    modifieableSources: () => []
   }
 );
 
@@ -186,7 +184,7 @@ const focusRow = (delta: number) => {
   editedLanguageItem.value = {
     key: rowToFocusKey,
     source: `${rowToFocusScope}`,
-    locale: delta > 0 ? locales[0] : locales[locales.length - 1],
+    locale: delta > 0 ? locales[0] : locales[locales.length - 1]
   };
 };
 
@@ -258,23 +256,23 @@ const renderLanguageItem = (itemProps: any, locale: string) => {
               focusItem(1);
             }
           }
-        },
+        }
       })
     : h(
         'div',
         {
           class: {
             'd-flex align-center justify-space-between text-no-wrap': true,
-            'veo-cursor-pointer': isModifiable,
+            'veo-cursor-pointer': isModifiable
           },
           onClick: () =>
             isModifiable ?
               (editedLanguageItem.value = {
                 key: itemKey,
                 source: itemSource,
-                locale,
+                locale
               })
-            : () => ({}),
+            : () => ({})
         },
         isModifiable ?
           [
@@ -282,8 +280,8 @@ const renderLanguageItem = (itemProps: any, locale: string) => {
             h(VBtn, {
               icon: mdiPencilOutline,
               size: 'small',
-              variant: 'plain',
-            }),
+              variant: 'plain'
+            })
           ]
         : itemProps.item.raw[locale]
       );
@@ -304,7 +302,7 @@ const headers = computed<TableHeader[]>(() => [
       return h(
         'div',
         {
-          class: 'd-flex align-center justify-space-between text-no-wrap',
+          class: 'd-flex align-center justify-space-between text-no-wrap'
         },
         [
           itemProps.item.raw.key,
@@ -321,9 +319,9 @@ const headers = computed<TableHeader[]>(() => [
                 emit('update:modelValue', toReturn);
                 emit('translation-deleted', {
                   key: itemProps.item.raw.key,
-                  source: itemSource,
+                  source: itemSource
                 });
-              },
+              }
             })
           : (
             !props.modelValue[itemProps.item.raw.key][
@@ -333,7 +331,7 @@ const headers = computed<TableHeader[]>(() => [
             h(
               VTooltip,
               {
-                location: 'bottom',
+                location: 'bottom'
               },
               {
                 activator: ({ props: slotProps }: { props: any }) =>
@@ -352,15 +350,15 @@ const headers = computed<TableHeader[]>(() => [
                       }
                       emit('update:modelValue', toReturn);
                     },
-                    ...slotProps,
+                    ...slotProps
                   }),
-                default: () => t('createEditableTranslation'),
+                default: () => t('createEditableTranslation')
               }
             )
-          : undefined,
+          : undefined
         ]
       );
-    },
+    }
   },
   {
     key: 'source',
@@ -377,7 +375,7 @@ const headers = computed<TableHeader[]>(() => [
         default:
           return t('unknown');
       }
-    },
+    }
   },
   ...(locales.value as LocaleObject[]).map((locale) => ({
     key: locale.code,
@@ -385,8 +383,8 @@ const headers = computed<TableHeader[]>(() => [
     priority: 100,
     value: locale.code,
     text: t('value', [locale.code]),
-    render: (props: any) => renderLanguageItem(props, locale.code),
-  })),
+    render: (props: any) => renderLanguageItem(props, locale.code)
+  }))
 ]);
 
 // Turn the translations object into an array of objects
@@ -405,7 +403,7 @@ const transformedTranslations = computed(() =>
         translationsAsArray.push({
           key,
           source,
-          ...translations,
+          ...translations
         });
       });
       return translationsAsArray;

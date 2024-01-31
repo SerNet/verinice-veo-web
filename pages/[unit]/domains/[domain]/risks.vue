@@ -21,8 +21,7 @@
       <LayoutHeadline
         class="mb-8"
         :title="upperFirst(t('risks').toString())"
-        :element="t('dpia')"
-      />
+        :element="t('dpia')" />
 
       <!--<div> Not relevant as long as there is only one risk definition
         <p class="pt-3 mb-0 text-body-1">
@@ -76,7 +75,7 @@
 import { upperFirst } from 'lodash';
 
 import domainQueryDefinitions, {
-  IVeoDomain,
+  IVeoDomain
 } from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~/composables/api/utils/query';
 
@@ -93,7 +92,7 @@ export default defineComponent({
     };
 
     const fetchDomainQueryParameters = computed(() => ({
-      id: route.params.domain as string,
+      id: route.params.domain as string
     }));
     const { data: domain } = useQuery(
       domainQueryDefinitions.queries.fetchDomain,
@@ -106,8 +105,8 @@ export default defineComponent({
         name: 'unit-domains-domain-risks-matrix',
         params: {
           ...route.params,
-          matrix: id,
-        },
+          matrix: id
+        }
       });
     };
 
@@ -116,9 +115,9 @@ export default defineComponent({
       viewRiskDefinition,
 
       t,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>
 

@@ -20,8 +20,7 @@
     :model-value="modelValue"
     large
     :title="title"
-    @update:model-value="emit('update:model-value', $event)"
-  >
+    @update:model-value="emit('update:model-value', $event)">
     <template #default>
       <component
         :is="fittingEditComponent"
@@ -33,13 +32,11 @@
             emit('add', elementPointer, element)
         "
         @remove="(elementPointer: string) => emit('remove', elementPointer)"
-        @set-translation="setPendingTranslation"
-      >
+        @set-translation="setPendingTranslation">
         <slot />
       </component>
       <EditorFormSchemaPlaygroundEditDialogElementConditionalVisibility
-        v-model:form-schema-element="localFormSchemaElement"
-      />
+        v-model:form-schema-element="localFormSchemaElement" />
     </template>
     <template #dialog-options>
       <v-btn variant="text" @click="emit('update:model-value', false)">
@@ -50,8 +47,7 @@
         variant="text"
         color="primary"
         :disabled="!elementIsDirty"
-        @click="onSave"
-      >
+        @click="onSave">
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>
@@ -83,7 +79,7 @@ const props = withDefaults(
     playgroundElement: IPlaygroundElement;
   }>(),
   {
-    modelValue: false,
+    modelValue: false
   }
 );
 

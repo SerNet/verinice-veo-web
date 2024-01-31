@@ -22,38 +22,38 @@ import VSkeletonLoader from '~/components/VSkeletonLoader.vue'; // TODO: import 
 export enum PageHeaderAlignment {
   LEFT,
   CENTER,
-  RIGHT,
+  RIGHT
 }
 
 export default defineComponent({
   components: {
-    VSkeletonLoader,
+    VSkeletonLoader
   },
   props: {
     headingLevel: {
       type: [Number, String],
-      default: 1,
+      default: 1
     },
     loading: {
       type: Boolean,
-      default: false,
+      default: false
     },
     stickyHeader: {
       type: Boolean,
-      default: false,
+      default: false
     },
     title: {
       type: [String],
-      default: undefined,
+      default: undefined
     },
     titlebarAlignment: {
       type: Number as PropType<PageHeaderAlignment>,
-      default: PageHeaderAlignment.LEFT,
+      default: PageHeaderAlignment.LEFT
     },
     color: {
       type: String,
-      default: undefined,
-    },
+      default: undefined
+    }
   },
   setup(props, { slots }) {
     const titlebarAlignment: ComputedRef<{ 'justify-content': string }> =
@@ -62,7 +62,7 @@ export default defineComponent({
           'justify-content':
             props.titlebarAlignment === PageHeaderAlignment.CENTER ? 'center'
             : props.titlebarAlignment === PageHeaderAlignment.RIGHT ? 'end'
-            : 'start',
+            : 'start'
         };
       });
     return () => [
@@ -74,8 +74,8 @@ export default defineComponent({
               class: 'd-flex flex-row flex-wrap veo-page__title pt-4',
               style: {
                 ...titlebarAlignment.value,
-                'background-color': props.color,
-              },
+                'background-color': props.color
+              }
             },
             {
               default:
@@ -83,17 +83,17 @@ export default defineComponent({
                   () =>
                     h(VSkeletonLoader, {
                       type: 'text',
-                      class: 'skeleton-title',
+                      class: 'skeleton-title'
                     })
                 : () => [
                     h(`h${props.headingLevel}`, {
                       class: `d-inline flex-grow-0 text-h${props.headingLevel} page-title`,
-                      innerText: props.title,
+                      innerText: props.title
                     }),
-                    ...(slots.title ? [slots.title()] : []),
-                  ],
+                    ...(slots.title ? [slots.title()] : [])
+                  ]
             }
-          ),
+          )
         ]
       : []),
       ...(slots.header ?
@@ -103,18 +103,18 @@ export default defineComponent({
             {
               class: [
                 'veo-page__header',
-                ...(props.stickyHeader ? ['veo-page__header--sticky'] : []),
+                ...(props.stickyHeader ? ['veo-page__header--sticky'] : [])
               ],
-              style: { 'background-color': props.color },
+              style: { 'background-color': props.color }
             },
             {
-              default: slots.header,
+              default: slots.header
             }
-          ),
+          )
         ]
-      : []),
+      : [])
     ];
-  },
+  }
 });
 </script>
 

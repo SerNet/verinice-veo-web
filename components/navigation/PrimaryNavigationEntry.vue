@@ -27,8 +27,7 @@
     :data-veo-test="componentName"
     density="compact"
     :target="openInNewtab ? '_blank' : undefined"
-    @click.stop="onClick"
-  >
+    @click.stop="onClick">
     <template v-if="icon" #prepend>
       <v-tooltip location="end" :disabled="!miniVariant">
         <template #activator="{ props: tooltip }">
@@ -64,7 +63,7 @@ const props = withDefaults(
     componentName: undefined,
     classes: undefined,
     children: undefined,
-    openInNewtab: false,
+    openInNewtab: false
   }
 );
 

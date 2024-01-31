@@ -354,7 +354,7 @@ const creationDate = computed(() =>
   date.toLocaleDateString(locale.value, {
     year: 'numeric',
     month: 'numeric',
-    day: 'numeric',
+    day: 'numeric'
   })
 );
 
@@ -366,6 +366,6 @@ const links = {
   accounts: 'https://github.com/SerNet/verinice-veo-accounts',
   reporting: 'https://github.com/SerNet/verinice-veo-reporting',
   history: 'https://github.com/SerNet/verinice-veo-history',
-  forms: 'https://github.com/SerNet/verinice-veo-forms',
+  forms: 'https://github.com/SerNet/verinice-veo-forms'
 };
 </script>

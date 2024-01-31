@@ -33,15 +33,15 @@ import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 const route = useRoute();
 useHead(() => ({
   style: {
-    src: './assets/styles/docs.scss',
-  },
+    src: './assets/styles/docs.scss'
+  }
 }));
 
 const normalizedPath = computed(() =>
   !isArray(route.params.slug) ? [route.params.slug] : route.params.slug
 );
 const _document = useDoc({
-  path: `/${normalizedPath.value.join('/') || 'index'}`,
+  path: `/${normalizedPath.value.join('/') || 'index'}`
 });
 const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 
@@ -79,7 +79,7 @@ const updateBreadcrumbs = () => {
         index: 0,
         text: breadcrumbItem.title,
         position: i * 10,
-        param: '',
+        param: ''
       });
     }
   }

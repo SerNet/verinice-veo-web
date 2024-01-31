@@ -50,7 +50,7 @@ export type TableHeader = Omit<DataTableHeader, 'text'> &
 
 export type ExtractProperty<
   V extends ReadonlyArray<Record<string, any>>,
-  K extends keyof V[0],
+  K extends keyof V[0]
 > = V extends ReadonlyArray<Record<K, infer U>> ? U : never;
 </script>
 
@@ -115,7 +115,7 @@ const props = withDefaults(
     defaultHeaders: () => [],
     additionalHeaders: () => [],
     showAllColumns: false,
-    enableClick: false,
+    enableClick: false
   }
 );
 
@@ -183,10 +183,10 @@ const renderActions: TableRenderer = (context) =>
       onClick(e: Event) {
         // do not emit row:click events for actions
         e.stopImmediatePropagation();
-      },
+      }
     },
     {
-      default: () => slots.actions?.(context),
+      default: () => slots.actions?.(context)
     }
   );
 
@@ -227,9 +227,9 @@ const presetHeaders: { [key: string]: TableHeader } = {
         color: isSelected ? 'primary' : undefined,
         disabled: context.internalItem.raw.disabled,
         hideDetails: true,
-        'onUpdate:model-value': () => toggleSelection(context),
+        'onUpdate:model-value': () => toggleSelection(context)
       });
-    },
+    }
   },
   actions: {
     value: 'actions',
@@ -239,8 +239,8 @@ const presetHeaders: { [key: string]: TableHeader } = {
     width: 80,
     render: renderActions,
     priority: 100,
-    order: 90,
-  },
+    order: 90
+  }
 };
 
 /**
@@ -275,17 +275,17 @@ const renderTooltip = (header: TableHeader, data?: any): TableRenderer => {
       VTooltip,
       {
         location: 'bottom',
-        width: 350,
+        width: 350
       },
       {
         activator: ({
           attrs: slotAttrs,
-          props: slotProps,
+          props: slotProps
         }: {
           attrs: any;
           props: any;
         }) => h('span', { slotAttrs, ...slotProps, ...data }, children),
-        default: () => header.tooltip?.(props),
+        default: () => header.tooltip?.(props)
       }
     );
   };
@@ -302,7 +302,7 @@ const _headers = computed<TableHeader[]>(() =>
           (key === 'data-table-select' && 'show-select' in attrs)
       )
       .map(([_key, header]) => header),
-    ...props.additionalHeaders,
+    ...props.additionalHeaders
   ]
     .map((header) => {
       const cellClass = defaultCellClasses.concat(
@@ -321,9 +321,9 @@ const _headers = computed<TableHeader[]>(() =>
           header.tooltip ?
             renderTooltip(header, {
               class: cellClass,
-              style: { maxWidth: `${header.width}px`, display: 'block' },
+              style: { maxWidth: `${header.width}px`, display: 'block' }
             })
-          : header.render,
+          : header.render
       };
     })
     .sort((a, b) => a.order - b.order)
@@ -361,11 +361,11 @@ const defaultRenderer: TableRenderer = (context: any, header) => {
       class: [
         ...column.cellClass,
         ...column.class,
-        ...(context.internalItem.raw.disabled ? ['v-list-item--disabled'] : []),
+        ...(context.internalItem.raw.disabled ? ['v-list-item--disabled'] : [])
       ],
       style: {
-        width: `${column.width}px`,
-      },
+        width: `${column.width}px`
+      }
     },
     header?.key ? context.internalItem.columns[header.key] : undefined
   );
@@ -377,7 +377,7 @@ const renderers = computed(() =>
       (context: any) =>
         header.render ?
           header.render(context)
-        : defaultRenderer(context, header),
+        : defaultRenderer(context, header)
     ])
   )
 );
@@ -499,7 +499,7 @@ const internalModelValue = computed({
           availablePreviousItems.find((item) => item.id === newValue)
       )
     );
-  },
+  }
 });
 
 const sharedProps = computed(() => ({
@@ -520,7 +520,7 @@ const sharedProps = computed(() => ({
         } else {
           emit('click', context);
         }
-      },
+      }
     }
   : {}),
   'onUpdate:modelValue': (newValue: string[]) =>
@@ -537,7 +537,7 @@ const sharedProps = computed(() => ({
   },
   ref: tableWrapper,
   'data-table-sorted-column-name': localSortBy.value[0].key,
-  'data-table-sort-order': localSortBy.value[0].order,
+  'data-table-sort-order': localSortBy.value[0].order
 }));
 
 const render = () =>
@@ -548,11 +548,11 @@ const render = () =>
         ...sharedProps.value,
         loading: props.loading,
         loadingText: t('loadingData'),
-        itemsLength: props.items.totalItemCount,
+        itemsLength: props.items.totalItemCount
       },
       {
         ...slots,
-        ...renderers.value,
+        ...renderers.value
       }
     )
   : h('div', [
@@ -561,8 +561,8 @@ const render = () =>
       : []),
       h(VDataTable, sharedProps.value, {
         ...slots,
-        ...renderers.value,
-      }),
+        ...renderers.value
+      })
     ]);
 </script>
 

@@ -21,8 +21,7 @@
     :title="unitId ? t('editUnit') : t('createUnit')"
     :close-disabled="creatingUnit || updatingUnit"
     v-bind="$attrs"
-    @update:model-value="emit('update:model-value', $event)"
-  >
+    @update:model-value="emit('update:model-value', $event)">
     <template #default>
       <v-form ref="form" v-model="formIsValid" class="new-unit-form">
         <BaseCard>
@@ -32,13 +31,11 @@
               :label="t('name')"
               :rules="[requiredRule]"
               required
-              variant="underlined"
-            />
+              variant="underlined" />
             <v-text-field
               v-model="unitDetails.description"
               variant="underlined"
-              :label="t('description')"
-            />
+              :label="t('description')" />
           </v-card-text>
         </BaseCard>
 
@@ -50,8 +47,7 @@
           <UtilProminentSelectionList
             v-model="selectedDomains"
             :items="availableDomains"
-            multiple
-          />
+            multiple />
         </div>
       </v-form>
     </template>
@@ -67,8 +63,7 @@
         :loading="creatingUnit || updatingUnit"
         color="primary"
         variant="text"
-        @click="createUnit"
-      >
+        @click="createUnit">
         {{ $t('global.button.save') }}
       </v-btn>
     </template>
@@ -80,7 +75,7 @@ import { useQueryClient } from '@tanstack/vue-query';
 
 import { getEntityDetailsFromLink, getFirstDomainDomaindId } from '~/lib/utils';
 import domainQueryDefinitions, {
-  IVeoDomain,
+  IVeoDomain
 } from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useRules } from '~/composables/utils';
@@ -95,7 +90,7 @@ const props = withDefaults(
   }>(),
   {
     modelValue: false,
-    unitId: undefined,
+    unitId: undefined
   }
 );
 
@@ -148,7 +143,7 @@ const { data: unit } = useQuery(
   unitQueryDefinitions.queries.fetch,
   fetchUnitQueryParams,
   {
-    enabled: fetchUnitQueryEnabled,
+    enabled: fetchUnitQueryEnabled
   }
 );
 watch(
@@ -169,7 +164,7 @@ const formIsDirty = computed(
     !isEqual(unitDetails, {
       name: unit.value?.name,
       description: unit.value?.description,
-      domains: unit.value?.domains,
+      domains: unit.value?.domains
     })
 );
 const unitDetails = reactive<{
@@ -190,7 +185,7 @@ watch(
 const {
   mutateAsync: create,
   isLoading: creatingUnit,
-  data: unitDetailsPayload,
+  data: unitDetailsPayload
 } = useMutation(unitQueryDefinitions.mutations.create);
 const { mutateAsync: update, isLoading: updatingUnit } = useMutation(
   unitQueryDefinitions.mutations.update
@@ -220,8 +215,8 @@ const createUnit = async () => {
           name: 'unit-domains-domain',
           params: {
             unit: unit.id,
-            domain: domainId,
-          },
+            domain: domainId
+          }
         });
       }
     }
@@ -238,7 +233,7 @@ const { data: domains } = useQuery(
       unitDetails.domains = (data as IVeoDomain[]).map((domain) =>
         createLink('domains', domain.id)
       );
-    },
+    }
   }
 );
 const availableDomains = computed(
@@ -246,7 +241,7 @@ const availableDomains = computed(
     domains.value?.map((domain) => ({
       title: domain.name,
       subtitle: domain.description,
-      value: domain.id,
+      value: domain.id
     })) ?? []
 );
 const selectedDomains = computed({
@@ -256,7 +251,7 @@ const selectedDomains = computed({
     unitDetails.domains = newValue.map((domainId) =>
       createLink('domains', domainId)
     );
-  },
+  }
 });
 </script>
 

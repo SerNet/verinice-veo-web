@@ -20,8 +20,7 @@
     v-if="options.visible"
     :id="formSchemaPointer"
     class="vf-label"
-    :class="options && options.class"
-  >
+    :class="options && options.class">
     {{ options.label }}
   </div>
 </template>
@@ -34,12 +33,12 @@ export const LABEL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-label',
   name: {
     en: 'label',
-    de: 'Label',
+    de: 'Label'
   },
   description: {
     en: 'Adds non-editable text to the form.',
-    de: 'Fügt Text in ein Formular ein.',
-  },
+    de: 'Fügt Text in ein Formular ein.'
+  }
 };
 
 export default defineComponent({
@@ -47,6 +46,6 @@ export default defineComponent({
   props: VeoFormsElementProps,
   setup() {
     return {};
-  },
+  }
 });
 </script>

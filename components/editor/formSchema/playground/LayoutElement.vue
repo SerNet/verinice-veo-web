@@ -20,16 +20,14 @@
     rounded
     border
     class="fill-width pb-1 my-1"
-    data-component-name="layout-form-element"
-  >
+    data-component-name="layout-form-element">
     <v-card-actions v-if="!playgroundElement.readonly">
       <div class="handle mr-1">
         <v-icon :icon="mdiDrag" />
       </div>
       <EditorFormSchemaPlaygroundRuleIcon
         :rule="formSchemaElement.rule"
-        class="mr-1"
-      />
+        class="mr-1" />
       {{ t('layout') }} ({{
         upperFirst(t(`layoutType.${formSchemaElement.options.format}`))
       }})
@@ -40,22 +38,19 @@
     <div class="mx-2">
       <EditorTranslationsTranslatedElementTitle
         :form-schema-element="formSchemaElement"
-        class="mb-1"
-      />
+        class="mb-1" />
       <div
         :class="[
           $style['child-layout-wrapper'],
           formSchemaElement.options?.direction === 'horizontal' ?
             $style['child-layout-wrapper--horizontal']
-          : $style['child-layout-wrapper--vertical'],
-        ]"
-      >
+          : $style['child-layout-wrapper--vertical']
+        ]">
         <slot />
         <span
           v-if="!playgroundElement.children.length"
           :class="$style.dragarea__placeholder"
-          class="d-flex justify-center align-center fill-width fill-height"
-        >
+          class="d-flex justify-center align-center fill-width fill-height">
           {{ t('addElementToGroup') }}
         </span>
       </div>
@@ -74,12 +69,12 @@ import { IPlaygroundElement } from './Element.vue';
 defineProps({
   playgroundElement: {
     type: Object as PropType<IPlaygroundElement>,
-    required: true,
+    required: true
   },
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
-    required: true,
-  },
+    required: true
+  }
 });
 
 const emit = defineEmits(['edit', 'delete']);

@@ -22,21 +22,21 @@ export default defineComponent({
   components: {
     VDivider,
     VTabs,
-    VWindow,
+    VWindow
   },
   props: {
     fullsize: {
       type: Boolean,
-      default: false,
+      default: false
     },
     modelValue: {
       type: Number,
-      default: 0,
+      default: 0
     },
     stickyTabs: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: ['update:model-value'],
   setup(props, { attrs, slots, emit }) {
@@ -71,8 +71,8 @@ export default defineComponent({
         {
           class: {
             'fill-width': props.fullsize,
-            'veo-tab--sticky': props.stickyTabs,
-          },
+            'veo-tab--sticky': props.stickyTabs
+          }
         },
         [
           h(
@@ -88,8 +88,8 @@ export default defineComponent({
               },
               class: {
                 'veo-tabs': true,
-                'veo-tabs--sticky': props.stickyTabs,
-              },
+                'veo-tabs--sticky': props.stickyTabs
+              }
             },
             { default: () => tabs.value }
           ),
@@ -98,14 +98,14 @@ export default defineComponent({
             VWindow,
             {
               modelValue: internalValue.value,
-              class: 'pt-2 transparent',
+              class: 'pt-2 transparent'
             },
             { default: () => (slots.items ? slots.items() : []) }
-          ),
+          )
         ]
       );
     };
-  },
+  }
 });
 </script>
 

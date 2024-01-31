@@ -56,9 +56,9 @@ export default {
       url: '/api/reporting/reports',
       queryParameterTransformationFn: () => ({}),
       staticQueryOptions: {
-        staleTime: STALE_TIME.INFINITY,
-      },
-    } as IVeoQueryDefinition<Record<string, never>, IVeoReportsMeta>,
+        staleTime: STALE_TIME.INFINITY
+      }
+    } as IVeoQueryDefinition<Record<string, never>, IVeoReportsMeta>
   },
   mutations: {
     create: {
@@ -68,13 +68,13 @@ export default {
       reponseType: VeoApiReponseType.BLOB,
       mutationParameterTransformationFn: (mutationParameters) => ({
         json: mutationParameters.body,
-        params: { type: mutationParameters.type },
+        params: { type: mutationParameters.type }
       }),
       staticMutationOptions: {
         onSuccess() {
           // No need to invalidate queries, as this doesn't create a new report type, just a new report of that type for the user
-        },
-      },
-    } as IVeoMutationDefinition<IVeoCreateReportParameters, void>,
-  },
+        }
+      }
+    } as IVeoMutationDefinition<IVeoCreateReportParameters, void>
+  }
 };

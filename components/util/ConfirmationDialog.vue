@@ -20,8 +20,7 @@
     :model-value="modelValue"
     v-bind="$attrs"
     :title="title"
-    @update:model-value="$emit('update:model-value', $event)"
-  >
+    @update:model-value="$emit('update:model-value', $event)">
     <template #default>
       {{ text }}
     </template>

@@ -25,8 +25,7 @@
     :alert-body="t('alertBody')"
     :items="state.accounts"
     :is-loading="state.isLoading"
-    :handle-click="exportAccountData"
-  />
+    :handle-click="exportAccountData" />
 </template>
 
 <script setup lang="ts">
@@ -46,7 +45,7 @@ const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const state = reactive({
   accounts: [profile.value] as IVeoAccount[],
   showAlert: false,
-  isLoading: [] as boolean[],
+  isLoading: [] as boolean[]
 });
 
 const isAccountManager = computed(() => roles.value.length > 0);

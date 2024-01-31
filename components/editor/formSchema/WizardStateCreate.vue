@@ -23,8 +23,7 @@
     <v-form
       :model-value="valid"
       @update:model-value="$emit('update:valid', $event)"
-      @submit.prevent="() => (valid ? $emit('submit') : () => {})"
-    >
+      @submit.prevent="() => (valid ? $emit('submit') : () => {})">
       <input type="submit" role="submit" class="d-none" />
       <BaseCard class="mb-4">
         <v-card-text>
@@ -39,8 +38,7 @@
                 :rules="[requiredRule]"
                 required
                 variant="underlined"
-                @update:model-value="$emit('update:name', $event)"
-              />
+                @update:model-value="$emit('update:name', $event)" />
             </v-col>
           </v-row>
           <v-row no-gutters class="align-center mt-4">
@@ -52,8 +50,7 @@
                 :model-value="sorting"
                 :label="t('editor.formschema.sorting')"
                 variant="underlined"
-                @update:model-value="$emit('update:sorting', $event)"
-              />
+                @update:model-value="$emit('update:sorting', $event)" />
             </v-col>
           </v-row>
         </v-card-text>
@@ -72,8 +69,7 @@
                 :items="objectTypes"
                 required
                 variant="underlined"
-                @update:model-value="$emit('update:object-type', $event)"
-              />
+                @update:model-value="$emit('update:object-type', $event)" />
             </v-col>
           </v-row>
           <v-row v-if="objectType === 'custom'" no-gutters>
@@ -82,8 +78,7 @@
               <EditorFileUpload
                 :input-label="t('objectSchemaUploadLabel')"
                 :submit-button-text="t('importObjectSchema')"
-                @schema-uploaded="$emit('update:object-schema', $event)"
-              />
+                @schema-uploaded="$emit('update:object-schema', $event)" />
             </v-col>
           </v-row>
           <v-row no-gutters class="align-center mt-4">
@@ -101,8 +96,7 @@
                 :label="t('editor.formschema.subtype')"
                 :rules="[requiredRule]"
                 variant="underlined"
-                @update:model-value="$emit('update:sub-type', $event)"
-              />
+                @update:model-value="$emit('update:sub-type', $event)" />
             </v-col>
           </v-row>
         </v-card-text>
@@ -124,36 +118,36 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Number,
-      required: true,
+      required: true
     },
     domainId: {
       type: String,
-      required: true,
+      required: true
     },
     valid: {
       type: Boolean,
-      default: true,
+      default: true
     },
     name: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     sorting: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     objectType: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     subType: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     objectSchema: {
       type: Object as PropType<IVeoObjectSchema | undefined>,
-      default: undefined,
-    },
+      default: undefined
+    }
   },
   emits: [
     'update:sub-type',
@@ -162,7 +156,7 @@ export default defineComponent({
     'update:sorting',
     'update:name',
     'submit',
-    'update:valid',
+    'update:valid'
   ],
   setup(props) {
     const { t } = useI18n();
@@ -182,7 +176,7 @@ export default defineComponent({
       );
       objectSchemaOptions.unshift({
         title: t('customObjectSchema').toString(),
-        value: 'custom',
+        value: 'custom'
       });
       return objectSchemaOptions;
     });
@@ -199,9 +193,9 @@ export default defineComponent({
       requiredRule,
       subTypes,
 
-      t,
+      t
     };
-  },
+  }
 });
 </script>
 

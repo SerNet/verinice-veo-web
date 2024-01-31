@@ -35,7 +35,7 @@ describe('chunkHistory()', () => {
       'changeNumber',
       'type',
       'time',
-      'author',
+      'author'
     ];
     requiredKeys.every((key) =>
       expect(Object.hasOwn(firstItem.chunk[0], key)).toBe(true)

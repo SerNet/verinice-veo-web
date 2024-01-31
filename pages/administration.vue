@@ -27,8 +27,7 @@
         no-close-button
         :title="t('access')"
         :type="VeoAlertType.INFO"
-        style="width: max-content"
-      >
+        style="width: max-content">
         {{ t('accountAdministrationHint') }}
       </BaseAlert>
 
@@ -45,23 +44,20 @@
           :default-headers="['actions']"
           :items="accounts"
           :loading="isFetching"
-          :additional-headers="additionalTableHeaders"
-        >
+          :additional-headers="additionalTableHeaders">
           <template #actions="{ item }">
             <div class="d-flex justify-end">
               <v-tooltip
                 v-for="action in accountTableActions"
                 :key="action.id"
-                location="bottom"
-              >
+                location="bottom">
                 <template #activator="{ props }">
                   <v-btn
                     v-bind="props"
                     :disabled="action.isDisabled && action.isDisabled(item.raw)"
                     :icon="action.icon"
                     variant="text"
-                    @click="action.action(item.raw)"
-                  />
+                    @click="action.action(item.raw)" />
                 </template>
                 {{ action.label }}
               </v-tooltip>
@@ -83,8 +79,7 @@
             size="large"
             class="veo-primary-action-fab"
             :icon="mdiPlus"
-            @click="createAccountDialogVisible = true"
-          />
+            @click="createAccountDialogVisible = true" />
           <div style="height: 76px" />
         </template>
         <template #default>
@@ -96,13 +91,11 @@
         :model-value="manageAccountDialogVisible"
         v-bind="manageAccountProps"
         :existing-accounts="accounts"
-        @update:model-value="onManageAccountDialogInput"
-      />
+        @update:model-value="onManageAccountDialogInput" />
       <AccountDeleteDialog
         v-if="deleteAccountDialogVisible"
         v-model="deleteAccountDialogVisible"
-        v-bind="deleteAccountDialogProps"
-      />
+        v-bind="deleteAccountDialogProps" />
     </template>
   </BasePage>
 </template>
@@ -111,7 +104,7 @@
 import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { TableHeader } from '~/components/base/Table.vue';
 import accountQueryDefinition, {
-  IVeoAccount,
+  IVeoAccount
 } from '~/composables/api/queryDefinitions/accounts';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
@@ -176,16 +169,15 @@ const accountTableActions: {
     id: 'edit',
     action: onEditAccount,
     icon: mdiPencilOutline,
-    label: t('edit'),
+    label: t('edit')
   },
   {
     id: 'delete',
     action: onDeleteAccount,
     icon: mdiTrashCanOutline,
     label: $t('global.button.delete'),
-    isDisabled: (item: IVeoAccount) =>
-      item.username === profile.value?.username,
-  },
+    isDisabled: (item: IVeoAccount) => item.username === profile.value?.username
+  }
 ];
 
 const additionalTableHeaders = ref<TableHeader[]>([
@@ -195,7 +187,7 @@ const additionalTableHeaders = ref<TableHeader[]>([
     text: t('username').toString(),
     value: 'username',
     key: 'username',
-    width: 180,
+    width: 180
   },
   {
     order: 20,
@@ -207,14 +199,14 @@ const additionalTableHeaders = ref<TableHeader[]>([
       item.raw.enabled ?
         $t('global.button.yes').toString()
       : $t('global.button.no').toString(),
-    width: 80,
+    width: 80
   },
   {
     order: 30,
     priority: 80,
     text: t('email').toString(),
     value: 'emailAddress',
-    key: 'emailAddress',
+    key: 'emailAddress'
   },
   {
     order: 40,
@@ -222,7 +214,7 @@ const additionalTableHeaders = ref<TableHeader[]>([
     text: t('firstName').toString(),
     value: 'firstName',
     key: 'firstName',
-    width: 180,
+    width: 180
   },
   {
     order: 50,
@@ -230,7 +222,7 @@ const additionalTableHeaders = ref<TableHeader[]>([
     text: t('lastName').toString(),
     value: 'lastName',
     key: 'lastName',
-    width: 180,
+    width: 180
   },
   {
     order: 60,
@@ -238,8 +230,8 @@ const additionalTableHeaders = ref<TableHeader[]>([
     text: t('groups').toString(),
     render: ({ item }) => item.raw.groups.join(', '),
     value: 'groups',
-    key: 'groups',
-  },
+    key: 'groups'
+  }
 ]);
 </script>
 

@@ -27,8 +27,7 @@
       hide-details
       variant="underlined"
       :items="displayOptions"
-      @update:model-value="emit('update:display-option', $event)"
-    />
+      @update:model-value="emit('update:display-option', $event)" />
   </v-card-text>
 </template>
 
@@ -48,7 +47,7 @@ const props = withDefaults(
   {
     objectData: undefined,
     objectSchema: undefined,
-    formSchemas: () => [],
+    formSchemas: () => []
   }
 );
 
@@ -70,11 +69,11 @@ const displayOptions = computed<{ title: string; value: string | undefined }[]>(
         )
         .map((formSchema) => ({
           title: formSchema.name[locale.value] || formSchema.subType,
-          value: formSchema.id,
+          value: formSchema.id
         }));
     availableFormSchemas.unshift({
       title: upperFirst(t('objectView').toString()),
-      value: 'objectschema',
+      value: 'objectschema'
     });
     return availableFormSchemas;
   }

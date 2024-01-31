@@ -24,8 +24,7 @@
         size="small"
         variant="flat"
         data-component-name="filter-bar-filter-button"
-        @click="filterDialogVisible = true"
-      >
+        @click="filterDialogVisible = true">
         <v-icon :icon="mdiFilter" location="start" />
         {{ upperFirst(t('filter').toString()) }}
       </v-btn>
@@ -33,8 +32,7 @@
     <v-col
       cols="auto"
       class="grow my-2"
-      data-component-name="filter-bar-active-filters"
-    >
+      data-component-name="filter-bar-active-filters">
       <BaseChip
         v-for="k in activeFilterKeys"
         :key="k"
@@ -42,14 +40,12 @@
         :label="formatLabel(k)"
         :value="formatValue(k, filter[k])"
         :close="!requiredFields.includes(k) && !disabledFields.includes(k)"
-        @click:close="clearFilter(k)"
-      />
+        @click:close="clearFilter(k)" />
     </v-col>
     <ObjectFilterDialog
       v-model="filterDialogVisible"
       v-bind="$props"
-      @update:filter="$emit('update:filter', $event)"
-    />
+      @update:filter="$emit('update:filter', $event)" />
   </v-row>
 </template>
 
@@ -60,7 +56,7 @@ import { mdiFilter } from '@mdi/js';
 
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import formQueryDefinitions, {
-  IVeoFormSchemaMeta,
+  IVeoFormSchemaMeta
 } from '~/composables/api/queryDefinitions/forms';
 import { useQuery } from '~/composables/api/utils/query';
 
@@ -68,29 +64,29 @@ export default defineComponent({
   props: {
     filter: {
       type: Object as PropType<Record<string, any>>,
-      required: true,
+      required: true
     },
     domainId: {
       type: String,
-      required: true,
+      required: true
     },
     disabledFields: {
       type: Array as PropType<string[]>,
-      default: () => [],
+      default: () => []
     },
     requiredFields: {
       type: Array as PropType<string[]>,
-      default: () => [],
+      default: () => []
     },
     // Props only required by the filter dialog. We define them explicitly here as $attrs gets binded to the container, so we use $props for binding to the filter. Also better readability
     availableObjectTypes: {
       type: Array as PropType<string[]>,
-      default: () => [],
+      default: () => []
     },
     availableSubTypes: {
       type: Array as PropType<string[]>,
-      default: () => [],
-    },
+      default: () => []
+    }
   },
   emits: ['update:filter'],
   setup(props, { emit }) {
@@ -99,7 +95,7 @@ export default defineComponent({
 
     const fetchTranslationsQueryParameters = computed(() => ({
       languages: [locale.value],
-      domain: props.domainId,
+      domain: props.domainId
     }));
     const { data: translations } = useQuery(
       translationQueryDefinitions.queries.fetch,
@@ -127,7 +123,7 @@ export default defineComponent({
       'description',
       'updatedBy',
       'hasNoParentElements',
-      'hasChildElements',
+      'hasChildElements'
     ];
     const activeFilterKeys = computed(() => {
       return filterKeys.filter((k) => props.filter[k] !== undefined);
@@ -176,9 +172,9 @@ export default defineComponent({
 
       t,
       upperFirst,
-      mdiFilter,
+      mdiFilter
     };
-  },
+  }
 });
 </script>
 

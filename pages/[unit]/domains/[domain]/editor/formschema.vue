@@ -19,14 +19,12 @@
   <LayoutPageWrapper
     title-class="d-flex align-center bg-basepage"
     :collapsable-left="schemaIsValid.valid"
-    :collapsable-right="schemaIsValid.valid"
-  >
+    :collapsable-right="schemaIsValid.valid">
     <template #title>
       <LayoutHeadline
         class="ml-1 mb-2"
         :title="globalT('editor.formschema.headline')"
-        :element="title"
-      />
+        :element="title" />
     </template>
 
     <template v-if="formSchema && objectSchema" #header>
@@ -40,8 +38,7 @@
           density="compact"
           variant="solo"
           hide-details
-          flat
-        />
+          flat />
       </div>
       <v-tooltip location="bottom">
         <template #activator="{ props }">
@@ -51,14 +48,12 @@
             href="#"
             class="text-decoration-none"
             style="vertical-align: bottom"
-            @click="downloadSchema()"
-          >
+            @click="downloadSchema()">
             <v-btn
               :icon="mdiDownload"
               class="bg-surface mr-1"
               size="small"
-              variant="text"
-            />
+              variant="text" />
           </a>
         </template>
         <template #default>
@@ -73,8 +68,7 @@
             class="bg-surface mr-1"
             size="small"
             variant="text"
-            @click="codeEditorVisible = true"
-          />
+            @click="codeEditorVisible = true" />
         </template>
         <template #default>
           {{ t('formSchemaCode') }}
@@ -90,8 +84,7 @@
             color="warning"
             class="ml-2"
             v-bind="props"
-            @click="errorDialogVisible = !errorDialogVisible"
-          />
+            @click="errorDialogVisible = !errorDialogVisible" />
         </template>
         <template #default>
           {{ globalT('editor.schema.warnings') }}
@@ -105,8 +98,7 @@
             size="small"
             variant="text"
             v-bind="props"
-            @click="translationDialogVisible = true"
-          />
+            @click="translationDialogVisible = true" />
         </template>
         <template #default>
           {{ globalT('editor.formschema.translation') }}
@@ -120,8 +112,7 @@
             class="bg-surface mr-1"
             size="small"
             variant="text"
-            @click="detailDialogVisible = !detailDialogVisible"
-          />
+            @click="detailDialogVisible = !detailDialogVisible" />
         </template>
         <template #default>
           {{ globalT('editor.schema.properties') }}
@@ -136,8 +127,7 @@
             target="_blank"
             :to="HELP_ROUTE"
             class="help-button bg-surface mr-1"
-            v-bind="props"
-          />
+            v-bind="props" />
         </template>
         <template #default>
           {{ t('help') }}
@@ -152,8 +142,7 @@
               size="small"
               variant="text"
               :disabled="ability.cannot('manage', 'editors')"
-              @click="save"
-            />
+              @click="save" />
           </div>
         </template>
         <template #default>
@@ -167,8 +156,7 @@
         heading-level="3"
         sticky-header
         :title="t('availableControls')"
-        :titlebar-alignment="PageHeaderAlignment.CENTER"
-      >
+        :titlebar-alignment="PageHeaderAlignment.CENTER">
         <template #header>
           <v-text-field
             v-model="searchQuery"
@@ -179,8 +167,7 @@
             hide-details
             filled
             :prepend-inner-icon="mdiMagnify"
-            :label="t('search')"
-          />
+            :label="t('search')" />
         </template>
         <template #default>
           <EditorFormSchemaBacklog
@@ -188,22 +175,19 @@
             :object-schema="objectSchema"
             :form-schema="formSchema"
             :search-query="searchQuery"
-            @control-items="updateControlItems"
-          />
+            @control-items="updateControlItems" />
         </template>
       </BasePage>
       <BasePage
         heading-level="3"
         :title="t('usedControls')"
-        :titlebar-alignment="PageHeaderAlignment.CENTER"
-      >
+        :titlebar-alignment="PageHeaderAlignment.CENTER">
         <template #default>
           <div class="fill-height fill-width d-flex mt-2">
             <EditorFormSchemaPlayground
               v-if="formSchema"
               v-model="formSchema.content"
-              @set-translations="setElementTranslation"
-            />
+              @set-translations="setElementTranslation" />
             <v-progress-circular v-else size="64" indeterminate />
           </div>
         </template>
@@ -213,8 +197,7 @@
         height="100%"
         heading-level="3"
         :title="t('preview')"
-        :titlebar-alignment="PageHeaderAlignment.CENTER"
-      >
+        :titlebar-alignment="PageHeaderAlignment.CENTER">
         <template #default>
           <DynamicFormEntrypoint
             v-if="formSchema && objectSchema"
@@ -224,8 +207,7 @@
             :form-schema="formSchema.content"
             :translations="eligibleTranslations"
             :additional-context="additionalContext"
-            :locale="editorLanguage"
-          />
+            :locale="editorLanguage" />
         </template>
       </BasePage>
     </template>
@@ -234,36 +216,30 @@
         <UtilValidationResults
           v-if="schemaIsValid.errors.length"
           v-bind="validationActions"
-          :messages="schemaIsValid"
-        />
+          :messages="schemaIsValid" />
       </BasePage>
     </template>
     <template #helpers>
       <EditorFormSchemaWizardDialog
         :model-value="creationDialogVisible"
         :domain-id="$route.params.domain as string"
-        @done="onWizardFinished"
-      />
+        @done="onWizardFinished" />
       <EditorErrorDialog
         v-model="errorDialogVisible"
         :validation="schemaIsValid"
-        v-bind="validationActions"
-      />
+        v-bind="validationActions" />
       <EditorFormSchemaCodeEditorDialog
         v-model="codeEditorVisible"
-        :code="code"
-      />
+        :code="code" />
       <EditorFormSchemaInvalidSchemaDownloadDialog
         v-model="invalidSchemaDownloadDialogVisible"
-        @download="downloadSchema(true)"
-      />
+        @download="downloadSchema(true)" />
       <EditorFormSchemaTranslationDialog
         v-model="translationDialogVisible"
         :form-schema-titles="formSchema?.name"
         @update:form-schema-titles="
           formSchema ? (formSchema.name = $event) : undefined
-        "
-      />
+        " />
       <EditorFormSchemaDetailsDialog
         v-if="formSchema && objectSchema"
         v-model="detailDialogVisible"
@@ -272,8 +248,7 @@
         :object-schema="objectSchema"
         :form-schema="formSchema.name[editorLanguage]"
         :domain-id="$route.params.domain as string"
-        @update-schema-name="updateSchemaName"
-      />
+        @update-schema-name="updateSchemaName" />
     </template>
   </LayoutPageWrapper>
 </template>
@@ -283,7 +258,7 @@ export const PROVIDE_KEYS = {
   EDITOR_LANGUAGE: 'editorLanguage',
   TRANSLATIONS: 'translations',
   FORMSCHEMA: 'mainFormSchema',
-  OBJECTSCHEMA: 'mainObjectSchema',
+  OBJECTSCHEMA: 'mainObjectSchema'
 };
 
 import { Ref } from 'vue';
@@ -296,13 +271,13 @@ import {
   mdiInformationOutline,
   mdiMagnify,
   mdiTranslate,
-  mdiWrench,
+  mdiWrench
 } from '@mdi/js';
 import { useDisplay } from 'vuetify';
 
 import {
   deleteFormSchemaElementTranslations,
-  validate,
+  validate
 } from '~/lib/FormSchemaHelper';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
@@ -311,7 +286,7 @@ import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import formQueryDefinitions, {
   IVeoFormSchema,
-  IVeoFormSchemaItem,
+  IVeoFormSchemaItem
 } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
@@ -323,7 +298,7 @@ import { JsonPointer } from 'json-ptr';
 import { cloneDeep, isArray } from 'lodash';
 import {
   IEditorTranslations,
-  TRANSLATION_SOURCE,
+  TRANSLATION_SOURCE
 } from '~/components/editor/translations/types';
 import { editorTranslationsToFormsTranslations } from '~/components/editor/translations/util';
 
@@ -393,7 +368,7 @@ export default defineComponent({
     // Create/update stuff
     const createFormSchemaQueryParameters = computed(() => ({
       domainId: route.params.domain as string,
-      form: formSchema.value as IVeoFormSchema,
+      form: formSchema.value as IVeoFormSchema
     }));
     const { mutateAsync: create } = useMutation(
       formQueryDefinitions.mutations.createForm,
@@ -402,13 +377,13 @@ export default defineComponent({
           if (formSchema.value) {
             formSchema.value.id = data; // For some reason the interface always returns void, even though this is a string
           }
-        },
+        }
       }
     );
     const updateFormSchemaQueryParameters = computed(() => ({
       id: formSchema.value?.id || '',
       domainId: route.params.domain as string,
-      form: formSchema.value as IVeoFormSchema,
+      form: formSchema.value as IVeoFormSchema
     }));
     const { mutateAsync: update } = useMutation(
       formQueryDefinitions.mutations.updateForm
@@ -463,7 +438,7 @@ export default defineComponent({
     }
 
     const fetchDomainQueryParameters = computed(() => ({
-      id: route.params.domain as string,
+      id: route.params.domain as string
     }));
     const { data: domain } = useQuery(
       domainQueryDefinitions.queries.fetchDomain,
@@ -478,7 +453,7 @@ export default defineComponent({
 
     const translationsQueryParameters = computed(() => ({
       languages: (locales.value as LocaleObject[]).map((locale) => locale.code),
-      domain: route.params.domain,
+      domain: route.params.domain
     }));
     const { data: translationsQueryData } = useQuery(
       translationQueryDefinitions.queries.fetch,
@@ -589,7 +564,7 @@ export default defineComponent({
           }
         }
         formSchema.value.translation = newFormSchemaTranslations;
-      },
+      }
     });
     provide(PROVIDE_KEYS.TRANSLATIONS, translations);
 
@@ -634,8 +609,8 @@ export default defineComponent({
               (
                 domain.value?.riskDefinitions?.DSRA
                   ?.implementationStateDefinition?.levels || []
-              ).map((level: any) => level.name))(),
-          },
+              ).map((level: any) => level.name))()
+          }
         },
       [`#/properties/riskValues/properties/DSRA/properties/potentialProbability`]:
         {
@@ -643,8 +618,8 @@ export default defineComponent({
             enum: (() =>
               (
                 domain.value?.riskDefinitions?.DSRA?.probability?.levels || []
-              ).map((level: any) => level.name))(),
-          },
+              ).map((level: any) => level.name))()
+          }
         },
       [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/C`]:
         {
@@ -654,8 +629,8 @@ export default defineComponent({
                 domain.value?.riskDefinitions?.DSRA?.categories?.find(
                   (category) => category.id === 'C'
                 )?.potentialImpacts || []
-              ).map((level: any) => level.name))(),
-          },
+              ).map((level: any) => level.name))()
+          }
         },
       [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/I`]:
         {
@@ -665,8 +640,8 @@ export default defineComponent({
                 domain.value?.riskDefinitions?.DSRA?.categories?.find(
                   (category) => category.id === 'I'
                 )?.potentialImpacts || []
-              ).map((level: any) => level.name))(),
-          },
+              ).map((level: any) => level.name))()
+          }
         },
       [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/A`]:
         {
@@ -676,8 +651,8 @@ export default defineComponent({
                 domain.value?.riskDefinitions?.DSRA?.categories?.find(
                   (category) => category.id === 'A'
                 )?.potentialImpacts || []
-              ).map((level: any) => level.name))(),
-          },
+              ).map((level: any) => level.name))()
+          }
         },
       [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/R`]:
         {
@@ -687,9 +662,9 @@ export default defineComponent({
                 domain.value?.riskDefinitions?.DSRA?.categories?.find(
                   (category) => category.id === 'R'
                 )?.potentialImpacts || []
-              ).map((level: any) => level.name))(),
-          },
-        },
+              ).map((level: any) => level.name))()
+          }
+        }
     }));
 
     const validationActions: Record<
@@ -735,7 +710,7 @@ export default defineComponent({
               formSchema.value = toModify;
             }
         }
-      },
+      }
     };
 
     return {
@@ -779,9 +754,9 @@ export default defineComponent({
       t,
       globalT,
       HELP_ROUTE,
-      xs,
+      xs
     };
-  },
+  }
 });
 </script>
 

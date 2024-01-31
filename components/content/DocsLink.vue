@@ -29,8 +29,8 @@ export default defineComponent({
   props: {
     to: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   setup(props) {
     const route = useRoute();
@@ -55,8 +55,8 @@ export default defineComponent({
 
     return {
       isPrintView,
-      transformedLink,
+      transformedLink
     };
-  },
+  }
 });
 </script>

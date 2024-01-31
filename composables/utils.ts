@@ -25,7 +25,7 @@ export const useFormatters = () => {
       date.toLocaleDateString(locale.value, {
         day: '2-digit',
         month: '2-digit',
-        year: 'numeric',
+        year: 'numeric'
       })
     );
 
@@ -33,7 +33,7 @@ export const useFormatters = () => {
     computed(() =>
       date.toLocaleDateString(locale.value, {
         hour: '2-digit',
-        minute: '2-digit',
+        minute: '2-digit'
       })
     );
 
@@ -44,14 +44,14 @@ export const useFormatters = () => {
         month: '2-digit',
         year: 'numeric',
         hour: '2-digit',
-        minute: '2-digit',
+        minute: '2-digit'
       })
     );
 
   return {
     formatDate,
     formatDateTime,
-    formatTime,
+    formatTime
   };
 };
 
@@ -101,6 +101,6 @@ export const useRules = () => {
 
   return {
     requiredRule,
-    banSpecialChars,
+    banSpecialChars
   };
 };

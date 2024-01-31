@@ -17,13 +17,13 @@
  */
 import type {
   DehydratedState,
-  VueQueryPluginOptions,
+  VueQueryPluginOptions
 } from '@tanstack/vue-query';
 import {
   VueQueryPlugin,
   QueryClient,
   hydrate,
-  dehydrate,
+  dehydrate
 } from '@tanstack/vue-query';
 
 import { STALE_TIME } from '~/composables/api/utils/query';
@@ -34,8 +34,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   // Modify your Vue Query global settings here
   const queryClient = new QueryClient({
     defaultOptions: {
-      queries: { staleTime: STALE_TIME.REQUEST, refetchOnWindowFocus: false },
-    },
+      queries: { staleTime: STALE_TIME.REQUEST, refetchOnWindowFocus: false }
+    }
   });
   const options: VueQueryPluginOptions = { queryClient };
 

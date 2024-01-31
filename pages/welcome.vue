@@ -38,8 +38,7 @@
               <v-card class="mx-8 fill-height bg-background">
                 <v-card-title
                   class="pt-4 bg-accent small-caps"
-                  style="min-height: 60px"
-                >
+                  style="min-height: 60px">
                   {{ t('selection.noob.question') }}
                 </v-card-title>
 
@@ -56,8 +55,7 @@
                     v-if="!isLoading"
                     :disbaled="isLoading"
                     color="primary"
-                    @click="applyProfile()"
-                  >
+                    @click="applyProfile()">
                     <span>
                       {{
                         isUnitExisting('Demo') ?
@@ -70,8 +68,7 @@
                     v-else
                     color="primary"
                     height="30"
-                    :indeterminate="isLoading"
-                  >
+                    :indeterminate="isLoading">
                     <span class="small-caps text-h2">{{
                       t('applyProfile')
                     }}</span>
@@ -84,8 +81,7 @@
               <v-card class="mr-8 fill-height bg-background">
                 <v-card-title
                   class="pt-4 bg-accent small-caps"
-                  style="min-height: 60px"
-                >
+                  style="min-height: 60px">
                   {{ t('selection.seasoned.question') }}
                 </v-card-title>
 
@@ -116,20 +112,17 @@
               align="center"
               class="ma-4 mt-12"
               density="compact"
-              direction="horizontal"
-            >
+              direction="horizontal">
               <v-timeline-item
                 dot-color="primary"
                 size="x-large"
-                :icon="mdiInformationOutline"
-              >
+                :icon="mdiInformationOutline">
                 <v-card-text>
                   <v-col cols="12" class="text-justify">
                     <i18n-t
                       keypath="firstSteps.tutorial"
                       tag="span"
-                      scope="global"
-                    >
+                      scope="global">
                       <span class="text-decoration-none">
                         <strong>{{ t('injector.tutorial') }}</strong>
                       </span>
@@ -141,21 +134,18 @@
               <v-timeline-item
                 dot-color="primary"
                 size="x-large"
-                :icon="mdiHelpCircleOutline"
-              >
+                :icon="mdiHelpCircleOutline">
                 <v-card-text>
                   <v-col cols="12" class="text-justify">
                     <i18n-t
                       keypath="firstSteps.documentation"
                       tag="span"
-                      scope="global"
-                    >
+                      scope="global">
                       <nuxt-link
                         class="text-decoration-none text-primary"
                         rel="noopener noreferrer"
                         target="_blank"
-                        to="/docs/index"
-                      >
+                        to="/docs/index">
                         <strong>{{ t('injector.documentation') }}</strong>
                       </nuxt-link>
                     </i18n-t>
@@ -170,26 +160,22 @@
               align="center"
               class="mx-4"
               density="compact"
-              direction="horizontal"
-            >
+              direction="horizontal">
               <v-timeline-item
                 dot-color="primary"
                 size="x-large"
-                :icon="mdiForumOutline"
-              >
+                :icon="mdiForumOutline">
                 <v-card-text>
                   <v-col cols="12" class="text-justify">
                     <i18n-t
                       keypath="firstSteps.forum"
                       tag="span"
-                      scope="global"
-                    >
+                      scope="global">
                       <nuxt-link
                         class="text-decoration-none text-primary"
                         rel="noopener noreferrer"
                         target="_blank"
-                        :to="links.forum"
-                      >
+                        :to="links.forum">
                         <strong>{{ t('injector.forum') }}</strong>
                       </nuxt-link>
                     </i18n-t>
@@ -200,21 +186,18 @@
               <v-timeline-item
                 dot-color="primary"
                 size="x-large"
-                :icon="mdiYoutubeTv"
-              >
+                :icon="mdiYoutubeTv">
                 <v-card-text>
                   <v-col cols="12" class="text-justify">
                     <i18n-t
                       keypath="firstSteps.channel"
                       tag="span"
-                      scope="global"
-                    >
+                      scope="global">
                       <nuxt-link
                         class="text-decoration-none text-primary"
                         rel="noopener noreferrer"
                         target="_blank"
-                        :to="links.channel"
-                      >
+                        :to="links.channel">
                         <strong>{{ t('injector.channel') }}</strong>
                       </nuxt-link>
                     </i18n-t>
@@ -225,23 +208,20 @@
               <v-timeline-item
                 dot-color="primary"
                 size="x-large"
-                :icon="mdiSchoolOutline"
-              >
+                :icon="mdiSchoolOutline">
                 <v-card-text>
                   <v-col cols="12" class="text-justify">
                     <i18n-t
                       keypath="firstSteps.webinar"
                       tag="span"
-                      scope="global"
-                    >
+                      scope="global">
                       <nuxt-link
                         class="text-decoration-none text-primary"
                         rel="noopener noreferrer"
                         target="_blank"
                         :to="
                           locale === 'de' ? links.webinar.de : links.webinar.en
-                        "
-                      >
+                        ">
                         <strong>{{ t('injector.webinar') }}</strong>
                       </nuxt-link>
                     </i18n-t>
@@ -268,7 +248,7 @@ import {
   mdiForumOutline,
   mdiSchoolOutline,
   mdiYoutubeTv,
-  mdiInformationOutline,
+  mdiInformationOutline
 } from '@mdi/js';
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
@@ -311,8 +291,8 @@ const loadUnit = (unitname = 'Unit 1') => {
       name: 'unit-domains-domain',
       params: {
         unit,
-        domain,
-      },
+        domain
+      }
     });
   }
 };
@@ -359,8 +339,8 @@ const links = ref({
   forum: 'https://forum.verinice.com',
   webinar: {
     de: 'https://verinice.com/webinare',
-    en: 'https://verinice.com/en/pro/webinars-1',
-  },
+    en: 'https://verinice.com/en/pro/webinars-1'
+  }
 });
 </script>
 

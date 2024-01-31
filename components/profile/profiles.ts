@@ -67,7 +67,7 @@ const initialState = {
   domainId: route.params.domain as string,
   selectedUnit: null as null | string,
   newUnitName: null as null | string,
-  newUnitDescription: null as null | string,
+  newUnitDescription: null as null | string
 };
 
 const state = reactive({ ...initialState });
@@ -103,7 +103,7 @@ function handleError(err: unknown, genericMsg: string) {
 // Local Composables
 function useDomain() {
   const fetchDomainQueryParameters = computed(() => ({
-    id: state.domainId as string,
+    id: state.domainId as string
   }));
   const fetchDomainQueryEnabled = computed(() => !!state.domainId);
   const { data: domain } = useQuery(
@@ -113,7 +113,7 @@ function useDomain() {
   );
 
   return {
-    domain: readonly(domain),
+    domain: readonly(domain)
   };
 }
 
@@ -128,7 +128,7 @@ export function useProfiles() {
     if (!_profiles) return [];
     return Object.keys(_profiles || {}).map((key) => ({
       key,
-      ..._profiles[key],
+      ..._profiles[key]
     })) as Profile[];
   });
 
@@ -136,7 +136,7 @@ export function useProfiles() {
     profiles: readonly(profiles),
     toggleDialog,
     updateDomainId,
-    state,
+    state
   };
 }
 
@@ -170,7 +170,7 @@ export function useUnits() {
     profileKey,
     unitId,
     domainId,
-    messages,
+    messages
   }: ApplyProfileParams) {
     state.isApplyingProfile = true;
     try {
@@ -187,7 +187,7 @@ export function useUnits() {
 
   async function redirectToUnit({
     unitId,
-    domainId,
+    domainId
   }: {
     unitId: string;
     domainId: string;
@@ -198,8 +198,8 @@ export function useUnits() {
       name: 'unit-domains-domain',
       params: {
         unit: unitId,
-        domain: domainId,
-      },
+        domain: domainId
+      }
     });
   }
 
@@ -207,7 +207,7 @@ export function useUnits() {
     name,
     domains,
     description,
-    messages,
+    messages
   }: createUnitAndApplyProfileParams) {
     state.isCreatingUnit = true;
 
@@ -218,7 +218,7 @@ export function useUnits() {
           profileKey: state.selectedProfiles[0],
           unitId: unitDetailsPayload.value.resourceId as string,
           domainId: state.domainId,
-          messages,
+          messages
         });
       } else {
         throw new Error('Could not apply profile');
@@ -236,6 +236,6 @@ export function useUnits() {
     toggleDialog,
     applyProfile,
     createUnitAndApplyProfile,
-    state,
+    state
   };
 }

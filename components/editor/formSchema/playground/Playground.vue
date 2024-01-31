@@ -24,8 +24,7 @@
     @move="onMoveElement"
     @remove="onRemoveElement"
     @form-schema-elements-modified="onFormSchemaModified(playgroundElements)"
-    @set-translations="emit('set-translations', $event)"
-  />
+    @set-translations="emit('set-translations', $event)" />
 </template>
 
 <script lang="ts">
@@ -35,7 +34,7 @@ export const FORMSCHEMA_PLAYGROUND_NAMESPACE =
 export type FormSchemaElementMap = Map<string, IVeoFormSchemaItem>;
 
 export const PROVIDE_KEYS = {
-  FORM_SCHEMA_ELEMENT_MAP: 'formSchemaElementMap',
+  FORM_SCHEMA_ELEMENT_MAP: 'formSchemaElementMap'
 };
 </script>
 
@@ -57,10 +56,10 @@ const props = withDefaults(
       type: 'Layout',
       options: {
         format: 'group',
-        direction: 'vertical',
+        direction: 'vertical'
       },
-      elements: [],
-    }),
+      elements: []
+    })
   }
 );
 

@@ -22,8 +22,7 @@
     </h2>
     <div
       v-for="(messagesBySeverity, severity) of categorizedMessages"
-      :key="severity"
-    >
+      :key="severity">
       <span class="font-weight-medium text-body-1 px-4">
         Information ({{ messagesBySeverity.length }})
       </span>
@@ -31,8 +30,7 @@
         <ObjectMessagesMessage
           v-for="message of messagesBySeverity"
           :key="message.key"
-          :message="message"
-        />
+          :message="message" />
       </v-list>
     </div>
   </div>
@@ -58,7 +56,7 @@ const props = withDefaults(
     messages: Message[];
   }>(),
   {
-    messages: () => [],
+    messages: () => []
   }
 );
 
@@ -86,7 +84,7 @@ watch(
         !oldMessages.some((oldMessage) => oldMessage.key === newMessage.key)
       ) {
         displayInfoMessage(t('info', 1), newMessage.text, {
-          timeout: 5000,
+          timeout: 5000
         });
       }
     }

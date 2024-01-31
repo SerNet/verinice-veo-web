@@ -31,8 +31,7 @@
     variant="underlined"
     @update:search="updateSearchQuery"
     @click="() => updateSearchQuery()"
-    @click:clear="onClearClicked"
-  >
+    @click:clear="onClearClicked">
     <template #prepend-item>
       <slot name="prepend-item" />
     </template>
@@ -49,8 +48,7 @@
           <ObjectIcon
             :object-type="item.raw.type"
             :is-composite="!!(item.raw.parts && item.raw.parts.length)"
-            left
-          />
+            left />
         </template>
         <template #append>
           <v-hover v-slot="{ hover }">
@@ -59,8 +57,7 @@
               style="z-index: 5000"
               :color="hover ? 'primary' : ''"
               :icon="mdiOpenInNew"
-              @click="openItem(item.raw)"
-            />
+              @click="openItem(item.raw)" />
           </v-hover>
         </template>
       </v-list-item>
@@ -103,7 +100,7 @@ const props = withDefaults(defineProps<Props>(), {
   domainId: undefined,
   valueAsLink: false,
   valueAsEntity: false,
-  hiddenValues: () => [],
+  hiddenValues: () => []
 });
 
 const emit = defineEmits<{
@@ -142,14 +139,14 @@ const internalValue = computed<string | undefined>({
           {
             targetUri: `${config.public.apiUrl}/${endpoints.value?.[
               props.objectType
-            ]}/${newValue}`,
+            ]}/${newValue}`
           }
         : undefined
       );
     } else {
       emit('update:model-value', newValue);
     }
-  },
+  }
 });
 
 // Select options related stuff
@@ -170,14 +167,14 @@ const fetchObjectsQueryParameters = computed(
       endpoint: endpoint.value,
       page: 1,
       ...(props.subType !== undefined ? { subType: props.subType } : {}),
-      displayName: searchQuery.value ?? undefined,
+      displayName: searchQuery.value ?? undefined
     }) as any
 );
 const { data: _fetchObjectsData, isFetching: isLoadingObjects } =
   useFetchObjects(fetchObjectsQueryParameters, {
     placeholderData: { items: [], pageCount: 0, page: 1 },
     enabled: searchQueryNotStale,
-    refetchOnMount: false, // If set to true (the default), refetches queries every time input changes, causing some weird cache issues
+    refetchOnMount: false // If set to true (the default), refetches queries every time input changes, causing some weird cache issues
   });
 
 watch(
@@ -205,7 +202,7 @@ const fetchObjectQueryParameters = computed(
   () =>
     ({
       endpoint: endpoints.value?.[props.objectType],
-      id: internalValue.value,
+      id: internalValue.value
     }) as any
 );
 const fetchObjectQueryEnabled = computed(
@@ -214,9 +211,9 @@ const fetchObjectQueryEnabled = computed(
 const {
   data: fetchObjectData,
   isFetching: isLoadingObject,
-  isError,
+  isError
 } = useQuery(objectQueryDefinitions.queries.fetch, fetchObjectQueryParameters, {
-  enabled: fetchObjectQueryEnabled,
+  enabled: fetchObjectQueryEnabled
 });
 
 watch(
@@ -227,7 +224,7 @@ watch(
         upperFirst(t('objectNotFound').toString()),
         t('objectNotFoundExplanation', [
           props.label,
-          internalValue.value,
+          internalValue.value
         ]).toString()
       );
     }
@@ -248,7 +245,7 @@ const items = computed<IVeoEntity[]>(() => [
     )
   ) ?
     [fetchObjectData.value]
-  : []),
+  : [])
 ]);
 const displayedItems = computed(() =>
   props.hiddenValues.length ?
@@ -258,7 +255,7 @@ const displayedItems = computed(() =>
 
 // Label
 const formsQueryParameters = computed(() => ({
-  domainId: props.domainId as string,
+  domainId: props.domainId as string
 }));
 const formsQueryEnabled = computed(() => !props.domainId);
 const { data: formSchemas } = useQuery(
@@ -290,8 +287,8 @@ const openItem = (item: IVeoEntity) => {
     name: OBJECT_OVERVIEW_ROUTE,
     params: {
       ...route.params,
-      object: item.id,
-    },
+      object: item.id
+    }
   });
   window.open(routeData.href, '_blank');
 };

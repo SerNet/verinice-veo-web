@@ -31,5 +31,5 @@ export default defineNuxtModule({
         resolve('modules/docs/language-setter.ts')
       );
     });
-  },
+  }
 });

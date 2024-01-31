@@ -26,7 +26,7 @@ import { IVeoPaginationOptions } from '~/types/VeoTypes';
 export enum VeoApiReponseType {
   JSON,
   BLOB,
-  VOID,
+  VOID
 }
 
 export class VeoApiError extends Error {
@@ -77,7 +77,7 @@ export const useRequest = () => {
     forms: context.$config.public.formsApiUrl.replace(/\/$/, ''),
     history: context.$config.public.historyApiUrl.replace(/\/$/, ''),
     reporting: context.$config.public.reportsApiUrl.replace(/\/$/, ''),
-    default: context.$config.public.apiUrl.replace(/\/$/, ''),
+    default: context.$config.public.apiUrl.replace(/\/$/, '')
   });
 
   const getUrl = (url: string) => {
@@ -195,10 +195,10 @@ export const useRequest = () => {
       headers: {
         Accept: 'application/json',
         Authorization: 'Bearer ' + user.keycloak.value?.token,
-        'Accept-Language': locale.value,
+        'Accept-Language': locale.value
       } as Record<string, string>,
       method: 'GET',
-      mode: 'cors',
+      mode: 'cors'
     };
 
     // Some requests, but not all use an ETag header. To automate setting and getting the etag header, we assume that every query that uses an ETag has a parameter called id

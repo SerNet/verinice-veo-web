@@ -32,24 +32,21 @@
               @set-translation="
                 (translationKey: string, newValue: string | undefined) =>
                   emit('set-translation', translationKey, newValue)
-              "
-            />
+              " />
           </v-col>
           <v-col cols="12" md="6">
             <EditorFormSchemaPlaygroundEditDialogElementDirectionOptions
               :form-schema-element="formSchemaElement"
               @update:form-schema-element="
                 emit('update:form-schema-element', $event)
-              "
-            />
+              " />
           </v-col>
           <v-col cols="12" md="6">
             <EditorFormSchemaPlaygroundEditDialogElementStylingOptions
               :form-schema-element="formSchemaElement"
               @update:form-schema-element="
                 emit('update:form-schema-element', $event)
-              "
-            />
+              " />
           </v-col>
         </v-row>
       </v-card-text>
@@ -65,8 +62,8 @@ import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 defineProps({
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
-    required: true,
-  },
+    required: true
+  }
 });
 
 const emit = defineEmits<{

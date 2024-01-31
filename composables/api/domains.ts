@@ -30,7 +30,7 @@ export const useFetchUnitDomains = (
   queryOptions?: QueryOptions
 ) => {
   const fetchUnitQueryParameters = computed(() => ({
-    id: queryParameters.value.unitId,
+    id: queryParameters.value.unitId
   }));
   const fetchUnitQueryEnabled = computed(
     () => !!queryParameters.value.unitId && unref(queryOptions?.enabled)
@@ -81,7 +81,7 @@ export const useFetchUnitDomains = (
 
   const toReturn = {
     data,
-    isFetching,
+    isFetching
   };
 
   return toReturn;

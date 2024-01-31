@@ -46,8 +46,7 @@
           v-if="error.statusCode === 403 || error.statusCode === 404"
           variant="text"
           color="primary"
-          @click="$router.back()"
-        >
+          @click="$router.back()">
           {{ $t('global.button.previous') }}
         </v-btn>
 
@@ -55,8 +54,7 @@
           v-if="error.statusCode !== 401"
           variant="text"
           color="primary"
-          @click="$router.push('/')"
-        >
+          @click="$router.push('/')">
           {{ t('goToHomepage') }}
         </v-btn>
       </div>

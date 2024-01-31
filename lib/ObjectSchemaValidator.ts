@@ -62,7 +62,7 @@ const NON_REQUIRED_PROPERTIES = [
   'domains',
   'designator',
   'type',
-  'displayName',
+  'displayName'
 ];
 
 export default class ObjectSchemaValidator {
@@ -80,7 +80,7 @@ export default class ObjectSchemaValidator {
   ): VeoSchemaValidatorValidationResult {
     const errors: VeoSchemaValidatorMessage[] = [];
     const helper = new ObjectSchemaHelper(schema, undefined, {
-      domainSpecificObjectSchema: true,
+      domainSpecificObjectSchema: true
     });
 
     for (const attribute in data) {
@@ -95,7 +95,7 @@ export default class ObjectSchemaValidator {
             if (!helper.getCustomAspect(customAspectTitle)) {
               errors.push({
                 code: 'E_ASPECT_MISSING',
-                message: `The aspect "${customAspectTitle}" is missing in the schema "${schema.title}"`,
+                message: `The aspect "${customAspectTitle}" is missing in the schema "${schema.title}"`
               });
               continue;
             }
@@ -111,7 +111,7 @@ export default class ObjectSchemaValidator {
               ) {
                 errors.push({
                   code: 'E_ATTRIBUTE_MISSING',
-                  message: `The attribute "${customAspectTitle}_${customAspectAttribute}" is missing in the schema "${schema.title}"`,
+                  message: `The attribute "${customAspectTitle}_${customAspectAttribute}" is missing in the schema "${schema.title}"`
                 });
               }
             }
@@ -124,7 +124,7 @@ export default class ObjectSchemaValidator {
             if (!helper.getCustomLink(linkTitle)) {
               errors.push({
                 code: 'E_LINK_MISSING',
-                message: `The link "${linkTitle}" is missing in the schema "${schema.title}"`,
+                message: `The link "${linkTitle}" is missing in the schema "${schema.title}"`
               });
               continue;
             }
@@ -139,7 +139,7 @@ export default class ObjectSchemaValidator {
               ) {
                 errors.push({
                   code: 'E_ATTRIBUTE_MISSING',
-                  message: `The attribute "${linkTitle}_${linkAttribute}" is missing in the schema "${schema.title}"`,
+                  message: `The attribute "${linkTitle}_${linkAttribute}" is missing in the schema "${schema.title}"`
                 });
               }
             }
@@ -154,7 +154,7 @@ export default class ObjectSchemaValidator {
           ) {
             errors.push({
               code: 'E_SCHEMA_PROPERTY_MISSING',
-              message: `The schema "${schema.title}" is missing the property "${attribute}"`,
+              message: `The schema "${schema.title}" is missing the property "${attribute}"`
             });
           }
           break;
@@ -171,7 +171,7 @@ export default class ObjectSchemaValidator {
     if (!schema.title) {
       this.errors.push({
         code: 'E_SCHEMA_PROPERTY_MISSING',
-        message: `The schema "${context}" is missing the property "title"`,
+        message: `The schema "${context}" is missing the property "title"`
       });
     }
 
@@ -182,7 +182,7 @@ export default class ObjectSchemaValidator {
     return {
       valid: this.errors.length === 0,
       errors: this.errors,
-      warnings: this.warnings,
+      warnings: this.warnings
     };
   }
 
@@ -190,12 +190,12 @@ export default class ObjectSchemaValidator {
     if (!schema.properties.customAspects) {
       this.errors.push({
         code: 'E_ASPECTS_MISSING',
-        message: `The custom aspects property couldn't be found (Searched for ${context}.properties.customAspects`,
+        message: `The custom aspects property couldn't be found (Searched for ${context}.properties.customAspects`
       });
     } else if (!schema.properties.customAspects.properties) {
       this.errors.push({
         code: 'E_ASPECTS_MISSING',
-        message: `The custom aspects property couldn't be found (Searched for ${context}.properties.customAspects.properties`,
+        message: `The custom aspects property couldn't be found (Searched for ${context}.properties.customAspects.properties`
       });
     } else {
       for (const aspect of Object.keys(
@@ -218,12 +218,12 @@ export default class ObjectSchemaValidator {
     if (!schema.properties.links) {
       this.errors.push({
         code: 'E_LINKS_MISSING',
-        message: `The custom links property couldn't be found (Searched for ${context}.properties.links`,
+        message: `The custom links property couldn't be found (Searched for ${context}.properties.links`
       });
     } else if (!schema.properties.links.properties) {
       this.errors.push({
         code: 'E_LINKS_MISSING',
-        message: `The custom links property couldn't be found (Searched for ${context}.properties.links.properties`,
+        message: `The custom links property couldn't be found (Searched for ${context}.properties.links.properties`
       });
     } else {
       for (const link of Object.keys(schema.properties.links.properties)) {
@@ -248,7 +248,7 @@ export default class ObjectSchemaValidator {
     if (!linkTitle.includes(schemaName + '_')) {
       this.warnings.push({
         code: 'W_INCORRECT_NAMING',
-        message: `${linkTitle} is not following the naming conventions (<schema name>_<link/aspect name>) ${context}`,
+        message: `${linkTitle} is not following the naming conventions (<schema name>_<link/aspect name>) ${context}`
       });
     }
   }
@@ -257,18 +257,18 @@ export default class ObjectSchemaValidator {
     if (!link.items.properties) {
       this.errors.push({
         code: 'E_LINK_INVALID',
-        message: `The custom link "${context}" is missing its properties.`,
+        message: `The custom link "${context}" is missing its properties.`
       });
     } else if (!link.items.properties.target.properties.type.enum) {
       this.errors.push({
         code: 'E_LINK_TARGET_INVALID',
-        message: `The custom links (${context}) target is missing or malformed.`,
+        message: `The custom links (${context}) target is missing or malformed.`
       });
     } else {
       const dummy = ObjectSchemaHelper.generateLinkSchema({
         targetType: link.items.properties.target.properties.type.enum,
         title: link.items.properties.target.title,
-        attributes: [],
+        attributes: []
       });
       const attributes = link.items.properties.attributes.properties;
 
@@ -276,7 +276,7 @@ export default class ObjectSchemaValidator {
         if (!link.items.properties[property]) {
           this.warnings.push({
             code: 'W_LINK_PROPERTY_MISSING',
-            message: `The custom link "${context}" is missing the property ${property}.`,
+            message: `The custom link "${context}" is missing the property ${property}.`
           });
         }
       }
@@ -291,7 +291,7 @@ export default class ObjectSchemaValidator {
     const dummy = ObjectSchemaHelper.generateAspectSchema(
       {
         title: '',
-        attributes: [],
+        attributes: []
       },
       this.domainSpecificObjectSchema
     );
@@ -301,7 +301,7 @@ export default class ObjectSchemaValidator {
       if (!aspect.properties[property]) {
         this.warnings.push({
           code: 'W_ASPECT_PROPERTY_MISSING',
-          message: `The custom aspect "${context}" is missing the property ${property}.`,
+          message: `The custom aspect "${context}" is missing the property ${property}.`
         });
       }
     }
@@ -321,7 +321,7 @@ export default class ObjectSchemaValidator {
           if (!attribute.enum || !isArray(attribute.enum)) {
             this.errors.push({
               code: 'E_ATTRIBUTE_MISSING_PROPERTY',
-              message: `The attribute ${context} is missing the property "enum". Required for "type: enum"`,
+              message: `The attribute ${context} is missing the property "enum". Required for "type: enum"`
             });
           }
           break;
@@ -329,7 +329,7 @@ export default class ObjectSchemaValidator {
           if (!attribute.items || !isObject(attribute.items)) {
             this.errors.push({
               code: 'E_ATTRIBUTE_MISSING_PROPERTY',
-              message: `The attribute ${context} is missing the property "items". Required for "type: array"`,
+              message: `The attribute ${context} is missing the property "items". Required for "type: array"`
             });
           }
           break;
@@ -337,7 +337,7 @@ export default class ObjectSchemaValidator {
           if (!attribute.properties || !isObject(attribute.properties)) {
             this.errors.push({
               code: 'E_ATTRIBUTE_MISSING_PROPERTY',
-              message: `The attribute ${context} is missing the property "properties". Required for "type: object"`,
+              message: `The attribute ${context} is missing the property "properties". Required for "type: object"`
             });
           }
           break;
@@ -352,14 +352,14 @@ export default class ObjectSchemaValidator {
       'domains',
       'id',
       'name',
-      'owner',
+      'owner'
     ];
 
     for (const key of requiredKeys) {
       if (schema.properties[key] === undefined) {
         this.errors.push({
           code: 'E_SCHEMA_PROPERTY_MISSING',
-          message: `${context} is missing the required property ${key}`,
+          message: `${context} is missing the required property ${key}`
         });
       }
     }

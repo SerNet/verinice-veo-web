@@ -22,15 +22,13 @@
         <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
-          :form-schema="form.formSchema"
-        />
+          :form-schema="form.formSchema" />
       </v-col>
     </v-row>
     <HelpFormDescription
       :object-schema="form.objectSchema"
       :form-schema="form.formSchema"
-      :data="form.data"
-    />
+      :data="form.data" />
   </BasePage>
 </template>
 
@@ -43,19 +41,19 @@ const form = ref({
     properties: {
       inputDateTime: {
         type: 'string',
-        format: 'date-time',
-      },
-    },
+        format: 'date-time'
+      }
+    }
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/inputDateTime',
     options: {
-      label: 'Input Date-Time',
-    },
+      label: 'Input Date-Time'
+    }
   },
   data: {
-    inputDateTime: '2020-08-05T12:05:00+02:00',
-  },
+    inputDateTime: '2020-08-05T12:05:00+02:00'
+  }
 });
 </script>

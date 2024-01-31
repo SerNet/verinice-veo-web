@@ -20,14 +20,12 @@
     :available-languages="availableLanguages"
     :import-function="importFunction"
     :replace-translations="replaceTranslations"
-    @update:replace-translations="$emit('update:replace-translations', $event)"
-  >
+    @update:replace-translations="$emit('update:replace-translations', $event)">
     <template #default>
       <v-expansion-panels
         v-model="resultExpansionPanel"
         flat
-        class="veo-border mt-6"
-      >
+        class="veo-border mt-6">
         <v-expansion-panel>
           <template #title>
             {{ t('result') }}
@@ -38,14 +36,12 @@
               :title="t('importedTranslations')"
               flat
               no-close-button
-              :type="VeoAlertType.SUCCESS"
-            >
+              :type="VeoAlertType.SUCCESS">
               <template #default>
                 <div
                   v-for="language of Object.entries(usedTranslations)"
                   :key="language[0]"
-                  class="mt-2"
-                >
+                  class="mt-2">
                   {{ localeDetailsMap[language[0]].name }}
                   <ul>
                     <li v-for="translation of language[1]" :key="translation">
@@ -60,14 +56,12 @@
               :title="t('duplicateTranslations')"
               flat
               no-close-button
-              :type="VeoAlertType.INFO"
-            >
+              :type="VeoAlertType.INFO">
               <template #default>
                 <div
                   v-for="language of Object.entries(duplicateTranslations)"
                   :key="language[0]"
-                  class="mt-2"
-                >
+                  class="mt-2">
                   {{ localeDetailsMap[language[0]].name }}
                   <ul>
                     <li v-for="translation of language[1]" :key="translation">
@@ -82,14 +76,12 @@
               :title="t('unusedTranslations')"
               flat
               no-close-button
-              :type="VeoAlertType.INFO"
-            >
+              :type="VeoAlertType.INFO">
               <template #default>
                 <ul>
                   <li
                     v-for="translation of unusedTranslations"
-                    :key="translation"
-                  >
+                    :key="translation">
                     {{ translation }}
                   </li>
                 </ul>
@@ -117,8 +109,8 @@ export default defineComponent({
   props: {
     replaceTranslations: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: ['translations-imported', 'update:replace-translations'],
   setup(props, { emit }) {
@@ -134,7 +126,7 @@ export default defineComponent({
 
     const translationsQueryParameters = computed(() => ({
       languages: availableLanguages.value,
-      domain: route.params.domain,
+      domain: route.params.domain
     }));
     const { data: objectSchemaTranslations } = useQuery(
       translationQueryDefinitions.queries.fetch,
@@ -253,9 +245,9 @@ export default defineComponent({
       usedTranslations,
 
       VeoAlertType,
-      t,
+      t
     };
-  },
+  }
 });
 </script>
 

@@ -21,8 +21,7 @@
     large
     :title="t('editor.formschema.translation')"
     fixed-footer
-    @update:model-value="$emit('update:model-value', $event)"
-  >
+    @update:model-value="$emit('update:model-value', $event)">
     <template #default>
       <div style="min-height: 20vh">
         <v-form v-model="formIsValid">
@@ -38,8 +37,7 @@
                 :items="displayLanguageItems"
                 :rules="requiredRule"
                 :label="t('displayLanguage')"
-                required
-              />
+                required />
             </v-col>
           </v-row>
           <v-row no-gutters class="align-center mt-4">
@@ -55,21 +53,18 @@
                 :rules="requiredRule"
                 multiple
                 :label="t('supportedLanguages')"
-                required
-              />
+                required />
             </v-col>
           </v-row>
           <EditorObjectSchemaTranslationUpload
             v-model:replace-translations="replaceTranslations"
             :available-languages="supportedLanguages"
-            @translations-imported="onTranslationsImported"
-          />
+            @translations-imported="onTranslationsImported" />
           <v-row>
             <v-col
               v-for="language in supportedLanguages"
               :key="language"
-              cols="12"
-            >
+              cols="12">
               <h3 class="text-h3">
                 {{ languageDetails[language] }}
               </h3>
@@ -91,8 +86,7 @@
         text
         color="primary"
         :disabled="formIsValid === false"
-        @click="onSave"
-      >
+        @click="onSave">
         {{ t('global.button.save') }}
       </v-btn>
     </template>
@@ -112,17 +106,17 @@ export default defineComponent({
   props: {
     availableLanguages: {
       type: Array as PropType<string[]>,
-      default: () => [],
+      default: () => []
     },
     currentDisplayLanguage: {
       type: String,
-      default: '',
-    },
+      default: ''
+    }
   },
   emits: [
     'update:current-display-language',
     'update:model-value',
-    'schema-updated',
+    'schema-updated'
   ],
   setup(props, { emit }) {
     const { locales, t } = useI18n();
@@ -152,7 +146,7 @@ export default defineComponent({
     );
 
     const requiredRule = computed(() => [
-      (v: any) => (Array.isArray(v) ? v.length > 0 : !!v),
+      (v: any) => (Array.isArray(v) ? v.length > 0 : !!v)
     ]);
 
     const languageDetails = computed(() =>
@@ -168,14 +162,14 @@ export default defineComponent({
     const supportedLanguageItems = computed(() =>
       props.availableLanguages.map((language: string) => ({
         title: languageDetails.value[language] || language,
-        value: language,
+        value: language
       }))
     );
 
     const displayLanguageItems = computed(() =>
       supportedLanguages.value.map((language: string) => ({
         title: languageDetails.value[language] || language,
-        value: language,
+        value: language
       }))
     );
 
@@ -298,9 +292,9 @@ export default defineComponent({
       supportedLanguageItems,
       translations,
 
-      t,
+      t
     };
-  },
+  }
 });
 </script>
 

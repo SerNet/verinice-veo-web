@@ -18,15 +18,13 @@
 <template>
   <LayoutPageWrapper
     unresponsive-page-widths
-    :page-widths="[{ width: '100%', minWidth: 0 }, 'auto']"
-  >
+    :page-widths="[{ width: '100%', minWidth: 0 }, 'auto']">
     <template #default>
       <BasePage
         :id="scrollWrapperId"
         data-component-name="object-form-form"
         sticky-footer
-        no-padding
-      >
+        no-padding>
         <template #default>
           <slot name="prepend-form" />
           <BaseCard>
@@ -42,8 +40,7 @@
                 :reactive-form-actions="reactiveFormActions"
                 :object-creation-disabled="objectCreationDisabled"
                 :translations="mergedTranslations"
-                @update:messages="formErrors = $event"
-              />
+                @update:messages="formErrors = $event" />
               <ObjectFormSkeletonLoader v-else />
             </v-card-text>
           </BaseCard>
@@ -56,50 +53,42 @@
         content-class="fill-height"
         height="100%"
         no-padding
-        data-component-name="object-form-sidebar"
-      >
+        data-component-name="object-form-sidebar">
         <template #default>
           <div class="d-flex flex-row fill-height pb-13 ml-2 align-start">
             <BaseCard
               v-if="selectedSideBarAction"
               class="overflow-y-auto"
-              style="max-height: 100%; width: 300px"
-            >
+              style="max-height: 100%; width: 300px">
               <component
                 :is="sideBarActions[selectedSideBarAction].component"
-                v-bind="sideBarActions[selectedSideBarAction].props"
-              />
+                v-bind="sideBarActions[selectedSideBarAction].props" />
             </BaseCard>
             <v-btn-toggle
               v-model="selectedSideBarAction"
               :class="$style['object-side-container-select']"
               color="primary"
-              variant="plain"
-            >
+              variant="plain">
               <ObjectSideBarAction
                 v-for="(action, actionName) in sideBarActions"
                 v-bind="action"
                 :key="actionName"
-                :value="actionName"
-              >
+                :value="actionName">
                 <template
                   v-if="actionName === 'messages'"
-                  #default="{ props: actionProps, activatorProps }"
-                >
+                  #default="{ props: actionProps, activatorProps }">
                   <div>
                     <v-badge
                       :content="messages.length"
                       :model-value="!!messages.length"
-                      :color="messagesBadgeColor"
-                    >
+                      :color="messagesBadgeColor">
                       <v-btn
                         v-bind="activatorProps"
                         :data-component-name="actionProps.dataComponentName"
                         class="my-1 py-1"
                         :disabled="actionProps.disabled"
                         :icon="actionProps.icon"
-                        :value="actionProps.value"
-                      />
+                        :value="actionProps.value" />
                     </v-badge>
                   </div>
                 </template>
@@ -120,31 +109,31 @@ import {
   mdiEyeOutline,
   mdiHistory,
   mdiInformationOutline,
-  mdiTableOfContents,
+  mdiTableOfContents
 } from '@mdi/js';
 
 import {
   IVeoFormsAdditionalContext,
-  IVeoFormsReactiveFormActions,
+  IVeoFormsReactiveFormActions
 } from '~/components/dynamic-form/types';
 import {
   getRiskAdditionalContext,
   getStatusAdditionalContext,
-  getSubTypeTranslation,
+  getSubTypeTranslation
 } from '~/components/dynamic-form/additionalContext';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import {
   IVeoDecisionResults,
   IVeoEntity,
   IVeoInspectionResult,
-  IVeoObjectHistoryEntry,
+  IVeoObjectHistoryEntry
 } from '~/types/VeoTypes';
 
 import formQueryDefinitions, {
-  IVeoFormSchemaMeta,
+  IVeoFormSchemaMeta
 } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions, {
-  IVeoTranslations,
+  IVeoTranslations
 } from '~/composables/api/queryDefinitions/translations';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
@@ -165,51 +154,51 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Object,
-      default: () => ({}),
+      default: () => ({})
     },
     loading: {
       type: Boolean,
-      default: false,
+      default: false
     },
     disabled: {
       type: Boolean,
-      default: false,
+      default: false
     },
     objectType: {
       type: String,
-      required: true,
+      required: true
     },
     disableHistory: {
       type: Boolean,
-      default: false,
+      default: false
     },
     additionalContext: {
       type: Object as PropType<IVeoFormsAdditionalContext>,
-      default: () => ({}),
+      default: () => ({})
     },
     domainId: {
       type: String,
-      required: true,
+      required: true
     },
     valid: {
       type: Boolean,
-      default: true,
+      default: true
     },
     scrollWrapperId: {
       type: String,
-      default: 'scroll-wrapper',
+      default: 'scroll-wrapper'
     },
     originalObject: {
       type: Object as PropType<IVeoEntity | undefined>,
-      default: undefined,
+      default: undefined
     },
     /**
      * If set to true, objects can't be created from within the custom link dropdown
      */
     objectCreationDisabled: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: [
     'update:model-value',
@@ -217,7 +206,7 @@ export default defineComponent({
     'create-dpia',
     'link-dpia',
     'update:object-meta-data',
-    'show-revision',
+    'show-revision'
   ],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
@@ -231,7 +220,7 @@ export default defineComponent({
       },
       set(newValue: Record<string, any>) {
         emit('update:model-value', newValue);
-      },
+      }
     });
     const subType = computed(() => objectData.value?.subType);
 
@@ -246,7 +235,7 @@ export default defineComponent({
     // Fetching object schema
     const fetchSchemaQueryParameters = computed(() => ({
       type: objectTypePlural.value as string,
-      domainId: props.domainId,
+      domainId: props.domainId
     }));
     const fetchSchemaQueryEnabled = computed(
       () => !!objectTypePlural.value && !!props.domainId
@@ -255,13 +244,13 @@ export default defineComponent({
       schemaQueryDefinitions.queries.fetchSchema,
       fetchSchemaQueryParameters,
       {
-        enabled: fetchSchemaQueryEnabled,
+        enabled: fetchSchemaQueryEnabled
       }
     );
 
     const translationQueryParameters = computed(() => ({
       languages: [locale.value],
-      domain: props.domainId,
+      domain: props.domainId
     }));
     const { data: translations, isFetching: translationsAreFetching } =
       useQuery(
@@ -277,14 +266,14 @@ export default defineComponent({
     );
 
     const fetchDomainQueryParameters = computed(() => ({
-      id: props.domainId as string,
+      id: props.domainId as string
     }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
     const { data: domain, isFetching: domainIsFetching } = useQuery(
       domainQueryDefinitions.queries.fetchDomain,
       fetchDomainQueryParameters,
       {
-        enabled: fetchDomainQueryEnabled,
+        enabled: fetchDomainQueryEnabled
       }
     );
 
@@ -311,12 +300,12 @@ export default defineComponent({
           locale.value,
           formSchemas.value || []
         )
-      : {}),
+      : {})
     }));
 
     // Stuff that manages which form schema gets used to display the object
     const formsQueryParameters = computed(() => ({
-      domainId: props.domainId as string,
+      domainId: props.domainId as string
     }));
     const formsQueryEnabled = computed(() => !!props.domainId);
     const { data: formSchemas, isFetching: formSchemasAreFetching } = useQuery(
@@ -349,7 +338,7 @@ export default defineComponent({
       Array.from(formErrors).map(([objectSchemaPointer, text]) => ({
         key: objectSchemaPointer,
         type: 'error',
-        text: text[0],
+        text: text[0]
       }));
 
     const transformDecisionResults = (
@@ -362,14 +351,14 @@ export default defineComponent({
           return {
             key: `${decision}_unknown`,
             type: 'warning',
-            text: `Text for decision ${decision} not found`,
+            text: `Text for decision ${decision} not found`
           };
         }
 
         const decisionResultStrings: Record<string, string> = {
           true: $t('global.button.yes'),
           false: $t('global.button.no'),
-          undefined: t('unknown'),
+          undefined: t('unknown')
         };
         // Returns true, false or undefined as string
         const decisionResultAsString =
@@ -395,7 +384,7 @@ export default defineComponent({
             `${decisionName}: ${decisionResultStrings[decisionResultAsString]}` +
             (result.decisiveRule !== undefined ?
               ` (${decisiveRuleDescription})`
-            : ''),
+            : '')
         };
       });
 
@@ -414,8 +403,8 @@ export default defineComponent({
                   componentProps: {
                     objectType: props.objectType,
                     subType: suggestion.partSubType,
-                    domainId: props.domainId,
-                  },
+                    domainId: props.domainId
+                  }
                 },
                 {
                   key: `${suggestion.partSubType}_link`,
@@ -423,9 +412,9 @@ export default defineComponent({
                   component: ObjectLinkDialog,
                   componentProps: {
                     object: props.originalObject,
-                    preselectedFilters: { subType: suggestion?.partSubType },
-                  },
-                },
+                    preselectedFilters: { subType: suggestion?.partSubType }
+                  }
+                }
               ];
             default:
               return [];
@@ -446,7 +435,7 @@ export default defineComponent({
         text:
           finding.description[locale.value] ||
           Object.values(finding.description)[0],
-        actions: transformInspectionFindingSuggestions(finding.suggestions),
+        actions: transformInspectionFindingSuggestions(finding.suggestions)
       }));
 
     const messages = computed(() => [
@@ -454,7 +443,7 @@ export default defineComponent({
       ...transformDecisionResults(inspectionFindings.value?.decisionResults),
       ...transformInspectionFindings(
         inspectionFindings.value?.inspectionFindings || []
-      ),
+      )
     ]);
 
     const messagesBadgeColor = computed(() =>
@@ -467,7 +456,7 @@ export default defineComponent({
     const displayOption = ref<string>('objectschema');
     const formQueryParameters = computed(() => ({
       domainId: props.domainId,
-      id: displayOption.value as string,
+      id: displayOption.value as string
     }));
     const formQueryEnabled = computed(
       () => displayOption.value !== 'objectschema'
@@ -515,12 +504,12 @@ export default defineComponent({
     // If the available form schemas change check if a subtype is set and get a formschema for that sub type
     watch(() => formSchemas.value, setDisplayOptionBasedOnSubtype, {
       deep: true,
-      immediate: true,
+      immediate: true
     });
     // If the subtype changes, check if a formschema for the subtype exists and set it's id
     watch(() => subType.value, setDisplayOptionBasedOnSubtype, {
       deep: true,
-      immediate: true,
+      immediate: true
     });
 
     // If no subtype is set but the users switches to a formschema, automatically set that schemas subtype
@@ -554,8 +543,8 @@ export default defineComponent({
             objectSchema: objectSchema.value,
             objectData: objectData.value,
             'onUpdate:displayOption': (newDisplayOption: string) =>
-              (displayOption.value = newDisplayOption),
-          },
+              (displayOption.value = newDisplayOption)
+          }
         },
         tableOfContents: {
           icon: mdiTableOfContents,
@@ -567,8 +556,8 @@ export default defineComponent({
             formSchema: currentFormSchema.value?.content,
             customTranslation:
               currentFormSchema.value?.translation?.[locale.value],
-            scrollWrapperId: props.scrollWrapperId,
-          },
+            scrollWrapperId: props.scrollWrapperId
+          }
         },
         history: {
           icon: mdiHistory,
@@ -580,8 +569,8 @@ export default defineComponent({
             objectType: props.originalObject?.type,
             objectId: props.originalObject?.id,
             objectSchema: objectSchema?.value,
-            onShowRevision,
-          },
+            onShowRevision
+          }
         },
         messages: {
           icon: mdiInformationOutline,
@@ -589,9 +578,9 @@ export default defineComponent({
           dataComponentName: 'object-form-messages-tab',
           component: Messages,
           props: {
-            messages: messages.value,
-          },
-        },
+            messages: messages.value
+          }
+        }
       })
     );
 
@@ -603,7 +592,7 @@ export default defineComponent({
       domain: props.domainId,
       endpoint: objectTypePlural.value as string,
       status: debouncedObjectData.value.status,
-      subType: debouncedObjectData.value.subType,
+      subType: debouncedObjectData.value.subType
     }));
     const fetchInspectionFindingsQueryEnabled = computed(
       () =>
@@ -616,7 +605,7 @@ export default defineComponent({
       fetchInspectionFindingsQueryParameters,
       {
         enabled: fetchInspectionFindingsQueryEnabled,
-        keepPreviousData: true,
+        keepPreviousData: true
       }
     );
 
@@ -628,7 +617,7 @@ export default defineComponent({
 
     const objectMetaData = computed(() => ({
       messages: messages.value,
-      objectData: props.modelValue,
+      objectData: props.modelValue
     }));
 
     const dataIsLoading = computed<boolean>(
@@ -672,9 +661,9 @@ export default defineComponent({
       mdiInformationOutline,
       mdiTableOfContents,
       upperFirst,
-      t,
+      t
     };
-  },
+  }
 });
 </script>
 

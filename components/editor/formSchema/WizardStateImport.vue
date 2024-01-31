@@ -32,14 +32,12 @@
           :items="formSchemaOptions"
           required
           variant="underlined"
-          @update:model-value="$emit('update:form-schema-id', $event)"
-        />
+          @update:model-value="$emit('update:form-schema-id', $event)" />
         <EditorFileUpload
           v-if="formSchemaId === 'custom'"
           :input-label="t('formSchemaUploadLabel')"
           :submit-button-text="t('importFormSchema')"
-          @schema-uploaded="$emit('update:form-schema', $event)"
-        />
+          @schema-uploaded="$emit('update:form-schema', $event)" />
         <BaseAlert
           :model-value="objectTypeMissing || !schemasCompatible"
           :buttons="
@@ -48,8 +46,8 @@
             : [
                 {
                   text: t('forceProceed'),
-                  onClick: () => $emit('force-import'),
-                },
+                  onClick: () => $emit('force-import')
+                }
               ]
           "
           :type="
@@ -65,8 +63,7 @@
           :text="t('uploadObjectSchemaHint')"
           class="my-4"
           flat
-          no-close-button
-        />
+          no-close-button />
       </v-card-text>
     </BaseCard>
     <h3 class="text-h3 mt-6">
@@ -77,14 +74,12 @@
         <v-checkbox
           :model-value="forceOwnSchema"
           :label="t('forceOwnSchema')"
-          @update:model-value="$emit('update:force-own-schema', $event)"
-        />
+          @update:model-value="$emit('update:force-own-schema', $event)" />
         <div v-if="forceOwnSchema">
           <EditorFileUpload
             :input-label="t('objectSchemaUploadLabel')"
             :submit-button-text="t('importObjectSchema')"
-            @schema-uploaded="$emit('update:object-schema', $event)"
-          />
+            @schema-uploaded="$emit('update:object-schema', $event)" />
         </div>
       </v-card-text>
     </BaseCard>
@@ -96,7 +91,7 @@ import { PropType } from 'vue';
 import { isObject } from 'lodash';
 
 import formsQueryDefinitions, {
-  IVeoFormSchema,
+  IVeoFormSchema
 } from '~/composables/api/queryDefinitions/forms';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { VeoAlertType } from '~/types/VeoTypes';
@@ -106,36 +101,36 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Number,
-      required: true,
+      required: true
     },
     domainId: {
       type: String,
-      required: true,
+      required: true
     },
     forceOwnSchema: {
       type: Boolean,
-      default: false,
+      default: false
     },
     formSchemaId: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     formSchema: {
       default: undefined,
       validator: (value: any) => value === undefined || isObject(value),
-      type: Object as PropType<IVeoFormSchema | undefined>,
+      type: Object as PropType<IVeoFormSchema | undefined>
     },
     schemasCompatible: {
       type: Boolean,
-      default: true,
-    },
+      default: true
+    }
   },
   emits: [
     'update:object-schema',
     'update:force-own-schema',
     'force-import',
     'update:form-schema-id',
-    'update:form-schema',
+    'update:form-schema'
   ],
   setup(props) {
     const { t, locale } = useI18n();
@@ -158,12 +153,12 @@ export default defineComponent({
       () => [
         {
           title: t('customFormSchema').toString(),
-          value: 'custom',
+          value: 'custom'
         },
         ...(formSchemas.value || []).map((formSchema) => ({
           title: formSchema?.name[locale.value] || '',
-          value: formSchema.id as string,
-        })),
+          value: formSchema.id as string
+        }))
       ]
     );
 
@@ -187,9 +182,9 @@ export default defineComponent({
       requiredRule,
 
       VeoAlertType,
-      t,
+      t
     };
-  },
+  }
 });
 </script>
 

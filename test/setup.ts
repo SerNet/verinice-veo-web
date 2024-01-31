@@ -22,7 +22,7 @@ import { config } from '@vue/test-utils';
 
 export const vuetify = createVuetify({
   components,
-  directives,
+  directives
 });
 
 try {
@@ -33,7 +33,7 @@ try {
       const i18n = (nuxtApp.vueApp as any).__VUE_I18N__;
 
       await i18n.install(app, ...options);
-    },
+    }
   });
 } catch {
   /* empty */

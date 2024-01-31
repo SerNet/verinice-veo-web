@@ -24,8 +24,7 @@
       variant="underlined"
       :placeholder="noValueText"
       :prepend-inner-icon="icon"
-      @update:model-value="onInput"
-    />
+      @update:model-value="onInput" />
     <div class="height: 1em">
       <v-icon start :icon="mdiTranslate" />
       {{ t('displayedAs', [displayedValue, source]) }}
@@ -42,7 +41,7 @@ import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import {
   IEditorTranslations,
-  TRANSLATION_SOURCE,
+  TRANSLATION_SOURCE
 } from '~/components/editor/translations/types';
 
 const props = withDefaults(

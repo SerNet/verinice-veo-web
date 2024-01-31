@@ -30,8 +30,7 @@
         text
         color="primary"
         :disabled="!type"
-        @click="$emit('create-entity', { type, ...eventPayload })"
-      >
+        @click="$emit('create-entity', { type, ...eventPayload })">
         {{ t('create') }}
       </v-btn>
     </template>
@@ -46,8 +45,8 @@ import { useQuery } from '~/composables/api/utils/query';
 defineProps({
   eventPayload: {
     type: Object,
-    default: () => ({}),
-  },
+    default: () => ({})
+  }
 });
 
 defineEmits(['create-entity', 'update:model-value']);
@@ -58,7 +57,7 @@ const route = useRoute();
 
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
-  domain: route.params.domain,
+  domain: route.params.domain
 }));
 const { data: translations } = useQuery(
   translationQueryDefinitions.queries.fetch,
@@ -72,7 +71,7 @@ const type = ref<string | undefined>();
 const options = computed<{ title: string; value: string }[]>(() =>
   Object.keys(schemas.value || {}).map((schemaName) => ({
     value: schemaName,
-    title: translations.value?.lang[locale.value]?.[schemaName] || schemaName,
+    title: translations.value?.lang[locale.value]?.[schemaName] || schemaName
   }))
 );
 </script>

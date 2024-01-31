@@ -22,5 +22,5 @@ export const LOCAL_STORAGE_KEYS = {
   IS_FRESH_LOGIN: 'is-fresh-login',
   LAST_DOMAIN: 'last-domain',
   LAST_UNIT: 'last-unit',
-  PRIMARY_NAV_MINI_VARIANT: 'primary-navigation-drawer--mini-variant',
+  PRIMARY_NAV_MINI_VARIANT: 'primary-navigation-drawer--mini-variant'
 };

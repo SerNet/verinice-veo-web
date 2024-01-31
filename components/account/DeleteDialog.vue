@@ -20,15 +20,13 @@
     v-bind="$attrs"
     :title="t('deleteAccount')"
     :close-disabled="isLoading"
-    @update:model-value="emit('update:model-value', $event)"
-  >
+    @update:model-value="emit('update:model-value', $event)">
     <template #default>
       <BaseAlert
         :model-value="profile && profile.username === username"
         flat
         no-close-button
-        :type="VeoAlertType.ERROR"
-      >
+        :type="VeoAlertType.ERROR">
         {{ t('cannotDeleteOwnAccount') }}
       </BaseAlert>
       {{ t('deleteAccountHint') }}
@@ -46,8 +44,7 @@
           (profile && profile.username === username)
         "
         :loading="isLoading"
-        @click="deleteAccount"
-      >
+        @click="deleteAccount">
         {{ globalT('global.button.delete') }}
       </v-btn>
     </template>
@@ -65,12 +62,12 @@ import { useMutation } from '~/composables/api/utils/mutation';
 const props = defineProps({
   id: {
     type: String,
-    required: true,
+    required: true
   },
   username: {
     type: String,
-    required: true,
-  },
+    required: true
+  }
 });
 
 const emit = defineEmits(['update:model-value', 'success']);

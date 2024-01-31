@@ -21,8 +21,7 @@
       :model-value="true"
       flat
       no-close-button
-      :type="VeoAlertType.INFO"
-    >
+      :type="VeoAlertType.INFO">
       {{ t('uploadOverwrite') }}
     </BaseAlert>
     <EditorTranslationUpload
@@ -31,14 +30,12 @@
       :replace-translations="replaceTranslations"
       @update:replace-translations="
         $emit('update:replace-translations', $event)
-      "
-    >
+      ">
       <template #default>
         <v-expansion-panels
           v-model="resultExpansionPanel"
           flat
-          class="veo-border mt-6"
-        >
+          class="veo-border mt-6">
           <v-expansion-panel>
             <v-expansion-panel-title>
               {{ t('result') }}
@@ -49,14 +46,12 @@
                 :title="t('importedTranslations')"
                 flat
                 no-close-button
-                :type="VeoAlertType.SUCCESS"
-              >
+                :type="VeoAlertType.SUCCESS">
                 <template #default>
                   <div
                     v-for="language of Object.entries(usedTranslations)"
                     :key="language[0]"
-                    class="mt-2"
-                  >
+                    class="mt-2">
                     {{ localeDetailsMap[language[0]].name }}
                     <ul>
                       <li v-for="translation of language[1]" :key="translation">
@@ -71,14 +66,12 @@
                 :title="t('unusedTranslations')"
                 flat
                 no-close-button
-                :type="VeoAlertType.INFO"
-              >
+                :type="VeoAlertType.INFO">
                 <template #default>
                   <ul>
                     <li
                       v-for="translation of unusedTranslations"
-                      :key="translation"
-                    >
+                      :key="translation">
                       {{ translation }}
                     </li>
                   </ul>
@@ -99,7 +92,7 @@ import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 
 import ObjectSchemaHelper, {
   IVeoOSHCustomAspect,
-  IVeoOSHCustomLink,
+  IVeoOSHCustomLink
 } from '~/lib/ObjectSchemaHelper2';
 
 import { VeoAlertType } from '~/types/VeoTypes';
@@ -108,12 +101,12 @@ export default defineComponent({
   props: {
     availableLanguages: {
       type: Array as PropType<string[]>,
-      required: true,
+      required: true
     },
     replaceTranslations: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: ['translations-imported', 'update:replace-translations'],
   setup(props, { emit }) {
@@ -180,7 +173,7 @@ export default defineComponent({
         ).map((property) => `${prefix}_${property}`),
         ...(objectSchemaHelper?.value?.getBasicProperties() || []).map(
           (property) => property.title
-        ),
+        )
       ];
       unusedTranslations.value = [];
 
@@ -233,9 +226,9 @@ export default defineComponent({
       usedTranslations,
 
       VeoAlertType,
-      t,
+      t
     };
-  },
+  }
 });
 </script>
 

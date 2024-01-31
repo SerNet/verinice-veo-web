@@ -26,8 +26,7 @@
             :rules="[requiredRule, banSpecialChars]"
             :prefix="prefix"
             variant="underlined"
-            @update:model-value="doUpdate($event, 'title')"
-          />
+            @update:model-value="doUpdate($event, 'title')" />
         </v-col>
         <v-col :cols="4" class="py-0">
           <v-select
@@ -35,8 +34,7 @@
             :label="t('aspectType')"
             :items="types"
             variant="underlined"
-            @update:model-value="doUpdate($event, 'type')"
-          />
+            @update:model-value="doUpdate($event, 'type')" />
         </v-col>
       </v-row>
       <v-row dense>
@@ -46,8 +44,7 @@
             :label="t('aspectDescription')"
             clearable
             variant="underlined"
-            @update:model-value="doUpdate($event, 'description')"
-          />
+            @update:model-value="doUpdate($event, 'description')" />
         </v-col>
       </v-row>
       <v-row v-if="form.data.type === 'enum'" class="flex-column" dense>
@@ -61,8 +58,7 @@
             hide-details
             :label="t('multiple')"
             class="mt-0 pt-0 ml-4"
-            @update:model-value="doUpdate($event, 'multiple')"
-          />
+            @update:model-value="doUpdate($event, 'multiple')" />
         </v-col>
         <v-col class="py-0">
           <v-combobox
@@ -75,8 +71,7 @@
             append-icon=""
             clearable
             variant="underlined"
-            @update:model-value="doUpdate($event, 'enum')"
-          >
+            @update:model-value="doUpdate($event, 'enum')">
             <template #label>
               <span>
                 {{ t('valuesHint') }}
@@ -87,8 +82,7 @@
                 :key="JSON.stringify(data.item)"
                 v-bind="data.attrs"
                 close
-                @click:close="removeValueFromEnum(data.item)"
-              >
+                @click:close="removeValueFromEnum(data.item)">
                 {{ data.item }}
               </v-chip>
             </template>
@@ -104,8 +98,7 @@
             item-title="displayName"
             item-value="name"
             variant="underlined"
-            @update:model-value="updateOptions($event)"
-          />
+            @update:model-value="updateOptions($event)" />
         </v-col>
       </v-row>
       <template #append>
@@ -113,8 +106,7 @@
           <v-btn
             variant="text"
             :icon="mdiTrashCanOutline"
-            @click="doDelete()"
-          />
+            @click="doDelete()" />
         </v-list-item-action>
       </template>
     </v-list-item>
@@ -144,71 +136,71 @@ const INPUT_FORMATS: IInputFormats = {
       name: 'text',
       options: {
         format: undefined,
-        pattern: undefined,
-      },
+        pattern: undefined
+      }
     },
     {
       name: 'date',
       options: {
         format: 'date',
-        pattern: undefined,
-      },
+        pattern: undefined
+      }
     },
     {
       name: 'dateTime',
       options: {
         format: 'date-time',
-        pattern: undefined,
-      },
+        pattern: undefined
+      }
     },
     {
       name: 'uri',
       options: {
         format: 'uri',
-        pattern: '^(https?|ftp)://',
-      },
-    },
-  ],
+        pattern: '^(https?|ftp)://'
+      }
+    }
+  ]
 };
 
 export default defineComponent({
   props: {
     title: {
       type: String,
-      default: '',
+      default: ''
     },
     type: {
       type: String,
-      default: 'enum',
+      default: 'enum'
     },
     description: {
       type: String,
-      default: '',
+      default: ''
     },
     aspectName: {
       type: String,
-      required: true,
+      required: true
     },
     enum: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     multiple: {
       type: Boolean,
-      default: false,
+      default: false
     },
     format: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     pattern: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     originalId: {
       type: String,
-      default: undefined,
-    },
+      default: undefined
+    }
   },
   emits: ['delete', 'update'],
   setup(props, context) {
@@ -226,16 +218,16 @@ export default defineComponent({
         });
       },
       {
-        deep: true,
+        deep: true
       }
     );
     const form = ref({
       data: {
-        ...props,
+        ...props
       },
       rules: {
-        title: [(value: string) => trim(value).length > 0],
-      },
+        title: [(value: string) => trim(value).length > 0]
+      }
     });
 
     nextTick().then(() => {
@@ -255,7 +247,7 @@ export default defineComponent({
             title: t(
               `editor.inputtypes.${availableTypes[entry].name}`
             ) as string,
-            value: availableTypes[entry].name,
+            value: availableTypes[entry].name
           });
         }
       }
@@ -269,7 +261,7 @@ export default defineComponent({
     function doObjectUpdate(newObject: any) {
       const object = {
         ...form.value.data,
-        originalId: props.originalId,
+        originalId: props.originalId
       } as any;
 
       // Delete properties only used for ui
@@ -312,7 +304,7 @@ export default defineComponent({
     const attributeTypes = ref([
       { title: 'Zahl', value: 'number' },
       { title: 'Ganzzahl', value: 'integer' },
-      { title: 'Text', value: 'string' },
+      { title: 'Text', value: 'string' }
     ]);
 
     function removeValueFromEnum(value: string) {
@@ -369,9 +361,9 @@ export default defineComponent({
       mdiTrashCanOutline,
       t,
       banSpecialChars,
-      requiredRule,
+      requiredRule
     };
-  },
+  }
 });
 </script>
 

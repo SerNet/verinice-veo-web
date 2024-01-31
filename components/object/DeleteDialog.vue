@@ -19,8 +19,7 @@
   <BaseDialog
     v-bind="$attrs"
     :title="t('headline')"
-    @update:model-value="emit('update:model-value', $event)"
-  >
+    @update:model-value="emit('update:model-value', $event)">
     <template #default>
       <span class="text-body-1">{{ t('text', { displayName }) }}</span>
     </template>
@@ -33,8 +32,7 @@
         variant="text"
         color="primary"
         :disabled="!deleteButtonEnabled || ability.cannot('manage', 'objects')"
-        @click="deleteObject"
-      >
+        @click="deleteObject">
         {{ globalT('global.button.delete') }}
       </v-btn>
     </template>
@@ -54,7 +52,7 @@ const props = withDefaults(
     item: IVeoEntity | undefined;
   }>(),
   {
-    item: undefined,
+    item: undefined
   }
 );
 
@@ -100,12 +98,12 @@ const deleteObject = async () => {
     if (route.params.object) {
       await deleteWithoutInvalidating({
         endpoint: endpoints.value?.[props.item.type],
-        id: props.item.id,
+        id: props.item.id
       });
     } else {
       await doDelete({
         endpoint: endpoints.value?.[props.item.type],
-        id: props.item.id,
+        id: props.item.id
       });
     }
     emit('success');

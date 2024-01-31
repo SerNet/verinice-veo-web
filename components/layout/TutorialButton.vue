@@ -26,11 +26,11 @@
           type="submit"
           :disabled="!tutorialsForRoute.length"
           data-component-name="tutorial-select"
-          @click="visible ? stop() : load()"
-        >
+          @click="visible ? stop() : load()">
           <v-icon
-            :icon="visible ? mdiInformationOffOutline : mdiInformationOutline"
-          />
+            :icon="
+              visible ? mdiInformationOffOutline : mdiInformationOutline
+            " />
         </v-btn>
         <v-menu v-else offset-y bottom left nudge-bottom="2">
           <template #activator="{ props: menu }">
@@ -38,8 +38,7 @@
               <v-icon
                 :icon="
                   visible ? mdiInformationOffOutline : mdiInformationOutline
-                "
-              />
+                " />
             </v-btn>
           </template>
           <template #default>
@@ -47,8 +46,7 @@
               <v-list-item
                 v-for="tutorial of tutorialsForRoute"
                 :key="tutorial._id"
-                @click="load(tutorial._path)"
-              >
+                @click="load(tutorial._path)">
                 <v-list-item-title>
                   {{ tutorial.title }}
                 </v-list-item-title>
@@ -80,9 +78,9 @@ export default defineComponent({
 
       mdiInformationOffOutline,
       mdiInformationOutline,
-      t,
+      t
     };
-  },
+  }
 });
 </script>
 

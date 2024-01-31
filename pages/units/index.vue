@@ -32,8 +32,7 @@
         <v-list
           lines="two"
           data-component-name="unit-selection-available-units"
-          data-veo-test="unit-selection-available-units"
-        >
+          data-veo-test="unit-selection-available-units">
           <template v-if="unitsFetching">
             <div v-for="i in 2" :key="i" class="mb-4">
               <VSkeletonLoader type="text" width="150px" class="mx-4 my-1" />
@@ -49,8 +48,7 @@
             :title="unit.name"
             :subtitle="unit.description"
             :disabled="!generateUnitDashboardLink(unit.id)"
-            :to="generateUnitDashboardLink(unit.id)"
-          >
+            :to="generateUnitDashboardLink(unit.id)">
             <template #append>
               <v-tooltip location="bottom">
                 <template #activator="{ props }">
@@ -59,8 +57,7 @@
                     :icon="mdiPencilOutline"
                     variant="text"
                     data-component-name="unit-selection-edit-unit-button"
-                    @click.prevent="editUnit(unit)"
-                  />
+                    @click.prevent="editUnit(unit)" />
                 </template>
                 <template #default>
                   {{ t('editUnit') }}
@@ -73,8 +70,7 @@
                     :icon="mdiTrashCanOutline"
                     variant="text"
                     data-component-name="unit-selection-delete-unit-button"
-                    @click.prevent="deleteUnit(unit)"
-                  />
+                    @click.prevent="deleteUnit(unit)" />
                 </template>
                 <template #default>
                   {{ t('deleteUnit') }}
@@ -96,8 +92,7 @@
               color="primary"
               :icon="mdiPlus"
               size="large"
-              @click="createUnit()"
-            />
+              @click="createUnit()" />
           </div>
         </template>
 
@@ -128,7 +123,7 @@ import { mdiTrashCanOutline, mdiPlus, mdiPencilOutline } from '@mdi/js';
 import { getFirstDomainDomaindId } from '~/lib/utils';
 import { useQuery } from '~/composables/api/utils/query';
 import unitQueryDefinitions, {
-  IVeoUnit,
+  IVeoUnit
 } from '~/composables/api/queryDefinitions/units';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -137,7 +132,7 @@ const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 
 useHead({
-  title: $t('breadcrumbs.index'),
+  title: $t('breadcrumbs.index')
 });
 
 const { ability } = useVeoPermissions();

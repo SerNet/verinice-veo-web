@@ -35,16 +35,14 @@
               clearable
               :label="`${t('languageFile')}*`"
               show-size
-              @update:model-value="uploadLanguageFile"
-            />
+              @update:model-value="uploadLanguageFile" />
             <v-row v-if="sheets.length > 1" class="mt-3">
               <v-col cols="12" md="4">
                 <v-select
                   v-model="sheet"
                   :disabled="!languageFile || uploadingLanguageFile"
                   :items="sheets"
-                  :label="`${t('sheet')}*`"
-                />
+                  :label="`${t('sheet')}*`" />
               </v-col>
             </v-row>
             <v-row class="mt-3">
@@ -57,14 +55,13 @@
                   :disabled="!languageFile || uploadingLanguageFile"
                   :items="availableColumns"
                   :rules="[requiredRule]"
-                  :label="`${t('column')}*`"
-                />
+                  :label="`${t('column')}*`" />
               </v-col>
               <v-col v-for="language of availableLanguages" :key="language">
                 <p class="text-body-2 mb-0">
                   {{
                     t('langColumn', [
-                      localeDetailsMap[language].name || language,
+                      localeDetailsMap[language].name || language
                     ])
                   }}
                 </p>
@@ -73,8 +70,7 @@
                   :disabled="!languageFile || uploadingLanguageFile"
                   :items="availableColumns"
                   :rules="[requiredRule]"
-                  :label="`${t('column')}*`"
-                />
+                  :label="`${t('column')}*`" />
               </v-col>
             </v-row>
             <div class="d-flex justify-space-between align-center">
@@ -84,16 +80,16 @@
                 :label="t('replaceTranslations')"
                 @update:model-value="
                   $emit('update:replace-translations', $event)
-                "
-              />
+                " />
               <v-btn
                 color="primary"
                 flat
                 :disabled="!formIsValid"
                 role="submit"
                 type="submit"
-                @click="importFunction(columns, idColumn || 0, languageColumns)"
-              >
+                @click="
+                  importFunction(columns, idColumn || 0, languageColumns)
+                ">
                 {{ t('import') }}
               </v-btn>
             </div>
@@ -117,7 +113,7 @@ export default defineComponent({
   props: {
     availableLanguages: {
       type: Array as PropType<string[]>,
-      required: true,
+      required: true
     },
     importFunction: {
       type: Function as PropType<
@@ -127,12 +123,12 @@ export default defineComponent({
           languageColumns: { [lang: string]: number }
         ) => void
       >,
-      required: true,
+      required: true
     },
     replaceTranslations: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: ['update:replace-translations'],
   setup() {
@@ -182,7 +178,7 @@ export default defineComponent({
         if (fileContent) {
           workbook.value = read(fileContent, {
             cellHTML: false,
-            cellFormula: false,
+            cellFormula: false
           });
           if (workbook.value.SheetNames.length === 1) {
             sheet.value = workbook.value.SheetNames[0];
@@ -237,7 +233,7 @@ export default defineComponent({
         .filter((column) => column[0])
         .map((column, index) => ({
           title: column[0].replace(/[^\w]/g, ''), // Remove special characters from column names
-          value: index,
+          value: index
         }))
         .filter((array) => array); // Filter out empty columns
     };
@@ -257,9 +253,9 @@ export default defineComponent({
       uploadingLanguageFile,
 
       t,
-      mdiTranslate,
+      mdiTranslate
     };
-  },
+  }
 });
 </script>
 

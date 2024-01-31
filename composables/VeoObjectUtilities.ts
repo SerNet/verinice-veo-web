@@ -35,7 +35,7 @@ export const useCreateLink = () => {
   const config = useRuntimeConfig();
 
   const createLink = (endpoint: string, objectId: string) => ({
-    targetUri: `${config.public.apiUrl}/${endpoint}/${objectId}`,
+    targetUri: `${config.public.apiUrl}/${endpoint}/${objectId}`
   });
 
   return { createLink };
@@ -66,7 +66,7 @@ export const useCloneObject = () => {
       domain: route.params.domain,
       endpoint: endpoints.value?.[newObject.type],
       object: newObject,
-      parentScopes,
+      parentScopes
     });
   };
 
@@ -103,7 +103,7 @@ export const useUnlinkObject = () => {
     return updateObject({
       domain: route.params.domain,
       endpoint: endpoints.value?.[object.type],
-      object,
+      object
     });
   };
 
@@ -148,7 +148,7 @@ export const useLinkObject = () => {
     return updateObject({
       domain: route.params.domain,
       endpoint: endpoints.value?.[object.type],
-      object,
+      object
     });
   };
 

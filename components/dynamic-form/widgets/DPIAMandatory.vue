@@ -21,8 +21,7 @@
     :type="piaMandatory ? VeoAlertType.INFO : VeoAlertType.SUCCESS"
     no-close-button
     flat
-    :title="piaMandatory ? t('piaMandatory') : t('piaNotMandatory')"
-  >
+    :title="piaMandatory ? t('piaMandatory') : t('piaNotMandatory')">
     <span v-if="piaMandatory">
       <i18n-t keypath="piaMandatoryText" tag="span" scope="global"
         ><br
@@ -42,12 +41,12 @@ import { VeoAlertType } from '~/types/VeoTypes';
 export const WIDGET_DEFINITION: IVeoFormsElementDefinition = {
   code: 'PiaMandatoryWidget',
   name: {
-    en: 'PiaMandatoryWidget',
+    en: 'PiaMandatoryWidget'
   },
   description: {
     en: 'Adds a label to the form, specifing whether a privacy impact assesment is mandatory.',
-    de: 'Fügt einen Text im Formschema ein, der definiert, ob eine Datenschutz-Folgeabschätzung nötig ist.',
-  },
+    de: 'Fügt einen Text im Formschema ein, der definiert, ob eine Datenschutz-Folgeabschätzung nötig ist.'
+  }
 };
 
 export default defineComponent({
@@ -64,9 +63,9 @@ export default defineComponent({
       piaMandatory,
 
       t,
-      VeoAlertType,
+      VeoAlertType
     };
-  },
+  }
 });
 </script>
 

@@ -22,15 +22,13 @@
         <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
-          :form-schema="form.formSchema"
-        />
+          :form-schema="form.formSchema" />
       </v-col>
     </v-row>
     <HelpFormDescription
       :object-schema="form.objectSchema"
       :form-schema="form.formSchema"
-      :data="form.data"
-    />
+      :data="form.data" />
   </BasePage>
 </template>
 
@@ -42,19 +40,19 @@ const form = ref({
     type: 'object',
     properties: {
       inputText: {
-        type: 'string',
-      },
-    },
+        type: 'string'
+      }
+    }
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/inputText',
     options: {
-      label: 'Input Text',
-    },
+      label: 'Input Text'
+    }
   },
   data: {
-    inputText: 'Beispiel',
-  },
+    inputText: 'Beispiel'
+  }
 });
 </script>

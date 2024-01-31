@@ -22,16 +22,14 @@
     :type="VeoAlertType.ERROR"
     no-close-button
     class="mb-2"
-    :title="t('pleaseFixError')"
-  >
+    :title="t('pleaseFixError')">
     {{ validationError }}
   </BaseAlert>
   <BaseCard>
     <v-card-text>
       <UtilCodeEditor
         :model-value="editorContent"
-        @update:model-value="onTranslationsUpdated"
-      />
+        @update:model-value="onTranslationsUpdated" />
     </v-card-text>
   </BaseCard>
 </template>
@@ -41,7 +39,7 @@ import { VeoAlertType } from '~/types/VeoTypes';
 import { IEditorTranslations, TRANSLATION_SOURCE } from './types';
 import {
   editorTranslationsToFormsTranslations,
-  formsTranslationsToEditorTranslations,
+  formsTranslationsToEditorTranslations
 } from './util';
 import { IVeoFormsTranslations } from '~/components/dynamic-form/types';
 
@@ -51,7 +49,7 @@ const props = withDefaults(
     source: TRANSLATION_SOURCE;
   }>(),
   {
-    modelValue: () => ({}),
+    modelValue: () => ({})
   }
 );
 
@@ -64,7 +62,7 @@ const { t } = useI18n();
 const editorContent = computed(() =>
   JSON.stringify(
     editorTranslationsToFormsTranslations(props.modelValue, [
-      TRANSLATION_SOURCE.FORMSCHEMA,
+      TRANSLATION_SOURCE.FORMSCHEMA
     ]),
     undefined,
     2

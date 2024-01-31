@@ -66,12 +66,12 @@ export default {
       primaryQueryKey: 'catalogs',
       url: '/api/catalogs',
       queryParameterTransformationFn: (queryParameters) => ({
-        query: { domain: queryParameters.domainId },
+        query: { domain: queryParameters.domainId }
       }),
       staticQueryOptions: {
         staleTime: STALE_TIME.INFINITY,
-        placeholderData: [],
-      },
+        placeholderData: []
+      }
     } as IVeoQueryDefinition<IVeoFetchCatalogsParameters, IVeoCatalog[]>,
     fetchCatalogItems: {
       primaryQueryKey: 'catalogItems',
@@ -85,14 +85,14 @@ export default {
             size: queryParameters.size,
             page: queryParameters.page,
             sortBy: queryParameters.sortBy,
-            sortOrder: queryParameters.sortOrder,
-          },
+            sortOrder: queryParameters.sortOrder
+          }
         };
       },
       staticQueryOptions: {
         staleTime: STALE_TIME.INFINITY,
-        placeholderData: [],
-      },
+        placeholderData: []
+      }
     } as IVeoQueryDefinition<
       IVeoFetchCatalogItemsParameters,
       IVeoCatalogItemCollection
@@ -101,12 +101,12 @@ export default {
       primaryQueryKey: 'catalogItemTypeCount',
       url: '/api/domains/:domainId/catalog-items/type-count',
       queryParameterTransformationFn: (queryParameters) => ({
-        params: { domainId: queryParameters.domainId },
+        params: { domainId: queryParameters.domainId }
       }),
       staticQueryOptions: {
-        staleTime: STALE_TIME.INFINITY,
-      },
-    },
+        staleTime: STALE_TIME.INFINITY
+      }
+    }
   },
-  mutations: {},
+  mutations: {}
 };

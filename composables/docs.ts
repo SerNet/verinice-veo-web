@@ -70,31 +70,31 @@ export const useDoc = (options: {
             _path:
               mergedOptions.value.path +
               mergedOptions.value.localeSeparator +
-              mergedOptions.value.locale,
+              mergedOptions.value.locale
           },
           {
             _path:
               mergedOptions.value.path +
               '/index' +
               mergedOptions.value.localeSeparator +
-              mergedOptions.value.locale,
+              mergedOptions.value.locale
           },
           {
             _path:
               mergedOptions.value.path +
               mergedOptions.value.localeSeparator +
-              mergedOptions.value.fallbackLocale,
+              mergedOptions.value.fallbackLocale
           },
           {
             _path:
               mergedOptions.value.path +
               '/index' +
               mergedOptions.value.localeSeparator +
-              mergedOptions.value.fallbackLocale,
+              mergedOptions.value.fallbackLocale
           },
-          { _path: mergedOptions.value.path },
+          { _path: mergedOptions.value.path }
         ],
-        _extension: 'md',
+        _extension: 'md'
       })
       .find();
     return (
@@ -133,7 +133,7 @@ export const useDocs = (options: { root?: string; locale?: string }) => {
     return await queryContent(options.root)
       .where({
         _extension: 'md',
-        language: { $in: [mergedOptions.value.locale, undefined] },
+        language: { $in: [mergedOptions.value.locale, undefined] }
       })
       .find();
   };
@@ -141,7 +141,7 @@ export const useDocs = (options: { root?: string; locale?: string }) => {
   const normalizedDocs = computed(() =>
     (docs.value || []).map((doc) => ({
       ...doc,
-      _path: normalizePath(doc._path),
+      _path: normalizePath(doc._path)
     }))
   );
 
@@ -198,8 +198,8 @@ export const useDocNavigation = (options: {
       where: [
         { _extension: 'md' },
         { language: { $in: [mergedOptions.value.locale, undefined] } },
-        ...(options.root ? [{ _path: new RegExp(`/^/${options.root}/`) }] : []),
-      ],
+        ...(options.root ? [{ _path: new RegExp(`/^/${options.root}/`) }] : [])
+      ]
     });
   };
 
@@ -226,7 +226,7 @@ export const useDocNavigationFlat = (options: {
       items.reduce((previous, current) => {
         let item = {
           title: current.title,
-          _path: normalizePath(current._path),
+          _path: normalizePath(current._path)
         };
 
         if (current.children) {
@@ -241,7 +241,7 @@ export const useDocNavigationFlat = (options: {
             const newIndexPage = children.splice(indexChild, 1);
             item = {
               title: newIndexPage[0].title,
-              _path: normalizePath(newIndexPage[0]._path),
+              _path: normalizePath(newIndexPage[0]._path)
             };
           }
           return previous.concat(item, reduceItems(children));

@@ -27,8 +27,7 @@
           color="primary"
           :value="item.initialId"
           :active="selectedItem === item.initialId"
-          @click="onClick(item.initialId)"
-        >
+          @click="onClick(item.initialId)">
           <v-list-item-title :class="currentLevelLeftMargin">
             {{ item.text }}
           </v-list-item-title>
@@ -39,8 +38,7 @@
           :form-schema="item.layout"
           :custom-translation="customTranslation"
           :initial-id="item.initialId"
-          :nesting-level="nextNestingLevel"
-        />
+          :nesting-level="nextNestingLevel" />
       </template>
     </v-list>
   </div>
@@ -48,7 +46,7 @@
 
 <script lang="ts">
 export default {
-  name: 'FormNavigation',
+  name: 'FormNavigation'
 };
 </script>
 
@@ -73,7 +71,7 @@ const props = withDefaults(
     customTranslation: () => ({}),
     initialId: '#',
     nestingLevel: 0,
-    scrollWrapperId: 'scroll-wrapper',
+    scrollWrapperId: 'scroll-wrapper'
   }
 );
 
@@ -129,7 +127,7 @@ const activateObserver = () => {
   const options = {
     root: scrollWrapper.value,
     rootMargin: '-200px 0px 0px 0px', // -72px because of sticky header
-    threshold: 0,
+    threshold: 0
   };
 
   observer.value = new IntersectionObserver((entries) => {
@@ -159,7 +157,7 @@ onMounted(activateObserver);
 onUnmounted(deactivateObserver);
 
 defineExpose({
-  activateObserver,
+  activateObserver
 });
 
 const items = computed(
@@ -177,7 +175,7 @@ const items = computed(
           text:
             props.customTranslation[el.options?.label?.replace('#lang/', '')] ||
             el.options?.label,
-          layout: el,
+          layout: el
         };
       })
       .filter((element: IItem | undefined) => !!element) as IItem[]

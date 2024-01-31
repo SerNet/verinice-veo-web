@@ -22,26 +22,22 @@
       :key="item.key"
       :to="item.to"
       :disabled="item.disabled || item.to === $route.fullPath"
-      nuxt
-    >
+      nuxt>
       <span v-if="index"> <v-icon :icon="mdiChevronRight" size="small" /></span>
       <!-- Display if the breadcrumb is visible or the amount of breadcrumbs is one over the BREADCRUMB_BREAKOFF (else there would be a single item in the list, making it kinda pointless) -->
       <template
         v-if="
           item.index < BREADCRUMB_BREAKOFF ||
           breadcrumbs.length === BREADCRUMB_BREAKOFF + 1
-        "
-      >
+        ">
         <v-icon
           v-if="item.icon"
           class="text-primary"
           :icon="item.icon"
-          size="large"
-        />
+          size="large" />
         <span
           v-else-if="Object.keys(queryResultMap).includes(item.param)"
-          class="breadcrumbs-item-height"
-        >
+          class="breadcrumbs-item-height">
           <template v-if="queryResultMap[item.param]">
             {{ queryResultMap[item.param] }}
           </template>
@@ -60,8 +56,7 @@
               color="primary"
               :icon="mdiDotsHorizontal"
               small
-              @click.stop.prevent
-            />
+              @click.stop.prevent />
           </template>
           <template #default>
             <v-list dense>
@@ -71,21 +66,18 @@
                   v-bind="menuItem"
                   :key="menuItem.key"
                   nuxt
-                  density="compact"
-                >
+                  density="compact">
                   <template v-if="menuItem.icon" #prepend>
                     <v-icon
                       :icon="menuItem.icon"
                       color="primary"
-                      size="large"
-                    />
+                      size="large" />
                   </template>
                   <v-list-item-title v-if="!menuItem.icon">
                     <template
                       v-if="
                         Object.keys(queryResultMap).includes(menuItem.param)
-                      "
-                    >
+                      ">
                       <template v-if="queryResultMap[item.param]">
                         {{ queryResultMap[item.param] }}
                       </template>
@@ -93,8 +85,7 @@
                         v-else
                         type="image"
                         width="80"
-                        height="14"
-                      />
+                        height="14" />
                     </template>
                     <template v-if="menuItem.text">
                       {{ menuItem.text }}
@@ -115,17 +106,17 @@ import { isEmpty, last, omit, pick } from 'lodash';
 import {
   mdiChevronRight,
   mdiDotsHorizontal,
-  mdiViewDashboardOutline,
+  mdiViewDashboardOutline
 } from '@mdi/js';
 
 import {
   IVeoBreadcrumb,
-  useVeoBreadcrumbs,
+  useVeoBreadcrumbs
 } from '~/composables/VeoBreadcrumbs';
 import { useQuery } from '~/composables/api/utils/query';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import formsQueryDefinitions, {
-  IVeoFormSchema,
+  IVeoFormSchema
 } from '~/composables/api/queryDefinitions/forms';
 import objectsQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
@@ -164,12 +155,12 @@ export default defineComponent({
   props: {
     overrideBreadcrumbs: {
       type: Boolean,
-      default: false,
+      default: false
     },
     writeToTitle: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   setup(props) {
     const { t, locale } = useI18n();
@@ -180,7 +171,7 @@ export default defineComponent({
     const title = ref('');
 
     useHead(() => ({
-      title,
+      title
     }));
 
     const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<
@@ -190,26 +181,26 @@ export default defineComponent({
       [
         '',
         {
-          hidden: true,
-        },
+          hidden: true
+        }
       ],
       [
         'init',
         {
-          hidden: true,
-        },
+          hidden: true
+        }
       ],
       [
         ':unit',
         {
-          hidden: true,
-        },
+          hidden: true
+        }
       ],
       [
         'domains',
         {
-          hidden: true,
-        },
+          hidden: true
+        }
       ],
       [
         ':domain',
@@ -218,9 +209,9 @@ export default defineComponent({
           queriedText: {
             query: ':domain',
             parameterTransformationFn: (_param, value) => ({ id: value }),
-            resultTransformationFn: (_param, _value, data) => data.name,
-          },
-        },
+            resultTransformationFn: (_param, _value, data) => data.name
+          }
+        }
       ],
       [
         ':objectType',
@@ -229,9 +220,9 @@ export default defineComponent({
             query: ':objectType',
             parameterTransformationFn: () => ({ languages: [locale.value] }),
             resultTransformationFn: (_param, value, data) =>
-              data.lang[locale.value]?.[value as string],
-          },
-        },
+              data.lang[locale.value]?.[value as string]
+          }
+        }
       ],
       [
         ':subType',
@@ -239,16 +230,16 @@ export default defineComponent({
           queriedText: {
             query: ':subType',
             parameterTransformationFn: () => ({
-              domainId: route.params.domain,
+              domainId: route.params.domain
             }),
             resultTransformationFn: (_param, value, data) =>
               value === '-' ?
                 t('all')
               : data.find(
                   (formSchema: IVeoFormSchema) => formSchema.subType === value
-                )?.name?.[locale.value],
-          },
-        },
+                )?.name?.[locale.value]
+          }
+        }
       ],
       [
         ':object',
@@ -257,11 +248,11 @@ export default defineComponent({
             query: ':object',
             parameterTransformationFn: () => ({
               id: route.params.object,
-              endpoint: route.params.objectType,
+              endpoint: route.params.objectType
             }),
-            resultTransformationFn: (_param, _value, data) => data.displayName,
-          },
-        },
+            resultTransformationFn: (_param, _value, data) => data.displayName
+          }
+        }
       ],
       [
         ':report', // Used for reports
@@ -270,9 +261,9 @@ export default defineComponent({
             query: ':report',
             parameterTransformationFn: (_param, _value) => ({}),
             resultTransformationFn: (_param, value, data) =>
-              data ? data[value as string]?.name?.[locale.value] : undefined,
-          },
-        },
+              data ? data[value as string]?.name?.[locale.value] : undefined
+          }
+        }
       ],
       [
         ':catalog',
@@ -283,34 +274,34 @@ export default defineComponent({
             resultTransformationFn: () =>
               unref(subTypeTranslation) === 'all' ?
                 t('all')
-              : unref(subTypeTranslation),
-          },
-        },
+              : unref(subTypeTranslation)
+          }
+        }
       ],
       [
         ':matrix',
         {
-          dynamicText: (_param, value) => value || '',
-        },
+          dynamicText: (_param, value) => value || ''
+        }
       ],
       [
         'risks',
         {
-          disabled: true,
-        },
+          disabled: true
+        }
       ],
       [
         'docs',
         {
-          to: '/docs/index',
-        },
+          to: '/docs/index'
+        }
       ],
       [
         ':slug(.*)*', // Doc page gets added manually to breadcrumbs
         {
-          hidden: true,
-        },
-      ],
+          hidden: true
+        }
+      ]
     ]);
 
     // After this position, all breadcrumbs will be moved to a menu to avoid scrolling
@@ -326,7 +317,7 @@ export default defineComponent({
       formsQueryDefinitions.queries.fetchForms,
       subTypeQueryParameters,
       {
-        enabled: subTypeQueryEnabled,
+        enabled: subTypeQueryEnabled
       }
     );
     const domainQueryParameters = ref<any>({});
@@ -337,7 +328,7 @@ export default defineComponent({
       domainQueryDefinitions.queries.fetchDomain,
       domainQueryParameters,
       {
-        enabled: domainQueryEnabled,
+        enabled: domainQueryEnabled
       }
     );
     const catalogQueryParameters = ref<any>({});
@@ -352,7 +343,7 @@ export default defineComponent({
       translationsQueryDefinitions.queries.fetch,
       objectTypeQueryParameters,
       {
-        enabled: objectTypeQueryEnabled,
+        enabled: objectTypeQueryEnabled
       }
     );
 
@@ -364,7 +355,7 @@ export default defineComponent({
       objectsQueryDefinitions.queries.fetch,
       objectQueryParameters,
       {
-        enabled: objectQueryEnabled,
+        enabled: objectQueryEnabled
       }
     );
 
@@ -428,7 +419,7 @@ export default defineComponent({
             route.params.report as string,
             report.value
           )
-        : undefined,
+        : undefined
     }));
 
     const pathTemplate = computed(() => last(route.matched)?.path || '');
@@ -474,7 +465,7 @@ export default defineComponent({
               'hidden',
               'icon',
               'position',
-              'text',
+              'text'
             ]),
             to:
               replacementMapEntry.to ?
@@ -488,7 +479,7 @@ export default defineComponent({
                     breadcrumbParts.value.findIndex((_part) => _part === part) +
                       1
                   )
-                  .join('/') || '/',
+                  .join('/') || '/'
           };
         })
         .map((breadcrumb) => {
@@ -500,7 +491,7 @@ export default defineComponent({
               text: replacementMapEntry.dynamicText(
                 breadcrumb.param,
                 route.params[breadcrumb.param.replace(/^:/, '')] as string
-              ),
+              )
             };
           } else {
             return breadcrumb;
@@ -566,7 +557,7 @@ export default defineComponent({
         }
       },
       {
-        immediate: true,
+        immediate: true
       }
     );
 
@@ -592,7 +583,7 @@ export default defineComponent({
     watch(() => queryResultMap, updateTitle, { deep: true, immediate: true });
     watch(() => breadcrumbs.value, updateTitle, {
       deep: true,
-      immediate: true,
+      immediate: true
     });
 
     return {
@@ -605,10 +596,10 @@ export default defineComponent({
       t,
       mdiChevronRight,
       mdiDotsHorizontal,
-      omit,
+      omit
     };
   },
-  head: {},
+  head: {}
 });
 </script>
 

@@ -27,8 +27,7 @@
           <i18n-t
             keypath="mitigationAreaOfApplicationExplanation"
             tag="span"
-            scope="global"
-          >
+            scope="global">
             <template #lineBreak>
               <br />
             </template>
@@ -48,11 +47,10 @@
           'name',
           'status',
           'updatedAt',
-          'actions',
+          'actions'
         ]"
         :loading="fetchingMitigation"
-        :items="selectedItems"
-      >
+        :items="selectedItems">
         <template #actions="{ item }">
           <div class="d-flex justify-end">
             <v-tooltip location="start">
@@ -61,8 +59,7 @@
                   v-bind="props"
                   :icon="mdiLinkOff"
                   variant="text"
-                  @click="removeMitigationPart(item)"
-                />
+                  @click="removeMitigationPart(item)" />
               </template>
               {{ t('unlinkPart') }}
             </v-tooltip>
@@ -77,8 +74,7 @@
               class="mt-2 mb-2"
               color="primary"
               flat
-              :disabled="disabled"
-            >
+              :disabled="disabled">
               <v-icon start :icon="mdiPencilOutline" />
               {{ t('editMitigatingActions').toString() }}
             </v-btn>
@@ -103,8 +99,7 @@
       v-model="editMitigationsDialogVisible"
       v-model:preselected-items="selectedItems"
       :object="editedObject"
-      return-objects
-    >
+      return-objects>
       <template #header>
         {{
           t('addMitigatingActionsToRisk', [data && data.designator]).toString()
@@ -116,8 +111,7 @@
       v-model="createMitigationDialogVisible"
       object-type="control"
       :domain-id="domainId"
-      @success="onMitigationCreated"
-    />
+      @success="onMitigationCreated" />
   </div>
 </template>
 
@@ -136,20 +130,20 @@ export default defineComponent({
   props: {
     data: {
       type: Object as PropType<IVeoRisk>,
-      default: undefined,
+      default: undefined
     },
     mitigations: {
       type: Array as PropType<IVeoEntity[]>,
-      default: () => [],
+      default: () => []
     },
     disabled: {
       type: Boolean,
-      default: false,
+      default: false
     },
     domainId: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: ['mitigations-modified', 'update:mitigations'],
   setup(props, { emit }) {
@@ -169,7 +163,7 @@ export default defineComponent({
       set(newValue: IVeoEntity[]) {
         emit('update:mitigations', newValue);
         emit('mitigations-modified', true);
-      },
+      }
     });
 
     const fetchingMitigation = ref(false);
@@ -187,7 +181,7 @@ export default defineComponent({
                 domain: props.domainId,
                 endpoint: 'controls',
                 id: id,
-                size: 9999,
+                size: 9999
               },
               queryClient
             )
@@ -236,9 +230,9 @@ export default defineComponent({
       upperFirst,
       mdiInformationOutline,
       mdiLinkOff,
-      mdiPencilOutline,
+      mdiPencilOutline
     };
-  },
+  }
 });
 </script>
 

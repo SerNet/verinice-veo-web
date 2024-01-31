@@ -25,13 +25,12 @@
         elevation="1"
         :icon="chevron"
         size="small"
-        @click="$emit('update:model-value', !modelValue)"
-      />
+        @click="$emit('update:model-value', !modelValue)" />
     </template>
     <template #default>
       {{
         t(modelValue ? 'expand' : 'collapse', {
-          elementName: elementName || t('page').toString(),
+          elementName: elementName || t('page').toString()
         })
       }}
       <span v-if="index !== undefined"
@@ -48,20 +47,20 @@ export default defineComponent({
   props: {
     modelValue: {
       default: false, // true if collapsed
-      type: Boolean,
+      type: Boolean
     },
     right: {
       type: Boolean,
-      default: false,
+      default: false
     },
     elementName: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     index: {
       type: Number,
-      default: undefined,
-    },
+      default: undefined
+    }
   },
   emits: ['update:model-value'],
   setup(props) {
@@ -76,7 +75,7 @@ export default defineComponent({
     });
 
     return { chevron, t };
-  },
+  }
 });
 </script>
 

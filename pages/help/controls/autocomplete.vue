@@ -23,22 +23,19 @@
           v-model="isMultiselect"
           label="Multiselect"
           hide-details
-          color="primary"
-        />
+          color="primary" />
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <DynamicFormEntrypoint
           v-model="dynamicForm.data"
           :object-schema="dynamicForm.objectSchema"
-          :form-schema="dynamicForm.formSchema"
-        />
+          :form-schema="dynamicForm.formSchema" />
       </v-col>
     </v-row>
     <HelpFormDescription
       :object-schema="dynamicForm.objectSchema"
       :form-schema="dynamicForm.formSchema"
-      :data="dynamicForm.data"
-    />
+      :data="dynamicForm.data" />
   </BasePage>
 </template>
 
@@ -50,21 +47,21 @@ const form = ref({
     type: 'object',
     properties: {
       autocomplete: {
-        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3'],
-      },
-    },
+        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
+      }
+    }
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/autocomplete',
     options: {
       label: 'Autocomplete',
-      format: 'autocomplete',
-    },
+      format: 'autocomplete'
+    }
   },
   data: {
-    autocomplete: 'Beispiel-1',
-  },
+    autocomplete: 'Beispiel-1'
+  }
 });
 
 const formMultiselect = ref({
@@ -74,22 +71,22 @@ const formMultiselect = ref({
       autocomplete: {
         type: 'array',
         items: {
-          enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3'],
-        },
-      },
-    },
+          enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
+        }
+      }
+    }
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/autocomplete',
     options: {
       label: 'Autocomplete',
-      format: 'autocomplete',
-    },
+      format: 'autocomplete'
+    }
   },
   data: {
-    autocomplete: ['Beispiel-1'],
-  },
+    autocomplete: ['Beispiel-1']
+  }
 });
 
 const isMultiselect = ref(true);

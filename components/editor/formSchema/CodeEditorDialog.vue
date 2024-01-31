@@ -22,8 +22,7 @@
     large
     fixed-footer
     :title="t('formSchema')"
-    @update:model-value="emit('update:model-value', $event)"
-  >
+    @update:model-value="emit('update:model-value', $event)">
     <template #default>
       <BaseCard style="min-height: 20vh">
         <UtilCodeEditor :model-value="code" readonly />
@@ -34,8 +33,7 @@
       <v-btn
         variant="text"
         color="primary"
-        @click="$emit('update:model-value', false)"
-      >
+        @click="$emit('update:model-value', false)">
         {{ t('global.button.close') }}
       </v-btn>
     </template>
@@ -45,12 +43,12 @@
 defineProps({
   modelValue: {
     type: Boolean,
-    default: false,
+    default: false
   },
   code: {
     type: String,
-    required: true,
-  },
+    required: true
+  }
 });
 
 const emit = defineEmits(['update:model-value']);

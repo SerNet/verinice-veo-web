@@ -41,8 +41,7 @@
               "
               @update:risk-treatment-explanation="
                 onRiskTreatmentExplanationChanged(protectionGoal.id, $event)
-              "
-            />
+              " />
           </template>
         </v-row>
       </v-card-text>
@@ -61,21 +60,21 @@ export default defineComponent({
   props: {
     data: {
       type: Array as PropType<IVeoRiskDefinition['riskValues']>,
-      required: true,
+      required: true
     },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true,
+      required: true
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      default: () => {},
+      default: () => {}
     },
     disabled: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: ['update:data', 'update:dirty-fields'],
   setup(props, { emit }) {
@@ -98,7 +97,7 @@ export default defineComponent({
       emit('update:data', localData);
       emit('update:dirty-fields', {
         ...props.dirtyFields,
-        [`${props.riskDefinition.id}_${protectionGoal}_riskTreatments`]: true,
+        [`${props.riskDefinition.id}_${protectionGoal}_riskTreatments`]: true
       });
     };
 
@@ -122,9 +121,9 @@ export default defineComponent({
       protectionGoalExists,
 
       t,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>
 

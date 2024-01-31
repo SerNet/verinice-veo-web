@@ -25,7 +25,7 @@ export default defineNuxtConfig({
 
   sourcemap: {
     server: true,
-    client: false,
+    client: false
   },
 
   typescript: {
@@ -34,14 +34,14 @@ export default defineNuxtConfig({
     tsConfig: {
       compilerOptions: {
         // Allow type imports without `type` modifier
-        verbatimModuleSyntax: false,
-      },
-    },
+        verbatimModuleSyntax: false
+      }
+    }
   },
 
   // Apply a transition to every page
   app: {
-    pageTransition: { name: 'page', mode: 'out-in' },
+    pageTransition: { name: 'page', mode: 'out-in' }
   },
 
   // Disable SSR as the app is deployed using static site generation (SSG)
@@ -84,8 +84,8 @@ export default defineNuxtConfig({
               process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP
             )
           )
-        : new Date(new Date().getFullYear() + 1, 0, 1),
-    },
+        : new Date(new Date().getFullYear() + 1, 0, 1)
+    }
   },
 
   // Modules are buildtime only. Can be used to modify build behaviour
@@ -95,11 +95,11 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     './modules/externalize-scripts',
     './modules/vuetify-sass-variables.ts',
-    'nuxt-font-loader',
+    'nuxt-font-loader'
   ],
 
   build: {
-    transpile: ['vuetify', 'hast-util-to-string', 'micromark'],
+    transpile: ['vuetify', 'hast-util-to-string', 'micromark']
   },
 
   vite: {
@@ -107,10 +107,10 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: '@import "@/assets/styles/global.scss";',
-        },
-      },
-    },
+          additionalData: '@import "@/assets/styles/global.scss";'
+        }
+      }
+    }
   },
 
   //==============================================================
@@ -122,20 +122,20 @@ export default defineNuxtConfig({
       // overwrite default source AKA `content` directory
       content: {
         driver: 'fs',
-        base: resolve(__dirname, 'docs'),
-      },
+        base: resolve(__dirname, 'docs')
+      }
     },
     markdown: {
-      rehypePlugins: ['rehype-inline'],
+      rehypePlugins: ['rehype-inline']
     },
     experimental: {
-      clientDB: true,
+      clientDB: true
     },
     locales: LOCALES.map((locale) => locale.code),
     defaultLocale: 'de',
     toc: {
-      depth: 5,
-    },
+      depth: 5
+    }
   },
 
   // i18n configuration
@@ -144,19 +144,19 @@ export default defineNuxtConfig({
     locales: LOCALES,
     defaultLocale: 'de',
     lazy: true,
-    langDir: 'locales/',
+    langDir: 'locales/'
   },
 
   fontLoader: {
     local: [
       {
         src: '/Roboto-Regular.ttf',
-        family: 'Roboto',
+        family: 'Roboto'
       },
       {
         src: '/OpenSans-Regular.ttf',
-        family: 'Open Sans',
-      },
-    ],
-  },
+        family: 'Open Sans'
+      }
+    ]
+  }
 });

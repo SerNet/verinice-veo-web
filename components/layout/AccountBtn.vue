@@ -20,16 +20,14 @@
     :close-on-content-click="true"
     content-class="veo-account-menu"
     max-width="300px"
-    @update:model-value="onMenuClosed"
-  >
+    @update:model-value="onMenuClosed">
     <template #activator="{ props }">
       <v-btn
         class="mr-0"
         data-component-name="account-menu-button"
         color="primary"
         v-bind="mergeProps(props, $attrs)"
-        icon
-      >
+        icon>
         <v-avatar color="primary" size="48">
           {{ initials }}
         </v-avatar>
@@ -47,8 +45,7 @@
             <span
               v-if="
                 (profile && profile.firstName) || (profile && profile.lastName)
-              "
-            >
+              ">
               {{ profile.firstName }}
               {{ profile.lastName }}
             </span>
@@ -95,8 +92,7 @@
         <v-list-item
           :active="displayDeploymentDetails"
           color="primary"
-          @click.stop="displayDeploymentDetails = true"
-        >
+          @click.stop="displayDeploymentDetails = true">
           <v-list-item-title>
             {{ t('about') }}
           </v-list-item-title>

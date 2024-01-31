@@ -32,12 +32,12 @@ describe('HistoryExport.vue', () => {
       zipArchives: [],
       isLoading: [true],
       showAlert: false,
-      prepare: { phase: 1, cur: 0, total: 100 },
+      prepare: { phase: 1, cur: 0, total: 100 }
     };
 
     const mocks = { state };
     const wrapper = mount(HistoryExport, {
-      global: { plugins, mocks },
+      global: { plugins, mocks }
     });
 
     const prepareDownloadBtn = wrapper.find('button');

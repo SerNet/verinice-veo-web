@@ -35,8 +35,8 @@ import { IVeoFormSchemaItemRule } from '~/composables/api/queryDefinitions/forms
 const props = defineProps({
   rule: {
     type: Object as PropType<IVeoFormSchemaItemRule>,
-    default: undefined,
-  },
+    default: undefined
+  }
 });
 
 const { t } = useI18n();

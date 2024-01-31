@@ -22,15 +22,13 @@
         <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
-          :form-schema="form.formSchema"
-        />
+          :form-schema="form.formSchema" />
       </v-col>
     </v-row>
     <HelpFormDescription
       :object-schema="form.objectSchema"
       :form-schema="form.formSchema"
-      :data="form.data"
-    />
+      :data="form.data" />
   </BasePage>
 </template>
 
@@ -44,20 +42,20 @@ const form = ref({
       inputUri: {
         type: 'string',
         format: 'uri',
-        pattern: '^(https?|ftp)://',
-      },
-    },
+        pattern: '^(https?|ftp)://'
+      }
+    }
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/inputUri',
     options: {
-      label: 'Input URI',
-    },
+      label: 'Input URI'
+    }
   },
   data: {
-    inputUri: 'https://verinice.com/',
-  },
+    inputUri: 'https://verinice.com/'
+  }
 });
 </script>
 

@@ -27,8 +27,7 @@
         :additional-headers="headers"
         :loading="props.isLoading"
         must-sort
-        show-select
-      />
+        show-select />
     </BaseCard>
     <v-row dense class="my-4">
       <v-spacer />
@@ -37,8 +36,7 @@
           variant="text"
           class="mr-2"
           :disabled="selectedItems.length === 0 || isApplyingItems"
-          @click="selectedItems = []"
-        >
+          @click="selectedItems = []">
           {{ globalT('global.button.cancel') }}
         </v-btn>
         <v-btn
@@ -50,8 +48,7 @@
             ability.cannot('manage', 'catalogs')
           "
           :loading="props.isApplyingItems"
-          @click="$emit('applyItems')"
-        >
+          @click="$emit('applyItems')">
           {{ t('apply') }}
         </v-btn>
       </v-col>
@@ -77,7 +74,7 @@ const props = withDefaults(
     modelValue: () => [],
     loading: false,
     isLoading: false,
-    isApplyingItems: false,
+    isApplyingItems: false
   }
 );
 
@@ -99,7 +96,7 @@ const headers: TableHeader[] = [
     truncate: true,
     width: 80,
     priority: 60,
-    order: 30,
+    order: 30
   },
   {
     value: 'name',
@@ -109,7 +106,7 @@ const headers: TableHeader[] = [
     truncate: true,
     sortable: true,
     priority: 100,
-    order: 40,
+    order: 40
   },
   {
     value: 'description',
@@ -120,8 +117,8 @@ const headers: TableHeader[] = [
     tooltip: ({ internalItem: item }: { internalItem: any }) =>
       item.raw.description,
     priority: 30,
-    order: 60,
-  },
+    order: 60
+  }
 ];
 
 const selectedItems = computed({
@@ -130,7 +127,7 @@ const selectedItems = computed({
   },
   set(selectedItems) {
     emit('update:modelValue', selectedItems);
-  },
+  }
 });
 
 const availableItems = computed(() =>

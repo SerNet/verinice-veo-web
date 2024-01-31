@@ -62,15 +62,15 @@ export default {
       primaryQueryKey: 'accounts',
       url: '/api/accounts',
       queryParameterTransformationFn: () => ({}),
-      staticQueryOptions: { placeholderData: [] },
+      staticQueryOptions: { placeholderData: [] }
     } as IVeoQueryDefinition<Record<string, never>, IVeoAccount[]>,
     fetchAccount: {
       primaryQueryKey: 'account',
       url: '/api/accounts/:id',
       queryParameterTransformationFn: (queryParameters) => ({
-        params: queryParameters,
-      }),
-    } as IVeoQueryDefinition<IVeoFetchAccountParameters, IVeoAccount>,
+        params: queryParameters
+      })
+    } as IVeoQueryDefinition<IVeoFetchAccountParameters, IVeoAccount>
   },
   mutations: {
     createAccount: {
@@ -78,13 +78,13 @@ export default {
       url: '/api/accounts',
       method: 'POST',
       mutationParameterTransformationFn: (mutationParameters) => ({
-        json: mutationParameters,
+        json: mutationParameters
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
           queryClient.invalidateQueries(['accounts']);
-        },
-      },
+        }
+      }
     } as IVeoMutationDefinition<IVeoCreateAccountParameters, void>,
     updateAccount: {
       primaryQueryKey: 'account',
@@ -93,17 +93,17 @@ export default {
       reponseType: VeoApiReponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: { id: mutationParameters.id },
-        json: mutationParameters,
+        json: mutationParameters
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
           queryClient.invalidateQueries(['accounts']);
           queryClient.invalidateQueries([
             'account',
-            { id: variables.params?.id || '' },
+            { id: variables.params?.id || '' }
           ]);
-        },
-      },
+        }
+      }
     } as IVeoMutationDefinition<IVeoUpdateAccountParameters, void>,
     deleteAccount: {
       primaryQueryKey: 'account',
@@ -111,17 +111,17 @@ export default {
       method: 'DELETE',
       reponseType: VeoApiReponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
-        params: { id: mutationParameters.id },
+        params: { id: mutationParameters.id }
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
           queryClient.invalidateQueries(['accounts']);
           queryClient.invalidateQueries([
             'account',
-            { id: variables.params?.id || '' },
+            { id: variables.params?.id || '' }
           ]);
-        },
-      },
-    } as IVeoMutationDefinition<IVeoDeleteAccountParameters, void>,
-  },
+        }
+      }
+    } as IVeoMutationDefinition<IVeoDeleteAccountParameters, void>
+  }
 };

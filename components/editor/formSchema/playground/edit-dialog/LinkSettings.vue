@@ -26,22 +26,19 @@
         hide-details
         multiple
         :prepend-inner-icon="mdiListBoxOutline"
-        variant="underlined"
-      >
+        variant="underlined">
         <template #item="{ item, props: itemProps }">
           <v-list-item
             v-bind="itemProps"
             :active="usedLinkAttributes.includes(item.value)"
             :title="undefined"
-            style="max-width: 500px"
-          >
+            style="max-width: 500px">
             <template #prepend>
               <v-icon
                 :icon="
                   usedLinkAttributes.includes(item.value) ? mdiCheckboxMarked
                   : mdiCheckboxBlankOutline
-                "
-              />
+                " />
             </template>
             <v-list-item-title>
               {{ last(availableLinkAttributes[item.value].scope?.split('/')) }}
@@ -58,8 +55,7 @@
             :icon="mdiInformationOutline"
             size="large"
             end
-            v-bind="tooltipProps"
-          />
+            v-bind="tooltipProps" />
         </template>
         <template #default>
           {{ t('changesVisibleImmediately') }}
@@ -75,7 +71,7 @@ import {
   mdiCheckboxBlankOutline,
   mdiCheckboxMarked,
   mdiInformationOutline,
-  mdiListBoxOutline,
+  mdiListBoxOutline
 } from '@mdi/js';
 import { JSONSchema7 } from 'json-schema';
 import { PropType } from 'vue';
@@ -89,20 +85,20 @@ import { IPlaygroundElement } from '../Element.vue';
 const props = defineProps({
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
-    required: true,
+    required: true
   },
   objectSchemaElement: {
     type: Object as PropType<JSONSchema7>,
-    required: true,
+    required: true
   },
   playgroundElement: {
     type: Object as PropType<IPlaygroundElement>,
-    required: true,
+    required: true
   },
   pointer: {
     type: String,
-    required: true,
-  },
+    required: true
+  }
 });
 
 const emit = defineEmits<{
@@ -127,8 +123,8 @@ const availableLinkAttributes = computed<{
       type: 'Control',
       scope: `${props.formSchemaElement.scope}/items/properties/attributes/properties/${key}`,
       options: {
-        label: `#lang/${key}`,
-      },
+        label: `#lang/${key}`
+      }
     };
     previous[UUIDv5(newElement.scope, FORMSCHEMA_PLAYGROUND_NAMESPACE)] =
       newElement;
@@ -159,7 +155,7 @@ const usedLinkAttributes = computed<string[]>({
       );
       emit('remove', `${props.pointer}/children/${deleteIndex}`);
     }
-  },
+  }
 });
 </script>
 

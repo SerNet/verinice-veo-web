@@ -94,28 +94,28 @@ export default {
       primaryQueryKey: 'forms',
       url: '/api/forms',
       queryParameterTransformationFn: (queryParameters) => ({
-        query: queryParameters,
+        query: queryParameters
       }),
       staticQueryOptions: {
         staleTime: STALE_TIME.MEDIUM,
-        placeholderData: [],
-      },
+        placeholderData: []
+      }
     } as IVeoQueryDefinition<IVeoFetchFormsParameters, IVeoFormSchemaMeta[]>,
     fetchForm: {
       primaryQueryKey: 'form',
       url: '/api/forms/:id',
       queryParameterTransformationFn: (queryParameters) => ({
         params: {
-          id: queryParameters.id,
+          id: queryParameters.id
         },
         query: {
-          domainId: queryParameters.domainId,
-        },
+          domainId: queryParameters.domainId
+        }
       }),
       staticQueryOptions: {
-        staleTime: STALE_TIME.MEDIUM,
-      },
-    } as IVeoQueryDefinition<IVeoFetchFormParameters, IVeoFormSchema>,
+        staleTime: STALE_TIME.MEDIUM
+      }
+    } as IVeoQueryDefinition<IVeoFetchFormParameters, IVeoFormSchema>
   },
   mutations: {
     createForm: {
@@ -125,14 +125,14 @@ export default {
       mutationParameterTransformationFn: (mutationParameters) => ({
         json: {
           domainId: mutationParameters.domainId,
-          ...mutationParameters.form,
-        },
+          ...mutationParameters.form
+        }
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
           queryClient.invalidateQueries(['forms']);
-        },
-      },
+        }
+      }
     } as IVeoMutationDefinition<IVeoCreateFormParameters, string>,
     updateForm: {
       primaryQueryKey: 'form',
@@ -140,12 +140,12 @@ export default {
       method: 'PUT',
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: {
-          id: mutationParameters.id,
+          id: mutationParameters.id
         },
         json: {
           domainId: mutationParameters.domainId,
-          ...mutationParameters.form,
-        },
+          ...mutationParameters.form
+        }
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
@@ -153,15 +153,15 @@ export default {
             'form',
             {
               domainId: variables.params?.domainId || '',
-              id: variables.params?.id || '',
-            },
+              id: variables.params?.id || ''
+            }
           ]);
           queryClient.invalidateQueries([
             'forms',
-            { domainId: variables.query?.domainId || '' },
+            { domainId: variables.query?.domainId || '' }
           ]);
-        },
-      },
-    } as IVeoMutationDefinition<IVeoUpdateFormParameters, void>,
-  },
+        }
+      }
+    } as IVeoMutationDefinition<IVeoUpdateFormParameters, void>
+  }
 };

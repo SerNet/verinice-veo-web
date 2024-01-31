@@ -19,8 +19,7 @@
   <div
     v-if="options.visible"
     class="vf-radio vf-form-element"
-    :data-attribute-name="last(objectSchemaPointer.split('/'))"
-  >
+    :data-attribute-name="last(objectSchemaPointer.split('/'))">
     <v-radio-group
       :id="objectSchemaPointer"
       :inline="!isVertical"
@@ -29,23 +28,20 @@
       :error-messages="getControlErrorMessages($props)"
       :label="options && options.label"
       :class="options && options.class"
-      @update:model-value="$emit('update:model-value', $event)"
-    >
+      @update:model-value="$emit('update:model-value', $event)">
       <template #default>
         <v-radio
           v-for="(item, i) in items"
           :key="i"
           :value="item.value"
           :label="item.title"
-          color="primary"
-        />
+          color="primary" />
       </template>
       <template v-if="modelValue !== undefined" #append>
         <v-btn
           :icon="mdiClose"
           variant="text"
-          @click="$emit('update:model-value', undefined)"
-        />
+          @click="$emit('update:model-value', undefined)" />
       </template>
     </v-radio-group>
   </div>
@@ -62,19 +58,19 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-radio-button',
   name: {
     en: 'radio button',
-    de: 'Radio Auswahl',
+    de: 'Radio Auswahl'
   },
   description: {
     en: 'radio button to select one of multiple options.',
-    de: 'Radio Auswahl um einen von mehreren Einträgen auszuwählen.',
+    de: 'Radio Auswahl um einen von mehreren Einträgen auszuwählen.'
   },
   conditions: (props) => [
     [undefined, 'string', 'integer', 'number'].includes(
       props.objectSchema.type
     ),
     typeof props.objectSchema.enum !== 'undefined',
-    props.options?.format === 'radio',
-  ],
+    props.options?.format === 'radio'
+  ]
 };
 
 export default defineComponent({
@@ -89,9 +85,9 @@ export default defineComponent({
 
       getControlErrorMessages,
       mdiClose,
-      last,
+      last
     };
-  },
+  }
 });
 </script>
 <style lang="scss">

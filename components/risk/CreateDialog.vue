@@ -23,16 +23,14 @@
     :title="upperFirst(t('createRisk', 0).toString())"
     x-large
     fixed-footer
-    v-bind="$attrs"
-  >
+    v-bind="$attrs">
     <template #default>
       <ObjectFilterBar
         :domain-id="domainId"
         :filter="filter"
         :disabled-fields="['objectType', 'subType']"
         :required-fields="['objectType']"
-        @update:filter="onFilterUpdate"
-      />
+        @update:filter="onFilterUpdate" />
       <BaseCard>
         <ObjectTable
           v-model="selectedScenarios"
@@ -48,11 +46,10 @@
             'description',
             'updatedBy',
             'updatedAt',
-            'actions',
+            'actions'
           ]"
           :items="notAlreadyUsedScenarios"
-          :loading="objectsQueryIsLoading"
-        />
+          :loading="objectsQueryIsLoading" />
       </BaseCard>
     </template>
     <template #dialog-options>
@@ -67,12 +64,11 @@
         :disabled="
           !selectedScenarios.length || ability.cannot('manage', 'objects')
         "
-        @click="onSubmit"
-      >
+        @click="onSubmit">
         {{
           t('createRisk', {
             plural: selectedScenarios.length,
-            named: { count: selectedScenarios.length },
+            named: { count: selectedScenarios.length }
           })
         }}
       </v-btn>
@@ -88,7 +84,7 @@ import { getEntityDetailsFromLink } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions, {
-  IVeoFetchRisksParameters,
+  IVeoFetchRisksParameters
 } from '~/composables/api/queryDefinitions/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useMutation } from '~/composables/api/utils/mutation';
@@ -99,16 +95,16 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Boolean,
-      default: false,
+      default: false
     },
     objectId: {
       type: String,
-      required: true,
+      required: true
     },
     domainId: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: ['update:model-value', 'success'],
   setup(props, { emit }) {
@@ -139,7 +135,7 @@ export default defineComponent({
           selectedScenarios.value = [];
         }
         emit('update:model-value', newValue);
-      },
+      }
     });
 
     // Filter stuff
@@ -170,7 +166,7 @@ export default defineComponent({
     };
 
     const filter = ref<Record<string, any>>({
-      objectType: 'scenario',
+      objectType: 'scenario'
     });
 
     const onFilterUpdate = (newFilter: any) => {
@@ -187,17 +183,17 @@ export default defineComponent({
       page: page.value,
       unit: route.params.unit,
       ...omit(filter.value, 'objectType'),
-      endpoint: 'scenarios',
+      endpoint: 'scenarios'
     }));
 
     const {
       data: objects,
       isFetching: objectsQueryIsLoading,
-      refetch,
+      refetch
     } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
     const risksQueryParameters = computed<IVeoFetchRisksParameters>(() => ({
       endpoint: route.params.objectType as string,
-      id: props.objectId,
+      id: props.objectId
     }));
     const { data: risks } = useQuery(
       objectQueryDefinitions.queries.fetchRisks,
@@ -248,18 +244,18 @@ export default defineComponent({
         )
         .map((scenario) => ({
           scenario: {
-            targetUri: `${config.public.apiUrl}/scenarios/${scenario.id}`,
+            targetUri: `${config.public.apiUrl}/scenarios/${scenario.id}`
           },
           domains: {
             [props.domainId]: {
               reference: {
-                targetUri: `${config.public.apiUrl}/domains/${props.domainId}`,
+                targetUri: `${config.public.apiUrl}/domains/${props.domainId}`
               },
               riskDefinitions: {
-                [domainRiskDefinitionKey.value]: {},
-              },
-            },
-          },
+                [domainRiskDefinitionKey.value]: {}
+              }
+            }
+          }
         }));
 
       try {
@@ -268,7 +264,7 @@ export default defineComponent({
             createRisk({
               endpoint: route.params.objectType as string,
               objectId: props.objectId,
-              risk,
+              risk
             })
           )
         );
@@ -303,9 +299,9 @@ export default defineComponent({
 
       t,
       globalT,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>
 

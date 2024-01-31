@@ -44,7 +44,7 @@ export function createZIP(data: any, filename: string) {
   return zip.generateAsync({
     type: 'blob',
     compression: 'DEFLATE',
-    compressionOptions: { level: 6 },
+    compressionOptions: { level: 6 }
   });
 }
 

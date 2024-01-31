@@ -31,23 +31,20 @@
     :multiple="multiple"
     autocomplete="off"
     variant="underlined"
-    @click:clear="$emit('update:model-value', undefined)"
-  >
+    @click:clear="$emit('update:model-value', undefined)">
     <template v-if="multiple" #item="{ props, item }">
       <v-list-item
         v-if="item.value === '_empty_array_'"
         v-bind="props"
         :active="isEmpty(modelValue)"
-        color="primary"
-      />
+        color="primary" />
       <v-list-item
         v-else
         v-bind="props"
         style="max-height: 48px"
         :title="undefined"
         :active="isArray(modelValue) && modelValue?.includes(item.value)"
-        color="primary"
-      >
+        color="primary">
         <div class="d-flex align-center">
           <v-icon
             :color="
@@ -60,8 +57,7 @@
               isArray(modelValue) && modelValue?.includes(item.value) ?
                 mdiCheckboxMarked
               : mdiCheckboxBlankOutline
-            "
-          />
+            " />
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </div>
       </v-list-item>
@@ -80,19 +76,19 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-select-input',
   name: {
     en: 'select input',
-    de: 'Auswahl',
+    de: 'Auswahl'
   },
   description: {
     en: 'Lets the user select an option from a dropdown list. Can be configured to allow multi select.',
-    de: 'Lässt den User einen Eintrag aus einer Dropdown-Liste auswählen. Kann als Mehrfachauswahl konfiguriert werden.',
+    de: 'Lässt den User einen Eintrag aus einer Dropdown-Liste auswählen. Kann als Mehrfachauswahl konfiguriert werden.'
   },
   conditions: (props) => [
     [undefined, 'string', 'integer', 'number', 'array'].includes(
       props.objectSchema.type
     ),
     typeof props.objectSchema.enum !== 'undefined' ||
-      typeof props.objectSchema.items?.enum !== 'undefined',
-  ],
+      typeof props.objectSchema.items?.enum !== 'undefined'
+  ]
 };
 
 export default defineComponent({
@@ -155,7 +151,7 @@ export default defineComponent({
         } else {
           onItemsChanged(newValue);
         }
-      },
+      }
     });
 
     return {
@@ -169,9 +165,9 @@ export default defineComponent({
       isEmpty,
       last,
       mdiCheckboxBlankOutline,
-      mdiCheckboxMarked,
+      mdiCheckboxMarked
     };
-  },
+  }
 });
 </script>
 

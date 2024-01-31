@@ -50,12 +50,10 @@
         </template>-->
         <template
           v-if="!!domain && internalValue?.domains[domain.id].riskDefinitions"
-          #items
-        >
+          #items>
           <v-window-item
             v-for="riskDefinition of domain.riskDefinitions"
-            :key="riskDefinition.id"
-          >
+            :key="riskDefinition.id">
             <RiskProbabilitySection
               v-model:data="
                 internalValue.domains[domain.id].riskDefinitions[
@@ -65,8 +63,7 @@
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
-              @update:dirty-fields="$emit('update:dirty-fields', $event)"
-            />
+              @update:dirty-fields="$emit('update:dirty-fields', $event)" />
             <RiskImpactSection
               v-model:data="
                 internalValue.domains[domain.id].riskDefinitions[
@@ -76,8 +73,7 @@
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
-              @update:dirty-fields="$emit('update:dirty-fields', $event)"
-            />
+              @update:dirty-fields="$emit('update:dirty-fields', $event)" />
             <RiskInherentRiskSection
               v-model:data="
                 internalValue.domains[domain.id].riskDefinitions[
@@ -87,8 +83,7 @@
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
-              @update:dirty-fields="$emit('update:dirty-fields', $event)"
-            />
+              @update:dirty-fields="$emit('update:dirty-fields', $event)" />
             <RiskTreatmentSection
               v-model:data="
                 internalValue.domains[domain.id].riskDefinitions[
@@ -98,15 +93,13 @@
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
-              @update:dirty-fields="$emit('update:dirty-fields', $event)"
-            />
+              @update:dirty-fields="$emit('update:dirty-fields', $event)" />
             <RiskMitigationSection
               v-model:mitigations="localMitigations"
               :data="internalValue"
               :disabled="disabled"
               :domain-id="domain.id"
-              v-bind="$attrs"
-            />
+              v-bind="$attrs" />
             <RiskResidualSection
               v-model:data="
                 internalValue.domains[domain.id].riskDefinitions[
@@ -114,8 +107,7 @@
                 ].riskValues
               "
               :risk-definition="riskDefinition"
-              :disabled="disabled"
-            />
+              :disabled="disabled" />
           </v-window-item>
         </template>
       </BaseTabs>
@@ -135,25 +127,25 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Object as PropType<IVeoRisk>,
-      required: true,
+      required: true
     },
     domain: {
       type: Object as PropType<IVeoDomain>,
-      default: () => undefined,
+      default: () => undefined
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      default: () => {},
+      default: () => {}
     },
     mitigations: {
       type: Array as PropType<IVeoEntity[]>,
-      default: () => [],
+      default: () => []
     },
     disabled: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: ['update:mitigations', 'update:model-value', 'update:dirty-fields'],
   setup(props, { emit }) {
@@ -227,7 +219,7 @@ export default defineComponent({
       },
       set(newValue: IVeoEntity[]) {
         emit('update:mitigations', newValue);
-      },
+      }
     });
 
     return {
@@ -235,9 +227,9 @@ export default defineComponent({
       activeRiskDefinition,
       getRiskValuesByProtectionGoal,
       internalValue,
-      localMitigations,
+      localMitigations
     };
-  },
+  }
 });
 </script>
 

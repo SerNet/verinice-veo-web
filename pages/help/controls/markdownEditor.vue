@@ -22,15 +22,13 @@
         <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
-          :form-schema="form.formSchema"
-        />
+          :form-schema="form.formSchema" />
       </v-col>
     </v-row>
     <HelpFormDescription
       :object-schema="form.objectSchema"
       :form-schema="form.formSchema"
-      :data="form.data"
-    />
+      :data="form.data" />
   </BasePage>
 </template>
 
@@ -42,20 +40,20 @@ const form = ref({
     type: 'object',
     properties: {
       markdown: {
-        type: 'string',
-      },
-    },
+        type: 'string'
+      }
+    }
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/markdown',
     options: {
       label: 'Markdown Editor',
-      format: 'markdown',
-    },
+      format: 'markdown'
+    }
   },
   data: {
-    markdown: '# Header\n\n```js\nconsole.log("Beispiel Code1")\n```',
-  },
+    markdown: '# Header\n\n```js\nconsole.log("Beispiel Code1")\n```'
+  }
 });
 </script>

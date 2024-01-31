@@ -27,8 +27,7 @@
     :alert-body="t('alertBody')"
     :items="state.zipArchives"
     :is-loading="state.isLoading"
-    :handle-click="downloadZip"
-  >
+    :handle-click="downloadZip">
     <!-- Prepare Data -->
     <template v-if="state.prepare.phase !== PrepPhase.Done" #prepareData>
       <div class="d-flex align-center ms-auto mt-4">
@@ -37,8 +36,7 @@
             state.prepare.phase === PrepPhase.Zip ||
             state.prepare.phase === PrepPhase.Download
           "
-          class="text-subtitle-1 text-primary me-4"
-        >
+          class="text-subtitle-1 text-primary me-4">
           <span>{{ t(`prepareHistoryPhases.${state.prepare?.phase}`) }}</span>
           <span
             class="font-weight-black"
@@ -50,8 +48,7 @@
           color="primary"
           variant="outlined"
           :loading="state.prepare.phase !== PrepPhase.Idle"
-          @click="prepareData"
-        >
+          @click="prepareData">
           {{ t('btnPrepareDownload') }}
 
           <template #loader>
@@ -66,8 +63,7 @@
   <BaseDialog
     :close-function="toggleWarnOnLeaveDialog"
     :model-value="state.warnOnLeave"
-    :title="t('alertLeavePageTitle')"
-  >
+    :title="t('alertLeavePageTitle')">
     <template #default>
       <v-card-text>
         {{ t('alertLeavePageCopy') }}
@@ -91,7 +87,7 @@ import { download } from '~/lib/jsonToZip';
 import {
   loadHistory,
   chunkHistory,
-  createZipArchives,
+  createZipArchives
 } from './modules/HistoryExport';
 import { logError } from './modules/HandleError';
 import { useQuerySync } from '~/composables/api/utils/query';
@@ -128,16 +124,16 @@ const state: IHistoryState = reactive({
   prepare: {
     phase: PrepPhase.Idle,
     currentPercentage: 0,
-    totalPercentage: 100,
+    totalPercentage: 100
   },
   warnOnLeave: false,
-  resolveWarnOnLeave: undefined,
+  resolveWarnOnLeave: undefined
 });
 
 function updateLoadingState({
   phase,
   currentPercentage,
-  totalPercentage,
+  totalPercentage
 }: {
   phase: PrepPhase;
   currentPercentage: number;
@@ -159,7 +155,7 @@ async function prepareData() {
     const history = await loadHistory({
       updateLoadingState,
       fetchFn: fetchHistoryData,
-      size: 5000,
+      size: 5000
     });
     const chunkedHistory = chunkHistory(history);
     const zipArchives = await createZipArchives(
@@ -177,11 +173,11 @@ async function prepareData() {
 
 async function fetchHistoryData({
   size = 10000,
-  afterId,
+  afterId
 }: { size?: number; afterId?: string | undefined } = {}) {
   return useQuerySync(historyQueryDefinitions.queries.fetchPagedRevisions, {
     size: size.toString(),
-    afterId,
+    afterId
   });
 }
 

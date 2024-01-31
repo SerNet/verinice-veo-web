@@ -28,21 +28,18 @@
     :page-widths-lg="pageWidthsLg"
     :page-titles="pageTitles"
     data-component-name="object-details-page"
-    @page-collapsed="onPageCollapsed"
-  >
+    @page-collapsed="onPageCollapsed">
     <template #title>
       <LayoutHeadline
         class="mb-2"
-        :title="(object && object.displayName) || ''"
-      />
+        :title="(object && object.displayName) || ''" />
     </template>
 
     <template #default>
       <BasePage
         sticky-footer
         data-component-name="object-details-details"
-        no-padding
-      >
+        no-padding>
         <template #default>
           <ObjectDetails
             v-model:active-tab="activeTab"
@@ -51,8 +48,7 @@
             :object="object"
             :domain-id="domainId"
             :dense="!!pageWidths[1]"
-            @reload="updateObjectRelationships"
-          />
+            @reload="updateObjectRelationships" />
         </template>
         <template #footer>
           <div style="height: 36px" />
@@ -62,16 +58,14 @@
             :disabled="ability.cannot('manage', 'objects')"
             :object="object"
             :type="activeTab"
-            @reload="updateObjectRelationships"
-          />
+            @reload="updateObjectRelationships" />
         </template>
       </BasePage>
 
       <BasePage
         content-class="fill-height"
         no-padding
-        data-component-name="object-details-form"
-      >
+        data-component-name="object-details-form">
         <template #default>
           <ObjectForm
             v-if="objectType"
@@ -89,8 +83,7 @@
             :additional-context="additionalContext"
             @show-revision="onShowRevision"
             @create-dpia="createDPIADialogVisible = true"
-            @link-dpia="linkObjectDialogVisible = true"
-          >
+            @link-dpia="linkObjectDialogVisible = true">
             <template v-if="formDataIsRevision" #prepend-form>
               <BaseAlert
                 :model-value="true"
@@ -99,14 +92,12 @@
                 flat
                 class="mb-4"
                 :title="upperFirst(t('version', { version: version + 1 }))"
-                :text="t('oldVersionAlert')"
-              />
+                :text="t('oldVersionAlert')" />
             </template>
             <template #append-form-outer>
               <div
                 class="d-flex object-details-actions pt-4"
-                data-component-name="object-details-actions"
-              >
+                data-component-name="object-details-actions">
                 <template v-if="!formDataIsRevision">
                   <v-btn
                     :disabled="
@@ -117,8 +108,7 @@
                     class="mb-4"
                     color="primary"
                     flat
-                    @click="resetForm"
-                  >
+                    @click="resetForm">
                     {{ t('reset') }}
                   </v-btn>
                   <v-spacer />
@@ -132,8 +122,7 @@
                     class="mb-4"
                     color="primary"
                     flat
-                    @click="saveObject"
-                  >
+                    @click="saveObject">
                     {{ $t('global.button.save') }}
                   </v-btn>
                 </template>
@@ -143,8 +132,7 @@
                     :disabled="ability.cannot('manage', 'objects')"
                     color="primary"
                     flat
-                    @click="restoreObject"
-                  >
+                    @click="restoreObject">
                     {{ t('restore') }}
                   </v-btn>
                 </template>
@@ -154,23 +142,20 @@
           <ObjectUnsavedChangesDialog
             v-model="entityModifiedDialogVisible"
             :item="object"
-            @exit="onContinueNavigation"
-          />
+            @exit="onContinueNavigation" />
           <UtilUnloadPrevention :model-value="isFormDirty" />
           <ObjectCreateDialog
             v-model="createDPIADialogVisible"
             object-type="process"
             sub-type="PRO_DPIA"
             :domain-id="domainId"
-            @success="onDPIACreated"
-          />
+            @success="onDPIACreated" />
           <ObjectLinkDialog
             v-if="object"
             v-model="linkObjectDialogVisible"
             :preselected-filters="{ subType: 'PRO_DPIA' }"
             :object="object"
-            @success="onDPIALinked"
-          />
+            @success="onDPIALinked" />
         </template>
       </BasePage>
     </template>
@@ -189,7 +174,7 @@ import { isObjectEqual } from '~/lib/utils';
 import {
   IVeoEntity,
   IVeoObjectHistoryEntry,
-  VeoAlertType,
+  VeoAlertType
 } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
@@ -209,7 +194,7 @@ onBeforeRouteLeave((to, _from, next) => {
       router.push({
         name: to.name || undefined,
         params: to.params,
-        query: to.query,
+        query: to.query
       });
     entityModifiedDialogVisible.value = true;
     next(false);
@@ -225,7 +210,7 @@ const {
   displaySuccessMessage,
   displayErrorMessage,
   expireAlert,
-  displayInfoMessage,
+  displayInfoMessage
 } = useVeoAlerts();
 const { link } = useLinkObject();
 const { ability } = useVeoPermissions();
@@ -242,7 +227,7 @@ const wipObjectData = ref<Record<string, any> | undefined>(undefined);
 const fetchObjectQueryParameters = computed(() => ({
   domain: route.params.domain as string,
   endpoint: route.params.objectType as string,
-  id: route.params.object as string,
+  id: route.params.object as string
 }));
 const fetchObjectQueryEnabled = computed(
   () =>
@@ -254,7 +239,7 @@ const {
   data: object,
   isFetching: loading,
   isError: notFoundError,
-  refetch,
+  refetch
 } = useQuery(objectQueryDefinitions.queries.fetch, fetchObjectQueryParameters, {
   enabled: fetchObjectQueryEnabled,
   onSuccess: (data) => {
@@ -267,11 +252,11 @@ const {
     if (wipObjectData.value) {
       modifiedObject.value = {
         ...modifiedObject.value,
-        ...wipObjectData.value,
+        ...wipObjectData.value
       };
       wipObjectData.value = undefined;
     }
-  },
+  }
 });
 
 onUnmounted(() => {
@@ -367,7 +352,7 @@ async function updateObject(successText: string, errorText: string) {
       await _updateObject({
         domain: route.params.domain,
         endpoint: route.params.objectType,
-        object: modifiedObject.value,
+        object: modifiedObject.value
       });
       displaySuccessMessage(successText);
       refetch();
@@ -383,9 +368,9 @@ async function updateObject(successText: string, errorText: string) {
           actions: [
             {
               text: globalT('global.button.yes'),
-              onClick: refetch,
-            },
-          ],
+              onClick: refetch
+            }
+          ]
         }
       );
     } else {
@@ -393,8 +378,8 @@ async function updateObject(successText: string, errorText: string) {
         details: cloneDeep({
           object: modifiedObject.value,
           objectSchema: objectForm.value.objectSchema,
-          error: JSON.stringify(e),
-        }),
+          error: JSON.stringify(e)
+        })
       });
     }
   }
@@ -441,7 +426,7 @@ const activeTab = computed<string>({
   },
   set(hash: string): void {
     router.push({ hash: `#${hash}`, query: route.query });
-  },
+  }
 });
 
 // pia stuff
@@ -469,8 +454,8 @@ const getAdditionalContext = () => {
     object.value?.subType ?
       {
         [`#/properties/subType`]: {
-          formSchema: { disabled: true },
-        },
+          formSchema: { disabled: true }
+        }
       }
     : {};
 
@@ -483,8 +468,8 @@ const getAdditionalContext = () => {
       {
         ['#/properties/customAspects/properties/control_bpCompendium/properties/control_bpCompendium_content']:
           {
-            formSchema: { disabled: true },
-          },
+            formSchema: { disabled: true }
+          }
       }
     : {};
 
@@ -493,21 +478,21 @@ const getAdditionalContext = () => {
       {
         ['#/properties/customAspects/properties/scenario_bpCompendium/properties/scenario_bpCompendium_content']:
           {
-            formSchema: { disabled: true },
-          },
+            formSchema: { disabled: true }
+          }
       }
     : {};
 
   additionalContext.value = {
     ...disabledSubType,
     ...disabledRequirementCTL,
-    ...disabledRequirementSCN,
+    ...disabledRequirementSCN
   };
 };
 
 watch(() => () => domainId.value, getAdditionalContext, {
   deep: true,
-  immediate: true,
+  immediate: true
 });
 </script>
 

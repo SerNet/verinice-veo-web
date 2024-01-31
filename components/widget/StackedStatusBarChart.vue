@@ -22,20 +22,17 @@
         v-for="(chart, index) of chartData"
         :key="index"
         class="align-center"
-        dense
-      >
+        dense>
         <v-col
           cols="12"
           sm="12"
           md="5"
           lg="7"
           xl="4"
-          class="body-1 text-no-wrap"
-        >
+          class="body-1 text-no-wrap">
           <nuxt-link
             :to="objectOveriewLink(index, schemas || {})"
-            class="text-decoration-none text-color"
-          >
+            class="text-decoration-none text-color">
             {{ chart.labels[0] }}
           </nuxt-link>
         </v-col>
@@ -45,8 +42,7 @@
             width="100%"
             type="image"
             height="25px"
-            class="my-1"
-          />
+            class="my-1" />
           <Bar
             v-else-if="chart.totalEntries > 0"
             ref="barChartRef"
@@ -57,9 +53,8 @@
               height: `${chartHeight}px`,
               cursor: 'pointer',
               width: '100%',
-              position: 'relative',
-            }"
-          />
+              position: 'relative'
+            }" />
           <div v-else class="ml-2 font-italic text-body-2">
             {{ t('noObjects') }}
           </div>
@@ -81,14 +76,14 @@ import {
   CategoryScale,
   BarElement,
   LinearScale,
-  ChartOptions,
+  ChartOptions
 } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { CHART_COLORS } from '~/lib/utils';
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import schemaQueryDefinitions, {
-  IVeoSchemaEndpoints,
+  IVeoSchemaEndpoints
 } from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
@@ -123,7 +118,7 @@ const props = withDefaults(
   {
     data: () => ({}),
     chartHeight: 50,
-    title: ' ',
+    title: ' '
   }
 );
 
@@ -145,7 +140,7 @@ const objectTypePlural = computed(() => schemas.value?.[props.objectType]);
 
 const fetchSchemaQueryParameters = computed(() => ({
   domainId: props.domainId,
-  type: objectTypePlural.value as string,
+  type: objectTypePlural.value as string
 }));
 const fetchSchemaQueryEnabled = computed(
   () => !!props.domainId && !!objectTypePlural.value
@@ -166,7 +161,7 @@ const sortedStatusBySubType = computed<Record<string, any>>(() =>
 
 const translationQueryParameters = computed(() => ({
   languages: [locale.value],
-  domain: props.domainId,
+  domain: props.domainId
 }));
 const { data: translations } = useQuery(
   translationQueryDefinitions.queries.fetch,
@@ -174,7 +169,7 @@ const { data: translations } = useQuery(
 );
 
 const formsQueryParameters = computed(() => ({
-  domainId: props.domainId as string,
+  domainId: props.domainId as string
 }));
 const formsQueryEnabled = computed(() => !!props.domainId);
 const { data: formSchemas } = useQuery(
@@ -210,11 +205,11 @@ const options = computed<ChartOptions[]>(() =>
           const index = context.dataIndex;
           const value = context.dataset?.data?.[index] || -1;
           return value > 0;
-        },
+        }
       },
       tooltip: {
-        enabled: false,
-      },
+        enabled: false
+      }
     },
     indexAxis: 'y' as 'x' | 'y',
     barPercentage: 1,
@@ -229,24 +224,24 @@ const options = computed<ChartOptions[]>(() =>
         ),
         stacked: true,
         ticks: {
-          display: false,
+          display: false
         },
         grid: {
-          display: false,
-        },
+          display: false
+        }
       },
       y: {
         min: 1,
         max: 1,
         stacked: true,
         ticks: {
-          display: false,
+          display: false
         },
         grid: {
-          display: false,
-        },
-      },
-    },
+          display: false
+        }
+      }
+    }
   }))
 );
 
@@ -272,7 +267,7 @@ const chartData = computed<IChartValue[]>(() =>
     labels: [
       (formSchemas.value || []).find(
         (formSchema) => formSchema.subType === subType
-      )?.name?.[locale.value] || subType,
+      )?.name?.[locale.value] || subType
     ],
     datasets: (
       Object.entries(sortedStatusBySubType.value).find(
@@ -284,8 +279,8 @@ const chartData = computed<IChartValue[]>(() =>
       label:
         translations.value?.lang?.[locale.value]?.[
           `${props.objectType}_${subType}_status_${status}`
-        ] || status,
-    })),
+        ] || status
+    }))
   }))
 );
 

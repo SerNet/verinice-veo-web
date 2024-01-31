@@ -22,8 +22,7 @@
       <LayoutHeadline
         class="mb-4"
         :title="$t('breadcrumbs.profiles')"
-        :element="profiles[0]?.key || ''"
-      />
+        :element="profiles[0]?.key || ''" />
 
       <p class="mt-8 mb-4 text-body-1">
         {{ t('hint') }}
@@ -40,8 +39,7 @@
           show-select
           select-strategy="single"
           :model-value="state.selectedProfiles"
-          @update:model-value="(newVal) => selectNewItem(newVal)"
-        />
+          @update:model-value="(newVal) => selectNewItem(newVal)" />
       </BaseCard>
 
       <!-- Table actions -->
@@ -53,8 +51,7 @@
             color="primary"
             data-veo-test="profiles-btn-apply"
             :disabled="!state.selectedProfiles[0]"
-            @click="toggleDialog"
-          >
+            @click="toggleDialog">
             {{ t('applyBtn') }}
           </v-btn>
         </v-col>
@@ -75,9 +72,9 @@ const headers = computed(() => [
     title: t('thDescription'),
     align: 'start',
     key: 'description',
-    sortable: false,
+    sortable: false
   },
-  { title: t('thLanguage'), align: 'start', key: 'language' },
+  { title: t('thLanguage'), align: 'start', key: 'language' }
 ]);
 
 // Make sure to allways write currently active domain into state

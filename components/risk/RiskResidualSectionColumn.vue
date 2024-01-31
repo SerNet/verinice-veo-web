@@ -32,8 +32,7 @@
       :clearable="!!(userDefinedResidualRiskPresent && riskTreatments.length)"
       hide-details
       variant="underlined"
-      @update:model-value="emit('update:user-defined-residual-risk', $event)"
-    >
+      @update:model-value="emit('update:user-defined-residual-risk', $event)">
       <template #selection="{ item }">
         <div class="d-flex justify-space-between fill-width">
           <span>{{ item.title }}</span>
@@ -41,8 +40,7 @@
             v-if="
               userDefinedResidualRisk === undefined && riskTreatments.length
             "
-            top
-          >
+            top>
             <template #activator="{ props: tooltipProps }">
               <v-icon v-bind="tooltipProps" :icon="mdiInformationOutline" />
             </template>
@@ -67,8 +65,7 @@
           v-bind="dialogProps"
           @update:model-value="
             $emit('update:residual-risk-explanation', $event)
-          "
-        />
+          " />
       </template>
       <template #input>
         <v-textarea
@@ -84,8 +81,7 @@
           variant="underlined"
           @update:model-value="
             $emit('update:residual-risk-explanation', $event)
-          "
-        />
+          " />
       </template>
     </v-edit-dialog>
   </v-col>
@@ -101,41 +97,41 @@ import { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
 const props = defineProps({
   disabled: {
     type: Boolean,
-    default: false,
+    default: false
   },
   riskDefinition: {
     type: Object as PropType<IVeoDomainRiskDefinition>,
-    required: true,
+    required: true
   },
   protectionGoal: {
     type: Object as PropType<IVeoRiskCategory>,
-    required: true,
+    required: true
   },
   riskTreatments: {
     type: Array as PropType<string[]>,
-    default: undefined,
+    default: undefined
   },
   userDefinedResidualRisk: {
     type: Number,
-    default: undefined,
+    default: undefined
   },
   residualRisk: {
     type: Number,
-    default: undefined,
+    default: undefined
   },
   residualRiskExplanation: {
     type: String,
-    default: undefined,
+    default: undefined
   },
   numOfCols: {
     type: Number,
-    default: 4,
-  },
+    default: 4
+  }
 });
 
 const emit = defineEmits([
   'update:residual-risk-explanation',
-  'update:user-defined-residual-risk',
+  'update:user-defined-residual-risk'
 ]);
 
 const { t, locale } = useI18n();
@@ -147,7 +143,7 @@ const userDefinedResidualRiskPresent = computed(
 const riskValues = computed(() =>
   props.riskDefinition.riskValues.map((level) => ({
     title: level.translations[locale.value].name,
-    value: level.ordinalValue,
+    value: level.ordinalValue
   }))
 );
 </script>

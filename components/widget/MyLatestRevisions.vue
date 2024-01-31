@@ -22,13 +22,11 @@
         <tr
           v-for="(revision, key) in revisions || []"
           :key="key"
-          class="text-no-wrap overflow-x-hidden fill-width"
-        >
+          class="text-no-wrap overflow-x-hidden fill-width">
           <td>
             <nuxt-link
               :to="createUrl(revision, schemas || {})"
-              class="text-body-2 text-color"
-            >
+              class="text-body-2 text-color">
               {{ revision.content.designator }}
               <b
                 >{{ revision.content.abbreviation }}
@@ -48,7 +46,7 @@
 <script setup lang="ts">
 import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
 import schemaQueryDefinitions, {
-  IVeoSchemaEndpoints,
+  IVeoSchemaEndpoints
 } from '~/composables/api/queryDefinitions/schemas';
 import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 import { useQuery } from '~/composables/api/utils/query';
@@ -57,7 +55,7 @@ const { t, locale } = useI18n();
 const route = useRoute();
 
 const latestChangesQueryParameters = computed(() => ({
-  unitId: route.params.unit as string,
+  unitId: route.params.unit as string
 }));
 const { data: revisions } = useQuery(
   historyQueryDefinitions.queries.fetchLatestVersions,

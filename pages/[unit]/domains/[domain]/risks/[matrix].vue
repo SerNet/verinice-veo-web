@@ -20,8 +20,7 @@
     <v-col
       v-for="protectionGoal of protectionGoals"
       :key="protectionGoal.id"
-      md="6"
-    >
+      md="6">
       <BaseCard>
         <v-card-title class="bg-accent mb-2 small-caps">
           {{ protectionGoal.text }}
@@ -30,8 +29,7 @@
         <RiskMatrix
           v-if="!domainIsFetching"
           v-bind="getMatrixData(protectionGoal.id)"
-          class="my-2"
-        />
+          class="my-2" />
 
         <v-skeleton-loader v-else type="image" width="600px" />
       </BaseCard>
@@ -43,7 +41,7 @@
 import { cloneDeep, reverse } from 'lodash';
 
 import domainQueryDefinitions, {
-  IVeoDomain,
+  IVeoDomain
 } from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~/composables/api/utils/query';
 export const ROUTE_NAME = 'unit-domains-domain-risks-matrix';
@@ -54,7 +52,7 @@ export default defineComponent({
     const route = useRoute();
 
     const fetchDomainQueryParameters = computed(() => ({
-      id: route.params.domain as string,
+      id: route.params.domain as string
     }));
     const { data: domain, isFetching: domainIsFetching } = useQuery(
       domainQueryDefinitions.queries.fetchDomain,
@@ -70,7 +68,7 @@ export default defineComponent({
         text:
           category.translations[locale.value]?.name ||
           Object.values(category.translations)[0].name,
-        id: category.id,
+        id: category.id
       }))
     );
 
@@ -84,15 +82,15 @@ export default defineComponent({
         impacts: reverse(cloneDeep(category?.potentialImpacts || [])),
         value: reverse(cloneDeep(category?.valueMatrix || [])),
         probabilities: data.value?.probability.levels || [],
-        riskValues: data.value?.riskValues || [],
+        riskValues: data.value?.riskValues || []
       };
     };
 
     return {
       domainIsFetching,
       getMatrixData,
-      protectionGoals,
+      protectionGoals
     };
-  },
+  }
 });
 </script>

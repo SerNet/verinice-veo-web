@@ -47,9 +47,9 @@ export default defineComponent({
     return {
       createReport,
 
-      t,
+      t
     };
-  },
+  }
 });
 </script>
 

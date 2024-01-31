@@ -24,8 +24,7 @@
     :prepend-inner-icon="mdiPaletteOutline"
     variant="underlined"
     :label="t('stylingOptions')"
-    clearable
-  />
+    clearable />
 </template>
 
 <script setup lang="ts">
@@ -38,8 +37,8 @@ import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 const props = defineProps({
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
-    required: true,
-  },
+    required: true
+  }
 });
 
 const emit = defineEmits<{
@@ -58,7 +57,7 @@ const options = [
   'bg-error',
   'text-warning',
   'text-info',
-  'text-error',
+  'text-error'
 ];
 
 const formattedOptions = computed(() =>
@@ -74,7 +73,7 @@ const activeOptions = computed({
     }
     currentData.options.class = newValue.join(' ');
     emit('update:form-schema-element', currentData);
-  },
+  }
 });
 </script>
 

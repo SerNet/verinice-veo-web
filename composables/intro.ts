@@ -96,7 +96,7 @@ export function createIntro() {
       }
       // watch hintsVisible (show hints bubbles)
       _watchHintsVisible = watch(hintsVisible, () => toggleHints(), {
-        immediate: true,
+        immediate: true
       });
 
       // Skip step if element is defined but not visible
@@ -129,7 +129,7 @@ export function createIntro() {
             ?.scrollIntoView({
               behavior: 'auto',
               block: 'center',
-              inline: 'center',
+              inline: 'center'
             });
         }
       );
@@ -232,7 +232,7 @@ export function createIntro() {
               showBullets: false,
               showStepNumbers: true,
               ...o,
-              scrollToElement: false,
+              scrollToElement: false
             });
 
             if (stepsVisible.value && tutorialReady) {
@@ -370,7 +370,7 @@ export function useIntro() {
      */
     removeAllHints() {
       options.value = { ...options.value, hints: [] };
-    },
+    }
   };
 }
 
@@ -384,7 +384,7 @@ export function useTutorials() {
     docs.value = await queryContent()
       .where({
         _extension: 'yaml',
-        language: { $in: [i18n.locale.value, undefined] },
+        language: { $in: [i18n.locale.value, undefined] }
       })
       .find();
   };
@@ -408,7 +408,7 @@ export function useTutorials() {
           applicable:
             tutorial.exact ?
               routeToMatch === tutorial.route
-            : routeToMatch.startsWith(tutorial.route),
+            : routeToMatch.startsWith(tutorial.route)
         };
       }) || []
   );
@@ -455,6 +455,6 @@ export function useTutorials() {
     /**
      * Are tutorials available for current route?
      */
-    hasTutorials,
+    hasTutorials
   };
 }

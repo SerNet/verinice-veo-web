@@ -10,7 +10,7 @@ const state = {
     () => OBJECT_TYPE_TO_URL_MAP[route.query.type as string] || 'all'
   ),
   riskAffected: computed(() => (route.query.riskAffected as string) || null),
-  control: computed(() => (route.query.control as string) || null),
+  control: computed(() => (route.query.control as string) || null)
 };
 
 function getRequirementImplementationId(url: string) {
@@ -20,7 +20,7 @@ function getRequirementImplementationId(url: string) {
 async function fetchRequirementImplementations({
   type,
   riskAffected,
-  control,
+  control
 }: {
   type: string;
   riskAffected: string;
@@ -37,7 +37,7 @@ async function fetchRequirementImplementations({
 async function fetchRequirementImplementation({
   type,
   riskAffected,
-  item,
+  item
 }: {
   type: string;
   riskAffected: string;
@@ -55,7 +55,7 @@ export function useCompliance() {
     fetchRequirementImplementations,
     fetchRequirementImplementation,
     getRequirementImplementationId,
-    state: state,
+    state: state
   };
 }
 
@@ -69,5 +69,5 @@ const OBJECT_TYPE_TO_URL_MAP: ObjectTypeToUrlMap = {
   incident: 'incidents',
   document: 'documents',
   scenario: 'scenarios',
-  control: 'controls',
+  control: 'controls'
 };

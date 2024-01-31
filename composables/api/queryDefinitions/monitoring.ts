@@ -48,12 +48,12 @@ export default {
       primaryQueryKey: 'monitoring',
       url: '/api/:api/actuator/info',
       queryParameterTransformationFn: (queryParameters) => ({
-        params: queryParameters,
-      }),
+        params: queryParameters
+      })
     } as IVeoQueryDefinition<
       IVeoFetchDeploymentDetailsParameters,
       IVeoDeploymentInformation
-    >,
+    >
   },
-  mutations: {},
+  mutations: {}
 };

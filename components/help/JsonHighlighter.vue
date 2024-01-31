@@ -34,15 +34,15 @@ import 'prismjs/components/prism-json';
 
 export default {
   props: {
-    text: { type: String, default: '' },
+    text: { type: String, default: '' }
   },
   computed: {
     textAsHighlighterHTML(): string {
       return this.text ?
           Prism.highlight(String(this.text || ''), Prism.languages.json, 'json')
         : '';
-    },
-  },
+    }
+  }
 };
 </script>
 

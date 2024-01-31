@@ -23,8 +23,7 @@
     class="veo-report-list"
     :items-per-page="tablePageSize"
     :loading="isFetchingReports || isFetchingDomains"
-    @click:row="onRowClicked"
-  >
+    @click:row="onRowClicked">
     <template #no-data>
       <span class="text-center">
         {{ t('noReports') }}
@@ -80,7 +79,7 @@ const { tablePageSize } = useVeoUser();
 
 const route = useRoute();
 const fetchDomainQueryParameters = computed(() => ({
-  id: route?.params.domain as string,
+  id: route?.params.domain as string
 }));
 const fetchDomainQueryEnabled = computed(() => !!route?.params?.domain);
 const { data: domain, isFetching: isFetchingDomains } = useQuery(
@@ -106,7 +105,7 @@ type TFilterReportsParams = {
 function filterReports({
   _domain,
   _allReports,
-  _locale,
+  _locale
 }: TFilterReportsParams) {
   if (!_domain || !_allReports) return [];
 
@@ -181,7 +180,7 @@ function mapFilterdReports({ reports, locale }: TMapFilteredReportsParams) {
       multipleTargetsSupported: report.multipleTargetsSupported,
       outputTypes,
       targetTypes,
-      descriptionShort,
+      descriptionShort
     };
   });
 }
@@ -191,7 +190,7 @@ const displayedItems = computed(() => {
   const filteredReports = filterReports({
     _domain: toRaw(domain.value),
     _allReports: toRaw(reports.value),
-    _locale,
+    _locale
   });
 
   if (filterReports.length === 0) return;
@@ -210,14 +209,14 @@ const headers = computed(() => {
       truncate: true,
       sortable: true,
       priority: 100,
-      order: 10,
+      order: 10
     },
     {
       text: t('targetTypes'),
       value: 'targetTypes',
       key: 'targetTypes',
       priority: 90,
-      order: 20,
+      order: 20
     },
     {
       title: t('reportDescription'),
@@ -229,15 +228,15 @@ const headers = computed(() => {
       tooltip: ({ internalItem: item }: { internalItem: any }) =>
         item.raw.description || '',
       priority: 30,
-      order: 30,
+      order: 30
     },
     {
       text: t('outputTypes'),
       value: 'outputTypes',
       key: 'outputTypes',
       priority: 80,
-      order: 40,
-    },
+      order: 40
+    }
   ];
 });
 

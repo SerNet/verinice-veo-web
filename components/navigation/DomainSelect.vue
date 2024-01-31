@@ -22,8 +22,7 @@
         class="ma-4"
         :icon="mdiDomain"
         v-bind="toolTips"
-        @click="$emit('expand-menu')"
-      />
+        @click="$emit('expand-menu')" />
     </template>
 
     <template #default>
@@ -40,8 +39,7 @@
     density="compact"
     :disabled="disabled"
     :items="itemSelection"
-    :label="items.length ? t('domain') : t('select')"
-  >
+    :label="items.length ? t('domain') : t('select')">
     <template #item="{ props, item }">
       <v-list-item
         v-show="!miniVariant"
@@ -52,8 +50,7 @@
         width="500"
         :title="item.title"
         :value="item.value"
-        @click="domainId = item.value"
-      />
+        @click="domainId = item.value" />
     </template>
 
     <template #append-item>
@@ -67,8 +64,7 @@
         @click="
           domainId = 'more';
           closeMenu.menu = false;
-        "
-      />
+        " />
     </template>
   </v-select>
 </template>
@@ -88,7 +84,7 @@ withDefaults(
   }>(),
   {
     disabled: false,
-    miniVariant: false,
+    miniVariant: false
   }
 );
 
@@ -101,11 +97,11 @@ const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
 const fetchUnitDomainsQueryParameters = computed(() => ({
-  unitId: route.params.unit as string,
+  unitId: route.params.unit as string
 }));
 const fetchUnitDomainsQueryEnabled = computed(() => !!route.params.unit);
 const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, {
-  enabled: fetchUnitDomainsQueryEnabled,
+  enabled: fetchUnitDomainsQueryEnabled
 });
 
 // v-select's append-item slot has no events (!), hence we have to reference it
@@ -120,7 +116,7 @@ const items = computed(
 const itemSelection = computed(() =>
   (domains.value || []).map((domain: any) => ({
     value: domain.id,
-    title: domain.name,
+    title: domain.name
   }))
 );
 
@@ -135,10 +131,10 @@ const domainId = computed({
     navigateTo({
       name: newValue === 'more' ? ROUTE_MORE_DOMAINS : ROUTE_DOMAIN_DASHBOARD,
       params: {
-        ...params,
-      },
+        ...params
+      }
     });
-  },
+  }
 });
 </script>
 

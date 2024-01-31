@@ -37,7 +37,7 @@ export const useFetchSchemasDetailed = (
   const dependentQueryParameters = computed(() =>
     Object.values(schemas.value || {}).map((schemaName) => ({
       domainId: unref(queryParameters).domainId,
-      type: schemaName,
+      type: schemaName
     }))
   );
 

@@ -23,22 +23,19 @@
           v-model="isVertical"
           label="Vertikal"
           hide-details
-          color="primary"
-        />
+          color="primary" />
       </v-col>
       <v-col cols="auto" class="docs-form-sector">
         <DynamicFormEntrypoint
           v-model="dynamicForm.data"
           :object-schema="dynamicForm.objectSchema"
-          :form-schema="dynamicForm.formSchema"
-        />
+          :form-schema="dynamicForm.formSchema" />
       </v-col>
     </v-row>
     <HelpFormDescription
       :object-schema="dynamicForm.objectSchema"
       :form-schema="dynamicForm.formSchema"
-      :data="dynamicForm.data"
-    />
+      :data="dynamicForm.data" />
   </BasePage>
 </template>
 
@@ -50,21 +47,21 @@ const form = ref({
     type: 'object',
     properties: {
       radio: {
-        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3'],
-      },
-    },
+        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
+      }
+    }
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/radio',
     options: {
       label: 'Radio',
-      format: 'radio',
-    },
+      format: 'radio'
+    }
   },
   data: {
-    radio: 'Beispiel-1',
-  },
+    radio: 'Beispiel-1'
+  }
 });
 
 const formVertical = ref({
@@ -72,9 +69,9 @@ const formVertical = ref({
     type: 'object',
     properties: {
       radio: {
-        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3'],
-      },
-    },
+        enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
+      }
+    }
   },
   formSchema: {
     type: 'Control',
@@ -82,12 +79,12 @@ const formVertical = ref({
     options: {
       label: 'Radio',
       format: 'radio',
-      direction: 'vertical',
-    },
+      direction: 'vertical'
+    }
   },
   data: {
-    radio: 'Beispiel-1',
-  },
+    radio: 'Beispiel-1'
+  }
 });
 
 const isVertical = ref(false);

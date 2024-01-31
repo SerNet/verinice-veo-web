@@ -29,25 +29,21 @@
             :items="item.children"
             open-on-hover
             location="right"
-            @close="closeMenu"
-          >
+            @close="closeMenu">
             <template #activator="{ props: activatorProps }">
               <v-list-item
                 v-bind="activatorProps"
                 :key="`0_${item.key}`"
-                @click.stop="() => {}"
-              >
+                @click.stop="() => {}">
                 <template v-if="anyItemHasIcon" #prepend>
                   <v-icon
                     v-if="item.icon"
                     :icon="item.icon"
-                    :color="item.color"
-                  />
+                    :color="item.color" />
                   <div v-else style="width: 54px" />
                 </template>
                 <v-list-item-title
-                  :class="{ [`text-${item.color}`]: !!item.color }"
-                >
+                  :class="{ [`text-${item.color}`]: !!item.color }">
                   {{ item.title }}
                 </v-list-item-title>
                 <template #append>
@@ -59,15 +55,13 @@
           <v-list-item
             v-else
             :key="`1_${item.key}`"
-            @click="onItemClicked(`1_${item.key}`, item)"
-          >
+            @click="onItemClicked(`1_${item.key}`, item)">
             <template v-if="anyItemHasIcon" #prepend>
               <v-icon v-if="item.icon" :icon="item.icon" :color="item.color" />
               <div v-else style="width: 54px" />
             </template>
             <v-list-item-title
-              :class="{ [`text-${item.color}`]: !!item.color }"
-            >
+              :class="{ [`text-${item.color}`]: !!item.color }">
               {{ item.title }}
             </v-list-item-title>
             <component
@@ -77,8 +71,7 @@
               :model-value="!!componentIsVisible[`1_${item.key}`]"
               @update:model-value="
                 onUpdateComponentModelValue(`1_${item.key}`, $event)
-              "
-            />
+              " />
             <template v-if="anyItemHasChildren" #append>
               <div style="width: 54px" />
             </template>
@@ -108,7 +101,7 @@ const props = withDefaults(
     items: INestedMenuEntries[];
   }>(),
   {
-    items: () => [],
+    items: () => []
   }
 );
 

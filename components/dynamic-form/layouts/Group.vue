@@ -20,16 +20,14 @@
     v-if="options.visible"
     :id="formSchemaPointer"
     class="vf-layout vf-group my-2 py-1 px-2 pb-2"
-    :class="classes"
-  >
+    :class="classes">
     <h3 v-if="options && options.label" class="text-h3">
       {{ options.label }}
     </h3>
     <div
       dense
       class="d-flex"
-      :class="isHorizontal ? 'flex-row' : 'flex-column'"
-    >
+      :class="isHorizontal ? 'flex-row' : 'flex-column'">
       <slot />
     </div>
   </div>
@@ -43,12 +41,12 @@ export const GROUP_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-group',
   name: {
     en: 'group',
-    de: 'Gruppe',
+    de: 'Gruppe'
   },
   description: {
     en: 'Adds a wrapper around other elements that can be styled.',
-    de: 'Fügt einen Container um andere Elemente hinzu, der optional gestyled werden kann.',
-  },
+    de: 'Fügt einen Container um andere Elemente hinzu, der optional gestyled werden kann.'
+  }
 };
 
 export default defineComponent({
@@ -63,8 +61,8 @@ export default defineComponent({
 
     return {
       classes,
-      isHorizontal,
+      isHorizontal
     };
-  },
+  }
 });
 </script>

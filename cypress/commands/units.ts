@@ -19,7 +19,7 @@ export function goToUnitSelection(): void {
 }
 
 export function selectUnit({
-  unitName = Cypress.env('unitDetails').name,
+  unitName = Cypress.env('unitDetails').name
 }: { unitName?: string } = {}): void {
   cy.get('[data-veo-test="unit-selection-available-units"] a')
     .contains(unitName)
@@ -29,7 +29,7 @@ export function selectUnit({
 export function createUnit({
   unitName = Cypress.env('unitDetails').name,
   unitDesc = Cypress.env('unitDetails').desc,
-  domains = Cypress.env('unitDetails').domains,
+  domains = Cypress.env('unitDetails').domains
 }: { unitName?: string; unitDesc?: string; domains?: string[] } = {}): void {
   cy.goToUnitSelection();
   cy.get('.veo-primary-action-fab button').click();
@@ -72,7 +72,7 @@ export function createUnit({
 }
 
 export function deleteUnit({
-  unitName = Cypress.env('unitDetails').name,
+  unitName = Cypress.env('unitDetails').name
 }: { unitName?: string } = {}): void {
   cy.goToUnitSelection();
   cy.get('.v-list-item--link')

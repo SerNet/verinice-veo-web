@@ -21,16 +21,14 @@
       <LayoutHeadline
         class="mb-4"
         :title="locale === 'de' ? 'Katalog' : 'Catalog'"
-        :element="title"
-      />
+        :element="title" />
       <CatalogDefaultCatalog
         v-model="selectedItems"
         class="mb-4"
         :catalog-items="catalogItems?.items"
         :is-loading="catalogItemsAreFetching"
         :is-applying-items="isApplyingItems"
-        @apply-items="applyItems"
-      >
+        @apply-items="applyItems">
         <span class="my-2">{{ t('selectScenariosCTA') }}</span>
       </CatalogDefaultCatalog>
     </template>
@@ -39,7 +37,7 @@
 
 <script lang="ts">
 export default {
-  name: 'VeoCatalogPage',
+  name: 'VeoCatalogPage'
 };
 export const ROUTE_NAME = 'unit-domains-domain-catalog';
 </script>
@@ -83,8 +81,8 @@ if (!currentSubType.value) {
     name: 'unit-domains-domain-catalog',
     query: {
       type: 'all',
-      subType: 'all',
-    },
+      subType: 'all'
+    }
   });
 }
 
@@ -92,7 +90,7 @@ if (!currentSubType.value) {
 const fetchCatalogItemsQueryParameters = computed(() => ({
   domainId: currentDomainId?.value,
   subType: currentSubType?.value,
-  size: '10000',
+  size: '10000'
 }));
 
 const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(
@@ -104,7 +102,7 @@ const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(
 // Translations are found in forms, so we fetch them:
 const allFormSchemasQueryEnabled = computed(() => !!currentDomainId);
 const queryParameters = computed(() => ({
-  domainId: currentDomainId.value,
+  domainId: currentDomainId.value
 }));
 const { data: formSchemas } = useQuery(
   formsQueryDefinitions.queries.fetchForms,
@@ -116,7 +114,7 @@ const currentSubTypeTranslated = computed(() =>
   translateSubType({
     formSchemas: formSchemas?.value,
     elementType: currentElementType?.value,
-    subType: currentSubType.value,
+    subType: currentSubType.value
   })
 );
 
@@ -130,7 +128,7 @@ const customBreadcrumbArgs = computed(() => ({
   text: currentSubTypeTranslated.value || t('all'),
   position: 11,
   param: '',
-  disabled: true,
+  disabled: true
 }));
 
 onMounted(() => addCustomBreadcrumb(customBreadcrumbArgs.value));
@@ -160,7 +158,7 @@ async function applyItems() {
     const fetchParameters = {
       unitId: route.params.unit as string,
       itemIds: selectedItems.value.map((item) => item.id),
-      exclude: ['COMPOSITE', 'LINK', 'LINK_EXTERNAL'],
+      exclude: ['COMPOSITE', 'LINK', 'LINK_EXTERNAL']
     };
 
     const incarnations = await useQuerySync(
@@ -189,7 +187,7 @@ type TranslateSubTypeParams = {
 function translateSubType({
   formSchemas,
   elementType,
-  subType,
+  subType
 }: TranslateSubTypeParams) {
   const formSchema = formSchemas?.find(
     (formSchema) =>

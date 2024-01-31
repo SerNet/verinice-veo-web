@@ -19,13 +19,11 @@
   <v-col
     class="veo-page bg-basepage py-0"
     cols="12"
-    :class="noPadding ? 'px-0' : 'px-4'"
-  >
+    :class="noPadding ? 'px-0' : 'px-4'">
     <LayoutPageHeader
       v-bind="
         omit(props, 'contentClass', 'stickyFooter', 'height', 'noPadding')
-      "
-    >
+      ">
       <template v-if="$slots.title" #title>
         <slot name="title" />
       </template>
@@ -36,8 +34,7 @@
     <v-row
       no-gutters
       :style="{ 'max-height': '100%', 'min-height': 0, height }"
-      class="pa-0 flex-column flex-nowrap"
-    >
+      class="pa-0 flex-column flex-nowrap">
       <v-col :class="contentClass">
         <slot name="default" />
       </v-col>
@@ -46,9 +43,8 @@
         :style="{
           bottom: 0,
           position: stickyFooter ? 'sticky' : undefined,
-          'flex-grow': 0,
-        }"
-      >
+          'flex-grow': 0
+        }">
         <slot name="footer" />
       </v-col>
     </v-row>
@@ -63,46 +59,46 @@ import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
 const props = defineProps({
   contentClass: {
     type: String,
-    default: '',
+    default: ''
   },
   headingLevel: {
     type: [Number, String],
-    default: 1,
+    default: 1
   },
   stickyHeader: {
     type: Boolean,
-    default: false,
+    default: false
   },
   stickyFooter: {
     type: Boolean,
-    default: false,
+    default: false
   },
   height: {
     type: String,
-    default: 'auto',
+    default: 'auto'
   },
   /**
    * Shows a skeleton for the title if set to true
    */
   loading: {
     type: Boolean,
-    default: false,
+    default: false
   },
   noPadding: {
     type: Boolean,
-    default: false,
+    default: false
   },
   /**
    * The title of the page. Used to standardtize headings
    */
   title: {
     type: String,
-    default: undefined,
+    default: undefined
   },
   titlebarAlignment: {
     type: Number as PropType<PageHeaderAlignment>,
-    default: PageHeaderAlignment.LEFT,
-  },
+    default: PageHeaderAlignment.LEFT
+  }
 });
 </script>
 

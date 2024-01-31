@@ -36,13 +36,13 @@ const initialProps = {
   alertBody: 'Test Alert Body',
   items: [],
   isLoading: [],
-  handleClick: (index: number) => index,
+  handleClick: (index: number) => index
 };
 
 describe('userDataCard.vue', () => {
   const wrapper = mount(UserDataCard, {
     global: { plugins },
-    props: initialProps,
+    props: initialProps
   });
 
   it('should show an alert', async () => {

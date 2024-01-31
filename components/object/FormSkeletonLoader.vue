@@ -27,20 +27,20 @@
 const _skeletons = [
   {
     type: 'heading',
-    width: '30%',
+    width: '30%'
   },
   {
     type: 'text',
-    width: '20%',
+    width: '20%'
   },
   {
     type: 'text',
-    width: '100%',
+    width: '100%'
   },
   {
     type: 'text',
-    width: '100%',
-  },
+    width: '100%'
+  }
 ];
 
 const skeletons = new Array(3).fill(_skeletons).flat();

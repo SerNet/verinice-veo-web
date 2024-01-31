@@ -31,8 +31,7 @@
       class="veo-risk-dialog__risk-treatment-selection"
       hide-details
       variant="underlined"
-      @update:model-value="$emit('update:risk-treatments', $event)"
-    >
+      @update:model-value="$emit('update:risk-treatments', $event)">
       <template #selection="{ item, index }">
         <span v-if="index === 0" class="text-no-wrap">
           {{ item.title }}
@@ -54,8 +53,7 @@
           v-bind="dialogProps"
           @update:model-value="
             $emit('update:risk-treatment-explanation', $event)
-          "
-        />
+          " />
       </template>
       <template #input>
         <v-textarea
@@ -71,8 +69,7 @@
           variant="underlined"
           @update:model-value="
             $emit('update:risk-treatment-explanation', $event)
-          "
-        />
+          " />
       </template>
     </v-edit-dialog>
   </v-col>
@@ -88,28 +85,28 @@ export default defineComponent({
   props: {
     disabled: {
       type: Boolean,
-      default: false,
+      default: false
     },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true,
+      required: true
     },
     protectionGoal: {
       type: Object as PropType<IVeoRiskCategory>,
-      required: true,
+      required: true
     },
     riskTreatments: {
       type: Array as PropType<string[]>,
-      default: undefined,
+      default: undefined
     },
     riskTreatmentExplanation: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     numOfCols: {
       type: Number,
-      default: 4,
-    },
+      default: 4
+    }
   },
   emits: ['update:risk-treatment-explanation', 'update:risk-treatments'],
   setup() {
@@ -120,10 +117,10 @@ export default defineComponent({
         'RISK_TREATMENT_ACCEPTANCE',
         'RISK_TREATMENT_AVOIDANCE',
         'RISK_TREATMENT_REDUCTION',
-        'RISK_TREATMENT_TRANSFER',
+        'RISK_TREATMENT_TRANSFER'
       ].map((option) => ({
         title: t(`riskTreatments.${option}`).toString(),
-        value: option,
+        value: option
       }))
     );
 
@@ -132,9 +129,9 @@ export default defineComponent({
 
       t,
       locale,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>
 

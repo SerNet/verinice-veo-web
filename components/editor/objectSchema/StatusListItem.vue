@@ -22,9 +22,8 @@
         class="handle d-flex align-center justify-center my-0 px-4"
         :style="{
           backgroundColor: CHART_COLORS[index % CHART_COLORS.length],
-          height: '58px',
-        }"
-      >
+          height: '58px'
+        }">
         <v-icon color="white" :icon="mdiMenu" />
       </div>
     </template>
@@ -40,8 +39,7 @@
           :label="upperFirst(t('translation').toString())"
           hide-details
           variant="underlined"
-          @update:model-value="onTranslationInput"
-        />
+          @update:model-value="onTranslationInput" />
       </v-col>
     </v-row>
     <template #append>
@@ -52,8 +50,7 @@
               v-bind="props"
               :icon="mdiTrashCanOutline"
               variant="text"
-              @click="$emit('delete')"
-            />
+              @click="$emit('delete')" />
           </template>
           <template #default>
             {{ upperFirst(t('deleteStatus').toString()) }}
@@ -75,16 +72,16 @@ export default defineComponent({
   props: {
     status: {
       type: Object as PropType<{ key: string; [lang: string]: string }>,
-      required: true,
+      required: true
     },
     index: {
       type: Number,
-      required: true,
+      required: true
     },
     lang: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: ['update-status', 'delete'],
   setup(props, { emit }) {
@@ -93,7 +90,7 @@ export default defineComponent({
     function onTranslationInput(value: string) {
       emit('update-status', {
         ...props.status,
-        [props.lang]: value,
+        [props.lang]: value
       });
     }
 
@@ -105,9 +102,9 @@ export default defineComponent({
       mdiMenu,
       mdiTrashCanOutline,
       mdiTranslate,
-      CHART_COLORS,
+      CHART_COLORS
     };
-  },
+  }
 });
 </script>
 

@@ -335,14 +335,14 @@
       on: on,
       once: once,
       off: off,
-      emit: emit,
+      emit: emit
     };
 
     descriptors = {
       on: d(on),
       once: d(once),
       off: d(off),
-      emit: d(emit),
+      emit: d(emit)
     };
 
     base = defineProperties({}, descriptors);
@@ -2524,12 +2524,12 @@
           args: args,
           //"context"  : context,
           deferred: deferred,
-          promise: promise,
+          promise: promise
         };
       } else {
         // Task is a promise
         queued = {
-          promise: task,
+          promise: task
         };
       }
 
@@ -3266,7 +3266,7 @@
     return {
       prev: null,
       next: null,
-      data: data,
+      data: data
     };
   }
 
@@ -3283,7 +3283,7 @@
       cursor = {
         prev: prev,
         next: next,
-        cursor: node.cursor,
+        cursor: node.cursor
       };
     }
 
@@ -3842,7 +3842,7 @@
           /^(.+\n){1,3}/,
           name + ': ' + message + '\n'
         );
-      },
+      }
     });
 
     return error;
@@ -3900,7 +3900,7 @@
     return [
       processLines(startLine, line),
       new Array(column + maxNumLength + 2).join('-') + '^',
-      processLines(line, endLine),
+      processLines(line, endLine)
     ]
       .filter(Boolean)
       .join('\n');
@@ -3922,14 +3922,14 @@
         return (
           'Parse error: ' + error.message + '\n' + sourceFragment(error, 2)
         );
-      },
+      }
     });
 
     // for backward capability
     error.parseError = {
       offset: offset,
       line: line,
-      column: column,
+      column: column
     };
 
     return error;
@@ -3965,7 +3965,7 @@
     RightParenthesis: 22, // <)-token>
     LeftCurlyBracket: 23, // <{-token>
     RightCurlyBracket: 24, // <}-token>
-    Comment: 25,
+    Comment: 25
   };
 
   var NAME$3 = Object.keys(TYPE$H).reduce(function (result, key) {
@@ -3975,7 +3975,7 @@
 
   var _const = {
     TYPE: TYPE$H,
-    NAME: NAME$3,
+    NAME: NAME$3
   };
 
   var EOF$1 = 0;
@@ -4224,7 +4224,7 @@
     isNumberStart: isNumberStart$1,
 
     isBOM: isBOM$2,
-    charCodeCategory: charCodeCategory$1,
+    charCodeCategory: charCodeCategory$1
   };
 
   var charCodeDef = charCodeDefinitions$1;
@@ -4475,7 +4475,7 @@
 
     getNewlineLength: getNewlineLength$1,
     findWhiteSpaceStart: findWhiteSpaceStart$1,
-    findWhiteSpaceEnd: findWhiteSpaceEnd$1,
+    findWhiteSpaceEnd: findWhiteSpaceEnd$1
   };
 
   var constants$2 = _const;
@@ -4691,12 +4691,12 @@
           idx: index,
           type: NAME$2[type],
           chunk: this.source.substring(start, end),
-          balance: this.balance[index],
+          balance: this.balance[index]
         };
       });
 
       return tokens;
-    },
+    }
   };
 
   var TokenStream_1 = TokenStream$4;
@@ -4903,7 +4903,7 @@
       mismatchOffset,
       mismatchLength,
       start,
-      end,
+      end
     };
   }
 
@@ -4921,7 +4921,7 @@
     const loc = {
       offset,
       line,
-      column,
+      column
     };
 
     if (extra) {
@@ -4976,7 +4976,7 @@
     error.loc = {
       source: (node && node.loc && node.loc.source) || '<unknown>',
       start,
-      end,
+      end
     };
 
     return error;
@@ -4984,7 +4984,7 @@
 
   var error = {
     SyntaxReferenceError: SyntaxReferenceError$1,
-    SyntaxMatchError: SyntaxMatchError$1,
+    SyntaxMatchError: SyntaxMatchError$1
   };
 
   var hasOwnProperty$7 = Object.prototype.hasOwnProperty;
@@ -5043,7 +5043,7 @@
       name: name,
       vendor: vendor,
       prefix: vendor,
-      custom: custom,
+      custom: custom
     }));
   }
 
@@ -5087,7 +5087,7 @@
       hack: hack,
       vendor: vendor,
       prefix: prefix,
-      custom: custom,
+      custom: custom
     }));
   }
 
@@ -5095,7 +5095,7 @@
     keyword: getKeywordDescriptor,
     property: getPropertyDescriptor,
     isCustomProperty: isCustomProperty$1,
-    vendorPrefix: getVendorPrefix,
+    vendorPrefix: getVendorPrefix
   };
 
   var MIN_SIZE = 16 * 1024;
@@ -6212,24 +6212,24 @@
     vw: true,
     vmin: true,
     vmax: true,
-    vm: true,
+    vm: true
   };
 
   var ANGLE = {
     deg: true,
     grad: true,
     rad: true,
-    turn: true,
+    turn: true
   };
 
   var TIME = {
     s: true,
-    ms: true,
+    ms: true
   };
 
   var FREQUENCY = {
     hz: true,
-    khz: true,
+    khz: true
   };
 
   // https://www.w3.org/TR/css-values-3/#resolution (https://drafts.csswg.org/css-values/#resolution)
@@ -6237,22 +6237,22 @@
     dpi: true,
     dpcm: true,
     dppx: true,
-    x: true, // https://github.com/w3c/csswg-drafts/issues/461
+    x: true // https://github.com/w3c/csswg-drafts/issues/461
   };
 
   // https://drafts.csswg.org/css-grid/#fr-unit
   var FLEX = {
-    fr: true,
+    fr: true
   };
 
   // https://www.w3.org/TR/css3-speech/#mixing-props-voice-volume
   var DECIBEL = {
-    db: true,
+    db: true
   };
 
   // https://www.w3.org/TR/css3-speech/#voice-props-voice-pitch
   var SEMITONES = {
-    st: true,
+    st: true
   };
 
   // safe char code getter
@@ -6779,7 +6779,7 @@
     integer: calc(integer),
 
     // old IE stuff
-    '-ms-legacy-expression': func('expression'),
+    '-ms-legacy-expression': func('expression')
   };
 
   var createCustomError = createCustomError$3;
@@ -6860,7 +6860,7 @@
     },
     error: function (message) {
       throw new SyntaxError$3(message, this.str, this.pos);
-    },
+    }
   };
 
   var tokenizer$1 = Tokenizer$1;
@@ -6898,7 +6898,7 @@
     ' ': 1,
     '&&': 2,
     '||': 3,
-    '|': 4,
+    '|': 4
   };
 
   function createCharMap(fn) {
@@ -6980,7 +6980,7 @@
 
     return {
       min: Number(min),
-      max: max ? Number(max) : 0,
+      max: max ? Number(max) : 0
     };
   }
 
@@ -6994,7 +6994,7 @@
 
         range = {
           min: 0,
-          max: 0,
+          max: 0
         };
 
         break;
@@ -7004,7 +7004,7 @@
 
         range = {
           min: 1,
-          max: 0,
+          max: 0
         };
 
         break;
@@ -7014,7 +7014,7 @@
 
         range = {
           min: 0,
-          max: 1,
+          max: 1
         };
 
         break;
@@ -7029,7 +7029,7 @@
         } else {
           range = {
             min: 1,
-            max: 0,
+            max: 0
           };
         }
 
@@ -7048,7 +7048,7 @@
       comma: comma,
       min: range.min,
       max: range.max,
-      term: null,
+      term: null
     };
   }
 
@@ -7072,7 +7072,7 @@
 
     return {
       type: 'Token',
-      value: ch,
+      value: ch
     };
   }
 
@@ -7089,7 +7089,7 @@
 
     return maybeMultiplied(tokenizer, {
       type: 'Property',
-      name: name,
+      name: name
     });
   }
 
@@ -7147,7 +7147,7 @@
     return {
       type: 'Range',
       min: min,
-      max: max,
+      max: max
     };
   }
 
@@ -7179,7 +7179,7 @@
     return maybeMultiplied(tokenizer, {
       type: 'Type',
       name: name,
-      opts: opts,
+      opts: opts
     });
   }
 
@@ -7193,13 +7193,13 @@
 
       return {
         type: 'Function',
-        name: name,
+        name: name
       };
     }
 
     return maybeMultiplied(tokenizer, {
       type: 'Keyword',
-      name: name,
+      name: name
     });
   }
 
@@ -7210,7 +7210,7 @@
         terms: terms,
         combinator: combinator,
         disallowEmpty: false,
-        explicit: false,
+        explicit: false
       };
     }
 
@@ -7276,7 +7276,7 @@
           combinators[' '] = true; // a b
           terms.push({
             type: 'Combinator',
-            value: ' ',
+            value: ' '
           });
         }
 
@@ -7297,7 +7297,7 @@
       terms: terms,
       combinator: regroupTerms(terms, combinators) || ' ',
       disallowEmpty: false,
-      explicit: false,
+      explicit: false
     };
   }
 
@@ -7345,7 +7345,7 @@
             tokenizer.nextCharCode() === VERTICALLINE$3 ?
               tokenizer.pos + 2
             : tokenizer.pos + 1
-          ),
+          )
         };
 
       case AMPERSAND$1:
@@ -7354,19 +7354,19 @@
 
         return {
           type: 'Combinator',
-          value: '&&',
+          value: '&&'
         };
 
       case COMMA$4:
         tokenizer.pos++;
         return {
-          type: 'Comma',
+          type: 'Comma'
         };
 
       case APOSTROPHE:
         return maybeMultiplied(tokenizer, {
           type: 'String',
-          value: scanString(tokenizer),
+          value: scanString(tokenizer)
         });
 
       case SPACE$1:
@@ -7376,7 +7376,7 @@
       case F$1:
         return {
           type: 'Spaces',
-          value: scanSpaces(tokenizer),
+          value: scanSpaces(tokenizer)
         };
 
       case COMMERCIALAT:
@@ -7386,7 +7386,7 @@
           tokenizer.pos++;
           return {
             type: 'AtKeyword',
-            name: scanWord(tokenizer),
+            name: scanWord(tokenizer)
           };
         }
 
@@ -7516,7 +7516,7 @@
           if (prev.node !== curNode) {
             nodes.push({
               len: chunk.length,
-              node: curNode,
+              node: curNode
             });
           } else {
             prev.len += chunk.length;
@@ -7524,9 +7524,9 @@
         },
         result: function () {
           return prepareTokens$1(buffer, nodes);
-        },
+        }
       };
-    },
+    }
   };
 
   function prepareTokens$1(str, nodes) {
@@ -7553,7 +7553,7 @@
         value: tokenStream.getTokenValue(),
         index: tokenStream.tokenIndex, // TODO: remove it, temporary solution
         balance: tokenStream.balance[tokenStream.tokenIndex], // TODO: remove it, temporary solution
-        node: currentNode,
+        node: currentNode
       });
       tokenStream.next();
       // console.log({ ...tokens[tokens.length - 1], node: undefined });
@@ -7601,7 +7601,7 @@
       type: 'If',
       match: match,
       then: thenBranch,
-      else: elseBranch,
+      else: elseBranch
     };
   }
 
@@ -7671,7 +7671,7 @@
               result = createCondition(
                 {
                   type: 'Enum',
-                  map: map,
+                  map: map
                 },
                 MATCH$1,
                 result
@@ -7707,7 +7707,7 @@
           return {
             type: 'MatchOnce',
             terms: terms,
-            all: true,
+            all: true
           };
         }
 
@@ -7766,7 +7766,7 @@
           return {
             type: 'MatchOnce',
             terms: terms,
-            all: false,
+            all: false
           };
         }
 
@@ -7890,7 +7890,7 @@
     if (typeof node === 'function') {
       return {
         type: 'Generic',
-        fn: node,
+        fn: node
       };
     }
 
@@ -7916,28 +7916,28 @@
         return {
           type: node.type,
           name: node.name,
-          syntax: node,
+          syntax: node
         };
 
       case 'Keyword':
         return {
           type: node.type,
           name: node.name.toLowerCase(),
-          syntax: node,
+          syntax: node
         };
 
       case 'AtKeyword':
         return {
           type: node.type,
           name: '@' + node.name.toLowerCase(),
-          syntax: node,
+          syntax: node
         };
 
       case 'Function':
         return {
           type: node.type,
           name: node.name.toLowerCase() + '(',
-          syntax: node,
+          syntax: node
         };
 
       case 'String':
@@ -7946,7 +7946,7 @@
           return {
             type: 'Token',
             value: node.value.charAt(1),
-            syntax: node,
+            syntax: node
           };
         }
 
@@ -7956,20 +7956,20 @@
           value: node.value
             .substr(1, node.value.length - 2)
             .replace(/\\'/g, "'"),
-          syntax: node,
+          syntax: node
         };
 
       case 'Token':
         return {
           type: node.type,
           value: node.value,
-          syntax: node,
+          syntax: node
         };
 
       case 'Comma':
         return {
           type: node.type,
-          syntax: node,
+          syntax: node
         };
 
       default:
@@ -7990,9 +7990,9 @@
         type: 'MatchGraph',
         match: buildMatchGraph$1(syntaxTree),
         syntax: ref || null,
-        source: syntaxTree,
+        source: syntaxTree
       };
-    },
+    }
   };
 
   var hasOwnProperty$6 = Object.prototype.hasOwnProperty;
@@ -8114,7 +8114,7 @@
         syntaxStack: syntaxStack,
         thenStack: thenStack,
         tokenIndex: tokenIndex,
-        prev: prev,
+        prev: prev
       };
     }
 
@@ -8123,7 +8123,7 @@
         nextState: nextState,
         matchStack: matchStack,
         syntaxStack: syntaxStack,
-        prev: thenStack,
+        prev: thenStack
       };
     }
 
@@ -8136,7 +8136,7 @@
         type: TOKEN,
         syntax: state.syntax,
         token: token,
-        prev: matchStack,
+        prev: matchStack
       };
 
       moveToNextToken();
@@ -8154,14 +8154,14 @@
           state.syntax.opts ||
           (syntaxStack !== null && syntaxStack.opts) ||
           null,
-        prev: syntaxStack,
+        prev: syntaxStack
       };
 
       matchStack = {
         type: OPEN_SYNTAX,
         syntax: state.syntax,
         token: matchStack.token,
-        prev: matchStack,
+        prev: matchStack
       };
     }
 
@@ -8173,7 +8173,7 @@
           type: CLOSE_SYNTAX,
           syntax: syntaxStack.syntax,
           token: matchStack.token,
-          prev: matchStack,
+          prev: matchStack
         };
       }
 
@@ -8199,7 +8199,7 @@
       type: STUB,
       syntax: null,
       token: null,
-      prev: null,
+      prev: null
     };
 
     moveToNextToken();
@@ -8317,7 +8317,7 @@
             type: 'MatchOnceBuffer',
             syntax: state,
             index: 0,
-            mask: 0,
+            mask: 0
           };
           break;
 
@@ -8352,7 +8352,7 @@
               pushThenStack({
                 type: 'AddMatchOnce',
                 syntax: state.syntax,
-                mask: state.mask | matchFlag,
+                mask: state.mask | matchFlag
               });
 
               // match
@@ -8367,7 +8367,7 @@
             type: 'MatchOnceBuffer',
             syntax: state.syntax,
             index: 0,
-            mask: state.mask,
+            mask: state.mask
           };
           break;
 
@@ -8573,7 +8573,7 @@
       reason: exitReason,
       iterations: iterationCount,
       match: matchStack,
-      longestMatch: longestMatch,
+      longestMatch: longestMatch
     };
   }
 
@@ -8594,14 +8594,14 @@
           case CLOSE_SYNTAX:
             matchResult.match.push({
               type: item.type,
-              syntax: item.syntax,
+              syntax: item.syntax
             });
             break;
 
           default:
             matchResult.match.push({
               token: item.token.value,
-              node: item.token.node,
+              node: item.token.node
             });
             break;
         }
@@ -8623,7 +8623,7 @@
     var item = matchResult.match;
     var host = (matchResult.match = {
       syntax: matchGraph.syntax || null,
-      match: [],
+      match: []
     });
     var hostStack = [host];
 
@@ -8637,7 +8637,7 @@
           host.match.push(
             (host = {
               syntax: item.syntax,
-              match: [],
+              match: []
             })
           );
           hostStack.push(host);
@@ -8652,7 +8652,7 @@
           host.match.push({
             syntax: item.syntax || null,
             token: item.token.value,
-            node: item.token.node,
+            node: item.token.node
           });
       }
 
@@ -8667,7 +8667,7 @@
     matchAsTree: matchAsTree$1,
     getTotalIterationCount: function () {
       return totalIterationCount;
-    },
+    }
   };
 
   function getTrace(node) {
@@ -8745,7 +8745,7 @@
     getTrace: getTrace,
     isType: isType,
     isProperty: isProperty,
-    isKeyword: isKeyword,
+    isKeyword: isKeyword
   };
 
   var List$5 = List_1;
@@ -8792,7 +8792,7 @@
 
             fragments.push({
               parent: list,
-              nodes: nodes,
+              nodes: nodes
             });
           }
         });
@@ -8813,7 +8813,7 @@
   }
 
   var search$1 = {
-    matchFragments: matchFragments,
+    matchFragments: matchFragments
   };
 
   var List$4 = List_1;
@@ -8927,10 +8927,10 @@
     var structure = nodeType.structure;
     var fields = {
       type: String,
-      loc: true,
+      loc: true
     };
     var docs = {
-      type: '"' + name + '"',
+      type: '"' + name + '"'
     };
 
     for (var key in structure) {
@@ -8972,7 +8972,7 @@
 
     return {
       docs: docs,
-      check: createNodeStructureChecker(name, fields),
+      check: createNodeStructureChecker(name, fields)
     };
   }
 
@@ -8999,7 +8999,7 @@
       }
 
       return structure;
-    },
+    }
   };
 
   var SyntaxReferenceError = error.SyntaxReferenceError;
@@ -9047,7 +9047,7 @@
           : generate(atrule.prelude.syntax, { compact })),
         descriptors:
           atrule.descriptors &&
-          dumpMapSyntax(atrule.descriptors, compact, syntaxAsAst),
+          dumpMapSyntax(atrule.descriptors, compact, syntaxAsAst)
       };
     }
 
@@ -9072,7 +9072,7 @@
       getTrace: trace.getTrace,
       isType: trace.isType,
       isProperty: trace.isProperty,
-      isKeyword: trace.isKeyword,
+      isKeyword: trace.isKeyword
     };
   }
 
@@ -9148,7 +9148,7 @@
       function collectWarning(node, message) {
         warns.push({
           node: node,
-          message: message,
+          message: message
         });
       }
 
@@ -9169,14 +9169,14 @@
     createDescriptor: function (syntax, type, name, parent = null) {
       var ref = {
         type: type,
-        name: name,
+        name: name
       };
       var descriptor = {
         type: type,
         name: name,
         parent: parent,
         syntax: null,
-        match: null,
+        match: null
       };
 
       if (typeof syntax === 'function') {
@@ -9187,11 +9187,11 @@
           Object.defineProperty(descriptor, 'syntax', {
             get: function () {
               Object.defineProperty(descriptor, 'syntax', {
-                value: parse(syntax),
+                value: parse(syntax)
               });
 
               return descriptor.syntax;
-            },
+            }
           });
         } else {
           descriptor.syntax = syntax;
@@ -9201,11 +9201,11 @@
         Object.defineProperty(descriptor, 'match', {
           get: function () {
             Object.defineProperty(descriptor, 'match', {
-              value: buildMatchGraph(descriptor.syntax, ref),
+              value: buildMatchGraph(descriptor.syntax, ref)
             });
 
             return descriptor.match;
-          },
+          }
         });
       }
 
@@ -9234,7 +9234,7 @@
               );
               return res;
             }, {})
-          : null,
+          : null
       };
     },
     addProperty_: function (name, syntax) {
@@ -9427,7 +9427,7 @@
             result,
             this.findDeclarationValueFragments(declaration, type, name)
           );
-        }.bind(this),
+        }.bind(this)
       });
 
       return result;
@@ -9519,7 +9519,7 @@
       if (brokenTypes.length || brokenProperties.length) {
         return {
           types: brokenTypes,
-          properties: brokenProperties,
+          properties: brokenProperties
         };
       }
 
@@ -9530,12 +9530,12 @@
         generic: this.generic,
         types: dumpMapSyntax(this.types, !pretty, syntaxAsAst),
         properties: dumpMapSyntax(this.properties, !pretty, syntaxAsAst),
-        atrules: dumpAtruleMapSyntax(this.atrules, !pretty, syntaxAsAst),
+        atrules: dumpAtruleMapSyntax(this.atrules, !pretty, syntaxAsAst)
       };
     },
     toString: function () {
       return JSON.stringify(this.dump());
-    },
+    }
   };
 
   var Lexer_1 = Lexer$1;
@@ -9544,7 +9544,7 @@
     SyntaxError: _SyntaxError,
     parse: parse_1,
     generate: generate_1,
-    walk: walk$1,
+    walk: walk$1
   };
 
   var adoptBuffer = adoptBuffer$2;
@@ -9620,7 +9620,7 @@
         source: filename,
         offset: this.startOffset + offset,
         line: this.lines[offset],
-        column: this.columns[offset],
+        column: this.columns[offset]
       };
     },
     getLocationRange: function (start, end, filename) {
@@ -9631,15 +9631,15 @@
         start: {
           offset: this.startOffset + start,
           line: this.lines[start],
-          column: this.columns[start],
+          column: this.columns[start]
         },
         end: {
           offset: this.startOffset + end,
           line: this.lines[end],
-          column: this.columns[end],
-        },
+          column: this.columns[end]
+        }
       };
-    },
+    }
   };
 
   var OffsetToLocation_1 = OffsetToLocation$1;
@@ -9655,7 +9655,7 @@
       recognizer: recognizer,
       space: null,
       ignoreWS: false,
-      ignoreWSAfter: false,
+      ignoreWSAfter: false
     };
 
     this.scanner.skipSC();
@@ -9733,7 +9733,7 @@
       context: {},
       scope: {},
       atrule: {},
-      pseudo: {},
+      pseudo: {}
     };
 
     if (config.parseContext) {
@@ -9962,7 +9962,7 @@
           location.line,
           location.column
         );
-      },
+      }
     };
 
     config = processConfig(config || {});
@@ -10297,7 +10297,7 @@
         auth: match[2],
         host: match[3],
         port: match[4],
-        path: match[5],
+        path: match[5]
       };
     }
     exports.urlParse = urlParse;
@@ -11021,14 +11021,14 @@
       var sourceRoot = aSourceMapConsumer.sourceRoot;
       var generator = new SourceMapGenerator$1({
         file: aSourceMapConsumer.file,
-        sourceRoot: sourceRoot,
+        sourceRoot: sourceRoot
       });
       aSourceMapConsumer.eachMapping(function (mapping) {
         var newMapping = {
           generated: {
             line: mapping.generatedLine,
-            column: mapping.generatedColumn,
-          },
+            column: mapping.generatedColumn
+          }
         };
 
         if (mapping.source != null) {
@@ -11039,7 +11039,7 @@
 
           newMapping.original = {
             line: mapping.originalLine,
-            column: mapping.originalColumn,
+            column: mapping.originalColumn
           };
 
           if (mapping.name != null) {
@@ -11108,7 +11108,7 @@
         originalLine: original != null && original.line,
         originalColumn: original != null && original.column,
         source: source,
-        name: name,
+        name: name
       });
     };
 
@@ -11188,7 +11188,7 @@
           // Check if it can be mapped by the source map, then update the mapping.
           var original = aSourceMapConsumer.originalPositionFor({
             line: mapping.originalLine,
-            column: mapping.originalColumn,
+            column: mapping.originalColumn
           });
           if (original.source != null) {
             // Copy mapping
@@ -11303,7 +11303,7 @@
               generated: aGenerated,
               source: aSource,
               original: aOriginal,
-              name: aName,
+              name: aName
             })
         );
       }
@@ -11412,7 +11412,7 @@
       version: this._version,
       sources: this._sources.toArray(),
       names: this._names.toArray(),
-      mappings: this._serializeMappings(),
+      mappings: this._serializeMappings()
     };
     if (this._file != null) {
       map.file = this._file;
@@ -11444,7 +11444,7 @@
   var trackNodes = {
     Atrule: true,
     Selector: true,
-    Declaration: true,
+    Declaration: true
   };
 
   var sourceMap$1 = function generateSourceMap(handlers) {
@@ -11453,19 +11453,19 @@
     var column = 0;
     var generated = {
       line: 1,
-      column: 0,
+      column: 0
     };
     var original = {
       line: 0, // should be zero to add first mapping
-      column: 0,
+      column: 0
     };
     var sourceMappingActive = false;
     var activatedGenerated = {
       line: 1,
-      column: 0,
+      column: 0
     };
     var activatedMapping = {
-      generated: activatedGenerated,
+      generated: activatedGenerated
     };
 
     var handlersNode = handlers.node;
@@ -11495,7 +11495,7 @@
           map.addMapping({
             source: node.loc.source,
             original: original,
-            generated: generated,
+            generated: generated
           });
         }
       }
@@ -11531,7 +11531,7 @@
 
       return {
         css: handlersResult(),
-        map: map,
+        map: map
       };
     };
 
@@ -11586,7 +11586,7 @@
         },
         result: function () {
           return buffer;
-        },
+        }
       };
 
       if (options) {
@@ -11615,7 +11615,7 @@
             if (node.children && node.children instanceof List$2 === false) {
               node.children = new List$2().fromArray(node.children);
             }
-          },
+          }
         });
 
         return ast;
@@ -11626,11 +11626,11 @@
             if (node.children && node.children instanceof List$2) {
               node.children = node.children.toArray();
             }
-          },
+          }
         });
 
         return ast;
-      },
+      }
     };
   };
 
@@ -11662,7 +11662,7 @@
       var walker = {
         name: key,
         type: false,
-        nullable: false,
+        nullable: false
       };
 
       if (!Array.isArray(structure[key])) {
@@ -11688,7 +11688,7 @@
     if (walkers.length) {
       return {
         context: nodeType.walkContext,
-        fields: walkers,
+        fields: walkers
       };
     }
 
@@ -11764,21 +11764,21 @@
         StyleSheet: iterators.StyleSheet,
         Atrule: iterators.Atrule,
         Rule: iterators.Rule,
-        Block: iterators.Block,
+        Block: iterators.Block
       },
       Rule: {
         StyleSheet: iterators.StyleSheet,
         Atrule: iterators.Atrule,
         Rule: iterators.Rule,
-        Block: iterators.Block,
+        Block: iterators.Block
       },
       Declaration: {
         StyleSheet: iterators.StyleSheet,
         Atrule: iterators.Atrule,
         Rule: iterators.Rule,
         Block: iterators.Block,
-        DeclarationList: iterators.DeclarationList,
-      },
+        DeclarationList: iterators.DeclarationList
+      }
     };
   }
 
@@ -11842,7 +11842,7 @@
         selector: null,
         block: null,
         declaration: null,
-        function: null,
+        function: null
       };
 
       if (typeof options === 'function') {
@@ -11911,7 +11911,7 @@
             found = node;
             return breakWalk;
           }
-        },
+        }
       });
 
       return found;
@@ -11960,14 +11960,14 @@
     types: appendOrAssign,
     atrules: {
       prelude: appendOrAssignOrNull,
-      descriptors: appendOrAssignOrNull,
+      descriptors: appendOrAssignOrNull
     },
     properties: appendOrAssign,
     parseContext: assign,
     scope: deepAssign,
     atrule: ['parse'],
     pseudo: ['parse'],
-    node: ['name', 'structure', 'parse', 'generate', 'walkContext'],
+    node: ['name', 'structure', 'parse', 'generate', 'walkContext']
   };
 
   function isObject$2(value) {
@@ -12156,7 +12156,7 @@
             extension(base, Object.assign)
           : mix(base, extension)
         );
-      },
+      }
     };
 
     syntax.lexer = new Lexer(
@@ -12165,7 +12165,7 @@
         types: config.types,
         atrules: config.atrules,
         properties: config.properties,
-        node: config.node,
+        node: config.node
       },
       syntax
     );
@@ -12181,7 +12181,7 @@
       syntax: '@charset "<charset>";',
       groups: ['CSS Charsets'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@charset',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@charset'
     },
     '@counter-style': {
       syntax:
@@ -12196,7 +12196,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'orderOfAppearance',
-          status: 'standard',
+          status: 'standard'
         },
         fallback: {
           syntax: '<counter-style-name>',
@@ -12205,7 +12205,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         negative: {
           syntax: '<symbol> <symbol>?',
@@ -12214,7 +12214,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'orderOfAppearance',
-          status: 'standard',
+          status: 'standard'
         },
         pad: {
           syntax: '<integer> && <symbol>',
@@ -12223,7 +12223,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         prefix: {
           syntax: '<symbol>',
@@ -12232,7 +12232,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         range: {
           syntax: '[ [ <integer> | infinite ]{2} ]# | auto',
@@ -12241,7 +12241,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'orderOfAppearance',
-          status: 'standard',
+          status: 'standard'
         },
         'speak-as': {
           syntax:
@@ -12251,7 +12251,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         suffix: {
           syntax: '<symbol>',
@@ -12260,7 +12260,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         symbols: {
           syntax: '<symbol>+',
@@ -12269,7 +12269,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'orderOfAppearance',
-          status: 'standard',
+          status: 'standard'
         },
         system: {
           syntax:
@@ -12279,11 +12279,11 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'standard',
-        },
+          status: 'standard'
+        }
       },
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@counter-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@counter-style'
     },
     '@document': {
       syntax:
@@ -12291,7 +12291,7 @@
       interfaces: ['CSSGroupingRule', 'CSSConditionRule'],
       groups: ['CSS Conditional Rules'],
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@document',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@document'
     },
     '@font-face': {
       syntax:
@@ -12306,7 +12306,7 @@
           initial: 'auto',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'experimental',
+          status: 'experimental'
         },
         'font-family': {
           syntax: '<family-name>',
@@ -12315,7 +12315,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         'font-feature-settings': {
           syntax: 'normal | <feature-tag-value>#',
@@ -12324,7 +12324,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'orderOfAppearance',
-          status: 'standard',
+          status: 'standard'
         },
         'font-variation-settings': {
           syntax: 'normal | [ <string> <number> ]#',
@@ -12333,7 +12333,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'orderOfAppearance',
-          status: 'standard',
+          status: 'standard'
         },
         'font-stretch': {
           syntax: '<font-stretch-absolute>{1,2}',
@@ -12342,7 +12342,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         'font-style': {
           syntax: 'normal | italic | oblique <angle>{0,2}',
@@ -12351,7 +12351,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         'font-weight': {
           syntax: '<font-weight-absolute>{1,2}',
@@ -12360,7 +12360,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         'font-variant': {
           syntax:
@@ -12370,7 +12370,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'orderOfAppearance',
-          status: 'standard',
+          status: 'standard'
         },
         src: {
           syntax:
@@ -12380,7 +12380,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'orderOfAppearance',
-          status: 'standard',
+          status: 'standard'
         },
         'unicode-range': {
           syntax: '<unicode-range>#',
@@ -12389,11 +12389,11 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'orderOfAppearance',
-          status: 'standard',
-        },
+          status: 'standard'
+        }
       },
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@font-face',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@font-face'
     },
     '@font-feature-values': {
       syntax:
@@ -12401,21 +12401,20 @@
       interfaces: ['CSSFontFeatureValuesRule'],
       groups: ['CSS Fonts'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/@font-feature-values',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@font-feature-values'
     },
     '@import': {
       syntax: '@import [ <string> | <url> ] [ <media-query-list> ]?;',
       groups: ['Media Queries'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@import',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@import'
     },
     '@keyframes': {
       syntax: '@keyframes <keyframes-name> {\n  <keyframe-block-list>\n}',
       interfaces: ['CSSKeyframeRule', 'CSSKeyframesRule'],
       groups: ['CSS Animations'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@keyframes',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@keyframes'
     },
     '@media': {
       syntax: '@media <media-query-list> {\n  <group-rule-body>\n}',
@@ -12423,17 +12422,17 @@
         'CSSGroupingRule',
         'CSSConditionRule',
         'CSSMediaRule',
-        'CSSCustomMediaRule',
+        'CSSCustomMediaRule'
       ],
       groups: ['CSS Conditional Rules', 'Media Queries'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@media',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@media'
     },
     '@namespace': {
       syntax: '@namespace <namespace-prefix>? [ <string> | <url> ];',
       groups: ['CSS Namespaces'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@namespace',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@namespace'
     },
     '@page': {
       syntax: '@page <page-selector-list> {\n  <page-body>\n}',
@@ -12447,7 +12446,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         marks: {
           syntax: 'none | [ crop || cross ]',
@@ -12456,7 +12455,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'orderOfAppearance',
-          status: 'standard',
+          status: 'standard'
         },
         size: {
           syntax:
@@ -12466,11 +12465,11 @@
           percentages: 'no',
           computed: 'asSpecifiedRelativeToAbsoluteLengths',
           order: 'orderOfAppearance',
-          status: 'standard',
-        },
+          status: 'standard'
+        }
       },
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@page',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@page'
     },
     '@property': {
       syntax: '@property <custom-property-name> {\n  <declaration-list>\n}',
@@ -12484,7 +12483,7 @@
           initial: 'n/a (required)',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'experimental',
+          status: 'experimental'
         },
         inherits: {
           syntax: 'true | false',
@@ -12493,7 +12492,7 @@
           initial: 'auto',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'experimental',
+          status: 'experimental'
         },
         'initial-value': {
           syntax: '<string>',
@@ -12502,18 +12501,18 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'experimental',
-        },
+          status: 'experimental'
+        }
       },
       status: 'experimental',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@property',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@property'
     },
     '@supports': {
       syntax: '@supports <supports-condition> {\n  <group-rule-body>\n}',
       interfaces: ['CSSGroupingRule', 'CSSConditionRule', 'CSSSupportsRule'],
       groups: ['CSS Conditional Rules'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@supports',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@supports'
     },
     '@viewport': {
       syntax: '@viewport {\n  <group-rule-body>\n}',
@@ -12527,7 +12526,7 @@
           percentages: ['min-height', 'max-height'],
           computed: ['min-height', 'max-height'],
           order: 'orderOfAppearance',
-          status: 'standard',
+          status: 'standard'
         },
         'max-height': {
           syntax: '<viewport-length>',
@@ -12536,7 +12535,7 @@
           percentages: 'referToHeightOfInitialViewport',
           computed: 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         'max-width': {
           syntax: '<viewport-length>',
@@ -12545,7 +12544,7 @@
           percentages: 'referToWidthOfInitialViewport',
           computed: 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         'max-zoom': {
           syntax: 'auto | <number> | <percentage>',
@@ -12554,7 +12553,7 @@
           percentages: 'the zoom factor itself',
           computed: 'autoNonNegativeOrPercentage',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         'min-height': {
           syntax: '<viewport-length>',
@@ -12563,7 +12562,7 @@
           percentages: 'referToHeightOfInitialViewport',
           computed: 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         'min-width': {
           syntax: '<viewport-length>',
@@ -12572,7 +12571,7 @@
           percentages: 'referToWidthOfInitialViewport',
           computed: 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         'min-zoom': {
           syntax: 'auto | <number> | <percentage>',
@@ -12581,7 +12580,7 @@
           percentages: 'the zoom factor itself',
           computed: 'autoNonNegativeOrPercentage',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         orientation: {
           syntax: 'auto | portrait | landscape',
@@ -12590,7 +12589,7 @@
           percentages: 'referToSizeOfBoundingBox',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         'user-zoom': {
           syntax: 'zoom | fixed',
@@ -12599,7 +12598,7 @@
           percentages: 'referToSizeOfBoundingBox',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         'viewport-fit': {
           syntax: 'auto | contain | cover',
@@ -12608,7 +12607,7 @@
           percentages: 'no',
           computed: 'asSpecified',
           order: 'uniqueOrder',
-          status: 'standard',
+          status: 'standard'
         },
         width: {
           syntax: '<viewport-length>{1,2}',
@@ -12617,7 +12616,7 @@
           percentages: ['min-width', 'max-width'],
           computed: ['min-width', 'max-width'],
           order: 'orderOfAppearance',
-          status: 'standard',
+          status: 'standard'
         },
         zoom: {
           syntax: 'auto | <number> | <percentage>',
@@ -12626,12 +12625,12 @@
           percentages: 'the zoom factor itself',
           computed: 'autoNonNegativeOrPercentage',
           order: 'uniqueOrder',
-          status: 'standard',
-        },
+          status: 'standard'
+        }
       },
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@viewport',
-    },
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@viewport'
+    }
   };
 
   var all = {
@@ -12646,7 +12645,7 @@
     computed: 'asSpecifiedAppliesToEachProperty',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/all',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/all'
   };
   var animation = {
     syntax: '<single-animation>#',
@@ -12663,7 +12662,7 @@
       'animation-iteration-count',
       'animation-direction',
       'animation-fill-mode',
-      'animation-play-state',
+      'animation-play-state'
     ],
     appliesto: 'allElementsAndPseudos',
     computed: [
@@ -12674,11 +12673,11 @@
       'animation-direction',
       'animation-iteration-count',
       'animation-fill-mode',
-      'animation-play-state',
+      'animation-play-state'
     ],
     order: 'orderOfAppearance',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation'
   };
   var appearance = {
     syntax: 'none | auto | textfield | menulist-button | <compat-auto>',
@@ -12692,7 +12691,7 @@
     computed: 'asSpecified',
     order: 'perGrammar',
     status: 'experimental',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/appearance',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/appearance'
   };
   var azimuth = {
     syntax:
@@ -12707,7 +12706,7 @@
     computed: 'normalizedAngle',
     order: 'orderOfAppearance',
     status: 'obsolete',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/azimuth',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/azimuth'
   };
   var background = {
     syntax: '[ <bg-layer> , ]* <final-bg-layer>',
@@ -12720,7 +12719,7 @@
       'background-position',
       'background-size',
       'background-repeat',
-      'background-attachment',
+      'background-attachment'
     ],
     percentages: ['background-position', 'background-size'],
     groups: ['CSS Backgrounds and Borders'],
@@ -12732,7 +12731,7 @@
       'background-origin',
       'background-clip',
       'background-attachment',
-      'background-color',
+      'background-color'
     ],
     appliesto: 'allElements',
     computed: [
@@ -12743,12 +12742,12 @@
       'background-origin',
       'background-clip',
       'background-attachment',
-      'background-color',
+      'background-color'
     ],
     order: 'orderOfAppearance',
     alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background'
   };
   var border = {
     syntax: '<line-width> || <line-style> || <color>',
@@ -12763,7 +12762,7 @@
     order: 'orderOfAppearance',
     alsoAppliesTo: ['::first-letter'],
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border'
   };
   var bottom = {
     syntax: '<length> | <percentage> | auto',
@@ -12777,7 +12776,7 @@
     computed: 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/bottom',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/bottom'
   };
   var clear = {
     syntax: 'none | left | right | both | inline-start | inline-end',
@@ -12791,7 +12790,7 @@
     computed: 'asSpecified',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/clear',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/clear'
   };
   var clip = {
     syntax: '<shape> | auto',
@@ -12805,7 +12804,7 @@
     computed: 'autoOrRectangle',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/clip',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/clip'
   };
   var color$1 = {
     syntax: '<color>',
@@ -12820,7 +12819,7 @@
     order: 'uniqueOrder',
     alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/color',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/color'
   };
   var columns = {
     syntax: "<'column-width'> || <'column-count'>",
@@ -12834,7 +12833,7 @@
     computed: ['column-width', 'column-count'],
     order: 'perGrammar',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/columns',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/columns'
   };
   var contain = {
     syntax: 'none | strict | content | [ size || layout || style || paint ]',
@@ -12848,7 +12847,7 @@
     computed: 'asSpecified',
     order: 'perGrammar',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/contain',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/contain'
   };
   var content = {
     syntax:
@@ -12863,7 +12862,7 @@
     computed: 'normalOnElementsForPseudosNoneAbsoluteURIStringOrAsSpecified',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/content',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/content'
   };
   var cursor = {
     syntax:
@@ -12878,7 +12877,7 @@
     computed: 'asSpecifiedURLsAbsolute',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/cursor',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/cursor'
   };
   var direction = {
     syntax: 'ltr | rtl',
@@ -12892,7 +12891,7 @@
     computed: 'asSpecified',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/direction',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/direction'
   };
   var display = {
     syntax:
@@ -12908,7 +12907,7 @@
       'asSpecifiedExceptPositionedFloatingAndRootElementsKeywordMaybeDifferent',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/display',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/display'
   };
   var filter = {
     syntax: 'none | <filter-function-list>',
@@ -12922,7 +12921,7 @@
     computed: 'asSpecified',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/filter',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/filter'
   };
   var flex = {
     syntax: "none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]",
@@ -12936,7 +12935,7 @@
     computed: ['flex-grow', 'flex-shrink', 'flex-basis'],
     order: 'orderOfAppearance',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/flex',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/flex'
   };
   var float = {
     syntax: 'left | right | none | inline-start | inline-end',
@@ -12950,7 +12949,7 @@
     computed: 'asSpecified',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/float',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/float'
   };
   var font = {
     syntax:
@@ -12964,7 +12963,7 @@
       'font-stretch',
       'font-size',
       'line-height',
-      'font-family',
+      'font-family'
     ],
     percentages: ['font-size', 'line-height'],
     groups: ['CSS Fonts'],
@@ -12975,7 +12974,7 @@
       'font-stretch',
       'font-size',
       'line-height',
-      'font-family',
+      'font-family'
     ],
     appliesto: 'allElements',
     computed: [
@@ -12985,12 +12984,12 @@
       'font-stretch',
       'font-size',
       'line-height',
-      'font-family',
+      'font-family'
     ],
     order: 'orderOfAppearance',
     alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font'
   };
   var gap = {
     syntax: "<'row-gap'> <'column-gap'>?",
@@ -13004,7 +13003,7 @@
     computed: ['row-gap', 'column-gap'],
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/gap',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/gap'
   };
   var grid = {
     syntax:
@@ -13016,7 +13015,7 @@
       'grid-template-rows',
       'grid-template-columns',
       'grid-auto-rows',
-      'grid-auto-columns',
+      'grid-auto-columns'
     ],
     groups: ['CSS Grid Layout'],
     initial: [
@@ -13029,7 +13028,7 @@
       'grid-column-gap',
       'grid-row-gap',
       'column-gap',
-      'row-gap',
+      'row-gap'
     ],
     appliesto: 'gridContainers',
     computed: [
@@ -13042,11 +13041,11 @@
       'grid-column-gap',
       'grid-row-gap',
       'column-gap',
-      'row-gap',
+      'row-gap'
     ],
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid'
   };
   var height = {
     syntax:
@@ -13062,7 +13061,7 @@
     computed: 'percentageAutoOrAbsoluteLength',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/height',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/height'
   };
   var hyphens = {
     syntax: 'none | manual | auto',
@@ -13076,7 +13075,7 @@
     computed: 'asSpecified',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/hyphens',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/hyphens'
   };
   var inset = {
     syntax: "<'top'>{1,4}",
@@ -13090,7 +13089,7 @@
     computed: 'sameAsBoxOffsets',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inset',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inset'
   };
   var isolation = {
     syntax: 'auto | isolate',
@@ -13104,7 +13103,7 @@
     computed: 'asSpecified',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/isolation',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/isolation'
   };
   var left = {
     syntax: '<length> | <percentage> | auto',
@@ -13118,7 +13117,7 @@
     computed: 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/left',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/left'
   };
   var margin = {
     syntax: '[ <length> | <percentage> | auto ]{1,4}',
@@ -13133,7 +13132,7 @@
     order: 'uniqueOrder',
     alsoAppliesTo: ['::first-letter', '::first-line'],
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin'
   };
   var mask = {
     syntax: '<mask-layer>#',
@@ -13147,7 +13146,7 @@
       'mask-clip',
       'mask-origin',
       'mask-size',
-      'mask-composite',
+      'mask-composite'
     ],
     percentages: ['mask-position'],
     groups: ['CSS Masking'],
@@ -13159,7 +13158,7 @@
       'mask-clip',
       'mask-origin',
       'mask-size',
-      'mask-composite',
+      'mask-composite'
     ],
     appliesto: 'allElementsSVGContainerElements',
     computed: [
@@ -13170,12 +13169,12 @@
       'mask-clip',
       'mask-origin',
       'mask-size',
-      'mask-composite',
+      'mask-composite'
     ],
     order: 'perGrammar',
     stacking: true,
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask'
   };
   var offset = {
     syntax:
@@ -13187,7 +13186,7 @@
       'offset-path',
       'offset-distance',
       'offset-anchor',
-      'offset-rotate',
+      'offset-rotate'
     ],
     percentages: ['offset-position', 'offset-distance', 'offset-anchor'],
     groups: ['CSS Motion Path'],
@@ -13196,7 +13195,7 @@
       'offset-path',
       'offset-distance',
       'offset-anchor',
-      'offset-rotate',
+      'offset-rotate'
     ],
     appliesto: 'transformableElements',
     computed: [
@@ -13204,12 +13203,12 @@
       'offset-path',
       'offset-distance',
       'offset-anchor',
-      'offset-rotate',
+      'offset-rotate'
     ],
     order: 'perGrammar',
     stacking: true,
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/offset',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/offset'
   };
   var opacity = {
     syntax: '<alpha-value>',
@@ -13224,7 +13223,7 @@
     order: 'uniqueOrder',
     alsoAppliesTo: ['::placeholder'],
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/opacity',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/opacity'
   };
   var order = {
     syntax: '<integer>',
@@ -13238,7 +13237,7 @@
     computed: 'asSpecified',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/order',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/order'
   };
   var orphans = {
     syntax: '<integer>',
@@ -13252,7 +13251,7 @@
     computed: 'asSpecified',
     order: 'perGrammar',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/orphans',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/orphans'
   };
   var outline = {
     syntax: "[ <'outline-color'> || <'outline-style'> || <'outline-width'> ]",
@@ -13266,7 +13265,7 @@
     computed: ['outline-color', 'outline-width', 'outline-style'],
     order: 'orderOfAppearance',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/outline',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/outline'
   };
   var overflow = {
     syntax: '[ visible | hidden | clip | scroll | auto ]{1,2}',
@@ -13280,7 +13279,7 @@
     computed: ['overflow-x', 'overflow-y'],
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overflow',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overflow'
   };
   var padding = {
     syntax: '[ <length> | <percentage> ]{1,4}',
@@ -13295,12 +13294,12 @@
       'padding-bottom',
       'padding-left',
       'padding-right',
-      'padding-top',
+      'padding-top'
     ],
     order: 'uniqueOrder',
     alsoAppliesTo: ['::first-letter', '::first-line'],
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding'
   };
   var perspective = {
     syntax: 'none | <length>',
@@ -13315,7 +13314,7 @@
     order: 'uniqueOrder',
     stacking: true,
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/perspective',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/perspective'
   };
   var position$1 = {
     syntax: 'static | relative | absolute | sticky | fixed',
@@ -13330,7 +13329,7 @@
     order: 'uniqueOrder',
     stacking: true,
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/position',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/position'
   };
   var quotes = {
     syntax: 'none | auto | [ <string> <string> ]+',
@@ -13344,7 +13343,7 @@
     computed: 'asSpecified',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/quotes',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/quotes'
   };
   var resize = {
     syntax: 'none | both | horizontal | vertical | block | inline',
@@ -13358,7 +13357,7 @@
     computed: 'asSpecified',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/resize',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/resize'
   };
   var right = {
     syntax: '<length> | <percentage> | auto',
@@ -13372,7 +13371,7 @@
     computed: 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/right',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/right'
   };
   var rotate = {
     syntax: 'none | <angle> | [ x | y | z | <number>{3} ] && <angle>',
@@ -13387,7 +13386,7 @@
     order: 'perGrammar',
     stacking: true,
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/rotate',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/rotate'
   };
   var scale = {
     syntax: 'none | <number>{1,3}',
@@ -13402,7 +13401,7 @@
     order: 'perGrammar',
     stacking: true,
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scale',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scale'
   };
   var top = {
     syntax: '<length> | <percentage> | auto',
@@ -13416,7 +13415,7 @@
     computed: 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/top',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/top'
   };
   var transform = {
     syntax: 'none | <transform-list>',
@@ -13431,7 +13430,7 @@
     order: 'uniqueOrder',
     stacking: true,
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transform',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transform'
   };
   var transition = {
     syntax: '<single-transition>#',
@@ -13444,18 +13443,18 @@
       'transition-delay',
       'transition-duration',
       'transition-property',
-      'transition-timing-function',
+      'transition-timing-function'
     ],
     appliesto: 'allElementsAndPseudos',
     computed: [
       'transition-delay',
       'transition-duration',
       'transition-property',
-      'transition-timing-function',
+      'transition-timing-function'
     ],
     order: 'orderOfAppearance',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transition',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transition'
   };
   var translate = {
     syntax: 'none | <length-percentage> [ <length-percentage> <length>? ]?',
@@ -13470,7 +13469,7 @@
     order: 'perGrammar',
     stacking: true,
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/translate',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/translate'
   };
   var visibility = {
     syntax: 'visible | hidden | collapse',
@@ -13484,7 +13483,7 @@
     computed: 'asSpecified',
     order: 'uniqueOrder',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/visibility',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/visibility'
   };
   var widows = {
     syntax: '<integer>',
@@ -13498,7 +13497,7 @@
     computed: 'asSpecified',
     order: 'perGrammar',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/widows',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/widows'
   };
   var width = {
     syntax:
@@ -13513,7 +13512,7 @@
     computed: 'percentageAutoOrAbsoluteLength',
     order: 'lengthOrPercentageBeforeKeywordIfBothPresent',
     status: 'standard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/width',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/width'
   };
   var zoom = {
     syntax: 'normal | reset | <number> | <percentage>',
@@ -13527,7 +13526,7 @@
     computed: 'asSpecified',
     order: 'uniqueOrder',
     status: 'nonstandard',
-    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/zoom',
+    mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/zoom'
   };
   var require$$1 = {
     '--*': {
@@ -13542,7 +13541,7 @@
       computed: 'asSpecifiedWithVarsSubstituted',
       order: 'perGrammar',
       status: 'experimental',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/--*',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/--*'
     },
     '-ms-accelerator': {
       syntax: 'false | true',
@@ -13556,7 +13555,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-accelerator',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-accelerator'
     },
     '-ms-block-progression': {
       syntax: 'tb | rl | bt | lr',
@@ -13571,7 +13570,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-block-progression',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-block-progression'
     },
     '-ms-content-zoom-chaining': {
       syntax: 'none | chained',
@@ -13586,7 +13585,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-chaining',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-chaining'
     },
     '-ms-content-zooming': {
       syntax: 'none | zoom',
@@ -13600,7 +13599,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zooming',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zooming'
     },
     '-ms-content-zoom-limit': {
       syntax: "<'-ms-content-zoom-limit-min'> <'-ms-content-zoom-limit-max'>",
@@ -13615,7 +13614,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-limit',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-limit'
     },
     '-ms-content-zoom-limit-max': {
       syntax: '<percentage>',
@@ -13630,7 +13629,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-limit-max',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-limit-max'
     },
     '-ms-content-zoom-limit-min': {
       syntax: '<percentage>',
@@ -13645,7 +13644,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-limit-min',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-limit-min'
     },
     '-ms-content-zoom-snap': {
       syntax:
@@ -13661,7 +13660,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-snap',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-snap'
     },
     '-ms-content-zoom-snap-points': {
       syntax:
@@ -13677,7 +13676,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-snap-points',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-snap-points'
     },
     '-ms-content-zoom-snap-type': {
       syntax: 'none | proximity | mandatory',
@@ -13692,7 +13691,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-snap-type',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-snap-type'
     },
     '-ms-filter': {
       syntax: '<string>',
@@ -13706,7 +13705,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-filter',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-filter'
     },
     '-ms-flow-from': {
       syntax: '[ none | <custom-ident> ]#',
@@ -13720,7 +13719,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-flow-from',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-flow-from'
     },
     '-ms-flow-into': {
       syntax: '[ none | <custom-ident> ]#',
@@ -13734,7 +13733,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-flow-into',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-flow-into'
     },
     '-ms-grid-columns': {
       syntax: 'none | <track-list> | <auto-track-list>',
@@ -13748,7 +13747,7 @@
       computed: 'asSpecifiedRelativeToAbsoluteLengths',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-grid-columns',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-grid-columns'
     },
     '-ms-grid-rows': {
       syntax: 'none | <track-list> | <auto-track-list>',
@@ -13762,7 +13761,7 @@
       computed: 'asSpecifiedRelativeToAbsoluteLengths',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-grid-rows',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-grid-rows'
     },
     '-ms-high-contrast-adjust': {
       syntax: 'auto | none',
@@ -13777,7 +13776,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-high-contrast-adjust',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-high-contrast-adjust'
     },
     '-ms-hyphenate-limit-chars': {
       syntax: 'auto | <integer>{1,3}',
@@ -13792,7 +13791,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-hyphenate-limit-chars',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-hyphenate-limit-chars'
     },
     '-ms-hyphenate-limit-lines': {
       syntax: 'no-limit | <integer>',
@@ -13807,7 +13806,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-hyphenate-limit-lines',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-hyphenate-limit-lines'
     },
     '-ms-hyphenate-limit-zone': {
       syntax: '<percentage> | <length>',
@@ -13822,7 +13821,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-hyphenate-limit-zone',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-hyphenate-limit-zone'
     },
     '-ms-ime-align': {
       syntax: 'auto | after',
@@ -13836,7 +13835,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-ime-align',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-ime-align'
     },
     '-ms-overflow-style': {
       syntax: 'auto | none | scrollbar | -ms-autohiding-scrollbar',
@@ -13850,7 +13849,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-overflow-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-overflow-style'
     },
     '-ms-scrollbar-3dlight-color': {
       syntax: '<color>',
@@ -13865,7 +13864,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-3dlight-color',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-3dlight-color'
     },
     '-ms-scrollbar-arrow-color': {
       syntax: '<color>',
@@ -13880,7 +13879,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-arrow-color',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-arrow-color'
     },
     '-ms-scrollbar-base-color': {
       syntax: '<color>',
@@ -13895,7 +13894,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-base-color',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-base-color'
     },
     '-ms-scrollbar-darkshadow-color': {
       syntax: '<color>',
@@ -13910,7 +13909,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-darkshadow-color',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-darkshadow-color'
     },
     '-ms-scrollbar-face-color': {
       syntax: '<color>',
@@ -13925,7 +13924,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-face-color',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-face-color'
     },
     '-ms-scrollbar-highlight-color': {
       syntax: '<color>',
@@ -13940,7 +13939,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-highlight-color',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-highlight-color'
     },
     '-ms-scrollbar-shadow-color': {
       syntax: '<color>',
@@ -13955,7 +13954,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-shadow-color',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-shadow-color'
     },
     '-ms-scrollbar-track-color': {
       syntax: '<color>',
@@ -13970,7 +13969,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-track-color',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-track-color'
     },
     '-ms-scroll-chaining': {
       syntax: 'chained | none',
@@ -13984,7 +13983,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-chaining',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-chaining'
     },
     '-ms-scroll-limit': {
       syntax:
@@ -13998,18 +13997,18 @@
         '-ms-scroll-limit-x-min',
         '-ms-scroll-limit-y-min',
         '-ms-scroll-limit-x-max',
-        '-ms-scroll-limit-y-max',
+        '-ms-scroll-limit-y-max'
       ],
       appliesto: 'nonReplacedBlockAndInlineBlockElements',
       computed: [
         '-ms-scroll-limit-x-min',
         '-ms-scroll-limit-y-min',
         '-ms-scroll-limit-x-max',
-        '-ms-scroll-limit-y-max',
+        '-ms-scroll-limit-y-max'
       ],
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit'
     },
     '-ms-scroll-limit-x-max': {
       syntax: 'auto | <length>',
@@ -14024,7 +14023,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-x-max',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-x-max'
     },
     '-ms-scroll-limit-x-min': {
       syntax: '<length>',
@@ -14039,7 +14038,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-x-min',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-x-min'
     },
     '-ms-scroll-limit-y-max': {
       syntax: 'auto | <length>',
@@ -14054,7 +14053,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-y-max',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-y-max'
     },
     '-ms-scroll-limit-y-min': {
       syntax: '<length>',
@@ -14069,7 +14068,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-y-min',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-y-min'
     },
     '-ms-scroll-rails': {
       syntax: 'none | railed',
@@ -14083,7 +14082,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-rails',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-rails'
     },
     '-ms-scroll-snap-points-x': {
       syntax:
@@ -14099,7 +14098,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-snap-points-x',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-snap-points-x'
     },
     '-ms-scroll-snap-points-y': {
       syntax:
@@ -14115,7 +14114,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-snap-points-y',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-snap-points-y'
     },
     '-ms-scroll-snap-type': {
       syntax: 'none | proximity | mandatory',
@@ -14129,8 +14128,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-snap-type',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-snap-type'
     },
     '-ms-scroll-snap-x': {
       syntax: "<'-ms-scroll-snap-type'> <'-ms-scroll-snap-points-x'>",
@@ -14144,7 +14142,7 @@
       computed: ['-ms-scroll-snap-type', '-ms-scroll-snap-points-x'],
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-snap-x',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-snap-x'
     },
     '-ms-scroll-snap-y': {
       syntax: "<'-ms-scroll-snap-type'> <'-ms-scroll-snap-points-y'>",
@@ -14158,7 +14156,7 @@
       computed: ['-ms-scroll-snap-type', '-ms-scroll-snap-points-y'],
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-snap-y',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-snap-y'
     },
     '-ms-scroll-translation': {
       syntax: 'none | vertical-to-horizontal',
@@ -14173,7 +14171,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-translation',
+        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-translation'
     },
     '-ms-text-autospace': {
       syntax:
@@ -14188,7 +14186,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-text-autospace',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-text-autospace'
     },
     '-ms-touch-select': {
       syntax: 'grippers | none',
@@ -14202,7 +14200,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-touch-select',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-touch-select'
     },
     '-ms-user-select': {
       syntax: 'none | element | text',
@@ -14216,7 +14214,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-user-select',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-user-select'
     },
     '-ms-wrap-flow': {
       syntax: 'auto | both | start | end | maximum | clear',
@@ -14230,7 +14228,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-wrap-flow',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-wrap-flow'
     },
     '-ms-wrap-margin': {
       syntax: '<length>',
@@ -14244,7 +14242,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-wrap-margin',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-wrap-margin'
     },
     '-ms-wrap-through': {
       syntax: 'wrap | none',
@@ -14258,7 +14256,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-wrap-through',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-wrap-through'
     },
     '-moz-appearance': {
       syntax:
@@ -14273,7 +14271,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/appearance',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/appearance'
     },
     '-moz-binding': {
       syntax: '<url> | none',
@@ -14287,7 +14285,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-binding',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-binding'
     },
     '-moz-border-bottom-colors': {
       syntax: '<color>+ | none',
@@ -14302,7 +14300,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-border-bottom-colors',
+        'https://developer.mozilla.org/docs/Web/CSS/-moz-border-bottom-colors'
     },
     '-moz-border-left-colors': {
       syntax: '<color>+ | none',
@@ -14317,7 +14315,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-border-left-colors',
+        'https://developer.mozilla.org/docs/Web/CSS/-moz-border-left-colors'
     },
     '-moz-border-right-colors': {
       syntax: '<color>+ | none',
@@ -14332,7 +14330,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-border-right-colors',
+        'https://developer.mozilla.org/docs/Web/CSS/-moz-border-right-colors'
     },
     '-moz-border-top-colors': {
       syntax: '<color>+ | none',
@@ -14347,7 +14345,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-border-top-colors',
+        'https://developer.mozilla.org/docs/Web/CSS/-moz-border-top-colors'
     },
     '-moz-context-properties': {
       syntax: 'none | [ fill | fill-opacity | stroke | stroke-opacity ]#',
@@ -14362,7 +14360,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-context-properties',
+        'https://developer.mozilla.org/docs/Web/CSS/-moz-context-properties'
     },
     '-moz-float-edge': {
       syntax: 'border-box | content-box | margin-box | padding-box',
@@ -14376,7 +14374,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-float-edge',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-float-edge'
     },
     '-moz-force-broken-image-icon': {
       syntax: '<integer [0,1]>',
@@ -14391,7 +14389,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-force-broken-image-icon',
+        'https://developer.mozilla.org/docs/Web/CSS/-moz-force-broken-image-icon'
     },
     '-moz-image-region': {
       syntax: '<shape> | auto',
@@ -14405,7 +14403,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-image-region',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-image-region'
     },
     '-moz-orient': {
       syntax: 'inline | block | horizontal | vertical',
@@ -14419,7 +14417,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-orient',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-orient'
     },
     '-moz-outline-radius': {
       syntax: '<outline-radius>{1,4} [ / <outline-radius>{1,4} ]?',
@@ -14429,31 +14427,31 @@
         '-moz-outline-radius-topleft',
         '-moz-outline-radius-topright',
         '-moz-outline-radius-bottomright',
-        '-moz-outline-radius-bottomleft',
+        '-moz-outline-radius-bottomleft'
       ],
       percentages: [
         '-moz-outline-radius-topleft',
         '-moz-outline-radius-topright',
         '-moz-outline-radius-bottomright',
-        '-moz-outline-radius-bottomleft',
+        '-moz-outline-radius-bottomleft'
       ],
       groups: ['Mozilla Extensions'],
       initial: [
         '-moz-outline-radius-topleft',
         '-moz-outline-radius-topright',
         '-moz-outline-radius-bottomright',
-        '-moz-outline-radius-bottomleft',
+        '-moz-outline-radius-bottomleft'
       ],
       appliesto: 'allElements',
       computed: [
         '-moz-outline-radius-topleft',
         '-moz-outline-radius-topright',
         '-moz-outline-radius-bottomright',
-        '-moz-outline-radius-bottomleft',
+        '-moz-outline-radius-bottomleft'
       ],
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius'
     },
     '-moz-outline-radius-bottomleft': {
       syntax: '<outline-radius>',
@@ -14468,7 +14466,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-bottomleft',
+        'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-bottomleft'
     },
     '-moz-outline-radius-bottomright': {
       syntax: '<outline-radius>',
@@ -14483,7 +14481,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-bottomright',
+        'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-bottomright'
     },
     '-moz-outline-radius-topleft': {
       syntax: '<outline-radius>',
@@ -14498,7 +14496,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-topleft',
+        'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-topleft'
     },
     '-moz-outline-radius-topright': {
       syntax: '<outline-radius>',
@@ -14513,7 +14511,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-topright',
+        'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-topright'
     },
     '-moz-stack-sizing': {
       syntax: 'ignore | stretch-to-fit',
@@ -14527,7 +14525,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-stack-sizing',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-stack-sizing'
     },
     '-moz-text-blink': {
       syntax: 'none | blink',
@@ -14541,7 +14539,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-text-blink',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-text-blink'
     },
     '-moz-user-focus': {
       syntax:
@@ -14556,7 +14554,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-user-focus',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-user-focus'
     },
     '-moz-user-input': {
       syntax: 'auto | none | enabled | disabled',
@@ -14570,7 +14568,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-user-input',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-user-input'
     },
     '-moz-user-modify': {
       syntax: 'read-only | read-write | write-only',
@@ -14584,7 +14582,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-user-modify',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-user-modify'
     },
     '-moz-window-dragging': {
       syntax: 'drag | no-drag',
@@ -14598,8 +14596,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-window-dragging',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-window-dragging'
     },
     '-moz-window-shadow': {
       syntax: 'default | menu | tooltip | sheet | none',
@@ -14613,7 +14610,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-window-shadow',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-window-shadow'
     },
     '-webkit-appearance': {
       syntax:
@@ -14628,7 +14625,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/appearance',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/appearance'
     },
     '-webkit-border-before': {
       syntax: "<'border-width'> || <'border-style'> || <'color'>",
@@ -14643,7 +14640,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-border-before',
+        'https://developer.mozilla.org/docs/Web/CSS/-webkit-border-before'
     },
     '-webkit-border-before-color': {
       syntax: "<'color'>",
@@ -14656,7 +14653,7 @@
       appliesto: 'allElements',
       computed: 'computedColor',
       order: 'uniqueOrder',
-      status: 'nonstandard',
+      status: 'nonstandard'
     },
     '-webkit-border-before-style': {
       syntax: "<'border-style'>",
@@ -14669,7 +14666,7 @@
       appliesto: 'allElements',
       computed: 'asSpecified',
       order: 'uniqueOrder',
-      status: 'nonstandard',
+      status: 'nonstandard'
     },
     '-webkit-border-before-width': {
       syntax: "<'border-width'>",
@@ -14682,7 +14679,7 @@
       appliesto: 'allElements',
       computed: 'absoluteLengthZeroIfBorderStyleNoneOrHidden',
       order: 'uniqueOrder',
-      status: 'nonstandard',
+      status: 'nonstandard'
     },
     '-webkit-box-reflect': {
       syntax: '[ above | below | right | left ]? <length>? <image>?',
@@ -14696,7 +14693,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-box-reflect',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-box-reflect'
     },
     '-webkit-line-clamp': {
       syntax: 'none | <integer>',
@@ -14710,7 +14707,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-line-clamp',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-line-clamp'
     },
     '-webkit-mask': {
       syntax:
@@ -14726,7 +14723,7 @@
         '-webkit-mask-attachment',
         '-webkit-mask-position',
         '-webkit-mask-origin',
-        '-webkit-mask-clip',
+        '-webkit-mask-clip'
       ],
       appliesto: 'allElements',
       computed: [
@@ -14735,11 +14732,11 @@
         '-webkit-mask-attachment',
         '-webkit-mask-position',
         '-webkit-mask-origin',
-        '-webkit-mask-clip',
+        '-webkit-mask-clip'
       ],
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask'
     },
     '-webkit-mask-attachment': {
       syntax: '<attachment>#',
@@ -14754,7 +14751,7 @@
       order: 'orderOfAppearance',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-attachment',
+        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-attachment'
     },
     '-webkit-mask-clip': {
       syntax: '[ <box> | border | padding | content | text ]#',
@@ -14768,7 +14765,7 @@
       computed: 'asSpecified',
       order: 'orderOfAppearance',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-clip',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-clip'
     },
     '-webkit-mask-composite': {
       syntax: '<composite-style>#',
@@ -14783,7 +14780,7 @@
       order: 'orderOfAppearance',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-composite',
+        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-composite'
     },
     '-webkit-mask-image': {
       syntax: '<mask-reference>#',
@@ -14797,7 +14794,7 @@
       computed: 'absoluteURIOrNone',
       order: 'orderOfAppearance',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-image',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-image'
     },
     '-webkit-mask-origin': {
       syntax: '[ <box> | border | padding | content ]#',
@@ -14811,7 +14808,7 @@
       computed: 'asSpecified',
       order: 'orderOfAppearance',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-origin',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-origin'
     },
     '-webkit-mask-position': {
       syntax: '<position>#',
@@ -14825,7 +14822,7 @@
       computed: 'absoluteLengthOrPercentage',
       order: 'orderOfAppearance',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-position',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-position'
     },
     '-webkit-mask-position-x': {
       syntax: '[ <length-percentage> | left | center | right ]#',
@@ -14840,7 +14837,7 @@
       order: 'orderOfAppearance',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-position-x',
+        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-position-x'
     },
     '-webkit-mask-position-y': {
       syntax: '[ <length-percentage> | top | center | bottom ]#',
@@ -14855,7 +14852,7 @@
       order: 'orderOfAppearance',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-position-y',
+        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-position-y'
     },
     '-webkit-mask-repeat': {
       syntax: '<repeat-style>#',
@@ -14869,7 +14866,7 @@
       computed: 'asSpecified',
       order: 'orderOfAppearance',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-repeat',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-repeat'
     },
     '-webkit-mask-repeat-x': {
       syntax: 'repeat | no-repeat | space | round',
@@ -14884,7 +14881,7 @@
       order: 'orderOfAppearance',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-repeat-x',
+        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-repeat-x'
     },
     '-webkit-mask-repeat-y': {
       syntax: 'repeat | no-repeat | space | round',
@@ -14899,7 +14896,7 @@
       order: 'orderOfAppearance',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-repeat-y',
+        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-repeat-y'
     },
     '-webkit-mask-size': {
       syntax: '<bg-size>#',
@@ -14913,7 +14910,7 @@
       computed: 'asSpecified',
       order: 'orderOfAppearance',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-size',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-size'
     },
     '-webkit-overflow-scrolling': {
       syntax: 'auto | touch',
@@ -14928,7 +14925,7 @@
       order: 'orderOfAppearance',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-overflow-scrolling',
+        'https://developer.mozilla.org/docs/Web/CSS/-webkit-overflow-scrolling'
     },
     '-webkit-tap-highlight-color': {
       syntax: '<color>',
@@ -14943,7 +14940,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-tap-highlight-color',
+        'https://developer.mozilla.org/docs/Web/CSS/-webkit-tap-highlight-color'
     },
     '-webkit-text-fill-color': {
       syntax: '<color>',
@@ -14958,7 +14955,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-text-fill-color',
+        'https://developer.mozilla.org/docs/Web/CSS/-webkit-text-fill-color'
     },
     '-webkit-text-stroke': {
       syntax: '<length> || <color>',
@@ -14972,7 +14969,7 @@
       computed: ['-webkit-text-stroke-width', '-webkit-text-stroke-color'],
       order: 'canonicalOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-text-stroke',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-text-stroke'
     },
     '-webkit-text-stroke-color': {
       syntax: '<color>',
@@ -14987,7 +14984,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-text-stroke-color',
+        'https://developer.mozilla.org/docs/Web/CSS/-webkit-text-stroke-color'
     },
     '-webkit-text-stroke-width': {
       syntax: '<length>',
@@ -15002,7 +14999,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-text-stroke-width',
+        'https://developer.mozilla.org/docs/Web/CSS/-webkit-text-stroke-width'
     },
     '-webkit-touch-callout': {
       syntax: 'default | none',
@@ -15017,7 +15014,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-touch-callout',
+        'https://developer.mozilla.org/docs/Web/CSS/-webkit-touch-callout'
     },
     '-webkit-user-modify': {
       syntax: 'read-only | read-write | read-write-plaintext-only',
@@ -15030,7 +15027,7 @@
       appliesto: 'allElements',
       computed: 'asSpecified',
       order: 'uniqueOrder',
-      status: 'nonstandard',
+      status: 'nonstandard'
     },
     'align-content': {
       syntax:
@@ -15045,7 +15042,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/align-content',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/align-content'
     },
     'align-items': {
       syntax:
@@ -15060,7 +15057,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/align-items',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/align-items'
     },
     'align-self': {
       syntax:
@@ -15075,7 +15072,7 @@
       computed: 'autoOnAbsolutelyPositionedElementsValueOfAlignItemsOnParent',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/align-self',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/align-self'
     },
     'align-tracks': {
       syntax:
@@ -15090,7 +15087,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'experimental',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/align-tracks',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/align-tracks'
     },
     all: all,
     animation: animation,
@@ -15106,7 +15103,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation-delay',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation-delay'
     },
     'animation-direction': {
       syntax: '<single-animation-direction>#',
@@ -15120,7 +15117,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation-direction',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation-direction'
     },
     'animation-duration': {
       syntax: '<time>#',
@@ -15134,7 +15131,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation-duration',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation-duration'
     },
     'animation-fill-mode': {
       syntax: '<single-animation-fill-mode>#',
@@ -15148,7 +15145,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation-fill-mode',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation-fill-mode'
     },
     'animation-iteration-count': {
       syntax: '<single-animation-iteration-count>#',
@@ -15163,7 +15160,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/animation-iteration-count',
+        'https://developer.mozilla.org/docs/Web/CSS/animation-iteration-count'
     },
     'animation-name': {
       syntax: '[ none | <keyframes-name> ]#',
@@ -15177,7 +15174,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation-name',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation-name'
     },
     'animation-play-state': {
       syntax: '<single-animation-play-state>#',
@@ -15191,8 +15188,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/animation-play-state',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation-play-state'
     },
     'animation-timing-function': {
       syntax: '<timing-function>#',
@@ -15207,7 +15203,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/animation-timing-function',
+        'https://developer.mozilla.org/docs/Web/CSS/animation-timing-function'
     },
     appearance: appearance,
     'aspect-ratio': {
@@ -15222,7 +15218,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'experimental',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/aspect-ratio',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/aspect-ratio'
     },
     azimuth: azimuth,
     'backdrop-filter': {
@@ -15237,7 +15233,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/backdrop-filter',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/backdrop-filter'
     },
     'backface-visibility': {
       syntax: 'visible | hidden',
@@ -15251,7 +15247,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/backface-visibility',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/backface-visibility'
     },
     background: background,
     'background-attachment': {
@@ -15268,7 +15264,7 @@
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/background-attachment',
+        'https://developer.mozilla.org/docs/Web/CSS/background-attachment'
     },
     'background-blend-mode': {
       syntax: '<blend-mode>#',
@@ -15285,7 +15281,7 @@
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/background-blend-mode',
+        'https://developer.mozilla.org/docs/Web/CSS/background-blend-mode'
     },
     'background-clip': {
       syntax: '<box>#',
@@ -15300,7 +15296,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-clip',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-clip'
     },
     'background-color': {
       syntax: '<color>',
@@ -15315,7 +15311,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-color',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-color'
     },
     'background-image': {
       syntax: '<bg-image>#',
@@ -15330,7 +15326,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-image',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-image'
     },
     'background-origin': {
       syntax: '<box>#',
@@ -15345,7 +15341,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-origin',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-origin'
     },
     'background-position': {
       syntax: '<bg-position>#',
@@ -15361,7 +15357,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-position',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-position'
     },
     'background-position-x': {
       syntax:
@@ -15378,7 +15374,7 @@
       order: 'uniqueOrder',
       status: 'experimental',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/background-position-x',
+        'https://developer.mozilla.org/docs/Web/CSS/background-position-x'
     },
     'background-position-y': {
       syntax:
@@ -15395,7 +15391,7 @@
       order: 'uniqueOrder',
       status: 'experimental',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/background-position-y',
+        'https://developer.mozilla.org/docs/Web/CSS/background-position-y'
     },
     'background-repeat': {
       syntax: '<repeat-style>#',
@@ -15410,7 +15406,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-repeat',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-repeat'
     },
     'background-size': {
       syntax: '<bg-size>#',
@@ -15425,7 +15421,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-size',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-size'
     },
     'block-overflow': {
       syntax: 'clip | ellipsis | <string>',
@@ -15438,7 +15434,7 @@
       appliesto: 'blockContainers',
       computed: 'asSpecified',
       order: 'perGrammar',
-      status: 'experimental',
+      status: 'experimental'
     },
     'block-size': {
       syntax: "<'width'>",
@@ -15452,7 +15448,7 @@
       computed: 'sameAsWidthAndHeight',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/block-size',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/block-size'
     },
     border: border,
     'border-block': {
@@ -15467,7 +15463,7 @@
       computed: ['border-top-width', 'border-top-style', 'border-top-color'],
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block'
     },
     'border-block-color': {
       syntax: "<'border-top-color'>{1,2}",
@@ -15481,7 +15477,7 @@
       computed: 'computedColor',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-color',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-color'
     },
     'border-block-style': {
       syntax: "<'border-top-style'>",
@@ -15495,7 +15491,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-style'
     },
     'border-block-width': {
       syntax: "<'border-top-width'>",
@@ -15509,7 +15505,7 @@
       computed: 'absoluteLengthZeroIfBorderStyleNoneOrHidden',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-width'
     },
     'border-block-end': {
       syntax: "<'border-top-width'> || <'border-top-style'> || <'color'>",
@@ -15518,7 +15514,7 @@
       animationType: [
         'border-block-end-color',
         'border-block-end-style',
-        'border-block-end-width',
+        'border-block-end-width'
       ],
       percentages: 'no',
       groups: ['CSS Logical Properties'],
@@ -15527,7 +15523,7 @@
       computed: ['border-top-width', 'border-top-style', 'border-top-color'],
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-end',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-end'
     },
     'border-block-end-color': {
       syntax: "<'border-top-color'>",
@@ -15542,7 +15538,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-block-end-color',
+        'https://developer.mozilla.org/docs/Web/CSS/border-block-end-color'
     },
     'border-block-end-style': {
       syntax: "<'border-top-style'>",
@@ -15557,7 +15553,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-block-end-style',
+        'https://developer.mozilla.org/docs/Web/CSS/border-block-end-style'
     },
     'border-block-end-width': {
       syntax: "<'border-top-width'>",
@@ -15572,7 +15568,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-block-end-width',
+        'https://developer.mozilla.org/docs/Web/CSS/border-block-end-width'
     },
     'border-block-start': {
       syntax: "<'border-top-width'> || <'border-top-style'> || <'color'>",
@@ -15581,7 +15577,7 @@
       animationType: [
         'border-block-start-color',
         'border-block-start-style',
-        'border-block-start-width',
+        'border-block-start-width'
       ],
       percentages: 'no',
       groups: ['CSS Logical Properties'],
@@ -15590,7 +15586,7 @@
       computed: ['border-width', 'border-style', 'border-block-start-color'],
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-start',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-start'
     },
     'border-block-start-color': {
       syntax: "<'border-top-color'>",
@@ -15605,7 +15601,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-block-start-color',
+        'https://developer.mozilla.org/docs/Web/CSS/border-block-start-color'
     },
     'border-block-start-style': {
       syntax: "<'border-top-style'>",
@@ -15620,7 +15616,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-block-start-style',
+        'https://developer.mozilla.org/docs/Web/CSS/border-block-start-style'
     },
     'border-block-start-width': {
       syntax: "<'border-top-width'>",
@@ -15635,7 +15631,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-block-start-width',
+        'https://developer.mozilla.org/docs/Web/CSS/border-block-start-width'
     },
     'border-bottom': {
       syntax: '<line-width> || <line-style> || <color>',
@@ -15644,25 +15640,25 @@
       animationType: [
         'border-bottom-color',
         'border-bottom-style',
-        'border-bottom-width',
+        'border-bottom-width'
       ],
       percentages: 'no',
       groups: ['CSS Backgrounds and Borders'],
       initial: [
         'border-bottom-width',
         'border-bottom-style',
-        'border-bottom-color',
+        'border-bottom-color'
       ],
       appliesto: 'allElements',
       computed: [
         'border-bottom-width',
         'border-bottom-style',
-        'border-bottom-color',
+        'border-bottom-color'
       ],
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-bottom',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-bottom'
     },
     'border-bottom-color': {
       syntax: "<'border-top-color'>",
@@ -15677,7 +15673,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-bottom-color',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-bottom-color'
     },
     'border-bottom-left-radius': {
       syntax: '<length-percentage>{1,2}',
@@ -15693,7 +15689,7 @@
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-bottom-left-radius',
+        'https://developer.mozilla.org/docs/Web/CSS/border-bottom-left-radius'
     },
     'border-bottom-right-radius': {
       syntax: '<length-percentage>{1,2}',
@@ -15709,7 +15705,7 @@
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-bottom-right-radius',
+        'https://developer.mozilla.org/docs/Web/CSS/border-bottom-right-radius'
     },
     'border-bottom-style': {
       syntax: '<line-style>',
@@ -15724,7 +15720,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-bottom-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-bottom-style'
     },
     'border-bottom-width': {
       syntax: '<line-width>',
@@ -15739,7 +15735,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-bottom-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-bottom-width'
     },
     'border-collapse': {
       syntax: 'collapse | separate',
@@ -15753,7 +15749,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-collapse',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-collapse'
     },
     'border-color': {
       syntax: '<color>{1,4}',
@@ -15763,7 +15759,7 @@
         'border-bottom-color',
         'border-left-color',
         'border-right-color',
-        'border-top-color',
+        'border-top-color'
       ],
       percentages: 'no',
       groups: ['CSS Backgrounds and Borders'],
@@ -15771,19 +15767,19 @@
         'border-top-color',
         'border-right-color',
         'border-bottom-color',
-        'border-left-color',
+        'border-left-color'
       ],
       appliesto: 'allElements',
       computed: [
         'border-bottom-color',
         'border-left-color',
         'border-right-color',
-        'border-top-color',
+        'border-top-color'
       ],
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-color',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-color'
     },
     'border-end-end-radius': {
       syntax: '<length-percentage>{1,2}',
@@ -15799,7 +15795,7 @@
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-end-end-radius',
+        'https://developer.mozilla.org/docs/Web/CSS/border-end-end-radius'
     },
     'border-end-start-radius': {
       syntax: '<length-percentage>{1,2}',
@@ -15815,7 +15811,7 @@
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-end-start-radius',
+        'https://developer.mozilla.org/docs/Web/CSS/border-end-start-radius'
     },
     'border-image': {
       syntax:
@@ -15830,7 +15826,7 @@
         'border-image-slice',
         'border-image-width',
         'border-image-outset',
-        'border-image-repeat',
+        'border-image-repeat'
       ],
       appliesto: 'allElementsExceptTableElementsWhenCollapse',
       computed: [
@@ -15838,12 +15834,12 @@
         'border-image-repeat',
         'border-image-slice',
         'border-image-source',
-        'border-image-width',
+        'border-image-width'
       ],
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-image',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-image'
     },
     'border-image-outset': {
       syntax: '[ <length> | <number> ]{1,4}',
@@ -15858,7 +15854,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-image-outset',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-image-outset'
     },
     'border-image-repeat': {
       syntax: '[ stretch | repeat | round | space ]{1,2}',
@@ -15873,7 +15869,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-image-repeat',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-image-repeat'
     },
     'border-image-slice': {
       syntax: '<number-percentage>{1,4} && fill?',
@@ -15888,7 +15884,7 @@
       order: 'percentagesOrLengthsFollowedByFill',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-image-slice',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-image-slice'
     },
     'border-image-source': {
       syntax: 'none | <image>',
@@ -15903,7 +15899,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-image-source',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-image-source'
     },
     'border-image-width': {
       syntax: '[ <length-percentage> | <number> | auto ]{1,4}',
@@ -15918,7 +15914,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-image-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-image-width'
     },
     'border-inline': {
       syntax: "<'border-top-width'> || <'border-top-style'> || <'color'>",
@@ -15932,7 +15928,7 @@
       computed: ['border-top-width', 'border-top-style', 'border-top-color'],
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline'
     },
     'border-inline-end': {
       syntax: "<'border-top-width'> || <'border-top-style'> || <'color'>",
@@ -15941,7 +15937,7 @@
       animationType: [
         'border-inline-end-color',
         'border-inline-end-style',
-        'border-inline-end-width',
+        'border-inline-end-width'
       ],
       percentages: 'no',
       groups: ['CSS Logical Properties'],
@@ -15950,7 +15946,7 @@
       computed: ['border-width', 'border-style', 'border-inline-end-color'],
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-end',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-end'
     },
     'border-inline-color': {
       syntax: "<'border-top-color'>{1,2}",
@@ -15964,7 +15960,7 @@
       computed: 'computedColor',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-color',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-color'
     },
     'border-inline-style': {
       syntax: "<'border-top-style'>",
@@ -15978,7 +15974,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-style'
     },
     'border-inline-width': {
       syntax: "<'border-top-width'>",
@@ -15992,7 +15988,7 @@
       computed: 'absoluteLengthZeroIfBorderStyleNoneOrHidden',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-width'
     },
     'border-inline-end-color': {
       syntax: "<'border-top-color'>",
@@ -16007,7 +16003,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-inline-end-color',
+        'https://developer.mozilla.org/docs/Web/CSS/border-inline-end-color'
     },
     'border-inline-end-style': {
       syntax: "<'border-top-style'>",
@@ -16022,7 +16018,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-inline-end-style',
+        'https://developer.mozilla.org/docs/Web/CSS/border-inline-end-style'
     },
     'border-inline-end-width': {
       syntax: "<'border-top-width'>",
@@ -16037,7 +16033,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-inline-end-width',
+        'https://developer.mozilla.org/docs/Web/CSS/border-inline-end-width'
     },
     'border-inline-start': {
       syntax: "<'border-top-width'> || <'border-top-style'> || <'color'>",
@@ -16046,7 +16042,7 @@
       animationType: [
         'border-inline-start-color',
         'border-inline-start-style',
-        'border-inline-start-width',
+        'border-inline-start-width'
       ],
       percentages: 'no',
       groups: ['CSS Logical Properties'],
@@ -16055,7 +16051,7 @@
       computed: ['border-width', 'border-style', 'border-inline-start-color'],
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-start',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-start'
     },
     'border-inline-start-color': {
       syntax: "<'border-top-color'>",
@@ -16070,7 +16066,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-inline-start-color',
+        'https://developer.mozilla.org/docs/Web/CSS/border-inline-start-color'
     },
     'border-inline-start-style': {
       syntax: "<'border-top-style'>",
@@ -16085,7 +16081,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-inline-start-style',
+        'https://developer.mozilla.org/docs/Web/CSS/border-inline-start-style'
     },
     'border-inline-start-width': {
       syntax: "<'border-top-width'>",
@@ -16100,7 +16096,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-inline-start-width',
+        'https://developer.mozilla.org/docs/Web/CSS/border-inline-start-width'
     },
     'border-left': {
       syntax: '<line-width> || <line-style> || <color>',
@@ -16109,7 +16105,7 @@
       animationType: [
         'border-left-color',
         'border-left-style',
-        'border-left-width',
+        'border-left-width'
       ],
       percentages: 'no',
       groups: ['CSS Backgrounds and Borders'],
@@ -16119,7 +16115,7 @@
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-left',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-left'
     },
     'border-left-color': {
       syntax: '<color>',
@@ -16134,7 +16130,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-left-color',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-left-color'
     },
     'border-left-style': {
       syntax: '<line-style>',
@@ -16149,7 +16145,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-left-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-left-style'
     },
     'border-left-width': {
       syntax: '<line-width>',
@@ -16164,7 +16160,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-left-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-left-width'
     },
     'border-radius': {
       syntax: '<length-percentage>{1,4} [ / <length-percentage>{1,4} ]?',
@@ -16174,7 +16170,7 @@
         'border-top-left-radius',
         'border-top-right-radius',
         'border-bottom-right-radius',
-        'border-bottom-left-radius',
+        'border-bottom-left-radius'
       ],
       percentages: 'referToDimensionOfBorderBox',
       groups: ['CSS Backgrounds and Borders'],
@@ -16182,19 +16178,19 @@
         'border-top-left-radius',
         'border-top-right-radius',
         'border-bottom-right-radius',
-        'border-bottom-left-radius',
+        'border-bottom-left-radius'
       ],
       appliesto: 'allElementsUAsNotRequiredWhenCollapse',
       computed: [
         'border-bottom-left-radius',
         'border-bottom-right-radius',
         'border-top-left-radius',
-        'border-top-right-radius',
+        'border-top-right-radius'
       ],
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-radius',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-radius'
     },
     'border-right': {
       syntax: '<line-width> || <line-style> || <color>',
@@ -16203,25 +16199,25 @@
       animationType: [
         'border-right-color',
         'border-right-style',
-        'border-right-width',
+        'border-right-width'
       ],
       percentages: 'no',
       groups: ['CSS Backgrounds and Borders'],
       initial: [
         'border-right-width',
         'border-right-style',
-        'border-right-color',
+        'border-right-color'
       ],
       appliesto: 'allElements',
       computed: [
         'border-right-width',
         'border-right-style',
-        'border-right-color',
+        'border-right-color'
       ],
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-right',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-right'
     },
     'border-right-color': {
       syntax: '<color>',
@@ -16236,7 +16232,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-right-color',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-right-color'
     },
     'border-right-style': {
       syntax: '<line-style>',
@@ -16251,7 +16247,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-right-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-right-style'
     },
     'border-right-width': {
       syntax: '<line-width>',
@@ -16266,7 +16262,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-right-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-right-width'
     },
     'border-spacing': {
       syntax: '<length> <length>?',
@@ -16280,7 +16276,7 @@
       computed: 'twoAbsoluteLengths',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-spacing',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-spacing'
     },
     'border-start-end-radius': {
       syntax: '<length-percentage>{1,2}',
@@ -16296,7 +16292,7 @@
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-start-end-radius',
+        'https://developer.mozilla.org/docs/Web/CSS/border-start-end-radius'
     },
     'border-start-start-radius': {
       syntax: '<length-percentage>{1,2}',
@@ -16312,7 +16308,7 @@
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-start-start-radius',
+        'https://developer.mozilla.org/docs/Web/CSS/border-start-start-radius'
     },
     'border-style': {
       syntax: '<line-style>{1,4}',
@@ -16325,19 +16321,19 @@
         'border-top-style',
         'border-right-style',
         'border-bottom-style',
-        'border-left-style',
+        'border-left-style'
       ],
       appliesto: 'allElements',
       computed: [
         'border-bottom-style',
         'border-left-style',
         'border-right-style',
-        'border-top-style',
+        'border-top-style'
       ],
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-style'
     },
     'border-top': {
       syntax: '<line-width> || <line-style> || <color>',
@@ -16346,7 +16342,7 @@
       animationType: [
         'border-top-color',
         'border-top-style',
-        'border-top-width',
+        'border-top-width'
       ],
       percentages: 'no',
       groups: ['CSS Backgrounds and Borders'],
@@ -16356,7 +16352,7 @@
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-top',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-top'
     },
     'border-top-color': {
       syntax: '<color>',
@@ -16371,7 +16367,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-top-color',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-top-color'
     },
     'border-top-left-radius': {
       syntax: '<length-percentage>{1,2}',
@@ -16387,7 +16383,7 @@
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-top-left-radius',
+        'https://developer.mozilla.org/docs/Web/CSS/border-top-left-radius'
     },
     'border-top-right-radius': {
       syntax: '<length-percentage>{1,2}',
@@ -16403,7 +16399,7 @@
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-top-right-radius',
+        'https://developer.mozilla.org/docs/Web/CSS/border-top-right-radius'
     },
     'border-top-style': {
       syntax: '<line-style>',
@@ -16418,7 +16414,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-top-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-top-style'
     },
     'border-top-width': {
       syntax: '<line-width>',
@@ -16433,7 +16429,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-top-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-top-width'
     },
     'border-width': {
       syntax: '<line-width>{1,4}',
@@ -16443,7 +16439,7 @@
         'border-bottom-width',
         'border-left-width',
         'border-right-width',
-        'border-top-width',
+        'border-top-width'
       ],
       percentages: 'no',
       groups: ['CSS Backgrounds and Borders'],
@@ -16451,19 +16447,19 @@
         'border-top-width',
         'border-right-width',
         'border-bottom-width',
-        'border-left-width',
+        'border-left-width'
       ],
       appliesto: 'allElements',
       computed: [
         'border-bottom-width',
         'border-left-width',
         'border-right-width',
-        'border-top-width',
+        'border-top-width'
       ],
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-width'
     },
     bottom: bottom,
     'box-align': {
@@ -16478,7 +16474,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-align',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-align'
     },
     'box-decoration-break': {
       syntax: 'slice | clone',
@@ -16492,8 +16488,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/box-decoration-break',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-decoration-break'
     },
     'box-direction': {
       syntax: 'normal | reverse | inherit',
@@ -16507,7 +16502,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-direction',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-direction'
     },
     'box-flex': {
       syntax: '<number>',
@@ -16521,7 +16516,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-flex',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-flex'
     },
     'box-flex-group': {
       syntax: '<integer>',
@@ -16535,7 +16530,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-flex-group',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-flex-group'
     },
     'box-lines': {
       syntax: 'single | multiple',
@@ -16549,7 +16544,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-lines',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-lines'
     },
     'box-ordinal-group': {
       syntax: '<integer>',
@@ -16563,7 +16558,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-ordinal-group',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-ordinal-group'
     },
     'box-orient': {
       syntax: 'horizontal | vertical | inline-axis | block-axis | inherit',
@@ -16577,7 +16572,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-orient',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-orient'
     },
     'box-pack': {
       syntax: 'start | center | end | justify',
@@ -16591,7 +16586,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-pack',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-pack'
     },
     'box-shadow': {
       syntax: 'none | <shadow>#',
@@ -16606,7 +16601,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-shadow',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-shadow'
     },
     'box-sizing': {
       syntax: 'content-box | border-box',
@@ -16620,7 +16615,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-sizing',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/box-sizing'
     },
     'break-after': {
       syntax:
@@ -16635,7 +16630,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/break-after',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/break-after'
     },
     'break-before': {
       syntax:
@@ -16650,7 +16645,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/break-before',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/break-before'
     },
     'break-inside': {
       syntax: 'auto | avoid | avoid-page | avoid-column | avoid-region',
@@ -16664,7 +16659,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/break-inside',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/break-inside'
     },
     'caption-side': {
       syntax:
@@ -16679,7 +16674,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/caption-side',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/caption-side'
     },
     'caret-color': {
       syntax: 'auto | <color>',
@@ -16693,7 +16688,7 @@
       computed: 'asAutoOrColor',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/caret-color',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/caret-color'
     },
     clear: clear,
     clip: clip,
@@ -16709,7 +16704,7 @@
       computed: 'asSpecifiedURLsAbsolute',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/clip-path',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/clip-path'
     },
     color: color$1,
     'color-adjust': {
@@ -16724,7 +16719,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/color-adjust',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/color-adjust'
     },
     'column-count': {
       syntax: '<integer> | auto',
@@ -16738,7 +16733,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-count',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-count'
     },
     'column-fill': {
       syntax: 'auto | balance | balance-all',
@@ -16752,7 +16747,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-fill',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-fill'
     },
     'column-gap': {
       syntax: 'normal | <length-percentage>',
@@ -16767,7 +16762,7 @@
         'asSpecifiedWithLengthsAbsoluteAndNormalComputingToZeroExceptMultiColumn',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-gap',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-gap'
     },
     'column-rule': {
       syntax:
@@ -16777,7 +16772,7 @@
       animationType: [
         'column-rule-color',
         'column-rule-style',
-        'column-rule-width',
+        'column-rule-width'
       ],
       percentages: 'no',
       groups: ['CSS Columns'],
@@ -16786,7 +16781,7 @@
       computed: ['column-rule-color', 'column-rule-style', 'column-rule-width'],
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-rule',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-rule'
     },
     'column-rule-color': {
       syntax: '<color>',
@@ -16800,7 +16795,7 @@
       computed: 'computedColor',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-rule-color',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-rule-color'
     },
     'column-rule-style': {
       syntax: "<'border-style'>",
@@ -16814,7 +16809,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-rule-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-rule-style'
     },
     'column-rule-width': {
       syntax: "<'border-width'>",
@@ -16828,7 +16823,7 @@
       computed: 'absoluteLength0IfColumnRuleStyleNoneOrHidden',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-rule-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-rule-width'
     },
     'column-span': {
       syntax: 'none | all',
@@ -16842,7 +16837,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-span',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-span'
     },
     'column-width': {
       syntax: '<length> | auto',
@@ -16856,7 +16851,7 @@
       computed: 'absoluteLengthZeroOrLarger',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-width'
     },
     columns: columns,
     contain: contain,
@@ -16873,7 +16868,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/counter-increment',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/counter-increment'
     },
     'counter-reset': {
       syntax: '[ <custom-ident> <integer>? ]+ | none',
@@ -16887,7 +16882,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/counter-reset',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/counter-reset'
     },
     'counter-set': {
       syntax: '[ <custom-ident> <integer>? ]+ | none',
@@ -16901,7 +16896,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/counter-set',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/counter-set'
     },
     cursor: cursor,
     direction: direction,
@@ -16918,7 +16913,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/empty-cells',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/empty-cells'
     },
     filter: filter,
     flex: flex,
@@ -16934,7 +16929,7 @@
       computed: 'asSpecifiedRelativeToAbsoluteLengths',
       order: 'lengthOrPercentageBeforeKeywordIfBothPresent',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/flex-basis',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/flex-basis'
     },
     'flex-direction': {
       syntax: 'row | row-reverse | column | column-reverse',
@@ -16948,7 +16943,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/flex-direction',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/flex-direction'
     },
     'flex-flow': {
       syntax: "<'flex-direction'> || <'flex-wrap'>",
@@ -16962,7 +16957,7 @@
       computed: ['flex-direction', 'flex-wrap'],
       order: 'orderOfAppearance',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/flex-flow',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/flex-flow'
     },
     'flex-grow': {
       syntax: '<number>',
@@ -16976,7 +16971,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/flex-grow',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/flex-grow'
     },
     'flex-shrink': {
       syntax: '<number>',
@@ -16990,7 +16985,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/flex-shrink',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/flex-shrink'
     },
     'flex-wrap': {
       syntax: 'nowrap | wrap | wrap-reverse',
@@ -17004,7 +16999,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/flex-wrap',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/flex-wrap'
     },
     float: float,
     font: font,
@@ -17021,7 +17016,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-family',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-family'
     },
     'font-feature-settings': {
       syntax: 'normal | <feature-tag-value>#',
@@ -17037,7 +17032,7 @@
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-feature-settings',
+        'https://developer.mozilla.org/docs/Web/CSS/font-feature-settings'
     },
     'font-kerning': {
       syntax: 'auto | normal | none',
@@ -17052,7 +17047,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-kerning',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-kerning'
     },
     'font-language-override': {
       syntax: 'normal | <string>',
@@ -17068,7 +17063,7 @@
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-language-override',
+        'https://developer.mozilla.org/docs/Web/CSS/font-language-override'
     },
     'font-optical-sizing': {
       syntax: 'auto | none',
@@ -17083,7 +17078,7 @@
       order: 'perGrammar',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-optical-sizing',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-optical-sizing'
     },
     'font-variation-settings': {
       syntax: 'normal | [ <string> <number> ]#',
@@ -17099,7 +17094,7 @@
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-variation-settings',
+        'https://developer.mozilla.org/docs/Web/CSS/font-variation-settings'
     },
     'font-size': {
       syntax: '<absolute-size> | <relative-size> | <length-percentage>',
@@ -17114,7 +17109,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-size',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-size'
     },
     'font-size-adjust': {
       syntax: 'none | <number>',
@@ -17129,7 +17124,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-size-adjust',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-size-adjust'
     },
     'font-smooth': {
       syntax: 'auto | never | always | <absolute-size> | <length>',
@@ -17143,7 +17138,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-smooth',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-smooth'
     },
     'font-stretch': {
       syntax: '<font-stretch-absolute>',
@@ -17158,7 +17153,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-stretch',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-stretch'
     },
     'font-style': {
       syntax: 'normal | italic | oblique <angle>?',
@@ -17173,7 +17168,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-style'
     },
     'font-synthesis': {
       syntax: 'none | [ weight || style ]',
@@ -17188,7 +17183,7 @@
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-synthesis',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-synthesis'
     },
     'font-variant': {
       syntax:
@@ -17204,7 +17199,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-variant',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-variant'
     },
     'font-variant-alternates': {
       syntax:
@@ -17221,7 +17216,7 @@
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-variant-alternates',
+        'https://developer.mozilla.org/docs/Web/CSS/font-variant-alternates'
     },
     'font-variant-caps': {
       syntax:
@@ -17237,7 +17232,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-variant-caps',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-variant-caps'
     },
     'font-variant-east-asian': {
       syntax:
@@ -17254,7 +17249,7 @@
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-variant-east-asian',
+        'https://developer.mozilla.org/docs/Web/CSS/font-variant-east-asian'
     },
     'font-variant-ligatures': {
       syntax:
@@ -17271,7 +17266,7 @@
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-variant-ligatures',
+        'https://developer.mozilla.org/docs/Web/CSS/font-variant-ligatures'
     },
     'font-variant-numeric': {
       syntax:
@@ -17287,8 +17282,7 @@
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-variant-numeric',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-variant-numeric'
     },
     'font-variant-position': {
       syntax: 'normal | sub | super',
@@ -17304,7 +17298,7 @@
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-variant-position',
+        'https://developer.mozilla.org/docs/Web/CSS/font-variant-position'
     },
     'font-weight': {
       syntax: '<font-weight-absolute> | bolder | lighter',
@@ -17319,7 +17313,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-weight',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-weight'
     },
     gap: gap,
     grid: grid,
@@ -17334,18 +17328,18 @@
         'grid-row-start',
         'grid-column-start',
         'grid-row-end',
-        'grid-column-end',
+        'grid-column-end'
       ],
       appliesto: 'gridItemsAndBoxesWithinGridContainer',
       computed: [
         'grid-row-start',
         'grid-column-start',
         'grid-row-end',
-        'grid-column-end',
+        'grid-column-end'
       ],
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-area',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-area'
     },
     'grid-auto-columns': {
       syntax: '<track-size>+',
@@ -17359,7 +17353,7 @@
       computed: 'percentageAsSpecifiedOrAbsoluteLength',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-auto-columns',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-auto-columns'
     },
     'grid-auto-flow': {
       syntax: '[ row | column ] || dense',
@@ -17373,7 +17367,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-auto-flow',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-auto-flow'
     },
     'grid-auto-rows': {
       syntax: '<track-size>+',
@@ -17387,7 +17381,7 @@
       computed: 'percentageAsSpecifiedOrAbsoluteLength',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-auto-rows',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-auto-rows'
     },
     'grid-column': {
       syntax: '<grid-line> [ / <grid-line> ]?',
@@ -17401,7 +17395,7 @@
       computed: ['grid-column-start', 'grid-column-end'],
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-column',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-column'
     },
     'grid-column-end': {
       syntax: '<grid-line>',
@@ -17415,7 +17409,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-column-end',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-column-end'
     },
     'grid-column-gap': {
       syntax: '<length-percentage>',
@@ -17429,7 +17423,7 @@
       computed: 'percentageAsSpecifiedOrAbsoluteLength',
       order: 'uniqueOrder',
       status: 'obsolete',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-gap',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-gap'
     },
     'grid-column-start': {
       syntax: '<grid-line>',
@@ -17443,7 +17437,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-column-start',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-column-start'
     },
     'grid-gap': {
       syntax: "<'grid-row-gap'> <'grid-column-gap'>?",
@@ -17457,7 +17451,7 @@
       computed: ['grid-row-gap', 'grid-column-gap'],
       order: 'uniqueOrder',
       status: 'obsolete',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/gap',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/gap'
     },
     'grid-row': {
       syntax: '<grid-line> [ / <grid-line> ]?',
@@ -17471,7 +17465,7 @@
       computed: ['grid-row-start', 'grid-row-end'],
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-row',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-row'
     },
     'grid-row-end': {
       syntax: '<grid-line>',
@@ -17485,7 +17479,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-row-end',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-row-end'
     },
     'grid-row-gap': {
       syntax: '<length-percentage>',
@@ -17499,7 +17493,7 @@
       computed: 'percentageAsSpecifiedOrAbsoluteLength',
       order: 'uniqueOrder',
       status: 'obsolete',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/row-gap',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/row-gap'
     },
     'grid-row-start': {
       syntax: '<grid-line>',
@@ -17513,7 +17507,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-row-start',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-row-start'
     },
     'grid-template': {
       syntax:
@@ -17526,17 +17520,17 @@
       initial: [
         'grid-template-columns',
         'grid-template-rows',
-        'grid-template-areas',
+        'grid-template-areas'
       ],
       appliesto: 'gridContainers',
       computed: [
         'grid-template-columns',
         'grid-template-rows',
-        'grid-template-areas',
+        'grid-template-areas'
       ],
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-template',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-template'
     },
     'grid-template-areas': {
       syntax: 'none | <string>+',
@@ -17550,7 +17544,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-template-areas',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-template-areas'
     },
     'grid-template-columns': {
       syntax:
@@ -17566,7 +17560,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/grid-template-columns',
+        'https://developer.mozilla.org/docs/Web/CSS/grid-template-columns'
     },
     'grid-template-rows': {
       syntax:
@@ -17581,7 +17575,7 @@
       computed: 'asSpecifiedRelativeToAbsoluteLengths',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-template-rows',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-template-rows'
     },
     'hanging-punctuation': {
       syntax: 'none | [ first || [ force-end | allow-end ] || last ]',
@@ -17595,7 +17589,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/hanging-punctuation',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/hanging-punctuation'
     },
     height: height,
     hyphens: hyphens,
@@ -17611,7 +17605,7 @@
       computed: 'angleRoundedToNextQuarter',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/image-orientation',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/image-orientation'
     },
     'image-rendering': {
       syntax: 'auto | crisp-edges | pixelated',
@@ -17625,7 +17619,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/image-rendering',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/image-rendering'
     },
     'image-resolution': {
       syntax: '[ from-image || <resolution> ] && snap?',
@@ -17638,7 +17632,7 @@
       appliesto: 'allElements',
       computed: 'asSpecifiedWithExceptionOfResolution',
       order: 'uniqueOrder',
-      status: 'experimental',
+      status: 'experimental'
     },
     'ime-mode': {
       syntax: 'auto | normal | active | inactive | disabled',
@@ -17652,7 +17646,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'obsolete',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/ime-mode',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/ime-mode'
     },
     'initial-letter': {
       syntax: 'normal | [ <number> <integer>? ]',
@@ -17666,7 +17660,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'experimental',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/initial-letter',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/initial-letter'
     },
     'initial-letter-align': {
       syntax: '[ auto | alphabetic | hanging | ideographic ]',
@@ -17680,8 +17674,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'experimental',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/initial-letter-align',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/initial-letter-align'
     },
     'inline-size': {
       syntax: "<'width'>",
@@ -17695,7 +17688,7 @@
       computed: 'sameAsWidthAndHeight',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inline-size',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inline-size'
     },
     inset: inset,
     'inset-block': {
@@ -17710,7 +17703,7 @@
       computed: 'sameAsBoxOffsets',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inset-block',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inset-block'
     },
     'inset-block-end': {
       syntax: "<'top'>",
@@ -17724,7 +17717,7 @@
       computed: 'sameAsBoxOffsets',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inset-block-end',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inset-block-end'
     },
     'inset-block-start': {
       syntax: "<'top'>",
@@ -17738,7 +17731,7 @@
       computed: 'sameAsBoxOffsets',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inset-block-start',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inset-block-start'
     },
     'inset-inline': {
       syntax: "<'top'>{1,2}",
@@ -17752,7 +17745,7 @@
       computed: 'sameAsBoxOffsets',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inset-inline',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inset-inline'
     },
     'inset-inline-end': {
       syntax: "<'top'>",
@@ -17766,7 +17759,7 @@
       computed: 'sameAsBoxOffsets',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inset-inline-end',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inset-inline-end'
     },
     'inset-inline-start': {
       syntax: "<'top'>",
@@ -17780,7 +17773,7 @@
       computed: 'sameAsBoxOffsets',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inset-inline-start',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/inset-inline-start'
     },
     isolation: isolation,
     'justify-content': {
@@ -17796,7 +17789,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/justify-content',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/justify-content'
     },
     'justify-items': {
       syntax:
@@ -17811,7 +17804,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/justify-items',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/justify-items'
     },
     'justify-self': {
       syntax:
@@ -17826,7 +17819,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/justify-self',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/justify-self'
     },
     'justify-tracks': {
       syntax:
@@ -17841,7 +17834,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'experimental',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/justify-tracks',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/justify-tracks'
     },
     left: left,
     'letter-spacing': {
@@ -17857,7 +17850,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/letter-spacing',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/letter-spacing'
     },
     'line-break': {
       syntax: 'auto | loose | normal | strict | anywhere',
@@ -17871,7 +17864,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/line-break',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/line-break'
     },
     'line-clamp': {
       syntax: 'none | <integer>',
@@ -17884,7 +17877,7 @@
       appliesto: 'blockContainersExceptMultiColumnContainers',
       computed: 'asSpecified',
       order: 'perGrammar',
-      status: 'experimental',
+      status: 'experimental'
     },
     'line-height': {
       syntax: 'normal | <number> | <length> | <percentage>',
@@ -17899,7 +17892,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/line-height',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/line-height'
     },
     'line-height-step': {
       syntax: '<length>',
@@ -17913,7 +17906,7 @@
       computed: 'absoluteLength',
       order: 'perGrammar',
       status: 'experimental',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/line-height-step',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/line-height-step'
     },
     'list-style': {
       syntax:
@@ -17928,7 +17921,7 @@
       computed: ['list-style-image', 'list-style-position', 'list-style-type'],
       order: 'orderOfAppearance',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/list-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/list-style'
     },
     'list-style-image': {
       syntax: '<url> | none',
@@ -17942,7 +17935,7 @@
       computed: 'noneOrImageWithAbsoluteURI',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/list-style-image',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/list-style-image'
     },
     'list-style-position': {
       syntax: 'inside | outside',
@@ -17956,7 +17949,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/list-style-position',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/list-style-position'
     },
     'list-style-type': {
       syntax: '<counter-style> | <string> | none',
@@ -17970,7 +17963,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/list-style-type',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/list-style-type'
     },
     margin: margin,
     'margin-block': {
@@ -17985,7 +17978,7 @@
       computed: 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-block',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-block'
     },
     'margin-block-end': {
       syntax: "<'margin-left'>",
@@ -17999,7 +17992,7 @@
       computed: 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-block-end',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-block-end'
     },
     'margin-block-start': {
       syntax: "<'margin-left'>",
@@ -18013,7 +18006,7 @@
       computed: 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-block-start',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-block-start'
     },
     'margin-bottom': {
       syntax: '<length> | <percentage> | auto',
@@ -18028,7 +18021,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-bottom',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-bottom'
     },
     'margin-inline': {
       syntax: "<'margin-left'>{1,2}",
@@ -18042,7 +18035,7 @@
       computed: 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-inline',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-inline'
     },
     'margin-inline-end': {
       syntax: "<'margin-left'>",
@@ -18056,7 +18049,7 @@
       computed: 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-inline-end',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-inline-end'
     },
     'margin-inline-start': {
       syntax: "<'margin-left'>",
@@ -18070,7 +18063,7 @@
       computed: 'lengthAbsolutePercentageAsSpecifiedOtherwiseAuto',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-inline-start',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-inline-start'
     },
     'margin-left': {
       syntax: '<length> | <percentage> | auto',
@@ -18085,7 +18078,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-left',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-left'
     },
     'margin-right': {
       syntax: '<length> | <percentage> | auto',
@@ -18100,7 +18093,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-right',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-right'
     },
     'margin-top': {
       syntax: '<length> | <percentage> | auto',
@@ -18115,7 +18108,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-top',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-top'
     },
     'margin-trim': {
       syntax: 'none | in-flow | all',
@@ -18130,7 +18123,7 @@
       order: 'perGrammar',
       alsoAppliesTo: ['::first-letter', '::first-line'],
       status: 'experimental',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-trim',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/margin-trim'
     },
     mask: mask,
     'mask-border': {
@@ -18144,7 +18137,7 @@
         'mask-border-repeat',
         'mask-border-slice',
         'mask-border-source',
-        'mask-border-width',
+        'mask-border-width'
       ],
       percentages: ['mask-border-slice', 'mask-border-width'],
       groups: ['CSS Masking'],
@@ -18154,7 +18147,7 @@
         'mask-border-repeat',
         'mask-border-slice',
         'mask-border-source',
-        'mask-border-width',
+        'mask-border-width'
       ],
       appliesto: 'allElementsSVGContainerElements',
       computed: [
@@ -18163,12 +18156,12 @@
         'mask-border-repeat',
         'mask-border-slice',
         'mask-border-source',
-        'mask-border-width',
+        'mask-border-width'
       ],
       order: 'perGrammar',
       stacking: true,
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-border',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-border'
     },
     'mask-border-mode': {
       syntax: 'luminance | alpha',
@@ -18182,7 +18175,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-border-mode',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-border-mode'
     },
     'mask-border-outset': {
       syntax: '[ <length> | <number> ]{1,4}',
@@ -18196,7 +18189,7 @@
       computed: 'asSpecifiedRelativeToAbsoluteLengths',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-border-outset',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-border-outset'
     },
     'mask-border-repeat': {
       syntax: '[ stretch | repeat | round | space ]{1,2}',
@@ -18210,7 +18203,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-border-repeat',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-border-repeat'
     },
     'mask-border-slice': {
       syntax: '<number-percentage>{1,4} fill?',
@@ -18224,7 +18217,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-border-slice',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-border-slice'
     },
     'mask-border-source': {
       syntax: 'none | <image>',
@@ -18238,7 +18231,7 @@
       computed: 'asSpecifiedURLsAbsolute',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-border-source',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-border-source'
     },
     'mask-border-width': {
       syntax: '[ <length-percentage> | <number> | auto ]{1,4}',
@@ -18252,7 +18245,7 @@
       computed: 'asSpecifiedRelativeToAbsoluteLengths',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-border-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-border-width'
     },
     'mask-clip': {
       syntax: '[ <geometry-box> | no-clip ]#',
@@ -18266,7 +18259,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-clip',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-clip'
     },
     'mask-composite': {
       syntax: '<compositing-operator>#',
@@ -18280,7 +18273,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-composite',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-composite'
     },
     'mask-image': {
       syntax: '<mask-reference>#',
@@ -18294,7 +18287,7 @@
       computed: 'asSpecifiedURLsAbsolute',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-image',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-image'
     },
     'mask-mode': {
       syntax: '<masking-mode>#',
@@ -18308,7 +18301,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-mode',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-mode'
     },
     'mask-origin': {
       syntax: '<geometry-box>#',
@@ -18322,7 +18315,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-origin',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-origin'
     },
     'mask-position': {
       syntax: '<position>#',
@@ -18336,7 +18329,7 @@
       computed: 'consistsOfTwoKeywordsForOriginAndOffsets',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-position',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-position'
     },
     'mask-repeat': {
       syntax: '<repeat-style>#',
@@ -18350,7 +18343,7 @@
       computed: 'consistsOfTwoDimensionKeywords',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-repeat',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-repeat'
     },
     'mask-size': {
       syntax: '<bg-size>#',
@@ -18364,7 +18357,7 @@
       computed: 'asSpecifiedRelativeToAbsoluteLengths',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-size',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-size'
     },
     'mask-type': {
       syntax: 'luminance | alpha',
@@ -18378,7 +18371,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-type',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mask-type'
     },
     'masonry-auto-flow': {
       syntax: '[ pack | next ] || [ definite-first | ordered ]',
@@ -18392,7 +18385,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'experimental',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/masonry-auto-flow',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/masonry-auto-flow'
     },
     'math-style': {
       syntax: 'normal | compact',
@@ -18406,7 +18399,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/math-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/math-style'
     },
     'max-block-size': {
       syntax: "<'max-width'>",
@@ -18420,7 +18413,7 @@
       computed: 'sameAsMaxWidthAndMaxHeight',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/max-block-size',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/max-block-size'
     },
     'max-height': {
       syntax:
@@ -18436,7 +18429,7 @@
       computed: 'percentageAsSpecifiedAbsoluteLengthOrNone',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/max-height',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/max-height'
     },
     'max-inline-size': {
       syntax: "<'max-width'>",
@@ -18450,7 +18443,7 @@
       computed: 'sameAsMaxWidthAndMaxHeight',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/max-inline-size',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/max-inline-size'
     },
     'max-lines': {
       syntax: 'none | <integer>',
@@ -18463,7 +18456,7 @@
       appliesto: 'blockContainersExceptMultiColumnContainers',
       computed: 'asSpecified',
       order: 'perGrammar',
-      status: 'experimental',
+      status: 'experimental'
     },
     'max-width': {
       syntax:
@@ -18478,7 +18471,7 @@
       computed: 'percentageAsSpecifiedAbsoluteLengthOrNone',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/max-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/max-width'
     },
     'min-block-size': {
       syntax: "<'min-width'>",
@@ -18492,7 +18485,7 @@
       computed: 'sameAsMinWidthAndMinHeight',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/min-block-size',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/min-block-size'
     },
     'min-height': {
       syntax:
@@ -18507,7 +18500,7 @@
       computed: 'percentageAsSpecifiedOrAbsoluteLength',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/min-height',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/min-height'
     },
     'min-inline-size': {
       syntax: "<'min-width'>",
@@ -18521,7 +18514,7 @@
       computed: 'sameAsMinWidthAndMinHeight',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/min-inline-size',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/min-inline-size'
     },
     'min-width': {
       syntax:
@@ -18536,7 +18529,7 @@
       computed: 'percentageAsSpecifiedOrAbsoluteLength',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/min-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/min-width'
     },
     'mix-blend-mode': {
       syntax: '<blend-mode>',
@@ -18551,7 +18544,7 @@
       order: 'uniqueOrder',
       stacking: true,
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mix-blend-mode',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/mix-blend-mode'
     },
     'object-fit': {
       syntax: 'fill | contain | cover | none | scale-down',
@@ -18565,7 +18558,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/object-fit',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/object-fit'
     },
     'object-position': {
       syntax: '<position>',
@@ -18579,7 +18572,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/object-position',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/object-position'
     },
     offset: offset,
     'offset-anchor': {
@@ -18593,7 +18586,7 @@
       appliesto: 'transformableElements',
       computed: 'forLengthAbsoluteValueOtherwisePercentage',
       order: 'perGrammar',
-      status: 'standard',
+      status: 'standard'
     },
     'offset-distance': {
       syntax: '<length-percentage>',
@@ -18607,7 +18600,7 @@
       computed: 'forLengthAbsoluteValueOtherwisePercentage',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/offset-distance',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/offset-distance'
     },
     'offset-path': {
       syntax:
@@ -18623,7 +18616,7 @@
       order: 'perGrammar',
       stacking: true,
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/offset-path',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/offset-path'
     },
     'offset-position': {
       syntax: 'auto | <position>',
@@ -18636,7 +18629,7 @@
       appliesto: 'transformableElements',
       computed: 'forLengthAbsoluteValueOtherwisePercentage',
       order: 'perGrammar',
-      status: 'experimental',
+      status: 'experimental'
     },
     'offset-rotate': {
       syntax: '[ auto | reverse ] || <angle>',
@@ -18650,7 +18643,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/offset-rotate',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/offset-rotate'
     },
     opacity: opacity,
     order: order,
@@ -18668,7 +18661,7 @@
       computed: 'invertForTranslucentColorRGBAOtherwiseRGB',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/outline-color',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/outline-color'
     },
     'outline-offset': {
       syntax: '<length>',
@@ -18682,7 +18675,7 @@
       computed: 'asSpecifiedRelativeToAbsoluteLengths',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/outline-offset',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/outline-offset'
     },
     'outline-style': {
       syntax: "auto | <'border-style'>",
@@ -18696,7 +18689,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/outline-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/outline-style'
     },
     'outline-width': {
       syntax: '<line-width>',
@@ -18710,7 +18703,7 @@
       computed: 'absoluteLength0ForNone',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/outline-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/outline-width'
     },
     overflow: overflow,
     'overflow-anchor': {
@@ -18724,7 +18717,7 @@
       appliesto: 'allElements',
       computed: 'asSpecified',
       order: 'perGrammar',
-      status: 'standard',
+      status: 'standard'
     },
     'overflow-block': {
       syntax: 'visible | hidden | clip | scroll | auto',
@@ -18738,7 +18731,7 @@
       computed:
         'asSpecifiedButVisibleOrClipReplacedToAutoOrHiddenIfOtherValueDifferent',
       order: 'perGrammar',
-      status: 'standard',
+      status: 'standard'
     },
     'overflow-clip-box': {
       syntax: 'padding-box | content-box',
@@ -18753,7 +18746,7 @@
       order: 'uniqueOrder',
       status: 'nonstandard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Mozilla/CSS/overflow-clip-box',
+        'https://developer.mozilla.org/docs/Mozilla/CSS/overflow-clip-box'
     },
     'overflow-inline': {
       syntax: 'visible | hidden | clip | scroll | auto',
@@ -18767,7 +18760,7 @@
       computed:
         'asSpecifiedButVisibleOrClipReplacedToAutoOrHiddenIfOtherValueDifferent',
       order: 'perGrammar',
-      status: 'standard',
+      status: 'standard'
     },
     'overflow-wrap': {
       syntax: 'normal | break-word | anywhere',
@@ -18781,7 +18774,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overflow-wrap',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overflow-wrap'
     },
     'overflow-x': {
       syntax: 'visible | hidden | clip | scroll | auto',
@@ -18796,7 +18789,7 @@
         'asSpecifiedButVisibleOrClipReplacedToAutoOrHiddenIfOtherValueDifferent',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overflow-x',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overflow-x'
     },
     'overflow-y': {
       syntax: 'visible | hidden | clip | scroll | auto',
@@ -18811,7 +18804,7 @@
         'asSpecifiedButVisibleOrClipReplacedToAutoOrHiddenIfOtherValueDifferent',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overflow-y',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overflow-y'
     },
     'overscroll-behavior': {
       syntax: '[ contain | none | auto ]{1,2}',
@@ -18825,7 +18818,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior'
     },
     'overscroll-behavior-block': {
       syntax: 'contain | none | auto',
@@ -18840,7 +18833,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-block',
+        'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-block'
     },
     'overscroll-behavior-inline': {
       syntax: 'contain | none | auto',
@@ -18855,7 +18848,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-inline',
+        'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-inline'
     },
     'overscroll-behavior-x': {
       syntax: 'contain | none | auto',
@@ -18870,7 +18863,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-x',
+        'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-x'
     },
     'overscroll-behavior-y': {
       syntax: 'contain | none | auto',
@@ -18885,7 +18878,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-y',
+        'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-y'
     },
     padding: padding,
     'padding-block': {
@@ -18900,7 +18893,7 @@
       computed: 'asLength',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-block',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-block'
     },
     'padding-block-end': {
       syntax: "<'padding-left'>",
@@ -18914,7 +18907,7 @@
       computed: 'asLength',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-block-end',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-block-end'
     },
     'padding-block-start': {
       syntax: "<'padding-left'>",
@@ -18928,7 +18921,7 @@
       computed: 'asLength',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-block-start',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-block-start'
     },
     'padding-bottom': {
       syntax: '<length> | <percentage>',
@@ -18943,7 +18936,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-bottom',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-bottom'
     },
     'padding-inline': {
       syntax: "<'padding-left'>{1,2}",
@@ -18957,7 +18950,7 @@
       computed: 'asLength',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-inline',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-inline'
     },
     'padding-inline-end': {
       syntax: "<'padding-left'>",
@@ -18971,7 +18964,7 @@
       computed: 'asLength',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-inline-end',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-inline-end'
     },
     'padding-inline-start': {
       syntax: "<'padding-left'>",
@@ -18985,8 +18978,7 @@
       computed: 'asLength',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/padding-inline-start',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-inline-start'
     },
     'padding-left': {
       syntax: '<length> | <percentage>',
@@ -19001,7 +18993,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-left',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-left'
     },
     'padding-right': {
       syntax: '<length> | <percentage>',
@@ -19016,7 +19008,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-right',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-right'
     },
     'padding-top': {
       syntax: '<length> | <percentage>',
@@ -19031,7 +19023,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-top',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/padding-top'
     },
     'page-break-after': {
       syntax: 'auto | always | avoid | left | right | recto | verso',
@@ -19045,7 +19037,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/page-break-after',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/page-break-after'
     },
     'page-break-before': {
       syntax: 'auto | always | avoid | left | right | recto | verso',
@@ -19059,7 +19051,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/page-break-before',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/page-break-before'
     },
     'page-break-inside': {
       syntax: 'auto | avoid',
@@ -19073,7 +19065,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/page-break-inside',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/page-break-inside'
     },
     'paint-order': {
       syntax: 'normal | [ fill || stroke || markers ]',
@@ -19087,7 +19079,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/paint-order',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/paint-order'
     },
     perspective: perspective,
     'perspective-origin': {
@@ -19102,7 +19094,7 @@
       computed: 'forLengthAbsoluteValueOtherwisePercentage',
       order: 'oneOrTwoValuesLengthAbsoluteKeywordsPercentages',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/perspective-origin',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/perspective-origin'
     },
     'place-content': {
       syntax: "<'align-content'> <'justify-content'>?",
@@ -19116,7 +19108,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/place-content',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/place-content'
     },
     'place-items': {
       syntax: "<'align-items'> <'justify-items'>?",
@@ -19130,7 +19122,7 @@
       computed: ['align-items', 'justify-items'],
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/place-items',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/place-items'
     },
     'place-self': {
       syntax: "<'align-self'> <'justify-self'>?",
@@ -19144,7 +19136,7 @@
       computed: ['align-self', 'justify-self'],
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/place-self',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/place-self'
     },
     'pointer-events': {
       syntax:
@@ -19159,7 +19151,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/pointer-events',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/pointer-events'
     },
     position: position$1,
     quotes: quotes,
@@ -19179,7 +19171,7 @@
         'asSpecifiedWithLengthsAbsoluteAndNormalComputingToZeroExceptMultiColumn',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/row-gap',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/row-gap'
     },
     'ruby-align': {
       syntax: 'start | center | space-between | space-around',
@@ -19193,7 +19185,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'experimental',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/ruby-align',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/ruby-align'
     },
     'ruby-merge': {
       syntax: 'separate | collapse | auto',
@@ -19206,7 +19198,7 @@
       appliesto: 'rubyAnnotationsContainers',
       computed: 'asSpecified',
       order: 'uniqueOrder',
-      status: 'experimental',
+      status: 'experimental'
     },
     'ruby-position': {
       syntax: 'over | under | inter-character',
@@ -19220,7 +19212,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'experimental',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/ruby-position',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/ruby-position'
     },
     scale: scale,
     'scrollbar-color': {
@@ -19235,7 +19227,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scrollbar-color',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scrollbar-color'
     },
     'scrollbar-gutter': {
       syntax: 'auto | [ stable | always ] && both? && force?',
@@ -19249,7 +19241,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scrollbar-gutter',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scrollbar-gutter'
     },
     'scrollbar-width': {
       syntax: 'auto | thin | none',
@@ -19263,7 +19255,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scrollbar-width',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scrollbar-width'
     },
     'scroll-behavior': {
       syntax: 'auto | smooth',
@@ -19277,7 +19269,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-behavior',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-behavior'
     },
     'scroll-margin': {
       syntax: '<length>{1,4}',
@@ -19291,7 +19283,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin'
     },
     'scroll-margin-block': {
       syntax: '<length>{1,2}',
@@ -19305,7 +19297,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-block',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-block'
     },
     'scroll-margin-block-start': {
       syntax: '<length>',
@@ -19320,7 +19312,7 @@
       order: 'perGrammar',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-block-start',
+        'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-block-start'
     },
     'scroll-margin-block-end': {
       syntax: '<length>',
@@ -19335,7 +19327,7 @@
       order: 'perGrammar',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-block-end',
+        'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-block-end'
     },
     'scroll-margin-bottom': {
       syntax: '<length>',
@@ -19349,8 +19341,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-bottom',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-bottom'
     },
     'scroll-margin-inline': {
       syntax: '<length>{1,2}',
@@ -19364,8 +19355,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-inline',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-inline'
     },
     'scroll-margin-inline-start': {
       syntax: '<length>',
@@ -19380,7 +19370,7 @@
       order: 'perGrammar',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-inline-start',
+        'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-inline-start'
     },
     'scroll-margin-inline-end': {
       syntax: '<length>',
@@ -19395,7 +19385,7 @@
       order: 'perGrammar',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-inline-end',
+        'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-inline-end'
     },
     'scroll-margin-left': {
       syntax: '<length>',
@@ -19409,7 +19399,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-left',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-left'
     },
     'scroll-margin-right': {
       syntax: '<length>',
@@ -19423,7 +19413,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-right',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-right'
     },
     'scroll-margin-top': {
       syntax: '<length>',
@@ -19437,7 +19427,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-top',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-top'
     },
     'scroll-padding': {
       syntax: '[ auto | <length-percentage> ]{1,4}',
@@ -19451,7 +19441,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-padding',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-padding'
     },
     'scroll-padding-block': {
       syntax: '[ auto | <length-percentage> ]{1,2}',
@@ -19465,8 +19455,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-block',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-block'
     },
     'scroll-padding-block-start': {
       syntax: 'auto | <length-percentage>',
@@ -19481,7 +19470,7 @@
       order: 'perGrammar',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-block-start',
+        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-block-start'
     },
     'scroll-padding-block-end': {
       syntax: 'auto | <length-percentage>',
@@ -19496,7 +19485,7 @@
       order: 'perGrammar',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-block-end',
+        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-block-end'
     },
     'scroll-padding-bottom': {
       syntax: 'auto | <length-percentage>',
@@ -19511,7 +19500,7 @@
       order: 'perGrammar',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-bottom',
+        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-bottom'
     },
     'scroll-padding-inline': {
       syntax: '[ auto | <length-percentage> ]{1,2}',
@@ -19526,7 +19515,7 @@
       order: 'perGrammar',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-inline',
+        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-inline'
     },
     'scroll-padding-inline-start': {
       syntax: 'auto | <length-percentage>',
@@ -19541,7 +19530,7 @@
       order: 'perGrammar',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-inline-start',
+        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-inline-start'
     },
     'scroll-padding-inline-end': {
       syntax: 'auto | <length-percentage>',
@@ -19556,7 +19545,7 @@
       order: 'perGrammar',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-inline-end',
+        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-inline-end'
     },
     'scroll-padding-left': {
       syntax: 'auto | <length-percentage>',
@@ -19570,7 +19559,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-left',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-left'
     },
     'scroll-padding-right': {
       syntax: 'auto | <length-percentage>',
@@ -19584,8 +19573,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-right',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-right'
     },
     'scroll-padding-top': {
       syntax: 'auto | <length-percentage>',
@@ -19599,7 +19587,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-top',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-top'
     },
     'scroll-snap-align': {
       syntax: '[ none | start | end | center ]{1,2}',
@@ -19613,7 +19601,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-align',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-align'
     },
     'scroll-snap-coordinate': {
       syntax: 'none | <position>#',
@@ -19628,7 +19616,7 @@
       order: 'uniqueOrder',
       status: 'obsolete',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-coordinate',
+        'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-coordinate'
     },
     'scroll-snap-destination': {
       syntax: '<position>',
@@ -19643,7 +19631,7 @@
       order: 'uniqueOrder',
       status: 'obsolete',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-destination',
+        'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-destination'
     },
     'scroll-snap-points-x': {
       syntax: 'none | repeat( <length-percentage> )',
@@ -19657,8 +19645,7 @@
       computed: 'asSpecifiedRelativeToAbsoluteLengths',
       order: 'uniqueOrder',
       status: 'obsolete',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-points-x',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-points-x'
     },
     'scroll-snap-points-y': {
       syntax: 'none | repeat( <length-percentage> )',
@@ -19672,8 +19659,7 @@
       computed: 'asSpecifiedRelativeToAbsoluteLengths',
       order: 'uniqueOrder',
       status: 'obsolete',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-points-y',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-points-y'
     },
     'scroll-snap-stop': {
       syntax: 'normal | always',
@@ -19687,7 +19673,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-stop',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-stop'
     },
     'scroll-snap-type': {
       syntax:
@@ -19702,7 +19688,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-type',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-type'
     },
     'scroll-snap-type-x': {
       syntax: 'none | mandatory | proximity',
@@ -19716,7 +19702,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'obsolete',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-type-x',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-type-x'
     },
     'scroll-snap-type-y': {
       syntax: 'none | mandatory | proximity',
@@ -19730,7 +19716,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'obsolete',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-type-y',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-type-y'
     },
     'shape-image-threshold': {
       syntax: '<alpha-value>',
@@ -19745,7 +19731,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/shape-image-threshold',
+        'https://developer.mozilla.org/docs/Web/CSS/shape-image-threshold'
     },
     'shape-margin': {
       syntax: '<length-percentage>',
@@ -19759,7 +19745,7 @@
       computed: 'asSpecifiedRelativeToAbsoluteLengths',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/shape-margin',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/shape-margin'
     },
     'shape-outside': {
       syntax: 'none | <shape-box> || <basic-shape> | <image>',
@@ -19773,7 +19759,7 @@
       computed: 'asDefinedForBasicShapeWithAbsoluteURIOtherwiseAsSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/shape-outside',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/shape-outside'
     },
     'tab-size': {
       syntax: '<integer> | <length>',
@@ -19787,7 +19773,7 @@
       computed: 'specifiedIntegerOrAbsoluteLength',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/tab-size',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/tab-size'
     },
     'table-layout': {
       syntax: 'auto | fixed',
@@ -19801,7 +19787,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/table-layout',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/table-layout'
     },
     'text-align': {
       syntax: 'start | end | left | right | center | justify | match-parent',
@@ -19816,7 +19802,7 @@
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-align',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-align'
     },
     'text-align-last': {
       syntax: 'auto | start | end | left | right | center | justify',
@@ -19830,7 +19816,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-align-last',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-align-last'
     },
     'text-combine-upright': {
       syntax: 'none | all | [ digits <integer>? ]',
@@ -19844,8 +19830,7 @@
       computed: 'keywordPlusIntegerIfDigits',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-combine-upright',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-combine-upright'
     },
     'text-decoration': {
       syntax:
@@ -19856,26 +19841,26 @@
         'text-decoration-color',
         'text-decoration-style',
         'text-decoration-line',
-        'text-decoration-thickness',
+        'text-decoration-thickness'
       ],
       percentages: 'no',
       groups: ['CSS Text Decoration'],
       initial: [
         'text-decoration-color',
         'text-decoration-style',
-        'text-decoration-line',
+        'text-decoration-line'
       ],
       appliesto: 'allElements',
       computed: [
         'text-decoration-line',
         'text-decoration-style',
         'text-decoration-color',
-        'text-decoration-thickness',
+        'text-decoration-thickness'
       ],
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-decoration',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-decoration'
     },
     'text-decoration-color': {
       syntax: '<color>',
@@ -19891,7 +19876,7 @@
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-decoration-color',
+        'https://developer.mozilla.org/docs/Web/CSS/text-decoration-color'
     },
     'text-decoration-line': {
       syntax:
@@ -19907,8 +19892,7 @@
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-decoration-line',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-decoration-line'
     },
     'text-decoration-skip': {
       syntax:
@@ -19923,8 +19907,7 @@
       computed: 'asSpecified',
       order: 'orderOfAppearance',
       status: 'experimental',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-decoration-skip',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-decoration-skip'
     },
     'text-decoration-skip-ink': {
       syntax: 'auto | all | none',
@@ -19939,7 +19922,7 @@
       order: 'orderOfAppearance',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-decoration-skip-ink',
+        'https://developer.mozilla.org/docs/Web/CSS/text-decoration-skip-ink'
     },
     'text-decoration-style': {
       syntax: 'solid | double | dotted | dashed | wavy',
@@ -19955,7 +19938,7 @@
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-decoration-style',
+        'https://developer.mozilla.org/docs/Web/CSS/text-decoration-style'
     },
     'text-decoration-thickness': {
       syntax: 'auto | from-font | <length> | <percentage> ',
@@ -19971,7 +19954,7 @@
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-decoration-thickness',
+        'https://developer.mozilla.org/docs/Web/CSS/text-decoration-thickness'
     },
     'text-emphasis': {
       syntax: "<'text-emphasis-style'> || <'text-emphasis-color'>",
@@ -19985,7 +19968,7 @@
       computed: ['text-emphasis-style', 'text-emphasis-color'],
       order: 'orderOfAppearance',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-emphasis',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-emphasis'
     },
     'text-emphasis-color': {
       syntax: '<color>',
@@ -19999,7 +19982,7 @@
       computed: 'computedColor',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-emphasis-color',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-emphasis-color'
     },
     'text-emphasis-position': {
       syntax: '[ over | under ] && [ right | left ]',
@@ -20014,7 +19997,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-emphasis-position',
+        'https://developer.mozilla.org/docs/Web/CSS/text-emphasis-position'
     },
     'text-emphasis-style': {
       syntax:
@@ -20029,7 +20012,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-emphasis-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-emphasis-style'
     },
     'text-indent': {
       syntax: '<length-percentage> && hanging? && each-line?',
@@ -20043,7 +20026,7 @@
       computed: 'percentageOrAbsoluteLengthPlusKeywords',
       order: 'lengthOrPercentageBeforeKeywords',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-indent',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-indent'
     },
     'text-justify': {
       syntax: 'auto | inter-character | inter-word | none',
@@ -20057,7 +20040,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-justify',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-justify'
     },
     'text-orientation': {
       syntax: 'mixed | upright | sideways',
@@ -20071,7 +20054,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-orientation',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-orientation'
     },
     'text-overflow': {
       syntax: '[ clip | ellipsis | <string> ]{1,2}',
@@ -20086,7 +20069,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-overflow',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-overflow'
     },
     'text-rendering': {
       syntax: 'auto | optimizeSpeed | optimizeLegibility | geometricPrecision',
@@ -20100,7 +20083,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-rendering',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-rendering'
     },
     'text-shadow': {
       syntax: 'none | <shadow-t>#',
@@ -20115,7 +20098,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-shadow',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-shadow'
     },
     'text-size-adjust': {
       syntax: 'none | auto | <percentage>',
@@ -20129,7 +20112,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'experimental',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-size-adjust',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-size-adjust'
     },
     'text-transform': {
       syntax:
@@ -20145,7 +20128,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-transform',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-transform'
     },
     'text-underline-offset': {
       syntax: 'auto | <length> | <percentage> ',
@@ -20161,7 +20144,7 @@
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-underline-offset',
+        'https://developer.mozilla.org/docs/Web/CSS/text-underline-offset'
     },
     'text-underline-position': {
       syntax: 'auto | from-font | [ under || [ left | right ] ]',
@@ -20176,7 +20159,7 @@
       order: 'orderOfAppearance',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-underline-position',
+        'https://developer.mozilla.org/docs/Web/CSS/text-underline-position'
     },
     top: top,
     'touch-action': {
@@ -20193,7 +20176,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/touch-action',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/touch-action'
     },
     transform: transform,
     'transform-box': {
@@ -20208,7 +20191,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transform-box',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transform-box'
     },
     'transform-origin': {
       syntax:
@@ -20223,7 +20206,7 @@
       computed: 'forLengthAbsoluteValueOtherwisePercentage',
       order: 'oneOrTwoValuesLengthAbsoluteKeywordsPercentages',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transform-origin',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transform-origin'
     },
     'transform-style': {
       syntax: 'flat | preserve-3d',
@@ -20238,7 +20221,7 @@
       order: 'uniqueOrder',
       stacking: true,
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transform-style',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transform-style'
     },
     transition: transition,
     'transition-delay': {
@@ -20253,7 +20236,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transition-delay',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transition-delay'
     },
     'transition-duration': {
       syntax: '<time>#',
@@ -20267,7 +20250,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transition-duration',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transition-duration'
     },
     'transition-property': {
       syntax: 'none | <single-transition-property>#',
@@ -20281,7 +20264,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transition-property',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transition-property'
     },
     'transition-timing-function': {
       syntax: '<timing-function>#',
@@ -20296,7 +20279,7 @@
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/transition-timing-function',
+        'https://developer.mozilla.org/docs/Web/CSS/transition-timing-function'
     },
     translate: translate,
     'unicode-bidi': {
@@ -20312,7 +20295,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/unicode-bidi',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/unicode-bidi'
     },
     'user-select': {
       syntax: 'auto | text | none | contain | all',
@@ -20326,7 +20309,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/user-select',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/user-select'
     },
     'vertical-align': {
       syntax:
@@ -20342,7 +20325,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/vertical-align',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/vertical-align'
     },
     visibility: visibility,
     'white-space': {
@@ -20357,7 +20340,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/white-space',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/white-space'
     },
     widows: widows,
     width: width,
@@ -20373,7 +20356,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/will-change',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/will-change'
     },
     'word-break': {
       syntax: 'normal | break-all | keep-all | break-word',
@@ -20387,7 +20370,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/word-break',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/word-break'
     },
     'word-spacing': {
       syntax: 'normal | <length-percentage>',
@@ -20402,7 +20385,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/word-spacing',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/word-spacing'
     },
     'word-wrap': {
       syntax: 'normal | break-word',
@@ -20416,7 +20399,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overflow-wrap',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overflow-wrap'
     },
     'writing-mode': {
       syntax:
@@ -20431,7 +20414,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/writing-mode',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/writing-mode'
     },
     'z-index': {
       syntax: 'auto | <integer>',
@@ -20446,1639 +20429,1638 @@
       order: 'uniqueOrder',
       stacking: true,
       status: 'standard',
-      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/z-index',
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/z-index'
     },
-    zoom: zoom,
+    zoom: zoom
   };
 
   var attachment = {
-    syntax: 'scroll | fixed | local',
+    syntax: 'scroll | fixed | local'
   };
   var box = {
-    syntax: 'border-box | padding-box | content-box',
+    syntax: 'border-box | padding-box | content-box'
   };
   var color = {
     syntax:
-      '<rgb()> | <rgba()> | <hsl()> | <hsla()> | <hex-color> | <named-color> | currentcolor | <deprecated-system-color>',
+      '<rgb()> | <rgba()> | <hsl()> | <hsla()> | <hex-color> | <named-color> | currentcolor | <deprecated-system-color>'
   };
   var combinator = {
-    syntax: "'>' | '+' | '~' | [ '||' ]",
+    syntax: "'>' | '+' | '~' | [ '||' ]"
   };
   var gradient = {
     syntax:
-      '<linear-gradient()> | <repeating-linear-gradient()> | <radial-gradient()> | <repeating-radial-gradient()> | <conic-gradient()>',
+      '<linear-gradient()> | <repeating-linear-gradient()> | <radial-gradient()> | <repeating-radial-gradient()> | <conic-gradient()>'
   };
   var hue = {
-    syntax: '<number> | <angle>',
+    syntax: '<number> | <angle>'
   };
   var image = {
     syntax:
-      '<url> | <image()> | <image-set()> | <element()> | <paint()> | <cross-fade()> | <gradient>',
+      '<url> | <image()> | <image-set()> | <element()> | <paint()> | <cross-fade()> | <gradient>'
   };
   var nth$1 = {
-    syntax: '<an-plus-b> | even | odd',
+    syntax: '<an-plus-b> | even | odd'
   };
   var position = {
     syntax:
-      '[ [ left | center | right ] || [ top | center | bottom ] | [ left | center | right | <length-percentage> ] [ top | center | bottom | <length-percentage> ]? | [ [ left | right ] <length-percentage> ] && [ [ top | bottom ] <length-percentage> ] ]',
+      '[ [ left | center | right ] || [ top | center | bottom ] | [ left | center | right | <length-percentage> ] [ top | center | bottom | <length-percentage> ]? | [ [ left | right ] <length-percentage> ] && [ [ top | bottom ] <length-percentage> ] ]'
   };
   var quote = {
-    syntax: 'open-quote | close-quote | no-open-quote | no-close-quote',
+    syntax: 'open-quote | close-quote | no-open-quote | no-close-quote'
   };
   var shadow = {
-    syntax: 'inset? && <length>{2,4} && <color>?',
+    syntax: 'inset? && <length>{2,4} && <color>?'
   };
   var shape = {
-    syntax: 'rect(<top>, <right>, <bottom>, <left>)',
+    syntax: 'rect(<top>, <right>, <bottom>, <left>)'
   };
   var size = {
     syntax:
-      'closest-side | farthest-side | closest-corner | farthest-corner | <length> | <length-percentage>{2}',
+      'closest-side | farthest-side | closest-corner | farthest-corner | <length> | <length-percentage>{2}'
   };
   var symbol = {
-    syntax: '<string> | <image> | <custom-ident>',
+    syntax: '<string> | <image> | <custom-ident>'
   };
   var target = {
-    syntax: '<target-counter()> | <target-counters()> | <target-text()>',
+    syntax: '<target-counter()> | <target-counters()> | <target-text()>'
   };
   var require$$2 = {
     'absolute-size': {
       syntax:
-        'xx-small | x-small | small | medium | large | x-large | xx-large | xxx-large',
+        'xx-small | x-small | small | medium | large | x-large | xx-large | xxx-large'
     },
     'alpha-value': {
-      syntax: '<number> | <percentage>',
+      syntax: '<number> | <percentage>'
     },
     'angle-percentage': {
-      syntax: '<angle> | <percentage>',
+      syntax: '<angle> | <percentage>'
     },
     'angular-color-hint': {
-      syntax: '<angle-percentage>',
+      syntax: '<angle-percentage>'
     },
     'angular-color-stop': {
-      syntax: '<color> && <color-stop-angle>?',
+      syntax: '<color> && <color-stop-angle>?'
     },
     'angular-color-stop-list': {
       syntax:
-        '[ <angular-color-stop> [, <angular-color-hint>]? ]# , <angular-color-stop>',
+        '[ <angular-color-stop> [, <angular-color-hint>]? ]# , <angular-color-stop>'
     },
     'animateable-feature': {
-      syntax: 'scroll-position | contents | <custom-ident>',
+      syntax: 'scroll-position | contents | <custom-ident>'
     },
     attachment: attachment,
     'attr()': {
-      syntax: 'attr( <attr-name> <type-or-unit>? [, <attr-fallback> ]? )',
+      syntax: 'attr( <attr-name> <type-or-unit>? [, <attr-fallback> ]? )'
     },
     'attr-matcher': {
-      syntax: "[ '~' | '|' | '^' | '$' | '*' ]? '='",
+      syntax: "[ '~' | '|' | '^' | '$' | '*' ]? '='"
     },
     'attr-modifier': {
-      syntax: 'i | s',
+      syntax: 'i | s'
     },
     'attribute-selector': {
       syntax:
-        "'[' <wq-name> ']' | '[' <wq-name> <attr-matcher> [ <string-token> | <ident-token> ] <attr-modifier>? ']'",
+        "'[' <wq-name> ']' | '[' <wq-name> <attr-matcher> [ <string-token> | <ident-token> ] <attr-modifier>? ']'"
     },
     'auto-repeat': {
       syntax:
-        'repeat( [ auto-fill | auto-fit ] , [ <line-names>? <fixed-size> ]+ <line-names>? )',
+        'repeat( [ auto-fill | auto-fit ] , [ <line-names>? <fixed-size> ]+ <line-names>? )'
     },
     'auto-track-list': {
       syntax:
-        '[ <line-names>? [ <fixed-size> | <fixed-repeat> ] ]* <line-names>? <auto-repeat>\n[ <line-names>? [ <fixed-size> | <fixed-repeat> ] ]* <line-names>?',
+        '[ <line-names>? [ <fixed-size> | <fixed-repeat> ] ]* <line-names>? <auto-repeat>\n[ <line-names>? [ <fixed-size> | <fixed-repeat> ] ]* <line-names>?'
     },
     'baseline-position': {
-      syntax: '[ first | last ]? baseline',
+      syntax: '[ first | last ]? baseline'
     },
     'basic-shape': {
-      syntax: '<inset()> | <circle()> | <ellipse()> | <polygon()> | <path()>',
+      syntax: '<inset()> | <circle()> | <ellipse()> | <polygon()> | <path()>'
     },
     'bg-image': {
-      syntax: 'none | <image>',
+      syntax: 'none | <image>'
     },
     'bg-layer': {
       syntax:
-        '<bg-image> || <bg-position> [ / <bg-size> ]? || <repeat-style> || <attachment> || <box> || <box>',
+        '<bg-image> || <bg-position> [ / <bg-size> ]? || <repeat-style> || <attachment> || <box> || <box>'
     },
     'bg-position': {
       syntax:
-        '[ [ left | center | right | top | bottom | <length-percentage> ] | [ left | center | right | <length-percentage> ] [ top | center | bottom | <length-percentage> ] | [ center | [ left | right ] <length-percentage>? ] && [ center | [ top | bottom ] <length-percentage>? ] ]',
+        '[ [ left | center | right | top | bottom | <length-percentage> ] | [ left | center | right | <length-percentage> ] [ top | center | bottom | <length-percentage> ] | [ center | [ left | right ] <length-percentage>? ] && [ center | [ top | bottom ] <length-percentage>? ] ]'
     },
     'bg-size': {
-      syntax: '[ <length-percentage> | auto ]{1,2} | cover | contain',
+      syntax: '[ <length-percentage> | auto ]{1,2} | cover | contain'
     },
     'blur()': {
-      syntax: 'blur( <length> )',
+      syntax: 'blur( <length> )'
     },
     'blend-mode': {
       syntax:
-        'normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn | hard-light | soft-light | difference | exclusion | hue | saturation | color | luminosity',
+        'normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn | hard-light | soft-light | difference | exclusion | hue | saturation | color | luminosity'
     },
     box: box,
     'brightness()': {
-      syntax: 'brightness( <number-percentage> )',
+      syntax: 'brightness( <number-percentage> )'
     },
     'calc()': {
-      syntax: 'calc( <calc-sum> )',
+      syntax: 'calc( <calc-sum> )'
     },
     'calc-sum': {
-      syntax: "<calc-product> [ [ '+' | '-' ] <calc-product> ]*",
+      syntax: "<calc-product> [ [ '+' | '-' ] <calc-product> ]*"
     },
     'calc-product': {
-      syntax: "<calc-value> [ '*' <calc-value> | '/' <number> ]*",
+      syntax: "<calc-value> [ '*' <calc-value> | '/' <number> ]*"
     },
     'calc-value': {
-      syntax: '<number> | <dimension> | <percentage> | ( <calc-sum> )',
+      syntax: '<number> | <dimension> | <percentage> | ( <calc-sum> )'
     },
     'cf-final-image': {
-      syntax: '<image> | <color>',
+      syntax: '<image> | <color>'
     },
     'cf-mixing-image': {
-      syntax: '<percentage>? && <image>',
+      syntax: '<percentage>? && <image>'
     },
     'circle()': {
-      syntax: 'circle( [ <shape-radius> ]? [ at <position> ]? )',
+      syntax: 'circle( [ <shape-radius> ]? [ at <position> ]? )'
     },
     'clamp()': {
-      syntax: 'clamp( <calc-sum>#{3} )',
+      syntax: 'clamp( <calc-sum>#{3} )'
     },
     'class-selector': {
-      syntax: "'.' <ident-token>",
+      syntax: "'.' <ident-token>"
     },
     'clip-source': {
-      syntax: '<url>',
+      syntax: '<url>'
     },
     color: color,
     'color-stop': {
-      syntax: '<color-stop-length> | <color-stop-angle>',
+      syntax: '<color-stop-length> | <color-stop-angle>'
     },
     'color-stop-angle': {
-      syntax: '<angle-percentage>{1,2}',
+      syntax: '<angle-percentage>{1,2}'
     },
     'color-stop-length': {
-      syntax: '<length-percentage>{1,2}',
+      syntax: '<length-percentage>{1,2}'
     },
     'color-stop-list': {
       syntax:
-        '[ <linear-color-stop> [, <linear-color-hint>]? ]# , <linear-color-stop>',
+        '[ <linear-color-stop> [, <linear-color-hint>]? ]# , <linear-color-stop>'
     },
     combinator: combinator,
     'common-lig-values': {
-      syntax: '[ common-ligatures | no-common-ligatures ]',
+      syntax: '[ common-ligatures | no-common-ligatures ]'
     },
     'compat-auto': {
       syntax:
-        'searchfield | textarea | push-button | slider-horizontal | checkbox | radio | square-button | menulist | listbox | meter | progress-bar | button',
+        'searchfield | textarea | push-button | slider-horizontal | checkbox | radio | square-button | menulist | listbox | meter | progress-bar | button'
     },
     'composite-style': {
       syntax:
-        'clear | copy | source-over | source-in | source-out | source-atop | destination-over | destination-in | destination-out | destination-atop | xor',
+        'clear | copy | source-over | source-in | source-out | source-atop | destination-over | destination-in | destination-out | destination-atop | xor'
     },
     'compositing-operator': {
-      syntax: 'add | subtract | intersect | exclude',
+      syntax: 'add | subtract | intersect | exclude'
     },
     'compound-selector': {
       syntax:
-        '[ <type-selector>? <subclass-selector>* [ <pseudo-element-selector> <pseudo-class-selector>* ]* ]!',
+        '[ <type-selector>? <subclass-selector>* [ <pseudo-element-selector> <pseudo-class-selector>* ]* ]!'
     },
     'compound-selector-list': {
-      syntax: '<compound-selector>#',
+      syntax: '<compound-selector>#'
     },
     'complex-selector': {
-      syntax: '<compound-selector> [ <combinator>? <compound-selector> ]*',
+      syntax: '<compound-selector> [ <combinator>? <compound-selector> ]*'
     },
     'complex-selector-list': {
-      syntax: '<complex-selector>#',
+      syntax: '<complex-selector>#'
     },
     'conic-gradient()': {
       syntax:
-        'conic-gradient( [ from <angle> ]? [ at <position> ]?, <angular-color-stop-list> )',
+        'conic-gradient( [ from <angle> ]? [ at <position> ]?, <angular-color-stop-list> )'
     },
     'contextual-alt-values': {
-      syntax: '[ contextual | no-contextual ]',
+      syntax: '[ contextual | no-contextual ]'
     },
     'content-distribution': {
-      syntax: 'space-between | space-around | space-evenly | stretch',
+      syntax: 'space-between | space-around | space-evenly | stretch'
     },
     'content-list': {
       syntax:
-        '[ <string> | contents | <image> | <quote> | <target> | <leader()> ]+',
+        '[ <string> | contents | <image> | <quote> | <target> | <leader()> ]+'
     },
     'content-position': {
-      syntax: 'center | start | end | flex-start | flex-end',
+      syntax: 'center | start | end | flex-start | flex-end'
     },
     'content-replacement': {
-      syntax: '<image>',
+      syntax: '<image>'
     },
     'contrast()': {
-      syntax: 'contrast( [ <number-percentage> ] )',
+      syntax: 'contrast( [ <number-percentage> ] )'
     },
     'counter()': {
-      syntax: 'counter( <custom-ident>, <counter-style>? )',
+      syntax: 'counter( <custom-ident>, <counter-style>? )'
     },
     'counter-style': {
-      syntax: '<counter-style-name> | symbols()',
+      syntax: '<counter-style-name> | symbols()'
     },
     'counter-style-name': {
-      syntax: '<custom-ident>',
+      syntax: '<custom-ident>'
     },
     'counters()': {
-      syntax: 'counters( <custom-ident>, <string>, <counter-style>? )',
+      syntax: 'counters( <custom-ident>, <string>, <counter-style>? )'
     },
     'cross-fade()': {
-      syntax: 'cross-fade( <cf-mixing-image> , <cf-final-image>? )',
+      syntax: 'cross-fade( <cf-mixing-image> , <cf-final-image>? )'
     },
     'cubic-bezier-timing-function': {
       syntax:
-        'ease | ease-in | ease-out | ease-in-out | cubic-bezier(<number [0,1]>, <number>, <number [0,1]>, <number>)',
+        'ease | ease-in | ease-out | ease-in-out | cubic-bezier(<number [0,1]>, <number>, <number [0,1]>, <number>)'
     },
     'deprecated-system-color': {
       syntax:
-        'ActiveBorder | ActiveCaption | AppWorkspace | Background | ButtonFace | ButtonHighlight | ButtonShadow | ButtonText | CaptionText | GrayText | Highlight | HighlightText | InactiveBorder | InactiveCaption | InactiveCaptionText | InfoBackground | InfoText | Menu | MenuText | Scrollbar | ThreeDDarkShadow | ThreeDFace | ThreeDHighlight | ThreeDLightShadow | ThreeDShadow | Window | WindowFrame | WindowText',
+        'ActiveBorder | ActiveCaption | AppWorkspace | Background | ButtonFace | ButtonHighlight | ButtonShadow | ButtonText | CaptionText | GrayText | Highlight | HighlightText | InactiveBorder | InactiveCaption | InactiveCaptionText | InfoBackground | InfoText | Menu | MenuText | Scrollbar | ThreeDDarkShadow | ThreeDFace | ThreeDHighlight | ThreeDLightShadow | ThreeDShadow | Window | WindowFrame | WindowText'
     },
     'discretionary-lig-values': {
-      syntax: '[ discretionary-ligatures | no-discretionary-ligatures ]',
+      syntax: '[ discretionary-ligatures | no-discretionary-ligatures ]'
     },
     'display-box': {
-      syntax: 'contents | none',
+      syntax: 'contents | none'
     },
     'display-inside': {
-      syntax: 'flow | flow-root | table | flex | grid | ruby',
+      syntax: 'flow | flow-root | table | flex | grid | ruby'
     },
     'display-internal': {
       syntax:
-        'table-row-group | table-header-group | table-footer-group | table-row | table-cell | table-column-group | table-column | table-caption | ruby-base | ruby-text | ruby-base-container | ruby-text-container',
+        'table-row-group | table-header-group | table-footer-group | table-row | table-cell | table-column-group | table-column | table-caption | ruby-base | ruby-text | ruby-base-container | ruby-text-container'
     },
     'display-legacy': {
       syntax:
-        'inline-block | inline-list-item | inline-table | inline-flex | inline-grid',
+        'inline-block | inline-list-item | inline-table | inline-flex | inline-grid'
     },
     'display-listitem': {
-      syntax: '<display-outside>? && [ flow | flow-root ]? && list-item',
+      syntax: '<display-outside>? && [ flow | flow-root ]? && list-item'
     },
     'display-outside': {
-      syntax: 'block | inline | run-in',
+      syntax: 'block | inline | run-in'
     },
     'drop-shadow()': {
-      syntax: 'drop-shadow( <length>{2,3} <color>? )',
+      syntax: 'drop-shadow( <length>{2,3} <color>? )'
     },
     'east-asian-variant-values': {
-      syntax: '[ jis78 | jis83 | jis90 | jis04 | simplified | traditional ]',
+      syntax: '[ jis78 | jis83 | jis90 | jis04 | simplified | traditional ]'
     },
     'east-asian-width-values': {
-      syntax: '[ full-width | proportional-width ]',
+      syntax: '[ full-width | proportional-width ]'
     },
     'element()': {
-      syntax: 'element( <id-selector> )',
+      syntax: 'element( <id-selector> )'
     },
     'ellipse()': {
-      syntax: 'ellipse( [ <shape-radius>{2} ]? [ at <position> ]? )',
+      syntax: 'ellipse( [ <shape-radius>{2} ]? [ at <position> ]? )'
     },
     'ending-shape': {
-      syntax: 'circle | ellipse',
+      syntax: 'circle | ellipse'
     },
     'env()': {
-      syntax: 'env( <custom-ident> , <declaration-value>? )',
+      syntax: 'env( <custom-ident> , <declaration-value>? )'
     },
     'explicit-track-list': {
-      syntax: '[ <line-names>? <track-size> ]+ <line-names>?',
+      syntax: '[ <line-names>? <track-size> ]+ <line-names>?'
     },
     'family-name': {
-      syntax: '<string> | <custom-ident>+',
+      syntax: '<string> | <custom-ident>+'
     },
     'feature-tag-value': {
-      syntax: '<string> [ <integer> | on | off ]?',
+      syntax: '<string> [ <integer> | on | off ]?'
     },
     'feature-type': {
       syntax:
-        '@stylistic | @historical-forms | @styleset | @character-variant | @swash | @ornaments | @annotation',
+        '@stylistic | @historical-forms | @styleset | @character-variant | @swash | @ornaments | @annotation'
     },
     'feature-value-block': {
-      syntax: "<feature-type> '{' <feature-value-declaration-list> '}'",
+      syntax: "<feature-type> '{' <feature-value-declaration-list> '}'"
     },
     'feature-value-block-list': {
-      syntax: '<feature-value-block>+',
+      syntax: '<feature-value-block>+'
     },
     'feature-value-declaration': {
-      syntax: '<custom-ident>: <integer>+;',
+      syntax: '<custom-ident>: <integer>+;'
     },
     'feature-value-declaration-list': {
-      syntax: '<feature-value-declaration>',
+      syntax: '<feature-value-declaration>'
     },
     'feature-value-name': {
-      syntax: '<custom-ident>',
+      syntax: '<custom-ident>'
     },
     'fill-rule': {
-      syntax: 'nonzero | evenodd',
+      syntax: 'nonzero | evenodd'
     },
     'filter-function': {
       syntax:
-        '<blur()> | <brightness()> | <contrast()> | <drop-shadow()> | <grayscale()> | <hue-rotate()> | <invert()> | <opacity()> | <saturate()> | <sepia()>',
+        '<blur()> | <brightness()> | <contrast()> | <drop-shadow()> | <grayscale()> | <hue-rotate()> | <invert()> | <opacity()> | <saturate()> | <sepia()>'
     },
     'filter-function-list': {
-      syntax: '[ <filter-function> | <url> ]+',
+      syntax: '[ <filter-function> | <url> ]+'
     },
     'final-bg-layer': {
       syntax:
-        "<'background-color'> || <bg-image> || <bg-position> [ / <bg-size> ]? || <repeat-style> || <attachment> || <box> || <box>",
+        "<'background-color'> || <bg-image> || <bg-position> [ / <bg-size> ]? || <repeat-style> || <attachment> || <box> || <box>"
     },
     'fit-content()': {
-      syntax: 'fit-content( [ <length> | <percentage> ] )',
+      syntax: 'fit-content( [ <length> | <percentage> ] )'
     },
     'fixed-breadth': {
-      syntax: '<length-percentage>',
+      syntax: '<length-percentage>'
     },
     'fixed-repeat': {
       syntax:
-        'repeat( [ <positive-integer> ] , [ <line-names>? <fixed-size> ]+ <line-names>? )',
+        'repeat( [ <positive-integer> ] , [ <line-names>? <fixed-size> ]+ <line-names>? )'
     },
     'fixed-size': {
       syntax:
-        '<fixed-breadth> | minmax( <fixed-breadth> , <track-breadth> ) | minmax( <inflexible-breadth> , <fixed-breadth> )',
+        '<fixed-breadth> | minmax( <fixed-breadth> , <track-breadth> ) | minmax( <inflexible-breadth> , <fixed-breadth> )'
     },
     'font-stretch-absolute': {
       syntax:
-        'normal | ultra-condensed | extra-condensed | condensed | semi-condensed | semi-expanded | expanded | extra-expanded | ultra-expanded | <percentage>',
+        'normal | ultra-condensed | extra-condensed | condensed | semi-condensed | semi-expanded | expanded | extra-expanded | ultra-expanded | <percentage>'
     },
     'font-variant-css21': {
-      syntax: '[ normal | small-caps ]',
+      syntax: '[ normal | small-caps ]'
     },
     'font-weight-absolute': {
-      syntax: 'normal | bold | <number [1,1000]>',
+      syntax: 'normal | bold | <number [1,1000]>'
     },
     'frequency-percentage': {
-      syntax: '<frequency> | <percentage>',
+      syntax: '<frequency> | <percentage>'
     },
     'general-enclosed': {
-      syntax: '[ <function-token> <any-value> ) ] | ( <ident> <any-value> )',
+      syntax: '[ <function-token> <any-value> ) ] | ( <ident> <any-value> )'
     },
     'generic-family': {
-      syntax: 'serif | sans-serif | cursive | fantasy | monospace',
+      syntax: 'serif | sans-serif | cursive | fantasy | monospace'
     },
     'generic-name': {
-      syntax: 'serif | sans-serif | cursive | fantasy | monospace',
+      syntax: 'serif | sans-serif | cursive | fantasy | monospace'
     },
     'geometry-box': {
-      syntax: '<shape-box> | fill-box | stroke-box | view-box',
+      syntax: '<shape-box> | fill-box | stroke-box | view-box'
     },
     gradient: gradient,
     'grayscale()': {
-      syntax: 'grayscale( <number-percentage> )',
+      syntax: 'grayscale( <number-percentage> )'
     },
     'grid-line': {
       syntax:
-        'auto | <custom-ident> | [ <integer> && <custom-ident>? ] | [ span && [ <integer> || <custom-ident> ] ]',
+        'auto | <custom-ident> | [ <integer> && <custom-ident>? ] | [ span && [ <integer> || <custom-ident> ] ]'
     },
     'historical-lig-values': {
-      syntax: '[ historical-ligatures | no-historical-ligatures ]',
+      syntax: '[ historical-ligatures | no-historical-ligatures ]'
     },
     'hsl()': {
       syntax:
-        'hsl( <hue> <percentage> <percentage> [ / <alpha-value> ]? ) | hsl( <hue>, <percentage>, <percentage>, <alpha-value>? )',
+        'hsl( <hue> <percentage> <percentage> [ / <alpha-value> ]? ) | hsl( <hue>, <percentage>, <percentage>, <alpha-value>? )'
     },
     'hsla()': {
       syntax:
-        'hsla( <hue> <percentage> <percentage> [ / <alpha-value> ]? ) | hsla( <hue>, <percentage>, <percentage>, <alpha-value>? )',
+        'hsla( <hue> <percentage> <percentage> [ / <alpha-value> ]? ) | hsla( <hue>, <percentage>, <percentage>, <alpha-value>? )'
     },
     hue: hue,
     'hue-rotate()': {
-      syntax: 'hue-rotate( <angle> )',
+      syntax: 'hue-rotate( <angle> )'
     },
     'id-selector': {
-      syntax: '<hash-token>',
+      syntax: '<hash-token>'
     },
     image: image,
     'image()': {
-      syntax: 'image( <image-tags>? [ <image-src>? , <color>? ]! )',
+      syntax: 'image( <image-tags>? [ <image-src>? , <color>? ]! )'
     },
     'image-set()': {
-      syntax: 'image-set( <image-set-option># )',
+      syntax: 'image-set( <image-set-option># )'
     },
     'image-set-option': {
-      syntax: '[ <image> | <string> ] <resolution>',
+      syntax: '[ <image> | <string> ] <resolution>'
     },
     'image-src': {
-      syntax: '<url> | <string>',
+      syntax: '<url> | <string>'
     },
     'image-tags': {
-      syntax: 'ltr | rtl',
+      syntax: 'ltr | rtl'
     },
     'inflexible-breadth': {
-      syntax: '<length> | <percentage> | min-content | max-content | auto',
+      syntax: '<length> | <percentage> | min-content | max-content | auto'
     },
     'inset()': {
-      syntax: "inset( <length-percentage>{1,4} [ round <'border-radius'> ]? )",
+      syntax: "inset( <length-percentage>{1,4} [ round <'border-radius'> ]? )"
     },
     'invert()': {
-      syntax: 'invert( <number-percentage> )',
+      syntax: 'invert( <number-percentage> )'
     },
     'keyframes-name': {
-      syntax: '<custom-ident> | <string>',
+      syntax: '<custom-ident> | <string>'
     },
     'keyframe-block': {
-      syntax: '<keyframe-selector># {\n  <declaration-list>\n}',
+      syntax: '<keyframe-selector># {\n  <declaration-list>\n}'
     },
     'keyframe-block-list': {
-      syntax: '<keyframe-block>+',
+      syntax: '<keyframe-block>+'
     },
     'keyframe-selector': {
-      syntax: 'from | to | <percentage>',
+      syntax: 'from | to | <percentage>'
     },
     'leader()': {
-      syntax: 'leader( <leader-type> )',
+      syntax: 'leader( <leader-type> )'
     },
     'leader-type': {
-      syntax: 'dotted | solid | space | <string>',
+      syntax: 'dotted | solid | space | <string>'
     },
     'length-percentage': {
-      syntax: '<length> | <percentage>',
+      syntax: '<length> | <percentage>'
     },
     'line-names': {
-      syntax: "'[' <custom-ident>* ']'",
+      syntax: "'[' <custom-ident>* ']'"
     },
     'line-name-list': {
-      syntax: '[ <line-names> | <name-repeat> ]+',
+      syntax: '[ <line-names> | <name-repeat> ]+'
     },
     'line-style': {
       syntax:
-        'none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset',
+        'none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset'
     },
     'line-width': {
-      syntax: '<length> | thin | medium | thick',
+      syntax: '<length> | thin | medium | thick'
     },
     'linear-color-hint': {
-      syntax: '<length-percentage>',
+      syntax: '<length-percentage>'
     },
     'linear-color-stop': {
-      syntax: '<color> <color-stop-length>?',
+      syntax: '<color> <color-stop-length>?'
     },
     'linear-gradient()': {
       syntax:
-        'linear-gradient( [ <angle> | to <side-or-corner> ]? , <color-stop-list> )',
+        'linear-gradient( [ <angle> | to <side-or-corner> ]? , <color-stop-list> )'
     },
     'mask-layer': {
       syntax:
-        '<mask-reference> || <position> [ / <bg-size> ]? || <repeat-style> || <geometry-box> || [ <geometry-box> | no-clip ] || <compositing-operator> || <masking-mode>',
+        '<mask-reference> || <position> [ / <bg-size> ]? || <repeat-style> || <geometry-box> || [ <geometry-box> | no-clip ] || <compositing-operator> || <masking-mode>'
     },
     'mask-position': {
       syntax:
-        '[ <length-percentage> | left | center | right ] [ <length-percentage> | top | center | bottom ]?',
+        '[ <length-percentage> | left | center | right ] [ <length-percentage> | top | center | bottom ]?'
     },
     'mask-reference': {
-      syntax: 'none | <image> | <mask-source>',
+      syntax: 'none | <image> | <mask-source>'
     },
     'mask-source': {
-      syntax: '<url>',
+      syntax: '<url>'
     },
     'masking-mode': {
-      syntax: 'alpha | luminance | match-source',
+      syntax: 'alpha | luminance | match-source'
     },
     'matrix()': {
-      syntax: 'matrix( <number>#{6} )',
+      syntax: 'matrix( <number>#{6} )'
     },
     'matrix3d()': {
-      syntax: 'matrix3d( <number>#{16} )',
+      syntax: 'matrix3d( <number>#{16} )'
     },
     'max()': {
-      syntax: 'max( <calc-sum># )',
+      syntax: 'max( <calc-sum># )'
     },
     'media-and': {
-      syntax: '<media-in-parens> [ and <media-in-parens> ]+',
+      syntax: '<media-in-parens> [ and <media-in-parens> ]+'
     },
     'media-condition': {
-      syntax: '<media-not> | <media-and> | <media-or> | <media-in-parens>',
+      syntax: '<media-not> | <media-and> | <media-or> | <media-in-parens>'
     },
     'media-condition-without-or': {
-      syntax: '<media-not> | <media-and> | <media-in-parens>',
+      syntax: '<media-not> | <media-and> | <media-in-parens>'
     },
     'media-feature': {
-      syntax: '( [ <mf-plain> | <mf-boolean> | <mf-range> ] )',
+      syntax: '( [ <mf-plain> | <mf-boolean> | <mf-range> ] )'
     },
     'media-in-parens': {
-      syntax: '( <media-condition> ) | <media-feature> | <general-enclosed>',
+      syntax: '( <media-condition> ) | <media-feature> | <general-enclosed>'
     },
     'media-not': {
-      syntax: 'not <media-in-parens>',
+      syntax: 'not <media-in-parens>'
     },
     'media-or': {
-      syntax: '<media-in-parens> [ or <media-in-parens> ]+',
+      syntax: '<media-in-parens> [ or <media-in-parens> ]+'
     },
     'media-query': {
       syntax:
-        '<media-condition> | [ not | only ]? <media-type> [ and <media-condition-without-or> ]?',
+        '<media-condition> | [ not | only ]? <media-type> [ and <media-condition-without-or> ]?'
     },
     'media-query-list': {
-      syntax: '<media-query>#',
+      syntax: '<media-query>#'
     },
     'media-type': {
-      syntax: '<ident>',
+      syntax: '<ident>'
     },
     'mf-boolean': {
-      syntax: '<mf-name>',
+      syntax: '<mf-name>'
     },
     'mf-name': {
-      syntax: '<ident>',
+      syntax: '<ident>'
     },
     'mf-plain': {
-      syntax: '<mf-name> : <mf-value>',
+      syntax: '<mf-name> : <mf-value>'
     },
     'mf-range': {
       syntax:
-        "<mf-name> [ '<' | '>' ]? '='? <mf-value>\n| <mf-value> [ '<' | '>' ]? '='? <mf-name>\n| <mf-value> '<' '='? <mf-name> '<' '='? <mf-value>\n| <mf-value> '>' '='? <mf-name> '>' '='? <mf-value>",
+        "<mf-name> [ '<' | '>' ]? '='? <mf-value>\n| <mf-value> [ '<' | '>' ]? '='? <mf-name>\n| <mf-value> '<' '='? <mf-name> '<' '='? <mf-value>\n| <mf-value> '>' '='? <mf-name> '>' '='? <mf-value>"
     },
     'mf-value': {
-      syntax: '<number> | <dimension> | <ident> | <ratio>',
+      syntax: '<number> | <dimension> | <ident> | <ratio>'
     },
     'min()': {
-      syntax: 'min( <calc-sum># )',
+      syntax: 'min( <calc-sum># )'
     },
     'minmax()': {
       syntax:
-        'minmax( [ <length> | <percentage> | min-content | max-content | auto ] , [ <length> | <percentage> | <flex> | min-content | max-content | auto ] )',
+        'minmax( [ <length> | <percentage> | min-content | max-content | auto ] , [ <length> | <percentage> | <flex> | min-content | max-content | auto ] )'
     },
     'named-color': {
       syntax:
-        'transparent | aliceblue | antiquewhite | aqua | aquamarine | azure | beige | bisque | black | blanchedalmond | blue | blueviolet | brown | burlywood | cadetblue | chartreuse | chocolate | coral | cornflowerblue | cornsilk | crimson | cyan | darkblue | darkcyan | darkgoldenrod | darkgray | darkgreen | darkgrey | darkkhaki | darkmagenta | darkolivegreen | darkorange | darkorchid | darkred | darksalmon | darkseagreen | darkslateblue | darkslategray | darkslategrey | darkturquoise | darkviolet | deeppink | deepskyblue | dimgray | dimgrey | dodgerblue | firebrick | floralwhite | forestgreen | fuchsia | gainsboro | ghostwhite | gold | goldenrod | gray | green | greenyellow | grey | honeydew | hotpink | indianred | indigo | ivory | khaki | lavender | lavenderblush | lawngreen | lemonchiffon | lightblue | lightcoral | lightcyan | lightgoldenrodyellow | lightgray | lightgreen | lightgrey | lightpink | lightsalmon | lightseagreen | lightskyblue | lightslategray | lightslategrey | lightsteelblue | lightyellow | lime | limegreen | linen | magenta | maroon | mediumaquamarine | mediumblue | mediumorchid | mediumpurple | mediumseagreen | mediumslateblue | mediumspringgreen | mediumturquoise | mediumvioletred | midnightblue | mintcream | mistyrose | moccasin | navajowhite | navy | oldlace | olive | olivedrab | orange | orangered | orchid | palegoldenrod | palegreen | paleturquoise | palevioletred | papayawhip | peachpuff | peru | pink | plum | powderblue | purple | rebeccapurple | red | rosybrown | royalblue | saddlebrown | salmon | sandybrown | seagreen | seashell | sienna | silver | skyblue | slateblue | slategray | slategrey | snow | springgreen | steelblue | tan | teal | thistle | tomato | turquoise | violet | wheat | white | whitesmoke | yellow | yellowgreen',
+        'transparent | aliceblue | antiquewhite | aqua | aquamarine | azure | beige | bisque | black | blanchedalmond | blue | blueviolet | brown | burlywood | cadetblue | chartreuse | chocolate | coral | cornflowerblue | cornsilk | crimson | cyan | darkblue | darkcyan | darkgoldenrod | darkgray | darkgreen | darkgrey | darkkhaki | darkmagenta | darkolivegreen | darkorange | darkorchid | darkred | darksalmon | darkseagreen | darkslateblue | darkslategray | darkslategrey | darkturquoise | darkviolet | deeppink | deepskyblue | dimgray | dimgrey | dodgerblue | firebrick | floralwhite | forestgreen | fuchsia | gainsboro | ghostwhite | gold | goldenrod | gray | green | greenyellow | grey | honeydew | hotpink | indianred | indigo | ivory | khaki | lavender | lavenderblush | lawngreen | lemonchiffon | lightblue | lightcoral | lightcyan | lightgoldenrodyellow | lightgray | lightgreen | lightgrey | lightpink | lightsalmon | lightseagreen | lightskyblue | lightslategray | lightslategrey | lightsteelblue | lightyellow | lime | limegreen | linen | magenta | maroon | mediumaquamarine | mediumblue | mediumorchid | mediumpurple | mediumseagreen | mediumslateblue | mediumspringgreen | mediumturquoise | mediumvioletred | midnightblue | mintcream | mistyrose | moccasin | navajowhite | navy | oldlace | olive | olivedrab | orange | orangered | orchid | palegoldenrod | palegreen | paleturquoise | palevioletred | papayawhip | peachpuff | peru | pink | plum | powderblue | purple | rebeccapurple | red | rosybrown | royalblue | saddlebrown | salmon | sandybrown | seagreen | seashell | sienna | silver | skyblue | slateblue | slategray | slategrey | snow | springgreen | steelblue | tan | teal | thistle | tomato | turquoise | violet | wheat | white | whitesmoke | yellow | yellowgreen'
     },
     'namespace-prefix': {
-      syntax: '<ident>',
+      syntax: '<ident>'
     },
     'ns-prefix': {
-      syntax: "[ <ident-token> | '*' ]? '|'",
+      syntax: "[ <ident-token> | '*' ]? '|'"
     },
     'number-percentage': {
-      syntax: '<number> | <percentage>',
+      syntax: '<number> | <percentage>'
     },
     'numeric-figure-values': {
-      syntax: '[ lining-nums | oldstyle-nums ]',
+      syntax: '[ lining-nums | oldstyle-nums ]'
     },
     'numeric-fraction-values': {
-      syntax: '[ diagonal-fractions | stacked-fractions ]',
+      syntax: '[ diagonal-fractions | stacked-fractions ]'
     },
     'numeric-spacing-values': {
-      syntax: '[ proportional-nums | tabular-nums ]',
+      syntax: '[ proportional-nums | tabular-nums ]'
     },
     nth: nth$1,
     'opacity()': {
-      syntax: 'opacity( [ <number-percentage> ] )',
+      syntax: 'opacity( [ <number-percentage> ] )'
     },
     'overflow-position': {
-      syntax: 'unsafe | safe',
+      syntax: 'unsafe | safe'
     },
     'outline-radius': {
-      syntax: '<length> | <percentage>',
+      syntax: '<length> | <percentage>'
     },
     'page-body': {
       syntax:
-        '<declaration>? [ ; <page-body> ]? | <page-margin-box> <page-body>',
+        '<declaration>? [ ; <page-body> ]? | <page-margin-box> <page-body>'
     },
     'page-margin-box': {
-      syntax: "<page-margin-box-type> '{' <declaration-list> '}'",
+      syntax: "<page-margin-box-type> '{' <declaration-list> '}'"
     },
     'page-margin-box-type': {
       syntax:
-        '@top-left-corner | @top-left | @top-center | @top-right | @top-right-corner | @bottom-left-corner | @bottom-left | @bottom-center | @bottom-right | @bottom-right-corner | @left-top | @left-middle | @left-bottom | @right-top | @right-middle | @right-bottom',
+        '@top-left-corner | @top-left | @top-center | @top-right | @top-right-corner | @bottom-left-corner | @bottom-left | @bottom-center | @bottom-right | @bottom-right-corner | @left-top | @left-middle | @left-bottom | @right-top | @right-middle | @right-bottom'
     },
     'page-selector-list': {
-      syntax: '[ <page-selector># ]?',
+      syntax: '[ <page-selector># ]?'
     },
     'page-selector': {
-      syntax: '<pseudo-page>+ | <ident> <pseudo-page>*',
+      syntax: '<pseudo-page>+ | <ident> <pseudo-page>*'
     },
     'path()': {
-      syntax: 'path( [ <fill-rule>, ]? <string> )',
+      syntax: 'path( [ <fill-rule>, ]? <string> )'
     },
     'paint()': {
-      syntax: 'paint( <ident>, <declaration-value>? )',
+      syntax: 'paint( <ident>, <declaration-value>? )'
     },
     'perspective()': {
-      syntax: 'perspective( <length> )',
+      syntax: 'perspective( <length> )'
     },
     'polygon()': {
       syntax:
-        'polygon( <fill-rule>? , [ <length-percentage> <length-percentage> ]# )',
+        'polygon( <fill-rule>? , [ <length-percentage> <length-percentage> ]# )'
     },
     position: position,
     'pseudo-class-selector': {
-      syntax: "':' <ident-token> | ':' <function-token> <any-value> ')'",
+      syntax: "':' <ident-token> | ':' <function-token> <any-value> ')'"
     },
     'pseudo-element-selector': {
-      syntax: "':' <pseudo-class-selector>",
+      syntax: "':' <pseudo-class-selector>"
     },
     'pseudo-page': {
-      syntax: ': [ left | right | first | blank ]',
+      syntax: ': [ left | right | first | blank ]'
     },
     quote: quote,
     'radial-gradient()': {
       syntax:
-        'radial-gradient( [ <ending-shape> || <size> ]? [ at <position> ]? , <color-stop-list> )',
+        'radial-gradient( [ <ending-shape> || <size> ]? [ at <position> ]? , <color-stop-list> )'
     },
     'relative-selector': {
-      syntax: '<combinator>? <complex-selector>',
+      syntax: '<combinator>? <complex-selector>'
     },
     'relative-selector-list': {
-      syntax: '<relative-selector>#',
+      syntax: '<relative-selector>#'
     },
     'relative-size': {
-      syntax: 'larger | smaller',
+      syntax: 'larger | smaller'
     },
     'repeat-style': {
       syntax:
-        'repeat-x | repeat-y | [ repeat | space | round | no-repeat ]{1,2}',
+        'repeat-x | repeat-y | [ repeat | space | round | no-repeat ]{1,2}'
     },
     'repeating-linear-gradient()': {
       syntax:
-        'repeating-linear-gradient( [ <angle> | to <side-or-corner> ]? , <color-stop-list> )',
+        'repeating-linear-gradient( [ <angle> | to <side-or-corner> ]? , <color-stop-list> )'
     },
     'repeating-radial-gradient()': {
       syntax:
-        'repeating-radial-gradient( [ <ending-shape> || <size> ]? [ at <position> ]? , <color-stop-list> )',
+        'repeating-radial-gradient( [ <ending-shape> || <size> ]? [ at <position> ]? , <color-stop-list> )'
     },
     'rgb()': {
       syntax:
-        'rgb( <percentage>{3} [ / <alpha-value> ]? ) | rgb( <number>{3} [ / <alpha-value> ]? ) | rgb( <percentage>#{3} , <alpha-value>? ) | rgb( <number>#{3} , <alpha-value>? )',
+        'rgb( <percentage>{3} [ / <alpha-value> ]? ) | rgb( <number>{3} [ / <alpha-value> ]? ) | rgb( <percentage>#{3} , <alpha-value>? ) | rgb( <number>#{3} , <alpha-value>? )'
     },
     'rgba()': {
       syntax:
-        'rgba( <percentage>{3} [ / <alpha-value> ]? ) | rgba( <number>{3} [ / <alpha-value> ]? ) | rgba( <percentage>#{3} , <alpha-value>? ) | rgba( <number>#{3} , <alpha-value>? )',
+        'rgba( <percentage>{3} [ / <alpha-value> ]? ) | rgba( <number>{3} [ / <alpha-value> ]? ) | rgba( <percentage>#{3} , <alpha-value>? ) | rgba( <number>#{3} , <alpha-value>? )'
     },
     'rotate()': {
-      syntax: 'rotate( [ <angle> | <zero> ] )',
+      syntax: 'rotate( [ <angle> | <zero> ] )'
     },
     'rotate3d()': {
       syntax:
-        'rotate3d( <number> , <number> , <number> , [ <angle> | <zero> ] )',
+        'rotate3d( <number> , <number> , <number> , [ <angle> | <zero> ] )'
     },
     'rotateX()': {
-      syntax: 'rotateX( [ <angle> | <zero> ] )',
+      syntax: 'rotateX( [ <angle> | <zero> ] )'
     },
     'rotateY()': {
-      syntax: 'rotateY( [ <angle> | <zero> ] )',
+      syntax: 'rotateY( [ <angle> | <zero> ] )'
     },
     'rotateZ()': {
-      syntax: 'rotateZ( [ <angle> | <zero> ] )',
+      syntax: 'rotateZ( [ <angle> | <zero> ] )'
     },
     'saturate()': {
-      syntax: 'saturate( <number-percentage> )',
+      syntax: 'saturate( <number-percentage> )'
     },
     'scale()': {
-      syntax: 'scale( <number> , <number>? )',
+      syntax: 'scale( <number> , <number>? )'
     },
     'scale3d()': {
-      syntax: 'scale3d( <number> , <number> , <number> )',
+      syntax: 'scale3d( <number> , <number> , <number> )'
     },
     'scaleX()': {
-      syntax: 'scaleX( <number> )',
+      syntax: 'scaleX( <number> )'
     },
     'scaleY()': {
-      syntax: 'scaleY( <number> )',
+      syntax: 'scaleY( <number> )'
     },
     'scaleZ()': {
-      syntax: 'scaleZ( <number> )',
+      syntax: 'scaleZ( <number> )'
     },
     'self-position': {
       syntax:
-        'center | start | end | self-start | self-end | flex-start | flex-end',
+        'center | start | end | self-start | self-end | flex-start | flex-end'
     },
     'shape-radius': {
-      syntax: '<length-percentage> | closest-side | farthest-side',
+      syntax: '<length-percentage> | closest-side | farthest-side'
     },
     'skew()': {
-      syntax: 'skew( [ <angle> | <zero> ] , [ <angle> | <zero> ]? )',
+      syntax: 'skew( [ <angle> | <zero> ] , [ <angle> | <zero> ]? )'
     },
     'skewX()': {
-      syntax: 'skewX( [ <angle> | <zero> ] )',
+      syntax: 'skewX( [ <angle> | <zero> ] )'
     },
     'skewY()': {
-      syntax: 'skewY( [ <angle> | <zero> ] )',
+      syntax: 'skewY( [ <angle> | <zero> ] )'
     },
     'sepia()': {
-      syntax: 'sepia( <number-percentage> )',
+      syntax: 'sepia( <number-percentage> )'
     },
     shadow: shadow,
     'shadow-t': {
-      syntax: '[ <length>{2,3} && <color>? ]',
+      syntax: '[ <length>{2,3} && <color>? ]'
     },
     shape: shape,
     'shape-box': {
-      syntax: '<box> | margin-box',
+      syntax: '<box> | margin-box'
     },
     'side-or-corner': {
-      syntax: '[ left | right ] || [ top | bottom ]',
+      syntax: '[ left | right ] || [ top | bottom ]'
     },
     'single-animation': {
       syntax:
-        '<time> || <timing-function> || <time> || <single-animation-iteration-count> || <single-animation-direction> || <single-animation-fill-mode> || <single-animation-play-state> || [ none | <keyframes-name> ]',
+        '<time> || <timing-function> || <time> || <single-animation-iteration-count> || <single-animation-direction> || <single-animation-fill-mode> || <single-animation-play-state> || [ none | <keyframes-name> ]'
     },
     'single-animation-direction': {
-      syntax: 'normal | reverse | alternate | alternate-reverse',
+      syntax: 'normal | reverse | alternate | alternate-reverse'
     },
     'single-animation-fill-mode': {
-      syntax: 'none | forwards | backwards | both',
+      syntax: 'none | forwards | backwards | both'
     },
     'single-animation-iteration-count': {
-      syntax: 'infinite | <number>',
+      syntax: 'infinite | <number>'
     },
     'single-animation-play-state': {
-      syntax: 'running | paused',
+      syntax: 'running | paused'
     },
     'single-transition': {
       syntax:
-        '[ none | <single-transition-property> ] || <time> || <timing-function> || <time>',
+        '[ none | <single-transition-property> ] || <time> || <timing-function> || <time>'
     },
     'single-transition-property': {
-      syntax: 'all | <custom-ident>',
+      syntax: 'all | <custom-ident>'
     },
     size: size,
     'step-position': {
-      syntax: 'jump-start | jump-end | jump-none | jump-both | start | end',
+      syntax: 'jump-start | jump-end | jump-none | jump-both | start | end'
     },
     'step-timing-function': {
-      syntax: 'step-start | step-end | steps(<integer>[, <step-position>]?)',
+      syntax: 'step-start | step-end | steps(<integer>[, <step-position>]?)'
     },
     'subclass-selector': {
       syntax:
-        '<id-selector> | <class-selector> | <attribute-selector> | <pseudo-class-selector>',
+        '<id-selector> | <class-selector> | <attribute-selector> | <pseudo-class-selector>'
     },
     'supports-condition': {
       syntax:
-        'not <supports-in-parens> | <supports-in-parens> [ and <supports-in-parens> ]* | <supports-in-parens> [ or <supports-in-parens> ]*',
+        'not <supports-in-parens> | <supports-in-parens> [ and <supports-in-parens> ]* | <supports-in-parens> [ or <supports-in-parens> ]*'
     },
     'supports-in-parens': {
       syntax:
-        '( <supports-condition> ) | <supports-feature> | <general-enclosed>',
+        '( <supports-condition> ) | <supports-feature> | <general-enclosed>'
     },
     'supports-feature': {
-      syntax: '<supports-decl> | <supports-selector-fn>',
+      syntax: '<supports-decl> | <supports-selector-fn>'
     },
     'supports-decl': {
-      syntax: '( <declaration> )',
+      syntax: '( <declaration> )'
     },
     'supports-selector-fn': {
-      syntax: 'selector( <complex-selector> )',
+      syntax: 'selector( <complex-selector> )'
     },
     symbol: symbol,
     target: target,
     'target-counter()': {
       syntax:
-        'target-counter( [ <string> | <url> ] , <custom-ident> , <counter-style>? )',
+        'target-counter( [ <string> | <url> ] , <custom-ident> , <counter-style>? )'
     },
     'target-counters()': {
       syntax:
-        'target-counters( [ <string> | <url> ] , <custom-ident> , <string> , <counter-style>? )',
+        'target-counters( [ <string> | <url> ] , <custom-ident> , <string> , <counter-style>? )'
     },
     'target-text()': {
       syntax:
-        'target-text( [ <string> | <url> ] , [ content | before | after | first-letter ]? )',
+        'target-text( [ <string> | <url> ] , [ content | before | after | first-letter ]? )'
     },
     'time-percentage': {
-      syntax: '<time> | <percentage>',
+      syntax: '<time> | <percentage>'
     },
     'timing-function': {
-      syntax:
-        'linear | <cubic-bezier-timing-function> | <step-timing-function>',
+      syntax: 'linear | <cubic-bezier-timing-function> | <step-timing-function>'
     },
     'track-breadth': {
-      syntax: '<length-percentage> | <flex> | min-content | max-content | auto',
+      syntax: '<length-percentage> | <flex> | min-content | max-content | auto'
     },
     'track-list': {
       syntax:
-        '[ <line-names>? [ <track-size> | <track-repeat> ] ]+ <line-names>?',
+        '[ <line-names>? [ <track-size> | <track-repeat> ] ]+ <line-names>?'
     },
     'track-repeat': {
       syntax:
-        'repeat( [ <positive-integer> ] , [ <line-names>? <track-size> ]+ <line-names>? )',
+        'repeat( [ <positive-integer> ] , [ <line-names>? <track-size> ]+ <line-names>? )'
     },
     'track-size': {
       syntax:
-        '<track-breadth> | minmax( <inflexible-breadth> , <track-breadth> ) | fit-content( [ <length> | <percentage> ] )',
+        '<track-breadth> | minmax( <inflexible-breadth> , <track-breadth> ) | fit-content( [ <length> | <percentage> ] )'
     },
     'transform-function': {
       syntax:
-        '<matrix()> | <translate()> | <translateX()> | <translateY()> | <scale()> | <scaleX()> | <scaleY()> | <rotate()> | <skew()> | <skewX()> | <skewY()> | <matrix3d()> | <translate3d()> | <translateZ()> | <scale3d()> | <scaleZ()> | <rotate3d()> | <rotateX()> | <rotateY()> | <rotateZ()> | <perspective()>',
+        '<matrix()> | <translate()> | <translateX()> | <translateY()> | <scale()> | <scaleX()> | <scaleY()> | <rotate()> | <skew()> | <skewX()> | <skewY()> | <matrix3d()> | <translate3d()> | <translateZ()> | <scale3d()> | <scaleZ()> | <rotate3d()> | <rotateX()> | <rotateY()> | <rotateZ()> | <perspective()>'
     },
     'transform-list': {
-      syntax: '<transform-function>+',
+      syntax: '<transform-function>+'
     },
     'translate()': {
-      syntax: 'translate( <length-percentage> , <length-percentage>? )',
+      syntax: 'translate( <length-percentage> , <length-percentage>? )'
     },
     'translate3d()': {
       syntax:
-        'translate3d( <length-percentage> , <length-percentage> , <length> )',
+        'translate3d( <length-percentage> , <length-percentage> , <length> )'
     },
     'translateX()': {
-      syntax: 'translateX( <length-percentage> )',
+      syntax: 'translateX( <length-percentage> )'
     },
     'translateY()': {
-      syntax: 'translateY( <length-percentage> )',
+      syntax: 'translateY( <length-percentage> )'
     },
     'translateZ()': {
-      syntax: 'translateZ( <length> )',
+      syntax: 'translateZ( <length> )'
     },
     'type-or-unit': {
       syntax:
-        'string | color | url | integer | number | length | angle | time | frequency | cap | ch | em | ex | ic | lh | rlh | rem | vb | vi | vw | vh | vmin | vmax | mm | Q | cm | in | pt | pc | px | deg | grad | rad | turn | ms | s | Hz | kHz | %',
+        'string | color | url | integer | number | length | angle | time | frequency | cap | ch | em | ex | ic | lh | rlh | rem | vb | vi | vw | vh | vmin | vmax | mm | Q | cm | in | pt | pc | px | deg | grad | rad | turn | ms | s | Hz | kHz | %'
     },
     'type-selector': {
-      syntax: "<wq-name> | <ns-prefix>? '*'",
+      syntax: "<wq-name> | <ns-prefix>? '*'"
     },
     'var()': {
-      syntax: 'var( <custom-property-name> , <declaration-value>? )',
+      syntax: 'var( <custom-property-name> , <declaration-value>? )'
     },
     'viewport-length': {
-      syntax: 'auto | <length-percentage>',
+      syntax: 'auto | <length-percentage>'
     },
     'wq-name': {
-      syntax: '<ns-prefix>? <ident-token>',
-    },
+      syntax: '<ns-prefix>? <ident-token>'
+    }
   };
 
   var atrules = {
     charset: {
-      prelude: '<string>',
+      prelude: '<string>'
     },
     'font-face': {
       descriptors: {
         'unicode-range': {
           comment: 'replaces <unicode-range>, an old production name',
-          syntax: '<urange>#',
-        },
-      },
-    },
+          syntax: '<urange>#'
+        }
+      }
+    }
   };
   var properties = {
     '-moz-background-clip': {
       comment:
         'deprecated syntax in old Firefox, https://developer.mozilla.org/en/docs/Web/CSS/background-clip',
-      syntax: 'padding | border',
+      syntax: 'padding | border'
     },
     '-moz-border-radius-bottomleft': {
       comment:
         'https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-left-radius',
-      syntax: "<'border-bottom-left-radius'>",
+      syntax: "<'border-bottom-left-radius'>"
     },
     '-moz-border-radius-bottomright': {
       comment:
         'https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-right-radius',
-      syntax: "<'border-bottom-right-radius'>",
+      syntax: "<'border-bottom-right-radius'>"
     },
     '-moz-border-radius-topleft': {
       comment:
         'https://developer.mozilla.org/en-US/docs/Web/CSS/border-top-left-radius',
-      syntax: "<'border-top-left-radius'>",
+      syntax: "<'border-top-left-radius'>"
     },
     '-moz-border-radius-topright': {
       comment:
         'https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-right-radius',
-      syntax: "<'border-bottom-right-radius'>",
+      syntax: "<'border-bottom-right-radius'>"
     },
     '-moz-control-character-visibility': {
       comment:
         'firefox specific keywords, https://bugzilla.mozilla.org/show_bug.cgi?id=947588',
-      syntax: 'visible | hidden',
+      syntax: 'visible | hidden'
     },
     '-moz-osx-font-smoothing': {
       comment:
         'misssed old syntax https://developer.mozilla.org/en-US/docs/Web/CSS/font-smooth',
-      syntax: 'auto | grayscale',
+      syntax: 'auto | grayscale'
     },
     '-moz-user-select': {
       comment: 'https://developer.mozilla.org/en-US/docs/Web/CSS/user-select',
-      syntax: 'none | text | all | -moz-none',
+      syntax: 'none | text | all | -moz-none'
     },
     '-ms-flex-align': {
       comment:
         'misssed old syntax implemented in IE, https://www.w3.org/TR/2012/WD-css3-flexbox-20120322/#flex-align',
-      syntax: 'start | end | center | baseline | stretch',
+      syntax: 'start | end | center | baseline | stretch'
     },
     '-ms-flex-item-align': {
       comment:
         'misssed old syntax implemented in IE, https://www.w3.org/TR/2012/WD-css3-flexbox-20120322/#flex-align',
-      syntax: 'auto | start | end | center | baseline | stretch',
+      syntax: 'auto | start | end | center | baseline | stretch'
     },
     '-ms-flex-line-pack': {
       comment:
         'misssed old syntax implemented in IE, https://www.w3.org/TR/2012/WD-css3-flexbox-20120322/#flex-line-pack',
-      syntax: 'start | end | center | justify | distribute | stretch',
+      syntax: 'start | end | center | justify | distribute | stretch'
     },
     '-ms-flex-negative': {
       comment:
         'misssed old syntax implemented in IE; TODO: find references for comfirmation',
-      syntax: "<'flex-shrink'>",
+      syntax: "<'flex-shrink'>"
     },
     '-ms-flex-pack': {
       comment:
         'misssed old syntax implemented in IE, https://www.w3.org/TR/2012/WD-css3-flexbox-20120322/#flex-pack',
-      syntax: 'start | end | center | justify | distribute',
+      syntax: 'start | end | center | justify | distribute'
     },
     '-ms-flex-order': {
       comment:
         'misssed old syntax implemented in IE; https://msdn.microsoft.com/en-us/library/jj127303(v=vs.85).aspx',
-      syntax: '<integer>',
+      syntax: '<integer>'
     },
     '-ms-flex-positive': {
       comment:
         'misssed old syntax implemented in IE; TODO: find references for comfirmation',
-      syntax: "<'flex-grow'>",
+      syntax: "<'flex-grow'>"
     },
     '-ms-flex-preferred-size': {
       comment:
         'misssed old syntax implemented in IE; TODO: find references for comfirmation',
-      syntax: "<'flex-basis'>",
+      syntax: "<'flex-basis'>"
     },
     '-ms-interpolation-mode': {
       comment:
         'https://msdn.microsoft.com/en-us/library/ff521095(v=vs.85).aspx',
-      syntax: 'nearest-neighbor | bicubic',
+      syntax: 'nearest-neighbor | bicubic'
     },
     '-ms-grid-column-align': {
       comment:
         'add this property first since it uses as fallback for flexbox, https://msdn.microsoft.com/en-us/library/windows/apps/hh466338.aspx',
-      syntax: 'start | end | center | stretch',
+      syntax: 'start | end | center | stretch'
     },
     '-ms-grid-row-align': {
       comment:
         'add this property first since it uses as fallback for flexbox, https://msdn.microsoft.com/en-us/library/windows/apps/hh466348.aspx',
-      syntax: 'start | end | center | stretch',
+      syntax: 'start | end | center | stretch'
     },
     '-ms-hyphenate-limit-last': {
       comment:
         'misssed old syntax implemented in IE; https://www.w3.org/TR/css-text-4/#hyphenate-line-limits',
-      syntax: 'none | always | column | page | spread',
+      syntax: 'none | always | column | page | spread'
     },
     '-webkit-appearance': {
       comment: 'webkit specific keywords',
       references: ['http://css-infos.net/property/-webkit-appearance'],
       syntax:
-        'none | button | button-bevel | caps-lock-indicator | caret | checkbox | default-button | inner-spin-button | listbox | listitem | media-controls-background | media-controls-fullscreen-background | media-current-time-display | media-enter-fullscreen-button | media-exit-fullscreen-button | media-fullscreen-button | media-mute-button | media-overlay-play-button | media-play-button | media-seek-back-button | media-seek-forward-button | media-slider | media-sliderthumb | media-time-remaining-display | media-toggle-closed-captions-button | media-volume-slider | media-volume-slider-container | media-volume-sliderthumb | menulist | menulist-button | menulist-text | menulist-textfield | meter | progress-bar | progress-bar-value | push-button | radio | scrollbarbutton-down | scrollbarbutton-left | scrollbarbutton-right | scrollbarbutton-up | scrollbargripper-horizontal | scrollbargripper-vertical | scrollbarthumb-horizontal | scrollbarthumb-vertical | scrollbartrack-horizontal | scrollbartrack-vertical | searchfield | searchfield-cancel-button | searchfield-decoration | searchfield-results-button | searchfield-results-decoration | slider-horizontal | slider-vertical | sliderthumb-horizontal | sliderthumb-vertical | square-button | textarea | textfield | -apple-pay-button',
+        'none | button | button-bevel | caps-lock-indicator | caret | checkbox | default-button | inner-spin-button | listbox | listitem | media-controls-background | media-controls-fullscreen-background | media-current-time-display | media-enter-fullscreen-button | media-exit-fullscreen-button | media-fullscreen-button | media-mute-button | media-overlay-play-button | media-play-button | media-seek-back-button | media-seek-forward-button | media-slider | media-sliderthumb | media-time-remaining-display | media-toggle-closed-captions-button | media-volume-slider | media-volume-slider-container | media-volume-sliderthumb | menulist | menulist-button | menulist-text | menulist-textfield | meter | progress-bar | progress-bar-value | push-button | radio | scrollbarbutton-down | scrollbarbutton-left | scrollbarbutton-right | scrollbarbutton-up | scrollbargripper-horizontal | scrollbargripper-vertical | scrollbarthumb-horizontal | scrollbarthumb-vertical | scrollbartrack-horizontal | scrollbartrack-vertical | searchfield | searchfield-cancel-button | searchfield-decoration | searchfield-results-button | searchfield-results-decoration | slider-horizontal | slider-vertical | sliderthumb-horizontal | sliderthumb-vertical | square-button | textarea | textfield | -apple-pay-button'
     },
     '-webkit-background-clip': {
       comment: 'https://developer.mozilla.org/en/docs/Web/CSS/background-clip',
-      syntax: '[ <box> | border | padding | content | text ]#',
+      syntax: '[ <box> | border | padding | content | text ]#'
     },
     '-webkit-column-break-after': {
       comment: 'added, http://help.dottoro.com/lcrthhhv.php',
-      syntax: 'always | auto | avoid',
+      syntax: 'always | auto | avoid'
     },
     '-webkit-column-break-before': {
       comment: 'added, http://help.dottoro.com/lcxquvkf.php',
-      syntax: 'always | auto | avoid',
+      syntax: 'always | auto | avoid'
     },
     '-webkit-column-break-inside': {
       comment: 'added, http://help.dottoro.com/lclhnthl.php',
-      syntax: 'always | auto | avoid',
+      syntax: 'always | auto | avoid'
     },
     '-webkit-font-smoothing': {
       comment: 'https://developer.mozilla.org/en-US/docs/Web/CSS/font-smooth',
-      syntax: 'auto | none | antialiased | subpixel-antialiased',
+      syntax: 'auto | none | antialiased | subpixel-antialiased'
     },
     '-webkit-mask-box-image': {
       comment:
         'missed; https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-mask-box-image',
       syntax:
-        '[ <url> | <gradient> | none ] [ <length-percentage>{4} <-webkit-mask-box-repeat>{2} ]?',
+        '[ <url> | <gradient> | none ] [ <length-percentage>{4} <-webkit-mask-box-repeat>{2} ]?'
     },
     '-webkit-print-color-adjust': {
       comment: 'missed',
       references: [
-        'https://developer.mozilla.org/en/docs/Web/CSS/-webkit-print-color-adjust',
+        'https://developer.mozilla.org/en/docs/Web/CSS/-webkit-print-color-adjust'
       ],
-      syntax: 'economy | exact',
+      syntax: 'economy | exact'
     },
     '-webkit-text-security': {
       comment: 'missed; http://help.dottoro.com/lcbkewgt.php',
-      syntax: 'none | circle | disc | square',
+      syntax: 'none | circle | disc | square'
     },
     '-webkit-user-drag': {
       comment: 'missed; http://help.dottoro.com/lcbixvwm.php',
-      syntax: 'none | element | auto',
+      syntax: 'none | element | auto'
     },
     '-webkit-user-select': {
       comment:
         'auto is supported by old webkit, https://developer.mozilla.org/en-US/docs/Web/CSS/user-select',
-      syntax: 'auto | none | text | all',
+      syntax: 'auto | none | text | all'
     },
     'alignment-baseline': {
       comment: 'added SVG property',
       references: [
-        'https://www.w3.org/TR/SVG/text.html#AlignmentBaselineProperty',
+        'https://www.w3.org/TR/SVG/text.html#AlignmentBaselineProperty'
       ],
       syntax:
-        'auto | baseline | before-edge | text-before-edge | middle | central | after-edge | text-after-edge | ideographic | alphabetic | hanging | mathematical',
+        'auto | baseline | before-edge | text-before-edge | middle | central | after-edge | text-after-edge | ideographic | alphabetic | hanging | mathematical'
     },
     'baseline-shift': {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/text.html#BaselineShiftProperty'],
-      syntax: 'baseline | sub | super | <svg-length>',
+      syntax: 'baseline | sub | super | <svg-length>'
     },
     behavior: {
       comment:
         'added old IE property https://msdn.microsoft.com/en-us/library/ms530723(v=vs.85).aspx',
-      syntax: '<url>+',
+      syntax: '<url>+'
     },
     'clip-rule': {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/masking.html#ClipRuleProperty'],
-      syntax: 'nonzero | evenodd',
+      syntax: 'nonzero | evenodd'
     },
     cue: {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax: "<'cue-before'> <'cue-after'>?",
+      syntax: "<'cue-before'> <'cue-after'>?"
     },
     'cue-after': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax: '<url> <decibel>? | none',
+      syntax: '<url> <decibel>? | none'
     },
     'cue-before': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax: '<url> <decibel>? | none',
+      syntax: '<url> <decibel>? | none'
     },
     cursor: {
       comment:
         'added legacy keywords: hand, -webkit-grab. -webkit-grabbing, -webkit-zoom-in, -webkit-zoom-out, -moz-grab, -moz-grabbing, -moz-zoom-in, -moz-zoom-out',
       references: ['https://www.sitepoint.com/css3-cursor-styles/'],
       syntax:
-        '[ [ <url> [ <x> <y> ]? , ]* [ auto | default | none | context-menu | help | pointer | progress | wait | cell | crosshair | text | vertical-text | alias | copy | move | no-drop | not-allowed | e-resize | n-resize | ne-resize | nw-resize | s-resize | se-resize | sw-resize | w-resize | ew-resize | ns-resize | nesw-resize | nwse-resize | col-resize | row-resize | all-scroll | zoom-in | zoom-out | grab | grabbing | hand | -webkit-grab | -webkit-grabbing | -webkit-zoom-in | -webkit-zoom-out | -moz-grab | -moz-grabbing | -moz-zoom-in | -moz-zoom-out ] ]',
+        '[ [ <url> [ <x> <y> ]? , ]* [ auto | default | none | context-menu | help | pointer | progress | wait | cell | crosshair | text | vertical-text | alias | copy | move | no-drop | not-allowed | e-resize | n-resize | ne-resize | nw-resize | s-resize | se-resize | sw-resize | w-resize | ew-resize | ns-resize | nesw-resize | nwse-resize | col-resize | row-resize | all-scroll | zoom-in | zoom-out | grab | grabbing | hand | -webkit-grab | -webkit-grabbing | -webkit-zoom-in | -webkit-zoom-out | -moz-grab | -moz-grabbing | -moz-zoom-in | -moz-zoom-out ] ]'
     },
     display: {
       comment: 'extended with -ms-flexbox',
-      syntax: '| <-non-standard-display>',
+      syntax: '| <-non-standard-display>'
     },
     position: {
       comment: 'extended with -webkit-sticky',
-      syntax: '| -webkit-sticky',
+      syntax: '| -webkit-sticky'
     },
     'dominant-baseline': {
       comment: 'added SVG property',
       references: [
-        'https://www.w3.org/TR/SVG/text.html#DominantBaselineProperty',
+        'https://www.w3.org/TR/SVG/text.html#DominantBaselineProperty'
       ],
       syntax:
-        'auto | use-script | no-change | reset-size | ideographic | alphabetic | hanging | mathematical | central | middle | text-after-edge | text-before-edge',
+        'auto | use-script | no-change | reset-size | ideographic | alphabetic | hanging | mathematical | central | middle | text-after-edge | text-before-edge'
     },
     'image-rendering': {
       comment:
         'extended with <-non-standard-image-rendering>, added SVG keywords optimizeSpeed and optimizeQuality',
       references: [
         'https://developer.mozilla.org/en/docs/Web/CSS/image-rendering',
-        'https://www.w3.org/TR/SVG/painting.html#ImageRenderingProperty',
+        'https://www.w3.org/TR/SVG/painting.html#ImageRenderingProperty'
       ],
       syntax:
-        '| optimizeSpeed | optimizeQuality | <-non-standard-image-rendering>',
+        '| optimizeSpeed | optimizeQuality | <-non-standard-image-rendering>'
     },
     fill: {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/painting.html#FillProperty'],
-      syntax: '<paint>',
+      syntax: '<paint>'
     },
     'fill-opacity': {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/painting.html#FillProperty'],
-      syntax: '<number-zero-one>',
+      syntax: '<number-zero-one>'
     },
     'fill-rule': {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/painting.html#FillProperty'],
-      syntax: 'nonzero | evenodd',
+      syntax: 'nonzero | evenodd'
     },
     filter: {
       comment: 'extend with IE legacy syntaxes',
-      syntax: '| <-ms-filter-function-list>',
+      syntax: '| <-ms-filter-function-list>'
     },
     'glyph-orientation-horizontal': {
       comment: 'added SVG property',
       references: [
-        'https://www.w3.org/TR/SVG/text.html#GlyphOrientationHorizontalProperty',
+        'https://www.w3.org/TR/SVG/text.html#GlyphOrientationHorizontalProperty'
       ],
-      syntax: '<angle>',
+      syntax: '<angle>'
     },
     'glyph-orientation-vertical': {
       comment: 'added SVG property',
       references: [
-        'https://www.w3.org/TR/SVG/text.html#GlyphOrientationVerticalProperty',
+        'https://www.w3.org/TR/SVG/text.html#GlyphOrientationVerticalProperty'
       ],
-      syntax: '<angle>',
+      syntax: '<angle>'
     },
     kerning: {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/text.html#KerningProperty'],
-      syntax: 'auto | <svg-length>',
+      syntax: 'auto | <svg-length>'
     },
     'letter-spacing': {
       comment: 'fix syntax <length> -> <length-percentage>',
       references: [
-        'https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/letter-spacing',
+        'https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/letter-spacing'
       ],
-      syntax: 'normal | <length-percentage>',
+      syntax: 'normal | <length-percentage>'
     },
     marker: {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/painting.html#MarkerProperties'],
-      syntax: 'none | <url>',
+      syntax: 'none | <url>'
     },
     'marker-end': {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/painting.html#MarkerProperties'],
-      syntax: 'none | <url>',
+      syntax: 'none | <url>'
     },
     'marker-mid': {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/painting.html#MarkerProperties'],
-      syntax: 'none | <url>',
+      syntax: 'none | <url>'
     },
     'marker-start': {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/painting.html#MarkerProperties'],
-      syntax: 'none | <url>',
+      syntax: 'none | <url>'
     },
     'max-width': {
       comment:
         'fix auto -> none (https://github.com/mdn/data/pull/431); extend by non-standard width keywords https://developer.mozilla.org/en-US/docs/Web/CSS/max-width',
       syntax:
-        'none | <length-percentage> | min-content | max-content | fit-content(<length-percentage>) | <-non-standard-width>',
+        'none | <length-percentage> | min-content | max-content | fit-content(<length-percentage>) | <-non-standard-width>'
     },
     width: {
       comment:
         'per spec fit-content should be a function, however browsers are supporting it as a keyword (https://github.com/csstree/stylelint-validator/issues/29)',
-      syntax: '| fit-content | -moz-fit-content | -webkit-fit-content',
+      syntax: '| fit-content | -moz-fit-content | -webkit-fit-content'
     },
     'min-width': {
       comment:
         'extend by non-standard width keywords https://developer.mozilla.org/en-US/docs/Web/CSS/width',
       syntax:
-        'auto | <length-percentage> | min-content | max-content | fit-content(<length-percentage>) | <-non-standard-width>',
+        'auto | <length-percentage> | min-content | max-content | fit-content(<length-percentage>) | <-non-standard-width>'
     },
     overflow: {
       comment:
         'extend by vendor keywords https://developer.mozilla.org/en-US/docs/Web/CSS/overflow',
-      syntax: '| <-non-standard-overflow>',
+      syntax: '| <-non-standard-overflow>'
     },
     pause: {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax: "<'pause-before'> <'pause-after'>?",
+      syntax: "<'pause-before'> <'pause-after'>?"
     },
     'pause-after': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax: '<time> | none | x-weak | weak | medium | strong | x-strong',
+      syntax: '<time> | none | x-weak | weak | medium | strong | x-strong'
     },
     'pause-before': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax: '<time> | none | x-weak | weak | medium | strong | x-strong',
+      syntax: '<time> | none | x-weak | weak | medium | strong | x-strong'
     },
     rest: {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax: "<'rest-before'> <'rest-after'>?",
+      syntax: "<'rest-before'> <'rest-after'>?"
     },
     'rest-after': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax: '<time> | none | x-weak | weak | medium | strong | x-strong',
+      syntax: '<time> | none | x-weak | weak | medium | strong | x-strong'
     },
     'rest-before': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax: '<time> | none | x-weak | weak | medium | strong | x-strong',
+      syntax: '<time> | none | x-weak | weak | medium | strong | x-strong'
     },
     'shape-rendering': {
       comment: 'added SVG property',
       references: [
-        'https://www.w3.org/TR/SVG/painting.html#ShapeRenderingPropert',
+        'https://www.w3.org/TR/SVG/painting.html#ShapeRenderingPropert'
       ],
-      syntax: 'auto | optimizeSpeed | crispEdges | geometricPrecision',
+      syntax: 'auto | optimizeSpeed | crispEdges | geometricPrecision'
     },
     src: {
       comment:
         "added @font-face's src property https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/src",
-      syntax: '[ <url> [ format( <string># ) ]? | local( <family-name> ) ]#',
+      syntax: '[ <url> [ format( <string># ) ]? | local( <family-name> ) ]#'
     },
     speak: {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax: 'auto | none | normal',
+      syntax: 'auto | none | normal'
     },
     'speak-as': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
       syntax:
-        'normal | spell-out || digits || [ literal-punctuation | no-punctuation ]',
+        'normal | spell-out || digits || [ literal-punctuation | no-punctuation ]'
     },
     stroke: {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/painting.html#StrokeProperties'],
-      syntax: '<paint>',
+      syntax: '<paint>'
     },
     'stroke-dasharray': {
       comment:
         'added SVG property; a list of comma and/or white space separated <length>s and <percentage>s',
       references: ['https://www.w3.org/TR/SVG/painting.html#StrokeProperties'],
-      syntax: 'none | [ <svg-length>+ ]#',
+      syntax: 'none | [ <svg-length>+ ]#'
     },
     'stroke-dashoffset': {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/painting.html#StrokeProperties'],
-      syntax: '<svg-length>',
+      syntax: '<svg-length>'
     },
     'stroke-linecap': {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/painting.html#StrokeProperties'],
-      syntax: 'butt | round | square',
+      syntax: 'butt | round | square'
     },
     'stroke-linejoin': {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/painting.html#StrokeProperties'],
-      syntax: 'miter | round | bevel',
+      syntax: 'miter | round | bevel'
     },
     'stroke-miterlimit': {
       comment: 'added SVG property (<miterlimit> = <number-one-or-greater>) ',
       references: ['https://www.w3.org/TR/SVG/painting.html#StrokeProperties'],
-      syntax: '<number-one-or-greater>',
+      syntax: '<number-one-or-greater>'
     },
     'stroke-opacity': {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/painting.html#StrokeProperties'],
-      syntax: '<number-zero-one>',
+      syntax: '<number-zero-one>'
     },
     'stroke-width': {
       comment: 'added SVG property',
       references: ['https://www.w3.org/TR/SVG/painting.html#StrokeProperties'],
-      syntax: '<svg-length>',
+      syntax: '<svg-length>'
     },
     'text-anchor': {
       comment: 'added SVG property',
       references: [
-        'https://www.w3.org/TR/SVG/text.html#TextAlignmentProperties',
+        'https://www.w3.org/TR/SVG/text.html#TextAlignmentProperties'
       ],
-      syntax: 'start | middle | end',
+      syntax: 'start | middle | end'
     },
     'unicode-bidi': {
       comment:
         'added prefixed keywords https://developer.mozilla.org/en-US/docs/Web/CSS/unicode-bidi',
       syntax:
-        '| -moz-isolate | -moz-isolate-override | -moz-plaintext | -webkit-isolate | -webkit-isolate-override | -webkit-plaintext',
+        '| -moz-isolate | -moz-isolate-override | -moz-plaintext | -webkit-isolate | -webkit-isolate-override | -webkit-plaintext'
     },
     'unicode-range': {
       comment:
         'added missed property https://developer.mozilla.org/en-US/docs/Web/CSS/%40font-face/unicode-range',
-      syntax: '<urange>#',
+      syntax: '<urange>#'
     },
     'voice-balance': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax: '<number> | left | center | right | leftwards | rightwards',
+      syntax: '<number> | left | center | right | leftwards | rightwards'
     },
     'voice-duration': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax: 'auto | <time>',
+      syntax: 'auto | <time>'
     },
     'voice-family': {
       comment:
         '<name> -> <family-name>, https://www.w3.org/TR/css3-speech/#property-index',
       syntax:
-        '[ [ <family-name> | <generic-voice> ] , ]* [ <family-name> | <generic-voice> ] | preserve',
+        '[ [ <family-name> | <generic-voice> ] , ]* [ <family-name> | <generic-voice> ] | preserve'
     },
     'voice-pitch': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
       syntax:
-        '<frequency> && absolute | [ [ x-low | low | medium | high | x-high ] || [ <frequency> | <semitones> | <percentage> ] ]',
+        '<frequency> && absolute | [ [ x-low | low | medium | high | x-high ] || [ <frequency> | <semitones> | <percentage> ] ]'
     },
     'voice-range': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
       syntax:
-        '<frequency> && absolute | [ [ x-low | low | medium | high | x-high ] || [ <frequency> | <semitones> | <percentage> ] ]',
+        '<frequency> && absolute | [ [ x-low | low | medium | high | x-high ] || [ <frequency> | <semitones> | <percentage> ] ]'
     },
     'voice-rate': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
       syntax:
-        '[ normal | x-slow | slow | medium | fast | x-fast ] || <percentage>',
+        '[ normal | x-slow | slow | medium | fast | x-fast ] || <percentage>'
     },
     'voice-stress': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax: 'normal | strong | moderate | none | reduced',
+      syntax: 'normal | strong | moderate | none | reduced'
     },
     'voice-volume': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
       syntax:
-        'silent | [ [ x-soft | soft | medium | loud | x-loud ] || <decibel> ]',
+        'silent | [ [ x-soft | soft | medium | loud | x-loud ] || <decibel> ]'
     },
     'writing-mode': {
       comment: 'extend with SVG keywords',
-      syntax: '| <svg-writing-mode>',
-    },
+      syntax: '| <svg-writing-mode>'
+    }
   };
   var syntaxes = {
     '-legacy-gradient': {
       comment: 'added collection of legacy gradient syntaxes',
       syntax:
-        '<-webkit-gradient()> | <-legacy-linear-gradient> | <-legacy-repeating-linear-gradient> | <-legacy-radial-gradient> | <-legacy-repeating-radial-gradient>',
+        '<-webkit-gradient()> | <-legacy-linear-gradient> | <-legacy-repeating-linear-gradient> | <-legacy-radial-gradient> | <-legacy-repeating-radial-gradient>'
     },
     '-legacy-linear-gradient': {
       comment:
         'like standard syntax but w/o `to` keyword https://developer.mozilla.org/en-US/docs/Web/CSS/linear-gradient',
       syntax:
-        '-moz-linear-gradient( <-legacy-linear-gradient-arguments> ) | -webkit-linear-gradient( <-legacy-linear-gradient-arguments> ) | -o-linear-gradient( <-legacy-linear-gradient-arguments> )',
+        '-moz-linear-gradient( <-legacy-linear-gradient-arguments> ) | -webkit-linear-gradient( <-legacy-linear-gradient-arguments> ) | -o-linear-gradient( <-legacy-linear-gradient-arguments> )'
     },
     '-legacy-repeating-linear-gradient': {
       comment:
         'like standard syntax but w/o `to` keyword https://developer.mozilla.org/en-US/docs/Web/CSS/linear-gradient',
       syntax:
-        '-moz-repeating-linear-gradient( <-legacy-linear-gradient-arguments> ) | -webkit-repeating-linear-gradient( <-legacy-linear-gradient-arguments> ) | -o-repeating-linear-gradient( <-legacy-linear-gradient-arguments> )',
+        '-moz-repeating-linear-gradient( <-legacy-linear-gradient-arguments> ) | -webkit-repeating-linear-gradient( <-legacy-linear-gradient-arguments> ) | -o-repeating-linear-gradient( <-legacy-linear-gradient-arguments> )'
     },
     '-legacy-linear-gradient-arguments': {
       comment:
         'like standard syntax but w/o `to` keyword https://developer.mozilla.org/en-US/docs/Web/CSS/linear-gradient',
-      syntax: '[ <angle> | <side-or-corner> ]? , <color-stop-list>',
+      syntax: '[ <angle> | <side-or-corner> ]? , <color-stop-list>'
     },
     '-legacy-radial-gradient': {
       comment:
         'deprecated syntax that implemented by some browsers https://www.w3.org/TR/2011/WD-css3-images-20110908/#radial-gradients',
       syntax:
-        '-moz-radial-gradient( <-legacy-radial-gradient-arguments> ) | -webkit-radial-gradient( <-legacy-radial-gradient-arguments> ) | -o-radial-gradient( <-legacy-radial-gradient-arguments> )',
+        '-moz-radial-gradient( <-legacy-radial-gradient-arguments> ) | -webkit-radial-gradient( <-legacy-radial-gradient-arguments> ) | -o-radial-gradient( <-legacy-radial-gradient-arguments> )'
     },
     '-legacy-repeating-radial-gradient': {
       comment:
         'deprecated syntax that implemented by some browsers https://www.w3.org/TR/2011/WD-css3-images-20110908/#radial-gradients',
       syntax:
-        '-moz-repeating-radial-gradient( <-legacy-radial-gradient-arguments> ) | -webkit-repeating-radial-gradient( <-legacy-radial-gradient-arguments> ) | -o-repeating-radial-gradient( <-legacy-radial-gradient-arguments> )',
+        '-moz-repeating-radial-gradient( <-legacy-radial-gradient-arguments> ) | -webkit-repeating-radial-gradient( <-legacy-radial-gradient-arguments> ) | -o-repeating-radial-gradient( <-legacy-radial-gradient-arguments> )'
     },
     '-legacy-radial-gradient-arguments': {
       comment:
         'deprecated syntax that implemented by some browsers https://www.w3.org/TR/2011/WD-css3-images-20110908/#radial-gradients',
       syntax:
-        '[ <position> , ]? [ [ [ <-legacy-radial-gradient-shape> || <-legacy-radial-gradient-size> ] | [ <length> | <percentage> ]{2} ] , ]? <color-stop-list>',
+        '[ <position> , ]? [ [ [ <-legacy-radial-gradient-shape> || <-legacy-radial-gradient-size> ] | [ <length> | <percentage> ]{2} ] , ]? <color-stop-list>'
     },
     '-legacy-radial-gradient-size': {
       comment:
         'before a standard it contains 2 extra keywords (`contain` and `cover`) https://www.w3.org/TR/2011/WD-css3-images-20110908/#ltsize',
       syntax:
-        'closest-side | closest-corner | farthest-side | farthest-corner | contain | cover',
+        'closest-side | closest-corner | farthest-side | farthest-corner | contain | cover'
     },
     '-legacy-radial-gradient-shape': {
       comment:
         "define to double sure it doesn't extends in future https://www.w3.org/TR/2011/WD-css3-images-20110908/#ltshape",
-      syntax: 'circle | ellipse',
+      syntax: 'circle | ellipse'
     },
     '-non-standard-font': {
       comment: 'non standard fonts',
       references: [
-        'https://webkit.org/blog/3709/using-the-system-font-in-web-content/',
+        'https://webkit.org/blog/3709/using-the-system-font-in-web-content/'
       ],
       syntax:
-        '-apple-system-body | -apple-system-headline | -apple-system-subheadline | -apple-system-caption1 | -apple-system-caption2 | -apple-system-footnote | -apple-system-short-body | -apple-system-short-headline | -apple-system-short-subheadline | -apple-system-short-caption1 | -apple-system-short-footnote | -apple-system-tall-body',
+        '-apple-system-body | -apple-system-headline | -apple-system-subheadline | -apple-system-caption1 | -apple-system-caption2 | -apple-system-footnote | -apple-system-short-body | -apple-system-short-headline | -apple-system-short-subheadline | -apple-system-short-caption1 | -apple-system-short-footnote | -apple-system-tall-body'
     },
     '-non-standard-color': {
       comment: 'non standard colors',
       references: [
         'http://cssdot.ru/%D0%A1%D0%BF%D1%80%D0%B0%D0%B2%D0%BE%D1%87%D0%BD%D0%B8%D0%BA_CSS/color-i305.html',
-        'https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Mozilla_Color_Preference_Extensions',
+        'https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Mozilla_Color_Preference_Extensions'
       ],
       syntax:
-        '-moz-ButtonDefault | -moz-ButtonHoverFace | -moz-ButtonHoverText | -moz-CellHighlight | -moz-CellHighlightText | -moz-Combobox | -moz-ComboboxText | -moz-Dialog | -moz-DialogText | -moz-dragtargetzone | -moz-EvenTreeRow | -moz-Field | -moz-FieldText | -moz-html-CellHighlight | -moz-html-CellHighlightText | -moz-mac-accentdarkestshadow | -moz-mac-accentdarkshadow | -moz-mac-accentface | -moz-mac-accentlightesthighlight | -moz-mac-accentlightshadow | -moz-mac-accentregularhighlight | -moz-mac-accentregularshadow | -moz-mac-chrome-active | -moz-mac-chrome-inactive | -moz-mac-focusring | -moz-mac-menuselect | -moz-mac-menushadow | -moz-mac-menutextselect | -moz-MenuHover | -moz-MenuHoverText | -moz-MenuBarText | -moz-MenuBarHoverText | -moz-nativehyperlinktext | -moz-OddTreeRow | -moz-win-communicationstext | -moz-win-mediatext | -moz-activehyperlinktext | -moz-default-background-color | -moz-default-color | -moz-hyperlinktext | -moz-visitedhyperlinktext | -webkit-activelink | -webkit-focus-ring-color | -webkit-link | -webkit-text',
+        '-moz-ButtonDefault | -moz-ButtonHoverFace | -moz-ButtonHoverText | -moz-CellHighlight | -moz-CellHighlightText | -moz-Combobox | -moz-ComboboxText | -moz-Dialog | -moz-DialogText | -moz-dragtargetzone | -moz-EvenTreeRow | -moz-Field | -moz-FieldText | -moz-html-CellHighlight | -moz-html-CellHighlightText | -moz-mac-accentdarkestshadow | -moz-mac-accentdarkshadow | -moz-mac-accentface | -moz-mac-accentlightesthighlight | -moz-mac-accentlightshadow | -moz-mac-accentregularhighlight | -moz-mac-accentregularshadow | -moz-mac-chrome-active | -moz-mac-chrome-inactive | -moz-mac-focusring | -moz-mac-menuselect | -moz-mac-menushadow | -moz-mac-menutextselect | -moz-MenuHover | -moz-MenuHoverText | -moz-MenuBarText | -moz-MenuBarHoverText | -moz-nativehyperlinktext | -moz-OddTreeRow | -moz-win-communicationstext | -moz-win-mediatext | -moz-activehyperlinktext | -moz-default-background-color | -moz-default-color | -moz-hyperlinktext | -moz-visitedhyperlinktext | -webkit-activelink | -webkit-focus-ring-color | -webkit-link | -webkit-text'
     },
     '-non-standard-image-rendering': {
       comment:
         'non-standard keywords http://phrogz.net/tmp/canvas_image_zoom.html',
       syntax:
-        'optimize-contrast | -moz-crisp-edges | -o-crisp-edges | -webkit-optimize-contrast',
+        'optimize-contrast | -moz-crisp-edges | -o-crisp-edges | -webkit-optimize-contrast'
     },
     '-non-standard-overflow': {
       comment:
         'non-standard keywords https://developer.mozilla.org/en-US/docs/Web/CSS/overflow',
       syntax:
-        '-moz-scrollbars-none | -moz-scrollbars-horizontal | -moz-scrollbars-vertical | -moz-hidden-unscrollable',
+        '-moz-scrollbars-none | -moz-scrollbars-horizontal | -moz-scrollbars-vertical | -moz-hidden-unscrollable'
     },
     '-non-standard-width': {
       comment:
         'non-standard keywords https://developer.mozilla.org/en-US/docs/Web/CSS/width',
       syntax:
-        'fill-available | min-intrinsic | intrinsic | -moz-available | -moz-fit-content | -moz-min-content | -moz-max-content | -webkit-min-content | -webkit-max-content',
+        'fill-available | min-intrinsic | intrinsic | -moz-available | -moz-fit-content | -moz-min-content | -moz-max-content | -webkit-min-content | -webkit-max-content'
     },
     '-webkit-gradient()': {
       comment:
         'first Apple proposal gradient syntax https://webkit.org/blog/175/introducing-css-gradients/ - TODO: simplify when after match algorithm improvement ( [, point, radius | , point] -> [, radius]? , point )',
       syntax:
-        '-webkit-gradient( <-webkit-gradient-type>, <-webkit-gradient-point> [, <-webkit-gradient-point> | , <-webkit-gradient-radius>, <-webkit-gradient-point> ] [, <-webkit-gradient-radius>]? [, <-webkit-gradient-color-stop>]* )',
+        '-webkit-gradient( <-webkit-gradient-type>, <-webkit-gradient-point> [, <-webkit-gradient-point> | , <-webkit-gradient-radius>, <-webkit-gradient-point> ] [, <-webkit-gradient-radius>]? [, <-webkit-gradient-color-stop>]* )'
     },
     '-webkit-gradient-color-stop': {
       comment:
         'first Apple proposal gradient syntax https://webkit.org/blog/175/introducing-css-gradients/',
       syntax:
-        'from( <color> ) | color-stop( [ <number-zero-one> | <percentage> ] , <color> ) | to( <color> )',
+        'from( <color> ) | color-stop( [ <number-zero-one> | <percentage> ] , <color> ) | to( <color> )'
     },
     '-webkit-gradient-point': {
       comment:
         'first Apple proposal gradient syntax https://webkit.org/blog/175/introducing-css-gradients/',
       syntax:
-        '[ left | center | right | <length-percentage> ] [ top | center | bottom | <length-percentage> ]',
+        '[ left | center | right | <length-percentage> ] [ top | center | bottom | <length-percentage> ]'
     },
     '-webkit-gradient-radius': {
       comment:
         'first Apple proposal gradient syntax https://webkit.org/blog/175/introducing-css-gradients/',
-      syntax: '<length> | <percentage>',
+      syntax: '<length> | <percentage>'
     },
     '-webkit-gradient-type': {
       comment:
         'first Apple proposal gradient syntax https://webkit.org/blog/175/introducing-css-gradients/',
-      syntax: 'linear | radial',
+      syntax: 'linear | radial'
     },
     '-webkit-mask-box-repeat': {
       comment:
         'missed; https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-mask-box-image',
-      syntax: 'repeat | stretch | round',
+      syntax: 'repeat | stretch | round'
     },
     '-webkit-mask-clip-style': {
       comment:
         'missed; there is no enough information about `-webkit-mask-clip` property, but looks like all those keywords are working',
       syntax:
-        'border | border-box | padding | padding-box | content | content-box | text',
+        'border | border-box | padding | padding-box | content | content-box | text'
     },
     '-ms-filter-function-list': {
       comment: 'https://developer.mozilla.org/en-US/docs/Web/CSS/-ms-filter',
-      syntax: '<-ms-filter-function>+',
+      syntax: '<-ms-filter-function>+'
     },
     '-ms-filter-function': {
       comment: 'https://developer.mozilla.org/en-US/docs/Web/CSS/-ms-filter',
-      syntax: '<-ms-filter-function-progid> | <-ms-filter-function-legacy>',
+      syntax: '<-ms-filter-function-progid> | <-ms-filter-function-legacy>'
     },
     '-ms-filter-function-progid': {
       comment: 'https://developer.mozilla.org/en-US/docs/Web/CSS/-ms-filter',
       syntax:
-        "'progid:' [ <ident-token> '.' ]* [ <ident-token> | <function-token> <any-value>? ) ]",
+        "'progid:' [ <ident-token> '.' ]* [ <ident-token> | <function-token> <any-value>? ) ]"
     },
     '-ms-filter-function-legacy': {
       comment: 'https://developer.mozilla.org/en-US/docs/Web/CSS/-ms-filter',
-      syntax: '<ident-token> | <function-token> <any-value>? )',
+      syntax: '<ident-token> | <function-token> <any-value>? )'
     },
     '-ms-filter': {
-      syntax: '<string>',
+      syntax: '<string>'
     },
     age: {
       comment: 'https://www.w3.org/TR/css3-speech/#voice-family',
-      syntax: 'child | young | old',
+      syntax: 'child | young | old'
     },
     'attr-name': {
-      syntax: '<wq-name>',
+      syntax: '<wq-name>'
     },
     'attr-fallback': {
-      syntax: '<any-value>',
+      syntax: '<any-value>'
     },
     'border-radius': {
       comment:
         'missed, https://drafts.csswg.org/css-backgrounds-3/#the-border-radius',
-      syntax: '<length-percentage>{1,2}',
+      syntax: '<length-percentage>{1,2}'
     },
     bottom: {
       comment:
         "missed; not sure we should add it, but no others except `shape` is using it so it's ok for now; https://drafts.fxtf.org/css-masking-1/#funcdef-clip-rect",
-      syntax: '<length> | auto',
+      syntax: '<length> | auto'
     },
     'content-list': {
       comment:
         'missed -> https://drafts.csswg.org/css-content/#typedef-content-list (document-url, <target> and leader() is omitted util stabilization)',
       syntax:
-        "[ <string> | contents | <image> | <quote> | <target> | <leader()> | <attr()> | counter( <ident>, <'list-style-type'>? ) ]+",
+        "[ <string> | contents | <image> | <quote> | <target> | <leader()> | <attr()> | counter( <ident>, <'list-style-type'>? ) ]+"
     },
     'element()': {
       comment:
         'https://drafts.csswg.org/css-gcpm/#element-syntax & https://drafts.csswg.org/css-images-4/#element-notation',
       syntax:
-        'element( <custom-ident> , [ first | start | last | first-except ]? ) | element( <id-selector> )',
+        'element( <custom-ident> , [ first | start | last | first-except ]? ) | element( <id-selector> )'
     },
     'generic-voice': {
       comment: 'https://www.w3.org/TR/css3-speech/#voice-family',
-      syntax: '[ <age>? <gender> <integer>? ]',
+      syntax: '[ <age>? <gender> <integer>? ]'
     },
     gender: {
       comment: 'https://www.w3.org/TR/css3-speech/#voice-family',
-      syntax: 'male | female | neutral',
+      syntax: 'male | female | neutral'
     },
     'generic-family': {
       comment: 'added -apple-system',
       references: [
-        'https://webkit.org/blog/3709/using-the-system-font-in-web-content/',
+        'https://webkit.org/blog/3709/using-the-system-font-in-web-content/'
       ],
-      syntax: '| -apple-system',
+      syntax: '| -apple-system'
     },
     gradient: {
       comment: 'added legacy syntaxes support',
-      syntax: '| <-legacy-gradient>',
+      syntax: '| <-legacy-gradient>'
     },
     left: {
       comment:
         "missed; not sure we should add it, but no others except `shape` is using it so it's ok for now; https://drafts.fxtf.org/css-masking-1/#funcdef-clip-rect",
-      syntax: '<length> | auto',
+      syntax: '<length> | auto'
     },
     'mask-image': {
       comment: 'missed; https://drafts.fxtf.org/css-masking-1/#the-mask-image',
-      syntax: '<mask-reference>#',
+      syntax: '<mask-reference>#'
     },
     'name-repeat': {
       comment:
         'missed, and looks like obsolete, keep it as is since other property syntaxes should be changed too; https://www.w3.org/TR/2015/WD-css-grid-1-20150917/#typedef-name-repeat',
-      syntax: 'repeat( [ <positive-integer> | auto-fill ], <line-names>+)',
+      syntax: 'repeat( [ <positive-integer> | auto-fill ], <line-names>+)'
     },
     'named-color': {
       comment: 'added non standard color names',
-      syntax: '| <-non-standard-color>',
+      syntax: '| <-non-standard-color>'
     },
     paint: {
       comment:
         'used by SVG https://www.w3.org/TR/SVG/painting.html#SpecifyingPaint',
       syntax:
-        'none | <color> | <url> [ none | <color> ]? | context-fill | context-stroke',
+        'none | <color> | <url> [ none | <color> ]? | context-fill | context-stroke'
     },
     'page-size': {
       comment: 'https://www.w3.org/TR/css-page-3/#typedef-page-size-page-size',
       syntax:
-        'A5 | A4 | A3 | B5 | B4 | JIS-B5 | JIS-B4 | letter | legal | ledger',
+        'A5 | A4 | A3 | B5 | B4 | JIS-B5 | JIS-B4 | letter | legal | ledger'
     },
     ratio: {
       comment: 'missed, https://drafts.csswg.org/mediaqueries-4/#typedef-ratio',
-      syntax: '<integer> / <integer>',
+      syntax: '<integer> / <integer>'
     },
     right: {
       comment:
         "missed; not sure we should add it, but no others except `shape` is using it so it's ok for now; https://drafts.fxtf.org/css-masking-1/#funcdef-clip-rect",
-      syntax: '<length> | auto',
+      syntax: '<length> | auto'
     },
     shape: {
       comment:
         'missed spaces in function body and add backwards compatible syntax',
       syntax:
-        'rect( <top>, <right>, <bottom>, <left> ) | rect( <top> <right> <bottom> <left> )',
+        'rect( <top>, <right>, <bottom>, <left> ) | rect( <top> <right> <bottom> <left> )'
     },
     'svg-length': {
       comment:
         'All coordinates and lengths in SVG can be specified with or without a unit identifier',
       references: ['https://www.w3.org/TR/SVG11/coords.html#Units'],
-      syntax: '<percentage> | <length> | <number>',
+      syntax: '<percentage> | <length> | <number>'
     },
     'svg-writing-mode': {
       comment: 'SVG specific keywords (deprecated for CSS)',
       references: [
         'https://developer.mozilla.org/en/docs/Web/CSS/writing-mode',
-        'https://www.w3.org/TR/SVG/text.html#WritingModeProperty',
+        'https://www.w3.org/TR/SVG/text.html#WritingModeProperty'
       ],
-      syntax: 'lr-tb | rl-tb | tb-rl | lr | rl | tb',
+      syntax: 'lr-tb | rl-tb | tb-rl | lr | rl | tb'
     },
     top: {
       comment:
         "missed; not sure we should add it, but no others except `shape` is using it so it's ok for now; https://drafts.fxtf.org/css-masking-1/#funcdef-clip-rect",
-      syntax: '<length> | auto',
+      syntax: '<length> | auto'
     },
     'track-group': {
       comment: 'used by old grid-columns and grid-rows syntax v0',
       syntax:
-        "'(' [ <string>* <track-minmax> <string>* ]+ ')' [ '[' <positive-integer> ']' ]? | <track-minmax>",
+        "'(' [ <string>* <track-minmax> <string>* ]+ ')' [ '[' <positive-integer> ']' ]? | <track-minmax>"
     },
     'track-list-v0': {
       comment: 'used by old grid-columns and grid-rows syntax v0',
-      syntax: '[ <string>* <track-group> <string>* ]+ | none',
+      syntax: '[ <string>* <track-group> <string>* ]+ | none'
     },
     'track-minmax': {
       comment: 'used by old grid-columns and grid-rows syntax v0',
       syntax:
-        'minmax( <track-breadth> , <track-breadth> ) | auto | <track-breadth> | fit-content',
+        'minmax( <track-breadth> , <track-breadth> ) | auto | <track-breadth> | fit-content'
     },
     x: {
       comment:
         "missed; not sure we should add it, but no others except `cursor` is using it so it's ok for now; https://drafts.csswg.org/css-ui-3/#cursor",
-      syntax: '<number>',
+      syntax: '<number>'
     },
     y: {
       comment:
         "missed; not sure we should add it, but no others except `cursor` is using so it's ok for now; https://drafts.csswg.org/css-ui-3/#cursor",
-      syntax: '<number>',
+      syntax: '<number>'
     },
     declaration: {
       comment: 'missed, restored by https://drafts.csswg.org/css-syntax',
-      syntax: "<ident-token> : <declaration-value>? [ '!' important ]?",
+      syntax: "<ident-token> : <declaration-value>? [ '!' important ]?"
     },
     'declaration-list': {
       comment: 'missed, restored by https://drafts.csswg.org/css-syntax',
-      syntax: "[ <declaration>? ';' ]* <declaration>?",
+      syntax: "[ <declaration>? ';' ]* <declaration>?"
     },
     url: {
       comment: 'https://drafts.csswg.org/css-values-4/#urls',
-      syntax: 'url( <string> <url-modifier>* ) | <url-token>',
+      syntax: 'url( <string> <url-modifier>* ) | <url-token>'
     },
     'url-modifier': {
       comment: 'https://drafts.csswg.org/css-values-4/#typedef-url-modifier',
-      syntax: '<ident> | <function-token> <any-value> )',
+      syntax: '<ident> | <function-token> <any-value> )'
     },
     'number-zero-one': {
-      syntax: '<number [0,1]>',
+      syntax: '<number [0,1]>'
     },
     'number-one-or-greater': {
-      syntax: '<number [1,∞]>',
+      syntax: '<number [1,∞]>'
     },
     'positive-integer': {
-      syntax: '<integer [0,∞]>',
+      syntax: '<integer [0,∞]>'
     },
     '-non-standard-display': {
       syntax:
-        '-ms-inline-flexbox | -ms-grid | -ms-inline-grid | -webkit-flex | -webkit-inline-flex | -webkit-box | -webkit-inline-box | -moz-inline-stack | -moz-box | -moz-inline-box',
-    },
+        '-ms-inline-flexbox | -ms-grid | -ms-inline-grid | -webkit-flex | -webkit-inline-flex | -webkit-box | -webkit-inline-box | -moz-inline-stack | -moz-box | -moz-inline-box'
+    }
   };
   var require$$3 = {
     atrules: atrules,
     properties: properties,
-    syntaxes: syntaxes,
+    syntaxes: syntaxes
   };
 
   const mdnAtrules = require$$0;
@@ -22108,7 +22090,7 @@
             .trim()
             .match(/^@\S+\s+([^;\{]*)/)[1]
             .trim() || null,
-        descriptors,
+        descriptors
       };
     }
 
@@ -22170,7 +22152,7 @@
         descriptors:
           dict[key].descriptors ?
             patchDictionary(dict[key].descriptors, patchDescriptors || {})
-          : patchDescriptors && unpackSyntaxes(patchDescriptors),
+          : patchDescriptors && unpackSyntaxes(patchDescriptors)
       };
     }
 
@@ -22181,7 +22163,7 @@
           prelude: patchDict[key].prelude || null,
           descriptors:
             patchDict[key].descriptors &&
-            unpackSyntaxes(patchDict[key].descriptors),
+            unpackSyntaxes(patchDict[key].descriptors)
         };
       }
     }
@@ -22192,7 +22174,7 @@
   var data$1 = {
     types: patchDictionary(mdnSyntaxes, patch.syntaxes),
     atrules: patchAtrules(preprocessAtrules(mdnAtrules), patch.atrules),
-    properties: patchDictionary(mdnProperties, patch.properties),
+    properties: patchDictionary(mdnProperties, patch.properties)
   };
 
   var cmpChar$2 = tokenizer$3.cmpChar;
@@ -22305,7 +22287,7 @@
     name: 'AnPlusB',
     structure: {
       a: [String, null],
-      b: [String, null],
+      b: [String, null]
     },
     parse: function () {
       /* eslint-disable brace-style*/
@@ -22488,7 +22470,7 @@
         type: 'AnPlusB',
         loc: this.getLocation(start, this.scanner.tokenStart),
         a: a,
-        b: b,
+        b: b
       };
     },
     generate: function (node) {
@@ -22519,7 +22501,7 @@
       } else {
         this.chunk(String(node.b));
       }
-    },
+    }
   };
 
   var tokenizer = tokenizer$3;
@@ -22578,7 +22560,7 @@
   var Raw = {
     name: 'Raw',
     structure: {
-      value: String,
+      value: String
     },
     parse: function (startToken, mode, excludeWhiteSpace) {
       var startOffset = this.scanner.getTokenStart(startToken);
@@ -22597,7 +22579,7 @@
       return {
         type: 'Raw',
         loc: this.getLocation(startOffset, endOffset),
-        value: this.scanner.source.substring(startOffset, endOffset),
+        value: this.scanner.source.substring(startOffset, endOffset)
       };
     },
     generate: function (node) {
@@ -22609,8 +22591,8 @@
       leftCurlyBracket: leftCurlyBracket,
       leftCurlyBracketOrSemicolon: leftCurlyBracketOrSemicolon,
       exclamationMarkOrSemicolon: exclamationMarkOrSemicolon,
-      semicolonIncluded: semicolonIncluded,
-    },
+      semicolonIncluded: semicolonIncluded
+    }
   };
 
   var TYPE$w = tokenizer$3.TYPE;
@@ -22648,7 +22630,7 @@
     structure: {
       name: String,
       prelude: ['AtrulePrelude', 'Raw', null],
-      block: ['Block', null],
+      block: ['Block', null]
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -22713,7 +22695,7 @@
         loc: this.getLocation(start, this.scanner.tokenStart),
         name: name,
         prelude: prelude,
-        block: block,
+        block: block
       };
     },
     generate: function (node) {
@@ -22731,7 +22713,7 @@
         this.chunk(';');
       }
     },
-    walkContext: 'atrule',
+    walkContext: 'atrule'
   };
 
   var TYPE$v = tokenizer$3.TYPE;
@@ -22742,7 +22724,7 @@
   var AtrulePrelude = {
     name: 'AtrulePrelude',
     structure: {
-      children: [[]],
+      children: [[]]
     },
     parse: function (name) {
       var children = null;
@@ -22781,13 +22763,13 @@
       return {
         type: 'AtrulePrelude',
         loc: this.getLocationFromList(children),
-        children: children,
+        children: children
       };
     },
     generate: function (node) {
       this.children(node);
     },
-    walkContext: 'atrulePrelude',
+    walkContext: 'atrulePrelude'
   };
 
   var TYPE$u = tokenizer$3.TYPE;
@@ -22843,7 +22825,7 @@
     return {
       type: 'Identifier',
       loc: this.getLocation(start, this.scanner.tokenStart),
-      name: this.scanner.substrToCursor(start),
+      name: this.scanner.substrToCursor(start)
     };
   }
 
@@ -22883,7 +22865,7 @@
       name: 'Identifier',
       matcher: [String, null],
       value: ['String', 'Identifier', null],
-      flags: [String, null],
+      flags: [String, null]
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -22930,7 +22912,7 @@
         name: name,
         matcher: matcher,
         value: value,
-        flags: flags,
+        flags: flags
       };
     },
     generate: function (node) {
@@ -22958,7 +22940,7 @@
       }
 
       this.chunk(']');
-    },
+    }
   };
 
   var TYPE$t = tokenizer$3.TYPE;
@@ -22997,7 +22979,7 @@
   var Block = {
     name: 'Block',
     structure: {
-      children: [['Atrule', 'Rule', 'Declaration']],
+      children: [['Atrule', 'Rule', 'Declaration']]
     },
     parse: function (isDeclaration) {
       var consumer = isDeclaration ? consumeDeclaration : consumeRule;
@@ -23033,7 +23015,7 @@
       return {
         type: 'Block',
         loc: this.getLocation(start, this.scanner.tokenStart),
-        children: children,
+        children: children
       };
     },
     generate: function (node) {
@@ -23045,7 +23027,7 @@
       });
       this.chunk('}');
     },
-    walkContext: 'block',
+    walkContext: 'block'
   };
 
   var TYPE$s = tokenizer$3.TYPE;
@@ -23056,7 +23038,7 @@
   var Brackets = {
     name: 'Brackets',
     structure: {
-      children: [[]],
+      children: [[]]
     },
     parse: function (readSequence, recognizer) {
       var start = this.scanner.tokenStart;
@@ -23073,14 +23055,14 @@
       return {
         type: 'Brackets',
         loc: this.getLocation(start, this.scanner.tokenStart),
-        children: children,
+        children: children
       };
     },
     generate: function (node) {
       this.chunk('[');
       this.children(node);
       this.chunk(']');
-    },
+    }
   };
 
   var CDC$1 = tokenizer$3.TYPE.CDC;
@@ -23095,12 +23077,12 @@
 
       return {
         type: 'CDC',
-        loc: this.getLocation(start, this.scanner.tokenStart),
+        loc: this.getLocation(start, this.scanner.tokenStart)
       };
     },
     generate: function () {
       this.chunk('-->');
-    },
+    }
   };
 
   var CDO$1 = tokenizer$3.TYPE.CDO;
@@ -23115,12 +23097,12 @@
 
       return {
         type: 'CDO',
-        loc: this.getLocation(start, this.scanner.tokenStart),
+        loc: this.getLocation(start, this.scanner.tokenStart)
       };
     },
     generate: function () {
       this.chunk('<!--');
-    },
+    }
   };
 
   var TYPE$r = tokenizer$3.TYPE;
@@ -23132,7 +23114,7 @@
   var ClassSelector = {
     name: 'ClassSelector',
     structure: {
-      name: String,
+      name: String
     },
     parse: function () {
       if (!this.scanner.isDelim(FULLSTOP$2)) {
@@ -23147,13 +23129,13 @@
           this.scanner.tokenStart - 1,
           this.scanner.tokenEnd
         ),
-        name: this.consume(IDENT$d),
+        name: this.consume(IDENT$d)
       };
     },
     generate: function (node) {
       this.chunk('.');
       this.chunk(node.name);
-    },
+    }
   };
 
   var TYPE$q = tokenizer$3.TYPE;
@@ -23168,7 +23150,7 @@
   var Combinator = {
     name: 'Combinator',
     structure: {
-      name: String,
+      name: String
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -23207,12 +23189,12 @@
       return {
         type: 'Combinator',
         loc: this.getLocation(start, this.scanner.tokenStart),
-        name: this.scanner.substrToCursor(start),
+        name: this.scanner.substrToCursor(start)
       };
     },
     generate: function (node) {
       this.chunk(node.name);
-    },
+    }
   };
 
   var TYPE$p = tokenizer$3.TYPE;
@@ -23225,7 +23207,7 @@
   var Comment = {
     name: 'Comment',
     structure: {
-      value: String,
+      value: String
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -23244,14 +23226,14 @@
       return {
         type: 'Comment',
         loc: this.getLocation(start, this.scanner.tokenStart),
-        value: this.scanner.source.substring(start + 2, end),
+        value: this.scanner.source.substring(start + 2, end)
       };
     },
     generate: function (node) {
       this.chunk('/*');
       this.chunk(node.value);
       this.chunk('*/');
-    },
+    }
   };
 
   var isCustomProperty = names$2.isCustomProperty;
@@ -23302,7 +23284,7 @@
     structure: {
       important: [Boolean, String],
       property: String,
-      value: ['Value', 'Raw'],
+      value: ['Value', 'Raw']
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -23345,7 +23327,7 @@
             value.children.appendData({
               type: 'WhiteSpace',
               loc: null,
-              value: ' ',
+              value: ' '
             });
             break;
           }
@@ -23373,7 +23355,7 @@
         loc: this.getLocation(start, this.scanner.tokenStart),
         important: important,
         property: property,
-        value: value,
+        value: value
       };
     },
     generate: function (node) {
@@ -23387,7 +23369,7 @@
         );
       }
     },
-    walkContext: 'declaration',
+    walkContext: 'declaration'
   };
 
   function readProperty() {
@@ -23449,7 +23431,7 @@
   var DeclarationList = {
     name: 'DeclarationList',
     structure: {
-      children: [['Declaration']],
+      children: [['Declaration']]
     },
     parse: function () {
       var children = this.createList();
@@ -23472,7 +23454,7 @@
       return {
         type: 'DeclarationList',
         loc: this.getLocationFromList(children),
-        children: children,
+        children: children
       };
     },
     generate: function (node) {
@@ -23481,7 +23463,7 @@
           this.chunk(';');
         }
       });
-    },
+    }
   };
 
   var consumeNumber$2 = utils$2.consumeNumber;
@@ -23493,7 +23475,7 @@
     name: 'Dimension',
     structure: {
       value: String,
-      unit: String,
+      unit: String
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -23505,13 +23487,13 @@
         type: 'Dimension',
         loc: this.getLocation(start, this.scanner.tokenStart),
         value: this.scanner.source.substring(start, numberEnd),
-        unit: this.scanner.source.substring(numberEnd, this.scanner.tokenStart),
+        unit: this.scanner.source.substring(numberEnd, this.scanner.tokenStart)
       };
     },
     generate: function (node) {
       this.chunk(node.value);
       this.chunk(node.unit);
-    },
+    }
   };
 
   var TYPE$l = tokenizer$3.TYPE;
@@ -23523,7 +23505,7 @@
     name: 'Function',
     structure: {
       name: String,
-      children: [[]],
+      children: [[]]
     },
     parse: function (readSequence, recognizer) {
       var start = this.scanner.tokenStart;
@@ -23544,7 +23526,7 @@
         type: 'Function',
         loc: this.getLocation(start, this.scanner.tokenStart),
         name: name,
-        children: children,
+        children: children
       };
     },
     generate: function (node) {
@@ -23553,7 +23535,7 @@
       this.children(node);
       this.chunk(')');
     },
-    walkContext: 'function',
+    walkContext: 'function'
   };
 
   var TYPE$k = tokenizer$3.TYPE;
@@ -23564,7 +23546,7 @@
   var Hash = {
     name: 'Hash',
     structure: {
-      value: String,
+      value: String
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -23574,13 +23556,13 @@
       return {
         type: 'Hash',
         loc: this.getLocation(start, this.scanner.tokenStart),
-        value: this.scanner.substrToCursor(start + 1),
+        value: this.scanner.substrToCursor(start + 1)
       };
     },
     generate: function (node) {
       this.chunk('#');
       this.chunk(node.value);
-    },
+    }
   };
 
   var TYPE$j = tokenizer$3.TYPE;
@@ -23590,18 +23572,18 @@
   var Identifier = {
     name: 'Identifier',
     structure: {
-      name: String,
+      name: String
     },
     parse: function () {
       return {
         type: 'Identifier',
         loc: this.getLocation(this.scanner.tokenStart, this.scanner.tokenEnd),
-        name: this.consume(IDENT$a),
+        name: this.consume(IDENT$a)
       };
     },
     generate: function (node) {
       this.chunk(node.name);
-    },
+    }
   };
 
   var TYPE$i = tokenizer$3.TYPE;
@@ -23612,7 +23594,7 @@
   var IdSelector = {
     name: 'IdSelector',
     structure: {
-      name: String,
+      name: String
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -23623,13 +23605,13 @@
       return {
         type: 'IdSelector',
         loc: this.getLocation(start, this.scanner.tokenStart),
-        name: this.scanner.substrToCursor(start + 1),
+        name: this.scanner.substrToCursor(start + 1)
       };
     },
     generate: function (node) {
       this.chunk('#');
       this.chunk(node.name);
-    },
+    }
   };
 
   var TYPE$h = tokenizer$3.TYPE;
@@ -23646,7 +23628,7 @@
     name: 'MediaFeature',
     structure: {
       name: String,
-      value: ['Identifier', 'Number', 'Dimension', 'Ratio', null],
+      value: ['Identifier', 'Number', 'Dimension', 'Ratio', null]
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -23695,7 +23677,7 @@
         type: 'MediaFeature',
         loc: this.getLocation(start, this.scanner.tokenStart),
         name: name,
-        value: value,
+        value: value
       };
     },
     generate: function (node) {
@@ -23706,7 +23688,7 @@
         this.node(node.value);
       }
       this.chunk(')');
-    },
+    }
   };
 
   var TYPE$g = tokenizer$3.TYPE;
@@ -23719,7 +23701,7 @@
   var MediaQuery = {
     name: 'MediaQuery',
     structure: {
-      children: [['Identifier', 'MediaFeature', 'WhiteSpace']],
+      children: [['Identifier', 'MediaFeature', 'WhiteSpace']]
     },
     parse: function () {
       this.scanner.skipSC();
@@ -23765,12 +23747,12 @@
       return {
         type: 'MediaQuery',
         loc: this.getLocationFromList(children),
-        children: children,
+        children: children
       };
     },
     generate: function (node) {
       this.children(node);
-    },
+    }
   };
 
   var COMMA$3 = tokenizer$3.TYPE.Comma;
@@ -23778,7 +23760,7 @@
   var MediaQueryList = {
     name: 'MediaQueryList',
     structure: {
-      children: [['MediaQuery']],
+      children: [['MediaQuery']]
     },
     parse: function (relative) {
       var children = this.createList();
@@ -23798,21 +23780,21 @@
       return {
         type: 'MediaQueryList',
         loc: this.getLocationFromList(children),
-        children: children,
+        children: children
       };
     },
     generate: function (node) {
       this.children(node, function () {
         this.chunk(',');
       });
-    },
+    }
   };
 
   var Nth = {
     name: 'Nth',
     structure: {
       nth: ['AnPlusB', 'Identifier'],
-      selector: ['SelectorList', null],
+      selector: ['SelectorList', null]
     },
     parse: function (allowOfClause) {
       this.scanner.skipSC();
@@ -23851,7 +23833,7 @@
         type: 'Nth',
         loc: this.getLocation(start, end),
         nth: query,
-        selector: selector,
+        selector: selector
       };
     },
     generate: function (node) {
@@ -23860,7 +23842,7 @@
         this.chunk(' of ');
         this.node(node.selector);
       }
-    },
+    }
   };
 
   var NUMBER$4 = tokenizer$3.TYPE.Number;
@@ -23868,25 +23850,25 @@
   var _Number = {
     name: 'Number',
     structure: {
-      value: String,
+      value: String
     },
     parse: function () {
       return {
         type: 'Number',
         loc: this.getLocation(this.scanner.tokenStart, this.scanner.tokenEnd),
-        value: this.consume(NUMBER$4),
+        value: this.consume(NUMBER$4)
       };
     },
     generate: function (node) {
       this.chunk(node.value);
-    },
+    }
   };
 
   // '/' | '*' | ',' | ':' | '+' | '-'
   var Operator = {
     name: 'Operator',
     structure: {
-      value: String,
+      value: String
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -23896,12 +23878,12 @@
       return {
         type: 'Operator',
         loc: this.getLocation(start, this.scanner.tokenStart),
-        value: this.scanner.substrToCursor(start),
+        value: this.scanner.substrToCursor(start)
       };
     },
     generate: function (node) {
       this.chunk(node.value);
-    },
+    }
   };
 
   var TYPE$f = tokenizer$3.TYPE;
@@ -23912,7 +23894,7 @@
   var Parentheses = {
     name: 'Parentheses',
     structure: {
-      children: [[]],
+      children: [[]]
     },
     parse: function (readSequence, recognizer) {
       var start = this.scanner.tokenStart;
@@ -23929,14 +23911,14 @@
       return {
         type: 'Parentheses',
         loc: this.getLocation(start, this.scanner.tokenStart),
-        children: children,
+        children: children
       };
     },
     generate: function (node) {
       this.chunk('(');
       this.children(node);
       this.chunk(')');
-    },
+    }
   };
 
   var consumeNumber$1 = utils$2.consumeNumber;
@@ -23947,7 +23929,7 @@
   var Percentage = {
     name: 'Percentage',
     structure: {
-      value: String,
+      value: String
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -23958,13 +23940,13 @@
       return {
         type: 'Percentage',
         loc: this.getLocation(start, this.scanner.tokenStart),
-        value: this.scanner.source.substring(start, numberEnd),
+        value: this.scanner.source.substring(start, numberEnd)
       };
     },
     generate: function (node) {
       this.chunk(node.value);
       this.chunk('%');
-    },
+    }
   };
 
   var TYPE$d = tokenizer$3.TYPE;
@@ -23979,7 +23961,7 @@
     name: 'PseudoClassSelector',
     structure: {
       name: String,
-      children: [['Raw'], null],
+      children: [['Raw'], null]
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -24011,7 +23993,7 @@
         type: 'PseudoClassSelector',
         loc: this.getLocation(start, this.scanner.tokenStart),
         name: name,
-        children: children,
+        children: children
       };
     },
     generate: function (node) {
@@ -24024,7 +24006,7 @@
         this.chunk(')');
       }
     },
-    walkContext: 'function',
+    walkContext: 'function'
   };
 
   var TYPE$c = tokenizer$3.TYPE;
@@ -24039,7 +24021,7 @@
     name: 'PseudoElementSelector',
     structure: {
       name: String,
-      children: [['Raw'], null],
+      children: [['Raw'], null]
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -24072,7 +24054,7 @@
         type: 'PseudoElementSelector',
         loc: this.getLocation(start, this.scanner.tokenStart),
         name: name,
-        children: children,
+        children: children
       };
     },
     generate: function (node) {
@@ -24085,7 +24067,7 @@
         this.chunk(')');
       }
     },
-    walkContext: 'function',
+    walkContext: 'function'
   };
 
   var isDigit = tokenizer$3.isDigit;
@@ -24132,7 +24114,7 @@
     name: 'Ratio',
     structure: {
       left: String,
-      right: String,
+      right: String
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -24151,14 +24133,14 @@
         type: 'Ratio',
         loc: this.getLocation(start, this.scanner.tokenStart),
         left: left,
-        right: right,
+        right: right
       };
     },
     generate: function (node) {
       this.chunk(node.left);
       this.chunk('/');
       this.chunk(node.right);
-    },
+    }
   };
 
   var TYPE$a = tokenizer$3.TYPE;
@@ -24188,7 +24170,7 @@
     name: 'Rule',
     structure: {
       prelude: ['SelectorList', 'Raw'],
-      block: ['Block'],
+      block: ['Block']
     },
     parse: function () {
       var startToken = this.scanner.tokenIndex;
@@ -24208,14 +24190,14 @@
         type: 'Rule',
         loc: this.getLocation(startOffset, this.scanner.tokenStart),
         prelude: prelude,
-        block: block,
+        block: block
       };
     },
     generate: function (node) {
       this.node(node.prelude);
       this.node(node.block);
     },
-    walkContext: 'rule',
+    walkContext: 'rule'
   };
 
   var Selector = {
@@ -24230,9 +24212,9 @@
           'PseudoClassSelector',
           'PseudoElementSelector',
           'Combinator',
-          'WhiteSpace',
-        ],
-      ],
+          'WhiteSpace'
+        ]
+      ]
     },
     parse: function () {
       var children = this.readSequence(this.scope.Selector);
@@ -24245,12 +24227,12 @@
       return {
         type: 'Selector',
         loc: this.getLocationFromList(children),
-        children: children,
+        children: children
       };
     },
     generate: function (node) {
       this.children(node);
-    },
+    }
   };
 
   var TYPE$9 = tokenizer$3.TYPE;
@@ -24260,7 +24242,7 @@
   var SelectorList = {
     name: 'SelectorList',
     structure: {
-      children: [['Selector', 'Raw']],
+      children: [['Selector', 'Raw']]
     },
     parse: function () {
       var children = this.createList();
@@ -24279,7 +24261,7 @@
       return {
         type: 'SelectorList',
         loc: this.getLocationFromList(children),
-        children: children,
+        children: children
       };
     },
     generate: function (node) {
@@ -24287,7 +24269,7 @@
         this.chunk(',');
       });
     },
-    walkContext: 'selector',
+    walkContext: 'selector'
   };
 
   var STRING$2 = tokenizer$3.TYPE.String;
@@ -24295,18 +24277,18 @@
   var _String = {
     name: 'String',
     structure: {
-      value: String,
+      value: String
     },
     parse: function () {
       return {
         type: 'String',
         loc: this.getLocation(this.scanner.tokenStart, this.scanner.tokenEnd),
-        value: this.consume(STRING$2),
+        value: this.consume(STRING$2)
       };
     },
     generate: function (node) {
       this.chunk(node.value);
-    },
+    }
   };
 
   var TYPE$8 = tokenizer$3.TYPE;
@@ -24325,7 +24307,7 @@
   var StyleSheet = {
     name: 'StyleSheet',
     structure: {
-      children: [['Comment', 'CDO', 'CDC', 'Atrule', 'Rule', 'Raw']],
+      children: [['Comment', 'CDO', 'CDC', 'Atrule', 'Rule', 'Raw']]
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -24377,13 +24359,13 @@
       return {
         type: 'StyleSheet',
         loc: this.getLocation(start, this.scanner.tokenStart),
-        children: children,
+        children: children
       };
     },
     generate: function (node) {
       this.children(node);
     },
-    walkContext: 'stylesheet',
+    walkContext: 'stylesheet'
   };
 
   var TYPE$7 = tokenizer$3.TYPE;
@@ -24414,7 +24396,7 @@
   var TypeSelector = {
     name: 'TypeSelector',
     structure: {
-      name: String,
+      name: String
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -24434,12 +24416,12 @@
       return {
         type: 'TypeSelector',
         loc: this.getLocation(start, this.scanner.tokenStart),
-        name: this.scanner.substrToCursor(start),
+        name: this.scanner.substrToCursor(start)
       };
     },
     generate: function (node) {
       this.chunk(node.name);
-    },
+    }
   };
 
   var isHexDigit = tokenizer$3.isHexDigit;
@@ -24595,7 +24577,7 @@
   var UnicodeRange = {
     name: 'UnicodeRange',
     structure: {
-      value: String,
+      value: String
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -24615,12 +24597,12 @@
       return {
         type: 'UnicodeRange',
         loc: this.getLocation(start, this.scanner.tokenStart),
-        value: this.scanner.substrToCursor(start),
+        value: this.scanner.substrToCursor(start)
       };
     },
     generate: function (node) {
       this.chunk(node.value);
-    },
+    }
   };
 
   var isWhiteSpace = tokenizer$3.isWhiteSpace;
@@ -24635,7 +24617,7 @@
   var Url = {
     name: 'Url',
     structure: {
-      value: ['String', 'Raw'],
+      value: ['String', 'Raw']
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -24663,7 +24645,7 @@
           value = {
             type: 'Raw',
             loc: this.getLocation(rawStart, rawEnd),
-            value: this.scanner.source.substring(rawStart, rawEnd),
+            value: this.scanner.source.substring(rawStart, rawEnd)
           };
 
           this.eat(URL$3);
@@ -24695,7 +24677,7 @@
       return {
         type: 'Url',
         loc: this.getLocation(start, this.scanner.tokenStart),
-        value: value,
+        value: value
       };
     },
     generate: function (node) {
@@ -24703,13 +24685,13 @@
       this.chunk('(');
       this.node(node.value);
       this.chunk(')');
-    },
+    }
   };
 
   var Value = {
     name: 'Value',
     structure: {
-      children: [[]],
+      children: [[]]
     },
     parse: function () {
       var start = this.scanner.tokenStart;
@@ -24718,25 +24700,25 @@
       return {
         type: 'Value',
         loc: this.getLocation(start, this.scanner.tokenStart),
-        children: children,
+        children: children
       };
     },
     generate: function (node) {
       this.children(node);
-    },
+    }
   };
 
   var WHITESPACE$2 = tokenizer$3.TYPE.WhiteSpace;
   var SPACE = Object.freeze({
     type: 'WhiteSpace',
     loc: null,
-    value: ' ',
+    value: ' '
   });
 
   var WhiteSpace = {
     name: 'WhiteSpace',
     structure: {
-      value: String,
+      value: String
     },
     parse: function () {
       this.eat(WHITESPACE$2);
@@ -24750,7 +24732,7 @@
     },
     generate: function (node) {
       this.chunk(node.value);
-    },
+    }
   };
 
   var node = {
@@ -24793,7 +24775,7 @@
     UnicodeRange: UnicodeRange,
     Url: Url,
     Value: Value,
-    WhiteSpace: WhiteSpace,
+    WhiteSpace: WhiteSpace
   };
 
   var data = data$1;
@@ -24803,7 +24785,7 @@
     types: data.types,
     atrules: data.atrules,
     properties: data.properties,
-    node: node,
+    node: node
   };
 
   var cmpChar = tokenizer$3.cmpChar;
@@ -24909,7 +24891,7 @@
   };
 
   var atrulePrelude = {
-    getNode: _default,
+    getNode: _default
   };
 
   var TYPE$3 = tokenizer$3.TYPE;
@@ -24991,7 +24973,7 @@
     }
   }
   var selector = {
-    getNode: getNode,
+    getNode: getNode
   };
 
   // legacy IE function
@@ -25042,7 +25024,7 @@
             value.children.appendData({
               type: 'WhiteSpace',
               loc: null,
-              value: ' ',
+              value: ' '
             });
             break;
           }
@@ -25058,13 +25040,13 @@
   var value$2 = {
     getNode: _default,
     expression: expression,
-    var: _var,
+    var: _var
   };
 
   var scope = {
     AtrulePrelude: atrulePrelude,
     Selector: selector,
-    Value: value$2,
+    Value: value$2
   };
 
   var fontFace = {
@@ -25072,8 +25054,8 @@
       prelude: null,
       block: function () {
         return this.Block(true);
-      },
-    },
+      }
+    }
   };
 
   var TYPE$1 = tokenizer$3.TYPE;
@@ -25115,8 +25097,8 @@
 
         return children;
       },
-      block: null,
-    },
+      block: null
+    }
   };
 
   var media = {
@@ -25126,8 +25108,8 @@
       },
       block: function () {
         return this.Block(false);
-      },
-    },
+      }
+    }
   };
 
   var page = {
@@ -25137,8 +25119,8 @@
       },
       block: function () {
         return this.Block(true);
-      },
-    },
+      }
+    }
   };
 
   var TYPE = tokenizer$3.TYPE;
@@ -25223,8 +25205,8 @@
       },
       block: function () {
         return this.Block(false);
-      },
-    },
+      }
+    }
   };
 
   var atrule = {
@@ -25232,31 +25214,31 @@
     import: _import,
     media: media,
     page: page,
-    supports: supports,
+    supports: supports
   };
 
   var dir = {
     parse: function () {
       return this.createSingleNodeList(this.Identifier());
-    },
+    }
   };
 
   var has = {
     parse: function () {
       return this.createSingleNodeList(this.SelectorList());
-    },
+    }
   };
 
   var lang = {
     parse: function () {
       return this.createSingleNodeList(this.Identifier());
-    },
+    }
   };
 
   var selectorList = {
     parse: function selectorList() {
       return this.createSingleNodeList(this.SelectorList());
-    },
+    }
   };
 
   var matches = selectorList;
@@ -25268,7 +25250,7 @@
   var nthWithOfClause = {
     parse: function nthWithOfClause() {
       return this.createSingleNodeList(this.Nth(ALLOW_OF_CLAUSE));
-    },
+    }
   };
 
   var nthChild = nthWithOfClause;
@@ -25280,7 +25262,7 @@
   var nth = {
     parse: function nth() {
       return this.createSingleNodeList(this.Nth(DISALLOW_OF_CLAUSE));
-    },
+    }
   };
 
   var nthLastOfType = nth;
@@ -25290,7 +25272,7 @@
   var slotted = {
     parse: function compoundSelector() {
       return this.createSingleNodeList(this.Selector());
-    },
+    }
   };
 
   var pseudo = {
@@ -25303,7 +25285,7 @@
     'nth-last-child': nthLastChild,
     'nth-last-of-type': nthLastOfType,
     'nth-of-type': nthOfType,
-    slotted: slotted,
+    slotted: slotted
   };
 
   var parser = {
@@ -25326,20 +25308,20 @@
       },
       declarationList: 'DeclarationList',
       declaration: 'Declaration',
-      value: 'Value',
+      value: 'Value'
     },
     scope: scope,
     atrule: atrule,
     pseudo: pseudo,
-    node: node,
+    node: node
   };
 
   var walker = {
-    node: node,
+    node: node
   };
 
   var _args = [
-    ['css-tree@1.1.3', '/home/gitlab-runner/builds/xUiosxA2/0/tools/pagedjs'],
+    ['css-tree@1.1.3', '/home/gitlab-runner/builds/xUiosxA2/0/tools/pagedjs']
   ];
   var _from = 'css-tree@1.1.3';
   var _id = 'css-tree@1.1.3';
@@ -25356,7 +25338,7 @@
     escapedName: 'css-tree',
     rawSpec: '1.1.3',
     saveSpec: null,
-    fetchSpec: '1.1.3',
+    fetchSpec: '1.1.3'
   };
   var _requiredBy = ['/'];
   var _resolved = 'https://registry.npmjs.org/css-tree/-/css-tree-1.1.3.tgz';
@@ -25365,14 +25347,14 @@
   var author = {
     name: 'Roman Dvornov',
     email: 'rdvornov@gmail.com',
-    url: 'https://github.com/lahmatiy',
+    url: 'https://github.com/lahmatiy'
   };
   var bugs = {
-    url: 'https://github.com/csstree/csstree/issues',
+    url: 'https://github.com/csstree/csstree/issues'
   };
   var dependencies = {
     'mdn-data': '2.0.14',
-    'source-map': '^0.6.1',
+    'source-map': '^0.6.1'
   };
   var description =
     'A tool set for CSS: fast detailed parser (CSS → AST), walker (AST traversal), generator (AST → CSS) and lexer (validation and matching) based on specs and browser implementations';
@@ -25386,10 +25368,10 @@
     mocha: '^6.2.3',
     nyc: '^14.1.1',
     rollup: '^1.32.1',
-    'rollup-plugin-terser': '^5.3.0',
+    'rollup-plugin-terser': '^5.3.0'
   };
   var engines = {
-    node: '>=8.0.0',
+    node: '>=8.0.0'
   };
   var files = ['data', 'dist', 'lib'];
   var homepage = 'https://github.com/csstree/csstree#readme';
@@ -25404,14 +25386,14 @@
     'generator',
     'utils',
     'syntax',
-    'validation',
+    'validation'
   ];
   var license = 'MIT';
   var main = 'lib/index.js';
   var name = 'css-tree';
   var repository = {
     type: 'git',
-    url: 'git+https://github.com/csstree/csstree.git',
+    url: 'git+https://github.com/csstree/csstree.git'
   };
   var scripts = {
     build: 'rollup --config',
@@ -25425,7 +25407,7 @@
     'review:syntax-patch': 'node scripts/review-syntax-patch',
     test: 'mocha --reporter progress',
     travis: 'nyc npm run lint-and-test && npm run coveralls',
-    'update:docs': 'node scripts/update-docs',
+    'update:docs': 'node scripts/update-docs'
   };
   var unpkg = 'dist/csstree.min.js';
   var version = '1.1.3';
@@ -25458,7 +25440,7 @@
     repository: repository,
     scripts: scripts,
     unpkg: unpkg,
-    version: version,
+    version: version
   };
 
   function merge() {
@@ -25554,7 +25536,7 @@
         visit: 'Url',
         enter: (node, item, list) => {
           this.hooks.onUrl.trigger(node, item, list);
-        },
+        }
       });
     }
 
@@ -25578,7 +25560,7 @@
             this.hooks.onImport.trigger(node, item, list);
             this.imports(node, item, list);
           }
-        },
+        }
       });
     }
 
@@ -25591,7 +25573,7 @@
           this.hooks.onRule.trigger(ruleNode, ruleItem, rulelist);
           this.declarations(ruleNode, ruleItem, rulelist);
           this.onSelector(ruleNode, ruleItem, rulelist);
-        },
+        }
       });
     }
 
@@ -25604,7 +25586,7 @@
           this.hooks.onDeclaration.trigger(declarationNode, dItem, dList, {
             ruleNode,
             ruleItem,
-            rulelist,
+            rulelist
           });
 
           if (declarationNode.property === 'content') {
@@ -25618,10 +25600,10 @@
                   { declarationNode, dItem, dList },
                   { ruleNode, ruleItem, rulelist }
                 );
-              },
+              }
             });
           }
-        },
+        }
       });
     }
 
@@ -25633,7 +25615,7 @@
           this.hooks.onSelector.trigger(selectNode, selectItem, selectList, {
             ruleNode,
             ruleItem,
-            rulelist,
+            rulelist
           });
 
           if (
@@ -25649,12 +25631,12 @@
                       { selectNode, selectItem, selectList },
                       { ruleNode, ruleItem, rulelist }
                     );
-                  },
+                  }
                 });
               }
             })
           );
-        },
+        }
       });
     }
 
@@ -25673,7 +25655,7 @@
             let url = new URL(href, this.url);
             node.value.value = url.toString();
           }
-        },
+        }
       });
     }
 
@@ -25687,7 +25669,7 @@
           children.prepend(
             children.createItem({
               type: 'WhiteSpace',
-              value: ' ',
+              value: ' '
             })
           );
           children.prepend(
@@ -25695,10 +25677,10 @@
               type: 'IdSelector',
               name: id,
               loc: null,
-              children: null,
+              children: null
             })
           );
-        },
+        }
       });
     }
 
@@ -25716,7 +25698,7 @@
                 let selector = lib.generate(node.prelude);
                 namedPageSelectors[name] = {
                   name: name,
-                  selector: selector,
+                  selector: selector
                 };
 
                 // dList.remove(dItem);
@@ -25726,9 +25708,9 @@
                 value.type = 'Identifier';
                 value.name = 'always';
               }
-            },
+            }
           });
-        },
+        }
       });
       return namedPageSelectors;
     }
@@ -25746,9 +25728,9 @@
               idNode.name = { type: 'Identifier', loc: null, name: 'data-id' };
               idNode.type = 'AttributeSelector';
               idNode.value = { type: 'String', loc: null, value: `"${name}"` };
-            },
+            }
           });
-        },
+        }
       });
     }
 
@@ -25762,9 +25744,9 @@
             visit: 'Identifier',
             enter: (identNode, identItem, identList) => {
               queries.push(identNode.name);
-            },
+            }
           });
-        },
+        }
       });
 
       // Just basic media query support for now
@@ -25793,7 +25775,7 @@
 
           // Remove the original
           list.remove(item);
-        },
+        }
       });
     }
 
@@ -26678,163 +26660,163 @@
     A0: {
       width: {
         value: 841,
-        unit: 'mm',
+        unit: 'mm'
       },
       height: {
         value: 1189,
-        unit: 'mm',
-      },
+        unit: 'mm'
+      }
     },
     A1: {
       width: {
         value: 594,
-        unit: 'mm',
+        unit: 'mm'
       },
       height: {
         value: 841,
-        unit: 'mm',
-      },
+        unit: 'mm'
+      }
     },
     A2: {
       width: {
         value: 420,
-        unit: 'mm',
+        unit: 'mm'
       },
       height: {
         value: 594,
-        unit: 'mm',
-      },
+        unit: 'mm'
+      }
     },
     A3: {
       width: {
         value: 297,
-        unit: 'mm',
+        unit: 'mm'
       },
       height: {
         value: 420,
-        unit: 'mm',
-      },
+        unit: 'mm'
+      }
     },
     A4: {
       width: {
         value: 210,
-        unit: 'mm',
+        unit: 'mm'
       },
       height: {
         value: 297,
-        unit: 'mm',
-      },
+        unit: 'mm'
+      }
     },
     A5: {
       width: {
         value: 148,
-        unit: 'mm',
+        unit: 'mm'
       },
       height: {
         value: 210,
-        unit: 'mm',
-      },
+        unit: 'mm'
+      }
     },
     A6: {
       width: {
         value: 105,
-        unit: 'mm',
+        unit: 'mm'
       },
       height: {
         value: 148,
-        unit: 'mm',
-      },
+        unit: 'mm'
+      }
     },
     A7: {
       width: {
         value: 74,
-        unit: 'mm',
+        unit: 'mm'
       },
       height: {
         value: 105,
-        unit: 'mm',
-      },
+        unit: 'mm'
+      }
     },
     A8: {
       width: {
         value: 52,
-        unit: 'mm',
+        unit: 'mm'
       },
       height: {
         value: 74,
-        unit: 'mm',
-      },
+        unit: 'mm'
+      }
     },
     A9: {
       width: {
         value: 37,
-        unit: 'mm',
+        unit: 'mm'
       },
       height: {
         value: 52,
-        unit: 'mm',
-      },
+        unit: 'mm'
+      }
     },
     A10: {
       width: {
         value: 26,
-        unit: 'mm',
+        unit: 'mm'
       },
       height: {
         value: 37,
-        unit: 'mm',
-      },
+        unit: 'mm'
+      }
     },
     B4: {
       width: {
         value: 250,
-        unit: 'mm',
+        unit: 'mm'
       },
       height: {
         value: 353,
-        unit: 'mm',
-      },
+        unit: 'mm'
+      }
     },
     B5: {
       width: {
         value: 176,
-        unit: 'mm',
+        unit: 'mm'
       },
       height: {
         value: 250,
-        unit: 'mm',
-      },
+        unit: 'mm'
+      }
     },
     letter: {
       width: {
         value: 8.5,
-        unit: 'in',
+        unit: 'in'
       },
       height: {
         value: 11,
-        unit: 'in',
-      },
+        unit: 'in'
+      }
     },
     legal: {
       width: {
         value: 8.5,
-        unit: 'in',
+        unit: 'in'
       },
       height: {
         value: 14,
-        unit: 'in',
-      },
+        unit: 'in'
+      }
     },
     ledger: {
       width: {
         value: 11,
-        unit: 'in',
+        unit: 'in'
       },
       height: {
         value: 17,
-        unit: 'in',
-      },
-    },
+        unit: 'in'
+      }
+    }
   };
 
   class AtPage extends Handler {
@@ -26863,24 +26845,24 @@
           top: {},
           right: {},
           left: {},
-          bottom: {},
+          bottom: {}
         },
         padding: {
           top: {},
           right: {},
           left: {},
-          bottom: {},
+          bottom: {}
         },
         border: {
           top: {},
           right: {},
           left: {},
-          bottom: {},
+          bottom: {}
         },
         backgroundOrigin: undefined,
         block: {},
         marks: undefined,
-        notes: undefined,
+        notes: undefined
       };
     }
 
@@ -26944,7 +26926,7 @@
               top: declarations.bleed[0],
               right: declarations.bleed[1],
               bottom: declarations.bleed[2],
-              left: declarations.bleed[3],
+              left: declarations.bleed[3]
             };
             break;
           case 3: // top right bottom right
@@ -26952,7 +26934,7 @@
               top: declarations.bleed[0],
               right: declarations.bleed[1],
               bottom: declarations.bleed[2],
-              left: declarations.bleed[1],
+              left: declarations.bleed[1]
             };
             break;
           case 2: // top right top right
@@ -26960,7 +26942,7 @@
               top: declarations.bleed[0],
               right: declarations.bleed[1],
               bottom: declarations.bleed[0],
-              left: declarations.bleed[1],
+              left: declarations.bleed[1]
             };
             break;
           default:
@@ -26968,7 +26950,7 @@
               top: declarations.bleed[0],
               right: declarations.bleed[0],
               bottom: declarations.bleed[0],
-              left: declarations.bleed[0],
+              left: declarations.bleed[0]
             };
         }
       }
@@ -26983,7 +26965,7 @@
             top: { value: 6, unit: 'mm' },
             right: { value: 6, unit: 'mm' },
             bottom: { value: 6, unit: 'mm' },
-            left: { value: 6, unit: 'mm' },
+            left: { value: 6, unit: 'mm' }
           };
         }
 
@@ -27092,7 +27074,7 @@
         visit: 'TypeSelector',
         enter: (node, item, list) => {
           name = node.name;
-        },
+        }
       });
 
       return name;
@@ -27107,7 +27089,7 @@
           if (node.name !== 'nth') {
             name = node.name;
           }
-        },
+        }
       });
 
       return name;
@@ -27123,7 +27105,7 @@
             let raw = node.children.first();
             nth = raw.value;
           }
-        },
+        }
       });
 
       return nth;
@@ -27153,7 +27135,7 @@
         'right-middle',
         'right',
         'right-bottom',
-        'right-right-corner',
+        'right-right-corner'
       ];
       lib.walk(ast.block, {
         visit: 'Atrule',
@@ -27175,7 +27157,7 @@
             parsed[name] = node.block;
             list.remove(item);
           }
-        },
+        }
       });
 
       return parsed;
@@ -27192,7 +27174,7 @@
             parsed[name] = node.block;
             list.remove(item);
           }
-        },
+        }
       });
 
       return parsed;
@@ -27213,7 +27195,7 @@
               visit: 'Identifier',
               enter: (ident) => {
                 parsed.marks.push(ident.name);
-              },
+              }
             });
             dList.remove(dItem);
           } else if (prop === 'margin') {
@@ -27226,7 +27208,7 @@
                 top: {},
                 right: {},
                 left: {},
-                bottom: {},
+                bottom: {}
               };
             }
             parsed.margin[m] = declaration.value.children.first();
@@ -27241,7 +27223,7 @@
                 top: {},
                 right: {},
                 left: {},
-                bottom: {},
+                bottom: {}
               };
             }
             parsed.padding[p] = declaration.value.children.first();
@@ -27252,7 +27234,7 @@
                 top: {},
                 right: {},
                 left: {},
-                bottom: {},
+                bottom: {}
               };
             }
             parsed.border.top = lib.generate(declaration.value);
@@ -27267,7 +27249,7 @@
                 top: {},
                 right: {},
                 left: {},
-                bottom: {},
+                bottom: {}
               };
             }
             let p = prop.substring('border-'.length);
@@ -27291,23 +27273,23 @@
                   case 'Dimension': // bleed: 1in 2in, bleed: 20px ect.
                     parsed.bleed.push({
                       value: subNode.value,
-                      unit: subNode.unit,
+                      unit: subNode.unit
                     });
                     break;
                   case 'Number':
                     parsed.bleed.push({
                       value: subNode.value,
-                      unit: 'px',
+                      unit: 'px'
                     });
                     break;
                   // ignore
                 }
-              },
+              }
             });
 
             dList.remove(dItem);
           }
-        },
+        }
       });
 
       return parsed;
@@ -27325,7 +27307,7 @@
           } else if (typeof height === 'undefined') {
             height = { value, unit };
           }
-        },
+        }
       });
 
       // Get size: "A4"
@@ -27338,7 +27320,7 @@
             width = s.width;
             height = s.height;
           }
-        },
+        }
       });
 
       // Get Format or Landscape or Portrait
@@ -27356,14 +27338,14 @@
             }
             format = name;
           }
-        },
+        }
       });
 
       return {
         width,
         height,
         orientation,
-        format,
+        format
       };
     }
 
@@ -27373,7 +27355,7 @@
         top: {},
         right: {},
         left: {},
-        bottom: {},
+        bottom: {}
       };
 
       lib.walk(declaration, {
@@ -27387,7 +27369,7 @@
               break;
             // ignore
           }
-        },
+        }
       });
 
       if (margins.length === 1) {
@@ -27420,7 +27402,7 @@
         top: {},
         right: {},
         left: {},
-        bottom: {},
+        bottom: {}
       };
 
       lib.walk(declaration, {
@@ -27434,7 +27416,7 @@
               break;
             // ignore
           }
-        },
+        }
       });
       if (paddings.length === 1) {
         for (let p in padding) {
@@ -27465,7 +27447,7 @@
         top: {},
         right: {},
         left: {},
-        bottom: {},
+        bottom: {}
       };
 
       if (declaration.prop == 'border') {
@@ -27533,7 +27515,7 @@
       let block = {
         type: 'Block',
         loc: 0,
-        children: children,
+        children: children
       };
 
       let rule = this.createRule(selectors, block);
@@ -27574,8 +27556,8 @@
             property: '--pagedjs-margin-' + m,
             value: {
               type: 'Raw',
-              value: value,
-            },
+              value: value
+            }
           });
           list.append(mVar, item);
         }
@@ -27592,8 +27574,8 @@
             property: '--pagedjs-padding-' + p,
             value: {
               type: 'Raw',
-              value: value,
-            },
+              value: value
+            }
           });
 
           list.append(pVar, item);
@@ -27612,8 +27594,8 @@
             property: '--pagedjs-border-' + name,
             value: {
               type: 'Raw',
-              value: value,
-            },
+              value: value
+            }
           });
           list.append(borderItem, item);
         }
@@ -27680,7 +27662,7 @@
                   } else if (name === 'bottom') {
                     identNode.name = 'flex-end';
                   }
-                },
+                }
               });
               node.property = 'align-items';
             }
@@ -27712,7 +27694,7 @@
               c.property = 'max-height';
               list.appendData(c);
             }
-          },
+          }
         });
 
         let marginSelectors = this.selectorsForPageMargin(page, loc);
@@ -27722,14 +27704,14 @@
 
         let sel = lib.generate({
           type: 'Selector',
-          children: marginSelectors,
+          children: marginSelectors
         });
 
         this.marginalia[sel] = {
           page: page,
           selector: sel,
           block: page.marginalia[loc],
-          hasContent: hasContent,
+          hasContent: hasContent
         };
       }
     }
@@ -27752,7 +27734,7 @@
             ) {
               displayNone = true;
             }
-          },
+          }
         });
 
         if (content.children.isEmpty()) {
@@ -27764,22 +27746,22 @@
 
         displaySelectors.insertData({
           type: 'Combinator',
-          name: '>',
+          name: '>'
         });
 
         displaySelectors.insertData({
           type: 'ClassSelector',
-          name: 'pagedjs_margin-content',
+          name: 'pagedjs_margin-content'
         });
 
         displaySelectors.insertData({
           type: 'Combinator',
-          name: '>',
+          name: '>'
         });
 
         displaySelectors.insertData({
           type: 'TypeSelector',
-          name: '*',
+          name: '*'
         });
 
         if (displayNone) {
@@ -27789,7 +27771,7 @@
         }
 
         let displayRule = this.createRule(displaySelectors, [
-          displayDeclaration,
+          displayDeclaration
         ]);
         sheet.insertRule(displayRule);
 
@@ -27798,18 +27780,18 @@
 
         contentSelectors.insertData({
           type: 'Combinator',
-          name: '>',
+          name: '>'
         });
 
         contentSelectors.insertData({
           type: 'ClassSelector',
-          name: 'pagedjs_margin-content',
+          name: 'pagedjs_margin-content'
         });
 
         contentSelectors.insertData({
           type: 'PseudoElementSelector',
           name: 'after',
-          children: null,
+          children: null
         });
 
         let contentRule = this.createRule(contentSelectors, content);
@@ -27832,7 +27814,7 @@
       selectors.insertData({
         type: 'PseudoClassSelector',
         name: 'root',
-        children: null,
+        children: null
       });
 
       let widthString, heightString;
@@ -28033,11 +28015,11 @@
           [widthString, heightString] = [heightString, widthString];
           [widthStringRight, heightStringRight] = [
             heightStringRight,
-            widthStringRight,
+            widthStringRight
           ];
           [widthStringLeft, heightStringLeft] = [
             heightStringLeft,
-            widthStringLeft,
+            widthStringLeft
           ];
         }
       }
@@ -28073,12 +28055,12 @@
 
         selectors.insertData({
           type: 'Combinator',
-          name: ' ',
+          name: ' '
         });
 
         selectors.insertData({
           type: 'ClassSelector',
-          name: 'pagedjs_' + note + '_content',
+          name: 'pagedjs_' + note + '_content'
         });
 
         let notesRule = this.createRule(selectors, notes[note]);
@@ -28111,149 +28093,149 @@
         widthCalculations.appendData({
           type: 'Dimension',
           unit: width.unit,
-          value: width.value,
+          value: width.value
         });
 
         widthCalculations.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         widthCalculations.appendData({
           type: 'Operator',
-          value: '+',
+          value: '+'
         });
 
         widthCalculations.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         widthCalculations.appendData({
           type: 'Dimension',
           unit: bleed.left.unit,
-          value: bleed.left.value,
+          value: bleed.left.value
         });
 
         widthCalculations.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         widthCalculations.appendData({
           type: 'Operator',
-          value: '+',
+          value: '+'
         });
 
         widthCalculations.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         widthCalculations.appendData({
           type: 'Dimension',
           unit: bleed.right.unit,
-          value: bleed.right.value,
+          value: bleed.right.value
         });
 
         // height
         heightCalculations.appendData({
           type: 'Dimension',
           unit: height.unit,
-          value: height.value,
+          value: height.value
         });
 
         heightCalculations.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         heightCalculations.appendData({
           type: 'Operator',
-          value: '+',
+          value: '+'
         });
 
         heightCalculations.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         heightCalculations.appendData({
           type: 'Dimension',
           unit: bleed.top.unit,
-          value: bleed.top.value,
+          value: bleed.top.value
         });
 
         heightCalculations.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         heightCalculations.appendData({
           type: 'Operator',
-          value: '+',
+          value: '+'
         });
 
         heightCalculations.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         heightCalculations.appendData({
           type: 'Dimension',
           unit: bleed.bottom.unit,
-          value: bleed.bottom.value,
+          value: bleed.bottom.value
         });
 
         dimensions.appendData({
           type: 'Function',
           name: 'calc',
-          children: widthCalculations,
+          children: widthCalculations
         });
 
         dimensions.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         dimensions.appendData({
           type: 'Function',
           name: 'calc',
-          children: heightCalculations,
+          children: heightCalculations
         });
       } else if (format) {
         dimensions.appendData({
           type: 'Identifier',
-          name: format,
+          name: format
         });
 
         if (orientation) {
           dimensions.appendData({
             type: 'WhiteSpace',
-            value: ' ',
+            value: ' '
           });
 
           dimensions.appendData({
             type: 'Identifier',
-            name: orientation,
+            name: orientation
           });
         }
       } else {
         dimensions.appendData({
           type: 'Dimension',
           unit: width.unit,
-          value: width.value,
+          value: width.value
         });
 
         dimensions.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         dimensions.appendData({
           type: 'Dimension',
           unit: height.unit,
-          value: height.value,
+          value: height.value
         });
       }
 
@@ -28263,8 +28245,8 @@
         loc: null,
         value: {
           type: 'Value',
-          children: dimensions,
-        },
+          children: dimensions
+        }
       });
 
       children.appendData({
@@ -28277,10 +28259,10 @@
             {
               type: 'Dimension',
               unit: 'px',
-              value: 0,
-            },
-          ],
-        },
+              value: 0
+            }
+          ]
+        }
       });
 
       children.appendData({
@@ -28293,10 +28275,10 @@
             {
               type: 'Dimension',
               unit: 'px',
-              value: 0,
-            },
-          ],
-        },
+              value: 0
+            }
+          ]
+        }
       });
 
       children.appendData({
@@ -28309,10 +28291,10 @@
             {
               type: 'Dimension',
               unit: 'px',
-              value: 0,
-            },
-          ],
-        },
+              value: 0
+            }
+          ]
+        }
       });
 
       let rule = ast.children.createItem({
@@ -28322,8 +28304,8 @@
         block: {
           type: 'Block',
           loc: null,
-          children: children,
-        },
+          children: children
+        }
       });
 
       ast.children.append(rule);
@@ -28336,115 +28318,115 @@
         widthCalculationsLeft.appendData({
           type: 'Dimension',
           unit: width.unit,
-          value: width.value,
+          value: width.value
         });
 
         widthCalculationsLeft.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         widthCalculationsLeft.appendData({
           type: 'Operator',
-          value: '+',
+          value: '+'
         });
 
         widthCalculationsLeft.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         widthCalculationsLeft.appendData({
           type: 'Dimension',
           unit: bleedverso.left.unit,
-          value: bleedverso.left.value,
+          value: bleedverso.left.value
         });
 
         widthCalculationsLeft.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         widthCalculationsLeft.appendData({
           type: 'Operator',
-          value: '+',
+          value: '+'
         });
 
         widthCalculationsLeft.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         widthCalculationsLeft.appendData({
           type: 'Dimension',
           unit: bleedverso.right.unit,
-          value: bleedverso.right.value,
+          value: bleedverso.right.value
         });
 
         // height
         heightCalculationsLeft.appendData({
           type: 'Dimension',
           unit: height.unit,
-          value: height.value,
+          value: height.value
         });
 
         heightCalculationsLeft.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         heightCalculationsLeft.appendData({
           type: 'Operator',
-          value: '+',
+          value: '+'
         });
 
         heightCalculationsLeft.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         heightCalculationsLeft.appendData({
           type: 'Dimension',
           unit: bleedverso.top.unit,
-          value: bleedverso.top.value,
+          value: bleedverso.top.value
         });
 
         heightCalculationsLeft.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         heightCalculationsLeft.appendData({
           type: 'Operator',
-          value: '+',
+          value: '+'
         });
 
         heightCalculationsLeft.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         heightCalculationsLeft.appendData({
           type: 'Dimension',
           unit: bleedverso.bottom.unit,
-          value: bleedverso.bottom.value,
+          value: bleedverso.bottom.value
         });
 
         dimensionsLeft.appendData({
           type: 'Function',
           name: 'calc',
-          children: widthCalculationsLeft,
+          children: widthCalculationsLeft
         });
 
         dimensionsLeft.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         dimensionsLeft.appendData({
           type: 'Function',
           name: 'calc',
-          children: heightCalculationsLeft,
+          children: heightCalculationsLeft
         });
 
         childrenLeft.appendData({
@@ -28453,8 +28435,8 @@
           loc: null,
           value: {
             type: 'Value',
-            children: dimensionsLeft,
-          },
+            children: dimensionsLeft
+          }
         });
 
         let ruleLeft = ast.children.createItem({
@@ -28464,8 +28446,8 @@
           block: {
             type: 'Block',
             loc: null,
-            children: childrenLeft,
-          },
+            children: childrenLeft
+          }
         });
 
         ast.children.append(ruleLeft);
@@ -28479,115 +28461,115 @@
         widthCalculationsRight.appendData({
           type: 'Dimension',
           unit: width.unit,
-          value: width.value,
+          value: width.value
         });
 
         widthCalculationsRight.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         widthCalculationsRight.appendData({
           type: 'Operator',
-          value: '+',
+          value: '+'
         });
 
         widthCalculationsRight.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         widthCalculationsRight.appendData({
           type: 'Dimension',
           unit: bleedrecto.left.unit,
-          value: bleedrecto.left.value,
+          value: bleedrecto.left.value
         });
 
         widthCalculationsRight.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         widthCalculationsRight.appendData({
           type: 'Operator',
-          value: '+',
+          value: '+'
         });
 
         widthCalculationsRight.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         widthCalculationsRight.appendData({
           type: 'Dimension',
           unit: bleedrecto.right.unit,
-          value: bleedrecto.right.value,
+          value: bleedrecto.right.value
         });
 
         // height
         heightCalculationsRight.appendData({
           type: 'Dimension',
           unit: height.unit,
-          value: height.value,
+          value: height.value
         });
 
         heightCalculationsRight.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         heightCalculationsRight.appendData({
           type: 'Operator',
-          value: '+',
+          value: '+'
         });
 
         heightCalculationsRight.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         heightCalculationsRight.appendData({
           type: 'Dimension',
           unit: bleedrecto.top.unit,
-          value: bleedrecto.top.value,
+          value: bleedrecto.top.value
         });
 
         heightCalculationsRight.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         heightCalculationsRight.appendData({
           type: 'Operator',
-          value: '+',
+          value: '+'
         });
 
         heightCalculationsRight.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         heightCalculationsRight.appendData({
           type: 'Dimension',
           unit: bleedrecto.bottom.unit,
-          value: bleedrecto.bottom.value,
+          value: bleedrecto.bottom.value
         });
 
         dimensionsRight.appendData({
           type: 'Function',
           name: 'calc',
-          children: widthCalculationsRight,
+          children: widthCalculationsRight
         });
 
         dimensionsRight.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         dimensionsRight.appendData({
           type: 'Function',
           name: 'calc',
-          children: heightCalculationsRight,
+          children: heightCalculationsRight
         });
 
         childrenRight.appendData({
@@ -28596,8 +28578,8 @@
           loc: null,
           value: {
             type: 'Value',
-            children: dimensionsRight,
-          },
+            children: dimensionsRight
+          }
         });
 
         let ruleRight = ast.children.createItem({
@@ -28607,8 +28589,8 @@
           block: {
             type: 'Block',
             loc: null,
-            children: childrenRight,
-          },
+            children: childrenRight
+          }
         });
 
         ast.children.append(ruleRight);
@@ -28639,8 +28621,8 @@
           type: 'AnPlusB',
           loc: null,
           a: a,
-          b: b,
-        },
+          b: b
+        }
       };
     }
 
@@ -29032,19 +29014,19 @@
 
       selectors.insertData({
         type: 'ClassSelector',
-        name: 'pagedjs_page',
+        name: 'pagedjs_page'
       });
 
       // Named page
       if (page.name) {
         selectors.insertData({
           type: 'ClassSelector',
-          name: 'pagedjs_named_page',
+          name: 'pagedjs_named_page'
         });
 
         selectors.insertData({
           type: 'ClassSelector',
-          name: 'pagedjs_' + page.name + '_page',
+          name: 'pagedjs_' + page.name + '_page'
         });
       }
 
@@ -29052,14 +29034,14 @@
       if (page.psuedo && !(page.name && page.psuedo === 'first')) {
         selectors.insertData({
           type: 'ClassSelector',
-          name: 'pagedjs_' + page.psuedo + '_page',
+          name: 'pagedjs_' + page.psuedo + '_page'
         });
       }
 
       if (page.name && page.psuedo === 'first') {
         selectors.insertData({
           type: 'ClassSelector',
-          name: 'pagedjs_' + page.name + '_' + page.psuedo + '_page',
+          name: 'pagedjs_' + page.name + '_' + page.psuedo + '_page'
         });
       }
 
@@ -29073,7 +29055,7 @@
         selectors.insertData({
           type: 'PseudoClassSelector',
           name: 'nth-of-type',
-          children: nthlist,
+          children: nthlist
         });
       }
 
@@ -29085,12 +29067,12 @@
 
       selectors.insertData({
         type: 'Combinator',
-        name: ' ',
+        name: ' '
       });
 
       selectors.insertData({
         type: 'ClassSelector',
-        name: 'pagedjs_margin-' + margin,
+        name: 'pagedjs_margin-' + margin
       });
 
       return selectors;
@@ -29102,7 +29084,7 @@
       children.insertData({
         type: 'Identifier',
         loc: null,
-        name: value,
+        name: value
       });
 
       return {
@@ -29113,8 +29095,8 @@
         value: {
           type: 'Value',
           loc: null,
-          children: children,
-        },
+          children: children
+        }
       };
     }
 
@@ -29125,8 +29107,8 @@
         property: property,
         value: {
           type: 'Raw',
-          value: value,
-        },
+          value: value
+        }
       };
     }
 
@@ -29138,23 +29120,23 @@
         calculations.appendData({
           type: 'Dimension',
           unit: item.unit,
-          value: item.value,
+          value: item.value
         });
 
         calculations.appendData({
           type: 'WhiteSpace',
-          value: ' ',
+          value: ' '
         });
 
         if (index + 1 < items.length) {
           calculations.appendData({
             type: 'Operator',
-            value: operator,
+            value: operator
           });
 
           calculations.appendData({
             type: 'WhiteSpace',
-            value: ' ',
+            value: ' '
           });
         }
       });
@@ -29163,7 +29145,7 @@
         type: 'Function',
         loc: null,
         name: 'calc',
-        children: calculations,
+        children: calculations
       });
 
       return {
@@ -29174,8 +29156,8 @@
         value: {
           type: 'Value',
           loc: null,
-          children: children,
-        },
+          children: children
+        }
       };
     }
 
@@ -29186,7 +29168,7 @@
         type: 'Dimension',
         loc: null,
         value: cssValue.value,
-        unit: cssValue.unit,
+        unit: cssValue.unit
       });
 
       return {
@@ -29197,8 +29179,8 @@
         value: {
           type: 'Value',
           loc: null,
-          children: children,
-        },
+          children: children
+        }
       };
     }
 
@@ -29212,7 +29194,7 @@
       return {
         type: 'Block',
         loc: null,
-        children: block,
+        children: block
       };
     }
 
@@ -29220,7 +29202,7 @@
       let selectorList = new lib.List();
       selectorList.insertData({
         type: 'Selector',
-        children: selectors,
+        children: selectors
       });
 
       if (Array.isArray(block)) {
@@ -29231,9 +29213,9 @@
         type: 'Rule',
         prelude: {
           type: 'SelectorList',
-          children: selectorList,
+          children: selectorList
         },
-        block: block,
+        block: block
       };
     }
   }
@@ -29258,7 +29240,7 @@
           property: property,
           value: value,
           selector: selector,
-          name: name,
+          name: name
         };
 
         selector.split(',').forEach((s) => {
@@ -29291,7 +29273,7 @@
         let breaker = {
           property: property,
           value: value,
-          selector: selector,
+          selector: selector
         };
 
         selector.split(',').forEach((s) => {
@@ -29459,7 +29441,7 @@
         visit: 'Identifier',
         enter: (identNode, iItem, iList) => {
           media = identNode.name;
-        },
+        }
       });
       return media;
     }
@@ -29571,7 +29553,7 @@
       this.counters[name] = {
         name: name,
         increments: {},
-        resets: {},
+        resets: {}
       };
 
       return this.counters[name];
@@ -29612,7 +29594,7 @@
           }
           let increment = {
             selector: selector,
-            number: value || 1,
+            number: value || 1
           };
           counter.increments[selector] = increment;
           increments.push(increment);
@@ -29676,7 +29658,7 @@
 
           let reset = {
             selector: selector,
-            number: value || 0,
+            number: value || 0
           };
 
           counter.resets[selector] = reset;
@@ -29850,7 +29832,7 @@
         visit: 'Identifier',
         enter: (identNode, iItem, iList) => {
           markers.push(identNode.name);
-        },
+        }
       });
 
       // Already added
@@ -29860,22 +29842,22 @@
 
       list.insertData({
         type: 'WhiteSpace',
-        value: ' ',
+        value: ' '
       });
 
       list.insertData({
         type: 'Identifier',
-        name: 'footnote-marker',
+        name: 'footnote-marker'
       });
 
       list.insertData({
         type: 'WhiteSpace',
-        value: ' ',
+        value: ' '
       });
 
       list.insertData({
         type: 'Number',
-        value: 0,
+        value: 0
       });
     }
 
@@ -30033,7 +30015,7 @@
       this.pageCounter = {
         name: 'page',
         increments: {},
-        resets: {},
+        resets: {}
       };
     }
 
@@ -30081,7 +30063,7 @@
       const selector = lib.generate(rule.ruleNode.prelude);
       return (this.pageCounter.increments[selector] = {
         selector: selector,
-        number,
+        number
       });
     }
 
@@ -30217,7 +30199,7 @@
           this.footnotes[selector] = {
             selector: selector,
             policy: 'auto',
-            display: 'block',
+            display: 'block'
           };
           dList.remove(dItem);
         }
@@ -30267,12 +30249,12 @@
           type: 'AttributeSelector',
           name: {
             type: 'Identifier',
-            name: 'data-footnote-marker',
+            name: 'data-footnote-marker'
           },
           flags: null,
           loc: null,
           matcher: null,
-          value: null,
+          value: null
         });
 
         // Add new pseudo element
@@ -30280,7 +30262,7 @@
           type: 'PseudoElementSelector',
           name: 'marker',
           loc: null,
-          children: null,
+          children: null
         });
 
         prelude.children.first().children = newPrelude;
@@ -30304,12 +30286,12 @@
           type: 'AttributeSelector',
           name: {
             type: 'Identifier',
-            name: 'data-footnote-call',
+            name: 'data-footnote-call'
           },
           flags: null,
           loc: null,
           matcher: null,
-          value: null,
+          value: null
         });
 
         // Add new pseudo element
@@ -30317,7 +30299,7 @@
           type: 'PseudoElementSelector',
           name: 'after',
           loc: null,
-          children: null,
+          children: null
         });
 
         prelude.children.first().children = newPrelude;
@@ -30774,7 +30756,7 @@
     PageCounterIncrement,
     NthOfType,
     Following,
-    Footnotes,
+    Footnotes
   ];
 
   class RunningHeaders extends Handler {
@@ -30796,13 +30778,13 @@
             visit: 'Function',
             enter: (node, item, list) => {
               value = node.children.first().name;
-            },
+            }
           });
 
           this.runningSelectors[value] = {
             identifier: identifier,
             value: value,
-            selector: selector,
+            selector: selector
           };
         }
       }
@@ -30833,11 +30815,11 @@
                   value: value,
                   style: style,
                   selector: s,
-                  fullSelector: selector,
+                  fullSelector: selector
                 };
               });
             }
-          },
+          }
         });
       }
     }
@@ -30974,7 +30956,7 @@
         4: [],
         5: [],
         6: [],
-        7: [],
+        7: []
       };
 
       let orderedSelectors = [];
@@ -31041,13 +31023,13 @@
           visit: 'Function',
           enter: (node, item, list) => {
             value = lib.generate(node);
-          },
+          }
         });
 
         this.stringSetSelectors[identifier] = {
           identifier,
           value,
-          selector,
+          selector
         };
       }
     }
@@ -31069,7 +31051,7 @@
             funcNode.children.createItem({
               type: 'Identifier',
               loc: null,
-              name: '--pagedjs-string-' + this.type + '-' + identifier,
+              name: '--pagedjs-string-' + this.type + '-' + identifier
             })
           );
         } else {
@@ -31077,7 +31059,7 @@
             funcNode.children.createItem({
               type: 'Identifier',
               loc: null,
-              name: '--pagedjs-string-first-' + identifier,
+              name: '--pagedjs-string-first-' + identifier
             })
           );
         }
@@ -31210,7 +31192,7 @@
             style: style,
             selector: s,
             fullSelector: selector,
-            variable: variable,
+            variable: variable
           };
         });
 
@@ -31220,14 +31202,14 @@
         funcNode.children.appendData({
           type: 'Identifier',
           loc: 0,
-          name: variable,
+          name: variable
         });
 
         if (styleIdentifier) {
           funcNode.children.appendData({
             type: 'Operator',
             loc: null,
-            value: ',',
+            value: ','
           });
           funcNode.children.appendData(styleIdentifier);
         }
@@ -31364,7 +31346,7 @@
             style: style || 'content',
             selector: s,
             fullSelector: this.selector,
-            variable: variable,
+            variable: variable
           };
         });
 
@@ -31374,7 +31356,7 @@
         funcNode.children.appendData({
           type: 'Identifier',
           loc: 0,
-          name: variable,
+          name: variable
         });
       }
     }
@@ -31454,7 +31436,7 @@
     RunningHeaders,
     StringSets,
     TargetCounters,
-    TargetText,
+    TargetText
   ];
 
   class WhiteSpaceFilter extends Handler {
@@ -31598,7 +31580,7 @@
       var types = {
         a: 0,
         b: 0,
-        c: 0,
+        c: 0
       };
 
       // Remove the negation psuedo-class (:not) but leave its argument because specificity is calculated on its argument
@@ -31692,7 +31674,7 @@
             value: value,
             selector: s,
             specificity: clearCut.calculateSpecificity(s),
-            important: declaration.important,
+            important: declaration.important
           };
         });
       }
@@ -31785,7 +31767,7 @@
     WhiteSpaceFilter,
     CommentsFilter,
     ScriptsFilter,
-    UndisplayedFilter,
+    UndisplayedFilter
   ];
 
   var isImplemented$3 = function () {
@@ -31900,7 +31882,7 @@
     description = description === undefined ? '' : String(description);
     return defineProperties(symbol, {
       __description__: d$1('', description),
-      __name__: d$1('', generateName(description)),
+      __name__: d$1('', generateName(description))
     });
   });
   defineProperties(SymbolPolyfill, {
@@ -31964,7 +31946,7 @@
       '',
       (NativeSymbol && NativeSymbol.unscopables) ||
         SymbolPolyfill('unscopables')
-    ),
+    )
   });
 
   // Internal tweaks for real symbol producer
@@ -31972,7 +31954,7 @@
     constructor: d$1(SymbolPolyfill),
     toString: d$1('', function () {
       return this.__name__;
-    }),
+    })
   });
 
   // Proper implementation of methods exposed on Symbol.prototype
@@ -31983,7 +31965,7 @@
     }),
     valueOf: d$1(function () {
       return validateSymbol(this);
-    }),
+    })
   });
   defineProperty$2(
     SymbolPolyfill.prototype,
@@ -32096,7 +32078,7 @@
       configurable: true,
       enumerable: true,
       writable: true,
-      value: null,
+      value: null
     },
     defineProperty$1 = Object.defineProperty;
 
@@ -32299,7 +32281,7 @@
     pipe = {
       close: function () {
         remove.call(pipes, e2);
-      },
+      }
     };
     if (hasOwnProperty$1.call(e1, '__eePipes__')) {
       (pipes = e1.__eePipes__).push(e2);
@@ -32327,7 +32309,7 @@
   let registeredHandlers = [
     ...pagedMediaHandlers,
     ...generatedContentHandlers,
-    ...filters,
+    ...filters
   ];
 
   class Handlers {
@@ -32373,14 +32355,14 @@
       this.size = {
         width: {
           value: 8.5,
-          unit: 'in',
+          unit: 'in'
         },
         height: {
           value: 11,
-          unit: 'in',
+          unit: 'in'
         },
         format: undefined,
-        orientation: undefined,
+        orientation: undefined
       };
 
       this.chunker.on('page', (page) => {
@@ -32531,7 +32513,7 @@
     Previewer: Previewer,
     Handler: Handler,
     registerHandlers: registerHandlers,
-    initializeHandlers: initializeHandlers,
+    initializeHandlers: initializeHandlers
   });
 
   window.Paged = Paged;
@@ -32559,7 +32541,7 @@
     content: undefined,
     stylesheets: undefined,
     renderTo: undefined,
-    settings: undefined,
+    settings: undefined
   };
 
   let previewer = new Previewer(config.settings);

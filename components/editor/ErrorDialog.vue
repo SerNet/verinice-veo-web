@@ -22,22 +22,19 @@
     :title="upperFirst(t('schemaValidationWarnings').toString())"
     large
     fixed-footer
-    @update:model-value="$emit('update:model-value', $event)"
-  >
+    @update:model-value="$emit('update:model-value', $event)">
     <template #default>
       <UtilValidationResults
         v-bind="$attrs"
         :messages="validation"
-        enable-fixing
-      />
+        enable-fixing />
     </template>
     <template #dialog-options>
       <v-spacer />
       <v-btn
         variant="text"
         color="primary"
-        @click="$emit('update:model-value', false)"
-      >
+        @click="$emit('update:model-value', false)">
         {{ t('global.button.close') }}
       </v-btn>
     </template>
@@ -53,16 +50,16 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Boolean,
-      default: false,
+      default: false
     },
     validation: {
       type: Object as PropType<VeoSchemaValidatorValidationResult>,
       default: () => ({
         valid: true,
         errors: [],
-        warnings: [],
-      }),
-    },
+        warnings: []
+      })
+    }
   },
   emits: ['update:model-value'],
   setup() {
@@ -70,9 +67,9 @@ export default defineComponent({
 
     return {
       t,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>
 

@@ -20,22 +20,19 @@
     v-if="options.visible"
     :class="options && options.class"
     class="vf-links-field vf-form-element"
-    :data-attribute-name="last(objectSchemaPointer.split('/'))"
-  >
+    :data-attribute-name="last(objectSchemaPointer.split('/'))">
     <v-list>
       <v-list-item
         v-for="(link, index) of internalValue"
         :key="index"
-        class="veo-links-field-border mt-4 px-4"
-      >
+        class="veo-links-field-border mt-4 px-4">
         <DynamicFormControlsLinksFieldRow
           v-bind="$props"
           :model-value="link.target"
           :other-selected-links="getOtherSelectedLinks(index)"
           :object-schema-pointer="objectSchemaPointer + '/' + index"
           :index="index"
-          @update:model-value="onLinksFieldRowInput(index, $event)"
-        >
+          @update:model-value="onLinksFieldRowInput(index, $event)">
           <slot name="default" />
         </DynamicFormControlsLinksFieldRow>
         <template #append>
@@ -44,8 +41,7 @@
               :icon="mdiTrashCanOutline"
               :disabled="disabled || options.disabled"
               variant="text"
-              @click="removeLink(index)"
-            />
+              @click="removeLink(index)" />
           </v-list-item-action>
         </template>
       </v-list-item>
@@ -55,8 +51,7 @@
       :disabled="disabled || options.disabled"
       color="primary"
       variant="text"
-      @click="addLink"
-    >
+      @click="addLink">
       <v-icon size="small" start :icon="mdiPlus" />
       {{ t('addLink') }}
     </v-btn>
@@ -74,16 +69,16 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field',
   name: {
     en: 'links field',
-    de: 'Link-Feld',
+    de: 'Link-Feld'
   },
   description: {
     en: 'Lets the user select 0-n objects to link. Object type and sub type can be restricted in the object schema.',
-    de: 'Lässt den User 0-n links auf andere Objekte erstellen. Objekttyp und Subtyp können durch das Objektschema bestimmt werden.',
+    de: 'Lässt den User 0-n links auf andere Objekte erstellen. Objekttyp und Subtyp können durch das Objektschema bestimmt werden.'
   },
   conditions: (props) => [
     props.objectSchema.type === 'array',
-    typeof props.objectSchema.items?.properties?.target !== 'undefined',
-  ],
+    typeof props.objectSchema.items?.properties?.target !== 'undefined'
+  ]
 };
 
 export default defineComponent({
@@ -112,7 +107,7 @@ export default defineComponent({
             undefined
           : newValue
         );
-      },
+      }
     });
 
     const addLink = () => {
@@ -153,9 +148,9 @@ export default defineComponent({
       last,
       mdiPlus,
       mdiTrashCanOutline,
-      t,
+      t
     };
-  },
+  }
 });
 </script>
 

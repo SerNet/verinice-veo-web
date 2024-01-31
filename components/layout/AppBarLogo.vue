@@ -22,8 +22,7 @@
       v-else-if="showMobile"
       height="80%"
       width="80%"
-      style="max-height: 40px"
-    />
+      style="max-height: 40px" />
   </div>
 </template>
 
@@ -33,8 +32,8 @@ import { useDisplay } from 'vuetify';
 const props = defineProps({
   size: {
     type: String,
-    default: 'auto',
-  },
+    default: 'auto'
+  }
 });
 
 const { mdAndUp } = useDisplay();

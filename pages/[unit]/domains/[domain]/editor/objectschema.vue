@@ -20,14 +20,12 @@
     class="bg-basepage"
     collapsable-right
     :page-widths="pageWidths"
-    @page-collapsed="onPageCollapsed"
-  >
+    @page-collapsed="onPageCollapsed">
     <template #title>
       <LayoutHeadline
         class="ml-1 mb-2"
         :title="globalT('editor.objectschema.headline')"
-        :element="title"
-      />
+        :element="title" />
     </template>
 
     <template #default>
@@ -43,8 +41,7 @@
                   href="#"
                   class="text-decoration-none"
                   style="vertical-align: bottom"
-                  @click="downloadSchema()"
-                >
+                  @click="downloadSchema()">
                   <v-btn class="bg-accent" icon large variant="text">
                     <v-icon :icon="mdiDownload" />
                   </v-btn>
@@ -64,8 +61,7 @@
                   class="ml-2"
                   v-bind="props"
                   variant="text"
-                  @click="errorDialogVisible = !errorDialogVisible"
-                />
+                  @click="errorDialogVisible = !errorDialogVisible" />
               </template>
               <template #default>
                 {{ globalT('editor.schema.warnings') }}
@@ -79,8 +75,7 @@
                   class="translate-button bg-accent"
                   v-bind="props"
                   variant="text"
-                  @click="translationDialogVisible = true"
-                />
+                  @click="translationDialogVisible = true" />
               </template>
               <template #default>
                 {{ t('translations') }}
@@ -94,8 +89,7 @@
                   class="bg-accent"
                   v-bind="props"
                   variant="text"
-                  @click="detailsDialogVisible = !detailsDialogVisible"
-                />
+                  @click="detailsDialogVisible = !detailsDialogVisible" />
               </template>
               <template #default>
                 {{ globalT('editor.schema.properties') }}
@@ -110,8 +104,7 @@
                   :to="HELP_ROUTE"
                   class="help-button bg-accent"
                   variant="text"
-                  v-bind="props"
-                />
+                  v-bind="props" />
               </template>
               <template #default>
                 {{ t('help') }}
@@ -129,8 +122,7 @@
                     large
                     class="bg-accent"
                     variant="text"
-                    @click="saveSchema"
-                  />
+                    @click="saveSchema" />
                 </div>
               </template>
               <template #default>
@@ -144,8 +136,7 @@
           <v-row
             v-if="schemaIsValid.valid"
             no-gutters
-            class="flex-column overflow-hidden fill-width bg-surface"
-          >
+            class="flex-column overflow-hidden fill-width bg-surface">
             <v-col>
               <v-row class="mx-2 mt-1">
                 <v-col cols="12" lg="6">
@@ -156,8 +147,7 @@
                     flat
                     :label="t('objectschema')"
                     variant="underlined"
-                    @update:model-value="updateSchemaName"
-                  />
+                    @update:model-value="updateSchemaName" />
                 </v-col>
                 <v-col cols="12" lg="6">
                   <v-text-field
@@ -166,8 +156,7 @@
                     hide-details
                     :label="t('description')"
                     variant="underlined"
-                    @update:model-value="updateDescription"
-                  />
+                    @update:model-value="updateDescription" />
                 </v-col>
               </v-row>
             </v-col>
@@ -175,8 +164,7 @@
           <v-row
             v-if="schemaIsValid.valid"
             no-gutters
-            class="flex-column overflow-hidden fill-width bg-surface"
-          >
+            class="flex-column overflow-hidden fill-width bg-surface">
             <v-col>
               <v-row class="ml-2 my-1">
                 <v-col cols="12" lg="6">
@@ -189,8 +177,7 @@
                     hide-details
                     :prepend-inner-icon="mdiMagnify"
                     :label="t('search')"
-                    variant="underlined"
-                  />
+                    variant="underlined" />
                 </v-col>
                 <v-col>
                   <v-checkbox
@@ -198,8 +185,7 @@
                     class="caption"
                     dense
                     hide-details
-                    :label="t('hideemptyaspects')"
-                  />
+                    :label="t('hideemptyaspects')" />
                 </v-col>
               </v-row>
             </v-col>
@@ -212,18 +198,15 @@
             :search="searchQuery"
             :hide-empty-aspects="hideEmptyAspects"
             :domain-id="$route.params.domain as string"
-            @schema-updated="updateCode"
-          />
+            @schema-updated="updateCode" />
           <v-row
             v-else
-            class="fill-height flex-column text-center align-center px-8"
-          >
+            class="fill-height flex-column text-center align-center px-8">
             <v-col cols="auto" style="flex-grow: 0">
               <v-icon
                 style="font-size: 8rem; opacity: 0.5"
                 color="primary"
-                :icon="mdiInformationOutline"
-              />
+                :icon="mdiInformationOutline" />
             </v-col>
             <v-col cols="auto" class="text-left">
               <h3 class="text-h3">
@@ -232,8 +215,7 @@
               <v-list-item
                 v-for="(error, index) of schemaIsValid.errors"
                 :key="`e_${index}`"
-                link
-              >
+                link>
                 <v-list-item-title>{{ error.code }}</v-list-item-title>
                 <v-list-item-subtitle>{{ error.message }}</v-list-item-subtitle>
               </v-list-item>
@@ -245,32 +227,27 @@
       <BasePage
         v-if="objectSchemaHelper && !xs"
         height="100%"
-        content-class="ose__code-editor"
-      >
+        content-class="ose__code-editor">
         <EditorSchemaCodeEditor v-model="code" @schema-updated="updateSchema" />
       </BasePage>
     </template>
     <template #helpers>
       <EditorObjectSchemaWizardDialog
         v-model="creationDialogVisible"
-        @completed="setSchema"
-      />
+        @completed="setSchema" />
       <EditorObjectSchemaDetailsDialog
         v-model="detailsDialogVisible"
         :domain-id="$route.params.domain as string"
-        @schema-updated="updateCode"
-      />
+        @schema-updated="updateCode" />
       <EditorErrorDialog
         v-model="errorDialogVisible"
-        :validation="schemaIsValid"
-      />
+        :validation="schemaIsValid" />
       <EditorObjectSchemaTranslationDialog
         v-if="!translationsLoading && translationDialogVisible"
         v-model="translationDialogVisible"
         v-model:current-display-language="displayLanguage"
         :available-languages="availableLanguages"
-        @schema-updated="updateCode"
-      />
+        @schema-updated="updateCode" />
     </template>
   </LayoutPageWrapper>
 </template>
@@ -285,7 +262,7 @@ import {
   mdiInformationOutline,
   mdiMagnify,
   mdiTranslate,
-  mdiWrench,
+  mdiWrench
 } from '@mdi/js';
 import { useDisplay } from 'vuetify';
 import { JsonPointer } from 'json-ptr';
@@ -297,7 +274,7 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import translationQueryDefinitions, {
-  IVeoTranslations,
+  IVeoTranslations
 } from '~/composables/api/queryDefinitions/translations';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
@@ -337,7 +314,7 @@ export default defineComponent({
 
     const fetchTranslationQueryParameters = computed(() => ({
       languages: (locales.value as LocaleObject[]).map((locale) => locale.code),
-      domain: route.params.domain,
+      domain: route.params.domain
     }));
     const translations = reactive<IVeoTranslations['lang']>({});
     const { data: _translations, isFetching: translationsLoading } = useQuery(
@@ -355,7 +332,7 @@ export default defineComponent({
     const schemaIsValid = ref<VeoSchemaValidatorValidationResult>({
       valid: false,
       errors: [],
-      warnings: [],
+      warnings: []
     });
 
     // Editor stuff
@@ -482,7 +459,7 @@ export default defineComponent({
       schemaIsValid.value = objectSchemaHelper.value?.validate() || {
         valid: false,
         errors: [],
-        warnings: [],
+        warnings: []
       };
     };
 
@@ -513,7 +490,7 @@ export default defineComponent({
         await update({
           domainId: route.params.domain,
           objectType: title.value,
-          objectSchema,
+          objectSchema
         });
         displaySuccessMessage(t('saveSchemaSuccess').toString());
       } catch (e: any) {
@@ -564,9 +541,9 @@ export default defineComponent({
       mdiTranslate,
       mdiWrench,
       HELP_ROUTE,
-      xs,
+      xs
     };
-  },
+  }
 });
 </script>
 

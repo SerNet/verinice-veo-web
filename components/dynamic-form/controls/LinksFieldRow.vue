@@ -29,15 +29,13 @@
         required
         :error-messages="getControlErrorMessages($props, '/properties/target')"
         value-as-link
-        @update:model-value="$emit('update:model-value', $event)"
-      >
+        @update:model-value="$emit('update:model-value', $event)">
         <template v-if="!objectCreationDisabled" #prepend-item>
           <v-btn
             block
             color="primary"
             variant="text"
-            @click="createObjectDialogVisible = true"
-          >
+            @click="createObjectDialogVisible = true">
             <v-icon start :icon="mdiPlus" />
             {{ t('create', [createButtonLabel]).toString() }}
           </v-btn>
@@ -49,8 +47,7 @@
         :object-type="objectType"
         :sub-type="subType"
         :domain-id="domainId"
-        @success="onTargetCreated"
-      />
+        @success="onTargetCreated" />
     </div>
     <div>
       <DynamicFormControlsLinksFieldRowAttribute v-bind="$props">
@@ -76,12 +73,12 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field-row',
   name: {
     en: 'links field row',
-    de: 'Link-Feld-Eintrag',
+    de: 'Link-Feld-Eintrag'
   },
   description: {
     en: 'Row of the links field. Not used independently.',
-    de: 'Einzelner Eintrag des Link-Feldes. Wird nicht alleine genutzt.',
-  },
+    de: 'Einzelner Eintrag des Link-Feldes. Wird nicht alleine genutzt.'
+  }
 };
 
 export default defineComponent({
@@ -90,12 +87,12 @@ export default defineComponent({
     ...VeoFormsControlProps,
     otherSelectedLinks: {
       type: Array as PropType<IVeoCustomLink[]>,
-      default: () => [],
+      default: () => []
     },
     index: {
       type: Number,
-      default: 0,
-    },
+      default: 0
+    }
   },
   emits: ['update:model-value'],
   setup(props, { emit }) {
@@ -143,7 +140,7 @@ export default defineComponent({
       emit('update:model-value', {
         targetUri: `${config.public.apiUrl}/${schemas.value?.[
           objectType.value
-        ]}/${newElementId}`,
+        ]}/${newElementId}`
       });
     };
 
@@ -165,9 +162,9 @@ export default defineComponent({
 
       getControlErrorMessages,
       mdiPlus,
-      t,
+      t
     };
-  },
+  }
 });
 </script>
 

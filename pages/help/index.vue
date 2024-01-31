@@ -26,8 +26,7 @@
               v-for="(item, j) in doc.items"
               :key="j"
               :to="item.to"
-              :ripple="true"
-            >
+              :ripple="true">
               <v-list-item-title v-text="item.title" />
             </v-list-item>
           </v-list>
@@ -56,24 +55,24 @@ const docs = [
       { to: ROUTE + '/controls/inputUri', title: 'Input URI' },
       {
         to: ROUTE + '/controls/inputTextMultiline',
-        title: 'Input Text Multiline',
+        title: 'Input Text Multiline'
       },
       { to: ROUTE + '/controls/checkbox', title: 'Checkbox' },
       { to: ROUTE + '/controls/radio', title: 'Radio' },
       { to: ROUTE + '/controls/select', title: 'Select' },
       { to: ROUTE + '/controls/autocomplete', title: 'Autocomplete' },
-      { to: ROUTE + '/controls/markdownEditor', title: 'Markdown Editor' },
-    ],
+      { to: ROUTE + '/controls/markdownEditor', title: 'Markdown Editor' }
+    ]
   },
   {
     cols: '4',
     title: 'Layouts',
-    items: [{ to: ROUTE + '/layouts/group', title: 'Group' }],
+    items: [{ to: ROUTE + '/layouts/group', title: 'Group' }]
   },
   {
     cols: '4',
     title: 'Static Texts',
-    items: [{ to: ROUTE + '/statictexts/label', title: 'Label' }],
+    items: [{ to: ROUTE + '/statictexts/label', title: 'Label' }]
   },
   {
     cols: '4',
@@ -82,8 +81,8 @@ const docs = [
       { to: ROUTE + '/rules/hide', title: 'Hide' },
       { to: ROUTE + '/rules/show', title: 'Show' },
       { to: ROUTE + '/rules/disable', title: 'Disable' },
-      { to: ROUTE + '/rules/enable', title: 'Enable' },
-    ],
-  },
+      { to: ROUTE + '/rules/enable', title: 'Enable' }
+    ]
+  }
 ];
 </script>

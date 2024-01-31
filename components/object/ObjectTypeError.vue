@@ -21,8 +21,7 @@
       class="fill-width"
       src="/images/objectNotFound.svg"
       max-height="300px"
-      contain
-    />
+      contain />
     <h1 class="text-h1 mt-8">
       {{ t('notFoundCode').toString() }}
     </h1>

@@ -28,8 +28,7 @@
     :no-close-button="type === VeoAlertType.SUCCESS"
     :dismiss-on-click="type === VeoAlertType.SUCCESS"
     :timeout="params ? params.timeout : undefined"
-    @update:model-value="onInput"
-  >
+    @update:model-value="onInput">
     <template #secondary-buttons>
       <div v-if="showDownloadDetailsButton && params && params.details">
         <v-btn variant="text" @click="downloadDetails">
@@ -51,24 +50,24 @@ export default defineComponent({
   props: {
     type: {
       type: Number as PropType<VeoAlertType>,
-      required: true,
+      required: true
     },
     title: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     text: {
       type: String,
-      default: '',
+      default: ''
     },
     params: {
       type: Object as PropType<IVeoGlobalAlertParams>,
-      default: undefined,
+      default: undefined
     },
     alertKey: {
       type: Number,
-      default: undefined,
-    },
+      default: undefined
+    }
   },
   setup(props) {
     const config = useRuntimeConfig();
@@ -96,7 +95,7 @@ export default defineComponent({
           if (props.alertKey) {
             expireAlert(props.alertKey);
           }
-        },
+        }
       }))
     );
 
@@ -108,7 +107,7 @@ export default defineComponent({
         value.value = true;
       },
       {
-        immediate: true,
+        immediate: true
       }
     );
 
@@ -117,7 +116,7 @@ export default defineComponent({
 
     const downloadDetails = () => {
       const blob = new Blob([JSON.stringify(props.params?.details)], {
-        type: 'text/json',
+        type: 'text/json'
       });
 
       downloadButton.value.download = `error_${new Date().toISOString()}.json`;
@@ -125,13 +124,13 @@ export default defineComponent({
       downloadButton.value.dataset.downloadurl = [
         'text/json',
         downloadButton.value.download,
-        downloadButton.value.href,
+        downloadButton.value.href
       ].join(':');
 
       const evt = new MouseEvent('click', {
         view: window,
         bubbles: true,
-        cancelable: true,
+        cancelable: true
       });
 
       downloadButton.value.dispatchEvent(evt);
@@ -148,9 +147,9 @@ export default defineComponent({
       value,
 
       t,
-      globalT,
+      globalT
     };
-  },
+  }
 });
 </script>
 

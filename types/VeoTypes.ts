@@ -497,7 +497,7 @@ export interface IVeoObjectHistoryEntry {
 export enum VeoAlertType {
   ERROR,
   INFO,
-  SUCCESS,
+  SUCCESS
 }
 
 export interface IVeoGlobalAlertParams {

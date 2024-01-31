@@ -32,5 +32,5 @@ export default defineComponent({
       return null;
     }
     return () => h(fittingComponent.value, { ...props });
-  },
+  }
 });

@@ -42,8 +42,7 @@
               "
               @update:specific-impact="
                 onSpecificImpactChanged(protectionGoal.id, $event)
-              "
-            />
+              " />
           </template>
         </v-row>
       </v-card-text>
@@ -62,21 +61,21 @@ export default defineComponent({
   props: {
     data: {
       type: Array as PropType<IVeoRiskDefinition['impactValues']>,
-      required: true,
+      required: true
     },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true,
+      required: true
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      default: () => {},
+      default: () => {}
     },
     disabled: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: ['update:data', 'update:dirty-fields'],
   setup(props, { emit }) {
@@ -107,7 +106,7 @@ export default defineComponent({
     ) => {
       emit('update:dirty-fields', {
         ...props.dirtyFields,
-        [`${props.riskDefinition.id}_${protectionGoal}_specificImpact`]: true,
+        [`${props.riskDefinition.id}_${protectionGoal}_specificImpact`]: true
       });
 
       const localData = cloneDeep(props.data);
@@ -126,9 +125,9 @@ export default defineComponent({
       protectionGoalExists,
 
       t,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>
 

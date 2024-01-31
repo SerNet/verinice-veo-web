@@ -26,8 +26,7 @@
         <v-list-item
           v-for="catalog in currentCatalogs"
           :key="catalog.id"
-          :to="generateRoute(catalog.id)"
-        >
+          :to="generateRoute(catalog.id)">
           <v-list-item-title class="d-flex justify-space-between">
             <span class="flex-grow-0 mb-0 font-weight-bold">{{
               catalog.name
@@ -53,7 +52,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   catalogs: () => [],
-  loading: false,
+  loading: false
 });
 
 const route = useRoute();

@@ -25,21 +25,21 @@ import Cookies from 'js-cookie';
 
 const vuetify = createVuetify({
   components: {
-    ...components,
+    ...components
   },
   directives,
   ssr: true,
   icons: {
     aliases,
     sets: {
-      mdi,
+      mdi
     },
-    defaultSet: 'mdi', // This is already the default value - only for display purposes
+    defaultSet: 'mdi' // This is already the default value - only for display purposes
   },
   locale: {
     // adapter: createVueI18nAdapter({ i18n, useI18n }) // Currently doesn't work with nuxt
     locale: Cookies.get('i18n_redirected') || navigator.language.split('-')[0],
-    messages: { de, en },
+    messages: { de, en }
   },
   theme: {
     defaultTheme: 'light',
@@ -51,12 +51,12 @@ const vuetify = createVuetify({
           accent: '#ddd',
           surface: '#fff',
           color: '#000',
-          basepage: '#f3f3f3',
+          basepage: '#f3f3f3'
           // error: '#',
           // info: '#'
           // success: '#',
           // warning: '#'
-        },
+        }
       },
       dark: {
         colors: {
@@ -65,15 +65,15 @@ const vuetify = createVuetify({
           accent: '#000',
           surface: '#1c1c1c',
           color: '#fff',
-          basepage: '#303030',
+          basepage: '#303030'
           // error: '#',
           // info: '#'
           // success: '#',
           // warning: '#'
-        },
-      },
-    },
-  },
+        }
+      }
+    }
+  }
 });
 
 export default defineNuxtPlugin((nuxtApp) => {

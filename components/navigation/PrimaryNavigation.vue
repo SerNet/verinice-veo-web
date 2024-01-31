@@ -24,19 +24,16 @@
     :permanent="!xs"
     :temporary="xs"
     scrim
-    v-bind="$attrs"
-  >
+    v-bind="$attrs">
     <template #prepend>
       <div class="mb-8">
         <NavigationUnitSelect
           :mini-variant="miniVariant"
-          @expand-menu="miniVariant = false"
-        />
+          @expand-menu="miniVariant = false" />
         <NavigationDomainSelect
           :disabled="!$route.params.unit"
           :mini-variant="miniVariant"
-          @expand-menu="miniVariant = false"
-        />
+          @expand-menu="miniVariant = false" />
       </div>
     </template>
     <template #default>
@@ -47,15 +44,13 @@
             v-bind="item"
             :level="0"
             :mini-variant="miniVariant"
-            @expand-menu="miniVariant = false"
-          />
+            @expand-menu="miniVariant = false" />
           <NavigationPrimaryNavigationEntry
             v-else
             v-bind="item"
             :level="0"
             :mini-variant="miniVariant"
-            @expand-menu="miniVariant = false"
-          />
+            @expand-menu="miniVariant = false" />
         </template>
       </v-list>
     </template>
@@ -67,15 +62,13 @@
           class="pl-4"
           data-component-name="toggle-navigation"
           density="compact"
-          @click="miniVariant = !miniVariant"
-        >
+          @click="miniVariant = !miniVariant">
           <template #prepend>
             <v-icon
               v-if="miniVariant"
               color="black"
               class="mr-3"
-              :icon="mdiChevronRight"
-            />
+              :icon="mdiChevronRight" />
             <v-icon v-else color="black" class="mr-3" :icon="mdiChevronLeft" />
           </template>
           <v-list-item-title v-if="miniVariant">
@@ -105,7 +98,7 @@ export interface INavItem {
 }
 
 export const PROVIDE_KEYS = {
-  navigation: 'primaryNavigationList',
+  navigation: 'primaryNavigationList'
 };
 </script>
 
@@ -122,7 +115,7 @@ import {
   mdiShapeOutline,
   mdiTextBoxEditOutline,
   mdiUngroup,
-  mdiViewDashboardOutline,
+  mdiViewDashboardOutline
 } from '@mdi/js';
 import { sortBy, upperFirst, isEmpty } from 'lodash';
 import { StorageSerializers, useStorage } from '@vueuse/core';
@@ -162,7 +155,7 @@ const objectTypeSortOrder = new Map<string, number>([
   ['incident', 5],
   ['document', 6],
   ['scenario', 7],
-  ['control', 8],
+  ['control', 8]
 ]);
 
 const props = withDefaults(
@@ -174,7 +167,7 @@ const props = withDefaults(
   {
     modelValue: true,
     unitId: undefined,
-    domainId: undefined,
+    domainId: undefined
   }
 );
 
@@ -190,7 +183,7 @@ const { xs } = useDisplay();
 function getFormSchema({
   formSchemas,
   elementType,
-  subType,
+  subType
 }: {
   formSchemas: IVeoFormSchema[] | undefined;
   elementType: string;
@@ -209,7 +202,7 @@ function getFormSchema({
  * Necessary because objects/elements do not come with a translation.
  */
 function getDisplayName({
-  formSchema,
+  formSchema
 }: {
   formSchema: IVeoFormSchema | undefined;
 }) {
@@ -227,7 +220,7 @@ const miniVariant = useStorage(
 
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
-  domain: props.domainId as string,
+  domain: props.domainId as string
 }));
 const fetchTranslationsQueryEnabled = computed(() => authenticated.value);
 const { data: translations } = useQuery(
@@ -241,7 +234,7 @@ const objectSchemas = ref<IVeoObjectSchema[]>([]);
 const schemasLoading = ref(false);
 
 const queryParameters = computed(() => ({
-  domainId: props.domainId as string,
+  domainId: props.domainId as string
 }));
 const allFormSchemasQueryEnabled = computed(() => !!props.domainId);
 const { data: formSchemas } = useQuery(
@@ -257,13 +250,13 @@ const { data: endpoints } = useQuery(
 );
 
 const fetchSchemasDetailedQueryParameters = computed(() => ({
-  domainId: props.domainId as string,
+  domainId: props.domainId as string
 }));
 const fetchSchemasDetailedQueryEnabled = computed(
   () => !!props.domainId && authenticated.value
 );
 const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, {
-  enabled: fetchSchemasDetailedQueryEnabled,
+  enabled: fetchSchemasDetailedQueryEnabled
 });
 watch(
   () => _schemas,
@@ -305,9 +298,9 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
                 unit: props.unitId,
                 domain: props.domainId,
                 objectType: endpoints.value?.[objectSchema.title],
-                subType: '-',
-              },
-            },
+                subType: '-'
+              }
+            }
           },
 
           // dynamic sub type routes
@@ -316,7 +309,7 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
               const formSchema = getFormSchema({
                 formSchemas: formSchemas?.value as IVeoFormSchema[],
                 elementType: objectSchema?.title,
-                subType: subType.subType,
+                subType: subType.subType
               });
 
               const displayName =
@@ -331,22 +324,22 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
                     unit: props.unitId,
                     domain: props.domainId,
                     objectType: endpoints.value?.[objectSchema.title],
-                    subType: subType.subType,
-                  },
+                    subType: subType.subType
+                  }
                 },
-                sorting: formSchema?.sorting,
+                sorting: formSchema?.sorting
               };
             }),
             'sorting'
-          ),
-        ],
+          )
+        ]
       };
     })
 );
 
 // catalog specific stuff
 const typeCountQueryParameters = computed(() => ({
-  domainId: props.domainId as string,
+  domainId: props.domainId as string
 }));
 const typeCountQueryEnabled = computed(() => !!props.domainId);
 const { data: catalogItemTypes, isFetching: catalogItemTypeCountIsLoading } =
@@ -361,7 +354,7 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
 
   const catalogItems = [
     ['all', { all: 'MISC' }],
-    ...Object.entries(catalogItemTypes?.value || []),
+    ...Object.entries(catalogItemTypes?.value || [])
   ];
 
   const catalogNavItems = (catalogItems || []).map((catalogItem) => {
@@ -372,7 +365,7 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
       const formSchema = getFormSchema({
         formSchemas: formSchemas?.value as IVeoFormSchema[],
         elementType: catalogItem[0] as string,
-        subType: _subType,
+        subType: _subType
       });
 
       const displayName =
@@ -390,13 +383,13 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
           name: CATALOGS_CATALOG_ROUTE_NAME,
           params: {
             unit: props.unitId,
-            domain: props.domainId,
+            domain: props.domainId
           },
           query: {
             type: catalogItem[0],
-            subType: _subType,
-          },
-        },
+            subType: _subType
+          }
+        }
       };
       return item;
     });
@@ -405,7 +398,7 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
 });
 
 const fetchDomainQueryParameters = computed(() => ({
-  id: props.domainId as string,
+  id: props.domainId as string
 }));
 const fetchDomainQueryEnabled = computed(() => !!props.domainId);
 const { data: domain, isFetching: riskDefinitionsLoading } = useQuery(
@@ -446,9 +439,9 @@ const reportsEntriesChildItems = computed<INavItem[]>(() => {
         params: {
           unit: props.unitId,
           domain: props.domainId,
-          report: reportId,
-        },
-      },
+          report: reportId
+        }
+      }
     })
   );
   return selectionItems.filter((entry) => entry.name); // Don't show reports which aren't translated in the users language
@@ -466,9 +459,9 @@ const riskChildItems = computed<INavItem[]>(() =>
       params: {
         unit: props.unitId,
         domain: props.domainId,
-        matrix: id,
-      },
-    },
+        matrix: id
+      }
+    }
   }))
 );
 
@@ -480,11 +473,11 @@ const domainDashboardNavEntry = computed<INavItem>(() => ({
     name: DOMAIN_DASHBOARD_ROUTE_NAME,
     params: {
       unit: props.unitId,
-      domain: props.domainId,
-    },
+      domain: props.domainId
+    }
   },
   componentName: 'domain-dashboard-nav-item',
-  exact: true,
+  exact: true
 }));
 
 const objectsNavEntry = computed<INavItem>(() => ({
@@ -493,7 +486,7 @@ const objectsNavEntry = computed<INavItem>(() => ({
   icon: mdiUngroup,
   children: objectTypesChildItems.value,
   childrenLoading: schemasLoading.value,
-  componentName: 'objects-nav-item',
+  componentName: 'objects-nav-item'
 }));
 
 const catalogsNavEntry = computed<INavItem>(() => ({
@@ -502,7 +495,7 @@ const catalogsNavEntry = computed<INavItem>(() => ({
   icon: mdiBookOpenPageVariantOutline,
   children: catalogsEntriesChildItems.value,
   childrenLoading: catalogItemTypeCountIsLoading.value,
-  componentName: 'catalogs-nav-item',
+  componentName: 'catalogs-nav-item'
 }));
 
 const profilesNavEntry = computed<INavItem>(() => ({
@@ -514,9 +507,9 @@ const profilesNavEntry = computed<INavItem>(() => ({
     name: PROFILE_ROUTE_NAME,
     params: {
       unit: props.unitId as string,
-      domain: props.domainId as string,
-    },
-  },
+      domain: props.domainId as string
+    }
+  }
 }));
 
 const reportsNavEntry = computed<INavItem>(() => ({
@@ -525,7 +518,7 @@ const reportsNavEntry = computed<INavItem>(() => ({
   icon: mdiFileChartOutline,
   children: reportsEntriesChildItems.value,
   childrenLoading: riskDefinitionsLoading.value || reportsEntriesLoading.value,
-  componentName: 'reports-nav-item',
+  componentName: 'reports-nav-item'
 }));
 
 const risksNavEntry = computed<INavItem>(() => ({
@@ -534,7 +527,7 @@ const risksNavEntry = computed<INavItem>(() => ({
   icon: mdiChartBar,
   children: riskChildItems.value,
   childrenLoading: riskDefinitionsLoading.value,
-  componentName: 'risks-nav-item',
+  componentName: 'risks-nav-item'
 }));
 
 const editorsNavEntry = computed<INavItem>(() => ({
@@ -545,10 +538,10 @@ const editorsNavEntry = computed<INavItem>(() => ({
     name: EDITOR_INDEX_ROUTE_NAME,
     params: {
       unit: props.unitId,
-      domain: props.domainId,
-    },
+      domain: props.domainId
+    }
   },
-  classes: 'mb-4',
+  classes: 'mb-4'
 }));
 
 const backToVeoNavEntry = computed<INavItem>(() => ({
@@ -558,7 +551,7 @@ const backToVeoNavEntry = computed<INavItem>(() => ({
   icon: mdiHomeOutline,
   componentName: 'veo-nav-item',
   exact: true,
-  openInNewtab: route.path.startsWith('/docs'),
+  openInNewtab: route.path.startsWith('/docs')
 }));
 
 const docsNavEntry = computed<INavItem>(() => ({
@@ -567,7 +560,7 @@ const docsNavEntry = computed<INavItem>(() => ({
   to: '/docs/index',
   icon: mdiFileDocumentOutline,
   componentName: 'docs-nav-item',
-  children: docNavItems.value,
+  children: docNavItems.value
 }));
 
 const docItemTransformationFn = (file: NavItem): INavItem => ({
@@ -580,7 +573,7 @@ const docItemTransformationFn = (file: NavItem): INavItem => ({
   children:
     file.children?.length ?
       file.children.map((file) => docItemTransformationFn(file))
-    : undefined,
+    : undefined
 });
 const docs = useDocNavigation({});
 const docNavItems = computed(() =>
@@ -602,12 +595,12 @@ const items = computed<INavItem[]>(() => [
         [catalogsNavEntry.value]
       : []),
       reportsNavEntry.value,
-      risksNavEntry.value,
+      risksNavEntry.value
     ]
   : []),
   ...(route.path.startsWith('/docs') ?
     [backToVeoNavEntry.value, docsNavEntry.value]
-  : []),
+  : [])
 ]);
 
 // Provide the ref to the v-list so children can do stuff with it

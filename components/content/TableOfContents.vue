@@ -21,8 +21,7 @@
       v-for="(item, index) in items"
       :key="index"
       class="toc-element"
-      :class="'toc-element-level-' + item.level"
-    >
+      :class="'toc-element-level-' + item.level">
       <a :href="'#' + item._path">{{ item.title }}</a>
     </div>
   </nav>
@@ -34,18 +33,18 @@ import { NavItem } from '@nuxt/content/dist/runtime/types';
 const props = defineProps({
   modelValue: {
     type: Array as PropType<NavItem[]>,
-    default: () => [],
+    default: () => []
   },
   localeSeparator: {
     type: String,
-    default: '.',
-  },
+    default: '.'
+  }
 });
 
 const items = computed(() =>
   props.modelValue.map((navItem) => ({
     ...navItem,
-    level: navItem._path.split('/').length - 1,
+    level: navItem._path.split('/').length - 1
   }))
 );
 </script>

@@ -22,8 +22,7 @@
     data-component-name="form-element-direction"
     :label="t('direction')"
     variant="underlined"
-    :prepend-inner-icon="mdiSwapVertical"
-  />
+    :prepend-inner-icon="mdiSwapVertical" />
 </template>
 
 <script setup lang="ts">
@@ -36,8 +35,8 @@ import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 const props = defineProps({
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
-    required: true,
-  },
+    required: true
+  }
 });
 
 const emit = defineEmits<{
@@ -52,12 +51,12 @@ const { t } = useI18n();
 const directionOptions = ref([
   {
     title: t('vertical'),
-    value: 'vertical',
+    value: 'vertical'
   },
   {
     title: t('horizontal'),
-    value: 'horizontal',
-  },
+    value: 'horizontal'
+  }
 ]);
 
 const direction = computed({
@@ -69,7 +68,7 @@ const direction = computed({
     }
     currentData.options.direction = newValue;
     emit('update:form-schema-element', currentData);
-  },
+  }
 });
 </script>
 

@@ -20,16 +20,14 @@
     rounded
     border
     class="fill-width pb-1 my-1"
-    data-component-name="label-form-element"
-  >
+    data-component-name="label-form-element">
     <v-card-actions>
       <div class="handle mr-1">
         <v-icon :icon="mdiDrag" />
       </div>
       <EditorFormSchemaPlaygroundRuleIcon
         :rule="formSchemaElement.rule"
-        class="mr-1"
-      />
+        class="mr-1" />
       {{ t('text') }}
       <v-spacer />
       <v-btn :icon="mdiPencilOutline" size="small" @click="emit('edit')" />
@@ -37,8 +35,7 @@
     </v-card-actions>
     <div class="mx-2">
       <EditorTranslationsTranslatedElementTitle
-        :form-schema-element="formSchemaElement"
-      />
+        :form-schema-element="formSchemaElement" />
     </div>
   </v-sheet>
 </template>
@@ -53,12 +50,12 @@ import { IPlaygroundElement } from './Element.vue';
 defineProps({
   playgroundElement: {
     type: Object as PropType<IPlaygroundElement>,
-    required: true,
+    required: true
   },
   formSchemaElement: {
     type: Object as PropType<IVeoFormSchemaItem>,
-    required: true,
-  },
+    required: true
+  }
 });
 
 const emit = defineEmits(['edit', 'delete']);

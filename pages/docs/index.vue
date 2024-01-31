@@ -30,8 +30,7 @@
       <h3>{{ t('documentation') }}</h3>
       <img
         src="/images/documentation/coverpage-icongroup.svg"
-        class="mt-12 mb-2"
-      />
+        class="mt-12 mb-2" />
       <span>{{ t('lastModified') }} {{ new Date().toLocaleDateString() }}</span>
       <LayoutAppLogoDesktop style="position: absolute; bottom: 0" />
     </div>
@@ -42,8 +41,7 @@
           v-for="document in documents"
           :id="document._path"
           :key="document._path"
-          class="page"
-        >
+          class="page">
           <h2>{{ document.title }}</h2>
           <div>
             <ContentRendererMarkdown :value="document" />
@@ -108,7 +106,7 @@ useHead(() => ({
   script: [
     {
       // Do not execute PagedJS automatically
-      innerHTML: 'window.PagedConfig = { auto: false };',
+      innerHTML: 'window.PagedConfig = { auto: false };'
     },
     ...(documents.value?.length && navigation.value?.length ?
       [
@@ -133,11 +131,11 @@ useHead(() => ({
               Paged.registerHandlers(MyHandler);
               _window.PagedPolyfill.preview();
             }, 1000);
-          },
-        },
+          }
+        }
       ]
-    : []),
-  ],
+    : [])
+  ]
 }));
 </script>
 

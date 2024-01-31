@@ -20,7 +20,7 @@ import {
   useQuery as vueQueryUseQuery,
   useQueries as VueQueryUseQueries,
   useQueryClient,
-  QueryClient,
+  QueryClient
 } from '@tanstack/vue-query';
 import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
 import { QueryObserverResult } from '@tanstack/query-core/build/lib/types';
@@ -46,7 +46,7 @@ export interface IVeoQueryDefinition<TVariables, TResult = any> {
 
 export interface IVeoQueryParameters<
   TParams = Record<string, any>,
-  TQuery = Record<string, any>,
+  TQuery = Record<string, any>
 > {
   params?: TParams;
   query?: TQuery;
@@ -57,7 +57,7 @@ export const STALE_TIME = {
   REQUEST: 1000, // 1 seconds
   LONG: 60 * 60 * 1000, // 60 minutes
   MEDIUM: 10 * 60 * 1000, // 10 minutes
-  INFINITY: Infinity, // Only refetch on page reload
+  INFINITY: Infinity // Only refetch on page reload
 };
 
 export const debugCacheAsArrayIncludesPrimaryKey = (
@@ -97,7 +97,7 @@ export const useQuery = <TVariables = undefined, TResult = any>(
 
   const combinedOptions = computed(() => ({
     ...queryDefinition.staticQueryOptions,
-    ...queryOptions,
+    ...queryOptions
   }));
 
   // Generating query key based on identifier and the query parameters. This causes the query to get executed again if the query parameters change
@@ -122,7 +122,7 @@ export const useQuery = <TVariables = undefined, TResult = any>(
         : {};
       let result = await request(queryDefinition.url, {
         ...transformedQueryParameters,
-        ...omit(queryDefinition, 'url', 'onDataFetched'),
+        ...omit(queryDefinition, 'url', 'onDataFetched')
       });
       if (queryDefinition.onDataFetched) {
         result = queryDefinition.onDataFetched(
@@ -208,7 +208,7 @@ export const useQuerySync = async <TVariables = undefined, TResult = any>(
     : {};
   let result = await request(queryDefinition.url, {
     ...transformedQueryParameters,
-    ...omit(queryDefinition, 'url', 'onDataFetched'),
+    ...omit(queryDefinition, 'url', 'onDataFetched')
   });
   if (queryDefinition.onDataFetched) {
     result = queryDefinition.onDataFetched(result, transformedQueryParameters);
@@ -253,13 +253,13 @@ export const useQueries = <TVariables = Record<string, any>, TResult = any>(
       );
     },
     {
-      immediate: true,
+      immediate: true
     }
   );
   const combinedOptions = computed(() => ({
     ...queryDefinition.staticQueryOptions,
     ...queryOptions,
-    enabled,
+    enabled
   }));
 
   const queries = ref<any[]>([]);
@@ -276,7 +276,7 @@ export const useQueries = <TVariables = Record<string, any>, TResult = any>(
                 queryDefinition.queryParameterTransformationFn(unref(query));
               let result = await request(queryDefinition.url, {
                 ...transformedQueryParameters,
-                ...omit(queryDefinition, 'url', 'onDataFetched'),
+                ...omit(queryDefinition, 'url', 'onDataFetched')
               });
               if (queryDefinition.onDataFetched) {
                 result = queryDefinition.onDataFetched(
@@ -286,7 +286,7 @@ export const useQueries = <TVariables = Record<string, any>, TResult = any>(
               }
               return result;
             },
-            ...combinedOptions.value,
+            ...combinedOptions.value
           }))
         : [{ queryKey: ['unnecessary'], queryFn: () => null }];
     },

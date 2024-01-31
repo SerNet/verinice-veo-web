@@ -36,14 +36,14 @@ export default {
       queryParameterTransformationFn: (queryParameters) => ({
         query: {
           languages: queryParameters.languages.toString(),
-          domain: queryParameters.domain,
-        },
+          domain: queryParameters.domain
+        }
       }),
       staticQueryOptions: {
         staleTime: STALE_TIME.LONG,
-        placeholderData: { lang: {} },
-      },
-    } as IVeoQueryDefinition<IVeoFetchTranslationsParameters, IVeoTranslations>,
+        placeholderData: { lang: {} }
+      }
+    } as IVeoQueryDefinition<IVeoFetchTranslationsParameters, IVeoTranslations>
   },
-  mutations: {},
+  mutations: {}
 };

@@ -22,8 +22,7 @@
     :close-disabled="isLoading"
     :title="id ? t('updateAccount') : t('createAccount')"
     large
-    @update:model-value="$emit('update:model-value', $event)"
-  >
+    @update:model-value="$emit('update:model-value', $event)">
     <template #default>
       <BaseAlert
         :title="t('password')"
@@ -31,8 +30,7 @@
         flat
         no-close-button
         :type="VeoAlertType.INFO"
-        class="mb-2"
-      >
+        class="mb-2">
         <span v-if="id">
           {{ t('updatingOwnAccount') }}
         </span>
@@ -51,8 +49,7 @@
                   :prepend-inner-icon="mdiAccountOutline"
                   :disabled="!!id"
                   :rules="[requiredRule, usernameIsDuplicateRule]"
-                  variant="underlined"
-                />
+                  variant="underlined" />
               </v-col>
               <v-col cols="12" md="6">
                 <v-text-field
@@ -62,10 +59,9 @@
                   :rules="[
                     requiredRule,
                     mailAddressIsDuplicateRule,
-                    mailRegexRule,
+                    mailRegexRule
                   ]"
-                  variant="underlined"
-                />
+                  variant="underlined" />
               </v-col>
             </v-row>
             <v-checkbox v-model="formData.enabled" :label="t('enabled')" />
@@ -76,8 +72,7 @@
                   clearable
                   :label="`${t('firstName')}*`"
                   :rules="[requiredRule]"
-                  variant="underlined"
-                />
+                  variant="underlined" />
               </v-col>
               <v-col cols="12" md="6">
                 <v-text-field
@@ -85,8 +80,7 @@
                   clearable
                   :label="`${t('lastName')}*`"
                   :rules="[requiredRule]"
-                  variant="underlined"
-                />
+                  variant="underlined" />
               </v-col>
             </v-row>
             <v-row>
@@ -97,8 +91,7 @@
                   multiple
                   :items="availableGroups"
                   :label="t('groups')"
-                  variant="underlined"
-                />
+                  variant="underlined" />
               </v-col>
             </v-row>
           </v-form>
@@ -116,8 +109,7 @@
           formIsValid === false || ability.cannot('manage', 'accounts')
         "
         :loading="isLoading"
-        @click="createOrUpdateAccount"
-      >
+        @click="createOrUpdateAccount">
         {{ id ? t('updateAccount') : t('createAccount') }}
       </v-btn>
     </template>
@@ -130,7 +122,7 @@ import { mdiAccountOutline, mdiEmailOutline } from '@mdi/js';
 import { cloneDeep, pick, trim } from 'lodash';
 
 import accountQueryDefinitions, {
-  IVeoAccount,
+  IVeoAccount
 } from '~/composables/api/queryDefinitions/accounts';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
@@ -143,40 +135,40 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Boolean,
-      default: false,
+      default: false
     },
     id: {
       type: String,
-      default: '',
+      default: ''
     },
     username: {
       type: String,
-      default: '',
+      default: ''
     },
     firstName: {
       type: String,
-      default: '',
+      default: ''
     },
     lastName: {
       type: String,
-      default: '',
+      default: ''
     },
     emailAddress: {
       type: String,
-      default: '',
+      default: ''
     },
     enabled: {
       type: Boolean,
-      default: true,
+      default: true
     },
     groups: {
       type: Array as PropType<string[]>,
-      default: () => [],
+      default: () => []
     },
     existingAccounts: {
       type: Array as PropType<IVeoAccount[]>,
-      default: () => [],
-    },
+      default: () => []
+    }
   },
   emits: ['update:model-value', 'success'],
   setup(props, { emit }) {
@@ -216,8 +208,8 @@ export default defineComponent({
     const availableGroups = ref([
       {
         title: t('permissions.veo-write').toString(),
-        value: 'veo-write-access',
-      },
+        value: 'veo-write-access'
+      }
     ]);
 
     // Update form data from outside
@@ -258,7 +250,7 @@ export default defineComponent({
     );
     const updateMutationParameters = computed(() => ({
       ...formData.value,
-      id: props.id,
+      id: props.id
     }));
     const { mutateAsync: update, isLoading: isLoadingUpdate } = useMutation(
       accountQueryDefinitions.mutations.updateAccount
@@ -326,9 +318,9 @@ export default defineComponent({
       globalT,
       VeoAlertType,
       mdiAccountOutline,
-      mdiEmailOutline,
+      mdiEmailOutline
     };
-  },
+  }
 });
 </script>
 

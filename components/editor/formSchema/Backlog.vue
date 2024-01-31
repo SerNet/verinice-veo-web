@@ -19,8 +19,7 @@
   <div style="height: 100%">
     <div
       v-show="!controlElementsVisible && searchQuery"
-      class="text-center mt-1"
-    >
+      class="text-center mt-1">
       <span class="text--disabled">{{ t('searchNoMatch') }}</span>
     </div>
     <div v-show="controlElementsVisible" class="pt-4 text-center">
@@ -46,14 +45,12 @@
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
                 :clone="onCloneFormElement"
-                :item-key="(element: any) => element.description.title"
-              >
+                :item-key="(element: any) => element.description.title">
                 <template #item="{ element }">
                   <EditorListItem
                     :title="element.description.title"
                     :styling="element.description"
-                    translate
-                  />
+                    translate />
                 </template>
               </Draggable>
             </v-list>
@@ -69,8 +66,7 @@
           <v-card
             v-show="filteredBasics.length"
             variant="outlined"
-            class="overflow-hidden"
-          >
+            class="overflow-hidden">
             <v-list class="py-0">
               <Draggable
                 v-model="filteredBasics"
@@ -80,14 +76,12 @@
                 item-key="scope"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
-                :clone="onCloneControl"
-              >
+                :clone="onCloneControl">
                 <template #item="{ element }">
                   <EditorListItem
                     :title="element.propertyName"
                     :styling="typeMap[element.type]"
-                    translate
-                  />
+                    translate />
                 </template>
               </Draggable>
             </v-list>
@@ -103,8 +97,7 @@
           <v-card
             v-if="filteredAspects.length"
             variant="outlined"
-            class="overflow-hidden"
-          >
+            class="overflow-hidden">
             <v-list class="py-0">
               <Draggable
                 :list="filteredAspects"
@@ -114,14 +107,12 @@
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
                 :clone="onCloneControl"
-                item-key="scope"
-              >
+                item-key="scope">
                 <template #item="{ element }">
                   <EditorListItem
                     :title="element.backlogTitle"
                     :styling="typeMap[element.type]"
-                    translate
-                  />
+                    translate />
                 </template>
               </Draggable>
             </v-list>
@@ -137,8 +128,7 @@
           <v-card
             v-if="filteredLinks.length"
             variant="outlined"
-            class="overflow-hidden"
-          >
+            class="overflow-hidden">
             <v-list class="py-0">
               <Draggable
                 :list="filteredLinks"
@@ -147,14 +137,12 @@
                 item-key="scope"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
-                :clone="onCloneControl"
-              >
+                :clone="onCloneControl">
                 <template #item="{ element }">
                   <EditorListItem
                     :title="element.backlogTitle"
                     :styling="typeMap[element.type]"
-                    translate
-                  />
+                    translate />
                 </template>
               </Draggable>
             </v-list>
@@ -169,8 +157,7 @@
           <v-card
             v-if="filteredWidgets.length"
             variant="outlined"
-            class="overflow-hidden"
-          >
+            class="overflow-hidden">
             <v-list class="py-0">
               <Draggable
                 :list="filteredWidgets"
@@ -179,8 +166,7 @@
                 style="overflow: auto; min-width: 300"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
-                :clone="onCloneWidget"
-              >
+                :clone="onCloneWidget">
                 <template #item="{ element }">
                   <EditorListItem
                     :title="
@@ -189,9 +175,8 @@
                     :styling="{
                       icon: mdiAutoFix,
                       color: 'grey darken-4',
-                      name: upperFirst(t('widget').toString()),
-                    }"
-                  />
+                      name: upperFirst(t('widget').toString())
+                    }" />
                 </template>
               </Draggable>
             </v-list>
@@ -250,21 +235,21 @@ const WIDGETS: IVeoFormsElementDefinition[] = [];
 
 export default defineComponent({
   components: {
-    Draggable,
+    Draggable
   },
   props: {
     searchQuery: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     formSchema: {
       type: Object as PropType<IVeoFormSchema>,
-      required: true,
+      required: true
     },
     objectSchema: {
       type: Object as PropType<IVeoObjectSchema>,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: ['control-items'],
   setup(props, context) {
@@ -277,15 +262,15 @@ export default defineComponent({
       {
         type: 'Layout',
         options: {
-          format: 'group',
+          format: 'group'
         },
         elements: [],
         description: {
           title: 'group',
           icon: mdiFormSelect,
           name: 'layout',
-          color: 'grey darken-2',
-        },
+          color: 'grey darken-2'
+        }
       },
       {
         type: 'Label',
@@ -293,9 +278,9 @@ export default defineComponent({
           title: 'text',
           icon: mdiFormatText,
           name: 'label',
-          color: 'grey darken-2',
-        },
-      },
+          color: 'grey darken-2'
+        }
+      }
     ];
 
     const controls: Ref<IControl[]> = ref([]);
@@ -307,7 +292,7 @@ export default defineComponent({
     const objectSchemaPropertiesPatterns = {
       regexAspectsAttributes:
         /^#\/properties\/customAspects\/properties\/\w+\/properties\/\w+$/,
-      regexLinks: /^#\/properties\/links\/properties\/\w+/,
+      regexLinks: /^#\/properties\/links\/properties\/\w+/
     };
 
     // When ObjectSchema is loaded, controls and controlsItems should be initialized to use them in other functions
@@ -357,7 +342,7 @@ export default defineComponent({
           label,
           backlogTitle,
           propertyName,
-          category,
+          category
         };
       };
 
@@ -379,8 +364,8 @@ export default defineComponent({
             '/designator$',
             '_self',
             '/risks$',
-            '/decisionResults$',
-          ],
+            '/decisionResults$'
+          ]
         },
         Mode.VEO
       );
@@ -448,7 +433,7 @@ export default defineComponent({
               (element) =>
                 element.type === 'Widget' && element.name === widget.code
             )
-        ),
+        )
       };
     });
 
@@ -519,15 +504,15 @@ export default defineComponent({
         type: 'Control',
         scope: dataToClone.scope,
         options: {
-          label: `#lang/${dataToClone.propertyName}`,
+          label: `#lang/${dataToClone.propertyName}`
         },
-        ...(dataToClone.category === 'links' && { elements: [] }),
+        ...(dataToClone.category === 'links' && { elements: [] })
       };
     }
 
     const onCloneWidget = (widget: IVeoFormsElementDefinition) => ({
       type: 'Widget',
-      name: widget.name[locale.value] || Object.values(widget.name)[0],
+      name: widget.name[locale.value] || Object.values(widget.name)[0]
     });
 
     return {
@@ -549,9 +534,9 @@ export default defineComponent({
       mdiAutoFix,
       t,
       globalT,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>
 

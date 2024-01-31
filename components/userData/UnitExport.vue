@@ -25,8 +25,7 @@
     :alert-body="t('alertBody')"
     :items="relevantUnits"
     :is-loading="state.isLoading"
-    :handle-click="exportUnit"
-  />
+    :handle-click="exportUnit" />
 </template>
 
 <script setup lang="ts">
@@ -47,7 +46,7 @@ const { profile } = useVeoUser();
 
 const state = reactive({
   isLoading: [] as boolean[],
-  showAlert: false,
+  showAlert: false
 });
 
 const username = computed(() => profile.value?.username as string);
@@ -72,7 +71,7 @@ async function exportUnit(index: number) {
   try {
     const unitId = relevantUnits.value[index].id;
     const unit = await useQuerySync(unitQueryDefinitions.queries.exportUnit, {
-      unitId,
+      unitId
     });
     const fileName = `${username.value}_${unit.unit.name}`;
     await downloadZIP(unit, fileName);

@@ -20,8 +20,7 @@
     v-bind="$attrs"
     :title="t('title')"
     large
-    @update:model-value="emit('update:model-value', $event)"
-  >
+    @update:model-value="emit('update:model-value', $event)">
     <template #default>
       <BaseAlert
         :model-value="true"
@@ -29,8 +28,7 @@
         :type="VeoAlertType.INFO"
         class="ma-4"
         flat
-        no-close-button
-      >
+        no-close-button>
         {{ t('domainAssignmentHint') }}
       </BaseAlert>
 
@@ -44,8 +42,7 @@
             v-model="selectedDomains"
             :items="domainProperties"
             check-box-selection-only
-            multiple
-          >
+            multiple>
             <template v-for="domain of availableDomains" #[`item-${domain.id}`]>
               <div v-if="selectedDomains.includes(domain.id)" :key="domain.id">
                 <v-row class="mt-2">
@@ -60,8 +57,7 @@
                       @click.stop
                       @update:model-value="
                         ($event: string) => onSubTypeChange($event, domain.id)
-                      "
-                    />
+                      " />
                   </v-col>
                   <v-col>
                     <v-select
@@ -75,8 +71,7 @@
                       @click.stop
                       @update:model-value="
                         ($event: string) => onStatusChange($event, domain.id)
-                      "
-                    />
+                      " />
                   </v-col>
                 </v-row>
               </div>
@@ -96,8 +91,7 @@
         color="primary"
         :disabled="!isDirty || !formIsValid"
         variant="text"
-        @click="assignObject()"
-      >
+        @click="assignObject()">
         {{ $t('global.button.save') }}
       </v-btn>
     </template>
@@ -125,7 +119,7 @@ const props = withDefaults(
   {
     modelValue: false,
     objectId: '',
-    objectType: '',
+    objectType: ''
   }
 );
 
@@ -166,7 +160,7 @@ const { data: legacyObject } = useQuery(
     onSuccess: (data: any) => {
       selectedDomains.value = Object.keys(data.domains || {});
       prePolluteList(data);
-    },
+    }
   }
 );
 
@@ -196,7 +190,7 @@ const subTypes = computed(() =>
           currentValue.elementTypeDefinitions[props.objectType].translations[
             locale.value
           ][`${props.objectType}_${subType}_singular`],
-        value: subType,
+        value: subType
       }));
 
       return prevValue;
@@ -223,7 +217,7 @@ const statuses = computed(() =>
                 selectedSubType.value[currentValue.id]
               }_status_${status}`
             ],
-          value: status,
+          value: status
         })
       );
 
@@ -248,7 +242,7 @@ const availableDomains = computed(
       abbreviation: domain.abbreviation,
       description: domain.description,
       id: domain.id,
-      name: domain.name,
+      name: domain.name
     })) ?? []
 );
 
@@ -262,7 +256,7 @@ const domainProperties = computed(() =>
       title: domain.name,
       subtitle: domain.description,
       value: domain.id,
-      disabled: disabledDomains.value.includes(domain.id),
+      disabled: disabledDomains.value.includes(domain.id)
     };
   })
 );
@@ -277,7 +271,7 @@ const assignObject = async () => {
         endpoint: route.params?.objectType,
         objectId: props.objectId,
         subType: selectedSubType.value[domain],
-        status: selectedStatus.value[domain],
+        status: selectedStatus.value[domain]
       });
       disabledDomains.value.push(domain);
     }

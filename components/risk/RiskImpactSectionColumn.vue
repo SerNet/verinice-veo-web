@@ -28,8 +28,7 @@
       :items="impacts[protectionGoal.id]"
       disabled
       variant="underlined"
-      hide-details
-    />
+      hide-details />
     <v-select
       data-test-selector="specific-impact"
       :model-value="specificImpact"
@@ -40,8 +39,7 @@
       clearable
       hide-details
       variant="underlined"
-      @update:model-value="$emit('update:specific-impact', $event)"
-    />
+      @update:model-value="$emit('update:specific-impact', $event)" />
     <v-edit-dialog>
       <template #default="{ props: dialogProps }">
         <v-text-field
@@ -54,8 +52,7 @@
           v-bind="dialogProps"
           @update:model-value="
             $emit('update:specific-impact-explanation', $event)
-          "
-        />
+          " />
       </template>
       <template #input>
         <v-textarea
@@ -71,8 +68,7 @@
           variant="underlined"
           @update:model-value="
             $emit('update:specific-impact-explanation', $event)
-          "
-        />
+          " />
       </template>
     </v-edit-dialog>
     <v-select
@@ -83,8 +79,7 @@
       :items="impacts[protectionGoal.id]"
       disabled
       variant="underlined"
-      hide-details
-    >
+      hide-details>
       <template
         v-if="
           dirtyFields &&
@@ -92,8 +87,7 @@
             `${riskDefinition.id}_${protectionGoal.id}_specificImpact`
           ]
         "
-        #selection
-      >
+        #selection>
         {{ t('saveCTA') }}
       </template>
     </v-select>
@@ -108,48 +102,48 @@ import { IDirtyFields } from './CreateDialogSingle.vue';
 import {
   IVeoDomainRiskDefinition,
   IVeoRisk,
-  IVeoRiskCategory,
+  IVeoRiskCategory
 } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true,
+      required: true
     },
     protectionGoal: {
       type: Object as PropType<IVeoRiskCategory>,
-      required: true,
+      required: true
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      default: () => {},
+      default: () => {}
     },
     potentialImpact: {
       type: Number,
-      default: undefined,
+      default: undefined
     },
     specificImpact: {
       type: Number,
-      default: undefined,
+      default: undefined
     },
     specificImpactExplanation: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     disabled: {
       type: Boolean,
-      default: false,
+      default: false
     },
     effectiveImpact: {
       type: Number,
-      default: undefined,
+      default: undefined
     },
     numOfCols: {
       type: Number,
-      default: 4,
-    },
+      default: 4
+    }
   },
   emits: ['update:specific-impact-explanation', 'update:specific-impact'],
   setup(props) {
@@ -161,7 +155,7 @@ export default defineComponent({
           previousValue[currentValue.id] = currentValue.potentialImpacts.map(
             (level) => ({
               title: level.translations[locale.value].name,
-              value: level.ordinalValue,
+              value: level.ordinalValue
             })
           );
           return previousValue;
@@ -185,9 +179,9 @@ export default defineComponent({
 
       t,
       locale,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>
 

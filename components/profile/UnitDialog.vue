@@ -20,8 +20,7 @@
     :model-value="state.showDialog"
     :title="t('unitSelectionTitle')"
     :close-function="toggleDialog"
-    @keydown.enter="apply"
-  >
+    @keydown.enter="apply">
     <template #default>
       <BaseCard>
         <v-card-text>
@@ -34,8 +33,7 @@
           :text="t('messageHasMaxUnitsText')"
           :type="VeoAlertType.INFO"
           no-close-button
-          flat
-        />
+          flat />
         <v-card-text>
           <v-text-field
             v-model="state.newUnitName"
@@ -44,15 +42,13 @@
             :rules="[requiredRule]"
             required
             clearable
-            variant="underlined"
-          />
+            variant="underlined" />
           <v-text-field
             v-model="state.newUnitDescription"
             :label="t('unitSelectionCreateDesc')"
             :disabled="!!state.selectedUnit || hasMaxUnits"
             variant="underlined"
-            clearable
-          />
+            clearable />
         </v-card-text>
       </BaseCard>
       <BaseCard class="mt-4">
@@ -69,8 +65,7 @@
             item-value="id"
             flat
             clearable
-            variant="underlined"
-          />
+            variant="underlined" />
         </v-list-item>
       </BaseCard>
     </template>
@@ -85,8 +80,7 @@
         color="primary"
         :loading="state.isApplyingProfile || state.isCreatingUnit"
         :disabled="applyIsDisabled || (hasMaxUnits && !state.selectedUnit)"
-        @click="apply"
-      >
+        @click="apply">
         {{ t('unitSelectionApplyBtn') }}
       </v-btn>
     </template>
@@ -106,7 +100,7 @@ const {
   domain,
   applyProfile,
   createUnitAndApplyProfile,
-  toggleDialog,
+  toggleDialog
 } = useUnits();
 
 const applyIsDisabled = computed(
@@ -121,15 +115,15 @@ function apply() {
       description: state.newUnitDescription || undefined,
       messages: {
         success: t('messageUnitWithProfileSuccess'),
-        error: t('messageUnitWithProfileError'),
-      },
+        error: t('messageUnitWithProfileError')
+      }
     });
   } else {
     applyProfile({
       profileKey: state.selectedProfiles[0],
       unitId: state.selectedUnit,
       domainId: state.domainId,
-      messages: { success: t('messageSuccess'), error: t('messageError') },
+      messages: { success: t('messageSuccess'), error: t('messageError') }
     });
   }
 }

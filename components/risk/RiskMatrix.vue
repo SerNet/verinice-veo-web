@@ -22,8 +22,7 @@
         <th
           :colspan="probabilities.length + 2"
           class="py-1"
-          style="height: auto"
-        >
+          style="height: auto">
           {{ upperFirst(t('probability').toString()) }}
         </th>
       </tr>
@@ -36,9 +35,8 @@
           class="px-4 py-2"
           :style="{
             backgroundColor: probability.htmlColor,
-            color: getMostContrastyColor(probability.htmlColor),
-          }"
-        >
+            color: getMostContrastyColor(probability.htmlColor)
+          }">
           <div class="d-flex flex-wrap justify-center">
             <span
               >{{
@@ -53,8 +51,7 @@
                   v-bind="props"
                   :color="getMostContrastyColor(probability.htmlColor)"
                   end
-                  :icon="mdiInformationOutline"
-                />
+                  :icon="mdiInformationOutline" />
               </template>
               <template #default>
                 {{
@@ -78,8 +75,7 @@
             writing-mode: tb;
             width: auto;
             min-width: 44px;
-          "
-        >
+          ">
           {{ upperFirst(t('impact').toString()) }}
         </th>
       </tr>
@@ -89,9 +85,8 @@
           class="px-4 py-2"
           :style="{
             backgroundColor: impact.htmlColor,
-            color: getMostContrastyColor(impact.htmlColor),
-          }"
-        >
+            color: getMostContrastyColor(impact.htmlColor)
+          }">
           <div class="d-flex flex-wrap justify-center">
             <span
               >{{
@@ -105,8 +100,7 @@
                 <v-icon
                   v-bind="props"
                   :color="getMostContrastyColor(impact.htmlColor)"
-                  :icon="mdiInformationOutline"
-                />
+                  :icon="mdiInformationOutline" />
               </template>
               <template #default>
                 {{
@@ -125,9 +119,8 @@
             class="px-4 py-2"
             :style="{
               backgroundColor: _value.htmlColor,
-              color: getMostContrastyColor(_value.htmlColor),
-            }"
-          >
+              color: getMostContrastyColor(_value.htmlColor)
+            }">
             <div class="d-flex flex-wrap justify-center">
               <span
                 >{{
@@ -143,8 +136,7 @@
                   <v-icon
                     v-bind="props"
                     :color="getMostContrastyColor(_value.htmlColor)"
-                    :icon="mdiInformationOutline"
-                  />
+                    :icon="mdiInformationOutline" />
                 </template>
                 <template #default>
                   {{
@@ -162,8 +154,7 @@
           <td
             v-for="index in impacts.length - value[rowIndex].length"
             :key="index + value[rowIndex].length"
-            class="px-4 py-2"
-          >
+            class="px-4 py-2">
             {{ upperFirst(t('noData').toString()) }}
           </td>
         </template>
@@ -183,7 +174,7 @@ import { upperFirst } from 'lodash';
 import {
   IVeoRiskProbabilityLevel,
   IVeoRiskValueLevel,
-  IVeoRiskPotentialImpact,
+  IVeoRiskPotentialImpact
 } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -191,20 +182,20 @@ export default defineComponent({
   props: {
     value: {
       type: Array as PropType<IVeoRiskValueLevel[][]>,
-      default: () => [],
+      default: () => []
     },
     probabilities: {
       type: Array as PropType<IVeoRiskProbabilityLevel[]>,
-      default: () => [],
+      default: () => []
     },
     impacts: {
       type: Array as PropType<IVeoRiskPotentialImpact[]>,
-      default: () => [],
+      default: () => []
     },
     riskValues: {
       type: Array as PropType<IVeoRiskValueLevel[]>,
-      default: () => [],
-    },
+      default: () => []
+    }
   },
   setup() {
     const { t, locale } = useI18n();
@@ -228,9 +219,9 @@ export default defineComponent({
       mdiInformationOutline,
       upperFirst,
       t,
-      locale,
+      locale
     };
-  },
+  }
 });
 </script>
 

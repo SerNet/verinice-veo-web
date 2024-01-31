@@ -41,8 +41,7 @@
               "
               @update:residual-risk-explanation="
                 onResidualRiskExplanationChanged(protectionGoal.id, $event)
-              "
-            />
+              " />
           </template>
         </v-row>
       </v-card-text>
@@ -60,16 +59,16 @@ export default defineComponent({
   props: {
     data: {
       type: Array as PropType<IVeoRiskDefinition['riskValues']>,
-      required: true,
+      required: true
     },
     disabled: {
       type: Boolean,
-      default: false,
+      default: false
     },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: ['update:data'],
   setup(props, { emit }) {
@@ -112,9 +111,9 @@ export default defineComponent({
       protectionGoalExists,
 
       t,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>
 

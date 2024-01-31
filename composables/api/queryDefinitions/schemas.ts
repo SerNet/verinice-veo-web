@@ -48,14 +48,14 @@ export default {
           Object.entries(result as IVeoEntitiesMetaInfo).map(([key, value]) => [
             key,
             /([a-z]*){(.+)$/.exec(value.collectionUri)?.[1] ||
-              value.collectionUri,
+              value.collectionUri
           ])
         ),
       queryParameterTransformationFn: () => ({}),
       staticQueryOptions: {
         staleTime: STALE_TIME.INFINITY,
-        placeholderData: {},
-      },
+        placeholderData: {}
+      }
     } as IVeoQueryDefinition<Record<string, never>, IVeoSchemaEndpoints>,
     fetchSchema: {
       primaryQueryKey: 'schema',
@@ -67,10 +67,10 @@ export default {
       queryParameterTransformationFn: (queryParameters) => ({
         params: {
           domainId: queryParameters.domainId,
-          type: queryParameters.type,
-        },
+          type: queryParameters.type
+        }
       }),
-      staticQueryOptions: { staleTime: STALE_TIME.MEDIUM },
+      staticQueryOptions: { staleTime: STALE_TIME.MEDIUM }
     } as IVeoQueryDefinition<IVeoFetchSchemaParameters, IVeoObjectSchema>,
     fetchSchemaLegacy: {
       primaryQueryKey: 'schema',
@@ -81,10 +81,10 @@ export default {
       },
       queryParameterTransformationFn: (queryParameters) => ({
         params: { type: queryParameters.type },
-        query: { domains: queryParameters.domainId },
+        query: { domains: queryParameters.domainId }
       }),
-      staticQueryOptions: { staleTime: STALE_TIME.MEDIUM },
-    } as IVeoQueryDefinition<IVeoFetchSchemaParameters, IVeoObjectSchema>,
+      staticQueryOptions: { staleTime: STALE_TIME.MEDIUM }
+    } as IVeoQueryDefinition<IVeoFetchSchemaParameters, IVeoObjectSchema>
   },
-  mutations: {},
+  mutations: {}
 };

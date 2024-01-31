@@ -20,8 +20,7 @@
     v-if="options.visible"
     class="vf-markdown-editor vf-form-element"
     :class="{ 'is-disabled': disabled || options.disabled }"
-    :data-attribute-name="last(objectSchemaPointer.split('/'))"
-  >
+    :data-attribute-name="last(objectSchemaPointer.split('/'))">
     <div v-if="options.label" class="subtitle-1">
       {{ options.label }}
     </div>
@@ -44,16 +43,16 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-markdown-editor',
   name: {
     en: 'markdown editor',
-    de: 'Markdown editor',
+    de: 'Markdown editor'
   },
   description: {
     en: 'WYSIWYG markdown editor to style input.',
-    de: 'WYSIWYG Markdown editor um Eingaben zu formatieren.',
+    de: 'WYSIWYG Markdown editor um Eingaben zu formatieren.'
   },
   conditions: (props) => [
     props.objectSchema.type === 'string',
-    typeof props.options !== 'undefined' && props.options.format === 'markdown',
-  ],
+    typeof props.options !== 'undefined' && props.options.format === 'markdown'
+  ]
 };
 
 // Outside of vue as the editor can't handle the function being part of the vue methods or computed properties.
@@ -126,7 +125,7 @@ export default defineComponent({
                 props.modelValue
               : markdownText
             );
-          },
+          }
         },
         usageStatistics: false,
         plugins: [[codeSyntaxHighlightPlugin, { highlighter: Prism }]],
@@ -141,10 +140,10 @@ export default defineComponent({
               el: clearButton(() => emit('update:model-value', undefined)),
               command: 'clear-button',
               name: 'clear-button',
-              tooltip: t('clear'),
-            },
-          ],
-        ],
+              tooltip: t('clear')
+            }
+          ]
+        ]
       });
     });
 
@@ -152,9 +151,9 @@ export default defineComponent({
       editor,
 
       getControlErrorMessages,
-      last,
+      last
     };
-  },
+  }
 });
 </script>
 

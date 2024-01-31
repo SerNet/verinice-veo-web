@@ -33,8 +33,7 @@
                 @set-translation="
                   (translationKey: string, newValue: string | undefined) =>
                     emit('set-translation', translationKey, newValue)
-                "
-              />
+                " />
             </v-col>
           </v-row>
         </v-card-text>
@@ -42,8 +41,7 @@
     </section>
     <section
       class="mt-4"
-      data-component-name="control-element-element-specific-settings"
-    >
+      data-component-name="control-element-element-specific-settings">
       <h2 class="text-h2">
         {{ t('formElement') }}
       </h2>
@@ -51,13 +49,11 @@
         v-model="elementTypeModelValue"
         :items="elementInputAlternatives"
         density="compact"
-        bg-color="transparent"
-      />
+        bg-color="transparent" />
     </section>
     <section
       v-if="elementsWithOptions.includes(elementTypeModelValue || '')"
-      class="mt-4"
-    >
+      class="mt-4">
       <h2 class="text-h2">
         {{ t('formElementOptions') }}
         <BaseCard>
@@ -68,8 +64,7 @@
                   :form-schema-element="formSchemaElement"
                   @update:form-schema-element="
                     emit('update:form-schema-element', $event)
-                  "
-                />
+                  " />
               </v-col>
             </v-row>
             <v-row v-if="elementTypeModelValue === 'LinksField'">
@@ -83,8 +78,7 @@
                     (elementPointer, element) =>
                       emit('add', elementPointer, element)
                   "
-                  @remove="(elementPointer) => emit('remove', elementPointer)"
-                >
+                  @remove="(elementPointer) => emit('remove', elementPointer)">
                   <slot />
                 </EditorFormSchemaPlaygroundEditDialogLinkSettings>
               </v-col>
@@ -104,7 +98,7 @@ import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/
 import {
   controlTypeAlternatives,
   eligibleInputElements,
-  INPUT_ELEMENTS,
+  INPUT_ELEMENTS
 } from '~/types/VeoEditor';
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { getFormSchemaControlType } from '~/lib/utils';
@@ -158,7 +152,7 @@ const inputType = computed(() =>
   props.formSchemaElement && objectSchemaElement.value ?
     eligibleInputElements(controlType.value, {
       ...props.formSchemaElement,
-      schema: objectSchemaElement.value,
+      schema: objectSchemaElement.value
     })[0].code
   : undefined
 );
@@ -167,14 +161,14 @@ const elementInputAlternatives = computed(() =>
     controlTypeAlternatives(inputType.value, {
       elements: props.formSchemaElement.elements,
       options: props.formSchemaElement.options,
-      schema: objectSchemaElement.value,
+      schema: objectSchemaElement.value
     })
   : []
   )
     .map((element) => ({
       title: element.name[locale.value],
       subtitle: element.description[locale.value],
-      value: element.code,
+      value: element.code
     }))
     .sort((elementA, elementB) => elementA.title.localeCompare(elementB.title))
 );
@@ -187,10 +181,10 @@ const elementTypeModelValue = computed({
       options: {
         label: props.formSchemaElement.options.label,
         ...INPUT_ELEMENTS.find((inputElement) => inputElement.code === newValue)
-          ?.options,
-      },
+          ?.options
+      }
     });
-  },
+  }
 });
 
 // Element specific options

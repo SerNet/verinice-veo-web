@@ -23,7 +23,7 @@ import {
   IVeoCustomLink,
   IVeoEntity,
   IVeoLink,
-  IVeoObjectSchema,
+  IVeoObjectSchema
 } from '~/types/VeoTypes';
 import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import { IVeoUnit } from '~/composables/api/queryDefinitions/units';
@@ -33,7 +33,7 @@ export const CHART_COLORS = [
   '#ffc107',
   '#3f51b5',
   '#8bc34a',
-  '#858585',
+  '#858585'
 ];
 // export const CHART_COLORS = ['#5c3f5a', '#304655', '#2892e4', '#8d9ac5', '#36384c'];
 
@@ -54,7 +54,7 @@ export function getEntityDetailsFromLink(link: IVeoLink): {
   return {
     id: destructedLink?.pop() || '',
     type: destructedLink?.pop() || '',
-    name: link.displayName || '',
+    name: link.displayName || ''
   };
 }
 
@@ -68,7 +68,7 @@ export function extractSubTypesFromObjectSchema(
   return (
     schema.allOf?.map((mapping) => ({
       subType: mapping.if.properties.subType.const,
-      status: mapping.then.properties.status.enum,
+      status: mapping.then.properties.status.enum
     })) || []
   );
 }
@@ -91,7 +91,7 @@ const IGNORED_KEYS: (string | RegExp)[] = [
   /targetUri$/,
   /searchesUri$/,
   /resourcesUri$/,
-  /displayName$/,
+  /displayName$/
 ];
 
 export const isObjectEqual = (objectA: IVeoEntity, objectB: IVeoEntity) => {
@@ -135,7 +135,7 @@ export const isObjectEqual = (objectA: IVeoEntity, objectB: IVeoEntity) => {
   return {
     isEqual: !missingKeys.length && !mismatchingValues.length,
     missingKeys,
-    mismatchingValues,
+    mismatchingValues
   };
 };
 

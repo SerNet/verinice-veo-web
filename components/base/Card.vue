@@ -20,11 +20,10 @@
     v-bind="attrs"
     class="veo-card"
     :class="{
-      'veo-border': border,
+      'veo-border': border
     }"
     flat
-    rounded
-  >
+    rounded>
     <slot />
   </VCard>
 </template>
@@ -36,7 +35,7 @@ withDefaults(
     border?: boolean;
   }>(),
   {
-    border: false,
+    border: false
   }
 );
 

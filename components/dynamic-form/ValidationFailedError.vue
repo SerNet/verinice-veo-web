@@ -35,8 +35,8 @@ import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 defineProps({
   errors: {
     type: Array as PropType<VeoSchemaValidatorMessage[]>,
-    default: () => [],
-  },
+    default: () => []
+  }
 });
 
 const { t } = useI18n();

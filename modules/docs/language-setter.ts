@@ -36,5 +36,5 @@ export default {
     // Language either beeing a string or undefined is okay (undefined if there is no .de.md or .en.md suffix for the file)
     content.language = LOCALES.find((locale) => locale.code === language)?.code;
     return content;
-  },
+  }
 };

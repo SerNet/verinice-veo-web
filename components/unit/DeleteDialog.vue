@@ -23,8 +23,7 @@
     :close-disabled="deletionInProgress"
     :close-function="closeDeleteDialog"
     width="600px"
-    @update:model-value="emit('update:model-value', $event)"
-  >
+    @update:model-value="emit('update:model-value', $event)">
     <template #default>
       <div>{{ t('question', { name: unit?.name }) }}</div
       ><br />
@@ -40,8 +39,7 @@
         class="mt-4"
         flat
         no-close-button
-        to="/user-data"
-      >
+        to="/user-data">
         {{ t('request') }}
       </BaseAlert>
 
@@ -54,8 +52,7 @@
             :placeholder="t('placeholder')"
             :rules="nameRules"
             required
-            type="input"
-          />
+            type="input" />
         </v-form>
       </BaseCard>
     </template>
@@ -73,8 +70,7 @@
         data-veo-test="units-delete-dialog-btn-delete"
         :disabled="unitDeletionDisabled"
         :loading="deletionInProgress"
-        @click="deleteUnit"
-      >
+        @click="deleteUnit">
         {{ globalT('global.button.delete') }}
       </v-btn>
     </template>
@@ -83,7 +79,7 @@
 
 <script setup lang="ts">
 import unitQueryDefinitions, {
-  IVeoUnit,
+  IVeoUnit
 } from '~/composables/api/queryDefinitions/units';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { VeoAlertType } from '~/types/VeoTypes';
@@ -95,7 +91,7 @@ const props = withDefaults(
     unit?: IVeoUnit;
   }>(),
   {
-    unit: undefined,
+    unit: undefined
   }
 );
 

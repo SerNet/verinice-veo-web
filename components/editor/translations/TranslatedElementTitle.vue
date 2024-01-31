@@ -34,7 +34,7 @@ const props = withDefaults(
   {
     tag: 'span',
     hideIfMissing: false,
-    source: TRANSLATION_SOURCE.UNSPECIFIED,
+    source: TRANSLATION_SOURCE.UNSPECIFIED
   }
 );
 
@@ -99,7 +99,7 @@ const translatedTitle = computed(() =>
   elementName.value || !props.hideIfMissing ?
     () => [
       h(props.tag, elementName.value ?? translationString.value),
-      slots.default?.({ translatedValue: elementName.value }),
+      slots.default?.({ translatedValue: elementName.value })
     ]
   : undefined
 );

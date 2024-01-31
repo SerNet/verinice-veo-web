@@ -24,8 +24,7 @@
     :close-disabled="savingObject"
     :confirm-close="itemsSelected"
     fixed-footer
-    @update:model-value="$emit('update:model-value', $event)"
-  >
+    @update:model-value="$emit('update:model-value', $event)">
     <template #default>
       <p v-if="!!$slots.header">
         <slot name="header" />
@@ -37,8 +36,7 @@
         :filter="filter"
         :available-object-types="availableObjectTypes"
         :required-fields="['objectType']"
-        @update:filter="updateFilter"
-      />
+        @update:filter="updateFilter" />
 
       <BaseCard id="link-dialog-select-all">
         <ObjectTable
@@ -55,11 +53,10 @@
             'description',
             'updatedBy',
             'updatedAt',
-            'actions',
+            'actions'
           ]"
           :items="selectableObjects"
-          :loading="objectsLoading || childrenLoading || parentsLoading"
-        />
+          :loading="objectsLoading || childrenLoading || parentsLoading" />
       </BaseCard>
     </template>
 
@@ -67,8 +64,7 @@
       <v-btn
         variant="text"
         :disabled="savingObject"
-        @click="$emit('update:model-value', false)"
-      >
+        @click="$emit('update:model-value', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
 
@@ -78,8 +74,7 @@
         color="primary"
         :loading="savingObject"
         :disabled="ability.cannot('manage', 'objects') || !isDirty"
-        @click="linkObjects"
-      >
+        @click="linkObjects">
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>
@@ -93,11 +88,11 @@ import { differenceBy, isEqual, omit, uniqBy, upperFirst } from 'lodash';
 import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import {
   useUnlinkObject,
-  useLinkObject,
+  useLinkObject
 } from '~/composables/VeoObjectUtilities';
 import {
   useFetchObjects,
-  useFetchParentObjects,
+  useFetchParentObjects
 } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
@@ -113,21 +108,21 @@ export default defineComponent({
      */
     modelValue: {
       type: Boolean,
-      required: true,
+      required: true
     },
     /**
      * Defines whether the current objects parent/child scopes should be edited or the parent/child objects of the same type as the object.
      */
     editScopeRelationship: {
       type: Boolean,
-      default: false,
+      default: false
     },
     /**
      * Defines whether the selected objects should be added as children or as parents
      */
     editParents: {
       type: Boolean,
-      default: false,
+      default: false
     },
     /**
      * Either pass a complete object (contains the id) or an object containing the minimal properties required for this component to work.
@@ -135,30 +130,30 @@ export default defineComponent({
      */
     object: {
       type: Object as PropType<IVeoEntity | undefined>,
-      required: true,
+      required: true
     },
     /**
      * Pass a list of objects that should be preselected. Those values will be merged with the values defined in this component.
      */
     preselectedItems: {
       type: Array as PropType<IVeoEntity[]>,
-      default: () => [],
+      default: () => []
     },
     /**
      * Instead of saving, returns the selected items
      */
     returnObjects: {
       type: Boolean,
-      default: false,
+      default: false
     },
     preselectedFilters: {
       type: Object,
-      default: () => ({}),
+      default: () => ({})
     },
     disabledFields: {
       type: Array as PropType<string[]>,
-      default: () => [],
-    },
+      default: () => []
+    }
   },
   emits: ['update:preselected-items', 'update:model-value', 'success', 'error'],
   setup(props, { emit }) {
@@ -206,7 +201,7 @@ export default defineComponent({
       page: page.value,
       unit: route.params.unit as string,
       ...omit(filter.value, 'objectType'),
-      endpoint: objectListEndpoint.value,
+      endpoint: objectListEndpoint.value
     }));
     const objectsQueryEnabled = computed(() => !!objectListEndpoint.value);
     const { data: objects, isFetching: objectsLoading } = useFetchObjects(
@@ -221,8 +216,8 @@ export default defineComponent({
         disabled:
           !!originalSelectedItems.value.find(
             (item) => getIdFromItem(item) === selectableObject.id
-          ) || props.object?.id === selectableObject.id,
-      })),
+          ) || props.object?.id === selectableObject.id
+      }))
     }));
 
     const getIdFromItem = (item: IVeoLink | IVeoEntity) => {
@@ -236,7 +231,7 @@ export default defineComponent({
       },
       {
         deep: true,
-        immediate: true,
+        immediate: true
       }
     );
 
@@ -278,7 +273,7 @@ export default defineComponent({
       page: 1,
       unitId: route.params.unit as string,
       parentEndpoint: objectListEndpoint.value,
-      childObjectId: props.object?.id || '',
+      childObjectId: props.object?.id || ''
     }));
     const parentsQueryEnabled = computed(
       () => !!objectEndpoint.value && !!props.object?.id && props.editParents
@@ -292,7 +287,7 @@ export default defineComponent({
       domain: route.params.domain as string,
       endpoint: objectEndpoint.value,
       id: props.object?.id || '',
-      size: 9999,
+      size: 9999
     }));
     const childObjectsQueryEnabled = computed(
       () =>
@@ -310,7 +305,7 @@ export default defineComponent({
     const childScopesQueryParameters = computed(() => ({
       domain: route.params.domain as string,
       id: props.object?.id || '',
-      size: 9999,
+      size: 9999
     }));
     const childScopesQueryEnabled = computed(
       () =>
@@ -330,7 +325,7 @@ export default defineComponent({
         [
           ...(childObjects.value?.items || []),
           ...(childScopes.value?.items || []),
-          ...props.preselectedItems,
+          ...props.preselectedItems
         ],
         (arrayEntry) => getIdFromItem(arrayEntry)
       )
@@ -389,7 +384,7 @@ export default defineComponent({
                   {
                     domain: route.params.domain as string,
                     endpoint: endpoints.value?.[parent.type],
-                    id: parent.id,
+                    id: parent.id
                   },
                   queryClient
                 );
@@ -401,7 +396,7 @@ export default defineComponent({
                   {
                     domain: route.params.domain as string,
                     endpoint: endpoints.value?.[parent.type],
-                    id: parent.id,
+                    id: parent.id
                   },
                   queryClient
                 );
@@ -435,7 +430,7 @@ export default defineComponent({
         }
       },
       {
-        immediate: true,
+        immediate: true
       }
     );
 
@@ -459,9 +454,9 @@ export default defineComponent({
 
       globalT,
       t,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>
 

@@ -19,8 +19,7 @@
   <BaseDialog
     v-bind="$attrs"
     :title="t('downloadSchema')"
-    @update:model-value="emit('update:model-value', $event)"
-  >
+    @update:model-value="emit('update:model-value', $event)">
     <template #default>
       {{ t('invalidSchemaConfirmation') }}
     </template>

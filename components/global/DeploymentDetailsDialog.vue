@@ -47,8 +47,7 @@
               <a
                 href="https://www.sernet.de"
                 rel="noopener noreferrer"
-                target="_blank"
-              >
+                target="_blank">
                 SerNet GmbH
               </a>
               &hyphen;&nbsp; Es gelten
@@ -85,8 +84,7 @@
             <tbody>
               <tr
                 v-for="(deployment, index) of deploymentInformation"
-                :key="index"
-              >
+                :key="index">
                 <td>
                   {{ deployment?.build?.name || t('unknown') }}
                 </td>
@@ -94,8 +92,7 @@
                   v-if="
                     deployment?.build?.version &&
                     deployment?.build?.ci?.buildnumber
-                  "
-                >
+                  ">
                   {{ deployment.build.version }} ({{ t('build') }}
                   {{ deployment.build.ci.buildnumber }})
                 </td>
@@ -124,8 +121,7 @@
                 class="text-decoration-none text-primary"
                 :href="link"
                 rel="noopener noreferrer"
-                target="_blank"
-              >
+                target="_blank">
                 veo-{{ key }}&nbsp;&nbsp;
               </a>
             </span>
@@ -138,7 +134,7 @@
 
 <script setup lang="ts">
 import monitoringQueryDefintions, {
-  IVeoDeploymentInformation,
+  IVeoDeploymentInformation
 } from '~/composables/api/queryDefinitions/monitoring';
 import { useQuery } from '~/composables/api/utils/query';
 
@@ -146,35 +142,35 @@ const config = useRuntimeConfig();
 const { t, locale } = useI18n();
 
 const fetchDefaultApiDeploymentDetailsQueryParameters = ref({
-  api: 'default' as 'default' | 'history' | 'forms' | 'reporting',
+  api: 'default' as 'default' | 'history' | 'forms' | 'reporting'
 });
 const { data: defaultApiDeploymentDetails } = useQuery(
   monitoringQueryDefintions.queries.fetch,
   fetchDefaultApiDeploymentDetailsQueryParameters
 );
 const fetchFormsApiDeploymentDetailsQueryParameters = ref({
-  api: 'forms' as 'default' | 'history' | 'forms' | 'reporting',
+  api: 'forms' as 'default' | 'history' | 'forms' | 'reporting'
 });
 const { data: formsApiDeploymentDetails } = useQuery(
   monitoringQueryDefintions.queries.fetch,
   fetchFormsApiDeploymentDetailsQueryParameters
 );
 const fetchHistoryApiDeploymentDetailsQueryParameters = ref({
-  api: 'history' as 'default' | 'history' | 'forms' | 'reporting',
+  api: 'history' as 'default' | 'history' | 'forms' | 'reporting'
 });
 const { data: historyApiDeploymentDetails } = useQuery(
   monitoringQueryDefintions.queries.fetch,
   fetchHistoryApiDeploymentDetailsQueryParameters
 );
 const fetchReportingApiDeploymentDetailsQueryParameters = ref({
-  api: 'reporting' as 'default' | 'history' | 'forms' | 'reporting',
+  api: 'reporting' as 'default' | 'history' | 'forms' | 'reporting'
 });
 const { data: reportingApiDeploymentDetails } = useQuery(
   monitoringQueryDefintions.queries.fetch,
   fetchReportingApiDeploymentDetailsQueryParameters
 );
 const fetchAccountingApiDeploymentDetailsQueryParameters = ref({
-  api: 'accounts' as 'default' | 'history' | 'forms' | 'reporting' | 'accounts',
+  api: 'accounts' as 'default' | 'history' | 'forms' | 'reporting' | 'accounts'
 });
 const { data: accountingApiDeploymentDetails } = useQuery(
   monitoringQueryDefintions.queries.fetch,
@@ -189,23 +185,23 @@ const deploymentInformation = computed<
   app: {
     git: {
       commit: {
-        id: config.public.build,
-      },
+        id: config.public.build
+      }
     },
     build: {
       name: 'webapp',
       ci: {
-        buildnumber: config.public.buildNumber,
+        buildnumber: config.public.buildNumber
       },
       version: config.public.version,
-      time: config.public.buildTime,
-    },
+      time: config.public.buildTime
+    }
   },
   default: defaultApiDeploymentDetails.value,
   forms: formsApiDeploymentDetails.value,
   history: historyApiDeploymentDetails.value,
   reports: reportingApiDeploymentDetails.value,
-  accounts: accountingApiDeploymentDetails.value,
+  accounts: accountingApiDeploymentDetails.value
 }));
 
 const links = {
@@ -216,7 +212,7 @@ const links = {
   reporting:
     'https://github.com/SerNet/verinice-veo-reporting/graphs/contributors',
   accounts:
-    'https://github.com/SerNet/verinice-veo-accounts/graphs/contributors',
+    'https://github.com/SerNet/verinice-veo-accounts/graphs/contributors'
 };
 
 const date = new Date();

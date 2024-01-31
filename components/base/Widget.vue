@@ -44,7 +44,7 @@ const _props = withDefaults(
   }>(),
   {
     title: undefined,
-    border: false,
+    border: false
   }
 );
 </script>

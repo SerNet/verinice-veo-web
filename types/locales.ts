@@ -17,5 +17,5 @@
  */
 export const LOCALES = [
   { code: 'de', file: 'de.json', name: 'Deutsch' },
-  { code: 'en', file: 'en.json', name: 'English' },
+  { code: 'en', file: 'en.json', name: 'English' }
 ];

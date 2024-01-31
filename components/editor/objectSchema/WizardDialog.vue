@@ -22,8 +22,7 @@
     :title="$t('editor.objectschema.headline')"
     confirm-close
     :close-function="onClose"
-    @update:model-value="emit('update:model-value', $event)"
-  >
+    @update:model-value="emit('update:model-value', $event)">
     <template #default>
       <v-window v-model="state">
         <v-window-item value="start" class="py-4">
@@ -70,8 +69,7 @@
                   :label="t('type')"
                   :rules="[requiredRule]"
                   required
-                  variant="underlined"
-                />
+                  variant="underlined" />
               </v-col>
             </v-row>
             <v-row no-gutters class="align-center mt-4">
@@ -86,8 +84,7 @@
                   :label="t('description')"
                   :rules="[requiredRule]"
                   required
-                  variant="underlined"
-                />
+                  variant="underlined" />
               </v-col>
             </v-row>
           </v-form>
@@ -107,8 +104,7 @@
                 :label="t('type')"
                 :items="availableObjectSchemas"
                 required
-                variant="underlined"
-              />
+                variant="underlined" />
             </v-col>
           </v-row>
           <v-row v-if="modelType === 'custom'">
@@ -116,8 +112,7 @@
               <EditorFileUpload
                 :code="code"
                 :input-label="t('uploadLabel')"
-                @schema-uploaded="importSchema"
-              />
+                @schema-uploaded="importSchema" />
             </v-col>
           </v-row>
           <v-row>
@@ -128,8 +123,7 @@
                   font-weight: bold;
                   cursor: pointer;
                 "
-                @click="state = 'create'"
-              >
+                @click="state = 'create'">
                 {{ t('importObjectSchemaSwitch') }}
               </span>
             </v-col>
@@ -149,8 +143,7 @@
         role="submit"
         type="submit"
         :disabled="createFormIsValid === false"
-        @click="createSchema()"
-      >
+        @click="createSchema()">
         {{ $t('global.button.next') }}
       </v-btn>
       <v-btn
@@ -160,8 +153,7 @@
         role="submit"
         type="submit"
         :disabled="importNextDisabled"
-        @click="importSchema()"
-      >
+        @click="importSchema()">
         {{ $t('global.button.next') }}
       </v-btn>
     </template>
@@ -180,8 +172,8 @@ import { useQueryClient } from '@tanstack/vue-query';
 const props = defineProps({
   modelValue: {
     type: Boolean,
-    required: true,
-  },
+    required: true
+  }
 });
 const emit = defineEmits(['update:model-value', 'completed']);
 
@@ -210,7 +202,7 @@ const isDialogCustom = computed(() => route.query.os === 'custom');
 // Create stuff
 const createForm = ref({
   type: undefined,
-  description: undefined,
+  description: undefined
 });
 
 const createFormIsValid = ref(false);
@@ -222,7 +214,7 @@ const modelType = ref();
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
-  domain: route.params.domain,
+  domain: route.params.domain
 }));
 const { data: translations } = useQuery(
   translationQueryDefinitions.queries.fetch,
@@ -233,7 +225,7 @@ const availableObjectSchemas = computed(() =>
   Object.keys(schemas.value || {})
     .map((objectType) => ({
       title: translations.value?.lang[locale.value]?.[objectType] || '',
-      value: objectType,
+      value: objectType
     }))
     .concat({ title: t('customObjectSchema'), value: 'custom' })
 );
@@ -247,12 +239,12 @@ const createSchema = async () => {
     schema: undefined,
     meta: {
       type: createForm.value.type,
-      description: createForm.value.description,
-    },
+      description: createForm.value.description
+    }
   });
   await navigateTo({
     type: createForm.value.type,
-    description: createForm.value.description,
+    description: createForm.value.description
   });
 };
 
@@ -274,12 +266,12 @@ const importSchema = async (schema?: any) => {
 const clearCreateForm = () => {
   createForm.value = {
     type: undefined,
-    description: undefined,
+    description: undefined
   };
 };
 const onClose = () => {
   router.push({
-    name: 'unit-domains-domain-editor',
+    name: 'unit-domains-domain-editor'
   });
   return true;
 };
@@ -288,7 +280,7 @@ const navigateTo = (params: Record<string, any>) => {
   if (!isEqual(route.query, params)) {
     router.push({
       name: 'unit-domains-domain-editor-objectschema',
-      query: params,
+      query: params
     });
   }
 };

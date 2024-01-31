@@ -28,16 +28,14 @@
         messages.warnings.length || messages.information?.length ?
           t('warningInformationHint')
         : undefined
-      "
-    />
+      " />
     <section v-else>
       <BaseAlert
         :type="VeoAlertType.ERROR"
         :model-value="true"
         no-close-button
         flat
-        :title="t('validationErrors', [messages.errors.length])"
-      >
+        :title="t('validationErrors', [messages.errors.length])">
         {{ t('validationErrorsText') }}<br />{{
           t('validationErrorsAutoFixHint')
         }}
@@ -48,8 +46,7 @@
           level.key +
           level.items
             .length /* for some reason if only level.key is used, the result list won't pick up changes in the items array. */
-        "
-      >
+        ">
         <div v-if="level.items.length" class="mt-4">
           <h3 class="text-h3">
             {{ level.title }}
@@ -59,8 +56,7 @@
               <UtilValidationResultList
                 v-bind="attrs"
                 :items="level.items"
-                fixing-allowed
-              />
+                fixing-allowed />
             </v-card-text>
           </BaseCard>
         </div>
@@ -75,14 +71,14 @@ import { PropType } from 'vue';
 
 import {
   VeoSchemaValidatorMessage,
-  VeoSchemaValidatorValidationResult,
+  VeoSchemaValidatorValidationResult
 } from '~/lib/ObjectSchemaValidator';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 const props = defineProps({
   enableFixing: {
     type: Boolean,
-    default: false,
+    default: false
   },
   messages: {
     type: Object as PropType<VeoSchemaValidatorValidationResult>,
@@ -90,9 +86,9 @@ const props = defineProps({
       valid: true,
       errors: [],
       information: [],
-      warnings: [],
-    }),
-  },
+      warnings: []
+    })
+  }
 });
 
 const attrs = useAttrs();
@@ -104,7 +100,7 @@ const levels = computed(() =>
     .map(([key, items]) => ({
       key,
       items: items as VeoSchemaValidatorMessage[],
-      title: t(`level.${key}`),
+      title: t(`level.${key}`)
     }))
 );
 </script>

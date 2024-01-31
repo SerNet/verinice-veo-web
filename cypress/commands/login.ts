@@ -18,7 +18,7 @@ interface LoginParams {
 export function login({
   username = Cypress.env('testUser').name,
   password = Cypress.env('testUser').pw,
-  isLocalhost = Cypress.env('isLocalhost') || false,
+  isLocalhost = Cypress.env('isLocalhost') || false
 }: LoginParams = {}) {
   cy.session(
     [username, password],
@@ -52,7 +52,7 @@ export function login({
 
 function applyCredentials({
   username,
-  password,
+  password
 }: {
   username: string;
   password: string;

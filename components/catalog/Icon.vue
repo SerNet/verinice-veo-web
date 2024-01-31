@@ -23,14 +23,12 @@
           <v-icon
             v-if="icon && icon.library === 'mdi'"
             v-bind="$attrs"
-            :icon="icon.icon"
-          />
+            :icon="icon.icon" />
           <v-icon
             v-else-if="isComposite"
             class="veo-object-icon--composite"
             color="primary"
-            :icon="mdiDotsHorizontal"
-          />
+            :icon="mdiDotsHorizontal" />
         </div>
       </template>
       <template #default>
@@ -53,7 +51,7 @@ export const CATALOG_TYPE_ICONS = new Map<
   ['incident', { icon: mdiAlarmLightOutline, library: 'mdi' }],
   ['document', { icon: mdiFileDocumentOutline, library: 'mdi' }],
   ['scenario', { icon: mdiShieldAlertOutline, library: 'mdi' }],
-  ['control', { icon: mdiPlaylistCheck, library: 'mdi' }],
+  ['control', { icon: mdiPlaylistCheck, library: 'mdi' }]
 ]);
 </script>
 
@@ -68,7 +66,7 @@ import {
   mdiFocusField,
   mdiPlaylistCheck,
   mdiShieldAlertOutline,
-  mdiAllInclusive,
+  mdiAllInclusive
 } from '@mdi/js';
 
 import { useQuery } from '~/composables/api/utils/query';
@@ -80,7 +78,7 @@ const props = withDefaults(
     isComposite?: boolean;
   }>(),
   {
-    isComposite: false,
+    isComposite: false
   }
 );
 
@@ -91,7 +89,7 @@ const icon = computed(() => OBJECT_TYPE_ICONS.get(props.objectType));
 
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
-  domain: route.params.domain,
+  domain: route.params.domain
 }));
 const { data: translations } = useQuery(
   translationQueryDefinitions.queries.fetch,

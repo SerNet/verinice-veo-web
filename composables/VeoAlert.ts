@@ -20,7 +20,7 @@ import { Ref } from 'vue';
 import {
   IVeoGlobalAlert,
   IVeoGlobalAlertParams,
-  VeoAlertType,
+  VeoAlertType
 } from '~/types/VeoTypes';
 
 const alerts: Ref<IVeoGlobalAlert[]> = ref([]);
@@ -47,7 +47,7 @@ export function useVeoAlerts() {
       title,
       text,
       params,
-      alertKey,
+      alertKey
     });
     return alertKey;
   }
@@ -96,7 +96,7 @@ export function useVeoAlerts() {
   ): number {
     return displayMessage(VeoAlertType.SUCCESS, text, '', {
       ...params,
-      timeout: 5000,
+      timeout: 5000
     });
   }
 
@@ -119,6 +119,6 @@ export function useVeoAlerts() {
     displayErrorMessage,
     displayInfoMessage,
     displaySuccessMessage,
-    expireAlert,
+    expireAlert
   };
 }

@@ -29,8 +29,7 @@
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
     variant="underlined"
     @update:model-value="$emit('update:model-value', $event)"
-    @click:clear="$emit('update:model-value', undefined)"
-  />
+    @click:clear="$emit('update:model-value', undefined)" />
 </template>
 
 <script lang="ts">
@@ -43,14 +42,14 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-text-input',
   name: {
     en: 'text input',
-    de: 'Texteingabe',
+    de: 'Texteingabe'
   },
   description: {
     en: 'Lets the user enter text.',
-    de: 'Lässt den User Text eingeben.',
+    de: 'Lässt den User Text eingeben.'
   },
   conditions: (props) => [props.objectSchema.type === 'string'],
-  bias: Number.EPSILON,
+  bias: Number.EPSILON
 };
 
 export default defineComponent({
@@ -61,8 +60,8 @@ export default defineComponent({
     return {
       getControlErrorMessages,
 
-      last,
+      last
     };
-  },
+  }
 });
 </script>

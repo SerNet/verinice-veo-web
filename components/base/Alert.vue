@@ -25,13 +25,12 @@
     class="overflow-hidden bg-basepage"
     :class="{
       'veo-pseudo-hover': dismissOnClick,
-      'cursor-pointer': dismissOnClick,
+      'cursor-pointer': dismissOnClick
     }"
     :icon="alertIcon"
     variant="tonal"
     style="border-radius: 6px"
-    @click="onContentClick"
-  >
+    @click="onContentClick">
     <v-row no-gutters class="justify-lg-space-between">
       <v-col cols="auto" class="d-flex justify-center flex-column">
         <h3 class="text-h3 small-caps mb-3" v-text="title" />
@@ -50,8 +49,7 @@
           :key="index"
           class="mt-4"
           variant="outlined"
-          @click="button.onClick"
-        >
+          @click="button.onClick">
           {{ button.text }}
         </v-btn>
       </v-col>
@@ -62,8 +60,7 @@
       class="veo-alert-timeout-bar"
       :color="alertColor"
       height="4"
-      :model-value="(remainingTime / timeout) * 100"
-    />
+      :model-value="(remainingTime / timeout) * 100" />
   </v-alert>
 </template>
 
@@ -72,7 +69,7 @@ import { PropType } from 'vue';
 import {
   mdiAlertCircleOutline,
   mdiCheckCircleOutline,
-  mdiInformationOutline,
+  mdiInformationOutline
 } from '@mdi/js';
 
 import { VeoAlertType } from '~/types/VeoTypes';
@@ -86,48 +83,48 @@ export default defineComponent({
   props: {
     modelValue: {
       type: Boolean,
-      default: false,
+      default: false
     },
     text: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     title: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     type: {
       type: Number as PropType<VeoAlertType>,
-      default: VeoAlertType.ERROR,
+      default: VeoAlertType.ERROR
     },
     flat: {
       type: Boolean,
-      default: false,
+      default: false
     },
     noCloseButton: {
       type: Boolean,
-      default: false,
+      default: false
     },
     defaultButtonText: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     buttons: {
       type: Array as PropType<IAlertButton[]>,
-      default: () => [],
+      default: () => []
     },
     dismissOnClick: {
       type: Boolean,
-      default: false,
+      default: false
     },
     timeout: {
       type: Number,
-      default: undefined,
+      default: undefined
     },
     enableKeyboardNavigation: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: ['update:model-value'],
   setup(props, { emit }) {
@@ -166,17 +163,17 @@ export default defineComponent({
           [
             {
               text: props.defaultButtonText || globalT('global.button.ok'),
-              onClick: () => emit('update:model-value', false),
-            },
+              onClick: () => emit('update:model-value', false)
+            }
           ]
         : []),
-        ...props.buttons,
+        ...props.buttons
       ].map((button, index) => ({
         ...button,
         text:
           props.enableKeyboardNavigation ?
             `(${index + 1}) ${button.text}`
-          : button.text,
+          : button.text
       }))
     );
 
@@ -246,9 +243,9 @@ export default defineComponent({
       remainingTime,
 
       t,
-      globalT,
+      globalT
     };
-  },
+  }
 });
 </script>
 

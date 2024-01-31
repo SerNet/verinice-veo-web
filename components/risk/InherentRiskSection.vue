@@ -37,8 +37,7 @@
                   (riskValue) => riskValue.category === protectionGoal.id
                 )
               "
-              @update:dirty-fields="$emit('update:dirty-fields', $event)"
-            />
+              @update:dirty-fields="$emit('update:dirty-fields', $event)" />
           </template>
         </v-row>
       </v-card-text>
@@ -57,21 +56,21 @@ export default defineComponent({
   props: {
     data: {
       type: Array as PropType<IVeoRiskDefinition['riskValues']>,
-      required: true,
+      required: true
     },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
-      required: true,
+      required: true
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      default: () => {},
+      default: () => {}
     },
     disabled: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: ['update:dirty-fields'],
   setup(props) {
@@ -84,9 +83,9 @@ export default defineComponent({
       protectionGoalExists,
 
       t,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>
 

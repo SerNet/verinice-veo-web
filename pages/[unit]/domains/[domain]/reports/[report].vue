@@ -25,8 +25,7 @@
           <p
             v-if="report"
             class="mb-0 text-body-1 font-italic"
-            data-component-name="report-description"
-          >
+            data-component-name="report-description">
             {{ report.description[locale] }}
           </p>
         </v-col>
@@ -43,8 +42,7 @@
         :domain-id="$route.params.domain as string"
         :filter="filter"
         :required-fields="requiredFields"
-        @update:filter="updateRouteQuery"
-      />
+        @update:filter="updateRouteQuery" />
 
       <p v-if="report" class="text-body-1 my-2">
         {{
@@ -67,13 +65,12 @@
             'description',
             'updatedBy',
             'updatedAt',
-            'actions',
+            'actions'
           ]"
           :items="objects"
           :loading="objectsFetching"
           data-component-name="report-entity-selection"
-          @update:model-value="onReportSelectionUpdated"
-        />
+          @update:model-value="onReportSelectionUpdated" />
       </BaseCard>
       <v-row no-gutters class="mt-4">
         <v-spacer />
@@ -83,8 +80,7 @@
             color="primary"
             :disabled="generatingReport || !selectedObjects.length"
             data-component-name="generate-report-button"
-            @click="generateReport"
-          >
+            @click="generateReport">
             {{ t('generateReport') }}
           </v-btn>
           <a ref="downloadButton" href="#" />
@@ -128,7 +124,7 @@ export default defineComponent({
     const title = computed(() =>
       t('create', {
         type: report.value?.name?.[locale.value] || '',
-        format: upperCase(outputType.value.split('/').pop()),
+        format: upperCase(outputType.value.split('/').pop())
       }).toString()
     );
 
@@ -178,7 +174,7 @@ export default defineComponent({
       'description',
       'updatedBy',
       'hasNoParentElements',
-      'hasChildElements',
+      'hasChildElements'
     ] as const;
 
     // filter built from URL query parameters
@@ -197,7 +193,7 @@ export default defineComponent({
       filterObject = {
         ...filterObject,
         objectType: report?.value?.targetTypes?.[0]?.modelType,
-        subType: fixedSubTypes.length === 1 ? fixedSubTypes[0] : undefined,
+        subType: fixedSubTypes.length === 1 ? fixedSubTypes[0] : undefined
       };
       return filterObject;
     });
@@ -214,7 +210,7 @@ export default defineComponent({
       page: page.value,
       unit: route.params.unit as string,
       ...omit(filter.value, 'objectType'),
-      endpoint: endpoint.value,
+      endpoint: endpoint.value
     }));
     const objectType = computed<string | undefined>(
       () => filter.value.objectType as string | undefined
@@ -226,11 +222,11 @@ export default defineComponent({
     const {
       data: objects,
       isLoading: objectsFetching,
-      refetch: refetchObjects,
+      refetch: refetchObjects
     } = useFetchObjects(combinedObjectsQueryParameters as any, {
       enabled: objectsQueryEnabled,
       keepPreviousData: true,
-      placeholderData: [],
+      placeholderData: []
     });
 
     const updateRouteQuery = async (
@@ -254,7 +250,7 @@ export default defineComponent({
       await navigateTo({
         ...route,
         name: route.name as RouteRecordName | undefined,
-        query,
+        query
       });
     };
 
@@ -276,8 +272,8 @@ export default defineComponent({
       type: requestedReportName.value,
       body: {
         outputType: outputType.value,
-        targets: selectedObjects.value,
-      },
+        targets: selectedObjects.value
+      }
     }));
     const { mutateAsync: create, isLoading: generatingReport } = useMutation(
       reportQueryDefinitions.mutations.create,
@@ -327,9 +323,9 @@ export default defineComponent({
 
       t,
       locale,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>
 

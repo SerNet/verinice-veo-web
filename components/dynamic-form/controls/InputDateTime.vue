@@ -19,8 +19,7 @@
   <div
     v-if="options.visible"
     :id="objectSchemaPointer"
-    class="vf-input-date-time vf-form-element d-flex"
-  >
+    class="vf-input-date-time vf-form-element d-flex">
     <!-- TODO-Vuetify: As of 3.1.0, v-date-picker and v-time-picker are not yet supported, so we use the browser fallback
     <v-menu
       v-model="menu"
@@ -109,8 +108,7 @@
       :hint="t('hint', [DATE_HINT])"
       variant="underlined"
       @update:model-value="onDateInput"
-      @click:clear="$emit('update:model-value', undefined)"
-    />
+      @click:clear="$emit('update:model-value', undefined)" />
     <v-text-field
       type="time"
       :model-value="time"
@@ -124,8 +122,7 @@
       variant="underlined"
       step="60"
       @update:model-value="onTimeInput"
-      @click:clear="$emit('update:model-value', undefined)"
-    />
+      @click:clear="$emit('update:model-value', undefined)" />
   </div>
 </template>
 
@@ -143,16 +140,16 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-date-time-input',
   name: {
     en: 'date time input',
-    de: 'Datums- und Zeiteingabe',
+    de: 'Datums- und Zeiteingabe'
   },
   description: {
     en: 'Lets the user choose a date and time from a calender-like component.',
-    de: 'Lässt den User mithilfe einer kalendermäßigen Komponente ein Datum und die dazugehörige Uhrzeit auswählen.',
+    de: 'Lässt den User mithilfe einer kalendermäßigen Komponente ein Datum und die dazugehörige Uhrzeit auswählen.'
   },
   conditions: (props) => [
     props.objectSchema.type === 'string',
-    props.objectSchema.format === 'date-time',
-  ],
+    props.objectSchema.format === 'date-time'
+  ]
 };
 
 export default defineComponent({
@@ -216,7 +213,7 @@ export default defineComponent({
     const time = computed(() => {
       if (internalDateObject.value) {
         return formatISO(internalDateObject.value, {
-          representation: 'time',
+          representation: 'time'
         }).split('+')[0];
       }
       return undefined;
@@ -282,9 +279,9 @@ export default defineComponent({
       mdiCalendar,
       mdiClockOutline,
       t,
-      DATE_HINT,
+      DATE_HINT
     };
-  },
+  }
 });
 </script>
 

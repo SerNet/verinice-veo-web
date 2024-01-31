@@ -30,51 +30,51 @@ import LayoutCollapseButton from '~/components/layout/CollapseButton.vue';
 const props = defineProps({
   title: {
     type: String,
-    default: undefined,
+    default: undefined
   },
   titleClass: {
     type: String,
-    default: undefined,
+    default: undefined
   },
   /**
    * Shows a skeleton for the title if set to true
    */
   loading: {
     type: Boolean,
-    default: false,
+    default: false
   },
   collapsableLeft: {
     type: Boolean,
-    default: false,
+    default: false
   },
   collapsableRight: {
     type: Boolean,
-    default: false,
+    default: false
   },
   headingLevel: {
     type: Number,
-    default: 1,
+    default: 1
   },
   pageWidths: {
     type: Array as PropType<(string | number)[]>,
-    default: () => [],
+    default: () => []
   },
   pageWidthsLg: {
     type: Array as PropType<(string | number)[]>,
-    default: () => [],
+    default: () => []
   },
   pageWidthsXl: {
     type: Array as PropType<(string | number)[]>,
-    default: () => [],
+    default: () => []
   },
   pageTitles: {
     type: Array as PropType<string[]>,
-    default: () => [],
+    default: () => []
   },
   unresponsivePageWidths: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 });
 
 const emit = defineEmits(['page-collapsed']);
@@ -216,7 +216,7 @@ const localPageWidth = (
       } else {
         styles = {
           width: props.pageWidths[index],
-          minWidth: props.pageWidths[index],
+          minWidth: props.pageWidths[index]
         };
       }
     }
@@ -230,7 +230,7 @@ const localPageWidth = (
       } else {
         styles = {
           width: props.pageWidthsLg[index],
-          minWidth: props.pageWidthsLg[index],
+          minWidth: props.pageWidthsLg[index]
         };
       }
     }
@@ -244,7 +244,7 @@ const localPageWidth = (
       } else {
         styles = {
           width: props.pageWidthsXl[index],
-          minWidth: props.pageWidthsXl[index],
+          minWidth: props.pageWidthsXl[index]
         };
       }
     }
@@ -262,7 +262,7 @@ const localPageWidth = (
 
   return {
     classes: props.unresponsivePageWidths ? [] : classes,
-    styles: props.unresponsivePageWidths ? styles : {},
+    styles: props.unresponsivePageWidths ? styles : {}
   };
 };
 
@@ -271,41 +271,41 @@ const render = () =>
     'div',
     {
       ...attrs,
-      class: 'fill-width fill-height d-flex flex-column overflow-hidden',
+      class: 'fill-width fill-height d-flex flex-column overflow-hidden'
     },
     [
       h(
         'div',
         {
-          class: props.titleClass,
+          class: props.titleClass
         },
         [
           ...(props.loading ?
             [
               h(VSkeletonLoader, {
                 type: 'text',
-                class: 'skeleton-title px-4 py-1',
-              }),
+                class: 'skeleton-title px-4 py-1'
+              })
             ]
           : [
               ...(props.title ?
                 [
                   h(`h${props.headingLevel}`, {
                     innerText: props.title,
-                    class: `d-inline flex-grow-0 text-h${props.headingLevel}`,
-                  }),
+                    class: `d-inline flex-grow-0 text-h${props.headingLevel}`
+                  })
                 ]
               : []),
-              ...(slots.title ? [slots.title()] : []),
+              ...(slots.title ? [slots.title()] : [])
             ]),
-          slots.header ? slots.header() : [],
+          slots.header ? slots.header() : []
         ]
       ),
       h(
         'div',
         {
           class: 'd-flex flex-nowrap overflow-hidden flex-grow-1',
-          ref: wrapper,
+          ref: wrapper
         },
         (slots.default ? slots.default() : [])
           .filter((slot) => slot.type.__name === 'Page')
@@ -324,9 +324,9 @@ const render = () =>
                     position: 'relative',
                     display:
                       pagesCollapsedStates.value[index] ? 'none' : 'flex',
-                    ...styles,
+                    ...styles
                   },
-                  class: ['flex-row', classes, 'pa-0'],
+                  class: ['flex-row', classes, 'pa-0']
                 },
                 [
                   ...((
@@ -339,7 +339,7 @@ const render = () =>
                         'div',
                         {
                           style: 'width: 16px',
-                          class: 'fill-height',
+                          class: 'fill-height'
                         },
                         [
                           h(LayoutCollapseButton, {
@@ -358,10 +358,10 @@ const render = () =>
                                 previousPageIsCollapsed(index) ?
                                   index - 1
                                 : index
-                              ),
-                          }),
+                              )
+                          })
                         ]
-                      ),
+                      )
                     ]
                   : []),
                   h(slotItem),
@@ -382,17 +382,17 @@ const render = () =>
                           'onUpdate:modelValue': () =>
                             togglePage(
                               nextPageIsCollapsed(index) ? index + 1 : index
-                            ),
-                        }),
-                      ]),
+                            )
+                        })
+                      ])
                     ]
-                  : []),
+                  : [])
                 ]
-              ),
+              )
             ];
           })
       ),
-      slots.helpers ? slots.helpers() : [],
+      slots.helpers ? slots.helpers() : []
     ]
   );
 </script>

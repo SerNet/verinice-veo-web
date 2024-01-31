@@ -23,8 +23,7 @@
     :confirm-close="isFormDirty"
     fixed-footer
     v-bind="$attrs"
-    @update:model-value="$emit('update:model-value', $event)"
-  >
+    @update:model-value="$emit('update:model-value', $event)">
     <template #default>
       <v-form ref="formRef" v-model="form.valid" @submit.prevent="onSubmit">
         <h3 class="text-h3">
@@ -40,8 +39,7 @@
                   required
                   :rules="form.rules.title"
                   :prefix="prefix"
-                  variant="underlined"
-                />
+                  variant="underlined" />
               </v-col>
               <v-col v-if="type === 'link'" cols="12" md="6">
                 <v-text-field
@@ -49,8 +47,7 @@
                   :label="`${t('linkName')} *`"
                   required
                   :rules="[requiredRule]"
-                  variant="underlined"
-                />
+                  variant="underlined" />
               </v-col>
             </v-row>
             <v-row v-if="type === 'link'">
@@ -61,8 +58,7 @@
                   :items="formattedObjectTypes"
                   required
                   :rules="form.rules.targetType"
-                  variant="underlined"
-                />
+                  variant="underlined" />
               </v-col>
               <v-col cols="4" class="py-0">
                 <v-select
@@ -72,8 +68,7 @@
                   "
                   :label="`${t('linkSubType')}`"
                   :items="filteredFormSchemas"
-                  variant="underlined"
-                />
+                  variant="underlined" />
               </v-col>
             </v-row>
           </v-card-text>
@@ -90,12 +85,10 @@
             v-bind="attribute"
             :aspect-name="aspectPrefix"
             @delete="removeAttribute(index)"
-            @update="updateAttribute($event, index)"
-          />
+            @update="updateAttribute($event, index)" />
           <p
             v-if="form.data.attributes.length === 0"
-            class="text-body-1 font-italic"
-          >
+            class="text-body-1 font-italic">
             {{ t(`noProperties.${type}`) }}
           </p>
           <v-alert
@@ -103,8 +96,7 @@
             type="error"
             class="mb-4 mt-6"
             start
-            colored-border
-          >
+            colored-border>
             <span>{{ t('duplicateAttributes') }}:</span>
             <ul>
               <li v-for="duplicate of duplicates" :key="duplicate">
@@ -135,8 +127,7 @@
           :disabled="
             form.valid === false || duplicates.length > 0 || !isFormDirty
           "
-          @click="saveProperty()"
-        >
+          @click="saveProperty()">
           {{ $t('global.button.save') }}
         </v-btn>
       </template>
@@ -145,8 +136,7 @@
           text
           color="primary"
           :disabled="!form.valid"
-          @click="dialogMode = 'edit'"
-        >
+          @click="dialogMode = 'edit'">
           {{ $t('global.button.next') }}
         </v-btn>
       </template>
@@ -161,7 +151,7 @@ import { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas'
 import ObjectSchemaHelper, {
   IVeoOSHCustomAspect,
   IVeoOSHCustomLink,
-  IVeoOSHCustomProperty,
+  IVeoOSHCustomProperty
 } from '~/lib/ObjectSchemaHelper2';
 import { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import { PropType } from 'vue';
@@ -172,28 +162,28 @@ export default {
   props: {
     modelValue: {
       type: Boolean,
-      required: true,
+      required: true
     },
     type: {
       type: String,
-      required: true,
+      required: true
     },
     propertyId: {
       type: String,
-      default: undefined,
+      default: undefined
     },
     domainId: {
       type: String,
-      required: true,
+      required: true
     },
     objectTypes: {
       type: Object as PropType<IVeoSchemaEndpoints>,
-      default: undefined,
+      default: undefined
     },
     formSchemas: {
       type: Array as PropType<IVeoFormSchemaMeta[]>,
-      default: () => [],
-    },
+      default: () => []
+    }
   },
   emits: ['delete', 'update:model-value', 'error', 'success'],
   setup(props) {
@@ -212,20 +202,20 @@ export default {
         targetSubType: '',
         description: '',
         attributes: [],
-        translatedTitle: undefined,
+        translatedTitle: undefined
       } as IVeoOSHCustomLink & { translatedTitle: string | undefined },
       rules: {
         title: [
           (input: string) => banSpecialChars(input),
-          (input: string) => requiredRule(input),
+          (input: string) => requiredRule(input)
         ],
         description: [
-          (input: string) => props.type === 'aspect' || trim(input).length > 0,
+          (input: string) => props.type === 'aspect' || trim(input).length > 0
         ],
         targetType: [
-          (input: string) => props.type === 'aspect' || trim(input).length > 0,
-        ],
-      } as { [key: string]: ((input: string) => boolean)[] },
+          (input: string) => props.type === 'aspect' || trim(input).length > 0
+        ]
+      } as { [key: string]: ((input: string) => boolean)[] }
     });
     const pristineForm = ref(cloneDeep(form));
 
@@ -257,7 +247,7 @@ export default {
 
       banSpecialChars,
       requiredRule,
-      t,
+      t
     };
   },
   data() {
@@ -269,7 +259,7 @@ export default {
         | undefined
         | IVeoOSHCustomAspect
         | IVeoOSHCustomLink,
-      mdiPlus,
+      mdiPlus
     };
   },
   computed: {
@@ -278,7 +268,7 @@ export default {
         return this.$t(`headlineCreate.${this.type}`) as string;
       } else {
         return this.$t(`headlineEdit.${this.type}`, {
-          title: this.editedProperty.title ?? '',
+          title: this.editedProperty.title ?? ''
         }) as string;
       }
     },
@@ -295,7 +285,7 @@ export default {
     formattedObjectTypes(): { title: string; value: string }[] {
       return Object.keys(this.objectTypes || {}).map((schemaName) => ({
         title: upperFirst(schemaName),
-        value: schemaName,
+        value: schemaName
       }));
     },
     filteredFormSchemas(): { title: string; value: string }[] {
@@ -312,7 +302,7 @@ export default {
           title:
             schema.name[this.displayLanguage] ||
             `Missing translation for ${this.displayLanguage.toUpperCase()}`,
-          value: schema.subType,
+          value: schema.subType
         }))
         .filter((schema) => schema.value !== null) as {
         title: string;
@@ -321,11 +311,11 @@ export default {
 
       schemasWithSubTypFormatted.unshift({
         title: this.$t('no_subtype').toString(),
-        value: '',
+        value: ''
       });
 
       return schemasWithSubTypFormatted;
-    },
+    }
   },
   watch: {
     modelValue(newValue: boolean) {
@@ -344,7 +334,7 @@ export default {
           subType: '',
           title: '',
           attributes: [],
-          translatedTitle: undefined,
+          translatedTitle: undefined
         };
         this.pristineForm = cloneDeep(this.form);
       } else if (this.editedProperty) {
@@ -357,7 +347,7 @@ export default {
             this.displayLanguage,
             `${this.editedProperty.prefix}${this.editedProperty.title}`
           ),
-          ...cloneDeep(this.editedProperty),
+          ...cloneDeep(this.editedProperty)
         };
 
         for (const attributeIndex in this.form.data.attributes) {
@@ -376,7 +366,7 @@ export default {
       } else {
         this.dialogMode = 'create';
       }
-    },
+    }
   },
   methods: {
     upperFirst,
@@ -564,7 +554,7 @@ export default {
       this.form.data.attributes.push({
         type: 'string',
         title: '',
-        description: '',
+        description: ''
       });
     },
     removeAttribute(index: number) {
@@ -591,8 +581,8 @@ export default {
           }
         }
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

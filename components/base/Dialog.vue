@@ -23,8 +23,7 @@
     :width="width"
     :content-class="dialogClasses"
     v-bind="$attrs"
-    @update:model-value="closeDialog"
-  >
+    @update:model-value="closeDialog">
     <v-card class="d-flex flex-column" tile>
       <v-card-title class="d-flex align-center bg-accent small-caps text-h4">
         <LayoutAppLogoMobile v-if="fullscreen" style="height: 36px" />
@@ -35,26 +34,22 @@
           :icon="mdiClose"
           flat
           class="close-button bg-accent"
-          @click="closeDialog"
-        />
+          @click="closeDialog" />
       </v-card-title>
       <v-card-text
         class="pa-4 overflow-x-hidden overflow-y-auto flex-grow-1"
         :class="innerClass"
-        style="position: relative"
-      >
+        style="position: relative">
         <slot />
         <v-card-actions
           v-if="!!$slots['dialog-options'] && !fixedFooter"
-          class="pt-3 pb-0 px-0 d-flex"
-        >
+          class="pt-3 pb-0 px-0 d-flex">
           <slot name="dialog-options" />
         </v-card-actions>
       </v-card-text>
       <v-card-actions
         v-if="!!$slots['dialog-options'] && fixedFooter"
-        class="bg-accent px-4 py-3 d-flex"
-      >
+        class="bg-accent px-4 py-3 d-flex">
         <slot name="dialog-options" />
       </v-card-actions>
     </v-card>
@@ -62,8 +57,7 @@
   <v-dialog
     v-if="confirmClose"
     v-model="closeConfirmationDialogVisible"
-    width="450px"
-  >
+    width="450px">
     <v-card>
       <v-card-title class="bg-accent small-caps">
         {{ t('closeDialog') }}
@@ -82,8 +76,7 @@
             color="primary"
             variant="text"
             @click="closeDialog(true)"
-            @keydown.enter="closeDialog(true)"
-          >
+            @keydown.enter="closeDialog(true)">
             {{ globalT('global.button.yes') }}
           </v-btn>
         </v-card-actions>
@@ -117,7 +110,7 @@ const props = withDefaults(
     confirmClose: false,
     closeFunction: () => () => true,
     fixedFooter: false,
-    innerClass: '',
+    innerClass: ''
   }
 );
 
@@ -145,7 +138,7 @@ const width = computed(() => {
 const dialogClasses = computed(() => {
   const classes = {
     'overflow-hidden': true,
-    'd-flex': props.modelValue,
+    'd-flex': props.modelValue
   };
 
   return Object.entries(classes)

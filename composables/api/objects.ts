@@ -20,7 +20,7 @@ import { Ref } from 'vue';
 import { IVeoPaginationOptions } from '~/types/VeoTypes';
 import { QueryOptions, useQuery } from './utils/query';
 import objectQueryDefinitions, {
-  IVeoFetchObjectsParameters,
+  IVeoFetchObjectsParameters
 } from './queryDefinitions/objects';
 
 export interface IVeoFetchParentObjectsParameters
@@ -48,7 +48,7 @@ export const useFetchObjects = (
       : queryParameters.value.size === -1 ? 1000
       : queryParameters.value.size,
     page:
-      queryParameters.value.page ? max([queryParameters.value.page - 1, 0]) : 0,
+      queryParameters.value.page ? max([queryParameters.value.page - 1, 0]) : 0
   }));
   return useQuery(
     objectQueryDefinitions.queries.fetchAll,
@@ -78,7 +78,7 @@ export const useFetchParentObjects = (
       : queryParameters.value.size === -1 ? 1000
       : queryParameters.value.size,
     page:
-      queryParameters.value.page ? max([queryParameters.value.page - 1, 0]) : 0,
+      queryParameters.value.page ? max([queryParameters.value.page - 1, 0]) : 0
   }));
   return useQuery(
     objectQueryDefinitions.queries.fetchAll,

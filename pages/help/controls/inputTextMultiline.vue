@@ -22,15 +22,13 @@
         <DynamicFormEntrypoint
           v-model="form.data"
           :object-schema="form.objectSchema"
-          :form-schema="form.formSchema"
-        />
+          :form-schema="form.formSchema" />
       </v-col>
     </v-row>
     <HelpFormDescription
       :object-schema="form.objectSchema"
       :form-schema="form.formSchema"
-      :data="form.data"
-    />
+      :data="form.data" />
   </BasePage>
 </template>
 
@@ -42,20 +40,20 @@ const form = ref({
     type: 'object',
     properties: {
       inputTextMultiline: {
-        type: 'string',
-      },
-    },
+        type: 'string'
+      }
+    }
   },
   formSchema: {
     type: 'Control',
     scope: '#/properties/inputTextMultiline',
     options: {
       label: 'Input Text Multiline',
-      format: 'multiline',
-    },
+      format: 'multiline'
+    }
   },
   data: {
-    inputTextMultiline: 'Beispiel 1\nBeispiel 2\nBeispiel 3',
-  },
+    inputTextMultiline: 'Beispiel 1\nBeispiel 2\nBeispiel 3'
+  }
 });
 </script>

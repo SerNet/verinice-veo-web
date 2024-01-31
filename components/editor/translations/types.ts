@@ -18,7 +18,7 @@
 export enum TRANSLATION_SOURCE {
   OBJECTSCHEMA,
   FORMSCHEMA,
-  UNSPECIFIED,
+  UNSPECIFIED
 }
 
 // Type aliases so IEditorTranslations is easier to understand

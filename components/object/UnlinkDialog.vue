@@ -19,8 +19,7 @@
   <BaseDialog
     :model-value="modelValue"
     v-bind="$attrs"
-    :title="t('unlinkObject')"
-  >
+    :title="t('unlinkObject')">
     <template #default>
       <span class="text-body-1">
         {{
@@ -28,7 +27,7 @@
             t('genericText')
           : t('text', {
               displayName: objectToRemove?.displayName,
-              parentDisplayName: parent?.displayName,
+              parentDisplayName: parent?.displayName
             })
         }}
       </span>
@@ -43,8 +42,7 @@
         color="primary"
         :disabled="!objectToRemove"
         :loading="unlinking"
-        @click="unlinkObject"
-      >
+        @click="unlinkObject">
         {{ t('unlinkObject') }}
       </v-btn>
     </template>
@@ -64,7 +62,7 @@ const props = withDefaults(
   {
     modelValue: false,
     objectToRemove: undefined,
-    parent: undefined,
+    parent: undefined
   }
 );
 

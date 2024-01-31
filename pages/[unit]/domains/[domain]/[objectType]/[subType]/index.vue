@@ -25,8 +25,7 @@
         :domain-id="domainId"
         :filter="filter"
         :required-fields="['objectType']"
-        @update:filter="updateRoute"
-      />
+        @update:filter="updateRoute" />
       <BaseCard v-if="filter.objectType || endpointsLoading">
         <ObjectTable
           v-model:page="page"
@@ -42,13 +41,12 @@
             'description',
             'updatedBy',
             'updatedAt',
-            'actions',
+            'actions'
           ]"
           :additional-headers="additionalHeaders"
           data-component-name="object-overview-table"
           enable-click
-          @click="openItem"
-        >
+          @click="openItem">
           <template #actions="{ item }">
             <div class="d-flex justify-end">
               <v-tooltip v-for="btn in actions" :key="btn.id" location="start">
@@ -61,8 +59,7 @@
                     :icon="btn.icon"
                     v-bind="props"
                     variant="text"
-                    @click="btn.action(item)"
-                  />
+                    @click="btn.action(item)" />
                 </template>
                 {{ btn.label }}
               </v-tooltip>
@@ -78,15 +75,13 @@
             onCloseDeleteDialog({ isOpen: false, isCancel: true })
           "
           @success="onCloseDeleteDialog({ isOpen: false })"
-          @error="showError('delete', itemToDelete, $event)"
-        />
+          @error="showError('delete', itemToDelete, $event)" />
 
         <ObjectAssignDialog
           :model-value="objectAssignDialogVisible"
           :object-id="objectId"
           :object-type="objectType"
-          @update:model-value="objectAssignDialogVisible = false"
-        />
+          @update:model-value="objectAssignDialogVisible = false" />
       </BaseCard>
       <ObjectTypeError v-else>
         <v-btn color="primary" variant="text" @click="onOpenFilterDialog">
@@ -100,8 +95,7 @@
         v-model="createObjectDialogVisible"
         :domain-id="domainId"
         :object-type="filter.objectType"
-        :sub-type="filter.subType"
-      />
+        :sub-type="filter.subType" />
       <v-tooltip v-if="filter.objectType" location="start">
         <template #activator="{ props }">
           <v-btn
@@ -113,8 +107,7 @@
             data-component-name="create-object-button"
             v-bind="props"
             size="large"
-            @click="createObjectDialogVisible = true"
-          />
+            @click="createObjectDialogVisible = true" />
           <div style="height: 76px" />
         </template>
         <template #default>
@@ -134,7 +127,7 @@ import {
   mdiContentCopy,
   mdiDotsVertical,
   mdiPlus,
-  mdiTrashCanOutline,
+  mdiTrashCanOutline
 } from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
 import { useFetchUnitDomains } from '~/composables/api/domains';
@@ -147,7 +140,7 @@ import { ObjectTableHeader } from '~/components/object/Table.vue';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import formQueryDefinitions, {
-  IVeoFormSchemaMeta,
+  IVeoFormSchemaMeta
 } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
@@ -157,7 +150,7 @@ import { useFetchObjects } from '~/composables/api/objects';
 enum FILTER_SOURCE {
   QUERY,
   PARAMS,
-  NONE,
+  NONE
 }
 
 type IFilterDefinition = {
@@ -180,7 +173,7 @@ const { clone } = useCloneObject();
 
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
-  domain: route.params.domain,
+  domain: route.params.domain
 }));
 const { data: translations, isFetching: translationsLoading } = useQuery(
   translationQueryDefinitions.queries.fetch,
@@ -188,11 +181,11 @@ const { data: translations, isFetching: translationsLoading } = useQuery(
 );
 
 const fetchUnitDomainsQueryParameters = computed(() => ({
-  unitId: route.params.unit as string,
+  unitId: route.params.unit as string
 }));
 const fetchUnitDomainsQueryEnabled = computed(() => !!route.params.unit);
 const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, {
-  enabled: fetchUnitDomainsQueryEnabled,
+  enabled: fetchUnitDomainsQueryEnabled
 });
 
 const domainId = computed(() => route.params.domain as string);
@@ -211,36 +204,36 @@ const onOpenFilterDialog = () => {
 
 const filterDefinitions: IFilterDefinition = {
   objectType: {
-    source: FILTER_SOURCE.PARAMS,
+    source: FILTER_SOURCE.PARAMS
   },
   subType: {
     source: FILTER_SOURCE.PARAMS,
-    nullValue: '-',
+    nullValue: '-'
   },
   abbreviation: {
-    source: FILTER_SOURCE.QUERY,
+    source: FILTER_SOURCE.QUERY
   },
   designator: {
-    source: FILTER_SOURCE.QUERY,
+    source: FILTER_SOURCE.QUERY
   },
   name: {
-    source: FILTER_SOURCE.QUERY,
+    source: FILTER_SOURCE.QUERY
   },
   status: {
-    source: FILTER_SOURCE.QUERY,
+    source: FILTER_SOURCE.QUERY
   },
   description: {
-    source: FILTER_SOURCE.QUERY,
+    source: FILTER_SOURCE.QUERY
   },
   updatedBy: {
-    source: FILTER_SOURCE.QUERY,
+    source: FILTER_SOURCE.QUERY
   },
   hasNoParentElements: {
-    source: FILTER_SOURCE.QUERY,
+    source: FILTER_SOURCE.QUERY
   },
   hasChildElements: {
-    source: FILTER_SOURCE.QUERY,
-  },
+    source: FILTER_SOURCE.QUERY
+  }
 };
 
 const stringOrFirstValue = (v: string | null | (string | null)[]) => {
@@ -304,7 +297,7 @@ const combinedQueryParameters = computed<any>(() => ({
   page: page.value,
   unit: route.params.unit as string,
   ...omit(filter.value, 'objectType'),
-  endpoint: endpoints.value?.[filter.value.objectType as string],
+  endpoint: endpoints.value?.[filter.value.objectType as string]
 }));
 const queryEnabled = computed(
   () => !!endpoints.value?.[filter.value.objectType as string]
@@ -335,7 +328,7 @@ const updateRoute = async (
   const routeDetails = {
     name: ROUTE_NAME,
     query: {} as Record<string, string>,
-    params: {} as Record<string, string>,
+    params: {} as Record<string, string>
   };
   Object.entries(newValue).forEach(([filterKey, filterValue]) => {
     // Special handling
@@ -399,8 +392,8 @@ const openItem = ({ item }: { item: any }) => {
     name: OBJECT_DETAIL_ROUTE,
     params: {
       ...route.params,
-      object: item.id,
-    },
+      object: item.id
+    }
   });
 };
 
@@ -417,7 +410,7 @@ const resetItemToDelete = () => (itemToDelete.value = undefined);
 
 const onCloseDeleteDialog = ({
   isOpen,
-  isCancel = false,
+  isCancel = false
 }: {
   isOpen: boolean;
   isCancel?: boolean;
@@ -453,17 +446,17 @@ const actions = computed(() => [
                   name: OBJECT_DETAIL_ROUTE,
                   params: {
                     ...route.params,
-                    object: clonedObjectId,
-                  },
+                    object: clonedObjectId
+                  }
                 });
-              },
-            },
-          ],
+              }
+            }
+          ]
         });
       } catch (e: any) {
         showError('clone', item, e);
       }
-    },
+    }
   },
   {
     id: 'delete',
@@ -471,7 +464,7 @@ const actions = computed(() => [
     icon: mdiTrashCanOutline,
     action(item: any) {
       itemToDelete.value = item;
-    },
+    }
   },
   {
     disabled: domains.value?.length <= 1,
@@ -482,8 +475,8 @@ const actions = computed(() => [
       objectAssignDialogVisible.value = true;
       objectId.value = item.id;
       objectType.value = item.type;
-    },
-  },
+    }
+  }
 ]);
 
 // Additional headers (only if user is viewing processes with subtype PRO_DataProcessing)
@@ -507,8 +500,8 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
           ),
         text: t('dpiaMandatory').toString(),
         sortable: false,
-        width: 210,
-      },
+        width: 210
+      }
     ]
   : []
 );

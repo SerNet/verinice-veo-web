@@ -30,8 +30,7 @@
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
     variant="underlined"
     @update:model-value="onInput"
-    @click:clear="$emit('update:model-value', undefined)"
-  />
+    @click:clear="$emit('update:model-value', undefined)" />
 </template>
 
 <script lang="ts">
@@ -44,16 +43,16 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-number-input',
   name: {
     en: 'number input',
-    de: 'Zahleneingabe',
+    de: 'Zahleneingabe'
   },
   description: {
     en: 'Lets the user enter a number, optionally by using spin buttons.',
-    de: 'Lässt den User Zahlen eingeben, die Zahl kann mit Buttons rechts höher oder niedriger gestellt werden.',
+    de: 'Lässt den User Zahlen eingeben, die Zahl kann mit Buttons rechts höher oder niedriger gestellt werden.'
   },
   conditions: (props) => [
     props.objectSchema.type === 'number' ||
-      props.objectSchema.type === 'integer',
-  ],
+      props.objectSchema.type === 'integer'
+  ]
 };
 
 export default defineComponent({
@@ -78,8 +77,8 @@ export default defineComponent({
       getControlErrorMessages,
       onInput,
 
-      last,
+      last
     };
-  },
+  }
 });
 </script>

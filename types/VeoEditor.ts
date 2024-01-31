@@ -24,7 +24,7 @@ import {
   mdiHelpBox,
   mdiLabelOutline,
   mdiNumeric,
-  mdiViewList,
+  mdiViewList
 } from '@mdi/js';
 import { JSONSchema7 } from 'json-schema';
 
@@ -69,7 +69,7 @@ export const INPUT_TYPES = {
   array: { icon: mdiViewList, name: 'array', color: '#ffbf00' },
   enum: { icon: mdiLabelOutline, name: 'enum', color: '#90ee90' },
   null: { icon: mdiCancel, name: 'null', color: 'blue-grey' },
-  default: { icon: mdiHelpBox, name: 'unknown', color: 'grey' },
+  default: { icon: mdiHelpBox, name: 'unknown', color: 'grey' }
 } as IInputTypes;
 
 /**
@@ -122,8 +122,8 @@ export const INPUT_ELEMENTS = [
             !Array.isArray(weights.schema.items) &&
             typeof weights.schema.items.enum !== 'undefined'),
         typeof weights.options !== 'undefined' &&
-          weights.options.format === 'autocomplete',
-      ]),
+          weights.options.format === 'autocomplete'
+      ])
   },
   {
     code: 'Checkbox',
@@ -131,7 +131,7 @@ export const INPUT_ELEMENTS = [
     name: CHECKBOX_CONTROL_DEFINITION.name,
     type: ['boolean'],
     weight: (weights) =>
-      calculateConditionsScore([weights.schema.type === 'boolean']),
+      calculateConditionsScore([weights.schema.type === 'boolean'])
   },
   {
     code: 'InputDate',
@@ -141,8 +141,8 @@ export const INPUT_ELEMENTS = [
     weight: (weights) =>
       calculateConditionsScore([
         weights.schema.type === 'string',
-        weights.schema.format === 'date',
-      ]),
+        weights.schema.format === 'date'
+      ])
   },
   {
     code: 'InputDateTime',
@@ -152,8 +152,8 @@ export const INPUT_ELEMENTS = [
     weight: (weights) =>
       calculateConditionsScore([
         weights.schema.type === 'string',
-        weights.schema.format === 'date-time',
-      ]),
+        weights.schema.format === 'date-time'
+      ])
   },
   {
     code: 'InputNumber',
@@ -162,8 +162,8 @@ export const INPUT_ELEMENTS = [
     type: ['number', 'integer'],
     weight: (weights) =>
       calculateConditionsScore([
-        weights.schema.type === 'number' || weights.schema.type === 'integer',
-      ]),
+        weights.schema.type === 'number' || weights.schema.type === 'integer'
+      ])
   },
   {
     alternatives: ['InputTextMultiline', 'MarkdownEditor'],
@@ -175,7 +175,7 @@ export const INPUT_ELEMENTS = [
       calculateConditionsScore(
         [weights.schema.type === 'string'],
         Number.EPSILON
-      ),
+      )
   },
   {
     code: 'InputTextMultiline',
@@ -187,8 +187,8 @@ export const INPUT_ELEMENTS = [
       calculateConditionsScore([
         weights.schema.type === 'string',
         typeof weights.options !== 'undefined' &&
-          weights.options.format === 'multiline',
-      ]),
+          weights.options.format === 'multiline'
+      ])
   },
   {
     code: 'InputUri',
@@ -198,8 +198,8 @@ export const INPUT_ELEMENTS = [
     weight: (weights) =>
       calculateConditionsScore([
         weights.schema.type === 'string',
-        weights.schema.format === 'uri',
-      ]),
+        weights.schema.format === 'uri'
+      ])
   },
   {
     code: 'LinksField',
@@ -221,9 +221,9 @@ export const INPUT_ELEMENTS = [
       return calculateConditionsScore([
         weights.schema.type === 'array',
         typeof weights.elements !== 'undefined',
-        isTarget,
+        isTarget
       ]);
-    },
+    }
   },
   {
     code: 'MarkdownEditor',
@@ -235,8 +235,8 @@ export const INPUT_ELEMENTS = [
       calculateConditionsScore([
         weights.schema.type === 'string',
         typeof weights.options !== 'undefined' &&
-          weights.options.format === 'markdown',
-      ]),
+          weights.options.format === 'markdown'
+      ])
   },
   {
     applicableAlternative: (currentType) => {
@@ -247,7 +247,7 @@ export const INPUT_ELEMENTS = [
     name: RADIO_CONTROL_DEFINITION.name,
     options: {
       format: 'radio',
-      direction: 'vertical',
+      direction: 'vertical'
     },
     type: ['undefined', 'enum', 'array'],
     weight: (weights) =>
@@ -258,8 +258,8 @@ export const INPUT_ELEMENTS = [
           weights.schema.type === 'number',
         typeof weights.schema.enum !== 'undefined',
         typeof weights.options !== 'undefined' &&
-          weights.options.format === 'radio',
-      ]),
+          weights.options.format === 'radio'
+      ])
   },
   {
     alternatives: ['Autocomplete', 'Radio'],
@@ -277,9 +277,9 @@ export const INPUT_ELEMENTS = [
         typeof weights.schema.enum !== 'undefined' ||
           (weights.schema.items instanceof Object &&
             !Array.isArray(weights.schema.items) &&
-            typeof weights.schema.items.enum !== 'undefined'),
-      ]),
-  },
+            typeof weights.schema.items.enum !== 'undefined')
+      ])
+  }
 ] as IControlElement[];
 
 /**
@@ -349,7 +349,7 @@ export function controlTypeAlternatives(
     .map((element) => ({
       code: element.code,
       description: element.description,
-      name: element.name,
+      name: element.name
     }));
   availableElements.unshift(
     ...(parentElement ?
@@ -357,8 +357,8 @@ export function controlTypeAlternatives(
         {
           code: parentElement.code,
           description: parentElement.description,
-          name: parentElement.name,
-        },
+          name: parentElement.name
+        }
       ]
     : [])
   );

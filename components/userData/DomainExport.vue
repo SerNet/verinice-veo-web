@@ -25,8 +25,7 @@
     :alert-body="t('alertBody')"
     :items="state.items"
     :handle-click="exportDomainData"
-    :is-loading="state.isLoading"
-  />
+    :is-loading="state.isLoading" />
 </template>
 
 <script setup lang="ts">
@@ -43,7 +42,7 @@ const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const state = reactive({
   items: [{ name: '', isLoading: false }],
   isLoading: [] as boolean[],
-  showAlert: false,
+  showAlert: false
 });
 
 const username = profile.value?.username;

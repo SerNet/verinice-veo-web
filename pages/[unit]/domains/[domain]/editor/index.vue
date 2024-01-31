@@ -19,8 +19,7 @@
   <BasePage :heading-level="2">
     <LayoutHeadline
       :title="t('editors')"
-      :element="t('calltoaction').toString()"
-    />
+      :element="t('calltoaction').toString()" />
     <div class="d-flex justify-center">
       <BaseCard class="mt-10" style="width: 70%; max-width: 1000px">
         <v-card-title class="bg-accent small-caps">
@@ -28,8 +27,7 @@
         </v-card-title>
         <v-list lines="two" class="overflow-hidden">
           <v-list-item
-            :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/objectschema`"
-          >
+            :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/objectschema`">
             <v-list-item-title class="font-weight-bold">
               {{ $t('editor.objectschema.headline') }}
             </v-list-item-title>
@@ -41,8 +39,7 @@
             </template>
           </v-list-item>
           <v-list-item
-            :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/formschema`"
-          >
+            :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/formschema`">
             <v-list-item-title class="font-weight-bold">
               {{ $t('editor.formschema.headline') }}
             </v-list-item-title>

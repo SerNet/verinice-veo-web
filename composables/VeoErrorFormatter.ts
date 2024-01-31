@@ -61,7 +61,7 @@ export const useVeoErrorFormatter = () => {
         isAdditionalPropertiesRule,
         isPatternRule,
         isFormatRule,
-        isTypeRule,
+        isTypeRule
       ].some((rule) => rule)
     ) {
       throw new Error(`No error formatter found for ${JSON.stringify(error)}`);
@@ -115,7 +115,7 @@ export const useVeoErrorFormatter = () => {
           break;
         }
         translatedErrorString = t(`error.${error.keyword}`, {
-          field: getInvalidFieldLabel(affectedProperty, translations),
+          field: getInvalidFieldLabel(affectedProperty, translations)
         }).toString();
         break;
       // While pattern, type and format are separate errors, we want to display the same error message, because all of them have to be fixed the same way by the user
@@ -127,14 +127,14 @@ export const useVeoErrorFormatter = () => {
             error.instancePath.split('/').pop() || error.instancePath,
             translations
           ),
-          format: error.params[error.keyword],
+          format: error.params[error.keyword]
         }).toString();
         break;
       // Enum is the keyword if a field is expected to have a certain value (one of the ones present in the enum) but has another one
       case 'enum':
       case 'additionalProperties':
         translatedErrorString = t(`error.${error.keyword}`, {
-          field: getInvalidFieldLabel(affectedProperty as string, translations),
+          field: getInvalidFieldLabel(affectedProperty as string, translations)
         }).toString();
         break;
       default:
@@ -164,7 +164,7 @@ export const useVeoErrorFormatter = () => {
         dataPathParts.pop() || missingProperty,
         translations
       ),
-      position,
+      position
     }).toString();
   };
 
@@ -176,6 +176,6 @@ export const useVeoErrorFormatter = () => {
   };
 
   return {
-    formatErrors,
+    formatErrors
   };
 };

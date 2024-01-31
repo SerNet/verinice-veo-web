@@ -19,8 +19,7 @@
   <BasePage
     :loading="!domain"
     data-component-name="domain-dashboard-page"
-    padding
-  >
+    padding>
     <UtilNotFoundError v-if="domainNotFound" :text="t('domainNotFoundText')" />
 
     <template v-else>
@@ -31,8 +30,7 @@
       <v-skeleton-loader
         v-else
         class="mt-n2 mb-4 skeleton-subtitle"
-        type="text"
-      />
+        type="text" />
 
       <v-row class="mt-4">
         <template v-if="elementStatusCountIsFetching">
@@ -47,8 +45,7 @@
                     <v-skeleton-loader
                       class="ml-6"
                       type="heading"
-                      width="210%"
-                    />
+                      width="210%" />
                   </v-col>
                 </v-row>
               </template>
@@ -61,13 +58,11 @@
             v-for="(row, rowIndex) of chartData"
             :key="rowIndex"
             cols="12"
-            lg="6"
-          >
+            lg="6">
             <div v-for="widget of row" :key="widget[0]" class="my-4">
               <WidgetMyLatestRevisions
                 v-if="widget[0] === 'my_latest_widget'"
-                data-component-name="domain-dashboard-latest-revisions-widget"
-              />
+                data-component-name="domain-dashboard-latest-revisions-widget" />
               <WidgetStackedStatusBarChart
                 v-else
                 chart-height="30"
@@ -75,8 +70,7 @@
                 :domain-id="$route.params.domain as string"
                 :object-type="widget[0]"
                 :data-component-name="`domain-dashboard-${widget[0]}-widget`"
-                @click="onBarClicked"
-              />
+                @click="onBarClicked" />
             </div>
           </v-col>
         </template>
@@ -104,19 +98,19 @@ export default defineComponent({
     // Domain specific stuff
     const fetchDomainElementStatusCountQueryParameters = computed(() => ({
       id: route.params.domain as string,
-      unitId: route.params.unit as string,
+      unitId: route.params.unit as string
     }));
     const {
       data: domainObjectInformation,
       isFetching: elementStatusCountIsFetching,
-      error: fetchElementStatusCountError,
+      error: fetchElementStatusCountError
     } = useQuery(
       domainQueryDefinitions.queries.fetchDomainElementStatusCount,
       fetchDomainElementStatusCountQueryParameters
     );
 
     const fetchDomainQueryParameters = computed(() => ({
-      id: route.params.domain as string,
+      id: route.params.domain as string
     }));
     const { data: domain, error: fetchDomainError } = useQuery(
       domainQueryDefinitions.queries.fetchDomain,
@@ -152,7 +146,7 @@ export default defineComponent({
       'control',
       'incident',
       'document',
-      'scenario',
+      'scenario'
     ];
     const WIDGETS_PER_ROW = 5;
 
@@ -166,16 +160,16 @@ export default defineComponent({
         params: {
           domain: route.params.domain,
           objectType,
-          subType,
+          subType
         },
         query: {
-          status,
-        },
+          status
+        }
       });
     };
 
     const fetchUnitQueryParams = computed(() => ({
-      id: route.params.unit as string,
+      id: route.params.unit as string
     }));
     const fetchUnitQueryEnabled = computed(() => !!route.params.unit);
 
@@ -183,7 +177,7 @@ export default defineComponent({
       unitQueryDefinitions.queries.fetch,
       fetchUnitQueryParams,
       {
-        enabled: fetchUnitQueryEnabled,
+        enabled: fetchUnitQueryEnabled
       }
     );
 
@@ -196,9 +190,9 @@ export default defineComponent({
       unit,
 
       t,
-      tGlobal,
+      tGlobal
     };
-  },
+  }
 });
 </script>
 

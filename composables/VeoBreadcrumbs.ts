@@ -68,6 +68,6 @@ export const useVeoBreadcrumbs = () => {
     addCustomBreadcrumb,
     clearCustomBreadcrumbs,
     updateCustomBreadcrumb,
-    removeCustomBreadcrumb,
+    removeCustomBreadcrumb
   };
 };

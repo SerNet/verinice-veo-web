@@ -21,8 +21,7 @@
       {{ idWithTitle }}
     </v-list-item-title>
     <v-list-item-subtitle
-      v-text="t('attributecount', item.attributes.length || 0)"
-    />
+      v-text="t('attributecount', item.attributes.length || 0)" />
     <template #append>
       <v-chip
         v-if="styling.name"
@@ -30,8 +29,7 @@
         class="mr-2"
         small
         label
-        variant="outlined"
-      >
+        variant="outlined">
         <span v-if="translate">
           {{ t(`editor.inputtypes.${styling.name}`) }}
         </span>
@@ -44,14 +42,12 @@
           class="edit-button"
           :icon="mdiPencil"
           variant="text"
-          @click="$emit('edit-item', $event)"
-        />
+          @click="$emit('edit-item', $event)" />
         <v-btn
           class="delete-button"
           :icon="mdiTrashCanOutline"
           variant="text"
-          @click="$emit('delete-item', $event)"
-        />
+          @click="$emit('delete-item', $event)" />
       </v-list-item-action>
     </template>
   </v-list-item>
@@ -63,23 +59,23 @@ import { mdiPencil, mdiTrashCanOutline } from '@mdi/js';
 
 import ObjectSchemaHelper, {
   IVeoOSHCustomAspect,
-  IVeoOSHCustomLink,
+  IVeoOSHCustomLink
 } from '~/lib/ObjectSchemaHelper2';
 import { IInputType } from '~/types/VeoEditor';
 
 const props = defineProps({
   item: {
     type: Object as PropType<IVeoOSHCustomAspect | IVeoOSHCustomLink>,
-    required: true,
+    required: true
   },
   styling: {
     type: Object as PropType<IInputType>,
-    default: () => ({}),
+    default: () => ({})
   },
   translate: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 });
 
 defineEmits(['delete-item', 'edit-item']);

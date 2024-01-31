@@ -25,8 +25,7 @@
           class="my-1 py-1"
           :icon="icon"
           :value="value"
-          :disabled="disabled"
-        />
+          :disabled="disabled" />
       </slot>
     </template>
     <template #default>

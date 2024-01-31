@@ -22,8 +22,7 @@
     x-large
     :title="t('editTranslations')"
     fixed-footer
-    @update:model-value="emit('update:model-value', $event)"
-  >
+    @update:model-value="emit('update:model-value', $event)">
     <template #default>
       <v-form v-model="formSchemaTitleFormIsValid">
         <h3 class="text-h3">
@@ -37,8 +36,7 @@
                   v-model="localFormSchemaTitles[locale]"
                   :label="t('title', [locale])"
                   :rules="[requiredRule]"
-                  variant="underlined"
-                />
+                  variant="underlined" />
               </v-col>
             </v-row>
           </v-card-text>
@@ -53,8 +51,7 @@
             v-model="expertMode"
             :label="t('expertMode')"
             color="primary"
-            hide-details
-          />
+            hide-details />
         </div>
       </div>
       <template v-if="!expertMode">
@@ -70,28 +67,24 @@
           @translation-deleted="
             deletedTranslations.push({
               key: $event.key,
-              source: parseInt($event.source, 10),
+              source: parseInt($event.source, 10)
             })
-          "
-        >
+          ">
           <template #controls>
             <v-checkbox
               v-model="formSchemaTranslationsOnly"
               color="primary"
               hide-details
-              :label="t('formSchemaTranslationsOnly')"
-            />
+              :label="t('formSchemaTranslationsOnly')" />
           </template>
           <template #no-data="{ searchQuery }">
             <i18n-t
               v-if="formSchemaTranslationsOnly"
               keypath="formSchemaTranslations.formSchemaTranslationNotFoundSearchAll"
-              scope="global"
-            >
+              scope="global">
               <a
                 class="cursor-pointer"
-                @click.prevent="formSchemaTranslationsOnly = false"
-              >
+                @click.prevent="formSchemaTranslationsOnly = false">
                 {{ t('click') }}
               </a>
             </i18n-t>
@@ -102,8 +95,7 @@
       <EditorTranslationsCodeEditor
         v-else
         v-model="localTranslations"
-        :source="TRANSLATION_SOURCE.FORMSCHEMA"
-      />
+        :source="TRANSLATION_SOURCE.FORMSCHEMA" />
       <BaseCard class="mt-6">
         <v-expansion-panels>
           <v-expansion-panel>
@@ -136,8 +128,7 @@
         variant="text"
         color="primary"
         :disabled="!dialogIsDirty || !dialogIsValid"
-        @click="onSave"
-      >
+        @click="onSave">
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>
@@ -161,7 +152,7 @@ const props = withDefaults(
     modelValue: boolean;
   }>(),
   {
-    formSchemaTitles: () => ({}),
+    formSchemaTitles: () => ({})
   }
 );
 

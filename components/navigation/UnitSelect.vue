@@ -22,8 +22,7 @@
         class="ma-4"
         :icon="mdiUnity"
         v-bind="toolTips"
-        @click="$emit('expand-menu')"
-      />
+        @click="$emit('expand-menu')" />
     </template>
 
     <template #default>
@@ -40,8 +39,7 @@
     density="compact"
     :disabled="disabled"
     :items="itemSelection"
-    :label="items.length ? t('unit') : t('select')"
-  >
+    :label="items.length ? t('unit') : t('select')">
     <template #item="{ props, item }">
       <v-list-item
         v-bind="props"
@@ -52,8 +50,7 @@
         :subtitle="item.raw.description"
         :title="item.title"
         :value="item.value"
-        @click="unitId = item.value"
-      />
+        @click="unitId = item.value" />
     </template>
 
     <template #append-item>
@@ -66,8 +63,7 @@
         @click="
           unitId = 'management';
           closeMenu.menu = false;
-        "
-      >
+        ">
         {{ t('management') }}
       </v-list-item>
     </template>
@@ -90,7 +86,7 @@ withDefaults(
   }>(),
   {
     disabled: false,
-    miniVariant: false,
+    miniVariant: false
   }
 );
 
@@ -115,7 +111,7 @@ const itemSelection = computed(() =>
   (units.value || []).map((unit) => ({
     value: unit.id,
     title: unit.name,
-    description: unit.description,
+    description: unit.description
   }))
 );
 
@@ -141,10 +137,10 @@ const unitId = computed({
     navigateTo({
       name: newValue === 'management' ? ROUTE_UNITS : ROUTE_DOMAIN_DASHBOARD,
       params: {
-        ...params,
-      },
+        ...params
+      }
     });
-  },
+  }
 });
 </script>
 

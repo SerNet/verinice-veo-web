@@ -33,8 +33,8 @@ export function useVeoReactiveFormActions() {
                 delete newObject.status;
               }
               return newObject;
-            },
-          ],
+            }
+          ]
         }
       : {};
   }
@@ -44,13 +44,13 @@ export function useVeoReactiveFormActions() {
       '#/properties/customAspects/properties/person_generalInformation/properties/attributes/properties/person_generalInformation_givenName':
         [
           (_newValue, _oldValue, newObject, oldObject) =>
-            getFullName(newObject, oldObject),
+            getFullName(newObject, oldObject)
         ],
       '#/properties/customAspects/properties/person_generalInformation/properties/attributes/properties/person_generalInformation_familyName':
         [
           (_newValue, _oldValue, newObject, oldObject) =>
-            getFullName(newObject, oldObject),
-        ],
+            getFullName(newObject, oldObject)
+        ]
     };
   }
 
@@ -118,6 +118,6 @@ export function useVeoReactiveFormActions() {
 
   return {
     defaultReactiveFormActions,
-    personReactiveFormActions,
+    personReactiveFormActions
   };
 }

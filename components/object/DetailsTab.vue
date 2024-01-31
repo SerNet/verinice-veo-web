@@ -25,8 +25,7 @@
       :items="items"
       :loading="tableIsLoading"
       enable-click
-      @click="openItem"
-    >
+      @click="openItem">
       <template #actions="{ item }">
         <div class="d-flex justify-end">
           <v-tooltip v-for="btn in actions" :key="btn.id" location="bottom">
@@ -37,8 +36,7 @@
                 size="small"
                 variant="flat"
                 :disabled="ability.cannot('manage', 'objects')"
-                @click="btn.action(item)"
-              />
+                @click="btn.action(item)" />
             </template>
             {{ btn.label }}
           </v-tooltip>
@@ -53,22 +51,21 @@
       :confirmation-text="globalT('global.button.delete')"
       :callback="confirmationDialogCallBack"
       @success="displaySuccessMessage(t('controlDeleted'))"
-      @error="displayErrorMessage(t('errors.control'), JSON.stringify($event))"
-    />
+      @error="
+        displayErrorMessage(t('errors.control'), JSON.stringify($event))
+      " />
     <ObjectUnlinkDialog
       v-model="unlinkEntityDialog.value"
       v-bind="unlinkEntityDialog"
       @success="onUnlinkEntitySuccess"
-      @error="onUnlinkEntityError"
-    />
+      @error="onUnlinkEntityError" />
     <RiskCreateDialogSingle
       v-if="object"
       v-model="editRiskDialog.visible"
       v-bind="editRiskDialog"
       :domain-id="domainId"
       :object-type="object.type"
-      :object-id="object.id"
-    />
+      :object-id="object.id" />
   </div>
 </template>
 
@@ -82,7 +79,7 @@ import {
   mdiContentCopy,
   mdiLinkOff,
   mdiTransitDetour,
-  mdiTrashCanOutline,
+  mdiTrashCanOutline
 } from '@mdi/js';
 import { VIcon, VTooltip } from 'vuetify/components';
 
@@ -97,18 +94,18 @@ import {
   IVeoRiskCategory,
   IVeoRiskDefinition,
   IVeoRiskValue,
-  VeoRiskTreatment,
+  VeoRiskTreatment
 } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import {
   useCloneObject,
-  useLinkObject,
+  useLinkObject
 } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions, {
   IVeoFetchRisksParameters,
-  IVeoFetchScopeChildrenParameters,
+  IVeoFetchScopeChildrenParameters
 } from '~/composables/api/queryDefinitions/objects';
 import { useFetchParentObjects } from '~/composables/api/objects';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
@@ -121,20 +118,20 @@ export default defineComponent({
   props: {
     type: {
       type: String,
-      default: '',
+      default: ''
     },
     object: {
       type: Object as PropType<IVeoEntity>,
-      default: undefined,
+      default: undefined
     },
     dense: {
       type: Boolean,
-      default: false,
+      default: false
     },
     domainId: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: ['reload'],
   setup(props, { emit }) {
@@ -160,7 +157,7 @@ export default defineComponent({
 
     const fetchTranslationsQueryParameters = computed(() => ({
       languages: [locale.value],
-      domain: props.domainId,
+      domain: props.domainId
     }));
     const { data: translations } = useQuery(
       translationQueryDefinitions.queries.fetch,
@@ -176,14 +173,14 @@ export default defineComponent({
       unitId: route.params.unit as string,
       sortBy: sortBy.value[0].key,
       sortOrder: sortBy.value[0].order as 'asc' | 'desc',
-      page: page.value,
+      page: page.value
     }));
     const parentScopesQueryEnabled = computed(
       () => props.type !== 'risks' && !!props.object?.id
     );
     const { data: parentScopes, isFetching: parentScopesIsFetching } =
       useFetchParentObjects(parentScopesQueryParameters, {
-        enabled: parentScopesQueryEnabled,
+        enabled: parentScopesQueryEnabled
       }); // Used by table and cloning objects
     const parentObjectsQueryParameters = computed(() => ({
       parentEndpoint: schemas.value?.[props.object?.type || ''] || '',
@@ -191,19 +188,19 @@ export default defineComponent({
       unitId: route.params.unit as string,
       sortBy: sortBy.value[0].key,
       sortOrder: sortBy.value[0].order as 'asc' | 'desc',
-      page: page.value,
+      page: page.value
     }));
     const parentObjectsQueryEnabled = computed(
       () => props.type === 'parentObjects' && !!props.object?.id
     );
     const { data: parentObjects, isFetching: parentObjectsIsFetching } =
       useFetchParentObjects(parentObjectsQueryParameters, {
-        enabled: parentObjectsQueryEnabled,
+        enabled: parentObjectsQueryEnabled
       });
     const childScopesQueryParameters =
       computed<IVeoFetchScopeChildrenParameters>(() => ({
         id: props.object?.id || '',
-        domain: (route.params.domain as string) || '',
+        domain: (route.params.domain as string) || ''
       }));
     const childScopesQueryEnabled = computed(
       () =>
@@ -219,7 +216,7 @@ export default defineComponent({
     const childObjectsQueryParameters = computed(() => ({
       id: props.object?.id || '',
       endpoint: schemas.value?.[props.object?.type || ''] || '',
-      domain: (route.params.domain as string) || '',
+      domain: (route.params.domain as string) || ''
     }));
     const childObjectsQueryEnabled = computed(
       () =>
@@ -235,7 +232,7 @@ export default defineComponent({
       );
     const risksQueryParameters = computed<IVeoFetchRisksParameters>(() => ({
       id: props.object?.id || '',
-      endpoint: schemas.value?.[props.object?.type || ''] || '',
+      endpoint: schemas.value?.[props.object?.type || ''] || ''
     }));
     const risksQueryEnabled = computed(
       () => props.type === 'risks' && !!props.object?.id
@@ -295,7 +292,7 @@ export default defineComponent({
                   ...control,
                   type: details.type,
                   name: details.name,
-                  id: details.id,
+                  id: details.id
                 };
               }
             );
@@ -337,7 +334,7 @@ export default defineComponent({
           'description',
           'updatedAt',
           'updatedBy',
-          'actions',
+          'actions'
         ]
       : props.type === 'links' ? ['icon', 'name']
       : props.type === 'controls' ? ['icon', 'actions']
@@ -359,7 +356,7 @@ export default defineComponent({
               priority: 100,
               order: 30,
               render: (data: any) =>
-                data.internalItem.raw.scenario?.abbreviation || '',
+                data.internalItem.raw.scenario?.abbreviation || ''
             },
             {
               value: 'scenario.displayName',
@@ -379,7 +376,7 @@ export default defineComponent({
                   .split(' ')
                   .slice(sliceIndex)
                   .join(' ');
-              },
+              }
             },
             ...riskDefinitionCategories.value.map(
               (categoryId: string, index: number) => ({
@@ -434,7 +431,7 @@ export default defineComponent({
                         VTooltip,
                         {
                           location: 'bottom',
-                          maxWidth: 600,
+                          maxWidth: 600
                         },
                         {
                           activator: ({ attrs, props }: any) =>
@@ -443,12 +440,11 @@ export default defineComponent({
                               {
                                 ...attrs,
                                 ...props,
-                                class: 'text-grey text--darken-4',
+                                class: 'text-grey text--darken-4'
                               },
                               translatedInherentRisk
                             ),
-                          default: () =>
-                            h('span', t('inherentRisk').toString()),
+                          default: () => h('span', t('inherentRisk').toString())
                         }
                       )
                     : undefined,
@@ -460,7 +456,7 @@ export default defineComponent({
                         VTooltip,
                         {
                           location: 'bottom',
-                          maxWidth: 600,
+                          maxWidth: 600
                         },
                         {
                           activator: ({ attrs, props }: any) =>
@@ -469,8 +465,7 @@ export default defineComponent({
                               { ...attrs, ...props, class: 'pr-1' },
                               translatedResidualRisk
                             ),
-                          default: () =>
-                            h('span', t('residualRisk').toString()),
+                          default: () => h('span', t('residualRisk').toString())
                         }
                       )
                     : undefined,
@@ -492,7 +487,7 @@ export default defineComponent({
                         VTooltip,
                         {
                           location: 'bottom',
-                          maxWidth: 600,
+                          maxWidth: 600
                         },
                         {
                           activator: ({ attrs, props }: any) =>
@@ -500,23 +495,23 @@ export default defineComponent({
                               ...attrs,
                               ...props,
                               size: 'small',
-                              icon,
+                              icon
                             }),
                           default: () =>
                             h(
                               'span',
                               t(`riskTreatments.${riskTreatment}`).toString()
-                            ),
+                            )
                         }
                       );
-                    }),
+                    })
                   ]);
                 },
                 priority: 89 - index,
                 order: 41 + index,
-                width: 150,
+                width: 150
               })
-            ),
+            )
           ]
         : props.type === 'links' ?
           [
@@ -529,7 +524,7 @@ export default defineComponent({
               priority: 100,
               order: 20,
               render: (data: any) =>
-                h('span', data.internalItem.raw?.abbreviation || ''),
+                h('span', data.internalItem.raw?.abbreviation || '')
             },
             {
               value: 'linkId',
@@ -544,8 +539,8 @@ export default defineComponent({
                   translations.value?.lang[locale.value][
                     data.internalItem.raw.linkId
                   ] || data.internalItem.raw.linkId
-                ),
-            },
+                )
+            }
           ]
         : props.type === 'controls' ?
           [
@@ -558,7 +553,7 @@ export default defineComponent({
               priority: 100,
               order: 20,
               render: (data: any) =>
-                h('span', data.internalItem.raw.control?.abbreviation || ''),
+                h('span', data.internalItem.raw.control?.abbreviation || '')
             },
             {
               value: 'name',
@@ -569,7 +564,7 @@ export default defineComponent({
               priority: 100,
               order: 30,
               render: (data: any) =>
-                h('span', data.internalItem.raw.control?.name || ''),
+                h('span', data.internalItem.raw.control?.name || '')
             },
             {
               value: 'status',
@@ -586,7 +581,7 @@ export default defineComponent({
                   t(
                     `controls.implementation.${data.internalItem.raw.implementationStatus}`
                   ) || ''
-                ),
+                )
             },
             {
               value: 'responsibility',
@@ -601,8 +596,8 @@ export default defineComponent({
                   'span',
                   { class: 'text-truncate d-inline-block' },
                   data.internalItem.raw.responsible?.name || ''
-                ),
-            },
+                )
+            }
           ]
         : []
       );
@@ -633,7 +628,7 @@ export default defineComponent({
           domain: props.domainId,
           endpoint: route.params?.objectType,
           id: copy?.id,
-          object: copy,
+          object: copy
         });
       }
     }
@@ -660,7 +655,7 @@ export default defineComponent({
                   await deleteRisk({
                     objectId: props.object?.id,
                     endpoint: schemas.value?.[props.object?.type || ''] || '',
-                    scenarioId: id,
+                    scenarioId: id
                   });
                   displaySuccessMessage(
                     upperFirst(t('riskDeleted').toString())
@@ -671,8 +666,8 @@ export default defineComponent({
                     e.message
                   );
                 }
-              },
-            },
+              }
+            }
           ];
         case 'controls':
           return [
@@ -688,8 +683,8 @@ export default defineComponent({
                   .join(' ');
                 confirmationDialogCallBack.value = () => onDeleteControl(item);
                 confirmationDialogVisible.value = true;
-              },
-            },
+              }
+            }
           ];
         // element type is neither risk nor control
         default:
@@ -711,7 +706,7 @@ export default defineComponent({
                     {
                       domain: route.params.domain as string,
                       endpoint: schemas.value?.[item.type] || '',
-                      id: clonedObjectId,
+                      id: clonedObjectId
                     },
                     queryClient
                   );
@@ -731,7 +726,7 @@ export default defineComponent({
                     e.message
                   );
                 }
-              },
+              }
             },
             {
               id: 'unlink',
@@ -753,7 +748,7 @@ export default defineComponent({
                   {
                     domain: route.params.domain as string,
                     endpoint: schemas.value?.[item.type] || '',
-                    id: item.id,
+                    id: item.id
                   },
                   queryClient
                 );
@@ -766,8 +761,8 @@ export default defineComponent({
                 }
 
                 unlinkEntityDialog.value.value = true;
-              },
-            },
+              }
+            }
           ];
       }
     });
@@ -778,7 +773,7 @@ export default defineComponent({
     const unlinkEntityDialog = ref({
       value: false as boolean,
       objectToRemove: undefined as IVeoEntity | undefined,
-      parent: undefined as IVeoEntity | undefined,
+      parent: undefined as IVeoEntity | undefined
     });
 
     const onUnlinkEntitySuccess = () => {
@@ -814,7 +809,7 @@ export default defineComponent({
     // Edit risk dialog stuff
     const editRiskDialog = ref<{ visible: boolean; scenarioId?: string }>({
       visible: false,
-      scenarioId: undefined,
+      scenarioId: undefined
     });
 
     // Map object types to corresponding url paths segments
@@ -827,7 +822,7 @@ export default defineComponent({
       incident: 'incidents',
       document: 'documents',
       scenario: 'scenarios',
-      control: 'controls',
+      control: 'controls'
     };
     // push to object detail site (on click in table)
     const openItem = ({ internalItem }) => {
@@ -839,7 +834,7 @@ export default defineComponent({
         ...route.params,
         object: itemId,
         objectType,
-        subType: '-',
+        subType: '-'
       };
 
       switch (props.type) {
@@ -856,20 +851,20 @@ export default defineComponent({
             query: {
               type: props.object?.type,
               riskAffected: props.object?.id,
-              control: internalItem.raw.id,
-            },
+              control: internalItem.raw.id
+            }
           });
         default:
           router.push({
             name: OBJECT_DETAIL_ROUTE,
-            params,
+            params
           });
       }
     };
 
     // Risk tab
     const fetchDomainQueryParameters = computed(() => ({
-      id: props.domainId as string,
+      id: props.domainId as string
     }));
     const { data: domain, isFetching: domainIsFetching } = useQuery(
       domainQueryDefinitions.queries.fetchDomain,
@@ -907,7 +902,7 @@ export default defineComponent({
         inherentRisk: categorySpecificRiskValues?.inherentRisk,
         residualRisk:
           categorySpecificRiskValues?.userDefinedResidualRisk ||
-          categorySpecificRiskValues?.residualRisk,
+          categorySpecificRiskValues?.residualRisk
       };
     }
 
@@ -948,9 +943,9 @@ export default defineComponent({
       sortBy,
 
       t,
-      upperFirst,
+      upperFirst
     };
-  },
+  }
 });
 </script>
 

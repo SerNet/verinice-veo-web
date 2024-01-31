@@ -13,7 +13,7 @@ export function generateUnitDetails() {
   const unitDetails: UnitDetails = {
     name: `${Cypress.env('testUnitPrefix')}${id}-spec-${Cypress.spec.name}`,
     desc: `Spec: ${Cypress.spec.name} | Test: ${Cypress.currentTest.title}`,
-    domains: ['DS-GVO'],
+    domains: ['DS-GVO']
   };
 
   Cypress.env('unitDetails', unitDetails);

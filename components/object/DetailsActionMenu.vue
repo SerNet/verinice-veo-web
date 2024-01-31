@@ -24,8 +24,7 @@
           :disabled="!visibleItems.length || $props.disabled"
           :icon="mdiDotsVertical"
           variant="text"
-          size="small"
-        />
+          size="small" />
       </template>
     </UtilNestedMenu>
   </div>
@@ -50,7 +49,7 @@ const props = withDefaults(
   }>(),
   {
     disabled: false,
-    object: undefined,
+    object: undefined
   }
 );
 
@@ -69,13 +68,13 @@ const navigateToObjectOverview = () => {
     name: OBJECT_OVERVIEW_ROUTE_NAME,
     params: {
       domain: route.params.domain,
-      unit: route.params.unit,
+      unit: route.params.unit
     },
     query: {
       objectType: props.object?.type,
       // subType: props.object?.domains[route.params.domain as string]?.subType
-      subType: props.object?.subType,
-    },
+      subType: props.object?.subType
+    }
   });
 };
 
@@ -103,8 +102,8 @@ const items = computed<
       item: props.object,
       onSuccess: navigateToObjectOverview,
       onError: (error: any) =>
-        displayErrorMessage(t('delteObjectFailed'), JSON.stringify(error)),
-    },
+        displayErrorMessage(t('delteObjectFailed'), JSON.stringify(error))
+    }
   },
   {
     key: 'dpia',
@@ -118,8 +117,8 @@ const items = computed<
           domainId: route.params.domain,
           objectType: 'process',
           subType: 'PRO_DPIA',
-          onSuccess: onCreateObjectSuccess,
-        },
+          onSuccess: onCreateObjectSuccess
+        }
       },
       {
         key: 'link_dpia',
@@ -128,13 +127,13 @@ const items = computed<
         componentProps: {
           object: props.object,
           preselectedFilters: { subType: 'PRO_DPIA' },
-          onSuccess: () => emit('reload'),
-        },
-      },
+          onSuccess: () => emit('reload')
+        }
+      }
     ],
     objectTypes: ['process'],
-    subTypes: ['PRO_DataProcessing'],
-  },
+    subTypes: ['PRO_DataProcessing']
+  }
 ]);
 
 // filter allowed actions for current object type & sub type

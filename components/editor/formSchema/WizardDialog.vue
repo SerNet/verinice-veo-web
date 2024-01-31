@@ -23,16 +23,14 @@
     fixed-footer
     :large="state !== WIZARD_STATES.START"
     :close-function="onClose"
-    @update:model-value="$emit('update:model-value', $event)"
-  >
+    @update:model-value="$emit('update:model-value', $event)">
     <template #default>
       <LayoutLoadingWrapper v-if="loadingFormSchema || loadingObjectSchema" />
       <v-window :model-value="state">
         <EditorFormSchemaWizardStateStart
           :model-value="WIZARD_STATES.START"
           @create="state = WIZARD_STATES.CREATE"
-          @import="state = WIZARD_STATES.IMPORT"
-        />
+          @import="state = WIZARD_STATES.IMPORT" />
         <EditorFormSchemaWizardStateCreate
           v-bind="mergeProps(formSchemaDetails, createFormListeners)"
           v-model:valid="createFormValid"
@@ -43,8 +41,7 @@
           :model-value="WIZARD_STATES.CREATE"
           :domain-id="domainId"
           :object-schema="objectSchema"
-          @update:object-schema="uploadedObjectSchema = $event"
-        />
+          @update:object-schema="uploadedObjectSchema = $event" />
         <EditorFormSchemaWizardStateImport
           v-model:force-own-schema="forceOwnObjectSchema"
           v-model:form-schema-id="formSchemaId"
@@ -54,8 +51,7 @@
           :schemas-compatible="schemasCompatible"
           @force-import="importFormSchema()"
           @update:form-schema="uploadedFormSchema = $event"
-          @update:object-schema="uploadedObjectSchema = $event"
-        />
+          @update:object-schema="uploadedObjectSchema = $event" />
       </v-window>
     </template>
     <template v-if="state !== WIZARD_STATES.START" #dialog-options>
@@ -75,8 +71,7 @@
           state === WIZARD_STATES.CREATE ?
             createFormSchema()
           : importFormSchema()
-        "
-      >
+        ">
         {{ globalT('global.button.next') }}
       </v-btn>
     </template>
@@ -92,35 +87,35 @@ import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
 import {
   IVeoObjectSchema,
-  IVeoObjectSchemaTranslations,
+  IVeoObjectSchemaTranslations
 } from '~/types/VeoTypes';
 import formsQueryDefinitions, {
-  IVeoFormSchema,
+  IVeoFormSchema
 } from '~/composables/api/queryDefinitions/forms';
 import schemaQueryDefinitions, {
-  IVeoFetchSchemaParameters,
+  IVeoFetchSchemaParameters
 } from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions, {
-  IVeoTranslations,
+  IVeoTranslations
 } from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 
 enum WIZARD_STATES {
   START,
   CREATE,
-  IMPORT,
+  IMPORT
 }
 
 export default defineComponent({
   props: {
     modelValue: {
       type: Boolean,
-      required: true,
+      required: true
     },
     domainId: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: ['done', 'update:model-value'],
   setup(props, { emit }) {
@@ -142,7 +137,7 @@ export default defineComponent({
         }
       },
       {
-        immediate: true,
+        immediate: true
       }
     );
 
@@ -156,7 +151,7 @@ export default defineComponent({
       formSchemaDetails.value = pick(route.query, [
         'name',
         'sorting',
-        'subType',
+        'subType'
       ]) as Dictionary<string | null>;
 
       // If the user wants to open a specific form schema, show the upload page to allow him to upload his own schema or select an object schema if he wishes to
@@ -192,7 +187,7 @@ export default defineComponent({
 
     function onClose() {
       router.push({
-        name: 'unit-domains-domain-editor',
+        name: 'unit-domains-domain-editor'
       });
       return true;
     }
@@ -209,7 +204,7 @@ export default defineComponent({
 
     const fetchFormQueryParameters = computed(() => ({
       domainId: props.domainId as string,
-      id: formSchemaId.value || '',
+      id: formSchemaId.value || ''
     }));
     const fetchFormQueryEnabled = computed(
       () => !!formSchemaId.value && formSchemaId.value !== 'custom'
@@ -304,7 +299,7 @@ export default defineComponent({
     // translation stuff
     const translationQueryParameters = computed(() => ({
       languages: (locales.value as LocaleObject[]).map((locale) => locale.code),
-      domain: props.domainId,
+      domain: props.domainId
     }));
     const { data: translations } = useQuery(
       translationQueryDefinitions.queries.fetch,
@@ -334,8 +329,8 @@ export default defineComponent({
         router.push({
           query: {
             objectType: objectSchemaId.value,
-            ...formSchemaDetails.value,
-          },
+            ...formSchemaDetails.value
+          }
         });
       }
       emitSchemas();
@@ -349,7 +344,7 @@ export default defineComponent({
       'update:sub-type': (newValue: string) =>
         (formSchemaDetails.value['subType'] = newValue),
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      submit: () => (createFormValid.value ? createFormSchema() : () => {}),
+      submit: () => (createFormValid.value ? createFormSchema() : () => {})
     };
 
     // import stuff
@@ -360,12 +355,12 @@ export default defineComponent({
         forceOwnSchema:
           forceOwnObjectSchema.value ?
             forceOwnObjectSchema.value + ''
-          : undefined,
+          : undefined
       };
 
       if (!isEqual(route.query, queryParams)) {
         router.push({
-          query: queryParams,
+          query: queryParams
         });
       }
       emitSchemas();
@@ -386,7 +381,7 @@ export default defineComponent({
       emit('done', {
         objectSchema: objectSchema.value,
         formSchema: formSchema.value,
-        translations: mergedTranslations,
+        translations: mergedTranslations
       });
     }
 
@@ -419,9 +414,9 @@ export default defineComponent({
       t,
       globalT,
       WIZARD_STATES,
-      mergeProps,
+      mergeProps
     };
-  },
+  }
 });
 </script>
 

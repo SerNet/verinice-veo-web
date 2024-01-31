@@ -5,8 +5,7 @@
     :close-disabled="view.isLoading || view.formIsDirty"
     large
     @keydown.enter="submitForm"
-    @update:model-value="emit('update:show-dialog', $event)"
-  >
+    @update:model-value="emit('update:show-dialog', $event)">
     <BaseCard>
       <v-card-text v-if="item">
         <!-- Read only text fields -->
@@ -14,22 +13,19 @@
           :label="t('requirement')"
           :model-value="form?.control?.displayName"
           readonly
-          variant="underlined"
-        />
+          variant="underlined" />
 
         <v-text-field
           :label="t('riskAffected')"
           :model-value="form?.origin?.displayName"
           readonly
-          variant="underlined"
-        />
+          variant="underlined" />
 
         <!-- Description -->
         <v-textarea
           v-model="form.implementationStatement"
           :label="t('description')"
-          variant="underlined"
-        />
+          variant="underlined" />
 
         <!-- Originiation -->
         <v-radio-group :model-value="form?.origination" inline>
@@ -40,8 +36,7 @@
           <template v-for="(key, value) in Origination" :key="key">
             <v-radio
               :label="t(`originationValues.${value}`)"
-              :value="`${key}`"
-            />
+              :value="`${key}`" />
           </template>
         </v-radio-group>
 
@@ -55,8 +50,7 @@
           item-value="name"
           return-object
           variant="underlined"
-          class="my-4"
-        />
+          class="my-4" />
 
         <!-- Status -->
         <v-radio-group v-model="form.status" inline>
@@ -76,8 +70,7 @@
         flat
         variant="plain"
         :disabled="view.isLoading"
-        @click="emit('update:show-dialog', false)"
-      >
+        @click="emit('update:show-dialog', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
@@ -96,11 +89,10 @@
                 riskAffected: state.riskAffected.value,
                 form,
                 item: item,
-                request,
+                request
               })
             )
-        "
-      >
+        ">
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>
@@ -113,7 +105,7 @@ import { cloneDeep } from 'lodash';
 import { useQuery } from '~/composables/api/utils/query';
 import domainQueryDefinitions, {
   IVeoFetchPersonsInDomainParameters,
-  IVeoPersonInDomain,
+  IVeoPersonInDomain
 } from '~/composables/api/queryDefinitions/domains';
 
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -150,7 +142,7 @@ type ResponsiblePerson = {
 };
 
 enum Origination {
-  SystemSpecific = 'SYSTEM_SPECIFIC',
+  SystemSpecific = 'SYSTEM_SPECIFIC'
   // Inherited = 'INHERITED',
   // Organisation = 'ORGANISATION'
 }
@@ -160,7 +152,7 @@ enum Status {
   Yes = 'YES',
   Partial = 'PARTIAL',
   No = 'NO',
-  NA = 'N_A',
+  NA = 'N_A'
 }
 
 const props = defineProps<Props>();
@@ -176,7 +168,7 @@ const initialForm = {
   responsible: null,
   status: 'UNKNOWN',
   implementationStatement: null,
-  origination: 'SYSTEM_SPECIFIC',
+  origination: 'SYSTEM_SPECIFIC'
 };
 
 const form: Ref<RequirementImplementation> = ref(initialForm);
@@ -186,14 +178,14 @@ const _item = computed(() => props.item);
 watch(_item, () => {
   if (!_item.value) return;
   form.value = {
-    ..._item.value,
+    ..._item.value
   };
 });
 
 // view
 const view = reactive({
   isLoading: false,
-  formIsDirty: false,
+  formIsDirty: false
 });
 
 // Load persons from current unit + current domain
@@ -212,7 +204,7 @@ const totalItemCountQueryParameters =
   computed<IVeoFetchPersonsInDomainParameters>(() => ({
     domainId: domainId.value as string,
     unitId: unitId.value as string,
-    size: '1',
+    size: '1'
   }));
 
 const { data: _personsForTotalItemCount } = useQuery(
@@ -230,7 +222,7 @@ const fetchPersonsInDomainQueryParameters =
   computed<IVeoFetchPersonsInDomainParameters>(() => ({
     domainId: domainId.value as string,
     unitId: unitId.value as string,
-    size: totalItemCount.value,
+    size: totalItemCount.value
   }));
 
 const { data: _persons } = useQuery(
@@ -246,7 +238,7 @@ const persons = computed(() =>
 function mapPersons(persons: IVeoPersonInDomain[]): ResponsiblePerson[] {
   return persons.map((person) => ({
     name: person.name,
-    targetUri: person._self,
+    targetUri: person._self
   }));
 }
 
@@ -255,7 +247,7 @@ async function submitForm({
   riskAffected,
   form,
   item,
-  request,
+  request
 }: {
   type: string;
   riskAffected: string;
@@ -282,7 +274,7 @@ async function submitForm({
     await request(url, {
       method: 'PUT',
       json: requirementImplementation,
-      params: { id: requirementImplementationId },
+      params: { id: requirementImplementationId }
     });
     emit('update:item');
     displaySuccessMessage(t('requirementImplementationUpdated'));

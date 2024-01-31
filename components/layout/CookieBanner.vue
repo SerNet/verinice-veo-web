@@ -20,8 +20,7 @@
     <div class="veo-border veo-cookie-banner">
       <v-card style="border-radius: 0">
         <v-card-text
-          class="d-flex flex-row align-center justify-space-between py-0"
-        >
+          class="d-flex flex-row align-center justify-space-between py-0">
           <span class="text-body-1">
             {{ t('cookieBannerText') }}
             <a :href="dataProtectionDeclarationLink" target="_blank">{{
@@ -33,16 +32,14 @@
               flat
               color="primary"
               class="mx-1 my-3"
-              @click="acceptRequiredCookies"
-            >
+              @click="acceptRequiredCookies">
               {{ t('declineOptionalCookies') }}
             </v-btn>
             <v-btn
               flat
               color="primary"
               class="mx-1 my-3"
-              @click="cookieConfigurationVisible = true"
-            >
+              @click="cookieConfigurationVisible = true">
               {{ t('configure') }}
             </v-btn>
             <v-btn
@@ -50,8 +47,7 @@
               color="primary"
               class="mx-1 my-3"
               data-veo-test="cookies-btn-accept-all"
-              @click="acceptAllCookies"
-            >
+              @click="acceptAllCookies">
               {{ t('acceptAllCookies') }}
             </v-btn>
           </div>
@@ -62,8 +58,7 @@
       v-model="cookieConfigurationVisible"
       temporary
       class="pa-4"
-      :width="300"
-    >
+      :width="300">
       <template #default>
         <h2 class="text-h2 mb-2">
           {{ t('cookieSettings') }}
@@ -77,8 +72,7 @@
         <v-expansion-panels :model-value="[0]" multiple variant="accordion">
           <v-expansion-panel
             v-for="(category, index) of categories"
-            :key="index"
-          >
+            :key="index">
             <v-expansion-panel-title v-if="category.options.length">
               <v-checkbox
                 :value="true"
@@ -86,8 +80,7 @@
                 disabled
                 dense
                 hide-details
-                :label="category.label"
-              />
+                :label="category.label" />
             </v-expansion-panel-title>
             <v-expansion-panel-text class="pl-4">
               <v-checkbox
@@ -98,8 +91,7 @@
                 disabled
                 dense
                 hide-details
-                :label="t(`cookie.${cookie}`)"
-              />
+                :label="t(`cookie.${cookie}`)" />
             </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -108,8 +100,7 @@
           class="mt-6"
           color="primary"
           block
-          @click="acceptAllCookies"
-        >
+          @click="acceptAllCookies">
           {{ t('acceptAllCookies') }}
         </v-btn>
         <v-btn flat class="mt-2" color="primary" block @click="acceptSelection">
@@ -152,12 +143,12 @@ export default defineComponent({
     }[] = [
       {
         label: t('requiredCookies').toString(),
-        options: REQUIRED_COOKIES,
+        options: REQUIRED_COOKIES
       },
       {
         label: t('optionalCookies').toString(),
-        options: OPTIONAL_COOKIES,
-      },
+        options: OPTIONAL_COOKIES
+      }
     ];
 
     // Cookie handling
@@ -173,7 +164,7 @@ export default defineComponent({
       (newValue) =>
         (localCookieSelection.value = [
           ...(newValue?.selected || []),
-          ...REQUIRED_COOKIES,
+          ...REQUIRED_COOKIES
         ]),
       { immediate: true }
     );
@@ -193,7 +184,7 @@ export default defineComponent({
           OPTIONAL_COOKIES.every((cookie) =>
             localCookieSelection.value.includes(cookie)
           ) && !!OPTIONAL_COOKIES.length,
-        selected: localCookieSelection.value,
+        selected: localCookieSelection.value
       };
     };
 
@@ -207,9 +198,9 @@ export default defineComponent({
       dataProtectionDeclarationLink,
       localCookieSelection,
 
-      t,
+      t
     };
-  },
+  }
 });
 </script>
 

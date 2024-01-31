@@ -43,8 +43,7 @@
                   <ObjectDetailsActionMenu
                     :disabled="ability.cannot('manage', 'objects')"
                     :object="object"
-                    @reload="$emit('reload')"
-                  />
+                    @reload="$emit('reload')" />
                 </v-col>
               </v-row>
             </template>
@@ -56,8 +55,7 @@
           <div
             v-if="!loading"
             class="text-body-2 overflow-y-auto object-details__description"
-            data-component-name="object-details-description"
-          >
+            data-component-name="object-details-description">
             <span v-if="object && object.description">{{
               object.description
             }}</span>
@@ -77,8 +75,7 @@
           v-show="!tab.hidden"
           :key="tab.key"
           :disabled="tab.disabled"
-          :data-component-name="`object-details-${tab.key}-tab`"
-        >
+          :data-component-name="`object-details-${tab.key}-tab`">
           {{ t(tab.key) }}
         </v-tab>
       </template>
@@ -91,8 +88,7 @@
               :object="object"
               :dense="dense"
               :domain-id="domainId"
-              @reload="$emit('reload')"
-            />
+              @reload="$emit('reload')" />
           </BaseCard>
         </v-window-item>
       </template>
@@ -115,24 +111,24 @@ export default defineComponent({
   props: {
     object: {
       type: Object as PropType<IVeoEntity>,
-      default: undefined,
+      default: undefined
     },
     loading: {
       type: Boolean,
-      default: false,
+      default: false
     },
     activeTab: {
       type: String,
-      default: 'childObjects',
+      default: 'childObjects'
     },
     domainId: {
       type: String,
-      required: true,
+      required: true
     },
     dense: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: ['reload', 'update:activeTab'],
   setup(props, { emit }) {
@@ -150,14 +146,14 @@ export default defineComponent({
 
     /** Fetch current domain: veo hides some tabs according to the current domain, type and subtype */
     const fetchDomainQueryParameters = computed(() => ({
-      id: props.domainId as string,
+      id: props.domainId as string
     }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
     const { data: domain } = useQuery(
       domainQueryDefinitions.queries.fetchDomain,
       fetchDomainQueryParameters,
       {
-        enabled: fetchDomainQueryEnabled,
+        enabled: fetchDomainQueryEnabled
       }
     );
 
@@ -194,29 +190,29 @@ export default defineComponent({
     >(() => [
       {
         key: 'childScopes',
-        disabled: props.object?.type !== 'scope',
+        disabled: props.object?.type !== 'scope'
       },
       {
-        key: 'childObjects',
+        key: 'childObjects'
       },
       {
-        key: 'parentScopes',
+        key: 'parentScopes'
       },
       {
         key: 'parentObjects',
-        disabled: props.object?.type === 'scope',
+        disabled: props.object?.type === 'scope'
       },
       {
-        key: 'links',
+        key: 'links'
       },
       {
         key: 'risks',
-        hidden: !hasRiskTab.value,
+        hidden: !hasRiskTab.value
       },
       {
         key: 'controls',
-        hidden: isControlsTabHidden.value,
-      },
+        hidden: isControlsTabHidden.value
+      }
     ]);
 
     const subType = computed(() => props.object?.subType);
@@ -245,7 +241,7 @@ export default defineComponent({
       },
       set(newValue: number) {
         emit('update:activeTab', tabs.value[newValue].key || 'childObjects');
-      },
+      }
     });
 
     const createdAtFormatted = computed(() =>
@@ -268,9 +264,9 @@ export default defineComponent({
       updatedAtFormatted,
 
       upperFirst,
-      t,
+      t
     };
-  },
+  }
 });
 </script>
 
