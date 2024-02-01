@@ -399,12 +399,16 @@ function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: boolean) {
     entityModifiedDialogVisible.value = false;
 
     // We have to stringify the content and then manually add the host, as the history api currently doesn't support absolute urls 18-01-2022
-    modifiedObject.value = JSON.parse(
-      JSON.stringify(data.content).replaceAll(
-        /"\//g,
-        `"${config.public.apiUrl}/`
-      )
-    );
+    if (isRevision) {
+      modifiedObject.value = JSON.parse(
+        JSON.stringify(data.content).replaceAll(
+          /"\//g,
+          `"${config.public.apiUrl}/`
+        )
+      );
+    } else {
+      modifiedObject.value = cloneDeep(object.value);
+    }
     // @ts-ignore We don't set the display name when loading objects from the history, so we have to do it here
     modifiedObject.value.displayName = `${data.content.designator} ${
       data.content.abbreviation || ''
@@ -413,6 +417,7 @@ function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: boolean) {
   };
   if (isFormDirty.value) {
     onContinueNavigation.value = displayRevisionCallback;
+    entityModifiedDialogVisible.value = true;
   } else {
     displayRevisionCallback();
   }
