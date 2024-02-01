@@ -116,7 +116,7 @@ function apply() {
     });
   } else {
     applyProfile({
-      profileKey: state.selectedProfiles[0],
+      profileId: state.selectedProfiles[0],
       unitId: state.selectedUnit,
       domainId: state.domainId,
       messages: { success: t('messageSuccess'), error: t('messageError') }

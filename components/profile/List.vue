@@ -19,7 +19,11 @@
 <template>
   <BasePage style="height: 100vh">
     <template #header>
-      <LayoutHeadline class="mb-4" :title="$t('breadcrumbs.profiles')" :element="profiles[0]?.key || ''" />
+      <LayoutHeadline
+        class="mb-4"
+        :title="$t('breadcrumbs.profiles')"
+        :element="profiles[0]?.key || ''"
+      />
 
       <p class="mt-8 mb-4 text-body-1">
         {{ t('hint') }}
@@ -31,7 +35,7 @@
         <v-data-table
           :headers="headers"
           :items="profiles"
-          item-value="key"
+          item-value="id"
           items-per-page="5"
           show-select
           select-strategy="single"
@@ -41,9 +45,15 @@
       </BaseCard>
 
       <!-- Table actions -->
-      <v-row dense class="mt-4">
+      <v-row
+        dense
+        class="mt-4"
+      >
         <v-spacer />
-        <v-col cols="auto" class="justify-end">
+        <v-col
+          cols="auto"
+          class="justify-end"
+        >
           <v-btn
             flat
             color="primary"

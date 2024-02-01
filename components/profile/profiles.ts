@@ -23,25 +23,17 @@ import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 // TYPES
 import { IVeoLink } from '~/types/VeoTypes';
 export type Profile = {
-  key: string;
+  id: string;
   name: string;
   description: string;
   language: string;
-};
-
-type Profiles = {
-  [key: string]: {
-    name: string;
-    description: string;
-    language: string;
-  };
 };
 
 // useUnits
 type ApplyProfileParams = {
   domainId: string;
   unitId: string;
-  profileKey: string;
+  profileId: string;
   messages: { [key: string]: string };
 };
 
@@ -114,19 +106,17 @@ function useDomain() {
 }
 
 export function useProfiles() {
-  // Fetch domain, because profiles are a member of the domain object
-  const { domain } = useDomain();
+  const fetchProfilesQueryParameters = computed(() => ({
+    domainId: state.domainId as string
+  }));
 
-  // Unpack available profiles
-  const profiles = computed(() => {
-    const _profiles: Profiles | undefined = toRaw(domain?.value?.profiles);
+  const fetchProfilesQueryEnabled = computed(() => !!state.domainId);
 
-    if (!_profiles) return [];
-    return Object.keys(_profiles || {}).map((key) => ({
-      key,
-      ..._profiles[key]
-    })) as Profile[];
-  });
+  const { data: profiles } = useQuery(
+    domainQueryDefinitions.queries.fetchProfiles,
+    fetchProfilesQueryParameters,
+    { enabled: fetchProfilesQueryEnabled }
+  );
 
   return {
     profiles: readonly(profiles),
@@ -151,13 +141,13 @@ export function useUnits() {
       _units.value.filter((unit) => {
         return unit.domains.some(({ targetUri }) => targetUri === domain?.value?._self);
       })
-    : []
+      : []
   );
 
   async function applyProfile({ profileKey, unitId, domainId, messages }: ApplyProfileParams) {
     state.isApplyingProfile = true;
     try {
-      await mutateExistingUnit({ domainId, unitId, profileKey });
+      await mutateExistingUnit({ domainId, unitId, profileId });
       redirectToUnit({ unitId, domainId });
       displaySuccessMessage(messages.success);
     } catch (err) {
@@ -187,7 +177,7 @@ export function useUnits() {
       await createNewUnit({ name, domains, description });
       if (unitDetailsPayload.value?.resourceId) {
         await applyProfile({
-          profileKey: state.selectedProfiles[0],
+          profileId: state.selectedProfiles[0],
           unitId: unitDetailsPayload.value.resourceId as string,
           domainId: state.domainId,
           messages

@@ -181,7 +181,7 @@ import { mdiHelpCircleOutline, mdiForumOutline, mdiSchoolOutline, mdiYoutubeTv, 
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-import { useQuery } from '~/composables/api/utils/query';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
 
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
@@ -199,7 +199,7 @@ const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
 const routeIds = (unitName: any) => {
   const unit = units.value?.find((unit: any) => unit.name === unitName);
   // get the DS-GVO-Id of the unit's allocated domains
-  const domain = unit?.domains?.find((domain: any) => domain.name === 'DS-GVO');
+  const domain = unit?.domains?.find((domain: any) => domain.name === 'NIS2');
 
   return [unit?.id, domain?.id];
 };
@@ -236,12 +236,25 @@ const applyProfile = async () => {
 
   const [unit, domain] = [...routeIds('Demo')];
 
-  if (unit && domain) {
+  const profiles = await useQuerySync(
+    domainQueryDefinitions.queries.fetchProfiles,
+    { domainId: domain }
+  );
+
+  if (unit && domain && profiles.length) {
     try {
+      const profileId = profiles.find(
+        (profile) => profile.name === 'example organization'
+      )?.id;
+
+      if (!profileId) {
+        throw new Error('No profile ID found!');
+        return;
+      }
       // set DEMO_UNIT_PROFILE_APPLIED to true on first call to ensure, that the profile is applied only once
       localStorage.setItem(LOCAL_STORAGE_KEYS.DEMO_UNIT_PROFILE_APPLIED, true.toString());
       // apply the profile / sample data to the unit <Demo>
-      await apply({ domainId: domain, unitId: unit, profileKey: ['demoUnit'] });
+      await apply({ domainId: domain, unitId: unit, profileId });
       // link to the dashboard
       loadUnit('Demo');
     } catch (error: any) {
