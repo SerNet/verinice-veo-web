@@ -166,6 +166,10 @@ export default defineComponent({
         return ['asset', 'process', 'scope'].includes(props.object?.type);
       }
 
+      if (domain.value.name === 'NIS2') {
+        return ['asset', 'process', 'scope'].includes(props.object?.type);
+      }
+
       return false;
     });
 
