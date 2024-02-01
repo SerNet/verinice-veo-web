@@ -3106,7 +3106,7 @@ The following npm packages may be included in this product:
  - @types/hast@2.3.4
  - @types/http-proxy@1.17.14
  - @types/mdast@3.0.10
- - @types/node@20.11.10
+ - @types/node@20.11.14
  - @types/resolve@1.20.2
  - @types/unist@2.0.6
  - @types/web-bluetooth@0.0.20
