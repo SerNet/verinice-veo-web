@@ -138,7 +138,7 @@
 
   "userDataExport": {
     "hint": {
-      "text": "Here you can exercise your right to data portability. { linebreak } Download your personal data in JSON format (ZIP compressed if necessary) by clicking on the download links:",
+      "text": "Here you can exercise your right to data portability. { linebreak } Download your data recorded in verinice to save it or use it in an external service (JSON-format, ZIP-compressed).",
       "href": "https://dsgvo-gesetz.de/art-20-dsgvo/"
     }
   },

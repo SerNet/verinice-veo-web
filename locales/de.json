@@ -138,7 +138,7 @@
 
   "userDataExport": {
     "hint": {
-      "text": "Hier können Sie Ihr Recht auf Datenübertragbarkeit wahrnehmen. { linebreak } Laden Sie ihre personenbezogenen Daten im JSON-Format (ZIP-komprimiert) durch Mausklick auf die Downloadlinks herunter:",
+      "text": "Hier können Sie Ihr Recht auf Datenübertragbarkeit wahrnehmen. { linebreak } Laden Sie Ihre in verinice erfassten Daten herunter, um sie zu sichern oder in einem externen Dienst zu verwenden (JSON-Format, ZIP-komprimiert).",
       "href": "https://dsgvo-gesetz.de/art-20-dsgvo/"
     }
   },
