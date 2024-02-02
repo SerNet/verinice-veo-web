@@ -1,14 +1,19 @@
+import { veoRequest } from '../commands/requests';
+import { getVeoDomains } from '../commands/domains';
 import { login } from '../commands/login';
 import { acceptAllCookies } from '../commands/cookies';
-import { goToUnitSelection, selectUnit, createUnit, deleteUnit } from '../commands/units';
+import { goToUnitSelection, selectUnit, createUnit, createUnitGUI, deleteUnit } from '../commands/units';
 import { generateUnitDetails } from './setupHelpers';
 
 Cypress.Commands.addAll({
+  veoRequest,
+  getVeoDomains,
   login,
   acceptAllCookies,
   goToUnitSelection,
   selectUnit,
   createUnit,
+  createUnitGUI,
   deleteUnit
 });
 
