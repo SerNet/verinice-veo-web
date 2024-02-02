@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { TCYVeoUnitNames } from './domains';
+
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
@@ -7,6 +9,7 @@ declare global {
       goToUnitSelection: typeof goToUnitSelection;
       selectUnit: typeof selectUnit;
       createUnit: typeof createUnit;
+      createUnitGUI: typeof createUnitGUI;
       deleteUnit: typeof deleteUnit;
     }
   }
@@ -22,7 +25,7 @@ export function selectUnit({ unitName = Cypress.env('unitDetails').name }: { uni
   cy.get('[data-veo-test="unit-selection-available-units"] a').contains(unitName).click();
 }
 
-export function createUnit({
+export function createUnitGUI({
   unitName = Cypress.env('unitDetails').name,
   unitDesc = Cypress.env('unitDetails').desc,
   domains = Cypress.env('unitDetails').domains
@@ -61,6 +64,33 @@ export function createUnit({
     .click();
 
   cy.wait(['@getNewUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 200);
+}
+
+export function createUnit({
+  unitName = Cypress.env('unitDetails').name,
+  unitDesc = Cypress.env('unitDetails').desc,
+  domainNames = Cypress.env('unitDetails').domains
+}: {
+  unitName?: string;
+  unitDesc?: string;
+  domainNames?: string[];
+} = {}): void {
+  cy.getVeoDomains().then((allVeoDomains) => {
+    // Get targetUris of domains the test unit will be associated with
+    const domains = allVeoDomains
+      .filter((domain) => domainNames.includes(domain.name as TCYVeoUnitNames))
+      .map((filteredDomain) => ({ targetUri: filteredDomain.targetUri }));
+
+    cy.veoRequest({
+      url: '/api/units',
+      method: 'POST',
+      requestBody: {
+        name: unitName,
+        description: unitDesc,
+        domains
+      }
+    });
+  });
 }
 
 export function deleteUnit({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {
