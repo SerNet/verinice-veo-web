@@ -23,11 +23,11 @@
       <BaseCard class="mx-12 my-4 bg-basepage" style="max-width: 1280px">
         <v-card class="my-4 bg-surface">
           <div class="bg-accent" style="height: 75px">
-            <v-card-title class="ml-4 small-caps">
+            <v-card-title class="ml-8 small-caps">
               {{ t('greeting') }}
             </v-card-title>
 
-            <v-card-subtitle class="ml-4">
+            <v-card-subtitle class="ml-8">
               {{ t('subTitle') }}
             </v-card-subtitle>
           </div>
@@ -78,7 +78,7 @@
             </v-col>
 
             <v-col cols="6">
-              <v-card class="mr-8 fill-height bg-background">
+              <v-card class="mx-8 fill-height bg-background">
                 <v-card-title
                   class="pt-4 bg-accent small-caps"
                   style="min-height: 60px">
@@ -93,7 +93,7 @@
                   }}
                 </v-card-text>
 
-                <div class="d-flex justify-center my-8">
+                <div class="d-flex justify-center my-4">
                   <v-btn color="primary" @click="loadUnit()">
                     {{
                       isUnitExisting('Unit 1') ?
