@@ -26,7 +26,7 @@
     scrim
     v-bind="$attrs">
     <template #prepend>
-      <div class="mb-8">
+      <div class="my-6">
         <NavigationUnitSelect
           :mini-variant="miniVariant"
           @expand-menu="miniVariant = false" />
