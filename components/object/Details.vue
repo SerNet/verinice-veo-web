@@ -181,8 +181,7 @@ export default defineComponent({
     });
 
     const isControlsTabHidden = computed(() => {
-      const isDomainWithControls = domain?.value?.abbreviation === 'ITGS';
-      return !isRiskAffected || !isDomainWithControls;
+      return !isRiskAffected || ['DS-GVO', 'NIS2'].includes(domain.value?.name);
     });
 
     const tabs = computed<
