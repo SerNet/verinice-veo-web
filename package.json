@@ -59,7 +59,7 @@
     "husky": "^8.0.2",
     "intro.js": "^7.0.1",
     "js-cookie": "^3.0.1",
-    "jsdom": "^23.0.0",
+    "jsdom": "^24.0.0",
     "json-ptr": "^3.1.1",
     "jszip": "^3.10.1",
     "keycloak-js": "^23.0.0",
