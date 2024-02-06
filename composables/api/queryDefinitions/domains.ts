@@ -20,13 +20,15 @@ import {
   IVeoDomainRiskDefinition,
   IVeoEntity,
   IVeoPiaMandatoryRule,
+  IVeoRisk,
   IVeoElementTypeDefinition
-} from '~/types/VeoTypes';
+} from '../../../types/VeoTypes';
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
-import { IVeoRisk } from '~/types/VeoTypes';
+
 import { VeoApiReponseType } from '../utils/request';
-import { Profile } from '~/components/profile/profiles';
+
+import type { Profile } from '../../../components/profile/profiles';
 
 export interface IVeoFetchPersonsInDomainParameters {
   domainId: string;
@@ -189,13 +191,16 @@ export default {
     } as IVeoMutationDefinition<IVeoUpdateTypeDefinitionParameters, void>,
     applyProfile: {
       primaryQueryKey: 'domain',
-      url: `/api/domains/:domainId/profilesnew/:profileId/units/:unitId`,
+      url: `/api/domains/:domainId/profiles/:profileId/incarnation`,
       method: 'POST',
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: {
           domainId: mutationParameters.domainId,
           profileId: mutationParameters.profileId,
           unitId: mutationParameters.unitId
+        },
+        query: {
+          unit: mutationParameters.unitId
         }
       }),
       responseType: VeoApiReponseType.VOID,

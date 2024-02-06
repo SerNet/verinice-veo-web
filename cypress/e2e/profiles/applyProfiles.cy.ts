@@ -1,5 +1,4 @@
-// disbaling the test temporarily; there is no data from the new profile endpoint atm for DS-GVO
-describe.skip('Apply Profiles', () => {
+describe('Apply Profiles', () => {
   before(() => {
     cy.login();
     cy.createUnit();
@@ -30,7 +29,10 @@ describe.skip('Apply Profiles', () => {
     cy.get('.v-autocomplete__content .v-list-item').click();
 
     // Set up a listener for API responses
-    cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/profiles/demoUnit/units/**`).as('applyProfile');
+    cy.intercept(
+      'POST',
+      `${Cypress.env('veoApiUrl')}/domains/**/profiles/**/incarnation`
+    ).as('applyProfile');
     cy.get('.v-card-actions button').last().click();
 
     // Wait for API response

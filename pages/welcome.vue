@@ -179,12 +179,12 @@
 <script setup lang="ts">
 import { mdiHelpCircleOutline, mdiForumOutline, mdiSchoolOutline, mdiYoutubeTv, mdiInformationOutline } from '@mdi/js';
 
-import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-import { useQuery, useQuerySync } from '~/composables/api/utils/query';
-import { useMutation } from '~/composables/api/utils/mutation';
+import domainQueryDefinitions from '../composables/api/queryDefinitions/domains';
+import unitQueryDefinitions from '../composables/api/queryDefinitions/units';
+import { useQuery, useQuerySync } from '../composables/api/utils/query';
+import { useMutation } from '../composables/api/utils/mutation';
 
-import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+import { LOCAL_STORAGE_KEYS } from '../types/localStorage';
 
 const { mutateAsync: apply, isLoading } = useMutation(domainQueryDefinitions.mutations.applyProfile);
 const { displayErrorMessage } = useVeoAlerts();
@@ -199,7 +199,7 @@ const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
 const routeIds = (unitName: any) => {
   const unit = units.value?.find((unit: any) => unit.name === unitName);
   // get the DS-GVO-Id of the unit's allocated domains
-  const domain = unit?.domains?.find((domain: any) => domain.name === 'NIS2');
+  const domain = unit?.domains?.find((domain: any) => domain.name === 'DS-GVO');
 
   return [unit?.id, domain?.id];
 };
@@ -243,9 +243,8 @@ const applyProfile = async () => {
 
   if (unit && domain && profiles.length) {
     try {
-      const profileId = profiles.find(
-        (profile) => profile.name === 'example organization'
-      )?.id;
+      const profileId = profiles.find((profile) => profile.name === 'demoUnit')
+        ?.id;
 
       if (!profileId) {
         throw new Error('No profile ID found!');
