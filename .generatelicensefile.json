@@ -7,10 +7,10 @@
 
   "replace": {
     "doctrine@3.0.0": "./node_modules/doctrine/LICENSE",
-    "@ucast/core@1.10.1": "./node_modules/@ucast/core/LICENSE",
-    "@ucast/js@3.0.2": "./node_modules/@ucast/js/LICENSE",
-    "@ucast/mongo@2.4.2": "./node_modules/@ucast/mongo/LICENSE",
-    "@ucast/mongo2js@1.3.3": "./node_modules/@ucast/mongo2js/LICENSE",
+    "@ucast/core@1.10.2": "./node_modules/@ucast/core/LICENSE",
+    "@ucast/js@3.0.4": "./node_modules/@ucast/js/LICENSE",
+    "@ucast/mongo@2.4.3": "./node_modules/@ucast/mongo/LICENSE",
+    "@ucast/mongo2js@1.3.4": "./node_modules/@ucast/mongo2js/LICENSE",
     "@cloudflare/kv-asset-handler@0.3.0": "./node_modules/@cloudflare/kv-asset-handler/LICENSE_MIT",
     "through@2.3.8": "./node_modules/through/LICENSE.MIT",
     "type-fest@2.19.0": "./node_modules/type-fest/license",
