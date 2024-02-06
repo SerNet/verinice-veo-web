@@ -123,7 +123,7 @@ const unitId = computed({
     let params;
 
     if (newValue === 'management') {
-      params = { ...route.params };
+      params = {};
     } else {
       const domainId =
         units.value
