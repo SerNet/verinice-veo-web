@@ -141,6 +141,11 @@ const deleteUnit = async () => {
       localStorage.removeItem('last-domain');
     }
 
+    // if the Demo-Unit is about to be deleted, we have to manipulate the storageKey to ensure, that a profile can be applied again (welcomePage) for another unit created with the same name ("Demo")
+    if (props.unit?.name === 'Demo') {
+      localStorage.removeItem('demo-unit-profile-applied');
+    }
+
     displaySuccessMessage(t('unitDeleted'));
     emit('success');
   } catch (e: any) {
