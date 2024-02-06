@@ -126,7 +126,7 @@ const domainId = computed({
   },
   set(newValue: string) {
     const params =
-      newValue === 'more' ? { ...route.params } : { domain: newValue };
+      newValue === 'more' ? { unit: route.params.unit } : { domain: newValue };
 
     navigateTo({
       name: newValue === 'more' ? ROUTE_MORE_DOMAINS : ROUTE_DOMAIN_DASHBOARD,
