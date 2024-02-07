@@ -23,7 +23,8 @@
       'veo-border': border
     }"
     flat
-    rounded>
+    rounded
+  >
     <slot />
   </VCard>
 </template>

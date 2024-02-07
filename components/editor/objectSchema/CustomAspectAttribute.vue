@@ -26,7 +26,8 @@
             :rules="[requiredRule, banSpecialChars]"
             :prefix="prefix"
             variant="underlined"
-            @update:model-value="doUpdate($event, 'title')" />
+            @update:model-value="doUpdate($event, 'title')"
+          />
         </v-col>
         <v-col :cols="4" class="py-0">
           <v-select
@@ -34,7 +35,8 @@
             :label="t('aspectType')"
             :items="types"
             variant="underlined"
-            @update:model-value="doUpdate($event, 'type')" />
+            @update:model-value="doUpdate($event, 'type')"
+          />
         </v-col>
       </v-row>
       <v-row dense>
@@ -44,7 +46,8 @@
             :label="t('aspectDescription')"
             clearable
             variant="underlined"
-            @update:model-value="doUpdate($event, 'description')" />
+            @update:model-value="doUpdate($event, 'description')"
+          />
         </v-col>
       </v-row>
       <v-row v-if="form.data.type === 'enum'" class="flex-column" dense>
@@ -58,7 +61,8 @@
             hide-details
             :label="t('multiple')"
             class="mt-0 pt-0 ml-4"
-            @update:model-value="doUpdate($event, 'multiple')" />
+            @update:model-value="doUpdate($event, 'multiple')"
+          />
         </v-col>
         <v-col class="py-0">
           <v-combobox
@@ -71,7 +75,8 @@
             append-icon=""
             clearable
             variant="underlined"
-            @update:model-value="doUpdate($event, 'enum')">
+            @update:model-value="doUpdate($event, 'enum')"
+          >
             <template #label>
               <span>
                 {{ t('valuesHint') }}
@@ -82,7 +87,8 @@
                 :key="JSON.stringify(data.item)"
                 v-bind="data.attrs"
                 close
-                @click:close="removeValueFromEnum(data.item)">
+                @click:close="removeValueFromEnum(data.item)"
+              >
                 {{ data.item }}
               </v-chip>
             </template>
@@ -98,15 +104,13 @@
             item-title="displayName"
             item-value="name"
             variant="underlined"
-            @update:model-value="updateOptions($event)" />
+            @update:model-value="updateOptions($event)"
+          />
         </v-col>
       </v-row>
       <template #append>
         <v-list-item-action>
-          <v-btn
-            variant="text"
-            :icon="mdiTrashCanOutline"
-            @click="doDelete()" />
+          <v-btn variant="text" :icon="mdiTrashCanOutline" @click="doDelete()" />
         </v-list-item-action>
       </template>
     </v-list-item>
@@ -238,15 +242,9 @@ export default defineComponent({
       const dummy: { title: string; value: string }[] = [];
       const availableTypes = INPUT_TYPES as any;
       for (const entry in availableTypes) {
-        if (
-          !['null', 'unknown', 'array', 'object'].includes(
-            availableTypes[entry].name
-          )
-        ) {
+        if (!['null', 'unknown', 'array', 'object'].includes(availableTypes[entry].name)) {
           dummy.push({
-            title: t(
-              `editor.inputtypes.${availableTypes[entry].name}`
-            ) as string,
+            title: t(`editor.inputtypes.${availableTypes[entry].name}`) as string,
             value: availableTypes[entry].name
           });
         }
@@ -278,13 +276,10 @@ export default defineComponent({
 
       // If the object type changes, we have to delete all custom properties belonging to the previous type
       if (newObject.type && newObject.type !== form.value.data.type) {
-        const newProperties =
-          INPUT_FORMATS[newObject.type]?.find((item) => !item.options.format)
-            ?.options || {};
+        const newProperties = INPUT_FORMATS[newObject.type]?.find((item) => !item.options.format)?.options || {};
         const oldProperties =
-          INPUT_FORMATS[form.value.data.type]?.find(
-            (item) => item.options.format === form.value.data.format
-          )?.options || {};
+          INPUT_FORMATS[form.value.data.type]?.find((item) => item.options.format === form.value.data.format)
+            ?.options || {};
 
         // Iterate over new
         for (const key in object) {
@@ -315,9 +310,7 @@ export default defineComponent({
     }
 
     function updateOptions(formatType: string) {
-      const object = cloneDeep(
-        formatOptions.value.find((item) => item.name === formatType)
-      );
+      const object = cloneDeep(formatOptions.value.find((item) => item.name === formatType));
       if (object) {
         doObjectUpdate(object.options);
       }
@@ -333,16 +326,11 @@ export default defineComponent({
 
     const currentFormatOption = computed<string | undefined>(() => {
       // We have to iterate over every object in the formatOptions array and only if the format property matches, we have the correct one.
-      return formatOptions.value.find(
-        (item) => item.options.format === form.value.data.format
-      )?.name;
+      return formatOptions.value.find((item) => item.options.format === form.value.data.format)?.name;
     });
 
     const requiredIfEnum = (value: string | undefined) =>
-      (form.value.data.type === 'enum' &&
-        form.value.data.type === 'enum' &&
-        Array.isArray(value) &&
-        !!value.length) ||
+      (form.value.data.type === 'enum' && form.value.data.type === 'enum' && Array.isArray(value) && !!value.length) ||
       t('requiredIfEnum');
 
     return {

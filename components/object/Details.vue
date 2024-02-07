@@ -25,16 +25,12 @@
               <v-row no-gutters>
                 <v-col data-component-name="object-details-date-time">
                   <p class="text-no-wrap mb-0">
-                    <strong
-                      >{{ upperFirst(t('updatedAt').toString()) }}:</strong
-                    >
+                    <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
                     {{ updatedAtFormatted || '-' }} {{ t('by') }}
                     {{ (object && object.updatedBy) || '-' }}
                   </p>
                   <p class="text-no-wrap mb-0">
-                    <strong
-                      >{{ upperFirst(t('createdAt').toString()) }}:</strong
-                    >
+                    <strong>{{ upperFirst(t('createdAt').toString()) }}:</strong>
                     {{ createdAtFormatted || '-' }} {{ t('by') }}
                     {{ (object && object.createdBy) || '-' }}
                   </p>
@@ -43,7 +39,8 @@
                   <ObjectDetailsActionMenu
                     :disabled="ability.cannot('manage', 'objects')"
                     :object="object"
-                    @reload="$emit('reload')" />
+                    @reload="$emit('reload')"
+                  />
                 </v-col>
               </v-row>
             </template>
@@ -55,10 +52,9 @@
           <div
             v-if="!loading"
             class="text-body-2 overflow-y-auto object-details__description"
-            data-component-name="object-details-description">
-            <span v-if="object && object.description">{{
-              object.description
-            }}</span>
+            data-component-name="object-details-description"
+          >
+            <span v-if="object && object.description">{{ object.description }}</span>
             <i v-else>{{ t('noDescription') }}</i>
           </div>
           <div v-else class="flex-grow-0">
@@ -75,7 +71,8 @@
           v-show="!tab.hidden"
           :key="tab.key"
           :disabled="tab.disabled"
-          :data-component-name="`object-details-${tab.key}-tab`">
+          :data-component-name="`object-details-${tab.key}-tab`"
+        >
           {{ t(tab.key) }}
         </v-tab>
       </template>
@@ -88,7 +85,8 @@
               :object="object"
               :dense="dense"
               :domain-id="domainId"
-              @reload="$emit('reload')" />
+              @reload="$emit('reload')"
+            />
           </BaseCard>
         </v-window-item>
       </template>
@@ -149,28 +147,19 @@ export default defineComponent({
       id: props.domainId as string
     }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
-    const { data: domain } = useQuery(
-      domainQueryDefinitions.queries.fetchDomain,
-      fetchDomainQueryParameters,
-      {
-        enabled: fetchDomainQueryEnabled
-      }
-    );
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
+      enabled: fetchDomainQueryEnabled
+    });
 
     const isRiskAffected = computed(() =>
-      (['asset', 'process', 'scope'] as (string | undefined)[]).includes(
-        props.object?.type
-      )
+      (['asset', 'process', 'scope'] as (string | undefined)[]).includes(props.object?.type)
     );
 
     const hasRiskTab: ComputedRef<boolean> = computed(() => {
       if (!domain.value || !subType.value || !props.object?.type) return false;
 
       if (domain.value.name === 'DS-GVO') {
-        return (
-          ['scope'].includes(props.object.type) ||
-          ['PRO_DataProcessing', 'PRO_DPIA'].includes(subType.value)
-        );
+        return ['scope'].includes(props.object.type) || ['PRO_DataProcessing', 'PRO_DPIA'].includes(subType.value);
       }
 
       if (domain.value.name === 'IT-Grundschutz') {
@@ -184,9 +173,7 @@ export default defineComponent({
       return !isRiskAffected || ['DS-GVO', 'NIS2'].includes(domain.value?.name);
     });
 
-    const tabs = computed<
-      { key: string; disabled?: boolean; hidden?: boolean }[]
-    >(() => [
+    const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean }[]>(() => [
       {
         key: 'childScopes',
         disabled: props.object?.type !== 'scope'
@@ -220,12 +207,7 @@ export default defineComponent({
     watch(
       () => props.loading,
       (newValue, previousValue) => {
-        if (
-          previousValue &&
-          !newValue &&
-          subType.value !== 'PRO_DataProcessing' &&
-          props.activeTab === 'risks'
-        ) {
+        if (previousValue && !newValue && subType.value !== 'PRO_DataProcessing' && props.activeTab === 'risks') {
           emit('update:activeTab', 'childObjects');
         }
       }
@@ -244,14 +226,10 @@ export default defineComponent({
     });
 
     const createdAtFormatted = computed(() =>
-      props.object ?
-        formatDateTime(new Date(props.object.createdAt)).value
-      : undefined
+      props.object ? formatDateTime(new Date(props.object.createdAt)).value : undefined
     );
     const updatedAtFormatted = computed(() =>
-      props.object ?
-        formatDateTime(new Date(props.object.updatedAt)).value
-      : undefined
+      props.object ? formatDateTime(new Date(props.object.updatedAt)).value : undefined
     );
 
     return {

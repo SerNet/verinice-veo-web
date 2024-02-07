@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseDialog
-    v-bind="$attrs"
-    :title="t('headline')"
-    @update:model-value="emit('update:model-value', $event)">
+  <BaseDialog v-bind="$attrs" :title="t('headline')" @update:model-value="emit('update:model-value', $event)">
     <template #default>
       <span class="text-body-1">{{ t('text', { displayName }) }}</span>
     </template>
@@ -32,7 +29,8 @@
         variant="text"
         color="primary"
         :disabled="!deleteButtonEnabled || ability.cannot('manage', 'objects')"
-        @click="deleteObject">
+        @click="deleteObject"
+      >
         {{ globalT('global.button.delete') }}
       </v-btn>
     </template>
@@ -66,32 +64,22 @@ const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const route = useRoute();
 
-const { mutateAsync: doDelete } = useMutation(
-  objectQueryDefinitions.mutations.deleteObject
-);
+const { mutateAsync: doDelete } = useMutation(objectQueryDefinitions.mutations.deleteObject);
 const { mutateAsync: deleteWithoutInvalidating } = useMutation(
   objectQueryDefinitions.mutations.deleteObject,
   {},
   { isInvalidating: false }
 );
 
-const { data: endpoints } = useQuery(
-  schemaQueryDefinitions.queries.fetchSchemas
-);
+const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 const { ability } = useVeoPermissions();
 
 const displayName = computed(() => props.item?.displayName ?? '');
 
-const deleteButtonEnabled = computed(
-  () => !props.item || !!endpoints.value?.[props.item.type]
-);
+const deleteButtonEnabled = computed(() => !props.item || !!endpoints.value?.[props.item.type]);
 
 const deleteObject = async () => {
-  if (
-    !deleteButtonEnabled.value ||
-    ability.value.cannot('manage', 'objects') ||
-    !props.item
-  ) {
+  if (!deleteButtonEnabled.value || ability.value.cannot('manage', 'objects') || !props.item) {
     return;
   }
   try {

@@ -28,7 +28,8 @@
       :items="impacts[protectionGoal.id]"
       disabled
       variant="underlined"
-      hide-details />
+      hide-details
+    />
     <v-select
       data-test-selector="specific-impact"
       :model-value="specificImpact"
@@ -39,7 +40,8 @@
       clearable
       hide-details
       variant="underlined"
-      @update:model-value="$emit('update:specific-impact', $event)" />
+      @update:model-value="$emit('update:specific-impact', $event)"
+    />
     <v-edit-dialog>
       <template #default="{ props: dialogProps }">
         <v-text-field
@@ -50,9 +52,8 @@
           hide-details
           variant="underlined"
           v-bind="dialogProps"
-          @update:model-value="
-            $emit('update:specific-impact-explanation', $event)
-          " />
+          @update:model-value="$emit('update:specific-impact-explanation', $event)"
+        />
       </template>
       <template #input>
         <v-textarea
@@ -66,9 +67,8 @@
           rows="3"
           no-resize
           variant="underlined"
-          @update:model-value="
-            $emit('update:specific-impact-explanation', $event)
-          " />
+          @update:model-value="$emit('update:specific-impact-explanation', $event)"
+        />
       </template>
     </v-edit-dialog>
     <v-select
@@ -79,15 +79,12 @@
       :items="impacts[protectionGoal.id]"
       disabled
       variant="underlined"
-      hide-details>
+      hide-details
+    >
       <template
-        v-if="
-          dirtyFields &&
-          dirtyFields[
-            `${riskDefinition.id}_${protectionGoal.id}_specificImpact`
-          ]
-        "
-        #selection>
+        v-if="dirtyFields && dirtyFields[`${riskDefinition.id}_${protectionGoal.id}_specificImpact`]"
+        #selection
+      >
         {{ t('saveCTA') }}
       </template>
     </v-select>
@@ -99,11 +96,7 @@ import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
 import { IDirtyFields } from './CreateDialogSingle.vue';
-import {
-  IVeoDomainRiskDefinition,
-  IVeoRisk,
-  IVeoRiskCategory
-} from '~/types/VeoTypes';
+import { IVeoDomainRiskDefinition, IVeoRisk, IVeoRiskCategory } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -150,27 +143,20 @@ export default defineComponent({
     const { t, locale } = useI18n();
 
     const impacts = computed(() =>
-      props.riskDefinition.categories.reduce(
-        (previousValue: Record<string, any>, currentValue) => {
-          previousValue[currentValue.id] = currentValue.potentialImpacts.map(
-            (level) => ({
-              title: level.translations[locale.value].name,
-              value: level.ordinalValue
-            })
-          );
-          return previousValue;
-        },
-        {}
-      )
+      props.riskDefinition.categories.reduce((previousValue: Record<string, any>, currentValue) => {
+        previousValue[currentValue.id] = currentValue.potentialImpacts.map((level) => ({
+          title: level.translations[locale.value].name,
+          value: level.ordinalValue
+        }));
+        return previousValue;
+      }, {})
     );
 
     const getImpactValuesByProtectionGoal = (
       riskDefinition: IVeoRisk['domains']['x']['riskDefinitions']['y'],
       protectionGoal: string
     ) => {
-      return riskDefinition.impactValues.find(
-        (value) => value.category === protectionGoal
-      );
+      return riskDefinition.impactValues.find((value) => value.category === protectionGoal);
     };
 
     return {

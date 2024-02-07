@@ -18,31 +18,14 @@
 <template>
   <BaseWidget :title="t(statusBarTitle)">
     <template #default>
-      <v-row
-        v-for="(chart, index) of chartData"
-        :key="index"
-        class="align-center"
-        dense>
-        <v-col
-          cols="12"
-          sm="12"
-          md="5"
-          lg="7"
-          xl="4"
-          class="body-1 text-no-wrap">
-          <nuxt-link
-            :to="objectOveriewLink(index, schemas || {})"
-            class="text-decoration-none text-color">
+      <v-row v-for="(chart, index) of chartData" :key="index" class="align-center" dense>
+        <v-col cols="12" sm="12" md="5" lg="7" xl="4" class="body-1 text-no-wrap">
+          <nuxt-link :to="objectOveriewLink(index, schemas || {})" class="text-decoration-none text-color">
             {{ chart.labels[0] }}
           </nuxt-link>
         </v-col>
         <v-col cols="12" sm="12" md="7" lg="5" xl="8">
-          <v-skeleton-loader
-            v-if="schemasIsLoading"
-            width="100%"
-            type="image"
-            height="25px"
-            class="my-1" />
+          <v-skeleton-loader v-if="schemasIsLoading" width="100%" type="image" height="25px" class="my-1" />
           <Bar
             v-else-if="chart.totalEntries > 0"
             ref="barChartRef"
@@ -54,7 +37,8 @@
               cursor: 'pointer',
               width: '100%',
               position: 'relative'
-            }" />
+            }"
+          />
           <div v-else class="ml-2 font-italic text-body-2">
             {{ t('noObjects') }}
           </div>
@@ -82,20 +66,12 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { CHART_COLORS } from '~/lib/utils';
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
-import schemaQueryDefinitions, {
-  IVeoSchemaEndpoints
-} from '~/composables/api/queryDefinitions/schemas';
+import schemaQueryDefinitions, { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 import { IVeoDomainStatusCount } from '~/composables/api/queryDefinitions/domains';
 
-ChartJS.register(
-  BarController,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip
-);
+ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
 interface IChartValue {
   totalEntries: number;
@@ -130,10 +106,7 @@ const { locale, t } = useI18n();
 const route = useRoute();
 
 const barChartRef = ref([]);
-const statusBarTitle = computed(
-  () =>
-    props.objectType.charAt(0).toUpperCase() + props.objectType.slice(1) || ' '
-);
+const statusBarTitle = computed(() => props.objectType.charAt(0).toUpperCase() + props.objectType.slice(1) || ' ');
 
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 const objectTypePlural = computed(() => schemas.value?.[props.objectType]);
@@ -142,9 +115,7 @@ const fetchSchemaQueryParameters = computed(() => ({
   domainId: props.domainId,
   type: objectTypePlural.value as string
 }));
-const fetchSchemaQueryEnabled = computed(
-  () => !!props.domainId && !!objectTypePlural.value
-);
+const fetchSchemaQueryEnabled = computed(() => !!props.domainId && !!objectTypePlural.value);
 const { data: objectSchema, isFetching: schemasIsLoading } = useQuery(
   schemaQueryDefinitions.queries.fetchSchema,
   fetchSchemaQueryParameters,
@@ -153,8 +124,7 @@ const { data: objectSchema, isFetching: schemasIsLoading } = useQuery(
 
 const sortedStatusBySubType = computed<Record<string, any>>(() =>
   (objectSchema.value?.allOf || []).reduce((previousValue, currentValue) => {
-    previousValue[currentValue.if.properties.subType.const] =
-      currentValue.then.properties.status.enum;
+    previousValue[currentValue.if.properties.subType.const] = currentValue.then.properties.status.enum;
     return previousValue;
   }, Object.assign({}))
 );
@@ -163,30 +133,21 @@ const translationQueryParameters = computed(() => ({
   languages: [locale.value],
   domain: props.domainId
 }));
-const { data: translations } = useQuery(
-  translationQueryDefinitions.queries.fetch,
-  translationQueryParameters
-);
+const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
 
 const formsQueryParameters = computed(() => ({
   domainId: props.domainId as string
 }));
 const formsQueryEnabled = computed(() => !!props.domainId);
-const { data: formSchemas } = useQuery(
-  formsQueryDefinitions.queries.fetchForms,
-  formsQueryParameters,
-  { enabled: formsQueryEnabled }
-);
+const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, formsQueryParameters, {
+  enabled: formsQueryEnabled
+});
 
 const sortedSubTypes = computed(() =>
   Object.entries(props.data).sort(
     ([subTypeA, _subTypeDataA], [subTypeB, _subTypeDataB]) =>
-      (formSchemas.value || []).findIndex(
-        (formSchema) => formSchema.subType === subTypeA
-      ) -
-      (formSchemas.value || []).findIndex(
-        (formSchema) => formSchema.subType === subTypeB
-      )
+      (formSchemas.value || []).findIndex((formSchema) => formSchema.subType === subTypeA) -
+      (formSchemas.value || []).findIndex((formSchema) => formSchema.subType === subTypeB)
   )
 );
 
@@ -218,10 +179,7 @@ const options = computed<ChartOptions[]>(() =>
     scales: {
       x: {
         min: 0,
-        max: Object.values(subTypeData).reduce(
-          (previousValue, currentValue) => previousValue + currentValue,
-          0
-        ),
+        max: Object.values(subTypeData).reduce((previousValue, currentValue) => previousValue + currentValue, 0),
         stacked: true,
         ticks: {
           display: false
@@ -250,24 +208,14 @@ const handleClickEvent = (clickedBarIndex: number, event: any) => {
     return;
   }
   const subType = sortedSubTypes.value[clickedBarIndex][0];
-  emit(
-    'click',
-    schemas.value[props.objectType],
-    subType,
-    sortedStatusBySubType.value[subType][event[0].datasetIndex]
-  );
+  emit('click', schemas.value[props.objectType], subType, sortedStatusBySubType.value[subType][event[0].datasetIndex]);
 };
 
 const chartData = computed<IChartValue[]>(() =>
   sortedSubTypes.value.map(([subType, subTypeData]) => ({
-    totalEntries: Object.values(subTypeData).reduce(
-      (previosValue, currentValue) => previosValue + currentValue,
-      0
-    ),
+    totalEntries: Object.values(subTypeData).reduce((previosValue, currentValue) => previosValue + currentValue, 0),
     labels: [
-      (formSchemas.value || []).find(
-        (formSchema) => formSchema.subType === subType
-      )?.name?.[locale.value] || subType
+      (formSchemas.value || []).find((formSchema) => formSchema.subType === subType)?.name?.[locale.value] || subType
     ],
     datasets: (
       Object.entries(sortedStatusBySubType.value).find(
@@ -276,18 +224,12 @@ const chartData = computed<IChartValue[]>(() =>
     ).map((status: string, index: number) => ({
       data: [subTypeData[status]],
       backgroundColor: CHART_COLORS[index],
-      label:
-        translations.value?.lang?.[locale.value]?.[
-          `${props.objectType}_${subType}_status_${status}`
-        ] || status
+      label: translations.value?.lang?.[locale.value]?.[`${props.objectType}_${subType}_status_${status}`] || status
     }))
   }))
 );
 
-const objectOveriewLink = (
-  subTypeIndex: number,
-  schemas: IVeoSchemaEndpoints
-) =>
+const objectOveriewLink = (subTypeIndex: number, schemas: IVeoSchemaEndpoints) =>
   `/${route.params.unit}/domains/${route.params.domain}/${objectTypePlural.value}/${sortedSubTypes.value[subTypeIndex][0]}`;
 </script>
 

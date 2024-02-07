@@ -20,7 +20,8 @@
     v-if="options.visible"
     class="vf-markdown-editor vf-form-element"
     :class="{ 'is-disabled': disabled || options.disabled }"
-    :data-attribute-name="last(objectSchemaPointer.split('/'))">
+    :data-attribute-name="last(objectSchemaPointer.split('/'))"
+  >
     <div v-if="options.label" class="subtitle-1">
       {{ options.label }}
     </div>
@@ -104,11 +105,7 @@ export default defineComponent({
               nextTick(() => {
                 // Focus name control and not the editor (cp. above)
                 localEditor.blur();
-                document
-                  .querySelector<HTMLElement>(
-                    '[data-component-name="object-form-form"]'
-                  )
-                  ?.scrollTo(0, 0);
+                document.querySelector<HTMLElement>('[data-component-name="object-form-form"]')?.scrollTo(0, 0);
                 firstFocus = false;
               });
             }
@@ -117,11 +114,7 @@ export default defineComponent({
             const markdownText = localEditor.getMarkdown();
             emit(
               'update:model-value',
-              (
-                (typeof props.modelValue === 'undefined' ||
-                  props.modelValue === null) &&
-                  markdownText === ''
-              ) ?
+              (typeof props.modelValue === 'undefined' || props.modelValue === null) && markdownText === '' ?
                 props.modelValue
               : markdownText
             );

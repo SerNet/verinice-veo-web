@@ -20,19 +20,18 @@
     v-if="options.visible"
     :class="options && options.class"
     class="vf-links-field vf-form-element"
-    :data-attribute-name="last(objectSchemaPointer.split('/'))">
+    :data-attribute-name="last(objectSchemaPointer.split('/'))"
+  >
     <v-list>
-      <v-list-item
-        v-for="(link, index) of internalValue"
-        :key="index"
-        class="veo-links-field-border mt-4 px-4">
+      <v-list-item v-for="(link, index) of internalValue" :key="index" class="veo-links-field-border mt-4 px-4">
         <DynamicFormControlsLinksFieldRow
           v-bind="$props"
           :model-value="link.target"
           :other-selected-links="getOtherSelectedLinks(index)"
           :object-schema-pointer="objectSchemaPointer + '/' + index"
           :index="index"
-          @update:model-value="onLinksFieldRowInput(index, $event)">
+          @update:model-value="onLinksFieldRowInput(index, $event)"
+        >
           <slot name="default" />
         </DynamicFormControlsLinksFieldRow>
         <template #append>
@@ -41,7 +40,8 @@
               :icon="mdiTrashCanOutline"
               :disabled="disabled || options.disabled"
               variant="text"
-              @click="removeLink(index)" />
+              @click="removeLink(index)"
+            />
           </v-list-item-action>
         </template>
       </v-list-item>
@@ -51,7 +51,8 @@
       :disabled="disabled || options.disabled"
       color="primary"
       variant="text"
-      @click="addLink">
+      @click="addLink"
+    >
       <v-icon size="small" start :icon="mdiPlus" />
       {{ t('addLink') }}
     </v-btn>
@@ -99,11 +100,7 @@ export default defineComponent({
       set: (newValue: undefined | any[]) => {
         emit(
           'update:model-value',
-          (
-            !newValue ||
-              (newValue.length === 1 &&
-                JSON.stringify(emptyLink) === JSON.stringify(newValue[0]))
-          ) ?
+          !newValue || (newValue.length === 1 && JSON.stringify(emptyLink) === JSON.stringify(newValue[0])) ?
             undefined
           : newValue
         );
@@ -133,9 +130,7 @@ export default defineComponent({
     };
 
     const getOtherSelectedLinks = (index: number) => {
-      return ((props.modelValue || []) as any[]).filter(
-        (_item, _index) => _index !== index
-      );
+      return ((props.modelValue || []) as any[]).filter((_item, _index) => _index !== index);
     };
 
     return {

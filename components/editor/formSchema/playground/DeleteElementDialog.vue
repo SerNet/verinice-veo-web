@@ -16,14 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseDialog
-    :model-value="modelValue"
-    :title="title"
-    @update:model-value="emit('update:model-value', $event)">
+  <BaseDialog :model-value="modelValue" :title="title" @update:model-value="emit('update:model-value', $event)">
     <template #default>
       <i18n-t keypath="deleteText" tag="span" scope="global">
-        <EditorTranslationsTranslatedElementTitle
-          :form-schema-element="formSchemaElement" />
+        <EditorTranslationsTranslatedElementTitle :form-schema-element="formSchemaElement" />
       </i18n-t>
     </template>
     <template #dialog-options>
@@ -59,9 +55,7 @@ const emit = defineEmits(['update:model-value', 'delete']);
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
-const translatedElementType = computed(() =>
-  t(`type.${props.formSchemaElement.type.toLowerCase()}`)
-);
+const translatedElementType = computed(() => t(`type.${props.formSchemaElement.type.toLowerCase()}`));
 
 const title = computed(() => t('delete', [translatedElementType.value]));
 

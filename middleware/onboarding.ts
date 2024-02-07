@@ -30,8 +30,7 @@ import { useQuerySync } from '~/composables/api/utils/query';
 export default defineNuxtRouteMiddleware((to) => {
   if (to.path !== '/') return;
 
-  const isRecurringUser =
-    localStorage.getItem(LOCAL_STORAGE_KEYS.IS_FRESH_LOGIN) === 'false';
+  const isRecurringUser = localStorage.getItem(LOCAL_STORAGE_KEYS.IS_FRESH_LOGIN) === 'false';
 
   if (isRecurringUser) {
     return showDashBoard();
@@ -44,12 +43,8 @@ export default defineNuxtRouteMiddleware((to) => {
 
 async function showDashBoard() {
   // check localStorage for unit- and domainkey
-  const storageUnitId = window.localStorage.getItem(
-    LOCAL_STORAGE_KEYS.LAST_UNIT
-  );
-  const storageDomainId = window.localStorage.getItem(
-    LOCAL_STORAGE_KEYS.LAST_DOMAIN
-  );
+  const storageUnitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
+  const storageDomainId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
 
   // if the keys are present, link to the appropriate dashboard
   if (storageUnitId && storageDomainId) {
@@ -62,8 +57,7 @@ async function showDashBoard() {
   const domainId = units?.[0]?.domains?.[0]?.id;
 
   // check the IDs again; if the API call fails, link to the unit management
-  const linkTarget =
-    unitId && domainId ? `/${unitId}/domains/${domainId}` : '/units';
+  const linkTarget = unitId && domainId ? `/${unitId}/domains/${domainId}` : '/units';
 
   return navigateTo(linkTarget);
 }

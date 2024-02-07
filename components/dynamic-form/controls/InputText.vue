@@ -29,7 +29,8 @@
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
     variant="underlined"
     @update:model-value="$emit('update:model-value', $event)"
-    @click:clear="$emit('update:model-value', undefined)" />
+    @click:clear="$emit('update:model-value', undefined)"
+  />
 </template>
 
 <script lang="ts">

@@ -27,36 +27,22 @@
               hide-details
               color="primary"
               false-value="vertical"
-              true-value="horizontal" />
+              true-value="horizontal"
+            />
           </v-col>
           <v-col cols="auto">
-            <v-switch
-              v-model="border"
-              label="Border"
-              hide-details
-              color="primary" />
+            <v-switch v-model="border" label="Border" hide-details color="primary" />
           </v-col>
           <v-col cols="2" class="ml-10">
-            <v-text-field
-              v-model="groupTitle"
-              label="Group title"
-              hide-details
-              clearable
-              variant="underlined" />
+            <v-text-field v-model="groupTitle" label="Group title" hide-details clearable variant="underlined" />
           </v-col>
         </v-row>
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
-        <DynamicFormEntrypoint
-          v-model="form.data"
-          :object-schema="form.objectSchema"
-          :form-schema="form.formSchema" />
+        <DynamicFormEntrypoint v-model="form.data" :object-schema="form.objectSchema" :form-schema="form.formSchema" />
       </v-col>
     </v-row>
-    <HelpFormDescription
-      :object-schema="form.objectSchema"
-      :form-schema="form.formSchema"
-      :data="form.data" />
+    <HelpFormDescription :object-schema="form.objectSchema" :form-schema="form.formSchema" :data="form.data" />
   </BasePage>
 </template>
 

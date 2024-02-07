@@ -21,7 +21,8 @@
     :title="unitId ? t('editUnit') : t('createUnit')"
     :close-disabled="creatingUnit || updatingUnit"
     v-bind="$attrs"
-    @update:model-value="emit('update:model-value', $event)">
+    @update:model-value="emit('update:model-value', $event)"
+  >
     <template #default>
       <v-form ref="form" v-model="formIsValid" class="new-unit-form">
         <BaseCard>
@@ -31,11 +32,9 @@
               :label="t('name')"
               :rules="[requiredRule]"
               required
-              variant="underlined" />
-            <v-text-field
-              v-model="unitDetails.description"
               variant="underlined"
-              :label="t('description')" />
+            />
+            <v-text-field v-model="unitDetails.description" variant="underlined" :label="t('description')" />
           </v-card-text>
         </BaseCard>
 
@@ -44,10 +43,7 @@
             {{ t('domainselection') }}
           </h3>
 
-          <UtilProminentSelectionList
-            v-model="selectedDomains"
-            :items="availableDomains"
-            multiple />
+          <UtilProminentSelectionList v-model="selectedDomains" :items="availableDomains" multiple />
         </div>
       </v-form>
     </template>
@@ -63,7 +59,8 @@
         :loading="creatingUnit || updatingUnit"
         color="primary"
         variant="text"
-        @click="createUnit">
+        @click="createUnit"
+      >
         {{ $t('global.button.save') }}
       </v-btn>
     </template>
@@ -74,9 +71,7 @@ import { cloneDeep, isEqual } from 'lodash';
 import { useQueryClient } from '@tanstack/vue-query';
 
 import { getEntityDetailsFromLink, getFirstDomainDomaindId } from '~/lib/utils';
-import domainQueryDefinitions, {
-  IVeoDomain
-} from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useRules } from '~/composables/utils';
 import { useMutation } from '~/composables/api/utils/mutation';
@@ -118,9 +113,7 @@ watch(
       } else {
         unitDetails.name = undefined;
         unitDetails.description = undefined;
-        unitDetails.domains =
-          domains.value?.map((domain) => createLink('domains', domain.id)) ||
-          [];
+        unitDetails.domains = domains.value?.map((domain) => createLink('domains', domain.id)) || [];
       }
       if (form.value) {
         form.value.resetValidation();
@@ -130,22 +123,15 @@ watch(
 );
 
 const actionPermitted = computed(
-  () =>
-    ability.value.can('manage', 'units') &&
-    !!formIsValid.value &&
-    unitDetails.domains.length
+  () => ability.value.can('manage', 'units') && !!formIsValid.value && unitDetails.domains.length
 );
 
 // Everything unit related
 const fetchUnitQueryParams = computed(() => ({ id: props.unitId as string }));
 const fetchUnitQueryEnabled = computed(() => !!props.unitId);
-const { data: unit } = useQuery(
-  unitQueryDefinitions.queries.fetch,
-  fetchUnitQueryParams,
-  {
-    enabled: fetchUnitQueryEnabled
-  }
-);
+const { data: unit } = useQuery(unitQueryDefinitions.queries.fetch, fetchUnitQueryParams, {
+  enabled: fetchUnitQueryEnabled
+});
 watch(
   () => unit.value,
   (newValue) => {
@@ -187,9 +173,7 @@ const {
   isLoading: creatingUnit,
   data: unitDetailsPayload
 } = useMutation(unitQueryDefinitions.mutations.create);
-const { mutateAsync: update, isLoading: updatingUnit } = useMutation(
-  unitQueryDefinitions.mutations.update
-);
+const { mutateAsync: update, isLoading: updatingUnit } = useMutation(unitQueryDefinitions.mutations.update);
 const createUnit = async () => {
   if (!actionPermitted.value) {
     return;
@@ -225,17 +209,11 @@ const createUnit = async () => {
   }
 };
 
-const { data: domains } = useQuery(
-  domainQueryDefinitions.queries.fetchDomains,
-  undefined,
-  {
-    onSuccess: (data) => {
-      unitDetails.domains = (data as IVeoDomain[]).map((domain) =>
-        createLink('domains', domain.id)
-      );
-    }
+const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains, undefined, {
+  onSuccess: (data) => {
+    unitDetails.domains = (data as IVeoDomain[]).map((domain) => createLink('domains', domain.id));
   }
-);
+});
 const availableDomains = computed(
   () =>
     domains.value?.map((domain) => ({
@@ -245,12 +223,9 @@ const availableDomains = computed(
     })) ?? []
 );
 const selectedDomains = computed({
-  get: () =>
-    unitDetails.domains.map((domain) => getEntityDetailsFromLink(domain).id),
+  get: () => unitDetails.domains.map((domain) => getEntityDetailsFromLink(domain).id),
   set: (newValue) => {
-    unitDetails.domains = newValue.map((domainId) =>
-      createLink('domains', domainId)
-    );
+    unitDetails.domains = newValue.map((domainId) => createLink('domains', domainId));
   }
 });
 </script>

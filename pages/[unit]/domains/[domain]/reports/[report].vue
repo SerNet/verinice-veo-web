@@ -22,10 +22,7 @@
 
       <v-row dense class="justify-space-between">
         <v-col cols="auto">
-          <p
-            v-if="report"
-            class="mb-0 text-body-1 font-italic"
-            data-component-name="report-description">
+          <p v-if="report" class="mb-0 text-body-1 font-italic" data-component-name="report-description">
             {{ report.description[locale] }}
           </p>
         </v-col>
@@ -42,12 +39,11 @@
         :domain-id="$route.params.domain as string"
         :filter="filter"
         :required-fields="requiredFields"
-        @update:filter="updateRouteQuery" />
+        @update:filter="updateRouteQuery"
+      />
 
       <p v-if="report" class="text-body-1 my-2">
-        {{
-          report.multipleTargetsSupported ? t('hintMultiple') : t('hintSingle')
-        }}
+        {{ report.multipleTargetsSupported ? t('hintMultiple') : t('hintSingle') }}
       </p>
 
       <BaseCard>
@@ -70,7 +66,8 @@
           :items="objects"
           :loading="objectsFetching"
           data-component-name="report-entity-selection"
-          @update:model-value="onReportSelectionUpdated" />
+          @update:model-value="onReportSelectionUpdated"
+        />
       </BaseCard>
       <v-row no-gutters class="mt-4">
         <v-spacer />
@@ -80,7 +77,8 @@
             color="primary"
             :disabled="generatingReport || !selectedObjects.length"
             data-component-name="generate-report-button"
-            @click="generateReport">
+            @click="generateReport"
+          >
             {{ t('generateReport') }}
           </v-btn>
           <a ref="downloadButton" href="#" />
@@ -113,13 +111,9 @@ export default defineComponent({
     const route = useRoute();
     const { displayErrorMessage } = useVeoAlerts();
     const { tablePageSize } = useVeoUser();
-    const { data: endpoints } = useQuery(
-      schemaQueryDefinitions.queries.fetchSchemas
-    );
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-    const outputType = computed<string>(
-      () => report.value?.outputTypes?.[0] || ''
-    );
+    const outputType = computed<string>(() => report.value?.outputTypes?.[0] || '');
 
     const title = computed(() =>
       t('create', {
@@ -131,21 +125,16 @@ export default defineComponent({
     // Fetching the right report
     const requestedReportName = computed(() => route.params.report as string);
 
-    const { data: reports, isFetching: reportsFetching } = useQuery(
-      reportQueryDefinitions.queries.fetchAll
-    );
+    const { data: reports, isFetching: reportsFetching } = useQuery(reportQueryDefinitions.queries.fetchAll);
     const report = computed(() => reports.value?.[requestedReportName.value]);
 
     const availableObjectTypes = computed<string[]>(() =>
-      (report.value?.targetTypes || []).map(
-        (targetType) => targetType.modelType
-      )
+      (report.value?.targetTypes || []).map((targetType) => targetType.modelType)
     );
     const availableSubTypes = computed<string[]>(
       () =>
-        (report.value?.targetTypes || []).find(
-          (targetType) => targetType.modelType === filter.value.objectType
-        )?.subTypes || []
+        (report.value?.targetTypes || []).find((targetType) => targetType.modelType === filter.value.objectType)
+          ?.subTypes || []
     );
 
     // Table stuff
@@ -159,9 +148,7 @@ export default defineComponent({
     };
 
     const requiredFields = computed(() =>
-      availableSubTypes.value.length ?
-        ['objectType', 'subType']
-      : ['objectType']
+      availableSubTypes.value.length ? ['objectType', 'subType'] : ['objectType']
     );
 
     // accepted filter keys (others wont be respected when specified in URL query parameters)
@@ -200,9 +187,7 @@ export default defineComponent({
 
     watch(() => filter.value, resetQueryOptions, { deep: true });
 
-    const endpoint = computed(
-      () => endpoints.value?.[filter.value.objectType as string]
-    );
+    const endpoint = computed(() => endpoints.value?.[filter.value.objectType as string]);
     const combinedObjectsQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
       sortBy: sortBy.value[0].key,
@@ -212,12 +197,8 @@ export default defineComponent({
       ...omit(filter.value, 'objectType'),
       endpoint: endpoint.value
     }));
-    const objectType = computed<string | undefined>(
-      () => filter.value.objectType as string | undefined
-    );
-    const objectsQueryEnabled = computed(
-      () => !!objectType.value && !!endpoint.value
-    );
+    const objectType = computed<string | undefined>(() => filter.value.objectType as string | undefined);
+    const objectsQueryEnabled = computed(() => !!objectType.value && !!endpoint.value);
 
     const {
       data: objects,
@@ -229,24 +210,14 @@ export default defineComponent({
       placeholderData: []
     });
 
-    const updateRouteQuery = async (
-      v: Record<string, string | undefined | null | true>,
-      reset = true
-    ) => {
-      const resetValues =
-        reset ?
-          filterKeys.map((key) => [key, undefined as string | undefined | null])
-        : [];
+    const updateRouteQuery = async (v: Record<string, string | undefined | null | true>, reset = true) => {
+      const resetValues = reset ? filterKeys.map((key) => [key, undefined as string | undefined | null]) : [];
       const newValues = Object.fromEntries(
-        resetValues.concat(
-          Object.entries(v).map(([k, v]) => [k, v === true ? null : v])
-        )
+        resetValues.concat(Object.entries(v).map(([k, v]) => [k, v === true ? null : v]))
       );
       const query = { ...route.query, ...newValues };
       // obsolete params need to be removed from the query to match the route exactly in the NavigationDrawer
-      Object.keys(query).forEach(
-        (key) => query[key] === undefined && delete query[key]
-      );
+      Object.keys(query).forEach((key) => query[key] === undefined && delete query[key]);
       await navigateTo({
         ...route,
         name: route.name as RouteRecordName | undefined,
@@ -262,9 +233,7 @@ export default defineComponent({
       }
 
       downloadButton.value.href = URL.createObjectURL(result);
-      downloadButton.value.download = `${
-        report.value.name[locale.value]
-      }.${outputType.value.split('/').pop()}`;
+      downloadButton.value.download = `${report.value.name[locale.value]}.${outputType.value.split('/').pop()}`;
       downloadButton.value.click();
     };
 
@@ -275,20 +244,16 @@ export default defineComponent({
         targets: selectedObjects.value
       }
     }));
-    const { mutateAsync: create, isLoading: generatingReport } = useMutation(
-      reportQueryDefinitions.mutations.create,
-      { onSuccess: openReport }
-    );
+    const { mutateAsync: create, isLoading: generatingReport } = useMutation(reportQueryDefinitions.mutations.create, {
+      onSuccess: openReport
+    });
 
     const generateReport = async () => {
       if (report.value) {
         try {
           await create(createMutationParameters);
         } catch (error: any) {
-          displayErrorMessage(
-            t('generateReportError').toString(),
-            error.message
-          );
+          displayErrorMessage(t('generateReportError').toString(), error.message);
         }
       }
     };

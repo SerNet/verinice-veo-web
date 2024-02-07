@@ -34,14 +34,16 @@
             :loading="uploading"
             :label="inputLabel"
             :disabled="uploading"
-            @update:model-value="onChange" />
+            @update:model-value="onChange"
+          />
         </v-form>
       </v-window-item>
       <v-window-item>
         <EditorSchemaCodeEditor
           :model-value="code"
           :submit-button-text="submitButtonText"
-          @schema-updated="sendSchema" />
+          @schema-updated="sendSchema"
+        />
       </v-window-item>
     </template>
   </BaseTabs>

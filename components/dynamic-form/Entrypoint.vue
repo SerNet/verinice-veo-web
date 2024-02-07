@@ -46,10 +46,7 @@ import Widget from './widgets/Widget';
 import Group from './layouts/Group.vue';
 import Label from './labels/Label.vue';
 import ValidationFailedError from './ValidationFailedError.vue';
-import {
-  IVeoFormSchemaGeneratorOptions,
-  IVeoObjectSchema
-} from '~/types/VeoTypes';
+import { IVeoFormSchemaGeneratorOptions, IVeoObjectSchema } from '~/types/VeoTypes';
 import FormSchemaValidator from '~/lib/FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
@@ -79,9 +76,7 @@ const GENERATOR_OPTIONS = (props: any) =>
       '(\\w+)/properties/domains$',
       '_self'
     ],
-    groupedNamespaces: Object.keys(
-      props.objectSchema.properties?.customAspects?.properties || {}
-    ).map((key) => ({
+    groupedNamespaces: Object.keys(props.objectSchema.properties?.customAspects?.properties || {}).map((key) => ({
       namespace: `#/properties/customAspects/properties/${key}`,
       label: key
     })),
@@ -173,21 +168,12 @@ export default defineComponent({
     const { defaultReactiveFormActions } = useVeoReactiveFormActions();
     const { formatErrors } = useVeoErrorFormatter();
 
-    const localTranslations = computed(
-      () => props.translations?.[props.locale || locale.value] || {}
-    );
-    const localAdditionalContext = computed(
-      () => props.additionalContext || {}
-    );
+    const localTranslations = computed(() => props.translations?.[props.locale || locale.value] || {});
+    const localAdditionalContext = computed(() => props.additionalContext || {});
     const localObjectSchema = computed(() => props.objectSchema);
     const localFormSchema = computed(
       () =>
-        cloneDeep(props.formSchema) ||
-        generateFormSchema(
-          localObjectSchema.value,
-          GENERATOR_OPTIONS(props),
-          Mode.VEO
-        )
+        cloneDeep(props.formSchema) || generateFormSchema(localObjectSchema.value, GENERATOR_OPTIONS(props), Mode.VEO)
     );
     const localReactiveFormActions = computed(() => {
       const toReturn = defaultReactiveFormActions();
@@ -205,19 +191,13 @@ export default defineComponent({
 
     // Form schema validation
     const formSchemaValidator = new FormSchemaValidator();
-    const formSchemaFitsObjectSchema =
-      computed<VeoSchemaValidatorValidationResult>(() =>
-        formSchemaValidator.validate(
-          localFormSchema.value,
-          localObjectSchema.value
-        )
-      );
+    const formSchemaFitsObjectSchema = computed<VeoSchemaValidatorValidationResult>(() =>
+      formSchemaValidator.validate(localFormSchema.value, localObjectSchema.value)
+    );
 
     // Object data validation
     const errorMessages = ref(new Map<string, string[]>());
-    const validateFunction = computed(() =>
-      ajv.compile(localObjectSchema.value)
-    );
+    const validateFunction = computed(() => ajv.compile(localObjectSchema.value));
 
     // global available data
     const _value = computed(() => props.modelValue);
@@ -254,10 +234,7 @@ export default defineComponent({
         const elementId = parentPointer.pop();
         parentPointer.pop();
         const requiredElements =
-          (JsonPointer.get(
-            props.objectSchema,
-            `${parentPointer.join('/')}/required`
-          ) as string[]) || [];
+          (JsonPointer.get(props.objectSchema, `${parentPointer.join('/')}/required`) as string[]) || [];
         if (requiredElements.includes(elementId)) {
           options.label = `${options.label}*`;
         }
@@ -266,19 +243,9 @@ export default defineComponent({
       if (options.visible) {
         switch (element.type) {
           case 'Layout':
-            return createLayout(
-              { ...element, options },
-              formSchemaPointer,
-              translations,
-              localObjectSchema
-            );
+            return createLayout({ ...element, options }, formSchemaPointer, translations, localObjectSchema);
           case 'Control':
-            return createControl(
-              { ...element, options },
-              formSchemaPointer,
-              translations,
-              localObjectSchema
-            );
+            return createControl({ ...element, options }, formSchemaPointer, translations, localObjectSchema);
           case 'Label':
             return createLabel({ ...element, options }, formSchemaPointer);
           case 'Widget':
@@ -302,12 +269,7 @@ export default defineComponent({
       return (
         element.elements &&
         element.elements.map((elem, index) =>
-          createComponent(
-            elem,
-            `${formSchemaPointer}/elements/${index}`,
-            translations,
-            localObjectSchema
-          )
+          createComponent(elem, `${formSchemaPointer}/elements/${index}`, translations, localObjectSchema)
         )
       );
     };
@@ -326,21 +288,12 @@ export default defineComponent({
           formSchemaPointer
         },
         {
-          default: () =>
-            createChildren(
-              element,
-              formSchemaPointer,
-              translations,
-              localObjectSchema
-            )
+          default: () => createChildren(element, formSchemaPointer, translations, localObjectSchema)
         }
       );
     };
 
-    const createLabel = (
-      element: IVeoFormLabelFormSchema,
-      formSchemaPointer: string
-    ) => {
+    const createLabel = (element: IVeoFormLabelFormSchema, formSchemaPointer: string) => {
       return h(Label, {
         key: formSchemaPointer,
         ...defaultProps.value,
@@ -349,10 +302,7 @@ export default defineComponent({
       });
     };
 
-    const createWidget = (
-      element: IVeoFormWidgetFormSchema,
-      formSchemaPointer: string
-    ) => {
+    const createWidget = (element: IVeoFormWidgetFormSchema, formSchemaPointer: string) => {
       return h(Widget, {
         ...defaultProps.value,
         options: element.options,
@@ -371,11 +321,7 @@ export default defineComponent({
       if (!scope) {
         if (process.dev && props.debug) {
           // eslint-disable-next-line no-console
-          console.warn(
-            `VeoForm::createControl: Control ${formSchemaPointer} has no scope: ${JSON.stringify(
-              element
-            )}`
-          );
+          console.warn(`VeoForm::createControl: Control ${formSchemaPointer} has no scope: ${JSON.stringify(element)}`);
         }
         return;
       }
@@ -390,15 +336,11 @@ export default defineComponent({
         }
         // Get object schema pointer of link based on the assumption that link attributes can't get displayed separately from the link
         const formSchemaPointerFragments = formSchemaPointer.split('/');
-        const parentFormSchemaPointer = take(
-          formSchemaPointerFragments,
-          formSchemaPointerFragments.length - 2
-        ).join('/'); // Links can't be deconstructed, so the attributes are always direct children of the link
+        const parentFormSchemaPointer = take(formSchemaPointerFragments, formSchemaPointerFragments.length - 2).join(
+          '/'
+        ); // Links can't be deconstructed, so the attributes are always direct children of the link
         const parentObjectSchemaPointer = (
-          JsonPointer.get(
-            localFormSchema.value,
-            parentFormSchemaPointer
-          ) as IVeoFormControlFormSchema
+          JsonPointer.get(localFormSchema.value, parentFormSchemaPointer) as IVeoFormControlFormSchema
         ).scope;
 
         // Glue the object schema pointer of the link attribute to the one of the link to create a valid one for the whole object
@@ -406,19 +348,14 @@ export default defineComponent({
         scope =
           parentObjectSchemaPointer +
           '/items/' +
-          takeRight(
-            objectSchemaPointerFragments,
-            objectSchemaPointerFragments.length - 1
-          ).join('/');
+          takeRight(objectSchemaPointerFragments, objectSchemaPointerFragments.length - 1).join('/');
       }
 
       const controlObjectSchema = computed(() => ({
         ...(JsonPointer.get(localObjectSchema.value, scope) as JSONSchema7),
         ...(localAdditionalContext.value[scope]?.objectSchema || {})
       }));
-      const valuePointer = computed(() =>
-        removePropertiesKeywordFromPath(scope)
-      );
+      const valuePointer = computed(() => removePropertiesKeywordFromPath(scope));
       return h(
         Control,
         {
@@ -442,13 +379,7 @@ export default defineComponent({
           'onUpdate:modelValue': onUpdate
         },
         {
-          default: () =>
-            createChildren(
-              element,
-              formSchemaPointer,
-              translations,
-              localObjectSchema
-            )
+          default: () => createChildren(element, formSchemaPointer, translations, localObjectSchema)
         }
       );
     };
@@ -468,10 +399,7 @@ export default defineComponent({
       try {
         const formIsValid = validateFunction.value(data);
         if (!formIsValid) {
-          errorMessages.value = formatErrors(
-            validateFunction.value.errors as ErrorObject[],
-            localTranslations.value
-          );
+          errorMessages.value = formatErrors(validateFunction.value.errors as ErrorObject[], localTranslations.value);
         } else {
           errorMessages.value = new Map();
         }
@@ -494,12 +422,7 @@ export default defineComponent({
     const updateFormDebounced = debounce(updateForm, 250);
 
     // Every input uses this fn to store its state in `updateFormData`
-    function onUpdate(
-      objectSchemaPointer: string,
-      newValue: any,
-      oldValue: string,
-      index?: number
-    ) {
+    function onUpdate(objectSchemaPointer: string, newValue: any, oldValue: string, index?: number) {
       updateFormData({ objectSchemaPointer, newValue, oldValue, index });
       updateFormDebounced();
     }
@@ -511,12 +434,7 @@ export default defineComponent({
       index?: number;
     };
 
-    function updateFormData({
-      objectSchemaPointer,
-      newValue,
-      oldValue,
-      index
-    }: updateFormDataParams) {
+    function updateFormData({ objectSchemaPointer, newValue, oldValue, index }: updateFormDataParams) {
       let valuePointer = removePropertiesKeywordFromPath(objectSchemaPointer);
 
       // If this condition is truthy, we have a link attribute and have to replace /items/ with the index.
@@ -537,9 +455,7 @@ export default defineComponent({
       }
 
       // Apply reactive form actions
-      for (const action of localReactiveFormActions.value[
-        objectSchemaPointer
-      ] || []) {
+      for (const action of localReactiveFormActions.value[objectSchemaPointer] || []) {
         formData = action(newValue, oldValue, formData, _value.value);
       }
     }
@@ -558,18 +474,11 @@ export default defineComponent({
         h(ValidationFailedError, {
           errors: [
             ...(formSchemaFitsObjectSchema.value?.errors || []),
-            ...(formError.value ?
-              [{ code: 'OS_Error', message: formError.value }]
-            : [])
+            ...(formError.value ? [{ code: 'OS_Error', message: formError.value }] : [])
           ]
         })
       : h('div', { class: 'vf-wrapper' }, [
-          createComponent(
-            localFormSchema.value,
-            '#',
-            localTranslations.value,
-            localObjectSchema
-          )
+          createComponent(localFormSchema.value, '#', localTranslations.value, localObjectSchema)
         ]);
   }
 });

@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseDialog
-    v-bind="$attrs"
-    :title="t('downloadSchema')"
-    @update:model-value="emit('update:model-value', $event)">
+  <BaseDialog v-bind="$attrs" :title="t('downloadSchema')" @update:model-value="emit('update:model-value', $event)">
     <template #default>
       {{ t('invalidSchemaConfirmation') }}
     </template>

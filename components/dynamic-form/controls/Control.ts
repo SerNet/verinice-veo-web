@@ -55,17 +55,13 @@ export default defineComponent({
   emits: ['update:model-value'],
   setup(props, { emit, slots }) {
     const objectData = inject<ComputedRef<Record<string, any>>>('objectData');
-    const translations =
-      inject<ComputedRef<Record<string, any>>>('translations');
+    const translations = inject<ComputedRef<Record<string, any>>>('translations');
 
     watch(
       () => props.objectSchema,
       (newValue) => {
         // @ts-ignore We added VEO_FORMS_DEBUG_MAP to the window previously
-        window.VEO_FORMS_DEBUG_MAP.set(
-          props.objectSchemaPointer,
-          JSON.stringify(newValue)
-        );
+        window.VEO_FORMS_DEBUG_MAP.set(props.objectSchemaPointer, JSON.stringify(newValue));
       },
       { immediate: true, deep: true }
     );
@@ -84,11 +80,8 @@ export default defineComponent({
               } meets all conditions...`
             );
           }
-          const evaluatedConditions: boolean[] =
-            definition.conditions?.(props) || [];
-          const truthyConditions = evaluatedConditions.filter(
-            (condition) => condition
-          ).length;
+          const evaluatedConditions: boolean[] = definition.conditions?.(props) || [];
+          const truthyConditions = evaluatedConditions.filter((condition) => condition).length;
 
           if (process.dev && props.debug) {
             for (let j = 0; j < evaluatedConditions.length; j++) {
@@ -115,8 +108,7 @@ export default defineComponent({
         // eslint-disable-next-line no-console
         console.log(
           `Control ${
-            control.control.CONTROL_DEFINITION.name[locale.value] ||
-            control.control.CONTROL_DEFINITION.name[0]
+            control.control.CONTROL_DEFINITION.name[locale.value] || control.control.CONTROL_DEFINITION.name[0]
           } has ${control.truthyConditions} truthy conditions`
         );
       }
@@ -126,9 +118,7 @@ export default defineComponent({
       // @ts-ignore At this point we expect objectSchema to be set, so type WILL exist
       const items =
         props.objectSchema.enum ||
-        [props.objectSchema.items || []]
-          .flat()
-          .flatMap((def) => (typeof def === 'object' ? def.enum || [] : []));
+        [props.objectSchema.items || []].flat().flatMap((def) => (typeof def === 'object' ? def.enum || [] : []));
       return items.map((item, index) =>
         props.options.enum ?
           { title: props.options.enum[index], value: item }
@@ -137,14 +127,10 @@ export default defineComponent({
     });
 
     const valuePointer = computed(() =>
-      props.index !== undefined ?
-        props.valuePointer.replace('items', props.index + '')
-      : props.valuePointer
+      props.index !== undefined ? props.valuePointer.replace('items', props.index + '') : props.valuePointer
     );
     const elementKey = computed(() =>
-      props.index !== undefined ?
-        props.elementKey?.replace('items', props.index + '')
-      : props.elementKey
+      props.index !== undefined ? props.elementKey?.replace('items', props.index + '') : props.elementKey
     );
 
     // If the element is part of a custom link, we have to modify some props. We can't do it in VeoForm as the index isn't accesible there, so we do it here

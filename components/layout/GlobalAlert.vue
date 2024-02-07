@@ -19,16 +19,15 @@
   <BaseAlert
     :model-value="value"
     v-bind="$props"
-    :default-button-text="
-      (params && params.defaultButtonText) || globalT('global.button.ok')
-    "
+    :default-button-text="(params && params.defaultButtonText) || globalT('global.button.ok')"
     :buttons="buttons"
     enable-keyboard-navigation
     class="veo-global-alert"
     :no-close-button="type === VeoAlertType.SUCCESS"
     :dismiss-on-click="type === VeoAlertType.SUCCESS"
     :timeout="params ? params.timeout : undefined"
-    @update:model-value="onInput">
+    @update:model-value="onInput"
+  >
     <template #secondary-buttons>
       <div v-if="showDownloadDetailsButton && params && params.details">
         <v-btn variant="text" @click="downloadDetails">

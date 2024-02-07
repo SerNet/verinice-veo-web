@@ -20,16 +20,9 @@
     <v-list-item-title class="body-1 font-weight-bold d-flex align-center">
       {{ idWithTitle }}
     </v-list-item-title>
-    <v-list-item-subtitle
-      v-text="t('attributecount', item.attributes.length || 0)" />
+    <v-list-item-subtitle v-text="t('attributecount', item.attributes.length || 0)" />
     <template #append>
-      <v-chip
-        v-if="styling.name"
-        :color="styling.color"
-        class="mr-2"
-        small
-        label
-        variant="outlined">
+      <v-chip v-if="styling.name" :color="styling.color" class="mr-2" small label variant="outlined">
         <span v-if="translate">
           {{ t(`editor.inputtypes.${styling.name}`) }}
         </span>
@@ -38,16 +31,8 @@
         </span>
       </v-chip>
       <v-list-item-action class="ml-0 d-flex flex-row">
-        <v-btn
-          class="edit-button"
-          :icon="mdiPencil"
-          variant="text"
-          @click="$emit('edit-item', $event)" />
-        <v-btn
-          class="delete-button"
-          :icon="mdiTrashCanOutline"
-          variant="text"
-          @click="$emit('delete-item', $event)" />
+        <v-btn class="edit-button" :icon="mdiPencil" variant="text" @click="$emit('edit-item', $event)" />
+        <v-btn class="delete-button" :icon="mdiTrashCanOutline" variant="text" @click="$emit('delete-item', $event)" />
       </v-list-item-action>
     </template>
   </v-list-item>
@@ -57,10 +42,7 @@ import { upperFirst } from 'lodash';
 import { PropType } from 'vue';
 import { mdiPencil, mdiTrashCanOutline } from '@mdi/js';
 
-import ObjectSchemaHelper, {
-  IVeoOSHCustomAspect,
-  IVeoOSHCustomLink
-} from '~/lib/ObjectSchemaHelper2';
+import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2';
 import { IInputType } from '~/types/VeoEditor';
 
 const props = defineProps({
@@ -81,22 +63,15 @@ const props = defineProps({
 defineEmits(['delete-item', 'edit-item']);
 
 const { t, locale } = useI18n();
-const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined =
-  inject('objectSchemaHelper');
+const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined = inject('objectSchemaHelper');
 const displayLanguage = inject<Ref<string>>('displayLanguage', locale);
 
 const translatedTitle = computed(
-  () =>
-    objectSchemaHelper?.value?.getTranslation(
-      displayLanguage.value,
-      `${props.item.prefix}${props.item.title}`
-    )
+  () => objectSchemaHelper?.value?.getTranslation(displayLanguage.value, `${props.item.prefix}${props.item.title}`)
 );
 
 const idWithTitle = computed(() =>
-  translatedTitle.value ?
-    `${props.item.title} (${locale.value}: ${translatedTitle.value})`
-  : props.item.title
+  translatedTitle.value ? `${props.item.title} (${locale.value}: ${translatedTitle.value})` : props.item.title
 );
 </script>
 

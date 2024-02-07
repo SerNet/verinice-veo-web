@@ -27,7 +27,8 @@
         no-close-button
         :title="t('access')"
         :type="VeoAlertType.INFO"
-        style="width: max-content">
+        style="width: max-content"
+      >
         {{ t('accountAdministrationHint') }}
       </BaseAlert>
 
@@ -35,8 +36,7 @@
         <v-card-title class="bg-accent small-caps text-h4">
           <span>{{ t('accounts') }}</span>
           <span style="float: right">
-            <b>{{ activeAccounts }}</b> {{ t('of') }}
-            <b>{{ userSettings.maxUsers - 1 }}</b> {{ t('activeAccounts') }}
+            <b>{{ activeAccounts }}</b> {{ t('of') }} <b>{{ userSettings.maxUsers - 1 }}</b> {{ t('activeAccounts') }}
           </span>
         </v-card-title>
 
@@ -44,20 +44,19 @@
           :default-headers="['actions']"
           :items="accounts"
           :loading="isFetching"
-          :additional-headers="additionalTableHeaders">
+          :additional-headers="additionalTableHeaders"
+        >
           <template #actions="{ item }">
             <div class="d-flex justify-end">
-              <v-tooltip
-                v-for="action in accountTableActions"
-                :key="action.id"
-                location="bottom">
+              <v-tooltip v-for="action in accountTableActions" :key="action.id" location="bottom">
                 <template #activator="{ props }">
                   <v-btn
                     v-bind="props"
                     :disabled="action.isDisabled && action.isDisabled(item.raw)"
                     :icon="action.icon"
                     variant="text"
-                    @click="action.action(item.raw)" />
+                    @click="action.action(item.raw)"
+                  />
                 </template>
                 {{ action.label }}
               </v-tooltip>
@@ -72,14 +71,12 @@
           <v-btn
             v-bind="props"
             color="primary"
-            :disabled="
-              ability.cannot('manage', 'accounts') ||
-              activeAccounts >= userSettings.maxUsers - 1
-            "
+            :disabled="ability.cannot('manage', 'accounts') || activeAccounts >= userSettings.maxUsers - 1"
             size="large"
             class="veo-primary-action-fab"
             :icon="mdiPlus"
-            @click="createAccountDialogVisible = true" />
+            @click="createAccountDialogVisible = true"
+          />
           <div style="height: 76px" />
         </template>
         <template #default>
@@ -91,11 +88,13 @@
         :model-value="manageAccountDialogVisible"
         v-bind="manageAccountProps"
         :existing-accounts="accounts"
-        @update:model-value="onManageAccountDialogInput" />
+        @update:model-value="onManageAccountDialogInput"
+      />
       <AccountDeleteDialog
         v-if="deleteAccountDialogVisible"
         v-model="deleteAccountDialogVisible"
-        v-bind="deleteAccountDialogProps" />
+        v-bind="deleteAccountDialogProps"
+      />
     </template>
   </BasePage>
 </template>
@@ -103,9 +102,7 @@
 <script setup lang="ts">
 import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { TableHeader } from '~/components/base/Table.vue';
-import accountQueryDefinition, {
-  IVeoAccount
-} from '~/composables/api/queryDefinitions/accounts';
+import accountQueryDefinition, { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useQuery } from '~/composables/api/utils/query';
@@ -116,12 +113,8 @@ const { t: $t } = useI18n({ useScope: 'global' });
 const { profile, userSettings } = useVeoUser();
 const { ability } = useVeoPermissions();
 
-const { data: accounts, isFetching } = useQuery(
-  accountQueryDefinition.queries.fetchAccounts
-);
-const activeAccounts = computed(
-  () => (accounts.value || []).filter((account) => account.enabled).length
-);
+const { data: accounts, isFetching } = useQuery(accountQueryDefinition.queries.fetchAccounts);
+const activeAccounts = computed(() => (accounts.value || []).filter((account) => account.enabled).length);
 
 const onEditAccount = (data: any) => {
   editAccountDialogProps.value = data;
@@ -139,13 +132,9 @@ const deleteAccountDialogProps = ref<Record<string, any>>({});
 const editAccountDialogVisible = ref(false);
 const editAccountDialogProps = ref<Record<string, any>>({});
 
-const manageAccountDialogVisible = computed(
-  () => createAccountDialogVisible.value || editAccountDialogVisible.value
-);
+const manageAccountDialogVisible = computed(() => createAccountDialogVisible.value || editAccountDialogVisible.value);
 const manageAccountProps = computed(() =>
-  editAccountDialogVisible.value ?
-    editAccountDialogProps.value
-  : { groups: ['veo-write-access'] }
+  editAccountDialogVisible.value ? editAccountDialogProps.value : { groups: ['veo-write-access'] }
 );
 const onManageAccountDialogInput = (newValue: boolean) => {
   if (!newValue) {
@@ -195,10 +184,7 @@ const additionalTableHeaders = ref<TableHeader[]>([
     text: t('enabled').toString(),
     value: 'enabled',
     key: 'enabled',
-    render: ({ item }) =>
-      item.raw.enabled ?
-        $t('global.button.yes').toString()
-      : $t('global.button.no').toString(),
+    render: ({ item }) => (item.raw.enabled ? $t('global.button.yes').toString() : $t('global.button.no').toString()),
     width: 80
   },
   {

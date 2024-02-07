@@ -24,7 +24,8 @@
           :disabled="!visibleItems.length || $props.disabled"
           :icon="mdiDotsVertical"
           variant="text"
-          size="small" />
+          size="small"
+        />
       </template>
     </UtilNestedMenu>
   </div>
@@ -89,9 +90,7 @@ const onCreateObjectSuccess = (newObjectId: string) => {
 // const subType = computed(() => props.object?.domains[route.params.domain as string]?.subType);
 const subType = computed(() => props.object?.subType);
 
-const items = computed<
-  (INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] })[]
->(() => [
+const items = computed<(INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] })[]>(() => [
   {
     key: 'delete',
     title: t('deleteObject').toString(),
@@ -101,8 +100,7 @@ const items = computed<
     componentProps: {
       item: props.object,
       onSuccess: navigateToObjectOverview,
-      onError: (error: any) =>
-        displayErrorMessage(t('delteObjectFailed'), JSON.stringify(error))
+      onError: (error: any) => displayErrorMessage(t('delteObjectFailed'), JSON.stringify(error))
     }
   },
   {

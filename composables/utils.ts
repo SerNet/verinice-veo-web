@@ -91,8 +91,7 @@ export const useRules = () => {
     }
   };
 
-  const banSpecialChars = (v: string) =>
-    hasNoSpecialChar(v) ? true : t('global.input.hasSpecialChar');
+  const banSpecialChars = (v: string) => (hasNoSpecialChar(v) ? true : t('global.input.hasSpecialChar'));
   function hasNoSpecialChar(s: string): boolean {
     if (s === '') return true; // do not test empty strings
     const re = /^[a-zA-Z0-9_-]+$/; // allowed characters

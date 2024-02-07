@@ -21,7 +21,8 @@
     large
     :title="t('schemaDetailsHeadline')"
     fixed-footer
-    @update:model-value="emit('update:model-value', $event)">
+    @update:model-value="emit('update:model-value', $event)"
+  >
     <template #default>
       <v-form v-model="formIsValid" class="mx-4" @submit="doSave()">
         <v-row no-gutters class="align-center mt-4">
@@ -29,32 +30,20 @@
             <span style="font-size: 1.2rem">{{ t('schemaName') }}*:</span>
           </v-col>
           <v-col cols="12" :md="5">
-            <v-text-field
-              v-model="form.formSchema"
-              required
-              flat
-              :rules="[requiredRule]"
-              :label="t('schemaName')" />
+            <v-text-field v-model="form.formSchema" required flat :rules="[requiredRule]" :label="t('schemaName')" />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
           <v-col cols="12" :md="5">
-            <span style="font-size: 1.2rem"
-              >{{ globalT('editor.formschema.sorting') }}:</span
-            >
+            <span style="font-size: 1.2rem">{{ globalT('editor.formschema.sorting') }}:</span>
           </v-col>
           <v-col cols="12" :md="5">
-            <v-text-field
-              v-model="form.sorting"
-              :label="globalT('editor.formschema.sorting')"
-              flat />
+            <v-text-field v-model="form.sorting" :label="globalT('editor.formschema.sorting')" flat />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
           <v-col cols="12" :md="5">
-            <span style="font-size: 1.2rem"
-              >{{ globalT('editor.formschema.create.type.text') }}*:</span
-            >
+            <span style="font-size: 1.2rem">{{ globalT('editor.formschema.create.type.text') }}*:</span>
           </v-col>
           <v-col cols="12" :md="5">
             <v-text-field
@@ -62,14 +51,13 @@
               flat
               :label="globalT('editor.formschema.create.type')"
               readonly
-              disabled />
+              disabled
+            />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
           <v-col cols="12" :md="5">
-            <span style="font-size: 1.2rem"
-              >{{ globalT('editor.formschema.subtype') }}:</span
-            >
+            <span style="font-size: 1.2rem">{{ globalT('editor.formschema.subtype') }}:</span>
           </v-col>
           <v-col cols="12" :md="5">
             <v-select
@@ -77,7 +65,8 @@
               :label="globalT('editor.formschema.subtype')"
               :items="subTypeOptions"
               :rules="[requiredRule]"
-              flat />
+              flat
+            />
           </v-col>
         </v-row>
         <small>{{ globalT('global.input.requiredfields') }}</small>
@@ -153,13 +142,12 @@ watch(
 );
 
 const subTypeOptions = computed(() =>
-  (
-    props.objectSchema?.properties?.domains?.properties?.['{CURRENT_DOMAIN_ID}']
-      ?.properties?.subType?.enum || []
-  ).map((subType: string) => ({
-    title: subType,
-    value: subType
-  }))
+  (props.objectSchema?.properties?.domains?.properties?.['{CURRENT_DOMAIN_ID}']?.properties?.subType?.enum || []).map(
+    (subType: string) => ({
+      title: subType,
+      value: subType
+    })
+  )
 );
 
 function doSave() {

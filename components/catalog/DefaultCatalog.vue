@@ -27,7 +27,8 @@
         :additional-headers="headers"
         :loading="props.isLoading"
         must-sort
-        show-select />
+        show-select
+      />
     </BaseCard>
     <v-row dense class="my-4">
       <v-spacer />
@@ -36,19 +37,17 @@
           variant="text"
           class="mr-2"
           :disabled="selectedItems.length === 0 || isApplyingItems"
-          @click="selectedItems = []">
+          @click="selectedItems = []"
+        >
           {{ globalT('global.button.cancel') }}
         </v-btn>
         <v-btn
           flat
           color="primary"
-          :disabled="
-            selectedItems.length === 0 ||
-            isApplyingItems ||
-            ability.cannot('manage', 'catalogs')
-          "
+          :disabled="selectedItems.length === 0 || isApplyingItems || ability.cannot('manage', 'catalogs')"
           :loading="props.isApplyingItems"
-          @click="$emit('applyItems')">
+          @click="$emit('applyItems')"
+        >
           {{ t('apply') }}
         </v-btn>
       </v-col>
@@ -114,8 +113,7 @@ const headers: TableHeader[] = [
     sortable: false,
     width: 500,
     truncate: true,
-    tooltip: ({ internalItem: item }: { internalItem: any }) =>
-      item.raw.description,
+    tooltip: ({ internalItem: item }: { internalItem: any }) => item.raw.description,
     priority: 30,
     order: 60
   }

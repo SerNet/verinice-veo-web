@@ -26,20 +26,18 @@
           <v-col cols="12" md="6" class="d-flex align-center">
             <EditorFormSchemaPlaygroundEditDialogTranslatedInput
               :form-schema-element="formSchemaElement"
-              @update:form-schema-element="
-                emit('update:form-schema-element', $event)
-              "
+              @update:form-schema-element="emit('update:form-schema-element', $event)"
               @set-translation="
                 (translationKey: string, newValue: string | undefined) =>
                   emit('set-translation', translationKey, newValue)
-              " />
+              "
+            />
           </v-col>
           <v-col cols="12" md="6">
             <EditorFormSchemaPlaygroundEditDialogElementStylingOptions
               :form-schema-element="formSchemaElement"
-              @update:form-schema-element="
-                emit('update:form-schema-element', $event)
-              " />
+              @update:form-schema-element="emit('update:form-schema-element', $event)"
+            />
           </v-col>
         </v-row>
       </v-card-text>
@@ -60,15 +58,8 @@ defineProps({
 });
 
 const emit = defineEmits<{
-  (
-    event: 'update:form-schema-element',
-    formSchemaElement: IVeoFormSchemaItem
-  ): void;
-  (
-    event: 'set-translation',
-    translationKey: string,
-    value: string | undefined
-  ): void;
+  (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void;
+  (event: 'set-translation', translationKey: string, value: string | undefined): void;
 }>();
 
 const { t } = useI18n();

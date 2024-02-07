@@ -168,11 +168,7 @@ export interface IVeoTranslationCollection {
 
 export interface IVeoReactiveFormAction {
   attributeName: string;
-  handler: (
-    newValue: string,
-    newObject: Record<string, any>,
-    oldObject: Record<string, any>
-  ) => void;
+  handler: (newValue: string, newObject: Record<string, any>, oldObject: Record<string, any>) => void;
 }
 
 export interface IVeoFormsAdditionalContext {
@@ -240,8 +236,7 @@ export interface IVeoObjectSchemaObject extends IVeoObjectSchemaProperty {
   };
 }
 
-export interface IVeoObjectSchemaPatternObject
-  extends IVeoObjectSchemaProperty {
+export interface IVeoObjectSchemaPatternObject extends IVeoObjectSchemaProperty {
   type: 'object';
   properties: {
     [key: string]: IVeoObjectSchemaProperty;
@@ -517,11 +512,7 @@ export interface IVeoGlobalAlert {
 export interface IVeoFormSchemaGeneratorOptions {
   excludedProperties?: string[];
   groupedNamespaces?: { namespace: string; label?: string }[];
-  generateControlFunction: (
-    pointer: string,
-    schema: Record<string, any>,
-    mode: Mode
-  ) => any;
+  generateControlFunction: (pointer: string, schema: Record<string, any>, mode: Mode) => any;
   generateGroupFunction: (children: any[], label?: string) => any;
 }
 

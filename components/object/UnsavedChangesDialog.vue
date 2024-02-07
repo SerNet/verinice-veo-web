@@ -19,7 +19,8 @@
   <BaseDialog
     :model-value="modelValue && !!item"
     :title="t('headline')"
-    @update:model-value="emit('update:model-value', $event)">
+    @update:model-value="emit('update:model-value', $event)"
+  >
     <template #default>
       <span class="text-body-1">
         {{ t('text', { displayName: item && item.displayName }) }}
@@ -34,11 +35,7 @@
 
       <v-spacer />
 
-      <v-btn
-        color="primary"
-        :disabled="!item"
-        variant="text"
-        @click="emit('exit', !!item?.id)">
+      <v-btn color="primary" :disabled="!item" variant="text" @click="emit('exit', !!item?.id)">
         {{ $t('global.button.yes') }}
       </v-btn>
     </template>

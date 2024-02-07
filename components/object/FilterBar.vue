@@ -24,15 +24,13 @@
         size="small"
         variant="flat"
         data-component-name="filter-bar-filter-button"
-        @click="filterDialogVisible = true">
+        @click="filterDialogVisible = true"
+      >
         <v-icon :icon="mdiFilter" location="start" />
         {{ upperFirst(t('filter').toString()) }}
       </v-btn>
     </v-col>
-    <v-col
-      cols="auto"
-      class="grow my-2"
-      data-component-name="filter-bar-active-filters">
+    <v-col cols="auto" class="grow my-2" data-component-name="filter-bar-active-filters">
       <BaseChip
         v-for="k in activeFilterKeys"
         :key="k"
@@ -40,12 +38,10 @@
         :label="formatLabel(k)"
         :value="formatValue(k, filter[k])"
         :close="!requiredFields.includes(k) && !disabledFields.includes(k)"
-        @click:close="clearFilter(k)" />
+        @click:close="clearFilter(k)"
+      />
     </v-col>
-    <ObjectFilterDialog
-      v-model="filterDialogVisible"
-      v-bind="$props"
-      @update:filter="$emit('update:filter', $event)" />
+    <ObjectFilterDialog v-model="filterDialogVisible" v-bind="$props" @update:filter="$emit('update:filter', $event)" />
   </v-row>
 </template>
 
@@ -55,9 +51,7 @@ import { upperFirst } from 'lodash';
 import { mdiFilter } from '@mdi/js';
 
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import formQueryDefinitions, {
-  IVeoFormSchemaMeta
-} from '~/composables/api/queryDefinitions/forms';
+import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import { useQuery } from '~/composables/api/utils/query';
 
 export default defineComponent({
@@ -104,11 +98,10 @@ export default defineComponent({
 
     const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
     const formsQueryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useQuery(
-      formQueryDefinitions.queries.fetchForms,
-      formsQueryParameters,
-      { enabled: formsQueryEnabled, placeholderData: [] }
-    );
+    const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, {
+      enabled: formsQueryEnabled,
+      placeholderData: []
+    });
 
     const filterDialogVisible = ref(false);
 
@@ -137,15 +130,13 @@ export default defineComponent({
       switch (label) {
         // Uppercase object types
         case 'objectType':
-          return value ?
-              translations.value?.lang[locale.value]?.[value]
-            : undefined;
+          return value ? translations.value?.lang[locale.value]?.[value] : undefined;
         // Translate sub types
         case 'subType':
           return (
-            (formSchemas.value as IVeoFormSchemaMeta[]).find(
-              (formSchema) => formSchema.subType === value
-            )?.name?.[locale.value] || value
+            (formSchemas.value as IVeoFormSchemaMeta[]).find((formSchema) => formSchema.subType === value)?.name?.[
+              locale.value
+            ] || value
           );
         case 'status':
           return (

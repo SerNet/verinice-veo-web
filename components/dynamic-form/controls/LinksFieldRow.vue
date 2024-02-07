@@ -29,13 +29,10 @@
         required
         :error-messages="getControlErrorMessages($props, '/properties/target')"
         value-as-link
-        @update:model-value="$emit('update:model-value', $event)">
+        @update:model-value="$emit('update:model-value', $event)"
+      >
         <template v-if="!objectCreationDisabled" #prepend-item>
-          <v-btn
-            block
-            color="primary"
-            variant="text"
-            @click="createObjectDialogVisible = true">
+          <v-btn block color="primary" variant="text" @click="createObjectDialogVisible = true">
             <v-icon start :icon="mdiPlus" />
             {{ t('create', [createButtonLabel]).toString() }}
           </v-btn>
@@ -47,7 +44,8 @@
         :object-type="objectType"
         :sub-type="subType"
         :domain-id="domainId"
-        @success="onTargetCreated" />
+        @success="onTargetCreated"
+      />
     </div>
     <div>
       <DynamicFormControlsLinksFieldRowAttribute v-bind="$props">
@@ -103,44 +101,32 @@ export default defineComponent({
     const domainId = computed(() => route.params.domain as string);
 
     const objectType = computed<string>(() =>
-      (
-        (props.objectSchema as any).items?.properties?.target?.properties?.type
-          ?.enum?.[0] + ''
-      ).toLowerCase()
+      ((props.objectSchema as any).items?.properties?.target?.properties?.type?.enum?.[0] + '').toLowerCase()
     );
     const subType = computed<string>(
-      () =>
-        (props.objectSchema as any).items?.properties?.target?.properties
-          ?.subType?.enum?.[0]
+      () => (props.objectSchema as any).items?.properties?.target?.properties?.subType?.enum?.[0]
     );
 
     const queryParameters = computed(() => ({ domainId: domainId.value }));
     const queryEnabled = computed(() => !!domainId.value);
 
-    const { data: formSchemas } = useQuery(
-      formsQueryDefinitions.queries.fetchForms,
-      queryParameters,
-      { enabled: queryEnabled }
-    );
+    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, {
+      enabled: queryEnabled
+    });
 
     const createButtonLabel = computed(() =>
       subType.value ?
-        formSchemas.value?.find(
-          (formSchema) => formSchema.subType === subType.value
-        )?.name?.[locale.value] || objectType.value
+        formSchemas.value?.find((formSchema) => formSchema.subType === subType.value)?.name?.[locale.value] ||
+        objectType.value
       : objectType.value
     );
 
     // new object creation
     const createObjectDialogVisible = ref(false);
-    const { data: schemas } = useQuery(
-      schemaQueryDefinitions.queries.fetchSchemas
-    );
+    const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const onTargetCreated = (newElementId: string) => {
       emit('update:model-value', {
-        targetUri: `${config.public.apiUrl}/${schemas.value?.[
-          objectType.value
-        ]}/${newElementId}`
+        targetUri: `${config.public.apiUrl}/${schemas.value?.[objectType.value]}/${newElementId}`
       });
     };
 

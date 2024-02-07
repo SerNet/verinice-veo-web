@@ -5,10 +5,7 @@ type UnitDetails = {
 };
 
 export function generateUnitDetails() {
-  const id =
-    Cypress.env('pipelineId') ?
-      Cypress.env('pipelineId')
-    : self.crypto.randomUUID();
+  const id = Cypress.env('pipelineId') ? Cypress.env('pipelineId') : self.crypto.randomUUID();
 
   const unitDetails: UnitDetails = {
     name: `${Cypress.env('testUnitPrefix')}${id}-spec-${Cypress.spec.name}`,

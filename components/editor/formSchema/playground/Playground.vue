@@ -24,12 +24,12 @@
     @move="onMoveElement"
     @remove="onRemoveElement"
     @form-schema-elements-modified="onFormSchemaModified(playgroundElements)"
-    @set-translations="emit('set-translations', $event)" />
+    @set-translations="emit('set-translations', $event)"
+  />
 </template>
 
 <script lang="ts">
-export const FORMSCHEMA_PLAYGROUND_NAMESPACE =
-  'bdc08095-d80f-4974-aa69-a41d01a66748';
+export const FORMSCHEMA_PLAYGROUND_NAMESPACE = 'bdc08095-d80f-4974-aa69-a41d01a66748';
 
 export type FormSchemaElementMap = Map<string, IVeoFormSchemaItem>;
 
@@ -69,31 +69,22 @@ const emit = defineEmits<{
 }>();
 
 // UUID Map stuff
-const formSchemaElementMap = reactive<FormSchemaElementMap>(
-  new Map<string, IVeoFormSchemaItem>()
-);
+const formSchemaElementMap = reactive<FormSchemaElementMap>(new Map<string, IVeoFormSchemaItem>());
 const playgroundElements = ref<IPlaygroundElement | undefined>(undefined);
 
 provide(PROVIDE_KEYS.FORM_SCHEMA_ELEMENT_MAP, formSchemaElementMap);
 
-const isCustomLinkAttribute = (
-  element: IVeoFormSchemaItem | undefined,
-  parent: IVeoFormSchemaItem | undefined
-) => {
+const isCustomLinkAttribute = (element: IVeoFormSchemaItem | undefined, parent: IVeoFormSchemaItem | undefined) => {
   if (!element?.scope) {
     return false;
   }
   return (
     element.scope.includes('/properties/attributes/properties') &&
-    (!!element.scope.startsWith('#/properties/links') ||
-      !!parent?.scope?.startsWith('#/properties/links'))
+    (!!element.scope.startsWith('#/properties/links') || !!parent?.scope?.startsWith('#/properties/links'))
   );
 };
 
-const getFormSchemaElementName = (
-  formSchemaElement: IVeoFormSchemaItem,
-  pointer: string
-) => {
+const getFormSchemaElementName = (formSchemaElement: IVeoFormSchemaItem, pointer: string) => {
   switch (formSchemaElement.type) {
     case 'Control':
       return formSchemaElement.scope as string;
@@ -110,38 +101,20 @@ const addElementToMap = (
   parent: IVeoFormSchemaItem | undefined
 ) => {
   // Turn relative custom link attribute scopes into absolute scopes. This is undone in buildFormSchemaItem
-  if (
-    isCustomLinkAttribute(formSchemaElement, parent) &&
-    !formSchemaElement?.scope?.startsWith('#/properties/links')
-  ) {
-    formSchemaElement.scope = `${parent?.scope}/items/${formSchemaElement.scope?.replace(
-      '#/',
-      ''
-    )}`;
+  if (isCustomLinkAttribute(formSchemaElement, parent) && !formSchemaElement?.scope?.startsWith('#/properties/links')) {
+    formSchemaElement.scope = `${parent?.scope}/items/${formSchemaElement.scope?.replace('#/', '')}`;
   }
 
-  const uuid = UUIDv5(
-    getFormSchemaElementName(formSchemaElement, pointer),
-    FORMSCHEMA_PLAYGROUND_NAMESPACE
-  );
+  const uuid = UUIDv5(getFormSchemaElementName(formSchemaElement, pointer), FORMSCHEMA_PLAYGROUND_NAMESPACE);
   formSchemaElementMap.set(uuid, cloneDeep(formSchemaElement)); // Add formSchema element to uuid map
   if (pointer === '#') {
     playgroundElements.value = { id: uuid, children: [], readonly: true };
   } else {
-    JsonPointer.set(
-      playgroundElements.value,
-      pointer,
-      { id: uuid, children: [] },
-      true
-    ); // Add to playground elements to be displayed
+    JsonPointer.set(playgroundElements.value, pointer, { id: uuid, children: [] }, true); // Add to playground elements to be displayed
   }
 
   (formSchemaElement.elements || []).forEach((child, childIndex) => {
-    addElementToMap(
-      child,
-      `${pointer}/children/${childIndex}`,
-      formSchemaElement
-    );
+    addElementToMap(child, `${pointer}/children/${childIndex}`, formSchemaElement);
   });
 };
 
@@ -151,15 +124,9 @@ const initPlayground = (formSchemaRoot: IVeoFormSchemaItem) => {
 };
 initPlayground(cloneDeep(props.modelValue)); // Call once as soon as the component gets initialized to create the map
 
-const buildFormSchemaItem = (
-  element: IPlaygroundElement,
-  parentElement: IPlaygroundElement | undefined
-) => {
-  const formSchemaElement = cloneDeep(
-    formSchemaElementMap.get(element.id) as IVeoFormSchemaItem
-  );
-  const parentFormSchemaElement =
-    parentElement ? formSchemaElementMap.get(parentElement.id) : undefined;
+const buildFormSchemaItem = (element: IPlaygroundElement, parentElement: IPlaygroundElement | undefined) => {
+  const formSchemaElement = cloneDeep(formSchemaElementMap.get(element.id) as IVeoFormSchemaItem);
+  const parentFormSchemaElement = parentElement ? formSchemaElementMap.get(parentElement.id) : undefined;
 
   // Undo absolute path scopes for link attributes (See addAllCustomLinkAttributes())
   if (isCustomLinkAttribute(formSchemaElement, parentFormSchemaElement)) {
@@ -193,53 +160,32 @@ const getParentPointer = (childPointer: string) => {
   return parts.join('/');
 };
 
-const isFormElement = (
-  element: IPlaygroundElement | IVeoFormSchemaItem
-): element is IVeoFormSchemaItem => 'type' in element;
+const isFormElement = (element: IPlaygroundElement | IVeoFormSchemaItem): element is IVeoFormSchemaItem =>
+  'type' in element;
 
-const onAddElement = (
-  elementPointer: string,
-  element: IPlaygroundElement | IVeoFormSchemaItem
-) => {
+const onAddElement = (elementPointer: string, element: IPlaygroundElement | IVeoFormSchemaItem) => {
   // onAddElement can either be called from within the playground or if the user drags a backlog item to the playground, so we have to check which object we got
   if (isFormElement(element)) {
     // We use v4 as a fallback here, as there is no pointer yet, as this elements gets added
-    const uuid = UUIDv5(
-      getFormSchemaElementName(element, UUIDv4()),
-      FORMSCHEMA_PLAYGROUND_NAMESPACE
-    );
+    const uuid = UUIDv5(getFormSchemaElementName(element, UUIDv4()), FORMSCHEMA_PLAYGROUND_NAMESPACE);
     formSchemaElementMap.set(uuid, cloneDeep(element)); // Add formSchema element to uuid map
     element = { id: uuid, children: [] };
   }
 
   const newIndex = parseInt(elementPointer.split('/').pop() as string);
 
-  const parent = JsonPointer.get(
-    playgroundElements.value,
-    getParentPointer(elementPointer)
-  ) as IPlaygroundElement;
+  const parent = JsonPointer.get(playgroundElements.value, getParentPointer(elementPointer)) as IPlaygroundElement;
 
   // Add at new position
   parent.children.splice(newIndex, 0, element);
 };
 
-const onRemoveElement = (
-  elementPointer: string,
-  removeFromSchemaElementMap = false
-) => {
-  const elementIndexToRemove = parseInt(
-    elementPointer.split('/').pop() as string
-  );
+const onRemoveElement = (elementPointer: string, removeFromSchemaElementMap = false) => {
+  const elementIndexToRemove = parseInt(elementPointer.split('/').pop() as string);
   const parentPointer = getParentPointer(elementPointer);
 
-  const element = JsonPointer.get(
-    playgroundElements.value,
-    elementPointer
-  ) as IPlaygroundElement;
-  const parent = JsonPointer.get(
-    playgroundElements.value,
-    parentPointer
-  ) as IPlaygroundElement;
+  const element = JsonPointer.get(playgroundElements.value, elementPointer) as IPlaygroundElement;
+  const parent = JsonPointer.get(playgroundElements.value, parentPointer) as IPlaygroundElement;
 
   // Remove from playground elements
   parent.children.splice(elementIndexToRemove, 1);
@@ -256,14 +202,8 @@ const onRemoveElement = (
   }
 };
 
-const onMoveElement = (
-  oldElementPointer: string,
-  newElementPointer: string
-) => {
-  const element = JsonPointer.get(
-    playgroundElements.value,
-    oldElementPointer
-  ) as IPlaygroundElement;
+const onMoveElement = (oldElementPointer: string, newElementPointer: string) => {
+  const element = JsonPointer.get(playgroundElements.value, oldElementPointer) as IPlaygroundElement;
 
   onRemoveElement(oldElementPointer);
   onAddElement(newElementPointer, element);

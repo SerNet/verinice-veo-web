@@ -30,7 +30,8 @@
     :icon="alertIcon"
     variant="tonal"
     style="border-radius: 6px"
-    @click="onContentClick">
+    @click="onContentClick"
+  >
     <v-row no-gutters class="justify-lg-space-between">
       <v-col cols="auto" class="d-flex justify-center flex-column">
         <h3 class="text-h3 small-caps mb-3" v-text="title" />
@@ -49,7 +50,8 @@
           :key="index"
           class="mt-4"
           variant="outlined"
-          @click="button.onClick">
+          @click="button.onClick"
+        >
           {{ button.text }}
         </v-btn>
       </v-col>
@@ -60,17 +62,14 @@
       class="veo-alert-timeout-bar"
       :color="alertColor"
       height="4"
-      :model-value="(remainingTime / timeout) * 100" />
+      :model-value="(remainingTime / timeout) * 100"
+    />
   </v-alert>
 </template>
 
 <script lang="ts">
 import { PropType } from 'vue';
-import {
-  mdiAlertCircleOutline,
-  mdiCheckCircleOutline,
-  mdiInformationOutline
-} from '@mdi/js';
+import { mdiAlertCircleOutline, mdiCheckCircleOutline, mdiInformationOutline } from '@mdi/js';
 
 import { VeoAlertType } from '~/types/VeoTypes';
 
@@ -170,10 +169,7 @@ export default defineComponent({
         ...props.buttons
       ].map((button, index) => ({
         ...button,
-        text:
-          props.enableKeyboardNavigation ?
-            `(${index + 1}) ${button.text}`
-          : button.text
+        text: props.enableKeyboardNavigation ? `(${index + 1}) ${button.text}` : button.text
       }))
     );
 
@@ -181,10 +177,7 @@ export default defineComponent({
     const keybindEvents = (event: KeyboardEvent) => {
       const digits = Array.from(Array(10).keys()).map((key) => `${key}`);
 
-      if (
-        digits.includes(event.key) &&
-        !!localButtons.value[parseInt(event.key) - 1]
-      ) {
+      if (digits.includes(event.key) && !!localButtons.value[parseInt(event.key) - 1]) {
         localButtons.value[parseInt(event.key) - 1].onClick();
       }
     };

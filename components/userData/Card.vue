@@ -33,7 +33,8 @@
         :text="props.alertBody"
         :type="VeoAlertType.INFO"
         no-close-button
-        flat />
+        flat
+      />
 
       <slot v-if="slots.prepareData" name="prepareData" />
 
@@ -50,7 +51,8 @@
             class="ms-auto mt-4"
             :loading="props.isLoading[index]"
             :disabled="props.showAlert"
-            @click="() => handleClick(index)">
+            @click="() => handleClick(index)"
+          >
             <v-icon :icon="mdiDownload" />
             {{ props.downloadBtnCopy }}
           </v-btn>

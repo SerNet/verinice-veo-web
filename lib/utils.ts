@@ -19,22 +19,11 @@ import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
 import { isEqual, isPlainObject } from 'lodash';
-import {
-  IVeoCustomLink,
-  IVeoEntity,
-  IVeoLink,
-  IVeoObjectSchema
-} from '~/types/VeoTypes';
+import { IVeoCustomLink, IVeoEntity, IVeoLink, IVeoObjectSchema } from '~/types/VeoTypes';
 import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
-export const CHART_COLORS = [
-  '#c90000',
-  '#ffc107',
-  '#3f51b5',
-  '#8bc34a',
-  '#858585'
-];
+export const CHART_COLORS = ['#c90000', '#ffc107', '#3f51b5', '#8bc34a', '#858585'];
 // export const CHART_COLORS = ['#5c3f5a', '#304655', '#2892e4', '#8d9ac5', '#36384c'];
 
 export interface IForm {
@@ -62,9 +51,7 @@ export function sanitizeURLParams(url: string) {
   return url.replaceAll(/(\/|[^\w-])/g, '');
 }
 
-export function extractSubTypesFromObjectSchema(
-  schema: IVeoObjectSchema
-): { subType: string; status: string[] }[] {
+export function extractSubTypesFromObjectSchema(schema: IVeoObjectSchema): { subType: string; status: string[] }[] {
   return (
     schema.allOf?.map((mapping) => ({
       subType: mapping.if.properties.subType.const,
@@ -144,9 +131,7 @@ const isLinkEqual = (linkA: IVeoCustomLink[], linkB: IVeoCustomLink[]) => {
     return false;
   }
   for (const link of linkA) {
-    const correspondingLinkB = linkB.find(
-      (_link) => link.target?.targetUri === _link.target?.targetUri
-    );
+    const correspondingLinkB = linkB.find((_link) => link.target?.targetUri === _link.target?.targetUri);
     // No need to compare target object, as the only relevant field is targetUri and correspondingLinkB would be undefined if the value doesn't exist
     if (
       !correspondingLinkB ||

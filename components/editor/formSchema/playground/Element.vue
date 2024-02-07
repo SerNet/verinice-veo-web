@@ -23,7 +23,8 @@
       :form-schema-element="formSchemaElement"
       style="min-width: 300px"
       @delete="deleteElementDialogVisible = true"
-      @edit="editElementDialogVisible = true">
+      @edit="editElementDialogVisible = true"
+    >
       <Draggable
         :model-value="props.playgroundElement.children"
         handle=".handle"
@@ -32,23 +33,18 @@
         :class="$style.dragarea"
         @add="onElementAdded"
         @update="onElementMoved"
-        @remove="onElementRemoved">
+        @remove="onElementRemoved"
+      >
         <template #item="{ element, index }">
           <EditorFormSchemaPlaygroundElement
             :playground-element="element"
             :pointer="`${pointer}/children/${index}`"
-            @add="
-              (elementPointer, element) => emit('add', elementPointer, element)
-            "
-            @move="
-              (oldPosition, newPosition) =>
-                emit('move', oldPosition, newPosition)
-            "
+            @add="(elementPointer, element) => emit('add', elementPointer, element)"
+            @move="(oldPosition, newPosition) => emit('move', oldPosition, newPosition)"
             @remove="(elementPointer) => emit('remove', elementPointer)"
-            @form-schema-elements-modified="
-              emit('form-schema-elements-modified')
-            "
-            @set-translations="emit('set-translations', $event)" />
+            @form-schema-elements-modified="emit('form-schema-elements-modified')"
+            @set-translations="emit('set-translations', $event)"
+          />
         </template>
       </Draggable>
     </component>
@@ -61,7 +57,8 @@
       @update:form-schema-element="onFormSchemaElementEdited"
       @set-translations="emit('set-translations', $event)"
       @add="(elementPointer, element) => emit('add', elementPointer, element)"
-      @remove="(elementPointer) => emit('remove', elementPointer)">
+      @remove="(elementPointer) => emit('remove', elementPointer)"
+    >
       <Draggable
         v-if="formSchemaElement.type === 'Control'"
         :model-value="props.playgroundElement.children"
@@ -71,23 +68,18 @@
         :class="$style.dragarea"
         @add="onElementAdded"
         @update="onElementMoved"
-        @remove="onElementRemoved">
+        @remove="onElementRemoved"
+      >
         <template #item="{ element, index }">
           <EditorFormSchemaPlaygroundElement
             :playground-element="element"
             :pointer="`${pointer}/children/${index}`"
-            @add="
-              (elementPointer, element) => emit('add', elementPointer, element)
-            "
-            @move="
-              (oldPosition, newPosition) =>
-                emit('move', oldPosition, newPosition)
-            "
+            @add="(elementPointer, element) => emit('add', elementPointer, element)"
+            @move="(oldPosition, newPosition) => emit('move', oldPosition, newPosition)"
             @remove="(elementPointer) => emit('remove', elementPointer)"
-            @form-schema-elements-modified="
-              emit('form-schema-elements-modified')
-            "
-            @set-translations="emit('set-translations', $event)" />
+            @form-schema-elements-modified="emit('form-schema-elements-modified')"
+            @set-translations="emit('set-translations', $event)"
+          />
         </template>
       </Draggable>
     </EditorFormSchemaPlaygroundEditElementDialog>
@@ -95,7 +87,8 @@
       v-if="formSchemaElement"
       v-model="deleteElementDialogVisible"
       :form-schema-element="formSchemaElement"
-      @delete="emit('remove', pointer, true)" />
+      @delete="emit('remove', pointer, true)"
+    />
   </div>
 </template>
 
@@ -111,10 +104,7 @@ export interface IPlaygroundElement {
 import Draggable from 'vuedraggable';
 import { cloneDeep } from 'lodash';
 
-import {
-  FormSchemaElementMap,
-  PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS
-} from './Playground.vue';
+import { FormSchemaElementMap, PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from './Playground.vue';
 import ControlElement from './ControlElement.vue';
 import LabelElement from './LabelElement.vue';
 import LayoutElement from './LayoutElement.vue';
@@ -130,30 +120,18 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  (
-    event: 'add',
-    pointer: string,
-    element: IPlaygroundElement | IVeoFormSchemaItem
-  ): void;
+  (event: 'add', pointer: string, element: IPlaygroundElement | IVeoFormSchemaItem): void;
   (event: 'move', oldPosition: string, newPosition: string): void;
-  (
-    event: 'remove',
-    pointer: string,
-    removeFromSchemaElementMap?: boolean
-  ): void;
+  (event: 'remove', pointer: string, removeFromSchemaElementMap?: boolean): void;
   (event: 'form-schema-elements-modified'): void;
   (event: 'set-translations', translations: PENDING_TRANSLATIONS): void;
 }>();
 
 const { t } = useI18n();
 
-const formSchemaElementMap = inject<FormSchemaElementMap>(
-  PLAYGROUND_PROVIDE_KEYS.FORM_SCHEMA_ELEMENT_MAP
-);
+const formSchemaElementMap = inject<FormSchemaElementMap>(PLAYGROUND_PROVIDE_KEYS.FORM_SCHEMA_ELEMENT_MAP);
 
-const formSchemaElement = computed(
-  () => formSchemaElementMap?.get(props.playgroundElement.id)
-);
+const formSchemaElement = computed(() => formSchemaElementMap?.get(props.playgroundElement.id));
 
 const fittingComponent = computed(() => {
   switch (formSchemaElement.value?.type) {
@@ -166,13 +144,7 @@ const fittingComponent = computed(() => {
     case 'Widget':
       return h('div', "Widget isn't implemented yet.");
     default:
-      return h(
-        'div',
-        t('componentNotFound', [
-          props.playgroundElement.id,
-          formSchemaElement.value?.type
-        ])
-      );
+      return h('div', t('componentNotFound', [props.playgroundElement.id, formSchemaElement.value?.type]));
   }
 });
 
@@ -180,29 +152,15 @@ const fittingComponent = computed(() => {
  * Unlike in previous versions, the manipulation gets handled by the playground as this avoids complex merging of multiple mutated children into the original structure
  */
 const onElementAdded = (event: any) =>
-  emit(
-    'add',
-    `${props.pointer}/children/${event.newIndex}`,
-    cloneDeep(event.item._underlying_vm_)
-  ); // cloneDeep shouldn't be needed, but as we access the element quite dirty, safe is safe
+  emit('add', `${props.pointer}/children/${event.newIndex}`, cloneDeep(event.item._underlying_vm_)); // cloneDeep shouldn't be needed, but as we access the element quite dirty, safe is safe
 
 const onElementMoved = (event: any) =>
-  emit(
-    'move',
-    `${props.pointer}/children/${event.oldIndex}`,
-    `${props.pointer}/children/${event.newIndex}`
-  );
+  emit('move', `${props.pointer}/children/${event.oldIndex}`, `${props.pointer}/children/${event.newIndex}`);
 
-const onElementRemoved = (event: any) =>
-  emit('remove', `${props.pointer}/children/${event.oldIndex}`);
+const onElementRemoved = (event: any) => emit('remove', `${props.pointer}/children/${event.oldIndex}`);
 
-const onFormSchemaElementEdited = (
-  editedFormSchemaElement: IVeoFormSchemaItem
-) => {
-  formSchemaElementMap?.set(
-    props.playgroundElement.id,
-    editedFormSchemaElement
-  );
+const onFormSchemaElementEdited = (editedFormSchemaElement: IVeoFormSchemaItem) => {
+  formSchemaElementMap?.set(props.playgroundElement.id, editedFormSchemaElement);
   emit('form-schema-elements-modified');
 };
 

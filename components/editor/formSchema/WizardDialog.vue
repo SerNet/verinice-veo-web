@@ -23,14 +23,16 @@
     fixed-footer
     :large="state !== WIZARD_STATES.START"
     :close-function="onClose"
-    @update:model-value="$emit('update:model-value', $event)">
+    @update:model-value="$emit('update:model-value', $event)"
+  >
     <template #default>
       <LayoutLoadingWrapper v-if="loadingFormSchema || loadingObjectSchema" />
       <v-window :model-value="state">
         <EditorFormSchemaWizardStateStart
           :model-value="WIZARD_STATES.START"
           @create="state = WIZARD_STATES.CREATE"
-          @import="state = WIZARD_STATES.IMPORT" />
+          @import="state = WIZARD_STATES.IMPORT"
+        />
         <EditorFormSchemaWizardStateCreate
           v-bind="mergeProps(formSchemaDetails, createFormListeners)"
           v-model:valid="createFormValid"
@@ -41,7 +43,8 @@
           :model-value="WIZARD_STATES.CREATE"
           :domain-id="domainId"
           :object-schema="objectSchema"
-          @update:object-schema="uploadedObjectSchema = $event" />
+          @update:object-schema="uploadedObjectSchema = $event"
+        />
         <EditorFormSchemaWizardStateImport
           v-model:force-own-schema="forceOwnObjectSchema"
           v-model:form-schema-id="formSchemaId"
@@ -51,7 +54,8 @@
           :schemas-compatible="schemasCompatible"
           @force-import="importFormSchema()"
           @update:form-schema="uploadedFormSchema = $event"
-          @update:object-schema="uploadedObjectSchema = $event" />
+          @update:object-schema="uploadedObjectSchema = $event"
+        />
       </v-window>
     </template>
     <template v-if="state !== WIZARD_STATES.START" #dialog-options>
@@ -64,14 +68,10 @@
         color="primary"
         :disabled="
           (state === WIZARD_STATES.CREATE && createFormValid === false) ||
-          (state === WIZARD_STATES.IMPORT &&
-            (!objectSchema || !formSchema || !schemasCompatible))
+          (state === WIZARD_STATES.IMPORT && (!objectSchema || !formSchema || !schemasCompatible))
         "
-        @click="
-          state === WIZARD_STATES.CREATE ?
-            createFormSchema()
-          : importFormSchema()
-        ">
+        @click="state === WIZARD_STATES.CREATE ? createFormSchema() : importFormSchema()"
+      >
         {{ globalT('global.button.next') }}
       </v-btn>
     </template>
@@ -85,19 +85,10 @@ import { JsonPointer } from 'json-ptr';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
-import {
-  IVeoObjectSchema,
-  IVeoObjectSchemaTranslations
-} from '~/types/VeoTypes';
-import formsQueryDefinitions, {
-  IVeoFormSchema
-} from '~/composables/api/queryDefinitions/forms';
-import schemaQueryDefinitions, {
-  IVeoFetchSchemaParameters
-} from '~/composables/api/queryDefinitions/schemas';
-import translationQueryDefinitions, {
-  IVeoTranslations
-} from '~/composables/api/queryDefinitions/translations';
+import { IVeoObjectSchema, IVeoObjectSchemaTranslations } from '~/types/VeoTypes';
+import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import schemaQueryDefinitions, { IVeoFetchSchemaParameters } from '~/composables/api/queryDefinitions/schemas';
+import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 
 enum WIZARD_STATES {
@@ -148,11 +139,7 @@ export default defineComponent({
       forceOwnObjectSchema.value = !!route.query.forceOwnSchema;
       objectSchemaId.value = (route.query.objectType as string) || undefined;
       formSchemaId.value = (route.query.formSchema as string) || undefined;
-      formSchemaDetails.value = pick(route.query, [
-        'name',
-        'sorting',
-        'subType'
-      ]) as Dictionary<string | null>;
+      formSchemaDetails.value = pick(route.query, ['name', 'sorting', 'subType']) as Dictionary<string | null>;
 
       // If the user wants to open a specific form schema, show the upload page to allow him to upload his own schema or select an object schema if he wishes to
       if (formSchemaId.value) {
@@ -166,9 +153,7 @@ export default defineComponent({
 
         // If all required properties are set create new formschema automatically
         if (
-          ['name', 'subType'].every((property) =>
-            Object.keys(formSchemaDetails.value).includes(property)
-          ) &&
+          ['name', 'subType'].every((property) => Object.keys(formSchemaDetails.value).includes(property)) &&
           objectSchemaId.value !== 'custom'
         ) {
           createFormSchema();
@@ -206,9 +191,7 @@ export default defineComponent({
       domainId: props.domainId as string,
       id: formSchemaId.value || ''
     }));
-    const fetchFormQueryEnabled = computed(
-      () => !!formSchemaId.value && formSchemaId.value !== 'custom'
-    );
+    const fetchFormQueryEnabled = computed(() => !!formSchemaId.value && formSchemaId.value !== 'custom');
     const { data: remoteFormSchema, isFetching: loadingFormSchema } = useQuery(
       formsQueryDefinitions.queries.fetchForm,
       fetchFormQueryParameters,
@@ -217,41 +200,30 @@ export default defineComponent({
 
     const formSchema = computed(() => {
       let schema =
-        !formSchemaId.value || formSchemaId.value === 'custom' ?
-          uploadedFormSchema.value
-        : remoteFormSchema.value;
+        !formSchemaId.value || formSchemaId.value === 'custom' ? uploadedFormSchema.value : remoteFormSchema.value;
       if (schema) {
         // We add a slash infront of the replace in order to only replace the domain id in the scope property
-        schema = JSON.parse(
-          JSON.stringify(schema).replaceAll(
-            `/${props.domainId}`,
-            '/{CURRENT_DOMAIN_ID}'
-          )
-        );
+        schema = JSON.parse(JSON.stringify(schema).replaceAll(`/${props.domainId}`, '/{CURRENT_DOMAIN_ID}'));
       }
       return schema;
     });
-    const { data: endpoints } = useQuery(
-      schemaQueryDefinitions.queries.fetchSchemas
-    );
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const forceOwnObjectSchema = ref(false);
     const objectSchemaId = ref<string>();
     const uploadedObjectSchema = ref<IVeoObjectSchema>();
 
-    const objectTypePlural = computed(
-      () => endpoints.value?.[objectSchemaId.value || '']
-    );
-    const fetchSchemaQueryParameters = computed<IVeoFetchSchemaParameters>(
-      () => ({ type: objectTypePlural.value || '', domainId: props.domainId })
-    );
+    const objectTypePlural = computed(() => endpoints.value?.[objectSchemaId.value || '']);
+    const fetchSchemaQueryParameters = computed<IVeoFetchSchemaParameters>(() => ({
+      type: objectTypePlural.value || '',
+      domainId: props.domainId
+    }));
     const fetchSchemaQueryEnabled = computed(() => !!objectTypePlural.value);
-    const { data: remoteObjectSchema, isFetching: loadingObjectSchema } =
-      useQuery(
-        schemaQueryDefinitions.queries.fetchSchema,
-        fetchSchemaQueryParameters,
-        { enabled: fetchSchemaQueryEnabled }
-      );
+    const { data: remoteObjectSchema, isFetching: loadingObjectSchema } = useQuery(
+      schemaQueryDefinitions.queries.fetchSchema,
+      fetchSchemaQueryParameters,
+      { enabled: fetchSchemaQueryEnabled }
+    );
 
     const objectSchema = computed(() => {
       let schema =
@@ -259,12 +231,7 @@ export default defineComponent({
           uploadedObjectSchema.value
         : remoteObjectSchema.value;
       if (schema) {
-        schema = JSON.parse(
-          JSON.stringify(schema).replaceAll(
-            props.domainId,
-            '{CURRENT_DOMAIN_ID}'
-          )
-        );
+        schema = JSON.parse(JSON.stringify(schema).replaceAll(props.domainId, '{CURRENT_DOMAIN_ID}'));
       }
       return schema;
     });
@@ -301,10 +268,7 @@ export default defineComponent({
       languages: (locales.value as LocaleObject[]).map((locale) => locale.code),
       domain: props.domainId
     }));
-    const { data: translations } = useQuery(
-      translationQueryDefinitions.queries.fetch,
-      translationQueryParameters
-    );
+    const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
 
     // create stuff
     const createFormValid = ref(true);
@@ -312,9 +276,7 @@ export default defineComponent({
     function createFormSchema() {
       if (!objectSchema.value) {
         // eslint-disable-next-line no-console
-        console.warn(
-          'VeoFseWiardDialog::Object schema missing. Cannot create form schema'
-        );
+        console.warn('VeoFseWiardDialog::Object schema missing. Cannot create form schema');
         return;
       }
 
@@ -337,12 +299,9 @@ export default defineComponent({
     }
 
     const createFormListeners = {
-      'update:name': (newValue: string) =>
-        (formSchemaDetails.value['name'] = newValue),
-      'update:sorting': (newValue: string) =>
-        (formSchemaDetails.value['sorting'] = newValue),
-      'update:sub-type': (newValue: string) =>
-        (formSchemaDetails.value['subType'] = newValue),
+      'update:name': (newValue: string) => (formSchemaDetails.value['name'] = newValue),
+      'update:sorting': (newValue: string) => (formSchemaDetails.value['sorting'] = newValue),
+      'update:sub-type': (newValue: string) => (formSchemaDetails.value['subType'] = newValue),
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       submit: () => (createFormValid.value ? createFormSchema() : () => {})
     };
@@ -352,10 +311,7 @@ export default defineComponent({
     function importFormSchema() {
       const queryParams = {
         formSchema: formSchemaId.value as string,
-        forceOwnSchema:
-          forceOwnObjectSchema.value ?
-            forceOwnObjectSchema.value + ''
-          : undefined
+        forceOwnSchema: forceOwnObjectSchema.value ? forceOwnObjectSchema.value + '' : undefined
       };
 
       if (!isEqual(route.query, queryParams)) {
@@ -368,10 +324,9 @@ export default defineComponent({
 
     function emitSchemas() {
       const mergedTranslations: IVeoTranslations = { lang: {} };
-      const osTranslations = (JsonPointer.get(
-        objectSchema,
-        '#/properties/translations'
-      ) || {}) as IVeoObjectSchemaTranslations | Record<string, never>;
+      const osTranslations = (JsonPointer.get(objectSchema, '#/properties/translations') || {}) as
+        | IVeoObjectSchemaTranslations
+        | Record<string, never>;
 
       mergedTranslations.lang = merge(translations.value?.lang, osTranslations);
       if (osTranslations) {
@@ -386,10 +341,7 @@ export default defineComponent({
     }
 
     const schemasCompatible = computed(
-      () =>
-        formSchema.value &&
-        objectSchema.value &&
-        validate(formSchema.value, objectSchema.value).valid
+      () => formSchema.value && objectSchema.value && validate(formSchema.value, objectSchema.value).valid
     );
 
     return {

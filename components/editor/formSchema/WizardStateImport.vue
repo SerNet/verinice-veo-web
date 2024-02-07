@@ -32,12 +32,14 @@
           :items="formSchemaOptions"
           required
           variant="underlined"
-          @update:model-value="$emit('update:form-schema-id', $event)" />
+          @update:model-value="$emit('update:form-schema-id', $event)"
+        />
         <EditorFileUpload
           v-if="formSchemaId === 'custom'"
           :input-label="t('formSchemaUploadLabel')"
           :submit-button-text="t('importFormSchema')"
-          @schema-uploaded="$emit('update:form-schema', $event)" />
+          @schema-uploaded="$emit('update:form-schema', $event)"
+        />
         <BaseAlert
           :model-value="objectTypeMissing || !schemasCompatible"
           :buttons="
@@ -50,20 +52,13 @@
                 }
               ]
           "
-          :type="
-            !schemasCompatible && !objectTypeMissing ?
-              VeoAlertType.INFO
-            : VeoAlertType.ERROR
-          "
-          :title="
-            !schemasCompatible && !objectTypeMissing ?
-              t('objectSchemaIncompatible')
-            : t('objectTypeMissing')
-          "
+          :type="!schemasCompatible && !objectTypeMissing ? VeoAlertType.INFO : VeoAlertType.ERROR"
+          :title="!schemasCompatible && !objectTypeMissing ? t('objectSchemaIncompatible') : t('objectTypeMissing')"
           :text="t('uploadObjectSchemaHint')"
           class="my-4"
           flat
-          no-close-button />
+          no-close-button
+        />
       </v-card-text>
     </BaseCard>
     <h3 class="text-h3 mt-6">
@@ -74,12 +69,14 @@
         <v-checkbox
           :model-value="forceOwnSchema"
           :label="t('forceOwnSchema')"
-          @update:model-value="$emit('update:force-own-schema', $event)" />
+          @update:model-value="$emit('update:force-own-schema', $event)"
+        />
         <div v-if="forceOwnSchema">
           <EditorFileUpload
             :input-label="t('objectSchemaUploadLabel')"
             :submit-button-text="t('importObjectSchema')"
-            @schema-uploaded="$emit('update:object-schema', $event)" />
+            @schema-uploaded="$emit('update:object-schema', $event)"
+          />
         </div>
       </v-card-text>
     </BaseCard>
@@ -90,9 +87,7 @@
 import { PropType } from 'vue';
 import { isObject } from 'lodash';
 
-import formsQueryDefinitions, {
-  IVeoFormSchema
-} from '~/composables/api/queryDefinitions/forms';
+import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { VeoAlertType } from '~/types/VeoTypes';
 import { useQuery } from '~/composables/api/utils/query';
@@ -143,29 +138,23 @@ export default defineComponent({
     // formschema stuff
     const queryParameters = computed(() => ({ domainId: props.domainId }));
     const queryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useQuery(
-      formsQueryDefinitions.queries.fetchForms,
-      queryParameters,
-      { enabled: queryEnabled }
-    );
+    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, {
+      enabled: queryEnabled
+    });
 
-    const formSchemaOptions = computed<{ title: string; value: string }[]>(
-      () => [
-        {
-          title: t('customFormSchema').toString(),
-          value: 'custom'
-        },
-        ...(formSchemas.value || []).map((formSchema) => ({
-          title: formSchema?.name[locale.value] || '',
-          value: formSchema.id as string
-        }))
-      ]
-    );
+    const formSchemaOptions = computed<{ title: string; value: string }[]>(() => [
+      {
+        title: t('customFormSchema').toString(),
+        value: 'custom'
+      },
+      ...(formSchemas.value || []).map((formSchema) => ({
+        title: formSchema?.name[locale.value] || '',
+        value: formSchema.id as string
+      }))
+    ]);
 
     // objectschema stuff
-    const { data: objectTypes } = useQuery(
-      schemaQueryDefinitions.queries.fetchSchemas
-    );
+    const { data: objectTypes } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     // If the object schema belonging to the form schema doesn't exist, the user has to upload it themself
     const objectTypeMissing = computed(

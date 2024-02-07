@@ -21,15 +21,12 @@ import { defineNuxtModule } from '@nuxt/kit';
 export default defineNuxtModule({
   setup(_options, nuxt) {
     nuxt.options.nitro.externals = nuxt.options.nitro.externals || {};
-    nuxt.options.nitro.externals.inline =
-      nuxt.options.nitro.externals.inline || [];
+    nuxt.options.nitro.externals.inline = nuxt.options.nitro.externals.inline || [];
     nuxt.options.nitro.externals.inline.push(resolve('./docs'));
 
     nuxt.hooks.hook('content:context', (contentContext) => {
       // @see https://content.nuxtjs.org/api/advanced#transformers. DONT PREFIX WITH ./, will break import (TODO-NuxtContent 2.3.0)
-      contentContext.transformers.push(
-        resolve('modules/docs/language-setter.ts')
-      );
+      contentContext.transformers.push(resolve('modules/docs/language-setter.ts'));
     });
   }
 });

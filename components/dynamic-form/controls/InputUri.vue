@@ -29,7 +29,8 @@
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
     variant="underlined"
     @update:model-value="$emit('update:model-value', $event)"
-    @click:clear="$emit('update:model-value', undefined)">
+    @click:clear="$emit('update:model-value', undefined)"
+  >
     <template #append>
       <v-btn
         :disabled="!!errors.get(objectSchemaPointer)?.length || !modelValue"
@@ -37,7 +38,8 @@
         :href="<string>modelValue"
         target="_blank"
         color="primary"
-        variant="text" />
+        variant="text"
+      />
     </template>
   </v-text-field>
 </template>
@@ -60,10 +62,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
     en: 'Lets the user enter text following an uri schema.',
     de: 'Lässt den User Text eingeben der wie eine URI formatiert ist.'
   },
-  conditions: (props) => [
-    props.objectSchema.type === 'string',
-    props.objectSchema.format === 'uri'
-  ]
+  conditions: (props) => [props.objectSchema.type === 'string', props.objectSchema.format === 'uri']
 };
 
 export default defineComponent({

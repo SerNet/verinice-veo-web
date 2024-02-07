@@ -22,7 +22,8 @@
     :title="$t('editor.objectschema.headline')"
     confirm-close
     :close-function="onClose"
-    @update:model-value="emit('update:model-value', $event)">
+    @update:model-value="emit('update:model-value', $event)"
+  >
     <template #default>
       <v-window v-model="state">
         <v-window-item value="start" class="py-4">
@@ -34,9 +35,7 @@
               <v-list-item-title class="font-weight-bold">
                 {{ t('createObjectSchema') }}
               </v-list-item-title>
-              <v-list-item-subtitle>{{
-                t('createObjectSchemaDescription')
-              }}</v-list-item-subtitle>
+              <v-list-item-subtitle>{{ t('createObjectSchemaDescription') }}</v-list-item-subtitle>
               <template #append>
                 <v-icon size="x-large" :icon="mdiChevronRight" />
               </template>
@@ -45,9 +44,7 @@
               <v-list-item-title class="font-weight-bold">
                 {{ t('importObjectSchema') }}
               </v-list-item-title>
-              <v-list-item-subtitle>{{
-                t('importObjectSchemaDescription')
-              }}</v-list-item-subtitle>
+              <v-list-item-subtitle>{{ t('importObjectSchemaDescription') }}</v-list-item-subtitle>
               <template #append>
                 <v-icon size="x-large" :icon="mdiChevronRight" />
               </template>
@@ -69,14 +66,13 @@
                   :label="t('type')"
                   :rules="[requiredRule]"
                   required
-                  variant="underlined" />
+                  variant="underlined"
+                />
               </v-col>
             </v-row>
             <v-row no-gutters class="align-center mt-4">
               <v-col cols="12" :md="5">
-                <span style="font-size: 1.2rem">
-                  {{ t('description') }}*:
-                </span>
+                <span style="font-size: 1.2rem"> {{ t('description') }}*: </span>
               </v-col>
               <v-col cols="12" :md="5">
                 <v-text-field
@@ -84,7 +80,8 @@
                   :label="t('description')"
                   :rules="[requiredRule]"
                   required
-                  variant="underlined" />
+                  variant="underlined"
+                />
               </v-col>
             </v-row>
           </v-form>
@@ -104,26 +101,18 @@
                 :label="t('type')"
                 :items="availableObjectSchemas"
                 required
-                variant="underlined" />
+                variant="underlined"
+              />
             </v-col>
           </v-row>
           <v-row v-if="modelType === 'custom'">
             <v-col cols="12">
-              <EditorFileUpload
-                :code="code"
-                :input-label="t('uploadLabel')"
-                @schema-uploaded="importSchema" />
+              <EditorFileUpload :code="code" :input-label="t('uploadLabel')" @schema-uploaded="importSchema" />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <span
-                style="
-                  text-decoration: undeline;
-                  font-weight: bold;
-                  cursor: pointer;
-                "
-                @click="state = 'create'">
+              <span style="text-decoration: undeline; font-weight: bold; cursor: pointer" @click="state = 'create'">
                 {{ t('importObjectSchemaSwitch') }}
               </span>
             </v-col>
@@ -143,7 +132,8 @@
         role="submit"
         type="submit"
         :disabled="createFormIsValid === false"
-        @click="createSchema()">
+        @click="createSchema()"
+      >
         {{ $t('global.button.next') }}
       </v-btn>
       <v-btn
@@ -153,7 +143,8 @@
         role="submit"
         type="submit"
         :disabled="importNextDisabled"
-        @click="importSchema()">
+        @click="importSchema()"
+      >
         {{ $t('global.button.next') }}
       </v-btn>
     </template>
@@ -216,10 +207,7 @@ const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
   domain: route.params.domain
 }));
-const { data: translations } = useQuery(
-  translationQueryDefinitions.queries.fetch,
-  fetchTranslationsQueryParameters
-);
+const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
 const availableObjectSchemas = computed(() =>
   Object.keys(schemas.value || {})
@@ -230,9 +218,7 @@ const availableObjectSchemas = computed(() =>
     .concat({ title: t('customObjectSchema'), value: 'custom' })
 );
 
-const importNextDisabled = computed(
-  () => (modelType.value === 'custom' && !code.value) || !modelType.value
-);
+const importNextDisabled = computed(() => (modelType.value === 'custom' && !code.value) || !modelType.value);
 
 const createSchema = async () => {
   emit('completed', {
@@ -290,10 +276,7 @@ watch(
   (newValue) => {
     // If the user navigates by URL, depending on the parameters, schemas should be generated
     if (!isNavigatedByDialog.value || isDialogCustom.value) {
-      if (
-        isString(newValue.query.type) &&
-        isString(newValue.query.description)
-      ) {
+      if (isString(newValue.query.type) && isString(newValue.query.description)) {
         // If a user navigates through a URL which has parameters type and description, new OS should be created
         createForm.value.type = newValue.query.type;
         createForm.value.description = newValue.query.description;
@@ -303,10 +286,7 @@ watch(
         // the dialog with selected custom OS should be opened
         state.value = 'import';
         modelType.value = 'custom';
-      } else if (
-        isString(newValue.query.os) &&
-        newValue.query.os !== 'custom'
-      ) {
+      } else if (isString(newValue.query.os) && newValue.query.os !== 'custom') {
         // If a user navigates through a URL which has os parameter different from 'custom'
         // (e.g. 'process', 'asset', etc.), the OS should be automatically loaded from the server
         state.value = 'import';

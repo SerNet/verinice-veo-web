@@ -33,21 +33,13 @@ export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
 export interface IVeoQueryDefinition<TVariables, TResult = any> {
   primaryQueryKey: string;
   url: string;
-  queryParameterTransformationFn: (
-    _queryParameters: TVariables
-  ) => IVeoQueryParameters;
+  queryParameterTransformationFn: (_queryParameters: TVariables) => IVeoQueryParameters;
   reponseType?: VeoApiReponseType;
-  onDataFetched?: (
-    result: TResult,
-    queryParameters: IVeoQueryParameters
-  ) => TResult;
+  onDataFetched?: (result: TResult, queryParameters: IVeoQueryParameters) => TResult;
   staticQueryOptions?: QueryOptions;
 }
 
-export interface IVeoQueryParameters<
-  TParams = Record<string, any>,
-  TQuery = Record<string, any>
-> {
+export interface IVeoQueryParameters<TParams = Record<string, any>, TQuery = Record<string, any>> {
   params?: TParams;
   query?: TQuery;
 }
@@ -60,15 +52,8 @@ export const STALE_TIME = {
   INFINITY: Infinity // Only refetch on page reload
 };
 
-export const debugCacheAsArrayIncludesPrimaryKey = (
-  configValue: string | undefined,
-  primaryQueryKey: string
-) => {
-  if (
-    !configValue ||
-    !configValue.startsWith('[') ||
-    !configValue.endsWith(']')
-  ) {
+export const debugCacheAsArrayIncludesPrimaryKey = (configValue: string | undefined, primaryQueryKey: string) => {
+  if (!configValue || !configValue.startsWith('[') || !configValue.endsWith(']')) {
     return false;
   }
   try {
@@ -117,18 +102,13 @@ export const useQuery = <TVariables = undefined, TResult = any>(
     queryKey,
     async () => {
       const transformedQueryParameters =
-        queryParameters ?
-          queryDefinition.queryParameterTransformationFn(unref(queryParameters))
-        : {};
+        queryParameters ? queryDefinition.queryParameterTransformationFn(unref(queryParameters)) : {};
       let result = await request(queryDefinition.url, {
         ...transformedQueryParameters,
         ...omit(queryDefinition, 'url', 'onDataFetched')
       });
       if (queryDefinition.onDataFetched) {
-        result = queryDefinition.onDataFetched(
-          result,
-          transformedQueryParameters
-        );
+        result = queryDefinition.onDataFetched(result, transformedQueryParameters);
       }
       return result;
     },
@@ -138,10 +118,7 @@ export const useQuery = <TVariables = undefined, TResult = any>(
   // Debugging stuff
   if (
     $config.public.debugCache === 'true' ||
-    debugCacheAsArrayIncludesPrimaryKey(
-      $config.public.debugCache,
-      queryDefinition.primaryQueryKey
-    )
+    debugCacheAsArrayIncludesPrimaryKey($config.public.debugCache, queryDefinition.primaryQueryKey)
   ) {
     const queryClient = useQueryClient();
 
@@ -149,9 +126,7 @@ export const useQuery = <TVariables = undefined, TResult = any>(
       () => result.isFetching?.value,
       (newValue) => {
         if (newValue && result.isStale.value) {
-          const staleTime =
-            combinedOptions.value?.staleTime ||
-            queryClient.getDefaultOptions().queries?.staleTime;
+          const staleTime = combinedOptions.value?.staleTime || queryClient.getDefaultOptions().queries?.staleTime;
           // eslint-disable-next-line no-console
           console.log(
             `[vueQuery] data for query "${JSON.stringify(
@@ -169,9 +144,7 @@ export const useQuery = <TVariables = undefined, TResult = any>(
               queryDefinition.primaryQueryKey
             )}" with parameters "${JSON.stringify(
               queryParameters?.value
-            )}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(
-              combinedOptions.value
-            )}"`
+            )}" not fetched yet. Fetching...\nOptions: "${JSON.stringify(combinedOptions.value)}"`
           );
         }
       },
@@ -203,9 +176,7 @@ export const useQuerySync = async <TVariables = undefined, TResult = any>(
 
   // Make sync request
   const transformedQueryParameters =
-    queryParameters ?
-      queryDefinition.queryParameterTransformationFn(queryParameters)
-    : {};
+    queryParameters ? queryDefinition.queryParameterTransformationFn(queryParameters) : {};
   let result = await request(queryDefinition.url, {
     ...transformedQueryParameters,
     ...omit(queryDefinition, 'url', 'onDataFetched')
@@ -217,10 +188,7 @@ export const useQuerySync = async <TVariables = undefined, TResult = any>(
   // Save to vue query cache
   if (queryClient) {
     try {
-      queryClient.setQueryData(
-        [queryDefinition.primaryQueryKey, queryParameters],
-        result
-      );
+      queryClient.setQueryData([queryDefinition.primaryQueryKey, queryParameters], result);
     } catch (e) {
       console.warn("Couldn't set queried data:", e);
     }
@@ -248,9 +216,7 @@ export const useQueries = <TVariables = Record<string, any>, TResult = any>(
   watch(
     () => unref(queryOptions?.enabled),
     (newValue) => {
-      nextTick(
-        () => (enabled.value = newValue === undefined ? true : newValue)
-      );
+      nextTick(() => (enabled.value = newValue === undefined ? true : newValue));
     },
     {
       immediate: true
@@ -272,17 +238,13 @@ export const useQueries = <TVariables = Record<string, any>, TResult = any>(
           newValue.map((query) => ({
             queryKey: [queryDefinition.primaryQueryKey, query],
             queryFn: async () => {
-              const transformedQueryParameters =
-                queryDefinition.queryParameterTransformationFn(unref(query));
+              const transformedQueryParameters = queryDefinition.queryParameterTransformationFn(unref(query));
               let result = await request(queryDefinition.url, {
                 ...transformedQueryParameters,
                 ...omit(queryDefinition, 'url', 'onDataFetched')
               });
               if (queryDefinition.onDataFetched) {
-                result = queryDefinition.onDataFetched(
-                  result,
-                  transformedQueryParameters
-                );
+                result = queryDefinition.onDataFetched(result, transformedQueryParameters);
               }
               return result;
             },

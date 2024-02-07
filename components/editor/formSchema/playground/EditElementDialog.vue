@@ -16,38 +16,29 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseDialog
-    :model-value="modelValue"
-    large
-    :title="title"
-    @update:model-value="emit('update:model-value', $event)">
+  <BaseDialog :model-value="modelValue" large :title="title" @update:model-value="emit('update:model-value', $event)">
     <template #default>
       <component
         :is="fittingEditComponent"
         v-model:form-schema-element="localFormSchemaElement"
         :pointer="pointer"
         :playground-element="playgroundElement"
-        @add="
-          (elementPointer: string, element: IVeoFormSchemaItem) =>
-            emit('add', elementPointer, element)
-        "
+        @add="(elementPointer: string, element: IVeoFormSchemaItem) => emit('add', elementPointer, element)"
         @remove="(elementPointer: string) => emit('remove', elementPointer)"
-        @set-translation="setPendingTranslation">
+        @set-translation="setPendingTranslation"
+      >
         <slot />
       </component>
       <EditorFormSchemaPlaygroundEditDialogElementConditionalVisibility
-        v-model:form-schema-element="localFormSchemaElement" />
+        v-model:form-schema-element="localFormSchemaElement"
+      />
     </template>
     <template #dialog-options>
       <v-btn variant="text" @click="emit('update:model-value', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn
-        variant="text"
-        color="primary"
-        :disabled="!elementIsDirty"
-        @click="onSave">
+      <v-btn variant="text" color="primary" :disabled="!elementIsDirty" @click="onSave">
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>
@@ -55,10 +46,7 @@
 </template>
 
 <script lang="ts">
-export type PENDING_TRANSLATIONS = Record<
-  string,
-  Record<string, string | undefined>
->;
+export type PENDING_TRANSLATIONS = Record<string, Record<string, string | undefined>>;
 </script>
 
 <script setup lang="ts">
@@ -85,17 +73,10 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (event: 'update:model-value', value: boolean): void;
-  (
-    event: 'update:form-schema-element',
-    formSchemaElement: IVeoFormSchemaItem
-  ): void;
+  (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void;
   (event: 'set-translations', translations: PENDING_TRANSLATIONS): void;
   (event: 'add', pointer: string, element: IVeoFormSchemaItem): void;
-  (
-    event: 'remove',
-    pointer: string,
-    removeFromSchemaElementMap?: boolean
-  ): void;
+  (event: 'remove', pointer: string, removeFromSchemaElementMap?: boolean): void;
 }>();
 
 const { t } = useI18n();
@@ -103,9 +84,7 @@ const { t: globalT } = useI18n({ useScope: 'global' });
 
 const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.EDITOR_LANGUAGE);
 
-const translatedElementType = computed(() =>
-  t(`type.${props.formSchemaElement.type.toLowerCase()}`)
-);
+const translatedElementType = computed(() => t(`type.${props.formSchemaElement.type.toLowerCase()}`));
 
 const title = computed(() => t('edit', [translatedElementType.value]));
 
@@ -118,17 +97,12 @@ const fittingEditComponent = computed(() => {
     case 'Layout':
       return EditorFormSchemaPlaygroundEditDialogLayoutElementSettings;
     default:
-      return h(
-        'div',
-        'Cannot find edit options for this form schema element type'
-      );
+      return h('div', 'Cannot find edit options for this form schema element type');
   }
 });
 
 const elementIsDirty = computed(
-  () =>
-    !isEqual(props.formSchemaElement, localFormSchemaElement.value) ||
-    Object.keys(pendingTranslations.value).length
+  () => !isEqual(props.formSchemaElement, localFormSchemaElement.value) || Object.keys(pendingTranslations.value).length
 );
 
 const localFormSchemaElement = ref(props.formSchemaElement);
@@ -152,10 +126,7 @@ watch(
 // Translations shouldn't be edited immediately, so we write changes to this component and the formschema page handles the rest
 const pendingTranslations = ref<PENDING_TRANSLATIONS>({});
 
-const setPendingTranslation = (
-  translationKey: string,
-  value: string | undefined
-) => {
+const setPendingTranslation = (translationKey: string, value: string | undefined) => {
   if (language?.value) {
     if (!pendingTranslations.value[language.value]) {
       pendingTranslations.value[language.value] = {};

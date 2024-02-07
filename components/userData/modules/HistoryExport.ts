@@ -60,10 +60,7 @@ export type FetchFnResult = {
 };
 
 interface ILoadHistoryParams {
-  fetchFn: ({
-    size,
-    afterId
-  }: FetchFnParams) => Promise<FetchFnResult | IVeoPagedRevision>;
+  fetchFn: ({ size, afterId }: FetchFnParams) => Promise<FetchFnResult | IVeoPagedRevision>;
   history?: IVeoObjectHistoryEntry[];
   size?: number;
   afterId?: undefined | string;
@@ -113,10 +110,7 @@ async function loadHistory({
   }
 }
 
-function chunkHistory(
-  historyItems: IVeoObjectHistoryEntry[],
-  archiveSize = 10000
-) {
+function chunkHistory(historyItems: IVeoObjectHistoryEntry[], archiveSize = 10000) {
   const archiveName = { displayName: '', name: '', counter: 0 };
   const chunks = chunk(historyItems, archiveSize);
 
@@ -132,14 +126,8 @@ function chunkHistory(
       archiveName.counter = 0;
     }
 
-    const countedName =
-      archiveName.counter === 0 ?
-        fileName
-      : fileName + '_' + archiveName.counter;
-    const countedDisplayName =
-      archiveName.counter === 0 ?
-        displayName
-      : displayName + ` (${archiveName.counter})`;
+    const countedName = archiveName.counter === 0 ? fileName : fileName + '_' + archiveName.counter;
+    const countedDisplayName = archiveName.counter === 0 ? displayName : displayName + ` (${archiveName.counter})`;
 
     archiveName.name = fileName;
     return { chunk, name: countedName, displayName: countedDisplayName };
@@ -174,26 +162,15 @@ async function createZipArchives(
   }
 
   _currentChunk++;
-  return await createZipArchives(
-    updateLoadingState,
-    chunks,
-    zipArchives,
-    _currentChunk
-  );
+  return await createZipArchives(updateLoadingState, chunks, zipArchives, _currentChunk);
 }
 
 function composeFileName(chunk: IVeoObjectHistoryEntry[]) {
   const startDate = new Date(chunk[0].time);
   const endDate = new Date(chunk[chunk.length - 1].time);
 
-  const displayName = `${format(startDate, 'dd.MM.yyyy')} – ${format(
-    endDate,
-    'dd.MM.yyyy'
-  )}`;
-  const fileName = `history_${format(startDate, 'yyyy-MM-dd')}_${format(
-    endDate,
-    'yyyy-MM-dd'
-  )}`;
+  const displayName = `${format(startDate, 'dd.MM.yyyy')} – ${format(endDate, 'dd.MM.yyyy')}`;
+  const fileName = `history_${format(startDate, 'yyyy-MM-dd')}_${format(endDate, 'yyyy-MM-dd')}`;
   return { displayName, fileName };
 }
 

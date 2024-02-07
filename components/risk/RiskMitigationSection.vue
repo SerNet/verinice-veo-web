@@ -24,10 +24,7 @@
           <v-icon v-bind="props" :icon="mdiInformationOutline" />
         </template>
         <template #default>
-          <i18n-t
-            keypath="mitigationAreaOfApplicationExplanation"
-            tag="span"
-            scope="global">
+          <i18n-t keypath="mitigationAreaOfApplicationExplanation" tag="span" scope="global">
             <template #lineBreak>
               <br />
             </template>
@@ -40,26 +37,15 @@
     </h2>
     <BaseCard class="veo-section-border">
       <ObjectTable
-        :default-headers="[
-          'icon',
-          'designator',
-          'abbreviation',
-          'name',
-          'status',
-          'updatedAt',
-          'actions'
-        ]"
+        :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'updatedAt', 'actions']"
         :loading="fetchingMitigation"
-        :items="selectedItems">
+        :items="selectedItems"
+      >
         <template #actions="{ item }">
           <div class="d-flex justify-end">
             <v-tooltip location="start">
               <template #activator="{ props }">
-                <v-btn
-                  v-bind="props"
-                  :icon="mdiLinkOff"
-                  variant="text"
-                  @click="removeMitigationPart(item)" />
+                <v-btn v-bind="props" :icon="mdiLinkOff" variant="text" @click="removeMitigationPart(item)" />
               </template>
               {{ t('unlinkPart') }}
             </v-tooltip>
@@ -69,12 +55,7 @@
       <div class="d-flex justify-end px-2">
         <v-menu :disabled="disabled" top offset-y>
           <template #activator="{ props }">
-            <v-btn
-              v-bind="props"
-              class="mt-2 mb-2"
-              color="primary"
-              flat
-              :disabled="disabled">
+            <v-btn v-bind="props" class="mt-2 mb-2" color="primary" flat :disabled="disabled">
               <v-icon start :icon="mdiPencilOutline" />
               {{ t('editMitigatingActions').toString() }}
             </v-btn>
@@ -82,9 +63,7 @@
           <template #default>
             <v-list dense>
               <v-list-item @click="createMitigationDialogVisible = true">
-                <v-list-item-title>{{
-                  t('createMitigation')
-                }}</v-list-item-title>
+                <v-list-item-title>{{ t('createMitigation') }}</v-list-item-title>
               </v-list-item>
               <v-list-item @click="editMitigationsDialogVisible = true">
                 <v-list-item-title>{{ t('addMitigation') }}</v-list-item-title>
@@ -99,11 +78,10 @@
       v-model="editMitigationsDialogVisible"
       v-model:preselected-items="selectedItems"
       :object="editedObject"
-      return-objects>
+      return-objects
+    >
       <template #header>
-        {{
-          t('addMitigatingActionsToRisk', [data && data.designator]).toString()
-        }}
+        {{ t('addMitigatingActionsToRisk', [data && data.designator]).toString() }}
       </template>
     </ObjectLinkDialog>
     <ObjectCreateDialog
@@ -111,7 +89,8 @@
       v-model="createMitigationDialogVisible"
       object-type="control"
       :domain-id="domainId"
-      @success="onMitigationCreated" />
+      @success="onMitigationCreated"
+    />
   </div>
 </template>
 
@@ -206,9 +185,7 @@ export default defineComponent({
     };
 
     const removeMitigationPart = (item: any) => {
-      selectedItems.value = selectedItems.value.filter(
-        (mitigation) => mitigation.id !== item.raw.id
-      );
+      selectedItems.value = selectedItems.value.filter((mitigation) => mitigation.id !== item.raw.id);
     };
 
     watch(

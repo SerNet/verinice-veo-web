@@ -19,19 +19,11 @@
   <BaseWidget :title="t('myLatestRevisions')">
     <v-table dense>
       <tbody>
-        <tr
-          v-for="(revision, key) in revisions || []"
-          :key="key"
-          class="text-no-wrap overflow-x-hidden fill-width">
+        <tr v-for="(revision, key) in revisions || []" :key="key" class="text-no-wrap overflow-x-hidden fill-width">
           <td>
-            <nuxt-link
-              :to="createUrl(revision, schemas || {})"
-              class="text-body-2 text-color">
+            <nuxt-link :to="createUrl(revision, schemas || {})" class="text-body-2 text-color">
               {{ revision.content.designator }}
-              <b
-                >{{ revision.content.abbreviation }}
-                {{ revision.content.name }}</b
-              >
+              <b>{{ revision.content.abbreviation }} {{ revision.content.name }}</b>
             </nuxt-link>
           </td>
           <td class="text-right text-body-2">
@@ -45,9 +37,7 @@
 
 <script setup lang="ts">
 import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
-import schemaQueryDefinitions, {
-  IVeoSchemaEndpoints
-} from '~/composables/api/queryDefinitions/schemas';
+import schemaQueryDefinitions, { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas';
 import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 import { useQuery } from '~/composables/api/utils/query';
 
@@ -57,23 +47,16 @@ const route = useRoute();
 const latestChangesQueryParameters = computed(() => ({
   unitId: route.params.unit as string
 }));
-const { data: revisions } = useQuery(
-  historyQueryDefinitions.queries.fetchLatestVersions,
-  latestChangesQueryParameters
-);
+const { data: revisions } = useQuery(historyQueryDefinitions.queries.fetchLatestVersions, latestChangesQueryParameters);
 
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-const createUrl = (
-  revision: IVeoObjectHistoryEntry,
-  schemas: IVeoSchemaEndpoints
-) => {
-  const subType =
-    revision.content.domains[route.params.domain as string]?.subType || '-';
+const createUrl = (revision: IVeoObjectHistoryEntry, schemas: IVeoSchemaEndpoints) => {
+  const subType = revision.content.domains[route.params.domain as string]?.subType || '-';
 
-  return `/${route.params.unit}/domains/${route.params.domain}/${
-    schemas[revision.content.type]
-  }/${subType}/${revision.content.id}/`;
+  return `/${route.params.unit}/domains/${route.params.domain}/${schemas[revision.content.type]}/${subType}/${
+    revision.content.id
+  }/`;
 };
 </script>
 

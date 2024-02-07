@@ -28,17 +28,17 @@
       :items="riskValues"
       disabled
       variant="underlined"
-      hide-details>
+      hide-details
+    >
       <template
         v-if="
           dirtyFields &&
           (dirtyFields.scenario ||
             dirtyFields[`${riskDefinition.id}_specificProbability`] ||
-            dirtyFields[
-              `${riskDefinition.id}_${protectionGoal.id}_specificImpact`
-            ])
+            dirtyFields[`${riskDefinition.id}_${protectionGoal.id}_specificImpact`])
         "
-        #selection>
+        #selection
+      >
         {{ t('saveCTA') }}
       </template>
     </v-select>

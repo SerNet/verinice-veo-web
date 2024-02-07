@@ -28,18 +28,14 @@
     :page-widths-lg="pageWidthsLg"
     :page-titles="pageTitles"
     data-component-name="object-details-page"
-    @page-collapsed="onPageCollapsed">
+    @page-collapsed="onPageCollapsed"
+  >
     <template #title>
-      <LayoutHeadline
-        class="mb-2"
-        :title="(object && object.displayName) || ''" />
+      <LayoutHeadline class="mb-2" :title="(object && object.displayName) || ''" />
     </template>
 
     <template #default>
-      <BasePage
-        sticky-footer
-        data-component-name="object-details-details"
-        no-padding>
+      <BasePage sticky-footer data-component-name="object-details-details" no-padding>
         <template #default>
           <ObjectDetails
             v-model:active-tab="activeTab"
@@ -48,7 +44,8 @@
             :object="object"
             :domain-id="domainId"
             :dense="!!pageWidths[1]"
-            @reload="updateObjectRelationships" />
+            @reload="updateObjectRelationships"
+          />
         </template>
         <template #footer>
           <div style="height: 36px" />
@@ -58,14 +55,12 @@
             :disabled="ability.cannot('manage', 'objects')"
             :object="object"
             :type="activeTab"
-            @reload="updateObjectRelationships" />
+            @reload="updateObjectRelationships"
+          />
         </template>
       </BasePage>
 
-      <BasePage
-        content-class="fill-height"
-        no-padding
-        data-component-name="object-details-form">
+      <BasePage content-class="fill-height" no-padding data-component-name="object-details-form">
         <template #default>
           <ObjectForm
             v-if="objectType"
@@ -73,9 +68,7 @@
             v-model="modifiedObject"
             v-model:valid="isFormValid"
             class="pb-4"
-            :disabled="
-              formDataIsRevision || ability.cannot('manage', 'objects')
-            "
+            :disabled="formDataIsRevision || ability.cannot('manage', 'objects')"
             :object-type="objectType"
             :original-object="object"
             :loading="loading || !modifiedObject"
@@ -83,7 +76,8 @@
             :additional-context="additionalContext"
             @show-revision="onShowRevision"
             @create-dpia="createDPIADialogVisible = true"
-            @link-dpia="linkObjectDialogVisible = true">
+            @link-dpia="linkObjectDialogVisible = true"
+          >
             <template v-if="formDataIsRevision" #prepend-form>
               <BaseAlert
                 :model-value="true"
@@ -92,47 +86,35 @@
                 flat
                 class="mb-4"
                 :title="upperFirst(t('version', { version: version + 1 }))"
-                :text="t('oldVersionAlert')" />
+                :text="t('oldVersionAlert')"
+              />
             </template>
             <template #append-form-outer>
-              <div
-                class="d-flex object-details-actions pt-4"
-                data-component-name="object-details-actions">
+              <div class="d-flex object-details-actions pt-4" data-component-name="object-details-actions">
                 <template v-if="!formDataIsRevision">
                   <v-btn
-                    :disabled="
-                      loading ||
-                      !isFormDirty ||
-                      ability.cannot('manage', 'objects')
-                    "
+                    :disabled="loading || !isFormDirty || ability.cannot('manage', 'objects')"
                     class="mb-4"
                     color="primary"
                     flat
-                    @click="resetForm">
+                    @click="resetForm"
+                  >
                     {{ t('reset') }}
                   </v-btn>
                   <v-spacer />
                   <v-btn
-                    :disabled="
-                      loading ||
-                      !isFormDirty ||
-                      !isFormValid ||
-                      ability.cannot('manage', 'objects')
-                    "
+                    :disabled="loading || !isFormDirty || !isFormValid || ability.cannot('manage', 'objects')"
                     class="mb-4"
                     color="primary"
                     flat
-                    @click="saveObject">
+                    @click="saveObject"
+                  >
                     {{ $t('global.button.save') }}
                   </v-btn>
                 </template>
                 <template v-else>
                   <v-spacer />
-                  <v-btn
-                    :disabled="ability.cannot('manage', 'objects')"
-                    color="primary"
-                    flat
-                    @click="restoreObject">
+                  <v-btn :disabled="ability.cannot('manage', 'objects')" color="primary" flat @click="restoreObject">
                     {{ t('restore') }}
                   </v-btn>
                 </template>
@@ -142,20 +124,23 @@
           <ObjectUnsavedChangesDialog
             v-model="entityModifiedDialogVisible"
             :item="object"
-            @exit="onContinueNavigation" />
+            @exit="onContinueNavigation"
+          />
           <UtilUnloadPrevention :model-value="isFormDirty" />
           <ObjectCreateDialog
             v-model="createDPIADialogVisible"
             object-type="process"
             sub-type="PRO_DPIA"
             :domain-id="domainId"
-            @success="onDPIACreated" />
+            @success="onDPIACreated"
+          />
           <ObjectLinkDialog
             v-if="object"
             v-model="linkObjectDialogVisible"
             :preselected-filters="{ subType: 'PRO_DPIA' }"
             :object="object"
-            @success="onDPIALinked" />
+            @success="onDPIALinked"
+          />
         </template>
       </BasePage>
     </template>
@@ -171,11 +156,7 @@ import { Ref } from 'vue';
 import { cloneDeep, isEqual, omit, upperFirst } from 'lodash';
 
 import { isObjectEqual } from '~/lib/utils';
-import {
-  IVeoEntity,
-  IVeoObjectHistoryEntry,
-  VeoAlertType
-} from '~/types/VeoTypes';
+import { IVeoEntity, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -206,17 +187,10 @@ const { t: globalT } = useI18n({ useScope: 'global' });
 const config = useRuntimeConfig();
 const route = useRoute();
 const router = useRouter();
-const {
-  displaySuccessMessage,
-  displayErrorMessage,
-  expireAlert,
-  displayInfoMessage
-} = useVeoAlerts();
+const { displaySuccessMessage, displayErrorMessage, expireAlert, displayInfoMessage } = useVeoAlerts();
 const { link } = useLinkObject();
 const { ability } = useVeoPermissions();
-const { mutateAsync: _updateObject } = useMutation(
-  objectQueryDefinitions.mutations.updateObject
-);
+const { mutateAsync: _updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
 const domainId = computed(() => route.params.domain as string);
 
@@ -282,22 +256,14 @@ const onPageCollapsed = (collapsedPages: boolean[]) => {
 };
 
 // Forms part specific stuff
-const { data: endpoints } = useQuery(
-  schemaQueryDefinitions.queries.fetchSchemas
-);
+const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 const objectType = computed(
-  () =>
-    Object.entries(endpoints.value || {}).find(
-      ([, endpoint]) => endpoint === route.params.objectType
-    )?.[0]
+  () => Object.entries(endpoints.value || {}).find(([, endpoint]) => endpoint === route.params.objectType)?.[0]
 );
 
 const isFormDirty = computed(
   () =>
-    !isObjectEqual(
-      object.value as IVeoEntity,
-      modifiedObject.value as IVeoEntity
-    ).isEqual && !formDataIsRevision.value
+    !isObjectEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity).isEqual && !formDataIsRevision.value
 );
 const isFormValid = ref(false);
 const objectForm = ref();
@@ -360,19 +326,15 @@ async function updateObject(successText: string, errorText: string) {
     }
   } catch (e: any) {
     if (e.code === 412) {
-      optimisticLockingAlertKey.value = displayErrorMessage(
-        errorText,
-        t('outdatedObject'),
-        {
-          defaultButtonText: globalT('global.button.no'),
-          actions: [
-            {
-              text: globalT('global.button.yes'),
-              onClick: refetch
-            }
-          ]
-        }
-      );
+      optimisticLockingAlertKey.value = displayErrorMessage(errorText, t('outdatedObject'), {
+        defaultButtonText: globalT('global.button.no'),
+        actions: [
+          {
+            text: globalT('global.button.yes'),
+            onClick: refetch
+          }
+        ]
+      });
     } else {
       displayErrorMessage(errorText, e.message, {
         details: cloneDeep({
@@ -400,19 +362,14 @@ function onShowRevision(data: IVeoObjectHistoryEntry, isRevision: boolean) {
 
     // We have to stringify the content and then manually add the host, as the history api currently doesn't support absolute urls 18-01-2022
     if (isRevision) {
-      modifiedObject.value = JSON.parse(
-        JSON.stringify(data.content).replaceAll(
-          /"\//g,
-          `"${config.public.apiUrl}/`
-        )
-      );
+      modifiedObject.value = JSON.parse(JSON.stringify(data.content).replaceAll(/"\//g, `"${config.public.apiUrl}/`));
     } else {
       modifiedObject.value = cloneDeep(object.value);
     }
     // @ts-ignore We don't set the display name when loading objects from the history, so we have to do it here
-    modifiedObject.value.displayName = `${data.content.designator} ${
-      data.content.abbreviation || ''
-    } ${data.content.name}`;
+    modifiedObject.value.displayName = `${data.content.designator} ${data.content.abbreviation || ''} ${
+      data.content.name
+    }`;
     version.value = data.changeNumber;
   };
   if (isFormDirty.value) {
@@ -471,20 +428,18 @@ const getAdditionalContext = () => {
   const disabledRequirementCTL =
     subTypesCTL.includes(route.params.subType as string) ?
       {
-        ['#/properties/customAspects/properties/control_bpCompendium/properties/control_bpCompendium_content']:
-          {
-            formSchema: { disabled: true }
-          }
+        ['#/properties/customAspects/properties/control_bpCompendium/properties/control_bpCompendium_content']: {
+          formSchema: { disabled: true }
+        }
       }
     : {};
 
   const disabledRequirementSCN =
     subTypesSCN.includes(route.params.subType as string) ?
       {
-        ['#/properties/customAspects/properties/scenario_bpCompendium/properties/scenario_bpCompendium_content']:
-          {
-            formSchema: { disabled: true }
-          }
+        ['#/properties/customAspects/properties/scenario_bpCompendium/properties/scenario_bpCompendium_content']: {
+          formSchema: { disabled: true }
+        }
       }
     : {};
 

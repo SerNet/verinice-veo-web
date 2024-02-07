@@ -43,11 +43,7 @@ export interface IVeoFormSchemaItemRule {
   };
 }
 
-export type IVeoFormSchemaContentType =
-  | 'Layout'
-  | 'Control'
-  | 'Label'
-  | 'Widget';
+export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | 'Widget';
 
 export interface IVeoFormSchemaItem {
   type: IVeoFormSchemaContentType;
@@ -156,10 +152,7 @@ export default {
               id: variables.params?.id || ''
             }
           ]);
-          queryClient.invalidateQueries([
-            'forms',
-            { domainId: variables.query?.domainId || '' }
-          ]);
+          queryClient.invalidateQueries(['forms', { domainId: variables.query?.domainId || '' }]);
         }
       }
     } as IVeoMutationDefinition<IVeoUpdateFormParameters, void>

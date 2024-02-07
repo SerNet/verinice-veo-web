@@ -24,7 +24,8 @@
     @update:items-per-page="emit('update:items-per-page', $event)"
     @update:page="emit('update:page', $event)"
     @update:sort-by="emit('update:sort-by', $event)"
-    @click="emit('click', $event)">
+    @click="emit('click', $event)"
+  >
     <template v-for="(_, name) in slots" #[name]="slotData">
       <slot :name="name" v-bind="slotData" />
     </template>
@@ -39,11 +40,7 @@ import ObjectIcon from '~/components/object/Icon.vue';
 import { useFormatters } from '~/composables/utils';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
-import {
-  TableFormatter,
-  TableHeader,
-  TableRenderer
-} from '~/components/base/Table.vue';
+import { TableFormatter, TableHeader, TableRenderer } from '~/components/base/Table.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -117,10 +114,7 @@ const translationQueryParameters = computed(() => ({
   languages: [locale.value],
   domain: route.params.domain
 }));
-const { data: translations } = useQuery(
-  translationQueryDefinitions.queries.fetch,
-  translationQueryParameters
-);
+const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
 
 /**
  * Render folder or file icons
@@ -276,15 +270,11 @@ const recurringHeaders: { [key: string]: TableHeader } = {
 };
 
 // We assume all headers not matching here are defind in BaseTable.vue, so we pass them along
-const unmatchedDefaultHeaders = computed(() =>
-  props.defaultHeaders.filter((header) => !recurringHeaders[header])
-);
+const unmatchedDefaultHeaders = computed(() => props.defaultHeaders.filter((header) => !recurringHeaders[header]));
 
 // Merge default headers from object table with additional headers
 const mergedAdditionalHeaders = computed(() => [
-  ...(props.defaultHeaders || [])
-    .map((header) => recurringHeaders[header])
-    .filter((header) => header),
+  ...(props.defaultHeaders || []).map((header) => recurringHeaders[header]).filter((header) => header),
   ...props.additionalHeaders
 ]);
 </script>

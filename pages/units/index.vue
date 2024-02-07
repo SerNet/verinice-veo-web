@@ -32,7 +32,8 @@
         <v-list
           lines="two"
           data-component-name="unit-selection-available-units"
-          data-veo-test="unit-selection-available-units">
+          data-veo-test="unit-selection-available-units"
+        >
           <template v-if="unitsFetching">
             <div v-for="i in 2" :key="i" class="mb-4">
               <VSkeletonLoader type="text" width="150px" class="mx-4 my-1" />
@@ -48,7 +49,8 @@
             :title="unit.name"
             :subtitle="unit.description"
             :disabled="!generateUnitDashboardLink(unit.id)"
-            :to="generateUnitDashboardLink(unit.id)">
+            :to="generateUnitDashboardLink(unit.id)"
+          >
             <template #append>
               <v-tooltip location="bottom">
                 <template #activator="{ props }">
@@ -57,7 +59,8 @@
                     :icon="mdiPencilOutline"
                     variant="text"
                     data-component-name="unit-selection-edit-unit-button"
-                    @click.prevent="editUnit(unit)" />
+                    @click.prevent="editUnit(unit)"
+                  />
                 </template>
                 <template #default>
                   {{ t('editUnit') }}
@@ -70,7 +73,8 @@
                     :icon="mdiTrashCanOutline"
                     variant="text"
                     data-component-name="unit-selection-delete-unit-button"
-                    @click.prevent="deleteUnit(unit)" />
+                    @click.prevent="deleteUnit(unit)"
+                  />
                 </template>
                 <template #default>
                   {{ t('deleteUnit') }}
@@ -92,7 +96,8 @@
               color="primary"
               :icon="mdiPlus"
               size="large"
-              @click="createUnit()" />
+              @click="createUnit()"
+            />
           </div>
         </template>
 
@@ -122,9 +127,7 @@ import { mdiTrashCanOutline, mdiPlus, mdiPencilOutline } from '@mdi/js';
 
 import { getFirstDomainDomaindId } from '~/lib/utils';
 import { useQuery } from '~/composables/api/utils/query';
-import unitQueryDefinitions, {
-  IVeoUnit
-} from '~/composables/api/queryDefinitions/units';
+import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
@@ -151,30 +154,22 @@ const editUnit = (unit: IVeoUnit) => {
   unitManageDialogVisible.value = true;
 };
 
-const { data: units, isFetching: unitsFetching } = useQuery(
-  unitQueryDefinitions.queries.fetchAll
-);
+const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
 const activeUnits = computed(() => units.value?.length || undefined);
 
 const generateUnitDashboardLink = (unitId: string) => {
-  const unitToLinkTo = (units.value || []).find(
-    (unit: IVeoUnit) => unit.id === unitId
-  );
+  const unitToLinkTo = (units.value || []).find((unit: IVeoUnit) => unit.id === unitId);
   let domainId;
 
   if (unitToLinkTo) {
     domainId = getFirstDomainDomaindId(unitToLinkTo);
   }
 
-  return unitToLinkTo && domainId ?
-      `/${unitToLinkTo.id}/domains/${domainId}`
-    : undefined;
+  return unitToLinkTo && domainId ? `/${unitToLinkTo.id}/domains/${domainId}` : undefined;
 };
 
-const maxUnitsExceeded = computed(
-  () => (units.value?.length || 0) >= userSettings.value.maxUnits
-);
+const maxUnitsExceeded = computed(() => (units.value?.length || 0) >= userSettings.value.maxUnits);
 
 // Unit deletion stuff
 const deleteUnitDialogVisible = ref(false);

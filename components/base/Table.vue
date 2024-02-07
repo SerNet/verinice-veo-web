@@ -45,13 +45,13 @@ interface TableHeaderAdditionalProperties {
   key: string;
 }
 
-export type TableHeader = Omit<DataTableHeader, 'text'> &
-  TableHeaderAdditionalProperties;
+export type TableHeader = Omit<DataTableHeader, 'text'> & TableHeaderAdditionalProperties;
 
-export type ExtractProperty<
-  V extends ReadonlyArray<Record<string, any>>,
-  K extends keyof V[0]
-> = V extends ReadonlyArray<Record<K, infer U>> ? U : never;
+export type ExtractProperty<V extends ReadonlyArray<Record<string, any>>, K extends keyof V[0]> = V extends (
+  ReadonlyArray<Record<K, infer U>>
+) ?
+  U
+: never;
 </script>
 
 <script setup lang="ts">
@@ -165,13 +165,8 @@ watch(
 /**
  * Distinguish between IVeoPaginatedResponse and basic arrays
  */
-const isPaginatedResponse = <T = any[],>(
-  items: any | T
-): items is IVeoPaginatedResponse<T> =>
-  'items' in items &&
-  'page' in items &&
-  'pageCount' in items &&
-  'totalItemCount' in items;
+const isPaginatedResponse = <T = any[],>(items: any | T): items is IVeoPaginatedResponse<T> =>
+  'items' in items && 'page' in items && 'pageCount' in items && 'totalItemCount' in items;
 /**
  * Render actions slot (aligned right, stopping click propagation)
  */
@@ -195,9 +190,7 @@ const toggleSelection = (context: any) => {
     return;
   }
   const newModelValue: any[] = cloneDeep(internalModelValue.value);
-  const existingIndex = newModelValue.findIndex(
-    (existingId) => existingId === context.internalItem.value
-  );
+  const existingIndex = newModelValue.findIndex((existingId) => existingId === context.internalItem.value);
   if (existingIndex !== -1) {
     newModelValue.splice(existingIndex, 1);
   } else {
@@ -219,9 +212,7 @@ const presetHeaders: { [key: string]: TableHeader } = {
     order: 0,
     text: '',
     render: (context) => {
-      const isSelected = internalModelValue.value.includes(
-        context.internalItem.value
-      );
+      const isSelected = internalModelValue.value.includes(context.internalItem.value);
       return h(VCheckbox, {
         modelValue: isSelected,
         color: isSelected ? 'primary' : undefined,
@@ -255,8 +246,7 @@ const truncateClasses = ['text-truncate'];
 /**
  * Render value inside a cell
  */
-const renderValue = (item: any, key: keyof any | string) =>
-  key in item ? String(item[key]) : '';
+const renderValue = (item: any, key: keyof any | string) => (key in item ? String(item[key]) : '');
 /**
  * Convert TableRenderer to VNode array
  */
@@ -267,10 +257,7 @@ const toNodeChildren = (items: ReturnType<TableRenderer>): VNodeArrayChildren =>
  */
 const renderTooltip = (header: TableHeader, data?: any): TableRenderer => {
   return (props) => {
-    const children =
-      header.render ?
-        toNodeChildren(header.render(props))
-      : renderValue(props.item, header.value);
+    const children = header.render ? toNodeChildren(header.render(props)) : renderValue(props.item, header.value);
     return h(
       VTooltip,
       {
@@ -278,13 +265,8 @@ const renderTooltip = (header: TableHeader, data?: any): TableRenderer => {
         width: 350
       },
       {
-        activator: ({
-          attrs: slotAttrs,
-          props: slotProps
-        }: {
-          attrs: any;
-          props: any;
-        }) => h('span', { slotAttrs, ...slotProps, ...data }, children),
+        activator: ({ attrs: slotAttrs, props: slotProps }: { attrs: any; props: any }) =>
+          h('span', { slotAttrs, ...slotProps, ...data }, children),
         default: () => header.tooltip?.(props)
       }
     );
@@ -298,8 +280,7 @@ const _headers = computed<TableHeader[]>(() =>
     ...Object.entries(presetHeaders)
       .filter(
         ([key, _header]) =>
-          props.defaultHeaders.includes(key) ||
-          (key === 'data-table-select' && 'show-select' in attrs)
+          props.defaultHeaders.includes(key) || (key === 'data-table-select' && 'show-select' in attrs)
       )
       .map(([_key, header]) => header),
     ...props.additionalHeaders
@@ -314,9 +295,7 @@ const _headers = computed<TableHeader[]>(() =>
         ...header,
         title: header.text ?? globalT(`objectlist.${String(header.value)}`),
         cellClass,
-        class: (header.class || []).concat(
-          header.truncate ? truncateClasses : []
-        ),
+        class: (header.class || []).concat(header.truncate ? truncateClasses : []),
         render:
           header.tooltip ?
             renderTooltip(header, {
@@ -335,8 +314,7 @@ const mapItem = (item: any) => {
   const mappedValues = Object.fromEntries(
     mappers.map((formatter) => {
       const name = formatter.value;
-      const value =
-        formatter.map ? formatter.map(item[name || '']) : item[name || ''];
+      const value = formatter.map ? formatter.map(item[name || '']) : item[name || ''];
       return [name, value];
     })
   );
@@ -344,8 +322,7 @@ const mapItem = (item: any) => {
 };
 
 const items = computed(() => {
-  const data =
-    isPaginatedResponse(props.items) ? props.items.items : props.items;
+  const data = isPaginatedResponse(props.items) ? props.items.items : props.items;
 
   return (data || []).map(mapItem);
 });
@@ -374,10 +351,7 @@ const renderers = computed(() =>
   Object.fromEntries(
     _headers.value.map((header) => [
       `item.${header.key}`,
-      (context: any) =>
-        header.render ?
-          header.render(context)
-        : defaultRenderer(context, header)
+      (context: any) => (header.render ? header.render(context) : defaultRenderer(context, header))
     ])
   )
 );
@@ -391,17 +365,7 @@ const displayedHeaders = ref<TableHeader[]>(_headers.value);
 // Normalized headers (not existing props get removed)
 const normalizedDisplayHeaders = computed<DataTableHeader[]>(() =>
   displayedHeaders.value.map((header) =>
-    omit(
-      header,
-      'priority',
-      'order',
-      'truncate',
-      'map',
-      'text',
-      'render',
-      'tooltip',
-      'value'
-    )
+    omit(header, 'priority', 'order', 'truncate', 'map', 'text', 'render', 'tooltip', 'value')
   )
 );
 
@@ -441,8 +405,7 @@ const onTableWidthChange = () => {
     // We use a for loop instead of a while loop to avoid creating an endless loop (normally shouldn't happen, but can't go wrong with precaution)
     for (let i = 0; i < _headers.value.length; i++) {
       if (calculateTableWidth(headers) > tableWrapperWidth) {
-        const leastImportantHeaderIndex =
-          indexOfHeaderWithLowestPriority(headers);
+        const leastImportantHeaderIndex = indexOfHeaderWithLowestPriority(headers);
 
         // If undefined, no header is left, so leave the loop.
         // Also we always want at least one column to be shown.
@@ -486,10 +449,7 @@ watch(
 const internalModelValue = computed({
   get: () => props.modelValue.map((item) => item.id),
   set: (newValue: string[]) => {
-    const availableCurrentItems =
-      isPaginatedResponse(props.items) ?
-        props.items.items
-      : (props.items as any[]);
+    const availableCurrentItems = isPaginatedResponse(props.items) ? props.items.items : (props.items as any[]);
     const availablePreviousItems = props.modelValue;
     emit(
       'update:model-value',
@@ -523,8 +483,7 @@ const sharedProps = computed(() => ({
       }
     }
   : {}),
-  'onUpdate:modelValue': (newValue: string[]) =>
-    (internalModelValue.value = newValue),
+  'onUpdate:modelValue': (newValue: string[]) => (internalModelValue.value = newValue),
   'onUpdate:page': (newValue: number) => {
     localPage.value = newValue;
   },
@@ -556,9 +515,7 @@ const render = () =>
       }
     )
   : h('div', [
-      ...(props.loading ?
-        [h(VProgressLinear, { indeterminate: true, color: 'primary' })]
-      : []),
+      ...(props.loading ? [h(VProgressLinear, { indeterminate: true, color: 'primary' })] : []),
       h(VDataTable, sharedProps.value, {
         ...slots,
         ...renderers.value

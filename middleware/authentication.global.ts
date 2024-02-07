@@ -65,15 +65,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   // If keycloak is initialized, the user isn't logged in and the path isn't public, redirect to login
-  if (
-    !authenticated.value &&
-    !publicRoutes.some((r) => to.path.startsWith(`/${r}`))
-  ) {
+  if (!authenticated.value && !publicRoutes.some((r) => to.path.startsWith(`/${r}`))) {
     return navigateTo({
       path: '/login',
       query: {
-        redirect_uri:
-          to.query.redirect_uri !== 'false' ? to.fullPath : undefined
+        redirect_uri: to.query.redirect_uri !== 'false' ? to.fullPath : undefined
       }
     });
   }
@@ -83,10 +79,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const isRouteRestricted = Array.isArray(requiredPermission);
 
   // If the route is restricted and the user doesn't have the required permissions, display an error
-  if (
-    isRouteRestricted &&
-    ability.value.cannot(requiredPermission[0], requiredPermission[1])
-  ) {
+  if (isRouteRestricted && ability.value.cannot(requiredPermission[0], requiredPermission[1])) {
     throw createError({ statusCode: 403 });
   }
 

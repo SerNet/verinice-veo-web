@@ -16,26 +16,19 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-sheet
-    rounded
-    border
-    class="fill-width pb-1 my-1"
-    data-component-name="label-form-element">
+  <v-sheet rounded border class="fill-width pb-1 my-1" data-component-name="label-form-element">
     <v-card-actions>
       <div class="handle mr-1">
         <v-icon :icon="mdiDrag" />
       </div>
-      <EditorFormSchemaPlaygroundRuleIcon
-        :rule="formSchemaElement.rule"
-        class="mr-1" />
+      <EditorFormSchemaPlaygroundRuleIcon :rule="formSchemaElement.rule" class="mr-1" />
       {{ t('text') }}
       <v-spacer />
       <v-btn :icon="mdiPencilOutline" size="small" @click="emit('edit')" />
       <v-btn :icon="mdiTrashCanOutline" size="small" @click="emit('delete')" />
     </v-card-actions>
     <div class="mx-2">
-      <EditorTranslationsTranslatedElementTitle
-        :form-schema-element="formSchemaElement" />
+      <EditorTranslationsTranslatedElementTitle :form-schema-element="formSchemaElement" />
     </div>
   </v-sheet>
 </template>

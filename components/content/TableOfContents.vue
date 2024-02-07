@@ -17,11 +17,7 @@
 -->
 <template>
   <nav class="list-toc-generated">
-    <div
-      v-for="(item, index) in items"
-      :key="index"
-      class="toc-element"
-      :class="'toc-element-level-' + item.level">
+    <div v-for="(item, index) in items" :key="index" class="toc-element" :class="'toc-element-level-' + item.level">
       <a :href="'#' + item._path">{{ item.title }}</a>
     </div>
   </nav>
@@ -100,8 +96,7 @@ const items = computed(() =>
     counter-increment: counterTocLevel3;
     counter-reset: counterTocLevel4;
     &::before {
-      content: counter(counterTocLevel1) '. ' counter(counterTocLevel2) '. '
-        counter(counterTocLevel3);
+      content: counter(counterTocLevel1) '. ' counter(counterTocLevel2) '. ' counter(counterTocLevel3);
       padding-right: 5px;
     }
   }
@@ -109,8 +104,8 @@ const items = computed(() =>
     margin-left: 25px;
     counter-increment: counterTocLevel4;
     &::before {
-      content: counter(counterTocLevel1) '. ' counter(counterTocLevel2) '. '
-        counter(counterTocLevel3) '. ' counter(counterTocLevel4);
+      content: counter(counterTocLevel1) '. ' counter(counterTocLevel2) '. ' counter(counterTocLevel3) '. '
+        counter(counterTocLevel4);
       padding-right: 5px;
     }
   }

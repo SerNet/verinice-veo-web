@@ -66,10 +66,7 @@ export default {
           ...entry,
           content: formatObject(entry.content)
         }))
-    } as IVeoQueryDefinition<
-      IVeoFetchVersionsParameters,
-      IVeoObjectHistoryEntry[]
-    >,
+    } as IVeoQueryDefinition<IVeoFetchVersionsParameters, IVeoObjectHistoryEntry[]>,
     fetchLatestVersions: {
       primaryQueryKey: 'latestVersions',
       url: '/api/history/revisions/my-latest',
@@ -84,10 +81,7 @@ export default {
           ...entry,
           content: formatObject(entry.content)
         }))
-    } as IVeoQueryDefinition<
-      IVeoFetchLatestChangesParameters,
-      IVeoObjectHistoryEntry[]
-    >,
+    } as IVeoQueryDefinition<IVeoFetchLatestChangesParameters, IVeoObjectHistoryEntry[]>,
     fetchPagedRevisions: {
       primaryQueryKey: 'pagedRevisions',
       url: '/api/history/revisions/paged',
@@ -97,10 +91,7 @@ export default {
           afterId: queryParameters?.afterId
         }
       })
-    } as IVeoQueryDefinition<
-      IVeoFetchPagedRevisionsParameters,
-      IVeoPagedRevision
-    >
+    } as IVeoQueryDefinition<IVeoFetchPagedRevisionsParameters, IVeoPagedRevision>
   },
   mutations: {}
 };

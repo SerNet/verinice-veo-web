@@ -22,7 +22,8 @@
     :close-disabled="isLoading"
     :title="id ? t('updateAccount') : t('createAccount')"
     large
-    @update:model-value="$emit('update:model-value', $event)">
+    @update:model-value="$emit('update:model-value', $event)"
+  >
     <template #default>
       <BaseAlert
         :title="t('password')"
@@ -30,7 +31,8 @@
         flat
         no-close-button
         :type="VeoAlertType.INFO"
-        class="mb-2">
+        class="mb-2"
+      >
         <span v-if="id">
           {{ t('updatingOwnAccount') }}
         </span>
@@ -49,19 +51,17 @@
                   :prepend-inner-icon="mdiAccountOutline"
                   :disabled="!!id"
                   :rules="[requiredRule, usernameIsDuplicateRule]"
-                  variant="underlined" />
+                  variant="underlined"
+                />
               </v-col>
               <v-col cols="12" md="6">
                 <v-text-field
                   v-model="formData.emailAddress"
                   :label="`${t('email')}*`"
                   :prepend-inner-icon="mdiEmailOutline"
-                  :rules="[
-                    requiredRule,
-                    mailAddressIsDuplicateRule,
-                    mailRegexRule
-                  ]"
-                  variant="underlined" />
+                  :rules="[requiredRule, mailAddressIsDuplicateRule, mailRegexRule]"
+                  variant="underlined"
+                />
               </v-col>
             </v-row>
             <v-checkbox v-model="formData.enabled" :label="t('enabled')" />
@@ -72,7 +72,8 @@
                   clearable
                   :label="`${t('firstName')}*`"
                   :rules="[requiredRule]"
-                  variant="underlined" />
+                  variant="underlined"
+                />
               </v-col>
               <v-col cols="12" md="6">
                 <v-text-field
@@ -80,7 +81,8 @@
                   clearable
                   :label="`${t('lastName')}*`"
                   :rules="[requiredRule]"
-                  variant="underlined" />
+                  variant="underlined"
+                />
               </v-col>
             </v-row>
             <v-row>
@@ -91,7 +93,8 @@
                   multiple
                   :items="availableGroups"
                   :label="t('groups')"
-                  variant="underlined" />
+                  variant="underlined"
+                />
               </v-col>
             </v-row>
           </v-form>
@@ -105,11 +108,10 @@
       <v-spacer />
       <v-btn
         color="primary"
-        :disabled="
-          formIsValid === false || ability.cannot('manage', 'accounts')
-        "
+        :disabled="formIsValid === false || ability.cannot('manage', 'accounts')"
         :loading="isLoading"
-        @click="createOrUpdateAccount">
+        @click="createOrUpdateAccount"
+      >
         {{ id ? t('updateAccount') : t('createAccount') }}
       </v-btn>
     </template>
@@ -121,9 +123,7 @@ import { PropType } from 'vue';
 import { mdiAccountOutline, mdiEmailOutline } from '@mdi/js';
 import { cloneDeep, pick, trim } from 'lodash';
 
-import accountQueryDefinitions, {
-  IVeoAccount
-} from '~/composables/api/queryDefinitions/accounts';
+import accountQueryDefinitions, { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -191,19 +191,15 @@ export default defineComponent({
     }>({});
 
     const usernameIsDuplicateRule = (v: any) =>
-      !props.existingAccounts.find(
-        (account) => account.username === trim(v) && account.id !== props.id
-      ) || t('usernameAlreadyTaken').toString();
+      !props.existingAccounts.find((account) => account.username === trim(v) && account.id !== props.id) ||
+      t('usernameAlreadyTaken').toString();
     const mailAddressIsDuplicateRule = (v: any) =>
-      !props.existingAccounts.find(
-        (account) => account.emailAddress === trim(v) && account.id !== props.id
-      ) || t('emailAddressAlreadyTaken').toString();
+      !props.existingAccounts.find((account) => account.emailAddress === trim(v) && account.id !== props.id) ||
+      t('emailAddressAlreadyTaken').toString();
     const mailRegexRule = (v: string) =>
-      (typeof v === 'string' &&
-        /^\w+([+.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v)) ||
+      (typeof v === 'string' && /^\w+([+.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v)) ||
       t('emailAddressWrongFormat').toString();
-    const requiredRule = (v: any) =>
-      (!!v && !!trim(v).length) || t('global.input.required').toString();
+    const requiredRule = (v: any) => (!!v && !!trim(v).length) || t('global.input.required').toString();
 
     const availableGroups = ref([
       {
@@ -217,15 +213,7 @@ export default defineComponent({
       () => props,
       (newValue) => {
         formData.value = cloneDeep(
-          pick(
-            newValue,
-            'username',
-            'emailAddress',
-            'firstName',
-            'lastName',
-            'enabled',
-            'groups'
-          )
+          pick(newValue, 'username', 'emailAddress', 'firstName', 'lastName', 'enabled', 'groups')
         );
       },
       { deep: true, immediate: true }
@@ -256,15 +244,10 @@ export default defineComponent({
       accountQueryDefinitions.mutations.updateAccount
     );
 
-    const isLoading = computed(
-      () => isLoadingCreate.value || isLoadingUpdate.value
-    );
+    const isLoading = computed(() => isLoadingCreate.value || isLoadingUpdate.value);
 
     const createOrUpdateAccount = async () => {
-      if (
-        formIsValid.value === false ||
-        ability.value.cannot('manage', 'accounts')
-      ) {
+      if (formIsValid.value === false || ability.value.cannot('manage', 'accounts')) {
         return;
       }
 
@@ -284,20 +267,11 @@ export default defineComponent({
         } else {
           await create(createMutationParameters);
         }
-        displaySuccessMessage(
-          t(
-            props.id ? 'updatingAccountSuccess' : 'creatingAccountSuccess'
-          ).toString()
-        );
+        displaySuccessMessage(t(props.id ? 'updatingAccountSuccess' : 'creatingAccountSuccess').toString());
         emit('success');
         emit('update:model-value', false);
       } catch (error: any) {
-        displayErrorMessage(
-          t(
-            props.id ? 'updatingAccountFailed' : 'creatingAccountFailed'
-          ).toString(),
-          error.message
-        );
+        displayErrorMessage(t(props.id ? 'updatingAccountFailed' : 'creatingAccountFailed').toString(), error.message);
       }
     };
 

@@ -21,17 +21,11 @@ import { last } from 'lodash';
 export const useVeoErrorFormatter = () => {
   const { t } = useI18n();
 
-  const formatErrors = (
-    errors: ErrorObject[],
-    translations: Record<string, any>
-  ) => {
+  const formatErrors = (errors: ErrorObject[], translations: Record<string, any>) => {
     const formattedErrors = new Map<string, string[]>();
 
     for (const error of errors) {
-      const [objectSchemaPointer, errorMessage] = formatError(
-        error,
-        translations
-      );
+      const [objectSchemaPointer, errorMessage] = formatError(error, translations);
 
       const previousValue = formattedErrors.get(objectSchemaPointer) || [];
       previousValue.push(errorMessage);
@@ -41,13 +35,8 @@ export const useVeoErrorFormatter = () => {
     return formattedErrors;
   };
 
-  const formatError = (
-    error: ErrorObject,
-    translations: Record<string, any>
-  ) => {
-    const isRequiredRule = error.schemaPath.match(
-      /((.+\/properties\/(\w-)+\b)|(.+(?=\/required)))/g
-    );
+  const formatError = (error: ErrorObject, translations: Record<string, any>) => {
+    const isRequiredRule = error.schemaPath.match(/((.+\/properties\/(\w-)+\b)|(.+(?=\/required)))/g);
     const isEqualRule = !!error.params.allowedValues;
     const isAdditionalPropertiesRule = error.keyword === 'additionalProperties';
     const isPatternRule = error.keyword === 'pattern';
@@ -55,14 +44,9 @@ export const useVeoErrorFormatter = () => {
     const isTypeRule = error.keyword === 'type';
 
     if (
-      ![
-        !!isRequiredRule,
-        isEqualRule,
-        isAdditionalPropertiesRule,
-        isPatternRule,
-        isFormatRule,
-        isTypeRule
-      ].some((rule) => rule)
+      ![!!isRequiredRule, isEqualRule, isAdditionalPropertiesRule, isPatternRule, isFormatRule, isTypeRule].some(
+        (rule) => rule
+      )
     ) {
       throw new Error(`No error formatter found for ${JSON.stringify(error)}`);
     }
@@ -72,10 +56,7 @@ export const useVeoErrorFormatter = () => {
     let affectedProperty;
     if (isRequiredRule) {
       indexMatch = error.instancePath.match(/(\/\d+$)|(\/\d+\/)/);
-      objectSchemaPointer =
-        indexMatch ?
-          isRequiredRule[0].replace('/items/', indexMatch[0])
-        : isRequiredRule[0];
+      objectSchemaPointer = indexMatch ? isRequiredRule[0].replace('/items/', indexMatch[0]) : isRequiredRule[0];
     }
     if (isEqualRule || isAdditionalPropertiesRule) {
       const paths = error.schemaPath.split('/');
@@ -92,10 +73,7 @@ export const useVeoErrorFormatter = () => {
       // Check for link elements
       const pointerIndexMatch = error.instancePath.match(/(\/\d+$)|(\/\d+\/)/);
       if (pointerIndexMatch) {
-        objectSchemaPointer = objectSchemaPointer.replace(
-          '/items/',
-          pointerIndexMatch[0]
-        );
+        objectSchemaPointer = objectSchemaPointer.replace('/items/', pointerIndexMatch[0]);
       }
     }
 
@@ -104,8 +82,7 @@ export const useVeoErrorFormatter = () => {
     switch (error.keyword) {
       case 'required':
         // eslint-disable-next-line no-case-declarations
-        affectedProperty = (error.params as Record<string, any>)
-          .missingProperty;
+        affectedProperty = (error.params as Record<string, any>).missingProperty;
         objectSchemaPointer = `${(isRequiredRule as RegExpMatchArray)[0]}${
           indexMatch ? indexMatch[0] : ''
         }/properties/${affectedProperty}`;
@@ -123,10 +100,7 @@ export const useVeoErrorFormatter = () => {
       case 'type':
       case 'pattern':
         translatedErrorString = t('error.format', {
-          field: getInvalidFieldLabel(
-            error.instancePath.split('/').pop() || error.instancePath,
-            translations
-          ),
+          field: getInvalidFieldLabel(error.instancePath.split('/').pop() || error.instancePath, translations),
           format: error.params[error.keyword]
         }).toString();
         break;
@@ -144,10 +118,7 @@ export const useVeoErrorFormatter = () => {
     return [objectSchemaPointer, translatedErrorString];
   };
 
-  const handleRequiredLink = (
-    error: ErrorObject,
-    translations: Record<string, any>
-  ): string => {
+  const handleRequiredLink = (error: ErrorObject, translations: Record<string, any>): string => {
     const dataPathParts = error.instancePath.split('/');
     const missingProperty = error.params.missingProperty;
     let index: number | undefined;
@@ -160,18 +131,12 @@ export const useVeoErrorFormatter = () => {
 
     const position = index ? `${index + 1}.` : '';
     return t(`error.${error.keyword}_link`, {
-      field: getInvalidFieldLabel(
-        dataPathParts.pop() || missingProperty,
-        translations
-      ),
+      field: getInvalidFieldLabel(dataPathParts.pop() || missingProperty, translations),
       position
     }).toString();
   };
 
-  const getInvalidFieldLabel = (
-    field: string,
-    translations: Record<string, any>
-  ): string => {
+  const getInvalidFieldLabel = (field: string, translations: Record<string, any>): string => {
     return translations[field] || field;
   };
 

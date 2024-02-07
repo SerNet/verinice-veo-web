@@ -20,17 +20,10 @@
     <h2 class="text-h2 px-4 pt-1">
       {{ t('messages') }}
     </h2>
-    <div
-      v-for="(messagesBySeverity, severity) of categorizedMessages"
-      :key="severity">
-      <span class="font-weight-medium text-body-1 px-4">
-        Information ({{ messagesBySeverity.length }})
-      </span>
+    <div v-for="(messagesBySeverity, severity) of categorizedMessages" :key="severity">
+      <span class="font-weight-medium text-body-1 px-4"> Information ({{ messagesBySeverity.length }}) </span>
       <v-list>
-        <ObjectMessagesMessage
-          v-for="message of messagesBySeverity"
-          :key="message.key"
-          :message="message" />
+        <ObjectMessagesMessage v-for="message of messagesBySeverity" :key="message.key" :message="message" />
       </v-list>
     </div>
   </div>
@@ -80,9 +73,7 @@ watch(
   () => props.messages,
   (newMessages, oldMessages) => {
     for (const newMessage of newMessages) {
-      if (
-        !oldMessages.some((oldMessage) => oldMessage.key === newMessage.key)
-      ) {
+      if (!oldMessages.some((oldMessage) => oldMessage.key === newMessage.key)) {
         displayInfoMessage(t('info', 1), newMessage.text, {
           timeout: 5000
         });

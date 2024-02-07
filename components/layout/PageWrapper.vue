@@ -133,8 +133,7 @@ const onPageCountChange = () => {
       // Only make the page on the very left and very right collapsable if passed by prop, all other pages aren't collapsable
       collapsablePages.value = Array(_currentPagesCount).fill(false);
       collapsablePages.value[0] = props.collapsableLeft;
-      collapsablePages.value[collapsablePages.value.length - 1] =
-        props.collapsableRight;
+      collapsablePages.value[collapsablePages.value.length - 1] = props.collapsableRight;
 
       // Expand all pages (resets the state even if previous pages have been collapsed)
       pagesCollapsedStates.value = Array(_currentPagesCount).fill(false);
@@ -151,14 +150,12 @@ watch(() => props.collapsableRight, onPageCountChange);
 /**
  * Helper function to find out whether the previous page is collapsed
  */
-const previousPageIsCollapsed = (index: number) =>
-  index > 0 && pagesCollapsedStates.value[index - 1];
+const previousPageIsCollapsed = (index: number) => index > 0 && pagesCollapsedStates.value[index - 1];
 /**
  * Helper function to find out whether the next page is collapsed
  */
 const nextPageIsCollapsed = (index: number) =>
-  index < collapsablePages.value.length - 1 &&
-  pagesCollapsedStates.value[index + 1];
+  index < collapsablePages.value.length - 1 && pagesCollapsedStates.value[index + 1];
 
 /**
  * Called when the user presses any key. The function only does stuff if Alt+(0-9) is pressed.
@@ -187,10 +184,7 @@ const onKeyPress = (event: KeyboardEvent) => {
             togglePage(0);
           }
         }
-      } else if (
-        digit <= currentPageCount.value &&
-        collapsablePages.value[digit - 1]
-      ) {
+      } else if (digit <= currentPageCount.value && collapsablePages.value[digit - 1]) {
         togglePage(digit - 1);
       }
     }
@@ -201,9 +195,7 @@ const onKeyPress = (event: KeyboardEvent) => {
  *
  * @param index The index of the page to look for values for
  */
-const localPageWidth = (
-  index: number
-): { classes: string[]; styles: Record<string, any> } => {
+const localPageWidth = (index: number): { classes: string[]; styles: Record<string, any> } => {
   const classes = [];
   let styles = {};
 
@@ -252,11 +244,7 @@ const localPageWidth = (
 
   if (classes.length === 0) {
     classes.push(
-      `v-col-${Math.floor(
-        12 /
-          (currentPageCount.value -
-            pagesCollapsedStates.value.filter((page) => page).length)
-      )}`
+      `v-col-${Math.floor(12 / (currentPageCount.value - pagesCollapsedStates.value.filter((page) => page).length))}`
     );
   }
 
@@ -322,16 +310,14 @@ const render = () =>
                 {
                   style: {
                     position: 'relative',
-                    display:
-                      pagesCollapsedStates.value[index] ? 'none' : 'flex',
+                    display: pagesCollapsedStates.value[index] ? 'none' : 'flex',
                     ...styles
                   },
                   class: ['flex-row', classes, 'pa-0']
                 },
                 [
                   ...((
-                    (index === collapsablePages.value.length - 1 &&
-                      collapsablePages.value[index]) ||
+                    (index === collapsablePages.value.length - 1 && collapsablePages.value[index]) ||
                     previousPageIsCollapsed(index)
                   ) ?
                     [
@@ -346,43 +332,25 @@ const render = () =>
                             modelValue: previousPageIsCollapsed(index),
                             right: false,
                             elementName:
-                              previousPageIsCollapsed(index) ?
-                                props.pageTitles[index - 1]
-                              : props.pageTitles[index],
-                            index:
-                              previousPageIsCollapsed(index) ?
-                                index - 1
-                              : index,
-                            'onUpdate:modelValue': () =>
-                              togglePage(
-                                previousPageIsCollapsed(index) ?
-                                  index - 1
-                                : index
-                              )
+                              previousPageIsCollapsed(index) ? props.pageTitles[index - 1] : props.pageTitles[index],
+                            index: previousPageIsCollapsed(index) ? index - 1 : index,
+                            'onUpdate:modelValue': () => togglePage(previousPageIsCollapsed(index) ? index - 1 : index)
                           })
                         ]
                       )
                     ]
                   : []),
                   h(slotItem),
-                  ...((
-                    (index === 0 && collapsablePages.value[index]) ||
-                    nextPageIsCollapsed(index)
-                  ) ?
+                  ...((index === 0 && collapsablePages.value[index]) || nextPageIsCollapsed(index) ?
                     [
                       h('div', { style: 'width: 16px', class: 'fill-height' }, [
                         h(LayoutCollapseButton, {
                           modelValue: nextPageIsCollapsed(index),
                           right: true,
                           elementName:
-                            nextPageIsCollapsed(index) ?
-                              props.pageTitles[index + 1]
-                            : props.pageTitles[index],
+                            nextPageIsCollapsed(index) ? props.pageTitles[index + 1] : props.pageTitles[index],
                           index: nextPageIsCollapsed(index) ? index + 1 : index,
-                          'onUpdate:modelValue': () =>
-                            togglePage(
-                              nextPageIsCollapsed(index) ? index + 1 : index
-                            )
+                          'onUpdate:modelValue': () => togglePage(nextPageIsCollapsed(index) ? index + 1 : index)
                         })
                       ])
                     ]

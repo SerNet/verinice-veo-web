@@ -16,11 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div
-    v-if="options.visible"
-    :id="formSchemaPointer"
-    class="vf-label"
-    :class="options && options.class">
+  <div v-if="options.visible" :id="formSchemaPointer" class="vf-label" :class="options && options.class">
     {{ options.label }}
   </div>
 </template>

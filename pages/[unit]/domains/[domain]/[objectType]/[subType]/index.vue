@@ -25,7 +25,8 @@
         :domain-id="domainId"
         :filter="filter"
         :required-fields="['objectType']"
-        @update:filter="updateRoute" />
+        @update:filter="updateRoute"
+      />
       <BaseCard v-if="filter.objectType || endpointsLoading">
         <ObjectTable
           v-model:page="page"
@@ -46,20 +47,20 @@
           :additional-headers="additionalHeaders"
           data-component-name="object-overview-table"
           enable-click
-          @click="openItem">
+          @click="openItem"
+        >
           <template #actions="{ item }">
             <div class="d-flex justify-end">
               <v-tooltip v-for="btn in actions" :key="btn.id" location="start">
                 <template #activator="{ props }">
                   <v-btn
                     :data-component-name="`object-overview-${btn.id}-button`"
-                    :disabled="
-                      ability.cannot('manage', 'objects') || btn.disabled
-                    "
+                    :disabled="ability.cannot('manage', 'objects') || btn.disabled"
                     :icon="btn.icon"
                     v-bind="props"
                     variant="text"
-                    @click="btn.action(item)" />
+                    @click="btn.action(item)"
+                  />
                 </template>
                 {{ btn.label }}
               </v-tooltip>
@@ -71,17 +72,17 @@
         <ObjectDeleteDialog
           :model-value="!!itemToDelete"
           :item="itemToDelete"
-          @update:model-value="
-            onCloseDeleteDialog({ isOpen: false, isCancel: true })
-          "
+          @update:model-value="onCloseDeleteDialog({ isOpen: false, isCancel: true })"
           @success="onCloseDeleteDialog({ isOpen: false })"
-          @error="showError('delete', itemToDelete, $event)" />
+          @error="showError('delete', itemToDelete, $event)"
+        />
 
         <ObjectAssignDialog
           :model-value="objectAssignDialogVisible"
           :object-id="objectId"
           :object-type="objectType"
-          @update:model-value="objectAssignDialogVisible = false" />
+          @update:model-value="objectAssignDialogVisible = false"
+        />
       </BaseCard>
       <ObjectTypeError v-else>
         <v-btn color="primary" variant="text" @click="onOpenFilterDialog">
@@ -95,7 +96,8 @@
         v-model="createObjectDialogVisible"
         :domain-id="domainId"
         :object-type="filter.objectType"
-        :sub-type="filter.subType" />
+        :sub-type="filter.subType"
+      />
       <v-tooltip v-if="filter.objectType" location="start">
         <template #activator="{ props }">
           <v-btn
@@ -107,7 +109,8 @@
             data-component-name="create-object-button"
             v-bind="props"
             size="large"
-            @click="createObjectDialogVisible = true" />
+            @click="createObjectDialogVisible = true"
+          />
           <div style="height: 76px" />
         </template>
         <template #default>
@@ -123,12 +126,7 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
 </script>
 
 <script setup lang="ts">
-import {
-  mdiContentCopy,
-  mdiDotsVertical,
-  mdiPlus,
-  mdiTrashCanOutline
-} from '@mdi/js';
+import { mdiContentCopy, mdiDotsVertical, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
 import { useFetchUnitDomains } from '~/composables/api/domains';
 
@@ -139,9 +137,7 @@ import { useCloneObject } from '~/composables/VeoObjectUtilities';
 import { ObjectTableHeader } from '~/components/object/Table.vue';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import formQueryDefinitions, {
-  IVeoFormSchemaMeta
-} from '~/composables/api/queryDefinitions/forms';
+import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~/composables/api/utils/query';
@@ -270,9 +266,7 @@ const filter = computed(() => {
 
       // Special handling
       if (filterKey === 'objectType') {
-        filterValue = Object.entries(endpoints.value || {}).find(
-          ([_, endpoint]) => endpoint === filterValue
-        )?.[0];
+        filterValue = Object.entries(endpoints.value || {}).find(([_, endpoint]) => endpoint === filterValue)?.[0];
       }
 
       return [filterKey, filterValue];
@@ -299,32 +293,25 @@ const combinedQueryParameters = computed<any>(() => ({
   ...omit(filter.value, 'objectType'),
   endpoint: endpoints.value?.[filter.value.objectType as string]
 }));
-const queryEnabled = computed(
-  () => !!endpoints.value?.[filter.value.objectType as string]
-);
-const { data: items, isLoading: isLoadingObjects } = useFetchObjects(
-  combinedQueryParameters,
-  { enabled: queryEnabled, keepPreviousData: true }
-);
+const queryEnabled = computed(() => !!endpoints.value?.[filter.value.objectType as string]);
+const { data: items, isLoading: isLoadingObjects } = useFetchObjects(combinedQueryParameters, {
+  enabled: queryEnabled,
+  keepPreviousData: true
+});
 
 const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
 const formsQueryEnabled = computed(() => !!domainId.value);
-const { data: formSchemas } = useQuery(
-  formQueryDefinitions.queries.fetchForms,
-  formsQueryParameters,
-  { enabled: formsQueryEnabled, placeholderData: [] }
-);
+const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, {
+  enabled: formsQueryEnabled,
+  placeholderData: []
+});
 
-const isLoading = computed(
-  () => isLoadingObjects.value || translationsLoading.value
-);
+const isLoading = computed(() => isLoadingObjects.value || translationsLoading.value);
 
 watch(() => filter.value, resetQueryOptions, { deep: true });
 
 // Update query parameters but keep other route options
-const updateRoute = async (
-  newValue: Record<string, string | undefined | null | true>
-) => {
+const updateRoute = async (newValue: Record<string, string | undefined | null | true>) => {
   const routeDetails = {
     name: ROUTE_NAME,
     query: {} as Record<string, string>,
@@ -336,10 +323,7 @@ const updateRoute = async (
       filterValue = endpoints.value?.[filterValue as string];
     }
 
-    if (
-      filterValue === undefined &&
-      filterDefinitions[filterKey].nullValue !== undefined
-    ) {
+    if (filterValue === undefined && filterDefinitions[filterKey].nullValue !== undefined) {
       if (filterDefinitions[filterKey].source === FILTER_SOURCE.PARAMS) {
         routeDetails.params[filterKey] = filterDefinitions[filterKey].nullValue;
       } else {
@@ -360,15 +344,13 @@ const formatObjectLabel = (label: string, value?: string) => {
   switch (label) {
     // translated object type
     case 'objectType':
-      return value ?
-          translations.value?.lang[locale.value]?.[value]
-        : undefined;
+      return value ? translations.value?.lang[locale.value]?.[value] : undefined;
     // translated sub type
     case 'subType':
       return (
-        (formSchemas.value as IVeoFormSchemaMeta[]).find(
-          (formschema) => formschema.subType === value
-        )?.name?.[locale.value] || value
+        (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === value)?.name?.[
+          locale.value
+        ] || value
       );
   }
 };
@@ -379,11 +361,7 @@ const createObjectLabel = computed(() =>
   : formatObjectLabel('objectType', filter.value.objectType)
 );
 
-const showError = (
-  messageKey: 'clone' | 'delete',
-  _item: IVeoEntity | undefined,
-  error: Error
-) => {
+const showError = (messageKey: 'clone' | 'delete', _item: IVeoEntity | undefined, error: Error) => {
   displayErrorMessage(t(`errors.${messageKey}`).toString(), error?.toString());
 };
 
@@ -408,13 +386,7 @@ const createObjectDialogVisible = ref(false);
 const itemToDelete = ref<IVeoEntity>();
 const resetItemToDelete = () => (itemToDelete.value = undefined);
 
-const onCloseDeleteDialog = ({
-  isOpen,
-  isCancel = false
-}: {
-  isOpen: boolean;
-  isCancel?: boolean;
-}) => {
+const onCloseDeleteDialog = ({ isOpen, isCancel = false }: { isOpen: boolean; isCancel?: boolean }) => {
   if (!isOpen && isCancel) {
     return resetItemToDelete();
   }
@@ -481,10 +453,7 @@ const actions = computed(() => [
 
 // Additional headers (only if user is viewing processes with subtype PRO_DataProcessing)
 const additionalHeaders = computed<ObjectTableHeader[]>(() =>
-  (
-    filter.value.objectType === 'process' &&
-    filter.value.subType === 'PRO_DataProcessing'
-  ) ?
+  filter.value.objectType === 'process' && filter.value.subType === 'PRO_DataProcessing' ?
     [
       {
         priority: 31,

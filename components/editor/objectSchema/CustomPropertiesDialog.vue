@@ -23,7 +23,8 @@
     :confirm-close="isFormDirty"
     fixed-footer
     v-bind="$attrs"
-    @update:model-value="$emit('update:model-value', $event)">
+    @update:model-value="$emit('update:model-value', $event)"
+  >
     <template #default>
       <v-form ref="formRef" v-model="form.valid" @submit.prevent="onSubmit">
         <h3 class="text-h3">
@@ -39,7 +40,8 @@
                   required
                   :rules="form.rules.title"
                   :prefix="prefix"
-                  variant="underlined" />
+                  variant="underlined"
+                />
               </v-col>
               <v-col v-if="type === 'link'" cols="12" md="6">
                 <v-text-field
@@ -47,7 +49,8 @@
                   :label="`${t('linkName')} *`"
                   required
                   :rules="[requiredRule]"
-                  variant="underlined" />
+                  variant="underlined"
+                />
               </v-col>
             </v-row>
             <v-row v-if="type === 'link'">
@@ -58,26 +61,24 @@
                   :items="formattedObjectTypes"
                   required
                   :rules="form.rules.targetType"
-                  variant="underlined" />
+                  variant="underlined"
+                />
               </v-col>
               <v-col cols="4" class="py-0">
                 <v-select
                   v-model="form.data.subType"
-                  :disabled="
-                    !form.data.targetType || form.data.targetType === ''
-                  "
+                  :disabled="!form.data.targetType || form.data.targetType === ''"
                   :label="`${t('linkSubType')}`"
                   :items="filteredFormSchemas"
-                  variant="underlined" />
+                  variant="underlined"
+                />
               </v-col>
             </v-row>
           </v-card-text>
         </BaseCard>
         <template v-if="dialogMode === 'edit'">
           <h3 class="text-h3 mt-6">
-            {{ upperFirst(t('attributes').toString()) }} ({{
-              form.data.attributes.length
-            }})
+            {{ upperFirst(t('attributes').toString()) }} ({{ form.data.attributes.length }})
           </h3>
           <EditorObjectSchemaCustomAspectAttribute
             v-for="(attribute, index) of form.data.attributes"
@@ -85,18 +86,12 @@
             v-bind="attribute"
             :aspect-name="aspectPrefix"
             @delete="removeAttribute(index)"
-            @update="updateAttribute($event, index)" />
-          <p
-            v-if="form.data.attributes.length === 0"
-            class="text-body-1 font-italic">
+            @update="updateAttribute($event, index)"
+          />
+          <p v-if="form.data.attributes.length === 0" class="text-body-1 font-italic">
             {{ t(`noProperties.${type}`) }}
           </p>
-          <v-alert
-            v-if="duplicates.length > 0"
-            type="error"
-            class="mb-4 mt-6"
-            start
-            colored-border>
+          <v-alert v-if="duplicates.length > 0" type="error" class="mb-4 mt-6" start colored-border>
             <span>{{ t('duplicateAttributes') }}:</span>
             <ul>
               <li v-for="duplicate of duplicates" :key="duplicate">
@@ -124,19 +119,14 @@
         <v-btn
           text
           color="primary"
-          :disabled="
-            form.valid === false || duplicates.length > 0 || !isFormDirty
-          "
-          @click="saveProperty()">
+          :disabled="form.valid === false || duplicates.length > 0 || !isFormDirty"
+          @click="saveProperty()"
+        >
           {{ $t('global.button.save') }}
         </v-btn>
       </template>
       <template v-else>
-        <v-btn
-          text
-          color="primary"
-          :disabled="!form.valid"
-          @click="dialogMode = 'edit'">
+        <v-btn text color="primary" :disabled="!form.valid" @click="dialogMode = 'edit'">
           {{ $t('global.button.next') }}
         </v-btn>
       </template>
@@ -190,8 +180,7 @@ export default {
     const { t, locale } = useI18n();
     const { banSpecialChars, requiredRule } = useRules();
 
-    const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined =
-      inject('objectSchemaHelper');
+    const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined = inject('objectSchemaHelper');
     const displayLanguage = inject<Ref<string>>('displayLanguage', locale);
 
     const form = reactive({
@@ -205,16 +194,9 @@ export default {
         translatedTitle: undefined
       } as IVeoOSHCustomLink & { translatedTitle: string | undefined },
       rules: {
-        title: [
-          (input: string) => banSpecialChars(input),
-          (input: string) => requiredRule(input)
-        ],
-        description: [
-          (input: string) => props.type === 'aspect' || trim(input).length > 0
-        ],
-        targetType: [
-          (input: string) => props.type === 'aspect' || trim(input).length > 0
-        ]
+        title: [(input: string) => banSpecialChars(input), (input: string) => requiredRule(input)],
+        description: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
+        targetType: [(input: string) => props.type === 'aspect' || trim(input).length > 0]
       } as { [key: string]: ((input: string) => boolean)[] }
     });
     const pristineForm = ref(cloneDeep(form));
@@ -255,10 +237,7 @@ export default {
       duplicates: [] as string[],
       dialogMode: 'create' as 'create' | 'edit',
       // Not computed, as changing the aspect/link title would make this undefined -> we want more control
-      editedProperty: undefined as
-        | undefined
-        | IVeoOSHCustomAspect
-        | IVeoOSHCustomLink,
+      editedProperty: undefined as undefined | IVeoOSHCustomAspect | IVeoOSHCustomLink,
       mdiPlus
     };
   },
@@ -273,11 +252,7 @@ export default {
       }
     },
     prefix(): string {
-      return (
-        this.editedProperty?.prefix ||
-        `${this.objectSchemaHelper?.getTitle()}_` ||
-        ''
-      );
+      return this.editedProperty?.prefix || `${this.objectSchemaHelper?.getTitle()}_` || '';
     },
     aspectPrefix(): string {
       return `${this.prefix}${this.form.data.title}`;
@@ -291,17 +266,12 @@ export default {
     filteredFormSchemas(): { title: string; value: string }[] {
       let schemas = this.formSchemas;
       if (this.form.data.targetType && this.form.data.targetType !== '') {
-        schemas = schemas.filter(
-          (schema: IVeoFormSchemaMeta) =>
-            schema.modelType === this.form.data.targetType
-        );
+        schemas = schemas.filter((schema: IVeoFormSchemaMeta) => schema.modelType === this.form.data.targetType);
       }
 
       const schemasWithSubTypFormatted = schemas
         .map((schema: IVeoFormSchemaMeta) => ({
-          title:
-            schema.name[this.displayLanguage] ||
-            `Missing translation for ${this.displayLanguage.toUpperCase()}`,
+          title: schema.name[this.displayLanguage] || `Missing translation for ${this.displayLanguage.toUpperCase()}`,
           value: schema.subType
         }))
         .filter((schema) => schema.value !== null) as {
@@ -359,8 +329,7 @@ export default {
             ) || '';
 
           // Set the originalId property to later differentiate between new, deleted and renamed attributes
-          this.form.data.attributes[attributeIndex].originalId =
-            this.form.data.attributes[attributeIndex].title;
+          this.form.data.attributes[attributeIndex].originalId = this.form.data.attributes[attributeIndex].title;
         }
         this.pristineForm = cloneDeep(this.form);
       } else {
@@ -390,9 +359,7 @@ export default {
             this.objectSchemaHelper?.addCustomAspect(this.form.data.title);
 
             // Set the prefix so that it won't be overwritten with undefined in the following updateCustomAspect
-            const aspect = this.objectSchemaHelper?.getCustomAspect(
-              this.form.data.title
-            );
+            const aspect = this.objectSchemaHelper?.getCustomAspect(this.form.data.title);
             this.form.data.prefix = aspect?.prefix;
           } else if (this.type === 'link') {
             this.objectSchemaHelper?.addCustomLink(
@@ -402,24 +369,15 @@ export default {
             );
 
             // Set the prefix so that it won't be overwritten with undefined in the following updateCustomLink
-            const link = this.objectSchemaHelper?.getCustomLink(
-              this.form.data.title
-            );
+            const link = this.objectSchemaHelper?.getCustomLink(this.form.data.title);
             this.form.data.prefix = link?.prefix;
 
             const translation = `${this.form.data.prefix}${this.form.data.title}`;
-            this.objectSchemaHelper?.addTranslation(
-              translation,
-              this.form.data.translatedTitle,
-              this.displayLanguage
-            );
+            this.objectSchemaHelper?.addTranslation(translation, this.form.data.translatedTitle, this.displayLanguage);
           }
         } else if (this.type === 'aspect') {
           if (this.editedProperty.title !== this.form.data.title) {
-            this.objectSchemaHelper?.renameCustomAspect(
-              this.editedProperty.title,
-              this.form.data.title
-            );
+            this.objectSchemaHelper?.renameCustomAspect(this.editedProperty.title, this.form.data.title);
             this.objectSchemaHelper?.changeTranslationKey(
               `${this.editedProperty.prefix}${this.editedProperty.title}`,
               `${this.editedProperty.prefix}${this.form.data.title}`
@@ -427,10 +385,7 @@ export default {
           }
         } else {
           if (this.editedProperty.title !== this.form.data.title) {
-            this.objectSchemaHelper?.renameCustomLink(
-              this.editedProperty.title,
-              this.form.data.title
-            );
+            this.objectSchemaHelper?.renameCustomLink(this.editedProperty.title, this.form.data.title);
             this.objectSchemaHelper?.changeTranslationKey(
               `${this.editedProperty.prefix}${this.editedProperty.title}`,
               `${this.editedProperty.prefix}${this.form.data.title}`
@@ -459,15 +414,9 @@ export default {
         }
 
         if (this.type === 'aspect') {
-          this.objectSchemaHelper?.updateCustomAspect(
-            this.form.data.title,
-            toSave
-          );
+          this.objectSchemaHelper?.updateCustomAspect(this.form.data.title, toSave);
         } else {
-          this.objectSchemaHelper?.updateCustomLink(
-            this.form.data.title,
-            toSave
-          );
+          this.objectSchemaHelper?.updateCustomLink(this.form.data.title, toSave);
         }
 
         // Update translations
@@ -475,10 +424,7 @@ export default {
 
         for (const attribute of this.form.data.attributes) {
           // Update translation key if attribute title changed across all languages
-          if (
-            attribute.originalId &&
-            attribute.originalId !== attribute.title
-          ) {
+          if (attribute.originalId && attribute.originalId !== attribute.title) {
             this.objectSchemaHelper?.changeTranslationKey(
               `${attributePrefix}${attribute.originalId}`,
               `${attributePrefix}${attribute.title}`
@@ -494,21 +440,14 @@ export default {
             );
           } else {
             // If no description is set, remove it if it exists (fail silent if not found)
-            this.objectSchemaHelper?.removeTranslation(
-              `${attributePrefix}${attribute.title}`,
-              this.displayLanguage
-            );
+            this.objectSchemaHelper?.removeTranslation(`${attributePrefix}${attribute.title}`, this.displayLanguage);
           }
 
           // Add a key for each enum entry
           if (attribute.type === 'enum' && attribute.enum) {
             for (const option of attribute.enum) {
               const translation = `${attributePrefix}${attribute.title}_${option}`;
-              this.objectSchemaHelper?.addTranslation(
-                translation,
-                translation,
-                this.displayLanguage
-              );
+              this.objectSchemaHelper?.addTranslation(translation, translation, this.displayLanguage);
             }
           }
         }
@@ -516,30 +455,18 @@ export default {
         // Remove language keys not present in the updated attribute lists
         if (this.editedProperty) {
           for (const attribute of this.editedProperty?.attributes || []) {
-            if (
-              !this.form.data.attributes.find(
-                (attribute2) => attribute2.originalId === attribute.title
-              )
-            ) {
-              this.objectSchemaHelper?.removeTranslation(
-                `${attribute.prefix}${attribute.title}`
-              );
+            if (!this.form.data.attributes.find((attribute2) => attribute2.originalId === attribute.title)) {
+              this.objectSchemaHelper?.removeTranslation(`${attribute.prefix}${attribute.title}`);
             }
 
             // check for removed enum items to remove their translations
             if (attribute.type === 'enum') {
               const pastEnumItems = attribute.enum || [];
               const nowEnumItems =
-                this.form.data.attributes.find(
-                  (attribute2) => attribute2.originalId === attribute.title
-                )?.enum || [];
-              const removedEnumItems = pastEnumItems.filter(
-                (x) => !nowEnumItems.includes(x)
-              );
+                this.form.data.attributes.find((attribute2) => attribute2.originalId === attribute.title)?.enum || [];
+              const removedEnumItems = pastEnumItems.filter((x) => !nowEnumItems.includes(x));
               for (const removedEnumItem of removedEnumItems) {
-                this.objectSchemaHelper?.removeTranslation(
-                  `${attributePrefix}${attribute.title}_${removedEnumItem}`
-                );
+                this.objectSchemaHelper?.removeTranslation(`${attributePrefix}${attribute.title}_${removedEnumItem}`);
               }
             }
           }
@@ -571,8 +498,7 @@ export default {
       for (const attribute1 of this.form.data.attributes) {
         if (
           this.form.data.attributes.filter(
-            (attribute2: IVeoOSHCustomProperty) =>
-              attribute2.title.toLowerCase() === attribute1.title.toLowerCase()
+            (attribute2: IVeoOSHCustomProperty) => attribute2.title.toLowerCase() === attribute1.title.toLowerCase()
           ).length > 1
         ) {
           const duplicateTitle = attribute1.title.toLowerCase();

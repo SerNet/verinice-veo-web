@@ -16,16 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <LayoutPageWrapper
-    class="bg-basepage"
-    collapsable-right
-    :page-widths="pageWidths"
-    @page-collapsed="onPageCollapsed">
+  <LayoutPageWrapper class="bg-basepage" collapsable-right :page-widths="pageWidths" @page-collapsed="onPageCollapsed">
     <template #title>
-      <LayoutHeadline
-        class="ml-1 mb-2"
-        :title="globalT('editor.objectschema.headline')"
-        :element="title" />
+      <LayoutHeadline class="ml-1 mb-2" :title="globalT('editor.objectschema.headline')" :element="title" />
     </template>
 
     <template #default>
@@ -41,7 +34,8 @@
                   href="#"
                   class="text-decoration-none"
                   style="vertical-align: bottom"
-                  @click="downloadSchema()">
+                  @click="downloadSchema()"
+                >
                   <v-btn class="bg-accent" icon large variant="text">
                     <v-icon :icon="mdiDownload" />
                   </v-btn>
@@ -61,7 +55,8 @@
                   class="ml-2"
                   v-bind="props"
                   variant="text"
-                  @click="errorDialogVisible = !errorDialogVisible" />
+                  @click="errorDialogVisible = !errorDialogVisible"
+                />
               </template>
               <template #default>
                 {{ globalT('editor.schema.warnings') }}
@@ -75,7 +70,8 @@
                   class="translate-button bg-accent"
                   v-bind="props"
                   variant="text"
-                  @click="translationDialogVisible = true" />
+                  @click="translationDialogVisible = true"
+                />
               </template>
               <template #default>
                 {{ t('translations') }}
@@ -89,7 +85,8 @@
                   class="bg-accent"
                   v-bind="props"
                   variant="text"
-                  @click="detailsDialogVisible = !detailsDialogVisible" />
+                  @click="detailsDialogVisible = !detailsDialogVisible"
+                />
               </template>
               <template #default>
                 {{ globalT('editor.schema.properties') }}
@@ -104,7 +101,8 @@
                   :to="HELP_ROUTE"
                   class="help-button bg-accent"
                   variant="text"
-                  v-bind="props" />
+                  v-bind="props"
+                />
               </template>
               <template #default>
                 {{ t('help') }}
@@ -114,29 +112,22 @@
               <template #activator="{ props }">
                 <div v-bind="props">
                   <v-btn
-                    :disabled="
-                      !schemaIsValid.valid ||
-                      ability.cannot('manage', 'editors')
-                    "
+                    :disabled="!schemaIsValid.valid || ability.cannot('manage', 'editors')"
                     :icon="mdiContentSave"
                     large
                     class="bg-accent"
                     variant="text"
-                    @click="saveSchema" />
+                    @click="saveSchema"
+                  />
                 </div>
               </template>
               <template #default>
-                <span v-if="ability.can('manage', 'editors')">{{
-                  upperFirst(t('save').toString())
-                }}</span>
+                <span v-if="ability.can('manage', 'editors')">{{ upperFirst(t('save').toString()) }}</span>
                 <span v-else>{{ t('saveContentCreator') }}</span>
               </template>
             </v-tooltip>
           </div>
-          <v-row
-            v-if="schemaIsValid.valid"
-            no-gutters
-            class="flex-column overflow-hidden fill-width bg-surface">
+          <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden fill-width bg-surface">
             <v-col>
               <v-row class="mx-2 mt-1">
                 <v-col cols="12" lg="6">
@@ -147,7 +138,8 @@
                     flat
                     :label="t('objectschema')"
                     variant="underlined"
-                    @update:model-value="updateSchemaName" />
+                    @update:model-value="updateSchemaName"
+                  />
                 </v-col>
                 <v-col cols="12" lg="6">
                   <v-text-field
@@ -156,15 +148,13 @@
                     hide-details
                     :label="t('description')"
                     variant="underlined"
-                    @update:model-value="updateDescription" />
+                    @update:model-value="updateDescription"
+                  />
                 </v-col>
               </v-row>
             </v-col>
           </v-row>
-          <v-row
-            v-if="schemaIsValid.valid"
-            no-gutters
-            class="flex-column overflow-hidden fill-width bg-surface">
+          <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden fill-width bg-surface">
             <v-col>
               <v-row class="ml-2 my-1">
                 <v-col cols="12" lg="6">
@@ -177,7 +167,8 @@
                     hide-details
                     :prepend-inner-icon="mdiMagnify"
                     :label="t('search')"
-                    variant="underlined" />
+                    variant="underlined"
+                  />
                 </v-col>
                 <v-col>
                   <v-checkbox
@@ -185,7 +176,8 @@
                     class="caption"
                     dense
                     hide-details
-                    :label="t('hideemptyaspects')" />
+                    :label="t('hideemptyaspects')"
+                  />
                 </v-col>
               </v-row>
             </v-col>
@@ -198,24 +190,17 @@
             :search="searchQuery"
             :hide-empty-aspects="hideEmptyAspects"
             :domain-id="$route.params.domain as string"
-            @schema-updated="updateCode" />
-          <v-row
-            v-else
-            class="fill-height flex-column text-center align-center px-8">
+            @schema-updated="updateCode"
+          />
+          <v-row v-else class="fill-height flex-column text-center align-center px-8">
             <v-col cols="auto" style="flex-grow: 0">
-              <v-icon
-                style="font-size: 8rem; opacity: 0.5"
-                color="primary"
-                :icon="mdiInformationOutline" />
+              <v-icon style="font-size: 8rem; opacity: 0.5" color="primary" :icon="mdiInformationOutline" />
             </v-col>
             <v-col cols="auto" class="text-left">
               <h3 class="text-h3">
                 {{ t('invalidObjectSchema') }}
               </h3>
-              <v-list-item
-                v-for="(error, index) of schemaIsValid.errors"
-                :key="`e_${index}`"
-                link>
+              <v-list-item v-for="(error, index) of schemaIsValid.errors" :key="`e_${index}`" link>
                 <v-list-item-title>{{ error.code }}</v-list-item-title>
                 <v-list-item-subtitle>{{ error.message }}</v-list-item-subtitle>
               </v-list-item>
@@ -224,30 +209,25 @@
           </v-row>
         </template>
       </BasePage>
-      <BasePage
-        v-if="objectSchemaHelper && !xs"
-        height="100%"
-        content-class="ose__code-editor">
+      <BasePage v-if="objectSchemaHelper && !xs" height="100%" content-class="ose__code-editor">
         <EditorSchemaCodeEditor v-model="code" @schema-updated="updateSchema" />
       </BasePage>
     </template>
     <template #helpers>
-      <EditorObjectSchemaWizardDialog
-        v-model="creationDialogVisible"
-        @completed="setSchema" />
+      <EditorObjectSchemaWizardDialog v-model="creationDialogVisible" @completed="setSchema" />
       <EditorObjectSchemaDetailsDialog
         v-model="detailsDialogVisible"
         :domain-id="$route.params.domain as string"
-        @schema-updated="updateCode" />
-      <EditorErrorDialog
-        v-model="errorDialogVisible"
-        :validation="schemaIsValid" />
+        @schema-updated="updateCode"
+      />
+      <EditorErrorDialog v-model="errorDialogVisible" :validation="schemaIsValid" />
       <EditorObjectSchemaTranslationDialog
         v-if="!translationsLoading && translationDialogVisible"
         v-model="translationDialogVisible"
         v-model:current-display-language="displayLanguage"
         :available-languages="availableLanguages"
-        @schema-updated="updateCode" />
+        @schema-updated="updateCode"
+      />
     </template>
   </LayoutPageWrapper>
 </template>
@@ -273,9 +253,7 @@ import { IVeoObjectSchema, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import translationQueryDefinitions, {
-  IVeoTranslations
-} from '~/composables/api/queryDefinitions/translations';
+import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { useQuery } from '~/composables/api/utils/query';
@@ -341,34 +319,22 @@ export default defineComponent({
 
     // Schema stuff
     const title = computed(() => objectSchemaHelper.value?.getTitle() || '');
-    const description = computed(
-      () => objectSchemaHelper.value?.getDescription() || ''
-    );
+    const description = computed(() => objectSchemaHelper.value?.getDescription() || '');
 
-    const schemaSpecificTranslations = computed<IVeoTranslations['lang']>(
-      () => {
-        const translationsToReturn: IVeoTranslations['lang'] = {};
-        const schemaTitle = `${objectSchemaHelper.value?.getTitle()}_` || '';
+    const schemaSpecificTranslations = computed<IVeoTranslations['lang']>(() => {
+      const translationsToReturn: IVeoTranslations['lang'] = {};
+      const schemaTitle = `${objectSchemaHelper.value?.getTitle()}_` || '';
 
-        for (const language of availableLanguages.value) {
-          translationsToReturn[language] = pickBy(
-            translations[language],
-            (_value, key) => key.startsWith(schemaTitle)
-          );
-        }
-
-        return translationsToReturn;
+      for (const language of availableLanguages.value) {
+        translationsToReturn[language] = pickBy(translations[language], (_value, key) => key.startsWith(schemaTitle));
       }
-    );
 
-    const setSchema = (data: {
-      schema?: IVeoObjectSchema;
-      meta: { type: string; description: string };
-    }) => {
+      return translationsToReturn;
+    });
+
+    const setSchema = (data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) => {
       objectSchemaHelper.value =
-        data.schema || data.meta ?
-          new ObjectSchemaHelper(data.schema, route.params.domain as string)
-        : undefined;
+        data.schema || data.meta ? new ObjectSchemaHelper(data.schema, route.params.domain as string) : undefined;
 
       if (objectSchemaHelper.value) {
         if (data.meta) {
@@ -377,20 +343,11 @@ export default defineComponent({
         }
 
         if (objectSchemaHelper.value.getLanguages().length === 0) {
-          for (const [languageKey, translations] of Object.entries(
-            schemaSpecificTranslations.value
-          )) {
-            objectSchemaHelper.value.updateTranslations(
-              languageKey,
-              translations
-            );
+          for (const [languageKey, translations] of Object.entries(schemaSpecificTranslations.value)) {
+            objectSchemaHelper.value.updateTranslations(languageKey, translations);
           }
         }
-        code.value = JSON.stringify(
-          objectSchemaHelper.value.toSchema(),
-          undefined,
-          2
-        );
+        code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
         validate();
       }
 
@@ -399,45 +356,26 @@ export default defineComponent({
 
     const updateSchema = (schema: IVeoObjectSchema) => {
       objectSchemaHelper.value = new ObjectSchemaHelper(schema);
-      code.value = JSON.stringify(
-        objectSchemaHelper.value.toSchema(),
-        undefined,
-        2
-      );
+      code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
       objectSchemaHelper.value = new ObjectSchemaHelper(JSON.parse(code.value));
 
       validate();
     };
 
     const updateSchemaName = (name: string) => {
-      objectSchemaHelper.value?.changeTranslationKey(
-        objectSchemaHelper.value.getTitle(),
-        name
-      );
+      objectSchemaHelper.value?.changeTranslationKey(objectSchemaHelper.value.getTitle(), name);
       objectSchemaHelper.value?.setTitle(name);
-      code.value = JSON.stringify(
-        objectSchemaHelper.value?.toSchema(),
-        undefined,
-        2
-      );
+      code.value = JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2);
     };
 
     const updateDescription = (description: string) => {
       objectSchemaHelper.value?.setDescription(description);
-      code.value = JSON.stringify(
-        objectSchemaHelper.value?.toSchema(),
-        undefined,
-        2
-      );
+      code.value = JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2);
     };
 
     const updateCode = () => {
       if (objectSchemaHelper.value) {
-        code.value = JSON.stringify(
-          objectSchemaHelper.value.toSchema(),
-          undefined,
-          2
-        );
+        code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
         validate();
       }
     };
@@ -449,9 +387,7 @@ export default defineComponent({
           JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2)
         )}`;
         (downloadButton.value as any).href = data;
-        (downloadButton.value as any).download = `os_${
-          objectSchemaHelper.value?.getTitle() || 'download'
-        }.json`;
+        (downloadButton.value as any).download = `os_${objectSchemaHelper.value?.getTitle() || 'download'}.json`;
       }
     };
 
@@ -476,9 +412,7 @@ export default defineComponent({
     };
 
     // Saving
-    const { mutateAsync: update } = useMutation(
-      domainQueryDefinitions.mutations.updateTypeDefinitions
-    );
+    const { mutateAsync: update } = useMutation(domainQueryDefinitions.mutations.updateTypeDefinitions);
 
     const saveSchema = async () => {
       const objectSchema = objectSchemaHelper.value?.toSchema();
@@ -494,10 +428,7 @@ export default defineComponent({
         });
         displaySuccessMessage(t('saveSchemaSuccess').toString());
       } catch (e: any) {
-        displayErrorMessage(
-          t('error.title').toString(),
-          `${t('saveSchemaError').toString()}: ${e.message}`
-        );
+        displayErrorMessage(t('error.title').toString(), `${t('saveSchemaError').toString()}: ${e.message}`);
       }
     };
 

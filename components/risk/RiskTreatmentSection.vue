@@ -31,17 +31,10 @@
               :protection-goal="protectionGoal"
               :risk-definition="riskDefinition"
               :num-of-cols="riskDefinition.categories.length"
-              v-bind="
-                data.find(
-                  (riskValue) => riskValue.category === protectionGoal.id
-                )
-              "
-              @update:risk-treatments="
-                onRiskTreatmentChanged(protectionGoal.id, $event)
-              "
-              @update:risk-treatment-explanation="
-                onRiskTreatmentExplanationChanged(protectionGoal.id, $event)
-              " />
+              v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
+              @update:risk-treatments="onRiskTreatmentChanged(protectionGoal.id, $event)"
+              @update:risk-treatment-explanation="onRiskTreatmentExplanationChanged(protectionGoal.id, $event)"
+            />
           </template>
         </v-row>
       </v-card-text>
@@ -83,14 +76,9 @@ export default defineComponent({
     const protectionGoalExists = (protectionGoal: string) =>
       !!props.data.find((riskValue) => riskValue.category === protectionGoal);
 
-    const onRiskTreatmentChanged = (
-      protectionGoal: string,
-      newValue: string[]
-    ) => {
+    const onRiskTreatmentChanged = (protectionGoal: string, newValue: string[]) => {
       const localData = cloneDeep(props.data);
-      const riskValue = localData.find(
-        (riskValue) => riskValue.category === protectionGoal
-      );
+      const riskValue = localData.find((riskValue) => riskValue.category === protectionGoal);
       if (riskValue) {
         riskValue.riskTreatments = newValue;
       }
@@ -101,14 +89,9 @@ export default defineComponent({
       });
     };
 
-    const onRiskTreatmentExplanationChanged = (
-      protectionGoal: string,
-      newValue: string
-    ) => {
+    const onRiskTreatmentExplanationChanged = (protectionGoal: string, newValue: string) => {
       const localData = cloneDeep(props.data);
-      const riskValue = localData.find(
-        (riskValue) => riskValue.category === protectionGoal
-      );
+      const riskValue = localData.find((riskValue) => riskValue.category === protectionGoal);
       if (riskValue) {
         riskValue.riskTreatmentExplanation = newValue;
       }

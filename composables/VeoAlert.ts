@@ -17,11 +17,7 @@
  */
 import { Ref } from 'vue';
 
-import {
-  IVeoGlobalAlert,
-  IVeoGlobalAlertParams,
-  VeoAlertType
-} from '~/types/VeoTypes';
+import { IVeoGlobalAlert, IVeoGlobalAlertParams, VeoAlertType } from '~/types/VeoTypes';
 
 const alerts: Ref<IVeoGlobalAlert[]> = ref([]);
 
@@ -35,12 +31,7 @@ export function useVeoAlerts() {
    * @param params Additional params to further customize certain messages
    * @returns Key of the alert. Can be used to call expireAlert programmatically
    */
-  function displayMessage(
-    type: VeoAlertType,
-    title: string,
-    text: string | undefined,
-    params?: IVeoGlobalAlertParams
-  ) {
+  function displayMessage(type: VeoAlertType, title: string, text: string | undefined, params?: IVeoGlobalAlertParams) {
     const alertKey = Date.now();
     alerts.value.push({
       type,
@@ -60,11 +51,7 @@ export function useVeoAlerts() {
    * @param params Text of the button. If set to undefined, "Okay" will be used
    * @returns Key of the alert. Can be used to call expireAlert programmatically
    */
-  function displayErrorMessage(
-    title: string,
-    text: string,
-    params?: IVeoGlobalAlertParams
-  ): number {
+  function displayErrorMessage(title: string, text: string, params?: IVeoGlobalAlertParams): number {
     return displayMessage(VeoAlertType.ERROR, title, text, params);
   }
 
@@ -76,11 +63,7 @@ export function useVeoAlerts() {
    * @param buttonText Text of the button. If set to undefined, "Okay" will be used
    * @returns Key of the alert. Can be used to call expireAlert programmatically
    */
-  function displayInfoMessage(
-    title: string,
-    text: string,
-    params?: IVeoGlobalAlertParams
-  ): number {
+  function displayInfoMessage(title: string, text: string, params?: IVeoGlobalAlertParams): number {
     return displayMessage(VeoAlertType.INFO, title, text, params);
   }
 
@@ -90,10 +73,7 @@ export function useVeoAlerts() {
    * @param text Text to display
    * @returns Key of the alert. Can be used to call expireAlert programmatically
    */
-  function displaySuccessMessage(
-    text: string,
-    params?: IVeoGlobalAlertParams
-  ): number {
+  function displaySuccessMessage(text: string, params?: IVeoGlobalAlertParams): number {
     return displayMessage(VeoAlertType.SUCCESS, text, '', {
       ...params,
       timeout: 5000
@@ -108,9 +88,7 @@ export function useVeoAlerts() {
    */
   function expireAlert(alertKey: number): void {
     setTimeout(() => {
-      alerts.value = alerts.value.filter(
-        (alert) => alert.alertKey !== alertKey
-      );
+      alerts.value = alerts.value.filter((alert) => alert.alertKey !== alertKey);
     }, 250); // 250ms timeout to not interrupt fade transition
   }
 

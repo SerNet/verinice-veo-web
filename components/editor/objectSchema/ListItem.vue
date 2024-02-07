@@ -16,15 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <EditorListItem
-    :title="title"
-    :styling="styling"
-    :translate="translate"
-    lines="two">
+  <EditorListItem :title="title" :styling="styling" :translate="translate" lines="two">
     <template #description>
-      <v-list-item-subtitle
-        ><span v-text="localizedDescription"
-      /></v-list-item-subtitle>
+      <v-list-item-subtitle><span v-text="localizedDescription" /></v-list-item-subtitle>
     </template>
   </EditorListItem>
 </template>
@@ -62,9 +56,7 @@ export default defineComponent({
   },
   setup(props) {
     const displayLanguage = inject<Ref<string> | undefined>('displayLanguage');
-    const objectSchemaHelper = inject<Ref<ObjectSchemaHelper> | undefined>(
-      'objectSchemaHelper'
-    );
+    const objectSchemaHelper = inject<Ref<ObjectSchemaHelper> | undefined>('objectSchemaHelper');
 
     /**
      * We sadly can't use a computed ref to get the localized description as vue won't
@@ -88,15 +80,12 @@ export default defineComponent({
 
     function i18n() {
       if (objectSchemaHelper && displayLanguage) {
-        const _localizedDescription = (
-          objectSchemaHelper.value as ObjectSchemaHelper
-        ).getTranslation(
+        const _localizedDescription = (objectSchemaHelper.value as ObjectSchemaHelper).getTranslation(
           displayLanguage.value as string,
           `${props.prefix}${props.title}`
         );
 
-        localizedDescription.value =
-          _localizedDescription || props.description || '';
+        localizedDescription.value = _localizedDescription || props.description || '';
       }
     }
 

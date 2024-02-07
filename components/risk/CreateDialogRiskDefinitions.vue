@@ -48,66 +48,48 @@
             />
           </v-tab>
         </template>-->
-        <template
-          v-if="!!domain && internalValue?.domains[domain.id].riskDefinitions"
-          #items>
-          <v-window-item
-            v-for="riskDefinition of domain.riskDefinitions"
-            :key="riskDefinition.id">
+        <template v-if="!!domain && internalValue?.domains[domain.id].riskDefinitions" #items>
+          <v-window-item v-for="riskDefinition of domain.riskDefinitions" :key="riskDefinition.id">
             <RiskProbabilitySection
-              v-model:data="
-                internalValue.domains[domain.id].riskDefinitions[
-                  riskDefinition.id
-                ].probability
-              "
+              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].probability"
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
-              @update:dirty-fields="$emit('update:dirty-fields', $event)" />
+              @update:dirty-fields="$emit('update:dirty-fields', $event)"
+            />
             <RiskImpactSection
-              v-model:data="
-                internalValue.domains[domain.id].riskDefinitions[
-                  riskDefinition.id
-                ].impactValues
-              "
+              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].impactValues"
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
-              @update:dirty-fields="$emit('update:dirty-fields', $event)" />
+              @update:dirty-fields="$emit('update:dirty-fields', $event)"
+            />
             <RiskInherentRiskSection
-              v-model:data="
-                internalValue.domains[domain.id].riskDefinitions[
-                  riskDefinition.id
-                ].riskValues
-              "
+              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
-              @update:dirty-fields="$emit('update:dirty-fields', $event)" />
+              @update:dirty-fields="$emit('update:dirty-fields', $event)"
+            />
             <RiskTreatmentSection
-              v-model:data="
-                internalValue.domains[domain.id].riskDefinitions[
-                  riskDefinition.id
-                ].riskValues
-              "
+              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
-              @update:dirty-fields="$emit('update:dirty-fields', $event)" />
+              @update:dirty-fields="$emit('update:dirty-fields', $event)"
+            />
             <RiskMitigationSection
               v-model:mitigations="localMitigations"
               :data="internalValue"
               :disabled="disabled"
               :domain-id="domain.id"
-              v-bind="$attrs" />
+              v-bind="$attrs"
+            />
             <RiskResidualSection
-              v-model:data="
-                internalValue.domains[domain.id].riskDefinitions[
-                  riskDefinition.id
-                ].riskValues
-              "
+              v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
               :risk-definition="riskDefinition"
-              :disabled="disabled" />
+              :disabled="disabled"
+            />
           </v-window-item>
         </template>
       </BaseTabs>
@@ -179,34 +161,25 @@ export default defineComponent({
       riskDefinition: IVeoRisk['domains']['x']['riskDefinitions']['y'],
       protectionGoal: string
     ) => {
-      return riskDefinition.riskValues.find(
-        (value) => value.category === protectionGoal
-      );
+      return riskDefinition.riskValues.find((value) => value.category === protectionGoal);
     };
 
     const activeTab = ref(0);
-    const activeRiskDefinition = computed(
-      () => Object.values(props.domain?.riskDefinitions || {})[activeTab.value]
-    );
+    const activeRiskDefinition = computed(() => Object.values(props.domain?.riskDefinitions || {})[activeTab.value]);
 
     // setting residual risk to the inherent risk if no risk treatment is selected
     watch(
       () =>
-        internalValue.value?.domains[props.domain?.id || ''].riskDefinitions[
-          activeRiskDefinition.value.id
-        ].riskValues,
+        internalValue.value?.domains[props.domain?.id || ''].riskDefinitions[activeRiskDefinition.value.id].riskValues,
       (newValue) => {
         for (const protectionGoalIndex in newValue) {
           if (
-            !internalValue.value?.domains[props.domain?.id || '']
-              .riskDefinitions[activeRiskDefinition.value.id].riskValues[
-              protectionGoalIndex
-            ].riskTreatments.length
+            !internalValue.value?.domains[props.domain?.id || ''].riskDefinitions[activeRiskDefinition.value.id]
+              .riskValues[protectionGoalIndex].riskTreatments.length
           ) {
             internalValue.value.domains[props.domain?.id || ''].riskDefinitions[
               activeRiskDefinition.value.id
-            ].riskValues[protectionGoalIndex].userDefinedResidualRisk =
-              undefined;
+            ].riskValues[protectionGoalIndex].userDefinedResidualRisk = undefined;
           }
         }
       },

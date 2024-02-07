@@ -24,21 +24,17 @@
       no-close-button
       flat
       :title="t('noValidationErrors')"
-      :text="
-        messages.warnings.length || messages.information?.length ?
-          t('warningInformationHint')
-        : undefined
-      " />
+      :text="messages.warnings.length || messages.information?.length ? t('warningInformationHint') : undefined"
+    />
     <section v-else>
       <BaseAlert
         :type="VeoAlertType.ERROR"
         :model-value="true"
         no-close-button
         flat
-        :title="t('validationErrors', [messages.errors.length])">
-        {{ t('validationErrorsText') }}<br />{{
-          t('validationErrorsAutoFixHint')
-        }}
+        :title="t('validationErrors', [messages.errors.length])"
+      >
+        {{ t('validationErrorsText') }}<br />{{ t('validationErrorsAutoFixHint') }}
       </BaseAlert>
       <template
         v-for="level of levels"
@@ -46,17 +42,15 @@
           level.key +
           level.items
             .length /* for some reason if only level.key is used, the result list won't pick up changes in the items array. */
-        ">
+        "
+      >
         <div v-if="level.items.length" class="mt-4">
           <h3 class="text-h3">
             {{ level.title }}
           </h3>
           <BaseCard>
             <v-card-text>
-              <UtilValidationResultList
-                v-bind="attrs"
-                :items="level.items"
-                fixing-allowed />
+              <UtilValidationResultList v-bind="attrs" :items="level.items" fixing-allowed />
             </v-card-text>
           </BaseCard>
         </div>
@@ -69,10 +63,7 @@
 import { isArray } from 'lodash';
 import { PropType } from 'vue';
 
-import {
-  VeoSchemaValidatorMessage,
-  VeoSchemaValidatorValidationResult
-} from '~/lib/ObjectSchemaValidator';
+import { VeoSchemaValidatorMessage, VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 const props = defineProps({

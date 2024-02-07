@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div
-    v-if="options.visible"
-    :id="objectSchemaPointer"
-    class="vf-input-date-time vf-form-element d-flex">
+  <div v-if="options.visible" :id="objectSchemaPointer" class="vf-input-date-time vf-form-element d-flex">
     <!-- TODO-Vuetify: As of 3.1.0, v-date-picker and v-time-picker are not yet supported, so we use the browser fallback
     <v-menu
       v-model="menu"
@@ -108,7 +105,8 @@
       :hint="t('hint', [DATE_HINT])"
       variant="underlined"
       @update:model-value="onDateInput"
-      @click:clear="$emit('update:model-value', undefined)" />
+      @click:clear="$emit('update:model-value', undefined)"
+    />
     <v-text-field
       type="time"
       :model-value="time"
@@ -122,7 +120,8 @@
       variant="underlined"
       step="60"
       @update:model-value="onTimeInput"
-      @click:clear="$emit('update:model-value', undefined)" />
+      @click:clear="$emit('update:model-value', undefined)"
+    />
   </div>
 </template>
 
@@ -146,10 +145,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
     en: 'Lets the user choose a date and time from a calender-like component.',
     de: 'Lässt den User mithilfe einer kalendermäßigen Komponente ein Datum und die dazugehörige Uhrzeit auswählen.'
   },
-  conditions: (props) => [
-    props.objectSchema.type === 'string',
-    props.objectSchema.format === 'date-time'
-  ]
+  conditions: (props) => [props.objectSchema.type === 'string', props.objectSchema.format === 'date-time']
 };
 
 export default defineComponent({

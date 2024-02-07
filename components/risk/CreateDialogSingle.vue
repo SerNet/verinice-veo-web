@@ -21,17 +21,12 @@
     :model-value="modelValue"
     :close-disabled="savingRisk"
     :confirm-close="!!Object.keys(dirtyFields).length"
-    :title="
-      upperFirst(
-        !!risk ?
-          t('editRisk', [risk.designator]).toString()
-        : t('createRisk').toString()
-      )
-    "
+    :title="upperFirst(!!risk ? t('editRisk', [risk.designator]).toString() : t('createRisk').toString())"
     x-large
     fixed-footer
     v-bind="$attrs"
-    @update:model-value="$emit('update:model-value', $event)">
+    @update:model-value="$emit('update:model-value', $event)"
+  >
     <template #default>
       <BaseAlert
         :model-value="true"
@@ -39,7 +34,8 @@
         :title="t('computedValues')"
         :text="t('computedValuesCTA')"
         flat
-        no-close-button />
+        no-close-button
+      />
       <v-form v-if="data" v-model="formIsValid">
         <h2 class="text-h2 mb-1">
           {{ upperFirst(t('common').toString()) }}
@@ -59,7 +55,8 @@
                   :disabled="formDisabled"
                   value-as-link
                   hide-details
-                  @update:model-value="onScenarioChanged" />
+                  @update:model-value="onScenarioChanged"
+                />
               </v-col>
               <v-col xs="12" md="6">
                 <UtilObjectSelect
@@ -72,7 +69,8 @@
                   :disabled="formDisabled"
                   value-as-link
                   hide-details
-                  @update:model-value="onRiskOwnerChanged" />
+                  @update:model-value="onRiskOwnerChanged"
+                />
               </v-col>
             </v-row>
           </v-card-text>
@@ -86,15 +84,12 @@
           @update:mitigations="onMitigationsChanged"
           @update:new-mitigating-action="newMitigatingAction = $event"
           @mitigations-modified="onMitigationsModified"
-          @update:model-value="onRiskDefinitionsChanged" />
+          @update:model-value="onRiskDefinitionsChanged"
+        />
       </v-form>
     </template>
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        color="primary"
-        :disabled="savingRisk"
-        @click="$emit('update:model-value', false)">
+      <v-btn variant="text" color="primary" :disabled="savingRisk" @click="$emit('update:model-value', false)">
         {{ globalT('global.button.close') }}
       </v-btn>
 
@@ -104,12 +99,9 @@
         variant="text"
         color="primary"
         :loading="savingRisk"
-        :disabled="
-          formIsValid === false ||
-          !formModified ||
-          ability.cannot('manage', 'objects')
-        "
-        @click="saveRisk">
+        :disabled="formIsValid === false || !formModified || ability.cannot('manage', 'objects')"
+        @click="saveRisk"
+      >
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>
@@ -121,18 +113,10 @@ import { cloneDeep, isEqual, merge, upperFirst } from 'lodash';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { getEntityDetailsFromLink } from '~/lib/utils';
-import {
-  IVeoLink,
-  IVeoRisk,
-  IVeoDomainRiskDefinition,
-  VeoAlertType,
-  IVeoEntity
-} from '~/types/VeoTypes';
+import { IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import domainQueryDefinitions, {
-  IVeoDomain
-} from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
@@ -175,31 +159,23 @@ export default defineComponent({
     const { link } = useLinkObject();
     const { createLink } = useCreateLink();
     const { ability } = useVeoPermissions();
-    const { mutateAsync: createObject } = useMutation(
-      objectQueryDefinitions.mutations.createObject
-    );
+    const { mutateAsync: createObject } = useMutation(objectQueryDefinitions.mutations.createObject);
     const { requiredRule } = useRules();
     const queryClient = useQueryClient();
 
-    const formDisabled = computed(() =>
-      ability.value.cannot('manage', 'objects')
-    );
+    const formDisabled = computed(() => ability.value.cannot('manage', 'objects'));
 
     // Domain stuff, used for risk definitions
     const data = ref<IVeoRisk | undefined>(undefined);
     const originalData = ref<IVeoRisk | undefined>(undefined);
 
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
-    const { data: domain } = useQuery(
-      domainQueryDefinitions.queries.fetchDomain,
-      fetchDomainQueryParameters
-    );
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     const formIsValid = ref(true);
     const formModified = ref(false);
     const validate = () => {
-      formModified.value =
-        !isEqual(data.value, originalData.value) || mitigationsModified.value;
+      formModified.value = !isEqual(data.value, originalData.value) || mitigationsModified.value;
     };
 
     // dirty/pristine stuff
@@ -234,26 +210,18 @@ export default defineComponent({
     }));
     const fetchRiskQueryEnabled = computed(() => !!props.scenarioId);
 
-    const { data: _risk } = useQuery(
-      objectQueryDefinitions.queries.fetchRisk,
-      fetchRiskQueryParameters,
-      {
-        enabled: fetchRiskQueryEnabled,
-        onSuccess: () => {
-          init();
-        }
+    const { data: _risk } = useQuery(objectQueryDefinitions.queries.fetchRisk, fetchRiskQueryParameters, {
+      enabled: fetchRiskQueryEnabled,
+      onSuccess: () => {
+        init();
       }
-    );
+    });
 
     const risk = computed(() => (props.scenarioId ? _risk.value : undefined));
 
     const init = () => {
       if (risk.value && domain.value) {
-        data.value = makeRiskObject(
-          risk.value,
-          props.domainId,
-          domain.value?.riskDefinitions || {}
-        );
+        data.value = makeRiskObject(risk.value, props.domainId, domain.value?.riskDefinitions || {});
         originalData.value = cloneDeep(data.value);
         formIsValid.value = true;
 
@@ -268,12 +236,8 @@ export default defineComponent({
     watch(() => props.modelValue, init, { immediate: true });
 
     const savingRisk = ref(false);
-    const { mutateAsync: createRisk } = useMutation(
-      objectQueryDefinitions.mutations.createRisk
-    );
-    const { mutateAsync: updateRisk } = useMutation(
-      objectQueryDefinitions.mutations.updateRisk
-    );
+    const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createRisk);
+    const { mutateAsync: updateRisk } = useMutation(objectQueryDefinitions.mutations.updateRisk);
     const saveRisk = async () => {
       if (ability.value.cannot('manage', 'objects')) {
         return;
@@ -282,11 +246,7 @@ export default defineComponent({
         savingRisk.value = true;
 
         try {
-          if (
-            mitigationsModified.value &&
-            !data.value.mitigation &&
-            mitigations.value.length
-          ) {
+          if (mitigationsModified.value && !data.value.mitigation && mitigations.value.length) {
             const newMitigationId = (
               await createObject({
                 endpoint: 'controls',
@@ -327,15 +287,10 @@ export default defineComponent({
             });
           }
           displaySuccessMessage(
-            props.scenarioId ?
-              upperFirst(t('riskUpdated').toString())
-            : upperFirst(t('riskCreated').toString())
+            props.scenarioId ? upperFirst(t('riskUpdated').toString()) : upperFirst(t('riskCreated').toString())
           );
         } catch (e: any) {
-          displayErrorMessage(
-            upperFirst(t('riskNotSaved').toString()),
-            e.message
-          );
+          displayErrorMessage(upperFirst(t('riskNotSaved').toString()), e.message);
         } finally {
           savingRisk.value = false;
         }
@@ -440,9 +395,7 @@ const makeRiskObject = (
       }
     });
 
-    for (const category of riskDefinitions[riskDefinition].categories.map(
-      (category) => category.id
-    )) {
+    for (const category of riskDefinitions[riskDefinition].categories.map((category) => category.id)) {
       const impactValueObject = {
         category,
         effectiveImpact: undefined,
@@ -451,20 +404,14 @@ const makeRiskObject = (
         potentialImpact: undefined
       };
       if (
-        !mergedObject.domains[domainId].riskDefinitions[
-          riskDefinition
-        ].impactValues.find(
+        !mergedObject.domains[domainId].riskDefinitions[riskDefinition].impactValues.find(
           (impactValue: any) => impactValue.category === category
         )
       ) {
-        mergedObject.domains[domainId].riskDefinitions[
-          riskDefinition
-        ].impactValues.push(impactValueObject);
+        mergedObject.domains[domainId].riskDefinitions[riskDefinition].impactValues.push(impactValueObject);
       } else {
         merge(
-          mergedObject.domains[domainId].riskDefinitions[
-            riskDefinition
-          ].impactValues.find(
+          mergedObject.domains[domainId].riskDefinitions[riskDefinition].impactValues.find(
             (impactValue: any) => impactValue.category === category
           ),
           impactValueObject
@@ -480,18 +427,14 @@ const makeRiskObject = (
         riskTreatmentExplanation: undefined
       };
       if (
-        !mergedObject.domains[domainId].riskDefinitions[
-          riskDefinition
-        ].riskValues.find((riskValue: any) => riskValue.category === category)
+        !mergedObject.domains[domainId].riskDefinitions[riskDefinition].riskValues.find(
+          (riskValue: any) => riskValue.category === category
+        )
       ) {
-        mergedObject.domains[domainId].riskDefinitions[
-          riskDefinition
-        ].riskValues.push(riskValueObject);
+        mergedObject.domains[domainId].riskDefinitions[riskDefinition].riskValues.push(riskValueObject);
       } else {
         merge(
-          mergedObject.domains[domainId].riskDefinitions[
-            riskDefinition
-          ].riskValues.find(
+          mergedObject.domains[domainId].riskDefinitions[riskDefinition].riskValues.find(
             (impactValue: any) => impactValue.category === category
           ),
           riskValueObject

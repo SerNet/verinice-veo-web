@@ -36,16 +36,14 @@
             :key="item.id"
             :title="item.name"
             :subtitle="item.description"
-            :to="`/${route.params.unit}/domains/${item.id}`" />
+            :to="`/${route.params.unit}/domains/${item.id}`"
+          />
         </v-list>
         <v-card-text>
           <template #default>
             <div class="text-body-1">
               <p>
-                <i18n-t
-                  keypath="furtherDomainInformation"
-                  tag="span"
-                  scope="global">
+                <i18n-t keypath="furtherDomainInformation" tag="span" scope="global">
                   <template #here>
                     <nuxt-link :to="`/${route.params.unit}/domains/more`">
                       {{ t('linkMoreInfo') }}
@@ -73,8 +71,7 @@ const route = useRoute();
 const fetchUnitDomainsQueryParameters = computed(() => ({
   unitId: route.params.unit as string
 }));
-const { data: allUnitDomains, isFetching: domainsFetching } =
-  useFetchUnitDomains(fetchUnitDomainsQueryParameters);
+const { data: allUnitDomains, isFetching: domainsFetching } = useFetchUnitDomains(fetchUnitDomainsQueryParameters);
 
 const { t } = useI18n();
 </script>

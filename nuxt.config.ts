@@ -14,8 +14,7 @@ import { PluginOption } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 let vitePlugins: PluginOption[] = [];
-if (process.env.NODE_ENV === 'test')
-  vitePlugins = [vue(), vuetify({ autoImport: true })];
+if (process.env.NODE_ENV === 'test') vitePlugins = [vue(), vuetify({ autoImport: true })];
 
 export default defineNuxtConfig({
   //==============================================================
@@ -53,37 +52,25 @@ export default defineNuxtConfig({
     public: {
       version: process.env.npm_package_version || 'latest',
       build: process.env.CI_COMMIT_SHORT_SHA || '0000000',
-      buildTime: new Date(
-        parseInt(process.env.CI_COMMIT_TIMESTAMP || Date.now().toString(), 10)
-      ).toISOString(),
+      buildTime: new Date(parseInt(process.env.CI_COMMIT_TIMESTAMP || Date.now().toString(), 10)).toISOString(),
       buildNumber: process.env.CI_JOB_ID || '-1',
       apiUrl: process.env.VEO_DEFAULT_API_URL || 'https://api.veo.example/veo',
-      formsApiUrl:
-        process.env.VEO_FORMS_API_URL || 'https://api.veo.example/forms',
-      historyApiUrl:
-        process.env.VEO_HISTORY_API_URL || 'https://api.veo.example/history',
-      reportsApiUrl:
-        process.env.VEO_REPORTING_API_URL ||
-        'https://api.veo.example/reporting',
-      accountsApiUrl:
-        process.env.VEO_ACCOUNTS_API_URL || 'https://api.veo.example/accounts',
+      formsApiUrl: process.env.VEO_FORMS_API_URL || 'https://api.veo.example/forms',
+      historyApiUrl: process.env.VEO_HISTORY_API_URL || 'https://api.veo.example/history',
+      reportsApiUrl: process.env.VEO_REPORTING_API_URL || 'https://api.veo.example/reporting',
+      accountsApiUrl: process.env.VEO_ACCOUNTS_API_URL || 'https://api.veo.example/accounts',
       oidcUrl: process.env.VEO_OIDC_URL || 'https://auth.veo.example/auth',
       oidcAccountApplication:
         process.env.VEO_OIDC_ACCOUNT_APPLICATION ||
         'https://auth.veo.example/auth/realms/veo-oidcrealm-example/account',
       oidcRealm: process.env.VEO_OIDC_REALM || 'veo-oidcrealm-example',
       oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-oidcclient-example',
-      accountPath:
-        process.env.VEO_ACCOUNT_PATH || 'https://account.veo.example',
+      accountPath: process.env.VEO_ACCOUNT_PATH || 'https://account.veo.example',
       debug: process.env.VEO_DEBUG || 'false',
       debugCache: process.env.VEO_DEBUG_CACHE || 'false', // Either a boolean or the query string (or first entry of query string if array)
       securityPolicyInvalidationDate:
         process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP ?
-          new Date(
-            parseInt(
-              process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP
-            )
-          )
+          new Date(parseInt(process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP))
         : new Date(new Date().getFullYear() + 1, 0, 1)
     }
   },

@@ -38,9 +38,7 @@ export const useVeoBreadcrumbs = () => {
     breadcrumbs.value.findIndex((breadcrumb) => breadcrumb.key === key) > -1;
 
   const removeCustomBreadcrumb = (key: string) => {
-    const index = breadcrumbs.value.findIndex(
-      (breadcrumb) => breadcrumb.key === key
-    );
+    const index = breadcrumbs.value.findIndex((breadcrumb) => breadcrumb.key === key);
     if (index > -1) {
       breadcrumbs.value.splice(index, 1);
     }
@@ -48,13 +46,9 @@ export const useVeoBreadcrumbs = () => {
 
   const updateCustomBreadcrumb = (key: string, breadcrumb: IVeoBreadcrumb) => {
     if (!customBreadcrumbExists(key)) {
-      throw new Error(
-        `VeoBreadcrumbs::updateCustomBreadcrumb: Breadcrumb ${key} doesn't exist`
-      );
+      throw new Error(`VeoBreadcrumbs::updateCustomBreadcrumb: Breadcrumb ${key} doesn't exist`);
     }
-    const index = breadcrumbs.value.findIndex(
-      (breadcrumb) => breadcrumb.key === key
-    );
+    const index = breadcrumbs.value.findIndex((breadcrumb) => breadcrumb.key === key);
     breadcrumbs.value[index] = breadcrumb;
   };
 

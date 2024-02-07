@@ -21,7 +21,8 @@
     :indent-with-tab="true"
     :tab-size="2"
     :extensions="extensions"
-    @update:model-value="emit('update:model-value', $event)" />
+    @update:model-value="emit('update:model-value', $event)"
+  />
 </template>
 <script setup lang="ts">
 import { PropType } from 'vue';

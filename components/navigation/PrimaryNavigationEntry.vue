@@ -27,7 +27,8 @@
     :data-veo-test="componentName"
     density="compact"
     :target="openInNewtab ? '_blank' : undefined"
-    @click.stop="onClick">
+    @click.stop="onClick"
+  >
     <template v-if="icon" #prepend>
       <v-tooltip location="end" :disabled="!miniVariant">
         <template #activator="{ props: tooltip }">
@@ -85,9 +86,7 @@ const active = computed(() => {
   }
 
   const resolvedRoute = router.resolve(props.to);
-  return props.exact ?
-      resolvedRoute.fullPath === route.fullPath
-    : route.fullPath.startsWith(resolvedRoute.fullPath);
+  return props.exact ? resolvedRoute.fullPath === route.fullPath : route.fullPath.startsWith(resolvedRoute.fullPath);
 });
 
 // For some reason the list doesn't get auto-openend if an object is opened even though active is true (probably because the nav item isn't the full path, so we have to do it by ourselves)
@@ -109,9 +108,7 @@ const onClick = () => {
     emit('expand-menu');
   }
 };
-const _classes = computed(
-  () => `${props.classes} primary-navigation-entry-level-${props.level}`
-);
+const _classes = computed(() => `${props.classes} primary-navigation-entry-level-${props.level}`);
 </script>
 
 <style lang="scss">

@@ -26,7 +26,8 @@
       no-close-button
       :type="VeoAlertType.ERROR"
       :title="t('access')"
-      :text="t('error-message')" />
+      :text="t('error-message')"
+    />
 
     <BaseCard class="mt-2 bg-surface">
       <v-card-text class="d-flex justify-space-around">
@@ -35,12 +36,7 @@
             {{ t('loginCTA') }}
           </h4>
           <div class="text-center">
-            <v-btn
-              color="primary"
-              data-veo-test="login-btn-login"
-              flat
-              size="x-large"
-              @click="login">
+            <v-btn color="primary" data-veo-test="login-btn-login" flat size="x-large" @click="login">
               {{ t('login') }}
             </v-btn>
           </div>
@@ -55,7 +51,8 @@
               v-if="context.$config.public.accountPath"
               variant="tonal"
               size="x-large"
-              :href="context.$config.public.accountPath">
+              :href="context.$config.public.accountPath"
+            >
               {{ t('register') }}
             </v-btn>
           </div>
@@ -97,18 +94,13 @@ if (!keycloakInitialized.value) {
 }
 
 // Needed as a separate function, as _login would be undefined if directly called from within the template.
-const login = () =>
-  _login((route.query.redirect_uri as string | undefined) || '/');
+const login = () => _login((route.query.redirect_uri as string | undefined) || '/');
 
 const dataProtectionRegulationLink = computed(() =>
-  locale.value === 'en' ?
-    'https://www.sernet.de/en/data-protection-declaration/'
-  : 'https://www.sernet.de/datenschutz/'
+  locale.value === 'en' ? 'https://www.sernet.de/en/data-protection-declaration/' : 'https://www.sernet.de/datenschutz/'
 );
 const imprintLink = computed(() =>
-  locale.value === 'en' ?
-    'https://account.verinice.com/en/left/Imprint/'
-  : 'https://account.verinice.com/impressum/'
+  locale.value === 'en' ? 'https://account.verinice.com/en/left/Imprint/' : 'https://account.verinice.com/impressum/'
 );
 </script>
 

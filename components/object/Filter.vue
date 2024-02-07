@@ -21,9 +21,7 @@
     <v-text-field
       v-else-if="type === IVeoFilterOptionType.TEXT"
       :model-value="modelValue"
-      :label="
-        upperFirst($t(`objectlist.${name}`).toString()) + (required ? '*' : '')
-      "
+      :label="upperFirst($t(`objectlist.${name}`).toString()) + (required ? '*' : '')"
       :required="required"
       :rules="required ? [requiredRule] : []"
       :disabled="disabled"
@@ -31,13 +29,12 @@
       :clearable="!required"
       variant="underlined"
       hide-details="auto"
-      @update:model-value="onInput($event)" />
+      @update:model-value="onInput($event)"
+    />
     <v-select
       v-else-if="type === IVeoFilterOptionType.SELECT"
       :model-value="modelValue"
-      :label="
-        upperFirst($t(`objectlist.${name}`).toString()) + (required ? '*' : '')
-      "
+      :label="upperFirst($t(`objectlist.${name}`).toString()) + (required ? '*' : '')"
       :required="required"
       :rules="required ? [requiredRule] : []"
       :items="selectOptions"
@@ -46,20 +43,20 @@
       :clearable="!required"
       hide-details="auto"
       variant="underlined"
-      @update:model-value="onInput($event)" />
+      @update:model-value="onInput($event)"
+    />
     <v-checkbox
       v-else-if="type === IVeoFilterOptionType.CHECKBOX"
       :model-value="modelValue"
-      :label="
-        upperFirst($t(`objectlist.${name}`).toString()) + (required ? '*' : '')
-      "
+      :label="upperFirst($t(`objectlist.${name}`).toString()) + (required ? '*' : '')"
       :required="required"
       :rules="required ? [requiredRule] : []"
       :disabled="disabled"
       :name="name"
       hide-details="auto"
       variant="underlined"
-      @update:model-value="onInput($event)" />
+      @update:model-value="onInput($event)"
+    />
   </v-list-item>
 </template>
 

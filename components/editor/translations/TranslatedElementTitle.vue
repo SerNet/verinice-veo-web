@@ -43,15 +43,10 @@ const slots = useSlots();
 // Find out element name
 const language = inject<Ref<string>>(FORMSCHEMA_PROVIDE_KEYS.EDITOR_LANGUAGE);
 
-const translations = inject<Ref<IEditorTranslations>>(
-  FORMSCHEMA_PROVIDE_KEYS.TRANSLATIONS
-);
+const translations = inject<Ref<IEditorTranslations>>(FORMSCHEMA_PROVIDE_KEYS.TRANSLATIONS);
 
 const translationString = computed(
-  () =>
-    props.formSchemaElement.text ||
-    props.formSchemaElement.options?.label ||
-    props.formSchemaElement.scope
+  () => props.formSchemaElement.text || props.formSchemaElement.options?.label || props.formSchemaElement.scope
 );
 
 // Only internationalized if starts with #lang/
@@ -67,26 +62,19 @@ const elementName = computed(() => {
     return translationString.value;
   }
 
-  const formSchemaTranslation =
-    translations?.value?.[sanitizedKey]?.[TRANSLATION_SOURCE.FORMSCHEMA]?.[
-      language.value
-    ];
+  const formSchemaTranslation = translations?.value?.[sanitizedKey]?.[TRANSLATION_SOURCE.FORMSCHEMA]?.[language.value];
   const objectSchemaTranslation =
-    translations?.value?.[sanitizedKey]?.[TRANSLATION_SOURCE.OBJECTSCHEMA]?.[
-      language.value
-    ];
+    translations?.value?.[sanitizedKey]?.[TRANSLATION_SOURCE.OBJECTSCHEMA]?.[language.value];
 
   if (
-    (props.source === TRANSLATION_SOURCE.UNSPECIFIED ||
-      props.source === TRANSLATION_SOURCE.FORMSCHEMA) &&
+    (props.source === TRANSLATION_SOURCE.UNSPECIFIED || props.source === TRANSLATION_SOURCE.FORMSCHEMA) &&
     formSchemaTranslation
   ) {
     return formSchemaTranslation;
   }
 
   if (
-    (props.source === TRANSLATION_SOURCE.UNSPECIFIED ||
-      props.source === TRANSLATION_SOURCE.OBJECTSCHEMA) &&
+    (props.source === TRANSLATION_SOURCE.UNSPECIFIED || props.source === TRANSLATION_SOURCE.OBJECTSCHEMA) &&
     objectSchemaTranslation
   ) {
     return objectSchemaTranslation;

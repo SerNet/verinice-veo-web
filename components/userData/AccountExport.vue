@@ -25,7 +25,8 @@
     :alert-body="t('alertBody')"
     :items="state.accounts"
     :is-loading="state.isLoading"
-    :handle-click="exportAccountData" />
+    :handle-click="exportAccountData"
+  />
 </template>
 
 <script setup lang="ts">
@@ -57,9 +58,7 @@ async function exportAccountData(index: number) {
 
     if (isAccountManager.value) {
       // Get data on all accounts managed by current account
-      accounts = await useQuerySync(
-        accountQueryDefinitions.queries.fetchAccounts
-      );
+      accounts = await useQuerySync(accountQueryDefinitions.queries.fetchAccounts);
     }
 
     // Add current account data

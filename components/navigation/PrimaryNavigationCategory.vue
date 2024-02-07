@@ -23,23 +23,19 @@
     :class="[{ 'border-top': level === 0 }, 'veo-list-nav-item']"
     :target="openInNewtab ? '_blank' : undefined"
     :value="id"
-    @click.stop="onClick">
+    @click.stop="onClick"
+  >
     <template #prependIcon>
       <v-icon v-if="level > 0" :icon="mdiChevronDown" />
       <v-icon v-else-if="icon" :icon="icon" />
     </template>
     <template #activator="{ props: activatorProps }">
-      <v-list-item
-        v-bind="activatorProps"
-        :density="level > 0 ? 'compact' : 'default'"
-        :class="activatorIntendation">
+      <v-list-item v-bind="activatorProps" :density="level > 0 ? 'compact' : 'default'" :class="activatorIntendation">
         <template #prepend>
           <v-icon v-if="icon" :icon="icon" class="mr-3" />
         </template>
         <template #default="{ isActive }">
-          <v-list-item-title
-            class="veo-primary-navigation-title"
-            :class="{ 'font-weight-bold': isActive }">
+          <v-list-item-title class="veo-primary-navigation-title" :class="{ 'font-weight-bold': isActive }">
             {{ name }}
           </v-list-item-title>
         </template>
@@ -60,13 +56,15 @@
           :level="level + 1"
           :mini-variant="miniVariant"
           @expand-menu="emit('expand-menu')"
-          @open-parent="openCategory" />
+          @open-parent="openCategory"
+        />
         <NavigationPrimaryNavigationCategory
           v-else
           v-bind="child"
           :level="level + 1"
           :mini-variant="miniVariant"
-          @expand-menu="emit('expand-menu')" />
+          @expand-menu="emit('expand-menu')"
+        />
       </template>
     </template>
   </v-list-group>
@@ -76,10 +74,7 @@
 import { mdiChevronDown } from '@mdi/js';
 import { VList } from 'vuetify/components';
 
-import {
-  INavItem,
-  PROVIDE_KEYS as PRIMARY_NAVIGATION_KEYS
-} from './PrimaryNavigation.vue';
+import { INavItem, PROVIDE_KEYS as PRIMARY_NAVIGATION_KEYS } from './PrimaryNavigation.vue';
 
 const props = withDefaults(
   defineProps<
@@ -122,9 +117,7 @@ const onClick = () => {
   }
 };
 
-const activatorIntendation = computed(
-  () => `primary-navigation-entry-level-${props.level}`
-);
+const activatorIntendation = computed(() => `primary-navigation-entry-level-${props.level}`);
 
 const openCategory = () => {
   navigation?.value.open(props.id, true);

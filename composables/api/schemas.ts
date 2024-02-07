@@ -29,9 +29,7 @@ export const useFetchSchemasDetailed = (
   queryOptions?: QueryOptions
 ) => {
   // Query useQueries depends on
-  const { data: schemas } = useQuery(
-    schemaQueryDefinitions.queries.fetchSchemas
-  );
+  const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
   // Parameters for the depending queries. As this function only gets called once, we have to add reactivity under the hood to make the magic happen
   const dependentQueryParameters = computed(() =>
@@ -41,9 +39,5 @@ export const useFetchSchemasDetailed = (
     }))
   );
 
-  return useQueries(
-    schemaQueryDefinitions.queries.fetchSchema,
-    dependentQueryParameters,
-    queryOptions
-  );
+  return useQueries(schemaQueryDefinitions.queries.fetchSchema, dependentQueryParameters, queryOptions);
 };

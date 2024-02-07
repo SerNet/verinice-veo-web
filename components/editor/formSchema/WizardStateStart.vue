@@ -21,11 +21,7 @@
       {{ t('start') }}
     </h2>
     <v-list lines="two" color="transparent">
-      <v-list-item
-        v-for="action of actions"
-        :key="action.title"
-        lines="two"
-        @click="action.onClick()">
+      <v-list-item v-for="action of actions" :key="action.title" lines="two" @click="action.onClick()">
         <v-list-item-title class="font-weight-bold">
           {{ action.title }}
         </v-list-item-title>

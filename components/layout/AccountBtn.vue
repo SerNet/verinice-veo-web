@@ -20,14 +20,16 @@
     :close-on-content-click="true"
     content-class="veo-account-menu"
     max-width="300px"
-    @update:model-value="onMenuClosed">
+    @update:model-value="onMenuClosed"
+  >
     <template #activator="{ props }">
       <v-btn
         class="mr-0"
         data-component-name="account-menu-button"
         color="primary"
         v-bind="mergeProps(props, $attrs)"
-        icon>
+        icon
+      >
         <v-avatar color="primary" size="48">
           {{ initials }}
         </v-avatar>
@@ -42,18 +44,13 @@
             </v-avatar>
           </template>
           <v-list-item-title>
-            <span
-              v-if="
-                (profile && profile.firstName) || (profile && profile.lastName)
-              ">
+            <span v-if="(profile && profile.firstName) || (profile && profile.lastName)">
               {{ profile.firstName }}
               {{ profile.lastName }}
             </span>
             <span v-else v-text="t('notAvailable')" />
           </v-list-item-title>
-          <v-list-item-subtitle>{{
-            (profile && profile.email) || t('notAvailable')
-          }}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{ (profile && profile.email) || t('notAvailable') }}</v-list-item-subtitle>
         </v-list-item>
         <v-divider />
         <v-list-item :href="accountLink" target="_blank">
@@ -89,10 +86,7 @@
           </v-list-item-title>
         </v-list-item>
         <v-divider />
-        <v-list-item
-          :active="displayDeploymentDetails"
-          color="primary"
-          @click.stop="displayDeploymentDetails = true">
+        <v-list-item :active="displayDeploymentDetails" color="primary" @click.stop="displayDeploymentDetails = true">
           <v-list-item-title>
             {{ t('about') }}
           </v-list-item-title>
@@ -129,9 +123,7 @@ const displayDeploymentDetails = ref(false);
 
 const firstName = computed(() => profile.value?.firstName || '');
 const lastName = computed(() => profile.value?.lastName || '');
-const initials = computed(
-  () => firstName.value.substring(0, 1) + lastName.value.substring(0, 1) || '??'
-);
+const initials = computed(() => firstName.value.substring(0, 1) + lastName.value.substring(0, 1) || '??');
 
 const accountLink = computed(() => `${config.public.oidcAccountApplication}`);
 

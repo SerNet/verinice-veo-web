@@ -67,23 +67,14 @@ export const useDoc = (options: {
       .where({
         $or: [
           {
-            _path:
-              mergedOptions.value.path +
-              mergedOptions.value.localeSeparator +
-              mergedOptions.value.locale
+            _path: mergedOptions.value.path + mergedOptions.value.localeSeparator + mergedOptions.value.locale
           },
           {
             _path:
-              mergedOptions.value.path +
-              '/index' +
-              mergedOptions.value.localeSeparator +
-              mergedOptions.value.locale
+              mergedOptions.value.path + '/index' + mergedOptions.value.localeSeparator + mergedOptions.value.locale
           },
           {
-            _path:
-              mergedOptions.value.path +
-              mergedOptions.value.localeSeparator +
-              mergedOptions.value.fallbackLocale
+            _path: mergedOptions.value.path + mergedOptions.value.localeSeparator + mergedOptions.value.fallbackLocale
           },
           {
             _path:
@@ -97,11 +88,7 @@ export const useDoc = (options: {
         _extension: 'md'
       })
       .find();
-    return (
-      eligiblePages.find(
-        (page) => page.language === mergedOptions.value?.locale
-      ) || eligiblePages[0]
-    );
+    return eligiblePages.find((page) => page.language === mergedOptions.value?.locale) || eligiblePages[0];
   };
 
   // Update doc as soon as content or the options change.
@@ -157,10 +144,7 @@ export const useDocs = (options: { root?: string; locale?: string }) => {
   return normalizedDocs;
 };
 
-export const useDocNavigation = (options: {
-  root?: string;
-  locale?: string;
-}) => {
+export const useDocNavigation = (options: { root?: string; locale?: string }) => {
   const { locale } = useI18n();
 
   const mergedOptions = computed(() => getOptions(options, locale.value));
@@ -172,11 +156,8 @@ export const useDocNavigation = (options: {
         return item;
       }
       const children = cloneDeep(item.children);
-      const searchCondition = (item: NavItem) =>
-        last(item._path.split('/')).startsWith('index');
-      const indexChild = item.children.findIndex((child) =>
-        searchCondition(child)
-      );
+      const searchCondition = (item: NavItem) => last(item._path.split('/')).startsWith('index');
+      const indexChild = item.children.findIndex((child) => searchCondition(child));
       const newIndexPage = children.splice(indexChild, 1);
 
       item.title = newIndexPage[0].title;
@@ -188,9 +169,7 @@ export const useDocNavigation = (options: {
 
       return item;
     };
-    return (navigation.value || [])
-      .map((item) => removeIndexPages(item))
-      .splice(1);
+    return (navigation.value || []).map((item) => removeIndexPages(item)).splice(1);
   });
 
   const fetch = async () => {
@@ -215,10 +194,7 @@ export const useDocNavigation = (options: {
   return normalizedDocs;
 };
 
-export const useDocNavigationFlat = (options: {
-  root?: string;
-  locale?: string;
-}) => {
+export const useDocNavigationFlat = (options: { root?: string; locale?: string }) => {
   const docEntries = useDocNavigation(options);
 
   const navigation = computed<NavItem[]>(() => {
@@ -230,11 +206,8 @@ export const useDocNavigationFlat = (options: {
         };
 
         if (current.children) {
-          const searchCondition = (item: NavItem) =>
-            last(item._path.split('/')).startsWith('index');
-          const indexChild = current.children.findIndex((child) =>
-            searchCondition(child)
-          );
+          const searchCondition = (item: NavItem) => last(item._path.split('/')).startsWith('index');
+          const indexChild = current.children.findIndex((child) => searchCondition(child));
 
           const children = cloneDeep(current.children);
           if (indexChild >= 0) {

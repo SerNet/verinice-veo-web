@@ -25,7 +25,8 @@
         elevation="1"
         :icon="chevron"
         size="small"
-        @click="$emit('update:model-value', !modelValue)" />
+        @click="$emit('update:model-value', !modelValue)"
+      />
     </template>
     <template #default>
       {{
@@ -33,9 +34,7 @@
           elementName: elementName || t('page').toString()
         })
       }}
-      <span v-if="index !== undefined"
-        ><br />(Alt/{{ t('control') }} + {{ index + 1 }})</span
-      >
+      <span v-if="index !== undefined"><br />(Alt/{{ t('control') }} + {{ index + 1 }})</span>
     </template>
   </v-tooltip>
 </template>

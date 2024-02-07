@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseDialog
-    :model-value="modelValue"
-    v-bind="$attrs"
-    :title="t('unlinkObject')">
+  <BaseDialog :model-value="modelValue" v-bind="$attrs" :title="t('unlinkObject')">
     <template #default>
       <span class="text-body-1">
         {{
@@ -37,12 +34,7 @@
         {{ globalT('global.button.no') }}
       </v-btn>
       <v-spacer />
-      <v-btn
-        variant="text"
-        color="primary"
-        :disabled="!objectToRemove"
-        :loading="unlinking"
-        @click="unlinkObject">
+      <v-btn variant="text" color="primary" :disabled="!objectToRemove" :loading="unlinking" @click="unlinkObject">
         {{ t('unlinkObject') }}
       </v-btn>
     </template>
@@ -92,9 +84,7 @@ const unlinkObject = async () => {
 
 // providing a message fallback if either of the props  objectToRemove.displayName or parent.displayName is undefined
 const isMessageFallback = computed<boolean>(
-  () =>
-    props.objectToRemove?.displayName === undefined ||
-    props.parent?.displayName === undefined
+  () => props.objectToRemove?.displayName === undefined || props.parent?.displayName === undefined
 );
 </script>
 

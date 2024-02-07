@@ -60,13 +60,7 @@
     "vue/component-tags-order": [
       "error",
       {
-        "order": [
-          "template",
-          "script:not([setup])",
-          "script[setup]",
-          "i18n",
-          "style"
-        ]
+        "order": ["template", "script:not([setup])", "script[setup]", "i18n", "style"]
       }
     ],
     "vue/define-emits-declaration": ["error", "type-based"],

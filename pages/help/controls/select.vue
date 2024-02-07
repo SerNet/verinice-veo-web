@@ -19,23 +19,21 @@
   <BasePage title="Select" fixed-header>
     <v-row justify="center">
       <v-col cols="12">
-        <v-switch
-          v-model="isMultiselect"
-          label="Multiselect"
-          hide-details
-          color="primary" />
+        <v-switch v-model="isMultiselect" label="Multiselect" hide-details color="primary" />
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <DynamicFormEntrypoint
           v-model="dynamicForm.data"
           :object-schema="dynamicForm.objectSchema"
-          :form-schema="dynamicForm.formSchema" />
+          :form-schema="dynamicForm.formSchema"
+        />
       </v-col>
     </v-row>
     <HelpFormDescription
       :object-schema="dynamicForm.objectSchema"
       :form-schema="dynamicForm.formSchema"
-      :data="dynamicForm.data" />
+      :data="dynamicForm.data"
+    />
   </BasePage>
 </template>
 
@@ -88,7 +86,5 @@ const formMultiselect = ref({
 
 const isMultiselect = ref(true);
 
-const dynamicForm = computed(() =>
-  isMultiselect.value ? formMultiselect.value : form.value
-);
+const dynamicForm = computed(() => (isMultiselect.value ? formMultiselect.value : form.value));
 </script>

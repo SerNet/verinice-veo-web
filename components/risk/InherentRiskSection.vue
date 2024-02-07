@@ -32,12 +32,9 @@
               :risk-definition="riskDefinition"
               :dirty-fields="dirtyFields"
               :num-of-cols="riskDefinition.categories.length"
-              v-bind="
-                data.find(
-                  (riskValue) => riskValue.category === protectionGoal.id
-                )
-              "
-              @update:dirty-fields="$emit('update:dirty-fields', $event)" />
+              v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
+              @update:dirty-fields="$emit('update:dirty-fields', $event)"
+            />
           </template>
         </v-row>
       </v-card-text>

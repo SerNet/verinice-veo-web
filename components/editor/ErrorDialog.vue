@@ -22,19 +22,14 @@
     :title="upperFirst(t('schemaValidationWarnings').toString())"
     large
     fixed-footer
-    @update:model-value="$emit('update:model-value', $event)">
+    @update:model-value="$emit('update:model-value', $event)"
+  >
     <template #default>
-      <UtilValidationResults
-        v-bind="$attrs"
-        :messages="validation"
-        enable-fixing />
+      <UtilValidationResults v-bind="$attrs" :messages="validation" enable-fixing />
     </template>
     <template #dialog-options>
       <v-spacer />
-      <v-btn
-        variant="text"
-        color="primary"
-        @click="$emit('update:model-value', false)">
+      <v-btn variant="text" color="primary" @click="$emit('update:model-value', false)">
         {{ t('global.button.close') }}
       </v-btn>
     </template>

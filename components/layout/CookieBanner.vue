@@ -19,27 +19,16 @@
   <div v-if="!cookieSelection">
     <div class="veo-border veo-cookie-banner">
       <v-card style="border-radius: 0">
-        <v-card-text
-          class="d-flex flex-row align-center justify-space-between py-0">
+        <v-card-text class="d-flex flex-row align-center justify-space-between py-0">
           <span class="text-body-1">
             {{ t('cookieBannerText') }}
-            <a :href="dataProtectionDeclarationLink" target="_blank">{{
-              t('moreInformation')
-            }}</a>
+            <a :href="dataProtectionDeclarationLink" target="_blank">{{ t('moreInformation') }}</a>
           </span>
           <div>
-            <v-btn
-              flat
-              color="primary"
-              class="mx-1 my-3"
-              @click="acceptRequiredCookies">
+            <v-btn flat color="primary" class="mx-1 my-3" @click="acceptRequiredCookies">
               {{ t('declineOptionalCookies') }}
             </v-btn>
-            <v-btn
-              flat
-              color="primary"
-              class="mx-1 my-3"
-              @click="cookieConfigurationVisible = true">
+            <v-btn flat color="primary" class="mx-1 my-3" @click="cookieConfigurationVisible = true">
               {{ t('configure') }}
             </v-btn>
             <v-btn
@@ -47,40 +36,27 @@
               color="primary"
               class="mx-1 my-3"
               data-veo-test="cookies-btn-accept-all"
-              @click="acceptAllCookies">
+              @click="acceptAllCookies"
+            >
               {{ t('acceptAllCookies') }}
             </v-btn>
           </div>
         </v-card-text>
       </v-card>
     </div>
-    <v-navigation-drawer
-      v-model="cookieConfigurationVisible"
-      temporary
-      class="pa-4"
-      :width="300">
+    <v-navigation-drawer v-model="cookieConfigurationVisible" temporary class="pa-4" :width="300">
       <template #default>
         <h2 class="text-h2 mb-2">
           {{ t('cookieSettings') }}
         </h2>
         <span class="text-body-1">
           {{ t('cookieBannerText') }}
-          <a :href="dataProtectionDeclarationLink" target="_blank">{{
-            t('moreInformation')
-          }}</a>
+          <a :href="dataProtectionDeclarationLink" target="_blank">{{ t('moreInformation') }}</a>
         </span>
         <v-expansion-panels :model-value="[0]" multiple variant="accordion">
-          <v-expansion-panel
-            v-for="(category, index) of categories"
-            :key="index">
+          <v-expansion-panel v-for="(category, index) of categories" :key="index">
             <v-expansion-panel-title v-if="category.options.length">
-              <v-checkbox
-                :value="true"
-                class="pt-0 mt-0"
-                disabled
-                dense
-                hide-details
-                :label="category.label" />
+              <v-checkbox :value="true" class="pt-0 mt-0" disabled dense hide-details :label="category.label" />
             </v-expansion-panel-title>
             <v-expansion-panel-text class="pl-4">
               <v-checkbox
@@ -91,16 +67,12 @@
                 disabled
                 dense
                 hide-details
-                :label="t(`cookie.${cookie}`)" />
+                :label="t(`cookie.${cookie}`)"
+              />
             </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
-        <v-btn
-          flat
-          class="mt-6"
-          color="primary"
-          block
-          @click="acceptAllCookies">
+        <v-btn flat class="mt-6" color="primary" block @click="acceptAllCookies">
           {{ t('acceptAllCookies') }}
         </v-btn>
         <v-btn flat class="mt-2" color="primary" block @click="acceptSelection">
@@ -153,19 +125,12 @@ export default defineComponent({
 
     // Cookie handling
     const localCookieSelection = ref<COOKIE_OPTIONS[]>([]);
-    const cookieSelection = useStorage<ACCEPTED_COOKIES>(
-      LOCAL_STORAGE_KEYS.ACCEPTED_COOKIES,
-      null,
-      localStorage,
-      { serializer: StorageSerializers.object }
-    );
+    const cookieSelection = useStorage<ACCEPTED_COOKIES>(LOCAL_STORAGE_KEYS.ACCEPTED_COOKIES, null, localStorage, {
+      serializer: StorageSerializers.object
+    });
     watch(
       () => cookieSelection.value,
-      (newValue) =>
-        (localCookieSelection.value = [
-          ...(newValue?.selected || []),
-          ...REQUIRED_COOKIES
-        ]),
+      (newValue) => (localCookieSelection.value = [...(newValue?.selected || []), ...REQUIRED_COOKIES]),
       { immediate: true }
     );
 
@@ -181,9 +146,7 @@ export default defineComponent({
       cookieSelection.value = {
         required: true,
         optional:
-          OPTIONAL_COOKIES.every((cookie) =>
-            localCookieSelection.value.includes(cookie)
-          ) && !!OPTIONAL_COOKIES.length,
+          OPTIONAL_COOKIES.every((cookie) => localCookieSelection.value.includes(cookie)) && !!OPTIONAL_COOKIES.length,
         selected: localCookieSelection.value
       };
     };

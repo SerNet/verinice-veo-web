@@ -38,14 +38,11 @@ function getTranslatedRiskValues({
   categoryId: string;
 }) {
   const potentialImpacts =
-    domain.riskDefinitions[riskDefinitionName]?.categories?.find(
-      (category) => category.id === categoryId
-    )?.potentialImpacts || [];
+    domain.riskDefinitions[riskDefinitionName]?.categories?.find((category) => category.id === categoryId)
+      ?.potentialImpacts || [];
 
   const translations = potentialImpacts.map(
-    (level) =>
-      level.translations[language]?.name ||
-      Object.values(level.translations)[0].name
+    (level) => level.translations[language]?.name || Object.values(level.translations)[0].name
   );
   return translations;
 }
@@ -61,10 +58,7 @@ function translateProcessRisks({
   riskDefinitionName: string;
   riskDefinitionCategories: string[];
 }) {
-  const translations: Record<
-    string,
-    Record<string, Record<string, string[]>>
-  > = {};
+  const translations: Record<string, Record<string, Record<string, string[]>>> = {};
   riskDefinitionCategories.forEach((categoryId: string) => {
     const key = `#/properties/riskValues/properties/${riskDefinitionName}/properties/potentialImpacts/properties/${categoryId}`;
 
@@ -114,37 +108,25 @@ export const getRiskAdditionalContext = (
       });
     case 'scenario':
       return {
-        [`#/properties/riskValues/properties/${riskDefinitionName}/properties/potentialProbability`]:
-          {
-            formSchema: {
-              enum: (() =>
-                (
-                  domain.riskDefinitions[riskDefinitionName]?.probability
-                    ?.levels || []
-                ).map(
-                  (level) =>
-                    level.translations[language]?.name ||
-                    Object.values(level.translations)[0].name
-                ))()
-            }
+        [`#/properties/riskValues/properties/${riskDefinitionName}/properties/potentialProbability`]: {
+          formSchema: {
+            enum: (() =>
+              (domain.riskDefinitions[riskDefinitionName]?.probability?.levels || []).map(
+                (level) => level.translations[language]?.name || Object.values(level.translations)[0].name
+              ))()
           }
+        }
       };
     case 'control':
       return {
-        [`#/properties/riskValues/properties/${riskDefinitionName}/properties/implementationStatus`]:
-          {
-            formSchema: {
-              enum: (() =>
-                (
-                  domain.riskDefinitions[riskDefinitionName]
-                    ?.implementationStateDefinition?.levels || []
-                ).map(
-                  (level) =>
-                    level.translations[language]?.name ||
-                    Object.values(level.translations)[0].name
-                ))()
-            }
+        [`#/properties/riskValues/properties/${riskDefinitionName}/properties/implementationStatus`]: {
+          formSchema: {
+            enum: (() =>
+              (domain.riskDefinitions[riskDefinitionName]?.implementationStateDefinition?.levels || []).map(
+                (level) => level.translations[language]?.name || Object.values(level.translations)[0].name
+              ))()
           }
+        }
       };
     default:
       return {};
@@ -161,20 +143,10 @@ export const getStatusAdditionalContext = (
       disabled: !objectData?.subType,
       enum: (() => {
         const scope = `#/properties/status`;
-        let elementSchema: any = cloneDeep(
-          JsonPointer.get(objectSchema, scope) || {}
-        );
-        elementSchema = addConditionalSchemaPropertiesToControlSchema(
-          objectSchema,
-          objectData,
-          elementSchema,
-          scope
-        );
+        let elementSchema: any = cloneDeep(JsonPointer.get(objectSchema, scope) || {});
+        elementSchema = addConditionalSchemaPropertiesToControlSchema(objectSchema, objectData, elementSchema, scope);
         return elementSchema?.enum?.map(
-          (status: string) =>
-            translations?.[
-              `${objectSchema.title}_${objectData?.subType}_status_${status}`
-            ] || status
+          (status: string) => translations?.[`${objectSchema.title}_${objectData?.subType}_status_${status}`] || status
         );
       })()
     }
@@ -191,20 +163,11 @@ export const getSubTypeTranslation = (
     formSchema: {
       enum: (() => {
         const scope = `#/properties/subType`;
-        let elementSchema: any = cloneDeep(
-          JsonPointer.get(objectSchema, scope) || {}
-        );
-        elementSchema = addConditionalSchemaPropertiesToControlSchema(
-          objectSchema,
-          objectData,
-          elementSchema,
-          scope
-        );
+        let elementSchema: any = cloneDeep(JsonPointer.get(objectSchema, scope) || {});
+        elementSchema = addConditionalSchemaPropertiesToControlSchema(objectSchema, objectData, elementSchema, scope);
         return elementSchema?.enum?.map(
           (_subType: string) =>
-            (formSchemas as IVeoFormSchemaMeta[]).find(
-              (formschema) => formschema.subType === _subType
-            )?.name[language]
+            (formSchemas as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === _subType)?.name[language]
         );
       })()
     }

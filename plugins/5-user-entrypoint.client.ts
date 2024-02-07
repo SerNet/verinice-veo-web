@@ -21,10 +21,7 @@ import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 export default defineNuxtPlugin(async (nuxtApp) => {
   const route = useRoute();
   // We don't want any of this to take effect during the login process or if the print script might be running
-  if (
-    route.path === '/sso' ||
-    (route.name === 'docs' && route.query.print !== undefined)
-  ) {
+  if (route.path === '/sso' || (route.name === 'docs' && route.query.print !== undefined)) {
     return;
   }
 
@@ -38,18 +35,12 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     return;
   }
 
-  const lastUnit = useStorage(
-    LOCAL_STORAGE_KEYS.LAST_UNIT,
-    undefined,
-    localStorage,
-    { serializer: StorageSerializers.string }
-  );
-  const lastDomain = useStorage(
-    LOCAL_STORAGE_KEYS.LAST_DOMAIN,
-    undefined,
-    localStorage,
-    { serializer: StorageSerializers.string }
-  );
+  const lastUnit = useStorage(LOCAL_STORAGE_KEYS.LAST_UNIT, undefined, localStorage, {
+    serializer: StorageSerializers.string
+  });
+  const lastDomain = useStorage(LOCAL_STORAGE_KEYS.LAST_DOMAIN, undefined, localStorage, {
+    serializer: StorageSerializers.string
+  });
 
   const router = useRouter();
 

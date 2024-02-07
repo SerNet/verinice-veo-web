@@ -36,42 +36,22 @@
           <v-row dense class="mt-8 mb-12">
             <v-col cols="6">
               <v-card class="mx-8 fill-height bg-background">
-                <v-card-title
-                  class="pt-4 bg-accent small-caps"
-                  style="min-height: 60px">
+                <v-card-title class="pt-4 bg-accent small-caps" style="min-height: 60px">
                   {{ t('selection.noob.question') }}
                 </v-card-title>
 
                 <v-card-text class="mt-8 text-center text-h3">
-                  {{
-                    isUnitExisting('Demo') ?
-                      t('selection.noob.advice')
-                    : t('selection.noob.adviceNoUnit')
-                  }}
+                  {{ isUnitExisting('Demo') ? t('selection.noob.advice') : t('selection.noob.adviceNoUnit') }}
                 </v-card-text>
 
                 <div class="d-flex justify-center my-4">
-                  <v-btn
-                    v-if="!isLoading"
-                    :disbaled="isLoading"
-                    color="primary"
-                    @click="applyProfile()">
+                  <v-btn v-if="!isLoading" :disbaled="isLoading" color="primary" @click="applyProfile()">
                     <span>
-                      {{
-                        isUnitExisting('Demo') ?
-                          t('selection.noob.buttonCaption')
-                        : t('unitManagement')
-                      }}
+                      {{ isUnitExisting('Demo') ? t('selection.noob.buttonCaption') : t('unitManagement') }}
                     </span>
                   </v-btn>
-                  <v-progress-linear
-                    v-else
-                    color="primary"
-                    height="30"
-                    :indeterminate="isLoading">
-                    <span class="small-caps text-h2">{{
-                      t('applyProfile')
-                    }}</span>
+                  <v-progress-linear v-else color="primary" height="30" :indeterminate="isLoading">
+                    <span class="small-caps text-h2">{{ t('applyProfile') }}</span>
                   </v-progress-linear>
                 </div>
               </v-card>
@@ -79,27 +59,17 @@
 
             <v-col cols="6">
               <v-card class="mx-8 fill-height bg-background">
-                <v-card-title
-                  class="pt-4 bg-accent small-caps"
-                  style="min-height: 60px">
+                <v-card-title class="pt-4 bg-accent small-caps" style="min-height: 60px">
                   {{ t('selection.seasoned.question') }}
                 </v-card-title>
 
                 <v-card-text class="mt-8 text-center text-h3">
-                  {{
-                    isUnitExisting('Unit 1') ?
-                      t('selection.seasoned.advice')
-                    : t('selection.seasoned.adviceNoUnit')
-                  }}
+                  {{ isUnitExisting('Unit 1') ? t('selection.seasoned.advice') : t('selection.seasoned.adviceNoUnit') }}
                 </v-card-text>
 
                 <div class="d-flex justify-center my-4">
                   <v-btn color="primary" @click="loadUnit()">
-                    {{
-                      isUnitExisting('Unit 1') ?
-                        t('selection.seasoned.buttonCaption')
-                      : t('unitManagement')
-                    }}
+                    {{ isUnitExisting('Unit 1') ? t('selection.seasoned.buttonCaption') : t('unitManagement') }}
                   </v-btn>
                 </div>
               </v-card>
@@ -108,21 +78,11 @@
 
           <!-- Links / Timeline -->
           <v-row dense>
-            <v-timeline
-              align="center"
-              class="ma-4 mt-12"
-              density="compact"
-              direction="horizontal">
-              <v-timeline-item
-                dot-color="primary"
-                size="x-large"
-                :icon="mdiInformationOutline">
+            <v-timeline align="center" class="ma-4 mt-12" density="compact" direction="horizontal">
+              <v-timeline-item dot-color="primary" size="x-large" :icon="mdiInformationOutline">
                 <v-card-text>
                   <v-col cols="12" class="text-justify">
-                    <i18n-t
-                      keypath="firstSteps.tutorial"
-                      tag="span"
-                      scope="global">
+                    <i18n-t keypath="firstSteps.tutorial" tag="span" scope="global">
                       <span class="text-decoration-none">
                         <strong>{{ t('injector.tutorial') }}</strong>
                       </span>
@@ -131,21 +91,16 @@
                 </v-card-text>
               </v-timeline-item>
 
-              <v-timeline-item
-                dot-color="primary"
-                size="x-large"
-                :icon="mdiHelpCircleOutline">
+              <v-timeline-item dot-color="primary" size="x-large" :icon="mdiHelpCircleOutline">
                 <v-card-text>
                   <v-col cols="12" class="text-justify">
-                    <i18n-t
-                      keypath="firstSteps.documentation"
-                      tag="span"
-                      scope="global">
+                    <i18n-t keypath="firstSteps.documentation" tag="span" scope="global">
                       <nuxt-link
                         class="text-decoration-none text-primary"
                         rel="noopener noreferrer"
                         target="_blank"
-                        to="/docs/index">
+                        to="/docs/index"
+                      >
                         <strong>{{ t('injector.documentation') }}</strong>
                       </nuxt-link>
                     </i18n-t>
@@ -156,26 +111,17 @@
           </v-row>
           <!-- external Links -->
           <v-row dense>
-            <v-timeline
-              align="center"
-              class="mx-4"
-              density="compact"
-              direction="horizontal">
-              <v-timeline-item
-                dot-color="primary"
-                size="x-large"
-                :icon="mdiForumOutline">
+            <v-timeline align="center" class="mx-4" density="compact" direction="horizontal">
+              <v-timeline-item dot-color="primary" size="x-large" :icon="mdiForumOutline">
                 <v-card-text>
                   <v-col cols="12" class="text-justify">
-                    <i18n-t
-                      keypath="firstSteps.forum"
-                      tag="span"
-                      scope="global">
+                    <i18n-t keypath="firstSteps.forum" tag="span" scope="global">
                       <nuxt-link
                         class="text-decoration-none text-primary"
                         rel="noopener noreferrer"
                         target="_blank"
-                        :to="links.forum">
+                        :to="links.forum"
+                      >
                         <strong>{{ t('injector.forum') }}</strong>
                       </nuxt-link>
                     </i18n-t>
@@ -183,21 +129,16 @@
                 </v-card-text>
               </v-timeline-item>
 
-              <v-timeline-item
-                dot-color="primary"
-                size="x-large"
-                :icon="mdiYoutubeTv">
+              <v-timeline-item dot-color="primary" size="x-large" :icon="mdiYoutubeTv">
                 <v-card-text>
                   <v-col cols="12" class="text-justify">
-                    <i18n-t
-                      keypath="firstSteps.channel"
-                      tag="span"
-                      scope="global">
+                    <i18n-t keypath="firstSteps.channel" tag="span" scope="global">
                       <nuxt-link
                         class="text-decoration-none text-primary"
                         rel="noopener noreferrer"
                         target="_blank"
-                        :to="links.channel">
+                        :to="links.channel"
+                      >
                         <strong>{{ t('injector.channel') }}</strong>
                       </nuxt-link>
                     </i18n-t>
@@ -205,23 +146,16 @@
                 </v-card-text>
               </v-timeline-item>
 
-              <v-timeline-item
-                dot-color="primary"
-                size="x-large"
-                :icon="mdiSchoolOutline">
+              <v-timeline-item dot-color="primary" size="x-large" :icon="mdiSchoolOutline">
                 <v-card-text>
                   <v-col cols="12" class="text-justify">
-                    <i18n-t
-                      keypath="firstSteps.webinar"
-                      tag="span"
-                      scope="global">
+                    <i18n-t keypath="firstSteps.webinar" tag="span" scope="global">
                       <nuxt-link
                         class="text-decoration-none text-primary"
                         rel="noopener noreferrer"
                         target="_blank"
-                        :to="
-                          locale === 'de' ? links.webinar.de : links.webinar.en
-                        ">
+                        :to="locale === 'de' ? links.webinar.de : links.webinar.en"
+                      >
                         <strong>{{ t('injector.webinar') }}</strong>
                       </nuxt-link>
                     </i18n-t>
@@ -243,13 +177,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  mdiHelpCircleOutline,
-  mdiForumOutline,
-  mdiSchoolOutline,
-  mdiYoutubeTv,
-  mdiInformationOutline
-} from '@mdi/js';
+import { mdiHelpCircleOutline, mdiForumOutline, mdiSchoolOutline, mdiYoutubeTv, mdiInformationOutline } from '@mdi/js';
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
@@ -258,9 +186,7 @@ import { useMutation } from '~/composables/api/utils/mutation';
 
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
-const { mutateAsync: apply, isLoading } = useMutation(
-  domainQueryDefinitions.mutations.applyProfile
-);
+const { mutateAsync: apply, isLoading } = useMutation(domainQueryDefinitions.mutations.applyProfile);
 const { displayErrorMessage } = useVeoAlerts();
 
 const router = useRouter();
@@ -302,9 +228,7 @@ const applyProfile = async () => {
   if (!isUnitExisting('Demo')) {
     router.push({ name: 'units' });
   }
-  const isProfileApplied = localStorage.getItem(
-    LOCAL_STORAGE_KEYS.DEMO_UNIT_PROFILE_APPLIED
-  );
+  const isProfileApplied = localStorage.getItem(LOCAL_STORAGE_KEYS.DEMO_UNIT_PROFILE_APPLIED);
   // navigate to the dashboard if the profile already has been applied
   if (isProfileApplied) {
     loadUnit('Demo');
@@ -315,10 +239,7 @@ const applyProfile = async () => {
   if (unit && domain) {
     try {
       // set DEMO_UNIT_PROFILE_APPLIED to true on first call to ensure, that the profile is applied only once
-      localStorage.setItem(
-        LOCAL_STORAGE_KEYS.DEMO_UNIT_PROFILE_APPLIED,
-        true.toString()
-      );
+      localStorage.setItem(LOCAL_STORAGE_KEYS.DEMO_UNIT_PROFILE_APPLIED, true.toString());
       // apply the profile / sample data to the unit <Demo>
       await apply({ domainId: domain, unitId: unit, profileKey: ['demoUnit'] });
       // link to the dashboard
@@ -329,13 +250,11 @@ const applyProfile = async () => {
   }
 };
 
-const isUnitExisting = (unitName: any) =>
-  units.value?.find((unit: any) => unit.name === unitName);
+const isUnitExisting = (unitName: any) => units.value?.find((unit: any) => unit.name === unitName);
 
 // external links
 const links = ref({
-  channel:
-    'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf',
+  channel: 'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf',
   forum: 'https://forum.verinice.com',
   webinar: {
     de: 'https://verinice.com/webinare',

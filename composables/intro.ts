@@ -87,11 +87,7 @@ export function createIntro() {
     const isFetching = useIsFetching();
     const onFetchFinish = () => {
       // Don't create new watchers if old ones already exist, as we don't want two watchers mutating the same instance (we ALWAYS have only one introJs instance,attached to the window).
-      if (
-        !!_watchOptionsHandle ||
-        !!_watchHintsVisible ||
-        !!_watchStepsVisible
-      ) {
+      if (!!_watchOptionsHandle || !!_watchHintsVisible || !!_watchStepsVisible) {
         return;
       }
       // watch hintsVisible (show hints bubbles)
@@ -115,22 +111,18 @@ export function createIntro() {
           }
 
           // Skip step if element is not visible
-          const element = document.querySelector(
-            currentStep.element as string
-          ) as HTMLElement | undefined;
+          const element = document.querySelector(currentStep.element as string) as HTMLElement | undefined;
           if (!element || element.style.display === 'none') {
             // Skip step if going forward, else go back two steps (No idea why there is a +1 offset. step.value, newValue and _instance.currentStep() all have the same value)
             _instance.goToStep(newValue + (newValue > oldValue ? 2 : 0));
           }
 
           // For some reason intro.js does not always scroll to the element, so we do it manually to always have then element on screen
-          document
-            .querySelector(currentStep.element as string)
-            ?.scrollIntoView({
-              behavior: 'auto',
-              block: 'center',
-              inline: 'center'
-            });
+          document.querySelector(currentStep.element as string)?.scrollIntoView({
+            behavior: 'auto',
+            block: 'center',
+            inline: 'center'
+          });
         }
       );
 
@@ -147,22 +139,16 @@ export function createIntro() {
                 _instance.goToStep(step.value + 1);
 
                 // check wether element is a link element
-                const isAnchorElement = (
-                  el: HTMLElement
-                ): el is HTMLAnchorElement => el && el.tagName === 'A';
+                const isAnchorElement = (el: HTMLElement): el is HTMLAnchorElement => el && el.tagName === 'A';
                 // emulate nuxt-link behaviour
                 const onClickHandler = (event: MouseEvent) => {
                   const target = event.target as HTMLElement;
                   if (isAnchorElement(target)) {
                     const url = new URL(target.href, document.location.href);
                     const isRelative = url.host === document.location.host;
-                    if (
-                      isRelative &&
-                      (!target.target || target.target === '_self')
-                    ) {
+                    if (isRelative && (!target.target || target.target === '_self')) {
                       // Keep tutorial open while navigating inside tooltip
-                      const _oldStopOnRouteChangeValue =
-                        stopOnRouteChange.value;
+                      const _oldStopOnRouteChangeValue = stopOnRouteChange.value;
                       stopOnRouteChange.value = false;
                       // prevent default browser behaviour
                       event.preventDefault();
@@ -174,9 +160,7 @@ export function createIntro() {
                   }
                 };
 
-                const tooltipEl = document.querySelector<HTMLDivElement>(
-                  '.vue-introjs-tooltip'
-                );
+                const tooltipEl = document.querySelector<HTMLDivElement>('.vue-introjs-tooltip');
                 tooltipEl?.addEventListener('click', onClickHandler);
 
                 // tutorial has been completed
@@ -278,9 +262,7 @@ export function useIntro() {
    * Configure intro.js
    * @param opts Options
    */
-  const configure = (
-    opts: introJs.Options | Ref<introJs.Options | undefined>
-  ) => {
+  const configure = (opts: introJs.Options | Ref<introJs.Options | undefined>) => {
     _watchHandle?.();
     // support reactive tutorials
     if (isRef(opts)) {
@@ -405,19 +387,14 @@ export function useTutorials() {
         const routeToMatch = last(route.matched)?.path || '';
         return {
           ...tutorial,
-          applicable:
-            tutorial.exact ?
-              routeToMatch === tutorial.route
-            : routeToMatch.startsWith(tutorial.route)
+          applicable: tutorial.exact ? routeToMatch === tutorial.route : routeToMatch.startsWith(tutorial.route)
         };
       }) || []
   );
 
   type Tutorial = typeof tutorials.value extends Array<infer U> ? U : never;
 
-  const tutorialsForRoute = computed(
-    () => tutorials.value?.filter((tutorial) => tutorial.applicable)
-  );
+  const tutorialsForRoute = computed(() => tutorials.value?.filter((tutorial) => tutorial.applicable));
 
   const hasTutorials = computed(() => !!tutorialsForRoute.value?.length);
 
@@ -431,13 +408,8 @@ export function useTutorials() {
      * @example `load('/tutorials/tutorial-test-steps')`
      */
     load(predicate?: string | TutorialPredicate, autoplay = true) {
-      const _find: TutorialPredicate =
-        typeof predicate === 'function' ? predicate : (
-          (_) => _._path === predicate
-        );
-      const tutorial = computed(() =>
-        predicate ? tutorials.value?.find(_find) : tutorialsForRoute.value?.[0]
-      );
+      const _find: TutorialPredicate = typeof predicate === 'function' ? predicate : (_) => _._path === predicate;
+      const tutorial = computed(() => (predicate ? tutorials.value?.find(_find) : tutorialsForRoute.value?.[0]));
       // @ts-ignore Some sort of type error, however intro js seems to work
       intro.configure(tutorial);
       if (autoplay) {

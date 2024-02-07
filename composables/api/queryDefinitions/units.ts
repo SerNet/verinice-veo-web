@@ -15,12 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import {
-  IVeoAPIMessage,
-  IVeoBaseObject,
-  IVeoLink,
-  IVeoUnitIncarnations
-} from '~/types/VeoTypes';
+import { IVeoAPIMessage, IVeoBaseObject, IVeoLink, IVeoUnitIncarnations } from '~/types/VeoTypes';
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
 import { VeoApiReponseType } from '../utils/request';
@@ -102,10 +97,7 @@ export default {
           exclude: queryParameters.exclude
         }
       })
-    } as IVeoQueryDefinition<
-      IVeoFetchIncarnationParameters,
-      IVeoUnitIncarnations
-    >,
+    } as IVeoQueryDefinition<IVeoFetchIncarnationParameters, IVeoUnitIncarnations>,
     exportUnit: {
       primaryQueryKey: 'units',
       url: '/api/units/:unitId/export',
@@ -177,9 +169,6 @@ export default {
           queryClient.invalidateQueries(['incarnations']);
         }
       }
-    } as IVeoMutationDefinition<
-      IVeoUpdateIncarnationParameters,
-      IVeoUnitIncarnations
-    >
+    } as IVeoMutationDefinition<IVeoUpdateIncarnationParameters, IVeoUnitIncarnations>
   }
 };

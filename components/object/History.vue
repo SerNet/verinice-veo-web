@@ -28,9 +28,7 @@
       </div>
     </div>
     <v-list v-else class="py-0" mandatory>
-      <div
-        v-for="(version, index) of historyEntriesWithCompability"
-        :key="version.changeNumber">
+      <div v-for="(version, index) of historyEntriesWithCompability" :key="version.changeNumber">
         <v-divider v-if="index > 0" />
         <v-tooltip location="bottom" :disabled="version.compability.valid">
           <template #activator="{ props }">
@@ -41,7 +39,8 @@
                 :value="index"
                 :active="selectedRevision === index"
                 color="primary"
-                @click="selectedRevision = index">
+                @click="selectedRevision = index"
+              >
                 <v-list-item-title>
                   {{ t('version') }}
                   <b>{{ version.changeNumber + 1 }}</b>
@@ -51,10 +50,7 @@
                   {{ t('by') }}
                   <b>{{ version.author }}</b>
                 </v-list-item-subtitle>
-                <v-list-item-subtitle
-                  >{{ t('type') }}:
-                  {{ t(`revisionType.${version.type}`) }}</v-list-item-subtitle
-                >
+                <v-list-item-subtitle>{{ t('type') }}: {{ t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
               </v-list-item>
             </div>
           </template>
@@ -74,9 +70,7 @@
 import { cloneDeep } from 'lodash';
 
 import { useFetchVersions } from '~/composables/api/history';
-import ObjectSchemaValidator, {
-  VeoSchemaValidatorValidationResult
-} from '~/lib/ObjectSchemaValidator';
+import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -104,13 +98,10 @@ export default defineComponent({
       objectType: props.objectType,
       domainId: route.params.domain
     }));
-    const { data: history, isLoading } = useFetchVersions(
-      fetchVersionsQueryParameters,
-      {
-        keepPreviousData: true,
-        refetchInterval: 2000 // The history service gets updated asynchronusly, but as soon as an object gets saved, the history gets refetched. To avoid using outdated data, we refetch ever 2 seconds.
-      }
-    );
+    const { data: history, isLoading } = useFetchVersions(fetchVersionsQueryParameters, {
+      keepPreviousData: true,
+      refetchInterval: 2000 // The history service gets updated asynchronusly, but as soon as an object gets saved, the history gets refetched. To avoid using outdated data, we refetch ever 2 seconds.
+    });
 
     const historyEntries = computed(() =>
       cloneDeep(history.value || []).sort((a, b) => {
@@ -133,27 +124,18 @@ export default defineComponent({
       }))
     );
 
-    const isDataCompatible = (
-      data: IVeoObjectHistoryEntry
-    ): VeoSchemaValidatorValidationResult => {
+    const isDataCompatible = (data: IVeoObjectHistoryEntry): VeoSchemaValidatorValidationResult => {
       if (!props.objectSchema) {
         return { valid: true, errors: [], warnings: [] };
       }
-      return ObjectSchemaValidator.fitsObjectSchema(
-        props.objectSchema,
-        data.content
-      );
+      return ObjectSchemaValidator.fitsObjectSchema(props.objectSchema, data.content);
     };
 
     const selectedRevision = ref(0);
     watch(
       () => selectedRevision.value,
       (newValue) => {
-        emit(
-          'show-revision',
-          historyEntriesWithCompability.value[newValue],
-          !!newValue
-        );
+        emit('show-revision', historyEntriesWithCompability.value[newValue], !!newValue);
       }
     );
 

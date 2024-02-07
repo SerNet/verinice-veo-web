@@ -22,7 +22,8 @@
     large
     fixed-footer
     :title="t('formSchema')"
-    @update:model-value="emit('update:model-value', $event)">
+    @update:model-value="emit('update:model-value', $event)"
+  >
     <template #default>
       <BaseCard style="min-height: 20vh">
         <UtilCodeEditor :model-value="code" readonly />
@@ -30,10 +31,7 @@
     </template>
     <template #dialog-options>
       <v-spacer />
-      <v-btn
-        variant="text"
-        color="primary"
-        @click="$emit('update:model-value', false)">
+      <v-btn variant="text" color="primary" @click="$emit('update:model-value', false)">
         {{ t('global.button.close') }}
       </v-btn>
     </template>

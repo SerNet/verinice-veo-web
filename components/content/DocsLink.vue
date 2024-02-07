@@ -40,16 +40,12 @@ export default defineComponent({
     const linkContainsId = computed(() => props.to.includes('#'));
     const linkId = computed(() => props.to.split('#')[1]);
 
-    const addLeadingSlashIfNotExists = (link: string) =>
-      link.startsWith('/') ? link : '/' + link;
-    const removeTrailingSlashIfExists = (link: string) =>
-      link.endsWith('/') ? link.substr(0, link.length - 1) : link;
+    const addLeadingSlashIfNotExists = (link: string) => (link.startsWith('/') ? link : '/' + link);
+    const removeTrailingSlashIfExists = (link: string) => (link.endsWith('/') ? link.substr(0, link.length - 1) : link);
 
     const transformedLink = computed(() =>
       removeTrailingSlashIfExists(
-        linkContainsId.value && isPrintView ?
-          linkId.value
-        : addLeadingSlashIfNotExists(props.to)
+        linkContainsId.value && isPrintView ? linkId.value : addLeadingSlashIfNotExists(props.to)
       )
     );
 

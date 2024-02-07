@@ -44,8 +44,7 @@ export interface IVeoFormElementRule {
   disabled: boolean;
 }
 
-export type IDynamicFormElementOptions = Record<string, any> &
-  IVeoFormElementRule;
+export type IDynamicFormElementOptions = Record<string, any> & IVeoFormElementRule;
 
 export interface IVeoFormElementDefaultProps {
   metaData: JSONSchema7;

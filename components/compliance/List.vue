@@ -12,7 +12,8 @@
             riskAffected: state.riskAffected.value,
             item: e.item
           })
-      ">
+      "
+    >
       <template #no-data>
         <span class="text-center">
           {{ t('noRequirementImplementations') }}
@@ -24,7 +25,8 @@
       :item="requirementImplementation"
       :show-dialog="showDialog"
       @update:show-dialog="showDialog = !showDialog"
-      @update:item="reloadRequirementImplementations" />
+      @update:item="reloadRequirementImplementations"
+    />
   </BaseCard>
 </template>
 <script lang="ts">
@@ -43,11 +45,7 @@ import { TableHeader } from '../base/Table.vue';
 import { useCompliance } from './compliance';
 import { RequirementImplementation } from './Editor.vue';
 
-const {
-  fetchRequirementImplementations,
-  fetchRequirementImplementation,
-  state
-} = useCompliance();
+const { fetchRequirementImplementations, fetchRequirementImplementation, state } = useCompliance();
 
 const { t, locale } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
@@ -77,46 +75,27 @@ watch(
 );
 
 // Translate
-const translatedRequirementImplementations = ref(
-  translate(requirementImplementations.value, globalT)
-);
+const translatedRequirementImplementations = ref(translate(requirementImplementations.value, globalT));
 
 watch(requirementImplementations, () => {
-  translatedRequirementImplementations.value = translate(
-    requirementImplementations.value,
-    globalT
-  );
+  translatedRequirementImplementations.value = translate(requirementImplementations.value, globalT);
 });
 
 watch(locale, () => {
-  translatedRequirementImplementations.value = translate(
-    requirementImplementations.value,
-    globalT
-  );
+  translatedRequirementImplementations.value = translate(requirementImplementations.value, globalT);
 });
 
-const currentName = computed(
-  () => requirementImplementations?.value?.items?.[0]?.origin?.displayName
-);
+const currentName = computed(() => requirementImplementations?.value?.items?.[0]?.origin?.displayName);
 
 // Emit the current name
 emit('update:currentName', currentName.value);
 watch(currentName, () => emit('update:currentName', currentName.value));
 
 // Open a single RI
-const requirementImplementation: Ref<RequirementImplementation | null> =
-  ref(null);
+const requirementImplementation: Ref<RequirementImplementation | null> = ref(null);
 const showDialog = ref(false);
 
-async function openItem({
-  type,
-  riskAffected,
-  item
-}: {
-  type: string | null;
-  riskAffected: string | null;
-  item: any;
-}) {
+async function openItem({ type, riskAffected, item }: { type: string | null; riskAffected: string | null; item: any }) {
   if (!type || !riskAffected) return;
 
   showDialog.value = true;

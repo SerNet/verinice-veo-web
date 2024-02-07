@@ -24,7 +24,8 @@
     :close-disabled="savingObject"
     :confirm-close="itemsSelected"
     fixed-footer
-    @update:model-value="$emit('update:model-value', $event)">
+    @update:model-value="$emit('update:model-value', $event)"
+  >
     <template #default>
       <p v-if="!!$slots.header">
         <slot name="header" />
@@ -36,7 +37,8 @@
         :filter="filter"
         :available-object-types="availableObjectTypes"
         :required-fields="['objectType']"
-        @update:filter="updateFilter" />
+        @update:filter="updateFilter"
+      />
 
       <BaseCard id="link-dialog-select-all">
         <ObjectTable
@@ -56,15 +58,13 @@
             'actions'
           ]"
           :items="selectableObjects"
-          :loading="objectsLoading || childrenLoading || parentsLoading" />
+          :loading="objectsLoading || childrenLoading || parentsLoading"
+        />
       </BaseCard>
     </template>
 
     <template #dialog-options>
-      <v-btn
-        variant="text"
-        :disabled="savingObject"
-        @click="$emit('update:model-value', false)">
+      <v-btn variant="text" :disabled="savingObject" @click="$emit('update:model-value', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
 
@@ -74,7 +74,8 @@
         color="primary"
         :loading="savingObject"
         :disabled="ability.cannot('manage', 'objects') || !isDirty"
-        @click="linkObjects">
+        @click="linkObjects"
+      >
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>
@@ -86,14 +87,8 @@ import { PropType } from 'vue';
 import { differenceBy, isEqual, omit, uniqBy, upperFirst } from 'lodash';
 
 import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
-import {
-  useUnlinkObject,
-  useLinkObject
-} from '~/composables/VeoObjectUtilities';
-import {
-  useFetchObjects,
-  useFetchParentObjects
-} from '~/composables/api/objects';
+import { useUnlinkObject, useLinkObject } from '~/composables/VeoObjectUtilities';
+import { useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
@@ -166,9 +161,7 @@ export default defineComponent({
     const { ability } = useVeoPermissions();
     const queryClient = useQueryClient();
 
-    const { data: endpoints } = useQuery(
-      schemaQueryDefinitions.queries.fetchSchemas
-    );
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const title = computed(() =>
       t(
@@ -191,9 +184,7 @@ export default defineComponent({
       sortBy.value = [{ key: 'name', order: 'asc' }];
     };
 
-    const objectListEndpoint = computed(
-      () => endpoints.value?.[filter.value.objectType] || ''
-    );
+    const objectListEndpoint = computed(() => endpoints.value?.[filter.value.objectType] || '');
     const combinedObjectsQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
       sortBy: sortBy.value[0].key,
@@ -204,19 +195,18 @@ export default defineComponent({
       endpoint: objectListEndpoint.value
     }));
     const objectsQueryEnabled = computed(() => !!objectListEndpoint.value);
-    const { data: objects, isFetching: objectsLoading } = useFetchObjects(
-      combinedObjectsQueryParameters,
-      { enabled: objectsQueryEnabled, keepPreviousData: true }
-    );
+    const { data: objects, isFetching: objectsLoading } = useFetchObjects(combinedObjectsQueryParameters, {
+      enabled: objectsQueryEnabled,
+      keepPreviousData: true
+    });
 
     const selectableObjects = computed(() => ({
       ...objects.value,
       items: (objects.value?.items || []).map((selectableObject) => ({
         ...selectableObject,
         disabled:
-          !!originalSelectedItems.value.find(
-            (item) => getIdFromItem(item) === selectableObject.id
-          ) || props.object?.id === selectableObject.id
+          !!originalSelectedItems.value.find((item) => getIdFromItem(item) === selectableObject.id) ||
+          props.object?.id === selectableObject.id
       }))
     }));
 
@@ -265,9 +255,7 @@ export default defineComponent({
     );
 
     // Selectable and selected objects
-    const objectEndpoint = computed(
-      () => endpoints.value?.[props.object?.type || ''] || ''
-    );
+    const objectEndpoint = computed(() => endpoints.value?.[props.object?.type || ''] || '');
     const parentsQueryParameters = computed(() => ({
       size: -1,
       page: 1,
@@ -275,13 +263,11 @@ export default defineComponent({
       parentEndpoint: objectListEndpoint.value,
       childObjectId: props.object?.id || ''
     }));
-    const parentsQueryEnabled = computed(
-      () => !!objectEndpoint.value && !!props.object?.id && props.editParents
-    );
-    const { data: parents, isFetching: parentsLoading } = useFetchParentObjects(
-      parentsQueryParameters,
-      { enabled: parentsQueryEnabled, keepPreviousData: false }
-    );
+    const parentsQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && props.editParents);
+    const { data: parents, isFetching: parentsLoading } = useFetchParentObjects(parentsQueryParameters, {
+      enabled: parentsQueryEnabled,
+      keepPreviousData: false
+    });
 
     const childObjectsQueryParameters = computed(() => ({
       domain: route.params.domain as string,
@@ -290,11 +276,7 @@ export default defineComponent({
       size: 9999
     }));
     const childObjectsQueryEnabled = computed(
-      () =>
-        !!objectEndpoint.value &&
-        !!props.object?.id &&
-        !props.editParents &&
-        objectEndpoint.value !== 'scopes'
+      () => !!objectEndpoint.value && !!props.object?.id && !props.editParents && objectEndpoint.value !== 'scopes'
     );
     const { data: childObjects, isFetching: childObjectsLoading } = useQuery(
       objectQueryDefinitions.queries.fetchObjectChildren,
@@ -308,11 +290,7 @@ export default defineComponent({
       size: 9999
     }));
     const childScopesQueryEnabled = computed(
-      () =>
-        !!objectEndpoint.value &&
-        !!props.object?.id &&
-        !props.editParents &&
-        objectEndpoint.value === 'scopes'
+      () => !!objectEndpoint.value && !!props.object?.id && !props.editParents && objectEndpoint.value === 'scopes'
     );
     const { data: childScopes, isFetching: childScopesLoading } = useQuery(
       objectQueryDefinitions.queries.fetchScopeChildren,
@@ -322,25 +300,15 @@ export default defineComponent({
 
     const children = computed(() =>
       uniqBy(
-        [
-          ...(childObjects.value?.items || []),
-          ...(childScopes.value?.items || []),
-          ...props.preselectedItems
-        ],
+        [...(childObjects.value?.items || []), ...(childScopes.value?.items || []), ...props.preselectedItems],
         (arrayEntry) => getIdFromItem(arrayEntry)
       )
     );
-    const childrenLoading = computed(
-      () => childObjectsLoading.value || childScopesLoading.value
-    );
+    const childrenLoading = computed(() => childObjectsLoading.value || childScopesLoading.value);
 
-    const originalSelectedItems = computed(() =>
-      props.editParents ? parents.value?.items || [] : children.value
-    ); // Doesn't get modified to compare which parents have been added removed
+    const originalSelectedItems = computed(() => (props.editParents ? parents.value?.items || [] : children.value)); // Doesn't get modified to compare which parents have been added removed
     const modifiedSelectedItems = ref<IVeoEntity[]>([]);
-    const isDirty = computed(
-      () => !isEqual(originalSelectedItems.value, modifiedSelectedItems.value)
-    );
+    const isDirty = computed(() => !isEqual(originalSelectedItems.value, modifiedSelectedItems.value));
 
     watch(
       () => originalSelectedItems.value,
@@ -350,9 +318,7 @@ export default defineComponent({
       { deep: true, immediate: true }
     );
 
-    const itemsSelected = computed(
-      () => !isEqual(originalSelectedItems.value, modifiedSelectedItems.value)
-    );
+    const itemsSelected = computed(() => !isEqual(originalSelectedItems.value, modifiedSelectedItems.value));
 
     // Linking logic
     const savingObject = ref(false); // saving status for adding entities
@@ -368,16 +334,8 @@ export default defineComponent({
         try {
           if (props.object && endpoints.value) {
             if (props.editParents) {
-              const parentsToAdd = differenceBy(
-                modifiedSelectedItems.value,
-                originalSelectedItems.value,
-                'id'
-              );
-              const parentsToRemove = differenceBy(
-                originalSelectedItems.value,
-                modifiedSelectedItems.value,
-                'id'
-              );
+              const parentsToAdd = differenceBy(modifiedSelectedItems.value, originalSelectedItems.value, 'id');
+              const parentsToRemove = differenceBy(originalSelectedItems.value, modifiedSelectedItems.value, 'id');
               for (const parent of parentsToAdd) {
                 const _parent = await useQuerySync(
                   objectQueryDefinitions.queries.fetch,

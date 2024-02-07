@@ -50,15 +50,13 @@ export interface IVeoFetchObjectLegacyParameters {
   id: string;
 }
 
-export interface IVeoFetchObjectChildrenParameters
-  extends IVeoPaginationOptions {
+export interface IVeoFetchObjectChildrenParameters extends IVeoPaginationOptions {
   domain: string;
   endpoint: string;
   id: string;
 }
 
-export interface IVeoFetchScopeChildrenParameters
-  extends IVeoPaginationOptions {
+export interface IVeoFetchScopeChildrenParameters extends IVeoPaginationOptions {
   domain: string;
   id: string;
 }
@@ -140,9 +138,7 @@ export const formatObject = (object: any) => {
     object.members = [];
   }
   // The frontend sets the display name as the backend only sets it for links. Gets used for example in the breadcrumbs.
-  object.displayName = [object.designator, object.abbreviation, object.name]
-    .filter((part) => part)
-    .join(' ');
+  object.displayName = [object.designator, object.abbreviation, object.name].filter((part) => part).join(' ');
 
   return object;
 };
@@ -165,15 +161,11 @@ export default {
         },
         query: {
           // The frontend only works with hasNoParentElements, but the backend expects hasParentElements
-          hasParentElements:
-            queryParameters.hasNoParentElements === true ? false : undefined,
+          hasParentElements: queryParameters.hasNoParentElements === true ? false : undefined,
           ...omit(queryParameters, 'endpoint')
         }
       })
-    } as IVeoQueryDefinition<
-      IVeoFetchObjectsParameters,
-      IVeoPaginatedResponse<IVeoEntity[]>
-    >,
+    } as IVeoQueryDefinition<IVeoFetchObjectsParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchLegacy: {
       primaryQueryKey: 'legacyObject',
       url: '/api/:endpoint/:id',
@@ -211,10 +203,7 @@ export default {
           id: queryParameters.id
         }
       })
-    } as IVeoQueryDefinition<
-      IVeoFetchObjectChildrenParameters,
-      IVeoPaginatedResponse<IVeoEntity[]>
-    >,
+    } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchScopeChildren: {
       primaryQueryKey: 'childScopes',
       url: '/api/domains/:domain/scopes/:id/members',
@@ -227,10 +216,7 @@ export default {
       queryParameterTransformationFn: (queryParameters) => ({
         params: { domain: route.params.domain, id: queryParameters.id }
       })
-    } as IVeoQueryDefinition<
-      IVeoFetchScopeChildrenParameters,
-      IVeoPaginatedResponse<IVeoEntity[]>
-    >,
+    } as IVeoQueryDefinition<IVeoFetchScopeChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchRisks: {
       primaryQueryKey: 'risks',
       url: '/api/:endpoint/:id/risks',
@@ -269,10 +255,7 @@ export default {
       staticQueryOptions: {
         method: 'POST'
       }
-    } as IVeoQueryDefinition<
-      IVeoFetchWipDecisionEvaluationParameters,
-      IVeoDecisionEvaluation
-    >
+    } as IVeoQueryDefinition<IVeoFetchWipDecisionEvaluationParameters, IVeoDecisionEvaluation>
   },
   mutations: {
     createObject: {
@@ -339,9 +322,7 @@ export default {
         if (!result.members) {
           result.members = [];
         }
-        result.displayName = `${result.designator} ${
-          result.abbreviation || ''
-        } ${result.name}`;
+        result.displayName = `${result.designator} ${result.abbreviation || ''} ${result.name}`;
         return result;
       },
       mutationParameterTransformationFn: (mutationParameters) => {
@@ -437,8 +418,7 @@ export default {
             queryKey: [
               'risk',
               {
-                scenarioId: getEntityDetailsFromLink(variables.json.scenario)
-                  .id,
+                scenarioId: getEntityDetailsFromLink(variables.json.scenario).id,
                 objectId: variables.params?.objectId,
                 endpoint: variables.params?.endpoint
               }

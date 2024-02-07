@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseDialog
-    :model-value="modelValue"
-    :title="t('deleteCustomAspect')"
-    v-bind="$attrs">
+  <BaseDialog :model-value="modelValue" :title="t('deleteCustomAspect')" v-bind="$attrs">
     <template #default>
       <span>{{ t(`delete.${type}`, { title }) }}</span>
     </template>

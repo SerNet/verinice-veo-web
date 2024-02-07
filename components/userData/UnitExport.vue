@@ -25,7 +25,8 @@
     :alert-body="t('alertBody')"
     :items="relevantUnits"
     :is-loading="state.isLoading"
-    :handle-click="exportUnit" />
+    :handle-click="exportUnit"
+  />
 </template>
 
 <script setup lang="ts">

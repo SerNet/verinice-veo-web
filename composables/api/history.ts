@@ -26,21 +26,12 @@ export interface IVeoFetchVersionsParameters {
   domainId: string;
 }
 
-export const useFetchVersions = (
-  queryParameters: Ref<IVeoFetchVersionsParameters>,
-  queryOptions?: QueryOptions
-) => {
-  const { data: endpoints } = useQuery(
-    schemaQueryDefinitions.queries.fetchSchemas
-  );
+export const useFetchVersions = (queryParameters: Ref<IVeoFetchVersionsParameters>, queryOptions?: QueryOptions) => {
+  const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-  const endpoint = computed(
-    () => endpoints.value?.[queryParameters.value.objectType]
-  );
+  const endpoint = computed(() => endpoints.value?.[queryParameters.value.objectType]);
   const queryEnabled = computed(() =>
-    !!endpoint.value && queryOptions?.enabled ?
-      unref(queryOptions?.enabled)
-    : true
+    !!endpoint.value && queryOptions?.enabled ? unref(queryOptions?.enabled) : true
   );
 
   const combinedQueryParameters = computed(() => ({
@@ -49,9 +40,8 @@ export const useFetchVersions = (
     endpoint: endpoint.value as string
   }));
 
-  return useQuery(
-    historyQueryDefinitions.queries.fetchVersions,
-    combinedQueryParameters,
-    { ...queryOptions, enabled: queryEnabled }
-  );
+  return useQuery(historyQueryDefinitions.queries.fetchVersions, combinedQueryParameters, {
+    ...queryOptions,
+    enabled: queryEnabled
+  });
 };

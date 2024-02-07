@@ -5,7 +5,8 @@
     :close-disabled="view.isLoading || view.formIsDirty"
     large
     @keydown.enter="submitForm"
-    @update:model-value="emit('update:show-dialog', $event)">
+    @update:model-value="emit('update:show-dialog', $event)"
+  >
     <BaseCard>
       <v-card-text v-if="item">
         <!-- Read only text fields -->
@@ -13,19 +14,18 @@
           :label="t('requirement')"
           :model-value="form?.control?.displayName"
           readonly
-          variant="underlined" />
+          variant="underlined"
+        />
 
         <v-text-field
           :label="t('riskAffected')"
           :model-value="form?.origin?.displayName"
           readonly
-          variant="underlined" />
+          variant="underlined"
+        />
 
         <!-- Description -->
-        <v-textarea
-          v-model="form.implementationStatement"
-          :label="t('description')"
-          variant="underlined" />
+        <v-textarea v-model="form.implementationStatement" :label="t('description')" variant="underlined" />
 
         <!-- Originiation -->
         <v-radio-group :model-value="form?.origination" inline>
@@ -34,9 +34,7 @@
           </template>
 
           <template v-for="(key, value) in Origination" :key="key">
-            <v-radio
-              :label="t(`originationValues.${value}`)"
-              :value="`${key}`" />
+            <v-radio :label="t(`originationValues.${value}`)" :value="`${key}`" />
           </template>
         </v-radio-group>
 
@@ -50,7 +48,8 @@
           item-value="name"
           return-object
           variant="underlined"
-          class="my-4" />
+          class="my-4"
+        />
 
         <!-- Status -->
         <v-radio-group v-model="form.status" inline>
@@ -66,11 +65,7 @@
       <ObjectFormSkeletonLoader v-else />
     </BaseCard>
     <template #dialog-options>
-      <v-btn
-        flat
-        variant="plain"
-        :disabled="view.isLoading"
-        @click="emit('update:show-dialog', false)">
+      <v-btn flat variant="plain" :disabled="view.isLoading" @click="emit('update:show-dialog', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
@@ -92,7 +87,8 @@
                 request
               })
             )
-        ">
+        "
+      >
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>
@@ -191,21 +187,16 @@ const view = reactive({
 // Load persons from current unit + current domain
 const unitId = computed(() => route.params.unit);
 const domainId = computed(() => route.params.domain);
-const totalItemCount = computed(
-  () => _personsForTotalItemCount?.value?.totalItemCount
-);
+const totalItemCount = computed(() => _personsForTotalItemCount?.value?.totalItemCount);
 
 // Fetch to get total number of persons
-const isFetchingTotalItemCount = computed(
-  () => !!domainId.value && !!unitId.value
-);
+const isFetchingTotalItemCount = computed(() => !!domainId.value && !!unitId.value);
 
-const totalItemCountQueryParameters =
-  computed<IVeoFetchPersonsInDomainParameters>(() => ({
-    domainId: domainId.value as string,
-    unitId: unitId.value as string,
-    size: '1'
-  }));
+const totalItemCountQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
+  domainId: domainId.value as string,
+  unitId: unitId.value as string,
+  size: '1'
+}));
 
 const { data: _personsForTotalItemCount } = useQuery(
   domainQueryDefinitions.queries.fetchPersonsInDomain,
@@ -214,16 +205,13 @@ const { data: _personsForTotalItemCount } = useQuery(
 );
 
 // Fetch again to get all persons in current domain + unit
-const isFetchingPersons = computed(
-  () => !!domainId.value && !!unitId.value && !!totalItemCount
-);
+const isFetchingPersons = computed(() => !!domainId.value && !!unitId.value && !!totalItemCount);
 
-const fetchPersonsInDomainQueryParameters =
-  computed<IVeoFetchPersonsInDomainParameters>(() => ({
-    domainId: domainId.value as string,
-    unitId: unitId.value as string,
-    size: totalItemCount.value
-  }));
+const fetchPersonsInDomainQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
+  domainId: domainId.value as string,
+  unitId: unitId.value as string,
+  size: totalItemCount.value
+}));
 
 const { data: _persons } = useQuery(
   domainQueryDefinitions.queries.fetchPersonsInDomain,
@@ -231,9 +219,7 @@ const { data: _persons } = useQuery(
   { enabled: isFetchingPersons.value }
 );
 
-const persons = computed(() =>
-  mapPersons(_persons?.value?.items as IVeoPersonInDomain[])
-);
+const persons = computed(() => mapPersons(_persons?.value?.items as IVeoPersonInDomain[]));
 
 function mapPersons(persons: IVeoPersonInDomain[]): ResponsiblePerson[] {
   return persons.map((person) => ({
@@ -261,13 +247,9 @@ async function submitForm({
 
   // Filter out empty properties
   const _form = cloneDeep(form);
-  const requirementImplementation = Object.fromEntries(
-    Object.entries(_form).filter(([, value]) => value !== null)
-  );
+  const requirementImplementation = Object.fromEntries(Object.entries(_form).filter(([, value]) => value !== null));
 
-  const requirementImplementationId = getRequirementImplementationId(
-    item._self
-  );
+  const requirementImplementationId = getRequirementImplementationId(item._self);
   const url = `/api/${type}/${riskAffected}/requirement-implementations/${requirementImplementationId}`;
 
   try {
@@ -279,10 +261,7 @@ async function submitForm({
     emit('update:item');
     displaySuccessMessage(t('requirementImplementationUpdated'));
   } catch (error: any) {
-    displayErrorMessage(
-      t('requirementImplementationNotUpdated'),
-      error.message
-    );
+    displayErrorMessage(t('requirementImplementationNotUpdated'), error.message);
   } finally {
     view.isLoading = false;
     emit('update:show-dialog', false);

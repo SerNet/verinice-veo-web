@@ -44,26 +44,11 @@
 
             <div class="mt-6 text-center">
               &copy; {{ currentYear }} &hyphen;
-              <a
-                href="https://www.sernet.de"
-                rel="noopener noreferrer"
-                target="_blank">
-                SerNet GmbH
-              </a>
+              <a href="https://www.sernet.de" rel="noopener noreferrer" target="_blank"> SerNet GmbH </a>
               &hyphen;&nbsp; Es gelten
-              <a
-                :href="privacyPolicyLink"
-                rel="noopener noreferrer"
-                target="_blank"
-                >{{ t('privacyPolicy') }}</a
-              >
+              <a :href="privacyPolicyLink" rel="noopener noreferrer" target="_blank">{{ t('privacyPolicy') }}</a>
               {{ locale === 'de' ? 'und' : 'and' }}
-              <a
-                :href="imprintLink"
-                rel="noopener noreferrer"
-                target="_blank"
-                >{{ t('imprint') }}</a
-              >
+              <a :href="imprintLink" rel="noopener noreferrer" target="_blank">{{ t('imprint') }}</a>
               der SerNet GmbH.
             </div>
           </v-card-text>
@@ -82,19 +67,12 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="(deployment, index) of deploymentInformation"
-                :key="index">
+              <tr v-for="(deployment, index) of deploymentInformation" :key="index">
                 <td>
                   {{ deployment?.build?.name || t('unknown') }}
                 </td>
-                <td
-                  v-if="
-                    deployment?.build?.version &&
-                    deployment?.build?.ci?.buildnumber
-                  ">
-                  {{ deployment.build.version }} ({{ t('build') }}
-                  {{ deployment.build.ci.buildnumber }})
+                <td v-if="deployment?.build?.version && deployment?.build?.ci?.buildnumber">
+                  {{ deployment.build.version }} ({{ t('build') }} {{ deployment.build.ci.buildnumber }})
                 </td>
                 <td v-else>
                   {{ t('unknown') }}
@@ -117,11 +95,7 @@
             <span>{{ t('contributors') }}:</span>&nbsp;
 
             <span v-for="(link, key, index) in links" :key="index">
-              <a
-                class="text-decoration-none text-primary"
-                :href="link"
-                rel="noopener noreferrer"
-                target="_blank">
+              <a class="text-decoration-none text-primary" :href="link" rel="noopener noreferrer" target="_blank">
                 veo-{{ key }}&nbsp;&nbsp;
               </a>
             </span>
@@ -133,9 +107,7 @@
 </template>
 
 <script setup lang="ts">
-import monitoringQueryDefintions, {
-  IVeoDeploymentInformation
-} from '~/composables/api/queryDefinitions/monitoring';
+import monitoringQueryDefintions, { IVeoDeploymentInformation } from '~/composables/api/queryDefinitions/monitoring';
 import { useQuery } from '~/composables/api/utils/query';
 
 const config = useRuntimeConfig();
@@ -179,9 +151,7 @@ const { data: accountingApiDeploymentDetails } = useQuery(
 
 const tab = ref(null);
 
-const deploymentInformation = computed<
-  Record<string, IVeoDeploymentInformation | undefined>
->(() => ({
+const deploymentInformation = computed<Record<string, IVeoDeploymentInformation | undefined>>(() => ({
   app: {
     git: {
       commit: {
@@ -209,24 +179,18 @@ const links = {
   rest: 'https://github.com/SerNet/verinice-veo/graphs/contributors',
   forms: 'https://github.com/SerNet/verinice-veo-forms/graphs/contributors',
   history: 'https://github.com/SerNet/verinice-veo-history/graphs/contributors',
-  reporting:
-    'https://github.com/SerNet/verinice-veo-reporting/graphs/contributors',
-  accounts:
-    'https://github.com/SerNet/verinice-veo-accounts/graphs/contributors'
+  reporting: 'https://github.com/SerNet/verinice-veo-reporting/graphs/contributors',
+  accounts: 'https://github.com/SerNet/verinice-veo-accounts/graphs/contributors'
 };
 
 const date = new Date();
 const currentYear = date.getFullYear();
 
 const imprintLink = computed(() =>
-  locale.value === 'de' ?
-    'https://www.sernet.de/impressum'
-  : 'https://www.sernet.de/en/imprint'
+  locale.value === 'de' ? 'https://www.sernet.de/impressum' : 'https://www.sernet.de/en/imprint'
 );
 const privacyPolicyLink = computed(() =>
-  locale.value === 'de' ?
-    'https://www.sernet.de/datenschutz'
-  : 'https://www.sernet.de/privacy'
+  locale.value === 'de' ? 'https://www.sernet.de/datenschutz' : 'https://www.sernet.de/privacy'
 );
 </script>
 

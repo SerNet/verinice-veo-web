@@ -23,7 +23,8 @@
     class="veo-report-list"
     :items-per-page="tablePageSize"
     :loading="isFetchingReports || isFetchingDomains"
-    @click:row="onRowClicked">
+    @click:row="onRowClicked"
+  >
     <template #no-data>
       <span class="text-center">
         {{ t('noReports') }}
@@ -33,11 +34,9 @@
       <div class="veo-report-list__description">
         <v-tooltip v-if="item.descriptionShort" location="bottom">
           <template #activator="{ props: tooltipProps }">
-            <span
-              v-bind="tooltipProps"
-              class="veo-report-list__description--description"
-              >{{ item.descriptionShort }}</span
-            >
+            <span v-bind="tooltipProps" class="veo-report-list__description--description">{{
+              item.descriptionShort
+            }}</span>
           </template>
           <template #default>
             <span>{{ item.raw.description }}</span>
@@ -87,9 +86,7 @@ const { data: domain, isFetching: isFetchingDomains } = useQuery(
   fetchDomainQueryParameters,
   { enabled: fetchDomainQueryEnabled }
 );
-const { data: reports, isFetching: isFetchingReports } = useQuery(
-  reportQueryDefinitions.queries.fetchAll
-);
+const { data: reports, isFetching: isFetchingReports } = useQuery(reportQueryDefinitions.queries.fetchAll);
 
 /**
  * Filter reports according to domain and GUI language.
@@ -102,11 +99,7 @@ type TFilterReportsParams = {
   _allReports: IVeoReport[];
   _locale: string;
 };
-function filterReports({
-  _domain,
-  _allReports,
-  _locale
-}: TFilterReportsParams) {
+function filterReports({ _domain, _allReports, _locale }: TFilterReportsParams) {
   if (!_domain || !_allReports) return [];
 
   const allReports = Object.entries(_allReports || {});
@@ -118,12 +111,8 @@ function filterReports({
         return targetTypesForReport.some(({ modelType, subTypes }) => {
           // if there is no subType, the report exists in the current domain
           if (subTypes === null) return true;
-          const subTypesInDomain = Object.keys(
-            _domain.elementTypeDefinitions[modelType].subTypes
-          );
-          return subTypesInDomain.some(
-            (subTypeInDomain) => subTypes.indexOf(subTypeInDomain) >= 0
-          );
+          const subTypesInDomain = Object.keys(_domain.elementTypeDefinitions[modelType].subTypes);
+          return subTypesInDomain.some((subTypeInDomain) => subTypes.indexOf(subTypeInDomain) >= 0);
         });
       });
 
@@ -149,9 +138,7 @@ function mapFilterdReports({ reports, locale }: TMapFilteredReportsParams) {
     const [id, report] = r;
 
     const name = report.name[locale] || Object.values(report.name)[0];
-    const targetTypes = report.targetTypes
-      .map((type) => upperFirst(type.modelType))
-      .join(', ');
+    const targetTypes = report.targetTypes.map((type) => upperFirst(type.modelType)).join(', ');
     const outputTypes = report.outputTypes
       .map((type) => {
         const formatParts = type.split('/');
@@ -161,10 +148,7 @@ function mapFilterdReports({ reports, locale }: TMapFilteredReportsParams) {
 
     // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
     let descriptionShort;
-    let description =
-      report.description[locale] ||
-      Object.values(report.description)[0] ||
-      t('noDescriptionAvailable');
+    let description = report.description[locale] || Object.values(report.description)[0] || t('noDescriptionAvailable');
     if (description.length > 80) {
       descriptionShort = description.substring(0, 80) + '...';
 
@@ -225,8 +209,7 @@ const headers = computed(() => {
       sortable: false,
       width: 600,
       truncate: true,
-      tooltip: ({ internalItem: item }: { internalItem: any }) =>
-        item.raw.description || '',
+      tooltip: ({ internalItem: item }: { internalItem: any }) => item.raw.description || '',
       priority: 30,
       order: 30
     },

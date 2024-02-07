@@ -19,16 +19,10 @@
   <BasePage title="Checkbox" fixed-header>
     <v-row justify="center">
       <v-col cols="auto" class="docs-form-sector">
-        <DynamicFormEntrypoint
-          v-model="data"
-          :object-schema="objectSchema"
-          :form-schema="formSchema" />
+        <DynamicFormEntrypoint v-model="data" :object-schema="objectSchema" :form-schema="formSchema" />
       </v-col>
     </v-row>
-    <HelpFormDescription
-      :object-schema="objectSchema"
-      :form-schema="formSchema"
-      :data="data" />
+    <HelpFormDescription :object-schema="objectSchema" :form-schema="formSchema" :data="data" />
   </BasePage>
 </template>
 

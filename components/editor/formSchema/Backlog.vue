@@ -17,9 +17,7 @@
 -->
 <template>
   <div style="height: 100%">
-    <div
-      v-show="!controlElementsVisible && searchQuery"
-      class="text-center mt-1">
+    <div v-show="!controlElementsVisible && searchQuery" class="text-center mt-1">
       <span class="text--disabled">{{ t('searchNoMatch') }}</span>
     </div>
     <div v-show="controlElementsVisible" class="pt-4 text-center">
@@ -45,12 +43,10 @@
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
                 :clone="onCloneFormElement"
-                :item-key="(element: any) => element.description.title">
+                :item-key="(element: any) => element.description.title"
+              >
                 <template #item="{ element }">
-                  <EditorListItem
-                    :title="element.description.title"
-                    :styling="element.description"
-                    translate />
+                  <EditorListItem :title="element.description.title" :styling="element.description" translate />
                 </template>
               </Draggable>
             </v-list>
@@ -63,10 +59,7 @@
           {{ globalT('editor.basicproperties') }} ({{ filteredBasics.length }})
         </v-expansion-panel-title>
         <v-expansion-panel-text>
-          <v-card
-            v-show="filteredBasics.length"
-            variant="outlined"
-            class="overflow-hidden">
+          <v-card v-show="filteredBasics.length" variant="outlined" class="overflow-hidden">
             <v-list class="py-0">
               <Draggable
                 v-model="filteredBasics"
@@ -76,12 +69,10 @@
                 item-key="scope"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
-                :clone="onCloneControl">
+                :clone="onCloneControl"
+              >
                 <template #item="{ element }">
-                  <EditorListItem
-                    :title="element.propertyName"
-                    :styling="typeMap[element.type]"
-                    translate />
+                  <EditorListItem :title="element.propertyName" :styling="typeMap[element.type]" translate />
                 </template>
               </Draggable>
             </v-list>
@@ -94,10 +85,7 @@
           {{ globalT('editor.customaspects') }} ({{ filteredAspects.length }})
         </v-expansion-panel-title>
         <v-expansion-panel-text>
-          <v-card
-            v-if="filteredAspects.length"
-            variant="outlined"
-            class="overflow-hidden">
+          <v-card v-if="filteredAspects.length" variant="outlined" class="overflow-hidden">
             <v-list class="py-0">
               <Draggable
                 :list="filteredAspects"
@@ -107,12 +95,10 @@
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
                 :clone="onCloneControl"
-                item-key="scope">
+                item-key="scope"
+              >
                 <template #item="{ element }">
-                  <EditorListItem
-                    :title="element.backlogTitle"
-                    :styling="typeMap[element.type]"
-                    translate />
+                  <EditorListItem :title="element.backlogTitle" :styling="typeMap[element.type]" translate />
                 </template>
               </Draggable>
             </v-list>
@@ -125,10 +111,7 @@
           {{ globalT('editor.customlinks') }} ({{ filteredLinks.length }})
         </v-expansion-panel-title>
         <v-expansion-panel-text>
-          <v-card
-            v-if="filteredLinks.length"
-            variant="outlined"
-            class="overflow-hidden">
+          <v-card v-if="filteredLinks.length" variant="outlined" class="overflow-hidden">
             <v-list class="py-0">
               <Draggable
                 :list="filteredLinks"
@@ -137,12 +120,10 @@
                 item-key="scope"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
-                :clone="onCloneControl">
+                :clone="onCloneControl"
+              >
                 <template #item="{ element }">
-                  <EditorListItem
-                    :title="element.backlogTitle"
-                    :styling="typeMap[element.type]"
-                    translate />
+                  <EditorListItem :title="element.backlogTitle" :styling="typeMap[element.type]" translate />
                 </template>
               </Draggable>
             </v-list>
@@ -154,10 +135,7 @@
           {{ t('formWidgets') }}
         </v-expansion-panel-title>
         <v-expansion-panel-text>
-          <v-card
-            v-if="filteredWidgets.length"
-            variant="outlined"
-            class="overflow-hidden">
+          <v-card v-if="filteredWidgets.length" variant="outlined" class="overflow-hidden">
             <v-list class="py-0">
               <Draggable
                 :list="filteredWidgets"
@@ -166,17 +144,17 @@
                 style="overflow: auto; min-width: 300"
                 :group="{ name: 'g1', pull: 'clone', put: false }"
                 :sort="false"
-                :clone="onCloneWidget">
+                :clone="onCloneWidget"
+              >
                 <template #item="{ element }">
                   <EditorListItem
-                    :title="
-                      element.name[locale] || Object.values(element.name)[0]
-                    "
+                    :title="element.name[locale] || Object.values(element.name)[0]"
                     :styling="{
                       icon: mdiAutoFix,
                       color: 'grey darken-4',
                       name: upperFirst(t('widget').toString())
-                    }" />
+                    }"
+                  />
                 </template>
               </Draggable>
             </v-list>
@@ -204,16 +182,7 @@ export interface IControl {
   scope: string;
   // TODO: These types are assumed for us to describe easily property type, however e.g. "type: enum" does not exist in JSONSchema standard
   // Therefore, "type: enum", describes the JSONSchema element, which includes "enum: []"
-  type:
-    | 'string'
-    | 'boolean'
-    | 'object'
-    | 'number'
-    | 'integer'
-    | 'array'
-    | 'enum'
-    | 'null'
-    | 'default';
+  type: 'string' | 'boolean' | 'object' | 'number' | 'integer' | 'array' | 'enum' | 'null' | 'default';
   label: string;
   backlogTitle: string;
   propertyName: string;
@@ -290,18 +259,13 @@ export default defineComponent({
 
     // We want to group links but show each custom aspect attribute on their own, thus we use two different regex
     const objectSchemaPropertiesPatterns = {
-      regexAspectsAttributes:
-        /^#\/properties\/customAspects\/properties\/\w+\/properties\/\w+$/,
+      regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/\w+$/,
       regexLinks: /^#\/properties\/links\/properties\/\w+/
     };
 
     // When ObjectSchema is loaded, controls and controlsItems should be initialized to use them in other functions
     function initializeControls() {
-      const createControl = (
-        key: string,
-        value: Record<string, any>,
-        mode: Mode
-      ): IControl => {
+      const createControl = (key: string, value: Record<string, any>, mode: Mode): IControl => {
         const propertyName = key.split('/').slice(-1)[0];
         const label = propertyName.split('_').pop() || '';
         let backlogTitle = propertyName;
@@ -310,30 +274,20 @@ export default defineComponent({
           category = 'aspects';
         } else if (objectSchemaPropertiesPatterns.regexLinks.test(key)) {
           category = 'links';
-          const attributes =
-            value.items?.properties?.attributes?.properties || [];
+          const attributes = value.items?.properties?.attributes?.properties || [];
 
-          for (const [attributeKey, attributeValue] of Object.entries<
-            Record<string, any>
-          >(attributes)) {
+          for (const [attributeKey, attributeValue] of Object.entries<Record<string, any>>(attributes)) {
             if (!nestedControls.value[key]) {
               nestedControls.value[key] = [];
             }
             nestedControls.value[key].push(
-              createControl(
-                `#/properties/attributes/properties/${attributeKey}`,
-                attributeValue,
-                mode
-              )
+              createControl(`#/properties/attributes/properties/${attributeKey}`, attributeValue, mode)
             );
           }
         }
 
         if (category !== 'basics') {
-          backlogTitle = backlogTitle.replace(
-            `${props.formSchema.modelType}_`,
-            ''
-          );
+          backlogTitle = backlogTitle.replace(`${props.formSchema.modelType}_`, '');
           backlogTitle = backlogTitle.replace('_', ' / ');
         }
         return {
@@ -374,17 +328,10 @@ export default defineComponent({
     }
     initializeControls();
 
-    const nonLayoutFormSchemaElements = computed<
-      { type: string; name?: string; scope?: string }[]
-    >(
+    const nonLayoutFormSchemaElements = computed<{ type: string; name?: string; scope?: string }[]>(
       () =>
         Object.values(JsonPointer.flatten(props.formSchema.content, true))
-          .filter(
-            (element: any) =>
-              typeof element === 'object' &&
-              element.type &&
-              element.type !== 'Layout'
-          )
+          .filter((element: any) => typeof element === 'object' && element.type && element.type !== 'Layout')
           .map((element: any) => pick(element, 'type', 'scope', 'name')) as any
     );
 
@@ -407,31 +354,27 @@ export default defineComponent({
           (obj) =>
             obj.category === 'basics' &&
             !nonLayoutFormSchemaElements.value.find(
-              (element) =>
-                element.type === 'Control' && element.scope === obj.scope
+              (element) => element.type === 'Control' && element.scope === obj.scope
             )
         ),
         aspects: controls.value.filter(
           (obj) =>
             obj.category === 'aspects' &&
             !nonLayoutFormSchemaElements.value.find(
-              (element) =>
-                element.type === 'Control' && element.scope === obj.scope
+              (element) => element.type === 'Control' && element.scope === obj.scope
             )
         ),
         links: controls.value.filter(
           (obj) =>
             obj.category === 'links' &&
             !nonLayoutFormSchemaElements.value.find(
-              (element) =>
-                element.type === 'Control' && element.scope === obj.scope
+              (element) => element.type === 'Control' && element.scope === obj.scope
             )
         ),
         widgets: WIDGETS.filter(
           (widget) =>
             !nonLayoutFormSchemaElements.value.find(
-              (element) =>
-                element.type === 'Widget' && element.name === widget.code
+              (element) => element.type === 'Widget' && element.name === widget.code
             )
         )
       };
@@ -439,41 +382,31 @@ export default defineComponent({
 
     const filteredBasics: ComputedRef<IControl[]> = computed(() => {
       return unused.value.basics.filter(
-        (b: any) =>
-          !props.searchQuery ||
-          b.label?.toLowerCase().includes(props.searchQuery)
+        (b: any) => !props.searchQuery || b.label?.toLowerCase().includes(props.searchQuery)
       );
     });
 
     const filteredAspects: ComputedRef<IControl[]> = computed(() => {
       return unused.value.aspects.filter(
-        (a: any) =>
-          !props.searchQuery ||
-          a.label?.toLowerCase().includes(props.searchQuery)
+        (a: any) => !props.searchQuery || a.label?.toLowerCase().includes(props.searchQuery)
       );
     });
 
     const filteredLinks: ComputedRef<IControl[]> = computed(() => {
       return unused.value.links.filter(
-        (l: any) =>
-          !props.searchQuery ||
-          l.label?.toLowerCase().includes(props.searchQuery)
+        (l: any) => !props.searchQuery || l.label?.toLowerCase().includes(props.searchQuery)
       );
     });
 
     const filteredFormElements: ComputedRef<any> = computed(() => {
       return formElements.filter(
-        (f: any) =>
-          !props.searchQuery ||
-          f.description.title?.toLowerCase().includes(props.searchQuery)
+        (f: any) => !props.searchQuery || f.description.title?.toLowerCase().includes(props.searchQuery)
       );
     });
 
     const filteredWidgets = computed(() =>
       unused.value.widgets.filter(
-        (widget) =>
-          !props.searchQuery ||
-          widget.code.toLowerCase().includes(props.searchQuery)
+        (widget) => !props.searchQuery || widget.code.toLowerCase().includes(props.searchQuery)
       )
     );
 

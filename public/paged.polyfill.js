@@ -17,11 +17,9 @@
  */
 
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ?
-    (module.exports = factory())
+  typeof exports === 'object' && typeof module !== 'undefined' ? (module.exports = factory())
   : typeof define === 'function' && define.amd ? define(factory)
-  : ((global = typeof globalThis !== 'undefined' ? globalThis : global || self),
-    (global.PagedPolyfill = factory()));
+  : ((global = typeof globalThis !== 'undefined' ? globalThis : global || self), (global.PagedPolyfill = factory()));
 })(this, function () {
   'use strict';
 
@@ -201,8 +199,7 @@
   };
 
   var validCallable = function (fn) {
-    if (typeof fn !== 'function')
-      throw new TypeError(fn + ' is not a function');
+    if (typeof fn !== 'function') throw new TypeError(fn + ' is not a function');
     return fn;
   };
 
@@ -273,19 +270,13 @@
 
       if (typeof listeners === 'object') {
         for (i = 0; (candidate = listeners[i]); ++i) {
-          if (
-            candidate === listener ||
-            candidate.__eeOnceListener__ === listener
-          ) {
+          if (candidate === listener || candidate.__eeOnceListener__ === listener) {
             if (listeners.length === 2) data[type] = listeners[i ? 0 : 1];
             else listeners.splice(i, 1);
           }
         }
       } else {
-        if (
-          listeners === listener ||
-          listeners.__eeOnceListener__ === listener
-        ) {
+        if (listeners === listener || listeners.__eeOnceListener__ === listener) {
           delete data[type];
         }
       }
@@ -348,9 +339,7 @@
     base = defineProperties({}, descriptors);
 
     module.exports = exports = function (o) {
-      return o == null ?
-          create(base)
-        : defineProperties(Object(o), descriptors);
+      return o == null ? create(base) : defineProperties(Object(o), descriptors);
     };
     exports.methods = methods;
   })(eventEmitter, eventEmitter.exports);
@@ -483,20 +472,14 @@
    */
   function UUID() {
     var d = new Date().getTime();
-    if (
-      typeof performance !== 'undefined' &&
-      typeof performance.now === 'function'
-    ) {
+    if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
       d += performance.now(); //use high-precision timer if available
     }
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
-      /[xy]/g,
-      function (c) {
-        var r = (d + Math.random() * 16) % 16 | 0;
-        d = Math.floor(d / 16);
-        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-      }
-    );
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = (d + Math.random() * 16) % 16 | 0;
+      d = Math.floor(d / 16);
+      return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    });
   }
 
   function attr(element, attributes) {
@@ -544,10 +527,7 @@
         (index == 0 && codeUnit >= 0x0030 && codeUnit <= 0x0039) ||
         // If the character is the second character and is in the range [0-9]
         // (U+0030 to U+0039) and the first character is a `-` (U+002D), […]
-        (index == 1 &&
-          codeUnit >= 0x0030 &&
-          codeUnit <= 0x0039 &&
-          firstCodeUnit == 0x002d)
+        (index == 1 && codeUnit >= 0x0030 && codeUnit <= 0x0039 && firstCodeUnit == 0x002d)
       ) {
         // https://drafts.csswg.org/cssom/#escape-a-character-as-code-point
         result += '\\' + codeUnit.toString(16) + ' ';
@@ -620,9 +600,7 @@
 
   const requestIdleCallback =
     typeof window !== 'undefined' &&
-    ('requestIdleCallback' in window ?
-      window.requestIdleCallback
-    : window.requestAnimationFrame);
+    ('requestIdleCallback' in window ? window.requestIdleCallback : window.requestAnimationFrame);
 
   function CSSValueToString(obj) {
     return obj.value + (obj.unit || '');
@@ -918,20 +896,14 @@
   }
 
   function needsPageBreak(node, previousSignificantNode) {
-    if (
-      typeof node === 'undefined' ||
-      !previousSignificantNode ||
-      isIgnorable(node)
-    ) {
+    if (typeof node === 'undefined' || !previousSignificantNode || isIgnorable(node)) {
       return false;
     }
     if (node.dataset && node.dataset.undisplayed) {
       return false;
     }
     const previousSignificantNodePage =
-      previousSignificantNode.dataset ?
-        previousSignificantNode.dataset.page
-      : undefined;
+      previousSignificantNode.dataset ? previousSignificantNode.dataset.page : undefined;
     const currentNodePage = node.dataset ? node.dataset.page : undefined;
     return currentNodePage !== previousSignificantNodePage;
   }
@@ -944,9 +916,7 @@
 
     let range;
     // @see https://github.com/pagedjs/pagedjs/issues/75
-    const significantWhitespaces =
-      node.parentElement &&
-      getComputedStyle(node.parentElement).whiteSpace === 'pre';
+    const significantWhitespaces = node.parentElement && getComputedStyle(node.parentElement).whiteSpace === 'pre';
 
     while (currentOffset < max) {
       currentLetter = currentText[currentOffset];
@@ -1284,18 +1254,10 @@
       if (!otherBreakToken) {
         return false;
       }
-      if (
-        this['node'] &&
-        otherBreakToken['node'] &&
-        this['node'] !== otherBreakToken['node']
-      ) {
+      if (this['node'] && otherBreakToken['node'] && this['node'] !== otherBreakToken['node']) {
         return false;
       }
-      if (
-        this['offset'] &&
-        otherBreakToken['offset'] &&
-        this['offset'] !== otherBreakToken['offset']
-      ) {
+      if (this['offset'] && otherBreakToken['offset'] && this['offset'] !== otherBreakToken['offset']) {
         return false;
       }
       return true;
@@ -1381,19 +1343,11 @@
             await this.waitForImages(imgs);
           }
 
-          newBreakToken = this.findBreakToken(
-            wrapper,
-            source,
-            bounds,
-            prevBreakToken
-          );
+          newBreakToken = this.findBreakToken(wrapper, source, bounds, prevBreakToken);
 
           if (newBreakToken && newBreakToken.equals(prevBreakToken)) {
             console.warn('Unable to layout item: ', prevNode);
-            return new RenderResult(
-              undefined,
-              new OverflowContentError('Unable to layout item', [prevNode])
-            );
+            return new RenderResult(undefined, new OverflowContentError('Unable to layout item', [prevNode]));
           }
           return new RenderResult(newBreakToken);
         }
@@ -1409,12 +1363,7 @@
             await this.waitForImages(imgs);
           }
 
-          newBreakToken = this.findBreakToken(
-            wrapper,
-            source,
-            bounds,
-            prevBreakToken
-          );
+          newBreakToken = this.findBreakToken(wrapper, source, bounds, prevBreakToken);
 
           if (!newBreakToken) {
             newBreakToken = this.breakAt(node);
@@ -1422,10 +1371,7 @@
 
           if (newBreakToken && newBreakToken.equals(prevBreakToken)) {
             console.warn('Unable to layout item: ', node);
-            return new RenderResult(
-              undefined,
-              new OverflowContentError('Unable to layout item', [node])
-            );
+            return new RenderResult(undefined, new OverflowContentError('Unable to layout item', [node]));
           }
 
           length = 0;
@@ -1453,12 +1399,7 @@
         if (this.forceRenderBreak) {
           this.hooks && this.hooks.layout.trigger(wrapper, this);
 
-          newBreakToken = this.findBreakToken(
-            wrapper,
-            source,
-            bounds,
-            prevBreakToken
-          );
+          newBreakToken = this.findBreakToken(wrapper, source, bounds, prevBreakToken);
 
           if (!newBreakToken) {
             newBreakToken = this.breakAt(node);
@@ -1479,19 +1420,11 @@
             await this.waitForImages(imgs);
           }
 
-          newBreakToken = this.findBreakToken(
-            wrapper,
-            source,
-            bounds,
-            prevBreakToken
-          );
+          newBreakToken = this.findBreakToken(wrapper, source, bounds, prevBreakToken);
 
           if (newBreakToken && newBreakToken.equals(prevBreakToken)) {
             console.warn('Unable to layout item: ', node);
-            return new RenderResult(
-              undefined,
-              new OverflowContentError('Unable to layout item', [node])
-            );
+            return new RenderResult(undefined, new OverflowContentError('Unable to layout item', [node]));
           }
 
           if (newBreakToken) {
@@ -1505,12 +1438,7 @@
 
     breakAt(node, offset = 0) {
       let newBreakToken = new BreakToken(node, offset);
-      let breakHooks = this.hooks.onBreakToken.triggerSync(
-        newBreakToken,
-        undefined,
-        node,
-        this
-      );
+      let breakHooks = this.hooks.onBreakToken.triggerSync(newBreakToken, undefined, node, this);
       breakHooks.forEach((newToken) => {
         if (typeof newToken != 'undefined') {
           newBreakToken = newToken;
@@ -1523,16 +1451,11 @@
     shouldBreak(node) {
       let previousSibling = previousSignificantNode(node);
       let parentNode = node.parentNode;
-      let parentBreakBefore =
-        needsBreakBefore(node) &&
-        parentNode &&
-        !previousSibling &&
-        needsBreakBefore(parentNode);
+      let parentBreakBefore = needsBreakBefore(node) && parentNode && !previousSibling && needsBreakBefore(parentNode);
       let doubleBreakBefore;
 
       if (parentBreakBefore) {
-        doubleBreakBefore =
-          node.dataset.breakBefore === parentNode.dataset.breakBefore;
+        doubleBreakBefore = node.dataset.breakBefore === parentNode.dataset.breakBefore;
       }
 
       return (
@@ -1572,11 +1495,7 @@
           parent = findElement(node.parentNode, fragment);
           if (!parent) {
             dest.appendChild(clone);
-          } else if (
-            breakToken &&
-            isText(breakToken.node) &&
-            breakToken.offset > 0
-          ) {
+          } else if (breakToken && isText(breakToken.node) && breakToken.offset > 0) {
             clone.textContent = clone.textContent.substring(breakToken.offset);
             parent.appendChild(clone);
           } else {
@@ -1670,10 +1589,7 @@
             if (!temp.nextSibling) {
               // We need to ensure that the previous sibling of temp is fully rendered.
               const renderedNodeFromSource = findElement(renderedNode, source);
-              const walker = document.createTreeWalker(
-                renderedNodeFromSource,
-                NodeFilter.SHOW_ELEMENT
-              );
+              const walker = document.createTreeWalker(renderedNodeFromSource, NodeFilter.SHOW_ELEMENT);
               const lastChildOfRenderedNodeFromSource = walker.lastChild();
               const lastChildOfRenderedNodeMatchingFromRendered = findElement(
                 lastChildOfRenderedNodeFromSource,
@@ -1716,10 +1632,7 @@
         renderedNode = findElement(container.parentNode, rendered);
 
         if (!renderedNode) {
-          renderedNode = findElement(
-            prevValidNode(container.parentNode),
-            rendered
-          );
+          renderedNode = findElement(prevValidNode(container.parentNode), rendered);
         }
 
         parent = findElement(renderedNode, source);
@@ -1741,22 +1654,11 @@
       return new BreakToken(node, offset);
     }
 
-    findBreakToken(
-      rendered,
-      source,
-      bounds = this.bounds,
-      prevBreakToken,
-      extract = true
-    ) {
+    findBreakToken(rendered, source, bounds = this.bounds, prevBreakToken, extract = true) {
       let overflow = this.findOverflow(rendered, bounds);
       let breakToken, breakLetter;
 
-      let overflowHooks = this.hooks.onOverflow.triggerSync(
-        overflow,
-        rendered,
-        bounds,
-        this
-      );
+      let overflowHooks = this.hooks.onOverflow.triggerSync(overflow, rendered, bounds, this);
       overflowHooks.forEach((newOverflow) => {
         if (typeof newOverflow != 'undefined') {
           overflow = newOverflow;
@@ -1766,12 +1668,7 @@
       if (overflow) {
         breakToken = this.createBreakToken(overflow, rendered, source);
         // breakToken is nullable
-        let breakHooks = this.hooks.onBreakToken.triggerSync(
-          breakToken,
-          overflow,
-          rendered,
-          this
-        );
+        let breakHooks = this.hooks.onBreakToken.triggerSync(breakToken, overflow, rendered, this);
         breakHooks.forEach((newToken) => {
           if (typeof newToken != 'undefined') {
             breakToken = newToken;
@@ -1783,23 +1680,15 @@
           return breakToken;
         }
 
-        if (
-          breakToken &&
-          breakToken['node'] &&
-          breakToken['offset'] &&
-          breakToken['node'].textContent
-        ) {
-          breakLetter = breakToken['node'].textContent.charAt(
-            breakToken['offset']
-          );
+        if (breakToken && breakToken['node'] && breakToken['offset'] && breakToken['node'].textContent) {
+          breakLetter = breakToken['node'].textContent.charAt(breakToken['offset']);
         } else {
           breakLetter = undefined;
         }
 
         if (breakToken && breakToken.node && extract) {
           let removed = this.removeOverflow(overflow, breakLetter);
-          this.hooks &&
-            this.hooks.afterOverflowRemoved.trigger(removed, rendered, this);
+          this.hooks && this.hooks.afterOverflowRemoved.trigger(removed, rendered, this);
         }
       }
       return breakToken;
@@ -1808,11 +1697,8 @@
     hasOverflow(element, bounds = this.bounds) {
       let constrainingElement = element && element.parentNode; // this gets the element, instead of the wrapper for the width workaround
       let { width } = element.getBoundingClientRect();
-      let scrollWidth =
-        constrainingElement ? constrainingElement.scrollWidth : 0;
-      return (
-        Math.max(Math.floor(width), scrollWidth) > Math.round(bounds.width)
-      );
+      let scrollWidth = constrainingElement ? constrainingElement.scrollWidth : 0;
+      return Math.max(Math.floor(width), scrollWidth) > Math.round(bounds.width);
     }
 
     findOverflow(rendered, bounds = this.bounds) {
@@ -1846,20 +1732,14 @@
 
             // Check if the node is inside a break-inside: avoid table cell
             const insideTableCell = parentOf(node, 'TD', rendered);
-            if (
-              insideTableCell &&
-              window.getComputedStyle(insideTableCell)['break-inside'] ===
-                'avoid'
-            ) {
+            if (insideTableCell && window.getComputedStyle(insideTableCell)['break-inside'] === 'avoid') {
               // breaking inside a table cell produces unexpected result, as a workaround, we forcibly avoid break inside in a cell.
               prev = insideTableCell;
             } else if (isElement(node)) {
               let styles = window.getComputedStyle(node);
               isFloat = styles.getPropertyValue('float') !== 'none';
               skip = styles.getPropertyValue('break-inside') === 'avoid';
-              breakAvoid =
-                node.dataset.breakBefore === 'avoid' ||
-                node.dataset.previousBreakAfter === 'avoid';
+              breakAvoid = node.dataset.breakBefore === 'avoid' || node.dataset.previousBreakAfter === 'avoid';
               prev = breakAvoid && nodeBefore(node, rendered);
               br = node.tagName === 'BR' || node.tagName === 'WBR';
             }
@@ -1884,9 +1764,7 @@
                   while (previousRow !== null) {
                     previousRowColumnCount = 0;
                     for (const cell of Array.from(previousRow.cells)) {
-                      previousRowColumnCount += parseInt(
-                        cell.getAttribute('COLSPAN') || '1'
-                      );
+                      previousRowColumnCount += parseInt(cell.getAttribute('COLSPAN') || '1');
                     }
                     if (previousRowColumnCount === columnCount) {
                       break;
@@ -2075,9 +1953,7 @@
 
         // Add a hyphen if previous character is a letter or soft hyphen
         if (
-          (breakLetter &&
-            /^\w|\u00AD$/.test(prevLetter) &&
-            /^\w|\u00AD$/.test(breakLetter)) ||
+          (breakLetter && /^\w|\u00AD$/.test(prevLetter) && /^\w|\u00AD$/.test(breakLetter)) ||
           (!breakLetter && /^\w|\u00AD$/.test(prevLetter))
         ) {
           startContainer.parentNode.classList.add('pagedjs_hyphen');
@@ -2128,10 +2004,7 @@
       let page, index;
       if (after) {
         this.pagesArea.insertBefore(clone, after.nextElementSibling);
-        index = Array.prototype.indexOf.call(
-          this.pagesArea.children,
-          after.nextElementSibling
-        );
+        index = Array.prototype.indexOf.call(this.pagesArea.children, after.nextElementSibling);
         page = this.pagesArea.children[index];
       } else {
         this.pagesArea.appendChild(clone);
@@ -2145,8 +2018,7 @@
       let size = area.getBoundingClientRect();
 
       area.style.columnWidth = Math.round(size.width) + 'px';
-      area.style.columnGap =
-        'calc(var(--pagedjs-margin-right) + var(--pagedjs-margin-left))';
+      area.style.columnGap = 'calc(var(--pagedjs-margin-right) + var(--pagedjs-margin-left))';
       // area.style.overflow = "scroll";
 
       this.width = Math.round(size.width);
@@ -2229,11 +2101,7 @@
 
       this.layoutMethod = new Layout(this.area, this.hooks, maxChars);
 
-      let renderResult = await this.layoutMethod.renderTo(
-        this.wrapper,
-        contents,
-        breakToken
-      );
+      let renderResult = await this.layoutMethod.renderTo(this.wrapper, contents, breakToken);
       let newBreakToken = renderResult.breakToken;
 
       this.addListeners(contents);
@@ -2248,11 +2116,7 @@
         return this.layout(contents, breakToken);
       }
 
-      let renderResult = await this.layoutMethod.renderTo(
-        this.wrapper,
-        contents,
-        breakToken
-      );
+      let renderResult = await this.layoutMethod.renderTo(this.wrapper, contents, breakToken);
       let newBreakToken = renderResult.breakToken;
 
       this.endToken = newBreakToken;
@@ -2288,20 +2152,9 @@
       if (typeof ResizeObserver !== 'undefined') {
         this.addResizeObserver(contents);
       } else {
-        this._checkOverflowAfterResize = this.checkOverflowAfterResize.bind(
-          this,
-          contents
-        );
-        this.element.addEventListener(
-          'overflow',
-          this._checkOverflowAfterResize,
-          false
-        );
-        this.element.addEventListener(
-          'underflow',
-          this._checkOverflowAfterResize,
-          false
-        );
+        this._checkOverflowAfterResize = this.checkOverflowAfterResize.bind(this, contents);
+        this.element.addEventListener('overflow', this._checkOverflowAfterResize, false);
+        this.element.addEventListener('underflow', this._checkOverflowAfterResize, false);
       }
       // TODO: fall back to mutation observer?
 
@@ -2325,20 +2178,11 @@
       if (typeof ResizeObserver !== 'undefined' && this.ro) {
         this.ro.disconnect();
       } else if (this.element) {
-        this.element.removeEventListener(
-          'overflow',
-          this._checkOverflowAfterResize,
-          false
-        );
-        this.element.removeEventListener(
-          'underflow',
-          this._checkOverflowAfterResize,
-          false
-        );
+        this.element.removeEventListener('overflow', this._checkOverflowAfterResize, false);
+        this.element.removeEventListener('underflow', this._checkOverflowAfterResize, false);
       }
 
-      this.element &&
-        this.element.removeEventListener('scroll', this._onScroll);
+      this.element && this.element.removeEventListener('scroll', this._onScroll);
     }
 
     addResizeObserver(contents) {
@@ -2372,11 +2216,7 @@
         return;
       }
 
-      let newBreakToken = this.layoutMethod.findBreakToken(
-        this.wrapper,
-        contents,
-        this.startToken
-      );
+      let newBreakToken = this.layoutMethod.findBreakToken(this.wrapper, contents, this.startToken);
 
       if (newBreakToken) {
         this.endToken = newBreakToken;
@@ -2448,12 +2288,7 @@
     }
 
     addRefs(content) {
-      var treeWalker = document.createTreeWalker(
-        content,
-        NodeFilter.SHOW_ELEMENT,
-        null,
-        false
-      );
+      var treeWalker = document.createTreeWalker(content, NodeFilter.SHOW_ELEMENT, null, false);
 
       let node = treeWalker.nextNode();
       while (node) {
@@ -2942,19 +2777,11 @@
         return;
       }
 
-      if (
-        node &&
-        typeof node.dataset !== 'undefined' &&
-        typeof node.dataset.previousBreakAfter !== 'undefined'
-      ) {
+      if (node && typeof node.dataset !== 'undefined' && typeof node.dataset.previousBreakAfter !== 'undefined') {
         previousBreakAfter = node.dataset.previousBreakAfter;
       }
 
-      if (
-        node &&
-        typeof node.dataset !== 'undefined' &&
-        typeof node.dataset.breakBefore !== 'undefined'
-      ) {
+      if (node && typeof node.dataset !== 'undefined' && typeof node.dataset.breakBefore !== 'undefined') {
         breakBefore = node.dataset.breakBefore;
       }
 
@@ -2978,29 +2805,15 @@
         breakBefore !== currentPosition
       ) {
         page = this.addPage(true);
-      } else if (
-        breakBefore &&
-        (breakBefore === 'verso' || breakBefore === 'recto') &&
-        breakBefore !== currentSide
-      ) {
+      } else if (breakBefore && (breakBefore === 'verso' || breakBefore === 'recto') && breakBefore !== currentSide) {
         page = this.addPage(true);
       }
 
       if (page) {
-        await this.hooks.beforePageLayout.trigger(
-          page,
-          undefined,
-          undefined,
-          this
-        );
+        await this.hooks.beforePageLayout.trigger(page, undefined, undefined, this);
         this.emit('page', page);
         // await this.hooks.layout.trigger(page.element, page, undefined, this);
-        await this.hooks.afterPageLayout.trigger(
-          page.element,
-          page,
-          undefined,
-          this
-        );
+        await this.hooks.afterPageLayout.trigger(page.element, page, undefined, this);
         this.emit('renderedPage', page);
       }
     }
@@ -3017,23 +2830,13 @@
 
         let page = this.addPage();
 
-        await this.hooks.beforePageLayout.trigger(
-          page,
-          content,
-          breakToken,
-          this
-        );
+        await this.hooks.beforePageLayout.trigger(page, content, breakToken, this);
         this.emit('page', page);
 
         // Layout content in the page, starting from the breakToken
         breakToken = await page.layout(content, breakToken, this.maxChars);
 
-        await this.hooks.afterPageLayout.trigger(
-          page.element,
-          page,
-          breakToken,
-          this
-        );
+        await this.hooks.afterPageLayout.trigger(page.element, page, breakToken, this);
         this.emit('renderedPage', page);
 
         this.recoredCharLength(page.wrapper.textContent.length);
@@ -3056,9 +2859,7 @@
         this.charsPerBreak.shift();
       }
 
-      this.maxChars =
-        this.charsPerBreak.reduce((a, b) => a + b, 0) /
-        this.charsPerBreak.length;
+      this.maxChars = this.charsPerBreak.reduce((a, b) => a + b, 0) / this.charsPerBreak.length;
     }
 
     removePages(fromIndex = 0) {
@@ -3187,29 +2988,16 @@
 
       page.index(this.total);
 
-      await this.hooks.beforePageLayout.trigger(
-        page,
-        undefined,
-        undefined,
-        this
-      );
+      await this.hooks.beforePageLayout.trigger(page, undefined, undefined, this);
       this.emit('page', page);
 
       for (const className of originalPage.element.classList) {
-        if (
-          className !== 'pagedjs_left_page' &&
-          className !== 'pagedjs_right_page'
-        ) {
+        if (className !== 'pagedjs_left_page' && className !== 'pagedjs_right_page') {
           page.element.classList.add(className);
         }
       }
 
-      await this.hooks.afterPageLayout.trigger(
-        page.element,
-        page,
-        undefined,
-        this
-      );
+      await this.hooks.afterPageLayout.trigger(page.element, page, undefined, this);
       this.emit('renderedPage', page);
     }
 
@@ -3312,12 +3100,7 @@
   List$6.createItem = createItem;
   List$6.prototype.createItem = createItem;
 
-  List$6.prototype.updateCursors = function (
-    prevOld,
-    prevNew,
-    nextOld,
-    nextNew
-  ) {
+  List$6.prototype.updateCursors = function (prevOld, prevNew, nextOld, nextNew) {
     var cursor = this.cursor;
 
     while (cursor !== null) {
@@ -3838,10 +3621,7 @@
 
     Object.defineProperty(error, 'stack', {
       get: function () {
-        return (errorStack.stack || '').replace(
-          /^(.+\n){1,3}/,
-          name + ': ' + message + '\n'
-        );
+        return (errorStack.stack || '').replace(/^(.+\n){1,3}/, name + ': ' + message + '\n');
       }
     });
 
@@ -3878,9 +3658,7 @@
     var cutLeft = 0;
 
     // column correction according to replaced tab before column
-    column +=
-      (TAB_REPLACEMENT.length - 1) *
-      (lines[line - 1].substr(0, column - 1).match(/\t/g) || []).length;
+    column += (TAB_REPLACEMENT.length - 1) * (lines[line - 1].substr(0, column - 1).match(/\t/g) || []).length;
 
     if (column > MAX_LINE_LENGTH) {
       cutLeft = column - OFFSET_CORRECTION + 3;
@@ -3919,9 +3697,7 @@
     };
     Object.defineProperty(error, 'formattedMessage', {
       get: function () {
-        return (
-          'Parse error: ' + error.message + '\n' + sourceFragment(error, 2)
-        );
+        return 'Parse error: ' + error.message + '\n' + sourceFragment(error, 2);
       }
     });
 
@@ -4041,10 +3817,7 @@
   // or a code point between U+000E SHIFT OUT and U+001F INFORMATION SEPARATOR ONE, or U+007F DELETE.
   function isNonPrintable(code) {
     return (
-      (code >= 0x0000 && code <= 0x0008) ||
-      code === 0x000b ||
-      (code >= 0x000e && code <= 0x001f) ||
-      code === 0x007f
+      (code >= 0x0000 && code <= 0x0008) || code === 0x000b || (code >= 0x000e && code <= 0x001f) || code === 0x007f
     );
   }
 
@@ -4086,11 +3859,7 @@
     if (first === 0x002d) {
       // If the second code point is a name-start code point or a U+002D HYPHEN-MINUS,
       // or the second and third code points are a valid escape, return true. Otherwise, return false.
-      return (
-        isNameStart(second) ||
-        second === 0x002d ||
-        isValidEscape$2(second, third)
-      );
+      return isNameStart(second) || second === 0x002d || isValidEscape$2(second, third);
     }
 
     // name-start code point
@@ -4240,10 +4009,7 @@
   }
 
   function getNewlineLength$1(source, offset, code) {
-    if (
-      code === 13 /* \r */ &&
-      getCharCode(source, offset + 1) === 10 /* \n */
-    ) {
+    if (code === 13 /* \r */ && getCharCode(source, offset + 1) === 10 /* \n */) {
       return 2;
     }
 
@@ -4327,11 +4093,7 @@
     if (isHexDigit$3(getCharCode(source, offset - 1))) {
       // Consume as many hex digits as possible, but no more than 5.
       // Note that this means 1-6 hex digits have been consumed in total.
-      for (
-        var maxOffset = Math.min(source.length, offset + 5);
-        offset < maxOffset;
-        offset++
-      ) {
+      for (var maxOffset = Math.min(source.length, offset + 5); offset < maxOffset; offset++) {
         if (!isHexDigit$3(getCharCode(source, offset))) {
           break;
         }
@@ -4597,16 +4359,10 @@
     },
     isDelim: function (code, offset) {
       if (offset) {
-        return (
-          this.lookupType(offset) === TYPE$G.Delim &&
-          this.source.charCodeAt(this.lookupOffset(offset)) === code
-        );
+        return this.lookupType(offset) === TYPE$G.Delim && this.source.charCodeAt(this.lookupOffset(offset)) === code;
       }
 
-      return (
-        this.tokenType === TYPE$G.Delim &&
-        this.source.charCodeAt(this.tokenStart) === code
-      );
+      return this.tokenType === TYPE$G.Delim && this.source.charCodeAt(this.tokenStart) === code;
     },
 
     getTokenValue: function () {
@@ -4620,11 +4376,7 @@
     },
 
     skipWS: function () {
-      for (
-        var i = this.tokenIndex, skipTokenCount = 0;
-        i < this.tokenCount;
-        i++, skipTokenCount++
-      ) {
+      for (var i = this.tokenIndex, skipTokenCount = 0; i < this.tokenCount; i++, skipTokenCount++) {
         if (this.offsetAndType[i] >> TYPE_SHIFT$1 !== WHITESPACE$c) {
           break;
         }
@@ -4726,24 +4478,14 @@
       (multiplier.comma ? '#' : '') +
       (multiplier.min === multiplier.max ?
         '{' + multiplier.min + '}'
-      : '{' +
-        multiplier.min +
-        ',' +
-        (multiplier.max !== 0 ? multiplier.max : '') +
-        '}')
+      : '{' + multiplier.min + ',' + (multiplier.max !== 0 ? multiplier.max : '') + '}')
     );
   }
 
   function generateTypeOpts(node) {
     switch (node.type) {
       case 'Range':
-        return (
-          ' [' +
-          (node.min === null ? '-∞' : node.min) +
-          ',' +
-          (node.max === null ? '∞' : node.max) +
-          ']'
-        );
+        return ' [' + (node.min === null ? '-∞' : node.min) + ',' + (node.max === null ? '∞' : node.max) + ']';
 
       default:
         throw new Error('Unknown node type `' + node.type + '`');
@@ -4751,10 +4493,7 @@
   }
 
   function generateSequence(node, decorate, forceBraces, compact) {
-    var combinator =
-      node.combinator === ' ' || compact ?
-        node.combinator
-      : ' ' + node.combinator + ' ';
+    var combinator = node.combinator === ' ' || compact ? node.combinator : ' ' + node.combinator + ' ';
     var result = node.terms
       .map(function (term) {
         return generate$2(term, decorate, forceBraces, compact);
@@ -4762,10 +4501,7 @@
       .join(combinator);
 
     if (node.explicit || forceBraces) {
-      result =
-        (compact || result[0] === ',' ? '[' : '[ ') +
-        result +
-        (compact ? ']' : ' ]');
+      result = (compact || result[0] === ',' ? '[' : '[ ') + result + (compact ? ']' : ' ]');
     }
 
     return result;
@@ -4776,24 +4512,15 @@
 
     switch (node.type) {
       case 'Group':
-        result =
-          generateSequence(node, decorate, forceBraces, compact) +
-          (node.disallowEmpty ? '!' : '');
+        result = generateSequence(node, decorate, forceBraces, compact) + (node.disallowEmpty ? '!' : '');
         break;
 
       case 'Multiplier':
         // return since node is a composition
-        return (
-          generate$2(node.term, decorate, forceBraces, compact) +
-          decorate(generateMultiplier(node), node)
-        );
+        return generate$2(node.term, decorate, forceBraces, compact) + decorate(generateMultiplier(node), node);
 
       case 'Type':
-        result =
-          '<' +
-          node.name +
-          (node.opts ? decorate(generateTypeOpts(node.opts), node.opts) : '') +
-          '>';
+        result = '<' + node.name + (node.opts ? decorate(generateTypeOpts(node.opts), node.opts) : '') + '>';
         break;
 
       case 'Property':
@@ -4853,8 +4580,7 @@
   function locateMismatch(matchResult, node) {
     const tokens = matchResult.tokens;
     const longestMatch = matchResult.longestMatch;
-    const mismatchNode =
-      longestMatch < tokens.length ? tokens[longestMatch].node || null : null;
+    const mismatchNode = longestMatch < tokens.length ? tokens[longestMatch].node || null : null;
     const badNode = mismatchNode !== node ? mismatchNode : null;
     let mismatchOffset = 0;
     let mismatchLength = 0;
@@ -4887,15 +4613,8 @@
       start = fromLoc(badNode || node, 'end') || buildLoc(defaultLoc, css);
       end = buildLoc(start);
     } else {
-      start =
-        fromLoc(badNode, 'start') ||
-        buildLoc(
-          fromLoc(node, 'start') || defaultLoc,
-          css.slice(0, mismatchOffset)
-        );
-      end =
-        fromLoc(badNode, 'end') ||
-        buildLoc(start, css.substr(mismatchOffset, mismatchLength));
+      start = fromLoc(badNode, 'start') || buildLoc(fromLoc(node, 'start') || defaultLoc, css.slice(0, mismatchOffset));
+      end = fromLoc(badNode, 'end') || buildLoc(start, css.substr(mismatchOffset, mismatchLength));
     }
 
     return {
@@ -4929,18 +4648,14 @@
 
       loc.offset += extra.length;
       loc.line += lines.length - 1;
-      loc.column =
-        lines.length === 1 ? loc.column + extra.length : lines.pop().length + 1;
+      loc.column = lines.length === 1 ? loc.column + extra.length : lines.pop().length + 1;
     }
 
     return loc;
   }
 
   const SyntaxReferenceError$1 = function (type, referenceName) {
-    const error = createCustomError$1(
-      'SyntaxReferenceError',
-      type + (referenceName ? ' `' + referenceName + '`' : '')
-    );
+    const error = createCustomError$1('SyntaxReferenceError', type + (referenceName ? ' `' + referenceName + '`' : ''));
 
     error.reference = referenceName;
 
@@ -4949,10 +4664,7 @@
 
   const SyntaxMatchError$1 = function (message, syntax, node, matchResult) {
     const error = createCustomError$1('SyntaxMatchError', message);
-    const { css, mismatchOffset, mismatchLength, start, end } = locateMismatch(
-      matchResult,
-      node
-    );
+    const { css, mismatchOffset, mismatchLength, start, end } = locateMismatch(matchResult, node);
 
     error.rawMessage = message;
     error.syntax = syntax ? generate$1(syntax) : '<generic>';
@@ -5008,10 +4720,7 @@
     // verdor prefix should be at least 3 chars length
     if (str.length - offset >= 3) {
       // vendor prefix starts with hyper minus following non-hyper minus
-      if (
-        str.charCodeAt(offset) === HYPHENMINUS$5 &&
-        str.charCodeAt(offset + 1) !== HYPHENMINUS$5
-      ) {
+      if (str.charCodeAt(offset) === HYPHENMINUS$5 && str.charCodeAt(offset + 1) !== HYPHENMINUS$5) {
         // vendor prefix should contain a hyper minus at the ending
         var secondDashIndex = str.indexOf('-', offset + 2);
 
@@ -5057,14 +4766,7 @@
 
     if (hack === '/') {
       hack = property[1] === '/' ? '//' : '/';
-    } else if (
-      hack !== '_' &&
-      hack !== '*' &&
-      hack !== '$' &&
-      hack !== '#' &&
-      hack !== '+' &&
-      hack !== '&'
-    ) {
+    } else if (hack !== '_' && hack !== '*' && hack !== '$' && hack !== '#' && hack !== '+' && hack !== '&') {
       hack = '';
     }
 
@@ -5099,8 +4801,7 @@
   };
 
   var MIN_SIZE = 16 * 1024;
-  var SafeUint32Array =
-    typeof Uint32Array !== 'undefined' ? Uint32Array : Array; // fallback on Array when TypedArray is not supported
+  var SafeUint32Array = typeof Uint32Array !== 'undefined' ? Uint32Array : Array; // fallback on Array when TypedArray is not supported
 
   var adoptBuffer$2 = function adoptBuffer(buffer, size) {
     if (buffer === null || buffer.length < size) {
@@ -5148,13 +4849,7 @@
       offset = consumeNumber$4(source, offset);
 
       // If the next 3 input code points would start an identifier, then:
-      if (
-        isIdentifierStart$1(
-          getCharCode(offset),
-          getCharCode(offset + 1),
-          getCharCode(offset + 2)
-        )
-      ) {
+      if (isIdentifierStart$1(getCharCode(offset), getCharCode(offset + 1), getCharCode(offset + 2))) {
         // Create a <dimension-token> with the same value and type flag as number, and a unit set initially to the empty string.
         // Consume a name. Set the <dimension-token>’s unit to the returned value.
         // Return the <dimension-token>.
@@ -5184,10 +4879,7 @@
 
       // If string’s value is an ASCII case-insensitive match for "url",
       // and the next input code point is U+0028 LEFT PARENTHESIS ((), consume it.
-      if (
-        cmpStr$4(source, nameStartOffset, offset, 'url') &&
-        getCharCode(offset) === 0x0028
-      ) {
+      if (cmpStr$4(source, nameStartOffset, offset, 'url') && getCharCode(offset) === 0x0028) {
         // While the next two input code points are whitespace, consume the next input code point.
         offset = findWhiteSpaceEnd(source, offset + 1);
 
@@ -5408,10 +5100,7 @@
         // U+0023 NUMBER SIGN (#)
         case 0x0023:
           // If the next input code point is a name code point or the next two input code points are a valid escape, then:
-          if (
-            isName(getCharCode(offset + 1)) ||
-            isValidEscape(getCharCode(offset + 1), getCharCode(offset + 2))
-          ) {
+          if (isName(getCharCode(offset + 1)) || isValidEscape(getCharCode(offset + 1), getCharCode(offset + 2))) {
             // Create a <hash-token>.
             type = TYPE$F.Hash;
 
@@ -5455,13 +5144,7 @@
         // U+002B PLUS SIGN (+)
         case 0x002b:
           // If the input stream starts with a number, ...
-          if (
-            isNumberStart(
-              code,
-              getCharCode(offset + 1),
-              getCharCode(offset + 2)
-            )
-          ) {
+          if (isNumberStart(code, getCharCode(offset + 1), getCharCode(offset + 2))) {
             // ... reconsume the current input code point, consume a numeric token, and return it.
             consumeNumericToken();
           } else {
@@ -5481,31 +5164,16 @@
         // U+002D HYPHEN-MINUS (-)
         case 0x002d:
           // If the input stream starts with a number, reconsume the current input code point, consume a numeric token, and return it.
-          if (
-            isNumberStart(
-              code,
-              getCharCode(offset + 1),
-              getCharCode(offset + 2)
-            )
-          ) {
+          if (isNumberStart(code, getCharCode(offset + 1), getCharCode(offset + 2))) {
             consumeNumericToken();
           } else {
             // Otherwise, if the next 2 input code points are U+002D HYPHEN-MINUS U+003E GREATER-THAN SIGN (->), consume them and return a <CDC-token>.
-            if (
-              getCharCode(offset + 1) === 0x002d &&
-              getCharCode(offset + 2) === 0x003e
-            ) {
+            if (getCharCode(offset + 1) === 0x002d && getCharCode(offset + 2) === 0x003e) {
               type = TYPE$F.CDC;
               offset = offset + 3;
             } else {
               // Otherwise, if the input stream starts with an identifier, ...
-              if (
-                isIdentifierStart$1(
-                  code,
-                  getCharCode(offset + 1),
-                  getCharCode(offset + 2)
-                )
-              ) {
+              if (isIdentifierStart$1(code, getCharCode(offset + 1), getCharCode(offset + 2))) {
                 // ... reconsume the current input code point, consume an ident-like token, and return it.
                 consumeIdentLikeToken();
               } else {
@@ -5520,13 +5188,7 @@
         // U+002E FULL STOP (.)
         case 0x002e:
           // If the input stream starts with a number, ...
-          if (
-            isNumberStart(
-              code,
-              getCharCode(offset + 1),
-              getCharCode(offset + 2)
-            )
-          ) {
+          if (isNumberStart(code, getCharCode(offset + 1), getCharCode(offset + 2))) {
             // ... reconsume the current input code point, consume a numeric token, and return it.
             consumeNumericToken();
           } else {
@@ -5590,13 +5252,7 @@
         // U+0040 COMMERCIAL AT (@)
         case 0x0040:
           // If the next 3 input code points would start an identifier, ...
-          if (
-            isIdentifierStart$1(
-              getCharCode(offset + 1),
-              getCharCode(offset + 2),
-              getCharCode(offset + 3)
-            )
-          ) {
+          if (isIdentifierStart$1(getCharCode(offset + 1), getCharCode(offset + 2), getCharCode(offset + 3))) {
             // ... consume a name, create an <at-keyword-token> with its value set to the returned value, and return it.
             type = TYPE$F.AtKeyword;
             offset = consumeName(source, offset + 1);
@@ -5764,18 +5420,11 @@
   var ALLOW_SIGN$1 = false;
 
   function isDelim$1(token, code) {
-    return (
-      token !== null &&
-      token.type === DELIM$6 &&
-      token.value.charCodeAt(0) === code
-    );
+    return token !== null && token.type === DELIM$6 && token.value.charCodeAt(0) === code;
   }
 
   function skipSC(token, offset, getNextToken) {
-    while (
-      token !== null &&
-      (token.type === WHITESPACE$b || token.type === COMMENT$9)
-    ) {
+    while (token !== null && (token.type === WHITESPACE$b || token.type === COMMENT$9)) {
       token = getNextToken(++offset);
     }
 
@@ -5863,10 +5512,7 @@
     // -n ['+' | '-'] <signless-integer>
     // -n- <signless-integer>
     // <dashndashdigit-ident>
-    else if (
-      token.type === IDENT$i &&
-      token.value.charCodeAt(0) === HYPHENMINUS$4
-    ) {
+    else if (token.type === IDENT$i && token.value.charCodeAt(0) === HYPHENMINUS$4) {
       // expect 1st char is N
       if (!cmpChar$4(token.value, 1, N$4)) {
         return 0;
@@ -5905,11 +5551,7 @@
     // '+'? n ['+' | '-'] <signless-integer>
     // '+'? n- <signless-integer>
     // '+'? <ndashdigit-ident>
-    else if (
-      token.type === IDENT$i ||
-      (isDelim$1(token, PLUSSIGN$8) &&
-        getNextToken(offset + 1).type === IDENT$i)
-    ) {
+    else if (token.type === IDENT$i || (isDelim$1(token, PLUSSIGN$8) && getNextToken(offset + 1).type === IDENT$i)) {
       // just ignore a plus
       if (token.type !== IDENT$i) {
         token = getNextToken(++offset);
@@ -6012,11 +5654,7 @@
   var U$2 = 0x0075; // U+0075 LATIN SMALL LETTER U (u)
 
   function isDelim(token, code) {
-    return (
-      token !== null &&
-      token.type === DELIM$5 &&
-      token.value.charCodeAt(0) === code
-    );
+    return token !== null && token.type === DELIM$5 && token.value.charCodeAt(0) === code;
   }
 
   function startsWith$1(token, code) {
@@ -6086,11 +5724,7 @@
     var length = 0;
 
     // should start with `u` or `U`
-    if (
-      token === null ||
-      token.type !== IDENT$h ||
-      !cmpChar$3(token.value, 0, U$2)
-    ) {
+    if (token === null || token.type !== IDENT$h || !cmpChar$3(token.value, 0, U$2)) {
       return 0;
     }
 
@@ -6109,11 +5743,7 @@
 
       if (token.type === IDENT$h) {
         // u '+' <ident-token> '?'*
-        return withQuestionMarkSequence(
-          hexSequence(token, 0, true),
-          ++length,
-          getNextToken
-        );
+        return withQuestionMarkSequence(hexSequence(token, 0, true), ++length, getNextToken);
       }
 
       if (isDelim(token, QUESTIONMARK$2)) {
@@ -6147,10 +5777,7 @@
       if (token.type === DIMENSION$6 || token.type === NUMBER$8) {
         // u <number-token> <dimension-token>
         // u <number-token> <number-token>
-        if (
-          !startsWith$1(token, HYPHENMINUS$3) ||
-          !hexSequence(token, 1, false)
-        ) {
+        if (!startsWith$1(token, HYPHENMINUS$3) || !hexSequence(token, 1, false)) {
           return 0;
         }
 
@@ -6167,11 +5794,7 @@
         return 0;
       }
 
-      return withQuestionMarkSequence(
-        hexSequence(token, 1, true),
-        ++length,
-        getNextToken
-      );
+      return withQuestionMarkSequence(hexSequence(token, 1, true), ++length, getNextToken);
     }
 
     return 0;
@@ -6288,11 +5911,7 @@
 
   function outOfRange(opts, value, numEnd) {
     if (opts && opts.type === 'Range') {
-      var num = Number(
-        numEnd !== undefined && numEnd !== value.length ?
-          value.substr(0, numEnd)
-        : value
-      );
+      var num = Number(numEnd !== undefined && numEnd !== value.length ? value.substr(0, numEnd) : value);
 
       if (isNaN(num)) {
         return true;
@@ -6335,10 +5954,7 @@
         return 0;
       }
 
-      if (
-        token.type === TYPE$C.Function &&
-        eqStrAny(token.value, calcFunctionNames)
-      ) {
+      if (token.type === TYPE$C.Function && eqStrAny(token.value, calcFunctionNames)) {
         return consumeFunction(token, getNextToken);
       }
 
@@ -6417,10 +6033,7 @@
     }
 
     // ... that starts with two dashes (U+002D HYPHEN-MINUS)
-    if (
-      charCode(token.value, 0) !== 0x002d ||
-      charCode(token.value, 1) !== 0x002d
-    ) {
+    if (charCode(token.value, 0) !== 0x002d || charCode(token.value, 1) !== 0x002d) {
       return 0;
     }
 
@@ -6457,13 +6070,7 @@
       return 0;
     }
 
-    if (
-      !isIdentifierStart(
-        charCode(token.value, 1),
-        charCode(token.value, 2),
-        charCode(token.value, 3)
-      )
-    ) {
+    if (!isIdentifierStart(charCode(token.value, 1), charCode(token.value, 2), charCode(token.value, 3))) {
       return 0;
     }
 
@@ -6596,10 +6203,7 @@
         // check for IE postfix hack, i.e. 123px\0 or 123px\9
         var reverseSolidusOffset = token.value.indexOf('\\', numberEnd);
         var unit =
-          (
-            reverseSolidusOffset === -1 ||
-            !isPostfixIeHack(token.value, reverseSolidusOffset)
-          ) ?
+          reverseSolidusOffset === -1 || !isPostfixIeHack(token.value, reverseSolidusOffset) ?
             token.value.substr(numberEnd)
           : token.value.substring(numberEnd, reverseSolidusOffset);
 
@@ -6832,13 +6436,7 @@
     findWsEnd: function (pos) {
       for (; pos < this.str.length; pos++) {
         var code = this.str.charCodeAt(pos);
-        if (
-          code !== R$2 &&
-          code !== N$3 &&
-          code !== F$2 &&
-          code !== SPACE$2 &&
-          code !== TAB$1
-        ) {
+        if (code !== R$2 && code !== N$3 && code !== F$2 && code !== SPACE$2 && code !== TAB$1) {
           break;
         }
       }
@@ -6902,8 +6500,7 @@
   };
 
   function createCharMap(fn) {
-    var array =
-      typeof Uint32Array === 'function' ? new Uint32Array(128) : new Array(128);
+    var array = typeof Uint32Array === 'function' ? new Uint32Array(128) : new Array(128);
     for (var i = 0; i < 128; i++) {
       array[i] = fn(String.fromCharCode(i)) ? 1 : 0;
     }
@@ -7158,18 +6755,12 @@
     tokenizer.eat(LESSTHANSIGN);
     name = scanWord(tokenizer);
 
-    if (
-      tokenizer.charCode() === LEFTPARENTHESIS$7 &&
-      tokenizer.nextCharCode() === RIGHTPARENTHESIS$7
-    ) {
+    if (tokenizer.charCode() === LEFTPARENTHESIS$7 && tokenizer.nextCharCode() === RIGHTPARENTHESIS$7) {
       tokenizer.pos += 2;
       name += '()';
     }
 
-    if (
-      tokenizer.charCodeAt(tokenizer.findWsEnd(tokenizer.pos)) ===
-      LEFTSQUAREBRACKET$4
-    ) {
+    if (tokenizer.charCodeAt(tokenizer.findWsEnd(tokenizer.pos)) === LEFTSQUAREBRACKET$4) {
       scanSpaces(tokenizer);
       opts = readTypeRange(tokenizer);
     }
@@ -7231,11 +6822,7 @@
             i--;
           } else {
             if (subgroupStart !== -1 && i - subgroupStart > 1) {
-              terms.splice(
-                subgroupStart,
-                i - subgroupStart,
-                createGroup(terms.slice(subgroupStart, i), combinator)
-              );
+              terms.splice(subgroupStart, i - subgroupStart, createGroup(terms.slice(subgroupStart, i), combinator));
               i = subgroupStart + 1;
             }
             subgroupStart = -1;
@@ -7244,11 +6831,7 @@
       }
 
       if (subgroupStart !== -1 && combinators.length) {
-        terms.splice(
-          subgroupStart,
-          i - subgroupStart,
-          createGroup(terms.slice(subgroupStart, i), combinator)
-        );
+        terms.splice(subgroupStart, i - subgroupStart, createGroup(terms.slice(subgroupStart, i), combinator));
       }
     }
 
@@ -7334,17 +6917,13 @@
         return maybeMultiplied(tokenizer, readGroup(tokenizer));
 
       case LESSTHANSIGN:
-        return tokenizer.nextCharCode() === APOSTROPHE ?
-            readProperty$1(tokenizer)
-          : readType(tokenizer);
+        return tokenizer.nextCharCode() === APOSTROPHE ? readProperty$1(tokenizer) : readType(tokenizer);
 
       case VERTICALLINE$3:
         return {
           type: 'Combinator',
           value: tokenizer.substringToPos(
-            tokenizer.nextCharCode() === VERTICALLINE$3 ?
-              tokenizer.pos + 2
-            : tokenizer.pos + 1
+            tokenizer.nextCharCode() === VERTICALLINE$3 ? tokenizer.pos + 2 : tokenizer.pos + 1
           )
         };
 
@@ -7485,9 +7064,7 @@
     }
 
     if (enter === noop$2 && leave === noop$2) {
-      throw new Error(
-        "Neither `enter` nor `leave` walker handler is set or both aren't a function"
-      );
+      throw new Error("Neither `enter` nor `leave` walker handler is set or both aren't a function");
     }
 
     walk(node);
@@ -7539,10 +7116,7 @@
 
     while (!tokenStream.eof) {
       if (nodes) {
-        while (
-          nodesIndex < nodes.length &&
-          nodesOffset + nodes[nodesIndex].len <= tokenStream.tokenStart
-        ) {
+        while (nodesIndex < nodes.length && nodesOffset + nodes[nodesIndex].len <= tokenStream.tokenStart) {
           nodesOffset += nodes[nodesIndex++].len;
           currentNode = nodes[nodesIndex].node;
         }
@@ -7588,11 +7162,7 @@
       return match;
     }
 
-    if (
-      match.type === 'If' &&
-      match.else === MISMATCH$1 &&
-      thenBranch === MATCH$1
-    ) {
+    if (match.type === 'If' && match.else === MISMATCH$1 && thenBranch === MATCH$1) {
       thenBranch = match.then;
       match = match.match;
     }
@@ -7679,10 +7249,7 @@
             }
 
             if (map !== null) {
-              var key = (
-                isFunctionType(term.name) ?
-                  term.name.slice(0, -1)
-                : term.name).toLowerCase();
+              var key = (isFunctionType(term.name) ? term.name.slice(0, -1) : term.name).toLowerCase();
               if (key in map === false) {
                 map[key] = term;
                 continue;
@@ -7840,28 +7407,16 @@
       );
 
       if (node.comma) {
-        result.then.else = createCondition(
-          { type: 'Comma', syntax: node },
-          result,
-          MISMATCH$1
-        );
+        result.then.else = createCondition({ type: 'Comma', syntax: node }, result, MISMATCH$1);
       }
     } else {
       // create a match node chain for [min .. max] interval with optional matches
       for (var i = node.min || 1; i <= node.max; i++) {
         if (node.comma && result !== MATCH$1) {
-          result = createCondition(
-            { type: 'Comma', syntax: node },
-            result,
-            MISMATCH$1
-          );
+          result = createCondition({ type: 'Comma', syntax: node }, result, MISMATCH$1);
         }
 
-        result = createCondition(
-          matchTerm,
-          createCondition(MATCH$1, MATCH$1, result),
-          MISMATCH$1
-        );
+        result = createCondition(matchTerm, createCondition(MATCH$1, MATCH$1, result), MISMATCH$1);
       }
     }
 
@@ -7872,11 +7427,7 @@
       // create a match node chain to collect [0 ... min - 1] required matches
       for (var i = 0; i < node.min - 1; i++) {
         if (node.comma && result !== MATCH$1) {
-          result = createCondition(
-            { type: 'Comma', syntax: node },
-            result,
-            MISMATCH$1
-          );
+          result = createCondition({ type: 'Comma', syntax: node }, result, MISMATCH$1);
         }
 
         result = createCondition(matchTerm, result, MISMATCH$1);
@@ -7896,11 +7447,7 @@
 
     switch (node.type) {
       case 'Group':
-        var result = buildGroupMatchGraph(
-          node.combinator,
-          node.terms.map(buildMatchGraph$1),
-          false
-        );
+        var result = buildGroupMatchGraph(node.combinator, node.terms.map(buildMatchGraph$1), false);
 
         if (node.disallowEmpty) {
           result = createCondition(result, DISALLOW_EMPTY$1, MISMATCH$1);
@@ -7953,9 +7500,7 @@
         // otherwise use it as is
         return {
           type: node.type,
-          value: node.value
-            .substr(1, node.value.length - 2)
-            .replace(/\\'/g, "'"),
+          value: node.value.substr(1, node.value.length - 2).replace(/\\'/g, "'"),
           syntax: node
         };
 
@@ -8095,10 +7640,7 @@
       do {
         tokenIndex++;
         token = tokenIndex < tokens.length ? tokens[tokenIndex] : null;
-      } while (
-        token !== null &&
-        (token.type === TYPE$B.WhiteSpace || token.type === TYPE$B.Comment)
-      );
+      } while (token !== null && (token.type === TYPE$B.WhiteSpace || token.type === TYPE$B.Comment));
     }
 
     function getNextToken(offset) {
@@ -8150,10 +7692,7 @@
     function openSyntax() {
       syntaxStack = {
         syntax: state.syntax,
-        opts:
-          state.syntax.opts ||
-          (syntaxStack !== null && syntaxStack.opts) ||
-          null,
+        opts: state.syntax.opts || (syntaxStack !== null && syntaxStack.opts) || null,
         prev: syntaxStack
       };
 
@@ -8228,10 +7767,7 @@
             // turn to MISMATCH when some tokens left unmatched
             if (token !== null) {
               // doesn't mismatch if just one token left and it's an IE hack
-              if (
-                tokenIndex !== tokens.length - 1 ||
-                (token.value !== '\\0' && token.value !== '\\9')
-              ) {
+              if (tokenIndex !== tokens.length - 1 || (token.value !== '\\0' && token.value !== '\\9')) {
                 state = MISMATCH;
                 break;
               }
@@ -8391,8 +7927,7 @@
 
         case 'Generic':
           var opts = syntaxStack !== null ? syntaxStack.opts : null;
-          var lastTokenIndex =
-            tokenIndex + Math.floor(state.fn(token, getNextToken, opts));
+          var lastTokenIndex = tokenIndex + Math.floor(state.fn(token, getNextToken, opts));
 
           if (!isNaN(lastTokenIndex) && lastTokenIndex > tokenIndex) {
             while (tokenIndex < lastTokenIndex) {
@@ -8409,26 +7944,16 @@
         case 'Type':
         case 'Property':
           var syntaxDict = state.type === 'Type' ? 'types' : 'properties';
-          var dictSyntax =
-            hasOwnProperty$6.call(syntaxes, syntaxDict) ?
-              syntaxes[syntaxDict][state.name]
-            : null;
+          var dictSyntax = hasOwnProperty$6.call(syntaxes, syntaxDict) ? syntaxes[syntaxDict][state.name] : null;
 
           if (!dictSyntax || !dictSyntax.match) {
             throw new Error(
-              'Bad syntax reference: ' +
-                (state.type === 'Type' ?
-                  '<' + state.name + '>'
-                : "<'" + state.name + "'>")
+              'Bad syntax reference: ' + (state.type === 'Type' ? '<' + state.name + '>' : "<'" + state.name + "'>")
             );
           }
 
           // stash a syntax for types with low priority
-          if (
-            syntaxStash !== false &&
-            token !== null &&
-            state.type === 'Type'
-          ) {
+          if (syntaxStash !== false && token !== null && state.type === 'Type') {
             var lowPriorityMatching =
               // https://drafts.csswg.org/css-values-4/#custom-idents
               // When parsing positionally-ambiguous keywords in a property value, a <custom-ident> production
@@ -8476,10 +8001,7 @@
 
         case 'AtKeyword':
         case 'Function':
-          if (
-            token !== null &&
-            areStringsEqualCaseInsensitive(token.value, state.name)
-          ) {
+          if (token !== null && areStringsEqualCaseInsensitive(token.value, state.name)) {
             addTokenToMatch();
             state = MATCH;
             break;
@@ -8507,13 +8029,7 @@
               state = isCommaContextEnd(token) ? MISMATCH : MATCH;
             }
           } else {
-            state =
-              (
-                isCommaContextStart(matchStack.token) ||
-                isCommaContextEnd(token)
-              ) ?
-                MATCH
-              : MISMATCH;
+            state = isCommaContextStart(matchStack.token) || isCommaContextEnd(token) ? MATCH : MISMATCH;
           }
 
           break;
@@ -8523,8 +8039,7 @@
 
           for (
             var lastTokenIndex = tokenIndex;
-            lastTokenIndex < tokens.length &&
-            string.length < state.value.length;
+            lastTokenIndex < tokens.length && string.length < state.value.length;
             lastTokenIndex++
           ) {
             string += tokens[lastTokenIndex].value;
@@ -8551,9 +8066,7 @@
 
     switch (exitReason) {
       case null:
-        console.warn(
-          '[csstree-match] BREAK after ' + ITERATION_LIMIT + ' iterations'
-        );
+        console.warn('[csstree-match] BREAK after ' + ITERATION_LIMIT + ' iterations');
         exitReason = EXIT_REASON_ITERATION_LIMIT;
         matchStack = null;
         break;
@@ -8676,11 +8189,7 @@
         return false;
       }
 
-      return (
-        syntax.type === 'Type' ||
-        syntax.type === 'Property' ||
-        syntax.type === 'Keyword'
-      );
+      return syntax.type === 'Type' || syntax.type === 'Property' || syntax.type === 'Keyword';
     }
 
     function hasMatch(matchNode) {
@@ -8768,11 +8277,7 @@
 
   function matchFragments(lexer, ast, match, type, name) {
     function findFragments(matchNode) {
-      if (
-        matchNode.syntax !== null &&
-        matchNode.syntax.type === type &&
-        matchNode.syntax.name === name
-      ) {
+      if (matchNode.syntax !== null && matchNode.syntax.type === type && matchNode.syntax.name === name) {
         var start = getFirstMatchNode(matchNode);
         var end = getLastMatchNode(matchNode);
 
@@ -8821,21 +8326,11 @@
 
   function isValidNumber(value) {
     // Number.isInteger(value) && value >= 0
-    return (
-      typeof value === 'number' &&
-      isFinite(value) &&
-      Math.floor(value) === value &&
-      value >= 0
-    );
+    return typeof value === 'number' && isFinite(value) && Math.floor(value) === value && value >= 0;
   }
 
   function isValidLocation(loc) {
-    return (
-      Boolean(loc) &&
-      isValidNumber(loc.offset) &&
-      isValidNumber(loc.line) &&
-      isValidNumber(loc.column)
-    );
+    return Boolean(loc) && isValidNumber(loc.offset) && isValidNumber(loc.line) && isValidNumber(loc.column);
   }
 
   function createNodeStructureChecker(type, fields) {
@@ -8853,10 +8348,7 @@
 
         if (key === 'type') {
           if (node.type !== type) {
-            warn(
-              node,
-              'Wrong node type `' + node.type + '`, expected `' + type + '`'
-            );
+            warn(node, 'Wrong node type `' + node.type + '`, expected `' + type + '`');
           }
         } else if (key === 'loc') {
           if (node.loc === null) {
@@ -8875,11 +8367,7 @@
 
           valid = false;
         } else if (fields.hasOwnProperty(key)) {
-          for (
-            var i = 0, valid = false;
-            !valid && i < fields[key].length;
-            i++
-          ) {
+          for (var i = 0, valid = false; !valid && i < fields[key].length; i++) {
             var fieldType = fields[key][i];
 
             switch (fieldType) {
@@ -8913,10 +8401,7 @@
       }
 
       for (var key in fields) {
-        if (
-          hasOwnProperty$5.call(fields, key) &&
-          hasOwnProperty$5.call(node, key) === false
-        ) {
+        if (hasOwnProperty$5.call(fields, key) && hasOwnProperty$5.call(node, key) === false) {
           warn(node, 'Field `' + type + '.' + key + '` is missed');
         }
       }
@@ -8939,10 +8424,7 @@
       }
 
       var docsTypes = [];
-      var fieldTypes = (fields[key] =
-        Array.isArray(structure[key]) ?
-          structure[key].slice()
-        : [structure[key]]);
+      var fieldTypes = (fields[key] = Array.isArray(structure[key]) ? structure[key].slice() : [structure[key]]);
 
       for (var i = 0; i < fieldTypes.length; i++) {
         var fieldType = fieldTypes[i];
@@ -8955,15 +8437,7 @@
         } else if (Array.isArray(fieldType)) {
           docsTypes.push('List'); // TODO: use type enum
         } else {
-          throw new Error(
-            'Wrong value `' +
-              fieldType +
-              '` in `' +
-              name +
-              '.' +
-              key +
-              '` structure definition'
-          );
+          throw new Error('Wrong value `' + fieldType + '` in `' + name + '.' + key + '` structure definition');
         }
       }
 
@@ -8988,11 +8462,7 @@
             if (nodeType.structure) {
               structure[name] = processStructure(name, nodeType);
             } else {
-              throw new Error(
-                'Missed `structure` field in `' +
-                  name +
-                  '` node type definition'
-              );
+              throw new Error('Missed `structure` field in `' + name + '` node type definition');
             }
           }
         }
@@ -9016,19 +8486,14 @@
   var search = search$1;
   var getStructureFromConfig = structure.getStructureFromConfig;
   var cssWideKeywords = buildMatchGraph('inherit | initial | unset');
-  var cssWideKeywordsWithExpression = buildMatchGraph(
-    'inherit | initial | unset | <-ms-legacy-expression>'
-  );
+  var cssWideKeywordsWithExpression = buildMatchGraph('inherit | initial | unset | <-ms-legacy-expression>');
 
   function dumpMapSyntax(map, compact, syntaxAsAst) {
     var result = {};
 
     for (var name in map) {
       if (map[name].syntax) {
-        result[name] =
-          syntaxAsAst ?
-            map[name].syntax
-          : generate(map[name].syntax, { compact: compact });
+        result[name] = syntaxAsAst ? map[name].syntax : generate(map[name].syntax, { compact: compact });
       }
     }
 
@@ -9040,14 +8505,8 @@
 
     for (const [name, atrule] of Object.entries(map)) {
       result[name] = {
-        prelude:
-          atrule.prelude &&
-          (syntaxAsAst ?
-            atrule.prelude.syntax
-          : generate(atrule.prelude.syntax, { compact })),
-        descriptors:
-          atrule.descriptors &&
-          dumpMapSyntax(atrule.descriptors, compact, syntaxAsAst)
+        prelude: atrule.prelude && (syntaxAsAst ? atrule.prelude.syntax : generate(atrule.prelude.syntax, { compact })),
+        descriptors: atrule.descriptors && dumpMapSyntax(atrule.descriptors, compact, syntaxAsAst)
       };
     }
 
@@ -9081,10 +8540,7 @@
     var result;
 
     if (valueHasVar(tokens)) {
-      return buildMatchResult(
-        null,
-        new Error('Matching for a tree with var() is not supported')
-      );
+      return buildMatchResult(null, new Error('Matching for a tree with var() is not supported'));
     }
 
     if (useCommon) {
@@ -9219,19 +8675,11 @@
       this.atrules[name] = {
         type: 'Atrule',
         name: name,
-        prelude:
-          syntax.prelude ?
-            this.createDescriptor(syntax.prelude, 'AtrulePrelude', name)
-          : null,
+        prelude: syntax.prelude ? this.createDescriptor(syntax.prelude, 'AtrulePrelude', name) : null,
         descriptors:
           syntax.descriptors ?
             Object.keys(syntax.descriptors).reduce((res, descName) => {
-              res[descName] = this.createDescriptor(
-                syntax.descriptors[descName],
-                'AtruleDescriptor',
-                descName,
-                name
-              );
+              res[descName] = this.createDescriptor(syntax.descriptors[descName], 'AtruleDescriptor', descName, name);
               return res;
             }, {})
           : null
@@ -9271,15 +8719,11 @@
       var atrule = this.getAtrule(atruleName);
 
       if (!atrule.prelude && prelude) {
-        return new SyntaxError(
-          'At-rule `@' + atruleName + '` should not contain a prelude'
-        );
+        return new SyntaxError('At-rule `@' + atruleName + '` should not contain a prelude');
       }
 
       if (atrule.prelude && !prelude) {
-        return new SyntaxError(
-          'At-rule `@' + atruleName + '` should contain a prelude'
-        );
+        return new SyntaxError('At-rule `@' + atruleName + '` should contain a prelude');
       }
     },
     checkAtruleDescriptorName: function (atruleName, descriptorName) {
@@ -9293,19 +8737,11 @@
       var descriptor = names$1.keyword(descriptorName);
 
       if (!atrule.descriptors) {
-        return new SyntaxError(
-          'At-rule `@' + atruleName + '` has no known descriptors'
-        );
+        return new SyntaxError('At-rule `@' + atruleName + '` has no known descriptors');
       }
 
-      if (
-        !atrule.descriptors[descriptor.name] &&
-        !atrule.descriptors[descriptor.basename]
-      ) {
-        return new SyntaxReferenceError(
-          'Unknown at-rule descriptor',
-          descriptorName
-        );
+      if (!atrule.descriptors[descriptor.name] && !atrule.descriptors[descriptor.basename]) {
+        return new SyntaxReferenceError('Unknown at-rule descriptor', descriptorName);
       }
     },
     checkPropertyName: function (propertyName) {
@@ -9313,9 +8749,7 @@
 
       // don't match syntax for a custom property
       if (property.custom) {
-        return new Error(
-          "Lexer matching doesn't applicable for custom properties"
-        );
+        return new Error("Lexer matching doesn't applicable for custom properties");
       }
 
       if (!this.getProperty(propertyName)) {
@@ -9334,12 +8768,7 @@
         return buildMatchResult(null, null);
       }
 
-      return matchSyntax(
-        this,
-        this.getAtrule(atruleName).prelude,
-        prelude,
-        false
-      );
+      return matchSyntax(this, this.getAtrule(atruleName).prelude, prelude, false);
     },
     matchAtruleDescriptor: function (atruleName, descriptorName, value) {
       var error = this.checkAtruleDescriptorName(atruleName, descriptorName);
@@ -9353,8 +8782,7 @@
 
       return matchSyntax(
         this,
-        atrule.descriptors[descriptor.name] ||
-          atrule.descriptors[descriptor.basename],
+        atrule.descriptors[descriptor.name] || atrule.descriptors[descriptor.basename],
         value,
         false
       );
@@ -9379,10 +8807,7 @@
       var typeSyntax = this.getType(typeName);
 
       if (!typeSyntax) {
-        return buildMatchResult(
-          null,
-          new SyntaxReferenceError('Unknown type', typeName)
-        );
+        return buildMatchResult(null, new SyntaxReferenceError('Unknown type', typeName));
       }
 
       return matchSyntax(this, typeSyntax, value, false);
@@ -9400,22 +8825,10 @@
     },
 
     findValueFragments: function (propertyName, value, type, name) {
-      return search.matchFragments(
-        this,
-        value,
-        this.matchProperty(propertyName, value),
-        type,
-        name
-      );
+      return search.matchFragments(this, value, this.matchProperty(propertyName, value), type, name);
     },
     findDeclarationValueFragments: function (declaration, type, name) {
-      return search.matchFragments(
-        this,
-        declaration.value,
-        this.matchDeclaration(declaration),
-        type,
-        name
-      );
+      return search.matchFragments(this, declaration.value, this.matchDeclaration(declaration), type, name);
     },
     findAllFragments: function (ast, type, name) {
       var result = [];
@@ -9423,10 +8836,7 @@
       this.syntax.walk(ast, {
         visit: 'Declaration',
         enter: function (declaration) {
-          result.push.apply(
-            result,
-            this.findDeclarationValueFragments(declaration, type, name)
-          );
+          result.push.apply(result, this.findDeclarationValueFragments(declaration, type, name));
         }.bind(this)
       });
 
@@ -9448,9 +8858,7 @@
       return (atrule && atrule.prelude) || null;
     },
     getAtruleDescriptor: function (atruleName, name) {
-      return (
-          this.atrules.hasOwnProperty(atruleName) && this.atrules.declarators
-        ) ?
+      return this.atrules.hasOwnProperty(atruleName) && this.atrules.declarators ?
           this.atrules[atruleName].declarators[name] || null
         : null;
     },
@@ -9483,13 +8891,9 @@
               }
 
               var map = node.type === 'Type' ? syntax.types : syntax.properties;
-              var brokenMap =
-                node.type === 'Type' ? brokenTypes : brokenProperties;
+              var brokenMap = node.type === 'Type' ? brokenTypes : brokenProperties;
 
-              if (
-                !map.hasOwnProperty(node.name) ||
-                validate(syntax, node.name, brokenMap, map[node.name])
-              ) {
+              if (!map.hasOwnProperty(node.name) || validate(syntax, node.name, brokenMap, map[node.name])) {
                 broken[name] = true;
               }
             },
@@ -9570,11 +8974,7 @@
       columns[i] = column++;
 
       if (code === N$1 || code === R || code === F) {
-        if (
-          code === R &&
-          i + 1 < sourceLength &&
-          source.charCodeAt(i + 1) === N$1
-        ) {
+        if (code === R && i + 1 < sourceLength && source.charCodeAt(i + 1) === N$1) {
           i++;
           lines[i] = line;
           columns[i] = column;
@@ -9744,9 +9144,7 @@
             break;
 
           case 'string':
-            parserConfig.context[name] = createParseContext(
-              config.parseContext[name]
-            );
+            parserConfig.context[name] = createParseContext(config.parseContext[name]);
             break;
         }
       }
@@ -9856,10 +9254,7 @@
           switch (tokenType) {
             case IDENT$g:
               // when identifier is expected but there is a function or url
-              if (
-                this.scanner.tokenType === FUNCTION$6 ||
-                this.scanner.tokenType === URL$4
-              ) {
+              if (this.scanner.tokenType === FUNCTION$6 || this.scanner.tokenType === URL$4) {
                 offset = this.scanner.tokenEnd - 1;
                 message = 'Identifier is expected but function found';
               } else {
@@ -9885,10 +9280,7 @@
             default:
               // when test type is part of another token show error for current position + 1
               // e.g. eat(HYPHENMINUS) will fail on "-foo", but pointing on "-" is odd
-              if (
-                this.scanner.source.charCodeAt(this.scanner.tokenStart) ===
-                tokenType
-              ) {
+              if (this.scanner.source.charCodeAt(this.scanner.tokenStart) === tokenType) {
                 offset = offset + 1;
               }
           }
@@ -9907,10 +9299,7 @@
         return value;
       },
       consumeFunctionName: function () {
-        var name = this.scanner.source.substring(
-          this.scanner.tokenStart,
-          this.scanner.tokenEnd - 1
-        );
+        var name = this.scanner.source.substring(this.scanner.tokenStart, this.scanner.tokenEnd - 1);
 
         this.eat(FUNCTION$6);
 
@@ -9929,12 +9318,8 @@
           var head = this.getFirstListNode(list);
           var tail = this.getLastListNode(list);
           return this.locationMap.getLocationRange(
-            head !== null ?
-              head.loc.start.offset - this.locationMap.startOffset
-            : this.scanner.tokenStart,
-            tail !== null ?
-              tail.loc.end.offset - this.locationMap.startOffset
-            : this.scanner.tokenStart,
+            head !== null ? head.loc.start.offset - this.locationMap.startOffset : this.scanner.tokenStart,
+            tail !== null ? tail.loc.end.offset - this.locationMap.startOffset : this.scanner.tokenStart,
             this.filename
           );
         }
@@ -9944,15 +9329,9 @@
 
       error: function (message, offset) {
         var location =
-          typeof offset !== 'undefined' && offset < this.scanner.source.length ?
-            this.locationMap.getLocation(offset)
+          typeof offset !== 'undefined' && offset < this.scanner.source.length ? this.locationMap.getLocation(offset)
           : this.scanner.eof ?
-            this.locationMap.getLocation(
-              findWhiteSpaceStart(
-                this.scanner.source,
-                this.scanner.source.length - 1
-              )
-            )
+            this.locationMap.getLocation(findWhiteSpaceStart(this.scanner.source, this.scanner.source.length - 1))
           : this.locationMap.getLocation(this.scanner.tokenStart);
 
         throw new SyntaxError$2(
@@ -9978,34 +9357,16 @@
       var ast;
 
       tokenize$1(source, parser.scanner);
-      parser.locationMap.setSource(
-        source,
-        options.offset,
-        options.line,
-        options.column
-      );
+      parser.locationMap.setSource(source, options.offset, options.line, options.column);
 
       parser.filename = options.filename || '<unknown>';
       parser.needPositions = Boolean(options.positions);
-      parser.onParseError =
-        typeof options.onParseError === 'function' ?
-          options.onParseError
-        : noop$1;
+      parser.onParseError = typeof options.onParseError === 'function' ? options.onParseError : noop$1;
       parser.onParseErrorThrow = false;
-      parser.parseAtrulePrelude =
-        'parseAtrulePrelude' in options ?
-          Boolean(options.parseAtrulePrelude)
-        : true;
-      parser.parseRulePrelude =
-        'parseRulePrelude' in options ?
-          Boolean(options.parseRulePrelude)
-        : true;
-      parser.parseValue =
-        'parseValue' in options ? Boolean(options.parseValue) : true;
-      parser.parseCustomProperty =
-        'parseCustomProperty' in options ?
-          Boolean(options.parseCustomProperty)
-        : false;
+      parser.parseAtrulePrelude = 'parseAtrulePrelude' in options ? Boolean(options.parseAtrulePrelude) : true;
+      parser.parseRulePrelude = 'parseRulePrelude' in options ? Boolean(options.parseRulePrelude) : true;
+      parser.parseValue = 'parseValue' in options ? Boolean(options.parseValue) : true;
+      parser.parseCustomProperty = 'parseCustomProperty' in options ? Boolean(options.parseCustomProperty) : false;
 
       if (!parser.context.hasOwnProperty(context)) {
         throw new Error('Unknown context `' + context + '`');
@@ -10016,9 +9377,7 @@
           if (type === COMMENT$7) {
             const loc = parser.getLocation(start, end);
             const value =
-              cmpStr$2(source, end - 2, end, '*/') ?
-                source.slice(start + 2, end - 2)
-              : source.slice(start + 2, end);
+              cmpStr$2(source, end - 2, end, '*/') ? source.slice(start + 2, end - 2) : source.slice(start + 2, end);
 
             onComment(value, loc);
           }
@@ -10049,10 +9408,7 @@
    * http://opensource.org/licenses/BSD-3-Clause
    */
 
-  var intToCharMap =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split(
-      ''
-    );
+  var intToCharMap = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split('');
 
   /**
    * Encode an integer in the range of 0 to 63 to a single base 64 digit.
@@ -10283,8 +9639,7 @@
     }
     exports.getArg = getArg;
 
-    var urlRegexp =
-      /^(?:([\w+\-.]+):)?\/\/(?:(\w+:\w+)@)?([\w.-]*)(?::(\d+))?(.*)$/;
+    var urlRegexp = /^(?:([\w+\-.]+):)?\/\/(?:(\w+:\w+)@)?([\w.-]*)(?::(\d+))?(.*)$/;
     var dataUrlRegexp = /^data:.+\,.+$/;
 
     function urlParse(aUrl) {
@@ -10427,10 +9782,7 @@
         return urlGenerate(aRootUrl);
       }
 
-      var joined =
-        aPath.charAt(0) === '/' ?
-          aPath
-        : normalize(aRoot.replace(/\/+$/, '') + '/' + aPath);
+      var joined = aPath.charAt(0) === '/' ? aPath : normalize(aRoot.replace(/\/+$/, '') + '/' + aPath);
 
       if (aRootUrl) {
         aRootUrl.path = joined;
@@ -10562,11 +9914,7 @@
      * line and column the same. Useful when searching for a mapping with a
      * stubbed out mapping.
      */
-    function compareByOriginalPositions(
-      mappingA,
-      mappingB,
-      onlyCompareOriginal
-    ) {
+    function compareByOriginalPositions(mappingA, mappingB, onlyCompareOriginal) {
       var cmp = strcmp(mappingA.source, mappingB.source);
       if (cmp !== 0) {
         return cmp;
@@ -10605,11 +9953,7 @@
      * source/name/original line and column the same. Useful when searching for a
      * mapping with a stubbed out mapping.
      */
-    function compareByGeneratedPositionsDeflated(
-      mappingA,
-      mappingB,
-      onlyCompareGenerated
-    ) {
+    function compareByGeneratedPositionsDeflated(mappingA, mappingB, onlyCompareGenerated) {
       var cmp = mappingA.generatedLine - mappingB.generatedLine;
       if (cmp !== 0) {
         return cmp;
@@ -10637,8 +9981,7 @@
 
       return strcmp(mappingA.name, mappingB.name);
     }
-    exports.compareByGeneratedPositionsDeflated =
-      compareByGeneratedPositionsDeflated;
+    exports.compareByGeneratedPositionsDeflated = compareByGeneratedPositionsDeflated;
 
     function strcmp(aStr1, aStr2) {
       if (aStr1 === aStr2) {
@@ -10692,8 +10035,7 @@
 
       return strcmp(mappingA.name, mappingB.name);
     }
-    exports.compareByGeneratedPositionsInflated =
-      compareByGeneratedPositionsInflated;
+    exports.compareByGeneratedPositionsInflated = compareByGeneratedPositionsInflated;
 
     /**
      * Strip any JSON XSSI avoidance prefix from the string (as documented
@@ -10802,9 +10144,7 @@
    * @returns Number
    */
   ArraySet$1.prototype.size = function ArraySet_size() {
-    return hasNativeMap ?
-        this._set.size
-      : Object.getOwnPropertyNames(this._set).length;
+    return hasNativeMap ? this._set.size : Object.getOwnPropertyNames(this._set).length;
   };
 
   /**
@@ -10814,8 +10154,7 @@
    */
   ArraySet$1.prototype.add = function ArraySet_add(aStr, aAllowDuplicates) {
     var sStr = hasNativeMap ? aStr : util$2.toSetString(aStr);
-    var isDuplicate =
-      hasNativeMap ? this.has(aStr) : has$1.call(this._set, sStr);
+    var isDuplicate = hasNativeMap ? this.has(aStr) : has$1.call(this._set, sStr);
     var idx = this._array.length;
     if (!isDuplicate || aAllowDuplicates) {
       this._array.push(aStr);
@@ -10934,10 +10273,7 @@
    *
    * NOTE: The order of the mappings is NOT guaranteed.
    */
-  MappingList$1.prototype.unsortedForEach = function MappingList_forEach(
-    aCallback,
-    aThisArg
-  ) {
+  MappingList$1.prototype.unsortedForEach = function MappingList_forEach(aCallback, aThisArg) {
     this._array.forEach(aCallback, aThisArg);
   };
 
@@ -11016,56 +10352,55 @@
    *
    * @param aSourceMapConsumer The SourceMap.
    */
-  SourceMapGenerator$1.fromSourceMap =
-    function SourceMapGenerator_fromSourceMap(aSourceMapConsumer) {
-      var sourceRoot = aSourceMapConsumer.sourceRoot;
-      var generator = new SourceMapGenerator$1({
-        file: aSourceMapConsumer.file,
-        sourceRoot: sourceRoot
-      });
-      aSourceMapConsumer.eachMapping(function (mapping) {
-        var newMapping = {
-          generated: {
-            line: mapping.generatedLine,
-            column: mapping.generatedColumn
-          }
+  SourceMapGenerator$1.fromSourceMap = function SourceMapGenerator_fromSourceMap(aSourceMapConsumer) {
+    var sourceRoot = aSourceMapConsumer.sourceRoot;
+    var generator = new SourceMapGenerator$1({
+      file: aSourceMapConsumer.file,
+      sourceRoot: sourceRoot
+    });
+    aSourceMapConsumer.eachMapping(function (mapping) {
+      var newMapping = {
+        generated: {
+          line: mapping.generatedLine,
+          column: mapping.generatedColumn
+        }
+      };
+
+      if (mapping.source != null) {
+        newMapping.source = mapping.source;
+        if (sourceRoot != null) {
+          newMapping.source = util.relative(sourceRoot, newMapping.source);
+        }
+
+        newMapping.original = {
+          line: mapping.originalLine,
+          column: mapping.originalColumn
         };
 
-        if (mapping.source != null) {
-          newMapping.source = mapping.source;
-          if (sourceRoot != null) {
-            newMapping.source = util.relative(sourceRoot, newMapping.source);
-          }
-
-          newMapping.original = {
-            line: mapping.originalLine,
-            column: mapping.originalColumn
-          };
-
-          if (mapping.name != null) {
-            newMapping.name = mapping.name;
-          }
+        if (mapping.name != null) {
+          newMapping.name = mapping.name;
         }
+      }
 
-        generator.addMapping(newMapping);
-      });
-      aSourceMapConsumer.sources.forEach(function (sourceFile) {
-        var sourceRelative = sourceFile;
-        if (sourceRoot !== null) {
-          sourceRelative = util.relative(sourceRoot, sourceFile);
-        }
+      generator.addMapping(newMapping);
+    });
+    aSourceMapConsumer.sources.forEach(function (sourceFile) {
+      var sourceRelative = sourceFile;
+      if (sourceRoot !== null) {
+        sourceRelative = util.relative(sourceRoot, sourceFile);
+      }
 
-        if (!generator._sources.has(sourceRelative)) {
-          generator._sources.add(sourceRelative);
-        }
+      if (!generator._sources.has(sourceRelative)) {
+        generator._sources.add(sourceRelative);
+      }
 
-        var content = aSourceMapConsumer.sourceContentFor(sourceFile);
-        if (content != null) {
-          generator.setSourceContent(sourceFile, content);
-        }
-      });
-      return generator;
-    };
+      var content = aSourceMapConsumer.sourceContentFor(sourceFile);
+      if (content != null) {
+        generator.setSourceContent(sourceFile, content);
+      }
+    });
+    return generator;
+  };
 
   /**
    * Add a single mapping from original source line and column to the generated
@@ -11077,67 +10412,68 @@
    *   - source: The original source file (relative to the sourceRoot).
    *   - name: An optional original token name for this mapping.
    */
-  SourceMapGenerator$1.prototype.addMapping =
-    function SourceMapGenerator_addMapping(aArgs) {
-      var generated = util.getArg(aArgs, 'generated');
-      var original = util.getArg(aArgs, 'original', null);
-      var source = util.getArg(aArgs, 'source', null);
-      var name = util.getArg(aArgs, 'name', null);
+  SourceMapGenerator$1.prototype.addMapping = function SourceMapGenerator_addMapping(aArgs) {
+    var generated = util.getArg(aArgs, 'generated');
+    var original = util.getArg(aArgs, 'original', null);
+    var source = util.getArg(aArgs, 'source', null);
+    var name = util.getArg(aArgs, 'name', null);
 
-      if (!this._skipValidation) {
-        this._validateMapping(generated, original, source, name);
+    if (!this._skipValidation) {
+      this._validateMapping(generated, original, source, name);
+    }
+
+    if (source != null) {
+      source = String(source);
+      if (!this._sources.has(source)) {
+        this._sources.add(source);
       }
+    }
 
-      if (source != null) {
-        source = String(source);
-        if (!this._sources.has(source)) {
-          this._sources.add(source);
-        }
+    if (name != null) {
+      name = String(name);
+      if (!this._names.has(name)) {
+        this._names.add(name);
       }
+    }
 
-      if (name != null) {
-        name = String(name);
-        if (!this._names.has(name)) {
-          this._names.add(name);
-        }
-      }
-
-      this._mappings.add({
-        generatedLine: generated.line,
-        generatedColumn: generated.column,
-        originalLine: original != null && original.line,
-        originalColumn: original != null && original.column,
-        source: source,
-        name: name
-      });
-    };
+    this._mappings.add({
+      generatedLine: generated.line,
+      generatedColumn: generated.column,
+      originalLine: original != null && original.line,
+      originalColumn: original != null && original.column,
+      source: source,
+      name: name
+    });
+  };
 
   /**
    * Set the source content for a source file.
    */
-  SourceMapGenerator$1.prototype.setSourceContent =
-    function SourceMapGenerator_setSourceContent(aSourceFile, aSourceContent) {
-      var source = aSourceFile;
-      if (this._sourceRoot != null) {
-        source = util.relative(this._sourceRoot, source);
-      }
+  SourceMapGenerator$1.prototype.setSourceContent = function SourceMapGenerator_setSourceContent(
+    aSourceFile,
+    aSourceContent
+  ) {
+    var source = aSourceFile;
+    if (this._sourceRoot != null) {
+      source = util.relative(this._sourceRoot, source);
+    }
 
-      if (aSourceContent != null) {
-        // Add the source content to the _sourcesContents map.
-        // Create a new _sourcesContents map if the property is null.
-        if (!this._sourcesContents) {
-          this._sourcesContents = Object.create(null);
-        }
-        this._sourcesContents[util.toSetString(source)] = aSourceContent;
-      } else if (this._sourcesContents) {
-        // Remove the source file from the _sourcesContents map.
-        // If the _sourcesContents map is empty, set the property to null.
-        delete this._sourcesContents[util.toSetString(source)];
-        if (Object.keys(this._sourcesContents).length === 0) {
-          this._sourcesContents = null;
-        }
+    if (aSourceContent != null) {
+      // Add the source content to the _sourcesContents map.
+      // Create a new _sourcesContents map if the property is null.
+      if (!this._sourcesContents) {
+        this._sourcesContents = Object.create(null);
       }
-    };
+      this._sourcesContents[util.toSetString(source)] = aSourceContent;
+    } else if (this._sourcesContents) {
+      // Remove the source file from the _sourcesContents map.
+      // If the _sourcesContents map is empty, set the property to null.
+      delete this._sourcesContents[util.toSetString(source)];
+      if (Object.keys(this._sourcesContents).length === 0) {
+        this._sourcesContents = null;
+      }
+    }
+  };
 
   /**
    * Applies the mappings of a sub-source-map for a specific source file to the
@@ -11155,85 +10491,84 @@
    *        paths. If so, those relative source paths need to be rewritten
    *        relative to the SourceMapGenerator.
    */
-  SourceMapGenerator$1.prototype.applySourceMap =
-    function SourceMapGenerator_applySourceMap(
-      aSourceMapConsumer,
-      aSourceFile,
-      aSourceMapPath
-    ) {
-      var sourceFile = aSourceFile;
-      // If aSourceFile is omitted, we will use the file property of the SourceMap
-      if (aSourceFile == null) {
-        if (aSourceMapConsumer.file == null) {
-          throw new Error(
-            'SourceMapGenerator.prototype.applySourceMap requires either an explicit source file, ' +
-              'or the source map\'s "file" property. Both were omitted.'
-          );
-        }
-        sourceFile = aSourceMapConsumer.file;
+  SourceMapGenerator$1.prototype.applySourceMap = function SourceMapGenerator_applySourceMap(
+    aSourceMapConsumer,
+    aSourceFile,
+    aSourceMapPath
+  ) {
+    var sourceFile = aSourceFile;
+    // If aSourceFile is omitted, we will use the file property of the SourceMap
+    if (aSourceFile == null) {
+      if (aSourceMapConsumer.file == null) {
+        throw new Error(
+          'SourceMapGenerator.prototype.applySourceMap requires either an explicit source file, ' +
+            'or the source map\'s "file" property. Both were omitted.'
+        );
       }
-      var sourceRoot = this._sourceRoot;
-      // Make "sourceFile" relative if an absolute Url is passed.
-      if (sourceRoot != null) {
-        sourceFile = util.relative(sourceRoot, sourceFile);
-      }
-      // Applying the SourceMap can add and remove items from the sources and
-      // the names array.
-      var newSources = new ArraySet();
-      var newNames = new ArraySet();
+      sourceFile = aSourceMapConsumer.file;
+    }
+    var sourceRoot = this._sourceRoot;
+    // Make "sourceFile" relative if an absolute Url is passed.
+    if (sourceRoot != null) {
+      sourceFile = util.relative(sourceRoot, sourceFile);
+    }
+    // Applying the SourceMap can add and remove items from the sources and
+    // the names array.
+    var newSources = new ArraySet();
+    var newNames = new ArraySet();
 
-      // Find mappings for the "sourceFile"
-      this._mappings.unsortedForEach(function (mapping) {
-        if (mapping.source === sourceFile && mapping.originalLine != null) {
-          // Check if it can be mapped by the source map, then update the mapping.
-          var original = aSourceMapConsumer.originalPositionFor({
-            line: mapping.originalLine,
-            column: mapping.originalColumn
-          });
-          if (original.source != null) {
-            // Copy mapping
-            mapping.source = original.source;
-            if (aSourceMapPath != null) {
-              mapping.source = util.join(aSourceMapPath, mapping.source);
-            }
-            if (sourceRoot != null) {
-              mapping.source = util.relative(sourceRoot, mapping.source);
-            }
-            mapping.originalLine = original.line;
-            mapping.originalColumn = original.column;
-            if (original.name != null) {
-              mapping.name = original.name;
-            }
-          }
-        }
-
-        var source = mapping.source;
-        if (source != null && !newSources.has(source)) {
-          newSources.add(source);
-        }
-
-        var name = mapping.name;
-        if (name != null && !newNames.has(name)) {
-          newNames.add(name);
-        }
-      }, this);
-      this._sources = newSources;
-      this._names = newNames;
-
-      // Copy sourcesContents of applied map.
-      aSourceMapConsumer.sources.forEach(function (sourceFile) {
-        var content = aSourceMapConsumer.sourceContentFor(sourceFile);
-        if (content != null) {
+    // Find mappings for the "sourceFile"
+    this._mappings.unsortedForEach(function (mapping) {
+      if (mapping.source === sourceFile && mapping.originalLine != null) {
+        // Check if it can be mapped by the source map, then update the mapping.
+        var original = aSourceMapConsumer.originalPositionFor({
+          line: mapping.originalLine,
+          column: mapping.originalColumn
+        });
+        if (original.source != null) {
+          // Copy mapping
+          mapping.source = original.source;
           if (aSourceMapPath != null) {
-            sourceFile = util.join(aSourceMapPath, sourceFile);
+            mapping.source = util.join(aSourceMapPath, mapping.source);
           }
           if (sourceRoot != null) {
-            sourceFile = util.relative(sourceRoot, sourceFile);
+            mapping.source = util.relative(sourceRoot, mapping.source);
           }
-          this.setSourceContent(sourceFile, content);
+          mapping.originalLine = original.line;
+          mapping.originalColumn = original.column;
+          if (original.name != null) {
+            mapping.name = original.name;
+          }
         }
-      }, this);
-    };
+      }
+
+      var source = mapping.source;
+      if (source != null && !newSources.has(source)) {
+        newSources.add(source);
+      }
+
+      var name = mapping.name;
+      if (name != null && !newNames.has(name)) {
+        newNames.add(name);
+      }
+    }, this);
+    this._sources = newSources;
+    this._names = newNames;
+
+    // Copy sourcesContents of applied map.
+    aSourceMapConsumer.sources.forEach(function (sourceFile) {
+      var content = aSourceMapConsumer.sourceContentFor(sourceFile);
+      if (content != null) {
+        if (aSourceMapPath != null) {
+          sourceFile = util.join(aSourceMapPath, sourceFile);
+        }
+        if (sourceRoot != null) {
+          sourceFile = util.relative(sourceRoot, sourceFile);
+        }
+        this.setSourceContent(sourceFile, content);
+      }
+    }, this);
+  };
 
   /**
    * A mapping can have one of the three levels of data:
@@ -11246,163 +10581,144 @@
    * To maintain consistency, we validate that any new mapping being added falls
    * in to one of these categories.
    */
-  SourceMapGenerator$1.prototype._validateMapping =
-    function SourceMapGenerator_validateMapping(
-      aGenerated,
-      aOriginal,
-      aSource,
-      aName
-    ) {
-      // When aOriginal is truthy but has empty values for .line and .column,
-      // it is most likely a programmer error. In this case we throw a very
-      // specific error message to try to guide them the right way.
-      // For example: https://github.com/Polymer/polymer-bundler/pull/519
-      if (
-        aOriginal &&
-        typeof aOriginal.line !== 'number' &&
-        typeof aOriginal.column !== 'number'
-      ) {
-        throw new Error(
-          'original.line and original.column are not numbers -- you probably meant to omit ' +
-            'the original mapping entirely and only map the generated position. If so, pass ' +
-            'null for the original mapping instead of an object with empty or null values.'
-        );
-      }
+  SourceMapGenerator$1.prototype._validateMapping = function SourceMapGenerator_validateMapping(
+    aGenerated,
+    aOriginal,
+    aSource,
+    aName
+  ) {
+    // When aOriginal is truthy but has empty values for .line and .column,
+    // it is most likely a programmer error. In this case we throw a very
+    // specific error message to try to guide them the right way.
+    // For example: https://github.com/Polymer/polymer-bundler/pull/519
+    if (aOriginal && typeof aOriginal.line !== 'number' && typeof aOriginal.column !== 'number') {
+      throw new Error(
+        'original.line and original.column are not numbers -- you probably meant to omit ' +
+          'the original mapping entirely and only map the generated position. If so, pass ' +
+          'null for the original mapping instead of an object with empty or null values.'
+      );
+    }
 
-      if (
-        aGenerated &&
-        'line' in aGenerated &&
-        'column' in aGenerated &&
-        aGenerated.line > 0 &&
-        aGenerated.column >= 0 &&
-        !aOriginal &&
-        !aSource &&
-        !aName
-      ) {
-        // Case 1.
-        return;
-      } else if (
-        aGenerated &&
-        'line' in aGenerated &&
-        'column' in aGenerated &&
-        aOriginal &&
-        'line' in aOriginal &&
-        'column' in aOriginal &&
-        aGenerated.line > 0 &&
-        aGenerated.column >= 0 &&
-        aOriginal.line > 0 &&
-        aOriginal.column >= 0 &&
-        aSource
-      ) {
-        // Cases 2 and 3.
-        return;
-      } else {
-        throw new Error(
-          'Invalid mapping: ' +
-            JSON.stringify({
-              generated: aGenerated,
-              source: aSource,
-              original: aOriginal,
-              name: aName
-            })
-        );
-      }
-    };
+    if (
+      aGenerated &&
+      'line' in aGenerated &&
+      'column' in aGenerated &&
+      aGenerated.line > 0 &&
+      aGenerated.column >= 0 &&
+      !aOriginal &&
+      !aSource &&
+      !aName
+    ) {
+      // Case 1.
+      return;
+    } else if (
+      aGenerated &&
+      'line' in aGenerated &&
+      'column' in aGenerated &&
+      aOriginal &&
+      'line' in aOriginal &&
+      'column' in aOriginal &&
+      aGenerated.line > 0 &&
+      aGenerated.column >= 0 &&
+      aOriginal.line > 0 &&
+      aOriginal.column >= 0 &&
+      aSource
+    ) {
+      // Cases 2 and 3.
+      return;
+    } else {
+      throw new Error(
+        'Invalid mapping: ' +
+          JSON.stringify({
+            generated: aGenerated,
+            source: aSource,
+            original: aOriginal,
+            name: aName
+          })
+      );
+    }
+  };
 
   /**
    * Serialize the accumulated mappings in to the stream of base 64 VLQs
    * specified by the source map format.
    */
-  SourceMapGenerator$1.prototype._serializeMappings =
-    function SourceMapGenerator_serializeMappings() {
-      var previousGeneratedColumn = 0;
-      var previousGeneratedLine = 1;
-      var previousOriginalColumn = 0;
-      var previousOriginalLine = 0;
-      var previousName = 0;
-      var previousSource = 0;
-      var result = '';
-      var next;
-      var mapping;
-      var nameIdx;
-      var sourceIdx;
+  SourceMapGenerator$1.prototype._serializeMappings = function SourceMapGenerator_serializeMappings() {
+    var previousGeneratedColumn = 0;
+    var previousGeneratedLine = 1;
+    var previousOriginalColumn = 0;
+    var previousOriginalLine = 0;
+    var previousName = 0;
+    var previousSource = 0;
+    var result = '';
+    var next;
+    var mapping;
+    var nameIdx;
+    var sourceIdx;
 
-      var mappings = this._mappings.toArray();
-      for (var i = 0, len = mappings.length; i < len; i++) {
-        mapping = mappings[i];
-        next = '';
+    var mappings = this._mappings.toArray();
+    for (var i = 0, len = mappings.length; i < len; i++) {
+      mapping = mappings[i];
+      next = '';
 
-        if (mapping.generatedLine !== previousGeneratedLine) {
-          previousGeneratedColumn = 0;
-          while (mapping.generatedLine !== previousGeneratedLine) {
-            next += ';';
-            previousGeneratedLine++;
-          }
-        } else {
-          if (i > 0) {
-            if (
-              !util.compareByGeneratedPositionsInflated(
-                mapping,
-                mappings[i - 1]
-              )
-            ) {
-              continue;
-            }
-            next += ',';
-          }
+      if (mapping.generatedLine !== previousGeneratedLine) {
+        previousGeneratedColumn = 0;
+        while (mapping.generatedLine !== previousGeneratedLine) {
+          next += ';';
+          previousGeneratedLine++;
         }
-
-        next += base64VLQ.encode(
-          mapping.generatedColumn - previousGeneratedColumn
-        );
-        previousGeneratedColumn = mapping.generatedColumn;
-
-        if (mapping.source != null) {
-          sourceIdx = this._sources.indexOf(mapping.source);
-          next += base64VLQ.encode(sourceIdx - previousSource);
-          previousSource = sourceIdx;
-
-          // lines are stored 0-based in SourceMap spec version 3
-          next += base64VLQ.encode(
-            mapping.originalLine - 1 - previousOriginalLine
-          );
-          previousOriginalLine = mapping.originalLine - 1;
-
-          next += base64VLQ.encode(
-            mapping.originalColumn - previousOriginalColumn
-          );
-          previousOriginalColumn = mapping.originalColumn;
-
-          if (mapping.name != null) {
-            nameIdx = this._names.indexOf(mapping.name);
-            next += base64VLQ.encode(nameIdx - previousName);
-            previousName = nameIdx;
+      } else {
+        if (i > 0) {
+          if (!util.compareByGeneratedPositionsInflated(mapping, mappings[i - 1])) {
+            continue;
           }
+          next += ',';
         }
-
-        result += next;
       }
 
-      return result;
-    };
+      next += base64VLQ.encode(mapping.generatedColumn - previousGeneratedColumn);
+      previousGeneratedColumn = mapping.generatedColumn;
 
-  SourceMapGenerator$1.prototype._generateSourcesContent =
-    function SourceMapGenerator_generateSourcesContent(aSources, aSourceRoot) {
-      return aSources.map(function (source) {
-        if (!this._sourcesContents) {
-          return null;
+      if (mapping.source != null) {
+        sourceIdx = this._sources.indexOf(mapping.source);
+        next += base64VLQ.encode(sourceIdx - previousSource);
+        previousSource = sourceIdx;
+
+        // lines are stored 0-based in SourceMap spec version 3
+        next += base64VLQ.encode(mapping.originalLine - 1 - previousOriginalLine);
+        previousOriginalLine = mapping.originalLine - 1;
+
+        next += base64VLQ.encode(mapping.originalColumn - previousOriginalColumn);
+        previousOriginalColumn = mapping.originalColumn;
+
+        if (mapping.name != null) {
+          nameIdx = this._names.indexOf(mapping.name);
+          next += base64VLQ.encode(nameIdx - previousName);
+          previousName = nameIdx;
         }
-        if (aSourceRoot != null) {
-          source = util.relative(aSourceRoot, source);
-        }
-        var key = util.toSetString(source);
-        return (
-            Object.prototype.hasOwnProperty.call(this._sourcesContents, key)
-          ) ?
-            this._sourcesContents[key]
-          : null;
-      }, this);
-    };
+      }
+
+      result += next;
+    }
+
+    return result;
+  };
+
+  SourceMapGenerator$1.prototype._generateSourcesContent = function SourceMapGenerator_generateSourcesContent(
+    aSources,
+    aSourceRoot
+  ) {
+    return aSources.map(function (source) {
+      if (!this._sourcesContents) {
+        return null;
+      }
+      if (aSourceRoot != null) {
+        source = util.relative(aSourceRoot, source);
+      }
+      var key = util.toSetString(source);
+      return Object.prototype.hasOwnProperty.call(this._sourcesContents, key) ? this._sourcesContents[key] : null;
+    }, this);
+  };
 
   /**
    * Externalize the source map.
@@ -11421,10 +10737,7 @@
       map.sourceRoot = this._sourceRoot;
     }
     if (this._sourcesContents) {
-      map.sourcesContent = this._generateSourcesContent(
-        map.sources,
-        map.sourceRoot
-      );
+      map.sourcesContent = this._generateSourcesContent(map.sources, map.sourceRoot);
     }
 
     return map;
@@ -11433,10 +10746,9 @@
   /**
    * Render the source map being generated to a string.
    */
-  SourceMapGenerator$1.prototype.toString =
-    function SourceMapGenerator_toString() {
-      return JSON.stringify(this.toJSON());
-    };
+  SourceMapGenerator$1.prototype.toString = function SourceMapGenerator_toString() {
+    return JSON.stringify(this.toJSON());
+  };
 
   sourceMapGenerator.SourceMapGenerator = SourceMapGenerator$1;
 
@@ -11483,10 +10795,7 @@
 
           if (sourceMappingActive) {
             sourceMappingActive = false;
-            if (
-              generated.line !== activatedGenerated.line ||
-              generated.column !== activatedGenerated.column
-            ) {
+            if (generated.line !== activatedGenerated.line || generated.column !== activatedGenerated.column) {
               map.addMapping(activatedMapping);
             }
           }
@@ -11703,9 +11012,7 @@
         var nodeType = config.node[name];
 
         if (!nodeType.structure) {
-          throw new Error(
-            'Missed `structure` field in `' + name + '` node type definition'
-          );
+          throw new Error('Missed `structure` field in `' + name + '` node type definition');
         }
 
         types[name] = getWalkersFromStructure(name, nodeType);
@@ -11738,10 +11045,7 @@
 
         if (!field.nullable || ref) {
           if (field.type === 'list') {
-            var breakWalk =
-              reverse ?
-                ref.reduceRight(walkReducer, false)
-              : ref.reduce(walkReducer, false);
+            var breakWalk = reverse ? ref.reduceRight(walkReducer, false) : ref.reduce(walkReducer, false);
 
             if (breakWalk) {
               return true;
@@ -11825,8 +11129,7 @@
         return false;
       }
 
-      var walkReducer = (ret, data, item, list) =>
-        ret || walkNode(data, item, list);
+      var walkReducer = (ret, data, item, list) => ret || walkNode(data, item, list);
       var enter = noop;
       var leave = noop;
       var iterators = iteratorsNatural;
@@ -11863,11 +11166,7 @@
               : fastTraversalIteratorsNatural[options.visit];
           } else if (!types.hasOwnProperty(options.visit)) {
             throw new Error(
-              'Bad value `' +
-                options.visit +
-                '` for `visit` option (should be: ' +
-                Object.keys(types).join(', ') +
-                ')'
+              'Bad value `' + options.visit + '` for `visit` option (should be: ' + Object.keys(types).join(', ') + ')'
             );
           }
 
@@ -11877,9 +11176,7 @@
       }
 
       if (enter === noop && leave === noop) {
-        throw new Error(
-          "Neither `enter` nor `leave` walker handler is set or both aren't a function"
-        );
+        throw new Error("Neither `enter` nor `leave` walker handler is set or both aren't a function");
       }
 
       walkNode(root);
@@ -12012,10 +11309,7 @@
     const result = Object.assign({}, a);
     for (let key in b) {
       if (hasOwnProperty$2.call(b, key)) {
-        result[key] = append(
-          hasOwnProperty$2.call(a, key) ? a[key] : undefined,
-          b[key]
-        );
+        result[key] = append(hasOwnProperty$2.call(a, key) ? a[key] : undefined, b[key]);
       }
     }
 
@@ -12053,11 +11347,7 @@
           }
 
           for (let name in src[key]) {
-            result[name] = mix$1(
-              result[name] || {},
-              src[key][name],
-              shape[key]
-            );
+            result[name] = mix$1(result[name] || {}, src[key][name], shape[key]);
           }
 
           dest[key] = result;
@@ -12151,11 +11441,7 @@
       },
       fork: function (extension) {
         var base = mix({}, config); // copy of config
-        return createSyntax(
-          typeof extension === 'function' ?
-            extension(base, Object.assign)
-          : mix(base, extension)
-        );
+        return createSyntax(typeof extension === 'function' ? extension(base, Object.assign) : mix(base, extension));
       }
     };
 
@@ -12244,8 +11530,7 @@
           status: 'standard'
         },
         'speak-as': {
-          syntax:
-            'auto | bullets | numbers | words | spell-out | <counter-style-name>',
+          syntax: 'auto | bullets | numbers | words | spell-out | <counter-style-name>',
           media: 'all',
           initial: 'auto',
           percentages: 'no',
@@ -12373,8 +11658,7 @@
           status: 'standard'
         },
         src: {
-          syntax:
-            '[ <url> [ format( <string># ) ]? | local( <family-name> ) ]#',
+          syntax: '[ <url> [ format( <string># ) ]? | local( <family-name> ) ]#',
           media: 'all',
           initial: 'n/a (required)',
           percentages: 'no',
@@ -12396,8 +11680,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@font-face'
     },
     '@font-feature-values': {
-      syntax:
-        '@font-feature-values <family-name># {\n  <feature-value-block-list>\n}',
+      syntax: '@font-feature-values <family-name># {\n  <feature-value-block-list>\n}',
       interfaces: ['CSSFontFeatureValuesRule'],
       groups: ['CSS Fonts'],
       status: 'standard',
@@ -12418,12 +11701,7 @@
     },
     '@media': {
       syntax: '@media <media-query-list> {\n  <group-rule-body>\n}',
-      interfaces: [
-        'CSSGroupingRule',
-        'CSSConditionRule',
-        'CSSMediaRule',
-        'CSSCustomMediaRule'
-      ],
+      interfaces: ['CSSGroupingRule', 'CSSConditionRule', 'CSSMediaRule', 'CSSCustomMediaRule'],
       groups: ['CSS Conditional Rules', 'Media Queries'],
       status: 'standard',
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/@media'
@@ -12458,8 +11736,7 @@
           status: 'standard'
         },
         size: {
-          syntax:
-            '<length>{1,2} | auto | [ <page-size> || [ portrait | landscape ] ]',
+          syntax: '<length>{1,2} | auto | [ <page-size> || [ portrait | landscape ] ]',
           media: ['visual', 'paged'],
           initial: 'auto',
           percentages: 'no',
@@ -12850,8 +12127,7 @@
     mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/contain'
   };
   var content = {
-    syntax:
-      'normal | none | [ <content-replacement> | <content-list> ] [/ <string> ]?',
+    syntax: 'normal | none | [ <content-replacement> | <content-list> ] [/ <string> ]?',
     media: 'all',
     inherited: false,
     animationType: 'discrete',
@@ -12903,8 +12179,7 @@
     groups: ['CSS Display'],
     initial: 'inline',
     appliesto: 'allElements',
-    computed:
-      'asSpecifiedExceptPositionedFloatingAndRootElementsKeywordMaybeDifferent',
+    computed: 'asSpecifiedExceptPositionedFloatingAndRootElementsKeywordMaybeDifferent',
     order: 'uniqueOrder',
     status: 'standard',
     mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/display'
@@ -12967,25 +12242,9 @@
     ],
     percentages: ['font-size', 'line-height'],
     groups: ['CSS Fonts'],
-    initial: [
-      'font-style',
-      'font-variant',
-      'font-weight',
-      'font-stretch',
-      'font-size',
-      'line-height',
-      'font-family'
-    ],
+    initial: ['font-style', 'font-variant', 'font-weight', 'font-stretch', 'font-size', 'line-height', 'font-family'],
     appliesto: 'allElements',
-    computed: [
-      'font-style',
-      'font-variant',
-      'font-weight',
-      'font-stretch',
-      'font-size',
-      'line-height',
-      'font-family'
-    ],
+    computed: ['font-style', 'font-variant', 'font-weight', 'font-stretch', 'font-size', 'line-height', 'font-family'],
     order: 'orderOfAppearance',
     alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
     status: 'standard',
@@ -13011,12 +12270,7 @@
     media: 'visual',
     inherited: false,
     animationType: 'discrete',
-    percentages: [
-      'grid-template-rows',
-      'grid-template-columns',
-      'grid-auto-rows',
-      'grid-auto-columns'
-    ],
+    percentages: ['grid-template-rows', 'grid-template-columns', 'grid-auto-rows', 'grid-auto-columns'],
     groups: ['CSS Grid Layout'],
     initial: [
       'grid-template-rows',
@@ -13048,13 +12302,11 @@
     mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid'
   };
   var height = {
-    syntax:
-      'auto | <length> | <percentage> | min-content | max-content | fit-content(<length-percentage>)',
+    syntax: 'auto | <length> | <percentage> | min-content | max-content | fit-content(<length-percentage>)',
     media: 'visual',
     inherited: false,
     animationType: 'lpc',
-    percentages:
-      'regardingHeightOfGeneratedBoxContainingBlockPercentagesRelativeToContainingBlock',
+    percentages: 'regardingHeightOfGeneratedBoxContainingBlockPercentagesRelativeToContainingBlock',
     groups: ['CSS Box Model'],
     initial: 'auto',
     appliesto: 'allElementsButNonReplacedAndTableColumns',
@@ -13181,30 +12433,12 @@
       "[ <'offset-position'>? [ <'offset-path'> [ <'offset-distance'> || <'offset-rotate'> ]? ]? ]! [ / <'offset-anchor'> ]?",
     media: 'visual',
     inherited: false,
-    animationType: [
-      'offset-position',
-      'offset-path',
-      'offset-distance',
-      'offset-anchor',
-      'offset-rotate'
-    ],
+    animationType: ['offset-position', 'offset-path', 'offset-distance', 'offset-anchor', 'offset-rotate'],
     percentages: ['offset-position', 'offset-distance', 'offset-anchor'],
     groups: ['CSS Motion Path'],
-    initial: [
-      'offset-position',
-      'offset-path',
-      'offset-distance',
-      'offset-anchor',
-      'offset-rotate'
-    ],
+    initial: ['offset-position', 'offset-path', 'offset-distance', 'offset-anchor', 'offset-rotate'],
     appliesto: 'transformableElements',
-    computed: [
-      'offset-position',
-      'offset-path',
-      'offset-distance',
-      'offset-anchor',
-      'offset-rotate'
-    ],
+    computed: ['offset-position', 'offset-path', 'offset-distance', 'offset-anchor', 'offset-rotate'],
     order: 'perGrammar',
     stacking: true,
     status: 'standard',
@@ -13290,12 +12524,7 @@
     groups: ['CSS Box Model'],
     initial: ['padding-bottom', 'padding-left', 'padding-right', 'padding-top'],
     appliesto: 'allElementsExceptInternalTableDisplayTypes',
-    computed: [
-      'padding-bottom',
-      'padding-left',
-      'padding-right',
-      'padding-top'
-    ],
+    computed: ['padding-bottom', 'padding-left', 'padding-right', 'padding-top'],
     order: 'uniqueOrder',
     alsoAppliesTo: ['::first-letter', '::first-line'],
     status: 'standard',
@@ -13439,19 +12668,9 @@
     animationType: 'discrete',
     percentages: 'no',
     groups: ['CSS Transitions'],
-    initial: [
-      'transition-delay',
-      'transition-duration',
-      'transition-property',
-      'transition-timing-function'
-    ],
+    initial: ['transition-delay', 'transition-duration', 'transition-property', 'transition-timing-function'],
     appliesto: 'allElementsAndPseudos',
-    computed: [
-      'transition-delay',
-      'transition-duration',
-      'transition-property',
-      'transition-timing-function'
-    ],
+    computed: ['transition-delay', 'transition-duration', 'transition-property', 'transition-timing-function'],
     order: 'orderOfAppearance',
     status: 'standard',
     mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transition'
@@ -13500,8 +12719,7 @@
     mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/widows'
   };
   var width = {
-    syntax:
-      'auto | <length> | <percentage> | min-content | max-content | fit-content(<length-percentage>)',
+    syntax: 'auto | <length> | <percentage> | min-content | max-content | fit-content(<length-percentage>)',
     media: 'visual',
     inherited: false,
     animationType: 'lpc',
@@ -13569,8 +12787,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-block-progression'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-block-progression'
     },
     '-ms-content-zoom-chaining': {
       syntax: 'none | chained',
@@ -13584,8 +12801,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-chaining'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-chaining'
     },
     '-ms-content-zooming': {
       syntax: 'none | zoom',
@@ -13613,8 +12829,7 @@
       computed: ['-ms-content-zoom-limit-max', '-ms-content-zoom-limit-min'],
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-limit'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-limit'
     },
     '-ms-content-zoom-limit-max': {
       syntax: '<percentage>',
@@ -13628,8 +12843,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-limit-max'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-limit-max'
     },
     '-ms-content-zoom-limit-min': {
       syntax: '<percentage>',
@@ -13643,12 +12857,10 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-limit-min'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-limit-min'
     },
     '-ms-content-zoom-snap': {
-      syntax:
-        "<'-ms-content-zoom-snap-type'> || <'-ms-content-zoom-snap-points'>",
+      syntax: "<'-ms-content-zoom-snap-type'> || <'-ms-content-zoom-snap-points'>",
       media: 'interactive',
       inherited: false,
       animationType: 'discrete',
@@ -13659,12 +12871,10 @@
       computed: ['-ms-content-zoom-snap-type', '-ms-content-zoom-snap-points'],
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-snap'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-snap'
     },
     '-ms-content-zoom-snap-points': {
-      syntax:
-        'snapInterval( <percentage>, <percentage> ) | snapList( <percentage># )',
+      syntax: 'snapInterval( <percentage>, <percentage> ) | snapList( <percentage># )',
       media: 'interactive',
       inherited: false,
       animationType: 'discrete',
@@ -13675,8 +12885,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-snap-points'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-snap-points'
     },
     '-ms-content-zoom-snap-type': {
       syntax: 'none | proximity | mandatory',
@@ -13690,8 +12899,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-snap-type'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-content-zoom-snap-type'
     },
     '-ms-filter': {
       syntax: '<string>',
@@ -13775,8 +12983,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-high-contrast-adjust'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-high-contrast-adjust'
     },
     '-ms-hyphenate-limit-chars': {
       syntax: 'auto | <integer>{1,3}',
@@ -13790,8 +12997,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-hyphenate-limit-chars'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-hyphenate-limit-chars'
     },
     '-ms-hyphenate-limit-lines': {
       syntax: 'no-limit | <integer>',
@@ -13805,8 +13011,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-hyphenate-limit-lines'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-hyphenate-limit-lines'
     },
     '-ms-hyphenate-limit-zone': {
       syntax: '<percentage> | <length>',
@@ -13820,8 +13025,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-hyphenate-limit-zone'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-hyphenate-limit-zone'
     },
     '-ms-ime-align': {
       syntax: 'auto | after',
@@ -13863,8 +13067,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-3dlight-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-3dlight-color'
     },
     '-ms-scrollbar-arrow-color': {
       syntax: '<color>',
@@ -13878,8 +13081,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-arrow-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-arrow-color'
     },
     '-ms-scrollbar-base-color': {
       syntax: '<color>',
@@ -13893,8 +13095,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-base-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-base-color'
     },
     '-ms-scrollbar-darkshadow-color': {
       syntax: '<color>',
@@ -13908,8 +13109,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-darkshadow-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-darkshadow-color'
     },
     '-ms-scrollbar-face-color': {
       syntax: '<color>',
@@ -13923,8 +13123,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-face-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-face-color'
     },
     '-ms-scrollbar-highlight-color': {
       syntax: '<color>',
@@ -13938,8 +13137,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-highlight-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-highlight-color'
     },
     '-ms-scrollbar-shadow-color': {
       syntax: '<color>',
@@ -13953,8 +13151,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-shadow-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-shadow-color'
     },
     '-ms-scrollbar-track-color': {
       syntax: '<color>',
@@ -13968,8 +13165,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-track-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scrollbar-track-color'
     },
     '-ms-scroll-chaining': {
       syntax: 'chained | none',
@@ -13993,12 +13189,7 @@
       animationType: 'discrete',
       percentages: 'no',
       groups: ['Microsoft Extensions'],
-      initial: [
-        '-ms-scroll-limit-x-min',
-        '-ms-scroll-limit-y-min',
-        '-ms-scroll-limit-x-max',
-        '-ms-scroll-limit-y-max'
-      ],
+      initial: ['-ms-scroll-limit-x-min', '-ms-scroll-limit-y-min', '-ms-scroll-limit-x-max', '-ms-scroll-limit-y-max'],
       appliesto: 'nonReplacedBlockAndInlineBlockElements',
       computed: [
         '-ms-scroll-limit-x-min',
@@ -14022,8 +13213,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-x-max'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-x-max'
     },
     '-ms-scroll-limit-x-min': {
       syntax: '<length>',
@@ -14037,8 +13227,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-x-min'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-x-min'
     },
     '-ms-scroll-limit-y-max': {
       syntax: 'auto | <length>',
@@ -14052,8 +13241,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-y-max'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-y-max'
     },
     '-ms-scroll-limit-y-min': {
       syntax: '<length>',
@@ -14067,8 +13255,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-y-min'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-limit-y-min'
     },
     '-ms-scroll-rails': {
       syntax: 'none | railed',
@@ -14085,8 +13272,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-rails'
     },
     '-ms-scroll-snap-points-x': {
-      syntax:
-        'snapInterval( <length-percentage>, <length-percentage> ) | snapList( <length-percentage># )',
+      syntax: 'snapInterval( <length-percentage>, <length-percentage> ) | snapList( <length-percentage># )',
       media: 'interactive',
       inherited: false,
       animationType: 'discrete',
@@ -14097,12 +13283,10 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-snap-points-x'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-snap-points-x'
     },
     '-ms-scroll-snap-points-y': {
-      syntax:
-        'snapInterval( <length-percentage>, <length-percentage> ) | snapList( <length-percentage># )',
+      syntax: 'snapInterval( <length-percentage>, <length-percentage> ) | snapList( <length-percentage># )',
       media: 'interactive',
       inherited: false,
       animationType: 'discrete',
@@ -14113,8 +13297,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-snap-points-y'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-snap-points-y'
     },
     '-ms-scroll-snap-type': {
       syntax: 'none | proximity | mandatory',
@@ -14170,12 +13353,10 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-translation'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-ms-scroll-translation'
     },
     '-ms-text-autospace': {
-      syntax:
-        'none | ideograph-alpha | ideograph-numeric | ideograph-parenthesis | ideograph-space',
+      syntax: 'none | ideograph-alpha | ideograph-numeric | ideograph-parenthesis | ideograph-space',
       media: 'visual',
       inherited: false,
       animationType: 'discrete',
@@ -14299,8 +13480,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-border-bottom-colors'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-border-bottom-colors'
     },
     '-moz-border-left-colors': {
       syntax: '<color>+ | none',
@@ -14314,8 +13494,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-border-left-colors'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-border-left-colors'
     },
     '-moz-border-right-colors': {
       syntax: '<color>+ | none',
@@ -14329,8 +13508,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-border-right-colors'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-border-right-colors'
     },
     '-moz-border-top-colors': {
       syntax: '<color>+ | none',
@@ -14344,8 +13522,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-border-top-colors'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-border-top-colors'
     },
     '-moz-context-properties': {
       syntax: 'none | [ fill | fill-opacity | stroke | stroke-opacity ]#',
@@ -14359,8 +13536,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-context-properties'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-context-properties'
     },
     '-moz-float-edge': {
       syntax: 'border-box | content-box | margin-box | padding-box',
@@ -14388,8 +13564,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-force-broken-image-icon'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-force-broken-image-icon'
     },
     '-moz-image-region': {
       syntax: '<shape> | auto',
@@ -14465,8 +13640,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-bottomleft'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-bottomleft'
     },
     '-moz-outline-radius-bottomright': {
       syntax: '<outline-radius>',
@@ -14480,8 +13654,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-bottomright'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-bottomright'
     },
     '-moz-outline-radius-topleft': {
       syntax: '<outline-radius>',
@@ -14495,8 +13668,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-topleft'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-topleft'
     },
     '-moz-outline-radius-topright': {
       syntax: '<outline-radius>',
@@ -14510,8 +13682,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-topright'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-outline-radius-topright'
     },
     '-moz-stack-sizing': {
       syntax: 'ignore | stretch-to-fit',
@@ -14542,8 +13713,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-moz-text-blink'
     },
     '-moz-user-focus': {
-      syntax:
-        'ignore | normal | select-after | select-before | select-menu | select-same | select-all | none',
+      syntax: 'ignore | normal | select-after | select-before | select-menu | select-same | select-all | none',
       media: 'interactive',
       inherited: false,
       animationType: 'discrete',
@@ -14639,8 +13809,7 @@
       computed: ['border-width', 'border-style', 'color'],
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-border-before'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-border-before'
     },
     '-webkit-border-before-color': {
       syntax: "<'color'>",
@@ -14750,8 +13919,7 @@
       computed: 'asSpecified',
       order: 'orderOfAppearance',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-attachment'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-attachment'
     },
     '-webkit-mask-clip': {
       syntax: '[ <box> | border | padding | content | text ]#',
@@ -14779,8 +13947,7 @@
       computed: 'asSpecified',
       order: 'orderOfAppearance',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-composite'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-composite'
     },
     '-webkit-mask-image': {
       syntax: '<mask-reference>#',
@@ -14836,8 +14003,7 @@
       computed: 'absoluteLengthOrPercentage',
       order: 'orderOfAppearance',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-position-x'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-position-x'
     },
     '-webkit-mask-position-y': {
       syntax: '[ <length-percentage> | top | center | bottom ]#',
@@ -14851,8 +14017,7 @@
       computed: 'absoluteLengthOrPercentage',
       order: 'orderOfAppearance',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-position-y'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-position-y'
     },
     '-webkit-mask-repeat': {
       syntax: '<repeat-style>#',
@@ -14880,8 +14045,7 @@
       computed: 'asSpecified',
       order: 'orderOfAppearance',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-repeat-x'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-repeat-x'
     },
     '-webkit-mask-repeat-y': {
       syntax: 'repeat | no-repeat | space | round',
@@ -14895,8 +14059,7 @@
       computed: 'absoluteLengthOrPercentage',
       order: 'orderOfAppearance',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-repeat-y'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-mask-repeat-y'
     },
     '-webkit-mask-size': {
       syntax: '<bg-size>#',
@@ -14924,8 +14087,7 @@
       computed: 'asSpecified',
       order: 'orderOfAppearance',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-overflow-scrolling'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-overflow-scrolling'
     },
     '-webkit-tap-highlight-color': {
       syntax: '<color>',
@@ -14939,8 +14101,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-tap-highlight-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-tap-highlight-color'
     },
     '-webkit-text-fill-color': {
       syntax: '<color>',
@@ -14954,8 +14115,7 @@
       computed: 'computedColor',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-text-fill-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-text-fill-color'
     },
     '-webkit-text-stroke': {
       syntax: '<length> || <color>',
@@ -14983,8 +14143,7 @@
       computed: 'computedColor',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-text-stroke-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-text-stroke-color'
     },
     '-webkit-text-stroke-width': {
       syntax: '<length>',
@@ -14998,8 +14157,7 @@
       computed: 'absoluteLength',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-text-stroke-width'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-text-stroke-width'
     },
     '-webkit-touch-callout': {
       syntax: 'default | none',
@@ -15013,8 +14171,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/-webkit-touch-callout'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/-webkit-touch-callout'
     },
     '-webkit-user-modify': {
       syntax: 'read-only | read-write | read-write-plaintext-only',
@@ -15030,8 +14187,7 @@
       status: 'nonstandard'
     },
     'align-content': {
-      syntax:
-        'normal | <baseline-position> | <content-distribution> | <overflow-position>? <content-position>',
+      syntax: 'normal | <baseline-position> | <content-distribution> | <overflow-position>? <content-position>',
       media: 'visual',
       inherited: false,
       animationType: 'discrete',
@@ -15045,8 +14201,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/align-content'
     },
     'align-items': {
-      syntax:
-        'normal | stretch | <baseline-position> | [ <overflow-position>? <self-position> ]',
+      syntax: 'normal | stretch | <baseline-position> | [ <overflow-position>? <self-position> ]',
       media: 'visual',
       inherited: false,
       animationType: 'discrete',
@@ -15060,8 +14215,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/align-items'
     },
     'align-self': {
-      syntax:
-        'auto | normal | stretch | <baseline-position> | <overflow-position>? <self-position>',
+      syntax: 'auto | normal | stretch | <baseline-position> | <overflow-position>? <self-position>',
       media: 'visual',
       inherited: false,
       animationType: 'discrete',
@@ -15075,8 +14229,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/align-self'
     },
     'align-tracks': {
-      syntax:
-        '[ normal | <baseline-position> | <content-distribution> | <overflow-position>? <content-position> ]#',
+      syntax: '[ normal | <baseline-position> | <content-distribution> | <overflow-position>? <content-position> ]#',
       media: 'visual',
       inherited: false,
       animationType: 'discrete',
@@ -15159,8 +14312,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/animation-iteration-count'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation-iteration-count'
     },
     'animation-name': {
       syntax: '[ none | <keyframes-name> ]#',
@@ -15202,8 +14354,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/animation-timing-function'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/animation-timing-function'
     },
     appearance: appearance,
     'aspect-ratio': {
@@ -15263,8 +14414,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/background-attachment'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-attachment'
     },
     'background-blend-mode': {
       syntax: '<blend-mode>#',
@@ -15274,14 +14424,12 @@
       percentages: 'no',
       groups: ['Compositing and Blending'],
       initial: 'normal',
-      appliesto:
-        'allElementsSVGContainerGraphicsAndGraphicsReferencingElements',
+      appliesto: 'allElementsSVGContainerGraphicsAndGraphicsReferencingElements',
       computed: 'asSpecified',
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/background-blend-mode'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-blend-mode'
     },
     'background-clip': {
       syntax: '<box>#',
@@ -15348,8 +14496,7 @@
       media: 'visual',
       inherited: false,
       animationType: 'repeatableListOfSimpleListOfLpc',
-      percentages:
-        'referToSizeOfBackgroundPositioningAreaMinusBackgroundImageSize',
+      percentages: 'referToSizeOfBackgroundPositioningAreaMinusBackgroundImageSize',
       groups: ['CSS Backgrounds and Borders'],
       initial: '0% 0%',
       appliesto: 'allElements',
@@ -15360,38 +14507,32 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-position'
     },
     'background-position-x': {
-      syntax:
-        '[ center | [ [ left | right | x-start | x-end ]? <length-percentage>? ]! ]#',
+      syntax: '[ center | [ [ left | right | x-start | x-end ]? <length-percentage>? ]! ]#',
       media: 'visual',
       inherited: false,
       animationType: 'discrete',
-      percentages:
-        'referToWidthOfBackgroundPositioningAreaMinusBackgroundImageHeight',
+      percentages: 'referToWidthOfBackgroundPositioningAreaMinusBackgroundImageHeight',
       groups: ['CSS Backgrounds and Borders'],
       initial: 'left',
       appliesto: 'allElements',
       computed: 'listEachItemConsistingOfAbsoluteLengthPercentageAndOrigin',
       order: 'uniqueOrder',
       status: 'experimental',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/background-position-x'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-position-x'
     },
     'background-position-y': {
-      syntax:
-        '[ center | [ [ top | bottom | y-start | y-end ]? <length-percentage>? ]! ]#',
+      syntax: '[ center | [ [ top | bottom | y-start | y-end ]? <length-percentage>? ]! ]#',
       media: 'visual',
       inherited: false,
       animationType: 'discrete',
-      percentages:
-        'referToHeightOfBackgroundPositioningAreaMinusBackgroundImageHeight',
+      percentages: 'referToHeightOfBackgroundPositioningAreaMinusBackgroundImageHeight',
       groups: ['CSS Backgrounds and Borders'],
       initial: 'top',
       appliesto: 'allElements',
       computed: 'listEachItemConsistingOfAbsoluteLengthPercentageAndOrigin',
       order: 'uniqueOrder',
       status: 'experimental',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/background-position-y'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/background-position-y'
     },
     'background-repeat': {
       syntax: '<repeat-style>#',
@@ -15511,11 +14652,7 @@
       syntax: "<'border-top-width'> || <'border-top-style'> || <'color'>",
       media: 'visual',
       inherited: false,
-      animationType: [
-        'border-block-end-color',
-        'border-block-end-style',
-        'border-block-end-width'
-      ],
+      animationType: ['border-block-end-color', 'border-block-end-style', 'border-block-end-width'],
       percentages: 'no',
       groups: ['CSS Logical Properties'],
       initial: ['border-top-width', 'border-top-style', 'border-top-color'],
@@ -15537,8 +14674,7 @@
       computed: 'computedColor',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-block-end-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-end-color'
     },
     'border-block-end-style': {
       syntax: "<'border-top-style'>",
@@ -15552,8 +14688,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-block-end-style'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-end-style'
     },
     'border-block-end-width': {
       syntax: "<'border-top-width'>",
@@ -15567,18 +14702,13 @@
       computed: 'absoluteLengthZeroIfBorderStyleNoneOrHidden',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-block-end-width'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-end-width'
     },
     'border-block-start': {
       syntax: "<'border-top-width'> || <'border-top-style'> || <'color'>",
       media: 'visual',
       inherited: false,
-      animationType: [
-        'border-block-start-color',
-        'border-block-start-style',
-        'border-block-start-width'
-      ],
+      animationType: ['border-block-start-color', 'border-block-start-style', 'border-block-start-width'],
       percentages: 'no',
       groups: ['CSS Logical Properties'],
       initial: ['border-width', 'border-style', 'color'],
@@ -15600,8 +14730,7 @@
       computed: 'computedColor',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-block-start-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-start-color'
     },
     'border-block-start-style': {
       syntax: "<'border-top-style'>",
@@ -15615,8 +14744,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-block-start-style'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-start-style'
     },
     'border-block-start-width': {
       syntax: "<'border-top-width'>",
@@ -15630,31 +14758,18 @@
       computed: 'absoluteLengthZeroIfBorderStyleNoneOrHidden',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-block-start-width'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-block-start-width'
     },
     'border-bottom': {
       syntax: '<line-width> || <line-style> || <color>',
       media: 'visual',
       inherited: false,
-      animationType: [
-        'border-bottom-color',
-        'border-bottom-style',
-        'border-bottom-width'
-      ],
+      animationType: ['border-bottom-color', 'border-bottom-style', 'border-bottom-width'],
       percentages: 'no',
       groups: ['CSS Backgrounds and Borders'],
-      initial: [
-        'border-bottom-width',
-        'border-bottom-style',
-        'border-bottom-color'
-      ],
+      initial: ['border-bottom-width', 'border-bottom-style', 'border-bottom-color'],
       appliesto: 'allElements',
-      computed: [
-        'border-bottom-width',
-        'border-bottom-style',
-        'border-bottom-color'
-      ],
+      computed: ['border-bottom-width', 'border-bottom-style', 'border-bottom-color'],
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
@@ -15688,8 +14803,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-bottom-left-radius'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-bottom-left-radius'
     },
     'border-bottom-right-radius': {
       syntax: '<length-percentage>{1,2}',
@@ -15704,8 +14818,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-bottom-right-radius'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-bottom-right-radius'
     },
     'border-bottom-style': {
       syntax: '<line-style>',
@@ -15755,27 +14868,12 @@
       syntax: '<color>{1,4}',
       media: 'visual',
       inherited: false,
-      animationType: [
-        'border-bottom-color',
-        'border-left-color',
-        'border-right-color',
-        'border-top-color'
-      ],
+      animationType: ['border-bottom-color', 'border-left-color', 'border-right-color', 'border-top-color'],
       percentages: 'no',
       groups: ['CSS Backgrounds and Borders'],
-      initial: [
-        'border-top-color',
-        'border-right-color',
-        'border-bottom-color',
-        'border-left-color'
-      ],
+      initial: ['border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color'],
       appliesto: 'allElements',
-      computed: [
-        'border-bottom-color',
-        'border-left-color',
-        'border-right-color',
-        'border-top-color'
-      ],
+      computed: ['border-bottom-color', 'border-left-color', 'border-right-color', 'border-top-color'],
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
@@ -15794,8 +14892,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-end-end-radius'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-end-end-radius'
     },
     'border-end-start-radius': {
       syntax: '<length-percentage>{1,2}',
@@ -15810,8 +14907,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-end-start-radius'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-end-start-radius'
     },
     'border-image': {
       syntax:
@@ -15934,11 +15030,7 @@
       syntax: "<'border-top-width'> || <'border-top-style'> || <'color'>",
       media: 'visual',
       inherited: false,
-      animationType: [
-        'border-inline-end-color',
-        'border-inline-end-style',
-        'border-inline-end-width'
-      ],
+      animationType: ['border-inline-end-color', 'border-inline-end-style', 'border-inline-end-width'],
       percentages: 'no',
       groups: ['CSS Logical Properties'],
       initial: ['border-width', 'border-style', 'color'],
@@ -16002,8 +15094,7 @@
       computed: 'computedColor',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-inline-end-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-end-color'
     },
     'border-inline-end-style': {
       syntax: "<'border-top-style'>",
@@ -16017,8 +15108,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-inline-end-style'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-end-style'
     },
     'border-inline-end-width': {
       syntax: "<'border-top-width'>",
@@ -16032,18 +15122,13 @@
       computed: 'absoluteLengthZeroIfBorderStyleNoneOrHidden',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-inline-end-width'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-end-width'
     },
     'border-inline-start': {
       syntax: "<'border-top-width'> || <'border-top-style'> || <'color'>",
       media: 'visual',
       inherited: false,
-      animationType: [
-        'border-inline-start-color',
-        'border-inline-start-style',
-        'border-inline-start-width'
-      ],
+      animationType: ['border-inline-start-color', 'border-inline-start-style', 'border-inline-start-width'],
       percentages: 'no',
       groups: ['CSS Logical Properties'],
       initial: ['border-width', 'border-style', 'color'],
@@ -16065,8 +15150,7 @@
       computed: 'computedColor',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-inline-start-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-start-color'
     },
     'border-inline-start-style': {
       syntax: "<'border-top-style'>",
@@ -16080,8 +15164,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-inline-start-style'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-start-style'
     },
     'border-inline-start-width': {
       syntax: "<'border-top-width'>",
@@ -16095,18 +15178,13 @@
       computed: 'absoluteLengthZeroIfBorderStyleNoneOrHidden',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-inline-start-width'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-inline-start-width'
     },
     'border-left': {
       syntax: '<line-width> || <line-style> || <color>',
       media: 'visual',
       inherited: false,
-      animationType: [
-        'border-left-color',
-        'border-left-style',
-        'border-left-width'
-      ],
+      animationType: ['border-left-color', 'border-left-style', 'border-left-width'],
       percentages: 'no',
       groups: ['CSS Backgrounds and Borders'],
       initial: ['border-left-width', 'border-left-style', 'border-left-color'],
@@ -16196,24 +15274,12 @@
       syntax: '<line-width> || <line-style> || <color>',
       media: 'visual',
       inherited: false,
-      animationType: [
-        'border-right-color',
-        'border-right-style',
-        'border-right-width'
-      ],
+      animationType: ['border-right-color', 'border-right-style', 'border-right-width'],
       percentages: 'no',
       groups: ['CSS Backgrounds and Borders'],
-      initial: [
-        'border-right-width',
-        'border-right-style',
-        'border-right-color'
-      ],
+      initial: ['border-right-width', 'border-right-style', 'border-right-color'],
       appliesto: 'allElements',
-      computed: [
-        'border-right-width',
-        'border-right-style',
-        'border-right-color'
-      ],
+      computed: ['border-right-width', 'border-right-style', 'border-right-color'],
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
@@ -16291,8 +15357,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-start-end-radius'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-start-end-radius'
     },
     'border-start-start-radius': {
       syntax: '<length-percentage>{1,2}',
@@ -16307,8 +15372,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-start-start-radius'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-start-start-radius'
     },
     'border-style': {
       syntax: '<line-style>{1,4}',
@@ -16317,19 +15381,9 @@
       animationType: 'discrete',
       percentages: 'no',
       groups: ['CSS Backgrounds and Borders'],
-      initial: [
-        'border-top-style',
-        'border-right-style',
-        'border-bottom-style',
-        'border-left-style'
-      ],
+      initial: ['border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style'],
       appliesto: 'allElements',
-      computed: [
-        'border-bottom-style',
-        'border-left-style',
-        'border-right-style',
-        'border-top-style'
-      ],
+      computed: ['border-bottom-style', 'border-left-style', 'border-right-style', 'border-top-style'],
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
@@ -16339,11 +15393,7 @@
       syntax: '<line-width> || <line-style> || <color>',
       media: 'visual',
       inherited: false,
-      animationType: [
-        'border-top-color',
-        'border-top-style',
-        'border-top-width'
-      ],
+      animationType: ['border-top-color', 'border-top-style', 'border-top-width'],
       percentages: 'no',
       groups: ['CSS Backgrounds and Borders'],
       initial: ['border-top-width', 'border-top-style', 'border-top-color'],
@@ -16382,8 +15432,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-top-left-radius'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-top-left-radius'
     },
     'border-top-right-radius': {
       syntax: '<length-percentage>{1,2}',
@@ -16398,8 +15447,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/border-top-right-radius'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/border-top-right-radius'
     },
     'border-top-style': {
       syntax: '<line-style>',
@@ -16435,27 +15483,12 @@
       syntax: '<line-width>{1,4}',
       media: 'visual',
       inherited: false,
-      animationType: [
-        'border-bottom-width',
-        'border-left-width',
-        'border-right-width',
-        'border-top-width'
-      ],
+      animationType: ['border-bottom-width', 'border-left-width', 'border-right-width', 'border-top-width'],
       percentages: 'no',
       groups: ['CSS Backgrounds and Borders'],
-      initial: [
-        'border-top-width',
-        'border-right-width',
-        'border-bottom-width',
-        'border-left-width'
-      ],
+      initial: ['border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width'],
       appliesto: 'allElements',
-      computed: [
-        'border-bottom-width',
-        'border-left-width',
-        'border-right-width',
-        'border-top-width'
-      ],
+      computed: ['border-bottom-width', 'border-left-width', 'border-right-width', 'border-top-width'],
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter'],
       status: 'standard',
@@ -16662,8 +15695,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/break-inside'
     },
     'caption-side': {
-      syntax:
-        'top | bottom | block-start | block-end | inline-start | inline-end',
+      syntax: 'top | bottom | block-start | block-end | inline-start | inline-end',
       media: 'visual',
       inherited: true,
       animationType: 'discrete',
@@ -16758,22 +15790,16 @@
       groups: ['CSS Box Alignment'],
       initial: 'normal',
       appliesto: 'multiColumnElementsFlexContainersGridContainers',
-      computed:
-        'asSpecifiedWithLengthsAbsoluteAndNormalComputingToZeroExceptMultiColumn',
+      computed: 'asSpecifiedWithLengthsAbsoluteAndNormalComputingToZeroExceptMultiColumn',
       order: 'perGrammar',
       status: 'standard',
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/column-gap'
     },
     'column-rule': {
-      syntax:
-        "<'column-rule-width'> || <'column-rule-style'> || <'column-rule-color'>",
+      syntax: "<'column-rule-width'> || <'column-rule-style'> || <'column-rule-color'>",
       media: 'visual',
       inherited: false,
-      animationType: [
-        'column-rule-color',
-        'column-rule-style',
-        'column-rule-width'
-      ],
+      animationType: ['column-rule-color', 'column-rule-style', 'column-rule-width'],
       percentages: 'no',
       groups: ['CSS Columns'],
       initial: ['column-rule-width', 'column-rule-style', 'column-rule-color'],
@@ -17031,8 +16057,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-feature-settings'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-feature-settings'
     },
     'font-kerning': {
       syntax: 'auto | normal | none',
@@ -17062,8 +16087,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-language-override'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-language-override'
     },
     'font-optical-sizing': {
       syntax: 'auto | none',
@@ -17093,8 +16117,7 @@
       order: 'perGrammar',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-variation-settings'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-variation-settings'
     },
     'font-size': {
       syntax: '<absolute-size> | <relative-size> | <length-percentage>',
@@ -17215,12 +16238,10 @@
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-variant-alternates'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-variant-alternates'
     },
     'font-variant-caps': {
-      syntax:
-        'normal | small-caps | all-small-caps | petite-caps | all-petite-caps | unicase | titling-caps',
+      syntax: 'normal | small-caps | all-small-caps | petite-caps | all-petite-caps | unicase | titling-caps',
       media: 'visual',
       inherited: true,
       animationType: 'discrete',
@@ -17235,8 +16256,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-variant-caps'
     },
     'font-variant-east-asian': {
-      syntax:
-        'normal | [ <east-asian-variant-values> || <east-asian-width-values> || ruby ]',
+      syntax: 'normal | [ <east-asian-variant-values> || <east-asian-width-values> || ruby ]',
       media: 'visual',
       inherited: true,
       animationType: 'discrete',
@@ -17248,8 +16268,7 @@
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-variant-east-asian'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-variant-east-asian'
     },
     'font-variant-ligatures': {
       syntax:
@@ -17265,8 +16284,7 @@
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-variant-ligatures'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-variant-ligatures'
     },
     'font-variant-numeric': {
       syntax:
@@ -17297,8 +16315,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/font-variant-position'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/font-variant-position'
     },
     'font-weight': {
       syntax: '<font-weight-absolute> | bolder | lighter',
@@ -17324,19 +16341,9 @@
       animationType: 'discrete',
       percentages: 'no',
       groups: ['CSS Grid Layout'],
-      initial: [
-        'grid-row-start',
-        'grid-column-start',
-        'grid-row-end',
-        'grid-column-end'
-      ],
+      initial: ['grid-row-start', 'grid-column-start', 'grid-row-end', 'grid-column-end'],
       appliesto: 'gridItemsAndBoxesWithinGridContainer',
-      computed: [
-        'grid-row-start',
-        'grid-column-start',
-        'grid-row-end',
-        'grid-column-end'
-      ],
+      computed: ['grid-row-start', 'grid-column-start', 'grid-row-end', 'grid-column-end'],
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-area'
@@ -17517,17 +16524,9 @@
       animationType: 'discrete',
       percentages: ['grid-template-columns', 'grid-template-rows'],
       groups: ['CSS Grid Layout'],
-      initial: [
-        'grid-template-columns',
-        'grid-template-rows',
-        'grid-template-areas'
-      ],
+      initial: ['grid-template-columns', 'grid-template-rows', 'grid-template-areas'],
       appliesto: 'gridContainers',
-      computed: [
-        'grid-template-columns',
-        'grid-template-rows',
-        'grid-template-areas'
-      ],
+      computed: ['grid-template-columns', 'grid-template-rows', 'grid-template-areas'],
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-template'
@@ -17547,8 +16546,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-template-areas'
     },
     'grid-template-columns': {
-      syntax:
-        'none | <track-list> | <auto-track-list> | subgrid <line-name-list>?',
+      syntax: 'none | <track-list> | <auto-track-list> | subgrid <line-name-list>?',
       media: 'visual',
       inherited: false,
       animationType: 'simpleListOfLpcDifferenceLpc',
@@ -17559,12 +16557,10 @@
       computed: 'asSpecifiedRelativeToAbsoluteLengths',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/grid-template-columns'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/grid-template-columns'
     },
     'grid-template-rows': {
-      syntax:
-        'none | <track-list> | <auto-track-list> | subgrid <line-name-list>?',
+      syntax: 'none | <track-list> | <auto-track-list> | subgrid <line-name-list>?',
       media: 'visual',
       inherited: false,
       animationType: 'simpleListOfLpcDifferenceLpc',
@@ -17777,8 +16773,7 @@
     },
     isolation: isolation,
     'justify-content': {
-      syntax:
-        'normal | <content-distribution> | <overflow-position>? [ <content-position> | left | right ]',
+      syntax: 'normal | <content-distribution> | <overflow-position>? [ <content-position> | left | right ]',
       media: 'visual',
       inherited: false,
       animationType: 'discrete',
@@ -17807,8 +16802,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/justify-items'
     },
     'justify-self': {
-      syntax:
-        'auto | normal | stretch | <baseline-position> | <overflow-position>? [ <self-position> | left | right ]',
+      syntax: 'auto | normal | stretch | <baseline-position> | <overflow-position>? [ <self-position> | left | right ]',
       media: 'visual',
       inherited: false,
       animationType: 'discrete',
@@ -17822,8 +16816,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/justify-self'
     },
     'justify-tracks': {
-      syntax:
-        '[ normal | <content-distribution> | <overflow-position>? [ <content-position> | left | right ] ]#',
+      syntax: '[ normal | <content-distribution> | <overflow-position>? [ <content-position> | left | right ] ]#',
       media: 'visual',
       inherited: false,
       animationType: 'discrete',
@@ -17909,8 +16902,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/line-height-step'
     },
     'list-style': {
-      syntax:
-        "<'list-style-type'> || <'list-style-position'> || <'list-style-image'>",
+      syntax: "<'list-style-type'> || <'list-style-position'> || <'list-style-image'>",
       media: 'visual',
       inherited: true,
       animationType: 'discrete',
@@ -18416,13 +17408,11 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/max-block-size'
     },
     'max-height': {
-      syntax:
-        'none | <length-percentage> | min-content | max-content | fit-content(<length-percentage>)',
+      syntax: 'none | <length-percentage> | min-content | max-content | fit-content(<length-percentage>)',
       media: 'visual',
       inherited: false,
       animationType: 'lpc',
-      percentages:
-        'regardingHeightOfGeneratedBoxContainingBlockPercentagesNone',
+      percentages: 'regardingHeightOfGeneratedBoxContainingBlockPercentagesNone',
       groups: ['CSS Box Model'],
       initial: 'none',
       appliesto: 'allElementsButNonReplacedAndTableColumns',
@@ -18459,8 +17449,7 @@
       status: 'experimental'
     },
     'max-width': {
-      syntax:
-        'none | <length-percentage> | min-content | max-content | fit-content(<length-percentage>)',
+      syntax: 'none | <length-percentage> | min-content | max-content | fit-content(<length-percentage>)',
       media: 'visual',
       inherited: false,
       animationType: 'lpc',
@@ -18488,8 +17477,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/min-block-size'
     },
     'min-height': {
-      syntax:
-        'auto | <length> | <percentage> | min-content | max-content | fit-content(<length-percentage>)',
+      syntax: 'auto | <length> | <percentage> | min-content | max-content | fit-content(<length-percentage>)',
       media: 'visual',
       inherited: false,
       animationType: 'lpc',
@@ -18517,8 +17505,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/min-inline-size'
     },
     'min-width': {
-      syntax:
-        'auto | <length> | <percentage> | min-content | max-content | fit-content(<length-percentage>)',
+      syntax: 'auto | <length> | <percentage> | min-content | max-content | fit-content(<length-percentage>)',
       media: 'visual',
       inherited: false,
       animationType: 'lpc',
@@ -18728,8 +17715,7 @@
       groups: ['CSS Overflow'],
       initial: 'auto',
       appliesto: 'blockContainersFlexContainersGridContainers',
-      computed:
-        'asSpecifiedButVisibleOrClipReplacedToAutoOrHiddenIfOtherValueDifferent',
+      computed: 'asSpecifiedButVisibleOrClipReplacedToAutoOrHiddenIfOtherValueDifferent',
       order: 'perGrammar',
       status: 'standard'
     },
@@ -18745,8 +17731,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'nonstandard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Mozilla/CSS/overflow-clip-box'
+      mdn_url: 'https://developer.mozilla.org/docs/Mozilla/CSS/overflow-clip-box'
     },
     'overflow-inline': {
       syntax: 'visible | hidden | clip | scroll | auto',
@@ -18757,8 +17742,7 @@
       groups: ['CSS Overflow'],
       initial: 'auto',
       appliesto: 'blockContainersFlexContainersGridContainers',
-      computed:
-        'asSpecifiedButVisibleOrClipReplacedToAutoOrHiddenIfOtherValueDifferent',
+      computed: 'asSpecifiedButVisibleOrClipReplacedToAutoOrHiddenIfOtherValueDifferent',
       order: 'perGrammar',
       status: 'standard'
     },
@@ -18785,8 +17769,7 @@
       groups: ['CSS Overflow'],
       initial: 'visible',
       appliesto: 'blockContainersFlexContainersGridContainers',
-      computed:
-        'asSpecifiedButVisibleOrClipReplacedToAutoOrHiddenIfOtherValueDifferent',
+      computed: 'asSpecifiedButVisibleOrClipReplacedToAutoOrHiddenIfOtherValueDifferent',
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overflow-x'
@@ -18800,8 +17783,7 @@
       groups: ['CSS Overflow'],
       initial: 'visible',
       appliesto: 'blockContainersFlexContainersGridContainers',
-      computed:
-        'asSpecifiedButVisibleOrClipReplacedToAutoOrHiddenIfOtherValueDifferent',
+      computed: 'asSpecifiedButVisibleOrClipReplacedToAutoOrHiddenIfOtherValueDifferent',
       order: 'uniqueOrder',
       status: 'standard',
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overflow-y'
@@ -18832,8 +17814,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-block'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-block'
     },
     'overscroll-behavior-inline': {
       syntax: 'contain | none | auto',
@@ -18847,8 +17828,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-inline'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-inline'
     },
     'overscroll-behavior-x': {
       syntax: 'contain | none | auto',
@@ -18862,8 +17842,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-x'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-x'
     },
     'overscroll-behavior-y': {
       syntax: 'contain | none | auto',
@@ -18877,8 +17856,7 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-y'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overscroll-behavior-y'
     },
     padding: padding,
     'padding-block': {
@@ -19167,8 +18145,7 @@
       groups: ['CSS Box Alignment'],
       initial: 'normal',
       appliesto: 'multiColumnElementsFlexContainersGridContainers',
-      computed:
-        'asSpecifiedWithLengthsAbsoluteAndNormalComputingToZeroExceptMultiColumn',
+      computed: 'asSpecifiedWithLengthsAbsoluteAndNormalComputingToZeroExceptMultiColumn',
       order: 'perGrammar',
       status: 'standard',
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/row-gap'
@@ -19311,8 +18288,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-block-start'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-block-start'
     },
     'scroll-margin-block-end': {
       syntax: '<length>',
@@ -19326,8 +18302,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-block-end'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-block-end'
     },
     'scroll-margin-bottom': {
       syntax: '<length>',
@@ -19369,8 +18344,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-inline-start'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-inline-start'
     },
     'scroll-margin-inline-end': {
       syntax: '<length>',
@@ -19384,8 +18358,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-inline-end'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-margin-inline-end'
     },
     'scroll-margin-left': {
       syntax: '<length>',
@@ -19469,8 +18442,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-block-start'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-block-start'
     },
     'scroll-padding-block-end': {
       syntax: 'auto | <length-percentage>',
@@ -19484,8 +18456,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-block-end'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-block-end'
     },
     'scroll-padding-bottom': {
       syntax: 'auto | <length-percentage>',
@@ -19499,8 +18470,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-bottom'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-bottom'
     },
     'scroll-padding-inline': {
       syntax: '[ auto | <length-percentage> ]{1,2}',
@@ -19514,8 +18484,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-inline'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-inline'
     },
     'scroll-padding-inline-start': {
       syntax: 'auto | <length-percentage>',
@@ -19529,8 +18498,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-inline-start'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-inline-start'
     },
     'scroll-padding-inline-end': {
       syntax: 'auto | <length-percentage>',
@@ -19544,8 +18512,7 @@
       computed: 'asSpecified',
       order: 'perGrammar',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-inline-end'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-padding-inline-end'
     },
     'scroll-padding-left': {
       syntax: 'auto | <length-percentage>',
@@ -19615,8 +18582,7 @@
       computed: 'asSpecifiedRelativeToAbsoluteLengths',
       order: 'uniqueOrder',
       status: 'obsolete',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-coordinate'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-coordinate'
     },
     'scroll-snap-destination': {
       syntax: '<position>',
@@ -19630,8 +18596,7 @@
       computed: 'asSpecifiedRelativeToAbsoluteLengths',
       order: 'uniqueOrder',
       status: 'obsolete',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-destination'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-destination'
     },
     'scroll-snap-points-x': {
       syntax: 'none | repeat( <length-percentage> )',
@@ -19676,8 +18641,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/scroll-snap-stop'
     },
     'scroll-snap-type': {
-      syntax:
-        'none | [ x | y | block | inline | both ] [ mandatory | proximity ]?',
+      syntax: 'none | [ x | y | block | inline | both ] [ mandatory | proximity ]?',
       media: 'interactive',
       inherited: false,
       animationType: 'discrete',
@@ -19730,8 +18694,7 @@
       computed: 'specifiedValueNumberClipped0To1',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/shape-image-threshold'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/shape-image-threshold'
     },
     'shape-margin': {
       syntax: '<length-percentage>',
@@ -19845,18 +18808,9 @@
       ],
       percentages: 'no',
       groups: ['CSS Text Decoration'],
-      initial: [
-        'text-decoration-color',
-        'text-decoration-style',
-        'text-decoration-line'
-      ],
+      initial: ['text-decoration-color', 'text-decoration-style', 'text-decoration-line'],
       appliesto: 'allElements',
-      computed: [
-        'text-decoration-line',
-        'text-decoration-style',
-        'text-decoration-color',
-        'text-decoration-thickness'
-      ],
+      computed: ['text-decoration-line', 'text-decoration-style', 'text-decoration-color', 'text-decoration-thickness'],
       order: 'orderOfAppearance',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
@@ -19875,12 +18829,10 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-decoration-color'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-decoration-color'
     },
     'text-decoration-line': {
-      syntax:
-        'none | [ underline || overline || line-through || blink ] | spelling-error | grammar-error',
+      syntax: 'none | [ underline || overline || line-through || blink ] | spelling-error | grammar-error',
       media: 'visual',
       inherited: false,
       animationType: 'discrete',
@@ -19895,8 +18847,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-decoration-line'
     },
     'text-decoration-skip': {
-      syntax:
-        'none | [ objects || [ spaces | [ leading-spaces || trailing-spaces ] ] || edges || box-decoration ]',
+      syntax: 'none | [ objects || [ spaces | [ leading-spaces || trailing-spaces ] ] || edges || box-decoration ]',
       media: 'visual',
       inherited: true,
       animationType: 'discrete',
@@ -19921,8 +18872,7 @@
       computed: 'asSpecified',
       order: 'orderOfAppearance',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-decoration-skip-ink'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-decoration-skip-ink'
     },
     'text-decoration-style': {
       syntax: 'solid | double | dotted | dashed | wavy',
@@ -19937,8 +18887,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-decoration-style'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-decoration-style'
     },
     'text-decoration-thickness': {
       syntax: 'auto | from-font | <length> | <percentage> ',
@@ -19953,8 +18902,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-decoration-thickness'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-decoration-thickness'
     },
     'text-emphasis': {
       syntax: "<'text-emphasis-style'> || <'text-emphasis-color'>",
@@ -19996,12 +18944,10 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-emphasis-position'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-emphasis-position'
     },
     'text-emphasis-style': {
-      syntax:
-        'none | [ [ filled | open ] || [ dot | circle | double-circle | triangle | sesame ] ] | <string>',
+      syntax: 'none | [ [ filled | open ] || [ dot | circle | double-circle | triangle | sesame ] ] | <string>',
       media: 'visual',
       inherited: false,
       animationType: 'discrete',
@@ -20115,8 +19061,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-size-adjust'
     },
     'text-transform': {
-      syntax:
-        'none | capitalize | uppercase | lowercase | full-width | full-size-kana',
+      syntax: 'none | capitalize | uppercase | lowercase | full-width | full-size-kana',
       media: 'visual',
       inherited: true,
       animationType: 'discrete',
@@ -20143,8 +19088,7 @@
       order: 'uniqueOrder',
       alsoAppliesTo: ['::first-letter', '::first-line', '::placeholder'],
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-underline-offset'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-underline-offset'
     },
     'text-underline-position': {
       syntax: 'auto | from-font | [ under || [ left | right ] ]',
@@ -20158,8 +19102,7 @@
       computed: 'asSpecified',
       order: 'orderOfAppearance',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/text-underline-position'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/text-underline-position'
     },
     top: top,
     'touch-action': {
@@ -20171,8 +19114,7 @@
       percentages: 'no',
       groups: ['Pointer Events'],
       initial: 'auto',
-      appliesto:
-        'allElementsExceptNonReplacedInlineElementsTableRowsColumnsRowColumnGroups',
+      appliesto: 'allElementsExceptNonReplacedInlineElementsTableRowsColumnsRowColumnGroups',
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
@@ -20278,13 +19220,11 @@
       computed: 'asSpecified',
       order: 'uniqueOrder',
       status: 'standard',
-      mdn_url:
-        'https://developer.mozilla.org/docs/Web/CSS/transition-timing-function'
+      mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/transition-timing-function'
     },
     translate: translate,
     'unicode-bidi': {
-      syntax:
-        'normal | embed | isolate | bidi-override | isolate-override | plaintext',
+      syntax: 'normal | embed | isolate | bidi-override | isolate-override | plaintext',
       media: 'visual',
       inherited: false,
       animationType: 'discrete',
@@ -20312,8 +19252,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/user-select'
     },
     'vertical-align': {
-      syntax:
-        'baseline | sub | super | text-top | text-bottom | middle | top | bottom | <percentage> | <length>',
+      syntax: 'baseline | sub | super | text-top | text-bottom | middle | top | bottom | <percentage> | <length>',
       media: 'visual',
       inherited: false,
       animationType: 'length',
@@ -20402,8 +19341,7 @@
       mdn_url: 'https://developer.mozilla.org/docs/Web/CSS/overflow-wrap'
     },
     'writing-mode': {
-      syntax:
-        'horizontal-tb | vertical-rl | vertical-lr | sideways-rl | sideways-lr',
+      syntax: 'horizontal-tb | vertical-rl | vertical-lr | sideways-rl | sideways-lr',
       media: 'visual',
       inherited: true,
       animationType: 'discrete',
@@ -20455,8 +19393,7 @@
     syntax: '<number> | <angle>'
   };
   var image = {
-    syntax:
-      '<url> | <image()> | <image-set()> | <element()> | <paint()> | <cross-fade()> | <gradient>'
+    syntax: '<url> | <image()> | <image-set()> | <element()> | <paint()> | <cross-fade()> | <gradient>'
   };
   var nth$1 = {
     syntax: '<an-plus-b> | even | odd'
@@ -20475,8 +19412,7 @@
     syntax: 'rect(<top>, <right>, <bottom>, <left>)'
   };
   var size = {
-    syntax:
-      'closest-side | farthest-side | closest-corner | farthest-corner | <length> | <length-percentage>{2}'
+    syntax: 'closest-side | farthest-side | closest-corner | farthest-corner | <length> | <length-percentage>{2}'
   };
   var symbol = {
     syntax: '<string> | <image> | <custom-ident>'
@@ -20486,8 +19422,7 @@
   };
   var require$$2 = {
     'absolute-size': {
-      syntax:
-        'xx-small | x-small | small | medium | large | x-large | xx-large | xxx-large'
+      syntax: 'xx-small | x-small | small | medium | large | x-large | xx-large | xxx-large'
     },
     'alpha-value': {
       syntax: '<number> | <percentage>'
@@ -20502,8 +19437,7 @@
       syntax: '<color> && <color-stop-angle>?'
     },
     'angular-color-stop-list': {
-      syntax:
-        '[ <angular-color-stop> [, <angular-color-hint>]? ]# , <angular-color-stop>'
+      syntax: '[ <angular-color-stop> [, <angular-color-hint>]? ]# , <angular-color-stop>'
     },
     'animateable-feature': {
       syntax: 'scroll-position | contents | <custom-ident>'
@@ -20519,12 +19453,10 @@
       syntax: 'i | s'
     },
     'attribute-selector': {
-      syntax:
-        "'[' <wq-name> ']' | '[' <wq-name> <attr-matcher> [ <string-token> | <ident-token> ] <attr-modifier>? ']'"
+      syntax: "'[' <wq-name> ']' | '[' <wq-name> <attr-matcher> [ <string-token> | <ident-token> ] <attr-modifier>? ']'"
     },
     'auto-repeat': {
-      syntax:
-        'repeat( [ auto-fill | auto-fit ] , [ <line-names>? <fixed-size> ]+ <line-names>? )'
+      syntax: 'repeat( [ auto-fill | auto-fit ] , [ <line-names>? <fixed-size> ]+ <line-names>? )'
     },
     'auto-track-list': {
       syntax:
@@ -20540,8 +19472,7 @@
       syntax: 'none | <image>'
     },
     'bg-layer': {
-      syntax:
-        '<bg-image> || <bg-position> [ / <bg-size> ]? || <repeat-style> || <attachment> || <box> || <box>'
+      syntax: '<bg-image> || <bg-position> [ / <bg-size> ]? || <repeat-style> || <attachment> || <box> || <box>'
     },
     'bg-position': {
       syntax:
@@ -20602,8 +19533,7 @@
       syntax: '<length-percentage>{1,2}'
     },
     'color-stop-list': {
-      syntax:
-        '[ <linear-color-stop> [, <linear-color-hint>]? ]# , <linear-color-stop>'
+      syntax: '[ <linear-color-stop> [, <linear-color-hint>]? ]# , <linear-color-stop>'
     },
     combinator: combinator,
     'common-lig-values': {
@@ -20621,8 +19551,7 @@
       syntax: 'add | subtract | intersect | exclude'
     },
     'compound-selector': {
-      syntax:
-        '[ <type-selector>? <subclass-selector>* [ <pseudo-element-selector> <pseudo-class-selector>* ]* ]!'
+      syntax: '[ <type-selector>? <subclass-selector>* [ <pseudo-element-selector> <pseudo-class-selector>* ]* ]!'
     },
     'compound-selector-list': {
       syntax: '<compound-selector>#'
@@ -20634,8 +19563,7 @@
       syntax: '<complex-selector>#'
     },
     'conic-gradient()': {
-      syntax:
-        'conic-gradient( [ from <angle> ]? [ at <position> ]?, <angular-color-stop-list> )'
+      syntax: 'conic-gradient( [ from <angle> ]? [ at <position> ]?, <angular-color-stop-list> )'
     },
     'contextual-alt-values': {
       syntax: '[ contextual | no-contextual ]'
@@ -20644,8 +19572,7 @@
       syntax: 'space-between | space-around | space-evenly | stretch'
     },
     'content-list': {
-      syntax:
-        '[ <string> | contents | <image> | <quote> | <target> | <leader()> ]+'
+      syntax: '[ <string> | contents | <image> | <quote> | <target> | <leader()> ]+'
     },
     'content-position': {
       syntax: 'center | start | end | flex-start | flex-end'
@@ -20693,8 +19620,7 @@
         'table-row-group | table-header-group | table-footer-group | table-row | table-cell | table-column-group | table-column | table-caption | ruby-base | ruby-text | ruby-base-container | ruby-text-container'
     },
     'display-legacy': {
-      syntax:
-        'inline-block | inline-list-item | inline-table | inline-flex | inline-grid'
+      syntax: 'inline-block | inline-list-item | inline-table | inline-flex | inline-grid'
     },
     'display-listitem': {
       syntax: '<display-outside>? && [ flow | flow-root ]? && list-item'
@@ -20733,8 +19659,7 @@
       syntax: '<string> [ <integer> | on | off ]?'
     },
     'feature-type': {
-      syntax:
-        '@stylistic | @historical-forms | @styleset | @character-variant | @swash | @ornaments | @annotation'
+      syntax: '@stylistic | @historical-forms | @styleset | @character-variant | @swash | @ornaments | @annotation'
     },
     'feature-value-block': {
       syntax: "<feature-type> '{' <feature-value-declaration-list> '}'"
@@ -20772,8 +19697,7 @@
       syntax: '<length-percentage>'
     },
     'fixed-repeat': {
-      syntax:
-        'repeat( [ <positive-integer> ] , [ <line-names>? <fixed-size> ]+ <line-names>? )'
+      syntax: 'repeat( [ <positive-integer> ] , [ <line-names>? <fixed-size> ]+ <line-names>? )'
     },
     'fixed-size': {
       syntax:
@@ -20809,8 +19733,7 @@
       syntax: 'grayscale( <number-percentage> )'
     },
     'grid-line': {
-      syntax:
-        'auto | <custom-ident> | [ <integer> && <custom-ident>? ] | [ span && [ <integer> || <custom-ident> ] ]'
+      syntax: 'auto | <custom-ident> | [ <integer> && <custom-ident>? ] | [ span && [ <integer> || <custom-ident> ] ]'
     },
     'historical-lig-values': {
       syntax: '[ historical-ligatures | no-historical-ligatures ]'
@@ -20883,8 +19806,7 @@
       syntax: '[ <line-names> | <name-repeat> ]+'
     },
     'line-style': {
-      syntax:
-        'none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset'
+      syntax: 'none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset'
     },
     'line-width': {
       syntax: '<length> | thin | medium | thick'
@@ -20896,16 +19818,14 @@
       syntax: '<color> <color-stop-length>?'
     },
     'linear-gradient()': {
-      syntax:
-        'linear-gradient( [ <angle> | to <side-or-corner> ]? , <color-stop-list> )'
+      syntax: 'linear-gradient( [ <angle> | to <side-or-corner> ]? , <color-stop-list> )'
     },
     'mask-layer': {
       syntax:
         '<mask-reference> || <position> [ / <bg-size> ]? || <repeat-style> || <geometry-box> || [ <geometry-box> | no-clip ] || <compositing-operator> || <masking-mode>'
     },
     'mask-position': {
-      syntax:
-        '[ <length-percentage> | left | center | right ] [ <length-percentage> | top | center | bottom ]?'
+      syntax: '[ <length-percentage> | left | center | right ] [ <length-percentage> | top | center | bottom ]?'
     },
     'mask-reference': {
       syntax: 'none | <image> | <mask-source>'
@@ -20947,8 +19867,7 @@
       syntax: '<media-in-parens> [ or <media-in-parens> ]+'
     },
     'media-query': {
-      syntax:
-        '<media-condition> | [ not | only ]? <media-type> [ and <media-condition-without-or> ]?'
+      syntax: '<media-condition> | [ not | only ]? <media-type> [ and <media-condition-without-or> ]?'
     },
     'media-query-list': {
       syntax: '<media-query>#'
@@ -21012,8 +19931,7 @@
       syntax: '<length> | <percentage>'
     },
     'page-body': {
-      syntax:
-        '<declaration>? [ ; <page-body> ]? | <page-margin-box> <page-body>'
+      syntax: '<declaration>? [ ; <page-body> ]? | <page-margin-box> <page-body>'
     },
     'page-margin-box': {
       syntax: "<page-margin-box-type> '{' <declaration-list> '}'"
@@ -21038,8 +19956,7 @@
       syntax: 'perspective( <length> )'
     },
     'polygon()': {
-      syntax:
-        'polygon( <fill-rule>? , [ <length-percentage> <length-percentage> ]# )'
+      syntax: 'polygon( <fill-rule>? , [ <length-percentage> <length-percentage> ]# )'
     },
     position: position,
     'pseudo-class-selector': {
@@ -21053,8 +19970,7 @@
     },
     quote: quote,
     'radial-gradient()': {
-      syntax:
-        'radial-gradient( [ <ending-shape> || <size> ]? [ at <position> ]? , <color-stop-list> )'
+      syntax: 'radial-gradient( [ <ending-shape> || <size> ]? [ at <position> ]? , <color-stop-list> )'
     },
     'relative-selector': {
       syntax: '<combinator>? <complex-selector>'
@@ -21066,16 +19982,13 @@
       syntax: 'larger | smaller'
     },
     'repeat-style': {
-      syntax:
-        'repeat-x | repeat-y | [ repeat | space | round | no-repeat ]{1,2}'
+      syntax: 'repeat-x | repeat-y | [ repeat | space | round | no-repeat ]{1,2}'
     },
     'repeating-linear-gradient()': {
-      syntax:
-        'repeating-linear-gradient( [ <angle> | to <side-or-corner> ]? , <color-stop-list> )'
+      syntax: 'repeating-linear-gradient( [ <angle> | to <side-or-corner> ]? , <color-stop-list> )'
     },
     'repeating-radial-gradient()': {
-      syntax:
-        'repeating-radial-gradient( [ <ending-shape> || <size> ]? [ at <position> ]? , <color-stop-list> )'
+      syntax: 'repeating-radial-gradient( [ <ending-shape> || <size> ]? [ at <position> ]? , <color-stop-list> )'
     },
     'rgb()': {
       syntax:
@@ -21089,8 +20002,7 @@
       syntax: 'rotate( [ <angle> | <zero> ] )'
     },
     'rotate3d()': {
-      syntax:
-        'rotate3d( <number> , <number> , <number> , [ <angle> | <zero> ] )'
+      syntax: 'rotate3d( <number> , <number> , <number> , [ <angle> | <zero> ] )'
     },
     'rotateX()': {
       syntax: 'rotateX( [ <angle> | <zero> ] )'
@@ -21120,8 +20032,7 @@
       syntax: 'scaleZ( <number> )'
     },
     'self-position': {
-      syntax:
-        'center | start | end | self-start | self-end | flex-start | flex-end'
+      syntax: 'center | start | end | self-start | self-end | flex-start | flex-end'
     },
     'shape-radius': {
       syntax: '<length-percentage> | closest-side | farthest-side'
@@ -21166,8 +20077,7 @@
       syntax: 'running | paused'
     },
     'single-transition': {
-      syntax:
-        '[ none | <single-transition-property> ] || <time> || <timing-function> || <time>'
+      syntax: '[ none | <single-transition-property> ] || <time> || <timing-function> || <time>'
     },
     'single-transition-property': {
       syntax: 'all | <custom-ident>'
@@ -21180,16 +20090,14 @@
       syntax: 'step-start | step-end | steps(<integer>[, <step-position>]?)'
     },
     'subclass-selector': {
-      syntax:
-        '<id-selector> | <class-selector> | <attribute-selector> | <pseudo-class-selector>'
+      syntax: '<id-selector> | <class-selector> | <attribute-selector> | <pseudo-class-selector>'
     },
     'supports-condition': {
       syntax:
         'not <supports-in-parens> | <supports-in-parens> [ and <supports-in-parens> ]* | <supports-in-parens> [ or <supports-in-parens> ]*'
     },
     'supports-in-parens': {
-      syntax:
-        '( <supports-condition> ) | <supports-feature> | <general-enclosed>'
+      syntax: '( <supports-condition> ) | <supports-feature> | <general-enclosed>'
     },
     'supports-feature': {
       syntax: '<supports-decl> | <supports-selector-fn>'
@@ -21203,16 +20111,13 @@
     symbol: symbol,
     target: target,
     'target-counter()': {
-      syntax:
-        'target-counter( [ <string> | <url> ] , <custom-ident> , <counter-style>? )'
+      syntax: 'target-counter( [ <string> | <url> ] , <custom-ident> , <counter-style>? )'
     },
     'target-counters()': {
-      syntax:
-        'target-counters( [ <string> | <url> ] , <custom-ident> , <string> , <counter-style>? )'
+      syntax: 'target-counters( [ <string> | <url> ] , <custom-ident> , <string> , <counter-style>? )'
     },
     'target-text()': {
-      syntax:
-        'target-text( [ <string> | <url> ] , [ content | before | after | first-letter ]? )'
+      syntax: 'target-text( [ <string> | <url> ] , [ content | before | after | first-letter ]? )'
     },
     'time-percentage': {
       syntax: '<time> | <percentage>'
@@ -21224,12 +20129,10 @@
       syntax: '<length-percentage> | <flex> | min-content | max-content | auto'
     },
     'track-list': {
-      syntax:
-        '[ <line-names>? [ <track-size> | <track-repeat> ] ]+ <line-names>?'
+      syntax: '[ <line-names>? [ <track-size> | <track-repeat> ] ]+ <line-names>?'
     },
     'track-repeat': {
-      syntax:
-        'repeat( [ <positive-integer> ] , [ <line-names>? <track-size> ]+ <line-names>? )'
+      syntax: 'repeat( [ <positive-integer> ] , [ <line-names>? <track-size> ]+ <line-names>? )'
     },
     'track-size': {
       syntax:
@@ -21246,8 +20149,7 @@
       syntax: 'translate( <length-percentage> , <length-percentage>? )'
     },
     'translate3d()': {
-      syntax:
-        'translate3d( <length-percentage> , <length-percentage> , <length> )'
+      syntax: 'translate3d( <length-percentage> , <length-percentage> , <length> )'
     },
     'translateX()': {
       syntax: 'translateX( <length-percentage> )'
@@ -21291,38 +20193,31 @@
   };
   var properties = {
     '-moz-background-clip': {
-      comment:
-        'deprecated syntax in old Firefox, https://developer.mozilla.org/en/docs/Web/CSS/background-clip',
+      comment: 'deprecated syntax in old Firefox, https://developer.mozilla.org/en/docs/Web/CSS/background-clip',
       syntax: 'padding | border'
     },
     '-moz-border-radius-bottomleft': {
-      comment:
-        'https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-left-radius',
+      comment: 'https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-left-radius',
       syntax: "<'border-bottom-left-radius'>"
     },
     '-moz-border-radius-bottomright': {
-      comment:
-        'https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-right-radius',
+      comment: 'https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-right-radius',
       syntax: "<'border-bottom-right-radius'>"
     },
     '-moz-border-radius-topleft': {
-      comment:
-        'https://developer.mozilla.org/en-US/docs/Web/CSS/border-top-left-radius',
+      comment: 'https://developer.mozilla.org/en-US/docs/Web/CSS/border-top-left-radius',
       syntax: "<'border-top-left-radius'>"
     },
     '-moz-border-radius-topright': {
-      comment:
-        'https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-right-radius',
+      comment: 'https://developer.mozilla.org/en-US/docs/Web/CSS/border-bottom-right-radius',
       syntax: "<'border-bottom-right-radius'>"
     },
     '-moz-control-character-visibility': {
-      comment:
-        'firefox specific keywords, https://bugzilla.mozilla.org/show_bug.cgi?id=947588',
+      comment: 'firefox specific keywords, https://bugzilla.mozilla.org/show_bug.cgi?id=947588',
       syntax: 'visible | hidden'
     },
     '-moz-osx-font-smoothing': {
-      comment:
-        'misssed old syntax https://developer.mozilla.org/en-US/docs/Web/CSS/font-smooth',
+      comment: 'misssed old syntax https://developer.mozilla.org/en-US/docs/Web/CSS/font-smooth',
       syntax: 'auto | grayscale'
     },
     '-moz-user-select': {
@@ -21330,13 +20225,11 @@
       syntax: 'none | text | all | -moz-none'
     },
     '-ms-flex-align': {
-      comment:
-        'misssed old syntax implemented in IE, https://www.w3.org/TR/2012/WD-css3-flexbox-20120322/#flex-align',
+      comment: 'misssed old syntax implemented in IE, https://www.w3.org/TR/2012/WD-css3-flexbox-20120322/#flex-align',
       syntax: 'start | end | center | baseline | stretch'
     },
     '-ms-flex-item-align': {
-      comment:
-        'misssed old syntax implemented in IE, https://www.w3.org/TR/2012/WD-css3-flexbox-20120322/#flex-align',
+      comment: 'misssed old syntax implemented in IE, https://www.w3.org/TR/2012/WD-css3-flexbox-20120322/#flex-align',
       syntax: 'auto | start | end | center | baseline | stretch'
     },
     '-ms-flex-line-pack': {
@@ -21345,33 +20238,27 @@
       syntax: 'start | end | center | justify | distribute | stretch'
     },
     '-ms-flex-negative': {
-      comment:
-        'misssed old syntax implemented in IE; TODO: find references for comfirmation',
+      comment: 'misssed old syntax implemented in IE; TODO: find references for comfirmation',
       syntax: "<'flex-shrink'>"
     },
     '-ms-flex-pack': {
-      comment:
-        'misssed old syntax implemented in IE, https://www.w3.org/TR/2012/WD-css3-flexbox-20120322/#flex-pack',
+      comment: 'misssed old syntax implemented in IE, https://www.w3.org/TR/2012/WD-css3-flexbox-20120322/#flex-pack',
       syntax: 'start | end | center | justify | distribute'
     },
     '-ms-flex-order': {
-      comment:
-        'misssed old syntax implemented in IE; https://msdn.microsoft.com/en-us/library/jj127303(v=vs.85).aspx',
+      comment: 'misssed old syntax implemented in IE; https://msdn.microsoft.com/en-us/library/jj127303(v=vs.85).aspx',
       syntax: '<integer>'
     },
     '-ms-flex-positive': {
-      comment:
-        'misssed old syntax implemented in IE; TODO: find references for comfirmation',
+      comment: 'misssed old syntax implemented in IE; TODO: find references for comfirmation',
       syntax: "<'flex-grow'>"
     },
     '-ms-flex-preferred-size': {
-      comment:
-        'misssed old syntax implemented in IE; TODO: find references for comfirmation',
+      comment: 'misssed old syntax implemented in IE; TODO: find references for comfirmation',
       syntax: "<'flex-basis'>"
     },
     '-ms-interpolation-mode': {
-      comment:
-        'https://msdn.microsoft.com/en-us/library/ff521095(v=vs.85).aspx',
+      comment: 'https://msdn.microsoft.com/en-us/library/ff521095(v=vs.85).aspx',
       syntax: 'nearest-neighbor | bicubic'
     },
     '-ms-grid-column-align': {
@@ -21385,8 +20272,7 @@
       syntax: 'start | end | center | stretch'
     },
     '-ms-hyphenate-limit-last': {
-      comment:
-        'misssed old syntax implemented in IE; https://www.w3.org/TR/css-text-4/#hyphenate-line-limits',
+      comment: 'misssed old syntax implemented in IE; https://www.w3.org/TR/css-text-4/#hyphenate-line-limits',
       syntax: 'none | always | column | page | spread'
     },
     '-webkit-appearance': {
@@ -21416,16 +20302,12 @@
       syntax: 'auto | none | antialiased | subpixel-antialiased'
     },
     '-webkit-mask-box-image': {
-      comment:
-        'missed; https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-mask-box-image',
-      syntax:
-        '[ <url> | <gradient> | none ] [ <length-percentage>{4} <-webkit-mask-box-repeat>{2} ]?'
+      comment: 'missed; https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-mask-box-image',
+      syntax: '[ <url> | <gradient> | none ] [ <length-percentage>{4} <-webkit-mask-box-repeat>{2} ]?'
     },
     '-webkit-print-color-adjust': {
       comment: 'missed',
-      references: [
-        'https://developer.mozilla.org/en/docs/Web/CSS/-webkit-print-color-adjust'
-      ],
+      references: ['https://developer.mozilla.org/en/docs/Web/CSS/-webkit-print-color-adjust'],
       syntax: 'economy | exact'
     },
     '-webkit-text-security': {
@@ -21437,15 +20319,12 @@
       syntax: 'none | element | auto'
     },
     '-webkit-user-select': {
-      comment:
-        'auto is supported by old webkit, https://developer.mozilla.org/en-US/docs/Web/CSS/user-select',
+      comment: 'auto is supported by old webkit, https://developer.mozilla.org/en-US/docs/Web/CSS/user-select',
       syntax: 'auto | none | text | all'
     },
     'alignment-baseline': {
       comment: 'added SVG property',
-      references: [
-        'https://www.w3.org/TR/SVG/text.html#AlignmentBaselineProperty'
-      ],
+      references: ['https://www.w3.org/TR/SVG/text.html#AlignmentBaselineProperty'],
       syntax:
         'auto | baseline | before-edge | text-before-edge | middle | central | after-edge | text-after-edge | ideographic | alphabetic | hanging | mathematical'
     },
@@ -21455,8 +20334,7 @@
       syntax: 'baseline | sub | super | <svg-length>'
     },
     behavior: {
-      comment:
-        'added old IE property https://msdn.microsoft.com/en-us/library/ms530723(v=vs.85).aspx',
+      comment: 'added old IE property https://msdn.microsoft.com/en-us/library/ms530723(v=vs.85).aspx',
       syntax: '<url>+'
     },
     'clip-rule': {
@@ -21493,21 +20371,17 @@
     },
     'dominant-baseline': {
       comment: 'added SVG property',
-      references: [
-        'https://www.w3.org/TR/SVG/text.html#DominantBaselineProperty'
-      ],
+      references: ['https://www.w3.org/TR/SVG/text.html#DominantBaselineProperty'],
       syntax:
         'auto | use-script | no-change | reset-size | ideographic | alphabetic | hanging | mathematical | central | middle | text-after-edge | text-before-edge'
     },
     'image-rendering': {
-      comment:
-        'extended with <-non-standard-image-rendering>, added SVG keywords optimizeSpeed and optimizeQuality',
+      comment: 'extended with <-non-standard-image-rendering>, added SVG keywords optimizeSpeed and optimizeQuality',
       references: [
         'https://developer.mozilla.org/en/docs/Web/CSS/image-rendering',
         'https://www.w3.org/TR/SVG/painting.html#ImageRenderingProperty'
       ],
-      syntax:
-        '| optimizeSpeed | optimizeQuality | <-non-standard-image-rendering>'
+      syntax: '| optimizeSpeed | optimizeQuality | <-non-standard-image-rendering>'
     },
     fill: {
       comment: 'added SVG property',
@@ -21530,16 +20404,12 @@
     },
     'glyph-orientation-horizontal': {
       comment: 'added SVG property',
-      references: [
-        'https://www.w3.org/TR/SVG/text.html#GlyphOrientationHorizontalProperty'
-      ],
+      references: ['https://www.w3.org/TR/SVG/text.html#GlyphOrientationHorizontalProperty'],
       syntax: '<angle>'
     },
     'glyph-orientation-vertical': {
       comment: 'added SVG property',
-      references: [
-        'https://www.w3.org/TR/SVG/text.html#GlyphOrientationVerticalProperty'
-      ],
+      references: ['https://www.w3.org/TR/SVG/text.html#GlyphOrientationVerticalProperty'],
       syntax: '<angle>'
     },
     kerning: {
@@ -21549,9 +20419,7 @@
     },
     'letter-spacing': {
       comment: 'fix syntax <length> -> <length-percentage>',
-      references: [
-        'https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/letter-spacing'
-      ],
+      references: ['https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/letter-spacing'],
       syntax: 'normal | <length-percentage>'
     },
     marker: {
@@ -21586,14 +20454,12 @@
       syntax: '| fit-content | -moz-fit-content | -webkit-fit-content'
     },
     'min-width': {
-      comment:
-        'extend by non-standard width keywords https://developer.mozilla.org/en-US/docs/Web/CSS/width',
+      comment: 'extend by non-standard width keywords https://developer.mozilla.org/en-US/docs/Web/CSS/width',
       syntax:
         'auto | <length-percentage> | min-content | max-content | fit-content(<length-percentage>) | <-non-standard-width>'
     },
     overflow: {
-      comment:
-        'extend by vendor keywords https://developer.mozilla.org/en-US/docs/Web/CSS/overflow',
+      comment: 'extend by vendor keywords https://developer.mozilla.org/en-US/docs/Web/CSS/overflow',
       syntax: '| <-non-standard-overflow>'
     },
     pause: {
@@ -21622,14 +20488,11 @@
     },
     'shape-rendering': {
       comment: 'added SVG property',
-      references: [
-        'https://www.w3.org/TR/SVG/painting.html#ShapeRenderingPropert'
-      ],
+      references: ['https://www.w3.org/TR/SVG/painting.html#ShapeRenderingPropert'],
       syntax: 'auto | optimizeSpeed | crispEdges | geometricPrecision'
     },
     src: {
-      comment:
-        "added @font-face's src property https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/src",
+      comment: "added @font-face's src property https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/src",
       syntax: '[ <url> [ format( <string># ) ]? | local( <family-name> ) ]#'
     },
     speak: {
@@ -21638,8 +20501,7 @@
     },
     'speak-as': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax:
-        'normal | spell-out || digits || [ literal-punctuation | no-punctuation ]'
+      syntax: 'normal | spell-out || digits || [ literal-punctuation | no-punctuation ]'
     },
     stroke: {
       comment: 'added SVG property',
@@ -21647,8 +20509,7 @@
       syntax: '<paint>'
     },
     'stroke-dasharray': {
-      comment:
-        'added SVG property; a list of comma and/or white space separated <length>s and <percentage>s',
+      comment: 'added SVG property; a list of comma and/or white space separated <length>s and <percentage>s',
       references: ['https://www.w3.org/TR/SVG/painting.html#StrokeProperties'],
       syntax: 'none | [ <svg-length>+ ]#'
     },
@@ -21684,20 +20545,16 @@
     },
     'text-anchor': {
       comment: 'added SVG property',
-      references: [
-        'https://www.w3.org/TR/SVG/text.html#TextAlignmentProperties'
-      ],
+      references: ['https://www.w3.org/TR/SVG/text.html#TextAlignmentProperties'],
       syntax: 'start | middle | end'
     },
     'unicode-bidi': {
-      comment:
-        'added prefixed keywords https://developer.mozilla.org/en-US/docs/Web/CSS/unicode-bidi',
+      comment: 'added prefixed keywords https://developer.mozilla.org/en-US/docs/Web/CSS/unicode-bidi',
       syntax:
         '| -moz-isolate | -moz-isolate-override | -moz-plaintext | -webkit-isolate | -webkit-isolate-override | -webkit-plaintext'
     },
     'unicode-range': {
-      comment:
-        'added missed property https://developer.mozilla.org/en-US/docs/Web/CSS/%40font-face/unicode-range',
+      comment: 'added missed property https://developer.mozilla.org/en-US/docs/Web/CSS/%40font-face/unicode-range',
       syntax: '<urange>#'
     },
     'voice-balance': {
@@ -21709,10 +20566,8 @@
       syntax: 'auto | <time>'
     },
     'voice-family': {
-      comment:
-        '<name> -> <family-name>, https://www.w3.org/TR/css3-speech/#property-index',
-      syntax:
-        '[ [ <family-name> | <generic-voice> ] , ]* [ <family-name> | <generic-voice> ] | preserve'
+      comment: '<name> -> <family-name>, https://www.w3.org/TR/css3-speech/#property-index',
+      syntax: '[ [ <family-name> | <generic-voice> ] , ]* [ <family-name> | <generic-voice> ] | preserve'
     },
     'voice-pitch': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
@@ -21726,8 +20581,7 @@
     },
     'voice-rate': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax:
-        '[ normal | x-slow | slow | medium | fast | x-fast ] || <percentage>'
+      syntax: '[ normal | x-slow | slow | medium | fast | x-fast ] || <percentage>'
     },
     'voice-stress': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
@@ -21735,8 +20589,7 @@
     },
     'voice-volume': {
       comment: 'https://www.w3.org/TR/css3-speech/#property-index',
-      syntax:
-        'silent | [ [ x-soft | soft | medium | loud | x-loud ] || <decibel> ]'
+      syntax: 'silent | [ [ x-soft | soft | medium | loud | x-loud ] || <decibel> ]'
     },
     'writing-mode': {
       comment: 'extend with SVG keywords',
@@ -21787,8 +20640,7 @@
     '-legacy-radial-gradient-size': {
       comment:
         'before a standard it contains 2 extra keywords (`contain` and `cover`) https://www.w3.org/TR/2011/WD-css3-images-20110908/#ltsize',
-      syntax:
-        'closest-side | closest-corner | farthest-side | farthest-corner | contain | cover'
+      syntax: 'closest-side | closest-corner | farthest-side | farthest-corner | contain | cover'
     },
     '-legacy-radial-gradient-shape': {
       comment:
@@ -21797,9 +20649,7 @@
     },
     '-non-standard-font': {
       comment: 'non standard fonts',
-      references: [
-        'https://webkit.org/blog/3709/using-the-system-font-in-web-content/'
-      ],
+      references: ['https://webkit.org/blog/3709/using-the-system-font-in-web-content/'],
       syntax:
         '-apple-system-body | -apple-system-headline | -apple-system-subheadline | -apple-system-caption1 | -apple-system-caption2 | -apple-system-footnote | -apple-system-short-body | -apple-system-short-headline | -apple-system-short-subheadline | -apple-system-short-caption1 | -apple-system-short-footnote | -apple-system-tall-body'
     },
@@ -21813,20 +20663,15 @@
         '-moz-ButtonDefault | -moz-ButtonHoverFace | -moz-ButtonHoverText | -moz-CellHighlight | -moz-CellHighlightText | -moz-Combobox | -moz-ComboboxText | -moz-Dialog | -moz-DialogText | -moz-dragtargetzone | -moz-EvenTreeRow | -moz-Field | -moz-FieldText | -moz-html-CellHighlight | -moz-html-CellHighlightText | -moz-mac-accentdarkestshadow | -moz-mac-accentdarkshadow | -moz-mac-accentface | -moz-mac-accentlightesthighlight | -moz-mac-accentlightshadow | -moz-mac-accentregularhighlight | -moz-mac-accentregularshadow | -moz-mac-chrome-active | -moz-mac-chrome-inactive | -moz-mac-focusring | -moz-mac-menuselect | -moz-mac-menushadow | -moz-mac-menutextselect | -moz-MenuHover | -moz-MenuHoverText | -moz-MenuBarText | -moz-MenuBarHoverText | -moz-nativehyperlinktext | -moz-OddTreeRow | -moz-win-communicationstext | -moz-win-mediatext | -moz-activehyperlinktext | -moz-default-background-color | -moz-default-color | -moz-hyperlinktext | -moz-visitedhyperlinktext | -webkit-activelink | -webkit-focus-ring-color | -webkit-link | -webkit-text'
     },
     '-non-standard-image-rendering': {
-      comment:
-        'non-standard keywords http://phrogz.net/tmp/canvas_image_zoom.html',
-      syntax:
-        'optimize-contrast | -moz-crisp-edges | -o-crisp-edges | -webkit-optimize-contrast'
+      comment: 'non-standard keywords http://phrogz.net/tmp/canvas_image_zoom.html',
+      syntax: 'optimize-contrast | -moz-crisp-edges | -o-crisp-edges | -webkit-optimize-contrast'
     },
     '-non-standard-overflow': {
-      comment:
-        'non-standard keywords https://developer.mozilla.org/en-US/docs/Web/CSS/overflow',
-      syntax:
-        '-moz-scrollbars-none | -moz-scrollbars-horizontal | -moz-scrollbars-vertical | -moz-hidden-unscrollable'
+      comment: 'non-standard keywords https://developer.mozilla.org/en-US/docs/Web/CSS/overflow',
+      syntax: '-moz-scrollbars-none | -moz-scrollbars-horizontal | -moz-scrollbars-vertical | -moz-hidden-unscrollable'
     },
     '-non-standard-width': {
-      comment:
-        'non-standard keywords https://developer.mozilla.org/en-US/docs/Web/CSS/width',
+      comment: 'non-standard keywords https://developer.mozilla.org/en-US/docs/Web/CSS/width',
       syntax:
         'fill-available | min-intrinsic | intrinsic | -moz-available | -moz-fit-content | -moz-min-content | -moz-max-content | -webkit-min-content | -webkit-max-content'
     },
@@ -21837,37 +20682,29 @@
         '-webkit-gradient( <-webkit-gradient-type>, <-webkit-gradient-point> [, <-webkit-gradient-point> | , <-webkit-gradient-radius>, <-webkit-gradient-point> ] [, <-webkit-gradient-radius>]? [, <-webkit-gradient-color-stop>]* )'
     },
     '-webkit-gradient-color-stop': {
-      comment:
-        'first Apple proposal gradient syntax https://webkit.org/blog/175/introducing-css-gradients/',
-      syntax:
-        'from( <color> ) | color-stop( [ <number-zero-one> | <percentage> ] , <color> ) | to( <color> )'
+      comment: 'first Apple proposal gradient syntax https://webkit.org/blog/175/introducing-css-gradients/',
+      syntax: 'from( <color> ) | color-stop( [ <number-zero-one> | <percentage> ] , <color> ) | to( <color> )'
     },
     '-webkit-gradient-point': {
-      comment:
-        'first Apple proposal gradient syntax https://webkit.org/blog/175/introducing-css-gradients/',
-      syntax:
-        '[ left | center | right | <length-percentage> ] [ top | center | bottom | <length-percentage> ]'
+      comment: 'first Apple proposal gradient syntax https://webkit.org/blog/175/introducing-css-gradients/',
+      syntax: '[ left | center | right | <length-percentage> ] [ top | center | bottom | <length-percentage> ]'
     },
     '-webkit-gradient-radius': {
-      comment:
-        'first Apple proposal gradient syntax https://webkit.org/blog/175/introducing-css-gradients/',
+      comment: 'first Apple proposal gradient syntax https://webkit.org/blog/175/introducing-css-gradients/',
       syntax: '<length> | <percentage>'
     },
     '-webkit-gradient-type': {
-      comment:
-        'first Apple proposal gradient syntax https://webkit.org/blog/175/introducing-css-gradients/',
+      comment: 'first Apple proposal gradient syntax https://webkit.org/blog/175/introducing-css-gradients/',
       syntax: 'linear | radial'
     },
     '-webkit-mask-box-repeat': {
-      comment:
-        'missed; https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-mask-box-image',
+      comment: 'missed; https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-mask-box-image',
       syntax: 'repeat | stretch | round'
     },
     '-webkit-mask-clip-style': {
       comment:
         'missed; there is no enough information about `-webkit-mask-clip` property, but looks like all those keywords are working',
-      syntax:
-        'border | border-box | padding | padding-box | content | content-box | text'
+      syntax: 'border | border-box | padding | padding-box | content | content-box | text'
     },
     '-ms-filter-function-list': {
       comment: 'https://developer.mozilla.org/en-US/docs/Web/CSS/-ms-filter',
@@ -21879,8 +20716,7 @@
     },
     '-ms-filter-function-progid': {
       comment: 'https://developer.mozilla.org/en-US/docs/Web/CSS/-ms-filter',
-      syntax:
-        "'progid:' [ <ident-token> '.' ]* [ <ident-token> | <function-token> <any-value>? ) ]"
+      syntax: "'progid:' [ <ident-token> '.' ]* [ <ident-token> | <function-token> <any-value>? ) ]"
     },
     '-ms-filter-function-legacy': {
       comment: 'https://developer.mozilla.org/en-US/docs/Web/CSS/-ms-filter',
@@ -21900,8 +20736,7 @@
       syntax: '<any-value>'
     },
     'border-radius': {
-      comment:
-        'missed, https://drafts.csswg.org/css-backgrounds-3/#the-border-radius',
+      comment: 'missed, https://drafts.csswg.org/css-backgrounds-3/#the-border-radius',
       syntax: '<length-percentage>{1,2}'
     },
     bottom: {
@@ -21918,8 +20753,7 @@
     'element()': {
       comment:
         'https://drafts.csswg.org/css-gcpm/#element-syntax & https://drafts.csswg.org/css-images-4/#element-notation',
-      syntax:
-        'element( <custom-ident> , [ first | start | last | first-except ]? ) | element( <id-selector> )'
+      syntax: 'element( <custom-ident> , [ first | start | last | first-except ]? ) | element( <id-selector> )'
     },
     'generic-voice': {
       comment: 'https://www.w3.org/TR/css3-speech/#voice-family',
@@ -21931,9 +20765,7 @@
     },
     'generic-family': {
       comment: 'added -apple-system',
-      references: [
-        'https://webkit.org/blog/3709/using-the-system-font-in-web-content/'
-      ],
+      references: ['https://webkit.org/blog/3709/using-the-system-font-in-web-content/'],
       syntax: '| -apple-system'
     },
     gradient: {
@@ -21959,15 +20791,12 @@
       syntax: '| <-non-standard-color>'
     },
     paint: {
-      comment:
-        'used by SVG https://www.w3.org/TR/SVG/painting.html#SpecifyingPaint',
-      syntax:
-        'none | <color> | <url> [ none | <color> ]? | context-fill | context-stroke'
+      comment: 'used by SVG https://www.w3.org/TR/SVG/painting.html#SpecifyingPaint',
+      syntax: 'none | <color> | <url> [ none | <color> ]? | context-fill | context-stroke'
     },
     'page-size': {
       comment: 'https://www.w3.org/TR/css-page-3/#typedef-page-size-page-size',
-      syntax:
-        'A5 | A4 | A3 | B5 | B4 | JIS-B5 | JIS-B4 | letter | legal | ledger'
+      syntax: 'A5 | A4 | A3 | B5 | B4 | JIS-B5 | JIS-B4 | letter | legal | ledger'
     },
     ratio: {
       comment: 'missed, https://drafts.csswg.org/mediaqueries-4/#typedef-ratio',
@@ -21979,14 +20808,11 @@
       syntax: '<length> | auto'
     },
     shape: {
-      comment:
-        'missed spaces in function body and add backwards compatible syntax',
-      syntax:
-        'rect( <top>, <right>, <bottom>, <left> ) | rect( <top> <right> <bottom> <left> )'
+      comment: 'missed spaces in function body and add backwards compatible syntax',
+      syntax: 'rect( <top>, <right>, <bottom>, <left> ) | rect( <top> <right> <bottom> <left> )'
     },
     'svg-length': {
-      comment:
-        'All coordinates and lengths in SVG can be specified with or without a unit identifier',
+      comment: 'All coordinates and lengths in SVG can be specified with or without a unit identifier',
       references: ['https://www.w3.org/TR/SVG11/coords.html#Units'],
       syntax: '<percentage> | <length> | <number>'
     },
@@ -22005,8 +20831,7 @@
     },
     'track-group': {
       comment: 'used by old grid-columns and grid-rows syntax v0',
-      syntax:
-        "'(' [ <string>* <track-minmax> <string>* ]+ ')' [ '[' <positive-integer> ']' ]? | <track-minmax>"
+      syntax: "'(' [ <string>* <track-minmax> <string>* ]+ ')' [ '[' <positive-integer> ']' ]? | <track-minmax>"
     },
     'track-list-v0': {
       comment: 'used by old grid-columns and grid-rows syntax v0',
@@ -22014,8 +20839,7 @@
     },
     'track-minmax': {
       comment: 'used by old grid-columns and grid-rows syntax v0',
-      syntax:
-        'minmax( <track-breadth> , <track-breadth> ) | auto | <track-breadth> | fit-content'
+      syntax: 'minmax( <track-breadth> , <track-breadth> ) | auto | <track-breadth> | fit-content'
     },
     x: {
       comment:
@@ -22141,14 +20965,10 @@
 
     // copy all syntaxes for an original dict
     for (const key in dict) {
-      const patchDescriptors =
-        (patchDict[key] && patchDict[key].descriptors) || null;
+      const patchDescriptors = (patchDict[key] && patchDict[key].descriptors) || null;
 
       result[key] = {
-        prelude:
-          key in patchDict && 'prelude' in patchDict[key] ?
-            patchDict[key].prelude
-          : dict[key].prelude || null,
+        prelude: key in patchDict && 'prelude' in patchDict[key] ? patchDict[key].prelude : dict[key].prelude || null,
         descriptors:
           dict[key].descriptors ?
             patchDictionary(dict[key].descriptors, patchDescriptors || {})
@@ -22161,9 +20981,7 @@
       if (!hasOwnProperty.call(dict, key)) {
         result[key] = {
           prelude: patchDict[key].prelude || null,
-          descriptors:
-            patchDict[key].descriptors &&
-            unpackSyntaxes(patchDict[key].descriptors)
+          descriptors: patchDict[key].descriptors && unpackSyntaxes(patchDict[key].descriptors)
         };
       }
     }
@@ -22215,9 +21033,7 @@
   }
 
   function expectCharCode(offset, code) {
-    if (
-      !cmpChar$2(this.scanner.source, this.scanner.tokenStart + offset, code)
-    ) {
+    if (!cmpChar$2(this.scanner.source, this.scanner.tokenStart + offset, code)) {
       var msg = '';
 
       switch (code) {
@@ -22245,12 +21061,8 @@
     }
 
     if (type !== NUMBER$6) {
-      if (
-        this.scanner.isDelim(PLUSSIGN$5, offset) ||
-        this.scanner.isDelim(HYPHENMINUS$2, offset)
-      ) {
-        sign =
-          this.scanner.isDelim(PLUSSIGN$5, offset) ? PLUSSIGN$5 : HYPHENMINUS$2;
+      if (this.scanner.isDelim(PLUSSIGN$5, offset) || this.scanner.isDelim(HYPHENMINUS$2, offset)) {
+        sign = this.scanner.isDelim(PLUSSIGN$5, offset) ? PLUSSIGN$5 : HYPHENMINUS$2;
 
         do {
           type = this.scanner.lookupType(++offset);
@@ -22277,9 +21089,7 @@
     }
 
     checkTokenIsInteger.call(this, sign !== 0);
-    return sign === HYPHENMINUS$2 ?
-        '-' + this.consume(NUMBER$6)
-      : this.consume(NUMBER$6);
+    return sign === HYPHENMINUS$2 ? '-' + this.consume(NUMBER$6) : this.consume(NUMBER$6);
   }
 
   // An+B microsyntax https://www.w3.org/TR/css-syntax-3/#anb
@@ -22352,8 +21162,7 @@
       // '+'? <ndashdigit-ident>
       else if (
         this.scanner.tokenType === IDENT$f ||
-        (this.scanner.isDelim(PLUSSIGN$5) &&
-          this.scanner.lookupType(1) === IDENT$f)
+        (this.scanner.isDelim(PLUSSIGN$5) && this.scanner.lookupType(1) === IDENT$f)
       ) {
         var sign = 0;
         a = '1';
@@ -22406,11 +21215,7 @@
         var code = this.scanner.source.charCodeAt(this.scanner.tokenStart);
         var sign = code === PLUSSIGN$5 || code === HYPHENMINUS$2;
 
-        for (
-          var i = this.scanner.tokenStart + sign;
-          i < this.scanner.tokenEnd;
-          i++
-        ) {
+        for (var i = this.scanner.tokenStart + sign; i < this.scanner.tokenEnd; i++) {
           if (!isDigit$1(this.scanner.source.charCodeAt(i))) {
             break;
           }
@@ -22430,11 +21235,7 @@
           this.scanner.next();
           b = consumeB.call(this);
         } else {
-          expectCharCode.call(
-            this,
-            i - this.scanner.tokenStart + 1,
-            HYPHENMINUS$2
-          );
+          expectCharCode.call(this, i - this.scanner.tokenStart + 1, HYPHENMINUS$2);
 
           // <ndash-dimension> <signless-integer>
           if (i + 2 === this.scanner.tokenEnd) {
@@ -22445,11 +21246,7 @@
           }
           // <ndashdigit-dimension>
           else {
-            checkInteger.call(
-              this,
-              i - this.scanner.tokenStart + 2,
-              DISALLOW_SIGN
-            );
+            checkInteger.call(this, i - this.scanner.tokenStart + 2, DISALLOW_SIGN);
             this.scanner.next();
             b = this.scanner.substrToCursor(i + 1);
           }
@@ -22542,10 +21339,7 @@
 
   // EXCLAMATIONMARK, SEMICOLON, false
   function exclamationMarkOrSemicolon(tokenType, source, offset) {
-    if (
-      tokenType === Delim &&
-      source.charCodeAt(offset) === EXCLAMATIONMARK$2
-    ) {
+    if (tokenType === Delim && source.charCodeAt(offset) === EXCLAMATIONMARK$2) {
       return 1;
     }
 
@@ -22566,9 +21360,7 @@
       var startOffset = this.scanner.getTokenStart(startToken);
       var endOffset;
 
-      this.scanner.skip(
-        this.scanner.getRawLength(startToken, mode || balanceEnd)
-      );
+      this.scanner.skip(this.scanner.getRawLength(startToken, mode || balanceEnd));
 
       if (excludeWhiteSpace && this.scanner.tokenStart > startOffset) {
         endOffset = getOffsetExcludeWS.call(this);
@@ -22608,11 +21400,7 @@
   }
 
   function isDeclarationBlockAtrule() {
-    for (
-      var offset = 1, type;
-      (type = this.scanner.lookupType(offset));
-      offset++
-    ) {
+    for (var offset = 1, type; (type = this.scanner.lookupType(offset)); offset++) {
       if (type === RIGHTCURLYBRACKET$1) {
         return true;
       }
@@ -22652,16 +21440,10 @@
         this.scanner.tokenType !== SEMICOLON$4
       ) {
         if (this.parseAtrulePrelude) {
-          prelude = this.parseWithFallback(
-            this.AtrulePrelude.bind(this, name),
-            consumeRaw$5
-          );
+          prelude = this.parseWithFallback(this.AtrulePrelude.bind(this, name), consumeRaw$5);
 
           // turn empty AtrulePrelude into null
-          if (
-            prelude.type === 'AtrulePrelude' &&
-            prelude.children.head === null
-          ) {
+          if (prelude.type === 'AtrulePrelude' && prelude.children.head === null) {
             prelude = null;
           }
         } else {
@@ -22677,10 +21459,7 @@
           break;
 
         case LEFTCURLYBRACKET$3:
-          if (
-            this.atrule.hasOwnProperty(nameLowerCase) &&
-            typeof this.atrule[nameLowerCase].block === 'function'
-          ) {
+          if (this.atrule.hasOwnProperty(nameLowerCase) && typeof this.atrule[nameLowerCase].block === 'function') {
             block = this.atrule[nameLowerCase].block.call(this);
           } else {
             // TODO: should consume block content as Raw?
@@ -22735,10 +21514,7 @@
 
       this.scanner.skipSC();
 
-      if (
-        this.atrule.hasOwnProperty(name) &&
-        typeof this.atrule[name].prelude === 'function'
-      ) {
+      if (this.atrule.hasOwnProperty(name) && typeof this.atrule[name].prelude === 'function') {
         // custom consumer
         children = this.atrule[name].prelude.call(this);
       } else {
@@ -22804,10 +21580,7 @@
     }
 
     if (this.scanner.isDelim(VERTICALLINE$2)) {
-      if (
-        this.scanner.source.charCodeAt(this.scanner.tokenStart + 1) !==
-        EQUALSSIGN
-      ) {
+      if (this.scanner.source.charCodeAt(this.scanner.tokenStart + 1) !== EQUALSSIGN) {
         this.scanner.next();
         this.eat(IDENT$e);
       } else if (expectIdent) {
@@ -22887,10 +21660,7 @@
 
           this.scanner.skipSC();
 
-          value =
-            this.scanner.tokenType === STRING$3 ?
-              this.String()
-            : this.Identifier();
+          value = this.scanner.tokenType === STRING$3 ? this.String() : this.Identifier();
 
           this.scanner.skipSC();
         }
@@ -23125,10 +21895,7 @@
 
       return {
         type: 'ClassSelector',
-        loc: this.getLocation(
-          this.scanner.tokenStart - 1,
-          this.scanner.tokenEnd
-        ),
+        loc: this.getLocation(this.scanner.tokenStart - 1, this.scanner.tokenEnd),
         name: this.consume(IDENT$d)
       };
     },
@@ -23166,10 +21933,7 @@
         case SOLIDUS$5:
           this.scanner.next();
 
-          if (
-            this.scanner.tokenType !== IDENT$c ||
-            this.scanner.lookupValue(0, 'deep') === false
-          ) {
+          if (this.scanner.tokenType !== IDENT$c || this.scanner.lookupValue(0, 'deep') === false) {
             this.error('Identifier `deep` is expected');
           }
 
@@ -23291,10 +22055,8 @@
       var startToken = this.scanner.tokenIndex;
       var property = readProperty.call(this);
       var customProperty = isCustomProperty(property);
-      var parseValue =
-        customProperty ? this.parseCustomProperty : this.parseValue;
-      var consumeRaw =
-        customProperty ? consumeCustomPropertyRaw : consumeValueRaw;
+      var parseValue = customProperty ? this.parseCustomProperty : this.parseValue;
+      var consumeRaw = customProperty ? consumeCustomPropertyRaw : consumeValueRaw;
       var important = false;
       var value;
 
@@ -23313,16 +22075,8 @@
         value = consumeRaw.call(this, this.scanner.tokenIndex);
       }
 
-      if (
-        customProperty &&
-        value.type === 'Value' &&
-        value.children.isEmpty()
-      ) {
-        for (
-          let offset = valueStart - this.scanner.tokenIndex;
-          offset <= 0;
-          offset++
-        ) {
+      if (customProperty && value.type === 'Value' && value.children.isEmpty()) {
+        for (let offset = valueStart - this.scanner.tokenIndex; offset <= 0; offset++) {
           if (this.scanner.lookupType(offset) === WHITESPACE$6) {
             value.children.appendData({
               type: 'WhiteSpace',
@@ -23364,9 +22118,7 @@
       this.node(node.value);
 
       if (node.important) {
-        this.chunk(
-          node.important === true ? '!important' : '!' + node.important
-        );
+        this.chunk(node.important === true ? '!important' : '!' + node.important);
       }
     },
     walkContext: 'declaration'
@@ -23445,9 +22197,7 @@
             break;
 
           default:
-            children.push(
-              this.parseWithFallback(this.Declaration, consumeRaw$3)
-            );
+            children.push(this.parseWithFallback(this.Declaration, consumeRaw$3));
         }
       }
 
@@ -23804,10 +22554,7 @@
       var selector = null;
       var query;
 
-      if (
-        this.scanner.lookupValue(0, 'odd') ||
-        this.scanner.lookupValue(0, 'even')
-      ) {
+      if (this.scanner.lookupValue(0, 'odd') || this.scanner.lookupValue(0, 'even')) {
         query = this.Identifier();
       } else {
         query = this.AnPlusB();
@@ -24092,18 +22839,12 @@
     for (var i = 0; i < value.length; i++) {
       var code = value.charCodeAt(i);
       if (!isDigit(code) && code !== FULLSTOP$1) {
-        this.error(
-          'Unsigned number is expected',
-          this.scanner.tokenStart - value.length + i
-        );
+        this.error('Unsigned number is expected', this.scanner.tokenStart - value.length + i);
       }
     }
 
     if (Number(value) === 0) {
-      this.error(
-        'Zero number is not allowed',
-        this.scanner.tokenStart - value.length
-      );
+      this.error('Zero number is not allowed', this.scanner.tokenStart - value.length);
     }
 
     return value;
@@ -24155,11 +22896,7 @@
   function consumePrelude() {
     var prelude = this.SelectorList();
 
-    if (
-      prelude.type !== 'Raw' &&
-      this.scanner.eof === false &&
-      this.scanner.tokenType !== LEFTCURLYBRACKET
-    ) {
+    if (prelude.type !== 'Raw' && this.scanner.eof === false && this.scanner.tokenType !== LEFTCURLYBRACKET) {
       this.error();
     }
 
@@ -24322,10 +23059,7 @@
 
           case COMMENT$1:
             // ignore comments except exclamation comments (i.e. /*! .. */) on top level
-            if (
-              this.scanner.source.charCodeAt(this.scanner.tokenStart + 2) !==
-              EXCLAMATIONMARK
-            ) {
+            if (this.scanner.source.charCodeAt(this.scanner.tokenStart + 2) !== EXCLAMATIONMARK) {
               this.scanner.next();
               continue;
             }
@@ -24375,10 +23109,7 @@
   var VERTICALLINE$1 = 0x007c; // U+007C VERTICAL LINE (|)
 
   function eatIdentifierOrAsterisk() {
-    if (
-      this.scanner.tokenType !== IDENT$5 &&
-      this.scanner.isDelim(ASTERISK$2) === false
-    ) {
+    if (this.scanner.tokenType !== IDENT$5 && this.scanner.isDelim(ASTERISK$2) === false) {
       this.error('Identifier or asterisk is expected');
     }
 
@@ -24438,11 +23169,7 @@
   var U$1 = 0x0075; // U+0075 LATIN SMALL LETTER U (u)
 
   function eatHexSequence(offset, allowDash) {
-    for (
-      var pos = this.scanner.tokenStart + offset, len = 0;
-      pos < this.scanner.tokenEnd;
-      pos++
-    ) {
+    for (var pos = this.scanner.tokenStart + offset, len = 0; pos < this.scanner.tokenEnd; pos++) {
       var code = this.scanner.source.charCodeAt(pos);
 
       if (code === HYPHENMINUS$1 && allowDash && len !== 0) {
@@ -24455,8 +23182,7 @@
 
       if (!isHexDigit(code)) {
         this.error(
-          allowDash && len !== 0 ?
-            'HyphenMinus' + (len < 6 ? ' or hex digit' : '') + ' is expected'
+          allowDash && len !== 0 ? 'HyphenMinus' + (len < 6 ? ' or hex digit' : '') + ' is expected'
           : len < 6 ? 'Hex digit is expected'
           : 'Unexpected input',
           pos
@@ -24547,10 +23273,7 @@
         return;
       }
 
-      if (
-        this.scanner.tokenType === DIMENSION$2 ||
-        this.scanner.tokenType === NUMBER$2
-      ) {
+      if (this.scanner.tokenType === DIMENSION$2 || this.scanner.tokenType === NUMBER$2) {
         startsWith.call(this, HYPHENMINUS$1);
         eatHexSequence.call(this, 1, false);
         return;
@@ -24628,17 +23351,11 @@
           var rawStart = start + 4;
           var rawEnd = this.scanner.tokenEnd - 1;
 
-          while (
-            rawStart < rawEnd &&
-            isWhiteSpace(this.scanner.source.charCodeAt(rawStart))
-          ) {
+          while (rawStart < rawEnd && isWhiteSpace(this.scanner.source.charCodeAt(rawStart))) {
             rawStart++;
           }
 
-          while (
-            rawStart < rawEnd &&
-            isWhiteSpace(this.scanner.source.charCodeAt(rawEnd - 1))
-          ) {
+          while (rawStart < rawEnd && isWhiteSpace(this.scanner.source.charCodeAt(rawEnd - 1))) {
             rawEnd--;
           }
 
@@ -24652,14 +23369,7 @@
           break;
 
         case FUNCTION$3:
-          if (
-            !cmpStr$1(
-              this.scanner.source,
-              this.scanner.tokenStart,
-              this.scanner.tokenEnd,
-              'url('
-            )
-          ) {
+          if (!cmpStr$1(this.scanner.source, this.scanner.tokenStart, this.scanner.tokenEnd, 'url(')) {
             this.error('Function name must be `url`');
           }
 
@@ -24840,14 +23550,7 @@
         return this.Number();
 
       case FUNCTION$2:
-        return (
-            cmpStr(
-              this.scanner.source,
-              this.scanner.tokenStart,
-              this.scanner.tokenEnd,
-              'url('
-            )
-          ) ?
+        return cmpStr(this.scanner.source, this.scanner.tokenStart, this.scanner.tokenEnd, 'url(') ?
             this.Url()
           : this.Function(this.readSequence, context.recognizer);
 
@@ -24868,22 +23571,14 @@
       case DELIM$1:
         var code = this.scanner.source.charCodeAt(this.scanner.tokenStart);
 
-        if (
-          code === SOLIDUS$1 ||
-          code === ASTERISK$1 ||
-          code === PLUSSIGN$1 ||
-          code === HYPHENMINUS
-        ) {
+        if (code === SOLIDUS$1 || code === ASTERISK$1 || code === PLUSSIGN$1 || code === HYPHENMINUS) {
           return this.Operator(); // TODO: replace with Delim
         }
 
         // TODO: produce a node with Delim node type
 
         if (code === NUMBERSIGN$1) {
-          this.error(
-            'Hex or identifier is expected',
-            this.scanner.tokenStart + 1
-          );
+          this.error('Hex or identifier is expected', this.scanner.tokenStart + 1);
         }
 
         break;
@@ -24937,9 +23632,7 @@
 
       case DIMENSION:
         // throws when .123ident
-        if (
-          this.scanner.source.charCodeAt(this.scanner.tokenStart) === FULLSTOP
-        ) {
+        if (this.scanner.source.charCodeAt(this.scanner.tokenStart) === FULLSTOP) {
           this.error('Identifier is expected', this.scanner.tokenStart + 1);
         }
         break;
@@ -24979,9 +23672,7 @@
   // legacy IE function
   // expression( <any-value> )
   var expression = function () {
-    return this.createSingleNodeList(
-      this.Raw(this.scanner.tokenIndex, null, false)
-    );
+    return this.createSingleNodeList(this.Raw(this.scanner.tokenIndex, null, false));
   };
 
   var TYPE$2 = tokenizer$3.TYPE;
@@ -25008,18 +23699,10 @@
       const value =
         this.parseCustomProperty ?
           this.Value(null)
-        : this.Raw(
-            this.scanner.tokenIndex,
-            rawMode.exclamationMarkOrSemicolon,
-            false
-          );
+        : this.Raw(this.scanner.tokenIndex, rawMode.exclamationMarkOrSemicolon, false);
 
       if (value.type === 'Value' && value.children.isEmpty()) {
-        for (
-          let offset = startIndex - this.scanner.tokenIndex;
-          offset <= 0;
-          offset++
-        ) {
+        for (let offset = startIndex - this.scanner.tokenIndex; offset <= 0; offset++) {
           if (this.scanner.lookupType(offset) === WHITESPACE$1) {
             value.children.appendData({
               type: 'WhiteSpace',
@@ -25087,10 +23770,7 @@
             this.error('String or url() is expected');
         }
 
-        if (
-          this.lookupNonWSType(0) === IDENT$1 ||
-          this.lookupNonWSType(0) === LEFTPARENTHESIS$1
-        ) {
+        if (this.lookupNonWSType(0) === IDENT$1 || this.lookupNonWSType(0) === LEFTPARENTHESIS$1) {
           children.push(this.WhiteSpace());
           children.push(this.MediaQueryList());
         }
@@ -25133,9 +23813,7 @@
   var LEFTPARENTHESIS = TYPE.LeftParenthesis;
 
   function consumeRaw() {
-    return this.createSingleNodeList(
-      this.Raw(this.scanner.tokenIndex, null, false)
-    );
+    return this.createSingleNodeList(this.Raw(this.scanner.tokenIndex, null, false));
   }
 
   function parentheses() {
@@ -25294,9 +23972,7 @@
       stylesheet: 'StyleSheet',
       atrule: 'Atrule',
       atrulePrelude: function (options) {
-        return this.AtrulePrelude(
-          options.atrule ? String(options.atrule) : null
-        );
+        return this.AtrulePrelude(options.atrule ? String(options.atrule) : null);
       },
       mediaQueryList: 'MediaQueryList',
       mediaQuery: 'MediaQuery',
@@ -25320,14 +23996,11 @@
     node: node
   };
 
-  var _args = [
-    ['css-tree@1.1.3', '/home/gitlab-runner/builds/xUiosxA2/0/tools/pagedjs']
-  ];
+  var _args = [['css-tree@1.1.3', '/home/gitlab-runner/builds/xUiosxA2/0/tools/pagedjs']];
   var _from = 'css-tree@1.1.3';
   var _id = 'css-tree@1.1.3';
   var _inBundle = false;
-  var _integrity =
-    'sha512-tRpdppF7TRazZrjJ6v3stzv93qxRcSsFmW6cX0Zm2NVKpxE1WV1HblnghVv9TreireHkqI/VDEsfolRF1p6y7Q==';
+  var _integrity = 'sha512-tRpdppF7TRazZrjJ6v3stzv93qxRcSsFmW6cX0Zm2NVKpxE1WV1HblnghVv9TreireHkqI/VDEsfolRF1p6y7Q==';
   var _location = '/css-tree';
   var _phantomChildren = {};
   var _requested = {
@@ -25376,18 +24049,7 @@
   var files = ['data', 'dist', 'lib'];
   var homepage = 'https://github.com/csstree/csstree#readme';
   var jsdelivr = 'dist/csstree.min.js';
-  var keywords = [
-    'css',
-    'ast',
-    'tokenizer',
-    'parser',
-    'walker',
-    'lexer',
-    'generator',
-    'utils',
-    'syntax',
-    'validation'
-  ];
+  var keywords = ['css', 'ast', 'tokenizer', 'parser', 'walker', 'lexer', 'generator', 'utils', 'syntax', 'validation'];
   var license = 'MIT';
   var main = 'lib/index.js';
   var name = 'css-tree';
@@ -25647,8 +24309,7 @@
           let content = node.value.value;
           if (
             (node.value.type === 'Raw' && content.startsWith('data:')) ||
-            (node.value.type === 'String' &&
-              (content.startsWith('"data:') || content.startsWith("'data:")))
+            (node.value.type === 'String' && (content.startsWith('"data:') || content.startsWith("'data:")))
           );
           else {
             let href = content.replace(/["']/g, '');
@@ -26500,10 +25161,7 @@
 
       request.onload = () => {
         // Chrome returns a status code of 0 for local files
-        const status =
-          request.status === 0 && url.startsWith('file://') ?
-            200
-          : request.status;
+        const status = request.status === 0 && url.startsWith('file://') ? 200 : request.status;
         resolve(new Response(request.responseText, { status }));
       };
 
@@ -26633,12 +25291,7 @@
 
   class Handler {
     constructor(chunker, polisher, caller) {
-      let hooks = Object.assign(
-        {},
-        chunker && chunker.hooks,
-        polisher && polisher.hooks,
-        caller && caller.hooks
-      );
+      let hooks = Object.assign({}, chunker && chunker.hooks, polisher && polisher.hooks, caller && caller.hooks);
       this.chunker = chunker;
       this.polisher = polisher;
       this.caller = caller;
@@ -26956,10 +25609,7 @@
       }
 
       if (declarations.marks) {
-        if (
-          !declarations.bleed ||
-          (declarations.bleed && declarations.bleed[0] === 'auto')
-        ) {
+        if (!declarations.bleed || (declarations.bleed && declarations.bleed[0] === 'auto')) {
           // Spec say 6pt, but needs more space for marks
           page.bleed = {
             top: { value: 6, unit: 'mm' },
@@ -27032,33 +25682,14 @@
           bleedrecto = this.pages[':right'].bleed;
         }
 
-        if (
-          width &&
-          height &&
-          (this.width !== width || this.height !== height)
-        ) {
+        if (width && height && (this.width !== width || this.height !== height)) {
           this.width = width;
           this.height = height;
           this.format = format;
           this.orientation = orientation;
 
-          this.addRootVars(
-            ast,
-            width,
-            height,
-            orientation,
-            bleed,
-            bleedrecto,
-            bleedverso,
-            marks
-          );
-          this.addRootPage(
-            ast,
-            this.pages['*'].size,
-            bleed,
-            bleedrecto,
-            bleedverso
-          );
+          this.addRootVars(ast, width, height, orientation, bleed, bleedrecto, bleedverso, marks);
+          this.addRootPage(ast, this.pages['*'].size, bleed, bleedrecto, bleedverso);
 
           this.emit('size', { width, height, orientation, format, bleed });
           this.emit('atpages', this.pages);
@@ -27525,13 +26156,7 @@
       this.addBorderVars(page.border, children, children.first());
 
       if (page.width) {
-        this.addDimensions(
-          page.width,
-          page.height,
-          page.orientation,
-          children,
-          children.first()
-        );
+        this.addDimensions(page.width, page.height, page.orientation, children, children.first());
       }
 
       if (page.marginalia) {
@@ -27640,10 +26265,7 @@
           visit: 'Declaration',
           enter: (node, item, list) => {
             if (node.property === 'content') {
-              if (
-                node.value.children &&
-                node.value.children.first().name === 'none'
-              ) {
+              if (node.value.children && node.value.children.first().name === 'none') {
                 hasContent = false;
               } else {
                 hasContent = true;
@@ -27728,10 +26350,7 @@
               list.remove(item);
             }
 
-            if (
-              node.value.children &&
-              node.value.children.first().name === 'none'
-            ) {
+            if (node.value.children && node.value.children.first().name === 'none') {
               displayNone = true;
             }
           }
@@ -27770,9 +26389,7 @@
           displayDeclaration = this.createDeclaration('display', 'block');
         }
 
-        let displayRule = this.createRule(displaySelectors, [
-          displayDeclaration
-        ]);
+        let displayRule = this.createRule(displaySelectors, [displayDeclaration]);
         sheet.insertRule(displayRule);
 
         // insert content rule
@@ -27799,16 +26416,7 @@
       }
     }
 
-    addRootVars(
-      ast,
-      width,
-      height,
-      orientation,
-      bleed,
-      bleedrecto,
-      bleedverso,
-      marks
-    ) {
+    addRootVars(ast, width, height, orientation, bleed, bleedrecto, bleedverso, marks) {
       let rules = [];
       let selectors = new lib.List();
       selectors.insertData({
@@ -27829,153 +26437,71 @@
         widthStringLeft = CSSValueToString(width);
         heightStringLeft = CSSValueToString(height);
       } else {
-        widthString = `calc( ${CSSValueToString(width)} + ${CSSValueToString(
-          bleed.left
-        )} + ${CSSValueToString(bleed.right)} )`;
-        heightString = `calc( ${CSSValueToString(height)} + ${CSSValueToString(
-          bleed.top
-        )} + ${CSSValueToString(bleed.bottom)} )`;
-
-        widthStringRight = `calc( ${CSSValueToString(
-          width
-        )} + ${CSSValueToString(bleed.left)} + ${CSSValueToString(
+        widthString = `calc( ${CSSValueToString(width)} + ${CSSValueToString(bleed.left)} + ${CSSValueToString(
           bleed.right
         )} )`;
-        heightStringRight = `calc( ${CSSValueToString(
-          height
-        )} + ${CSSValueToString(bleed.top)} + ${CSSValueToString(
+        heightString = `calc( ${CSSValueToString(height)} + ${CSSValueToString(bleed.top)} + ${CSSValueToString(
           bleed.bottom
         )} )`;
 
-        widthStringLeft = `calc( ${CSSValueToString(
-          width
-        )} + ${CSSValueToString(bleed.left)} + ${CSSValueToString(
+        widthStringRight = `calc( ${CSSValueToString(width)} + ${CSSValueToString(bleed.left)} + ${CSSValueToString(
           bleed.right
         )} )`;
-        heightStringLeft = `calc( ${CSSValueToString(
-          height
-        )} + ${CSSValueToString(bleed.top)} + ${CSSValueToString(
+        heightStringRight = `calc( ${CSSValueToString(height)} + ${CSSValueToString(bleed.top)} + ${CSSValueToString(
           bleed.bottom
         )} )`;
 
-        let bleedTop = this.createVariable(
-          '--pagedjs-bleed-top',
-          CSSValueToString(bleed.top)
-        );
-        let bleedRight = this.createVariable(
-          '--pagedjs-bleed-right',
-          CSSValueToString(bleed.right)
-        );
-        let bleedBottom = this.createVariable(
-          '--pagedjs-bleed-bottom',
-          CSSValueToString(bleed.bottom)
-        );
-        let bleedLeft = this.createVariable(
-          '--pagedjs-bleed-left',
-          CSSValueToString(bleed.left)
-        );
+        widthStringLeft = `calc( ${CSSValueToString(width)} + ${CSSValueToString(bleed.left)} + ${CSSValueToString(
+          bleed.right
+        )} )`;
+        heightStringLeft = `calc( ${CSSValueToString(height)} + ${CSSValueToString(bleed.top)} + ${CSSValueToString(
+          bleed.bottom
+        )} )`;
 
-        let bleedTopRecto = this.createVariable(
-          '--pagedjs-bleed-right-top',
-          CSSValueToString(bleed.top)
-        );
-        let bleedRightRecto = this.createVariable(
-          '--pagedjs-bleed-right-right',
-          CSSValueToString(bleed.right)
-        );
-        let bleedBottomRecto = this.createVariable(
-          '--pagedjs-bleed-right-bottom',
-          CSSValueToString(bleed.bottom)
-        );
-        let bleedLeftRecto = this.createVariable(
-          '--pagedjs-bleed-right-left',
-          CSSValueToString(bleed.left)
-        );
+        let bleedTop = this.createVariable('--pagedjs-bleed-top', CSSValueToString(bleed.top));
+        let bleedRight = this.createVariable('--pagedjs-bleed-right', CSSValueToString(bleed.right));
+        let bleedBottom = this.createVariable('--pagedjs-bleed-bottom', CSSValueToString(bleed.bottom));
+        let bleedLeft = this.createVariable('--pagedjs-bleed-left', CSSValueToString(bleed.left));
 
-        let bleedTopVerso = this.createVariable(
-          '--pagedjs-bleed-left-top',
-          CSSValueToString(bleed.top)
-        );
-        let bleedRightVerso = this.createVariable(
-          '--pagedjs-bleed-left-right',
-          CSSValueToString(bleed.right)
-        );
-        let bleedBottomVerso = this.createVariable(
-          '--pagedjs-bleed-left-bottom',
-          CSSValueToString(bleed.bottom)
-        );
-        let bleedLeftVerso = this.createVariable(
-          '--pagedjs-bleed-left-left',
-          CSSValueToString(bleed.left)
-        );
+        let bleedTopRecto = this.createVariable('--pagedjs-bleed-right-top', CSSValueToString(bleed.top));
+        let bleedRightRecto = this.createVariable('--pagedjs-bleed-right-right', CSSValueToString(bleed.right));
+        let bleedBottomRecto = this.createVariable('--pagedjs-bleed-right-bottom', CSSValueToString(bleed.bottom));
+        let bleedLeftRecto = this.createVariable('--pagedjs-bleed-right-left', CSSValueToString(bleed.left));
+
+        let bleedTopVerso = this.createVariable('--pagedjs-bleed-left-top', CSSValueToString(bleed.top));
+        let bleedRightVerso = this.createVariable('--pagedjs-bleed-left-right', CSSValueToString(bleed.right));
+        let bleedBottomVerso = this.createVariable('--pagedjs-bleed-left-bottom', CSSValueToString(bleed.bottom));
+        let bleedLeftVerso = this.createVariable('--pagedjs-bleed-left-left', CSSValueToString(bleed.left));
 
         if (bleedrecto) {
-          bleedTopRecto = this.createVariable(
-            '--pagedjs-bleed-right-top',
-            CSSValueToString(bleedrecto.top)
-          );
-          bleedRightRecto = this.createVariable(
-            '--pagedjs-bleed-right-right',
-            CSSValueToString(bleedrecto.right)
-          );
-          bleedBottomRecto = this.createVariable(
-            '--pagedjs-bleed-right-bottom',
-            CSSValueToString(bleedrecto.bottom)
-          );
-          bleedLeftRecto = this.createVariable(
-            '--pagedjs-bleed-right-left',
-            CSSValueToString(bleedrecto.left)
-          );
+          bleedTopRecto = this.createVariable('--pagedjs-bleed-right-top', CSSValueToString(bleedrecto.top));
+          bleedRightRecto = this.createVariable('--pagedjs-bleed-right-right', CSSValueToString(bleedrecto.right));
+          bleedBottomRecto = this.createVariable('--pagedjs-bleed-right-bottom', CSSValueToString(bleedrecto.bottom));
+          bleedLeftRecto = this.createVariable('--pagedjs-bleed-right-left', CSSValueToString(bleedrecto.left));
 
-          widthStringRight = `calc( ${CSSValueToString(
-            width
-          )} + ${CSSValueToString(bleedrecto.left)} + ${CSSValueToString(
-            bleedrecto.right
-          )} )`;
-          heightStringRight = `calc( ${CSSValueToString(
-            height
-          )} + ${CSSValueToString(bleedrecto.top)} + ${CSSValueToString(
-            bleedrecto.bottom
-          )} )`;
+          widthStringRight = `calc( ${CSSValueToString(width)} + ${CSSValueToString(
+            bleedrecto.left
+          )} + ${CSSValueToString(bleedrecto.right)} )`;
+          heightStringRight = `calc( ${CSSValueToString(height)} + ${CSSValueToString(
+            bleedrecto.top
+          )} + ${CSSValueToString(bleedrecto.bottom)} )`;
         }
         if (bleedverso) {
-          bleedTopVerso = this.createVariable(
-            '--pagedjs-bleed-left-top',
-            CSSValueToString(bleedverso.top)
-          );
-          bleedRightVerso = this.createVariable(
-            '--pagedjs-bleed-left-right',
-            CSSValueToString(bleedverso.right)
-          );
-          bleedBottomVerso = this.createVariable(
-            '--pagedjs-bleed-left-bottom',
-            CSSValueToString(bleedverso.bottom)
-          );
-          bleedLeftVerso = this.createVariable(
-            '--pagedjs-bleed-left-left',
-            CSSValueToString(bleedverso.left)
-          );
+          bleedTopVerso = this.createVariable('--pagedjs-bleed-left-top', CSSValueToString(bleedverso.top));
+          bleedRightVerso = this.createVariable('--pagedjs-bleed-left-right', CSSValueToString(bleedverso.right));
+          bleedBottomVerso = this.createVariable('--pagedjs-bleed-left-bottom', CSSValueToString(bleedverso.bottom));
+          bleedLeftVerso = this.createVariable('--pagedjs-bleed-left-left', CSSValueToString(bleedverso.left));
 
-          widthStringLeft = `calc( ${CSSValueToString(
-            width
-          )} + ${CSSValueToString(bleedverso.left)} + ${CSSValueToString(
-            bleedverso.right
-          )} )`;
-          heightStringLeft = `calc( ${CSSValueToString(
-            height
-          )} + ${CSSValueToString(bleedverso.top)} + ${CSSValueToString(
-            bleedverso.bottom
-          )} )`;
+          widthStringLeft = `calc( ${CSSValueToString(width)} + ${CSSValueToString(
+            bleedverso.left
+          )} + ${CSSValueToString(bleedverso.right)} )`;
+          heightStringLeft = `calc( ${CSSValueToString(height)} + ${CSSValueToString(
+            bleedverso.top
+          )} + ${CSSValueToString(bleedverso.bottom)} )`;
         }
 
-        let pageWidthVar = this.createVariable(
-          '--pagedjs-width',
-          CSSValueToString(width)
-        );
-        let pageHeightVar = this.createVariable(
-          '--pagedjs-height',
-          CSSValueToString(height)
-        );
+        let pageWidthVar = this.createVariable('--pagedjs-width', CSSValueToString(width));
+        let pageHeightVar = this.createVariable('--pagedjs-height', CSSValueToString(height));
 
         rules.push(
           bleedTop,
@@ -27997,10 +26523,7 @@
 
       if (marks) {
         marks.forEach((mark) => {
-          let markDisplay = this.createVariable(
-            '--pagedjs-mark-' + mark + '-display',
-            'block'
-          );
+          let markDisplay = this.createVariable('--pagedjs-mark-' + mark + '-display', 'block');
           rules.push(markDisplay);
         });
       }
@@ -28013,34 +26536,19 @@
         if (orientation !== 'portrait') {
           // reverse for orientation
           [widthString, heightString] = [heightString, widthString];
-          [widthStringRight, heightStringRight] = [
-            heightStringRight,
-            widthStringRight
-          ];
-          [widthStringLeft, heightStringLeft] = [
-            heightStringLeft,
-            widthStringLeft
-          ];
+          [widthStringRight, heightStringRight] = [heightStringRight, widthStringRight];
+          [widthStringLeft, heightStringLeft] = [heightStringLeft, widthStringLeft];
         }
       }
 
       let wVar = this.createVariable('--pagedjs-width', widthString);
       let hVar = this.createVariable('--pagedjs-height', heightString);
 
-      let wVarR = this.createVariable(
-        '--pagedjs-width-right',
-        widthStringRight
-      );
-      let hVarR = this.createVariable(
-        '--pagedjs-height-right',
-        heightStringRight
-      );
+      let wVarR = this.createVariable('--pagedjs-width-right', widthStringRight);
+      let hVarR = this.createVariable('--pagedjs-height-right', heightStringRight);
 
       let wVarL = this.createVariable('--pagedjs-width-left', widthStringLeft);
-      let hVarL = this.createVariable(
-        '--pagedjs-height-left',
-        heightStringLeft
-      );
+      let hVarL = this.createVariable('--pagedjs-height-left', heightStringLeft);
 
       rules.push(wVar, hVar, wVarR, hVarR, wVarL, hVarL);
 
@@ -28696,15 +27204,9 @@
       // check center
       ['top', 'bottom'].forEach((loc) => {
         let marginGroup = page.element.querySelector('.pagedjs_margin-' + loc);
-        let center = page.element.querySelector(
-          '.pagedjs_margin-' + loc + '-center'
-        );
-        let left = page.element.querySelector(
-          '.pagedjs_margin-' + loc + '-left'
-        );
-        let right = page.element.querySelector(
-          '.pagedjs_margin-' + loc + '-right'
-        );
+        let center = page.element.querySelector('.pagedjs_margin-' + loc + '-center');
+        let left = page.element.querySelector('.pagedjs_margin-' + loc + '-left');
+        let right = page.element.querySelector('.pagedjs_margin-' + loc + '-right');
 
         let centerContent = center.classList.contains('hasContent');
         let leftContent = left.classList.contains('hasContent');
@@ -28728,8 +27230,7 @@
             } else if (leftContent) {
               if (!rightContent) {
                 if (leftWidth !== 'none' && leftWidth !== 'auto') {
-                  marginGroup.style['grid-template-columns'] =
-                    leftWidth + ' 1fr ' + leftWidth;
+                  marginGroup.style['grid-template-columns'] = leftWidth + ' 1fr ' + leftWidth;
                 } else {
                   marginGroup.style['grid-template-columns'] = 'auto auto 1fr';
                   left.style['white-space'] = 'nowrap';
@@ -28739,45 +27240,35 @@
                   let outerwidths = leftOuterWidth + centerOuterWidth;
                   let newcenterWidth = (centerOuterWidth * 100) / outerwidths;
                   marginGroup.style['grid-template-columns'] =
-                    'minmax(16.66%, 1fr) minmax(33%, ' +
-                    newcenterWidth +
-                    '%) minmax(16.66%, 1fr)';
+                    'minmax(16.66%, 1fr) minmax(33%, ' + newcenterWidth + '%) minmax(16.66%, 1fr)';
                   left.style['white-space'] = 'normal';
                   center.style['white-space'] = 'normal';
                 }
               } else {
                 if (leftWidth !== 'none' && leftWidth !== 'auto') {
                   if (rightWidth !== 'none' && rightWidth !== 'auto') {
-                    marginGroup.style['grid-template-columns'] =
-                      leftWidth + ' 1fr ' + rightWidth;
+                    marginGroup.style['grid-template-columns'] = leftWidth + ' 1fr ' + rightWidth;
                   } else {
-                    marginGroup.style['grid-template-columns'] =
-                      leftWidth + ' 1fr ' + leftWidth;
+                    marginGroup.style['grid-template-columns'] = leftWidth + ' 1fr ' + leftWidth;
                   }
                 } else {
                   if (rightWidth !== 'none' && rightWidth !== 'auto') {
-                    marginGroup.style['grid-template-columns'] =
-                      rightWidth + ' 1fr ' + rightWidth;
+                    marginGroup.style['grid-template-columns'] = rightWidth + ' 1fr ' + rightWidth;
                   } else {
-                    marginGroup.style['grid-template-columns'] =
-                      'auto auto 1fr';
+                    marginGroup.style['grid-template-columns'] = 'auto auto 1fr';
                     left.style['white-space'] = 'nowrap';
                     center.style['white-space'] = 'nowrap';
                     right.style['white-space'] = 'nowrap';
                     let leftOuterWidth = left.offsetWidth;
                     let centerOuterWidth = center.offsetWidth;
                     let rightOuterWidth = right.offsetWidth;
-                    let outerwidths =
-                      leftOuterWidth + centerOuterWidth + rightOuterWidth;
+                    let outerwidths = leftOuterWidth + centerOuterWidth + rightOuterWidth;
                     let newcenterWidth = (centerOuterWidth * 100) / outerwidths;
                     if (newcenterWidth > 40) {
                       marginGroup.style['grid-template-columns'] =
-                        'minmax(16.66%, 1fr) minmax(33%, ' +
-                        newcenterWidth +
-                        '%) minmax(16.66%, 1fr)';
+                        'minmax(16.66%, 1fr) minmax(33%, ' + newcenterWidth + '%) minmax(16.66%, 1fr)';
                     } else {
-                      marginGroup.style['grid-template-columns'] =
-                        'repeat(3, 1fr)';
+                      marginGroup.style['grid-template-columns'] = 'repeat(3, 1fr)';
                     }
                     left.style['white-space'] = 'normal';
                     center.style['white-space'] = 'normal';
@@ -28787,8 +27278,7 @@
               }
             } else {
               if (rightWidth !== 'none' && rightWidth !== 'auto') {
-                marginGroup.style['grid-template-columns'] =
-                  rightWidth + ' 1fr ' + rightWidth;
+                marginGroup.style['grid-template-columns'] = rightWidth + ' 1fr ' + rightWidth;
               } else {
                 marginGroup.style['grid-template-columns'] = 'auto auto 1fr';
                 right.style['white-space'] = 'nowrap';
@@ -28798,27 +27288,18 @@
                 let outerwidths = rightOuterWidth + centerOuterWidth;
                 let newcenterWidth = (centerOuterWidth * 100) / outerwidths;
                 marginGroup.style['grid-template-columns'] =
-                  'minmax(16.66%, 1fr) minmax(33%, ' +
-                  newcenterWidth +
-                  '%) minmax(16.66%, 1fr)';
+                  'minmax(16.66%, 1fr) minmax(33%, ' + newcenterWidth + '%) minmax(16.66%, 1fr)';
                 right.style['white-space'] = 'normal';
                 center.style['white-space'] = 'normal';
               }
             }
           } else if (centerWidth !== 'none' && centerWidth !== 'auto') {
             if (leftContent && leftWidth !== 'none' && leftWidth !== 'auto') {
-              marginGroup.style['grid-template-columns'] =
-                leftWidth + ' ' + centerWidth + ' 1fr';
-            } else if (
-              rightContent &&
-              rightWidth !== 'none' &&
-              rightWidth !== 'auto'
-            ) {
-              marginGroup.style['grid-template-columns'] =
-                '1fr ' + centerWidth + ' ' + rightWidth;
+              marginGroup.style['grid-template-columns'] = leftWidth + ' ' + centerWidth + ' 1fr';
+            } else if (rightContent && rightWidth !== 'none' && rightWidth !== 'auto') {
+              marginGroup.style['grid-template-columns'] = '1fr ' + centerWidth + ' ' + rightWidth;
             } else {
-              marginGroup.style['grid-template-columns'] =
-                '1fr ' + centerWidth + ' 1fr';
+              marginGroup.style['grid-template-columns'] = '1fr ' + centerWidth + ' 1fr';
             }
           }
         } else {
@@ -28828,16 +27309,13 @@
             } else {
               if (leftWidth !== 'none' && leftWidth !== 'auto') {
                 if (rightWidth !== 'none' && rightWidth !== 'auto') {
-                  marginGroup.style['grid-template-columns'] =
-                    leftWidth + ' 1fr ' + rightWidth;
+                  marginGroup.style['grid-template-columns'] = leftWidth + ' 1fr ' + rightWidth;
                 } else {
-                  marginGroup.style['grid-template-columns'] =
-                    leftWidth + ' 0 1fr';
+                  marginGroup.style['grid-template-columns'] = leftWidth + ' 0 1fr';
                 }
               } else {
                 if (rightWidth !== 'none' && rightWidth !== 'auto') {
-                  marginGroup.style['grid-template-columns'] =
-                    '1fr 0 ' + rightWidth;
+                  marginGroup.style['grid-template-columns'] = '1fr 0 ' + rightWidth;
                 } else {
                   marginGroup.style['grid-template-columns'] = 'auto 1fr auto';
                   left.style['white-space'] = 'nowrap';
@@ -28846,8 +27324,7 @@
                   let rightOuterWidth = right.offsetWidth;
                   let outerwidths = leftOuterWidth + rightOuterWidth;
                   let newLeftWidth = (leftOuterWidth * 100) / outerwidths;
-                  marginGroup.style['grid-template-columns'] =
-                    'minmax(16.66%, ' + newLeftWidth + '%) 0 1fr';
+                  marginGroup.style['grid-template-columns'] = 'minmax(16.66%, ' + newLeftWidth + '%) 0 1fr';
                   left.style['white-space'] = 'normal';
                   right.style['white-space'] = 'normal';
                 }
@@ -28855,8 +27332,7 @@
             }
           } else {
             if (rightWidth !== 'none' && rightWidth !== 'auto') {
-              marginGroup.style['grid-template-columns'] =
-                '1fr 0 ' + rightWidth;
+              marginGroup.style['grid-template-columns'] = '1fr 0 ' + rightWidth;
             } else {
               marginGroup.style['grid-template-columns'] = '0 0 1fr';
             }
@@ -28866,14 +27342,10 @@
 
       // check middle
       ['left', 'right'].forEach((loc) => {
-        let middle = page.element.querySelector(
-          '.pagedjs_margin-' + loc + '-middle.hasContent'
-        );
+        let middle = page.element.querySelector('.pagedjs_margin-' + loc + '-middle.hasContent');
         let marginGroup = page.element.querySelector('.pagedjs_margin-' + loc);
         let top = page.element.querySelector('.pagedjs_margin-' + loc + '-top');
-        let bottom = page.element.querySelector(
-          '.pagedjs_margin-' + loc + '-bottom'
-        );
+        let bottom = page.element.querySelector('.pagedjs_margin-' + loc + '-bottom');
         let topContent = top.classList.contains('hasContent');
         let bottomContent = bottom.classList.contains('hasContent');
         let middleHeight, topHeight, bottomHeight;
@@ -28896,79 +27368,39 @@
               if (!bottomContent) {
                 if (topHeight !== 'none' && topHeight !== 'auto') {
                   marginGroup.style['grid-template-rows'] =
-                    topHeight +
-                    ' calc(100% - ' +
-                    topHeight +
-                    '*2) ' +
-                    topHeight;
+                    topHeight + ' calc(100% - ' + topHeight + '*2) ' + topHeight;
                 }
               } else {
                 if (topHeight !== 'none' && topHeight !== 'auto') {
                   if (bottomHeight !== 'none' && bottomHeight !== 'auto') {
                     marginGroup.style['grid-template-rows'] =
-                      topHeight +
-                      ' calc(100% - ' +
-                      topHeight +
-                      ' - ' +
-                      bottomHeight +
-                      ') ' +
-                      bottomHeight;
+                      topHeight + ' calc(100% - ' + topHeight + ' - ' + bottomHeight + ') ' + bottomHeight;
                   } else {
                     marginGroup.style['grid-template-rows'] =
-                      topHeight +
-                      ' calc(100% - ' +
-                      topHeight +
-                      '*2) ' +
-                      topHeight;
+                      topHeight + ' calc(100% - ' + topHeight + '*2) ' + topHeight;
                   }
                 } else {
                   if (bottomHeight !== 'none' && bottomHeight !== 'auto') {
                     marginGroup.style['grid-template-rows'] =
-                      bottomHeight +
-                      ' calc(100% - ' +
-                      bottomHeight +
-                      '*2) ' +
-                      bottomHeight;
+                      bottomHeight + ' calc(100% - ' + bottomHeight + '*2) ' + bottomHeight;
                   }
                 }
               }
             } else {
               if (bottomHeight !== 'none' && bottomHeight !== 'auto') {
                 marginGroup.style['grid-template-rows'] =
-                  bottomHeight +
-                  ' calc(100% - ' +
-                  bottomHeight +
-                  '*2) ' +
-                  bottomHeight;
+                  bottomHeight + ' calc(100% - ' + bottomHeight + '*2) ' + bottomHeight;
               }
             }
           } else {
             if (topContent && topHeight !== 'none' && topHeight !== 'auto') {
               marginGroup.style['grid-template-rows'] =
-                topHeight +
-                ' ' +
-                middleHeight +
-                ' calc(100% - (' +
-                topHeight +
-                ' + ' +
-                middleHeight +
-                '))';
-            } else if (
-              bottomContent &&
-              bottomHeight !== 'none' &&
-              bottomHeight !== 'auto'
-            ) {
-              marginGroup.style['grid-template-rows'] =
-                '1fr ' + middleHeight + ' ' + bottomHeight;
+                topHeight + ' ' + middleHeight + ' calc(100% - (' + topHeight + ' + ' + middleHeight + '))';
+            } else if (bottomContent && bottomHeight !== 'none' && bottomHeight !== 'auto') {
+              marginGroup.style['grid-template-rows'] = '1fr ' + middleHeight + ' ' + bottomHeight;
             } else {
               marginGroup.style['grid-template-rows'] =
-                'calc((100% - ' +
-                middleHeight +
-                ')/2) ' +
-                middleHeight +
-                ' calc((100% - ' +
-                middleHeight +
-                ')/2)';
+                'calc((100% - ' + middleHeight + ')/2) ' + middleHeight + ' calc((100% - ' + middleHeight + ')/2)';
             }
           }
         } else {
@@ -28978,16 +27410,13 @@
             } else {
               if (topHeight !== 'none' && topHeight !== 'auto') {
                 if (bottomHeight !== 'none' && bottomHeight !== 'auto') {
-                  marginGroup.style['grid-template-rows'] =
-                    topHeight + ' 1fr ' + bottomHeight;
+                  marginGroup.style['grid-template-rows'] = topHeight + ' 1fr ' + bottomHeight;
                 } else {
-                  marginGroup.style['grid-template-rows'] =
-                    topHeight + ' 0 1fr';
+                  marginGroup.style['grid-template-rows'] = topHeight + ' 0 1fr';
                 }
               } else {
                 if (bottomHeight !== 'none' && bottomHeight !== 'auto') {
-                  marginGroup.style['grid-template-rows'] =
-                    '1fr 0 ' + bottomHeight;
+                  marginGroup.style['grid-template-rows'] = '1fr 0 ' + bottomHeight;
                 } else {
                   marginGroup.style['grid-template-rows'] = '1fr 0 1fr';
                 }
@@ -29315,10 +27744,7 @@
               // If we cannot find a node before we should not break!
               // https://drafts.csswg.org/css-break-3/#break-propagation
               if (nodeBefore) {
-                if (
-                  prop.value === 'page' &&
-                  needsPageBreak(elements[i], nodeBefore)
-                ) {
+                if (prop.value === 'page' && needsPageBreak(elements[i], nodeBefore)) {
                   // we ignore this explicit page break because an implicit page break is already needed
                   continue;
                 }
@@ -29355,23 +27781,15 @@
     addBreakAttributes(pageElement, page) {
       let before = pageElement.querySelector('[data-break-before]');
       let after = pageElement.querySelector('[data-break-after]');
-      let previousBreakAfter = pageElement.querySelector(
-        '[data-previous-break-after]'
-      );
+      let previousBreakAfter = pageElement.querySelector('[data-previous-break-after]');
 
       if (before) {
         if (before.dataset.splitFrom) {
           page.splitFrom = before.dataset.splitFrom;
           pageElement.setAttribute('data-split-from', before.dataset.splitFrom);
-        } else if (
-          before.dataset.breakBefore &&
-          before.dataset.breakBefore !== 'avoid'
-        ) {
+        } else if (before.dataset.breakBefore && before.dataset.breakBefore !== 'avoid') {
           page.breakBefore = before.dataset.breakBefore;
-          pageElement.setAttribute(
-            'data-break-before',
-            before.dataset.breakBefore
-          );
+          pageElement.setAttribute('data-break-before', before.dataset.breakBefore);
         }
       }
 
@@ -29379,15 +27797,9 @@
         if (after.dataset.splitTo) {
           page.splitTo = after.dataset.splitTo;
           pageElement.setAttribute('data-split-to', after.dataset.splitTo);
-        } else if (
-          after.dataset.breakAfter &&
-          after.dataset.breakAfter !== 'avoid'
-        ) {
+        } else if (after.dataset.breakAfter && after.dataset.breakAfter !== 'avoid') {
           page.breakAfter = after.dataset.breakAfter;
-          pageElement.setAttribute(
-            'data-break-after',
-            after.dataset.breakAfter
-          );
+          pageElement.setAttribute('data-break-after', after.dataset.breakAfter);
         }
       }
 
@@ -29396,8 +27808,7 @@
           previousBreakAfter.dataset.previousBreakAfter &&
           previousBreakAfter.dataset.previousBreakAfter !== 'avoid'
         ) {
-          page.previousBreakAfter =
-            previousBreakAfter.dataset.previousBreakAfter;
+          page.previousBreakAfter = previousBreakAfter.dataset.previousBreakAfter;
         }
       }
     }
@@ -29430,10 +27841,7 @@
     getMediaName(node) {
       let media = '';
 
-      if (
-        typeof node.prelude === 'undefined' ||
-        node.prelude.type !== 'AtrulePrelude'
-      ) {
+      if (typeof node.prelude === 'undefined' || node.prelude.type !== 'AtrulePrelude') {
         return;
       }
 
@@ -29453,9 +27861,7 @@
     }
 
     afterPageLayout(pageElement, page, breakToken, chunker) {
-      let splits = Array.from(
-        pageElement.querySelectorAll('[data-split-from]')
-      );
+      let splits = Array.from(pageElement.querySelectorAll('[data-split-from]'));
       let pages = pageElement.parentNode;
       let index = Array.prototype.indexOf.call(pages.children, pageElement);
       let prevPage;
@@ -29469,9 +27875,7 @@
       let from; // Capture the last from element
       splits.forEach((split) => {
         let ref = split.dataset.ref;
-        from = prevPage.querySelector(
-          "[data-ref='" + ref + "']:not([data-split-to])"
-        );
+        from = prevPage.querySelector("[data-ref='" + ref + "']:not([data-split-to])");
 
         if (from) {
           from.dataset.splitTo = ref;
@@ -29575,11 +27979,7 @@
           if (item.next && item.next.data.type === 'WhiteSpace') {
             whitespace = item.next;
           }
-          if (
-            whitespace &&
-            whitespace.next &&
-            whitespace.next.data.type === 'Number'
-          ) {
+          if (whitespace && whitespace.next && whitespace.next.data.type === 'Number') {
             number = whitespace.next;
             value = parseInt(number.data.value);
           }
@@ -29624,11 +28024,7 @@
           if (item.next && item.next.data.type === 'WhiteSpace') {
             whitespace = item.next;
           }
-          if (
-            whitespace &&
-            whitespace.next &&
-            whitespace.next.data.type === 'Number'
-          ) {
+          if (whitespace && whitespace.next && whitespace.next.data.type === 'Number') {
             number = whitespace.next;
             value = parseInt(number.data.value);
           }
@@ -29637,10 +28033,7 @@
           let selector;
           let prelude = rule.ruleNode.prelude;
 
-          if (
-            rule.ruleNode.type === 'Atrule' &&
-            rule.ruleNode.name === 'page'
-          ) {
+          if (rule.ruleNode.type === 'Atrule' && rule.ruleNode.name === 'page') {
             selector = '.pagedjs_page';
           } else {
             selector = lib.generate(prelude || rule.ruleNode);
@@ -29719,22 +28112,14 @@
         let incrementElements = parsed.querySelectorAll(increment.selector);
         // Add counter data
         for (let i = 0; i < incrementElements.length; i++) {
-          incrementElements[i].setAttribute(
-            'data-counter-' + counter.name + '-increment',
-            increment.number
-          );
+          incrementElements[i].setAttribute('data-counter-' + counter.name + '-increment', increment.number);
           if (incrementElements[i].getAttribute('data-counter-increment')) {
             incrementElements[i].setAttribute(
               'data-counter-increment',
-              incrementElements[i].getAttribute('data-counter-increment') +
-                ' ' +
-                counter.name
+              incrementElements[i].getAttribute('data-counter-increment') + ' ' + counter.name
             );
           } else {
-            incrementElements[i].setAttribute(
-              'data-counter-increment',
-              counter.name
-            );
+            incrementElements[i].setAttribute('data-counter-increment', counter.name);
           }
         }
       }
@@ -29748,16 +28133,11 @@
         let resetElements = parsed.querySelectorAll(reset.selector);
         // Add counter data
         for (var i = 0; i < resetElements.length; i++) {
-          resetElements[i].setAttribute(
-            'data-counter-' + counter.name + '-reset',
-            reset.number
-          );
+          resetElements[i].setAttribute('data-counter-' + counter.name + '-reset', reset.number);
           if (resetElements[i].getAttribute('data-counter-reset')) {
             resetElements[i].setAttribute(
               'data-counter-reset',
-              resetElements[i].getAttribute('data-counter-reset') +
-                ' ' +
-                counter.name
+              resetElements[i].getAttribute('data-counter-reset') + ' ' + counter.name
             );
           } else {
             resetElements[i].setAttribute('data-counter-reset', counter.name);
@@ -29774,11 +28154,7 @@
       }
 
       let elements = parsed.querySelectorAll(
-        '[data-counter-' +
-          counterName +
-          '-reset], [data-counter-' +
-          counterName +
-          '-increment]'
+        '[data-counter-' + counterName + '-reset], [data-counter-' + counterName + '-increment]'
       );
 
       let count = 0;
@@ -29793,9 +28169,7 @@
         incrementArray = [];
 
         if (element.hasAttribute('data-counter-' + counterName + '-reset')) {
-          reset = element.getAttribute(
-            'data-counter-' + counterName + '-reset'
-          );
+          reset = element.getAttribute('data-counter-' + counterName + '-reset');
           resetValue = parseInt(reset);
 
           // Use negative increment value inplace of reset
@@ -29805,12 +28179,8 @@
           count = resetValue;
         }
 
-        if (
-          element.hasAttribute('data-counter-' + counterName + '-increment')
-        ) {
-          increment = element.getAttribute(
-            'data-counter-' + counterName + '-increment'
-          );
+        if (element.hasAttribute('data-counter-' + counterName + '-increment')) {
+          increment = element.getAttribute('data-counter-' + counterName + '-increment');
           incrementValue = parseInt(increment);
 
           count += incrementValue;
@@ -29865,15 +28235,12 @@
       if (!element || !incrementArray || incrementArray.length === 0) return;
 
       const ref = element.dataset.ref;
-      const prevIncrements = Array.from(this.styleSheet.cssRules).filter(
-        (rule) => {
-          return (
-            rule.selectorText ===
-              `[data-ref="${element.dataset.ref}"]:not([data-split-from])` &&
-            rule.style[0] === 'counter-increment'
-          );
-        }
-      );
+      const prevIncrements = Array.from(this.styleSheet.cssRules).filter((rule) => {
+        return (
+          rule.selectorText === `[data-ref="${element.dataset.ref}"]:not([data-split-from])` &&
+          rule.style[0] === 'counter-increment'
+        );
+      });
 
       const increments = [];
       for (let styleRule of prevIncrements) {
@@ -29885,19 +28252,13 @@
 
       Array.prototype.push.apply(increments, incrementArray);
 
-      this.insertRule(
-        `[data-ref="${ref}"]:not([data-split-from]) { counter-increment: ${increments.join(
-          ' '
-        )} }`
-      );
+      this.insertRule(`[data-ref="${ref}"]:not([data-split-from]) { counter-increment: ${increments.join(' ')} }`);
     }
 
     afterPageLayout(pageElement, page) {
       let resets = [];
 
-      let pgreset = pageElement.querySelectorAll(
-        '[data-counter-page-reset]:not([data-split-from])'
-      );
+      let pgreset = pageElement.querySelectorAll('[data-counter-page-reset]:not([data-split-from])');
       pgreset.forEach((reset) => {
         const ref = reset.dataset && reset.dataset.ref;
         if (ref && this.resetCountersMap.has(ref));
@@ -29910,9 +28271,7 @@
         }
       });
 
-      let notereset = pageElement.querySelectorAll(
-        '[data-counter-footnote-reset]:not([data-split-from])'
-      );
+      let notereset = pageElement.querySelectorAll('[data-counter-footnote-reset]:not([data-split-from])');
       notereset.forEach((reset) => {
         let value = reset.dataset.counterFootnoteReset;
         resets.push(`footnote ${value}`);
@@ -29977,10 +28336,7 @@
     }
 
     onDeclaration(declaration, dItem, dList, rule) {
-      if (
-        declaration.property === 'position' &&
-        declaration.value.children.first().name === 'fixed'
-      ) {
+      if (declaration.property === 'position' && declaration.value.children.first().name === 'fixed') {
         let selector = lib.generate(rule.ruleNode.prelude);
         this.fixedElementsSelector.push(selector);
         dList.remove(dItem);
@@ -30000,9 +28356,7 @@
     afterPageLayout(pageElement, page, breakToken) {
       this.fixedElements.forEach((el) => {
         const clone = el.cloneNode(true);
-        pageElement
-          .querySelector('.pagedjs_pagebox')
-          .insertAdjacentElement('afterbegin', clone);
+        pageElement.querySelector('.pagedjs_pagebox').insertAdjacentElement('afterbegin', clone);
       });
     }
   }
@@ -30033,18 +28387,13 @@
     afterParsed(_) {
       for (const inc in this.pageCounter.increments) {
         const increment = this.pageCounter.increments[inc];
-        this.insertRule(
-          `${increment.selector} { --pagedjs-page-counter-increment: ${increment.number} }`
-        );
+        this.insertRule(`${increment.selector} { --pagedjs-page-counter-increment: ${increment.number} }`);
       }
     }
 
     handleIncrement(declaration, rule) {
       const identifier = declaration.value.children.first();
-      const number =
-        declaration.value.children.getSize() > 1 ?
-          declaration.value.children.last().value
-        : 1;
+      const number = declaration.value.children.getSize() > 1 ? declaration.value.children.last().value : 1;
       const name = identifier && identifier.name;
 
       if (name && name.indexOf('target-counter-') === 0) {
@@ -30191,8 +28540,7 @@
     onDeclaration(declaration, dItem, dList, rule) {
       let property = declaration.property;
       if (property === 'float') {
-        let identifier =
-          declaration.value.children && declaration.value.children.first();
+        let identifier = declaration.value.children && declaration.value.children.first();
         let location = identifier && identifier.name;
         if (location === 'footnote') {
           let selector = lib.generate(rule.ruleNode.prelude);
@@ -30205,8 +28553,7 @@
         }
       }
       if (property === 'footnote-policy') {
-        let identifier =
-          declaration.value.children && declaration.value.children.first();
+        let identifier = declaration.value.children && declaration.value.children.first();
         let policy = identifier && identifier.name;
         if (policy) {
           let selector = lib.generate(rule.ruleNode.prelude);
@@ -30217,8 +28564,7 @@
         }
       }
       if (property === 'footnote-display') {
-        let identifier =
-          declaration.value.children && declaration.value.children.first();
+        let identifier = declaration.value.children && declaration.value.children.first();
         let display = identifier && identifier.name;
         let selector = lib.generate(rule.ruleNode.prelude);
         if (display && this.footnotes[selector]) {
@@ -30395,9 +28741,7 @@
       // let pageArea = node.closest(".pagedjs_area");
       let noteArea = pageArea.querySelector('.pagedjs_footnote_area');
       let noteContent = noteArea.querySelector('.pagedjs_footnote_content');
-      let noteInnerContent = noteContent.querySelector(
-        '.pagedjs_footnote_inner_content'
-      );
+      let noteInnerContent = noteContent.querySelector('.pagedjs_footnote_inner_content');
 
       if (!isElement(node)) {
         return;
@@ -30413,9 +28757,7 @@
       node.removeAttribute('data-break-before');
 
       // Check if note already exists for overflow
-      let existing = noteInnerContent.querySelector(
-        `[data-ref="${node.dataset.ref}"]`
-      );
+      let existing = noteInnerContent.querySelector(`[data-ref="${node.dataset.ref}"]`);
       if (existing) {
         // Remove the note from the flow but no need to render it again
         node.remove();
@@ -30488,9 +28830,7 @@
           // Check that there is a previous element on the page
           let parentParagraph = noteCall.closest('p').previousElementSibling;
           if (parentParagraph) {
-            noteCallOffset = Math.ceil(
-              parentParagraph.getBoundingClientRect().bottom
-            );
+            noteCallOffset = Math.ceil(parentParagraph.getBoundingClientRect().bottom);
           } else {
             noteCallOffset = Math.ceil(rangeBounds.bottom);
           }
@@ -30501,8 +28841,7 @@
       // Space between the top of the footnotes area and the bottom of the footnote call
       let noteDelta = noteCallPosition ? notAreaTop - noteCallPosition : 0;
       // Space needed for the force a break for the policy of the footnote
-      let notePolicyDelta =
-        noteCallPosition ? Math.floor(noteAreaBounds.top) - noteCallOffset : 0;
+      let notePolicyDelta = noteCallPosition ? Math.floor(noteAreaBounds.top) - noteCallOffset : 0;
       let hasNotes = noteArea.querySelector("[data-note='footnote']");
       if (needsNoteCall && noteCallBounds.left > right) {
         // Note is offscreen and will be chunked to the next page on overflow
@@ -30517,10 +28856,7 @@
         this.needsLayout.push(wrapperDiv);
       } else if (!needsNoteCall) {
         // Call was previously added, force adding footnote
-        pageArea.style.setProperty(
-          '--pagedjs-footnotes-height',
-          `${height + total}px`
-        );
+        pageArea.style.setProperty('--pagedjs-footnotes-height', `${height + total}px`);
       } else if (noteCallPosition < noteAreaBounds.top - contentDelta) {
         // the current note content will fit without pushing the call to the next page
         pageArea.style.setProperty(
@@ -30529,12 +28865,8 @@
         );
       } else {
         // set height to just before note call
-        pageArea.style.setProperty(
-          '--pagedjs-footnotes-height',
-          `${noteAreaBounds.height + notePolicyDelta}px`
-        );
-        noteInnerContent.style.height =
-          noteAreaBounds.height + notePolicyDelta - total + 'px';
+        pageArea.style.setProperty('--pagedjs-footnotes-height', `${noteAreaBounds.height + notePolicyDelta}px`);
+        noteInnerContent.style.height = noteAreaBounds.height + notePolicyDelta - total + 'px';
       }
     }
 
@@ -30563,16 +28895,13 @@
       let pageArea = pageElement.querySelector('.pagedjs_area');
       let noteArea = page.footnotesArea;
       let noteContent = noteArea.querySelector('.pagedjs_footnote_content');
-      let noteInnerContent = noteArea.querySelector(
-        '.pagedjs_footnote_inner_content'
-      );
+      let noteInnerContent = noteArea.querySelector('.pagedjs_footnote_inner_content');
 
       let noteContentBounds = noteContent.getBoundingClientRect();
       let { width } = noteContentBounds;
 
       noteInnerContent.style.columnWidth = Math.round(width) + 'px';
-      noteInnerContent.style.columnGap =
-        'calc(var(--pagedjs-margin-right) + var(--pagedjs-margin-left))';
+      noteInnerContent.style.columnGap = 'calc(var(--pagedjs-margin-right) + var(--pagedjs-margin-left))';
 
       // Get overflow
       let layout = new Layout(noteArea);
@@ -30583,8 +28912,7 @@
         let startIsNode;
         if (isElement(startContainer)) {
           let start = startContainer.childNodes[startOffset];
-          startIsNode =
-            isElement(start) && start.hasAttribute('data-footnote-marker');
+          startIsNode = isElement(start) && start.hasAttribute('data-footnote-marker');
         }
 
         let extracted = overflow.extractContents();
@@ -30610,12 +28938,7 @@
         let noteContentBorders = this.borderHeight(noteContent);
         pageArea.style.setProperty(
           '--pagedjs-footnotes-height',
-          `${
-            height +
-            noteContentMargins +
-            noteContentBorders +
-            noteContentPadding
-          }px`
+          `${height + noteContentMargins + noteContentBorders + noteContentPadding}px`
         );
 
         // Hide footnote content if empty
@@ -30667,11 +28990,7 @@
         let fragment = this.needsLayout.shift();
 
         Array.from(fragment.childNodes).forEach((node) => {
-          this.moveFootnote(
-            node,
-            page.element.querySelector('.pagedjs_area'),
-            false
-          );
+          this.moveFootnote(node, page.element.querySelector('.pagedjs_area'), false);
         });
       }
     }
@@ -30680,23 +28999,17 @@
       // Find the page area
       let area = rendered.closest('.pagedjs_area');
       // Get any rendered footnotes
-      let notes = area.querySelectorAll(
-        ".pagedjs_footnote_area [data-note='footnote']"
-      );
+      let notes = area.querySelectorAll(".pagedjs_footnote_area [data-note='footnote']");
       for (let n = 0; n < notes.length; n++) {
         const note = notes[n];
         // Check if the call for that footnote has been removed with the overflow
-        let call = removed.querySelector(
-          `[data-footnote-call="${note.dataset.ref}"]`
-        );
+        let call = removed.querySelector(`[data-footnote-call="${note.dataset.ref}"]`);
         if (call) {
           note.remove();
         }
       }
       // Hide footnote content if empty
-      let noteInnerContent = area.querySelector(
-        '.pagedjs_footnote_inner_content'
-      );
+      let noteInnerContent = area.querySelector('.pagedjs_footnote_inner_content');
       if (noteInnerContent && noteInnerContent.childNodes.length === 0) {
         noteInnerContent.parentElement.classList.add('pagedjs_footnote_empty');
       }
@@ -30900,10 +29213,7 @@
         case 4:
           if (parts[3] === 'pagedjs_first_page') {
             weight = 7;
-          } else if (
-            parts[3] === 'pagedjs_left_page' ||
-            parts[3] === 'pagedjs_right_page'
-          ) {
+          } else if (parts[3] === 'pagedjs_left_page' || parts[3] === 'pagedjs_right_page') {
             weight = 6;
           }
           break;
@@ -30921,10 +29231,7 @@
             weight = 4;
           } else if (parts[1] === 'pagedjs_blank_page') {
             weight = 3;
-          } else if (
-            parts[1] === 'pagedjs_left_page' ||
-            parts[1] === 'pagedjs_right_page'
-          ) {
+          } else if (parts[1] === 'pagedjs_left_page' || parts[1] === 'pagedjs_right_page') {
             weight = 2;
           }
           break;
@@ -30975,10 +29282,7 @@
 
     beforeTreeParse(text, sheet) {
       // element(x) is parsed as image element selector, so update element to element-ident
-      sheet.text = text.replace(
-        /element[\s]*\(([^|^#)]*)\)/g,
-        'element-ident($1)'
-      );
+      sheet.text = text.replace(/element[\s]*\(([^|^#)]*)\)/g, 'element-ident($1)');
     }
   }
 
@@ -30997,9 +29301,7 @@
 
   function cleanSelector(el) {
     if (el == null) return;
-    return el
-      .replace(new RegExp('::footnote-call', 'g'), '')
-      .replace(new RegExp('::footnote-marker', 'g'), '');
+    return el.replace(new RegExp('::footnote-call', 'g'), '').replace(new RegExp('::footnote-marker', 'g'), '');
   }
 
   class StringSets extends Handler {
@@ -31041,12 +29343,7 @@
         funcNode.name = 'var';
         funcNode.children = new lib.List();
 
-        if (
-          this.type === 'first' ||
-          this.type === 'last' ||
-          this.type === 'start' ||
-          this.type === 'first-except'
-        ) {
+        if (this.type === 'first' || this.type === 'last' || this.type === 'start' || this.type === 'first-except') {
           funcNode.children.append(
             funcNode.children.createItem({
               type: 'Identifier',
@@ -31076,8 +29373,7 @@
         let selected = fragment.querySelectorAll(set.selector);
 
         // Get the last found string for the current identifier
-        let stringPrevPage =
-          name in this.pageLastString ? this.pageLastString[name] : '';
+        let stringPrevPage = name in this.pageLastString ? this.pageLastString[name] : '';
 
         let varFirst, varLast, varStart, varFirstExcept;
 
@@ -31090,8 +29386,7 @@
         } else {
           selected.forEach((sel) => {
             // push each content into the array to define in the variable the first and the last element of the page.
-            this.pageLastString[name] =
-              selected[selected.length - 1].textContent;
+            this.pageLastString[name] = selected[selected.length - 1].textContent;
           });
 
           /* FIRST */
@@ -31120,22 +29415,10 @@
           varFirstExcept = '';
         }
 
-        fragment.style.setProperty(
-          `--pagedjs-string-first-${name}`,
-          `"${cleanPseudoContent(varFirst)}`
-        );
-        fragment.style.setProperty(
-          `--pagedjs-string-last-${name}`,
-          `"${cleanPseudoContent(varLast)}`
-        );
-        fragment.style.setProperty(
-          `--pagedjs-string-start-${name}`,
-          `"${cleanPseudoContent(varStart)}`
-        );
-        fragment.style.setProperty(
-          `--pagedjs-string-first-except-${name}`,
-          `"${cleanPseudoContent(varFirstExcept)}`
-        );
+        fragment.style.setProperty(`--pagedjs-string-first-${name}`, `"${cleanPseudoContent(varFirst)}`);
+        fragment.style.setProperty(`--pagedjs-string-last-${name}`, `"${cleanPseudoContent(varLast)}`);
+        fragment.style.setProperty(`--pagedjs-string-start-${name}`, `"${cleanPseudoContent(varStart)}`);
+        fragment.style.setProperty(`--pagedjs-string-first-except-${name}`, `"${cleanPseudoContent(varFirstExcept)}`);
       }
     }
   }
@@ -31222,9 +29505,7 @@
         let split = target.selector.split(/::?/g);
         let query = split[0];
 
-        let queried = chunker.pagesArea.querySelectorAll(
-          query + ':not([data-' + target.variable + '])'
-        );
+        let queried = chunker.pagesArea.querySelectorAll(query + ':not([data-' + target.variable + '])');
 
         queried.forEach((selected, index) => {
           // TODO: handle func other than attr
@@ -31232,9 +29513,7 @@
             return;
           }
           let val = attr(selected, target.args);
-          let element = chunker.pagesArea.querySelector(
-            querySelectorEscape(val)
-          );
+          let element = chunker.pagesArea.querySelector(querySelectorEscape(val));
 
           if (element) {
             let selector = UUID();
@@ -31251,9 +29530,7 @@
                 let page = pages[i];
                 let styles = window.getComputedStyle(page);
                 let reset = styles['counter-reset'].replace('page', '').trim();
-                let increment = styles['counter-increment']
-                  .replace('page', '')
-                  .trim();
+                let increment = styles['counter-increment'].replace('page', '').trim();
 
                 if (reset !== 'none') {
                   pg = parseInt(reset);
@@ -31271,25 +29548,19 @@
                 this.styleSheet.cssRules.length
               );
             } else {
-              let value = element.getAttribute(
-                `data-counter-${target.counter}-value`
-              );
+              let value = element.getAttribute(`data-counter-${target.counter}-value`);
               if (value) {
                 this.styleSheet.insertRule(
-                  `[data-${
+                  `[data-${target.variable}="${selector}"]${pseudo} { counter-reset: ${target.variable} ${
                     target.variable
-                  }="${selector}"]${pseudo} { counter-reset: ${
-                    target.variable
-                  } ${target.variable} ${parseInt(value)}; }`,
+                  } ${parseInt(value)}; }`,
                   this.styleSheet.cssRules.length
                 );
               }
             }
 
             // force redraw
-            let el = document.querySelector(
-              `[data-${target.variable}="${selector}"]`
-            );
+            let el = document.querySelector(`[data-${target.variable}="${selector}"]`);
             if (el) {
               el.style.display = 'none';
               el.clientHeight;
@@ -31376,10 +29647,7 @@
               this.beforeContent = prop.value;
             }
           });
-        } else if (
-          pseudoNode.name === 'after' &&
-          properties.property === 'content'
-        ) {
+        } else if (pseudoNode.name === 'after' && properties.property === 'content') {
           properties.value.children.forEach((prop) => {
             if (prop.type === 'String') {
               this.afterContent = prop.value;
@@ -31416,10 +29684,7 @@
               } else {
                 textContent = cleanPseudoContent(element.textContent, ' ');
               }
-              textContent =
-                target.style === 'first-letter' ?
-                  textContent.charAt(0)
-                : textContent;
+              textContent = target.style === 'first-letter' ? textContent.charAt(0) : textContent;
               this.styleSheet.insertRule(
                 `[data-target-text="${this.selector}"]${psuedo} { ${target.variable}: "${textContent}" }`
               );
@@ -31432,12 +29697,7 @@
     }
   }
 
-  var generatedContentHandlers = [
-    RunningHeaders,
-    StringSets,
-    TargetCounters,
-    TargetText
-  ];
+  var generatedContentHandlers = [RunningHeaders, StringSets, TargetCounters, TargetText];
 
   class WhiteSpaceFilter extends Handler {
     constructor(chunker, polisher, caller) {
@@ -31546,8 +29806,7 @@
     var attributeRegex = /(\[[^\]]+\])/g;
     var idRegex = /(#[^\s\+>~\.\[:]+)/g;
     var classRegex = /(\.[^\s\+>~\.\[:]+)/g;
-    var pseudoElementRegex =
-      /(::[^\s\+>~\.\[:]+|:first-line|:first-letter|:before|:after)/g;
+    var pseudoElementRegex = /(::[^\s\+>~\.\[:]+|:first-line|:first-letter|:before|:after)/g;
     var pseudoClassRegex = /(:[^\s\+>~\.\[:]+)/g;
     var elementRegex = /([^\s\+>~\.\[:]+)/g;
     var notRegex = /:not\(([^\)]*)\)/g;
@@ -31681,10 +29940,7 @@
     }
 
     filter(content) {
-      let { matches, selectors } = this.sortDisplayedSelectors(
-        content,
-        this.displayRules
-      );
+      let { matches, selectors } = this.sortDisplayedSelectors(content, this.displayRules);
 
       // Find matching elements that have display styles
       for (let i = 0; i < matches.length; i++) {
@@ -31751,11 +30007,7 @@
     }
 
     removable(element) {
-      if (
-        element.style &&
-        element.style.display !== '' &&
-        element.style.display !== 'none'
-      ) {
+      if (element.style && element.style.display !== '' && element.style.display !== 'none') {
         return false;
       }
 
@@ -31763,12 +30015,7 @@
     }
   }
 
-  var filters = [
-    WhiteSpaceFilter,
-    CommentsFilter,
-    ScriptsFilter,
-    UndisplayedFilter
-  ];
+  var filters = [WhiteSpaceFilter, CommentsFilter, ScriptsFilter, UndisplayedFilter];
 
   var isImplemented$3 = function () {
     var from = Array.from,
@@ -31866,8 +30113,7 @@
   // Internal constructor (not one exposed) for creating Symbol instances.
   // This one is used to ensure that `someSymbol instanceof Symbol` always return false
   HiddenSymbol = function Symbol(description) {
-    if (this instanceof HiddenSymbol)
-      throw new TypeError('Symbol is not a constructor');
+    if (this instanceof HiddenSymbol) throw new TypeError('Symbol is not a constructor');
     return SymbolPolyfill(description);
   };
 
@@ -31875,8 +30121,7 @@
   // (returns instances of HiddenSymbol)
   var polyfill = (SymbolPolyfill = function Symbol(description) {
     var symbol;
-    if (this instanceof Symbol)
-      throw new TypeError('Symbol is not a constructor');
+    if (this instanceof Symbol) throw new TypeError('Symbol is not a constructor');
     if (isNativeSafe) return NativeSymbol(description);
     symbol = create(HiddenSymbol.prototype);
     description = description === undefined ? '' : String(description);
@@ -31898,55 +30143,20 @@
 
     // To ensure proper interoperability with other native functions (e.g. Array.from)
     // fallback to eventual native implementation of given symbol
-    hasInstance: d$1(
-      '',
-      (NativeSymbol && NativeSymbol.hasInstance) ||
-        SymbolPolyfill('hasInstance')
-    ),
+    hasInstance: d$1('', (NativeSymbol && NativeSymbol.hasInstance) || SymbolPolyfill('hasInstance')),
     isConcatSpreadable: d$1(
       '',
-      (NativeSymbol && NativeSymbol.isConcatSpreadable) ||
-        SymbolPolyfill('isConcatSpreadable')
+      (NativeSymbol && NativeSymbol.isConcatSpreadable) || SymbolPolyfill('isConcatSpreadable')
     ),
-    iterator: d$1(
-      '',
-      (NativeSymbol && NativeSymbol.iterator) || SymbolPolyfill('iterator')
-    ),
-    match: d$1(
-      '',
-      (NativeSymbol && NativeSymbol.match) || SymbolPolyfill('match')
-    ),
-    replace: d$1(
-      '',
-      (NativeSymbol && NativeSymbol.replace) || SymbolPolyfill('replace')
-    ),
-    search: d$1(
-      '',
-      (NativeSymbol && NativeSymbol.search) || SymbolPolyfill('search')
-    ),
-    species: d$1(
-      '',
-      (NativeSymbol && NativeSymbol.species) || SymbolPolyfill('species')
-    ),
-    split: d$1(
-      '',
-      (NativeSymbol && NativeSymbol.split) || SymbolPolyfill('split')
-    ),
-    toPrimitive: d$1(
-      '',
-      (NativeSymbol && NativeSymbol.toPrimitive) ||
-        SymbolPolyfill('toPrimitive')
-    ),
-    toStringTag: d$1(
-      '',
-      (NativeSymbol && NativeSymbol.toStringTag) ||
-        SymbolPolyfill('toStringTag')
-    ),
-    unscopables: d$1(
-      '',
-      (NativeSymbol && NativeSymbol.unscopables) ||
-        SymbolPolyfill('unscopables')
-    )
+    iterator: d$1('', (NativeSymbol && NativeSymbol.iterator) || SymbolPolyfill('iterator')),
+    match: d$1('', (NativeSymbol && NativeSymbol.match) || SymbolPolyfill('match')),
+    replace: d$1('', (NativeSymbol && NativeSymbol.replace) || SymbolPolyfill('replace')),
+    search: d$1('', (NativeSymbol && NativeSymbol.search) || SymbolPolyfill('search')),
+    species: d$1('', (NativeSymbol && NativeSymbol.species) || SymbolPolyfill('species')),
+    split: d$1('', (NativeSymbol && NativeSymbol.split) || SymbolPolyfill('split')),
+    toPrimitive: d$1('', (NativeSymbol && NativeSymbol.toPrimitive) || SymbolPolyfill('toPrimitive')),
+    toStringTag: d$1('', (NativeSymbol && NativeSymbol.toStringTag) || SymbolPolyfill('toStringTag')),
+    unscopables: d$1('', (NativeSymbol && NativeSymbol.unscopables) || SymbolPolyfill('unscopables'))
   });
 
   // Internal tweaks for real symbol producer
@@ -31976,11 +30186,7 @@
       return symbol.toString();
     })
   );
-  defineProperty$2(
-    SymbolPolyfill.prototype,
-    SymbolPolyfill.toStringTag,
-    d$1('c', 'Symbol')
-  );
+  defineProperty$2(SymbolPolyfill.prototype, SymbolPolyfill.toStringTag, d$1('c', 'Symbol'));
 
   // Proper implementaton of toPrimitive and toStringTag for returned symbol instances
   defineProperty$2(
@@ -32057,9 +30263,7 @@
   var isString$1 = function (value) {
     return (
       typeof value === 'string' ||
-      (value &&
-        typeof value === 'object' &&
-        (value instanceof String || objToString.call(value) === id)) ||
+      (value && typeof value === 'object' && (value instanceof String || objToString.call(value) === id)) ||
       false
     );
   };
@@ -32132,8 +30336,7 @@
         result = iterator.next();
         i = 0;
         while (!result.done) {
-          value =
-            mapFn ? call.call(mapFn, thisArg, result.value, i) : result.value;
+          value = mapFn ? call.call(mapFn, thisArg, result.value, i) : result.value;
           if (Context) {
             desc.value = value;
             defineProperty$1(arr, i, desc);
@@ -32172,8 +30375,7 @@
       length = toPosInt$1(arrayLike.length);
       if (Context) arr = new Context(length);
       for (i = 0; i < length; ++i) {
-        value =
-          mapFn ? call.call(mapFn, thisArg, arrayLike[i], i) : arrayLike[i];
+        value = mapFn ? call.call(mapFn, thisArg, arrayLike[i], i) : arrayLike[i];
         if (Context) {
           desc.value = value;
           defineProperty$1(arr, i, desc);
@@ -32306,11 +30508,7 @@
     return pipe;
   };
 
-  let registeredHandlers = [
-    ...pagedMediaHandlers,
-    ...generatedContentHandlers,
-    ...filters
-  ];
+  let registeredHandlers = [...pagedMediaHandlers, ...generatedContentHandlers, ...filters];
 
   class Handlers {
     constructor(chunker, polisher, caller) {
@@ -32413,9 +30611,7 @@
 
       // Check if a template exists
       let template;
-      template = body.querySelector(
-        ":scope > template[data-ref='pagedjs-content']"
-      );
+      template = body.querySelector(":scope > template[data-ref='pagedjs-content']");
 
       if (!template) {
         // Otherwise create one
@@ -32431,13 +30627,9 @@
 
     removeStyles(doc = document) {
       // Get all stylesheets
-      const stylesheets = Array.from(
-        doc.querySelectorAll("link[rel='stylesheet']")
-      );
+      const stylesheets = Array.from(doc.querySelectorAll("link[rel='stylesheet']"));
       // Get inline styles
-      const inlineStyles = Array.from(
-        doc.querySelectorAll('style:not([data-pagedjs-inserted-styles])')
-      );
+      const inlineStyles = Array.from(doc.querySelectorAll('style:not([data-pagedjs-inserted-styles])'));
       const elements = [...stylesheets, ...inlineStyles];
       return (
         elements
@@ -32519,10 +30711,7 @@
   window.Paged = Paged;
 
   let ready = new Promise(function (resolve, reject) {
-    if (
-      document.readyState === 'interactive' ||
-      document.readyState === 'complete'
-    ) {
+    if (document.readyState === 'interactive' || document.readyState === 'complete') {
       resolve(document.readyState);
       return;
     }
@@ -32553,11 +30742,7 @@
     }
 
     if (config.auto !== false) {
-      done = await previewer.preview(
-        config.content,
-        config.stylesheets,
-        config.renderTo
-      );
+      done = await previewer.preview(config.content, config.stylesheets, config.renderTo);
     }
 
     if (config.after) {

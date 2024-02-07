@@ -24,7 +24,8 @@
     fixed-footer
     inner-class="d-flex flex-column"
     v-bind="$attrs"
-    @update:model-value="$emit('update:model-value', $event)">
+    @update:model-value="$emit('update:model-value', $event)"
+  >
     <template #default>
       <ObjectForm
         v-model="objectData"
@@ -33,18 +34,15 @@
         :loading="domainIsFetching"
         disable-history
         scroll-wrapper-id="scroll-wrapper-create-dialog"
-        object-creation-disabled />
+        object-creation-disabled
+      />
     </template>
     <template #dialog-options>
       <v-btn variant="text" @click="$emit('update:model-value', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn
-        variant="text"
-        color="primary"
-        :disabled="!isFormValid || !isFormDirty"
-        @click="onSubmit">
+      <v-btn variant="text" color="primary" :disabled="!isFormValid || !isFormDirty" @click="onSubmit">
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>
@@ -105,15 +103,10 @@ export default defineComponent({
       fetchTranslationsQueryParameters
     );
 
-    const { data: endpoints } = useQuery(
-      schemaQueryDefinitions.queries.fetchSchemas
-    );
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const headline = computed(
-      () =>
-        upperFirst(t('createObject').toString()) +
-        ': ' +
-        translations.value?.lang[locale.value]?.[props.objectType]
+      () => upperFirst(t('createObject').toString()) + ': ' + translations.value?.lang[locale.value]?.[props.objectType]
     );
 
     // Seeding of empty form
@@ -138,20 +131,14 @@ export default defineComponent({
     const pristineObjectData = ref<Record<string, any>>({});
 
     const isFormDirty = computed(
-      () =>
-        !isObjectEqual(
-          objectData.value as IVeoEntity,
-          pristineObjectData.value as IVeoEntity
-        ).isEqual
+      () => !isObjectEqual(objectData.value as IVeoEntity, pristineObjectData.value as IVeoEntity).isEqual
     );
     const isFormValid = ref(false);
 
     const seedInitialData = () => {
       objectData.value = {
         owner: {
-          targetUri: `${config.public.apiUrl}/units/${
-            route.params.unit as string
-          }`
+          targetUri: `${config.public.apiUrl}/units/${route.params.unit as string}`
         }
       };
 
@@ -170,9 +157,7 @@ export default defineComponent({
     const setDefaultRiskDefinitionIfScope = () => {
       if (props.objectType === 'scope' && domain.value) {
         if (Object.keys(domain.value.riskDefinitions).length === 1) {
-          objectData.value.riskDefinition = Object.keys(
-            domain.value.riskDefinitions
-          )[0];
+          objectData.value.riskDefinition = Object.keys(domain.value.riskDefinitions)[0];
         }
       }
     };
@@ -191,51 +176,40 @@ export default defineComponent({
     );
 
     // Submitting form
-    const { mutateAsync: create } = useMutation(
-      objectQueryDefinitions.mutations.createObject,
-      {
-        onSuccess: (queryClient, data: IVeoAPIMessage) => {
-          // Invalidate parent scopes (should always be only one), if set directly as a parent via parentScopeIds.
-          if (props.parentScopeIds) {
-            for (const scope of props.parentScopeIds) {
-              queryClient.invalidateQueries([
-                'object',
-                {
-                  endpoint: 'scopes',
-                  id: scope
-                }
-              ]);
-              queryClient.invalidateQueries([
-                'childObjects',
-                {
-                  endpoint: 'scopes',
-                  id: scope
-                }
-              ]);
-              queryClient.invalidateQueries([
-                'childScopes',
-                {
-                  id: scope
-                }
-              ]);
-            }
+    const { mutateAsync: create } = useMutation(objectQueryDefinitions.mutations.createObject, {
+      onSuccess: (queryClient, data: IVeoAPIMessage) => {
+        // Invalidate parent scopes (should always be only one), if set directly as a parent via parentScopeIds.
+        if (props.parentScopeIds) {
+          for (const scope of props.parentScopeIds) {
+            queryClient.invalidateQueries([
+              'object',
+              {
+                endpoint: 'scopes',
+                id: scope
+              }
+            ]);
+            queryClient.invalidateQueries([
+              'childObjects',
+              {
+                endpoint: 'scopes',
+                id: scope
+              }
+            ]);
+            queryClient.invalidateQueries([
+              'childScopes',
+              {
+                id: scope
+              }
+            ]);
           }
-          emit('success', data.resourceId);
-          displaySuccessMessage(
-            upperFirst(
-              t('objectCreated', { name: objectData.value.name }).toString()
-            )
-          );
-          emit('update:model-value', false);
         }
+        emit('success', data.resourceId);
+        displaySuccessMessage(upperFirst(t('objectCreated', { name: objectData.value.name }).toString()));
+        emit('update:model-value', false);
       }
-    );
+    });
     const onSubmit = async () => {
-      if (
-        !isFormValid.value ||
-        !isFormDirty.value ||
-        ability.value.cannot('manage', 'objects')
-      ) {
+      if (!isFormValid.value || !isFormDirty.value || ability.value.cannot('manage', 'objects')) {
         return;
       }
       try {

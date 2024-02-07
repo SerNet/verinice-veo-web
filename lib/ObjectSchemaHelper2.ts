@@ -17,9 +17,7 @@
  */
 import { cloneDeep, merge, trim } from 'lodash';
 
-import ObjectSchemaValidator, {
-  VeoSchemaValidatorValidationResult
-} from './ObjectSchemaValidator';
+import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
 import {
   IVeoObjectSchema,
   IVeoObjectSchemaCustomAspect,
@@ -91,11 +89,7 @@ export default class ObjectSchemaHelper {
 
   private _options: IVeoOSHOptions;
 
-  constructor(
-    objectSchema?: IVeoObjectSchema,
-    domainId?: string,
-    options?: IVeoOSHOptions
-  ) {
+  constructor(objectSchema?: IVeoObjectSchema, domainId?: string, options?: IVeoOSHOptions) {
     this._title = '';
     this._description = '';
     this._customAspects = [];
@@ -156,14 +150,10 @@ export default class ObjectSchemaHelper {
   }
 
   public updateCustomAspect(aspectName: string, aspect: IVeoOSHCustomAspect) {
-    const aspectIndex = this._customAspects.findIndex(
-      (aspect) => aspect.title === aspectName
-    );
+    const aspectIndex = this._customAspects.findIndex((aspect) => aspect.title === aspectName);
 
     if (aspectIndex === -1) {
-      throw new Error(
-        `ObjectSchemaHelper2::updateCustomAspect: Aspect "${aspectName}" not found!`
-      );
+      throw new Error(`ObjectSchemaHelper2::updateCustomAspect: Aspect "${aspectName}" not found!`);
     } else {
       aspect.title = aspectName; // Make sure this method won't rename the aspect, as there are special operations to be executed if that happens
       aspect.prefix = `${this._title}_`;
@@ -172,18 +162,11 @@ export default class ObjectSchemaHelper {
     }
   }
 
-  public updateCustomAspectAttributes(
-    aspectName: string,
-    attributes: IVeoOSHCustomProperty[]
-  ) {
-    const aspectIndex = this._customAspects.findIndex(
-      (aspect) => aspect.title === aspectName
-    );
+  public updateCustomAspectAttributes(aspectName: string, attributes: IVeoOSHCustomProperty[]) {
+    const aspectIndex = this._customAspects.findIndex((aspect) => aspect.title === aspectName);
 
     if (aspectIndex === -1) {
-      throw new Error(
-        `ObjectSchemaHelper2::updateCustomAspectAttributes: Aspect "${aspectName}" not found!`
-      );
+      throw new Error(`ObjectSchemaHelper2::updateCustomAspectAttributes: Aspect "${aspectName}" not found!`);
     } else {
       this._customAspects[aspectIndex].attributes = attributes;
       this.updateAspectAttributePrefixes(aspectIndex);
@@ -191,14 +174,10 @@ export default class ObjectSchemaHelper {
   }
 
   public renameCustomAspect(oldName: string, newName: string) {
-    const aspectIndex = this._customAspects.findIndex(
-      (aspect) => aspect.title === oldName
-    );
+    const aspectIndex = this._customAspects.findIndex((aspect) => aspect.title === oldName);
 
     if (aspectIndex === -1) {
-      throw new Error(
-        `ObjectSchemaHelper2::renameCustomAspect: Aspect "${oldName}" not found!`
-      );
+      throw new Error(`ObjectSchemaHelper2::renameCustomAspect: Aspect "${oldName}" not found!`);
     } else {
       this._customAspects[aspectIndex].title = newName;
       this.updateAspectAttributePrefixes(aspectIndex);
@@ -206,14 +185,10 @@ export default class ObjectSchemaHelper {
   }
 
   public removeCustomAspect(aspectName: string) {
-    const aspectIndex = this._customAspects.findIndex(
-      (aspect) => aspect.title === aspectName
-    );
+    const aspectIndex = this._customAspects.findIndex((aspect) => aspect.title === aspectName);
 
     if (aspectIndex === -1) {
-      throw new Error(
-        `ObjectSchemaHelper2::removeCustomAspect: Aspect "${aspectName}" not found!`
-      );
+      throw new Error(`ObjectSchemaHelper2::removeCustomAspect: Aspect "${aspectName}" not found!`);
     } else {
       this._customAspects.splice(aspectIndex, 1);
     }
@@ -239,14 +214,10 @@ export default class ObjectSchemaHelper {
   }
 
   public updateCustomLink(linkName: string, link: IVeoOSHCustomLink) {
-    const linkIndex = this._customLinks.findIndex(
-      (link) => link.title === linkName
-    );
+    const linkIndex = this._customLinks.findIndex((link) => link.title === linkName);
 
     if (linkIndex === -1) {
-      throw new Error(
-        `ObjectSchemaHelper2::updateCustomLink: Link "${linkName}" not found!`
-      );
+      throw new Error(`ObjectSchemaHelper2::updateCustomLink: Link "${linkName}" not found!`);
     } else {
       link.title = linkName; // Make sure this method won't rename the aspect, as there are special operations to be executed if that happens
       link.prefix = `${this._title}_`;
@@ -255,18 +226,11 @@ export default class ObjectSchemaHelper {
     }
   }
 
-  public updateCustomLinkAttributes(
-    linkName: string,
-    attributes: IVeoOSHCustomProperty[]
-  ) {
-    const linkIndex = this._customLinks.findIndex(
-      (link) => link.title === linkName
-    );
+  public updateCustomLinkAttributes(linkName: string, attributes: IVeoOSHCustomProperty[]) {
+    const linkIndex = this._customLinks.findIndex((link) => link.title === linkName);
 
     if (linkIndex === -1) {
-      throw new Error(
-        `ObjectSchemaHelper2::updateCustomLinkAttributes: Link "${linkName}" not found!`
-      );
+      throw new Error(`ObjectSchemaHelper2::updateCustomLinkAttributes: Link "${linkName}" not found!`);
     } else {
       this._customLinks[linkIndex].attributes = attributes;
       this.updateLinkAttributePrefixes(linkIndex);
@@ -274,14 +238,10 @@ export default class ObjectSchemaHelper {
   }
 
   public renameCustomLink(oldName: string, newName: string) {
-    const linkIndex = this._customLinks.findIndex(
-      (link) => link.title === oldName
-    );
+    const linkIndex = this._customLinks.findIndex((link) => link.title === oldName);
 
     if (linkIndex === -1) {
-      throw new Error(
-        `ObjectSchemaHelper2::renameCustomLink: Link "${oldName}" not found!`
-      );
+      throw new Error(`ObjectSchemaHelper2::renameCustomLink: Link "${oldName}" not found!`);
     } else {
       this._customLinks[linkIndex].title = newName;
       this.updateLinkAttributePrefixes(linkIndex);
@@ -289,14 +249,10 @@ export default class ObjectSchemaHelper {
   }
 
   public removeCustomLink(linkName: string) {
-    const linkIndex = this._customLinks.findIndex(
-      (link) => link.title === linkName
-    );
+    const linkIndex = this._customLinks.findIndex((link) => link.title === linkName);
 
     if (linkIndex === -1) {
-      throw new Error(
-        `ObjectSchemaHelper2::removeCustomLink: Link "${linkName}" not found!`
-      );
+      throw new Error(`ObjectSchemaHelper2::removeCustomLink: Link "${linkName}" not found!`);
     } else {
       this._customLinks.splice(linkIndex, 1);
     }
@@ -323,10 +279,7 @@ export default class ObjectSchemaHelper {
     this._translations[language][key] = value;
   }
 
-  public updateTranslations(
-    language: string,
-    translations: IVeoTranslationCollection
-  ) {
+  public updateTranslations(language: string, translations: IVeoTranslationCollection) {
     this._translations[language] = translations;
   }
 
@@ -336,23 +289,17 @@ export default class ObjectSchemaHelper {
 
     for (const language of Object.keys(this._translations)) {
       // Update exact key (for example scnario_threat)
-      this._translations[language][newKey] =
-        this._translations[language][oldKey];
+      this._translations[language][newKey] = this._translations[language][oldKey];
       delete this._translations[language][oldKey];
 
       // Update child translations (for example scenario_threat_type)
       this._translations[language] = Object.fromEntries(
-        Object.entries(this._translations[language]).map(
-          ([translationKey, value]) => {
-            if (translationKey.includes(`${oldKey}_`)) {
-              translationKey = translationKey.replace(
-                `${oldKey}_`,
-                `${newKey}_`
-              );
-            }
-            return [translationKey, value];
+        Object.entries(this._translations[language]).map(([translationKey, value]) => {
+          if (translationKey.includes(`${oldKey}_`)) {
+            translationKey = translationKey.replace(`${oldKey}_`, `${newKey}_`);
           }
-        )
+          return [translationKey, value];
+        })
       );
     }
   }
@@ -441,9 +388,7 @@ export default class ObjectSchemaHelper {
   }
 
   public validate(): VeoSchemaValidatorValidationResult {
-    const validator = new ObjectSchemaValidator(
-      this._options.domainSpecificObjectSchema as boolean
-    );
+    const validator = new ObjectSchemaValidator(this._options.domainSpecificObjectSchema as boolean);
     return validator.validate(this.toSchema());
   }
 
@@ -451,9 +396,7 @@ export default class ObjectSchemaHelper {
     return items.map((item: string) => `${prefix}_${item}`);
   }
 
-  public static generateLinkSchema(
-    link: IVeoOSHCustomLink
-  ): IVeoObjectSchemaCustomLink {
+  public static generateLinkSchema(link: IVeoOSHCustomLink): IVeoObjectSchemaCustomLink {
     const schemaLink: IVeoObjectSchemaCustomLink = {
       items: {
         additionalProperties: false,
@@ -468,8 +411,7 @@ export default class ObjectSchemaHelper {
             items: {
               properties: {
                 displayName: {
-                  description:
-                    'A friendly human readable title of the referenced domain.',
+                  description: 'A friendly human readable title of the referenced domain.',
                   type: 'string'
                 },
                 targetUri: {
@@ -486,8 +428,7 @@ export default class ObjectSchemaHelper {
           },
           id: {
             format: 'regex',
-            pattern:
-              '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}',
+            pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}',
             title: 'The UUID to identify the element',
             type: 'string'
           },
@@ -495,8 +436,7 @@ export default class ObjectSchemaHelper {
             items: {
               properties: {
                 displayName: {
-                  description:
-                    'A friendly human readable title of the referenced object.',
+                  description: 'A friendly human readable title of the referenced object.',
                   type: 'string'
                 },
                 targetUri: {
@@ -549,10 +489,7 @@ export default class ObjectSchemaHelper {
       // @ts-ignore We cast attribute to IVeoObjectSchemaProperty a couple lines before,
       // however there is still some data in there which is not defined in IVeoObjectSchemaProperty
       if (dummy.type === 'enum') {
-        dummy.enum = this.addPrefixToEnum(
-          dummy.enum,
-          `${attribute.prefix}${attribute.title}`
-        );
+        dummy.enum = this.addPrefixToEnum(dummy.enum, `${attribute.prefix}${attribute.title}`);
         delete dummy.type;
         if (dummy.multiple) {
           dummy.type = 'array';
@@ -567,9 +504,7 @@ export default class ObjectSchemaHelper {
 
       delete dummy.multiple;
 
-      schemaLink.items.properties.attributes.properties[
-        `${attribute.prefix}${attribute.title}`
-      ] = dummy;
+      schemaLink.items.properties.attributes.properties[`${attribute.prefix}${attribute.title}`] = dummy;
     }
 
     return schemaLink;
@@ -605,10 +540,7 @@ export default class ObjectSchemaHelper {
       // @ts-ignore We cast attribute to IVeoObjectSchemaProperty a couple lines before,
       // however there is still some data in there which is not defined in IVeoObjectSchemaProperty
       if (dummy.type === 'enum') {
-        dummy.enum = this.addPrefixToEnum(
-          dummy.enum,
-          `${attribute.prefix}${attribute.title}`
-        );
+        dummy.enum = this.addPrefixToEnum(dummy.enum, `${attribute.prefix}${attribute.title}`);
         delete dummy.type;
         if (dummy.multiple) {
           dummy.type = 'array';
@@ -627,12 +559,9 @@ export default class ObjectSchemaHelper {
       delete dummy.title;
 
       if (domainSpecificObjectSchema) {
-        schemaAspect.properties[`${attribute.prefix}${attribute.title}`] =
-          dummy;
+        schemaAspect.properties[`${attribute.prefix}${attribute.title}`] = dummy;
       } else {
-        schemaAspect.properties.attributes.properties[
-          `${attribute.prefix}${attribute.title}`
-        ] = dummy;
+        schemaAspect.properties.attributes.properties[`${attribute.prefix}${attribute.title}`] = dummy;
       }
     }
 
@@ -717,22 +646,16 @@ export default class ObjectSchemaHelper {
     return items.map((item: string) => item.split(`${prefix}_`)[1]);
   }
 
-  private loadCustomAspects(
-    aspects: IVeoObjectSchema['properties']['customAspects']
-  ) {
+  private loadCustomAspects(aspects: IVeoObjectSchema['properties']['customAspects']) {
     for (const aspectName in aspects.properties) {
-      const aspect = aspects.properties[
-        aspectName
-      ] as IVeoObjectSchemaCustomAspect;
+      const aspect = aspects.properties[aspectName] as IVeoObjectSchemaCustomAspect;
       const dummy: any = {};
       dummy.title = this.cleanCustomObjectName(aspectName);
       dummy.attributes = [];
       dummy.prefix = `${this._title}_`;
 
       const attributes: Record<string, any> =
-        this._options.domainSpecificObjectSchema ?
-          aspect.properties
-        : aspect.properties.attributes.properties;
+        this._options.domainSpecificObjectSchema ? aspect.properties : aspect.properties.attributes.properties;
 
       for (const attributeName in attributes) {
         const attribute = attributes[attributeName];
@@ -752,10 +675,7 @@ export default class ObjectSchemaHelper {
         }
 
         if (toPush.enum) {
-          toPush.enum = this.removePrefixFromEnum(
-            toPush.enum,
-            `${toPush.prefix}${toPush.title}`
-          );
+          toPush.enum = this.removePrefixFromEnum(toPush.enum, `${toPush.prefix}${toPush.title}`);
         }
 
         dummy.attributes.push(toPush);
@@ -775,8 +695,7 @@ export default class ObjectSchemaHelper {
       dummy.subType = link.items.properties.target.properties.subType?.enum[0];
 
       for (const attributeName in link.items.properties.attributes.properties) {
-        const attribute =
-          link.items.properties.attributes.properties[attributeName];
+        const attribute = link.items.properties.attributes.properties[attributeName];
 
         const toPush = {
           ...attribute,
@@ -793,10 +712,7 @@ export default class ObjectSchemaHelper {
         }
 
         if (toPush.enum) {
-          toPush.enum = this.removePrefixFromEnum(
-            toPush.enum,
-            `${toPush.prefix}${toPush.title}`
-          );
+          toPush.enum = this.removePrefixFromEnum(toPush.enum, `${toPush.prefix}${toPush.title}`);
         }
 
         dummy.attributes.push(toPush);
@@ -805,10 +721,7 @@ export default class ObjectSchemaHelper {
     }
   }
 
-  private loadBasicProperties(
-    schema: IVeoObjectSchema['properties'],
-    key: string
-  ) {
+  private loadBasicProperties(schema: IVeoObjectSchema['properties'], key: string) {
     const property = schema[key] as IVeoObjectSchemaProperty;
     this._basicProperties.push({
       title: key,
@@ -820,15 +733,13 @@ export default class ObjectSchemaHelper {
 
   private loadDomains(schema: IVeoObjectSchemaProperty) {
     this._domains = Object.fromEntries(
-      Object.entries(schema.properties).map(
-        ([domainId, content]: [string, any]) => [
-          domainId,
-          content.allOf?.map((mapping: any) => ({
-            subType: mapping.if.properties.subType.const,
-            status: mapping.then.properties.status.enum
-          }))
-        ]
-      )
+      Object.entries(schema.properties).map(([domainId, content]: [string, any]) => [
+        domainId,
+        content.allOf?.map((mapping: any) => ({
+          subType: mapping.if.properties.subType.const,
+          status: mapping.then.properties.status.enum
+        }))
+      ])
     );
   }
 
@@ -849,9 +760,7 @@ export default class ObjectSchemaHelper {
   }
 
   private cleanAttributeName(attributeName: string, customObjectName: string) {
-    return attributeName
-      .replace(`${this._title}_`, '')
-      .replace(`${customObjectName}_`, '');
+    return attributeName.replace(`${this._title}_`, '').replace(`${customObjectName}_`, '');
   }
 
   private updateAspectAttributePrefixes(aspectIndex: number) {
@@ -893,27 +802,17 @@ export default class ObjectSchemaHelper {
     return this._schema;
   }
 
-  private addAspectToSchema(
-    schema: IVeoObjectSchema,
-    aspect: IVeoOSHCustomAspect
-  ) {
-    schema.properties.customAspects.properties[
-      `${aspect.prefix}${aspect.title}`
-    ] = ObjectSchemaHelper.generateAspectSchema(aspect);
+  private addAspectToSchema(schema: IVeoObjectSchema, aspect: IVeoOSHCustomAspect) {
+    schema.properties.customAspects.properties[`${aspect.prefix}${aspect.title}`] =
+      ObjectSchemaHelper.generateAspectSchema(aspect);
   }
 
   private addLinkToSchema(schema: IVeoObjectSchema, link: IVeoOSHCustomLink) {
-    schema.properties.links.properties[`${link.prefix}${link.title}`] =
-      ObjectSchemaHelper.generateLinkSchema(link);
+    schema.properties.links.properties[`${link.prefix}${link.title}`] = ObjectSchemaHelper.generateLinkSchema(link);
   }
 
-  private addDomainToSchema(
-    schema: IVeoObjectSchema,
-    domainId: string,
-    domain: IVeoOSHDomains['domain']
-  ) {
-    schema.properties.domains.properties[domainId] =
-      ObjectSchemaHelper.generateDomain(domain);
+  private addDomainToSchema(schema: IVeoObjectSchema, domainId: string, domain: IVeoOSHDomains['domain']) {
+    schema.properties.domains.properties[domainId] = ObjectSchemaHelper.generateDomain(domain);
   }
 
   private getDefaultSchema(domainId: string): any {
@@ -935,8 +834,7 @@ export default class ObjectSchemaHelper {
         },
         createdAt: {
           type: 'string',
-          description:
-            'A timestamp acc. to RFC 3339 specifying when this entity was created.',
+          description: 'A timestamp acc. to RFC 3339 specifying when this entity was created.',
           readOnly: true
         },
         createdBy: {
@@ -957,8 +855,7 @@ export default class ObjectSchemaHelper {
         },
         designator: {
           type: 'string',
-          description:
-            'Compact human-readable identifier that is unique within the client.',
+          description: 'Compact human-readable identifier that is unique within the client.',
           readOnly: true
         },
         domains: {
@@ -1008,8 +905,7 @@ export default class ObjectSchemaHelper {
           properties: {
             displayName: {
               type: 'string',
-              description:
-                'A friendly human readable title of the referenced unit.',
+              description: 'A friendly human readable title of the referenced unit.',
               readOnly: true
             },
             resourcesUri: {
@@ -1036,8 +932,7 @@ export default class ObjectSchemaHelper {
             properties: {
               displayName: {
                 type: 'string',
-                description:
-                  'A friendly human readable title of the referenced entity.',
+                description: 'A friendly human readable title of the referenced entity.',
                 readOnly: true
               },
               resourcesUri: {
@@ -1065,8 +960,7 @@ export default class ObjectSchemaHelper {
         },
         updatedAt: {
           type: 'string',
-          description:
-            'A timestamp acc. to RFC 3339 specifying when this entity was created.',
+          description: 'A timestamp acc. to RFC 3339 specifying when this entity was created.',
           readOnly: true
         },
         updatedBy: {

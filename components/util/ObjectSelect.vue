@@ -31,7 +31,8 @@
     variant="underlined"
     @update:search="updateSearchQuery"
     @click="() => updateSearchQuery()"
-    @click:clear="onClearClicked">
+    @click:clear="onClearClicked"
+  >
     <template #prepend-item>
       <slot name="prepend-item" />
     </template>
@@ -45,10 +46,7 @@
     <template #item="{ props: _props, item }">
       <v-list-item v-bind="_props">
         <template #prepend>
-          <ObjectIcon
-            :object-type="item.raw.type"
-            :is-composite="!!(item.raw.parts && item.raw.parts.length)"
-            left />
+          <ObjectIcon :object-type="item.raw.type" :is-composite="!!(item.raw.parts && item.raw.parts.length)" left />
         </template>
         <template #append>
           <v-hover v-slot="{ hover }">
@@ -57,7 +55,8 @@
               style="z-index: 5000"
               :color="hover ? 'primary' : ''"
               :icon="mdiOpenInNew"
-              @click="openItem(item.raw)" />
+              @click="openItem(item.raw)"
+            />
           </v-hover>
         </template>
       </v-list-item>
@@ -113,9 +112,7 @@ const { displayErrorMessage } = useVeoAlerts();
 const router = useRouter();
 const route = useRoute();
 
-const { data: endpoints } = useQuery(
-  schemaQueryDefinitions.queries.fetchSchemas
-);
+const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
 const internalValue = computed<string | undefined>({
   get: () => {
@@ -137,9 +134,7 @@ const internalValue = computed<string | undefined>({
         'update:model-value',
         newValue ?
           {
-            targetUri: `${config.public.apiUrl}/${endpoints.value?.[
-              props.objectType
-            ]}/${newValue}`
+            targetUri: `${config.public.apiUrl}/${endpoints.value?.[props.objectType]}/${newValue}`
           }
         : undefined
       );
@@ -155,10 +150,7 @@ const searchQuery = ref();
 const fetchObjectsData = ref<IVeoPaginatedResponse<IVeoEntity[]>>();
 const endpoint = computed(() => endpoints.value?.[props.objectType]);
 const searchQueryNotStale = computed(
-  () =>
-    !fetchObjectsData?.value?.items?.find(
-      (item) => item.displayName === searchQuery.value
-    ) && !!endpoint.value
+  () => !fetchObjectsData?.value?.items?.find((item) => item.displayName === searchQuery.value) && !!endpoint.value
 );
 const fetchObjectsQueryParameters = computed(
   () =>
@@ -170,12 +162,11 @@ const fetchObjectsQueryParameters = computed(
       displayName: searchQuery.value ?? undefined
     }) as any
 );
-const { data: _fetchObjectsData, isFetching: isLoadingObjects } =
-  useFetchObjects(fetchObjectsQueryParameters, {
-    placeholderData: { items: [], pageCount: 0, page: 1 },
-    enabled: searchQueryNotStale,
-    refetchOnMount: false // If set to true (the default), refetches queries every time input changes, causing some weird cache issues
-  });
+const { data: _fetchObjectsData, isFetching: isLoadingObjects } = useFetchObjects(fetchObjectsQueryParameters, {
+  placeholderData: { items: [], pageCount: 0, page: 1 },
+  enabled: searchQueryNotStale,
+  refetchOnMount: false // If set to true (the default), refetches queries every time input changes, causing some weird cache issues
+});
 
 watch(
   () => _fetchObjectsData.value,
@@ -194,9 +185,7 @@ const onClearClicked = () => {
   internalValue.value = undefined;
 };
 
-const moreItemsAvailable = computed(
-  () => (fetchObjectsData.value?.pageCount || 0) > 1
-);
+const moreItemsAvailable = computed(() => (fetchObjectsData.value?.pageCount || 0) > 1);
 
 const fetchObjectQueryParameters = computed(
   () =>
@@ -205,9 +194,7 @@ const fetchObjectQueryParameters = computed(
       id: internalValue.value
     }) as any
 );
-const fetchObjectQueryEnabled = computed(
-  () => !!unref(internalValue) && !!endpoints.value?.[props.objectType]
-);
+const fetchObjectQueryEnabled = computed(() => !!unref(internalValue) && !!endpoints.value?.[props.objectType]);
 const {
   data: fetchObjectData,
   isFetching: isLoadingObject,
@@ -222,35 +209,26 @@ watch(
     if (newValue) {
       displayErrorMessage(
         upperFirst(t('objectNotFound').toString()),
-        t('objectNotFoundExplanation', [
-          props.label,
-          internalValue.value
-        ]).toString()
+        t('objectNotFoundExplanation', [props.label, internalValue.value]).toString()
       );
     }
   }
 );
 
-const isLoading = computed(
-  () => isLoadingObjects.value || isLoadingObject.value
-);
+const isLoading = computed(() => isLoadingObjects.value || isLoadingObject.value);
 
 const items = computed<IVeoEntity[]>(() => [
   ...(fetchObjectsData.value?.items || []),
   ...((
     !!unref(internalValue) &&
     fetchObjectData.value &&
-    !fetchObjectsData.value?.items?.find(
-      (item) => item.id === fetchObjectData.value.id
-    )
+    !fetchObjectsData.value?.items?.find((item) => item.id === fetchObjectData.value.id)
   ) ?
     [fetchObjectData.value]
   : [])
 ]);
 const displayedItems = computed(() =>
-  props.hiddenValues.length ?
-    items.value.filter((item) => !props.hiddenValues.includes(item.id))
-  : items.value
+  props.hiddenValues.length ? items.value.filter((item) => !props.hiddenValues.includes(item.id)) : items.value
 );
 
 // Label
@@ -258,27 +236,21 @@ const formsQueryParameters = computed(() => ({
   domainId: props.domainId as string
 }));
 const formsQueryEnabled = computed(() => !props.domainId);
-const { data: formSchemas } = useQuery(
-  formQueryDefinitions.queries.fetchForms,
-  formsQueryParameters,
-  { enabled: formsQueryEnabled }
-);
+const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, {
+  enabled: formsQueryEnabled
+});
 
 const currentSubTypeFormName = computed(
   () =>
     props.subType &&
-    (formSchemas.value || []).find(
-      (formSchema) => formSchema.subType === props.subType
-    )?.name[locale.value]
+    (formSchemas.value || []).find((formSchema) => formSchema.subType === props.subType)?.name[locale.value]
 );
 const localLabel = computed(
   () =>
     props.label ??
-    `${
-      currentSubTypeFormName.value ?
-        currentSubTypeFormName.value
-      : upperFirst(props.objectType)
-    }${props.required ? '*' : ''}`
+    `${currentSubTypeFormName.value ? currentSubTypeFormName.value : upperFirst(props.objectType)}${
+      props.required ? '*' : ''
+    }`
 );
 
 // Object select display

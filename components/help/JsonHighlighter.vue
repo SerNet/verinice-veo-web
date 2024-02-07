@@ -38,9 +38,7 @@ export default {
   },
   computed: {
     textAsHighlighterHTML(): string {
-      return this.text ?
-          Prism.highlight(String(this.text || ''), Prism.languages.json, 'json')
-        : '';
+      return this.text ? Prism.highlight(String(this.text || ''), Prism.languages.json, 'json') : '';
     }
   }
 };

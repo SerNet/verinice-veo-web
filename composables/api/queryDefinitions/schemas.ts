@@ -47,8 +47,7 @@ export default {
         Object.fromEntries(
           Object.entries(result as IVeoEntitiesMetaInfo).map(([key, value]) => [
             key,
-            /([a-z]*){(.+)$/.exec(value.collectionUri)?.[1] ||
-              value.collectionUri
+            /([a-z]*){(.+)$/.exec(value.collectionUri)?.[1] || value.collectionUri
           ])
         ),
       queryParameterTransformationFn: () => ({}),

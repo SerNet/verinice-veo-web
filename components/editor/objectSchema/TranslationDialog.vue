@@ -21,15 +21,14 @@
     large
     :title="t('editor.formschema.translation')"
     fixed-footer
-    @update:model-value="$emit('update:model-value', $event)">
+    @update:model-value="$emit('update:model-value', $event)"
+  >
     <template #default>
       <div style="min-height: 20vh">
         <v-form v-model="formIsValid">
           <v-row no-gutters class="align-center mt-4">
             <v-col cols="12" :md="5">
-              <span style="font-size: 1.2rem"
-                >{{ t('displayLanguageDescription') }}*:</span
-              >
+              <span style="font-size: 1.2rem">{{ t('displayLanguageDescription') }}*:</span>
             </v-col>
             <v-col cols="12" :md="5">
               <v-select
@@ -37,14 +36,13 @@
                 :items="displayLanguageItems"
                 :rules="requiredRule"
                 :label="t('displayLanguage')"
-                required />
+                required
+              />
             </v-col>
           </v-row>
           <v-row no-gutters class="align-center mt-4">
             <v-col cols="12" :md="5">
-              <span style="font-size: 1.2rem"
-                >{{ t('supportedLanguages') }}*:</span
-              >
+              <span style="font-size: 1.2rem">{{ t('supportedLanguages') }}*:</span>
             </v-col>
             <v-col cols="12" :md="5">
               <v-select
@@ -53,18 +51,17 @@
                 :rules="requiredRule"
                 multiple
                 :label="t('supportedLanguages')"
-                required />
+                required
+              />
             </v-col>
           </v-row>
           <EditorObjectSchemaTranslationUpload
             v-model:replace-translations="replaceTranslations"
             :available-languages="supportedLanguages"
-            @translations-imported="onTranslationsImported" />
+            @translations-imported="onTranslationsImported"
+          />
           <v-row>
-            <v-col
-              v-for="language in supportedLanguages"
-              :key="language"
-              cols="12">
+            <v-col v-for="language in supportedLanguages" :key="language" cols="12">
               <h3 class="text-h3">
                 {{ languageDetails[language] }}
               </h3>
@@ -82,11 +79,7 @@
         {{ t('global.button.close') }}
       </v-btn>
       <v-spacer />
-      <v-btn
-        text
-        color="primary"
-        :disabled="formIsValid === false"
-        @click="onSave">
+      <v-btn text color="primary" :disabled="formIsValid === false" @click="onSave">
         {{ t('global.button.save') }}
       </v-btn>
     </template>
@@ -113,23 +106,16 @@ export default defineComponent({
       default: ''
     }
   },
-  emits: [
-    'update:current-display-language',
-    'update:model-value',
-    'schema-updated'
-  ],
+  emits: ['update:current-display-language', 'update:model-value', 'schema-updated'],
   setup(props, { emit }) {
     const { locales, t } = useI18n();
     const { displayErrorMessage } = useVeoAlerts();
 
-    const objectSchemaHelper =
-      inject<Ref<ObjectSchemaHelper>>('objectSchemaHelper');
+    const objectSchemaHelper = inject<Ref<ObjectSchemaHelper>>('objectSchemaHelper');
 
     // Local translations that get edited. Key is language, value is the language object. In this case a string as the editor returns a string and expects a string.
     const translations = reactive<{ [lang: string]: string }>(
-      Object.entries(
-        objectSchemaHelper?.value.getAllTranslations() || {}
-      ).reduce(
+      Object.entries(objectSchemaHelper?.value.getAllTranslations() || {}).reduce(
         (prevValue, [language, translations]) => {
           prevValue[language] = JSON.stringify(translations, undefined, 2);
           return prevValue;
@@ -141,13 +127,9 @@ export default defineComponent({
     // Form stuff
     const formIsValid = ref(true);
     const displayLanguage = ref<string>(props.currentDisplayLanguage);
-    const supportedLanguages = ref<string[]>(
-      objectSchemaHelper?.value.getLanguages() || []
-    );
+    const supportedLanguages = ref<string[]>(objectSchemaHelper?.value.getLanguages() || []);
 
-    const requiredRule = computed(() => [
-      (v: any) => (Array.isArray(v) ? v.length > 0 : !!v)
-    ]);
+    const requiredRule = computed(() => [(v: any) => (Array.isArray(v) ? v.length > 0 : !!v)]);
 
     const languageDetails = computed(() =>
       (locales.value as LocaleObject[]).reduce(
@@ -179,14 +161,9 @@ export default defineComponent({
         // Make sure all supported languages contain an entry in the translations object.
         newValue.forEach((language) => {
           if (!translations[language]) {
-            const savedTranslations =
-              objectSchemaHelper?.value.getTranslations(language);
+            const savedTranslations = objectSchemaHelper?.value.getTranslations(language);
             if (savedTranslations) {
-              translations[language] = JSON.stringify(
-                savedTranslations,
-                undefined,
-                2
-              );
+              translations[language] = JSON.stringify(savedTranslations, undefined, 2);
             } else {
               translations[language] = JSON.stringify({});
             }
@@ -229,22 +206,13 @@ export default defineComponent({
 
     // Translation file import stuff
     const replaceTranslations = ref(false);
-    const onTranslationsImported = (
-      _translations: IVeoTranslations['lang']
-    ) => {
+    const onTranslationsImported = (_translations: IVeoTranslations['lang']) => {
       for (const language of Object.keys(translations)) {
         if (replaceTranslations.value) {
-          translations[language] = JSON.stringify(
-            _translations[language],
-            undefined,
-            2
-          );
+          translations[language] = JSON.stringify(_translations[language], undefined, 2);
         } else {
           translations[language] = JSON.stringify(
-            merge(
-              objectSchemaHelper?.value?.getTranslations(language) || {},
-              _translations[language]
-            ),
+            merge(objectSchemaHelper?.value?.getTranslations(language) || {}, _translations[language]),
             undefined,
             2
           );
@@ -257,10 +225,7 @@ export default defineComponent({
         Object.entries(translations).forEach(([language, translations]) => {
           const parsedTranslation = JSON.parse(translations);
           const trimmedTranslations = trimTranslations(parsedTranslation);
-          objectSchemaHelper?.value.updateTranslations(
-            language,
-            trimmedTranslations
-          );
+          objectSchemaHelper?.value.updateTranslations(language, trimmedTranslations);
         });
 
         emit('update:model-value', false);

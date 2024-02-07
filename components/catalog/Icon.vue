@@ -20,15 +20,13 @@
     <v-tooltip location="top">
       <template #activator="{ props: tooltipProps }">
         <div v-bind="tooltipProps">
-          <v-icon
-            v-if="icon && icon.library === 'mdi'"
-            v-bind="$attrs"
-            :icon="icon.icon" />
+          <v-icon v-if="icon && icon.library === 'mdi'" v-bind="$attrs" :icon="icon.icon" />
           <v-icon
             v-else-if="isComposite"
             class="veo-object-icon--composite"
             color="primary"
-            :icon="mdiDotsHorizontal" />
+            :icon="mdiDotsHorizontal"
+          />
         </div>
       </template>
       <template #default>
@@ -39,10 +37,7 @@
 </template>
 
 <script lang="ts">
-export const CATALOG_TYPE_ICONS = new Map<
-  string,
-  { icon: string | string[]; library: 'mdi' }
->([
+export const CATALOG_TYPE_ICONS = new Map<string, { icon: string | string[]; library: 'mdi' }>([
   ['all', { icon: mdiAllInclusive, library: 'mdi' }],
   ['scope', { icon: mdiFocusField, library: 'mdi' }],
   ['process', { icon: mdiDatabaseCogOutline, library: 'mdi' }],
@@ -91,14 +86,9 @@ const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
   domain: route.params.domain
 }));
-const { data: translations } = useQuery(
-  translationQueryDefinitions.queries.fetch,
-  fetchTranslationsQueryParameters
-);
+const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 const translatedObjectType = computed(
-  () =>
-    translations.value?.lang?.[locale.value]?.[props.objectType] ||
-    props.objectType
+  () => translations.value?.lang?.[locale.value]?.[props.objectType] || props.objectType
 );
 </script>
 

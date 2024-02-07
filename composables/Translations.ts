@@ -9,12 +9,7 @@ type TranslateSubTypeParams = {
   elementType?: string | undefined;
 };
 
-function translateSubType({
-  formSchemas,
-  locale,
-  subType,
-  elementType
-}: TranslateSubTypeParams) {
+function translateSubType({ formSchemas, locale, subType, elementType }: TranslateSubTypeParams) {
   if (!subType) subType = 'all';
   if (!formSchemas) return;
 
@@ -23,9 +18,7 @@ function translateSubType({
       return formSchema.subType === subType;
     }
 
-    return (
-      formSchema.modelType === elementType && formSchema.subType === subType
-    );
+    return formSchema.modelType === elementType && formSchema.subType === subType;
   });
 
   const translation = formSchema?.name[locale] || subType;
@@ -45,11 +38,10 @@ export function useSubTypeTranslation() {
   const queryParameters = computed(() => ({
     domainId: domainId.value
   }));
-  const { data: formSchemas } = useQuery(
-    formsQueryDefinitions.queries.fetchForms,
-    queryParameters,
-    { enabled: allFormSchemasQueryEnabled, placeholderData: [] }
-  );
+  const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, {
+    enabled: allFormSchemasQueryEnabled,
+    placeholderData: []
+  });
 
   return {
     subTypeTranslation: computed(() =>

@@ -20,12 +20,10 @@
     :available-languages="availableLanguages"
     :import-function="importFunction"
     :replace-translations="replaceTranslations"
-    @update:replace-translations="$emit('update:replace-translations', $event)">
+    @update:replace-translations="$emit('update:replace-translations', $event)"
+  >
     <template #default>
-      <v-expansion-panels
-        v-model="resultExpansionPanel"
-        flat
-        class="veo-border mt-6">
+      <v-expansion-panels v-model="resultExpansionPanel" flat class="veo-border mt-6">
         <v-expansion-panel>
           <template #title>
             {{ t('result') }}
@@ -36,12 +34,10 @@
               :title="t('importedTranslations')"
               flat
               no-close-button
-              :type="VeoAlertType.SUCCESS">
+              :type="VeoAlertType.SUCCESS"
+            >
               <template #default>
-                <div
-                  v-for="language of Object.entries(usedTranslations)"
-                  :key="language[0]"
-                  class="mt-2">
+                <div v-for="language of Object.entries(usedTranslations)" :key="language[0]" class="mt-2">
                   {{ localeDetailsMap[language[0]].name }}
                   <ul>
                     <li v-for="translation of language[1]" :key="translation">
@@ -56,12 +52,10 @@
               :title="t('duplicateTranslations')"
               flat
               no-close-button
-              :type="VeoAlertType.INFO">
+              :type="VeoAlertType.INFO"
+            >
               <template #default>
-                <div
-                  v-for="language of Object.entries(duplicateTranslations)"
-                  :key="language[0]"
-                  class="mt-2">
+                <div v-for="language of Object.entries(duplicateTranslations)" :key="language[0]" class="mt-2">
                   {{ localeDetailsMap[language[0]].name }}
                   <ul>
                     <li v-for="translation of language[1]" :key="translation">
@@ -76,12 +70,11 @@
               :title="t('unusedTranslations')"
               flat
               no-close-button
-              :type="VeoAlertType.INFO">
+              :type="VeoAlertType.INFO"
+            >
               <template #default>
                 <ul>
-                  <li
-                    v-for="translation of unusedTranslations"
-                    :key="translation">
+                  <li v-for="translation of unusedTranslations" :key="translation">
                     {{ translation }}
                   </li>
                 </ul>
@@ -117,12 +110,9 @@ export default defineComponent({
     const { locales, t } = useI18n();
     const route = useRoute();
 
-    const formSchema =
-      inject<Ref<IVeoFormSchema | undefined>>('mainFormSchema');
+    const formSchema = inject<Ref<IVeoFormSchema | undefined>>('mainFormSchema');
 
-    const availableLanguages = computed(() =>
-      (locales.value as LocaleObject[]).map((locale) => locale.code)
-    );
+    const availableLanguages = computed(() => (locales.value as LocaleObject[]).map((locale) => locale.code));
 
     const translationsQueryParameters = computed(() => ({
       languages: availableLanguages.value,
@@ -137,13 +127,10 @@ export default defineComponent({
     const resultExpansionPanel = ref();
 
     const localeDetailsMap = computed(() =>
-      (locales.value as LocaleObject[]).reduce(
-        (previousValue, currentValue) => {
-          previousValue[currentValue.code] = currentValue;
-          return previousValue;
-        },
-        Object.create(null)
-      )
+      (locales.value as LocaleObject[]).reduce((previousValue, currentValue) => {
+        previousValue[currentValue.code] = currentValue;
+        return previousValue;
+      }, Object.create(null))
     );
 
     // Import stuff
@@ -151,29 +138,17 @@ export default defineComponent({
     const duplicateTranslations = reactive<{ [lang: string]: string[] }>({});
     const usedTranslations = reactive<{ [lang: string]: string[] }>({});
 
-    const importFunction = (
-      columns: string[][],
-      idColumn: number,
-      languageColumns: { [language: string]: number }
-    ) => {
-      if (
-        idColumn === undefined ||
-        Object.keys(languageColumns).length < availableLanguages.value.length
-      ) {
+    const importFunction = (columns: string[][], idColumn: number, languageColumns: { [language: string]: number }) => {
+      if (idColumn === undefined || Object.keys(languageColumns).length < availableLanguages.value.length) {
         return;
       }
       unusedTranslations.value = [];
-      const translations = availableLanguages.value.reduce(
-        (previousValue, currentValue) => {
-          previousValue[currentValue] = {};
-          return previousValue;
-        },
-        Object.create(null)
-      );
+      const translations = availableLanguages.value.reduce((previousValue, currentValue) => {
+        previousValue[currentValue] = {};
+        return previousValue;
+      }, Object.create(null));
 
-      const usedLanguageKeys = Object.entries(
-        JsonPointer.flatten(formSchema?.value)
-      )
+      const usedLanguageKeys = Object.entries(JsonPointer.flatten(formSchema?.value))
         .filter(([key, _value]) => key.endsWith('/label'))
         .map(([_, value]) => (value as string).split('#lang/')[1]);
       unusedTranslations.value = [];
@@ -194,10 +169,7 @@ export default defineComponent({
         }
 
         // If id is not used in this form schema, add to unusedTranslations array and go to next id
-        if (
-          !usedLanguageKeys.includes(id) &&
-          !unusedTranslations.value.includes(id)
-        ) {
+        if (!usedLanguageKeys.includes(id) && !unusedTranslations.value.includes(id)) {
           unusedTranslations.value.push(id);
           continue;
         }
@@ -207,8 +179,7 @@ export default defineComponent({
 
           if (translatedValue) {
             if (
-              objectSchemaTranslations.value?.lang?.[language[0]]?.[id] ===
-                translatedValue &&
+              objectSchemaTranslations.value?.lang?.[language[0]]?.[id] === translatedValue &&
               !duplicateTranslations[language[0]].includes(id)
             ) {
               duplicateTranslations[language[0]].push(id);
@@ -221,14 +192,11 @@ export default defineComponent({
       }
       Object.assign(
         usedTranslations,
-        Object.entries(translations).reduce(
-          (previousValue, [language, entries]) => {
-            previousValue[language] = Object.keys(entries as any);
+        Object.entries(translations).reduce((previousValue, [language, entries]) => {
+          previousValue[language] = Object.keys(entries as any);
 
-            return previousValue;
-          },
-          Object.create(null)
-        )
+          return previousValue;
+        }, Object.create(null))
       );
 
       resultExpansionPanel.value = 0;

@@ -27,21 +27,18 @@
             <v-col cols="12" md="6" class="d-flex align-center">
               <EditorFormSchemaPlaygroundEditDialogTranslatedInput
                 :form-schema-element="formSchemaElement"
-                @update:form-schema-element="
-                  emit('update:form-schema-element', $event)
-                "
+                @update:form-schema-element="emit('update:form-schema-element', $event)"
                 @set-translation="
                   (translationKey: string, newValue: string | undefined) =>
                     emit('set-translation', translationKey, newValue)
-                " />
+                "
+              />
             </v-col>
           </v-row>
         </v-card-text>
       </BaseCard>
     </section>
-    <section
-      class="mt-4"
-      data-component-name="control-element-element-specific-settings">
+    <section class="mt-4" data-component-name="control-element-element-specific-settings">
       <h2 class="text-h2">
         {{ t('formElement') }}
       </h2>
@@ -49,11 +46,10 @@
         v-model="elementTypeModelValue"
         :items="elementInputAlternatives"
         density="compact"
-        bg-color="transparent" />
+        bg-color="transparent"
+      />
     </section>
-    <section
-      v-if="elementsWithOptions.includes(elementTypeModelValue || '')"
-      class="mt-4">
+    <section v-if="elementsWithOptions.includes(elementTypeModelValue || '')" class="mt-4">
       <h2 class="text-h2">
         {{ t('formElementOptions') }}
         <BaseCard>
@@ -62,9 +58,8 @@
               <v-col cols="12" md="6">
                 <EditorFormSchemaPlaygroundEditDialogElementDirectionOptions
                   :form-schema-element="formSchemaElement"
-                  @update:form-schema-element="
-                    emit('update:form-schema-element', $event)
-                  " />
+                  @update:form-schema-element="emit('update:form-schema-element', $event)"
+                />
               </v-col>
             </v-row>
             <v-row v-if="elementTypeModelValue === 'LinksField'">
@@ -74,11 +69,9 @@
                   :object-schema-element="objectSchemaElement"
                   :playground-element="playgroundElement"
                   :pointer="pointer"
-                  @add="
-                    (elementPointer, element) =>
-                      emit('add', elementPointer, element)
-                  "
-                  @remove="(elementPointer) => emit('remove', elementPointer)">
+                  @add="(elementPointer, element) => emit('add', elementPointer, element)"
+                  @remove="(elementPointer) => emit('remove', elementPointer)"
+                >
                   <slot />
                 </EditorFormSchemaPlaygroundEditDialogLinkSettings>
               </v-col>
@@ -95,11 +88,7 @@ import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import {
-  controlTypeAlternatives,
-  eligibleInputElements,
-  INPUT_ELEMENTS
-} from '~/types/VeoEditor';
+import { controlTypeAlternatives, eligibleInputElements, INPUT_ELEMENTS } from '~/types/VeoEditor';
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { getFormSchemaControlType } from '~/lib/utils';
 import { IPlaygroundElement } from '../Element.vue';
@@ -114,40 +103,21 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  (
-    event: 'update:form-schema-element',
-    formSchemaElement: IVeoFormSchemaItem
-  ): void;
-  (
-    event: 'set-translation',
-    translationKey: string,
-    value: string | undefined
-  ): void;
+  (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void;
+  (event: 'set-translation', translationKey: string, value: string | undefined): void;
   (event: 'add', pointer: string, element: IVeoFormSchemaItem): void;
-  (
-    event: 'remove',
-    pointer: string,
-    removeFromSchemaElementMap?: boolean
-  ): void;
+  (event: 'remove', pointer: string, removeFromSchemaElementMap?: boolean): void;
 }>();
 
 const { t, locale } = useI18n();
 
 // Some elements can be displayed with a different input, e.g. a text field can be displayed as a multiline input or with a WYSIWYG editor
-const objectSchema = inject<Ref<JSONSchema7>>(
-  FORMSCHEMA_PROVIDE_KEYS.OBJECTSCHEMA
-);
+const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.OBJECTSCHEMA);
 const objectSchemaElement = computed(
-  () =>
-    JsonPointer.get(
-      objectSchema?.value,
-      props.formSchemaElement.scope as string
-    ) as JSONSchema7
+  () => JsonPointer.get(objectSchema?.value, props.formSchemaElement.scope as string) as JSONSchema7
 ); // Can't be undefined, as a control ALWAYS has a scope
 
-const controlType = computed(() =>
-  getFormSchemaControlType(objectSchemaElement.value)
-);
+const controlType = computed(() => getFormSchemaControlType(objectSchemaElement.value));
 const inputType = computed(() =>
   props.formSchemaElement && objectSchemaElement.value ?
     eligibleInputElements(controlType.value, {
@@ -180,8 +150,7 @@ const elementTypeModelValue = computed({
       ...props.formSchemaElement,
       options: {
         label: props.formSchemaElement.options.label,
-        ...INPUT_ELEMENTS.find((inputElement) => inputElement.code === newValue)
-          ?.options
+        ...INPUT_ELEMENTS.find((inputElement) => inputElement.code === newValue)?.options
       }
     });
   }

@@ -22,11 +22,7 @@ import addFormats from 'ajv-formats';
 import { cloneDeep, dropRight, merge, partition, pull } from 'lodash';
 import { JSONSchema7 } from 'json-schema';
 
-import {
-  IDynamicFormElementOptions,
-  IVeoFormElementFormSchemaRule,
-  IVeoFormElementRule
-} from './types';
+import { IDynamicFormElementOptions, IVeoFormElementFormSchemaRule, IVeoFormElementRule } from './types';
 import { IVeoFormSchemaControl, UISchemaElement } from '~/types/UISchema';
 import { IVeoFormSchemaGeneratorOptions } from '~/types/VeoTypes';
 
@@ -125,10 +121,7 @@ export const removePropertiesKeywordFromPath = (path: string) => {
   return String(path || '').replace(/\/properties\//g, '/');
 };
 
-export const evaluateRule = (
-  value: any,
-  rule: IVeoFormElementFormSchemaRule | undefined
-): IVeoFormElementRule => {
+export const evaluateRule = (value: any, rule: IVeoFormElementFormSchemaRule | undefined): IVeoFormElementRule => {
   const defaults = {
     visible: true,
     disabled: false
@@ -146,10 +139,7 @@ export const evaluateRule = (
     return defaults;
   }
 
-  const v = JsonPointer.get(
-    value,
-    removePropertiesKeywordFromPath(rule.condition.scope)
-  );
+  const v = JsonPointer.get(value, removePropertiesKeywordFromPath(rule.condition.scope));
 
   // if rule condition is true
   if (ajv.validate(rule.condition.schema, v)) {
@@ -201,16 +191,11 @@ export const addConditionalSchemaPropertiesToControlSchema = (
   if (parentSchema) {
     const getSchemaCompositionConditions = (schemaCompositionObject: any) =>
       schemaCompositionObject?.filter(
-        (condition: any) =>
-          condition.then?.properties?.[controlName] ||
-          condition.else?.properties?.[controlName]
+        (condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]
       ) || [];
 
     const conditionsToCheck = [
-      ...((
-        parentSchema.then?.properties?.[controlName] ||
-        parentSchema.else?.properties?.[controlName]
-      ) ?
+      ...(parentSchema.then?.properties?.[controlName] || parentSchema.else?.properties?.[controlName] ?
         [parentSchema]
       : []),
       ...getSchemaCompositionConditions(parentSchema.allOf),
@@ -240,30 +225,15 @@ const getSchemaWithAppliedConditionalSchemaProperties = (
   controlName: string
 ) => {
   let schema;
-  for (const propertyWithCondition of Object.keys(
-    ifElseThenBlock.if?.properties
-  )) {
-    const pathInFormDataParts = pull(
-      parentPointer.split('/'),
-      'properties',
-      'attributes'
-    );
+  for (const propertyWithCondition of Object.keys(ifElseThenBlock.if?.properties)) {
+    const pathInFormDataParts = pull(parentPointer.split('/'), 'properties', 'attributes');
     pathInFormDataParts.push(propertyWithCondition);
     const pathInFormData = pathInFormDataParts.join('/');
 
-    if (
-      JsonPointer.get(objectData, pathInFormData) ===
-      ifElseThenBlock.if.properties[propertyWithCondition].const
-    ) {
-      schema = merge(
-        controlObjectSchema,
-        ifElseThenBlock.then?.properties?.[controlName]
-      );
+    if (JsonPointer.get(objectData, pathInFormData) === ifElseThenBlock.if.properties[propertyWithCondition].const) {
+      schema = merge(controlObjectSchema, ifElseThenBlock.then?.properties?.[controlName]);
     } else {
-      schema = merge(
-        controlObjectSchema,
-        ifElseThenBlock.else?.properties?.[controlName]
-      );
+      schema = merge(controlObjectSchema, ifElseThenBlock.else?.properties?.[controlName]);
     }
   }
   return schema;
@@ -278,21 +248,13 @@ function isGroup(schema: JSONSchema7): boolean {
   return !!schema.properties;
 }
 
-function isPropertyExcludedFromFormSchema(
-  pointer: string,
-  excludedProperties: string[]
-): boolean {
-  const excludedPropertiesRegexp = excludedProperties.map(
-    (prop) => new RegExp(prop)
-  );
+function isPropertyExcludedFromFormSchema(pointer: string, excludedProperties: string[]): boolean {
+  const excludedPropertiesRegexp = excludedProperties.map((prop) => new RegExp(prop));
 
   return excludedPropertiesRegexp.some((regexp) => regexp.test(pointer));
 }
 
-export function generateFormSchemaGroup(
-  children: UISchemaElement[],
-  label?: string
-): UISchemaElement {
+export function generateFormSchemaGroup(children: UISchemaElement[], label?: string): UISchemaElement {
   const labelElement =
     label ?
       {
@@ -343,19 +305,12 @@ function generateFormSchemaControls(
 ): any[] {
   const controls: IVeoFormSchemaControl[] = [];
 
-  if (
-    isPropertyExcludedFromFormSchema(
-      pointer,
-      generatorOptions.excludedProperties as string[]
-    )
-  ) {
+  if (isPropertyExcludedFromFormSchema(pointer, generatorOptions.excludedProperties as string[])) {
     return [];
   }
 
   if (!isGroup(schema)) {
-    controls.push(
-      generatorOptions.generateControlFunction(pointer, schema, mode)
-    );
+    controls.push(generatorOptions.generateControlFunction(pointer, schema, mode));
   } else {
     const properties = schema.properties || {};
     for (const property of Object.keys(properties)) {
@@ -382,26 +337,13 @@ export function generateFormSchema(
     { excludedProperties: [] as string[], groupedNamespaces: [] as string[] },
     generatorOptions
   );
-  let schema: UISchemaElement[] = generateFormSchemaControls(
-    '#',
-    objectSchema,
-    _generatorOptions,
-    mode
-  );
+  let schema: UISchemaElement[] = generateFormSchemaControls('#', objectSchema, _generatorOptions, mode);
 
   for (const namespace of _generatorOptions.groupedNamespaces) {
-    const [controlsToAddToGroup, untouchedControls] = partition(
-      schema,
-      (control) =>
-        new RegExp(namespace.namespace).test((control as any).scope || '')
+    const [controlsToAddToGroup, untouchedControls] = partition(schema, (control) =>
+      new RegExp(namespace.namespace).test((control as any).scope || '')
     );
-    schema = [
-      ...untouchedControls,
-      generatorOptions.generateGroupFunction(
-        controlsToAddToGroup,
-        namespace.label
-      )
-    ];
+    schema = [...untouchedControls, generatorOptions.generateGroupFunction(controlsToAddToGroup, namespace.label)];
   }
 
   const formSchema = generatorOptions.generateGroupFunction(schema);
@@ -412,14 +354,8 @@ export function generateFormSchema(
 
 export const getControlErrorMessages = (props: any, modifier = '') => {
   // Handle link elements (link elements have an index prop)
-  if (
-    props.index !== undefined &&
-    props.objectSchemaPointer.includes('/items/')
-  ) {
-    return props.errors.get(
-      props.objectSchemaPointer.replace('/items/', `/${props.index}/`) +
-        modifier
-    );
+  if (props.index !== undefined && props.objectSchemaPointer.includes('/items/')) {
+    return props.errors.get(props.objectSchemaPointer.replace('/items/', `/${props.index}/`) + modifier);
   }
 
   // Handle everything else

@@ -42,15 +42,9 @@ export function useVeoReactiveFormActions() {
   function personReactiveFormActions(): IVeoFormsReactiveFormActions {
     return {
       '#/properties/customAspects/properties/person_generalInformation/properties/attributes/properties/person_generalInformation_givenName':
-        [
-          (_newValue, _oldValue, newObject, oldObject) =>
-            getFullName(newObject, oldObject)
-        ],
+        [(_newValue, _oldValue, newObject, oldObject) => getFullName(newObject, oldObject)],
       '#/properties/customAspects/properties/person_generalInformation/properties/attributes/properties/person_generalInformation_familyName':
-        [
-          (_newValue, _oldValue, newObject, oldObject) =>
-            getFullName(newObject, oldObject)
-        ]
+        [(_newValue, _oldValue, newObject, oldObject) => getFullName(newObject, oldObject)]
     };
   }
 
@@ -58,10 +52,7 @@ export function useVeoReactiveFormActions() {
    Helpers for previously defined reactive form actions
   
   */
-  function getFullName(
-    newObject: Record<string, any>,
-    oldObject: Record<string, any>
-  ) {
+  function getFullName(newObject: Record<string, any>, oldObject: Record<string, any>) {
     let fullnameOld = '';
     let givenNameOld = '';
     let familyNameOld = '';
@@ -75,29 +66,25 @@ export function useVeoReactiveFormActions() {
     }
     try {
       givenNameOld =
-        oldObject?.customAspects?.person_generalInformation?.attributes
-          ?.person_generalInformation_givenName;
+        oldObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_givenName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
     try {
       familyNameOld =
-        oldObject?.customAspects?.person_generalInformation?.attributes
-          ?.person_generalInformation_familyName;
+        oldObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_familyName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
     try {
       givenNameNew =
-        newObject?.customAspects?.person_generalInformation?.attributes
-          ?.person_generalInformation_givenName;
+        newObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_givenName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
     try {
       familyNameNew =
-        newObject?.customAspects?.person_generalInformation?.attributes
-          ?.person_generalInformation_familyName;
+        newObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_familyName;
     } catch (e) {
       // If the above action fails, no further action is required
     }
@@ -106,11 +93,7 @@ export function useVeoReactiveFormActions() {
     const computedFullNameOld = trim(`${givenNameOld} ${familyNameOld}`);
     const computedFullNameNew = trim(`${givenNameNew} ${familyNameNew}`);
 
-    if (
-      fullnameOld === computedFullNameOld ||
-      fullnameOld === '' ||
-      fullnameOld === undefined
-    ) {
+    if (fullnameOld === computedFullNameOld || fullnameOld === '' || fullnameOld === undefined) {
       newObject.name = computedFullNameNew;
     }
     return newObject;

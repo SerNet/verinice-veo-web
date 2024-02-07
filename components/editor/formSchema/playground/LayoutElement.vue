@@ -16,41 +16,33 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-sheet
-    rounded
-    border
-    class="fill-width pb-1 my-1"
-    data-component-name="layout-form-element">
+  <v-sheet rounded border class="fill-width pb-1 my-1" data-component-name="layout-form-element">
     <v-card-actions v-if="!playgroundElement.readonly">
       <div class="handle mr-1">
         <v-icon :icon="mdiDrag" />
       </div>
-      <EditorFormSchemaPlaygroundRuleIcon
-        :rule="formSchemaElement.rule"
-        class="mr-1" />
-      {{ t('layout') }} ({{
-        upperFirst(t(`layoutType.${formSchemaElement.options.format}`))
-      }})
+      <EditorFormSchemaPlaygroundRuleIcon :rule="formSchemaElement.rule" class="mr-1" />
+      {{ t('layout') }} ({{ upperFirst(t(`layoutType.${formSchemaElement.options.format}`)) }})
       <v-spacer />
       <v-btn :icon="mdiPencilOutline" size="small" @click="emit('edit')" />
       <v-btn :icon="mdiTrashCanOutline" size="small" @click="emit('delete')" />
     </v-card-actions>
     <div class="mx-2">
-      <EditorTranslationsTranslatedElementTitle
-        :form-schema-element="formSchemaElement"
-        class="mb-1" />
+      <EditorTranslationsTranslatedElementTitle :form-schema-element="formSchemaElement" class="mb-1" />
       <div
         :class="[
           $style['child-layout-wrapper'],
           formSchemaElement.options?.direction === 'horizontal' ?
             $style['child-layout-wrapper--horizontal']
           : $style['child-layout-wrapper--vertical']
-        ]">
+        ]"
+      >
         <slot />
         <span
           v-if="!playgroundElement.children.length"
           :class="$style.dragarea__placeholder"
-          class="d-flex justify-center align-center fill-width fill-height">
+          class="d-flex justify-center align-center fill-width fill-height"
+        >
           {{ t('addElementToGroup') }}
         </span>
       </div>

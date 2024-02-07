@@ -32,11 +32,10 @@
     color="primary"
     role="checkbox"
     :aria-checked="!!modelValue"
-    @update:model-value="$emit('update:model-value', $event)">
+    @update:model-value="$emit('update:model-value', $event)"
+  >
     <template v-if="modelValue !== undefined" #append>
-      <v-icon
-        :icon="mdiClose"
-        @click="$emit('update:model-value', undefined)" />
+      <v-icon :icon="mdiClose" @click="$emit('update:model-value', undefined)" />
     </template>
   </v-checkbox>
 </template>

@@ -24,7 +24,8 @@
     :style="{
       width,
       height
-    }" />
+    }"
+  />
 </template>
 
 <script setup lang="ts">

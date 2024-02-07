@@ -32,17 +32,10 @@
               :disabled="disabled"
               :risk-definition="riskDefinition"
               :num-of-cols="riskDefinition.categories.length"
-              v-bind="
-                data.find(
-                  (impactValue) => impactValue.category === protectionGoal.id
-                )
-              "
-              @update:specific-impact-explanation="
-                onSpecificImpactExplanationChanged(protectionGoal.id, $event)
-              "
-              @update:specific-impact="
-                onSpecificImpactChanged(protectionGoal.id, $event)
-              " />
+              v-bind="data.find((impactValue) => impactValue.category === protectionGoal.id)"
+              @update:specific-impact-explanation="onSpecificImpactExplanationChanged(protectionGoal.id, $event)"
+              @update:specific-impact="onSpecificImpactChanged(protectionGoal.id, $event)"
+            />
           </template>
         </v-row>
       </v-card-text>
@@ -82,37 +75,25 @@ export default defineComponent({
     const { t } = useI18n();
 
     const protectionGoalExists = (protectionGoal: string) =>
-      !!props.data.find(
-        (impactValue) => impactValue.category === protectionGoal
-      );
+      !!props.data.find((impactValue) => impactValue.category === protectionGoal);
 
-    const onSpecificImpactExplanationChanged = (
-      protectionGoal: string,
-      newValue: string
-    ) => {
+    const onSpecificImpactExplanationChanged = (protectionGoal: string, newValue: string) => {
       const localData = cloneDeep(props.data);
-      const impactValue = localData.find(
-        (impactValue) => impactValue.category === protectionGoal
-      );
+      const impactValue = localData.find((impactValue) => impactValue.category === protectionGoal);
       if (impactValue) {
         impactValue.specificImpactExplanation = newValue;
       }
       emit('update:data', localData);
     };
 
-    const onSpecificImpactChanged = (
-      protectionGoal: string,
-      newValue: string
-    ) => {
+    const onSpecificImpactChanged = (protectionGoal: string, newValue: string) => {
       emit('update:dirty-fields', {
         ...props.dirtyFields,
         [`${props.riskDefinition.id}_${protectionGoal}_specificImpact`]: true
       });
 
       const localData = cloneDeep(props.data);
-      const impactValue = localData.find(
-        (impactValue) => impactValue.category === protectionGoal
-      );
+      const impactValue = localData.find((impactValue) => impactValue.category === protectionGoal);
       if (impactValue) {
         impactValue.specificImpact = newValue;
       }

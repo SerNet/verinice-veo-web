@@ -26,13 +26,7 @@
     <slot name="description" />
     <template #append>
       <v-list-item-action class="ml-3">
-        <v-chip
-          v-if="styling"
-          :color="styling.color"
-          class="mr-2"
-          small
-          label
-          outlined>
+        <v-chip v-if="styling" :color="styling.color" class="mr-2" small label outlined>
           <span v-if="translate">
             {{ t(`editor.inputtypes.${styling.name}`) }}
           </span>

@@ -29,21 +29,15 @@
             :items="item.children"
             open-on-hover
             location="right"
-            @close="closeMenu">
+            @close="closeMenu"
+          >
             <template #activator="{ props: activatorProps }">
-              <v-list-item
-                v-bind="activatorProps"
-                :key="`0_${item.key}`"
-                @click.stop="() => {}">
+              <v-list-item v-bind="activatorProps" :key="`0_${item.key}`" @click.stop="() => {}">
                 <template v-if="anyItemHasIcon" #prepend>
-                  <v-icon
-                    v-if="item.icon"
-                    :icon="item.icon"
-                    :color="item.color" />
+                  <v-icon v-if="item.icon" :icon="item.icon" :color="item.color" />
                   <div v-else style="width: 54px" />
                 </template>
-                <v-list-item-title
-                  :class="{ [`text-${item.color}`]: !!item.color }">
+                <v-list-item-title :class="{ [`text-${item.color}`]: !!item.color }">
                   {{ item.title }}
                 </v-list-item-title>
                 <template #append>
@@ -52,16 +46,12 @@
               </v-list-item>
             </template>
           </UtilNestedMenu>
-          <v-list-item
-            v-else
-            :key="`1_${item.key}`"
-            @click="onItemClicked(`1_${item.key}`, item)">
+          <v-list-item v-else :key="`1_${item.key}`" @click="onItemClicked(`1_${item.key}`, item)">
             <template v-if="anyItemHasIcon" #prepend>
               <v-icon v-if="item.icon" :icon="item.icon" :color="item.color" />
               <div v-else style="width: 54px" />
             </template>
-            <v-list-item-title
-              :class="{ [`text-${item.color}`]: !!item.color }">
+            <v-list-item-title :class="{ [`text-${item.color}`]: !!item.color }">
               {{ item.title }}
             </v-list-item-title>
             <component
@@ -69,9 +59,8 @@
               v-if="item.component"
               v-bind="item.componentProps"
               :model-value="!!componentIsVisible[`1_${item.key}`]"
-              @update:model-value="
-                onUpdateComponentModelValue(`1_${item.key}`, $event)
-              " />
+              @update:model-value="onUpdateComponentModelValue(`1_${item.key}`, $event)"
+            />
             <template v-if="anyItemHasChildren" #append>
               <div style="width: 54px" />
             </template>
@@ -109,13 +98,9 @@ const emit = defineEmits<{
   (event: 'close'): void;
 }>();
 
-const anyItemHasIcon = computed(() =>
-  (props.items || []).some((item) => !!item.icon)
-);
+const anyItemHasIcon = computed(() => (props.items || []).some((item) => !!item.icon));
 
-const anyItemHasChildren = computed(() =>
-  (props.items || []).some((item) => !!item.children)
-);
+const anyItemHasChildren = computed(() => (props.items || []).some((item) => !!item.children));
 
 const menu = ref(false);
 

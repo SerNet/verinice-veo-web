@@ -6,9 +6,7 @@ const { request } = useRequest();
 const route = useRoute();
 
 const state = {
-  type: computed(
-    () => OBJECT_TYPE_TO_URL_MAP[route.query.type as string] || 'all'
-  ),
+  type: computed(() => OBJECT_TYPE_TO_URL_MAP[route.query.type as string] || 'all'),
   riskAffected: computed(() => (route.query.riskAffected as string) || null),
   control: computed(() => (route.query.control as string) || null)
 };

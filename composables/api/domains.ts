@@ -32,9 +32,7 @@ export const useFetchUnitDomains = (
   const fetchUnitQueryParameters = computed(() => ({
     id: queryParameters.value.unitId
   }));
-  const fetchUnitQueryEnabled = computed(
-    () => !!queryParameters.value.unitId && unref(queryOptions?.enabled)
-  );
+  const fetchUnitQueryEnabled = computed(() => !!queryParameters.value.unitId && unref(queryOptions?.enabled));
   const { data: unit, isFetching: isFetchingUnits } = useQuery(
     unitQueryDefinitions.queries.fetch,
     fetchUnitQueryParameters,
@@ -69,15 +67,10 @@ export const useFetchUnitDomains = (
 
   const data = computed(() =>
     (domains.value || []).filter(
-      (domain) =>
-        unit.value?.domains?.some((unitDomain) =>
-          unitDomain.targetUri.includes(domain.id)
-        )
+      (domain) => unit.value?.domains?.some((unitDomain) => unitDomain.targetUri.includes(domain.id))
     )
   );
-  const isFetching = computed(
-    () => isFetchingUnits.value || isFetchingDomains.value
-  );
+  const isFetching = computed(() => isFetchingUnits.value || isFetchingDomains.value);
 
   const toReturn = {
     data,

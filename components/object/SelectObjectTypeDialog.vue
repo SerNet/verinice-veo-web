@@ -26,11 +26,7 @@
         {{ $t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn
-        text
-        color="primary"
-        :disabled="!type"
-        @click="$emit('create-entity', { type, ...eventPayload })">
+      <v-btn text color="primary" :disabled="!type" @click="$emit('create-entity', { type, ...eventPayload })">
         {{ t('create') }}
       </v-btn>
     </template>
@@ -59,10 +55,7 @@ const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
   domain: route.params.domain
 }));
-const { data: translations } = useQuery(
-  translationQueryDefinitions.queries.fetch,
-  fetchTranslationsQueryParameters
-);
+const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 

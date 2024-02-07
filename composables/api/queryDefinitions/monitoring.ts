@@ -50,10 +50,7 @@ export default {
       queryParameterTransformationFn: (queryParameters) => ({
         params: queryParameters
       })
-    } as IVeoQueryDefinition<
-      IVeoFetchDeploymentDetailsParameters,
-      IVeoDeploymentInformation
-    >
+    } as IVeoQueryDefinition<IVeoFetchDeploymentDetailsParameters, IVeoDeploymentInformation>
   },
   mutations: {}
 };

@@ -93,10 +93,7 @@ export default {
         staleTime: STALE_TIME.INFINITY,
         placeholderData: []
       }
-    } as IVeoQueryDefinition<
-      IVeoFetchCatalogItemsParameters,
-      IVeoCatalogItemCollection
-    >,
+    } as IVeoQueryDefinition<IVeoFetchCatalogItemsParameters, IVeoCatalogItemCollection>,
     fetchCatalogItemTypeCount: {
       primaryQueryKey: 'catalogItemTypeCount',
       url: '/api/domains/:domainId/catalog-items/type-count',

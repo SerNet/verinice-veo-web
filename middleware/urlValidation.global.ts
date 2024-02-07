@@ -23,8 +23,7 @@ export default defineNuxtRouteMiddleware((to) => {
   // Fix for Link Hijack & Open Redirect
   // To fix the problem, the page will be redirected to the index page if a url parameter contains at least one "/"
   const invalidUrl = Object.values(to.params).some(
-    (param) =>
-      param.includes('//') || decodeURIComponent(param as string).includes('//')
+    (param) => param.includes('//') || decodeURIComponent(param as string).includes('//')
   );
   if (invalidUrl) {
     return navigateTo('/');

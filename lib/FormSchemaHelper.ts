@@ -17,15 +17,8 @@
  */
 import FormSchemaValidator from './FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
-import {
-  IVeoFormSchemaTranslationCollection,
-  IVeoObjectSchema
-} from '~/types/VeoTypes';
-import {
-  IVeoFormSchema,
-  IVeoFormSchemaItem,
-  IVeoFormSchemaMeta
-} from '~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchemaTranslationCollection, IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import { cloneDeep } from 'lodash';
 
 export function generateSchema(

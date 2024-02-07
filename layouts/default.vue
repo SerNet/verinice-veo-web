@@ -24,7 +24,8 @@
         :target="route.path.startsWith('/docs') ? '_blank' : undefined"
         class="text-decoration-none ml-4"
         data-component-name="logo"
-        data-veo-test="unit-page-link">
+        data-veo-test="unit-page-link"
+      >
         <LayoutAppBarLogo style="height: 60px" class="d-flex align-center" />
       </nuxt-link>
 
@@ -48,7 +49,8 @@
             to="/docs/index"
             exact
             v-bind="props"
-            data-component-name="docs-nav-item">
+            data-component-name="docs-nav-item"
+          >
             <v-icon :icon="mdiHelpCircleOutline" />
           </v-btn>
         </template>
@@ -67,7 +69,8 @@
       v-model="drawer"
       :domain-id="domainId"
       :unit-id="route.params.unit as string"
-      data-component-name="primary-navigation" />
+      data-component-name="primary-navigation"
+    />
 
     <v-main :class="$style.main">
       <slot />
@@ -115,10 +118,7 @@ const domainId = computed((): string | undefined => {
 // Theme stuff
 onBeforeMount(() => {
   // check if browser supports dark mode
-  if (
-    window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme)').media !== 'not all'
-  ) {
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme)').media !== 'not all') {
     // if user prefers light mode switch to it
     if (window.matchMedia('(prefers-color-scheme: light)').matches) {
       theme.global.name.value = 'light';

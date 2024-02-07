@@ -20,16 +20,13 @@
     <v-menu v-model="speedDialIsOpen" location="top left">
       <template #activator="{ props: menuProps }">
         <v-btn
-          :icon="
-            speedDialIsOpen && !disabled && allowedActions.length ?
-              mdiClose
-            : mdiPlus
-          "
+          :icon="speedDialIsOpen && !disabled && allowedActions.length ? mdiClose : mdiPlus"
           :disabled="!allowedActions.length || disabled"
           class="veo-primary-action-fab mr-2"
           color="primary"
           data-component-name="object-details-actions-button"
-          v-bind="menuProps" />
+          v-bind="menuProps"
+        />
       </template>
       <template v-if="allowedActions.length && !disabled" #default>
         <v-list>
@@ -39,7 +36,8 @@
             :title="action.title"
             :prepend-icon="action.icon"
             density="compact"
-            @click="action.action" />
+            @click="action.action"
+          />
         </v-list>
       </template>
     </v-menu>
@@ -50,11 +48,13 @@
       v-bind="addEntityDialog"
       @success="onAddEntitySuccess"
       @error="onAddEntityError"
-      @update:preselected-items="onItemsUpdated" />
+      @update:preselected-items="onItemsUpdated"
+    />
     <ObjectSelectObjectTypeDialog
       v-model="createEntityDialog.value"
       :v-bind="createEntityDialog"
-      @create-entity="openCreateObjectDialog($event.type, $event.addAsChild)" />
+      @create-entity="openCreateObjectDialog($event.type, $event.addAsChild)"
+    />
     <ObjectCreateDialog
       v-if="createObjectDialog.objectType"
       v-model="createObjectDialog.value"
@@ -62,13 +62,15 @@
       :object-type="createObjectDialog.objectType"
       :sub-type="subType"
       :parent-scope-ids="createObjectDialog.parentScopeIds"
-      @success="onCreateObjectSuccess" />
+      @success="onCreateObjectSuccess"
+    />
     <RiskCreateDialog
       v-if="object && createRiskDialogVisible"
       v-model="createRiskDialogVisible"
       :domain-id="$route.params.domain as string"
       :object-id="object.id"
-      @success="onCreateRiskSuccess" />
+      @success="onCreateRiskSuccess"
+    />
   </div>
 </template>
 
@@ -111,9 +113,7 @@ export default defineComponent({
     const { createLink } = useCreateLink();
     const queryClient = useQueryClient();
 
-    const { data: endpoints } = useQuery(
-      schemaQueryDefinitions.queries.fetchSchemas
-    );
+    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const fetchTranslationsQueryParameters = computed(() => ({
       languages: [locale.value],
@@ -123,9 +123,7 @@ export default defineComponent({
       translationQueryDefinitions.queries.fetch,
       fetchTranslationsQueryParameters
     );
-    const { mutateAsync: updateObject } = useMutation(
-      objectQueryDefinitions.mutations.updateObject
-    );
+    const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
     const speedDialIsOpen = ref(false);
 
     // configure possible action items
@@ -153,8 +151,7 @@ export default defineComponent({
             locale.value === 'de' ?
               'Maßnahmen'
             : 'Controls'
-          : props.object?.type !== 'scope' ?
-            translations.value?.lang[locale.value]?.[props.object?.type || '']
+          : props.object?.type !== 'scope' ? translations.value?.lang[locale.value]?.[props.object?.type || '']
           : t('object')
         ]).toString(),
         icon: mdiLinkPlus,
@@ -169,11 +166,7 @@ export default defineComponent({
           if (props.type === 'controls') {
             type === 'control';
           }
-          openLinkObjectDialog(
-            type,
-            props.type !== 'parentObjects',
-            props.type === 'controls'
-          );
+          openLinkObjectDialog(type, props.type !== 'parentObjects', props.type === 'controls');
         }
       },
       {
@@ -182,8 +175,7 @@ export default defineComponent({
         icon: mdiPlus,
         tab: ['childScopes', 'parentScopes'],
         objectTypes: ['scope', 'entity'],
-        action: () =>
-          openCreateObjectDialog('scope', props.type === 'childScopes')
+        action: () => openCreateObjectDialog('scope', props.type === 'childScopes')
       },
       {
         key: 'linkScope',
@@ -191,8 +183,7 @@ export default defineComponent({
         icon: mdiLinkPlus,
         tab: ['childScopes', 'parentScopes'],
         objectTypes: ['scope', 'entity'],
-        action: () =>
-          openLinkObjectDialog('scope', props.type === 'childScopes')
+        action: () => openLinkObjectDialog('scope', props.type === 'childScopes')
       },
       {
         key: 'createRisk',
@@ -249,10 +240,7 @@ export default defineComponent({
     });
 
     // control dialogs
-    const openCreateObjectDialog = (
-      objectType?: string,
-      addAsChild?: boolean
-    ) => {
+    const openCreateObjectDialog = (objectType?: string, addAsChild?: boolean) => {
       if (!objectType) {
         createEntityDialog.value = {
           value: true,
@@ -263,37 +251,23 @@ export default defineComponent({
         createObjectDialog.value = {
           objectType,
           value: true,
-          hierarchicalContext:
-            addAsChild === undefined || addAsChild ? 'child' : 'parent',
-          parentScopeIds:
-            props.object?.type === 'scope' ? [props.object?.id] : undefined
+          hierarchicalContext: addAsChild === undefined || addAsChild ? 'child' : 'parent',
+          parentScopeIds: props.object?.type === 'scope' ? [props.object?.id] : undefined
         };
       }
     };
 
     // control dialogs
-    const openLinkObjectDialog = (
-      objectType?: string,
-      addAsChild?: boolean,
-      isControlImplementation?: boolean
-    ) => {
+    const openLinkObjectDialog = (objectType?: string, addAsChild?: boolean, isControlImplementation?: boolean) => {
       addEntityDialog.value = {
-        object:
-          isControlImplementation ?
-            { type: 'control', displayName: 'CI' }
-          : props.object,
+        object: isControlImplementation ? { type: 'control', displayName: 'CI' } : props.object,
         editScopeRelationship: objectType === 'scope',
         value: true,
         editParents: addAsChild !== undefined && !addAsChild,
         preselectedItems:
-          isControlImplementation ?
-            props.object?.controlImplementations?.map(
-              (control) => control.control
-            )
-          : [],
+          isControlImplementation ? props.object?.controlImplementations?.map((control) => control.control) : [],
         returnObjects: !!isControlImplementation,
-        preselectedFilters:
-          isControlImplementation ? { subType: 'CTL_Module' } : {},
+        preselectedFilters: isControlImplementation ? { subType: 'CTL_Module' } : {},
         disabledFields: isControlImplementation ? ['subType'] : []
       };
     };
@@ -304,8 +278,7 @@ export default defineComponent({
       copy.controlImplementations?.push(
         ...newItems.map((item) => {
           return {
-            control:
-              'targetUri' in item ? item : createLink('controls', item.id)
+            control: 'targetUri' in item ? item : createLink('controls', item.id)
           };
         })
       );
@@ -324,10 +297,7 @@ export default defineComponent({
       emit('reload');
     };
     const onAddEntityError = (error: any) => {
-      displayErrorMessage(
-        upperFirst(t('objectNotLinked').toString()),
-        JSON.stringify(error)
-      );
+      displayErrorMessage(upperFirst(t('objectNotLinked').toString()), JSON.stringify(error));
       addEntityDialog.value.value = false;
     };
 
@@ -335,9 +305,7 @@ export default defineComponent({
      * create scopes & objects
      */
     const subType = computed(() =>
-      props.object?.type !== 'scope' && props.type.endsWith('Objects') ?
-        props.object?.subType
-      : undefined
+      props.object?.type !== 'scope' && props.type.endsWith('Objects') ? props.object?.subType : undefined
     );
     // emit after new object creation for linking
     const onCreateObjectSuccess = async (newObjectId: string) => {
@@ -347,9 +315,7 @@ export default defineComponent({
             objectQueryDefinitions.queries.fetch,
             {
               domain: route.params.domain as string,
-              endpoint:
-                endpoints.value?.[createObjectDialog.value?.objectType || ''] ||
-                '',
+              endpoint: endpoints.value?.[createObjectDialog.value?.objectType || ''] || '',
               id: newObjectId
             },
             queryClient
@@ -365,10 +331,7 @@ export default defineComponent({
           displaySuccessMessage(t('objectLinked').toString());
           emit('reload');
         } catch (e: any) {
-          displayErrorMessage(
-            upperFirst(t('errors.link').toString()),
-            e.message
-          );
+          displayErrorMessage(upperFirst(t('errors.link').toString()), e.message);
         }
       }
     };

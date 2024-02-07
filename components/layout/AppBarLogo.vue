@@ -18,11 +18,7 @@
 <template>
   <div>
     <LayoutAppLogoDesktop v-if="showDesktop" height="60%" width="85%" />
-    <LayoutAppLogoMobile
-      v-else-if="showMobile"
-      height="80%"
-      width="80%"
-      style="max-height: 40px" />
+    <LayoutAppLogoMobile v-else-if="showMobile" height="80%" width="80%" style="max-height: 40px" />
   </div>
 </template>
 
@@ -38,8 +34,6 @@ const props = defineProps({
 
 const { mdAndUp } = useDisplay();
 
-const showDesktop = computed(
-  () => props.size !== 'small' && (mdAndUp.value || props.size === 'large')
-);
+const showDesktop = computed(() => props.size !== 'small' && (mdAndUp.value || props.size === 'large'));
 const showMobile = computed(() => props.size !== 'large');
 </script>

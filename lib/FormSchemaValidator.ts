@@ -17,16 +17,11 @@
  */
 import { JsonPointer } from 'json-ptr';
 
-import {
-  VeoSchemaValidatorMessage,
-  VeoSchemaValidatorValidationResult
-} from './ObjectSchemaValidator';
+import { VeoSchemaValidatorMessage, VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 
-export type VeoSchemaValidatorRequiredProperty =
-  | string
-  | { key: string; value: any };
+export type VeoSchemaValidatorRequiredProperty = string | { key: string; value: any };
 
 export default class FormSchemaValidator {
   private errors: VeoSchemaValidatorMessage[] = [];
@@ -51,8 +46,7 @@ export default class FormSchemaValidator {
     } else {
       this.warnings.push({
         code: 'W_OBJECTSCHEMA_MISSING',
-        message:
-          'No object schema provided. Provide one for more in depth validation.'
+        message: 'No object schema provided. Provide one for more in depth validation.'
       });
     }
 
@@ -63,10 +57,7 @@ export default class FormSchemaValidator {
     };
   }
 
-  private propertiesExistInObjectSchema(
-    formSchema: any,
-    objectSchema: IVeoObjectSchema
-  ) {
+  private propertiesExistInObjectSchema(formSchema: any, objectSchema: IVeoObjectSchema) {
     if (formSchema.content) {
       this.elementExists(formSchema.content, objectSchema, `#/`, undefined);
     } else if (formSchema.elements) {
@@ -79,12 +70,7 @@ export default class FormSchemaValidator {
     }
   }
 
-  private elementExists(
-    element: any,
-    objectSchema: IVeoObjectSchema,
-    context: string,
-    parent: any
-  ) {
+  private elementExists(element: any, objectSchema: IVeoObjectSchema, context: string, parent: any) {
     if (!element.scope && element.type === 'Control') {
       this.errors.push({
         code: 'E_SCOPE_MISSING',
@@ -110,8 +96,7 @@ export default class FormSchemaValidator {
             {
               key: 'fix',
               title: (t) => t('fix'),
-              callback: (item: any, emit: any) =>
-                emit('fix', item.code, item.params)
+              callback: (item: any, emit: any) => emit('fix', item.code, item.params)
             }
           ],
           params: { formSchemaPointer: context.substr(0, context.length - 1) } // We have to remove the trailing slash in order for JsonPointer to pick the currect path
@@ -121,12 +106,7 @@ export default class FormSchemaValidator {
 
     if (element.elements) {
       for (const child in element.elements) {
-        this.elementExists(
-          element.elements[child],
-          objectSchema,
-          `${context}elements/${child}/`,
-          element
-        );
+        this.elementExists(element.elements[child], objectSchema, `${context}elements/${child}/`, element);
       }
     }
   }

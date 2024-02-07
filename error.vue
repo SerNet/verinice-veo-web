@@ -21,24 +21,10 @@
       <v-img :src="image" max-height="300px" contain />
 
       <h1 class="text-h1 mt-8">
-        {{
-          upperFirst(
-            t(
-              errorIsCustomized ?
-                `titles.${error.statusCode}`
-              : 'titles.default'
-            ).toString()
-          )
-        }}
+        {{ upperFirst(t(errorIsCustomized ? `titles.${error.statusCode}` : 'titles.default').toString()) }}
       </h1>
       <p class="mt-2">
-        {{
-          upperFirst(
-            t(
-              errorIsCustomized ? `texts.${error.statusCode}` : 'texts.default'
-            ).toString()
-          )
-        }}
+        {{ upperFirst(t(errorIsCustomized ? `texts.${error.statusCode}` : 'texts.default').toString()) }}
       </p>
 
       <div>
@@ -46,15 +32,12 @@
           v-if="error.statusCode === 403 || error.statusCode === 404"
           variant="text"
           color="primary"
-          @click="$router.back()">
+          @click="$router.back()"
+        >
           {{ $t('global.button.previous') }}
         </v-btn>
 
-        <v-btn
-          v-if="error.statusCode !== 401"
-          variant="text"
-          color="primary"
-          @click="$router.push('/')">
+        <v-btn v-if="error.statusCode !== 401" variant="text" color="primary" @click="$router.push('/')">
           {{ t('goToHomepage') }}
         </v-btn>
       </div>
@@ -90,16 +73,9 @@ const { t: $t } = useI18n({ useScope: 'global' });
 
 const CUSTOMIZED_ERROR_PAGES = [401, 403, 404];
 
-const errorIsCustomized = computed(() =>
-  CUSTOMIZED_ERROR_PAGES.includes(props.error.statusCode || -1)
-);
+const errorIsCustomized = computed(() => CUSTOMIZED_ERROR_PAGES.includes(props.error.statusCode || -1));
 
-const image = computed(
-  () =>
-    `/images/${
-      props.error.statusCode === 404 ? 'pageNotFound' : 'defaultError'
-    }.svg`
-);
+const image = computed(() => `/images/${props.error.statusCode === 404 ? 'pageNotFound' : 'defaultError'}.svg`);
 </script>
 
 <i18n>

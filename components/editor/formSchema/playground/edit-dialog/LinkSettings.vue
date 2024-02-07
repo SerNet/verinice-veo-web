@@ -26,19 +26,17 @@
         hide-details
         multiple
         :prepend-inner-icon="mdiListBoxOutline"
-        variant="underlined">
+        variant="underlined"
+      >
         <template #item="{ item, props: itemProps }">
           <v-list-item
             v-bind="itemProps"
             :active="usedLinkAttributes.includes(item.value)"
             :title="undefined"
-            style="max-width: 500px">
+            style="max-width: 500px"
+          >
             <template #prepend>
-              <v-icon
-                :icon="
-                  usedLinkAttributes.includes(item.value) ? mdiCheckboxMarked
-                  : mdiCheckboxBlankOutline
-                " />
+              <v-icon :icon="usedLinkAttributes.includes(item.value) ? mdiCheckboxMarked : mdiCheckboxBlankOutline" />
             </template>
             <v-list-item-title>
               {{ last(availableLinkAttributes[item.value].scope?.split('/')) }}
@@ -51,11 +49,7 @@
       </v-select>
       <v-tooltip location="top">
         <template #activator="{ props: tooltipProps }">
-          <v-icon
-            :icon="mdiInformationOutline"
-            size="large"
-            end
-            v-bind="tooltipProps" />
+          <v-icon :icon="mdiInformationOutline" size="large" end v-bind="tooltipProps" />
         </template>
         <template #default>
           {{ t('changesVisibleImmediately') }}
@@ -67,12 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  mdiCheckboxBlankOutline,
-  mdiCheckboxMarked,
-  mdiInformationOutline,
-  mdiListBoxOutline
-} from '@mdi/js';
+import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiInformationOutline, mdiListBoxOutline } from '@mdi/js';
 import { JSONSchema7 } from 'json-schema';
 import { PropType } from 'vue';
 import { v5 as UUIDv5 } from 'uuid';
@@ -103,11 +92,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (event: 'add', pointer: string, element: IVeoFormSchemaItem): void;
-  (
-    event: 'remove',
-    pointer: string,
-    removeFromSchemaElementMap?: boolean
-  ): void;
+  (event: 'remove', pointer: string, removeFromSchemaElementMap?: boolean): void;
 }>();
 
 const { t } = useI18n();
@@ -115,26 +100,23 @@ const { t } = useI18n();
 const availableLinkAttributes = computed<{
   [uuid: string]: IVeoFormSchemaItem;
 }>(() =>
-  Object.entries(
-    (props.objectSchemaElement.items as any)?.properties?.attributes
-      ?.properties || {}
-  ).reduce((previous, [key, _attribute]) => {
-    const newElement = {
-      type: 'Control',
-      scope: `${props.formSchemaElement.scope}/items/properties/attributes/properties/${key}`,
-      options: {
-        label: `#lang/${key}`
-      }
-    };
-    previous[UUIDv5(newElement.scope, FORMSCHEMA_PLAYGROUND_NAMESPACE)] =
-      newElement;
-    return previous;
-  }, Object.create({}))
+  Object.entries((props.objectSchemaElement.items as any)?.properties?.attributes?.properties || {}).reduce(
+    (previous, [key, _attribute]) => {
+      const newElement = {
+        type: 'Control',
+        scope: `${props.formSchemaElement.scope}/items/properties/attributes/properties/${key}`,
+        options: {
+          label: `#lang/${key}`
+        }
+      };
+      previous[UUIDv5(newElement.scope, FORMSCHEMA_PLAYGROUND_NAMESPACE)] = newElement;
+      return previous;
+    },
+    Object.create({})
+  )
 );
 
-const availableLinkAttributeUUIDs = computed(() =>
-  Object.keys(availableLinkAttributes.value)
-);
+const availableLinkAttributeUUIDs = computed(() => Object.keys(availableLinkAttributes.value));
 
 const usedLinkAttributes = computed<string[]>({
   get: () => {
@@ -144,15 +126,9 @@ const usedLinkAttributes = computed<string[]>({
     // New elemnt was added, this is usually app
     if (newValue.length > usedLinkAttributes.value.length) {
       const newElementUUID = difference(newValue, usedLinkAttributes.value)[0];
-      emit(
-        'add',
-        `${props.pointer}/children/${newValue.length - 1}`,
-        availableLinkAttributes.value[newElementUUID]
-      );
+      emit('add', `${props.pointer}/children/${newValue.length - 1}`, availableLinkAttributes.value[newElementUUID]);
     } else {
-      const deleteIndex = usedLinkAttributes.value.findIndex(
-        (uuid) => !newValue.includes(uuid)
-      );
+      const deleteIndex = usedLinkAttributes.value.findIndex((uuid) => !newValue.includes(uuid));
       emit('remove', `${props.pointer}/children/${deleteIndex}`);
     }
   }

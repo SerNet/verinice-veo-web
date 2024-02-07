@@ -1,11 +1,6 @@
 import { login } from '../commands/login';
 import { acceptAllCookies } from '../commands/cookies';
-import {
-  goToUnitSelection,
-  selectUnit,
-  createUnit,
-  deleteUnit
-} from '../commands/units';
+import { goToUnitSelection, selectUnit, createUnit, deleteUnit } from '../commands/units';
 import { generateUnitDetails } from './setupHelpers';
 
 Cypress.Commands.addAll({
@@ -30,11 +25,7 @@ Cypress.on('uncaught:exception', (err, _runnable) => {
   }
 
   // Prevent ResizeObserver errors when testing in headless firefox
-  if (
-    err.message.includes(
-      'ResizeObserver loop completed with undelivered notifications.'
-    )
-  ) {
+  if (err.message.includes('ResizeObserver loop completed with undelivered notifications.')) {
     return false;
   }
 

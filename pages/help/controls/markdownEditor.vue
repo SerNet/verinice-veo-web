@@ -19,16 +19,10 @@
   <BasePage title="Markdown Editor" fixed-header>
     <v-row justify="center">
       <v-col cols="auto" class="docs-form-sector">
-        <DynamicFormEntrypoint
-          v-model="form.data"
-          :object-schema="form.objectSchema"
-          :form-schema="form.formSchema" />
+        <DynamicFormEntrypoint v-model="form.data" :object-schema="form.objectSchema" :form-schema="form.formSchema" />
       </v-col>
     </v-row>
-    <HelpFormDescription
-      :object-schema="form.objectSchema"
-      :form-schema="form.formSchema"
-      :data="form.data" />
+    <HelpFormDescription :object-schema="form.objectSchema" :form-schema="form.formSchema" :data="form.data" />
   </BasePage>
 </template>
 

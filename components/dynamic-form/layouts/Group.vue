@@ -16,18 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div
-    v-if="options.visible"
-    :id="formSchemaPointer"
-    class="vf-layout vf-group my-2 py-1 px-2 pb-2"
-    :class="classes">
+  <div v-if="options.visible" :id="formSchemaPointer" class="vf-layout vf-group my-2 py-1 px-2 pb-2" :class="classes">
     <h3 v-if="options && options.label" class="text-h3">
       {{ options.label }}
     </h3>
-    <div
-      dense
-      class="d-flex"
-      :class="isHorizontal ? 'flex-row' : 'flex-column'">
+    <div dense class="d-flex" :class="isHorizontal ? 'flex-row' : 'flex-column'">
       <slot />
     </div>
   </div>
@@ -55,9 +48,7 @@ export default defineComponent({
   setup(props) {
     const classes = computed(() => props.options.class || '');
 
-    const isHorizontal = computed(
-      () => props.options.direction === 'horizontal'
-    );
+    const isHorizontal = computed(() => props.options.direction === 'horizontal');
 
     return {
       classes,

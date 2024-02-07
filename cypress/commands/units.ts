@@ -18,12 +18,8 @@ export function goToUnitSelection(): void {
   cy.wait(['@getUnits']).its('response.statusCode').should('eq', 200);
 }
 
-export function selectUnit({
-  unitName = Cypress.env('unitDetails').name
-}: { unitName?: string } = {}): void {
-  cy.get('[data-veo-test="unit-selection-available-units"] a')
-    .contains(unitName)
-    .click();
+export function selectUnit({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {
+  cy.get('[data-veo-test="unit-selection-available-units"] a').contains(unitName).click();
 }
 
 export function createUnit({
@@ -42,9 +38,7 @@ export function createUnit({
 
       if (numAvailableDomains > 1) {
         cy.get('@availableDomains').click({ multiple: true });
-        domains.forEach((domain) =>
-          cy.get('@availableDomains').contains(domain).click()
-        );
+        domains.forEach((domain) => cy.get('@availableDomains').contains(domain).click());
       } else if (numAvailableDomains < domains.length) {
         cy.log('Domains:', domains);
         cy.get('@availableDomains').then(($el) => cy.log($el.text()));
@@ -66,14 +60,10 @@ export function createUnit({
     .last()
     .click();
 
-  cy.wait(['@getNewUnit'], { responseTimeout: 15000 })
-    .its('response.statusCode')
-    .should('eq', 200);
+  cy.wait(['@getNewUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 200);
 }
 
-export function deleteUnit({
-  unitName = Cypress.env('unitDetails').name
-}: { unitName?: string } = {}): void {
+export function deleteUnit({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {
   cy.goToUnitSelection();
   cy.get('.v-list-item--link')
     .contains(unitName)
@@ -86,9 +76,7 @@ export function deleteUnit({
   cy.get('[data-veo-test="units-delete-dialog"]').as('deleteDialog');
 
   // Set up a listener for API responses
-  cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/units/**`).as(
-    'deleteUnit'
-  );
+  cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/units/**`).as('deleteUnit');
 
   // Request delete unit
   cy.get('@deleteDialog')
@@ -100,7 +88,5 @@ export function deleteUnit({
     .click();
 
   // Wait for API response and assert
-  cy.wait(['@deleteUnit'], { responseTimeout: 15000 })
-    .its('response.statusCode')
-    .should('eq', 204);
+  cy.wait(['@deleteUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 204);
 }

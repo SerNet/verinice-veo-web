@@ -18,17 +18,15 @@
 <template>
   <BasePage data-component-name="catalog-page">
     <template #default>
-      <LayoutHeadline
-        class="mb-4"
-        :title="locale === 'de' ? 'Katalog' : 'Catalog'"
-        :element="title" />
+      <LayoutHeadline class="mb-4" :title="locale === 'de' ? 'Katalog' : 'Catalog'" :element="title" />
       <CatalogDefaultCatalog
         v-model="selectedItems"
         class="mb-4"
         :catalog-items="catalogItems?.items"
         :is-loading="catalogItemsAreFetching"
         :is-applying-items="isApplyingItems"
-        @apply-items="applyItems">
+        @apply-items="applyItems"
+      >
         <span class="my-2">{{ t('selectScenariosCTA') }}</span>
       </CatalogDefaultCatalog>
     </template>
@@ -63,16 +61,10 @@ const { t, locale } = useI18n();
 const route = useRoute();
 
 // State
-const title = computed(() =>
-  t('catalog', { name: currentSubTypeTranslated.value || t('all') })
-);
+const title = computed(() => t('catalog', { name: currentSubTypeTranslated.value || t('all') }));
 const currentDomainId = computed(() => route.params.domain as string);
-const currentElementType = computed(() =>
-  route.query.type === 'all' ? undefined : (route.query.type as string)
-);
-const currentSubType = computed(() =>
-  route.query.subType === 'all' ? undefined : (route.query.subType as string)
-);
+const currentElementType = computed(() => (route.query.type === 'all' ? undefined : (route.query.type as string)));
+const currentSubType = computed(() => (route.query.subType === 'all' ? undefined : (route.query.subType as string)));
 
 // Always show query params in url
 // This ensures an active state in the navbar (e.g. after a reload)
@@ -104,11 +96,10 @@ const allFormSchemasQueryEnabled = computed(() => !!currentDomainId);
 const queryParameters = computed(() => ({
   domainId: currentDomainId.value
 }));
-const { data: formSchemas } = useQuery(
-  formsQueryDefinitions.queries.fetchForms,
-  queryParameters,
-  { enabled: allFormSchemasQueryEnabled, placeholderData: [] }
-);
+const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, {
+  enabled: allFormSchemasQueryEnabled,
+  placeholderData: []
+});
 
 const currentSubTypeTranslated = computed(() =>
   translateSubType({
@@ -145,9 +136,7 @@ onBeforeRouteLeave(async (_to, _from) => {
 });
 
 // Incarnate, create objects, from selected catalog items
-const { mutateAsync: incarnate } = useMutation(
-  unitQueryDefinitions.mutations.updateIncarnations
-);
+const { mutateAsync: incarnate } = useMutation(unitQueryDefinitions.mutations.updateIncarnations);
 const selectedItems = ref<IVeoEntity[]>([]);
 const isApplyingItems = ref(false);
 
@@ -161,10 +150,7 @@ async function applyItems() {
       exclude: ['COMPOSITE', 'LINK', 'LINK_EXTERNAL']
     };
 
-    const incarnations = await useQuerySync(
-      unitQueryDefinitions.queries.fetchIncarnations,
-      fetchParameters
-    );
+    const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, fetchParameters);
 
     // Apply incarnations
     await incarnate({ incarnations, unitId: route.params.unit });
@@ -184,14 +170,9 @@ type TranslateSubTypeParams = {
   subType: string | undefined;
 };
 
-function translateSubType({
-  formSchemas,
-  elementType,
-  subType
-}: TranslateSubTypeParams) {
+function translateSubType({ formSchemas, elementType, subType }: TranslateSubTypeParams) {
   const formSchema = formSchemas?.find(
-    (formSchema) =>
-      formSchema.modelType === elementType && formSchema.subType === subType
+    (formSchema) => formSchema.modelType === elementType && formSchema.subType === subType
   );
   return formSchema?.name[locale.value];
 }

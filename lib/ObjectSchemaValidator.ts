@@ -19,9 +19,7 @@ import { ComposerTranslation } from '@nuxtjs/i18n/dist/runtime/composables';
 import { isArray, isObject } from 'lodash';
 import ObjectSchemaHelper from './ObjectSchemaHelper2';
 
-export type VeoSchemaValidatorRequiredProperty =
-  | string
-  | { key: string; value: any };
+export type VeoSchemaValidatorRequiredProperty = string | { key: string; value: any };
 
 export interface VeoSchemaValidatorProperty {
   name: string;
@@ -56,14 +54,7 @@ export interface VeoSchemaValidatorValidationResult {
  * Properties are added in later on on the backend side to provide some sort of meta data.
  * Those won't exist in the scheme so they should get ignored if checking an object.
  */
-const NON_REQUIRED_PROPERTIES = [
-  'members',
-  'parts',
-  'domains',
-  'designator',
-  'type',
-  'displayName'
-];
+const NON_REQUIRED_PROPERTIES = ['members', 'parts', 'domains', 'designator', 'type', 'displayName'];
 
 export default class ObjectSchemaValidator {
   private errors: VeoSchemaValidatorMessage[] = [];
@@ -74,10 +65,7 @@ export default class ObjectSchemaValidator {
     this.domainSpecificObjectSchema = domainSpecificObjectSchema;
   }
 
-  public static fitsObjectSchema(
-    schema: any,
-    data: any
-  ): VeoSchemaValidatorValidationResult {
+  public static fitsObjectSchema(schema: any, data: any): VeoSchemaValidatorValidationResult {
     const errors: VeoSchemaValidatorMessage[] = [];
     const helper = new ObjectSchemaHelper(schema, undefined, {
       domainSpecificObjectSchema: true
@@ -100,14 +88,11 @@ export default class ObjectSchemaValidator {
               continue;
             }
             // check if all attributes of custom aspect exist
-            for (const customAspectAttribute in data.customAspects[customAspect]
-              .attributes) {
+            for (const customAspectAttribute in data.customAspects[customAspect].attributes) {
               if (
                 !helper
                   .getCustomAspect(customAspectTitle)
-                  ?.attributes.find((a) =>
-                    (a.prefix + a.title).endsWith(customAspectAttribute)
-                  )
+                  ?.attributes.find((a) => (a.prefix + a.title).endsWith(customAspectAttribute))
               ) {
                 errors.push({
                   code: 'E_ATTRIBUTE_MISSING',
@@ -131,11 +116,7 @@ export default class ObjectSchemaValidator {
             // check if all attributes of custom link exists
             for (const linkAttribute in data.links[link].attributes) {
               if (
-                !helper
-                  .getCustomLink(linkTitle)
-                  ?.attributes.find((a) =>
-                    (a.prefix + a.title).endsWith(linkAttribute)
-                  )
+                !helper.getCustomLink(linkTitle)?.attributes.find((a) => (a.prefix + a.title).endsWith(linkAttribute))
               ) {
                 errors.push({
                   code: 'E_ATTRIBUTE_MISSING',
@@ -164,10 +145,7 @@ export default class ObjectSchemaValidator {
     return { valid: errors.length === 0, errors, warnings: [] };
   }
 
-  public validate(
-    schema: any,
-    context = 'schema'
-  ): VeoSchemaValidatorValidationResult {
+  public validate(schema: any, context = 'schema'): VeoSchemaValidatorValidationResult {
     if (!schema.title) {
       this.errors.push({
         code: 'E_SCHEMA_PROPERTY_MISSING',
@@ -198,14 +176,8 @@ export default class ObjectSchemaValidator {
         message: `The custom aspects property couldn't be found (Searched for ${context}.properties.customAspects.properties`
       });
     } else {
-      for (const aspect of Object.keys(
-        schema.properties.customAspects.properties
-      )) {
-        this.validateName(
-          schema.title,
-          aspect,
-          `${context}.properties.customAspects.properties.${aspect}`
-        );
+      for (const aspect of Object.keys(schema.properties.customAspects.properties)) {
+        this.validateName(schema.title, aspect, `${context}.properties.customAspects.properties.${aspect}`);
         this.validateAspect(
           schema.properties.customAspects.properties[aspect],
           `${context}.properties.customAspects.properties.${aspect}`
@@ -227,24 +199,13 @@ export default class ObjectSchemaValidator {
       });
     } else {
       for (const link of Object.keys(schema.properties.links.properties)) {
-        this.validateName(
-          schema.title,
-          link,
-          `${context}.links.properties.${link}`
-        );
-        this.validateLink(
-          schema.properties.links.properties[link],
-          `${context}.links.properties.${link}`
-        );
+        this.validateName(schema.title, link, `${context}.links.properties.${link}`);
+        this.validateLink(schema.properties.links.properties[link], `${context}.links.properties.${link}`);
       }
     }
   }
 
-  private validateName(
-    schemaName: string,
-    linkTitle: string,
-    context: string
-  ): void {
+  private validateName(schemaName: string, linkTitle: string, context: string): void {
     if (!linkTitle.includes(schemaName + '_')) {
       this.warnings.push({
         code: 'W_INCORRECT_NAMING',
@@ -346,14 +307,7 @@ export default class ObjectSchemaValidator {
   }
 
   private validateBaseSchema(schema: any, context: string) {
-    const requiredKeys: string[] = [
-      'abbreviation',
-      'description',
-      'domains',
-      'id',
-      'name',
-      'owner'
-    ];
+    const requiredKeys: string[] = ['abbreviation', 'description', 'domains', 'id', 'name', 'owner'];
 
     for (const key of requiredKeys) {
       if (schema.properties[key] === undefined) {

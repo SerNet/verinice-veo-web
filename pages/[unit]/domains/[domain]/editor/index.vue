@@ -17,35 +17,27 @@
 -->
 <template>
   <BasePage :heading-level="2">
-    <LayoutHeadline
-      :title="t('editors')"
-      :element="t('calltoaction').toString()" />
+    <LayoutHeadline :title="t('editors')" :element="t('calltoaction').toString()" />
     <div class="d-flex justify-center">
       <BaseCard class="mt-10" style="width: 70%; max-width: 1000px">
         <v-card-title class="bg-accent small-caps">
           {{ t('editors') }}
         </v-card-title>
         <v-list lines="two" class="overflow-hidden">
-          <v-list-item
-            :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/objectschema`">
+          <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/objectschema`">
             <v-list-item-title class="font-weight-bold">
               {{ $t('editor.objectschema.headline') }}
             </v-list-item-title>
-            <v-list-item-subtitle>{{
-              t('objectSchemaDescription')
-            }}</v-list-item-subtitle>
+            <v-list-item-subtitle>{{ t('objectSchemaDescription') }}</v-list-item-subtitle>
             <template #append>
               <v-icon size="x-large" :icon="mdiChevronRight" />
             </template>
           </v-list-item>
-          <v-list-item
-            :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/formschema`">
+          <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/formschema`">
             <v-list-item-title class="font-weight-bold">
               {{ $t('editor.formschema.headline') }}
             </v-list-item-title>
-            <v-list-item-subtitle>{{
-              t('formSchemaDescription')
-            }}</v-list-item-subtitle>
+            <v-list-item-subtitle>{{ t('formSchemaDescription') }}</v-list-item-subtitle>
             <template #append>
               <v-icon size="x-large" :icon="mdiChevronRight" />
             </template>

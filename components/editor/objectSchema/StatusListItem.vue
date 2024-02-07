@@ -23,7 +23,8 @@
         :style="{
           backgroundColor: CHART_COLORS[index % CHART_COLORS.length],
           height: '58px'
-        }">
+        }"
+      >
         <v-icon color="white" :icon="mdiMenu" />
       </div>
     </template>
@@ -39,18 +40,15 @@
           :label="upperFirst(t('translation').toString())"
           hide-details
           variant="underlined"
-          @update:model-value="onTranslationInput" />
+          @update:model-value="onTranslationInput"
+        />
       </v-col>
     </v-row>
     <template #append>
       <v-list-item-action>
         <v-tooltip location="bottom">
           <template #activator="{ props }">
-            <v-btn
-              v-bind="props"
-              :icon="mdiTrashCanOutline"
-              variant="text"
-              @click="$emit('delete')" />
+            <v-btn v-bind="props" :icon="mdiTrashCanOutline" variant="text" @click="$emit('delete')" />
           </template>
           <template #default>
             {{ upperFirst(t('deleteStatus').toString()) }}

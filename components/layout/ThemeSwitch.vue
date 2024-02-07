@@ -19,10 +19,7 @@
   <v-tooltip location="bottom">
     <template #activator="{ props }">
       <div v-bind="props">
-        <v-btn
-          data-component-name="theme-switch"
-          :icon="mdiThemeLightDark"
-          @click="_switch" />
+        <v-btn data-component-name="theme-switch" :icon="mdiThemeLightDark" @click="_switch" />
       </div>
     </template>
 
@@ -52,10 +49,7 @@ if (darkModeSet === 'true' && theme.global.name.value === LIGHT) {
 
 const _switch = () => {
   theme.global.name.value = theme.global.current.value.dark ? LIGHT : DARK;
-  localStorage.setItem(
-    LOCAL_STORAGE_KEYS.DARK_MODE,
-    (theme.global.name.value === DARK).toString()
-  );
+  localStorage.setItem(LOCAL_STORAGE_KEYS.DARK_MODE, (theme.global.name.value === DARK).toString());
 };
 </script>
 

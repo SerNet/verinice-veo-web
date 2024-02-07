@@ -19,10 +19,7 @@
 <template>
   <BasePage style="height: 100vh">
     <template #header>
-      <LayoutHeadline
-        class="mb-4"
-        :title="$t('breadcrumbs.profiles')"
-        :element="profiles[0]?.key || ''" />
+      <LayoutHeadline class="mb-4" :title="$t('breadcrumbs.profiles')" :element="profiles[0]?.key || ''" />
 
       <p class="mt-8 mb-4 text-body-1">
         {{ t('hint') }}
@@ -39,7 +36,8 @@
           show-select
           select-strategy="single"
           :model-value="state.selectedProfiles"
-          @update:model-value="(newVal) => selectNewItem(newVal)" />
+          @update:model-value="(newVal) => selectNewItem(newVal)"
+        />
       </BaseCard>
 
       <!-- Table actions -->
@@ -51,7 +49,8 @@
             color="primary"
             data-veo-test="profiles-btn-apply"
             :disabled="!state.selectedProfiles[0]"
-            @click="toggleDialog">
+            @click="toggleDialog"
+          >
             {{ t('applyBtn') }}
           </v-btn>
         </v-col>
@@ -94,9 +93,7 @@ function selectNewItem(val: string[]) {
   state.selectedProfiles = val;
 
   // Use the profile's name prop as a default name
-  const profileObj = profiles.value.filter(
-    (profile) => profile.key === state.selectedProfiles[0]
-  )[0];
+  const profileObj = profiles.value.filter((profile) => profile.key === state.selectedProfiles[0])[0];
   state.newUnitName = profileObj?.name || '';
 }
 </script>

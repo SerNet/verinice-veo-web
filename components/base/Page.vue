@@ -16,14 +16,8 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-col
-    class="veo-page bg-basepage py-0"
-    cols="12"
-    :class="noPadding ? 'px-0' : 'px-4'">
-    <LayoutPageHeader
-      v-bind="
-        omit(props, 'contentClass', 'stickyFooter', 'height', 'noPadding')
-      ">
+  <v-col class="veo-page bg-basepage py-0" cols="12" :class="noPadding ? 'px-0' : 'px-4'">
+    <LayoutPageHeader v-bind="omit(props, 'contentClass', 'stickyFooter', 'height', 'noPadding')">
       <template v-if="$slots.title" #title>
         <slot name="title" />
       </template>
@@ -31,10 +25,7 @@
         <slot name="header" />
       </template>
     </LayoutPageHeader>
-    <v-row
-      no-gutters
-      :style="{ 'max-height': '100%', 'min-height': 0, height }"
-      class="pa-0 flex-column flex-nowrap">
+    <v-row no-gutters :style="{ 'max-height': '100%', 'min-height': 0, height }" class="pa-0 flex-column flex-nowrap">
       <v-col :class="contentClass">
         <slot name="default" />
       </v-col>
@@ -44,7 +35,8 @@
           bottom: 0,
           position: stickyFooter ? 'sticky' : undefined,
           'flex-grow': 0
-        }">
+        }"
+      >
         <slot name="footer" />
       </v-col>
     </v-row>

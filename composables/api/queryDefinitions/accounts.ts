@@ -98,10 +98,7 @@ export default {
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
           queryClient.invalidateQueries(['accounts']);
-          queryClient.invalidateQueries([
-            'account',
-            { id: variables.params?.id || '' }
-          ]);
+          queryClient.invalidateQueries(['account', { id: variables.params?.id || '' }]);
         }
       }
     } as IVeoMutationDefinition<IVeoUpdateAccountParameters, void>,
@@ -116,10 +113,7 @@ export default {
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
           queryClient.invalidateQueries(['accounts']);
-          queryClient.invalidateQueries([
-            'account',
-            { id: variables.params?.id || '' }
-          ]);
+          queryClient.invalidateQueries(['account', { id: variables.params?.id || '' }]);
         }
       }
     } as IVeoMutationDefinition<IVeoDeleteAccountParameters, void>

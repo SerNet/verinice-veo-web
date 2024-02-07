@@ -17,19 +17,13 @@
 -->
 <template>
   <v-row data-component-name="risk-matrix-wrapper">
-    <v-col
-      v-for="protectionGoal of protectionGoals"
-      :key="protectionGoal.id"
-      md="6">
+    <v-col v-for="protectionGoal of protectionGoals" :key="protectionGoal.id" md="6">
       <BaseCard>
         <v-card-title class="bg-accent mb-2 small-caps">
           {{ protectionGoal.text }}
         </v-card-title>
 
-        <RiskMatrix
-          v-if="!domainIsFetching"
-          v-bind="getMatrixData(protectionGoal.id)"
-          class="my-2" />
+        <RiskMatrix v-if="!domainIsFetching" v-bind="getMatrixData(protectionGoal.id)" class="my-2" />
 
         <v-skeleton-loader v-else type="image" width="600px" />
       </BaseCard>
@@ -40,9 +34,7 @@
 <script lang="ts">
 import { cloneDeep, reverse } from 'lodash';
 
-import domainQueryDefinitions, {
-  IVeoDomain
-} from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~/composables/api/utils/query';
 export const ROUTE_NAME = 'unit-domains-domain-risks-matrix';
 
@@ -65,18 +57,14 @@ export default defineComponent({
     // Matrix selection
     const protectionGoals = computed(() =>
       (data.value?.categories || []).map((category) => ({
-        text:
-          category.translations[locale.value]?.name ||
-          Object.values(category.translations)[0].name,
+        text: category.translations[locale.value]?.name || Object.values(category.translations)[0].name,
         id: category.id
       }))
     );
 
     // Matrix stuff
     const getMatrixData = (protectionGoal: string) => {
-      const category = data.value?.categories.find(
-        (category) => category.id === protectionGoal
-      );
+      const category = data.value?.categories.find((category) => category.id === protectionGoal);
 
       return {
         impacts: reverse(cloneDeep(category?.potentialImpacts || [])),

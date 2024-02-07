@@ -36,18 +36,12 @@ export const editorTranslationsToFormsTranslations = (
         const _source = parseInt(source, 10) as TRANSLATION_SOURCE;
 
         // If sources contains UNSPECIFIED, all sources are allowed. Else only the specified sources are allowed, other translations get ignored.
-        if (
-          !sources.includes(TRANSLATION_SOURCE.UNSPECIFIED) &&
-          !sources.includes(_source)
-        ) {
+        if (!sources.includes(TRANSLATION_SOURCE.UNSPECIFIED) && !sources.includes(_source)) {
           return;
         }
 
         // If this key already exists for this language, this means the translation has been set by the formschema and as it is more specific, it should be used
-        if (
-          _source === TRANSLATION_SOURCE.OBJECTSCHEMA &&
-          _translations?.[locale]?.[key]
-        ) {
+        if (_source === TRANSLATION_SOURCE.OBJECTSCHEMA && _translations?.[locale]?.[key]) {
           return;
         }
         if (!_translations[locale]) {

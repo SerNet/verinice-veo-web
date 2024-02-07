@@ -21,11 +21,10 @@
     :type="piaMandatory ? VeoAlertType.INFO : VeoAlertType.SUCCESS"
     no-close-button
     flat
-    :title="piaMandatory ? t('piaMandatory') : t('piaNotMandatory')">
+    :title="piaMandatory ? t('piaMandatory') : t('piaNotMandatory')"
+  >
     <span v-if="piaMandatory">
-      <i18n-t keypath="piaMandatoryText" tag="span" scope="global"
-        ><br
-      /></i18n-t>
+      <i18n-t keypath="piaMandatoryText" tag="span" scope="global"><br /></i18n-t>
     </span>
     <span v-else>
       {{ t('piaNotMandatoryText') }}
@@ -55,9 +54,7 @@ export default defineComponent({
   setup(props) {
     const { t } = useI18n();
 
-    const piaMandatory = computed(
-      () => !!props.metaData?.decisionResults?.piaMandatory?.value
-    );
+    const piaMandatory = computed(() => !!props.metaData?.decisionResults?.piaMandatory?.value);
 
     return {
       piaMandatory,

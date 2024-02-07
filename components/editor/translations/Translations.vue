@@ -25,7 +25,8 @@
         single-line
         hide-details
         variant="solo"
-        flat />
+        flat
+      />
     </v-col>
     <slot name="controls" />
   </v-row>
@@ -35,7 +36,8 @@
         :additional-headers="headers"
         :items="transformedTranslations"
         :search="searchQuery"
-        :sort-by="[{ key: 'key', order: 'asc' }]">
+        :sort-by="[{ key: 'key', order: 'asc' }]"
+      >
         <template #no-data>
           <slot name="no-data" v-bind="{ searchQuery }" />
         </template>
@@ -82,9 +84,7 @@ const { requiredRule } = useRules();
 
 const searchQuery = ref('');
 
-const editedLanguageItem = ref<
-  { key: string; source: string; locale: string } | undefined
->(undefined);
+const editedLanguageItem = ref<{ key: string; source: string; locale: string } | undefined>(undefined);
 const ignoreBlurEvent = ref(false);
 
 // Navigate table with tab and shift+tab
@@ -100,16 +100,11 @@ const columnExists = (delta: number) => {
     return false;
   }
   const locales = Object.keys(
-    props.modelValue[editedLanguageItem.value.key][
-      editedLanguageItem.value.source as any as TRANSLATION_SOURCE
-    ]
+    props.modelValue[editedLanguageItem.value.key][editedLanguageItem.value.source as any as TRANSLATION_SOURCE]
   );
   const currentLocaleIndex = locales.indexOf(editedLanguageItem.value.locale);
 
-  return (
-    currentLocaleIndex + delta <= locales.length - 1 &&
-    currentLocaleIndex + delta >= 0
-  );
+  return currentLocaleIndex + delta <= locales.length - 1 && currentLocaleIndex + delta >= 0;
 };
 
 /**
@@ -123,17 +118,13 @@ const focusColumn = (delta: number) => {
     return;
   }
   const locales = Object.keys(
-    props.modelValue[editedLanguageItem.value.key][
-      editedLanguageItem.value.source as any as TRANSLATION_SOURCE
-    ]
+    props.modelValue[editedLanguageItem.value.key][editedLanguageItem.value.source as any as TRANSLATION_SOURCE]
   );
   const localeIndex = locales.indexOf(editedLanguageItem.value.locale);
 
   ignoreBlurEvent.value = true;
   editedLanguageItem.value.locale = Object.keys(
-    props.modelValue[editedLanguageItem.value.key][
-      editedLanguageItem.value.source as any as TRANSLATION_SOURCE
-    ]
+    props.modelValue[editedLanguageItem.value.key][editedLanguageItem.value.source as any as TRANSLATION_SOURCE]
   )[localeIndex + delta];
 };
 
@@ -147,14 +138,9 @@ const focusRow = (delta: number) => {
   if (!visibleRows) {
     return;
   }
-  const rowIndexWithFocus = Array.from(visibleRows?.values()).findIndex((row) =>
-    row.contains(document.activeElement)
-  );
+  const rowIndexWithFocus = Array.from(visibleRows?.values()).findIndex((row) => row.contains(document.activeElement));
   // If the new row is out of bounds, do nothing
-  if (
-    rowIndexWithFocus + delta > visibleRows.length - 1 ||
-    rowIndexWithFocus + delta < 1
-  ) {
+  if (rowIndexWithFocus + delta > visibleRows.length - 1 || rowIndexWithFocus + delta < 1) {
     return;
   }
   const rowToFocus = visibleRows[rowIndexWithFocus + delta];
@@ -174,11 +160,7 @@ const focusRow = (delta: number) => {
     return;
   }
 
-  const locales = Object.keys(
-    props.modelValue[rowToFocusKey][
-      rowToFocusScope as any as TRANSLATION_SOURCE
-    ]
-  );
+  const locales = Object.keys(props.modelValue[rowToFocusKey][rowToFocusScope as any as TRANSLATION_SOURCE]);
 
   ignoreBlurEvent.value = true;
   editedLanguageItem.value = {
@@ -219,9 +201,7 @@ const renderLanguageItem = (itemProps: any, locale: string) => {
       editedLanguageItem.value?.source === itemSource &&
       editedLanguageItem.value?.locale === locale
   );
-  const isModifiable = props.modifieableSources.includes(
-    parseInt(itemSource, 10)
-  );
+  const isModifiable = props.modifieableSources.includes(parseInt(itemSource, 10));
 
   return isEditedLanguageItem.value ?
       h(VTextField, {
@@ -233,8 +213,7 @@ const renderLanguageItem = (itemProps: any, locale: string) => {
         variant: 'underlined',
         'onUpdate:modelValue': (newValue: string) => {
           const toReturn = cloneDeep(props.modelValue);
-          toReturn[itemKey][itemSource as any as TRANSLATION_SOURCE][locale] =
-            newValue; // Objects can't have numeric keys, so our enum value gets cast to a string
+          toReturn[itemKey][itemSource as any as TRANSLATION_SOURCE][locale] = newValue; // Objects can't have numeric keys, so our enum value gets cast to a string
           emit('update:modelValue', toReturn);
         },
         onBlur: () => {
@@ -296,9 +275,7 @@ const headers = computed<TableHeader[]>(() => [
     text: t('key'),
     render: (itemProps) => {
       const itemSource: string = itemProps.item.raw.source;
-      const isModifiable = props.modifieableSources.includes(
-        parseInt(itemSource, 10)
-      );
+      const isModifiable = props.modifieableSources.includes(parseInt(itemSource, 10));
       return h(
         'div',
         {
@@ -313,9 +290,7 @@ const headers = computed<TableHeader[]>(() => [
               variant: 'plain',
               onClick: () => {
                 const toReturn = cloneDeep(props.modelValue);
-                delete toReturn[itemProps.item.raw.key][
-                  itemSource as any as TRANSLATION_SOURCE
-                ];
+                delete toReturn[itemProps.item.raw.key][itemSource as any as TRANSLATION_SOURCE];
                 emit('update:modelValue', toReturn);
                 emit('translation-deleted', {
                   key: itemProps.item.raw.key,
@@ -323,11 +298,7 @@ const headers = computed<TableHeader[]>(() => [
                 });
               }
             })
-          : (
-            !props.modelValue[itemProps.item.raw.key][
-              TRANSLATION_SOURCE.FORMSCHEMA
-            ]
-          ) ?
+          : !props.modelValue[itemProps.item.raw.key][TRANSLATION_SOURCE.FORMSCHEMA] ?
             h(
               VTooltip,
               {
@@ -343,9 +314,7 @@ const headers = computed<TableHeader[]>(() => [
                       const toReturn = cloneDeep(props.modelValue);
                       for (const source of props.modifieableSources) {
                         toReturn[itemProps.item.raw.key][source] = cloneDeep(
-                          toReturn[itemProps.item.raw.key][
-                            itemSource as any as TRANSLATION_SOURCE
-                          ]
+                          toReturn[itemProps.item.raw.key][itemSource as any as TRANSLATION_SOURCE]
                         );
                       }
                       emit('update:modelValue', toReturn);
@@ -389,27 +358,24 @@ const headers = computed<TableHeader[]>(() => [
 
 // Turn the translations object into an array of objects
 const transformedTranslations = computed(() =>
-  Object.entries(cloneDeep(props.modelValue)).reduce(
-    (translationsAsArray, [key, value]) => {
-      Object.entries(value).forEach(([source, translations]) => {
-        // If the current source shouldn't be displayed, skip it
-        if (
-          props.sources.length &&
-          !props.sources.includes(TRANSLATION_SOURCE.UNSPECIFIED) &&
-          !props.sources?.includes(parseInt(source))
-        ) {
-          return;
-        }
-        translationsAsArray.push({
-          key,
-          source,
-          ...translations
-        });
+  Object.entries(cloneDeep(props.modelValue)).reduce((translationsAsArray, [key, value]) => {
+    Object.entries(value).forEach(([source, translations]) => {
+      // If the current source shouldn't be displayed, skip it
+      if (
+        props.sources.length &&
+        !props.sources.includes(TRANSLATION_SOURCE.UNSPECIFIED) &&
+        !props.sources?.includes(parseInt(source))
+      ) {
+        return;
+      }
+      translationsAsArray.push({
+        key,
+        source,
+        ...translations
       });
-      return translationsAsArray;
-    },
-    [] as ITranslationsItem[]
-  )
+    });
+    return translationsAsArray;
+  }, [] as ITranslationsItem[])
 );
 </script>
 

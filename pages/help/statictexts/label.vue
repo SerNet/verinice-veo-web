@@ -18,21 +18,11 @@
 <template>
   <BasePage title="Label">
     <v-row justify="center">
-      <v-col
-        cols="12"
-        sm="6"
-        lg="4"
-        class="docs-form-sector d-flex justify-center">
-        <DynamicFormEntrypoint
-          v-model="form.data"
-          :object-schema="form.objectSchema"
-          :form-schema="form.formSchema" />
+      <v-col cols="12" sm="6" lg="4" class="docs-form-sector d-flex justify-center">
+        <DynamicFormEntrypoint v-model="form.data" :object-schema="form.objectSchema" :form-schema="form.formSchema" />
       </v-col>
     </v-row>
-    <HelpFormDescription
-      :object-schema="form.objectSchema"
-      :form-schema="form.formSchema"
-      :data="form.data" />
+    <HelpFormDescription :object-schema="form.objectSchema" :form-schema="form.formSchema" :data="form.data" />
   </BasePage>
 </template>
 

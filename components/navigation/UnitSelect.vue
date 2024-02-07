@@ -18,11 +18,7 @@
 <template>
   <v-tooltip v-if="miniVariant" location="bottom">
     <template #activator="{ props: toolTips }">
-      <v-icon
-        class="ma-4"
-        :icon="mdiUnity"
-        v-bind="toolTips"
-        @click="$emit('expand-menu')" />
+      <v-icon class="ma-4" :icon="mdiUnity" v-bind="toolTips" @click="$emit('expand-menu')" />
     </template>
 
     <template #default>
@@ -39,7 +35,8 @@
     density="compact"
     :disabled="disabled"
     :items="itemSelection"
-    :label="items.length ? t('unit') : t('select')">
+    :label="items.length ? t('unit') : t('select')"
+  >
     <template #item="{ props, item }">
       <v-list-item
         v-bind="props"
@@ -50,7 +47,8 @@
         :subtitle="item.raw.description"
         :title="item.title"
         :value="item.value"
-        @click="unitId = item.value" />
+        @click="unitId = item.value"
+      />
     </template>
 
     <template #append-item>
@@ -63,7 +61,8 @@
         @click="
           unitId = 'management';
           closeMenu.menu = false;
-        ">
+        "
+      >
         {{ t('management') }}
       </v-list-item>
     </template>
@@ -102,11 +101,7 @@ const closeMenu = ref();
 // fetch all client units
 const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
-const items = computed(
-  () =>
-    (units.value || []).find((unit) => unit.id === route.params.unit)?.name ||
-    []
-);
+const items = computed(() => (units.value || []).find((unit) => unit.id === route.params.unit)?.name || []);
 const itemSelection = computed(() =>
   (units.value || []).map((unit) => ({
     value: unit.id,
@@ -128,8 +123,7 @@ const unitId = computed({
       const domainId =
         units.value
           ?.find((unit: any) => unit.id === newValue)
-          .domains.find((domain: any) => domain.id === route.params.domain)
-          ?.id ||
+          .domains.find((domain: any) => domain.id === route.params.domain)?.id ||
         units.value?.find((unit: any) => unit.id === newValue).domains?.[0]?.id;
       params = { unit: newValue, domain: domainId };
     }

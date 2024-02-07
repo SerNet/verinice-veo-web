@@ -27,7 +27,8 @@
       hide-details
       variant="underlined"
       :items="displayOptions"
-      @update:model-value="emit('update:display-option', $event)" />
+      @update:model-value="emit('update:display-option', $event)"
+    />
   </v-card-text>
 </template>
 
@@ -57,27 +58,23 @@ const emit = defineEmits<{
 
 const { t, locale } = useI18n();
 
-const displayOptions = computed<{ title: string; value: string | undefined }[]>(
-  () => {
-    const currentSubType = props.objectData?.subType;
-    const availableFormSchemas: { title: string; value: string | undefined }[] =
-      props.formSchemas
-        .filter(
-          (formSchema) =>
-            formSchema.modelType === props.objectSchema?.title &&
-            (!currentSubType || currentSubType === formSchema.subType)
-        )
-        .map((formSchema) => ({
-          title: formSchema.name[locale.value] || formSchema.subType,
-          value: formSchema.id
-        }));
-    availableFormSchemas.unshift({
-      title: upperFirst(t('objectView').toString()),
-      value: 'objectschema'
-    });
-    return availableFormSchemas;
-  }
-);
+const displayOptions = computed<{ title: string; value: string | undefined }[]>(() => {
+  const currentSubType = props.objectData?.subType;
+  const availableFormSchemas: { title: string; value: string | undefined }[] = props.formSchemas
+    .filter(
+      (formSchema) =>
+        formSchema.modelType === props.objectSchema?.title && (!currentSubType || currentSubType === formSchema.subType)
+    )
+    .map((formSchema) => ({
+      title: formSchema.name[locale.value] || formSchema.subType,
+      value: formSchema.id
+    }));
+  availableFormSchemas.unshift({
+    title: upperFirst(t('objectView').toString()),
+    value: 'objectschema'
+  });
+  return availableFormSchemas;
+});
 </script>
 
 <i18n>

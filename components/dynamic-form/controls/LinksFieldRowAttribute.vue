@@ -49,8 +49,7 @@ export default defineComponent({
       slots.default ?
         slots.default().map((linkAttribute) => {
           // Add an index to every control so that VeoForms can enter the value for the correct link
-          for (const control of (linkAttribute.children as any)?.[0]
-            ?.children || []) {
+          for (const control of (linkAttribute.children as any)?.[0]?.children || []) {
             control.props.index = props.index;
           }
 

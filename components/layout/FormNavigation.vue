@@ -27,7 +27,8 @@
           color="primary"
           :value="item.initialId"
           :active="selectedItem === item.initialId"
-          @click="onClick(item.initialId)">
+          @click="onClick(item.initialId)"
+        >
           <v-list-item-title :class="currentLevelLeftMargin">
             {{ item.text }}
           </v-list-item-title>
@@ -38,7 +39,8 @@
           :form-schema="item.layout"
           :custom-translation="customTranslation"
           :initial-id="item.initialId"
-          :nesting-level="nextNestingLevel" />
+          :nesting-level="nextNestingLevel"
+        />
       </template>
     </v-list>
   </div>
@@ -85,9 +87,7 @@ const currentLevelLeftMargin = computed(() => `ml-${props.nestingLevel * 4}`);
 
 const itemsToObserve = computed(() =>
   items.value.length ?
-    document.querySelectorAll(
-      items.value.map((item) => `[id="${item.initialId}"]`).join(', ')
-    )
+    document.querySelectorAll(items.value.map((item) => `[id="${item.initialId}"]`).join(', '))
   : false
 );
 
@@ -101,9 +101,7 @@ const scroll = (groupId: string) => {
   const item = document.getElementById(groupId);
   // The wrapper we will scroll inside
   const wrapper = scrollWrapper.value;
-  const header = scrollWrapper.value?.getElementsByClassName(
-    'veo-page__header'
-  )[0] as HTMLElement | null;
+  const header = scrollWrapper.value?.getElementsByClassName('veo-page__header')[0] as HTMLElement | null;
   const headerOffset = header?.offsetHeight || 0;
   // extra distance from top (=sticky-header height)
   if (item && wrapper) {
@@ -120,8 +118,7 @@ const activateObserver = () => {
     observer.value?.disconnect();
   }
 
-  scrollWrapper.value =
-    document.getElementById(props.scrollWrapperId) || undefined;
+  scrollWrapper.value = document.getElementById(props.scrollWrapperId) || undefined;
 
   // Activate Observer when the component is mounted
   const options = {
@@ -169,12 +166,8 @@ const items = computed(
         }
         // Important to iterate on all elements to have correct indices of Layouts in FormSchema
         return {
-          initialId: `${props.initialId}${
-            props.initialId ? '/' : ''
-          }elements/${index}`,
-          text:
-            props.customTranslation[el.options?.label?.replace('#lang/', '')] ||
-            el.options?.label,
+          initialId: `${props.initialId}${props.initialId ? '/' : ''}elements/${index}`,
+          text: props.customTranslation[el.options?.label?.replace('#lang/', '')] || el.options?.label,
           layout: el
         };
       })

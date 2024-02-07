@@ -30,7 +30,8 @@
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
     variant="underlined"
     @update:model-value="onInput"
-    @click:clear="$emit('update:model-value', undefined)" />
+    @click:clear="$emit('update:model-value', undefined)"
+  />
 </template>
 
 <script lang="ts">
@@ -49,10 +50,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
     en: 'Lets the user enter a number, optionally by using spin buttons.',
     de: 'Lässt den User Zahlen eingeben, die Zahl kann mit Buttons rechts höher oder niedriger gestellt werden.'
   },
-  conditions: (props) => [
-    props.objectSchema.type === 'number' ||
-      props.objectSchema.type === 'integer'
-  ]
+  conditions: (props) => [props.objectSchema.type === 'number' || props.objectSchema.type === 'integer']
 };
 
 export default defineComponent({

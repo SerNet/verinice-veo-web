@@ -20,7 +20,8 @@
     :model-value="state.showDialog"
     :title="t('unitSelectionTitle')"
     :close-function="toggleDialog"
-    @keydown.enter="apply">
+    @keydown.enter="apply"
+  >
     <template #default>
       <BaseCard>
         <v-card-text>
@@ -33,7 +34,8 @@
           :text="t('messageHasMaxUnitsText')"
           :type="VeoAlertType.INFO"
           no-close-button
-          flat />
+          flat
+        />
         <v-card-text>
           <v-text-field
             v-model="state.newUnitName"
@@ -42,13 +44,15 @@
             :rules="[requiredRule]"
             required
             clearable
-            variant="underlined" />
+            variant="underlined"
+          />
           <v-text-field
             v-model="state.newUnitDescription"
             :label="t('unitSelectionCreateDesc')"
             :disabled="!!state.selectedUnit || hasMaxUnits"
             variant="underlined"
-            clearable />
+            clearable
+          />
         </v-card-text>
       </BaseCard>
       <BaseCard class="mt-4">
@@ -65,7 +69,8 @@
             item-value="id"
             flat
             clearable
-            variant="underlined" />
+            variant="underlined"
+          />
         </v-list-item>
       </BaseCard>
     </template>
@@ -80,7 +85,8 @@
         color="primary"
         :loading="state.isApplyingProfile || state.isCreatingUnit"
         :disabled="applyIsDisabled || (hasMaxUnits && !state.selectedUnit)"
-        @click="apply">
+        @click="apply"
+      >
         {{ t('unitSelectionApplyBtn') }}
       </v-btn>
     </template>
@@ -93,19 +99,9 @@ import { mdiFolderOpenOutline, mdiFilePlusOutline } from '@mdi/js';
 import { useUnits } from './profiles';
 const { requiredRule } = useRules();
 const { t } = useI18n();
-const {
-  state,
-  units,
-  hasMaxUnits,
-  domain,
-  applyProfile,
-  createUnitAndApplyProfile,
-  toggleDialog
-} = useUnits();
+const { state, units, hasMaxUnits, domain, applyProfile, createUnitAndApplyProfile, toggleDialog } = useUnits();
 
-const applyIsDisabled = computed(
-  () => state.newUnitName === null && state.selectedUnit === null
-);
+const applyIsDisabled = computed(() => state.newUnitName === null && state.selectedUnit === null);
 
 function apply() {
   if (!state.selectedUnit) {

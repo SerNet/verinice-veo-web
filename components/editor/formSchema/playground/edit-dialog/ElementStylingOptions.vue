@@ -24,7 +24,8 @@
     :prepend-inner-icon="mdiPaletteOutline"
     variant="underlined"
     :label="t('stylingOptions')"
-    clearable />
+    clearable
+  />
 </template>
 
 <script setup lang="ts">
@@ -42,27 +43,14 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (
-    event: 'update:form-schema-element',
-    formSchemaElement: IVeoFormSchemaItem
-  ): void;
+  (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void;
 }>();
 
 const { t } = useI18n();
 
-const options = [
-  'border',
-  'bg-warning',
-  'bg-info',
-  'bg-error',
-  'text-warning',
-  'text-info',
-  'text-error'
-];
+const options = ['border', 'bg-warning', 'bg-info', 'bg-error', 'text-warning', 'text-info', 'text-error'];
 
-const formattedOptions = computed(() =>
-  options.map((option) => ({ value: option, title: t(`options.${option}`) }))
-);
+const formattedOptions = computed(() => options.map((option) => ({ value: option, title: t(`options.${option}`) })));
 
 const activeOptions = computed({
   get: () => props.formSchemaElement.options?.class?.split(' ') || [],

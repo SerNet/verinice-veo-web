@@ -31,14 +31,13 @@
       class="veo-risk-dialog__risk-treatment-selection"
       hide-details
       variant="underlined"
-      @update:model-value="$emit('update:risk-treatments', $event)">
+      @update:model-value="$emit('update:risk-treatments', $event)"
+    >
       <template #selection="{ item, index }">
         <span v-if="index === 0" class="text-no-wrap">
           {{ item.title }}
         </span>
-        <v-chip v-else-if="index === 1" size="small">
-          +{{ riskTreatments.length - 1 }} {{ t('more') }}
-        </v-chip>
+        <v-chip v-else-if="index === 1" size="small"> +{{ riskTreatments.length - 1 }} {{ t('more') }} </v-chip>
       </template>
     </v-select>
     <v-edit-dialog>
@@ -51,9 +50,8 @@
           hide-details
           variant="underlined"
           v-bind="dialogProps"
-          @update:model-value="
-            $emit('update:risk-treatment-explanation', $event)
-          " />
+          @update:model-value="$emit('update:risk-treatment-explanation', $event)"
+        />
       </template>
       <template #input>
         <v-textarea
@@ -67,9 +65,8 @@
           rows="3"
           no-resize
           variant="underlined"
-          @update:model-value="
-            $emit('update:risk-treatment-explanation', $event)
-          " />
+          @update:model-value="$emit('update:risk-treatment-explanation', $event)"
+        />
       </template>
     </v-edit-dialog>
   </v-col>

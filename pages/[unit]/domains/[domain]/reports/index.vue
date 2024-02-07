@@ -39,9 +39,7 @@ export default defineComponent({
     const route = useRoute();
 
     const createReport = async (report: any) => {
-      await navigateTo(
-        `/${route.params.unit}/domains/${route.params.domain}/reports/${report.id}`
-      );
+      await navigateTo(`/${route.params.unit}/domains/${route.params.domain}/reports/${report.id}`);
     };
 
     return {

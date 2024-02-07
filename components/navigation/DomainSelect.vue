@@ -18,11 +18,7 @@
 <template>
   <v-tooltip v-if="miniVariant" location="bottom">
     <template #activator="{ props: toolTips }">
-      <v-icon
-        class="ma-4"
-        :icon="mdiDomain"
-        v-bind="toolTips"
-        @click="$emit('expand-menu')" />
+      <v-icon class="ma-4" :icon="mdiDomain" v-bind="toolTips" @click="$emit('expand-menu')" />
     </template>
 
     <template #default>
@@ -39,7 +35,8 @@
     density="compact"
     :disabled="disabled"
     :items="itemSelection"
-    :label="items.length ? t('domain') : t('select')">
+    :label="items.length ? t('domain') : t('select')"
+  >
     <template #item="{ props, item }">
       <v-list-item
         v-show="!miniVariant"
@@ -50,7 +47,8 @@
         width="500"
         :title="item.title"
         :value="item.value"
-        @click="domainId = item.value" />
+        @click="domainId = item.value"
+      />
     </template>
 
     <template #append-item>
@@ -64,7 +62,8 @@
         @click="
           domainId = 'more';
           closeMenu.menu = false;
-        " />
+        "
+      />
     </template>
   </v-select>
 </template>
@@ -108,10 +107,7 @@ const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, {
 const closeMenu = ref();
 
 const items = computed(
-  () =>
-    (domains.value || []).find(
-      (domain: any) => domain.id === route.params.domain
-    )?.name || []
+  () => (domains.value || []).find((domain: any) => domain.id === route.params.domain)?.name || []
 );
 const itemSelection = computed(() =>
   (domains.value || []).map((domain: any) => ({
@@ -125,8 +121,7 @@ const domainId = computed({
     return (route.params.domain as string) || 'more';
   },
   set(newValue: string) {
-    const params =
-      newValue === 'more' ? { unit: route.params.unit } : { domain: newValue };
+    const params = newValue === 'more' ? { unit: route.params.unit } : { domain: newValue };
 
     navigateTo({
       name: newValue === 'more' ? ROUTE_MORE_DOMAINS : ROUTE_DOMAIN_DASHBOARD,

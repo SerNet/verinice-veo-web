@@ -18,10 +18,7 @@
 <template>
   <BasePage data-component-name="risk-page">
     <template #default>
-      <LayoutHeadline
-        class="mb-8"
-        :title="upperFirst(t('risks').toString())"
-        :element="t('dpia')" />
+      <LayoutHeadline class="mb-8" :title="upperFirst(t('risks').toString())" :element="t('dpia')" />
 
       <!--<div> Not relevant as long as there is only one risk definition
         <p class="pt-3 mb-0 text-body-1">
@@ -74,9 +71,7 @@
 <script lang="ts">
 import { upperFirst } from 'lodash';
 
-import domainQueryDefinitions, {
-  IVeoDomain
-} from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~/composables/api/utils/query';
 
 export default defineComponent({
@@ -94,11 +89,9 @@ export default defineComponent({
     const fetchDomainQueryParameters = computed(() => ({
       id: route.params.domain as string
     }));
-    const { data: domain } = useQuery(
-      domainQueryDefinitions.queries.fetchDomain,
-      fetchDomainQueryParameters,
-      { onSuccess: redirectIfNoRiskDefinitionSelected }
-    );
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
+      onSuccess: redirectIfNoRiskDefinitionSelected
+    });
 
     const viewRiskDefinition = (id: string) => {
       router.push({

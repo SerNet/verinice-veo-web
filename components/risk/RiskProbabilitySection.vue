@@ -32,7 +32,8 @@
               :items="probabilities"
               disabled
               variant="underlined"
-              hide-details>
+              hide-details
+            >
               <template v-if="dirtyFields.scenario" #selection>
                 {{ t('saveCTA') }}
               </template>
@@ -49,7 +50,8 @@
               clearable
               hide-details
               variant="underlined"
-              @update:model-value="onSpecificProbabilityChanged" />
+              @update:model-value="onSpecificProbabilityChanged"
+            />
           </v-col>
           <v-col xs="12" md="3">
             <v-select
@@ -60,14 +62,12 @@
               :items="probabilities"
               disabled
               variant="underlined"
-              hide-details>
+              hide-details
+            >
               <template
-                v-if="
-                  dirtyFields &&
-                  (dirtyFields.scenario ||
-                    dirtyFields[`${riskDefinition.id}_specificProbability`])
-                "
-                #selection>
+                v-if="dirtyFields && (dirtyFields.scenario || dirtyFields[`${riskDefinition.id}_specificProbability`])"
+                #selection
+              >
                 {{ t('saveCTA') }}
               </template>
             </v-select>
@@ -83,9 +83,8 @@
                   hide-details
                   variant="underlined"
                   v-bind="dialogProps"
-                  @update:model-value="
-                    onSpecificProbabilityExplanationChanged
-                  " />
+                  @update:model-value="onSpecificProbabilityExplanationChanged"
+                />
               </template>
               <template #input>
                 <v-textarea
@@ -101,9 +100,8 @@
                   hide-details
                   class="pb-1"
                   variant="underlined"
-                  @update:model-value="
-                    onSpecificProbabilityExplanationChanged
-                  " />
+                  @update:model-value="onSpecificProbabilityExplanationChanged"
+                />
               </template>
             </v-edit-dialog>
           </v-col>

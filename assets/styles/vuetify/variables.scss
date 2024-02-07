@@ -94,9 +94,7 @@ $heading-font-family: $body-font-family;
 // Overriding default styles
 
 // Fixing a vuetify bug that causes child-subgroups to also get expanded if the parent subgroup is expanded
-.v-list-group--sub-group.v-list-group--active
-  .v-list-item__icon.v-list-group__header__prepend-icon
-  .v-icon {
+.v-list-group--sub-group.v-list-group--active .v-list-item__icon.v-list-group__header__prepend-icon .v-icon {
   transform: none;
 }
 

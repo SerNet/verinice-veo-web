@@ -23,7 +23,8 @@
     :close-disabled="deletionInProgress"
     :close-function="closeDeleteDialog"
     width="600px"
-    @update:model-value="emit('update:model-value', $event)">
+    @update:model-value="emit('update:model-value', $event)"
+  >
     <template #default>
       <div>{{ t('question', { name: unit?.name }) }}</div
       ><br />
@@ -39,7 +40,8 @@
         class="mt-4"
         flat
         no-close-button
-        to="/user-data">
+        to="/user-data"
+      >
         {{ t('request') }}
       </BaseAlert>
 
@@ -52,7 +54,8 @@
             :placeholder="t('placeholder')"
             :rules="nameRules"
             required
-            type="input" />
+            type="input"
+          />
         </v-form>
       </BaseCard>
     </template>
@@ -70,7 +73,8 @@
         data-veo-test="units-delete-dialog-btn-delete"
         :disabled="unitDeletionDisabled"
         :loading="deletionInProgress"
-        @click="deleteUnit">
+        @click="deleteUnit"
+      >
         {{ globalT('global.button.delete') }}
       </v-btn>
     </template>
@@ -78,9 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import unitQueryDefinitions, {
-  IVeoUnit
-} from '~/composables/api/queryDefinitions/units';
+import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { VeoAlertType } from '~/types/VeoTypes';
 
@@ -106,19 +108,14 @@ const { t: globalT } = useI18n({ useScope: 'global' });
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { ability } = useVeoPermissions();
 
-const { mutateAsync: doDelete, isLoading: deletionInProgress } = useMutation(
-  unitQueryDefinitions.mutations.delete
-);
+const { mutateAsync: doDelete, isLoading: deletionInProgress } = useMutation(unitQueryDefinitions.mutations.delete);
 
 const unitName = ref('');
 const unitNameIsValid = computed(() => unitName.value === props.unit?.name);
 const nameRules = [(name: any) => !!name || 'Unit name required'];
 
 const unitDeletionDisabled = computed(
-  () =>
-    deletionInProgress.value ||
-    ability.value.cannot('manage', 'units') ||
-    !unitNameIsValid.value
+  () => deletionInProgress.value || ability.value.cannot('manage', 'units') || !unitNameIsValid.value
 );
 const closeDeleteDialog = () => {
   emit('update:model-value', false);
@@ -132,9 +129,7 @@ const deleteUnit = async () => {
   try {
     await doDelete({ id: props.unit?.id });
     // if the unit's to be deleted equals the unit ID in the storage, we delete it from the storage to circumvent a 404 code at login
-    const storageUnitId = window.localStorage.getItem(
-      LOCAL_STORAGE_KEYS.LAST_UNIT
-    );
+    const storageUnitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
 
     if (props.unit?.id === storageUnitId) {
       localStorage.removeItem('last-unit');

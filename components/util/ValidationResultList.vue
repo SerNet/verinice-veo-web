@@ -21,41 +21,31 @@
       <v-divider v-if="index > 0" />
       <v-list-item
         class="d-block veo-object-message"
-        :class="
-          item.params && item.params.type ?
-            `veo-object-message--${item.params.type}`
-          : ''
-        ">
+        :class="item.params && item.params.type ? `veo-object-message--${item.params.type}` : ''"
+      >
         <v-list-item-title class="text-body-2" style="white-space: normal">
           {{ item.message }}
         </v-list-item-title>
-        <v-list-item-action
-          v-if="item.actions && item.actions.length"
-          class="fill-width ml-0 my-0">
+        <v-list-item-action v-if="item.actions && item.actions.length" class="fill-width ml-0 my-0">
           <v-btn
             v-if="item.actions && item.actions.length === 1"
             variant="text"
-            @click="item.actions && item.actions[0].callback(item, $emit)">
+            @click="item.actions && item.actions[0].callback(item, $emit)"
+          >
             <v-icon :icon="mdiLightbulbOutline" start />
-            {{
-              isFunction(item.actions[0].title) ?
-                item.actions[0].title(t)
-              : item.actions[0].title
-            }}
+            {{ isFunction(item.actions[0].title) ? item.actions[0].title(t) : item.actions[0].title }}
           </v-btn>
           <UtilNestedMenu
             v-else-if="item.actions && item.actions.length > 0"
             :items="formattedActions(item.actions)"
             bottom
             right
-            offset-y>
+            offset-y
+          >
             <template #activator="{ props: menu }">
               <v-tooltip location="left">
                 <template #activator="{ props: tooltip }">
-                  <v-btn
-                    :icon="mdiLightbulbOutline"
-                    variant="text"
-                    v-bind="mergeProps(menu, tooltip)" />
+                  <v-btn :icon="mdiLightbulbOutline" variant="text" v-bind="mergeProps(menu, tooltip)" />
                 </template>
                 <template #default>
                   {{ t('fix') }}
@@ -94,9 +84,7 @@ defineProps({
 
 const { t } = useI18n();
 
-const formattedActions: (
-  actions: VeoSchemaValidatorMessage['actions']
-) => INestedMenuEntries[] = (actions) =>
+const formattedActions: (actions: VeoSchemaValidatorMessage['actions']) => INestedMenuEntries[] = (actions) =>
   (actions || []).map((action) => ({
     key: action.key,
     title: action.title,

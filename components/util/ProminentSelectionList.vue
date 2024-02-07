@@ -26,7 +26,8 @@
       :title="item.title"
       class="rounded mb-2 py-2 bg-accent"
       two-line
-      @click="checkBoxSelectionOnly ? undefined : onItemSelected(item)">
+      @click="checkBoxSelectionOnly ? undefined : onItemSelected(item)"
+    >
       <template #default>
         <slot :name="`item-${item.value}`" />
       </template>
@@ -41,7 +42,8 @@
             : multiple ? mdiCheckboxBlankOutline
             : mdiRadioboxBlank
           "
-          @click="checkBoxSelectionOnly ? onItemSelected(item) : undefined" />
+          @click="checkBoxSelectionOnly ? onItemSelected(item) : undefined"
+        />
       </template>
     </v-list-item>
   </v-list>
@@ -50,12 +52,7 @@
 <script setup lang="ts">
 import { cloneDeep, isArray } from 'lodash';
 import { PropType } from 'vue';
-import {
-  mdiCheckboxBlankOutline,
-  mdiCheckboxMarked,
-  mdiRadioboxBlank,
-  mdiRadioboxMarked
-} from '@mdi/js';
+import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiRadioboxBlank, mdiRadioboxMarked } from '@mdi/js';
 
 export interface IProminentSelectionListItem {
   disabled?: boolean;
@@ -88,17 +85,14 @@ const emit = defineEmits<{
 }>();
 
 const isActive = (item: IProminentSelectionListItem) =>
-  item.value === props.modelValue ||
-  (isArray(props.modelValue) && props.modelValue.includes(item.value));
+  item.value === props.modelValue || (isArray(props.modelValue) && props.modelValue.includes(item.value));
 
 const onItemSelected = (item: IProminentSelectionListItem) => {
   let oldModelValue = cloneDeep(props.modelValue);
 
   if (props.multiple) {
     const existingItemPosition =
-      !isArray(props.modelValue) ? -1 : (
-        props.modelValue.findIndex((value) => item.value === value)
-      );
+      !isArray(props.modelValue) ? -1 : props.modelValue.findIndex((value) => item.value === value);
 
     if (existingItemPosition !== -1) {
       (oldModelValue as any[]).splice(existingItemPosition, 1);

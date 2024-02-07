@@ -15,51 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import {
-  QueryClient,
-  useMutation as vueQueryUseMutation,
-  useQueryClient
-} from '@tanstack/vue-query';
+import { QueryClient, useMutation as vueQueryUseMutation, useQueryClient } from '@tanstack/vue-query';
 import { UseMutationOptions } from '@tanstack/vue-query/build/lib';
 import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 import { omit } from 'lodash';
 
-import {
-  debugCacheAsArrayIncludesPrimaryKey,
-  IVeoQueryDefinition,
-  IVeoQueryParameters
-} from './query';
+import { debugCacheAsArrayIncludesPrimaryKey, IVeoQueryDefinition, IVeoQueryParameters } from './query';
 import { useRequest } from './request';
 
 export interface MutationOptions<_TVariables, TResult = unknown>
-  extends Omit<
-    UseMutationOptions<TResult, unknown, void, unknown>,
-    'queryFn' | 'onSuccess'
-  > {
-  onSuccess: (
-    queryClient: QueryClient,
-    data: TResult,
-    variables: IVeoMutationParameters,
-    context: any
-  ) => any;
+  extends Omit<UseMutationOptions<TResult, unknown, void, unknown>, 'queryFn' | 'onSuccess'> {
+  onSuccess: (queryClient: QueryClient, data: TResult, variables: IVeoMutationParameters, context: any) => any;
 }
 
 export interface IVeoMutationDefinition<TVariables, TResult>
-  extends Omit<
-    IVeoQueryDefinition<TVariables, TResult>,
-    'queryParameterTransformationFn' | 'staticQueryOptions'
-  > {
+  extends Omit<IVeoQueryDefinition<TVariables, TResult>, 'queryParameterTransformationFn' | 'staticQueryOptions'> {
   method?: 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
-  mutationParameterTransformationFn: (
-    _queryParameters: TVariables
-  ) => IVeoMutationParameters;
+  mutationParameterTransformationFn: (_queryParameters: TVariables) => IVeoMutationParameters;
   staticMutationOptions: MutationOptions<TVariables, TResult>;
 }
 
-export interface IVeoMutationParameters<
-  TParams = Record<string, any>,
-  TQuery = Record<string, any>
-> extends IVeoQueryParameters<TParams, TQuery> {
+export interface IVeoMutationParameters<TParams = Record<string, any>, TQuery = Record<string, any>>
+  extends IVeoQueryParameters<TParams, TQuery> {
   body?: any;
   json?: any;
 }
@@ -75,12 +52,7 @@ export const useMutation = <TVariables, TResult>(
   mutationDefinition: IVeoMutationDefinition<TVariables, TResult>,
   // Internally (in the mutation definition, we want to force the developer to use onSuccess, as usually every mutation implies invalidating an existing query), however further onSuccess callbacks are optional
   mutationOptions?: Omit<MutationOptions<TVariables, TResult>, 'onSuccess'> & {
-    onSuccess?: (
-      queryClient: QueryClient,
-      data: TResult,
-      variables: IVeoMutationParameters,
-      context: any
-    ) => void;
+    onSuccess?: (queryClient: QueryClient, data: TResult, variables: IVeoMutationParameters, context: any) => void;
   },
   options: { isInvalidating: boolean } = { isInvalidating: true }
 ) => {
@@ -91,18 +63,9 @@ export const useMutation = <TVariables, TResult>(
   const combinedOptions = computed(() => ({
     ...mutationDefinition.staticMutationOptions,
     ...mutationOptions,
-    onSuccess: async (
-      data: TResult,
-      variables: IVeoMutationParameters,
-      context: any
-    ) => {
+    onSuccess: async (data: TResult, variables: IVeoMutationParameters, context: any) => {
       if (options.isInvalidating) {
-        await mutationDefinition.staticMutationOptions.onSuccess(
-          queryClient,
-          data,
-          variables,
-          context
-        );
+        await mutationDefinition.staticMutationOptions.onSuccess(queryClient, data, variables, context);
       }
       if (mutationOptions?.onSuccess) {
         await mutationOptions.onSuccess(queryClient, data, variables, context);
@@ -129,23 +92,15 @@ export const useMutation = <TVariables, TResult>(
   return {
     ...result,
     mutateAsync: (mutationParameters: MaybeRef<any>) => {
-      const transformedParameters =
-        mutationDefinition.mutationParameterTransformationFn(
-          unref(mutationParameters)
-        );
+      const transformedParameters = mutationDefinition.mutationParameterTransformationFn(unref(mutationParameters));
       // Debugging stuff
       if (
         $config.public.debugCache === 'true' ||
-        debugCacheAsArrayIncludesPrimaryKey(
-          $config.public.debugCache,
-          mutationDefinition.primaryQueryKey
-        )
+        debugCacheAsArrayIncludesPrimaryKey($config.public.debugCache, mutationDefinition.primaryQueryKey)
       ) {
         // eslint-disable-next-line no-console
         console.log(
-          `[vueQuery] Mutation "${
-            mutationDefinition.primaryQueryKey
-          }" is running with parameters "${JSON.stringify(
+          `[vueQuery] Mutation "${mutationDefinition.primaryQueryKey}" is running with parameters "${JSON.stringify(
             mutationParameters
           )}". Fetching...\nOptions: "${JSON.stringify(combinedOptions.value)}"`
         );

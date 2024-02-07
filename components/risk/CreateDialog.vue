@@ -23,14 +23,16 @@
     :title="upperFirst(t('createRisk', 0).toString())"
     x-large
     fixed-footer
-    v-bind="$attrs">
+    v-bind="$attrs"
+  >
     <template #default>
       <ObjectFilterBar
         :domain-id="domainId"
         :filter="filter"
         :disabled-fields="['objectType', 'subType']"
         :required-fields="['objectType']"
-        @update:filter="onFilterUpdate" />
+        @update:filter="onFilterUpdate"
+      />
       <BaseCard>
         <ObjectTable
           v-model="selectedScenarios"
@@ -49,7 +51,8 @@
             'actions'
           ]"
           :items="notAlreadyUsedScenarios"
-          :loading="objectsQueryIsLoading" />
+          :loading="objectsQueryIsLoading"
+        />
       </BaseCard>
     </template>
     <template #dialog-options>
@@ -61,10 +64,9 @@
         variant="text"
         color="primary"
         :loading="creatingRisks"
-        :disabled="
-          !selectedScenarios.length || ability.cannot('manage', 'objects')
-        "
-        @click="onSubmit">
+        :disabled="!selectedScenarios.length || ability.cannot('manage', 'objects')"
+        @click="onSubmit"
+      >
         {{
           t('createRisk', {
             plural: selectedScenarios.length,
@@ -83,9 +85,7 @@ import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import objectQueryDefinitions, {
-  IVeoFetchRisksParameters
-} from '~/composables/api/queryDefinitions/objects';
+import objectQueryDefinitions, { IVeoFetchRisksParameters } from '~/composables/api/queryDefinitions/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useFetchObjects } from '~/composables/api/objects';
@@ -116,14 +116,9 @@ export default defineComponent({
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
 
-    const { mutateAsync: createRisk } = useMutation(
-      objectQueryDefinitions.mutations.createRisk
-    );
+    const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createRisk);
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
-    const { data: domain } = useQuery(
-      domainQueryDefinitions.queries.fetchDomain,
-      fetchDomainQueryParameters
-    );
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     // Layout stuff
     const dialog = computed({
@@ -156,9 +151,7 @@ export default defineComponent({
         }
 
         // Add scenario to selected objects
-        const object = objects.value.items.find(
-          (object) => object.id === objectId
-        );
+        const object = objects.value.items.find((object) => object.id === objectId);
         if (object) {
           selectedScenarios.value.push(object);
         }
@@ -195,35 +188,26 @@ export default defineComponent({
       endpoint: route.params.objectType as string,
       id: props.objectId
     }));
-    const { data: risks } = useQuery(
-      objectQueryDefinitions.queries.fetchRisks,
-      risksQueryParameters
-    );
+    const { data: risks } = useQuery(objectQueryDefinitions.queries.fetchRisks, risksQueryParameters);
 
     watch(() => objects.value, polluteTable, { deep: true, immediate: true });
     watch(() => risks.value, polluteTable, { deep: true, immediate: true });
 
-    const notAlreadyUsedScenarios = computed<
-      IVeoPaginatedResponse<IVeoEntity[] & { disabled?: boolean }> | undefined
-    >(() => {
-      const _objects = cloneDeep(objects.value);
+    const notAlreadyUsedScenarios = computed<IVeoPaginatedResponse<IVeoEntity[] & { disabled?: boolean }> | undefined>(
+      () => {
+        const _objects = cloneDeep(objects.value);
 
-      _objects?.items.forEach((item: IVeoEntity & { disabled?: boolean }) => {
-        if (
-          risks.value?.find(
-            (risk) => getEntityDetailsFromLink(risk.scenario).id === item.id
-          )
-        ) {
-          item.disabled = true;
-        }
-      });
+        _objects?.items.forEach((item: IVeoEntity & { disabled?: boolean }) => {
+          if (risks.value?.find((risk) => getEntityDetailsFromLink(risk.scenario).id === item.id)) {
+            item.disabled = true;
+          }
+        });
 
-      return _objects;
-    });
-
-    const domainRiskDefinitionKey = computed(
-      () => Object.keys(domain.value?.riskDefinitions || {})[0]
+        return _objects;
+      }
     );
+
+    const domainRiskDefinitionKey = computed(() => Object.keys(domain.value?.riskDefinitions || {})[0]);
     // Create risk stuff
     const creatingRisks = ref(false);
 
@@ -235,13 +219,7 @@ export default defineComponent({
 
       // Create new risks, but only for those scenarios that aren't yet linked to a risk!
       const newRisks = selectedScenarios.value
-        .filter(
-          (scenario) =>
-            !risks.value?.find(
-              (risk) =>
-                getEntityDetailsFromLink(risk.scenario).id === scenario.id
-            )
-        )
+        .filter((scenario) => !risks.value?.find((risk) => getEntityDetailsFromLink(risk.scenario).id === scenario.id))
         .map((scenario) => ({
           scenario: {
             targetUri: `${config.public.apiUrl}/scenarios/${scenario.id}`
@@ -268,16 +246,11 @@ export default defineComponent({
             })
           )
         );
-        displaySuccessMessage(
-          t('risksCreated', selectedScenarios.value.length)
-        );
+        displaySuccessMessage(t('risksCreated', selectedScenarios.value.length));
         selectedScenarios.value = [];
         emit('success');
       } catch (e: any) {
-        displayErrorMessage(
-          t('createRiskError', selectedScenarios.value.length),
-          e.message
-        );
+        displayErrorMessage(t('createRiskError', selectedScenarios.value.length), e.message);
       }
 
       creatingRisks.value = false;

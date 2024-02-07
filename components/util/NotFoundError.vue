@@ -17,11 +17,7 @@
 -->
 <template>
   <div class="d-flex flex-column align-center justify-center fill-height">
-    <v-img
-      class="fill-width"
-      src="/images/objectNotFound.svg"
-      max-height="300px"
-      contain />
+    <v-img class="fill-width" src="/images/objectNotFound.svg" max-height="300px" contain />
     <h1 class="text-h1 mt-8">
       {{ t('notFoundCode').toString() }}
     </h1>

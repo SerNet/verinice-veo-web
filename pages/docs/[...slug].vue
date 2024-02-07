@@ -37,9 +37,7 @@ useHead(() => ({
   }
 }));
 
-const normalizedPath = computed(() =>
-  !isArray(route.params.slug) ? [route.params.slug] : route.params.slug
-);
+const normalizedPath = computed(() => (!isArray(route.params.slug) ? [route.params.slug] : route.params.slug));
 const _document = useDoc({
   path: `/${normalizedPath.value.join('/') || 'index'}`
 });
@@ -56,21 +54,15 @@ const updateBreadcrumbs = () => {
   }
 
   // Get all path segments and the nesting level to know how many breadcrumb entries have to be created
-  const pathSegments = (_document.value?._path || '')
-    .split('/')
-    .filter((segment) => segment);
+  const pathSegments = (_document.value?._path || '').split('/').filter((segment) => segment);
   const nestingLevel = pathSegments.length;
 
   // Greater than 0 as we don't want to include the index page in the breadcrumbs
   for (let i = nestingLevel; i > 0; i--) {
     const currentPathSegments = pathSegments.slice(0, i);
-    const unlocalizedCurrentPath = currentPathSegments
-      .join('/')
-      .replace(/(\.\w+)/, '');
+    const unlocalizedCurrentPath = currentPathSegments.join('/').replace(/(\.\w+)/, '');
 
-    const breadcrumbItem = (docs.value || []).find(
-      (doc) => doc._path === `/${unlocalizedCurrentPath}`
-    );
+    const breadcrumbItem = (docs.value || []).find((doc) => doc._path === `/${unlocalizedCurrentPath}`);
     if (breadcrumbItem) {
       addCustomBreadcrumb({
         to: `/docs${breadcrumbItem._path}`,
@@ -89,10 +81,7 @@ const routeToHeader = () => {
   if (!_document.value || !route.hash) {
     return;
   }
-  scrollTo(
-    0,
-    document?.querySelector(route.hash)?.getBoundingClientRect()?.y || 0
-  );
+  scrollTo(0, document?.querySelector(route.hash)?.getBoundingClientRect()?.y || 0);
 };
 
 watch(() => _document.value?._path, updateBreadcrumbs, { immediate: true });

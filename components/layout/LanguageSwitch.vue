@@ -21,10 +21,7 @@
       <div v-bind="tooltip">
         <v-menu offset-y bottom left nudge-bottom="2">
           <template #activator="{ props: menu }">
-            <v-btn
-              v-bind="menu"
-              data-component-name="language-select"
-              :icon="mdiTranslate" />
+            <v-btn v-bind="menu" data-component-name="language-select" :icon="mdiTranslate" />
           </template>
 
           <template #default>
@@ -34,7 +31,8 @@
               mandatory
               :items="availableLocales"
               item-title="name"
-              item-value="code" />
+              item-value="code"
+            />
           </template>
         </v-menu>
       </div>
@@ -59,9 +57,7 @@ const selectedLocale = computed({
   }
 });
 
-const availableLocales = computed<LocaleObject[]>(
-  () => locales.value as LocaleObject[]
-);
+const availableLocales = computed<LocaleObject[]>(() => locales.value as LocaleObject[]);
 </script>
 
 <i18n>

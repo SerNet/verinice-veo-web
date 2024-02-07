@@ -71,7 +71,8 @@
       :hint="t('hint', [DATE_HINT])"
       variant="underlined"
       @update:model-value="onDateInput"
-      @click:clear="$emit('update:model-value', undefined)" />
+      @click:clear="$emit('update:model-value', undefined)"
+    />
   </div>
 </template>
 
@@ -95,10 +96,7 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
     en: 'Lets the user choose a date from a calender-like component.',
     de: 'Lässt den User mithilfe einer kalendermäßigen Komponente ein Datum auswählen.'
   },
-  conditions: (props) => [
-    props.objectSchema.type === 'string',
-    props.objectSchema.format === 'date'
-  ]
+  conditions: (props) => [props.objectSchema.type === 'string', props.objectSchema.format === 'date']
 };
 
 export default defineComponent({
@@ -160,10 +158,7 @@ export default defineComponent({
       const date = parseInt(splittedDateString[2] || '', 10);
       if (year && month && date) {
         dateObject.setFullYear(year, month - 1, date);
-        emit(
-          'update:model-value',
-          formatISO(dateObject, { representation: 'date' })
-        );
+        emit('update:model-value', formatISO(dateObject, { representation: 'date' }));
       } else {
         emit('update:model-value', newValue);
       }

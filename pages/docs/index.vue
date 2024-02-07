@@ -28,20 +28,14 @@
     <div class="coverpage document">
       <h1>verinice.veo</h1>
       <h3>{{ t('documentation') }}</h3>
-      <img
-        src="/images/documentation/coverpage-icongroup.svg"
-        class="mt-12 mb-2" />
+      <img src="/images/documentation/coverpage-icongroup.svg" class="mt-12 mb-2" />
       <span>{{ t('lastModified') }} {{ new Date().toLocaleDateString() }}</span>
       <LayoutAppLogoDesktop style="position: absolute; bottom: 0" />
     </div>
     <div class="document">
       <template v-if="documents">
         <TableOfContents class="page" :model-value="navigation" />
-        <div
-          v-for="document in documents"
-          :id="document._path"
-          :key="document._path"
-          class="page">
+        <div v-for="document in documents" :id="document._path" :key="document._path" class="page">
           <h2>{{ document.title }}</h2>
           <div>
             <ContentRendererMarkdown :value="document" />
@@ -90,10 +84,7 @@ const getTranslatedHierarchyAsString = (path: string) => {
   const translatedParts = [];
   while (parts.length > 0) {
     parts.pop();
-    translatedParts.push(
-      navigation.value.find((item) => item._path === `/${parts.join('/')}`)
-        ?.title
-    );
+    translatedParts.push(navigation.value.find((item) => item._path === `/${parts.join('/')}`)?.title);
   }
   // Pop as the first page is always the welcome page (we don't want to show that)
   translatedParts.pop();
@@ -120,11 +111,9 @@ useHead(() => ({
                 afterRendered() {
                   document.dispatchEvent(new Event('PAGEDJS_AFTER_RENDERED'));
                   // We have to register the event handler here, as @click gets broken by paged.js
-                  document
-                    .querySelector('#print-button')
-                    ?.addEventListener('click', () => {
-                      window.print();
-                    });
+                  document.querySelector('#print-button')?.addEventListener('click', () => {
+                    window.print();
+                  });
                 }
               }
 

@@ -31,33 +31,26 @@
     :multiple="multiple"
     autocomplete="off"
     variant="underlined"
-    @click:clear="$emit('update:model-value', undefined)">
+    @click:clear="$emit('update:model-value', undefined)"
+  >
     <template v-if="multiple" #item="{ props, item }">
-      <v-list-item
-        v-if="item.value === '_empty_array_'"
-        v-bind="props"
-        :active="isEmpty(modelValue)"
-        color="primary" />
+      <v-list-item v-if="item.value === '_empty_array_'" v-bind="props" :active="isEmpty(modelValue)" color="primary" />
       <v-list-item
         v-else
         v-bind="props"
         style="max-height: 48px"
         :title="undefined"
         :active="isArray(modelValue) && modelValue?.includes(item.value)"
-        color="primary">
+        color="primary"
+      >
         <div class="d-flex align-center">
           <v-icon
-            :color="
-              isArray(modelValue) && modelValue?.includes(item.value) ?
-                'primary'
-              : undefined
-            "
+            :color="isArray(modelValue) && modelValue?.includes(item.value) ? 'primary' : undefined"
             start
             :icon="
-              isArray(modelValue) && modelValue?.includes(item.value) ?
-                mdiCheckboxMarked
-              : mdiCheckboxBlankOutline
-            " />
+              isArray(modelValue) && modelValue?.includes(item.value) ? mdiCheckboxMarked : mdiCheckboxBlankOutline
+            "
+          />
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </div>
       </v-list-item>
@@ -83,13 +76,9 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
     de: 'Lässt den Nutzer aus einer Liste vorkonfigurierter Einträge auswählen, die Liste kann per Textfeld gefiltert werden.'
   },
   conditions: (props) => [
-    [undefined, 'string', 'array', 'integer', 'number'].includes(
-      props.objectSchema.type
-    ),
-    typeof props.objectSchema.enum !== 'undefined' ||
-      typeof props.objectSchema.items?.enum !== 'undefined',
-    typeof props.options !== 'undefined' &&
-      props.options.format === 'autocomplete'
+    [undefined, 'string', 'array', 'integer', 'number'].includes(props.objectSchema.type),
+    typeof props.objectSchema.enum !== 'undefined' || typeof props.objectSchema.items?.enum !== 'undefined',
+    typeof props.options !== 'undefined' && props.options.format === 'autocomplete'
   ]
 };
 
@@ -102,9 +91,7 @@ export default defineComponent({
 
     // @ts-ignore At this point we expect objectSchema to be set, so type WILL exist
     const multiple = computed(
-      () =>
-        props.objectSchema.type === 'array' &&
-        typeof props.objectSchema.items?.enum !== 'undefined'
+      () => props.objectSchema.type === 'array' && typeof props.objectSchema.items?.enum !== 'undefined'
     );
 
     // If the user deselects from one item to zero items, we want to pass undefined instead of an empty array as an empty array has to be explicitly selected
@@ -114,36 +101,26 @@ export default defineComponent({
       } else {
         emit(
           'update:model-value',
-          Array.isArray(newValue) ?
-            newValue.filter((entry) => entry !== '_empty_array_')
-          : newValue
+          Array.isArray(newValue) ? newValue.filter((entry) => entry !== '_empty_array_') : newValue
         );
       }
     };
 
     const localItems = computed(() =>
-      (multiple.value ?
-        [{ title: t('nothing'), value: '_empty_array_' }]
-      : []
-      ).concat(props.items)
+      (multiple.value ? [{ title: t('nothing'), value: '_empty_array_' }] : []).concat(props.items)
     );
 
     // Needed as _empty_array_ is needed as a value to display the text when selected while it should never be passed down to VeoForms
     const internalValue = computed({
       get() {
-        return (
-            props.modelValue &&
-              Array.isArray(props.modelValue) &&
-              props.modelValue.length === 0
-          ) ?
+        return props.modelValue && Array.isArray(props.modelValue) && props.modelValue.length === 0 ?
             ['_empty_array_']
           : props.modelValue;
       },
       set(newValue: any) {
         const newValueIsArray = Array.isArray(newValue);
         const oldValueIsArray = Array.isArray(props.modelValue);
-        const newValueIsEmpty =
-          Array.isArray(newValue) && newValue?.includes('_empty_array_');
+        const newValueIsEmpty = Array.isArray(newValue) && newValue?.includes('_empty_array_');
         if (
           newValueIsArray &&
           newValueIsEmpty &&

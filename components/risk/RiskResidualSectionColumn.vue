@@ -22,9 +22,7 @@
     </h3>
     <v-select
       data-test-selector="residual-risk"
-      :model-value="
-        userDefinedResidualRiskPresent ? userDefinedResidualRisk : residualRisk
-      "
+      :model-value="userDefinedResidualRiskPresent ? userDefinedResidualRisk : residualRisk"
       color="primary"
       :label="upperFirst(t('residualRisk').toString())"
       :items="riskValues"
@@ -32,15 +30,12 @@
       :clearable="!!(userDefinedResidualRiskPresent && riskTreatments.length)"
       hide-details
       variant="underlined"
-      @update:model-value="emit('update:user-defined-residual-risk', $event)">
+      @update:model-value="emit('update:user-defined-residual-risk', $event)"
+    >
       <template #selection="{ item }">
         <div class="d-flex justify-space-between fill-width">
           <span>{{ item.title }}</span>
-          <v-tooltip
-            v-if="
-              userDefinedResidualRisk === undefined && riskTreatments.length
-            "
-            top>
+          <v-tooltip v-if="userDefinedResidualRisk === undefined && riskTreatments.length" top>
             <template #activator="{ props: tooltipProps }">
               <v-icon v-bind="tooltipProps" :icon="mdiInformationOutline" />
             </template>
@@ -63,9 +58,8 @@
           hide-details
           variant="underlined"
           v-bind="dialogProps"
-          @update:model-value="
-            $emit('update:residual-risk-explanation', $event)
-          " />
+          @update:model-value="$emit('update:residual-risk-explanation', $event)"
+        />
       </template>
       <template #input>
         <v-textarea
@@ -79,9 +73,8 @@
           rows="3"
           no-resize
           variant="underlined"
-          @update:model-value="
-            $emit('update:residual-risk-explanation', $event)
-          " />
+          @update:model-value="$emit('update:residual-risk-explanation', $event)"
+        />
       </template>
     </v-edit-dialog>
   </v-col>
@@ -129,16 +122,11 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits([
-  'update:residual-risk-explanation',
-  'update:user-defined-residual-risk'
-]);
+const emit = defineEmits(['update:residual-risk-explanation', 'update:user-defined-residual-risk']);
 
 const { t, locale } = useI18n();
 
-const userDefinedResidualRiskPresent = computed(
-  () => props.userDefinedResidualRisk !== undefined
-);
+const userDefinedResidualRiskPresent = computed(() => props.userDefinedResidualRisk !== undefined);
 
 const riskValues = computed(() =>
   props.riskDefinition.riskValues.map((level) => ({

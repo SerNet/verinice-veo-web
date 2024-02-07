@@ -22,7 +22,8 @@
     data-component-name="form-element-direction"
     :label="t('direction')"
     variant="underlined"
-    :prepend-inner-icon="mdiSwapVertical" />
+    :prepend-inner-icon="mdiSwapVertical"
+  />
 </template>
 
 <script setup lang="ts">
@@ -40,10 +41,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (
-    event: 'update:form-schema-element',
-    formSchemaElement: IVeoFormSchemaItem
-  ): void;
+  (event: 'update:form-schema-element', formSchemaElement: IVeoFormSchemaItem): void;
 }>();
 
 const { t } = useI18n();

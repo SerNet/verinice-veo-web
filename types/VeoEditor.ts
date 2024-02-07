@@ -95,10 +95,7 @@ export interface IControlElement {
   weight: (weights: IControlElementContext) => number;
 }
 
-export type IControlElementType = Pick<
-  IControlElement,
-  'code' | 'name' | 'description'
->;
+export type IControlElementType = Pick<IControlElement, 'code' | 'name' | 'description'>;
 
 /**
  * Const array defining all possible control types and when which input type shall be used
@@ -121,8 +118,7 @@ export const INPUT_ELEMENTS = [
           (weights.schema.items instanceof Object &&
             !Array.isArray(weights.schema.items) &&
             typeof weights.schema.items.enum !== 'undefined'),
-        typeof weights.options !== 'undefined' &&
-          weights.options.format === 'autocomplete'
+        typeof weights.options !== 'undefined' && weights.options.format === 'autocomplete'
       ])
   },
   {
@@ -130,19 +126,14 @@ export const INPUT_ELEMENTS = [
     description: CHECKBOX_CONTROL_DEFINITION.description,
     name: CHECKBOX_CONTROL_DEFINITION.name,
     type: ['boolean'],
-    weight: (weights) =>
-      calculateConditionsScore([weights.schema.type === 'boolean'])
+    weight: (weights) => calculateConditionsScore([weights.schema.type === 'boolean'])
   },
   {
     code: 'InputDate',
     description: INPUT_DATE_CONTROL_DEFINITION.description,
     name: INPUT_DATE_CONTROL_DEFINITION.name,
     type: ['string'],
-    weight: (weights) =>
-      calculateConditionsScore([
-        weights.schema.type === 'string',
-        weights.schema.format === 'date'
-      ])
+    weight: (weights) => calculateConditionsScore([weights.schema.type === 'string', weights.schema.format === 'date'])
   },
   {
     code: 'InputDateTime',
@@ -150,10 +141,7 @@ export const INPUT_ELEMENTS = [
     name: INPUT_DATE_TIME_CONTROL_DEFINITION.name,
     type: ['string'],
     weight: (weights) =>
-      calculateConditionsScore([
-        weights.schema.type === 'string',
-        weights.schema.format === 'date-time'
-      ])
+      calculateConditionsScore([weights.schema.type === 'string', weights.schema.format === 'date-time'])
   },
   {
     code: 'InputNumber',
@@ -161,9 +149,7 @@ export const INPUT_ELEMENTS = [
     name: INPUT_NUMBER_CONTROL_DEFINITION.name,
     type: ['number', 'integer'],
     weight: (weights) =>
-      calculateConditionsScore([
-        weights.schema.type === 'number' || weights.schema.type === 'integer'
-      ])
+      calculateConditionsScore([weights.schema.type === 'number' || weights.schema.type === 'integer'])
   },
   {
     alternatives: ['InputTextMultiline', 'MarkdownEditor'],
@@ -171,11 +157,7 @@ export const INPUT_ELEMENTS = [
     description: INPUT_TEXT_CONTROL_DEFINITION.description,
     name: INPUT_TEXT_CONTROL_DEFINITION.name,
     type: ['string'],
-    weight: (weights) =>
-      calculateConditionsScore(
-        [weights.schema.type === 'string'],
-        Number.EPSILON
-      )
+    weight: (weights) => calculateConditionsScore([weights.schema.type === 'string'], Number.EPSILON)
   },
   {
     code: 'InputTextMultiline',
@@ -186,8 +168,7 @@ export const INPUT_ELEMENTS = [
     weight: (weights) =>
       calculateConditionsScore([
         weights.schema.type === 'string',
-        typeof weights.options !== 'undefined' &&
-          weights.options.format === 'multiline'
+        typeof weights.options !== 'undefined' && weights.options.format === 'multiline'
       ])
   },
   {
@@ -195,11 +176,7 @@ export const INPUT_ELEMENTS = [
     description: INPUT_URI_CONTROL_DEFINITION.description,
     name: INPUT_URI_CONTROL_DEFINITION.name,
     type: ['string'],
-    weight: (weights) =>
-      calculateConditionsScore([
-        weights.schema.type === 'string',
-        weights.schema.format === 'uri'
-      ])
+    weight: (weights) => calculateConditionsScore([weights.schema.type === 'string', weights.schema.format === 'uri'])
   },
   {
     code: 'LinksField',
@@ -215,9 +192,7 @@ export const INPUT_ELEMENTS = [
         !Array.isArray(weights.schema.items) &&
         weights.schema.items.properties &&
         weights.schema.items.properties;
-      const isTarget = !!(
-        schemaItemsProperties && schemaItemsProperties.target
-      );
+      const isTarget = !!(schemaItemsProperties && schemaItemsProperties.target);
       return calculateConditionsScore([
         weights.schema.type === 'array',
         typeof weights.elements !== 'undefined',
@@ -234,8 +209,7 @@ export const INPUT_ELEMENTS = [
     weight: (weights) =>
       calculateConditionsScore([
         weights.schema.type === 'string',
-        typeof weights.options !== 'undefined' &&
-          weights.options.format === 'markdown'
+        typeof weights.options !== 'undefined' && weights.options.format === 'markdown'
       ])
   },
   {
@@ -257,8 +231,7 @@ export const INPUT_ELEMENTS = [
           weights.schema.type === 'integer' ||
           weights.schema.type === 'number',
         typeof weights.schema.enum !== 'undefined',
-        typeof weights.options !== 'undefined' &&
-          weights.options.format === 'radio'
+        typeof weights.options !== 'undefined' && weights.options.format === 'radio'
       ])
   },
   {
@@ -287,16 +260,10 @@ export const INPUT_ELEMENTS = [
  * @param conditions The conditions to check against.
  * @param additionalCustomAdvantage Increases the score by x.
  */
-function calculateConditionsScore(
-  conditions: boolean[],
-  additionalCustomAdvantage = 0
-): number {
+function calculateConditionsScore(conditions: boolean[], additionalCustomAdvantage = 0): number {
   // If every condition is satisfied, then calculate number of conditions
   // else not every condition is satisfied and therefore return 0
-  return (
-    (isEveryConditionTrue(conditions) ? conditions.length : 0) +
-    additionalCustomAdvantage
-  );
+  return (isEveryConditionTrue(conditions) ? conditions.length : 0) + additionalCustomAdvantage;
 }
 
 function isEveryConditionTrue(conditions: boolean[]): boolean {
@@ -306,15 +273,9 @@ function isEveryConditionTrue(conditions: boolean[]): boolean {
 /**
  * Returns an array containing all control types with the one fitting best at the front and the one fitting worst at the end of the array.
  */
-export function eligibleInputElements(
-  type: string,
-  elementContext: IControlElementContext
-) {
+export function eligibleInputElements(type: string, elementContext: IControlElementContext) {
   return INPUT_ELEMENTS.filter((element) => element.type.includes(type))
-    .sort(
-      (a: IControlElement, b: IControlElement) =>
-        b.weight(elementContext) - a.weight(elementContext)
-    )
+    .sort((a: IControlElement, b: IControlElement) => b.weight(elementContext) - a.weight(elementContext))
     .filter((element) => element.weight(elementContext) > 0);
 }
 
@@ -327,12 +288,9 @@ export function controlTypeAlternatives(
   controlType: string,
   controlDetails: IControlElementContext
 ): IControlElementType[] {
-  const currentElement = INPUT_ELEMENTS.find(
-    (element) => element.code === controlType
-  );
+  const currentElement = INPUT_ELEMENTS.find((element) => element.code === controlType);
   const parentElement = INPUT_ELEMENTS.find(
-    (element) =>
-      element.alternatives?.find((alternative) => alternative === controlType)
+    (element) => element.alternatives?.find((alternative) => alternative === controlType)
   );
 
   const availableElements = INPUT_ELEMENTS.filter(
@@ -341,11 +299,7 @@ export function controlTypeAlternatives(
       currentElement?.alternatives?.includes(element.code) ||
       parentElement?.alternatives?.includes(element.code)
   )
-    .filter(
-      (element) =>
-        element.applicableAlternative === undefined ||
-        element.applicableAlternative(controlDetails)
-    )
+    .filter((element) => element.applicableAlternative === undefined || element.applicableAlternative(controlDetails))
     .map((element) => ({
       code: element.code,
       description: element.description,

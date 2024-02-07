@@ -18,10 +18,7 @@
 <template>
   <v-app>
     <v-app-bar :class="$style['app-bar']" flat>
-      <nuxt-link
-        to="/units"
-        class="text-decoration-none ml-4"
-        data-veo-test="unit-page-link">
+      <nuxt-link to="/units" class="text-decoration-none ml-4" data-veo-test="unit-page-link">
         <LayoutAppBarLogo style="height: 60px" class="d-flex align-center" />
       </nuxt-link>
 
@@ -43,7 +40,8 @@
             to="/docs/index"
             exact
             v-bind="props"
-            data-component-name="docs-nav-item">
+            data-component-name="docs-nav-item"
+          >
             <v-icon :icon="mdiBookOpenBlankVariant" />
           </v-btn>
         </template>
@@ -59,7 +57,8 @@
         :prename="profile.firstName"
         :lastname="profile.lastName"
         :email="profile.email"
-        @logout="logout" />
+        @logout="logout"
+      />
       <v-btn v-else color="primary" icon :href="$config.public.accountPath">
         <v-icon :icon="mdiAccountCircleOutline" />
       </v-btn>

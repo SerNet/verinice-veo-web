@@ -35,14 +35,16 @@
               clearable
               :label="`${t('languageFile')}*`"
               show-size
-              @update:model-value="uploadLanguageFile" />
+              @update:model-value="uploadLanguageFile"
+            />
             <v-row v-if="sheets.length > 1" class="mt-3">
               <v-col cols="12" md="4">
                 <v-select
                   v-model="sheet"
                   :disabled="!languageFile || uploadingLanguageFile"
                   :items="sheets"
-                  :label="`${t('sheet')}*`" />
+                  :label="`${t('sheet')}*`"
+                />
               </v-col>
             </v-row>
             <v-row class="mt-3">
@@ -55,22 +57,20 @@
                   :disabled="!languageFile || uploadingLanguageFile"
                   :items="availableColumns"
                   :rules="[requiredRule]"
-                  :label="`${t('column')}*`" />
+                  :label="`${t('column')}*`"
+                />
               </v-col>
               <v-col v-for="language of availableLanguages" :key="language">
                 <p class="text-body-2 mb-0">
-                  {{
-                    t('langColumn', [
-                      localeDetailsMap[language].name || language
-                    ])
-                  }}
+                  {{ t('langColumn', [localeDetailsMap[language].name || language]) }}
                 </p>
                 <v-select
                   v-model="languageColumns[language]"
                   :disabled="!languageFile || uploadingLanguageFile"
                   :items="availableColumns"
                   :rules="[requiredRule]"
-                  :label="`${t('column')}*`" />
+                  :label="`${t('column')}*`"
+                />
               </v-col>
             </v-row>
             <div class="d-flex justify-space-between align-center">
@@ -78,18 +78,16 @@
                 :model-value="replaceTranslations"
                 color="primary"
                 :label="t('replaceTranslations')"
-                @update:model-value="
-                  $emit('update:replace-translations', $event)
-                " />
+                @update:model-value="$emit('update:replace-translations', $event)"
+              />
               <v-btn
                 color="primary"
                 flat
                 :disabled="!formIsValid"
                 role="submit"
                 type="submit"
-                @click="
-                  importFunction(columns, idColumn || 0, languageColumns)
-                ">
+                @click="importFunction(columns, idColumn || 0, languageColumns)"
+              >
                 {{ t('import') }}
               </v-btn>
             </div>
@@ -117,11 +115,7 @@ export default defineComponent({
     },
     importFunction: {
       type: Function as PropType<
-        (
-          columns: string[][],
-          idColumn: number,
-          languageColumns: { [lang: string]: number }
-        ) => void
+        (columns: string[][], idColumn: number, languageColumns: { [lang: string]: number }) => void
       >,
       required: true
     },
@@ -138,13 +132,10 @@ export default defineComponent({
 
     // Layout / form stuff
     const localeDetailsMap = computed(() =>
-      (locales.value as LocaleObject[]).reduce(
-        (previousValue, currentValue) => {
-          previousValue[currentValue.code] = currentValue;
-          return previousValue;
-        },
-        Object.create(null)
-      )
+      (locales.value as LocaleObject[]).reduce((previousValue, currentValue) => {
+        previousValue[currentValue.code] = currentValue;
+        return previousValue;
+      }, Object.create(null))
     );
 
     const formIsValid = ref(false);
@@ -187,10 +178,7 @@ export default defineComponent({
         uploadingLanguageFile.value = false;
       };
       fileReader.onerror = () => {
-        displayErrorMessage(
-          t('fileUploadFailed').toString(),
-          JSON.stringify(fileReader.error)
-        );
+        displayErrorMessage(t('fileUploadFailed').toString(), JSON.stringify(fileReader.error));
         uploadingLanguageFile.value = false;
       };
 

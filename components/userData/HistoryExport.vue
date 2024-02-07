@@ -27,20 +27,17 @@
     :alert-body="t('alertBody')"
     :items="state.zipArchives"
     :is-loading="state.isLoading"
-    :handle-click="downloadZip">
+    :handle-click="downloadZip"
+  >
     <!-- Prepare Data -->
     <template v-if="state.prepare.phase !== PrepPhase.Done" #prepareData>
       <div class="d-flex align-center ms-auto mt-4">
         <div
-          v-if="
-            state.prepare.phase === PrepPhase.Zip ||
-            state.prepare.phase === PrepPhase.Download
-          "
-          class="text-subtitle-1 text-primary me-4">
+          v-if="state.prepare.phase === PrepPhase.Zip || state.prepare.phase === PrepPhase.Download"
+          class="text-subtitle-1 text-primary me-4"
+        >
           <span>{{ t(`prepareHistoryPhases.${state.prepare?.phase}`) }}</span>
-          <span
-            class="font-weight-black"
-            style="display: inline-block; width: 48px"
+          <span class="font-weight-black" style="display: inline-block; width: 48px"
             >&nbsp;{{ Math.floor(progressBar) }}&nbsp;%</span
           >
         </div>
@@ -48,7 +45,8 @@
           color="primary"
           variant="outlined"
           :loading="state.prepare.phase !== PrepPhase.Idle"
-          @click="prepareData">
+          @click="prepareData"
+        >
           {{ t('btnPrepareDownload') }}
 
           <template #loader>
@@ -63,7 +61,8 @@
   <BaseDialog
     :close-function="toggleWarnOnLeaveDialog"
     :model-value="state.warnOnLeave"
-    :title="t('alertLeavePageTitle')">
+    :title="t('alertLeavePageTitle')"
+  >
     <template #default>
       <v-card-text>
         {{ t('alertLeavePageCopy') }}
@@ -84,11 +83,7 @@
 
 <script setup lang="ts">
 import { download } from '~/lib/jsonToZip';
-import {
-  loadHistory,
-  chunkHistory,
-  createZipArchives
-} from './modules/HistoryExport';
+import { loadHistory, chunkHistory, createZipArchives } from './modules/HistoryExport';
 import { logError } from './modules/HandleError';
 import { useQuerySync } from '~/composables/api/utils/query';
 import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
@@ -117,10 +112,7 @@ const { t } = useI18n();
 const state: IHistoryState = reactive({
   zipArchives: [],
   isLoading: [],
-  showAlert: computed(
-    () =>
-      state.zipArchives.length === 0 && state.prepare.phase === PrepPhase.Done
-  ),
+  showAlert: computed(() => state.zipArchives.length === 0 && state.prepare.phase === PrepPhase.Done),
   prepare: {
     phase: PrepPhase.Idle,
     currentPercentage: 0,
@@ -158,10 +150,7 @@ async function prepareData() {
       size: 5000
     });
     const chunkedHistory = chunkHistory(history);
-    const zipArchives = await createZipArchives(
-      updateLoadingState,
-      chunkedHistory
-    );
+    const zipArchives = await createZipArchives(updateLoadingState, chunkedHistory);
     state.zipArchives.push(...zipArchives);
   } catch (error) {
     handleError(error);
@@ -171,10 +160,7 @@ async function prepareData() {
   }
 }
 
-async function fetchHistoryData({
-  size = 10000,
-  afterId
-}: { size?: number; afterId?: string | undefined } = {}) {
+async function fetchHistoryData({ size = 10000, afterId }: { size?: number; afterId?: string | undefined } = {}) {
   return useQuerySync(historyQueryDefinitions.queries.fetchPagedRevisions, {
     size: size.toString(),
     afterId
@@ -217,10 +203,7 @@ function confirmPageLeave(isLeaving: boolean) {
 
 onBeforeRouteLeave((to, from, next) => {
   // Prompt user if download in progress
-  if (
-    state.prepare.phase === PrepPhase.Download ||
-    state.prepare.phase === PrepPhase.Zip
-  ) {
+  if (state.prepare.phase === PrepPhase.Download || state.prepare.phase === PrepPhase.Zip) {
     askForConfirmation().then((isLeaving) => {
       if (isLeaving) next();
     });

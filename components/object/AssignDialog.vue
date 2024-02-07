@@ -20,7 +20,8 @@
     v-bind="$attrs"
     :title="t('title')"
     large
-    @update:model-value="emit('update:model-value', $event)">
+    @update:model-value="emit('update:model-value', $event)"
+  >
     <template #default>
       <BaseAlert
         :model-value="true"
@@ -28,7 +29,8 @@
         :type="VeoAlertType.INFO"
         class="ma-4"
         flat
-        no-close-button>
+        no-close-button
+      >
         {{ t('domainAssignmentHint') }}
       </BaseAlert>
 
@@ -42,7 +44,8 @@
             v-model="selectedDomains"
             :items="domainProperties"
             check-box-selection-only
-            multiple>
+            multiple
+          >
             <template v-for="domain of availableDomains" #[`item-${domain.id}`]>
               <div v-if="selectedDomains.includes(domain.id)" :key="domain.id">
                 <v-row class="mt-2">
@@ -55,9 +58,8 @@
                       :rules="[requiredRule]"
                       variant="solo-filled"
                       @click.stop
-                      @update:model-value="
-                        ($event: string) => onSubTypeChange($event, domain.id)
-                      " />
+                      @update:model-value="($event: string) => onSubTypeChange($event, domain.id)"
+                    />
                   </v-col>
                   <v-col>
                     <v-select
@@ -69,9 +71,8 @@
                       :rules="[requiredRule]"
                       variant="solo-filled"
                       @click.stop
-                      @update:model-value="
-                        ($event: string) => onStatusChange($event, domain.id)
-                      " />
+                      @update:model-value="($event: string) => onStatusChange($event, domain.id)"
+                    />
                   </v-col>
                 </v-row>
               </div>
@@ -87,11 +88,7 @@
       </v-btn>
 
       <v-spacer />
-      <v-btn
-        color="primary"
-        :disabled="!isDirty || !formIsValid"
-        variant="text"
-        @click="assignObject()">
+      <v-btn color="primary" :disabled="!isDirty || !formIsValid" variant="text" @click="assignObject()">
         {{ $t('global.button.save') }}
       </v-btn>
     </template>
@@ -138,46 +135,29 @@ const { requiredRule } = useRules();
 const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains);
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-const { mutateAsync: assign } = useMutation(
-  objectQueryDefinitions.mutations.assignObject
-);
+const { mutateAsync: assign } = useMutation(objectQueryDefinitions.mutations.assignObject);
 
 const selectedSubType = ref<Record<string, string | undefined>>({});
 const selectedStatus = ref<Record<string, string | undefined>>({});
 const selectedDomains = ref<string[]>([]);
 
 const fetchLegacyObjectQueryParameters = computed(
-  () =>
-    ({ endpoint: schemas.value?.[props.objectType], id: props.objectId }) as any
+  () => ({ endpoint: schemas.value?.[props.objectType], id: props.objectId }) as any
 );
 
 const formIsValid = ref(undefined);
 
-const { data: legacyObject } = useQuery(
-  objectQueryDefinitions.queries.fetchLegacy,
-  fetchLegacyObjectQueryParameters,
-  {
-    onSuccess: (data: any) => {
-      selectedDomains.value = Object.keys(data.domains || {});
-      prePolluteList(data);
-    }
+const { data: legacyObject } = useQuery(objectQueryDefinitions.queries.fetchLegacy, fetchLegacyObjectQueryParameters, {
+  onSuccess: (data: any) => {
+    selectedDomains.value = Object.keys(data.domains || {});
+    prePolluteList(data);
   }
-);
+});
 
-const isDirty = computed(
-  () =>
-    !isEqual(
-      Object.keys(legacyObject.value?.domains || {}),
-      selectedDomains.value
-    )
-);
+const isDirty = computed(() => !isEqual(Object.keys(legacyObject.value?.domains || {}), selectedDomains.value));
 const prePolluteList = (data: IVeoEntityLegacy) => {
-  selectedSubType.value = Object.fromEntries(
-    Object.entries(data.domains).map(([id, domain]) => [id, domain.subType])
-  );
-  selectedStatus.value = Object.fromEntries(
-    Object.entries(data.domains).map(([id, domain]) => [id, domain.status])
-  );
+  selectedSubType.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.subType]));
+  selectedStatus.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.status]));
 };
 
 const subTypes = computed(() =>
@@ -187,9 +167,9 @@ const subTypes = computed(() =>
         currentValue.elementTypeDefinitions?.[props.objectType]?.subTypes || {}
       ).map((subType) => ({
         title:
-          currentValue.elementTypeDefinitions[props.objectType].translations[
-            locale.value
-          ][`${props.objectType}_${subType}_singular`],
+          currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][
+            `${props.objectType}_${subType}_singular`
+          ],
         value: subType
       }));
 
@@ -205,21 +185,15 @@ const statuses = computed(() =>
       if (!selectedSubType.value[currentValue.id]) {
         return prevValue;
       }
-      prevValue[currentValue.id] = currentValue.elementTypeDefinitions[
-        props.objectType
-      ].subTypes[selectedSubType.value[currentValue.id]].statuses.map(
-        (status: any) => ({
-          title:
-            currentValue.elementTypeDefinitions[props.objectType].translations[
-              locale.value
-            ][
-              `${props.objectType}_${
-                selectedSubType.value[currentValue.id]
-              }_status_${status}`
-            ],
-          value: status
-        })
-      );
+      prevValue[currentValue.id] = currentValue.elementTypeDefinitions[props.objectType].subTypes[
+        selectedSubType.value[currentValue.id]
+      ].statuses.map((status: any) => ({
+        title:
+          currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][
+            `${props.objectType}_${selectedSubType.value[currentValue.id]}_status_${status}`
+          ],
+        value: status
+      }));
 
       return prevValue;
     },
@@ -246,9 +220,7 @@ const availableDomains = computed(
     })) ?? []
 );
 
-const disabledDomains = computed(() =>
-  Object.keys(legacyObject.value?.domains || {})
-);
+const disabledDomains = computed(() => Object.keys(legacyObject.value?.domains || {}));
 
 const domainProperties = computed(() =>
   availableDomains.value.map((domain) => {
@@ -263,9 +235,7 @@ const domainProperties = computed(() =>
 
 const assignObject = async () => {
   try {
-    for (const domain of selectedDomains.value.filter(
-      (domain) => !disabledDomains.value.includes(domain)
-    )) {
+    for (const domain of selectedDomains.value.filter((domain) => !disabledDomains.value.includes(domain))) {
       await assign({
         domain: domain,
         endpoint: route.params?.objectType,

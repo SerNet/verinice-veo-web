@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    :loading="!domain"
-    data-component-name="domain-dashboard-page"
-    padding>
+  <BasePage :loading="!domain" data-component-name="domain-dashboard-page" padding>
     <UtilNotFoundError v-if="domainNotFound" :text="t('domainNotFoundText')" />
 
     <template v-else>
@@ -27,10 +24,7 @@
         <LayoutHeadline :title="t('overview')" :element="unit?.name" />
       </div>
 
-      <v-skeleton-loader
-        v-else
-        class="mt-n2 mb-4 skeleton-subtitle"
-        type="text" />
+      <v-skeleton-loader v-else class="mt-n2 mb-4 skeleton-subtitle" type="text" />
 
       <v-row class="mt-4">
         <template v-if="elementStatusCountIsFetching">
@@ -42,10 +36,7 @@
                     <v-skeleton-loader class="ml-6" type="text" width="70%" />
                   </v-col>
                   <v-col>
-                    <v-skeleton-loader
-                      class="ml-6"
-                      type="heading"
-                      width="210%" />
+                    <v-skeleton-loader class="ml-6" type="heading" width="210%" />
                   </v-col>
                 </v-row>
               </template>
@@ -54,15 +45,12 @@
         </template>
 
         <template v-else>
-          <v-col
-            v-for="(row, rowIndex) of chartData"
-            :key="rowIndex"
-            cols="12"
-            lg="6">
+          <v-col v-for="(row, rowIndex) of chartData" :key="rowIndex" cols="12" lg="6">
             <div v-for="widget of row" :key="widget[0]" class="my-4">
               <WidgetMyLatestRevisions
                 v-if="widget[0] === 'my_latest_widget'"
-                data-component-name="domain-dashboard-latest-revisions-widget" />
+                data-component-name="domain-dashboard-latest-revisions-widget"
+              />
               <WidgetStackedStatusBarChart
                 v-else
                 chart-height="30"
@@ -70,7 +58,8 @@
                 :domain-id="$route.params.domain as string"
                 :object-type="widget[0]"
                 :data-component-name="`domain-dashboard-${widget[0]}-widget`"
-                @click="onBarClicked" />
+                @click="onBarClicked"
+              />
             </div>
           </v-col>
         </template>
@@ -118,9 +107,7 @@ export default defineComponent({
     );
 
     const domainNotFound = computed(
-      () =>
-        fetchDomainError.value?.code === 404 ||
-        fetchElementStatusCountError.value?.code === 404
+      () => fetchDomainError.value?.code === 404 || fetchElementStatusCountError.value?.code === 404
     );
     // Create chart data
     const chartData = computed(() => {
@@ -138,23 +125,10 @@ export default defineComponent({
       return rows;
     });
 
-    const WIDGET_LAYOUT = [
-      'scope',
-      'process',
-      'asset',
-      'person',
-      'control',
-      'incident',
-      'document',
-      'scenario'
-    ];
+    const WIDGET_LAYOUT = ['scope', 'process', 'asset', 'person', 'control', 'incident', 'document', 'scenario'];
     const WIDGETS_PER_ROW = 5;
 
-    const onBarClicked = (
-      objectType: string,
-      subType: string,
-      status: string
-    ) => {
+    const onBarClicked = (objectType: string, subType: string, status: string) => {
       router.push({
         name: OBJECT_OVERVIEW_ROUTE,
         params: {
@@ -173,13 +147,9 @@ export default defineComponent({
     }));
     const fetchUnitQueryEnabled = computed(() => !!route.params.unit);
 
-    const { data: unit } = useQuery(
-      unitQueryDefinitions.queries.fetch,
-      fetchUnitQueryParams,
-      {
-        enabled: fetchUnitQueryEnabled
-      }
-    );
+    const { data: unit } = useQuery(unitQueryDefinitions.queries.fetch, fetchUnitQueryParams, {
+      enabled: fetchUnitQueryEnabled
+    });
 
     return {
       chartData,

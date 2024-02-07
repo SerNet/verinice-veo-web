@@ -56,15 +56,14 @@ export default defineComponent({
     }
   },
   setup(props, { slots }) {
-    const titlebarAlignment: ComputedRef<{ 'justify-content': string }> =
-      computed(() => {
-        return {
-          'justify-content':
-            props.titlebarAlignment === PageHeaderAlignment.CENTER ? 'center'
-            : props.titlebarAlignment === PageHeaderAlignment.RIGHT ? 'end'
-            : 'start'
-        };
-      });
+    const titlebarAlignment: ComputedRef<{ 'justify-content': string }> = computed(() => {
+      return {
+        'justify-content':
+          props.titlebarAlignment === PageHeaderAlignment.CENTER ? 'center'
+          : props.titlebarAlignment === PageHeaderAlignment.RIGHT ? 'end'
+          : 'start'
+      };
+    });
     return () => [
       ...(!!props.title || !!slots.title ?
         [
@@ -101,10 +100,7 @@ export default defineComponent({
           h(
             'div',
             {
-              class: [
-                'veo-page__header',
-                ...(props.stickyHeader ? ['veo-page__header--sticky'] : [])
-              ],
+              class: ['veo-page__header', ...(props.stickyHeader ? ['veo-page__header--sticky'] : [])],
               style: { 'background-color': props.color }
             },
             {

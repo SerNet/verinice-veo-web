@@ -140,10 +140,7 @@ export default {
       staticQueryOptions: {
         staleTime: STALE_TIME.REQUEST
       }
-    } as IVeoQueryDefinition<
-      IVeoFetchDomainElementStatusCount,
-      IVeoDomainStatusCount
-    >,
+    } as IVeoQueryDefinition<IVeoFetchDomainElementStatusCount, IVeoDomainStatusCount>,
     fetchPersonsInDomain: {
       primaryQueryKey: 'personsInDomain',
       url: '/api/domains/:domainId/persons',
@@ -159,10 +156,7 @@ export default {
       staticQueryOptions: {
         staleTime: STALE_TIME.REQUEST
       }
-    } as IVeoQueryDefinition<
-      IVeoFetchPersonsInDomainParameters,
-      IVeoPersonsInDomain
-    >
+    } as IVeoQueryDefinition<IVeoFetchPersonsInDomainParameters, IVeoPersonsInDomain>
   },
   mutations: {
     updateTypeDefinitions: {

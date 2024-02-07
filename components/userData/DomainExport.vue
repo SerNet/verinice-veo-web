@@ -25,7 +25,8 @@
     :alert-body="t('alertBody')"
     :items="state.items"
     :handle-click="exportDomainData"
-    :is-loading="state.isLoading" />
+    :is-loading="state.isLoading"
+  />
 </template>
 
 <script setup lang="ts">
@@ -51,9 +52,7 @@ async function exportDomainData(index: number) {
   state.isLoading[index] = true;
   try {
     const fileName = `${username}_domains`;
-    const domain = await useQuerySync(
-      domainQueryDefinitions.queries.fetchDomains
-    );
+    const domain = await useQuerySync(domainQueryDefinitions.queries.fetchDomains);
     await downloadZIP(domain, fileName);
     displaySuccessMessage(t('successHeader'));
   } catch (error) {

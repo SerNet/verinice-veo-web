@@ -19,12 +19,7 @@
   <v-tooltip location="bottom">
     <template #activator="{ props }">
       <div v-bind="props">
-        <v-btn
-          href="/docs?print"
-          variant="flat"
-          color="primary"
-          class="mr-2"
-          target="_blank">
+        <v-btn href="/docs?print" variant="flat" color="primary" class="mr-2" target="_blank">
           {{ t('buttonCopy') }}
         </v-btn>
       </div>
