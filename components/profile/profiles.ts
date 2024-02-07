@@ -142,7 +142,7 @@ export function useUnits() {
     : []
   );
 
-  async function applyProfile({ profileKey, unitId, domainId, messages }: ApplyProfileParams) {
+  async function applyProfile({ profileId, unitId, domainId, messages }: ApplyProfileParams) {
     state.isApplyingProfile = true;
     try {
       await mutateExistingUnit({ domainId, unitId, profileId });

@@ -168,7 +168,33 @@ export default {
       staticQueryOptions: {
         staleTime: STALE_TIME.REQUEST
       }
-    } as IVeoQueryDefinition<IVeoFetchPersonsInDomainParameters, IVeoPersonsInDomain>
+    } as IVeoQueryDefinition<IVeoFetchPersonsInDomainParameters, IVeoPersonsInDomain>,
+    fetchProfiles: {
+      primaryQueryKey: 'profiles',
+      url: '/api/domains/:domainId/profiles',
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: {
+          domainId: queryParameters.domainId
+        }
+      }),
+      staticQueryOptions: {
+        staleTime: STALE_TIME.REQUEST,
+        placeholderData: []
+      }
+    } as IVeoQueryDefinition<IVeoFetchProfilesParameters, Profile[]>,
+    fetchProfile: {
+      primaryQueryKey: 'profile',
+      url: '/api/domains/:domainId/profiles/:id',
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: {
+          domainId: queryParameters.domainId,
+          id: queryParameters.id
+        }
+      }),
+      staticQueryOptions: {
+        staleTime: STALE_TIME.MEDIUM
+      }
+    } as IVeoQueryDefinition<IVeoFetchProfileParameters, Profile>
   },
   mutations: {
     updateTypeDefinitions: {

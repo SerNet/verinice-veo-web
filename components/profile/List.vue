@@ -93,7 +93,7 @@ function selectNewItem(val: string[]) {
   state.selectedProfiles = val;
 
   // Use the profile's name prop as a default name
-  const profileObj = profiles.value.filter((profile) => profile.key === state.selectedProfiles[0])[0];
+  const profileObj = profiles.value.filter((profile) => profile.id === state.selectedProfiles[0])[0];
   state.newUnitName = profileObj?.name || '';
 }
 </script>
