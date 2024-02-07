@@ -26,16 +26,6 @@
     "format:check": "prettier . --check",
     "format:install-hook": "chmod u+x scripts/format-install-pre-commit-hook.sh && ./scripts/format-install-pre-commit-hook.sh"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,vue,ts}": [
-      "eslint --fix"
-    ]
-  },
   "dependencies": {
     "@casl/ability": "^6.3.1",
     "@codemirror/lang-json": "^6.0.1",
