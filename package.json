@@ -58,7 +58,7 @@
     "rehype-inline": "^2.0.0",
     "serve": "^14.2.0",
     "uuid": "^9.0.0",
-    "vite-plugin-vuetify": "^1.0.1",
+    "vite-plugin-vuetify": "^2.0.1",
     "vue": "^3.3.4",
     "vue-chartjs": "^5.0.1",
     "vue-codemirror": "^6.1.1",
