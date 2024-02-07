@@ -112,11 +112,9 @@ export function useProfiles() {
 
   const fetchProfilesQueryEnabled = computed(() => !!state.domainId);
 
-  const { data: profiles } = useQuery(
-    domainQueryDefinitions.queries.fetchProfiles,
-    fetchProfilesQueryParameters,
-    { enabled: fetchProfilesQueryEnabled }
-  );
+  const { data: profiles } = useQuery(domainQueryDefinitions.queries.fetchProfiles, fetchProfilesQueryParameters, {
+    enabled: fetchProfilesQueryEnabled
+  });
 
   return {
     profiles: readonly(profiles),
@@ -141,7 +139,7 @@ export function useUnits() {
       _units.value.filter((unit) => {
         return unit.domains.some(({ targetUri }) => targetUri === domain?.value?._self);
       })
-      : []
+    : []
   );
 
   async function applyProfile({ profileKey, unitId, domainId, messages }: ApplyProfileParams) {

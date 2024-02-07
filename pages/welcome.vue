@@ -236,15 +236,11 @@ const applyProfile = async () => {
 
   const [unit, domain] = [...routeIds('Demo')];
 
-  const profiles = await useQuerySync(
-    domainQueryDefinitions.queries.fetchProfiles,
-    { domainId: domain }
-  );
+  const profiles = await useQuerySync(domainQueryDefinitions.queries.fetchProfiles, { domainId: domain });
 
   if (unit && domain && profiles.length) {
     try {
-      const profileId = profiles.find((profile) => profile.name === 'demoUnit')
-        ?.id;
+      const profileId = profiles.find((profile) => profile.name === 'demoUnit')?.id;
 
       if (!profileId) {
         throw new Error('No profile ID found!');
