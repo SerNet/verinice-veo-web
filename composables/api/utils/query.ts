@@ -211,49 +211,26 @@ export const useQueries = <TVariables = Record<string, any>, TResult = any>(
   queryOptions?: QueryOptions
 ) => {
   const { request } = useRequest();
-  const enabled = ref(false);
-  // convenience feature. sometimes query is already enabled, while params are still assembeled
-  watch(
-    () => unref(queryOptions?.enabled),
-    (newValue) => {
-      nextTick(() => (enabled.value = newValue === undefined ? true : newValue));
-    },
-    {
-      immediate: true
-    }
-  );
-  const combinedOptions = computed(() => ({
-    ...queryDefinition.staticQueryOptions,
-    ...queryOptions,
-    enabled
-  }));
-
-  const queries = ref<any[]>([]);
-
-  watch(
-    () => queryParameters.value,
-    (newValue) => {
-      queries.value =
-        newValue.length ?
-          newValue.map((query) => ({
-            queryKey: [queryDefinition.primaryQueryKey, query],
-            queryFn: async () => {
-              const transformedQueryParameters = queryDefinition.queryParameterTransformationFn(unref(query));
-              let result = await request(queryDefinition.url, {
-                ...transformedQueryParameters,
-                ...omit(queryDefinition, 'url', 'onDataFetched')
-              });
-              if (queryDefinition.onDataFetched) {
-                result = queryDefinition.onDataFetched(result, transformedQueryParameters);
-              }
-              return result;
-            },
-            ...combinedOptions.value
-          }))
-        : [{ queryKey: ['unnecessary'], queryFn: () => null }];
-    },
-    { deep: true, immediate: true }
-  );
+  const queries = computed(() => {
+    return queryParameters.value?.length ?
+        queryParameters.value.map((query) => ({
+          queryKey: [queryDefinition.primaryQueryKey, query],
+          queryFn: async () => {
+            const transformedQueryParameters = queryDefinition.queryParameterTransformationFn(unref(query));
+            let result = await request(queryDefinition.url, {
+              ...transformedQueryParameters,
+              ...omit(queryDefinition, 'url', 'onDataFetched')
+            });
+            if (queryDefinition.onDataFetched) {
+              result = queryDefinition.onDataFetched(result, transformedQueryParameters);
+            }
+            return result;
+          },
+          ...queryDefinition.staticQueryOptions,
+          ...queryOptions
+        }))
+      : [{ queryKey: ['unnecessary'], queryFn: () => null }];
+  });
 
   // Actual query getting executed
   const result = VueQueryUseQueries({ queries });

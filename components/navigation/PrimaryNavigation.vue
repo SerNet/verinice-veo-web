@@ -211,7 +211,7 @@ const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
   domain: props.domainId as string
 }));
-const fetchTranslationsQueryEnabled = computed(() => authenticated.value);
+const fetchTranslationsQueryEnabled = computed(() => authenticated.value && !!props.domainId);
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters, {
   enabled: fetchTranslationsQueryEnabled
 });

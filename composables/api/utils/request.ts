@@ -160,7 +160,7 @@ export const useRequest = () => {
         if (replaceValue) {
           splittedUrl[index] = sanitizeURLParams(String(replaceValue));
         } else {
-          throw new Error(`API Request is missing the value for parameter "${splittedUrl[index]}"`);
+          throw new Error(`API Request to ${url} is missing the value for parameter "${splittedUrl[index]}"`);
         }
       }
     }

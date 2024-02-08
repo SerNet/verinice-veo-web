@@ -111,11 +111,11 @@ const statusBarTitle = computed(() => props.objectType.charAt(0).toUpperCase() +
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 const objectTypePlural = computed(() => schemas.value?.[props.objectType]);
 
+const fetchSchemaQueryEnabled = computed(() => !!props.domainId && !!objectTypePlural.value);
 const fetchSchemaQueryParameters = computed(() => ({
   domainId: props.domainId,
   type: objectTypePlural.value as string
 }));
-const fetchSchemaQueryEnabled = computed(() => !!props.domainId && !!objectTypePlural.value);
 const { data: objectSchema, isFetching: schemasIsLoading } = useQuery(
   schemaQueryDefinitions.queries.fetchSchema,
   fetchSchemaQueryParameters,

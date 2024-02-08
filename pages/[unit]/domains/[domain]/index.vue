@@ -101,9 +101,13 @@ export default defineComponent({
     const fetchDomainQueryParameters = computed(() => ({
       id: route.params.domain as string
     }));
+
+    const domainQueryEnabled = computed(() => !!route.params.domain);
+
     const { data: domain, error: fetchDomainError } = useQuery(
       domainQueryDefinitions.queries.fetchDomain,
-      fetchDomainQueryParameters
+      fetchDomainQueryParameters,
+      { enabled: domainQueryEnabled }
     );
 
     const domainNotFound = computed(
