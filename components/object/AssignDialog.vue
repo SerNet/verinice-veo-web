@@ -141,7 +141,7 @@ const selectedSubType = ref<Record<string, string | undefined>>({});
 const selectedStatus = ref<Record<string, string | undefined>>({});
 const selectedDomains = ref<string[]>([]);
 
-const legacyParametersEnabled = computed(() => !!Object.keys(schemas.value || {}).length && !!props.objectId);
+const schemaParametersEnabled = computed(() => !!Object.keys(schemas.value || {}).length && !!props.objectId);
 const fetchLegacyObjectQueryParameters = computed(
   () => ({ endpoint: schemas.value?.[props.objectType], id: props.objectId }) as any
 );
@@ -153,7 +153,7 @@ const { data: legacyObject } = useQuery(objectQueryDefinitions.queries.fetchLega
     selectedDomains.value = Object.keys(data.domains || {});
     prePolluteList(data);
   },
-  enabled: legacyParametersEnabled
+  enabled: schemaParametersEnabled
 });
 
 const isDirty = computed(() => !isEqual(Object.keys(legacyObject.value?.domains || {}), selectedDomains.value));
