@@ -1,11 +1,11 @@
 title: The unit selection
 description: Description of the unit selection
-route: /
+route: /units
 exact: true
 lang: en
 steps:
   - title: 'Available units'
-    element: '[data-component-name=unit-selection-nav-item]'
+    element: '[data-component-name=unit-selection-available-units]'
     intro: Navigate to the <b>Unit selection</b> page to get an overview of all available units.
   - title: 'The unit selection'
     element: '[data-component-name=unit-selection-page]'
