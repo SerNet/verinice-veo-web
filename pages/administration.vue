@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2022  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -52,10 +52,10 @@
                 <template #activator="{ props }">
                   <v-btn
                     v-bind="props"
-                    :disabled="action.isDisabled && action.isDisabled(item.raw)"
+                    :disabled="action.isDisabled && action.isDisabled(item)"
                     :icon="action.icon"
                     variant="text"
-                    @click="action.action(item.raw)"
+                    @click="action.action(item)"
                   />
                 </template>
                 {{ action.label }}
@@ -184,7 +184,8 @@ const additionalTableHeaders = ref<TableHeader[]>([
     text: t('enabled').toString(),
     value: 'enabled',
     key: 'enabled',
-    render: ({ item }) => (item.raw.enabled ? $t('global.button.yes').toString() : $t('global.button.no').toString()),
+    render: ({ internalItem: item }) =>
+      item.raw.enabled ? $t('global.button.yes').toString() : $t('global.button.no').toString(),
     width: 80
   },
   {
@@ -214,7 +215,7 @@ const additionalTableHeaders = ref<TableHeader[]>([
     order: 60,
     priority: 60,
     text: t('groups').toString(),
-    render: ({ item }) => item.raw.groups.join(', '),
+    render: ({ internalItem: item }) => item.raw.groups.join(', '),
     value: 'groups',
     key: 'groups'
   }
