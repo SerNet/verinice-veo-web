@@ -1,6 +1,6 @@
 {
   "name": "veo-web",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "engines": {
     "npm": "10.3.x",
     "node": "20.11.x"
