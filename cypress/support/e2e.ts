@@ -4,6 +4,7 @@ import { login } from '../commands/login';
 import { acceptAllCookies } from '../commands/cookies';
 import { goToUnitSelection, selectUnit, createUnit, createUnitGUI, deleteUnit } from '../commands/units';
 import { generateUnitDetails } from './setupHelpers';
+import { navigation } from '../commands/navigation';
 
 Cypress.Commands.addAll({
   veoRequest,
@@ -14,7 +15,8 @@ Cypress.Commands.addAll({
   selectUnit,
   createUnit,
   createUnitGUI,
-  deleteUnit
+  deleteUnit,
+  navigation
 });
 
 before(() => {
