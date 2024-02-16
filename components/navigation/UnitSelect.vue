@@ -26,7 +26,7 @@
     </template>
   </v-tooltip>
 
-  <v-select
+  <v-autocomplete
     v-else
     ref="closeMenu"
     :model-value="items"
@@ -66,7 +66,7 @@
         {{ t('management') }}
       </v-list-item>
     </template>
-  </v-select>
+  </v-autocomplete>
 </template>
 
 <script setup lang="ts">
