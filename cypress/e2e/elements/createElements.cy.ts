@@ -15,11 +15,11 @@ describe('Create elements', () => {
 
   const elementTypeList: string[] = ['Scope', 'Process', 'Asset', 'Person', 'Incident', 'Document', 'Scenario'];
 
-  const childNummber = 1;
+  const numOfElements = 1;
 
   for (const elementType of elementTypeList) {
     it('creates elements in ' + elementType, () => {
-      cy.navigation(['Objects', elementType]);
+      cy.navigateTo(['Objects', elementType]);
 
       cy.contains('div[sub-group="true"] > div', new RegExp(`^${elementType}$`))
         .should('be.visible')
@@ -30,9 +30,10 @@ describe('Create elements', () => {
 
           cy.wrap($subType).click();
 
+          //Wait for the next element tab to load correctly
           cy.wait(100);
 
-          for (let i = 0; i < childNummber; i++) {
+          for (let i = 0; i < numOfElements; i++) {
             cy.get('button[data-component-name="create-object-button"]').click();
 
             const elements = {
@@ -77,6 +78,7 @@ describe('Create elements', () => {
     cy.get('textarea[id="#/properties/description"]').type(description);
     selectMenuItem(status);
 
+    //Wait for all changes to be saved correctly
     cy.wait(200);
     cy.contains('Save').click();
   };

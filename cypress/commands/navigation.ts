@@ -4,12 +4,12 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
-      navigation: typeof navigation;
+      navigateTo: typeof navigateTo;
     }
   }
 }
 
-export function navigation(navigationList: string[]) {
+export function navigateTo(navigationList: string[]) {
   navigationList.forEach((navigator) => {
     cy.get('div[data-component-name="objects-nav-item"]')
       .contains(new RegExp(`^${navigator}$`))
