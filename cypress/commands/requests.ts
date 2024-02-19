@@ -20,6 +20,7 @@ export function veoRequest({ url, method, requestBody }: { url: string; method: 
 
   return cy.window().then((win) => {
     return win.request(url, options).then((response) => {
+      cy.log(JSON.stringify(response));
       return response;
     });
   });
