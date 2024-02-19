@@ -17,8 +17,8 @@ declare global {
 }
 
 export function goToUnitSelection(): void {
-  cy.visit('/units');
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units`).as('getUnits');
+  cy.visit('/units');
   cy.wait(['@getUnits']).its('response.statusCode').should('eq', 200);
 }
 
