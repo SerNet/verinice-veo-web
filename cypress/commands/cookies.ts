@@ -9,6 +9,11 @@ declare global {
   }
 }
 
-export function acceptAllCookies() {
-  cy.get('[data-veo-test="cookies-btn-accept-all"]').click();
+type TCYAcceptAllCookiesParams = { useGUI?: false };
+export function acceptAllCookies({ useGUI }: TCYAcceptAllCookiesParams = {}) {
+  if (useGUI) {
+    cy.get('[data-veo-test="cookies-btn-accept-all"]').click();
+    return;
+  }
+  window.localStorage.setItem('accepted-cookies', '{"required":true,"optional":true,"selected":[]}');
 }
