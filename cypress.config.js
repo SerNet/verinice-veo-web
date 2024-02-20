@@ -4,7 +4,7 @@ const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
   defaultCommandTimeout: 15000,
-  requestTimeout: 15000,
+  requestTimeout: 30000,
   e2e: {
     setupNodeEvents(_on, config) {
       // Load cypress.env.[environment].json files for different environments

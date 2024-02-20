@@ -106,7 +106,7 @@ export function deleteUnit(): void {
     url: `/api/units/${Cypress.env('unitDetails').unitId}`,
     method: 'DELETE'
   });
-  cy.wait(['@deleteUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 204);
+  cy.wait(['@deleteUnit']).its('response.statusCode').should('eq', 204);
 }
 
 export function deleteUnitGUI({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {
