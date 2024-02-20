@@ -12971,9 +12971,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm packages may be included in this product:
 
- - @vueuse/core@10.7.2
- - @vueuse/metadata@10.7.2
- - @vueuse/shared@10.7.2
+ - @vueuse/core@10.8.0
+ - @vueuse/metadata@10.8.0
+ - @vueuse/shared@10.8.0
 
 These packages each contain the following license and notice below:
 
