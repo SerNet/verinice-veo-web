@@ -81,8 +81,9 @@ export const getRiskAdditionalContext = (
   domain: IVeoDomain,
   language: string
 ): IVeoFormsAdditionalContext => {
+  // we assume "the one and only" risk definition per domain, so we extract the first and only key available
   const riskDefinitionName = Object.keys(domain.riskDefinitions)[0];
-  const riskDefinitionCategories = ['C', 'I', 'A', 'R', 'AU'];
+  const riskDefinitionCategories = domain.riskDefinitions[riskDefinitionName].categories.map((category) => category.id);
 
   switch (objectType) {
     case 'process':
