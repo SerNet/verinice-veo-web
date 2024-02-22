@@ -4,5 +4,5 @@ before(() => {
 });
 
 it('deletes a unit', () => {
-  cy.deleteUnit();
+  cy.deleteUnitGUI();
 });

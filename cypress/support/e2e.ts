@@ -2,7 +2,7 @@ import { veoRequest } from '../commands/requests';
 import { getVeoDomains } from '../commands/domains';
 import { login } from '../commands/login';
 import { acceptAllCookies } from '../commands/cookies';
-import { goToUnitSelection, selectUnit, createUnit, createUnitGUI, deleteUnit } from '../commands/units';
+import { goToUnitSelection, selectUnit, createUnit, createUnitGUI, deleteUnit, deleteUnitGUI } from '../commands/units';
 import { generateUnitDetails } from './setupHelpers';
 import { navigateTo } from '../commands/navigation';
 
@@ -16,7 +16,8 @@ Cypress.Commands.addAll({
   createUnit,
   createUnitGUI,
   deleteUnit,
-  navigateTo
+  navigateTo,
+  deleteUnitGUI
 });
 
 before(() => {

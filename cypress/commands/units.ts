@@ -10,6 +10,7 @@ declare global {
       selectUnit: typeof selectUnit;
       createUnit: typeof createUnit;
       createUnitGUI: typeof createUnitGUI;
+      deleteUnitGUI: typeof deleteUnit;
       deleteUnit: typeof deleteUnit;
     }
   }
@@ -93,7 +94,16 @@ export function createUnit({
   });
 }
 
-export function deleteUnit({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {
+export function deleteUnit(): void {
+  cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/units/**`).as('deleteUnit');
+  cy.veoRequest({
+    url: `/api/units/${Cypress.env('unitDetails').unitId}`,
+    method: 'DELETE'
+  });
+  cy.wait(['@deleteUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 204);
+}
+
+export function deleteUnitGUI({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {
   cy.goToUnitSelection();
   cy.get('.v-list-item--link')
     .contains(unitName)
