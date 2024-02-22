@@ -66,6 +66,18 @@ export function createUnitGUI({
     .click();
 
   cy.wait(['@getNewUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 200);
+
+  /**
+   * After creating a new unit users are redirected to the new unit dashboard.
+   * The new unit id can be found in the url.
+   * Take it and store it for later use.
+   */
+  cy.get('[data-component-name="domain-dashboard-page"]').then((_el) => {
+    cy.url().then((url) => {
+      const unitDetails = { ...Cypress.env('unitDetails'), unitId: url.split('/').at(3) };
+      Cypress.env('unitDetails', unitDetails);
+    });
+  });
 }
 
 export function createUnit({
