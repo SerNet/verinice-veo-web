@@ -12,6 +12,7 @@ declare global {
       createUnitGUI: typeof createUnitGUI;
       deleteUnitGUI: typeof deleteUnit;
       deleteUnit: typeof deleteUnit;
+      goToUnitDashboard: typeof goToUnitDashboard;
     }
   }
 }
@@ -135,4 +136,20 @@ export function deleteUnitGUI({ unitName = Cypress.env('unitDetails').name }: { 
 
   // Wait for API response and assert
   cy.wait(['@deleteUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 204);
+}
+
+export function goToUnitDashboard({ isStoringUnitID = true, unitName = Cypress.env('unitDetails').name } = {}) {
+  cy.goToUnitSelection();
+
+  cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units/**`).as('getUnitForDashboard');
+  cy.get('.v-list-item--link').contains(unitName).parent().parent().click();
+  cy.wait(['@getUnitForDashboard']).its('response.statusCode').should('eq', 200);
+
+  if (!isStoringUnitID) return;
+
+  // Store unit id to make it accessible in tests and other commands
+  cy.url().then((url) => {
+    const unitDetails = { ...Cypress.env('unitDetails'), unitId: url.split('/').at(3) };
+    Cypress.env('unitDetails', unitDetails);
+  });
 }
