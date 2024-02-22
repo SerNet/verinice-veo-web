@@ -18,6 +18,10 @@ declare global {
 export function veoRequest({ url, method, requestBody }: { url: string; method: string; requestBody?: any }): any {
   const options = requestBody ? { method, json: requestBody } : { method };
 
+  // Make sure window.request is available
+  cy.visit('/security');
+  cy.get('[data-component-name="breadcrumbs"]', { timeout: 60000 }).as('prepareVeoRequest');
+
   return cy.window().then((win) => {
     return win.request(url, options).then((response) => {
       cy.log(JSON.stringify(response));
