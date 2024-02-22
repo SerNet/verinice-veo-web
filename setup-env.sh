@@ -26,7 +26,8 @@ CY_CONFIG_LOCAL='{
 "veoApiUrl" : "'${VEO_DEFAULT_API_URL}'",
 "pipelineId": "'${CI_PIPELINE_ID}'",
 "isLocalhost": "true",
-"testUnitPrefix": "CY-TEST-pipeline-"
+"testUnitPrefix": "CY-TEST-pipeline-",
+"dsgvoUnitId":"'${CYPRESS_DOMAIN_ID_DSGVO}'"
 }'
 
 echo ${CY_CONFIG_LOCAL} >> ${CY_CONFIG_LOCAL_PATH}
