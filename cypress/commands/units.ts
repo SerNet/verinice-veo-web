@@ -82,6 +82,7 @@ export function createUnit({
       .filter((domain) => domainNames.includes(domain.name as TCYVeoUnitNames))
       .map((filteredDomain) => ({ targetUri: filteredDomain.targetUri }));
 
+    cy.intercept('POST', `${Cypress.env('veoApiUrl')}/units`).as('createUnit');
     cy.veoRequest({
       url: '/api/units',
       method: 'POST',
@@ -90,7 +91,12 @@ export function createUnit({
         description: unitDesc,
         domains
       }
+    }).then((data) => {
+      // Store unit id to make it accessible in tests and other commands
+      const unitDetails = { ...Cypress.env('unitDetails'), unitId: data.resourceId };
+      Cypress.env('unitDetails', unitDetails);
     });
+    cy.wait(['@createUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 201);
   });
 }
 
