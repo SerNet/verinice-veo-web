@@ -7351,7 +7351,7 @@ END OF TERMS AND CONDITIONS
 
 The following npm package may be included in this product:
 
- - keycloak-js@23.0.6
+ - keycloak-js@23.0.7
 
 This package contains the following license and notice below:
 
