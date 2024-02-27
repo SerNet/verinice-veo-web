@@ -74,16 +74,22 @@ export default {
               'potentialImpactsCalculated',
               'potentialImpactsEffective'
             ];
-  
-            result.properties.riskValues.properties.GSRA.properties.potentialImpact =
-              Object.keys(result.properties.riskValues.properties.GSRA.properties.potentialImpactEffectiveReasons.properties).reduce((prev, current) => {
+
+            result.properties.riskValues.properties.GSRA.properties.potentialImpact = Object.keys(
+              result.properties.riskValues.properties.GSRA.properties.potentialImpactEffectiveReasons.properties
+            ).reduce(
+              (prev, current) => {
                 prev[current] = {
-                  properties: riskKeys.map((key) => result.properties.riskValues.properties.GSRA.properties[key].properties[current])
+                  properties: riskKeys.map(
+                    (key) => result.properties.riskValues.properties.GSRA.properties[key].properties[current]
+                  )
                 };
                 return prev;
-              }, {} as Record<string, any>);
+              },
+              {} as Record<string, any>
+            );
           }
-        } catch(e) {
+        } catch (e) {
           console.log(e);
         }
         result.title = result.title.toLowerCase();
