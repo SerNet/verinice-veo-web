@@ -17,7 +17,7 @@
  */
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
-import processSchema from '~/components/schema.json';
+
 export interface IVeoEntityMetaInfo {
   collectionUri: string;
   searchUri: string;
@@ -60,10 +60,6 @@ export default {
       primaryQueryKey: 'schema',
       url: '/api/domains/:domainId/:type/json-schema',
       onDataFetched: (result: any) => {
-        if (result.title === 'Process') {
-          result = processSchema;
-        }
-
         try {
           if (result.properties?.riskValues?.properties?.GSRA?.properties?.potentialImpactEffectiveReasons) {
             const riskKeys = [
@@ -92,6 +88,7 @@ export default {
         } catch (e) {
           console.log(e);
         }
+
         result.title = result.title.toLowerCase();
         return result;
       },
