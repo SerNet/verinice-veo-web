@@ -1315,7 +1315,7 @@ The following npm packages may be included in this product:
  - @types/mdast@3.0.15
  - @types/mdurl@1.0.5
  - @types/ms@0.7.34
- - @types/node@20.11.20
+ - @types/node@20.11.21
  - @types/unist@2.0.10
  - @types/web-bluetooth@0.0.20
 
