@@ -15392,8 +15392,8 @@ SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @vuetify/loader-shared@2.0.1
- - vite-plugin-vuetify@2.0.1
+ - @vuetify/loader-shared@2.0.2
+ - vite-plugin-vuetify@2.0.2
 
 These packages each contain the following license and notice below:
 
