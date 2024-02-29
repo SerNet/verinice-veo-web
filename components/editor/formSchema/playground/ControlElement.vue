@@ -76,6 +76,7 @@ const objectSchemaElement = computed(
   () => JsonPointer.get(objectSchema?.value, props.formSchemaElement.scope as string) as JSONSchema7
 ); // Can't be undefined, as a control ALWAYS has a scope
 const controlType = computed(() => getFormSchemaControlType(objectSchemaElement.value));
+
 const inputType = computed(() =>
   props.formSchemaElement && objectSchemaElement.value ?
     eligibleInputElements(controlType.value, {

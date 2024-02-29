@@ -18,21 +18,22 @@
 import FormSchemaValidator from './FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
 import { IVeoFormSchemaTranslationCollection, IVeoObjectSchema } from '~/types/VeoTypes';
-import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import { IVeoFormSchema, IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { cloneDeep } from 'lodash';
 
 export function generateSchema(
-  name: IVeoFormSchemaMeta['name'],
+  name: string,
   modelType: string,
   subType: string,
   sorting: string | null,
+  defaultLocale: string,
   translation: IVeoFormSchemaTranslationCollection = {}
 ): IVeoFormSchema {
   return {
-    name,
+    name: { [defaultLocale]: name },
     modelType,
     subType,
-    translation,
+    translation: translation ?? { [defaultLocale]: {} },
     content: {
       type: 'Layout',
       options: {

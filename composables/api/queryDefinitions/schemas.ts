@@ -60,35 +60,41 @@ export default {
       primaryQueryKey: 'schema',
       url: '/api/domains/:domainId/:type/json-schema',
       onDataFetched: (result: any) => {
-        try {
-          if (result.properties?.riskValues?.properties?.GSRA?.properties?.potentialImpactEffectiveReasons) {
-            const riskKeys = [
-              'potentialImpactEffectiveReasons',
-              'potentialImpactExplanations',
-              'potentialImpactReasons',
-              'potentialImpacts',
-              'potentialImpactsCalculated',
-              'potentialImpactsEffective'
-            ];
+        const riskAffectedEntities = ['Scope', 'Asset', 'Process'];
 
-            result.properties.riskValues.properties.GSRA.properties.potentialImpact = Object.keys(
-              result.properties.riskValues.properties.GSRA.properties.potentialImpactEffectiveReasons.properties
-            ).reduce(
-              (prev, current) => {
-                prev[current] = {
-                  properties: riskKeys.map(
-                    (key) => result.properties.riskValues.properties.GSRA.properties[key].properties[current]
-                  )
-                };
-                return prev;
-              },
-              {} as Record<string, any>
-            );
-          }
-        } catch (e) {
-          console.log(e);
+        if (
+          riskAffectedEntities.includes(result.title) &&
+          Object.keys(result.properties?.riskValues?.properties).length
+        ) {
+          // determine the specific anylysis type, e.g. DSRA, GSRA, NISRA
+          const [analysisType] = Object.keys(result.properties?.riskValues?.properties);
+          // shorten the key for convenience
+          const analysisTypeProps = result.properties.riskValues.properties[analysisType].properties;
+          // extract the impactTypes, e.g. potentialImpactEffectiveReasons, potentialImpactExplanations, ...
+          const impactTypes = Object.keys(analysisTypeProps);
+          // extract protection goals, e.g. C, I, A
+          const protectionGoals = Object.keys(analysisTypeProps.potentialImpactEffectiveReasons.properties);
+
+          analysisTypeProps.potentialImpacts.properties = protectionGoals.reduce(
+            (previous, protectionGoal) => {
+              previous[protectionGoal] = {
+                properties: impactTypes.reduce(
+                  (protectionGoalObject, impactType) => {
+                    protectionGoalObject[impactType] = analysisTypeProps[impactType].properties[protectionGoal];
+                    return protectionGoalObject;
+                  },
+                  {} as Record<string, any>
+                )
+              };
+              return previous;
+            },
+            {} as Record<string, any>
+          );
+
+          result.properties.riskValues.properties[analysisType].properties = Object.fromEntries(
+            Object.entries(analysisTypeProps).filter(([key, ,]) => key === 'potentialImpacts')
+          );
         }
-
         result.title = result.title.toLowerCase();
         return result;
       },

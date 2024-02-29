@@ -281,10 +281,11 @@ export default defineComponent({
 
       // we typecast in the following function call, as the form validation makes sure, that all values have been set
       uploadedFormSchema.value = generateSchema(
-        { [locale.value]: formSchemaDetails.value.name as string },
+        formSchemaDetails.value.name as string,
         objectSchema.value?.title as string,
         formSchemaDetails.value.subType as string,
-        formSchemaDetails.value.sorting || null
+        formSchemaDetails.value.sorting || null,
+        locale.value
       );
       if (!isEqual(route.query, formSchemaDetails.value)) {
         router.push({

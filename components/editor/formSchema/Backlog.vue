@@ -170,7 +170,7 @@ import { JsonPointer } from 'json-ptr';
 import Draggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
 import { cloneDeep, pick, upperFirst } from 'lodash';
-import { mdiAutoFix, mdiFormatText, mdiFormSelect } from '@mdi/js';
+import { mdiAutoFix, mdiFormatText, mdiFormSelect, mdiArrowCollapseVertical } from '@mdi/js';
 
 import { INPUT_TYPES } from '~/types/VeoEditor';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
@@ -237,6 +237,19 @@ export default defineComponent({
         description: {
           title: 'group',
           icon: mdiFormSelect,
+          name: 'layout',
+          color: 'grey darken-2'
+        }
+      },
+      {
+        type: 'Layout',
+        options: {
+          format: 'accordion'
+        },
+        elements: [],
+        description: {
+          title: 'accordion',
+          icon: mdiArrowCollapseVertical,
           name: 'layout',
           color: 'grey darken-2'
         }

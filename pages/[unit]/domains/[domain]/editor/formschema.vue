@@ -534,7 +534,11 @@ export default defineComponent({
           }
 
           if (translationValue) {
-            formSchema.value.translation[translationLocale][translationKey] = translationValue;
+            if (!formSchema.value.translation[translationLocale]) {
+              formSchema.value.translation[translationLocale] = { [translationKey]: translationValue };
+            } else {
+              formSchema.value.translation[translationLocale][translationKey] = translationValue;
+            }
           } else {
             delete formSchema.value.translation[translationLocale][translationKey];
           }

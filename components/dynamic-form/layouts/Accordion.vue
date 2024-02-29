@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2022  Jonas Heitmann
+   - Copyright (C) 2024 Jonas Heitmann, Frank Schneider
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -16,14 +16,20 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div v-if="options.visible" :id="formSchemaPointer" class="vf-layout vf-group my-2 py-1 px-2 pb-2" :class="classes">
-    <h3 v-if="options && options.label" class="text-h3">
-      {{ options.label }}
-    </h3>
-    <div dense class="d-flex" :class="isHorizontal ? 'flex-row' : 'flex-column'">
-      <slot />
-    </div>
-  </div>
+  <v-expansion-panels
+    v-if="options.visible"
+    :id="formSchemaPointer"
+    class="vf-layout vf-expansion-panel my-2 py-1 px-2 pb-2"
+    :class="classes"
+  >
+    <v-expansion-panel :title="options?.label || 'accordion'">
+      <template #text>
+        <div dense class="d-flex" :class="isHorizontal ? 'flex-row' : 'flex-column'">
+          <slot />
+        </div>
+      </template>
+    </v-expansion-panel>
+  </v-expansion-panels>
 </template>
 
 <script lang="ts">
@@ -31,17 +37,16 @@ import { VeoFormsElementProps } from '../util';
 import { IVeoFormsElementDefinition } from '../types';
 
 export const GROUP_DEFINITION: IVeoFormsElementDefinition = {
-  code: 'veo-group',
+  code: 'veo-accordion',
   name: {
-    en: 'group',
-    de: 'Gruppe'
+    en: 'accordion',
+    de: 'Akkordion'
   },
   description: {
-    en: 'Adds a wrapper around other elements that can be styled.',
-    de: 'Fügt einen Container um andere Elemente hinzu, der optional gestyled werden kann.'
+    en: 'Adds a wrapper around other elements that can be collapsed or expanded.',
+    de: 'Fügt einen Container um andere Elemente hinzu, der aus- und eingeklappt werden kann.'
   },
-  conditions: (_props) => [],
-  bias: Number.EPSILON
+  conditions: (props) => [props.options.format === 'accordion']
 };
 
 export default defineComponent({
