@@ -15038,7 +15038,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - chart.js@4.4.1
+ - chart.js@4.4.2
 
 This package contains the following license and notice below:
 
