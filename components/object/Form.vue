@@ -373,7 +373,6 @@ export default defineComponent({
     // Stuff that handles which formschema the object gets displayed with
     const displayOption = ref<string>('objectschema');
     const formQueryParameters = computed(() => ({
-      domainId: props.domainId,
       id: displayOption.value as string
     }));
     const formQueryEnabled = computed(() => displayOption.value !== 'objectschema');

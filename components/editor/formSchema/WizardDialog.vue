@@ -188,7 +188,6 @@ export default defineComponent({
     const uploadedFormSchema = ref<IVeoFormSchema>();
 
     const fetchFormQueryParameters = computed(() => ({
-      domainId: props.domainId as string,
       id: formSchemaId.value || ''
     }));
     const fetchFormQueryEnabled = computed(() => !!formSchemaId.value && formSchemaId.value !== 'custom');

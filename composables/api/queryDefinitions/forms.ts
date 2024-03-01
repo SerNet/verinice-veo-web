@@ -69,7 +69,6 @@ export interface IVeoFetchFormsParameters {
 }
 
 export interface IVeoFetchFormParameters {
-  domainId: string;
   id: string;
 }
 
@@ -103,9 +102,6 @@ export default {
       queryParameterTransformationFn: (queryParameters) => ({
         params: {
           id: queryParameters.id
-        },
-        query: {
-          domainId: queryParameters.domainId
         }
       }),
       staticQueryOptions: {
