@@ -47,7 +47,7 @@ function getTranslatedRiskValues({
   return translations;
 }
 
-function translateProcessRisks({
+function enrichRisks({
   domain,
   riskDefinitionName,
   language,
@@ -58,22 +58,39 @@ function translateProcessRisks({
   riskDefinitionName: string;
   riskDefinitionCategories: string[];
 }) {
-  const translations: Record<string, Record<string, Record<string, string[]>>> = {};
-  riskDefinitionCategories.forEach((categoryId: string) => {
-    const key = `#/properties/riskValues/properties/${riskDefinitionName}/properties/potentialImpacts/properties/${categoryId}`;
+  const riskProperties = [
+    { property: 'potentialImpacts', transLateEnumValues: true, disabled: false },
+    { property: 'potentialImpactReasons', transLateEnumValues: false, disabled: false },
+    { property: 'potentialImpactExplanations', transLateEnumValues: false, disabled: false },
+    { property: 'potentialImpactEffectiveReasons', transLateEnumValues: false, disabled: false },
+    { property: 'potentialImpactsCalculated', transLateEnumValues: true, disabled: true },
+    { property: 'potentialImpactsEffective', transLateEnumValues: true, disabled: true }
+  ];
 
-    translations[key] = {
-      formSchema: {
-        enum: getTranslatedRiskValues({
-          domain,
-          categoryId,
-          language,
-          riskDefinitionName
-        })
-      }
-    };
-  });
-  return translations;
+  const toReturn = [];
+
+  for (const riskProperty of riskProperties) {
+    for (const protectionGoal of riskDefinitionCategories) {
+      toReturn.push([
+        `#/properties/riskValues/properties/${riskDefinitionName}/properties/potentialImpacts/properties/${protectionGoal}/properties/${riskProperty.property}`,
+        {
+          formSchema: {
+            enum:
+              riskProperty.transLateEnumValues ?
+                getTranslatedRiskValues({
+                  domain,
+                  protectionGoal,
+                  language,
+                  riskDefinitionName
+                })
+              : undefined,
+            disabled: riskProperty.disabled
+          }
+        }
+      ]);
+    }
+  }
+  return Object.fromEntries(toReturn);
 }
 
 export const getRiskAdditionalContext = (
@@ -87,21 +104,21 @@ export const getRiskAdditionalContext = (
 
   switch (objectType) {
     case 'process':
-      return translateProcessRisks({
+      return enrichRisks({
         domain,
         riskDefinitionCategories,
         language,
         riskDefinitionName
       });
     case 'scope':
-      return translateProcessRisks({
+      return enrichRisks({
         domain,
         riskDefinitionCategories,
         language,
         riskDefinitionName
       });
     case 'asset':
-      return translateProcessRisks({
+      return enrichRisks({
         domain,
         riskDefinitionCategories,
         language,

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-import { omit } from 'lodash';
+import { omit, cloneDeep } from 'lodash';
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition } from '../utils/query';
@@ -126,6 +126,33 @@ export interface IVeoFetchWipDecisionEvaluationParameters {
   subType: string;
 }
 
+export const transFormObject = (object: any) => {
+  const _object = cloneDeep(object);
+
+  const riskAffectedEntities = ['scope', 'asset', 'process'];
+  const analysisTypes = Object.keys(_object.riskValues || {});
+
+  if (!analysisTypes.length) return _object;
+
+  if (riskAffectedEntities.includes(_object.type)) {
+    const riskValues = {};
+
+    Object.entries(_object.riskValues[analysisTypes[0]].potentialImpacts || {}).forEach(([protectionGoal, value]) => {
+      const properties = Object.entries(value);
+
+      for (const [property, propertyValue] of properties) {
+        if (!riskValues[property]) {
+          riskValues[property] = {};
+        }
+        riskValues[property][protectionGoal] = propertyValue;
+      }
+    });
+
+    _object.riskValues[analysisTypes[0]] = riskValues;
+  }
+  return _object;
+};
+
 export const formatObject = (object: any) => {
   /*
    * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
@@ -139,6 +166,35 @@ export const formatObject = (object: any) => {
   }
   // The frontend sets the display name as the backend only sets it for links. Gets used for example in the breadcrumbs.
   object.displayName = [object.designator, object.abbreviation, object.name].filter((part) => part).join(' ');
+
+  const riskAffectedEntities = ['scope', 'asset', 'process'];
+  const [analysisType] = Object.keys(object.riskValues || {});
+
+  if (riskAffectedEntities.includes(object.type) && !!analysisType) {
+    const keysToTransform = [
+      'potentialImpacts',
+      'potentialImpactsCalculated',
+      'potentialImpactsEffective',
+      'potentialImpactReasons',
+      'potentialImpactExplanations',
+      'potentialImpactEffectiveReasons'
+    ];
+
+    const impacts = {};
+    Object.entries(object.riskValues[analysisType] || {}).forEach(([key, value]) => {
+      if (!keysToTransform.includes(key)) return;
+
+      const protectionGoals = Object.entries(value);
+      for (const [protectionGoal, protectionGoalValue] of protectionGoals) {
+        if (!impacts[protectionGoal]) {
+          impacts[protectionGoal] = {};
+        }
+        impacts[protectionGoal][key] = protectionGoalValue;
+      }
+    });
+
+    object.riskValues[analysisType] = { potentialImpacts: impacts };
+  }
 
   return object;
 };
@@ -247,7 +303,7 @@ export default {
           domain: queryParameters.domain
         },
         json: {
-          ...queryParameters.object,
+          ...transFormObject(queryParameters.object),
           status: queryParameters.status,
           subType: queryParameters.subType
         }
@@ -263,7 +319,7 @@ export default {
       url: '/api/domains/:domain/:endpoint',
       method: 'POST',
       mutationParameterTransformationFn: (mutationParameters) => {
-        const _object = mutationParameters.object;
+        const _object = transFormObject(mutationParameters.object);
         // Remove properties of the object only used in the frontend
         if (_object.type === 'scope') {
           // @ts-ignore Is only set in DTO if object is any type expect scope
@@ -326,7 +382,7 @@ export default {
         return result;
       },
       mutationParameterTransformationFn: (mutationParameters) => {
-        const _object = mutationParameters.object;
+        const _object = transFormObject(mutationParameters.object);
         // Remove properties of the object only used in the frontend
         if (_object.type === 'scope') {
           // @ts-ignore Is only set in DTO if object is any type expect scope

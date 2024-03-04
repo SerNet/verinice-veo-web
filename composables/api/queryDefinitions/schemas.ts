@@ -62,10 +62,7 @@ export default {
       onDataFetched: (result: any) => {
         const riskAffectedEntities = ['Scope', 'Asset', 'Process'];
 
-        if (
-          riskAffectedEntities.includes(result.title) &&
-          Object.keys(result.properties?.riskValues?.properties).length
-        ) {
+        if (riskAffectedEntities.includes(result.title)) {
           // determine the specific anylysis type, e.g. DSRA, GSRA, NISRA
           const [analysisType] = Object.keys(result.properties?.riskValues?.properties);
           // shorten the key for convenience
@@ -73,7 +70,7 @@ export default {
           // extract the impactTypes, e.g. potentialImpactEffectiveReasons, potentialImpactExplanations, ...
           const impactTypes = Object.keys(analysisTypeProps);
           // extract protection goals, e.g. C, I, A
-          const protectionGoals = Object.keys(analysisTypeProps.potentialImpactEffectiveReasons.properties);
+          const protectionGoals = Object.keys(analysisTypeProps?.potentialImpactEffectiveReasons?.properties || {});
 
           analysisTypeProps.potentialImpacts.properties = protectionGoals.reduce(
             (previous, protectionGoal) => {
@@ -91,9 +88,9 @@ export default {
             {} as Record<string, any>
           );
 
-          result.properties.riskValues.properties[analysisType].properties = Object.fromEntries(
-            Object.entries(analysisTypeProps).filter(([key, ,]) => key === 'potentialImpacts')
-          );
+          result.properties.riskValues.properties[analysisType].properties = {
+            potentialImpacts: { properties: analysisTypeProps.potentialImpacts.properties }
+          };
         }
         result.title = result.title.toLowerCase();
         return result;
