@@ -46,7 +46,12 @@
                 :item-key="(element: any) => element.description.title"
               >
                 <template #item="{ element }">
-                  <EditorListItem :title="element.description.title" :styling="element.description" translate />
+                  <EditorListItem
+                    :scope="element.scope"
+                    :title="element.description.title"
+                    :styling="element.description"
+                    translate
+                  />
                 </template>
               </Draggable>
             </v-list>
@@ -72,7 +77,12 @@
                 :clone="onCloneControl"
               >
                 <template #item="{ element }">
-                  <EditorListItem :title="element.propertyName" :styling="typeMap[element.type]" translate />
+                  <EditorListItem
+                    :scope="element.scope"
+                    :title="element.propertyName"
+                    :styling="typeMap[element.type]"
+                    translate
+                  />
                 </template>
               </Draggable>
             </v-list>
@@ -98,7 +108,12 @@
                 item-key="scope"
               >
                 <template #item="{ element }">
-                  <EditorListItem :title="element.backlogTitle" :styling="typeMap[element.type]" translate />
+                  <EditorListItem
+                    :scope="element.scope"
+                    :title="element.backlogTitle"
+                    :styling="typeMap[element.type]"
+                    translate
+                  />
                 </template>
               </Draggable>
             </v-list>
@@ -123,7 +138,12 @@
                 :clone="onCloneControl"
               >
                 <template #item="{ element }">
-                  <EditorListItem :title="element.backlogTitle" :styling="typeMap[element.type]" translate />
+                  <EditorListItem
+                    :scope="element.scope"
+                    :title="element.backlogTitle"
+                    :styling="typeMap[element.type]"
+                    translate
+                  />
                 </template>
               </Draggable>
             </v-list>
@@ -148,6 +168,7 @@
               >
                 <template #item="{ element }">
                   <EditorListItem
+                    :scope="element.scope"
                     :title="element.name[locale] || Object.values(element.name)[0]"
                     :styling="{
                       icon: mdiAutoFix,

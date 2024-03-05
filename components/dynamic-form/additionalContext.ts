@@ -51,12 +51,14 @@ function enrichRisks({
   domain,
   riskDefinitionName,
   language,
-  riskDefinitionCategories
+  riskDefinitionCategories,
+  t
 }: {
   domain: IVeoDomain;
   language: string;
   riskDefinitionName: string;
   riskDefinitionCategories: string[];
+  t: any;
 }) {
   const riskProperties = [
     { property: 'potentialImpacts', transLateEnumValues: true, disabled: false },
@@ -79,12 +81,13 @@ function enrichRisks({
               riskProperty.transLateEnumValues ?
                 getTranslatedRiskValues({
                   domain,
-                  protectionGoal,
+                  categoryId: protectionGoal,
                   language,
                   riskDefinitionName
                 })
               : undefined,
-            disabled: riskProperty.disabled
+            disabled: riskProperty.disabled,
+            label: t(riskProperty.property)
           }
         }
       ]);
@@ -96,7 +99,8 @@ function enrichRisks({
 export const getRiskAdditionalContext = (
   objectType: string,
   domain: IVeoDomain,
-  language: string
+  language: string,
+  t: any
 ): IVeoFormsAdditionalContext => {
   // we assume "the one and only" risk definition per domain, so we extract the first and only key available
   const riskDefinitionName = Object.keys(domain.riskDefinitions)[0];
@@ -104,25 +108,14 @@ export const getRiskAdditionalContext = (
 
   switch (objectType) {
     case 'process':
-      return enrichRisks({
-        domain,
-        riskDefinitionCategories,
-        language,
-        riskDefinitionName
-      });
     case 'scope':
-      return enrichRisks({
-        domain,
-        riskDefinitionCategories,
-        language,
-        riskDefinitionName
-      });
     case 'asset':
       return enrichRisks({
         domain,
         riskDefinitionCategories,
         language,
-        riskDefinitionName
+        riskDefinitionName,
+        t
       });
     case 'scenario':
       return {

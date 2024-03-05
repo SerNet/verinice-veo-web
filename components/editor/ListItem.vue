@@ -23,6 +23,9 @@
       </v-avatar>
     </template>
     <v-list-item-title class="caption" v-text="title" />
+    <v-list-item-subtitle v-if="scope">
+      {{ scope }}
+    </v-list-item-subtitle>
     <slot name="description" />
     <template #append>
       <v-list-item-action class="ml-3">
@@ -45,6 +48,10 @@ import { IInputType } from '~/types/VeoEditor';
 
 export default defineComponent({
   props: {
+    scope: {
+      type: String,
+      default: undefined
+    },
     title: {
       type: String,
       default: undefined
@@ -64,7 +71,6 @@ export default defineComponent({
   },
   setup() {
     const { t } = useI18n();
-
     return {
       t
     };

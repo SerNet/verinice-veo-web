@@ -112,6 +112,12 @@
     }
   },
 
+  "potentialImpactsCalculated": "Calculated (High water mark)",
+  "potentialImpacts": "User specified",
+  "potentialImpactsEffective": "Effective",
+  "potentialImpactReasons": "Reason",
+  "potentialImpactExplanations": "Explanation",
+
   "error": {
     "additionalProperties": "The field \"{field}\" contains attributes that aren\"t part of the object schema",
     "enum": "The field \"{field}\" contains an invalid value",

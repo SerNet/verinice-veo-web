@@ -112,6 +112,12 @@
     }
   },
 
+  "potentialImpactsCalculated": "Berechnet (Maximumprinzip)",
+  "potentialImpacts": "Nutzervorgabe",
+  "potentialImpactsEffective": "Effektiv",
+  "potentialImpactReasons": "Begründung",
+  "potentialImpactExplanations": "Erläuterung",
+
   "error": {
     "additionalProperties": "Das Feld \"{field}\" besitzt nicht im Objektschema erlaubte Attribute.",
     "enum": "Das Feld \"{field}\" besitzt einen nicht erlaubten Wert",
