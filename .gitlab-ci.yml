@@ -4,6 +4,16 @@ stages:
   - build
   - deploy
 
+# Verification (tests and code analysis) is unnecessary on 'develop' &
+# 'master', because only verified MRs can be merged into those branches.
+.verification:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: never
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: never
+    - when: on_success
+
 default:
   image: node:21
   cache: # Cache modules in between jobs
@@ -17,6 +27,8 @@ default:
 
 store_project_version:
   before_script: []
+  rules:
+    - when: on_success
   cache: []
   stage: setup
   script:
@@ -29,6 +41,8 @@ store_project_version:
 
 check_formatting:
   stage: test
+  rules:
+    - !reference [.verification, rules]
   needs: []
   script:
     - npm run format:check
@@ -37,6 +51,8 @@ check_formatting:
 
 check_license:
   stage: test
+  rules:
+    - !reference [.verification, rules]
   needs: []
   script:
     - mv LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
@@ -48,6 +64,8 @@ check_license:
 test:
   image: cypress/browsers:node18.12.0-chrome103-ff107
   stage: test
+  rules:
+    - !reference [.verification, rules]
   cache: # Cache modules in between jobs
     key:
       files:
@@ -76,6 +94,8 @@ test:
 
 docker_image:
   stage: build
+  rules:
+    - when: on_success
   needs: ['store_project_version']
   image:
     name: gcr.io/kaniko-project/executor:v1.21.0-debug
