@@ -61,38 +61,57 @@ function enrichRisks({
   t: any;
 }) {
   const riskProperties = [
-    { property: 'potentialImpacts', transLateEnumValues: true, disabled: false },
-    { property: 'potentialImpactReasons', transLateEnumValues: false, disabled: false },
-    { property: 'potentialImpactExplanations', transLateEnumValues: false, disabled: false },
-    { property: 'potentialImpactEffectiveReasons', transLateEnumValues: false, disabled: false },
-    { property: 'potentialImpactsCalculated', transLateEnumValues: true, disabled: true },
-    { property: 'potentialImpactsEffective', transLateEnumValues: true, disabled: true }
+    { name: 'potentialImpacts', transLateEnumValues: true, disabled: false },
+    { name: 'potentialImpactReasons', transLateEnumValues: false, disabled: false },
+    { name: 'potentialImpactExplanations', transLateEnumValues: false, disabled: false },
+    { name: 'potentialImpactEffectiveReasons', transLateEnumValues: false, disabled: false },
+    { name: 'potentialImpactsCalculated', transLateEnumValues: true, disabled: true },
+    { name: 'potentialImpactsEffective', transLateEnumValues: true, disabled: true }
   ];
 
   const toReturn = [];
 
-  for (const riskProperty of riskProperties) {
+  if (riskDefinitionName === 'GSRA') {
+    for (const riskProperty of riskProperties) {
+      for (const protectionGoal of riskDefinitionCategories) {
+        toReturn.push([
+          `#/properties/riskValues/properties/${riskDefinitionName}/properties/potentialImpacts/properties/${protectionGoal}/properties/${riskProperty.name}`,
+          {
+            formSchema: {
+              enum:
+                riskProperty.transLateEnumValues ?
+                  getTranslatedRiskValues({
+                    domain,
+                    categoryId: protectionGoal,
+                    language,
+                    riskDefinitionName
+                  })
+                : undefined,
+              disabled: riskProperty.disabled,
+              label: t(riskProperty.name)
+            }
+          }
+        ]);
+      }
+    }
+  } else {
     for (const protectionGoal of riskDefinitionCategories) {
       toReturn.push([
-        `#/properties/riskValues/properties/${riskDefinitionName}/properties/potentialImpacts/properties/${protectionGoal}/properties/${riskProperty.property}`,
+        `#/properties/riskValues/properties/${riskDefinitionName}/properties/potentialImpacts/properties/${protectionGoal}`,
         {
           formSchema: {
-            enum:
-              riskProperty.transLateEnumValues ?
-                getTranslatedRiskValues({
-                  domain,
-                  categoryId: protectionGoal,
-                  language,
-                  riskDefinitionName
-                })
-              : undefined,
-            disabled: riskProperty.disabled,
-            label: t(riskProperty.property)
+            enum: getTranslatedRiskValues({
+              domain,
+              categoryId: protectionGoal,
+              language,
+              riskDefinitionName
+            })
           }
         }
       ]);
     }
   }
+
   return Object.fromEntries(toReturn);
 }
 
@@ -107,8 +126,8 @@ export const getRiskAdditionalContext = (
   const riskDefinitionCategories = domain.riskDefinitions[riskDefinitionName].categories.map((category) => category.id);
 
   switch (objectType) {
-    case 'process':
     case 'scope':
+    case 'process':
     case 'asset':
       return enrichRisks({
         domain,

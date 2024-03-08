@@ -43,7 +43,7 @@ import {
 } from './util';
 import Control from './controls/Control';
 import Widget from './widgets/Widget';
-import Layout from './layouts/Layout';
+import Group from './layouts/Group.vue';
 import Label from './labels/Label.vue';
 import ValidationFailedError from './ValidationFailedError.vue';
 import { IVeoFormSchemaGeneratorOptions, IVeoObjectSchema } from '~/types/VeoTypes';
@@ -281,7 +281,7 @@ export default defineComponent({
       localObjectSchema: ComputedRef<IVeoObjectSchema>
     ) => {
       return h(
-        Layout,
+        Group,
         {
           ...defaultProps.value,
           options: element.options,

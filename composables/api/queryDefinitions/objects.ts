@@ -132,9 +132,7 @@ export const transFormObject = (object: any) => {
   const riskAffectedEntities = ['scope', 'asset', 'process'];
   const analysisTypes = Object.keys(_object.riskValues || {});
 
-  if (!analysisTypes.length) return _object;
-
-  if (riskAffectedEntities.includes(_object.type)) {
+  if (riskAffectedEntities.includes(_object.type) && analysisTypes.length && analysisTypes[0] === 'GSRA') {
     const riskValues = {};
 
     Object.entries(_object.riskValues[analysisTypes[0]].potentialImpacts || {}).forEach(([protectionGoal, value]) => {
@@ -170,7 +168,7 @@ export const formatObject = (object: any) => {
   const riskAffectedEntities = ['scope', 'asset', 'process'];
   const [analysisType] = Object.keys(object.riskValues || {});
 
-  if (riskAffectedEntities.includes(object.type) && !!analysisType) {
+  if (riskAffectedEntities.includes(object.type) && !!analysisType && analysisType === 'GSRA') {
     const keysToTransform = [
       'potentialImpacts',
       'potentialImpactsCalculated',

@@ -65,32 +65,55 @@ export default {
         if (riskAffectedEntities.includes(result.title)) {
           // determine the specific anylysis type, e.g. DSRA, GSRA, NISRA
           const [analysisType] = Object.keys(result.properties?.riskValues?.properties);
-          // shorten the key for convenience
-          const analysisTypeProps = result.properties.riskValues.properties[analysisType].properties;
-          // extract the impactTypes, e.g. potentialImpactEffectiveReasons, potentialImpactExplanations, ...
-          const impactTypes = Object.keys(analysisTypeProps);
-          // extract protection goals, e.g. C, I, A
-          const protectionGoals = Object.keys(analysisTypeProps?.potentialImpactEffectiveReasons?.properties || {});
+          if (analysisType === 'GSRA') {
+            // shorten the key for convenience
+            const analysisTypeProps = result.properties.riskValues.properties[analysisType].properties;
+            // extract the impactTypes, e.g. potentialImpactEffectiveReasons, potentialImpactExplanations, ...
+            const impactTypes = Object.keys(analysisTypeProps);
+            // extract protection goals, e.g. C, I, A
+            const protectionGoals = Object.keys(analysisTypeProps?.potentialImpactEffectiveReasons?.properties || {});
 
-          analysisTypeProps.potentialImpacts.properties = protectionGoals.reduce(
-            (previous, protectionGoal) => {
-              previous[protectionGoal] = {
-                properties: impactTypes.reduce(
-                  (protectionGoalObject, impactType) => {
-                    protectionGoalObject[impactType] = analysisTypeProps[impactType].properties[protectionGoal];
-                    return protectionGoalObject;
-                  },
-                  {} as Record<string, any>
-                )
-              };
-              return previous;
-            },
-            {} as Record<string, any>
-          );
+            analysisTypeProps.potentialImpacts.properties = protectionGoals.reduce(
+              (previous, protectionGoal) => {
+                previous[protectionGoal] = {
+                  properties: impactTypes.reduce(
+                    (protectionGoalObject, impactType) => {
+                      protectionGoalObject[impactType] = analysisTypeProps[impactType].properties[protectionGoal];
+                      return protectionGoalObject;
+                    },
+                    {} as Record<string, any>
+                  ),
+                  allOf: [
+                    {
+                      if: {
+                        properties: {
+                          potentialImpacts: {
+                            maxLength: 0
+                          }
+                        }
+                      },
+                      then: {
+                        properties: {
+                          potentialImpactReasons: {
+                            readOnly: true
+                          },
+                          potentialImpactExplanations: {
+                            readOnly: true
+                          }
+                        }
+                      }
+                    }
+                  ]
+                };
+                return previous;
+              },
+              {} as Record<string, any>
+            );
 
-          result.properties.riskValues.properties[analysisType].properties = {
-            potentialImpacts: { properties: analysisTypeProps.potentialImpacts.properties }
-          };
+            result.properties.riskValues.properties[analysisType].properties = {
+              potentialImpacts: { properties: analysisTypeProps.potentialImpacts.properties }
+            };
+          }
         }
         result.title = result.title.toLowerCase();
         return result;

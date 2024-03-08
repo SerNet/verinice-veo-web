@@ -149,9 +149,22 @@ export default defineComponent({
       }
 
       setDefaultRiskDefinitionIfScope();
+      setDefaultRiskReason();
 
       // Create a pristine object to compare whether the user has inputted data
       pristineObjectData.value = cloneDeep(objectData.value);
+    };
+
+    const setDefaultRiskReason = () => {
+      const analysisType = Object.keys(domain.value?.riskDefinitions || {})[0];
+      if (domain.value && analysisType === 'GSRA') {
+        objectData.value.riskValues = { [analysisType]: { potentialImpacts: {} } };
+        for (const category of domain.value.riskDefinitions[analysisType].categories.map((category) => category.id)) {
+          objectData.value.riskValues[analysisType].potentialImpacts[category] = {
+            potentialImpactReasons: 'impact_reason_manual'
+          };
+        }
+      }
     };
 
     const setDefaultRiskDefinitionIfScope = () => {

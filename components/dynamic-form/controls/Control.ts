@@ -136,6 +136,10 @@ export default defineComponent({
     // If the element is part of a custom link, we have to modify some props. We can't do it in VeoForm as the index isn't accesible there, so we do it here
     const _props = computed(() => ({
       ...props,
+      options: {
+        ...props.options,
+        disabled: props.objectSchema.readOnly || props.options.disabled
+      },
       items: items.value,
       valuePointer: valuePointer.value,
       modelValue: JsonPointer.get(objectData?.value, valuePointer.value),
