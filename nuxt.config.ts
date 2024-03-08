@@ -27,6 +27,10 @@ export default defineNuxtConfig({
     client: false
   },
 
+  vue: {
+    runtimeCompiler: true
+  },
+
   typescript: {
     // Disable, because Takeover mode and Volar should be used
     shim: false,
