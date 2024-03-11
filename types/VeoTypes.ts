@@ -42,6 +42,7 @@ export interface IVeoLink {
   targetUri: string;
   searchesUri?: string;
   name?: string;
+  abbreviation?: string;
   id?: string;
 }
 
