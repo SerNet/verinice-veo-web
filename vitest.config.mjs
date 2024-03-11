@@ -1,8 +1,12 @@
-import { defineVitestConfig } from 'nuxt-vitest/config';
+import { defineVitestConfig } from '@nuxt/test-utils/config';
 
 export default defineVitestConfig({
   test: {
-    environment: 'nuxt',
-    setupFiles: ['test/setup.ts']
+    exclude: ['node_modules', './components/userData/__test__/**'],
+    includeSource: ['**/*.{js,ts}']
+  },
+  // eliminate dead code in production
+  define: {
+    'import.meta.vitest': 'undefined'
   }
 });
