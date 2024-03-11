@@ -45,11 +45,18 @@ async function showDashBoard() {
   // check localStorage for unit- and domainkey
   const storageUnitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
   const storageDomainId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
+  const favoriteUnitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT);
+  const favoriteUnitDomain = window.localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT_DOMAIN);
+
+  if (favoriteUnitId && favoriteUnitDomain) {
+    return navigateTo(`/${favoriteUnitId}/domains/${favoriteUnitDomain}`);
+  }
 
   // if the keys are present, link to the appropriate dashboard
   if (storageUnitId && storageDomainId) {
     return navigateTo(`/${storageUnitId}/domains/${storageDomainId}`);
   }
+
   // if neither of the keys is found fetch all units and link to the "first" unit / domain returned by the backend
   const units = await useQuerySync(unitQueryDefinitions.queries.fetchAll);
 

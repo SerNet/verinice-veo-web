@@ -29,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { useQuery } from '~/composables/api/utils/query';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import {
@@ -68,6 +69,7 @@ type TInlineComponent = {
 
 const { data: _units, isFetching: isFetchingUnits } = useQuery(unitQueryDefinitions.queries.fetchAll);
 const activeUnits = computed(() => _units.value?.length || null);
+const favoriteUnitId = localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT);
 
 const newUnits = ref<any>(null);
 const units = computed({
@@ -81,6 +83,7 @@ const units = computed({
       description: unit?.description,
       link: `/${unit.id}/domains/${unit.domains?.[0].id}`,
       profilesUrl: `${unit.id}/domains/${unit.domains?.[0].id}/profiles`,
+      isFavorite: unit.id === favoriteUnitId ? true : false,
       metaData: `by: ${unit.createdBy} | at: ${format(unit.createdAt, 'dd.MM.yyyy')}`,
       domains: {
         names: unit.domains.map((d) => d.name),
@@ -120,6 +123,14 @@ function deleteUnit(unit: TUnit) {
 
 function bookmarkFavoriteUnit(unit: IUnit) {
   if (!units.value) return;
+  const favoriteUnitDomainId = unit.raw.domains[0]?.id;
+  localStorage.setItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT, unit.id);
+
+  if (typeof favoriteUnitDomainId === 'string') {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT_DOMAIN, favoriteUnitDomainId);
+  } else {
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT_DOMAIN);
+  }
 
   // Change the units' isFavorite state
   units.value = units.value.map((u: TUnit) => ({ ...u, isFavorite: u.id === unit.id }));
