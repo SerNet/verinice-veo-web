@@ -20,7 +20,9 @@ export function veoRequest({ url, method, requestBody }: { url: string; method: 
 
   // Make sure window.request is available
   cy.visit('/security');
-  cy.get('[data-component-name="breadcrumbs"]', { timeout: 60000 }).as('prepareVeoRequest');
+  cy.get('[data-component-name="breadcrumbs"]').as('prepareVeoRequest');
+
+  cy.wait(1000);
 
   return cy.window().then((win) => {
     return win.request(url, options).then((response) => {

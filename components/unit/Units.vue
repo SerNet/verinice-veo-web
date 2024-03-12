@@ -136,7 +136,7 @@ const UnitActions: TInlineComponent = {
   },
   template: `
     <v-btn @click="emitEditUnit" :icon="mdiPencilOutline" variant="text"></v-btn>
-    <v-btn @click="emitDeleteUnit" :icon="mdiDeleteOutline" variant="text"></v-btn>
+    <v-btn @click="emitDeleteUnit" :icon="mdiDeleteOutline" variant="text" data-veo-test="units-delete-unit-button"></v-btn>
   `
 };
 

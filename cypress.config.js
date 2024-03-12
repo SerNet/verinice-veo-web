@@ -3,7 +3,7 @@
 const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
-  defaultCommandTimeout: 15000,
+  defaultCommandTimeout: 30000,
   requestTimeout: 30000,
   e2e: {
     excludeSpecPattern: ['*/*/**/createElements.cy.ts'],

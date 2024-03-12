@@ -24,7 +24,7 @@ export function goToUnitSelection(): void {
 }
 
 export function selectUnit({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {
-  cy.get('[data-veo-test="unit-selection-available-units"] a').contains(unitName).click();
+  cy.get('.v-card-title').contains(unitName).click();
 }
 
 export function createUnitGUI({
@@ -124,11 +124,11 @@ export function deleteUnit(): void {
 
 export function deleteUnitGUI({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {
   cy.goToUnitSelection();
-  cy.get('.v-list-item--link')
+  cy.get('.v-card-title')
     .contains(unitName)
     .parent()
     .parent()
-    .find('[data-component-name="unit-selection-delete-unit-button"]')
+    .find('[data-veo-test="units-delete-unit-button"]')
     .click();
 
   // Get delete dialog
