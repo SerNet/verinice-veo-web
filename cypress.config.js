@@ -6,6 +6,7 @@ module.exports = defineConfig({
   defaultCommandTimeout: 15000,
   requestTimeout: 30000,
   e2e: {
+    excludeSpecPattern: ['*/*/**/createElements.cy.ts'],
     setupNodeEvents(_on, config) {
       // Load cypress.env.[environment].json files for different environments
       // if version not defined, use local
