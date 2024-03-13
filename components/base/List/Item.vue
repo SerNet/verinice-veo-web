@@ -1,13 +1,13 @@
 <template>
   <v-col cols="12">
-    <v-card :loading="false">
-      <div class="veo-base-card__slot-prepend" style="padding: 0">
+    <v-card :loading="false" data-veo-test="veo-card">
+      <div data-veo-test="item-card-slot-prepend" class="veo-base-card__slot-prepend" style="padding: 0">
         <slot :item="item" name="prepend" />
       </div>
 
-      <div class="veo-base-card__slot-center">
+      <div class="veo-base-card__slot-center" data-veo-test="item-card-slot-center">
         <div>
-          <NuxtLink :to="item.link" class="veo-base-card__slot-center__main">
+          <NuxtLink :to="item.link" class="veo-base-card__slot-center__main" data-veo-test="item-card-slot-center-link">
             <v-card-title v-text="item.name"></v-card-title>
             <v-card-subtitle v-text="item.metaData ?? 'No meta data available'"></v-card-subtitle>
             <v-card-text
@@ -16,7 +16,7 @@
             ></v-card-text>
           </NuxtLink>
 
-          <div class="veo-base-card__slot-center__aside">
+          <div data-veo-test="item-card-slot-center-aside" class="veo-base-card__slot-center__aside">
             <slot :item="item" name="center-aside"></slot>
           </div>
         </div>

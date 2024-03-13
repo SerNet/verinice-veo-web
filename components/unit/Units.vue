@@ -135,8 +135,20 @@ const UnitActions: TInlineComponent = {
     }
   },
   template: `
-    <v-btn @click="emitEditUnit" :icon="mdiPencilOutline" variant="text"></v-btn>
-    <v-btn @click="emitDeleteUnit" :icon="mdiDeleteOutline" variant="text" data-veo-test="units-delete-unit-button"></v-btn>
+    <v-btn
+      @click="emitEditUnit"
+      :icon="mdiPencilOutline"
+      variant="text"
+      data-veo-test="units-edit-unit-button"
+    >
+    </v-btn>
+    <v-btn
+      @click="emitDeleteUnit"
+      :icon="mdiDeleteOutline"
+      variant="text"
+      data-veo-test="units-delete-unit-button"
+    >
+    </v-btn>
   `
 };
 
@@ -182,6 +194,7 @@ const BookmarkFavorite: TInlineComponent = {
   template: `
     <v-btn
       :icon="this.isFavorite ? mdiBookmark : mdiBookmarkOutline"
+      :data-veo-test="this.isFavorite ? 'is-favorite' : 'is-not-favorite'"
       variant="text"
       @click="emitBookmark"
     />
@@ -200,6 +213,7 @@ const ApplyProfiles: TInlineComponent = {
     <v-btn
       :href="this.profilesUrl"
       :prepend-icon="mdiShapeOutline"
+      data-veo-test="apply-profiles-link"
       variant="outlined"
       color="primary"
       size="small"
