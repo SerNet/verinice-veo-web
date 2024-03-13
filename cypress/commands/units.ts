@@ -12,6 +12,7 @@ declare global {
       createUnitGUI: typeof createUnitGUI;
       deleteUnitGUI: typeof deleteUnit;
       deleteUnit: typeof deleteUnit;
+      editUnit: typeof editUnit;
       goToUnitDashboard: typeof goToUnitDashboard;
     }
   }
@@ -30,41 +31,19 @@ export function selectUnit({ unitName = Cypress.env('unitDetails').name }: { uni
 export function createUnitGUI({
   unitName = Cypress.env('unitDetails').name,
   unitDesc = Cypress.env('unitDetails').desc,
-  domains = Cypress.env('unitDetails').domains
-}: { unitName?: string; unitDesc?: string; domains?: string[] } = {}): void {
+  domainNames = Cypress.env('unitDetails').domains
+}: { unitName?: string; unitDesc?: string; domainNames?: string[] } = {}): void {
   cy.goToUnitSelection();
   cy.get('.veo-primary-action-fab button').click();
 
-  // Choose domains
-  cy.get('.new-unit-form .v-list-item')
-    .as('availableDomains')
-    .then(($el) => {
-      const numAvailableDomains = $el.length;
+  chooseDomains(domainNames);
 
-      if (numAvailableDomains > 1) {
-        cy.get('@availableDomains').click({ multiple: true });
-        domains.forEach((domain) => cy.get('@availableDomains').contains(domain).click());
-      } else if (numAvailableDomains < domains.length) {
-        cy.log('Domains:', domains);
-        cy.get('@availableDomains').then(($el) => cy.log($el.text()));
-        throw new Error('Some of the choosen domains are not applicable');
-      } else if (numAvailableDomains === 1 && domains.length === 1) {
-        cy.get('@availableDomains').contains(domains[0]);
-      }
-    });
+  // Fill in name and description
+  cy.get('.new-unit-form input').first().type(unitName).get('.new-unit-form input').last().type(unitDesc);
 
   // Create new unit
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units/**`).as('getNewUnit');
-  cy.get('.new-unit-form input')
-    .first()
-    .type(unitName)
-    .get('.new-unit-form input')
-    .last()
-    .type(unitDesc)
-    .get('.v-card-actions button')
-    .last()
-    .click();
-
+  cy.get('.v-card-actions button').last().click();
   cy.wait(['@getNewUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 200);
 
   /**
@@ -78,6 +57,33 @@ export function createUnitGUI({
       Cypress.env('unitDetails', unitDetails);
     });
   });
+}
+
+export function editUnit({
+  unitName = Cypress.env('unitDetails').name,
+  unitDesc = Cypress.env('unitDetails').desc,
+  domainNames = []
+}: {
+  unitName?: string;
+  unitDesc?: string;
+  domainNames?: string[];
+} = {}): void {
+  // Commands not chained,
+  // because it would be unsafe: https://docs.cypress.io/api/commands/clear
+  // Name
+  cy.get('.new-unit-form input').first().clear();
+  cy.get('.new-unit-form input').first().type(unitName);
+
+  // Description
+  cy.get('.new-unit-form input').last().clear();
+  cy.get('.new-unit-form input').last().type(unitDesc);
+
+  if (domainNames.length) chooseDomains(['DS-GVO']);
+
+  // Submit
+  cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units/**`).as('updatedUnit');
+  cy.get('.v-card-actions button').last().click();
+  cy.wait(['@updatedUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 200);
 }
 
 export function createUnit({
@@ -104,9 +110,10 @@ export function createUnit({
         description: unitDesc,
         domains
       }
-    }).then((data) => {
-      // Store unit id to make it accessible in tests and other commands
-      const unitDetails = { ...Cypress.env('unitDetails'), unitId: data.resourceId };
+    }).then((data: any) => {
+      // Store unit id and domainNames
+      // to make them accessible in tests and other commands
+      const unitDetails = { ...Cypress.env('unitDetails'), unitId: data.resourceId, domains: domainNames };
       Cypress.env('unitDetails', unitDetails);
     });
     cy.wait(['@createUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 201);
@@ -164,4 +171,24 @@ export function goToUnitDashboard({ isStoringUnitID = true, unitName = Cypress.e
     const unitDetails = { ...Cypress.env('unitDetails'), unitId: url.split('/').at(3) };
     Cypress.env('unitDetails', unitDetails);
   });
+}
+
+function chooseDomains(domainNames: string[]) {
+  // Choose domains
+  cy.get('.new-unit-form .v-list-item')
+    .as('availableDomains')
+    .then(($el) => {
+      const numAvailableDomains = $el.length;
+
+      if (numAvailableDomains > 1) {
+        cy.get('@availableDomains').click({ multiple: true });
+        domainNames.forEach((domain) => cy.get('@availableDomains').contains(domain).click());
+      } else if (numAvailableDomains < domainNames.length) {
+        cy.log('Domains:', domainNames);
+        cy.get('@availableDomains').then(($el) => cy.log($el.text()));
+        throw new Error('Some of the choosen domains are not applicable');
+      } else if (numAvailableDomains === 1 && domainNames.length === 1) {
+        cy.get('@availableDomains').contains(domainNames[0]);
+      }
+    });
 }

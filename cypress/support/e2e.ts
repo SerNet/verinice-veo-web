@@ -8,6 +8,7 @@ import {
   selectUnit,
   createUnit,
   createUnitGUI,
+  editUnit,
   deleteUnit,
   deleteUnitGUI
 } from '../commands/units';
@@ -26,6 +27,7 @@ Cypress.Commands.addAll({
   createUnit,
   createUnitGUI,
   deleteUnit,
+  editUnit,
   navigateTo,
   deleteUnitGUI,
   importUnit
