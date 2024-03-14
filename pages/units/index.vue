@@ -19,73 +19,19 @@
   <BasePage data-component-name="unit-selection-page" sticky-footer>
     <LayoutHeadline :title="t('management')" />
 
-    <div class="d-flex justify-center my-8">
-      <BaseCard style="width: 70%; max-width: 1000px">
-        <v-card-title class="bg-accent small-caps text-h4">
-          <span>Units</span>
-          <span style="float: right">
-            {{ activeUnits }} {{ t('of') }} {{ userSettings.maxUnits }}
-            {{ t('active') }}
-          </span>
-        </v-card-title>
+    <BaseContainer>
+      <h2 class="text-h5 d-flex flex-grow-1 justify-end my-4">
+        <strong>Units:&nbsp;</strong>
+        <span>
+          {{ activeUnits }} {{ t('of') }} {{ userSettings.maxUnits }}
+          {{ t('active') }}
+        </span>
+      </h2>
+    </BaseContainer>
 
-        <v-list
-          lines="two"
-          data-component-name="unit-selection-available-units"
-          data-veo-test="unit-selection-available-units"
-        >
-          <template v-if="unitsFetching">
-            <div v-for="i in 2" :key="i" class="mb-4">
-              <VSkeletonLoader type="text" width="150px" class="mx-4 my-1" />
-              <VSkeletonLoader type="text" width="250px" class="mx-4 my-1" />
-            </div>
-          </template>
-
-          <v-list-item
-            v-for="unit in units"
-            v-else
-            :key="unit.id"
-            lines="two"
-            :title="unit.name"
-            :subtitle="unit.description"
-            :disabled="!generateUnitDashboardLink(unit.id)"
-            :to="generateUnitDashboardLink(unit.id)"
-          >
-            <template #append>
-              <v-tooltip location="bottom">
-                <template #activator="{ props }">
-                  <v-btn
-                    v-bind="props"
-                    :icon="mdiPencilOutline"
-                    variant="text"
-                    data-component-name="unit-selection-edit-unit-button"
-                    @click.prevent="editUnit(unit)"
-                  />
-                </template>
-                <template #default>
-                  {{ t('editUnit') }}
-                </template>
-              </v-tooltip>
-              <v-tooltip location="bottom">
-                <template #activator="{ props }">
-                  <v-btn
-                    v-bind="props"
-                    :icon="mdiTrashCanOutline"
-                    variant="text"
-                    data-component-name="unit-selection-delete-unit-button"
-                    @click.prevent="deleteUnit(unit)"
-                  />
-                </template>
-                <template #default>
-                  {{ t('deleteUnit') }}
-                </template>
-              </v-tooltip>
-            </template>
-            <v-divider v-if="units && units?.length > 1" />
-          </v-list-item>
-        </v-list>
-      </BaseCard>
-    </div>
+    <BaseContainer>
+      <UnitUnits ref="unitsRef" />
+    </BaseContainer>
 
     <template #footer>
       <v-tooltip location="start">
@@ -111,10 +57,6 @@
         </template>
       </v-tooltip>
     </template>
-
-    <UnitManageDialog v-model="unitManageDialogVisible" :unit-id="unitToEdit" />
-
-    <UnitDeleteDialog v-model="deleteUnitDialogVisible" :unit="unitToDelete" />
   </BasePage>
 </template>
 
@@ -123,62 +65,27 @@ export const ROUTE_NAME = 'units';
 </script>
 
 <script setup lang="ts">
-import { mdiTrashCanOutline, mdiPlus, mdiPencilOutline } from '@mdi/js';
-
-import { getFirstDomainDomaindId } from '~/lib/utils';
-import { useQuery } from '~/composables/api/utils/query';
-import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import { mdiPlus } from '@mdi/js';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
-const { t } = useI18n();
-const { t: $t } = useI18n({ useScope: 'global' });
-
-useHead({
-  title: $t('breadcrumbs.index')
-});
-
 const { ability } = useVeoPermissions();
 const { userSettings } = useVeoUser();
+const { t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
 
-const unitManageDialogVisible = ref(false);
+const unitsRef = ref<{ createUnit(): () => void; activeUnits: number | null } | null>(null);
+const activeUnits = computed(() => unitsRef?.value?.activeUnits || null);
+const maxUnitsExceeded = computed(() => (activeUnits?.value || 0) >= userSettings.value.maxUnits);
 
 function createUnit() {
-  unitToEdit.value = undefined;
-  unitManageDialogVisible.value = true;
+  if (!unitsRef.value) return null;
+  unitsRef.value.createUnit();
 }
 
-const unitToEdit = ref<undefined | string>();
-const editUnit = (unit: IVeoUnit) => {
-  unitToEdit.value = unit.id;
-  unitManageDialogVisible.value = true;
-};
-
-const { data: units, isFetching: unitsFetching } = useQuery(unitQueryDefinitions.queries.fetchAll);
-
-const activeUnits = computed(() => units.value?.length || undefined);
-
-const generateUnitDashboardLink = (unitId: string) => {
-  const unitToLinkTo = (units.value || []).find((unit: IVeoUnit) => unit.id === unitId);
-  let domainId;
-
-  if (unitToLinkTo) {
-    domainId = getFirstDomainDomaindId(unitToLinkTo);
-  }
-
-  return unitToLinkTo && domainId ? `/${unitToLinkTo.id}/domains/${domainId}` : undefined;
-};
-
-const maxUnitsExceeded = computed(() => (units.value?.length || 0) >= userSettings.value.maxUnits);
-
-// Unit deletion stuff
-const deleteUnitDialogVisible = ref(false);
-const unitToDelete = ref<undefined | IVeoUnit>();
-
-const deleteUnit = (unit: IVeoUnit) => {
-  unitToDelete.value = unit;
-  deleteUnitDialogVisible.value = true;
-};
+useHead({
+  title: globalT('breadcrumbs.units')
+});
 </script>
 
 <i18n>
