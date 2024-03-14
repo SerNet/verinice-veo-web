@@ -194,7 +194,6 @@ const BookmarkFavorite: TInlineComponent = {
   template: `
     <v-btn
       :icon="this.isFavorite ? mdiBookmark : mdiBookmarkOutline"
-      :data-veo-test="this.isFavorite ? 'is-favorite' : 'is-not-favorite'"
       variant="text"
       @click="emitBookmark"
     />
