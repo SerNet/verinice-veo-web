@@ -49,6 +49,7 @@ import type { TUnit } from './unit-module.ts';
 
 type TInlineComponent = {
   props?: string[];
+  emits?: string[];
   data?: () => Record<string, string>;
   methods?: Record<string, () => void | any>;
   template?: string;
@@ -126,6 +127,7 @@ defineExpose({
 
 const UnitActions: TInlineComponent = {
   data: () => ({ mdiPencilOutline, mdiDeleteOutline }),
+  emits: ['editUnit', 'deleteUnit'],
   methods: {
     emitEditUnit() {
       (this as any).$emit('editUnit');
@@ -154,6 +156,7 @@ const UnitActions: TInlineComponent = {
 
 const DomainActions: TInlineComponent = {
   props: ['domains'],
+  emits: ['editDomains'],
   data: () => ({ mdiPuzzle, mdiPencilOutline }),
   methods: {
     emitEditDomains() {
@@ -179,12 +182,12 @@ const DomainActions: TInlineComponent = {
     >
       Edit domains
     </v-btn>
-    </div>
   `
 };
 
 const BookmarkFavorite: TInlineComponent = {
   props: ['isFavorite'],
+  emits: ['bookmarkFavorite'],
   data: () => ({ mdiBookmark, mdiBookmarkOutline }),
   methods: {
     emitBookmark() {
@@ -202,6 +205,7 @@ const BookmarkFavorite: TInlineComponent = {
 
 const ApplyProfiles: TInlineComponent = {
   props: ['profilesUrl'],
+  emits: ['apply-profiles'],
   data: () => ({ mdiShapeOutline }),
   methods: {
     emitApplyProfiles() {
