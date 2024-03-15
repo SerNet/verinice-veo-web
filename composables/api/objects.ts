@@ -42,7 +42,10 @@ export const useFetchObjects = (queryParameters: Ref<IVeoFetchObjectsParameters>
       : queryParameters.value.size,
     page: queryParameters.value.page ? max([queryParameters.value.page - 1, 0]) : 0
   }));
-  return useQuery(objectQueryDefinitions.queries.fetchAll, transformedQueryParameters, queryOptions);
+  return useQuery(objectQueryDefinitions.queries.fetchAll, transformedQueryParameters, {
+    ...queryOptions,
+    placeholderData: { items: [], pageCount: 0, page: 1, totalItemCount: 0 }
+  });
 };
 
 export const useFetchParentObjects = (
