@@ -45,15 +45,8 @@ import { mapUnitValues } from './unit-module';
 
 // Locally used types
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
-import type { TUnit } from './unit-module.ts';
-
-type TInlineComponent = {
-  props?: string[];
-  emits?: string[];
-  data?: () => Record<string, string>;
-  methods?: Record<string, () => void | any>;
-  template?: string;
-};
+import type { TUnit } from './unit-module';
+import type { TInlineComponent } from '~/types/utils';
 
 const { data: _units, isFetching: isFetchingUnits } = useQuery(unitQueryDefinitions.queries.fetchAll);
 const activeUnits = computed(() => _units.value?.length || null);
