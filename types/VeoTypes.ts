@@ -315,6 +315,7 @@ export interface IVeoObjectSchema {
     updatedAt: IVeoObjectSchemaProperty;
     updatedBy: IVeoObjectSchemaProperty;
     translations?: IVeoObjectSchemaTranslations;
+    riskValues?: IVeoObjectSchemaProperty;
   };
   required: string[];
   title: string;

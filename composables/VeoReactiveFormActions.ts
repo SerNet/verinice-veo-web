@@ -48,6 +48,33 @@ export function useVeoReactiveFormActions() {
     };
   }
 
+  function riskReactiveFormActions(riskAnalysisType: string, protectionGoals: string[]): IVeoFormsReactiveFormActions {
+    return protectionGoals.reduce(
+      (previous, current) => {
+        previous[
+          `#/properties/riskValues/properties/${riskAnalysisType}/properties/potentialImpacts/properties/${current}/properties/potentialImpacts`
+        ] = [
+          (newValue, _oldValue, newObject, _oldObject) => {
+            newObject.riskValues[riskAnalysisType].potentialImpacts[current].potentialImpactsEffective =
+              newValue ?? newObject.riskValues[riskAnalysisType].potentialImpacts[current].potentialImpactsCalculated;
+            if (
+              newValue !== undefined &&
+              !newObject.riskValues[riskAnalysisType].potentialImpacts[current].potentialImpactReasons
+            ) {
+              newObject.riskValues[riskAnalysisType].potentialImpacts[current].potentialImpactReasons =
+                'impact_reason_manual';
+            } else if (newValue === undefined) {
+              newObject.riskValues[riskAnalysisType].potentialImpacts[current].potentialImpactReasons = undefined;
+            }
+            return newObject;
+          }
+        ];
+        return previous;
+      },
+      {} as Record<string, any>
+    );
+  }
+
   /*
    Helpers for previously defined reactive form actions
   
@@ -101,6 +128,7 @@ export function useVeoReactiveFormActions() {
 
   return {
     defaultReactiveFormActions,
-    personReactiveFormActions
+    personReactiveFormActions,
+    riskReactiveFormActions
   };
 }

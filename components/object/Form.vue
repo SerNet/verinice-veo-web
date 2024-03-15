@@ -174,7 +174,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t, locale } = useI18n();
     const { t: $t } = useI18n({ useScope: 'global' });
-    const { personReactiveFormActions } = useVeoReactiveFormActions();
+    const { personReactiveFormActions, riskReactiveFormActions } = useVeoReactiveFormActions();
 
     // Object stuff
     const objectData = computed({
@@ -264,7 +264,20 @@ export default defineComponent({
     );
 
     const reactiveFormActions = computed<IVeoFormsReactiveFormActions>(() => {
-      return objectSchema.value?.title === 'person' ? personReactiveFormActions() : {};
+      const riskAnalysisType = Object.keys(objectSchema.value?.properties?.riskValues?.properties)[0];
+
+      return {
+        ...(objectSchema.value?.title === 'person' ? personReactiveFormActions() : {}),
+        ...(['process', 'asset', 'scope'].includes(objectSchema.value?.title || '') ?
+          riskReactiveFormActions(
+            riskAnalysisType,
+            Object.keys(
+              objectSchema.value?.properties?.riskValues?.properties?.[riskAnalysisType]?.properties?.potentialImpacts
+                ?.properties
+            )
+          )
+        : {})
+      };
     });
 
     // side menu stuff
