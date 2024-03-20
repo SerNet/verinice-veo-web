@@ -28,7 +28,7 @@ import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
 
 import { VeoApiReponseType } from '../utils/request';
 
-import type { Profile } from '../../../components/profile/profiles';
+import type { IVeoProfile } from '~/composables/profiles/useProfiles';
 
 export interface IVeoFetchPersonsInDomainParameters {
   domainId: string;
@@ -181,7 +181,7 @@ export default {
         staleTime: STALE_TIME.REQUEST,
         placeholderData: []
       }
-    } as IVeoQueryDefinition<IVeoFetchProfilesParameters, Profile[]>,
+    } as IVeoQueryDefinition<IVeoFetchProfilesParameters, IVeoProfile[]>,
     fetchProfile: {
       primaryQueryKey: 'profile',
       url: '/api/domains/:domainId/profiles/:id',
@@ -194,7 +194,7 @@ export default {
       staticQueryOptions: {
         staleTime: STALE_TIME.MEDIUM
       }
-    } as IVeoQueryDefinition<IVeoFetchProfileParameters, Profile>
+    } as IVeoQueryDefinition<IVeoFetchProfileParameters, IVeoProfile>
   },
   mutations: {
     updateTypeDefinitions: {
