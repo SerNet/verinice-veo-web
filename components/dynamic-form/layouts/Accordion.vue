@@ -19,6 +19,7 @@
   <v-expansion-panels
     v-if="options.visible"
     :id="formSchemaPointer"
+    v-model="panel"
     class="vf-layout vf-expansion-panel my-2 py-1 px-2 pb-2"
     :class="classes"
   >
@@ -54,12 +55,13 @@ export default defineComponent({
   props: VeoFormsElementProps,
   setup(props) {
     const classes = computed(() => props.options.class || '');
-
     const isHorizontal = computed(() => props.options.direction === 'horizontal');
+    const panel = ref(0);
 
     return {
       classes,
-      isHorizontal
+      isHorizontal,
+      panel
     };
   }
 });
