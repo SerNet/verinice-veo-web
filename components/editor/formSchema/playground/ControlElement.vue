@@ -29,7 +29,7 @@
         <v-btn :icon="mdiTrashCanOutline" size="small" @click="emit('delete')" />
       </v-card-actions>
       <div class="mx-2 mb-1">
-        <EditorTranslationsTranslatedElementTitle :form-schema-element="formSchemaElement" tag="b" hide-if-missing>
+        <EditorTranslationsTranslatedElementTitle :form-schema-element="formSchemaElement" tag="b">
           <template #default="{ translatedValue }">
             <span v-if="translatedValue" class="text-body-2" style="overflow-wrap: break-word">
               ({{ attributeKey }})
