@@ -13270,7 +13270,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - date-fns@3.3.1
+ - date-fns@3.6.0
 
 This package contains the following license and notice below:
 
