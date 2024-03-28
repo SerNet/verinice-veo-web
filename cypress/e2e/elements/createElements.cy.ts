@@ -77,9 +77,9 @@ describe('Create elements', () => {
     cy.get('input[id="#/properties/abbreviation"]').type(abbreviation);
     cy.get('input[id="#/properties/name"]').type(name);
     cy.get('textarea[id="#/properties/description"]').type(description);
-    
+
     selectMenuItem(status);
-    
+
     cy.contains('Save').click();
   };
 
