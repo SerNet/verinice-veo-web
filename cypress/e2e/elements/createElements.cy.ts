@@ -79,8 +79,10 @@ describe('Create elements', () => {
     cy.get('textarea[id="#/properties/description"]').type(description);
     selectMenuItem(status);
 
+    cy.get('.v-overlay__content').contains(status);
+
     //Wait for all changes to be saved correctly
-    cy.wait(200);
+    //cy.wait(200);
     cy.contains('Save').click();
   };
 
