@@ -255,7 +255,8 @@ export default {
           domain: route.params.domain,
           endpoint: queryParameters.endpoint,
           id: queryParameters.id
-        }
+        },
+        query: { size: 1000 }
       })
     } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchScopeChildren: {
@@ -268,7 +269,8 @@ export default {
         return result;
       },
       queryParameterTransformationFn: (queryParameters) => ({
-        params: { domain: route.params.domain, id: queryParameters.id }
+        params: { domain: route.params.domain, id: queryParameters.id },
+        query: { size: 1000 }
       })
     } as IVeoQueryDefinition<IVeoFetchScopeChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchRisks: {
