@@ -77,18 +77,19 @@ describe('Create elements', () => {
     cy.get('input[id="#/properties/abbreviation"]').type(abbreviation);
     cy.get('input[id="#/properties/name"]').type(name);
     cy.get('textarea[id="#/properties/description"]').type(description);
+    
     selectMenuItem(status);
-
-    cy.get('.v-overlay__content').contains(status);
-
-    //Wait for all changes to be saved correctly
-    //cy.wait(200);
+    
     cy.contains('Save').click();
   };
 
   const selectMenuItem = (status: string) => {
-    cy.get('div[data-attribute-name="status"]').click();
-    cy.get('div[role="listbox"]').contains(status).click();
+    new Cypress.Promise(() => {
+      cy.get('div[data-attribute-name="status"]').click();
+      cy.get('div[role="listbox"]').contains(status).click();
+    });
+
+    cy.get('.v-overlay__content .v-field__input').contains(status);
   };
 
   const selectRandom = (list) => {
