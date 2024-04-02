@@ -130,7 +130,6 @@ import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domain
 import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/reports/[report].vue';
 import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/risks/[matrix].vue';
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/editor/index.vue';
-import { ROUTE_NAME as PROFILE_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/profiles.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
 import { CATALOG_TYPE_ICONS } from '~/components/catalog/Icon.vue';
 import { useVeoUser } from '~/composables/VeoUser';
@@ -455,20 +454,6 @@ const catalogsNavEntry = computed<INavItem>(() => ({
   componentName: 'catalogs-nav-item'
 }));
 
-const profilesNavEntry = computed<INavItem>(() => ({
-  id: 'profiles',
-  name: $t('breadcrumbs.profiles'),
-  icon: mdiShapeOutline,
-  componentName: 'profiles-nav-item',
-  to: {
-    name: PROFILE_ROUTE_NAME,
-    params: {
-      unit: props.unitId as string,
-      domain: props.domainId as string
-    }
-  }
-}));
-
 const reportsNavEntry = computed<INavItem>(() => ({
   id: 'reports',
   name: $t('breadcrumbs.reports').toString(),
@@ -533,7 +518,6 @@ const items = computed<INavItem[]>(() => [
   ...(props.unitId && props.domainId ?
     [
       domainDashboardNavEntry.value,
-      ...(props.domainId && props.unitId ? [profilesNavEntry.value] : []),
       ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
       objectsNavEntry.value,
       ...(!isEmpty(catalogsEntriesChildItems.value) ? [catalogsNavEntry.value] : []),
