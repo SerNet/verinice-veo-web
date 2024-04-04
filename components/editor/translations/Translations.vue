@@ -193,8 +193,8 @@ const focusItem = (delta: number) => {
  * @param locale The locale to render for.
  */
 const renderLanguageItem = (itemProps: any, locale: string) => {
-  const itemKey: string = itemProps.item.raw.key;
-  const itemSource: string = itemProps.item.raw.source;
+  const itemKey: string = itemProps.item.key;
+  const itemSource: string = itemProps.item.source;
   const isEditedLanguageItem = computed(
     () =>
       editedLanguageItem.value?.key === itemKey &&
@@ -205,7 +205,7 @@ const renderLanguageItem = (itemProps: any, locale: string) => {
 
   return isEditedLanguageItem.value ?
       h(VTextField, {
-        modelValue: itemProps.item.raw[locale],
+        modelValue: itemProps.item[locale],
         dense: true,
         autofocus: true,
         hideDetails: true,
@@ -255,14 +255,14 @@ const renderLanguageItem = (itemProps: any, locale: string) => {
         },
         isModifiable ?
           [
-            itemProps.item.raw[locale],
+            itemProps.item[locale],
             h(VBtn, {
               icon: mdiPencilOutline,
               size: 'small',
               variant: 'plain'
             })
           ]
-        : itemProps.item.raw[locale]
+        : itemProps.item[locale]
       );
 };
 
@@ -274,7 +274,7 @@ const headers = computed<TableHeader[]>(() => [
     value: 'key',
     text: t('key'),
     render: (itemProps) => {
-      const itemSource: string = itemProps.item.raw.source;
+      const itemSource: string = itemProps.item.source;
       const isModifiable = props.modifieableSources.includes(parseInt(itemSource, 10));
       return h(
         'div',
@@ -282,7 +282,7 @@ const headers = computed<TableHeader[]>(() => [
           class: 'd-flex align-center justify-space-between text-no-wrap'
         },
         [
-          itemProps.item.raw.key,
+          itemProps.item.key,
           isModifiable ?
             h(VBtn, {
               icon: mdiTrashCanOutline,
@@ -290,15 +290,15 @@ const headers = computed<TableHeader[]>(() => [
               variant: 'plain',
               onClick: () => {
                 const toReturn = cloneDeep(props.modelValue);
-                delete toReturn[itemProps.item.raw.key][itemSource as any as TRANSLATION_SOURCE];
+                delete toReturn[itemProps.item.key][itemSource as any as TRANSLATION_SOURCE];
                 emit('update:modelValue', toReturn);
                 emit('translation-deleted', {
-                  key: itemProps.item.raw.key,
+                  key: itemProps.item.key,
                   source: itemSource
                 });
               }
             })
-          : !props.modelValue[itemProps.item.raw.key][TRANSLATION_SOURCE.FORMSCHEMA] ?
+          : !props.modelValue[itemProps.item.key][TRANSLATION_SOURCE.FORMSCHEMA] ?
             h(
               VTooltip,
               {
@@ -313,8 +313,8 @@ const headers = computed<TableHeader[]>(() => [
                     onClick: () => {
                       const toReturn = cloneDeep(props.modelValue);
                       for (const source of props.modifieableSources) {
-                        toReturn[itemProps.item.raw.key][source] = cloneDeep(
-                          toReturn[itemProps.item.raw.key][itemSource as any as TRANSLATION_SOURCE]
+                        toReturn[itemProps.item.key][source] = cloneDeep(
+                          toReturn[itemProps.item.key][itemSource as any as TRANSLATION_SOURCE]
                         );
                       }
                       emit('update:modelValue', toReturn);
@@ -336,7 +336,7 @@ const headers = computed<TableHeader[]>(() => [
     value: 'source',
     text: t('source'),
     render: (props) => {
-      switch (parseInt(props.item.raw.source)) {
+      switch (parseInt(props.item.source)) {
         case TRANSLATION_SOURCE.FORMSCHEMA:
           return t('formschema');
         case TRANSLATION_SOURCE.OBJECTSCHEMA:
@@ -357,8 +357,8 @@ const headers = computed<TableHeader[]>(() => [
 ]);
 
 // Turn the translations object into an array of objects
-const transformedTranslations = computed(() =>
-  Object.entries(cloneDeep(props.modelValue)).reduce((translationsAsArray, [key, value]) => {
+const transformedTranslations = computed(() => {
+  return Object.entries(cloneDeep(props.modelValue)).reduce((translationsAsArray, [key, value]) => {
     Object.entries(value).forEach(([source, translations]) => {
       // If the current source shouldn't be displayed, skip it
       if (
@@ -375,8 +375,8 @@ const transformedTranslations = computed(() =>
       });
     });
     return translationsAsArray;
-  }, [] as ITranslationsItem[])
-);
+  }, [] as ITranslationsItem[]);
+});
 </script>
 
 <i18n>
