@@ -4,6 +4,12 @@ stages:
   - build
   - deploy
 
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+      when: never
+    - when: always
+
 # Verification (tests and code analysis) is unnecessary on 'develop' &
 # 'master', because only verified MRs can be merged into those branches.
 .verification:
