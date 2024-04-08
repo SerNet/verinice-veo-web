@@ -65,8 +65,8 @@ const noValueText = computed(() => (props.formSchemaElement.type === 'Label' ? t
 const icon = computed(() => (props.formSchemaElement.type === 'Label' ? mdiAlphabeticalVariant : mdiLabelOutline));
 
 const labelExists = computed(() => !!props.formSchemaElement.text || !!props.formSchemaElement.options?.label);
-const isTranslatedLabel = computed(
-  () => (props.formSchemaElement.text || props.formSchemaElement.options?.label || '')?.startsWith('#lang/')
+const isTranslatedLabel = computed(() =>
+  (props.formSchemaElement.text || props.formSchemaElement.options?.label || '')?.startsWith('#lang/')
 );
 const translatedLabelKey = computed(() =>
   (props.formSchemaElement.text || props.formSchemaElement.options?.label || '').replace('#lang/', '')

@@ -66,8 +66,8 @@ const { t, locale } = useI18n();
 const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined = inject('objectSchemaHelper');
 const displayLanguage = inject<Ref<string>>('displayLanguage', locale);
 
-const translatedTitle = computed(
-  () => objectSchemaHelper?.value?.getTranslation(displayLanguage.value, `${props.item.prefix}${props.item.title}`)
+const translatedTitle = computed(() =>
+  objectSchemaHelper?.value?.getTranslation(displayLanguage.value, `${props.item.prefix}${props.item.title}`)
 );
 
 const idWithTitle = computed(() =>

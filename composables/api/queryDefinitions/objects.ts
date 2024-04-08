@@ -248,6 +248,7 @@ export default {
         result.items.map((item) => formatObject(item));
         // +1, because the first page for the api is 0, however vuetify expects it to be 1
         result.page = result.page + 1;
+        console.log('objects.ts::fetchObjectChildren::result', result);
         return result;
       },
       queryParameterTransformationFn: (queryParameters) => ({
@@ -266,6 +267,7 @@ export default {
         result.items.map((item) => formatObject(item));
         // +1, because the first page for the api is 0, however vuetify expects it to be 1
         result.page = result.page + 1;
+        console.log('objects.ts::fetchScopeChildren::result', result);
         return result;
       },
       queryParameterTransformationFn: (queryParameters) => ({

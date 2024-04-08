@@ -66,8 +66,8 @@ export const useFetchUnitDomains = (
   );
 
   const data = computed(() =>
-    (domains.value || []).filter(
-      (domain) => unit.value?.domains?.some((unitDomain) => unitDomain.targetUri.includes(domain.id))
+    (domains.value || []).filter((domain) =>
+      unit.value?.domains?.some((unitDomain) => unitDomain.targetUri.includes(domain.id))
     )
   );
   const isFetching = computed(() => isFetchingUnits.value || isFetchingDomains.value);

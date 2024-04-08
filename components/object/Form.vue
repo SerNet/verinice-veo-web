@@ -408,8 +408,9 @@ export default defineComponent({
     };
 
     const getSubTypeByFormSchemaId = (id: string) => {
-      const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.id === id)
-        ?.subType;
+      const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find(
+        (formschema) => formschema.id === id
+      )?.subType;
       if (formSchemaId) {
         return formSchemaId;
       }

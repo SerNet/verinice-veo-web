@@ -289,8 +289,8 @@ export function controlTypeAlternatives(
   controlDetails: IControlElementContext
 ): IControlElementType[] {
   const currentElement = INPUT_ELEMENTS.find((element) => element.code === controlType);
-  const parentElement = INPUT_ELEMENTS.find(
-    (element) => element.alternatives?.find((alternative) => alternative === controlType)
+  const parentElement = INPUT_ELEMENTS.find((element) =>
+    element.alternatives?.find((alternative) => alternative === controlType)
   );
 
   const availableElements = INPUT_ELEMENTS.filter(

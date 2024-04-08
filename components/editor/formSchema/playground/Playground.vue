@@ -130,9 +130,9 @@ const buildFormSchemaItem = (element: IPlaygroundElement, parentElement: IPlaygr
 
   // Undo absolute path scopes for link attributes (See addAllCustomLinkAttributes())
   if (isCustomLinkAttribute(formSchemaElement, parentFormSchemaElement)) {
-    formSchemaElement.scope = `#/properties/attributes/properties${formSchemaElement.scope?.split(
-      '/properties/attributes/properties'
-    )[1]}`;
+    formSchemaElement.scope = `#/properties/attributes/properties${
+      formSchemaElement.scope?.split('/properties/attributes/properties')[1]
+    }`;
   }
   formSchemaElement.elements = 'elements' in formSchemaElement ? [] : undefined;
 

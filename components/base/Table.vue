@@ -47,11 +47,8 @@ interface TableHeaderAdditionalProperties {
 
 export type TableHeader = Omit<DataTableHeader, 'text'> & TableHeaderAdditionalProperties;
 
-export type ExtractProperty<V extends ReadonlyArray<Record<string, any>>, K extends keyof V[0]> = V extends (
-  ReadonlyArray<Record<K, infer U>>
-) ?
-  U
-: never;
+export type ExtractProperty<V extends ReadonlyArray<Record<string, any>>, K extends keyof V[0]> =
+  V extends ReadonlyArray<Record<K, infer U>> ? U : never;
 </script>
 
 <script setup lang="ts">
