@@ -20,15 +20,14 @@ describe('Create elements', () => {
 
   for (const elementType of elementTypeList) {
     it('creates elements in ' + elementType, () => {
-
       //Workaround for language bug
       cy.get('div[data-component-name="objects-nav-item"]').then((body) => {
-        if (body.find('div[data-component-name="objects-nav-item"]:contains("Objecte")').length){}
-        else {
+        if (body.find('div[data-component-name="objects-nav-item"]:contains("Objecte")').length) {
+        } else {
           cy.languageTo('English');
         }
       });
-      
+
       cy.navigateTo(['Objects', elementType]);
 
       cy.contains('div[sub-group="true"] > div', new RegExp(`^${elementType}$`))

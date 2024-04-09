@@ -8,7 +8,7 @@ declare global {
     }
   }
 }
-  
+
 export function languageTo(language: string) {
   cy.get('button[data-component-name="language-select"]').click();
   cy.get('div[role="listbox"] div').contains(language).click();
