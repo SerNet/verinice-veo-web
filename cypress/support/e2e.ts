@@ -15,6 +15,7 @@ import {
 import { generateUnitDetails } from './setupHelpers';
 import { navigateTo } from '../commands/navigation';
 import { importUnit } from '../commands/importUnit';
+import { languageTo } from '../commands/language';
 
 Cypress.Commands.addAll({
   veoRequest,
@@ -30,7 +31,8 @@ Cypress.Commands.addAll({
   editUnit,
   navigateTo,
   deleteUnitGUI,
-  importUnit
+  importUnit,
+  languageTo
 });
 
 before(() => {
