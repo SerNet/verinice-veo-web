@@ -42,6 +42,7 @@
 
   "error.title": "An error occurred",
 
+  "global.button.back": "Go back",
   "global.button.cancel": "Cancel",
   "global.button.close": "Close",
   "global.button.delete": "Delete",
