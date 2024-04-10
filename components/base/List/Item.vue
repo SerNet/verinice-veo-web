@@ -9,11 +9,8 @@
         <div>
           <NuxtLink :to="item.link" class="veo-base-card__slot-center__main" data-veo-test="item-card-slot-center-link">
             <v-card-title v-text="item.name"></v-card-title>
-            <v-card-subtitle v-text="item.metaData ?? 'No meta data available'"></v-card-subtitle>
-            <v-card-text
-              data-veo-test="item-card-text"
-              v-text="item.description ?? 'No description available.'"
-            ></v-card-text>
+            <v-card-subtitle v-if="item.metaData" v-text="item.metaData"></v-card-subtitle>
+            <v-card-text data-veo-test="item-card-text" v-text="item.description ?? t('noDescription')"></v-card-text>
           </NuxtLink>
 
           <div data-veo-test="item-card-slot-center-aside" class="veo-base-card__slot-center__aside">
@@ -36,15 +33,13 @@
 </template>
 <script setup lang="ts">
 interface Props {
-  item: {
-    name: string;
-    link: string;
-    description: string | undefined;
-    metaData: string | undefined;
-  };
+  item: any;
 }
-const props = defineProps<Props>();
+defineProps<Props>();
+
+const { t } = useI18n();
 </script>
+
 <style scoped lang="scss">
 .v-card {
   display: flex;
@@ -76,6 +71,7 @@ const props = defineProps<Props>();
 }
 
 .veo-base-card__slot-center__aside {
+  padding: 8px;
   flex-direction: column;
 }
 
@@ -96,3 +92,14 @@ const props = defineProps<Props>();
   --veo-text: white;
 }
 </style>
+
+<i18n>
+{
+  "en": {
+    "noDescription": "No description available."
+  },
+  "de": {
+    "noDescription": "Keine Beschreibung verfügbar."
+  }
+}
+</i18n>

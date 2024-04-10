@@ -221,7 +221,6 @@ const ApplyProfiles: TInlineComponent = {
       variant="outlined"
       color="primary"
       size="small"
-      @click="emitApplyProfiles"
     >
       Add Profiles
     </v-btn>
