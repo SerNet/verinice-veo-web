@@ -1099,7 +1099,7 @@ Apache License
 
 The following npm package may be included in this product:
 
- - xlsx@0.19.0
+ - xlsx@0.20.2
 
 This package contains the following license and notice below:
 
@@ -14534,7 +14534,7 @@ The following npm packages may be included in this product:
  - minimatch@3.1.2
  - semver@6.3.1
  - semver@7.6.0
- - tar@6.2.0
+ - tar@6.2.1
  - which@2.0.2
  - yallist@3.1.1
  - yallist@4.0.0
