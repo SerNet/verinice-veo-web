@@ -206,13 +206,7 @@ const BookmarkFavorite: TInlineComponent = {
 
 const ApplyProfiles: TInlineComponent = {
   props: ['profilesUrl'],
-  emits: ['apply-profiles'],
   data: () => ({ mdiShapeOutline }),
-  methods: {
-    emitApplyProfiles() {
-      (this as any).$emit('apply-profiles');
-    }
-  },
   template: `
     <v-btn
       :to="this.profilesUrl"
