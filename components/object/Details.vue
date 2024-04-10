@@ -180,7 +180,7 @@ export default defineComponent({
     const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean }[]>(() => [
       {
         key: 'childScopes',
-        disabled: props.object?.type !== 'scope'
+        hidden: props.object?.type !== 'scope'
       },
       {
         key: 'childObjects'
@@ -190,7 +190,7 @@ export default defineComponent({
       },
       {
         key: 'parentObjects',
-        disabled: props.object?.type === 'scope'
+        hidden: props.object?.type === 'scope'
       },
       {
         key: 'links'
