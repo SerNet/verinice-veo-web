@@ -1,12 +1,29 @@
+<!--
+verinice.veo web
+Copyright (C) 2024 jae
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <v-row align="center" justify="center">
-    <template v-if="isFetchingUnits" class="mb-4">
+    <template v-if="isLoadingUnits" class="mb-4">
       <v-col cols="12">
         <VSkeletonLoader v-for="i in 5" :key="i" type="image" elevation="2" class="my-6" height="160px" />
       </v-col>
     </template>
 
-    <template v-if="units && !isFetchingUnits" v-for="unit in units">
+    <template v-if="units && !isLoadingUnits" v-for="unit in units">
       <BaseListItem :item="unit">
         <template #center-aside="{ item: unit }">
           <UnitActions @edit-unit="() => editUnit(unit)" @delete-unit="() => deleteUnit(unit)" />
@@ -30,8 +47,6 @@
 
 <script setup lang="ts">
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-import { useQuery } from '~/composables/api/utils/query';
-import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import {
   mdiPencilOutline,
   mdiPuzzle,
@@ -40,25 +55,20 @@ import {
   mdiDeleteOutline,
   mdiShapeOutline
 } from '@mdi/js';
-import { format } from 'date-fns';
-import { mapUnitValues } from './unit-module';
 
-// Locally used types
+// Types
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
-import type { TUnit } from './unit-module';
+import type { TVeoUnit } from '~/composables/units/useUnits';
 import type { TInlineComponent } from '~/types/utils';
 
-const { data: _units, isFetching: isFetchingUnits } = useQuery(unitQueryDefinitions.queries.fetchAll);
-const activeUnits = computed(() => _units.value?.length || null);
-const favoriteUnitId: string | null = localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT);
-
+// Unit Data
+const { data: veoUnits, isLoading: isLoadingUnits } = useUnits();
+const activeUnits = computed(() => veoUnits.value?.length || null);
 const newUnits = ref<any>(null);
 const units = computed({
   get() {
     if (newUnits.value) return newUnits.value;
-    if (!_units.value) return [];
-
-    return _units.value.map((unit: IVeoUnit) => mapUnitValues({ unit, favoriteUnitId }));
+    return veoUnits.value ?? [];
   },
   set(newValue) {
     newUnits.value = newValue;
@@ -66,30 +76,29 @@ const units = computed({
 });
 
 // Unit Actions
-const unitToEditId = ref<null | string>(null);
-const unitToDelete = ref<null | IVeoUnit>(null);
+const unitToEditId = ref<undefined | string>(undefined);
+const unitToDelete = ref<undefined | IVeoUnit>(undefined);
 const isManageDialogOpen = ref(false);
 const deleteDialogIsOpen = ref(false);
 
 function createUnit() {
-  unitToEditId.value = null;
+  unitToEditId.value = undefined;
   isManageDialogOpen.value = true;
 }
 
-function editUnit(unit: TUnit) {
+function editUnit(unit: TVeoUnit) {
   unitToEditId.value = unit.id;
   isManageDialogOpen.value = true;
 }
 
-function deleteUnit(unit: TUnit) {
+function deleteUnit(unit: TVeoUnit) {
   unitToDelete.value = unit.raw;
   deleteDialogIsOpen.value = true;
 }
 
-function bookmarkFavoriteUnit(unit: TUnit) {
+function bookmarkFavoriteUnit(unit: TVeoUnit) {
   if (!units.value) return;
-  const favoriteUnitDomainId = unit.raw.domains[0]?.id;
-
+  const favoriteUnitDomainId = unit.domains[0]?.id;
   localStorage.setItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT, unit.id);
 
   if (typeof favoriteUnitDomainId === 'string') {
@@ -97,13 +106,12 @@ function bookmarkFavoriteUnit(unit: TUnit) {
   } else {
     localStorage.removeItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT_DOMAIN);
   }
-
   // Change the units' isFavorite state
-  units.value = units.value.map((u: TUnit) => ({ ...u, isFavorite: u.id === unit.id }));
+  units.value = units.value.map((u: TVeoUnit) => ({ ...u, isFavorite: u.id === unit.id }));
 }
 
 // Domain Actions
-function editDomains(unit: TUnit) {
+function editDomains(unit: TVeoUnit) {
   // For now the same action as in `editUnit` is triggered
   // In a later iteration this is going to change
   editUnit(unit);
@@ -207,7 +215,7 @@ const ApplyProfiles: TInlineComponent = {
   },
   template: `
     <v-btn
-      :href="this.profilesUrl"
+      :to="this.profilesUrl"
       :prepend-icon="mdiShapeOutline"
       data-veo-test="apply-profiles-link"
       variant="outlined"
@@ -220,5 +228,4 @@ const ApplyProfiles: TInlineComponent = {
     `
 };
 </script>
-
 <style scoped lang="scss"></style>

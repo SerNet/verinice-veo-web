@@ -44,7 +44,7 @@ export const unit0 = {
     name: 'unit_0',
     description: 'unit_0_description',
     link: '/unit_0_id/domains/domain_0_id',
-    profilesUrl: '/unit_0_id/domains/domain_0_id/profiles',
+    profilesUrl: '/units/unit_0_id/profiles',
     isFavorite: false,
     metaData: 'by: user_creator | at: 07.02.2023',
     domains: [
