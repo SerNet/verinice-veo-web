@@ -9113,7 +9113,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - sass@1.74.1
+ - sass@1.75.0
 
 This package contains the following license and notice below:
 
