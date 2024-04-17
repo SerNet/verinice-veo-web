@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-import { omit, cloneDeep } from 'lodash';
+import { omit, cloneDeep, max } from 'lodash';
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition } from '../utils/query';
@@ -125,6 +125,8 @@ export interface IVeoFetchWipDecisionEvaluationParameters {
   status: string;
   subType: string;
 }
+
+export const getPageNumber = (page: number | undefined) => (page ? max([page - 1, 0]) : 0);
 
 export const transFormObject = (object: any) => {
   const _object = cloneDeep(object);
@@ -248,7 +250,7 @@ export default {
         result.items.map((item) => formatObject(item));
         // +1, because the first page for the api is 0, however vuetify expects it to be 1
         result.page = result.page + 1;
-        console.log('objects.ts::fetchObjectChildren::result', result);
+
         return result;
       },
       queryParameterTransformationFn: (queryParameters) => ({
@@ -257,7 +259,10 @@ export default {
           endpoint: queryParameters.endpoint,
           id: queryParameters.id
         },
-        query: { size: 1000 }
+        query: {
+          ...omit(queryParameters, 'domain', 'id', 'endpoint'),
+          page: getPageNumber(queryParameters.page)
+        }
       })
     } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchScopeChildren: {
@@ -267,12 +272,15 @@ export default {
         result.items.map((item) => formatObject(item));
         // +1, because the first page for the api is 0, however vuetify expects it to be 1
         result.page = result.page + 1;
-        console.log('objects.ts::fetchScopeChildren::result', result);
+
         return result;
       },
       queryParameterTransformationFn: (queryParameters) => ({
         params: { domain: route.params.domain, id: queryParameters.id },
-        query: { size: 1000 }
+        query: {
+          ...omit(queryParameters, 'domain', 'id', 'endpoint'),
+          page: getPageNumber(queryParameters.page)
+        }
       })
     } as IVeoQueryDefinition<IVeoFetchScopeChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchRisks: {

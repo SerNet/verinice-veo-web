@@ -140,6 +140,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const { ability } = useVeoPermissions();
+    const { tablePageSize } = useVeoUser();
 
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { link } = useLinkObject();
@@ -195,10 +196,22 @@ export default defineComponent({
         enabled: parentObjectsQueryEnabled
       }
     );
+
+    const tableSize = tablePageSize?.value === -1 ? 1000 : tablePageSize.value;
+
     const childScopesQueryParameters = computed<IVeoFetchScopeChildrenParameters>(() => ({
       id: props.object?.id || '',
-      domain: (route.params.domain as string) || ''
+      domain: (route.params.domain as string) || '',
+      elementType:
+        props.type === 'childObjects' ?
+          ['asset', 'person', 'incident', 'process', 'document', 'scenario', 'control']
+        : ['scope'],
+      sortBy: sortBy.value[0].key,
+      sortOrder: sortBy.value[0].order as 'asc' | 'desc',
+      page: page.value,
+      size: tableSize
     }));
+
     const childScopesQueryEnabled = computed(
       () => props.type.startsWith('child') && props.object?.type === 'scope' && !!props.object?.id
     );
@@ -207,10 +220,19 @@ export default defineComponent({
       childScopesQueryParameters,
       { enabled: childScopesQueryEnabled }
     );
+
     const childObjectsQueryParameters = computed(() => ({
       id: props.object?.id || '',
       endpoint: schemas.value?.[props.object?.type || ''] || '',
-      domain: (route.params.domain as string) || ''
+      domain: (route.params.domain as string) || '',
+      elementType:
+        props.type === 'childObjects' ?
+          ['asset', 'person', 'incident', 'process', 'document', 'scenario', 'control']
+        : ['scope'],
+      sortBy: sortBy.value[0].key,
+      sortOrder: sortBy.value[0].order as 'asc' | 'desc',
+      page: page.value,
+      size: tableSize
     }));
     const childObjectsQueryEnabled = computed(
       () => props.type.startsWith('child') && props.object?.type !== 'scope' && !!props.object?.id
@@ -255,9 +277,8 @@ export default defineComponent({
     const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>(() => {
       switch (props.type) {
         case 'childScopes':
-          return (children.value?.items || []).filter((item) => item.type === 'scope');
         case 'childObjects':
-          return (children.value?.items || []).filter((item) => item.type !== 'scope');
+          return children.value;
         case 'parentScopes':
           return cloneDeep(parentScopes.value || []);
         case 'parentObjects':
