@@ -53,13 +53,16 @@ import {
   mdiBookmark,
   mdiBookmarkOutline,
   mdiDeleteOutline,
-  mdiShapeOutline
+  mdiShapeOutline,
+  mdiPlus
 } from '@mdi/js';
 
 // Types
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import type { TVeoUnit } from '~/composables/units/useUnits';
 import type { TInlineComponent } from '~/types/utils';
+
+const { t } = useI18n();
 
 // Unit Data
 const { data: veoUnits, isLoading: isLoadingUnits } = useUnits();
@@ -158,7 +161,7 @@ const UnitActions: TInlineComponent = {
 const DomainActions: TInlineComponent = {
   props: ['domains'],
   emits: ['editDomains'],
-  data: () => ({ mdiPuzzle, mdiPencilOutline }),
+  data: () => ({ mdiPuzzle, mdiPlus, t }),
   methods: {
     emitEditDomains() {
       (this as any).$emit('editDomains');
@@ -176,12 +179,12 @@ const DomainActions: TInlineComponent = {
     </v-btn>
 
     <v-btn
-      :prepend-icon="mdiPencilOutline"
+      :prepend-icon="mdiPlus"
       variant="text"
       size="x-small"
       @click="emitEditDomains"
     >
-      Edit domains
+    {{ t('editDomains') }}
     </v-btn>
   `
 };
@@ -206,7 +209,8 @@ const BookmarkFavorite: TInlineComponent = {
 
 const ApplyProfiles: TInlineComponent = {
   props: ['profilesUrl'],
-  data: () => ({ mdiShapeOutline }),
+  data: () => ({ mdiShapeOutline, t }),
+
   template: `
     <v-btn
       :to="this.profilesUrl"
@@ -216,9 +220,21 @@ const ApplyProfiles: TInlineComponent = {
       color="primary"
       size="small"
     >
-      Add Profiles
+    {{ t('addProfiles') }}
     </v-btn>
     `
 };
 </script>
 <style scoped lang="scss"></style>
+
+<i18n>
+{
+  "en": {
+    "addProfiles": "Add Profiles",
+    "editDomains": "Add Domains"
+  },
+  "de": {
+    "addProfiles": "Profile hinzufügen",
+    "editDomains": "Domänen hinzufügen"
+  } }
+</i18n>
