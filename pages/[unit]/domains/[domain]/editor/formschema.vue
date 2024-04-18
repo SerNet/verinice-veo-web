@@ -21,12 +21,8 @@
     :collapsable-left="schemaIsValid.valid"
     :collapsable-right="schemaIsValid.valid"
   >
-    <template #title>
-      <LayoutHeadline v-if="title" class="ml-1 mb-2" :title="globalT('editor.formschema.headline')" :element="title" />
-    </template>
-
     <template v-if="formSchema && objectSchema" #header>
-      <div style="width: 120px" class="mr-8">
+      <div class="ma-6 ml-4" style="width: 120px">
         <v-select
           v-model="editorLanguage"
           :items="locales"

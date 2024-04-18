@@ -20,7 +20,7 @@
     <!-- German version -->
     <BasePage v-if="locale === 'de'">
       <div class="d-flex justify-center">
-        <BaseCard class="my-12" style="max-width: 500px; min-width: 500px">
+        <BaseCard class="my-6" style="max-width: 500px; min-width: 500px">
           <v-card-title class="bg-accent">
             <div class="mx-4 d-flex" style="height: 75px; width: 300px">
               <LayoutAppLogoDesktop />

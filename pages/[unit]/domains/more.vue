@@ -17,7 +17,7 @@
 -->
 <template>
   <BasePage>
-    <div class="my-8" style="width: 300px">
+    <div class="my-6" style="width: 300px">
       <LayoutAppLogoDesktop />
     </div>
     <div class="text-body-1">

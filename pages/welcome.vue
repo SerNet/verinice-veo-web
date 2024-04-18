@@ -18,7 +18,7 @@
 <template>
   <BasePage data-test-selector="welcome-page">
     <v-container fluid>
-      <BaseCard class="mx-12 my-4 bg-basepage" style="max-width: 1280px">
+      <BaseCard class="mx-12 mb-4 bg-basepage" style="max-width: 1280px">
         <v-card class="my-4 bg-surface">
           <div class="bg-accent" style="height: 75px">
             <v-card-title class="ml-8 small-caps">

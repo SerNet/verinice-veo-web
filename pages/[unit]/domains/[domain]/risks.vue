@@ -59,7 +59,7 @@
           </template>
         </BaseTabs>
       </div>-->
-      <div class="mt-8">
+      <div class="mt-6">
         <nuxt-page />
       </div>
     </template>

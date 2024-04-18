@@ -20,7 +20,7 @@
     <template #default>
       <BaseAlert
         :model-value="true"
-        class="mt-8 mb-4"
+        class="mt-6 mb-4"
         flat
         no-close-button
         :title="t('access')"

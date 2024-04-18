@@ -19,7 +19,7 @@
 <template>
   <BasePage style="height: 100vh">
     <template #header>
-      <p class="mt-8 mb-4 text-body-1">
+      <p class="mt-6 mb-4 text-body-1">
         {{ t('hint') }}
       </p>
     </template>
