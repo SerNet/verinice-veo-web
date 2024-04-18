@@ -47,7 +47,7 @@ import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 
-import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
+import { onBeforeRouteLeave } from 'vue-router';
 const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 
 // Types
@@ -124,10 +124,13 @@ const customBreadcrumbArgs = computed(() => ({
 onMounted(() => addCustomBreadcrumb(customBreadcrumbArgs.value));
 
 // Update breadcrumb if a filter is changed
-watch(route, () => {
-  clearCustomBreadcrumbs();
-  addCustomBreadcrumb(customBreadcrumbArgs.value);
-});
+watch(
+  () => route.fullPath,
+  () => {
+    clearCustomBreadcrumbs();
+    addCustomBreadcrumb(customBreadcrumbArgs.value);
+  }
+);
 
 // Remove breadcrumb on leaving route: otherwise they persist in other views
 onBeforeRouteLeave(async (_to, _from) => {
