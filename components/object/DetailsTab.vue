@@ -197,7 +197,7 @@ export default defineComponent({
       }
     );
 
-    const tableSize = tablePageSize?.value === -1 ? 1000 : tablePageSize.value;
+    const tableSize = computed(() => (tablePageSize?.value === -1 ? 1000 : tablePageSize.value));
 
     const childScopesQueryParameters = computed<IVeoFetchScopeChildrenParameters>(() => ({
       id: props.object?.id || '',
@@ -209,7 +209,7 @@ export default defineComponent({
       sortBy: sortBy.value[0].key,
       sortOrder: sortBy.value[0].order as 'asc' | 'desc',
       page: page.value,
-      size: tableSize
+      size: tableSize.value
     }));
 
     const childScopesQueryEnabled = computed(
@@ -232,7 +232,7 @@ export default defineComponent({
       sortBy: sortBy.value[0].key,
       sortOrder: sortBy.value[0].order as 'asc' | 'desc',
       page: page.value,
-      size: tableSize
+      size: tableSize.value
     }));
     const childObjectsQueryEnabled = computed(
       () => props.type.startsWith('child') && props.object?.type !== 'scope' && !!props.object?.id
@@ -817,7 +817,6 @@ export default defineComponent({
     const onRelatedObjectModified = () => {
       emit('reload');
     };
-
     return {
       ability,
       additionalHeaders,
