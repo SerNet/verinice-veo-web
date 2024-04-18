@@ -22,7 +22,7 @@
     :collapsable-right="schemaIsValid.valid"
   >
     <template #title>
-      <LayoutHeadline class="ml-1 mb-2" :title="globalT('editor.formschema.headline')" :element="title" />
+      <LayoutHeadline v-if="title" class="ml-1 mb-2" :title="globalT('editor.formschema.headline')" :element="title" />
     </template>
 
     <template v-if="formSchema && objectSchema" #header>

@@ -17,8 +17,6 @@
 -->
 <template>
   <BasePage data-component-name="unit-selection-page" sticky-footer>
-    <LayoutHeadline :title="t('management')" />
-
     <BaseContainer>
       <h2 class="text-h5 d-flex flex-grow-1 justify-end my-4">
         <strong>Units:&nbsp;</strong>
@@ -96,7 +94,6 @@ useHead({
     "deleteUnit": "Delete Unit",
     "editUnit": "Edit Unit",
     "exceeded": "You have reached the maximum amount of Units",
-    "management": "Unit management",
     "of": "of"
   },
   "de": {
@@ -105,7 +102,6 @@ useHead({
     "deleteUnit": "Unit löschen",
     "editUnit": "Unit bearbeiten",
     "exceeded": "Sie haben die maximale Anzahl an Units erreicht",
-    "management": "Unit-Verwaltung",
     "of": "von"
   }
 }

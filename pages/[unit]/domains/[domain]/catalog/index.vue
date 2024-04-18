@@ -18,10 +18,9 @@
 <template>
   <BasePage data-component-name="catalog-page">
     <template #default>
-      <LayoutHeadline class="mb-4" :title="locale === 'de' ? 'Katalog' : 'Catalog'" :element="title" />
       <CatalogDefaultCatalog
         v-model="selectedItems"
-        class="mb-4"
+        class="mt-6 mb-4"
         :catalog-items="catalogItems?.items"
         :is-loading="catalogItemsAreFetching"
         :is-applying-items="isApplyingItems"

@@ -17,8 +17,6 @@
 -->
 <template>
   <BasePage sticky-footer>
-    <LayoutHeadline class="mb-4" :title="t('breadcrumbs.user-data')" />
-
     <i18n-t keypath="userDataExport.hint.text" tag="p" scope="global">
       <template #linebreak>
         <br />
@@ -45,8 +43,3 @@
     </v-row>
   </BasePage>
 </template>
-
-<script setup lang="ts">
-// i18n message are in global en.json/de.json, because they are used with `<i18n-t>` => compare README
-const { t } = useI18n();
-</script>

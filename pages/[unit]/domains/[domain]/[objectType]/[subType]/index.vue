@@ -18,10 +18,9 @@
 <template>
   <BasePage data-component-name="object-overview-page" sticky-footer>
     <template #default>
-      <LayoutHeadline class="mb-4" :title="upperFirst(t('objectOverview'))" />
-
       <ObjectFilterBar
         ref="filterBar"
+        class="mt-4"
         :domain-id="domainId"
         :filter="filter"
         :required-fields="['objectType']"
@@ -480,7 +479,6 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
 {
   "en": {
     "assignObject": "Assign object to another domain",
-    "objectOverview": "object overview",
     "filterObjects": "filter objects",
     "createObject": "create {0}",
     "clone": "duplicated",
@@ -497,7 +495,6 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
   },
   "de": {
     "assignObject": "Objekt einer weiteren Domäne zuordnen",
-    "objectOverview": "Objektübersicht",
     "filterObjects": "Objekte filtern",
     "createObject": "{0} erstellen",
     "clone": "dupliziert",

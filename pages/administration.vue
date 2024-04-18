@@ -18,8 +18,6 @@
 <template>
   <BasePage sticky-footer>
     <template #default>
-      <LayoutHeadline :title="$t('breadcrumbs.administration')" />
-
       <BaseAlert
         :model-value="true"
         class="mt-8 mb-4"

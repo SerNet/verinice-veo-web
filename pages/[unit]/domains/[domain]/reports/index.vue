@@ -18,8 +18,6 @@
 <template>
   <BasePage>
     <template #header>
-      <LayoutHeadline class="mb-4" :title="$t('breadcrumbs.reports')" />
-
       <p class="mt-8 mb-4 text-body-1">
         {{ t('hint') }}
       </p>

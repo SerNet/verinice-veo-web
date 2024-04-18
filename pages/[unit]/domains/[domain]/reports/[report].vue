@@ -18,9 +18,7 @@
 <template>
   <BasePage :loading="reportsFetching" data-component-name="report-page">
     <template #header>
-      <LayoutHeadline class="mb-4" title="Report" :element="title" />
-
-      <v-row dense class="justify-space-between">
+      <v-row dense class="justify-space-between mt-6">
         <v-col cols="auto">
           <p v-if="report" class="mb-0 text-body-1 font-italic" data-component-name="report-description">
             {{ report.description[locale] }}

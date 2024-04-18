@@ -17,8 +17,6 @@
 -->
 <template>
   <BasePage>
-    <LayoutHeadline :title="t('moreModules')" />
-
     <div class="my-8" style="width: 300px">
       <LayoutAppLogoDesktop />
     </div>
@@ -48,13 +46,11 @@ const { t, locale } = useI18n();
   "en": {
     "furtherInformation": "An overview of further functions and domains can be found on the",
     "linkName": "verinice website",
-    "moreModules": "Further domains",
     "moreModulesInfo": "The verinice.TEAM will successively provide further domains for verinice.veo."
   },
   "de": {
     "furtherInformation": "Eine Übersicht über weitere Funktionen und Domänen finden Sie auf der",
     "linkName": "verinice Webseite",
-    "moreModules": "Weitere Domänen",
     "moreModulesInfo": "Das verinice.TEAM wird sukzessive weitere Domänen für verinice.veo zur Verfügung stellen."
   }
 }

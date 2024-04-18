@@ -16,11 +16,12 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <LayoutPageWrapper class="bg-basepage" collapsable-right :page-widths="pageWidths" @page-collapsed="onPageCollapsed">
-    <template #title>
-      <LayoutHeadline class="ml-1 mb-2" :title="globalT('editor.objectschema.headline')" :element="title" />
-    </template>
-
+  <LayoutPageWrapper
+    class="bg-basepage pt-6"
+    collapsable-right
+    :page-widths="pageWidths"
+    @page-collapsed="onPageCollapsed"
+  >
     <template #default>
       <BasePage v-if="objectSchemaHelper" sticky-header>
         <template #header>
@@ -245,11 +246,10 @@ import {
   mdiWrench
 } from '@mdi/js';
 import { useDisplay } from 'vuetify';
-import { JsonPointer } from 'json-ptr';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
-import { IVeoObjectSchema, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';

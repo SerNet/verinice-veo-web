@@ -19,8 +19,6 @@
   <v-layout>
     <!-- German version -->
     <BasePage v-if="locale === 'de'">
-      <LayoutHeadline :title="'Sicherheitsrichtlinie'" />
-
       <div class="d-flex justify-center">
         <BaseCard class="my-12" style="max-width: 500px; min-width: 500px">
           <v-card-title class="bg-accent">
@@ -43,17 +41,17 @@
               <v-card-title class="small-caps"> Suche nach Schwachstellen </v-card-title>
 
               <v-card-text class="mt-6 text-justify">
-                <p
-                  >Wir erlauben ethischen Hackern ausdrücklich unsere Anwendung zu testen, aber nur unter den folgenden
-                  Bedingungen:</p
-                >
+                <p>
+                  Wir erlauben ethischen Hackern ausdrücklich unsere Anwendung zu testen, aber nur unter den folgenden
+                  Bedingungen:
+                </p>
                 <br />
 
                 <ul class="mx-4">
-                  <li
-                    >Verwenden Sie keine Scanner von der Stange und versuchen Sie, überflüssigen Datenverkehr zu
-                    vermeiden</li
-                  >
+                  <li>
+                    Verwenden Sie keine Scanner von der Stange und versuchen Sie, überflüssigen Datenverkehr zu
+                    vermeiden
+                  </li>
                   <li>Setzen Sie ein vernünftiges Rate-Limit</li>
                   <li>Greifen Sie nicht auf Kundendaten zu und verwenden Sie nach Möglichkeit Ihre eigenen Konten</li>
                   <li>Kein Phishing, kein DDoS, keine Post-Exploitation ...</li>
@@ -156,8 +154,6 @@
 
     <!-- English version -->
     <BasePage v-else>
-      <LayoutHeadline :title="'Security Policy'" />
-
       <div class="d-flex justify-center">
         <BaseCard class="my-12" style="max-width: 500px; min-width: 500px">
           <v-card-title class="bg-accent">
@@ -226,10 +222,10 @@
               <v-card-title class="small-caps"> Reporting a Vulnerability </v-card-title>
 
               <v-card-text class="mt-6 text-justify">
-                <p
-                  >Please e-mail to <strong>security@verinice.com</strong> if you believe you have found a security
-                  issue in verinice.veo.</p
-                >
+                <p>
+                  Please e-mail to <strong>security@verinice.com</strong> if you believe you have found a security issue
+                  in verinice.veo.
+                </p>
                 <br />
 
                 <p>In your bug report, please try to cover the following info:</p>

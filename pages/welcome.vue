@@ -17,8 +17,6 @@
 -->
 <template>
   <BasePage data-test-selector="welcome-page">
-    <LayoutHeadline :title="t('headline')" />
-
     <v-container fluid>
       <BaseCard class="mx-12 my-4 bg-basepage" style="max-width: 1280px">
         <v-card class="my-4 bg-surface">
@@ -276,7 +274,6 @@ const links = ref({
       "applyProfile": "Profile is applying...",
       "errorMessage": "Could not apply profile!",
       "greeting": "Welcome!",
-      "headline": "First steps",
       "injector": {
         "channel": "YouTube channel",
         "documentation": "documentation",
@@ -307,7 +304,6 @@ const links = ref({
       "applyProfile": "Profil wird geladen ...",
       "errorMessage": "Profil konnte nicht angewendet werden!",
       "greeting": "Willkommen!",
-      "headline": "Erste Schritte",
       "injector": {
         "channel": "YouTube Channel",
         "documentation": "Dokumentation",

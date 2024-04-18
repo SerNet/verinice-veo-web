@@ -19,7 +19,7 @@
   <UtilNotFoundError v-if="!loading && notFoundError" :text="t('notFound')" />
   <LayoutPageWrapper
     v-else
-    class="px-4 bg-basepage"
+    class="px-4 pt-6 bg-basepage"
     collapsable-left
     collapsable-right
     :loading="loading"
@@ -30,10 +30,6 @@
     data-component-name="object-details-page"
     @page-collapsed="onPageCollapsed"
   >
-    <template #title>
-      <LayoutHeadline class="mb-2" :title="(object && object.displayName) || ''" />
-    </template>
-
     <template #default>
       <BasePage sticky-footer data-component-name="object-details-details" no-padding>
         <template #default>

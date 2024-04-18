@@ -19,8 +19,6 @@
 <template>
   <BasePage style="height: 100vh">
     <template #header>
-      <LayoutHeadline class="mb-4" :title="globalT('breadcrumbs.compliance')" :element="currentName || ''" />
-
       <!-- Link back to Control-Object: to be changed when the IT-SA is done -->
       <p class="mt-8 mb-4 text-body-1" style="cursor: pointer" @click="$router.go(-1)">
         {{ t('hint', { currentName }) }}
@@ -38,7 +36,6 @@ export const ROUTE_NAME = 'unit-domains-domain-compliance';
 
 <script setup lang="ts">
 const { t } = useI18n();
-const { t: globalT } = useI18n({ useScope: 'global' });
 
 const currentName = ref('');
 </script>

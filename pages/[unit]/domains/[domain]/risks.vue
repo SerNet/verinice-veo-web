@@ -18,8 +18,6 @@
 <template>
   <BasePage data-component-name="risk-page">
     <template #default>
-      <LayoutHeadline class="mb-8" :title="upperFirst(t('risks').toString())" :element="t('dpia')" />
-
       <!--<div> Not relevant as long as there is only one risk definition
         <p class="pt-3 mb-0 text-body-1">
           {{ t('selectRiskMatrixToView') }}
@@ -61,7 +59,7 @@
           </template>
         </BaseTabs>
       </div>-->
-      <div>
+      <div class="mt-8">
         <nuxt-page />
       </div>
     </template>
@@ -117,13 +115,9 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "dpia": "DPIA",
-    "risks": "risk definitions",
     "selectRiskMatrixToView": "Please select the risk definition you want to view."
   },
   "de": {
-    "dpia": "DSRA",
-    "risks": "Risikodefinitionen",
     "selectRiskMatrixToView": "Bitte wählen Sie die Risikodefinition aus, die Sie betrachten möchten."
   }
 }

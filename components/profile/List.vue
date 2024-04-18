@@ -19,8 +19,6 @@
 <template>
   <BasePage style="height: 100vh">
     <template #header>
-      <LayoutHeadline class="mb-4" :title="$t('breadcrumbs.profiles')" :element="profiles[0]?.key || ''" />
-
       <p class="mt-8 mb-4 text-body-1">
         {{ t('hint') }}
       </p>
