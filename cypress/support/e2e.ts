@@ -10,7 +10,8 @@ import {
   createUnitGUI,
   editUnit,
   deleteUnit,
-  deleteUnitGUI
+  deleteUnitGUI,
+  getVeoTestUnitCard
 } from '../commands/units';
 import { generateUnitDetails } from './setupHelpers';
 import { navigateTo } from '../commands/navigation';
@@ -32,7 +33,8 @@ Cypress.Commands.addAll({
   navigateTo,
   deleteUnitGUI,
   importUnit,
-  languageTo
+  languageTo,
+  getVeoTestUnitCard
 });
 
 before(() => {

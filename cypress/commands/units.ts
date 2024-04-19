@@ -192,3 +192,9 @@ function chooseDomains(domainNames: string[]) {
       }
     });
 }
+
+export function getVeoTestUnitCard() {
+  const url = `/${Cypress.env('unitDetails').unitId}/domains/`;
+  const veoCardSelector = `a[data-veo-test="item-card-slot-center-link"][href^="${url}"]`;
+  return cy.get(veoCardSelector).parent().parent().parent();
+}

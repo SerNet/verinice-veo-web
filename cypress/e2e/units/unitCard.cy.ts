@@ -1,18 +1,9 @@
 import { LOCAL_STORAGE_KEYS } from '../../../types/localStorage';
-import type { IVeoDomain } from '../../../composables/api/queryDefinitions/domains';
 
 describe('Unit-Card', () => {
   const testUnitDetails = {
     domainNames: ['IT-Grundschutz', 'DS-GVO']
   };
-
-  // Helpers
-  /** Get the card representing the test unit */
-  function getVeoCard() {
-    const url = `/${Cypress.env('unitDetails').unitId}/domains/`;
-    const veoCardSelector = `a[data-veo-test="item-card-slot-center-link"][href^="${url}"]`;
-    return cy.get(veoCardSelector).parent().parent().parent();
-  }
 
   beforeEach(() => {
     cy.login();
@@ -20,12 +11,12 @@ describe('Unit-Card', () => {
     cy.goToUnitSelection();
   });
 
-  after(() => {
+  afterEach(() => {
     cy.deleteUnit();
   });
 
   it('displays the right unit data', () => {
-    getVeoCard().as('veo-card');
+    cy.getVeoTestUnitCard().as('veo-card');
     cy.get('@veo-card').should('contain', Cypress.env('unitDetails').name);
     cy.get('@veo-card').should('contain', Cypress.env('unitDetails').desc);
     Cypress.env('unitDetails').domains.forEach((domain: string) => {
@@ -38,7 +29,8 @@ describe('Unit-Card', () => {
       unitName: 'TEST NAME',
       unitDesc: 'TEST DESCRIPTION'
     };
-    getVeoCard().as('veo-card');
+
+    cy.getVeoTestUnitCard().as('veo-card');
 
     // Open edit modal
     cy.get('@veo-card').find('[data-veo-test="units-edit-unit-button"]').click();
@@ -51,7 +43,7 @@ describe('Unit-Card', () => {
   });
 
   it('bookmarks a unit as favorite unit', () => {
-    getVeoCard().as('veo-card');
+    cy.getVeoTestUnitCard().as('veo-card');
 
     // Bookmark test unit as favorite unit
     cy.get('@veo-card').within((_card) => {
