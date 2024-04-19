@@ -25,6 +25,8 @@ export function getVeoDomains(): Promise<ICYVeoDomain[]> {
   const savedDomains = Cypress.env('veoDomains');
   if (savedDomains) return savedDomains;
 
+  cy.log('Fetching domains...');
+
   return cy
     .veoRequest({
       url: '/api/domains',

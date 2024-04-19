@@ -15,17 +15,28 @@ declare global {
 /**
  * Wrap veo's `window.request` method into a cypress command.
  */
-export function veoRequest({ url, method, requestBody }: { url: string; method: string; requestBody?: any }): any {
+export function veoRequest({
+  url,
+  method,
+  requestBody,
+  waitForRequestMethod = true
+}: {
+  url: string;
+  method: string;
+  requestBody?: any;
+  waitForRequestMethod?: boolean;
+}): any {
   const options = requestBody ? { method, json: requestBody } : { method };
 
   // Make sure window.request is available
-  cy.visit('/security');
-  cy.get('[data-component-name="breadcrumbs"]').as('prepareVeoRequest');
-
-  cy.wait(1000);
+  if (waitForRequestMethod) {
+    cy.visit('/security');
+    cy.get('[data-component-name="breadcrumbs"]').as('prepareVeoRequest');
+    cy.wait(1000);
+  }
 
   return cy.window().then((win) => {
-    return win.request(url, options).then((response) => {
+    return win.request(url, options).then((response: any) => {
       cy.log(JSON.stringify(response));
       return response;
     });

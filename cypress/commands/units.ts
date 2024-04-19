@@ -14,6 +14,7 @@ declare global {
       deleteUnit: typeof deleteUnit;
       editUnit: typeof editUnit;
       goToUnitDashboard: typeof goToUnitDashboard;
+      getVeoTestUnitCard: typeof getVeoTestUnitCard;
     }
   }
 }
@@ -101,10 +102,13 @@ export function createUnit({
       .filter((domain) => domainNames.includes(domain.name as TCYVeoUnitNames))
       .map((filteredDomain) => ({ targetUri: filteredDomain.targetUri }));
 
+    const waitForRequestMethod = Cypress.env('veoDomains') ? true : false;
+
     cy.intercept('POST', `${Cypress.env('veoApiUrl')}/units`).as('createUnit');
     cy.veoRequest({
       url: '/api/units',
       method: 'POST',
+      waitForRequestMethod,
       requestBody: {
         name: unitName,
         description: unitDesc,
@@ -120,11 +124,12 @@ export function createUnit({
   });
 }
 
-export function deleteUnit(): void {
+export function deleteUnit(waitForRequestMethod = true): void {
   cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/units/**`).as('deleteUnit');
   cy.veoRequest({
     url: `/api/units/${Cypress.env('unitDetails').unitId}`,
-    method: 'DELETE'
+    method: 'DELETE',
+    waitForRequestMethod
   });
   cy.wait(['@deleteUnit']).its('response.statusCode').should('eq', 204);
 }
