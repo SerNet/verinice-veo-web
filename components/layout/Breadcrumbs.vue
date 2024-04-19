@@ -80,7 +80,7 @@
 
 <script lang="ts">
 import { isEmpty, last, omit, pick } from 'lodash';
-import { mdiChevronRight, mdiDotsHorizontal, mdiViewDashboardOutline } from '@mdi/js';
+import { mdiChevronRight, mdiDotsHorizontal } from '@mdi/js';
 
 import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 import { useQuery } from '~/composables/api/utils/query';
@@ -90,8 +90,9 @@ import objectsQueryDefinitions from '~/composables/api/queryDefinitions/objects'
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import translationsQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useSubTypeTranslation } from '~/composables/Translations';
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 
-type SupportedQuery = ':domain' | ':subType' | ':report' | ':catalog' | ':objectType' | ':object';
+type SupportedQuery = ':unit' | ':domain' | ':subType' | ':report' | ':catalog' | ':objectType' | ':object';
 
 interface IVeoBreadcrumbReplacementMapBreadcrumb {
   disabled?: boolean;
@@ -148,7 +149,13 @@ export default defineComponent({
       [
         ':unit',
         {
-          hidden: true
+          hidden: false,
+          queriedText: {
+            query: ':unit',
+            parameterTransformationFn: (_param, value) => ({ id: value }),
+            resultTransformationFn: (_param, _value, data) => data.name
+          },
+          to: '/units'
         }
       ],
       [
@@ -160,11 +167,10 @@ export default defineComponent({
       [
         ':domain',
         {
-          icon: mdiViewDashboardOutline,
           queriedText: {
             query: ':domain',
             parameterTransformationFn: (_param, value) => ({ id: value }),
-            resultTransformationFn: (_param, _value, data) => data.name
+            resultTransformationFn: (_param, _value, data) => data.abbreviation
           }
         }
       ],
@@ -207,7 +213,7 @@ export default defineComponent({
         }
       ],
       [
-        ':report', // Used for reports
+        ':report',
         {
           queriedText: {
             query: ':report',
@@ -268,6 +274,13 @@ export default defineComponent({
     const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, domainQueryParameters, {
       enabled: domainQueryEnabled
     });
+
+    const unitQueryParameters = ref<any>({});
+    const unitQueryEnabled = computed(() => !isEmpty(unitQueryParameters.value));
+    const { data: unit } = useQuery(unitQueryDefinitions.queries.fetch, unitQueryParameters, {
+      enabled: unitQueryEnabled
+    });
+
     const catalogQueryParameters = ref<any>({});
 
     const { data: report } = useQuery(reportQueryDefinitions.queries.fetchAll);
@@ -317,6 +330,14 @@ export default defineComponent({
             object.value
           )
         : undefined,
+      ':report':
+        report.value ?
+          BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':report')?.queriedText?.resultTransformationFn(
+            ':report',
+            route.params.report as string,
+            report.value
+          )
+        : undefined,
       ':subType':
         subType.value ?
           BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':subType')?.queriedText?.resultTransformationFn(
@@ -325,12 +346,12 @@ export default defineComponent({
             subType.value
           )
         : undefined,
-      ':report':
-        report.value ?
-          BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':report')?.queriedText?.resultTransformationFn(
-            ':report',
-            route.params.report as string,
-            report.value
+      ':unit':
+        unit.value ?
+          BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':unit')?.queriedText?.resultTransformationFn(
+            ':unit',
+            route.params.unit as string,
+            unit.value
           )
         : undefined
     }));
@@ -432,6 +453,9 @@ export default defineComponent({
               case ':object':
                 objectQueryParameters.value = transformedParameters;
                 break;
+              case ':unit':
+                unitQueryParameters.value = transformedParameters;
+                break;
             }
           }
         }
@@ -458,10 +482,7 @@ export default defineComponent({
 
     watch(() => locale.value, updateTitle, { immediate: true });
     watch(() => queryResultMap, updateTitle, { deep: true, immediate: true });
-    watch(() => breadcrumbs.value, updateTitle, {
-      deep: true,
-      immediate: true
-    });
+    watch(() => breadcrumbs.value, updateTitle, { deep: true, immediate: true });
 
     return {
       queryResultMap,
@@ -475,8 +496,7 @@ export default defineComponent({
       mdiDotsHorizontal,
       omit
     };
-  },
-  head: {}
+  }
 });
 </script>
 
