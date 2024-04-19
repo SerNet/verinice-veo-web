@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { useQuerySync } from '~/composables/api/utils/query';
+import { useQuerySync, useQuery } from '~/composables/api/utils/query';
+import { useQueryClient } from '@tanstack/vue-query';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { format } from 'date-fns';
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
@@ -47,21 +48,9 @@ export type TVeoCurrentUnit = {
   raw: IVeoUnit;
 };
 
-const units = ref<TVeoUnit[] | null>(null);
 const currentUnit = ref<TVeoCurrentUnit | null>(null);
 const currentUnitId = ref<string | null>(null);
 const isLoadingCurrentUnit = ref(false);
-const isLoadingUnits = ref(false);
-
-async function fetchUnits() {
-  if (!currentUnit.value) {
-    isLoadingUnits.value = true;
-    const favoriteUnitId: string | null = localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT);
-    const result = await useQuerySync(unitQueryDefinitions.queries.fetchAll);
-    units.value = result.map((unit: IVeoUnit) => mapUnitValues({ unit, favoriteUnitId }));
-    isLoadingUnits.value = false;
-  }
-}
 
 async function fetchCurrentUnit() {
   isLoadingCurrentUnit.value = true;
@@ -88,15 +77,23 @@ export function useCurrentUnit() {
 }
 
 export function useUnits() {
-  fetchUnits();
+  const units = ref<TVeoUnit[] | null>(null);
+  const queryClient = useQueryClient();
+
+  const { data: _data, isFetching, error } = useQuery(unitQueryDefinitions.queries.fetchAll);
+  units.value = _data.value ? _data.value.map((unit) => mapUnitValues({ unit })) : [];
+  watch(_data, () => (_data.value ? (units.value = _data.value.map((unit) => mapUnitValues({ unit }))) : []));
 
   return {
     data: units,
-    isLoading: isLoadingUnits
+    isLoading: isFetching,
+    error,
+    invalidateUnitCache: () => queryClient.invalidateQueries({ queryKey: ['units'] }, { cancelRefetch: true })
   };
 }
 
-export function mapUnitValues({ unit, favoriteUnitId }: { unit: IVeoUnit; favoriteUnitId: string | null }): TVeoUnit {
+export function mapUnitValues({ unit }: { unit: IVeoUnit }): TVeoUnit {
+  const favoriteUnitId: string | null = localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT);
   const { domainColorsByAbbreviation: COLORS } = useDomainColors();
   return {
     id: unit.id,

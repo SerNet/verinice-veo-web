@@ -65,7 +65,7 @@ import type { TInlineComponent } from '~/types/utils';
 const { t } = useI18n();
 
 // Unit Data
-const { data: veoUnits, isLoading: isLoadingUnits } = useUnits();
+const { data: veoUnits, isLoading: isLoadingUnits, invalidateUnitCache } = useUnits();
 const activeUnits = computed(() => veoUnits.value?.length || null);
 const newUnits = ref<any>(null);
 const units = computed({
@@ -111,6 +111,7 @@ function bookmarkFavoriteUnit(unit: TVeoUnit) {
   }
   // Change the units' isFavorite state
   units.value = units.value.map((u: TVeoUnit) => ({ ...u, isFavorite: u.id === unit.id }));
+  invalidateUnitCache();
 }
 
 // Domain Actions
