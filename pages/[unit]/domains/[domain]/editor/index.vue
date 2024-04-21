@@ -17,9 +17,8 @@
 -->
 <template>
   <BasePage :heading-level="2">
-    <LayoutHeadline :title="t('editors')" :element="t('calltoaction').toString()" />
     <div class="d-flex justify-center">
-      <BaseCard class="mt-10" style="width: 70%; max-width: 1000px">
+      <BaseCard class="mt-16" style="width: 70%; max-width: 1000px">
         <v-card-title class="bg-accent small-caps">
           {{ t('editors') }}
         </v-card-title>

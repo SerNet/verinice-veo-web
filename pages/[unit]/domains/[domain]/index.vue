@@ -21,7 +21,7 @@
 
     <template v-else>
       <div v-if="domain" class="mt-0">
-        <LayoutHeadline :title="t('overview')" :element="unit?.name" />
+        <LayoutHeadline title="Dashboard" />
       </div>
 
       <v-skeleton-loader v-else class="mt-n2 mb-4 skeleton-subtitle" type="text" />
@@ -173,12 +173,10 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "domainNotFoundText": "The requested domain couldn't be found.",
-    "overview": "Unit overview",
+    "domainNotFoundText": "The requested domain couldn't be found."
   },
   "de": {
-    "domainNotFoundText": "Die gewünschte Domain konnte nicht gefunden werden.",
-    "overview": "Unit-Übersicht",
+    "domainNotFoundText": "Die gewünschte Domain konnte nicht gefunden werden."
   }
 }
 </i18n>
