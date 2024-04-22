@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <h1 class="text-h4" data-component-name="breadcrumbs">
+  <div class="text-h3" data-component-name="breadcrumbs">
     <v-breadcrumbs-item
       v-for="(item, index) of displayedBreadcrumbs"
       :key="item.key"
@@ -30,13 +30,16 @@
       <!-- Display if the breadcrumb is visible or the amount of breadcrumbs is bigger than BREADCRUMB_BREAKOFF -->
       <template v-if="item.index < BREADCRUMB_BREAKOFF || breadcrumbs.length === BREADCRUMB_BREAKOFF + 1">
         <v-icon v-if="item.icon" class="text-primary" :icon="item.icon" size="large" />
-        <span v-else-if="Object.keys(queryResultMap).includes(item.param)" class="breadcrumbs-item-height small-caps">
+        <span
+          v-else-if="Object.keys(queryResultMap).includes(item.param)"
+          class="breadcrumbs-item-height small-caps capitalize"
+        >
           <template v-if="queryResultMap[item.param]">
             {{ queryResultMap[item.param] }}
           </template>
           <v-skeleton-loader v-else type="image" width="80" height="14" />
         </span>
-        <span v-else-if="item.text" class="breadcrumbs-item-height small-caps">
+        <span v-else-if="item.text" class="breadcrumbs-item-height small-caps capitalize">
           {{ item.text }}
         </span>
       </template>
@@ -77,7 +80,7 @@
         </v-menu>
       </template>
     </v-breadcrumbs-item>
-  </h1>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -113,13 +116,10 @@ interface IVeoBreadcrumbReplacementMapBreadcrumb {
   text?: string;
 }
 
-const props = withDefaults(
-  defineProps<{
-    overrideBreadcrumbs?: boolean;
-    writeToTitle?: boolean;
-  }>(),
-  {}
-);
+const props = defineProps<{
+  overrideBreadcrumbs?: boolean;
+  writeToTitle?: boolean;
+}>();
 
 const { t, locale } = useI18n();
 const route = useRoute();
@@ -148,13 +148,13 @@ const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbRepl
   [
     ':unit',
     {
+      disabled: true,
       hidden: false,
       queriedText: {
         query: ':unit',
         parameterTransformationFn: (_param, value) => ({ id: value }),
         resultTransformationFn: (_param, _value, data) => data.name
-      },
-      to: '/units'
+      }
     }
   ],
   [
@@ -355,7 +355,7 @@ const queryResultMap = computed<{ [key: string]: any }>(() => ({
       )
     : undefined
 }));
-
+console.log(queryResultMap.value);
 const pathTemplate = computed(() => last(route.matched)?.path || '');
 
 const breadcrumbParts = computed(() => pathTemplate.value.replaceAll('()', '').split('/'));
@@ -496,6 +496,9 @@ watch(() => breadcrumbs.value, updateTitle, { deep: true, immediate: true });
 </i18n>
 
 <style lang="scss" scoped>
+:deep(.capitalize) {
+  text-transform: capitalize;
+}
 .v-breadcrumbs-item .v-icon {
   font-size: 2rem;
 }
