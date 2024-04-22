@@ -174,6 +174,7 @@ const DomainActions: TInlineComponent = {
       :prepend-icon="mdiPuzzle"
       variant="outlined"
       :color="domain.color"
+      class="domain-btn"
       size="x-small"
     >
       {{ domain.name }}
@@ -226,7 +227,12 @@ const ApplyProfiles: TInlineComponent = {
     `
 };
 </script>
-<style scoped lang="scss"></style>
+
+<style scoped lang="scss">
+:deep(.domain-btn) {
+  cursor: default;
+}
+</style>
 
 <i18n>
 {
