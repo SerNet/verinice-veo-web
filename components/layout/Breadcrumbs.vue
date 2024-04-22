@@ -116,12 +116,9 @@ interface IVeoBreadcrumbReplacementMapBreadcrumb {
 const props = withDefaults(
   defineProps<{
     overrideBreadcrumbs?: boolean;
-    writeToTitle: boolean;
+    writeToTitle?: boolean;
   }>(),
-  {
-    overrideBreadcrumbs: false,
-    writeToTitle: false
-  }
+  {}
 );
 
 const { t, locale } = useI18n();
