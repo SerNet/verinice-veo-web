@@ -27,6 +27,7 @@
           {{ globalT('global.button.back') }}
         </v-btn>
         <v-btn
+          data-veo-test="apply-profile"
           :disabled="!profilesRef?.canApplyProfile"
           color="primary"
           :prepend-icon="mdiShapeOutline"
