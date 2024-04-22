@@ -20,13 +20,13 @@
     <UtilNotFoundError v-if="domainNotFound" :text="t('domainNotFoundText')" />
 
     <template v-else>
-      <div v-if="domain" class="mt-0">
+      <div v-if="domain" class="text-h3">
         <LayoutHeadline title="Dashboard" />
       </div>
 
       <v-skeleton-loader v-else class="mt-n2 mb-4 skeleton-subtitle" type="text" />
 
-      <v-row class="mt-4">
+      <v-row>
         <template v-if="elementStatusCountIsFetching">
           <v-col v-for="index in 2" :key="index" cols="12" lg="6">
             <BaseWidget v-for="j in 4" :key="j" loading class="my-4">

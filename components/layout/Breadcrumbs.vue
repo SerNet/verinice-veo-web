@@ -355,7 +355,7 @@ const queryResultMap = computed<{ [key: string]: any }>(() => ({
       )
     : undefined
 }));
-console.log(queryResultMap.value);
+
 const pathTemplate = computed(() => last(route.matched)?.path || '');
 
 const breadcrumbParts = computed(() => pathTemplate.value.replaceAll('()', '').split('/'));
