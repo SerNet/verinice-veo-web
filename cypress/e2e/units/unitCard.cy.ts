@@ -19,14 +19,14 @@ describe('Unit-Card', () => {
     cy.getVeoTestUnitCard().as('veo-card');
     cy.get('@veo-card').should('contain', Cypress.env('unitDetails').name);
     cy.get('@veo-card').should('contain', Cypress.env('unitDetails').desc);
-    Cypress.env('unitDetails').domains.forEach((domain: string) => {
-      cy.get('@veo-card').should('contain', domain);
+    Cypress.env('unitDetails').domains.forEach((domain: { name: string; id: string }) => {
+      cy.get('@veo-card').should('contain', domain.name);
     });
   });
 
   it('changes unit name and description', () => {
     const testData = {
-      unitName: 'TEST NAME',
+      unitName: `TEST-NAME-${Math.random()}`,
       unitDesc: 'TEST DESCRIPTION'
     };
 
