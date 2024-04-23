@@ -16,15 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage :loading="!domain" data-component-name="domain-dashboard-page" data-veo-test="dashboard" padding>
+  <BasePage class="pt-2" :loading="!domain" data-component-name="domain-dashboard-page" padding>
     <UtilNotFoundError v-if="domainNotFound" :text="t('domainNotFoundText')" />
 
     <template v-else>
-      <div v-if="domain" class="text-h3">
-        <LayoutHeadline title="Dashboard" />
-      </div>
-
-      <v-skeleton-loader v-else class="mt-n2 mb-4 skeleton-subtitle" type="text" />
+      <v-skeleton-loader v-if="!domain" class="mt-n2 mb-4 skeleton-subtitle" type="text" />
 
       <v-row>
         <template v-if="elementStatusCountIsFetching">
