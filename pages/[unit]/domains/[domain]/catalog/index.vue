@@ -116,7 +116,6 @@ const customBreadcrumbArgs = computed(() => ({
   key: 'catalog',
   index: 1,
   text: currentSubTypeTranslated.value || t('all'),
-  position: 11,
   param: '',
   disabled: true
 }));

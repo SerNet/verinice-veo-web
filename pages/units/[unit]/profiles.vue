@@ -16,9 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage data-component-name="unit-selection-page" sticky-footer>
-    <LayoutHeadline :title="currentUnit?.name" :element="t('profiles')" />
-
+  <BasePage class="pt-6" data-component-name="unit-selection-page" sticky-footer>
     <ProfileProfiles ref="profilesRef" />
 
     <template #footer>
@@ -32,8 +30,8 @@
           color="primary"
           :prepend-icon="mdiShapeOutline"
           size="large"
-          @click="profilesRef?.applyProfile()"
           class="my-6"
+          @click="profilesRef?.applyProfile()"
         >
           {{ t('applyProfiles') }}
         </v-btn>
