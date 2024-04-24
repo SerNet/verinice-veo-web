@@ -8805,7 +8805,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm package may be included in this product:
 
- - magic-string@0.30.10
+ - magic-string@0.30.9
 
 This package contains the following license and notice below:
 
@@ -15519,16 +15519,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm packages may be included in this product:
 
- - @vue/compiler-core@3.4.24
- - @vue/compiler-dom@3.4.24
- - @vue/compiler-sfc@3.4.24
- - @vue/compiler-ssr@3.4.24
- - @vue/reactivity@3.4.24
- - @vue/runtime-core@3.4.24
- - @vue/runtime-dom@3.4.24
- - @vue/server-renderer@3.4.24
- - @vue/shared@3.4.24
- - vue@3.4.24
+ - @vue/compiler-core@3.4.23
+ - @vue/compiler-dom@3.4.23
+ - @vue/compiler-sfc@3.4.23
+ - @vue/compiler-ssr@3.4.23
+ - @vue/reactivity@3.4.23
+ - @vue/runtime-core@3.4.23
+ - @vue/runtime-dom@3.4.23
+ - @vue/server-renderer@3.4.23
+ - @vue/shared@3.4.23
+ - vue@3.4.23
 
 These packages each contain the following license and notice below:
 
