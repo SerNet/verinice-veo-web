@@ -17,7 +17,9 @@
 -->
 <template>
   <BasePage class="pt-6" data-component-name="unit-selection-page" sticky-footer>
-    <ProfileProfiles ref="profilesRef" />
+    <BaseContainer>
+      <UnitProfiles ref="profilesRef" />
+    </BaseContainer>
 
     <template #footer>
       <div class="d-flex justify-space-between">
@@ -50,8 +52,6 @@ import { mdiShapeOutline } from '@mdi/js';
 const profilesRef = ref<{ applyProfile(): () => void; canApplyProfile: boolean } | null>(null);
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-
-const { data: currentUnit } = useCurrentUnit();
 
 useHead({
   title: globalT('breadcrumbs.profiles')
