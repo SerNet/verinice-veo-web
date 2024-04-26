@@ -3043,7 +3043,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 The following npm package may be included in this product:
 
- - serve@14.2.2
+ - serve@14.2.3
 
 This package contains the following license and notice below:
 
@@ -12831,7 +12831,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @zeit/schemas@2.29.0
+ - @zeit/schemas@2.36.0
 
 This package contains the following license and notice below:
 
