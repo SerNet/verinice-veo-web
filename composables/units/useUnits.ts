@@ -45,6 +45,7 @@ export type TVeoUnit = {
   raw: IVeoUnit;
 };
 
+const queryKey = ['units', 'unit'];
 const currentUnit = ref<TVeoUnit | null>(null);
 const isLoadingCurrentUnit = ref(false);
 
@@ -57,10 +58,14 @@ async function fetchCurrentUnit() {
 }
 
 export function useCurrentUnit() {
+  const queryClient = useQueryClient();
+
   fetchCurrentUnit();
+
   return {
     data: currentUnit,
-    isLoading: isLoadingCurrentUnit
+    isLoading: isLoadingCurrentUnit,
+    invalidateUnitCache: () => queryClient.invalidateQueries({ queryKey }, { cancelRefetch: true })
   };
 }
 
@@ -76,7 +81,7 @@ export function useUnits() {
     data: units,
     isLoading: isFetching,
     error,
-    invalidateUnitCache: () => queryClient.invalidateQueries({ queryKey: ['units'] }, { cancelRefetch: true })
+    invalidateUnitCache: () => queryClient.invalidateQueries({ queryKey }, { cancelRefetch: true })
   };
 }
 
