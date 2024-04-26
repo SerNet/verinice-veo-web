@@ -161,8 +161,8 @@ async function applyProfile({ profileId, unitId, domainId } = applyProfileParams
 }
 
 async function initApplyProfile() {
-  if (!currentUnit.value?.associatedDomains) return;
-  const unitKnowsDomain = currentUnit.value.associatedDomains.includes(radio.value?.domainId ?? '');
+  if (!currentUnit.value?.domains) return;
+  const unitKnowsDomain = currentUnit.value.domains.map((d) => d.id).includes(radio.value?.domainId ?? '');
 
   if (!unitKnowsDomain) {
     isDialogOpen.value = true;

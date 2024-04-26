@@ -44,14 +44,7 @@ export type TVeoUnit = {
   raw: IVeoUnit;
 };
 
-export type TVeoCurrentUnit = {
-  id: string;
-  name: string;
-  associatedDomains: string[];
-  raw: IVeoUnit;
-};
-
-const currentUnit = ref<TVeoCurrentUnit | null>(null);
+const currentUnit = ref<TVeoUnit | null>(null);
 const currentUnitId = ref<string | null>(null);
 const isLoadingCurrentUnit = ref(false);
 
@@ -60,12 +53,7 @@ async function fetchCurrentUnit() {
   const id = useRoute().params.unit;
   if (!currentUnit.value || currentUnitId.value !== id) {
     const result = await useQuerySync(unitQueryDefinitions.queries.fetch, { id });
-    currentUnit.value = {
-      name: result.name,
-      id: result.id,
-      associatedDomains: toRaw(result).domains.map((d) => d.id!),
-      raw: result
-    };
+    currentUnit.value = mapUnitValues({ unit: result });
     currentUnitId.value = id;
   }
   isLoadingCurrentUnit.value = false;
