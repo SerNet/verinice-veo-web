@@ -46,17 +46,13 @@ export type TVeoUnit = {
 };
 
 const currentUnit = ref<TVeoUnit | null>(null);
-const currentUnitId = ref<string | null>(null);
 const isLoadingCurrentUnit = ref(false);
 
 async function fetchCurrentUnit() {
   isLoadingCurrentUnit.value = true;
   const id = useRoute().params.unit;
-  if (!currentUnit.value || currentUnitId.value !== id) {
-    const result = await useQuerySync(unitQueryDefinitions.queries.fetch, { id });
-    currentUnit.value = mapUnitValues({ unit: result });
-    currentUnitId.value = id;
-  }
+  const result = await useQuerySync(unitQueryDefinitions.queries.fetch, { id });
+  currentUnit.value = mapUnitValues({ unit: result });
   isLoadingCurrentUnit.value = false;
 }
 
