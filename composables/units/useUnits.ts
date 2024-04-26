@@ -29,6 +29,7 @@ export type TVeoUnit = {
   id: string;
   name: string;
   description: string;
+  updatedAt: string;
   metaData: string;
   link: string | undefined;
   profilesUrl: string;
