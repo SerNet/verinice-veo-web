@@ -68,10 +68,16 @@ const { t } = useI18n();
 const { data: veoUnits, isLoading: isLoadingUnits, invalidateUnitCache } = useUnits();
 const activeUnits = computed(() => veoUnits.value?.length || null);
 const newUnits = ref<any>(null);
+
+// Sort helper: show last updated unit on top
+function sortUnits(a: TVeoUnit, b: TVeoUnit) {
+  return Math.sign(new Date(b.updatedAt) - new Date(a.updatedAt));
+}
+
 const units = computed({
   get() {
     if (newUnits.value) return newUnits.value;
-    return veoUnits.value ?? [];
+    return veoUnits.value?.sort(sortUnits) ?? [];
   },
   set(newValue) {
     newUnits.value = newValue;

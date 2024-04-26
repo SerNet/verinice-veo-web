@@ -92,6 +92,7 @@ export function mapUnitValues({ unit }: { unit: IVeoUnit }): TVeoUnit {
     id: unit.id,
     name: unit.name,
     description: unit?.description,
+    updatedAt: unit.updatedAt,
     link: unit.domains.length ? `/${unit.id}/domains/${unit.domains[0].id}` : undefined,
     profilesUrl: `/units/${unit.id}/profiles`,
     domainsUrl: `/units/${unit.id}/domains`,
