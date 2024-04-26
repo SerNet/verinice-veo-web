@@ -20,3 +20,5 @@
 export { useDomains, useDomainColors } from '~/composables/domains/useDomains';
 export { useProfiles } from '~/composables/profiles/useProfiles';
 export { useUnits, useCurrentUnit } from '~/composables/units/useUnits';
+export { useMutation } from '~/composables/api/utils/mutation';
+export { useRules } from '~/composables/utils';
