@@ -34,14 +34,16 @@
     <template #footer>
       <v-tooltip location="start">
         <template #activator="{ props }">
-          <div v-bind="props" class="veo-primary-action-fab">
+          <div v-bind="props" class="d-flex">
             <v-btn
+              class="ml-auto my-6"
+              to="/units/create"
+              :prepend-icon="mdiPlus"
               :disabled="maxUnitsExceeded || ability.cannot('manage', 'units')"
               color="primary"
-              :icon="mdiPlus"
               size="large"
-              @click="createUnit()"
-            />
+              >{{ t('createUnit') }}</v-btn
+            >
           </div>
         </template>
 
