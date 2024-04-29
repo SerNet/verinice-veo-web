@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <template v-if="units && !isLoadingUnits" v-for="unit in units">
       <BaseListItem :item="unit">
         <template #center-aside="{ item: unit }">
-          <UnitActions :details-url="unit.detailsUrl" @delete-unit="() => deleteUnit(unit)" />
+          <UnitActions :details-url="unit?.detailsUrl" @delete-unit="() => deleteUnit(unit)" />
         </template>
         <template #bottom-left="{ item: unit }">
           <DomainActions :domains="unit.domains" :domains-url="unit.domainsUrl" />
@@ -41,7 +41,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </template>
   </v-row>
 
-  <UnitManageDialog v-model="isManageDialogOpen" :unit-id="unitToEditId" />
   <UnitDeleteDialog v-model="deleteDialogIsOpen" :unit="unitToDelete" />
 </template>
 
