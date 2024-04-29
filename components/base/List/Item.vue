@@ -25,7 +25,7 @@
           </div>
         </div>
 
-        <v-card-actions class="veo-card-actions">
+        <v-card-actions class="veo-card-actions" v-if="hasBottomSlots">
           <div data-veo-test="item-card-slot-left" class="veo-card-actions__slot-left">
             <slot :item="item" name="bottom-left"></slot>
           </div>
@@ -46,6 +46,8 @@ interface Props {
 }
 defineProps<Props>();
 
+const slots = useSlots();
+const hasBottomSlots = computed(() => !!(slots?.['bottom-right'] || slots?.['bottom-left']));
 const { t } = useI18n();
 
 const ItemDetails: TInlineComponent = {
