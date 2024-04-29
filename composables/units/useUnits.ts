@@ -21,7 +21,7 @@ import { useQueryClient } from '@tanstack/vue-query';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { format } from 'date-fns';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-import { Colors as VeoDomainColors } from '~/composables/domains/useDomains';
+import { Colors as VeoDomainColors, getColorByDomainAbbreviation } from '~/composables/domains/useDomains';
 
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
@@ -47,25 +47,33 @@ export type TVeoUnit = {
 };
 
 const queryKey = ['units', 'unit'];
-const currentUnit = ref<TVeoUnit | null>(null);
-const isLoadingCurrentUnit = ref(false);
-
-async function fetchCurrentUnit() {
-  isLoadingCurrentUnit.value = true;
-  const id = useRoute().params.unit;
-  const result = await useQuerySync(unitQueryDefinitions.queries.fetch, { id });
-  currentUnit.value = mapUnitValues({ unit: result });
-  isLoadingCurrentUnit.value = false;
-}
 
 export function useCurrentUnit() {
+  const data = ref<TVeoUnit | null>(null);
+  const isLoading = ref(false);
   const queryClient = useQueryClient();
+
+  async function fetchCurrentUnit() {
+    const route = useRoute();
+    isLoading.value = true;
+
+    watch(
+      () => route.params.unit,
+      async () => {
+        if (!route.params.unit) return;
+        const result = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: route.params.unit });
+        data.value = mapUnitValues({ unit: result });
+        isLoading.value = false;
+      },
+      { immediate: true }
+    );
+  }
 
   fetchCurrentUnit();
 
   return {
-    data: currentUnit,
-    isLoading: isLoadingCurrentUnit,
+    data,
+    isLoading,
     invalidateUnitCache: () => queryClient.invalidateQueries({ queryKey }, { cancelRefetch: true })
   };
 }
@@ -88,13 +96,12 @@ export function useUnits() {
 
 export function mapUnitValues({ unit }: { unit: IVeoUnit }): TVeoUnit {
   const favoriteUnitId: string | null = localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT);
-  const { domainColorsByAbbreviation: COLORS } = useDomainColors();
   return {
     id: unit.id,
     name: unit.name,
     description: unit?.description,
     updatedAt: unit.updatedAt,
-    link: unit.domains.length ? `/${unit.id}/domains/${unit.domains[0].id}` : undefined,
+    link: unit.domains.length ? `/${unit.id}/domains/${unit.domains[0]!.id}` : undefined,
     profilesUrl: `/units/${unit.id}/profiles`,
     domainsUrl: `/units/${unit.id}/domains`,
     detailsUrl: `/units/${unit.id}/details`,
@@ -104,7 +111,7 @@ export function mapUnitValues({ unit }: { unit: IVeoUnit }): TVeoUnit {
       id: d.id!,
       name: d.name ?? '',
       abbreviation: d.abbreviation ?? '',
-      color: d.abbreviation && COLORS.hasOwnProperty(d.abbreviation) ? COLORS[d.abbreviation] : COLORS['DEFAULT'],
+      color: getColorByDomainAbbreviation(d.abbreviation),
       targetUri: d.targetUri
     })),
     raw: toRaw(unit)
