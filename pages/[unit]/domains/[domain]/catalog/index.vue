@@ -151,6 +151,13 @@ async function applyItems() {
 
     const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, fetchParameters);
 
+    // API sends back an array of catalog elements, which can be incarnated in the following
+    // If this array is empty, there is nothing to incarnate and we return from the function
+    if (!incarnations.parameters.length) {
+      displaySuccessMessage(t('itemsAlreadyApplied'));
+      return;
+    }
+
     // Apply incarnations
     await incarnate({ incarnations, unitId: route.params.unit });
     displaySuccessMessage(t('itemsApplied'));
@@ -192,6 +199,7 @@ function translateSubType({ formSchemas, elementType, subType }: TranslateSubTyp
     "TOMsApplied": "TOMs were applied",
     "itemsApplied": "Successfully applied catalog elements.",
     "applyItemsError": "Could not apply catalog elements.",
+    "itemsAlreadyApplied": "Catalog elements have already been applied. No new elements have been created."
   },
   "de": {
     "all": "Alle",
@@ -206,6 +214,7 @@ function translateSubType({ formSchemas, elementType, subType }: TranslateSubTyp
     "TOMsApplied": "TOM wurden angewendet",
     "itemsApplied": "Katalogelemente wurden erfolgreich angewendet.",
     "applyItemsError": "Katalogelemente konnten nicht angewandt werden.",
+    "itemsAlreadyApplied": "Katalogelemente wurden bereits angewandt. Es wurden keinen neuen Elemente erzeugt."
   }
 }
 </i18n>
