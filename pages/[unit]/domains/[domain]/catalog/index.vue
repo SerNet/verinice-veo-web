@@ -149,7 +149,7 @@ async function applyItems() {
       itemIds: selectedItems.value.map((item) => item.id)
     };
 
-    const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, fetchParameters);
+    const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnationDescriptions, fetchParameters);
 
     // API sends back an array of catalog elements, which can be incarnated in the following
     // If this array is empty, there is nothing to incarnate and we return from the function

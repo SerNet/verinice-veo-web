@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IVeoAPIMessage, IVeoBaseObject, IVeoLink, IVeoUnitIncarnations } from '~/types/VeoTypes';
+import { IVeoAPIMessage, IVeoBaseObject, IVeoLink, IVeoUnitIncarnationDescriptions } from '~/types/VeoTypes';
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
 import { VeoApiReponseType } from '../utils/request';
@@ -54,17 +54,34 @@ export interface IVeoExportUnitParameters {
   unitId: string;
 }
 
-export interface IVeoFetchIncarnationParameters {
+type TailoringReferenceType =
+  | 'OMIT'
+  | 'LINK'
+  | 'LINK_EXTERNAL'
+  | 'COPY'
+  | 'COPY_ALWAYS'
+  | 'PART'
+  | 'COMPOSITE'
+  | 'RISK'
+  | 'SCOPE'
+  | 'MEMBER'
+  | 'CONTROL_IMPLEMENTATION';
+
+export interface IVeoFetchIncarnationDescriptionParameters {
   unitId: string;
   domainId: string;
   itemIds: string[];
-  exclude?: string[];
+  mode?: 'DEFAULT' | 'MANUAL';
+  exclude?: TailoringReferenceType[];
+  include?: TailoringReferenceType[];
+  useExistingIncarnations?: 'NEVER' | 'FOR_REFERENCED_ITEMS' | 'ALWAYS';
 }
 
 export interface IVeoUpdateIncarnationParameters {
-  incarnations: IVeoUnitIncarnations;
+  incarnations: IVeoUnitIncarnationDescriptions;
   unitId: string;
 }
+
 export default {
   queries: {
     fetchAll: {
@@ -86,7 +103,7 @@ export default {
         staleTime: STALE_TIME.MEDIUM
       }
     } as IVeoQueryDefinition<IVeoFetchUnitParameters, IVeoUnit>,
-    fetchIncarnations: {
+    fetchIncarnationDescriptions: {
       primaryQueryKey: 'incarnations',
       url: '/api/units/:unitId/domains/:domainId/incarnation-descriptions',
       queryParameterTransformationFn: (queryParameters) => ({
@@ -99,7 +116,7 @@ export default {
           exclude: queryParameters.exclude
         }
       })
-    } as IVeoQueryDefinition<IVeoFetchIncarnationParameters, IVeoUnitIncarnations>,
+    } as IVeoQueryDefinition<IVeoFetchIncarnationDescriptionParameters, IVeoUnitIncarnationDescriptions>,
     exportUnit: {
       primaryQueryKey: 'units',
       url: '/api/units/:unitId/export',
@@ -171,6 +188,6 @@ export default {
           queryClient.invalidateQueries(['incarnations']);
         }
       }
-    } as IVeoMutationDefinition<IVeoUpdateIncarnationParameters, IVeoUnitIncarnations>
+    } as IVeoMutationDefinition<IVeoUpdateIncarnationParameters, IVeoUnitIncarnationDescriptions>
   }
 };

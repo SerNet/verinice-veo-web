@@ -329,7 +329,7 @@ export interface IVeoAPIMessage {
   message: string;
 }
 
-export interface IVeoUnitIncarnations {
+export interface IVeoUnitIncarnationDescriptions {
   parameters: {
     item: IVeoLink;
     references: {
