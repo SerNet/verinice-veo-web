@@ -46,9 +46,7 @@ import { useMutation } from '~/composables/api/utils/mutation';
 import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-
 import { onBeforeRouteLeave } from 'vue-router';
-const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 
 // Types
 import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
@@ -58,9 +56,9 @@ import type { IVeoEntity } from '~/types/VeoTypes';
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { t, locale } = useI18n();
 const route = useRoute();
+const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 
 // State
-const title = computed(() => t('catalog', { name: currentSubTypeTranslated.value || t('all') }));
 const currentDomainId = computed(() => route.params.domain as string);
 const currentElementType = computed(() => (route.query.type === 'all' ? undefined : (route.query.type as string)));
 const currentSubType = computed(() => (route.query.subType === 'all' ? undefined : (route.query.subType as string)));
