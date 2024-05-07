@@ -94,7 +94,7 @@ describe('Create elements', () => {
     cy.get('.v-overlay__content .v-field__input').contains(status);
   };
 
-  const selectRandom = (list) => {
+  const selectRandom = (list: string[]) => {
     const randomIndex = Math.floor(Math.random() * list.length);
     return list[randomIndex];
   };
