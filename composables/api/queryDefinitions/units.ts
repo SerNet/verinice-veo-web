@@ -56,8 +56,9 @@ export interface IVeoExportUnitParameters {
 
 export interface IVeoFetchIncarnationParameters {
   unitId: string;
+  domainId: string;
   itemIds: string[];
-  exclude: string[];
+  exclude?: string[];
 }
 
 export interface IVeoUpdateIncarnationParameters {
@@ -87,10 +88,11 @@ export default {
     } as IVeoQueryDefinition<IVeoFetchUnitParameters, IVeoUnit>,
     fetchIncarnations: {
       primaryQueryKey: 'incarnations',
-      url: '/api/units/:unitId/incarnations',
+      url: '/api/units/:unitId/domains/:domainId/incarnation-descriptions',
       queryParameterTransformationFn: (queryParameters) => ({
         params: {
-          unitId: queryParameters.unitId
+          unitId: queryParameters.unitId,
+          domainId: queryParameters.domainId
         },
         query: {
           itemIds: queryParameters.itemIds,

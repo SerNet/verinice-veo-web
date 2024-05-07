@@ -145,8 +145,8 @@ async function applyItems() {
     // Fetch incarnations for all selected items
     const fetchParameters = {
       unitId: route.params.unit as string,
-      itemIds: selectedItems.value.map((item) => item.id),
-      exclude: ['COMPOSITE', 'LINK', 'LINK_EXTERNAL']
+      domainId: route.params.domain as string,
+      itemIds: selectedItems.value.map((item) => item.id)
     };
 
     const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnations, fetchParameters);
