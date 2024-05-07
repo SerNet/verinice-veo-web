@@ -60,6 +60,14 @@ export interface IVeoFetchCatalogItemsParameters {
   sortOrder?: string;
 }
 
+export interface IVeoFetchCatalogItemTypeCountParameters {
+  domainId: string;
+}
+
+export interface IVeoCatalogItemTypeCount {
+  [key: string]: Record<string, number>;
+}
+
 export default {
   queries: {
     fetchCatalogs: {
@@ -103,7 +111,7 @@ export default {
       staticQueryOptions: {
         staleTime: STALE_TIME.INFINITY
       }
-    }
+    } as IVeoQueryDefinition<IVeoFetchCatalogItemTypeCountParameters, IVeoCatalogItemTypeCount>
   },
   mutations: {}
 };

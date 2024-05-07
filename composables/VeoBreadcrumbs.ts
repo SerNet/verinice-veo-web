@@ -22,7 +22,7 @@ export interface IVeoBreadcrumb {
   to: string;
   text?: string;
   icon?: any;
-  position: number;
+  position?: number;
   index: number; // Can be set to zero, as the VeoBreadcrumbs.vue component will handle it.
   param: string;
 }
