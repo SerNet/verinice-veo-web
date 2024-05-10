@@ -14,6 +14,7 @@
         </template>
         <template #prepend="{ item: domain }">
           <v-checkbox
+            :data-veo-test="`domain-card-checkbox-${domain?.abbreviation ? domain.abbreviation.toLowerCase() : ''}`"
             color="primary"
             :value="domain"
             :disabled="isDisabled || domain.id === mandatoryDomain?.id"

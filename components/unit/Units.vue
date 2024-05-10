@@ -171,6 +171,7 @@ const DomainActions: TInlineComponent = {
     </v-btn>
 
     <v-btn
+      data-veo-test="units-add-domains-button"
       :to="domainsUrl"
       :prepend-icon="mdiPlus"
       variant="text"
