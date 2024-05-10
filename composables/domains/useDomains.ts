@@ -23,6 +23,9 @@ import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 export type TVeoDomain = {
   name: string;
   id: string;
+  abbreviation: string;
+  description: string;
+  color: string;
   raw: IVeoDomain;
 };
 
