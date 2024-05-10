@@ -48,6 +48,7 @@ export interface TVeoProfile {
 export function useProfiles() {
   const { domains } = useDomains();
   const profiles = ref<TVeoProfile[]>([]);
+  const isLoading = ref(true);
 
   // Fetch all profiles from all available domains
   async function getProfiles({ domains }: { domains: TVeoDomain[] }): Promise<IVeoProfilesPerDomain[]> {
@@ -69,10 +70,12 @@ export function useProfiles() {
     const _domains = JSON.parse(JSON.stringify(domains.value));
     const profilesPerDomain = await getProfiles({ domains: _domains });
     profiles.value = map(profilesPerDomain);
+    isLoading.value = false;
   });
 
   return {
-    profiles
+    profiles,
+    isLoading
   };
 }
 
