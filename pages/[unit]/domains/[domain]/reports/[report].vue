@@ -239,7 +239,8 @@ export default defineComponent({
       type: requestedReportName.value,
       body: {
         outputType: outputType.value,
-        targets: selectedObjects.value
+        targets: selectedObjects.value,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       }
     }));
     const { mutateAsync: create, isLoading: generatingReport } = useMutation(reportQueryDefinitions.mutations.create, {
