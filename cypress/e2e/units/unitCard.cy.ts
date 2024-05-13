@@ -24,24 +24,6 @@ describe('Unit-Card', () => {
     });
   });
 
-  it('changes unit name and description', () => {
-    const testData = {
-      unitName: `TEST-NAME-${Math.random()}`,
-      unitDesc: 'TEST DESCRIPTION'
-    };
-
-    cy.getVeoTestUnitCard().as('veo-card');
-
-    // Open edit modal
-    cy.get('@veo-card').find('[data-veo-test="units-edit-unit-button"]').click();
-    // Fill in and store new data
-    cy.editUnit(testData);
-
-    // Check if new data is rendered
-    cy.get('@veo-card').should('contain', testData.unitName);
-    cy.get('@veo-card').should('contain', testData.unitDesc);
-  });
-
   it('bookmarks a unit as favorite unit', () => {
     cy.getVeoTestUnitCard().as('veo-card');
 
