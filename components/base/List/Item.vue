@@ -7,11 +7,18 @@
 
       <div class="veo-base-card__slot-center" data-veo-test="item-card-slot-center">
         <div>
-          <NuxtLink :to="item.link" class="veo-base-card__slot-center__main" data-veo-test="item-card-slot-center-link">
-            <v-card-title v-text="item.name"></v-card-title>
-            <v-card-subtitle v-if="item.metaData" v-text="item.metaData"></v-card-subtitle>
-            <v-card-text data-veo-test="item-card-text" v-text="item.description ?? t('noDescription')"></v-card-text>
+          <NuxtLink
+            v-if="item.link"
+            :to="item.link"
+            class="veo-base-card__slot-center__main"
+            data-veo-test="item-card-slot-center-link"
+          >
+            <ItemDetails :item="item" />
           </NuxtLink>
+
+          <div v-if="!item.link" class="veo-base-card__slot-center__main" data-veo-test="item-card-slot-center-link">
+            <ItemDetails :item="item" />
+          </div>
 
           <div data-veo-test="item-card-slot-center-aside" class="veo-base-card__slot-center__aside">
             <slot :item="item" name="center-aside"></slot>
@@ -32,12 +39,24 @@
   </v-col>
 </template>
 <script setup lang="ts">
+import type { TInlineComponent } from '~/types/utils';
+
 interface Props {
   item: any;
 }
 defineProps<Props>();
 
 const { t } = useI18n();
+
+const ItemDetails: TInlineComponent = {
+  props: ['item'],
+  data: () => ({ t }),
+  template: `
+    <v-card-title v-text="item.name"></v-card-title>
+    <v-card-subtitle v-if="item.metaData" v-text="item.metaData"></v-card-subtitle>
+    <v-card-text data-veo-test="item-card-text" v-text="item.description ?? t('noDescription')"></v-card-text>
+`
+};
 </script>
 
 <style scoped lang="scss">
