@@ -264,7 +264,7 @@ export default defineComponent({
     );
 
     const reactiveFormActions = computed<IVeoFormsReactiveFormActions>(() => {
-      const riskAnalysisType = Object.keys(objectSchema.value?.properties?.riskValues?.properties)[0];
+      const riskAnalysisType = Object.keys(objectSchema.value?.properties?.riskValues?.properties ?? {})[0];
 
       return {
         ...(objectSchema.value?.title === 'person' ? personReactiveFormActions() : {}),
