@@ -7,16 +7,16 @@ import {
   goToUnitDashboard,
   selectUnit,
   createUnit,
-  createUnitGUI,
   editUnit,
   deleteUnit,
   deleteUnitGUI,
   getVeoTestUnitCard
 } from '../commands/units';
 import { generateUnitDetails } from './setupHelpers';
-import { navigateTo } from '../commands/navigation';
+import { testDashboardWidgets } from '../commands/dashboard';
 import { importUnit } from '../commands/importUnit';
 import { languageTo } from '../commands/language';
+import { navigateTo } from '../commands/navigation';
 
 Cypress.Commands.addAll({
   veoRequest,
@@ -27,14 +27,14 @@ Cypress.Commands.addAll({
   goToUnitDashboard,
   selectUnit,
   createUnit,
-  createUnitGUI,
   deleteUnit,
   editUnit,
   navigateTo,
   deleteUnitGUI,
   importUnit,
   languageTo,
-  getVeoTestUnitCard
+  getVeoTestUnitCard,
+  testDashboardWidgets
 });
 
 before(() => {

@@ -36,6 +36,7 @@
         <template #activator="{ props }">
           <div v-bind="props" class="d-flex">
             <v-btn
+              data-veo-test="create-unit-btn"
               class="ml-auto my-6"
               to="/units/create"
               :prepend-icon="mdiPlus"

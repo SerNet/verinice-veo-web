@@ -29,37 +29,6 @@ export function selectUnit({ unitName = Cypress.env('unitDetails').name }: { uni
   cy.get('.v-card-title').contains(unitName).click();
 }
 
-export function createUnitGUI({
-  unitName = Cypress.env('unitDetails').name,
-  unitDesc = Cypress.env('unitDetails').desc,
-  domainNames = Cypress.env('unitDetails').domains
-}: { unitName?: string; unitDesc?: string; domainNames?: string[] } = {}): void {
-  cy.goToUnitSelection();
-  cy.get('.veo-primary-action-fab button').click();
-
-  chooseDomains(domainNames);
-
-  // Fill in name and description
-  cy.get('.new-unit-form input').first().type(unitName).get('.new-unit-form input').last().type(unitDesc);
-
-  // Create new unit
-  cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units/**`).as('getNewUnit');
-  cy.get('.v-card-actions button').last().click();
-  cy.wait(['@getNewUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 200);
-
-  /**
-   * After creating a new unit users are redirected to the new unit dashboard.
-   * The new unit id can be found in the url.
-   * Take it and store it for later use.
-   */
-  cy.get('[data-component-name="domain-dashboard-page"]').then((_el) => {
-    cy.url().then((url) => {
-      const unitDetails = { ...Cypress.env('unitDetails'), unitId: url.split('/').at(3) };
-      Cypress.env('unitDetails', unitDetails);
-    });
-  });
-}
-
 export function editUnit({
   unitName = Cypress.env('unitDetails').name,
   unitDesc = Cypress.env('unitDetails').desc,

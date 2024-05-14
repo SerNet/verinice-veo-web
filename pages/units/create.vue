@@ -109,6 +109,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         }}</v-btn>
         <v-spacer></v-spacer>
         <v-btn
+          data-veo-test="create-unit-next-btn"
           size="large"
           class="my-6"
           v-if="step < 4"
@@ -118,7 +119,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           @click="step++"
           >{{ globalT('global.button.next') }}</v-btn
         >
-        <v-btn size="large" class="my-6" v-if="step === 4" color="primary" :prepend-icon="mdiPlus" @click="createUnit"
+        <v-btn
+          data-veo-test="create-unit-create-btn"
+          size="large"
+          class="my-6"
+          v-if="step === 4"
+          color="primary"
+          :prepend-icon="mdiPlus"
+          @click="createUnit"
           >{{ t('createUnit') }}
         </v-btn>
       </div>

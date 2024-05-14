@@ -27,35 +27,16 @@ describe('Apply Profiles', () => {
     cy.get(`[data-veo-test="profile-${profileName}"]`).as('profileCard');
 
     // Choose profile
-    cy.get('@profileCard').find('[data-veo-test="profile-radio-btn"] input').click();
+    cy.get('@profileCard').find('[data-veo-test="profile-radio-btn-Beispieldaten"] input').click();
 
     // Apply profile
     cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/profiles/**/incarnation?unit=**`).as('applyProfile');
     cy.get('[data-veo-test="apply-profile"]').click();
-    cy.wait(['@applyProfile'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 204);
+    cy.wait(['@applyProfile']).its('response.statusCode').should('eq', 204);
 
     // Check redirect to unit dashboard
     cy.url().should('be.equal', `${Cypress.config('baseUrl')}/${unitId}/domains/${domainId}`);
 
-    // Test if widgets contain the assumed number of canvas elements
-    // (Canvas is used to draw charts if elements/objects exist,
-    // otherwise a regular div is used)
-    const widgets = [
-      { name: 'scope', numOfElements: 5 },
-      { name: 'process', numOfElements: 3 },
-      { name: 'asset', numOfElements: 3 },
-      { name: 'person', numOfElements: 2 },
-      { name: 'control', numOfElements: 1 },
-      { name: 'incident', numOfElements: 1 },
-      { name: 'document', numOfElements: 3 },
-      { name: 'scenario', numOfElements: 1 }
-    ];
-
-    widgets.forEach((widget) => {
-      cy.get(`[data-veo-test="domain-dashboard-${widget.name}-widget"]`).as('widget');
-      cy.get('@widget').within((_w) => {
-        cy.get('canvas').should('have.length', widget.numOfElements);
-      });
-    });
+    cy.testDashboardWidgets();
   });
 });

@@ -55,7 +55,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           </template>
 
           <template #prepend="{ item: profile }">
-            <RadioButton :profile="profile" :isDisabled="isDisabled" />
+            <RadioButton
+              :data-veo-test="`profile-radio-btn-${profile.name}`"
+              :profile="profile"
+              :isDisabled="isDisabled"
+            />
           </template>
         </BaseListItem>
       </template>
@@ -124,12 +128,11 @@ const DomainChip: TInlineComponent = {
 };
 
 const RadioButton: TInlineComponent = {
-  props: ['profile', 'isDisabled'],
+  props: ['profile', 'isDisabled', 'dataVeoTest'],
   emits: ['profileSelected'],
   template: `
     <v-radio
-      data-veo-test="profile-radio-btn"
-      :model-value="radio"
+      :data-veo-test="dataVeoTest"
       :value="profile"
       :disabled="isDisabled"
     >
