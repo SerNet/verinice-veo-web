@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <template v-if="units && !isLoadingUnits" v-for="unit in units">
       <BaseListItem :item="unit">
         <template #center-aside="{ item: unit }">
-          <UnitActions @edit-unit="() => editUnit(unit)" @delete-unit="() => deleteUnit(unit)" />
+          <UnitActions :details-url="unit.detailsUrl" @delete-unit="() => deleteUnit(unit)" />
         </template>
         <template #bottom-left="{ item: unit }">
           <DomainActions :domains="unit.domains" :domains-url="unit.domainsUrl" />
@@ -130,19 +130,17 @@ defineExpose({
 /* ++++++++++++++++++++++++++++++++++++++++++++++++ */
 
 const UnitActions: TInlineComponent = {
+  props: ['detailsUrl'],
   data: () => ({ mdiPencilOutline, mdiDeleteOutline }),
-  emits: ['editUnit', 'deleteUnit'],
+  emits: ['deleteUnit'],
   methods: {
-    emitEditUnit() {
-      (this as any).$emit('editUnit');
-    },
     emitDeleteUnit() {
       (this as any).$emit('deleteUnit');
     }
   },
   template: `
     <v-btn
-      @click="emitEditUnit"
+      :to="detailsUrl"
       :icon="mdiPencilOutline"
       variant="text"
       data-veo-test="units-edit-unit-button"
