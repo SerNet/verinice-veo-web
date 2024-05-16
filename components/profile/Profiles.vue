@@ -48,12 +48,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   <BaseDialog
     :close-function="() => (isDialogOpen = false)"
     :model-value="isDialogOpen"
-    :title="t('warningAssociateDomainTitle')"
+    :title="t('infoAssociateDomainTitle')"
   >
     <template #default>
       <BaseCard>
         <v-card-text>
-          {{ t('warningAssociateDomainBody') }}
+          {{ t('infoAssociateDomainBody') }}
         </v-card-text>
       </BaseCard>
     </template>
@@ -64,7 +64,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       <v-spacer />
 
       <v-btn flat color="primary" @click="associateDomainAndApplyProfile">
-        {{ t('global.button.ok') }}
+        {{ t('applyProfileBtn') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -228,22 +228,25 @@ const RadioButton: TInlineComponent = {
 <i18n>
 {
   "en": {
-    "warningAssociateDomainTitle": "Warning!",
-    "warningAssociateDomainBody": "Action cannot be reversed. Applying this profile requires associating a new domain with your unit. This cannot be undone!",
+    "infoAssociateDomainTitle": "Hint!",
+    "infoAssociateDomainBody": "Applying this profile adds a new domain to your unit. This step cannot be undone!",
     "applyProfileSuccess": "Profile successfully applied.",
     "applyProfileErrorTitle": "Sorry, an error occurred.",
     "applyProfileErrorBody": "Could not apply profile.",
     "isAssociatingDomain": "Associating Domain...",
     "isApplyingProfile": "Applying Profile...",
+    "applyProfileBtn": "Apply profile",
+
 
   },
   "de": {
-    "warningAssociateDomainTitle": "Warnung!",
-    "warningAssociateDomainBody": " Aktion kann nicht rückgängig gemacht werden. Die Anwendung dieses Profils erfordert die Verknüpfung einer neuen Domäne mit Ihrer Unit. Dies kann nicht rückgängig gemacht werden!",
+    "infoAssociateDomainTitle": "Hinweis!",
+    "infoAssociateDomainBody": "Das Anwenden dieses Profils fügt Ihrer Unit eine neue Domäne hinzu. Dieser Schritt kann nicht rückgängig gemacht werden!",
     "applyProfileSuccess": "Das Profil wurde erfolgreich angewendet.",
     "applyProfileErrorTitle": "Entschuldigung, es ist ein Fehler aufgetreten.",
     "applyProfileErrorBody": " Das Profil konnte nicht angewendet werden.",
     "isAssociatingDomain": "Verknüpfe Domäne...",
     "isApplyingProfile": "Wende Profil an...",
+    "applyProfileBtn": "Profil anwenden",
   } }
 </i18n>
