@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           <UnitActions @edit-unit="() => editUnit(unit)" @delete-unit="() => deleteUnit(unit)" />
         </template>
         <template #bottom-left="{ item: unit }">
-          <DomainActions :domains="unit.domains" @edit-domains="() => editDomains(unit)" />
+          <DomainActions :domains="unit.domains" :domains-url="unit.domainsUrl" />
         </template>
         <template #prepend="{ item: unit }">
           <BookmarkFavorite :isFavorite="unit?.isFavorite" @bookmark-favorite="() => bookmarkFavoriteUnit(unit)" />
@@ -114,13 +114,6 @@ function bookmarkFavoriteUnit(unit: TVeoUnit) {
   invalidateUnitCache();
 }
 
-// Domain Actions
-function editDomains(unit: TVeoUnit) {
-  // For now the same action as in `editUnit` is triggered
-  // In a later iteration this is going to change
-  editUnit(unit);
-}
-
 defineExpose({
   createUnit,
   activeUnits
@@ -160,14 +153,8 @@ const UnitActions: TInlineComponent = {
 };
 
 const DomainActions: TInlineComponent = {
-  props: ['domains'],
-  emits: ['editDomains'],
+  props: ['domains', 'domainsUrl'],
   data: () => ({ mdiPuzzle, mdiPlus, t }),
-  methods: {
-    emitEditDomains() {
-      (this as any).$emit('editDomains');
-    }
-  },
   template: `
     <v-btn v-for="(domain, index) in this.domains"
       :key="index"
@@ -181,10 +168,10 @@ const DomainActions: TInlineComponent = {
     </v-btn>
 
     <v-btn
+      :to="domainsUrl"
       :prepend-icon="mdiPlus"
       variant="text"
       size="x-small"
-      @click="emitEditDomains"
     >
     {{ t('editDomains') }}
     </v-btn>

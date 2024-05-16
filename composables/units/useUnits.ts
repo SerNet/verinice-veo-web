@@ -20,9 +20,10 @@ import { useQuerySync, useQuery } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { format } from 'date-fns';
-import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { Colors as VeoDomainColors } from '~/composables/domains/useDomains';
+
+import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
 export type TVeoUnit = {
   id: string;
@@ -31,12 +32,14 @@ export type TVeoUnit = {
   metaData: string;
   link: string | undefined;
   profilesUrl: string;
+  domainsUrl: string;
   isFavorite: boolean;
   domains: Array<{
     id: string;
     name: string;
     abbreviation: string;
     color: VeoDomainColors;
+    targetUri: string;
   }>;
   raw: IVeoUnit;
 };
@@ -101,13 +104,15 @@ export function mapUnitValues({ unit }: { unit: IVeoUnit }): TVeoUnit {
     description: unit?.description,
     link: unit.domains.length ? `/${unit.id}/domains/${unit.domains[0].id}` : undefined,
     profilesUrl: `/units/${unit.id}/profiles`,
+    domainsUrl: `/units/${unit.id}/domains`,
     isFavorite: unit.id === favoriteUnitId ? true : false,
     metaData: `by: ${unit.createdBy} | at: ${format(unit.createdAt, 'dd.MM.yyyy')}`,
     domains: unit.domains.map((d) => ({
       id: d.id!,
       name: d.name ?? '',
       abbreviation: d.abbreviation ?? '',
-      color: d.abbreviation && COLORS.hasOwnProperty(d.abbreviation) ? COLORS[d.abbreviation] : COLORS['DEFAULT']
+      color: d.abbreviation && COLORS.hasOwnProperty(d.abbreviation) ? COLORS[d.abbreviation] : COLORS['DEFAULT'],
+      targetUri: d.targetUri
     })),
     raw: toRaw(unit)
   };

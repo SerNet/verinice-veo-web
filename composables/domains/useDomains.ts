@@ -4,7 +4,7 @@
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -52,21 +52,31 @@ export function useDomains() {
   };
 }
 
+const domainColorsByAbbreviation: Record<string, Colors> = {
+  ITGS: Colors.ITGS,
+  'DS-GVO': Colors.DSGVO,
+  NIS2: Colors.NIS2,
+  DEFAULT: Colors.DEFAULT
+};
+
+export function getColorByDomainAbbreviation(abbreviation?: string): Colors {
+  if (!abbreviation) return Colors.DEFAULT;
+  return domainColorsByAbbreviation[abbreviation] ?? Colors.DEFAULT;
+}
+
+const domainColorsByName: Record<string, Colors> = {
+  'IT-Grundschutz': Colors.ITGS,
+  'DS-GVO': Colors.DSGVO,
+  NIS2: Colors.NIS2,
+  DEFAULT: Colors.DEFAULT
+};
+
+export function getColorByDomainName(name?: string): Colors {
+  if (!name) return Colors.DEFAULT;
+  return domainColorsByName[name] ?? Colors.DEFAULT;
+}
+
 export function useDomainColors() {
-  const domainColorsByAbbreviation: Record<string, Colors> = {
-    ITGS: Colors.ITGS,
-    'DS-GVO': Colors.DSGVO,
-    NIS2: Colors.NIS2,
-    DEFAULT: Colors.DEFAULT
-  };
-
-  const domainColorsByName: Record<string, Colors> = {
-    'IT-Grundschutz': Colors.ITGS,
-    'DS-GVO': Colors.DSGVO,
-    NIS2: Colors.NIS2,
-    DEFAULT: Colors.DEFAULT
-  };
-
   return {
     domainColorsByName,
     domainColorsByAbbreviation
@@ -76,7 +86,10 @@ export function useDomainColors() {
 function map(domains: IVeoDomain[]): TVeoDomain[] {
   return domains.map((domain) => ({
     name: domain.name,
+    abbreviation: domain.abbreviation,
     id: domain.id,
+    description: domain.description,
+    color: getColorByDomainName(domain?.name)!,
     raw: domain
   }));
 }
