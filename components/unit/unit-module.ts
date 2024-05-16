@@ -62,4 +62,3 @@ export function useApplyProfile() {
   }
   return { applyProfile, isLoading };
 }
-

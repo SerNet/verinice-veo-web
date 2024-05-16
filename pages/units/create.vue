@@ -161,7 +161,7 @@ const hasRightToCreateUnits = computed(() => ability.value.can('manage', 'units'
 
 const unitDetails = ref<UnitDetails>({ name: '' });
 
-const selectedProfile = ref<TVeoProfile>();
+const selectedProfile = ref<TVeoProfile | null>(null);
 
 const mandatoryDomain = computed<TVeoDomain>(() => {
   if (!selectedProfile.value) return;

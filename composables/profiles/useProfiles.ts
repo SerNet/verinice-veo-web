@@ -72,7 +72,7 @@ export function useProfiles() {
   });
 
   return {
-    profiles: readonly(profiles)
+    profiles
   };
 }
 
