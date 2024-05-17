@@ -543,3 +543,14 @@ export interface IVeoReport {
   outputTypes: string[];
   targetTypes: { modelType: string; subTypes: string[] }[];
 }
+
+export enum VeoElementTypePlurals {
+  scope = 'scopes',
+  process = 'processes',
+  asset = 'assets',
+  person = 'persons',
+  incident = 'incidents',
+  document = 'documents',
+  scenario = 'scenarios',
+  control = 'controls'
+}

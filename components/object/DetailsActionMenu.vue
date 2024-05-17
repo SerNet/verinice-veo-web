@@ -1,8 +1,7 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2022  Jessica Lühnen
-   -
-   - This program is free software: you can redistribute it and/or modify
+   - - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
@@ -22,27 +21,34 @@
         <v-btn
           class="bg-primary mr-2"
           v-bind="mergeProps($attrs, menuProps)"
-          :disabled="!visibleItems.length || $props.disabled"
-          :icon="mdiDotsVertical"
           variant="text"
           size="small"
+          :loading="isLoadingActions"
+          :disabled="!visibleItems.length || $props.disabled"
+          :icon="mdiDotsVertical"
         />
       </template>
     </UtilNestedMenu>
   </div>
+  <Teleport to="body">
+    <LayoutLoadingWrapper v-if="isPerformingActions" :text="messages.isPerformingActions" />
+  </Teleport>
 </template>
 
 <script setup lang="ts">
 import { mergeProps } from 'vue';
-import { mdiDotsVertical, mdiTrashCanOutline } from '@mdi/js';
+import { mdiCreation, mdiDotsVertical, mdiTrashCanOutline } from '@mdi/js';
 
-import { IVeoEntity } from '~/types/VeoTypes';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
-import { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
 import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
 import ObjectLinkDialog from '~/components/object/LinkDialog.vue';
 import ObjectDeleteDialog from '~/components/object/DeleteDialog.vue';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
+
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
+
+import type { IVeoEntity } from '~/types/VeoTypes';
+import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -62,7 +68,6 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const route = useRoute();
 const { link } = useLinkObject();
-const { displayErrorMessage } = useVeoAlerts();
 
 // Callbacks
 const navigateToObjectOverview = () => {
@@ -91,6 +96,14 @@ const onCreateObjectSuccess = (newObjectId: string) => {
 // const subType = computed(() => props.object?.domains[route.params.domain as string]?.subType);
 const subType = computed(() => props.object?.subType);
 
+const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+const { locale } = useI18n();
+
+type TVeoAction = {
+  id: string;
+  name: { de: string; en: string };
+};
+
 const items = computed<(INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] })[]>(() => [
   {
     key: 'delete',
@@ -104,6 +117,17 @@ const items = computed<(INestedMenuEntries & { objectTypes?: string[]; subTypes?
       onError: (error: any) => displayErrorMessage(t('delteObjectFailed'), JSON.stringify(error))
     }
   },
+  ...(actions.value ?
+    actions.value?.map((action: TVeoAction) => ({
+      icon: mdiCreation,
+      key: action.id,
+      title: action.name?.[locale?.value as keyof { en: string; de: string }] ?? t('noActionNameAvailable'),
+      callback: () => {
+        generateMessages(action.name);
+        performVeoAction({ ...actionsRequestParams, actionId: action.id });
+      }
+    }))
+  : []),
   {
     key: 'dpia',
     title: t('dpia').toString(),
@@ -145,6 +169,54 @@ const visibleItems = computed(() =>
       (!a.subTypes || a.subTypes.includes(subType.value))
   )
 );
+
+// Veo actions
+const actionsRequestParams = {
+  domainId: route.params.domain,
+  elementType: VeoElementTypePlurals[props.object?.type as keyof typeof VeoElementTypePlurals],
+  elementId: props.object?.id!
+};
+
+/**
+ * @todo: Currently (2024-05-27) there is one action implemented: `threat overview draw up`.
+ * However, this action is still experimental. Therefore, actions are not used in production.
+ * Once `threat overview draw up` works as intended, do the following:
+ * 1. comment in `useActions`.
+ * 2. remove `const actions = ref(null)`
+ * 2. remove `const isLoadingActions = false`
+ */
+//const { data: actions, isLoading: isLoadingActions } = useActions(actionsRequestParams);
+const actions = ref(null);
+const isLoadingActions = false;
+
+const { performVeoAction, isLoading: isPerformingActions, error: performActionsError } = usePerformActions();
+
+// Show messages to inform users
+type Messages = { isPerformingActions: string; performActionsErrorBody: string; performActionsSuccess: string };
+type ActionNameTranslations = { en: string; de: string };
+
+const messages = ref<Messages>();
+
+function generateMessages(actionNameTranslations: ActionNameTranslations) {
+  const actionName = actionNameTranslations[locale.value as keyof ActionNameTranslations];
+  messages.value = {
+    isPerformingActions: t('isPerformingActions', { actionName }),
+    performActionsErrorBody: t('performActionsErrorBody', { actionName }),
+    performActionsSuccess: t('performActionsSuccess', { actionName })
+  };
+}
+
+watch(
+  () => isPerformingActions.value,
+  () => {
+    if (isPerformingActions.value) return;
+    if (performActionsError.value) {
+      displayErrorMessage(t('performActionsErrorTitle'), messages.value?.performActionsErrorBody ?? '');
+      return;
+    }
+    displaySuccessMessage(messages.value?.performActionsSuccess ?? '');
+  }
+);
 </script>
 
 <i18n>
@@ -154,14 +226,22 @@ const visibleItems = computed(() =>
     "deleteObject": "delete object",
     "deleteObjectFailed": "Deleting the object failed",
     "dpia": "DPIA",
-    "linkDPIA": "link DPIA"
+    "linkDPIA": "link DPIA",
+    "performActionsErrorTitle": "Error",
+    "performActionsErrorBody": "\"{actionName}\" was not successful.",
+    "performActionsSuccess": "\"{actionName}\" was successful.",
+    "isPerformingActions": "{actionName}..."
   },
   "de": {
     "createDPIA": "DSFA erstellen",
     "deleteObject": "Objekt löschen",
     "deleteObjectFailed": "Das Objekt konnte nicht gelöscht werden",
     "dpia": "DSFA",
-    "linkDPIA": "DSFA auswählen"
+    "linkDPIA": "DSFA auswählen",
+    "performActionsErrorTitle": "Fehler",
+    "performActionsErrorBody": "\"{actionName}\" war nicht erfolgreich.",
+    "performActionsSuccess": "\"{actionName}\" war erfolgreich.",
+    "isPerformingActions": "{actionName}..."
   }
 }
 </i18n>
