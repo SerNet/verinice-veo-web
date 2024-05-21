@@ -185,7 +185,7 @@ export default defineComponent({
     };
 
     const removeMitigationPart = (item: any) => {
-      selectedItems.value = selectedItems.value.filter((mitigation) => mitigation.id !== item.raw.id);
+      selectedItems.value = selectedItems.value.filter((mitigation) => mitigation.id !== item.id);
     };
 
     watch(
