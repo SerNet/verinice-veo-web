@@ -61,6 +61,18 @@
   "global.menu.collapse": "Menü verstecken",
   "global.menu.expand": "Menü fixieren",
 
+  "userMessages": {
+    "info": {
+      "title": "Hinweis"
+    },
+    "warning": {
+      "title": "Warnung"
+    },
+    "error": {
+      "title": "Fehler"
+    }
+  },
+
   "objectlist": {
     "abbreviation": "Abkürzung",
     "createdAt": "Erstellzeitpunkt",

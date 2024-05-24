@@ -428,7 +428,10 @@ export default defineComponent({
         });
         displaySuccessMessage(t('saveSchemaSuccess').toString());
       } catch (e: any) {
-        displayErrorMessage(t('error.title').toString(), `${t('saveSchemaError').toString()}: ${e.message}`);
+        displayErrorMessage(
+          globalT('userMessages.error.title').toString(),
+          `${t('saveSchemaError').toString()}: ${e.message}`
+        );
       }
     };
 

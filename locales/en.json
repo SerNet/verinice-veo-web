@@ -40,8 +40,6 @@
   "editor.schema.warnings": "Warnings",
   "editor.schema.properties": "Schema properties",
 
-  "error.title": "An error occurred",
-
   "global.button.back": "Go back",
   "global.button.cancel": "Cancel",
   "global.button.close": "Close",
@@ -60,6 +58,18 @@
   "global.logout": "Logout",
   "global.menu.collapse": "Collapse menu",
   "global.menu.expand": "Fix menu",
+
+  "userMessages": {
+    "info": {
+      "title": "Hint"
+    },
+    "warning": {
+      "title": "Warning"
+    },
+    "error": {
+      "title": "Error"
+    }
+  },
 
   "objectlist": {
     "abbreviation": "Abbreviation",
