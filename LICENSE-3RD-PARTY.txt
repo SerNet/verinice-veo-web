@@ -14256,7 +14256,7 @@ The MIT license applies to all non-font and non-icon files.
 
 The following npm package may be included in this product:
 
- - glob@10.3.16
+ - glob@10.4.1
 
 This package contains the following license and notice below:
 
@@ -14451,7 +14451,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 The following npm packages may be included in this product:
 
  - minipass@5.0.0
- - minipass@7.0.4
+ - minipass@7.1.2
 
 These packages each contain the following license and notice below:
 
