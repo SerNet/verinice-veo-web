@@ -22,6 +22,7 @@ import { IVeoGlobalAlert, IVeoGlobalAlertParams, VeoAlertType } from '~/types/Ve
 const alerts: Ref<IVeoGlobalAlert[]> = ref([]);
 
 export function useVeoAlerts() {
+  const { t } = useI18n();
   /**
    * Internal function that handles adding the message to the alerts array ready for displaying
    *
@@ -43,6 +44,12 @@ export function useVeoAlerts() {
     return alertKey;
   }
 
+  type ErrorMessageParams = {
+    text: string;
+    title?: string;
+    params?: IVeoGlobalAlertParams;
+  };
+
   /**
    * Displays an error message consisting of a title, text and button.
    *
@@ -51,8 +58,22 @@ export function useVeoAlerts() {
    * @param params Text of the button. If set to undefined, "Okay" will be used
    * @returns Key of the alert. Can be used to call expireAlert programmatically
    */
-  function displayErrorMessage(title: string, text: string, params?: IVeoGlobalAlertParams): number {
-    return displayMessage(VeoAlertType.ERROR, title, text, params);
+  function displayErrorMessage(title: string, text?: string, params?: IVeoGlobalAlertParams): number;
+  function displayErrorMessage({ title, text, params }: ErrorMessageParams): number;
+  function displayErrorMessage(
+    titleOrParams: string | ErrorMessageParams,
+    text?: string,
+    params?: IVeoGlobalAlertParams
+  ): number {
+    if (typeof titleOrParams === 'string') return displayMessage(VeoAlertType.ERROR, titleOrParams, text, params);
+    if (!titleOrParams.title)
+      return displayMessage(
+        VeoAlertType.ERROR,
+        t('userMessages.error.title'),
+        titleOrParams.text,
+        titleOrParams.params
+      );
+    return displayMessage(VeoAlertType.ERROR, titleOrParams.title, titleOrParams.text, titleOrParams.params);
   }
 
   /**
