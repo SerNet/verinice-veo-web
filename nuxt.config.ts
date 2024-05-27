@@ -75,7 +75,8 @@ export default defineNuxtConfig({
       securityPolicyInvalidationDate:
         process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP ?
           new Date(parseInt(process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP))
-        : new Date(new Date().getFullYear() + 1, 0, 1)
+        : new Date(new Date().getFullYear() + 1, 0, 1),
+      documentationUrl: process.env.VEO_DOCUMENTATION_URL || 'veo-documentation-url-example'
     }
   },
 

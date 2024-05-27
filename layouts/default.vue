@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Markus Werner, Philipp Ballhausen, Davit Svandize, Jonas Heitmann, Annemarie Bufe
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -46,7 +46,7 @@
             class="mr-3"
             icon
             target="_blank"
-            to="/docs/index"
+            :href="context.$config.public.documentationUrl"
             exact
             v-bind="props"
             data-component-name="docs-nav-item"
@@ -98,6 +98,7 @@ const { ability } = useVeoPermissions();
 const { alerts } = useVeoAlerts();
 const { t } = useI18n();
 const theme = useTheme();
+const context = useNuxtApp();
 
 useHead(() => ({
   titleTemplate: '%s - verinice.veo'
