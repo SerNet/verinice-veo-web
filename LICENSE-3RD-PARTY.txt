@@ -7294,7 +7294,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 The following npm package may be included in this product:
 
- - keycloak-js@24.0.3
+ - keycloak-js@24.0.4
 
 This package contains the following license and notice below:
 
