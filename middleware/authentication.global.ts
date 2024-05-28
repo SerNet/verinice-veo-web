@@ -21,7 +21,7 @@ import { useVeoUser } from '~/composables/VeoUser';
 /**
  * These routes will not trigger authentication
  */
-export const publicRoutes = ['help', 'docs', 'login', 'security'];
+export const publicRoutes = ['help', 'login', 'security'];
 
 export const restrictedRoutes = new Map<string, [string, string]>([
   ['unit-domains-domain-editor', ['view', 'editors']],
@@ -42,11 +42,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   // /sso only gets accessed by keycloak and keycloak can't init itself if it starts another init
   if (to.path === '/sso') {
-    return;
-  }
-
-  // if the print path is called, immediately exit, as this route might has been called by the print script, which can't auth.
-  if (to.name === 'docs' && to.query.print !== undefined) {
     return;
   }
 

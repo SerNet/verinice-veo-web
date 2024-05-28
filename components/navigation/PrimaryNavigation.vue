@@ -135,7 +135,6 @@ import { CATALOG_TYPE_ICONS } from '~/components/catalog/Icon.vue';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchSchemasDetailed } from '~/composables/api/schemas';
-import { useDocNavigation } from '~/composables/docs';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
@@ -501,8 +500,7 @@ const docsNavEntry = computed<INavItem>(() => ({
   name: $t('breadcrumbs.docs').toString(),
   to: '/docs/index',
   icon: mdiFileDocumentOutline,
-  componentName: 'docs-nav-item',
-  children: docNavItems.value
+  componentName: 'docs-nav-item'
 }));
 
 const docItemTransformationFn = (file: NavItem): INavItem => ({
@@ -511,8 +509,6 @@ const docItemTransformationFn = (file: NavItem): INavItem => ({
   to: `/docs${(file._path.startsWith('/index') ? file._path : file._path.replace('index', '')).replace(/\.\w{2}/, '')}`,
   children: file.children?.length ? file.children.map((file) => docItemTransformationFn(file)) : undefined
 });
-const docs = useDocNavigation({});
-const docNavItems = computed(() => (docs.value || []).map((file) => docItemTransformationFn(file)));
 
 const items = computed<INavItem[]>(() => [
   ...(props.unitId && props.domainId ?

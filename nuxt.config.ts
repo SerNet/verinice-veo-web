@@ -117,9 +117,6 @@ export default defineNuxtConfig({
         base: resolve(__dirname, 'docs')
       }
     },
-    markdown: {
-      rehypePlugins: ['rehype-inline']
-    },
     experimental: {
       clientDB: true
     },

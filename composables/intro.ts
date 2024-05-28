@@ -393,7 +393,6 @@ export function useTutorials() {
   );
 
   type Tutorial = typeof tutorials.value extends Array<infer U> ? U : never;
-
   const tutorialsForRoute = computed(() => tutorials.value?.filter((tutorial) => tutorial.applicable));
 
   const hasTutorials = computed(() => !!tutorialsForRoute.value?.length);

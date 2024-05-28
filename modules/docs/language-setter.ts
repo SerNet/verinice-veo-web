@@ -25,7 +25,7 @@ import { LOCALES } from '~/types/locales';
  */
 export default {
   name: 'language-setter',
-  extensions: ['.md', '.yaml'],
+  extensions: ['.yaml'],
   transform: (content: ParsedContent, _options = {}) => {
     const idParts = content._id.split('.');
     // Pop extension

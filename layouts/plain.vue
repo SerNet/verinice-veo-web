@@ -28,12 +28,11 @@
 
       <LayoutLanguageSwitch />
 
-      <LayoutTutorialButton v-if="!$route.path.startsWith('/docs')" />
+      <LayoutTutorialButton />
 
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
-            v-if="!$route.path.startsWith('/docs')"
             class="mr-3"
             icon
             target="_blank"

@@ -21,7 +21,7 @@
       <v-app-bar-nav-icon v-if="xs" @click="drawer = !drawer" />
       <nuxt-link
         to="/units"
-        :target="route.path.startsWith('/docs') ? '_blank' : undefined"
+        :target="undefined"
         class="text-decoration-none ml-4"
         data-component-name="logo"
         data-veo-test="unit-page-link"
@@ -32,17 +32,14 @@
       <LayoutBreadcrumbs write-to-title />
       <v-spacer />
 
-      <DocsDownloadButton v-if="$route.path.startsWith('/docs')" />
-
       <LayoutThemeSwitch />
       <LayoutLanguageSwitch />
 
-      <LayoutTutorialButton v-if="!$route.path.startsWith('/docs')" />
+      <LayoutTutorialButton />
 
       <v-tooltip v-if="ability.can('view', 'documentation')" location="bottom">
         <template #activator="{ props }">
           <v-btn
-            v-if="!$route.path.startsWith('/docs')"
             class="mr-3"
             icon
             target="_blank"

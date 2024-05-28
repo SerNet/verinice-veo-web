@@ -21,7 +21,7 @@ import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 export default defineNuxtPlugin(async (nuxtApp) => {
   const route = useRoute();
   // We don't want any of this to take effect during the login process or if the print script might be running
-  if (route.path === '/sso' || (route.name === 'docs' && route.query.print !== undefined)) {
+  if (route.path === '/sso') {
     return;
   }
 

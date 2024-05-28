@@ -54,7 +54,6 @@
     "lodash": "^4.17.21",
     "nuxt-font-loader": "^2.2.2",
     "prismjs": "^1.29.0",
-    "rehype-inline": "^2.0.0",
     "serve": "^14.2.0",
     "uuid": "^9.0.0",
     "vite-plugin-vuetify": "^2.0.1",
