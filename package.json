@@ -3,7 +3,7 @@
   "version": "1.13.0",
   "engines": {
     "npm": "10.6.x",
-    "node": "20.12.x"
+    "node": "20.14.x"
   },
   "description": "veo-web",
   "author": "NBRX AG <info@nbrx.de>",
