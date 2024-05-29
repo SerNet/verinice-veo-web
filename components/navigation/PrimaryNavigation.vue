@@ -485,31 +485,6 @@ const editorsNavEntry = computed<INavItem>(() => ({
   classes: 'mb-4'
 }));
 
-const backToVeoNavEntry = computed<INavItem>(() => ({
-  id: 'veo',
-  name: t('backToVeo').toString(),
-  to: '/',
-  icon: mdiHomeOutline,
-  componentName: 'veo-nav-item',
-  exact: true,
-  openInNewtab: route.path.startsWith('/docs')
-}));
-
-const docsNavEntry = computed<INavItem>(() => ({
-  id: 'docs',
-  name: $t('breadcrumbs.docs').toString(),
-  to: '/docs/index',
-  icon: mdiFileDocumentOutline,
-  componentName: 'docs-nav-item'
-}));
-
-const docItemTransformationFn = (file: NavItem): INavItem => ({
-  id: file._path,
-  name: file.title,
-  to: `/docs${(file._path.startsWith('/index') ? file._path : file._path.replace('index', '')).replace(/\.\w{2}/, '')}`,
-  children: file.children?.length ? file.children.map((file) => docItemTransformationFn(file)) : undefined
-});
-
 const items = computed<INavItem[]>(() => [
   ...(props.unitId && props.domainId ?
     [
@@ -520,8 +495,7 @@ const items = computed<INavItem[]>(() => [
       reportsNavEntry.value,
       risksNavEntry.value
     ]
-  : []),
-  ...(route.path.startsWith('/docs') ? [backToVeoNavEntry.value, docsNavEntry.value] : [])
+  : [])
 ]);
 
 // Provide the ref to the v-list so children can do stuff with it

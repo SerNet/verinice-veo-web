@@ -21,7 +21,6 @@
       <v-app-bar-nav-icon v-if="xs" @click="drawer = !drawer" />
       <nuxt-link
         to="/units"
-        :target="undefined"
         class="text-decoration-none ml-4"
         data-component-name="logo"
         data-veo-test="unit-page-link"

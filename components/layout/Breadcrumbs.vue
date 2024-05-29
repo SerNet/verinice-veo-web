@@ -245,12 +245,6 @@ const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbRepl
     }
   ],
   [
-    'docs',
-    {
-      to: '/docs/index'
-    }
-  ],
-  [
     ':slug(.*)*', // Doc page gets added manually to breadcrumbs
     {
       hidden: true

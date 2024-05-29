@@ -97,7 +97,7 @@
                         class="text-decoration-none text-primary"
                         rel="noopener noreferrer"
                         target="_blank"
-                        to="/docs/index"
+                        :to="context.$config.public.documentationUrl"
                       >
                         <strong>{{ t('injector.documentation') }}</strong>
                       </nuxt-link>
@@ -184,6 +184,7 @@ import { useMutation } from '../composables/api/utils/mutation';
 
 import { LOCAL_STORAGE_KEYS } from '../types/localStorage';
 
+const context = useNuxtApp();
 const { mutateAsync: apply, isLoading } = useMutation(domainQueryDefinitions.mutations.applyProfile);
 const { displayErrorMessage } = useVeoAlerts();
 
