@@ -96,6 +96,8 @@
     "catalogs": "Katalog",
     "compliance": "Compliance",
     "docs": "Dokumentation",
+    "create": "Unit anlegen",
+    "details": "Details",
     "domain": "Domain",
     "editor": "Editoren",
     "formschema": "Formschema Editor",
@@ -109,8 +111,7 @@
     "risks": "Risikodefinitionen",
     "security": "Sicherheitsrichtlinie",
     "user-data": "Datenübertragung",
-    "welcome": "Willkommen",
-    "create": "Unit anlegen"
+    "welcome": "Willkommen"
   },
 
   "compliance": {

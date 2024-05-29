@@ -93,6 +93,8 @@
     "catalog": "Catalog",
     "catalogs": "Catalog",
     "compliance": "Compliance",
+    "create": "Create Unit",
+    "details": "Details",
     "docs": "Documentation",
     "domain": "Domains",
     "editor": "Editors",
@@ -107,8 +109,7 @@
     "risks": "Risk definitions",
     "security": "Security policy",
     "user-data": "Data portability",
-    "welcome": "Welcome",
-    "create": "Create Unit"
+    "welcome": "Welcome"
   },
 
   "compliance": {
