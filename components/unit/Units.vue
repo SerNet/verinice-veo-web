@@ -130,7 +130,7 @@ defineExpose({
 
 const UnitActions: TInlineComponent = {
   props: ['detailsUrl'],
-  data: () => ({ mdiPencilOutline, mdiDeleteOutline }),
+  data: () => ({ mdiPencilOutline, mdiDeleteOutline, t }),
   emits: ['deleteUnit'],
   methods: {
     emitDeleteUnit() {
@@ -138,20 +138,30 @@ const UnitActions: TInlineComponent = {
     }
   },
   template: `
-    <v-btn
-      :to="detailsUrl"
-      :icon="mdiPencilOutline"
-      variant="text"
-      data-veo-test="units-edit-unit-button"
-    >
-    </v-btn>
-    <v-btn
-      @click="emitDeleteUnit"
-      :icon="mdiDeleteOutline"
-      variant="text"
-      data-veo-test="units-delete-unit-button"
-    >
-    </v-btn>
+    <v-tooltip :text="t('editUnit')">
+      <template #activator="{ props }">
+        <v-btn
+          v-bind="props"
+          :to="detailsUrl"
+          :icon="mdiPencilOutline"
+          variant="text"
+          data-veo-test="units-edit-unit-button"
+        >
+        </v-btn>
+      </template>
+    </v-tooltip>
+    <v-tooltip :text="t('deleteUnit')">
+      <template #activator="{ props }">
+        <v-btn
+          v-bind="props"
+          @click="emitDeleteUnit"
+          :icon="mdiDeleteOutline"
+          variant="text"
+          data-veo-test="units-delete-unit-button"
+        >
+        </v-btn>
+      </template>
+    </v-tooltip>
   `
 };
 
@@ -170,33 +180,43 @@ const DomainActions: TInlineComponent = {
       {{ domain.name }}
     </v-btn>
 
-    <v-btn
-      data-veo-test="units-add-domains-button"
-      :to="domainsUrl"
-      :prepend-icon="mdiPlus"
-      variant="text"
-      size="x-small"
-    >
-    {{ t('editDomains') }}
+    <v-tooltip :text="t('editDomains')">
+    <template #activator="{ props }">
+      <v-btn
+        v-bind="props"
+        data-veo-test="units-add-domains-button"
+        :to="domainsUrl"
+        :prepend-icon="mdiPlus"
+        variant="text"
+        size="x-small"
+      >
+      {{ t('editDomains') }}
     </v-btn>
+    </template>
+    </v-tooltip>
   `
 };
 
 const BookmarkFavorite: TInlineComponent = {
   props: ['isFavorite'],
   emits: ['bookmarkFavorite'],
-  data: () => ({ mdiBookmark, mdiBookmarkOutline }),
+  data: () => ({ mdiBookmark, mdiBookmarkOutline, t }),
   methods: {
     emitBookmark() {
       (this as any).$emit('bookmarkFavorite');
     }
   },
   template: `
-    <v-btn
-      :icon="this.isFavorite ? mdiBookmark : mdiBookmarkOutline"
-      variant="text"
-      @click="emitBookmark"
-    />
+    <v-tooltip :text="t('bookmarkTooltip')">
+      <template #activator={props}>
+        <v-btn
+          v-bind="props"
+          :icon="this.isFavorite ? mdiBookmark : mdiBookmarkOutline"
+          variant="text"
+          @click="emitBookmark"
+        />
+      </template>
+    </v-tooltip>
   `
 };
 
@@ -205,16 +225,21 @@ const ApplyProfiles: TInlineComponent = {
   data: () => ({ mdiShapeOutline, t }),
 
   template: `
-    <v-btn
-      :to="this.profilesUrl"
-      :prepend-icon="mdiShapeOutline"
-      data-veo-test="apply-profiles-link"
-      variant="outlined"
-      color="primary"
-      size="small"
-    >
-    {{ t('addProfiles') }}
-    </v-btn>
+    <v-tooltip :text="t('addProfiles')">
+      <template #activator={props}>
+        <v-btn
+          v-bind="props"
+          :to="this.profilesUrl"
+          :prepend-icon="mdiShapeOutline"
+          data-veo-test="apply-profiles-link"
+          variant="outlined"
+          color="primary"
+          size="small"
+        >
+        {{ t('addProfiles') }}
+        </v-btn>
+      </template>
+    </v-tooltip>
     `
 };
 </script>
