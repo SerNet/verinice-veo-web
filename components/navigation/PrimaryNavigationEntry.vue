@@ -39,7 +39,7 @@
         <span>{{ name }}</span>
       </v-tooltip>
     </template>
-    <v-list-item-title class="veo-primary-navigation-title">
+    <v-list-item-title class="veo-primary-navigation-title" data-veo-test="nav-entry-title">
       {{ name }}
     </v-list-item-title>
   </v-list-item>

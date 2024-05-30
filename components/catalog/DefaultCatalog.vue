@@ -42,6 +42,7 @@
           {{ globalT('global.button.cancel') }}
         </v-btn>
         <v-btn
+          data-veo-test="catalogs-btn-apply"
           flat
           color="primary"
           :disabled="selectedItems.length === 0 || isApplyingItems || ability.cannot('manage', 'catalogs')"

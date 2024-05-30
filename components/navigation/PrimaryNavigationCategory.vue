@@ -36,7 +36,11 @@
           <v-icon v-if="icon" :icon="icon" class="mr-3" />
         </template>
         <template #default="{ isActive }">
-          <v-list-item-title class="veo-primary-navigation-title" :class="{ 'font-weight-bold': isActive }">
+          <v-list-item-title
+            class="veo-primary-navigation-title"
+            :class="{ 'font-weight-bold': isActive }"
+            data-veo-test="nav-category-title"
+          >
             {{ name }}
           </v-list-item-title>
         </template>
