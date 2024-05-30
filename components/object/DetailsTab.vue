@@ -379,7 +379,7 @@ export default defineComponent({
               },
               render: (data: any) => {
                 const { inherentRisk, residualRisk } = getInherentAndResidualRisk(data.internalItem.raw, categoryId);
-                const riskTreatments = getRiskTreatments(data.item.raw, categoryId);
+                const riskTreatments = getRiskTreatments(data.item, categoryId);
                 const values = riskDefinition.value?.riskValues;
 
                 const translatedInherentRisk = values?.find((entry) => entry.ordinalValue === inherentRisk)
