@@ -93,6 +93,8 @@
     "catalog": "Catalog",
     "catalogs": "Catalog",
     "compliance": "Compliance",
+    "create": "Create Unit",
+    "details": "Details",
     "domain": "Domains",
     "editor": "Editors",
     "formschema": "Formschema editor",
