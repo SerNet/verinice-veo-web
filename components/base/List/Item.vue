@@ -56,7 +56,7 @@ const ItemDetails: TInlineComponent = {
   template: `
     <v-card-title v-text="item.name"></v-card-title>
     <v-card-subtitle v-if="item.metaData" v-text="item.metaData"></v-card-subtitle>
-    <v-card-text data-veo-test="item-card-text" v-text="item.description ?? t('noDescription')"></v-card-text>
+    <v-card-text data-veo-test="item-card-text" v-text="item.description || t('noDescription')"></v-card-text>
 `
 };
 </script>
