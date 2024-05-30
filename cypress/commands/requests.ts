@@ -28,6 +28,8 @@ export function veoRequest({
 }): any {
   const options = requestBody ? { method, json: requestBody } : { method };
 
+  if (Cypress.env('debug')) cy.log('veoRequest arguments:', JSON.stringify(arguments));
+
   // Make sure window.request is available
   if (waitForRequestMethod) {
     cy.visit('/security');
@@ -37,7 +39,7 @@ export function veoRequest({
 
   return cy.window().then((win) => {
     return win.request(url, options).then((response: any) => {
-      cy.log(JSON.stringify(response));
+      if (Cypress.env('debug')) cy.log(JSON.stringify(response));
       return response;
     });
   });
