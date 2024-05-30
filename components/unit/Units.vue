@@ -253,11 +253,17 @@ const ApplyProfiles: TInlineComponent = {
 <i18n>
 {
   "en": {
-    "addProfiles": "Add Profiles",
-    "editDomains": "Add Domains"
+    "addProfiles": "Apply Profiles",
+    "editDomains": "Edit Domains",
+    "editUnit": "Edit unit",
+    "deleteUnit": "Delete unit",
+    "bookmarkTooltip": "Favorite (open the dashboard of this unit at the next login)",
   },
   "de": {
-    "addProfiles": "Profile hinzufügen",
-    "editDomains": "Domänen hinzufügen"
+    "addProfiles": "Profile anwenden",
+    "editDomains": "Domänen bearbeiten",
+    "editUnit": "Unit bearbeiten",
+    "deleteUnit": "Unit löschen",
+    "bookmarkTooltip": "Favorit (Beim nächsten Login das Dashboard dieser Unit öffnen)",
   } }
 </i18n>

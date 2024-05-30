@@ -117,10 +117,10 @@ const ItemDetails: TInlineComponent = {
 <i18n>
 {
   "en": {
-    "noDescription": "No description available."
+    "noDescription": "No description available"
   },
   "de": {
-    "noDescription": "Keine Beschreibung verfügbar."
+    "noDescription": "Keine Beschreibung vorhanden"
   }
 }
 </i18n>
