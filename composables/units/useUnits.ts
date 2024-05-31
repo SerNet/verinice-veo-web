@@ -30,7 +30,10 @@ export type TVeoUnit = {
   name: string;
   description: string;
   updatedAt: string;
-  metaData: string;
+  metaData: {
+    createdAt: string;
+    createdBy: string;
+  };
   link: string | undefined;
   profilesUrl: string;
   domainsUrl: string;
@@ -106,7 +109,10 @@ export function mapUnitValues({ unit }: { unit: IVeoUnit }): TVeoUnit {
     domainsUrl: `/units/${unit.id}/domains`,
     detailsUrl: `/units/${unit.id}/details`,
     isFavorite: unit.id === favoriteUnitId ? true : false,
-    metaData: `by: ${unit.createdBy} | at: ${format(unit.createdAt, 'dd.MM.yyyy')}`,
+    metaData: {
+      createdBy: unit.createdBy,
+      createdAt: format(unit.createdAt, 'dd.MM.yyyy')
+    },
     domains: unit.domains.map((d) => ({
       id: d.id!,
       name: d.name ?? '',
