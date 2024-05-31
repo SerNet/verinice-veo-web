@@ -13,11 +13,13 @@
             class="veo-base-card__slot-center__main"
             data-veo-test="item-card-slot-center-link"
           >
-            <ItemDetails :item="item" />
+            <ItemDetails :item="item" v-if="!hasDetailsSlot" />
+            <slot :item="item" name="details"></slot>
           </NuxtLink>
 
           <div v-if="!item.link" class="veo-base-card__slot-center__main" data-veo-test="item-card-slot-center-link">
-            <ItemDetails :item="item" />
+            <ItemDetails :item="item" v-if="!hasDetailsSlot" />
+            <slot :item="item" name="details"></slot>
           </div>
 
           <div data-veo-test="item-card-slot-center-aside" class="veo-base-card__slot-center__aside">
@@ -47,6 +49,7 @@ interface Props {
 defineProps<Props>();
 
 const slots = useSlots();
+const hasDetailsSlot = computed(() => !!slots?.['details']);
 const hasBottomSlots = computed(() => !!(slots?.['bottom-right'] || slots?.['bottom-left']));
 const { t } = useI18n();
 
