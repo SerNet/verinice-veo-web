@@ -25,6 +25,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <template v-if="units && !isLoadingUnits" v-for="unit in units">
       <BaseListItem :item="unit">
+        <template #details="{ item: unit }">
+          <Details
+            :name="unit.name"
+            :description="unit.description"
+            :meta="compileMetaData({ metaData: unit.metaData, unitId: unit.id })"
+          />
+        </template>
         <template #center-aside="{ item: unit }">
           <UnitActions :details-url="unit?.detailsUrl" @delete-unit="() => deleteUnit(unit)" />
         </template>
@@ -119,6 +126,10 @@ function bookmarkFavoriteUnit(unit: TVeoUnit) {
   invalidateUnitCache();
 }
 
+function compileMetaData({ metaData, unitId }) {
+  return `${t('createdBy')}: ${metaData.createdBy} | ${t('createdAt')}: ${metaData.createdAt} | ID: ${unitId}`;
+}
+
 defineExpose({
   createUnit,
   activeUnits
@@ -127,6 +138,19 @@ defineExpose({
 /* ++++++++++++++++++++++++++++++++++++++++++++++++ */
 /* ++++++++++ COMPONENTS ++++++++++++++++++++++++++ */
 /* ++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+const Details: TInlineComponent = {
+  props: ['name', 'description', 'meta'],
+  data: () => ({ t }),
+  template: `
+    <v-card-title v-text="name"></v-card-title>
+    <v-card-subtitle v-text="this.meta"></v-card-subtitle>
+    <v-card-text
+      data-veo-test="item-card-text"
+      v-text="this.description || t('noDescription')">
+    </v-card-text>
+  `
+};
 
 const UnitActions: TInlineComponent = {
   props: ['detailsUrl'],
@@ -258,6 +282,9 @@ const ApplyProfiles: TInlineComponent = {
     "editUnit": "Edit unit",
     "deleteUnit": "Delete unit",
     "bookmarkTooltip": "Favorite (open the dashboard of this unit at the next login)",
+    "createdBy": "Created by",
+    "createdAt": "Created at",
+    "noDescription": "No description available",
   },
   "de": {
     "addProfiles": "Profile anwenden",
@@ -265,5 +292,8 @@ const ApplyProfiles: TInlineComponent = {
     "editUnit": "Unit bearbeiten",
     "deleteUnit": "Unit löschen",
     "bookmarkTooltip": "Favorit (Beim nächsten Login das Dashboard dieser Unit öffnen)",
+    "createdBy": "Erstellt von",
+    "createdAt": "Erstellt am",
+    "noDescription": "Keine Beschreibung vorhanden",
   } }
 </i18n>
