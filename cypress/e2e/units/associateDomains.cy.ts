@@ -37,7 +37,7 @@ describe('Add domains', () => {
 
     // Check if new domains show up in card
     cy.get('@testUnitCard').within((_card) => {
-      cy.get('[data-veo-test="item-card-slot-left"] button').as('domainButtons');
+      cy.get('[data-veo-test="item-card-slot-left"] .v-chip').as('domainButtons');
     });
     cy.get('@domainButtons').each((button) => {
       expect(domainNames).to.includes(button.text());

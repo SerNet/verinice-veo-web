@@ -131,7 +131,7 @@ describe('create units', () => {
 
     // Check domain
     cy.get('@testUnitCard').within((_card) => {
-      cy.get('[data-veo-test="item-card-slot-left"] button').as('domainButtons');
+      cy.get('[data-veo-test="item-card-slot-left"] .v-chip').as('domainButtons');
     });
     cy.get('@domainButtons').each((button) => {
       expect(testData.domains).to.includes(button.text());

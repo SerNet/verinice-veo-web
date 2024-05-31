@@ -117,6 +117,7 @@ const DomainChip: TInlineComponent = {
   data: () => ({ mdiPuzzle, domainColorsByName }),
   template: `
     <v-chip
+      label
       :prepend-icon="mdiPuzzle"
       variant="outlined"
       size="small"

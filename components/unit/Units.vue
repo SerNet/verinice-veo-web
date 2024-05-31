@@ -193,7 +193,8 @@ const DomainActions: TInlineComponent = {
   props: ['domains', 'domainsUrl'],
   data: () => ({ mdiPuzzle, mdiPlus, t }),
   template: `
-    <v-btn v-for="(domain, index) in this.domains"
+    <v-chip v-for="(domain, index) in this.domains"
+      label
       :key="index"
       :prepend-icon="mdiPuzzle"
       variant="outlined"
@@ -202,7 +203,7 @@ const DomainActions: TInlineComponent = {
       size="x-small"
     >
       {{ domain.name }}
-    </v-btn>
+    </v-chip>
 
     <v-tooltip :text="t('editDomains')">
     <template #activator="{ props }">
