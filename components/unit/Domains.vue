@@ -8,12 +8,13 @@
     </template>
 
     <template v-if="domains.length" v-for="domain in domains">
-      <BaseListItem :item="domain" :data-veo-test="`domain-${domain.name}`">
+      <BaseListItem :hasLabel="true" :item="domain" :data-veo-test="`domain-${domain.name}`">
         <template #center-aside="{ item: domain }">
           <v-icon :color="domain.color" :icon="mdiPuzzle" />
         </template>
         <template #prepend="{ item: domain }">
           <v-checkbox
+            :id="domain.id"
             :data-veo-test="`domain-card-checkbox-${domain?.abbreviation ? domain.abbreviation.toLowerCase() : ''}`"
             color="primary"
             :value="domain"

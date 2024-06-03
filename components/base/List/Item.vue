@@ -7,6 +7,7 @@
 
       <div class="veo-base-card__slot-center" data-veo-test="item-card-slot-center">
         <div>
+          <!-- Item details are a link -->
           <NuxtLink
             v-if="item.link"
             :to="item.link"
@@ -17,7 +18,24 @@
             <slot :item="item" name="details"></slot>
           </NuxtLink>
 
-          <div v-if="!item.link" class="veo-base-card__slot-center__main" data-veo-test="item-card-slot-center-link">
+          <!-- Item details are a label -->
+          <!-- If using labels: Make sure associated inputs have an id of `item.id` -->
+          <label
+            v-if="hasLabel"
+            :for="item.id"
+            class="veo-base-card__slot-center__main"
+            data-veo-test="item-card-slot-center-link"
+          >
+            <ItemDetails :item="item" v-if="!hasDetailsSlot" />
+            <slot :item="item" name="details"></slot>
+          </label>
+
+          <!-- Item details are text -->
+          <div
+            v-if="!item.link && !hasLabel"
+            class="veo-base-card__slot-center__main"
+            data-veo-test="item-card-slot-center-link"
+          >
             <ItemDetails :item="item" v-if="!hasDetailsSlot" />
             <slot :item="item" name="details"></slot>
           </div>
@@ -45,8 +63,11 @@ import type { TInlineComponent } from '~/types/utils';
 
 interface Props {
   item: any;
+  hasLabel?: boolean;
 }
-defineProps<Props>();
+withDefaults(defineProps<Props>(), {
+  hasLabel: false
+});
 
 const slots = useSlots();
 const hasDetailsSlot = computed(() => !!slots?.['details']);

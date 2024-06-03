@@ -45,7 +45,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </v-col>
 
       <template v-if="profiles.length" v-for="profile in profiles">
-        <BaseListItem :item="profile" :data-veo-test="`profile-${profile.name}`">
+        <BaseListItem :hasLabel="true" :item="profile" :data-veo-test="`profile-${profile.name}`">
           <template #center-aside="{ item: profile }">
             <LanguageChip :lang="profile.language" />
           </template>
@@ -133,6 +133,7 @@ const RadioButton: TInlineComponent = {
   emits: ['profileSelected'],
   template: `
     <v-radio
+      :id="profile?.id"
       :data-veo-test="dataVeoTest"
       :value="profile"
       :disabled="isDisabled"
