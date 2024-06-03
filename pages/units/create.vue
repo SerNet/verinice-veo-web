@@ -85,15 +85,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <!-- Overview -->
         <v-window-item :value="4">
-          <UnitDetails v-model="unitDetails" :isDisabled="true" />
+          <UnitDetails v-model="unitDetails" :is-disabled="true" />
           <UnitDomains v-model="selectedDomains" :domains="selectedDomains" :is-disabled="true" />
           <UnitProfiles
             v-if="selectedProfile"
             v-model="selectedProfile"
             :profiles="[selectedProfile]"
-            :isLoadingProfiles="isLoadingProfiles"
-            :isDisabled="true"
-            :hasNoneOption="false"
+            :is-loading-profiles="isLoadingProfiles"
+            :is-disabled="true"
+            :has-none-option="false"
           />
         </v-window-item>
       </v-window>
@@ -101,18 +101,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <template #footer>
       <div class="d-flex justify-space-between">
-        <v-btn size="large" class="my-6" v-if="step > 1" variant="outlined" @click="step--">{{
+        <v-btn v-if="step > 1" size="large" class="my-6" variant="outlined" @click="step--">{{
           globalT('global.button.back')
         }}</v-btn>
-        <v-btn to="/units" size="large" class="my-6" v-if="step === 1" variant="outlined">{{
+        <v-btn v-if="step === 1" to="/units" size="large" class="my-6" variant="outlined">{{
           t('goToUnitAdmin')
         }}</v-btn>
         <v-spacer></v-spacer>
         <v-btn
+          v-if="step < 4"
           data-veo-test="create-unit-next-btn"
           size="large"
           class="my-6"
-          v-if="step < 4"
           color="primary"
           variant="outlined"
           :disabled="!canClickNext"
@@ -120,10 +120,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           >{{ globalT('global.button.next') }}</v-btn
         >
         <v-btn
+          v-if="step === 4"
           data-veo-test="create-unit-create-btn"
           size="large"
           class="my-6"
-          v-if="step === 4"
           color="primary"
           :prepend-icon="mdiPlus"
           @click="createUnit"
@@ -247,13 +247,6 @@ const messages = computed(() => ({
   error: { text: t('applyProfileError') }
 }));
 </script>
-<style scoped lang="scss">
-#unit-create-wizard {
-  :deep(.v-window-item) {
-    margin: 16px;
-  }
-}
-</style>
 <i18n>
 {
   "en": {
@@ -292,3 +285,10 @@ const messages = computed(() => ({
   }
 }
 </i18n>
+<style scoped lang="scss">
+#unit-create-wizard {
+  :deep(.v-window-item) {
+    margin: 16px;
+  }
+}
+</style>

@@ -21,7 +21,7 @@
     "format:install-hook": "chmod u+x scripts/format-install-pre-commit-hook.sh && ./scripts/format-install-pre-commit-hook.sh",
     "generate": "nuxi generate",
     "generate-3rd-party-license-file": "generate-license-file --config ./.generatelicensefile.json",
-    "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore public/ .",
+    "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore --ignore-pattern 'public/paged.polyfill.js' .",
     "precommit": "npm run lint",
     "print": "docker run --add-host=host.docker.internal:host-gateway -v $(pwd)/print.js:/usr/src/app/print.mjs -v $(pwd)/dist:/usr/src/app/dist ghcr.io/drpayyne/chrome-puppeteer:latest node print.mjs http://host.docker.internal:3000/docs?print",
     "start": "nuxi start"

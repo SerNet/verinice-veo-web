@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </v-col>
     </template>
 
-    <template v-if="units && !isLoadingUnits" v-for="unit in units">
+    <template v-for="unit in units" v-if="units && !isLoadingUnits">
       <BaseListItem :item="unit">
         <template #details="{ item: unit }">
           <Details
@@ -39,10 +39,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           <DomainActions :domains="unit.domains" :domains-url="unit.domainsUrl" />
         </template>
         <template #prepend="{ item: unit }">
-          <BookmarkFavorite :isFavorite="unit?.isFavorite" @bookmark-favorite="() => bookmarkFavoriteUnit(unit)" />
+          <BookmarkFavorite :is-favorite="unit?.isFavorite" @bookmark-favorite="() => bookmarkFavoriteUnit(unit)" />
         </template>
         <template #bottom-right="{ item: unit }">
-          <ApplyProfiles :profilesUrl="unit?.profilesUrl" />
+          <ApplyProfiles :profiles-url="unit?.profilesUrl" />
         </template>
       </BaseListItem>
     </template>
@@ -269,12 +269,6 @@ const ApplyProfiles: TInlineComponent = {
 };
 </script>
 
-<style scoped lang="scss">
-:deep(.domain-btn) {
-  cursor: default;
-}
-</style>
-
 <i18n>
 {
   "en": {
@@ -298,3 +292,9 @@ const ApplyProfiles: TInlineComponent = {
     "noDescription": "Keine Beschreibung vorhanden",
   } }
 </i18n>
+
+<style scoped lang="scss">
+:deep(.domain-btn) {
+  cursor: default;
+}
+</style>

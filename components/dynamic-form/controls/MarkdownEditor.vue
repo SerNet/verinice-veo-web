@@ -26,7 +26,7 @@
       {{ options.label }}
     </div>
     <div v-if="!options.disabled" ref="editor" />
-    <div class="no-editor-html-output" v-else v-html="modelValue" />
+    <div v-else class="no-editor-html-output" v-html="modelValue" />
   </div>
 </template>
 

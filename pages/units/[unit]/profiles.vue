@@ -21,8 +21,8 @@
       <UnitProfiles
         v-model="selectedProfile"
         :profiles="profiles ?? []"
-        :isAssociatingDomain="isAssociatingDomain"
-        :isApplyingProfile="isApplyingProfile"
+        :is-associating-domain="isAssociatingDomain"
+        :is-applying-profile="isApplyingProfile"
       />
     </BaseContainer>
 
@@ -59,7 +59,7 @@
         </BaseCard>
       </template>
       <template #dialog-options>
-        <v-btn @click="isDialogOpen = false" flat variant="plain">
+        <v-btn flat variant="plain" @click="isDialogOpen = false">
           {{ t('global.button.cancel') }}
         </v-btn>
         <v-spacer />

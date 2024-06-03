@@ -167,19 +167,6 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.veo-cookie-banner {
-  border-bottom-width: 0 !important;
-  border-left-width: 0 !important;
-  border-right-width: 0 !important;
-  bottom: 0;
-  left: 0;
-  position: fixed;
-  right: 0;
-  z-index: 6;
-}
-</style>
-
 <i18n>
 {
   "en": {
@@ -216,3 +203,16 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.veo-cookie-banner {
+  border-bottom-width: 0 !important;
+  border-left-width: 0 !important;
+  border-right-width: 0 !important;
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  z-index: 6;
+}
+</style>

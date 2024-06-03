@@ -39,26 +39,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       {{ t('hasNoProfilesBody') }}
     </BaseAlert>
 
-    <v-radio-group v-model="selectedProfile" v-if="profiles.length">
+    <v-radio-group v-if="profiles.length" v-model="selectedProfile">
       <v-col v-if="hasNoneOption">
         <RadioButton data-veo-test="profile-radio-btn-none" :profile="null" :label="t('noProfile')" />
       </v-col>
 
-      <template v-if="profiles.length" v-for="profile in profiles">
-        <BaseListItem :hasLabel="true" :item="profile" :data-veo-test="`profile-${profile.name}`">
+      <template v-for="profile in profiles" v-if="profiles.length">
+        <BaseListItem :item="profile" :data-veo-test="`profile-${profile.name}`">
           <template #center-aside="{ item: profile }">
             <LanguageChip :lang="profile.language" />
           </template>
 
           <template #bottom-left="{ item: profile }">
-            <DomainChip :domainName="profile.domainName" />
+            <DomainChip :domain-name="profile.domainName" />
           </template>
 
           <template #prepend="{ item: profile }">
             <RadioButton
               :data-veo-test="`profile-radio-btn-${profile.name}`"
               :profile="profile"
-              :isDisabled="isDisabled"
+              :is-disabled="isDisabled"
             />
           </template>
         </BaseListItem>

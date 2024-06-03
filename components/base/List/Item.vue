@@ -14,7 +14,7 @@
             class="veo-base-card__slot-center__main"
             data-veo-test="item-card-slot-center-link"
           >
-            <ItemDetails :item="item" v-if="!hasDetailsSlot" />
+            <ItemDetails v-if="!hasDetailsSlot" :item="item" />
             <slot :item="item" name="details"></slot>
           </NuxtLink>
 
@@ -26,7 +26,7 @@
             class="veo-base-card__slot-center__main"
             data-veo-test="item-card-slot-center-link"
           >
-            <ItemDetails :item="item" v-if="!hasDetailsSlot" />
+            <ItemDetails v-if="!hasDetailsSlot" :item="item" />
             <slot :item="item" name="details"></slot>
           </label>
 
@@ -36,7 +36,7 @@
             class="veo-base-card__slot-center__main"
             data-veo-test="item-card-slot-center-link"
           >
-            <ItemDetails :item="item" v-if="!hasDetailsSlot" />
+            <ItemDetails v-if="!hasDetailsSlot" :item="item" />
             <slot :item="item" name="details"></slot>
           </div>
 
@@ -45,7 +45,7 @@
           </div>
         </div>
 
-        <v-card-actions class="veo-card-actions" v-if="hasBottomSlots">
+        <v-card-actions v-if="hasBottomSlots" class="veo-card-actions">
           <div data-veo-test="item-card-slot-left" class="veo-card-actions__slot-left">
             <slot :item="item" name="bottom-left"></slot>
           </div>
@@ -84,6 +84,17 @@ const ItemDetails: TInlineComponent = {
 `
 };
 </script>
+
+<i18n>
+{
+  "en": {
+    "noDescription": "No description available."
+  },
+  "de": {
+    "noDescription": "Keine Beschreibung verfügbar."
+  }
+}
+</i18n>
 
 <style scoped lang="scss">
 .v-card {
@@ -138,14 +149,3 @@ const ItemDetails: TInlineComponent = {
   --veo-text: white;
 }
 </style>
-
-<i18n>
-{
-  "en": {
-    "noDescription": "No description available"
-  },
-  "de": {
-    "noDescription": "Keine Beschreibung vorhanden"
-  }
-}
-</i18n>

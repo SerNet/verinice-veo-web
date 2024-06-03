@@ -7,19 +7,18 @@
       </v-col>
     </template>
 
-    <template v-if="domains.length" v-for="domain in domains">
-      <BaseListItem :hasLabel="true" :item="domain" :data-veo-test="`domain-${domain.name}`">
+    <template v-for="domain in domains" v-if="domains.length">
+      <BaseListItem :item="domain" :data-veo-test="`domain-${domain.name}`">
         <template #center-aside="{ item: domain }">
           <v-icon :color="domain.color" :icon="mdiPuzzle" />
         </template>
         <template #prepend="{ item: domain }">
           <v-checkbox
-            :id="domain.id"
+            v-model="selected"
             :data-veo-test="`domain-card-checkbox-${domain?.abbreviation ? domain.abbreviation.toLowerCase() : ''}`"
             color="primary"
             :value="domain"
             :disabled="isDisabled || domain.id === mandatoryDomain?.id"
-            v-model="selected"
           ></v-checkbox>
         </template>
       </BaseListItem>

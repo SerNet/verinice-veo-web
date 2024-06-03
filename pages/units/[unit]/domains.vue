@@ -1,7 +1,7 @@
 <template>
   <BasePage class="pt-6" data-component-name="unit-selection-page" sticky-footer>
     <BaseContainer>
-      <UnitDomains v-model="selectedDomains" :domains="domains" :isAssociatingDomains="isAssociatingDomains" />
+      <UnitDomains v-model="selectedDomains" :domains="domains" :is-associating-domains="isAssociatingDomains" />
     </BaseContainer>
 
     <template #footer>
@@ -60,7 +60,6 @@ const messages = computed(() => ({
   error: { text: t('associateDomainsErrorText') }
 }));
 </script>
-<style scoped lang="scss"></style>
 <i18n>
 {
   "en": {
@@ -77,3 +76,4 @@ const messages = computed(() => ({
   }
 }
 </i18n>
+<style scoped lang="scss"></style>
