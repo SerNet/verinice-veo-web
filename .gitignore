@@ -1,14 +1,12 @@
-.idea
+node_modules
 .env
 
 # Nuxt
-node_modules
 *.log*
-.nuxt
-.nitro
 .cache
+.nitro
+.nuxt
 .output
-.env
 dist
 
 .DS_Store
@@ -23,8 +21,8 @@ cypress/config
 cypress/downloads
 cypress/screenshots
 cypress/videos
-cypress/config
 
 # VS Code
 *.code-workspace
 .vscode/*
+.idea

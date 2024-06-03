@@ -8,7 +8,8 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:nuxt/recommended",
     "plugin:vue/vue3-recommended",
-    "@nuxt/eslint-config"
+    "@nuxt/eslint-config",
+    "prettier"
   ],
   "plugins": ["@typescript-eslint"],
   "parserOptions": {
@@ -42,13 +43,6 @@
       "error",
       {
         "ts-ignore": "allow-with-description"
-      }
-    ],
-    "@typescript-eslint/indent": [
-      "error",
-      2,
-      {
-        "SwitchCase": 1
       }
     ],
     "vue/valid-v-slot": [
