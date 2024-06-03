@@ -1,7 +1,7 @@
 <template>
   <LayoutLoadingWrapper v-if="isAssociatingDomains" :text="t('isAssociatingDomains')" />
   <v-row align="center" justify="center">
-    <template v-if="!domains.length" class="mb-4">
+    <template v-if="!domains.length">
       <v-col cols="12">
         <VSkeletonLoader v-for="i in 5" :key="i" type="image" elevation="2" class="my-6" height="160px" />
       </v-col>
