@@ -82,7 +82,8 @@ const ItemDetails: TInlineComponent = {
     padding-left: 8px;
     white-space: break-spaces;
   }
-  a:hover div:first-child {
+
+  :deep(a:hover .v-card-title) {
     text-decoration: underline;
   }
 }
