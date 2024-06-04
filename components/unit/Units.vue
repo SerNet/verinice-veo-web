@@ -119,7 +119,7 @@ function bookmarkFavoriteUnit(unit: TVeoUnit) {
   invalidateUnitCache();
 }
 
-function compileMetaData({ metaData, unitId }) {
+function _compileMetaData({ metaData, unitId }) {
   return `${t('createdBy')}: ${metaData.createdBy} | ${t('createdAt')}: ${metaData.createdAt} | ID: ${unitId}`;
 }
 
@@ -132,7 +132,7 @@ defineExpose({
 /* ++++++++++ COMPONENTS ++++++++++++++++++++++++++ */
 /* ++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-const Details: TInlineComponent = {
+const _Details: TInlineComponent = {
   props: ['name', 'description', 'meta'],
   data: () => ({ t }),
   template: `
