@@ -23,15 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </v-col>
     </template>
 
-    <template v-for="unit in units" v-if="units && !isLoadingUnits">
-      <BaseListItem :item="unit">
-        <template #details="{ item: unit }">
-          <Details
-            :name="unit.name"
-            :description="unit.description"
-            :meta="compileMetaData({ metaData: unit.metaData, unitId: unit.id })"
-          />
-        </template>
+    <template v-for="unit in units">
+      <BaseListItem v-if="units && !isLoadingUnits" :item="unit">
         <template #center-aside="{ item: unit }">
           <UnitActions :details-url="unit?.detailsUrl" @delete-unit="() => deleteUnit(unit)" />
         </template>

@@ -44,7 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <RadioButton data-veo-test="profile-radio-btn-none" :profile="null" :label="t('noProfile')" />
       </v-col>
 
-      <template v-for="profile in profiles" v-if="profiles.length">
+      <template v-for="profile in profiles">
         <BaseListItem :item="profile" :data-veo-test="`profile-${profile.name}`">
           <template #center-aside="{ item: profile }">
             <LanguageChip :lang="profile.language" />
