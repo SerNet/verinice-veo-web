@@ -66,7 +66,7 @@
     "vue/define-emits-declaration": ["off", "type-based"],
     "vue/define-props-declaration": ["off", "type-based"],
     "vue/multi-word-component-names": "off",
-    "vue/no-v-text-v-html-on-component": "off",
+    "vue/no-v-text-v-html-on-component": "warn",
     "vue/valid-v-slot": [
       "error",
       {
