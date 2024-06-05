@@ -22,8 +22,7 @@ describe('Create elements', () => {
     it('creates elements in ' + elementType, () => {
       //Workaround for language bug
       cy.get('nav[data-component-name="primary-navigation"]').then((body) => {
-        if (body.find('div[data-component-name="objects-nav-item"]:contains("Objects")').length > 0) {
-        } else {
+        if (!body.find('div[data-component-name="objects-nav-item"]:contains("Objects")').length) {
           cy.languageTo('English');
         }
       });

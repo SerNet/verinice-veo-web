@@ -109,9 +109,6 @@ import {
   mdiChevronLeft,
   mdiChevronRight,
   mdiFileChartOutline,
-  mdiFileDocumentOutline,
-  mdiHomeOutline,
-  mdiShapeOutline,
   mdiTextBoxEditOutline,
   mdiUngroup,
   mdiViewDashboardOutline
@@ -119,7 +116,6 @@ import {
 import { sortBy, upperFirst, isEmpty } from 'lodash';
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { useDisplay } from 'vuetify';
-import { NavItem } from '@nuxt/content/dist/runtime/types';
 
 import { extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
@@ -171,7 +167,6 @@ const props = withDefaults(
 const { t, locale } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 const { authenticated } = useVeoUser();
-const route = useRoute();
 const { ability } = useVeoPermissions();
 const { xs } = useDisplay();
 

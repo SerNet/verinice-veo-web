@@ -15,19 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { writeFileSync, readFile } from 'fs';
-import { resolve } from 'path';
-import glob from 'glob';
-import hash from 'hash-sum';
-import { Nuxt } from '@nuxt/schema';
+
+// import { writeFileSync, readFile } from 'fs';
+// import { resolve } from 'path';
+// import glob from 'glob';
+// import hash from 'hash-sum';
+// import { Nuxt } from '@nuxt/schema';
+
+// CURRENTLY DOESN'T WORK AS THERE IS NO "AFTER EVERYTHING" HOOK. CURRENTLY externalize-scripts.js is used instead in the dockerfile
 
 /**
  * Hook running after the build process to externalize all scripts
  */
-export default (_inlineOptions: object, nuxt: Nuxt) => {
-  // CURRENTLY DOESN'T WORK AS THERE IS NO "AFTER EVERYTHING" HOOK. CURRENTLY externalize-scripts.js is used instead in the dockerfile
-  // nuxt.hooks.hook('build:done', () => {
-  //   const BUILD_OUTPUT_DIR = resolve(nuxt.options.rootDir, '.output', 'public');
+export default (_inlineOptions: object, _nuxt: Nuxt) => {
+  // _nuxt.hooks.hook('build:done', () => {
+  //   const BUILD_OUTPUT_DIR = resolve(_nuxt.options.rootDir, '.output', 'public');
   //   let configData: string;
   //   let configFileName: string;
   //   // Get a list of all compiled html files (those could contain <script>)

@@ -234,7 +234,7 @@
 </template>
 
 <script lang="ts">
-import { upperFirst, pickBy, cloneDeep } from 'lodash';
+import { upperFirst, pickBy } from 'lodash';
 import {
   mdiAlertCircleOutline,
   mdiContentSave,

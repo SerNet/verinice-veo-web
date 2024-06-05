@@ -140,7 +140,6 @@ export const ROUTE_NAME = 'unit-create';
 
 <script setup lang="ts">
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { mdiPlus } from '@mdi/js';
 import { VeoAlertType } from '~/types/VeoTypes';
 import { useApplyProfile, redirectToUnits } from '~/components/unit/unit-module';
@@ -153,7 +152,6 @@ import type { UnitDetails } from '~/components/unit/Details.vue';
 // Helper
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-const router = useRouter();
 const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 const { createLink } = useCreateLink();
 const { ability } = useVeoPermissions();
