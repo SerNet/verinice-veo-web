@@ -177,17 +177,7 @@ const actionsRequestParams = {
   elementId: props.object?.id!
 };
 
-/**
- * @todo: Currently (2024-05-27) there is one action implemented: `threat overview draw up`.
- * However, this action is still experimental. Therefore, actions are not used in production.
- * Once `threat overview draw up` works as intended, do the following:
- * 1. comment in `useActions`.
- * 2. remove `const actions = ref(null)`
- * 2. remove `const isLoadingActions = false`
- */
-//const { data: actions, isLoading: isLoadingActions } = useActions(actionsRequestParams);
-const actions = ref(null);
-const isLoadingActions = false;
+const { data: actions, isLoading: isLoadingActions } = useActions(actionsRequestParams);
 
 const { performVeoAction, isLoading: isPerformingActions, error: performActionsError } = usePerformActions();
 
