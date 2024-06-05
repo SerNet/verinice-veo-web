@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           {{ cardTitle }}
         </v-card-title>
         <v-card-text>
-          <template v-if="isLoadingCurrentUnit">
+          <template v-if="isLoadingCurrentUnit" class="mb-4">
             <v-col cols="12">
               <VSkeletonLoader
                 v-for="i in 2"
