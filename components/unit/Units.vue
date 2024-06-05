@@ -101,7 +101,7 @@ function createUnit() {
   isManageDialogOpen.value = true;
 }
 
-function _editUnit(unit: TVeoUnit) {
+function editUnit(unit: TVeoUnit) {
   unitToEditId.value = unit.id;
   isManageDialogOpen.value = true;
 }

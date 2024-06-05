@@ -55,7 +55,7 @@ import { upperFirst, toUpper } from 'lodash';
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
-import { useQuery } from '~/composables/api/utils/query';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 
 import type { IVeoReport } from '~/types/VeoTypes';
 import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
