@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IVeoObjectSchema } from '~/types/VeoTypes';
+import { VeoRiskAffectedDomains } from '~/types/VeoTypes';
+import type { IVeoObjectSchema } from '~/types/VeoTypes';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
 
 export interface IVeoEntityMetaInfo {
@@ -63,9 +64,9 @@ export default {
         const riskAffectedEntities = ['Scope', 'Asset', 'Process'];
 
         if (riskAffectedEntities.includes(result.title)) {
-          // determine the specific anylysis type, e.g. DSRA, GSRA, NISRA
+          // determine the specific anylysis type, e.g. DSRA, GSRA, NIS2RA
           const [analysisType] = Object.keys(result.properties?.riskValues?.properties);
-          if (analysisType === 'GSRA') {
+          if (VeoRiskAffectedDomains[analysisType as keyof typeof VeoRiskAffectedDomains]) {
             // shorten the key for convenience
             const analysisTypeProps = result.properties.riskValues.properties[analysisType].properties;
             // extract the impactTypes, e.g. potentialImpactEffectiveReasons, potentialImpactExplanations, ...

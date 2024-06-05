@@ -554,3 +554,8 @@ export enum VeoElementTypePlurals {
   scenario = 'scenarios',
   control = 'controls'
 }
+
+export enum VeoRiskAffectedDomains {
+  GSRA,
+  NIS2RA
+}

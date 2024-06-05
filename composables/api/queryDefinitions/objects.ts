@@ -26,7 +26,8 @@ import {
   IVeoEntityLegacy,
   IVeoPaginatedResponse,
   IVeoPaginationOptions,
-  IVeoRisk
+  IVeoRisk,
+  VeoRiskAffectedDomains
 } from '~/types/VeoTypes';
 
 const route = useRoute();
@@ -132,9 +133,14 @@ export const transFormObject = (object: any) => {
   const _object = cloneDeep(object);
 
   const riskAffectedEntities = ['scope', 'asset', 'process'];
+
   const analysisTypes = Object.keys(_object.riskValues || {});
 
-  if (riskAffectedEntities.includes(_object.type) && analysisTypes.length && analysisTypes[0] === 'GSRA') {
+  if (
+    riskAffectedEntities.includes(_object.type) &&
+    analysisTypes.length &&
+    VeoRiskAffectedDomains[analysisTypes[0] as keyof typeof VeoRiskAffectedDomains]
+  ) {
     const riskValues = {};
 
     Object.entries(_object.riskValues[analysisTypes[0]].potentialImpacts || {}).forEach(([protectionGoal, value]) => {
@@ -170,7 +176,11 @@ export const formatObject = (object: any) => {
   const riskAffectedEntities = ['scope', 'asset', 'process'];
   const [analysisType] = Object.keys(object.riskValues || {});
 
-  if (riskAffectedEntities.includes(object.type) && !!analysisType && analysisType === 'GSRA') {
+  if (
+    riskAffectedEntities.includes(object.type) &&
+    !!analysisType &&
+    VeoRiskAffectedDomains[analysisType as keyof typeof VeoRiskAffectedDomains]
+  ) {
     const keysToTransform = [
       'potentialImpacts',
       'potentialImpactsCalculated',
