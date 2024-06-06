@@ -22,7 +22,7 @@
         <v-icon size="small" :icon="styling.icon" color="white" />
       </v-avatar>
     </template>
-    <v-list-item-title class="caption" v-text="title" />
+    <v-list-item-title class="caption">{{ $props.title }}</v-list-item-title>
     <v-list-item-subtitle v-if="scope">
       {{ scope }}
     </v-list-item-subtitle>

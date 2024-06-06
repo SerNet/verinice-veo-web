@@ -20,7 +20,7 @@
     <v-list-item-title class="body-1 font-weight-bold d-flex align-center">
       {{ idWithTitle }}
     </v-list-item-title>
-    <v-list-item-subtitle v-text="t('attributecount', item.attributes.length || 0)" />
+    <v-list-item-subtitle>{{ t('attributecount', item.attributes.length || 0) }}</v-list-item-subtitle>
     <template #append>
       <v-chip v-if="styling.name" :color="styling.color" class="mr-2" small label variant="outlined">
         <span v-if="translate">

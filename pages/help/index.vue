@@ -23,7 +23,7 @@
           <v-card-title>{{ doc.title }}</v-card-title>
           <v-list>
             <v-list-item v-for="(item, j) in doc.items" :key="j" :to="item.to" :ripple="true">
-              <v-list-item-title v-text="item.title" />
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </BaseCard>
