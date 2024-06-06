@@ -20,7 +20,7 @@
     <template #default>
       <v-row v-for="(chart, index) of chartData" :key="index" class="align-center" dense>
         <v-col cols="12" sm="12" md="5" lg="7" xl="4" class="body-1 text-no-wrap">
-          <nuxt-link :to="objectOveriewLink(index, schemas || {})" class="text-decoration-none text-color">
+          <nuxt-link :to="objectOveriewLink(index)" class="text-decoration-none text-color">
             {{ chart.labels[0] }}
           </nuxt-link>
         </v-col>
@@ -66,7 +66,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { CHART_COLORS } from '~/lib/utils';
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
-import schemaQueryDefinitions, { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 import { IVeoDomainStatusCount } from '~/composables/api/queryDefinitions/domains';
@@ -229,7 +229,7 @@ const chartData = computed<IChartValue[]>(() =>
   }))
 );
 
-const objectOveriewLink = (subTypeIndex: number, schemas: IVeoSchemaEndpoints) =>
+const objectOveriewLink = (subTypeIndex: number) =>
   `/${route.params.unit}/domains/${route.params.domain}/${objectTypePlural.value}/${sortedSubTypes.value[subTypeIndex][0]}`;
 </script>
 

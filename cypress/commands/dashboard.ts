@@ -1,5 +1,3 @@
-import { IVeoDomain } from '../../composables/api/queryDefinitions/domains';
-
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
