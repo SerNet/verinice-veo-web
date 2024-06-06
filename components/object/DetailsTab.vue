@@ -744,6 +744,7 @@ export default defineComponent({
     };
     // push to object detail site (on click in table)
     const openItem = ({ internalItem }) => {
+      const item = internalItem.raw as IVeoRisk;
       // assemble route params
       const { id: itemId, type: itemType } = internalItem.raw as IVeoEntity;
       const objectType = OBJECT_TYPE_TO_URL_MAP[itemType] || route.params.objectType;
@@ -756,7 +757,6 @@ export default defineComponent({
 
       switch (props.type) {
         case 'risks':
-          const item = internalItem.raw as IVeoRisk;
           editRiskDialog.value.scenarioId = getEntityDetailsFromLink(item.scenario).id;
           editRiskDialog.value.visible = true;
           break;

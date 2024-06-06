@@ -48,7 +48,6 @@ export function useApplyProfile() {
   const { mutateAsync: applyProfileToUnit, isLoading } = useMutation(domainQueryDefinitions.mutations.applyProfile);
 
   async function applyProfile({ profileId, unitId, domainId }: ApplyProfileParams, messages: Messages) {
-    console.log({ messages });
     try {
       await applyProfileToUnit({ domainId, unitId, profileId });
       displaySuccessMessage(messages?.success);
