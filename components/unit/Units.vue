@@ -23,8 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </v-col>
     </template>
 
-    <template v-for="unit in units" v-if="units && !isLoadingUnits">
-      <BaseListItem :item="unit">
+    <template v-if="units && !isLoadingUnits">
+      <BaseListItem v-for="unit in units" :item="unit">
         <template #details="{ item: unit }">
           <Details
             :name="unit.name"
