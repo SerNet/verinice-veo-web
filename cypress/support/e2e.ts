@@ -1,5 +1,5 @@
 import { veoRequest } from '../commands/requests';
-import { getVeoDomains } from '../commands/domains';
+import { getVeoDomains, selectRandomDomain, getSelectedDomain, selectDomain } from '../commands/domains';
 import { login } from '../commands/login';
 import { acceptAllCookies } from '../commands/cookies';
 import {
@@ -34,7 +34,10 @@ Cypress.Commands.addAll({
   importUnit,
   languageTo,
   getVeoTestUnitCard,
-  testDashboardWidgets
+  testDashboardWidgets,
+  selectRandomDomain,
+  getSelectedDomain,
+  selectDomain
 });
 
 before(() => {
