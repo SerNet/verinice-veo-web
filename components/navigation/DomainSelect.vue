@@ -36,6 +36,7 @@
     :disabled="disabled"
     :items="itemSelection"
     :label="items.length ? t('domain') : t('select')"
+    data-veo-test="domain-select"
   >
     <template #item="{ props, item }">
       <v-list-item
