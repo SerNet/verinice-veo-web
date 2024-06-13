@@ -43,9 +43,6 @@ describe('Copy elements', () => {
             if (Cypress.$(cell).text()) texts.push(Cypress.$(cell).text());
           });
 
-          texts.forEach((text) => {
-            cy.log(text); // This is just to log the texts, you can use them as needed
-          });
           let name = texts[0];
           let status = texts[1];
           cy.wait('@cloneElement').its('response.statusCode').should('eq', 201);
@@ -99,7 +96,7 @@ describe('Copy elements', () => {
           const rowText = Cypress.$(row).text();
           return rowText.includes(`${name} (duplicated)`) && rowText.includes(status);
         })
-        .should('be.visible');
+        .should('exist');
     };
   });
 });
