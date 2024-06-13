@@ -26,7 +26,29 @@ export function goToUnitSelection(): void {
 }
 
 export function selectUnit({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {
-  cy.get('.v-card-title').contains(unitName).click();
+  cy.get('.v-card-title')
+    .contains(unitName)
+    .click()
+    .then(() => {
+      cy.url().then((url) => {
+        const segments = url.split('/');
+
+        let unitId = null;
+        for (const segment of segments) {
+          if (segment.match(/^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/)) {
+            unitId = segment;
+            break;
+          }
+        }
+        expect(unitId).to.match(/^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/);
+
+        const unitDetails = {
+          ...Cypress.env('unitDetails'),
+          unitId: unitId
+        };
+        Cypress.env('unitDetails', unitDetails);
+      });
+    });
 }
 
 export function editUnit({
