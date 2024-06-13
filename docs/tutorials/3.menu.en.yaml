@@ -6,9 +6,6 @@ steps:
   - title: 'The menu'
     element: '[data-component-name=primary-navigation]'
     intro: Use the menu to navigate to the various detail pages.
-  - title: 'Logo'
-    element: '[data-component-name=logo]'
-    intro: Via the logo you can always return to the dashboard of the active unit.
   - title: 'Unit Selector'
     element: '[data-component-name=unit-select]'
     intro: Use the Unit Selector to select one of the available units
@@ -26,7 +23,7 @@ steps:
     intro: In the Objects section, you navigate directly to the overview pages of the object types <i>Scopes</i>, <i>Processes</i>, <i>Assets</i>, <i>People</i>, <i>Incidents</i>, <i>Documents</i>, <i>Scenarios</i> and <i>Controls</i>.
   - title: 'Catalogues'
     element: '[data-component-name=catalogs-nav-item]'
-    intro: Under Catalogues you can apply <i>TOM</i> or <i>Hazards</i> from one of the available catalogues.
+    intro: Under Catalogs you can apply <i>objects</i> from one of the available catalogs.
   - title: 'Reports'
     element: '[data-component-name=reports-nav-item]'
     intro: To output a report select one of the available report templates in the Reports section.

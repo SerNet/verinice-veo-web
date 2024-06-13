@@ -6,12 +6,9 @@ steps:
   - title: 'Reports'
     element: '[data-component-name=report-page]'
     intro: In diesem Bereich erstellen Sie nach Auswahl einer Reportvorlage den gewünschten Report.
-  - title: 'Name der Reportvorlage'
-    element: '[data-component-name=report-page] h1'
-    intro: Im oberen Bereich finden Sie den Namen der jeweiligen Reportvorlage ...
   - title: 'Beschreibung der Reportvorlage'
     element: '[data-component-name=report-description]'
-    intro: ... sowie eine kurze inhaltliche Beschreibung.
+    intro: Im oberen Bereich finden Sie eine kurze inhaltliche Beschreibung der jeweiligen Reportvorlage.
   - title: 'Scopeauswahl'
     element: '[data-component-name=report-entity-selection]'
     intro: In der bereits bekannten Listenansicht wählen Sie den Scope aus, für den der Report erzeugt werden soll.

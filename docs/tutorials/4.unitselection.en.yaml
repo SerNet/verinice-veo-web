@@ -4,11 +4,42 @@ route: /units
 exact: true
 lang: en
 steps:
-  - title: 'Available units'
-    element: '[data-component-name=unit-selection-available-units]'
-    intro: Navigate to the <b>Unit selection</b> page to get an overview of all available units.
-  - title: 'The unit selection'
+  - title: 'Unit management'
     element: '[data-component-name=unit-selection-page]'
-    intro: On the <b>Unit selection</b> page, select one of the available units for further processing.
-  - title: 'Done'
-    intro: Further information can also be found in the documentation.
+    intro: Units can be created, deleted or edited in the unit management.
+
+  - title: 'Available units'
+    element: '[data-component-name=number-available-units]'
+    intro: You can see the number of units that you can still create on the basis of the selected plan.
+
+  - title: 'Unit details'
+    element: '[data-component-name=item-card-slot-center-link]'
+    intro: The name, an optional description and information on creation are displayed for each unit.
+
+  - title: 'Favorite'
+    element: '[data-component-name=unit-favorite-button]'
+    intro: You can mark a unit as a favorite to go directly to its dashboard the next time you log in.
+
+  - title: 'Edit domains'
+    element: '[data-component-name=units-add-domains-button]'
+    intro: At least one domain is assigned to each unit. Depending on the selected plan, you can assign additional domains to a unit.
+
+  - title: 'Apply profiles'
+    element: '[data-component-name=apply-profiles-link]'
+    intro: By applying profiles, you add a variety of objects to the unit. Profiles can be, for example, IT-Grundschutz profiles or entire sample organizations.
+
+  - title: 'Edit unit'
+    element: '[data-component-name=units-edit-unit-button]'
+    intro: Edit the name and description of the unit.
+
+  - title: 'Delete units'
+    element: '[data-component-name=units-delete-unit-button]'
+    intro: Delete units that are no longer required after a confirmation prompt. It is recommended to create a backup before deleting.
+
+  - title: 'Switch to unit'
+    element: '[data-component-name=unit-selection-available-units]'
+    intro: Click on the card to open the dashboard for the unit.
+
+  - title: 'Create unit'
+    element: '[data-component-name=create-unit-btn]'
+    intro: You create new units in a wizard in which available profiles can be applied and the desired domains can be assigned.

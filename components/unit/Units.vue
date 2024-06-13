@@ -170,6 +170,7 @@ const UnitActions: TInlineComponent = {
           :icon="mdiPencilOutline"
           variant="text"
           data-veo-test="units-edit-unit-button"
+          data-component-name="units-edit-unit-button"
         >
         </v-btn>
       </template>
@@ -182,6 +183,7 @@ const UnitActions: TInlineComponent = {
           :icon="mdiDeleteOutline"
           variant="text"
           data-veo-test="units-delete-unit-button"
+          data-component-name="units-delete-unit-button"
         >
         </v-btn>
       </template>
@@ -210,6 +212,7 @@ const DomainActions: TInlineComponent = {
       <v-btn
         v-bind="props"
         data-veo-test="units-add-domains-button"
+        data-component-name="units-add-domains-button"
         :to="domainsUrl"
         :prepend-icon="mdiPlus"
         variant="text"
@@ -235,6 +238,7 @@ const BookmarkFavorite: TInlineComponent = {
     <v-tooltip :text="t('bookmarkTooltip')">
       <template #activator={props}>
         <v-btn
+          data-component-name="unit-favorite-button"
           v-bind="props"
           :icon="this.isFavorite ? mdiBookmark : mdiBookmarkOutline"
           variant="text"
@@ -257,6 +261,7 @@ const ApplyProfiles: TInlineComponent = {
           :to="this.profilesUrl"
           :prepend-icon="mdiShapeOutline"
           data-veo-test="apply-profiles-link"
+          data-component-name="apply-profiles-link"
           variant="outlined"
           color="primary"
           size="small"

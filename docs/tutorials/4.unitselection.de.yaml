@@ -1,14 +1,45 @@
-title: Die Unitauswahl
-description: Beschreibung der Unitauswahl
+title: Die Unitverwaltung
+description: Beschreibung der Unitverwaltung
 route: /units
 exact: true
 lang: de
 steps:
-  - title: 'Verfügbare Units'
-    element: '[data-component-name=unit-selection-available-units]'
-    intro: Navigieren Sie zur <b>Unitauswahl</b>, um einen Überblick über alle vorhandenen Units zu erhalten.
-  - title: 'Die Unitauswahl'
+  - title: 'Unitverwaltung'
     element: '[data-component-name=unit-selection-page]'
-    intro: Auf der Seite <b>Unitauswahl</b> wählen Sie eine der verfügbaren Units zur weiteren Bearbeitung aus.
-  - title: 'Geschafft'
-    intro: Weitere Informationen finden Sie auch in der Online Dokumentation.
+    intro: In der Unitverwaltung können Units angelegt, gelöscht oder bearbeitet werden.
+
+  - title: 'Verfügbare Units'
+    element: '[data-component-name=number-available-units]'
+    intro: Sie erkennen die Anzahl der Units, die Sie auf Grundlage des gewählten Planes noch anlegen können.
+
+  - title: 'Details zur Unit'
+    element: '[data-component-name=item-card-slot-center-link]'
+    intro: Zu jeder Unit werden der Name, eine optionale Beschreibung sowie Informationen zur Erstellung angezeigt.
+
+  - title: 'Favorit'
+    element: '[data-component-name=unit-favorite-button]'
+    intro: Sie können eine Unit als Favorit markieren, um beim nächsten Login direkt auf deren Dashboard zu gelangen.
+
+  - title: 'Domänen bearbeiten'
+    element: '[data-component-name=units-add-domains-button]'
+    intro: Jeder Unit ist mindestens eine Domänen zugeordnet. Je nach gewähltem Plan können Sie einer Unit weitere Domänen zuordnen.
+
+  - title: 'Profile anwenden'
+    element: '[data-component-name=apply-profiles-link]'
+    intro: Durch das Anwenden von Profilen fügen Sie der Unit eine Vielzahl von Objekten hinzu. Profile können zum Beispiel IT-Grundschutz-Profile oder ganze Beispielorganisationen sein.
+
+  - title: 'Unit bearbeiten'
+    element: '[data-component-name=units-edit-unit-button]'
+    intro: Bearbeiten Sie Namen und Beschreibung der Unit.
+
+  - title: 'Unit löschen'
+    element: '[data-component-name=units-delete-unit-button]'
+    intro: Löschen Sie Units, die nicht länger benötigt werden nach einer Sicherheitsabfrage. Es wird empfohlen vor dem Löschen ein Backup zu erstellen.
+
+  - title: 'Zur Unit wechseln'
+    element: '[data-component-name=unit-selection-available-units]'
+    intro: Durch Klick auf die Karte rufen Sie das Dashboard der Unit auf.
+
+  - title: 'Unit erstellen'
+    element: '[data-component-name=create-unit-btn]'
+    intro: Neue Units erstellen Sie in einem Assistenten, in dem verfügbare Profile angewendet und die gewünschten Domänen zugeordnet werden können.

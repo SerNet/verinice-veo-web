@@ -18,7 +18,7 @@
 <template>
   <BasePage data-component-name="unit-selection-page" sticky-footer>
     <BaseContainer>
-      <h2 class="text-h5 d-flex flex-grow-1 justify-end my-4">
+      <h2 class="text-h5 d-flex flex-grow-1 justify-end my-4" data-component-name="number-available-units">
         <strong>Units:&nbsp;</strong>
         <span>
           {{ activeUnits }} {{ t('of') }} {{ userSettings.maxUnits }}
@@ -38,6 +38,7 @@
             <div class="ml-auto my-6" v-bind="props">
               <v-btn
                 data-veo-test="create-unit-btn"
+                data-component-name="create-unit-btn"
                 to="/units/create"
                 :prepend-icon="mdiPlus"
                 :disabled="maxUnitsExceeded || ability.cannot('manage', 'units')"

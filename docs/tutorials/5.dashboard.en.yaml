@@ -15,22 +15,22 @@ steps:
     intro: This area displays subtypes of an object type, here the available scopes.
   - title: 'Processes'
     element: '[data-component-name=domain-dashboard-process-widget]'
-    intro: The subtypes are used to display the objects of a type differently in special forms. For example, processes can be presented as processing activities, data transfers or data protection impact assessments.
+    intro: The subtypes are used to display the objects of a type differently in special forms. For example, processes can be presented as processing activities or business processes.
   - title: 'Assets'
     element: '[data-component-name=domain-dashboard-asset-widget]'
     intro: Each subtype can have a specific status. By default, a life cycle of the individual objects is presented, e.g. for the assets.
   - title: 'People'
     element: '[data-component-name=domain-dashboard-person-widget]'
-    intro: The status of the objects are colour-coded<br>red = new<br>yellow = in progress<br>blue = under review<br>green = released and<br>grey = archived.
+    intro: The status of the objects are colour-coded:<br>dark grey = New<br>yellow = In progress<br>blue = For review<br>green = Released<br>light grey = Archived.
   - title: 'Controls'
     element: '[data-component-name=domain-dashboard-control-widget]'
-    intro: Red, yellow and blue objects require further documentation, green and grey ones you have defined as sufficiently documented.
+    intro: Dark gray, yellow and blue objects require further documentation; you have defined green and light gray objects as sufficiently documented.
   - title: 'Incidents'
     element: '[data-component-name=domain-dashboard-incident-widget]'
-    intro: A new data protection incident that requires a timely response is displayed in red in the Incidents section.<br>
+    intro: A new incident that requires a timely response is displayed in <b>dark gray</b> in the Incidents area.<br>
   - title: 'Documents'
     element: '[data-component-name=domain-dashboard-document-widget]'
-    intro: Or if there is a contract pending review, you will find it in blue in the bar chart in the documents section.
+    intro: Documents to be checked can be found in blue in the bar chart in this area, for example.
   - title: 'Scenarios'
     element: '[data-component-name=domain-dashboard-scenario-widget]'
     intro: Navigate from the dashboard directly to the yellow scenarios that need further consideration.

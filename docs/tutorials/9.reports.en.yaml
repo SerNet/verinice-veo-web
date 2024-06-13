@@ -6,12 +6,9 @@ steps:
   - title: 'Reports'
     element: '[data-component-name=report-page]'
     intro: In this section you create the desired report after selecting a report template.
-  - title: 'Name of the report template'
-    element: '[data-component-name=report-page] h1'
-    intro: In the upper area you will find the name of the respective report template ...
   - title: 'Description of the report template'
     element: '[data-component-name=report-description]'
-    intro: ... and a description of the contents.
+    intro: In the upper area you will find a description of the contents of the respective report template.
   - title: 'Scope selection'
     element: '[data-component-name=report-entity-selection]'
     intro: In the already familiar list view, select the scope for which the report is to be generated.

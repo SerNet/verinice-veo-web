@@ -43,6 +43,9 @@ steps:
   - title: 'Delete object'
     element: '[data-component-name=object-overview-delete-button]'
     intro: ... and delete it just as quickly.
+  - title: 'Further actions'
+    element: '[data-component-name=object-overview-delete-button]'
+    intro: Further actions may be available for individual objects.
   - title: 'Create object'
     element: '[data-component-name=create-object-button]'
     intro: Use the 'Create object' button to create a new object for the active filter settings.

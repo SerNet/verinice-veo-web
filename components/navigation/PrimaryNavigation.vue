@@ -341,6 +341,7 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
         name: displayName,
         subtype: _subType,
         elementType: catalogItem[0],
+        componentName: `catalog-child-${catalogItem[0]}`,
         icon: _icon?.library === 'mdi' ? (_icon?.icon as string) : undefined,
         to: {
           name: CATALOGS_CATALOG_ROUTE_NAME,
@@ -409,6 +410,7 @@ const riskChildItems = computed<INavItem[]>(() =>
   Object.values(riskDefinitions.value).map(({ id }: { id: string }) => ({
     id: id,
     name: id,
+    componentName: `risk-definition-${id}`,
     to: {
       name: RISKS_MATRIX_ROUTE_NAME,
       params: {

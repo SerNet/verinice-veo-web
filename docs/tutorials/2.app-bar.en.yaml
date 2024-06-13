@@ -6,12 +6,15 @@ steps:
   - title: 'Application bar'
     element: '[data-component-name=app-bar]'
     intro: The application bar is used to control basic functions. It is available in all views.
+  - title: 'Logo'
+    element: '[data-component-name=logo]'
+    intro: Click on the logo to switch to unit management at any time.
   - title: 'Breadcrumbs'
     element: '[data-component-name=breadcrumbs]'
     intro: Use the breadcrumbs to navigate to previously accessed objects at any time.
   - title: 'Theme switch'
     element: '[data-component-name=theme-switch]'
-    intro: Click the icon to switch bewtween <i>light</i> mode and <i>dark</i>-mode.
+    intro: Click the icon to switch between <i>light</i> mode and <i>dark</i> mode.
   - title: 'Language selection'
     element: '[data-component-name=language-select]'
     intro: Use the language selector to choose from the available languages.

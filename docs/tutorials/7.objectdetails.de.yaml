@@ -43,7 +43,10 @@ steps:
     intro: Der Abschnitt Links zeigt alle im Formular verknüpften Objekte an.
   - title: 'Risiken'
     element: '[data-component-name=object-details-risks-tab]'
-    intro: Für den Objekttyp Prozess werden im Abschnitt Risiken die angelegten Prozessrisiken aufgelistet.
+    intro: Für einige Objekte (Scopes, Prozesse, Assets) können je nach Domäne Risiken dokumentiert und bearbeitet werden.
+  - title: 'Maßnahmen'
+    element: '[data-component-name=object-details-risks-tab]'
+    intro: Für einige Objekte können je nach Domäne Baustein oder Controls hinterlegt werden.
   - title: 'Hinzufügen'
     element: '[data-component-name=object-details-actions-button]'
     intro: Über die Schaltfläsche Hinzufügen können Sie je nach aktivem Abschnitt Objekte und Scopes als Bestandteile hinzufügen bzw. das aktive Objekt zum Teil eines anderen machen und falls vorhanden Risiken hinzufügen.

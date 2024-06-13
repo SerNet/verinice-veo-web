@@ -11,7 +11,7 @@ steps:
     intro: Aktuell steht die Risikodefinition für die Datenschutz-Risikoanalyse (DSRA) zur Verfügung.
   - title: 'Schutzziele'
     element: '[data-component-name=risk-matrix-wrapper]'
-    intro: Für die DSRA wird die Risikomatrix für die Schutzziele Vertraulichkeit, Integrität, Verfügbarkeit und Belastbarkeit dargestellt.
+    intro: Für jedes verfügbare Schutzziel wird die zugehörige Risikomatrix dargestellt.
   - title: 'Risikomatrix'
     element: '[data-component-name=risk-matrix-wrapper] .veo-card'
     intro: Die Risikomatrix stellt die Zuordnung der Kombination aus Eintrittswahrscheinlichkeit und möglicher Auswirkung zu den Risikokategorien dar.

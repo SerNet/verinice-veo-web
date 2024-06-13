@@ -6,9 +6,6 @@ steps:
   - title: 'Das Menü'
     element: '[data-component-name=primary-navigation]'
     intro: Über das Menü navigieren Sie zu den verschiedenen Detailseiten.
-  - title: 'Logo'
-    element: '[data-component-name=logo]'
-    intro: Über das Logo kommen Sie jederzeit zurück auf das Dashboard der aktiven Unit.
   - title: 'Unit-Selektor'
     element: '[data-component-name=unit-select]'
     intro: Mit dem Unit-Selektor wählen Sie eine der zur Verfügung stehenden Units aus.
@@ -26,7 +23,7 @@ steps:
     intro: Im Bereich Objekte navigieren Sie direkt zu den Übersichtsseiten der Objekttypen <i>Scopes</i>, <i>Prozesse</i>, <i>Assets</i>, <i>Personen</i>, <i>Incidents</i>, <i>Dokumente</i>, <i>Szenarien</i> und <i>Controls</i>.
   - title: 'Kataloge'
     element: '[data-component-name=catalogs-nav-item]'
-    intro: Unter Kataloge können Sie <i>TOM</i> oder <i>Gefährdungen</i> aus einem der verfügbaren Kataloge anwenden.
+    intro: Unter Kataloge können Sie <i>Objekte</i> aus einem der verfügbaren Kataloge anwenden.
   - title: 'Reports'
     element: '[data-component-name=reports-nav-item]'
     intro: Um einen Report auszugeben, wählen Sie im Bereich Reports eine der verfügbaren Reportvorlagen aus.

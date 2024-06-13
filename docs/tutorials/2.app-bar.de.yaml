@@ -6,12 +6,15 @@ steps:
   - title: 'Anwendungsleiste'
     element: '[data-component-name=app-bar]'
     intro: Über die Anwendungsleiste steuern Sie grundlegende Funktionen. Sie steht in allen Ansichten zur Verfügung.
+  - title: 'Logo'
+    element: '[data-component-name=logo]'
+    intro: Mit Klick auf das Logo wechseln Sie jederzeit in die Unitverwaltung.
   - title: 'Breadcrumbs'
     element: '[data-component-name=breadcrumbs]'
     intro: Über die Breadcrumbs navigieren Sie jederzeit zu vorab aufgerufenen Objekten.
   - title: 'Theme-Switch'
     element: '[data-component-name=theme-switch]'
-    intro: Mit Klick auf das Icon wechseln Sie komfortabel zwischen <i>light-</i> und <i>dark-mode</i>.
+    intro: Mit Klick auf das Icon wechseln Sie komfortabel zwischen <i>Hell-</i> und <i>Dunkel-Modus</i>.
   - title: 'Sprachauswahl'
     element: '[data-component-name=language-select]'
     intro: Mit dem Sprachumschalter wählen Sie eine der verfügbaren Sprachen.
@@ -20,10 +23,10 @@ steps:
     intro: Über die Kontext-Hilfe rufen Sie eines der verfügbaren Tutorials auf.
   - title: 'Dokumentation'
     element: '[data-component-name=docs-nav-item]'
-    intro: Über das Fragezeichen gelangen Sie zur Online-Dokumentation.
+    intro: Über das Fragezeichen gelangen Sie zur Dokumentation.
   - title: 'Account Button'
     element: '[data-component-name=account-menu-button]'
-    intro: Über den Account Button können Sie sich abmelden und weitere Informationen zu verinice.veo abrufen.
+    intro: Über den Account Button können Sie sich abmelden und weitere Informationen zu verinice abrufen.
   - title: 'Geschafft'
     # todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
     #    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.

@@ -1,16 +1,16 @@
 title: Die Kataloge
 description: Beschreibung der Kataloge
-route: /:unit()/domains/:domain()/catalogs/:catalog()
+route: /:unit()/domains/:domain()/catalog
 lang: de
 steps:
   - title: 'Kataloge'
     element: '[data-component-name=catalog-page]'
     intro: Im diesem Abschnitt können vorhandene Kataloge angewendet werden.
   - title: 'Gefährdungen anwenden'
-    element: '[data-component-name=catalog-hazards-tab]'
+    element: '[data-component-name=catalog-child-scenario]'
     intro: Wählen Sie die Gefährdungen aus, die im Rahmen der Risikoanalyse betrachtet werden sollen. Die Gefährdungen werden in Ihre aktuelle Unit kopiert und können dort verwendet werden.
   - title: 'TOM anwenden'
-    element: '[data-component-name=catalog-tom-tab]'
+    element: '[data-component-name=catalog-child-control]'
     intro: Wählen Sie die TOM aus, die zur weiteren Verwendung in Ihre Unit kopiert werden sollen.
   - title: 'Geschafft'
     intro: Weitere Informationen finden Sie auch in der Online Dokumentation.

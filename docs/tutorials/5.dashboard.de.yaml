@@ -15,22 +15,22 @@ steps:
     intro: In diesem Bereich werden Subtypen eins Objekttyps dargestellt, hier die verfügbaren Scopes.
   - title: 'Prozesse'
     element: '[data-component-name=domain-dashboard-process-widget]'
-    intro: Die Subtypen dienen der unterschiedlichen Darstellung der Objekte eines Typs in speziellen Formularen. Prozesse können so z.B. als Verarbeitungstätigkeiten, Datenübertragungen oder Datenschutzfolgenabschätzung präsentiert werden.
+    intro: Die Subtypen dienen der unterschiedlichen Darstellung der Objekte eines Typs in speziellen Formularen. Prozesse können so z.B. als Verarbeitungstätigkeiten oder Geschäftsprozesse präsentiert werden.
   - title: 'Assets'
     element: '[data-component-name=domain-dashboard-asset-widget]'
     intro: Jeder Subtyp kann einen spezifischen Status besitzen. Standardmäßig wird ein Lebenszyklus der einzelnen Objekte dargestellt, z.B. für die Assets.
   - title: 'Personen'
     element: '[data-component-name=domain-dashboard-person-widget]'
-    intro: Die Status der Objekte sind farblich codiert<br>rot = neu<br>gelb = in Bearbeitung<br>blau = in Prüfung<br>grün = freigegeben<br>grau = archiviert<br>
+    intro: Die Status der Objekte sind farblich codiert:<br>dunkelgrau = Neu<br>gelb = In Bearbeitung<br>blau = Zur Prüfung<br>grün = Freigegeben<br>hellgrau = Archiviert<br>
   - title: 'Controls'
     element: '[data-component-name=domain-dashboard-control-widget]'
-    intro: Rote, gelbe und blaue Objekte bedürfen weiterer Dokumentation, grüne und graue haben Sie als hinreichend dokumentiert definiert.
+    intro: Dunkelgraue, gelbe und blaue Objekte bedürfen weiterer Dokumentation, grüne und hellgraue haben Sie als hinreichend dokumentiert definiert.
   - title: 'Incidents'
     element: '[data-component-name=domain-dashboard-incident-widget]'
-    intro: Ein neuer Datenschutzvorfall, der eine fristgerechte Reaktion erfordert, wird Ihnen im Bereich Incidents rot dargestellt.<br>
+    intro: Ein neuer Vorfall, der eine fristgerechte Reaktion erfordert, wird Ihnen im Bereich Incidents <b>dunkelgrau</b> dargestellt.<br>
   - title: 'Documents'
     element: '[data-component-name=domain-dashboard-document-widget]'
-    intro: Steht ein Vertrag zur Prüfung an, so finden Sie diesen blau im Balkendiagramm im Bereich Dokumente.
+    intro: Zu prüfende Dokumente finden Sie zum Beispiel blau im Balkendiagramm in diesem Bereich.
   - title: 'Scenarios'
     element: '[data-component-name=domain-dashboard-scenario-widget]'
     intro: Navigieren Sie vom Dashboard direkt zu den gelben Gefährdungen, die weiter betrachtet werden müssen.

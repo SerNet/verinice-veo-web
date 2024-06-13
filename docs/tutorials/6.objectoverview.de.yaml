@@ -43,6 +43,9 @@ steps:
   - title: 'Objekt löschen'
     element: '[data-component-name=object-overview-delete-button]'
     intro: ... und genau so schnell löschen.
+  - title: 'Weitere Aktionen'
+    element: '[data-component-name=object-overview-delete-button]'
+    intro: Gegebenenfalls stehen weitere Aktionen für einzelne Objekte zur Verfügung.
   - title: 'Objekt erstellen'
     element: '[data-component-name=create-object-button]'
     intro: Über die Schältfläche "Objekt erstellen" können Sie ein neues Objekt zu den aktiven Filtereinstellungen erstellen.

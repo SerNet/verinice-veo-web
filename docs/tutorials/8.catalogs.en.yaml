@@ -1,16 +1,16 @@
 title: The catalogues
 description: Description of the catalogues
-route: /:unit()/domains/:domain()/catalogs/:catalog()
+route: /:unit()/domains/:domain()/catalog
 lang: en
 steps:
   - title: 'Catalogues'
     element: '[data-component-name=catalog-page]'
     intro: In this section, existing catalogues can be applied.
   - title: 'Apply hazards'
-    element: '[data-component-name=catalog-hazards-tab]'
+    element: '[data-component-name=catalog-child-scenario]'
     intro: Select the hazards to be considered in the risk analysis. The hazards are copied to your current unit and can be used there.
   - title: 'Apply TOM'
-    element: '[data-component-name=catalog-tom-tab]'
+    element: '[data-component-name=catalog-child-control]'
     intro: Select the TOM to be copied into your unit for further use.
   - title: 'Done'
     intro: Further information can also be found in the documentation.
