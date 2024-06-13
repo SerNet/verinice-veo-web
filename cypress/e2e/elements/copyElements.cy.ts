@@ -40,15 +40,17 @@ describe('Copy elements', () => {
           const cells = $row.children();
           let texts = [];
           cells.each((index, cell) => {
-            if (Cypress.$(cell).text()) texts.push(Cypress.$(cell).text());
+            texts.push(Cypress.$(cell).text());
           });
 
-          let name = texts[0];
-          let status = texts[1];
+          let abb = texts[1];
+          let name = texts[2];
+          let status = texts[3];
+
           cy.wait('@cloneElement').its('response.statusCode').should('eq', 201);
           cy.wait('@getClonedElement').its('response.statusCode').should('eq', 200);
 
-          verifyElementCopy(name, status);
+          verifyElementCopy(abb, name, status);
         });
       });
     });
@@ -90,11 +92,11 @@ describe('Copy elements', () => {
       cy.wrap($row).find('[data-component-name="object-overview-clone-button"]').should('be.visible').click();
     };
 
-    const verifyElementCopy = (name, status) => {
+    const verifyElementCopy = (abb, name, status) => {
       cy.get('tr')
         .filter((index, row) => {
           const rowText = Cypress.$(row).text();
-          return rowText.includes(`${name} (duplicated)`) && rowText.includes(status);
+          return rowText.includes(abb) && rowText.includes(`${name} (duplicated)`) && rowText.includes(status);
         })
         .should('exist');
     };
