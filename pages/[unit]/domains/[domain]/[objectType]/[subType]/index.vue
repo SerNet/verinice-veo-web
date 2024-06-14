@@ -54,6 +54,7 @@
                 <template #activator="{ props }">
                   <v-btn
                     :data-component-name="`object-overview-${btn.id}-button`"
+                    :data-veo-test="`object-overview-${btn.id}-button`"
                     :disabled="ability.cannot('manage', 'objects') || btn.disabled"
                     :icon="btn.icon"
                     v-bind="props"

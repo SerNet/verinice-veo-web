@@ -55,6 +55,7 @@
                       :label="`${t('subtype')}*`"
                       :items="subTypes[domain.id]"
                       required
+                      data-veo-test="subtype-select"
                       :rules="[requiredRule]"
                       variant="solo-filled"
                       @click.stop
@@ -68,6 +69,7 @@
                       :items="statuses[domain.id]"
                       :disabled="!selectedSubType[domain.id]"
                       required
+                      data-veo-test="status-select"
                       :rules="[requiredRule]"
                       variant="solo-filled"
                       @click.stop

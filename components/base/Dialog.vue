@@ -36,6 +36,7 @@
         class="pa-4 overflow-x-hidden overflow-y-auto flex-grow-1"
         :class="innerClass"
         style="position: relative"
+        data-veo-test="dialog-card"
       >
         <slot />
         <v-card-actions v-if="!!$slots['dialog-options'] && !fixedFooter" class="pt-3 pb-0 px-0 d-flex">
