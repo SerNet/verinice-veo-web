@@ -8,6 +8,7 @@ declare global {
       selectRandomDomain: typeof selectRandomDomain;
       getSelectedDomain: typeof getSelectedDomain;
       selectDomain: typeof selectDomain;
+      addDomain: typeof addDomain;
     }
   }
 }
@@ -17,6 +18,23 @@ export interface ICYVeoDomain {
   name: string;
   id: string;
   targetUri: string;
+}
+
+export function addDomain(domainName: string): void {
+  cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains`).as('getDomains');
+
+  cy.get('[data-veo-test="item-card-slot-center"]')
+    .filter((index, element) => {
+      return Cypress.$(element).find('.v-card-title').text().includes(Cypress.env('unitDetails').name);
+    })
+    .first()
+    .find('[data-veo-test="units-add-domains-button"]')
+    .first()
+    .click({ force: true });
+  cy.wait(['@getDomains']).its('response.statusCode').should('eq', 200);
+
+  cy.get('[data-veo-test="domain-IT-Grundschutz"] input').click({ force: true });
+  cy.get('[data-veo-test="associate-domains"]').click({ force: true });
 }
 
 export function selectDomain(domainName: string): void {

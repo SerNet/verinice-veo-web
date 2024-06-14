@@ -1,5 +1,5 @@
 import { veoRequest } from '../commands/requests';
-import { getVeoDomains, selectRandomDomain, getSelectedDomain, selectDomain } from '../commands/domains';
+import { getVeoDomains, selectRandomDomain, getSelectedDomain, selectDomain, addDomain } from '../commands/domains';
 import { login } from '../commands/login';
 import { acceptAllCookies } from '../commands/cookies';
 import {
@@ -21,6 +21,7 @@ import { navigateTo } from '../commands/navigation';
 Cypress.Commands.addAll({
   veoRequest,
   getVeoDomains,
+  addDomain,
   login,
   acceptAllCookies,
   goToUnitSelection,
