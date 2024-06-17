@@ -44,7 +44,7 @@ steps:
     element: '[data-component-name=object-overview-delete-button]'
     intro: ... and delete it just as quickly.
   - title: 'Further actions'
-    element: '[data-component-name=object-overview-delete-button]'
+    element: '[data-component-name=object-overview-assign-button]'
     intro: Further actions may be available for individual objects.
   - title: 'Create object'
     element: '[data-component-name=create-object-button]'

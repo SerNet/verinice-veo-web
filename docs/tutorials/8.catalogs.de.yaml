@@ -6,11 +6,8 @@ steps:
   - title: 'Kataloge'
     element: '[data-component-name=catalog-page]'
     intro: Im diesem Abschnitt können vorhandene Kataloge angewendet werden.
-  - title: 'Gefährdungen anwenden'
-    element: '[data-component-name=catalog-child-scenario]'
-    intro: Wählen Sie die Gefährdungen aus, die im Rahmen der Risikoanalyse betrachtet werden sollen. Die Gefährdungen werden in Ihre aktuelle Unit kopiert und können dort verwendet werden.
-  - title: 'TOM anwenden'
-    element: '[data-component-name=catalog-child-control]'
-    intro: Wählen Sie die TOM aus, die zur weiteren Verwendung in Ihre Unit kopiert werden sollen.
+  - title: 'Objekte anwenden'
+    element: '[data-component-name=catalogs-nav-item]'
+    intro: Wählen Sie die Objekte aus, die in Ihre aktuelle Unit kopiert und dort verwendet werden können.
   - title: 'Geschafft'
     intro: Weitere Informationen finden Sie auch in der Online Dokumentation.

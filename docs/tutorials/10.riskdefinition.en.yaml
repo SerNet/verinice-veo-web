@@ -8,7 +8,10 @@ steps:
     intro: In the section Risk definitions the available risk definitions can be viewed.
   - title: 'Risk definition DSRA'
     element: '[data-component-name=risk-definition-DSRA]'
-    intro: The risk definition for the Data Protection Risk Analysis (DSRA) is currently available.
+    intro: The risk definition for the Risk Analysis is currently available.
+  - title: 'Risk definition GSRA'
+    element: '[data-component-name=risk-definition-GSRA]'
+    intro: The risk definition for the Risk Analysis is currently available.
   - title: 'Protection goals'
     element: '[data-component-name=risk-matrix-wrapper]'
     intro: The associated risk matrix is shown for each available protection target.

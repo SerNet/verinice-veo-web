@@ -45,7 +45,7 @@ steps:
     element: '[data-component-name=object-details-risks-tab]'
     intro: Für einige Objekte (Scopes, Prozesse, Assets) können je nach Domäne Risiken dokumentiert und bearbeitet werden.
   - title: 'Maßnahmen'
-    element: '[data-component-name=object-details-risks-tab]'
+    element: '[data-component-name=object-details-controls-tab]'
     intro: Für einige Objekte können je nach Domäne Baustein oder Controls hinterlegt werden.
   - title: 'Hinzufügen'
     element: '[data-component-name=object-details-actions-button]'

@@ -45,7 +45,7 @@ steps:
     element: '[data-component-name=object-details-risks-tab]'
     intro: Depending on the domain, risks can be documented and processed for some objects (scopes, processes, assets).
   - title: 'Measures'
-    element: '[data-component-name=object-details-risks-tab]'
+    element: '[data-component-name=object-details-controls-tab]'
     intro: Depending on the domain, modules or controls can be stored for some objects.
   - title: 'Add'
     element: '[data-component-name=object-details-actions-button]'

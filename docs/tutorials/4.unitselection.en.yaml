@@ -37,7 +37,7 @@ steps:
     intro: Delete units that are no longer required after a confirmation prompt. It is recommended to create a backup before deleting.
 
   - title: 'Switch to unit'
-    element: '[data-component-name=unit-selection-available-units]'
+    element: '[data-component-name=item-card-slot-center-link]'
     intro: Click on the card to open the dashboard for the unit.
 
   - title: 'Create unit'

@@ -44,7 +44,7 @@ steps:
     element: '[data-component-name=object-overview-delete-button]'
     intro: ... und genau so schnell löschen.
   - title: 'Weitere Aktionen'
-    element: '[data-component-name=object-overview-delete-button]'
+    element: '[data-component-name=object-overview-assign-button]'
     intro: Gegebenenfalls stehen weitere Aktionen für einzelne Objekte zur Verfügung.
   - title: 'Objekt erstellen'
     element: '[data-component-name=create-object-button]'

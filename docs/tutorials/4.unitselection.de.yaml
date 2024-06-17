@@ -37,7 +37,7 @@ steps:
     intro: Löschen Sie Units, die nicht länger benötigt werden nach einer Sicherheitsabfrage. Es wird empfohlen vor dem Löschen ein Backup zu erstellen.
 
   - title: 'Zur Unit wechseln'
-    element: '[data-component-name=unit-selection-available-units]'
+    element: '[data-component-name=item-card-slot-center-link]'
     intro: Durch Klick auf die Karte rufen Sie das Dashboard der Unit auf.
 
   - title: 'Unit erstellen'

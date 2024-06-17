@@ -8,7 +8,10 @@ steps:
     intro: Im Abschnitt Risikodefinitionen können die verfügbaren Risikodefinitionen eingesehen werden.
   - title: 'Risikodefinition DSRA'
     element: '[data-component-name=risk-definition-DSRA]'
-    intro: Aktuell steht die Risikodefinition für die Datenschutz-Risikoanalyse (DSRA) zur Verfügung.
+    intro: Aktuell steht die Risikodefinition für die Risikoanalyse zur Verfügung.
+  - title: 'Risikodefinition GSRA'
+    element: '[data-component-name=risk-definition-GSRA]'
+    intro: Aktuell steht die Risikodefinition für die Risikoanalyse zur Verfügung.
   - title: 'Schutzziele'
     element: '[data-component-name=risk-matrix-wrapper]'
     intro: Für jedes verfügbare Schutzziel wird die zugehörige Risikomatrix dargestellt.
