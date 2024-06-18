@@ -7,7 +7,7 @@
   },
   "name": "veo-web",
   "private": true,
-  "version": "1.13.0",
+  "version": "1.14.0",
   "scripts": {
     "cy:develop": "cypress run --env environment=develop",
     "cy-gui:develop": "cypress open --env environment=develop",
