@@ -1,3 +1,19 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2024 Aziz Khalledi
+   - 
+   - This program is free software: you can redistribute it and/or modify it
+   - under the terms of the GNU Affero General Public License
+   - as published by the Free Software Foundation, either version 3 of the License,
+   - or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+   - without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   - See the GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License along with this program.
+   - If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <BaseDialog
     :model-value="showDialog"
@@ -61,6 +77,19 @@
             <v-radio :label="t(`statusValues.${value}`)" :value="`${key}`" />
           </template>
         </v-radio-group>
+
+        <!-- Foldable Requirement Description -->
+        <v-expansion-panels>
+          <v-expansion-panel>
+            <template #title>
+              {{ t('requirementDescription') }}
+            </template>
+            <template #text>
+              <div v-if="controlContent" v-html="controlContent"></div>
+              <div v-else>{{ t('noRequirementDescriptionAvailable') }}</div>
+            </template>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-card-text>
       <ObjectFormSkeletonLoader v-else />
     </BaseCard>
@@ -103,6 +132,7 @@ import domainQueryDefinitions, {
   IVeoFetchPersonsInDomainParameters,
   IVeoPersonInDomain
 } from '~/composables/api/queryDefinitions/domains';
+import controlQueryDefinitions from '~/composables/api/queryDefinitions/controls';
 
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
@@ -125,7 +155,7 @@ interface Emits {
 
 export type RequirementImplementation = {
   origin: { displayName?: string };
-  control: { displayName?: string };
+  control: { id?: string; displayName?: string };
   responsible: ResponsiblePerson | null;
   status: string;
   implementationStatement?: string | null;
@@ -204,6 +234,23 @@ const { data: _personsForTotalItemCount } = useQuery(
   { enabled: isFetchingTotalItemCount.value }
 );
 
+// Fetch Requirement Description
+const { data: control } = useQuery(
+  controlQueryDefinitions.queries.fetchControl,
+  computed(() => ({
+    id: props.item?.control.id as string
+  })),
+  {
+    enabled: computed(() => !!props.item?.control.id)
+  }
+);
+
+const controlContent = ref(
+  computed(() => {
+    return control.value?.customAspects.control_bpCompendium.attributes.control_bpCompendium_content ?? '';
+  })
+);
+
 // Fetch again to get all persons in current domain + unit
 const isFetchingPersons = computed(() => !!domainId.value && !!unitId.value && !!totalItemCount);
 
@@ -273,6 +320,8 @@ async function submitForm({
 {
 "de": {
   "requirement": "Anforderung:",
+  "requirementDescription": "Anforderungsbeschreibung",
+  "noRequirementDescriptionAvailable": "Kein Inhalt verfügbar.",
   "riskAffected": "Objekt:",
   "description": "Umsetzungsbeschreibung",
   "origination": "Umsetzungsherkunft",
@@ -296,6 +345,8 @@ async function submitForm({
 },
 "en": {
   "requirement": "Requirement Implementation:",
+  "requirementDescription": "Requirement Description",
+  "noRequirementDescriptionAvailable": "No content available.",
   "riskAffected": "Target object:",
   "description": "Umsetzungsbeschreibung",
   "origination": "Umsetzungsherkunft",
