@@ -4,7 +4,7 @@ https://www.npmjs.com/package/generate-license-file
 The following npm packages may be included in this product:
 
  - @ampproject/remapping@2.3.0
- - keycloak-js@25.0.0
+ - keycloak-js@25.0.1
 
 These packages each contain the following license and notice below:
 
