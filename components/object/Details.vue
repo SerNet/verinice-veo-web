@@ -104,6 +104,7 @@ import { useQuery } from '~/composables/api/utils/query';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useFormatters } from '~/composables/utils';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useCurrentDomain } from '~/composables/domains/useDomains';
 
 export default defineComponent({
   props: {
@@ -133,7 +134,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { formatDateTime } = useFormatters();
     const { ability } = useVeoPermissions();
-
+    const { currentDomain } = useCurrentDomain();
     // Hide tabs
 
     /**
@@ -200,7 +201,7 @@ export default defineComponent({
         hidden: !hasRiskTab.value
       },
       {
-        key: 'controls',
+        key: currentDomain.value?.abbreviation === 'ITGS' ? 'itgs.controls' : 'controls',
         hidden: isControlsTabHidden.value
       }
     ]);
