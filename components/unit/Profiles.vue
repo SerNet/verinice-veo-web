@@ -40,7 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </BaseAlert>
 
     <v-radio-group v-if="profiles.length" v-model="selectedProfile">
-      <v-col v-if="hasNoneOption">
+      <v-col cols="12" class="flex-1-1-100" v-if="hasNoneOption">
         <RadioButton data-veo-test="profile-radio-btn-none" :profile="null" :label="t('noProfile')" />
       </v-col>
 
