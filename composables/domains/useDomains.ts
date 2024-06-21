@@ -36,6 +36,42 @@ export enum Colors {
   DEFAULT = ''
 }
 
+export function useCurrentDomain() {
+  const data = ref<TVeoDomain | undefined>();
+  const route = useRoute();
+  async function getDomain() {
+    try {
+      const result = await useQuerySync(domainQueryDefinitions.queries.fetchDomain, {
+        id: route.params.domain as string
+      });
+      if (result) {
+        data.value = {
+          name: result.name,
+          abbreviation: result.abbreviation,
+          id: result.id,
+          description: result.description,
+          color: getColorByDomainName(result.name)!,
+          raw: result
+        };
+      }
+    } catch (error) {
+      console.error('Error fetching domain:', error);
+    }
+  }
+  if (route.params.domain) getDomain();
+  watch(
+    () => route.params.domain,
+    () => {
+      if (route.params.domain) getDomain();
+    }
+  );
+
+  return {
+    currentDomain: readonly(data),
+    currentDomainName: data.value?.name
+  };
+}
+
 export function useDomains() {
   const data = ref<TVeoDomain[]>([]);
   const isLoading = ref<boolean>(true);
