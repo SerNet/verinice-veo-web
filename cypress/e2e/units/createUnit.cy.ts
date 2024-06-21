@@ -101,10 +101,20 @@ describe('create units', () => {
     }
 
     /**
+     * GET UNIT ID
      * If a unit is created without a profile,
      * users are redirected to /units
      * here we get the unit id from its unit card
      */
+
+    // Make sure everything is loaded correctly:
+    // 1. Check if the current view is /units
+    cy.get('[data-component-name="number-available-units"]').as('checkUnitPageIsLoaded');
+    // 2. Check if unit cards are rendered
+    cy.get('.v-card').as('checkUnitCardsAreRendered');
+
+    // Get url to the units dashboard
+    // -> unit id is part of that link
     cy.contains(testData.unitName).as('testUnitLink');
     cy.get('@testUnitLink').then(($link) => {
       if (!$link.length) {
