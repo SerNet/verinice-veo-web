@@ -107,7 +107,7 @@ describe('create units', () => {
      */
     cy.contains(testData.unitName).as('testUnitLink');
     cy.get('@testUnitLink').then(($link) => {
-      if (!$link) {
+      if (!$link.length) {
         cy.log("There was an issue getting the test unit's url");
         return;
       }
