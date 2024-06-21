@@ -136,11 +136,7 @@ export const transFormObject = (object: any) => {
 
   const analysisTypes = Object.keys(_object.riskValues || {});
 
-  if (
-    riskAffectedEntities.includes(_object.type) &&
-    analysisTypes.length &&
-    VeoRiskAffectedDomains[analysisTypes[0] as keyof typeof VeoRiskAffectedDomains]
-  ) {
+  if (riskAffectedEntities.includes(_object.type) && analysisTypes[0] && analysisTypes[0] in VeoRiskAffectedDomains) {
     const riskValues = {};
 
     Object.entries(_object.riskValues[analysisTypes[0]].potentialImpacts || {}).forEach(([protectionGoal, value]) => {
@@ -176,11 +172,7 @@ export const formatObject = (object: any) => {
   const riskAffectedEntities = ['scope', 'asset', 'process'];
   const [analysisType] = Object.keys(object.riskValues || {});
 
-  if (
-    riskAffectedEntities.includes(object.type) &&
-    !!analysisType &&
-    VeoRiskAffectedDomains[analysisType as keyof typeof VeoRiskAffectedDomains]
-  ) {
+  if (riskAffectedEntities.includes(object.type) && !!analysisType && analysisType in VeoRiskAffectedDomains) {
     const keysToTransform = [
       'potentialImpacts',
       'potentialImpactsCalculated',

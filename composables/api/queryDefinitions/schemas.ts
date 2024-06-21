@@ -66,7 +66,8 @@ export default {
         if (riskAffectedEntities.includes(result.title)) {
           // determine the specific anylysis type, e.g. DSRA, GSRA, NIS2RA
           const [analysisType] = Object.keys(result.properties?.riskValues?.properties);
-          if (VeoRiskAffectedDomains[analysisType as keyof typeof VeoRiskAffectedDomains]) {
+
+          if (analysisType && analysisType in VeoRiskAffectedDomains) {
             // shorten the key for convenience
             const analysisTypeProps = result.properties.riskValues.properties[analysisType].properties;
             // extract the impactTypes, e.g. potentialImpactEffectiveReasons, potentialImpactExplanations, ...

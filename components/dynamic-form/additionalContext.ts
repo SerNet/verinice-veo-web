@@ -71,7 +71,7 @@ function enrichRisks({
 
   const toReturn = [];
 
-  if (VeoRiskAffectedDomains[riskDefinitionName as keyof typeof VeoRiskAffectedDomains]) {
+  if (riskDefinitionName in VeoRiskAffectedDomains) {
     for (const riskProperty of riskProperties) {
       for (const protectionGoal of riskDefinitionCategories) {
         toReturn.push([
