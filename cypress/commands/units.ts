@@ -100,6 +100,12 @@ export function createUnit({
 }
 
 export function deleteUnit(waitForRequestMethod = true): void {
+  // Check if the cypress environment has an ID for the test unit
+  if (!Cypress.env('unitDetails').unitId) {
+    cy.log('Could not find test unit ID. Test unit cannot be deleted.');
+    return;
+  }
+
   cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/units/**`).as('deleteUnit');
   cy.veoRequest({
     url: `/api/units/${Cypress.env('unitDetails').unitId}`,
