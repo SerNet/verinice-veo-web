@@ -88,6 +88,7 @@ import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQueryClient } from '@tanstack/vue-query';
+import { useCurrentDomain } from '~/composables/domains/useDomains';
 
 export default defineComponent({
   props: {
@@ -112,7 +113,7 @@ export default defineComponent({
     const { link } = useLinkObject();
     const { createLink } = useCreateLink();
     const queryClient = useQueryClient();
-
+    const { currentDomain } = useCurrentDomain();
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const fetchTranslationsQueryParameters = computed(() => ({
@@ -127,73 +128,96 @@ export default defineComponent({
     const speedDialIsOpen = ref(false);
 
     // configure possible action items
-    const actions = computed(() => [
-      {
-        key: 'createObject',
-        title: t('createObject', [
-          props.object?.type !== 'scope' ?
-            translations.value?.lang[locale.value]?.[props.object?.type || '']
-          : t('object')
-        ]).toString(),
-        icon: mdiPlus,
-        tab: ['childObjects', 'parentObjects'],
-        objectTypes: ['entity'],
-        action: () =>
-          openCreateObjectDialog(
-            props.object?.type === 'scope' ? undefined : props.object?.type,
-            props.type === 'childObjects'
-          )
-      },
-      {
-        key: 'linkObject',
-        title: t('linkObject', [
-          props.type === 'controls' ?
-            locale.value === 'de' ?
-              'Maßnahmen'
-            : 'Controls'
-          : props.object?.type !== 'scope' ? translations.value?.lang[locale.value]?.[props.object?.type || '']
-          : t('object')
-        ]).toString(),
-        icon: mdiLinkPlus,
-        tab: ['childObjects', 'parentObjects', 'controls'],
-        objectTypes: ['entity'],
-        action: () => {
-          let type = props.object?.type;
-
-          if (props.object?.type === 'scope') {
-            type = undefined;
-          }
-          if (props.type === 'controls') {
-            type === 'control';
-          }
-          openLinkObjectDialog(type, props.type !== 'parentObjects', props.type === 'controls');
+    const actions = computed(() => {
+      const getCreateObjectTranslationParams = () => {
+        if (props.object?.type === 'scope') {
+          return t('object');
         }
-      },
-      {
-        key: 'createScope',
-        title: t('createScope').toString(),
-        icon: mdiPlus,
-        tab: ['childScopes', 'parentScopes'],
-        objectTypes: ['scope', 'entity'],
-        action: () => openCreateObjectDialog('scope', props.type === 'childScopes')
-      },
-      {
-        key: 'linkScope',
-        title: t('linkScope').toString(),
-        icon: mdiLinkPlus,
-        tab: ['childScopes', 'parentScopes'],
-        objectTypes: ['scope', 'entity'],
-        action: () => openLinkObjectDialog('scope', props.type === 'childScopes')
-      },
-      {
-        key: 'createRisk',
-        title: t('createRisk').toString(),
-        icon: mdiPlus,
-        tab: ['risks'],
-        objectTypes: ['entity'],
-        action: () => onCreateRisk()
-      }
-    ]);
+        return translations.value?.lang[locale.value]?.[props.object?.type || ''] || t('object');
+      };
+
+      const getLinkObjectTranslationParams = () => {
+        if (props.type === 'controls') {
+          return locale.value === 'de' ? 'Maßnahmen' : 'Controls';
+        }
+        return getCreateObjectTranslationParams();
+      };
+
+      const getLinkObjectTranslation = () => {
+        if (currentDomain.value?.abbreviation === 'ITGS') {
+          return t('itgs.linkObject');
+        }
+        return t('linkObject', getLinkObjectTranslationParams());
+      };
+
+      const createObjectAction = () =>
+        openCreateObjectDialog(
+          props.object?.type === 'scope' ? undefined : props.object?.type,
+          props.type === 'childObjects'
+        );
+      const linkObjectAction = () => {
+        let type = props.object?.type;
+        if (props.object?.type === 'scope') type = undefined;
+        if (props.type === 'controls') type = 'control';
+        openLinkObjectDialog(type, props.type !== 'parentObjects', props.type === 'controls');
+      };
+      const createScopeAction = () => openCreateObjectDialog('scope', props.type === 'childScopes');
+      const linkScopeAction = () => openLinkObjectDialog('scope', props.type === 'childScopes');
+      const createRiskAction = () => onCreateRisk();
+
+      const createAction = (
+        key: string,
+        title: string,
+        icon: any,
+        tab: string[],
+        objectTypes: string[],
+        action: () => void
+      ) => ({
+        key,
+        title: title.toString(),
+        icon,
+        tab,
+        objectTypes,
+        action
+      });
+
+      return [
+        createAction(
+          'createObject',
+          t('createObject', [getCreateObjectTranslationParams()]),
+          mdiPlus,
+          ['childObjects', 'parentObjects'],
+          ['entity'],
+          createObjectAction
+        ),
+        createAction(
+          'linkObject',
+          getLinkObjectTranslation(),
+          mdiLinkPlus,
+          ['childObjects', 'parentObjects', 'controls'],
+          ['entity'],
+          linkObjectAction
+        ),
+        createAction(
+          'createScope',
+          t('createScope'),
+          mdiPlus,
+          ['childScopes', 'parentScopes'],
+          ['scope', 'entity'],
+          createScopeAction
+        ),
+        createAction(
+          'linkScope',
+          t('linkScope'),
+          mdiLinkPlus,
+          ['childScopes', 'parentScopes'],
+          ['scope', 'entity'],
+          linkScopeAction
+        ),
+        createAction('createRisk', t('createRisk'), mdiPlus, ['risks'], ['entity'], createRiskAction)
+      ];
+    });
+
     // filter allowed actions for current type
     const allowedActions = computed(() => {
       let allowed = actions.value.filter((a) => a.tab.includes(props.type)); // filter by type
