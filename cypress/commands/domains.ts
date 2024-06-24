@@ -38,19 +38,19 @@ export function addDomain(domainName: string): void {
 }
 
 export function selectDomain(domainName: string): void {
-  cy.get('[data-veo-test="domain-select"] .v-autocomplete__menu-icon').click({ force: true });
+  cy.get('[data-veo-test="domain-select"] .v-autocomplete__menu-icon').click();
   cy.get('[data-veo-test="domain-selection-nav-item"]').should('be.visible');
   cy.wait(500);
   cy.get('[data-veo-test="domain-selection-nav-item"]').each(($el) => {
     if ($el.text().trim() === domainName) {
       cy.wrap($el).click();
-      return false; // Exit the .each() loop earlyc
+      return false; // Exit the .each() loop early
     }
   });
 }
 
 export function selectRandomDomain(): void {
-  cy.get('[data-veo-test="domain-select"] .v-autocomplete__menu-icon').click({ force: true });
+  cy.get('[data-veo-test="domain-select"] .v-autocomplete__menu-icon').click();
   cy.get('[data-veo-test="domain-selection-nav-item"]').should('be.visible');
   cy.wait(500);
   cy.get('[data-veo-test="domain-selection-nav-item"]').then(($options) => {
