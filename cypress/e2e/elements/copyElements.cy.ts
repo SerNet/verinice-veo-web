@@ -20,7 +20,7 @@ describe('Copy elements', () => {
     const pluralizedElementType = elementType.toLowerCase() + (elementType === 'Process' ? 'es' : 's');
 
     it('copies element in ' + elementType, () => {
-      cy.handleLanguageBug()
+      cy.handleLanguageBug();
 
       navigateToElementType(elementType);
 
