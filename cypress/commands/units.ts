@@ -19,6 +19,8 @@ declare global {
   }
 }
 
+const UNIT_ID_REGEX = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/
+
 export function goToUnitSelection(): void {
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units`).as('getUnits');
   cy.visit('/units');
@@ -36,12 +38,12 @@ export function selectUnit({ unitName = Cypress.env('unitDetails').name }: { uni
 
         let unitId = null;
         for (const segment of segments) {
-          if (segment.match(/^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/)) {
+          if (segment.match(UNIT_ID_REGEX)) {
             unitId = segment;
             break;
           }
         }
-        expect(unitId).to.match(/^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/);
+        expect(unitId).to.match(UNIT_ID_REGEX);
 
         const unitDetails = {
           ...Cypress.env('unitDetails'),
