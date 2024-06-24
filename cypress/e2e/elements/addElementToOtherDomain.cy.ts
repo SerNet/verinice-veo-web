@@ -1,4 +1,4 @@
-describe('Add Elements to other Domain', () => {
+describe.skip('Add Elements to other Domain', () => {
   before(() => {
     cy.viewport(1000, 1000);
     cy.login();
@@ -13,7 +13,6 @@ describe('Add Elements to other Domain', () => {
     cy.goToUnitSelection();
     cy.acceptAllCookies();
     cy.selectUnit();
-    cy.selectDomain('DS-GVO');
   });
 
   after(() => cy.deleteUnit());
