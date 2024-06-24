@@ -22,7 +22,6 @@ describe('Add Elements to other Domain', () => {
 
   elementTypeList.forEach((elementType) => {
     it('Add Element of type ' + elementType + ' to other Domain', () => {
-      handleLanguageBug();
       navigateToElementType(elementType);
       var targetDomain = 'IT-Grundschutz';
       var targetObjects = []; // Initialize array to store target objects and statuses
@@ -31,8 +30,8 @@ describe('Add Elements to other Domain', () => {
       iterateSubTypes(elementType, ($subType) => {
         cy.wrap($subType).click();
         cy.wait(100);
+        cy.get('.v-data-table__tr').first().as('originalRow');
 
-        selectOriginalRow();
         cy.get('@originalRow').then(($row) => {
           const cells = $row.children();
           let texts = [];
@@ -101,7 +100,6 @@ describe('Add Elements to other Domain', () => {
 
       cy.then(() => {
         cy.selectDomain(targetDomain);
-        handleLanguageBug();
         navigateToElementType(elementType);
         let foundCount = 0;
         targetObjects.forEach((target) => {
@@ -149,18 +147,6 @@ describe('Add Elements to other Domain', () => {
           callback($subType);
         });
     }
-
-    const selectOriginalRow = () => {
-      cy.get('.v-data-table__tr').first().as('originalRow');
-    };
-
-    const handleLanguageBug = () => {
-      cy.get('nav[data-component-name="primary-navigation"]').then((body) => {
-        if (body.find('div[data-component-name="objects-nav-item"]:contains("Objects")').length === 0) {
-          cy.languageTo('English');
-        }
-      });
-    };
 
     const navigateToElementType = (elementType) => {
       cy.navigateTo(['Objects', elementType]);

@@ -27,8 +27,8 @@ describe('Copy elements', () => {
         cy.wait(100);
 
         cy.get('.v-data-table__tr') // Adjust this selector if needed to be more specific
-        .first()
-        .as('originalRow');
+          .first()
+          .as('originalRow');
 
         cy.get('@originalRow').then(($row) => {
           cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/${pluralizedElementType}`).as('cloneElement');
@@ -65,11 +65,9 @@ describe('Copy elements', () => {
         });
     }
 
-
     const navigateToElementType = (elementType) => {
       cy.navigateTo(['Objects', elementType]);
     };
-
 
     const verifyElementCopy = (abb, name, status) => {
       cy.get('tr')
