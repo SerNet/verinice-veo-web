@@ -132,11 +132,11 @@ import domainQueryDefinitions, {
   IVeoFetchPersonsInDomainParameters,
   IVeoPersonInDomain
 } from '~/composables/api/queryDefinitions/domains';
-import controlQueryDefinitions from '~/composables/api/queryDefinitions/controls';
-
+import controlQueryDefinitions, { IVeoFetchObjectParameters } from '~/composables/api/queryDefinitions/objects';
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 import { useRequest } from '@/composables/api/utils/request';
+import { IVeoObjectControlCompendiumEntry } from '~/types/VeoTypes';
 const { request } = useRequest();
 
 const { t } = useI18n();
@@ -235,21 +235,27 @@ const { data: _personsForTotalItemCount } = useQuery(
 );
 
 // Fetch Requirement Description
-const { data: control } = useQuery(
-  controlQueryDefinitions.queries.fetchControl,
-  computed(() => ({
-    id: props.item?.control.id as string
-  })),
-  {
-    enabled: computed(() => !!props.item?.control.id)
-  }
-);
+const controlParameters = computed<IVeoFetchObjectParameters>(() => ({
+  id: props.item?.control.id as string,
+  domain: domainId.value,
+  endpoint: 'controls'
+}));
+const { data: control } = useQuery(controlQueryDefinitions.queries.fetch, controlParameters, {
+  enabled: computed(() => !!props.item?.control.id)
+});
 
-const controlContent = ref(
-  computed(() => {
-    return control.value?.customAspects.control_bpCompendium.attributes.control_bpCompendium_content ?? '';
-  })
-);
+watch(control, () => {
+  updateControlContent();
+});
+
+const controlContent = ref('');
+
+const updateControlContent = () => {
+  const controlEntry = control.value?.customAspects as IVeoObjectControlCompendiumEntry | undefined;
+  controlContent.value = controlEntry?.control_bpCompendium?.control_bpCompendium_content ?? '';
+};
+
+watch(() => control.value, updateControlContent, { immediate: true });
 
 // Fetch again to get all persons in current domain + unit
 const isFetchingPersons = computed(() => !!domainId.value && !!unitId.value && !!totalItemCount);
