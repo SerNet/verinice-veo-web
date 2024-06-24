@@ -21,6 +21,7 @@ describe.skip('Add Elements to other Domain', () => {
 
   elementTypeList.forEach((elementType) => {
     it('Add Element of type ' + elementType + ' to other Domain', () => {
+      cy.handleLanguageBug();
       navigateToElementType(elementType);
       var targetDomain = 'IT-Grundschutz';
       var targetObjects = []; // Initialize array to store target objects and statuses

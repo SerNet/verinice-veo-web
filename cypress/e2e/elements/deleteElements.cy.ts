@@ -20,6 +20,7 @@ describe('Delete elements', () => {
     const pluralizedElementType = elementType.toLowerCase() + (elementType === 'Process' ? 'es' : 's');
 
     it('deletes element in ' + elementType, () => {
+      cy.handleLanguageBug();
       cy.navigateTo(['Objects', elementType]);
 
       iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {

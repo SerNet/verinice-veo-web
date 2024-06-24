@@ -15,7 +15,7 @@ import {
 import { generateUnitDetails } from './setupHelpers';
 import { testDashboardWidgets } from '../commands/dashboard';
 import { importUnit } from '../commands/importUnit';
-import { languageTo } from '../commands/language';
+import { languageTo, handleLanguageBug } from '../commands/language';
 import { navigateTo } from '../commands/navigation';
 
 Cypress.Commands.addAll({
@@ -38,7 +38,8 @@ Cypress.Commands.addAll({
   testDashboardWidgets,
   selectRandomDomain,
   getSelectedDomain,
-  selectDomain
+  selectDomain,
+  handleLanguageBug
 });
 
 before(() => {

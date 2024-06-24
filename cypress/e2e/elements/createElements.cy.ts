@@ -20,13 +20,7 @@ describe('Create elements', () => {
 
   for (const elementType of elementTypeList) {
     it('creates elements in ' + elementType, () => {
-      //Workaround for language bug
-      cy.get('nav[data-component-name="primary-navigation"]').then((body) => {
-        if (body.find('div[data-component-name="objects-nav-item"]:contains("Objects")').length > 0) {
-        } else {
-          cy.languageTo('English');
-        }
-      });
+      cy.handleLanguageBug();
 
       cy.navigateTo(['Objects', elementType]);
 
