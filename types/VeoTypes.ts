@@ -559,3 +559,9 @@ export enum VeoRiskAffectedDomains {
   GSRA,
   NIS2RA
 }
+
+export interface IVeoObjectControlCompendiumEntry {
+  control_bpCompendium: {
+    control_bpCompendium_content: string;
+  };
+}
