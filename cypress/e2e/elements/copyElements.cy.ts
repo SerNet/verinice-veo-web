@@ -10,7 +10,6 @@ describe('Copy elements', () => {
     cy.goToUnitSelection();
     cy.acceptAllCookies();
     cy.selectUnit();
-    cy.selectDomain('DS-GVO');
   });
 
   after(() => cy.deleteUnit());
@@ -21,25 +20,25 @@ describe('Copy elements', () => {
     const pluralizedElementType = elementType.toLowerCase() + (elementType === 'Process' ? 'es' : 's');
 
     it('copies element in ' + elementType, () => {
-      handleLanguageBug();
       navigateToElementType(elementType);
 
-      iterateSubTypes(elementType, ($subType) => {
+      iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
         cy.wrap($subType).click();
         cy.wait(100);
 
-        selectOriginalRow();
+        cy.get('.v-data-table__tr') // Adjust this selector if needed to be more specific
+        .first()
+        .as('originalRow');
 
         cy.get('@originalRow').then(($row) => {
-          interceptCloneRequest(pluralizedElementType);
+          cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/${pluralizedElementType}`).as('cloneElement');
           cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**/${pluralizedElementType}**`).as(
             'getClonedElement'
           );
-
-          cloneElement($row);
+          cy.wrap($row).find('[data-component-name="object-overview-clone-button"]').should('be.visible').click();
           const cells = $row.children();
           let texts = [];
-          cells.each((index, cell) => {
+          cells.each((_index, cell) => {
             texts.push(Cypress.$(cell).text());
           });
 
@@ -66,31 +65,11 @@ describe('Copy elements', () => {
         });
     }
 
-    const selectOriginalRow = () => {
-      cy.get('.v-data-table__tr') // Adjust this selector if needed to be more specific
-        .first()
-        .as('originalRow');
-    };
-
-    const handleLanguageBug = () => {
-      cy.get('nav[data-component-name="primary-navigation"]').then((body) => {
-        if (body.find('div[data-component-name="objects-nav-item"]:contains("Objects")').length === 0) {
-          cy.languageTo('English');
-        }
-      });
-    };
 
     const navigateToElementType = (elementType) => {
       cy.navigateTo(['Objects', elementType]);
     };
 
-    const interceptCloneRequest = (pluralizedElementType) => {
-      cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/${pluralizedElementType}`).as('cloneElement');
-    };
-
-    const cloneElement = ($row) => {
-      cy.wrap($row).find('[data-component-name="object-overview-clone-button"]').should('be.visible').click();
-    };
 
     const verifyElementCopy = (abb, name, status) => {
       cy.get('tr')
