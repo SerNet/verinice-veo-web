@@ -20,11 +20,7 @@ describe('Copy elements', () => {
     const pluralizedElementType = elementType.toLowerCase() + (elementType === 'Process' ? 'es' : 's');
 
     it('copies element in ' + elementType, () => {
-      cy.get('nav[data-component-name="primary-navigation"]').then((body) => {
-        if (body.find('div[data-component-name="objects-nav-item"]:contains("Objects")').length === 0) {
-          cy.languageTo('English');
-        }
-      });
+      cy.handleLanguageBug()
 
       navigateToElementType(elementType);
 
