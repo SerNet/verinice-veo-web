@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </template>
 
     <template v-if="units && !isLoadingUnits">
-      <BaseListItem v-for="unit in units" :item="unit">
+      <BaseListItem v-for="unit in units" :key="unit.id" :item="unit">
         <template #details="{ item: unit }">
           <Details
             :name="unit.name"

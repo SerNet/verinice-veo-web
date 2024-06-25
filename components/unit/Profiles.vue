@@ -40,11 +40,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </BaseAlert>
 
     <v-radio-group v-if="profiles.length" v-model="selectedProfile">
-      <v-col cols="12" class="flex-1-1-100" v-if="hasNoneOption">
+      <v-col v-if="hasNoneOption" cols="12" class="flex-1-1-100">
         <RadioButton data-veo-test="profile-radio-btn-none" :profile="null" :label="t('noProfile')" />
       </v-col>
 
-      <template v-for="profile in profiles">
+      <template v-for="profile in profiles" :key="profile.id">
         <BaseListItem :item="profile" :data-veo-test="`profile-${profile.name}`">
           <template #center-aside="{ item: profile }">
             <LanguageChip :lang="profile.language" />

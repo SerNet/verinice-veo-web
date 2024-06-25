@@ -7,7 +7,7 @@
       </v-col>
     </template>
 
-    <template v-for="domain in domains" v-else>
+    <template v-for="domain in domains" v-else :key="domain.id">
       <BaseListItem :item="domain" :data-veo-test="`domain-${domain.name}`">
         <template #center-aside="{ item: domain }">
           <v-icon :color="domain.color" :icon="mdiPuzzle" />
