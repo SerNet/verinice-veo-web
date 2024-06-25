@@ -39,14 +39,14 @@ describe('Copy elements', () => {
           );
           cy.wrap($row).find('[data-component-name="object-overview-clone-button"]').should('be.visible').click();
           const cells = $row.children();
-          let texts = [];
+          const texts = [];
           cells.each((_index, cell) => {
             texts.push(Cypress.$(cell).text());
           });
 
-          let abb = texts[1];
-          let name = texts[2];
-          let status = texts[3];
+          const abb = texts[1];
+          const name = texts[2];
+          const status = texts[3];
 
           cy.wait('@cloneElement').its('response.statusCode').should('eq', 201);
           cy.wait('@getClonedElement').its('response.statusCode').should('eq', 200);

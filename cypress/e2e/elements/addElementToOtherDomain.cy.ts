@@ -23,8 +23,8 @@ describe.skip('Add Elements to other Domain', () => {
     it('Add Element of type ' + elementType + ' to other Domain', () => {
       cy.handleLanguageBug();
       navigateToElementType(elementType);
-      var targetDomain = 'IT-Grundschutz';
-      var targetObjects = []; // Initialize array to store target objects and statuses
+      const targetDomain = 'IT-Grundschutz';
+      let targetObjects = []; // Initialize array to store target objects and statuses
       let originalElementName;
 
       iterateSubTypes(elementType, ($subType) => {
@@ -34,7 +34,7 @@ describe.skip('Add Elements to other Domain', () => {
 
         cy.get('@originalRow').then(($row) => {
           const cells = $row.children();
-          let texts = [];
+          const texts = [];
           cells.each((index, cell) => {
             texts.push(Cypress.$(cell).text());
           });
