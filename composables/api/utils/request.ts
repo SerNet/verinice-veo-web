@@ -83,14 +83,14 @@ export const useRequest = () => {
 
     let path;
     let endpoint;
-    if (apiEndpoints[parsedUrl[1]]) {
-      endpoint = apiEndpoints[parsedUrl[1]];
+    if (apiEndpoints[parsedUrl[1] ?? '']) {
+      endpoint = apiEndpoints[parsedUrl[1] ?? ''];
       path = parsedUrl[2];
     } else {
       endpoint = apiEndpoints.default;
       path = `${parsedUrl[1]}${parsedUrl[2]}`;
     }
-    if (path.startsWith('/')) {
+    if (path?.startsWith('/')) {
       path = path.substring(1);
     }
 
@@ -155,8 +155,8 @@ export const useRequest = () => {
 
     const splittedUrl = url.split('/');
     for (const index in splittedUrl) {
-      if (splittedUrl[index].startsWith(':')) {
-        const replaceValue = options.params?.[splittedUrl[index].substring(1)];
+      if (splittedUrl[index]?.startsWith(':')) {
+        const replaceValue = options.params?.[splittedUrl[index]?.substring(1) ?? ''];
         if (replaceValue) {
           splittedUrl[index] = sanitizeURLParams(String(replaceValue));
         } else {
