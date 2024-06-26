@@ -54,6 +54,13 @@ export interface RequestOptions extends RequestInit {
   reponseType?: VeoApiReponseType;
 }
 
+function generateEtagMapKey({ requestOptions }: { requestOptions: RequestOptions }): string {
+  if (typeof requestOptions.params?.id !== 'string') return '';
+  return requestOptions.params?.endpoint ?
+      `${requestOptions.params.endpoint}-${requestOptions.params.id}`
+    : requestOptions.params.id;
+}
+
 export const useRequest = () => {
   const context = useNuxtApp();
   const user = useVeoUser();
@@ -141,11 +148,10 @@ export const useRequest = () => {
     return parsed;
   };
 
-  const updateETagMapIfEtagExists = (response: Response, options: RequestOptions) => {
+  const updateETagMapIfEtagExists = (response: Response, etagMapKey: string) => {
     const etag = response.headers.get('etag');
-    if (etag && options.params?.id) {
-      ETAG_MAP.set(options.params.id as string, etag);
-    }
+    if (!etag || !etagMapKey) return;
+    ETAG_MAP.set(etagMapKey, etag);
   };
 
   const request = async <TResult = any>(url: string, options: RequestOptions): Promise<TResult> => {
@@ -176,11 +182,17 @@ export const useRequest = () => {
       mode: 'cors'
     };
 
-    // Some requests, but not all use an ETag header. To automate setting and getting the etag header, we assume that every query that uses an ETag has a parameter called id
-    if (options.method !== 'GET' && options.params?.id && ETAG_MAP.has(options.params.id as string)) {
-      defaults.headers['If-Match'] = (ETAG_MAP.get(options.params.id as string) as string)
-        .replace(/["]+/g, '')
-        .replace(/^(.*)W\//gi, '');
+    /**
+     * When modifying resources an etag header is required
+     * Existing etags are stored in `ETAG_MAP` using either the resource ID,
+     * or a combination of the endpoint's name AND the resource ID as keys
+     * The latter is done to keep keys unique
+     */
+    const etagMapKey = generateEtagMapKey({ requestOptions: options });
+    const etag = ETAG_MAP.get(etagMapKey);
+
+    if (options.method !== 'GET' && etag) {
+      defaults.headers['If-Match'] = etag.replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
     }
 
     if (options.json) {
@@ -200,7 +212,7 @@ export const useRequest = () => {
     const combinedUrl = `${url}${queryParameters.toString() ? '?' : ''}${queryParameters.toString()}`;
     const reqURL = getUrl(combinedUrl);
     const res = await fetch(reqURL, combinedOptions);
-    updateETagMapIfEtagExists(res, options);
+    updateETagMapIfEtagExists(res, etagMapKey);
     return await parseResponse(res, options);
   };
 
