@@ -1,19 +1,22 @@
 import { getRandomElementType } from '../../commands/utils';
+import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
+let unitDetails: UnitDetails;
 
 describe('Delete elements', () => {
   before(() => {
+    unitDetails = generateUnitDetails('deleteElements');
     cy.login();
-    cy.importUnit({ fixturePath: 'units/test-unit-dsgvo.json' });
+    cy.importUnit(unitDetails.name, { fixturePath: 'units/test-unit-dsgvo.json' });
   });
 
   beforeEach(() => {
     cy.login();
     cy.goToUnitSelection();
     cy.acceptAllCookies();
-    cy.selectUnit();
+    cy.selectUnit(unitDetails.name);
   });
 
-  after(() => cy.deleteUnit());
+  after(() => cy.deleteUnit(unitDetails.name));
 
   const elementTypeList: string[] = ['Scopes', getRandomElementType()];
 

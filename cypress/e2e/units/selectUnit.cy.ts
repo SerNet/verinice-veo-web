@@ -1,19 +1,22 @@
+import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
+
+let unitDetails: UnitDetails;
+
 describe('Unit Selection Functionality', () => {
   before(() => {
+    unitDetails = generateUnitDetails('selectUnit');
     cy.login();
-    cy.createUnit({ domainNames: ['IT-Grundschutz', 'DS-GVO'] });
+    cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: ['IT-Grundschutz', 'DS-GVO'] });
     cy.goToUnitSelection();
     cy.acceptAllCookies();
-    cy.selectUnit();
+    cy.selectUnit(unitDetails.name);
     cy.handleLanguageBug();
   });
 
-  after(() => {
-    cy.deleteUnit();
-  });
+  after(() => cy.deleteUnit(unitDetails.name));
 
   it('should switch unit and verify unit selection', () => {
-    const defaultUnitName = Cypress.env('unitDetails').name;
+    const defaultUnitName = Cypress.env(unitDetails.name).name;
     cy.get('[data-component-name="unit-select"] span')
       .invoke('text')
       .then((text) => {

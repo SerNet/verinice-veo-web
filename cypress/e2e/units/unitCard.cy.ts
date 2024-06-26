@@ -1,31 +1,32 @@
 import { LOCAL_STORAGE_KEYS } from '../../../types/localStorage';
+import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
+let unitDetails: UnitDetails;
 
 describe('Unit-Card', () => {
-  const testUnitDetails = {
-    domainNames: ['IT-Grundschutz', 'DS-GVO']
-  };
-
-  beforeEach(() => {
+  before(() => {
+    unitDetails = generateUnitDetails('unitCard');
     cy.login();
-    cy.createUnit(testUnitDetails);
+    cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: ['IT-Grundschutz', 'DS-GVO'] });
     cy.goToUnitSelection();
   });
-
-  afterEach(() => {
-    cy.deleteUnit();
+  beforeEach(() => {
+    cy.login();
+    cy.acceptAllCookies();
+    cy.goToUnitSelection();
   });
+  after(() => cy.deleteUnit(unitDetails.name));
 
   it('displays the right unit data', () => {
-    cy.getVeoTestUnitCard().as('veo-card');
-    cy.get('@veo-card').should('contain', Cypress.env('unitDetails').name);
-    cy.get('@veo-card').should('contain', Cypress.env('unitDetails').desc);
-    Cypress.env('unitDetails').domains.forEach((domain: { name: string; id: string }) => {
+    cy.getVeoTestUnitCard(unitDetails.name).as('veo-card');
+    cy.get('@veo-card').should('contain', Cypress.env(unitDetails.name).name);
+    cy.get('@veo-card').should('contain', Cypress.env(unitDetails.name).desc);
+    Cypress.env(unitDetails.name).domains.forEach((domain: { name: string; id: string }) => {
       cy.get('@veo-card').should('contain', domain.name);
     });
   });
 
   it('bookmarks a unit as favorite unit', () => {
-    cy.getVeoTestUnitCard().as('veo-card');
+    cy.getVeoTestUnitCard(unitDetails.name).as('veo-card');
 
     // Bookmark test unit as favorite unit
     cy.get('@veo-card').within((_card) => {
@@ -43,7 +44,7 @@ describe('Unit-Card', () => {
     });
 
     // Compare id of favorite unit to the id of the test unit
-    cy.get('@favorite-unit-id').should('equal', Cypress.env('unitDetails').unitId);
+    cy.get('@favorite-unit-id').should('equal', Cypress.env(unitDetails.name).unitId);
 
     // Check draw-path to figure out if the correct svg is rendered
     cy.get('@favorite-unit-btn').should(

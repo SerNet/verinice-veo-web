@@ -64,12 +64,12 @@ check_formatting:
     - if [[ ${?} -ne 0 ]]; then echo "Use 'npm run format' to format your code"; exit 1; fi
   interruptible: true
 
-test:
+.test_template:
   image: cypress/browsers:node18.12.0-chrome103-ff107
   stage: test
   rules:
     - !reference [.verification, rules]
-  cache: # Cache modules in between jobs
+  cache:
     key:
       files:
         - package-lock.json
@@ -77,23 +77,29 @@ test:
       - .npm/
   before_script:
     - npm ci --cache .npm --prefer-offline
-    # Write .env file
-    - chmod +x ./setup-env.sh
+    - chmod +x ./setup-env.sh ./run-parallel-tests.sh
     - ./setup-env.sh
-  script:
     - export {http,https}_proxy="${http_proxy}"
-    # Install TS (cypress image does not support TS out of the box)
-    - npm i typescript
-    # Build and run veo
     - npm run generate
     - npx serve .output/public/ &
-    - npm run e2e
+
+test:
+  stage: test
+  image: cypress/browsers:node18.12.0-chrome103-ff107
+  extends: .test_template
+  variables:
+    CYPRESS_parallel_group: 8
+  script:
+    - ./run-parallel-tests.sh $CI_NODE_INDEX $CYPRESS_parallel_group
   artifacts:
     expire_in: 1 week
     when: always
     paths:
       - ${CI_PROJECT_DIR}/cypress/screenshots
       - ${CI_PROJECT_DIR}/cypress/videos
+  parallel:
+    matrix:
+      - CI_NODE_INDEX: [0, 1, 2, 3, 4, 5, 6, 7]
 
 docker_image:
   stage: build

@@ -1,17 +1,19 @@
 import { getRandomElementType } from '../../commands/utils';
-import { generateUnitDetails } from '../../support/setupHelpers';
+import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
 
+let unitDetails: UnitDetails;
 describe('Create elements', { testIsolation: false }, () => {
   before(() => {
-    generateUnitDetails();
+    unitDetails = generateUnitDetails('createElements');
     cy.login();
-    cy.createUnit();
+    cy.createUnit(unitDetails);
+
     cy.acceptAllCookies();
     cy.goToUnitSelection();
-    cy.selectUnit();
+    cy.selectUnit(unitDetails.name);
   });
 
-  after(() => cy.deleteUnit());
+  after(() => cy.deleteUnit(unitDetails.name)); // Use the name from the unitDetails object to delete);
 
   const elementTypeList: string[] = ['Scopes', getRandomElementType()];
 

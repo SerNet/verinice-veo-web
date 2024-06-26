@@ -1,19 +1,24 @@
+import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
+
+let unitDetails: UnitDetails;
+
 describe('Catalogs', { testIsolation: false }, () => {
   before(() => {
+    unitDetails = generateUnitDetails('catalogs');
     cy.login();
+    cy.createUnit(unitDetails); // Assuming you have a function to create the unit
     cy.acceptAllCookies();
-    cy.createUnit();
   });
 
-  after(() => cy.deleteUnit());
+  after(() => cy.deleteUnit(unitDetails.name));
 
   it('renders catalog table correctly', () => {
     cy.goToUnitSelection();
-    cy.selectUnit();
+    cy.selectUnit(unitDetails.name);
 
     // Check if the correct number of items is displayed
     cy.veoRequest({
-      url: `/api/domains/${Cypress.env('unitDetails').domains[0].id}/catalog-items?size=20&sortBy=abbreviation&sortOrder=asc`,
+      url: `/api/domains/${Cypress.env(unitDetails.name).domains[0].id}/catalog-items?size=20&sortBy=abbreviation&sortOrder=asc`,
       method: 'GET',
       waitForRequestMethod: false
     }).then((response: any) => {
@@ -40,7 +45,7 @@ describe('Catalogs', { testIsolation: false }, () => {
 
   it('incarnates GDPR scenario catalog items', () => {
     cy.visit('/units');
-    cy.selectUnit();
+    cy.selectUnit(unitDetails.name);
     const api = {
       scenarios: `${Cypress.env('veoApiUrl')}/domains/**/scenarios**`,
       incarnationDescriptions: `${Cypress.env('veoApiUrl')}/units/**/domains/**/incarnation-descriptions?**`,

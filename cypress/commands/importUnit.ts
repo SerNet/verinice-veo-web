@@ -9,17 +9,17 @@ declare global {
   }
 }
 
-export function importUnit({ fixturePath }: { fixturePath: string }) {
+export function importUnit(unitName: string, { fixturePath }: { fixturePath: string }) {
   cy.fixture(fixturePath).then((json) => {
     cy.veoRequest({
       url: '/api/units/import',
       method: 'POST',
-      requestBody: prepareUnitData(json)
+      requestBody: prepareUnitData(unitName, json)
     });
   });
 }
 
-function prepareUnitData(json: any) {
+function prepareUnitData(unitName: string, json: any) {
   const replacementData = [
     {
       key: '{%%DOMAIN_ID%%}',
@@ -27,7 +27,7 @@ function prepareUnitData(json: any) {
     },
     {
       key: '{%%UNIT_NAME%%}',
-      val: Cypress.env('unitDetails').name
+      val: unitName
     },
     {
       key: '{%%UNIT_ID%%}',

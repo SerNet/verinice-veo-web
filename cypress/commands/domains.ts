@@ -20,12 +20,12 @@ export interface ICYVeoDomain {
   targetUri: string;
 }
 
-export function addDomain(_domainName: string): void {
+export function addDomain(unitName: string, _domainName: string): void {
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains`).as('getDomains');
 
   cy.get('[data-veo-test="item-card-slot-center"]')
     .filter((index, element) => {
-      return Cypress.$(element).find('.v-card-title').text().includes(Cypress.env('unitDetails').name);
+      return Cypress.$(element).find('.v-card-title').text().includes(unitName);
     })
     .first()
     .find('[data-veo-test="units-add-domains-button"]')
@@ -49,12 +49,12 @@ export function selectDomain(domainName: string): void {
   });
 }
 
-export function selectRandomDomain(): void {
+export function selectRandomDomain(unitName: string): void {
   cy.get('[data-veo-test="domain-select"] .v-autocomplete__menu-icon').click();
   cy.get('[data-veo-test="domain-selection-nav-item"]').should('be.visible');
   cy.wait(500);
   cy.get('[data-veo-test="domain-selection-nav-item"]').then(($options) => {
-    const randomIndex = Math.floor(Math.random() * Cypress.env('unitDetails').domains.length);
+    const randomIndex = Math.floor(Math.random() * Cypress.env(unitName).domains.length);
     cy.wrap($options[randomIndex]).click();
   });
 }

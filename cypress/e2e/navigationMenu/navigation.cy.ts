@@ -1,22 +1,25 @@
+import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
+
+let unitDetails: UnitDetails;
+
 describe('Navigation Menu', () => {
   before(() => {
+    unitDetails = generateUnitDetails('copyElements');
     cy.login();
-    cy.importUnit({ fixturePath: 'units/test-unit-dsgvo.json' });
+    cy.importUnit(unitDetails.name, { fixturePath: 'units/test-unit-dsgvo.json' });
     cy.goToUnitSelection();
-    cy.addDomain('IT-Grundschutz');
+    cy.addDomain(unitDetails.name, 'IT-Grundschutz');
   });
 
   beforeEach(() => {
     cy.login();
     cy.goToUnitSelection();
     cy.acceptAllCookies();
-    cy.selectUnit();
+    cy.selectUnit(unitDetails.name);
     cy.handleLanguageBug();
   });
 
-  after(() => {
-    cy.deleteUnit();
-  });
+  after(() => cy.deleteUnit(unitDetails.name));
 
   const groupsWithCategories = [
     {
@@ -74,6 +77,13 @@ describe('Navigation Menu', () => {
 
   it('ITGS navigate to all expected menu entries', () => {
     cy.selectDomain('IT-Grundschutz');
+
+    cy.get('[data-veo-test="domain-select"] span')
+      .invoke('text')
+      .then((text) => {
+        expect(text.trim()).to.equal('IT-Grundschutz');
+        cy.get('[data-component-name="breadcrumbs"]').contains('ITGS');
+      });
 
     cy.get('[data-veo-test="domain-select"]').should('be.visible');
     cy.get('[data-component-name="unit-select"]').should('be.visible');

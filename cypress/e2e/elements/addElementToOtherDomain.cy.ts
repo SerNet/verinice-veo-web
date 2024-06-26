@@ -1,21 +1,24 @@
 import { getRandomElementType } from '../../commands/utils';
+import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
+let unitDetails: UnitDetails;
 
 describe.skip('Add Elements to other Domain', () => {
   before(() => {
+    unitDetails = generateUnitDetails('addElementToOtherDomain');
     cy.login();
-    cy.importUnit({ fixturePath: 'units/test-unit-dsgvo.json' });
+    cy.importUnit(unitDetails.name, { fixturePath: 'units/test-unit-dsgvo.json' });
     cy.goToUnitSelection();
-    cy.addDomain('IT-Grundschutz');
+    cy.addDomain(unitDetails.name, 'IT-Grundschutz');
   });
 
   beforeEach(() => {
     cy.login();
     cy.goToUnitSelection();
     cy.acceptAllCookies();
-    cy.selectUnit();
+    cy.selectUnit(unitDetails.name);
   });
 
-  after(() => cy.deleteUnit());
+  after(() => cy.deleteUnit(unitDetails.name));
 
   const elementTypeList: string[] = ['Scopes', getRandomElementType()];
 

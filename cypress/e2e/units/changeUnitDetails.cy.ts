@@ -1,17 +1,22 @@
+import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
+
+let unitDetails: UnitDetails;
+
 describe('Unit details', { testIsolation: false }, () => {
   before(() => {
+    unitDetails = generateUnitDetails('changeUnitDetails');
     cy.login();
-    cy.createUnit();
+    cy.createUnit(unitDetails);
     cy.acceptAllCookies();
   });
 
-  after(() => cy.deleteUnit());
+  after(() => cy.deleteUnit(unitDetails.name));
 
-  it.only('checks if unit details are displayed correctly', () => {
+  it('checks if unit details are displayed correctly', () => {
     cy.goToUnitSelection();
 
     // Get the test unit
-    cy.getVeoTestUnitCard().as('testUnitCard');
+    cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
 
     // Go to /details
     cy.get('@testUnitCard').find('[data-veo-test="units-edit-unit-button"]').click();
@@ -22,11 +27,11 @@ describe('Unit details', { testIsolation: false }, () => {
 
     // Assert
     // URL
-    cy.url().should('be.equal', `${Cypress.config('baseUrl')}/units/${Cypress.env('unitDetails').unitId}/details`);
+    cy.url().should('be.equal', `${Cypress.config('baseUrl')}/units/${Cypress.env(unitDetails.name).unitId}/details`);
 
     // Name and description
     cy.get('@detailsCard').within((_$card) => {
-      cy.get('.v-card-title').contains(Cypress.env('unitDetails').name);
+      cy.get('.v-card-title').contains(Cypress.env(unitDetails.name).name);
 
       /*
        * Check against value:
@@ -34,10 +39,10 @@ describe('Unit details', { testIsolation: false }, () => {
        * thus a check using `contains` will fail
        */
       cy.get('input').then(($input) => {
-        expect($input[0].value).to.equal(Cypress.env('unitDetails').name);
+        expect($input[0].value).to.equal(Cypress.env(unitDetails.name).name);
       });
       cy.get('textarea').then(($textarea) => {
-        expect($textarea[0].value).to.equal(Cypress.env('unitDetails').desc);
+        expect($textarea[0].value).to.equal(Cypress.env(unitDetails.name).desc);
       });
     });
   });
@@ -51,7 +56,7 @@ describe('Unit details', { testIsolation: false }, () => {
     // Go to details page of the test unit
     // cy.visit(`${Cypress.config('baseUrl')}/units/${Cypress.env('unitDetails').unitId}/details`); => does not yet work in pipelines
     cy.visit('/units');
-    cy.getVeoTestUnitCard().as('testUnitCard');
+    cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
     cy.get('@testUnitCard').within((_card) => {
       cy.get('[data-veo-test="units-edit-unit-button"]').click();
     });
@@ -66,7 +71,7 @@ describe('Unit details', { testIsolation: false }, () => {
     });
 
     // Post new details
-    cy.intercept('PUT', `${Cypress.env('veoApiUrl')}/units/${Cypress.env('unitDetails').unitId}`).as(
+    cy.intercept('PUT', `${Cypress.env('veoApiUrl')}/units/${Cypress.env(unitDetails.name).unitId}`).as(
       'updateUnitDetails'
     );
     cy.get('[data-veo-test="associate-domains"]').click();
@@ -76,7 +81,7 @@ describe('Unit details', { testIsolation: false }, () => {
     cy.url().should('be.equal', `${Cypress.config('baseUrl')}/units`);
 
     // Test if unit card renders updated details
-    cy.getVeoTestUnitCard().as('testUnitCard');
+    cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
     cy.get('@testUnitCard').should('contain', testData.unitName);
     cy.get('@testUnitCard').should('contain', testData.unitDesc);
   });

@@ -1,12 +1,17 @@
+import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
+
+let unitDetails: UnitDetails;
+
 describe('Add domains', () => {
   before(() => {
+    unitDetails = generateUnitDetails('associateDomains');
     cy.login();
-    cy.createUnit();
+    cy.createUnit(unitDetails);
     cy.acceptAllCookies();
     cy.goToUnitSelection();
   });
 
-  after(() => cy.deleteUnit());
+  after(() => cy.deleteUnit(unitDetails.name));
 
   it('associates a test unit with the IT-GS domain', () => {
     // DS-GVO is associated on creating the test unit,
@@ -15,7 +20,7 @@ describe('Add domains', () => {
     const selectors = ['[data-veo-test="domain-card-checkbox-itgs"]'];
 
     // Get the test unit
-    cy.getVeoTestUnitCard().as('testUnitCard');
+    cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
 
     // Go to /units/**/domains
     cy.get('@testUnitCard').within((_card) => {

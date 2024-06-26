@@ -1,22 +1,27 @@
+import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
+
+let unitDetails: UnitDetails;
+
 describe('Apply Profiles', () => {
   before(() => {
+    unitDetails = generateUnitDetails('profiles');
     cy.login();
-    cy.createUnit();
+    cy.createUnit(unitDetails);
   });
 
-  after(() => cy.deleteUnit());
+  after(() => cy.deleteUnit(unitDetails.name));
 
   it('applies the DS-GVO demo profile to the test unit', () => {
     const profileName = 'Beispieldaten';
-    const unitId = Cypress.env('unitDetails').unitId;
-    const domainId = Cypress.env('unitDetails').domains[0].id;
+    const unitId = Cypress.env(unitDetails.name).unitId;
+    const domainId = Cypress.env(unitDetails.name).domains[0].id;
 
-    cy.log(JSON.stringify(Cypress.env('unitDetails')));
+    cy.log(JSON.stringify(Cypress.env(unitDetails.name)));
 
     // Per default test units are associated with the DS-GVO Domain
     cy.acceptAllCookies();
     cy.goToUnitSelection();
-    cy.getVeoTestUnitCard().as('testUnitCard');
+    cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
 
     // Go to profiles
     cy.get('@testUnitCard').within((_card) => {

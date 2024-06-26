@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
 
+import { UnitDetails } from '../support/setupHelpers';
 import { TCYVeoUnitNames } from './domains';
 
 declare global {
@@ -44,7 +45,7 @@ export function selectUnitFromDropdown(unitName?: string): void {
   });
 }
 
-export function selectUnit({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {
+export function selectUnit(unitName: string): void {
   cy.get('.v-card-title')
     .contains(unitName)
     .click()
@@ -63,10 +64,10 @@ export function selectUnit({ unitName = Cypress.env('unitDetails').name }: { uni
         expect(unitId).to.match(UNIT_ID_REGEX);
 
         const unitDetails = {
-          ...Cypress.env('unitDetails'),
+          ...Cypress.env(unitName),
           unitId: unitId
         };
-        Cypress.env('unitDetails', unitDetails);
+        Cypress.env(unitName, unitDetails);
       });
     });
 }
@@ -99,14 +100,12 @@ export function editUnit({
 }
 
 export function createUnit({
-  unitName = Cypress.env('unitDetails').name,
-  unitDesc = Cypress.env('unitDetails').desc,
-  domainNames = Cypress.env('unitDetails').domains
-}: {
-  unitName?: string;
-  unitDesc?: string;
-  domainNames?: string[];
-} = {}): void {
+  name,
+  desc = Cypress.env('unitDetails').desc,
+  domains: domainNames = Cypress.env('unitDetails').domains
+}: UnitDetails): void {
+  cy.log(name);
+  cy.log(desc);
   cy.getVeoDomains().then((allVeoDomains) => {
     // Get targetUris of domains the test unit will be associated with
     const domains = allVeoDomains
@@ -121,37 +120,39 @@ export function createUnit({
       method: 'POST',
       waitForRequestMethod,
       requestBody: {
-        name: unitName,
-        description: unitDesc,
+        name: name,
+        description: desc,
         domains
       }
     }).then((data: any) => {
       // Store unit id and domainNames
       // to make them accessible in tests and other commands
       const unitDetails = {
-        ...Cypress.env('unitDetails'),
-        name: unitName,
+        ...Cypress.env(name),
+        name: name,
         unitId: data.resourceId,
+        desc: desc,
         domains: allVeoDomains
           .filter((domain) => domainNames.includes(domain.name as TCYVeoUnitNames))
           .map((filteredDomain) => ({ name: filteredDomain.name, id: filteredDomain.id }))
       };
-      Cypress.env('unitDetails', unitDetails);
+      cy.log(unitDetails.name);
+      Cypress.env(unitDetails.name, unitDetails);
     });
     cy.wait(['@createUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 201);
   });
 }
 
-export function deleteUnit(waitForRequestMethod = true): void {
+export function deleteUnit(unitName: string, waitForRequestMethod = true): void {
   // Check if the cypress environment has an ID for the test unit
-  if (!Cypress.env('unitDetails').unitId) {
+  if (!unitName) {
     cy.log('Could not find test unit ID. Test unit cannot be deleted.');
     return;
   }
 
   cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/units/**`).as('deleteUnit');
   cy.veoRequest({
-    url: `/api/units/${Cypress.env('unitDetails').unitId}`,
+    url: `/api/units/${Cypress.env(unitName).unitId}`,
     method: 'DELETE',
     waitForRequestMethod
   });
@@ -222,8 +223,8 @@ function chooseDomains(domainNames: string[]) {
     });
 }
 
-export function getVeoTestUnitCard() {
-  const url = `/${Cypress.env('unitDetails').unitId}/domains/`;
+export function getVeoTestUnitCard(unitName: string) {
+  const url = `/${Cypress.env(unitName).unitId}/domains/`;
   const veoCardSelector = `a[data-veo-test="item-card-slot-center-link"][href^="${url}"]`;
   return cy.get(veoCardSelector).parent().parent().parent();
 }

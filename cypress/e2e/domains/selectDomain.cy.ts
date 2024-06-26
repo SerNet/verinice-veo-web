@@ -1,16 +1,19 @@
+import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
+
+let unitDetails: UnitDetails;
+
 describe('Domain Selection Functionality', () => {
   before(() => {
+    unitDetails = generateUnitDetails('domains');
     cy.login();
-    cy.createUnit({ domainNames: ['IT-Grundschutz', 'DS-GVO'] });
+    cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: ['IT-Grundschutz', 'DS-GVO'] });
     cy.goToUnitSelection();
     cy.acceptAllCookies();
-    cy.selectUnit();
+    cy.selectUnit(unitDetails.name);
     cy.handleLanguageBug();
   });
 
-  after(() => {
-    cy.deleteUnit();
-  });
+  after(() => cy.deleteUnit(unitDetails.name));
 
   const itgs_widgets = [
     { name: 'scope', numOfElements: 4 },

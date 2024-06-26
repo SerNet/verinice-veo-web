@@ -1,24 +1,23 @@
-import { veoRequest } from '../commands/requests';
-import { getVeoDomains, selectRandomDomain, getSelectedDomain, selectDomain, addDomain } from '../commands/domains';
-import { login } from '../commands/login';
 import { acceptAllCookies } from '../commands/cookies';
+import { testDashboardWidgets, testEmptyDashboard } from '../commands/dashboard';
+import { addDomain, getSelectedDomain, getVeoDomains, selectDomain, selectRandomDomain } from '../commands/domains';
 import { checkSubTypePage } from '../commands/elements';
+import { importUnit } from '../commands/importUnit';
+import { handleLanguageBug, languageTo } from '../commands/language';
+import { login } from '../commands/login';
+import { iterateSubTypes, navigateTo } from '../commands/navigation';
+import { veoRequest } from '../commands/requests';
 import {
-  goToUnitSelection,
-  goToUnitDashboard,
-  selectUnit,
   createUnit,
-  editUnit,
   deleteUnit,
   deleteUnitGUI,
+  editUnit,
   getVeoTestUnitCard,
+  goToUnitDashboard,
+  goToUnitSelection,
+  selectUnit,
   selectUnitFromDropdown
 } from '../commands/units';
-import { generateUnitDetails } from './setupHelpers';
-import { testDashboardWidgets, testEmptyDashboard } from '../commands/dashboard';
-import { importUnit } from '../commands/importUnit';
-import { languageTo, handleLanguageBug } from '../commands/language';
-import { navigateTo, iterateSubTypes } from '../commands/navigation';
 
 Cypress.Commands.addAll({
   veoRequest,
@@ -46,10 +45,6 @@ Cypress.Commands.addAll({
   checkSubTypePage,
   iterateSubTypes,
   selectUnitFromDropdown
-});
-
-before(() => {
-  generateUnitDetails();
 });
 
 // Uncaught exeptions make cypress test runs fail
