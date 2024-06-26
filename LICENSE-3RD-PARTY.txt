@@ -15131,7 +15131,7 @@ THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - vue-router@4.3.3
+ - vue-router@4.4.0
 
 This package contains the following license and notice below:
 
