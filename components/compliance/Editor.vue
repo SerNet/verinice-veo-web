@@ -1,16 +1,16 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2024 Aziz Khalledi
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify it
    - under the terms of the GNU Affero General Public License
    - as published by the Free Software Foundation, either version 3 of the License,
    - or (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
    - without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    - See the GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License along with this program.
    - If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -27,32 +27,34 @@
       <v-card-text v-if="item">
         <!-- Read only text fields -->
         <v-text-field
-          :label="t('requirement')"
-          :model-value="form?.control?.displayName"
-          readonly
-          variant="underlined"
-        />
-
-        <v-text-field
           :label="t('riskAffected')"
           :model-value="form?.origin?.displayName"
           readonly
           variant="underlined"
         />
 
-        <!-- Description -->
-        <v-textarea v-model="form.implementationStatement" :label="t('description')" variant="underlined" />
+        <v-label>{{ t('requirement') }}</v-label>
+        <v-row>
+          <v-col>
+            <v-text-field
+              :label="t('abbreviation')"
+              :model-value="form?.control?.abbreviation"
+              readonly
+              variant="underlined"
+            />
+          </v-col>
 
-        <!-- Originiation -->
-        <v-radio-group :model-value="form?.origination" inline>
-          <template #label>
-            <div>{{ t('origination') }}</div>
-          </template>
+          <v-col>
+            <v-text-field
+              :label="t('protectionApproach')"
+              :model-value="additionalInfo?.protectionApproach"
+              readonly
+              variant="underlined"
+            />
+          </v-col>
+        </v-row>
 
-          <template v-for="(key, value) in Origination" :key="key">
-            <v-radio :label="t(`originationValues.${value}`)" :value="`${key}`" />
-          </template>
-        </v-radio-group>
+        <v-text-field :label="t('name')" :model-value="form?.control?.name" readonly variant="underlined" />
 
         <!-- Responsible person -->
         <v-autocomplete
@@ -78,6 +80,20 @@
           </template>
         </v-radio-group>
 
+        <!-- Description -->
+        <v-textarea v-model="form.implementationStatement" :label="t('description')" variant="underlined" />
+
+        <!-- Originiation -->
+        <v-radio-group :model-value="form?.origination" inline>
+          <template #label>
+            <div>{{ t('origination') }}</div>
+          </template>
+
+          <template v-for="(key, value) in Origination" :key="key">
+            <v-radio :label="t(`originationValues.${value}`)" :value="`${key}`" />
+          </template>
+        </v-radio-group>
+
         <!-- Foldable Requirement Description -->
         <v-expansion-panels>
           <v-expansion-panel>
@@ -85,7 +101,7 @@
               {{ t('requirementDescription') }}
             </template>
             <template #text>
-              <div v-if="controlContent" v-html="controlContent"></div>
+              <div v-if="additionalInfo.requirementDescription" v-html="additionalInfo.requirementDescription"></div>
               <div v-else>{{ t('noRequirementDescriptionAvailable') }}</div>
             </template>
           </v-expansion-panel>
@@ -234,7 +250,7 @@ const { data: _personsForTotalItemCount } = useQuery(
   { enabled: isFetchingTotalItemCount.value }
 );
 
-// Fetch Requirement Description
+// Fetch Control
 const controlParameters = computed<IVeoFetchObjectParameters>(() => ({
   id: props.item?.control.id as string,
   domain: domainId.value,
@@ -244,18 +260,19 @@ const { data: control } = useQuery(controlQueryDefinitions.queries.fetch, contro
   enabled: computed(() => !!props.item?.control.id)
 });
 
-watch(control, () => {
-  updateControlContent();
-});
+const additionalInfo = ref({});
 
-const controlContent = ref('');
+const updateControlInfo = (control) => {
+  const customAspects = control?.customAspects as IVeoObjectControlCompendiumEntry | undefined;
 
-const updateControlContent = () => {
-  const controlEntry = control.value?.customAspects as IVeoObjectControlCompendiumEntry | undefined;
-  controlContent.value = controlEntry?.control_bpCompendium?.control_bpCompendium_content ?? '';
+  if (!customAspects) return undefined;
+
+  additionalInfo.value.requirementDescription = customAspects?.control_bpCompendium?.control_bpCompendium_content ?? '';
+  additionalInfo.value.protectionApproach =
+    customAspects.control_bpInformation?.control_bpInformation_protectionApproach;
 };
 
-watch(() => control.value, updateControlContent, { immediate: true });
+watch(control, () => updateControlInfo(control.value), { immediate: true });
 
 // Fetch again to get all persons in current domain + unit
 const isFetchingPersons = computed(() => !!domainId.value && !!unitId.value && !!totalItemCount);
@@ -347,7 +364,9 @@ async function submitForm({
   "responsible": "Verantwortlich",
   "editRequirementImplementation": "Anforderung bearbeiten",
   "requirementImplementationNotUpdated": "Anforderung konnte nicht aktualisiert werden.",
-  "requirementImplementationUpdated": "Anforderung wurde erfolgreich aktualisiert."
+  "requirementImplementationUpdated": "Anforderung wurde erfolgreich aktualisiert.",
+  "name": "Name",
+  "protectionApproach": "Vorgehensweise"
 },
 "en": {
   "requirement": "Requirement Implementation:",
@@ -372,7 +391,9 @@ async function submitForm({
   "responsible": "responsible",
   "editRequirementImplementation": "edit Requirement Implementation",
   "requirementImplementationNotUpdated": "Requirement Implementation could not be updated.",
-  "requirementImplementationUpdated": "Requirement Implementation successfully updated."
+  "requirementImplementationUpdated": "Requirement Implementation successfully updated.",
+  "name": "Name",
+  "protectionApproach": "Protection approach"
 }
 }
 </i18n>
