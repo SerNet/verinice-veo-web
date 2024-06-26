@@ -40,6 +40,7 @@
     <ComplianceEditor
       :item="requirementImplementation"
       :show-dialog="showDialog"
+      :locale="locale"
       @update:show-dialog="showDialog = !showDialog"
       @update:item="reloadRequirementImplementations"
     />

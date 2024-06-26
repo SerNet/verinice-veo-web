@@ -47,7 +47,7 @@
           <v-col>
             <v-text-field
               :label="t('protectionApproach')"
-              :model-value="additionalInfo?.protectionApproach"
+              :model-value="additionalInfo?.protectionApproachTranslation"
               readonly
               variant="underlined"
             />
@@ -162,6 +162,7 @@ const { getRequirementImplementationId, state } = useCompliance();
 interface Props {
   item: RequirementImplementation | null;
   showDialog: boolean;
+  locale: string;
 }
 
 interface Emits {
@@ -273,6 +274,22 @@ const updateControlInfo = (control) => {
 };
 
 watch(control, () => updateControlInfo(control.value), { immediate: true });
+
+// Get and translate the protection approach value of the current item
+const { data: translations } = useTranslations({ domain: props.domainId });
+
+function translateProtectionApproach({ translations, locale, protectionApproach }) {
+  if (!translations?.lang || !locale || !protectionApproach) return '';
+  return translations.lang[locale][protectionApproach];
+}
+
+additionalInfo.value.protectionApproachTranslation = computed(() =>
+  translateProtectionApproach({
+    translations: translations.value,
+    locale: props.locale,
+    protectionApproach: additionalInfo.value.protectionApproach
+  })
+);
 
 // Fetch again to get all persons in current domain + unit
 const isFetchingPersons = computed(() => !!domainId.value && !!unitId.value && !!totalItemCount);

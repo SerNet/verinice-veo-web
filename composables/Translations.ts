@@ -1,5 +1,6 @@
-import { useQuery } from './api/utils/query';
+import { useQuery, useQuerySync } from './api/utils/query';
 import formsQueryDefinitions from './api/queryDefinitions/forms';
+import translationsQueryDefinitions from './api/queryDefinitions/translations';
 import { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 
 type TranslateSubTypeParams = {
@@ -8,6 +9,36 @@ type TranslateSubTypeParams = {
   subType: string | undefined;
   elementType?: string | undefined;
 };
+
+type UseTranslationsParams = { domain: string | string[]; languages?: string[] };
+
+export function useTranslations({ domain, languages = ['en', 'de'] }: UseTranslationsParams) {
+  const data = ref();
+  const isLoading = ref();
+  const error = ref();
+
+  async function fetchTranslations({ languages, domain }: UseTranslationsParams) {
+    if (!languages?.length) return;
+    isLoading.value = true;
+
+    try {
+      data.value = await useQuerySync(translationsQueryDefinitions.queries.fetch, { languages, domain });
+    } catch (err) {
+      console.error(err);
+      error.value = err;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  fetchTranslations({ languages, domain });
+
+  return {
+    data,
+    isLoading,
+    error
+  };
+}
 
 function translateSubType({ formSchemas, locale, subType, elementType }: TranslateSubTypeParams) {
   if (!subType) subType = 'all';
