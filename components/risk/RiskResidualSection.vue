@@ -20,24 +20,22 @@
     <h2 class="text-h2 mt-2 mb-1">
       {{ upperFirst(t('residualRisk').toString()) }}
     </h2>
-    <BaseCard class="veo-section-border mb-4">
-      <v-card-text class="pa-3 px-4">
-        <v-row>
-          <template v-for="protectionGoal of riskDefinition.categories">
-            <RiskResidualSectionColumn
-              v-if="protectionGoalExists(protectionGoal.id)"
-              :key="protectionGoal.id"
-              :disabled="disabled"
-              :protection-goal="protectionGoal"
-              :risk-definition="riskDefinition"
-              :num-of-cols="riskDefinition.categories.length"
-              v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
-              @update:user-defined-residual-risk="onUserDefinedResidualRiskChanged(protectionGoal.id, $event)"
-              @update:residual-risk-explanation="onResidualRiskExplanationChanged(protectionGoal.id, $event)"
-            />
-          </template>
-        </v-row>
-      </v-card-text>
+    <BaseCard border padding margin-bottom>
+      <v-row>
+        <template v-for="protectionGoal of riskDefinition.categories">
+          <RiskResidualSectionColumn
+            v-if="protectionGoalExists(protectionGoal.id)"
+            :key="protectionGoal.id"
+            :disabled="disabled"
+            :protection-goal="protectionGoal"
+            :risk-definition="riskDefinition"
+            :num-of-cols="riskDefinition.categories.length"
+            v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
+            @update:user-defined-residual-risk="onUserDefinedResidualRiskChanged(protectionGoal.id, $event)"
+            @update:residual-risk-explanation="onResidualRiskExplanationChanged(protectionGoal.id, $event)"
+          />
+        </template>
+      </v-row>
     </BaseCard>
   </div>
 </template>

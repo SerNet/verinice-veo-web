@@ -20,24 +20,22 @@
     <h2 class="text-h2 mt-2 mb-1">
       {{ upperFirst(t('riskTreatment').toString()) }}
     </h2>
-    <BaseCard class="veo-section-border">
-      <v-card-text class="pa-3 px-4">
-        <v-row>
-          <template v-for="protectionGoal of riskDefinition.categories">
-            <RiskTreatmentSectionColumn
-              v-if="protectionGoalExists(protectionGoal.id)"
-              :key="protectionGoal.id"
-              :disabled="disabled"
-              :protection-goal="protectionGoal"
-              :risk-definition="riskDefinition"
-              :num-of-cols="riskDefinition.categories.length"
-              v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
-              @update:risk-treatments="onRiskTreatmentChanged(protectionGoal.id, $event)"
-              @update:risk-treatment-explanation="onRiskTreatmentExplanationChanged(protectionGoal.id, $event)"
-            />
-          </template>
-        </v-row>
-      </v-card-text>
+    <BaseCard border padding>
+      <v-row>
+        <template v-for="protectionGoal of riskDefinition.categories">
+          <RiskTreatmentSectionColumn
+            v-if="protectionGoalExists(protectionGoal.id)"
+            :key="protectionGoal.id"
+            :disabled="disabled"
+            :protection-goal="protectionGoal"
+            :risk-definition="riskDefinition"
+            :num-of-cols="riskDefinition.categories.length"
+            v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
+            @update:risk-treatments="onRiskTreatmentChanged(protectionGoal.id, $event)"
+            @update:risk-treatment-explanation="onRiskTreatmentExplanationChanged(protectionGoal.id, $event)"
+          />
+        </template>
+      </v-row>
     </BaseCard>
   </div>
 </template>

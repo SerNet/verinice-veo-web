@@ -40,40 +40,38 @@
         <h2 class="text-h2 mb-1">
           {{ upperFirst(t('common').toString()) }}
         </h2>
-        <BaseCard class="veo-section-border">
-          <v-card-text class="pa-3 px-4">
-            <v-row>
-              <v-col xs="12" md="6">
-                <UtilObjectSelect
-                  data-test-selector="risk-scenario"
-                  :model-value="data.scenario"
-                  object-type="scenario"
-                  sub-type="route.params.subType"
-                  required
-                  :rules="[requiredRule]"
-                  :domain-id="domainId"
-                  :disabled="formDisabled"
-                  value-as-link
-                  hide-details
-                  @update:model-value="onScenarioChanged"
-                />
-              </v-col>
-              <v-col xs="12" md="6">
-                <UtilObjectSelect
-                  data-test-selector="risk-owner"
-                  :model-value="data.riskOwner"
-                  object-type="person"
-                  required
-                  :label="upperFirst(t('riskOwner').toString())"
-                  :domain-id="domainId"
-                  :disabled="formDisabled"
-                  value-as-link
-                  hide-details
-                  @update:model-value="onRiskOwnerChanged"
-                />
-              </v-col>
-            </v-row>
-          </v-card-text>
+        <BaseCard border padding>
+          <v-row>
+            <v-col xs="12" md="6">
+              <UtilObjectSelect
+                data-test-selector="risk-scenario"
+                :model-value="data.scenario"
+                object-type="scenario"
+                sub-type="route.params.subType"
+                required
+                :rules="[requiredRule]"
+                :domain-id="domainId"
+                :disabled="formDisabled"
+                value-as-link
+                hide-details
+                @update:model-value="onScenarioChanged"
+              />
+            </v-col>
+            <v-col xs="12" md="6">
+              <UtilObjectSelect
+                data-test-selector="risk-owner"
+                :model-value="data.riskOwner"
+                object-type="person"
+                required
+                :label="upperFirst(t('riskOwner').toString())"
+                :domain-id="domainId"
+                :disabled="formDisabled"
+                value-as-link
+                hide-details
+                @update:model-value="onRiskOwnerChanged"
+              />
+            </v-col>
+          </v-row>
         </BaseCard>
         <RiskCreateDialogRiskDefinitions
           v-model:dirty-fields="dirtyFields"

@@ -20,24 +20,22 @@
     <h2 class="text-h2 mt-2 mb-1">
       {{ upperFirst(t('inherentRisk').toString()) }}
     </h2>
-    <BaseCard class="veo-section-border">
-      <v-card-text class="pa-3 px-4">
-        <v-row>
-          <template v-for="protectionGoal of riskDefinition.categories">
-            <RiskInherentRiskSectionColumn
-              v-if="protectionGoalExists(protectionGoal.id)"
-              :key="protectionGoal.id"
-              :disabled="disabled"
-              :protection-goal="protectionGoal"
-              :risk-definition="riskDefinition"
-              :dirty-fields="dirtyFields"
-              :num-of-cols="riskDefinition.categories.length"
-              v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
-              @update:dirty-fields="$emit('update:dirty-fields', $event)"
-            />
-          </template>
-        </v-row>
-      </v-card-text>
+    <BaseCard border padding>
+      <v-row>
+        <template v-for="protectionGoal of riskDefinition.categories">
+          <RiskInherentRiskSectionColumn
+            v-if="protectionGoalExists(protectionGoal.id)"
+            :key="protectionGoal.id"
+            :disabled="disabled"
+            :protection-goal="protectionGoal"
+            :risk-definition="riskDefinition"
+            :dirty-fields="dirtyFields"
+            :num-of-cols="riskDefinition.categories.length"
+            v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
+            @update:dirty-fields="$emit('update:dirty-fields', $event)"
+          />
+        </template>
+      </v-row>
     </BaseCard>
   </div>
 </template>

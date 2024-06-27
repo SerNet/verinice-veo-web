@@ -20,25 +20,23 @@
     <h2 class="text-h2 mt-2 mb-1">
       {{ upperFirst(t('impact').toString()) }}
     </h2>
-    <BaseCard class="veo-section-border">
-      <v-card-text class="pa-4 px-4">
-        <v-row>
-          <template v-for="protectionGoal of riskDefinition.categories">
-            <RiskImpactSectionColumn
-              v-if="protectionGoalExists(protectionGoal.id)"
-              :key="protectionGoal.id"
-              :dirty-fields="dirtyFields"
-              :protection-goal="protectionGoal"
-              :disabled="disabled"
-              :risk-definition="riskDefinition"
-              :num-of-cols="riskDefinition.categories.length"
-              v-bind="data.find((impactValue) => impactValue.category === protectionGoal.id)"
-              @update:specific-impact-explanation="onSpecificImpactExplanationChanged(protectionGoal.id, $event)"
-              @update:specific-impact="onSpecificImpactChanged(protectionGoal.id, $event)"
-            />
-          </template>
-        </v-row>
-      </v-card-text>
+    <BaseCard border padding>
+      <v-row>
+        <template v-for="protectionGoal of riskDefinition.categories">
+          <RiskImpactSectionColumn
+            v-if="protectionGoalExists(protectionGoal.id)"
+            :key="protectionGoal.id"
+            :dirty-fields="dirtyFields"
+            :protection-goal="protectionGoal"
+            :disabled="disabled"
+            :risk-definition="riskDefinition"
+            :num-of-cols="riskDefinition.categories.length"
+            v-bind="data.find((impactValue) => impactValue.category === protectionGoal.id)"
+            @update:specific-impact-explanation="onSpecificImpactExplanationChanged(protectionGoal.id, $event)"
+            @update:specific-impact="onSpecificImpactChanged(protectionGoal.id, $event)"
+          />
+        </template>
+      </v-row>
     </BaseCard>
   </div>
 </template>

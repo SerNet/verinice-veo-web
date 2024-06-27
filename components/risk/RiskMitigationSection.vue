@@ -35,7 +35,7 @@
         </template>
       </v-tooltip>
     </h2>
-    <BaseCard class="veo-section-border">
+    <BaseCard border>
       <ObjectTable
         :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'updatedAt', 'actions']"
         :loading="fetchingMitigation"

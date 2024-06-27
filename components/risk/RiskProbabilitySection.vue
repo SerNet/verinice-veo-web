@@ -20,93 +20,91 @@
     <h2 class="text-h2 mb-1">
       {{ upperFirst(t('probability').toString()) }}
     </h2>
-    <BaseCard class="veo-section-border">
-      <v-card-text class="pa-3 px-4">
-        <v-row class="pt-0">
-          <v-col xs="12" md="3">
-            <v-select
-              data-test-selector="risk-potential-probability"
-              :model-value="data.potentialProbability"
-              color="primary"
-              :label="upperFirst(t('potentialProbability').toString())"
-              :items="probabilities"
-              disabled
-              variant="underlined"
-              hide-details
+    <BaseCard border padding>
+      <v-row class="pt-0">
+        <v-col xs="12" md="3">
+          <v-select
+            data-test-selector="risk-potential-probability"
+            :model-value="data.potentialProbability"
+            color="primary"
+            :label="upperFirst(t('potentialProbability').toString())"
+            :items="probabilities"
+            disabled
+            variant="underlined"
+            hide-details
+          >
+            <template v-if="dirtyFields.scenario" #selection>
+              {{ t('saveCTA') }}
+            </template>
+          </v-select>
+        </v-col>
+        <v-col xs="12" md="3">
+          <v-select
+            data-test-selector="risk-specific-probability"
+            :model-value="data.specificProbability"
+            color="primary"
+            :disabled="disabled"
+            :label="upperFirst(t('specificProbability').toString())"
+            :items="probabilities"
+            clearable
+            hide-details
+            variant="underlined"
+            @update:model-value="onSpecificProbabilityChanged"
+          />
+        </v-col>
+        <v-col xs="12" md="3">
+          <v-select
+            data-test-selector="risk-effective-probability"
+            :model-value="data.effectiveProbability"
+            color="primary"
+            :label="upperFirst(t('effectiveProbability').toString())"
+            :items="probabilities"
+            disabled
+            variant="underlined"
+            hide-details
+          >
+            <template
+              v-if="dirtyFields && (dirtyFields.scenario || dirtyFields[`${riskDefinition.id}_specificProbability`])"
+              #selection
             >
-              <template v-if="dirtyFields.scenario" #selection>
-                {{ t('saveCTA') }}
-              </template>
-            </v-select>
-          </v-col>
-          <v-col xs="12" md="3">
-            <v-select
-              data-test-selector="risk-specific-probability"
-              :model-value="data.specificProbability"
-              color="primary"
-              :disabled="disabled"
-              :label="upperFirst(t('specificProbability').toString())"
-              :items="probabilities"
-              clearable
-              hide-details
-              variant="underlined"
-              @update:model-value="onSpecificProbabilityChanged"
-            />
-          </v-col>
-          <v-col xs="12" md="3">
-            <v-select
-              data-test-selector="risk-effective-probability"
-              :model-value="data.effectiveProbability"
-              color="primary"
-              :label="upperFirst(t('effectiveProbability').toString())"
-              :items="probabilities"
-              disabled
-              variant="underlined"
-              hide-details
-            >
-              <template
-                v-if="dirtyFields && (dirtyFields.scenario || dirtyFields[`${riskDefinition.id}_specificProbability`])"
-                #selection
-              >
-                {{ t('saveCTA') }}
-              </template>
-            </v-select>
-          </v-col>
-          <v-col xs="12" md="3">
-            <v-edit-dialog>
-              <template #default="{ props: dialogProps }">
-                <v-text-field
-                  data-test-selector="risk-probability-explanation-text-field"
-                  :model-value="data.specificProbabilityExplanation"
-                  :disabled="disabled"
-                  :label="upperFirst(t('explanation').toString())"
-                  hide-details
-                  variant="underlined"
-                  v-bind="dialogProps"
-                  @update:model-value="onSpecificProbabilityExplanationChanged"
-                />
-              </template>
-              <template #input>
-                <v-textarea
-                  data-test-selector="'risk-probability-explanation-textarea'"
-                  :model-value="data.specificProbabilityExplanation"
-                  :disabled="disabled"
-                  :label="upperFirst(t('explanation').toString())"
-                  clearable
-                  auto-grow
-                  autofocus
-                  rows="3"
-                  no-resize
-                  hide-details
-                  class="pb-1"
-                  variant="underlined"
-                  @update:model-value="onSpecificProbabilityExplanationChanged"
-                />
-              </template>
-            </v-edit-dialog>
-          </v-col>
-        </v-row>
-      </v-card-text>
+              {{ t('saveCTA') }}
+            </template>
+          </v-select>
+        </v-col>
+        <v-col xs="12" md="3">
+          <v-edit-dialog>
+            <template #default="{ props: dialogProps }">
+              <v-text-field
+                data-test-selector="risk-probability-explanation-text-field"
+                :model-value="data.specificProbabilityExplanation"
+                :disabled="disabled"
+                :label="upperFirst(t('explanation').toString())"
+                hide-details
+                variant="underlined"
+                v-bind="dialogProps"
+                @update:model-value="onSpecificProbabilityExplanationChanged"
+              />
+            </template>
+            <template #input>
+              <v-textarea
+                data-test-selector="'risk-probability-explanation-textarea'"
+                :model-value="data.specificProbabilityExplanation"
+                :disabled="disabled"
+                :label="upperFirst(t('explanation').toString())"
+                clearable
+                auto-grow
+                autofocus
+                rows="3"
+                no-resize
+                hide-details
+                class="pb-1"
+                variant="underlined"
+                @update:model-value="onSpecificProbabilityExplanationChanged"
+              />
+            </template>
+          </v-edit-dialog>
+        </v-col>
+      </v-row>
     </BaseCard>
   </div>
 </template>
