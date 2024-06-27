@@ -20,12 +20,19 @@
     v-bind="attrs"
     class="veo-card"
     :class="{
-      'veo-border': border
+      'veo-border': border,
+      'mt-4': marginTop,
+      'mb-4': marginBottom
     }"
     flat
     rounded
   >
-    <slot />
+    <v-card-text v-if="padding" class="pa-3 px-4">
+      <slot />
+    </v-card-text>
+    <template v-else>
+      <slot />
+    </template>
   </VCard>
 </template>
 <script setup lang="ts">
@@ -34,9 +41,15 @@ import { VCard } from 'vuetify/components';
 withDefaults(
   defineProps<{
     border?: boolean;
+    padding?: boolean;
+    marginTop?: boolean;
+    marginBottom?: boolean;
   }>(),
   {
-    border: false
+    border: false,
+    padding: false,
+    marginTop: false,
+    marginBottom: false
   }
 );
 
